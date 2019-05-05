@@ -2,6 +2,8 @@ function doMovement(key)
   local played_sound = {}
   local moving_units = {}
 
+  first_turn = false
+
   for _,unit in ipairs(units) do
     if hasProperty(unit, "u") then
       table.insert(moving_units, {unit = unit, dir = dirs_by_name[key]})
@@ -41,8 +43,10 @@ function doAction(action)
   local action_name = action[1]
   if action_name == "open" then
     playSound("break", 0.5)
+    playSound("unlock", 0.6)
     local opened = action[2]
     for _,unit in ipairs(opened) do
+      doParticles("destroy", unit.x, unit.y, {237,226,133})
       unit.removed = true
       unit.destroyed = true
     end

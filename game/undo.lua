@@ -36,7 +36,7 @@ function undo()
 
     updateUnits(true)
     if update_rules then
-      parseRules()
+      parseRules(true)
     end
     updateUnits(true)
 

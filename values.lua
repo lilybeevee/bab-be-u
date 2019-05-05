@@ -14,7 +14,7 @@ dirs_by_name = {
   left = 3,
   up = 4
 }
-tilesize = 32
+TILE_SIZE = 32
 
 mapwidth = 21
 mapheight = 15

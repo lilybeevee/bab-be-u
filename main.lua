@@ -14,6 +14,7 @@ move_sound_data = nil
 move_sound_source = nil
 
 function clear()
+  particles = {}
   tiles_by_name = {}
   units = {}
   units_by_id = {}
@@ -23,6 +24,7 @@ function clear()
   undo_buffer = {}
   max_layer = 1
   max_unit_id = 0
+  first_turn = true
 
   win = false
   win_size = 0
@@ -62,6 +64,9 @@ function love.load()
   end
   registerSound("move")
   registerSound("break")
+  registerSound("unlock")
+  registerSound("sink")
+  registerSound("rule")
   registerSound("win")
 
   clear()
@@ -143,8 +148,8 @@ function love.draw()
   love.graphics.setBackgroundColor(0.10, 0.1, 0.11)
 
   love.graphics.push()
-  local roomwidth = mapwidth * tilesize
-  local roomheight = mapheight * tilesize
+  local roomwidth = mapwidth * TILE_SIZE
+  local roomheight = mapheight * TILE_SIZE
   love.graphics.translate(love.graphics.getWidth() / 2 - roomwidth / 2, love.graphics.getHeight() / 2 - roomheight / 2)
 
   love.graphics.setColor(0, 0, 0)
@@ -156,7 +161,7 @@ function love.draw()
       for _,unit in ipairs(units_by_layer[i]) do
         local sprite = sprites[unit.sprite]
         local brightness = 1
-        if not unit.active then
+        if unit.type == "text" and not unit.active then
           brightness = 0.33
         end
         local drawx = lerp(unit.oldx, unit.x, unit.move_timer/MAX_MOVE_TIMER)
@@ -172,7 +177,7 @@ function love.draw()
         end
         
         love.graphics.setColor(unit.color[1]/255 * brightness, unit.color[2]/255 * brightness, unit.color[3]/255 * brightness)
-        love.graphics.draw(sprite, (drawx + 0.5)*tilesize, (drawy + 0.5)*tilesize, 0, unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+        love.graphics.draw(sprite, (drawx + 0.5)*TILE_SIZE, (drawy + 0.5)*TILE_SIZE, 0, unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
         if unit.move_timer < MAX_MOVE_TIMER then
           unit.move_timer = math.min(MAX_MOVE_TIMER, unit.move_timer + (dt * 1000))
         end
@@ -181,6 +186,20 @@ function love.draw()
         removeFromTable(units_by_layer[i], unit)
       end
     end
+  end
+  local removed_particles = {}
+  for _,ps in ipairs(particles) do
+    ps:update(dt)
+    if ps:getCount() == 0 then
+      ps:stop()
+      table.insert(removed_particles, ps)
+    else
+      love.graphics.setColor(255, 255, 255)
+      love.graphics.draw(ps)
+    end
+  end
+  for _,ps in ipairs(removed_particles) do
+    removeFromTable(particles, ps)
   end
   love.graphics.pop()
 
@@ -192,5 +211,39 @@ function love.draw()
 
   if win and win_size < 1 then
     win_size = win_size + 0.02
+  end
+end
+
+function doParticles(type,x,y,color)
+  if type == "destroy" then
+    local ps = love.graphics.newParticleSystem(sprites["circle"])
+    local px = (x + 0.5) * TILE_SIZE
+    local py = (y + 0.5) * TILE_SIZE
+    ps:setPosition(px, py)
+    ps:setSpread(0)
+    ps:setEmissionArea("uniform", TILE_SIZE/3, TILE_SIZE/3, 0, true)
+    ps:setSizes(0.15, 0.15, 0.15, 0)
+    ps:setSpeed(50)
+    ps:setLinearDamping(5)
+    ps:setParticleLifetime(0.25)
+    ps:setColors(color[1]/255, color[2]/255, color[3]/255, (color[4] or 255)/255)
+    ps:start()
+    ps:emit(20)
+    table.insert(particles, ps)
+  elseif type == "rule" then
+    local ps = love.graphics.newParticleSystem(sprites["circle"])
+    local px = (x + 0.5) * TILE_SIZE
+    local py = (y + 0.5) * TILE_SIZE
+    ps:setPosition(px, py)
+    ps:setSpread(0)
+    ps:setEmissionArea("borderrectangle", TILE_SIZE/3, TILE_SIZE/3, 0, true)
+    ps:setSizes(0.1, 0.1, 0.1, 0)
+    ps:setSpeed(50)
+    ps:setLinearDamping(4)
+    ps:setParticleLifetime(0.25)
+    ps:setColors(color[1]/255, color[2]/255, color[3]/255, (color[4] or 255)/255)
+    ps:start()
+    ps:emit(10)
+    table.insert(particles, ps)
   end
 end

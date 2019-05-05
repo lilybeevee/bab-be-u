@@ -31,17 +31,21 @@ function updateUnits(undoing)
 
       unit.layer = tile.layer
 
-      for _,on in ipairs(units_by_tile[tileid]) do
-        if hasProperty(on, "no swim") and on ~= unit then
-          unit.destroyed = true
-          unit.removed = true
-          on.destroyed = true
-          on.removed = true
-          table.insert(del_units, on)
-        elseif is_u and hasProperty(on, ":)") then
-          win = true
-          music_fading = true
-          playSound("win", 0.5)
+      if not undoing then
+        for _,on in ipairs(units_by_tile[tileid]) do
+          if hasProperty(on, "no swim") and on ~= unit then
+            unit.destroyed = true
+            unit.removed = true
+            on.destroyed = true
+            on.removed = true
+            playSound("sink", 0.5)
+            doParticles("destroy", unit.x, unit.y, on.color)
+            table.insert(del_units, on)
+          elseif is_u and hasProperty(on, ":)") then
+            win = true
+            music_fading = true
+            playSound("win", 0.5)
+          end
         end
       end
 
@@ -136,7 +140,7 @@ function createUnit(tile,x,y,convert,id_)
   unit.id = id_ or newUnitID()
   unit.x = x or 0
   unit.y = y or 0
-  unit.active = true
+  unit.active = false
   unit.removed = false
 
   unit.scalex = 1
@@ -147,6 +151,7 @@ function createUnit(tile,x,y,convert,id_)
   unit.oldx = unit.x
   unit.oldy = unit.y
   unit.move_timer = MAX_MOVE_TIMER
+  unit.old_active = unit.active
 
   unit.tile = tile
   unit.sprite = tiles_list[tile].sprite

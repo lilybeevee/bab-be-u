@@ -1,4 +1,4 @@
-function parseRules()
+function parseRules(undoing)
   full_rules = {}
   rules_with = {}
 
@@ -29,12 +29,14 @@ function parseRules()
           table.insert(first_words, {unit, i})
         end
       end
+      unit.old_active = unit.active
       unit.active = false
     end
   end
 
   print("-- begin parse --")
 
+  local has_new_rule = false
   local already_parsed = {}
   local first_words_count = #first_words
   for i,first in ipairs(first_words) do
@@ -143,14 +145,29 @@ function parseRules()
             for _,unit in ipairs(a[2]) do
               table.insert(all_units, unit)
               unit.active = true
+              if not unit.old_active and not first_turn and not undoing then
+                doParticles("rule", unit.x, unit.y, unit.color)
+                has_new_rule = true
+              end
+              unit.old_active = unit.active
             end
             for _,unit in ipairs(b[2]) do
               table.insert(all_units, unit)
               unit.active = true
+              if not unit.old_active and not first_turn and not undoing then
+                doParticles("rule", unit.x, unit.y, unit.color)
+                has_new_rule = true
+              end
+              unit.old_active = unit.active
             end
             for _,unit in ipairs(c[2]) do
               table.insert(all_units, unit)
               unit.active = true
+              if not unit.old_active and not first_turn and not undoing then
+                doParticles("rule", unit.x, unit.y, unit.color)
+                has_new_rule = true
+              end
+              unit.old_active = unit.active
             end
 
             local rule = {{noun,verb,prop},all_units}
@@ -174,5 +191,9 @@ function parseRules()
         end
       end
     end
+  end
+
+  if has_new_rule then
+    playSound("rule",0.5)
   end
 end
