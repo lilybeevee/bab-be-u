@@ -140,6 +140,7 @@ function createUnit(tile,x,y,convert,id_)
   unit.id = id_ or newUnitID()
   unit.x = x or 0
   unit.y = y or 0
+  unit.dir = 1
   unit.active = false
   unit.removed = false
 
@@ -160,6 +161,7 @@ function createUnit(tile,x,y,convert,id_)
   unit.allowprops = tiles_list[tile].allowprops or false
   unit.color = tiles_list[tile].color
   unit.layer = tiles_list[tile].layer
+  unit.rotate = tiles_list[tile].rotate or false
 
   unit.fullname = tiles_list[tile].name
   if unit.type == "text" then

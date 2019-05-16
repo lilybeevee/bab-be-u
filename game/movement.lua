@@ -26,6 +26,7 @@ function doMovement(key)
       if success then
         for _,mover in ipairs(movers) do
           if not mover.removed then
+            mover.dir = dir
             addUndo({"update", mover.id, mover.x, mover.y})
             moveUnit(mover, mover.x + dx, mover.y + dy)
           end

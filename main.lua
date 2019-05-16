@@ -176,8 +176,13 @@ function love.draw()
           unit.scaley = math.min(1, unit.scaley + (dt*10))
         end
         
+        local rotation = 0
+        if unit.rotate then
+        	rotation = (unit.dir - 1) * 90
+        end
+        
         love.graphics.setColor(unit.color[1]/255 * brightness, unit.color[2]/255 * brightness, unit.color[3]/255 * brightness)
-        love.graphics.draw(sprite, (drawx + 0.5)*TILE_SIZE, (drawy + 0.5)*TILE_SIZE, 0, unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+        love.graphics.draw(sprite, (drawx + 0.5)*TILE_SIZE, (drawy + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
         if unit.move_timer < MAX_MOVE_TIMER then
           unit.move_timer = math.min(MAX_MOVE_TIMER, unit.move_timer + (dt * 1000))
         end

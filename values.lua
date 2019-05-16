@@ -44,6 +44,7 @@ tiles_list = {
     type = "object",
     color = {255,255,255},
     layer = 5,
+    rotate = true,
   },
   -- 2
   {
@@ -154,6 +155,7 @@ tiles_list = {
     type = "object",
     color = {237,226,133},
     layer = 4,
+    rotate = true,
   },
   -- 15
   {
