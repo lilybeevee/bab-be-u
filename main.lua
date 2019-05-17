@@ -25,6 +25,11 @@ function love.load()
       sprites[spritename] = sprite
     end
   end
+  system_cursor = sprites["mous_windows"]
+  if love.system.getOS() == "OS X" then
+    system_cursor = sprites["mous_osx"]
+  end
+  
   registerSound("move")
   registerSound("break")
   registerSound("unlock")

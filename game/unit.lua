@@ -113,7 +113,7 @@ function updateUnits(undoing)
     end
   end
 
-  cursor_convert = nil
+  cursor_convert_to = nil
 
   for _,rules in ipairs(full_rules) do
     local rule = rules[1]
@@ -129,7 +129,7 @@ function updateUnits(undoing)
 
     if units_by_name[rule[1]] then
       for i,unit in ipairs(units_by_name[rule[1]]) do
-        if obj_tile ~= nil and (obj_tile.type == "object" or istext) then
+        if rule[3] == "mous" or (obj_tile ~= nil and (obj_tile.type == "object" or istext)) then
           if rule[2] == "got" then
             if unit.destroyed and not undoing then
               local new_unit = createUnit(obj_id, unit.x, unit.y, unit.dir)
@@ -141,8 +141,13 @@ function updateUnits(undoing)
                 table.insert(converted_units, unit)
               end
               unit.removed = true
-              local new_unit = createUnit(obj_id, unit.x, unit.y, unit.dir, true)
-              addUndo({"create", new_unit.id, true})
+              if rule[3] == "mous" then
+                local new_mouse = createMouse(unit.x, unit.y)
+                addUndo({"create_cursor", new_mouse.id})
+              else
+                local new_unit = createUnit(obj_id, unit.x, unit.y, unit.dir, true)
+                addUndo({"create", new_unit.id, true})
+              end
             end
           end
         end
@@ -152,7 +157,9 @@ function updateUnits(undoing)
     if rule[1] == "mous" then
       if obj_tile ~= nil and (obj_tile.type == "object" or istext) then
         if rule[2] == "be" then
-          cursor_convert = obj_id
+          if rule[3] ~= "mous" then
+            cursor_convert_to = obj_id
+          end
         end
       end
     end
@@ -168,6 +175,50 @@ function deleteUnits(del_units,convert)
     addUndo({"remove", unit.tile, unit.x, unit.y, unit.dir, convert or false, unit.id})
   end
 end
+
+function createMouse_direct(x,y,id_)
+  local mouse = {}
+  mouse.x = x
+  mouse.y = y
+  mouse.id = id_ or newMouseID()
+  table.insert(cursors, mouse)
+  return mouse
+end
+
+function createMouse(gamex,gamey,id_)
+  local gx,gy = gameTileToScreen(gamex,gamey)
+  local mouse = {}
+  mouse.x = gx
+  mouse.y = gy
+  mouse.id = id_ or newMouseID()
+  table.insert(cursors, mouse)
+  return mouse
+end
+
+function deleteMouse(id)
+  for i,mous in ipairs(cursors) do
+    if cursors[i].id == id then
+      table.remove(cursors,i)
+      return
+    end
+  end
+end
+
+--[[function deleteMice(gamex,gamey)
+  local toBeDeleted = {}
+  local numberDeleted = 0
+  local hx,hy = gameTileToScreen(gamex,gamey)
+  for i,mous in ipairs(cursors) do
+  	if cursors[i].x >= hx and cursors[i].x <= hx + TILE_SIZE and cursors[i].y >= hy and cursors[i].y <= hy + TILE_SIZE then
+  	  table.insert(toBeDeleted, i)
+  	end
+  end
+  for i=table.getn(toBeDeleted),1,-1 do
+    table.remove(toBeDeleted)
+    numberDeleted = numberDeleted + 2
+  end
+  return numberDeleted
+end]]--
 
 function createUnit(tile,x,y,dir,convert,id_)
   local unit = {}
@@ -265,4 +316,9 @@ end
 function newUnitID()
   max_unit_id = max_unit_id + 1
   return max_unit_id
+end
+
+function newMouseID()
+  max_mouse_id = max_mouse_id + 1
+  return max_mouse_id
 end

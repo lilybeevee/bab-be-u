@@ -10,9 +10,17 @@ function clear()
   rainbowmode = false
   max_layer = 1
   max_unit_id = 0
+  max_mouse_id = 0
   first_turn = true
   cursor_convert = nil
   cursor_converted = false
+  mouse_X = love.mouse.getX()
+  mouse_Y = love.mouse.getY()
+  mouse_oldX = love.mouse.getX()
+  mouse_oldY = love.mouse.getY()
+  cursors = {}
+  createMouse_direct(love.mouse.getX(), love.mouse.getY())
+  --createMouse_direct(20, 20)
 
   win = false
   win_size = 0
@@ -237,10 +245,10 @@ function addParticles(type,x,y,color)
   end
 end
 
-function getHoveredTile()
-  if scene.getTransform and not cursor_converted then
+function screenToGameTile(x,y)
+  if scene.getTransform then
     local transform = scene.getTransform()
-    local mx,my = transform:inverseTransformPoint(love.mouse.getX(), love.mouse.getY())
+    local mx,my = transform:inverseTransformPoint(x,y)
     local tilex = math.floor(mx / TILE_SIZE)
     local tiley = math.floor(my / TILE_SIZE)
     if inBounds(tilex, tiley) then
@@ -248,6 +256,23 @@ function getHoveredTile()
     end
   end
   return nil,nil
+end
+
+function gameTileToScreen(x,y)
+  if scene.getTransform then
+  	local screenx = (x * TILE_SIZE)
+    local screeny = (y * TILE_SIZE)
+    local transform = scene.getTransform()
+    local mx,my = transform:transformPoint(screenx,screeny)
+    return mx, my
+  end
+  return nil,nil
+end
+
+function getHoveredTile()
+  if not cursor_converted then
+    return screenToGameTile(love.mouse.getX(), love.mouse.getY())
+  end
 end
 
 function eq(a,b)

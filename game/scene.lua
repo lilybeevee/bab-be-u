@@ -5,6 +5,7 @@ function scene.load()
   selector_open = false
 
   clear()
+  love.mouse.setCursor(empty_cursor)
   resetMusic("bab_be_u_them", 0.5)
   loadMap()
   parseRules()
@@ -12,25 +13,30 @@ function scene.load()
 end
 
 function scene.update(dt)
+  mouse_X = love.mouse.getX()
+  mouse_Y = love.mouse.getY()
+  
   scene.checkInput()
-
-  if not cursor_converted then
-    love.mouse.setCursor()
-    love.mouse.setGrabbed(false)
-    if cursor_convert ~= nil then
-      local hx,hy = getHoveredTile()
-      if hx ~= nil then
-        local new_unit = createUnit(cursor_convert, hx, hy, 1, true)
+  
+  for i,mous in ipairs(cursors) do
+  	cursors[i].x = cursors[i].x + mouse_X - mouse_oldX
+  	cursors[i].y = cursors[i].y + mouse_Y - mouse_oldY
+  end
+  
+  if cursor_convert_to ~= nil then
+    for i,mous in ipairs(cursors) do
+      local hx,hy = screenToGameTile(cursors[i].x, cursors[i].y)
+      if hx ~= nil and hy ~= nil then
+        local new_unit = createUnit(cursor_convert_to, hx, hy, 1, true)
         addUndo({"create", new_unit.id, true})
-        addUndo({"cursor", love.mouse.getX(), love.mouse.getY()})
-
-        love.mouse.setCursor(empty_cursor)
-        love.mouse.setGrabbed(true)
-
-        cursor_converted = true
+        addUndo({"remove_cursor", cursors[i].x, cursors[i].y, cursors[i].id})
+        deleteMouse(cursors[i].id)
       end
     end
   end
+  
+  mouse_oldX = mouse_X
+  mouse_oldY = mouse_Y
 end
 
 function scene.keyPressed(key)
@@ -42,6 +48,7 @@ function scene.keyPressed(key)
 
   if key == "r" then
     clear()
+    love.mouse.setCursor(empty_cursor)
     resetMusic("bab_be_u_them", 0.5)
     loadMap()
     parseRules()
@@ -166,6 +173,7 @@ function scene.draw(dt)
   end
   love.graphics.pop()
 
+  love.graphics.push()
   love.graphics.setColor(1, 1, 1)
   love.graphics.translate(love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
   love.graphics.scale(win_size, win_size)
@@ -174,6 +182,11 @@ function scene.draw(dt)
 
   if win and win_size < 1 then
     win_size = win_size + 0.02
+  end
+  love.graphics.pop()
+  
+  for i,mous in ipairs(cursors) do
+    love.graphics.draw(system_cursor, cursors[i].x, cursors[i].y)
   end
 end
 
