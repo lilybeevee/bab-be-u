@@ -79,15 +79,12 @@ function updateUnits(undoing)
         unit.color = copyTable(tiles_list[unit.tile].color)
       end
 
+      unit.overlay = {}
       if hasProperty(unit,"tranz") then
-        unit.overlay = "trans"
-      else
-        unit.overlay = nil
+        table.insert(unit.overlay, "trans")
       end
       if hasProperty(unit,"gay") then
-        unit.overlay = "gay"
-      else
-        unit.overlay = nil
+        table.insert(unit.overlay, "gay")
       end
 
       if not units_by_layer[unit.layer] then
@@ -115,6 +112,8 @@ function updateUnits(undoing)
       end
     end
   end
+
+  cursor_convert = nil
 
   for _,rules in ipairs(full_rules) do
     local rule = rules[1]
@@ -150,7 +149,6 @@ function updateUnits(undoing)
       end
     end
 
-    cursor_convert = nil
     if rule[1] == "mous" then
       if obj_tile ~= nil and (obj_tile.type == "object" or istext) then
         if rule[2] == "be" then
@@ -190,7 +188,7 @@ function createUnit(tile,x,y,dir,convert,id_)
   unit.oldy = unit.y
   unit.move_timer = MAX_MOVE_TIMER
   unit.old_active = unit.active
-  unit.overlay = nil
+  unit.overlay = {}
 
   unit.tile = tile
   unit.sprite = tiles_list[tile].sprite
