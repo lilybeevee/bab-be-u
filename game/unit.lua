@@ -66,7 +66,16 @@ function updateUnits(undoing)
         newcolor[2] = newcolor[2]*255
         newcolor[3] = newcolor[3]*255
         unit.color = newcolor
-      else
+      end
+
+      if hasProperty(unit,"reed") then
+        unit.color = {255, 0, 0}
+      end
+      if hasProperty(unit,"bleu") then
+        unit.color = {0, 0, 255}
+      end
+
+      if not hasProperty(unit,"colrful") and not hasProperty(unit, "reed") and not hasProperty(unit, "bleu") then
         unit.color = copyTable(tiles_list[unit.tile].color)
       end
 
