@@ -14,6 +14,9 @@ function love.load()
   move_sound_data = nil
   move_sound_source = nil
 
+  empty_sprite = love.image.newImageData(32, 32)
+  empty_cursor = love.mouse.newCursor(empty_sprite)
+
   local files = love.filesystem.getDirectoryItems("assets/sprites")
   for _,file in ipairs(files) do
     if string.sub(file, -4) == ".png" then

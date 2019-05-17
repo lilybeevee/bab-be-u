@@ -10,6 +10,8 @@ function clear()
   max_layer = 1
   max_unit_id = 0
   first_turn = true
+  cursor_convert = nil
+  cursor_converted = false
 
   win = false
   win_size = 0
@@ -17,6 +19,9 @@ function clear()
   for i,v in ipairs(tiles_list) do
     tiles_by_name[v.name] = i
   end
+
+  love.mouse.setCursor()
+  love.mouse.setGrabbed(false)
 end
 
 function loadMap()
@@ -218,7 +223,7 @@ function addParticles(type,x,y,color)
 end
 
 function getHoveredTile()
-  if scene.getTransform then
+  if scene.getTransform and not cursor_converted then
     local transform = scene.getTransform()
     local mx,my = transform:inverseTransformPoint(love.mouse.getX(), love.mouse.getY())
     local tilex = math.floor(mx / TILE_SIZE)

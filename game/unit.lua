@@ -111,38 +111,45 @@ function updateUnits(undoing)
     end
   end
 
-  if not undoing then
-    for _,rules in ipairs(full_rules) do
-      local rule = rules[1]
-      local obj_name = rule[3]
+  for _,rules in ipairs(full_rules) do
+    local rule = rules[1]
+    local obj_name = rule[3]
 
-      local istext = false
-      if rule[3] == "text" then
-        istext = true
-        obj_name = "text_" .. unit.name
-      end
-      local obj_id = tiles_by_name[rule[3]]
-      local obj_tile = tiles_list[obj_id]
+    local istext = false
+    if rule[3] == "text" then
+      istext = true
+      obj_name = "text_" .. unit.name
+    end
+    local obj_id = tiles_by_name[rule[3]]
+    local obj_tile = tiles_list[obj_id]
 
-      if units_by_name[rule[1]] then
-        for i,unit in ipairs(units_by_name[rule[1]]) do
-          if obj_tile ~= nil and (obj_tile.type == "object" or istext) then
-            if rule[2] == "got" then
-              if unit.destroyed then
-                local new_unit = createUnit(obj_id, unit.x, unit.y, unit.dir)
-                addUndo({"create", new_unit.id, false})
+    if units_by_name[rule[1]] then
+      for i,unit in ipairs(units_by_name[rule[1]]) do
+        if obj_tile ~= nil and (obj_tile.type == "object" or istext) then
+          if rule[2] == "got" then
+            if unit.destroyed and not undoing then
+              local new_unit = createUnit(obj_id, unit.x, unit.y, unit.dir)
+              addUndo({"create", new_unit.id, false})
+            end
+          elseif rule[2] == "be" then
+            if not unit.destroyed and rule[3] ~= unit.name and not undoing then
+              if not unit.removed then
+                table.insert(converted_units, unit)
               end
-            elseif rule[2] == "be" then
-              if not unit.destroyed and rule[3] ~= unit.name then
-                if not unit.removed then
-                  table.insert(converted_units, unit)
-                end
-                unit.removed = true
-                local new_unit = createUnit(obj_id, unit.x, unit.y, unit.dir, true)
-                addUndo({"create", new_unit.id, true})
-              end
+              unit.removed = true
+              local new_unit = createUnit(obj_id, unit.x, unit.y, unit.dir, true)
+              addUndo({"create", new_unit.id, true})
             end
           end
+        end
+      end
+    end
+
+    cursor_convert = nil
+    if rule[1] == "mous" then
+      if obj_tile ~= nil and (obj_tile.type == "object" or istext) then
+        if rule[2] == "be" then
+          cursor_convert = obj_id
         end
       end
     end
@@ -193,7 +200,6 @@ function createUnit(tile,x,y,dir,convert,id_)
   if unit.type == "text" then
     unit.name = "text"
     unit.textname = string.sub(unit.fullname, 6)
-    print(unit.textname)
   else
     unit.name = unit.fullname
     unit.textname = unit.fullname

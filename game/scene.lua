@@ -8,10 +8,29 @@ function scene.load()
   resetMusic("bab_be_u_them", 0.5)
   loadMap()
   parseRules()
+  updateUnits(true)
 end
 
 function scene.update(dt)
   scene.checkInput()
+
+  if not cursor_converted then
+    love.mouse.setCursor()
+    love.mouse.setGrabbed(false)
+    if cursor_convert ~= nil then
+      local hx,hy = getHoveredTile()
+      if hx ~= nil then
+        local new_unit = createUnit(cursor_convert, hx, hy, 1, true)
+        addUndo({"create", new_unit.id, true})
+        addUndo({"cursor", love.mouse.getX(), love.mouse.getY()})
+
+        love.mouse.setCursor(empty_cursor)
+        love.mouse.setGrabbed(true)
+
+        cursor_converted = true
+      end
+    end
+  end
 end
 
 function scene.keyPressed(key)
@@ -26,6 +45,7 @@ function scene.keyPressed(key)
     resetMusic("bab_be_u_them", 0.5)
     loadMap()
     parseRules()
+    updateUnits(true)
   end
 end
 
@@ -41,13 +61,24 @@ function scene.keyReleased(key)
   end
 end
 
+function scene.getTransform()
+  local transform = love.math.newTransform()
+
+  local roomwidth = mapwidth * TILE_SIZE
+  local roomheight = mapheight * TILE_SIZE
+  transform:translate(love.graphics.getWidth() / 2 - roomwidth / 2, love.graphics.getHeight() / 2 - roomheight / 2)
+
+  return transform
+end
+
 function scene.draw(dt)
   love.graphics.setBackgroundColor(0.10, 0.1, 0.11)
 
-  love.graphics.push()
   local roomwidth = mapwidth * TILE_SIZE
   local roomheight = mapheight * TILE_SIZE
-  love.graphics.translate(love.graphics.getWidth() / 2 - roomwidth / 2, love.graphics.getHeight() / 2 - roomheight / 2)
+
+  love.graphics.push()
+  love.graphics.applyTransform(scene.getTransform())
 
   love.graphics.setColor(0, 0, 0)
   love.graphics.rectangle("fill", 0, 0, roomwidth, roomheight)

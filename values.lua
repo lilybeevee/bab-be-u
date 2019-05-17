@@ -288,4 +288,12 @@ tiles_list = {
     color = {255,255,255},
     layer = 20,
   },
+  --30
+  {
+    name = "text_mous",
+    sprite = "text_mous",
+    type = "text",
+    color = {145,131,215},
+    layer = 20,
+  }
 }

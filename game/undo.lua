@@ -32,6 +32,9 @@ function undo()
         end
       elseif action == "remove" then
         createUnit(v[2], v[3], v[4], v[5], v[6], v[7])
+      elseif action == "cursor" then
+        cursor_converted = false
+        love.mouse.setPosition(v[2], v[3])
       end
     end
 
