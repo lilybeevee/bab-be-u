@@ -4,15 +4,16 @@ function scene.load()
 	repeat_timers = {}
 
 	clear()
-	scene.resetMusic()
-	scene.startGame()
+	resetMusic("bab_be_u_them", 0.5)
+	loadMap()
+	parseRules()
 end
 
 function scene.update(dt)
   scene.checkInput()
 end
 
-function scene.keypressed(key)
+function scene.keyPressed(key)
   for _,v in ipairs(repeat_keys) do
     if v == key then
       repeat_timers[v] = 0
@@ -21,12 +22,13 @@ function scene.keypressed(key)
 
   if key == "r" then
     clear()
-    scene.resetMusic()
-    scene.startGame()
+		resetMusic("bab_be_u_them", 0.5)
+		loadMap()
+		parseRules()
   end
 end
 
-function scene.keyreleased(key)
+function scene.keyReleased(key)
   for _,v in ipairs(repeat_keys) do
     if v == key then
       repeat_timers[v] = nil
@@ -111,30 +113,6 @@ function scene.draw(dt)
   if win and win_size < 1 then
     win_size = win_size + 0.02
   end
-end
-
-function scene.resetMusic()
-	music_fading = false
-	if music_volume == 0 or not hasMusic() then
-    playMusic("bab_be_u_them", 0.5)
-  else
-    music_volume = 0.5
-  end
-end
-
-function scene.startGame()
-  for i,v in ipairs(map) do
-    local tileid = i-1
-    local x = tileid % mapwidth
-    local y = math.floor(tileid / mapwidth)
-    units_by_tile[tileid] = {}
-    for _,id in ipairs(v) do
-      local new_unit = createUnit(id, x, y)
-      new_unit.scaley = 1
-    end
-  end
-
-  parseRules()
 end
 
 function scene.checkInput()

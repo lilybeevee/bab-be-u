@@ -40,14 +40,14 @@ function love.keypressed(key,scancode,isrepeat)
 		print("editor will go here")
 	end
 
-	if scene and scene.keypressed then
-		scene.keypressed(key)
+	if scene and scene.keyPressed then
+		scene.keyPressed(key)
 	end
 end
 
 function love.keyreleased(key)
-	if scene and scene.keyreleased then
-		scene.keyreleased(key)
+	if scene and scene.keyReleased then
+		scene.keyReleased(key)
 	end
 end
 

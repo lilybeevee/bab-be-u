@@ -146,7 +146,7 @@ function parseRules(undoing)
               table.insert(all_units, unit)
               unit.active = true
               if not unit.old_active and not first_turn and not undoing then
-                doParticles("rule", unit.x, unit.y, unit.color)
+                addParticles("rule", unit.x, unit.y, unit.color)
                 has_new_rule = true
               end
               unit.old_active = unit.active
@@ -155,7 +155,7 @@ function parseRules(undoing)
               table.insert(all_units, unit)
               unit.active = true
               if not unit.old_active and not first_turn and not undoing then
-                doParticles("rule", unit.x, unit.y, unit.color)
+                addParticles("rule", unit.x, unit.y, unit.color)
                 has_new_rule = true
               end
               unit.old_active = unit.active
@@ -164,7 +164,7 @@ function parseRules(undoing)
               table.insert(all_units, unit)
               unit.active = true
               if not unit.old_active and not first_turn and not undoing then
-                doParticles("rule", unit.x, unit.y, unit.color)
+                addParticles("rule", unit.x, unit.y, unit.color)
                 has_new_rule = true
               end
               unit.old_active = unit.active

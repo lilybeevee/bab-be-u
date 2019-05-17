@@ -29,6 +29,15 @@ function playMusic(music, volume)
   music_source:play()
 end
 
+function resetMusic(name,volume)
+  music_fading = false
+  if music_volume == 0 or not hasMusic() then
+    playMusic(name,volume)
+  else
+    music_volume = volume
+  end
+end
+
 function updateMusic()
   if music_source ~= nil then
     music_source:setVolume(music_volume)

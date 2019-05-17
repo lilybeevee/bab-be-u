@@ -31,7 +31,7 @@ function undo()
           deleteUnit(unit, v[3])
         end
       elseif action == "remove" then
-        createUnit(v[2], v[3], v[4], v[5], v[6])
+        createUnit(v[2], v[3], v[4], v[5], v[6], v[7])
       end
     end
 

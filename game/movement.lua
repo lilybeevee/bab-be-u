@@ -47,7 +47,7 @@ function doAction(action)
     playSound("unlock", 0.6)
     local opened = action[2]
     for _,unit in ipairs(opened) do
-      doParticles("destroy", unit.x, unit.y, {237,226,133})
+      addParticles("destroy", unit.x, unit.y, {237,226,133})
       unit.removed = true
       unit.destroyed = true
     end

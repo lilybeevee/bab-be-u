@@ -19,6 +19,18 @@ function clear()
   end
 end
 
+function loadMap()
+  for i,v in ipairs(map) do
+    local tileid = i-1
+    local x = tileid % mapwidth
+    local y = math.floor(tileid / mapwidth)
+    units_by_tile[tileid] = {}
+    for _,id in ipairs(v) do
+      local new_unit = createUnit(id, x, y, 1)
+    end
+  end
+end
+
 function hasProperty(unit,prop)
   if rules_with[unit.name] then
     for _,v in ipairs(rules_with[unit.name]) do
@@ -158,7 +170,7 @@ function hslToRgb(h, s, l, a)
   return {r, g, b} --a removed cus unused
 end
 
-function doParticles(type,x,y,color)
+function addParticles(type,x,y,color)
   if type == "destroy" then
     local ps = love.graphics.newParticleSystem(sprites["circle"])
     local px = (x + 0.5) * TILE_SIZE

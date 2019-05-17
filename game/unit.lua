@@ -39,7 +39,7 @@ function updateUnits(undoing)
             on.destroyed = true
             on.removed = true
             playSound("sink", 0.5)
-            doParticles("destroy", unit.x, unit.y, on.color)
+            addParticles("destroy", unit.x, unit.y, on.color)
             table.insert(del_units, on)
           elseif is_u and hasProperty(on, ":)") then
             win = true
@@ -123,7 +123,7 @@ function updateUnits(undoing)
           if obj_tile ~= nil and (obj_tile.type == "object" or istext) then
             if rule[2] == "got" then
               if unit.destroyed then
-                local new_unit = createUnit(obj_id, unit.x, unit.y)
+                local new_unit = createUnit(obj_id, unit.x, unit.y, unit.dir)
                 addUndo({"create", new_unit.id, false})
               end
             elseif rule[2] == "be" then
@@ -132,7 +132,7 @@ function updateUnits(undoing)
                   table.insert(converted_units, unit)
                 end
                 unit.removed = true
-                local new_unit = createUnit(obj_id, unit.x, unit.y, true)
+                local new_unit = createUnit(obj_id, unit.x, unit.y, unit.dir, true)
                 addUndo({"create", new_unit.id, true})
               end
             end
@@ -149,17 +149,17 @@ end
 function deleteUnits(del_units,convert)
   for _,unit in ipairs(del_units) do
     deleteUnit(unit,convert)
-    addUndo({"remove", unit.tile, unit.x, unit.y, convert or false, unit.id})
+    addUndo({"remove", unit.tile, unit.x, unit.y, unit.dir, convert or false, unit.id})
   end
 end
 
-function createUnit(tile,x,y,convert,id_)
+function createUnit(tile,x,y,dir,convert,id_)
   local unit = {}
 
   unit.id = id_ or newUnitID()
   unit.x = x or 0
   unit.y = y or 0
-  unit.dir = 1
+  unit.dir = dir or 1
   unit.active = false
   unit.removed = false
 
