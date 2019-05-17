@@ -3,18 +3,21 @@ local scene = {}
 function scene.load()
   repeat_timers = {}
   selector_open = false
+  game_started = false
 
   clear()
   resetMusic("bab_be_u_them", 0.5)
   loadMap()
   parseRules()
   updateUnits(true)
+
+  game_started = true
 end
 
 function scene.update(dt)
   scene.checkInput()
 
-  if not cursor_converted then
+  if game_started and not cursor_converted then
     love.mouse.setCursor()
     love.mouse.setGrabbed(false)
     if cursor_convert ~= nil then

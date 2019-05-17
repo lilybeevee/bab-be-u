@@ -437,5 +437,14 @@ tiles_list = {
     grid = {5, 7},
     color = {115,115,115},
     layer = 20
-  }
+  },
+  --41
+  {
+    name = "text_text",
+    sprite = "text_txt",
+    type = "text",
+    grid = {6, 2},
+    color = {217,57,106},
+    layer = 20,
+  },
 }

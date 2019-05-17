@@ -122,9 +122,9 @@ function updateUnits(undoing)
     local istext = false
     if rule[3] == "text" then
       istext = true
-      obj_name = "text_" .. unit.name
+      obj_name = "text_" .. rule[1]
     end
-    local obj_id = tiles_by_name[rule[3]]
+    local obj_id = tiles_by_name[obj_name]
     local obj_tile = tiles_list[obj_id]
 
     if units_by_name[rule[1]] then
