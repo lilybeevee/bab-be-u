@@ -60,6 +60,16 @@ function updateUnits(undoing)
         end
       end
 
+      if hasProperty(unit,"colrful") then
+        local newcolor = hslToRgb(#undo_buffer/45%1, .5, .5, 1)
+        newcolor[1] = newcolor[1]*255
+        newcolor[2] = newcolor[2]*255
+        newcolor[3] = newcolor[3]*255
+        unit.color = newcolor
+      else
+        unit.color = copyTable(tiles_list[unit.tile].color)
+      end
+
       if not units_by_layer[unit.layer] then
         units_by_layer[unit.layer] = {}
       end
