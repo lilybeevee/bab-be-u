@@ -7,6 +7,7 @@ function clear()
   units_by_tile = {}
   units_by_layer = {}
   undo_buffer = {}
+  rainbowmode = false
   max_layer = 1
   max_unit_id = 0
   first_turn = true

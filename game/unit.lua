@@ -60,8 +60,8 @@ function updateUnits(undoing)
         end
       end
 
-      if hasProperty(unit,"colrful") then
-        local newcolor = hslToRgb(#undo_buffer/45%1, .5, .5, 1)
+      if hasProperty(unit,"colrful") or rainbowmode then
+        local newcolor = hslToRgb((#undo_buffer/45+i/2)%1, .5, .5, 1)
         newcolor[1] = newcolor[1]*255
         newcolor[2] = newcolor[2]*255
         newcolor[3] = newcolor[3]*255
@@ -75,12 +75,17 @@ function updateUnits(undoing)
         unit.color = {0, 0, 255}
       end
 
-      if not hasProperty(unit,"colrful") and not hasProperty(unit, "reed") and not hasProperty(unit, "bleu") then
+      if not hasProperty(unit,"colrful") and not hasProperty(unit, "reed") and not hasProperty(unit, "bleu") and not rainbowmode then
         unit.color = copyTable(tiles_list[unit.tile].color)
       end
 
       if hasProperty(unit,"tranz") then
         unit.overlay = "trans"
+      else
+        unit.overlay = nil
+      end
+      if hasProperty(unit,"gay") then
+        unit.overlay = "gay"
       else
         unit.overlay = nil
       end
