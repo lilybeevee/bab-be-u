@@ -305,4 +305,84 @@ tiles_list = {
     color = {145,131,215},
     layer = 20,
   },
+  --32
+  {
+    name = "text_boux",
+    sprite = "text_boux",
+    type = "text",
+    color = {144,103,62},
+    layer = 20,
+  },
+  --33
+  {
+    name = "boux",
+    sprite = "boux",
+    type = "object",
+    color = {194,158,70},
+    layer = 16,
+  },
+  --34
+  {
+    name = "text_skul",
+    sprite = "text_skul",
+    type = "text",
+    color = {130,38,28},
+    layer = 20,
+  },
+  --35
+  {
+    name = "skul",
+    sprite = "skul",
+    type = "object",
+    color = {130,38,28},
+    layer = 16,
+  },
+  --36
+  {
+    name = "text_laav",
+    sprite = "text_laav",
+    type = "text",
+    color = {228,153,80},
+    layer = 20,
+  },
+  --37
+  {
+    name = "laav",
+    sprite = "watr",
+    type = "object",
+    color = {228,153,80},
+    layer = 2,
+  },
+  --38
+  {
+    name = "text_keek",
+    sprite = "text_keek",
+    type = "text",
+    color = {229,83,59},
+    layer = 20,
+  },
+  --39
+  {
+    name = "keek",
+    sprite = "keek",
+    type = "object",
+    color = {229,83,59},
+    layer = 18,
+  },
+  --38
+  {
+    name = "text_meem",
+    sprite = "text_meem",
+    type = "text",
+    color = {142,94,156},
+    layer = 20,
+  },
+  --39
+  {
+    name = "meem",
+    sprite = "meem",
+    type = "object",
+    color = {142,94,156},
+    layer = 18,
+  },
 }
