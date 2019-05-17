@@ -40,6 +40,9 @@ function love.keypressed(key,scancode,isrepeat)
   elseif key == "f2" and scene ~= editor then
     scene = editor
     scene.load()
+  elseif key == "g" and love.keyboard.isDown('f3') and scene ~= editor then
+    rainbowmode = not rainbowmode
+    print(rainbowmode)
   end
 
   if scene and scene.keyPressed then
