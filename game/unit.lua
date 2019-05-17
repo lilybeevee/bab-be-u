@@ -79,6 +79,12 @@ function updateUnits(undoing)
         unit.color = copyTable(tiles_list[unit.tile].color)
       end
 
+      if hasProperty(unit,"tranz") then
+        unit.overlay = "trans"
+      else
+        unit.overlay = nil
+      end
+
       if not units_by_layer[unit.layer] then
         units_by_layer[unit.layer] = {}
       end
@@ -172,6 +178,7 @@ function createUnit(tile,x,y,dir,convert,id_)
   unit.oldy = unit.y
   unit.move_timer = MAX_MOVE_TIMER
   unit.old_active = unit.active
+  unit.overlay = nil
 
   unit.tile = tile
   unit.sprite = tiles_list[tile].sprite

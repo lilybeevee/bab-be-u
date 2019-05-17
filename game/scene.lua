@@ -77,9 +77,37 @@ function scene.draw(dt)
         if unit.rotate then
           rotation = (unit.dir - 1) * 90
         end
-        
-        love.graphics.setColor(unit.color[1]/255 * brightness, unit.color[2]/255 * brightness, unit.color[3]/255 * brightness)
+
+        if unit.overlay and eq(unit.color, tiles_list[unit.tile].color) then
+          love.graphics.setColor(1, 1, 1)
+        else
+          love.graphics.setColor(unit.color[1]/255 * brightness, unit.color[2]/255 * brightness, unit.color[3]/255 * brightness)
+        end
         love.graphics.draw(sprite, (drawx + 0.5)*TILE_SIZE, (drawy + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+        if unit.overlay then
+          local mask_shader = love.graphics.newShader[[
+             vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords) {
+                if (Texel(texture, texture_coords).rgb == vec3(0.0)) {
+                   // a discarded pixel wont be applied as the stencil.
+                   discard;
+                }
+                return vec4(1.0);
+             }
+          ]]
+          local function overlayStencil()
+             love.graphics.setShader(mask_shader)
+             love.graphics.draw(sprite, (drawx + 0.5)*TILE_SIZE, (drawy + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+             love.graphics.setShader()
+          end
+          love.graphics.setColor(1, 1, 1)
+          love.graphics.stencil(overlayStencil, "replace")
+          love.graphics.setStencilTest("greater", 0)
+          love.graphics.setBlendMode("multiply", "premultiplied")
+          love.graphics.draw(sprites["overlay_" .. unit.overlay], (drawx + 0.5)*TILE_SIZE, (drawy + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+          love.graphics.setBlendMode("alpha", "alphamultiply")
+          love.graphics.setStencilTest()  
+        end
+
         if unit.move_timer < MAX_MOVE_TIMER then
           unit.move_timer = math.min(MAX_MOVE_TIMER, unit.move_timer + (dt * 1000))
         end

@@ -20,6 +20,15 @@ function clear()
 end
 
 function loadMap()
+  if map == nil then
+    print("its nil!")
+    map = {}
+    for x=1,mapwidth do
+      for y=1,mapheight do
+        table.insert(map, {})
+      end
+    end
+  end
   for i,v in ipairs(map) do
     local tileid = i-1
     local x = tileid % mapwidth
@@ -223,4 +232,26 @@ end
 
 function getSelectorSize()
   return math.ceil(math.sqrt(#tiles_list + 1))
+end
+
+function eq(a,b)
+  if type(a) == "table" or type(b) == "table" then
+    if type(a) ~= "table" or type(b) ~= "table" then
+      return false
+    end
+    local result = true
+    if #a == #b then
+      for i,v in pairs(a) do
+        if v ~= b[i] then
+          result = false
+          break
+        end
+      end
+    else
+      result = false
+    end
+    return result
+  else
+    return a == b
+  end
 end
