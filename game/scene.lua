@@ -1,13 +1,13 @@
 local scene = {}
 
 function scene.load()
-	repeat_timers = {}
-	selector_open = false
+  repeat_timers = {}
+  selector_open = false
 
-	clear()
-	resetMusic("bab_be_u_them", 0.5)
-	loadMap()
-	parseRules()
+  clear()
+  resetMusic("bab_be_u_them", 0.5)
+  loadMap()
+  parseRules()
 end
 
 function scene.update(dt)
@@ -23,9 +23,9 @@ function scene.keyPressed(key)
 
   if key == "r" then
     clear()
-		resetMusic("bab_be_u_them", 0.5)
-		loadMap()
-		parseRules()
+    resetMusic("bab_be_u_them", 0.5)
+    loadMap()
+    parseRules()
   end
 end
 
@@ -75,7 +75,7 @@ function scene.draw(dt)
 
         local rotation = 0
         if unit.rotate then
-        	rotation = (unit.dir - 1) * 90
+          rotation = (unit.dir - 1) * 90
         end
         
         love.graphics.setColor(unit.color[1]/255 * brightness, unit.color[2]/255 * brightness, unit.color[3]/255 * brightness)

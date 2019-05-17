@@ -10,9 +10,9 @@ game = require 'game/scene'
 editor = require 'editor/scene'
 
 function love.load()
-	sprites = {}
-	move_sound_data = nil
-	move_sound_source = nil
+  sprites = {}
+  move_sound_data = nil
+  move_sound_source = nil
 
   local files = love.filesystem.getDirectoryItems("assets/sprites")
   for _,file in ipairs(files) do
@@ -34,29 +34,29 @@ function love.load()
 end
 
 function love.keypressed(key,scancode,isrepeat)
-	if key == "f1" and scene ~= game then
-		scene = game
-		scene.load()
-	elseif key == "f2" and scene ~= editor then
-		scene = editor
-		scene.load()
-	end
+  if key == "f1" and scene ~= game then
+    scene = game
+    scene.load()
+  elseif key == "f2" and scene ~= editor then
+    scene = editor
+    scene.load()
+  end
 
-	if scene and scene.keyPressed then
-		scene.keyPressed(key)
-	end
+  if scene and scene.keyPressed then
+    scene.keyPressed(key)
+  end
 end
 
 function love.keyreleased(key)
-	if scene and scene.keyReleased then
-		scene.keyReleased(key)
-	end
+  if scene and scene.keyReleased then
+    scene.keyReleased(key)
+  end
 end
 
 function love.update(dt)
-	if scene and scene.update then
-		scene.update(dt)
-	end
+  if scene and scene.update then
+    scene.update(dt)
+  end
 
   updateMusic()
 end
@@ -65,6 +65,6 @@ function love.draw()
   local dt = love.timer.getDelta()
 
   if scene and scene.draw then
-  	scene.draw(dt)
+    scene.draw(dt)
   end
 end
