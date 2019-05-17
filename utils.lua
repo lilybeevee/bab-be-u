@@ -1,3 +1,24 @@
+function clear()
+  particles = {}
+  tiles_by_name = {}
+  units = {}
+  units_by_id = {}
+  units_by_name = {}
+  units_by_tile = {}
+  units_by_layer = {}
+  undo_buffer = {}
+  max_layer = 1
+  max_unit_id = 0
+  first_turn = true
+
+  win = false
+  win_size = 0
+
+  for i,v in ipairs(tiles_list) do
+    tiles_by_name[v.name] = i
+  end
+end
+
 function hasProperty(unit,prop)
   if rules_with[unit.name] then
     for _,v in ipairs(rules_with[unit.name]) do
@@ -72,7 +93,7 @@ end
 
 function lerp(a,b,t) return (1-t)*a + t*b end
 
-function dump(o)
+function fullDump(o)
   if type(o) == 'table' then
      local s = '{ '
      for k,v in pairs(o) do
@@ -82,6 +103,31 @@ function dump(o)
      return s .. '} '
   else
      return tostring(o)
+  end
+end
+
+function dump(o)
+  if type(o) == 'table' then
+    local s = '{'
+    local cn = 1
+    if #o ~= 0 then
+      for _,v in ipairs(o) do
+        if cn > 1 then s = s .. ',' end
+        s = s .. dump(v)
+        cn = cn + 1
+      end
+    else
+      for k,v in pairs(o) do
+        if cn > 1 then s = s .. ',' end
+        s = s .. tostring(k) .. ' = ' .. dump(v)
+        cn = cn + 1
+      end
+    end
+    return s .. '}'
+  elseif type(o) == 'string' then
+    return '"' .. o .. '"'
+  else
+    return tostring(o)
   end
 end
 
@@ -110,4 +156,38 @@ function hslToRgb(h, s, l, a)
   end
 
   return {r, g, b} --a removed cus unused
+end
+
+function doParticles(type,x,y,color)
+  if type == "destroy" then
+    local ps = love.graphics.newParticleSystem(sprites["circle"])
+    local px = (x + 0.5) * TILE_SIZE
+    local py = (y + 0.5) * TILE_SIZE
+    ps:setPosition(px, py)
+    ps:setSpread(0)
+    ps:setEmissionArea("uniform", TILE_SIZE/3, TILE_SIZE/3, 0, true)
+    ps:setSizes(0.15, 0.15, 0.15, 0)
+    ps:setSpeed(50)
+    ps:setLinearDamping(5)
+    ps:setParticleLifetime(0.25)
+    ps:setColors(color[1]/255, color[2]/255, color[3]/255, (color[4] or 255)/255)
+    ps:start()
+    ps:emit(20)
+    table.insert(particles, ps)
+  elseif type == "rule" then
+    local ps = love.graphics.newParticleSystem(sprites["circle"])
+    local px = (x + 0.5) * TILE_SIZE
+    local py = (y + 0.5) * TILE_SIZE
+    ps:setPosition(px, py)
+    ps:setSpread(0)
+    ps:setEmissionArea("borderrectangle", TILE_SIZE/3, TILE_SIZE/3, 0, true)
+    ps:setSizes(0.1, 0.1, 0.1, 0)
+    ps:setSpeed(50)
+    ps:setLinearDamping(4)
+    ps:setParticleLifetime(0.25)
+    ps:setColors(color[1]/255, color[2]/255, color[3]/255, (color[4] or 255)/255)
+    ps:start()
+    ps:emit(10)
+    table.insert(particles, ps)
+  end
 end
