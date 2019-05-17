@@ -61,7 +61,7 @@ function updateUnits(undoing)
       end
 
       if hasProperty(unit,"colrful") or rainbowmode then
-        local newcolor = hslToRgb((#undo_buffer/45+i/2)%1, .5, .5, 1)
+        local newcolor = hslToRgb((#undo_buffer/45+unit.x/18+unit.y/18)%1, .5, .5, 1)
         newcolor[1] = newcolor[1]*255
         newcolor[2] = newcolor[2]*255
         newcolor[3] = newcolor[3]*255
