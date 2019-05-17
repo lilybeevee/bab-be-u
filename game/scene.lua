@@ -92,6 +92,15 @@ function scene.draw(dt)
         if unit.type == "text" and not unit.active then
           brightness = 0.33
         end
+
+        if unit.fullname == "text_gay" then
+          if unit.active then
+            unit.sprite = "text_gay-colored"
+          else
+            unit.sprite = "text_gay"
+          end
+        end
+
         local drawx = lerp(unit.oldx, unit.x, unit.move_timer/MAX_MOVE_TIMER)
         local drawy = lerp(unit.oldy, unit.y, unit.move_timer/MAX_MOVE_TIMER)
 
