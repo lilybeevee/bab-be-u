@@ -44,7 +44,11 @@ function hasProperty(unit,prop)
 end
 
 function inBounds(x,y)
-  return x >= 0 and x < mapwidth and y >= 0 and y < mapheight
+  if not selector_open then
+    return x >= 0 and x < mapwidth and y >= 0 and y < mapheight
+  else
+    return x >=0 and x < getSelectorSize() and y >= 0 and y < getSelectorSize()
+  end
 end
 
 function removeFromTable(t, obj)
@@ -202,4 +206,21 @@ function addParticles(type,x,y,color)
     ps:emit(10)
     table.insert(particles, ps)
   end
+end
+
+function getHoveredTile()
+  if scene.getTransform then
+    local transform = scene.getTransform()
+    local mx,my = transform:inverseTransformPoint(love.mouse.getX(), love.mouse.getY())
+    local tilex = math.floor(mx / TILE_SIZE)
+    local tiley = math.floor(my / TILE_SIZE)
+    if inBounds(tilex, tiley) then
+      return tilex, tiley
+    end
+  end
+  return nil,nil
+end
+
+function getSelectorSize()
+  return math.ceil(math.sqrt(#tiles_list + 1))
 end

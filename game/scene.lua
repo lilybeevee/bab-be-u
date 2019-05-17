@@ -2,6 +2,7 @@ local scene = {}
 
 function scene.load()
 	repeat_timers = {}
+	selector_open = false
 
 	clear()
 	resetMusic("bab_be_u_them", 0.5)
