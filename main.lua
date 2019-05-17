@@ -7,6 +7,7 @@ require "game/movement"
 require "game/rules"
 require "game/undo"
 game = require 'game/scene'
+editor = require 'editor/scene'
 
 function love.load()
 	sprites = {}
@@ -36,8 +37,9 @@ function love.keypressed(key,scancode,isrepeat)
 	if key == "f1" and scene ~= game then
 		scene = game
 		scene.load()
-	elseif key == "f2" then
-		print("editor will go here")
+	elseif key == "f2" and scene ~= editor then
+		scene = editor
+		scene.load()
 	end
 
 	if scene and scene.keyPressed then
