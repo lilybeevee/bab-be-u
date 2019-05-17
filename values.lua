@@ -288,4 +288,13 @@ tiles_list = {
     color = {255,255,255},
     layer = 20,
   },
+  --30
+  {
+    name = "text_gay",
+    sprite = "text_gay-colored",
+    type = "text",
+    texttype = "property",
+    color = {255,255,255},
+    layer = 20,
+  },
 }

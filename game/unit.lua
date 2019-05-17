@@ -84,6 +84,11 @@ function updateUnits(undoing)
       else
         unit.overlay = nil
       end
+      if hasProperty(unit,"gay") then
+        unit.overlay = "gay"
+      else
+        unit.overlay = nil
+      end
 
       if not units_by_layer[unit.layer] then
         units_by_layer[unit.layer] = {}
