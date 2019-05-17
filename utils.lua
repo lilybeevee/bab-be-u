@@ -17,8 +17,22 @@ function clear()
   win = false
   win_size = 0
 
+  tile_grid = {}
+  tile_grid_width = 1
+  tile_grid_height = 1
+
+  local add_to_grid = {}
   for i,v in ipairs(tiles_list) do
     tiles_by_name[v.name] = i
+    if v.grid then
+      tile_grid_width = math.max(tile_grid_width, v.grid[1]+1)
+      tile_grid_height = math.max(tile_grid_height, v.grid[2]+1)
+      table.insert(add_to_grid, {i, v.grid[1], v.grid[2]})
+    end
+  end
+  for _,v in ipairs(add_to_grid) do
+    local gridid = v[2] + v[3] * tile_grid_width
+    tile_grid[gridid] = v[1]
   end
 
   love.mouse.setCursor()
@@ -62,7 +76,7 @@ function inBounds(x,y)
   if not selector_open then
     return x >= 0 and x < mapwidth and y >= 0 and y < mapheight
   else
-    return x >=0 and x < getSelectorSize() and y >= 0 and y < getSelectorSize()
+    return x >=0 and x < tile_grid_width and y >= 0 and y < tile_grid_height
   end
 end
 
@@ -234,10 +248,6 @@ function getHoveredTile()
     end
   end
   return nil,nil
-end
-
-function getSelectorSize()
-  return math.ceil(math.sqrt(#tiles_list + 1))
 end
 
 function eq(a,b)

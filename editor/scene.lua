@@ -43,11 +43,10 @@ function scene.update(dt)
           loadMap()
         end
       else
-        local selected = hx + hy * getSelectorSize()
-        if tiles_list[selected] then
-          brush = selected
+        local selected = hx + hy * tile_grid_width
+        if tile_grid[selected] then
+          brush = tile_grid[selected]
         else
-          print("no tile for: " .. tileid)
           brush = nil
         end
       end
@@ -70,8 +69,9 @@ function scene.getTransform()
     local roomheight = mapheight * TILE_SIZE
     transform:translate(love.graphics.getWidth() / 2 - roomwidth / 2, love.graphics.getHeight() / 2 - roomheight / 2)
   else
-    local size = getSelectorSize() * TILE_SIZE
-    transform:translate(love.graphics.getWidth() / 2 - size / 2, love.graphics.getHeight() / 2 - size / 2)
+    local sizex = tile_grid_width * TILE_SIZE
+    local sizey = tile_grid_height * TILE_SIZE
+    transform:translate(love.graphics.getWidth() / 2 - sizex / 2, love.graphics.getHeight() / 2 - sizey / 2)
   end
 
   return transform
@@ -85,8 +85,8 @@ function scene.draw(dt)
     roomwidth = mapwidth * TILE_SIZE
     roomheight = mapheight * TILE_SIZE
   else
-    roomwidth = getSelectorSize() * TILE_SIZE
-    roomheight = getSelectorSize() * TILE_SIZE
+    roomwidth = tile_grid_width * TILE_SIZE
+    roomheight = tile_grid_height * TILE_SIZE
   end
 
   love.graphics.push()
@@ -112,15 +112,29 @@ function scene.draw(dt)
       end
     end
   else
-    for i=1,#tiles_list do
-      local tile = tiles_list[i]
-      local sprite = sprites[tile.sprite]
+    for x=0,tile_grid_width-1 do
+      for y=0,tile_grid_height-1 do
+        local gridid = x + y * tile_grid_width
+        local i = tile_grid[gridid]
+          if i ~= nil then
+          local tile = tiles_list[i]
+          local sprite = sprites[tile.sprite]
 
-      local x = i % getSelectorSize()
-      local y = math.floor(i / getSelectorSize())
+          local x = tile.grid[1]
+          local y = tile.grid[2]
 
-      love.graphics.setColor(tile.color[1]/255, tile.color[2]/255, tile.color[3]/255)
-      love.graphics.draw(sprite, (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+          love.graphics.setColor(tile.color[1]/255, tile.color[2]/255, tile.color[3]/255)
+          love.graphics.draw(sprite, (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+
+          if brush == i then
+            love.graphics.setColor(1, 0, 0)
+            love.graphics.rectangle("line", x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
+          end
+        elseif gridid == 0 and brush == nil then
+          love.graphics.setColor(1, 0, 0)
+          love.graphics.rectangle("line", x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
+        end
+      end
     end
   end
 
