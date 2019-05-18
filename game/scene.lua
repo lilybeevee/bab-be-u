@@ -115,6 +115,13 @@ function scene.draw(dt)
             unit.sprite = "text_gay"
           end
         end
+        if unit.fullname == "text_tranz" then
+          if unit.active then
+            unit.sprite = "text_tranz-colored"
+          else
+            unit.sprite = "text_tranz"
+          end
+        end
 
         --os
         if unit.fullname == "os" then
