@@ -87,6 +87,7 @@ end
 
 function scene.draw(dt)
   love.graphics.setBackgroundColor(0.10, 0.1, 0.11)
+  if rainbowmode then love.graphics.setBackgroundColor(hslToRgb(love.timer.getTime()/6%1, .2, .2, .9)) end
 
   local roomwidth = mapwidth * TILE_SIZE
   local roomheight = mapheight * TILE_SIZE
@@ -95,6 +96,7 @@ function scene.draw(dt)
   love.graphics.applyTransform(scene.getTransform())
 
   love.graphics.setColor(0, 0, 0)
+  if rainbowmode then love.graphics.setColor(hslToRgb(love.timer.getTime()/6%1, .1, .1, .9)) end
   love.graphics.rectangle("fill", 0, 0, roomwidth, roomheight)
 
   for i=1,max_layer do
