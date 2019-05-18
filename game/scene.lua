@@ -5,25 +5,23 @@ function scene.load()
   selector_open = false
   game_started = false
 
-  clear()
-  love.mouse.setCursor(empty_cursor)
-  resetMusic("bab_be_u_them", 0.5)
-  loadMap()
-  parseRules()
-  updateUnits(true)
+  scene.resetStuff()
 
   game_started = true
 end
 
 function scene.update(dt)
-  mouse_X = love.mouse.getX()
-  mouse_Y = love.mouse.getY()
+  --mouse_X = love.mouse.getX()
+  --mouse_Y = love.mouse.getY()
+  
+  mouse_movedX = love.mouse.getX() - love.graphics.getWidth()*0.5
+  mouse_movedY = love.mouse.getY() - love.graphics.getHeight()*0.5
   
   scene.checkInput()
   
   for i,mous in ipairs(cursors) do
-  	cursors[i].x = cursors[i].x + mouse_X - mouse_oldX
-  	cursors[i].y = cursors[i].y + mouse_Y - mouse_oldY
+  	cursors[i].x = cursors[i].x + mouse_movedX
+  	cursors[i].y = cursors[i].y + mouse_movedY
   end
   
   if game_started and cursor_convert_to ~= nil then
@@ -38,8 +36,19 @@ function scene.update(dt)
     end
   end
   
-  mouse_oldX = mouse_X
-  mouse_oldY = mouse_Y
+  
+  love.mouse.setPosition(love.graphics.getWidth()*0.5, love.graphics.getHeight()*0.5)
+end
+
+function scene.resetStuff()
+  clear()
+  love.mouse.setCursor(empty_cursor)
+  love.mouse.setGrabbed(true)
+  --resetMusic("bab_be_u_them", 0.5)
+  resetMusic("bab be go", 0.4)
+  loadMap()
+  parseRules()
+  updateUnits(true)
 end
 
 function scene.keyPressed(key)
@@ -50,12 +59,7 @@ function scene.keyPressed(key)
   end
 
   if key == "r" then
-    clear()
-    love.mouse.setCursor(empty_cursor)
-    resetMusic("bab_be_u_them", 0.5)
-    loadMap()
-    parseRules()
-    updateUnits(true)
+    scene.resetStuff()
   end
 end
 
