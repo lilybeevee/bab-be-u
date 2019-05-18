@@ -296,7 +296,7 @@ tiles_list = {
   --29
   {
     name = "text_tranz",
-    sprite = "text_tranz",
+    sprite = "text_tranz-colored",
     type = "text",
     texttype = "property",
     grid = {10, 1},
