@@ -127,6 +127,26 @@ function scene.draw(dt)
           end
         end
 
+
+        if hasProperty(unit,"colrful") or rainbowmode then
+          local newcolor = hslToRgb((#undo_buffer/45+unit.x/18+unit.y/18)%1, .5, .5, 1)
+          newcolor[1] = newcolor[1]*255
+          newcolor[2] = newcolor[2]*255
+          newcolor[3] = newcolor[3]*255
+          unit.color = newcolor
+        end
+
+        if hasProperty(unit,"reed") then
+          unit.color = {255, 0, 0}
+        end
+        if hasProperty(unit,"bleu") then
+          unit.color = {0, 0, 255}
+        end
+
+        if not hasProperty(unit,"colrful") and not hasProperty(unit, "reed") and not hasProperty(unit, "bleu") and not rainbowmode then
+          unit.color = copyTable(tiles_list[unit.tile].color)
+        end
+
         local drawx = lerp(unit.oldx, unit.x, unit.move_timer/MAX_MOVE_TIMER)
         local drawy = lerp(unit.oldy, unit.y, unit.move_timer/MAX_MOVE_TIMER)
 
