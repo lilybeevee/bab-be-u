@@ -60,8 +60,8 @@ function updateUnits(undoing)
         end
       end
 
-      if hasProperty(unit,"slep") and unit.sleepsprite then
-        unit.sprite = unit.sleepsprite
+      if hasProperty(unit,"slep") and tiles_list[unit.tile].sleepsprite then
+        unit.sprite = tiles_list[unit.tile].sleepsprite
       else
         unit.sprite = tiles_list[unit.tile].sprite
       end

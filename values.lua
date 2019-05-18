@@ -45,6 +45,7 @@ tiles_list = {
   {
     name = "bab",
     sprite = "bab",
+    sleepsprite = "bab_slep",
     type = "object",
     grid = {1, 1},
     color = {255,255,255},
@@ -369,6 +370,7 @@ tiles_list = {
   {
     name = "skul",
     sprite = "skul",
+    sleepsprite = "skul_slep",
     type = "object",
     grid = {4, 6},
     color = {130,38,28},
@@ -406,6 +408,7 @@ tiles_list = {
   {
     name = "keek",
     sprite = "keek",
+    sleepsprite = "keek_slep",
     type = "object",
     grid = {4, 4},
     color = {229,83,59},
@@ -425,6 +428,7 @@ tiles_list = {
   {
     name = "meem",
     sprite = "meem",
+    sleepsprite = "meem_slep",
     type = "object",
     grid = {4, 5},
     color = {142,94,156},
@@ -477,6 +481,5 @@ tiles_list = {
     grid = {5, 2},
     color = {131,200,229},
     layer = 20,
-    rotate = "true",
   },
 }
