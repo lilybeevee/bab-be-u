@@ -464,5 +464,6 @@ tiles_list = {
     grid = {4, 3},
     color = {255,255,255},
     layer = 18,
+    rotate = "true",
   },
 }
