@@ -3,7 +3,9 @@ function newUndo()
 end
 
 function addUndo(data)
-  table.insert(undo_buffer[1], 1, data)
+  if #undo_buffer > 0 then
+    table.insert(undo_buffer[1], 1, data)
+  end
 end
 
 function undo()

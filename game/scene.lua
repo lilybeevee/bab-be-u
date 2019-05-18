@@ -3,6 +3,7 @@ local scene = {}
 function scene.load()
   repeat_timers = {}
   selector_open = false
+  game_started = false
 
   clear()
   love.mouse.setCursor(empty_cursor)
@@ -10,6 +11,8 @@ function scene.load()
   loadMap()
   parseRules()
   updateUnits(true)
+
+  game_started = true
 end
 
 function scene.update(dt)
@@ -23,7 +26,7 @@ function scene.update(dt)
   	cursors[i].y = cursors[i].y + mouse_Y - mouse_oldY
   end
   
-  if cursor_convert_to ~= nil then
+  if game_started and cursor_convert_to ~= nil then
     for i,mous in ipairs(cursors) do
       local hx,hy = screenToGameTile(cursors[i].x, cursors[i].y)
       if hx ~= nil and hy ~= nil then
@@ -99,6 +102,15 @@ function scene.draw(dt)
         if unit.type == "text" and not unit.active then
           brightness = 0.33
         end
+
+        if unit.fullname == "text_gay" then
+          if unit.active then
+            unit.sprite = "text_gay-colored"
+          else
+            unit.sprite = "text_gay"
+          end
+        end
+
         local drawx = lerp(unit.oldx, unit.x, unit.move_timer/MAX_MOVE_TIMER)
         local drawy = lerp(unit.oldy, unit.y, unit.move_timer/MAX_MOVE_TIMER)
 

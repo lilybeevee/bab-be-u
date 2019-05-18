@@ -77,6 +77,7 @@ function scene.getTransform()
   return transform
 end
 
+last_hovered_tile = {0,0}
 function scene.draw(dt)
   love.graphics.setBackgroundColor(0.10, 0.1, 0.11)
 
@@ -150,6 +151,12 @@ function scene.draw(dt)
 
     love.graphics.setColor(1, 1, 0)
     love.graphics.rectangle("line", hx * TILE_SIZE, hy * TILE_SIZE, TILE_SIZE, TILE_SIZE)
+
+    last_hovered_tile = {hx, hy}
+  end
+
+  if selector_open then
+    love.graphics.print(last_hovered_tile[1] .. ', ' .. last_hovered_tile[2], 0, roomheight)
   end
 
   love.graphics.pop()
