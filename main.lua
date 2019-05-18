@@ -81,6 +81,9 @@ function love.draw()
   end
   if debug then
     love.graphics.setColor(1, 1, 1, 0.9)
+    if rainbowmode then
+      love.graphics.setColor(hslToRgb(love.timer.getTime()/3%1, .5, .5, .9))
+    end
     love.graphics.print('~~ !! DEBUG MENU !! ~~'..'\n'..
         'window height: '..love.graphics.getHeight()..'\n'..
         'window width: '..love.graphics.getWidth()..'\n'..
