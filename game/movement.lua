@@ -5,7 +5,7 @@ function doMovement(key)
   first_turn = false
 
   for _,unit in ipairs(units) do
-    if hasProperty(unit, "u") then
+    if hasProperty(unit, "u") and not hasProperty(unit, "slep") then
       table.insert(moving_units, {unit = unit, dir = dirs_by_name[key]})
     end
   end

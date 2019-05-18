@@ -468,4 +468,15 @@ tiles_list = {
     layer = 18,
     rotate = "true",
   },
+  --44
+  {
+    name = "text_slep",
+    sprite = "text_slep",
+    type = "text",
+    texttype = "property",
+    grid = {5, 2},
+    color = {131,200,229},
+    layer = 20,
+    rotate = "true",
+  },
 }

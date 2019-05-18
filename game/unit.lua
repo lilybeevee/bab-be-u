@@ -60,6 +60,12 @@ function updateUnits(undoing)
         end
       end
 
+      if hasProperty(unit,"slep") and unit.sleepsprite then
+        unit.sprite = unit.sleepsprite
+      else
+        unit.sprite = tiles_list[unit.tile].sprite
+      end
+
       unit.overlay = {}
       if hasProperty(unit,"tranz") then
         table.insert(unit.overlay, "trans")
