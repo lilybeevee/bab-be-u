@@ -97,7 +97,6 @@ function scene.draw(dt)
     if units_by_layer[i] then
       local removed_units = {}
       for _,unit in ipairs(units_by_layer[i]) do
-        local sprite = sprites[unit.sprite]
         local brightness = 1
         if unit.type == "text" and not unit.active then
           brightness = 0.33
@@ -146,6 +145,9 @@ function scene.draw(dt)
         if not hasProperty(unit,"colrful") and not hasProperty(unit, "reed") and not hasProperty(unit, "bleu") and not rainbowmode then
           unit.color = copyTable(tiles_list[unit.tile].color)
         end
+
+        local sprite = sprites[unit.sprite]
+        if not sprite then sprite = sprites["wat"] end
 
         local drawx = lerp(unit.oldx, unit.x, unit.move_timer/MAX_MOVE_TIMER)
         local drawy = lerp(unit.oldy, unit.y, unit.move_timer/MAX_MOVE_TIMER)

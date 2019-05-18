@@ -101,7 +101,8 @@ function scene.draw(dt)
       if units_by_layer[i] then
         for _,unit in ipairs(units_by_layer[i]) do
           local sprite = sprites[unit.sprite]
-
+          if not sprite then sprite = sprites["wat"] end
+          
           local rotation = 0
           if unit.rotate then
             rotation = (unit.dir - 1) * 90
@@ -120,6 +121,7 @@ function scene.draw(dt)
           if i ~= nil then
           local tile = tiles_list[i]
           local sprite = sprites[tile.sprite]
+          if not sprite then sprite = sprites["wat"] end
 
           local x = tile.grid[1]
           local y = tile.grid[2]
@@ -143,6 +145,7 @@ function scene.draw(dt)
   if hx ~= nil then
     if brush and not selector_open then
       local sprite = sprites[tiles_list[brush].sprite]
+      if not sprite then sprite = sprites["wat"] end
       local color = tiles_list[brush].color
 
       love.graphics.setColor(color[1]/255, color[2]/255, color[3]/255, 0.25)
