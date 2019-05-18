@@ -136,10 +136,10 @@ function scene.draw(dt)
         end
 
         if hasProperty(unit,"reed") then
-          unit.color = {255, 0, 0}
+          unit.color = {229,83,59}
         end
         if hasProperty(unit,"bleu") then
-          unit.color = {0, 0, 255}
+          unit.color = {145,131,215}
         end
 
         if not hasProperty(unit,"colrful") and not hasProperty(unit, "reed") and not hasProperty(unit, "bleu") and not rainbowmode then

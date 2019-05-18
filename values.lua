@@ -297,7 +297,7 @@ tiles_list = {
     type = "text",
     texttype = "property",
     grid = {4, 1},
-    color = {255,0,0},
+    color = {229,83,59},
     layer = 20,
   },
   --28
@@ -307,7 +307,7 @@ tiles_list = {
     type = "text",
     texttype = "property",
     grid = {5, 1},
-    color = {0,0,255},
+    color = {145,131,215},
     layer = 20,
   },
   --29
