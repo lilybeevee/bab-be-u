@@ -6,6 +6,8 @@ UNDO_SPEED = 5
 UNDO_DELAY = MAX_UNDO_DELAY
 repeat_keys = {"w","a","s","d","up","down","left","right","z"}
 
+debug = false
+
 dirs = {{1,0},{0,1},{-1,0},{0,-1}}
 dirs8 = {{1,0},{1,1},{0,1},{-1,1},{-1,0},{-1,-1},{0,-1},{1,-1}}
 dirs_by_name = {

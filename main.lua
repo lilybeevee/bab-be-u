@@ -50,7 +50,8 @@ function love.keypressed(key,scancode,isrepeat)
     scene.load()
   elseif key == "g" and love.keyboard.isDown('f3') and scene ~= editor then
     rainbowmode = not rainbowmode
-    print(rainbowmode)
+  elseif key == "f4" then
+    debug = not debug
   end
 
   if scene and scene.keyPressed then
@@ -77,5 +78,16 @@ function love.draw()
 
   if scene and scene.draw then
     scene.draw(dt)
+  end
+  if debug then
+    love.graphics.setColor(1, 1, 1, 0.9)
+    love.graphics.print('~~ !! DEBUG MENU !! ~~'..'\n'..
+        'window height: '..love.graphics.getHeight()..'\n'..
+        'window width: '..love.graphics.getWidth()..'\n'..
+        'press r to restart\n'..
+        'f4 to toggle debug menu\n'..
+        'f3+g to toggle rainbowmode\n'..
+        'f2 for editor mode\n'..
+        'f1 for game mode')
   end
 end
