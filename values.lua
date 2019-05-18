@@ -447,4 +447,22 @@ tiles_list = {
     color = {217,57,106},
     layer = 20,
   },
+  --42
+  {
+    name = "text_os",
+    sprite = "text_os",
+    type = "text",
+    grid = {3, 3},
+    color = {217,57,106},
+    layer = 20,
+  },
+  --43
+  {
+    name = "os",
+    sprite = "os",
+    type = "object",
+    grid = {4, 3},
+    color = {255,255,255},
+    layer = 18,
+  },
 }

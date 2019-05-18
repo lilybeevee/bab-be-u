@@ -111,6 +111,22 @@ function scene.draw(dt)
           end
         end
 
+        --os
+        if unit.fullname == "os" then
+          local os = love.system.getOS()
+          if os == "Windows" then
+            unit.sprite = "os_windous"
+          elseif os == "OS X" or os == "iOS" then
+            unit.sprite = "os_mak"
+          elseif os == "Linux" then
+            unit.sprite = "os_linx"
+          elseif os == "Android" then
+            unit.sprite = "os_androd"
+          else
+            unit.sprite = "wat"
+          end
+        end
+
         local drawx = lerp(unit.oldx, unit.x, unit.move_timer/MAX_MOVE_TIMER)
         local drawy = lerp(unit.oldy, unit.y, unit.move_timer/MAX_MOVE_TIMER)
 
