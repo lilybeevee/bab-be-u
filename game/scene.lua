@@ -142,6 +142,10 @@ function scene.draw(dt)
           unit.color = {145,131,215}
         end
 
+        if hasProperty(unit,"bleu") and hasProperty(unit,"reed") then
+          unit.color = {187,107,137}
+        end
+
         if not hasProperty(unit,"colrful") and not hasProperty(unit, "reed") and not hasProperty(unit, "bleu") and not rainbowmode then
           unit.color = copyTable(tiles_list[unit.tile].color)
         end
