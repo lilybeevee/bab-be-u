@@ -16,8 +16,8 @@ function clear()
   cursor_converted = false
   mouse_X = love.mouse.getX()
   mouse_Y = love.mouse.getY()
-  mouse_oldX = love.mouse.getX()
-  mouse_oldY = love.mouse.getY()
+  mouse_movedX = 0
+  mouse_movedY = 0
   cursors = {}
   createMouse_direct(love.mouse.getX(), love.mouse.getY())
   --createMouse_direct(20, 20)
