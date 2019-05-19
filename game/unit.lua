@@ -86,20 +86,11 @@ function updateUnits(undoing)
     end
   end
 
+  deleteUnits(del_units)
+end
+
+function convertUnits()
   local converted_units = {}
-
-  local unitcount = #units
-  for i,unit in ipairs(units) do
-    if i > unitcount then
-      break
-    end
-    if rules_with[unit.name] and not undoing then
-      for _,rules in ipairs(rules_with[unit.name]) do
-
-      end
-    end
-  end
-
   cursor_convert_to = nil
 
   for _,rules in ipairs(full_rules) do
@@ -118,12 +109,12 @@ function updateUnits(undoing)
       for i,unit in ipairs(units_by_name[rule[1]]) do
         if rule[3] == "mous" or (obj_tile ~= nil and (obj_tile.type == "object" or istext)) then
           if rule[2] == "got" then
-            if unit.destroyed and not undoing then
+            if unit.destroyed then
               local new_unit = createUnit(obj_id, unit.x, unit.y, unit.dir)
               addUndo({"create", new_unit.id, false})
             end
           elseif rule[2] == "be" then
-            if not unit.destroyed and rule[3] ~= unit.name and not undoing then
+            if not unit.destroyed and rule[3] ~= unit.name then
               if not unit.removed then
                 table.insert(converted_units, unit)
               end
@@ -152,7 +143,6 @@ function updateUnits(undoing)
     end
   end
 
-  deleteUnits(del_units)
   deleteUnits(converted_units,true)
 end
 

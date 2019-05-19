@@ -37,6 +37,8 @@ function doMovement(key)
 
   updateUnits()
   parseRules()
+  convertUnits()
+  parseRules()
   updateUnits()
 end
 
