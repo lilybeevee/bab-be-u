@@ -296,3 +296,8 @@ function eq(a,b)
     return a == b
   end
 end
+
+function mouseOverBox(x,y,w,h)
+  mousex, mousey = love.mouse.getPosition()
+  return mousex > x and mousex < x+w and mousey > y and mousey < y+h
+end
