@@ -9,8 +9,15 @@ require "game/cursor"
 game = require 'game/scene'
 editor = require 'editor/scene'
 menu = require 'menu/scene'
-discordRPC = require "lib/discordRPC"
 presence = {}
+
+local libstatus, liberr = pcall(function() discordRPC = require "lib/discordRPC" end)
+
+if libstatus then
+  discordRPC = require "lib/discordRPC"
+else
+  print("WARNING: failed to require discordrpc: "..liberr)
+end
 
 function love.load()
   sprites = {}
