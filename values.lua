@@ -582,7 +582,7 @@ tiles_list = {
     color = {255,255,255},
     layer = 20,
   },
-  --56
+  --57
   {
     name = "text_f1",
     sprite = "tutorial_f1",
@@ -590,6 +590,16 @@ tiles_list = {
     texttype = "property",
     grid = {-1, -1},
     color = {255,255,255},
+    layer = 20,
+  },
+  -- 58
+  {
+    name = "text_:(",
+    sprite = "text_bad",
+    type = "text",
+    texttype = "property",
+    grid = {2, 7},
+    color = {130,38,28},
     layer = 20,
   },
 }
