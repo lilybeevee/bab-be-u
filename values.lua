@@ -631,4 +631,50 @@ tiles_list = {
     color = {142,94,156},
     layer = 5,
   },
+  -- 62
+  {
+    name = "text_boll",
+    sprite = "text_boll",
+    type = "text",
+    grid = {1, 10},
+    color = {257,57,106},
+    layer = 20,
+  },
+  -- 63
+  {
+    name = "boll",
+    sprite = "orrb",
+    type = "object",
+    grid = {0, 10},
+    color = {257,57,106},
+    layer = 5,
+  },
+  -- 64
+  {
+    name = "text_bellt",
+    sprite = "text_bellt",
+    type = "text",
+    grid = {1, 9},
+    color = {95,157,209},
+    layer = 20,
+  },
+  -- 65
+  {
+    name = "bellt",
+    sprite = "bellt",
+    type = "object",
+    grid = {0, 9},
+    color = {41,49,65},
+    layer = 3,
+  },
+  -- 66
+  {
+    name = "text_:o",
+    sprite = "text_whoa",
+    type = "text",
+    texttype = "property",
+    grid = {2, 10},
+    color = {257,57,106},
+    layer = 20,
+  },
 }
