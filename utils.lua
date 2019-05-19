@@ -265,6 +265,22 @@ function addParticles(type,x,y,color)
     ps:start()
     ps:emit(10)
     table.insert(particles, ps)
+  elseif type == "bonus" then
+    print("sparkle !!")
+    local ps = love.graphics.newParticleSystem(sprites["sparkle"])
+    local px = (x + 0.5) * TILE_SIZE
+    local py = (y + 0.5) * TILE_SIZE
+    ps:setPosition(px, py)
+    ps:setSpread(0.8)
+    ps:setEmissionArea("uniform", TILE_SIZE, TILE_SIZE, 0, true)
+    ps:setSizes(0.40, 0.40, 0.40, 0)
+    ps:setSpeed(30)
+    ps:setLinearDamping(2)
+    ps:setParticleLifetime(0.6)
+    ps:setColors(color[1]/255, color[2]/255, color[3]/255, (color[4] or 255)/255)
+    ps:start()
+    ps:emit(10)
+    table.insert(particles, ps)
   end
 end
 

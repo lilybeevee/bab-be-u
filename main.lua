@@ -91,6 +91,10 @@ function love.mousepressed(x, y, button)
       scene.load()
     end
   end
+
+  if scene and scene.mousepressed then
+    scene.mousepressed(x, y, button)
+  end
 end
 
 function love.update(dt)

@@ -1,6 +1,8 @@
 function updateUnits(undoing)
   max_layer = 1
   units_by_layer = {}
+  
+  presence["details"] = #undo_buffer.." turns done"
 
   for i,v in ipairs(units_by_tile) do
     units_by_tile[i] = {}
@@ -29,6 +31,31 @@ function updateUnits(undoing)
       local tileid = unit.x + unit.y * mapwidth
       local is_u = hasProperty(unit, "u")
 
+      -- rich presence icon
+      if is_u and discordRPC and discordRPC ~= true then
+        if unit.fullname == "bab" or unit.fullname == "keek" or unit.fullname == "meem" then
+          presence["smallImageText"] = unit.fullname
+          presence["smallImageKey"] = unit.fullname
+        elseif unit.fullname == "os" then
+          local os = love.system.getOS()
+
+          if os == "Windows" then
+            presence["smallImageKey"] = "windous"
+          elseif os == "OS X" then
+            presence["smallImageKey"] = "maac" -- i know, the mac name is inconsistent but SHUSH you cant change it after you upload the image
+          elseif os == "Linux" then
+            presence["smallImageKey"] = "linx"
+          else
+            presence["smallImageKey"] = "other"
+          end
+
+          presence["smallImageText"] = "os"
+        else
+          presence["smallImageText"] = "other"
+          presence["smallImageKey"] = "other"
+        end
+      end
+
       unit.layer = tile.layer
 
       if not undoing then
@@ -46,6 +73,20 @@ function updateUnits(undoing)
             win = true
             music_fading = true
             playSound("win", 0.5)
+          elseif is_u and hasProperty(on, ":(") then
+            unit.destroyed = true
+            unit.removed = true
+            playSound("break", 0.5)
+            addParticles("destroy", unit.x, unit.y, unit.color)
+            table.insert(del_units, unit)
+            update_undo = true
+          elseif is_u and hasProperty(on, ":o") then
+            on.destroyed = true
+            on.removed = true
+            playSound("rule", 0.5)
+            addParticles("bonus", unit.x, unit.y, on.color)
+            table.insert(del_units, on)
+            update_undo = true
           end
         end
       end
