@@ -10,6 +10,28 @@ local mask_shader = love.graphics.newShader[[
   }
 ]]
 
+local paletteshader_0 = love.graphics.newShader[[
+  vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords) {
+    vec4 texturecolor = Texel(texture, texture_coords);
+    texturecolor = texturecolor * color;
+    number r = texturecolor.r;
+    number g = texturecolor.g;
+    number b = texturecolor.b;
+    return vec4(r, g, b, texturecolor.a);
+  }
+]]
+local paletteshader_1 = love.graphics.newShader[[
+  vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords) {
+    vec4 texturecolor = Texel(texture, texture_coords);
+    texturecolor = texturecolor * color;
+    number r = texturecolor.r + 0.1;
+    number g = texturecolor.g - 0.1 + (texturecolor.b * 0.3);
+    number b = texturecolor.b * 0.8;
+    return vec4(r, g, b, texturecolor.a);
+  }
+]]
+local palette_shader = paletteshader_1
+
 function scene.load()
   repeat_timers = {}
   selector_open = false
@@ -95,6 +117,7 @@ function scene.getTransform()
 end
 
 function scene.draw(dt)
+  love.graphics.setShader(palette_shader)
   love.graphics.setBackgroundColor(0.10, 0.1, 0.11)
   if rainbowmode then love.graphics.setBackgroundColor(hslToRgb(love.timer.getTime()/6%1, .2, .2, .9)) end
 
@@ -202,7 +225,7 @@ function scene.draw(dt)
           local function overlayStencil()
              love.graphics.setShader(mask_shader)
              love.graphics.draw(sprite, (drawx + 0.5)*TILE_SIZE, (drawy + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
-             love.graphics.setShader()
+             love.graphics.setShader(palette_shader)
           end
           for _,overlay in ipairs(unit.overlay) do
             love.graphics.setColor(1, 1, 1)
@@ -281,7 +304,7 @@ function scene.draw(dt)
         local function overlayStencil()
           love.graphics.setShader(mask_shader)
           love.graphics.draw(system_cursor, cursor.x, cursor.y)
-          love.graphics.setShader()
+          love.graphics.setShader(palette_shader)
         end
         for _,overlay in ipairs(cursor.overlay) do
           love.graphics.setColor(1, 1, 1)
