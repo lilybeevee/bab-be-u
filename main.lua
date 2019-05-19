@@ -9,6 +9,8 @@ require "game/undo"
 game = require 'game/scene'
 editor = require 'editor/scene'
 menu = require 'menu/scene'
+discordRPC = require "discordRPC"
+presence = {}
 
 function love.load()
   sprites = {}
@@ -40,6 +42,8 @@ function love.load()
 
   scene = menu
   scene.load()
+
+  discordRPC.initialize("579475239646396436", true) -- app belongs to thefox, contact him if you wish to make any changes
 end
 
 function love.keypressed(key,scancode,isrepeat)
@@ -93,6 +97,11 @@ function love.update(dt)
   end
 
   updateMusic()
+  if nextPresenceUpdate < love.timer.getTime() then
+    discordRPC.updatePresence(presence)
+    nextPresenceUpdate = love.timer.getTime() + 2.0
+  end
+  discordRPC.runCallbacks()
 end
 
 function love.draw()
@@ -117,4 +126,8 @@ function love.draw()
         'f2 for editor mode\n'..
         'f1 for game mode')
   end
+end
+
+function love.quit()
+  discordRPC.shutdown()
 end

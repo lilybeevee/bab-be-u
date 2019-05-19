@@ -8,6 +8,18 @@ function scene.load()
   scene.resetStuff()
 
   game_started = true
+
+  local now = os.time(os.date("*t"))
+  presence = {
+    state = "ingame",
+    details = "playing the gam",
+    largeImageKey = "cover",
+    largeimageText = "bab be u",
+    smallImageKey = "icon",
+    smallImageText = "bab",
+    startTimestamp = now
+  }
+  nextPresenceUpdate = 0
 end
 
 function scene.update(dt)

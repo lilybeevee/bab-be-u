@@ -11,6 +11,15 @@ function scene.load()
   clear()
   love.graphics.setBackgroundColor(0.10, 0.1, 0.11)
   playMusic("bab_be_u_them", 0.5)
+  local now = os.time(os.date("*t"))
+  presence = {
+    state = "main menu",
+    details = "idling",
+    largeImageKey = "titlescreen",
+    largeimageText = "main menu",
+    startTimestamp = now
+  }
+  nextPresenceUpdate = 0
 end
 
 function scene.draw(dt)
