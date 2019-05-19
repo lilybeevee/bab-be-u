@@ -5,7 +5,7 @@ function parseRules(undoing)
   rules_with["text"] = {}
   rules_with["be"] = {}
   rules_with["go away"] = {}
-  local text_be_go_away = {{"text","be","go away"},{}}
+  local text_be_go_away = {{"text","be","go away",nil},{}}
   table.insert(full_rules, text_be_go_away)
   table.insert(rules_with["text"], text_be_go_away)
   table.insert(rules_with["be"], text_be_go_away)
@@ -37,7 +37,7 @@ function parseRules(undoing)
   print("-- begin parse --")
 
   local has_new_rule = false
-  local already_parsed = {}
+  --local already_parsed = {}
   local first_words_count = #first_words
   for i,first in ipairs(first_words) do
     local first_unit = first[1]
@@ -47,7 +47,7 @@ function parseRules(undoing)
     local prev_type = first_unit.texttype
     local extras = {}
     local first_units = {}
-    local new_rules = {{{first_unit.textname,{first_unit}}},{},{}}
+    local new_rules = {{{first_unit.textname,{first_unit}}},{},{},{}} --object, verb, prop, cond
     local unit_queue = {}
     local stage = "start"
     local allow_properties = false
@@ -80,7 +80,7 @@ function parseRules(undoing)
         elseif stage == "start" then
           if type == "object" and prev_type == "and" then
             valid = true
-            table.insert(new_rules[1], {name, copyTable(unit_queue)})
+            table.insert(new_rules[1], {name, copyTable(unit_queue)}) --copyTable(unit_queue) is the text units that make up this part of the rule
             unit_queue = {}
           elseif type == "verb" and prev_type == "object" then
             valid = true
@@ -90,6 +90,20 @@ function parseRules(undoing)
             unit_queue = {}
           elseif type == "and" and prev_type == "object" then
             valid = true
+          elseif type == "cond_infix" and prev_type == "object" then
+            valid = true
+            new_stage = "cond_infix"
+          end
+        elseif stage == "cond_infix" then
+          if type == "object" and prev_type == "cond_infix" then
+            valid = true
+            table.insert(new_rules[4], {{"on", {name}}, copyTable(unit_queue)}) --for now i will hardcode On just to see if it works
+          elseif type == "verb" and prev_type == "object" then
+            valid = true
+            new_stage = "verb"
+            allow_properties = unit.allowprops
+            table.insert(new_rules[2], {name, copyTable(unit_queue)})
+            unit_queue = {}
           end
         elseif stage == "verb" then
           if ((type == "property" and allow_properties) or type == "object") and (prev_type == "verb" or prev_type == "and") then
@@ -127,6 +141,8 @@ function parseRules(undoing)
         dx = dx + dir[1]
         dy = dy + dir[2]
       end
+      
+      --table.insert(already_parsed, unit)
     end
 
     if #new_rules[3] > 0 then
@@ -134,15 +150,18 @@ function parseRules(undoing)
         for _,b in ipairs(new_rules[2]) do
           for _,c in ipairs(new_rules[3]) do
             local noun = a[1]
+            local noun_texts = a[2]
             local verb = b[1]
+            local verb_texts = b[2]
             local prop = c[1]
+            local prop_texts = c[2]
 
-            if a[2] == nil then
+            if noun_texts == nil then
               print("nil on: " .. noun .. " - " .. verb .. " - " .. prop)
             end
 
             local all_units = {}
-            for _,unit in ipairs(a[2]) do
+            for _,unit in ipairs(noun_texts) do
               table.insert(all_units, unit)
               unit.active = true
               if not unit.old_active and not first_turn and not undoing then
@@ -151,7 +170,7 @@ function parseRules(undoing)
               end
               unit.old_active = unit.active
             end
-            for _,unit in ipairs(b[2]) do
+            for _,unit in ipairs(verb_texts) do
               table.insert(all_units, unit)
               unit.active = true
               if not unit.old_active and not first_turn and not undoing then
@@ -160,7 +179,7 @@ function parseRules(undoing)
               end
               unit.old_active = unit.active
             end
-            for _,unit in ipairs(c[2]) do
+            for _,unit in ipairs(prop_texts) do
               table.insert(all_units, unit)
               unit.active = true
               if not unit.old_active and not first_turn and not undoing then
@@ -168,9 +187,30 @@ function parseRules(undoing)
                 has_new_rule = true
               end
               unit.old_active = unit.active
+            end
+            
+            local cond = nil--{}
+            for _,d in ipairs(new_rules[4]) do --cond's loop is here because conds are optional
+              cond = d[1]
+              local cond_texts = d[2]
+              for _,unit in ipairs(cond_texts) do
+                table.insert(all_units, unit)
+                unit.active = true
+                if not unit.old_active and not first_turn and not undoing then
+                  addParticles("rule", unit.x, unit.y, unit.color)
+                  has_new_rule = true
+                end
+                unit.old_active = unit.active
+              end
+            end
+            
+            if cond ~= nil then
+              print("ok : " .. noun .. " - " .. verb .. " - " .. prop .. " - " .. cond[1] .. " " .. cond[2][1])
+            else
+              print("ok : " .. noun .. " - " .. verb .. " - " .. prop)
             end
 
-            local rule = {{noun,verb,prop},all_units}
+            local rule = {{noun,verb,prop,cond},all_units}
             table.insert(full_rules, rule)
 
             if not rules_with[noun] then
@@ -187,6 +227,11 @@ function parseRules(undoing)
               rules_with[prop] = {}
             end
             table.insert(rules_with[prop], rule)
+            
+            --[[if not rules_with[cond] then
+              rules_with[cond] = {}
+            end
+            table.insert(rules_with[cond], rule)]]--
           end
         end
       end

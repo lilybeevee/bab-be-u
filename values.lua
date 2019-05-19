@@ -611,5 +611,15 @@ tiles_list = {
     grid = {2, 2},
     color = {165,177,63},
     layer = 20,
+  },
+  -- 60
+  {
+    name = "text_on",
+    sprite = "text_on",
+    type = "text",
+    texttype = "cond_infix",
+    grid = {3, 2},
+    color = {255,255,255},
+    layer = 20,
   }
 }
