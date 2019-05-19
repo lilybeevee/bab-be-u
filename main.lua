@@ -43,7 +43,9 @@ function love.load()
   scene = menu
   scene.load()
 
-  discordRPC.initialize("579475239646396436", true) -- app belongs to thefox, contact him if you wish to make any changes
+  if discordRPC and discordRPC ~= true then
+    discordRPC.initialize("579475239646396436", true) -- app belongs to thefox, contact him if you wish to make any changes
+  end
 end
 
 function love.keypressed(key,scancode,isrepeat)
@@ -97,11 +99,14 @@ function love.update(dt)
   end
 
   updateMusic()
-  if nextPresenceUpdate < love.timer.getTime() then
-    discordRPC.updatePresence(presence)
-    nextPresenceUpdate = love.timer.getTime() + 2.0
+
+  if discordRPC and discordRPC ~= true then
+    if nextPresenceUpdate < love.timer.getTime() then
+      discordRPC.updatePresence(presence)
+      nextPresenceUpdate = love.timer.getTime() + 2.0
+    end
+    discordRPC.runCallbacks()
   end
-  discordRPC.runCallbacks()
 end
 
 function love.draw()
@@ -129,5 +134,7 @@ function love.draw()
 end
 
 function love.quit()
-  discordRPC.shutdown()
+  if discordRPC and discordRPC ~= true then
+    discordRPC.shutdown()
+  end
 end
