@@ -41,6 +41,7 @@ function updateUnits(undoing)
             playSound("sink", 0.5)
             addParticles("destroy", unit.x, unit.y, on.color)
             table.insert(del_units, on)
+            update_undo = true
           elseif is_u and hasProperty(on, ":)") then
             win = true
             music_fading = true
@@ -111,6 +112,7 @@ function convertUnits()
             if unit.destroyed then
               local new_unit = createUnit(obj_id, unit.x, unit.y, unit.dir)
               addUndo({"create", new_unit.id, false})
+              update_undo = true
             end
           elseif rule[2] == "be" then
             if not unit.destroyed and rule[3] ~= unit.name then
@@ -125,6 +127,7 @@ function convertUnits()
                 local new_unit = createUnit(obj_id, unit.x, unit.y, unit.dir, true)
                 addUndo({"create", new_unit.id, true})
               end
+              update_undo = true
             end
           end
         end
@@ -227,13 +230,20 @@ function deleteUnit(unit,convert)
 end
 
 function moveUnit(unit,x,y)
+  local tileid = unit.x + unit.y * mapwidth
+  removeFromTable(units_by_tile[tileid], unit)
+
   unit.oldx = lerp(unit.oldx, unit.x, unit.move_timer/MAX_MOVE_TIMER)
   unit.oldy = lerp(unit.oldy, unit.y, unit.move_timer/MAX_MOVE_TIMER)
   unit.x = x
   unit.y = y
   unit.move_timer = 0
 
+  tileid = unit.x + unit.y * mapwidth
+  table.insert(units_by_tile[tileid], unit)
+
   do_move_sound = true
+  update_undo = true
 end
 
 function newUnitID()

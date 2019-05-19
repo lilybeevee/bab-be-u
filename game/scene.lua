@@ -302,20 +302,24 @@ function scene.checkInput()
 
   for _,key in ipairs(repeat_keys) do
     if not win and repeat_timers[key] ~= nil and repeat_timers[key] <= 0 then
-      local dir = key
+      local control = key
       if key == "w" then
-        dir = "up"
+        control = "up"
       elseif key == "a" then
-        dir = "left"
+        control = "left"
       elseif key == "s" then
-        dir = "down"
+        control = "down"
       elseif key == "d" then
-        dir = "right"
+        control = "right"
+      elseif key == "space" then
+        control = "wait"
       end
-      if dir == "up" or dir == "down" or dir == "right" or dir == "left" then
+      if control == "up" or control == "down" or control == "right" or control == "left" or control == "wait" then
         newUndo()
-        doMovement(dir)
+        update_undo = false
+        doMovement(control)
       elseif key == "z" then
+        update_undo = false
         undo()
       end
     end
