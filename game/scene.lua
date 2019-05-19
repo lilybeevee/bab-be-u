@@ -8,6 +8,18 @@ function scene.load()
   scene.resetStuff()
 
   game_started = true
+
+  local now = os.time(os.date("*t"))
+  presence = {
+    state = "ingame",
+    details = "playing the gam",
+    largeImageKey = "cover",
+    largeimageText = "bab be u",
+    smallImageKey = "icon",
+    smallImageText = "bab",
+    startTimestamp = now
+  }
+  nextPresenceUpdate = 0
 end
 
 function scene.update(dt)
@@ -113,6 +125,13 @@ function scene.draw(dt)
             unit.sprite = "text_gay-colored"
           else
             unit.sprite = "text_gay"
+          end
+        end
+        if unit.fullname == "text_tranz" then
+          if unit.active then
+            unit.sprite = "text_tranz-colored"
+          else
+            unit.sprite = "text_tranz"
           end
         end
 

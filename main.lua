@@ -8,6 +8,9 @@ require "game/rules"
 require "game/undo"
 game = require 'game/scene'
 editor = require 'editor/scene'
+menu = require 'menu/scene'
+discordRPC = require "discordRPC"
+presence = {}
 
 function love.load()
   sprites = {}
@@ -37,16 +40,21 @@ function love.load()
   registerSound("rule")
   registerSound("win")
 
-  scene = game
+  scene = menu
   scene.load()
+
+  discordRPC.initialize("579475239646396436", true) -- app belongs to thefox, contact him if you wish to make any changes
 end
 
 function love.keypressed(key,scancode,isrepeat)
-  if key == "f1" and scene ~= game then
+  if key == "f1" and scene == editor then
     scene = game
     scene.load()
-  elseif key == "f2" and scene ~= editor then
+  elseif key == "f2" and scene == game then
     scene = editor
+    scene.load()
+  elseif key == "escape" and scene ~= menu then
+    scene = menu
     scene.load()
   elseif key == "g" and love.keyboard.isDown('f3') and scene ~= editor then
     rainbowmode = not rainbowmode
@@ -65,12 +73,35 @@ function love.keyreleased(key)
   end
 end
 
+function love.mousepressed(x, y, button)
+  if scene == menu and button == 1 then
+    local width = love.graphics.getWidth()
+    local height = love.graphics.getHeight()
+
+    local buttonheight = height*0.05
+    local buttonwidth = width*0.375
+    if mouseOverBox(width/2-buttonwidth/2, height/2-buttonheight/2+buttonheight+10, buttonwidth, buttonheight) then
+      scene = game
+      scene.load()
+    end
+    if mouseOverBox(width/2-buttonwidth/2, height/2-buttonheight/2+(buttonheight+10)*2, buttonwidth, buttonheight) then
+      scene = editor
+      scene.load()
+    end
+  end
+end
+
 function love.update(dt)
   if scene and scene.update then
     scene.update(dt)
   end
 
   updateMusic()
+  if nextPresenceUpdate < love.timer.getTime() then
+    discordRPC.updatePresence(presence)
+    nextPresenceUpdate = love.timer.getTime() + 2.0
+  end
+  discordRPC.runCallbacks()
 end
 
 function love.draw()
@@ -84,13 +115,19 @@ function love.draw()
     if rainbowmode then
       love.graphics.setColor(hslToRgb(love.timer.getTime()/3%1, .5, .5, .9))
     end
+    mousex, mousey = love.mouse.getPosition()
     love.graphics.print('~~ !! DEBUG MENU !! ~~'..'\n'..
         'window height: '..love.graphics.getHeight()..'\n'..
         'window width: '..love.graphics.getWidth()..'\n'..
+        'mouse : x'..mousex..' y'..mousey..'\n'..
         'press r to restart\n'..
         'f4 to toggle debug menu\n'..
         'f3+g to toggle rainbowmode\n'..
         'f2 for editor mode\n'..
         'f1 for game mode')
   end
+end
+
+function love.quit()
+  discordRPC.shutdown()
 end
