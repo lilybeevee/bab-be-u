@@ -30,8 +30,6 @@ function scene.keyPressed(key)
     selector_open = not selector_open
     if selector_open then
       presence["details"] = "browsing selector"
-    else
-
     end
   end
 end
