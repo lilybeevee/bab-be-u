@@ -91,7 +91,7 @@ function hasProperty(unit,prop)
   return false
 end
 
-function isCondTrue(unit,cond) --cond should be a {"cond",{object types}}
+function isCondTrue(unit,cond) --cond should be a {cond,{object types}}
   if cond == nil then
     return true
   elseif cond[1] == "on" then
