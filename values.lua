@@ -728,4 +728,14 @@ tiles_list = {
     color = {142,94,156},
     layer = 20,
   },
+  -- 72
+  {
+    name = "text_on",
+    sprite = "text_on",
+    type = "text",
+    texttype = "cond_infix",
+    grid = {7, 4},
+    color = {255,255,255},
+    layer = 20,
+  }
 }

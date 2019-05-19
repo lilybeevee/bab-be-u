@@ -160,25 +160,27 @@ function convertUnits()
       for i,unit in ipairs(units_by_name[rule[1]]) do
         if rule[3] == "mous" or (obj_tile ~= nil and (obj_tile.type == "object" or istext)) then
           if rule[2] == "got" then
-            if unit.destroyed then
+            if unit.destroyed and isCondTrue(unit,rule[4]) then
               local new_unit = createUnit(obj_id, unit.x, unit.y, unit.dir)
               addUndo({"create", new_unit.id, false})
               update_undo = true
             end
           elseif rule[2] == "be" then
             if not unit.destroyed and rule[3] ~= unit.name then
-              if not unit.removed then
-                table.insert(converted_units, unit)
+              if isCondTrue(unit,rule[4]) then
+                if not unit.removed then
+                  table.insert(converted_units, unit)
+                end
+                unit.removed = true
+                if rule[3] == "mous" then
+                  local new_mouse = createMouse(unit.x, unit.y)
+                  addUndo({"create_cursor", new_mouse.id})
+                else
+                  local new_unit = createUnit(obj_id, unit.x, unit.y, unit.dir, true)
+                  addUndo({"create", new_unit.id, true})
+                end
+                update_undo = true
               end
-              unit.removed = true
-              if rule[3] == "mous" then
-                local new_mouse = createMouse(unit.x, unit.y)
-                addUndo({"create_cursor", new_mouse.id})
-              else
-                local new_unit = createUnit(obj_id, unit.x, unit.y, unit.dir, true)
-                addUndo({"create", new_unit.id, true})
-              end
-              update_undo = true
             end
           end
         end

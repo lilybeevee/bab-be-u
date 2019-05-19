@@ -83,8 +83,21 @@ function hasProperty(unit,prop)
     for _,v in ipairs(rules_with[name]) do
       local rule = v[1]
       if rule[1] == name and rule[2] == "be" and rule[3] == prop then
-        return true
+        print("par : " .. rule[1] .. " - " .. rule[2] .. " - " .. rule[3])
+        return isCondTrue(unit,rule[4])
       end
+    end
+  end
+  return false
+end
+
+function isCondTrue(unit,cond) --cond should be a {cond,{object types}}
+  if cond == nil then
+    return true
+  elseif cond[1] == "on" then
+    local others = getUnitsOnTile(unit.x,unit.y,cond[2][1]) --currently, conditions only work up to one layer of nesting, so the noun argument of the condition is assumed to be just a noun
+    if #others > 0 then
+      return true
     end
   end
   return false

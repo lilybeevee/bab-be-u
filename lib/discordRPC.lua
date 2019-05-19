@@ -3,7 +3,7 @@ local ffi = require "ffi"
 local discordRPClib
 local libname
 local systemos = love.system.getOS()
-local gamedir = love.filesystem.getSourceBaseDirectory() .. "/lib/"
+local gamedir = "./lib/"
 
 if systemos == "Windows" then
     libname = "discord-rpc.dll"
