@@ -612,5 +612,23 @@ tiles_list = {
     grid = {2, 2},
     color = {165,177,63},
     layer = 20,
-  }
+  },
+  -- 60
+  {
+    name = "text_fax",
+    sprite = "text_fax",
+    type = "text",
+    grid = {5, 8},
+    color = {142,94,156},
+    layer = 20,
+  },
+  -- 61
+  {
+    name = "fax",
+    sprite = "fax",
+    type = "object",
+    grid = {6, 8},
+    color = {142,94,156},
+    layer = 5,
+  },
 }
