@@ -1,5 +1,7 @@
 function newUndo()
-  table.insert(undo_buffer, 1, {})
+  if update_undo then
+    table.insert(undo_buffer, 1, {})
+  end
 end
 
 function addUndo(data)

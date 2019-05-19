@@ -1,5 +1,25 @@
 local ffi = require "ffi"
-local discordRPClib = ffi.load("discord-rpc")
+
+local discordRPClib
+local libname
+local systemos = love.system.getOS()
+local gamedir = love.filesystem.getSourceBaseDirectory() .. "/lib/"
+
+if systemos == "Windows" then
+    libname = "discord-rpc.dll"
+elseif systemos == "OS X" then
+    libname = "libdiscord-rpc.dylib"
+elseif systemos == "Linux" then
+    libname = "libdiscord-rpc.so"
+end
+
+if libname ~= nil then
+    discordRPClib = ffi.load(gamedir .. libname)
+end
+
+if discordRPClib == nil then
+    return nil
+end
 
 ffi.cdef[[
 typedef struct DiscordRichPresence {

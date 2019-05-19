@@ -4,7 +4,7 @@ MAX_UNDO_DELAY = 150
 MIN_UNDO_DELAY = 50
 UNDO_SPEED = 5
 UNDO_DELAY = MAX_UNDO_DELAY
-repeat_keys = {"w","a","s","d","up","down","left","right","z"}
+repeat_keys = {"w","a","s","d","up","down","left","right","space","z"}
 
 debug = false
 
@@ -602,4 +602,14 @@ tiles_list = {
     color = {130,38,28},
     layer = 20,
   },
+  -- 59
+  {
+    name = "text_walk",
+    sprite = "text_walk",
+    type = "text",
+    texttype = "property",
+    grid = {2, 2},
+    color = {165,177,63},
+    layer = 20,
+  }
 }
