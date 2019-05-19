@@ -4,13 +4,16 @@ game = require '../game/scene'
 local width = love.graphics.getWidth()
 local height = love.graphics.getHeight()
 
+local scrollx = 0
+local scrolly = 0
+
 local buttonheight = height*0.05
 local buttonwidth = width*0.375
 
 function scene.load()
   clear()
-  love.graphics.setBackgroundColor(0.10, 0.1, 0.11)
   playMusic("bab_be_u_them", 0.5)
+  love.graphics.setBackgroundColor(0.10, 0.1, 0.11)
   local now = os.time(os.date("*t"))
   presence = {
     state = "main menu",
@@ -24,6 +27,21 @@ end
 
 function scene.draw(dt)
   local buttons = {"play", "editor", "exit"}
+  local bgsprite = sprites["menu_background"]
+
+  -- no need to insult me, i know this is terrible code
+  love.graphics.draw(bgsprite, scrollx%bgsprite:getWidth(), scrolly%bgsprite:getHeight(), 0)
+  
+  love.graphics.draw(bgsprite, scrollx%bgsprite:getWidth()-bgsprite:getWidth(), scrolly%bgsprite:getHeight()-bgsprite:getHeight(), 0)
+  love.graphics.draw(bgsprite, scrollx%bgsprite:getWidth()-bgsprite:getWidth(), scrolly%bgsprite:getHeight(), 0)
+  love.graphics.draw(bgsprite, scrollx%bgsprite:getWidth(), scrolly%bgsprite:getHeight()-bgsprite:getHeight(), 0)
+
+  love.graphics.draw(bgsprite, scrollx%bgsprite:getWidth()+bgsprite:getWidth(), scrolly%bgsprite:getHeight()+bgsprite:getHeight(), 0)
+  love.graphics.draw(bgsprite, scrollx%bgsprite:getWidth()+bgsprite:getWidth(), scrolly%bgsprite:getHeight(), 0)
+  love.graphics.draw(bgsprite, scrollx%bgsprite:getWidth(), scrolly%bgsprite:getHeight()+bgsprite:getHeight(), 0)
+
+  love.graphics.draw(bgsprite, scrollx%bgsprite:getWidth()+bgsprite:getWidth(), scrolly%bgsprite:getHeight()-bgsprite:getHeight(), 0)
+  love.graphics.draw(bgsprite, scrollx%bgsprite:getWidth()-bgsprite:getWidth(), scrolly%bgsprite:getHeight()+bgsprite:getHeight(), 0)
 
   for i=1, #buttons do
     if mouseOverBox(width/2-buttonwidth/2, height/2-buttonheight/2+(buttonheight+10)*i, buttonwidth, buttonheight) then love.graphics.setColor(.9, .9, .9) end
@@ -48,6 +66,9 @@ function scene.update()
   buttonwidth = width*0.375
 
   local mousex, mousey = love.mouse.getPosition()
+
+  scrollx = scrollx+0.1
+  scrolly = scrolly+0.1
 
   if mouseOverBox(width/2-buttonwidth/2, height/2-buttonheight/2+(buttonheight+10)*3, buttonwidth, buttonheight) then 
     love.mouse.setPosition(mousex, mousey-(buttonheight+10)) 
