@@ -33,6 +33,11 @@ function scene.draw(dt)
     love.graphics.printf(buttons[i], width/2-buttonwidth/2, height/2-buttonheight/2+(buttonheight+10)*i+5, buttonwidth, "center")
   end
   love.graphics.draw(sprites["bab_be_u"], width/2 - sprites["bab_be_u"]:getWidth() / 2, height/2 - sprites["bab_be_u"]:getHeight() / 2 - 200)
+
+  onstate = "on"
+  if not music_on then onstate = "off" end
+
+  love.graphics.draw(sprites["music-"..onstate], 10, height - sprites["music-"..onstate]:getHeight() - 10)
 end
 
 function scene.update()
@@ -44,7 +49,20 @@ function scene.update()
 
   local mousex, mousey = love.mouse.getPosition()
 
-  if mouseOverBox(width/2-buttonwidth/2, height/2-buttonheight/2+(buttonheight+10)*3, buttonwidth, buttonheight) then love.mouse.setPosition(mousex, mousey-(buttonheight+10)) end
+  if mouseOverBox(width/2-buttonwidth/2, height/2-buttonheight/2+(buttonheight+10)*3, buttonwidth, buttonheight) then 
+    love.mouse.setPosition(mousex, mousey-(buttonheight+10)) 
+  end
+  if mouseOverBox(10, height - sprites["music-on"]:getHeight(), sprites["music-on"]:getWidth(), sprites["music-on"]:getHeight()) and love.mouse.isDown() then
+    music_on = not music_on
+  end
+end
+
+function scene.mousepressed(x, y, button)
+  if mouseOverBox(10, height - sprites["music-on"]:getHeight(), sprites["music-on"]:getWidth(), sprites["music-on"]:getHeight()) and button == 1 then
+    music_on = not music_on
+    if not music_on then stopMusic() end
+    if music_on then playMusic("bab_be_u_them", 0.5) end
+  end
 end
 
 return scene

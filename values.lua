@@ -7,6 +7,7 @@ UNDO_DELAY = MAX_UNDO_DELAY
 repeat_keys = {"w","a","s","d","up","down","left","right","space","z"}
 
 debug = false
+music_on = true
 
 dirs = {{1,0},{0,1},{-1,0},{0,-1}}
 dirs8 = {{1,0},{1,1},{0,1},{-1,1},{-1,0},{-1,-1},{0,-1},{1,-1}}

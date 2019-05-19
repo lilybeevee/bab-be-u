@@ -17,33 +17,45 @@ function playSound(sound, volume)
 end
 
 function playMusic(music, volume)
+  if music_on then
+    if music_source ~= nil then
+      music_source:stop()
+    end
+
+    music_volume = volume or 1
+
+    music_source = love.audio.newSource("assets/audio/" .. music .. ".wav", "stream")
+    music_source:setVolume(music_volume)
+    music_source:setLooping(true)
+    music_source:play()
+  end
+end
+
+function stopMusic()
   if music_source ~= nil then
     music_source:stop()
   end
-
-  music_volume = volume or 1
-
-  music_source = love.audio.newSource("assets/audio/" .. music .. ".wav", "stream")
-  music_source:setVolume(music_volume)
-  music_source:setLooping(true)
-  music_source:play()
 end
 
 function resetMusic(name,volume)
-  music_fading = false
-  if music_volume == 0 or not hasMusic() then
-    playMusic(name,volume)
-  else
-    music_volume = volume
+  if music_on then
+    music_fading = false
+    if music_volume == 0 or not hasMusic() then
+      playMusic(name,volume)
+    else
+      music_volume = volume
+    end
   end
 end
 
 function updateMusic()
-  if music_source ~= nil then
-    music_source:setVolume(music_volume)
-  end
-  if music_fading and music_volume > 0 then
-    music_volume = math.max(0, music_volume - 0.01)
+  if music_on then
+    if music_source ~= nil then
+      music_source:setVolume(music_volume)
+    end
+    if music_fading and music_volume > 0 then
+      music_volume = math.max(0, music_volume - 0.01)
+    end
   end
 end
 
