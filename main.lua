@@ -1,15 +1,15 @@
 require "values"
 require "utils"
-require "input"
 require "audio"
 require "game/unit"
 require "game/movement"
 require "game/rules"
 require "game/undo"
+require "game/cursor"
 game = require 'game/scene'
 editor = require 'editor/scene'
 menu = require 'menu/scene'
-discordRPC = require "discordRPC"
+discordRPC = require "lib/discordRPC"
 presence = {}
 
 function love.load()

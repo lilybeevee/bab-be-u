@@ -1,13 +1,20 @@
 local scene = {}
 
+local mask_shader = love.graphics.newShader[[
+  vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords) {
+     if (Texel(texture, texture_coords).rgb == vec3(0.0)) {
+        // a discarded pixel wont be applied as the stencil.
+        discard;
+     }
+     return vec4(1.0);
+  }
+]]
+
 function scene.load()
   repeat_timers = {}
   selector_open = false
-  game_started = false
 
   scene.resetStuff()
-
-  game_started = true
 
   local now = os.time(os.date("*t"))
   presence = {
@@ -30,23 +37,7 @@ function scene.update(dt)
   --mouse_movedY = love.mouse.getY() - love.graphics.getHeight()*0.5
   
   scene.checkInput()
-  
-  for i,mous in ipairs(cursors) do
-  	cursors[i].x = cursors[i].x + mouse_X - mouse_oldX
-  	cursors[i].y = cursors[i].y + mouse_Y - mouse_oldY
-  end
-  
-  if game_started and cursor_convert_to ~= nil then
-    for i,mous in ipairs(cursors) do
-      local hx,hy = screenToGameTile(cursors[i].x, cursors[i].y)
-      if hx ~= nil and hy ~= nil then
-        local new_unit = createUnit(cursor_convert_to, hx, hy, 1, true)
-        addUndo({"create", new_unit.id, true})
-        addUndo({"remove_cursor", cursors[i].x, cursors[i].y, cursors[i].id})
-        deleteMouse(cursors[i].id)
-      end
-    end
-  end
+  updateCursors()
   
   mouse_oldX = mouse_X
   mouse_oldY = mouse_Y
@@ -208,15 +199,6 @@ function scene.draw(dt)
         end
         love.graphics.draw(sprite, (drawx + 0.5)*TILE_SIZE, (drawy + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
         if #unit.overlay > 0 then
-          local mask_shader = love.graphics.newShader[[
-             vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords) {
-                if (Texel(texture, texture_coords).rgb == vec3(0.0)) {
-                   // a discarded pixel wont be applied as the stencil.
-                   discard;
-                }
-                return vec4(1.0);
-             }
-          ]]
           local function overlayStencil()
              love.graphics.setShader(mask_shader)
              love.graphics.draw(sprite, (drawx + 0.5)*TILE_SIZE, (drawy + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
@@ -271,8 +253,46 @@ function scene.draw(dt)
   love.graphics.pop()
   
   if love.window.hasMouseFocus() then
-    for i,mous in ipairs(cursors) do
-      love.graphics.draw(system_cursor, cursors[i].x, cursors[i].y)
+    for i,cursor in ipairs(cursors) do
+      local color
+
+      if hasProperty(cursor,"colrful") or rainbowmode then
+        local newcolor = hslToRgb((#undo_buffer/45+cursor.x/18+cursor.y/18)%1, .5, .5, 1)
+        newcolor[1] = newcolor[1]*255
+        newcolor[2] = newcolor[2]*255
+        newcolor[3] = newcolor[3]*255
+        color = newcolor
+      elseif hasProperty(cursor,"bleu") and hasProperty(cursor,"reed") then
+        color = {187,107,137}
+      elseif hasProperty(cursor,"reed") then
+        color = {229,83,59}
+      elseif hasProperty(cursor,"bleu") then
+        color = {145,131,215}
+      end
+
+      if not color then
+        love.graphics.setColor(1, 1, 1)
+      else
+        love.graphics.setColor(color[1]/255, color[2]/255, color[3]/255)
+      end
+      love.graphics.draw(system_cursor, cursor.x, cursor.y)
+
+      if #cursor.overlay > 0 then
+        local function overlayStencil()
+          love.graphics.setShader(mask_shader)
+          love.graphics.draw(system_cursor, cursor.x, cursor.y)
+          love.graphics.setShader()
+        end
+        for _,overlay in ipairs(cursor.overlay) do
+          love.graphics.setColor(1, 1, 1)
+          love.graphics.stencil(overlayStencil, "replace")
+          love.graphics.setStencilTest("greater", 0)
+          love.graphics.setBlendMode("multiply", "premultiplied")
+          love.graphics.draw(sprites["overlay_" .. overlay], cursor.x, cursor.y, 0, 14/32, 14/32)
+          love.graphics.setBlendMode("alpha", "alphamultiply")
+          love.graphics.setStencilTest() 
+        end
+      end
     end
   end
 end

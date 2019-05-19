@@ -19,7 +19,10 @@ function clear()
   mouse_oldX = mouse_X
   mouse_oldY = mouse_Y
   cursors = {}
-  createMouse_direct(love.mouse.getX(), love.mouse.getY())
+
+  if scene == game then
+    createMouse_direct(love.mouse.getX(), love.mouse.getY())
+  end
   --createMouse_direct(20, 20)
 
   win = false
@@ -69,10 +72,16 @@ function loadMap()
 end
 
 function hasProperty(unit,prop)
-  if rules_with[unit.name] then
-    for _,v in ipairs(rules_with[unit.name]) do
+  local name
+  if unit.class == "unit" then
+    name = unit.name
+  elseif unit.class == "cursor" then
+    name = "mous"
+  end
+  if rules_with[name] then
+    for _,v in ipairs(rules_with[name]) do
       local rule = v[1]
-      if rule[1] == unit.name and rule[2] == "be" and rule[3] == prop then
+      if rule[1] == name and rule[2] == "be" and rule[3] == prop then
         return true
       end
     end

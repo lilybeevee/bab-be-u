@@ -91,7 +91,6 @@ end
 
 function convertUnits()
   local converted_units = {}
-  cursor_convert_to = nil
 
   for _,rules in ipairs(full_rules) do
     local rule = rules[1]
@@ -131,16 +130,6 @@ function convertUnits()
         end
       end
     end
-
-    if rule[1] == "mous" then
-      if obj_tile ~= nil and (obj_tile.type == "object" or istext) then
-        if rule[2] == "be" then
-          if rule[3] ~= "mous" then
-            cursor_convert_to = obj_id
-          end
-        end
-      end
-    end
   end
 
   deleteUnits(converted_units,true)
@@ -153,81 +142,9 @@ function deleteUnits(del_units,convert)
   end
 end
 
-function createMouse_direct(x,y,id_)
-  local mouse = {}
-  mouse.x = x
-  mouse.y = y
-  mouse.id = id_ or newMouseID()
-  if #cursors == 0 then
-    mouse.primary = true
-    mouse_X, mouse_Y = x, y
-    mouse_oldX, mouse_oldY = x, y
-    love.mouse.setPosition(x, y)
-  else
-    mouse.primary = false
-  end
-  table.insert(cursors, mouse)
-  return mouse
-end
-
-function createMouse(gamex,gamey,id_)
-  local gx,gy = gameTileToScreen(gamex+0.5,gamey+0.5)
-  local mouse = {}
-  mouse.x = gx
-  mouse.y = gy
-  mouse.id = id_ or newMouseID()
-  if #cursors == 0 then
-    mouse.primary = true
-    mouse_X, mouse_Y = gx, gy
-    mouse_oldX, mouse_oldY = gx, gy
-    love.mouse.setPosition(gx, gy)
-  else
-    mouse.primary = false
-  end
-  table.insert(cursors, mouse)
-  return mouse
-end
-
-function deleteMouse(id)
-  local needs_new_primary = false
-  for i,mous in ipairs(cursors) do
-    if mous.id == id then
-      if mous.primary then
-        needs_new_primary = true
-      end
-      table.remove(cursors,i)
-      return
-    end
-  end
-  if needs_new_primary then
-    if #cursors > 0 then
-      local mous = cursors[1]
-      mous.primary = true
-      mouse_X, mouse_Y = mous.x, mous.y
-      mouse_oldX, mouse_oldY = mous.x, mous.y
-      love.mouse.setPosition(mous.x, mous.y)
-    end
-  end
-end
-
---[[function deleteMice(gamex,gamey)
-  local toBeDeleted = {}
-  local numberDeleted = 0
-  local hx,hy = gameTileToScreen(gamex,gamey)
-  for i,mous in ipairs(cursors) do
-  	if cursors[i].x >= hx and cursors[i].x <= hx + TILE_SIZE and cursors[i].y >= hy and cursors[i].y <= hy + TILE_SIZE then
-  	  table.insert(toBeDeleted, i)
-  	end
-  end
-  for i=table.getn(toBeDeleted),1,-1 do
-    table.remove(toBeDeleted)
-    numberDeleted = numberDeleted + 2
-  end
-  return numberDeleted
-end]]--
-
 function createUnit(tile,x,y,dir,convert,id_)
   local unit = {}
+  unit.class = "unit"
 
   unit.id = id_ or newUnitID()
   unit.x = x or 0
