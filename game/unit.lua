@@ -158,25 +158,54 @@ function createMouse_direct(x,y,id_)
   mouse.x = x
   mouse.y = y
   mouse.id = id_ or newMouseID()
+  if #cursors == 0 then
+    mouse.primary = true
+    mouse_X, mouse_Y = x, y
+    mouse_oldX, mouse_oldY = x, y
+    love.mouse.setPosition(x, y)
+  else
+    mouse.primary = false
+  end
   table.insert(cursors, mouse)
   return mouse
 end
 
 function createMouse(gamex,gamey,id_)
-  local gx,gy = gameTileToScreen(gamex,gamey)
+  local gx,gy = gameTileToScreen(gamex+0.5,gamey+0.5)
   local mouse = {}
   mouse.x = gx
   mouse.y = gy
   mouse.id = id_ or newMouseID()
+  if #cursors == 0 then
+    mouse.primary = true
+    mouse_X, mouse_Y = gx, gy
+    mouse_oldX, mouse_oldY = gx, gy
+    love.mouse.setPosition(gx, gy)
+  else
+    mouse.primary = false
+  end
   table.insert(cursors, mouse)
   return mouse
 end
 
 function deleteMouse(id)
+  local needs_new_primary = false
   for i,mous in ipairs(cursors) do
-    if cursors[i].id == id then
+    if mous.id == id then
+      if mous.primary then
+        needs_new_primary = true
+      end
       table.remove(cursors,i)
       return
+    end
+  end
+  if needs_new_primary then
+    if #cursors > 0 then
+      local mous = cursors[1]
+      mous.primary = true
+      mouse_X, mouse_Y = mous.x, mous.y
+      mouse_oldX, mouse_oldY = mous.x, mous.y
+      love.mouse.setPosition(mous.x, mous.y)
     end
   end
 end

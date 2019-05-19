@@ -50,6 +50,12 @@ function scene.update(dt)
   
   mouse_oldX = mouse_X
   mouse_oldY = mouse_Y
+
+  if #cursors == 0 then
+    love.mouse.setGrabbed(true)
+  else
+    love.mouse.setGrabbed(false)
+  end
 end
 
 function scene.resetStuff()
