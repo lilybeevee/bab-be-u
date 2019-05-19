@@ -7,6 +7,17 @@ function scene.load()
   clear()
   resetMusic("bab_be_u_them", 0.1)
   loadMap()
+  local now = os.time(os.date("*t"))
+  presence = {
+    state = "in editor",
+    details = "editing a neat new level",
+    largeImageKey = "cover",
+    largeimageText = "bab be u",
+    smallImageKey = "icon",
+    smallImageText = "bab",
+    startTimestamp = now
+  }
+  nextPresenceUpdate = 0
 end
 
 function scene.keyPressed(key)

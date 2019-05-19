@@ -41,6 +41,7 @@ function updateUnits(undoing)
             playSound("sink", 0.5)
             addParticles("destroy", unit.x, unit.y, on.color)
             table.insert(del_units, on)
+            update_undo = true
           elseif is_u and hasProperty(on, ":)") then
             win = true
             music_fading = true
@@ -86,21 +87,11 @@ function updateUnits(undoing)
     end
   end
 
+  deleteUnits(del_units)
+end
+
+function convertUnits()
   local converted_units = {}
-
-  local unitcount = #units
-  for i,unit in ipairs(units) do
-    if i > unitcount then
-      break
-    end
-    if rules_with[unit.name] and not undoing then
-      for _,rules in ipairs(rules_with[unit.name]) do
-
-      end
-    end
-  end
-
-  cursor_convert_to = nil
 
   for _,rules in ipairs(full_rules) do
     local rule = rules[1]
@@ -118,12 +109,13 @@ function updateUnits(undoing)
       for i,unit in ipairs(units_by_name[rule[1]]) do
         if rule[3] == "mous" or (obj_tile ~= nil and (obj_tile.type == "object" or istext)) then
           if rule[2] == "got" then
-            if unit.destroyed and not undoing then
+            if unit.destroyed then
               local new_unit = createUnit(obj_id, unit.x, unit.y, unit.dir)
               addUndo({"create", new_unit.id, false})
+              update_undo = true
             end
           elseif rule[2] == "be" then
-            if not unit.destroyed and rule[3] ~= unit.name and not undoing then
+            if not unit.destroyed and rule[3] ~= unit.name then
               if not unit.removed then
                 table.insert(converted_units, unit)
               end
@@ -135,24 +127,14 @@ function updateUnits(undoing)
                 local new_unit = createUnit(obj_id, unit.x, unit.y, unit.dir, true)
                 addUndo({"create", new_unit.id, true})
               end
+              update_undo = true
             end
-          end
-        end
-      end
-    end
-
-    if rule[1] == "mous" then
-      if obj_tile ~= nil and (obj_tile.type == "object" or istext) then
-        if rule[2] == "be" then
-          if rule[3] ~= "mous" then
-            cursor_convert_to = obj_id
           end
         end
       end
     end
   end
 
-  deleteUnits(del_units)
   deleteUnits(converted_units,true)
 end
 
@@ -163,52 +145,9 @@ function deleteUnits(del_units,convert)
   end
 end
 
-function createMouse_direct(x,y,id_)
-  local mouse = {}
-  mouse.x = x
-  mouse.y = y
-  mouse.id = id_ or newMouseID()
-  table.insert(cursors, mouse)
-  return mouse
-end
-
-function createMouse(gamex,gamey,id_)
-  local gx,gy = gameTileToScreen(gamex,gamey)
-  local mouse = {}
-  mouse.x = gx
-  mouse.y = gy
-  mouse.id = id_ or newMouseID()
-  table.insert(cursors, mouse)
-  return mouse
-end
-
-function deleteMouse(id)
-  for i,mous in ipairs(cursors) do
-    if cursors[i].id == id then
-      table.remove(cursors,i)
-      return
-    end
-  end
-end
-
---[[function deleteMice(gamex,gamey)
-  local toBeDeleted = {}
-  local numberDeleted = 0
-  local hx,hy = gameTileToScreen(gamex,gamey)
-  for i,mous in ipairs(cursors) do
-  	if cursors[i].x >= hx and cursors[i].x <= hx + TILE_SIZE and cursors[i].y >= hy and cursors[i].y <= hy + TILE_SIZE then
-  	  table.insert(toBeDeleted, i)
-  	end
-  end
-  for i=table.getn(toBeDeleted),1,-1 do
-    table.remove(toBeDeleted)
-    numberDeleted = numberDeleted + 2
-  end
-  return numberDeleted
-end]]--
-
 function createUnit(tile,x,y,dir,convert,id_)
   local unit = {}
+  unit.class = "unit"
 
   unit.id = id_ or newUnitID()
   unit.x = x or 0
@@ -291,13 +230,20 @@ function deleteUnit(unit,convert)
 end
 
 function moveUnit(unit,x,y)
+  local tileid = unit.x + unit.y * mapwidth
+  removeFromTable(units_by_tile[tileid], unit)
+
   unit.oldx = lerp(unit.oldx, unit.x, unit.move_timer/MAX_MOVE_TIMER)
   unit.oldy = lerp(unit.oldy, unit.y, unit.move_timer/MAX_MOVE_TIMER)
   unit.x = x
   unit.y = y
   unit.move_timer = 0
 
+  tileid = unit.x + unit.y * mapwidth
+  table.insert(units_by_tile[tileid], unit)
+
   do_move_sound = true
+  update_undo = true
 end
 
 function newUnitID()

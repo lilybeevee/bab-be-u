@@ -1,13 +1,32 @@
 local scene = {}
 
+local mask_shader = love.graphics.newShader[[
+  vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords) {
+     if (Texel(texture, texture_coords).rgb == vec3(0.0)) {
+        // a discarded pixel wont be applied as the stencil.
+        discard;
+     }
+     return vec4(1.0);
+  }
+]]
+
 function scene.load()
   repeat_timers = {}
   selector_open = false
-  game_started = false
 
   scene.resetStuff()
 
-  game_started = true
+  local now = os.time(os.date("*t"))
+  presence = {
+    state = "ingame",
+    details = "playing the gam",
+    largeImageKey = "cover",
+    largeimageText = "bab be u",
+    smallImageKey = "icon",
+    smallImageText = "bab",
+    startTimestamp = now
+  }
+  nextPresenceUpdate = 0
 end
 
 function scene.update(dt)
@@ -18,28 +37,16 @@ function scene.update(dt)
   --mouse_movedY = love.mouse.getY() - love.graphics.getHeight()*0.5
   
   scene.checkInput()
+  updateCursors()
   
-  for i,mous in ipairs(cursors) do
-  	cursors[i].x = cursors[i].x + mouse_X - mouse_movedX
-  	cursors[i].y = cursors[i].y + mouse_Y - mouse_movedY
+  mouse_oldX = mouse_X
+  mouse_oldY = mouse_Y
+
+  if #cursors == 0 then
+    love.mouse.setGrabbed(true)
+  else
+    love.mouse.setGrabbed(false)
   end
-  
-  if game_started and cursor_convert_to ~= nil then
-    for i,mous in ipairs(cursors) do
-      local hx,hy = screenToGameTile(cursors[i].x, cursors[i].y)
-      if hx ~= nil and hy ~= nil then
-        local new_unit = createUnit(cursor_convert_to, hx, hy, 1, true)
-        addUndo({"create", new_unit.id, true})
-        addUndo({"remove_cursor", cursors[i].x, cursors[i].y, cursors[i].id})
-        deleteMouse(cursors[i].id)
-      end
-    end
-  end
-  
-  mouse_movedX = mouse_X
-  mouse_movedY = mouse_Y
-  
-  --love.mouse.setPosition(love.graphics.getWidth()*0.5, love.graphics.getHeight()*0.5)
 end
 
 function scene.resetStuff()
@@ -89,6 +96,7 @@ end
 
 function scene.draw(dt)
   love.graphics.setBackgroundColor(0.10, 0.1, 0.11)
+  if rainbowmode then love.graphics.setBackgroundColor(hslToRgb(love.timer.getTime()/6%1, .2, .2, .9)) end
 
   local roomwidth = mapwidth * TILE_SIZE
   local roomheight = mapheight * TILE_SIZE
@@ -97,6 +105,7 @@ function scene.draw(dt)
   love.graphics.applyTransform(scene.getTransform())
 
   love.graphics.setColor(0, 0, 0)
+  if rainbowmode then love.graphics.setColor(hslToRgb(love.timer.getTime()/6%1, .1, .1, .9)) end
   love.graphics.rectangle("fill", 0, 0, roomwidth, roomheight)
 
   for i=1,max_layer do
@@ -113,6 +122,13 @@ function scene.draw(dt)
             unit.sprite = "text_gay-colored"
           else
             unit.sprite = "text_gay"
+          end
+        end
+        if unit.fullname == "text_tranz" then
+          if unit.active then
+            unit.sprite = "text_tranz-colored"
+          else
+            unit.sprite = "text_tranz"
           end
         end
 
@@ -142,10 +158,14 @@ function scene.draw(dt)
         end
 
         if hasProperty(unit,"reed") then
-          unit.color = {255, 0, 0}
+          unit.color = {229,83,59}
         end
         if hasProperty(unit,"bleu") then
-          unit.color = {0, 0, 255}
+          unit.color = {145,131,215}
+        end
+
+        if hasProperty(unit,"bleu") and hasProperty(unit,"reed") then
+          unit.color = {187,107,137}
         end
 
         if not hasProperty(unit,"colrful") and not hasProperty(unit, "reed") and not hasProperty(unit, "bleu") and not rainbowmode then
@@ -179,15 +199,6 @@ function scene.draw(dt)
         end
         love.graphics.draw(sprite, (drawx + 0.5)*TILE_SIZE, (drawy + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
         if #unit.overlay > 0 then
-          local mask_shader = love.graphics.newShader[[
-             vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords) {
-                if (Texel(texture, texture_coords).rgb == vec3(0.0)) {
-                   // a discarded pixel wont be applied as the stencil.
-                   discard;
-                }
-                return vec4(1.0);
-             }
-          ]]
           local function overlayStencil()
              love.graphics.setShader(mask_shader)
              love.graphics.draw(sprite, (drawx + 0.5)*TILE_SIZE, (drawy + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
@@ -241,8 +252,48 @@ function scene.draw(dt)
   end
   love.graphics.pop()
   
-  for i,mous in ipairs(cursors) do
-    love.graphics.draw(system_cursor, cursors[i].x, cursors[i].y)
+  if love.window.hasMouseFocus() then
+    for i,cursor in ipairs(cursors) do
+      local color
+
+      if hasProperty(cursor,"colrful") or rainbowmode then
+        local newcolor = hslToRgb((#undo_buffer/45+cursor.x/18+cursor.y/18)%1, .5, .5, 1)
+        newcolor[1] = newcolor[1]*255
+        newcolor[2] = newcolor[2]*255
+        newcolor[3] = newcolor[3]*255
+        color = newcolor
+      elseif hasProperty(cursor,"bleu") and hasProperty(cursor,"reed") then
+        color = {187,107,137}
+      elseif hasProperty(cursor,"reed") then
+        color = {229,83,59}
+      elseif hasProperty(cursor,"bleu") then
+        color = {145,131,215}
+      end
+
+      if not color then
+        love.graphics.setColor(1, 1, 1)
+      else
+        love.graphics.setColor(color[1]/255, color[2]/255, color[3]/255)
+      end
+      love.graphics.draw(system_cursor, cursor.x, cursor.y)
+
+      if #cursor.overlay > 0 then
+        local function overlayStencil()
+          love.graphics.setShader(mask_shader)
+          love.graphics.draw(system_cursor, cursor.x, cursor.y)
+          love.graphics.setShader()
+        end
+        for _,overlay in ipairs(cursor.overlay) do
+          love.graphics.setColor(1, 1, 1)
+          love.graphics.stencil(overlayStencil, "replace")
+          love.graphics.setStencilTest("greater", 0)
+          love.graphics.setBlendMode("multiply", "premultiplied")
+          love.graphics.draw(sprites["overlay_" .. overlay], cursor.x, cursor.y, 0, 14/32, 14/32)
+          love.graphics.setBlendMode("alpha", "alphamultiply")
+          love.graphics.setStencilTest() 
+        end
+      end
+    end
   end
 end
 
@@ -251,20 +302,24 @@ function scene.checkInput()
 
   for _,key in ipairs(repeat_keys) do
     if not win and repeat_timers[key] ~= nil and repeat_timers[key] <= 0 then
-      local dir = key
+      local control = key
       if key == "w" then
-        dir = "up"
+        control = "up"
       elseif key == "a" then
-        dir = "left"
+        control = "left"
       elseif key == "s" then
-        dir = "down"
+        control = "down"
       elseif key == "d" then
-        dir = "right"
+        control = "right"
+      elseif key == "space" then
+        control = "wait"
       end
-      if dir == "up" or dir == "down" or dir == "right" or dir == "left" then
+      if control == "up" or control == "down" or control == "right" or control == "left" or control == "wait" then
         newUndo()
-        doMovement(dir)
+        update_undo = false
+        doMovement(control)
       elseif key == "z" then
+        update_undo = false
         undo()
       end
     end
