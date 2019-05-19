@@ -1,6 +1,8 @@
 function updateUnits(undoing)
   max_layer = 1
   units_by_layer = {}
+  
+  presence["details"] = #undo_buffer.." turns done"
 
   for i,v in ipairs(units_by_tile) do
     units_by_tile[i] = {}
@@ -28,6 +30,31 @@ function updateUnits(undoing)
       local tile = tiles_list[unit.tile]
       local tileid = unit.x + unit.y * mapwidth
       local is_u = hasProperty(unit, "u")
+
+      -- rich presence icon
+      if is_u and discordRPC and discordRPC ~= true then
+        if unit.fullname == "bab" or unit.fullname == "keek" or unit.fullname == "meem" then
+          presence["smallImageText"] = unit.fullname
+          presence["smallImageKey"] = unit.fullname
+        elseif unit.fullname == "os" then
+          local os = love.system.getOS()
+
+          if os == "Windows" then
+            presence["smallImageKey"] = "windous"
+          elseif os == "OS X" then
+            presence["smallImageKey"] = "maac" -- i know, the mac name is inconsistent but SHUSH you cant change it after you upload the image
+          elseif os == "Linux" then
+            presence["smallImageKey"] = "linx"
+          else
+            presence["smallImageKey"] = "other"
+          end
+
+          presence["smallImageText"] = "os"
+        else
+          presence["smallImageText"] = "other"
+          presence["smallImageKey"] = "other"
+        end
+      end
 
       unit.layer = tile.layer
 

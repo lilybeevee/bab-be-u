@@ -1,4 +1,5 @@
 local scene = {}
+local paintedtiles = 0
 
 function scene.load()
   brush = nil
@@ -10,11 +11,11 @@ function scene.load()
   local now = os.time(os.date("*t"))
   presence = {
     state = "in editor",
-    details = "editing a neat new level",
+    details = "making a neat new level",
     largeImageKey = "cover",
     largeimageText = "bab be u",
-    smallImageKey = "icon",
-    smallImageText = "bab",
+    smallImageKey = "edit",
+    smallImageText = "editor",
     startTimestamp = now
   }
   nextPresenceUpdate = 0
@@ -27,6 +28,11 @@ function scene.keyPressed(key)
 
   if key == "tab" then
     selector_open = not selector_open
+    if selector_open then
+      presence["details"] = "browsing selector"
+    else
+
+    end
   end
 end
 
@@ -50,6 +56,8 @@ function scene.update(dt)
           else
             map[tileid+1] = {}
           end
+          paintedtiles = paintedtiles + 1
+          presence["details"] = "painted "..paintedtiles.." tiles"
           clear()
           loadMap()
         end
