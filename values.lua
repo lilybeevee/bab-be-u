@@ -679,11 +679,62 @@ tiles_list = {
   },
   -- 67
   {
+    name = "text_up",
+    sprite = "text_goup",
+    type = "text",
+    texttype = "property",
+    grid = {6, 1},
+    color = {131,200,229},
+    layer = 20,
+  },
+  -- 68
+  {
+    name = "text_right",
+    sprite = "text_goright",
+    type = "text",
+    texttype = "property",
+    grid = {7, 1},
+    color = {131,200,229},
+    layer = 20,
+  },
+  -- 69
+  {
+    name = "text_left",
+    sprite = "text_goleft",
+    type = "text",
+    texttype = "property",
+    grid = {6, 2},
+    color = {131,200,229},
+    layer = 20,
+    nice = true,
+  },
+  -- 70
+  {
+    name = "text_down",
+    sprite = "text_godown",
+    type = "text",
+    texttype = "property",
+    grid = {7, 2},
+    color = {131,200,229},
+    layer = 20,
+  },
+  -- 71
+  {
+    name = "text_edgy",
+    sprite = "text_edgy",
+    type = "text",
+    texttype = "property",
+    grid = {8, 2},
+    color = {142,94,156},
+    layer = 20,
+  },
+  -- 72
+  {
     name = "text_on",
     sprite = "text_on",
     type = "text",
     texttype = "cond_infix",
-    grid = {5, 5},
+    grid = {7, 4},
     color = {255,255,255},
     layer = 20,
   }

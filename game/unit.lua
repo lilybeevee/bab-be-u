@@ -108,6 +108,16 @@ function updateUnits(undoing)
         unit.sprite = tiles_list[unit.tile].sprite
       end
 
+      if hasProperty(unit,"up") then
+        unit.dir = 0
+      elseif hasProperty(unit,"right") then
+        unit.dir = 1
+      elseif hasProperty(unit,"down") then
+        unit.dir = 2
+      elseif hasProperty(unit,"left") then
+        unit.dir = 3
+      end
+
       unit.overlay = {}
       if hasProperty(unit,"tranz") then
         table.insert(unit.overlay, "trans")
