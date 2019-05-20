@@ -737,5 +737,15 @@ tiles_list = {
     grid = {7, 4},
     color = {255,255,255},
     layer = 20,
+  },
+  -- 73
+  {
+    name = "text_look at",
+    sprite = "text_look at",
+    type = "text",
+    texttype = "cond_infix",
+    grid = {10, 4},
+    color = {255,255,255},
+    layer = 20,
   }
 }

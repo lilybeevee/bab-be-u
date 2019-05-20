@@ -45,6 +45,7 @@ function parseRules(undoing)
 
     local dx,dy = dir[1],dir[2]
     local prev_type = first_unit.texttype
+    local prev_name = first_unit.textname
     local extras = {}
     local first_units = {}
     local new_rules = {{{first_unit.textname,{first_unit}}},{},{},{}} --object, verb, prop, cond
@@ -97,7 +98,7 @@ function parseRules(undoing)
         elseif stage == "cond_infix" then
           if type == "object" and prev_type == "cond_infix" then
             valid = true
-            table.insert(new_rules[4], {{"on", {name}}, copyTable(unit_queue)}) --for now i will hardcode On just to see if it works
+            table.insert(new_rules[4], {{prev_name, {name}}, copyTable(unit_queue)}) --for now i will hardcode On just to see if it works
           elseif type == "verb" and prev_type == "object" then
             valid = true
             new_stage = "verb"
@@ -137,6 +138,7 @@ function parseRules(undoing)
         end
       else
         prev_type = found_units[1].texttype
+        prev_name = found_units[1].textname
 
         dx = dx + dir[1]
         dy = dy + dir[2]

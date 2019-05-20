@@ -99,6 +99,11 @@ function isCondTrue(unit,cond) --cond should be a {cond,{object types}}
     if #others > 0 then
       return true
     end
+  elseif cond[1] == "look at" then
+    local others = getUnitsOnTile(unit.x + dirs[unit.dir][1],unit.y + dirs[unit.dir][2],cond[2][1])
+    if #others > 0 then
+      return true
+    end
   end
   return false
 end
