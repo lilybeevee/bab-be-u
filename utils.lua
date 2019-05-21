@@ -84,25 +84,40 @@ function hasProperty(unit,prop)
       local rule = v[1]
       if rule[1] == name and rule[2] == "be" and rule[3] == prop then
         print("par : " .. rule[1] .. " - " .. rule[2] .. " - " .. rule[3])
-        return isCondTrue(unit,rule[4])
+        return testConds(unit,rule[4][1])
       end
     end
   end
   return false
 end
 
-function isCondTrue(unit,cond) --cond should be a {cond,{object types}}
-  if cond == nil then
-    return true
-  elseif cond[1] == "on" then
-    local others = getUnitsOnTile(unit.x,unit.y,cond[2][1]) --currently, conditions only work up to one layer of nesting, so the noun argument of the condition is assumed to be just a noun
-    if #others > 0 then
-      return true
-    end
-  elseif cond[1] == "look at" then
-    local others = getUnitsOnTile(unit.x + dirs[unit.dir][1],unit.y + dirs[unit.dir][2],cond[2][1])
-    if #others > 0 then
-      return true
+function testConds(unit,conds) --cond should be a {cond,{object types}}
+  local result = true
+  for _,cond in ipairs(conds) do
+    local condtype = cond[1]
+    local params = cond[2]
+    if condtype == "on" then
+      for _,param in ipairs(params) do
+        local others = getUnitsOnTile(unit.x,unit.y,param) --currently, conditions only work up to one layer of nesting, so the noun argument of the condition is assumed to be just a noun
+        if #others == 0 then
+          result = false
+        end
+      end
+    elseif condtype == "look at" then
+      for _,param in ipairs(params) do
+        local others = getUnitsOnTile(unit.x + dirs[unit.dir][1],unit.y + dirs[unit.dir][2],param)
+        if #others == 0 then
+          result = false
+        end
+      end
+    elseif condtype == "frenles" then
+      local others = getUnitsOnTile(unit.x, unit.y)
+      if #others > 1 then
+        result = false
+      end
+    else
+      print("unknown condtype: " .. condtype)
+      result = false
     end
   elseif cond[1] == "lonly" then
     local others = getUnitsOnTile(unit.x,unit.y)
@@ -110,7 +125,7 @@ function isCondTrue(unit,cond) --cond should be a {cond,{object types}}
       return true
     end
   end
-  return false
+  return result
 end
 
 function inBounds(x,y)
@@ -175,6 +190,18 @@ function copyTable(table)
     new_table[k] = v
   end
   return new_table
+end
+
+function deepCopy(o)
+  if type(o) == "table" then
+    local new_table = {}
+    for k,v in pairs(o) do
+      new_table[k] = deepCopy(v)
+    end
+    return new_table
+  else
+    return o
+  end
 end
 
 function lerp(a,b,t) return (1-t)*a + t*b end
@@ -364,4 +391,12 @@ function HSL(h, s, l, a)
 	elseif h < 5 then r,g,b = x,0,c
 	else              r,g,b = c,0,x
 	end return (r+m),(g+m),(b+m),a
+end
+
+function string.starts(str, start)
+  return str:sub(1, #start) == start
+end
+
+function string.ends(str, ending)
+  return ending == "" or str:sub(-#ending) == ending
 end

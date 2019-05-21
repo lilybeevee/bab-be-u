@@ -103,7 +103,16 @@ function scene.getTransform()
 
   local roomwidth = mapwidth * TILE_SIZE
   local roomheight = mapheight * TILE_SIZE
-  transform:translate(love.graphics.getWidth() / 2 - roomwidth / 2, love.graphics.getHeight() / 2 - roomheight / 2)
+
+  local screenwidth = love.graphics.getWidth()
+  local screenheight = love.graphics.getHeight()
+
+  if screenwidth >= roomwidth * 2 and screenheight >= roomheight * 2 then
+    transform:translate(-screenwidth / 2, -screenheight / 2)
+    transform:scale(2, 2)
+  end
+
+  transform:translate(screenwidth / 2 - roomwidth / 2, screenheight / 2 - roomheight / 2)
 
   return transform
 end

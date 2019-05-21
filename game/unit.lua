@@ -78,7 +78,6 @@ function updateUnits(undoing)
             unit.removed = true
             playSound("break", 0.5)
             addParticles("destroy", unit.x, unit.y, unit.color)
-            table.insert(del_units, unit)
             update_undo = true
           elseif is_u and hasProperty(on, ":o") then
             on.destroyed = true
@@ -160,14 +159,14 @@ function convertUnits()
       for i,unit in ipairs(units_by_name[rule[1]]) do
         if rule[3] == "mous" or (obj_tile ~= nil and (obj_tile.type == "object" or istext)) then
           if rule[2] == "got" then
-            if unit.destroyed and isCondTrue(unit,rule[4]) then
+            if unit.destroyed and testConds(unit,rule[4][1]) then
               local new_unit = createUnit(obj_id, unit.x, unit.y, unit.dir)
               addUndo({"create", new_unit.id, false})
               update_undo = true
             end
           elseif rule[2] == "be" then
             if not unit.destroyed and rule[3] ~= unit.name then
-              if isCondTrue(unit,rule[4]) then
+              if testConds(unit,rule[4][1]) then
                 if not unit.removed then
                   table.insert(converted_units, unit)
                 end
@@ -220,16 +219,19 @@ function createUnit(tile,x,y,dir,convert,id_)
   unit.old_active = unit.active
   unit.overlay = {}
 
-  unit.tile = tile
-  unit.sprite = tiles_list[tile].sprite
-  unit.type = tiles_list[tile].type
-  unit.texttype = tiles_list[tile].texttype or "object"
-  unit.allowprops = tiles_list[tile].allowprops or false
-  unit.color = tiles_list[tile].color
-  unit.layer = tiles_list[tile].layer
-  unit.rotate = tiles_list[tile].rotate or false
+  local data = tiles_list[tile]
 
-  unit.fullname = tiles_list[tile].name
+  unit.tile = tile
+  unit.sprite = data.sprite
+  unit.type = data.type
+  unit.texttype = data.texttype or "object"
+  unit.allowprops = data.allowprops or false
+  unit.allowconds = data.allowconds or false
+  unit.color = data.color
+  unit.layer = data.layer
+  unit.rotate = data.rotate or false
+
+  unit.fullname = data.name
   if unit.type == "text" then
     unit.name = "text"
     unit.textname = string.sub(unit.fullname, 6)

@@ -23,7 +23,11 @@ end
 
 function scene.keyPressed(key)
   if key == "s" then
-    print(dump(map))
+    love.system.setClipboardText(dump(map))
+  elseif key == "l" then
+    map = loadstring("return " .. love.system.getClipboardText())()
+    clear()
+    loadMap()
   end
 
   if key == "tab" then
@@ -81,15 +85,25 @@ end
 function scene.getTransform()
   local transform = love.math.newTransform()
 
+  local roomwidth, roomheight
+
   if not selector_open then
-    local roomwidth = mapwidth * TILE_SIZE
-    local roomheight = mapheight * TILE_SIZE
-    transform:translate(love.graphics.getWidth() / 2 - roomwidth / 2, love.graphics.getHeight() / 2 - roomheight / 2)
+    roomwidth = mapwidth * TILE_SIZE
+    roomheight = mapheight * TILE_SIZE
   else
-    local sizex = tile_grid_width * TILE_SIZE
-    local sizey = tile_grid_height * TILE_SIZE
-    transform:translate(love.graphics.getWidth() / 2 - sizex / 2, love.graphics.getHeight() / 2 - sizey / 2)
+    roomwidth = tile_grid_width * TILE_SIZE
+    roomheight = tile_grid_height * TILE_SIZE
   end
+
+  local screenwidth = love.graphics.getWidth()
+  local screenheight = love.graphics.getHeight()
+
+  if screenwidth >= roomwidth * 2 and screenheight >= roomheight * 2 then
+    transform:translate(-screenwidth / 2, -screenheight / 2)
+    transform:scale(2, 2)
+  end
+
+  transform:translate(screenwidth / 2 - roomwidth / 2, screenheight / 2 - roomheight / 2)
 
   return transform
 end
@@ -176,6 +190,7 @@ function scene.draw(dt)
   end
 
   if selector_open then
+    love.graphics.setColor(1, 1, 1)
     love.graphics.print(last_hovered_tile[1] .. ', ' .. last_hovered_tile[2], 0, roomheight)
   end
 
