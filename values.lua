@@ -757,5 +757,25 @@ tiles_list = {
     grid = {9, 4},
     color = {229,83,59},
     layer = 20,
-  }
+  },
+  --75
+  {
+    name = "text_creat",
+    sprite = "text_creat",
+    type = "text",
+    texttype = "verb",
+    grid = {8, 5},
+    color = {255,255,255},
+    layer = 20,
+  },
+  --76
+  {
+    name = "text_consume",
+    sprite = "text_consume",
+    type = "text",
+    texttype = "verb",
+    grid = {9, 5},
+    color = {229,83,59},
+    layer = 20,
+  },
 }

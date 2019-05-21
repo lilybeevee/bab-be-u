@@ -143,6 +143,15 @@ end
 function convertUnits()
   local converted_units = {}
 
+  for i,v in ipairs(units_by_tile) do
+    units_by_tile[i] = {}
+  end
+
+  for _,unit in ipairs(units) do
+    local tileid = unit.x + unit.y * mapwidth
+    table.insert(units_by_tile[tileid], unit)
+  end
+
   for _,rules in ipairs(full_rules) do
     local rule = rules[1]
     local obj_name = rule[3]
@@ -179,6 +188,32 @@ function convertUnits()
                   addUndo({"create", new_unit.id, true})
                 end
                 update_undo = true
+              end
+            end
+          elseif rule[2] == "creat" and not unit.destroyed then
+            local new_unit = createUnit(obj_id, unit.x, unit.y, unit.dir)
+            addUndo({"create", new_unit.id, false})
+            update_undo = true
+          elseif rule[2] == "consume" then
+            if not unit.destroyed then
+              if rule[3] == unit.name then
+                unit.destroyed = true
+                unit.removed = true
+                playSound("break", 0.5)
+                addParticles("destroy", unit.x, unit.y, unit.color)
+              else
+                if not undoing then
+                  for _,on in ipairs(units_by_tile[unit.id]) do
+                    if on ~= unit and rule[3] == on.name then
+                      on.destroyed = true
+                      on.removed = true
+                      playSound("break", 0.5)
+                      addParticles("destroy", on.x, on.y, on.color)
+                      table.insert(del_units, on)
+                      update_undo = true
+                    end
+                  end
+                end
               end
             end
           end
