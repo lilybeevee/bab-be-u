@@ -119,6 +119,11 @@ function testConds(unit,conds) --cond should be a {cond,{object types}}
       print("unknown condtype: " .. condtype)
       result = false
     end
+  elseif cond[1] == "lonly" then
+    local others = getUnitsOnTile(unit.x,unit.y)
+    if #others == 0 then
+      return true
+    end
   end
   return result
 end
