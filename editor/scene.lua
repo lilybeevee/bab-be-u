@@ -6,7 +6,7 @@ function scene.load()
   selector_open = false
 
   clear()
-  resetMusic("bab_be_u_them", 0.1)
+  resetMusic(current_music, 0.1)
   loadMap()
   local now = os.time(os.date("*t"))
   presence = {
@@ -23,9 +23,13 @@ end
 
 function scene.keyPressed(key)
   if key == "s" then
-    love.system.setClipboardText(dump(map))
+    local mapdata = love.data.compress("string", "zlib", dump(map))
+    local savestr = love.data.encode("string", "base64", mapdata)
+    love.system.setClipboardText(savestr)
   elseif key == "l" then
-    map = loadstring("return " .. love.system.getClipboardText())()
+    local loaddata = love.data.decode("string", "base64", love.system.getClipboardText())
+    local mapstr = love.data.decompress("string", "zlib", loaddata)
+    map = loadstring("return " .. mapstr)()
     clear()
     loadMap()
   end

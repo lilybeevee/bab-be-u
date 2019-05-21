@@ -1,5 +1,6 @@
 local music_source = nil
 
+current_music = ""
 music_volume = 1
 music_fading = false
 local sound_data = {}
@@ -28,19 +29,22 @@ function playMusic(music, volume)
     music_source:setVolume(music_volume)
     music_source:setLooping(true)
     music_source:play()
+
+    current_music = music
   end
 end
 
 function stopMusic()
   if music_source ~= nil then
     music_source:stop()
+    current_music = ""
   end
 end
 
 function resetMusic(name,volume)
-  if music_on then
+  if music_on and name ~= "" then
     music_fading = false
-    if music_volume == 0 or not hasMusic() then
+    if music_volume == 0 or not hasMusic() or current_music ~= name then
       playMusic(name,volume)
     else
       music_volume = volume

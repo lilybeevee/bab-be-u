@@ -138,11 +138,13 @@ function love.draw()
         'window height: '..love.graphics.getHeight()..'\n'..
         'window width: '..love.graphics.getWidth()..'\n'..
         'mouse : x'..mousex..' y'..mousey..'\n'..
-        'press r to restart\n'..
-        'f4 to toggle debug menu\n'..
-        'f3+g to toggle rainbowmode\n'..
-        'f2 for editor mode\n'..
-        'f1 for game mode')
+        'press R to restart\n'..
+        'press S to save level to clipboard (editor)\n' ..
+        'press L to load level from clipboard (editor)\n' ..
+        'F4 to toggle debug menu\n'..
+        'F3+G to toggle rainbowmode\n'..
+        'F2 for editor mode\n'..
+        'F1 for game mode')
   end
 end
 
