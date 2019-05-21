@@ -747,5 +747,15 @@ tiles_list = {
     grid = {10, 4},
     color = {255,255,255},
     layer = 20,
+  },
+  -- 74 TODO: support prefix conditions.
+  {
+    name = "text_lonly",
+    sprite = "text_lonly",
+    type = "text",
+    texttype = "cond_prefix",
+    grid = {11, 4},
+    color = {255,255,255},
+    layer = 20,
   }
 }

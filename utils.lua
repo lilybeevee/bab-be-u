@@ -104,6 +104,11 @@ function isCondTrue(unit,cond) --cond should be a {cond,{object types}}
     if #others > 0 then
       return true
     end
+  elseif cond[1] == "lonly" then
+    local others = getUnitsOnTile(unit.x,unit.y)
+    if #others == 0 then
+      return true
+    end
   end
   return false
 end
