@@ -747,5 +747,15 @@ tiles_list = {
     grid = {10, 4},
     color = {255,255,255},
     layer = 20,
+  },
+  -- 74
+  {
+    name = "text_frenles",
+    sprite = "text_frenles",
+    type = "text",
+    texttype = "cond_prefix",
+    grid = {9, 4},
+    color = {229,83,59},
+    layer = 20,
   }
 }

@@ -23,7 +23,11 @@ end
 
 function scene.keyPressed(key)
   if key == "s" then
-    print(dump(map))
+    love.system.setClipboardText(dump(map))
+  elseif key == "l" then
+    map = loadstring("return " .. love.system.getClipboardText())()
+    clear()
+    loadMap()
   end
 
   if key == "tab" then
