@@ -1,5 +1,5 @@
 function love.conf(t)
-    t.identity = "babConfig"
+    t.identity = "bab"
     t.version = "11.1"
     t.release = false
     t.window.title = 'bab be u'
