@@ -233,7 +233,7 @@ function scene.draw(dt)
             love.graphics.stencil(overlayStencil, "replace")
             love.graphics.setStencilTest("greater", 0)
             love.graphics.setBlendMode("multiply", "premultiplied")
-            love.graphics.draw(sprites["overlay_" .. overlay], (drawx + 0.5)*TILE_SIZE, (drawy + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+            love.graphics.draw(sprites["overlay/" .. overlay], (drawx + 0.5)*TILE_SIZE, (drawy + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
             love.graphics.setBlendMode("alpha", "alphamultiply")
             love.graphics.setStencilTest() 
           end 
@@ -268,7 +268,7 @@ function scene.draw(dt)
   love.graphics.setColor(1, 1, 1)
   love.graphics.translate(love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
   love.graphics.scale(win_size, win_size)
-  local win_sprite = sprites["u_r_win"]
+  local win_sprite = sprites["ui/u_r_win"]
   love.graphics.draw(win_sprite, -win_sprite:getWidth() / 2, -win_sprite:getHeight() / 2)
 
   if win and win_size < 1 then
@@ -312,7 +312,7 @@ function scene.draw(dt)
           love.graphics.stencil(overlayStencil, "replace")
           love.graphics.setStencilTest("greater", 0)
           love.graphics.setBlendMode("multiply", "premultiplied")
-          love.graphics.draw(sprites["overlay_" .. overlay], cursor.x, cursor.y, 0, 14/32, 14/32)
+          love.graphics.draw(sprites["overlay/" .. overlay], cursor.x, cursor.y, 0, 14/32, 14/32)
           love.graphics.setBlendMode("alpha", "alphamultiply")
           love.graphics.setStencilTest() 
         end

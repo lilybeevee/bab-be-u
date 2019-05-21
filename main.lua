@@ -30,17 +30,34 @@ function love.load()
 
   love.graphics.setDefaultFilter("nearest","nearest")
 
-  local files = love.filesystem.getDirectoryItems("assets/sprites")
-  for _,file in ipairs(files) do
-    if string.sub(file, -4) == ".png" then
-      local spritename = string.sub(file, 1, -5)
-      local sprite = love.graphics.newImage("assets/sprites/" .. file)
-      sprites[spritename] = sprite
+  local function addsprites(d)
+    local dir = "assets/sprites"
+    if d then
+      dir = dir .. "/" .. d
+    end
+    local files = love.filesystem.getDirectoryItems(dir)
+    for _,file in ipairs(files) do
+      if string.sub(file, -4) == ".png" then
+        local spritename = string.sub(file, 1, -5)
+        local sprite = love.graphics.newImage(dir .. "/" .. file)
+        if d then
+          spritename = d .. "/" .. spritename
+        end
+        sprites[spritename] = sprite
+      elseif love.filesystem.getInfo(dir .. "/" .. file).type == "directory" then
+        print("found sprite dir: " .. file)
+        local newdir = file
+        if d then
+          newdir = d .. "/" .. newdir
+        end
+        addsprites(file)
+      end
     end
   end
-  system_cursor = sprites["mous"]
+  addsprites()
+  system_cursor = sprites["ui/mous"]
   --if love.system.getOS() == "OS X" then
-    --system_cursor = sprites["mous_osx"]
+    --system_cursor = sprites["ui/mous_osx"]
   --end
   
   registerSound("move")
@@ -82,6 +99,12 @@ end
 function love.keyreleased(key)
   if scene and scene.keyReleased then
     scene.keyReleased(key)
+  end
+end
+
+function love.textinput(text)
+  if scene and scene.textInput then
+    scene.textInput(text)
   end
 end
 

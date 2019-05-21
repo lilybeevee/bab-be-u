@@ -27,7 +27,7 @@ end
 
 function scene.draw(dt)
   local buttons = {"play", "editor", "exit"}
-  local bgsprite = sprites["menu_background"]
+  local bgsprite = sprites["ui/menu_background"]
 
   -- no need to insult me, i know this is terrible code
   love.graphics.draw(bgsprite, scrollx%bgsprite:getWidth(), scrolly%bgsprite:getHeight(), 0)
@@ -45,17 +45,17 @@ function scene.draw(dt)
 
   for i=1, #buttons do
     if mouseOverBox(width/2-buttonwidth/2, height/2-buttonheight/2+(buttonheight+10)*i, buttonwidth, buttonheight) then love.graphics.setColor(.9, .9, .9) end
-    love.graphics.draw(sprites["button_"..i%2+1], width/2-buttonwidth/2, height/2-buttonheight/2+(buttonheight+10)*i, 0, buttonwidth/sprites["button_"..i%2+1]:getWidth(), buttonheight/sprites["button_1"]:getHeight())
+    love.graphics.draw(sprites["ui/button_"..i%2+1], width/2-buttonwidth/2, height/2-buttonheight/2+(buttonheight+10)*i, 0, buttonwidth/sprites["ui/button_"..i%2+1]:getWidth(), buttonheight/sprites["ui/button_1"]:getHeight())
 
     love.graphics.setColor(1,1,1)
     love.graphics.printf(buttons[i], width/2-buttonwidth/2, height/2-buttonheight/2+(buttonheight+10)*i+5, buttonwidth, "center")
   end
-  love.graphics.draw(sprites["bab_be_u"], width/2 - sprites["bab_be_u"]:getWidth() / 2, height/2 - sprites["bab_be_u"]:getHeight() / 2 - 200)
+  love.graphics.draw(sprites["ui/bab_be_u"], width/2 - sprites["ui/bab_be_u"]:getWidth() / 2, height/2 - sprites["ui/bab_be_u"]:getHeight() / 2 - 200)
 
   onstate = "on"
   if not music_on then onstate = "off" end
 
-  love.graphics.draw(sprites["music-"..onstate], 10, height - sprites["music-"..onstate]:getHeight() - 10)
+  love.graphics.draw(sprites["ui/music-"..onstate], 10, height - sprites["ui/music-"..onstate]:getHeight() - 10)
 end
 
 function scene.update()
@@ -73,13 +73,13 @@ function scene.update()
   if mouseOverBox(width/2-buttonwidth/2, height/2-buttonheight/2+(buttonheight+10)*3, buttonwidth, buttonheight) then 
     love.mouse.setPosition(mousex, mousey-(buttonheight+10)) 
   end
-  if mouseOverBox(10, height - sprites["music-on"]:getHeight(), sprites["music-on"]:getWidth(), sprites["music-on"]:getHeight()) and love.mouse.isDown() then
+  if mouseOverBox(10, height - sprites["ui/music-on"]:getHeight(), sprites["ui/music-on"]:getWidth(), sprites["ui/music-on"]:getHeight()) and love.mouse.isDown() then
     music_on = not music_on
   end
 end
 
 function scene.mousepressed(x, y, button)
-  if mouseOverBox(10, height - sprites["music-on"]:getHeight(), sprites["music-on"]:getWidth(), sprites["music-on"]:getHeight()) and button == 1 then
+  if mouseOverBox(10, height - sprites["ui/music-on"]:getHeight(), sprites["ui/music-on"]:getWidth(), sprites["ui/music-on"]:getHeight()) and button == 1 then
     music_on = not music_on
     if not music_on then stopMusic() end
     if music_on then playMusic("bab_be_u_them", 0.5) end
