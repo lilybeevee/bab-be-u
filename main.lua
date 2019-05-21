@@ -1,3 +1,4 @@
+json = require "lib/json"
 require "values"
 require "utils"
 require "audio"
