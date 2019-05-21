@@ -8,6 +8,7 @@ function scene.load()
   brush = nil
   selector_open = false
 
+  buttons = {}
   table.insert(buttons, {"load", scene.loadLevel})
   table.insert(buttons, {"save", scene.saveLevel})
   table.insert(buttons, {"cog", scene.openSettings})

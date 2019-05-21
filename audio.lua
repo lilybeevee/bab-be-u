@@ -1,8 +1,10 @@
 local music_source = nil
 
-current_music = ""
 music_volume = 1
+
+current_music = ""
 music_fading = false
+local current_volume = 1
 local sound_data = {}
 
 function registerSound(sound)
@@ -18,20 +20,18 @@ function playSound(sound, volume)
 end
 
 function playMusic(music, volume)
-  if music_on then
-    if music_source ~= nil then
-      music_source:stop()
-    end
-
-    music_volume = volume or 1
-
-    music_source = love.audio.newSource("assets/audio/" .. music .. ".wav", "stream")
-    music_source:setVolume(music_volume)
-    music_source:setLooping(true)
-    music_source:play()
-
-    current_music = music
+  if music_source ~= nil then
+    music_source:stop()
   end
+
+  current_volume = volume or 1
+
+  music_source = love.audio.newSource("assets/audio/" .. music .. ".wav", "stream")
+  music_source:setVolume(current_volume * music_volume)
+  music_source:setLooping(true)
+  music_source:play()
+
+  current_music = music
 end
 
 function stopMusic()
@@ -42,24 +42,22 @@ function stopMusic()
 end
 
 function resetMusic(name,volume)
-  if music_on and name ~= "" then
+  if name ~= "" then
     music_fading = false
-    if music_volume == 0 or not hasMusic() or current_music ~= name then
+    if current_volume == 0 or not hasMusic() or current_music ~= name then
       playMusic(name,volume)
     else
-      music_volume = volume
+      current_volume = volume
     end
   end
 end
 
 function updateMusic()
-  if music_on then
-    if music_source ~= nil then
-      music_source:setVolume(music_volume)
-    end
-    if music_fading and music_volume > 0 then
-      music_volume = math.max(0, music_volume - 0.01)
-    end
+  if music_source ~= nil then
+    music_source:setVolume(current_volume * music_volume)
+  end
+  if music_fading and current_volume > 0 then
+    current_volume = math.max(0, current_volume - 0.01)
   end
 end
 

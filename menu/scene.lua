@@ -10,6 +10,8 @@ local scrolly = 0
 local buttonheight = height*0.05
 local buttonwidth = width*0.375
 
+local music_on = true
+
 function scene.load()
   clear()
   playMusic("bab_be_u_them", 0.5)
@@ -81,8 +83,8 @@ end
 function scene.mousepressed(x, y, button)
   if mouseOverBox(10, height - sprites["ui/music-on"]:getHeight(), sprites["ui/music-on"]:getWidth(), sprites["ui/music-on"]:getHeight()) and button == 1 then
     music_on = not music_on
-    if not music_on then stopMusic() end
-    if music_on then playMusic("bab_be_u_them", 0.5) end
+    if not music_on then music_volume = 0 end
+    if music_on then music_volume = 1 end
   end
 end
 
