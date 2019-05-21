@@ -78,7 +78,6 @@ function updateUnits(undoing)
             unit.removed = true
             playSound("break", 0.5)
             addParticles("destroy", unit.x, unit.y, unit.color)
-            table.insert(del_units, unit)
             update_undo = true
           elseif is_u and hasProperty(on, ":o") then
             on.destroyed = true

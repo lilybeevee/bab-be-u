@@ -27,6 +27,8 @@ function love.load()
   empty_sprite = love.image.newImageData(32, 32)
   empty_cursor = love.mouse.newCursor(empty_sprite)
 
+  love.graphics.setDefaultFilter("nearest","nearest")
+
   local files = love.filesystem.getDirectoryItems("assets/sprites")
   for _,file in ipairs(files) do
     if string.sub(file, -4) == ".png" then
