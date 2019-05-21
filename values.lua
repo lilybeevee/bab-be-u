@@ -797,4 +797,22 @@ tiles_list = {
     color = {235,145,202},
     layer = 20,
   },
+  --79
+  {
+    name = "gun",
+    sprite = "gun",
+    type = "object",
+    grid = {7, 8},
+    color = {255,255,255},
+    layer = 4,
+  },
+  --80
+  {
+    name = "text_gun",
+    sprite = "text_gun",
+    type = "text",
+    grid = {8, 8},
+    color = {255,255,255},
+    layer = 20,
+  },
 }
