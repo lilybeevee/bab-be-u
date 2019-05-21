@@ -778,4 +778,23 @@ tiles_list = {
     color = {229,83,59},
     layer = 20,
   },
+  --77
+  {
+    name = "kirb",
+    sprite = "kirb",
+    type = "object",
+    grid = {5, 7},
+    color = {235,145,202},
+    layer = 6,
+    rotate = true,
+  },
+  --78
+  {
+    name = "text_kirb",
+    sprite = "text_kirb",
+    type = "text",
+    grid = {6, 7},
+    color = {235,145,202},
+    layer = 20,
+  },
 }
