@@ -22,7 +22,12 @@ local paletteshader_0 = love.graphics.newShader[[
 ]]
 --local paletteshader_autumn = love.graphics.newShader("paletteshader_autumn.txt")
 --local paletteshader_dunno = love.graphics.newShader("paletteshader_dunno.txt")
+local paletteshader_zawarudo = love.graphics.newShader("shader_pucker.txt")
 local level_shader = paletteshader_0
+local doin_the_world = false
+local shader_time = 0
+
+local canv = love.graphics.newCanvas(love.graphics.getWidth(), love.graphics.getHeight())
 
 function scene.load()
   repeat_timers = {}
@@ -84,6 +89,12 @@ function scene.keyPressed(key)
   if key == "r" then
     scene.resetStuff()
   end
+  
+  if key == "y" then
+    level_shader = paletteshader_zawarudo
+    shader_time = 0
+    doin_the_world = true
+  end
 end
 
 function scene.keyReleased(key)
@@ -118,7 +129,8 @@ function scene.getTransform()
 end
 
 function scene.draw(dt)
-  love.graphics.setShader(level_shader)
+  love.graphics.setCanvas(canv)
+  love.graphics.setShader()
   love.graphics.setBackgroundColor(0.10, 0.1, 0.11)
   if rainbowmode then love.graphics.setBackgroundColor(hslToRgb(love.timer.getTime()/6%1, .2, .2, .9)) end
 
@@ -226,7 +238,7 @@ function scene.draw(dt)
           local function overlayStencil()
              love.graphics.setShader(mask_shader)
              love.graphics.draw(sprite, (drawx + 0.5)*TILE_SIZE, (drawy + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
-             love.graphics.setShader(level_shader)
+             love.graphics.setShader()
           end
           for _,overlay in ipairs(unit.overlay) do
             love.graphics.setColor(1, 1, 1)
@@ -305,7 +317,7 @@ function scene.draw(dt)
         local function overlayStencil()
           love.graphics.setShader(mask_shader)
           love.graphics.draw(system_cursor, cursor.x, cursor.y)
-          love.graphics.setShader(level_shader)
+          love.graphics.setShader()
         end
         for _,overlay in ipairs(cursor.overlay) do
           love.graphics.setColor(1, 1, 1)
@@ -318,6 +330,17 @@ function scene.draw(dt)
         end
       end
     end
+  end
+  love.graphics.setCanvas()
+  love.graphics.setShader(level_shader)
+  if doin_the_world then
+    level_shader:send("time", shader_time)
+    shader_time = shader_time + 1
+  end
+  love.graphics.draw(canv,0,0)
+  if shader_time == 600 then
+    love.graphics.setShader(paletteshader_0)
+    doin_the_world = false
   end
 end
 
