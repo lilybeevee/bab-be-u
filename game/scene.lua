@@ -234,6 +234,10 @@ function scene.draw(dt)
           love.graphics.setColor(unit.color[1]/255 * brightness, unit.color[2]/255 * brightness, unit.color[3]/255 * brightness)
         end
         love.graphics.draw(sprite, (drawx + 0.5)*TILE_SIZE, (drawy + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+        if(table.has_value(unit.got_objects, "gun")) then
+          love.graphics.setColor(1, 1, 1)
+          love.graphics.draw(sprites["gunsmol"], (drawx + 0.5)*TILE_SIZE, (drawy + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+        end
         if #unit.overlay > 0 then
           local function overlayStencil()
              love.graphics.setShader(mask_shader)
