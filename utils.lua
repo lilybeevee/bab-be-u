@@ -72,6 +72,59 @@ function loadMap()
   end
 end
 
+function matchesRule(rule1,rule2,rule3)
+  local nrules = {}
+  local rule_units = {}
+
+  local function getnrule(o,i)
+    if type(o) == "table" then
+      local name
+      if unit.class == "unit" then
+        name = unit.name
+      elseif unit.class == "cursor" then
+        name = "mous"
+      end
+      nrules[i] = name
+      rule_units[i] = o
+    else
+      nrules[i] = o
+    end
+  end
+
+  getnrule(rule1,1)
+  getnrule(rule2,2)
+  getnrule(rule3,3)
+
+  local return_rules = {}
+
+  if rules_with[name] then
+    for _,rules in ipairs(rules_with[name]) do
+      local rule = rules[1]
+      local result = true
+      for i=1,3 do
+        if nrules[i] ~= nil and nrules[i] ~= rule[i] then
+          result = false
+        elseif rule_units[i] ~= nil then
+          local cond
+          if i == 1 then
+            cond = 1
+          elseif i == 3 then
+            cond = 2
+          end
+          if cond and not testConds(rule_units[i], rule[4][cond]) then
+            result = false
+          end
+        end
+      end
+      if result then
+        table.insert(return_rules, rules)
+      end
+    end
+  end
+
+  return return_rules
+end
+
 function hasProperty(unit,prop)
   local name
   if unit.class == "unit" then
