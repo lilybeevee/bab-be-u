@@ -815,4 +815,14 @@ tiles_list = {
     color = {255,255,255},
     layer = 20,
   },
+  --81
+  {
+    name = "text_ouch",
+    sprite = "text_ouch",
+    type = "text",
+    texttype = "property",
+    grid = {7, 3},
+    color = {62, 118, 136},
+    layer = 20,
+  }
 }
