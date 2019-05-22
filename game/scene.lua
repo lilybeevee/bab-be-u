@@ -28,6 +28,7 @@ local doin_the_world = false
 local shader_time = 0
 
 local canv = love.graphics.newCanvas(love.graphics.getWidth(), love.graphics.getHeight())
+local last_width,last_height = love.graphics.getWidth(),love.graphics.getHeight()
 
 function scene.load()
   repeat_timers = {}
@@ -129,10 +130,22 @@ function scene.getTransform()
 end
 
 function scene.draw(dt)
-  love.graphics.setCanvas(canv)
+  -- reset canvas if the screen size has changed
+  if love.graphics.getWidth() ~= last_width or love.graphics.getHeight() ~= last_height then
+    last_width = love.graphics.getWidth()
+    last_height = love.graphics.getHeight()
+    canv = love.graphics.newCanvas(love.graphics.getWidth(), love.graphics.getHeight())
+  end
+
+  love.graphics.setCanvas{canv, stencil=true}
   love.graphics.setShader()
-  love.graphics.setBackgroundColor(0.10, 0.1, 0.11)
-  if rainbowmode then love.graphics.setBackgroundColor(hslToRgb(love.timer.getTime()/6%1, .2, .2, .9)) end
+
+  --background color
+  love.graphics.setColor(0.10, 0.1, 0.11)
+  if rainbowmode then love.graphics.setColor(hslToRgb(love.timer.getTime()/6%1, .2, .2, .9)) end
+
+  -- fill the background with the background color
+  love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
 
   local roomwidth = mapwidth * TILE_SIZE
   local roomheight = mapheight * TILE_SIZE
@@ -234,7 +247,7 @@ function scene.draw(dt)
           love.graphics.setColor(unit.color[1]/255 * brightness, unit.color[2]/255 * brightness, unit.color[3]/255 * brightness)
         end
         love.graphics.draw(sprite, (drawx + 0.5)*TILE_SIZE, (drawy + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
-        if(table.has_value(unit.got_objects, "gun")) then
+        if(hasRule(unit,"got","gun")) then
           love.graphics.setColor(1, 1, 1)
           love.graphics.draw(sprites["gunsmol"], (drawx + 0.5)*TILE_SIZE, (drawy + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
         end

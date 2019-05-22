@@ -264,12 +264,20 @@ function createUnit(tile,x,y,dir,convert,id_)
   unit.sprite = data.sprite
   unit.type = data.type
   unit.texttype = data.texttype or "object"
-  unit.allowprops = data.allowprops or false
   unit.allowconds = data.allowconds or false
   unit.color = data.color
   unit.layer = data.layer
   unit.rotate = data.rotate or false
   unit.got_objects = {}
+
+  unit.argtypes = {}
+  if data.argtypes then
+    for _,v in ipairs(data.argtypes) do
+      unit.argtypes[v] = true
+    end
+  else
+    unit.argtypes["object"] = true
+  end
 
   unit.fullname = data.name
   if unit.type == "text" then

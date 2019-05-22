@@ -5,6 +5,8 @@ function doMovement(key)
 
   first_turn = false
 
+  print("[---- begin turn ----]")
+
   local move_stage = 0
   while move_stage < 2 do
     for _,unit in ipairs(units) do
