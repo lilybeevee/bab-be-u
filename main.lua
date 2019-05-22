@@ -9,6 +9,7 @@ require "game/undo"
 require "game/cursor"
 game = require 'game/scene'
 editor = require 'editor/scene'
+loadscene = require 'editor/loadscene'
 menu = require 'menu/scene'
 presence = {}
 
@@ -27,6 +28,8 @@ function love.load()
 
   empty_sprite = love.image.newImageData(32, 32)
   empty_cursor = love.mouse.newCursor(empty_sprite)
+
+  default_font = love.graphics.newFont()
 
   love.graphics.setDefaultFilter("nearest","nearest")
 
@@ -82,9 +85,14 @@ function love.keypressed(key,scancode,isrepeat)
   elseif key == "f2" and scene == game then
     scene = editor
     scene.load()
-  elseif key == "escape" and scene ~= menu then
-    scene = menu
-    scene.load()
+  elseif key == "escape" then
+    if scene == loadscene then
+      scene = editor
+      scene.load()
+    elseif scene ~= menu then
+      scene = menu
+      scene.load()
+    end
   elseif key == "g" and love.keyboard.isDown('f3') and scene ~= editor then
     rainbowmode = not rainbowmode
   elseif key == "f4" then
@@ -135,6 +143,12 @@ function love.update(dt)
     scene.update(dt)
   end
 
+  if new_scene then
+    scene = new_scene
+    scene.load()
+    new_scene = nil
+  end
+
   updateMusic()
 
   if discordRPC and discordRPC ~= true then
@@ -148,6 +162,8 @@ end
 
 function love.draw()
   local dt = love.timer.getDelta()
+
+  love.graphics.setFont(default_font)
 
   if scene and scene.draw then
     scene.draw(dt)

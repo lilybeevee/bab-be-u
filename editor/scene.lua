@@ -2,16 +2,26 @@ local scene = {}
 local paintedtiles = 0
 local buttons = {}
 local button_over = nil
-local button_pressed = nil
+local name_font = nil
+local typing_name = false
+local ignore_mouse = true
 
 function scene.load()
   brush = nil
   selector_open = false
+  
+  if not level_name then
+    level_name = "unnamed"
+  end
+  typing_name = false
+  ignore_mouse = true
 
   buttons = {}
   table.insert(buttons, {"load", scene.loadLevel})
   table.insert(buttons, {"save", scene.saveLevel})
   table.insert(buttons, {"cog", scene.openSettings})
+
+  name_font = love.graphics.newFont(24)
 
   clear()
   resetMusic(current_music, 0.1)
@@ -30,6 +40,15 @@ function scene.load()
 end
 
 function scene.keyPressed(key)
+  if typing_name then
+    if key == "backspace" and level_name:len() > 0 then
+      level_name = level_name:sub(1, -2)
+    elseif key == "return" and level_name:len() > 0 then
+      typing_name = false
+    end
+    return
+  end
+
   if key == "s" then
     scene.saveLevel()
   elseif key == "l" then
@@ -56,6 +75,13 @@ function scene.update(dt)
       button_over = btn
     end
     btnx = btnx + sprite:getWidth() + 4
+  end
+
+  if ignore_mouse then
+    if not love.mouse.isDown(1) then
+      ignore_mouse = false
+    end
+    return
   end
 
   if button_over then
@@ -248,6 +274,21 @@ function scene.draw(dt)
 
     btnx = btnx + sprite:getWidth() + 4
   end
+
+  love.graphics.setFont(name_font)
+  love.graphics.setColor(1, 1, 1)
+
+  love.graphics.printf(level_name, 0, name_font:getLineHeight() / 2, love.graphics.getWidth(), "center")
+
+  if typing_name then
+    love.graphics.rectangle("fill", love.graphics.getWidth() / 2 + name_font:getWidth(level_name) / 2 + 4, 0, 2, 28)
+  end
+end
+
+function scene.textInput(t)
+  if typing_name then
+    level_name = level_name .. t
+  end
 end
 
 function scene.saveLevel()
@@ -255,34 +296,22 @@ function scene.saveLevel()
   local savestr = love.data.encode("string", "base64", mapdata)
 
   local data = {
-    name = "test",
+    name = level_name,
     width = mapwidth,
     height = mapheight,
     map = savestr
   }
 
   love.filesystem.createDirectory("levels")
-  love.filesystem.write("levels/" .. data.name .. ".bab", json.encode(data))
+  love.filesystem.write("levels/" .. level_name .. ".bab", json.encode(data))
 end
 
 function scene.loadLevel()
-  local file = love.filesystem.read("levels/test.bab")
-
-  if file ~= nil then
-    local data = json.decode(file)
-
-    local loaddata = love.data.decode("string", "base64", data.map)
-    local mapstr = love.data.decompress("string", "zlib", loaddata)
-
-    map = loadstring("return " .. mapstr)()
-
-    clear()
-    loadMap()
-  end
+  new_scene = loadscene
 end
 
 function scene.openSettings()
-  -- not implemented
+  typing_name = true
 end
 
 return scene
