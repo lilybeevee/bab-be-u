@@ -98,7 +98,7 @@ function parseRules(undoing)
         local valid_rule = false
         if not first_valid then
           valid = false
-        elseif type == "object" or type == "property" and not allowed[type] then
+        elseif (type == "object" or type == "property") and not allowed[type] then
           valid = false
         elseif substage == "cond_prefix" then
           if type == "cond_prefix" and prev_type == "and" then
