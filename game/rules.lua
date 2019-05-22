@@ -51,13 +51,14 @@ function parseRules(undoing)
     -- rule object format: {name, {units}}
     -- rule conds format: {{object conds}, {effect conds}}
       -- individual cond: {name, {parameters}}
-    local new_rules = {{{first_unit.textname,{first_unit}}},{},{},{{},{}}} --object, verb, prop, conds
+    --local new_rules = {{{first_unit.textname,{first_unit}}},{},{},{{},{}}} --object, verb, prop, conds
+    local new_rules = {{},{},{},{{},{}}}
     local unit_queue = {}
     local stupid_cond_units = {}
     local current_cond = {}
     local stage = "start"
     local substage = ""
-    local allow_props = false
+    local allowed = first_unit.argtypes
     local allow_conds = true
 
     if i > first_words_count then
@@ -71,6 +72,7 @@ function parseRules(undoing)
       table.insert(new_rules[1], {first_unit.textname, {first_unit}})
     elseif first_unit.texttype == "cond_prefix" then
       table.insert(new_rules[4][1], {first_unit.textname, {}})
+      table.insert(stupid_cond_units, first_unit)
       substage = "cond_prefix"
     else
       first_valid = false
@@ -96,6 +98,8 @@ function parseRules(undoing)
         local valid_rule = false
         if not first_valid then
           valid = false
+        elseif type == "object" or type == "property" and not allowed[type] then
+          valid = false
         elseif substage == "cond_prefix" then
           if type == "cond_prefix" and prev_type == "and" then
             valid = true
@@ -113,26 +117,26 @@ function parseRules(undoing)
             valid = true
           end
         elseif substage == "cond_infix" then -- substage so conds can technically work both before and after the verb
-          if (type == "object" or (type == "property" and allow_props)) and (prev_type == "cond_infix" or prev_type == "and") then -- [ON/AND] [BAB/U]
+          if (type == "object" or type == "property") and (prev_type == "cond_infix" or prev_type == "and") then -- [ON/AND] [BAB/U]
             valid = true
             table.insert(current_cond, name)
             for _,cunit in ipairs(unit_queue) do
               table.insert(stupid_cond_units, cunit)
             end
             unit_queue = {}
-          elseif type == "verb" and stage == "start" and ((prev_type == "property" and allow_props) or prev_type == "object") then -- (start only) [BAB/U] BE
+          elseif type == "verb" and stage == "start" and (prev_type == "property" or prev_type == "object") then -- (start only) [BAB/U] BE
             valid = true
             new_stage = "verb"
             new_substage = ""
-            allow_props = unit.allowprops
+            allowed = unit.argtypes
             allow_conds = unit.allowconds
             table.insert(new_rules[2], {name, copyTable(unit_queue)})
             unit_queue = {}
-          elseif type == "and" and ((prev_type == "property" and allow_props) or prev_type == "object") then -- [BAB/U] AND
+          elseif type == "and" and (prev_type == "property" or prev_type == "object") then -- [BAB/U] AND
             valid = true
           elseif type == "cond_infix" and prev_type == "and" then -- AND ON
             valid = true
-            allow_props = unit.allowprops
+            allowed = unit.argtypes
             current_cond = {}
             if stage == "start" then
               table.insert(new_rules[4][1], {name, current_cond})
@@ -148,7 +152,7 @@ function parseRules(undoing)
           elseif type == "verb" and prev_type == "object" then
             valid = true
             new_stage = "verb"
-            allow_props = unit.allowprops
+            allowed = unit.argtypes
             allow_conds = unit.allowconds
             table.insert(new_rules[2], {name, copyTable(unit_queue)})
             unit_queue = {}
@@ -157,22 +161,22 @@ function parseRules(undoing)
           elseif type == "cond_infix" and prev_type == "object" then
             valid = true
             new_substage = "cond_infix"
-            allow_props = unit.allowprops
+            allowed = unit.argtypes
             current_cond = {}
             table.insert(new_rules[4][1], {name, current_cond})
           end
         elseif stage == "verb" then
-          if ((type == "property" and allow_props) or type == "object") and (prev_type == "verb" or prev_type == "and") then
+          if (type == "property" or type == "object") and (prev_type == "verb" or prev_type == "and") then
             valid = true
             extras = {}
             table.insert(new_rules[3], {name, copyTable(unit_queue)})
             unit_queue = {}
-          elseif type == "and" and ((prev_type == "property" and allow_props) or prev_type == "object") then
+          elseif type == "and" and (prev_type == "property" or prev_type == "object") then
             valid = true
-          elseif type == "cond_infix" and allow_conds and ((prev_type == "property" and allow_props) or prev_type == "object") then
+          elseif type == "cond_infix" and allow_conds and (prev_type == "property" or prev_type == "object") then
             valid = true
             new_substage = "cond_infix"
-            allow_props = unit.allowprops
+            allowed = unit.argtypes
             current_cond = {}
             table.insert(new_rules[4][2], {name, current_cond})
           end
@@ -222,6 +226,10 @@ function parseRules(undoing)
 
             if noun_texts == nil then
               print("nil on: " .. noun .. " - " .. verb .. " - " .. prop)
+            end
+
+            if verb == "got" then
+              print("added rule: " .. noun .. " " .. verb .. " " .. prop)
             end
 
             local all_units = {}

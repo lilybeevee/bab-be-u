@@ -72,8 +72,141 @@ function loadMap()
   end
 end
 
+--[[
+  First and third arguments can be:
+    unit, string, nil
+  Second argument can be:
+    string
+
+  Unit argument will check conditions for that unit, and match rules using its name
+  Both nil and "?" act as a wildcard, however a nil wildcard will return the argument as a unit
+  Return value changes depending on how many arguments are nil
+  Example:
+    Rules:
+    BAB BE U - FLOG BE =) - ROC BE KEEK - KEEK GOT MEEM
+
+    Units:
+    [BAB] [FLOG] [KEEK] [MEEM]
+
+    matchesRule(bab unit,"be","u") => {BAB BE U}
+    - Returns the matching "BAB BE U" rule, as it checks the unit's name
+
+    matchesRule("bab","be","?") => {BAB BE U}
+    - Same result, as the U property matches the wildcard
+
+    matchesRule(nil,"be","?") => {{BAB BE U, bab unit}, {FLOG BE =), flog unit}}
+    - The rule for ROC is not returned because no ROC exists, however the others do
+
+    matchesRule("?","be",nil) => {{ROC BE KEEK, keek unit}}
+    - The first two rules are not returned because properties have no matching units
+
+    matchesRule(nil,"?",nil) => {{KEEK GOT MEEM, keek unit, meem unit}}
+    - Both KEEK and MEEM units exist and GOT matches the wildcard, so it returns both units in order
+  
+  Note that the rules returned are full rules, formatted like: {{subject,verb,object,{preconds,postconds}}, {ids}} 
+]]
+function matchesRule(rule1,rule2,rule3)
+  local nrules = {}
+  local rule_units = {}
+
+  local function getnrule(o,i)
+    if type(o) == "table" then
+      local name
+      if o.class == "unit" then
+        name = o.name
+      elseif o.class == "cursor" then
+        name = "mous"
+      end
+      nrules[i] = name
+      rule_units[i] = o
+    else
+      if o ~= "?" then
+        nrules[i] = o
+      end
+    end
+  end
+
+  getnrule(rule1,1)
+  getnrule(rule2,2)
+  getnrule(rule3,3)
+
+  local ret = {}
+
+  local find = 0
+  local find_arg = 0
+  if (rule1 == nil and rule3 ~= nil) or (rule1 ~= nil and rule3 == nil) then
+    find = 1
+    if rule1 == nil then
+      find_arg = 1
+    elseif rule3 == nil then
+      find_arg = 3
+    end
+  elseif rule1 == nil and rule3 == nil then
+    find = 2
+  end
+
+  local key = nrules[1] or nrules[3] or nrules[2]
+  if rules_with[key] then
+    for _,rules in ipairs(rules_with[key]) do
+      local rule = rules[1]
+      local result = true
+      for i=1,3 do
+        if nrules[i] ~= nil and nrules[i] ~= rule[i] then
+          result = false
+        elseif rule_units[i] ~= nil then
+          if i == 1 then
+            cond = 1
+          elseif i == 3 then
+            cond = 2
+          end
+          if cond and not testConds(rule_units[i], rule[4][cond]) then
+            result = false
+          end
+        end
+      end
+      if result then
+        print("matched: " .. dump(rule) .. " | find: " .. find)
+        if find == 0 then
+          table.insert(ret, rules)
+        elseif find == 1 then
+          for _,unit in ipairs(findUnitsByName(rule[find_arg])) do
+            local cond
+            if find_arg == 1 then
+              cond = 1
+            elseif find_arg == 3 then
+              cond = 2
+            end
+            if testConds(unit, rule[4][cond]) then
+              table.insert(ret, {rules, unit})
+            end
+          end
+        elseif find == 2 then
+          local found1, found2
+          for _,unit1 in ipairs(findUnitsByName(rule[1])) do
+            for _,unit2 in ipairs(findUnitsByName(rule[3])) do
+              if testConds(unit1, rule[4][1]) and testConds(unit2, rule[4][2]) then
+                table.insert(ret, {rules, unit1, unit2})
+              end
+            end
+          end
+        end
+      end
+    end
+  end
+
+  return ret
+end
+
+function hasRule(rule1,rule2,rule3)
+  return #matchesRule(rule1,rule2,rule3) > 0
+end
+
+function findUnitsByName(name)
+  return copyTable(units_by_name[name] or {})
+end
+
 function hasProperty(unit,prop)
-  local name
+  --[[local name
   if unit.class == "unit" then
     name = unit.name
   elseif unit.class == "cursor" then
@@ -88,7 +221,8 @@ function hasProperty(unit,prop)
       end
     end
   end
-  return false
+  return false]]
+  return hasRule(unit,"be",prop)
 end
 
 function testConds(unit,conds) --cond should be a {cond,{object types}}
@@ -404,4 +538,12 @@ function table.has_value(tab, val)
   end
 
   return false
+end
+
+function table.merge(table, other)
+  if other ~= nil then
+    for i,v in ipairs(other) do
+      table.insert(table, v)
+    end
+  end
 end

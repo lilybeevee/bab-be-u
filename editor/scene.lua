@@ -32,9 +32,6 @@ end
 function scene.keyPressed(key)
   if key == "s" then
     scene.saveLevel()
-    local mapdata = love.data.compress("string", "zlib", dump(map))
-    local savestr = love.data.encode("string", "base64", mapdata)
-    love.system.setClipboardText(savestr)
   elseif key == "l" then
     scene.loadLevel()
   end
