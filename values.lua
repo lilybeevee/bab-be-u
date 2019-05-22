@@ -778,4 +778,41 @@ tiles_list = {
     color = {229,83,59},
     layer = 20,
   },
+  --77
+  {
+    name = "kirb",
+    sprite = "kirb",
+    type = "object",
+    grid = {5, 7},
+    color = {235,145,202},
+    layer = 6,
+    rotate = true,
+  },
+  --78
+  {
+    name = "text_kirb",
+    sprite = "text_kirb",
+    type = "text",
+    grid = {6, 7},
+    color = {235,145,202},
+    layer = 20,
+  },
+  --79
+  {
+    name = "gun",
+    sprite = "gun",
+    type = "object",
+    grid = {7, 8},
+    color = {255,255,255},
+    layer = 4,
+  },
+  --80
+  {
+    name = "text_gun",
+    sprite = "text_gun",
+    type = "text",
+    grid = {8, 8},
+    color = {255,255,255},
+    layer = 20,
+  },
 }

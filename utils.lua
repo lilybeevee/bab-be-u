@@ -448,3 +448,13 @@ end
 function string.ends(str, ending)
   return ending == "" or str:sub(-#ending) == ending
 end
+
+function table.has_value(tab, val)
+  for index, value in ipairs(tab) do
+      if value == val then
+          return true
+      end
+  end
+
+  return false
+end

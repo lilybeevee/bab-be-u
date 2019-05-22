@@ -166,8 +166,12 @@ function convertUnits()
 
     if units_by_name[rule[1]] then
       for i,unit in ipairs(units_by_name[rule[1]]) do
+        unit.got_object = {}
         if rule[3] == "mous" or (obj_tile ~= nil and (obj_tile.type == "object" or istext)) then
           if rule[2] == "got" then
+            if not table.has_value(unit.got_objects, rule[3]) and testConds(unit,rule[4][1]) then
+              table.insert(unit.got_objects, rule[3])
+            end
             if unit.destroyed and testConds(unit,rule[4][1]) then
               local new_unit = createUnit(obj_id, unit.x, unit.y, unit.dir)
               addUndo({"create", new_unit.id, false})
@@ -265,6 +269,7 @@ function createUnit(tile,x,y,dir,convert,id_)
   unit.color = data.color
   unit.layer = data.layer
   unit.rotate = data.rotate or false
+  unit.got_objects = {}
 
   unit.fullname = data.name
   if unit.type == "text" then
