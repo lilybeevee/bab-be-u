@@ -33,6 +33,7 @@ function scene.draw(dt)
   local bgsprite = sprites["ui/menu_background"]
 
   -- no need to insult me, i know this is terrible code
+  love.graphics.setColor(1, 1, 1)
   love.graphics.draw(bgsprite, scrollx%bgsprite:getWidth(), scrolly%bgsprite:getHeight(), 0)
   
   love.graphics.draw(bgsprite, scrollx%bgsprite:getWidth()-bgsprite:getWidth(), scrolly%bgsprite:getHeight()-bgsprite:getHeight(), 0)
@@ -58,7 +59,19 @@ function scene.draw(dt)
   onstate = "on"
   if not music_on then onstate = "off" end
 
+  love.graphics.setColor(1, 1, 1)
+  if mouseOverBox(10, height - sprites["ui/music-on"]:getHeight(), sprites["ui/music-on"]:getWidth(), sprites["ui/music-on"]:getHeight()) then
+    love.graphics.setColor(0.8, 0.8, 0.8)
+  end
+
   love.graphics.draw(sprites["ui/music-"..onstate], 10, height - sprites["ui/music-"..onstate]:getHeight() - 10)
+  
+  love.graphics.setColor(1, 1, 1)
+  if mouseOverBox(20+sprites["ui/github"]:getWidth(), height-sprites["ui/github"]:getHeight() - 10, sprites["ui/github"]:getWidth(), sprites["ui/github"]:getHeight()) then
+    love.graphics.setColor(0.8, 0.8, 0.8)
+  end
+
+  love.graphics.draw(sprites["ui/github"], 20+sprites["ui/github"]:getWidth(), height-sprites["ui/github"]:getHeight() - 10)
 end
 
 function scene.update()
@@ -76,9 +89,6 @@ function scene.update()
   if mouseOverBox(width/2-buttonwidth/2, height/2-buttonheight/2+(buttonheight+10)*3, buttonwidth, buttonheight) then 
     love.mouse.setPosition(mousex, mousey-(buttonheight+10)) 
   end
-  if mouseOverBox(10, height - sprites["ui/music-on"]:getHeight(), sprites["ui/music-on"]:getWidth(), sprites["ui/music-on"]:getHeight()) and love.mouse.isDown() then
-    music_on = not music_on
-  end
 end
 
 function scene.mousepressed(x, y, button)
@@ -86,6 +96,10 @@ function scene.mousepressed(x, y, button)
     music_on = not music_on
     if not music_on then music_volume = 0 end
     if music_on then music_volume = 1 end
+  end
+
+  if mouseOverBox(20+sprites["ui/github"]:getWidth(), height-sprites["ui/github"]:getHeight() - 10, sprites["ui/github"]:getWidth(), sprites["ui/github"]:getHeight()) and button == 1 then
+    love.system.openURL("https://github.com/lilybeevee/bab-be-u")
   end
 end
 
