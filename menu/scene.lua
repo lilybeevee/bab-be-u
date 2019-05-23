@@ -25,6 +25,7 @@ function scene.load()
     startTimestamp = now
   }
   nextPresenceUpdate = 0
+  love.keyboard.setKeyRepeat(false)
 end
 
 function scene.draw(dt)

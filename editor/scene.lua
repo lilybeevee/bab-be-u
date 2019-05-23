@@ -1,10 +1,14 @@
 local scene = {}
+
 local paintedtiles = 0
 local buttons = {}
 local button_over = nil
 local name_font = nil
 local typing_name = false
 local ignore_mouse = true
+
+local settings
+local input_name, input_width, input_height
 
 function scene.load()
   brush = nil
@@ -17,9 +21,9 @@ function scene.load()
   ignore_mouse = true
 
   buttons = {}
-  table.insert(buttons, {"load", scene.loadLevel})
-  table.insert(buttons, {"save", scene.saveLevel})
-  table.insert(buttons, {"cog", scene.openSettings})
+  --table.insert(buttons, {"load", scene.loadLevel})
+  --table.insert(buttons, {"save", scene.saveLevel})
+  --table.insert(buttons, {"cog", scene.openSettings})
 
   name_font = love.graphics.newFont(24)
 
@@ -37,22 +41,18 @@ function scene.load()
     startTimestamp = now
   }
   nextPresenceUpdate = 0
+  love.keyboard.setKeyRepeat(true)
 end
 
 function scene.keyPressed(key)
-  if typing_name then
-    if key == "backspace" and level_name:len() > 0 then
-      level_name = level_name:sub(1, -2)
-    elseif key == "return" and level_name:len() > 0 then
-      typing_name = false
+  if settings then
+    settings:keypressed(key)
+  else
+    if key == "s" then
+      scene.saveLevel()
+    elseif key == "l" then
+      scene.loadLevel()
     end
-    return
-  end
-
-  if key == "s" then
-    scene.saveLevel()
-  elseif key == "l" then
-    scene.loadLevel()
   end
 
   if key == "tab" then
@@ -64,19 +64,6 @@ function scene.keyPressed(key)
 end
 
 function scene.update(dt)
-  width = love.graphics.getWidth()
-  height = love.graphics.getHeight()
-
-  button_over = nil
-  local btnx = 0
-  for _,btn in ipairs(buttons) do
-    local sprite = sprites["ui/" .. btn[1]]
-    if mouseOverBox(btnx, 0, sprite:getWidth(), sprite:getHeight()) then
-      button_over = btn
-    end
-    btnx = btnx + sprite:getWidth() + 4
-  end
-
   if ignore_mouse then
     if not love.mouse.isDown(1) then
       ignore_mouse = false
@@ -84,54 +71,96 @@ function scene.update(dt)
     return
   end
 
-  if button_over then
-    if love.mouse.isDown(1) then
-      if not button_pressed then
-        button_over[2]()
-      end
-      button_pressed = button_over
-    else
-      button_pressed = nil
+  width = love.graphics.getWidth()
+  height = love.graphics.getHeight()
+  
+  if settings then
+    --local mousex, mousey = scene.getTransform():transformPoint(love.mouse.getPosition())
+    --settings:updateMouse(mousex, mousey, love.mouse.isDown(1))
+
+    settings.layout:reset(10, 10)
+    settings.layout:padding(4, 4)
+
+    settings:Label("Level Name", {align = "center"}, settings.layout:row(300, 24))
+    local name = settings:Input(input_name, {align = "center"}, settings.layout:row())
+    settings.layout:row()
+    settings:Label("Level Size", {align = "center"}, settings.layout:row())
+    settings.layout:push(settings.layout:row())
+    settings:Input(input_width, {align = "center"}, settings.layout:col((300 - 4)/2, 24))
+    settings:Input(input_height, {align = "center"}, settings.layout:col())
+    settings.layout:pop()
+    settings.layout:row()
+    settings.layout:push(settings.layout:row())
+    local save = settings:Button("Save", settings.layout:col((300 - 4*2)/3, 24))
+    settings.layout:col()
+    local cancel = settings:Button("Cancel", settings.layout:col())
+    settings.layout:pop()
+
+    if name.submitted then
+      level_name = input_name.text
+    end
+
+    if save.hit then
+      scene.saveSettings()
+    elseif cancel.hit then
+      scene.openSettings()
     end
   else
-    local hx,hy = getHoveredTile()
-    if hx ~= nil then
-      local tileid = hx + hy * mapwidth
+    suit.layout:reset(0, 0)
+    suit.layout:padding(4, 4)
 
-      local hovered = {}
-      if units_by_tile[tileid] then
-        for _,v in ipairs(units_by_tile[tileid]) do
-          table.insert(hovered, v)
-        end
-      end
+    love.graphics.setColor(1, 1, 1)
 
-      if love.mouse.isDown(1) then
-        if not selector_open then
-          if #hovered > 1 or (#hovered == 1 and hovered[1].tile ~= brush) or (#hovered == 0 and brush ~= nil) then
-            if brush then
-              map[tileid+1] = {brush}
-            else
-              map[tileid+1] = {}
-            end
-            paintedtiles = paintedtiles + 1
-            presence["details"] = "painted "..paintedtiles.." tiles"
-            clear()
-            loadMap()
+    local load_btn = suit.ImageButton(sprites["ui/load"], {color = load_color}, suit.layout:col(32, 32))
+    local save_btn = suit.ImageButton(sprites["ui/save"], {color = save_color}, suit.layout:col())
+    local settings_btn = suit.ImageButton(sprites["ui/cog"], {color = settings_color}, suit.layout:col())
+
+    if load_btn.hit then
+      scene.loadLevel()
+    elseif save_btn.hit then
+      scene.saveLevel()
+    elseif settings_btn.hit then
+      scene.openSettings()
+    else
+      local hx,hy = getHoveredTile()
+      if hx ~= nil then
+        local tileid = hx + hy * mapwidth
+
+        local hovered = {}
+        if units_by_tile[tileid] then
+          for _,v in ipairs(units_by_tile[tileid]) do
+            table.insert(hovered, v)
           end
-        else
-          local selected = hx + hy * tile_grid_width
-          if tile_grid[selected] then
-            brush = tile_grid[selected]
+        end
+
+        if love.mouse.isDown(1) then
+          if not selector_open then
+            if #hovered > 1 or (#hovered == 1 and hovered[1].tile ~= brush) or (#hovered == 0 and brush ~= nil) then
+              if brush then
+                map[tileid+1] = {brush}
+              else
+                map[tileid+1] = {}
+              end
+              paintedtiles = paintedtiles + 1
+              presence["details"] = "painted "..paintedtiles.." tiles"
+              clear()
+              loadMap()
+            end
+          else
+            local selected = hx + hy * tile_grid_width
+            if tile_grid[selected] then
+              brush = tile_grid[selected]
+            else
+              brush = nil
+            end
+          end
+        end
+        if love.mouse.isDown(2) and not selector_open then
+          if #hovered >= 1 then
+            brush = hovered[1].tile
           else
             brush = nil
           end
-        end
-      end
-      if love.mouse.isDown(2) and not selector_open then
-        if #hovered >= 1 then
-          brush = hovered[1].tile
-        else
-          brush = nil
         end
       end
     end
@@ -154,12 +183,20 @@ function scene.getTransform()
   local screenwidth = love.graphics.getWidth()
   local screenheight = love.graphics.getHeight()
 
-  if screenwidth >= roomwidth * 2 and screenheight >= roomheight * 2 then
-    transform:translate(-screenwidth / 2, -screenheight / 2)
-    transform:scale(2, 2)
+  local scale = 1
+  if roomwidth >= screenwidth or roomheight >= screenheight then
+    scale = 0.5
+  elseif screenwidth >= roomwidth * 4 and screenheight >= roomheight * 4 then
+    scale = 4
+  elseif screenwidth >= roomwidth * 2 and screenheight >= roomheight * 2 then
+    scale = 2
   end
 
-  transform:translate(screenwidth / 2 - roomwidth / 2, screenheight / 2 - roomheight / 2)
+  local scaledwidth = screenwidth * (1/scale)
+  local scaledheight = screenheight * (1/scale)
+
+  transform:scale(scale, scale)
+  transform:translate(scaledwidth / 2 - roomwidth / 2, scaledheight / 2 - roomheight / 2)
 
   return transform
 end
@@ -280,14 +317,17 @@ function scene.draw(dt)
 
   love.graphics.printf(level_name, 0, name_font:getLineHeight() / 2, love.graphics.getWidth(), "center")
 
-  if typing_name then
-    love.graphics.rectangle("fill", love.graphics.getWidth() / 2 + name_font:getWidth(level_name) / 2 + 4, 0, 2, 28)
+  if settings then
+    love.graphics.setColor(0.1, 0.1, 0.1)
+    love.graphics.rectangle("fill", 0, 0, 320, height)
+    love.graphics.setColor(1, 1, 1)
+    settings:draw()
   end
 end
 
 function scene.textInput(t)
-  if typing_name then
-    level_name = level_name .. t
+  if settings then
+    settings:textinput(t)
   end
 end
 
@@ -311,7 +351,42 @@ function scene.loadLevel()
 end
 
 function scene.openSettings()
-  typing_name = true
+  if settings == nil then
+    input_name = {text = level_name}
+    input_width = {text = tostring(mapwidth)}
+    input_height = {text = tostring(mapheight)}
+
+    settings = suit.new()
+  else
+    settings = nil
+  end
+end
+
+function scene.saveSettings()
+  level_name = input_name.text
+
+  local new_width = tonumber(input_width.text)
+  local new_height = tonumber(input_height.text)
+  local new_map = {}
+
+  for x=0,new_width-1 do
+    for y=0,new_height-1 do
+      local tileid = (x + y * mapwidth)
+      local new_id = (x + y * new_width)
+      if inBounds(x, y) then
+        new_map[new_id+1] = map[tileid+1]
+      else
+        new_map[new_id+1] = {}
+      end
+    end
+  end
+
+  mapwidth = new_width
+  mapheight = new_height
+  map = new_map
+
+  clear()
+  loadMap()
 end
 
 return scene

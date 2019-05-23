@@ -1,4 +1,5 @@
 json = require "lib/json"
+suit = require "lib/suit"
 require "values"
 require "utils"
 require "audio"
@@ -103,6 +104,8 @@ function love.keypressed(key,scancode,isrepeat)
   if scene and scene.keyPressed then
     scene.keyPressed(key)
   end
+
+  suit.keypressed(key)
 end
 
 function love.keyreleased(key)
@@ -115,6 +118,8 @@ function love.textinput(text)
   if scene and scene.textInput then
     scene.textInput(text)
   end
+  
+  suit.textinput(text)
 end
 
 function love.mousepressed(x, y, button)
@@ -169,6 +174,9 @@ function love.draw()
   if scene and scene.draw then
     scene.draw(dt)
   end
+
+  suit.draw()
+
   if debug then
     love.graphics.setColor(1, 1, 1, 0.9)
     if rainbowmode then
