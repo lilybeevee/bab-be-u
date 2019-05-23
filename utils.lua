@@ -561,3 +561,7 @@ function table.merge(table, other)
     end
   end
 end
+
+function saveAll()
+  love.filesystem.write("Settings.bab", json.encode(settings))
+end

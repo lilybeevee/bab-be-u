@@ -20,6 +20,7 @@ function doMovement(movex, movey)
         if move_stage == 0 then
           if (movex ~= 0 or movey ~= 0) and hasProperty(unit, "u") then
             table.insert(unit.moves, {reason = "u", dir = dirs8_by_offset[movex][movey]})
+            unit.olddir = unit.dir
             moving = true
           end
         elseif move_stage == 1 then

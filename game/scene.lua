@@ -267,7 +267,7 @@ function scene.draw(dt)
 
         local rotation = 0
         if unit.rotate then
-          rotation = (unit.dir - 1) * 45
+          rotation = (lerp(unit.olddir, unit.dir, unit.move_timer/MAX_MOVE_TIMER) - 1) * 45
         end
 
         local drawcolor = {unit.color[1]/255 * brightness, unit.color[2]/255 * brightness, unit.color[3]/255 * brightness}

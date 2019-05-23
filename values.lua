@@ -6,8 +6,15 @@ UNDO_SPEED = 5
 UNDO_DELAY = MAX_UNDO_DELAY
 repeat_keys = {"wasd","udlr","space","z"}
 
+settings = {
+  music_on = true
+}
+
+if love.filesystem.read("Settings.bab") ~= nil then
+  settings = json.decode(love.filesystem.read("Settings.bab"))
+end
+
 debug = false
-music_on = true
 
 dirs = {{1,0},{0,1},{-1,0},{0,-1}}
 dirs_by_name = {
