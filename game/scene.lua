@@ -276,10 +276,7 @@ function scene.draw(dt)
           love.graphics.setColor(unit.color[1]/255 * brightness, unit.color[2]/255 * brightness, unit.color[3]/255 * brightness)
         end
         love.graphics.draw(sprite, (drawx + 0.5)*TILE_SIZE, (drawy + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
-        if(hasRule(unit,"got","gun")) then
-          love.graphics.setColor(1, 1, 1)
-          love.graphics.draw(sprites["gunsmol"], (drawx + 0.5)*TILE_SIZE, (drawy + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
-        end
+        
         if hasRule(unit,"got","hatt") then
           local hatx = 0
           local haty = 0
@@ -292,6 +289,12 @@ function scene.draw(dt)
 
           love.graphics.draw(sprites["hatsmol"], (drawx + 0.5 - hatx/2)*TILE_SIZE, (drawy + 0.5 + haty/2)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
         end
+
+        if(hasRule(unit,"got","gun")) then
+          love.graphics.setColor(1, 1, 1)
+          love.graphics.draw(sprites["gunsmol"], (drawx + 0.5)*TILE_SIZE, (drawy + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+        end
+        
         if #unit.overlay > 0 then
           local function overlayStencil()
              love.graphics.setShader(mask_shader)
