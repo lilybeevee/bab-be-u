@@ -30,6 +30,7 @@ function love.load()
   empty_cursor = love.mouse.newCursor(empty_sprite)
 
   default_font = love.graphics.newFont()
+  game_time_start = love.timer.getTime()
 
   love.graphics.setDefaultFilter("nearest","nearest")
 

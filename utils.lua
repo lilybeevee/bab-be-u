@@ -165,7 +165,7 @@ function matchesRule(rule1,rule2,rule3)
         end
       end
       if result then
-        print("matched: " .. dump(rule) .. " | find: " .. find)
+        --print("matched: " .. dump(rule) .. " | find: " .. find)
         if find == 0 then
           table.insert(ret, rules)
         elseif find == 1 then
@@ -400,7 +400,7 @@ function hslToRgb(h, s, l, a)
   return {r, g, b} --a removed cus unused
 end
 
-function addParticles(type,x,y,color)
+function addParticles(type,x,y,color,count)
   if type == "destroy" then
     local ps = love.graphics.newParticleSystem(sprites["circle"])
     local px = (x + 0.5) * TILE_SIZE
@@ -414,7 +414,7 @@ function addParticles(type,x,y,color)
     ps:setParticleLifetime(0.25)
     ps:setColors(color[1]/255, color[2]/255, color[3]/255, (color[4] or 255)/255)
     ps:start()
-    ps:emit(20)
+    ps:emit(count or 20)
     table.insert(particles, ps)
   elseif type == "rule" then
     local ps = love.graphics.newParticleSystem(sprites["circle"])
@@ -429,23 +429,37 @@ function addParticles(type,x,y,color)
     ps:setParticleLifetime(0.25)
     ps:setColors(color[1]/255, color[2]/255, color[3]/255, (color[4] or 255)/255)
     ps:start()
-    ps:emit(10)
+    ps:emit(count or 10)
     table.insert(particles, ps)
   elseif type == "bonus" then
-    print("sparkle !!")
+    --print("sparkle !!")
     local ps = love.graphics.newParticleSystem(sprites["sparkle"])
     local px = (x + 0.5) * TILE_SIZE
     local py = (y + 0.5) * TILE_SIZE
     ps:setPosition(px, py)
     ps:setSpread(0.8)
-    ps:setEmissionArea("uniform", TILE_SIZE, TILE_SIZE, 0, true)
+    ps:setEmissionArea("uniform", TILE_SIZE / 2, TILE_SIZE / 2, 0, true)
     ps:setSizes(0.40, 0.40, 0.40, 0)
     ps:setSpeed(30)
     ps:setLinearDamping(2)
     ps:setParticleLifetime(0.6)
     ps:setColors(color[1]/255, color[2]/255, color[3]/255, (color[4] or 255)/255)
     ps:start()
-    ps:emit(10)
+    ps:emit(count or 10)
+    table.insert(particles, ps)
+  elseif type == "love" then
+    local ps = love.graphics.newParticleSystem(sprites["luv"])
+    local px = (x + 0.5) * TILE_SIZE
+    local py = (y + 0.5) * TILE_SIZE
+    ps:setPosition(px, py)
+    ps:setSpread(0)
+    ps:setEmissionArea("borderrectangle", TILE_SIZE/3, TILE_SIZE/3, 0, true)
+    ps:setSizes(0.5, 0.5, 0.5, 0)
+    ps:setSpeed(20)
+    ps:setParticleLifetime(1)
+    ps:setColors(color[1]/255, color[2]/255, color[3]/255, (color[4] or 255)/255)
+    ps:start()
+    ps:emit(count or 10)
     table.insert(particles, ps)
   end
 end

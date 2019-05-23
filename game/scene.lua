@@ -27,6 +27,8 @@ local level_shader = paletteshader_0
 local doin_the_world = false
 local shader_time = 0
 
+local particle_timers = {}
+
 local canv = love.graphics.newCanvas(love.graphics.getWidth(), love.graphics.getHeight())
 local last_width,last_height = love.graphics.getWidth(),love.graphics.getHeight()
 
@@ -67,6 +69,10 @@ function scene.update(dt)
   else
     love.mouse.setGrabbed(false)
   end
+
+  scene.doPassiveParticles(dt, ":)", "bonus", 0.25, 1, 1, {237,226,133})
+  scene.doPassiveParticles(dt, ":o", "bonus", 0.5, 0.8, 1, {257,57,106})
+  scene.doPassiveParticles(dt, "qt", "love", 0.25, 0.5, 1, {235,145,202})
 end
 
 function scene.resetStuff()
@@ -403,6 +409,33 @@ function scene.checkInput()
 
   if do_move_sound then
     playSound("move", 0.33)
+  end
+end
+
+function scene.doPassiveParticles(timer,word,effect,delay,chance,count,color)
+  local do_particles = false
+  if not particle_timers[word] then
+    particle_timers[word] = 0
+  else
+    particle_timers[word] = particle_timers[word] + timer
+    if particle_timers[word] >= delay then
+      particle_timers[word] = particle_timers[word] - delay
+      do_particles = true
+    end
+  end
+
+  if do_particles then
+    local matches = matchesRule(nil,"be",word)
+    for _,match in ipairs(matches) do
+      local unit = match[2]
+      local real_count = 0
+      for i = 1, count do
+        if math.random() < chance then
+          real_count = real_count + 1
+        end
+      end
+      addParticles(effect, unit.x, unit.y, color, real_count)
+    end
   end
 end
 

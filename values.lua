@@ -824,5 +824,34 @@ tiles_list = {
     grid = {7, 3},
     color = {62, 118, 136},
     layer = 20,
+  },
+  -- 82
+  {
+    name = "tot",
+    sprite = "tot",
+    type = "object",
+    grid = {10, 8},
+    color = {235,145,202},
+    layer = 5,
+    rotate = true,
+  },
+  -- 83
+  {
+    name = "text_tot",
+    sprite = "text_tot",
+    type = "text",
+    grid = {11, 8},
+    color = {235,145,202},
+    layer = 20,
+  },
+  -- 84
+  {
+    name = "text_qt",
+    sprite = "text_qt",
+    type = "text",
+    texttype = "property",
+    grid = {9, 2},
+    color = {235,145,202},
+    layer = 20,
   }
 }
