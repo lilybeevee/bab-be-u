@@ -560,6 +560,7 @@ tiles_list = {
   {
     name = "wog",
     sprite = "wog",
+    sleepsprite = "wog_slep",
     type = "object",
     grid = {9, 7},
     color = {237,226,133},
@@ -660,6 +661,7 @@ tiles_list = {
   {
     name = "fax",
     sprite = "fax",
+    sleepsprite = "fax_slep",
     type = "object",
     grid = {5, 8},
     color = {142,94,156},
@@ -816,6 +818,7 @@ tiles_list = {
   {
     name = "kirb",
     sprite = "kirb",
+    sleepsprite = "kirb_slep",
     type = "object",
     grid = {5, 7},
     color = {235,145,202},
@@ -892,6 +895,7 @@ tiles_list = {
   {
     name = "o",
     sprite = "o",
+    sleepsprite = "o_slep",
     type = "object",
     grid = {5, 6},
     color = {237,226,133},
