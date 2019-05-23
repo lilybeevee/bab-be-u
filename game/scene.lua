@@ -90,11 +90,11 @@ end
 function scene.keyPressed(key)
   if key == "w" or key == "a" or key == "s" or key == "d" then
     if not repeat_timers["wasd"] then
-      repeat_timers["wasd"] = 15
+      repeat_timers["wasd"] = 30
     end
   elseif key == "up" or key == "down" or key == "left" or key == "right" then
     if not repeat_timers["udlr"] then
-      repeat_timers["udlr"] = 15
+      repeat_timers["udlr"] = 30
     end
   end
 
@@ -352,7 +352,7 @@ function scene.draw(dt)
   love.graphics.draw(win_sprite, -win_sprite:getWidth() / 2, -win_sprite:getHeight() / 2)
 
   if win and win_size < 1 then
-    win_size = win_size + 0.02
+    win_size = win_size + dt*2
   end
   love.graphics.pop()
   
