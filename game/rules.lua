@@ -56,6 +56,7 @@ function parseRules(undoing)
     local unit_queue = {}
     local stupid_cond_units = {}
     local current_cond = {}
+    local current_effects = {}
     local stage = "start"
     local substage = ""
     local allowed = first_unit.argtypes
@@ -130,6 +131,8 @@ function parseRules(undoing)
             new_substage = ""
             allowed = unit.argtypes
             allow_conds = unit.allowconds
+            current_effects = {}
+            table.insert(new_rules[3], current_effects)
             table.insert(new_rules[2], {name, copyTable(unit_queue)})
             unit_queue = {}
           elseif type == "and" and (prev_type == "property" or prev_type == "object") then -- [BAB/U] AND
@@ -154,6 +157,8 @@ function parseRules(undoing)
             new_stage = "verb"
             allowed = unit.argtypes
             allow_conds = unit.allowconds
+            current_effects = {}
+            table.insert(new_rules[3], current_effects)
             table.insert(new_rules[2], {name, copyTable(unit_queue)})
             unit_queue = {}
           elseif type == "and" and prev_type == "object" then
@@ -169,7 +174,7 @@ function parseRules(undoing)
           if (type == "property" or type == "object") and (prev_type == "verb" or prev_type == "and") then
             valid = true
             extras = {}
-            table.insert(new_rules[3], {name, copyTable(unit_queue)})
+            table.insert(current_effects, {name, copyTable(unit_queue)})
             unit_queue = {}
           elseif type == "and" and (prev_type == "property" or prev_type == "object") then
             valid = true
@@ -179,6 +184,14 @@ function parseRules(undoing)
             allowed = unit.argtypes
             current_cond = {}
             table.insert(new_rules[4][2], {name, current_cond})
+          elseif type == "verb" and prev_type == "and" then
+            valid = true
+            allowed = unit.argtypes
+            allow_conds = unit.allowconds
+            current_effects = {}
+            table.insert(new_rules[3], current_effects)
+            table.insert(new_rules[2], {name, copyTable(unit_queue)})
+            unit_queue = {}
           end
         end
 
@@ -213,10 +226,10 @@ function parseRules(undoing)
       --table.insert(already_parsed, unit)
     end
 
-    if #new_rules[3] > 0 then
+    if #new_rules[3] > 0 and #new_rules[3][1] > 0 then
       for _,a in ipairs(new_rules[1]) do
-        for _,b in ipairs(new_rules[2]) do
-          for _,c in ipairs(new_rules[3]) do
+        for vi,b in ipairs(new_rules[2]) do
+          for _,c in ipairs(new_rules[3][vi]) do
             local noun = a[1]
             local noun_texts = a[2]
             local verb = b[1]
