@@ -155,6 +155,8 @@ function love.update(dt)
     new_scene = nil
   end
 
+  if not settings["music_on"] then music_volume = 0 end
+  if settings["music_on"] then music_volume = 1 end
   updateMusic()
 
   if discordRPC and discordRPC ~= true then

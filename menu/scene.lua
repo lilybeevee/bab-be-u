@@ -57,7 +57,7 @@ function scene.draw(dt)
   love.graphics.draw(sprites["ui/bab_be_u"], width/2 - sprites["ui/bab_be_u"]:getWidth() / 2, height/2 - sprites["ui/bab_be_u"]:getHeight() / 2 - 200)
 
   onstate = "on"
-  if not music_on then onstate = "off" end
+  if not settings["music_on"] then onstate = "off" end
 
   love.graphics.setColor(1, 1, 1)
   if mouseOverBox(10, height - sprites["ui/music-on"]:getHeight(), sprites["ui/music-on"]:getWidth(), sprites["ui/music-on"]:getHeight()) then
@@ -93,9 +93,8 @@ end
 
 function scene.mousepressed(x, y, button)
   if mouseOverBox(10, height - sprites["ui/music-on"]:getHeight(), sprites["ui/music-on"]:getWidth(), sprites["ui/music-on"]:getHeight()) and button == 1 then
-    music_on = not music_on
-    if not music_on then music_volume = 0 end
-    if music_on then music_volume = 1 end
+    settings["music_on"] = not settings["music_on"]
+    saveAll()
   end
 
   if mouseOverBox(20+sprites["ui/github"]:getWidth(), height-sprites["ui/github"]:getHeight() - 10, sprites["ui/github"]:getWidth(), sprites["ui/github"]:getHeight()) and button == 1 then
