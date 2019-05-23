@@ -270,32 +270,31 @@ function scene.draw(dt)
           rotation = (unit.dir - 1) * 45
         end
 
+        local drawcolor = {unit.color[1]/255 * brightness, unit.color[2]/255 * brightness, unit.color[3]/255 * brightness}
         if #unit.overlay > 0 and eq(unit.color, tiles_list[unit.tile].color) then
           love.graphics.setColor(1, 1, 1)
         else
-          love.graphics.setColor(unit.color[1]/255 * brightness, unit.color[2]/255 * brightness, unit.color[3]/255 * brightness)
+          love.graphics.setColor(drawcolor[1], drawcolor[2], drawcolor[3])
         end
-        love.graphics.draw(sprite, (drawx + 0.5)*TILE_SIZE, (drawy + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
-        if(hasRule(unit,"got","gun")) then
-          love.graphics.setColor(1, 1, 1)
-          love.graphics.draw(sprites["gunsmol"], (drawx + 0.5)*TILE_SIZE, (drawy + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
-        end
-        if hasRule(unit,"got","hatt") then
-          local hatx = 0
-          local haty = 0
 
-          if unit.dir == 1 or unit.dir == 3 then
-            haty = unit.dir - 2
-          else
-            hatx = unit.dir - 3
-          end
+        local fulldrawx = (drawx + 0.5)*TILE_SIZE
+        local fulldrawy = (drawy + 0.5)*TILE_SIZE
 
-          love.graphics.draw(sprites["hatsmol"], (drawx + 0.5 - hatx/2)*TILE_SIZE, (drawy + 0.5 + haty/2)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+        love.graphics.push()
+        love.graphics.translate(fulldrawx, fulldrawy)
+        love.graphics.rotate(math.rad(rotation))
+        love.graphics.translate(-fulldrawx, -fulldrawy)
+
+        local function drawSprite(overlay)
+          local sprite = overlay or sprite
+          love.graphics.draw(sprite, fulldrawx, fulldrawy, 0, unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
         end
+        drawSprite()
+
         if #unit.overlay > 0 then
           local function overlayStencil()
              love.graphics.setShader(mask_shader)
-             love.graphics.draw(sprite, (drawx + 0.5)*TILE_SIZE, (drawy + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+             drawSprite()
              love.graphics.setShader()
           end
           for _,overlay in ipairs(unit.overlay) do
@@ -303,11 +302,22 @@ function scene.draw(dt)
             love.graphics.stencil(overlayStencil, "replace")
             love.graphics.setStencilTest("greater", 0)
             love.graphics.setBlendMode("multiply", "premultiplied")
-            love.graphics.draw(sprites["overlay/" .. overlay], (drawx + 0.5)*TILE_SIZE, (drawy + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+            drawSprite(sprites["overlay/" .. overlay])
             love.graphics.setBlendMode("alpha", "alphamultiply")
             love.graphics.setStencilTest() 
           end 
         end
+
+        if hasRule(unit,"got","hatt") then
+          love.graphics.setColor(drawcolor[1], drawcolor[2], drawcolor[3])
+          love.graphics.draw(sprites["hatsmol"], fulldrawx, fulldrawy - 0.5*TILE_SIZE, 0, unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+        end
+        if(hasRule(unit,"got","gun")) then
+          love.graphics.setColor(1, 1, 1)
+          love.graphics.draw(sprites["gunsmol"], fulldrawx, fulldrawy, 0, unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+        end
+
+        love.graphics.pop()
 
         if unit.move_timer < MAX_MOVE_TIMER then
           unit.move_timer = math.min(MAX_MOVE_TIMER, unit.move_timer + (dt * 1000))
