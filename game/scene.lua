@@ -125,12 +125,20 @@ function scene.getTransform()
   local screenwidth = love.graphics.getWidth()
   local screenheight = love.graphics.getHeight()
 
-  if screenwidth >= roomwidth * 2 and screenheight >= roomheight * 2 then
-    transform:translate(-screenwidth / 2, -screenheight / 2)
-    transform:scale(2, 2)
+  local scale = 1
+  if roomwidth >= screenwidth or roomheight >= screenheight then
+    scale = 0.5
+  elseif screenwidth >= roomwidth * 4 and screenheight >= roomheight * 4 then
+    scale = 4
+  elseif screenwidth >= roomwidth * 2 and screenheight >= roomheight * 2 then
+    scale = 2
   end
 
-  transform:translate(screenwidth / 2 - roomwidth / 2, screenheight / 2 - roomheight / 2)
+  local scaledwidth = screenwidth * (1/scale)
+  local scaledheight = screenheight * (1/scale)
+
+  transform:scale(scale, scale)
+  transform:translate(scaledwidth / 2 - roomwidth / 2, scaledheight / 2 - roomheight / 2)
 
   return transform
 end
