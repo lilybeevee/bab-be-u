@@ -854,5 +854,23 @@ tiles_list = {
     grid = {9, 2},
     color = {235,145,202},
     layer = 20,
-  }
+  },
+  -- 85
+  {
+    name = "o",
+    sprite = "o",
+    type = "object",
+    grid = {5, 6},
+    color = {237,226,133},
+    layer = 5,
+  },
+  -- 86
+  {
+    name = "text_o",
+    sprite = "text_o",
+    type = "text",
+    grid = {6, 6},
+    color = {237,226,133},
+    layer = 20,
+  },
 }
