@@ -1,4 +1,4 @@
-function doMovement(key)
+function doMovement(movex, movey)
   local played_sound = {}
   local already_added = {}
   local moving_units = {}
@@ -6,6 +6,7 @@ function doMovement(key)
   first_turn = false
 
   print("[---- begin turn ----]")
+  print("move: " .. movex .. ", " .. movey)
 
   local move_stage = 0
   while move_stage < 2 do
@@ -17,8 +18,8 @@ function doMovement(key)
       end
       if not hasProperty(unit, "slep") then
         if move_stage == 0 then
-          if key ~= "wait" and hasProperty(unit, "u") then
-            table.insert(unit.moves, {reason = "u", dir = dirs_by_name[key]})
+          if (movex ~= 0 or movey ~= 0) and hasProperty(unit, "u") then
+            table.insert(unit.moves, {reason = "u", dir = dirs8_by_offset[movex][movey]})
             moving = true
           end
         elseif move_stage == 1 then
@@ -46,7 +47,7 @@ function doMovement(key)
           dir = unit.dir
         end
 
-        local dpos = dirs[dir]
+        local dpos = dirs8[dir]
         local dx,dy = dpos[1],dpos[2]
 
         local success,movers,specials = canMove(unit, dx, dy)
@@ -65,7 +66,7 @@ function doMovement(key)
           end
         else
           if data.reason == "walk" then
-            unit.dir = rotate(unit.dir)
+            unit.dir = rotate8(unit.dir)
             table.insert(unit.moves, {"walk", unit.dir})
           end
         end

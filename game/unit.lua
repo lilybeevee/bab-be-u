@@ -114,13 +114,13 @@ function updateUnits(undoing)
       end
 
       if hasProperty(unit,"up") then
-        unit.dir = 0
+        unit.dir = 7
       elseif hasProperty(unit,"right") then
         unit.dir = 1
       elseif hasProperty(unit,"down") then
-        unit.dir = 2
-      elseif hasProperty(unit,"left") then
         unit.dir = 3
+      elseif hasProperty(unit,"left") then
+        unit.dir = 5
       end
 
       unit.overlay = {}

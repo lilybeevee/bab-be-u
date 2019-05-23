@@ -239,7 +239,7 @@ function testConds(unit,conds) --cond should be a {cond,{object types}}
       end
     elseif condtype == "look at" then
       for _,param in ipairs(params) do
-        local others = getUnitsOnTile(unit.x + dirs[unit.dir][1],unit.y + dirs[unit.dir][2],param)
+        local others = getUnitsOnTile(unit.x + dirs8[unit.dir][1],unit.y + dirs8[unit.dir][2],param)
         if #others == 0 then
           result = false
         end

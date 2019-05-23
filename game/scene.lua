@@ -34,6 +34,7 @@ local last_width,last_height = love.graphics.getWidth(),love.graphics.getHeight(
 
 function scene.load()
   repeat_timers = {}
+  key_down = {}
   selector_open = false
 
   scene.resetStuff()
@@ -87,6 +88,16 @@ function scene.resetStuff()
 end
 
 function scene.keyPressed(key)
+  if key == "w" or key == "a" or key == "s" or key == "d" then
+    if not repeat_timers["wasd"] then
+      repeat_timers["wasd"] = 15
+    end
+  elseif key == "up" or key == "down" or key == "left" or key == "right" then
+    if not repeat_timers["udlr"] then
+      repeat_timers["udlr"] = 15
+    end
+  end
+
   for _,v in ipairs(repeat_keys) do
     if v == key then
       repeat_timers[v] = 0
@@ -102,6 +113,8 @@ function scene.keyPressed(key)
     shader_time = 0
     doin_the_world = true
   end
+
+  key_down[key] = true
 end
 
 function scene.keyReleased(key)
@@ -114,6 +127,8 @@ function scene.keyReleased(key)
   if key == "z" then
     UNDO_DELAY = MAX_UNDO_DELAY
   end
+
+  key_down[key] = false
 end
 
 function scene.getTransform()
@@ -252,7 +267,7 @@ function scene.draw(dt)
 
         local rotation = 0
         if unit.rotate then
-          rotation = (unit.dir - 1) * 90
+          rotation = (unit.dir - 1) * 45
         end
 
         if #unit.overlay > 0 and eq(unit.color, tiles_list[unit.tile].color) then
@@ -378,27 +393,34 @@ end
 function scene.checkInput()
   do_move_sound = false
 
+  if not (key_down["w"] or key_down["a"] or key_down["s"] or key_down["d"]) then
+    repeat_timers["wasd"] = nil
+  end
+  if not (key_down["up"] or key_down["down"] or key_down["left"] or key_down["right"]) then
+    repeat_timers["udlr"] = nil
+  end
+
   for _,key in ipairs(repeat_keys) do
     if not win and repeat_timers[key] ~= nil and repeat_timers[key] <= 0 then
-      local control = key
-      if key == "w" then
-        control = "up"
-      elseif key == "a" then
-        control = "left"
-      elseif key == "s" then
-        control = "down"
-      elseif key == "d" then
-        control = "right"
-      elseif key == "space" then
-        control = "wait"
-      end
-      if control == "up" or control == "down" or control == "right" or control == "left" or control == "wait" then
-        newUndo()
-        update_undo = false
-        doMovement(control)
-      elseif key == "z" then
+      if key == "z" then
         update_undo = false
         undo()
+      else
+        local x, y = 0, 0
+        if key == "udlr" then
+          if key_down["up"] then y = y - 1 end
+          if key_down["down"] then y = y + 1 end
+          if key_down["left"] then x = x - 1 end
+          if key_down["right"] then x = x + 1 end
+        elseif key == "wasd" then
+          if key_down["w"] then y = y - 1 end
+          if key_down["s"] then y = y + 1 end
+          if key_down["a"] then x = x - 1 end
+          if key_down["d"] then x = x + 1 end
+        end
+        newUndo()
+        update_undo = false
+        doMovement(x, y)
       end
     end
 

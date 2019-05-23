@@ -4,19 +4,45 @@ MAX_UNDO_DELAY = 150
 MIN_UNDO_DELAY = 50
 UNDO_SPEED = 5
 UNDO_DELAY = MAX_UNDO_DELAY
-repeat_keys = {"w","a","s","d","up","down","left","right","space","z"}
+repeat_keys = {"wasd","udlr","space","z"}
 
 debug = false
 music_on = true
 
 dirs = {{1,0},{0,1},{-1,0},{0,-1}}
-dirs8 = {{1,0},{1,1},{0,1},{-1,1},{-1,0},{-1,-1},{0,-1},{1,-1}}
 dirs_by_name = {
   right = 1,
   down = 2,
   left = 3,
   up = 4
 }
+dirs_by_offset = {}
+dirs_by_offset[-1],dirs_by_offset[0],dirs_by_offset[1] = {},{},{}
+dirs_by_offset[1][0] = 1
+dirs_by_offset[0][1] = 2
+dirs_by_offset[-1][0] = 3
+dirs_by_offset[0][-1] = 4
+dirs8 = {{1,0},{1,1},{0,1},{-1,1},{-1,0},{-1,-1},{0,-1},{1,-1}}
+dirs8_by_name = {
+  right = 1,
+  downright = 2,
+  down = 3,
+  downleft = 4,
+  left = 5,
+  upleft = 6,
+  up = 7,
+  upright = 8,
+}
+dirs8_by_offset = {}
+dirs8_by_offset[-1],dirs8_by_offset[0],dirs8_by_offset[1] = {},{},{}
+dirs8_by_offset[1][0] = 1
+dirs8_by_offset[1][1] = 2
+dirs8_by_offset[0][1] = 3
+dirs8_by_offset[-1][1] = 4
+dirs8_by_offset[-1][0] = 5
+dirs8_by_offset[-1][-1] = 6
+dirs8_by_offset[0][-1] = 7
+dirs8_by_offset[1][-1] = 8
 TILE_SIZE = 32
 
 mapwidth = 21
