@@ -210,23 +210,6 @@ function scene.draw(dt)
           end
         end
 
-        --os
-        if unit.fullname == "os" then
-          local os = love.system.getOS()
-          if os == "Windows" then
-            unit.sprite = "os_windous"
-          elseif os == "OS X" or os == "iOS" then
-            unit.sprite = "os_mak"
-          elseif os == "Linux" then
-            unit.sprite = "os_linx"
-          elseif os == "Android" then
-            unit.sprite = "os_androd"
-          else
-            unit.sprite = "wat"
-          end
-        end
-
-
         if hasProperty(unit,"colrful") or rainbowmode then
           local newcolor = hslToRgb((#undo_buffer/45+unit.x/18+unit.y/18)%1, .5, .5, 1)
           newcolor[1] = newcolor[1]*255

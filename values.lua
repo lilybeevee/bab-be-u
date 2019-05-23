@@ -560,6 +560,7 @@ tiles_list = {
   {
     name = "wog",
     sprite = "wog",
+    sleepsprite = "wog_slep",
     type = "object",
     grid = {9, 7},
     color = {237,226,133},
@@ -863,6 +864,7 @@ tiles_list = {
   {
     name = "tot",
     sprite = "tot",
+    sleepsprite = "tot_slep",
     type = "object",
     grid = {9, 8},
     color = {235,145,202},
