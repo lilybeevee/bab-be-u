@@ -114,12 +114,16 @@ function updateUnits(undoing)
       end
 
       if hasProperty(unit,"up") then
+        unit.olddir = unit.dir
         unit.dir = 7
       elseif hasProperty(unit,"right") then
+        unit.olddir = unit.dir
         unit.dir = 1
       elseif hasProperty(unit,"down") then
+        unit.olddir = unit.dir
         unit.dir = 3
       elseif hasProperty(unit,"left") then
+        unit.olddir = unit.dir
         unit.dir = 5
       end
 
@@ -260,6 +264,7 @@ function createUnit(tile,x,y,dir,convert,id_)
   end
   unit.oldx = unit.x
   unit.oldy = unit.y
+  unit.olddir = unit.dir
   unit.move_timer = MAX_MOVE_TIMER
   unit.old_active = unit.active
   unit.overlay = {}
