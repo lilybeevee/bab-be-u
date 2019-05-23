@@ -873,4 +873,95 @@ tiles_list = {
     color = {237,226,133},
     layer = 20,
   },
+  -- 87
+  {
+    name = "han",
+    sprite = "han",
+    type = "object",
+    grid = {7, 8},
+    color = {255,255,255},
+    layer = 5,
+    rotate = true,
+  },
+  -- 88
+  {
+    name = "text_han",
+    sprite = "text_han",
+    type = "text",
+    grid = {8, 8},
+    color = {255,255,255},
+    layer = 20,
+  },
+  -- 87
+  {
+    name = "gras",
+    sprite = "gras",
+    type = "object",
+    grid = {3, 4},
+    color = {48,56,36},
+    layer = 5,
+  },
+  -- 88
+  {
+    name = "text_gras",
+    sprite = "text_gras",
+    type = "text",
+    grid = {4, 4},
+    color = {165,177,63},
+    layer = 20,
+  },
+  -- 89
+  {
+    name = "dayzy",
+    sprite = "dayzy",
+    type = "object",
+    grid = {5, 4},
+    color = {145,131,215},
+    layer = 5,
+  },
+  -- 90
+  {
+    name = "text_dayzy",
+    sprite = "text_dayzy",
+    type = "text",
+    grid = {6, 4},
+    color = {145,131,215},
+    layer = 20,
+  },
+  -- 91
+  {
+    name = "hurcane",
+    sprite = "hurcane",
+    type = "object",
+    grid = {5, 5},
+    color = {142,94,156},
+    layer = 12,
+  },
+  -- 92
+  {
+    name = "text_hurcane",
+    sprite = "text_hurcane",
+    type = "text",
+    grid = {6, 5},
+    color = {142,94,156},
+    layer = 20,
+  },
+  -- 91
+  {
+    name = "hatt",
+    sprite = "hat",
+    type = "object",
+    grid = {7, 9},
+    color = {142,94,156},
+    layer = 12,
+  },
+  -- 92
+  {
+    name = "text_hatt",
+    sprite = "text_hatt",
+    type = "text",
+    grid = {8, 9},
+    color = {142,94,156},
+    layer = 20,
+  },
 }
