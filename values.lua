@@ -999,4 +999,13 @@ tiles_list = {
     color = {142,94,156},
     layer = 20,
   },
+  -- 93
+  {
+    name = "press",
+    sprite = "press",
+    type = "object",
+    grid = {999,999},
+    color = {255,255,255},
+    layer = 20,
+  },
 }
