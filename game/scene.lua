@@ -380,6 +380,9 @@ function scene.draw(dt)
         love.graphics.setColor(color[1]/255, color[2]/255, color[3]/255)
       end
       love.graphics.draw(system_cursor, cursor.x, cursor.y)
+      
+      love.graphics.setColor(1,1,1)
+      color = nil
 
       if #cursor.overlay > 0 then
         local function overlayStencil()
