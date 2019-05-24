@@ -2,8 +2,10 @@ function doMovement(movex, movey)
   local played_sound = {}
   local already_added = {}
   local moving_units = {}
+  --TODO: Patashu: slippers as a construct is probably unnecessary after we have simultaneous doupdate movement, since they won't get a chance to 'double move' until after all slipping has been computed. (Also, simultaneous doupdate movement will remove the 'u & push separates' behaviour.)
   local slippers = {}
   local flippers = {}
+  local kikkers = {}
 
   first_turn = false
 
@@ -84,6 +86,7 @@ function doMovement(movex, movey)
                   end
                 end
               end
+              doPull(unit, dx, dy)
             else
               if data.reason == "walk" and i == 1 and flippers[unit.id] ~= true then
                 unit.dir = rotate8(unit.dir)
@@ -120,7 +123,50 @@ function doAction(action)
   end
 end
 
-function canMove(unit,dx,dy)
+function doPull(unit,dx,dy)
+  local x = unit.x;
+  local y = unit.y;
+  --TODO: Patashu: since movement is instant right now, we have to do it from the old location
+  x = x - dx;
+  y = y - dy;
+  local failure = false;
+  while (not failure) do
+    local successes = 0;
+    x = x - dx;
+    y = y - dy;
+    print("0:"..tostring(x)..","..tostring(y))
+    local tileid = x + y * mapwidth
+    for _,v in ipairs(units_by_tile[tileid]) do
+      print("a")
+      if hasProperty(v, "come pls") then
+        print("b")
+        local success,movers,specials = canMove(v, dx, dy)
+        print("c:"..tostring(success))
+        for _,special in ipairs(specials) do
+          doAction(special)
+        end
+        if (success) then
+          successes = successes + 1
+          unit.already_moving = true
+          for _,mover in ipairs(movers) do
+            if not mover.removed then
+              mover.dir = dir
+              addUndo({"update", mover.id, mover.x, mover.y, mover.dir})
+              moveUnit(mover, mover.x + dx, mover.y + dy)
+            end
+          end
+        end
+      end
+    end
+    failure = successes == 0;
+  end
+end
+
+function canMove(unit,dx,dy,pulling_)
+  local pulling = false
+	if (pulling_ ~= nil) then
+		pulling = pulling_
+	end
   local movers = {}
   local specials = {}
   table.insert(movers, unit)
@@ -157,6 +203,12 @@ function canMove(unit,dx,dy)
       end
     end
     if hasProperty(v, "no go") then
+      stopped = true
+    end
+    if hasProperty(v, "sidekik") then
+      stopped = true
+    end
+    if hasProperty(v, "come pls") and not pulling then
       stopped = true
     end
     if stopped then

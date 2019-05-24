@@ -1042,7 +1042,7 @@ tiles_list = {
     color = {131,200,229},
     layer = 20,
   },
-  --- 96
+  --- 97
   {
     name = "text_xwx",
     sprite = "text_xwx",
@@ -1050,6 +1050,26 @@ tiles_list = {
     texttype = "property",
     grid = {10, 10},
     color = {36,0,168},
+    layer = 20,
+  },
+  --- 98
+  {
+    name = "text_come pls",
+    sprite = "text_comepls",
+    type = "text",
+    texttype = "property",
+    grid = {2, 8},
+    color = {144,103,62},
+    layer = 20,
+  },
+  --- 99
+  {
+    name = "text_sidekik",
+    sprite = "text_sidekik",
+    type = "text",
+    texttype = "property",
+    grid = {10, 3},
+    color ={144,103,62},
     layer = 20,
   },
 }
