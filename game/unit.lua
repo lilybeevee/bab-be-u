@@ -189,6 +189,9 @@ function convertUnits()
       istext = true
       obj_name = "text_" .. rule[1]
     end
+    if rule[3]:starts("text_") then
+      istext = true
+    end
     local obj_id = tiles_by_name[obj_name]
     local obj_tile = tiles_list[obj_id]
 

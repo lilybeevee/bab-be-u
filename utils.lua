@@ -107,17 +107,25 @@ end
 ]]
 function matchesRule(rule1,rule2,rule3)
   local nrules = {}
+  local fnrules = {}
   local rule_units = {}
 
   local function getnrule(o,i)
     if type(o) == "table" then
       local name
+      local fullname
       if o.class == "unit" then
         name = o.name
+        if o.fullname ~= o.name then
+          fullname = o.fullname
+        end
       elseif o.class == "cursor" then
         name = "mous"
       end
       nrules[i] = name
+      if fullname then
+        fnrules[i] = fullname
+      end
       rule_units[i] = o
     else
       if o ~= "?" then
@@ -145,13 +153,17 @@ function matchesRule(rule1,rule2,rule3)
     find = 2
   end
 
-  local key = nrules[1] or nrules[3] or nrules[2]
-  if rules_with[key] then
-    for _,rules in ipairs(rules_with[key]) do
+  local rules_list
+
+  rules_list = rules_with[nrules[1] or nrules[3] or nrules[2]] or {}
+  mergeTable(rules_list, rules_with[fnrules[1] or fnrules[3] or fnrules[2]] or {})
+
+  if #rules_list > 0 then
+    for _,rules in ipairs(rules_list) do
       local rule = rules[1]
       local result = true
       for i=1,3 do
-        if nrules[i] ~= nil and nrules[i] ~= rule[i] then
+        if nrules[i] ~= nil and nrules[i] ~= rule[i] and (fnrules[i] == nil or (fnrules[i] ~= nil and fnrules[i] ~= rule[i])) then
           result = false
         elseif rule_units[i] ~= nil then
           if i == 1 then
@@ -554,10 +566,12 @@ function table.has_value(tab, val)
   return false
 end
 
-function table.merge(table, other)
+function mergeTable(t, other)
   if other ~= nil then
     for i,v in ipairs(other) do
-      table.insert(table, v)
+      if not table.has_value(t, v) then
+        table.insert(t, v)
+      end
     end
   end
 end
