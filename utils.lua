@@ -241,6 +241,10 @@ function hasProperty(unit,prop)
   return hasRule(unit,"be",prop)
 end
 
+function countProperty(unit,prop)
+  return #matchesRule(unit,"be",prop)
+end
+
 function testConds(unit,conds) --cond should be a {cond,{object types}}
   local result = true
   for _,cond in ipairs(conds) do

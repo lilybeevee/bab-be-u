@@ -24,7 +24,8 @@ function doMovement(movex, movey)
             moving = true
           end
         elseif move_stage == 1 then
-          if hasProperty(unit, "walk") then
+          print(tostring(countProperty(unit, "walk")))
+          for i=1,countProperty(unit, "walk") do
             table.insert(unit.moves, {reason = "walk", dir = unit.dir})
             moving = true
           end
