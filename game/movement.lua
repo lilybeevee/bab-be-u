@@ -19,25 +19,28 @@ function doMovement(movex, movey)
         if move_stage == -1 then
           for __,other in ipairs(getUnitsOnTile(unit.x, unit.y)) do
             if other.id ~= unit.id then
-              for i=1,countProperty(other, "icy") do
-                table.insert(unit.moves, {reason = "icy", dir = unit.dir})
+              local icyness = countProperty(other, "icy");
+              if icyness > 0 then
+                table.insert(unit.moves, {reason = "icy", dir = unit.dir, times = icyness})
               end
             end
           end
         elseif move_stage == 0 and slippers[unit.id] == nil and not hasProperty(unit, "slep") then
           if (movex ~= 0 or movey ~= 0) and hasProperty(unit, "u") then
-            table.insert(unit.moves, {reason = "u", dir = dirs8_by_offset[movex][movey]})
+            table.insert(unit.moves, {reason = "u", dir = dirs8_by_offset[movex][movey], times = 1})
             unit.olddir = unit.dir
           end
         elseif move_stage == 1 and slippers[unit.id] == nil and not hasProperty(unit, "slep") then
-          for i=1,countProperty(unit, "walk") do
-            table.insert(unit.moves, {reason = "walk", dir = unit.dir})
+          local moveness = countProperty(unit, "walk")
+          if moveness > 0 then
+            table.insert(unit.moves, {reason = "walk", dir = unit.dir, times = moveness})
           end
         elseif move_stage == 2 then
           for __,other in ipairs(getUnitsOnTile(unit.x, unit.y)) do
             if other.id ~= unit.id then
-              for i=1,countProperty(other, "go") do
-                table.insert(unit.moves, {reason = "go", dir = other.dir})
+              local goness = countProperty(other, "go");
+              if goness > 0 then
+                table.insert(unit.moves, {reason = "go", dir = other.dir, times = goness})
               end
             end
           end
@@ -55,31 +58,35 @@ function doMovement(movex, movey)
           local dir = data.dir
 
           local dpos = dirs8[dir]
+          print(tostring(dpos)..","..tostring(dir))
           local dx,dy = dpos[1],dpos[2]
+          for i=1,data.times do
+            local success,movers,specials = canMove(unit, dx, dy)
 
-          local success,movers,specials = canMove(unit, dx, dy)
-
-          for _,special in ipairs(specials) do
-            doAction(special)
-          end
-          if success then
-            unit.already_moving = true
-            for _,mover in ipairs(movers) do
-              if not mover.removed then
-                if not (data.reason == "icy" and slippers[mover.id] == true) then
-                  mover.dir = dir
-                  addUndo({"update", mover.id, mover.x, mover.y, mover.dir})
-                  moveUnit(mover, mover.x + dx, mover.y + dy)
-                  if (data.reason == "icy") then
-                    slippers[mover.id] = true
+            for _,special in ipairs(specials) do
+              doAction(special)
+            end
+            if success then
+              unit.already_moving = true
+              for _,mover in ipairs(movers) do
+                if not mover.removed then
+                  if not (data.reason == "icy" and slippers[mover.id] == true) then
+                    mover.dir = dir
+                    addUndo({"update", mover.id, mover.x, mover.y, mover.dir})
+                    moveUnit(mover, mover.x + dx, mover.y + dy)
+                    if (data.reason == "icy" and i == data.times) then
+                      slippers[mover.id] = true
+                    end
                   end
                 end
               end
-            end
-          else
-            if data.reason == "walk" then
-              unit.dir = rotate8(unit.dir)
-              table.insert(unit.moves, {"walk", unit.dir})
+            else
+              if data.reason == "walk" and i == 1 then
+                unit.dir = rotate8(unit.dir)
+                print(tostring(unit.dir))
+                table.insert(unit.moves, {reason = "walk", dir = unit.dir, times = data.times})
+              end
+              break
             end
           end
         end
