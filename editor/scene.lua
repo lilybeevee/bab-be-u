@@ -389,4 +389,20 @@ function scene.saveSettings()
   loadMap()
 end
 
+function love.filedropped(file)
+  local data = file:read()
+  local mapdata = json.decode(data)
+  
+  local loaddata = love.data.decode("string", "base64", mapdata.map)
+  local mapstr = love.data.decompress("string", "zlib", loaddata)
+
+  level_name = mapdata.name
+  mapwidth = mapdata.width
+  mapheight = mapdata.height
+  map = loadstring("return " .. mapstr)()
+
+  clear()
+  loadMap()
+end
+
 return scene
