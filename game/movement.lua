@@ -5,15 +5,14 @@ function doMovement(movex, movey)
   --TODO: Patashu: slippers as a construct is probably unnecessary after we have simultaneous doupdate movement, since they won't get a chance to 'double move' until after all slipping has been computed. (Also, simultaneous doupdate movement will remove the 'u & push separates' behaviour.)
   local slippers = {}
   local flippers = {}
-  local kikkers = {}
-
-  first_turn = false
+  local kikers = {}
 
   print("[---- begin turn ----]")
   print("move: " .. movex .. ", " .. movey)
 
   local move_stage = -1
   while move_stage < 3 do
+    kikers = {}
     for _,unit in ipairs(units) do
       if move_stage == -1 then
         unit.already_moving = false
@@ -58,46 +57,65 @@ function doMovement(movex, movey)
       end
     end
     
-    for _,unit in ipairs(moving_units) do
-      while #unit.moves > 0 do
-        local data = unit.moves[1]
-        if not unit.removed then
-          local dir = data.dir
+    local something_moved = true
+    local infinite_loop_protection = 0
+    while (something_moved and infinite_loop_protection < 99) do
+      something_moved = false
+      infinite_loop_protection = infinite_loop_protection + 1
+      for _,unit in ipairs(moving_units) do
+        while #unit.moves > 0 do
+          local data = unit.moves[1]
+          if not unit.removed then
+            local dir = data.dir
 
-          local dpos = dirs8[dir]
-          local dx,dy = dpos[1],dpos[2]
-          for i=1,data.times do
-            local success,movers,specials = canMove(unit, dx, dy)
+            local dpos = dirs8[dir]
+            local dx,dy = dpos[1],dpos[2]
+            for i=1,data.times do
+              local success,movers,specials = canMove(unit, dx, dy)
 
-            for _,special in ipairs(specials) do
-              doAction(special)
-            end
-            if success then
-              unit.already_moving = true
-              for _,mover in ipairs(movers) do
-                if not mover.removed then
-                  if not (data.reason == "icy" and slippers[mover.id] == true) then
-                    mover.dir = dir
-                    addUndo({"update", mover.id, mover.x, mover.y, mover.dir})
-                    moveUnit(mover, mover.x + dx, mover.y + dy)
-                    if (data.reason == "icy" and i == data.times) then
-                      slippers[mover.id] = true
+              for _,special in ipairs(specials) do
+                doAction(special)
+              end
+              if success then
+                unit.already_moving = true
+                for _,mover in ipairs(movers) do
+                  if not mover.removed then
+                    if not (data.reason == "icy" and slippers[mover.id] == true) then
+                      mover.dir = dir
+                      addUndo({"update", mover.id, mover.x, mover.y, mover.dir})
+                      moveUnit(mover, mover.x + dx, mover.y + dy)
+                      something_moved = true
+                      if (data.reason == "icy" and i == data.times) then
+                        slippers[mover.id] = true
+                      end
+                      --add SIDEKIKERs to move in the next iteration
+                      for __,sidekiker in ipairs(findSidekikers(mover, dx, dy)) do
+                        if (kikers[sidekiker.id] ~= true) then
+                          kikers[sidekiker.id] = true
+                          table.insert(sidekiker.moves, {reason = "sidekik", dir = mover.dir, times = 1})
+                          if not already_added[sidekiker] then
+                            table.insert(moving_units, sidekiker)
+                            already_added[sidekiker] = true
+                          end
+                        end
+                      end
                     end
                   end
                 end
+                --Patashu: only the mover itself pulls, otherwise it's a mess. stuff like STICKY/STUCK will require ruggedizing this logic.
+                doPull(unit, dx, dy, already_added, moving_units, kikers)
+              else
+                if data.reason == "walk" and i == 1 and flippers[unit.id] ~= true then
+                  unit.dir = rotate8(unit.dir)
+          flippers[unit.id] = true
+                  table.insert(unit.moves, {reason = "walk", dir = unit.dir, times = data.times})
+                end
+                break
               end
-              doPull(unit, dx, dy)
-            else
-              if data.reason == "walk" and i == 1 and flippers[unit.id] ~= true then
-                unit.dir = rotate8(unit.dir)
-				flippers[unit.id] = true
-                table.insert(unit.moves, {reason = "walk", dir = unit.dir, times = data.times})
-              end
-              break
             end
           end
+          table.remove(unit.moves, 1)
         end
-        table.remove(unit.moves, 1)
       end
     end
     move_stage = move_stage + 1
@@ -123,7 +141,46 @@ function doAction(action)
   end
 end
 
-function doPull(unit,dx,dy)
+function sign(x)
+  if (x > 0) then
+    return 1
+  elseif (x < 0) then
+    return -1
+  end
+  return 0
+end
+
+function findSidekikers(unit,dx,dy)
+  local result = {}
+  local x = unit.x;
+  local y = unit.y;
+  --TODO: Patashu: since movement is instant right now, we have to do it from the old location
+  x = x - dx;
+  y = y - dy;
+  dx = sign(dx);
+  dy = sign(dy);
+  local dir = dirs8_by_offset[dx][dy];
+  local dirleft = (dir + 2) % 8;
+  local dirright = (dir + 6) % 8;
+  local x_left = x+dirs8[dirleft][1];
+  local y_left = y+dirs8[dirleft][2];
+  local x_right = x+dirs8[dirright][1];
+  local y_right = y+dirs8[dirright][2];
+  
+  for _,v in ipairs(getUnitsOnTile(x_left, y_left)) do
+    if hasProperty(v, "sidekik") then
+      table.insert(result, v);
+    end
+  end
+  for _,v in ipairs(getUnitsOnTile(x_right, y_right)) do
+    if hasProperty(v, "sidekik") then
+      table.insert(result, v);
+    end
+  end
+  return result;
+end
+
+function doPull(unit,dx,dy, already_added, moving_units, kikers)
   local x = unit.x;
   local y = unit.y;
   --TODO: Patashu: since movement is instant right now, we have to do it from the old location
@@ -134,14 +191,9 @@ function doPull(unit,dx,dy)
     local successes = 0;
     x = x - dx;
     y = y - dy;
-    print("0:"..tostring(x)..","..tostring(y))
-    local tileid = x + y * mapwidth
-    for _,v in ipairs(units_by_tile[tileid]) do
-      print("a")
+    for _,v in ipairs(getUnitsOnTile(x, y)) do
       if hasProperty(v, "come pls") then
-        print("b")
         local success,movers,specials = canMove(v, dx, dy)
-        print("c:"..tostring(success))
         for _,special in ipairs(specials) do
           doAction(special)
         end
@@ -150,9 +202,23 @@ function doPull(unit,dx,dy)
           unit.already_moving = true
           for _,mover in ipairs(movers) do
             if not mover.removed then
-              mover.dir = dir
+              mover.dir = unit.dir
               addUndo({"update", mover.id, mover.x, mover.y, mover.dir})
               moveUnit(mover, mover.x + dx, mover.y + dy)
+              --add SIDEKIKERs to move in the next iteration
+              --TODO: Patashu: Cleanup would be nice here. It's annoying that we have to
+              --1) duplicate the logic to move a unit in two different places
+              --2) pass around a bunch of state to do it
+              for __,sidekiker in ipairs(findSidekikers(mover, dx, dy)) do
+                if (kikers[sidekiker.id] ~= true) then
+                  kikers[sidekiker.id] = true
+                  table.insert(sidekiker.moves, {reason = "sidekik", dir = mover.dir, times = 1})
+                  if not already_added[sidekiker] then
+                    table.insert(moving_units, sidekiker)
+                    already_added[sidekiker] = true
+                  end
+                end
+              end
             end
           end
         end
