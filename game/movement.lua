@@ -2,80 +2,101 @@ function doMovement(movex, movey)
   local played_sound = {}
   local already_added = {}
   local moving_units = {}
+  local slippers = {}
 
   first_turn = false
 
   print("[---- begin turn ----]")
   print("move: " .. movex .. ", " .. movey)
 
-  local move_stage = 0
-  while move_stage < 2 do
+  local move_stage = -1
+  while move_stage < 3 do
     for _,unit in ipairs(units) do
-      local moving = false
-      if move_stage == 0 then
+      if move_stage == -1 then
         unit.already_moving = false
         unit.moves = {}
       end
-      if not hasProperty(unit, "slep") then
-        if move_stage == 0 then
-          if (movex ~= 0 or movey ~= 0) and hasProperty(unit, "u") then
-            table.insert(unit.moves, {reason = "u", dir = dirs8_by_offset[movex][movey]})
-            unit.olddir = unit.dir
-            moving = true
+        if move_stage == -1 then
+          for __,other in ipairs(getUnitsOnTile(unit.x, unit.y)) do
+            if other.id ~= unit.id then
+              local icyness = countProperty(other, "icy");
+              if icyness > 0 then
+                table.insert(unit.moves, {reason = "icy", dir = unit.dir, times = icyness})
+              end
+            end
           end
-        elseif move_stage == 1 then
-          if hasProperty(unit, "walk") then
-            table.insert(unit.moves, {reason = "walk", dir = unit.dir})
-            moving = true
+        elseif move_stage == 0 and slippers[unit.id] == nil and not hasProperty(unit, "slep") then
+          if (movex ~= 0 or movey ~= 0) and hasProperty(unit, "u") then
+            table.insert(unit.moves, {reason = "u", dir = dirs8_by_offset[movex][movey], times = 1})
+            unit.olddir = unit.dir
+          end
+        elseif move_stage == 1 and slippers[unit.id] == nil and not hasProperty(unit, "slep") then
+          local moveness = countProperty(unit, "walk")
+          if moveness > 0 then
+            table.insert(unit.moves, {reason = "walk", dir = unit.dir, times = moveness})
+          end
+        elseif move_stage == 2 then
+          for __,other in ipairs(getUnitsOnTile(unit.x, unit.y)) do
+            if other.id ~= unit.id then
+              local yeeter = hasRule(other, "yeet", unit)
+              if (yeeter) then
+                table.insert(unit.moves, {reason = "yeet", dir = other.dir, times = 99})
+              end
+              local goness = countProperty(other, "go");
+              if goness > 0 then
+                table.insert(unit.moves, {reason = "go", dir = other.dir, times = goness})
+              end
+            end
           end
         end
-      end
-      if moving and not already_added[unit] then
+      if #unit.moves > 0 and not already_added[unit] then
         table.insert(moving_units, unit)
         already_added[unit] = true
       end
     end
-    move_stage = move_stage + 1
-  end
+    
+    for _,unit in ipairs(moving_units) do
+      while #unit.moves > 0 do
+        local data = unit.moves[1]
+        if not unit.removed then
+          local dir = data.dir
 
-  for _,unit in ipairs(moving_units) do
-    while #unit.moves > 0 do
-      local data = unit.moves[1]
-      if not unit.removed then
-        local dir = data.dir
+          local dpos = dirs8[dir]
+          local dx,dy = dpos[1],dpos[2]
+          for i=1,data.times do
+            local success,movers,specials = canMove(unit, dx, dy)
 
-        if data.reason ~= "u" then
-          dir = unit.dir
-        end
-
-        local dpos = dirs8[dir]
-        local dx,dy = dpos[1],dpos[2]
-
-        local success,movers,specials = canMove(unit, dx, dy)
-
-        for _,special in ipairs(specials) do
-          doAction(special)
-        end
-        if success then
-          unit.already_moving = true
-          for _,mover in ipairs(movers) do
-            if not mover.removed then
-              addUndo({"update", mover.id, mover.x, mover.y, mover.dir})
-              moveUnit(mover, mover.x + dx, mover.y + dy)
-              mover.dir = dir
+            for _,special in ipairs(specials) do
+              doAction(special)
+            end
+            if success then
+              unit.already_moving = true
+              for _,mover in ipairs(movers) do
+                if not mover.removed then
+                  if not (data.reason == "icy" and slippers[mover.id] == true) then
+                    mover.dir = dir
+                    addUndo({"update", mover.id, mover.x, mover.y, mover.dir})
+                    moveUnit(mover, mover.x + dx, mover.y + dy)
+                    if (data.reason == "icy" and i == data.times) then
+                      slippers[mover.id] = true
+                    end
+                  end
+                end
+              end
+            else
+              if data.reason == "walk" and i == 1 then
+                unit.dir = rotate8(unit.dir)
+                table.insert(unit.moves, {reason = "walk", dir = unit.dir, times = data.times})
+              end
+              break
             end
           end
-        else
-          if data.reason == "walk" then
-            unit.dir = rotate8(unit.dir)
-            table.insert(unit.moves, {"walk", unit.dir})
-          end
         end
+        table.remove(unit.moves, 1)
       end
-      table.remove(unit.moves, 1)
     end
+    move_stage = move_stage + 1
   end
-
   updateUnits()
   parseRules()
   convertUnits()
