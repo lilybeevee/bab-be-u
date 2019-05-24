@@ -70,7 +70,9 @@ function doMovement(movex, movey)
 
             local dpos = dirs8[dir]
             local dx,dy = dpos[1],dpos[2]
-            for i=1,data.times do
+            local i = 0;
+            while data.times > 0 do
+              i = i + 1;
               local success,movers,specials = canMove(unit, dx, dy)
 
               for _,special in ipairs(specials) do
@@ -78,40 +80,22 @@ function doMovement(movex, movey)
               end
               if success then
                 unit.already_moving = true
+                something_moved = true
                 for _,mover in ipairs(movers) do
-                  if not mover.removed then
-                    if not (data.reason == "icy" and slippers[mover.id] == true) then
-                      mover.dir = dir
-                      addUndo({"update", mover.id, mover.x, mover.y, mover.dir})
-                      moveUnit(mover, mover.x + dx, mover.y + dy)
-                      something_moved = true
-                      if (data.reason == "icy" and i == data.times) then
-                        slippers[mover.id] = true
-                      end
-                      --add SIDEKIKERs to move in the next iteration
-                      for __,sidekiker in ipairs(findSidekikers(mover, dx, dy)) do
-                        if (kikers[sidekiker.id] ~= true) then
-                          kikers[sidekiker.id] = true
-                          table.insert(sidekiker.moves, {reason = "sidekik", dir = mover.dir, times = 1})
-                          if not already_added[sidekiker] then
-                            table.insert(moving_units, sidekiker)
-                            already_added[sidekiker] = true
-                          end
-                        end
-                      end
-                    end
-                  end
+                  moveIt(mover, dx, dy, data, false, already_added, moving_units, kikers, slippers)
                 end
                 --Patashu: only the mover itself pulls, otherwise it's a mess. stuff like STICKY/STUCK will require ruggedizing this logic.
-                doPull(unit, dx, dy, already_added, moving_units, kikers)
+                doPull(unit, dx, dy, data, already_added, moving_units, kikers, slippers)
               else
+                --once per turn per walker, flip the walker if its first move is into a wall
                 if data.reason == "walk" and i == 1 and flippers[unit.id] ~= true then
                   unit.dir = rotate8(unit.dir)
-          flippers[unit.id] = true
+                  flippers[unit.id] = true
                   table.insert(unit.moves, {reason = "walk", dir = unit.dir, times = data.times})
                 end
                 break
               end
+              data.times = data.times - 1
             end
           end
           table.remove(unit.moves, 1)
@@ -141,6 +125,32 @@ function doAction(action)
   end
 end
 
+function moveIt(mover, dx, dy, data, pulling, already_added, moving_units, kikers, slippers)
+  if not mover.removed then
+    if pulling or not ((data.reason == "icy" or data.reason == "sidekik" or data.reason == "pull") and slippers[mover.id] == true) then
+      mover.dir = data.dir
+      addUndo({"update", mover.id, mover.x, mover.y, mover.dir})
+      moveUnit(mover, mover.x + dx, mover.y + dy)
+      --finishing a slip locks you out of U/WALK for the rest of the turn
+      --TODO: Patashu: Possibly simultaneous movement will prevent the specific 'pull/sidekik' exception from being needed...?
+      if not pulling and (data.reason == "icy" and data.times == 1) then
+        slippers[mover.id] = true
+      end
+      --add SIDEKIKERs to move in the next iteration
+      for __,sidekiker in ipairs(findSidekikers(mover, dx, dy)) do
+        if (kikers[sidekiker.id] ~= true) then
+          kikers[sidekiker.id] = true
+          table.insert(sidekiker.moves, {reason = "sidekik", dir = mover.dir, times = 1})
+          if not already_added[sidekiker] then
+            table.insert(moving_units, sidekiker)
+            already_added[sidekiker] = true
+          end
+        end
+      end
+    end
+  end
+end
+
 function sign(x)
   if (x > 0) then
     return 1
@@ -160,8 +170,8 @@ function findSidekikers(unit,dx,dy)
   dx = sign(dx);
   dy = sign(dy);
   local dir = dirs8_by_offset[dx][dy];
-  local dirleft = (dir + 2) % 8;
-  local dirright = (dir + 6) % 8;
+  local dirleft = (dir + 2 - 1) % 8 + 1;
+  local dirright = (dir + 6 - 1) % 8 + 1;
   local x_left = x+dirs8[dirleft][1];
   local y_left = y+dirs8[dirleft][2];
   local x_right = x+dirs8[dirright][1];
@@ -180,15 +190,15 @@ function findSidekikers(unit,dx,dy)
   return result;
 end
 
-function doPull(unit,dx,dy, already_added, moving_units, kikers)
+function doPull(unit,dx,dy,data, already_added, moving_units, kikers, slippers)
   local x = unit.x;
   local y = unit.y;
   --TODO: Patashu: since movement is instant right now, we have to do it from the old location
   x = x - dx;
   y = y - dy;
-  local failure = false;
-  while (not failure) do
-    local successes = 0;
+  local something_moved = true
+  while (something_moved) do
+    something_moved = false
     x = x - dx;
     y = y - dy;
     for _,v in ipairs(getUnitsOnTile(x, y)) do
@@ -198,33 +208,14 @@ function doPull(unit,dx,dy, already_added, moving_units, kikers)
           doAction(special)
         end
         if (success) then
-          successes = successes + 1
           unit.already_moving = true
+          something_moved = true
           for _,mover in ipairs(movers) do
-            if not mover.removed then
-              mover.dir = unit.dir
-              addUndo({"update", mover.id, mover.x, mover.y, mover.dir})
-              moveUnit(mover, mover.x + dx, mover.y + dy)
-              --add SIDEKIKERs to move in the next iteration
-              --TODO: Patashu: Cleanup would be nice here. It's annoying that we have to
-              --1) duplicate the logic to move a unit in two different places
-              --2) pass around a bunch of state to do it
-              for __,sidekiker in ipairs(findSidekikers(mover, dx, dy)) do
-                if (kikers[sidekiker.id] ~= true) then
-                  kikers[sidekiker.id] = true
-                  table.insert(sidekiker.moves, {reason = "sidekik", dir = mover.dir, times = 1})
-                  if not already_added[sidekiker] then
-                    table.insert(moving_units, sidekiker)
-                    already_added[sidekiker] = true
-                  end
-                end
-              end
-            end
+            moveIt(mover, dx, dy, data, true, already_added, moving_units, kikers, slippers)
           end
         end
       end
     end
-    failure = successes == 0;
   end
 end
 
