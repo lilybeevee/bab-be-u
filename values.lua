@@ -1008,4 +1008,45 @@ tiles_list = {
     color = {255,255,255},
     layer = 20,
   },
+  --- 94
+  {
+    name = "text_yeet",
+    sprite = "text_yeet",
+    type = "text",
+    texttype = "verb",
+    argtypes = {"object", "property"},
+    grid = {9, 5},
+    color = {255,255,255},
+    layer = 20,
+  },
+  --- 95
+  {
+    name = "text_go",
+    sprite = "text_go",
+    type = "text",
+    texttype = "property",
+    grid = {2, 9},
+    color = {95,157,209},
+    layer = 20,
+  },
+  --- 96
+  {
+    name = "text_icy",
+    sprite = "text_icy",
+    type = "text",
+    texttype = "property",
+    grid = {9, 3},
+    color = {131,200,229},
+    layer = 20,
+  },
+  --- 96
+  {
+    name = "text_xwx",
+    sprite = "text_xwx",
+    type = "text",
+    texttype = "property",
+    grid = {10, 10},
+    color = {36,0,168},
+    layer = 20,
+  },
 }
