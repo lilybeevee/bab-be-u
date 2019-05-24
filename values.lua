@@ -16,7 +16,7 @@ end
 
 debug = false
 debug_values = {
-  
+
 }
 
 dirs = {{1,0},{0,1},{-1,0},{0,-1}}
@@ -1045,7 +1045,7 @@ tiles_list = {
     color = {131,200,229},
     layer = 20,
   },
-  --- 96
+  --- 97
   {
     name = "text_xwx",
     sprite = "text_xwx",
@@ -1055,7 +1055,7 @@ tiles_list = {
     color = {36,0,168},
     layer = 20,
   },
-  --97
+  --98
   {
     name = "text_windo",
     sprite = "text_windo",
@@ -1065,4 +1065,24 @@ tiles_list = {
     color = {255, 255, 255},
     layer = 20,
   }
+  --- 99
+  {
+    name = "text_come pls",
+    sprite = "text_comepls",
+    type = "text",
+    texttype = "property",
+    grid = {2, 8},
+    color = {144,103,62},
+    layer = 20,
+  },
+  --- 100
+  {
+    name = "text_sidekik",
+    sprite = "text_sidekik",
+    type = "text",
+    texttype = "property",
+    grid = {10, 3},
+    color ={144,103,62},
+    layer = 20,
+  },
 }
