@@ -1007,7 +1007,7 @@ tiles_list = {
     name = "press",
     sprite = "press",
     type = "object",
-    grid = {999,999},
+    grid = {-1,-1},
     color = {255,255,255},
     layer = 20,
   },
