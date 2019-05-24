@@ -56,6 +56,7 @@ function parseRules(undoing)
     local unit_queue = {}
     local stupid_cond_units = {}
     local current_cond = {}
+    local current_effects = {}
     local stage = "start"
     local substage = ""
     local allowed = first_unit.argtypes
@@ -67,9 +68,15 @@ function parseRules(undoing)
 
     local stopped = false
     local first_valid = true
+    local await_valid = nil
 
-    if first_unit.texttype == "object" then
+    local formed_valid_rule = false
+
+    if first_unit.texttype == "object" or first_unit.texttype == "property" then
       table.insert(new_rules[1], {first_unit.textname, {first_unit}})
+      if first_unit.texttype == "property" then
+        await_valid = "text"
+      end
     elseif first_unit.texttype == "cond_prefix" then
       table.insert(new_rules[4][1], {first_unit.textname, {}})
       table.insert(stupid_cond_units, first_unit)
@@ -98,7 +105,7 @@ function parseRules(undoing)
         local valid_rule = false
         if not first_valid then
           valid = false
-        elseif (type == "object" or type == "property") and not allowed[type] then
+        elseif type == "object" and not allowed[type] then
           valid = false
         elseif substage == "cond_prefix" then
           if type == "cond_prefix" and prev_type == "and" then
@@ -124,12 +131,21 @@ function parseRules(undoing)
               table.insert(stupid_cond_units, cunit)
             end
             unit_queue = {}
+          elseif name == "text" and prev_type == "object" and not current_cond[#current_cond]:starts("text_") then
+            valid = true
+            current_cond[#current_cond] = "text_" .. current_cond[#current_cond]
+            for _,cunit in ipairs(unit_queue) do
+              table.insert(stupid_cond_units, cunit)
+            end
+            unit_queue = {}
           elseif type == "verb" and stage == "start" and (prev_type == "property" or prev_type == "object") then -- (start only) [BAB/U] BE
             valid = true
             new_stage = "verb"
             new_substage = ""
             allowed = unit.argtypes
             allow_conds = unit.allowconds
+            current_effects = {}
+            table.insert(new_rules[3], current_effects)
             table.insert(new_rules[2], {name, copyTable(unit_queue)})
             unit_queue = {}
           elseif type == "and" and (prev_type == "property" or prev_type == "object") then -- [BAB/U] AND
@@ -145,18 +161,32 @@ function parseRules(undoing)
             end
           end
         elseif stage == "start" then
-          if type == "object" and prev_type == "and" then
+          if (type == "object" or type == "property") and prev_type == "and" then
             valid = true
+            if type == "property" and not allowed["property"] then
+              await_valid = "text"
+            end
             table.insert(new_rules[1], {name, copyTable(unit_queue)}) --copyTable(unit_queue) is the text units that make up this part of the rule
             unit_queue = {}
-          elseif type == "verb" and prev_type == "object" then
+          elseif name == "text" and (prev_type == "object" or prev_type == "property") and not new_rules[1][#new_rules[1]][1]:starts("text_") then
+            valid = true
+            if await_valid == "text" then
+              await_valid = nil
+            end
+            local mod_table = new_rules[1][#new_rules[1]]
+            mod_table[1] = "text_" .. mod_table[1]
+            mergeTable(mod_table[2], unit_queue)
+            unit_queue = {}
+          elseif type == "verb" and (prev_type == "object" or prev_type == "property") and not await_valid then
             valid = true
             new_stage = "verb"
             allowed = unit.argtypes
             allow_conds = unit.allowconds
+            current_effects = {}
+            table.insert(new_rules[3], current_effects)
             table.insert(new_rules[2], {name, copyTable(unit_queue)})
             unit_queue = {}
-          elseif type == "and" and prev_type == "object" then
+          elseif type == "and" and (prev_type == "object" or prev_type == "property") then
             valid = true
           elseif type == "cond_infix" and prev_type == "object" then
             valid = true
@@ -168,8 +198,21 @@ function parseRules(undoing)
         elseif stage == "verb" then
           if (type == "property" or type == "object") and (prev_type == "verb" or prev_type == "and") then
             valid = true
+            formed_valid_rule = true
+            if type == "property" and not allowed["property"] then
+              await_valid = "text"
+            end
             extras = {}
-            table.insert(new_rules[3], {name, copyTable(unit_queue)})
+            table.insert(current_effects, {name, copyTable(unit_queue)})
+            unit_queue = {}
+          elseif name == "text" and (prev_type == "object" or prev_type == "property") and not current_effects[#current_effects][1]:starts("text_") then
+            valid = true
+            if await_valid == "text" then
+              await_valid = nil
+            end
+            local mod_table = current_effects[#current_effects]
+            mod_table[1] = "text_" .. mod_table[1]
+            mergeTable(mod_table[2], unit_queue)
             unit_queue = {}
           elseif type == "and" and (prev_type == "property" or prev_type == "object") then
             valid = true
@@ -179,6 +222,14 @@ function parseRules(undoing)
             allowed = unit.argtypes
             current_cond = {}
             table.insert(new_rules[4][2], {name, current_cond})
+          elseif type == "verb" and prev_type == "and" then
+            valid = true
+            allowed = unit.argtypes
+            allow_conds = unit.allowconds
+            current_effects = {}
+            table.insert(new_rules[3], current_effects)
+            table.insert(new_rules[2], {name, copyTable(unit_queue)})
+            unit_queue = {}
           end
         end
 
@@ -199,6 +250,9 @@ function parseRules(undoing)
       end
 
       if stopped then
+        if await_valid then
+          formed_valid_rule = false
+        end
         for _,unit in ipairs(extras) do
           table.insert(first_words, {unit, first[2]})
         end
@@ -213,10 +267,10 @@ function parseRules(undoing)
       --table.insert(already_parsed, unit)
     end
 
-    if #new_rules[3] > 0 then
+    if formed_valid_rule then
       for _,a in ipairs(new_rules[1]) do
-        for _,b in ipairs(new_rules[2]) do
-          for _,c in ipairs(new_rules[3]) do
+        for vi,b in ipairs(new_rules[2]) do
+          for _,c in ipairs(new_rules[3][vi]) do
             local noun = a[1]
             local noun_texts = a[2]
             local verb = b[1]
@@ -228,7 +282,7 @@ function parseRules(undoing)
               print("nil on: " .. noun .. " - " .. verb .. " - " .. prop)
             end
 
-            if verb == "got" then
+            if verb == "got" or a[1]:starts("text_") or c[1]:starts("text_") then
               print("added rule: " .. noun .. " " .. verb .. " " .. prop)
             end
 

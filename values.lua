@@ -866,6 +866,7 @@ tiles_list = {
   {
     name = "tot",
     sprite = "tot",
+    sleepsprite = "tot_slep",
     type = "object",
     grid = {9, 8},
     color = {235,145,202},
@@ -999,6 +1000,15 @@ tiles_list = {
     type = "text",
     grid = {8, 9},
     color = {142,94,156},
+    layer = 20,
+  },
+  -- 93
+  {
+    name = "press",
+    sprite = "press",
+    type = "object",
+    grid = {999,999},
+    color = {255,255,255},
     layer = 20,
   },
 }

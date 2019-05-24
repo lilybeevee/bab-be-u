@@ -107,10 +107,28 @@ function updateUnits(undoing)
         end
       end
 
-      if hasProperty(unit,"slep") and tiles_list[unit.tile].sleepsprite then
-        unit.sprite = tiles_list[unit.tile].sleepsprite
+      if unit.fullname == "os" then
+        local os = love.system.getOS()
+        if os == "Windows" then
+          unit.sprite = "os_windous"
+        elseif os == "OS X" or os == "iOS" then
+          unit.sprite = "os_mak"
+        elseif os == "Linux" then
+          unit.sprite = "os_linx"
+        elseif os == "Android" then
+          unit.sprite = "os_androd"
+        else
+          unit.sprite = "wat"
+        end
+        if unit.sprite ~= "wat" and hasProperty(unit,"slep") then
+          unit.sprite = unit.sprite .. "_slep"
+        end
       else
-        unit.sprite = tiles_list[unit.tile].sprite
+        if hasProperty(unit,"slep") and tiles_list[unit.tile].sleepsprite then
+          unit.sprite = tiles_list[unit.tile].sleepsprite
+        else
+          unit.sprite = tiles_list[unit.tile].sprite
+        end
       end
 
       if hasProperty(unit,"up") then
@@ -170,6 +188,9 @@ function convertUnits()
     if rule[3] == "text" then
       istext = true
       obj_name = "text_" .. rule[1]
+    end
+    if rule[3]:starts("text_") then
+      istext = true
     end
     local obj_id = tiles_by_name[obj_name]
     local obj_tile = tiles_list[obj_id]
