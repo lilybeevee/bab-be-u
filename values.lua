@@ -1064,7 +1064,7 @@ tiles_list = {
     grid = {9, 0},
     color = {255, 255, 255},
     layer = 20,
-  }
+  },
   --- 99
   {
     name = "text_come pls",
