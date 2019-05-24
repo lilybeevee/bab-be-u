@@ -268,6 +268,10 @@ function canMove(unit,dx,dy,pulling_)
     if hasProperty(v, "come pls") and not pulling then
       stopped = true
     end
+	--if thing is ouch, it will not stop things. probably recreates the normal baba behaviour pretty well
+	if hasProperty(v, "ouch") then
+		stopped = false
+	end
     if stopped then
       return false,movers,specials
     end
