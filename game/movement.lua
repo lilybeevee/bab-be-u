@@ -38,6 +38,10 @@ function doMovement(movex, movey)
         elseif move_stage == 2 then
           for __,other in ipairs(getUnitsOnTile(unit.x, unit.y)) do
             if other.id ~= unit.id then
+              local yeeter = hasRule(other, "yeet", unit)
+              if (yeeter) then
+                table.insert(unit.moves, {reason = "yeet", dir = other.dir, times = 99})
+              end
               local goness = countProperty(other, "go");
               if goness > 0 then
                 table.insert(unit.moves, {reason = "go", dir = other.dir, times = goness})
@@ -58,7 +62,6 @@ function doMovement(movex, movey)
           local dir = data.dir
 
           local dpos = dirs8[dir]
-          print(tostring(dpos)..","..tostring(dir))
           local dx,dy = dpos[1],dpos[2]
           for i=1,data.times do
             local success,movers,specials = canMove(unit, dx, dy)
@@ -83,7 +86,6 @@ function doMovement(movex, movey)
             else
               if data.reason == "walk" and i == 1 then
                 unit.dir = rotate8(unit.dir)
-                print(tostring(unit.dir))
                 table.insert(unit.moves, {reason = "walk", dir = unit.dir, times = data.times})
               end
               break
