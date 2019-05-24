@@ -100,7 +100,7 @@ function updateUnits(undoing)
         unit.layer = unit.layer + 10
         for _,on in ipairs(units_by_tile[tileid]) do
           if hasProperty(on, "xwx") then
-            local dummy = OOPSIE_WOOPSIE_UWU_WE_MADE_A_FUCKY_WUCKY_XWX.dummy;
+            love = {}
           end
           if hasProperty(on, ":)") then
             win = true
