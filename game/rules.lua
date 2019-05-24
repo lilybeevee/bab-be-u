@@ -110,15 +110,27 @@ function parseRules(undoing)
         elseif substage == "cond_prefix" then
           if type == "cond_prefix" and prev_type == "and" then
             valid = true
-            table.insert(new_rules[4][1], {name, {}})
+            if stage == "start" then
+              table.insert(new_rules[4][1], {name, {}})
+            elseif stage == "verb" then
+              table.insert(new_rules[4][2], {name, {}})
+            end
             for _,cunit in ipairs(unit_queue) do
               table.insert(stupid_cond_units, cunit)
             end
             unit_queue = {}
-          elseif type == "object" and prev_type == "cond_prefix" then
+          elseif (type == "object" or type == "property") and prev_type == "cond_prefix" then
             valid = true
             new_substage = ""
-            table.insert(new_rules[1], {name, copyTable(unit_queue)})
+            if type == "property" and not allowed["property"] then
+              await_valid = "text"
+            end
+            if stage == "start" then
+              table.insert(new_rules[1], {name, copyTable(unit_queue)})
+            elseif stage == "verb" then
+              formed_valid_rule = true
+              table.insert(current_effects, {name, copyTable(unit_queue)})
+            end
             unit_queue = {}
           elseif type == "and" and prev_type == "cond_prefix" then
             valid = true
@@ -216,6 +228,11 @@ function parseRules(undoing)
             unit_queue = {}
           elseif type == "and" and (prev_type == "property" or prev_type == "object") then
             valid = true
+          elseif type == "cond_prefix" and allow_conds and prev_type == "verb" then
+            valid = true
+            new_substage = "cond_prefix"
+            table.insert(new_rules[4][2], {name, {}})
+            table.insert(stupid_cond_units, unit)
           elseif type == "cond_infix" and allow_conds and (prev_type == "property" or prev_type == "object") then
             valid = true
             new_substage = "cond_infix"
