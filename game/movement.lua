@@ -57,6 +57,7 @@ function doMovement(movex, movey)
       end
     end
     
+    --TODO: Patashu: We probably want to invert this so it goes for each unit that is moving -> move it once, to help prevent some units moving far ahead of others.
     local something_moved = true
     local infinite_loop_protection = 0
     while (something_moved and infinite_loop_protection < 99) do
@@ -88,6 +89,7 @@ function doMovement(movex, movey)
                 doPull(unit, dx, dy, data, already_added, moving_units, kikers, slippers)
               else
                 --once per turn per walker, flip the walker if its first move is into a wall
+                --TODO: Patashu: We probably want to add walkers to flippers after their first move no matter what, so that even after arbitrary refactors they can only flip on their first move of a turn.
                 if data.reason == "walk" and i == 1 and flippers[unit.id] ~= true then
                   unit.dir = rotate8(unit.dir)
                   flippers[unit.id] = true
@@ -95,6 +97,7 @@ function doMovement(movex, movey)
                 end
                 break
               end
+              --TODO: Patashu: We probably want to cancel the rest of a move if success was false, both so we're not wasting our time and to prevent weird edge case bugs.
               data.times = data.times - 1
             end
           end
@@ -265,10 +268,10 @@ function canMove(unit,dx,dy,pulling_)
     if hasProperty(v, "sidekik") then
       stopped = true
     end
-    if hasProperty(v, "come pls") and not pulling then
+    if hasProperty(v, "come pls") and not hasProperty(v, "go away") and not pulling then
       stopped = true
     end
-	--if thing is ouch, it will not stop things. probably recreates the normal baba behaviour pretty well
+    --if thing is ouch, it will not stop things. probably recreates the normal baba behaviour pretty well
     if hasProperty(v, "ouch") then
 	  stopped = false
     end
