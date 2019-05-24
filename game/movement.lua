@@ -3,6 +3,7 @@ function doMovement(movex, movey)
   local already_added = {}
   local moving_units = {}
   local slippers = {}
+  local flippers = {}
 
   first_turn = false
 
@@ -84,8 +85,9 @@ function doMovement(movex, movey)
                 end
               end
             else
-              if data.reason == "walk" and i == 1 then
+              if data.reason == "walk" and i == 1 and flippers[unit.id] ~= true then
                 unit.dir = rotate8(unit.dir)
+				flippers[unit.id] = true
                 table.insert(unit.moves, {reason = "walk", dir = unit.dir, times = data.times})
               end
               break
