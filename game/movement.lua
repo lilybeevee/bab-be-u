@@ -127,13 +127,13 @@ end
 
 function moveIt(mover, dx, dy, data, pulling, already_added, moving_units, kikers, slippers)
   if not mover.removed then
-    if pulling or not ((data.reason == "icy" or data.reason == "sidekik" or data.reason == "pull") and slippers[mover.id] == true) then
+    if not ((data.reason == "icy" or data.reason == "sidekik") and slippers[mover.id] == true) then
       mover.dir = data.dir
       addUndo({"update", mover.id, mover.x, mover.y, mover.dir})
       moveUnit(mover, mover.x + dx, mover.y + dy)
       --finishing a slip locks you out of U/WALK for the rest of the turn
       --TODO: Patashu: Possibly simultaneous movement will prevent the specific 'pull/sidekik' exception from being needed...?
-      if not pulling and (data.reason == "icy" and data.times == 1) then
+      if (data.reason == "icy" and data.times == 1) then
         slippers[mover.id] = true
       end
       --add SIDEKIKERs to move in the next iteration
