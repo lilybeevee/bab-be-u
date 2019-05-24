@@ -88,17 +88,20 @@ function doMovement(movex, movey)
                 --Patashu: only the mover itself pulls, otherwise it's a mess. stuff like STICKY/STUCK will require ruggedizing this logic.
                 doPull(unit, dx, dy, data, already_added, moving_units, kikers, slippers)
               else
-                --once per turn per walker, flip the walker if its first move is into a wall
-                --TODO: Patashu: We probably want to add walkers to flippers after their first move no matter what, so that even after arbitrary refactors they can only flip on their first move of a turn.
-                if data.reason == "walk" and i == 1 and flippers[unit.id] ~= true then
+                --flip walkers on their first move of the turn if they failed to move
+                if data.reason == "walk" and flippers[unit.id] ~= true then
                   unit.dir = rotate8(unit.dir)
                   flippers[unit.id] = true
                   table.insert(unit.moves, {reason = "walk", dir = unit.dir, times = data.times})
                 end
-                break
+                break --if we failed to move, then stop moving (table.remove below will be hit)
               end
-              --TODO: Patashu: We probably want to cancel the rest of a move if success was false, both so we're not wasting our time and to prevent weird edge case bugs.
+              --otherwise just count down once
               data.times = data.times - 1
+              --if we didn't flip on our first walk of the turn, we've lost our chance to flip
+              if data.reason == "walk" then
+                flippers[unit.id] = true
+              end
             end
           end
           table.remove(unit.moves, 1)
