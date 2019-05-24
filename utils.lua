@@ -587,3 +587,7 @@ end
 function saveAll()
   love.filesystem.write("Settings.bab", json.encode(settings))
 end
+
+function debugDisplay(key, val)
+  debug_values[key] = val
+end

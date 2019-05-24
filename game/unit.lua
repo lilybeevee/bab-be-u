@@ -225,6 +225,24 @@ function convertUnits()
                   local new_unit = createUnit(obj_id, unit.x, unit.y, unit.dir, true)
                   addUndo({"create", new_unit.id, true})
                 end
+                if rule[1] == "windo" then
+                  local wx, wy = love.window.getPosition()
+                  if rule[3] == "up" then
+                    window_dir = 0
+                  elseif rule[3] == "right" then
+                    window_dir = 1
+                  elseif rule[3] == "down" then
+                    window_dir = 2
+                  elseif rule[3] == "left" then
+                    window_dir = 3
+                  elseif rule[3] == "walk" then
+                    if window_dir == 0 or window_dir == 2 then
+                      love.window.setPosition(wx, wy+(window_dir/2%2-1)*50) -- i hate this
+                    elseif window_dir == 1 or window_dir == 3 then
+                      love.window.setPosition(wx+((window_dir-1)/2%2-1)*50, wy) -- i hate this too
+                    end
+                  end
+                end
                 update_undo = true
               end
             end

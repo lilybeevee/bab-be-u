@@ -185,17 +185,23 @@ function love.draw()
       love.graphics.setColor(hslToRgb(love.timer.getTime()/3%1, .5, .5, .9))
     end
     mousex, mousey = love.mouse.getPosition()
-    love.graphics.print('~~ !! DEBUG MENU !! ~~'..'\n'..
-        'window height: '..love.graphics.getHeight()..'\n'..
-        'window width: '..love.graphics.getWidth()..'\n'..
-        'mouse : x'..mousex..' y'..mousey..'\n'..
-        'press R to restart\n'..
-        'press S to save level to clipboard (editor)\n' ..
-        'press L to load level from clipboard (editor)\n' ..
-        'F4 to toggle debug menu\n'..
-        'F3+G to toggle rainbowmode\n'..
-        'F2 for editor mode\n'..
-        'F1 for game mode')
+    local debugtext = '~~ !! DEBUG MENU !! ~~'..'\n'..
+    'window height: '..love.graphics.getHeight()..'\n'..
+    'window width: '..love.graphics.getWidth()..'\n'..
+    'mouse: x'..mousex..' y'..mousey..'\n'..
+    'press R to restart\n'..
+    'press S to save level to clipboard (editor)\n' ..
+    'press L to load level from clipboard (editor)\n' ..
+    'F4 to toggle debug menu\n'..
+    'F3+G to toggle rainbowmode\n'..
+    'F2 for editor mode\n'..
+    'F1 for game mode'
+    for key, value in ipairs(debug_values) do
+      debugtext = debugtext..'\n'..
+      key..': '..value
+      print('added '..key)
+    end
+    love.graphics.print(debugtext)
   end
 end
 

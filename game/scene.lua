@@ -1,4 +1,5 @@
 local scene = {}
+window_dir = 0
 
 local mask_shader = love.graphics.newShader[[
   vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords) {
@@ -74,6 +75,8 @@ function scene.update(dt)
   scene.doPassiveParticles(dt, ":)", "bonus", 0.25, 1, 1, {237,226,133})
   scene.doPassiveParticles(dt, ":o", "bonus", 0.5, 0.8, 1, {257,57,106})
   scene.doPassiveParticles(dt, "qt", "love", 0.25, 0.5, 1, {235,145,202})
+
+  debugDisplay('window dir', window_dir)
 end
 
 function scene.resetStuff()
@@ -85,6 +88,8 @@ function scene.resetStuff()
   loadMap()
   parseRules()
   updateUnits(true)
+
+  window_dir = 0
 end
 
 function scene.keyPressed(key)
@@ -185,6 +190,8 @@ function scene.draw(dt)
   love.graphics.setColor(0, 0, 0)
   if rainbowmode then love.graphics.setColor(hslToRgb(love.timer.getTime()/6%1, .1, .1, .9)) end
   love.graphics.rectangle("fill", 0, 0, roomwidth, roomheight)
+
+  love.graphics.print(window_dir)
 
   for i=1,max_layer do
     if units_by_layer[i] then

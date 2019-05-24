@@ -15,6 +15,9 @@ if love.filesystem.read("Settings.bab") ~= nil then
 end
 
 debug = false
+debug_values = {
+  
+}
 
 dirs = {{1,0},{0,1},{-1,0},{0,-1}}
 dirs_by_name = {
@@ -1052,4 +1055,14 @@ tiles_list = {
     color = {36,0,168},
     layer = 20,
   },
+  --97
+  {
+    name = "text_windo",
+    sprite = "text_windo",
+    type = "text",
+    texttype = "object",
+    grid = {9, 0},
+    color = {255, 255, 255},
+    layer = 20,
+  }
 }
