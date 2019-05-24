@@ -37,8 +37,12 @@ function clear()
   for i,v in ipairs(tiles_list) do
     tiles_by_name[v.name] = i
     if v.grid then
-      tile_grid_width = math.max(tile_grid_width, v.grid[1]+1)
-      tile_grid_height = math.max(tile_grid_height, v.grid[2]+1)
+      if (v.grid[1]+1 < 100) then
+        tile_grid_width = math.max(tile_grid_width, v.grid[1]+1)
+      end
+      if (v.grid[2]+1 < 100) then 
+        tile_grid_height = math.max(tile_grid_height, v.grid[2]+1)
+      end
       table.insert(add_to_grid, {i, v.grid[1], v.grid[2]})
     end
   end
