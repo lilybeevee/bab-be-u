@@ -1089,7 +1089,7 @@ tiles_list = {
   },
  --- 101
   {
-name = "text_piler",
+    name = "text_piler",
     sprite = "text_piler",
     type = "text",
     grid = {6, 3},
