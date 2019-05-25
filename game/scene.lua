@@ -23,7 +23,7 @@ local paletteshader_0 = love.graphics.newShader[[
 ]]
 --local paletteshader_autumn = love.graphics.newShader("paletteshader_autumn.txt")
 --local paletteshader_dunno = love.graphics.newShader("paletteshader_dunno.txt")
-local paletteshader_zawarudo = love.graphics.newShader("shader_pucker.txt")
+local shader_zawarudo = love.graphics.newShader("shader_pucker.txt")
 local level_shader = paletteshader_0
 local doin_the_world = false
 local shader_time = 0
@@ -114,7 +114,7 @@ function scene.keyPressed(key)
   end
   
   if key == "y" then
-    level_shader = paletteshader_zawarudo
+    level_shader = shader_zawarudo
     shader_time = 0
     doin_the_world = true
   end

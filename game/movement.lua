@@ -240,6 +240,12 @@ function canMove(unit,dx,dy,pulling_)
   if not inBounds(x,y) then
     return false,{},{}
   end
+  if hasProperty(unit, "diagnal") and (dx == 0 or dy == 0) then
+    return false,movers,specials
+  end
+  if hasProperty(unit, "orthongl") and (dx ~= 0 and dy ~= 0) then
+    return false,movers,specials
+  end
 
   local nedkee = hasProperty(unit, "ned kee")
   local fordor = hasProperty(unit, "for dor")
@@ -274,9 +280,12 @@ function canMove(unit,dx,dy,pulling_)
     if hasProperty(v, "come pls") and not hasProperty(v, "go away") and not pulling then
       stopped = true
     end
-    --if thing is ouch, it will not stop things. probably recreates the normal baba behaviour pretty well
+    if hasProperty(v, "go my wey") and ((v.dir == 1 and dx == -1) or (v.dir == 2 and (dx == -1 or dy == -1) and (dx ~= 1 and dy ~= 1)) or (v.dir == 3 and dy == -1) or (v.dir == 4 and (dx == 1 or dy == -1) and (dx ~= -1 and dy ~= 1)) or (v.dir == 5 and dx == 1) or (v.dir == 6 and (dx == 1 or dy == 1) and (dx ~= -1 and dy ~= -1)) or (v.dir == 7 and dy == 1)) or (v.dir == 8 and (dx == -1 or dy == 1) and (dx ~= 1 and dy ~= -1)) then
+      stopped = true
+    end
+	--if thing is ouch, it will not stop things. probably recreates the normal baba behaviour pretty well
     if hasProperty(v, "ouch") then
-	  stopped = false
+      stopped = false
     end
     if stopped then
       return false,movers,specials

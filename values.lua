@@ -1087,4 +1087,52 @@ tiles_list = {
     color ={144,103,62},
     layer = 20,
   },
+  --- 101
+  {
+    name = "chekr",
+    sprite = "chekr",
+    type = "object",
+    grid = {11, 3},
+    color ={78,90,148},
+    layer = 5,
+  },
+  --- 102
+  {
+    name = "text_chekr",
+    sprite = "text_chekr",
+    type = "text",
+    grid = {12, 3},
+    color ={78,90,148},
+    layer = 20,
+  },
+  --- 103
+  {
+    name = "text_diagnal",
+    sprite = "text_diagnal",
+    type = "text",
+    texttype = "property",
+    grid = {13, 3},
+    color ={78,90,148},
+    layer = 20,
+  },
+  --- 104
+  {
+    name = "text_go my wey",
+    sprite = "text_go my wey",
+    type = "text",
+    texttype = "property",
+    grid = {13, 4},
+    color ={131,200,229},
+    layer = 20,
+  },
+  --- 105
+  {
+    name = "text_orthongl",
+    sprite = "text_orthongl",
+    type = "text",
+    texttype = "property",
+    grid = {13, 2},
+    color ={78,90,148},
+    layer = 20,
+  },
 }
