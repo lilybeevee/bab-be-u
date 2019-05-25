@@ -1087,4 +1087,22 @@ tiles_list = {
     color ={144,103,62},
     layer = 20,
   },
+ --- 101
+  {
+name = "text_piler",
+    sprite = "text_piler",
+    type = "text",
+    grid = {6, 3},
+    color = {41,49,65},
+    layer = 20,
+  },
+ --- 102
+  {
+   name = "piler",
+    sprite = "piler",
+    type = "object",
+    grid = {5, 4},
+    color = {41,49,65},
+    layer = 3,
+  },
 }
