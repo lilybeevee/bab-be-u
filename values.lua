@@ -813,6 +813,7 @@ tiles_list = {
     sprite = "text_consume",
     type = "text",
     texttype = "verb",
+    allowconds = true,
     grid = {8, 5},
     color = {229,83,59},
     layer = 20,
@@ -1021,6 +1022,7 @@ tiles_list = {
     type = "text",
     texttype = "verb",
     argtypes = {"object", "property"},
+    allowconds = true,
     grid = {9, 5},
     color = {255,255,255},
     layer = 20,
@@ -1084,5 +1086,23 @@ tiles_list = {
     grid = {10, 3},
     color ={144,103,62},
     layer = 20,
+  },
+ --- 101
+  {
+name = "text_piler",
+    sprite = "text_piler",
+    type = "text",
+    grid = {6, 3},
+    color = {115,115,115},
+    layer = 20,
+  },
+ --- 102
+  {
+   name = "piler",
+    sprite = "piler",
+    type = "object",
+    grid = {5, 3},
+    color = {115,115,115},
+    layer = 3,
   },
 }

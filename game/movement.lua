@@ -57,6 +57,7 @@ function doMovement(movex, movey)
       end
     end
     
+    --TODO: Patashu: We probably want to invert this so it goes for each unit that is moving -> move it once, to help prevent some units moving far ahead of others.
     local something_moved = true
     local infinite_loop_protection = 0
     while (something_moved and infinite_loop_protection < 99) do
@@ -87,15 +88,20 @@ function doMovement(movex, movey)
                 --Patashu: only the mover itself pulls, otherwise it's a mess. stuff like STICKY/STUCK will require ruggedizing this logic.
                 doPull(unit, dx, dy, data, already_added, moving_units, kikers, slippers)
               else
-                --once per turn per walker, flip the walker if its first move is into a wall
-                if data.reason == "walk" and i == 1 and flippers[unit.id] ~= true then
+                --flip walkers on their first move of the turn if they failed to move
+                if data.reason == "walk" and flippers[unit.id] ~= true then
                   unit.dir = rotate8(unit.dir)
                   flippers[unit.id] = true
                   table.insert(unit.moves, {reason = "walk", dir = unit.dir, times = data.times})
                 end
-                break
+                break --if we failed to move, then stop moving (table.remove below will be hit)
               end
+              --otherwise just count down once
               data.times = data.times - 1
+              --if we didn't flip on our first walk of the turn, we've lost our chance to flip
+              if data.reason == "walk" then
+                flippers[unit.id] = true
+              end
             end
           end
           table.remove(unit.moves, 1)
@@ -265,10 +271,10 @@ function canMove(unit,dx,dy,pulling_)
     if hasProperty(v, "sidekik") then
       stopped = true
     end
-    if hasProperty(v, "come pls") and not pulling then
+    if hasProperty(v, "come pls") and not hasProperty(v, "go away") and not pulling then
       stopped = true
     end
-	--if thing is ouch, it will not stop things. probably recreates the normal baba behaviour pretty well
+    --if thing is ouch, it will not stop things. probably recreates the normal baba behaviour pretty well
     if hasProperty(v, "ouch") then
 	  stopped = false
     end
