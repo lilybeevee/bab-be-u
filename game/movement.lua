@@ -28,9 +28,7 @@ function doMovement(movex, movey)
   while move_stage < 3 do
     local moving_units = {}
     local moving_units_next = {}
-    local remove_from_moving_units = {}
     local already_added = {}
-    local kikers = {} --so two sidekikers don't trigger each other indefinitely
     for _,unit in ipairs(units) do
       unit.already_moving = false
       unit.moves = {}
@@ -85,18 +83,23 @@ Simultaneous movement algorithm, basically a simple version of Baba's:
     local loopa = 0
     local successes = 1
     --Outer loop continues until nothing moves in the inner loop, and does a doUpdate after each inner loop, to allow for multimoves to exist.
-    while (#moving_units > 0 and successes > 0 and loopa < 99) do
+    while (#moving_units > 0 and successes > 0 and loopa < 99) do 
       successes = 0
       local loopb = 0
       loopa = loopa + 1
       local something_moved = true
-      local has_flipped = false
       --Inner loop tries to move everything at least once, and gives up if after an iteration, nothing can move. (It also tries to do flips to see if that helps.)
       while (something_moved and loopb < 99) do
+        local remove_from_moving_units = {}
+        local has_flipped = false
+        local kikers = {} --so two sidekikers don't trigger each other indefinitely
         something_moved = false
         loopb = loopb + 1
         for _,unit in ipairs(moving_units) do
-          if #unit.moves > 0 and not unit.removed and unit.moves[1].times > 0 then
+          while #unit.moves > 0 and unit.moves[1].times <= 0 do
+            table.remove(unit.moves, 1)
+          end
+          if #unit.moves > 0 and not unit.removed then
             local data = unit.moves[1]
             local dir = data.dir
             local dpos = dirs8[dir]
@@ -107,9 +110,10 @@ Simultaneous movement algorithm, basically a simple version of Baba's:
               doAction(special)
             end
             if success then
-              --unit.already_moving = true
               something_moved = true
               successes = successes + 1
+              remove_from_moving_units[unit] = true;
+              table.insert(moving_units_next, unit);
               
               for _,mover in ipairs(movers) do
                 moveIt(mover, dx, dy, data, false, already_added, moving_units, kikers, slippers)
@@ -118,8 +122,6 @@ Simultaneous movement algorithm, basically a simple version of Baba's:
               --Patashu: TODO: Doing the pull right away means that in a situation like this: https://cdn.discordapp.com/attachments/579519329515732993/582179745006092318/unknown.png the pull could happen before the bounce depending on move order. To fix this... I'm not sure how Baba does this? But it's somewhere in that mess of code.
               doPull(unit, dx, dy, data, already_added, moving_units, kikers, slippers)
               data.times = data.times - 1;
-              remove_from_moving_units[unit] = true;
-              table.insert(moving_units_next, unit);
             end
           else
             remove_from_moving_units[unit] = true;
@@ -127,19 +129,25 @@ Simultaneous movement algorithm, basically a simple version of Baba's:
         end
         --do flips if we failed to move anything
         if (not something_moved and not has_flipped) then
+          --CLEANUP: This is getting a little duplicate-y.
           for _,unit in ipairs(moving_units) do
+            while #unit.moves > 0 and unit.moves[1].times <= 0 do
+              table.remove(unit.moves)
+            end
             if #unit.moves > 0 and not unit.removed and unit.moves[1].times > 0 then
               local data = unit.moves[1]
               if data.reason == "walk" and flippers[unit.id] ~= true then
-                dir = rotate8(data.dir); unit.dir = dir; data.dir = dir;
-                dpos = dirs8[dir]
-                dx,dy = dpos[1],dpos[2]
+                dir = rotate8(data.dir); data.dir = dir;
+                addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
+                table.insert(update_queue, {unit = unit, reason = "update", payload = {x = unit.x, y = unit.y, dir = data.dir}})
                 flippers[unit.id] = true
-                --data.times = data.times + 1
+                something_moved = true
+                successes = successes + 1
+                remove_from_moving_units[unit] = true;
+                table.insert(moving_units_next, unit);
               end
             end
           end
-          something_moved = true;
           has_flipped = true;
         end
         for i=#moving_units,1,-1 do
@@ -182,8 +190,9 @@ function moveIt(mover, dx, dy, data, pulling, already_added, moving_units, kiker
   if not mover.removed then
     update_undo = true
     addUndo({"update", mover.id, mover.x, mover.y, mover.dir})
-    mover.dir = data.dir 
-    --print("moving:"..mover.name..","..tostring(mover.x)..","..tostring(mover.y)..","..tostring(dx)..","..tostring(dy))
+    mover.olddir = mover.dir
+    mover.dir = data.dir
+    --print("moving:"..mover.name..","..tostring(mover.id)..","..tostring(mover.x)..","..tostring(mover.y)..","..tostring(dx)..","..tostring(dy))
     mover.already_moving = true;
     table.insert(update_queue, {unit = mover, reason = "update", payload = {x = mover.x + dx, y = mover.y + dy, dir = mover.dir}})
     --finishing a slip locks you out of U/WALK for the rest of the turn
