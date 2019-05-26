@@ -1,11 +1,9 @@
 function newUndo()
-  if update_undo then
-    table.insert(undo_buffer, 1, {})
-  end
+  table.insert(undo_buffer, 1, {})
 end
 
 function addUndo(data)
-  if #undo_buffer > 0 then
+  if #undo_buffer > 0 then 
     table.insert(undo_buffer[1], 1, data)
   end
 end
@@ -52,5 +50,7 @@ function undo()
     updateUnits(true)
 
     table.remove(undo_buffer, 1)
+  else
+     print("undo failed")
   end
 end

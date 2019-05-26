@@ -11,6 +11,7 @@ function doUpdate()
       unit.dir = dir
       moveUnit(unit, x, y)
       unit.already_moving = false
+      update_undo = true
     end
   end
   update_queue = {}
@@ -144,11 +145,13 @@ function doAction(action)
       unit.destroyed = true
     end
   end
+  update_undo = true
 end
 
 function moveIt(mover, dx, dy, data, pulling, already_added, moving_units, kikers, slippers)
   if not mover.removed then
     if not ((data.reason == "icy" or data.reason == "sidekik") and slippers[mover.id] == true) then
+      update_undo = true
       addUndo({"update", mover.id, mover.x, mover.y, mover.dir})
       mover.dir = data.dir --print("moving:"..mover.name..","..tostring(mover.x)..","..tostring(mover.y)..","..tostring(dx)..","..tostring(dy))
       table.insert(update_queue, {unit = mover, reason = "movement", payload = {x = mover.x + dx, y = mover.y + dy, dir = mover.dir}})
