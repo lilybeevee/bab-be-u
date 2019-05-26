@@ -79,6 +79,11 @@ function updateUnits(undoing)
             unit.removed = true
             playSound("break", 0.5)
             addParticles("destroy", unit.x, unit.y, unit.color)
+		  elseif hasProperty(on, "hotte") and hasProperty(unit, "fridgd") then
+		    unit.destroyed = true
+            unit.removed = true
+			playSound("sink", 0.5)
+            addParticles("destroy", unit.x, unit.y, unit.color)
           elseif is_u and hasProperty(on, ":(") then
             unit.destroyed = true
             unit.removed = true
