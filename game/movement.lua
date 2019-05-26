@@ -72,7 +72,7 @@ function doMovement(movex, movey)
             local dpos = dirs8[dir]
             local dx,dy = dpos[1],dpos[2]
             while data.times > 0 do
-              local success,movers,specials = canMove(unit, dx, dy)
+              local success,movers,specials = canMove(unit, dx, dy, true)
 
               for _,special in ipairs(specials) do
                 doAction(special)
@@ -86,7 +86,7 @@ function doMovement(movex, movey)
                 --Patashu: only the mover itself pulls, otherwise it's a mess. stuff like STICKY/STUCK will require ruggedizing this logic.
                 doPull(unit, dx, dy, data, already_added, moving_units, kikers, slippers)
               else
-                --the first time a walker fails to walk per turn, flip it. (TODO: We need to not flip early if the only reason we can't walk is because something in front of us hasn't moved yet (like a walk/stop or a walk/pull. Re-investigate after simultaneous movement)
+                --the first time a walker fails to walk per turn, flip it. (TODO: Patashu: We need to not flip early if the only reason we can't walk is because something in front of us hasn't moved yet (like a walk/stop or a walk/pull. Re-investigate after simultaneous movement)
                 if data.reason == "walk" and flippers[unit.id] ~= true then
                   dir = rotate8(dir); unit.dir = dir; data.dir = dir;
                   dpos = dirs8[dir]
@@ -206,7 +206,7 @@ function doPull(unit,dx,dy,data, already_added, moving_units, kikers, slippers)
     y = y - dy;
     for _,v in ipairs(getUnitsOnTile(x, y)) do
       if hasProperty(v, "come pls") then
-        local success,movers,specials = canMove(v, dx, dy)
+        local success,movers,specials = canMove(v, dx, dy, true)
         for _,special in ipairs(specials) do
           doAction(special)
         end
@@ -222,8 +222,13 @@ function doPull(unit,dx,dy,data, already_added, moving_units, kikers, slippers)
   end
 end
 
-function canMove(unit,dx,dy,pulling_)
+function canMove(unit,dx,dy,pushing_,pulling_)
   local pulling = false
+  if (pushing_ ~= nil) then
+		pushing = pushing_
+	end
+  --TODO: Patashu: this isn't used now but might be in the future??
+  local pushing = false
 	if (pulling_ ~= nil) then
 		pulling = pulling_
 	end
@@ -249,13 +254,17 @@ function canMove(unit,dx,dy,pulling_)
     end
     if hasProperty(v, "go away") then
       if not v.already_moving then
-        local success,new_movers,new_specials = canMove(v, dx, dy)
-        for _,special in ipairs(new_specials) do
-          table.insert(specials, special)
-        end
-        if success then
-          for _,mover in ipairs(new_movers) do
-            table.insert(movers, mover)
+        if pushing then
+          local success,new_movers,new_specials = canMove(v, dx, dy)
+          for _,special in ipairs(new_specials) do
+            table.insert(specials, special)
+          end
+          if success then
+            for _,mover in ipairs(new_movers) do
+              table.insert(movers, mover)
+            end
+          else
+            stopped = true
           end
         else
           stopped = true
