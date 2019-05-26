@@ -116,6 +116,7 @@ TODO: Patashu: New simultaneous movement algorithm shall be:
                 moveIt(mover, dx, dy, data, false, already_added, moving_units, kikers, slippers)
               end
               --Patashu: only the mover itself pulls, otherwise it's a mess. stuff like STICKY/STUCK will require ruggedizing this logic.
+              --Patashu: TODO: Doing the pull right away means that in a situation like this: https://cdn.discordapp.com/attachments/579519329515732993/582179745006092318/unknown.png the pull could happen before the bounce depending on move order. To fix this... I'm not sure how Baba does this? But it's somewhere in that mess of code.
               doPull(unit, dx, dy, data, already_added, moving_units, kikers, slippers)
               data.times = data.times - 1;
               remove_from_moving_units[unit] = true;
