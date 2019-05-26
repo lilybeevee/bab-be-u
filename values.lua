@@ -1099,6 +1099,7 @@ tiles_list = {
     layer = 20,
   },
   --- 102
+  {
     name = "chekr",
     sprite = "chekr",
     type = "object",
