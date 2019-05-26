@@ -223,12 +223,12 @@ function doPull(unit,dx,dy,data, already_added, moving_units, kikers, slippers)
 end
 
 function canMove(unit,dx,dy,pushing_,pulling_)
-  local pulling = false
+  local pushing = false
   if (pushing_ ~= nil) then
 		pushing = pushing_
 	end
   --TODO: Patashu: this isn't used now but might be in the future??
-  local pushing = false
+  local pulling = false
 	if (pulling_ ~= nil) then
 		pulling = pulling_
 	end
@@ -255,7 +255,7 @@ function canMove(unit,dx,dy,pushing_,pulling_)
     if hasProperty(v, "go away") then
       if not v.already_moving then
         if pushing then
-          local success,new_movers,new_specials = canMove(v, dx, dy)
+          local success,new_movers,new_specials = canMove(v, dx, dy, pushing, pulling)
           for _,special in ipairs(new_specials) do
             table.insert(specials, special)
           end
