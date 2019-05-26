@@ -705,6 +705,7 @@ tiles_list = {
     grid = {0, 9},
     color = {41,49,65},
     layer = 3,
+    rotate = true,
   },
   -- 66
   {
@@ -1087,22 +1088,14 @@ tiles_list = {
     color ={144,103,62},
     layer = 20,
   },
- --- 101
+  --- 101
   {
-name = "text_piler",
-    sprite = "text_piler",
-    type = "text",
-    grid = {6, 3},
-    color = {115,115,115},
-    layer = 20,
-  },
- --- 102
-  {
-   name = "piler",
-    sprite = "piler",
-    type = "object",
-    grid = {5, 3},
-    color = {115,115,115},
-    layer = 3,
-  },
+    name = "text_arond",
+	sprite = "text_arond",
+	type = "text",
+	texttype = "cond_infix",
+	grid = {8,4},
+	color = {255,255,255},
+	layer = 20,
+  }
 }

@@ -60,7 +60,9 @@ function updateUnits(undoing)
 
       if not undoing then
         for _,on in ipairs(units_by_tile[tileid]) do
-          if hasProperty(on, "no swim") and on ~= unit then
+          if hasProperty(on, "go") and on ~= unit then
+            unit.dir = on.dir
+          elseif hasProperty(on, "no swim") and on ~= unit then
             unit.destroyed = true
             unit.removed = true
             on.destroyed = true
@@ -69,10 +71,6 @@ function updateUnits(undoing)
             addParticles("destroy", unit.x, unit.y, on.color)
             table.insert(del_units, on)
             update_undo = true
-          elseif is_u and hasProperty(on, ":)") then
-            win = true
-            music_fading = true
-            playSound("win", 0.5)
           elseif is_u and hasProperty(on, ":(") then
             unit.destroyed = true
             unit.removed = true
@@ -92,6 +90,10 @@ function updateUnits(undoing)
             playSound("break", 0.5)
             addParticles("destroy", unit.x, unit.y, unit.color)
             update_undo = true
+          elseif is_u and hasProperty(on, ":)") then
+            win = true
+            music_fading = true
+            playSound("win", 0.5)
           end
         end
       end

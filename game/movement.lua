@@ -14,8 +14,8 @@ function doMovement(movex, movey)
   while move_stage < 3 do
     kikers = {}
     for _,unit in ipairs(units) do
+      unit.already_moving = false
       if move_stage == -1 then
-        unit.already_moving = false
         unit.moves = {}
       end
         if move_stage == -1 then
@@ -71,10 +71,8 @@ function doMovement(movex, movey)
 
             local dpos = dirs8[dir]
             local dx,dy = dpos[1],dpos[2]
-            local i = 0;
             while data.times > 0 do
-              i = i + 1;
-              local success,movers,specials = canMove(unit, dx, dy)
+              local success,movers,specials = canMove(unit, dx, dy, true)
 
               for _,special in ipairs(specials) do
                 doAction(special)
@@ -88,20 +86,19 @@ function doMovement(movex, movey)
                 --Patashu: only the mover itself pulls, otherwise it's a mess. stuff like STICKY/STUCK will require ruggedizing this logic.
                 doPull(unit, dx, dy, data, already_added, moving_units, kikers, slippers)
               else
-                --flip walkers on their first move of the turn if they failed to move
+                --the first time a walker fails to walk per turn, flip it. (TODO: Patashu: We need to not flip early if the only reason we can't walk is because something in front of us hasn't moved yet (like a walk/stop or a walk/pull. Re-investigate after simultaneous movement)
                 if data.reason == "walk" and flippers[unit.id] ~= true then
-                  unit.dir = rotate8(unit.dir)
+                  dir = rotate8(dir); unit.dir = dir; data.dir = dir;
+                  dpos = dirs8[dir]
+                  dx,dy = dpos[1],dpos[2]
                   flippers[unit.id] = true
-                  table.insert(unit.moves, {reason = "walk", dir = unit.dir, times = data.times})
+                  data.times = data.times + 1
+                else
+                  break --if we failed to move, then stop moving (table.remove below will be hit)
                 end
-                break --if we failed to move, then stop moving (table.remove below will be hit)
               end
               --otherwise just count down once
               data.times = data.times - 1
-              --if we didn't flip on our first walk of the turn, we've lost our chance to flip
-              if data.reason == "walk" then
-                flippers[unit.id] = true
-              end
             end
           end
           table.remove(unit.moves, 1)
@@ -136,6 +133,7 @@ function moveIt(mover, dx, dy, data, pulling, already_added, moving_units, kiker
     if not ((data.reason == "icy" or data.reason == "sidekik") and slippers[mover.id] == true) then
       mover.dir = data.dir
       addUndo({"update", mover.id, mover.x, mover.y, mover.dir})
+      --print("moving:"..mover.name..","..tostring(mover.x)..","..tostring(mover.y)..","..tostring(dx)..","..tostring(dy))
       moveUnit(mover, mover.x + dx, mover.y + dy)
       --finishing a slip locks you out of U/WALK for the rest of the turn
       --TODO: Patashu: Possibly simultaneous movement will prevent the specific 'pull/sidekik' exception from being needed...?
@@ -209,7 +207,7 @@ function doPull(unit,dx,dy,data, already_added, moving_units, kikers, slippers)
     y = y - dy;
     for _,v in ipairs(getUnitsOnTile(x, y)) do
       if hasProperty(v, "come pls") then
-        local success,movers,specials = canMove(v, dx, dy)
+        local success,movers,specials = canMove(v, dx, dy, true)
         for _,special in ipairs(specials) do
           doAction(special)
         end
@@ -225,7 +223,12 @@ function doPull(unit,dx,dy,data, already_added, moving_units, kikers, slippers)
   end
 end
 
-function canMove(unit,dx,dy,pulling_)
+function canMove(unit,dx,dy,pushing_,pulling_)
+  local pushing = false
+  if (pushing_ ~= nil) then
+		pushing = pushing_
+	end
+  --TODO: Patashu: this isn't used now but might be in the future??
   local pulling = false
 	if (pulling_ ~= nil) then
 		pulling = pulling_
@@ -252,13 +255,17 @@ function canMove(unit,dx,dy,pulling_)
     end
     if hasProperty(v, "go away") then
       if not v.already_moving then
-        local success,new_movers,new_specials = canMove(v, dx, dy)
-        for _,special in ipairs(new_specials) do
-          table.insert(specials, special)
-        end
-        if success then
-          for _,mover in ipairs(new_movers) do
-            table.insert(movers, mover)
+        if pushing then
+          local success,new_movers,new_specials = canMove(v, dx, dy, pushing, pulling)
+          for _,special in ipairs(new_specials) do
+            table.insert(specials, special)
+          end
+          if success then
+            for _,mover in ipairs(new_movers) do
+              table.insert(movers, mover)
+            end
+          else
+            stopped = true
           end
         else
           stopped = true
