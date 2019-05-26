@@ -71,9 +71,7 @@ function doMovement(movex, movey)
 
             local dpos = dirs8[dir]
             local dx,dy = dpos[1],dpos[2]
-            local i = 0;
             while data.times > 0 do
-              i = i + 1;
               local success,movers,specials = canMove(unit, dx, dy)
 
               for _,special in ipairs(specials) do
@@ -88,20 +86,19 @@ function doMovement(movex, movey)
                 --Patashu: only the mover itself pulls, otherwise it's a mess. stuff like STICKY/STUCK will require ruggedizing this logic.
                 doPull(unit, dx, dy, data, already_added, moving_units, kikers, slippers)
               else
-                --flip walkers on their first move of the turn if they failed to move
+                --the first time a walker fails to walk per turn, flip it. (TODO: We need to not flip early if the only reason we can't walk is because something in front of us hasn't moved yet (like a walk/stop or a walk/pull. Re-investigate after simultaneous movement)
                 if data.reason == "walk" and flippers[unit.id] ~= true then
-                  unit.dir = rotate8(unit.dir)
+                  dir = rotate8(dir); unit.dir = dir; data.dir = dir;
+                  dpos = dirs8[dir]
+                  dx,dy = dpos[1],dpos[2]
                   flippers[unit.id] = true
-                  table.insert(unit.moves, {reason = "walk", dir = unit.dir, times = data.times})
+                  data.times = data.times + 1
+                else
+                  break --if we failed to move, then stop moving (table.remove below will be hit)
                 end
-                break --if we failed to move, then stop moving (table.remove below will be hit)
               end
               --otherwise just count down once
               data.times = data.times - 1
-              --if we didn't flip on our first walk of the turn, we've lost our chance to flip
-              if data.reason == "walk" then
-                flippers[unit.id] = true
-              end
             end
           end
           table.remove(unit.moves, 1)
