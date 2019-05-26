@@ -11,7 +11,6 @@ function doUpdate()
       unit.dir = dir
       moveUnit(unit, x, y)
       unit.already_moving = false
-      update_undo = true
     end
   end
   update_queue = {}
@@ -145,7 +144,6 @@ function doAction(action)
       unit.destroyed = true
     end
   end
-  update_undo = true
 end
 
 function moveIt(mover, dx, dy, data, pulling, already_added, moving_units, kikers, slippers)
