@@ -353,25 +353,26 @@ function canMove(unit,dx,dy,pushing_,pulling_)
           stopped = true
         end
       end
-    end
-    if hasProperty(v, "no go") then
-      stopped = true
-    end
-    if hasProperty(v, "sidekik") then
-      stopped = true
-    end
-    if hasProperty(v, "come pls") and not hasProperty(v, "go away") and not pulling then
-      stopped = true
-    end
-    if hasProperty(v, "go my wey") and ((v.dir == 1 and dx == -1) or (v.dir == 2 and (dx == -1 or dy == -1) and (dx ~= 1 and dy ~= 1)) or (v.dir == 3 and dy == -1) or (v.dir == 4 and (dx == 1 or dy == -1) and (dx ~= -1 and dy ~= 1)) or (v.dir == 5 and dx == 1) or (v.dir == 6 and (dx == 1 or dy == 1) and (dx ~= -1 and dy ~= -1)) or (v.dir == 7 and dy == 1)) or (v.dir == 8 and (dx == -1 or dy == 1) and (dx ~= 1 and dy ~= -1)) then
-      stopped = true
-    end
-	--if thing is ouch, it will not stop things. probably recreates the normal baba behaviour pretty well
-    if hasProperty(v, "ouch") then
+      if hasProperty(v, "no go") then --Things that are STOP stop being PUSH or PULL, unlike in Baba. This is currently intended.
+        stopped = true
+      end
+      if hasProperty(v, "sidekik") then
+        stopped = true
+      end
+      if hasProperty(v, "come pls") and not hasProperty(v, "go away") and not pulling then
+        stopped = true
+      end
+      if hasProperty(v, "go my wey") and ((v.dir == 1 and dx == -1) or (v.dir == 2 and (dx == -1 or dy == -1) and (dx ~= 1 and dy ~= 1)) or (v.dir == 3 and dy == -1) or (v.dir == 4 and (dx == 1 or dy == -1) and (dx ~= -1 and dy ~= 1)) or (v.dir == 5 and dx == 1) or (v.dir == 6 and (dx == 1 or dy == 1) and (dx ~= -1 and dy ~= -1)) or (v.dir == 7 and dy == 1)) or (v.dir == 8 and (dx == -1 or dy == 1) and (dx ~= 1 and dy ~= -1)) then
+        --TODO: I think this is just 'direction is 2 or less away'? and we can turn dx/dy into dir by looking at dirs8_by_offset.
+        stopped = true
+      end
+      --if thing is ouch, it will not stop things. probably recreates the normal baba behaviour pretty well (except the item dropped by GOT will be on the wrong tile...?)
+      if hasProperty(v, "ouch") then
       stopped = false
-    end
-    if stopped then
-      return false,movers,specials
+      end
+      if stopped then
+        return false,movers,specials
+      end
     end
   end
 
