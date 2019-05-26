@@ -1098,6 +1098,7 @@ tiles_list = {
     color = {255,255,255},
     layer = 20,
   },
+  {
   --- 102
   {
     name = "chekr",
