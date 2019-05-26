@@ -1155,6 +1155,7 @@ tiles_list = {
     grid = {11, 4},
     color ={255,255,255},
     layer = 5,
+    rotate = true,
   },
   --- 108
   {
