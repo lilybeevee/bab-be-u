@@ -338,7 +338,7 @@ function canMove(unit,dx,dy,pushing_,pulling_)
           stopped = true
         end
       end
-      if hasProperty(v, "no go") then
+      if hasProperty(v, "no go") then --Things that are STOP stop being PUSH or PULL, unlike in Baba. This is currently intended.
         stopped = true
       end
       if hasProperty(v, "sidekik") then
