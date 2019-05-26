@@ -1163,5 +1163,43 @@ tiles_list = {
     grid = {12, 4},
     color ={255,255,255},
     layer = 20,
-  }
+  },
+  --- 109
+  {
+    name = "text_hotte",
+	sprite = "text_hotte",
+	type = "text",
+	texttype = "property",
+	grid = {6,3},
+	color = {228,153,80},
+	layer = 20,
+  },
+  --- 110
+  {
+    name = "text_fridgd",
+	sprite = "text_fridgd",
+	type = "text",
+	texttype = "property",
+	grid = {5,3},
+	color = {95,157,209},
+	layer = 20,
+  },
+  --- 111
+  {
+    name = "text_colld",
+	sprite = "text_colld",
+	type = "text",
+	grid = {4,3},
+	color = {95,157,209},
+	layer = 20,
+  },
+  --- 112
+  {
+    name = "colld",
+	sprite = "colld",
+	type = "object",
+	grid = {3,3},
+	color = {62, 118, 136},
+	layer = 3,
+  },
 }
