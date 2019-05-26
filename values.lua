@@ -705,6 +705,7 @@ tiles_list = {
     grid = {0, 9},
     color = {41,49,65},
     layer = 3,
+    rotate = true,
   },
   -- 66
   {
@@ -1089,6 +1090,15 @@ tiles_list = {
   },
   --- 101
   {
+    name = "text_arond",
+    sprite = "text_arond",
+    type = "text",
+    texttype = "cond_infix",
+    grid = {8,4},
+    color = {255,255,255},
+    layer = 20,
+  },
+  --- 102
     name = "chekr",
     sprite = "chekr",
     type = "object",
@@ -1096,7 +1106,7 @@ tiles_list = {
     color ={78,90,148},
     layer = 5,
   },
-  --- 102
+  --- 103
   {
     name = "text_chekr",
     sprite = "text_chekr",
@@ -1105,7 +1115,7 @@ tiles_list = {
     color ={78,90,148},
     layer = 20,
   },
-  --- 103
+  --- 104
   {
     name = "text_diagnal",
     sprite = "text_diagnal",
@@ -1115,7 +1125,7 @@ tiles_list = {
     color ={78,90,148},
     layer = 20,
   },
-  --- 104
+  --- 105
   {
     name = "text_go my wey",
     sprite = "text_go my wey",
@@ -1125,7 +1135,7 @@ tiles_list = {
     color ={131,200,229},
     layer = 20,
   },
-  --- 105
+  --- 106
   {
     name = "text_orthongl",
     sprite = "text_orthongl",
@@ -1135,7 +1145,7 @@ tiles_list = {
     color ={78,90,148},
     layer = 20,
   },
-  --- 106
+  --- 107
   {
     name = "arro",
     sprite = "arro",
@@ -1144,7 +1154,7 @@ tiles_list = {
     color ={255,255,255},
     layer = 5,
   },
-  --- 107
+  --- 108
   {
     name = "text_arro",
     sprite = "text_arro",
@@ -1152,5 +1162,5 @@ tiles_list = {
     grid = {12, 4},
     color ={255,255,255},
     layer = 20,
-  },
+  }
 }

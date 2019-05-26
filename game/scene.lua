@@ -417,8 +417,7 @@ function scene.checkInput()
 
   for _,key in ipairs(repeat_keys) do
     if not win and repeat_timers[key] ~= nil and repeat_timers[key] <= 0 then
-      if key == "z" then
-        update_undo = false
+      if key == "z" or key == "backspace" then
         undo()
       else
         local x, y = 0, 0
@@ -434,8 +433,10 @@ function scene.checkInput()
           if key_down["d"] then x = x + 1 end
         end
         newUndo()
-        update_undo = false
         doMovement(x, y)
+        if #undo_buffer[1] == 0 then
+          table.remove(undo_buffer, 1)
+        end
       end
     end
 

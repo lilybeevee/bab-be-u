@@ -257,6 +257,20 @@ function testConds(unit,conds) --cond should be a {cond,{object types}}
           result = false
         end
       end
+	elseif condtype == "arond" then
+	  for _,param in ipairs(params) do
+        local others = getUnitsOnTile(unit.x-1,unit.y-1,param)
+		for nx=-1,1 do
+		  for ny=-1,1 do
+		    if (nx ~= 0) or (ny ~= 0) then
+		      mergeTable(others,getUnitsOnTile(unit.x+nx,unit.y+ny,param))
+			end
+		  end
+		end
+        if #others == 0 then
+          result = false
+        end
+      end
     elseif condtype == "look at" then
       for _,param in ipairs(params) do
         local others = getUnitsOnTile(unit.x + dirs8[unit.dir][1],unit.y + dirs8[unit.dir][2],param)
