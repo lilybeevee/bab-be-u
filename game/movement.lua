@@ -180,27 +180,24 @@ end
 
 function moveIt(mover, dx, dy, data, pulling, already_added, moving_units, kikers, slippers)
   if not mover.removed then
-    if not ((data.reason == "icy" or data.reason == "sidekik") and slippers[mover.id] == true) then
-      update_undo = true
-      addUndo({"update", mover.id, mover.x, mover.y, mover.dir})
-      mover.dir = data.dir 
-      print("moving:"..mover.name..","..tostring(mover.x)..","..tostring(mover.y)..","..tostring(dx)..","..tostring(dy))
-      mover.already_moving = true;
-      table.insert(update_queue, {unit = mover, reason = "movement", payload = {x = mover.x + dx, y = mover.y + dy, dir = mover.dir}})
-      --finishing a slip locks you out of U/WALK for the rest of the turn
-      --TODO: Patashu: Possibly simultaneous movement will prevent the specific 'pull/sidekik' exception from being needed...?
-      if (data.reason == "icy" and data.times == 1) then
-        slippers[mover.id] = true
-      end
-      --add SIDEKIKERs to move in the next iteration
-      for __,sidekiker in ipairs(findSidekikers(mover, dx, dy)) do
-        if (kikers[sidekiker.id] ~= true) then
-          kikers[sidekiker.id] = true
-          table.insert(sidekiker.moves, {reason = "sidekik", dir = mover.dir, times = 1})
-          if not already_added[sidekiker] then
-            table.insert(moving_units, sidekiker)
-            already_added[sidekiker] = true
-          end
+    update_undo = true
+    addUndo({"update", mover.id, mover.x, mover.y, mover.dir})
+    mover.dir = data.dir 
+    print("moving:"..mover.name..","..tostring(mover.x)..","..tostring(mover.y)..","..tostring(dx)..","..tostring(dy))
+    mover.already_moving = true;
+    table.insert(update_queue, {unit = mover, reason = "movement", payload = {x = mover.x + dx, y = mover.y + dy, dir = mover.dir}})
+    --finishing a slip locks you out of U/WALK for the rest of the turn
+    if (data.reason == "icy") then
+      slippers[mover.id] = true
+    end
+    --add SIDEKIKERs to move in the next iteration
+    for __,sidekiker in ipairs(findSidekikers(mover, dx, dy)) do
+      if (kikers[sidekiker.id] ~= true) then
+        kikers[sidekiker.id] = true
+        table.insert(sidekiker.moves, {reason = "sidekik", dir = mover.dir, times = 1})
+        if not already_added[sidekiker] then
+          table.insert(moving_units, sidekiker)
+          already_added[sidekiker] = true
         end
       end
     end
