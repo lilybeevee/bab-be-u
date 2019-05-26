@@ -61,7 +61,6 @@ function updateUnits(undoing)
       if not undoing then
         for _,on in ipairs(units_by_tile[tileid]) do
           if hasProperty(on, "go") and on ~= unit then
-            print("a:"..tostring(unit.dir)..","..tostring(on.dir))
             unit.dir = on.dir
           elseif hasProperty(on, "no swim") and on ~= unit then
             unit.destroyed = true

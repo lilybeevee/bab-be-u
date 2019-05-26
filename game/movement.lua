@@ -14,8 +14,8 @@ function doMovement(movex, movey)
   while move_stage < 3 do
     kikers = {}
     for _,unit in ipairs(units) do
+      unit.already_moving = false
       if move_stage == -1 then
-        unit.already_moving = false
         unit.moves = {}
       end
         if move_stage == -1 then
@@ -133,6 +133,7 @@ function moveIt(mover, dx, dy, data, pulling, already_added, moving_units, kiker
     if not ((data.reason == "icy" or data.reason == "sidekik") and slippers[mover.id] == true) then
       mover.dir = data.dir
       addUndo({"update", mover.id, mover.x, mover.y, mover.dir})
+      --print("moving:"..mover.name..","..tostring(mover.x)..","..tostring(mover.y)..","..tostring(dx)..","..tostring(dy))
       moveUnit(mover, mover.x + dx, mover.y + dy)
       --finishing a slip locks you out of U/WALK for the rest of the turn
       --TODO: Patashu: Possibly simultaneous movement will prevent the specific 'pull/sidekik' exception from being needed...?
