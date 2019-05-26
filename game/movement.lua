@@ -1,9 +1,9 @@
---format: {unit = unit, type = "movement", payload = {x = x, y = y, dir = dir}} 
+--format: {unit = unit, type = "update", payload = {x = x, y = y, dir = dir}} 
 update_queue = {}
 
 function doUpdate()
   for _,update in ipairs(update_queue) do
-    if update.reason == "movement" then
+    if update.reason == "update" then
       local unit = update.unit
       local x = update.payload.x
       local y = update.payload.y
@@ -74,13 +74,12 @@ function doMovement(movex, movey)
     end
     
     --[[
-TODO: Patashu: New simultaneous movement algorithm shall be:
-1) Make a list of all things that are moving this take, moving_this_tick
-2a) Try to move each of them once. For each success, move it to moving_next_tick and set it already_moving with one less move point and an update queued. If there was at least one success, repeat 2 until there are no successes. (During this process, things that are currently moving are considered intangible in canMove.)
+Simultaneous movement algorithm, basically a simple version of Baba's:
+1) Make a list of all things that are moving this take, moving_units
+2a) Try to move each of them once. For each success, move it to moving_units_next and set it already_moving with one less move point and an update queued. If there was at least one success, repeat 2 until there are no successes. (During this process, things that are currently moving are considered intangible in canMove.)
 2b) But wait, we're still not done! Flip all walkers that failed to flip, then continue until we once again have no successes. (Flipping still only happens once per turn.)
-2c) Finally, if we had at least one success, everything left is moved to moving_next_tick with one less move point and we repeat from 2a). If we had no successes, the take is totally resolved. doupdate() and unset all current_moving.
+2c) Finally, if we had at least one success, everything left is moved to moving_units_next with one less move point and we repeat from 2a). If we had no successes, the take is totally resolved. doupdate() and unset all current_moving.
 3) when SLIDE/LAUNCH/BOUNCE exists, we'll need to figure out where to insert it... but if it's like baba, it goes after the move succeeds but before do_update(), and it adds either another update or another movement as appropriate.
-(This setup is very similar to how baba does it, BTW. We'll just try to code it cleaner with a laser sharp focus on what interactions we know we care about.)
 ]]
     --loopa and loopb are just infinite loop protection.
     local loopa = 0
@@ -184,9 +183,9 @@ function moveIt(mover, dx, dy, data, pulling, already_added, moving_units, kiker
     update_undo = true
     addUndo({"update", mover.id, mover.x, mover.y, mover.dir})
     mover.dir = data.dir 
-    print("moving:"..mover.name..","..tostring(mover.x)..","..tostring(mover.y)..","..tostring(dx)..","..tostring(dy))
+    --print("moving:"..mover.name..","..tostring(mover.x)..","..tostring(mover.y)..","..tostring(dx)..","..tostring(dy))
     mover.already_moving = true;
-    table.insert(update_queue, {unit = mover, reason = "movement", payload = {x = mover.x + dx, y = mover.y + dy, dir = mover.dir}})
+    table.insert(update_queue, {unit = mover, reason = "update", payload = {x = mover.x + dx, y = mover.y + dy, dir = mover.dir}})
     --finishing a slip locks you out of U/WALK for the rest of the turn
     if (data.reason == "icy") then
       slippers[mover.id] = true
@@ -348,7 +347,7 @@ function canMove(unit,dx,dy,pushing_,pulling_)
       if hasProperty(v, "come pls") and not hasProperty(v, "go away") and not pulling then
         stopped = true
       end
-      --if thing is ouch, it will not stop things. probably recreates the normal baba behaviour pretty well
+      --if thing is ouch, it will not stop things. probably recreates the normal baba behaviour pretty well (except the item dropped by GOT will be on the wrong tile...?)
       if hasProperty(v, "ouch") then
       stopped = false
       end
