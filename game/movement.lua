@@ -79,7 +79,10 @@ TODO: Patashu: New simultaneous movement algorithm shall be:
 1) Make a list of all things that are moving this take, moving_this_tick
 2a) Try to move each of them once. For each success, move it to moving_next_tick and set it already_moving with one less move point and an update queued. If there was at least one success, repeat 2 until there are no successes. (During this process, things that are currently moving are considered intangible in canMove.)
 2b) But wait, we're still not done! Flip all walkers that failed to flip, then continue until we once again have no successes. (Flipping still only happens once per turn.)
-2c) Finally, if we had at least one success, everything left is moved to moving_next_tick with one less move point and we repeat from 2a). If we had no successes, the take is totally resolved. doupdate() and unset all current_moving.]]
+2c) Finally, if we had at least one success, everything left is moved to moving_next_tick with one less move point and we repeat from 2a). If we had no successes, the take is totally resolved. doupdate() and unset all current_moving.
+3) when SLIDE/LAUNCH/BOUNCE exists, we'll need to figure out where to insert it... but if it's like baba, it goes after the move succeeds but before do_update(), and it adds either another update or another movement as appropriate.
+(This setup is very similar to how baba does it, BTW. We'll just try to code it cleaner with a laser sharp focus on what interactions we know we care about.)
+]]
     local something_moved = true
     local infinite_loop_protection = 0
     while (something_moved and infinite_loop_protection < 99) do
