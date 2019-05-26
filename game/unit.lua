@@ -71,6 +71,16 @@ function updateUnits(undoing)
             addParticles("destroy", unit.x, unit.y, on.color)
             table.insert(del_units, on)
             update_undo = true
+          elseif hasProperty(on, "ned kee") and hasProperty(unit, "for dor") then
+            doAction({"open", {unit, on}})
+          elseif hasProperty(on, "for dor") and hasProperty(unit, "ned kee") then
+            doAction({"open", {unit, on}})
+          elseif hasProperty(unit, "ouch") and on ~= unit then
+            unit.destroyed = true
+            unit.removed = true
+            playSound("break", 0.5)
+            addParticles("destroy", unit.x, unit.y, unit.color)
+            update_undo = true
           elseif is_u and hasProperty(on, ":(") then
             unit.destroyed = true
             unit.removed = true
@@ -83,12 +93,6 @@ function updateUnits(undoing)
             playSound("rule", 0.5)
             addParticles("bonus", unit.x, unit.y, on.color)
             table.insert(del_units, on)
-            update_undo = true
-          elseif hasProperty(unit, "ouch") and on ~= unit then
-            unit.destroyed = true
-            unit.removed = true
-            playSound("break", 0.5)
-            addParticles("destroy", unit.x, unit.y, unit.color)
             update_undo = true
           elseif is_u and hasProperty(on, ":)") then
             win = true

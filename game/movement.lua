@@ -1,18 +1,35 @@
+--format: {unit = unit, type = "movement", payload = {x = x, y = y, dir = dir}} 
+update_queue = {}
+
+function doUpdate()
+  for _,update in ipairs(update_queue) do
+    if update.reason == "movement" then
+      local unit = update.unit
+      local x = update.payload.x
+      local y = update.payload.y
+      local dir = update.payload.dir
+      unit.dir = dir
+      moveUnit(unit, x, y)
+      unit.already_moving = false
+    end
+  end
+  update_queue = {}
+end
+
 function doMovement(movex, movey)
   local played_sound = {}
-  local already_added = {}
   local moving_units = {}
-  --TODO: Patashu: slippers as a construct is probably unnecessary after we have simultaneous doupdate movement, since they won't get a chance to 'double move' until after all slipping has been computed. (Also, simultaneous doupdate movement will remove the 'u & push separates' behaviour.)
+  local moving_units_next = {}
   local slippers = {}
   local flippers = {}
-  local kikers = {}
 
   print("[---- begin turn ----]")
   print("move: " .. movex .. ", " .. movey)
 
   local move_stage = -1
   while move_stage < 3 do
-    kikers = {}
+    local already_added = {}
+    local kikers = {} --so two sidekikers don't trigger each other indefinitely
     for _,unit in ipairs(units) do
       unit.already_moving = false
       if move_stage == -1 then
@@ -104,6 +121,7 @@ function doMovement(movex, movey)
           table.remove(unit.moves, 1)
         end
       end
+      doUpdate()
     end
     move_stage = move_stage + 1
   end
@@ -131,10 +149,10 @@ end
 function moveIt(mover, dx, dy, data, pulling, already_added, moving_units, kikers, slippers)
   if not mover.removed then
     if not ((data.reason == "icy" or data.reason == "sidekik") and slippers[mover.id] == true) then
-      mover.dir = data.dir
       addUndo({"update", mover.id, mover.x, mover.y, mover.dir})
-      --print("moving:"..mover.name..","..tostring(mover.x)..","..tostring(mover.y)..","..tostring(dx)..","..tostring(dy))
-      moveUnit(mover, mover.x + dx, mover.y + dy)
+      mover.dir = data.dir --print("moving:"..mover.name..","..tostring(mover.x)..","..tostring(mover.y)..","..tostring(dx)..","..tostring(dy))
+      table.insert(update_queue, {unit = mover, reason = "movement", payload = {x = mover.x + dx, y = mover.y + dy, dir = mover.dir}})
+      --moveUnit(mover, mover.x + dx, mover.y + dy)
       --finishing a slip locks you out of U/WALK for the rest of the turn
       --TODO: Patashu: Possibly simultaneous movement will prevent the specific 'pull/sidekik' exception from being needed...?
       if (data.reason == "icy" and data.times == 1) then
@@ -168,9 +186,6 @@ function findSidekikers(unit,dx,dy)
   local result = {}
   local x = unit.x;
   local y = unit.y;
-  --TODO: Patashu: since movement is instant right now, we have to do it from the old location
-  x = x - dx;
-  y = y - dy;
   dx = sign(dx);
   dy = sign(dy);
   local dir = dirs8_by_offset[dx][dy];
@@ -197,9 +212,6 @@ end
 function doPull(unit,dx,dy,data, already_added, moving_units, kikers, slippers)
   local x = unit.x;
   local y = unit.y;
-  --TODO: Patashu: since movement is instant right now, we have to do it from the old location
-  x = x - dx;
-  y = y - dy;
   local something_moved = true
   while (something_moved) do
     something_moved = false
@@ -249,12 +261,13 @@ function canMove(unit,dx,dy,pushing_,pulling_)
 
   local tileid = x + y * mapwidth
   for _,v in ipairs(units_by_tile[tileid]) do
-    local stopped = false
-    if (fordor and hasProperty(v, "ned kee")) or (nedkee and hasProperty(v, "for dor")) then
-      table.insert(specials, {"open", {unit, v}})
-    end
-    if hasProperty(v, "go away") then
-      if not v.already_moving then
+    --Patashu: treat moving things as intangible in general
+    if (not v.already_moving) then
+      local stopped = false
+      if (fordor and hasProperty(v, "ned kee")) or (nedkee and hasProperty(v, "for dor")) then
+        table.insert(specials, {"open", {unit, v}})
+      end
+      if hasProperty(v, "go away") then
         if pushing then
           local success,new_movers,new_specials = canMove(v, dx, dy, pushing, pulling)
           for _,special in ipairs(new_specials) do
@@ -271,22 +284,22 @@ function canMove(unit,dx,dy,pushing_,pulling_)
           stopped = true
         end
       end
-    end
-    if hasProperty(v, "no go") then
-      stopped = true
-    end
-    if hasProperty(v, "sidekik") then
-      stopped = true
-    end
-    if hasProperty(v, "come pls") and not hasProperty(v, "go away") and not pulling then
-      stopped = true
-    end
-    --if thing is ouch, it will not stop things. probably recreates the normal baba behaviour pretty well
-    if hasProperty(v, "ouch") then
-	  stopped = false
-    end
-    if stopped then
-      return false,movers,specials
+      if hasProperty(v, "no go") then
+        stopped = true
+      end
+      if hasProperty(v, "sidekik") then
+        stopped = true
+      end
+      if hasProperty(v, "come pls") and not hasProperty(v, "go away") and not pulling then
+        stopped = true
+      end
+      --if thing is ouch, it will not stop things. probably recreates the normal baba behaviour pretty well
+      if hasProperty(v, "ouch") then
+      stopped = false
+      end
+      if stopped then
+        return false,movers,specials
+      end
     end
   end
 
