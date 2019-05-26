@@ -18,8 +18,6 @@ end
 
 function doMovement(movex, movey)
   local played_sound = {}
-  local moving_units = {}
-  local moving_units_next = {}
   local slippers = {}
   local flippers = {}
 
@@ -28,13 +26,14 @@ function doMovement(movex, movey)
 
   local move_stage = -1
   while move_stage < 3 do
+    local moving_units = {}
+    local moving_units_next = {}
+    local remove_from_moving_units = {}
     local already_added = {}
     local kikers = {} --so two sidekikers don't trigger each other indefinitely
     for _,unit in ipairs(units) do
       unit.already_moving = false
-      if move_stage == -1 then
-        unit.moves = {}
-      end
+      unit.moves = {}
         if move_stage == -1 then
           for __,other in ipairs(getUnitsOnTile(unit.x, unit.y)) do
             if other.id ~= unit.id then
@@ -83,52 +82,77 @@ TODO: Patashu: New simultaneous movement algorithm shall be:
 3) when SLIDE/LAUNCH/BOUNCE exists, we'll need to figure out where to insert it... but if it's like baba, it goes after the move succeeds but before do_update(), and it adds either another update or another movement as appropriate.
 (This setup is very similar to how baba does it, BTW. We'll just try to code it cleaner with a laser sharp focus on what interactions we know we care about.)
 ]]
-    local something_moved = true
-    local infinite_loop_protection = 0
-    while (something_moved and infinite_loop_protection < 99) do
-      something_moved = false
-      infinite_loop_protection = infinite_loop_protection + 1
-      for _,unit in ipairs(moving_units) do
-        while #unit.moves > 0 do
-          local data = unit.moves[1]
-          if not unit.removed then
+    --loopa and loopb are just infinite loop protection.
+    local loopa = 0
+    local successes = 1
+    --Outer loop continues until nothing moves in the inner loop, and does a doUpdate after each inner loop, to allow for multimoves to exist.
+    while (#moving_units > 0 and successes > 0 and loopa < 99) do
+      successes = 0
+      local loopb = 0
+      loopa = loopa + 1
+      local something_moved = true
+      local has_flipped = false
+      --Inner loop tries to move everything at least once, and gives up if after an iteration, nothing can move. (It also tries to do flips to see if that helps.)
+      while (something_moved and loopb < 99) do
+        something_moved = false
+        loopb = loopb + 1
+        for _,unit in ipairs(moving_units) do
+          if #unit.moves > 0 and not unit.removed and unit.moves[1].times > 0 then
+            local data = unit.moves[1]
             local dir = data.dir
-
             local dpos = dirs8[dir]
             local dx,dy = dpos[1],dpos[2]
-            while data.times > 0 do
-              local success,movers,specials = canMove(unit, dx, dy, true)
+            local success,movers,specials = canMove(unit, dx, dy, true)
 
-              for _,special in ipairs(specials) do
-                doAction(special)
+            for _,special in ipairs(specials) do
+              doAction(special)
+            end
+            if success then
+              --unit.already_moving = true
+              something_moved = true
+              successes = successes + 1
+              
+              for _,mover in ipairs(movers) do
+                moveIt(mover, dx, dy, data, false, already_added, moving_units, kikers, slippers)
               end
-              if success then
-                unit.already_moving = true
-                something_moved = true
-                for _,mover in ipairs(movers) do
-                  moveIt(mover, dx, dy, data, false, already_added, moving_units, kikers, slippers)
-                end
-                --Patashu: only the mover itself pulls, otherwise it's a mess. stuff like STICKY/STUCK will require ruggedizing this logic.
-                doPull(unit, dx, dy, data, already_added, moving_units, kikers, slippers)
-              else
-                --the first time a walker fails to walk per turn, flip it. (TODO: Patashu: We need to not flip early if the only reason we can't walk is because something in front of us hasn't moved yet (like a walk/stop or a walk/pull. Re-investigate after simultaneous movement)
-                if data.reason == "walk" and flippers[unit.id] ~= true then
-                  dir = rotate8(dir); unit.dir = dir; data.dir = dir;
-                  dpos = dirs8[dir]
-                  dx,dy = dpos[1],dpos[2]
-                  flippers[unit.id] = true
-                  data.times = data.times + 1
-                else
-                  break --if we failed to move, then stop moving (table.remove below will be hit)
-                end
+              --Patashu: only the mover itself pulls, otherwise it's a mess. stuff like STICKY/STUCK will require ruggedizing this logic.
+              doPull(unit, dx, dy, data, already_added, moving_units, kikers, slippers)
+              data.times = data.times - 1;
+              remove_from_moving_units[unit] = true;
+              table.insert(moving_units_next, unit);
+            end
+          else
+            remove_from_moving_units[unit] = true;
+          end
+        end
+        --do flips if we failed to move anything
+        if (not something_moved and not has_flipped) then
+          for _,unit in ipairs(moving_units) do
+            if #unit.moves > 0 and not unit.removed and unit.moves[1].times > 0 then
+              local data = unit.moves[1]
+              if data.reason == "walk" and flippers[unit.id] ~= true then
+                dir = rotate8(data.dir); unit.dir = dir; data.dir = dir;
+                dpos = dirs8[dir]
+                dx,dy = dpos[1],dpos[2]
+                flippers[unit.id] = true
+                --data.times = data.times + 1
               end
-              --otherwise just count down once
-              data.times = data.times - 1
             end
           end
-          table.remove(unit.moves, 1)
+          something_moved = true;
+          has_flipped = true;
+        end
+        for i=#moving_units,1,-1 do
+          local unit = moving_units[i];
+          if (remove_from_moving_units[unit]) then
+            table.remove(moving_units, i);
+          end
         end
       end
+      for _,unit in ipairs(moving_units_next) do
+        table.insert(moving_units, unit);
+      end
+      moving_units_next = {}
       doUpdate()
     end
     move_stage = move_stage + 1
@@ -159,9 +183,10 @@ function moveIt(mover, dx, dy, data, pulling, already_added, moving_units, kiker
     if not ((data.reason == "icy" or data.reason == "sidekik") and slippers[mover.id] == true) then
       update_undo = true
       addUndo({"update", mover.id, mover.x, mover.y, mover.dir})
-      mover.dir = data.dir --print("moving:"..mover.name..","..tostring(mover.x)..","..tostring(mover.y)..","..tostring(dx)..","..tostring(dy))
+      mover.dir = data.dir 
+      print("moving:"..mover.name..","..tostring(mover.x)..","..tostring(mover.y)..","..tostring(dx)..","..tostring(dy))
+      mover.already_moving = true;
       table.insert(update_queue, {unit = mover, reason = "movement", payload = {x = mover.x + dx, y = mover.y + dy, dir = mover.dir}})
-      --moveUnit(mover, mover.x + dx, mover.y + dy)
       --finishing a slip locks you out of U/WALK for the rest of the turn
       --TODO: Patashu: Possibly simultaneous movement will prevent the specific 'pull/sidekik' exception from being needed...?
       if (data.reason == "icy" and data.times == 1) then
@@ -233,7 +258,7 @@ function doPull(unit,dx,dy,data, already_added, moving_units, kikers, slippers)
           doAction(special)
         end
         if (success) then
-          unit.already_moving = true
+          --unit.already_moving = true
           something_moved = true
           for _,mover in ipairs(movers) do
             moveIt(mover, dx, dy, data, true, already_added, moving_units, kikers, slippers)
@@ -243,6 +268,29 @@ function doPull(unit,dx,dy,data, already_added, moving_units, kikers, slippers)
     end
   end
 end
+
+--[[
+TODO: Patashu: Right now two things that are STOP can pass through each other perpendicularly. This doesn't work in Baba Is You. The reason why is this code that's in check:
+```
+local alreadymoving = findupdate(id,"update")
+local valid = true
+
+if (#alreadymoving > 0) then
+	for a,b in ipairs(alreadymoving) do
+		local nx,ny = b[3],b[4]
+		
+		if ((nx ~= x) and (ny ~= y)) and ((reason == "shift") and (pulling == false)) then
+			valid = false
+		end
+		
+		if ((nx == x) and (ny == y + oy * 2)) or ((ny == y) and (nx == x + ox * 2)) then
+			valid = false
+		end
+	end
+end
+```
+So if we want that behaviour too, we need to add something similar.
+]]
 
 function canMove(unit,dx,dy,pushing_,pulling_)
   local pushing = false
