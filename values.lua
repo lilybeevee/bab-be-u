@@ -1135,4 +1135,22 @@ tiles_list = {
     color ={78,90,148},
     layer = 20,
   },
+  --- 106
+  {
+    name = "arro",
+    sprite = "arro",
+    type = "object",
+    grid = {11, 4},
+    color ={255,255,255},
+    layer = 5,
+  },
+  --- 107
+  {
+    name = "text_arro",
+    sprite = "text_arro",
+    type = "text",
+    grid = {12, 4},
+    color ={255,255,255},
+    layer = 20,
+  },
 }
