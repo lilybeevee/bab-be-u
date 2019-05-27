@@ -1222,4 +1222,14 @@ tiles_list = {
     color = {131,200,229},
     layer = 20,
   },
+  -- 115
+  {
+    name = "text_protecc",
+    sprite = "text_protecc",
+    type = "text",
+    texttype = "property",
+    grid = {9, 3},
+    color = {255,255,255},
+    layer = 20,
+  }
 }
