@@ -48,7 +48,12 @@ function scene.update(dt)
 
   scrollvel = scrollvel - scrollvel * math.min(dt * 10, 1)
   if scrollvel < 0.1 and scrollvel > -0.1 then scrollvel = 0 end
-  debugDisplay("scroll tutorial", stopscrolltutorial)
+  debugDisplay("scrollvel", scrollvel)
+  debugDisplay("scrolloffset", scrolloffset)
+
+  if height > (#buttons)*(buttonheight+10)+10 then
+    scrolloffset = 0
+  end
 end
 
 function scene.mousepressed(x, y, button)
