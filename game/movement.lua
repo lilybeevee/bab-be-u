@@ -407,7 +407,7 @@ function canMove(unit,dx,dy,pushing_,pulling_)
       if hasProperty(v, "no go") then --Things that are STOP stop being PUSH or PULL, unlike in Baba. This is currently intended.
         stopped = true
       end
-      if hasProperty(v, "sidekik") then
+      if hasProperty(v, "sidekik") and not hasProperty(v, "go away") then
         stopped = true
       end
       if hasProperty(v, "come pls") and not hasProperty(v, "go away") and not pulling then
