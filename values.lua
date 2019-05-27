@@ -705,6 +705,7 @@ tiles_list = {
     grid = {0, 9},
     color = {41,49,65},
     layer = 3,
+    rotate = true,
   },
   -- 66
   {
@@ -1043,7 +1044,7 @@ tiles_list = {
     sprite = "text_icy",
     type = "text",
     texttype = "property",
-    grid = {9, 3},
+    grid = {10, 2},
     color = {131,200,229},
     layer = 20,
   },
@@ -1087,22 +1088,138 @@ tiles_list = {
     color ={144,103,62},
     layer = 20,
   },
- --- 101
+  --- 101
   {
-    name = "text_piler",
-    sprite = "text_piler",
+    name = "text_arond",
+    sprite = "text_arond",
     type = "text",
-    grid = {6, 3},
-    color = {115,115,115},
+    texttype = "cond_infix",
+    grid = {8,4},
+    color = {255,255,255},
     layer = 20,
   },
- --- 102
+  --- 102
   {
-   name = "piler",
-    sprite = "piler",
+    name = "chekr",
+    sprite = "chekr",
     type = "object",
-    grid = {5, 3},
-    color = {115,115,115},
-    layer = 3,
+    grid = {11, 3},
+    color ={78,90,148},
+    layer = 5,
+  },
+  --- 103
+  {
+    name = "text_chekr",
+    sprite = "text_chekr",
+    type = "text",
+    grid = {12, 3},
+    color ={78,90,148},
+    layer = 20,
+  },
+  --- 104
+  {
+    name = "text_diagnal",
+    sprite = "text_diagnal",
+    type = "text",
+    texttype = "property",
+    grid = {13, 3},
+    color ={78,90,148},
+    layer = 20,
+  },
+  --- 105
+  {
+    name = "text_go my wey",
+    sprite = "text_go my wey",
+    type = "text",
+    texttype = "property",
+    grid = {13, 4},
+    color ={131,200,229},
+    layer = 20,
+  },
+  --- 106
+  {
+    name = "text_orthongl",
+    sprite = "text_orthongl",
+    type = "text",
+    texttype = "property",
+    grid = {13, 2},
+    color ={78,90,148},
+    layer = 20,
+  },
+  --- 107
+  {
+    name = "arro",
+    sprite = "arro",
+    type = "object",
+    grid = {11, 4},
+    color ={255,255,255},
+    layer = 5,
+  },
+  --- 108
+  {
+    name = "text_arro",
+    sprite = "text_arro",
+    type = "text",
+    grid = {12, 4},
+    color ={255,255,255},
+    layer = 20,
+  },
+  --- 109
+  {
+    name = "text_hotte",
+	sprite = "text_hotte",
+	type = "text",
+	texttype = "property",
+	grid = {6,3},
+	color = {228,153,80},
+	layer = 20,
+  },
+  --- 110
+  {
+    name = "text_fridgd",
+	sprite = "text_fridgd",
+	type = "text",
+	texttype = "property",
+	grid = {5,3},
+	color = {95,157,209},
+	layer = 20,
+  },
+  --- 111
+  {
+    name = "text_colld",
+	sprite = "text_colld",
+	type = "text",
+	grid = {4,3},
+	color = {95,157,209},
+	layer = 20,
+  },
+  --- 112
+  {
+    name = "colld",
+	sprite = "colld",
+	type = "object",
+	grid = {3,3},
+	color = {62, 118, 136},
+	layer = 3,
+  },
+  --- 113
+  {
+    name = "text_goooo",
+    sprite = "text_goooo",
+    type = "text",
+    texttype = "property",
+    grid = {11, 2},
+    color = {95,157,209},
+    layer = 20,
+  },
+  --- 114
+  {
+    name = "text_icyyyy",
+    sprite = "text_icyyyy",
+    type = "text",
+    texttype = "property",
+    grid = {12, 2},
+    color = {131,200,229},
+    layer = 20,
   },
 }

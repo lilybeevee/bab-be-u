@@ -60,7 +60,9 @@ function updateUnits(undoing)
 
       if not undoing then
         for _,on in ipairs(units_by_tile[tileid]) do
-          if hasProperty(on, "no swim") and on ~= unit then
+          if hasProperty(on, "go") and on ~= unit then
+            unit.dir = on.dir
+          elseif hasProperty(on, "no swim") and on ~= unit then
             unit.destroyed = true
             unit.removed = true
             on.destroyed = true
@@ -68,30 +70,35 @@ function updateUnits(undoing)
             playSound("sink", 0.5)
             addParticles("destroy", unit.x, unit.y, on.color)
             table.insert(del_units, on)
-            update_undo = true
-          elseif is_u and hasProperty(on, ":)") then
-            win = true
-            music_fading = true
-            playSound("win", 0.5)
+          elseif hasProperty(on, "ned kee") and hasProperty(unit, "for dor") then
+            doAction({"open", {unit, on}})
+          elseif hasProperty(on, "for dor") and hasProperty(unit, "ned kee") then
+            doAction({"open", {unit, on}})
+          elseif hasProperty(unit, "ouch") and on ~= unit then
+            unit.destroyed = true
+            unit.removed = true
+            playSound("break", 0.5)
+            addParticles("destroy", unit.x, unit.y, unit.color)
+		  elseif hasProperty(on, "hotte") and hasProperty(unit, "fridgd") then
+		    unit.destroyed = true
+            unit.removed = true
+			playSound("sink", 0.5)
+            addParticles("destroy", unit.x, unit.y, unit.color)
           elseif is_u and hasProperty(on, ":(") then
             unit.destroyed = true
             unit.removed = true
             playSound("break", 0.5)
             addParticles("destroy", unit.x, unit.y, unit.color)
-            update_undo = true
           elseif is_u and hasProperty(on, ":o") then
             on.destroyed = true
             on.removed = true
             playSound("rule", 0.5)
             addParticles("bonus", unit.x, unit.y, on.color)
             table.insert(del_units, on)
-            update_undo = true
-          elseif hasProperty(unit, "ouch") and on ~= unit then
-            unit.destroyed = true
-            unit.removed = true
-            playSound("break", 0.5)
-            addParticles("destroy", unit.x, unit.y, unit.color)
-            update_undo = true
+          elseif is_u and hasProperty(on, ":)") then
+            win = true
+            music_fading = true
+            playSound("win", 0.5)
           end
         end
       end
@@ -209,7 +216,6 @@ function convertUnits()
             if unit.destroyed and testConds(unit,rule[4][1]) then
               local new_unit = createUnit(obj_id, unit.x, unit.y, unit.dir)
               addUndo({"create", new_unit.id, false})
-              update_undo = true
             end
           elseif rule[2] == "be" then
             if not unit.destroyed and rule[3] ~= unit.name then
@@ -243,13 +249,11 @@ function convertUnits()
                     end
                   end
                 end
-                update_undo = true
               end
             end
           elseif rule[2] == "creat" and not unit.destroyed then
             local new_unit = createUnit(obj_id, unit.x, unit.y, unit.dir)
             addUndo({"create", new_unit.id, false})
-            update_undo = true
           elseif rule[2] == "consume" then
             if not unit.destroyed then
               if rule[3] == unit.name then
@@ -266,7 +270,6 @@ function convertUnits()
                       playSound("break", 0.5)
                       addParticles("destroy", on.x, on.y, on.color)
                       table.insert(del_units, on)
-                      update_undo = true
                     end
                   end
                 end
@@ -399,7 +402,6 @@ function moveUnit(unit,x,y)
   table.insert(units_by_tile[tileid], unit)
 
   do_move_sound = true
-  update_undo = true
 end
 
 function newUnitID()
