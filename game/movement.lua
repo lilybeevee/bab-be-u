@@ -129,7 +129,7 @@ Simultaneous movement algorithm, basically a simple version of Baba's:
         end
         --do flips if we failed to move anything
         if (not something_moved and not has_flipped) then
-          --CLEANUP: This is getting a little duplicate-y.
+          --TODO: CLEANUP: This is getting a little duplicate-y.
           for _,unit in ipairs(moving_units) do
             while #unit.moves > 0 and unit.moves[1].times <= 0 do
               table.remove(unit.moves)
@@ -195,6 +195,7 @@ function moveIt(mover, dx, dy, data, pulling, already_added, moving_units, kiker
     --print("moving:"..mover.name..","..tostring(mover.id)..","..tostring(mover.x)..","..tostring(mover.y)..","..tostring(dx)..","..tostring(dy))
     mover.already_moving = true;
     table.insert(update_queue, {unit = mover, reason = "update", payload = {x = mover.x + dx, y = mover.y + dy, dir = mover.dir}})
+    applySlide(mover, dx, dy, already_added, moving_units);
     --finishing a slip locks you out of U/WALK for the rest of the turn
     if (data.reason == "icy") then
       slippers[mover.id] = true
@@ -208,6 +209,56 @@ function moveIt(mover, dx, dy, data, pulling, already_added, moving_units, kiker
           table.insert(moving_units, sidekiker)
           already_added[sidekiker] = true
         end
+      end
+    end
+  end
+end
+
+function applySlide(mover, dx, dy, already_added, moving_units)
+  --Before we add a new LAUNCH/SLIDE move, deleting all existing LAUNCH/SLIDE moves, so that if we 'move twice in the same tick' (such as because we're being pushed or pulled while also sliding) it doesn't stack. (this also means e.g. SLIDE & SLIDE gives you one extra move at the end, rather than multiplying your movement.)
+  local did_clear_existing = false
+  --LAUNCH will take precedence over SLIDE, so that puzzles where you move around launchers on an ice rink will behave intuitively.
+  local did_launch = false
+   --we haven't actually moved ye, so check the tile we will be on
+  for _,v in ipairs(getUnitsOnTile(mover.x+dx, mover.y+dy)) do
+    local launchness = countProperty(v, "goooo");
+    if (launchness > 0) then
+      if (not did_clear_existing) then
+        for i = #mover.moves,1,-1 do
+          if mover.moves[i].reason == "goooo" or mover.moves[i].reason == "icyyyy" then
+            table.remove(mover.moves, i)
+          end
+        end
+        did_clear_existing = true
+      end
+      --the new moves will be at the start of the unit's moves data, so that it takes precedence over what it would have done next otherwise
+      --TODO: CLEANUP: Figure out a nice way to not have to pass this around/do this in a million places.
+      table.insert(mover.moves, 1, {reason = "goooo", dir = v.dir, times = launchness})
+      if not already_added[mover] then
+        table.insert(moving_units, mover)
+        already_added[mover] = true
+      end
+      did_launch = true
+    end
+  end
+  if (did_launch) then
+    return
+  end
+  for _,v in ipairs(getUnitsOnTile(mover.x+dx, mover.y+dy)) do
+    local slideness = countProperty(v, "icyyyy");
+    if (slideness > 0) then
+      if (not did_clear_existing) then
+        for i = #mover.moves,1,-1 do
+          if mover.moves[i].reason == "goooo" or mover.moves[i].reason == "icyyyy" then
+            table.remove(mover.moves, i)
+          end
+        end
+        did_clear_existing = true
+      end
+      table.insert(mover.moves, 1, {reason = "icyyyy", dir = mover.dir, times = slideness})
+      if not already_added[mover] then
+        table.insert(moving_units, mover)
+        already_added[mover] = true
       end
     end
   end
@@ -229,23 +280,32 @@ function findSidekikers(unit,dx,dy)
   dx = sign(dx);
   dy = sign(dy);
   local dir = dirs8_by_offset[dx][dy];
-  local dirleft = (dir + 2 - 1) % 8 + 1;
-  local dirright = (dir + 6 - 1) % 8 + 1;
-  local x_left = x+dirs8[dirleft][1];
-  local y_left = y+dirs8[dirleft][2];
-  local x_right = x+dirs8[dirright][1];
-  local y_right = y+dirs8[dirright][2];
   
-  for _,v in ipairs(getUnitsOnTile(x_left, y_left)) do
-    if hasProperty(v, "sidekik") then
-      table.insert(result, v);
+  local dir90 = (dir + 2 - 1) % 8 + 1;
+  for i = 1,2 do
+    local curdir = (dir90 + 4*i - 1) % 8 + 1;
+    local curx = x+dirs8[curdir][1];
+    local cury = y+dirs8[curdir][2];
+    for _,v in ipairs(getUnitsOnTile(curx, cury)) do
+      if hasProperty(v, "sidekik") then
+        table.insert(result, v);
+      end
     end
   end
-  for _,v in ipairs(getUnitsOnTile(x_right, y_right)) do
-    if hasProperty(v, "sidekik") then
-      table.insert(result, v);
+  
+  --Testing a new feature: sidekik & come pls objects follow you even on diagonals, to make them very hard to get away from in bab 8 way geometry, while just sidekik objects behave as they are right now so they're appropriate for 4 way geometry or being easy to walk away from
+  local dir45 = (dir + 1 - 1) % 8 + 1;
+  for i = 1,4 do
+    local curdir = (dir45 + 2*i - 1) % 8 + 1;
+    local curx = x+dirs8[curdir][1];
+    local cury = y+dirs8[curdir][2];
+    for _,v in ipairs(getUnitsOnTile(curx, cury)) do
+      if hasProperty(v, "sidekik") and hasProperty(v, "come pls") then
+        table.insert(result, v);
+      end
     end
   end
+  
   return result;
 end
 
@@ -356,17 +416,17 @@ function canMove(unit,dx,dy,pushing_,pulling_)
       if hasProperty(v, "no go") then --Things that are STOP stop being PUSH or PULL, unlike in Baba. This is currently intended.
         stopped = true
       end
-      if hasProperty(v, "sidekik") then
+      if hasProperty(v, "sidekik") and not hasProperty(v, "go away") then
         stopped = true
       end
       if hasProperty(v, "come pls") and not hasProperty(v, "go away") and not pulling then
         stopped = true
       end
       if hasProperty(v, "go my wey") and ((v.dir == 1 and dx == -1) or (v.dir == 2 and (dx == -1 or dy == -1) and (dx ~= 1 and dy ~= 1)) or (v.dir == 3 and dy == -1) or (v.dir == 4 and (dx == 1 or dy == -1) and (dx ~= -1 and dy ~= 1)) or (v.dir == 5 and dx == 1) or (v.dir == 6 and (dx == 1 or dy == 1) and (dx ~= -1 and dy ~= -1)) or (v.dir == 7 and dy == 1)) or (v.dir == 8 and (dx == -1 or dy == 1) and (dx ~= 1 and dy ~= -1)) then
-        --TODO: I think this is just 'direction is 2 or less away'? and we can turn dx/dy into dir by looking at dirs8_by_offset.
+        --TODO: I think this is just 'direction is 2 or less away'? and we can turn dx/dy into dir by looking at dirs8_by_offset, similar to findSidekikers.
         stopped = true
       end
-      --if thing is ouch, it will not stop things. probably recreates the normal baba behaviour pretty well (except the item dropped by GOT will be on the wrong tile...?)
+      --if thing is ouch, it will not stop things. probably recreates the normal baba behaviour pretty well (TODO: test that items dropped by GOT are dropped in the expected tiles for all ouch combinations)
       if hasProperty(v, "ouch") then
       stopped = false
       end

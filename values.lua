@@ -16,7 +16,7 @@ end
 
 debug = false
 debug_values = {
-
+  
 }
 
 dirs = {{1,0},{0,1},{-1,0},{0,-1}}
@@ -1044,7 +1044,7 @@ tiles_list = {
     sprite = "text_icy",
     type = "text",
     texttype = "property",
-    grid = {9, 3},
+    grid = {10, 2},
     color = {131,200,229},
     layer = 20,
   },
@@ -1202,4 +1202,34 @@ tiles_list = {
 	color = {62, 118, 136},
 	layer = 3,
   },
+  --- 113
+  {
+    name = "text_goooo",
+    sprite = "text_goooo",
+    type = "text",
+    texttype = "property",
+    grid = {11, 2},
+    color = {95,157,209},
+    layer = 20,
+  },
+  --- 114
+  {
+    name = "text_icyyyy",
+    sprite = "text_icyyyy",
+    type = "text",
+    texttype = "property",
+    grid = {12, 2},
+    color = {131,200,229},
+    layer = 20,
+  },
+  -- 115
+  {
+    name = "text_protecc",
+    sprite = "text_protecc",
+    type = "text",
+    texttype = "property",
+    grid = {9, 3},
+    color = {255,255,255},
+    layer = 20,
+  }
 }
