@@ -1044,7 +1044,7 @@ tiles_list = {
     sprite = "text_icy",
     type = "text",
     texttype = "property",
-    grid = {9, 3},
+    grid = {10, 2},
     color = {131,200,229},
     layer = 20,
   },
@@ -1201,5 +1201,25 @@ tiles_list = {
 	grid = {3,3},
 	color = {62, 118, 136},
 	layer = 3,
+  },
+  --- 113
+  {
+    name = "text_goooo",
+    sprite = "text_goooo",
+    type = "text",
+    texttype = "property",
+    grid = {11, 2},
+    color = {95,157,209},
+    layer = 20,
+  },
+  --- 114
+  {
+    name = "text_icyyyy",
+    sprite = "text_icyyyy",
+    type = "text",
+    texttype = "property",
+    grid = {12, 2},
+    color = {131,200,229},
+    layer = 20,
   },
 }
