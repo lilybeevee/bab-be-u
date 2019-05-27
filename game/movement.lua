@@ -78,6 +78,10 @@ Simultaneous movement algorithm, basically a simple version of Baba's:
 2b) But wait, we're still not done! Flip all walkers that failed to flip, then continue until we once again have no successes. (Flipping still only happens once per turn.)
 2c) Finally, if we had at least one success, everything left is moved to moving_units_next with one less move point and we repeat from 2a). If we had no successes, the take is totally resolved. doupdate() and unset all current_moving.
 3) when SLIDE/LAUNCH/BOUNCE exists, we'll need to figure out where to insert it... but if it's like baba, it goes after the move succeeds but before do_update(), and it adds either another update or another movement as appropriate.
+
+ALTERNATE MOVEMENT ALGORITHM that would preserve properties like 'x is move and stop pulls apart' and is mostly move order independent:
+1) Do it as before, except instead of moving a unit when you discover it can be moved, mark it and wait until the inner loop is over.
+2) After the inner loop is over, move all the things that you marked.
 ]]
     --loopa and loopb are just infinite loop protection.
     local loopa = 0
