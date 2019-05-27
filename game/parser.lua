@@ -127,12 +127,13 @@ parser = {
 
 --print(dump(parser))
 
-function testParse(words, parser, state_, full_group_)
+function testParse(words, parser, state_)
   local state = state_ or {}
-  local full_group = copyTable(full_group_ or {})
 
   state.parent_rule = state.parent_rule or parser
-  state.group = state.group or {}
+  state.group = state.group or "root"
+  state.current_matches = copyTable(state.current_matches or {})
+  state.matches = copyTable(state.matches or {})
   state.option = state.option or 1
   state.index = state.index or 1
   state.word_index = state.word_index or 1
@@ -140,35 +141,51 @@ function testParse(words, parser, state_, full_group_)
 
   local rule = state.parent_rule.options[state.option][state.index]
   local word = words[state.word_index]
-  
-  local current_group = full_group
-  for _,k in ipairs(state.group) do
-    if current_group[k] == nil then
-      current_group[k] = {}
-    end
-    current_group = current_group[k]
-  end
 
   if not rule then
+    if keyCount(state.current_matches) > 0 then
+      table.insert(state.matches, state.current_matches)
+    end
     if state.parent_rule.repeatable then
       local new_state = {
         parent = state.parent,
         parent_rule = state.parent_rule,
         group = state.group,
+        current_matches = {},
+        matches = state.matches,
         index = 1,
         word_index = state.word_index,
         is_repeat = true
       }
-      local valid, new_matches = testParse(words, parser, new_state)
+      local valid, ret_state = testParse(words, parser, new_state)
       if valid then
-        return true, new_matches
+        return true, ret_state
       end
     end
     if state.parent then
+      local new_matches = copyTable(state.parent.current_matches)
+      if state.parent_rule.group then
+        if not new_matches[state.group] then
+          new_matches[state.group] = {}
+        end
+        if keyCount(state.matches) > 0 then
+          new_matches[state.group] = state.matches
+        end
+      else
+        if keyCount(state.matches) > 0 then
+          for _,a in ipairs(state.matches) do
+            for _,b in ipairs(a) do
+              table.insert(new_matches, b)
+            end
+          end
+        end
+      end
       local new_state = {
         parent = state.parent.parent,
         parent_rule = state.parent.parent_rule,
         group = state.parent.group,
+        current_matches = new_matches,
+        matches = state.parent.matches,
         option = state.parent.option,
         index = state.parent.index + 1,
         word_index = state.word_index,
@@ -176,13 +193,15 @@ function testParse(words, parser, state_, full_group_)
       }
       return testParse(words, parser, new_state)
     else
-      return true, ret_matches
+      return true, state
     end
   else
     local next_state = {
       parent = state.parent,
       parent_rule = state.parent_rule,
       group = state.group,
+      current_matches = state.current_matches,
+      matches = state.matches,
       option = state.option,
       index = state.index + 1,
       word_index = state.word_index
@@ -194,17 +213,19 @@ function testParse(words, parser, state_, full_group_)
           if not rule.optional then
             --print(dump(rule))
             --print("FAILED AT TYPE/NAME - WORD IS NIL")
-            return false
+            return false, state
           end
         else
           if rule.type and rule.type ~= word.type and rule.type ~= "any" then
             valid = false
           elseif rule.name and rule.name ~= word.name then
             valid = false
+          elseif not rule.connector then
+            table.insert(state.current_matches, word)
           end
           next_state.word_index = state.word_index + 1
         end
-      else
+      elseif rule.connector and not state.is_repeat then
         valid = true
       end
       if valid then
@@ -216,13 +237,18 @@ function testParse(words, parser, state_, full_group_)
       end
     elseif rule.options then
       local valid = false
+      local ret_state
       if #rule.options == 0 then
         valid = true
+        ret_state = state
       else
         for i = 1, #rule.options do
           local new_state = {
             parent = state,
             parent_rule = rule,
+            group = rule.group or state.group,
+            current_matches = {},
+            matches = {},
             option = i,
             index = 1,
             word_index = state.word_index
@@ -232,23 +258,23 @@ function testParse(words, parser, state_, full_group_)
           else
             new_state.is_repeat = state.is_repeat
           end
-          if testParse(words, parser, new_state) then
-            valid = true
+          valid, ret_state = testParse(words, parser, new_state)
+          if valid then
             break
           end
         end
       end
       if valid then
-        return true
+        return true, ret_state
       elseif rule.optional then
         return testParse(words, parser, next_state)
       end
     else
-      return true
+      return true, state
     end
   end
 
-  return false
+  return false, state
 end
 
 local function testParser()
@@ -277,6 +303,7 @@ local function testParser()
     },
     { -- Test 5 - TRUE
       {name = "bab", type = "object"},
+      {name = "text", type = "object"},
       {name = "&", type = "and"},
       {name = "keek", type = "object"},
       {name = "be", type = "verb"},
@@ -314,8 +341,12 @@ local function testParser()
   }
 
   for i,v in ipairs(tests) do
-    print("Test " .. i .. ": " .. tostring(testParse(v, parser)))
+    local result, state = testParse(v, parser)
+    print("--- TEST " .. i .. " ---")
+    print("Result: " .. tostring(result))
+    print("Words: " .. state.word_index-1 .. "/" .. #v)
+    print("Matches: " .. fullDump(state.matches))
   end
 end
 
---testParser()
+testParser()
