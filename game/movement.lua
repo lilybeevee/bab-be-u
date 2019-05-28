@@ -82,6 +82,12 @@ Simultaneous movement algorithm, basically a simple version of Baba's:
 ALTERNATE MOVEMENT ALGORITHM that would preserve properties like 'x is move and stop pulls apart' and is mostly move order independent:
 1) Do it as before, except instead of moving a unit when you discover it can be moved, mark it and wait until the inner loop is over.
 2) After the inner loop is over, move all the things that you marked.
+
+But if we want to go a step further and e.g. make it so X IS YOU AND PUSH lets you catapult one of yourselves two tiles, we have to go a step further and stack up all of the movement that would occur instead of making it simultaneous and override itself.
+
+But if we do THIS, then we can now attempt to move to different destination tiles than we tried the first time around. So we have to re-evaluate the outcome of that by calling canMove again. And if that new movement can also cause push/pull/sidekik/slide/launch, then we have to recursively check everything again, and it's unclear what order things should evaluate in, and etc.
+
+It is probably possible to do, but lily has decided that it's not important enough if it's difficult, so we shall stay with simultanous movement for now.
 ]]
     --loopa and loopb are just infinite loop protection.
     local loopa = 0
