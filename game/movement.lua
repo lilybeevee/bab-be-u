@@ -198,14 +198,9 @@ end
 
 function moveIt(mover, dx, dy, data, pulling, already_added, moving_units, kikers, slippers)
   if not mover.removed then
-    update_undo = true
-    addUndo({"update", mover.id, mover.x, mover.y, mover.dir})
-    mover.olddir = mover.dir
-    mover.dir = data.dir
-    --print("moving:"..mover.name..","..tostring(mover.id)..","..tostring(mover.x)..","..tostring(mover.y)..","..tostring(dx)..","..tostring(dy))
-    mover.already_moving = true;
-    table.insert(update_queue, {unit = mover, reason = "update", payload = {x = mover.x + dx, y = mover.y + dy, dir = mover.dir}})
+    queueMove(mover, dx, dy, data.dir, false);
     applySlide(mover, dx, dy, already_added, moving_units);
+    applySwap(mover, dx, dy);
     --finishing a slip locks you out of U/WALK for the rest of the turn
     if (data.reason == "icy") then
       slippers[mover.id] = true
@@ -224,12 +219,21 @@ function moveIt(mover, dx, dy, data, pulling, already_added, moving_units, kiker
   end
 end
 
+function queueMove(mover, dx, dy, dir, priority)
+  addUndo({"update", mover.id, mover.x, mover.y, mover.dir})
+  mover.olddir = mover.dir
+  mover.dir = dir
+  --print("moving:"..mover.name..","..tostring(mover.id)..","..tostring(mover.x)..","..tostring(mover.y)..","..tostring(dx)..","..tostring(dy))
+  mover.already_moving = true;
+  table.insert(update_queue, (priority and 1 or (#update_queue + 1)), {unit = mover, reason = "update", payload = {x = mover.x + dx, y = mover.y + dy, dir = mover.dir}})
+end
+
 function applySlide(mover, dx, dy, already_added, moving_units)
   --Before we add a new LAUNCH/SLIDE move, deleting all existing LAUNCH/SLIDE moves, so that if we 'move twice in the same tick' (such as because we're being pushed or pulled while also sliding) it doesn't stack. (this also means e.g. SLIDE & SLIDE gives you one extra move at the end, rather than multiplying your movement.)
   local did_clear_existing = false
   --LAUNCH will take precedence over SLIDE, so that puzzles where you move around launchers on an ice rink will behave intuitively.
   local did_launch = false
-   --we haven't actually moved ye, so check the tile we will be on
+   --we haven't actually moved yet, so check the tile we will be on
   for _,v in ipairs(getUnitsOnTile(mover.x+dx, mover.y+dy)) do
     local launchness = countProperty(v, "goooo");
     if (launchness > 0) then
@@ -269,6 +273,26 @@ function applySlide(mover, dx, dy, already_added, moving_units)
       if not already_added[mover] then
         table.insert(moving_units, mover)
         already_added[mover] = true
+      end
+    end
+  end
+end
+
+function applySwap(mover, dx, dy)
+  --we haven't actually moved yet, same as applySlide
+  --two priority related things:
+  --1) don't swap with things that are already moving, to prevent move order related behaviour
+  --2) swaps should occur before any other kind of movement, so that the swap gets 'overriden' by later, more intentional movement e.g. in a group of swap and you moving things, or a swapper pulling boxen behind it
+  if hasProperty(mover, "edgy") then
+    for _,v in ipairs(getUnitsOnTile(mover.x+dx, mover.y+dy)) do
+      if not v.already_moved then
+        queueMove(v, -dx, -dy, v.dir, true);
+      end
+    end
+  else
+    for _,v in ipairs(getUnitsOnTile(mover.x+dx, mover.y+dy)) do
+      if not v.already_moved and hasProperty(v, "edgy") then
+        queueMove(v, -dx, -dy, v.dir, true);
       end
     end
   end
@@ -345,29 +369,6 @@ function doPull(unit,dx,dy,data, already_added, moving_units, kikers, slippers)
   end
 end
 
---[[
-TODO: Patashu: Right now two things that are STOP can pass through each other perpendicularly. This doesn't work in Baba Is You. The reason why is this code that's in check:
-```
-local alreadymoving = findupdate(id,"update")
-local valid = true
-
-if (#alreadymoving > 0) then
-	for a,b in ipairs(alreadymoving) do
-		local nx,ny = b[3],b[4]
-		
-		if ((nx ~= x) and (ny ~= y)) and ((reason == "shift") and (pulling == false)) then
-			valid = false
-		end
-		
-		if ((nx == x) and (ny == y + oy * 2)) or ((ny == y) and (nx == x + ox * 2)) then
-			valid = false
-		end
-	end
-end
-```
-So if we want that behaviour too, we need to add something similar.
-]]
-
 function canMove(unit,dx,dy,pushing_,pulling_)
   local pushing = false
   if (pushing_ ~= nil) then
@@ -403,10 +404,11 @@ function canMove(unit,dx,dy,pushing_,pulling_)
     --Patashu: treat moving things as intangible in general
     if (not v.already_moving) then
       local stopped = false
+      local would_swap_with = hasProperty(v, "edgy") and pushing
       if (fordor and hasProperty(v, "ned kee")) or (nedkee and hasProperty(v, "for dor")) then
         table.insert(specials, {"open", {unit, v}})
       end
-      if hasProperty(v, "go away") then
+      if hasProperty(v, "go away") and not would_swap_with then
         if pushing then
           local success,new_movers,new_specials = canMove(v, dx, dy, pushing, pulling)
           for _,special in ipairs(new_specials) do
@@ -426,10 +428,10 @@ function canMove(unit,dx,dy,pushing_,pulling_)
       if hasProperty(v, "no go") then --Things that are STOP stop being PUSH or PULL, unlike in Baba. This is currently intended.
         stopped = true
       end
-      if hasProperty(v, "sidekik") and not hasProperty(v, "go away") then
+      if hasProperty(v, "sidekik") and not hasProperty(v, "go away") and not would_swap_with then
         stopped = true
       end
-      if hasProperty(v, "come pls") and not hasProperty(v, "go away") and not pulling then
+      if hasProperty(v, "come pls") and not hasProperty(v, "go away") and not would_swap_with and not pulling then
         stopped = true
       end
       if hasProperty(v, "go my wey") and ((v.dir == 1 and dx == -1) or (v.dir == 2 and (dx == -1 or dy == -1) and (dx ~= 1 and dy ~= 1)) or (v.dir == 3 and dy == -1) or (v.dir == 4 and (dx == 1 or dy == -1) and (dx ~= -1 and dy ~= 1)) or (v.dir == 5 and dx == 1) or (v.dir == 6 and (dx == 1 or dy == 1) and (dx ~= -1 and dy ~= -1)) or (v.dir == 7 and dy == 1)) or (v.dir == 8 and (dx == -1 or dy == 1) and (dx ~= 1 and dy ~= -1)) then
