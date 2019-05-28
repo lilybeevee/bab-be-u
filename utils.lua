@@ -600,9 +600,19 @@ end
 
 function mergeTable(t, other)
   if other ~= nil then
-    for i,v in ipairs(other) do
-      if not table.has_value(t, v) then
-        table.insert(t, v)
+    for k,v in pairs(other) do
+      if type(k) == "number" then
+        if not table.has_value(t, v) then
+          table.insert(t, v)
+        end
+      else
+        if t[k] ~= nil then
+          if type(t[k]) == "table" and type(v) == "table" then
+            mergeTable(t[k], v)
+          end
+        else
+          t[k] = v
+        end
       end
     end
   end

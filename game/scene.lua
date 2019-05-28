@@ -89,6 +89,7 @@ function scene.resetStuff()
   parseRules()
   updateUnits(true)
 
+  first_turn = false
   window_dir = 0
 end
 

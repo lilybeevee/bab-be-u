@@ -121,13 +121,13 @@ parser = {
       commons({"object"}, "target"),
       cond_infixes,
       verbs,
-    }
+    },
   }
 }
 
 --print(dump(parser))
 
-function testParse(words, parser, state_)
+function parse(words, parser, state_)
   local state = state_ or {}
 
   state.parent_rule = state.parent_rule or parser
@@ -157,7 +157,7 @@ function testParse(words, parser, state_)
         word_index = state.word_index,
         is_repeat = true
       }
-      local valid, ret_state = testParse(words, parser, new_state)
+      local valid, ret_state = parse(words, parser, new_state)
       if valid then
         return true, ret_state
       end
@@ -169,14 +169,12 @@ function testParse(words, parser, state_)
           new_matches[state.group] = {}
         end
         if keyCount(state.matches) > 0 then
-          new_matches[state.group] = state.matches
+          mergeTable(new_matches[state.group], state.matches)
         end
       else
         if keyCount(state.matches) > 0 then
           for _,a in ipairs(state.matches) do
-            for _,b in ipairs(a) do
-              table.insert(new_matches, b)
-            end
+            mergeTable(new_matches, a)
           end
         end
       end
@@ -191,7 +189,7 @@ function testParse(words, parser, state_)
         word_index = state.word_index,
         is_repeat = state.parent.is_repeat
       }
-      return testParse(words, parser, new_state)
+      return parse(words, parser, new_state)
     else
       return true, state
     end
@@ -220,8 +218,12 @@ function testParse(words, parser, state_)
             valid = false
           elseif rule.name and rule.name ~= word.name then
             valid = false
-          elseif not rule.connector then
-            table.insert(state.current_matches, word)
+          else
+            local match_word = copyTable(word)
+            if rule.connector then
+              match_word.connector = true
+            end
+            local nya = table.insert(state.current_matches, match_word)
           end
           next_state.word_index = state.word_index + 1
         end
@@ -229,7 +231,7 @@ function testParse(words, parser, state_)
         valid = true
       end
       if valid then
-        return testParse(words, parser, next_state)
+        return parse(words, parser, next_state)
       else
         --print(dump(rule))
         --print(dump(word))
@@ -242,6 +244,7 @@ function testParse(words, parser, state_)
         valid = true
         ret_state = state
       else
+        local best_word_index = 0
         for i = 1, #rule.options do
           local new_state = {
             parent = state,
@@ -258,16 +261,23 @@ function testParse(words, parser, state_)
           else
             new_state.is_repeat = state.is_repeat
           end
-          valid, ret_state = testParse(words, parser, new_state)
+          local new_ret_state
+          valid, new_ret_state = parse(words, parser, new_state)
           if valid then
-            break
+            if new_ret_state.word_index > best_word_index then
+              best_word_index = new_ret_state.word_index
+              ret_state = new_ret_state
+            end
           end
+        end
+        if best_word_index > 0 then
+          valid = true
         end
       end
       if valid then
         return true, ret_state
       elseif rule.optional then
-        return testParse(words, parser, next_state)
+        return parse(words, parser, next_state)
       end
     else
       return true, state
@@ -338,15 +348,23 @@ local function testParser()
       {name = "u", type = "property"},
       {name = "be", type = "verb"}
     },
+    { -- Test 11 - TRUE
+      {name = "bab", type = "object"},
+      {name = "on", type = "cond_infix"},
+      {name = "til", type = "object"},
+      {name = "be", type = "verb"},
+      {name = "u", type = "property"},
+      {name = "be", type = "verb"}
+    },
   }
 
   for i,v in ipairs(tests) do
-    local result, state = testParse(v, parser)
     print("--- TEST " .. i .. " ---")
+    local result, state = parse(v, parser)
     print("Result: " .. tostring(result))
     print("Words: " .. state.word_index-1 .. "/" .. #v)
     print("Matches: " .. fullDump(state.matches))
   end
 end
 
-testParser()
+--testParser()
