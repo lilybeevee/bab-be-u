@@ -125,8 +125,8 @@ It is probably possible to do, but lily has decided that it's not important enou
               remove_from_moving_units[unit] = true;
               table.insert(moving_units_next, unit);
               
-              for _,mover in ipairs(movers) do
-                moveIt(mover, dx, dy, data, false, already_added, moving_units, kikers, slippers)
+              for k = #movers, 1, -1 do
+                moveIt(movers[k], dx, dy, data, false, already_added, moving_units, kikers, slippers)
               end
               --Patashu: only the mover itself pulls, otherwise it's a mess. stuff like STICKY/STUCK will require ruggedizing this logic.
               --Patashu: TODO: Doing the pull right away means that in a situation like this: https://cdn.discordapp.com/attachments/579519329515732993/582179745006092318/unknown.png the pull could happen before the bounce depending on move order. To fix this... I'm not sure how Baba does this? But it's somewhere in that mess of code.
@@ -237,44 +237,48 @@ function applySlide(mover, dx, dy, already_added, moving_units)
   local did_launch = false
    --we haven't actually moved yet, so check the tile we will be on
   for _,v in ipairs(getUnitsOnTile(mover.x+dx, mover.y+dy)) do
-    local launchness = countProperty(v, "goooo");
-    if (launchness > 0) then
-      if (not did_clear_existing) then
-        for i = #mover.moves,1,-1 do
-          if mover.moves[i].reason == "goooo" or mover.moves[i].reason == "icyyyy" then
-            table.remove(mover.moves, i)
+    if (not v.already_moving) then
+      local launchness = countProperty(v, "goooo");
+      if (launchness > 0) then
+        if (not did_clear_existing) then
+          for i = #mover.moves,1,-1 do
+            if mover.moves[i].reason == "goooo" or mover.moves[i].reason == "icyyyy" then
+              table.remove(mover.moves, i)
+            end
           end
+          did_clear_existing = true
         end
-        did_clear_existing = true
+        --the new moves will be at the start of the unit's moves data, so that it takes precedence over what it would have done next otherwise
+        --TODO: CLEANUP: Figure out a nice way to not have to pass this around/do this in a million places.
+        table.insert(mover.moves, 1, {reason = "goooo", dir = v.dir, times = launchness})
+        if not already_added[mover] then
+          table.insert(moving_units, mover)
+          already_added[mover] = true
+        end
+        did_launch = true
       end
-      --the new moves will be at the start of the unit's moves data, so that it takes precedence over what it would have done next otherwise
-      --TODO: CLEANUP: Figure out a nice way to not have to pass this around/do this in a million places.
-      table.insert(mover.moves, 1, {reason = "goooo", dir = v.dir, times = launchness})
-      if not already_added[mover] then
-        table.insert(moving_units, mover)
-        already_added[mover] = true
-      end
-      did_launch = true
     end
   end
   if (did_launch) then
     return
   end
   for _,v in ipairs(getUnitsOnTile(mover.x+dx, mover.y+dy)) do
-    local slideness = countProperty(v, "icyyyy");
-    if (slideness > 0) then
-      if (not did_clear_existing) then
-        for i = #mover.moves,1,-1 do
-          if mover.moves[i].reason == "goooo" or mover.moves[i].reason == "icyyyy" then
-            table.remove(mover.moves, i)
+    if (not v.already_moving) then
+      local slideness = countProperty(v, "icyyyy");
+      if (slideness > 0) then
+        if (not did_clear_existing) then
+          for i = #mover.moves,1,-1 do
+            if mover.moves[i].reason == "goooo" or mover.moves[i].reason == "icyyyy" then
+              table.remove(mover.moves, i)
+            end
           end
+          did_clear_existing = true
         end
-        did_clear_existing = true
-      end
-      table.insert(mover.moves, 1, {reason = "icyyyy", dir = mover.dir, times = slideness})
-      if not already_added[mover] then
-        table.insert(moving_units, mover)
-        already_added[mover] = true
+        table.insert(mover.moves, 1, {reason = "icyyyy", dir = mover.dir, times = slideness})
+        if not already_added[mover] then
+          table.insert(moving_units, mover)
+          already_added[mover] = true
+        end
       end
     end
   end
