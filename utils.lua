@@ -371,14 +371,24 @@ function lerp(a,b,t) return (1-t)*a + t*b end
 
 function fullDump(o)
   if type(o) == 'table' then
-     local s = '{ '
-     for k,v in pairs(o) do
-        if type(k) ~= 'number' then k = '"'..k..'"' end
-        s = s .. '['..k..'] = ' .. dump(v) .. ','
-     end
-     return s .. '} '
+    local s = '{'
+    local first = true
+    for k,v in pairs(o) do
+      if not first then
+        s = s .. ', '
+      end
+      if type(k) ~= 'number' then
+        s = s .. k .. ' = ' .. fullDump(v)
+      else
+        s = s .. fullDump(v)
+      end
+      first = false
+    end
+    return s .. '}'
+  elseif type(o) == 'string' then
+    return '"' .. o .. '"'
   else
-     return tostring(o)
+    return tostring(o)
   end
 end
 
@@ -590,9 +600,19 @@ end
 
 function mergeTable(t, other)
   if other ~= nil then
-    for i,v in ipairs(other) do
-      if not table.has_value(t, v) then
-        table.insert(t, v)
+    for k,v in pairs(other) do
+      if type(k) == "number" then
+        if not table.has_value(t, v) then
+          table.insert(t, v)
+        end
+      else
+        if t[k] ~= nil then
+          if type(t[k]) == "table" and type(v) == "table" then
+            mergeTable(t[k], v)
+          end
+        else
+          t[k] = v
+        end
       end
     end
   end
@@ -604,4 +624,12 @@ end
 
 function debugDisplay(key, val)
   debug_values[key] = val
+end
+
+function keyCount(t)
+  local count = 0
+  for k,v in pairs(t) do
+    count = count + 1
+  end
+  return count
 end

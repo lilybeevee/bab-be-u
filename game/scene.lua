@@ -23,7 +23,7 @@ local paletteshader_0 = love.graphics.newShader[[
 ]]
 --local paletteshader_autumn = love.graphics.newShader("paletteshader_autumn.txt")
 --local paletteshader_dunno = love.graphics.newShader("paletteshader_dunno.txt")
-local paletteshader_zawarudo = love.graphics.newShader("shader_pucker.txt")
+local shader_zawarudo = love.graphics.newShader("shader_pucker.txt")
 local level_shader = paletteshader_0
 local doin_the_world = false
 local shader_time = 0
@@ -89,6 +89,7 @@ function scene.resetStuff()
   parseRules()
   updateUnits(true)
 
+  first_turn = false
   window_dir = 0
 end
 
@@ -114,7 +115,7 @@ function scene.keyPressed(key)
   end
   
   if key == "y" then
-    level_shader = paletteshader_zawarudo
+    level_shader = shader_zawarudo
     shader_time = 0
     doin_the_world = true
   end
@@ -417,8 +418,7 @@ function scene.checkInput()
 
   for _,key in ipairs(repeat_keys) do
     if not win and repeat_timers[key] ~= nil and repeat_timers[key] <= 0 then
-      if key == "z" then
-        update_undo = false
+      if key == "z" or key == "backspace" then
         undo()
       else
         local x, y = 0, 0
@@ -434,8 +434,10 @@ function scene.checkInput()
           if key_down["d"] then x = x + 1 end
         end
         newUndo()
-        update_undo = false
         doMovement(x, y)
+        if #undo_buffer[1] == 0 then
+          table.remove(undo_buffer, 1)
+        end
       end
     end
 

@@ -5,6 +5,7 @@ require "utils"
 require "audio"
 require "game/unit"
 require "game/movement"
+require "game/parser"
 require "game/rules"
 require "game/undo"
 require "game/cursor"
@@ -196,10 +197,9 @@ function love.draw()
     'F3+G to toggle rainbowmode\n'..
     'F2 for editor mode\n'..
     'F1 for game mode'
-    for key, value in ipairs(debug_values) do
+    for key, value in pairs(debug_values) do
       debugtext = debugtext..'\n'..
       key..': '..value
-      print('added '..key)
     end
     love.graphics.print(debugtext)
   end
