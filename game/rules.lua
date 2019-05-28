@@ -71,7 +71,15 @@ function parseRules(undoing)
 
     local valid, state = parse(words, parser)
 
-    if valid then
+    if not valid then
+      if #words > 1 then
+        table.insert(first_words, {words[2].unit, first[2]})
+      end
+    else
+      if state.word_index <= #words then
+        table.insert(first_words, {words[state.word_index-1].unit, first[2]})
+      end
+
       local new_rules = {{},{},{},{{},{}}}
 
       local function simplify(t, allow_text)
