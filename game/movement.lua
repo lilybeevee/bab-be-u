@@ -190,8 +190,10 @@ function doAction(action)
     local opened = action[2]
     for _,unit in ipairs(opened) do
       addParticles("destroy", unit.x, unit.y, {237,226,133})
-      unit.removed = true
-      unit.destroyed = true
+      if not hasProperty("protecc") then
+        unit.removed = true
+        unit.destroyed = true
+      end
     end
   end
 end
