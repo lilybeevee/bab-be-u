@@ -103,7 +103,7 @@ function love.keypressed(key,scancode,isrepeat)
   end
 
   if scene and scene.keyPressed then
-    scene.keyPressed(key)
+    scene.keyPressed(key, isrepeat)
   end
 
   suit.keypressed(key)

@@ -93,7 +93,11 @@ function scene.resetStuff()
   window_dir = 0
 end
 
-function scene.keyPressed(key)
+function scene.keyPressed(key, isrepeat)
+  if isrepeat then
+    return
+  end
+
   if key == "w" or key == "a" or key == "s" or key == "d" then
     if not repeat_timers["wasd"] then
       repeat_timers["wasd"] = 30
