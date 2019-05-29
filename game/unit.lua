@@ -212,18 +212,19 @@ function updateUnits(undoing, big_update)
         end
       end
 
-      if hasProperty(unit,"up") then
-        unit.olddir = unit.dir
-        unit.dir = 7
-      elseif hasProperty(unit,"right") then
-        unit.olddir = unit.dir
-        unit.dir = 1
-      elseif hasProperty(unit,"down") then
-        unit.olddir = unit.dir
-        unit.dir = 3
-      elseif hasProperty(unit,"left") then
-        unit.olddir = unit.dir
-        unit.dir = 5
+      for k,v in pairs(dirs8_by_name) do
+        if hasProperty(unit, k) then
+          unit.olddir = unit.dir
+          updateDir(unit, v)
+        end
+      end
+
+      if unit.fullname == "text_direction" then
+        for k,v in pairs(dirs8_by_name) do
+          if unit.dir == v then
+            unit.textname = k
+          end
+        end
       end
 
       unit.overlay = {}
@@ -478,6 +479,8 @@ function createUnit(tile,x,y,dir,convert,id_)
 
   table.insert(units, unit)
 
+  updateDir(unit, unit.dir)
+
   return unit
 end
 
@@ -518,6 +521,17 @@ function moveUnit(unit,x,y)
   table.insert(units_by_tile[tileid], unit)
 
   do_move_sound = true
+end
+
+function updateDir(unit,dir)
+  unit.dir = dir
+  if unit.fullname == "text_direction" then
+    for k,v in pairs(dirs8_by_name) do
+      if unit.dir == v then
+        unit.textname = k
+      end
+    end
+  end
 end
 
 function newUnitID()

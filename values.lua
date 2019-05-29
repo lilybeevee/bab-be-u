@@ -726,19 +726,20 @@ tiles_list = {
     sprite = "text_goup",
     type = "text",
     texttype = "property",
-    grid = {6, 1},
+    --grid = {6, 1},
     color = {131,200,229},
     layer = 20,
   },
   -- 68
   {
-    name = "text_right",
+    name = "text_direction",
     sprite = "text_goright",
     type = "text",
     texttype = "property",
     grid = {7, 1},
     color = {131,200,229},
     layer = 20,
+    rotate = true,
   },
   -- 69
   {
@@ -746,7 +747,7 @@ tiles_list = {
     sprite = "text_goleft",
     type = "text",
     texttype = "property",
-    grid = {6, 2},
+    --grid = {6, 2},
     color = {131,200,229},
     layer = 20,
     nice = true,
@@ -757,7 +758,7 @@ tiles_list = {
     sprite = "text_godown",
     type = "text",
     texttype = "property",
-    grid = {7, 2},
+    --grid = {7, 2},
     color = {131,200,229},
     layer = 20,
   },
@@ -1199,13 +1200,53 @@ tiles_list = {
   --- 112
   {
     name = "colld",
-	sprite = "colld",
-	type = "object",
-	grid = {3,3},
-	color = {62, 118, 136},
-	layer = 3,
+    sprite = "colld",
+    type = "object",
+    grid = {3,3},
+    color = {62, 118, 136},
+    layer = 3,
   },
-  -- 113
+  --- 113
+  {
+    name = "text_goooo",
+    sprite = "text_goooo",
+    type = "text",
+    texttype = "property",
+    grid = {11, 2},
+    color = {95,157,209},
+    layer = 20,
+  },
+  --- 114
+  {
+    name = "text_icyyyy",
+    sprite = "text_icyyyy",
+    type = "text",
+    texttype = "property",
+    grid = {12, 2},
+    color = {131,200,229},
+    layer = 20,
+  },
+  -- 115
+  {
+    name = "text_protecc",
+    sprite = "text_protecc",
+    type = "text",
+    texttype = "property",
+    grid = {9, 3},
+    color = {255,255,255},
+    layer = 20,
+  },
+  -- 116
+  {
+    name = "text_flye",
+    sprite = "text_flye",
+    type = "text",
+    texttype = "property",
+    grid = {8, 1},
+    color = {131,200,229},
+    layer = 20,
+  },
+  -- 117
   {
     name = "text_n't",
     sprite = "text_nt",

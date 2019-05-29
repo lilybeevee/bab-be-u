@@ -93,17 +93,19 @@ function parseRules(undoing)
         for _,v in ipairs(t) do
           table.insert(units, v.unit)
           if not v.connector then
-            name = name .. v.name
+            name = v.name
+            local suffix = ""
             if v.mods then
               for _,mod in ipairs(v.mods) do
                 table.insert(units, mod.unit)
                 if mod.name == "text" then
-                  name = "text_" .. name
+                  name = v.unit.fullname
                 elseif mod.name == "n't" then
-                  name = name .. "n't"
+                  suffix = suffix .. "n't"
                 end
               end
             end
+            name = name .. suffix
           end
         end
         return name, units
@@ -175,9 +177,9 @@ function parseRules(undoing)
               print("nil on: " .. noun .. " - " .. verb .. " - " .. prop)
             end
 
-            if verb == "got" or a[1]:starts("text_") or c[1]:starts("text_") then
+            --if verb == "got" or a[1]:starts("text_") or c[1]:starts("text_") then
               print("added rule: " .. noun .. " " .. verb .. " " .. prop)
-            end
+            --end
 
             local all_units = {}
             for _,unit in ipairs(noun_texts) do

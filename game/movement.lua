@@ -8,7 +8,7 @@ function doUpdate()
       local x = update.payload.x
       local y = update.payload.y
       local dir = update.payload.dir
-      unit.dir = dir
+      updateDir(unit, dir)
       moveUnit(unit, x, y)
       unit.already_moving = false
     end
@@ -236,7 +236,7 @@ end
 function queueMove(mover, dx, dy, dir, priority)
   addUndo({"update", mover.id, mover.x, mover.y, mover.dir})
   mover.olddir = mover.dir
-  mover.dir = dir
+  updateDir(mover, dir)
   print("moving:"..mover.name..","..tostring(mover.id)..","..tostring(mover.x)..","..tostring(mover.y)..","..tostring(dx)..","..tostring(dy))
   mover.already_moving = true;
   table.insert(update_queue, (priority and 1 or (#update_queue + 1)), {unit = mover, reason = "update", payload = {x = mover.x + dx, y = mover.y + dy, dir = mover.dir}})

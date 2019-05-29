@@ -20,7 +20,7 @@ function undo()
 
         if unit ~= nil then
           moveUnit(unit,v[3],v[4])
-          unit.dir = v[5]
+          updateDir(unit, v[5])
 
           if unit.type == "text" then
             update_rules = true
