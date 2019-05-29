@@ -109,7 +109,7 @@ end
   
   Note that the rules returned are full rules, formatted like: {{subject,verb,object,{preconds,postconds}}, {ids}} 
 ]]
-function matchesRule(rule1,rule2,rule3)
+function matchesRule(rule1,rule2,rule3,debugging)
   local nrules = {}
   local fnrules = {}
   local rule_units = {}
@@ -141,6 +141,12 @@ function matchesRule(rule1,rule2,rule3)
   getnrule(rule1,1)
   getnrule(rule2,2)
   getnrule(rule3,3)
+  
+  if (debugging) then
+    for x,y in ipairs(nrules) do
+      print("b:"..tostring(x)..","..tostring(y))
+    end
+  end
 
   local ret = {}
 
@@ -162,12 +168,23 @@ function matchesRule(rule1,rule2,rule3)
   rules_list = rules_with[nrules[1] or nrules[3] or nrules[2]] or {}
   mergeTable(rules_list, rules_with[fnrules[1] or fnrules[3] or fnrules[2]] or {})
 
+  if (debugging) then
+    print ("c:"..tostring(#rules_list))
+  end
   if #rules_list > 0 then
     for _,rules in ipairs(rules_list) do
       local rule = rules[1]
+      if (debugging) then
+        for i=1,3 do
+          print("d,"..tostring(i)..":"..tostring(rule[i]))
+        end
+      end
       local result = true
       for i=1,3 do
         if nrules[i] ~= nil and nrules[i] ~= rule[i] and (fnrules[i] == nil or (fnrules[i] ~= nil and fnrules[i] ~= rule[i])) then
+          if (debugging) then
+            print("false due to nrules/fnrules mismatch")
+          end
           result = false
         elseif rule_units[i] ~= nil then
           if i == 1 then
@@ -176,12 +193,17 @@ function matchesRule(rule1,rule2,rule3)
             cond = 2
           end
           if cond and not testConds(rule_units[i], rule[4][cond]) then
+            if (debugging) then
+              print("false due to cond")
+            end
             result = false
           end
         end
       end
       if result then
-        --print("matched: " .. dump(rule) .. " | find: " .. find)
+        if (debugging) then
+          print("matched: " .. dump(rule) .. " | find: " .. find)
+        end
         if find == 0 then
           table.insert(ret, rules)
         elseif find == 1 then

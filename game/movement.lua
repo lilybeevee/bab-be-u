@@ -175,10 +175,10 @@ It is probably possible to do, but lily has decided that it's not important enou
     end
     move_stage = move_stage + 1
   end
-  updateUnits()
+  updateUnits(false, true)
   parseRules()
   convertUnits()
-  updateUnits()
+  updateUnits(false, false)
   parseRules()
 end
 

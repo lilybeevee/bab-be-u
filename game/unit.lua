@@ -1,4 +1,4 @@
-function updateUnits(undoing)
+function updateUnits(undoing, big_update)
   max_layer = 1
   units_by_layer = {}
   
@@ -58,7 +58,7 @@ function updateUnits(undoing)
 
       unit.layer = tile.layer
 
-      if not undoing then
+      if not undoing and big_update then
         for _,on in ipairs(units_by_tile[tileid]) do
           if sameFloat(unit, on) then
             if hasProperty(on, "go") and on ~= unit then
@@ -109,7 +109,7 @@ function updateUnits(undoing)
         end
       end
       
-      if is_u and not undoing and not unit.removed then
+      if is_u and not undoing and not unit.removed and big_update then
         unit.layer = unit.layer + 10
         for _,on in ipairs(units_by_tile[tileid]) do
           if sameFloat(unit, on) then
@@ -188,7 +188,38 @@ function updateUnits(undoing)
     end
   end
 
-  deleteUnits(del_units)
+  deleteUnits(del_units,false)
+end
+
+function dropGotUnit(unit, rule)
+  --TODO: CLEANUP: Blatantly copypasta'd from convertUnits.
+  local obj_name = rule[3]
+  print(obj_name)
+  if (obj_name == "hatt" or obj_name == "gun") then
+    return
+  end
+  
+  local istext = false
+  if rule[3] == "text" then
+    istext = true
+    obj_name = "text_" .. rule[1]
+  end
+  if rule[3]:starts("text_") then
+    istext = true
+  end
+  local obj_id = tiles_by_name[obj_name]
+  local obj_tile = tiles_list[obj_id]
+  if rule[3] == "mous" or (obj_tile ~= nil and (obj_tile.type == "object" or istext)) then
+    --if testConds(unit,rule[4][1]) then
+    if rule[3] == "mous" then
+      local new_mouse = createMouse(unit.x, unit.y)
+      addUndo({"create_cursor", new_mouse.id})
+    else
+      print("dropped:"..obj_name)
+      local new_unit = createUnit(obj_id, unit.x, unit.y, unit.dir, true)
+      addUndo({"create", new_unit.id, true})
+    end
+  end
 end
 
 function convertUnits()
@@ -222,15 +253,7 @@ function convertUnits()
       for i,unit in ipairs(units_by_name[rule[1]]) do
         unit.got_object = {}
         if rule[3] == "mous" or (obj_tile ~= nil and (obj_tile.type == "object" or istext)) then
-          if rule[2] == "got" then
-            if not table.has_value(unit.got_objects, rule[3]) and testConds(unit,rule[4][1]) then
-              table.insert(unit.got_objects, rule[3])
-            end
-            if unit.destroyed and testConds(unit,rule[4][1]) then
-              local new_unit = createUnit(obj_id, unit.x, unit.y, unit.dir)
-              addUndo({"create", new_unit.id, false})
-            end
-          elseif rule[2] == "be" then
+          if rule[2] == "be" then
             if not unit.destroyed and rule[3] ~= unit.name then
               if testConds(unit,rule[4][1]) then
                 if not unit.removed then
@@ -388,6 +411,13 @@ end
 function deleteUnit(unit,convert)
   unit.removed = true
   unit.removed_final = true
+  if not convert then
+    gotters = matchesRule(unit, "got", "?");
+    for _,ruleparent in ipairs(gotters) do
+      local rule = ruleparent[1]
+      dropGotUnit(unit, rule);
+    end
+  end
   removeFromTable(units, unit)
   units_by_id[unit.id] = nil
   removeFromTable(units_by_name[unit.name], unit)
