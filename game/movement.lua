@@ -179,6 +179,7 @@ It is probably possible to do, but lily has decided that it's not important enou
   updateUnits(false, true)
   parseRules()
   convertUnits()
+  fallBlock()
   updateUnits(false, false)
   parseRules()
 end
@@ -375,6 +376,32 @@ function doPull(unit,dx,dy,data, already_added, moving_units, kikers, slippers)
         end
       end
     end
+  end
+end
+
+function fallBlock()
+  local fallers = getUnitsWithEffect("haet_skye")
+  table.sort(fallers, function(a, b) return a.y > b.y end )
+  
+  for _,unit in ipairs(fallers) do
+    local caught = false
+	
+	addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
+	while (caught == false) do
+	  local catchers = getUnitsOnTile(unit.x,unit.y+1)
+	  if not inBounds(unit.x,unit.y+1) then
+	    caught = true
+	  end
+	  for _,on in ipairs(catchers) do
+	    if not canMove(unit, 0, 1) then
+		  caught = true
+		end
+	  end
+	  
+	  if caught == false then
+	    unit.y = unit.y + 1
+	  end
+	end
   end
 end
 
