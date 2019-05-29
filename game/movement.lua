@@ -175,7 +175,6 @@ It is probably possible to do, but lily has decided that it's not important enou
     end
     move_stage = move_stage + 1
   end
-  parseRules()
   updateUnits(false, true)
   parseRules()
   convertUnits()
@@ -188,20 +187,9 @@ function doAction(action)
   if action_name == "open" then
     playSound("break", 0.5)
     playSound("unlock", 0.6)
-    local victims = action[2]
-    for _,unit in ipairs(victims) do
+    local opened = action[2]
+    for _,unit in ipairs(opened) do
       addParticles("destroy", unit.x, unit.y, {237,226,133})
-      if not hasProperty("protecc") then
-        unit.removed = true
-        unit.destroyed = true
-      end
-    end
-  elseif action_name == "weak" then
-    playSound("break", 0.5)
-    local victims = action[2]
-    for _,unit in ipairs(victims) do
-      print("instant weak")
-      addParticles("destroy", unit.x, unit.y, unit.color)
       if not hasProperty("protecc") then
         unit.removed = true
         unit.destroyed = true
@@ -237,7 +225,7 @@ function queueMove(mover, dx, dy, dir, priority)
   addUndo({"update", mover.id, mover.x, mover.y, mover.dir})
   mover.olddir = mover.dir
   mover.dir = dir
-  print("moving:"..mover.name..","..tostring(mover.id)..","..tostring(mover.x)..","..tostring(mover.y)..","..tostring(dx)..","..tostring(dy))
+  --print("moving:"..mover.name..","..tostring(mover.id)..","..tostring(mover.x)..","..tostring(mover.y)..","..tostring(dx)..","..tostring(dy))
   mover.already_moving = true;
   table.insert(update_queue, (priority and 1 or (#update_queue + 1)), {unit = mover, reason = "update", payload = {x = mover.x + dx, y = mover.y + dy, dir = mover.dir}})
 end
@@ -388,22 +376,16 @@ function canMove(unit,dx,dy,pushing_,pulling_)
 	if (pulling_ ~= nil) then
 		pulling = pulling_
 	end
-  
-  local x = unit.x + dx
-  local y = unit.y + dy
-  
   local movers = {}
   local specials = {}
   table.insert(movers, unit)
-  
+
+  local x = unit.x + dx
+  local y = unit.y + dy
+
   if not inBounds(x,y) then
-    if hasProperty(unit, "ouch") then
-      table.insert(specials, {"weak", {unit}})
-      return true,movers,specials
-    end
     return false,{},{}
   end
-
   if hasProperty(unit, "diagnal") and (dx == 0 or dy == 0) then
     return false,movers,specials
   end
@@ -420,10 +402,8 @@ function canMove(unit,dx,dy,pushing_,pulling_)
     if (not v.already_moving) then
       local stopped = false
       local would_swap_with = hasProperty(v, "edgy") and pushing
-      --pushing a key into a door automatically works
       if (fordor and hasProperty(v, "ned kee")) or (nedkee and hasProperty(v, "for dor")) then
         table.insert(specials, {"open", {unit, v}})
-        return true,movers,specials
       end
       if hasProperty(v, "go away") and not would_swap_with then
         if pushing then
@@ -458,11 +438,6 @@ function canMove(unit,dx,dy,pushing_,pulling_)
       --if thing is ouch, it will not stop things. probably recreates the normal baba behaviour pretty well (TODO: test that items dropped by GOT are dropped in the expected tiles for all ouch combinations)
       if hasProperty(v, "ouch") then
       stopped = false
-      end
-      --if a weak thing tries to move and fails, destroy it
-      if stopped and hasProperty(unit, "ouch") then
-        table.insert(specials, {"weak", {unit}})
-        return true,movers,specials
       end
       if stopped then
         return false,movers,specials
