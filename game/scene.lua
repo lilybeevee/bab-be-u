@@ -277,6 +277,8 @@ function scene.draw(dt)
 
         love.graphics.push()
         love.graphics.translate(fulldrawx, fulldrawy)
+
+        love.graphics.push()
         love.graphics.rotate(math.rad(rotation))
         love.graphics.translate(-fulldrawx, -fulldrawy)
 
@@ -310,6 +312,26 @@ function scene.draw(dt)
         if(hasRule(unit,"got","gun")) then
           love.graphics.setColor(1, 1, 1)
           love.graphics.draw(sprites["gunsmol"], fulldrawx, fulldrawy, 0, unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+        end
+
+        love.graphics.pop()
+
+        if unit.blocked then
+          local rotation = (unit.blocked_dir - 1) * 45
+
+          love.graphics.push()
+          love.graphics.rotate(math.rad(rotation))
+          love.graphics.translate(-fulldrawx, -fulldrawy)
+
+          local scalex = 1
+          if unit.blocked_dir % 2 == 0 then
+            scalex = math.sqrt(2)
+          end
+
+          love.graphics.setColor(0.7, 0, 0)
+          love.graphics.draw(sprites["scribble_" .. anim_stage], fulldrawx, fulldrawy, 0, unit.scalex * scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+
+          love.graphics.pop()
         end
 
         love.graphics.pop()

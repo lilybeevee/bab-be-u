@@ -6,6 +6,7 @@ function clear()
   units_by_name = {}
   units_by_tile = {}
   units_by_layer = {}
+  referenced_objects = {}
   undo_buffer = {}
   update_undo = true
   rainbowmode = false
@@ -83,7 +84,7 @@ end
     string
 
   Unit argument will check conditions for that unit, and match rules using its name
-  Both nil and "?" act as a wildcard, however a nil wildcard will return the argument as a unit
+  Both nil and "?" act as a wildcard, however a nil wildcard will only check units & return the argument as a unit
   Return value changes depending on how many arguments are nil
   Example:
     Rules:
@@ -241,7 +242,7 @@ end
 function getUnitsWithEffect(effect)
   local result = {}
   local rules = matchesRule(nil, "be", effect);
-  print ("h:"..tostring(#rules))
+  --print ("h:"..tostring(#rules))
   for _,dat in ipairs(rules) do
     local unit = dat[2];
     if not unit.removed then
@@ -284,10 +285,18 @@ function countProperty(unit,prop)
 end
 
 function testConds(unit,conds) --cond should be a {cond,{object types}}
-  local result = true
+  local endresult = true
   for _,cond in ipairs(conds) do
     local condtype = cond[1]
     local params = cond[2]
+
+    local result = true
+    local cond_not = false
+    if condtype:ends("n't") then
+      condtype = condtype:sub(1, -4)
+      cond_not = true
+    end
+
     if condtype == "on" then
       for _,param in ipairs(params) do
         local others = getUnitsOnTile(unit.x,unit.y,param) --currently, conditions only work up to one layer of nesting, so the noun argument of the condition is assumed to be just a noun
@@ -295,16 +304,16 @@ function testConds(unit,conds) --cond should be a {cond,{object types}}
           result = false
         end
       end
-	elseif condtype == "arond" then
-	  for _,param in ipairs(params) do
+    elseif condtype == "arond" then
+      for _,param in ipairs(params) do
         local others = getUnitsOnTile(unit.x-1,unit.y-1,param)
-		for nx=-1,1 do
-		  for ny=-1,1 do
-		    if (nx ~= 0) or (ny ~= 0) then
-		      mergeTable(others,getUnitsOnTile(unit.x+nx,unit.y+ny,param))
-			end
-		  end
-		end
+        for nx=-1,1 do
+          for ny=-1,1 do
+            if (nx ~= 0) or (ny ~= 0) then
+            mergeTable(others,getUnitsOnTile(unit.x+nx,unit.y+ny,param))
+            end
+          end
+        end
         if #others == 0 then
           result = false
         end
@@ -325,8 +334,15 @@ function testConds(unit,conds) --cond should be a {cond,{object types}}
       print("unknown condtype: " .. condtype)
       result = false
     end
+
+    if cond_not then
+      result = not result
+    end
+    if not result then
+      endresult = false
+    end
   end
-  return result
+  return endresult
 end
 
 function inBounds(x,y)
@@ -409,18 +425,22 @@ end
 
 function lerp(a,b,t) return (1-t)*a + t*b end
 
-function fullDump(o)
-  if type(o) == 'table' then
+function fullDump(o, r)
+  if type(o) == 'table' and r ~= 2 then
     local s = '{'
     local first = true
     for k,v in pairs(o) do
       if not first then
         s = s .. ', '
       end
+      local nr = nil
+      if r then
+        nr = 2
+      end
       if type(k) ~= 'number' then
-        s = s .. k .. ' = ' .. fullDump(v)
+        s = s .. k .. ' = ' .. fullDump(v, nr)
       else
-        s = s .. fullDump(v)
+        s = s .. fullDump(v, nr)
       end
       first = false
     end

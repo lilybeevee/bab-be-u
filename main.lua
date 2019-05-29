@@ -27,6 +27,8 @@ function love.load()
   sprites = {}
   move_sound_data = nil
   move_sound_source = nil
+  anim_stage = 1
+  next_anim = ANIM_TIMER
 
   empty_sprite = love.image.newImageData(32, 32)
   empty_cursor = love.mouse.newCursor(empty_sprite)
@@ -171,6 +173,12 @@ end
 
 function love.draw()
   local dt = love.timer.getDelta()
+
+  next_anim = next_anim - (dt * 1000)
+  if next_anim <= 0 then
+    anim_stage = (anim_stage % 3) + 1
+    next_anim = next_anim + ANIM_TIMER
+  end
 
   love.graphics.setFont(default_font)
 

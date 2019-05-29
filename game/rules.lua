@@ -1,15 +1,19 @@
 function parseRules(undoing)
   full_rules = {}
   rules_with = {}
+  not_rules = {}
+  protect_rules = {}
 
   rules_with["text"] = {}
   rules_with["be"] = {}
   rules_with["go away"] = {}
-  local text_be_go_away = {{"text","be","go away",{{},{}}},{}}
+  local text_be_go_away = {{"text","be","go away",{{},{}}},{},1}
   table.insert(full_rules, text_be_go_away)
   table.insert(rules_with["text"], text_be_go_away)
   table.insert(rules_with["be"], text_be_go_away)
   table.insert(rules_with["go away"], text_be_go_away)
+
+  has_new_rule = false
 
   local first_words = {}
   if units_by_name["text"] then
@@ -31,6 +35,7 @@ function parseRules(undoing)
       end
       unit.old_active = unit.active
       unit.active = false
+      unit.blocked = false
     end
   end
 
@@ -94,6 +99,8 @@ function parseRules(undoing)
                 table.insert(units, mod.unit)
                 if mod.name == "text" then
                   name = "text_" .. name
+                elseif mod.name == "n't" then
+                  name = name .. "n't"
                 end
               end
             end
@@ -175,30 +182,12 @@ function parseRules(undoing)
             local all_units = {}
             for _,unit in ipairs(noun_texts) do
               table.insert(all_units, unit)
-              unit.active = true
-              if not unit.old_active and not first_turn and not undoing then
-                addParticles("rule", unit.x, unit.y, unit.color)
-                has_new_rule = true
-              end
-              unit.old_active = unit.active
             end
             for _,unit in ipairs(verb_texts) do
               table.insert(all_units, unit)
-              unit.active = true
-              if not unit.old_active and not first_turn and not undoing then
-                addParticles("rule", unit.x, unit.y, unit.color)
-                has_new_rule = true
-              end
-              unit.old_active = unit.active
             end
             for _,unit in ipairs(prop_texts) do
               table.insert(all_units, unit)
-              unit.active = true
-              if not unit.old_active and not first_turn and not undoing then
-                addParticles("rule", unit.x, unit.y, unit.color)
-                has_new_rule = true
-              end
-              unit.old_active = unit.active
             end
 
             local conds = {{},{}}
@@ -206,11 +195,6 @@ function parseRules(undoing)
               for _,cond in ipairs(new_rules[4][i]) do
                 for _,unit in ipairs(cond[3]) do
                   table.insert(all_units, unit)
-                  unit.active = true
-                  if not unit.old_active and not first_turn and not undoing then
-                    addParticles("rule", unit.x, unit.y, unit.color)
-                    has_new_rule = true
-                  end
                 end
                 table.insert(conds[i], {cond[1], cond[2]})
               end
@@ -226,35 +210,178 @@ function parseRules(undoing)
               unit.old_active = unit.active
             end]]
 
-            local rule = {{noun,verb,prop,conds},all_units}
-            table.insert(full_rules, rule)
-
-            if not rules_with[noun] then
-              rules_with[noun] = {}
-            end
-            table.insert(rules_with[noun], rule)
-
-            if not rules_with[verb] then
-              rules_with[verb] = {}
-            end
-            table.insert(rules_with[verb], rule)
-
-            if not rules_with[prop] then
-              rules_with[prop] = {}
-            end
-            table.insert(rules_with[prop], rule)
-            
-            --[[if not rules_with[cond] then
-              rules_with[cond] = {}
-            end
-            table.insert(rules_with[cond], rule)]]--
+            local rule = {{noun,verb,prop,conds},all_units,first[2]}
+            addRule(rule)
           end
         end
       end
     end
   end
 
+  postRules()
+end
+
+function addRule(full_rule)
+  local rules = full_rule[1]
+  local units = full_rule[2]
+  local dir = full_rule[3]
+
+  local subject = rules[1]
+  local verb = rules[2]
+  local object = rules[3]
+  local conds = rules[4]
+
+  local subject_not = false
+  local verb_not = false
+  local object_not = false
+
+  if subject:ends("n't") then subject, subject_not = subject:sub(1, -4), true end
+  if verb:ends("n't")    then verb,       verb_not =    verb:sub(1, -4), true end
+  if object:ends("n't")  then object,   object_not =  object:sub(1, -4), true end
+
+  local is_protect = (subject == object) and (verb == "be")
+  local is_not = (verb_not or object_not) and not (verb_not and object_not) -- where's my XOR operator huh
+
+  for _,unit in ipairs(units) do
+    unit.active = true
+    if not unit.old_active and not first_turn then
+      addParticles("rule", unit.x, unit.y, unit.color)
+      has_new_rule = true
+    end
+    unit.old_active = unit.active
+  end
+
+  if subject_not then
+    print("subject not" .. subject)
+    if tiles_by_name[subject] then
+      print("adding not subject")
+      local new_subjects = {}
+      for _,v in ipairs(referenced_objects) do
+        if v ~= subject then
+          table.insert(new_subjects, v)
+        end
+      end
+      for _,v in ipairs(new_subjects) do
+        print(string.format("%s %s %s -> %s %s %s", rules[1],rules[2],rules[3], v,rules[2],rules[3]))
+        addRule({{v, rules[2], rules[3], rules[4]}, units, dir})
+      end
+      return
+    end
+  end
+
+  if object_not then
+    print("object not: " .. object)
+    if tiles_by_name[object] then
+      print("adding not object")
+      local new_objects = {}
+      for _,v in ipairs(referenced_objects) do
+        if v ~= object then
+          table.insert(new_objects, v)
+        end
+      end
+      for _,v in ipairs(new_objects) do
+        print(string.format("%s %s %s -> %s %s %s", rules[1],rules[2],rules[3], rules[1],rules[2],v))
+        addRule({{rules[1], rules[2], v, rules[4]}, units, dir})
+      end
+      return
+    end
+  end
+
+  if is_not then
+    local inverse_conds = {{},{}}
+    for i=1,2 do
+      for _,cond in ipairs(conds[i]) do
+        local new_cond = copyTable(cond)
+        if new_cond[1]:ends("n't") then
+          new_cond[1] = new_cond[1]:sub(1, -4)
+        else
+          new_cond[1] = new_cond[1] .. "n't"
+        end
+        table.insert(inverse_conds[i], new_cond)
+      end
+    end
+    table.insert(not_rules, {{subject, verb, object, inverse_conds}, units, dir})
+    if is_protect then 
+      -- for unit removal via X BEN'T X
+      table.insert(full_rules, {{subject, verb .. "n't", object, conds}, units, dir})
+    end
+  elseif is_protect then
+    addRule({{subject, "ben't", object .. "n't", conds}, units, dir})
+  else
+    table.insert(full_rules, full_rule)
+  end
+end
+
+function postRules()
+  local all_units = {}
+
+  -- Step 1:
+  -- Block & remove rules if they're N'T'd out
+  for _,rules in ipairs(not_rules) do
+    local rule = rules[1]
+
+    local has_conds = (#rule[4][1] > 0 or #rule[4][2] > 0)
+
+    local blocked_rules = {}
+    for _,frules in ipairs(full_rules) do
+      local frule = frules[1]
+      if frule[1] == rule[1] and frule[2] == rule[2] and frule[3] == rule[3] then
+        print("matching rule", rule[1], rule[2], rule[3])
+        if has_conds then
+          for i=1,2 do
+            for _,cond in ipairs(rule[4][i]) do
+              table.insert(frule[4][i], cond)
+            end
+          end
+        else
+          table.insert(blocked_rules, frules)
+        end
+      end
+    end
+
+    for _,blocked in ipairs(blocked_rules) do
+      for _,unit in ipairs(blocked[2]) do
+        unit.blocked = true
+        unit.blocked_dir = blocked[3]
+      end
+      removeFromTable(full_rules, blocked)
+    end
+
+    mergeTable(all_units, rules[2])
+  end
+
+  -- Step 2:
+  -- Add all remaining rules to lookup tables
+  for _,rules in ipairs(full_rules) do
+    local rule = rules[1]
+
+    local subject, verb, object = rule[1], rule[2], rule[3]
+
+    if not rules_with[subject] then
+      rules_with[subject] = {}
+    end
+    table.insert(rules_with[subject], rules)
+
+    if not rules_with[verb] then
+      rules_with[verb] = {}
+    end
+    table.insert(rules_with[verb], rules)
+
+    if not rules_with[object] then
+      rules_with[object] = {}
+    end
+    table.insert(rules_with[object], rules)
+
+    mergeTable(all_units, rules[2])
+  end
+
+  -- Step 3:
+  -- Unblock any units in an unblocked rule
+  for _,unit in ipairs(all_units) do
+    unit.blocked = false
+  end
+
   if has_new_rule then
-    playSound("rule",0.5)
+    playSound("rule", 0.5)
   end
 end

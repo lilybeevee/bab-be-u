@@ -130,7 +130,7 @@ function updateUnits(undoing, big_update)
     to_destroy = handleDels(to_destroy);
     
     local iswin = getUnitsWithEffect(":)");
-    for _,unit in ipairs(isbonus) do
+    for _,unit in ipairs(iswin) do
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
       for _,on in ipairs(stuff) do
         is_u = hasProperty(on, "u")
@@ -402,6 +402,7 @@ function createUnit(tile,x,y,dir,convert,id_)
   unit.y = y or 0
   unit.dir = dir or 1
   unit.active = false
+  unit.blocked = false
   unit.removed = false
 
   unit.scalex = 1
@@ -444,6 +445,12 @@ function createUnit(tile,x,y,dir,convert,id_)
   else
     unit.name = unit.fullname
     unit.textname = unit.fullname
+  end
+
+  if unit.texttype == "object" then
+    if not table.has_value(referenced_objects, unit.textname) then
+      table.insert(referenced_objects, unit.textname)
+    end
   end
 
   units_by_id[unit.id] = unit

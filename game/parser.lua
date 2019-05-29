@@ -1,3 +1,21 @@
+--[[
+
+PARSER TODO:
+  Make "mod" only apply to previously added words
+  Dont count other mod rules as added words
+
+repeating N'Ts will not work until this is made!
+
+
+local not_suffix = {
+  repeatable = true,
+  optional = true,
+  options = {{{type = "not", mod = -1}}}
+}]]
+local not_suffix = {type = "not", optional = true, mod = -1}
+
+local and_repeat = {type = "and", connector = true}
+
 local function common(arg, group)
   local has = {}
   for i,v in ipairs(arg) do
@@ -9,11 +27,13 @@ local function common(arg, group)
   if has["object"] then
     local options = {
       {
-        {type = "object"}
+        {type = "object"},
+        not_suffix
       },
       {
         {type = "any"},
-        {name = "text", mod = -1}
+        {name = "text", mod = -1},
+        {type = "not", optional = true, mod = -2}
       }
     }
     mergeTable(full_options, options)
@@ -29,8 +49,6 @@ local function common(arg, group)
 
   return {group = group, options = full_options}
 end
-
-local and_repeat = {type = "and", connector = true}
 
 local function commons(arg, group)
   local option = {
@@ -53,7 +71,8 @@ local cond_prefixes = {
   options = {
     {
       and_repeat,
-      {type = "cond_prefix"}
+      {type = "cond_prefix"},
+      not_suffix
     }
   }
 }
@@ -88,10 +107,12 @@ local cond_infixes = {
         options = {
           {
             {type = "cond_infix"},
+            not_suffix,
             commons({"object"}, "target")
           },
           {
             {name = "look at"},
+            not_suffix,
             directions_and_objects
           }
         }
@@ -107,6 +128,7 @@ local verbs = {
     {
       and_repeat,
       {type = "verb"},
+      not_suffix,
       cond_prefixes,
       commons({"object", "property"}, "target"),
       cond_infixes
@@ -234,20 +256,23 @@ function parse(words, parser, state_)
               table.insert(state.current_matches, word)
             end
           end
-          next_state.word_index = state.word_index + 1
+          if valid then
+            next_state.word_index = state.word_index + 1
+          end
         end
       elseif rule.connector and not state.is_repeat then
         valid = true
       end
-      if valid then
+      if valid or rule.optional then
         return parse(words, parser, next_state)
       else
-        --print(dump(rule))
-        --print(dump(word))
+        --print(fullDump(rule, true))
+        --print(fullDump(word, true))
         --print("FAILED AT TYPE/NAME")
       end
     elseif rule.options then
       local valid = false
+      local failed_state
       local ret_state
       if #rule.options == 0 then
         valid = true
@@ -277,6 +302,8 @@ function parse(words, parser, state_)
               best_word_index = new_ret_state.word_index
               ret_state = new_ret_state
             end
+          else
+            failed_state = ret_state
           end
         end
         if best_word_index > 0 then
@@ -287,6 +314,10 @@ function parse(words, parser, state_)
         return true, ret_state
       elseif rule.optional then
         return parse(words, parser, next_state)
+      else
+        if failed_state then
+          return false, failed_state
+        end
       end
     else
       return true, state
@@ -376,4 +407,4 @@ local function testParser()
   end
 end
 
---testParser()
+testParser()
