@@ -1246,7 +1246,25 @@ tiles_list = {
     color = {131,200,229},
     layer = 20,
   },
-  -- 117
+  --- 117
+  {
+    name = "text_piler",
+    sprite = "text_piler",
+    type = "text",
+    grid = {6, 9},
+    color = {115,115,115},
+    layer = 20,
+  },
+  --- 118
+  {
+    name = "piler",
+    sprite = "piler",
+    type = "object",
+    grid = {5, 9},
+    color = {115,115,115},
+    layer = 3,
+  },
+  -- 119
   {
     name = "text_n't",
     sprite = "text_nt",
@@ -1255,5 +1273,5 @@ tiles_list = {
     grid = {4, 0},
     color = {229,83,59},
     layer = 20,
-  }
+  },
 }
