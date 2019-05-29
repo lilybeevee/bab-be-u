@@ -110,6 +110,9 @@ end
   Note that the rules returned are full rules, formatted like: {{subject,verb,object,{preconds,postconds}}, {ids}} 
 ]]
 function matchesRule(rule1,rule2,rule3,debugging)
+  if (debugging) then
+    print("a:"..tostring(rule1)..","..tostring(rule2)..","..tostring(rule3))
+  end
   local nrules = {}
   local fnrules = {}
   local rule_units = {}
@@ -235,6 +238,19 @@ function matchesRule(rule1,rule2,rule3,debugging)
   return ret
 end
 
+function getUnitsWithEffect(effect)
+  local result = {}
+  local rules = matchesRule(nil, "be", effect);
+  print ("h:"..tostring(#rules))
+  for _,dat in ipairs(rules) do
+    local unit = dat[2];
+    if not unit.removed then
+      table.insert(result, unit)
+    end
+  end
+  return result
+end
+
 function hasRule(rule1,rule2,rule3)
   return #matchesRule(rule1,rule2,rule3) > 0
 end
@@ -354,15 +370,17 @@ function tileHasUnitName(name,x,y)
   end
 end
 
-function getUnitsOnTile(x,y,name)
+function getUnitsOnTile(x,y,name,not_destroyed)
   if not inBounds(x,y) then
     return {}
   else
     local result = {}
     local tileid = x + y * mapwidth
     for _,unit in ipairs(units_by_tile[tileid]) do
-      if not name or (name and nameIs(unit, name)) then
-        table.insert(result, unit)
+      if not not_destroyed or (not_destroyed and not unit.removed) then
+        if not name or (name and nameIs(unit, name)) then
+          table.insert(result, unit)
+        end
       end
     end
     return result

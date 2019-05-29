@@ -1,6 +1,7 @@
 function updateUnits(undoing, big_update)
   max_layer = 1
   units_by_layer = {}
+  local del_units = {}
   
   presence["details"] = #undo_buffer.." turns done"
 
@@ -11,9 +12,138 @@ function updateUnits(undoing, big_update)
   for _,unit in ipairs(units) do
     local tileid = unit.x + unit.y * mapwidth
     table.insert(units_by_tile[tileid], unit)
+    --just in case undeleted units are lingering around
+    if (unit.removed) then
+      --table.insert(del_units, on)
+    end
   end
-
-  local del_units = {}
+  
+  deleteUnits(del_units,false)
+  
+  --handle non-monotonic (creative, destructive) effects one at a time, so that we can process them in a set order instead of unit order
+  --BABA order is as follows: DONE, BLUE, RED, MORE, SINK, WEAK, MELT, DEFEAT, SHUT, EAT, BONUS, END, WIN, MAKE, HIDE
+  --(SHIFT, TELE, FOLLOW, BACK are handled in moveblock. FALL is handled in fallblock.)
+  
+  if (big_update and not undoing) then
+    local to_destroy = {}
+    local issink = getUnitsWithEffect("no swim");
+    for _,unit in ipairs(issink) do
+      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
+      for _,on in ipairs(stuff) do
+        if unit ~= on and sameFloat(unit, on) then
+          table.insert(to_destroy, unit)
+          table.insert(to_destroy, on)
+          playSound("sink", 0.5)
+          addParticles("destroy", unit.x, unit.y, on.color)
+        end
+      end
+    end
+    
+    to_destroy = handleDels(to_destroy);
+    
+    local isweak = getUnitsWithEffect("ouch");
+    for _,unit in ipairs(isweak) do
+      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
+      for _,on in ipairs(stuff) do
+        if unit ~= on and sameFloat(unit, on) then
+          table.insert(to_destroy, unit)
+          playSound("break", 0.5)
+          addParticles("destroy", unit.x, unit.y, unit.color)
+        end
+      end
+    end
+    
+    to_destroy = handleDels(to_destroy);
+    
+    local ishot = getUnitsWithEffect("hotte");
+    for _,unit in ipairs(ishot) do
+      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
+      for _,on in ipairs(stuff) do
+        if hasProperty(on, "fridgd") and sameFloat(unit, on) then
+          table.insert(to_destroy, on)
+          playSound("sink", 0.5)
+          addParticles("destroy", unit.x, unit.y, unit.color)
+        end
+      end
+    end
+    
+    to_destroy = handleDels(to_destroy);
+    
+    local isdefeat = getUnitsWithEffect(":(");
+    for _,unit in ipairs(isdefeat) do
+      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
+      for _,on in ipairs(stuff) do
+        is_u = hasProperty(on, "u")
+        if is_u and sameFloat(unit, on) then
+          table.insert(to_destroy, on)
+          playSound("break", 0.5)
+          addParticles("destroy", unit.x, unit.y, unit.color)
+        end
+      end
+    end
+    
+    to_destroy = handleDels(to_destroy);
+    
+    local isshut = getUnitsWithEffect("ned kee");
+    for _,unit in ipairs(isshut) do
+      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
+      for _,on in ipairs(stuff) do
+        if hasProperty("for dor") and sameFloat(unit, on) then
+          table.insert(to_destroy, unit)
+          table.insert(to_destroy, on)
+          playSound("break", 0.5)
+          playSound("unlock", 0.6)
+          addParticles("destroy", unit.x, unit.y, unit.color)
+          addParticles("destroy", on.x, on.y, on.color)
+        end
+      end
+    end
+    
+    to_destroy = handleDels(to_destroy);
+    
+    local iscrash = getUnitsWithEffect("xwx");
+    for _,unit in ipairs(iscrash) do
+      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
+      for _,on in ipairs(stuff) do
+        is_u = hasProperty(on, "u")
+        if is_u and sameFloat(unit, on) then
+          love = {}
+        end
+      end
+    end
+    
+    to_destroy = handleDels(to_destroy);
+    
+    local isbonus = getUnitsWithEffect(":o");
+    for _,unit in ipairs(isbonus) do
+      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
+      for _,on in ipairs(stuff) do
+        is_u = hasProperty(on, "u")
+        if is_u and sameFloat(unit, on) then
+          table.insert(to_destroy, on)
+          playSound("break", 0.5)
+          addParticles("destroy", unit.x, unit.y, unit.color)
+        end
+      end
+    end
+    
+    to_destroy = handleDels(to_destroy);
+    
+    local iswin = getUnitsWithEffect(":)");
+    for _,unit in ipairs(isbonus) do
+      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
+      for _,on in ipairs(stuff) do
+        is_u = hasProperty(on, "u")
+        if is_u and sameFloat(unit, on) then
+          win = true
+          music_fading = true
+          playSound("win", 0.5)
+        end
+      end
+    end
+  end
+  
+  
   local unitcount = #units
   for i,unit in ipairs(units) do
     --[[if i > unitcount then
@@ -57,82 +187,6 @@ function updateUnits(undoing, big_update)
       end
 
       unit.layer = tile.layer
-      to_destroy = {}
-      
-      --TODO: We might want to re-order this so it loops effect,unit instead of unit,effect like baba so we're less dependent on unit order.
-      if not undoing and big_update and not unit.removed then
-        for _,on in ipairs(units_by_tile[tileid]) do
-          if not on.removed and sameFloat(unit, on) then
-            if hasProperty(on, "go") and on ~= unit then
-              unit.dir = on.dir
-            end
-            if hasProperty(on, "no swim") and on ~= unit then
-              table.insert(to_destroy, unit)
-              table.insert(to_destroy, on)
-              playSound("sink", 0.5)
-              addParticles("destroy", unit.x, unit.y, on.color)
-            end
-            if hasProperty(on, "ned kee") and hasProperty(unit, "for dor") then
-              doAction({"open", {unit, on}})
-            end
-            if hasProperty(on, "for dor") and hasProperty(unit, "ned kee") then
-              doAction({"open", {unit, on}})
-            end
-            if hasProperty(unit, "ouch") and on ~= unit then
-              print("block weak")
-              table.insert(to_destroy, unit)
-              playSound("break", 0.5)
-              addParticles("destroy", unit.x, unit.y, unit.color)
-            end
-            if (hasProperty(on, "hotte") and hasProperty(unit, "fridgd"))
-            or (hasProperty(on, "fridgd") and hasProperty(unit, "hotte")) then
-              table.insert(to_destroy, unit)
-              playSound("sink", 0.5)
-              addParticles("destroy", unit.x, unit.y, unit.color)
-            end
-            if is_u and hasProperty(on, ":(") then
-              table.insert(to_destroy, unit)
-              playSound("break", 0.5)
-              addParticles("destroy", unit.x, unit.y, unit.color)
-            end
-          end
-        end
-      end
-      
-      for _,bye in ipairs(to_destroy) do
-        if not hasProperty(bye, "protecc") then
-          bye.destroyed = true
-          bye.removed = true
-        end
-      end
-      to_destroy = {}
-      
-      if is_u and not undoing and not unit.removed and big_update then
-        unit.layer = unit.layer + 10
-        for _,on in ipairs(units_by_tile[tileid]) do
-          if sameFloat(unit, on) then
-            if hasProperty(on, "xwx") then
-              love = {}
-            elseif hasProperty(on, ":o") and not hasProperty(on, "protecc") then
-              table.insert(to_destroy, on)
-              playSound("rule", 0.5)
-              addParticles("bonus", unit.x, unit.y, on.color)
-            elseif hasProperty(on, ":)") then
-              win = true
-              music_fading = true
-              playSound("win", 0.5)
-            end
-          end
-        end
-      end
-      
-      for _,bye in ipairs(to_destroy) do
-        if not hasProperty(bye, "protecc") then
-          bye.destroyed = true
-          bye.removed = true
-        end
-      end
-      to_destroy = {}
 
       if unit.fullname == "os" then
         local os = love.system.getOS()
@@ -185,14 +239,24 @@ function updateUnits(undoing, big_update)
       end
       table.insert(units_by_layer[unit.layer], unit)
       max_layer = math.max(max_layer, unit.layer)
-
+      
       if unit.removed then
         table.insert(del_units, unit)
       end
     end
   end
-
   deleteUnits(del_units,false)
+end
+
+function handleDels(to_destroy)
+  local convert = false
+  for _,unit in ipairs(to_destroy) do
+    if not hasProperty(unit, "protecc") then
+      unit.destroyed = true
+      unit.removed = true
+    end
+  end
+  return {}
 end
 
 function dropGotUnit(unit, rule)
