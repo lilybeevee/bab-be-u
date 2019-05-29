@@ -103,7 +103,6 @@ function updateUnits(undoing, big_update)
         if not hasProperty(bye, "protecc") then
           bye.destroyed = true
           bye.removed = true
-          table.insert(del_units, bye)
         end
       end
       to_destroy = {}
@@ -131,7 +130,6 @@ function updateUnits(undoing, big_update)
         if not hasProperty(bye, "protecc") then
           bye.destroyed = true
           bye.removed = true
-          table.insert(del_units, bye)
         end
       end
       to_destroy = {}
