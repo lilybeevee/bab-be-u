@@ -57,18 +57,18 @@ function updateUnits(undoing, big_update)
       end
 
       unit.layer = tile.layer
-
-      if not undoing and big_update then
+      to_destroy = {}
+      
+      --TODO: We might want to re-order this so it loops effect,unit instead of unit,effect like baba so we're less dependent on unit order.
+      if not undoing and big_update and not unit.removed then
         for _,on in ipairs(units_by_tile[tileid]) do
-          if sameFloat(unit, on) then
+          if not on.removed and sameFloat(unit, on) then
             if hasProperty(on, "go") and on ~= unit then
               unit.dir = on.dir
             end
             if hasProperty(on, "no swim") and on ~= unit then
-              unit.destroyed = true
-              unit.removed = true
-              on.destroyed = true
-              on.removed = true
+              table.insert(to_destroy, unit)
+              table.insert(to_destroy, on)
               playSound("sink", 0.5)
               addParticles("destroy", unit.x, unit.y, on.color)
             end
@@ -79,35 +79,34 @@ function updateUnits(undoing, big_update)
               doAction({"open", {unit, on}})
             end
             if hasProperty(unit, "ouch") and on ~= unit then
-              unit.destroyed = true
-              unit.removed = true
+              print("block weak")
+              table.insert(to_destroy, unit)
               playSound("break", 0.5)
               addParticles("destroy", unit.x, unit.y, unit.color)
             end
             if (hasProperty(on, "hotte") and hasProperty(unit, "fridgd"))
             or (hasProperty(on, "fridgd") and hasProperty(unit, "hotte")) then
-              unit.destroyed = true
-              unit.removed = true
+              table.insert(to_destroy, unit)
               playSound("sink", 0.5)
               addParticles("destroy", unit.x, unit.y, unit.color)
             end
             if is_u and hasProperty(on, ":(") then
-              unit.destroyed = true
-              unit.removed = true
+              table.insert(to_destroy, unit)
               playSound("break", 0.5)
               addParticles("destroy", unit.x, unit.y, unit.color)
-            end
-            if hasProperty(unit, "protecc") then
-              unit.destroyed = false
-              unit.removed = false
-            end
-            if hasProperty(on, "protecc") then
-              on.destroyed = false
-              on.removed = false
             end
           end
         end
       end
+      
+      for _,bye in ipairs(to_destroy) do
+        if not hasProperty(bye, "protecc") then
+          bye.destroyed = true
+          bye.removed = true
+          table.insert(del_units, bye)
+        end
+      end
+      to_destroy = {}
       
       if is_u and not undoing and not unit.removed and big_update then
         unit.layer = unit.layer + 10
@@ -116,11 +115,9 @@ function updateUnits(undoing, big_update)
             if hasProperty(on, "xwx") then
               love = {}
             elseif hasProperty(on, ":o") and not hasProperty(on, "protecc") then
-              on.destroyed = true
-              on.removed = true
+              table.insert(to_destroy, on)
               playSound("rule", 0.5)
               addParticles("bonus", unit.x, unit.y, on.color)
-              table.insert(del_units, on)
             elseif hasProperty(on, ":)") then
               win = true
               music_fading = true
@@ -129,6 +126,15 @@ function updateUnits(undoing, big_update)
           end
         end
       end
+      
+      for _,bye in ipairs(to_destroy) do
+        if not hasProperty(bye, "protecc") then
+          bye.destroyed = true
+          bye.removed = true
+          table.insert(del_units, bye)
+        end
+      end
+      to_destroy = {}
 
       if unit.fullname == "os" then
         local os = love.system.getOS()
@@ -194,7 +200,6 @@ end
 function dropGotUnit(unit, rule)
   --TODO: CLEANUP: Blatantly copypasta'd from convertUnits.
   local obj_name = rule[3]
-  print(obj_name)
   if (obj_name == "hatt" or obj_name == "gun") then
     return
   end
@@ -215,7 +220,6 @@ function dropGotUnit(unit, rule)
       local new_mouse = createMouse(unit.x, unit.y)
       addUndo({"create_cursor", new_mouse.id})
     else
-      print("dropped:"..obj_name)
       local new_unit = createUnit(obj_id, unit.x, unit.y, unit.dir, true)
       addUndo({"create", new_unit.id, true})
     end
