@@ -1290,7 +1290,7 @@ tiles_list = {
 	sprite = "clowd",
 	type = "object",
 	grid = {5,10},
-	color = {145,131,215},
+	color = {255,255,255},
 	layer = 6,
   },
   -- 122
@@ -1298,8 +1298,8 @@ tiles_list = {
     name = "text_clowd",
 	sprite = "text_clowd",
 	type = "text",
-	grid = {5,11},
-	color = {145,131,215},
+	grid = {6,10},
+	color = {255,255,255},
 	layer = 20,
   },
 }
