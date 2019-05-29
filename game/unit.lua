@@ -212,10 +212,15 @@ function updateUnits(undoing, big_update)
         end
       end
 
-      for k,v in pairs(dirs8_by_name) do
-        if hasProperty(unit, k) then
-          unit.olddir = unit.dir
-          updateDir(unit, v)
+      if not undoing then
+        for k,v in pairs(dirs8_by_name) do
+          if hasProperty(unit, k) then
+            unit.olddir = unit.dir
+            if unit.dir ~= v then
+              addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
+            end
+            updateDir(unit, v)
+          end
         end
       end
 
