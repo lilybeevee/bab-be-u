@@ -304,15 +304,6 @@ function applySwap(mover, dx, dy)
   end
 end
 
-function sign(x)
-  if (x > 0) then
-    return 1
-  elseif (x < 0) then
-    return -1
-  end
-  return 0
-end
-
 function findSidekikers(unit,dx,dy)
   local result = {}
   local x = unit.x;

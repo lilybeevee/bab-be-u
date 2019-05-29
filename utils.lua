@@ -633,3 +633,16 @@ function keyCount(t)
   end
   return count
 end
+
+function sign(x)
+  if (x > 0) then
+    return 1
+  elseif (x < 0) then
+    return -1
+  end
+  return 0
+end
+
+function sameFloat(a, b)
+  return countProperty(a, "flye") == countProperty(b, "flye")
+end

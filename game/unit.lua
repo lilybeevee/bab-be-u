@@ -60,49 +60,51 @@ function updateUnits(undoing)
 
       if not undoing then
         for _,on in ipairs(units_by_tile[tileid]) do
-          if hasProperty(on, "go") and on ~= unit then
-            unit.dir = on.dir
-          end
-          if hasProperty(on, "no swim") and on ~= unit then
-            unit.destroyed = true
-            unit.removed = true
-            on.destroyed = true
-            on.removed = true
-            playSound("sink", 0.5)
-            addParticles("destroy", unit.x, unit.y, on.color)
-          end
-          if hasProperty(on, "ned kee") and hasProperty(unit, "for dor") then
-            doAction({"open", {unit, on}})
-          end
-          if hasProperty(on, "for dor") and hasProperty(unit, "ned kee") then
-            doAction({"open", {unit, on}})
-          end
-          if hasProperty(unit, "ouch") and on ~= unit then
-            unit.destroyed = true
-            unit.removed = true
-            playSound("break", 0.5)
-            addParticles("destroy", unit.x, unit.y, unit.color)
-          end
-		      if (hasProperty(on, "hotte") and hasProperty(unit, "fridgd"))
-          or (hasProperty(on, "fridgd") and hasProperty(unit, "hotte")) then
-		        unit.destroyed = true
-            unit.removed = true
-		      	playSound("sink", 0.5)
-            addParticles("destroy", unit.x, unit.y, unit.color)
-          end
-          if is_u and hasProperty(on, ":(") then
-            unit.destroyed = true
-            unit.removed = true
-            playSound("break", 0.5)
-            addParticles("destroy", unit.x, unit.y, unit.color)
-          end
-          if hasProperty(unit, "protecc") then
-            unit.destroyed = false
-            unit.removed = false
-          end
-          if hasProperty(on, "protecc") then
-            on.destroyed = false
-            on.removed = false
+          if sameFloat(unit, on) then
+            if hasProperty(on, "go") and on ~= unit then
+              unit.dir = on.dir
+            end
+            if hasProperty(on, "no swim") and on ~= unit then
+              unit.destroyed = true
+              unit.removed = true
+              on.destroyed = true
+              on.removed = true
+              playSound("sink", 0.5)
+              addParticles("destroy", unit.x, unit.y, on.color)
+            end
+            if hasProperty(on, "ned kee") and hasProperty(unit, "for dor") then
+              doAction({"open", {unit, on}})
+            end
+            if hasProperty(on, "for dor") and hasProperty(unit, "ned kee") then
+              doAction({"open", {unit, on}})
+            end
+            if hasProperty(unit, "ouch") and on ~= unit then
+              unit.destroyed = true
+              unit.removed = true
+              playSound("break", 0.5)
+              addParticles("destroy", unit.x, unit.y, unit.color)
+            end
+            if (hasProperty(on, "hotte") and hasProperty(unit, "fridgd"))
+            or (hasProperty(on, "fridgd") and hasProperty(unit, "hotte")) then
+              unit.destroyed = true
+              unit.removed = true
+              playSound("sink", 0.5)
+              addParticles("destroy", unit.x, unit.y, unit.color)
+            end
+            if is_u and hasProperty(on, ":(") then
+              unit.destroyed = true
+              unit.removed = true
+              playSound("break", 0.5)
+              addParticles("destroy", unit.x, unit.y, unit.color)
+            end
+            if hasProperty(unit, "protecc") then
+              unit.destroyed = false
+              unit.removed = false
+            end
+            if hasProperty(on, "protecc") then
+              on.destroyed = false
+              on.removed = false
+            end
           end
         end
       end
@@ -110,18 +112,20 @@ function updateUnits(undoing)
       if is_u and not undoing and not unit.removed then
         unit.layer = unit.layer + 10
         for _,on in ipairs(units_by_tile[tileid]) do
-          if hasProperty(on, "xwx") then
-            love = {}
-          elseif hasProperty(on, ":o") and not hasProperty(on, "protecc") then
-            on.destroyed = true
-            on.removed = true
-            playSound("rule", 0.5)
-            addParticles("bonus", unit.x, unit.y, on.color)
-            table.insert(del_units, on)
-          elseif hasProperty(on, ":)") then
-            win = true
-            music_fading = true
-            playSound("win", 0.5)
+          if sameFloat(unit, on) then
+            if hasProperty(on, "xwx") then
+              love = {}
+            elseif hasProperty(on, ":o") and not hasProperty(on, "protecc") then
+              on.destroyed = true
+              on.removed = true
+              playSound("rule", 0.5)
+              addParticles("bonus", unit.x, unit.y, on.color)
+              table.insert(del_units, on)
+            elseif hasProperty(on, ":)") then
+              win = true
+              music_fading = true
+              playSound("win", 0.5)
+            end
           end
         end
       end

@@ -1231,5 +1231,15 @@ tiles_list = {
     grid = {9, 3},
     color = {255,255,255},
     layer = 20,
+  },
+  -- 116
+  {
+    name = "text_flye",
+    sprite = "text_flye",
+    type = "text",
+    texttype = "property",
+    grid = {8, 1},
+    color = {131,200,229},
+    layer = 20,
   }
 }
