@@ -1274,4 +1274,32 @@ tiles_list = {
     color = {229,83,59},
     layer = 20,
   },
+  -- 120
+  {
+    name = "text_haet_skye",
+	sprite = "text_haet_skye",
+	type = "text",
+	texttype = "property",
+	grid = {7,2},
+	color = {165,177,63},
+	layer = 20,
+  },
+  -- 121
+  {
+    name = "clowd",
+	sprite = "clowd",
+	type = "object",
+	grid = {5,10},
+	color = {145,131,215},
+	layer = 6,
+  },
+  -- 122
+  {
+    name = "text_clowd",
+	sprite = "text_clowd",
+	type = "text",
+	grid = {5,11},
+	color = {145,131,215},
+	layer = 20,
+  },
 }
