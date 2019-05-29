@@ -82,16 +82,20 @@ function parseRules(undoing)
 
       local new_rules = {{},{},{},{{},{}}}
 
-      local function simplify(t, allow_text)
+      local function simplify(t)
         local name = ""
         local units = {}
         for _,v in ipairs(t) do
           table.insert(units, v.unit)
           if not v.connector then
-            if name == "" then
-              name = v.name
-            elseif v.name == "text" and allow_text then
-              name = "text_" .. name
+            name = name .. v.name
+            if v.mods then
+              for _,mod in ipairs(v.mods) do
+                table.insert(units, mod.unit)
+                if mod.name == "text" then
+                  name = "text_" .. name
+                end
+              end
             end
           end
         end

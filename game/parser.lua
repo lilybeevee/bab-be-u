@@ -13,7 +13,7 @@ local function common(arg, group)
       },
       {
         {type = "any"},
-        {name = "text"}
+        {name = "text", mod = -1}
       }
     }
     mergeTable(full_options, options)
@@ -219,11 +219,20 @@ function parse(words, parser, state_)
           elseif rule.name and rule.name ~= word.name then
             valid = false
           else
-            local match_word = copyTable(word)
             if rule.connector then
-              match_word.connector = true
+              word.connector = true
             end
-            local nya = table.insert(state.current_matches, match_word)
+            if rule.mod then
+              local mod_word = words[state.word_index + rule.mod]
+              if mod_word ~= nil then
+                if mod_word.mods == nil then
+                  mod_word.mods = {}
+                end
+                table.insert(mod_word.mods, word)
+              end
+            else
+              table.insert(state.current_matches, word)
+            end
           end
           next_state.word_index = state.word_index + 1
         end
