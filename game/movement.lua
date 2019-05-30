@@ -176,10 +176,10 @@ It is probably possible to do, but lily has decided that it's not important enou
     move_stage = move_stage + 1
   end
   parseRules()
+  fallBlock()
   updateUnits(false, true)
   parseRules()
   convertUnits()
-  fallBlock()
   updateUnits(false, false)
   parseRules()
 end
@@ -399,7 +399,7 @@ function fallBlock()
 	  end
 	  
 	  if caught == false then
-	    unit.y = unit.y + 1
+	    moveUnit(unit,unit.x,unit.y+1)
 	  end
 	end
   end
