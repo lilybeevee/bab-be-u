@@ -265,11 +265,18 @@ function scene.draw(dt)
           rotation = (lerp(unit.olddir, unit.dir, unit.move_timer/MAX_MOVE_TIMER) - 1) * 45
         end
 
-        local drawcolor = {unit.color[1]/255 * brightness, unit.color[2]/255 * brightness, unit.color[3]/255 * brightness}
+        local color
+        if #unit.color == 3 then
+          color = {unit.color[1]/255 * brightness, unit.color[2]/255 * brightness, unit.color[3]/255 * brightness, 1}
+        else
+          local r,g,b,a = getPaletteColor(unit.color[1], unit.color[2])
+          color = {r * brightness, g * brightness, b * brightness, a}
+        end
+
         if #unit.overlay > 0 and eq(unit.color, tiles_list[unit.tile].color) then
           love.graphics.setColor(1, 1, 1)
         else
-          love.graphics.setColor(drawcolor[1], drawcolor[2], drawcolor[3])
+          love.graphics.setColor(color[1], color[2], color[3], color[4])
         end
 
         local fulldrawx = (drawx + 0.5)*TILE_SIZE
@@ -306,7 +313,7 @@ function scene.draw(dt)
         end
 
         if hasRule(unit,"got","hatt") then
-          love.graphics.setColor(drawcolor[1], drawcolor[2], drawcolor[3])
+          love.graphics.setColor(color[1], color[2], color[3], color[4])
           love.graphics.draw(sprites["hatsmol"], fulldrawx, fulldrawy - 0.5*TILE_SIZE, 0, unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
         end
         if(hasRule(unit,"got","gun")) then
@@ -328,7 +335,7 @@ function scene.draw(dt)
             scalex = math.sqrt(2)
           end
 
-          love.graphics.setColor(229/255, 83/255, 59/255)
+          love.graphics.setColor(getPaletteColor(2, 2))
           love.graphics.draw(sprites["scribble_" .. anim_stage], fulldrawx, fulldrawy, 0, unit.scalex * scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
 
           love.graphics.pop()

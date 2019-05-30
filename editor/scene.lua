@@ -8,7 +8,7 @@ local typing_name = false
 local ignore_mouse = true
 
 local settings
-local input_name, input_width, input_height
+local input_name, input_palette, input_width, input_height
 
 function scene.load()
   brush = nil
@@ -84,6 +84,8 @@ function scene.update(dt)
     settings:Label("Level Name", {align = "center"}, settings.layout:row(300, 24))
     local name = settings:Input(input_name, {align = "center"}, settings.layout:row())
     settings.layout:row()
+    settings:Label("Level Palette", {align = "center"}, settings.layout:row(300, 24))
+    local palette = settings:Input(input_palette, {align = "center"}, settings.layout:row())
     settings:Label("Level Size", {align = "center"}, settings.layout:row())
     settings.layout:push(settings.layout:row())
     settings:Input(input_width, {align = "center"}, settings.layout:col((300 - 4)/2, 24))
@@ -98,6 +100,10 @@ function scene.update(dt)
 
     if name.submitted then
       level_name = input_name.text
+    end
+
+    if palette.submitted then
+      current_palette = input_palette.text
     end
 
     if save.hit then
@@ -203,7 +209,7 @@ end
 
 last_hovered_tile = {0,0}
 function scene.draw(dt)
-  love.graphics.setBackgroundColor(0.10, 0.1, 0.11)
+  love.graphics.setBackgroundColor(getPaletteColor(1, 0))
 
   local roomwidth, roomheight
   if not selector_open then
@@ -217,7 +223,7 @@ function scene.draw(dt)
   love.graphics.push()
   love.graphics.applyTransform(scene.getTransform())
 
-  love.graphics.setColor(0, 0, 0)
+  love.graphics.setColor(getPaletteColor(0, 4))
   love.graphics.rectangle("fill", 0, 0, roomwidth, roomheight)
 
   if not selector_open then
@@ -232,7 +238,11 @@ function scene.draw(dt)
             rotation = (unit.dir - 1) * 90
           end
           
-          love.graphics.setColor(unit.color[1]/255, unit.color[2]/255, unit.color[3]/255)
+          if #unit.color == 3 then
+            love.graphics.setColor(unit.color[1]/255, unit.color[2]/255, unit.color[3]/255)
+          else
+            love.graphics.setColor(getPaletteColor(unit.color[1], unit.color[2]))
+          end
           love.graphics.draw(sprite, (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
         end
       end
@@ -250,7 +260,11 @@ function scene.draw(dt)
           local x = tile.grid[1]
           local y = tile.grid[2]
 
-          love.graphics.setColor(tile.color[1]/255, tile.color[2]/255, tile.color[3]/255)
+          if #tile.color == 3 then
+            love.graphics.setColor(tile.color[1]/255, tile.color[2]/255, tile.color[3]/255)
+          else
+            love.graphics.setColor(getPaletteColor(tile.color[1], tile.color[2]))
+          end
           love.graphics.draw(sprite, (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
 
           if brush == i then
@@ -272,7 +286,12 @@ function scene.draw(dt)
       if not sprite then sprite = sprites["wat"] end
       local color = tiles_list[brush].color
 
-      love.graphics.setColor(color[1]/255, color[2]/255, color[3]/255, 0.25)
+      if #color == 3 then
+        love.graphics.setColor(color[1]/255, color[2]/255, color[3]/255, 0.25)
+      else
+        local r, g, b, a = getPaletteColor(color[1], color[2])
+        love.graphics.setColor(r, g, b, a * 0.25)
+      end
       love.graphics.draw(sprite, (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
     end
 
@@ -337,6 +356,7 @@ function scene.saveLevel()
 
   local data = {
     name = level_name,
+    palette = current_palette,
     width = mapwidth,
     height = mapheight,
     map = savestr
@@ -353,6 +373,7 @@ end
 function scene.openSettings()
   if settings == nil then
     input_name = {text = level_name}
+    input_palette = {text = current_palette}
     input_width = {text = tostring(mapwidth)}
     input_height = {text = tostring(mapheight)}
 
@@ -364,6 +385,7 @@ end
 
 function scene.saveSettings()
   level_name = input_name.text
+  current_palette = input_palette.text
 
   local new_width = tonumber(input_width.text)
   local new_height = tonumber(input_height.text)
@@ -397,6 +419,7 @@ function love.filedropped(file)
   local mapstr = love.data.decompress("string", "zlib", loaddata)
 
   level_name = mapdata.name
+  current_palette = mapdata.palette or "default"
   mapwidth = mapdata.width
   mapheight = mapdata.height
   map = loadstring("return " .. mapstr)()

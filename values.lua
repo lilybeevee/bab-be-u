@@ -71,7 +71,7 @@ tiles_list = {
     sleepsprite = "bab_slep",
     type = "object",
     grid = {0, 1},
-    color = {255,255,255},
+    color = {0, 3},
     layer = 5,
     rotate = true,
   },
@@ -81,7 +81,7 @@ tiles_list = {
     sprite = "text_bab",
     type = "text",
     grid = {1, 1},
-    color = {217,57,106},
+    color = {4, 1},
     layer = 20,
   },
   -- 3
@@ -92,7 +92,7 @@ tiles_list = {
     texttype = "verb",
     argtypes = {"object", "property"},
     grid = {1, 0},
-    color = {255,255,255},
+    color = {0, 3},
     layer = 20,
   },
   -- 4
@@ -102,7 +102,7 @@ tiles_list = {
     type = "text",
     texttype = "property",
     grid = {2, 1},
-    color = {217,57,106},
+    color = {4, 1},
     layer = 20,
   },
   -- 5
@@ -111,7 +111,7 @@ tiles_list = {
     sprite = "wal",
     type = "object",
     grid = {0, 5},
-    color = {41,49,65},
+    color = {1, 1},
     layer = 2,
   },
   -- 6
@@ -120,7 +120,7 @@ tiles_list = {
     sprite = "text_wal",
     type = "text",
     grid = {1, 5},
-    color = {115,115,115},
+    color = {0, 1},
     layer = 20,
   },
   -- 7
@@ -130,7 +130,7 @@ tiles_list = {
     type = "text",
     texttype = "property",
     grid = {2, 5},
-    color = {75,92,28},
+    color = {5, 1},
     layer = 20,
   },
   -- 8
@@ -139,7 +139,7 @@ tiles_list = {
     sprite = "roc",
     type = "object",
     grid = {0, 4},
-    color = {194,158,70},
+    color = {6, 2},
     layer = 3,
   },
   -- 9
@@ -148,7 +148,7 @@ tiles_list = {
     sprite = "text_roc",
     type = "text",
     grid = {1, 4},
-    color = {144,103,62},
+    color = {6, 1},
     layer = 20,
   },
   -- 10
@@ -158,7 +158,7 @@ tiles_list = {
     type = "text",
     texttype = "property",
     grid = {2, 4},
-    color = {144,103,62},
+    color = {6, 1},
     layer = 20,
   },
   -- 11
@@ -167,7 +167,7 @@ tiles_list = {
     sprite = "dor",
     type = "object",
     grid = {3, 2},
-    color = {229,83,59},
+    color = {2, 2},
     layer = 3,
   },
   -- 12
@@ -176,7 +176,7 @@ tiles_list = {
     sprite = "text_dor",
     type = "text",
     grid = {4, 2},
-    color = {229,83,59},
+    color = {2, 2},
     layer = 20,
   },
   -- 13
@@ -186,7 +186,7 @@ tiles_list = {
     type = "text",
     texttype = "property",
     grid = {5, 2},
-    color = {229,83,59},
+    color = {2, 2},
     layer = 20,
   },
   -- 14
@@ -195,7 +195,7 @@ tiles_list = {
     sprite = "kee",
     type = "object",
     grid = {3, 1},
-    color = {237,226,133},
+    color = {2, 4},
     layer = 4,
     rotate = true,
   },
@@ -205,7 +205,7 @@ tiles_list = {
     sprite = "text_kee",
     type = "text",
     grid = {4, 1},
-    color = {237,226,133},
+    color = {2, 4},
     layer = 20,
   },
   -- 16
@@ -215,7 +215,7 @@ tiles_list = {
     type = "text",
     texttype = "property",
     grid = {5, 1},
-    color = {237,226,133},
+    color = {2, 4},
     layer = 20,
   },
   -- 17
@@ -225,7 +225,7 @@ tiles_list = {
     type = "text",
     texttype = "and",
     grid = {2, 0},
-    color = {255,255,255},
+    color = {0, 3},
     layer = 20,
   },
   -- 18
@@ -234,7 +234,7 @@ tiles_list = {
     sprite = "flog",
     type = "object",
     grid = {0, 3},
-    color = {237,226,133},
+    color = {2, 4},
     layer = 3,
   },
   -- 19
@@ -243,7 +243,7 @@ tiles_list = {
     sprite = "text_flog",
     type = "text",
     grid = {1, 3},
-    color = {237,226,133},
+    color = {2, 4},
     layer = 20,
   },
   -- 20
@@ -253,7 +253,7 @@ tiles_list = {
     type = "text",
     texttype = "property",
     grid = {2, 3},
-    color = {237,226,133},
+    color = {2, 4},
     layer = 20,
   },
   -- 21
@@ -262,7 +262,7 @@ tiles_list = {
     sprite = "til",
     type = "object",
     grid = {3, 7},
-    color = {21,24,31},
+    color = {1, 1},
     layer = 1,
   },
   -- 22
@@ -271,7 +271,7 @@ tiles_list = {
     sprite = "watr",
     type = "object",
     grid = {0, 6},
-    color = {95,157,209},
+    color = {1, 3},
     layer = 1,
   },
   -- 23
@@ -280,7 +280,7 @@ tiles_list = {
     sprite = "text_watr",
     type = "text",
     grid = {1, 6},
-    color = {95,157,209},
+    color = {1, 3},
     layer = 20,
   },
   -- 24
@@ -290,7 +290,7 @@ tiles_list = {
     type = "text",
     texttype = "property",
     grid = {2, 6},
-    color = {95,157,209},
+    color = {1, 3},
     layer = 20,
   },
   -- 25
@@ -300,7 +300,7 @@ tiles_list = {
     type = "text",
     texttype = "verb",
     grid = {3, 0},
-    color = {255,255,255},
+    color = {0, 3},
     layer = 20,
   },
   --26
@@ -310,7 +310,7 @@ tiles_list = {
     type = "text",
     texttype = "property",
     grid = {8, 6},
-    color = {255,255,255},
+    color = {0, 3},
     layer = 20,
   },
   --27
@@ -320,7 +320,7 @@ tiles_list = {
     type = "text",
     texttype = "property",
     grid = {10, 6},
-    color = {229,83,59},
+    color = {2, 2},
     layer = 20,
   },
   --28
@@ -330,7 +330,7 @@ tiles_list = {
     type = "text",
     texttype = "property",
     grid = {9, 6},
-    color = {145,131,215},
+    color = {1, 3},
     layer = 20,
   },
   --29
@@ -340,7 +340,7 @@ tiles_list = {
     type = "text",
     texttype = "property",
     grid = {9, 1},
-    color = {255,255,255},
+    color = {255, 255, 255},
     layer = 20,
   },
   --30
@@ -350,7 +350,7 @@ tiles_list = {
     type = "text",
     texttype = "property",
     grid = {10, 1},
-    color = {255,255,255},
+    color = {255, 255, 255},
     layer = 20,
   },
   --31
@@ -359,7 +359,7 @@ tiles_list = {
     sprite = "text_mous",
     type = "text",
     grid = {10, 0},
-    color = {145,131,215},
+    color = {3, 3},
     layer = 20,
   },
   --32
@@ -368,7 +368,7 @@ tiles_list = {
     sprite = "text_boux",
     type = "text",
     grid = {1, 8},
-    color = {144,103,62},
+    color = {6, 1},
     layer = 20,
   },
   --33
@@ -377,7 +377,7 @@ tiles_list = {
     sprite = "boux",
     type = "object",
     grid = {0, 8},
-    color = {194,158,70},
+    color = {6, 2},
     layer = 16,
   },
   --34
@@ -386,7 +386,7 @@ tiles_list = {
     sprite = "text_skul",
     type = "text",
     grid = {1, 7},
-    color = {130,38,28},
+    color = {2, 1},
     layer = 20,
   },
   --35
@@ -396,7 +396,7 @@ tiles_list = {
     sleepsprite = "skul_slep",
     type = "object",
     grid = {0, 7},
-    color = {130,38,28},
+    color = {2, 1},
     layer = 16,
     rotate = true,
   },
@@ -406,7 +406,7 @@ tiles_list = {
     sprite = "text_laav",
     type = "text",
     grid = {10, 9},
-    color = {228,153,80},
+    color = {2, 3},
     layer = 20,
   },
   --37
@@ -415,7 +415,7 @@ tiles_list = {
     sprite = "watr",
     type = "object",
     grid = {9, 9},
-    color = {228,153,80},
+    color = {2, 3},
     layer = 2,
   },
   --38
@@ -424,7 +424,7 @@ tiles_list = {
     sprite = "text_keek",
     type = "text",
     grid = {1, 2},
-    color = {229,83,59},
+    color = {2, 2},
     layer = 20,
   },
   --39
@@ -434,7 +434,7 @@ tiles_list = {
     sleepsprite = "keek_slep",
     type = "object",
     grid = {0, 2},
-    color = {229,83,59},
+    color = {2, 2},
     layer = 18,
     rotate = true,
   },
@@ -444,7 +444,7 @@ tiles_list = {
     sprite = "text_meem",
     type = "text",
     grid = {4, 6},
-    color = {142,94,156},
+    color = {3, 1},
     layer = 20,
   },
   --39
@@ -454,7 +454,7 @@ tiles_list = {
     sleepsprite = "meem_slep",
     type = "object",
     grid = {3, 6},
-    color = {142,94,156},
+    color = {3, 1},
     layer = 18,
     rotate = true,
   },
@@ -464,7 +464,7 @@ tiles_list = {
     sprite = "text_til",
     type = "text",
     grid = {4, 7},
-    color = {115,115,115},
+    color = {0, 1},
     layer = 20
   },
   --41
@@ -473,7 +473,7 @@ tiles_list = {
     sprite = "text_txt",
     type = "text",
     grid = {7, 0},
-    color = {217,57,106},
+    color = {4, 1},
     layer = 20,
   },
   --42
@@ -482,7 +482,7 @@ tiles_list = {
     sprite = "text_os",
     type = "text",
     grid = {4, 8},
-    color = {217,57,106},
+    color = {4, 1},
     layer = 20,
   },
   --43
@@ -491,7 +491,7 @@ tiles_list = {
     sprite = "os",
     type = "object",
     grid = {3, 8},
-    color = {255,255,255},
+    color = {0, 3},
     layer = 18,
     rotate = "true",
   },
@@ -502,7 +502,7 @@ tiles_list = {
     type = "text",
     texttype = "property",
     grid = {8, 3},
-    color = {131,200,229},
+    color = {1, 3},
     layer = 20,
   },
   --45
@@ -511,7 +511,7 @@ tiles_list = {
     sprite = "luv",
     type = "object",
     grid = {3, 5},
-    color = {235,145,202},
+    color = {4, 2},
     layer = 10,
     rotate = "true",
   },
@@ -521,7 +521,7 @@ tiles_list = {
     sprite = "text_luv",
     type = "text",
     grid = {4, 5},
-    color = {235,145,202},
+    color = {4, 2},
     layer = 20,
   },
   --47
@@ -530,7 +530,7 @@ tiles_list = {
     sprite = "frut",
     type = "object",
     grid = {3, 10},
-    color = {229,83,59},
+    color = {2, 2},
     layer = 10,
     rotate = "true",
   },
@@ -540,7 +540,7 @@ tiles_list = {
     sprite = "text_frut",
     type = "text",
     grid = {4, 10},
-    color = {229,83,59},
+    color = {2, 2},
     layer = 20,
   },
   --49
@@ -549,7 +549,7 @@ tiles_list = {
     sprite = "tre",
     type = "object",
     grid = {3, 9},
-    color = {92,131,57},
+    color = {5, 2},
     layer = 10,
     rotate = "true",
   },
@@ -559,7 +559,7 @@ tiles_list = {
     sprite = "text_tre",
     type = "text",
     grid = {4, 9},
-    color = {92,131,57},
+    color = {5, 2},
     layer = 20,
   },
   --51
@@ -569,7 +569,7 @@ tiles_list = {
     sleepsprite = "wog_slep",
     type = "object",
     grid = {9, 7},
-    color = {237,226,133},
+    color = {2, 4},
     layer = 10,
     rotate = "true",
   },
@@ -579,7 +579,7 @@ tiles_list = {
     sprite = "text_wog",
     type = "text",
     grid = {10, 7},
-    color = {237,226,133},
+    color = {2, 4},
     layer = 20,
   },
   --tutorial sprites
@@ -589,7 +589,7 @@ tiles_list = {
     sprite = "tutorial_press",
     type = "text",
     grid = {-1, -1},
-    color = {255,255,255},
+    color = {0, 3},
     layer = 20,
   },
   --54
@@ -600,7 +600,7 @@ tiles_list = {
     texttype = "verb",
     argtypes = {"object", "property"},
     grid = {-1, -1},
-    color = {255,255,255},
+    color = {0, 3},
     layer = 20,
   },
   --55
@@ -610,7 +610,7 @@ tiles_list = {
     type = "text",
     texttype = "property",
     grid = {-1, -1},
-    color = {255,255,255},
+    color = {0, 3},
     layer = 20,
   },
   --56
@@ -620,7 +620,7 @@ tiles_list = {
     type = "text",
     texttype = "property",
     grid = {-1, -1},
-    color = {255,255,255},
+    color = {0, 3},
     layer = 20,
   },
   --57
@@ -631,7 +631,7 @@ tiles_list = {
     texttype = "verb",
     argtypes = {"object", "property"},
     grid = {-1, -1},
-    color = {255,255,255},
+    color = {0, 3},
     layer = 20,
   },
   -- 58
@@ -641,7 +641,7 @@ tiles_list = {
     type = "text",
     texttype = "property",
     grid = {2, 7},
-    color = {130,38,28},
+    color = {2, 1},
     layer = 20,
   },
   -- 59
@@ -651,7 +651,7 @@ tiles_list = {
     type = "text",
     texttype = "property",
     grid = {2, 2},
-    color = {165,177,63},
+    color = {5, 3},
     layer = 20,
   },
   -- 60
@@ -660,7 +660,7 @@ tiles_list = {
     sprite = "text_fax",
     type = "text",
     grid = {6, 8},
-    color = {142,94,156},
+    color = {3, 1},
     layer = 20,
   },
   -- 61
@@ -670,7 +670,7 @@ tiles_list = {
     sleepsprite = "fax_slep",
     type = "object",
     grid = {5, 8},
-    color = {142,94,156},
+    color = {3, 1},
     layer = 5,
   },
   -- 62
@@ -679,7 +679,7 @@ tiles_list = {
     sprite = "text_boll",
     type = "text",
     grid = {1, 10},
-    color = {257,57,106},
+    color = {4, 1},
     layer = 20,
   },
   -- 63
@@ -688,7 +688,7 @@ tiles_list = {
     sprite = "orrb",
     type = "object",
     grid = {0, 10},
-    color = {257,57,106},
+    color = {4, 1},
     layer = 5,
   },
   -- 64
@@ -697,7 +697,7 @@ tiles_list = {
     sprite = "text_bellt",
     type = "text",
     grid = {1, 9},
-    color = {95,157,209},
+    color = {1, 3},
     layer = 20,
   },
   -- 65
@@ -706,7 +706,7 @@ tiles_list = {
     sprite = "bellt",
     type = "object",
     grid = {0, 9},
-    color = {41,49,65},
+    color = {1, 1},
     layer = 3,
     rotate = true,
   },
@@ -717,7 +717,7 @@ tiles_list = {
     type = "text",
     texttype = "property",
     grid = {2, 10},
-    color = {257,57,106},
+    color = {4, 1},
     layer = 20,
   },
   -- 67
@@ -727,7 +727,7 @@ tiles_list = {
     type = "text",
     texttype = "property",
     --grid = {6, 1},
-    color = {131,200,229},
+    color = {1, 4},
     layer = 20,
   },
   -- 68
@@ -737,7 +737,7 @@ tiles_list = {
     type = "text",
     texttype = "property",
     grid = {7, 1},
-    color = {131,200,229},
+    color = {1, 4},
     layer = 20,
     rotate = true,
   },
@@ -748,7 +748,7 @@ tiles_list = {
     type = "text",
     texttype = "property",
     --grid = {6, 2},
-    color = {131,200,229},
+    color = {1, 4},
     layer = 20,
     nice = true,
   },
@@ -759,7 +759,7 @@ tiles_list = {
     type = "text",
     texttype = "property",
     --grid = {7, 2},
-    color = {131,200,229},
+    color = {1, 4},
     layer = 20,
   },
   -- 71
@@ -769,7 +769,7 @@ tiles_list = {
     type = "text",
     texttype = "property",
     grid = {8, 2},
-    color = {142,94,156},
+    color = {3, 1},
     layer = 20,
   },
   -- 72
@@ -779,7 +779,7 @@ tiles_list = {
     type = "text",
     texttype = "cond_infix",
     grid = {7, 4},
-    color = {255,255,255},
+    color = {0, 3},
     layer = 20,
   },
   -- 73
@@ -789,7 +789,7 @@ tiles_list = {
     type = "text",
     texttype = "cond_infix",
     grid = {10, 4},
-    color = {255,255,255},
+    color = {0, 3},
     layer = 20,
   },
   -- 74
@@ -799,7 +799,7 @@ tiles_list = {
     type = "text",
     texttype = "cond_prefix",
     grid = {9, 4},
-    color = {229,83,59},
+    color = {2, 2},
     layer = 20,
   },
   --75
@@ -809,7 +809,7 @@ tiles_list = {
     type = "text",
     texttype = "verb",
     grid = {7, 5},
-    color = {255,255,255},
+    color = {0, 3},
     layer = 20,
   },
   --76
@@ -820,7 +820,7 @@ tiles_list = {
     texttype = "verb",
     allowconds = true,
     grid = {8, 5},
-    color = {229,83,59},
+    color = {2, 2},
     layer = 20,
   },
   --77
@@ -830,7 +830,7 @@ tiles_list = {
     sleepsprite = "kirb_slep",
     type = "object",
     grid = {5, 7},
-    color = {235,145,202},
+    color = {4, 2},
     layer = 6,
     rotate = true,
   },
@@ -840,7 +840,7 @@ tiles_list = {
     sprite = "text_kirb",
     type = "text",
     grid = {6, 7},
-    color = {235,145,202},
+    color = {4, 2},
     layer = 20,
   },
   --79
@@ -849,7 +849,7 @@ tiles_list = {
     sprite = "gun",
     type = "object",
     grid = {7, 7},
-    color = {255,255,255},
+    color = {0, 3},
     layer = 4,
   },
   --80
@@ -858,7 +858,7 @@ tiles_list = {
     sprite = "text_gun",
     type = "text",
     grid = {8, 7},
-    color = {255,255,255},
+    color = {0, 3},
     layer = 20,
   },
   --81
@@ -868,7 +868,7 @@ tiles_list = {
     type = "text",
     texttype = "property",
     grid = {7, 3},
-    color = {62, 118, 136},
+    color = {1, 2},
     layer = 20,
   },
   -- 82
@@ -878,7 +878,7 @@ tiles_list = {
     sleepsprite = "tot_slep",
     type = "object",
     grid = {9, 8},
-    color = {235,145,202},
+    color = {4, 2},
     layer = 5,
     rotate = true,
   },
@@ -888,7 +888,7 @@ tiles_list = {
     sprite = "text_tot",
     type = "text",
     grid = {10, 8},
-    color = {235,145,202},
+    color = {4, 2},
     layer = 20,
   },
   -- 84
@@ -898,7 +898,7 @@ tiles_list = {
     type = "text",
     texttype = "property",
     grid = {9, 2},
-    color = {235,145,202},
+    color = {4, 2},
     layer = 20,
   },
   -- 85
@@ -908,7 +908,7 @@ tiles_list = {
     sleepsprite = "o_slep",
     type = "object",
     grid = {5, 6},
-    color = {237,226,133},
+    color = {2, 4},
     layer = 5,
   },
   -- 86
@@ -917,7 +917,7 @@ tiles_list = {
     sprite = "text_o",
     type = "text",
     grid = {6, 6},
-    color = {237,226,133},
+    color = {2, 4},
     layer = 20,
   },
   -- 87
@@ -926,7 +926,7 @@ tiles_list = {
     sprite = "han",
     type = "object",
     grid = {7, 8},
-    color = {255,255,255},
+    color = {0, 3},
     layer = 5,
     rotate = true,
   },
@@ -936,7 +936,7 @@ tiles_list = {
     sprite = "text_han",
     type = "text",
     grid = {8, 8},
-    color = {255,255,255},
+    color = {0, 3},
     layer = 20,
   },
   -- 87
@@ -945,7 +945,7 @@ tiles_list = {
     sprite = "gras",
     type = "object",
     grid = {3, 4},
-    color = {48,56,36},
+    color = {5, 1},
     layer = 5,
   },
   -- 88
@@ -954,7 +954,7 @@ tiles_list = {
     sprite = "text_gras",
     type = "text",
     grid = {4, 4},
-    color = {165,177,63},
+    color = {5, 3},
     layer = 20,
   },
   -- 89
@@ -963,7 +963,7 @@ tiles_list = {
     sprite = "dayzy",
     type = "object",
     grid = {5, 4},
-    color = {145,131,215},
+    color = {3, 3},
     layer = 5,
   },
   -- 90
@@ -972,7 +972,7 @@ tiles_list = {
     sprite = "text_dayzy",
     type = "text",
     grid = {6, 4},
-    color = {145,131,215},
+    color = {3, 3},
     layer = 20,
   },
   -- 91
@@ -981,7 +981,7 @@ tiles_list = {
     sprite = "hurcane",
     type = "object",
     grid = {5, 5},
-    color = {142,94,156},
+    color = {3, 1},
     layer = 12,
   },
   -- 92
@@ -990,7 +990,7 @@ tiles_list = {
     sprite = "text_hurcane",
     type = "text",
     grid = {6, 5},
-    color = {142,94,156},
+    color = {3, 1},
     layer = 20,
   },
   -- 91
@@ -999,7 +999,7 @@ tiles_list = {
     sprite = "hat",
     type = "object",
     grid = {7, 9},
-    color = {142,94,156},
+    color = {3, 1},
     layer = 12,
   },
   -- 92
@@ -1008,7 +1008,7 @@ tiles_list = {
     sprite = "text_hatt",
     type = "text",
     grid = {8, 9},
-    color = {142,94,156},
+    color = {3, 1},
     layer = 20,
   },
   -- 93
@@ -1017,7 +1017,7 @@ tiles_list = {
     sprite = "press",
     type = "object",
     grid = {-1,-1},
-    color = {255,255,255},
+    color = {255, 255, 255},
     layer = 20,
   },
   --- 94
@@ -1029,7 +1029,7 @@ tiles_list = {
     argtypes = {"object", "property"},
     allowconds = true,
     grid = {9, 5},
-    color = {255,255,255},
+    color = {0, 3},
     layer = 20,
   },
   --- 95
@@ -1039,7 +1039,7 @@ tiles_list = {
     type = "text",
     texttype = "property",
     grid = {2, 9},
-    color = {95,157,209},
+    color = {1, 3},
     layer = 20,
   },
   --- 96
@@ -1049,7 +1049,7 @@ tiles_list = {
     type = "text",
     texttype = "property",
     grid = {9, 3},
-    color = {131,200,229},
+    color = {1, 4},
     layer = 20,
   },
   --- 97
@@ -1059,7 +1059,7 @@ tiles_list = {
     type = "text",
     texttype = "property",
     grid = {10, 10},
-    color = {36,0,168},
+    color = {3, 2},
     layer = 20,
   },
   --98
@@ -1069,7 +1069,7 @@ tiles_list = {
     type = "text",
     texttype = "object",
     grid = {9, 0},
-    color = {255, 255, 255},
+    color = {0, 3},
     layer = 20,
   },
   --- 99
@@ -1079,7 +1079,7 @@ tiles_list = {
     type = "text",
     texttype = "property",
     grid = {2, 8},
-    color = {144,103,62},
+    color = {6, 1},
     layer = 20,
   },
   --- 100
@@ -1089,7 +1089,7 @@ tiles_list = {
     type = "text",
     texttype = "property",
     grid = {10, 3},
-    color ={144,103,62},
+    color ={6, 1},
     layer = 20,
   },
   --- 101
@@ -1099,7 +1099,7 @@ tiles_list = {
     type = "text",
     texttype = "cond_infix",
     grid = {8,4},
-    color = {255,255,255},
+    color = {0, 3},
     layer = 20,
   },
   --- 102
@@ -1108,7 +1108,7 @@ tiles_list = {
     sprite = "chekr",
     type = "object",
     grid = {11, 3},
-    color ={78,90,148},
+    color ={3, 2},
     layer = 5,
   },
   --- 103
@@ -1117,7 +1117,7 @@ tiles_list = {
     sprite = "text_chekr",
     type = "text",
     grid = {12, 3},
-    color ={78,90,148},
+    color ={3, 2},
     layer = 20,
   },
   --- 104
@@ -1127,7 +1127,7 @@ tiles_list = {
     type = "text",
     texttype = "property",
     grid = {13, 3},
-    color ={78,90,148},
+    color ={3, 2},
     layer = 20,
   },
   --- 105
@@ -1137,7 +1137,7 @@ tiles_list = {
     type = "text",
     texttype = "property",
     grid = {13, 4},
-    color ={131,200,229},
+    color ={1, 4},
     layer = 20,
   },
   --- 106
@@ -1147,7 +1147,7 @@ tiles_list = {
     type = "text",
     texttype = "property",
     grid = {13, 2},
-    color ={78,90,148},
+    color ={3, 2},
     layer = 20,
   },
   --- 107
@@ -1156,7 +1156,7 @@ tiles_list = {
     sprite = "arro",
     type = "object",
     grid = {11, 4},
-    color ={255,255,255},
+    color ={0, 3},
     layer = 5,
     rotate = true,
   },
@@ -1166,7 +1166,7 @@ tiles_list = {
     sprite = "text_arro",
     type = "text",
     grid = {12, 4},
-    color ={255,255,255},
+    color ={0, 3},
     layer = 20,
   },
   --- 109
@@ -1176,7 +1176,7 @@ tiles_list = {
 	type = "text",
 	texttype = "property",
 	grid = {6,3},
-	color = {228,153,80},
+	color = {2, 3},
 	layer = 20,
   },
   --- 110
@@ -1186,7 +1186,7 @@ tiles_list = {
 	type = "text",
 	texttype = "property",
 	grid = {5,3},
-	color = {95,157,209},
+	color = {1, 3},
 	layer = 20,
   },
   --- 111
@@ -1195,7 +1195,7 @@ tiles_list = {
 	sprite = "text_colld",
 	type = "text",
 	grid = {4,3},
-	color = {95,157,209},
+	color = {1, 3},
 	layer = 20,
   },
   --- 112
@@ -1204,7 +1204,7 @@ tiles_list = {
     sprite = "colld",
     type = "object",
     grid = {3,3},
-    color = {62, 118, 136},
+    color = {1, 2},
     layer = 3,
   },
   --- 113
@@ -1214,7 +1214,7 @@ tiles_list = {
     type = "text",
     texttype = "property",
     grid = {11, 2},
-    color = {95,157,209},
+    color = {1, 3},
     layer = 20,
   },
   --- 114
@@ -1224,7 +1224,7 @@ tiles_list = {
     type = "text",
     texttype = "property",
     grid = {12, 2},
-    color = {131,200,229},
+    color = {1, 4},
     layer = 20,
   },
   -- 115
@@ -1234,7 +1234,7 @@ tiles_list = {
     type = "text",
     texttype = "property",
     grid = {9, 3},
-    color = {255,255,255},
+    color = {0, 3},
     layer = 20,
   },
   -- 116
@@ -1244,7 +1244,7 @@ tiles_list = {
     type = "text",
     texttype = "property",
     grid = {8, 1},
-    color = {131,200,229},
+    color = {1, 4},
     layer = 20,
   },
   --- 117
@@ -1253,7 +1253,7 @@ tiles_list = {
     sprite = "text_piler",
     type = "text",
     grid = {6, 9},
-    color = {115,115,115},
+    color = {0, 1},
     layer = 20,
   },
   --- 118
@@ -1262,7 +1262,7 @@ tiles_list = {
     sprite = "piler",
     type = "object",
     grid = {5, 9},
-    color = {115,115,115},
+    color = {0, 1},
     layer = 3,
   },
   -- 119
@@ -1272,35 +1272,35 @@ tiles_list = {
     type = "text",
     texttype = "not",
     grid = {4, 0},
-    color = {229,83,59},
+    color = {2, 2},
     layer = 20,
   },
   -- 120
   {
     name = "text_haet_skye",
-	sprite = "text_haet_skye",
-	type = "text",
-	texttype = "property",
-	grid = {7,2},
-	color = {165,177,63},
-	layer = 20,
+    sprite = "text_haet_skye",
+    type = "text",
+    texttype = "property",
+    grid = {7,2},
+    color = {5, 3},
+    layer = 20,
   },
   -- 121
   {
     name = "clowd",
-	sprite = "clowd",
-	type = "object",
-	grid = {5,10},
-	color = {255,255,255},
-	layer = 6,
+    sprite = "clowd",
+    type = "object",
+    grid = {5,10},
+    color = {0, 3},
+    layer = 6,
   },
   -- 122
   {
     name = "text_clowd",
-	sprite = "text_clowd",
-	type = "text",
-	grid = {6,10},
-	color = {255,255,255},
-	layer = 20,
+    sprite = "text_clowd",
+    type = "text",
+    grid = {6,10},
+    color = {0, 3},
+    layer = 20,
   },
 }

@@ -516,7 +516,11 @@ function addParticles(type,x,y,color,count)
     ps:setSpeed(50)
     ps:setLinearDamping(5)
     ps:setParticleLifetime(0.25)
-    ps:setColors(color[1]/255, color[2]/255, color[3]/255, (color[4] or 255)/255)
+    if #color == 2 then
+      ps:setColors(getPaletteColor(color[1], color[2]))
+    else
+      ps:setColors(color[1]/255, color[2]/255, color[3]/255, (color[4] or 255)/255)
+    end
     ps:start()
     ps:emit(count or 20)
     table.insert(particles, ps)
@@ -531,7 +535,11 @@ function addParticles(type,x,y,color,count)
     ps:setSpeed(50)
     ps:setLinearDamping(4)
     ps:setParticleLifetime(0.25)
-    ps:setColors(color[1]/255, color[2]/255, color[3]/255, (color[4] or 255)/255)
+    if #color == 2 then
+      ps:setColors(getPaletteColor(color[1], color[2]))
+    else
+      ps:setColors(color[1]/255, color[2]/255, color[3]/255, (color[4] or 255)/255)
+    end
     ps:start()
     ps:emit(count or 10)
     table.insert(particles, ps)
@@ -547,7 +555,11 @@ function addParticles(type,x,y,color,count)
     ps:setSpeed(30)
     ps:setLinearDamping(2)
     ps:setParticleLifetime(0.6)
-    ps:setColors(color[1]/255, color[2]/255, color[3]/255, (color[4] or 255)/255)
+    if #color == 2 then
+      ps:setColors(getPaletteColor(color[1], color[2]))
+    else
+      ps:setColors(color[1]/255, color[2]/255, color[3]/255, (color[4] or 255)/255)
+    end
     ps:start()
     ps:emit(count or 10)
     table.insert(particles, ps)
@@ -561,7 +573,11 @@ function addParticles(type,x,y,color,count)
     ps:setSizes(0.5, 0.5, 0.5, 0)
     ps:setSpeed(20)
     ps:setParticleLifetime(1)
-    ps:setColors(color[1]/255, color[2]/255, color[3]/255, (color[4] or 255)/255)
+    if #color == 2 then
+      ps:setColors(getPaletteColor(color[1], color[2]))
+    else
+      ps:setColors(color[1]/255, color[2]/255, color[3]/255, (color[4] or 255)/255)
+    end
     ps:start()
     ps:emit(count or 10)
     table.insert(particles, ps)

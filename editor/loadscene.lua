@@ -118,6 +118,7 @@ function scene.loadLevel(data)
   local mapstr = love.data.decompress("string", "zlib", loaddata)
 
   level_name = data.name
+  current_palette = data.palette or "default"
   mapwidth = data.width
   mapheight = data.height
   map = loadstring("return " .. mapstr)()
