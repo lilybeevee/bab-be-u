@@ -1,5 +1,7 @@
 json = require "lib/json"
 suit = require "lib/suit"
+tick = require "lib/tick"
+tween = require "lib/tween"
 require "values"
 require "utils"
 require "audio"
@@ -26,6 +28,8 @@ end
 function love.load()
   sprites = {}
   palettes = {}
+  tweens = {}
+  ticks = {}
   move_sound_data = nil
   move_sound_source = nil
   anim_stage = 1
@@ -185,7 +189,27 @@ function love.mousepressed(x, y, button)
   end
 end
 
+function addTween(tween, name, fn)
+  tweens[name] = {tween, fn}
+end
+
+function addTick(name, delay, fn)
+  if ticks[name] then ticks[name]:stop() end
+  local ret = tick.delay(fn, delay)
+  ticks[name] = ret
+  return ret
+end
+
 function love.update(dt)
+  for k,v in pairs(tweens) do
+    if v[1]:update(dt) then
+      tweens[k] = nil
+      if v[2] then v[2]() end
+    end
+  end
+
+  tick.update(dt)
+
   if scene and scene.update then
     scene.update(dt)
   end

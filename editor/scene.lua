@@ -10,6 +10,8 @@ local ignore_mouse = true
 local settings
 local input_name, input_palette, input_width, input_height
 
+local saved_popup
+
 function scene.load()
   brush = nil
   selector_open = false
@@ -24,6 +26,8 @@ function scene.load()
   --table.insert(buttons, {"load", scene.loadLevel})
   --table.insert(buttons, {"save", scene.saveLevel})
   --table.insert(buttons, {"cog", scene.openSettings})
+
+  saved_popup = {sprite = sprites["ui/level_saved"], y = 8, alpha = 0}
 
   name_font = love.graphics.newFont(24)
 
@@ -86,6 +90,7 @@ function scene.update(dt)
     settings.layout:row()
     settings:Label("Level Palette", {align = "center"}, settings.layout:row(300, 24))
     local palette = settings:Input(input_palette, {align = "center"}, settings.layout:row())
+    settings.layout:row()
     settings:Label("Level Size", {align = "center"}, settings.layout:row())
     settings.layout:push(settings.layout:row())
     settings:Input(input_width, {align = "center"}, settings.layout:col((300 - 4)/2, 24))
@@ -336,10 +341,13 @@ function scene.draw(dt)
 
   love.graphics.printf(level_name, 0, name_font:getLineHeight() / 2, love.graphics.getWidth(), "center")
 
+  love.graphics.setColor(1, 1, 1, saved_popup.alpha)
+  love.graphics.draw(saved_popup.sprite, 0, 36 + saved_popup.y)
+
   if settings then
-    love.graphics.setColor(0.1, 0.1, 0.1)
+    love.graphics.setColor(0.1, 0.1, 0.1, 1)
     love.graphics.rectangle("fill", 0, 0, 320, height)
-    love.graphics.setColor(1, 1, 1)
+    love.graphics.setColor(1, 1, 1, 1)
     settings:draw()
   end
 end
@@ -364,6 +372,11 @@ function scene.saveLevel()
 
   love.filesystem.createDirectory("levels")
   love.filesystem.write("levels/" .. level_name .. ".bab", json.encode(data))
+
+  addTween(tween.new(0.25, saved_popup, {y = 0, alpha = 1}, 'inQuad'), "saved_popup")
+  addTick("saved_popup", 1, function()
+    addTween(tween.new(0.5, saved_popup, {y = 8, alpha = 0}), "saved_popup")
+  end)
 end
 
 function scene.loadLevel()
