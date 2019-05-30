@@ -35,7 +35,7 @@ function doMovement(movex, movey)
       unit.moves = {}
         if move_stage == -1 then
           for __,other in ipairs(getUnitsOnTile(unit.x, unit.y)) do
-            if other.id ~= unit.id then
+            if other.id ~= unit.id and sameFloat(unit, other) then
               local icyness = countProperty(other, "icy");
               if icyness > 0 then
                 table.insert(unit.moves, {reason = "icy", dir = unit.dir, times = icyness})
@@ -54,7 +54,7 @@ function doMovement(movex, movey)
           end
         elseif move_stage == 2 then
           for __,other in ipairs(getUnitsOnTile(unit.x, unit.y)) do
-            if other.id ~= unit.id then
+            if other.id ~= unit.id and sameFloat(unit, other) then
               local yeeter = hasRule(other, "yeet", unit)
               if (yeeter) then
                 table.insert(unit.moves, {reason = "yeet", dir = other.dir, times = 99})
@@ -103,7 +103,6 @@ It is probably possible to do, but lily has decided that it's not important enou
       while (something_moved and loopb < 99) do
         local remove_from_moving_units = {}
         local has_flipped = false
-        local kikers = {} --so two sidekikers don't trigger each other indefinitely
         something_moved = false
         loopb = loopb + 1
         for _,unit in ipairs(moving_units) do
@@ -126,11 +125,11 @@ It is probably possible to do, but lily has decided that it's not important enou
               table.insert(moving_units_next, unit);
               
               for k = #movers, 1, -1 do
-                moveIt(movers[k], dx, dy, data, false, already_added, moving_units, moving_units_next, kikers, slippers)
+                moveIt(movers[k], dx, dy, data, false, already_added, moving_units, moving_units_next, slippers)
               end
               --Patashu: only the mover itself pulls, otherwise it's a mess. stuff like STICKY/STUCK will require ruggedizing this logic.
               --Patashu: TODO: Doing the pull right away means that in a situation like this: https://cdn.discordapp.com/attachments/579519329515732993/582179745006092318/unknown.png the pull could happen before the bounce depending on move order. To fix this... I'm not sure how Baba does this? But it's somewhere in that mess of code.
-              doPull(unit, dx, dy, data, already_added, moving_units, moving_units_next, kikers, slippers)
+              doPull(unit, dx, dy, data, already_added, moving_units, moving_units_next,  slippers)
               data.times = data.times - 1;
             end
           else
@@ -210,7 +209,7 @@ function doAction(action)
   end
 end
 
-function moveIt(mover, dx, dy, data, pulling, already_added, moving_units, moving_units_next, kikers, slippers)
+function moveIt(mover, dx, dy, data, pulling, already_added, moving_units, moving_units_next, slippers)
   if not mover.removed then
     queueMove(mover, dx, dy, data.dir, false);
     applySlide(mover, dx, dy, already_added, moving_units_next);
@@ -219,26 +218,19 @@ function moveIt(mover, dx, dy, data, pulling, already_added, moving_units, movin
     if (data.reason == "icy") then
       slippers[mover.id] = true
     end
-    --add ourselves, so that if we're a SIDEKIKer we don't get infinite loop SIDEKIK'd by a SIDEKIKer next to us
-    kikers[mover.id] = true
     --add SIDEKIKERs to move in the next iteration
     for __,sidekiker in ipairs(findSidekikers(mover, dx, dy)) do
-      if (kikers[sidekiker.id] ~= true) then
-        kikers[sidekiker.id] = true
-        local currently_moving = false
-        for _,mover2 in ipairs(moving_units) do
-          if mover2 == sidekiker then
-            currently_moving = true
-            break
-          end
+      local currently_moving = false
+      for _,mover2 in ipairs(moving_units) do
+        if mover2 == sidekiker then
+          currently_moving = true
+          break
         end
-        if not currently_moving then
-          table.insert(sidekiker.moves, {reason = "sidekik", dir = mover.dir, times = 1})
-          if not already_added[sidekiker] then
-            table.insert(moving_units, sidekiker) --TODO: Patashu: moving_units_next instead? maybe someone will find a sidekiker bug and this will be the solution.
-            already_added[sidekiker] = true
-          end
-        end
+      end
+      if not currently_moving then
+        table.insert(sidekiker.moves, {reason = "sidekik", dir = mover.dir, times = 1})
+        table.insert(moving_units, sidekiker) --TODO: Patashu: moving_units_next instead? maybe someone will find a sidekiker bug and this will be the solution.
+        already_added[sidekiker] = true
       end
     end
   end
@@ -363,7 +355,7 @@ function findSidekikers(unit,dx,dy)
   return result;
 end
 
-function doPull(unit,dx,dy,data, already_added, moving_units, moving_units_next, kikers, slippers)
+function doPull(unit,dx,dy,data, already_added, moving_units, moving_units_next, slippers)
   local x = unit.x;
   local y = unit.y;
   local something_moved = true
@@ -381,7 +373,7 @@ function doPull(unit,dx,dy,data, already_added, moving_units, moving_units_next,
           --unit.already_moving = true
           something_moved = true
           for _,mover in ipairs(movers) do
-            moveIt(mover, dx, dy, data, true, already_added, moving_units, moving_units_next, kikers, slippers)
+            moveIt(mover, dx, dy, data, true, already_added, moving_units, moving_units_next, slippers)
           end
         end
       end
