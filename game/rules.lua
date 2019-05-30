@@ -178,7 +178,7 @@ function parseRules(undoing)
             end
 
             --if verb == "got" or a[1]:starts("text_") or c[1]:starts("text_") then
-              print("added rule: " .. noun .. " " .. verb .. " " .. prop)
+              --print("added rule: " .. noun .. " " .. verb .. " " .. prop)
             --end
 
             local all_units = {}
@@ -254,9 +254,9 @@ function addRule(full_rule)
   end
 
   if subject_not then
-    print("subject not" .. subject)
+    --print("subject not" .. subject)
     if tiles_by_name[subject] or subject == "text" then
-      print("adding not subject")
+      --print("adding not subject")
       local new_subjects = {}
       for _,v in ipairs(referenced_objects) do
         if v ~= subject then
@@ -264,7 +264,7 @@ function addRule(full_rule)
         end
       end
       for _,v in ipairs(new_subjects) do
-        print(string.format("%s %s %s -> %s %s %s", rules[1],rules[2],rules[3], v,rules[2],rules[3]))
+        --print(string.format("%s %s %s -> %s %s %s", rules[1],rules[2],rules[3], v,rules[2],rules[3]))
         addRule({{v, rules[2], rules[3], rules[4]}, units, dir})
       end
       return
@@ -272,9 +272,9 @@ function addRule(full_rule)
   end
 
   if object_not then
-    print("object not: " .. object)
+    --print("object not: " .. object)
     if tiles_by_name[object] or object == "text" then
-      print("adding not object")
+      --print("adding not object")
       local new_objects = {}
       for _,v in ipairs(referenced_objects) do
         if v ~= object then
@@ -282,7 +282,7 @@ function addRule(full_rule)
         end
       end
       for _,v in ipairs(new_objects) do
-        print(string.format("%s %s %s -> %s %s %s", rules[1],rules[2],rules[3], rules[1],rules[2],v))
+        --print(string.format("%s %s %s -> %s %s %s", rules[1],rules[2],rules[3], rules[1],rules[2],v))
         addRule({{rules[1], rules[2], v, rules[4]}, units, dir})
       end
       return
@@ -307,7 +307,7 @@ function addRule(full_rule)
     -- for specifically checking NOT rules
     table.insert(full_rules, {{subject, verb .. "n't", object, conds}, units, dir})
   elseif is_protect then
-    print("protecting: " .. subject .. ", " .. object)
+    --print("protecting: " .. subject .. ", " .. object)
     addRule({{subject, "ben't", object .. "n't", conds}, units, dir})
   else
     table.insert(full_rules, full_rule)
@@ -328,7 +328,7 @@ function postRules()
     for _,frules in ipairs(full_rules) do
       local frule = frules[1]
       if frule[1] == rule[1] and frule[2] == rule[2] and frule[3] == rule[3] then
-        print("matching rule", rule[1], rule[2], rule[3])
+        --print("matching rule", rule[1], rule[2], rule[3])
         if has_conds then
           for i=1,2 do
             for _,cond in ipairs(rule[4][i]) do
