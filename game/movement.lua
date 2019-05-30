@@ -9,7 +9,7 @@ function doUpdate()
       local y = update.payload.y
       local dir = update.payload.dir
       updateDir(unit, dir)
-      print("doUpdate:"..tostring(unit.name)..","..tostring(x)..","..tostring(y)..","..tostring(dir))
+      --print("doUpdate:"..tostring(unit.name)..","..tostring(x)..","..tostring(y)..","..tostring(dir))
       moveUnit(unit, x, y)
       unit.already_moving = false
     end
@@ -240,7 +240,7 @@ function queueMove(mover, dx, dy, dir, priority)
   addUndo({"update", mover.id, mover.x, mover.y, mover.dir})
   mover.olddir = mover.dir
   updateDir(mover, dir)
-  print("moving:"..mover.name..","..tostring(mover.id)..","..tostring(mover.x)..","..tostring(mover.y)..","..tostring(dx)..","..tostring(dy))
+  --print("moving:"..mover.name..","..tostring(mover.id)..","..tostring(mover.x)..","..tostring(mover.y)..","..tostring(dx)..","..tostring(dy))
   mover.already_moving = true;
   table.insert(update_queue, (priority and 1 or (#update_queue + 1)), {unit = mover, reason = "update", payload = {x = mover.x + dx, y = mover.y + dy, dir = mover.dir}})
 end
@@ -481,14 +481,14 @@ function canMove(unit,dx,dy,pushing_,pulling_)
         stopped = true
       end
       if hasProperty(v, "go my wey") and goMyWeyPrevents(v.dir, dx, dy) then
-        --TODO: I think this is just 'direction is 2 or less away'? and we can turn dx/dy into dir by looking at dirs8_by_offset, similar to findSidekikers.
         stopped = true
       end
-      --if thing is ouch, it will not stop things. probably recreates the normal baba behaviour pretty well (TODO: test that items dropped by GOT are dropped in the expected tiles for all ouch combinations)
-      if hasProperty(v, "ouch") then
+      --if thing is ouch, it will not stop things - similar to Baba behaviour. But check safe and float as well.
+      if hasProperty(v, "ouch") and not hasProperty(v, "protecc") and sameFloat(unit, v) then
       stopped = false
       end
       --if a weak thing tries to move and fails, destroy it
+      --TODO: Patashu: Maybe except for MOVErs? (in Baba they turn around instead of dying when WEAK)
       if stopped and hasProperty(unit, "ouch") then
         table.insert(specials, {"weak", {unit}})
         return true,movers,specials
@@ -503,6 +503,8 @@ function canMove(unit,dx,dy,pushing_,pulling_)
 end
 
 function goMyWeyPrevents(dir, dx, dy)
+  dx = sign(dx)
+  dy = sign(dy)
   return
      (dir == 1 and dx == -1) or (dir == 2 and (dx == -1 or dy == -1) and (dx ~=  1 and dy ~=  1))
   or (dir == 3 and dy == -1) or (dir == 4 and (dx ==  1 or dy == -1) and (dx ~= -1 and dy ~=  1))
