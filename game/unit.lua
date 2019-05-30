@@ -25,6 +25,10 @@ function updateUnits(undoing, big_update)
   --(SHIFT, TELE, FOLLOW, BACK are handled in moveblock. FALL is handled in fallblock.)
   --TODO: MORE (MOAR?) idea: Make stacked MOREs give you 4-way, 8-way, double 4-way and double 8-way growth for 1, 2, 3 and 4 respectively.
   
+  --TODO: SHIFT (GO) and TELE (VIST FREN) go here. (Or in a separate function, but here works.)
+  
+  --TODO: MORE (MOAR) goes here.
+  
   if (big_update and not undoing) then
     local to_destroy = {}
     local issink = getUnitsWithEffect("no swim");
@@ -101,6 +105,8 @@ function updateUnits(undoing, big_update)
     end
     
     to_destroy = handleDels(to_destroy);
+    
+    --TODO: EAT (SNACC) goes here, as well as in movement (because a solid wall can eat you, I think? need to check how baba does it)
     
     local iscrash = getUnitsWithEffect("xwx");
     for _,unit in ipairs(iscrash) do
