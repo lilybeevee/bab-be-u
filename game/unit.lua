@@ -295,8 +295,6 @@ function dropGotUnit(unit, rule)
 end
 
 function convertUnits()
-  local converted_units = {}
-
   for i,v in ipairs(units_by_tile) do
     units_by_tile[i] = {}
   end
@@ -305,6 +303,27 @@ function convertUnits()
     local tileid = unit.x + unit.y * mapwidth
     table.insert(units_by_tile[tileid], unit)
   end
+
+  local converted_units = {}
+
+  local deconverts = matchesRule(nil,"ben't","?")
+  for _,match in ipairs(deconverts) do
+    local rules = match[1]
+    local unit = match[2]
+
+    local rule = rules[1]
+
+    if nameIs(unit, rule[3]) then
+      if not unit.removed then
+        table.insert(converted_units, unit)
+      end
+      unit.removed = true
+    end
+  end
+
+  deleteUnits(converted_units,true)
+
+  converted_units = {}
 
   for _,rules in ipairs(full_rules) do
     local rule = rules[1]

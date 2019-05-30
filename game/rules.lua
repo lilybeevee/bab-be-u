@@ -255,7 +255,7 @@ function addRule(full_rule)
 
   if subject_not then
     print("subject not" .. subject)
-    if tiles_by_name[subject] then
+    if tiles_by_name[subject] or subject == "text" then
       print("adding not subject")
       local new_subjects = {}
       for _,v in ipairs(referenced_objects) do
@@ -273,7 +273,7 @@ function addRule(full_rule)
 
   if object_not then
     print("object not: " .. object)
-    if tiles_by_name[object] then
+    if tiles_by_name[object] or object == "text" then
       print("adding not object")
       local new_objects = {}
       for _,v in ipairs(referenced_objects) do
@@ -303,11 +303,11 @@ function addRule(full_rule)
       end
     end
     table.insert(not_rules, {{subject, verb, object, inverse_conds}, units, dir})
-    if is_protect then 
-      -- for unit removal via X BEN'T X
-      table.insert(full_rules, {{subject, verb .. "n't", object, conds}, units, dir})
-    end
+
+    -- for specifically checking NOT rules
+    table.insert(full_rules, {{subject, verb .. "n't", object, conds}, units, dir})
   elseif is_protect then
+    print("protecting: " .. subject .. ", " .. object)
     addRule({{subject, "ben't", object .. "n't", conds}, units, dir})
   else
     table.insert(full_rules, full_rule)

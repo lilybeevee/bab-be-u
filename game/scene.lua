@@ -328,7 +328,7 @@ function scene.draw(dt)
             scalex = math.sqrt(2)
           end
 
-          love.graphics.setColor(0.7, 0, 0)
+          love.graphics.setColor(229/255, 83/255, 59/255)
           love.graphics.draw(sprites["scribble_" .. anim_stage], fulldrawx, fulldrawy, 0, unit.scalex * scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
 
           love.graphics.pop()
