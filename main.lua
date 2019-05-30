@@ -167,6 +167,10 @@ function love.textinput(text)
   suit.textinput(text)
 end
 
+function love.touchpressed(id, x, y)
+  love.mousepressed(x,y,1)
+end
+
 function love.mousepressed(x, y, button)
   if scene == menu and button == 1 then
     local width = love.graphics.getWidth()
