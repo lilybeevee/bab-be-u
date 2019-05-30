@@ -9,6 +9,7 @@ function doUpdate()
       local y = update.payload.y
       local dir = update.payload.dir
       updateDir(unit, dir)
+      print("doUpdate:"..tostring(unit.name)..","..tostring(x)..","..tostring(y)..","..tostring(dir))
       moveUnit(unit, x, y)
       unit.already_moving = false
     end
@@ -125,11 +126,11 @@ It is probably possible to do, but lily has decided that it's not important enou
               table.insert(moving_units_next, unit);
               
               for k = #movers, 1, -1 do
-                moveIt(movers[k], dx, dy, data, false, already_added, moving_units, kikers, slippers)
+                moveIt(movers[k], dx, dy, data, false, already_added, moving_units, moving_units_next, kikers, slippers)
               end
               --Patashu: only the mover itself pulls, otherwise it's a mess. stuff like STICKY/STUCK will require ruggedizing this logic.
               --Patashu: TODO: Doing the pull right away means that in a situation like this: https://cdn.discordapp.com/attachments/579519329515732993/582179745006092318/unknown.png the pull could happen before the bounce depending on move order. To fix this... I'm not sure how Baba does this? But it's somewhere in that mess of code.
-              doPull(unit, dx, dy, data, already_added, moving_units, kikers, slippers)
+              doPull(unit, dx, dy, data, already_added, moving_units, moving_units_next, kikers, slippers)
               data.times = data.times - 1;
             end
           else
@@ -209,10 +210,10 @@ function doAction(action)
   end
 end
 
-function moveIt(mover, dx, dy, data, pulling, already_added, moving_units, kikers, slippers)
+function moveIt(mover, dx, dy, data, pulling, already_added, moving_units, moving_units_next, kikers, slippers)
   if not mover.removed then
     queueMove(mover, dx, dy, data.dir, false);
-    applySlide(mover, dx, dy, already_added, moving_units);
+    applySlide(mover, dx, dy, already_added, moving_units_next);
     applySwap(mover, dx, dy);
     --finishing a slip locks you out of U/WALK for the rest of the turn
     if (data.reason == "icy") then
@@ -224,7 +225,7 @@ function moveIt(mover, dx, dy, data, pulling, already_added, moving_units, kiker
         kikers[sidekiker.id] = true
         table.insert(sidekiker.moves, {reason = "sidekik", dir = mover.dir, times = 1})
         if not already_added[sidekiker] then
-          table.insert(moving_units, sidekiker)
+          table.insert(moving_units, sidekiker) --TODO: Patashu: moving_units_next instead? maybe someone will find a sidekiker bug and this will be the solution.
           already_added[sidekiker] = true
         end
       end
@@ -236,19 +237,19 @@ function queueMove(mover, dx, dy, dir, priority)
   addUndo({"update", mover.id, mover.x, mover.y, mover.dir})
   mover.olddir = mover.dir
   updateDir(mover, dir)
-  --print("moving:"..mover.name..","..tostring(mover.id)..","..tostring(mover.x)..","..tostring(mover.y)..","..tostring(dx)..","..tostring(dy))
+  print("moving:"..mover.name..","..tostring(mover.id)..","..tostring(mover.x)..","..tostring(mover.y)..","..tostring(dx)..","..tostring(dy))
   mover.already_moving = true;
   table.insert(update_queue, (priority and 1 or (#update_queue + 1)), {unit = mover, reason = "update", payload = {x = mover.x + dx, y = mover.y + dy, dir = mover.dir}})
 end
 
-function applySlide(mover, dx, dy, already_added, moving_units)
+function applySlide(mover, dx, dy, already_added, moving_units_next)
   --Before we add a new LAUNCH/SLIDE move, deleting all existing LAUNCH/SLIDE moves, so that if we 'move twice in the same tick' (such as because we're being pushed or pulled while also sliding) it doesn't stack. (this also means e.g. SLIDE & SLIDE gives you one extra move at the end, rather than multiplying your movement.)
   local did_clear_existing = false
   --LAUNCH will take precedence over SLIDE, so that puzzles where you move around launchers on an ice rink will behave intuitively.
   local did_launch = false
    --we haven't actually moved yet, so check the tile we will be on
   for _,v in ipairs(getUnitsOnTile(mover.x+dx, mover.y+dy)) do
-    if (not v.already_moving) then
+    if (sameFloat(mover, v) and not v.already_moving) then
       local launchness = countProperty(v, "goooo");
       if (launchness > 0) then
         if (not did_clear_existing) then
@@ -263,7 +264,7 @@ function applySlide(mover, dx, dy, already_added, moving_units)
         --TODO: CLEANUP: Figure out a nice way to not have to pass this around/do this in a million places.
         table.insert(mover.moves, 1, {reason = "goooo", dir = v.dir, times = launchness})
         if not already_added[mover] then
-          table.insert(moving_units, mover)
+          table.insert(moving_units_next, mover)
           already_added[mover] = true
         end
         did_launch = true
@@ -274,7 +275,7 @@ function applySlide(mover, dx, dy, already_added, moving_units)
     return
   end
   for _,v in ipairs(getUnitsOnTile(mover.x+dx, mover.y+dy)) do
-    if (not v.already_moving) then
+    if (sameFloat(mover, v) and not v.already_moving) then
       local slideness = countProperty(v, "icyyyy");
       if (slideness > 0) then
         if (not did_clear_existing) then
@@ -287,7 +288,7 @@ function applySlide(mover, dx, dy, already_added, moving_units)
         end
         table.insert(mover.moves, 1, {reason = "icyyyy", dir = mover.dir, times = slideness})
         if not already_added[mover] then
-          table.insert(moving_units, mover)
+          table.insert(moving_units_next, mover)
           already_added[mover] = true
         end
       end
@@ -351,7 +352,7 @@ function findSidekikers(unit,dx,dy)
   return result;
 end
 
-function doPull(unit,dx,dy,data, already_added, moving_units, kikers, slippers)
+function doPull(unit,dx,dy,data, already_added, moving_units, moving_units_next, kikers, slippers)
   local x = unit.x;
   local y = unit.y;
   local something_moved = true
@@ -369,7 +370,7 @@ function doPull(unit,dx,dy,data, already_added, moving_units, kikers, slippers)
           --unit.already_moving = true
           something_moved = true
           for _,mover in ipairs(movers) do
-            moveIt(mover, dx, dy, data, true, already_added, moving_units, kikers, slippers)
+            moveIt(mover, dx, dy, data, true, already_added, moving_units, moving_units_next, kikers, slippers)
           end
         end
       end
