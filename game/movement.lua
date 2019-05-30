@@ -246,6 +246,7 @@ function queueMove(mover, dx, dy, dir, priority)
 end
 
 function applySlide(mover, dx, dy, already_added, moving_units_next)
+  --TODO: LAUNCH/SLIDE vs SIDEKIK is surprising (the sidekik is not dragged the entire way). Hopefully it's just a matter of slightly re-ordering two things.
   --Before we add a new LAUNCH/SLIDE move, deleting all existing LAUNCH/SLIDE moves, so that if we 'move twice in the same tick' (such as because we're being pushed or pulled while also sliding) it doesn't stack. (this also means e.g. SLIDE & SLIDE gives you one extra move at the end, rather than multiplying your movement.)
   local did_clear_existing = false
   --LAUNCH will take precedence over SLIDE, so that puzzles where you move around launchers on an ice rink will behave intuitively.
@@ -340,6 +341,7 @@ function findSidekikers(unit,dx,dy)
   end
   
   --Testing a new feature: sidekik & come pls objects follow you even on diagonals, to make them very hard to get away from in bab 8 way geometry, while just sidekik objects behave as they are right now so they're appropriate for 4 way geometry or being easy to walk away from
+  --TODO: Maybe make this only happen if the object is also not orthogonal?
   local dir45 = (dir + 1 - 1) % 8 + 1;
   for i = 1,4 do
     local curdir = (dir45 + 2*i - 1) % 8 + 1;
@@ -382,6 +384,7 @@ function doPull(unit,dx,dy,data, already_added, moving_units, moving_units_next,
 end
 
 function fallBlock()
+  --TODO: check FALL vs SWAP interaction
   local fallers = getUnitsWithEffect("haet_skye")
   table.sort(fallers, function(a, b) return a.y > b.y end )
   
@@ -488,7 +491,7 @@ function canMove(unit,dx,dy,pushing_,pulling_)
       stopped = false
       end
       --if a weak thing tries to move and fails, destroy it
-      --TODO: Patashu: Maybe except for MOVErs? (in Baba they turn around instead of dying when WEAK)
+      --TODO: Patashu: Maybe except for MOVErs? (in Baba they turn around instead of dying when WEAK, unless sandwiched between two walls)
       if stopped and hasProperty(unit, "ouch") then
         table.insert(specials, {"weak", {unit}})
         return true,movers,specials

@@ -23,6 +23,7 @@ function updateUnits(undoing, big_update)
   --handle non-monotonic (creative, destructive) effects one at a time, so that we can process them in a set order instead of unit order
   --BABA order is as follows: DONE, BLUE, RED, MORE, SINK, WEAK, MELT, DEFEAT, SHUT, EAT, BONUS, END, WIN, MAKE, HIDE
   --(SHIFT, TELE, FOLLOW, BACK are handled in moveblock. FALL is handled in fallblock.)
+  --TODO: MORE (MOAR?) idea: Make stacked MOREs give you 4-way, 8-way, double 4-way and double 8-way growth for 1, 2, 3 and 4 respectively.
   
   if (big_update and not undoing) then
     local to_destroy = {}
