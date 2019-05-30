@@ -219,14 +219,25 @@ function moveIt(mover, dx, dy, data, pulling, already_added, moving_units, movin
     if (data.reason == "icy") then
       slippers[mover.id] = true
     end
+    --add ourselves, so that if we're a SIDEKIKer we don't get infinite loop SIDEKIK'd by a SIDEKIKer next to us
+    kikers[mover.id] = true
     --add SIDEKIKERs to move in the next iteration
     for __,sidekiker in ipairs(findSidekikers(mover, dx, dy)) do
       if (kikers[sidekiker.id] ~= true) then
         kikers[sidekiker.id] = true
-        table.insert(sidekiker.moves, {reason = "sidekik", dir = mover.dir, times = 1})
-        if not already_added[sidekiker] then
-          table.insert(moving_units, sidekiker) --TODO: Patashu: moving_units_next instead? maybe someone will find a sidekiker bug and this will be the solution.
-          already_added[sidekiker] = true
+        local currently_moving = false
+        for _,mover2 in ipairs(moving_units) do
+          if mover2 == sidekiker then
+            currently_moving = true
+            break
+          end
+        end
+        if not currently_moving then
+          table.insert(sidekiker.moves, {reason = "sidekik", dir = mover.dir, times = 1})
+          if not already_added[sidekiker] then
+            table.insert(moving_units, sidekiker) --TODO: Patashu: moving_units_next instead? maybe someone will find a sidekiker bug and this will be the solution.
+            already_added[sidekiker] = true
+          end
         end
       end
     end
