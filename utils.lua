@@ -706,3 +706,13 @@ end
 function sameFloat(a, b)
   return countProperty(a, "flye") == countProperty(b, "flye")
 end
+
+function getPaletteColor(x, y, name_)
+  local palette = palettes[name_ or current_palette]
+  local pixelid = x + y * palette.sprite:getWidth()
+  if palette[pixelid] then
+    return palette[pixelid][1], palette[pixelid][2], palette[pixelid][3], palette[pixelid][4]
+  else
+    return 1, 1, 1, 1
+  end
+end

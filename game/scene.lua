@@ -180,7 +180,7 @@ function scene.draw(dt)
   love.graphics.setShader()
 
   --background color
-  love.graphics.setColor(0.10, 0.1, 0.11)
+  love.graphics.setColor(getPaletteColor(1, 0))
   if rainbowmode then love.graphics.setColor(hslToRgb(love.timer.getTime()/6%1, .2, .2, .9)) end
 
   -- fill the background with the background color
@@ -192,7 +192,7 @@ function scene.draw(dt)
   love.graphics.push()
   love.graphics.applyTransform(scene.getTransform())
 
-  love.graphics.setColor(0, 0, 0)
+  love.graphics.setColor(getPaletteColor(0, 4))
   if rainbowmode then love.graphics.setColor(hslToRgb(love.timer.getTime()/6%1, .1, .1, .9)) end
   love.graphics.rectangle("fill", 0, 0, roomwidth, roomheight)
 

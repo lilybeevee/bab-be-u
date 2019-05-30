@@ -25,6 +25,7 @@ end
 
 function love.load()
   sprites = {}
+  palettes = {}
   move_sound_data = nil
   move_sound_source = nil
   anim_stage = 1
@@ -63,6 +64,43 @@ function love.load()
     end
   end
   addsprites()
+
+  local function addPalettes(d)
+    local dir = "assets/palettes"
+    if d then
+      dir = dir .. "/" .. d
+    end
+    local files = love.filesystem.getDirectoryItems(dir)
+    for _,file in ipairs(files) do
+      if string.sub(file, -4) == ".png" then
+        local palettename = string.sub(file, 1, -5)
+        local data = love.image.newImageData(dir .. "/" .. file)
+        local sprite = love.graphics.newImage(data)
+        if d then
+          palettename = d .. "/" .. palettename
+        end
+        local palette = {}
+        palettes[palettename] = palette
+        palette.sprite = sprite
+        for x = 0, sprite:getWidth()-1 do
+          for y = 0, sprite:getHeight()-1 do
+            local r, g, b, a = data:getPixel(x, y)
+            palette[x + y * sprite:getWidth()] = {r, g, b, a}
+          end
+        end
+      elseif love.filesystem.getInfo(dir .. "/" .. file).type == "directory" then
+        print("found sprite dir: " .. file)
+        local newdir = file
+        if d then
+          newdir = d .. "/" .. newdir
+        end
+        addPalettes(file)
+      end
+    end
+  end
+  addPalettes()
+  current_palette = "default"
+
   system_cursor = sprites["ui/mous"]
   --if love.system.getOS() == "OS X" then
     --system_cursor = sprites["ui/mous_osx"]
