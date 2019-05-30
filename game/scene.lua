@@ -282,6 +282,10 @@ function scene.draw(dt)
         local fulldrawx = (drawx + 0.5)*TILE_SIZE
         local fulldrawy = (drawy + 0.5)*TILE_SIZE
 
+        if #matchesRule(unit, "be", "flye") ~= 0 then
+          fulldrawy = fulldrawy - 5 - math.sin(love.timer.getTime())*2.5
+        end
+
         love.graphics.push()
         love.graphics.translate(fulldrawx, fulldrawy)
 

@@ -137,8 +137,10 @@ function scene.keyPressed(key)
 end
 
 function love.wheelmoved(whx, why)
-  if stopscrolltutorial == 1 then stopscrolltutorial = 0.9 end
-  scrollvel = (buttonheight-10)*why*45
+  if buttonheight then
+    if stopscrolltutorial == 1 then stopscrolltutorial = 0.9 end
+    scrollvel = (buttonheight-10)*why*45
+  end
 end
 
 return scene
