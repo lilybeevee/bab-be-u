@@ -115,7 +115,6 @@ It is probably possible to do, but lily has decided that it's not important enou
             local dpos = dirs8[dir]
             local dx,dy = dpos[1],dpos[2]
             local success,movers,specials = canMove(unit, dx, dy, true)
-
             for _,special in ipairs(specials) do
               doAction(special)
             end
@@ -201,7 +200,6 @@ function doAction(action)
     playSound("break", 0.5)
     local victims = action[2]
     for _,unit in ipairs(victims) do
-      print("instant weak")
       addParticles("destroy", unit.x, unit.y, unit.color)
       if not hasProperty("protecc") then
         unit.removed = true
@@ -238,7 +236,7 @@ function queueMove(mover, dx, dy, dir, priority)
   addUndo({"update", mover.id, mover.x, mover.y, mover.dir})
   mover.olddir = mover.dir
   updateDir(mover, dir)
-  print("moving:"..mover.name..","..tostring(mover.id)..","..tostring(mover.x)..","..tostring(mover.y)..","..tostring(dx)..","..tostring(dy))
+  --print("moving:"..mover.name..","..tostring(mover.id)..","..tostring(mover.x)..","..tostring(mover.y)..","..tostring(dx)..","..tostring(dy))
   mover.already_moving = true;
   table.insert(update_queue, (priority and 1 or (#update_queue + 1)), {unit = mover, reason = "update", payload = {x = mover.x + dx, y = mover.y + dy, dir = mover.dir}})
 end
@@ -478,7 +476,7 @@ function canMove(unit,dx,dy,pushing_,pulling_)
       if hasProperty(v, "come pls") and not hasProperty(v, "go away") and not would_swap_with and not pulling then
         stopped = true
       end
-      if hasProperty(v, "go my wey") and ((v.dir == 1 and dx == -1) or (v.dir == 2 and (dx == -1 or dy == -1) and (dx ~= 1 and dy ~= 1)) or (v.dir == 3 and dy == -1) or (v.dir == 4 and (dx == 1 or dy == -1) and (dx ~= -1 and dy ~= 1)) or (v.dir == 5 and dx == 1) or (v.dir == 6 and (dx == 1 or dy == 1) and (dx ~= -1 and dy ~= -1)) or (v.dir == 7 and dy == 1)) or (v.dir == 8 and (dx == -1 or dy == 1) and (dx ~= 1 and dy ~= -1)) then
+      if hasProperty(v, "go my wey") and goMyWeyPrevents(v.dir, dx, dy) then
         --TODO: I think this is just 'direction is 2 or less away'? and we can turn dx/dy into dir by looking at dirs8_by_offset, similar to findSidekikers.
         stopped = true
       end
@@ -498,4 +496,12 @@ function canMove(unit,dx,dy,pushing_,pulling_)
   end
 
   return true,movers,specials
+end
+
+function goMyWeyPrevents(dir, dx, dy)
+  return
+     (dir == 1 and dx == -1) or (dir == 2 and (dx == -1 or dy == -1) and (dx ~=  1 and dy ~=  1))
+  or (dir == 3 and dy == -1) or (dir == 4 and (dx ==  1 or dy == -1) and (dx ~= -1 and dy ~=  1))
+  or (dir == 5 and dx ==  1) or (dir == 6 and (dx ==  1 or dy ==  1) and (dx ~= -1 and dy ~= -1)) 
+  or (dir == 7 and dy ==  1) or (dir == 8 and (dx == -1 or dy ==  1) and (dx ~=  1 and dy ~= -1))
 end
