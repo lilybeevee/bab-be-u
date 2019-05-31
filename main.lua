@@ -36,7 +36,9 @@ function love.load()
   next_anim = ANIM_TIMER
 
   empty_sprite = love.image.newImageData(32, 32)
-  empty_cursor = love.mouse.newCursor(empty_sprite)
+  if not is_mobile then
+    empty_cursor = love.mouse.newCursor(empty_sprite)
+  end
 
   default_font = love.graphics.newFont()
   game_time_start = love.timer.getTime()

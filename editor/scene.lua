@@ -125,6 +125,7 @@ function scene.update(dt)
     local load_btn = suit.ImageButton(sprites["ui/load"], {color = load_color}, suit.layout:col(32, 32))
     local save_btn = suit.ImageButton(sprites["ui/save"], {color = save_color}, suit.layout:col())
     local settings_btn = suit.ImageButton(sprites["ui/cog"], {color = settings_color}, suit.layout:col())
+    local play_btn = suit.ImageButton(sprites["ui/play"], {color = settings_color}, suit.layout:col())
 
     if load_btn.hit then
       scene.loadLevel()
@@ -132,6 +133,8 @@ function scene.update(dt)
       scene.saveLevel()
     elseif settings_btn.hit then
       scene.openSettings()
+    elseif play_btn.hit then
+      love.keypressed("f1")
     else
       local hx,hy = getHoveredTile()
       if hx ~= nil then
