@@ -173,6 +173,10 @@ function love.touchpressed(id, x, y)
   love.mousepressed(x,y,1)
 end
 
+function love.touchreleased(id, x, y, dx, dy, pressure)
+  love.mousereleased(x,y,1)
+end
+
 function love.mousepressed(x, y, button)
   if scene == menu and button == 1 then
     local width = love.graphics.getWidth()
@@ -194,8 +198,14 @@ function love.mousepressed(x, y, button)
     love.mouse.setPosition(x, y)
   end
 
-  if scene and scene.mousepressed then
-    scene.mousepressed(x, y, button)
+  if scene and scene.mousePressed then
+    scene.mousePressed(x, y, button)
+  end
+end
+
+function love.mousereleased(x, y, button)
+  if scene and scene.mouseReleased then
+    scene.mouseReleased(x, y, button)
   end
 end
 

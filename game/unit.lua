@@ -581,7 +581,6 @@ function deleteUnit(unit,convert)
   end
 end
 
--- TODO: move tween
 function moveUnit(unit,x,y)
   local tileid = unit.x + unit.y * mapwidth
   removeFromTable(units_by_tile[tileid], unit)

@@ -96,7 +96,7 @@ function scene.update()
   end
 end
 
-function scene.mousepressed(x, y, button)
+function scene.mousePressed(x, y, button)
   if mouseOverBox(10, height - sprites["ui/music-on"]:getHeight(), sprites["ui/music-on"]:getWidth(), sprites["ui/music-on"]:getHeight()) and button == 1 then
     settings["music_on"] = not settings["music_on"]
     saveAll()

@@ -56,7 +56,7 @@ function scene.update(dt)
   end
 end
 
-function scene.mousepressed(x, y, button)
+function scene.mousePressed(x, y, button)
   for i,button in ipairs(buttons) do
     if mouseOverBox(width/2-buttonwidth/2, buttonheight/2+(buttonheight+10)*(i-1)+scrolloffset, buttonwidth, buttonheight) then
       scene.loadLevel(button)

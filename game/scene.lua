@@ -385,7 +385,15 @@ function scene.draw(dt)
   end
   love.graphics.pop()
   
-  love.graphics.draw(sprites["ui/cog"], 0, 0)
+  if mouseOverBox(0,0,sprites["ui/cog"]:getHeight(),sprites["ui/cog"]:getWidth()) then
+    if love.mouse.isDown(1) then
+      love.graphics.draw(sprites["ui/cog_a"], 0, 0)
+    else
+      love.graphics.draw(sprites["ui/cog_h"], 0, 0)
+    end
+  else
+    love.graphics.draw(sprites["ui/cog"], 0, 0)
+  end
 
   if love.window.hasMouseFocus() then
     for i,cursor in ipairs(cursors) do
@@ -398,11 +406,11 @@ function scene.draw(dt)
         newcolor[3] = newcolor[3]*255
         color = newcolor
       elseif hasProperty(cursor,"bleu") and hasProperty(cursor,"reed") then
-        color = {187,107,137}
+        color = {3, 1}
       elseif hasProperty(cursor,"reed") then
-        color = {229,83,59}
+        color = {2, 2}
       elseif hasProperty(cursor,"bleu") then
-        color = {145,131,215}
+        color = {1, 3}
       end
 
       if not color then
@@ -526,9 +534,10 @@ function scene.doPassiveParticles(timer,word,effect,delay,chance,count,color)
   end
 end
 
-function scene.mousepressed(x,y,button)
+function scene.mouseReleased(x,y,button)
   if mouseOverBox(0,0,sprites["ui/cog"]:getHeight(),sprites["ui/cog"]:getWidth()) then
-    love.keypressed("f2")
+    --love.keypressed("f2")
+    new_scene = editor
   end
 end
 
