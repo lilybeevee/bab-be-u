@@ -40,6 +40,22 @@ function updateUnits(undoing, big_update)
     --TODO: TELE (VIST FREN) goes here.
   
     --TODO: MORE (MOAR) goes here.
+    
+    local ismoar = getUnitsWithEffect("moar");
+    for _,unit in ipairs(ismoar) do
+      for i=1,4 do
+        local ndir = dirs[i];
+        local dx = ndir[1];
+        local dy = ndir[2];
+        if canMove(unit, dx, dy, false, false, unit.name) then
+          --TODO: straight up calling this might malfunction in certain cases, like with text being moar?
+          local new_unit = createUnit(tiles_by_name[unit.fullname], unit.x, unit.y, unit.dir)
+          addUndo({"create", new_unit.id, false})
+          moveUnit(new_unit,unit.x+dx,unit.y+dy)
+          addUndo({"update", new_unit.id, unit.x, unit.y, unit.dir})
+        end
+      end
+    end
   
     local to_destroy = {}
     

@@ -385,7 +385,6 @@ function doPull(unit,dx,dy,data, already_added, moving_units, moving_units_next,
 end
 
 function fallBlock()
-  --TODO: check FALL vs SWAP interaction
   local fallers = getUnitsWithEffect("haet_skye")
   table.sort(fallers, function(a, b) return a.y > b.y end )
   
@@ -411,7 +410,7 @@ function fallBlock()
   end
 end
 
-function canMove(unit,dx,dy,pushing_,pulling_)
+function canMove(unit,dx,dy,pushing_,pulling_,solid_name)
   local pushing = false
   if (pushing_ ~= nil) then
 		pushing = pushing_
@@ -452,6 +451,9 @@ function canMove(unit,dx,dy,pushing_,pulling_)
     --Patashu: treat moving things as intangible in general
     if (not v.already_moving) then
       local stopped = false
+      if (v.name == solid_name) then
+        return false,movers,specials
+      end
       local would_swap_with = hasProperty(v, "edgy") and pushing
       --pushing a key into a door automatically works
       if (fordor and hasProperty(v, "ned kee")) or (nedkee and hasProperty(v, "for dor")) then

@@ -1306,4 +1306,13 @@ tiles_list = {
     color = {0, 3},
     layer = 20,
   },
+  -- 123
+  {
+    name = "text_moar",
+    sprite = "text_moar",
+    type = "text",
+    grid = {10,2},
+    color = {4, 1},
+    layer = 20,
+  },
 }
