@@ -32,6 +32,11 @@ function scene.draw(dt)
   local buttons = {"play", "editor", "exit"}
   local bgsprite = sprites["ui/menu_background"]
 
+  if is_mobile then
+    local cursorx, cursory = love.mouse.getPosition()
+    love.graphics.draw(system_cursor, cursorx, cursory)
+  end
+
   -- no need to insult me, i know this is terrible code
   love.graphics.setColor(1, 1, 1)
   love.graphics.draw(bgsprite, scrollx%bgsprite:getWidth(), scrolly%bgsprite:getHeight(), 0)

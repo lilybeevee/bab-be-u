@@ -166,6 +166,15 @@ function scene.update(dt)
     local load_btn = suit.ImageButton(sprites["ui/load"], {hovered = sprites["ui/load_h"], active = sprites["ui/load_a"]}, suit.layout:col(40, 40))
     local save_btn = suit.ImageButton(sprites["ui/save"], {hovered = sprites["ui/save_h"], active = sprites["ui/save_a"]}, suit.layout:col())
     local settings_btn = suit.ImageButton(sprites["ui/cog"], {hovered = sprites["ui/cog_h"], active = sprites["ui/cog_a"]}, suit.layout:col())
+    local play_btn = suit.ImageButton(sprites["ui/play"], {hovered = sprites["ui/play_h"], active = sprites["ui/play_a"]}, suit.layout:col())
+    local selector_btn
+
+    --if is_mobile then
+    if true then
+      selector_btn = suit.ImageButton(sprites["ui/selector"], {hovered = sprites["ui/selector_h"], active = sprites["ui/selector_a"]}, suit.layout:col())
+    else
+      selector_btn = {hit = false}
+    end
 
     if load_btn.hit then
       scene.loadLevel()
@@ -173,6 +182,10 @@ function scene.update(dt)
       scene.saveLevel()
     elseif settings_btn.hit then
       scene.openSettings()
+    elseif play_btn.hit then
+      love.keypressed("f1")
+    elseif selector_btn.hit then
+      selector_open = not selector_open
     else
       local hx,hy = getHoveredTile()
       if hx ~= nil then
@@ -337,6 +350,11 @@ function scene.draw(dt)
   else
     roomwidth = tile_grid_width * TILE_SIZE
     roomheight = tile_grid_height * TILE_SIZE
+  end
+
+  if is_mobile then
+    local cursorx, cursory = love.mouse.getPosition()
+    love.graphics.draw(system_cursor, cursorx, cursory)
   end
 
   love.graphics.push()
@@ -527,7 +545,7 @@ end
 function scene.openSettings()
   if not settings_open then
     settings_open = true
-    
+
     input_name = {text = level_name}
     input_palette = {text = current_palette}
     input_width = {text = tostring(mapwidth)}

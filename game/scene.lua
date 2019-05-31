@@ -23,7 +23,9 @@ local paletteshader_0 = love.graphics.newShader[[
 ]]
 --local paletteshader_autumn = love.graphics.newShader("paletteshader_autumn.txt")
 --local paletteshader_dunno = love.graphics.newShader("paletteshader_dunno.txt")
-local shader_zawarudo = love.graphics.newShader("shader_pucker.txt")
+if not is_mobile then
+  local shader_zawarudo = love.graphics.newShader("shader_pucker.txt")
+end
 local level_shader = paletteshader_0
 local doin_the_world = false
 local shader_time = 0
@@ -81,7 +83,9 @@ end
 
 function scene.resetStuff()
   clear()
-  love.mouse.setCursor(empty_cursor)
+  if not is_mobile then
+    love.mouse.setCursor(empty_cursor)
+  end
   --love.mouse.setGrabbed(true)
   --resetMusic("bab_be_u_them", 0.5)
   resetMusic("bab be go", 0.4)
@@ -196,8 +200,6 @@ function scene.draw(dt)
   if rainbowmode then love.graphics.setColor(hslToRgb(love.timer.getTime()/6%1, .1, .1, .9)) end
   love.graphics.rectangle("fill", 0, 0, roomwidth, roomheight)
 
-  love.graphics.print(window_dir)
-
   for i=1,max_layer do
     if units_by_layer[i] then
       local removed_units = {}
@@ -310,9 +312,22 @@ function scene.draw(dt)
           love.graphics.setColor(color[1], color[2], color[3], color[4])
           love.graphics.draw(sprites["hatsmol"], fulldrawx, fulldrawy - 0.5*TILE_SIZE, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
         end
-        if(hasRule(unit,"got","gun")) then
+        if hasRule(unit,"got","gun") then
           love.graphics.setColor(1, 1, 1)
           love.graphics.draw(sprites["gunsmol"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+        end
+        if hasRule(unit,"got",nil) then
+          local matchrule = matchesRule(unit,"got",nil)
+
+          if #matchrule[2].color == 3 then
+            gotcolor = {matchrule[2].color[1]/255 * brightness, matchrule[2].color[2]/255 * brightness, matchrule[2].color[3]/255 * brightness, 1}
+          else
+            local r,g,b,a = getPaletteColor(matchrule[2].color[1], matchrule[2].color[2])
+            gotcolor = {r * brightness, g * brightness, b * brightness, a}
+          end
+
+          love.graphics.setColor(gotcolor[1], gotcolor[2], gotcolor[3], gotcolor[4])
+          love.graphics.draw(sprites[matchrule[2].sprite], fulldrawx/4*3, fulldrawy/4*3, 0, unit.scalex/4, unit.scaley/4, sprite:getWidth() / 2, sprite:getHeight() / 2)
         end
 
         love.graphics.pop()
@@ -370,6 +385,8 @@ function scene.draw(dt)
   end
   love.graphics.pop()
   
+  love.graphics.draw(sprites["ui/cog"], 0, 0)
+
   if love.window.hasMouseFocus() then
     for i,cursor in ipairs(cursors) do
       local color
@@ -506,6 +523,12 @@ function scene.doPassiveParticles(timer,word,effect,delay,chance,count,color)
       end
       addParticles(effect, unit.x, unit.y, color, real_count)
     end
+  end
+end
+
+function scene.mousepressed(x,y,button)
+  if mouseOverBox(0,0,sprites["ui/cog"]:getHeight(),sprites["ui/cog"]:getWidth()) then
+    love.keypressed("f2")
   end
 end
 
