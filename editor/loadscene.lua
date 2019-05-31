@@ -121,7 +121,13 @@ function scene.loadLevel(data)
   current_palette = data.palette or "default"
   mapwidth = data.width
   mapheight = data.height
-  map = loadstring("return " .. mapstr)()
+  map_ver = data.version or 0
+
+  if map_ver == 0 then
+    map = loadstring("return " .. mapstr)()
+  else
+    map = mapstr
+  end
 
   new_scene = editor
   button_pressed = {}

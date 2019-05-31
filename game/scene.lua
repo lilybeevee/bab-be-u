@@ -250,21 +250,11 @@ function scene.draw(dt)
         local sprite = sprites[unit.sprite]
         if not sprite then sprite = sprites["wat"] end
 
-        local drawx = lerp(unit.oldx, unit.x, unit.move_timer/MAX_MOVE_TIMER)
-        local drawy = lerp(unit.oldy, unit.y, unit.move_timer/MAX_MOVE_TIMER)
-
-        if unit.removed then
-          unit.scaley = math.max(0, unit.scaley - (dt*10))
-          if unit.scaley == 0 then
-            table.insert(removed_units, unit)
-          end
-        elseif unit.scaley < 1 then
-          unit.scaley = math.min(1, unit.scaley + (dt*10))
-        end
+        local drawx, drawy = unit.draw.x, unit.draw.y
 
         local rotation = 0
         if unit.rotate then
-          rotation = (lerp(unit.olddir, unit.dir, unit.move_timer/MAX_MOVE_TIMER) - 1) * 45
+          rotation = math.rad(unit.draw.rotation)
         end
 
         local color
@@ -292,12 +282,12 @@ function scene.draw(dt)
         love.graphics.translate(fulldrawx, fulldrawy)
 
         love.graphics.push()
-        love.graphics.rotate(math.rad(rotation))
+        love.graphics.rotate(rotation)
         love.graphics.translate(-fulldrawx, -fulldrawy)
 
         local function drawSprite(overlay)
           local sprite = overlay or sprite
-          love.graphics.draw(sprite, fulldrawx, fulldrawy, 0, unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+          love.graphics.draw(sprite, fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
         end
         drawSprite()
 
@@ -320,11 +310,11 @@ function scene.draw(dt)
 
         if hasRule(unit,"got","hatt") then
           love.graphics.setColor(color[1], color[2], color[3], color[4])
-          love.graphics.draw(sprites["hatsmol"], fulldrawx, fulldrawy - 0.5*TILE_SIZE, 0, unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+          love.graphics.draw(sprites["hatsmol"], fulldrawx, fulldrawy - 0.5*TILE_SIZE, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
         end
         if hasRule(unit,"got","gun") then
           love.graphics.setColor(1, 1, 1)
-          love.graphics.draw(sprites["gunsmol"], fulldrawx, fulldrawy, 0, unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+          love.graphics.draw(sprites["gunsmol"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
         end
         if hasRule(unit,"got",nil) then
           local matchrule = matchesRule(unit,"got",nil)
@@ -355,16 +345,12 @@ function scene.draw(dt)
           end
 
           love.graphics.setColor(getPaletteColor(2, 2))
-          love.graphics.draw(sprites["scribble_" .. anim_stage], fulldrawx, fulldrawy, 0, unit.scalex * scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+          love.graphics.draw(sprites["scribble_" .. anim_stage], fulldrawx, fulldrawy, 0, unit.draw.scalex * scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
 
           love.graphics.pop()
         end
 
         love.graphics.pop()
-
-        if unit.move_timer < MAX_MOVE_TIMER then
-          unit.move_timer = math.min(MAX_MOVE_TIMER, unit.move_timer + (dt * 1000))
-        end
       end
       for _,unit in ipairs(removed_units) do
         removeFromTable(units_by_layer[i], unit)

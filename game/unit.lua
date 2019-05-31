@@ -22,15 +22,45 @@ function updateUnits(undoing, big_update)
   
   --handle non-monotonic (creative, destructive) effects one at a time, so that we can process them in a set order instead of unit order
   --BABA order is as follows: DONE, BLUE, RED, MORE, SINK, WEAK, MELT, DEFEAT, SHUT, EAT, BONUS, END, WIN, MAKE, HIDE
-  --(SHIFT, TELE, FOLLOW, BACK are handled in moveblock. FALL is handled in fallblock.)
-  --TODO: MORE (MOAR?) idea: Make stacked MOREs give you 4-way, 8-way, double 4-way and double 8-way growth for 1, 2, 3 and 4 respectively.
-  
-  --TODO: SHIFT (GO) and TELE (VIST FREN) go here. (Or in a separate function, but here works.)
-  
-  --TODO: MORE (MOAR) goes here.
-  
+  --(SHIFT, TELE, FOLLOW, BACK are handled in moveblock. FALL is handled in fallblock. But we can just put moveblock in the start here and it's more or less the same thing.)
+
   if (big_update and not undoing) then
+    local isshift = getUnitsWithEffect("go");
+    for _,unit in ipairs(isshift) do
+      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
+      for _,on in ipairs(stuff) do
+        if unit ~= on and sameFloat(unit, on) then
+          addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
+          on.dir = unit.dir
+        end
+      end
+    end
+    
+    --TODO: TELE idea: Instead of randomly chosing between multiple other teleports, choose the next one in reading order.
+    --Then... If you're TELE & TELE, choose the previous one. TELEx3, two ahead. TELEx4, two behind. TELEx5, three ahead. And so on.
+    local istele = getUnitsWithEffect("visit fren");
+    for _,unit in ipairs(istele) do
+      --TODO: implement TELE
+    end
+    
+    --TODO: MORE (MOAR?) idea: Make stacked MOREs give you 4-way, 8-way, double 4-way and double 8-way growth for 1, 2, 3 and 4 respectively.
+    local ismoar = getUnitsWithEffect("moar");
+    for _,unit in ipairs(ismoar) do
+      for i=1,4 do
+        local ndir = dirs[i];
+        local dx = ndir[1];
+        local dy = ndir[2];
+        if canMove(unit, dx, dy, false, false, unit.name) then
+          local new_unit = createUnit(tiles_by_name[unit.fullname], unit.x, unit.y, unit.dir)
+          addUndo({"create", new_unit.id, false})
+          moveUnit(new_unit,unit.x+dx,unit.y+dy)
+          addUndo({"update", new_unit.id, unit.x, unit.y, unit.dir})
+        end
+      end
+    end
+  
     local to_destroy = {}
+    
     local issink = getUnitsWithEffect("no swim");
     for _,unit in ipairs(issink) do
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
@@ -258,6 +288,17 @@ function updateUnits(undoing, big_update)
       end
     end
   end
+
+  for _,unit in ipairs(still_converting) do
+    if not units_by_layer[unit.layer] then
+      units_by_layer[unit.layer] = {}
+    end
+    if not table.has_value(units_by_layer[unit.layer], unit) then
+      table.insert(units_by_layer[unit.layer], unit)
+    end
+    max_layer = math.max(max_layer, unit.layer)
+  end
+
   deleteUnits(del_units,false)
 end
 
@@ -437,15 +478,13 @@ function createUnit(tile,x,y,dir,convert,id_)
   unit.blocked = false
   unit.removed = false
 
-  unit.scalex = 1
-  unit.scaley = 1
+  unit.draw = {x = unit.x, y = unit.y, scalex = 1, scaley = 1, rotation = (unit.dir - 1) * 45}
+
   if convert then
-    unit.scaley = 0
+    unit.draw.scaley = 0
+    addTween(tween.new(0.1, unit.draw, {scaley = 1}), "unit:scale:" .. unit.id)
   end
-  unit.oldx = unit.x
-  unit.oldy = unit.y
-  unit.olddir = unit.dir
-  unit.move_timer = MAX_MOVE_TIMER
+
   unit.old_active = unit.active
   unit.overlay = {}
 
@@ -518,7 +557,7 @@ end
 function deleteUnit(unit,convert)
   unit.removed = true
   unit.removed_final = true
-  if not convert then
+  if not convert and scene == game then
     gotters = matchesRule(unit, "got", "?");
     for _,ruleparent in ipairs(gotters) do
       local rule = ruleparent[1]
@@ -535,18 +574,24 @@ function deleteUnit(unit,convert)
   removeFromTable(units_by_tile[tileid], unit)
   if not convert then
     removeFromTable(units_by_layer[unit.layer], unit)
+  else
+    table.insert(still_converting, unit)
+    addTween(tween.new(0.1, unit.draw, {scaley = 0}), "unit:scale:" .. unit.id)
+    tick.delay(function() removeFromTable(still_converting, unit) end, 0.1)
   end
 end
 
+-- TODO: move tween
 function moveUnit(unit,x,y)
   local tileid = unit.x + unit.y * mapwidth
   removeFromTable(units_by_tile[tileid], unit)
 
-  unit.oldx = lerp(unit.oldx, unit.x, unit.move_timer/MAX_MOVE_TIMER)
-  unit.oldy = lerp(unit.oldy, unit.y, unit.move_timer/MAX_MOVE_TIMER)
+  if x ~= unit.x or y ~= unit.y then
+    addTween(tween.new(0.1, unit.draw, {x = x, y = y}), "unit:pos:" .. unit.id)
+  end
+
   unit.x = x
   unit.y = y
-  unit.move_timer = 0
 
   tileid = unit.x + unit.y * mapwidth
   table.insert(units_by_tile[tileid], unit)
@@ -563,6 +608,16 @@ function updateDir(unit,dir)
       end
     end
   end
+
+  -- angles are literally the worst
+  unit.draw.rotation = unit.draw.rotation % 360
+  local target_rot = (dir - 1) * 45
+  if unit.draw.rotation - target_rot > 180 then
+    target_rot = target_rot + 360
+  elseif target_rot - unit.draw.rotation > 180 then
+    target_rot = target_rot - 360
+  end
+  addTween(tween.new(0.1, unit.draw, {rotation = target_rot}), "unit:dir:" .. unit.id)
 end
 
 function newUnitID()

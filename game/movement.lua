@@ -12,6 +12,11 @@ function doUpdate()
       --print("doUpdate:"..tostring(unit.name)..","..tostring(x)..","..tostring(y)..","..tostring(dir))
       moveUnit(unit, x, y)
       unit.already_moving = false
+    elseif update.reason == "dir" then
+      local unit = update.unit
+      local dir = update.payload.dir
+      unit.olddir = unit.dir
+      updateDir(unit, dir);
     end
   end
   update_queue = {}
@@ -30,6 +35,7 @@ function doMovement(movex, movey)
     local moving_units = {}
     local moving_units_next = {}
     local already_added = {}
+    --TODO: PERFORMANCE: Instead of iterating over all units (slow in well decorated levels or ones with lots of rules), use getUnitsWithEffect to get just the units we care about in one iteration. (Also, write a new getUnitsWithEffectAndCount that also returns the count, since we need it in almost all cases here.)
     for _,unit in ipairs(units) do
       unit.already_moving = false
       unit.moves = {}
@@ -95,12 +101,14 @@ It is probably possible to do, but lily has decided that it's not important enou
     local successes = 1
     --Outer loop continues until nothing moves in the inner loop, and does a doUpdate after each inner loop, to allow for multimoves to exist.
     while (#moving_units > 0 and successes > 0 and loopa < 99) do 
+      --print("loopa:"..tostring(loopa))
       successes = 0
       local loopb = 0
       loopa = loopa + 1
       local something_moved = true
       --Inner loop tries to move everything at least once, and gives up if after an iteration, nothing can move. (It also tries to do flips to see if that helps.)
       while (something_moved and loopb < 99) do
+        --print("loopb:"..tostring(loopb))
         local remove_from_moving_units = {}
         local has_flipped = false
         something_moved = false
@@ -236,6 +244,8 @@ function moveIt(mover, dx, dy, data, pulling, already_added, moving_units, movin
   end
 end
 
+
+
 function queueMove(mover, dx, dy, dir, priority)
   addUndo({"update", mover.id, mover.x, mover.y, mover.dir})
   mover.olddir = mover.dir
@@ -305,18 +315,20 @@ function applySwap(mover, dx, dy)
   --two priority related things:
   --1) don't swap with things that are already moving, to prevent move order related behaviour
   --2) swaps should occur before any other kind of movement, so that the swap gets 'overriden' by later, more intentional movement e.g. in a group of swap and you moving things, or a swapper pulling boxen behind it
-  if hasProperty(mover, "edgy") then
-    for _,v in ipairs(getUnitsOnTile(mover.x+dx, mover.y+dy)) do
-      if not v.already_moved then
-        queueMove(v, -dx, -dy, v.dir, true);
+  --[[addUndo({"update", unit.id, unit.x, unit.y, unit.dir})]]--
+  local swap_mover = hasProperty(mover, "behin u");
+  local did_swap = false
+  for _,v in ipairs(getUnitsOnTile(mover.x+dx, mover.y+dy)) do
+    --if not v.already_moving then --this made some things move order dependent, so taking it out
+      local swap_v = hasProperty(v, "behin u");
+      if (swap_mover or swap_v) then
+        queueMove(v, -dx, -dy, swap_v and rotate8(mover.dir) or v.dir, true);
+        did_swap = true
       end
     end
-  else
-    for _,v in ipairs(getUnitsOnTile(mover.x+dx, mover.y+dy)) do
-      if not v.already_moved and hasProperty(v, "edgy") then
-        queueMove(v, -dx, -dy, v.dir, true);
-      end
-    end
+  --end
+  if (swap_mover and did_swap) then
+     table.insert(update_queue, {unit = mover, reason = "dir", payload = {dir = rotate8(mover.dir)}})
   end
 end
 
@@ -384,7 +396,6 @@ function doPull(unit,dx,dy,data, already_added, moving_units, moving_units_next,
 end
 
 function fallBlock()
-  --TODO: check FALL vs SWAP interaction
   local fallers = getUnitsWithEffect("haet_skye")
   table.sort(fallers, function(a, b) return a.y > b.y end )
   
@@ -410,7 +421,7 @@ function fallBlock()
   end
 end
 
-function canMove(unit,dx,dy,pushing_,pulling_)
+function canMove(unit,dx,dy,pushing_,pulling_,solid_name)
   local pushing = false
   if (pushing_ ~= nil) then
 		pushing = pushing_
@@ -445,13 +456,17 @@ function canMove(unit,dx,dy,pushing_,pulling_)
 
   local nedkee = hasProperty(unit, "ned kee")
   local fordor = hasProperty(unit, "for dor")
+  local swap_mover = hasProperty(unit, "behin u")
 
   local tileid = x + y * mapwidth
   for _,v in ipairs(units_by_tile[tileid]) do
     --Patashu: treat moving things as intangible in general
     if (not v.already_moving) then
       local stopped = false
-      local would_swap_with = hasProperty(v, "edgy") and pushing
+      if (v.name == solid_name) then
+        return false,movers,specials
+      end
+      local would_swap_with = swap_mover or hasProperty(v, "behin u") and pushing
       --pushing a key into a door automatically works
       if (fordor and hasProperty(v, "ned kee")) or (nedkee and hasProperty(v, "for dor")) then
         table.insert(specials, {"open", {unit, v}})
