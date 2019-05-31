@@ -552,6 +552,29 @@ function scene.mouseReleased(x,y,button)
     --love.keypressed("f2")
     new_scene = editor
   end
+  if is_mobile then
+    local screenwidth = love.graphics.getWidth()
+    local screenheight = love.graphics.getHeight()
+
+    local arrowsprite = sprites["ui/arrow"]
+    local squaresprite = sprites["ui/square"]
+
+    local key = "0"
+    
+    if mouseOverBox(screenwidth-squaresprite:getWidth()*2, screenheight-squaresprite:getHeight()*2, squaresprite:getWidth(), squaresprite:getHeight()) then
+      key = "space"
+    elseif mouseOverBox(screenwidth-squaresprite:getWidth()*3, screenheight-squaresprite:getHeight()*2, squaresprite:getWidth(), squaresprite:getHeight()) then
+      key = "left"
+    elseif mouseOverBox(screenwidth-squaresprite:getWidth()*2, screenheight-squaresprite:getHeight()*3, squaresprite:getWidth(), squaresprite:getHeight()) then
+      key = "up"
+    elseif mouseOverBox(screenwidth-squaresprite:getWidth()*2, screenheight-squaresprite:getHeight(), squaresprite:getWidth(), squaresprite:getHeight()) then
+      key = "down"
+    elseif mouseOverBox(screenwidth-squaresprite:getWidth(), screenheight-squaresprite:getHeight()*2, squaresprite:getWidth(), squaresprite:getHeight()) then
+      key = "right"
+    end
+
+    scene.keyReleased(key)
+  end
 end
 
 function scene.mousePressed(x, y, button)
@@ -567,18 +590,16 @@ function scene.mousePressed(x, y, button)
     if mouseOverBox(screenwidth-squaresprite:getWidth()*2, screenheight-squaresprite:getHeight()*2, squaresprite:getWidth(), squaresprite:getHeight()) then
       key = "space"
     elseif mouseOverBox(screenwidth-squaresprite:getWidth()*3, screenheight-squaresprite:getHeight()*2, squaresprite:getWidth(), squaresprite:getHeight()) then
-      key = "a"
+      key = "left"
     elseif mouseOverBox(screenwidth-squaresprite:getWidth()*2, screenheight-squaresprite:getHeight()*3, squaresprite:getWidth(), squaresprite:getHeight()) then
-      key = "w"
+      key = "up"
     elseif mouseOverBox(screenwidth-squaresprite:getWidth()*2, screenheight-squaresprite:getHeight(), squaresprite:getWidth(), squaresprite:getHeight()) then
-      key = "s"
+      key = "down"
     elseif mouseOverBox(screenwidth-squaresprite:getWidth(), screenheight-squaresprite:getHeight()*2, squaresprite:getWidth(), squaresprite:getHeight()) then
-      key = "d"
+      key = "right"
     end
 
     scene.keyPressed(key)
-    scene.checkInput()
-    scene.keyReleased(key)
   end
 end
 
