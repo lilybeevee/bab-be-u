@@ -30,6 +30,7 @@ function doMovement(movex, movey)
     local moving_units = {}
     local moving_units_next = {}
     local already_added = {}
+    --TODO: PERFORMANCE: Instead of iterating over all units (slow in well decorated levels or ones with lots of rules), use getUnitsWithEffect to get just the units we care about in one iteration. (Also, write a new getUnitsWithEffectAndCount that also returns the count, since we need it in almost all cases here.)
     for _,unit in ipairs(units) do
       unit.already_moving = false
       unit.moves = {}
