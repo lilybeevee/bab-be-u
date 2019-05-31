@@ -127,10 +127,26 @@ local verbs = {
   options = {
     {
       and_repeat,
-      {type = "verb"},
-      not_suffix,
-      cond_prefixes,
-      commons({"object", "property"}, "target"),
+      {options={
+        {
+          {type = "verb_all"},
+          not_suffix,
+          cond_prefixes,
+          commons({"object", "property"}, "target"),
+        },
+        {
+          {type = "verb_object"},
+          not_suffix,
+          cond_prefixes,
+          commons({"object"}, "target"),
+        },
+        {
+          {type = "verb_property"},
+          not_suffix,
+          cond_prefixes,
+          commons({"property"}, "target"),
+        },
+      }},
       cond_infixes
     }
   }

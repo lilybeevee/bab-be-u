@@ -500,15 +500,6 @@ function createUnit(tile,x,y,dir,convert,id_)
   unit.rotate = data.rotate or false
   unit.got_objects = {}
 
-  unit.argtypes = {}
-  if data.argtypes then
-    for _,v in ipairs(data.argtypes) do
-      unit.argtypes[v] = true
-    end
-  else
-    unit.argtypes["object"] = true
-  end
-
   unit.fullname = data.name
   if unit.type == "text" then
     unit.name = "text"
