@@ -34,6 +34,7 @@ function scene.draw(dt)
 
   if is_mobile then
     local cursorx, cursory = love.mouse.getPosition()
+    love.graphics.setColor(1, 1, 1)
     love.graphics.draw(system_cursor, cursorx, cursory)
   end
 

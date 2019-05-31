@@ -362,10 +362,6 @@ function scene.draw(dt)
     roomheight = tile_grid_height * TILE_SIZE
   end
 
-  if is_mobile then
-    local cursorx, cursory = love.mouse.getPosition()
-    love.graphics.draw(system_cursor, cursorx, cursory)
-  end
 
   love.graphics.push()
   love.graphics.applyTransform(scene.getTransform())
@@ -505,6 +501,10 @@ function scene.draw(dt)
   settings:draw()
 
   love.graphics.pop()
+  if is_mobile then
+    local cursorx, cursory = love.mouse.getPosition()
+    love.graphics.draw(system_cursor, cursorx, cursory)
+  end
 end
 
 function scene.textInput(t)

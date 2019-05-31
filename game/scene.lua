@@ -451,6 +451,20 @@ function scene.draw(dt)
     love.graphics.setShader(paletteshader_0)
     doin_the_world = false
   end
+
+  if is_mobile then
+    local screenwidth = love.graphics.getWidth()
+    local screenheight = love.graphics.getHeight()
+
+    local arrowsprite = sprites["ui/arrow"]
+    local squaresprite = sprites["ui/square"]
+
+    love.graphics.draw(arrowsprite, screenwidth-arrowsprite:getWidth(), screenheight, 3.14)
+    love.graphics.draw(arrowsprite, screenwidth, screenheight-arrowsprite:getHeight()*2, 3.14/2)
+    love.graphics.draw(arrowsprite, screenwidth-arrowsprite:getWidth()*3, screenheight-arrowsprite:getHeight(), 3.14*1.5)
+    love.graphics.draw(arrowsprite, screenwidth-arrowsprite:getWidth()*2, screenheight-arrowsprite:getHeight()*3)
+    love.graphics.draw(squaresprite, screenwidth-squaresprite:getWidth()*2, screenheight-squaresprite:getHeight()*2)
+  end
 end
 
 function scene.checkInput()
@@ -534,9 +548,37 @@ function scene.doPassiveParticles(timer,word,effect,delay,chance,count,color)
 end
 
 function scene.mouseReleased(x,y,button)
-  if mouseOverBox(0,0,sprites["ui/cog"]:getHeight(),sprites["ui/cog"]:getWidth()) then
+  if mouseOverBox(0,0,sprites["ui/cog"]:getHeight(),sprites["ui/cog"]:getWidth()) and is_mobile then
     --love.keypressed("f2")
     new_scene = editor
+  end
+end
+
+function scene.mousePressed(x, y, button)
+  if is_mobile then
+    local screenwidth = love.graphics.getWidth()
+    local screenheight = love.graphics.getHeight()
+
+    local arrowsprite = sprites["ui/arrow"]
+    local squaresprite = sprites["ui/square"]
+
+    local key = "0"
+    
+    if mouseOverBox(screenwidth-squaresprite:getWidth()*2, screenheight-squaresprite:getHeight()*2, squaresprite:getWidth(), squaresprite:getHeight()) then
+      key = "space"
+    elseif mouseOverBox(screenwidth-squaresprite:getWidth()*3, screenheight-squaresprite:getHeight()*2, squaresprite:getWidth(), squaresprite:getHeight()) then
+      key = "a"
+    elseif mouseOverBox(screenwidth-squaresprite:getWidth()*2, screenheight-squaresprite:getHeight()*3, squaresprite:getWidth(), squaresprite:getHeight()) then
+      key = "w"
+    elseif mouseOverBox(screenwidth-squaresprite:getWidth()*2, screenheight-squaresprite:getHeight(), squaresprite:getWidth(), squaresprite:getHeight()) then
+      key = "s"
+    elseif mouseOverBox(screenwidth-squaresprite:getWidth(), screenheight-squaresprite:getHeight()*2, squaresprite:getWidth(), squaresprite:getHeight()) then
+      key = "d"
+    end
+
+    scene.keyPressed(key)
+    scene.checkInput()
+    scene.keyReleased(key)
   end
 end
 
