@@ -767,8 +767,8 @@ tiles_list = {
   },
   -- 71
   {
-    name = "text_edgy",
-    sprite = "text_edgy",
+    name = "text_behin u",
+    sprite = "text_behinu",
     type = "text",
     texttype = "property",
     grid = {8, 2},
