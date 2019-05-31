@@ -1280,7 +1280,7 @@ tiles_list = {
   },
   -- 120
   {
-    name = "text_haet_skye",
+    name = "text_haet skye",
     sprite = "text_haet_skye",
     type = "text",
     texttype = "property",
@@ -1313,6 +1313,15 @@ tiles_list = {
     type = "text",
     grid = {10,2},
     color = {4, 1},
+    layer = 20,
+  },
+  -- 124
+  {
+    name = "text_visit fren",
+    sprite = "text_visitfren",
+    type = "text",
+    grid = {6, 2},
+    color = {1, 4},
     layer = 20,
   },
 }

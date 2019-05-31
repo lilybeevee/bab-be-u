@@ -23,8 +23,7 @@ function updateUnits(undoing, big_update)
   --handle non-monotonic (creative, destructive) effects one at a time, so that we can process them in a set order instead of unit order
   --BABA order is as follows: DONE, BLUE, RED, MORE, SINK, WEAK, MELT, DEFEAT, SHUT, EAT, BONUS, END, WIN, MAKE, HIDE
   --(SHIFT, TELE, FOLLOW, BACK are handled in moveblock. FALL is handled in fallblock. But we can just put moveblock in the start here and it's more or less the same thing.)
-  --TODO: MORE (MOAR?) idea: Make stacked MOREs give you 4-way, 8-way, double 4-way and double 8-way growth for 1, 2, 3 and 4 respectively.
-  
+
   if (big_update and not undoing) then
     local isshift = getUnitsWithEffect("go");
     for _,unit in ipairs(isshift) do
@@ -37,8 +36,14 @@ function updateUnits(undoing, big_update)
       end
     end
     
-    --TODO: TELE (VIST FREN) goes here.
+    --TODO: TELE idea: Instead of randomly chosing between multiple other teleports, choose the next one in reading order.
+    --Then... If you're TELE & TELE, choose the previous one. TELEx3, two ahead. TELEx4, two behind. TELEx5, three ahead. And so on.
+    local istele = getUnitsWithEffect("visit fren");
+    for _,unit in ipairs(istele) do
+      --TODO: implement TELE
+    end
     
+    --TODO: MORE (MOAR?) idea: Make stacked MOREs give you 4-way, 8-way, double 4-way and double 8-way growth for 1, 2, 3 and 4 respectively.
     local ismoar = getUnitsWithEffect("moar");
     for _,unit in ipairs(ismoar) do
       for i=1,4 do
