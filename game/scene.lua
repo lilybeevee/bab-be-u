@@ -230,17 +230,12 @@ function scene.draw(dt)
           newcolor[2] = newcolor[2]*255
           newcolor[3] = newcolor[3]*255
           unit.color = newcolor
-        end
-
-        if hasProperty(unit,"reed") then
-          unit.color = {229,83,59}
-        end
-        if hasProperty(unit,"bleu") then
-          unit.color = {145,131,215}
-        end
-
-        if hasProperty(unit,"bleu") and hasProperty(unit,"reed") then
-          unit.color = {187,107,137}
+        elseif hasProperty(unit,"bleu") and hasProperty(unit,"reed") then
+          unit.color = {3, 1}
+        elseif hasProperty(unit,"reed") then
+          unit.color = {2, 2}
+        elseif hasProperty(unit,"bleu") then
+          unit.color = {1, 3}
         end
 
         if not hasProperty(unit,"colrful") and not hasProperty(unit, "reed") and not hasProperty(unit, "bleu") and not rainbowmode then
@@ -416,7 +411,11 @@ function scene.draw(dt)
       if not color then
         love.graphics.setColor(1, 1, 1)
       else
-        love.graphics.setColor(color[1]/255, color[2]/255, color[3]/255)
+        if #color == 3 then
+          love.graphics.setColor(color[1]/255, color[2]/255, color[3]/255)
+        else
+          love.graphics.setColor(getPaletteColor(color[1], color[2]))
+        end
       end
       love.graphics.draw(system_cursor, cursor.x, cursor.y)
       
