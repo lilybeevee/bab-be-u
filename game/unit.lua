@@ -39,8 +39,44 @@ function updateUnits(undoing, big_update)
     --TODO: TELE idea: Instead of randomly chosing between multiple other teleports, choose the next one in reading order.
     --Then... If you're TELE & TELE, choose the previous one. TELEx3, two ahead. TELEx4, two behind. TELEx5, three ahead. And so on.
     local istele = getUnitsWithEffect("visit fren");
-    for _,unit in ipairs(istele) do
-      --TODO: implement TELE
+    teles_by_name = {};
+    teles_by_name_index = {};
+    tele_targets = {};
+    if (#istele > 0) then
+      --form lists, by tele name, of what all the tele units are
+      for _,unit in ipairs(istele) do
+        if teles_by_name[unit.name] == nil then
+          teles_by_name[unit.name] = {}
+        end
+        table.insert(teles_by_name[unit.name], unit);
+      end
+      --form a lookup index for each of those lists
+      for name,tbl in pairs(teles_by_name) do
+        teles_by_name_index[name] = {}
+        for k,v in ipairs(tbl) do
+          teles_by_name_index[name][v] = k
+        end
+      end
+      --now do the actual teleports. we can use the index to know our own place in the list so we can skip ourselves
+      for _,unit in ipairs(istele) do
+        local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
+        for _,on in ipairs(stuff) do
+          if unit ~= on and sameFloat(unit, on) then
+            local destinations = teles_by_name[unit.name]
+            local source_index = teles_by_name_index[unit.name][unit]
+            print(math.floor(math.random()*#destinations-1))
+            local rng = math.floor(math.random()*(#destinations-1))+1 --even distribution of each integer. +1 because lua is 1 indexed, -1 because we want one less than the number of teleporters (since we're going to ignore our own)
+            if (rng >= source_index) then
+              rng = rng + 1
+            end
+             tele_targets[on] = destinations[rng]
+          end
+        end
+      end
+      for a,b in pairs(tele_targets) do
+        moveUnit(a, b.x, b.y)
+        addUndo({"update", a.id, b.x, b.y, a.dir})
+      end
     end
     
     --TODO: MORE (MOAR?) idea: Make stacked MOREs give you 4-way, 8-way, double 4-way and double 8-way growth for 1, 2, 3 and 4 respectively.
