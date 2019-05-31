@@ -22,15 +22,27 @@ function updateUnits(undoing, big_update)
   
   --handle non-monotonic (creative, destructive) effects one at a time, so that we can process them in a set order instead of unit order
   --BABA order is as follows: DONE, BLUE, RED, MORE, SINK, WEAK, MELT, DEFEAT, SHUT, EAT, BONUS, END, WIN, MAKE, HIDE
-  --(SHIFT, TELE, FOLLOW, BACK are handled in moveblock. FALL is handled in fallblock.)
+  --(SHIFT, TELE, FOLLOW, BACK are handled in moveblock. FALL is handled in fallblock. But we can just put moveblock in the start here and it's more or less the same thing.)
   --TODO: MORE (MOAR?) idea: Make stacked MOREs give you 4-way, 8-way, double 4-way and double 8-way growth for 1, 2, 3 and 4 respectively.
   
-  --TODO: SHIFT (GO) and TELE (VIST FREN) go here. (Or in a separate function, but here works.)
-  
-  --TODO: MORE (MOAR) goes here.
-  
   if (big_update and not undoing) then
+    local isshift = getUnitsWithEffect("go");
+    for _,unit in ipairs(isshift) do
+      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
+      for _,on in ipairs(stuff) do
+        if unit ~= on and sameFloat(unit, on) then
+          addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
+          on.dir = unit.dir
+        end
+      end
+    end
+    
+    --TODO: TELE (VIST FREN) goes here.
+  
+    --TODO: MORE (MOAR) goes here.
+  
     local to_destroy = {}
+    
     local issink = getUnitsWithEffect("no swim");
     for _,unit in ipairs(issink) do
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
