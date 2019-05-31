@@ -6,6 +6,7 @@ function clear()
   units_by_name = {}
   units_by_tile = {}
   units_by_layer = {}
+  still_converting = {}
   referenced_objects = {}
   undo_buffer = {}
   update_undo = true

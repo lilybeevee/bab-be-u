@@ -283,6 +283,17 @@ function updateUnits(undoing, big_update)
       end
     end
   end
+
+  for _,unit in ipairs(still_converting) do
+    if not units_by_layer[unit.layer] then
+      units_by_layer[unit.layer] = {}
+    end
+    if not table.has_value(units_by_layer[unit.layer], unit) then
+      table.insert(units_by_layer[unit.layer], unit)
+    end
+    max_layer = math.max(max_layer, unit.layer)
+  end
+
   deleteUnits(del_units,false)
 end
 
@@ -462,15 +473,13 @@ function createUnit(tile,x,y,dir,convert,id_)
   unit.blocked = false
   unit.removed = false
 
-  unit.scalex = 1
-  unit.scaley = 1
+  unit.draw = {x = unit.x, y = unit.y, scalex = 1, scaley = 1, rotation = (unit.dir - 1) * 45}
+
   if convert then
-    unit.scaley = 0
+    unit.draw.scaley = 0
+    addTween(tween.new(0.1, unit.draw, {scaley = 1}), "unit:scale:" .. unit.id)
   end
-  unit.oldx = unit.x
-  unit.oldy = unit.y
-  unit.olddir = unit.dir
-  unit.move_timer = MAX_MOVE_TIMER
+
   unit.old_active = unit.active
   unit.overlay = {}
 
@@ -560,18 +569,24 @@ function deleteUnit(unit,convert)
   removeFromTable(units_by_tile[tileid], unit)
   if not convert then
     removeFromTable(units_by_layer[unit.layer], unit)
+  else
+    table.insert(still_converting, unit)
+    addTween(tween.new(0.1, unit.draw, {scaley = 0}), "unit:scale:" .. unit.id)
+    tick.delay(function() removeFromTable(still_converting, unit) end, 0.1)
   end
 end
 
+-- TODO: move tween
 function moveUnit(unit,x,y)
   local tileid = unit.x + unit.y * mapwidth
   removeFromTable(units_by_tile[tileid], unit)
 
-  unit.oldx = lerp(unit.oldx, unit.x, unit.move_timer/MAX_MOVE_TIMER)
-  unit.oldy = lerp(unit.oldy, unit.y, unit.move_timer/MAX_MOVE_TIMER)
+  if x ~= unit.x or y ~= unit.y then
+    addTween(tween.new(0.1, unit.draw, {x = x, y = y}), "unit:pos:" .. unit.id)
+  end
+
   unit.x = x
   unit.y = y
-  unit.move_timer = 0
 
   tileid = unit.x + unit.y * mapwidth
   table.insert(units_by_tile[tileid], unit)
@@ -588,6 +603,16 @@ function updateDir(unit,dir)
       end
     end
   end
+
+  -- angles are literally the worst
+  unit.draw.rotation = unit.draw.rotation % 360
+  local target_rot = (dir - 1) * 45
+  if unit.draw.rotation - target_rot > 180 then
+    target_rot = target_rot + 360
+  elseif target_rot - unit.draw.rotation > 180 then
+    target_rot = target_rot - 360
+  end
+  addTween(tween.new(0.1, unit.draw, {rotation = target_rot}), "unit:dir:" .. unit.id)
 end
 
 function newUnitID()
