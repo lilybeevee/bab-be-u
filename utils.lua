@@ -57,22 +57,37 @@ function clear()
 end
 
 function loadMap()
-  if map == nil then
-    print("its nil!")
-    map = {}
-    for x=1,mapwidth do
-      for y=1,mapheight do
-        table.insert(map, {})
+  if map_ver == 0 then
+    if map == nil then
+      map = {}
+      for x=1,mapwidth do
+        for y=1,mapheight do
+          table.insert(map, {})
+        end
       end
     end
-  end
-  for i,v in ipairs(map) do
-    local tileid = i-1
-    local x = tileid % mapwidth
-    local y = math.floor(tileid / mapwidth)
-    units_by_tile[tileid] = {}
-    for _,id in ipairs(v) do
-      local new_unit = createUnit(id, x, y, 1)
+    for i,v in ipairs(map) do
+      local tileid = i-1
+      local x = tileid % mapwidth
+      local y = math.floor(tileid / mapwidth)
+      units_by_tile[tileid] = {}
+      for _,id in ipairs(v) do
+        local new_unit = createUnit(id, x, y, 1)
+      end
+    end
+  elseif map_ver == 1 then
+    local pos = 1
+    for x=0,mapwidth-1 do
+      for y=0,mapheight-1 do
+        units_by_tile[x + y * mapwidth] = {}
+      end
+    end
+    while pos <= #map do
+      local id, x, y, dir
+      id, x, y, dir, pos = love.data.unpack(PACK_UNIT_V1, map, pos)
+      if inBounds(x, y) then
+        createUnit(id, x, y, dir)
+      end
     end
   end
 end

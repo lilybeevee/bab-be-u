@@ -518,7 +518,7 @@ end
 function deleteUnit(unit,convert)
   unit.removed = true
   unit.removed_final = true
-  if not convert then
+  if not convert and scene == game then
     gotters = matchesRule(unit, "got", "?");
     for _,ruleparent in ipairs(gotters) do
       local rule = ruleparent[1]

@@ -1,5 +1,7 @@
 local scene = {}
 
+local brush
+
 local paintedtiles = 0
 local buttons = {}
 local button_over = nil
@@ -13,7 +15,8 @@ local input_name, input_palette, input_width, input_height
 local saved_popup
 
 function scene.load()
-  brush = nil
+  brush = {id = nil, dir = 1, mode = "none", picked_tile = nil, picked_index = 0}
+
   selector_open = false
   
   if not level_name then
@@ -22,12 +25,14 @@ function scene.load()
   typing_name = false
   ignore_mouse = true
 
+  key_down = {}
+
   buttons = {}
   --table.insert(buttons, {"load", scene.loadLevel})
   --table.insert(buttons, {"save", scene.saveLevel})
   --table.insert(buttons, {"cog", scene.openSettings})
 
-  saved_popup = {sprite = sprites["ui/level_saved"], y = 8, alpha = 0}
+  saved_popup = {sprite = sprites["ui/level_saved"], y = 16, alpha = 0}
 
   name_font = love.graphics.newFont(24)
 
@@ -46,16 +51,50 @@ function scene.load()
   }
   nextPresenceUpdate = 0
   love.keyboard.setKeyRepeat(true)
+
+  if map_ver == 0 then
+    scene.updateMap()
+  end
 end
 
 function scene.keyPressed(key)
+  key_down[key] = true
+
   if settings then
     settings:keypressed(key)
-  else
-    if key == "s" then
-      scene.saveLevel()
-    elseif key == "l" then
-      scene.loadLevel()
+  elseif not selector_open then
+    if key == "up" or key == "left" or key == "down" or key == "right" then
+      local dx, dy = 0, 0
+      if key_down["up"] then dy = dy - 1 end
+      if key_down["down"] then dy = dy + 1 end
+      if key_down["left"] then dx = dx - 1 end
+      if key_down["right"] then dx = dx + 1 end
+      local dir = dirs8_by_offset[dx][dy]
+      brush.dir = dir
+      local hx,hy = getHoveredTile()
+      if hx ~= nil then
+        local tileid = hx + hy * mapwidth
+        if units_by_tile[tileid] and #units_by_tile[tileid] > 0 then
+          for _,unit in ipairs(units_by_tile[tileid]) do
+            unit.dir = brush.dir
+          end
+        end
+      end
+    end
+  end
+
+
+  if key == "s" and key_down["lctrl"] then
+    scene.saveLevel()
+  elseif key == "l" and key_down["lctrl"] then
+    scene.loadLevel()
+  elseif key == "o" and key_down["lctrl"] then
+    scene.openSettings()
+  elseif key == "f" and key_down["lctrl"] then
+    if love.filesystem.getInfo("levels") then
+      love.system.openURL("file://"..love.filesystem.getSaveDirectory().."/levels/")
+    else
+      love.system.openURL("file://"..love.filesystem.getSaveDirectory())
     end
   end
 
@@ -65,6 +104,10 @@ function scene.keyPressed(key)
       presence["details"] = "browsing selector"
     end
   end
+end
+
+function scene.keyReleased(key)
+  key_down[key] = false
 end
 
 function scene.update(dt)
@@ -93,8 +136,8 @@ function scene.update(dt)
     settings.layout:row()
     settings:Label("Level Size", {align = "center"}, settings.layout:row())
     settings.layout:push(settings.layout:row())
-    settings:Input(input_width, {align = "center"}, settings.layout:col((300 - 4)/2, 24))
-    settings:Input(input_height, {align = "center"}, settings.layout:col())
+    local winput = settings:Input(input_width, {align = "center"}, settings.layout:col((300 - 4)/2, 24))
+    local hinput = settings:Input(input_height, {align = "center"}, settings.layout:col())
     settings.layout:pop()
     settings.layout:row()
     settings.layout:push(settings.layout:row())
@@ -103,16 +146,11 @@ function scene.update(dt)
     local cancel = settings:Button("Cancel", settings.layout:col())
     settings.layout:pop()
 
-    if name.submitted then
-      level_name = input_name.text
-    end
-
-    if palette.submitted then
-      current_palette = input_palette.text
-    end
-
-    if save.hit then
+    if name.submitted or palette.submitted or winput.submitted or hinput.submitted then
       scene.saveSettings()
+    elseif save.hit then
+      scene.saveSettings()
+      scene.openSettings()
     elseif cancel.hit then
       scene.openSettings()
     end
@@ -146,34 +184,107 @@ function scene.update(dt)
 
         if love.mouse.isDown(1) then
           if not selector_open then
-            if #hovered > 1 or (#hovered == 1 and hovered[1].tile ~= brush) or (#hovered == 0 and brush ~= nil) then
-              if brush then
-                map[tileid+1] = {brush}
-              else
-                map[tileid+1] = {}
+            local painted = false
+            local existing = nil
+            if #hovered >= 1 then
+              for _,unit in ipairs(hovered) do
+                if unit.tile == brush.id then
+                  existing = unit
+                elseif brush.mode == "placing" and not key_down["lshift"] then
+                  deleteUnit(unit)
+                  painted = true
+                end
+              end
+            end
+            if existing and brush.mode == "none" then
+              brush.mode = "erasing"
+            elseif not existing and brush.mode == "none" then
+              brush.mode = "placing"
+            end
+            if brush.id ~= nil then
+              if brush.mode == "erasing" then
+                if existing then
+                  deleteUnit(existing)
+                  painted = true
+                end
+              elseif brush.mode == "placing" then
+                if existing then
+                  existing.dir = brush.dir
+                  painted = true
+                else
+                  createUnit(brush.id, hx, hy, brush.dir)
+                  painted = true
+                end
+              end
+            end
+            if painted then
+              if tileid == brush.picked_tile then
+                brush.picked_tile = nil
+                brush.picked_index = 0
               end
               paintedtiles = paintedtiles + 1
               presence["details"] = "painted "..paintedtiles.." tiles"
-              clear()
-              loadMap()
+              scene.updateMap()
             end
           else
             local selected = hx + hy * tile_grid_width
             if tile_grid[selected] then
-              brush = tile_grid[selected]
+              brush.id = tile_grid[selected]
+              brush.picked_tile = nil
+              brush.picked_index = 0
             else
-              brush = nil
+              brush.id = nil
+              brush.picked_tile = nil
+              brush.picked_index = 0
             end
           end
         end
         if love.mouse.isDown(2) and not selector_open then
-          if #hovered >= 1 then
-            brush = hovered[1].tile
-          else
-            brush = nil
+          if brush.mode ~= "picking" then
+            if #hovered >= 1 then
+              brush.picked_tile = tileid
+              if brush.picked_tile == tileid and brush.picked_index > 0 then
+                local new_index = brush.picked_index + 1
+                if new_index > #hovered then
+                  new_index = 1
+                end
+                brush.picked_index = new_index
+                brush.id = hovered[new_index].tile
+              else
+                brush.id = hovered[1].tile
+                brush.picked_index = 1
+              end
+              brush.mode = "picking"
+            else
+              brush.id = nil
+              brush.picked_tile = nil
+              brush.picked_index = 0
+            end
           end
         end
       end
+    end
+  end
+
+  max_layer = 1
+  units_by_layer = {}
+  for _,unit in ipairs(units) do
+    if not units_by_layer[unit.layer] then
+      units_by_layer[unit.layer] = {}
+    end
+
+    table.insert(units_by_layer[unit.layer], unit)
+    max_layer = math.max(max_layer, unit.layer)
+  end
+
+  if not love.mouse.isDown(1) then
+    if brush.mode == "placing" or brush.mode == "erasing" then
+      brush.mode = "none"
+    end
+  end
+  if not love.mouse.isDown(2) then
+    if brush.mode == "picking" then
+      brush.mode = "none"
     end
   end
 end
@@ -240,7 +351,7 @@ function scene.draw(dt)
           
           local rotation = 0
           if unit.rotate then
-            rotation = (unit.dir - 1) * 90
+            rotation = (unit.dir - 1) * 45
           end
           
           if #unit.color == 3 then
@@ -272,11 +383,11 @@ function scene.draw(dt)
           end
           love.graphics.draw(sprite, (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
 
-          if brush == i then
+          if brush.id == i then
             love.graphics.setColor(1, 0, 0)
             love.graphics.rectangle("line", x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
           end
-        elseif gridid == 0 and brush == nil then
+        elseif gridid == 0 and brush.id == nil then
           love.graphics.setColor(1, 0, 0)
           love.graphics.rectangle("line", x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
         end
@@ -286,18 +397,24 @@ function scene.draw(dt)
 
   local hx,hy = getHoveredTile()
   if hx ~= nil then
-    if brush and not selector_open then
-      local sprite = sprites[tiles_list[brush].sprite]
+    if brush.id and not selector_open then
+      local sprite = sprites[tiles_list[brush.id].sprite]
       if not sprite then sprite = sprites["wat"] end
-      local color = tiles_list[brush].color
 
+      local rotation = 0
+      if tiles_list[brush.id].rotate then
+        rotation = (brush.dir - 1) * 45
+      end
+
+      local color = tiles_list[brush.id].color
       if #color == 3 then
         love.graphics.setColor(color[1]/255, color[2]/255, color[3]/255, 0.25)
       else
         local r, g, b, a = getPaletteColor(color[1], color[2])
         love.graphics.setColor(r, g, b, a * 0.25)
       end
-      love.graphics.draw(sprite, (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+
+      love.graphics.draw(sprite, (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, math.rad(rotation), 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
     end
 
     love.graphics.setColor(1, 1, 0)
@@ -358,8 +475,25 @@ function scene.textInput(t)
   end
 end
 
+function scene.updateMap()
+  map_ver = 1
+  map = ""
+  for x = 0, mapwidth-1 do
+    for y = 0, mapheight-1 do
+      local tileid = x + y * mapwidth
+      if units_by_tile[tileid] then
+        for _,unit in ipairs(units_by_tile[tileid]) do
+          map = map .. love.data.pack("string", PACK_UNIT_V1, unit.tile, unit.x, unit.y, unit.dir)
+        end
+      end
+    end
+  end
+end
+
 function scene.saveLevel()
-  local mapdata = love.data.compress("string", "zlib", dump(map))
+  scene.updateMap()
+
+  local mapdata = love.data.compress("string", "zlib", map)
   local savestr = love.data.encode("string", "base64", mapdata)
 
   local data = {
@@ -367,15 +501,16 @@ function scene.saveLevel()
     palette = current_palette,
     width = mapwidth,
     height = mapheight,
+    version = 1,
     map = savestr
   }
 
   love.filesystem.createDirectory("levels")
   love.filesystem.write("levels/" .. level_name .. ".bab", json.encode(data))
 
-  addTween(tween.new(0.25, saved_popup, {y = 0, alpha = 1}, 'inQuad'), "saved_popup")
+  addTween(tween.new(0.25, saved_popup, {y = 0, alpha = 1}, 'outQuad'), "saved_popup")
   addTick("saved_popup", 1, function()
-    addTween(tween.new(0.5, saved_popup, {y = 8, alpha = 0}), "saved_popup")
+    addTween(tween.new(0.5, saved_popup, {y = 16, alpha = 0}), "saved_popup")
   end)
 end
 
@@ -400,34 +535,21 @@ function scene.saveSettings()
   level_name = input_name.text
   current_palette = input_palette.text
 
-  local new_width = tonumber(input_width.text)
-  local new_height = tonumber(input_height.text)
-  local new_map = {}
+  scene.updateMap()
 
-  for x=0,new_width-1 do
-    for y=0,new_height-1 do
-      local tileid = (x + y * mapwidth)
-      local new_id = (x + y * new_width)
-      if inBounds(x, y) then
-        new_map[new_id+1] = map[tileid+1]
-      else
-        new_map[new_id+1] = {}
-      end
-    end
-  end
-
-  mapwidth = new_width
-  mapheight = new_height
-  map = new_map
-
+  mapwidth = tonumber(input_width.text)
+  mapheight = tonumber(input_height.text)
+  
   clear()
   loadMap()
+
+  scene.updateMap()
 end
 
 function love.filedropped(file)
   local data = file:read()
   local mapdata = json.decode(data)
-  
+
   local loaddata = love.data.decode("string", "base64", mapdata.map)
   local mapstr = love.data.decompress("string", "zlib", loaddata)
 
@@ -435,10 +557,19 @@ function love.filedropped(file)
   current_palette = mapdata.palette or "default"
   mapwidth = mapdata.width
   mapheight = mapdata.height
-  map = loadstring("return " .. mapstr)()
+  map_ver = mapdata.version or 0
+
+  if map_ver == 0 then
+    map = loadstring("return " .. mapstr)()
+  else
+    map = mapstr
+  end
 
   clear()
   loadMap()
+
+  brush.picked_tile = nil
+  brush.picked_index = 0
 end
 
 return scene
