@@ -164,6 +164,13 @@ function scene.update(dt)
     local save_btn = suit.ImageButton(sprites["ui/save"], {color = save_color}, suit.layout:col())
     local settings_btn = suit.ImageButton(sprites["ui/cog"], {color = settings_color}, suit.layout:col())
     local play_btn = suit.ImageButton(sprites["ui/play"], {color = settings_color}, suit.layout:col())
+    local selector_btn
+
+    if is_mobile then
+      selector_btn = suit.ImageButton(sprites["ui/selector"], {color = settings_color}, suit.layout:col())
+    else
+      selector_btn = {hit = false}
+    end
 
     if load_btn.hit then
       scene.loadLevel()
@@ -173,6 +180,8 @@ function scene.update(dt)
       scene.openSettings()
     elseif play_btn.hit then
       love.keypressed("f1")
+    elseif selector_btn.hit then
+      selector_open = not selector_open
     else
       local hx,hy = getHoveredTile()
       if hx ~= nil then
@@ -337,6 +346,11 @@ function scene.draw(dt)
   else
     roomwidth = tile_grid_width * TILE_SIZE
     roomheight = tile_grid_height * TILE_SIZE
+  end
+
+  if is_mobile then
+    local cursorx, cursory = love.mouse.getPosition()
+    love.graphics.draw(system_cursor, cursorx, cursory)
   end
 
   love.graphics.push()

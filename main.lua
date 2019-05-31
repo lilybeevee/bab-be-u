@@ -190,6 +190,10 @@ function love.mousepressed(x, y, button)
     end
   end
 
+  if is_mobile then
+    love.mouse.setPosition(x, y)
+  end
+
   if scene and scene.mousepressed then
     scene.mousepressed(x, y, button)
   end
