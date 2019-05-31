@@ -146,6 +146,8 @@ function love.keypressed(key,scancode,isrepeat)
     rainbowmode = not rainbowmode
   elseif key == "f4" then
     debug = not debug
+  elseif key == "f5" then
+    love.event.quit("restart")
   end
 
   if scene and scene.keyPressed then
