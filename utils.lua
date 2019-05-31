@@ -50,6 +50,9 @@ function clear()
   end
   for _,v in ipairs(add_to_grid) do
     local gridid = v[2] + v[3] * tile_grid_width
+    if (tile_grid[gridid] ~= nil and v[2] >= 0) then
+      print("WARNING: "..tostring(v[2])..","..tostring(v[3]).." used by multiple tiles!")
+    end
     tile_grid[gridid] = v[1]
   end
 

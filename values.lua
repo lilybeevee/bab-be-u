@@ -1051,7 +1051,7 @@ tiles_list = {
     sprite = "text_icy",
     type = "text",
     texttype = "property",
-    grid = {9, 3},
+    grid = {11, 1},
     color = {1, 4},
     layer = 20,
   },
