@@ -101,12 +101,14 @@ It is probably possible to do, but lily has decided that it's not important enou
     local successes = 1
     --Outer loop continues until nothing moves in the inner loop, and does a doUpdate after each inner loop, to allow for multimoves to exist.
     while (#moving_units > 0 and successes > 0 and loopa < 99) do 
+      --print("loopa:"..tostring(loopa))
       successes = 0
       local loopb = 0
       loopa = loopa + 1
       local something_moved = true
       --Inner loop tries to move everything at least once, and gives up if after an iteration, nothing can move. (It also tries to do flips to see if that helps.)
       while (something_moved and loopb < 99) do
+        --print("loopb:"..tostring(loopb))
         local remove_from_moving_units = {}
         local has_flipped = false
         something_moved = false
@@ -317,14 +319,14 @@ function applySwap(mover, dx, dy)
   local swap_mover = hasProperty(mover, "behin u");
   local did_swap = false
   for _,v in ipairs(getUnitsOnTile(mover.x+dx, mover.y+dy)) do
-    if not v.already_moved then
+    --if not v.already_moving then
       local swap_v = hasProperty(v, "behin u");
       if (swap_mover or swap_v) then
         queueMove(v, -dx, -dy, swap_v and rotate8(mover.dir) or v.dir, true);
         did_swap = true
       end
     end
-  end
+  --end
   if (swap_mover and did_swap) then
      table.insert(update_queue, {unit = mover, reason = "dir", payload = {dir = rotate8(mover.dir)}})
   end
