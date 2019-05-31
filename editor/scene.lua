@@ -64,7 +64,7 @@ end
 function scene.keyPressed(key)
   key_down[key] = true
 
-  if settings then
+  if settings_open then
     settings:keypressed(key)
   elseif not selector_open then
     if key == "up" or key == "left" or key == "down" or key == "right" then
@@ -163,15 +163,21 @@ function scene.update(dt)
 
     love.graphics.setColor(1, 1, 1)
 
-    local load_btn = suit.ImageButton(sprites["ui/load"], {hovered = sprites["ui/load_h"], active = sprites["ui/load_a"]}, suit.layout:col(40, 40))
-    local save_btn = suit.ImageButton(sprites["ui/save"], {hovered = sprites["ui/save_h"], active = sprites["ui/save_a"]}, suit.layout:col())
-    local settings_btn = suit.ImageButton(sprites["ui/cog"], {hovered = sprites["ui/cog_h"], active = sprites["ui/cog_a"]}, suit.layout:col())
-    local play_btn = suit.ImageButton(sprites["ui/play"], {hovered = sprites["ui/play_h"], active = sprites["ui/play_a"]}, suit.layout:col())
+    local fn
+    if is_mobile then
+      fn = suit.layout.row
+    else
+      fn = suit.layout.col
+    end
+
+    local load_btn = suit.ImageButton(sprites["ui/load"], {hovered = sprites["ui/load_h"], active = sprites["ui/load_a"]}, fn(suit.layout, 40, 40))
+    local save_btn = suit.ImageButton(sprites["ui/save"], {hovered = sprites["ui/save_h"], active = sprites["ui/save_a"]}, fn(suit.layout))
+    local settings_btn = suit.ImageButton(sprites["ui/cog"], {hovered = sprites["ui/cog_h"], active = sprites["ui/cog_a"]}, fn(suit.layout))
+    local play_btn = suit.ImageButton(sprites["ui/play"], {hovered = sprites["ui/play_h"], active = sprites["ui/play_a"]}, fn(suit.layout))
     local selector_btn
 
-    --if is_mobile then
-    if true then
-      selector_btn = suit.ImageButton(sprites["ui/selector"], {hovered = sprites["ui/selector_h"], active = sprites["ui/selector_a"]}, suit.layout:col())
+    if is_mobile then
+      selector_btn = suit.ImageButton(sprites["ui/selector"], {hovered = sprites["ui/selector_h"], active = sprites["ui/selector_a"]}, fn(suit.layout))
     else
       selector_btn = {hit = false}
     end
@@ -480,7 +486,11 @@ function scene.draw(dt)
   love.graphics.printf(level_name, 0, name_font:getLineHeight() / 2, love.graphics.getWidth(), "center")
 
   love.graphics.setColor(1, 1, 1, saved_popup.alpha)
-  love.graphics.draw(saved_popup.sprite, 0, 40 + saved_popup.y)
+  if is_mobile then
+    love.graphics.draw(saved_popup.sprite, 44, 40 + saved_popup.y)
+  else
+    love.graphics.draw(saved_popup.sprite, 0, 40 + saved_popup.y)
+  end
 
   love.graphics.push()
   love.graphics.translate(settings_pos.x, 0)
