@@ -9,14 +9,19 @@ local name_font = nil
 local typing_name = false
 local ignore_mouse = true
 
-local settings
+local settings, settings_open, settings_pos
 local input_name, input_palette, input_width, input_height
 
 local saved_popup
 
 function scene.load()
   brush = {id = nil, dir = 1, mode = "none", picked_tile = nil, picked_index = 0}
+  saved_popup = {sprite = sprites["ui/level_saved"], y = 16, alpha = 0}
+  settings_pos = {x = -320}
+  key_down = {}
+  buttons = {}
 
+  settings_open = false
   selector_open = false
   
   if not level_name then
@@ -25,16 +30,15 @@ function scene.load()
   typing_name = false
   ignore_mouse = true
 
-  key_down = {}
-
-  buttons = {}
-  --table.insert(buttons, {"load", scene.loadLevel})
-  --table.insert(buttons, {"save", scene.saveLevel})
-  --table.insert(buttons, {"cog", scene.openSettings})
-
-  saved_popup = {sprite = sprites["ui/level_saved"], y = 16, alpha = 0}
-
+  width = love.graphics.getWidth()
+  height = love.graphics.getHeight()
   name_font = love.graphics.newFont(24)
+  settings = suit.new()
+
+  input_name = {text = level_name}
+  input_palette = {text = current_palette}
+  input_width = {text = tostring(mapwidth)}
+  input_height = {text = tostring(mapheight)}
 
   clear()
   resetMusic(current_music, 0.1)
@@ -121,31 +125,31 @@ function scene.update(dt)
   width = love.graphics.getWidth()
   height = love.graphics.getHeight()
   
-  if settings then
-    --local mousex, mousey = scene.getTransform():transformPoint(love.mouse.getPosition())
-    --settings:updateMouse(mousex, mousey, love.mouse.isDown(1))
+  local mousex, mousey = love.mouse.getPosition()
+  settings:updateMouse(mousex - settings_pos.x, mousey, love.mouse.isDown(1))
 
-    settings.layout:reset(10, 10)
-    settings.layout:padding(4, 4)
+  settings.layout:reset(10, 10)
+  settings.layout:padding(4, 4)
 
-    settings:Label("Level Name", {align = "center"}, settings.layout:row(300, 24))
-    local name = settings:Input(input_name, {align = "center"}, settings.layout:row())
-    settings.layout:row()
-    settings:Label("Level Palette", {align = "center"}, settings.layout:row(300, 24))
-    local palette = settings:Input(input_palette, {align = "center"}, settings.layout:row())
-    settings.layout:row()
-    settings:Label("Level Size", {align = "center"}, settings.layout:row())
-    settings.layout:push(settings.layout:row())
-    local winput = settings:Input(input_width, {align = "center"}, settings.layout:col((300 - 4)/2, 24))
-    local hinput = settings:Input(input_height, {align = "center"}, settings.layout:col())
-    settings.layout:pop()
-    settings.layout:row()
-    settings.layout:push(settings.layout:row())
-    local save = settings:Button("Save", settings.layout:col((300 - 4*2)/3, 24))
-    settings.layout:col()
-    local cancel = settings:Button("Cancel", settings.layout:col())
-    settings.layout:pop()
+  settings:Label("Level Name", {align = "center"}, settings.layout:row(300, 24))
+  local name = settings:Input(input_name, {align = "center"}, settings.layout:row())
+  settings.layout:row()
+  settings:Label("Level Palette", {align = "center"}, settings.layout:row(300, 24))
+  local palette = settings:Input(input_palette, {align = "center"}, settings.layout:row())
+  settings.layout:row()
+  settings:Label("Level Size", {align = "center"}, settings.layout:row())
+  settings.layout:push(settings.layout:row())
+  local winput = settings:Input(input_width, {align = "center"}, settings.layout:col((300 - 4)/2, 24))
+  local hinput = settings:Input(input_height, {align = "center"}, settings.layout:col())
+  settings.layout:pop()
+  settings.layout:row()
+  settings.layout:push(settings.layout:row())
+  local save = settings:Button("Save", settings.layout:col((300 - 4*2)/3, 24))
+  settings.layout:col()
+  local cancel = settings:Button("Cancel", settings.layout:col())
+  settings.layout:pop()
 
+  if settings_open then
     if name.submitted or palette.submitted or winput.submitted or hinput.submitted then
       scene.saveSettings()
     elseif save.hit then
@@ -156,13 +160,12 @@ function scene.update(dt)
     end
   else
     suit.layout:reset(0, 0)
-    suit.layout:padding(4, 4)
 
     love.graphics.setColor(1, 1, 1)
 
-    local load_btn = suit.ImageButton(sprites["ui/load"], {color = load_color}, suit.layout:col(32, 32))
-    local save_btn = suit.ImageButton(sprites["ui/save"], {color = save_color}, suit.layout:col())
-    local settings_btn = suit.ImageButton(sprites["ui/cog"], {color = settings_color}, suit.layout:col())
+    local load_btn = suit.ImageButton(sprites["ui/load"], {hovered = sprites["ui/load_h"], active = sprites["ui/load_a"]}, suit.layout:col(40, 40))
+    local save_btn = suit.ImageButton(sprites["ui/save"], {hovered = sprites["ui/save_h"], active = sprites["ui/save_a"]}, suit.layout:col())
+    local settings_btn = suit.ImageButton(sprites["ui/cog"], {hovered = sprites["ui/cog_h"], active = sprites["ui/cog_a"]}, suit.layout:col())
 
     if load_btn.hit then
       scene.loadLevel()
@@ -459,14 +462,17 @@ function scene.draw(dt)
   love.graphics.printf(level_name, 0, name_font:getLineHeight() / 2, love.graphics.getWidth(), "center")
 
   love.graphics.setColor(1, 1, 1, saved_popup.alpha)
-  love.graphics.draw(saved_popup.sprite, 0, 36 + saved_popup.y)
+  love.graphics.draw(saved_popup.sprite, 0, 40 + saved_popup.y)
 
-  if settings then
-    love.graphics.setColor(0.1, 0.1, 0.1, 1)
-    love.graphics.rectangle("fill", 0, 0, 320, height)
-    love.graphics.setColor(1, 1, 1, 1)
-    settings:draw()
-  end
+  love.graphics.push()
+  love.graphics.translate(settings_pos.x, 0)
+
+  love.graphics.setColor(0.1, 0.1, 0.1, 1)
+  love.graphics.rectangle("fill", 0, 0, 320, height)
+  love.graphics.setColor(1, 1, 1, 1)
+  settings:draw()
+
+  love.graphics.pop()
 end
 
 function scene.textInput(t)
@@ -519,15 +525,18 @@ function scene.loadLevel()
 end
 
 function scene.openSettings()
-  if settings == nil then
+  if not settings_open then
+    settings_open = true
+    
     input_name = {text = level_name}
     input_palette = {text = current_palette}
     input_width = {text = tostring(mapwidth)}
     input_height = {text = tostring(mapheight)}
 
-    settings = suit.new()
+    addTween(tween.new(0.5, settings_pos, {x = 0}, 'outBounce'), "settings")
   else
-    settings = nil
+    settings_open = false
+    addTween(tween.new(0.5, settings_pos, {x = -320}, 'outCubic'), "settings")
   end
 end
 
