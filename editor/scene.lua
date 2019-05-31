@@ -10,7 +10,7 @@ local typing_name = false
 local ignore_mouse = true
 
 local settings, settings_open, settings_pos
-local input_name, input_palette, input_width, input_height
+local input_name, input_palette, input_music, input_width, input_height
 
 local saved_popup
 
@@ -37,11 +37,12 @@ function scene.load()
 
   input_name = {text = level_name}
   input_palette = {text = current_palette}
+  input_music = {text = map_music}
   input_width = {text = tostring(mapwidth)}
   input_height = {text = tostring(mapheight)}
 
   clear()
-  resetMusic(current_music, 0.1)
+  resetMusic(map_music, 0.1)
   loadMap()
   local now = os.time(os.date("*t"))
   presence = {
@@ -137,6 +138,9 @@ function scene.update(dt)
   settings:Label("Level Palette", {align = "center"}, settings.layout:row(300, 24))
   local palette = settings:Input(input_palette, {align = "center"}, settings.layout:row())
   settings.layout:row()
+  settings:Label("Level Music", {align = "center"}, settings.layout:row(300, 24))
+  local music = settings:Input(input_music, {align = "center"}, settings.layout:row())
+  settings.layout:row()
   settings:Label("Level Size", {align = "center"}, settings.layout:row())
   settings.layout:push(settings.layout:row())
   local winput = settings:Input(input_width, {align = "center"}, settings.layout:col((300 - 4)/2, 24))
@@ -150,7 +154,7 @@ function scene.update(dt)
   settings.layout:pop()
 
   if settings_open then
-    if name.submitted or palette.submitted or winput.submitted or hinput.submitted then
+    if name.submitted or palette.submitted or music.submitted or winput.submitted or hinput.submitted then
       scene.saveSettings()
     elseif save.hit then
       scene.saveSettings()
@@ -533,6 +537,7 @@ function scene.saveLevel()
   local data = {
     name = level_name,
     palette = current_palette,
+    music = map_music,
     width = mapwidth,
     height = mapheight,
     version = 1,
@@ -556,10 +561,11 @@ function scene.openSettings()
   if not settings_open then
     settings_open = true
 
-    input_name = {text = level_name}
-    input_palette = {text = current_palette}
-    input_width = {text = tostring(mapwidth)}
-    input_height = {text = tostring(mapheight)}
+    input_name.text = level_name
+    input_palette.text = current_palette
+    input_music.text = map_music
+    input_width.text = tostring(mapwidth)
+    input_height.text = tostring(mapheight)
 
     addTween(tween.new(0.5, settings_pos, {x = 0}, 'outBounce'), "settings")
   else
@@ -571,6 +577,7 @@ end
 function scene.saveSettings()
   level_name = input_name.text
   current_palette = input_palette.text
+  map_music = input_music.text
 
   scene.updateMap()
 
@@ -579,6 +586,7 @@ function scene.saveSettings()
   
   clear()
   loadMap()
+  resetMusic(map_music, 0.1)
 
   scene.updateMap()
 end
@@ -592,6 +600,7 @@ function love.filedropped(file)
 
   level_name = mapdata.name
   current_palette = mapdata.palette or "default"
+  map_music = mapdata.music or "bab be u them"
   mapwidth = mapdata.width
   mapheight = mapdata.height
   map_ver = mapdata.version or 0

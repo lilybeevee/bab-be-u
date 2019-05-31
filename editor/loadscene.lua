@@ -119,6 +119,7 @@ function scene.loadLevel(data)
 
   level_name = data.name
   current_palette = data.palette or "default"
+  map_music = data.music or "bab be u them"
   mapwidth = data.width
   mapheight = data.height
   map_ver = data.version or 0

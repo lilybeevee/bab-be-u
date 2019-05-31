@@ -14,7 +14,7 @@ local music_on = true
 
 function scene.load()
   clear()
-  playMusic("bab_be_u_them", 0.5)
+  playMusic("bab be u them", 0.5)
   love.graphics.setBackgroundColor(0.10, 0.1, 0.11)
   local now = os.time(os.date("*t"))
   presence = {
