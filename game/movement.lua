@@ -319,7 +319,7 @@ function applySwap(mover, dx, dy)
   local swap_mover = hasProperty(mover, "behin u");
   local did_swap = false
   for _,v in ipairs(getUnitsOnTile(mover.x+dx, mover.y+dy)) do
-    --if not v.already_moving then
+    --if not v.already_moving then --this made some things move order dependent, so taking it out
       local swap_v = hasProperty(v, "behin u");
       if (swap_mover or swap_v) then
         queueMove(v, -dx, -dy, swap_v and rotate8(mover.dir) or v.dir, true);
