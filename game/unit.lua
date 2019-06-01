@@ -172,7 +172,20 @@ function updateUnits(undoing, big_update)
     
     to_destroy = handleDels(to_destroy);
     
-    --TODO: EAT (SNACC) goes here, as well as in movement (because a solid wall can eat you, I think? need to check how baba does it)
+    local issnacc = matchesRule(nil, "snacc", "?");
+    for _,ruleparent in ipairs(issnacc) do
+      local unit = ruleparent[2]
+      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
+      for _,on in ipairs(stuff) do
+        if hasRule(unit, "snacc", on) and sameFloat(unit, on) then
+          table.insert(to_destroy, on)
+          playSound("break", 0.5)
+          addParticles("destroy", unit.x, unit.y, unit.color)
+        end
+      end
+    end
+    
+    to_destroy = handleDels(to_destroy);
     
     local iscrash = getUnitsWithEffect("xwx");
     for _,unit in ipairs(iscrash) do
@@ -378,7 +391,7 @@ function dropGotUnit(unit, rule)
   end
 end
 
---TODO: Conversions need to be simultaneous, so that if e.g. bab on bab be hurcane and you stack two babs, they both become hurcanes.
+--TODO: Conversions need to be simultaneous, so that if e.g. bab on bab be hurcane and you stack two babs, they both become hurcanes. Also, I think creat timing should be tested to see if it matches baba's or not. (In Baba, it's pretty much at the end of the turn, but I don't know if it's before or after conversion.)
 function convertUnits()
   for i,v in ipairs(units_by_tile) do
     units_by_tile[i] = {}
@@ -466,27 +479,6 @@ function convertUnits()
           elseif rule[2] == "creat" and not unit.destroyed then
             local new_unit = createUnit(obj_id, unit.x, unit.y, unit.dir)
             addUndo({"create", new_unit.id, false})
-          elseif rule[2] == "consume" then
-            if not unit.destroyed then
-              if rule[3] == unit.name then
-                unit.destroyed = true
-                unit.removed = true
-                playSound("break", 0.5)
-                addParticles("destroy", unit.x, unit.y, unit.color)
-              else
-                if not undoing then
-                  for _,on in ipairs(units_by_tile[unit.id]) do
-                    if on ~= unit and rule[3] == on.name then
-                      on.destroyed = true
-                      on.removed = true
-                      playSound("break", 0.5)
-                      addParticles("destroy", on.x, on.y, on.color)
-                      table.insert(del_units, on)
-                    end
-                  end
-                end
-              end
-            end
           end
         end
       end

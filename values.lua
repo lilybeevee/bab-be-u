@@ -818,8 +818,8 @@ tiles_list = {
   },
   --76
   {
-    name = "text_consume",
-    sprite = "text_consume",
+    name = "text_snacc",
+    sprite = "text_snacc",
     type = "text",
     texttype = "verb_object",
     allowconds = true,
