@@ -172,6 +172,7 @@ function scene.getTransform()
   return transform
 end
 
+--TODO: PERFORMANCE: Calling hasProperty once per frame means that we have to index rules, check conditions, etc. with O(m*n) performance penalty. But, the results of these calls do not change until a new turn or undo. So, we can cache the values of these calls in a global table and dump the table whenever the turn changes for a nice and easy performance boost.
 function scene.draw(dt)
   -- reset canvas if the screen size has changed
   if love.graphics.getWidth() ~= last_width or love.graphics.getHeight() ~= last_height then
