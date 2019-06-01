@@ -66,7 +66,7 @@ function updateUnits(undoing, big_update)
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
       for _,on in ipairs(stuff) do
         --we're going to deliberately let two same name teles tele if they're on each other, since with the deterministic behaviour it's predictable and interesting
-        if unit ~= on and sameFloat(unit, on) --[[and unit.name ~= on.name]]-- then
+        if unit ~= on and sameFloat(unit, on) --[[and unit.name ~= on.name]] then
           local destinations = teles_by_name[unit.name]
           local source_index = teles_by_name_index[unit.name][unit]
           
@@ -390,10 +390,10 @@ function updateUnits(undoing, big_update)
   deleteUnits(del_units,false)
 end
 
-function handleDels(to_destroy)
+function handleDels(to_destroy, unstoppable)
   local convert = false
   for _,unit in ipairs(to_destroy) do
-    if not hasProperty(unit, "protecc") then
+    if unstoppable or not hasProperty(unit, "protecc") then
       unit.destroyed = true
       unit.removed = true
     end
@@ -408,6 +408,18 @@ function readingOrderSort(a, b)
     return a.x < b.x
   else
     return a.id < b.id
+  end
+end
+
+function destroyLevel(reason)
+  playSound("break", 0.5)
+  for _,unit in ipairs(units) do
+    addParticles("destroy", unit.x, unit.y, unit.color)
+  end
+  handleDels(units, true)
+  if (reason == "infloop") then
+    local new_unit = createUnit(tiles_by_name["infloop"], math.floor(mapwidth/2), math.floor(mapheight/2), 0)
+    addUndo({"create", new_unit.id, false})
   end
 end
 

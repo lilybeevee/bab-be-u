@@ -1324,4 +1324,13 @@ tiles_list = {
     color = {1, 4},
     layer = 20,
   },
+  -- 125
+  {
+    name = "infloop",
+    sprite = "text_infloop",
+    type = "object",
+    grid = {-1, -1},
+    color = {0, 3},
+    layer = 20,
+  },
 }

@@ -190,8 +190,9 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
 
   local rules_list
 
-  rules_list = rules_with[nrules[1] or nrules[3] or nrules[2]] or {}
-  mergeTable(rules_list, rules_with[fnrules[1] or fnrules[3] or fnrules[2]] or {})
+  --there are more properties than there are nouns, so we're more likely to miss based on a property not existing than based on a noun not existing
+  rules_list = rules_with[nrules[3] or nrules[1] or nrules[2]] or {}
+  mergeTable(rules_list, rules_with[fnrules[3] or fnrules[1] or fnrules[2]] or {})
 
   if (debugging) then
     print ("found this many rules:"..tostring(#rules_list))
@@ -211,17 +212,23 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
             print("false due to nrules/fnrules mismatch")
           end
           result = false
-        elseif rule_units[i] ~= nil then
-          if i == 1 then
-            cond = 1
-          elseif i == 3 then
-            cond = 2
-          end
-          if cond and not testConds(rule_units[i], rule[4][cond]) then
-            if (debugging) then
-              print("false due to cond")
+        end
+      end
+      --don't test condition until the rule fully matches
+      if result then
+        for i=1,3 do
+          if rule_units[i] ~= nil then
+            if i == 1 then
+              cond = 1
+            elseif i == 3 then
+              cond = 2
             end
-            result = false
+            if cond and not testConds(rule_units[i], rule[4][cond]) then
+              if (debugging) then
+                print("false due to cond")
+              end
+              result = false
+            end
           end
         end
       end
@@ -324,7 +331,16 @@ function countProperty(unit,prop)
   return #matchesRule(unit,"be",prop)
 end
 
+--to prevent infinite loops where a set of rules/conditions is self referencing
+reentrance = 0
+
 function testConds(unit,conds) --cond should be a {cond,{object types}}
+  if reentrance > 10 then
+    print("testConds infinite loop!")
+    destroyLevel("infloop");
+    return false
+  end
+  reentrance = reentrance + 1
   local endresult = true
   for _,cond in ipairs(conds) do
     local condtype = cond[1]
@@ -342,6 +358,18 @@ function testConds(unit,conds) --cond should be a {cond,{object types}}
         local others = getUnitsOnTile(unit.x, unit.y, param, false, unit) --currently, conditions only work up to one layer of nesting, so the noun argument of the condition is assumed to be just a noun
         if #others == 0 then
           result = false
+        end
+      end
+    elseif condtype == "sit on" then
+      --special condition for use with reflexive properties/verbs (GIV and NOU)
+      for _,param in ipairs(params) do
+        local others = getUnitsOnTile(unit.x, unit.y, param, false, unit) --currently, conditions only work up to one layer of nesting, so the noun argument of the condition is assumed to be just a noun
+        result = false
+        for _,on in ipairs(others) do
+          if sameFloat(unit, on) then
+            result = true
+            break
+          end
         end
       end
     elseif condtype == "arond" then
@@ -382,6 +410,7 @@ function testConds(unit,conds) --cond should be a {cond,{object types}}
       endresult = false
     end
   end
+  reentrance = reentrance - 1
   return endresult
 end
 
