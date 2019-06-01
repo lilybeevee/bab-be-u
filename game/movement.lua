@@ -122,7 +122,7 @@ It is probably possible to do, but lily has decided that it's not important enou
             local dir = data.dir
             local dpos = dirs8[dir]
             local dx,dy = dpos[1],dpos[2]
-            local success,movers,specials = canMove(unit, dx, dy, true)
+            local success,movers,specials = canMove(unit, dx, dy, true, false, nil, data.reason)
             for _,special in ipairs(specials) do
               doAction(special)
             end
@@ -419,7 +419,7 @@ function fallBlock()
   end
 end
 
-function canMove(unit,dx,dy,pushing_,pulling_,solid_name)
+function canMove(unit,dx,dy,pushing_,pulling_,solid_name,reason)
   local pushing = false
   if (pushing_ ~= nil) then
 		pushing = pushing_
@@ -438,7 +438,7 @@ function canMove(unit,dx,dy,pushing_,pulling_,solid_name)
   table.insert(movers, unit)
   
   if not inBounds(x,y) then
-    if hasProperty(unit, "ouch") and not hasProperty(unit, "protecc") then
+    if hasProperty(unit, "ouch") and not hasProperty(unit, "protecc") and reason ~= "walk" then
       table.insert(specials, {"weak", {unit}})
       return true,movers,specials
     end
@@ -472,7 +472,7 @@ function canMove(unit,dx,dy,pushing_,pulling_,solid_name)
       end
       if hasProperty(v, "go away") and not would_swap_with then
         if pushing then
-          local success,new_movers,new_specials = canMove(v, dx, dy, pushing, pulling)
+          local success,new_movers,new_specials = canMove(v, dx, dy, pushing, pulling, solid_name, "go away")
           for _,special in ipairs(new_specials) do
             table.insert(specials, special)
           end
@@ -503,9 +503,8 @@ function canMove(unit,dx,dy,pushing_,pulling_,solid_name)
       if hasProperty(v, "ouch") and not hasProperty(v, "protecc") and sameFloat(unit, v) then
       stopped = false
       end
-      --if a weak thing tries to move and fails, destroy it
-      --TODO: Patashu: Maybe except for MOVErs? (in Baba they turn around instead of dying when WEAK, unless sandwiched between two walls)
-      if stopped and hasProperty(unit, "ouch") and not hasProperty(unit, "protecc") then
+      --if a weak thing tries to move and fails, destroy it. movers don't do this though.
+      if stopped and hasProperty(unit, "ouch") and not hasProperty(unit, "protecc") and reason ~= "walk" then
         table.insert(specials, {"weak", {unit}})
         return true,movers,specials
       end
