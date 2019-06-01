@@ -35,8 +35,79 @@ function doMovement(movex, movey)
     local moving_units = {}
     local moving_units_next = {}
     local already_added = {}
-    --TODO: PERFORMANCE: Instead of iterating over all units (slow in well decorated levels or ones with lots of rules), use getUnitsWithEffect to get just the units we care about in one iteration. (Also, write a new getUnitsWithEffectAndCount that also returns the count, since we need it in almost all cases here.)
+    
     for _,unit in ipairs(units) do
+      unit.already_moving = false
+      unit.moves = {}
+    end
+    
+    if move_stage == -1 then
+      local icy = getUnitsWithEffectAndCount("icy")
+      for unit,icyness in pairs(icy) do
+        for __,other in ipairs(getUnitsOnTile(unit.x, unit.y)) do
+          if other.id ~= unit.id and sameFloat(unit, other) then
+            table.insert(other.moves, {reason = "icy", dir = other.dir, times = icyness})
+            if #other.moves > 0 and not already_added[other] then
+              table.insert(moving_units, other)
+              already_added[other] = true
+            end
+          end
+        end
+      end
+    elseif move_stage == 0 and (movex ~= 0 or movey ~= 0) then
+      local u = getUnitsWithEffectAndCount("u")
+      for unit,uness in pairs(u) do
+        if not hasProperty(unit, "slep") and slippers[unit.id] == nil then
+          table.insert(unit.moves, {reason = "u", dir = dirs8_by_offset[movex][movey], times = 1})
+          if #unit.moves > 0 and not already_added[unit] then
+            table.insert(moving_units, unit)
+            already_added[unit] = true
+          end
+        end
+      end
+    elseif move_stage == 1 then
+      local walk = getUnitsWithEffectAndCount("walk")
+      for unit,walkness in pairs(walk) do
+        if not hasProperty(unit, "slep") and slippers[unit.id] == nil then
+          table.insert(unit.moves, {reason = "walk", dir = unit.dir, times = walkness})
+          if #unit.moves > 0 and not already_added[unit] then
+            table.insert(moving_units, unit)
+            already_added[unit] = true
+          end
+        end
+      end
+    elseif move_stage == 2 then
+      local issnacc = matchesRule(nil, "yeet", "?");
+      for _,ruleparent in ipairs(issnacc) do
+        local unit = ruleparent[2]
+        for __,other in ipairs(getUnitsOnTile(unit.x, unit.y)) do
+          if other.id ~= unit.id and sameFloat(unit, other) then
+            local is_yeeted = hasRule(unit, "yeet", other)
+            if (is_yeeted) then
+              table.insert(other.moves, {reason = "yeet", dir = unit.dir, times = 99})
+              if #other.moves > 0 and not already_added[other] then
+                table.insert(moving_units, other)
+                already_added[other] = true
+              end
+            end
+          end
+        end
+      end
+      local go = getUnitsWithEffectAndCount("go")
+      for unit,goness in pairs(go) do
+        for __,other in ipairs(getUnitsOnTile(unit.x, unit.y)) do
+          if other.id ~= unit.id and sameFloat(unit, other) then
+            table.insert(other.moves, {reason = "go", dir = unit.dir, times = goness})
+            if #other.moves > 0 and not already_added[other] then
+              table.insert(moving_units, other)
+              already_added[other] = true
+            end
+          end
+        end
+      end
+    end
+    
+   --[[for _,unit in ipairs(units) do
       unit.already_moving = false
       unit.moves = {}
         if move_stage == -1 then
@@ -76,7 +147,7 @@ function doMovement(movex, movey)
         table.insert(moving_units, unit)
         already_added[unit] = true
       end
-    end
+    end]]
     
     --[[
 Simultaneous movement algorithm, basically a simple version of Baba's:

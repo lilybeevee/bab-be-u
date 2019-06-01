@@ -376,9 +376,10 @@ function testConds(unit,conds) --cond should be a {cond,{object types}}
         local others = getUnitsOnTile(unit.x-1, unit.y-1, param, false, unit)
         for nx=-1,1 do
           for ny=-1,1 do
-            if (nx ~= 0) or (ny ~= 0) then
+            --Patashu: In Baba, NEAR counts the tile you're on.
+            --if (nx ~= 0) or (ny ~= 0) then
               mergeTable(others,getUnitsOnTile(unit.x+nx,unit.y+ny,param))
-            end
+            --end
           end
         end
         if #others == 0 then
