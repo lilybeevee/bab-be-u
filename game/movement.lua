@@ -352,14 +352,13 @@ function findSidekikers(unit,dx,dy)
   end
   
   --Testing a new feature: sidekik & come pls objects follow you even on diagonals, to make them very hard to get away from in bab 8 way geometry, while just sidekik objects behave as they are right now so they're appropriate for 4 way geometry or being easy to walk away from
-  --TODO: Maybe make this only happen if the object is also not orthogonal?
   local dir45 = (dir + 1 - 1) % 8 + 1;
   for i = 1,4 do
     local curdir = (dir45 + 2*i - 1) % 8 + 1;
     local curx = x+dirs8[curdir][1];
     local cury = y+dirs8[curdir][2];
     for _,v in ipairs(getUnitsOnTile(curx, cury)) do
-      if hasProperty(v, "sidekik") and hasProperty(v, "come pls") then
+      if hasProperty(v, "sidekik") and hasProperty(v, "come pls") and not hasProperty(v, "orthognl") then
         table.insert(result, v);
       end
     end
