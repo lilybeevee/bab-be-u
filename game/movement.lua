@@ -9,7 +9,7 @@ function doUpdate()
       local y = update.payload.y
       local dir = update.payload.dir
       updateDir(unit, dir)
-      print("doUpdate:"..tostring(unit.name)..","..tostring(x)..","..tostring(y)..","..tostring(dir))
+      --print("doUpdate:"..tostring(unit.name)..","..tostring(x)..","..tostring(y)..","..tostring(dir))
       moveUnit(unit, x, y)
       unit.already_moving = false
     elseif update.reason == "dir" then
@@ -130,14 +130,14 @@ It is probably possible to do, but lily has decided that it's not important enou
     local successes = 1
     --Outer loop continues until nothing moves in the inner loop, and does a doUpdate after each inner loop, to allow for multimoves to exist.
     while (#moving_units > 0 and successes > 0 and loopa < 99) do 
-      print("loopa:"..tostring(loopa))
+      --print("loopa:"..tostring(loopa))
       successes = 0
       local loopb = 0
       loopa = loopa + 1
       local something_moved = true
       --Inner loop tries to move everything at least once, and gives up if after an iteration, nothing can move. (It also tries to do flips to see if that helps.)
       while (something_moved and loopb < 99) do
-        print("loopb:"..tostring(loopb))
+        --print("loopb:"..tostring(loopb))
         local remove_from_moving_units = {}
         local has_flipped = false
         something_moved = false
@@ -158,7 +158,6 @@ It is probably possible to do, but lily has decided that it's not important enou
             if success then
               something_moved = true
               successes = successes + 1
-              print("doing this for:"..tostring(unit.name))
               remove_from_moving_units[unit] = true;
               --add to moving_units_next if we have another pending move
               data.times = data.times - 1;
@@ -266,7 +265,6 @@ function moveIt(mover, dx, dy, data, pulling, already_added, moving_units, movin
       local currently_moving = false
       for _,mover2 in ipairs(moving_units) do
         if mover2 == sidekiker then
-          print("break bc already moving")
           currently_moving = true
           break
         end
@@ -286,7 +284,7 @@ function queueMove(mover, dx, dy, dir, priority)
   addUndo({"update", mover.id, mover.x, mover.y, mover.dir})
   mover.olddir = mover.dir
   updateDir(mover, dir)
-  print("moving:"..mover.name..","..tostring(mover.id)..","..tostring(mover.x)..","..tostring(mover.y)..","..tostring(dx)..","..tostring(dy))
+  --print("moving:"..mover.name..","..tostring(mover.id)..","..tostring(mover.x)..","..tostring(mover.y)..","..tostring(dx)..","..tostring(dy))
   mover.already_moving = true;
   table.insert(update_queue, (priority and 1 or (#update_queue + 1)), {unit = mover, reason = "update", payload = {x = mover.x + dx, y = mover.y + dy, dir = mover.dir}})
 end
