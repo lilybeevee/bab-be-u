@@ -9,7 +9,7 @@ function doUpdate()
       local y = update.payload.y
       local dir = update.payload.dir
       updateDir(unit, dir)
-      --print("doUpdate:"..tostring(unit.name)..","..tostring(x)..","..tostring(y)..","..tostring(dir))
+      print("doUpdate:"..tostring(unit.name)..","..tostring(x)..","..tostring(y)..","..tostring(dir))
       moveUnit(unit, x, y)
       unit.already_moving = false
     elseif update.reason == "dir" then
@@ -107,48 +107,6 @@ function doMovement(movex, movey)
       end
     end
     
-   --[[for _,unit in ipairs(units) do
-      unit.already_moving = false
-      unit.moves = {}
-        if move_stage == -1 then
-          for __,other in ipairs(getUnitsOnTile(unit.x, unit.y)) do
-            if other.id ~= unit.id and sameFloat(unit, other) then
-              local icyness = countProperty(other, "icy");
-              if icyness > 0 then
-                table.insert(unit.moves, {reason = "icy", dir = unit.dir, times = icyness})
-              end
-            end
-          end
-        elseif move_stage == 0 and slippers[unit.id] == nil and not hasProperty(unit, "slep") then
-          if (movex ~= 0 or movey ~= 0) and hasProperty(unit, "u") then
-            table.insert(unit.moves, {reason = "u", dir = dirs8_by_offset[movex][movey], times = 1})
-            unit.olddir = unit.dir
-          end
-        elseif move_stage == 1 and slippers[unit.id] == nil and not hasProperty(unit, "slep") then
-          local moveness = countProperty(unit, "walk")
-          if moveness > 0 then
-            table.insert(unit.moves, {reason = "walk", dir = unit.dir, times = moveness})
-          end
-        elseif move_stage == 2 then
-          for __,other in ipairs(getUnitsOnTile(unit.x, unit.y)) do
-            if other.id ~= unit.id and sameFloat(unit, other) then
-              local yeeter = hasRule(other, "yeet", unit)
-              if (yeeter) then
-                table.insert(unit.moves, {reason = "yeet", dir = other.dir, times = 99})
-              end
-              local goness = countProperty(other, "go");
-              if goness > 0 then
-                table.insert(unit.moves, {reason = "go", dir = other.dir, times = goness})
-              end
-            end
-          end
-        end
-      if #unit.moves > 0 and not already_added[unit] then
-        table.insert(moving_units, unit)
-        already_added[unit] = true
-      end
-    end]]
-    
     --[[
 Simultaneous movement algorithm, basically a simple version of Baba's:
 1) Make a list of all things that are moving this take, moving_units
@@ -172,14 +130,14 @@ It is probably possible to do, but lily has decided that it's not important enou
     local successes = 1
     --Outer loop continues until nothing moves in the inner loop, and does a doUpdate after each inner loop, to allow for multimoves to exist.
     while (#moving_units > 0 and successes > 0 and loopa < 99) do 
-      --print("loopa:"..tostring(loopa))
+      print("loopa:"..tostring(loopa))
       successes = 0
       local loopb = 0
       loopa = loopa + 1
       local something_moved = true
       --Inner loop tries to move everything at least once, and gives up if after an iteration, nothing can move. (It also tries to do flips to see if that helps.)
       while (something_moved and loopb < 99) do
-        --print("loopb:"..tostring(loopb))
+        print("loopb:"..tostring(loopb))
         local remove_from_moving_units = {}
         local has_flipped = false
         something_moved = false
@@ -200,8 +158,16 @@ It is probably possible to do, but lily has decided that it's not important enou
             if success then
               something_moved = true
               successes = successes + 1
+              print("doing this for:"..tostring(unit.name))
               remove_from_moving_units[unit] = true;
-              table.insert(moving_units_next, unit);
+              --add to moving_units_next if we have another pending move
+              data.times = data.times - 1;
+              while #unit.moves > 0 and unit.moves[1].times <= 0 do
+                table.remove(unit.moves, 1)
+              end
+              if #unit.moves > 0 then
+                table.insert(moving_units_next, unit);
+              end
               
               for k = #movers, 1, -1 do
                 moveIt(movers[k], dx, dy, data, false, already_added, moving_units, moving_units_next, slippers)
@@ -209,7 +175,6 @@ It is probably possible to do, but lily has decided that it's not important enou
               --Patashu: only the mover itself pulls, otherwise it's a mess. stuff like STICKY/STUCK will require ruggedizing this logic.
               --Patashu: TODO: Doing the pull right away means that in a situation like this: https://cdn.discordapp.com/attachments/579519329515732993/582179745006092318/unknown.png the pull could happen before the bounce depending on move order. To fix this... I'm not sure how Baba does this? But it's somewhere in that mess of code.
               doPull(unit, dx, dy, data, already_added, moving_units, moving_units_next,  slippers)
-              data.times = data.times - 1;
             end
           else
             remove_from_moving_units[unit] = true;
@@ -301,6 +266,7 @@ function moveIt(mover, dx, dy, data, pulling, already_added, moving_units, movin
       local currently_moving = false
       for _,mover2 in ipairs(moving_units) do
         if mover2 == sidekiker then
+          print("break bc already moving")
           currently_moving = true
           break
         end
@@ -320,13 +286,12 @@ function queueMove(mover, dx, dy, dir, priority)
   addUndo({"update", mover.id, mover.x, mover.y, mover.dir})
   mover.olddir = mover.dir
   updateDir(mover, dir)
-  --print("moving:"..mover.name..","..tostring(mover.id)..","..tostring(mover.x)..","..tostring(mover.y)..","..tostring(dx)..","..tostring(dy))
+  print("moving:"..mover.name..","..tostring(mover.id)..","..tostring(mover.x)..","..tostring(mover.y)..","..tostring(dx)..","..tostring(dy))
   mover.already_moving = true;
   table.insert(update_queue, (priority and 1 or (#update_queue + 1)), {unit = mover, reason = "update", payload = {x = mover.x + dx, y = mover.y + dy, dir = mover.dir}})
 end
 
 function applySlide(mover, dx, dy, already_added, moving_units_next)
-  --TODO: LAUNCH/SLIDE vs SIDEKIK is surprising (the sidekik is not dragged the entire way). Hopefully it's just a matter of slightly re-ordering two things.
   --Before we add a new LAUNCH/SLIDE move, deleting all existing LAUNCH/SLIDE moves, so that if we 'move twice in the same tick' (such as because we're being pushed or pulled while also sliding) it doesn't stack. (this also means e.g. SLIDE & SLIDE gives you one extra move at the end, rather than multiplying your movement.)
   local did_clear_existing = false
   --LAUNCH will take precedence over SLIDE, so that puzzles where you move around launchers on an ice rink will behave intuitively.
