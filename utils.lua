@@ -131,7 +131,7 @@ end
   
   Note that the rules returned are full rules, formatted like: {{subject,verb,object,{preconds,postconds}}, {ids}} 
 ]]
-function matchesRule(rule1,rule2,rule3,debugging)
+function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
   if (debugging) then
     print("matchesRule arguments:"..tostring(rule1)..","..tostring(rule2)..","..tostring(rule3))
   end
@@ -231,6 +231,7 @@ function matchesRule(rule1,rule2,rule3,debugging)
         end
         if find == 0 then
           table.insert(ret, rules)
+          if stopafterone then return ret end
         elseif find == 1 then
           for _,unit in ipairs(findUnitsByName(rule[find_arg])) do
             local cond
@@ -241,6 +242,7 @@ function matchesRule(rule1,rule2,rule3,debugging)
             end
             if testConds(unit, rule[4][cond]) then
               table.insert(ret, {rules, unit})
+              if stopafterone then return ret end
             end
           end
         elseif find == 2 then
@@ -249,6 +251,7 @@ function matchesRule(rule1,rule2,rule3,debugging)
             for _,unit2 in ipairs(findUnitsByName(rule[3])) do
               if testConds(unit1, rule[4][1]) and testConds(unit2, rule[4][2]) then
                 table.insert(ret, {rules, unit1, unit2})
+                if stopafterone then return ret end
               end
             end
           end
@@ -273,8 +276,24 @@ function getUnitsWithEffect(effect)
   return result
 end
 
+function getUnitsWithEffectAndCount(effect)
+  local result = {}
+  local rules = matchesRule(nil, "be", effect);
+  --print ("h:"..tostring(#rules))
+  for _,dat in ipairs(rules) do
+    local unit = dat[2];
+    if not unit.removed then
+      if result[unit] == nil then
+        result[unit] = 0
+      end
+      result[unit] = result[unit] + 1
+    end
+  end
+  return result
+end
+
 function hasRule(rule1,rule2,rule3)
-  return #matchesRule(rule1,rule2,rule3) > 0
+  return #matchesRule(rule1,rule2,rule3, true) > 0
 end
 
 function findUnitsByName(name)

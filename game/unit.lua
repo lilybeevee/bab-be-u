@@ -79,20 +79,45 @@ function updateUnits(undoing, big_update)
       end
     end
     
-    --TODO: MORE (MOAR?) idea: Make stacked MOREs give you 4-way, 8-way, double 4-way and double 8-way growth for 1, 2, 3 and 4 respectively.
-    local ismoar = getUnitsWithEffect("moar");
-    for _,unit in ipairs(ismoar) do
-      for i=1,4 do
-        local ndir = dirs[i];
-        local dx = ndir[1];
-        local dy = ndir[2];
-        if canMove(unit, dx, dy, false, false, unit.name) then
-          local new_unit = createUnit(tiles_by_name[unit.fullname], unit.x, unit.y, unit.dir)
-          addUndo({"create", new_unit.id, false})
-          moveUnit(new_unit,unit.x+dx,unit.y+dy)
-          addUndo({"update", new_unit.id, unit.x, unit.y, unit.dir})
+    --MOAR is 4-way growth, MOARx2 is 8-way growth, MOARx3 is 2x 4-way growth, MOARx4 is 2x 8-way growth, MOARx5 is 3x 4-way growth, etc.
+    local give_me_moar = true;
+    local moar_repeats = 0;
+    while (give_me_moar) do
+      give_me_moar = false;
+      local ismoar = getUnitsWithEffectAndCount("moar");
+      for unit,amt in pairs(ismoar) do
+        amt = amt - 2*moar_repeats;
+        if amt > 0 then
+          if (amt % 2) == 1 then
+            for i=1,4 do
+              local ndir = dirs[i];
+              local dx = ndir[1];
+              local dy = ndir[2];
+              if canMove(unit, dx, dy, false, false, unit.name) then
+                local new_unit = createUnit(tiles_by_name[unit.fullname], unit.x, unit.y, unit.dir)
+                addUndo({"create", new_unit.id, false})
+                moveUnit(new_unit,unit.x+dx,unit.y+dy)
+                addUndo({"update", new_unit.id, unit.x, unit.y, unit.dir})
+                give_me_moar = give_me_moar or amt >= 3;
+              end
+            end
+          else
+            for i=1,8 do
+              local ndir = dirs8[i];
+              local dx = ndir[1];
+              local dy = ndir[2];
+              if canMove(unit, dx, dy, false, false, unit.name) then
+                local new_unit = createUnit(tiles_by_name[unit.fullname], unit.x, unit.y, unit.dir)
+                addUndo({"create", new_unit.id, false})
+                moveUnit(new_unit,unit.x+dx,unit.y+dy)
+                addUndo({"update", new_unit.id, unit.x, unit.y, unit.dir})
+                give_me_moar = give_me_moar or amt >= 3;
+              end
+            end
+          end
         end
       end
+      moar_repeats = moar_repeats + 1
     end
   
     local to_destroy = {}
