@@ -93,6 +93,24 @@ function updateUnits(undoing, big_update)
       addUndo({"update", a.id, b.x, b.y, a.dir})
     end
     
+    local isstalk = matchesRule("?", "stalk", "?");
+    for _,ruleparent in ipairs(isstalk) do
+      local stalkers = units_by_name[ruleparent[1][1]]
+      local stalkees = units_by_name[ruleparent[1][3]]
+      for _,stalker in ipairs(stalkers) do
+        table.sort(stalkees, function(a, b) return euclideanDistance(a, unit) < euclideanDistance(b, unit) end )
+        for _,stalkee in ipairs(stalkees) do
+          if euclideanDistance(stalker, stalkee) <= 0 or not hasRule(stalker, "stalk", stalkee) then
+            --nothing
+          else
+            addUndo({"update", stalker.id, stalker.x, stalker.y, stalker.dir})
+            stalker.olddir = stalker.dir
+            updateDir(stalker, dirs8_by_offset[sign(stalkee.x - stalker.x)][sign(stalkee.y - stalker.y)])
+          end
+        end
+      end
+    end
+    
     --MOAR is 4-way growth, MOARx2 is 8-way growth, MOARx3 is 2x 4-way growth, MOARx4 is 2x 8-way growth, MOARx5 is 3x 4-way growth, etc.
     local give_me_moar = true;
     local moar_repeats = 0;
@@ -399,6 +417,18 @@ function handleDels(to_destroy, unstoppable)
     end
   end
   return {}
+end
+
+function taxicabDistance(a, b)
+  return math.abs(a.x - b.x) + math.abs(a.y - b.y)
+end
+
+function kingDistance(a, b)
+  return math.max(math.abs(a.x - b.x), math.abs(a.y - b.y))
+end
+
+function euclideanDistance(a, b)
+  return (a.x-b.x)*(a.x-b.x) + (a.y-b.y)*(a.y-b.y)
 end
 
 function readingOrderSort(a, b)
