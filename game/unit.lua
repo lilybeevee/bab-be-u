@@ -36,47 +36,61 @@ function updateUnits(undoing, big_update)
       end
     end
     
-    --TODO: TELE idea: Instead of randomly chosing between multiple other teleports, choose the next one in reading order.
-    --Then... If you're TELE & TELE, choose the previous one. TELEx3, two ahead. TELEx4, two behind. TELEx5, three ahead. And so on.
-    local istele = getUnitsWithEffect("visit fren");
+    --Currently using deterministic tele version. Number of teles a teleporter has influences whether it goes forwards or backwards and by how many steps.
+    local istele = getUnitsWithEffectAndCount("visit fren");
     teles_by_name = {};
     teles_by_name_index = {};
     tele_targets = {};
-    if (#istele > 0) then
-      --form lists, by tele name, of what all the tele units are
-      for _,unit in ipairs(istele) do
-        if teles_by_name[unit.name] == nil then
-          teles_by_name[unit.name] = {}
-        end
-        table.insert(teles_by_name[unit.name], unit);
+    print("0:"..tostring(#istele))
+    --form lists, by tele name, of what all the tele units are
+    for unit,amt in pairs(istele) do
+      if teles_by_name[unit.name] == nil then
+        teles_by_name[unit.name] = {}
       end
-      --form a lookup index for each of those lists
-      for name,tbl in pairs(teles_by_name) do
-        teles_by_name_index[name] = {}
-        for k,v in ipairs(tbl) do
-          teles_by_name_index[name][v] = k
-        end
+      table.insert(teles_by_name[unit.name], unit);
+    end
+    --then sort those lists in reading order (tiebreaker is id).
+    --skip this step if doing random version, the sorting won't matter then!
+    for name,tbl in pairs(teles_by_name) do
+      table.sort(tbl, readingOrderSort)
+    end
+    --form a lookup index for each of those lists
+    for name,tbl in pairs(teles_by_name) do
+      teles_by_name_index[name] = {}
+      for k,v in ipairs(tbl) do
+        teles_by_name_index[name][v] = k
       end
-      --now do the actual teleports. we can use the index to know our own place in the list so we can skip ourselves
-      for _,unit in ipairs(istele) do
-        local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
-        for _,on in ipairs(stuff) do
-          if unit ~= on and sameFloat(unit, on) then
-            local destinations = teles_by_name[unit.name]
-            local source_index = teles_by_name_index[unit.name][unit]
-            print(math.floor(math.random()*#destinations-1))
-            local rng = math.floor(math.random()*(#destinations-1))+1 --even distribution of each integer. +1 because lua is 1 indexed, -1 because we want one less than the number of teleporters (since we're going to ignore our own)
-            if (rng >= source_index) then
-              rng = rng + 1
-            end
-             tele_targets[on] = destinations[rng]
+    end
+    --now do the actual teleports. we can use the index to know our own place in the list so we can skip ourselves
+    for unit,amt in pairs(istele) do
+      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
+      for _,on in ipairs(stuff) do
+        --we're going to deliberately let two same name teles tele if they're on each other, since with the deterministic behaviour it's predictable and interesting
+        if unit ~= on and sameFloat(unit, on) --[[and unit.name ~= on.name]]-- then
+          local destinations = teles_by_name[unit.name]
+          local source_index = teles_by_name_index[unit.name][unit]
+          
+          --RANDOM VERSION: just pick any tele that isn't us
+          --[[local dest = math.floor(math.random()*(#destinations-1))+1 --even distribution of each integer. +1 because lua is 1 indexed, -1 because we want one less than the number of teleporters (since we're going to ignore our own)
+          if (dest >= source_index) then
+            dest = dest + 1
+          end]]
+          
+          --DETERMINISTIC VERSION: 1/-1/2/-2/3/-3... based on amount of TELE, in reading order.
+          local dest = source_index + (math.floor(amt/2+0.5) * (amt % 2 == 1 and 1 or -1))
+          --have to subtract 1/add 1 because arrays are 1 indexed but modulo arithmetic is 0 indexed.
+          dest = ((dest-1) % (#destinations))+1
+          if dest == source_index then
+            dest = dest + 1
           end
+          dest = ((dest-1) % (#destinations))+1
+          tele_targets[on] = destinations[dest]
         end
       end
-      for a,b in pairs(tele_targets) do
-        moveUnit(a, b.x, b.y)
-        addUndo({"update", a.id, b.x, b.y, a.dir})
-      end
+    end
+    for a,b in pairs(tele_targets) do
+      moveUnit(a, b.x, b.y)
+      addUndo({"update", a.id, b.x, b.y, a.dir})
     end
     
     --MOAR is 4-way growth, MOARx2 is 8-way growth, MOARx3 is 2x 4-way growth, MOARx4 is 2x 8-way growth, MOARx5 is 3x 4-way growth, etc.
@@ -385,6 +399,16 @@ function handleDels(to_destroy)
     end
   end
   return {}
+end
+
+function readingOrderSort(a, b)
+  if a.y ~= b.y then
+    return a.y < b.y
+  elseif a.x ~= b.x then
+    return a.x < b.x
+  else
+    return a.id < b.id
+  end
 end
 
 function dropGotUnit(unit, rule)
