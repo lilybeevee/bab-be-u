@@ -378,6 +378,7 @@ function dropGotUnit(unit, rule)
   end
 end
 
+--TODO: Conversions need to be simultaneous, so that if e.g. bab on bab be hurcane and you stack two babs, they both become hurcanes.
 function convertUnits()
   for i,v in ipairs(units_by_tile) do
     units_by_tile[i] = {}

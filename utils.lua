@@ -133,7 +133,7 @@ end
 ]]
 function matchesRule(rule1,rule2,rule3,debugging)
   if (debugging) then
-    print("a:"..tostring(rule1)..","..tostring(rule2)..","..tostring(rule3))
+    print("matchesRule arguments:"..tostring(rule1)..","..tostring(rule2)..","..tostring(rule3))
   end
   local nrules = {}
   local fnrules = {}
@@ -169,7 +169,7 @@ function matchesRule(rule1,rule2,rule3,debugging)
   
   if (debugging) then
     for x,y in ipairs(nrules) do
-      print("b:"..tostring(x)..","..tostring(y))
+      print("in nuules:"..tostring(x)..","..tostring(y))
     end
   end
 
@@ -194,14 +194,14 @@ function matchesRule(rule1,rule2,rule3,debugging)
   mergeTable(rules_list, rules_with[fnrules[1] or fnrules[3] or fnrules[2]] or {})
 
   if (debugging) then
-    print ("c:"..tostring(#rules_list))
+    print ("found this many rules:"..tostring(#rules_list))
   end
   if #rules_list > 0 then
     for _,rules in ipairs(rules_list) do
       local rule = rules[1]
       if (debugging) then
         for i=1,3 do
-          print("d,"..tostring(i)..":"..tostring(rule[i]))
+          print("checking this rule:"..tostring(i)..":"..tostring(rule[i]))
         end
       end
       local result = true
@@ -321,7 +321,7 @@ function testConds(unit,conds) --cond should be a {cond,{object types}}
     if condtype == "on" then
       for _,param in ipairs(params) do
         local others = getUnitsOnTile(unit.x,unit.y,param) --currently, conditions only work up to one layer of nesting, so the noun argument of the condition is assumed to be just a noun
-        if #others == 0 then
+        if #others == 0 or others[1] == unit then
           result = false
         end
       end
@@ -335,7 +335,7 @@ function testConds(unit,conds) --cond should be a {cond,{object types}}
             end
           end
         end
-        if #others == 0 then
+        if #others == 0 or others[1] == unit then
           result = false
         end
       end

@@ -367,12 +367,16 @@ function postRules()
     if not rules_with[verb] then
       rules_with[verb] = {}
     end
-    table.insert(rules_with[verb], rules)
+    if (verb ~= subject) then
+      table.insert(rules_with[verb], rules)
+    end
 
     if not rules_with[object] then
       rules_with[object] = {}
     end
-    table.insert(rules_with[object], rules)
+    if (object ~= subject and object ~= verb) then
+      table.insert(rules_with[object], rules)
+    end
 
     mergeTable(all_units, rules[2])
   end
