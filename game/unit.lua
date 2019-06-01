@@ -30,8 +30,9 @@ function updateUnits(undoing, big_update)
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
       for _,on in ipairs(stuff) do
         if unit ~= on and sameFloat(unit, on) then
-          addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
-          on.dir = unit.dir
+          addUndo({"update", on.id, on.x, on.y, on.dir})
+          on.olddir = on.dir
+          updateDir(on, unit.dir)
         end
       end
     end
@@ -41,7 +42,6 @@ function updateUnits(undoing, big_update)
     teles_by_name = {};
     teles_by_name_index = {};
     tele_targets = {};
-    print("0:"..tostring(#istele))
     --form lists, by tele name, of what all the tele units are
     for unit,amt in pairs(istele) do
       if teles_by_name[unit.name] == nil then

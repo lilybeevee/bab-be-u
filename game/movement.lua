@@ -66,6 +66,31 @@ function doMovement(movex, movey)
         end
       end
     elseif move_stage == 1 then
+      local isspoop = matchesRule(nil, "spoop", "?")
+      for _,ruleparent in ipairs(isspoop) do
+        local unit = ruleparent[2]
+        local others = {}
+        for nx=-1,1 do
+          for ny=-1,1 do
+            if (nx ~= 0) or (ny ~= 0) then
+              mergeTable(others,getUnitsOnTile(unit.x+nx,unit.y+ny,nil))
+            end
+          end
+        end
+        for _,other in ipairs(others) do
+          local is_spoopy = hasRule(unit, "spoop", other)
+          if (is_spoopy and not hasProperty(other, "slep")) then
+            addUndo({"update", other.id, other.x, other.y, other.dir})
+            other.olddir = other.dir
+            updateDir(other, dirs8_by_offset[sign(other.x - unit.x)][sign(other.y - unit.y)])
+            table.insert(other.moves, {reason = "spoop", dir = other.dir, times = 1})
+            if #other.moves > 0 and not already_added[other] then
+              table.insert(moving_units, other)
+              already_added[other] = true
+            end
+          end
+        end
+      end
       local walk = getUnitsWithEffectAndCount("walk")
       for unit,walkness in pairs(walk) do
         if not hasProperty(unit, "slep") and slippers[unit.id] == nil then
@@ -277,8 +302,6 @@ function moveIt(mover, dx, dy, data, pulling, already_added, moving_units, movin
     end
   end
 end
-
-
 
 function queueMove(mover, dx, dy, dir, priority)
   addUndo({"update", mover.id, mover.x, mover.y, mover.dir})

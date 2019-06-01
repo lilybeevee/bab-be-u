@@ -373,13 +373,12 @@ function testConds(unit,conds) --cond should be a {cond,{object types}}
       end
     elseif condtype == "arond" then
       for _,param in ipairs(params) do
-        local others = getUnitsOnTile(unit.x-1, unit.y-1, param, false, unit)
+        local others = getUnitsOnTile(unit.x, unit.y, param, false, unit)
         for nx=-1,1 do
           for ny=-1,1 do
-            --Patashu: In Baba, NEAR counts the tile you're on.
-            --if (nx ~= 0) or (ny ~= 0) then
+            if (nx ~= 0) or (ny ~= 0) then
               mergeTable(others,getUnitsOnTile(unit.x+nx,unit.y+ny,param))
-            --end
+            end
           end
         end
         if #others == 0 then
