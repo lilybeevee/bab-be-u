@@ -1,4 +1,5 @@
 function clear()
+  last_move = nil
   particles = {}
   tiles_by_name = {}
   units = {}
@@ -359,9 +360,9 @@ function testConds(unit,conds) --cond should be a {cond,{object types}}
         end
       end
     elseif condtype == "sit on" then
-      --special condition for use with reflexive properties/verbs (GIV and NOU)
+      --on that checks float. special condition for use with reflexive properties/verbs (GIV and NOU). warning: can cause paradoxes that destroy the level!
       for _,param in ipairs(params) do
-        local others = getUnitsOnTile(unit.x, unit.y, param, false, unit) --currently, conditions only work up to one layer of nesting, so the noun argument of the condition is assumed to be just a noun
+        local others = getUnitsOnTile(unit.x, unit.y, param, false, unit)
         result = false
         for _,on in ipairs(others) do
           if sameFloat(unit, on) then
@@ -396,6 +397,8 @@ function testConds(unit,conds) --cond should be a {cond,{object types}}
       if #others > 0 then
         result = false
       end
+    elseif condtype == "wait" then
+      result = last_move ~= nil and last_move[1] == 0 and last_move[2] == 0
     else
       print("unknown condtype: " .. condtype)
       result = false

@@ -501,6 +501,7 @@ function scene.checkInput()
           if key_down["d"] then x = x + 1 end
         end
         newUndo()
+        last_move = {x, y}
         doMovement(x, y)
         if #undo_buffer[1] == 0 then
           table.remove(undo_buffer, 1)

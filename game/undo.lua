@@ -1,5 +1,6 @@
 function newUndo()
   table.insert(undo_buffer, 1, {})
+  undo_buffer[1].last_move = last_move
 end
 
 function addUndo(data)
@@ -11,6 +12,8 @@ end
 function undo()
   if undo_buffer[1] ~= nil then
     local update_rules = false
+    
+    last_move = undo_buffer[1].last_move or {0, 0}
 
     for _,v in ipairs(undo_buffer[1]) do
       local action = v[1]
