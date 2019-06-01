@@ -1371,7 +1371,7 @@ tiles_list = {
     sprite = "text_stalk",
     texttype = "verb_object",
     type = "text",
-    grid = {10, 5},
+    grid = {-1, -1},
     color = {5, 2},
     layer = 20,
   },
