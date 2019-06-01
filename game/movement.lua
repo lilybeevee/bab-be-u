@@ -199,7 +199,7 @@ function doAction(action)
     local victims = action[2]
     for _,unit in ipairs(victims) do
       addParticles("destroy", unit.x, unit.y, {237,226,133})
-      if not hasProperty("protecc") then
+      if not hasProperty(unit, "protecc") then
         unit.removed = true
         unit.destroyed = true
       end
@@ -209,10 +209,9 @@ function doAction(action)
     local victims = action[2]
     for _,unit in ipairs(victims) do
       addParticles("destroy", unit.x, unit.y, unit.color)
-      if not hasProperty("protecc") then
-        unit.removed = true
-        unit.destroyed = true
-      end
+      --no protecc check because it can't safely be prevented here (we might be moving OoB)
+      unit.removed = true
+      unit.destroyed = true
     end
   end
 end
@@ -440,7 +439,7 @@ function canMove(unit,dx,dy,pushing_,pulling_,solid_name)
   table.insert(movers, unit)
   
   if not inBounds(x,y) then
-    if hasProperty(unit, "ouch") then
+    if hasProperty(unit, "ouch") and not hasProperty(unit, "protecc") then
       table.insert(specials, {"weak", {unit}})
       return true,movers,specials
     end
@@ -507,7 +506,7 @@ function canMove(unit,dx,dy,pushing_,pulling_,solid_name)
       end
       --if a weak thing tries to move and fails, destroy it
       --TODO: Patashu: Maybe except for MOVErs? (in Baba they turn around instead of dying when WEAK, unless sandwiched between two walls)
-      if stopped and hasProperty(unit, "ouch") then
+      if stopped and hasProperty(unit, "ouch") and not hasProperty(unit, "protecc") then
         table.insert(specials, {"weak", {unit}})
         return true,movers,specials
       end
