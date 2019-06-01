@@ -206,9 +206,9 @@ function updateUnits(undoing, big_update)
       for _,on in ipairs(stuff) do
         is_u = hasProperty(on, "u")
         if is_u and sameFloat(unit, on) then
-          table.insert(to_destroy, on)
-          playSound("break", 0.5)
-          addParticles("destroy", unit.x, unit.y, unit.color)
+          table.insert(to_destroy, unit)
+            playSound("rule", 0.5)
+            addParticles("bonus", unit.x, unit.y, unit.color)
         end
       end
     end
