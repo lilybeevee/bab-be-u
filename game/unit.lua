@@ -103,9 +103,14 @@ function updateUnits(undoing, big_update)
           if euclideanDistance(stalker, stalkee) <= 0 or not hasRule(stalker, "stalk", stalkee) then
             --nothing
           else
+            local stalk_dir = dirs8_by_offset[sign(stalkee.x - stalker.x)][sign(stalkee.y - stalker.y)]
+            if hasProperty(stalker, "orthongl") then
+              local use_hori = math.abs(stalkee.x - stalker.x) > math.abs(stalkee.y - stalker.y)
+              stalk_dir = dirs8_by_offset[use_hori and sign(stalkee.x - stalker.x) or 0][not use_hori and sign(stalkee.y - stalker.y) or 0]
+            end
             addUndo({"update", stalker.id, stalker.x, stalker.y, stalker.dir})
             stalker.olddir = stalker.dir
-            updateDir(stalker, dirs8_by_offset[sign(stalkee.x - stalker.x)][sign(stalkee.y - stalker.y)])
+            updateDir(stalker, stalk_dir)
           end
         end
       end

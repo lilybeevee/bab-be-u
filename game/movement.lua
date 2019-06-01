@@ -80,13 +80,16 @@ function doMovement(movex, movey)
         for _,other in ipairs(others) do
           local is_spoopy = hasRule(unit, "spoop", other)
           if (is_spoopy and not hasProperty(other, "slep")) then
-            addUndo({"update", other.id, other.x, other.y, other.dir})
-            other.olddir = other.dir
-            updateDir(other, dirs8_by_offset[sign(other.x - unit.x)][sign(other.y - unit.y)])
-            table.insert(other.moves, {reason = "spoop", dir = other.dir, times = 1})
-            if #other.moves > 0 and not already_added[other] then
-              table.insert(moving_units, other)
-              already_added[other] = true
+            spoop_dir = dirs8_by_offset[sign(other.x - unit.x)][sign(other.y - unit.y)]
+            if (spoop_dir % 2 == 1 or (not hasProperty(unit, "orthongl") and not hasProperty(other, "orthongl"))) then
+              addUndo({"update", other.id, other.x, other.y, other.dir})
+              other.olddir = other.dir
+              updateDir(other, spoop_dir)
+              table.insert(other.moves, {reason = "spoop", dir = other.dir, times = 1})
+              if #other.moves > 0 and not already_added[other] then
+                table.insert(moving_units, other)
+                already_added[other] = true
+              end
             end
           end
         end
