@@ -483,6 +483,7 @@ function dropGotUnit(unit, rule)
 end
 
 --TODO: Conversions need to be simultaneous, so that if e.g. bab on bab be hurcane and you stack two babs, they both become hurcanes. Also, I think creat timing should be tested to see if it matches baba's or not. (In Baba, it's pretty much at the end of the turn, but I don't know if it's before or after conversion.)
+--Also, why the fuck is creat and window rules even HERE. All of this needs serious de-spaghettification
 function convertUnits()
   for i,v in ipairs(units_by_tile) do
     units_by_tile[i] = {}
