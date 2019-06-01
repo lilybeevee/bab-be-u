@@ -311,18 +311,24 @@ function scene.draw(dt)
           love.graphics.setColor(1, 1, 1)
           love.graphics.draw(sprites["gunsmol"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
         end
-        if hasRule(unit,"got",nil) then
-          local matchrule = matchesRule(unit,"got",nil)
+        if false then -- stupid lua comments
+          if hasRule(unit,"got","?") then
+            local matchrules = matchesRule(unit,"got","?")
+            
+            for _,matchrule in ipairs(matchrules) do
+              local tile = tiles_list[tiles_by_name[matchrule[1][3]]]
 
-          if #matchrule[2].color == 3 then
-            gotcolor = {matchrule[2].color[1]/255 * brightness, matchrule[2].color[2]/255 * brightness, matchrule[2].color[3]/255 * brightness, 1}
-          else
-            local r,g,b,a = getPaletteColor(matchrule[2].color[1], matchrule[2].color[2])
-            gotcolor = {r * brightness, g * brightness, b * brightness, a}
+              if #tile.color == 3 then
+                gotcolor = {tile.color[1]/255 * brightness, tile.color[2]/255 * brightness, tile.color[3]/255 * brightness, 1}
+              else
+                local r,g,b,a = getPaletteColor(tile.color[1], tile.color[2])
+                gotcolor = {r * brightness, g * brightness, b * brightness, a}
+              end
+
+              love.graphics.setColor(gotcolor[1], gotcolor[2], gotcolor[3], gotcolor[4])
+              love.graphics.draw(sprites[tile.sprite], fulldrawx/4*3, fulldrawy/4*3, 0, 1/4, 1/4, sprite:getWidth() / 2, sprite:getHeight() / 2)
+            end
           end
-
-          love.graphics.setColor(gotcolor[1], gotcolor[2], gotcolor[3], gotcolor[4])
-          love.graphics.draw(sprites[matchrule[2].sprite], fulldrawx/4*3, fulldrawy/4*3, 0, unit.scalex/4, unit.scaley/4, sprite:getWidth() / 2, sprite:getHeight() / 2)
         end
 
         love.graphics.pop()
