@@ -150,23 +150,29 @@ But if we do THIS, then we can now attempt to move to different destination tile
 
 It is probably possible to do, but lily has decided that it's not important enough if it's difficult, so we shall stay with simultanous movement for now.
 ]]
-    --loopa and loopb are just infinite loop protection.
-    local loopa = 0
+    --loop_stage and loop_tick are infinite loop detection.
+    local loop_stage = 0
     local successes = 1
     --Outer loop continues until nothing moves in the inner loop, and does a doUpdate after each inner loop, to allow for multimoves to exist.
-    while (#moving_units > 0 and successes > 0 and loopa < 99) do 
-      --print("loopa:"..tostring(loopa))
+    while (#moving_units > 0 and successes > 0) do 
+      if (loop_stage > 1000) then
+        print("movement infinite loop! (1000 attempts at a stage)")
+        destroyLevel("infloop");
+      end
       successes = 0
-      local loopb = 0
-      loopa = loopa + 1
+      local loop_tick = 0
+      loop_stage = loop_stage + 1
       local something_moved = true
       --Inner loop tries to move everything at least once, and gives up if after an iteration, nothing can move. (It also tries to do flips to see if that helps.)
-      while (something_moved and loopb < 99) do
-        --print("loopb:"..tostring(loopb))
+      while (something_moved) do
+         if (loop_tick > 1000) then
+          print("movement infinite loop! (1000 attempts at a single tick)")
+          destroyLevel("infloop");
+        end
         local remove_from_moving_units = {}
         local has_flipped = false
         something_moved = false
-        loopb = loopb + 1
+        loop_tick = loop_tick + 1
         for _,unit in ipairs(moving_units) do
           while #unit.moves > 0 and unit.moves[1].times <= 0 do
             table.remove(unit.moves, 1)
@@ -183,6 +189,15 @@ It is probably possible to do, but lily has decided that it's not important enou
             if success then
               something_moved = true
               successes = successes + 1
+              
+              for k = #movers, 1, -1 do
+                moveIt(movers[k], dx, dy, data, false, already_added, moving_units, moving_units_next, slippers)
+              end
+              --Patashu: only the mover itself pulls, otherwise it's a mess. stuff like STICKY/STUCK will require ruggedizing this logic.
+              --Patashu: TODO: Doing the pull right away means that in a situation like this: https://cdn.discordapp.com/attachments/579519329515732993/582179745006092318/unknown.png the pull could happen before the bounce depending on move order. To fix this... I'm not sure how Baba does this? But it's somewhere in that mess of code.
+              doPull(unit, dx, dy, data, already_added, moving_units, moving_units_next,  slippers)
+              
+              --we made our move this iteration, wait until the next iteration to move again
               remove_from_moving_units[unit] = true;
               --add to moving_units_next if we have another pending move
               data.times = data.times - 1;
@@ -192,13 +207,6 @@ It is probably possible to do, but lily has decided that it's not important enou
               if #unit.moves > 0 then
                 table.insert(moving_units_next, unit);
               end
-              
-              for k = #movers, 1, -1 do
-                moveIt(movers[k], dx, dy, data, false, already_added, moving_units, moving_units_next, slippers)
-              end
-              --Patashu: only the mover itself pulls, otherwise it's a mess. stuff like STICKY/STUCK will require ruggedizing this logic.
-              --Patashu: TODO: Doing the pull right away means that in a situation like this: https://cdn.discordapp.com/attachments/579519329515732993/582179745006092318/unknown.png the pull could happen before the bounce depending on move order. To fix this... I'm not sure how Baba does this? But it's somewhere in that mess of code.
-              doPull(unit, dx, dy, data, already_added, moving_units, moving_units_next,  slippers)
             end
           else
             remove_from_moving_units[unit] = true;
@@ -332,6 +340,7 @@ function applySlide(mover, dx, dy, already_added, moving_units_next)
         end
         --the new moves will be at the start of the unit's moves data, so that it takes precedence over what it would have done next otherwise
         --TODO: CLEANUP: Figure out a nice way to not have to pass this around/do this in a million places.
+        --print("launching")
         table.insert(mover.moves, 1, {reason = "goooo", dir = v.dir, times = launchness})
         if not already_added[mover] then
           table.insert(moving_units_next, mover)
@@ -356,6 +365,7 @@ function applySlide(mover, dx, dy, already_added, moving_units_next)
           end
           did_clear_existing = true
         end
+        --print("sliding")
         table.insert(mover.moves, 1, {reason = "icyyyy", dir = mover.dir, times = slideness})
         if not already_added[mover] then
           table.insert(moving_units_next, mover)
