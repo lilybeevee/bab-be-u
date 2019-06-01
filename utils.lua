@@ -320,18 +320,18 @@ function testConds(unit,conds) --cond should be a {cond,{object types}}
 
     if condtype == "on" then
       for _,param in ipairs(params) do
-        local others = getUnitsOnTile(unit.x,unit.y,param) --currently, conditions only work up to one layer of nesting, so the noun argument of the condition is assumed to be just a noun
+        local others = getUnitsOnTile(unit.x, unit.y, param, false, unit) --currently, conditions only work up to one layer of nesting, so the noun argument of the condition is assumed to be just a noun
         if #others == 0 then
           result = false
         end
       end
     elseif condtype == "arond" then
       for _,param in ipairs(params) do
-        local others = getUnitsOnTile(unit.x-1,unit.y-1,param)
+        local others = getUnitsOnTile(unit.x-1, unit.y-1, param, false, unit)
         for nx=-1,1 do
           for ny=-1,1 do
             if (nx ~= 0) or (ny ~= 0) then
-            mergeTable(others,getUnitsOnTile(unit.x+nx,unit.y+ny,param))
+              mergeTable(others,getUnitsOnTile(unit.x+nx,unit.y+ny,param))
             end
           end
         end
@@ -347,8 +347,8 @@ function testConds(unit,conds) --cond should be a {cond,{object types}}
         end
       end
     elseif condtype == "frenles" then
-      local others = getUnitsOnTile(unit.x, unit.y)
-      if #others > 1 then
+      local others = getUnitsOnTile(unit.x, unit.y, nil, false, unit)
+      if #others > 0 then
         result = false
       end
     else
@@ -407,16 +407,18 @@ function tileHasUnitName(name,x,y)
   end
 end
 
-function getUnitsOnTile(x,y,name,not_destroyed)
+function getUnitsOnTile(x,y,name,not_destroyed,exclude)
   if not inBounds(x,y) then
     return {}
   else
     local result = {}
     local tileid = x + y * mapwidth
     for _,unit in ipairs(units_by_tile[tileid]) do
-      if not not_destroyed or (not_destroyed and not unit.removed) then
-        if not name or (name and nameIs(unit, name)) then
-          table.insert(result, unit)
+      if unit ~= exclude then
+        if not not_destroyed or (not_destroyed and not unit.removed) then
+          if not name or (name and nameIs(unit, name)) then
+            table.insert(result, unit)
+          end
         end
       end
     end
