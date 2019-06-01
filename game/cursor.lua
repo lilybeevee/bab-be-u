@@ -32,18 +32,25 @@ function updateCursors()
         deleted = true
       end
     end
+    if not deleted and cursor.removed then
+      deleted = true
+      table.insert(del_cursors, cursor.id)
+    end
 
     if not deleted then
-      cursor.x = cursor.x + mouse_X - mouse_oldX
-      cursor.y = cursor.y + mouse_Y - mouse_oldY
+      cursor.screenx = cursor.screenx + mouse_X - mouse_oldX
+      cursor.screeny = cursor.screeny + mouse_Y - mouse_oldY
 
-      local hx,hy = screenToGameTile(cursor.x, cursor.y)
+      local x, y = screenToGameTile(cursor.screenx, cursor.screeny)
+      
+      cursor.x = x
+      cursor.y = y
 
-      if hx ~= nil and hy ~= nil then
+      if inBounds(x, y) then
         if cursor_convert_to ~= nil then
-          local new_unit = createUnit(cursor_convert_to, hx, hy, 1, true)
+          local new_unit = createUnit(cursor_convert_to, x, y, 1, true)
           addUndo({"create", new_unit.id, true})
-          addUndo({"remove_cursor", cursor.x, cursor.y, cursor.id})
+          addUndo({"remove_cursor", cursor.screenx, cursor.screeny, cursor.id})
           table.insert(del_cursors, cursor.id)
         end
       end
@@ -67,8 +74,17 @@ function createMouse_direct(x,y,id_)
   mouse.class = "cursor"
 
   mouse.id = id_ or newMouseID()
-  mouse.x = x
-  mouse.y = y
+
+  mouse.screenx = x
+  mouse.screeny = y
+
+  -- unit compatibility
+  mouse.x, mouse.y = screenToGameTile(x, y)
+  mouse.dir = 7
+  mouse.name = "mous"
+  mouse.fullname = "mous"
+  mouse.type = "object"
+  mouse.color = {255, 255, 255}
 
   mouse.overlay = {}
   mouse.removed = false
@@ -106,9 +122,9 @@ function deleteMouse(id)
     if #cursors > 0 then
       local mous = cursors[1]
       mous.primary = true
-      mouse_X, mouse_Y = mous.x, mous.y
-      mouse_oldX, mouse_oldY = mous.x, mous.y
-      love.mouse.setPosition(mous.x, mous.y)
+      mouse_X, mouse_Y = mous.screenx, mous.screeny
+      mouse_oldX, mouse_oldY = mous.screenx, mous.screeny
+      love.mouse.setPosition(mous.screenx, mous.screeny)
     end
   end
 end

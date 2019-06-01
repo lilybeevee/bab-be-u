@@ -303,7 +303,11 @@ function hasRule(rule1,rule2,rule3)
 end
 
 function findUnitsByName(name)
-  return copyTable(units_by_name[name] or {})
+  if name == "mous" then
+    return cursors
+  else
+    return units_by_name[name] or {}
+  end
 end
 
 function hasProperty(unit,prop)
@@ -352,9 +356,16 @@ function testConds(unit,conds) --cond should be a {cond,{object types}}
       cond_not = true
     end
 
+    local x, y = unit.x, unit.y
+
     if condtype == "on" then
       for _,param in ipairs(params) do
-        local others = getUnitsOnTile(unit.x, unit.y, param, false, unit) --currently, conditions only work up to one layer of nesting, so the noun argument of the condition is assumed to be just a noun
+        local others
+        if param ~= "mous" then
+          others = getUnitsOnTile(x, y, param, false, unit) --currently, conditions only work up to one layer of nesting, so the noun argument of the condition is assumed to be just a noun
+        else
+          others = getCursorsOnTile(x, y, false, unit)
+        end
         if #others == 0 then
           result = false
         end
@@ -362,7 +373,12 @@ function testConds(unit,conds) --cond should be a {cond,{object types}}
     elseif condtype == "sit on" then
       --on that checks float. special condition for use with reflexive properties/verbs (GIV and NOU). warning: can cause paradoxes that destroy the level!
       for _,param in ipairs(params) do
-        local others = getUnitsOnTile(unit.x, unit.y, param, false, unit)
+        local others
+        if param ~= "mous" then
+          others = getUnitsOnTile(x, y, param, false, unit) --currently, conditions only work up to one layer of nesting, so the noun argument of the condition is assumed to be just a noun
+        else
+          others = getCursorsOnTile(x, y, false, unit)
+        end
         result = false
         for _,on in ipairs(others) do
           if sameFloat(unit, on) then
@@ -373,28 +389,39 @@ function testConds(unit,conds) --cond should be a {cond,{object types}}
       end
     elseif condtype == "arond" then
       for _,param in ipairs(params) do
-        local others = getUnitsOnTile(unit.x, unit.y, param, false, unit)
+        local found = 0
         for nx=-1,1 do
           for ny=-1,1 do
             if (nx ~= 0) or (ny ~= 0) then
-              mergeTable(others,getUnitsOnTile(unit.x+nx,unit.y+ny,param))
+              local others
+              if param ~= "mous" then
+                others = getUnitsOnTile(x, y, param, false, unit) --currently, conditions only work up to one layer of nesting, so the noun argument of the condition is assumed to be just a noun
+              else
+                others = getCursorsOnTile(x, y, false, unit)
+              end
+              found = found + #others
             end
           end
         end
-        if #others == 0 then
+        if found == 0 then
           result = false
         end
       end
     elseif condtype == "look at" then
       for _,param in ipairs(params) do
-        local others = getUnitsOnTile(unit.x + dirs8[unit.dir][1],unit.y + dirs8[unit.dir][2],param)
+        local others
+        if param ~= "mous" then
+          others = getUnitsOnTile(x + dirs8[unit.dir][1], y + dirs8[unit.dir][2], param, false, unit) --currently, conditions only work up to one layer of nesting, so the noun argument of the condition is assumed to be just a noun
+        else
+          others = getCursorsOnTile(x + dirs8[unit.dir][1], y + dirs8[unit.dir][2], false, unit)
+        end
         if #others == 0 then
           result = false
         end
       end
     elseif condtype == "sans" then
       for _,param in ipairs(params) do
-        local others = units_by_name[param]
+        local others = findUnitsByName(param)
         if #others > 1 or #others == 1 and others[1] ~= unit then
           result = false
         end
@@ -474,6 +501,24 @@ function getUnitsOnTile(x,y,name,not_destroyed,exclude)
         if not not_destroyed or (not_destroyed and not unit.removed) then
           if not name or (name and nameIs(unit, name)) then
             table.insert(result, unit)
+          end
+        end
+      end
+    end
+    return result
+  end
+end
+
+function getCursorsOnTile(x, y, not_destroyed, exclude)
+  if not inBounds(x, y) then
+    return {}
+  else
+    local result = {}
+    for _,cursor in ipairs(cursors) do
+      if cursor ~= exclude then
+        if not not_destroyed or (not_destroyed and not cursor.removed) then
+          if cursor.x == x and cursor.y == y then
+            table.insert(result, cursor)
           end
         end
       end
@@ -669,9 +714,7 @@ function screenToGameTile(x,y)
     local mx,my = transform:inverseTransformPoint(x,y)
     local tilex = math.floor(mx / TILE_SIZE)
     local tiley = math.floor(my / TILE_SIZE)
-    if inBounds(tilex, tiley) then
-      return tilex, tiley
-    end
+    return tilex, tiley
   end
   return nil,nil
 end
@@ -689,7 +732,10 @@ end
 
 function getHoveredTile()
   if not cursor_converted then
-    return screenToGameTile(love.mouse.getX(), love.mouse.getY())
+    local x, y = screenToGameTile(love.mouse.getX(), love.mouse.getY())
+    if inBounds(x, y) then
+      return x, y
+    end
   end
 end
 

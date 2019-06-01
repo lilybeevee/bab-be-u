@@ -403,7 +403,7 @@ function scene.draw(dt)
       local color
 
       if hasProperty(cursor,"colrful") or rainbowmode then
-        local newcolor = hslToRgb((#undo_buffer/45+cursor.x/18+cursor.y/18)%1, .5, .5, 1)
+        local newcolor = hslToRgb((#undo_buffer/45+cursor.screenx/18+cursor.screeny/18)%1, .5, .5, 1)
         newcolor[1] = newcolor[1]*255
         newcolor[2] = newcolor[2]*255
         newcolor[3] = newcolor[3]*255
@@ -425,7 +425,7 @@ function scene.draw(dt)
           love.graphics.setColor(getPaletteColor(color[1], color[2]))
         end
       end
-      love.graphics.draw(system_cursor, cursor.x, cursor.y)
+      love.graphics.draw(system_cursor, cursor.screenx, cursor.screeny)
       
       love.graphics.setColor(1,1,1)
       color = nil
@@ -433,7 +433,7 @@ function scene.draw(dt)
       if #cursor.overlay > 0 then
         local function overlayStencil()
           love.graphics.setShader(mask_shader)
-          love.graphics.draw(system_cursor, cursor.x, cursor.y)
+          love.graphics.draw(system_cursor, cursor.screenx, cursor.screeny)
           love.graphics.setShader()
         end
         for _,overlay in ipairs(cursor.overlay) do
@@ -441,7 +441,7 @@ function scene.draw(dt)
           love.graphics.stencil(overlayStencil, "replace")
           love.graphics.setStencilTest("greater", 0)
           love.graphics.setBlendMode("multiply", "premultiplied")
-          love.graphics.draw(sprites["overlay/" .. overlay], cursor.x, cursor.y, 0, 14/32, 14/32)
+          love.graphics.draw(sprites["overlay/" .. overlay], cursor.screenx, cursor.screeny, 0, 14/32, 14/32)
           love.graphics.setBlendMode("alpha", "alphamultiply")
           love.graphics.setStencilTest() 
         end

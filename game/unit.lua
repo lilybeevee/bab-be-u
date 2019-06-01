@@ -95,16 +95,14 @@ function updateUnits(undoing, big_update)
     
     local isstalk = matchesRule("?", "look at", "?");
     for _,ruleparent in ipairs(isstalk) do
-      local stalkers = units_by_name[ruleparent[1][1]]
-      local stalkees = units_by_name[ruleparent[1][3]]
+      local stalkers = findUnitsByName(ruleparent[1][1])
+      local stalkees = findUnitsByName(ruleparent[1][3])
       local stalker_conds = ruleparent[1][4][1]
       local stalkee_conds = ruleparent[1][4][2]
       for _,stalker in ipairs(stalkers) do
         table.sort(stalkees, function(a, b) return euclideanDistance(a, stalker) > euclideanDistance(b, stalker) end )
         for _,stalkee in ipairs(stalkees) do
-          if euclideanDistance(stalker, stalkee) <= 0 or not testConds(stalker, stalker_conds) or not testConds(stalkee, stalkee_conds) then
-            --nothing
-          else
+          if euclideanDistance(stalker, stalkee) > 0 and testConds(stalker, stalker_conds) and testConds(stalkee, stalkee_conds) then
             local stalk_dir = dirs8_by_offset[sign(stalkee.x - stalker.x)][sign(stalkee.y - stalker.y)]
             if hasProperty(stalker, "orthongl") then
               local use_hori = math.abs(stalkee.x - stalker.x) > math.abs(stalkee.y - stalker.y)
@@ -133,10 +131,18 @@ function updateUnits(undoing, big_update)
               local dx = ndir[1];
               local dy = ndir[2];
               if canMove(unit, dx, dy, false, false, unit.name) then
-                local new_unit = createUnit(tiles_by_name[unit.fullname], unit.x, unit.y, unit.dir)
-                addUndo({"create", new_unit.id, false})
-                moveUnit(new_unit,unit.x+dx,unit.y+dy)
-                addUndo({"update", new_unit.id, unit.x, unit.y, unit.dir})
+                if unit.class == "unit" then
+                  local new_unit = createUnit(tiles_by_name[unit.fullname], unit.x, unit.y, unit.dir)
+                  addUndo({"create", new_unit.id, false})
+                  moveUnit(new_unit,unit.x+dx,unit.y+dy)
+                  addUndo({"update", new_unit.id, unit.x, unit.y, unit.dir})
+                elseif unit.class == "cursor" then
+                  local others = getCursorsOnTile(unit.x + dx, unit.y + dy)
+                  if #others == 0 then
+                    local new_mouse = createMouse(unit.x + dx, unit.y + dy)
+                    addUndo({"create_cursor", new_mouse.id})
+                  end
+                end
                 give_me_moar = give_me_moar or amt >= 3;
               end
             end
@@ -146,10 +152,18 @@ function updateUnits(undoing, big_update)
               local dx = ndir[1];
               local dy = ndir[2];
               if canMove(unit, dx, dy, false, false, unit.name) then
-                local new_unit = createUnit(tiles_by_name[unit.fullname], unit.x, unit.y, unit.dir)
-                addUndo({"create", new_unit.id, false})
-                moveUnit(new_unit,unit.x+dx,unit.y+dy)
-                addUndo({"update", new_unit.id, unit.x, unit.y, unit.dir})
+                if unit.class == "unit" then
+                  local new_unit = createUnit(tiles_by_name[unit.fullname], unit.x, unit.y, unit.dir)
+                  addUndo({"create", new_unit.id, false})
+                  moveUnit(new_unit,unit.x+dx,unit.y+dy)
+                  addUndo({"update", new_unit.id, unit.x, unit.y, unit.dir})
+                elseif unit.class == "cursor" then
+                  local others = getCursorsOnTile(unit.x + dx, unit.y + dy)
+                  if #others == 0 then
+                    local new_mouse = createMouse(unit.x + dx, unit.y + dy)
+                    addUndo({"create_cursor", new_mouse.id})
+                  end
+                end
                 give_me_moar = give_me_moar or amt >= 3;
               end
             end
@@ -271,8 +285,8 @@ function updateUnits(undoing, big_update)
         is_u = hasProperty(on, "u")
         if is_u and sameFloat(unit, on) then
           table.insert(to_destroy, unit)
-            playSound("rule", 0.5)
-            addParticles("bonus", unit.x, unit.y, unit.color)
+          playSound("rule", 0.5)
+          addParticles("bonus", unit.x, unit.y, unit.color)
         end
       end
     end
@@ -289,6 +303,24 @@ function updateUnits(undoing, big_update)
           music_fading = true
           playSound("win", 0.5)
         end
+      end
+    end
+
+    local creators = matchesRule(nil, "creat", "?")
+    for _,match in ipairs(creators) do
+      local creator = match[2]
+      local createe = match[1][1][3]
+
+      local tile = tiles_by_name[createe]
+      if tile ~= nil then
+        local others = getUnitsOnTile(creator.x, creator.y, createe, true, creator)
+        if #others == 0 then
+          local new_unit = createUnit(tile, creator.x, creator.y, creator.dir)
+          addUndo({"create", new_unit.id, false})
+        end
+      elseif createe == "mous" then
+        local new_mouse = createMouse(creator.x, creator.y)
+        addUndo({"create_cursor", new_mouse.id})
       end
     end
   end
@@ -522,64 +554,32 @@ function convertUnits()
 
   converted_units = {}
 
-  for _,rules in ipairs(full_rules) do
+  local converts = matchesRule(nil,"be","?")
+  for _,match in ipairs(converts) do
+    local rules = match[1]
+    local unit = match[2]
+
     local rule = rules[1]
-    local obj_name = rule[3]
 
-    local istext = false
-    if rule[3] == "text" then
-      istext = true
-      obj_name = "text_" .. rule[1]
-    end
-    if rule[3]:starts("text_") then
-      istext = true
-    end
-    local obj_id = tiles_by_name[obj_name]
-    local obj_tile = tiles_list[obj_id]
-
-    if units_by_name[rule[1]] then
-      for i,unit in ipairs(units_by_name[rule[1]]) do
-        unit.got_object = {}
-        if rule[3] == "mous" or (obj_tile ~= nil and (obj_tile.type == "object" or istext)) then
-          if rule[2] == "be" then
-            if not unit.destroyed and rule[3] ~= unit.name then
-              if testConds(unit,rule[4][1]) then
-                if not unit.removed then
-                  table.insert(converted_units, unit)
-                end
-                unit.removed = true
-                if rule[3] == "mous" then
-                  local new_mouse = createMouse(unit.x, unit.y)
-                  addUndo({"create_cursor", new_mouse.id})
-                else
-                  local new_unit = createUnit(obj_id, unit.x, unit.y, unit.dir, true)
-                  addUndo({"create", new_unit.id, true})
-                end
-                if rule[1] == "windo" then
-                  local wx, wy = love.window.getPosition()
-                  if rule[3] == "up" then
-                    window_dir = 0
-                  elseif rule[3] == "right" then
-                    window_dir = 1
-                  elseif rule[3] == "down" then
-                    window_dir = 2
-                  elseif rule[3] == "left" then
-                    window_dir = 3
-                  elseif rule[3] == "walk" then
-                    if window_dir == 0 or window_dir == 2 then
-                      love.window.setPosition(wx, wy+(window_dir/2%2-1)*50) -- i hate this
-                    elseif window_dir == 1 or window_dir == 3 then
-                      love.window.setPosition(wx+((window_dir-1)/2%2-1)*50, wy) -- i hate this too
-                    end
-                  end
-                end
-              end
-            end
-          elseif rule[2] == "creat" and not unit.destroyed then
-            local new_unit = createUnit(obj_id, unit.x, unit.y, unit.dir)
-            addUndo({"create", new_unit.id, false})
-          end
+    if unit.class == "unit" and not nameIs(unit, rule[3]) then
+      local tile = tiles_by_name[rule[3]]
+      if rule[3] == "text" then
+        tile = tiles_by_name["text_" .. rule[1]]
+      end
+      if tile ~= nil then
+        if not unit.removed then
+          table.insert(converted_units, unit)
         end
+        unit.removed = true
+        local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
+        addUndo({"create", new_unit.id, true})
+      elseif rule[3] == "mous" then
+        if not unit.removed then
+          table.insert(converted_units, unit)
+        end
+        unit.removed = true
+        local new_mouse = createMouse(unit.x, unit.y)
+        addUndo({"create_cursor", new_mouse.id})
       end
     end
   end
