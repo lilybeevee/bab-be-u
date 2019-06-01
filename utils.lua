@@ -392,6 +392,13 @@ function testConds(unit,conds) --cond should be a {cond,{object types}}
           result = false
         end
       end
+    elseif condtype == "sans" then
+      for _,param in ipairs(params) do
+        local others = units_by_name[param]
+        if #others > 1 or #others == 1 and others[1] ~= unit then
+          result = false
+        end
+      end
     elseif condtype == "frenles" then
       local others = getUnitsOnTile(unit.x, unit.y, nil, false, unit)
       if #others > 0 then
