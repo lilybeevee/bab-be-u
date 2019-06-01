@@ -96,8 +96,6 @@ function loadMap()
   end
 end
 
---TODO: PERFORMANCE: Sometimes we care about how many instances of a rule exist, sometimes we only care if there's one or zero matches and thus can return as soon as we find the first one. Either write two sets of functions for these two use cases or make an 'any' boolean flag to do this.
-
 --[[
   First and third arguments can be:
     unit, string, nil

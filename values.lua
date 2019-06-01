@@ -1031,7 +1031,7 @@ tiles_list = {
     type = "text",
     texttype = "verb_object",
     allowconds = true,
-    grid = {9, 5},
+    grid = {11, 5},
     color = {0, 3},
     layer = 20,
   },
@@ -1331,6 +1331,51 @@ tiles_list = {
     type = "object",
     grid = {-1, -1},
     color = {0, 3},
+    layer = 20,
+  },
+  -- 126
+  {
+    name = "text_wait",
+    sprite = "text_wait",
+    type = "object",
+    grid = {11, 0},
+    color = {0, 3},
+    layer = 20,
+  },
+  -- 127
+  {
+    name = "text_sans",
+    sprite = "text_sans",
+    type = "object",
+    grid = {12, 0},
+    color = {2, 2},
+    layer = 20,
+  },
+  -- 128
+  {
+    name = "text_spoop",
+    sprite = "text_spoop",
+    type = "object",
+    grid = {9, 5},
+    color = {2, 2},
+    layer = 20,
+  },
+  -- 129
+  {
+    name = "text_stalk",
+    sprite = "text_stalk",
+    type = "object",
+    grid = {10, 5},
+    color = {5, 2},
+    layer = 20,
+  },
+  -- 130
+  {
+    name = "text_stelth",
+    sprite = "text_stelth",
+    type = "object",
+    grid = {11, 6},
+    color = {1, 3},
     layer = 20,
   },
 }

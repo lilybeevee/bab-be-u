@@ -236,7 +236,7 @@ function moveIt(mover, dx, dy, data, pulling, already_added, moving_units, movin
       end
       if not currently_moving then
         table.insert(sidekiker.moves, {reason = "sidekik", dir = mover.dir, times = 1})
-        table.insert(moving_units, sidekiker) --TODO: Patashu: moving_units_next instead? maybe someone will find a sidekiker bug and this will be the solution.
+        table.insert(moving_units, sidekiker) --Patashu: I think moving_units is correct (since it should happen 'at the same time' like a push or pull) but maybe changing this to moving_units_next will fix a bug in the future...?
         already_added[sidekiker] = true
       end
     end
