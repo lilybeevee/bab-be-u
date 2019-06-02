@@ -268,7 +268,7 @@ tiles_list = {
     sprite = "til",
     type = "object",
     grid = {3, 7},
-    color = {1, 1},
+    color = {1, 0},
     layer = 1,
   },
   -- 22
