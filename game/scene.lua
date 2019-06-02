@@ -559,7 +559,7 @@ function scene.doPassiveParticles(timer,word,effect,delay,chance,count,color)
 end
 
 function scene.mouseReleased(x,y,button)
-  if mouseOverBox(0,0,sprites["ui/cog"]:getHeight(),sprites["ui/cog"]:getWidth()) and is_mobile then
+  if mouseOverBox(0,0,sprites["ui/cog"]:getHeight(),sprites["ui/cog"]:getWidth()) then
     --love.keypressed("f2")
     new_scene = editor
   end
