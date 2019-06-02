@@ -81,6 +81,7 @@ tiles_list = {
     color = {0, 3},
     layer = 5,
     rotate = true,
+    eye = {x=22, y=10, w=2, h=2},
   },
   -- 2
   {
@@ -405,6 +406,7 @@ tiles_list = {
     color = {2, 1},
     layer = 16,
     rotate = true,
+    eye = {x=21, y=8, w=4, h=4},
   },
   --36
   {
@@ -443,6 +445,7 @@ tiles_list = {
     color = {2, 2},
     layer = 18,
     rotate = true,
+    eye = {x=19, y=7, w=2, h=2},
   },
   --38
   {
@@ -463,6 +466,7 @@ tiles_list = {
     color = {3, 1},
     layer = 18,
     rotate = true,
+    eye = {x=18, y=3, w=2, h=2},
   },
   --40
   {
@@ -500,6 +504,7 @@ tiles_list = {
     color = {0, 3},
     layer = 18,
     rotate = "true",
+    eye = {x=14, y=8, w=2, h=2},
   },
   --44
   {
@@ -578,6 +583,7 @@ tiles_list = {
     color = {2, 4},
     layer = 10,
     rotate = "true",
+    eye = {x=16, y=9, w=3, h=3},
   },
   --52
   {
@@ -676,6 +682,7 @@ tiles_list = {
     grid = {5, 8},
     color = {3, 1},
     layer = 5,
+    eye = {x=21, y=13, w=2, h=3},
   },
   -- 62
   {
@@ -837,6 +844,7 @@ tiles_list = {
     color = {4, 2},
     layer = 6,
     rotate = true,
+    eye = {x=21, y=9, w=2, h=2},
   },
   --78
   {
@@ -885,6 +893,7 @@ tiles_list = {
     color = {4, 2},
     layer = 5,
     rotate = true,
+    eye = {x=18, y=8, w=2, h=2},
   },
   -- 83
   {
@@ -914,6 +923,7 @@ tiles_list = {
     grid = {5, 6},
     color = {2, 4},
     layer = 5,
+    eye = {x=19, y=7, w=2, h=2},
   },
   -- 86
   {
@@ -969,6 +979,7 @@ tiles_list = {
     grid = {5, 4},
     color = {3, 3},
     layer = 5,
+    eye = {x=10, y=7, w=3, h=3},
   },
   -- 90
   {
@@ -987,6 +998,7 @@ tiles_list = {
     grid = {5, 5},
     color = {3, 1},
     layer = 12,
+    eye = {x=15, y=15, w=3, h=3},
   },
   -- 92
   {
