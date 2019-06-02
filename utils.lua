@@ -389,21 +389,15 @@ function testConds(unit,conds) --cond should be a {cond,{object types}}
       end
     elseif condtype == "arond" then
       for _,param in ipairs(params) do
-        local found = 0
+        local others = param ~= "mous" and getUnitsOnTile(unit.x, unit.y, param, false, unit) or getCursorsOnTile(x, y, false, unit)
         for nx=-1,1 do
           for ny=-1,1 do
             if (nx ~= 0) or (ny ~= 0) then
-              local others
-              if param ~= "mous" then
-                others = getUnitsOnTile(x, y, param, false, unit) --currently, conditions only work up to one layer of nesting, so the noun argument of the condition is assumed to be just a noun
-              else
-                others = getCursorsOnTile(x, y, false, unit)
-              end
-              found = found + #others
+              mergeTable(others, param ~= "mous" and getUnitsOnTile(unit.x+nx,unit.y+ny,param) or getCursorsOnTile(x+nx, y+ny, false, unit))
             end
           end
         end
-        if found == 0 then
+        if #others == 0 then
           result = false
         end
       end
