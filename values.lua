@@ -1061,7 +1061,7 @@ tiles_list = {
     sprite = "text_xwx",
     type = "text",
     texttype = "property",
-    grid = {10, 10},
+    grid = {12, 1},
     color = {3, 2},
     layer = 20,
   },
@@ -1402,6 +1402,25 @@ tiles_list = {
     type = "text",
     grid = {8, 10},
     color = {3, 3},
+    layer = 20,
+  },
+  -- 133
+  {
+    name = "larry",
+    sprite = "larry",
+    type = "object",
+    grid = {9, 10},
+    color = {2, 4},
+    layer = 5,
+    rotate = true,
+  },
+  -- 134
+  {
+    name = "text_larry",
+    sprite = "text_larry",
+    type = "object",
+    grid = {10, 10},
+    color = {2, 4},
     layer = 20,
   },
 }
