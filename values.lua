@@ -1385,4 +1385,23 @@ tiles_list = {
     color = {1, 3},
     layer = 20,
   },
+  -- 131
+  {
+    name = "pata",
+    sprite = "pata",
+    type = "object",
+    grid = {7, 10},
+    color = {3, 3},
+    layer = 5,
+    rotate = true,
+  },
+  -- 132
+  {
+    name = "text_pata",
+    sprite = "text_pata",
+    type = "text",
+    grid = {8, 10},
+    color = {3, 3},
+    layer = 20,
+  },
 }
