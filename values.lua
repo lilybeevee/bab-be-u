@@ -778,8 +778,8 @@ tiles_list = {
   },
   -- 72
   {
-    name = "text_on",
-    sprite = "text_on",
+    name = "text_wfren",
+    sprite = "text_wfren",
     type = "text",
     texttype = "cond_infix",
     grid = {7, 4},
