@@ -616,6 +616,7 @@ function createUnit(tile,x,y,dir,convert,id_)
 
   unit.old_active = unit.active
   unit.overlay = {}
+  unit.prop_status = 0
 
   local data = tiles_list[tile]
 

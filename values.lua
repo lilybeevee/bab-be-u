@@ -269,7 +269,7 @@ tiles_list = {
     sprite = "til",
     type = "object",
     grid = {3, 7},
-    color = {1, 1},
+    color = {1, 0},
     layer = 1,
   },
   -- 22
@@ -1361,6 +1361,7 @@ tiles_list = {
   {
     name = "text_sans",
     sprite = "text_sans",
+    propsprite = "text_sans_property",
     type = "text",
     texttype = "cond_infix",
     grid = {12, 0},
