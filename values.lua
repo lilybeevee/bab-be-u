@@ -1418,7 +1418,7 @@ tiles_list = {
   {
     name = "text_larry",
     sprite = "text_larry",
-    type = "object",
+    type = "text",
     grid = {10, 10},
     color = {2, 4},
     layer = 20,
