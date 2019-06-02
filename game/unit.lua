@@ -96,11 +96,11 @@ function updateUnits(undoing, big_update)
     local isstalk = matchesRule("?", "look at", "?");
     for _,ruleparent in ipairs(isstalk) do
       local stalkers = findUnitsByName(ruleparent[1][1])
-      local stalkees = findUnitsByName(ruleparent[1][3])
+      local stalkees = copyTable(findUnitsByName(ruleparent[1][3]))
       local stalker_conds = ruleparent[1][4][1]
       local stalkee_conds = ruleparent[1][4][2]
       for _,stalker in ipairs(stalkers) do
-        table.sort(stalkees, function(a, b) return euclideanDistance(a, stalker) > euclideanDistance(b, stalker) end )
+        table.sort(stalkees, function(a, b) return euclideanDistance(a, stalker) < euclideanDistance(b, stalker) end )
         for _,stalkee in ipairs(stalkees) do
           if euclideanDistance(stalker, stalkee) > 0 and testConds(stalker, stalker_conds) and testConds(stalkee, stalkee_conds) then
             local stalk_dir = dirs8_by_offset[sign(stalkee.x - stalker.x)][sign(stalkee.y - stalker.y)]
@@ -111,6 +111,7 @@ function updateUnits(undoing, big_update)
             addUndo({"update", stalker.id, stalker.x, stalker.y, stalker.dir})
             stalker.olddir = stalker.dir
             updateDir(stalker, stalk_dir)
+            break
           end
         end
       end

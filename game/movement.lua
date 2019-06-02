@@ -464,28 +464,28 @@ function doPull(unit,dx,dy,data, already_added, moving_units, moving_units_next,
 end
 
 function fallBlock()
-  local fallers = getUnitsWithEffect("haet_skye")
+  local fallers = getUnitsWithEffect("haet skye")
   table.sort(fallers, function(a, b) return a.y > b.y end )
   
   for _,unit in ipairs(fallers) do
     local caught = false
 	
-	addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
-	while (caught == false) do
-	  local catchers = getUnitsOnTile(unit.x,unit.y+1)
-	  if not inBounds(unit.x,unit.y+1) then
-	    caught = true
-	  end
-	  for _,on in ipairs(catchers) do
-	    if not canMove(unit, 0, 1) then
-		  caught = true
-		end
-	  end
-	  
-	  if caught == false then
-	    moveUnit(unit,unit.x,unit.y+1)
-	  end
-	end
+    addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
+    while (caught == false) do
+      local catchers = getUnitsOnTile(unit.x,unit.y+1)
+      if not inBounds(unit.x,unit.y+1) then
+        caught = true
+      end
+      for _,on in ipairs(catchers) do
+        if not canMove(unit, 0, 1) then
+          caught = true
+        end
+      end
+      
+      if caught == false then
+        moveUnit(unit,unit.x,unit.y+1)
+      end
+    end
   end
 end
 
