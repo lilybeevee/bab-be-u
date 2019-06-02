@@ -358,7 +358,7 @@ function testConds(unit,conds) --cond should be a {cond,{object types}}
 
     local x, y = unit.x, unit.y
 
-    if condtype == "on" then
+    if condtype == "wfren" then
       for _,param in ipairs(params) do
         local others
         if param ~= "mous" then
