@@ -1430,7 +1430,7 @@ tiles_list = {
   {
     name = "larry",
     sprite = "larry",
-    sleepsprite = "larry_slep"
+    sleepsprite = "larry_slep",
     type = "object",
     grid = {9, 10},
     color = {2, 4},
