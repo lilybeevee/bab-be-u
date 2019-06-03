@@ -374,7 +374,7 @@ function updateUnits(undoing, big_update)
         end
       end
 
-      unit.layer = tile.layer
+      unit.layer = tile.layer + (20 * countProperty(unit, "flye"))
 
       if unit.fullname == "os" then
         local os = love.system.getOS()
