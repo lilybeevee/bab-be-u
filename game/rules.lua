@@ -4,14 +4,8 @@ function parseRules(undoing)
   not_rules = {}
   protect_rules = {}
 
-  rules_with["text"] = {}
-  rules_with["be"] = {}
-  rules_with["go away"] = {}
   local text_be_go_away = {{"text","be","go away",{{},{}}},{},1}
-  table.insert(full_rules, text_be_go_away)
-  table.insert(rules_with["text"], text_be_go_away)
-  table.insert(rules_with["be"], text_be_go_away)
-  table.insert(rules_with["go away"], text_be_go_away)
+  addRule(text_be_go_away)
 
   has_new_rule = false
 
