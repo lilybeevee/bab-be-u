@@ -1,3 +1,7 @@
+Vanilla todo list: FACING DIR, WORD, GROUP, EMPTY, LEVEL, map/world/cursor stuff, text stacking, letter/combined text
+
+---
+
 WINDO: Going to be the big bab meta mechanic. You can open windows, close/crash windows, make them move around, and have inter-window communication to have things happening in different places in bab simultaneously. If WINDO be X, the entire WINDO becomes a giant X until you undo. Forming a giant rule with three WINDOs that have been turned into blocks of text will happen at some point.
 
 SPLAT: Fixes a unit's position to the window. It works one of two ways (not sure which:)
