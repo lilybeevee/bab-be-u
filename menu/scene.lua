@@ -26,6 +26,9 @@ function scene.load()
   }
   nextPresenceUpdate = 0
   love.keyboard.setKeyRepeat(false)
+  if love.filesystem.getInfo("build_number") then
+    local build_number = love.filesystem.read("build_number")
+  end
 end
 
 function scene.draw(dt)
@@ -78,6 +81,10 @@ function scene.draw(dt)
   end
 
   love.graphics.draw(sprites["ui/github"], 20+sprites["ui/github"]:getWidth(), height-sprites["ui/github"]:getHeight() - 10)
+
+  if build_number then
+    love.graphics.print('v'..build_number)
+  end
 end
 
 function scene.update()
