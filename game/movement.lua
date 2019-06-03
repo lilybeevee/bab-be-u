@@ -491,7 +491,7 @@ end
 
 function doZip(unit)
   if not canMove(unit, 0, 0, false, false, unit.name, "zip") then
-    --try to zip to the tile behind us - this is usually elegant, since we probably just left that tile. if that fails, try increasingly larger squares around our current position until we give up. I guess reading order is just going to be the most elegant tiebreaker? but I would prefer it if it tries more backwards directions before more forwards directions in each shell.
+    --try to zip to the tile behind us - this is usually elegant, since we probably just left that tile. if that fails, try increasingly larger squares around our current position until we give up. prefer squares closer to the tile behind us, arbitrarily break ties via however table.sort and the order we put tiles into it decides to do it!
     local dx = -dirs8[unit.dir][1]
     local dy = -dirs8[unit.dir][2]
     if canMove(unit, dx, dy, false, false, unit.name, "zip") then
@@ -500,17 +500,24 @@ function doZip(unit)
       return
     end
     
+    local orig = {x = dx, y = dy}
     start_radius = 1
     end_radius = 5
     for radius = start_radius, end_radius do
+      places = {}
       for dx = -radius, radius do
         for dy = -radius, radius do
-          --experimental feature: double as a kind of topple by zipping out of other units with our name. change it in all places in the function if removed!!
-          if canMove(unit, dx, dy, false, false, unit.name, "zip") then
-            addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
-            moveUnit(unit,unit.x+dx,unit.y+dy)
-            return
-          end
+          table.insert(places, {x = dx, y = dy})
+        end
+      end
+      table.sort(places, function(a, b) return euclideanDistance(a, orig) < euclideanDistance(b, orig) end )
+      for _,place in ipairs(places) do
+        local dx = place.x
+        local dy = place.y
+        if canMove(unit, dx, dy, false, false, unit.name, "zip") then
+          addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
+          moveUnit(unit,unit.x+dx,unit.y+dy)
+          return
         end
       end
     end
