@@ -560,6 +560,9 @@ end
 
 function scene.loadLevel()
   new_scene = loadscene
+  if level_name then
+    presence["details"] = "working on "..level_name..".bab"
+  end
 end
 
 function scene.openSettings()
