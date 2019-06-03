@@ -249,15 +249,21 @@ function scene.draw(dt)
             unit.color = copyTable(tiles_list[unit.tile].color)
           end
 
-          local sprite = sprites[unit.sprite]
-          if not sprite then sprite = sprites["wat"] end
-
+          local sprite_name = unit.sprite
+          
           for type,name in pairs(unit.sprite_transforms) do
             if table.has_value(unit.used_as, type) then
-              sprite = sprites[name]
+              sprite_name = name
               break
             end
           end
+          local frame = (unit.frame + anim_stage) % 3 + 1
+          if sprites[sprite_name .. "_" .. frame] then
+            sprite_name = sprite_name .. "_" .. frame
+          end
+          if not sprites[sprite_name] then sprite_name = "wat" end
+
+          local sprite = sprites[sprite_name]
 
           local drawx, drawy = unit.draw.x, unit.draw.y
 
@@ -370,7 +376,7 @@ function scene.draw(dt)
             end
 
             love.graphics.setColor(getPaletteColor(2, 2))
-            love.graphics.draw(sprites["scribble_" .. anim_stage], fulldrawx, fulldrawy, 0, unit.draw.scalex * scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+            love.graphics.draw(sprites["scribble_" .. anim_stage+1], fulldrawx, fulldrawy, 0, unit.draw.scalex * scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
 
             love.graphics.pop()
           end

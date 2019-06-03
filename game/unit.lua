@@ -622,6 +622,7 @@ function createUnit(tile,x,y,dir,convert,id_)
   unit.old_active = unit.active
   unit.overlay = {}
   unit.used_as = {} -- list of text types, used for determining sprite transformation
+  unit.frame = math.random(1, 3)-1 -- for potential animation
 
   local data = tiles_list[tile]
 

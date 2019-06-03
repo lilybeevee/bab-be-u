@@ -32,7 +32,7 @@ function love.load()
   ticks = {}
   move_sound_data = nil
   move_sound_source = nil
-  anim_stage = 1
+  anim_stage = 0
   next_anim = ANIM_TIMER
 
   empty_sprite = love.image.newImageData(32, 32)
@@ -303,7 +303,7 @@ function love.draw()
 
   next_anim = next_anim - (dt * 1000)
   if next_anim <= 0 then
-    anim_stage = (anim_stage % 3) + 1
+    anim_stage = (anim_stage + 1) % 3
     next_anim = next_anim + ANIM_TIMER
   end
 
