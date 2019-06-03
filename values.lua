@@ -747,7 +747,7 @@ tiles_list = {
     sprite = "text_goright",
     type = "text",
     texttype = "property",
-    grid = {7, 1},
+    grid = {6, 1},
     color = {1, 4},
     layer = 20,
     rotate = true,
@@ -1466,6 +1466,16 @@ tiles_list = {
     type = "text",
     grid = {5, 0},
     color = {0, 3},
+    layer = 20,
+  },
+  -- 138
+  {
+    name = "text_tall",
+    sprite = "text_tall",
+    type = "text",
+    texttype = "property",
+    grid = {7, 1},
+    color = {0, 1},
     layer = 20,
   },
 }

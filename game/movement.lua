@@ -557,7 +557,7 @@ function canMove(unit,dx,dy,pushing_,pulling_,solid_name,reason)
           stopped = true
         end
       end
-      if hasProperty(v, "no go") then --Things that are STOP stop being PUSH or PULL, unlike in Baba. This is currently intended.
+      if hasProperty(v, "no go") and sameFloat(unit, v) then --Things that are STOP stop being PUSH or PULL, unlike in Baba. Also unlike Baba, a wall can be floated across if it is not tall!
         stopped = true
       end
       if hasProperty(v, "sidekik") and not hasProperty(v, "go away") and not would_swap_with then
