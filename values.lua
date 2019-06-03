@@ -25,6 +25,12 @@ debug_values = {
 
 }
 
+if love.filesystem.getInfo("build_number") ~= nil then
+  build_number = love.filesystem.read("build_number")
+else
+  build_number = "HEY, READ THE README!"
+end
+
 dirs = {{1,0},{0,1},{-1,0},{0,-1}}
 dirs_by_name = {
   right = 1,

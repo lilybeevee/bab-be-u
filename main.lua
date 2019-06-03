@@ -119,6 +119,49 @@ function love.load()
   registerSound("rule")
   registerSound("win")
 
+  print([[
+                                  BBBBBBBBBB
+                                  BBBBBBBBBBBBB            BBBBBBBBBB
+                                  BBBBBBBBBBBBB            BBBBBBBBBB
+                                BBBBBBBBBBBBBBB          BBBBBBBBBBBB
+                                BBBBBBBBBBBBBBB          BBBBBBBBBBBB
+                                BBBBBBBBBBBBBBB       BBBBBBBBBBBBBBB
+                                BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+                                BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+                      BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+                NBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB        BBBBBBBBBB
+                 BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB        BBBBBBBBBB
+              BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB        BBBBBBBBBB          
+           N  BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB        BBBBBBBBBB          
+            BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB        BBBBBBBBBB          
+         BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB        BBBBBBBBBBBBBBBBBBBBBB             
+         BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB        BBBBBBBBBBBBBBBBBBBBBB             
+         BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB        BBBBBBBBBBBBBBBBBBBBBB             
+         BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB        BBBBBBBBBBBBBBBBBBBBBB             
+         BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB        BBBBBBBBBBBBBBBBBBBBBB             
+         BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB             
+         BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB             
+         BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB             
+         BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB               
+         BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB               
+              BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB                    
+            BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB                  
+            BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB                  
+            BBBBBBBBBB  BBBBBBBB               BBBBBBBBBBBBBBBBB                  
+           NBBBBBBBBBB  BBBBBBBB               BBBBBBBBBBBBBBBBB                  
+         BBBBBBBBBBBBB  BBBBBBBB               BBBBBBB   BBBBBBB                  
+         BBBBBBBBBB     BBBBBBBBBB             BBBBBBB   BBBBBBBBBB               
+         BBBBBBBBBB     BBBBBBBBBB             BBBBBBB   BBBBBBBBBB               
+         BBBBBBBB       BBBBBBBBBB                       BBBBBBBBBB               
+         BBBBBBBB          BBBBBBBBBB                    BBBBBBBBBB               
+         BBBBBBBB          BBBBBBBBBB                    BBBBBBBBBB               
+         BBBBBBBB          BBBBBBBBBB                      BBBBBBBB               
+         BBBBBBBB          BBBBBBBBBB                      BBBBBBBB               
+         BBBBBBBB          BBBBBBBBBB                      BBBBBBBB               
+  ]])
+  print("--------------------------------")
+  print("BAB BE U v."..build_number)
+
   scene = menu
   scene.load()
 
