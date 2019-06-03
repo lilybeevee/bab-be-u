@@ -1,0 +1,49 @@
+WINDO: Going to be the big bab meta mechanic. You can open windows, close/crash windows, make them move around, and have inter-window communication to have things happening in different places in bab simultaneously. If WINDO be X, the entire WINDO becomes a giant X until you undo. Forming a giant rule with three WINDOs that have been turned into blocks of text will happen at some point.
+
+SPLAT: Fixes a unit's position to the window. It works one of two ways (not sure which:)
+1) It is considered to be in that tile even if you change levels, until something unsplats or otherwise removes it.
+2) When you change levels, splatted things unsplat and fall down (so it's like a NXT variant).
+
+NXT: LVL BE NXT moves you to the next level in sequential order. For any other object, it phases out and phases back in on the next level you go to.
+
+PERSIST: Objects that are persist preserve their state even when you change levels. (I assume they also have the lily mod behaviour where they ignore undos?)
+
+IMBLIES (IMPLIES): A variant on MEANS from lily's mod. Started out as just the idea of rewriting 'propA IMPLY propB' as 'SUPERALL WITH propA IS propB' (where SUPERALL is ALL AND EMPTY AND LEVEL AND MOUSE etc etc). But even more generically, it can be a rule parser modification: x IMPLY y means 'every time x text is seen by the parser, treat it as a stack of x text and y text'. Not sure which is the better mechanic.
+
+x GIV (GIVES) y: If you're float on (same tile, same floating) x, you have the property y - e.g. SUPERALL FLOATON X IS Y.
+
+x is NOU: x doesn't get properties when you write x is y. Instead, it gives them to whatever's on it - so it's like all of its BEs are GIVs.
+
+OUT:
+[11:46 AM] the bab dictator: so what you do is LEVEL IS OUT and the level becomes a file and if you drag it onto the window in the world map the level will appear in a clearly-broken spot of the map, where the flag transformation level used to be in baba
+
+Cursor standardization:
+
+Cursor is now an object like any other rather than being a weird rules-ignoring thing.
+
+The default rules (they're inserted into the rules before anything else like level is stop and text is push) are:
+
+Cursor is you and float, cursor bound level and path
+
+BOUND means 'if a tile doesn't have at least one thing I'm bound to, treat it as impassible'.
+
+We also have to change the following things:
+1) FLOAT lets you ignore NO GO.
+2) TALL - new property that means you can't float above or below it. (e.g. change sameFloat code to also check TALL)
+So whenever you have floating stuff and you don't want it to phase through walls, you can write TEXT IS FLOAT, WALL IS TALL AND STOP or whatever.
+
+Whenever a thing that is YOU idles on a thing that can be entered as a level, then you enter the level.
+
+If two things that are YOU enter two different levels simultaneously, they are combined. Their largest dimensions are taken, their objects are added together and if the combined level is won, both individual levels are won.
+
+Another new property is 'ZIP' which makes it so if you couldn't enter the tile you're on (if you weren't on it, so ignoring yourself), then you move to the nearest tile that you could enter (maybe tie breaking by distance, then by prioritizing backwards movement over forwards movement, so you tend to get ejected to the nearest tile behind you). This wouldn't be a default rule like the others, but could be useful in other ways.
+
+PRESS (key):
+A prefix condition that's true if the last thing you did was press that key. Basically a way to have arbitrarily many special action keys. Not sure how this works with touch screens/controllers - maybe the game detects how many press (key) conditions exists in the level, and creates on-screen virtual buttons/arbitrary controller mappings for them that it displays to you.
+
+modded words from baba mods that could be fun (but obviously not going to add a bunch of stuff unless lily wants it to exist):
+cg5: WRAP/PORTAL, ACTIVE/BLOCKED, FIND/EVIL/REPENT
+jumbods64: LEAN, DRIFT/RISE (1 tile per turn FALL/VALL)
+lily: MEANS (well it'd be IMPLIES now), COPY (fixed up to be more generic), WITH (if it doesn't turn into IMPLIES but I think this word is cool), BAIT/LURE, TURN (45 degrees by default, 90 degrees if you're ORTHO or DIAG?), STILL, AUTO??, RESET/conds/PERSIST (if it doesn't get expanded on), ANY?, (probably not STICKY since SIDEKIK exists and STICKY is hard), NEAREST/TOUCH (easy), GRAVITY (I know lily expressed an interest in at least simple GRAVITY stuff), TIMELESS (hard but lily wants it anyway), BEAM/REFLECT/SPLIT/CROSS (hard but could be fun)
+patashu: STUCK (as FREEZ or IN JAIL or something), TOPPLE?, (PHASE is unlikely after the FLOAT/NO GO changes, not much special it does anymore), STRAFE?, MAYBE, COLLIDE, SEND/RECEIVE/RESEND? (if we even want a meta mechanic like that), EVENTURN/ODDTURN?, STRONG (as ATTAC and not letting you bulldoze walls?), MOONWALK/DRUNK/DRUNKER/SKIP?, STUBBORN (maybe adding that stubborn things that can't move diagonally try horizontal/vertical with similar timing to when walkers flip, and stubborn weak walkers will kill themselves?), LAZY (as effort.)
+unimplemented: MARK/UNMARK/MARKED, ROUND, CLIMB, WIELD, CHAINED, VERY/ABSOLUTE (as PLZ), SPAWNER/RESPAWN/SPAWN, HASMORE/MASSPROD/PRINT, YOINK, X-AXIS/Y-AXIS, SPLIT, DITTO MARK ("), JUMP, BEHAVE, REPEL, MAGNET, TRAILS, CARRY, NEWTON, FLICK, HEAVY, SAYS/FEELS/LITERAL/THING, NEW/OLD?
