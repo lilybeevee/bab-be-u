@@ -120,6 +120,8 @@ function love.load()
   registerSound("win")
 
   print([[
+
+  
                                   BBBBBBBBBB
                                   BBBBBBBBBBBBB            BBBBBBBBBB
                                   BBBBBBBBBBBBB            BBBBBBBBBB
@@ -159,8 +161,10 @@ function love.load()
          BBBBBBBB          BBBBBBBBBB                      BBBBBBBB               
          BBBBBBBB          BBBBBBBBBB                      BBBBBBBB               
   ]])
-  print("--------------------------------")
-  print("BAB BE U v."..build_number)
+  print([[
+                                   BAB BE U
+                                    v. ]]..build_number..[[
+                                   ❤ v. ]]..love.getVersion()..'\n\n')
 
   scene = menu
   scene.load()
@@ -322,6 +326,7 @@ function love.draw()
     end
     mousex, mousey = love.mouse.getPosition()
     local debugtext = '~~ !! DEBUG MENU !! ~~'..'\n'..
+    'bab be u commit n'..build_number..'\n'..
     'window height: '..love.graphics.getHeight()..'\n'..
     'window width: '..love.graphics.getWidth()..'\n'..
     'mouse: x'..mousex..' y'..mousey..'\n'..
