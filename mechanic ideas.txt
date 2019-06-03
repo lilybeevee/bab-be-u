@@ -25,18 +25,18 @@ The default rules (they're inserted into the rules before anything else like lev
 
 Cursor is you and float, cursor bound level and path
 
-BOUND means 'if a tile doesn't have at least one thing I'm bound to, treat it as impassible'.
+~~BOUND means 'if a tile doesn't have at least one thing I'm bound to, treat it as impassible'.~~ IMPLEMENTED
 
-We also have to change the following things:
+~~We also have to change the following things:
 1) FLOAT lets you ignore NO GO.
 2) TALL - new property that means you can't float above or below it. (e.g. change sameFloat code to also check TALL)
-So whenever you have floating stuff and you don't want it to phase through walls, you can write TEXT IS FLOAT, WALL IS TALL AND STOP or whatever.
+So whenever you have floating stuff and you don't want it to phase through walls, you can write TEXT IS FLOAT, WALL IS TALL AND STOP or whatever.~~ IMPLEMENTED
 
 Whenever a thing that is YOU idles on a thing that can be entered as a level, then you enter the level.
 
 If two things that are YOU enter two different levels simultaneously, they are combined. Their largest dimensions are taken, their objects are added together and if the combined level is won, both individual levels are won.
 
-Another new property is 'ZIP' which makes it so if you couldn't enter the tile you're on (if you weren't on it, so ignoring yourself), then you move to the nearest tile that you could enter (maybe tie breaking by distance, then by prioritizing backwards movement over forwards movement, so you tend to get ejected to the nearest tile behind you). This wouldn't be a default rule like the others, but could be useful in other ways.
+~~Another new property is 'ZIP' which makes it so if you couldn't enter the tile you're on (if you weren't on it, so ignoring yourself), then you move to the nearest tile that you could enter (maybe tie breaking by distance, then by prioritizing backwards movement over forwards movement, so you tend to get ejected to the nearest tile behind you). This wouldn't be a default rule like the others, but could be useful in other ways.~~ IMPLEMENTED
 
 PRESS (key):
 A prefix condition that's true if the last thing you did was press that key. Basically a way to have arbitrarily many special action keys. Not sure how this works with touch screens/controllers - maybe the game detects how many press (key) conditions exists in the level, and creates on-screen virtual buttons/arbitrary controller mappings for them that it displays to you.
