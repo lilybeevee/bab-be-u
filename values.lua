@@ -1440,4 +1440,23 @@ tiles_list = {
     color = {2, 4},
     layer = 20,
   },
+  -- 135
+  {
+    name = "lila",
+    sprite = "lila",
+    grid = {11, 8},
+    color = {4, 2},
+    layer = 5,
+    rotate = true,
+    eye = {x=19, y=8, w=2, h=2}
+  },
+  -- 136
+  {
+    name = "text_lila",
+    sprite = "text_lila",
+    type = "text",
+    grid = {12, 8},
+    color = {4, 2},
+    layer = 20,
+  },
 }
