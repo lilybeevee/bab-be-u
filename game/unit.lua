@@ -738,7 +738,7 @@ function updateDir(unit,dir)
 
   unit.draw.rotation = unit.draw.rotation % 360
   local target_rot = (dir - 1) * 45
-  if math.abs(unit.draw.rotation - target_rot) == 180 then
+  if unit.rotate and math.abs(unit.draw.rotation - target_rot) == 180 then
     -- flip "mirror" effect
     addTween(tween.new(0.05, unit.draw, {scalex = 0}), "unit:scale:" .. unit.id, function()
       unit.draw.rotation = target_rot
