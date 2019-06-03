@@ -79,7 +79,7 @@ tiles_list = {
     type = "object",
     grid = {0, 1},
     color = {0, 3},
-    layer = 5,
+    layer = 6,
     rotate = true,
     eye = {x=22, y=10, w=2, h=2},
   },
@@ -385,7 +385,7 @@ tiles_list = {
     type = "object",
     grid = {0, 8},
     color = {6, 2},
-    layer = 16,
+    layer = 3,
   },
   --34
   {
@@ -404,7 +404,7 @@ tiles_list = {
     type = "object",
     grid = {0, 7},
     color = {2, 1},
-    layer = 16,
+    layer = 5,
     rotate = true,
     eye = {x=21, y=8, w=4, h=4},
   },
@@ -443,7 +443,7 @@ tiles_list = {
     type = "object",
     grid = {0, 2},
     color = {2, 2},
-    layer = 18,
+    layer = 5,
     rotate = true,
     eye = {x=19, y=7, w=2, h=2},
   },
@@ -464,7 +464,7 @@ tiles_list = {
     type = "object",
     grid = {3, 6},
     color = {3, 1},
-    layer = 18,
+    layer = 5,
     rotate = true,
     eye = {x=18, y=3, w=2, h=2},
   },
@@ -502,7 +502,7 @@ tiles_list = {
     type = "object",
     grid = {3, 8},
     color = {0, 3},
-    layer = 18,
+    layer = 5,
     rotate = "true",
     eye = {x=14, y=8, w=2, h=2},
   },
@@ -523,7 +523,7 @@ tiles_list = {
     type = "object",
     grid = {3, 5},
     color = {4, 2},
-    layer = 10,
+    layer = 3,
     rotate = "true",
   },
   --46
@@ -542,7 +542,7 @@ tiles_list = {
     type = "object",
     grid = {3, 10},
     color = {2, 2},
-    layer = 10,
+    layer = 3,
     rotate = "true",
   },
   --48
@@ -561,7 +561,7 @@ tiles_list = {
     type = "object",
     grid = {3, 9},
     color = {5, 2},
-    layer = 10,
+    layer = 2,
     rotate = "true",
   },
   --50
@@ -581,7 +581,7 @@ tiles_list = {
     type = "object",
     grid = {9, 7},
     color = {2, 4},
-    layer = 10,
+    layer = 5,
     rotate = "true",
     eye = {x=16, y=9, w=3, h=3},
   },
@@ -700,7 +700,7 @@ tiles_list = {
     type = "object",
     grid = {0, 10},
     color = {4, 1},
-    layer = 5,
+    layer = 3,
   },
   -- 64
   {
@@ -718,7 +718,7 @@ tiles_list = {
     type = "object",
     grid = {0, 9},
     color = {1, 1},
-    layer = 3,
+    layer = 1,
     rotate = true,
   },
   -- 66
@@ -842,7 +842,7 @@ tiles_list = {
     type = "object",
     grid = {5, 7},
     color = {4, 2},
-    layer = 6,
+    layer = 5,
     rotate = true,
     eye = {x=21, y=9, w=2, h=2},
   },
@@ -862,7 +862,7 @@ tiles_list = {
     type = "object",
     grid = {7, 7},
     color = {0, 3},
-    layer = 4,
+    layer = 3,
   },
   --80
   {
@@ -941,7 +941,7 @@ tiles_list = {
     type = "object",
     grid = {7, 8},
     color = {0, 3},
-    layer = 5,
+    layer = 7,
     rotate = true,
   },
   -- 88
@@ -960,7 +960,7 @@ tiles_list = {
     type = "object",
     grid = {3, 4},
     color = {5, 1},
-    layer = 5,
+    layer = 1,
   },
   -- 88
   {
@@ -997,7 +997,7 @@ tiles_list = {
     type = "object",
     grid = {5, 5},
     color = {3, 1},
-    layer = 12,
+    layer = 3,
     eye = {x=15, y=15, w=3, h=3},
   },
   -- 92
@@ -1016,7 +1016,7 @@ tiles_list = {
     type = "object",
     grid = {7, 9},
     color = {3, 1},
-    layer = 12,
+    layer = 3,
   },
   -- 92
   {
@@ -1034,7 +1034,7 @@ tiles_list = {
     type = "object",
     grid = {-1,-1},
     color = {255, 255, 255},
-    layer = 20,
+    layer = 3,
   },
   --- 94
   {
@@ -1124,7 +1124,7 @@ tiles_list = {
     type = "object",
     grid = {11, 3},
     color ={3, 2},
-    layer = 5,
+    layer = 1,
   },
   --- 103
   {
@@ -1172,7 +1172,7 @@ tiles_list = {
     type = "object",
     grid = {11, 4},
     color ={0, 3},
-    layer = 5,
+    layer = 1,
     rotate = true,
   },
   --- 108
@@ -1220,7 +1220,7 @@ tiles_list = {
     type = "object",
     grid = {3,3},
     color = {1, 2},
-    layer = 3,
+    layer = 1,
   },
   --- 113
   {
@@ -1307,7 +1307,7 @@ tiles_list = {
     type = "object",
     grid = {5,10},
     color = {0, 3},
-    layer = 6,
+    layer = 7,
   },
   -- 122
   {
