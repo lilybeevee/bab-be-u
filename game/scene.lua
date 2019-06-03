@@ -110,6 +110,10 @@ function scene.keyPressed(key, isrepeat)
     if not repeat_timers["udlr"] then
       repeat_timers["udlr"] = 30
     end
+  elseif key == "z" or key == "backspace" then
+    if not repeat_timers["undo"] then
+      repeat_timers["undo"] = 0
+    end
   end
 
   for _,v in ipairs(repeat_keys) do
@@ -138,7 +142,7 @@ function scene.keyReleased(key)
     end
   end
 
-  if key == "z" then
+  if key == "z" or key == "backspace" then
     UNDO_DELAY = MAX_UNDO_DELAY
   end
 
@@ -503,10 +507,13 @@ function scene.checkInput()
   if not (key_down["up"] or key_down["down"] or key_down["left"] or key_down["right"]) then
     repeat_timers["udlr"] = nil
   end
+  if not (key_down["z"] or key_down["backspace"]) then
+    repeat_timers["undo"] = nil
+  end
 
   for _,key in ipairs(repeat_keys) do
     if not win and repeat_timers[key] ~= nil and repeat_timers[key] <= 0 then
-      if key == "z" or key == "backspace" then
+      if key == "undo" then
         undo()
       else
         local x, y = 0, 0
@@ -532,7 +539,7 @@ function scene.checkInput()
 
     if repeat_timers[key] ~= nil then
       if repeat_timers[key] <= 0 then
-        if key ~= "z" then
+        if key ~= "undo" then
           repeat_timers[key] = repeat_timers[key] + INPUT_DELAY
         else
           repeat_timers[key] = repeat_timers[key] + UNDO_DELAY
