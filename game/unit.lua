@@ -616,7 +616,7 @@ function createUnit(tile,x,y,dir,convert,id_)
 
   unit.old_active = unit.active
   unit.overlay = {}
-  unit.prop_status = 0
+  unit.used_as = {} -- list of text types, used for determining sprite transformation
 
   local data = tiles_list[tile]
 
@@ -629,6 +629,8 @@ function createUnit(tile,x,y,dir,convert,id_)
   unit.layer = data.layer
   unit.rotate = data.rotate or false
   unit.got_objects = {}
+  unit.sprite_transforms = data.sprite_transforms or {}
+  unit.eye = data.eye -- eye rectangle used for sans
 
   unit.fullname = data.name
   if unit.type == "text" then

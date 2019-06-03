@@ -36,6 +36,7 @@ function parseRules(undoing)
       unit.old_active = unit.active
       unit.active = false
       unit.blocked = false
+      unit.used_as = {}
     end
   end
 
@@ -183,12 +184,15 @@ function parseRules(undoing)
 
             local all_units = {}
             for _,unit in ipairs(noun_texts) do
+              if not table.has_value(unit.used_as, "noun") then table.insert(unit.used_as, "noun") end
               table.insert(all_units, unit)
             end
             for _,unit in ipairs(verb_texts) do
+              if not table.has_value(unit.used_as, "verb") then table.insert(unit.used_as, "verb") end
               table.insert(all_units, unit)
             end
             for _,unit in ipairs(prop_texts) do
+              if not table.has_value(unit.used_as, "property") then table.insert(unit.used_as, "property") end
               table.insert(all_units, unit)
             end
 

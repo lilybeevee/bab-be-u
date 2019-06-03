@@ -1361,11 +1361,13 @@ tiles_list = {
   {
     name = "text_sans",
     sprite = "text_sans",
-    propsprite = "text_sans_property",
+    sprite_transforms = {
+      property = "text_sans_property"
+    },
     type = "text",
     texttype = "cond_infix",
     grid = {12, 0},
-    color = {2, 2},
+    color = {1, 4},
     layer = 20,
   },
   -- 128
@@ -1407,6 +1409,7 @@ tiles_list = {
     color = {3, 3},
     layer = 5,
     rotate = true,
+    eye = {x=17, y=4, w=1, h=2},
   },
   -- 132
   {
@@ -1426,6 +1429,7 @@ tiles_list = {
     color = {2, 4},
     layer = 5,
     rotate = true,
+    eye = {x=18, y=4, w=2, h=2},
   },
   -- 134
   {

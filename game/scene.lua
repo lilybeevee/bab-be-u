@@ -248,6 +248,13 @@ function scene.draw(dt)
           local sprite = sprites[unit.sprite]
           if not sprite then sprite = sprites["wat"] end
 
+          for type,name in pairs(unit.sprite_transforms) do
+            if table.has_value(unit.used_as, type) then
+              sprite = sprites[name]
+              break
+            end
+          end
+
           local drawx, drawy = unit.draw.x, unit.draw.y
 
           local rotation = 0
@@ -304,6 +311,15 @@ function scene.draw(dt)
               love.graphics.setBlendMode("alpha", "alphamultiply")
               love.graphics.setStencilTest() 
             end 
+          end
+
+          if hasRule(unit,"be","sans") and unit.eye then
+            local topleft = {x = drawx * TILE_SIZE, y = drawy * TILE_SIZE}
+            love.graphics.setColor(0, 1, 1, 1)
+            love.graphics.rectangle("fill", topleft.x + unit.eye.x, topleft.y + unit.eye.y, unit.eye.w, unit.eye.h)
+            for i = 1, unit.eye.w-1 do
+              love.graphics.rectangle("fill", topleft.x + unit.eye.x + i, topleft.y + unit.eye.y - i, unit.eye.w - i, 1)
+            end
           end
 
           if hasRule(unit,"got","hatt") then

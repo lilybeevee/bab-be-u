@@ -42,6 +42,9 @@ local function common(arg, group)
     local options = {
       {
         {type = "property"}
+      },
+      {
+        {name = "sans"}
       }
     }
     mergeTable(full_options, options)
