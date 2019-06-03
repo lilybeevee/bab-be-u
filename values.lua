@@ -1478,4 +1478,15 @@ tiles_list = {
     color = {0, 1},
     layer = 20,
   },
+  --- 139
+  {
+    name = "text_bounded",
+    sprite = "text_bounded",
+    type = "text",
+    texttype = "verb_object",
+    allowconds = true,
+    grid = {13, 1},
+    color = {5, 3},
+    layer = 20,
+  },
 }

@@ -105,8 +105,8 @@ function doMovement(movex, movey)
         end
       end
     elseif move_stage == 2 then
-      local issnacc = matchesRule(nil, "yeet", "?");
-      for _,ruleparent in ipairs(issnacc) do
+      local isyeet = matchesRule(nil, "yeet", "?");
+      for _,ruleparent in ipairs(isyeet) do
         local unit = ruleparent[2]
         for __,other in ipairs(getUnitsOnTile(unit.x, unit.y)) do
           if other.id ~= unit.id and sameFloat(unit, other) then
@@ -521,12 +521,29 @@ function canMove(unit,dx,dy,pushing_,pulling_,solid_name,reason)
   if hasProperty(unit, "orthongl") and (dx ~= 0 and dy ~= 0) then
     return false,movers,specials
   end
-
+  
+  local tileid = x + y * mapwidth
+  
+  --bounded: if we're bounded and there are no units in the destination that satisfy a bounded rule, we can't go
+  local isbounded = matchesRule(unit, "bounded", "?");
+  if (#isbounded > 0) then
+    local success = false
+    for _,v in ipairs(units_by_tile[tileid]) do
+      if hasRule(unit, "bounded", v) then
+        success = true
+        break
+      end
+    end
+    if not success then
+      return false,{},{}
+    end
+  end
+  
   local nedkee = hasProperty(unit, "ned kee")
   local fordor = hasProperty(unit, "for dor")
   local swap_mover = hasProperty(unit, "behin u")
-
-  local tileid = x + y * mapwidth
+  
+  --normal checks
   for _,v in ipairs(units_by_tile[tileid]) do
     --Patashu: treat moving things as intangible in general
     if (not v.already_moving) then
@@ -557,18 +574,18 @@ function canMove(unit,dx,dy,pushing_,pulling_,solid_name,reason)
           stopped = true
         end
       end
+      
+      --if/elseif chain for everything that sets stopped to true if it's true - no need to check the remainders after all!
       if hasProperty(v, "no go") and sameFloat(unit, v) then --Things that are STOP stop being PUSH or PULL, unlike in Baba. Also unlike Baba, a wall can be floated across if it is not tall!
         stopped = true
-      end
-      if hasProperty(v, "sidekik") and not hasProperty(v, "go away") and not would_swap_with then
+      elseif hasProperty(v, "sidekik") and not hasProperty(v, "go away") and not would_swap_with then
+        stopped = true
+      elseif hasProperty(v, "come pls") and not hasProperty(v, "go away") and not would_swap_with and not pulling then
+        stopped = true
+      elseif hasProperty(v, "go my wey") and goMyWeyPrevents(v.dir, dx, dy) then
         stopped = true
       end
-      if hasProperty(v, "come pls") and not hasProperty(v, "go away") and not would_swap_with and not pulling then
-        stopped = true
-      end
-      if hasProperty(v, "go my wey") and goMyWeyPrevents(v.dir, dx, dy) then
-        stopped = true
-      end
+      
       --if thing is ouch, it will not stop things - similar to Baba behaviour. But check safe and float as well.
       if hasProperty(v, "ouch") and not hasProperty(v, "protecc") and sameFloat(unit, v) then
       stopped = false
