@@ -257,7 +257,15 @@ function addRule(full_rule)
     unit.old_active = unit.active
   end
 
-  if subject_not then
+  if subject == "every1" then
+    if subject_not then
+      return
+    else
+      for _,v in ipairs(referenced_objects) do
+        addRule({{v, rules[2], rules[3], rules[4]}, units, dir})
+      end
+    end
+  elseif subject_not then
     --print("subject not" .. subject)
     if tiles_by_name[subject] or subject == "text" then
       --print("adding not subject")
@@ -273,9 +281,17 @@ function addRule(full_rule)
       end
       return
     end
-  end
+  end 
 
-  if object_not then
+  if object == "every1" then
+    if object_not then
+      return
+    else
+      for _,v in ipairs(referenced_objects) do
+        addRule({{rules[1], rules[2], v, rules[4]}, units, dir})
+      end
+    end
+  elseif object_not then
     --print("object not: " .. object)
     if tiles_by_name[object] or object == "text" then
       --print("adding not object")

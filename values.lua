@@ -1459,4 +1459,13 @@ tiles_list = {
     color = {4, 2},
     layer = 20,
   },
+  -- 137
+  {
+    name = "text_every1",
+    sprite = "text_every1",
+    type = "text",
+    grid = {5, 0},
+    color = {0, 3},
+    layer = 20,
+  },
 }

@@ -641,7 +641,7 @@ function createUnit(tile,x,y,dir,convert,id_)
     unit.textname = unit.fullname
   end
 
-  if unit.texttype == "object" then
+  if unit.texttype == "object" and unit.textname ~= "every1" and unit.textname ~= "mous" then
     if not table.has_value(referenced_objects, unit.textname) then
       table.insert(referenced_objects, unit.textname)
     end
