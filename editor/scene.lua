@@ -505,6 +505,11 @@ function scene.draw(dt)
     local cursorx, cursory = love.mouse.getPosition()
     love.graphics.draw(system_cursor, cursorx, cursory)
   end
+
+  if is_mobile then
+    local cursorx, cursory = love.mouse.getPosition()
+    love.graphics.draw(system_cursor, cursorx, cursory)
+  end
 end
 
 function scene.textInput(t)
