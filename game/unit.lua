@@ -25,6 +25,11 @@ function updateUnits(undoing, big_update)
   --(SHIFT, TELE, FOLLOW, BACK are handled in moveblock. FALL is handled in fallblock. But we can just put moveblock in the start here and it's more or less the same thing.)
 
   if (big_update and not undoing) then
+    local iszip = getUnitsWithEffect("zip");
+    for _,unit in ipairs(iszip) do
+      doZip(unit)
+    end
+  
     local isshift = getUnitsWithEffect("go");
     for _,unit in ipairs(isshift) do
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)

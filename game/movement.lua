@@ -489,6 +489,34 @@ function fallBlock()
   end
 end
 
+function doZip(unit)
+  if not canMove(unit, 0, 0, false, false, unit.name, "zip") then
+    --try to zip to the tile behind us - this is usually elegant, since we probably just left that tile. if that fails, try increasingly larger squares around our current position until we give up. I guess reading order is just going to be the most elegant tiebreaker? but I would prefer it if it tries more backwards directions before more forwards directions in each shell.
+    local dx = -dirs8[unit.dir][1]
+    local dy = -dirs8[unit.dir][2]
+    if canMove(unit, dx, dy, false, false, unit.name, "zip") then
+      addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
+      moveUnit(unit,unit.x+dx,unit.y+dy)
+      return
+    end
+    
+    start_radius = 1
+    end_radius = 5
+    for radius = start_radius, end_radius do
+      for dx = -radius, radius do
+        for dy = -radius, radius do
+          --experimental feature: double as a kind of topple by zipping out of other units with our name. change it in all places in the function if removed!!
+          if canMove(unit, dx, dy, false, false, unit.name, "zip") then
+            addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
+            moveUnit(unit,unit.x+dx,unit.y+dy)
+            return
+          end
+        end
+      end
+    end
+  end
+end
+
 function canMove(unit,dx,dy,pushing_,pulling_,solid_name,reason)
   local pushing = false
   if (pushing_ ~= nil) then
@@ -545,8 +573,8 @@ function canMove(unit,dx,dy,pushing_,pulling_,solid_name,reason)
   
   --normal checks
   for _,v in ipairs(units_by_tile[tileid]) do
-    --Patashu: treat moving things as intangible in general
-    if (not v.already_moving) then
+    --Patashu: treat moving things as intangible in general. also, ignore ourselves for zip purposes
+    if (v ~= unit and not v.already_moving) then
       local stopped = false
       if (v.name == solid_name) then
         return false,movers,specials

@@ -1489,4 +1489,14 @@ tiles_list = {
     color = {5, 3},
     layer = 20,
   },
+  -- 140
+  {
+    name = "text_zip",
+    sprite = "text_zip",
+    type = "text",
+    texttype = "property",
+    grid = {11, 5},
+    color = {5, 3},
+    layer = 20,
+  },
 }
