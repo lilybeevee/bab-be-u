@@ -280,7 +280,8 @@ function scene.draw(dt)
           local fulldrawy = (drawy + 0.5)*TILE_SIZE
 
           if #matchesRule(unit, "be", "flye") ~= 0 then
-            fulldrawy = fulldrawy - 5 - math.sin(love.timer.getTime())*2.5
+            local flyenes = countProperty(unit, "flye")
+            fulldrawy = fulldrawy - 5 - math.sin(love.timer.getTime())*2.5*(flyenes^2)
           end
 
           love.graphics.push()
