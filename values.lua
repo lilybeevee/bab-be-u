@@ -1506,4 +1506,14 @@ tiles_list = {
     color = {5, 3},
     layer = 20,
   },
+  -- 141
+  {
+    name = "text_effort",
+    sprite = "text_effort",
+    type = "text",
+    texttype = "property",
+    grid = {12, 5},
+    color = {6, 2},
+    layer = 20,
+  },
 }
