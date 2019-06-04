@@ -95,8 +95,8 @@ function updateUnits(undoing, big_update)
       end
     end
     for a,b in pairs(tele_targets) do
+      addUndo({"update", a.id, a.x, a.y, a.dir})
       moveUnit(a, b.x, b.y)
-      addUndo({"update", a.id, b.x, b.y, a.dir})
     end
     
     local isstalk = matchesRule("?", "look at", "?");

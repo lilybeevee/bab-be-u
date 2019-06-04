@@ -29,6 +29,9 @@ function doMovement(movex, movey)
 
   print("[---- begin turn ----]")
   print("move: " .. movex .. ", " .. movey)
+  
+  --handle folo wall and turn cornr here
+  doDirChanges();
 
   local move_stage = -1
   while move_stage < 3 do
@@ -443,7 +446,7 @@ end
 function doPull(unit,dx,dy,data, already_added, moving_units, moving_units_next, slippers)
   local x = unit.x;
   local y = unit.y;
-  local something_moved = not hasProperty(mover, "effort")
+  local something_moved = not hasProperty(unit, "effort")
   while (something_moved) do
     something_moved = false
     x = x - dx;
@@ -527,6 +530,36 @@ function doZip(unit)
   end
 end
 
+function doDirChanges()
+  local folo_wall = getUnitsWithEffectAndCount("folo wal")
+  for unit,amt in pairs(folo_wall) do
+    local fwd = unit.dir;
+    local right = (((unit.dir + 2)-1)%8)+1;
+    local bwd = (((unit.dir + 4)-1)%8)+1;
+    local left = (((unit.dir + 6)-1)%8)+1;
+    local result = changeDirIfFree(unit, right) or changeDirIfFree(unit, fwd) or changeDirIfFree(unit, left) or changeDirIfFree(unit, bwd);
+  end
+  
+  local turn_cornr = getUnitsWithEffectAndCount("turn cornr")
+  for unit,amt in pairs(turn_cornr) do
+    local fwd = unit.dir;
+    local right = (((unit.dir + 2)-1)%8)+1;
+    local bwd = (((unit.dir + 4)-1)%8)+1;
+    local left = (((unit.dir + 6)-1)%8)+1;
+    local result = changeDirIfFree(unit, fwd) or changeDirIfFree(unit, right) or changeDirIfFree(unit, left) or changeDirIfFree(unit, bwd);
+  end
+end
+
+function changeDirIfFree(unit, dir)
+  if canMove(unit, dirs8[dir][1], dirs8[dir][2], false, false, unit.name, "dir check") then
+    addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
+    unit.olddir = unit.dir
+    updateDir(unit, dir);
+    return true
+  end
+  return false
+end
+
 function canMove(unit,dx,dy,pushing_,pulling_,solid_name,reason)
   local pushing = false
   if (pushing_ ~= nil and not hasProperty(unit, "effort")) then
@@ -553,10 +586,10 @@ function canMove(unit,dx,dy,pushing_,pulling_,solid_name,reason)
     return false,{},{}
   end
 
-  if hasProperty(unit, "diagnal") and (dx == 0 or dy == 0) then
+  if hasProperty(unit, "diagnal") and (not hasProperty(unit, "orthongl")) and (dx == 0 or dy == 0) then
     return false,movers,specials
   end
-  if hasProperty(unit, "orthongl") and (dx ~= 0 and dy ~= 0) then
+  if hasProperty(unit, "orthongl") and (not hasProperty(unit, "diagnal")) and (dx ~= 0 and dy ~= 0) then
     return false,movers,specials
   end
   

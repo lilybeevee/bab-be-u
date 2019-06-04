@@ -1518,13 +1518,32 @@ tiles_list = {
   },
   -- 142
   {
+    name = "text_folo wal",
+    sprite = "text_folo_wal",
+    type = "text",
+    texttype = "property",
+    grid = {11, 6},
+    color = {5, 3},
+    layer = 20,
+  },
+  -- 143
+  {
+    name = "text_turn cornr",
+    sprite = "text_turn_cornr",
+    type = "text",
+    texttype = "property",
+    grid = {12, 6},
+    color = {5, 3},
+  },
+  -- 144
+  {
     name = "petnygrame",
     sprite = "petnygrame",
     grid = {13, 0},
     color = {2, 1},
     layer = 5,
   },
-  -- 143
+  -- 145
   {
     name = "text_petnygrame",
     sprite = "text_petnygrame",
@@ -1533,7 +1552,7 @@ tiles_list = {
     color = {2, 1},
     layer = 20,
   },
-  -- 144
+  -- 146
   {
     name = "katany",
     sprite = "katany",
@@ -1542,7 +1561,7 @@ tiles_list = {
     layer = 5,
     rotate = true,
   },
-  -- 145
+  -- 147
   {
     name = "text_katany",
     sprite = "text_katany",
@@ -1551,7 +1570,7 @@ tiles_list = {
     color = {0, 1},
     layer = 20,
   },
-  -- 146
+  -- 148
   {
     name = "scarr",
     sprite = "scarr",
@@ -1559,7 +1578,7 @@ tiles_list = {
     color = {2, 1},
     layer = 5,
   },
-  -- 147
+  -- 149
   {
     name = "text_scarr",
     sprite = "text_scarr",
@@ -1567,5 +1586,5 @@ tiles_list = {
     grid = {14, 2},
     color = {2, 1},
     layer = 20,
-  },
+  }
 }
