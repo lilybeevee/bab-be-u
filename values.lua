@@ -1516,4 +1516,56 @@ tiles_list = {
     color = {6, 2},
     layer = 20,
   },
+  -- 142
+  {
+    name = "petnygrame",
+    sprite = "petnygrame",
+    grid = {13, 0},
+    color = {2, 1},
+    layer = 5,
+  },
+  -- 143
+  {
+    name = "text_petnygrame",
+    sprite = "text_petnygrame",
+    type = "text",
+    grid = {14, 0},
+    color = {2, 1},
+    layer = 20,
+  },
+  -- 144
+  {
+    name = "katany",
+    sprite = "katany",
+    grid = {13, 1},
+    color = {0, 1},
+    layer = 5,
+    rotate = true,
+  },
+  -- 145
+  {
+    name = "text_katany",
+    sprite = "text_katany",
+    type = "text",
+    grid = {14, 1},
+    color = {0, 1},
+    layer = 20,
+  },
+  -- 146
+  {
+    name = "scarr",
+    sprite = "scarr",
+    grid = {13, 2},
+    color = {2, 1},
+    layer = 5,
+  },
+  -- 147
+  {
+    name = "text_scarr",
+    sprite = "text_scarr",
+    type = "text",
+    grid = {14, 2},
+    color = {2, 1},
+    layer = 20,
+  },
 }
