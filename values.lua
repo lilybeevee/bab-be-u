@@ -1508,8 +1508,8 @@ tiles_list = {
   },
   -- 141
   {
-    name = "text_effort",
-    sprite = "text_effort",
+    name = "text_lazzy",
+    sprite = "text_lazzy",
     type = "text",
     texttype = "property",
     grid = {12, 5},
