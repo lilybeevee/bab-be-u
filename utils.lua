@@ -335,6 +335,7 @@ function countProperty(unit,prop)
 end
 
 --to prevent infinite loops where a set of rules/conditions is self referencing
+--TODO: If we end up with infinite loops for stuff that isn't pardoxical (should form a closed loop of false -> false or true -> true), then we can try improving it by tracking what conditions we're already testing, and if we re-entrantly test a condition, assume it's (false I guess? real world testing will be required since I'm not sure)
 reentrance = 0
 
 function testConds(unit,conds) --cond should be a {cond,{object types}}
