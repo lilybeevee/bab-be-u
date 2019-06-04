@@ -443,7 +443,7 @@ end
 function doPull(unit,dx,dy,data, already_added, moving_units, moving_units_next, slippers)
   local x = unit.x;
   local y = unit.y;
-  local something_moved = not hasProperty(mover, "effort")
+  local something_moved = not hasProperty(unit, "effort")
   while (something_moved) do
     something_moved = false
     x = x - dx;
