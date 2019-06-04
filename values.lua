@@ -1516,4 +1516,24 @@ tiles_list = {
     color = {6, 2},
     layer = 20,
   },
+  -- 142
+  {
+    name = "text_folo wal",
+    sprite = "text_folo_wal",
+    type = "text",
+    texttype = "property",
+    grid = {11, 6},
+    color = {5, 3},
+    layer = 20,
+  },
+  -- 143
+  {
+    name = "text_turn cornr",
+    sprite = "text_turn_cornr",
+    type = "text",
+    texttype = "property",
+    grid = {12, 6},
+    color = {5, 3},
+    layer = 20,
+  },
 }
