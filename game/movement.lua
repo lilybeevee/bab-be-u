@@ -586,10 +586,10 @@ function canMove(unit,dx,dy,pushing_,pulling_,solid_name,reason)
     return false,{},{}
   end
 
-  if hasProperty(unit, "diagnal") and (dx == 0 or dy == 0) then
+  if hasProperty(unit, "diagnal") and (not hasProperty(unit, "orthongl")) and (dx == 0 or dy == 0) then
     return false,movers,specials
   end
-  if hasProperty(unit, "orthongl") and (dx ~= 0 and dy ~= 0) then
+  if hasProperty(unit, "orthongl") and (not hasProperty(unit, "diagnal")) and (dx ~= 0 and dy ~= 0) then
     return false,movers,specials
   end
   
