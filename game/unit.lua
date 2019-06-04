@@ -10,11 +10,12 @@ function updateUnits(undoing, big_update)
   end
 
   for _,unit in ipairs(units) do
-    local tileid = unit.x + unit.y * mapwidth
-    table.insert(units_by_tile[tileid], unit)
-    --just in case undeleted units are lingering around
+    --delete units that were deleted during movement (like from walking oob while ouch)
     if (unit.removed) then
-      --table.insert(del_units, on)
+      table.insert(del_units, on)
+    else
+    local tileid = unit.x + unit.y * mapwidth
+      table.insert(units_by_tile[tileid], unit)
     end
   end
   
