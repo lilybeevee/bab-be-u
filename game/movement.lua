@@ -626,7 +626,7 @@ function canMove(unit,dx,dy,pushing_,pulling_,solid_name,reason)
       
       --if thing is ouch, it will not stop things - similar to Baba behaviour. But check safe and float as well.
       if hasProperty(v, "ouch") and not hasProperty(v, "protecc") and sameFloat(unit, v) then
-      stopped = false
+        stopped = false
       end
       --if a weak thing tries to move and fails, destroy it. movers don't do this though.
       if stopped and hasProperty(unit, "ouch") and not hasProperty(unit, "protecc") and reason ~= "walk" then
@@ -638,6 +638,13 @@ function canMove(unit,dx,dy,pushing_,pulling_,solid_name,reason)
       end
     end
   end
+  
+  --go my wey DOES Not also prevents things from leaving them against their direction
+  --[[for _,v in ipairs(units_by_tile[unit.x + unit.y * mapwidth]) do
+    if hasProperty(v, "go my wey") and goMyWeyPrevents(v.dir, dx, dy) then
+      return false,movers,specials
+    end
+  end]]--
 
   return true,movers,specials
 end
