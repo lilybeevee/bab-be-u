@@ -636,12 +636,12 @@ function canMove(unit,dx,dy,pushing_,pulling_,solid_name,reason)
     end
   end
   
-  --go my wey also prevents things from leaving them against their direction
-  for _,v in ipairs(units_by_tile[unit.x + unit.y * mapwidth]) do
+  --go my wey DOES Not also prevents things from leaving them against their direction
+  --[[for _,v in ipairs(units_by_tile[unit.x + unit.y * mapwidth]) do
     if hasProperty(v, "go my wey") and goMyWeyPrevents(v.dir, dx, dy) then
       return false,movers,specials
     end
-  end
+  end]]--
 
   return true,movers,specials
 end
