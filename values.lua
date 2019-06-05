@@ -1,3 +1,6 @@
+DEFAULT_WIDTH = 800
+DEFAULT_HEIGHT = 600
+
 ANIM_TIMER = 180
 MAX_MOVE_TIMER = 80
 INPUT_DELAY = 150
@@ -1508,8 +1511,8 @@ tiles_list = {
   },
   -- 141
   {
-    name = "text_effort",
-    sprite = "text_effort",
+    name = "text_lazzy",
+    sprite = "text_lazzy",
     type = "text",
     texttype = "property",
     grid = {12, 5},

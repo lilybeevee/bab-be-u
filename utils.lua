@@ -852,3 +852,21 @@ function getPaletteColor(x, y, name_)
     return 1, 1, 1, 1
   end
 end
+
+function getUIScale()
+  local width = love.graphics.getWidth()
+  if width < DEFAULT_WIDTH then
+    return 1/math.ceil(DEFAULT_WIDTH / width)
+  elseif width > DEFAULT_WIDTH then
+    return math.floor(width / DEFAULT_WIDTH)
+  else
+    return 1
+  end
+end
+
+function clearGooi()
+  gooi.closeDialog()
+  for k, v in pairs(gooi.components) do
+    gooi.removeComponent(gooi.components[k])
+  end
+end

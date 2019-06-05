@@ -165,6 +165,7 @@ It is probably possible to do, but lily has decided that it's not important enou
         print("movement infinite loop! (1000 attempts at a stage)")
         destroyLevel("infloop");
       end
+      --print("loop_stage:"..tostring(loop_stage))
       successes = 0
       local loop_tick = 0
       loop_stage = loop_stage + 1
@@ -175,6 +176,7 @@ It is probably possible to do, but lily has decided that it's not important enou
           print("movement infinite loop! (1000 attempts at a single tick)")
           destroyLevel("infloop");
         end
+        --print("loop_tick:"..tostring(loop_tick))
         local remove_from_moving_units = {}
         local has_flipped = false
         something_moved = false
@@ -406,7 +408,7 @@ end
 
 function findSidekikers(unit,dx,dy)
   local result = {}
-  if hasProperty(unit, "effort") then
+  if hasProperty(unit, "lazzy") then
     return result;
   end
   local x = unit.x;
@@ -446,7 +448,7 @@ end
 function doPull(unit,dx,dy,data, already_added, moving_units, moving_units_next, slippers)
   local x = unit.x;
   local y = unit.y;
-  local something_moved = not hasProperty(unit, "effort")
+  local something_moved = not hasProperty(unit, "lazzy")
   while (something_moved) do
     something_moved = false
     x = x - dx;
@@ -459,7 +461,7 @@ function doPull(unit,dx,dy,data, already_added, moving_units, moving_units_next,
         end
         if (success) then
           --unit.already_moving = true
-          something_moved = something_moved or not hasProperty(mover, "effort")
+          something_moved = something_moved or not hasProperty(mover, "lazzy")
           for _,mover in ipairs(movers) do
             moveIt(mover, dx, dy, data, true, already_added, moving_units, moving_units_next, slippers)
           end
@@ -562,12 +564,12 @@ end
 
 function canMove(unit,dx,dy,pushing_,pulling_,solid_name,reason)
   local pushing = false
-  if (pushing_ ~= nil and not hasProperty(unit, "effort")) then
+  if (pushing_ ~= nil and not hasProperty(unit, "lazzy")) then
 		pushing = pushing_
 	end
   --TODO: Patashu: this isn't used now but might be in the future??
   local pulling = false
-	if (pulling_ ~= nil and not hasProperty(unit, "effort")) then
+	if (pulling_ ~= nil and not hasProperty(unit, "lazzy")) then
 		pulling = pulling_
 	end
   
@@ -595,7 +597,7 @@ function canMove(unit,dx,dy,pushing_,pulling_,solid_name,reason)
   
   local tileid = x + y * mapwidth
   
-  --bounded: if we're bounded and there are no units in the destination that satisfy a bounded rule, we can't go
+  --bounded: if we're bounded and there are no units in the destination that satisfy a bounded rule, AND there's no units at our feet that would be moving there to carry us, we can't go
   local isbounded = matchesRule(unit, "bounded", "?");
   if (#isbounded > 0) then
     local success = false
@@ -603,6 +605,19 @@ function canMove(unit,dx,dy,pushing_,pulling_,solid_name,reason)
       if hasRule(unit, "bounded", v) then
         success = true
         break
+      end
+    end
+    if not success then
+      for _,update in ipairs(update_queue) do
+        if update.reason == "update" then
+          local unit2 = update.unit2
+          local x2 = update.payload.x
+          local y2 = update.payload.y
+          if x2 == x and y2 == y and hasRule(unit, "bounded", unit2) then
+            success = true
+            break
+          end
+        end
       end
     end
     if not success then
@@ -628,6 +643,7 @@ function canMove(unit,dx,dy,pushing_,pulling_,solid_name,reason)
         table.insert(specials, {"open", {unit, v}})
         return true,movers,specials
       end
+      --New FLYE mechanic, as decreed by the bab dictator - if you aren't sameFloat as a push/pull/sidekik, you can enter it.
       if hasProperty(v, "go away") and not would_swap_with then
         if pushing then
           local success,new_movers,new_specials = canMove(v, dx, dy, pushing, pulling, solid_name, "go away")
@@ -639,20 +655,20 @@ function canMove(unit,dx,dy,pushing_,pulling_,solid_name,reason)
               table.insert(movers, mover)
             end
           else
-            stopped = true
+            stopped = stopped or sameFloat(unit, v)
           end
         else
-          stopped = true
+          stopped = stopped or sameFloat(unit, v)
         end
       end
       
       --if/elseif chain for everything that sets stopped to true if it's true - no need to check the remainders after all!
-      if hasProperty(v, "no go") and sameFloat(unit, v) then --Things that are STOP stop being PUSH or PULL, unlike in Baba. Also unlike Baba, a wall can be floated across if it is not tall!
-        stopped = true
+      if hasProperty(v, "no go") then --Things that are STOP stop being PUSH or PULL, unlike in Baba. Also unlike Baba, a wall can be floated across if it is not tall!
+        stopped = stopped or sameFloat(unit, v)
       elseif hasProperty(v, "sidekik") and not hasProperty(v, "go away") and not would_swap_with then
-        stopped = true
+        stopped = stopped or sameFloat(unit, v)
       elseif hasProperty(v, "come pls") and not hasProperty(v, "go away") and not would_swap_with and not pulling then
-        stopped = true
+        stopped = stopped or sameFloat(unit, v)
       elseif hasProperty(v, "go my wey") and goMyWeyPrevents(v.dir, dx, dy) then
         stopped = true
       end
