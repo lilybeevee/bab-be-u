@@ -86,6 +86,9 @@ function parseRules(undoing)
     end
 
     local sentences = getCombinations(words)
+    if #sentences > 10 then
+      print(fullDump(words, 2))
+    end
 
     for _,sentence_ in ipairs(sentences) do
       local sentence = copyTable(sentence_, 1)
