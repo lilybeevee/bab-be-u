@@ -13,29 +13,28 @@ function parseRules(undoing)
 
   local first_words = {}
   local been_first = {}
+  for i=1,8 do
+    been_first[i] = {}
+  end
   if units_by_name["text"] then
     for _,unit in ipairs(units_by_name["text"]) do
-      if not been_first[unit.x + unit.y * mapwidth] then
-        local added = false
-        local x,y = unit.x,unit.y
-        for i=1,3 do
-          local dpos = dirs8[i]
-          local ndpos = dirs8[rotate8(i)]
+      local x,y = unit.x,unit.y
+      for i=1,3 do
+        local dpos = dirs8[i]
+        local ndpos = dirs8[rotate8(i)]
 
-          local dx,dy = dpos[1],dpos[2]
-          local ndx,ndy = ndpos[1],ndpos[2]
+        local dx,dy = dpos[1],dpos[2]
+        local ndx,ndy = ndpos[1],ndpos[2]
 
-          local tileid = (x+dx) + (y+dy) * mapwidth
-          local ntileid = (x+ndx) + (y+ndy) * mapwidth
+        local tileid = (x+dx) + (y+dy) * mapwidth
+        local ntileid = (x+ndx) + (y+ndy) * mapwidth
 
-          --print(tostring(x)..","..tostring(y)..","..tostring(dx)..","..tostring(dy)..","..tostring(ndx)..","..tostring(ndy)..","..tostring(#getUnitsOnTile(x+ndx, y+ndy, "text"))..","..tostring(#getUnitsOnTile(x+dx, y+dy, "text")))
-          if #getUnitsOnTile(x+ndx, y+ndy, "text") == 0 and #getUnitsOnTile(x+dx, y+dy, "text") >= 1 then
-            added = true
+        --print(tostring(x)..","..tostring(y)..","..tostring(dx)..","..tostring(dy)..","..tostring(ndx)..","..tostring(ndy)..","..tostring(#getUnitsOnTile(x+ndx, y+ndy, "text"))..","..tostring(#getUnitsOnTile(x+dx, y+dy, "text")))
+        if #getUnitsOnTile(x+ndx, y+ndy, "text") == 0 and #getUnitsOnTile(x+dx, y+dy, "text") >= 1 then
+          if not been_first[i][x + y * mapwidth] then
             table.insert(first_words, {unit, i})
+            been_first[i][x + y * mapwidth] = true
           end
-        end
-        if added then
-          been_first[unit.x + unit.y * mapwidth] = true
         end
       end
       unit.old_active = unit.active
@@ -98,15 +97,17 @@ function parseRules(undoing)
       if not valid then
         if #sentence > 1 then
           local unit = sentence[2].unit
-          if not been_first[unit.x + unit.y * mapwidth] then
+          if not been_first[first[2]][unit.x + unit.y * mapwidth] then
             table.insert(first_words, {sentence[2].unit, first[2]})
+            been_first[first[2]][unit.x + unit.y * mapwidth] = true
           end
         end
       else
         if state.word_index <= #sentence then
           local unit = sentence[state.word_index-1].unit
-          if not been_first[unit.x + unit.y * mapwidth] then
+          if not been_first[first[2]][unit.x + unit.y * mapwidth] then
             table.insert(first_words, {sentence[state.word_index-1].unit, first[2]})
+            been_first[first[2]][unit.x + unit.y * mapwidth] = true
           end
         end
 
