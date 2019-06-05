@@ -628,6 +628,7 @@ function canMove(unit,dx,dy,pushing_,pulling_,solid_name,reason)
         table.insert(specials, {"open", {unit, v}})
         return true,movers,specials
       end
+      --New FLYE mechanic, as decreed by the bab dictator - if you aren't sameFloat as a push/pull/sidekik, you can enter it.
       if hasProperty(v, "go away") and not would_swap_with then
         if pushing then
           local success,new_movers,new_specials = canMove(v, dx, dy, pushing, pulling, solid_name, "go away")
@@ -639,20 +640,20 @@ function canMove(unit,dx,dy,pushing_,pulling_,solid_name,reason)
               table.insert(movers, mover)
             end
           else
-            stopped = true
+            stopped = stopped or sameFloat(unit, v)
           end
         else
-          stopped = true
+          stopped = stopped or sameFloat(unit, v)
         end
       end
       
       --if/elseif chain for everything that sets stopped to true if it's true - no need to check the remainders after all!
-      if hasProperty(v, "no go") and sameFloat(unit, v) then --Things that are STOP stop being PUSH or PULL, unlike in Baba. Also unlike Baba, a wall can be floated across if it is not tall!
-        stopped = true
+      if hasProperty(v, "no go") then --Things that are STOP stop being PUSH or PULL, unlike in Baba. Also unlike Baba, a wall can be floated across if it is not tall!
+        stopped = stopped or sameFloat(unit, v)
       elseif hasProperty(v, "sidekik") and not hasProperty(v, "go away") and not would_swap_with then
-        stopped = true
+        stopped = stopped or sameFloat(unit, v)
       elseif hasProperty(v, "come pls") and not hasProperty(v, "go away") and not would_swap_with and not pulling then
-        stopped = true
+        stopped = stopped or sameFloat(unit, v)
       elseif hasProperty(v, "go my wey") and goMyWeyPrevents(v.dir, dx, dy) then
         stopped = true
       end
