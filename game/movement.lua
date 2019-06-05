@@ -165,6 +165,7 @@ It is probably possible to do, but lily has decided that it's not important enou
         print("movement infinite loop! (1000 attempts at a stage)")
         destroyLevel("infloop");
       end
+      --print("loop_stage:"..tostring(loop_stage))
       successes = 0
       local loop_tick = 0
       loop_stage = loop_stage + 1
@@ -175,6 +176,7 @@ It is probably possible to do, but lily has decided that it's not important enou
           print("movement infinite loop! (1000 attempts at a single tick)")
           destroyLevel("infloop");
         end
+        --print("loop_tick:"..tostring(loop_tick))
         local remove_from_moving_units = {}
         local has_flipped = false
         something_moved = false
@@ -595,7 +597,7 @@ function canMove(unit,dx,dy,pushing_,pulling_,solid_name,reason)
   
   local tileid = x + y * mapwidth
   
-  --bounded: if we're bounded and there are no units in the destination that satisfy a bounded rule, we can't go
+  --bounded: if we're bounded and there are no units in the destination that satisfy a bounded rule, AND there's no units at our feet that would be moving there to carry us, we can't go
   local isbounded = matchesRule(unit, "bounded", "?");
   if (#isbounded > 0) then
     local success = false
@@ -603,6 +605,19 @@ function canMove(unit,dx,dy,pushing_,pulling_,solid_name,reason)
       if hasRule(unit, "bounded", v) then
         success = true
         break
+      end
+    end
+    if not success then
+      for _,update in ipairs(update_queue) do
+        if update.reason == "update" then
+          local unit2 = update.unit2
+          local x2 = update.payload.x
+          local y2 = update.payload.y
+          if x2 == x and y2 == y and hasRule(unit, "bounded", unit2) then
+            success = true
+            break
+          end
+        end
       end
     end
     if not success then
