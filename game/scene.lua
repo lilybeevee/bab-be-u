@@ -190,7 +190,9 @@ function scene.draw(dt)
   love.graphics.setShader()
 
   --background color
-  love.graphics.setColor(getPaletteColor(1, 0))
+  local bg_color = {getPaletteColor(1, 0)}
+
+  love.graphics.setColor(bg_color[1], bg_color[2], bg_color[3], bg_color[4])
   if rainbowmode then love.graphics.setColor(hslToRgb(love.timer.getTime()/6%1, .2, .2, .9)) end
 
   -- fill the background with the background color
@@ -282,12 +284,24 @@ function scene.draw(dt)
             unit.draw.scaley = 1
           end
 
+          if brightness < 1 then
+            print('multiplying')
+          end
+          local mult = {}
+
           local color
           if #unit.color == 3 then
-            color = {unit.color[1]/255 * brightness, unit.color[2]/255 * brightness, unit.color[3]/255 * brightness, 1}
+            color = {unit.color[1]/255, unit.color[2]/255, unit.color[3]/255, 1}
           else
             local r,g,b,a = getPaletteColor(unit.color[1], unit.color[2])
-            color = {r * brightness, g * brightness, b * brightness, a}
+            color = {r, g, b, a}
+          end
+
+          -- multiply brightness by darkened bg color
+          for i,c in ipairs(bg_color) do
+            if i < 4 then
+              color[i] = (1 - brightness) * (bg_color[i] * 0.5) + brightness * color[i]
+            end
           end
 
           if #unit.overlay > 0 and eq(unit.color, tiles_list[unit.tile].color) then
