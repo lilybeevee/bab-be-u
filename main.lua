@@ -1,5 +1,5 @@
+require "lib/gooi"
 json = require "lib/json"
-suit = require "lib/suit"
 tick = require "lib/tick"
 tween = require "lib/tween"
 require "values"
@@ -38,6 +38,7 @@ function love.load()
   empty_sprite = love.image.newImageData(32, 32)
   if not is_mobile then
     empty_cursor = love.mouse.newCursor(empty_sprite)
+    gooi.desktopMode()
   end
 
   default_font = love.graphics.newFont()
@@ -107,6 +108,31 @@ function love.load()
   addPalettes()
   current_palette = "default"
 
+  sound_exists = {}
+  local function addAudio(d)
+    local dir = "assets/audio"
+    if d then
+      dir = dir .. "/" .. d
+    end
+    local files = love.filesystem.getDirectoryItems(dir)
+    for _,file in ipairs(files) do
+      if string.sub(file, -4) == ".wav" then
+        local audioname = string.sub(file, 1, -5)
+        if d then
+          audioname = d .. "/" .. audioname
+        end
+        sound_exists[audioname] = true
+      elseif love.filesystem.getInfo(dir .. "/" .. file).type == "directory" then
+        local newdir = file
+        if d then
+          newdir = d .. "/" .. newdir
+        end
+        addAudio(file)
+      end
+    end
+  end
+  addAudio()
+
   system_cursor = sprites["ui/mous"]
   --if love.system.getOS() == "OS X" then
     --system_cursor = sprites["ui/mous_osx"]
@@ -175,18 +201,24 @@ function love.load()
 end
 
 function love.keypressed(key,scancode,isrepeat)
+  gooi.keypressed(key, scancode)
+
   if key == "f1" and scene == editor then
     scene = game
+    clearGooi()
     scene.load()
   elseif key == "f2" and scene == game then
     scene = editor
+    clearGooi()
     scene.load()
   elseif key == "escape" then
     if scene == loadscene then
       scene = editor
+      clearGooi()
       scene.load()
     elseif scene ~= menu then
       scene = menu
+      clearGooi()
       scene.load()
     end
   elseif key == "g" and love.keyboard.isDown('f3') and scene ~= editor then
@@ -200,22 +232,22 @@ function love.keypressed(key,scancode,isrepeat)
   if scene and scene.keyPressed then
     scene.keyPressed(key, isrepeat)
   end
-
-  suit.keypressed(key)
 end
 
-function love.keyreleased(key)
+function love.keyreleased(key, scancode)
+  gooi.keyreleased(key, scancode)
+
   if scene and scene.keyReleased then
     scene.keyReleased(key)
   end
 end
 
 function love.textinput(text)
+  gooi.textinput(text)
+
   if scene and scene.textInput then
     scene.textInput(text)
   end
-  
-  suit.textinput(text)
 end
 
 function love.touchpressed(id, x, y)
@@ -227,6 +259,8 @@ function love.touchreleased(id, x, y, dx, dy, pressure)
 end
 
 function love.mousepressed(x, y, button)
+  gooi.pressed()
+
   if scene == menu and button == 1 then
     local width = love.graphics.getWidth()
     local height = love.graphics.getHeight()
@@ -235,10 +269,12 @@ function love.mousepressed(x, y, button)
     local buttonwidth = width*0.375
     if mouseOverBox(width/2-buttonwidth/2, height/2-buttonheight/2+buttonheight+10, buttonwidth, buttonheight) then
       scene = game
+      clearGooi()
       scene.load()
     end
     if mouseOverBox(width/2-buttonwidth/2, height/2-buttonheight/2+(buttonheight+10)*2, buttonwidth, buttonheight) then
       scene = editor
+      clearGooi()
       scene.load()
     end
   end
@@ -253,6 +289,8 @@ function love.mousepressed(x, y, button)
 end
 
 function love.mousereleased(x, y, button)
+  gooi.released()
+
   if scene and scene.mouseReleased then
     scene.mouseReleased(x, y, button)
   end
@@ -277,6 +315,7 @@ function love.update(dt)
     end
   end
 
+  gooi.update(dt)
   tick.update(dt)
 
   if scene and scene.update then
@@ -285,6 +324,7 @@ function love.update(dt)
 
   if new_scene then
     scene = new_scene
+    clearGooi()
     scene.load()
     new_scene = nil
   end
@@ -317,8 +357,6 @@ function love.draw()
     scene.draw(dt)
   end
 
-  suit.draw()
-
   if debug then
     love.graphics.setColor(1, 1, 1, 0.9)
     if rainbowmode then
@@ -342,6 +380,12 @@ function love.draw()
       key..': '..value
     end
     love.graphics.print(debugtext)
+  end
+end
+
+function love.resize(w, h)
+  if scene and scene.resize then
+    scene.resize(w, h)
   end
 end
 

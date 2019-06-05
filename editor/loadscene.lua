@@ -117,7 +117,10 @@ function scene.loadLevel(data)
   local loaddata = love.data.decode("string", "base64", data.map)
   local mapstr = love.data.decompress("string", "zlib", loaddata)
 
+  loaded_level = true
+
   level_name = data.name
+  level_author = data.author or ""
   current_palette = data.palette or "default"
   map_music = data.music or "bab be u them"
   mapwidth = data.width

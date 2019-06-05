@@ -9,15 +9,15 @@ local name_font = nil
 local typing_name = false
 local ignore_mouse = true
 
-local settings, settings_open, settings_pos
-local input_name, input_palette, input_music, input_width, input_height
+local settings_open, settings
+local label_palette, label_music
+local input_name, input_author, input_palette, input_music, input_width, input_height
 
 local saved_popup
 
 function scene.load()
   brush = {id = nil, dir = 1, mode = "none", picked_tile = nil, picked_index = 0}
   saved_popup = {sprite = sprites["ui/level_saved"], y = 16, alpha = 0}
-  settings_pos = {x = -320}
   key_down = {}
   buttons = {}
 
@@ -27,19 +27,25 @@ function scene.load()
   if not level_name then
     level_name = "unnamed"
   end
+  if not level_author then
+    level_author = ""
+  end
+
+  if not loaded_level then
+    if love.filesystem.getInfo("author_name") then
+      level_author = love.filesystem.read("author_name")
+    end
+    default_author = level_author
+  end
+
   typing_name = false
   ignore_mouse = true
 
   width = love.graphics.getWidth()
   height = love.graphics.getHeight()
   name_font = love.graphics.newFont(24)
-  settings = suit.new()
 
-  input_name = {text = level_name}
-  input_palette = {text = current_palette}
-  input_music = {text = map_music}
-  input_width = {text = tostring(mapwidth)}
-  input_height = {text = tostring(mapheight)}
+  scene.setupGooi()
 
   clear()
   resetMusic(map_music, 0.1)
@@ -62,12 +68,77 @@ function scene.load()
   end
 end
 
+function scene.setupGooi()
+  gooi.newButton({text = "", x = 40*0, y = 0, w = 40, h = 40}):onRelease(function()
+    scene.loadLevel()
+  end):setBGImage(sprites["ui/load"], sprites["ui/load_h"], sprites["ui/load_a"]):bg({0, 0, 0, 0})
+  gooi.newButton({text = "", x = 40*1, y = 0, w = 40, h = 40}):onRelease(function()
+    scene.saveLevel()
+  end):setBGImage(sprites["ui/save"], sprites["ui/save_h"], sprites["ui/save_a"]):bg({0, 0, 0, 0})
+  gooi.newButton({text = "", x = 40*2, y = 0, w = 40, h = 40}):onRelease(function()
+    scene.openSettings()
+  end):setBGImage(sprites["ui/cog"], sprites["ui/cog_h"], sprites["ui/cog_a"]):bg({0, 0, 0, 0})
+  gooi.newButton({text = "", x = 40*3, y = 0, w = 40, h = 40}):onRelease(function()
+    new_scene = game
+  end):setBGImage(sprites["ui/play"],sprites["ui/play_h"], sprites["ui/play_a"]):bg({0, 0, 0, 0})
+
+  settings = {x = 0, y = 0, w = 208, h = 336}
+
+  local y = (love.graphics.getHeight() - settings.h) / 2
+
+  settings.y = y
+
+  y = y + 4
+  gooi.newLabel({text = "Name", x = 4, y = y, w = 200, h = 24}):center():setGroup("settings")
+  y = y + 24 + 4
+  input_name = gooi.newText({text = level_name, x = 4, y = y, w = 200, h = 24}):setGroup("settings")
+
+  y = y + 24 + 4
+  gooi.newLabel({text = "Author", x = 4, y = y, w = 200, h = 24}):center():setGroup("settings")
+  y = y + 24 + 4
+  input_author = gooi.newText({text = level_author, x = 4, y = y, w = 200, h = 24}):setGroup("settings")
+
+  y = y + 24 + 4
+  label_palette = gooi.newLabel({text = "Palette", x = 4, y = y, w = 200, h = 24}):center():setGroup("settings")
+  y = y + 24 + 4
+  input_palette = gooi.newText({text = current_palette, x = 4, y = y, w = 200, h = 24}):setGroup("settings")
+
+  y = y + 24 + 4
+  label_music = gooi.newLabel({text = "Music", x = 4, y = y, w = 200, h = 24}):center():setGroup("settings")
+  y = y + 24 + 4
+  input_music = gooi.newText({text = map_music, x = 4, y = y, w = 200, h = 24}):setGroup("settings")
+
+  -- Arbitrary limits of 512 until i come up with a reasonable limit
+  y = y + 24 + 4
+  gooi.newLabel({text = "Width", x = 4, y = y, w = 98, h = 24}):center():setGroup("settings")
+  gooi.newLabel({text = "Height", x = 106, y = y, w = 98, h = 24}):center():setGroup("settings")
+  y = y + 24 + 4
+  input_width = gooi.newSpinner({value = mapwidth, min = 1, max = 512, x = 4, y = y, w = 98, h = 24}):setGroup("settings")
+  input_height = gooi.newSpinner({value = mapwidth, min = 1, max = 512, x = 106, y = y, w = 98, h = 24}):setGroup("settings")
+
+  y = y + (24 * 2) + 4
+  gooi.newButton({text = "Save", x = 4, y = y, w = 98, h = 24}):onRelease(function()
+    scene.saveSettings()
+  end):center():success():setGroup("settings")
+  gooi.newButton({text = "Cancel", x = 106, y = y, w = 98, h = 24}):onRelease(function()
+    scene.openSettings()
+  end):center():danger():setGroup("settings")
+
+  y = y + 24 + 4
+  --print("height: " .. y - settings.y)
+
+  gooi.setGroupVisible("settings", settings_open)
+  gooi.setGroupEnabled("settings", settings_open)
+end
+
 function scene.keyPressed(key)
   key_down[key] = true
 
-  if settings_open then
-    settings:keypressed(key)
-  elseif not selector_open then
+  if gooi.showingDialog then
+    return
+  end
+
+  if not settings_open and not selector_open then
     if key == "up" or key == "left" or key == "down" or key == "right" then
       local dx, dy = 0, 0
       if key_down["up"] then dy = dy - 1 end
@@ -116,6 +187,10 @@ function scene.keyReleased(key)
 end
 
 function scene.update(dt)
+  if gooi.showingDialog then
+    return
+  end
+
   if ignore_mouse then
     if not love.mouse.isDown(1) then
       ignore_mouse = false
@@ -125,167 +200,107 @@ function scene.update(dt)
 
   width = love.graphics.getWidth()
   height = love.graphics.getHeight()
-  
-  local mousex, mousey = love.mouse.getPosition()
-  settings:updateMouse(mousex - settings_pos.x, mousey, love.mouse.isDown(1))
-
-  settings.layout:reset(10, 10)
-  settings.layout:padding(4, 4)
-
-  settings:Label("Level Name", {align = "center"}, settings.layout:row(300, 24))
-  local name = settings:Input(input_name, {align = "center"}, settings.layout:row())
-  settings.layout:row()
-  settings:Label("Level Palette", {align = "center"}, settings.layout:row(300, 24))
-  local palette = settings:Input(input_palette, {align = "center"}, settings.layout:row())
-  settings.layout:row()
-  settings:Label("Level Music", {align = "center"}, settings.layout:row(300, 24))
-  local music = settings:Input(input_music, {align = "center"}, settings.layout:row())
-  settings.layout:row()
-  settings:Label("Level Size", {align = "center"}, settings.layout:row())
-  settings.layout:push(settings.layout:row())
-  local winput = settings:Input(input_width, {align = "center"}, settings.layout:col((300 - 4)/2, 24))
-  local hinput = settings:Input(input_height, {align = "center"}, settings.layout:col())
-  settings.layout:pop()
-  settings.layout:row()
-  settings.layout:push(settings.layout:row())
-  local save = settings:Button("Save", settings.layout:col((300 - 4*2)/3, 24))
-  settings.layout:col()
-  local cancel = settings:Button("Cancel", settings.layout:col())
-  settings.layout:pop()
 
   if settings_open then
-    if name.submitted or palette.submitted or music.submitted or winput.submitted or hinput.submitted then
-      scene.saveSettings()
-    elseif save.hit then
-      scene.saveSettings()
-      scene.openSettings()
-    elseif cancel.hit then
-      scene.openSettings()
-    end
-  else
-    suit.layout:reset(0, 0)
-
-    love.graphics.setColor(1, 1, 1)
-
-    local fn
-    if is_mobile then
-      fn = suit.layout.row
+    if not palettes[input_palette:getText()] then
+      label_palette:setIcon(sprites["ui/smol warning"])
     else
-      fn = suit.layout.col
+      label_palette:setIcon()
     end
-
-    local load_btn = suit.ImageButton(sprites["ui/load"], {hovered = sprites["ui/load_h"], active = sprites["ui/load_a"]}, fn(suit.layout, 40, 40))
-    local save_btn = suit.ImageButton(sprites["ui/save"], {hovered = sprites["ui/save_h"], active = sprites["ui/save_a"]}, fn(suit.layout))
-    local settings_btn = suit.ImageButton(sprites["ui/cog"], {hovered = sprites["ui/cog_h"], active = sprites["ui/cog_a"]}, fn(suit.layout))
-    local play_btn = suit.ImageButton(sprites["ui/play"], {hovered = sprites["ui/play_h"], active = sprites["ui/play_a"]}, fn(suit.layout))
-    local selector_btn
-
-    if is_mobile then
-      selector_btn = suit.ImageButton(sprites["ui/selector"], {hovered = sprites["ui/selector_h"], active = sprites["ui/selector_a"]}, fn(suit.layout))
+    if not sound_exists[input_music:getText()] then
+      label_music:setIcon(sprites["ui/smol warning"])
     else
-      selector_btn = {hit = false}
+      label_music:setIcon()
     end
+  elseif not settings_open or not mouseOverBox(settings.x, settings.y, settings.w, settings.h) then
+    local hx,hy = getHoveredTile()
+    if hx ~= nil then
+      local tileid = hx + hy * mapwidth
 
-    if load_btn.hit then
-      scene.loadLevel()
-    elseif save_btn.hit then
-      scene.saveLevel()
-    elseif settings_btn.hit then
-      scene.openSettings()
-    elseif play_btn.hit then
-      love.keypressed("f1")
-    elseif selector_btn.hit then
-      selector_open = not selector_open
-    else
-      local hx,hy = getHoveredTile()
-      if hx ~= nil then
-        local tileid = hx + hy * mapwidth
-
-        local hovered = {}
-        if units_by_tile[tileid] then
-          for _,v in ipairs(units_by_tile[tileid]) do
-            table.insert(hovered, v)
-          end
+      local hovered = {}
+      if units_by_tile[tileid] then
+        for _,v in ipairs(units_by_tile[tileid]) do
+          table.insert(hovered, v)
         end
+      end
 
-        if love.mouse.isDown(1) then
-          if not selector_open then
-            local painted = false
-            local existing = nil
-            if #hovered >= 1 then
-              for _,unit in ipairs(hovered) do
-                if unit.tile == brush.id then
-                  existing = unit
-                elseif brush.mode == "placing" and not key_down["lshift"] then
-                  deleteUnit(unit)
-                  painted = true
-                end
+      if love.mouse.isDown(1) then
+        if not selector_open then
+          local painted = false
+          local existing = nil
+          if #hovered >= 1 then
+            for _,unit in ipairs(hovered) do
+              if unit.tile == brush.id then
+                existing = unit
+              elseif brush.mode == "placing" and not key_down["lshift"] then
+                deleteUnit(unit)
+                painted = true
               end
-            end
-            if existing and brush.mode == "none" then
-              brush.mode = "erasing"
-            elseif not existing and brush.mode == "none" then
-              brush.mode = "placing"
-            end
-            if brush.id ~= nil then
-              if brush.mode == "erasing" then
-                if existing then
-                  deleteUnit(existing)
-                  painted = true
-                end
-              elseif brush.mode == "placing" then
-                if existing then
-                  existing.dir = brush.dir
-                  painted = true
-                else
-                  createUnit(brush.id, hx, hy, brush.dir)
-                  painted = true
-                end
-              end
-            end
-            if painted then
-              if tileid == brush.picked_tile then
-                brush.picked_tile = nil
-                brush.picked_index = 0
-              end
-              paintedtiles = paintedtiles + 1
-              presence["details"] = "painted "..paintedtiles.." tiles"
-              scene.updateMap()
-            end
-          else
-            local selected = hx + hy * tile_grid_width
-            if tile_grid[selected] then
-              brush.id = tile_grid[selected]
-              brush.picked_tile = nil
-              brush.picked_index = 0
-            else
-              brush.id = nil
-              brush.picked_tile = nil
-              brush.picked_index = 0
             end
           end
-        end
-        if love.mouse.isDown(2) and not selector_open then
-          if brush.mode ~= "picking" then
-            if #hovered >= 1 then
-              brush.picked_tile = tileid
-              if brush.picked_tile == tileid and brush.picked_index > 0 then
-                local new_index = brush.picked_index + 1
-                if new_index > #hovered then
-                  new_index = 1
-                end
-                brush.picked_index = new_index
-                brush.id = hovered[new_index].tile
+          if existing and brush.mode == "none" then
+            brush.mode = "erasing"
+          elseif not existing and brush.mode == "none" then
+            brush.mode = "placing"
+          end
+          if brush.id ~= nil then
+            if brush.mode == "erasing" then
+              if existing then
+                deleteUnit(existing)
+                painted = true
+              end
+            elseif brush.mode == "placing" then
+              if existing then
+                existing.dir = brush.dir
+                painted = true
               else
-                brush.id = hovered[1].tile
-                brush.picked_index = 1
+                createUnit(brush.id, hx, hy, brush.dir)
+                painted = true
               end
-              brush.mode = "picking"
-            else
-              brush.id = nil
+            end
+          end
+          if painted then
+            if tileid == brush.picked_tile then
               brush.picked_tile = nil
               brush.picked_index = 0
             end
+            paintedtiles = paintedtiles + 1
+            presence["details"] = "painted "..paintedtiles.." tiles"
+            scene.updateMap()
+          end
+        else
+          local selected = hx + hy * tile_grid_width
+          if tile_grid[selected] then
+            brush.id = tile_grid[selected]
+            brush.picked_tile = nil
+            brush.picked_index = 0
+          else
+            brush.id = nil
+            brush.picked_tile = nil
+            brush.picked_index = 0
+          end
+        end
+      end
+      if love.mouse.isDown(2) and not selector_open then
+        if brush.mode ~= "picking" then
+          if #hovered >= 1 then
+            brush.picked_tile = tileid
+            if brush.picked_tile == tileid and brush.picked_index > 0 then
+              local new_index = brush.picked_index + 1
+              if new_index > #hovered then
+                new_index = 1
+              end
+              brush.picked_index = new_index
+              brush.id = hovered[new_index].tile
+            else
+              brush.id = hovered[1].tile
+              brush.picked_index = 1
+            end
+            brush.mode = "picking"
+          else
+            brush.id = nil
+            brush.picked_tile = nil
+            brush.picked_index = 0
           end
         end
       end
@@ -480,6 +495,9 @@ function scene.draw(dt)
     btnx = btnx + sprite:getWidth() + 4
   end
 
+  love.graphics.push()
+  gooi.draw()
+
   love.graphics.setFont(name_font)
   love.graphics.setColor(1, 1, 1)
 
@@ -492,15 +510,14 @@ function scene.draw(dt)
     love.graphics.draw(saved_popup.sprite, 0, 40 + saved_popup.y)
   end
 
-  love.graphics.push()
-  love.graphics.translate(settings_pos.x, 0)
-
-  love.graphics.setColor(0.1, 0.1, 0.1, 1)
-  love.graphics.rectangle("fill", 0, 0, 320, height)
-  love.graphics.setColor(1, 1, 1, 1)
-  settings:draw()
-
+  if settings_open then
+    love.graphics.setColor(0.1, 0.1, 0.1, 1)
+    love.graphics.rectangle("fill", settings.x, settings.y, settings.w, settings.h)
+    love.graphics.setColor(1, 1, 1, 1)
+    gooi.draw("settings")
+  end
   love.graphics.pop()
+
   if is_mobile then
     local cursorx, cursory = love.mouse.getPosition()
     love.graphics.draw(system_cursor, cursorx, cursory)
@@ -509,12 +526,6 @@ function scene.draw(dt)
   if is_mobile then
     local cursorx, cursory = love.mouse.getPosition()
     love.graphics.draw(system_cursor, cursorx, cursory)
-  end
-end
-
-function scene.textInput(t)
-  if settings then
-    settings:textinput(t)
   end
 end
 
@@ -541,6 +552,7 @@ function scene.saveLevel()
 
   local data = {
     name = level_name,
+    author = level_author,
     palette = current_palette,
     music = map_music,
     width = mapwidth,
@@ -569,34 +581,83 @@ function scene.openSettings()
   if not settings_open then
     settings_open = true
 
-    input_name.text = level_name
-    input_palette.text = current_palette
-    input_music.text = map_music
-    input_width.text = tostring(mapwidth)
-    input_height.text = tostring(mapheight)
+    input_name:setText(level_name)
+    input_author:setText(level_author)
+    input_palette:setText(current_palette)
+    input_music:setText(map_music)
+    input_width:setValue(mapwidth)
+    input_height:setValue(mapheight)
 
-    addTween(tween.new(0.5, settings_pos, {x = 0}, 'outBounce'), "settings")
+    gooi.setGroupVisible("settings", true)
+    gooi.setGroupEnabled("settings", true)
+    --addTween(tween.new(0.5, settings_pos, {x = 0}, 'outBounce'), "settings")
   else
     settings_open = false
-    addTween(tween.new(0.5, settings_pos, {x = -320}, 'outCubic'), "settings")
+
+    gooi.setGroupVisible("settings", false)
+    gooi.setGroupEnabled("settings", false)
+    --addTween(tween.new(0.5, settings_pos, {x = -320}, 'outCubic'), "settings")
   end
 end
 
 function scene.saveSettings()
-  level_name = input_name.text
-  current_palette = input_palette.text
-  map_music = input_music.text
+  local success = true
+  if not palettes[input_palette:getText()] then
+    success = false
+    input_palette:danger()
+  else
+    input_palette:primary()
+  end
+  if not sound_exists[input_music:getText()] then
+    success = false
+    input_music:danger()
+  else
+    input_music:primary()
+  end
+  if not success then
+    return
+  end
+
+  local author_change = false
+  if not loaded_level then
+    if input_author:getText() ~= level_author and input_author:getText() ~= default_author then
+      author_change = true
+    end
+  end
+
+  level_name = input_name:getText()
+  level_author = input_author:getText()
+  current_palette = input_palette:getText()
+  map_music = input_music:getText()
 
   scene.updateMap()
 
-  mapwidth = tonumber(input_width.text)
-  mapheight = tonumber(input_height.text)
+  mapwidth = input_width:getValue()
+  mapheight = input_height:getValue()
   
   clear()
   loadMap()
   resetMusic(map_music, 0.1)
 
   scene.updateMap()
+
+  if author_change then
+    gooi.confirm({
+      text = 'Set your default author name to:\n' .. level_author,
+      okText = "Yes",
+      cancelText = "No",
+      ok = function()
+        default_author = level_author
+        love.filesystem.write("author_name", default_author)
+        scene.openSettings()
+      end,
+      cancel = function()
+        scene.openSettings()
+      end
+    })
+  else
+    scene.openSettings()
+  end
 end
 
 function love.filedropped(file)
@@ -606,7 +667,10 @@ function love.filedropped(file)
   local loaddata = love.data.decode("string", "base64", mapdata.map)
   local mapstr = love.data.decompress("string", "zlib", loaddata)
 
+  loaded_level = true
+
   level_name = mapdata.name
+  level_author = mapdata.author or ""
   current_palette = mapdata.palette or "default"
   map_music = mapdata.music or "bab be u them"
   mapwidth = mapdata.width
@@ -624,6 +688,11 @@ function love.filedropped(file)
 
   brush.picked_tile = nil
   brush.picked_index = 0
+end
+
+function scene.resize(w, h)
+  clearGooi()
+  scene.setupGooi()
 end
 
 return scene
