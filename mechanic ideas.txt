@@ -1,4 +1,4 @@
-Vanilla todo list: FACING DIR, WORD, GROUP, LEVEL, map/world/cursor stuff, text stacking, letter/combined text
+Vanilla todo list: FACING DIR, WORD, GROUP, LEVEL, save/map/world/selector/meta stuff, letter/combined text
 
 ---
 
@@ -8,9 +8,9 @@ SPLAT: Fixes a unit's position to the window. It works one of two ways (not sure
 1) It is considered to be in that tile even if you change levels, until something unsplats or otherwise removes it.
 2) When you change levels, splatted things unsplat and fall down (so it's like a NXT variant).
 
-NXT: LVL BE NXT moves you to the next level in sequential order. For any other object, it phases out and phases back in on the next level you go to.
+NXT: LVL BE NXT moves you to the next level in sequential order. For any other object, it phases out and phases back in on the next level you go to. (Might also have a PRV/PREV?)
 
-PERSIST: Objects that are persist preserve their state even when you change levels. (I assume they also have the lily mod behaviour where they ignore undos?)
+STAY THER (PERSIST): Objects that are persist preserve their state even when you change levels. (I assume they also have the lily mod behaviour where they ignore undos?)
 
 IMBLIES (IMPLIES): A variant on MEANS from lily's mod. Started out as just the idea of rewriting 'propA IMPLY propB' as 'SUPERALL WITH propA IS propB' (where SUPERALL is ALL AND EMPTY AND LEVEL AND MOUSE etc etc). But even more generically, it can be a rule parser modification: x IMPLY y means 'every time x text is seen by the parser, treat it as a stack of x text and y text'. Not sure which is the better mechanic.
 
