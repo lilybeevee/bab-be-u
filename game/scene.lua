@@ -293,8 +293,7 @@ function scene.draw(dt)
           if #unit.color == 3 then
             color = {unit.color[1]/255, unit.color[2]/255, unit.color[3]/255, 1}
           else
-            local r,g,b,a = getPaletteColor(unit.color[1], unit.color[2])
-            color = {r, g, b, a}
+            color = {getPaletteColor(unit.color[1], unit.color[2])}
           end
 
           -- multiply brightness by darkened bg color
