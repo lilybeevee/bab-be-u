@@ -53,6 +53,10 @@ function scene.load()
     startTimestamp = now
   }
   nextPresenceUpdate = 0
+
+  if level_name then
+    presence["details"] = "playing level: "..level_name
+  end
 end
 
 function scene.update(dt)

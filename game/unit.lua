@@ -2,8 +2,6 @@ function updateUnits(undoing, big_update)
   max_layer = 1
   units_by_layer = {}
   local del_units = {}
-  
-  presence["details"] = #undo_buffer.." turns done"
 
   for i,v in pairs(units_by_tile) do
     units_by_tile[i] = {}
