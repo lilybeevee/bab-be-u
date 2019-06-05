@@ -138,12 +138,12 @@ function love.load()
     --system_cursor = sprites["ui/mous_osx"]
   --end
   
-  registerSound("move")
-  registerSound("break")
-  registerSound("unlock")
-  registerSound("sink")
-  registerSound("rule")
-  registerSound("win")
+  registerSound("move", 0.4)
+  registerSound("break", 0.5)
+  registerSound("unlock", 0.6)
+  registerSound("sink", 0.5)
+  registerSound("rule", 0.5)
+  registerSound("win", 0.5)
 
   print([[
 

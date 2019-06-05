@@ -61,6 +61,8 @@ function scene.update(dt)
   
   --mouse_movedX = love.mouse.getX() - love.graphics.getWidth()*0.5
   --mouse_movedY = love.mouse.getY() - love.graphics.getHeight()*0.5
+
+  sound_volume = {}
   
   scene.checkInput()
   updateCursors()
@@ -575,7 +577,7 @@ function scene.checkInput()
   end
 
   if do_move_sound then
-    playSound("move", 0.33)
+    playSound("move")
   end
 end
 

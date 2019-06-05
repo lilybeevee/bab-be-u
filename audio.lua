@@ -5,17 +5,31 @@ music_volume = 1
 current_music = ""
 music_fading = false
 local current_volume = 1
-local sound_data = {}
+local sounds = {}
+local sound_instances = {}
 
-function registerSound(sound)
-  sound_data[sound] = love.sound.newSoundData("assets/audio/" .. sound .. ".wav")
+function registerSound(sound, volume)
+  sounds[sound] = {
+    data = love.sound.newSoundData("assets/audio/" .. sound .. ".wav"),
+    volume = volume or 1
+  }
 end
 
 function playSound(sound, volume)
-  if sound_data[sound] then
-    local source = love.audio.newSource(sound_data[sound], "static")
-    source:setVolume(volume or 1)
+  if sounds[sound] then
+    if not sound_instances[sound] then
+      sound_instances[sound] = 0
+    end
+
+    local source = love.audio.newSource(sounds[sound].data, "static")
+
+    local adjusted_volume = 1/(2^sound_instances[sound])
+    source:setVolume((volume or 1) * adjusted_volume * sounds[sound].volume)
+
     source:play()
+
+    sound_instances[sound] = sound_instances[sound] + 1
+    tick.delay(function() sound_instances[sound] = sound_instances[sound] - 1 end, sounds[sound].data:getDuration()/4)
   end
 end
 

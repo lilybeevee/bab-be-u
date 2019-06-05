@@ -190,7 +190,7 @@ function updateUnits(undoing, big_update)
         if unit ~= on and sameFloat(unit, on) then
           table.insert(to_destroy, unit)
           table.insert(to_destroy, on)
-          playSound("sink", 0.5)
+          playSound("sink")
           addParticles("destroy", unit.x, unit.y, on.color)
         end
       end
@@ -204,7 +204,7 @@ function updateUnits(undoing, big_update)
       for _,on in ipairs(stuff) do
         if unit ~= on and sameFloat(unit, on) then
           table.insert(to_destroy, unit)
-          playSound("break", 0.5)
+          playSound("break")
           addParticles("destroy", unit.x, unit.y, unit.color)
         end
       end
@@ -218,7 +218,7 @@ function updateUnits(undoing, big_update)
       for _,on in ipairs(stuff) do
         if hasProperty(on, "fridgd") and sameFloat(unit, on) then
           table.insert(to_destroy, on)
-          playSound("sink", 0.5)
+          playSound("sink")
           addParticles("destroy", unit.x, unit.y, unit.color)
         end
       end
@@ -233,7 +233,7 @@ function updateUnits(undoing, big_update)
         is_u = hasProperty(on, "u")
         if is_u and sameFloat(unit, on) then
           table.insert(to_destroy, on)
-          playSound("break", 0.5)
+          playSound("break")
           addParticles("destroy", unit.x, unit.y, unit.color)
         end
       end
@@ -248,8 +248,8 @@ function updateUnits(undoing, big_update)
         if hasProperty(unit, "for dor") and sameFloat(unit, on) then
           table.insert(to_destroy, unit)
           table.insert(to_destroy, on)
-          playSound("break", 0.5)
-          playSound("unlock", 0.6)
+          playSound("break")
+          playSound("unlock")
           addParticles("destroy", unit.x, unit.y, unit.color)
           addParticles("destroy", on.x, on.y, on.color)
         end
@@ -265,7 +265,7 @@ function updateUnits(undoing, big_update)
       for _,on in ipairs(stuff) do
         if hasRule(unit, "snacc", on) and sameFloat(unit, on) then
           table.insert(to_destroy, on)
-          playSound("break", 0.5)
+          playSound("break")
           addParticles("destroy", unit.x, unit.y, unit.color)
         end
       end
@@ -293,7 +293,7 @@ function updateUnits(undoing, big_update)
         is_u = hasProperty(on, "u")
         if is_u and sameFloat(unit, on) then
           table.insert(to_destroy, unit)
-          playSound("rule", 0.5)
+          playSound("rule")
           addParticles("bonus", unit.x, unit.y, unit.color)
         end
       end
@@ -309,7 +309,7 @@ function updateUnits(undoing, big_update)
         if is_u and sameFloat(unit, on) then
           win = true
           music_fading = true
-          playSound("win", 0.5)
+          playSound("win")
         end
       end
     end
@@ -489,7 +489,7 @@ function readingOrderSort(a, b)
 end
 
 function destroyLevel(reason)
-  playSound("break", 0.5)
+  playSound("break")
   for _,unit in ipairs(units) do
     addParticles("destroy", unit.x, unit.y, unit.color)
   end
