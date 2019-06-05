@@ -177,6 +177,20 @@ function scene.keyPressed(key)
     else
       love.system.openURL("file://"..love.filesystem.getSaveDirectory())
     end
+  elseif key == "r" and key_down["lctrl"] then
+    gooi.confirm({
+      text = "Clear the level?",
+      okText = "Yes",
+      cancelText = "Cancel",
+      ok = function()
+        map = ""
+        clear()
+        loadMap()
+        loaded_level = false
+      end
+    })
+  elseif key == "return" and settings_open then
+    scene.saveSettings()
   end
 
   if key == "tab" then

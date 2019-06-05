@@ -125,7 +125,14 @@ function scene.keyPressed(key, isrepeat)
   end
 
   if key == "r" then
-    scene.resetStuff()
+    gooi.confirm({
+      text = "Restart level?",
+      okText = "Yes",
+      cancelText = "Cancel",
+      ok = function()
+        scene.resetStuff()
+      end
+    })
   end
   
   if key == "y" then
@@ -447,6 +454,34 @@ function scene.draw(dt)
     love.graphics.draw(sprites["ui/cog"], 0, 0)
   end
 
+  love.graphics.setCanvas()
+  love.graphics.setShader(level_shader)
+  if doin_the_world then
+    level_shader:send("time", shader_time)
+    shader_time = shader_time + 1
+  end
+  love.graphics.draw(canv,0,0)
+  if shader_time == 600 then
+    love.graphics.setShader(paletteshader_0)
+    doin_the_world = false
+  end
+
+  if is_mobile then
+    local screenwidth = love.graphics.getWidth()
+    local screenheight = love.graphics.getHeight()
+
+    local arrowsprite = sprites["ui/arrow"]
+    local squaresprite = sprites["ui/square"]
+
+    love.graphics.draw(arrowsprite, screenwidth-arrowsprite:getWidth(), screenheight, 3.14)
+    love.graphics.draw(arrowsprite, screenwidth, screenheight-arrowsprite:getHeight()*2, 3.14/2)
+    love.graphics.draw(arrowsprite, screenwidth-arrowsprite:getWidth()*3, screenheight-arrowsprite:getHeight(), 3.14*1.5)
+    love.graphics.draw(arrowsprite, screenwidth-arrowsprite:getWidth()*2, screenheight-arrowsprite:getHeight()*3)
+    love.graphics.draw(squaresprite, screenwidth-squaresprite:getWidth()*2, screenheight-squaresprite:getHeight()*2)
+  end
+
+  gooi.draw()
+
   if love.window.hasMouseFocus() then
     for i,cursor in ipairs(cursors) do
       local color
@@ -496,31 +531,6 @@ function scene.draw(dt)
         end
       end
     end
-  end
-  love.graphics.setCanvas()
-  love.graphics.setShader(level_shader)
-  if doin_the_world then
-    level_shader:send("time", shader_time)
-    shader_time = shader_time + 1
-  end
-  love.graphics.draw(canv,0,0)
-  if shader_time == 600 then
-    love.graphics.setShader(paletteshader_0)
-    doin_the_world = false
-  end
-
-  if is_mobile then
-    local screenwidth = love.graphics.getWidth()
-    local screenheight = love.graphics.getHeight()
-
-    local arrowsprite = sprites["ui/arrow"]
-    local squaresprite = sprites["ui/square"]
-
-    love.graphics.draw(arrowsprite, screenwidth-arrowsprite:getWidth(), screenheight, 3.14)
-    love.graphics.draw(arrowsprite, screenwidth, screenheight-arrowsprite:getHeight()*2, 3.14/2)
-    love.graphics.draw(arrowsprite, screenwidth-arrowsprite:getWidth()*3, screenheight-arrowsprite:getHeight(), 3.14*1.5)
-    love.graphics.draw(arrowsprite, screenwidth-arrowsprite:getWidth()*2, screenheight-arrowsprite:getHeight()*3)
-    love.graphics.draw(squaresprite, screenwidth-squaresprite:getWidth()*2, screenheight-squaresprite:getHeight()*2)
   end
 end
 

@@ -217,9 +217,16 @@ function love.keypressed(key,scancode,isrepeat)
       clearGooi()
       scene.load()
     elseif scene ~= menu then
-      scene = menu
-      clearGooi()
-      scene.load()
+      gooi.confirm({
+        text = "Go back to main menu?",
+        okText = "Yes",
+        cancelText = "Cancel",
+        ok = function()
+          scene = menu
+          clearGooi()
+          scene.load()
+        end
+      })
     end
   elseif key == "g" and love.keyboard.isDown('f3') and scene ~= editor then
     rainbowmode = not rainbowmode
