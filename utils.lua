@@ -550,10 +550,15 @@ function getCursorsOnTile(x, y, not_destroyed, exclude)
   end
 end
 
-function copyTable(table)
+function copyTable(t, l_)
+  local l = l_ or 0
   local new_table = {}
-  for k,v in pairs(table) do
-    new_table[k] = v
+  for k,v in pairs(t) do
+    if type(v) == "table" and l > 0 then
+      new_table[k] = copyTable(v, l - 1)
+    else
+      new_table[k] = v
+    end
   end
   return new_table
 end
@@ -573,7 +578,7 @@ end
 function lerp(a,b,t) return (1-t)*a + t*b end
 
 function fullDump(o, r)
-  if type(o) == 'table' and r ~= 2 then
+  if type(o) == 'table' and (not r or r > 0) then
     local s = '{'
     local first = true
     for k,v in pairs(o) do
@@ -582,7 +587,7 @@ function fullDump(o, r)
       end
       local nr = nil
       if r then
-        nr = 2
+        nr = r - 1
       end
       if type(k) ~= 'number' then
         s = s .. k .. ' = ' .. fullDump(v, nr)

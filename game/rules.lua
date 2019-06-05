@@ -77,7 +77,9 @@ function parseRules(undoing)
 
     local sentences = getCombinations(words)
 
-    for _,sentence in ipairs(sentences) do
+    for _,sentence_ in ipairs(sentences) do
+      local sentence = copyTable(sentence_, 1)
+
       local valid, state = parse(sentence, parser)
 
       if not valid then
@@ -85,6 +87,8 @@ function parseRules(undoing)
           table.insert(first_words, {sentence[2].unit, first[2]})
         end
       else
+        print(fullDump(sentence, 2))
+
         if state.word_index <= #sentence then
           table.insert(first_words, {sentence[state.word_index-1].unit, first[2]})
         end

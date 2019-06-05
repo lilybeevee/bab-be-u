@@ -285,8 +285,8 @@ function parse(words, parser, state_)
       if valid or rule.optional then
         return parse(words, parser, next_state)
       else
-        --print(fullDump(rule, true))
-        --print(fullDump(word, true))
+        --print(fullDump(rule, 1))
+        --print(fullDump(word, 1))
         --print("FAILED AT TYPE/NAME")
       end
     elseif rule.options then
