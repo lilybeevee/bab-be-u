@@ -145,7 +145,12 @@ function scene.keyPressed(key)
       if key_down["down"] then dy = dy + 1 end
       if key_down["left"] then dx = dx - 1 end
       if key_down["right"] then dx = dx + 1 end
-      local dir = dirs8_by_offset[dx][dy]
+      local dir
+      if dx ~= 0 or dy ~= 0 then
+        dir = dirs8_by_offset[dx][dy]
+      else
+        dir = rotate8(brush.dir)
+      end
       brush.dir = dir
       local hx,hy = getHoveredTile()
       if hx ~= nil then
