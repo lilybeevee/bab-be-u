@@ -1196,31 +1196,31 @@ tiles_list = {
   --- 109
   {
     name = "text_hotte",
-	sprite = "text_hotte",
-	type = "text",
-	texttype = "property",
-	grid = {6,3},
-	color = {2, 3},
-	layer = 20,
+    sprite = "text_hotte",
+    type = "text",
+    texttype = "property",
+    grid = {6,3},
+    color = {2, 3},
+    layer = 20,
   },
   --- 110
   {
     name = "text_fridgd",
-	sprite = "text_fridgd",
-	type = "text",
-	texttype = "property",
-	grid = {5,3},
-	color = {1, 3},
-	layer = 20,
+    sprite = "text_fridgd",
+    type = "text",
+    texttype = "property",
+    grid = {5,3},
+    color = {1, 3},
+    layer = 20,
   },
   --- 111
   {
     name = "text_colld",
-	sprite = "text_colld",
-	type = "text",
-	grid = {4,3},
-	color = {1, 3},
-	layer = 20,
+    sprite = "text_colld",
+    type = "text",
+    grid = {4,3},
+    color = {1, 3},
+    layer = 20,
   },
   --- 112
   {
@@ -1537,6 +1537,7 @@ tiles_list = {
     texttype = "property",
     grid = {12, 6},
     color = {5, 3},
+    layer = 20,
   },
   -- 144
   {
