@@ -4,6 +4,8 @@ function parseRules(undoing)
   not_rules = {}
   protect_rules = {}
 
+  max_not_rules = 0
+
   local text_be_go_away = {{"text","be","go away",{{},{}}},{},1}
   addRule(text_be_go_away)
 
@@ -257,16 +259,17 @@ function addRule(full_rule)
   local object = rules[3]
   local conds = rules[4]
 
-  local subject_not = false
-  local verb_not = false
-  local object_not = false
+  local subject_not = 0
+  local verb_not = 0
+  local object_not = 0
 
-  if subject:ends("n't") then subject, subject_not = subject:sub(1, -4), true end
-  if verb:ends("n't")    then verb,       verb_not =    verb:sub(1, -4), true end
-  if object:ends("n't")  then object,   object_not =  object:sub(1, -4), true end
+  while subject:ends("n't") do subject, subject_not = subject:sub(1, -4), subject_not + 1 end
+  while verb:ends("n't")    do verb,       verb_not =    verb:sub(1, -4),    verb_not + 1 end
+  while object:ends("n't")  do object,   object_not =  object:sub(1, -4),  object_not + 1 end
 
-  local is_protect = (subject == object) and (verb == "be")
-  local is_not = (verb_not or object_not) and not (verb_not and object_not) -- where's my XOR operator huh
+  if verb_not > 0 then
+    verb = rules[2]:sub(1, -4)
+  end
 
   for _,unit in ipairs(units) do
     unit.active = true
@@ -278,14 +281,14 @@ function addRule(full_rule)
   end
 
   if subject == "every1" then
-    if subject_not then
+    if subject_not % 2 == 1 then
       return
     else
       for _,v in ipairs(referenced_objects) do
         addRule({{v, rules[2], rules[3], rules[4]}, units, dir})
       end
     end
-  elseif subject_not then
+  elseif subject_not % 2 == 1 then
     --print("subject not" .. subject)
     if tiles_by_name[subject] or subject == "text" then
       --print("adding not subject")
@@ -304,14 +307,14 @@ function addRule(full_rule)
   end 
 
   if object == "every1" then
-    if object_not then
+    if object_not % 2 == 1 then
       return
     else
       for _,v in ipairs(referenced_objects) do
         addRule({{rules[1], rules[2], v, rules[4]}, units, dir})
       end
     end
-  elseif object_not then
+  elseif object_not % 2 == 1 then
     --print("object not: " .. object)
     if tiles_by_name[object] or object == "text" then
       --print("adding not object")
@@ -329,28 +332,20 @@ function addRule(full_rule)
     end
   end
 
-  if is_not then
-    local inverse_conds = {{},{}}
-    for i=1,2 do
-      for _,cond in ipairs(conds[i]) do
-        local new_cond = copyTable(cond)
-        if new_cond[1]:ends("n't") then
-          new_cond[1] = new_cond[1]:sub(1, -4)
-        else
-          new_cond[1] = new_cond[1] .. "n't"
-        end
-        table.insert(inverse_conds[i], new_cond)
-      end
+  if verb_not > 0 then
+    if not not_rules[verb_not] then
+      not_rules[verb_not] = {}
+      max_not_rules = math.max(max_not_rules, verb_not)
     end
-    table.insert(not_rules, {{subject, verb, object, inverse_conds}, units, dir})
+    table.insert(not_rules[verb_not], {{subject, verb, object, conds}, units, dir})
 
     -- for specifically checking NOT rules
     table.insert(full_rules, {{subject, verb .. "n't", object, conds}, units, dir})
-  elseif is_protect then
+  elseif (subject == object) and (verb == "be") then
     --print("protecting: " .. subject .. ", " .. object)
     addRule({{subject, "ben't", object .. "n't", conds}, units, dir})
   else
-    table.insert(full_rules, full_rule)
+    table.insert(full_rules, {{subject, verb, object, conds}, units, dir})
   end
 end
 
@@ -359,37 +354,66 @@ function postRules()
 
   -- Step 1:
   -- Block & remove rules if they're N'T'd out
-  for _,rules in ipairs(not_rules) do
-    local rule = rules[1]
+  for n = max_not_rules, 1, -1 do
+    if not_rules[n] then
+      for _,rules in ipairs(not_rules[n]) do
+        local rule = rules[1]
+        local conds = rule[4]
 
-    local has_conds = (#rule[4][1] > 0 or #rule[4][2] > 0)
+        local inverse_conds = {{},{}}
+        for i=1,2 do
+          for _,cond in ipairs(conds[i]) do
+            local new_cond = copyTable(cond)
+            if new_cond[1]:ends("n't") then
+              new_cond[1] = new_cond[1]:sub(1, -4)
+            else
+              new_cond[1] = new_cond[1] .. "n't"
+            end
+            table.insert(inverse_conds[i], new_cond)
+          end
+        end
 
-    local blocked_rules = {}
-    for _,frules in ipairs(full_rules) do
-      local frule = frules[1]
-      if frule[1] == rule[1] and frule[2] == rule[2] and frule[3] == rule[3] then
-        --print("matching rule", rule[1], rule[2], rule[3])
-        if has_conds then
-          for i=1,2 do
-            for _,cond in ipairs(rule[4][i]) do
-              table.insert(frule[4][i], cond)
+        local has_conds = (#conds[1] > 0 or #conds[2] > 0)
+
+        local function blockRules(t, n)
+          local blocked_rules = {}
+          for _,frules in ipairs(t) do
+            local frule = frules[1]
+            local fverb = frule[2]
+            if n then
+              fverb = fverb .. "n't"
+            end
+            if frule[1] == rule[1] and fverb == rule[2] and frule[3] == rule[3] then
+              --print("matching rule", rule[1], rule[2], rule[3])
+              if has_conds then
+                for i=1,2 do
+                  for _,cond in ipairs(inverse_conds[i]) do
+                    table.insert(frule[4][i], cond)
+                  end
+                end
+              else
+                table.insert(blocked_rules, frules)
+              end
             end
           end
-        else
-          table.insert(blocked_rules, frules)
+
+          for _,blocked in ipairs(blocked_rules) do
+            for _,unit in ipairs(blocked[2]) do
+              unit.blocked = true
+              unit.blocked_dir = blocked[3]
+            end
+            removeFromTable(t, blocked)
+          end
         end
+
+        if not_rules[n - 1] then
+          blockRules(not_rules[n - 1], true)
+        end
+        blockRules(full_rules)
+
+        mergeTable(all_units, rules[2])
       end
     end
-
-    for _,blocked in ipairs(blocked_rules) do
-      for _,unit in ipairs(blocked[2]) do
-        unit.blocked = true
-        unit.blocked_dir = blocked[3]
-      end
-      removeFromTable(full_rules, blocked)
-    end
-
-    mergeTable(all_units, rules[2])
   end
 
   -- Step 2:

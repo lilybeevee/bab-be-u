@@ -1,18 +1,8 @@
---[[
-
-PARSER TODO:
-  Make "mod" only apply to previously added words
-  Dont count other mod rules as added words
-
-repeating N'Ts will not work until this is made!
-
-
 local not_suffix = {
   repeatable = true,
   optional = true,
-  options = {{{type = "not", mod = -1}}}
-}]]
-local not_suffix = {type = "not", optional = true, mod = -1}
+  options = {{{type = "not", mod = 1}}}
+}
 
 local and_repeat = {type = "and", connector = true}
 
@@ -32,8 +22,8 @@ local function common(arg, group)
       },
       {
         {type = "any"},
-        {name = "text", mod = -1},
-        {type = "not", optional = true, mod = -2}
+        {name = "text", mod = 1},
+        not_suffix
       }
     }
     mergeTable(full_options, options)
@@ -175,6 +165,7 @@ function parse(words, parser, state_)
   state.group = state.group or "root"
   state.current_matches = copyTable(state.current_matches or {})
   state.matches = copyTable(state.matches or {})
+  state.all_words = copyTable(state.all_words or {})
   state.option = state.option or 1
   state.index = state.index or 1
   state.word_index = state.word_index or 1
@@ -194,6 +185,7 @@ function parse(words, parser, state_)
         group = state.group,
         current_matches = {},
         matches = state.matches,
+        all_words = state.all_words,
         index = 1,
         word_index = state.word_index,
         is_repeat = true
@@ -225,6 +217,7 @@ function parse(words, parser, state_)
         group = state.parent.group,
         current_matches = new_matches,
         matches = state.parent.matches,
+        all_words = state.all_words,
         option = state.parent.option,
         index = state.parent.index + 1,
         word_index = state.word_index,
@@ -241,6 +234,7 @@ function parse(words, parser, state_)
       group = state.group,
       current_matches = state.current_matches,
       matches = state.matches,
+      all_words = state.all_words,
       option = state.option,
       index = state.index + 1,
       word_index = state.word_index
@@ -264,7 +258,7 @@ function parse(words, parser, state_)
               word.connector = true
             end
             if rule.mod then
-              local mod_word = words[state.word_index + rule.mod]
+              local mod_word = state.all_words[#state.all_words - rule.mod + 1]
               if mod_word ~= nil then
                 if mod_word.mods == nil then
                   mod_word.mods = {}
@@ -273,6 +267,7 @@ function parse(words, parser, state_)
               end
             else
               table.insert(state.current_matches, word)
+              table.insert(state.all_words, word)
             end
           end
           if valid then
@@ -305,6 +300,7 @@ function parse(words, parser, state_)
             group = rule.group or state.group,
             current_matches = {},
             matches = {},
+            all_words = state.all_words,
             option = i,
             index = 1,
             word_index = state.word_index
