@@ -50,18 +50,23 @@ function parseRules(undoing)
 
     local stopped = false
     while not stopped do
+      local new_words = {}
       local x = first_unit.x + dx
       local y = first_unit.y + dy
 
       local units = getUnitsOnTile(x, y, "text")
       if #units > 0 then
-        local new_word = {}
+        for _,unit in ipairs(units) do
+          local new_word = {}
 
-        new_word.name = units[1].textname
-        new_word.type = units[1].texttype
-        new_word.unit = units[1]
+          new_word.name = unit.textname
+          new_word.type = unit.texttype
+          new_word.unit = unit
 
-        table.insert(words, new_word)
+          table.insert(new_words, new_word)
+        end
+
+        table.insert(words, new_words)
       else
         stopped = true
       end
@@ -70,79 +75,55 @@ function parseRules(undoing)
       dy = dy + dir[2]
     end
 
-    local valid, state = parse(words, parser)
+    local sentences = getCombinations(words)
 
-    if not valid then
-      if #words > 1 then
-        table.insert(first_words, {words[2].unit, first[2]})
-      end
-    else
-      if state.word_index <= #words then
-        table.insert(first_words, {words[state.word_index-1].unit, first[2]})
-      end
+    for _,sentence in ipairs(sentences) do
+      local valid, state = parse(sentence, parser)
 
-      local new_rules = {{},{},{},{{},{}}}
+      if not valid then
+        if #sentence > 1 then
+          table.insert(first_words, {sentence[2].unit, first[2]})
+        end
+      else
+        if state.word_index <= #sentence then
+          table.insert(first_words, {sentence[state.word_index-1].unit, first[2]})
+        end
 
-      local function simplify(t)
-        local name = ""
-        local units = {}
-        for _,v in ipairs(t) do
-          table.insert(units, v.unit)
-          if not v.connector then
-            name = v.name
-            local suffix = ""
-            if v.mods then
-              for _,mod in ipairs(v.mods) do
-                table.insert(units, mod.unit)
-                if mod.name == "text" then
-                  name = v.unit.fullname
-                elseif mod.name == "n't" then
-                  suffix = suffix .. "n't"
+        local new_rules = {{},{},{},{{},{}}}
+
+        local function simplify(t)
+          local name = ""
+          local units = {}
+          for _,v in ipairs(t) do
+            table.insert(units, v.unit)
+            if not v.connector then
+              name = v.name
+              local suffix = ""
+              if v.mods then
+                for _,mod in ipairs(v.mods) do
+                  table.insert(units, mod.unit)
+                  if mod.name == "text" then
+                    name = v.unit.fullname
+                  elseif mod.name == "n't" then
+                    suffix = suffix .. "n't"
+                  end
                 end
               end
+              name = name .. suffix
             end
-            name = name .. suffix
           end
+          return name, units
         end
-        return name, units
-      end
 
-      for _,matches in ipairs(state.matches) do
-        for _,targets in ipairs(matches.target) do
-          local name, units = simplify(targets, true)
-          table.insert(new_rules[1], {name, units})
-        end
-        if matches.cond then
-          for _,conds in ipairs(matches.cond) do
-            local name, units = simplify(conds)
-
-            local params = {}
-            if conds.target then
-              for _,targets in ipairs(conds.target) do
-                local name, param_units = simplify(targets, true)
-                table.insert(params, name)
-                mergeTable(units, param_units)
-              end
-            end
-
-            table.insert(new_rules[4][1], {name, params, units})
-          end
-        end
-        for _,verbs in ipairs(matches.verb) do
-          local name, units = simplify(verbs)
-          table.insert(new_rules[2], {name, units})
-
-          local verb_rules = {}
-          table.insert(new_rules[3], verb_rules)
-          for _,targets in ipairs(verbs.target) do
+        for _,matches in ipairs(state.matches) do
+          for _,targets in ipairs(matches.target) do
             local name, units = simplify(targets, true)
-            table.insert(verb_rules, {name, units})
+            table.insert(new_rules[1], {name, units})
           end
-
-          if verbs.cond then
-            for _,conds in ipairs(verbs.cond) do
+          if matches.cond then
+            for _,conds in ipairs(matches.cond) do
               local name, units = simplify(conds)
-    
+
               local params = {}
               if conds.target then
                 for _,targets in ipairs(conds.target) do
@@ -151,68 +132,96 @@ function parseRules(undoing)
                   mergeTable(units, param_units)
                 end
               end
-    
-              table.insert(new_rules[4][2], {name, params, units})
+
+              table.insert(new_rules[4][1], {name, params, units})
+            end
+          end
+          for _,verbs in ipairs(matches.verb) do
+            local name, units = simplify(verbs)
+            table.insert(new_rules[2], {name, units})
+
+            local verb_rules = {}
+            table.insert(new_rules[3], verb_rules)
+            for _,targets in ipairs(verbs.target) do
+              local name, units = simplify(targets, true)
+              table.insert(verb_rules, {name, units})
+            end
+
+            if verbs.cond then
+              for _,conds in ipairs(verbs.cond) do
+                local name, units = simplify(conds)
+      
+                local params = {}
+                if conds.target then
+                  for _,targets in ipairs(conds.target) do
+                    local name, param_units = simplify(targets, true)
+                    table.insert(params, name)
+                    mergeTable(units, param_units)
+                  end
+                end
+      
+                table.insert(new_rules[4][2], {name, params, units})
+              end
             end
           end
         end
-      end
 
 
-      for _,a in ipairs(new_rules[1]) do
-        for vi,b in ipairs(new_rules[2]) do
-          for _,c in ipairs(new_rules[3][vi]) do
-            local noun = a[1]
-            local noun_texts = a[2]
-            local verb = b[1]
-            local verb_texts = b[2]
-            local prop = c[1]
-            local prop_texts = c[2]
+        for _,a in ipairs(new_rules[1]) do
+          for vi,b in ipairs(new_rules[2]) do
+            for _,c in ipairs(new_rules[3][vi]) do
+              local noun = a[1]
+              local noun_texts = a[2]
+              local verb = b[1]
+              local verb_texts = b[2]
+              local prop = c[1]
+              local prop_texts = c[2]
 
-            if noun_texts == nil then
-              print("nil on: " .. noun .. " - " .. verb .. " - " .. prop)
-            end
+              if noun_texts == nil then
+                print("nil on: " .. noun .. " - " .. verb .. " - " .. prop)
+              end
 
-            --if verb == "got" or a[1]:starts("text_") or c[1]:starts("text_") then
-              --print("added rule: " .. noun .. " " .. verb .. " " .. prop)
-            --end
+              --if verb == "got" or a[1]:starts("text_") or c[1]:starts("text_") then
+                --print("added rule: " .. noun .. " " .. verb .. " " .. prop)
+              --end
 
-            local all_units = {}
-            for _,unit in ipairs(noun_texts) do
-              if not table.has_value(unit.used_as, "noun") then table.insert(unit.used_as, "noun") end
-              table.insert(all_units, unit)
-            end
-            for _,unit in ipairs(verb_texts) do
-              if not table.has_value(unit.used_as, "verb") then table.insert(unit.used_as, "verb") end
-              table.insert(all_units, unit)
-            end
-            for _,unit in ipairs(prop_texts) do
-              if not table.has_value(unit.used_as, "property") then table.insert(unit.used_as, "property") end
-              table.insert(all_units, unit)
-            end
+              local all_units = {}
+              for _,unit in ipairs(noun_texts) do
+                if not table.has_value(unit.used_as, "noun") then table.insert(unit.used_as, "noun") end
+                table.insert(all_units, unit)
+              end
+              for _,unit in ipairs(verb_texts) do
+                if not table.has_value(unit.used_as, "verb") then table.insert(unit.used_as, "verb") end
+                table.insert(all_units, unit)
+              end
+              for _,unit in ipairs(prop_texts) do
+                if not table.has_value(unit.used_as, "property") then table.insert(unit.used_as, "property") end
+                table.insert(all_units, unit)
+              end
 
-            local conds = {{},{}}
-            for i=1,2 do
-              for _,cond in ipairs(new_rules[4][i]) do
-                for _,unit in ipairs(cond[3]) do
-                  table.insert(all_units, unit)
+              local conds = {{},{}}
+              for i=1,2 do
+                for _,cond in ipairs(new_rules[4][i]) do
+                  for _,unit in ipairs(cond[3]) do
+                    table.insert(all_units, unit)
+                  end
+                  table.insert(conds[i], {cond[1], cond[2]})
                 end
-                table.insert(conds[i], {cond[1], cond[2]})
               end
+
+              --[[for _,unit in ipairs(stupid_cond_units) do
+                table.insert(all_units, unit)
+                unit.active = true
+                if not unit.old_active and not first_turn and not undoing then
+                  addParticles("rule", unit.x, unit.y, unit.color)
+                  has_new_rule = true
+                end
+                unit.old_active = unit.active
+              end]]
+
+              local rule = {{noun,verb,prop,conds},all_units,first[2]}
+              addRule(rule)
             end
-
-            --[[for _,unit in ipairs(stupid_cond_units) do
-              table.insert(all_units, unit)
-              unit.active = true
-              if not unit.old_active and not first_turn and not undoing then
-                addParticles("rule", unit.x, unit.y, unit.color)
-                has_new_rule = true
-              end
-              unit.old_active = unit.active
-            end]]
-
-            local rule = {{noun,verb,prop,conds},all_units,first[2]}
-            addRule(rule)
           end
         end
       end

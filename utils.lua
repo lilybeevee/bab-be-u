@@ -898,3 +898,23 @@ function clearGooi()
     gooi.removeComponent(gooi.components[k])
   end
 end
+
+function getCombinations(t, param_)
+  local param = param_ or {}
+  local ret = param.ret or {}
+  local i = param.i or 1
+  if t[i] then
+    for _,v in ipairs(t[i]) do
+      local current = copyTable(param.current or {})
+      table.insert(current, v)
+      if t[i+1] then
+        getCombinations(t, {i = i+1, current = current, ret = ret})
+      else
+        table.insert(ret, current)
+      end
+    end
+  end
+  if i == 1 then
+    return ret
+  end
+end
