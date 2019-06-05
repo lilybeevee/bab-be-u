@@ -15,8 +15,10 @@ local stopscrolltutorial = 1.0
 function scene.load()
   stopscrolltutorial = 1.0
   buttons = {}
+  offbuttons = {} --not to be intepreted as "off buttons"
 
   local files = love.filesystem.getDirectoryItems("levels")
+  local offfiles = love.filesystem.getDirectoryItems("officiallevels")
   for i,file in ipairs(files) do
     print(file)
     if file:sub(-4) == ".bab" then
@@ -29,6 +31,19 @@ function scene.load()
       end
     end
   end
+  print("official levels")
+  for i,file in ipairs(offfiles) do
+    print(file)
+    if file:sub(-4) == ".bab" then
+      local file = love.filesystem.read("officiallevels/" .. file)
+
+      if file ~= nil then
+        local data = json.decode(file)
+
+        table.insert(offbuttons, data)
+      end
+    end
+  end
 
   scene.updateWindowSize()
 end
@@ -36,10 +51,10 @@ end
 function scene.update(dt)
   scene.updateWindowSize()
 
-  if scrolloffset > (#buttons)*(0-buttonheight-10)-10+height and scrolloffset < 0 then
+  if scrolloffset > (#buttons+#offbuttons)*(0-buttonheight-10)-10+height and scrolloffset < 0 then
     scrolloffset = scrolloffset + scrollvel * dt
-  elseif scrolloffset < (#buttons)*(0-buttonheight-10)-10+height then
-    scrolloffset = (#buttons)*(0-buttonheight-10)-9+height
+  elseif scrolloffset < (#buttons+#offbuttons)*(0-buttonheight-10)-10+height then
+    scrolloffset = (#buttons+#offbuttons)*(0-buttonheight-10)-9+height
   elseif scrolloffset > 0 then
     scrolloffset = -1
   end
@@ -51,7 +66,7 @@ function scene.update(dt)
   debugDisplay("scrollvel", scrollvel)
   debugDisplay("scrolloffset", scrolloffset)
 
-  if height > (#buttons)*(buttonheight+10)+10 then
+  if height > (#buttons+#offbuttons)*(buttonheight+10)+10 then
     scrolloffset = 0
   end
 end
@@ -59,6 +74,11 @@ end
 function scene.mousePressed(x, y, button)
   for i,button in ipairs(buttons) do
     if mouseOverBox(width/2-buttonwidth/2, buttonheight/2+(buttonheight+10)*(i-1)+scrolloffset, buttonwidth, buttonheight) then
+      scene.loadLevel(button)
+    end
+  end
+  for i,button in ipairs(offbuttons) do
+    if mouseOverBox(width/2-buttonwidth/2, buttonheight/2+(buttonheight+10)*(i+#buttons)+scrolloffset, buttonwidth, buttonheight) then
       scene.loadLevel(button)
     end
   end
@@ -88,7 +108,7 @@ function scene.draw(dt)
   love.graphics.draw(bgsprite, scrollx%bgsprite:getWidth()+bgsprite:getWidth(), scrolly%bgsprite:getHeight()-bgsprite:getHeight(), 0)
   love.graphics.draw(bgsprite, scrollx%bgsprite:getWidth()-bgsprite:getWidth(), scrolly%bgsprite:getHeight()+bgsprite:getHeight(), 0)
 
-  if height < (#buttons)*(buttonheight+10)+10 and stopscrolltutorial > 0 then
+  if height < (#buttons+#offbuttons)*(buttonheight+10)+10 and stopscrolltutorial > 0 then
     love.graphics.setColor(1, 1, 1, stopscrolltutorial)
     love.graphics.print("press up and down arrows or use the scrollbar to scroll")
   end
@@ -102,6 +122,21 @@ function scene.draw(dt)
     love.graphics.setColor(1,1,1)
     
     love.graphics.printf(button.name, width/2-buttonwidth/2, buttonheight/2+(buttonheight+10)*(i-1)+5+scrolloffset, buttonwidth, "center")
+  end
+
+  if #offbuttons ~= 0 then
+    love.graphics.printf("official levels", width/2-buttonwidth/2, buttonheight/2+(buttonheight+10)*(#buttons)+5+scrolloffset, buttonwidth, "center")
+  end
+
+  for i,button in ipairs(offbuttons) do
+    love.graphics.setColor(237/255, 114/255, 0) -- too lazy to enter colors manually
+
+    if mouseOverBox(width/2-buttonwidth/2, buttonheight/2+(buttonheight+10)*(i+#buttons)+scrolloffset, buttonwidth, buttonheight) then love.graphics.setColor(237/255-0.1, 114/255-0.1, 0) end
+    love.graphics.draw(sprites["ui/button_white_"..i%2+1], width/2-buttonwidth/2, buttonheight/2+(buttonheight+10)*(i+#buttons)+scrolloffset, 0, buttonwidth/sprites["ui/button_white_"..i%2+1]:getWidth(), buttonheight/sprites["ui/button_white_1"]:getHeight())
+
+    love.graphics.setColor(1,1,1)
+    
+    love.graphics.printf(button.name, width/2-buttonwidth/2, buttonheight/2+(buttonheight+10)*(i+#buttons)+5+scrolloffset, buttonwidth, "center")
   end
 end
 
@@ -140,17 +175,18 @@ end
 function scene.keyPressed(key)
   if stopscrolltutorial == 1 and (key == "down" or key == "up") then stopscrolltutorial = 0.9 end
   if key == "down" then
-    scrollvel = (buttonheight-10)*-35
+    scrollvel = (buttonheight-10)*-40
   elseif key == "up" then
-    scrollvel = (buttonheight-10)*35
+    scrollvel = (buttonheight-10)*40
   end
 end
 
-function love.wheelmoved(whx, why)
+function love.wheelmoved(whx, why) -- The wheel moved, Why?
   if buttonheight then
     if stopscrolltutorial == 1 then stopscrolltutorial = 0.9 end
-    scrollvel = (buttonheight-10)*why*45
+    scrollvel = (buttonheight-10)*why*60
   end
+  -- why = "well i dont fuckin know the person who moved it probably wanted it to move"
 end
 
 return scene

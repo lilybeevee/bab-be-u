@@ -61,6 +61,10 @@ function scene.load()
     startTimestamp = now
   }
   nextPresenceUpdate = 0
+  if level_name then
+    presence["details"] = "working on "..level_name..".bab"
+  end
+
   love.keyboard.setKeyRepeat(true)
 
   if map_ver == 0 then
@@ -284,7 +288,6 @@ function scene.update(dt)
               brush.picked_index = 0
             end
             paintedtiles = paintedtiles + 1
-            presence["details"] = "painted "..paintedtiles.." tiles"
             scene.updateMap()
           end
         else
@@ -591,9 +594,6 @@ end
 
 function scene.loadLevel()
   new_scene = loadscene
-  if level_name then
-    presence["details"] = "working on "..level_name..".bab"
-  end
 end
 
 function scene.openSettings()
