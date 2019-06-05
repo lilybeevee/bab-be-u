@@ -284,11 +284,6 @@ function scene.draw(dt)
             unit.draw.scaley = 1
           end
 
-          if brightness < 1 then
-            print('multiplying')
-          end
-          local mult = {}
-
           local color
           if #unit.color == 3 then
             color = {unit.color[1]/255, unit.color[2]/255, unit.color[3]/255, 1}
