@@ -87,8 +87,6 @@ function parseRules(undoing)
           table.insert(first_words, {sentence[2].unit, first[2]})
         end
       else
-        print(fullDump(sentence, 2))
-
         if state.word_index <= #sentence then
           table.insert(first_words, {sentence[state.word_index-1].unit, first[2]})
         end
