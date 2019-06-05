@@ -210,7 +210,7 @@ function scene.draw(dt)
     if units_by_layer[i] then
       local removed_units = {}
       for _,unit in ipairs(units_by_layer[i]) do
-        if not hasProperty(unit,"stelth") then
+        if not hasProperty(unit,"stelth") and (unit.name ~= "no1" or validEmpty(unit)) then
           local brightness = 1
           if unit.type == "text" and not unit.active then
             brightness = 0.33
@@ -270,6 +270,16 @@ function scene.draw(dt)
           local rotation = 0
           if unit.rotate then
             rotation = math.rad(unit.draw.rotation)
+          end
+          
+          --no tweening empty for now - it's buggy!
+          --TODO: it's still a little buggy if you push/pull empties.
+          if (unit.name == "no1") then
+            drawx = unit.x
+            drawy = unit.y
+            rotation = math.rad((unit.dir - 1) * 45)
+            unit.draw.scalex = 1
+            unit.draw.scaley = 1
           end
 
           local color

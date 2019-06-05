@@ -601,7 +601,7 @@ function canMove(unit,dx,dy,pushing_,pulling_,solid_name,reason)
   local isbounded = matchesRule(unit, "bounded", "?");
   if (#isbounded > 0) then
     local success = false
-    for _,v in ipairs(units_by_tile[tileid]) do
+    for _,v in ipairs(getUnitsOnTile(x, y, nil, false)) do
       if hasRule(unit, "bounded", v) then
         success = true
         break
@@ -630,7 +630,7 @@ function canMove(unit,dx,dy,pushing_,pulling_,solid_name,reason)
   local swap_mover = hasProperty(unit, "behin u")
   
   --normal checks
-  for _,v in ipairs(units_by_tile[tileid]) do
+  for _,v in ipairs(getUnitsOnTile(x, y, nil, false)) do
     --Patashu: treat moving things as intangible in general. also, ignore ourselves for zip purposes
     if (v ~= unit and not v.already_moving) then
       local stopped = false
@@ -689,7 +689,7 @@ function canMove(unit,dx,dy,pushing_,pulling_,solid_name,reason)
   end
   
   --go my wey DOES Not also prevents things from leaving them against their direction
-  --[[for _,v in ipairs(units_by_tile[unit.x + unit.y * mapwidth]) do
+  --[[for _,v in ipairs(getUnitsOnTile(unit.x, unit.y, nil, false)) do
     if hasProperty(v, "go my wey") and goMyWeyPrevents(v.dir, dx, dy) then
       return false,movers,specials
     end

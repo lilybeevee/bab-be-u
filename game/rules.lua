@@ -23,6 +23,7 @@ function parseRules(undoing)
         local tileid = (x+dx) + (y+dy) * mapwidth
         local ntileid = (x+ndx) + (y+ndy) * mapwidth
 
+        --print(tostring(x)..","..tostring(y)..","..tostring(dx)..","..tostring(dy)..","..tostring(ndx)..","..tostring(ndy)..","..tostring(#getUnitsOnTile(x+ndx, y+ndy, "text"))..","..tostring(#getUnitsOnTile(x+dx, y+dy, "text")))
         if #getUnitsOnTile(x+ndx, y+ndy, "text") == 0 and #getUnitsOnTile(x+dx, y+dy, "text") >= 1 then
           table.insert(first_words, {unit, i})
         end

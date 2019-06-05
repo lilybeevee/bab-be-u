@@ -391,7 +391,7 @@ local function testParser()
       {name = "u", type = "property"}
     },
     { -- Test 8 - FALSE
-      {name = "frenless", type = "cond_prefix"},
+      {name = "frenles", type = "cond_prefix"},
       {name = "be", type = "verb"},
       {name = "u", type = "property"}
     },

@@ -7,6 +7,7 @@ function clear()
   units_by_name = {}
   units_by_tile = {}
   units_by_layer = {}
+  empties_by_tile = {}
   still_converting = {}
   referenced_objects = {}
   undo_buffer = {}
@@ -93,6 +94,17 @@ function loadMap()
       if inBounds(x, y) then
         createUnit(id, x, y, dir)
       end
+    end
+  end
+  initializeEmpties()
+end
+
+function initializeEmpties()
+  for x=0,mapwidth-1 do
+    for y=0,mapheight-1 do
+      local tileid = x + y * mapwidth
+      empties_by_tile[tileid] = createUnit(tiles_by_name["no1"], x, y,
+      (((tileid - 1) % 8) + 1), nil, nil, true)
     end
   end
 end
@@ -302,9 +314,21 @@ function hasRule(rule1,rule2,rule3)
   return #matchesRule(rule1,rule2,rule3, true) > 0
 end
 
+function validEmpty(unit)
+  return #units_by_tile[unit.x + unit.y * mapwidth] == 0
+end
+
 function findUnitsByName(name)
   if name == "mous" then
     return cursors
+  elseif name == "no1" then
+    local result = {}
+    for _,unit in ipairs(units_by_name["no1"]) do
+      if validEmpty(unit) then
+        table.insert(result, unit)
+      end
+    end
+    return result
   else
     return units_by_name[name] or {}
   end
@@ -499,6 +523,10 @@ function getUnitsOnTile(x,y,name,not_destroyed,exclude)
           end
         end
       end
+    end
+    --If we care about no1 and the tile is empty, find the no1 that's there.
+    if (#units_by_tile[tileid] == 0 and (name == "no1" or name == nil) and empties_by_tile[tileid] ~= exclude) then
+      table.insert(result, empties_by_tile[tileid]);
     end
     return result
   end

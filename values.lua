@@ -1559,7 +1559,7 @@ tiles_list = {
   {
     name = "katany",
     sprite = "katany",
-    grid = {13, 1},
+    grid = {13, 5},
     color = {0, 1},
     layer = 5,
     rotate = true,
@@ -1569,7 +1569,7 @@ tiles_list = {
     name = "text_katany",
     sprite = "text_katany",
     type = "text",
-    grid = {14, 1},
+    grid = {14, 5},
     color = {0, 1},
     layer = 20,
   },
@@ -1577,7 +1577,7 @@ tiles_list = {
   {
     name = "scarr",
     sprite = "scarr",
-    grid = {13, 2},
+    grid = {13, 6},
     color = {2, 1},
     layer = 5,
   },
@@ -1586,8 +1586,27 @@ tiles_list = {
     name = "text_scarr",
     sprite = "text_scarr",
     type = "text",
-    grid = {14, 2},
+    grid = {14, 6},
     color = {2, 1},
     layer = 20,
-  }
+  },
+  -- 150
+  {
+    name = "text_no1",
+    sprite = "text_no1",
+    type = "text",
+    grid = {6, 0},
+    color = {0, 3},
+    layer = 20,
+  },
+  -- 151
+  {
+    name = "no1",
+    sprite = "no1",
+    type = "object",
+    grid = {-1, -1},
+    color = {0, 0},
+    layer = 20,
+    rotate = true,
+  },
 }

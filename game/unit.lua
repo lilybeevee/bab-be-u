@@ -13,8 +13,9 @@ function updateUnits(undoing, big_update)
     --delete units that were deleted during movement (like from walking oob while ouch)
     if (unit.removed) then
       table.insert(del_units, on)
-    else
-    local tileid = unit.x + unit.y * mapwidth
+    --keep empty out of units_by_tile - it will be returned in getUnitsOnTile
+    elseif unit.name ~= "no1" and unit.fullname ~= "no1" then
+      local tileid = unit.x + unit.y * mapwidth
       table.insert(units_by_tile[tileid], unit)
     end
   end
@@ -529,15 +530,18 @@ function dropGotUnit(unit, rule)
 end
 
 --TODO: Conversions need to be simultaneous, so that if e.g. bab on bab be hurcane and you stack two babs, they both become hurcanes. Also, I think creat timing should be tested to see if it matches baba's or not. (In Baba, it's pretty much at the end of the turn, but I don't know if it's before or after conversion.)
---Also, why the fuck is creat and window rules even HERE. All of this needs serious de-spaghettification
 function convertUnits()
   for i,v in ipairs(units_by_tile) do
     units_by_tile[i] = {}
   end
 
+ --keep empty out of units_by_tile - it will be returned in getUnitsOnTile
+ --TODO: CLEANUP: This is similar to updateUnits.
   for _,unit in ipairs(units) do
-    local tileid = unit.x + unit.y * mapwidth
-    table.insert(units_by_tile[tileid], unit)
+    if unit.name ~= "no1" and unit.fullname ~= "no1" then
+      local tileid = unit.x + unit.y * mapwidth
+      table.insert(units_by_tile[tileid], unit)
+    end
   end
 
   local converted_units = {}
@@ -579,7 +583,9 @@ function convertUnits()
         end
         unit.removed = true
         local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
-        addUndo({"create", new_unit.id, true})
+        if (new_unit ~= nil) then
+          addUndo({"create", new_unit.id, true})
+        end
       elseif rule[3] == "mous" then
         if not unit.removed then
           table.insert(converted_units, unit)
@@ -601,7 +607,7 @@ function deleteUnits(del_units,convert)
   end
 end
 
-function createUnit(tile,x,y,dir,convert,id_)
+function createUnit(tile,x,y,dir,convert,id_,really_create_empty)
   local unit = {}
   unit.class = "unit"
 
@@ -647,8 +653,14 @@ function createUnit(tile,x,y,dir,convert,id_)
     unit.name = unit.fullname
     unit.textname = unit.fullname
   end
+  
+  --abort if we're trying to create empty outside of initialization, to preserve the invariant 'there is exactly empty per tile'
+  if ((unit.name == "no1" or unit.fullname == "no1") and not really_create_empty) then
+    --print("not placing an empty:"..unit.name..","..unit.fullname..","..unit.textname)
+    return nil
+  end
 
-  if unit.texttype == "object" and unit.textname ~= "every1" and unit.textname ~= "mous" then
+  if unit.texttype == "object" and unit.textname ~= "every1" and unit.textname ~= "mous" and unit.textname ~= "no1" then
     if not table.has_value(referenced_objects, unit.textname) then
       table.insert(referenced_objects, unit.textname)
     end
@@ -675,7 +687,10 @@ function createUnit(tile,x,y,dir,convert,id_)
   max_layer = math.max(max_layer, unit.layer)
 
   local tileid = x + y * mapwidth
-  table.insert(units_by_tile[tileid], unit)
+  --keep empty out of units_by_tile - it will be returned in getUnitsOnTile
+  if (not (unit.name == "no1" or unit.fullname == "no1")) then
+    table.insert(units_by_tile[tileid], unit)
+  end
 
   table.insert(units, unit)
 
@@ -693,6 +708,13 @@ function deleteUnit(unit,convert)
       local rule = ruleparent[1]
       dropGotUnit(unit, rule);
     end
+  end
+  --empty can't really be destroyed, only pretend to be, to preserve the invariant 'there is exactly empty per tile'
+  if (unit.name == "no1" or unit.fullname == "no1") then
+    unit.destroyed = false
+    unit.removed = false
+    unit.removed_final = false
+    return
   end
   removeFromTable(units, unit)
   units_by_id[unit.id] = nil
@@ -712,18 +734,35 @@ function deleteUnit(unit,convert)
 end
 
 function moveUnit(unit,x,y)
-  local tileid = unit.x + unit.y * mapwidth
-  removeFromTable(units_by_tile[tileid], unit)
+  --when empty moves, swap it with the empty in its destination tile, to preserve the invariant 'there is exactly empty per tile'
+  --also, keep empty out of units_by_tile - it will be added in getUnitsOnTile
+  if (unit.name == "no1" or unit.fullname == "no1") then
+    local tileid = unit.x + unit.y * mapwidth
+    local oldx = unit.x
+    local oldy = unit.y
+    unit.x = x
+    unit.y = y
+    local dest_tileid = unit.x + unit.y * mapwidth
+    dest_empty = empties_by_tile[dest_tileid];
+    dest_empty.x = oldx;
+    dest_empty.y = oldy;
+    dest_empty.dir = unit.dir;
+    empties_by_tile[tileid] = dest_empty;
+    empties_by_tile[dest_tileid] = unit;
+  else
+    local tileid = unit.x + unit.y * mapwidth
+    removeFromTable(units_by_tile[tileid], unit)
 
-  if x ~= unit.x or y ~= unit.y then
-    addTween(tween.new(0.1, unit.draw, {x = x, y = y}), "unit:pos:" .. unit.id)
+    if x ~= unit.x or y ~= unit.y then
+      addTween(tween.new(0.1, unit.draw, {x = x, y = y}), "unit:pos:" .. unit.id)
+    end
+
+    unit.x = x
+    unit.y = y
+
+    tileid = unit.x + unit.y * mapwidth
+    table.insert(units_by_tile[tileid], unit)
   end
-
-  unit.x = x
-  unit.y = y
-
-  tileid = unit.x + unit.y * mapwidth
-  table.insert(units_by_tile[tileid], unit)
 
   do_move_sound = true
 end
