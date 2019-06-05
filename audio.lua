@@ -40,7 +40,7 @@ function playMusic(music, volume)
 
   current_volume = volume or 1
 
-  music_source = love.audio.newSource("assets/audio/" .. music .. ".wav", "stream")
+  music_source = love.audio.newSource("assets/audio/" .. music .. ".wav", "static")
   music_source:setVolume(current_volume * music_volume)
   music_source:setLooping(true)
   music_source:play()
