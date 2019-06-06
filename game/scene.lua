@@ -120,7 +120,19 @@ function scene.keyPressed(key, isrepeat)
     if not repeat_timers["udlr"] then
       repeat_timers["udlr"] = 30
     end
-  elseif key == "z" or key == "backspace" then
+  elseif key == "kp1" or
+  key == "kp2" or
+  key == "kp3" or
+  key == "kp4" or
+  key == "kp5" or
+  key == "kp6" or
+  key == "kp7" or
+  key == "kp8" or
+  key == "kp9" then
+    if not repeat_timers["udlr"] then
+      repeat_timers["numpad"] = 0
+    end
+  elseif key == "z" or key == "backspace" or key == "kp0" then
     if not repeat_timers["undo"] then
       repeat_timers["undo"] = 0
     end
@@ -152,7 +164,7 @@ function scene.keyReleased(key)
     end
   end
 
-  if key == "z" or key == "backspace" then
+  if key == "z" or key == "backspace" or key == "kp0" then
     UNDO_DELAY = MAX_UNDO_DELAY
   end
 
@@ -544,7 +556,18 @@ function scene.checkInput()
   if not (key_down["up"] or key_down["down"] or key_down["left"] or key_down["right"]) then
     repeat_timers["udlr"] = nil
   end
-  if not (key_down["z"] or key_down["backspace"]) then
+  if not (key_down["kp1"] or
+  key_down["kp2"] or
+  key_down["kp3"] or
+  key_down["kp4"] or
+  key_down["kp5"] or
+  key_down["kp6"] or
+  key_down["kp7"] or
+  key_down["kp8"] or
+  key_down["kp9"]) then
+    repeat_timers["numpad"] = nil
+  end
+  if not (key_down["z"] or key_down["backspace"] or key_down["kp0"]) then
     repeat_timers["undo"] = nil
   end
 
@@ -564,7 +587,18 @@ function scene.checkInput()
           if key_down["s"] then y = y + 1 end
           if key_down["a"] then x = x - 1 end
           if key_down["d"] then x = x + 1 end
+        elseif key == "numpad" then
+          if key_down["kp1"] then x = x + -1; y = y + 1; end
+          if key_down["kp2"] then x = x + 0; y = y + 1; end
+          if key_down["kp3"] then x = x + 1; y = y + 1; end
+          if key_down["kp4"] then x = x + -1; y = y + 0; end
+          if key_down["kp5"] then x = x + 0; y = y + 0; end
+          if key_down["kp6"] then x = x + 1; y = y + 0; end
+          if key_down["kp7"] then x = x + -1; y = y + -1; end
+          if key_down["kp8"] then x = x + 0; y = y + -1; end
+          if key_down["kp9"] then x = x + 1; y = y + -1; end
         end
+        x = sign(x); y = sign(y);
         newUndo()
         last_move = {x, y}
         doMovement(x, y)
