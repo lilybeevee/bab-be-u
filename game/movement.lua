@@ -408,7 +408,8 @@ function applySwap(mover, dx, dy)
   for _,v in ipairs(getUnitsOnTile(mover.x+dx, mover.y+dy)) do
     --if not v.already_moving then --this made some things move order dependent, so taking it out
       local swap_v = hasProperty(v, "behin u");
-      if (swap_mover or swap_v) then
+      --Don't swap with non-swap empty.
+      if ((swap_mover and v.name ~= "no1") or swap_v) then
         queueMove(v, -dx, -dy, swap_v and rotate8(mover.dir) or v.dir, true);
         did_swap = true
       end
