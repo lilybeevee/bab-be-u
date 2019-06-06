@@ -191,7 +191,7 @@ It is probably possible to do, but lily has decided that it's not important enou
             local dir = data.dir
             local dpos = dirs8[dir]
             local dx,dy = dpos[1],dpos[2]
-            print("considering:"..unit.name..","..dir)
+            --print("considering:"..unit.name..","..dir)
             local success,movers,specials = canMove(unit, dx, dy, true, false, nil, data.reason)
             for _,special in ipairs(specials) do
               doAction(special)
