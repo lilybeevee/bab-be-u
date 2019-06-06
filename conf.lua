@@ -9,6 +9,6 @@ function love.conf(t)
     t.window.minwidth = 705
     t.window.minheight = 510 
 
-    t.gammacorrect = true
-    t.window.msaa = 4
+    --t.gammacorrect = true
+    --t.window.msaa = 4
 end
