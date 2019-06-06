@@ -790,7 +790,9 @@ function updateDir(unit,dir)
     elseif target_rot - unit.draw.rotation > 180 then
       target_rot = target_rot - 360
     end
-    addTween(tween.new(0.1, unit.draw, {rotation = target_rot}), "unit:dir:" .. unit.id)
+    if (unit.draw.rotation ~= target_rot) then
+      addTween(tween.new(0.1, unit.draw, {rotation = target_rot}), "unit:dir:" .. unit.id)
+    end
   end
 end
 
