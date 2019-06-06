@@ -1,13 +1,14 @@
 --format: {unit = unit, type = "update", payload = {x = x, y = y, dir = dir}} 
 update_queue = {}
 
-function doUpdate()
+function doUpdate(already_added, moving_units_next)
   for _,update in ipairs(update_queue) do
     if update.reason == "update" then
       local unit = update.unit
       local x = update.payload.x
       local y = update.payload.y
       local dir = update.payload.dir
+      applySlide(unit, x-unit.x, y-unit.y, already_added, moving_units_next);
       updateDir(unit, dir)
       --print("doUpdate:"..tostring(unit.name)..","..tostring(x)..","..tostring(y)..","..tostring(dir))
       moveUnit(unit, x, y)
@@ -190,6 +191,7 @@ It is probably possible to do, but lily has decided that it's not important enou
             local dir = data.dir
             local dpos = dirs8[dir]
             local dx,dy = dpos[1],dpos[2]
+            print("considering:"..unit.name..","..dir)
             local success,movers,specials = canMove(unit, dx, dy, true, false, nil, data.reason)
             for _,special in ipairs(specials) do
               doAction(special)
@@ -247,6 +249,7 @@ It is probably possible to do, but lily has decided that it's not important enou
           local unit = moving_units[i];
           if (remove_from_moving_units[unit]) then
             table.remove(moving_units, i);
+            already_added[unit] = false;
           end
         end
       end
@@ -263,11 +266,13 @@ It is probably possible to do, but lily has decided that it's not important enou
           end
         end
       end]]--
+      doUpdate(already_added, moving_units_next)
       for _,unit in ipairs(moving_units_next) do
+        --print("re-added:"..unit.name)
         table.insert(moving_units, unit);
+        already_added[unit] = true;
       end
       moving_units_next = {}
-      doUpdate()
     end
     move_stage = move_stage + 1
   end
@@ -308,7 +313,7 @@ end
 function moveIt(mover, dx, dy, data, pulling, already_added, moving_units, moving_units_next, slippers)
   if not mover.removed then
     queueMove(mover, dx, dy, data.dir, false);
-    applySlide(mover, dx, dy, already_added, moving_units_next);
+    --applySlide(mover, dx, dy, already_added, moving_units_next);
     applySwap(mover, dx, dy);
     --finishing a slip locks you out of U/WALK for the rest of the turn
     if (data.reason == "icy") then
@@ -361,9 +366,10 @@ function applySlide(mover, dx, dy, already_added, moving_units_next)
         end
         --the new moves will be at the start of the unit's moves data, so that it takes precedence over what it would have done next otherwise
         --TODO: CLEANUP: Figure out a nice way to not have to pass this around/do this in a million places.
-        --print("launching")
+        --print("launching:"..mover.name..","..v.dir)
         table.insert(mover.moves, 1, {reason = "goooo", dir = v.dir, times = launchness})
         if not already_added[mover] then
+          --print("did add launcher")
           table.insert(moving_units_next, mover)
           already_added[mover] = true
         end
@@ -386,9 +392,10 @@ function applySlide(mover, dx, dy, already_added, moving_units_next)
           end
           did_clear_existing = true
         end
-        --print("sliding")
+        --print("sliding:"..mover.name..","..mover.dir)
         table.insert(mover.moves, 1, {reason = "icyyyy", dir = mover.dir, times = slideness})
         if not already_added[mover] then
+          --print("did add slider")
           table.insert(moving_units_next, mover)
           already_added[mover] = true
         end
