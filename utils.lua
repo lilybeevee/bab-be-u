@@ -15,6 +15,7 @@ function clear()
   rainbowmode = false
   max_layer = 1
   max_unit_id = 0
+  max_temp_id = 0
   max_mouse_id = 0
   first_turn = true
   cursor_convert = nil

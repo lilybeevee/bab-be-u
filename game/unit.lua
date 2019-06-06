@@ -610,6 +610,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty)
   unit.class = "unit"
 
   unit.id = id_ or newUnitID()
+  unit.tempid = newTempID()
   unit.x = x or 0
   unit.y = y or 0
   unit.dir = dir or 1
@@ -621,7 +622,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty)
 
   if convert then
     unit.draw.scaley = 0
-    addTween(tween.new(0.1, unit.draw, {scaley = 1}), "unit:scale:" .. unit.id)
+    addTween(tween.new(0.1, unit.draw, {scaley = 1}), "unit:scale:" .. unit.tempid)
   end
 
   unit.old_active = unit.active
@@ -726,7 +727,7 @@ function deleteUnit(unit,convert)
     removeFromTable(units_by_layer[unit.layer], unit)
   else
     table.insert(still_converting, unit)
-    addTween(tween.new(0.1, unit.draw, {scaley = 0}), "unit:scale:" .. unit.id)
+    addTween(tween.new(0.1, unit.draw, {scaley = 0}), "unit:scale:" .. unit.tempid)
     tick.delay(function() removeFromTable(still_converting, unit) end, 0.1)
   end
 end
@@ -752,7 +753,7 @@ function moveUnit(unit,x,y)
     removeFromTable(units_by_tile[tileid], unit)
 
     if x ~= unit.x or y ~= unit.y then
-      addTween(tween.new(0.1, unit.draw, {x = x, y = y}), "unit:pos:" .. unit.id)
+      addTween(tween.new(0.1, unit.draw, {x = x, y = y}), "unit:pos:" .. unit.tempid)
     end
 
     unit.x = x
@@ -779,9 +780,9 @@ function updateDir(unit,dir)
   local target_rot = (dir - 1) * 45
   if unit.rotate and math.abs(unit.draw.rotation - target_rot) == 180 then
     -- flip "mirror" effect
-    addTween(tween.new(0.05, unit.draw, {scalex = 0}), "unit:scale:" .. unit.id, function()
+    addTween(tween.new(0.05, unit.draw, {scalex = 0}), "unit:dir:" .. unit.tempid, function()
       unit.draw.rotation = target_rot
-      addTween(tween.new(0.05, unit.draw, {scalex = 1}), "unit:scale:" .. unit.id)
+      addTween(tween.new(0.05, unit.draw, {scalex = 1}), "unit:dir:" .. unit.tempid)
     end)
   else
     -- smooth angle rotation
@@ -790,15 +791,18 @@ function updateDir(unit,dir)
     elseif target_rot - unit.draw.rotation > 180 then
       target_rot = target_rot - 360
     end
-    if (unit.draw.rotation ~= target_rot) then
-      addTween(tween.new(0.1, unit.draw, {rotation = target_rot}), "unit:dir:" .. unit.id)
-    end
+    addTween(tween.new(0.1, unit.draw, {scalex = 1, rotation = target_rot}), "unit:dir:" .. unit.tempid)
   end
 end
 
 function newUnitID()
   max_unit_id = max_unit_id + 1
   return max_unit_id
+end
+
+function newTempID()
+  max_temp_id = max_temp_id + 1
+  return max_temp_id
 end
 
 function newMouseID()
