@@ -129,14 +129,7 @@ function scene.keyPressed(key, isrepeat)
   end
 
   if key == "r" then
-    gooi.confirm({
-      text = "Restart level?",
-      okText = "Yes",
-      cancelText = "Cancel",
-      ok = function()
-        scene.resetStuff()
-      end
-    })
+    scene.resetStuff()
   end
   
   if key == "y" then
