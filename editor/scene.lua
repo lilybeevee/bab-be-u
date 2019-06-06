@@ -707,6 +707,8 @@ function love.filedropped(file)
 
   brush.picked_tile = nil
   brush.picked_index = 0
+
+  resetMusic(map_music, 0.1)
 end
 
 function scene.resize(w, h)
