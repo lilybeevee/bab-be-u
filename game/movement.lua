@@ -140,10 +140,10 @@ function doMovement(movex, movey)
     
     --[[
 Simultaneous movement algorithm, basically a simple version of Baba's:
-1) Make a list of all things that are moving this take, moving_units
+1) Make a list of all things that are moving this stage, moving_units.
 2a) Try to move each of them once. For each success, move it to moving_units_next and set it already_moving with one less move point and an update queued. If there was at least one success, repeat 2 until there are no successes. (During this process, things that are currently moving are considered intangible in canMove.)
 2b) But wait, we're still not done! Flip all walkers that failed to flip, then continue until we once again have no successes. (Flipping still only happens once per turn.)
-2c) Finally, if we had at least one success, everything left is moved to moving_units_next with one less move point and we repeat from 2a). If we had no successes, the take is totally resolved. doupdate() and unset all current_moving.
+2c) Finally, if we had at least one success, everything left is moved to moving_units_next with one less move point and we repeat from 2a). If we had no successes, the stage is totally resolved. doupdate() and unset all current_moving.
 3) when SLIDE/LAUNCH/BOUNCE exists, we'll need to figure out where to insert it... but if it's like baba, it goes after the move succeeds but before do_update(), and it adds either another update or another movement as appropriate.
 
 ALTERNATE MOVEMENT ALGORITHM that would preserve properties like 'x is move and stop pulls apart' and is mostly move order independent:
@@ -159,7 +159,7 @@ It is probably possible to do, but lily has decided that it's not important enou
     --loop_stage and loop_tick are infinite loop detection.
     local loop_stage = 0
     local successes = 1
-    --Outer loop continues until nothing moves in the inner loop, and does a doUpdate after each inner loop, to allow for multimoves to exist.
+    --Stage loop continues until nothing moves in the inner loop, and does a doUpdate after each inner loop, to allow for multimoves to exist.
     while (#moving_units > 0 and successes > 0) do 
       if (loop_stage > 1000) then
         print("movement infinite loop! (1000 attempts at a stage)")
@@ -170,7 +170,7 @@ It is probably possible to do, but lily has decided that it's not important enou
       local loop_tick = 0
       loop_stage = loop_stage + 1
       local something_moved = true
-      --Inner loop tries to move everything at least once, and gives up if after an iteration, nothing can move. (It also tries to do flips to see if that helps.)
+      --Tick loop tries to move everything at least once, and gives up if after an iteration, nothing can move. (It also tries to do flips to see if that helps.) (Incrementing loop_tick once is a 'sub-tick'. Calling doUpdate and incrementing loop_stage is a 'tick'. Incrementing move_stage is a 'stage'.)
       while (something_moved) do
          if (loop_tick > 1000) then
           print("movement infinite loop! (1000 attempts at a single tick)")
@@ -250,6 +250,19 @@ It is probably possible to do, but lily has decided that it's not important enou
           end
         end
       end
+      --Patashu: If we want to satisfy the invariant 'when multiple units move simultaneously, if some of them can't move the first time around, they lose their chance to move', then uncomment this. This lets you do things like bab be u & bounded no1 and have a blob of babs break up (since initially only the front row can move).
+      --[[for i=#moving_units,1,-1 do
+        local unit = moving_units[i];
+        if #unit.moves > 0 and unit.moves[1].times > 0 then
+          unit.moves[1].times = unit.moves[1].times - 1;
+          while #unit.moves > 0 and unit.moves[1].times <= 0 do
+            table.remove(unit.moves)
+          end
+          if #unit.moves == 0 then
+            table.remove(moving_units, i);
+          end
+        end
+      end]]--
       for _,unit in ipairs(moving_units_next) do
         table.insert(moving_units, unit);
       end
