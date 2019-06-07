@@ -1697,4 +1697,24 @@ tiles_list = {
     color = {5, 3},
     layer = 20,
   },
+  -- 161
+  {
+    name = "zsoob",
+    sprite = "zsoob",
+    sleepsprite = "zsoob_slep",
+    type = "object",
+    grid = {13,10},
+    color = {4,1},
+    layer = 5,
+    eye = {x=17, y=9, w=2, h=2},
+  },
+  -- 162
+  {
+    name = "text_zsoob",
+    sprite = "text_zsoob",
+    type = "text",
+    grid = {14,10},
+    color = {4,1},
+    layer = 20,
+  },
 }
