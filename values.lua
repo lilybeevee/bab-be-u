@@ -1637,7 +1637,7 @@ tiles_list = {
     color = {0, 3},
     layer = 5,
   },
-  -- 153
+  -- 155
   {
     name = "text_pepis",
     sprite = "text_pepis",
@@ -1645,5 +1645,15 @@ tiles_list = {
     grid = {12, 10},
     color = {3, 2},
     layer = 20,
-  }
+  },
+  -- 156
+  {
+    name = "text_copkat",
+    sprite = "text_copkat",
+    type = "text",
+    texttype = "verb_object",
+    grid = {11, 7},
+    color = {0, 3},
+    layer = 20,
+  },
 }
