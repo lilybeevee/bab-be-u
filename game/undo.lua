@@ -21,7 +21,7 @@ function undo()
       if action == "update" then
         local unit = units_by_id[v[2]]
 
-        if unit ~= nil then
+        if unit ~= nil and not hasProperty(unit, "no undo") then
           moveUnit(unit,v[3],v[4])
           updateDir(unit, v[5])
 
@@ -30,13 +30,20 @@ function undo()
           end
         end
       elseif action == "create" then
+      local convert = v[3];
         local unit = units_by_id[v[2]]
 
-        if unit ~= nil then
-          deleteUnit(unit, v[3])
+        if unit ~= nil and not hasProperty(unit, "no undo") then
+          deleteUnit(unit, convert, true)
         end
       elseif action == "remove" then
-        createUnit(v[2], v[3], v[4], v[5], v[6], v[7])
+        local convert = v[6];
+        local unit = createUnit(v[2], v[3], v[4], v[5], convert, v[7])
+        --If the unit was actually a destroyed 'no undo', oops. Don't actually bring it back. It's dead, Jim.
+        if (unit ~= nil and not convert and hasProperty(unit, "no undo")) then
+          deleteUnit(unit, convert, true)
+        end
+        --TODO: If roc be no undo and we form water be roc then undo, should the water come back? If it shouldn't, then the 'remove, convert' event needs to 'know' what it came from so that if it came from a 'no undo' object then we can delete it in that circumstance too.
       elseif action == "create_cursor" then
         --love.mouse.setPosition(v[2], v[3])
         deleteMouse(v[2]) --id
@@ -54,6 +61,7 @@ function undo()
 
     table.remove(undo_buffer, 1)
   else
-     print("undo failed")
+      return false
   end
+  return true
 end

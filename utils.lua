@@ -1,4 +1,5 @@
 function clear()
+  reset_count = 0
   last_move = nil
   particles = {}
   tiles_by_name = {}

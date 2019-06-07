@@ -561,6 +561,8 @@ function doPull(unit,dx,dy,data, already_added, moving_units, moving_units_next,
 end
 
 function fallBlock()
+  --TODO: If we have multiple gravity directions, then we probably want a simultaneous single step algorithm to resolve everything neatly.
+  --TODO: If anything can change a faller's direction or position mid-flight (wrap/portal anyone?) then we need infinite loop protection here.
   local fallers = getUnitsWithEffect("haet skye")
   table.sort(fallers, function(a, b) return a.y > b.y end )
   
