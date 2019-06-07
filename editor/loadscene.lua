@@ -36,8 +36,8 @@ function scene.update(dt)
     scrollvel = 0
   end
 
-  scrollx = scrollx+0.1
-  scrolly = scrolly+0.1
+  scrollx = scrollx+75*dt
+  scrolly = scrolly+75*dt
 end
 
 function scene.keyPressed(key)
@@ -118,20 +118,17 @@ function scene.draw()
 
   local bgsprite = sprites["ui/menu_background"]
 
-  -- it'll be improved later dont worry
+  local cells_x = math.ceil(love.graphics.getWidth() / bgsprite:getWidth())
+  local cells_y = math.ceil(love.graphics.getHeight() / bgsprite:getHeight())
+
   love.graphics.setColor(1, 1, 1, 0.6)
-  love.graphics.draw(bgsprite, scrollx%bgsprite:getWidth(), scrolly%bgsprite:getHeight(), 0)
-  
-  love.graphics.draw(bgsprite, scrollx%bgsprite:getWidth()-bgsprite:getWidth(), scrolly%bgsprite:getHeight()-bgsprite:getHeight(), 0)
-  love.graphics.draw(bgsprite, scrollx%bgsprite:getWidth()-bgsprite:getWidth(), scrolly%bgsprite:getHeight(), 0)
-  love.graphics.draw(bgsprite, scrollx%bgsprite:getWidth(), scrolly%bgsprite:getHeight()-bgsprite:getHeight(), 0)
-
-  love.graphics.draw(bgsprite, scrollx%bgsprite:getWidth()+bgsprite:getWidth(), scrolly%bgsprite:getHeight()+bgsprite:getHeight(), 0)
-  love.graphics.draw(bgsprite, scrollx%bgsprite:getWidth()+bgsprite:getWidth(), scrolly%bgsprite:getHeight(), 0)
-  love.graphics.draw(bgsprite, scrollx%bgsprite:getWidth(), scrolly%bgsprite:getHeight()+bgsprite:getHeight(), 0)
-
-  love.graphics.draw(bgsprite, scrollx%bgsprite:getWidth()+bgsprite:getWidth(), scrolly%bgsprite:getHeight()-bgsprite:getHeight(), 0)
-  love.graphics.draw(bgsprite, scrollx%bgsprite:getWidth()-bgsprite:getWidth(), scrolly%bgsprite:getHeight()+bgsprite:getHeight(), 0)
+  for x = -1, cells_x do
+    for y = -1, cells_y do
+      local draw_x = scrollx % bgsprite:getWidth() + x * bgsprite:getWidth()
+      local draw_y = scrolly % bgsprite:getHeight() + y * bgsprite:getHeight()
+      love.graphics.draw(bgsprite, draw_x, draw_y)
+    end
+  end
 
   -- ui
   love.graphics.push()

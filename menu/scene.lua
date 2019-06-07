@@ -38,20 +38,17 @@ function scene.draw(dt)
     love.graphics.draw(system_cursor, cursorx, cursory)
   end
 
-  -- no need to insult me, i know this is terrible code
-  love.graphics.setColor(1, 1, 1)
-  love.graphics.draw(bgsprite, scrollx%bgsprite:getWidth(), scrolly%bgsprite:getHeight(), 0)
-  
-  love.graphics.draw(bgsprite, scrollx%bgsprite:getWidth()-bgsprite:getWidth(), scrolly%bgsprite:getHeight()-bgsprite:getHeight(), 0)
-  love.graphics.draw(bgsprite, scrollx%bgsprite:getWidth()-bgsprite:getWidth(), scrolly%bgsprite:getHeight(), 0)
-  love.graphics.draw(bgsprite, scrollx%bgsprite:getWidth(), scrolly%bgsprite:getHeight()-bgsprite:getHeight(), 0)
+  local cells_x = math.ceil(love.graphics.getWidth() / bgsprite:getWidth())
+  local cells_y = math.ceil(love.graphics.getHeight() / bgsprite:getHeight())
 
-  love.graphics.draw(bgsprite, scrollx%bgsprite:getWidth()+bgsprite:getWidth(), scrolly%bgsprite:getHeight()+bgsprite:getHeight(), 0)
-  love.graphics.draw(bgsprite, scrollx%bgsprite:getWidth()+bgsprite:getWidth(), scrolly%bgsprite:getHeight(), 0)
-  love.graphics.draw(bgsprite, scrollx%bgsprite:getWidth(), scrolly%bgsprite:getHeight()+bgsprite:getHeight(), 0)
-
-  love.graphics.draw(bgsprite, scrollx%bgsprite:getWidth()+bgsprite:getWidth(), scrolly%bgsprite:getHeight()-bgsprite:getHeight(), 0)
-  love.graphics.draw(bgsprite, scrollx%bgsprite:getWidth()-bgsprite:getWidth(), scrolly%bgsprite:getHeight()+bgsprite:getHeight(), 0)
+  love.graphics.setColor(1, 1, 1, 1)
+  for x = -1, cells_x do
+    for y = -1, cells_y do
+      local draw_x = scrollx % bgsprite:getWidth() + x * bgsprite:getWidth()
+      local draw_y = scrolly % bgsprite:getHeight() + y * bgsprite:getHeight()
+      love.graphics.draw(bgsprite, draw_x, draw_y)
+    end
+  end
 
   for i=1, #buttons do
     if mouseOverBox(width/2-buttonwidth/2, height/2-buttonheight/2+(buttonheight+10)*i, buttonwidth, buttonheight) then love.graphics.setColor(.9, .9, .9) end
