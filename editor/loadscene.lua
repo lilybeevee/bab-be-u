@@ -141,6 +141,14 @@ function scene.draw()
   for i,button in ipairs(ui.buttons) do
     local sprite = sprites["ui/" .. button.type .. " box"]
 
+    local sx, sy
+
+    if button.icon then
+      local imgw, imgh = button.icon:getWidth(), button.icon:getHeight()
+      --scale factors
+      sx, sy = ICON_WIDTH / imgw, ICON_HEIGHT / imgh
+    end
+
     love.graphics.push()
     if mouseOverBox(button.x, button.y, button.w, button.h, scene.getTransform()) then
       love.graphics.translate(button.x+button.w/2, button.y+button.h/2)
@@ -153,8 +161,8 @@ function scene.draw()
       love.graphics.draw(sprite, button.x, button.y)
       if button.icon then
         love.graphics.draw(button.icon,
-          button.x + (button.w / 2) - (button.icon:getWidth() / 2),
-          button.y + (button.h / 2) - (button.icon:getHeight() / 2))
+          button.x + (button.w / 2) - (ICON_WIDTH / 2),
+          button.y + (button.h / 2) - (ICON_HEIGHT / 2))
       else
         love.graphics.setFont(icon_font)
 
@@ -164,24 +172,26 @@ function scene.draw()
         love.graphics.printf(button.name:upper(), button.x + (button.w / 2) - (96 / 2), button.y + (button.h / 2) - (height / 2), 96, "center")
       end
     elseif button.type == "level" then
-      if button.create then
-        love.graphics.draw(sprite, button.x, button.y)
-        love.graphics.draw(button.icon,
-          button.x + (button.w / 2) - (button.icon:getWidth() / 2),
-          button.y + (button.h / 2) - (button.icon:getHeight() / 2))
-      else
-        love.graphics.draw(sprite, button.x, button.y)
-        love.graphics.draw(button.icon,
-          button.x + (button.w / 2) - (button.icon:getWidth() / 2),
-          button.y + (button.h * (2/3)) - (button.icon:getHeight() / 2))
-        
-        love.graphics.setFont(name_font)
+      local icon_y_multiplier = 2/3
+      if button.create then icon_y_multiplier = 1/2 end
 
-        local _,lines = name_font:getWrap(button.data.name:upper(), 112)
-        local height = #lines * name_font:getHeight()
-        
-        love.graphics.printf(button.data.name:upper(), button.x + (button.w / 2) - (112 / 2), button.y + 40 - (height / 2), 112, "center")
+      love.graphics.draw(sprite, button.x, button.y)
+      love.graphics.draw(button.icon,
+        button.x + (button.w / 2) - (ICON_WIDTH / 2),
+        button.y + (button.h * icon_y_multiplier) - (ICON_HEIGHT / 2),
+        0, sx, sy)
+      
+      local lvlname = ""
+      if not button.create then
+        lvlname = button.data.name:upper()
       end
+
+      love.graphics.setFont(name_font)
+
+      local _,lines = name_font:getWrap(button.data.name:upper(), 112)
+      local height = #lines * name_font:getHeight()
+      
+      love.graphics.printf(lvlname, button.x + (button.w / 2) - (112 / 2), button.y + 40 - (height / 2), 112, "center")
     end
     love.graphics.pop()
   end

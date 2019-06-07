@@ -18,6 +18,9 @@ local screenshot, screenshot_image
 
 local saved_popup
 
+ICON_WIDTH = 96
+ICON_HEIGHT = 96
+
 function scene.load()
   brush = {id = nil, dir = 1, mode = "none", picked_tile = nil, picked_index = 0}
   saved_popup = {sprite = sprites["ui/level_saved"], y = 16, alpha = 0}
@@ -837,7 +840,7 @@ function scene.captureIcon()
   end
 
   local rect = {
-    x = math.min(start_drag.x, end_drag.x), 
+    x = math.min(start_drag.x, end_drag.x),
     y = math.min(start_drag.y, end_drag.y),
     w = math.abs(end_drag.x - start_drag.x),
     h = math.abs(end_drag.y - start_drag.y)
@@ -856,11 +859,11 @@ function scene.captureIcon()
   local new_image = love.graphics.newImage(new_data)
   new_image:setFilter("linear","nearest")
   
-  local canvas = love.graphics.newCanvas(96, 96) -- icon width/height
+  local canvas = love.graphics.newCanvas(ICON_WIDTH, ICON_HEIGHT)
   love.graphics.origin()
   love.graphics.setCanvas(canvas)
   love.graphics.setColor(1, 1, 1, 1)
-  love.graphics.draw(new_image, 0, 0, 0, 96 / rect.w, 96 / rect.h)
+  love.graphics.draw(new_image, 0, 0, 0, ICON_WIDTH / rect.w, ICON_HEIGHT / rect.h)
   love.graphics.setCanvas()
 
   icon_data = canvas:newImageData()
