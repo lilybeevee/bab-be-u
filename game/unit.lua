@@ -623,8 +623,10 @@ end
 
 function deleteUnits(del_units,convert)
   for _,unit in ipairs(del_units) do
+    if (not unit.removed_final) then
+      addUndo({"remove", unit.tile, unit.x, unit.y, unit.dir, convert or false, unit.id})
+    end
     deleteUnit(unit,convert)
-    addUndo({"remove", unit.tile, unit.x, unit.y, unit.dir, convert or false, unit.id})
   end
 end
 
