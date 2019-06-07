@@ -181,17 +181,14 @@ function scene.draw()
         button.y + (button.h * icon_y_multiplier) - (ICON_HEIGHT / 2),
         0, sx, sy)
       
-      local lvlname = ""
       if not button.create then
-        lvlname = button.data.name:upper()
+        love.graphics.setFont(name_font)
+
+        local _,lines = name_font:getWrap(button.data.name:upper(), 112)
+        local height = #lines * name_font:getHeight()
+        
+        love.graphics.printf(button.data.name:upper(), button.x + (button.w / 2) - (112 / 2), button.y + 40 - (height / 2), 112, "center")
       end
-
-      love.graphics.setFont(name_font)
-
-      local _,lines = name_font:getWrap(button.data.name:upper(), 112)
-      local height = #lines * name_font:getHeight()
-      
-      love.graphics.printf(lvlname, button.x + (button.w / 2) - (112 / 2), button.y + 40 - (height / 2), 112, "center")
     end
     love.graphics.pop()
   end
