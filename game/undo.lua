@@ -48,7 +48,7 @@ function undo()
           deleteUnit(unit, convert, true)
         end
 
-        if unit.type == "text" then
+        if unit ~= nil and unit.type == "text" then
           update_rules = true
         end
         --TODO: If roc be no undo and we form water be roc then undo, should the water come back? If it shouldn't, then the 'remove, convert' event needs to 'know' what it came from so that if it came from a 'no undo' object then we can delete it in that circumstance too.
