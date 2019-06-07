@@ -1637,13 +1637,30 @@ tiles_list = {
     color = {0, 3},
     layer = 5,
   },
-  -- 153
+  -- 155
   {
     name = "text_pepis",
     sprite = "text_pepis",
     type = "text",
     grid = {12, 10},
     color = {3, 2},
+    layer = 20,
+  },
+  -- 156
+  {
+    name = "dorf",
+    sprite = "dorf",
+    grid = {13, 10},
+    color = {0, 3},
+    layer = 5,
+  },
+  -- 157
+  {
+    name = "text_dorf",
+    sprite = "text_dorf",
+    type = "text",
+    grid = {14, 10},
+    color = {0, 3},
     layer = 20,
   }
 }
