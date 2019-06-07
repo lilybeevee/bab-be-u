@@ -43,6 +43,7 @@ function undo()
         if (unit ~= nil and not convert and hasProperty(unit, "no undo")) then
           deleteUnit(unit, convert, true)
         end
+        --TODO: If roc be no undo and we form water be roc then undo, should the water come back? If it shouldn't, then the 'remove, convert' event needs to 'know' what it came from so that if it came from a 'no undo' object then we can delete it in that circumstance too.
       elseif action == "create_cursor" then
         --love.mouse.setPosition(v[2], v[3])
         deleteMouse(v[2]) --id
