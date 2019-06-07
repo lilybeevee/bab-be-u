@@ -33,6 +33,10 @@ function undo()
       local convert = v[3];
         local unit = units_by_id[v[2]]
 
+        if unit.type == "text" then
+          update_rules = true
+        end
+
         if unit ~= nil and not hasProperty(unit, "no undo") then
           deleteUnit(unit, convert, true)
         end
@@ -42,6 +46,10 @@ function undo()
         --If the unit was actually a destroyed 'no undo', oops. Don't actually bring it back. It's dead, Jim.
         if (unit ~= nil and not convert and hasProperty(unit, "no undo")) then
           deleteUnit(unit, convert, true)
+        end
+
+        if unit.type == "text" then
+          update_rules = true
         end
         --TODO: If roc be no undo and we form water be roc then undo, should the water come back? If it shouldn't, then the 'remove, convert' event needs to 'know' what it came from so that if it came from a 'no undo' object then we can delete it in that circumstance too.
       elseif action == "create_cursor" then
