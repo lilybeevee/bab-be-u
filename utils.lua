@@ -790,8 +790,11 @@ function eq(a,b)
   end
 end
 
-function mouseOverBox(x,y,w,h)
-  mousex, mousey = love.mouse.getPosition()
+function mouseOverBox(x,y,w,h,t)
+  local mousex, mousey = love.mouse.getPosition()
+  if t then
+    mousex, mousey = t:inverseTransformPoint(mousex, mousey)
+  end
   return mousex > x and mousex < x+w and mousey > y and mousey < y+h
 end
 

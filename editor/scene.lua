@@ -136,6 +136,18 @@ function scene.setupGooi()
 end
 
 function scene.keyPressed(key)
+  if key == "escape" then
+    gooi.confirm({
+      text = "Go back to level selector?",
+      okText = "Yes",
+      cancelText = "Cancel",
+      ok = function()
+        new_scene = loadscene
+      end
+    })
+    return
+  end
+
   key_down[key] = true
 
   if gooi.showingDialog then
@@ -176,10 +188,18 @@ function scene.keyPressed(key)
   elseif key == "o" and key_down["lctrl"] then
     scene.openSettings()
   elseif key == "f" and key_down["lctrl"] then
-    if love.filesystem.getInfo("levels") then
-      love.system.openURL("file://"..love.filesystem.getSaveDirectory().."/levels/")
+    if world == "" then
+      if love.filesystem.getInfo("levels") then
+        love.system.openURL("file://"..love.filesystem.getSaveDirectory().."/levels/")
+      else
+        love.system.openURL("file://"..love.filesystem.getSaveDirectory())
+      end
     else
-      love.system.openURL("file://"..love.filesystem.getSaveDirectory())
+      if world_parent ~= "officialworlds" then
+        love.system.openURL("file://"..love.filesystem.getSaveDirectory().."/"..world_parent.."/"..world.."/")
+      else
+        love.system.openURL("file://"..love.filesystem.getSource().."/"..world_parent.."/"..world.."/")
+      end
     end
   elseif key == "r" and key_down["lctrl"] then
     gooi.confirm({
@@ -584,7 +604,11 @@ function scene.saveLevel()
   }
 
   love.filesystem.createDirectory("levels")
-  love.filesystem.write("levels/" .. level_name .. ".bab", json.encode(data))
+  if world == "" then
+    love.filesystem.write("levels/" .. level_name .. ".bab", json.encode(data))
+  else
+    love.filesystem.write(world_parent .. "/" .. world .. "/" .. level_name .. ".bab", json.encode(data))
+  end
 
   addTween(tween.new(0.25, saved_popup, {y = 0, alpha = 1}, 'outQuad'), "saved_popup")
   addTick("saved_popup", 1, function()

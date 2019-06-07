@@ -315,7 +315,6 @@ function component:draw()-- Every component has the same base:
 		end
 
     if bgImage then
-
 			love.graphics.setColor(1, 1, 1)
       love.graphics.draw(bgImage,
         math.floor(self.x),
@@ -323,7 +322,18 @@ function component:draw()-- Every component has the same base:
         0,
         self.w / bgImage:getWidth(),
         self.h / bgImage:getHeight())
-    end
+		end
+		
+		if self.fgImage then
+			love.graphics.setColor(1, 1, 1)
+      love.graphics.draw(self.fgImage,
+        math.floor(self.x) + (self.w / 2) - (self.fgImage:getWidth() / 2),
+        math.floor(self.y) + (self.h / 2) - (self.fgImage:getHeight() / 2),
+        0,
+        self.fgImage:getWidth(),
+				self.fgImage:getHeight())
+		end
+
 		love.graphics.setStencilTest()
 
 		-- Border:
@@ -517,6 +527,13 @@ function component:setBGImage(image, hover, pressed)
 	self.hoverImage = hover
 	self.pressedImage = pressed
   return self
+end
+
+function component:setFGImage(image)
+	if type(image) == "string" then image = love.graphics.newImage(image) end
+
+	self.fgImage = image
+	return self
 end
 
 function component:setOpaque(b)

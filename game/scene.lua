@@ -108,6 +108,17 @@ function scene.keyPressed(key, isrepeat)
     return
   end
 
+  if key == "escape" then
+    gooi.confirm({
+      text = "Go back to level selector?",
+      okText = "Yes",
+      cancelText = "Cancel",
+      ok = function()
+        new_scene = loadscene
+      end
+    })
+  end
+
   --TODO: PERFORMANCE: Some ways to cut down on input latency:
   --1) If we see a second input before the 30ms is up, then we know the input and we can instantly get rid of the 30ms delay.
   --2) If we know what the next move is (either it was an orthogonal move and we can see the 30ms delay already elapsed, or we just got our 2nd input for the move) we can do checkInput() from THIS function instead of waiting for love2d to call update().

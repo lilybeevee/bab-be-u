@@ -1,99 +1,121 @@
 local scene = {}
 
-local width, height
-local buttonheight, buttonheight
-local buttons = {}
+world_parent = ""
+world = ""
+
+local title_font, label_font, icon_font, name_font
+local ui
 
 local scrollx = 0
 local scrolly = 0
-
-local scrolloffset = -1
+local scrolloffset = 0
 local scrollvel = 0
 
-local stopscrolltutorial = 1.0
+local full_height = 0
 
 function scene.load()
-  stopscrolltutorial = 1.0
-  buttons = {}
-  offbuttons = {} --not to be intepreted as "off buttons"
-
-  local files = love.filesystem.getDirectoryItems("levels")
-  local offfiles = love.filesystem.getDirectoryItems("officiallevels")
-  for i,file in ipairs(files) do
-    print(file)
-    if file:sub(-4) == ".bab" then
-      local file = love.filesystem.read("levels/" .. file)
-
-      if file ~= nil then
-        local data = json.decode(file)
-
-        table.insert(buttons, data)
-      end
-    end
-  end
-  print("official levels")
-  for i,file in ipairs(offfiles) do
-    print(file)
-    if file:sub(-4) == ".bab" then
-      local file = love.filesystem.read("officiallevels/" .. file)
-
-      if file ~= nil then
-        local data = json.decode(file)
-
-        table.insert(offbuttons, data)
-      end
-    end
-  end
-
-  scene.updateWindowSize()
+  clear()
+  scene.buildUI()
 end
 
 function scene.update(dt)
-  scene.updateWindowSize()
-
-  if scrolloffset > (#buttons+#offbuttons)*(0-buttonheight-10)-10+height and scrolloffset < 0 then
-    scrolloffset = scrolloffset + scrollvel * dt
-  elseif scrolloffset < (#buttons+#offbuttons)*(0-buttonheight-10)-10+height then
-    scrolloffset = (#buttons+#offbuttons)*(0-buttonheight-10)-9+height
-  elseif scrolloffset > 0 then
-    scrolloffset = -1
-  end
-  scrollx = scrollx+0.1
-  scrolly = scrolly+0.1
+  scrolloffset = scrolloffset + scrollvel * dt
 
   scrollvel = scrollvel - scrollvel * math.min(dt * 10, 1)
   if scrollvel < 0.1 and scrollvel > -0.1 then scrollvel = 0 end
   debugDisplay("scrollvel", scrollvel)
   debugDisplay("scrolloffset", scrolloffset)
 
-  if height > (#buttons+#offbuttons)*(buttonheight+10)+10 then
+  local scroll_height = math.max(0, full_height - love.graphics.getHeight())
+  if scrolloffset > scroll_height then
+    scrolloffset = scroll_height
+    scrollvel = 0
+  elseif scrolloffset < 0 then
     scrolloffset = 0
+    scrollvel = 0
+  end
+
+  scrollx = scrollx+0.1
+  scrolly = scrolly+0.1
+end
+
+function scene.keyPressed(key)
+  if key == "escape" then
+    if world ~= "" then
+      world_parent = ""
+      world = ""
+      scene.buildUI()
+    else
+      new_scene = menu
+    end
   end
 end
 
-function scene.mousePressed(x, y, button)
-  for i,button in ipairs(buttons) do
-    if mouseOverBox(width/2-buttonwidth/2, buttonheight/2+(buttonheight+10)*(i-1)+scrolloffset, buttonwidth, buttonheight) then
-      scene.loadLevel(button)
+function scene.mouseReleased(x, y, mouse_button)
+  if gooi.showingDialog then return end
+
+  if mouse_button == 1 then
+    for _,button in ipairs(ui.buttons) do
+      if mouseOverBox(button.x, button.y, button.w, button.h, scene.getTransform()) then
+        if button.type == "world" then
+          world = button.name
+          world_parent = button.data
+          scene.buildUI()
+          break
+        elseif button.type == "level" then
+          if button.create then
+            loaded_level = false
+            scene.loadLevel(button.data, true)
+          else
+            scene.loadLevel(button.data)
+          end
+        end
+      end
     end
-  end
-  for i,button in ipairs(offbuttons) do
-    if mouseOverBox(width/2-buttonwidth/2, buttonheight/2+(buttonheight+10)*(i+#buttons)+scrolloffset, buttonwidth, buttonheight) then
-      scene.loadLevel(button)
+  elseif mouse_button == 2 and world_parent ~= "officialworlds" then
+    for _,button in ipairs(ui.buttons) do
+      if mouseOverBox(button.x, button.y, button.w, button.h, scene.getTransform()) then
+        if button.type == "level" then
+          if not button.create then
+            gooi.confirm({
+              text = "Delete level:\n" .. button.data.name,
+              okText = "Delete",
+              cancelText = "Cancel",
+              ok = function()
+                if world == "" then
+                  love.filesystem.remove("levels/" .. button.name .. ".bab")
+                else
+                  love.filesystem.remove(world_parent .. "/" .. world .. "/" .. button.name .. ".bab")
+                end
+                scene.buildUI()
+              end
+            })
+          end
+        end
+      end
     end
   end
 end
 
-function scene.draw(dt)
-  if stopscrolltutorial < 1 and stopscrolltutorial > 0 then
-    stopscrolltutorial = stopscrolltutorial - dt
-  end
+function scene.wheelMoved(whx, why) -- The wheel moved, Why?
+  scrollvel = scrollvel + (-191 * why * 3)
+  -- why = "well i dont fuckin know the person who moved it probably wanted it to move"
+end
 
-  love.graphics.setBackgroundColor(0.10, 0.1, 0.11)
+function scene.getTransform()
+  local transform = love.math.newTransform()
+
+  transform:translate(0, -scrolloffset)
+
+  return transform
+end
+
+function scene.draw()
+  love.graphics.clear(0.10, 0.1, 0.11, 1)
 
   local bgsprite = sprites["ui/menu_background"]
 
-  -- no need to insult me, i know this is terrible code
+  -- it'll be improved later dont worry
   love.graphics.setColor(1, 1, 1, 0.6)
   love.graphics.draw(bgsprite, scrollx%bgsprite:getWidth(), scrolly%bgsprite:getHeight(), 0)
   
@@ -108,51 +130,73 @@ function scene.draw(dt)
   love.graphics.draw(bgsprite, scrollx%bgsprite:getWidth()+bgsprite:getWidth(), scrolly%bgsprite:getHeight()-bgsprite:getHeight(), 0)
   love.graphics.draw(bgsprite, scrollx%bgsprite:getWidth()-bgsprite:getWidth(), scrolly%bgsprite:getHeight()+bgsprite:getHeight(), 0)
 
-  if height < (#buttons+#offbuttons)*(buttonheight+10)+10 and stopscrolltutorial > 0 then
-    love.graphics.setColor(1, 1, 1, stopscrolltutorial)
-    love.graphics.print("press up and down arrows or use the scrollbar to scroll")
+  -- ui
+  love.graphics.push()
+  love.graphics.applyTransform(scene.getTransform())
+  love.graphics.setColor(1, 1, 1, 1)
+
+  for i,button in ipairs(ui.buttons) do
+    local sprite = sprites["ui/" .. button.type .. " box"]
+
+    love.graphics.push()
+    if mouseOverBox(button.x, button.y, button.w, button.h, scene.getTransform()) then
+      love.graphics.translate(button.x+button.w/2, button.y+button.h/2)
+      love.graphics.scale(1.1)
+      love.graphics.rotate(0.05 * math.sin(love.timer.getTime()*5))
+      love.graphics.translate(-button.x-button.w/2, -button.y-button.h/2)
+    end
+
+    if button.type == "world" then
+      love.graphics.draw(sprite, button.x, button.y)
+      if button.icon then
+        love.graphics.draw(button.icon,
+          button.x + (button.w / 2) - (button.icon:getWidth() / 2),
+          button.y + (button.h / 2) - (button.icon:getHeight() / 2))
+      else
+        love.graphics.setFont(icon_font)
+
+        local _,lines = icon_font:getWrap(button.name:upper(), 96)
+        local height = #lines * icon_font:getHeight()
+
+        love.graphics.printf(button.name:upper(), button.x + (button.w / 2) - (96 / 2), button.y + (button.h / 2) - (height / 2), 96, "center")
+      end
+    elseif button.type == "level" then
+      if button.create then
+        love.graphics.draw(sprite, button.x, button.y)
+        love.graphics.draw(button.icon,
+          button.x + (button.w / 2) - (button.icon:getWidth() / 2),
+          button.y + (button.h / 2) - (button.icon:getHeight() / 2))
+      else
+        love.graphics.draw(sprite, button.x, button.y)
+        love.graphics.draw(button.icon,
+          button.x + (button.w / 2) - (button.icon:getWidth() / 2),
+          button.y + (button.h * (2/3)) - (button.icon:getHeight() / 2))
+        
+        love.graphics.setFont(name_font)
+
+        local _,lines = name_font:getWrap(button.data.name:upper(), 112)
+        local height = #lines * name_font:getHeight()
+        
+        love.graphics.printf(button.data.name:upper(), button.x + (button.w / 2) - (112 / 2), button.y + 40 - (height / 2), 112, "center")
+      end
+    end
+    love.graphics.pop()
   end
 
-  for i,button in ipairs(buttons) do
-    love.graphics.setColor(1, 1, 1)
-
-    if mouseOverBox(width/2-buttonwidth/2, buttonheight/2+(buttonheight+10)*(i-1)+scrolloffset, buttonwidth, buttonheight) then love.graphics.setColor(.9, .9, .9) end
-    love.graphics.draw(sprites["ui/button_"..i%2+1], width/2-buttonwidth/2, buttonheight/2+(buttonheight+10)*(i-1)+scrolloffset, 0, buttonwidth/sprites["ui/button_"..i%2+1]:getWidth(), buttonheight/sprites["ui/button_1"]:getHeight())
-
-    love.graphics.setColor(1,1,1)
-    
-    love.graphics.printf(button.name, width/2-buttonwidth/2, buttonheight/2+(buttonheight+10)*(i-1)+5+scrolloffset, buttonwidth, "center")
+  for _,label in ipairs(ui.labels) do
+    love.graphics.setFont(label.font)
+    love.graphics.printf(label.text, label.x, label.y, label.w or (love.graphics.getWidth()), label.align or "center")
   end
 
-  if #offbuttons ~= 0 then
-    love.graphics.printf("official levels", width/2-buttonwidth/2, buttonheight/2+(buttonheight+10)*(#buttons)+5+scrolloffset, buttonwidth, "center")
-  end
-
-  for i,button in ipairs(offbuttons) do
-    love.graphics.setColor(237/255, 114/255, 0) -- too lazy to enter colors manually
-
-    if mouseOverBox(width/2-buttonwidth/2, buttonheight/2+(buttonheight+10)*(i+#buttons)+scrolloffset, buttonwidth, buttonheight) then love.graphics.setColor(237/255-0.1, 114/255-0.1, 0) end
-    love.graphics.draw(sprites["ui/button_white_"..i%2+1], width/2-buttonwidth/2, buttonheight/2+(buttonheight+10)*(i+#buttons)+scrolloffset, 0, buttonwidth/sprites["ui/button_white_"..i%2+1]:getWidth(), buttonheight/sprites["ui/button_white_1"]:getHeight())
-
-    love.graphics.setColor(1,1,1)
-    
-    love.graphics.printf(button.name, width/2-buttonwidth/2, buttonheight/2+(buttonheight+10)*(i+#buttons)+5+scrolloffset, buttonwidth, "center")
-  end
+  love.graphics.pop()
+  gooi.draw()
 end
 
-function scene.updateWindowSize()
-  width = love.graphics.getWidth()
-  height = love.graphics.getHeight()
-
-  buttonheight = height*0.05
-  buttonwidth = width*0.375
-end
-
-function scene.loadLevel(data)
+function scene.loadLevel(data, new)
   local loaddata = love.data.decode("string", "base64", data.map)
   local mapstr = love.data.decompress("string", "zlib", loaddata)
 
-  loaded_level = true
+  loaded_level = not new
 
   level_name = data.name
   level_author = data.author or ""
@@ -168,25 +212,190 @@ function scene.loadLevel(data)
     map = mapstr
   end
 
-  new_scene = editor
-  button_pressed = {}
-end
-
-function scene.keyPressed(key)
-  if stopscrolltutorial == 1 and (key == "down" or key == "up") then stopscrolltutorial = 0.9 end
-  if key == "down" then
-    scrollvel = (buttonheight-10)*-40
-  elseif key == "up" then
-    scrollvel = (buttonheight-10)*40
+  if load_mode == "edit" then
+    new_scene = editor
+  elseif load_mode == "play" then
+    new_scene = game
   end
 end
 
-function love.wheelmoved(whx, why) -- The wheel moved, Why?
-  if buttonheight then
-    if stopscrolltutorial == 1 then stopscrolltutorial = 0.9 end
-    scrollvel = (buttonheight-10)*why*60
+function scene.buildUI()
+  local sw, sh = love.graphics.getWidth(), love.graphics.getHeight()
+
+  title_font = love.graphics.newFont(32)
+  label_font = love.graphics.newFont(24)
+  icon_font = love.graphics.newFont(24)
+  name_font = love.graphics.newFont(12)
+  icon_font:setFilter("nearest","nearest")
+  name_font:setFilter("nearest","nearest")
+
+  ui = {}
+  ui.labels = {}
+  ui.buttons = {}
+
+  local world_text = world:upper()
+  if world == "" then
+    world_text = "LOAD WORLD"
   end
-  -- why = "well i dont fuckin know the person who moved it probably wanted it to move"
+
+  local title_width, title_height = title_font:getWidth(world_text), title_font:getHeight()
+  table.insert(ui.labels, {
+    font = title_font,
+    text = world_text, 
+    x = 0,
+    y = 4
+  })
+  local oy = 4 + title_height + 24
+
+  if world == "" then
+    local worlds = scene.searchDir("officialworlds", "world")
+    if #worlds > 0 then
+      local label_width, label_height = label_font:getWidth("Official Worlds"), label_font:getHeight()
+      table.insert(ui.labels, {
+        font = label_font,
+        text = "Official Worlds",
+        x = 0,
+        y = oy
+      })
+      oy = oy + label_height + 8
+
+      oy = scene.addButtons("world", worlds, oy)
+    end
+
+    worlds = scene.searchDir("worlds", "world")
+    if #worlds > 0 then
+      label_width, label_height = label_font:getWidth("Custom Worlds"), label_font:getHeight()
+      table.insert(ui.labels, {
+        font = label_font,
+        text = "Custom Worlds",
+        x = 0,
+        y = oy
+      })
+      oy = oy + label_height + 8
+
+      oy = scene.addButtons("world", worlds, oy)
+    end
+
+    local levels = scene.searchDir("levels", "level")
+    if #levels > 0 or load_mode == "edit" then
+      label_width, label_height = label_font:getWidth("Custom Levels"), label_font:getHeight()
+      table.insert(ui.labels, {
+        font = label_font,
+        text = "Custom Levels",
+        x = 0,
+        y = oy
+      })
+      oy = oy + label_height + 8
+
+      if load_mode == "edit" and world_parent ~= "officialworlds" then
+        table.insert(levels, 1, {
+          create = true,
+          name = "new level",
+          data = json.decode(default_map),
+          icon = sprites["ui/create icon"]
+        })
+      end
+
+      oy = scene.addButtons("level", levels, oy)
+    end
+  else
+    local levels = scene.searchDir(world_parent .. "/" .. world, "level")
+    if #levels > 0 or load_mode == "edit" then
+      label_width, label_height = label_font:getWidth("Levels"), label_font:getHeight()
+      table.insert(ui.labels, {
+        font = label_font,
+        text = "Levels",
+        x = 0,
+        y = oy
+      })
+      oy = oy + label_height + 8
+
+      if load_mode == "edit" and world_parent ~= "officialworlds" then
+        table.insert(levels, 1, {
+          create = true,
+          name = "new level",
+          data = json.decode(default_map),
+          icon = sprites["ui/create icon"]
+        })
+      end
+
+      oy = scene.addButtons("level", levels, oy)
+    end
+  end
+
+  full_height = oy + 8
+end
+
+function scene.searchDir(dir, type)
+  local ret = {}
+  local dirs = love.filesystem.getDirectoryItems(dir)
+  for _,file in ipairs(dirs) do
+    local info = love.filesystem.getInfo(dir .. "/" .. file)
+    if info and ((type == "world" and info.type == "directory") or (type == "level" and file:ends(".bab"))) then
+      local t = {}
+      if type == "world" then
+        t.name = file
+        t.data = dir
+        if love.filesystem.getInfo(dir .. "/" .. file .. "/icon.png") then
+          t.icon = love.graphics.newImage(dir .. "/" .. file .. "/icon.png")
+        end
+      elseif type == "level" then
+        t.name = file:sub(1, -5)
+        t.data = json.decode(love.filesystem.read(dir .. "/" .. file))
+        if love.filesystem.getInfo(dir .. "/" .. file:sub(1, -5) .. ".png") then
+          t.icon = love.graphics.newImage(dir .. "/" .. file:sub(1, -5) .. ".png")
+        else
+          t.icon = sprites["ui/default icon"]
+        end
+      end
+      table.insert(ret, t)
+    end
+  end
+  return ret
+end
+
+function scene.addButtons(type, list, oy)
+  local sw = love.graphics.getWidth()
+  local btn_width, btn_height
+  if type == "world" then
+    btn_width, btn_height = sprites["ui/world box"]:getWidth(), sprites["ui/world box"]:getHeight()
+  elseif type == "level" then
+    btn_width, btn_height = sprites["ui/level box"]:getWidth(), sprites["ui/level box"]:getHeight()
+  end
+  local final_list = {}
+  for i,v in ipairs(list) do
+    local row = math.floor((i - 1) / math.floor(sw / (btn_width + 8))) + 1
+    if not final_list[row] then
+      final_list[row] = {}
+    end
+    table.insert(final_list[row], v)
+  end
+  for row,cols in ipairs(final_list) do
+    local width = (btn_width * #cols) + ((#cols - 1) * 8)
+    local ox = (sw / 2) - (width / 2)
+    for col,v in ipairs(cols) do
+      local button = {
+        type = type,
+        name = v.name,
+        x = ox,
+        y = oy,
+        w = btn_width,
+        h = btn_height,
+        icon = v.icon,
+        data = v.data,
+        create = v.create,
+      }
+      table.insert(ui.buttons, button)
+
+      ox = ox + btn_width + 8
+    end
+    oy = oy + btn_height + 8
+  end
+  return oy
+end
+
+function scene.resize(w, h)
+  scene.buildUI()
 end
 
 return scene

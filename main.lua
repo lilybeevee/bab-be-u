@@ -203,31 +203,16 @@ end
 function love.keypressed(key,scancode,isrepeat)
   gooi.keypressed(key, scancode)
 
-  if key == "f1" and scene == editor then
+  if key == "f1" then--and scene == editor then
     scene = game
+    load_mode = "play"
     clearGooi()
     scene.load()
   elseif key == "f2" and scene == game then
     scene = editor
+    load_mode = "edit"
     clearGooi()
     scene.load()
-  elseif key == "escape" then
-    if scene == loadscene then
-      scene = editor
-      clearGooi()
-      scene.load()
-    elseif scene ~= menu then
-      gooi.confirm({
-        text = "Go back to main menu?",
-        okText = "Yes",
-        cancelText = "Cancel",
-        ok = function()
-          scene = menu
-          clearGooi()
-          scene.load()
-        end
-      })
-    end
   elseif key == "g" and love.keyboard.isDown('f3') and scene ~= editor then
     rainbowmode = not rainbowmode
   elseif key == "f4" then
@@ -257,6 +242,12 @@ function love.textinput(text)
   end
 end
 
+function love.wheelmoved(whx, why)
+  if scene and scene.wheelMoved then
+    scene.wheelMoved(whx, why)
+  end
+end
+
 function love.touchpressed(id, x, y)
   love.mousepressed(x,y,1)
 end
@@ -268,24 +259,6 @@ end
 function love.mousepressed(x, y, button)
   gooi.pressed()
 
-  if scene == menu and button == 1 then
-    local width = love.graphics.getWidth()
-    local height = love.graphics.getHeight()
-
-    local buttonheight = height*0.05
-    local buttonwidth = width*0.375
-    if mouseOverBox(width/2-buttonwidth/2, height/2-buttonheight/2+buttonheight+10, buttonwidth, buttonheight) then
-      scene = game
-      clearGooi()
-      scene.load()
-    end
-    if mouseOverBox(width/2-buttonwidth/2, height/2-buttonheight/2+(buttonheight+10)*2, buttonwidth, buttonheight) then
-      scene = editor
-      clearGooi()
-      scene.load()
-    end
-  end
-
   if is_mobile then
     love.mouse.setPosition(x, y)
   end
@@ -296,11 +269,31 @@ function love.mousepressed(x, y, button)
 end
 
 function love.mousereleased(x, y, button)
-  gooi.released()
-
   if scene and scene.mouseReleased then
     scene.mouseReleased(x, y, button)
   end
+
+  if scene == menu and button == 1 then
+    local width = love.graphics.getWidth()
+    local height = love.graphics.getHeight()
+
+    local buttonheight = height*0.05
+    local buttonwidth = width*0.375
+    if mouseOverBox(width/2-buttonwidth/2, height/2-buttonheight/2+buttonheight+10, buttonwidth, buttonheight) then
+      scene = loadscene
+      load_mode = "play"
+      clearGooi()
+      scene.load()
+    end
+    if mouseOverBox(width/2-buttonwidth/2, height/2-buttonheight/2+(buttonheight+10)*2, buttonwidth, buttonheight) then
+      scene = loadscene
+      load_mode = "edit"
+      clearGooi()
+      scene.load()
+    end
+  end
+
+  gooi.released()
 end
 
 function addTween(tween, name, fn)
