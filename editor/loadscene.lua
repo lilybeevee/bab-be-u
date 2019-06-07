@@ -347,6 +347,17 @@ end
 function scene.searchDir(dir, type)
   local ret = {}
   local dirs = love.filesystem.getDirectoryItems(dir)
+
+  table.sort(dirs, function(a, b)
+    if a:ends(".bab") and b:ends(".bab") then
+      return sortString(a:sub(1, -5), b:sub(1, -5))
+    elseif not (a:ends(".bab") or b:ends(".bab")) then --if neither are .bab, don't care, sort normally
+      return a < b
+    else -- if one of them is .bab, put it first to avoid inconsistencies with the function
+      if a:ends(".bab") then return true else return false end
+    end
+  end)
+
   for _,file in ipairs(dirs) do
     local info = love.filesystem.getInfo(dir .. "/" .. file)
     if info and ((type == "world" and info.type == "directory") or (type == "level" and file:ends(".bab"))) then

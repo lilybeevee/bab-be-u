@@ -934,3 +934,23 @@ function round(num, numDecimalPlaces)
   local mult = 10^(numDecimalPlaces or 0)
   return math.floor(num * mult + 0.5) / mult
 end
+
+--[[
+  sort string function, for use with table.sort
+  puts strings with spaces after those without
+  Ex: "abc" will come before "abc 2"
+
+  i think this is called lexicographical sort
+]]
+function sortString(a, b)
+  local min_length = math.min(a:len(), b:len())
+  if a:sub(1, min_length) == b:sub(1, min_length) then
+    if a:len() == min_length then
+      return true
+    else
+      return false
+    end
+  else
+    return a < b
+  end
+end
