@@ -1677,4 +1677,24 @@ tiles_list = {
     color = {3, 3},
     layer = 20,
   },
+  -- 159
+  {
+    name = "text_try again",
+    sprite = "text_try again",
+    type = "text",
+    texttype = "property",
+    grid = {13, 9},
+    color = {3, 3},
+    layer = 20,
+  },
+  -- 160
+  {
+    name = "text_no undo",
+    sprite = "text_no undo",
+    type = "text",
+    texttype = "property",
+    grid = {14, 9},
+    color = {5, 3},
+    layer = 20,
+  },
 }

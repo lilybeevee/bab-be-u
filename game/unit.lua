@@ -2,6 +2,7 @@ function updateUnits(undoing, big_update)
   max_layer = 1
   units_by_layer = {}
   local del_units = {}
+  local will_undo = false
 
   for i,v in pairs(units_by_tile) do
     units_by_tile[i] = {}
@@ -269,6 +270,18 @@ function updateUnits(undoing, big_update)
       end
     end
     
+    local isreset = getUnitsWithEffect("try again");
+    for _,unit in ipairs(isreset) do
+      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
+      for _,on in ipairs(stuff) do
+        is_u = hasProperty(on, "u")
+        if is_u and sameFloat(unit, on) then
+          will_undo = true
+          break
+        end
+      end
+    end
+    
     to_destroy = handleDels(to_destroy);
     
     local iscrash = getUnitsWithEffect("xwx");
@@ -330,7 +343,6 @@ function updateUnits(undoing, big_update)
       end
     end
   end
-  
   
   local unitcount = #units
   for i,unit in ipairs(units) do
@@ -451,16 +463,27 @@ function updateUnits(undoing, big_update)
   end
 
   deleteUnits(del_units,false)
+  
+  if (will_undo) then
+    local can_undo = true;
+    while (can_undo) do
+      can_undo = undo()
+    end
+    reset_count = reset_count + 1
+  end
 end
 
 function handleDels(to_destroy, unstoppable)
   local convert = false
+  local del_units = {}
   for _,unit in ipairs(to_destroy) do
     if unstoppable or not hasProperty(unit, "protecc") then
       unit.destroyed = true
       unit.removed = true
+      table.insert(del_units, unit)
     end
   end
+  deleteUnits(del_units, false);
   return {}
 end
 
@@ -521,8 +544,8 @@ function dropGotUnit(unit, rule)
       local new_mouse = createMouse(unit.x, unit.y)
       addUndo({"create_cursor", new_mouse.id})
     else
-      local new_unit = createUnit(obj_id, unit.x, unit.y, unit.dir, true)
-      addUndo({"create", new_unit.id, true})
+      local new_unit = createUnit(obj_id, unit.x, unit.y, unit.dir, false)
+      addUndo({"create", new_unit.id, false})
     end
   end
 end
@@ -601,6 +624,7 @@ end
 function deleteUnits(del_units,convert)
   for _,unit in ipairs(del_units) do
     deleteUnit(unit,convert)
+    print("in deleteUnits:"..unit.name..","..tostring(convert))
     addUndo({"remove", unit.tile, unit.x, unit.y, unit.dir, convert or false, unit.id})
   end
 end
@@ -698,10 +722,10 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty)
   return unit
 end
 
-function deleteUnit(unit,convert)
+function deleteUnit(unit,convert,undoing)
   unit.removed = true
   unit.removed_final = true
-  if not convert and scene == game then
+  if not undoing and not convert and scene == game then
     gotters = matchesRule(unit, "got", "?");
     for _,ruleparent in ipairs(gotters) do
       local rule = ruleparent[1]

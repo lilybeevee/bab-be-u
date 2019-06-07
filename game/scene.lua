@@ -613,7 +613,7 @@ function scene.checkInput()
         newUndo()
         last_move = {x, y}
         doMovement(x, y)
-        if #undo_buffer[1] == 0 then
+        if #undo_buffer > 0 and #undo_buffer[1] == 0 then
           table.remove(undo_buffer, 1)
         end
       end
