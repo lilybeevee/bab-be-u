@@ -1291,7 +1291,7 @@ tiles_list = {
   },
   -- 119
   {
-    name = "text_n't",
+    name = "text_nt",
     sprite = "text_nt",
     type = "text",
     texttype = "not",

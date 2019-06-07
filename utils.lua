@@ -11,6 +11,7 @@ function clear()
   empties_by_tile = {}
   still_converting = {}
   referenced_objects = {}
+  referenced_text = {}
   undo_buffer = {}
   update_undo = true
   rainbowmode = false
@@ -953,4 +954,21 @@ function sortString(a, b)
   else
     return a < b
   end
+end
+
+function getEverythingExcept(except)
+  local result = {}
+
+  local ref_list = referenced_objects
+  if except:starts("text_") then
+    ref_list = referenced_text
+  end
+
+  for i,ref in ipairs(ref_list) do
+    if ref ~= except then
+      table.insert(result, ref)
+    end
+  end
+
+  return result
 end

@@ -689,6 +689,11 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty)
       table.insert(referenced_objects, unit.textname)
     end
   end
+  if unit.type == "text" then
+    if not table.has_value(referenced_text, unit.fullname) then
+      table.insert(referenced_text, unit.fullname)
+    end
+  end
 
   units_by_id[unit.id] = unit
 
