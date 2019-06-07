@@ -624,7 +624,6 @@ end
 function deleteUnits(del_units,convert)
   for _,unit in ipairs(del_units) do
     deleteUnit(unit,convert)
-    print("in deleteUnits:"..unit.name..","..tostring(convert))
     addUndo({"remove", unit.tile, unit.x, unit.y, unit.dir, convert or false, unit.id})
   end
 end

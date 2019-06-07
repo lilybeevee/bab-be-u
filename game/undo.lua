@@ -40,7 +40,6 @@ function undo()
         local convert = v[6];
         local unit = createUnit(v[2], v[3], v[4], v[5], convert, v[7])
         --If the unit was actually a destroyed 'no undo', oops. Don't actually bring it back. It's dead, Jim.
-        print(tostring(unit.name)..","..tostring(convert))
         if (unit ~= nil and not convert and hasProperty(unit, "no undo")) then
           deleteUnit(unit, convert, true)
         end
