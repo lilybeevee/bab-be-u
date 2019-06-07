@@ -116,18 +116,22 @@ function love.load()
     end
     local files = love.filesystem.getDirectoryItems(dir)
     for _,file in ipairs(files) do
-      if string.sub(file, -4) == ".wav" then
-        local audioname = string.sub(file, 1, -5)
-        if d then
-          audioname = d .. "/" .. audioname
-        end
-        sound_exists[audioname] = true
-      elseif love.filesystem.getInfo(dir .. "/" .. file).type == "directory" then
+      if love.filesystem.getInfo(dir .. "/" .. file).type == "directory" then
         local newdir = file
         if d then
           newdir = d .. "/" .. newdir
         end
         addAudio(file)
+      else
+        local audioname = file
+        if file:ends(".wav") then audioname = file:sub(1, -5) end
+        if file:ends(".mp3") then audioname = file:sub(1, -5) end
+        if file:ends(".ogg") then audioname = file:sub(1, -5) end
+        if file:ends(".xm") then audioname = file:sub(1, -4) end
+        if d then
+          audioname = d .. "/" .. audioname
+        end
+        sound_exists[audioname] = true
       end
     end
   end
