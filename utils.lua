@@ -415,7 +415,7 @@ function testConds(unit,conds) --cond should be a {cond,{object types}}
       end
     elseif condtype == "arond" then
       for _,param in ipairs(params) do
-        local others = param ~= "mous" and getUnitsOnTile(unit.x, unit.y, param, false, unit) or getCursorsOnTile(x, y, false, unit)
+        local others = param ~= "mous" and getUnitsOnTile(unit.x+1, unit.y+1, param, false, unit) or getCursorsOnTile(x+1, y+1, false, unit)
         for nx=-1,1 do
           for ny=-1,1 do
             if (nx ~= 0) or (ny ~= 0) then
