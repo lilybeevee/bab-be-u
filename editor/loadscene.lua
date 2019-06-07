@@ -15,6 +15,7 @@ local full_height = 0
 
 function scene.load()
   clear()
+  resetMusic(current_music, 0.1)
   scene.buildUI()
 end
 
@@ -84,8 +85,10 @@ function scene.mouseReleased(x, y, mouse_button)
               ok = function()
                 if world == "" then
                   love.filesystem.remove("levels/" .. button.name .. ".bab")
+                  love.filesystem.remove("levels/" .. button.name .. ".png")
                 else
                   love.filesystem.remove(world_parent .. "/" .. world .. "/" .. button.name .. ".bab")
+                  love.filesystem.remove(world_parent .. "/" .. world .. "/" .. button.name .. ".png")
                 end
                 scene.buildUI()
               end
@@ -216,6 +219,14 @@ function scene.loadLevel(data, new)
     new_scene = editor
   elseif load_mode == "play" then
     new_scene = game
+  end
+
+  local dir = "levels/"
+  if world ~= "" then dir = world_parent .. "/" .. world .. "/" end
+  if love.filesystem.getInfo(dir .. level_name .. ".png") then
+    icon_data = love.image.newImageData(dir .. level_name .. ".png")
+  else
+    icon_data = nil
   end
 end
 

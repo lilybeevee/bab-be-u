@@ -1612,6 +1612,25 @@ tiles_list = {
   },
   -- 152
   {
+    name = "text_lvl",
+    sprite = "text_lvl",
+    type = "text",
+    grid = {8,0},
+    color = {4,1},
+    layer = 20,
+  },
+  -- 153
+  {
+    name = "text_nxt",
+    sprite = "text_nxt",
+    type = "text",
+    texttype = "property",
+    grid = {14,1},
+    color = {0,3},
+    layer = 20,
+  },
+  -- 154
+  {
     name = "pepis",
     sprite = "pepis",
     grid = {11, 10},
@@ -1626,5 +1645,5 @@ tiles_list = {
     grid = {12, 10},
     color = {3, 2},
     layer = 20,
-  },
+  }
 }

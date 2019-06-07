@@ -668,6 +668,7 @@ function scene.mouseReleased(x,y,button)
   if mouseOverBox(0,0,sprites["ui/cog"]:getHeight(),sprites["ui/cog"]:getWidth()) then
     --love.keypressed("f2")
     new_scene = editor
+    load_mode = "edit"
   end
   if is_mobile then
     local screenwidth = love.graphics.getWidth()
