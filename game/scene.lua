@@ -79,7 +79,8 @@ function scene.update(dt)
   else
     love.mouse.setGrabbed(false)
   end
-
+  
+  --TODO: PERFORMANCE: If many things are producing particles, it's laggy as heck.
   scene.doPassiveParticles(dt, ":)", "bonus", 0.25, 1, 1, {237,226,133})
   scene.doPassiveParticles(dt, ":o", "bonus", 0.5, 0.8, 1, {257,57,106})
   scene.doPassiveParticles(dt, "qt", "love", 0.25, 0.5, 1, {235,145,202})
