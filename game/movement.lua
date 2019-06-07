@@ -210,6 +210,7 @@ It is probably possible to do, but lily has decided that it's not important enou
                 break
               else
                 dir = dirs8_by_offset[dx][dy];
+                data.dir = dir
               end
             end
             movedebug("considering:"..unit.name..","..dir)
