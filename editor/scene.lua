@@ -681,7 +681,7 @@ function scene.saveLevel()
     map = savestr
   }
 
-  if world == "" then
+  if world == "" or world_parent == "officialworlds" then
     love.filesystem.createDirectory("levels")
     love.filesystem.write("levels/" .. level_name .. ".bab", json.encode(data))
     if icon_data then
