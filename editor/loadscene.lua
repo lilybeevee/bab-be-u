@@ -172,13 +172,16 @@ function scene.draw()
         love.graphics.printf(button.name:upper(), button.x + (button.w / 2) - (96 / 2), button.y + (button.h / 2) - (height / 2), 96, "center")
       end
     elseif button.type == "level" then
+      local icon_y_multiplier = 2/3
+      if button.create then icon_y_multiplier = 1/2 end
+
       love.graphics.draw(sprite, button.x, button.y)
       love.graphics.draw(button.icon,
         button.x + (button.w / 2) - (ICON_WIDTH / 2),
-        button.y + (button.h * (2/3)) - (ICON_HEIGHT / 2),
+        button.y + (button.h * icon_y_multiplier) - (ICON_HEIGHT / 2),
         0, sx, sy)
       
-      local lvlname = "CREATE NEW LEVEL"
+      local lvlname = ""
       if not button.create then
         lvlname = button.data.name:upper()
       end
