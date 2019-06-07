@@ -1706,6 +1706,7 @@ tiles_list = {
     grid = {13,10},
     color = {4,1},
     layer = 5,
+    rotate = true,
     eye = {x=17, y=9, w=2, h=2},
   },
   -- 162
