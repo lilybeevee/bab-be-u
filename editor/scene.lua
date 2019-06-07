@@ -13,6 +13,9 @@ local settings_open, settings
 local label_palette, label_music
 local input_name, input_author, input_palette, input_music, input_width, input_height
 
+local capturing, start_drag, end_drag
+local screenshot, screenshot_image
+
 local saved_popup
 
 function scene.load()
@@ -40,6 +43,12 @@ function scene.load()
 
   typing_name = false
   ignore_mouse = true
+  capturing = false
+  start_drag, end_drag = nil, nil
+  screenshot, screenshot_image = nil, nil
+
+  local dir = "levels/"
+  if world ~= "" then dir = world_parent .. "/" .. world .. "/" end
 
   width = love.graphics.getWidth()
   height = love.graphics.getHeight()
@@ -85,6 +94,14 @@ function scene.setupGooi()
   gooi.newButton({text = "", x = 40*3, y = 0, w = 40, h = 40}):onRelease(function()
     new_scene = game
   end):setBGImage(sprites["ui/play"],sprites["ui/play_h"], sprites["ui/play_a"]):bg({0, 0, 0, 0})
+  gooi.newButton({text = "", x = 40*4, y = 0, w = 40, h = 40}):onRelease(function()
+    love.graphics.captureScreenshot(function(s)
+      capturing = true
+      start_drag, end_drag = nil, nil
+      screenshot = s
+      screenshot_image = love.graphics.newImage(s)
+    end)
+  end):setBGImage(sprites["ui/camera"],sprites["ui/camera_h"], sprites["ui/camera_a"]):bg({0, 0, 0, 0})
 
   settings = {x = 0, y = 0, w = 208, h = 336}
 
@@ -137,15 +154,21 @@ end
 
 function scene.keyPressed(key)
   if key == "escape" then
-    gooi.confirm({
-      text = "Go back to level selector?",
-      okText = "Yes",
-      cancelText = "Cancel",
-      ok = function()
-        new_scene = loadscene
-      end
-    })
-    return
+    if not capturing then
+      gooi.confirm({
+        text = "Go back to level selector?",
+        okText = "Yes",
+        cancelText = "Cancel",
+        ok = function()
+          new_scene = loadscene
+        end
+      })
+      return
+    else
+      capturing = false
+      screenshot, screenshot_image = nil, nil
+      ignore_mouse = true
+    end
   end
 
   key_down[key] = true
@@ -225,11 +248,45 @@ function scene.keyPressed(key)
   end
 end
 
+function scene.mousePressed(x, y, button)
+  if capturing and button == 1 then
+    start_drag = {x = love.mouse.getX(), y = love.mouse.getY()}
+  end
+end
+
+function scene.mouseReleased(x, y, button)
+  if capturing and button == 1 then
+    scene.captureIcon()
+  end
+end
+
 function scene.keyReleased(key)
   key_down[key] = false
 end
 
 function scene.update(dt)
+  if capturing then
+    if start_drag then
+      local rect = {
+        x = start_drag.x, 
+        y = start_drag.y,
+        w = love.mouse.getX() - start_drag.x,
+        h = love.mouse.getY() - start_drag.y
+      }
+      local highest = math.max(math.abs(rect.w), math.abs(rect.h))
+      if math.abs(rect.w) < highest then
+        if rect.w < 0 then rect.w = -highest end
+        if rect.w > 0 then rect.w = highest end
+      end
+      if math.abs(rect.h) < highest then
+        if rect.h < 0 then rect.h = -highest end
+        if rect.h > 0 then rect.h = highest end
+      end
+      end_drag = {x = rect.x + rect.w, y = rect.y + rect.h}
+    end
+    return
+  end
+
   if gooi.showingDialog then
     return
   end
@@ -481,28 +538,30 @@ function scene.draw(dt)
 
   local hx,hy = getHoveredTile()
   if hx ~= nil then
-    if brush.id and not selector_open then
-      local sprite = sprites[tiles_list[brush.id].sprite]
-      if not sprite then sprite = sprites["wat"] end
+    if not (gooi.showingDialog or capturing) then
+      if brush.id and not selector_open then
+        local sprite = sprites[tiles_list[brush.id].sprite]
+        if not sprite then sprite = sprites["wat"] end
 
-      local rotation = 0
-      if tiles_list[brush.id].rotate then
-        rotation = (brush.dir - 1) * 45
+        local rotation = 0
+        if tiles_list[brush.id].rotate then
+          rotation = (brush.dir - 1) * 45
+        end
+        
+        local color = tiles_list[brush.id].color
+        if #color == 3 then
+          love.graphics.setColor(color[1]/255, color[2]/255, color[3]/255, 0.25)
+        else
+          local r, g, b, a = getPaletteColor(color[1], color[2])
+          love.graphics.setColor(r, g, b, a * 0.25)
+        end
+
+        love.graphics.draw(sprite, (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, math.rad(rotation), 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
       end
 
-      local color = tiles_list[brush.id].color
-      if #color == 3 then
-        love.graphics.setColor(color[1]/255, color[2]/255, color[3]/255, 0.25)
-      else
-        local r, g, b, a = getPaletteColor(color[1], color[2])
-        love.graphics.setColor(r, g, b, a * 0.25)
-      end
-
-      love.graphics.draw(sprite, (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, math.rad(rotation), 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      love.graphics.setColor(1, 1, 0)
+      love.graphics.rectangle("line", hx * TILE_SIZE, hy * TILE_SIZE, TILE_SIZE, TILE_SIZE)
     end
-
-    love.graphics.setColor(1, 1, 0)
-    love.graphics.rectangle("line", hx * TILE_SIZE, hy * TILE_SIZE, TILE_SIZE, TILE_SIZE)
 
     last_hovered_tile = {hx, hy}
   end
@@ -560,6 +619,25 @@ function scene.draw(dt)
   end
   love.graphics.pop()
 
+  if capturing then
+    love.graphics.setColor(0.5, 0.5, 0.5, 1)
+    love.graphics.draw(screenshot_image)
+
+    if start_drag and end_drag then
+      local rect = {
+        x = math.min(start_drag.x, end_drag.x), 
+        y = math.min(start_drag.y, end_drag.y),
+        w = math.abs(end_drag.x - start_drag.x),
+        h = math.abs(end_drag.y - start_drag.y)
+      }
+      love.graphics.setColor(1, 1, 1, 1)
+      love.graphics.rectangle("line", rect.x, rect.y, rect.w, rect.h)
+      love.graphics.setScissor(rect.x, rect.y, rect.w, rect.h)
+      love.graphics.draw(screenshot_image)
+      love.graphics.setScissor()
+    end
+  end
+
   if is_mobile then
     local cursorx, cursory = love.mouse.getPosition()
     love.graphics.draw(system_cursor, cursorx, cursory)
@@ -603,11 +681,18 @@ function scene.saveLevel()
     map = savestr
   }
 
-  love.filesystem.createDirectory("levels")
   if world == "" then
+    love.filesystem.createDirectory("levels")
     love.filesystem.write("levels/" .. level_name .. ".bab", json.encode(data))
+    if icon_data then
+      icon_data:encode("png", "levels/" .. level_name .. ".png")
+    end
   else
+    love.filesystem.createDirectory(world_parent .. "/" .. world)
     love.filesystem.write(world_parent .. "/" .. world .. "/" .. level_name .. ".bab", json.encode(data))
+    if icon_data then
+      icon_data:encode("png", world_parent .. "/" .. world .. "/" .. level_name .. ".png")
+    end
   end
 
   addTween(tween.new(0.25, saved_popup, {y = 0, alpha = 1}, 'outQuad'), "saved_popup")
@@ -732,7 +817,57 @@ function love.filedropped(file)
   brush.picked_tile = nil
   brush.picked_index = 0
 
+  local dir = "levels/"
+  if world ~= "" then dir = world_parent .. "/" .. world .. "/" end
+  if love.filesystem.getInfo(dir .. level_name .. ".png") then
+    icon_data = love.image.newImageData(dir .. level_name .. ".png")
+  else
+    icon_data = nil
+  end
+
   resetMusic(map_music, 0.1)
+end
+
+function scene.captureIcon()
+  if start_drag == nil or end_drag == nil then
+    capturing = false
+    screenshot = nil
+    screenshot_image = nil
+    return
+  end
+
+  local rect = {
+    x = math.min(start_drag.x, end_drag.x), 
+    y = math.min(start_drag.y, end_drag.y),
+    w = math.abs(end_drag.x - start_drag.x),
+    h = math.abs(end_drag.y - start_drag.y)
+  }
+
+  if rect.w == 0 or rect.h == 0 then
+    capturing = false
+    screenshot = nil
+    screenshot_image = nil
+    return
+  end
+
+  local new_data = love.image.newImageData(rect.w, rect.h)
+  new_data:paste(screenshot, 0, 0, rect.x, rect.y, rect.w, rect.h)
+
+  local new_image = love.graphics.newImage(new_data)
+  new_image:setFilter("linear","nearest")
+  
+  local canvas = love.graphics.newCanvas(96, 96) -- icon width/height
+  love.graphics.origin()
+  love.graphics.setCanvas(canvas)
+  love.graphics.setColor(1, 1, 1, 1)
+  love.graphics.draw(new_image, 0, 0, 0, 96 / rect.w, 96 / rect.h)
+  love.graphics.setCanvas()
+
+  icon_data = canvas:newImageData()
+
+  capturing = false
+  screenshot = nil
+  screenshot_image = nil
 end
 
 function scene.resize(w, h)
