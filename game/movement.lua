@@ -15,6 +15,8 @@ function doUpdate(already_added, moving_units_next)
       local x = update.payload.x
       local y = update.payload.y
       local dir = update.payload.dir
+      --TODO: We need to do all applySlides either totally before or totally after doupdate.
+      --Reason: Imagine two units that are ICYYYY step onto the same tile. Right now, one will slip on the other. Do we either want both to to slip or neither to slip? The former is more fun, so we should probably do all applySlides after we're done.
       applySlide(unit, x-unit.x, y-unit.y, already_added, moving_units_next);
       updateDir(unit, dir)
       movedebug("doUpdate:"..tostring(unit.name)..","..tostring(x)..","..tostring(y)..","..tostring(dir))
@@ -765,6 +767,7 @@ function canMove(unit,dx,dy,pushing_,pulling_,solid_name,reason)
       end
       
       --if thing is ouch, it will not stop things - similar to Baba behaviour. But check safe and float as well.
+      --Funny buggy looking interaction (that also happens in Baba): You can push the 'ouch' of 'wall be ouch' onto a solid wall. This could be fixed by making walking onto an ouch wall destroy it as a reaction to movement, like how keys/doors are destroyed as a reaction to movement right now.
       if hasProperty(v, "ouch") and not hasProperty(v, "protecc") and sameFloat(unit, v) then
         stopped = false
       end
