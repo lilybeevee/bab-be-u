@@ -1610,4 +1610,21 @@ tiles_list = {
     layer = 20,
     rotate = true,
   },
+  -- 152
+  {
+    name = "pepis",
+    sprite = "pepis",
+    grid = {11, 10},
+    color = {0, 3},
+    layer = 5,
+  },
+  -- 153
+  {
+    name = "text_pepis",
+    sprite = "text_pepis",
+    type = "text",
+    grid = {12, 10},
+    color = {3, 2},
+    layer = 20,
+  },
 }
