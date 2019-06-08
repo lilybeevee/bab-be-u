@@ -71,10 +71,10 @@ function scene.draw(dt)
 
     love.graphics.draw(sprites["ui/button_white_"..i%2+1], buttonx, buttony, rot, 1, 1)
 
+    love.graphics.pop()
+
     love.graphics.setColor(1,1,1)
     love.graphics.printf(buttons[i], width/2-buttonwidth/2, height/2-buttonheight/2+(buttonheight+10)*i+5, buttonwidth, "center")
-
-    love.graphics.pop()
   end
 
   if rainbowmode then love.graphics.setColor(hslToRgb(love.timer.getTime()/6%1, .5, .5, .9)) end
