@@ -123,6 +123,36 @@ function updateUnits(undoing, big_update)
       end
     end
     
+    local isshy = getUnitsWithEffect("shy");
+    for _,unit in ipairs(isshy) do
+      if not hasProperty("folo wal") and not hasProperty("turn cornr") then
+        local dpos = dirs8[unit.dir];
+        local dx, dy = dpos[1], dpos[2];
+        local stuff = getUnitsOnTile(unit.x+dx, unit.y+dy, nil, true)
+        local stuff2 = getUnitsOnTile(unit.x-dx, unit.y-dy, nil, true)
+        local pushfront = false
+        local pushbehin = false
+        for _,on in ipairs(stuff) do
+          if hasProperty(on, "go away") then
+            pushfront = true
+            break
+          end
+        end
+        if pushfront then
+          for _,on in ipairs(stuff2) do
+            if hasProperty(on, "go away") then
+              pushbehin = true
+              break
+            end
+          end
+        end
+        if pushfront and not pushbehin then
+          addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
+          updateDir(unit, rotate8(unit.dir))
+        end
+      end
+    end
+    
     --MOAR is 4-way growth, MOARx2 is 8-way growth, MOARx3 is 2x 4-way growth, MOARx4 is 2x 8-way growth, MOARx5 is 3x 4-way growth, etc.
     local give_me_moar = true;
     local moar_repeats = 0;

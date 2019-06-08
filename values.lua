@@ -1512,8 +1512,8 @@ tiles_list = {
   },
   -- 141
   {
-    name = "text_lazzy",
-    sprite = "text_lazzy",
+    name = "text_shy",
+    sprite = "text_shy",
     type = "text",
     texttype = "property",
     grid = {12, 5},

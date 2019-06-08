@@ -484,7 +484,7 @@ end
 
 function findSidekikers(unit,dx,dy)
   local result = {}
-  if hasProperty(unit, "lazzy") then
+  if hasProperty(unit, "shy") then
     return result;
   end
   local x = unit.x;
@@ -539,7 +539,7 @@ end
 function doPull(unit,dx,dy,data, already_added, moving_units, moving_units_next, slippers)
   local x = unit.x;
   local y = unit.y;
-  local something_moved = not hasProperty(unit, "lazzy")
+  local something_moved = not hasProperty(unit, "shy")
   while (something_moved) do
     something_moved = false
     x = x - dx;
@@ -552,7 +552,7 @@ function doPull(unit,dx,dy,data, already_added, moving_units, moving_units_next,
         end
         if (success) then
           --unit.already_moving = true
-          something_moved = something_moved or not hasProperty(mover, "lazzy")
+          something_moved = something_moved or not hasProperty(mover, "shy")
           for _,mover in ipairs(movers) do
             moveIt(mover, dx, dy, data, true, already_added, moving_units, moving_units_next, slippers)
           end
@@ -657,12 +657,12 @@ end
 
 function canMove(unit,dx,dy,pushing_,pulling_,solid_name,reason)
   local pushing = false
-  if (pushing_ ~= nil and not hasProperty(unit, "lazzy")) then
+  if (pushing_ ~= nil and not hasProperty(unit, "shy")) then
 		pushing = pushing_
 	end
   --TODO: Patashu: this isn't used now but might be in the future??
   local pulling = false
-	if (pulling_ ~= nil and not hasProperty(unit, "lazzy")) then
+	if (pulling_ ~= nil and not hasProperty(unit, "shy")) then
 		pulling = pulling_
 	end
   
