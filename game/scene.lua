@@ -35,13 +35,16 @@ local particle_timers = {}
 local canv = love.graphics.newCanvas(love.graphics.getWidth(), love.graphics.getHeight())
 local last_width,last_height = love.graphics.getWidth(),love.graphics.getHeight()
 
-local stack_box
+local stack_box, stack_font
 
 function scene.load()
   repeat_timers = {}
   key_down = {}
   selector_open = false
+
   stack_box = {x = 0, y = 0, scale = 0, units = {}, enabled = false}
+  stack_font = love.graphics.newFont(12)
+  stack_font:setFilter("nearest","nearest")
 
   scene.resetStuff()
 
@@ -467,32 +470,59 @@ function scene.draw(dt)
     love.graphics.polygon("fill", -4, -8, 0, 0, 4, -8)
 
     local units = stack_box.units
-    local width = (40 + 4) * #units - 8
+    local draw_units = {}
+    local already_added = {}
+    for _,unit in ipairs(units) do
+      if not already_added[unit.sprite] then already_added[unit.sprite] = {} end
+      local dir = unit.dir
+      if not unit.rotate then dir = 1 end -- dont separate non-rotatable objects with different dirs
+      if not already_added[unit.sprite][dir] then
+        table.insert(draw_units, {unit = unit, dir = dir, count = 1})
+        already_added[unit.sprite][dir] = #draw_units
+      else
+        draw_units[already_added[unit.sprite][dir]].count = draw_units[already_added[unit.sprite][dir]].count + 1
+      end
+    end
 
+    local width = (40 + 4) * #draw_units - 4
     love.graphics.rectangle("fill", -width / 2, -48, width, 40)
 
     love.graphics.setColor(getPaletteColor(3, 3))
     love.graphics.setLineWidth(2)
     love.graphics.line(-width / 2, -48, -width / 2, -8, -4, -8, 0, 0, 4, -8, width / 2, -8, width / 2, -48, -width / 2, -48)
 
-    for i,unit in ipairs(units) do
-      local cx = (-width / 2) + ((i / #units) * width) - 18
+    for i,draw in ipairs(draw_units) do
+      local cx = (-width / 2) + ((i / #draw_units) * width) - 20
 
       love.graphics.push()
       love.graphics.translate(cx, -28)
-      if unit.rotate then
-        love.graphics.rotate(math.rad(unit.draw.rotation))
-      end
 
-      if #unit.color == 2 then
-        love.graphics.setColor(getPaletteColor(unit.color[1], unit.color[2]))
+      love.graphics.push()
+      love.graphics.rotate(math.rad((draw.dir - 1) * 45))
+
+      if #draw.unit.color == 2 then
+        love.graphics.setColor(getPaletteColor(draw.unit.color[1], draw.unit.color[2]))
       else
-        love.graphics.setColor(unit.color[1], unit.color[2], unit.color[3], unit.color[4] or 1)
+        love.graphics.setColor(draw.unit.color[1], draw.unit.color[2], draw.unit.color[3], draw.unit.color[4] or 1)
       end
 
-      local sprite = sprites[unit.sprite]
+      local sprite = sprites[draw.unit.sprite]
       love.graphics.draw(sprite, 0, 0, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      love.graphics.pop()
 
+      if draw.count > 1 then
+        love.graphics.setFont(stack_font)
+        love.graphics.setColor(getPaletteColor(0, 4))
+        for x = -1, 1 do
+          for y = -1, 1 do
+            if x ~= 0 or y ~= 0 then
+              love.graphics.printf(tostring(draw.count), x, 4+y, 32, "center")
+            end
+          end
+        end
+        love.graphics.setColor(getPaletteColor(0, 3))
+        love.graphics.printf(tostring(draw.count), 0, 4, 32, "center")
+      end
       love.graphics.pop()
     end
 
