@@ -483,6 +483,16 @@ function scene.draw(dt)
   love.graphics.push()
   love.graphics.applyTransform(scene.getTransform())
 
+  if selector_open then
+    for i=1,3 do
+      love.graphics.setColor(getPaletteColor(1, 3))
+      love.graphics.draw(sprites["ui/button_white_"..i%2+1], (sprites["ui/button_1"]:getHeight()+5)*i, 0-sprites["ui/button_1"]:getHeight(), math.pi/2)
+
+      love.graphics.setColor(1, 1, 1)
+      love.graphics.printf(i, (sprites["ui/button_1"]:getHeight()+5)*(i-1) + (sprites["ui/button_1"]:getHeight()/8), 0-sprites["ui/button_1"]:getHeight()/3*2, sprites["ui/button_1"]:getHeight(), "center")
+    end
+  end
+
   love.graphics.setColor(getPaletteColor(0, 4))
   love.graphics.rectangle("fill", 0, 0, roomwidth, roomheight)
 
