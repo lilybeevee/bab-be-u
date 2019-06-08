@@ -29,25 +29,16 @@ The default rules (they're inserted into the rules before anything else like lev
 
 Cursor is you and float, cursor bound level and path
 
-~~BOUND means 'if a tile doesn't have at least one thing I'm bound to, treat it as impassible'.~~ IMPLEMENTED
-
-~~We also have to change the following things:
-1) FLOAT lets you ignore NO GO.
-2) TALL - new property that means you can't float above or below it. (e.g. change sameFloat code to also check TALL)
-So whenever you have floating stuff and you don't want it to phase through walls, you can write TEXT IS FLOAT, WALL IS TALL AND STOP or whatever.~~ IMPLEMENTED
-
 Whenever a thing that is YOU idles on a thing that can be entered as a level, then you enter the level.
 
 If two things that are YOU enter two different levels simultaneously, they are combined. Their largest dimensions are taken, their objects are added together and if the combined level is won, both individual levels are won.
-
-~~Another new property is 'ZIP' which makes it so if you couldn't enter the tile you're on (if you weren't on it, so ignoring yourself), then you move to the nearest tile that you could enter (maybe tie breaking by distance, then by prioritizing backwards movement over forwards movement, so you tend to get ejected to the nearest tile behind you). This wouldn't be a default rule like the others, but could be useful in other ways.~~ IMPLEMENTED
 
 PRESS (key):
 A prefix condition that's true if the last thing you did was press that key. Basically a way to have arbitrarily many special action keys. Not sure how this works with touch screens/controllers - maybe the game detects how many press (key) conditions exists in the level, and creates on-screen virtual buttons/arbitrary controller mappings for them that it displays to you.
 
 modded words from baba mods that could be fun (but obviously not going to add a bunch of stuff unless lily wants it to exist):
-cg5: WRAP/PORTAL, ACTIVE/BLOCKED, FIND/EVIL/REPENT
-jumbods64: ~~LEAN~~, DRIFT/RISE (1 tile per turn FALL/VALL)
-lily: MEANS (well it'd be IMPLIES now), COPY (fixed up to be more generic), WITH (if it doesn't turn into IMPLIES but I think this word is cool), BAIT/LURE, TURN (45 degrees by default, 90 degrees if you're ORTHO or DIAG?), STILL, AUTO??, ~~RESET/conds/PERSIST (if it doesn't get expanded on)~~ (except for conds but easy to write), ANY?, (probably not STICKY since SIDEKIK exists and STICKY is hard), NEAREST/TOUCH (easy), GRAVITY (I know lily expressed an interest in at least simple GRAVITY stuff), TIMELESS (hard but lily wants it anyway), BEAM/REFLECT/SPLIT/CROSS (hard but could be fun)
-patashu: STUCK (as FREEZ or IN JAIL or something), TOPPLE?, (PHASE is unlikely after the FLOAT/NO GO changes, not much special it does anymore), STRAFE?, MAYBE, COLLIDE (this is like... boring BOUNDED lmao), SEND/RECEIVE/RESEND? (if we even want a meta mechanic like that), EVENTURN/ODDTURN?, STRONG (as ATTAC and not letting you bulldoze walls? or idk that's just bab snack babn't, why not make it OP then?), MOONWALK/DRUNK/DRUNKER/SKIP?, STUBBORN (maybe adding that stubborn things that can't move diagonally try horizontal/vertical with similar timing to when walkers flip, and stubborn weak walkers will kill themselves?), ~~LAZY (as effort.)~~
-unimplemented: MARK/UNMARK/MARKED, ROUND, CLIMB, WIELD, CHAINED, VERY/ABSOLUTE (as PLZ), SPAWNER/RESPAWN/SPAWN, HASMORE/MASSPROD/PRINT, YOINK, X-AXIS/Y-AXIS, SPLIT, DITTO MARK ("), JUMP, BEHAVE, REPEL, MAGNET, TRAILS, CARRY, NEWTON, FLICK, HEAVY, SAYS/FEELS/LITERAL/THING, NEW/OLD?
+cg5: WRAP/PORTAL (lily wants), ACTIVE/BLOCKED, FIND/EVIL/REPENT
+jumbods64: DRIFT/RISE (1 tile per turn FALL/VALL)
+lily: MEANS (well it'd be IMPLIES now), WITH (will become THAT), BAIT/LURE, TURN (45 degrees by default, 90 degrees if you're ORTHO or DIAG?), STILL, AUTO??, reset conds?, ANY?, (probably not STICKY since SIDEKIK exists and STICKY is hard), NEAREST/TOUCH (easy), GRAVITY (I know lily expressed an interest in at least simple GRAVITY stuff), TIMELESS (hard but lily wants it anyway), BEAM/REFLECT/SPLIT/CROSS (hard but could be fun)
+patashu: STUCK (as FREEZ or IN JAIL or something), TOPPLE? (boring ZIP?), (PHASE is unlikely after the FLOAT/NO GO changes, not much special it does anymore), STRAFE?, COLLIDE (this is like... boring BOUNDED lmao), SEND/RECEIVE/RESEND? (if we even want a meta mechanic like that), EVENTURN/ODDTURN? (can be done with a gadget already so), STRONG (as ATTAC and not letting you bulldoze walls? or idk that's just bab snack babn't, why not make it OP then?), MOONWALK/DRUNK/DRUNKER/SKIP?, STUBBORN (maybe adding that stubborn things that can't move diagonally try horizontal/vertical with similar timing to when walkers flip, and stubborn weak walkers will kill themselves? can you also push stubborn things diagonally to slide along a wall? hmm),
+unimplemented: MARK/UNMARK/MARKED, ROUND, CLIMB, WIELD, CHAINED, VERY/ABSOLUTE (as PLZ) (the n't n't thing kinda does this), SPAWNER/RESPAWN/SPAWN, HASMORE/MASSPROD/PRINT, YOINK, X-AXIS/Y-AXIS, SPLIT, DITTO MARK ("), JUMP, BEHAVE, REPEL, MAGNET, TRAILS, CARRY, NEWTON, FLICK, HEAVY, SAYS/FEELS/LITERAL/THING, NEW/OLD?
