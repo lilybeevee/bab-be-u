@@ -70,8 +70,8 @@ function doMovement(movex, movey)
         if not hasProperty(unit, "slep") and slippers[unit.id] == nil then
           local dir = dirs8_by_offset[movex][movey]
           --If you want baba style 'when you moves, even if it fails to move, it changes direction', uncomment this.
-          --[[table.insert(unit.moves, {reason = "u", dir = dir, times = 1})
-          addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
+          table.insert(unit.moves, {reason = "u", dir = dir, times = 1})
+          --[[addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
           updateDir(unit, dir);]]
           if #unit.moves > 0 and not already_added[unit] then
             table.insert(moving_units, unit)
