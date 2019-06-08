@@ -122,6 +122,7 @@ function scene.draw()
   local cells_y = math.ceil(love.graphics.getHeight() / bgsprite:getHeight())
 
   love.graphics.setColor(1, 1, 1, 0.6)
+  if rainbowmode then love.graphics.setColor(hslToRgb(love.timer.getTime()/6%1, .5, .5, .6)) end
   for x = -1, cells_x do
     for y = -1, cells_y do
       local draw_x = scrollx % bgsprite:getWidth() + x * bgsprite:getWidth()
@@ -154,9 +155,13 @@ function scene.draw()
       love.graphics.translate(-button.x-button.w/2, -button.y-button.h/2)
     end
 
+    if rainbowmode then love.graphics.setColor(hslToRgb((love.timer.getTime()/6+i*10)%1, .5, .5, .9)) end
+
     if button.type == "world" then
       love.graphics.draw(sprite, button.x, button.y)
+      love.graphics.setColor(1, 1, 1)
       if button.icon then
+        
         love.graphics.draw(button.icon,
           button.x + (button.w / 2) - (ICON_WIDTH / 2),
           button.y + (button.h / 2) - (ICON_HEIGHT / 2))
@@ -173,6 +178,7 @@ function scene.draw()
       if button.create then icon_y_multiplier = 1/2 end
 
       love.graphics.draw(sprite, button.x, button.y)
+      love.graphics.setColor(1, 1, 1)
       love.graphics.draw(button.icon,
         button.x + (button.w / 2) - (ICON_WIDTH / 2),
         button.y + (button.h * icon_y_multiplier) - (ICON_HEIGHT / 2),

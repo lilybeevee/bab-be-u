@@ -534,6 +534,9 @@ function scene.draw(dt)
           love.graphics.setColor(getPaletteColor(color[1], color[2]))
         end
       end
+
+      if rainbowmode then love.graphics.setColor(hslToRgb((love.timer.getTime()/6+i*10)%1, .5, .5, .9)) end
+
       love.graphics.draw(system_cursor, cursor.screenx, cursor.screeny)
       
       love.graphics.setColor(1,1,1)

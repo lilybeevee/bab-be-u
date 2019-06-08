@@ -221,7 +221,7 @@ function love.keypressed(key,scancode,isrepeat)
     load_mode = "edit"
     clearGooi()
     scene.load()
-  elseif key == "g" and love.keyboard.isDown('f3') and scene ~= editor then
+  elseif key == "g" and love.keyboard.isDown('f3') then
     rainbowmode = not rainbowmode
   elseif key == "f4" then
     debug = not debug
@@ -370,6 +370,13 @@ function love.draw()
     if rainbowmode then
       love.graphics.setColor(hslToRgb(love.timer.getTime()/3%1, .5, .5, .9))
     end
+
+    if rainbowmode then
+      debugDisplay("rainbowmode", "yes")
+    else
+      debugDisplay("rainbowmode", "no")
+    end
+
     mousex, mousey = love.mouse.getPosition()
     local debugtext = '~~ !! DEBUG MENU !! ~~'..'\n'..
     'bab be u commit n'..build_number..'\n'..
@@ -381,7 +388,7 @@ function love.draw()
     'F3+G to toggle rainbowmode\n'..
     'F2 for editor mode\n'..
     'F1 for game mode'
-    
+
     for key, value in pairs(debug_values) do
       debugtext = debugtext..'\n'..
       key..': '..value
