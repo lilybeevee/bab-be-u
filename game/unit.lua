@@ -153,6 +153,24 @@ function updateUnits(undoing, big_update)
       end
     end
     
+    local folo_wall = getUnitsWithEffectAndCount("folo wal")
+    for unit,amt in pairs(folo_wall) do
+      local fwd = unit.dir;
+      local right = (((unit.dir + 2)-1)%8)+1;
+      local bwd = (((unit.dir + 4)-1)%8)+1;
+      local left = (((unit.dir + 6)-1)%8)+1;
+      local result = changeDirIfFree(unit, right) or changeDirIfFree(unit, fwd) or changeDirIfFree(unit, left) or changeDirIfFree(unit, bwd);
+    end
+    
+    local turn_cornr = getUnitsWithEffectAndCount("turn cornr")
+    for unit,amt in pairs(turn_cornr) do
+      local fwd = unit.dir;
+      local right = (((unit.dir + 2)-1)%8)+1;
+      local bwd = (((unit.dir + 4)-1)%8)+1;
+      local left = (((unit.dir + 6)-1)%8)+1;
+      local result = changeDirIfFree(unit, fwd) or changeDirIfFree(unit, right) or changeDirIfFree(unit, left) or changeDirIfFree(unit, bwd);
+    end
+    
     --MOAR is 4-way growth, MOARx2 is 8-way growth, MOARx3 is 2x 4-way growth, MOARx4 is 2x 8-way growth, MOARx5 is 3x 4-way growth, etc.
     local give_me_moar = true;
     local moar_repeats = 0;
@@ -515,6 +533,16 @@ function handleDels(to_destroy, unstoppable)
   end
   deleteUnits(del_units, false);
   return {}
+end
+
+function changeDirIfFree(unit, dir)
+  if canMove(unit, dirs8[dir][1], dirs8[dir][2], false, false, unit.name, "dir check") then
+    addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
+    unit.olddir = unit.dir
+    updateDir(unit, dir);
+    return true
+  end
+  return false
 end
 
 function taxicabDistance(a, b)
