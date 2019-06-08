@@ -345,37 +345,41 @@ function scene.searchDir(dir, type)
   local ret = {}
   local dirs = love.filesystem.getDirectoryItems(dir)
 
-  table.sort(dirs, function(a, b)
-    if a:ends(".bab") and b:ends(".bab") then
-      return sortString(a:sub(1, -5), b:sub(1, -5))
-    elseif not (a:ends(".bab") or b:ends(".bab")) then --if neither are .bab, don't care, sort normally
-      return a < b
-    else -- if one of them is .bab, put it first to avoid inconsistencies with the function
-      if a:ends(".bab") then return true else return false end
+  local filtered = filter(dirs, function(file)
+    if type == "world" then
+      return love.filesystem.getInfo(dir .. "/" .. file).type == "directory"
+    elseif type == "level" then
+      return file:ends(".bab")
     end
   end)
 
-  for _,file in ipairs(dirs) do
-    local info = love.filesystem.getInfo(dir .. "/" .. file)
-    if info and ((type == "world" and info.type == "directory") or (type == "level" and file:ends(".bab"))) then
-      local t = {}
-      if type == "world" then
-        t.name = file
-        t.data = dir
-        if love.filesystem.getInfo(dir .. "/" .. file .. "/icon.png") then
-          t.icon = love.graphics.newImage(dir .. "/" .. file .. "/icon.png")
-        end
-      elseif type == "level" then
-        t.name = file:sub(1, -5)
-        t.data = json.decode(love.filesystem.read(dir .. "/" .. file))
-        if love.filesystem.getInfo(dir .. "/" .. file:sub(1, -5) .. ".png") then
-          t.icon = love.graphics.newImage(dir .. "/" .. file:sub(1, -5) .. ".png")
-        else
-          t.icon = sprites["ui/default icon"]
-        end
-      end
-      table.insert(ret, t)
+  table.sort(filtered, function(a, b)
+    local a_, b_ = a, b
+    if type == "level" then
+      a_ = a:sub(1, -5)
+      b_ = b:sub(1, -5)
     end
+    return sortString(a_, b_)
+  end)
+
+  for _,file in ipairs(filtered) do
+    local t = {}
+    if type == "world" then
+      t.name = file
+      t.data = dir
+      if love.filesystem.getInfo(dir .. "/" .. file .. "/icon.png") then
+        t.icon = love.graphics.newImage(dir .. "/" .. file .. "/icon.png")
+      end
+    elseif type == "level" then
+      t.name = file:sub(1, -5)
+      t.data = json.decode(love.filesystem.read(dir .. "/" .. file))
+      if love.filesystem.getInfo(dir .. "/" .. t.name .. ".png") then
+        t.icon = love.graphics.newImage(dir .. "/" .. t.name .. ".png")
+      else
+        t.icon = sprites["ui/default icon"]
+      end
+    end
+    table.insert(ret, t)
   end
   return ret
 end
