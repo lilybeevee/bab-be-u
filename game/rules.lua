@@ -110,6 +110,11 @@ function parseRules(undoing)
             been_first[first[2]][unit.x + unit.y * mapwidth] = true
           end
         end
+        for i = 1, state.word_index-1 do
+          local unit = sentence[i].unit
+          print(sentence[i].name)
+          been_first[first[2]][unit.x + unit.y * mapwidth] = true
+        end
 
         local new_rules = {{},{},{},{{},{}}}
 

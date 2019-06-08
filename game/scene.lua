@@ -35,10 +35,13 @@ local particle_timers = {}
 local canv = love.graphics.newCanvas(love.graphics.getWidth(), love.graphics.getHeight())
 local last_width,last_height = love.graphics.getWidth(),love.graphics.getHeight()
 
+local stack_box
+
 function scene.load()
   repeat_timers = {}
   key_down = {}
   selector_open = false
+  stack_box = {x = 0, y = 0, scale = 0, units = {}, enabled = false}
 
   scene.resetStuff()
 
@@ -455,6 +458,46 @@ function scene.draw(dt)
   for _,ps in ipairs(removed_particles) do
     removeFromTable(particles, ps)
   end
+  if stack_box.scale > 0 then
+    love.graphics.push()
+    love.graphics.translate((stack_box.x + 0.5) * TILE_SIZE, stack_box.y * TILE_SIZE)
+    love.graphics.scale(stack_box.scale)
+
+    love.graphics.setColor(getPaletteColor(0, 4))
+    love.graphics.polygon("fill", -4, -8, 0, 0, 4, -8)
+
+    local units = stack_box.units
+    local width = (40 + 4) * #units - 8
+
+    love.graphics.rectangle("fill", -width / 2, -48, width, 40)
+
+    love.graphics.setColor(getPaletteColor(3, 3))
+    love.graphics.setLineWidth(2)
+    love.graphics.line(-width / 2, -48, -width / 2, -8, -4, -8, 0, 0, 4, -8, width / 2, -8, width / 2, -48, -width / 2, -48)
+
+    for i,unit in ipairs(units) do
+      local cx = (-width / 2) + ((i / #units) * width) - 18
+
+      love.graphics.push()
+      love.graphics.translate(cx, -28)
+      if unit.rotate then
+        love.graphics.rotate(math.rad(unit.draw.rotation))
+      end
+
+      if #unit.color == 2 then
+        love.graphics.setColor(getPaletteColor(unit.color[1], unit.color[2]))
+      else
+        love.graphics.setColor(unit.color[1], unit.color[2], unit.color[3], unit.color[4] or 1)
+      end
+
+      local sprite = sprites[unit.sprite]
+      love.graphics.draw(sprite, 0, 0, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+
+      love.graphics.pop()
+    end
+
+    love.graphics.pop()
+  end
   love.graphics.pop()
 
   love.graphics.push()
@@ -639,6 +682,20 @@ function scene.checkInput()
   if do_move_sound then
     playSound("move")
   end
+
+  if stack_box.enabled then
+    local keep = false
+    for _,unit in ipairs(stack_box.units) do
+      if unit.x == stack_box.x and unit.y == stack_box.y and not unit.removed then
+        keep = true
+      end
+    end
+    if not keep then
+      scene.setStackBox(-1, -1)
+    else
+      stack_box.units = getUnitsOnTile(stack_box.x, stack_box.y)
+    end
+  end
 end
 
 function scene.doPassiveParticles(timer,word,effect,delay,chance,count,color)
@@ -669,6 +726,8 @@ function scene.doPassiveParticles(timer,word,effect,delay,chance,count,color)
 end
 
 function scene.mouseReleased(x,y,button)
+  scene.setStackBox(screenToGameTile(x, y))
+
   if mouseOverBox(0,0,sprites["ui/cog"]:getHeight(),sprites["ui/cog"]:getWidth()) then
     --love.keypressed("f2")
     new_scene = editor
@@ -722,6 +781,35 @@ function scene.mousePressed(x, y, button)
     end
 
     scene.keyPressed(key)
+  end
+end
+
+function scene.setStackBox(x, y)
+  local units = getUnitsOnTile(x, y)
+  for _,unit in ipairs(units) do
+    if unit.name ~= "no1" then
+      if stack_box.scale == 0 then
+        stack_box.enabled = true
+        stack_box.units = units
+        stack_box.x, stack_box.y = unit.x, unit.y
+        addTween(tween.new(0.1, stack_box, {scale = 1}), "stack box")
+      elseif stack_box.x ~= unit.x or stack_box.y ~= unit.y then
+        addTween(tween.new(0.1, stack_box, {scale = 0}), "stack box", function()
+          stack_box.enabled = true
+          stack_box.units = units
+          stack_box.x, stack_box.y = unit.x, unit.y
+          addTween(tween.new(0.1, stack_box, {scale = 1}), "stack box")
+        end)
+      else
+        stack_box.enabled = false
+        addTween(tween.new(0.1, stack_box, {scale = 0}), "stack box")
+      end
+      return
+    end
+  end
+  if stack_box.enabled then
+    stack_box.enabled = false
+    addTween(tween.new(0.1, stack_box, {scale = 0}), "stack box")
   end
 end
 
