@@ -1291,7 +1291,7 @@ tiles_list = {
   },
   -- 119
   {
-    name = "text_n't",
+    name = "text_nt",
     sprite = "text_nt",
     type = "text",
     texttype = "not",
@@ -1413,6 +1413,7 @@ tiles_list = {
   {
     name = "pata",
     sprite = "pata",
+    sleepsprite = "pata_slep";
     type = "object",
     grid = {7, 10},
     color = {3, 3},
@@ -1648,19 +1649,73 @@ tiles_list = {
   },
   -- 156
   {
-    name = "dorf",
-    sprite = "dorf",
-    grid = {13, 10},
-    color = {0, 3},
-    layer = 5,
-  },
-  -- 157
-  {
-    name = "text_dorf",
-    sprite = "text_dorf",
+    name = "text_copkat",
+    sprite = "text_copkat",
     type = "text",
-    grid = {14, 10},
+    texttype = "verb_object",
+    grid = {11, 7},
     color = {0, 3},
     layer = 20,
-  }
+  },
+  --157
+  {
+    name = "clok",
+    sprite = "clok",
+    type = "object",
+    grid = {11, 9},
+    color = {3, 3},
+    layer = 3,
+    rotate = true,
+    eye = {x=14, y=14, w=3, h=3},
+  },
+  -- 158
+  {
+    name = "text_clok",
+    sprite = "text_clok",
+    type = "text",
+    grid = {12, 9},
+    color = {3, 3},
+    layer = 20,
+  },
+  -- 159
+  {
+    name = "text_try again",
+    sprite = "text_try again",
+    type = "text",
+    texttype = "property",
+    grid = {13, 9},
+    color = {3, 3},
+    layer = 20,
+  },
+  -- 160
+  {
+    name = "text_no undo",
+    sprite = "text_no undo",
+    type = "text",
+    texttype = "property",
+    grid = {14, 9},
+    color = {5, 3},
+    layer = 20,
+  },
+  -- 161
+  {
+    name = "zsoob",
+    sprite = "zsoob",
+    sleepsprite = "zsoob_slep",
+    type = "object",
+    grid = {13,10},
+    color = {4,1},
+    layer = 5,
+    rotate = true,
+    eye = {x=17, y=9, w=2, h=2},
+  },
+  -- 162
+  {
+    name = "text_zsoob",
+    sprite = "text_zsoob",
+    type = "text",
+    grid = {14,10},
+    color = {4,1},
+    layer = 20,
+  },
 }

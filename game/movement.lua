@@ -1,6 +1,13 @@
 --format: {unit = unit, type = "update", payload = {x = x, y = y, dir = dir}} 
 update_queue = {}
 
+movedebugflag = false
+function movedebug(message)
+  if movedebugflag then
+    print(message)
+  end
+end
+
 function doUpdate(already_added, moving_units_next)
   for _,update in ipairs(update_queue) do
     if update.reason == "update" then
@@ -8,9 +15,11 @@ function doUpdate(already_added, moving_units_next)
       local x = update.payload.x
       local y = update.payload.y
       local dir = update.payload.dir
+      --TODO: We need to do all applySlides either totally before or totally after doupdate.
+      --Reason: Imagine two units that are ICYYYY step onto the same tile. Right now, one will slip on the other. Do we either want both to to slip or neither to slip? The former is more fun, so we should probably do all applySlides after we're done.
       applySlide(unit, x-unit.x, y-unit.y, already_added, moving_units_next);
       updateDir(unit, dir)
-      --print("doUpdate:"..tostring(unit.name)..","..tostring(x)..","..tostring(y)..","..tostring(dir))
+      movedebug("doUpdate:"..tostring(unit.name)..","..tostring(x)..","..tostring(y)..","..tostring(dir))
       moveUnit(unit, x, y)
       unit.already_moving = false
     elseif update.reason == "dir" then
@@ -166,7 +175,7 @@ It is probably possible to do, but lily has decided that it's not important enou
         print("movement infinite loop! (1000 attempts at a stage)")
         destroyLevel("infloop");
       end
-      --print("loop_stage:"..tostring(loop_stage))
+      movedebug("loop_stage:"..tostring(loop_stage))
       successes = 0
       local loop_tick = 0
       loop_stage = loop_stage + 1
@@ -177,7 +186,7 @@ It is probably possible to do, but lily has decided that it's not important enou
           print("movement infinite loop! (1000 attempts at a single tick)")
           destroyLevel("infloop");
         end
-        --print("loop_tick:"..tostring(loop_tick))
+        movedebug("loop_tick:"..tostring(loop_tick))
         local remove_from_moving_units = {}
         local has_flipped = false
         something_moved = false
@@ -191,7 +200,22 @@ It is probably possible to do, but lily has decided that it's not important enou
             local dir = data.dir
             local dpos = dirs8[dir]
             local dx,dy = dpos[1],dpos[2]
-            --print("considering:"..unit.name..","..dir)
+            --dx/dy collation logic for copykat moves
+            if (data.reason == "copkat") then
+              dx = sign(data.dx)
+              dy = sign(data.dy)
+              if (dx == 0 and dy == 0) then
+                data.times = data.times - 1;
+                while #unit.moves > 0 and unit.moves[1].times <= 0 do
+                  table.remove(unit.moves, 1)
+                end
+                break
+              else
+                dir = dirs8_by_offset[dx][dy];
+                data.dir = dir
+              end
+            end
+            movedebug("considering:"..unit.name..","..dir)
             local success,movers,specials = canMove(unit, dx, dy, true, false, nil, data.reason)
             for _,special in ipairs(specials) do
               doAction(special)
@@ -268,7 +292,7 @@ It is probably possible to do, but lily has decided that it's not important enou
       end]]--
       doUpdate(already_added, moving_units_next)
       for _,unit in ipairs(moving_units_next) do
-        --print("re-added:"..unit.name)
+        movedebug("re-added:"..unit.name)
         table.insert(moving_units, unit);
         already_added[unit] = true;
       end
@@ -319,7 +343,7 @@ function moveIt(mover, dx, dy, data, pulling, already_added, moving_units, movin
     if (data.reason == "icy") then
       slippers[mover.id] = true
     end
-    --add SIDEKIKERs to move in the next iteration
+    --add SIDEKIKERs to move in the next sub-tick
     for __,sidekiker in ipairs(findSidekikers(mover, dx, dy)) do
       local currently_moving = false
       for _,mover2 in ipairs(moving_units) do
@@ -334,6 +358,37 @@ function moveIt(mover, dx, dy, data, pulling, already_added, moving_units, movin
         already_added[sidekiker] = true
       end
     end
+    --add COPYKATs to move in the next tick
+    --basically: if they're currently copying, ignore the first move we find. if we find a non-ignored move, add to it. else, add a new move.
+    --On that new move, we add up all dx and dy. The final dx and dy will be the sign (so limited to -1/1) of its dx and dy.
+    for copykat,_ in pairs(findCopykats(mover)) do
+      local currently_moving = false
+      for _,mover2 in ipairs(moving_units) do
+        if mover2 == copykat then
+          currently_moving = true
+          break
+        end
+      end
+      local found = false
+      for i,move in ipairs(copykat.moves) do
+        if move.reason == "copkat" then
+          if currently_moving then
+            currently_moving = false
+          else
+            move.dx = move.dx + dx
+            move.dy = move.dy + dy
+            movedebug("copykat collate:"..tostring(move.dx)..","..tostring(move.dy))
+            found = true
+            break
+          end
+        end
+      end
+      if not found then
+        table.insert(copykat.moves, {reason = "copkat", dir = mover.dir, times = 1, dx = dx, dy = dy})
+        table.insert(moving_units_next, copykat)
+        already_added[copykat] = true
+      end
+    end
   end
 end
 
@@ -341,7 +396,7 @@ function queueMove(mover, dx, dy, dir, priority)
   addUndo({"update", mover.id, mover.x, mover.y, mover.dir})
   mover.olddir = mover.dir
   updateDir(mover, dir)
-  --print("moving:"..mover.name..","..tostring(mover.id)..","..tostring(mover.x)..","..tostring(mover.y)..","..tostring(dx)..","..tostring(dy))
+  movedebug("moving:"..mover.name..","..tostring(mover.id)..","..tostring(mover.x)..","..tostring(mover.y)..","..tostring(dx)..","..tostring(dy))
   mover.already_moving = true;
   table.insert(update_queue, (priority and 1 or (#update_queue + 1)), {unit = mover, reason = "update", payload = {x = mover.x + dx, y = mover.y + dy, dir = mover.dir}})
 end
@@ -366,10 +421,10 @@ function applySlide(mover, dx, dy, already_added, moving_units_next)
         end
         --the new moves will be at the start of the unit's moves data, so that it takes precedence over what it would have done next otherwise
         --TODO: CLEANUP: Figure out a nice way to not have to pass this around/do this in a million places.
-        --print("launching:"..mover.name..","..v.dir)
+        movedebug("launching:"..mover.name..","..v.dir)
         table.insert(mover.moves, 1, {reason = "goooo", dir = v.dir, times = launchness})
         if not already_added[mover] then
-          --print("did add launcher")
+          movedebug("did add launcher")
           table.insert(moving_units_next, mover)
           already_added[mover] = true
         end
@@ -392,10 +447,10 @@ function applySlide(mover, dx, dy, already_added, moving_units_next)
           end
           did_clear_existing = true
         end
-        --print("sliding:"..mover.name..","..mover.dir)
+        movedebug("sliding:"..mover.name..","..mover.dir)
         table.insert(mover.moves, 1, {reason = "icyyyy", dir = mover.dir, times = slideness})
         if not already_added[mover] then
-          --print("did add slider")
+          movedebug("did add slider")
           table.insert(moving_units_next, mover)
           already_added[mover] = true
         end
@@ -466,6 +521,21 @@ function findSidekikers(unit,dx,dy)
   return result;
 end
 
+function findCopykats(unit)
+  local result = {}
+  local iscopykat = matchesRule("?", "copkat", unit);
+  for _,ruleparent in ipairs(iscopykat) do
+    local copykats = findUnitsByName(ruleparent[1][1])
+    local copykat_conds = ruleparent[1][4][1]
+    for _,copykat in ipairs(copykats) do
+      if testConds(copykat, copykat_conds) then
+        result[copykat] = true;
+      end
+    end
+  end
+  return result
+end
+
 function doPull(unit,dx,dy,data, already_added, moving_units, moving_units_next, slippers)
   local x = unit.x;
   local y = unit.y;
@@ -493,6 +563,8 @@ function doPull(unit,dx,dy,data, already_added, moving_units, moving_units_next,
 end
 
 function fallBlock()
+  --TODO: If we have multiple gravity directions, then we probably want a simultaneous single step algorithm to resolve everything neatly.
+  --TODO: If anything can change a faller's direction or position mid-flight (wrap/portal anyone?) then we need infinite loop protection here.
   local fallers = getUnitsWithEffect("haet skye")
   table.sort(fallers, function(a, b) return a.y > b.y end )
   
@@ -695,6 +767,7 @@ function canMove(unit,dx,dy,pushing_,pulling_,solid_name,reason)
       end
       
       --if thing is ouch, it will not stop things - similar to Baba behaviour. But check safe and float as well.
+      --Funny buggy looking interaction (that also happens in Baba): You can push the 'ouch' of 'wall be ouch' onto a solid wall. This could be fixed by making walking onto an ouch wall destroy it as a reaction to movement, like how keys/doors are destroyed as a reaction to movement right now.
       if hasProperty(v, "ouch") and not hasProperty(v, "protecc") and sameFloat(unit, v) then
         stopped = false
       end

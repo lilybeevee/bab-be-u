@@ -126,7 +126,7 @@ function parseRules(undoing)
                   table.insert(units, mod.unit)
                   if mod.name == "text" then
                     name = v.unit.fullname
-                  elseif mod.name == "n't" then
+                  elseif mod.name == "nt" then
                     suffix = suffix .. "n't"
                   end
                 end
@@ -293,17 +293,9 @@ function addRule(full_rule)
       end
     end
   elseif subject_not % 2 == 1 then
-    --print("subject not" .. subject)
     if tiles_by_name[subject] or subject == "text" then
-      --print("adding not subject")
-      local new_subjects = {}
-      for _,v in ipairs(referenced_objects) do
-        if v ~= subject then
-          table.insert(new_subjects, v)
-        end
-      end
+      local new_subjects = getEverythingExcept(subject)
       for _,v in ipairs(new_subjects) do
-        --print(string.format("%s %s %s -> %s %s %s", rules[1],rules[2],rules[3], v,rules[2],rules[3]))
         addRule({{v, rules[2], rules[3], rules[4]}, units, dir})
       end
       return
@@ -319,17 +311,9 @@ function addRule(full_rule)
       end
     end
   elseif object_not % 2 == 1 then
-    --print("object not: " .. object)
     if tiles_by_name[object] or object == "text" then
-      --print("adding not object")
-      local new_objects = {}
-      for _,v in ipairs(referenced_objects) do
-        if v ~= object then
-          table.insert(new_objects, v)
-        end
-      end
+      local new_objects = getEverythingExcept(object)
       for _,v in ipairs(new_objects) do
-        --print(string.format("%s %s %s -> %s %s %s", rules[1],rules[2],rules[3], rules[1],rules[2],v))
         addRule({{rules[1], rules[2], v, rules[4]}, units, dir})
       end
       return
@@ -345,7 +329,7 @@ function addRule(full_rule)
 
     -- for specifically checking NOT rules
     table.insert(full_rules, {{subject, verb .. "n't", object, conds}, units, dir})
-  elseif (subject == object) and (verb == "be") then
+  elseif (verb == "be") and (subject == object or (subject:starts("text_") and object == "text")) then
     --print("protecting: " .. subject .. ", " .. object)
     addRule({{subject, "ben't", object .. "n't", conds}, units, dir})
   else

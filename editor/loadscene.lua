@@ -36,8 +36,8 @@ function scene.update(dt)
     scrollvel = 0
   end
 
-  scrollx = scrollx+0.1
-  scrolly = scrolly+0.1
+  scrollx = scrollx+75*dt
+  scrolly = scrolly+75*dt
 end
 
 function scene.keyPressed(key)
@@ -118,20 +118,17 @@ function scene.draw()
 
   local bgsprite = sprites["ui/menu_background"]
 
-  -- it'll be improved later dont worry
+  local cells_x = math.ceil(love.graphics.getWidth() / bgsprite:getWidth())
+  local cells_y = math.ceil(love.graphics.getHeight() / bgsprite:getHeight())
+
   love.graphics.setColor(1, 1, 1, 0.6)
-  love.graphics.draw(bgsprite, scrollx%bgsprite:getWidth(), scrolly%bgsprite:getHeight(), 0)
-  
-  love.graphics.draw(bgsprite, scrollx%bgsprite:getWidth()-bgsprite:getWidth(), scrolly%bgsprite:getHeight()-bgsprite:getHeight(), 0)
-  love.graphics.draw(bgsprite, scrollx%bgsprite:getWidth()-bgsprite:getWidth(), scrolly%bgsprite:getHeight(), 0)
-  love.graphics.draw(bgsprite, scrollx%bgsprite:getWidth(), scrolly%bgsprite:getHeight()-bgsprite:getHeight(), 0)
-
-  love.graphics.draw(bgsprite, scrollx%bgsprite:getWidth()+bgsprite:getWidth(), scrolly%bgsprite:getHeight()+bgsprite:getHeight(), 0)
-  love.graphics.draw(bgsprite, scrollx%bgsprite:getWidth()+bgsprite:getWidth(), scrolly%bgsprite:getHeight(), 0)
-  love.graphics.draw(bgsprite, scrollx%bgsprite:getWidth(), scrolly%bgsprite:getHeight()+bgsprite:getHeight(), 0)
-
-  love.graphics.draw(bgsprite, scrollx%bgsprite:getWidth()+bgsprite:getWidth(), scrolly%bgsprite:getHeight()-bgsprite:getHeight(), 0)
-  love.graphics.draw(bgsprite, scrollx%bgsprite:getWidth()-bgsprite:getWidth(), scrolly%bgsprite:getHeight()+bgsprite:getHeight(), 0)
+  for x = -1, cells_x do
+    for y = -1, cells_y do
+      local draw_x = scrollx % bgsprite:getWidth() + x * bgsprite:getWidth()
+      local draw_y = scrolly % bgsprite:getHeight() + y * bgsprite:getHeight()
+      love.graphics.draw(bgsprite, draw_x, draw_y)
+    end
+  end
 
   -- ui
   love.graphics.push()
@@ -140,6 +137,14 @@ function scene.draw()
 
   for i,button in ipairs(ui.buttons) do
     local sprite = sprites["ui/" .. button.type .. " box"]
+
+    local sx, sy
+
+    if button.icon then
+      local imgw, imgh = button.icon:getWidth(), button.icon:getHeight()
+      --scale factors
+      sx, sy = ICON_WIDTH / imgw, ICON_HEIGHT / imgh
+    end
 
     love.graphics.push()
     if mouseOverBox(button.x, button.y, button.w, button.h, scene.getTransform()) then
@@ -153,8 +158,8 @@ function scene.draw()
       love.graphics.draw(sprite, button.x, button.y)
       if button.icon then
         love.graphics.draw(button.icon,
-          button.x + (button.w / 2) - (button.icon:getWidth() / 2),
-          button.y + (button.h / 2) - (button.icon:getHeight() / 2))
+          button.x + (button.w / 2) - (ICON_WIDTH / 2),
+          button.y + (button.h / 2) - (ICON_HEIGHT / 2))
       else
         love.graphics.setFont(icon_font)
 
@@ -164,17 +169,16 @@ function scene.draw()
         love.graphics.printf(button.name:upper(), button.x + (button.w / 2) - (96 / 2), button.y + (button.h / 2) - (height / 2), 96, "center")
       end
     elseif button.type == "level" then
-      if button.create then
-        love.graphics.draw(sprite, button.x, button.y)
-        love.graphics.draw(button.icon,
-          button.x + (button.w / 2) - (button.icon:getWidth() / 2),
-          button.y + (button.h / 2) - (button.icon:getHeight() / 2))
-      else
-        love.graphics.draw(sprite, button.x, button.y)
-        love.graphics.draw(button.icon,
-          button.x + (button.w / 2) - (button.icon:getWidth() / 2),
-          button.y + (button.h * (2/3)) - (button.icon:getHeight() / 2))
-        
+      local icon_y_multiplier = 2/3
+      if button.create then icon_y_multiplier = 1/2 end
+
+      love.graphics.draw(sprite, button.x, button.y)
+      love.graphics.draw(button.icon,
+        button.x + (button.w / 2) - (ICON_WIDTH / 2),
+        button.y + (button.h * icon_y_multiplier) - (ICON_HEIGHT / 2),
+        0, sx, sy)
+      
+      if not button.create then
         love.graphics.setFont(name_font)
 
         local _,lines = name_font:getWrap(button.data.name:upper(), 112)
@@ -340,6 +344,17 @@ end
 function scene.searchDir(dir, type)
   local ret = {}
   local dirs = love.filesystem.getDirectoryItems(dir)
+
+  table.sort(dirs, function(a, b)
+    if a:ends(".bab") and b:ends(".bab") then
+      return sortString(a:sub(1, -5), b:sub(1, -5))
+    elseif not (a:ends(".bab") or b:ends(".bab")) then --if neither are .bab, don't care, sort normally
+      return a < b
+    else -- if one of them is .bab, put it first to avoid inconsistencies with the function
+      if a:ends(".bab") then return true else return false end
+    end
+  end)
+
   for _,file in ipairs(dirs) do
     local info = love.filesystem.getInfo(dir .. "/" .. file)
     if info and ((type == "world" and info.type == "directory") or (type == "level" and file:ends(".bab"))) then
