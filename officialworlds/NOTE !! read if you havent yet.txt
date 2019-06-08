@@ -1,0 +1,3 @@
+since levels in solo are sorted by their file name alphabetically, in order to put extras near each other, you must name your level files after each other
+
+ex. erthquak is an extra level for tektonik so we name tektonik's level file "tektonik1.bab", and earthquak's "tektonik2.bab" 

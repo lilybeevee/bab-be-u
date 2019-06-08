@@ -138,6 +138,7 @@ function scene.draw()
 
   for i,button in ipairs(ui.buttons) do
     local sprite = sprites["ui/" .. button.type .. " box"]
+    local btncolor = {1, 1, 1}
 
     local sx, sy
 
@@ -155,13 +156,13 @@ function scene.draw()
       love.graphics.translate(-button.x-button.w/2, -button.y-button.h/2)
     end
 
-    if rainbowmode then love.graphics.setColor(hslToRgb((love.timer.getTime()/6+i*10)%1, .5, .5, .9)) end
+    if rainbowmode then btncolor = hslToRgb((love.timer.getTime()/6+i*10)%1, .5, .5, .9) end
+    love.graphics.setColor(btncolor)
 
     if button.type == "world" then
       love.graphics.draw(sprite, button.x, button.y)
       love.graphics.setColor(1, 1, 1)
       if button.icon then
-        
         love.graphics.draw(button.icon,
           button.x + (button.w / 2) - (ICON_WIDTH / 2),
           button.y + (button.h / 2) - (ICON_HEIGHT / 2))
@@ -171,13 +172,18 @@ function scene.draw()
         local _,lines = icon_font:getWrap(button.name:upper(), 96)
         local height = #lines * icon_font:getHeight()
 
+        love.graphics.setColor(1, 1, 1)
         love.graphics.printf(button.name:upper(), button.x + (button.w / 2) - (96 / 2), button.y + (button.h / 2) - (height / 2), 96, "center")
       end
     elseif button.type == "level" then
       local icon_y_multiplier = 2/3
       if button.create then icon_y_multiplier = 1/2 end
 
+      if button.data.extra then
+        love.graphics.setColor(btncolor[1]-0.4, btncolor[2]-0.4, btncolor[3]-0.4)
+      end
       love.graphics.draw(sprite, button.x, button.y)
+
       love.graphics.setColor(1, 1, 1)
       love.graphics.draw(button.icon,
         button.x + (button.w / 2) - (ICON_WIDTH / 2),
@@ -189,8 +195,15 @@ function scene.draw()
 
         local _,lines = name_font:getWrap(button.data.name:upper(), 112)
         local height = #lines * name_font:getHeight()
-        
-        love.graphics.printf(button.data.name:upper(), button.x + (button.w / 2) - (112 / 2), button.y + 40 - (height / 2), 112, "center")
+
+        local btnprintname
+        if button.data.extra then
+          btnprintname = button.data.name:lower()
+        else
+          btnprintname = button.data.name:upper()
+        end
+
+        love.graphics.printf(btnprintname, button.x + (button.w / 2) - (112 / 2), button.y + 40 - (height / 2), 112, "center")
       end
     end
     love.graphics.pop()

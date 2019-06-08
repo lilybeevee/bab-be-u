@@ -11,7 +11,7 @@ local ignore_mouse = true
 
 local settings_open, settings
 local label_palette, label_music
-local input_name, input_author, input_palette, input_music, input_width, input_height
+local input_name, input_author, input_palette, input_music, input_width, input_height, input_extra
 
 local capturing, start_drag, end_drag
 local screenshot, screenshot_image
@@ -35,6 +35,9 @@ function scene.load()
   end
   if not level_author then
     level_author = ""
+  end
+  if not level_extra then
+    level_extra = false
   end
 
   if not loaded_level then
@@ -139,6 +142,14 @@ function scene.setupGooi()
   y = y + 24 + 4
   input_width = gooi.newSpinner({value = mapwidth, min = 1, max = 512, x = 4, y = y, w = 98, h = 24}):setGroup("settings")
   input_height = gooi.newSpinner({value = mapwidth, min = 1, max = 512, x = 106, y = y, w = 98, h = 24}):setGroup("settings")
+
+  
+  y = y + 24 + 4
+  gooi.newLabel({text = "Extra", x = 4, y = y, w = 200, h = 24}):center():setGroup("settings")
+  y = y + 24 + 4
+  input_extra = gooi.newCheck({checked = level_extra, x = 4, y = y}):setGroup("settings")
+
+  input_extra.checked = level_extra
 
   y = y + (24 * 2) + 4
   gooi.newButton({text = "Save", x = 4, y = y, w = 98, h = 24}):onRelease(function()
@@ -706,6 +717,7 @@ function scene.saveLevel()
   local data = {
     name = level_name,
     author = level_author,
+    extra = level_extra,
     palette = current_palette,
     music = map_music,
     width = mapwidth,
@@ -748,6 +760,7 @@ function scene.openSettings()
     input_music:setText(map_music)
     input_width:setValue(mapwidth)
     input_height:setValue(mapheight)
+    input_extra.checked = level_extra
 
     gooi.setGroupVisible("settings", true)
     gooi.setGroupEnabled("settings", true)
@@ -795,6 +808,7 @@ function scene.saveSettings()
 
   mapwidth = input_width:getValue()
   mapheight = input_height:getValue()
+  level_extra = input_extra.checked
   
   clear()
   loadMap()
@@ -832,6 +846,7 @@ function love.filedropped(file)
 
   level_name = mapdata.name
   level_author = mapdata.author or ""
+  level_extra = mapdata.extra or false
   current_palette = mapdata.palette or "default"
   map_music = mapdata.music or "bab be u them"
   mapwidth = mapdata.width
