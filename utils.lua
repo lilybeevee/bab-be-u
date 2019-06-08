@@ -460,7 +460,7 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
       result = last_move ~= nil and last_move[1] == 0 and last_move[2] == 0
     elseif condtype == "mayb" then
       rng = deterministicRng(unit, cond_unit);
-      result = (rng*100) > threshold_for_dir[cond_unit.dir];
+      result = (rng*100) < threshold_for_dir[cond_unit.dir];
     else
       print("unknown condtype: " .. condtype)
       result = false
@@ -477,7 +477,7 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
   return endresult
 end
 
-threshold_for_dir = {50, 25, 10, 5, 2, 1, 0.1, 0.01};
+threshold_for_dir = {50, 0.01, 0.1, 1, 2, 5, 10, 25};
 
 function deterministicRng(unit, cond)
   local key = unit.name..","..tostring(unit.x)..","..tostring(unit.y)..","..tostring(unit.dir)..","..tostring(cond.x)..","..tostring(cond.y)..","..tostring(cond.dir)..","..tostring(#undo_buffer)
