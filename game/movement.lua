@@ -628,13 +628,20 @@ function canMove(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason)
     local success, movers, specials = canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason);
     if not success then
       local movementdir = dir
-      local stubborndir1 = first_stubborn_dir[movementdir];
-      local success, movers, specials = canMoveCore(unit,dirs8[stubborndir1][1],dirs8[stubborndir1][2],dir,pushing_,pulling_,solid_name,reason);
-      if not success then
-        local stubborndir2 = second_stubborn_dir[movementdir];
-        return canMoveCore(unit,dirs8[stubborndir2][1],dirs8[stubborndir2][2],dir,pushing_,pulling_,solid_name,reason);
-      else
-        return success, movers, specials;
+      local stubborndir1 = ((dir+1-1)%8)+1
+      local stubborndir2 = ((dir-1-1)%8)+1
+      local success1, movers1, specials1 = canMoveCore(unit,dirs8[stubborndir1][1],dirs8[stubborndir1][2],dir,pushing_,pulling_,solid_name,reason);
+      local success2, movers2, specials2 = canMoveCore(unit,dirs8[stubborndir2][1],dirs8[stubborndir2][2],dir,pushing_,pulling_,solid_name,reason);
+      if (success1 and not success2) then
+        return success1,movers1,specials1
+      elseif (success2 and not success1) then
+        return success2,movers2,specials2
+      else --both succeeded or both failed - return whichever requires less effort
+        if #movers1 <= #movers2 then
+          return success1,movers1,specials1
+        else
+          return success2,movers2,specials2
+        end
       end
     else
       return success, movers, specials;
@@ -643,22 +650,6 @@ function canMove(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason)
     return canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason)
   end
 end
-
---[[
-diagonal moves: try vert first.
-horizontal moves: try topleftmost first.
-6  7  8
- \ | /
- 
-5- 0 -1
- 
- / | \
-4  3  2
-TODO: We might want a different simpler rule, like 'always try dir+1 first, dir-1 second'.
-]]
-
-first_stubborn_dir = {8, 3, 4, 3, 6, 7, 6, 7};
-second_stubborn_dir = {2, 1, 2, 5, 4, 5, 8, 1};
 
 function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason)
   local pushing = false
