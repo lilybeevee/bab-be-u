@@ -432,6 +432,24 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
           result = false
         end
       end
+    elseif condtype == "seen by" then
+      for _,param in ipairs(params) do
+        local others = {}
+        for nx=-1,1 do
+          for ny=-1,1 do
+            if (nx ~= 0) or (ny ~= 0) then
+              mergeTable(others, param ~= "mous" and getUnitsOnTile(unit.x+nx,unit.y+ny,param) or {})
+            end
+          end
+        end
+        result = false
+        for _,other in ipairs(others) do
+          if other.x+dirs8[other.dir][1] == unit.x and other.y+dirs8[other.dir][2] == unit.y then
+            result = true
+            break
+          end
+        end
+      end
     elseif condtype == "look at" then
       for _,param in ipairs(params) do
         local others

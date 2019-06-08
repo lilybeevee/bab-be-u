@@ -1740,4 +1740,14 @@ tiles_list = {
     layer = 20,
     rotate = true
   },
+  -- 165
+  {
+    name = "text_seen by",
+    sprite = "text_seen by",
+    type = "text",
+    texttype = "cond_infix",
+    grid = {13, 7},
+    color = {0, 3},
+    layer = 20,
+  },
 }
