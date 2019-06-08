@@ -1750,4 +1750,25 @@ tiles_list = {
     color = {0, 3},
     layer = 20,
   },
+  -- 166
+  {
+    name = "steev",
+    sprite = "steev",
+    sleepsprite = "steev_slep",
+    type = "object",
+    grid = {13,8},
+    color = {2,3},
+    layer = 5,
+    rotate = true,
+    eye = {x=20, y=13, w=2, h=2},
+  },
+  -- 167
+  {
+    name = "text_steev",
+    sprite = "text_steev",
+    type = "text",
+    grid = {14,8},
+    color = {2,3	},
+    layer = 20,
+  },
 }
