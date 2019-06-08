@@ -359,7 +359,7 @@ function scene.searchDir(dir, type)
       a_ = a:sub(1, -5)
       b_ = b:sub(1, -5)
     end
-    return sortString(a_, b_)
+    return a_ < b_
   end)
 
   for _,file in ipairs(filtered) do
