@@ -227,7 +227,7 @@ function parseRules(undoing)
                   for _,unit in ipairs(cond[3]) do
                     table.insert(all_units, unit)
                   end
-                  table.insert(conds[i], {cond[1], cond[2]})
+                  table.insert(conds[i], {cond[1], cond[2], cond[3]})
                 end
               end
 

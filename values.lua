@@ -1718,4 +1718,15 @@ tiles_list = {
     color = {4,1},
     layer = 20,
   },
+  -- 163
+  {
+    name = "text_mayb",
+    sprite = "text_mayb",
+    type = "text",
+    texttype = "cond_prefix",
+    grid = {14, 2},
+    color = {0, 3},
+    layer = 20,
+    rotate = true
+  },
 }

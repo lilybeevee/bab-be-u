@@ -1,4 +1,5 @@
 function clear()
+  rng_cache = {}
   reset_count = 0
   last_move = nil
   particles = {}
@@ -365,7 +366,7 @@ end
 --TODO: If we end up with infinite loops for stuff that isn't pardoxical (should form a closed loop of false -> false or true -> true), then we can try improving it by tracking what conditions we're already testing, and if we re-entrantly test a condition, assume it's (false I guess? real world testing will be required since I'm not sure)
 reentrance = 0
 
-function testConds(unit,conds) --cond should be a {cond,{object types}}
+function testConds(unit,conds) --cond should be a {condtype,{object types},{cond_units}}
   if reentrance > 10 then
     print("testConds infinite loop!")
     destroyLevel("infloop");
@@ -376,6 +377,7 @@ function testConds(unit,conds) --cond should be a {cond,{object types}}
   for _,cond in ipairs(conds) do
     local condtype = cond[1]
     local params = cond[2]
+    local cond_unit = cond[3][1]
 
     local result = true
     local cond_not = false
@@ -456,6 +458,9 @@ function testConds(unit,conds) --cond should be a {cond,{object types}}
       end
     elseif condtype == "wait" then
       result = last_move ~= nil and last_move[1] == 0 and last_move[2] == 0
+    elseif condtype == "mayb" then
+      rng = deterministicRng(unit, cond_unit);
+      result = (rng*100) > threshold_for_dir[cond_unit.dir];
     else
       print("unknown condtype: " .. condtype)
       result = false
@@ -470,6 +475,16 @@ function testConds(unit,conds) --cond should be a {cond,{object types}}
   end
   reentrance = reentrance - 1
   return endresult
+end
+
+threshold_for_dir = {50, 25, 10, 5, 2, 1, 0.1, 0.01};
+
+function deterministicRng(unit, cond)
+  local key = unit.name..","..tostring(unit.x)..","..tostring(unit.y)..","..tostring(unit.dir)..","..tostring(cond.x)..","..tostring(cond.y)..","..tostring(cond.dir)..","..tostring(#undo_buffer)
+  if rng_cache[key] == nil then
+     rng_cache[key] = math.random();
+  end
+  return rng_cache[key]
 end
 
 function inBounds(x,y)
