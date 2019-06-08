@@ -13,9 +13,9 @@ function registerSound(sound, volume)
     data = love.sound.newSoundData("assets/audio/" .. sound .. ".wav"),
     volume = volume or 1
   }
-  if not (sounds[sound].data) then
+  --[[if not (sounds[sound].data) then
     sounds[sound].data = love.sound.newSoundData("assets/audio/" .. sound .. ".xm")
-  end
+  end]]
 end
 
 function playSound(sound, volume)
@@ -48,8 +48,8 @@ function playMusic(music, volume)
   else
     music_source = love.audio.newSource("assets/audio/" .. music .. ".xm", "static")
   end
-  music_source:setVolume(current_volume * music_volume)
   music_source:setLooping(true)
+  music_source:setVolume(current_volume * music_volume)
   music_source:play()
 
   current_music = music
