@@ -185,7 +185,7 @@ function updateUnits(undoing, big_update)
               local ndir = dirs[i];
               local dx = ndir[1];
               local dy = ndir[2];
-              if canMove(unit, dx, dy, false, false, unit.name) then
+              if canMove(unit, dx, dy, i*2-1, false, false, unit.name) then
                 if unit.class == "unit" then
                   local new_unit = createUnit(tiles_by_name[unit.fullname], unit.x, unit.y, unit.dir)
                   addUndo({"create", new_unit.id, false})
@@ -206,7 +206,7 @@ function updateUnits(undoing, big_update)
               local ndir = dirs8[i];
               local dx = ndir[1];
               local dy = ndir[2];
-              if canMove(unit, dx, dy, false, false, unit.name) then
+              if canMove(unit, dx, dy, i, false, false, unit.name) then
                 if unit.class == "unit" then
                   local new_unit = createUnit(tiles_by_name[unit.fullname], unit.x, unit.y, unit.dir)
                   addUndo({"create", new_unit.id, false})
@@ -536,7 +536,7 @@ function handleDels(to_destroy, unstoppable)
 end
 
 function changeDirIfFree(unit, dir)
-  if canMove(unit, dirs8[dir][1], dirs8[dir][2], false, false, unit.name, "dir check") then
+  if canMove(unit, dirs8[dir][1], dirs8[dir][2], dir, false, false, unit.name, "dir check") then
     addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
     unit.olddir = unit.dir
     updateDir(unit, dir);

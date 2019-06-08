@@ -1729,4 +1729,15 @@ tiles_list = {
     layer = 20,
     rotate = true
   },
+  -- 164
+  {
+    name = "text_stubbn",
+    sprite = "text_stubbn",
+    type = "text",
+    texttype = "property",
+    grid = {12, 7},
+    color = {1, 4},
+    layer = 20,
+    rotate = true
+  },
 }

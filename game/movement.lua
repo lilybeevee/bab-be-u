@@ -213,7 +213,7 @@ It is probably possible to do, but lily has decided that it's not important enou
               end
             end
             movedebug("considering:"..unit.name..","..dir)
-            local success,movers,specials = canMove(unit, dx, dy, true, false, nil, data.reason)
+            local success,movers,specials = canMove(unit, dx, dy, dir, true, false, nil, data.reason)
             for _,special in ipairs(specials) do
               doAction(special)
             end
@@ -222,11 +222,11 @@ It is probably possible to do, but lily has decided that it's not important enou
               successes = successes + 1
               
               for k = #movers, 1, -1 do
-                moveIt(movers[k], dx, dy, data, false, already_added, moving_units, moving_units_next, slippers)
+                moveIt(movers[k].unit, movers[k].dx, movers[k].dy, movers[k].dir, data, false, already_added, moving_units, moving_units_next, slippers)
               end
               --Patashu: only the mover itself pulls, otherwise it's a mess. stuff like STICKY/STUCK will require ruggedizing this logic.
               --Patashu: TODO: Doing the pull right away means that in a situation like this: https://cdn.discordapp.com/attachments/579519329515732993/582179745006092318/unknown.png the pull could happen before the bounce depending on move order. To fix this... I'm not sure how Baba does this? But it's somewhere in that mess of code.
-              doPull(unit, dx, dy, data, already_added, moving_units, moving_units_next,  slippers)
+              doPull(unit, dx, dy, dir, data, already_added, moving_units, moving_units_next,  slippers)
               
               --we made our move this iteration, wait until the next iteration to move again
               remove_from_moving_units[unit] = true;
@@ -252,7 +252,7 @@ It is probably possible to do, but lily has decided that it's not important enou
             end
             if #unit.moves > 0 and not unit.removed and unit.moves[1].times > 0 then
               local data = unit.moves[1]
-              if data.reason == "walk" and flippers[unit.id] ~= true then
+              if data.reason == "walk" and flippers[unit.id] ~= true and not hasProperty(unit, "stubbn") then
                 dir = rotate8(data.dir); data.dir = dir;
                 addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
                 table.insert(update_queue, {unit = unit, reason = "update", payload = {x = unit.x, y = unit.y, dir = data.dir}})
@@ -331,9 +331,9 @@ function doAction(action)
   end
 end
 
-function moveIt(mover, dx, dy, data, pulling, already_added, moving_units, moving_units_next, slippers)
+function moveIt(mover, dx, dy, dir, data, pulling, already_added, moving_units, moving_units_next, slippers)
   if not mover.removed then
-    queueMove(mover, dx, dy, data.dir, false);
+    queueMove(mover, dx, dy, dir, false);
     --applySlide(mover, dx, dy, already_added, moving_units_next);
     applySwap(mover, dx, dy);
     --finishing a slip locks you out of U/WALK for the rest of the turn
@@ -350,7 +350,7 @@ function moveIt(mover, dx, dy, data, pulling, already_added, moving_units, movin
         end
       end
       if not currently_moving then
-        table.insert(sidekiker.moves, {reason = "sidekik", dir = mover.dir, times = 1})
+        table.insert(sidekiker.moves, {reason = "sidekik", dir = mover.dir, times = 1}) --TODO: dx/dy, dir and mover.dir could possibly all be different, explore advanced movement interactions with sidekik and wrap, portal, stubborn
         table.insert(moving_units, sidekiker) --Patashu: I think moving_units is correct (since it should happen 'at the same time' like a push or pull) but maybe changing this to moving_units_next will fix a bug in the future...?
         already_added[sidekiker] = true
       end
@@ -381,7 +381,7 @@ function moveIt(mover, dx, dy, data, pulling, already_added, moving_units, movin
         end
       end
       if not found then
-        table.insert(copykat.moves, {reason = "copkat", dir = mover.dir, times = 1, dx = dx, dy = dy})
+        table.insert(copykat.moves, {reason = "copkat", dir = mover.dir, times = 1, dx = dx, dy = dy}) --TODO: dx/dy, dir and mover.dir could possibly all be different, explore advanced movement interactions with copykat and wrap, portal, stubborn
         table.insert(moving_units_next, copykat)
         already_added[copykat] = true
       end
@@ -533,7 +533,7 @@ function findCopykats(unit)
   return result
 end
 
-function doPull(unit,dx,dy,data, already_added, moving_units, moving_units_next, slippers)
+function doPull(unit,dx,dy,dir,data, already_added, moving_units, moving_units_next, slippers)
   local x = unit.x;
   local y = unit.y;
   local something_moved = not hasProperty(unit, "shy")
@@ -543,7 +543,7 @@ function doPull(unit,dx,dy,data, already_added, moving_units, moving_units_next,
     y = y - dy;
     for _,v in ipairs(getUnitsOnTile(x, y)) do
       if hasProperty(v, "come pls") then
-        local success,movers,specials = canMove(v, dx, dy, true)
+        local success,movers,specials = canMove(v, dx, dy, dir, true) --TODO: I can't remember why pushing is set but pulling isn't LOL, but if nothing's broken then shrug??
         for _,special in ipairs(specials) do
           doAction(special)
         end
@@ -551,7 +551,7 @@ function doPull(unit,dx,dy,data, already_added, moving_units, moving_units_next,
           --unit.already_moving = true
           something_moved = something_moved or not hasProperty(mover, "shy")
           for _,mover in ipairs(movers) do
-            moveIt(mover, dx, dy, data, true, already_added, moving_units, moving_units_next, slippers)
+            moveIt(mover.unit, mover.dx, mover.dy, mover.dir, data, true, already_added, moving_units, moving_units_next, slippers)
           end
         end
       end
@@ -575,7 +575,7 @@ function fallBlock()
         caught = true
       end
       for _,on in ipairs(catchers) do
-        if not canMove(unit, 0, 1) then
+        if not canMove(unit, 0, 1, 3, false, false, nil, "haet skye") then
           caught = true
         end
       end
@@ -588,11 +588,11 @@ function fallBlock()
 end
 
 function doZip(unit)
-  if not canMove(unit, 0, 0, false, false, unit.name, "zip") then
+  if not canMove(unit, 0, 0, -1, false, false, unit.name, "zip") then
     --try to zip to the tile behind us - this is usually elegant, since we probably just left that tile. if that fails, try increasingly larger squares around our current position until we give up. prefer squares closer to the tile behind us, arbitrarily break ties via however table.sort and the order we put tiles into it decides to do it!
     local dx = -dirs8[unit.dir][1]
     local dy = -dirs8[unit.dir][2]
-    if canMove(unit, dx, dy, false, false, unit.name, "zip") then
+    if canMove(unit, dx, dy, -1, false, false, unit.name, "zip") then
       addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
       moveUnit(unit,unit.x+dx,unit.y+dy)
       return
@@ -612,7 +612,7 @@ function doZip(unit)
       for _,place in ipairs(places) do
         local dx = place.x
         local dy = place.y
-        if canMove(unit, dx, dy, false, false, unit.name, "zip") then
+        if canMove(unit, dx, dy, -1, false, false, unit.name, "zip") then
           addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
           moveUnit(unit,unit.x+dx,unit.y+dy)
           return
@@ -622,7 +622,45 @@ function doZip(unit)
   end
 end
 
-function canMove(unit,dx,dy,pushing_,pulling_,solid_name,reason)
+--stubborn units will try to slide around an obstacle in their way. everyone else just passes through!
+function canMove(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason)
+  if dir > 0 and hasProperty(unit, "stubbn") then
+    local success, movers, specials = canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason);
+    if not success then
+      local movementdir = dir
+      local stubborndir1 = first_stubborn_dir[movementdir];
+      local success, movers, specials = canMoveCore(unit,dirs8[stubborndir1][1],dirs8[stubborndir1][2],dir,pushing_,pulling_,solid_name,reason);
+      if not success then
+        local stubborndir2 = second_stubborn_dir[movementdir];
+        return canMoveCore(unit,dirs8[stubborndir2][1],dirs8[stubborndir2][2],dir,pushing_,pulling_,solid_name,reason);
+      else
+        return success, movers, specials;
+      end
+    else
+      return success, movers, specials;
+    end
+  else
+    return canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason)
+  end
+end
+
+--[[
+diagonal moves: try vert first.
+horizontal moves: try topleftmost first.
+6  7  8
+ \ | /
+ 
+5- 0 -1
+ 
+ / | \
+4  3  2
+TODO: We might want a different simpler rule, like 'always try dir+1 first, dir-1 second'.
+]]
+
+first_stubborn_dir = {8, 3, 4, 3, 6, 7, 6, 7};
+second_stubborn_dir = {2, 1, 2, 5, 4, 5, 8, 1};
+
+function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason)
   local pushing = false
   if (pushing_ ~= nil and not hasProperty(unit, "shy")) then
 		pushing = pushing_
@@ -638,10 +676,10 @@ function canMove(unit,dx,dy,pushing_,pulling_,solid_name,reason)
   
   local movers = {}
   local specials = {}
-  table.insert(movers, unit)
+  table.insert(movers, {unit = unit,dx = dx,dy = dy,dir = dir})
   
   if not inBounds(x,y) then
-    if hasProperty(unit, "ouch") and not hasProperty(unit, "protecc") and reason ~= "walk" then
+    if hasProperty(unit, "ouch") and not hasProperty(unit, "protecc") and (reason ~= "walk" or hasProperty(unit, "stubbn")) then
       table.insert(specials, {"weak", {unit}})
       return true,movers,specials
     end
@@ -706,7 +744,7 @@ function canMove(unit,dx,dy,pushing_,pulling_,solid_name,reason)
       --New FLYE mechanic, as decreed by the bab dictator - if you aren't sameFloat as a push/pull/sidekik, you can enter it.
       if hasProperty(v, "go away") and not would_swap_with then
         if pushing then
-          local success,new_movers,new_specials = canMove(v, dx, dy, pushing, pulling, solid_name, "go away")
+          local success,new_movers,new_specials = canMove(v, dx, dy, dir, pushing, pulling, solid_name, "go away")
           for _,special in ipairs(new_specials) do
             table.insert(specials, special)
           end
@@ -739,8 +777,8 @@ function canMove(unit,dx,dy,pushing_,pulling_,solid_name,reason)
         stopped = false
       end
       --if a weak thing tries to move and fails, destroy it. movers don't do this though.
-      if stopped and hasProperty(unit, "ouch") and not hasProperty(unit, "protecc") and reason ~= "walk" then
-        table.insert(specials, {"weak", {unit}})
+      if stopped and hasProperty(unit, "ouch") and not hasProperty(unit, "protecc") and (reason ~= "walk" or not hasProperty(unit, "stubbn")) then
+        table.insert(specials, {"weak", {unit = unit,dx = dx,dy = dy,dir = dir}})
         return true,movers,specials
       end
       if stopped then
