@@ -224,20 +224,6 @@ function scene.keyPressed(key)
     scene.loadLevel()
   elseif key == "o" and key_down["lctrl"] then
     scene.openSettings()
-  elseif key == "f" and key_down["lctrl"] then
-    if world == "" then
-      if love.filesystem.getInfo("levels") then
-        love.system.openURL("file://"..love.filesystem.getSaveDirectory().."/levels/")
-      else
-        love.system.openURL("file://"..love.filesystem.getSaveDirectory())
-      end
-    else
-      if world_parent ~= "officialworlds" then
-        love.system.openURL("file://"..love.filesystem.getSaveDirectory().."/"..world_parent.."/"..world.."/")
-      else
-        love.system.openURL("file://"..love.filesystem.getSource().."/"..world_parent.."/"..world.."/")
-      end
-    end
   elseif key == "r" and key_down["lctrl"] then
     gooi.confirm({
       text = "Clear the level?",
