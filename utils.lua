@@ -971,6 +971,14 @@ function sortString(a, b)
   end
 end
 
+function filter(xs, p)
+  local newxs = {}
+  for _,x in ipairs(xs) do
+    if p(x) then table.insert(newxs, x) end
+  end
+  return newxs
+end
+
 function getEverythingExcept(except)
   local result = {}
 
