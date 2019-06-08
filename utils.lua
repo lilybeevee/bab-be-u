@@ -15,7 +15,6 @@ function clear()
   referenced_text = {}
   undo_buffer = {}
   update_undo = true
-  rainbowmode = false
   max_layer = 1
   max_unit_id = 0
   max_temp_id = 0

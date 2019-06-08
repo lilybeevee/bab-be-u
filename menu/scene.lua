@@ -7,9 +7,6 @@ local height = love.graphics.getHeight()
 local scrollx = 0
 local scrolly = 0
 
-local buttonheight = height*0.05
-local buttonwidth = width*0.375
-
 local music_on = true
 
 function scene.load()
@@ -35,6 +32,7 @@ function scene.draw(dt)
   if is_mobile then
     local cursorx, cursory = love.mouse.getPosition()
     love.graphics.setColor(1, 1, 1)
+    if rainbowmode then love.graphics.setColor(hslToRgb(love.timer.getTime()/6%1, .5, .5, .9)) end
     love.graphics.draw(system_cursor, cursorx, cursory)
   end
 
@@ -42,6 +40,7 @@ function scene.draw(dt)
   local cells_y = math.ceil(love.graphics.getHeight() / bgsprite:getHeight())
 
   love.graphics.setColor(1, 1, 1, 1)
+  if rainbowmode then love.graphics.setColor(hslToRgb(love.timer.getTime()/6%1, .5, .5, .9)) end
   for x = -1, cells_x do
     for y = -1, cells_y do
       local draw_x = scrollx % bgsprite:getWidth() + x * bgsprite:getWidth()
@@ -50,13 +49,35 @@ function scene.draw(dt)
     end
   end
 
+  local buttonwidth, buttonheight = sprites["ui/button_1"]:getDimensions()
+
+  local buttoncolor = {84/255, 109/255, 255/255} --terrible but it works so /shrug
+  if rainbowmode then buttoncolor = hslToRgb(love.timer.getTime()/6%1, .5, .5, .9) end
+
   for i=1, #buttons do
-    if mouseOverBox(width/2-buttonwidth/2, height/2-buttonheight/2+(buttonheight+10)*i, buttonwidth, buttonheight) then love.graphics.setColor(.9, .9, .9) end
-    love.graphics.draw(sprites["ui/button_"..i%2+1], width/2-buttonwidth/2, height/2-buttonheight/2+(buttonheight+10)*i, 0, buttonwidth/sprites["ui/button_"..i%2+1]:getWidth(), buttonheight/sprites["ui/button_1"]:getHeight())
+    love.graphics.push()
+    local rot = 0
+
+    local buttonx = width/2-buttonwidth/2
+    local buttony = height/2-buttonheight/2+(buttonheight+10)*i
+
+    love.graphics.setColor(buttoncolor[1], buttoncolor[2], buttoncolor[3])
+    if mouseOverBox(width/2-sprites["ui/button_1"]:getWidth()/2, height/2-buttonheight/2+(buttonheight+10)*i, buttonwidth, buttonheight) then 
+      love.graphics.setColor(buttoncolor[1]-0.1, buttoncolor[2]-0.1, buttoncolor[3]-0.1) --i know this is horrible
+      love.graphics.translate(buttonx+buttonwidth/2, buttony+buttonheight/2)
+      love.graphics.rotate(0.05 * math.sin(love.timer.getTime()*3))
+      love.graphics.translate(-buttonx-buttonwidth/2, -buttony-buttonheight/2)
+    end
+
+    love.graphics.draw(sprites["ui/button_white_"..i%2+1], buttonx, buttony, rot, 1, 1)
 
     love.graphics.setColor(1,1,1)
     love.graphics.printf(buttons[i], width/2-buttonwidth/2, height/2-buttonheight/2+(buttonheight+10)*i+5, buttonwidth, "center")
+
+    love.graphics.pop()
   end
+
+  if rainbowmode then love.graphics.setColor(hslToRgb(love.timer.getTime()/6%1, .5, .5, .9)) end
   love.graphics.draw(sprites["ui/bab_be_u"], width/2 - sprites["ui/bab_be_u"]:getWidth() / 2, height/2 - sprites["ui/bab_be_u"]:getHeight() / 2 - 200)
 
   onstate = "on"
@@ -64,24 +85,25 @@ function scene.draw(dt)
 
   love.graphics.setColor(1, 1, 1)
   if mouseOverBox(10, height - sprites["ui/music-on"]:getHeight(), sprites["ui/music-on"]:getWidth(), sprites["ui/music-on"]:getHeight()) then
-    love.graphics.setColor(0.8, 0.8, 0.8)
+    love.graphics.setColor(.7, .7, .7)
   end
 
   love.graphics.draw(sprites["ui/music-"..onstate], 10, height - sprites["ui/music-"..onstate]:getHeight() - 10)
   
   love.graphics.setColor(1, 1, 1)
   if mouseOverBox(20+sprites["ui/github"]:getWidth(), height-sprites["ui/github"]:getHeight() - 10, sprites["ui/github"]:getWidth(), sprites["ui/github"]:getHeight()) then
-    love.graphics.setColor(0.8, 0.8, 0.8)
+    love.graphics.setColor(.7, .7, .7)
   end
 
   love.graphics.draw(sprites["ui/github"], 20+sprites["ui/github"]:getWidth(), height-sprites["ui/github"]:getHeight() - 10)
 
   if build_number and not debug then
+    if rainbowmode then love.graphics.setColor(hslToRgb(love.timer.getTime()/6%1, .6, .6, .9)) end
     love.graphics.print('v'..build_number)
   end
 end
 
-function scene.update()
+function scene.update(dt)
   width = love.graphics.getWidth()
   height = love.graphics.getHeight()
 
@@ -90,8 +112,8 @@ function scene.update()
 
   local mousex, mousey = love.mouse.getPosition()
 
-  scrollx = scrollx+0.1
-  scrolly = scrolly+0.1
+  scrollx = scrollx+dt*50
+  scrolly = scrolly+dt*50
 
   if mouseOverBox(width/2-buttonwidth/2, height/2-buttonheight/2+(buttonheight+10)*3, buttonwidth, buttonheight) then 
     love.mouse.setPosition(mousex, mousey-(buttonheight+10)) 

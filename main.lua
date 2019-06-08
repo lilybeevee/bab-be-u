@@ -26,6 +26,8 @@ else
 end
 
 function love.load()
+  local startload = love.timer.getTime()
+
   sprites = {}
   palettes = {}
   tweens = {}
@@ -202,6 +204,8 @@ function love.load()
   if discordRPC and discordRPC ~= true then
     discordRPC.initialize("579475239646396436", true) -- app belongs to thefox, contact him if you wish to make any changes
   end
+
+  print("load took "..love.timer.getTime()-startload.."ms")
 end
 
 function love.keypressed(key,scancode,isrepeat)
@@ -217,7 +221,7 @@ function love.keypressed(key,scancode,isrepeat)
     load_mode = "edit"
     clearGooi()
     scene.load()
-  elseif key == "g" and love.keyboard.isDown('f3') and scene ~= editor then
+  elseif key == "g" and love.keyboard.isDown('f3') then
     rainbowmode = not rainbowmode
   elseif key == "f4" then
     debug = not debug
@@ -366,19 +370,25 @@ function love.draw()
     if rainbowmode then
       love.graphics.setColor(hslToRgb(love.timer.getTime()/3%1, .5, .5, .9))
     end
+
+    if rainbowmode then
+      debugDisplay("rainbowmode", "yes")
+    else
+      debugDisplay("rainbowmode", "no")
+    end
+
     mousex, mousey = love.mouse.getPosition()
     local debugtext = '~~ !! DEBUG MENU !! ~~'..'\n'..
     'bab be u commit n'..build_number..'\n'..
+    'fps: '..love.timer.getFPS()..'\n'..
     'window height: '..love.graphics.getHeight()..'\n'..
     'window width: '..love.graphics.getWidth()..'\n'..
-    'mouse: x'..mousex..' y'..mousey..'\n'..
-    'press R to restart\n'..
-    'press S to save level to clipboard (editor)\n' ..
-    'press L to load level from clipboard (editor)\n' ..
+    '\npress R to restart\n'..
     'F4 to toggle debug menu\n'..
     'F3+G to toggle rainbowmode\n'..
     'F2 for editor mode\n'..
     'F1 for game mode'
+
     for key, value in pairs(debug_values) do
       debugtext = debugtext..'\n'..
       key..': '..value
