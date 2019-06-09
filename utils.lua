@@ -1015,3 +1015,11 @@ function renameDir(from, to, cur_)
   end
   love.filesystem.remove(from .. cur)
 end
+
+function setRainbowModeColor(value, brightness)
+  brightness = brightness or 0.5
+  
+  if rainbowmode then
+    love.graphics.setColor(hslToRgb(value%1, brightness, brightness, .9))
+  end
+end

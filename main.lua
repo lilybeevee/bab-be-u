@@ -17,6 +17,12 @@ loadscene = require 'editor/loadscene'
 menu = require 'menu/scene'
 presence = {}
 
+local frame = 0
+
+local debugDrawText                           -- read the line below
+local headerfont = love.graphics.newFont(32)  -- used for debug
+local regularfont = love.graphics.newFont(16) -- read the line above
+
 local libstatus, liberr = pcall(function() discordRPC = require "lib/discordRPC" end)
 
 if libstatus then
@@ -380,6 +386,7 @@ end
 
 function love.draw()
   local dt = love.timer.getDelta()
+  frame = frame + 1
 
   next_anim = next_anim - (dt * 1000)
   if next_anim <= 0 then
@@ -394,34 +401,50 @@ function love.draw()
   end
 
   if debug then
-    love.graphics.setColor(1, 1, 1, 0.9)
-    if rainbowmode then
-      love.graphics.setColor(hslToRgb(love.timer.getTime()/3%1, .5, .5, .9))
-    end
+    local mousex, mousey = love.mouse.getPosition()
 
-    if rainbowmode then
-      debugDisplay("rainbowmode", "yes")
-    else
-      debugDisplay("rainbowmode", "no")
-    end
-
-    mousex, mousey = love.mouse.getPosition()
-    local debugtext = '~~ !! DEBUG MENU !! ~~'..'\n'..
-    'bab be u commit n'..build_number..'\n'..
+    local debugheader = "SUPER DEBUG MENU V2.0"
+    local debugtext = 'bab be u commit n'..build_number..'\n'..
     'fps: '..love.timer.getFPS()..'\n'..
-    'window height: '..love.graphics.getHeight()..'\n'..
-    'window width: '..love.graphics.getWidth()..'\n'..
     '\npress R to restart\n'..
     'F4 to toggle debug menu\n'..
     'F3+G to toggle rainbowmode\n'..
     'F2 for editor mode\n'..
-    'F1 for game mode'
+    'F1 for game mode\n'
 
     for key, value in pairs(debug_values) do
       debugtext = debugtext..'\n'..
       key..': '..value
     end
-    love.graphics.print(debugtext)
+
+    if debugtext ~= olddebugtext or not debugDrawText then
+      debugDrawText = {love.graphics.newText(regularfont, debugtext), love.graphics.newText(headerfont, debugheader)}
+    end
+    local debugmenuw, debugmenuh = debugDrawText[1]:getDimensions()
+    if debugmenuw < debugDrawText[2]:getWidth() then debugmenuw = debugDrawText[2]:getWidth() end
+
+    -- print the background
+    love.graphics.setColor(0, 0, 0, 0.6)
+    love.graphics.rectangle("fill", 0, 0, debugmenuw, debugmenuh+headerfont:getHeight())
+
+    -- print the header and its shadow
+    love.graphics.setFont(headerfont)
+
+    love.graphics.setColor(0, 0, 0, 1)
+    love.graphics.print(debugheader, 1, 1)
+    love.graphics.setColor(hslToRgb(love.timer.getTime()/3%1, .5, .5, .9))
+    love.graphics.print(debugheader, 0, 0)
+
+    --print the actual debug text and its shadow
+    love.graphics.setFont(regularfont)
+
+    love.graphics.setColor(0, 0, 0, 1)
+    love.graphics.printf(debugtext, 1, 1+headerfont:getHeight(), love.graphics.getWidth()-love.graphics.getWidth()/4)
+    love.graphics.setColor(1, 1, 1, 0.9)
+    setRainbowModeColor(love.timer.getTime()/3)
+    love.graphics.printf(debugtext, 0, 0+headerfont:getHeight(), love.graphics.getWidth()-love.graphics.getWidth()/4)
+
+    olddebugtext = debugtext
   end
 end
 
