@@ -637,9 +637,7 @@ end
 --for use with wrap and portal. portals can change the facing dir, and facing dir can already be different from dx and dy, so we need to keep track of everything.
 function getNextTile(unit,dx,dy,dir)
   local move_dir = dirs8_by_offset[sign(dx)][sign(dy)]
-  print(tostring(move_dir))
   local px, py = unit.x+dx, unit.y+dy
-  print(tostring(unit.x)..","..tostring(unit.y)..","..tostring(px)..","..tostring(py))
   --we have to loop because a portal might put us oob, which wraps and puts us in another portal, which puts us oob... etc
   local did_update = true
   local loop_portal = 0
@@ -681,27 +679,22 @@ function doWrap(unit, px, py)
   return px, py
 end
 
+--TODO: facing dir is not altered by portaling
+--TODO: there's a graphical glitch where undoing doesn't seem to work, because of the tween I used
 function doPortal(unit, px, py, move_dir, dir)
-  --print(tostring(px)..","..tostring(py))
   if not inBounds(px,py) or rules_with["poor toll"] == nil then
-    --print("b")
     return px, py, move_dir, dir;
   else
     --arbitrarily pick the first paired portal we find while iterating - can't think of a more 'simultaneousy' logic
     --TODO: I could make portals go backwards/forwards twice/etc depending on property count. maybe later?
-    --print("c")
     for _,v in ipairs(getUnitsOnTile(px, py, nil, false)) do
-      --print("d")
       if hasProperty(v, "poor toll") then
-        --print("e")
         local portal_rules = matchesRule(v.name, "be", "poor toll");
         local portals_direct = {};
         local portals = {};
         local portal_index = -1;
         for _,rule in ipairs(portal_rules) do
           for _,s in ipairs(findUnitsByName(v.name)) do
-            print("s")
-            print(dump(rule))
             if testConds(s, rule[1][4][1]) then
               portals_direct[s] = true
             end
@@ -716,21 +709,15 @@ function doPortal(unit, px, py, move_dir, dir)
         --find our place in the list
         for pk,pv in ipairs(portals) do
           if pv == v then
-            --print("g")
             portal_index = pk;
             break
           end
         end
-        print(tostring(portal_index))
         --did I ever mention I hate 1 indexed arrays?
         local dest_index = ((portal_index + 1 - 1) % #portals) + 1;
-        print(tostring(dest_index)..","..tostring(#portals))
         local dest_portal = portals[dest_index];
-        --print(dump(portals))
-        print(tostring(move_dir)..","..tostring(v)..","..tostring(dest_portal))
         local dir1 = v.dir
         local dir2 = dest_portal.dir
-        --print(tostring(dir1)..","..tostring(dir2))
         move_dir = move_dir > 0 and dirAdd(move_dir, dirDiff(dir1, dir2)) or 0
         dir = dir > 0 and dirAdd(dir, dirDiff(dir1, dir2)) or 0
         local dx, dy = 0, 0;

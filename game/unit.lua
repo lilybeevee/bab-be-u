@@ -842,16 +842,16 @@ function moveUnit(unit,x,y)
     removeFromTable(units_by_tile[tileid], unit)
 
     if x ~= unit.x or y ~= unit.y then
-      if math.abs(x - unit.x) < 2 and math.abs(y - unit.y) < 2 then
+      --if math.abs(x - unit.x) < 2 and math.abs(y - unit.y) < 2 then
         addTween(tween.new(0.1, unit.draw, {x = x, y = y}), "unit:pos:" .. unit.tempid)
-      else
+      --[[else
         --fade in, fade out effect
         addTween(tween.new(0.05, unit.draw, {scalex = 0}), "unit:dir:" .. unit.tempid, function()
         unit.draw.x = x
         unit.draw.y = y
         addTween(tween.new(0.05, unit.draw, {scalex = 1}), "unit:dir:" .. unit.tempid)
         end)
-      end
+      end]]
     end
 
     unit.x = x
