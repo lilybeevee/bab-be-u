@@ -32,7 +32,7 @@ function scene.draw(dt)
   if is_mobile then
     local cursorx, cursory = love.mouse.getPosition()
     love.graphics.setColor(1, 1, 1)
-    if rainbowmode then love.graphics.setColor(hslToRgb(love.timer.getTime()/6%1, .5, .5, .9)) end
+    setRainbowModeColor(love.timer.getTime()/6, .5)
     love.graphics.draw(system_cursor, cursorx, cursory)
   end
 
@@ -40,7 +40,8 @@ function scene.draw(dt)
   local cells_y = math.ceil(love.graphics.getHeight() / bgsprite:getHeight())
 
   love.graphics.setColor(1, 1, 1, 1)
-  if rainbowmode then love.graphics.setColor(hslToRgb(love.timer.getTime()/6%1, .5, .5, .9)) end
+  setRainbowModeColor(love.timer.getTime()/6, .4)
+
   for x = -1, cells_x do
     for y = -1, cells_y do
       local draw_x = scrollx % bgsprite:getWidth() + x * bgsprite:getWidth()
@@ -77,7 +78,7 @@ function scene.draw(dt)
     love.graphics.printf(buttons[i], width/2-buttonwidth/2, height/2-buttonheight/2+(buttonheight+10)*i+5, buttonwidth, "center")
   end
 
-  if rainbowmode then love.graphics.setColor(hslToRgb(love.timer.getTime()/6%1, .5, .5, .9)) end
+  setRainbowModeColor(love.timer.getTime()/3, .5)
   love.graphics.draw(sprites["ui/bab_be_u"], width/2 - sprites["ui/bab_be_u"]:getWidth() / 2, height/2 - sprites["ui/bab_be_u"]:getHeight() / 2 - 200)
 
   onstate = "on"
@@ -98,7 +99,7 @@ function scene.draw(dt)
   love.graphics.draw(sprites["ui/github"], 20+sprites["ui/github"]:getWidth(), height-sprites["ui/github"]:getHeight() - 10)
 
   if build_number and not debug then
-    if rainbowmode then love.graphics.setColor(hslToRgb(love.timer.getTime()/6%1, .6, .6, .9)) end
+    setRainbowModeColor(love.timer.getTime()/6, .6)
     love.graphics.print('v'..build_number)
   end
 end

@@ -153,7 +153,8 @@ function scene.draw()
   local cells_y = math.ceil(love.graphics.getHeight() / bgsprite:getHeight())
 
   love.graphics.setColor(1, 1, 1, 0.6)
-  if rainbowmode then love.graphics.setColor(hslToRgb(love.timer.getTime()/6%1, .5, .5, .6)) end
+  setRainbowModeColor(love.timer.getTime()/6, .4)
+  
   for x = -1, cells_x do
     for y = -1, cells_y do
       local draw_x = scrollx % bgsprite:getWidth() + x * bgsprite:getWidth()
