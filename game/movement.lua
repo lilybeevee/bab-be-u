@@ -538,14 +538,24 @@ function findCopykats(unit)
 end
 
 function doPull(unit,dx,dy,dir,data, already_added, moving_units, moving_units_next, slippers)
-  local x = unit.x;
-  local y = unit.y;
   local something_moved = not hasProperty(unit, "shy")
+  local prev_unit = unit
   while (something_moved) do
     something_moved = false
-    --TODO: Pull doesn't use WRAP/PORTAL yet.
-    x = x - dx;
-    y = y - dy;
+    local changed_unit = false
+    --To implement WRAP/PORTAL, we pick an arbitrary unit along our pull chain and make it the next puller.
+    local x, y = 0, 0;
+    dx = dirs8[dir][1];
+    dy = dirs8[dir][2];
+    dx = -dx;
+    dy = -dy;
+    local old_dir = dir;
+    dir = rotate8(dir);
+    dx, dy, dir, x, y = getNextTile(unit, dx, dy, dir);
+    dx = -dx;
+    dy = -dy;
+    dir = rotate8(dir);
+    local dir_diff = dirDiff(old_dir, dir);
     for _,v in ipairs(getUnitsOnTile(x, y)) do
       if hasProperty(v, "come pls") then
         local success,movers,specials = canMove(v, dx, dy, dir, true) --TODO: I can't remember why pushing is set but pulling isn't LOL, but if nothing's broken then shrug??
@@ -554,8 +564,16 @@ function doPull(unit,dx,dy,dir,data, already_added, moving_units, moving_units_n
         end
         if (success) then
           --unit.already_moving = true
-          something_moved = something_moved or not hasProperty(mover, "shy")
+          something_moved = true
           for _,mover in ipairs(movers) do
+            if not changed_unit and (mover.unit.x ~= unit.x or mover.unit.y ~= unit.y) then
+              prev_unit = unit
+              unit = mover.unit
+              dx = mover.dx
+              dy = mover.dy
+              dir = dirAdd(mover.dir, dir_diff);
+              changed_unit = true
+            end
             moveIt(mover.unit, mover.dx, mover.dy, mover.dir, data, true, already_added, moving_units, moving_units_next, slippers)
           end
         end
@@ -649,11 +667,8 @@ function getNextTile(unit,dx,dy,dir)
       print("movement infinite loop! (1000 attempts at wrap/portal)")
       destroyLevel("infloop");
     end
-    print(tostring(px)..","..tostring(py))
     px, py = doWrap(unit, px, py);
-    print(tostring(px)..","..tostring(py))
     px, py, move_dir, dir = doPortal(unit, px, py, move_dir, dir)
-    print(tostring(px)..","..tostring(py))
     if (px ~= pxold or py ~= pyold) then
       did_update = true
     end
@@ -679,8 +694,7 @@ function doWrap(unit, px, py)
   return px, py
 end
 
---TODO: facing dir is not altered by portaling
---TODO: there's a graphical glitch where undoing doesn't seem to work, because of the tween I used
+--TODO: figure out how to fix my cool tween that had bugs =w=
 function doPortal(unit, px, py, move_dir, dir)
   if not inBounds(px,py) or rules_with["poor toll"] == nil then
     return px, py, move_dir, dir;
@@ -700,12 +714,10 @@ function doPortal(unit, px, py, move_dir, dir)
             end
           end
         end
-        print(dump(portals_direct));
         for p,_ in pairs(portals_direct) do
           table.insert(portals, p);
         end
         table.sort(portals, readingOrderSort)
-        print(dump(portals));
         --find our place in the list
         for pk,pv in ipairs(portals) do
           if pv == v then
