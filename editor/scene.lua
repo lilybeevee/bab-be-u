@@ -469,7 +469,7 @@ function scene.draw(dt)
   local bg_color = {getPaletteColor(1, 0)}
 
   love.graphics.setColor(bg_color[1], bg_color[2], bg_color[3], bg_color[4])
-  if rainbowmode then love.graphics.setColor(hslToRgb(love.timer.getTime()/6%1, .2, .2, .9)) end
+  setRainbowModeColor(love.timer.getTime()/6, .2)
 
   -- fill the background with the background color
   love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
@@ -490,7 +490,8 @@ function scene.draw(dt)
   if selector_open then
     for i=1,3 do
       love.graphics.setColor(getPaletteColor(1, 3))
-      if rainbowmode then love.graphics.setColor(hslToRgb((love.timer.getTime()/3+i*1.3)%1, .5, .5, 1)) end
+      setRainbowModeColor(love.timer.getTime()/3+i*1.3, .5)
+      
       love.graphics.draw(sprites["ui/button_white_"..i%2+1], (sprites["ui/button_1"]:getHeight()+5)*i, 0-sprites["ui/button_1"]:getHeight(), math.pi/2)
 
       love.graphics.setColor(1, 1, 1)
