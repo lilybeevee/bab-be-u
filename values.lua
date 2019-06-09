@@ -1802,6 +1802,45 @@ tiles_list = {
   },
   -- 169
   {
+    name = "text_poor toll",
+    sprite = "text_poor_toll",
+    type = "text",
+    texttype = "property",
+    grid = {14, 4},
+    color = {3, 2},
+    layer = 20,
+  },
+  -- 170
+  {
+    name = "splittr",
+    sprite = "splittr",
+    type = "object",
+    grid = {15,8},
+    color = {0, 3},
+    layer = 2,
+    rotate = true,
+  },
+  -- 171
+  {
+    name = "text_splittr",
+    sprite = "text_splittr",
+    type = "text",
+    grid = {16,8},
+    color = {0, 3},
+    layer = 20,
+  },
+  -- 172
+  {
+    name = "text_split",
+    sprite = "text_split",
+    type = "text",
+    texttype = "property",
+    grid = {17, 8},
+    color = {4, 1},
+    layer = 20,
+  },
+  -- 173
+  {
     name = "text_cilindr",
     sprite = "text_cilindr",
     type = "text",
@@ -1811,7 +1850,7 @@ tiles_list = {
     layer = 20,
     rotate = true,
   },
-  -- 170
+  -- 174
   {
     name = "text_mobyus",
     sprite = "text_mobyus",
@@ -1821,5 +1860,5 @@ tiles_list = {
     color = {3, 2},
     layer = 20,
     rotate = true,
-  },
+  }
 }

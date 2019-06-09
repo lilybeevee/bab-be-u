@@ -152,7 +152,7 @@ function scene.keyPressed(key, isrepeat)
     if not repeat_timers["udlr"] then
       repeat_timers["numpad"] = 0
     end
-  elseif key == "z" or key == "backspace" or key == "kp0" then
+  elseif key == "z" or key == "q" or key == "backspace" or key == "kp0" then
     if not repeat_timers["undo"] then
       repeat_timers["undo"] = 0
     end
@@ -192,7 +192,7 @@ function scene.keyReleased(key)
     displaywords = false
   end
 
-  if key == "z" or key == "backspace" or key == "kp0" then
+  if key == "z" or key == "q" or key == "backspace" or key == "kp0" then
     UNDO_DELAY = MAX_UNDO_DELAY
   end
 
@@ -280,6 +280,13 @@ function scene.draw(dt)
               unit.sprite = "text_tranz-colored"
             else
               unit.sprite = "text_tranz"
+            end
+          end
+		  if unit.fullname == "text_katany" then
+            if hasRule("steev","got","katany") then
+              unit.sprite = "text_katanya"
+            else
+              unit.sprite = "text_katany"
             end
           end
 
@@ -409,6 +416,10 @@ function scene.draw(dt)
             love.graphics.setColor(1, 1, 1)
             love.graphics.draw(sprites["gunsmol"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
           end
+		  if hasRule(unit,"got","katany") then
+            love.graphics.setColor(0.45, 0.45, 0.45)
+            love.graphics.draw(sprites["katanysmol"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+		  end
           if false then -- stupid lua comments
             if hasRule(unit,"got","?") then
               local matchrules = matchesRule(unit,"got","?")
@@ -690,7 +701,7 @@ function scene.checkInput()
   key_down["kp9"]) then
     repeat_timers["numpad"] = nil
   end
-  if not (key_down["z"] or key_down["backspace"] or key_down["kp0"]) then
+  if not (key_down["z"] or key_down["q"] or key_down["backspace"] or key_down["kp0"]) then
     repeat_timers["undo"] = nil
   end
 

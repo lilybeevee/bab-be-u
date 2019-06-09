@@ -226,7 +226,7 @@ It is probably possible to do, but lily has decided that it's not important enou
               successes = successes + 1
               
               for k = #movers, 1, -1 do
-                moveIt(movers[k].unit, movers[k].dx, movers[k].dy, movers[k].dir, data, false, already_added, moving_units, moving_units_next, slippers)
+                moveIt(movers[k].unit, movers[k].dx, movers[k].dy, movers[k].dir, movers[k].move_dir, data, false, already_added, moving_units, moving_units_next, slippers)
               end
               --Patashu: only the mover itself pulls, otherwise it's a mess. stuff like STICKY/STUCK will require ruggedizing this logic.
               --Patashu: TODO: Doing the pull right away means that in a situation like this: https://cdn.discordapp.com/attachments/579519329515732993/582179745006092318/unknown.png the pull could happen before the bounce depending on move order. To fix this... I'm not sure how Baba does this? But it's somewhere in that mess of code.
@@ -335,9 +335,10 @@ function doAction(action)
   end
 end
 
-function moveIt(mover, dx, dy, dir, data, pulling, already_added, moving_units, moving_units_next, slippers)
+function moveIt(mover, dx, dy, facing_dir, move_dir, data, pulling, already_added, moving_units, moving_units_next, slippers)
   if not mover.removed then
-    queueMove(mover, dx, dy, dir, false);
+    local move_dx, move_dy = dirs8[move_dir][1], dirs8[move_dir][2]
+    queueMove(mover, dx, dy, facing_dir, false);
     --applySlide(mover, dx, dy, already_added, moving_units_next);
     applySwap(mover, dx, dy);
     --finishing a slip locks you out of U/WALK for the rest of the turn
@@ -345,7 +346,8 @@ function moveIt(mover, dx, dy, dir, data, pulling, already_added, moving_units, 
       slippers[mover.id] = true
     end
     --add SIDEKIKERs to move in the next sub-tick
-    for __,sidekiker in ipairs(findSidekikers(mover, dx, dy)) do
+    --move_dir is more accurate in the presence of WRAP/PORTAL than dx/dy (which can fling you across the map)
+    for __,sidekiker in ipairs(findSidekikers(mover, move_dx, move_dy)) do
       local currently_moving = false
       for _,mover2 in ipairs(moving_units) do
         if mover2 == sidekiker then
@@ -354,7 +356,7 @@ function moveIt(mover, dx, dy, dir, data, pulling, already_added, moving_units, 
         end
       end
       if not currently_moving then
-        table.insert(sidekiker.moves, {reason = "sidekik", dir = mover.dir, times = 1}) --TODO: dx/dy, dir and mover.dir could possibly all be different, explore advanced movement interactions with sidekik and wrap, portal, stubborn
+        table.insert(sidekiker.moves, {reason = "sidekik", dir = move_dir, times = 1}) --TODO: dx/dy, dir and mover.dir could possibly all be different, explore advanced movement interactions with sidekik and wrap, portal, stubborn
         table.insert(moving_units, sidekiker) --Patashu: I think moving_units is correct (since it should happen 'at the same time' like a push or pull) but maybe changing this to moving_units_next will fix a bug in the future...?
         already_added[sidekiker] = true
       end
@@ -376,8 +378,8 @@ function moveIt(mover, dx, dy, dir, data, pulling, already_added, moving_units, 
           if currently_moving then
             currently_moving = false
           else
-            move.dx = move.dx + dx
-            move.dy = move.dy + dy
+            move.dx = move.dx + move_dx
+            move.dy = move.dy + move_dy
             movedebug("copykat collate:"..tostring(move.dx)..","..tostring(move.dy))
             found = true
             break
@@ -385,7 +387,7 @@ function moveIt(mover, dx, dy, dir, data, pulling, already_added, moving_units, 
         end
       end
       if not found then
-        table.insert(copykat.moves, {reason = "copkat", dir = mover.dir, times = 1, dx = dx, dy = dy}) --TODO: dx/dy, dir and mover.dir could possibly all be different, explore advanced movement interactions with copykat and wrap, portal, stubborn
+        table.insert(copykat.moves, {reason = "copkat", dir = mover.dir, times = 1, dx = move_dx, dy = move_dy}) --TODO: dx/dy, dir and mover.dir could possibly all be different, explore advanced movement interactions with copykat and wrap, portal, stubborn
         table.insert(moving_units_next, copykat)
         already_added[copykat] = true
       end
@@ -538,13 +540,21 @@ function findCopykats(unit)
 end
 
 function doPull(unit,dx,dy,dir,data, already_added, moving_units, moving_units_next, slippers)
-  local x = unit.x;
-  local y = unit.y;
+  --TODO: CLEANUP: This is a big ol mess now and there's no way it needs to be THIS complicated.
   local something_moved = not hasProperty(unit, "shy")
+  local prev_unit = unit
   while (something_moved) do
     something_moved = false
-    x = x - dx;
-    y = y - dy;
+    local changed_unit = false
+    --To implement WRAP/PORTAL, we pick an arbitrary unit along our pull chain and make it the next puller.
+    --We have to momentarily reverse dir/dx/dy so that we check what the tile is BEHIND us instead of AHEAD of us.
+    --To successfully pull through a portal, we have to track how much our direction changes after taking a portal, so that we can continue the pull in the appropriate direction on the other side.
+    local x, y = 0, 0;
+    dx = dirs8[dir][1];
+    dy = dirs8[dir][2];
+    local old_dir = dir;
+    dx, dy, dir, x, y = getNextTile(unit, dx, dy, dir, true);
+    local dir_diff = dirDiff(old_dir, dir);
     for _,v in ipairs(getUnitsOnTile(x, y)) do
       if hasProperty(v, "come pls") then
         local success,movers,specials = canMove(v, dx, dy, dir, true) --TODO: I can't remember why pushing is set but pulling isn't LOL, but if nothing's broken then shrug??
@@ -553,9 +563,19 @@ function doPull(unit,dx,dy,dir,data, already_added, moving_units, moving_units_n
         end
         if (success) then
           --unit.already_moving = true
-          something_moved = something_moved or not hasProperty(mover, "shy")
+          
           for _,mover in ipairs(movers) do
-            moveIt(mover.unit, mover.dx, mover.dy, mover.dir, data, true, already_added, moving_units, moving_units_next, slippers)
+            if not changed_unit and (mover.unit.x ~= unit.x or mover.unit.y ~= unit.y) and not hasProperty(mover.unit, "shy") then
+              something_moved = true
+              --Here's where we pick our arbitrary next unit as the puller. (I guess if we're pulling a wrap and a non wrap thing simultaneously it will be ambiguous, so don't use this in a puzzle so I don't have to be recursive...?) (IDK how I'm going to code moonwalk/drunk/drunker/skip pull though LOL, I guess that WOULD have to be recursive??)
+              prev_unit = unit
+              unit = mover.unit
+              dx = mover.dx
+              dy = mover.dy
+              dir = dirAdd(mover.dir, dir_diff);
+              changed_unit = true
+            end
+            moveIt(mover.unit, mover.dx, mover.dy, mover.dir, mover.move_dir, data, true, already_added, moving_units, moving_units_next, slippers)
           end
         end
       end
@@ -565,7 +585,6 @@ end
 
 function fallBlock()
   --TODO: If we have multiple gravity directions, then we probably want a simultaneous single step algorithm to resolve everything neatly.
-  --TODO: If anything can change a faller's direction or position mid-flight (wrap/portal anyone?) then we need infinite loop protection here.
   local fallers = getUnitsWithEffect("haet skye")
   table.sort(fallers, function(a, b) return a.y > b.y end )
   
@@ -574,24 +593,27 @@ function fallBlock()
 	
     addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
     local loop_fall = 0
+    local dx, dy, dir, px, py = 0, 1, 3, -1, -1
+    local old_dir = 3;
     while (caught == false) do
-      local loop_fall = loop_fall + 1;
-      if (loop_stage > 1000) then
+      loop_fall = loop_fall + 1;
+      if (loop_fall > 1000) then
         print("movement infinite loop! (1000 attempts at a faller)")
         destroyLevel("infloop");
+        return;
       end
-      local catchers = getUnitsOnTile(unit.x,unit.y+1)
-      if not inBounds(unit.x,unit.y+1) then
+      dx, dy, dir, px, py = getNextTile(unit, dx, dy, dir);
+      --local catchers = getUnitsOnTile(px,py)
+      if not inBounds(px,py) then
         caught = true
       end
-      for _,on in ipairs(catchers) do
-        if not canMove(unit, 0, 1, 3, false, false, nil, "haet skye") then
-          caught = true
-        end
+      if not canMove(unit, dx, dy, dir, false, false, nil, "haet skye") then
+        caught = true
       end
-      
       if caught == false then
-        moveUnit(unit,unit.x,unit.y+1)
+        updateDir(unit, dirAdd(unit.dir, dirDiff(old_dir, dir)));
+        old_dir = dir;
+        moveUnit(unit,px,py)
       end
     end
   end
@@ -622,6 +644,7 @@ function doZip(unit)
       for _,place in ipairs(places) do
         local dx = place.x
         local dy = place.y
+        --TODO: Fall doesn't use WRAP/PORTAL yet.
         if canMove(unit, dx, dy, -1, false, false, unit.name, "zip") then
           addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
           moveUnit(unit,unit.x+dx,unit.y+dy)
@@ -633,8 +656,13 @@ function doZip(unit)
 end
 
 --for use with wrap and portal. portals can change the facing dir, and facing dir can already be different from dx and dy, so we need to keep track of everything.
-function getNextTile(unit,dx,dy,dir)
-  local px, py, pdir = unit.x+dx, unit.y+dy, dir
+function getNextTile(unit,dx,dy,dir,reverse_)
+  local reverse = reverse_ or false
+  local rs = reverse and -1 or 1
+  dx = dx*rs
+  dy = dy*rs
+  local move_dir = dirs8_by_offset[sign(dx)][sign(dy)] or 0
+  local px, py = unit.x+dx, unit.y+dy
   --we have to loop because a portal might put us oob, which wraps and puts us in another portal, which puts us oob... etc
   local did_update = true
   local loop_portal = 0
@@ -646,16 +674,18 @@ function getNextTile(unit,dx,dy,dir)
       print("movement infinite loop! (1000 attempts at wrap/portal)")
       destroyLevel("infloop");
     end
-    px, py, pdir = doWrap(unit, px, py, pdir);
-    --do portal stuff here
+    px, py = doWrap(unit, px, py);
+    px, py, move_dir, dir = doPortal(unit, px, py, move_dir, dir, reverse)
     if (px ~= pxold or py ~= pyold) then
       did_update = true
     end
   end
-  return dx, dy, pdir, px, py
+  dx = move_dir > 0 and dirs8[move_dir][1] or 0;
+  dy = move_dir > 0 and dirs8[move_dir][2] or 0;
+  return rs*dx, rs*dy, dir, px, py
 end
 
-function doWrap(unit, px, py, dir)
+function doWrap(unit, px, py)
   if hasProperty(unit, "go arnd") then
     if (px < 0) then
       px = px + mapwidth
@@ -715,7 +745,79 @@ function doWrap(unit, px, py, dir)
       px = mapwidth - px - 1
     end
   end
-  return px, py, dir
+  return px, py
+end
+
+--TODO: figure out how to fix my cool tween that had bugs =w=
+function doPortal(unit, px, py, move_dir, dir, reverse)
+  if not inBounds(px,py) or rules_with["poor toll"] == nil then
+    return px, py, move_dir, dir;
+  else
+    local rs = reverse and -1 or 1
+    --arbitrarily pick the first paired portal we find while iterating - can't think of a more 'simultaneousy' logic
+    --TODO: I could make portals go backwards/forwards twice/etc depending on property count. maybe later?
+    for _,v in ipairs(getUnitsOnTile(px, py, nil, false)) do
+      if hasProperty(v, "poor toll") then
+        local portal_rules = matchesRule(v.name, "be", "poor toll");
+        local portals_direct = {};
+        local portals = {};
+        local portal_index = -1;
+        for _,rule in ipairs(portal_rules) do
+          for _,s in ipairs(findUnitsByName(v.name)) do
+            if testConds(s, rule[1][4][1]) then
+              portals_direct[s] = true
+            end
+          end
+        end
+        for p,_ in pairs(portals_direct) do
+          table.insert(portals, p);
+        end
+        table.sort(portals, readingOrderSort)
+        --find our place in the list
+        for pk,pv in ipairs(portals) do
+          if pv == v then
+            portal_index = pk;
+            break
+          end
+        end
+        --did I ever mention I hate 1 indexed arrays?
+        local dest_index = ((portal_index + rs - 1) % #portals) + 1;
+        local dest_portal = portals[dest_index];
+        local dir1 = v.dir
+        local dir2 = dest_portal.dir
+        move_dir = move_dir > 0 and dirAdd(move_dir, dirDiff(dir1, dir2)) or 0
+        dir = dir > 0 and dirAdd(dir, dirDiff(dir1, dir2)) or 0
+        local dx, dy = 0, 0;
+        if (move_dir > 0) then
+          dx = dirs8[move_dir][1];
+          dy = dirs8[move_dir][2];
+        end
+        px = dest_portal.x + dx;
+        py = dest_portal.y + dy;
+        return px, py, move_dir, dir;
+      end
+    end
+  end
+  return px, py, move_dir, dir;
+end
+
+function dirDiff(dir1, dir2)
+  if dir1 <= dir2 then
+    return dir2 - dir1
+  else
+    return dir2 - (dir1+8)
+  end
+end
+
+function dirAdd(dir1, diff)
+  dir1 = dir1 + diff;
+  while dir1 < 0 do
+    dir1 = dir1  + 8
+  end
+  while dir1 > 8 do
+    dir1 = dir1 - 8
+  end
+  return dir1
 end
 
 --stubborn units will try to slide around an obstacle in their way. everyone else just passes through!
@@ -772,11 +874,13 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
 		pulling = pulling_
 	end
   
+  local move_dx, move_dy = dx, dy;
+  local move_dir = dirs8_by_offset[move_dx][move_dy] or 0
   local dx, dy, dir, x, y = getNextTile(unit, dx, dy, dir);
   
   local movers = {}
   local specials = {}
-  table.insert(movers, {unit = unit,dx = x-unit.x,dy = y-unit.y,dir = dir})
+  table.insert(movers, {unit = unit, dx = x-unit.x, dy = y-unit.y, dir = dir, move_dx = move_dx, move_dy = move_dy, move_dir = move_dir})
   
   if not inBounds(x,y) then
     if hasProperty(unit, "ouch") and not hasProperty(unit, "protecc") and (reason ~= "walk" or hasProperty(unit, "stubbn")) then
