@@ -898,6 +898,12 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
 		pulling = pulling_
 	end
   
+  --apply munwalk here
+  if hasProperty(unit, "munwalk") then
+    dx = -dx;
+    dy = -dy;
+  end
+  
   local move_dx, move_dy = dx, dy;
   local move_dir = dirs8_by_offset[move_dx][move_dy] or 0
   local dx, dy, dir, x, y = getNextTile(unit, dx, dy, dir);

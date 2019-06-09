@@ -1860,5 +1860,15 @@ tiles_list = {
     color = {3, 2},
     layer = 20,
     rotate = true,
-  }
+  },
+  -- 175
+  {
+    name = "text_munwalk",
+    sprite = "text_munwalk",
+    type = "text",
+    texttype = "property",
+    grid = {14, 7},
+    color = {1, 4},
+    layer = 20,
+  },
 }
