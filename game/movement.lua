@@ -634,7 +634,7 @@ end
 
 --for use with wrap and portal. portals can change the facing dir, and facing dir can already be different from dx and dy, so we need to keep track of everything.
 function getNextTile(unit,dx,dy,dir)
-  local px, py = unit.x+dx, unit.y+dy
+  local px, py, pdir = unit.x+dx, unit.y+dy, dir
   --we have to loop because a portal might put us oob, which wraps and puts us in another portal, which puts us oob... etc
   local did_update = true
   local loop_portal = 0
@@ -646,16 +646,16 @@ function getNextTile(unit,dx,dy,dir)
       print("movement infinite loop! (1000 attempts at wrap/portal)")
       destroyLevel("infloop");
     end
-    px, py = doWrap(unit, px, py);
+    px, py, pdir = doWrap(unit, px, py, pdir);
     --do portal stuff here
     if (px ~= pxold or py ~= pyold) then
       did_update = true
     end
   end
-  return dx, dy, dir, px, py
+  return dx, dy, pdir, px, py
 end
 
-function doWrap(unit, px, py)
+function doWrap(unit, px, py, dir)
   if hasProperty(unit, "go arnd") then
     if (px < 0) then
       px = px + mapwidth
@@ -668,7 +668,54 @@ function doWrap(unit, px, py)
       py = py - mapheight
     end
   end
-  return px, py
+  if hasProperty(unit, "cilindr_up") or hasProperty(unit, "cilindr_down") then
+    if (px < 0) then
+      px = px + mapwidth
+    elseif (px >= mapwidth) then
+      px = px - mapwidth
+    end
+  end
+  if hasProperty(unit, "cilindr_left") or hasProperty(unit, "cilindr_right") then
+    if (py < 0) then
+      py = py + mapheight
+    elseif (py >= mapheight) then
+      py = py - mapheight
+    end
+  end
+  if hasProperty(unit, "cilindr_upleft") then
+    --bleh, i need to wait for portal to be implemented
+    --[[if (py < 0 and ((mapwidth > mapheight and px < mapheight) or (mapwidth <= mapheight))) then
+      dir = 2
+      py = py + 1
+      local temp = px
+      px = py
+      py = temp
+    elseif (px < 0 and ((mapheight > mapwidth and py < mapwidth) or (mapheight <= mapwidth))) then
+      px = px + 1
+      local temp = px
+      px = py
+      py = temp
+    end]]--
+  end
+  if hasProperty(unit, "mobyus_up") or hasProperty(unit, "mobyus_down") then
+    if (px < 0) then
+      px = px + mapwidth
+      py = mapheight - py - 1
+    elseif (px >= mapwidth) then
+      px = px - mapwidth
+      py = mapheight - py - 1
+    end
+  end
+  if hasProperty(unit, "mobyus_left") or hasProperty(unit, "mobyus_right") then
+    if (py < 0) then
+      py = py + mapheight
+      px = mapwidth - px - 1
+    elseif (py >= mapheight) then
+      py = py - mapheight
+      px = mapwidth - px - 1
+    end
+  end
+  return px, py, dir
 end
 
 --stubborn units will try to slide around an obstacle in their way. everyone else just passes through!

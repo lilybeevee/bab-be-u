@@ -480,6 +480,22 @@ function updateUnits(undoing, big_update)
           end
         end
       end
+      
+      if unit.fullname == "text_cilindr" then
+        for k,v in pairs(cilindr_names) do
+          if unit.dir == v then
+            unit.textname = k
+          end
+        end
+      end
+      
+      if unit.fullname == "text_mobyus" then
+        for k,v in pairs(mobyus_names) do
+          if unit.dir == v then
+            unit.textname = k
+          end
+        end
+      end
 
       unit.overlay = {}
       if hasProperty(unit,"tranz") then
