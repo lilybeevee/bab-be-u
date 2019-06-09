@@ -573,7 +573,13 @@ function fallBlock()
     local caught = false
 	
     addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
+    local loop_fall = 0
     while (caught == false) do
+      local loop_fall = loop_fall + 1;
+      if (loop_stage > 1000) then
+        print("movement infinite loop! (1000 attempts at a faller)")
+        destroyLevel("infloop");
+      end
       local catchers = getUnitsOnTile(unit.x,unit.y+1)
       if not inBounds(unit.x,unit.y+1) then
         caught = true
@@ -624,6 +630,24 @@ function doZip(unit)
       end
     end
   end
+end
+
+--for use with wrap and portal. portals can change the facing dir, and facing dir can already be different from dx and dy, so we need to keep track of everything.
+function getNextTile(unit,dx,dy,dir)
+  local px, py = unit.x+dx, unit.y+dy
+  if hasProperty(unit, "go arnd") then
+    if (px < 0) then
+      px = px + mapwidth
+    elseif (px >= mapwidth) then
+      px = px - mapwidth
+    end
+    if (py < 0) then
+      py = py + mapheight
+    elseif (py >= mapheight) then
+      py = py - mapheight
+    end
+  end
+  return dx, dy, dir, px, py
 end
 
 --stubborn units will try to slide around an obstacle in their way. everyone else just passes through!
@@ -680,12 +704,11 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
 		pulling = pulling_
 	end
   
-  local x = unit.x + dx
-  local y = unit.y + dy
+  local dx, dy, dir, x, y = getNextTile(unit, dx, dy, dir);
   
   local movers = {}
   local specials = {}
-  table.insert(movers, {unit = unit,dx = dx,dy = dy,dir = dir})
+  table.insert(movers, {unit = unit,dx = x-unit.x,dy = y-unit.y,dir = dir})
   
   if not inBounds(x,y) then
     if hasProperty(unit, "ouch") and not hasProperty(unit, "protecc") and (reason ~= "walk" or hasProperty(unit, "stubbn")) then

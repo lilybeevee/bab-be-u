@@ -1770,4 +1770,14 @@ tiles_list = {
     color = {2,3},
     layer = 20,
   },
+  -- 168
+  {
+    name = "text_go arnd",
+    sprite = "text_go arnd",
+    type = "text",
+    texttype = "property",
+    grid = {14, 3},
+    color = {3, 2},
+    layer = 20,
+  },
 }

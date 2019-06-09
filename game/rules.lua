@@ -112,7 +112,7 @@ function parseRules(undoing)
         end
         for i = 1, state.word_index-1 do
           local unit = sentence[i].unit
-          print(sentence[i].name)
+          --print(sentence[i].name)
           been_first[first[2]][unit.x + unit.y * mapwidth] = true
         end
 
