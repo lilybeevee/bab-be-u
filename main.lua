@@ -209,7 +209,9 @@ function love.load()
 end
 
 function love.keypressed(key,scancode,isrepeat)
-  gooi.keypressed(key, scancode)
+  if scene ~= loadscene then
+    gooi.keypressed(key, scancode)
+  end
 
   if key == "f1" then--and scene == editor then
     scene = game
@@ -251,7 +253,9 @@ function love.keypressed(key,scancode,isrepeat)
 end
 
 function love.keyreleased(key, scancode)
-  gooi.keyreleased(key, scancode)
+  if scene ~= loadscene then
+    gooi.keyreleased(key, scancode)
+  end
 
   if scene and scene.keyReleased then
     scene.keyReleased(key)
@@ -259,7 +263,9 @@ function love.keyreleased(key, scancode)
 end
 
 function love.textinput(text)
-  gooi.textinput(text)
+  if scene ~= loadscene then
+    gooi.textinput(text)
+  end
 
   if scene and scene.textInput then
     scene.textInput(text)
@@ -281,7 +287,9 @@ function love.touchreleased(id, x, y, dx, dy, pressure)
 end
 
 function love.mousepressed(x, y, button)
-  gooi.pressed()
+  if scene ~= loadscene then
+    gooi.pressed()
+  end
 
   if is_mobile then
     love.mouse.setPosition(x, y)
@@ -317,7 +325,9 @@ function love.mousereleased(x, y, button)
     end
   end
 
-  gooi.released()
+  if scene ~= loadscene then
+    gooi.released()
+  end
 end
 
 function addTween(tween, name, fn)
@@ -339,7 +349,9 @@ function love.update(dt)
     end
   end
 
-  gooi.update(dt)
+  if scene ~= loadscene then
+    gooi.update(dt)
+  end
   tick.update(dt)
 
   if scene and scene.update then

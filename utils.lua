@@ -992,3 +992,17 @@ function getEverythingExcept(except)
 
   return result
 end
+
+function renameDir(from, to, cur_)
+  local cur = cur_ or ""
+  love.filesystem.createDirectory(to .. cur)
+  for _,file in ipairs(love.filesystem.getDirectoryItems(from .. cur)) do
+    if love.filesystem.getInfo(file, "directory") then
+      renameDir(from, to, cur .. "/" .. file)
+    else
+      love.filesystem.write(to .. cur .. "/" .. file, love.filesystem.read(from .. cur .. "/" .. file))
+      love.filesystem.remove(from .. cur .. "/" .. file)
+    end
+  end
+  love.filesystem.remove(from .. cur)
+end

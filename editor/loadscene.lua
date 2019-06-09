@@ -4,7 +4,8 @@ world_parent = ""
 world = ""
 
 local title_font, label_font, icon_font, name_font
-local ui
+local ui, world_label
+local text_input
 
 local scrollx = 0
 local scrolly = 0
@@ -17,6 +18,8 @@ function scene.load()
   clear()
   resetMusic(current_music, 0.1)
   scene.buildUI()
+  love.keyboard.setKeyRepeat(true)
+  text_input = nil
 end
 
 function scene.update(dt)
@@ -41,15 +44,23 @@ function scene.update(dt)
 end
 
 function scene.keyPressed(key)
-  if key == "escape" then
-    if world ~= "" then
-      world_parent = ""
-      world = ""
-      scene.buildUI()
-    else
-      new_scene = menu
+  if text_input then
+    scene.updateTextInput(nil, key)
+  else
+    if key == "escape" then
+      if world ~= "" then
+        world_parent = ""
+        world = ""
+        scene.buildUI()
+      else
+        new_scene = menu
+      end
     end
   end
+end
+
+function scene.textInput(text)
+  scene.updateTextInput(text)
 end
 
 function scene.mouseReleased(x, y, mouse_button)
@@ -61,6 +72,9 @@ function scene.mouseReleased(x, y, mouse_button)
         if button.type == "world" then
           world = button.name
           world_parent = button.data
+          if button.create then
+            love.filesystem.createDirectory(world_parent .. "/" .. world)
+          end
           scene.buildUI()
           break
         elseif button.type == "level" then
@@ -73,26 +87,43 @@ function scene.mouseReleased(x, y, mouse_button)
         end
       end
     end
+    if world_label and world_label.editable and mouseOverBox(world_label.x, world_label.y, world_label.w, world_label.h, scene.getTransform()) then
+      if not text_input then
+        text_input = {
+          label = world_label,
+          text = world_label.text,
+          old_text = world_label.text,
+          position = #world_label.text
+        }
+        love.keyboard.setTextInput(true)
+      end
+    end
   elseif mouse_button == 2 and world_parent ~= "officialworlds" then
     for _,button in ipairs(ui.buttons) do
       if mouseOverBox(button.x, button.y, button.w, button.h, scene.getTransform()) then
-        if button.type == "level" then
+        if button.type == "world" then
           if not button.create then
-            gooi.confirm({
-              text = "Delete level:\n" .. button.data.name,
-              okText = "Delete",
-              cancelText = "Cancel",
-              ok = function()
-                if world == "" then
-                  love.filesystem.remove("levels/" .. button.name .. ".bab")
-                  love.filesystem.remove("levels/" .. button.name .. ".png")
-                else
-                  love.filesystem.remove(world_parent .. "/" .. world .. "/" .. button.name .. ".bab")
-                  love.filesystem.remove(world_parent .. "/" .. world .. "/" .. button.name .. ".png")
-                end
-                scene.buildUI()
+            if not button.deleting then
+              button.deleting = true
+            else
+              love.filesystem.remove(button.data .. "/" .. button.name)
+              scene.buildUI()
+            end
+          end
+        elseif button.type == "level" then
+          if not button.create then
+            if not button.deleting then
+              button.deleting = true
+            else
+              if world == "" then
+                love.filesystem.remove("levels/" .. button.name .. ".bab")
+                love.filesystem.remove("levels/" .. button.name .. ".png")
+              else
+                love.filesystem.remove(world_parent .. "/" .. world .. "/" .. button.name .. ".bab")
+                love.filesystem.remove(world_parent .. "/" .. world .. "/" .. button.name .. ".png")
               end
-            })
+              scene.buildUI()
+            end
           end
         end
       end
@@ -137,7 +168,11 @@ function scene.draw()
   love.graphics.setColor(1, 1, 1, 1)
 
   for i,button in ipairs(ui.buttons) do
-    local sprite = sprites["ui/" .. button.type .. " box"]
+    local sprite_name = "ui/" .. button.type .. " box"
+    if button.deleting then
+      sprite_name = sprite_name .. " delete"
+    end
+    local sprite = sprites[sprite_name]
     local btncolor = {1, 1, 1}
 
     local sx, sy
@@ -154,6 +189,8 @@ function scene.draw()
       love.graphics.scale(1.1)
       love.graphics.rotate(0.05 * math.sin(love.timer.getTime()*5))
       love.graphics.translate(-button.x-button.w/2, -button.y-button.h/2)
+    else
+      button.deleting = false
     end
 
     if rainbowmode then btncolor = hslToRgb((love.timer.getTime()/6+i*10)%1, .5, .5, .9) end
@@ -211,7 +248,22 @@ function scene.draw()
 
   for _,label in ipairs(ui.labels) do
     love.graphics.setFont(label.font)
-    love.graphics.printf(label.text, label.x, label.y, label.w or (love.graphics.getWidth()), label.align or "center")
+    local text_width = label.font:getWidth(label.text)
+    local font_height = label.font:getHeight()
+    if label.editable and mouseOverBox(label.x, label.y, label.w or love.graphics.getWidth(), label.h or font_height) then
+      love.graphics.setColor(0.75, 0.75, 0.75, 1)
+    else
+      love.graphics.setColor(1, 1, 1, 1)
+    end
+    love.graphics.printf(label.text, label.x, label.y, label.w or love.graphics.getWidth(), label.align or "center")
+
+    if text_input and text_input.label == label then
+      love.graphics.setLineWidth(1)
+      local x = label.x + label.w / 2 - text_width / 2 + label.font:getWidth(label.text:sub(1, text_input.position))
+      if math.floor(love.timer.getTime()*2) % 2 == 0 then
+        love.graphics.line(x, label.y, x, label.y + font_height)
+      end
+    end
   end
 
   love.graphics.pop()
@@ -258,7 +310,7 @@ function scene.buildUI()
 
   title_font = love.graphics.newFont(32)
   label_font = love.graphics.newFont(24)
-  icon_font = love.graphics.newFont(24)
+  icon_font = love.graphics.newFont(16)
   name_font = love.graphics.newFont(12)
   icon_font:setFilter("nearest","nearest")
   name_font:setFilter("nearest","nearest")
@@ -267,19 +319,23 @@ function scene.buildUI()
   ui.labels = {}
   ui.buttons = {}
 
-  local world_text = world:upper()
-  if world == "" then
-    world_text = "LOAD WORLD"
+  local oy = 4
+  if world ~= "" then
+    local title_width, title_height = title_font:getWidth(world:upper()), title_font:getHeight()
+    world_label = {
+      font = title_font,
+      text = world:upper(),
+      x = 0,
+      y = oy,
+      w = love.graphics.getWidth(),
+      h = title_height
+    }
+    if load_mode == "edit" and world_parent ~= "officialworlds" and world ~= "" then
+      world_label.editable = true
+    end
+    table.insert(ui.labels, world_label)
+    oy = oy + title_height + 24
   end
-
-  local title_width, title_height = title_font:getWidth(world_text), title_font:getHeight()
-  table.insert(ui.labels, {
-    font = title_font,
-    text = world_text, 
-    x = 0,
-    y = 4
-  })
-  local oy = 4 + title_height + 24
 
   if world == "" then
     local worlds = scene.searchDir("officialworlds", "world")
@@ -297,7 +353,7 @@ function scene.buildUI()
     end
 
     worlds = scene.searchDir("worlds", "world")
-    if #worlds > 0 then
+    if #worlds > 0 or load_mode == "edit" then
       label_width, label_height = label_font:getWidth("Custom Worlds"), label_font:getHeight()
       table.insert(ui.labels, {
         font = label_font,
@@ -306,6 +362,15 @@ function scene.buildUI()
         y = oy
       })
       oy = oy + label_height + 8
+
+      if load_mode == "edit" and world_parent ~= "officialworlds" then
+        table.insert(worlds, 1, {
+          create = true,
+          name = "new world",
+          data = "worlds",
+          icon = sprites["ui/create icon"]
+        })
+      end
 
       oy = scene.addButtons("world", worlds, oy)
     end
@@ -445,6 +510,42 @@ end
 
 function scene.resize(w, h)
   scene.buildUI()
+end
+
+function scene.updateTextInput(text, key)
+  if text_input then
+    if not text then
+      if key == "return" then
+        text_input.label.text = text_input.text:upper()
+        -- hardcoding for now
+        renameDir(world_parent .. "/" .. world, world_parent .. "/" .. text_input.text:lower())
+        world = text_input.text:lower()
+        scene.buildUI()
+        text_input = nil
+      elseif key == "escape" then
+        text_input.label.text = text_input.old_text
+        text_input = nil
+        love.keyboard.setTextInput(false)
+      elseif key == "backspace" then
+        local a = text_input.text:sub(1, math.max(0, text_input.position - 1))
+        local b = text_input.text:sub(text_input.position + 1)
+        text_input.text = a .. b
+        text_input.position = math.max(0, text_input.position - 1)
+      elseif key == "left" then
+        text_input.position = math.max(0, text_input.position - 1)
+      elseif key == "right" then
+        text_input.position = math.min(#text_input.text, text_input.position + 1)
+      end
+    else
+      local a = text_input.text:sub(1, text_input.position)
+      local b = text_input.text:sub(text_input.position + 1)
+      text_input.text = a .. text .. b
+      text_input.position = text_input.position + 1
+    end
+    if text_input then
+      text_input.label.text = text_input.text:upper()
+    end
+  end
 end
 
 return scene
