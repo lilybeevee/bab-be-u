@@ -545,6 +545,8 @@ function doPull(unit,dx,dy,dir,data, already_added, moving_units, moving_units_n
     something_moved = false
     local changed_unit = false
     --To implement WRAP/PORTAL, we pick an arbitrary unit along our pull chain and make it the next puller.
+    --We have to momentarily reverse dir/dx/dy so that we check what the tile is BEHIND us instead of AHEAD of us.
+    --To successfully pull through a portal, we have to track how much our direction changes after taking a portal, so that we can continue the pull in the appropriate direction on the other side.
     local x, y = 0, 0;
     dx = dirs8[dir][1];
     dy = dirs8[dir][2];
@@ -565,9 +567,11 @@ function doPull(unit,dx,dy,dir,data, already_added, moving_units, moving_units_n
         end
         if (success) then
           --unit.already_moving = true
-          something_moved = true
+          
           for _,mover in ipairs(movers) do
-            if not changed_unit and (mover.unit.x ~= unit.x or mover.unit.y ~= unit.y) then
+            if not changed_unit and (mover.unit.x ~= unit.x or mover.unit.y ~= unit.y) and not hasProperty(mover.unit, "shy") then
+              something_moved = true
+              --Here's where we pick our arbitrary next unit as the puller. (I guess if we're pulling a wrap and a non wrap thing simultaneously it will be ambiguous, so don't use this in a puzzle so I don't have to be recursive...?) (IDK how I'm going to code moonwalk/drunk/drunker/skip pull though LOL, I guess that WOULD have to be recursive??)
               prev_unit = unit
               unit = mover.unit
               dx = mover.dx
