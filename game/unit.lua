@@ -361,6 +361,54 @@ function updateUnits(undoing, big_update)
     
     to_destroy = handleDels(to_destroy);
     
+    local split = getUnitsWithEffect("split");
+    for _,unit in ipairs(split) do
+      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
+      for _,on in ipairs(stuff) do
+        if unit ~= on and sameFloat(unit, on) then
+          local dir1 = dirAdd(unit.dir,0)
+          local dx1 = dirs8[dir1][1]
+          local dy1 = dirs8[dir1][2]
+          local dir2 = dirAdd(unit.dir,4)
+          local dx2 = dirs8[dir2][1]
+          local dy2 = dirs8[dir2][2]
+          print(dir1)
+          print(dir2)
+          if canMove(on, dx1, dy1, dir1, false, false, on.name) then
+            if on.class == "unit" then
+              local new_unit = createUnit(tiles_by_name[on.fullname], on.x, on.y, dir1)
+              addUndo({"create", new_unit.id, false})
+              moveUnit(new_unit,on.x+dx1,unit.y+dy1)
+              addUndo({"update", new_unit.id, on.x, on.y, dir1})
+            elseif unit.class == "cursor" then
+              local others = getCursorsOnTile(on.x + dx1, on.y + dy1)
+              if #others == 0 then
+                local new_mouse = createMouse(on.x + dx1, on.y + dy1)
+                addUndo({"create_cursor", new_mouse.id})
+              end
+            end
+          end
+          if canMove(on, dx2, dy2, dir2, false, false, on.name) then
+            if on.class == "unit" then
+              local new_unit = createUnit(tiles_by_name[on.fullname], on.x, on.y, dir2)
+              addUndo({"create", new_unit.id, false})
+              moveUnit(new_unit,on.x+dx2,unit.y+dy2)
+              addUndo({"update", new_unit.id, on.x, on.y, dir2})
+            elseif unit.class == "cursor" then
+              local others = getCursorsOnTile(on.x + dx2, on.y + dy2)
+              if #others == 0 then
+                local new_mouse = createMouse(on.x + dx2, on.y + dy2)
+                addUndo({"create_cursor", new_mouse.id})
+              end
+            end
+          end
+          table.insert(to_destroy, on)
+        end
+      end
+    end
+    
+    to_destroy = handleDels(to_destroy);
+    
     local iswin = getUnitsWithEffect(":)");
     for _,unit in ipairs(iswin) do
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)

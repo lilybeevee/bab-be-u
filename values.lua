@@ -1790,4 +1790,33 @@ tiles_list = {
     color = {3, 2},
     layer = 20,
   },
+  -- 170
+  {
+    name = "splittr",
+    sprite = "splittr",
+    type = "object",
+    grid = {15,8},
+    color = {0, 3},
+    layer = 2,
+    rotate = true,
+  },
+  -- 171
+  {
+    name = "text_splittr",
+    sprite = "text_splittr",
+    type = "text",
+    grid = {16,8},
+    color = {0, 3},
+    layer = 20,
+  },
+  -- 172
+  {
+    name = "text_split",
+    sprite = "text_split",
+    type = "text",
+    texttype = "property",
+    grid = {17, 8},
+    color = {4, 1},
+    layer = 20,
+  },
 }
