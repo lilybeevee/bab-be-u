@@ -584,7 +584,6 @@ end
 
 function fallBlock()
   --TODO: If we have multiple gravity directions, then we probably want a simultaneous single step algorithm to resolve everything neatly.
-  --TODO: If anything can change a faller's direction or position mid-flight (wrap/portal anyone?) then we need infinite loop protection here.
   local fallers = getUnitsWithEffect("haet skye")
   table.sort(fallers, function(a, b) return a.y > b.y end )
   
@@ -599,8 +598,10 @@ function fallBlock()
         print("movement infinite loop! (1000 attempts at a faller)")
         destroyLevel("infloop");
       end
-      local catchers = getUnitsOnTile(unit.x,unit.y+1)
-      if not inBounds(unit.x,unit.y+1) then
+      --TODO: implement WRAP/PORTAL here
+      local dx, dy = 0, 1;
+      local catchers = getUnitsOnTile(unit.x+dx,unit.y+dy)
+      if not inBounds(unit.x+dx,unit.y+dy) then
         caught = true
       end
       for _,on in ipairs(catchers) do
@@ -610,7 +611,7 @@ function fallBlock()
       end
       
       if caught == false then
-        moveUnit(unit,unit.x,unit.y+1)
+        moveUnit(unit,unit.x+dx,unit.y+dy)
       end
     end
   end
