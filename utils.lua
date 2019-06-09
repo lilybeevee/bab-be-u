@@ -1,4 +1,5 @@
 function clear()
+  debug_values = {}
   rng_cache = {}
   reset_count = 0
   last_move = nil
@@ -1018,7 +1019,7 @@ end
 
 function setRainbowModeColor(value, brightness)
   brightness = brightness or 0.5
-  
+
   if rainbowmode then
     love.graphics.setColor(hslToRgb(value%1, brightness, brightness, .9))
   end
