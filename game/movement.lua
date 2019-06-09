@@ -635,6 +635,27 @@ end
 --for use with wrap and portal. portals can change the facing dir, and facing dir can already be different from dx and dy, so we need to keep track of everything.
 function getNextTile(unit,dx,dy,dir)
   local px, py = unit.x+dx, unit.y+dy
+  --we have to loop because a portal might put us oob, which wraps and puts us in another portal, which puts us oob... etc
+  local did_update = true
+  local loop_portal = 0
+  while (did_update) do
+    local pxold, pyold = px, py
+    did_update = false
+    loop_portal = loop_portal + 1
+    if loop_portal > 1000 then
+      print("movement infinite loop! (1000 attempts at wrap/portal)")
+      destroyLevel("infloop");
+    end
+    px, py = doWrap(unit, px, py);
+    --do portal stuff here
+    if (px ~= pxold or py ~= pyold) then
+      did_update = true
+    end
+  end
+  return dx, dy, dir, px, py
+end
+
+function doWrap(unit, px, py)
   if hasProperty(unit, "go arnd") then
     if (px < 0) then
       px = px + mapwidth
@@ -647,7 +668,7 @@ function getNextTile(unit,dx,dy,dir)
       py = py - mapheight
     end
   end
-  return dx, dy, dir, px, py
+  return px, py
 end
 
 --stubborn units will try to slide around an obstacle in their way. everyone else just passes through!
