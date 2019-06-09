@@ -1780,4 +1780,14 @@ tiles_list = {
     color = {3, 2},
     layer = 20,
   },
+  -- 169
+  {
+    name = "text_poor toll",
+    sprite = "text_poor_toll",
+    type = "text",
+    texttype = "property",
+    grid = {14, 4},
+    color = {3, 2},
+    layer = 20,
+  },
 }

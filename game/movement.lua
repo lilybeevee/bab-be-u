@@ -543,6 +543,7 @@ function doPull(unit,dx,dy,dir,data, already_added, moving_units, moving_units_n
   local something_moved = not hasProperty(unit, "shy")
   while (something_moved) do
     something_moved = false
+    --TODO: Pull doesn't use WRAP/PORTAL yet.
     x = x - dx;
     y = y - dy;
     for _,v in ipairs(getUnitsOnTile(x, y)) do
@@ -622,6 +623,7 @@ function doZip(unit)
       for _,place in ipairs(places) do
         local dx = place.x
         local dy = place.y
+        --TODO: Fall doesn't use WRAP/PORTAL yet.
         if canMove(unit, dx, dy, -1, false, false, unit.name, "zip") then
           addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
           moveUnit(unit,unit.x+dx,unit.y+dy)
@@ -634,7 +636,10 @@ end
 
 --for use with wrap and portal. portals can change the facing dir, and facing dir can already be different from dx and dy, so we need to keep track of everything.
 function getNextTile(unit,dx,dy,dir)
+  local move_dir = dirs8_by_offset[sign(dx)][sign(dy)]
+  print(tostring(move_dir))
   local px, py = unit.x+dx, unit.y+dy
+  print(tostring(unit.x)..","..tostring(unit.y)..","..tostring(px)..","..tostring(py))
   --we have to loop because a portal might put us oob, which wraps and puts us in another portal, which puts us oob... etc
   local did_update = true
   local loop_portal = 0
@@ -646,12 +651,17 @@ function getNextTile(unit,dx,dy,dir)
       print("movement infinite loop! (1000 attempts at wrap/portal)")
       destroyLevel("infloop");
     end
+    print(tostring(px)..","..tostring(py))
     px, py = doWrap(unit, px, py);
-    --do portal stuff here
+    print(tostring(px)..","..tostring(py))
+    px, py, move_dir, dir = doPortal(unit, px, py, move_dir, dir)
+    print(tostring(px)..","..tostring(py))
     if (px ~= pxold or py ~= pyold) then
       did_update = true
     end
   end
+  dx = dirs8[move_dir][1];
+  dy = dirs8[move_dir][2];
   return dx, dy, dir, px, py
 end
 
@@ -669,6 +679,91 @@ function doWrap(unit, px, py)
     end
   end
   return px, py
+end
+
+function doPortal(unit, px, py, move_dir, dir)
+  --print(tostring(px)..","..tostring(py))
+  if not inBounds(px,py) or rules_with["poor toll"] == nil then
+    --print("b")
+    return px, py, move_dir, dir;
+  else
+    --arbitrarily pick the first paired portal we find while iterating - can't think of a more 'simultaneousy' logic
+    --TODO: I could make portals go backwards/forwards twice/etc depending on property count. maybe later?
+    --print("c")
+    for _,v in ipairs(getUnitsOnTile(px, py, nil, false)) do
+      --print("d")
+      if hasProperty(v, "poor toll") then
+        --print("e")
+        local portal_rules = matchesRule(v.name, "be", "poor toll");
+        local portals_direct = {};
+        local portals = {};
+        local portal_index = -1;
+        for _,rule in ipairs(portal_rules) do
+          for _,s in ipairs(findUnitsByName(v.name)) do
+            print("s")
+            print(dump(rule))
+            if testConds(s, rule[1][4][1]) then
+              portals_direct[s] = true
+            end
+          end
+        end
+        print(dump(portals_direct));
+        for p,_ in pairs(portals_direct) do
+          table.insert(portals, p);
+        end
+        table.sort(portals, readingOrderSort)
+        print(dump(portals));
+        --find our place in the list
+        for pk,pv in ipairs(portals) do
+          if pv == v then
+            --print("g")
+            portal_index = pk;
+            break
+          end
+        end
+        print(tostring(portal_index))
+        --did I ever mention I hate 1 indexed arrays?
+        local dest_index = ((portal_index + 1 - 1) % #portals) + 1;
+        print(tostring(dest_index)..","..tostring(#portals))
+        local dest_portal = portals[dest_index];
+        --print(dump(portals))
+        print(tostring(move_dir)..","..tostring(v)..","..tostring(dest_portal))
+        local dir1 = v.dir
+        local dir2 = dest_portal.dir
+        --print(tostring(dir1)..","..tostring(dir2))
+        move_dir = move_dir > 0 and dirAdd(move_dir, dirDiff(dir1, dir2)) or 0
+        dir = dir > 0 and dirAdd(dir, dirDiff(dir1, dir2)) or 0
+        local dx, dy = 0, 0;
+        if (move_dir > 0) then
+          dx = dirs8[move_dir][1];
+          dy = dirs8[move_dir][2];
+        end
+        px = dest_portal.x + dx;
+        py = dest_portal.y + dy;
+        return px, py, move_dir, dir;
+      end
+    end
+  end
+  return px, py, move_dir, dir;
+end
+
+function dirDiff(dir1, dir2)
+  if dir1 <= dir2 then
+    return dir2 - dir1
+  else
+    return dir2 - (dir1+8)
+  end
+end
+
+function dirAdd(dir1, diff)
+  dir1 = dir1 + diff;
+  while dir1 < 0 do
+    dir1 = dir1  + 8
+  end
+  while dir1 > 8 do
+    dir1 = dir1 - 8
+  end
+  return dir1
 end
 
 --stubborn units will try to slide around an obstacle in their way. everyone else just passes through!
