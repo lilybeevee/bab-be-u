@@ -538,6 +538,7 @@ function findCopykats(unit)
 end
 
 function doPull(unit,dx,dy,dir,data, already_added, moving_units, moving_units_next, slippers)
+  --TODO: CLEANUP: This is a big ol mess now and there's no way it needs to be THIS complicated.
   local something_moved = not hasProperty(unit, "shy")
   local prev_unit = unit
   while (something_moved) do
@@ -592,26 +593,27 @@ function fallBlock()
 	
     addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
     local loop_fall = 0
+    local dx, dy, dir, px, py = 0, 1, 3, -1, -1
+    local old_dir = 3;
     while (caught == false) do
-      local loop_fall = loop_fall + 1;
+      loop_fall = loop_fall + 1;
       if (loop_fall > 1000) then
         print("movement infinite loop! (1000 attempts at a faller)")
         destroyLevel("infloop");
+        return;
       end
-      --TODO: implement WRAP/PORTAL here
-      local dx, dy = 0, 1;
-      local catchers = getUnitsOnTile(unit.x+dx,unit.y+dy)
-      if not inBounds(unit.x+dx,unit.y+dy) then
+      dx, dy, dir, px, py = getNextTile(unit, dx, dy, dir);
+      --local catchers = getUnitsOnTile(px,py)
+      if not inBounds(px,py) then
         caught = true
       end
-      for _,on in ipairs(catchers) do
-        if not canMove(unit, 0, 1, 3, false, false, nil, "haet skye") then
-          caught = true
-        end
+      if not canMove(unit, dx, dy, dir, false, false, nil, "haet skye") then
+        caught = true
       end
-      
       if caught == false then
-        moveUnit(unit,unit.x+dx,unit.y+dy)
+        updateDir(unit, dirAdd(unit.dir, dirDiff(old_dir, dir)));
+        old_dir = dir;
+        moveUnit(unit,px,py)
       end
     end
   end
