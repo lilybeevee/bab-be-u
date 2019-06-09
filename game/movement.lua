@@ -345,7 +345,8 @@ function moveIt(mover, dx, dy, dir, data, pulling, already_added, moving_units, 
       slippers[mover.id] = true
     end
     --add SIDEKIKERs to move in the next sub-tick
-    for __,sidekiker in ipairs(findSidekikers(mover, dx, dy)) do
+    --Patashu: dx/dy is horribly inaccurate in the presence of wrap/portal. we really want move_dir, but facing_dir is close enough.
+    for __,sidekiker in ipairs(findSidekikers(mover, dirs8[dir][1], dirs8[dir][2])) do
       local currently_moving = false
       for _,mover2 in ipairs(moving_units) do
         if mover2 == sidekiker then
