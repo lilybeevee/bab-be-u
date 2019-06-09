@@ -627,35 +627,49 @@ function doZip(unit)
 end
 
 --stubborn units will try to slide around an obstacle in their way. everyone else just passes through!
-function canMove(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason)
-  if dir > 0 and hasProperty(unit, "stubbn") then
-    local success, movers, specials = canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason);
-    if not success then
-      local movementdir = dir
-      local stubborndir1 = ((dir+1-1)%8)+1
-      local stubborndir2 = ((dir-1-1)%8)+1
-      local success1, movers1, specials1 = canMoveCore(unit,dirs8[stubborndir1][1],dirs8[stubborndir1][2],dir,pushing_,pulling_,solid_name,reason);
-      local success2, movers2, specials2 = canMoveCore(unit,dirs8[stubborndir2][1],dirs8[stubborndir2][2],dir,pushing_,pulling_,solid_name,reason);
-      if (success1 and not success2) then
-        return success1,movers1,specials1
-      elseif (success2 and not success1) then
-        return success2,movers2,specials2
-      else --both succeeded or both failed - return whichever requires less effort
-        if #movers1 <= #movers2 then
+--stubbornness increases with amount of stacks:
+--1 stack: 45 degree angles for diagonal moves only
+--2 stacks: 45 degree angles for all moves
+--3 stacks: up to 90 degrees
+--4 stacks: up to 135 degrees
+--5 stacks: up to 180 degrees (e.g. all directions)
+function canMove(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_stack_)
+  local success, movers, specials = canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_stack_);
+  if success then
+    return success, movers, specials;
+  elseif dir > 0 then
+    local stubbn = countProperty(unit, "stubbn")
+    if stubbn > 0 and (dir % 2 == 0) or stubbn > 1 then
+      for i = 1,clamp(stubbn-1, 1, 4) do
+        local stubborndir1 = ((dir+i-1)%8)+1
+        local stubborndir2 = ((dir-i-1)%8)+1
+        local success1, movers1, specials1 = canMoveCore(unit,dirs8[stubborndir1][1],dirs8[stubborndir1][2],dir,pushing_,pulling_,solid_name,reason,push_stack_);
+        local success2, movers2, specials2 = canMoveCore(unit,dirs8[stubborndir2][1],dirs8[stubborndir2][2],dir,pushing_,pulling_,solid_name,reason,push_stack_);
+        if (success1 and not success2) then
           return success1,movers1,specials1
-        else
+        elseif (success2 and not success1) then
           return success2,movers2,specials2
+        elseif (success1 and success2) then --both succeeded - return whichever requires less effort
+          if #movers1 <= #movers2 then
+            return success1,movers1,specials1
+          else
+            return success2,movers2,specials2
+          end
         end
       end
-    else
-      return success, movers, specials;
     end
-  else
-    return canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason)
   end
+  return success, movers, specials;
 end
 
-function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason)
+function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_stack_)
+  --prevent infinite push loops by returning false if a push intersects an already considered unit
+  local push_stack = push_stack_ or {}
+  
+  if (push_stack[unit] == true) then
+    return false,{},{}
+  end
+  
   local pushing = false
   if (pushing_ ~= nil and not hasProperty(unit, "shy")) then
 		pushing = pushing_
@@ -739,7 +753,9 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason)
       --New FLYE mechanic, as decreed by the bab dictator - if you aren't sameFloat as a push/pull/sidekik, you can enter it.
       if hasProperty(v, "go away") and not would_swap_with then
         if pushing then
-          local success,new_movers,new_specials = canMove(v, dx, dy, dir, pushing, pulling, solid_name, "go away")
+          push_stack[unit] = true
+          local success,new_movers,new_specials = canMove(v, dx, dy, dir, pushing, pulling, solid_name, "go away", push_stack)
+          push_stack[unit] = nil
           for _,special in ipairs(new_specials) do
             table.insert(specials, special)
           end
