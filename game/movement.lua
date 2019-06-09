@@ -577,7 +577,7 @@ function fallBlock()
     local loop_fall = 0
     while (caught == false) do
       local loop_fall = loop_fall + 1;
-      if (loop_stage > 1000) then
+      if (loop_fall > 1000) then
         print("movement infinite loop! (1000 attempts at a faller)")
         destroyLevel("infloop");
       end
