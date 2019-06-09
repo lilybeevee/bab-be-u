@@ -320,6 +320,7 @@ function updateUnits(undoing, big_update)
           table.insert(to_destroy, on)
           playSound("break")
           addParticles("destroy", unit.x, unit.y, unit.color)
+          shakeScreen(0.3, 0.15)
         end
       end
     end
