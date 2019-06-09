@@ -282,6 +282,13 @@ function scene.draw(dt)
               unit.sprite = "text_tranz"
             end
           end
+		  if unit.fullname == "text_katany" then
+            if hasRule("steev","got","katany") then
+              unit.sprite = "text_katanya"
+            else
+              unit.sprite = "text_katany"
+            end
+          end
 
           if hasProperty(unit,"colrful") or rainbowmode then
             local newcolor = hslToRgb((#undo_buffer/45+unit.x/18+unit.y/18)%1, .5, .5, 1)
