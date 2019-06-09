@@ -657,7 +657,7 @@ end
 
 --for use with wrap and portal. portals can change the facing dir, and facing dir can already be different from dx and dy, so we need to keep track of everything.
 function getNextTile(unit,dx,dy,dir)
-  local move_dir = dirs8_by_offset[sign(dx)][sign(dy)]
+  local move_dir = dirs8_by_offset[sign(dx)][sign(dy)] or 0
   local px, py = unit.x+dx, unit.y+dy
   --we have to loop because a portal might put us oob, which wraps and puts us in another portal, which puts us oob... etc
   local did_update = true
@@ -676,8 +676,8 @@ function getNextTile(unit,dx,dy,dir)
       did_update = true
     end
   end
-  dx = dirs8[move_dir][1];
-  dy = dirs8[move_dir][2];
+  dx = move_dir > 0 and dirs8[move_dir][1] or 0;
+  dy = move_dir > 0 and dirs8[move_dir][2] or 0;
   return dx, dy, dir, px, py
 end
 
