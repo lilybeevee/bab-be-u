@@ -226,7 +226,7 @@ It is probably possible to do, but lily has decided that it's not important enou
               successes = successes + 1
               
               for k = #movers, 1, -1 do
-                moveIt(movers[k].unit, movers[k].dx, movers[k].dy, movers[k].dir, data, false, already_added, moving_units, moving_units_next, slippers)
+                moveIt(movers[k].unit, movers[k].dx, movers[k].dy, movers[k].dir, movers[k].move_dir, data, false, already_added, moving_units, moving_units_next, slippers)
               end
               --Patashu: only the mover itself pulls, otherwise it's a mess. stuff like STICKY/STUCK will require ruggedizing this logic.
               --Patashu: TODO: Doing the pull right away means that in a situation like this: https://cdn.discordapp.com/attachments/579519329515732993/582179745006092318/unknown.png the pull could happen before the bounce depending on move order. To fix this... I'm not sure how Baba does this? But it's somewhere in that mess of code.
@@ -335,9 +335,10 @@ function doAction(action)
   end
 end
 
-function moveIt(mover, dx, dy, dir, data, pulling, already_added, moving_units, moving_units_next, slippers)
+function moveIt(mover, dx, dy, facing_dir, move_dir, data, pulling, already_added, moving_units, moving_units_next, slippers)
   if not mover.removed then
-    queueMove(mover, dx, dy, dir, false);
+    local move_dx, move_dy = dirs8[move_dir][1], dirs8[move_dir][2]
+    queueMove(mover, dx, dy, facing_dir, false);
     --applySlide(mover, dx, dy, already_added, moving_units_next);
     applySwap(mover, dx, dy);
     --finishing a slip locks you out of U/WALK for the rest of the turn
@@ -345,8 +346,8 @@ function moveIt(mover, dx, dy, dir, data, pulling, already_added, moving_units, 
       slippers[mover.id] = true
     end
     --add SIDEKIKERs to move in the next sub-tick
-    --Patashu: dx/dy is horribly inaccurate in the presence of wrap/portal. we really want move_dir, but facing_dir is close enough.
-    for __,sidekiker in ipairs(findSidekikers(mover, dirs8[dir][1], dirs8[dir][2])) do
+    --move_dir is more accurate in the presence of WRAP/PORTAL than dx/dy (which can fling you across the map)
+    for __,sidekiker in ipairs(findSidekikers(mover, move_dx, move_dy)) do
       local currently_moving = false
       for _,mover2 in ipairs(moving_units) do
         if mover2 == sidekiker then
@@ -355,7 +356,7 @@ function moveIt(mover, dx, dy, dir, data, pulling, already_added, moving_units, 
         end
       end
       if not currently_moving then
-        table.insert(sidekiker.moves, {reason = "sidekik", dir = mover.dir, times = 1}) --TODO: dx/dy, dir and mover.dir could possibly all be different, explore advanced movement interactions with sidekik and wrap, portal, stubborn
+        table.insert(sidekiker.moves, {reason = "sidekik", dir = move_dir, times = 1}) --TODO: dx/dy, dir and mover.dir could possibly all be different, explore advanced movement interactions with sidekik and wrap, portal, stubborn
         table.insert(moving_units, sidekiker) --Patashu: I think moving_units is correct (since it should happen 'at the same time' like a push or pull) but maybe changing this to moving_units_next will fix a bug in the future...?
         already_added[sidekiker] = true
       end
@@ -377,8 +378,8 @@ function moveIt(mover, dx, dy, dir, data, pulling, already_added, moving_units, 
           if currently_moving then
             currently_moving = false
           else
-            move.dx = move.dx + dx
-            move.dy = move.dy + dy
+            move.dx = move.dx + move_dx
+            move.dy = move.dy + move_dy
             movedebug("copykat collate:"..tostring(move.dx)..","..tostring(move.dy))
             found = true
             break
@@ -386,7 +387,7 @@ function moveIt(mover, dx, dy, dir, data, pulling, already_added, moving_units, 
         end
       end
       if not found then
-        table.insert(copykat.moves, {reason = "copkat", dir = mover.dir, times = 1, dx = dx, dy = dy}) --TODO: dx/dy, dir and mover.dir could possibly all be different, explore advanced movement interactions with copykat and wrap, portal, stubborn
+        table.insert(copykat.moves, {reason = "copkat", dir = mover.dir, times = 1, dx = move_dx, dy = move_dy}) --TODO: dx/dy, dir and mover.dir could possibly all be different, explore advanced movement interactions with copykat and wrap, portal, stubborn
         table.insert(moving_units_next, copykat)
         already_added[copykat] = true
       end
@@ -574,7 +575,7 @@ function doPull(unit,dx,dy,dir,data, already_added, moving_units, moving_units_n
               dir = dirAdd(mover.dir, dir_diff);
               changed_unit = true
             end
-            moveIt(mover.unit, mover.dx, mover.dy, mover.dir, data, true, already_added, moving_units, moving_units_next, slippers)
+            moveIt(mover.unit, mover.dx, mover.dy, mover.dir, mover.move_dir, data, true, already_added, moving_units, moving_units_next, slippers)
           end
         end
       end
@@ -826,11 +827,13 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
 		pulling = pulling_
 	end
   
+  local move_dx, move_dy = dx, dy;
+  local move_dir = dirs8_by_offset[move_dx][move_dy] or 0
   local dx, dy, dir, x, y = getNextTile(unit, dx, dy, dir);
   
   local movers = {}
   local specials = {}
-  table.insert(movers, {unit = unit,dx = x-unit.x,dy = y-unit.y,dir = dir})
+  table.insert(movers, {unit = unit, dx = x-unit.x, dy = y-unit.y, dir = dir, move_dx = move_dx, move_dy = move_dy, move_dir = move_dir})
   
   if not inBounds(x,y) then
     if hasProperty(unit, "ouch") and not hasProperty(unit, "protecc") and (reason ~= "walk" or hasProperty(unit, "stubbn")) then
