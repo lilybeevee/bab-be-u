@@ -550,14 +550,8 @@ function doPull(unit,dx,dy,dir,data, already_added, moving_units, moving_units_n
     local x, y = 0, 0;
     dx = dirs8[dir][1];
     dy = dirs8[dir][2];
-    dx = -dx;
-    dy = -dy;
     local old_dir = dir;
-    dir = rotate8(dir);
-    dx, dy, dir, x, y = getNextTile(unit, dx, dy, dir);
-    dx = -dx;
-    dy = -dy;
-    dir = rotate8(dir);
+    dx, dy, dir, x, y = getNextTile(unit, dx, dy, dir, true);
     local dir_diff = dirDiff(old_dir, dir);
     for _,v in ipairs(getUnitsOnTile(x, y)) do
       if hasProperty(v, "come pls") then
@@ -660,7 +654,11 @@ function doZip(unit)
 end
 
 --for use with wrap and portal. portals can change the facing dir, and facing dir can already be different from dx and dy, so we need to keep track of everything.
-function getNextTile(unit,dx,dy,dir)
+function getNextTile(unit,dx,dy,dir,reverse_)
+  local reverse = reverse_ or false
+  local rs = reverse and -1 or 1
+  dx = dx*rs
+  dy = dy*rs
   local move_dir = dirs8_by_offset[sign(dx)][sign(dy)] or 0
   local px, py = unit.x+dx, unit.y+dy
   --we have to loop because a portal might put us oob, which wraps and puts us in another portal, which puts us oob... etc
@@ -675,14 +673,14 @@ function getNextTile(unit,dx,dy,dir)
       destroyLevel("infloop");
     end
     px, py = doWrap(unit, px, py);
-    px, py, move_dir, dir = doPortal(unit, px, py, move_dir, dir)
+    px, py, move_dir, dir = doPortal(unit, px, py, move_dir, dir, reverse)
     if (px ~= pxold or py ~= pyold) then
       did_update = true
     end
   end
   dx = move_dir > 0 and dirs8[move_dir][1] or 0;
   dy = move_dir > 0 and dirs8[move_dir][2] or 0;
-  return dx, dy, dir, px, py
+  return rs*dx, rs*dy, dir, px, py
 end
 
 function doWrap(unit, px, py)
@@ -702,10 +700,11 @@ function doWrap(unit, px, py)
 end
 
 --TODO: figure out how to fix my cool tween that had bugs =w=
-function doPortal(unit, px, py, move_dir, dir)
+function doPortal(unit, px, py, move_dir, dir, reverse)
   if not inBounds(px,py) or rules_with["poor toll"] == nil then
     return px, py, move_dir, dir;
   else
+    local rs = reverse and -1 or 1
     --arbitrarily pick the first paired portal we find while iterating - can't think of a more 'simultaneousy' logic
     --TODO: I could make portals go backwards/forwards twice/etc depending on property count. maybe later?
     for _,v in ipairs(getUnitsOnTile(px, py, nil, false)) do
@@ -733,7 +732,7 @@ function doPortal(unit, px, py, move_dir, dir)
           end
         end
         --did I ever mention I hate 1 indexed arrays?
-        local dest_index = ((portal_index + 1 - 1) % #portals) + 1;
+        local dest_index = ((portal_index + rs - 1) % #portals) + 1;
         local dest_portal = portals[dest_index];
         local dir1 = v.dir
         local dir2 = dest_portal.dir
