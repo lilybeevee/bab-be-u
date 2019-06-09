@@ -35,6 +35,8 @@ local particle_timers = {}
 local canv = love.graphics.newCanvas(love.graphics.getWidth(), love.graphics.getHeight())
 local last_width,last_height = love.graphics.getWidth(),love.graphics.getHeight()
 
+local displaywords = false
+
 local stack_box, stack_font
 
 function scene.load()
@@ -172,6 +174,10 @@ function scene.keyPressed(key, isrepeat)
     doin_the_world = true
   end
 
+  if key == "tab" then
+    displaywords = true
+  end
+
   key_down[key] = true
 end
 
@@ -180,6 +186,10 @@ function scene.keyReleased(key)
     if v == key then
       repeat_timers[v] = nil
     end
+  end
+
+  if key == "tab" then
+    displaywords = false
   end
 
   if key == "z" or key == "backspace" or key == "kp0" then
@@ -632,6 +642,31 @@ function scene.draw(dt)
         end
       end
     end
+  end
+
+  if displaywords then
+    love.graphics.setColor(0, 0, 0, 0.4)
+    love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
+
+    local rules = ""
+
+    local rulesnum = 0
+    local lines = 0.5
+
+    for i,rule in pairs(full_rules) do
+      rules = rules..rule[1][1]..' '..rule[1][2]..' '..rule[1][3]
+      rulesnum = rulesnum + 1
+
+      if rulesnum % 4 >= 3 then
+        rules = rules..'\n'
+        lines = lines + 1
+      else
+        rules = rules..'   '
+      end
+    end
+
+    love.graphics.setColor(1,1,1)
+    love.graphics.printf(rules, 0, love.graphics.getHeight()/2-love.graphics.getFont():getHeight()*lines, love.graphics.getWidth(), "center")
   end
 end
 

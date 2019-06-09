@@ -573,7 +573,13 @@ function fallBlock()
     local caught = false
 	
     addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
+    local loop_fall = 0
     while (caught == false) do
+      local loop_fall = loop_fall + 1;
+      if (loop_stage > 1000) then
+        print("movement infinite loop! (1000 attempts at a faller)")
+        destroyLevel("infloop");
+      end
       local catchers = getUnitsOnTile(unit.x,unit.y+1)
       if not inBounds(unit.x,unit.y+1) then
         caught = true
@@ -626,36 +632,89 @@ function doZip(unit)
   end
 end
 
---stubborn units will try to slide around an obstacle in their way. everyone else just passes through!
-function canMove(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason)
-  if dir > 0 and hasProperty(unit, "stubbn") then
-    local success, movers, specials = canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason);
-    if not success then
-      local movementdir = dir
-      local stubborndir1 = ((dir+1-1)%8)+1
-      local stubborndir2 = ((dir-1-1)%8)+1
-      local success1, movers1, specials1 = canMoveCore(unit,dirs8[stubborndir1][1],dirs8[stubborndir1][2],dir,pushing_,pulling_,solid_name,reason);
-      local success2, movers2, specials2 = canMoveCore(unit,dirs8[stubborndir2][1],dirs8[stubborndir2][2],dir,pushing_,pulling_,solid_name,reason);
-      if (success1 and not success2) then
-        return success1,movers1,specials1
-      elseif (success2 and not success1) then
-        return success2,movers2,specials2
-      else --both succeeded or both failed - return whichever requires less effort
-        if #movers1 <= #movers2 then
-          return success1,movers1,specials1
-        else
-          return success2,movers2,specials2
-        end
-      end
-    else
-      return success, movers, specials;
+--for use with wrap and portal. portals can change the facing dir, and facing dir can already be different from dx and dy, so we need to keep track of everything.
+function getNextTile(unit,dx,dy,dir)
+  local px, py = unit.x+dx, unit.y+dy
+  --we have to loop because a portal might put us oob, which wraps and puts us in another portal, which puts us oob... etc
+  local did_update = true
+  local loop_portal = 0
+  while (did_update) do
+    local pxold, pyold = px, py
+    did_update = false
+    loop_portal = loop_portal + 1
+    if loop_portal > 1000 then
+      print("movement infinite loop! (1000 attempts at wrap/portal)")
+      destroyLevel("infloop");
     end
-  else
-    return canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason)
+    px, py = doWrap(unit, px, py);
+    --do portal stuff here
+    if (px ~= pxold or py ~= pyold) then
+      did_update = true
+    end
   end
+  return dx, dy, dir, px, py
 end
 
-function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason)
+function doWrap(unit, px, py)
+  if hasProperty(unit, "go arnd") then
+    if (px < 0) then
+      px = px + mapwidth
+    elseif (px >= mapwidth) then
+      px = px - mapwidth
+    end
+    if (py < 0) then
+      py = py + mapheight
+    elseif (py >= mapheight) then
+      py = py - mapheight
+    end
+  end
+  return px, py
+end
+
+--stubborn units will try to slide around an obstacle in their way. everyone else just passes through!
+--stubbornness increases with amount of stacks:
+--1 stack: 45 degree angles for diagonal moves only
+--2 stacks: 45 degree angles for all moves
+--3 stacks: up to 90 degrees
+--4 stacks: up to 135 degrees
+--5 stacks: up to 180 degrees (e.g. all directions)
+function canMove(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_stack_)
+  local success, movers, specials = canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_stack_);
+  if success then
+    return success, movers, specials;
+  elseif dir > 0 then
+    local stubbn = countProperty(unit, "stubbn")
+    if stubbn > 0 and (dir % 2 == 0) or stubbn > 1 then
+      for i = 1,clamp(stubbn-1, 1, 4) do
+        local stubborndir1 = ((dir+i-1)%8)+1
+        local stubborndir2 = ((dir-i-1)%8)+1
+        local success1, movers1, specials1 = canMoveCore(unit,dirs8[stubborndir1][1],dirs8[stubborndir1][2],dir,pushing_,pulling_,solid_name,reason,push_stack_);
+        local success2, movers2, specials2 = canMoveCore(unit,dirs8[stubborndir2][1],dirs8[stubborndir2][2],dir,pushing_,pulling_,solid_name,reason,push_stack_);
+        if (success1 and not success2) then
+          return success1,movers1,specials1
+        elseif (success2 and not success1) then
+          return success2,movers2,specials2
+        elseif (success1 and success2) then --both succeeded - return whichever requires less effort
+          if #movers1 <= #movers2 then
+            return success1,movers1,specials1
+          else
+            return success2,movers2,specials2
+          end
+        end
+      end
+    end
+  end
+  return success, movers, specials;
+end
+
+function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_stack_)
+  --prevent infinite push loops by returning false if a push intersects an already considered unit
+  local push_stack = push_stack_ or {}
+  
+  if (push_stack[unit] == true) then
+    return false,{},{}
+  end
+  
   local pushing = false
   if (pushing_ ~= nil and not hasProperty(unit, "shy")) then
 		pushing = pushing_
@@ -666,12 +725,11 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason)
 		pulling = pulling_
 	end
   
-  local x = unit.x + dx
-  local y = unit.y + dy
+  local dx, dy, dir, x, y = getNextTile(unit, dx, dy, dir);
   
   local movers = {}
   local specials = {}
-  table.insert(movers, {unit = unit,dx = dx,dy = dy,dir = dir})
+  table.insert(movers, {unit = unit,dx = x-unit.x,dy = y-unit.y,dir = dir})
   
   if not inBounds(x,y) then
     if hasProperty(unit, "ouch") and not hasProperty(unit, "protecc") and (reason ~= "walk" or hasProperty(unit, "stubbn")) then
@@ -739,7 +797,9 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason)
       --New FLYE mechanic, as decreed by the bab dictator - if you aren't sameFloat as a push/pull/sidekik, you can enter it.
       if hasProperty(v, "go away") and not would_swap_with then
         if pushing then
-          local success,new_movers,new_specials = canMove(v, dx, dy, dir, pushing, pulling, solid_name, "go away")
+          push_stack[unit] = true
+          local success,new_movers,new_specials = canMove(v, dx, dy, dir, pushing, pulling, solid_name, "go away", push_stack)
+          push_stack[unit] = nil
           for _,special in ipairs(new_specials) do
             table.insert(specials, special)
           end

@@ -108,9 +108,10 @@ function updateUnits(undoing, big_update)
       for _,stalker in ipairs(stalkers) do
         table.sort(stalkees, function(a, b) return euclideanDistance(a, stalker) < euclideanDistance(b, stalker) end )
         for _,stalkee in ipairs(stalkees) do
-          if euclideanDistance(stalker, stalkee) > 0 and testConds(stalker, stalker_conds) and testConds(stalkee, stalkee_conds) then
-            local stalk_dir = dirs8_by_offset[sign(stalkee.x - stalker.x)][sign(stalkee.y - stalker.y)]
-            if hasProperty(stalker, "orthongl") then
+          if testConds(stalker, stalker_conds) and testConds(stalkee, stalkee_conds) then
+            local dist = euclideanDistance(stalker, stalkee)
+            local stalk_dir = dist > 0 and dirs8_by_offset[sign(stalkee.x - stalker.x)][sign(stalkee.y - stalker.y)] or stalkee.dir
+            if dist > 0 and hasProperty(stalker, "orthongl") then
               local use_hori = math.abs(stalkee.x - stalker.x) > math.abs(stalkee.y - stalker.y)
               stalk_dir = dirs8_by_offset[use_hori and sign(stalkee.x - stalker.x) or 0][not use_hori and sign(stalkee.y - stalker.y) or 0]
             end
@@ -841,7 +842,16 @@ function moveUnit(unit,x,y)
     removeFromTable(units_by_tile[tileid], unit)
 
     if x ~= unit.x or y ~= unit.y then
-      addTween(tween.new(0.1, unit.draw, {x = x, y = y}), "unit:pos:" .. unit.tempid)
+      if math.abs(x - unit.x) < 2 and math.abs(y - unit.y) < 2 then
+        addTween(tween.new(0.1, unit.draw, {x = x, y = y}), "unit:pos:" .. unit.tempid)
+      else
+        --fade in, fade out effect
+        addTween(tween.new(0.05, unit.draw, {scalex = 0}), "unit:dir:" .. unit.tempid, function()
+        unit.draw.x = x
+        unit.draw.y = y
+        addTween(tween.new(0.05, unit.draw, {scalex = 1}), "unit:dir:" .. unit.tempid)
+        end)
+      end
     end
 
     unit.x = x

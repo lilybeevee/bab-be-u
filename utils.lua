@@ -902,6 +902,15 @@ function keyCount(t)
   return count
 end
 
+function clamp(x, min_, max_)
+  if x < min_ then
+    return min_
+  elseif x > max_ then
+    return max_
+  end
+  return x
+end
+
 function sign(x)
   if (x > 0) then
     return 1

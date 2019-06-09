@@ -1738,7 +1738,6 @@ tiles_list = {
     grid = {12, 7},
     color = {1, 4},
     layer = 20,
-    rotate = true
   },
   -- 165
   {
@@ -1768,7 +1767,17 @@ tiles_list = {
     sprite = "text_steev",
     type = "text",
     grid = {14,8},
-    color = {2,3	},
+    color = {2,3},
+    layer = 20,
+  },
+  -- 168
+  {
+    name = "text_go arnd",
+    sprite = "text_go arnd",
+    type = "text",
+    texttype = "property",
+    grid = {14, 3},
+    color = {3, 2},
     layer = 20,
   },
 }
