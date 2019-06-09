@@ -28,6 +28,8 @@ function clear()
   mouse_oldX = mouse_X
   mouse_oldY = mouse_Y
   cursors = {}
+  shake_dur = 0
+  shake_intensity = 0.5
 
   if scene == game then
     createMouse_direct(love.mouse.getX(), love.mouse.getY())
@@ -1023,4 +1025,9 @@ function setRainbowModeColor(value, brightness)
   if rainbowmode then
     love.graphics.setColor(hslToRgb(value%1, brightness, brightness, .9))
   end
+end
+
+function shakeScreen(dur, intensity)
+  shake_dur = dur
+  shake_intensity = shake_intensity + intensity
 end

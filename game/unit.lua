@@ -240,6 +240,7 @@ function updateUnits(undoing, big_update)
           table.insert(to_destroy, on)
           playSound("sink")
           addParticles("destroy", unit.x, unit.y, on.color)
+          shakeScreen(0.3, 0.1)
         end
       end
     end
@@ -254,6 +255,7 @@ function updateUnits(undoing, big_update)
           table.insert(to_destroy, unit)
           playSound("break")
           addParticles("destroy", unit.x, unit.y, unit.color)
+          shakeScreen(0.3, 0.1)
         end
       end
     end
@@ -268,6 +270,7 @@ function updateUnits(undoing, big_update)
           table.insert(to_destroy, on)
           playSound("sink")
           addParticles("destroy", unit.x, unit.y, unit.color)
+          shakeScreen(0.3, 0.1)
         end
       end
     end
@@ -283,6 +286,7 @@ function updateUnits(undoing, big_update)
           table.insert(to_destroy, on)
           playSound("break")
           addParticles("destroy", unit.x, unit.y, unit.color)
+          shakeScreen(0.3, 0.2)
         end
       end
     end
@@ -300,6 +304,7 @@ function updateUnits(undoing, big_update)
           playSound("unlock")
           addParticles("destroy", unit.x, unit.y, unit.color)
           addParticles("destroy", on.x, on.y, on.color)
+          shakeScreen(0.3, 0.1)
         end
       end
     end

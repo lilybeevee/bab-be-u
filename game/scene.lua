@@ -94,6 +94,13 @@ function scene.update(dt)
   scene.doPassiveParticles(dt, "qt", "love", 0.25, 0.5, 1, {235,145,202})
 
   debugDisplay('window dir', window_dir)
+  if shake_dur > 0 then
+    shake_dur = shake_dur-dt
+    shake_intensity = shake_intensity-dt/2
+  else
+    shake_intensity = 0
+    shake_dur = 0
+  end
 end
 
 function scene.resetStuff()
@@ -367,6 +374,13 @@ function scene.draw(dt)
           if hasRule(unit,"be","flye") then
             local flyenes = countProperty(unit, "flye")
             fulldrawy = fulldrawy - 5 - math.sin(love.timer.getTime())*2.5*(flyenes^2)
+          end
+
+          if shake_dur > 0 then
+            fulldrawx = fulldrawx + (math.random(0.00, TILE_SIZE)*shake_intensity*2)-shake_intensity*TILE_SIZE
+            fulldrawy = fulldrawy + (math.random(0.00, TILE_SIZE)*shake_intensity*2)-shake_intensity*TILE_SIZE
+
+            debugDisplay("test", (math.random(0.00, TILE_SIZE)*shake_intensity*2)-shake_intensity)
           end
 
           love.graphics.push()
