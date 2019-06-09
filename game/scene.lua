@@ -409,6 +409,10 @@ function scene.draw(dt)
             love.graphics.setColor(1, 1, 1)
             love.graphics.draw(sprites["gunsmol"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
           end
+		  if hasRule(unit,"got","katany") then
+            love.graphics.setColor(0.45, 0.45, 0.45)
+            love.graphics.draw(sprites["katanysmol"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+		  end
           if false then -- stupid lua comments
             if hasRule(unit,"got","?") then
               local matchrules = matchesRule(unit,"got","?")
