@@ -105,10 +105,11 @@ function scene.mouseReleased(x, y, mouse_button)
           if not button.create then
             if not button.deletingconfirm then
               if not button.deleting then
+			    playSound("move")
                 button.deleting = true
               else
+				playSound("unlock")
                 button.deletingconfirm = true
-                button.deleting = false
               end
             else
               love.filesystem.remove(button.data .. "/" .. button.name)
@@ -121,10 +122,12 @@ function scene.mouseReleased(x, y, mouse_button)
           if not button.create then
             if not button.deletingconfirm then
               if not button.deleting then
+				playSound("move")
                 button.deleting = true
               else
+				playSound("unlock")
                 button.deletingconfirm = true
-			        end
+			    end
             else
               if world == "" then
                 love.filesystem.remove("levels/" .. button.name .. ".bab")
