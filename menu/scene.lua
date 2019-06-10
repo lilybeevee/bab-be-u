@@ -78,6 +78,16 @@ function scene.draw(dt)
     love.graphics.printf(buttons[i], width/2-buttonwidth/2, height/2-buttonheight/2+(buttonheight+10)*i+5, buttonwidth, "center")
   end
 
+  for _,pair in pairs({{1,0},{0,1},{1,1},{-1,0},{0,-1},{-1,-1},{1,-1},{-1,1}}) do
+    local outlineSize = 2
+    pair[1] = pair[1] * outlineSize
+    pair[2] = pair[2] * outlineSize
+
+    love.graphics.setColor(0,0,0)
+    love.graphics.draw(sprites["ui/bab_be_u"], width/2 - sprites["ui/bab_be_u"]:getWidth() / 2 + pair[1], height/2 - sprites["ui/bab_be_u"]:getHeight() / 2 - 200 + pair[2])
+  end
+
+  love.graphics.setColor(1, 1, 1)
   setRainbowModeColor(love.timer.getTime()/3, .5)
   love.graphics.draw(sprites["ui/bab_be_u"], width/2 - sprites["ui/bab_be_u"]:getWidth() / 2, height/2 - sprites["ui/bab_be_u"]:getHeight() / 2 - 200)
 
