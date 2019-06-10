@@ -104,37 +104,38 @@ function scene.mouseReleased(x, y, mouse_button)
         if button.type == "world" then
           if not button.create then
             if not button.deletingconfirm then
-			  if not button.deleting then
+              if not button.deleting then
                 button.deleting = true
-			  else
-			    button.deletingconfirm = true
-				button.deleting = false
-			  end
+              else
+                button.deletingconfirm = true
+                button.deleting = false
+              end
             else
               love.filesystem.remove(button.data .. "/" .. button.name)
-			  playSound("break")
-			  shakeScreen(0.3, 0.1)
+              playSound("break")
+              shakeScreen(0.3, 0.1)
               scene.buildUI()
             end
           end
         elseif button.type == "level" then
           if not button.create then
             if not button.deletingconfirm then
-			  if not button.deleting then
+              if not button.deleting then
                 button.deleting = true
-			  else button.deletingconfirm = true
-			  end
+              else
+                button.deletingconfirm = true
+			        end
             else
               if world == "" then
                 love.filesystem.remove("levels/" .. button.name .. ".bab")
                 love.filesystem.remove("levels/" .. button.name .. ".png")
-				playSound("break")
-				shakeScreen(5, 3)
+                playSound("break")
+                shakeScreen(5, 3)
               else
                 love.filesystem.remove(world_parent .. "/" .. world .. "/" .. button.name .. ".bab")
                 love.filesystem.remove(world_parent .. "/" .. world .. "/" .. button.name .. ".png")
-				playSound("break")
-				shakeScreen(5, 3)
+                playSound("break")
+                shakeScreen(5, 3)
               end
               scene.buildUI()
             end
@@ -184,11 +185,10 @@ function scene.draw()
 
   for i,button in ipairs(ui.buttons) do
     local sprite_name = "ui/" .. button.type .. " box"
-    if button.deleting then
+    if button.deletingconfirm then
+      sprite_name = sprite_name .. " deleteconfirm"
+    elseif button.deleting then
       sprite_name = sprite_name .. " delete"
-	end
-	if button.deletingconfirm then
-	  sprite_name = sprite_name .. " deleteconfirm"
     end
     local sprite = sprites[sprite_name]
     local btncolor = {1, 1, 1}

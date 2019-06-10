@@ -118,6 +118,8 @@ function scene.resetStuff()
   --resetMusic("bab be u them", 0.5)
   resetMusic(map_music, 0.5)
   loadMap()
+  clearRules()
+  parseRules()
   parseRules()
   updateUnits(true)
 

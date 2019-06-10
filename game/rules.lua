@@ -1,16 +1,19 @@
-function parseRules(undoing)
+function clearRules()
   full_rules = {}
   rules_with = {}
   not_rules = {}
   protect_rules = {}
 
   max_not_rules = 0
+  portal_id = ""
 
   local text_be_go_away = {{"text","be","go away",{{},{}}},{},1}
   addRule(text_be_go_away)
 
   has_new_rule = false
+end
 
+function parseRules(undoing)
   local first_words = {}
   local been_first = {}
   for i=1,8 do
@@ -30,7 +33,7 @@ function parseRules(undoing)
         local ntileid = (x+ndx) + (y+ndy) * mapwidth
 
         --print(tostring(x)..","..tostring(y)..","..tostring(dx)..","..tostring(dy)..","..tostring(ndx)..","..tostring(ndy)..","..tostring(#getUnitsOnTile(x+ndx, y+ndy, "text"))..","..tostring(#getUnitsOnTile(x+dx, y+dy, "text")))
-        if #getUnitsOnTile(x+ndx, y+ndy, "text") == 0 and #getUnitsOnTile(x+dx, y+dy, "text") >= 1 then
+        if #getUnitsOnTile(x+ndx, y+ndy, "text") == 0 then
           if not been_first[i][x + y * mapwidth] then
             table.insert(first_words, {unit, i})
             been_first[i][x + y * mapwidth] = true
@@ -46,42 +49,55 @@ function parseRules(undoing)
 
   print("-- begin parse --")
 
-  local has_new_rule = false
+  local final_rules = {}
   --local already_parsed = {}
   local first_words_count = #first_words
   for _,first in ipairs(first_words) do
     local first_unit = first[1]
+    local last_unit = first[1]
 
-    local dir = dirs8[first[2]]
-    local dx,dy = 0, 0
+    local dir = first[2]
+    local x,y = first_unit.x, first_unit.y
+    local dx,dy = dirs8[dir][1], dirs8[dir][2]
 
     local words = {}
+    local been_here = {}
 
     local stopped = false
     while not stopped do
-      local new_words = {}
-      local x = first_unit.x + dx
-      local y = first_unit.y + dy
+      if been_here[x + y * mapwidth] == 2 then
+        stopped = true
+      else
+        local new_words = {}
+        local get_next_later = false
 
-      local units = getUnitsOnTile(x, y, "text")
-      if #units > 0 then
-        for _,unit in ipairs(units) do
-          local new_word = {}
+        local units = getUnitsOnTile(x, y, "text")
+        if #units > 0 then
+          for _,unit in ipairs(units) do
+            local new_word = {}
 
-          new_word.name = unit.textname
-          new_word.type = unit.texttype
-          new_word.unit = unit
+            new_word.name = unit.textname
+            new_word.type = unit.texttype
+            new_word.unit = unit
 
-          table.insert(new_words, new_word)
+            last_unit = unit
+
+            table.insert(new_words, new_word)
+          end
+
+          table.insert(words, new_words)
+        else
+          stopped = true
         end
 
-        table.insert(words, new_words)
-      else
-        stopped = true
-      end
+        dx, dy, dir, x, y = getNextTile(last_unit, dx, dy, dir)
 
-      dx = dx + dir[1]
-      dy = dy + dir[2]
+        if not been_here[x + y * mapwidth] then
+          been_here[x + y * mapwidth] = 1
+        else
+          been_here[x + y * mapwidth] = 2
+        end
+      end
     end
 
     local sentences = getCombinations(words)
@@ -193,63 +209,70 @@ function parseRules(undoing)
           end
         end
 
+        table.insert(final_rules, {new_rules, dir})
+      end
+    end
+  end
 
-        for _,a in ipairs(new_rules[1]) do
-          for vi,b in ipairs(new_rules[2]) do
-            for _,c in ipairs(new_rules[3][vi]) do
-              local noun = a[1]
-              local noun_texts = a[2]
-              local verb = b[1]
-              local verb_texts = b[2]
-              local prop = c[1]
-              local prop_texts = c[2]
+  clearRules()
+  
+  for _,final in ipairs(final_rules) do
+    local new_rules = final[1]
+    local dir = final[2]
+    for _,a in ipairs(new_rules[1]) do
+      for vi,b in ipairs(new_rules[2]) do
+        for _,c in ipairs(new_rules[3][vi]) do
+          local noun = a[1]
+          local noun_texts = a[2]
+          local verb = b[1]
+          local verb_texts = b[2]
+          local prop = c[1]
+          local prop_texts = c[2]
 
-              if noun_texts == nil then
-                print("nil on: " .. noun .. " - " .. verb .. " - " .. prop)
-              end
+          if noun_texts == nil then
+            print("nil on: " .. noun .. " - " .. verb .. " - " .. prop)
+          end
 
-              --if verb == "got" or a[1]:starts("text_") or c[1]:starts("text_") then
-                --print("added rule: " .. noun .. " " .. verb .. " " .. prop)
-              --end
+          --if verb == "got" or a[1]:starts("text_") or c[1]:starts("text_") then
+            --print("added rule: " .. noun .. " " .. verb .. " " .. prop)
+          --end
 
-              local all_units = {}
-              for _,unit in ipairs(noun_texts) do
-                if not table.has_value(unit.used_as, "noun") then table.insert(unit.used_as, "noun") end
+          local all_units = {}
+          for _,unit in ipairs(noun_texts) do
+            if not table.has_value(unit.used_as, "noun") then table.insert(unit.used_as, "noun") end
+            table.insert(all_units, unit)
+          end
+          for _,unit in ipairs(verb_texts) do
+            if not table.has_value(unit.used_as, "verb") then table.insert(unit.used_as, "verb") end
+            table.insert(all_units, unit)
+          end
+          for _,unit in ipairs(prop_texts) do
+            if not table.has_value(unit.used_as, "property") then table.insert(unit.used_as, "property") end
+            table.insert(all_units, unit)
+          end
+
+          local conds = {{},{}}
+          for i=1,2 do
+            for _,cond in ipairs(new_rules[4][i]) do
+              for _,unit in ipairs(cond[3]) do
                 table.insert(all_units, unit)
               end
-              for _,unit in ipairs(verb_texts) do
-                if not table.has_value(unit.used_as, "verb") then table.insert(unit.used_as, "verb") end
-                table.insert(all_units, unit)
-              end
-              for _,unit in ipairs(prop_texts) do
-                if not table.has_value(unit.used_as, "property") then table.insert(unit.used_as, "property") end
-                table.insert(all_units, unit)
-              end
-
-              local conds = {{},{}}
-              for i=1,2 do
-                for _,cond in ipairs(new_rules[4][i]) do
-                  for _,unit in ipairs(cond[3]) do
-                    table.insert(all_units, unit)
-                  end
-                  table.insert(conds[i], {cond[1], cond[2], cond[3]})
-                end
-              end
-
-              --[[for _,unit in ipairs(stupid_cond_units) do
-                table.insert(all_units, unit)
-                unit.active = true
-                if not unit.old_active and not first_turn and not undoing then
-                  addParticles("rule", unit.x, unit.y, unit.color)
-                  has_new_rule = true
-                end
-                unit.old_active = unit.active
-              end]]
-
-              local rule = {{noun,verb,prop,conds},all_units,first[2]}
-              addRule(rule)
+              table.insert(conds[i], {cond[1], cond[2], cond[3]})
             end
           end
+
+          --[[for _,unit in ipairs(stupid_cond_units) do
+            table.insert(all_units, unit)
+            unit.active = true
+            if not unit.old_active and not first_turn and not undoing then
+              addParticles("rule", unit.x, unit.y, unit.color)
+              has_new_rule = true
+            end
+            unit.old_active = unit.active
+          end]]
+
+          local rule = {{noun,verb,prop,conds},all_units,dir}
+          addRule(rule)
         end
       end
     end

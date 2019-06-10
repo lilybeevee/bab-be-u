@@ -1035,3 +1035,15 @@ function shakeScreen(dur, intensity)
     shake_intensity = 3
   end
 end
+
+function startTest(name)
+  perf_test = {
+    name = name,
+    time = love.timer.getTime()
+  }
+end
+
+function endTest()
+  local time = love.timer.getTime() - perf_test.time
+  print(perf_test.name .. ": " .. time .. "s")
+end
