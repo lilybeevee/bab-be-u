@@ -184,6 +184,9 @@ function scene.keyPressed(key)
       ignore_mouse = true
     end
   end
+  if key == "w" and key_down["lctrl"] then
+    new_scene = loadscene
+  end
 
   key_down[key] = true
 
