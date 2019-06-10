@@ -42,6 +42,7 @@ function love.load()
   move_sound_source = nil
   anim_stage = 0
   next_anim = ANIM_TIMER
+  fullscreen = false
 
   empty_sprite = love.image.newImageData(32, 32)
   if not is_mobile then
@@ -235,6 +236,13 @@ function love.keypressed(key,scancode,isrepeat)
     debug = not debug
   elseif key == "f5" then
     love.event.quit("restart")
+  elseif key == "f11" then
+    if fullscreen == false then
+      love.window.setMode(0, 0, {borderless=false})
+      fullscreen = true
+    elseif fullscreen == true then
+      fullscreen = false
+    end
   elseif key == "f" and love.keyboard.isDown('lctrl') then
     if scene == menu then
       love.system.openURL("file://"..love.filesystem.getSaveDirectory())
