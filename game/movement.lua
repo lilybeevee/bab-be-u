@@ -898,9 +898,7 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
 	end
   
   --apply munwalk and sidestep here
-  local muncount = countProperty(unit, "munwalk")
-  local sidecount = countProperty(unit, "sidestep")
-  local movecount = 2 * muncount + sidecount
+  local movecount = 2 * countProperty(unit, "munwalk") + countProperty(unit, "sidestep")
   if movecount == 1 then
 	old_dx = dx
     dx = dy;
