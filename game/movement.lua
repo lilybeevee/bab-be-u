@@ -898,9 +898,25 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
 	end
   
   --apply munwalk here
-  if hasProperty(unit, "munwalk") then
+  local muncount = countProperty(unit, "munwalk")
+  if muncount % 2 == 1 then
     dx = -dx;
     dy = -dy;
+  end
+  
+  --apply sidestep here
+  local sidecount = countProperty(unit, "sidestep")
+  if hasProperty(unit, "sidestep") then
+	old_dx = dx
+    dx = dy;
+    dy = -old_dx;
+  end
+  
+  --apply diagstep here
+  if hasProperty(unit, "diagstep") then
+	old_dx = dx
+    dx = dx;
+    dy = dy;
   end
   
   local move_dx, move_dy = dx, dy;

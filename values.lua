@@ -1881,4 +1881,24 @@ tiles_list = {
     color = {3, 2},
     layer = 20,
   },
+  -- 177
+  {
+    name = "text_sidestep",
+    sprite = "text_sidestep",
+    type = "text",
+    texttype = "property",
+    grid = {15, 7},
+    color = {6, 2},
+    layer = 20,
+  },
+  -- 178
+  {
+    name = "text_diagstep",
+    sprite = "text_diagstep",
+    type = "text",
+    texttype = "property",
+    grid = {16, 7},
+    color = {3, 1},
+    layer = 20,
+  },
 }
