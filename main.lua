@@ -388,10 +388,6 @@ function love.draw()
   local dt = love.timer.getDelta()
   frame = frame + 1
 
-  if not love.window.hasFocus() and frame % 3 ~= 1 then
-    return
-  end
-
   next_anim = next_anim - (dt * 1000)
   if next_anim <= 0 then
     anim_stage = (anim_stage + 1) % 3
