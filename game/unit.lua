@@ -190,7 +190,8 @@ function updateUnits(undoing, big_update)
                 if unit.class == "unit" then
                   local new_unit = createUnit(tiles_by_name[unit.fullname], unit.x, unit.y, unit.dir)
                   addUndo({"create", new_unit.id, false})
-                  moveUnit(new_unit,unit.x+dx,unit.y+dy)
+                  _, __, ___, x, y = getNextTile(unit, dx, dy, i*2-1, false);
+                  moveUnit(new_unit,x,y)
                   addUndo({"update", new_unit.id, unit.x, unit.y, unit.dir})
                 elseif unit.class == "cursor" then
                   local others = getCursorsOnTile(unit.x + dx, unit.y + dy)
@@ -211,7 +212,8 @@ function updateUnits(undoing, big_update)
                 if unit.class == "unit" then
                   local new_unit = createUnit(tiles_by_name[unit.fullname], unit.x, unit.y, unit.dir)
                   addUndo({"create", new_unit.id, false})
-                  moveUnit(new_unit,unit.x+dx,unit.y+dy)
+                  _, __, ___, x, y = getNextTile(unit, dx, dy, i, false);
+                  moveUnit(new_unit,x,y);
                   addUndo({"update", new_unit.id, unit.x, unit.y, unit.dir})
                 elseif unit.class == "cursor" then
                   local others = getCursorsOnTile(unit.x + dx, unit.y + dy)
@@ -384,7 +386,8 @@ function updateUnits(undoing, big_update)
             if on.class == "unit" then
               local new_unit = createUnit(tiles_by_name[on.fullname], on.x, on.y, dir1)
               addUndo({"create", new_unit.id, false})
-              moveUnit(new_unit,on.x+dx1,unit.y+dy1)
+              _, __, ___, x, y = getNextTile(on, dx1, dy1, dir1, false);
+              moveUnit(new_unit,x,y)
               addUndo({"update", new_unit.id, on.x, on.y, dir1})
             elseif unit.class == "cursor" then
               local others = getCursorsOnTile(on.x + dx1, on.y + dy1)
@@ -398,7 +401,8 @@ function updateUnits(undoing, big_update)
             if on.class == "unit" then
               local new_unit = createUnit(tiles_by_name[on.fullname], on.x, on.y, dir2)
               addUndo({"create", new_unit.id, false})
-              moveUnit(new_unit,on.x+dx2,unit.y+dy2)
+              _, __, ___, x, y = getNextTile(on, dx2, dy2, dir2, false);
+              moveUnit(new_unit,x,y)
               addUndo({"update", new_unit.id, on.x, on.y, dir2})
             elseif unit.class == "cursor" then
               local others = getCursorsOnTile(on.x + dx2, on.y + dy2)
