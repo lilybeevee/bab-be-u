@@ -772,6 +772,26 @@ function addParticles(type,x,y,color,count)
     ps:start()
     ps:emit(count or 10)
     table.insert(particles, ps)
+  elseif type == "movement-puff" then
+    local ps = love.graphics.newParticleSystem(sprites["circle"])
+    local px = (x + 0.5) * TILE_SIZE
+    local py = (y + 0.5) * TILE_SIZE
+    local size = 0.2
+    ps:setPosition(px, py)
+    ps:setSpread(0.3)
+    ps:setEmissionArea("borderrectangle", TILE_SIZE/4, TILE_SIZE/4, 0, true)
+    ps:setSizes(size, size, size, 0)
+    ps:setSpeed(math.random(30, 40))
+    ps:setLinearDamping(5)
+    ps:setParticleLifetime(math.random(0.50, 1.10))
+    if #color == 2 then
+      ps:setColors(getPaletteColor(color[1], color[2]))
+    else
+      ps:setColors(color[1]/255, color[2]/255, color[3]/255, (color[4] or 255)/255)
+    end
+    ps:start()
+    ps:emit(count or 1)
+    table.insert(particles, ps)
   end
 end
 

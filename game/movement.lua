@@ -148,6 +148,10 @@ function doMovement(movex, movey)
         end
       end
     end
+
+    for _,unit in pairs(moving_units) do
+      addParticles("movement-puff", unit.x, unit.y, unit.color)
+    end
     
     --[[
 Simultaneous movement algorithm, basically a simple version of Baba's:
