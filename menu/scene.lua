@@ -99,7 +99,12 @@ function scene.draw(dt)
   love.graphics.draw(sprites["ui/github"], 20+sprites["ui/github"]:getWidth(), height-sprites["ui/github"]:getHeight() - 10)
 
   if build_number and not debug then
+    love.graphics.setColor(1, 1, 1)
     setRainbowModeColor(love.timer.getTime()/6, .6)
+    --if haha number then make it rainbow anyways
+    if string.find(build_number, "420") or string.find(build_number, "1337") or string.find(build_number, "666") or string.find(build_number, "69") then
+      love.graphics.setColor(hslToRgb(love.timer.getTime()%1, .5, .5, .9))
+    end
     love.graphics.print('v'..build_number)
   end
 end
