@@ -98,11 +98,10 @@ function scene.update(dt)
   if shake_dur > 0 then
     shake_dur = shake_dur-dt
     shake_intensity = shake_intensity-dt/2
-
-    if shake_intensity > 0.5 then
-      local windowx, windowy = love.window.getPosition()
-      love.window.setPosition(windowx+(math.random(0.00, 20.00)*shake_intensity*2)-shake_intensity*20.0,
-                              windowy+(math.random(0.00, 20.00)*shake_intensity*2)-shake_intensity*20.0)
+  if shake_intensity > 0.5 and not fullscreen then
+    local windowx, windowy = love.window.getPosition()
+    love.window.setPosition(windowx+(math.random(0.00, 20.00)*shake_intensity*2)-shake_intensity*20.0,
+                            windowy+(math.random(0.00, 20.00)*shake_intensity*2)-shake_intensity*20.0)
     end
   else
     shake_intensity = 0
