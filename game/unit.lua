@@ -380,8 +380,6 @@ function updateUnits(undoing, big_update)
           local dir2 = dirAdd(unit.dir,4)
           local dx2 = dirs8[dir2][1]
           local dy2 = dirs8[dir2][2]
-          print(dir1)
-          print(dir2)
           if canMove(on, dx1, dy1, dir1, false, false, on.name) then
             if on.class == "unit" then
               local new_unit = createUnit(tiles_by_name[on.fullname], on.x, on.y, dir1)
