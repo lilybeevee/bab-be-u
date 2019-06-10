@@ -1901,4 +1901,14 @@ tiles_list = {
     color = {3, 1},
     layer = 20,
   },
+  -- 179
+  {
+    name = "text_hopovr",
+    sprite = "text_hopovr",
+    type = "text",
+    texttype = "property",
+    grid = {17, 7},
+    color = {5, 3},
+    layer = 20,
+  },
 }
