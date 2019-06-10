@@ -905,11 +905,13 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
 	local diagy = round(math.sin(math.pi/4)*old_dx+math.cos(math.pi/4)*old_dy)
 	dx = diagx;
 	dy = diagy;
-  elseif movecount % 4 >= 2 then
+  end
+  if movecount % 4 >= 2 then
 	old_dx = dx
-    dx = dy;
-    dy = -old_dx;
-  elseif movecount % 8 >= 4 then
+    dx = -dy;
+    dy = old_dx;
+  end
+  if movecount % 8 >= 4 then
 	dx = -dx;
 	dy = -dy;
   end
