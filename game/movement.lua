@@ -904,18 +904,23 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
     if movecount % 2 == 1 then
       local diagx = round(math.cos(math.pi/4)*old_dx-math.sin(math.pi/4)*old_dy)
       local diagy = round(math.sin(math.pi/4)*old_dx+math.cos(math.pi/4)*old_dy)
-      dx = diagx;
-      dy = diagy;
+      dx = diagx
+      dy = diagy
     end
     if movecount % 4 >= 2 then
       old_dx = dx
-      dx = -dy;
-      dy = old_dx;
+      dx = -dy
+      dy = old_dx
     end
     if movecount % 8 >= 4 then
-      dx = -dx;
-      dy = -dy;
+      dx = -dx
+      dy = -dy
     end
+	if hasProperty(unit, "hopovr") then
+	  local hops = countProperty(unit, "hopovr")
+	  dx = dx * (hops + 1)
+	  dy = dy * (hops + 1)
+	end
   end
   
   local move_dx, move_dy = dx, dy;
