@@ -38,6 +38,7 @@ local last_width,last_height = love.graphics.getWidth(),love.graphics.getHeight(
 local displaywords = false
 
 local stack_box, stack_font
+local initialwindoposition
 
 function scene.load()
   repeat_timers = {}
@@ -97,6 +98,12 @@ function scene.update(dt)
   if shake_dur > 0 then
     shake_dur = shake_dur-dt
     shake_intensity = shake_intensity-dt/2
+
+    if shake_intensity > 0.5 then
+      local windowx, windowy = love.window.getPosition()
+      love.window.setPosition(windowx+(math.random(0.00, 20.00)*shake_intensity*2)-shake_intensity*20.0,
+                              windowy+(math.random(0.00, 20.00)*shake_intensity*2)-shake_intensity*20.0)
+    end
   else
     shake_intensity = 0
     shake_dur = 0
@@ -379,8 +386,6 @@ function scene.draw(dt)
           if shake_dur > 0 then
             fulldrawx = fulldrawx + (math.random(0.00, TILE_SIZE)*shake_intensity*2)-shake_intensity*TILE_SIZE
             fulldrawy = fulldrawy + (math.random(0.00, TILE_SIZE)*shake_intensity*2)-shake_intensity*TILE_SIZE
-
-            debugDisplay("test", (math.random(0.00, TILE_SIZE)*shake_intensity*2)-shake_intensity)
           end
 
           love.graphics.push()
