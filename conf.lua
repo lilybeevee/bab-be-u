@@ -11,4 +11,8 @@ function love.conf(t)
 
     --t.gammacorrect = true
     --t.window.msaa = 4
+
+    t.modules.joystick = false
+    t.modules.physics = false
+    t.modules.video = false
 end

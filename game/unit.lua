@@ -559,6 +559,12 @@ function updateUnits(undoing, big_update)
         table.insert(unit.overlay, "gay")
       end
 
+      -- for optimisation in drawing
+      unit.stelth = hasProperty(unit,"stelth")
+      unit.colrful = hasProperty(unit,"colrful")
+      unit.red = hasProperty(unit,"reed")
+      unit.blue = hasProperty(unit,"bleu")
+
       if not units_by_layer[unit.layer] then
         units_by_layer[unit.layer] = {}
       end

@@ -269,7 +269,7 @@ function scene.draw(dt)
     if units_by_layer[i] then
       local removed_units = {}
       for _,unit in ipairs(units_by_layer[i]) do
-        if not hasProperty(unit,"stelth") and (unit.name ~= "no1" or validEmpty(unit)) then
+        if not unit.stelth and (unit.name ~= "no1" or validEmpty(unit)) then
           local brightness = 1
           if unit.type == "text" and not unit.active then
             brightness = 0.33
@@ -297,21 +297,21 @@ function scene.draw(dt)
             end
           end
 
-          if hasProperty(unit,"colrful") or rainbowmode then
-            local newcolor = hslToRgb((#undo_buffer/45+unit.x/18+unit.y/18)%1, .5, .5, 1)
+          if unit.colrful or rainbowmode then
+            local newcolor = hslToRgb((love.timer.getTime()/15+#undo_buffer/45+unit.x/18+unit.y/18)%1, .5, .5, 1)
             newcolor[1] = newcolor[1]*255
             newcolor[2] = newcolor[2]*255
             newcolor[3] = newcolor[3]*255
             unit.color = newcolor
-          elseif hasProperty(unit,"bleu") and hasProperty(unit,"reed") then
+          elseif unit.red and unit.blue then
             unit.color = {3, 1}
-          elseif hasProperty(unit,"reed") then
+          elseif unit.red then
             unit.color = {2, 2}
-          elseif hasProperty(unit,"bleu") then
+          elseif unit.red then
             unit.color = {1, 3}
           end
 
-          if not hasProperty(unit,"colrful") and not hasProperty(unit, "reed") and not hasProperty(unit, "bleu") and not rainbowmode then
+          if not unit.colrful and unit.red and not unit.blue and not rainbowmode then
             unit.color = copyTable(tiles_list[unit.tile].color)
           end
 
