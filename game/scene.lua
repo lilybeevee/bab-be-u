@@ -695,6 +695,8 @@ function scene.draw(dt)
         rules = rules..'   '
       end
     end
+	
+	rules = 'da rulz:\n'..rules
 
     love.graphics.setColor(1,1,1)
     love.graphics.printf(rules, 0, love.graphics.getHeight()/2-love.graphics.getFont():getHeight()*lines, love.graphics.getWidth(), "center")
