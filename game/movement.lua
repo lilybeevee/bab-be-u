@@ -674,7 +674,7 @@ function getNextTile(unit,dx,dy,dir,reverse_)
       print("movement infinite loop! (1000 attempts at wrap/portal)")
       destroyLevel("infloop");
     end
-    px, py = doWrap(unit, px, py);
+    px, py, move_dir, dir = doWrap(unit, px, py, move_dir, dir);
     px, py, move_dir, dir = doPortal(unit, px, py, move_dir, dir, reverse)
     if (px ~= pxold or py ~= pyold) then
       did_update = true
@@ -685,43 +685,8 @@ function getNextTile(unit,dx,dy,dir,reverse_)
   return rs*dx, rs*dy, dir, px, py
 end
 
-function doWrap(unit, px, py)
+function doWrap(unit, px, py, move_dir, dir)
   local wrapcount = countProperty(unit, "go arnd")
-  if wrapcount > 0 then
-    if wrapcount % 2 == 1 then --torus wrapping
-      if (px < 0) then
-        px = px + mapwidth
-      elseif (px >= mapwidth) then
-        px = px - mapwidth
-      end
-      if (py < 0) then
-        py = py + mapheight
-      elseif (py >= mapheight) then
-        py = py - mapheight
-      end
-    else --projective plane wrapping
-      local dx, dy = 0, 0;
-      if (px < 0) then
-        dx = -px;
-        px = 0;
-      elseif (px >= mapwidth) then
-        dx = px-mapwidth+1;
-        px = mapwidth-1;
-      end
-      if (py < 0) then
-        dy = -py;
-        py = 0;
-      elseif (py >= mapheight) then
-        dy = py-mapheight+1;
-        py = mapheight-1;
-      end
-      if (dx ~= 0 or dy ~= 0) then
-        px = px + (mapwidth/2-0.5-px)*2;
-        py = py + (mapheight/2-0.5-py)*2;
-        print(tostring(px)..","..tostring(py))
-      end
-    end
-  end
   if hasProperty(unit, "cilindr_up") or hasProperty(unit, "cilindr_down") then
     if (px < 0) then
       px = px + mapwidth
@@ -769,7 +734,41 @@ function doWrap(unit, px, py)
       px = mapwidth - px - 1
     end
   end
-  return px, py
+  if hasProperty(unit, "mirr arnd") then--projective plane wrapping
+    local dx, dy = 0, 0;
+    if (px < 0) then
+      dx = -px;
+      px = 0;
+    elseif (px >= mapwidth) then
+      dx = px-mapwidth+1;
+      px = mapwidth-1;
+    end
+    if (py < 0) then
+      dy = -py;
+      py = 0;
+    elseif (py >= mapheight) then
+      dy = py-mapheight+1;
+      py = mapheight-1;
+    end
+    if (dx ~= 0 or dy ~= 0) then
+      px = px + (mapwidth/2-0.5-px)*2;
+      py = py + (mapheight/2-0.5-py)*2;
+    end
+  end
+  if hasProperty(unit, "go arnd") then --torus wrapping
+    if (px < 0) then
+      px = px + mapwidth
+    elseif (px >= mapwidth) then
+      px = px - mapwidth
+    end
+    if (py < 0) then
+      py = py + mapheight
+    elseif (py >= mapheight) then
+      py = py - mapheight
+    end
+  end
+
+  return px, py, move_dir, dir
 end
 
 --TODO: figure out how to fix my cool tween that had bugs =w=
@@ -855,7 +854,7 @@ function canMove(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_stack_)
   local success, movers, specials = canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_stack_);
   if success then
     return success, movers, specials;
-  elseif dir > 0 then
+  elseif dir > 0 and pushing_ then
     local stubbn = countProperty(unit, "stubbn")
     if stubbn > 0 and (dir % 2 == 0) or stubbn > 1 then
       for i = 1,clamp(stubbn-1, 1, 4) do

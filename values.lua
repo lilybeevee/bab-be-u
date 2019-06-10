@@ -1871,4 +1871,14 @@ tiles_list = {
     color = {1, 4},
     layer = 20,
   },
+  -- 176
+  {
+    name = "text_mirr arnd",
+    sprite = "text_mirr arnd",
+    type = "text",
+    texttype = "property",
+    grid = {15, 2},
+    color = {3, 2},
+    layer = 20,
+  },
 }
