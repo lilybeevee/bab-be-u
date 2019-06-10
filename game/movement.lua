@@ -854,7 +854,7 @@ function canMove(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_stack_)
   local success, movers, specials = canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_stack_);
   if success then
     return success, movers, specials;
-  elseif dir > 0 and pushing then
+  elseif dir > 0 and pushing_ then
     local stubbn = countProperty(unit, "stubbn")
     if stubbn > 0 and (dir % 2 == 0) or stubbn > 1 then
       for i = 1,clamp(stubbn-1, 1, 4) do
