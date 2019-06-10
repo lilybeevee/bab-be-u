@@ -897,23 +897,25 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
 		pulling = pulling_
 	end
   
-  --apply munwalk, sidestep and diagstep here
-  old_dx, old_dy = dx, dy
-  local movecount = 4 * countProperty(unit, "munwalk") + 2 * countProperty(unit, "sidestep") + countProperty(unit, "diagstep")
-  if movecount % 2 == 1 then
-	local diagx = round(math.cos(math.pi/4)*old_dx-math.sin(math.pi/4)*old_dy)
-	local diagy = round(math.sin(math.pi/4)*old_dx+math.cos(math.pi/4)*old_dy)
-	dx = diagx;
-	dy = diagy;
-  end
-  if movecount % 4 >= 2 then
-	old_dx = dx
-    dx = -dy;
-    dy = old_dx;
-  end
-  if movecount % 8 >= 4 then
-	dx = -dx;
-	dy = -dy;
+  --apply munwalk, sidestep and diagstep here (only if making a push move, to not mess up other checks)
+  if (pushing) then
+    local old_dx, old_dy = dx, dy
+    local movecount = 4 * countProperty(unit, "munwalk") + 2 * countProperty(unit, "sidestep") + countProperty(unit, "diagstep")
+    if movecount % 2 == 1 then
+      local diagx = round(math.cos(math.pi/4)*old_dx-math.sin(math.pi/4)*old_dy)
+      local diagy = round(math.sin(math.pi/4)*old_dx+math.cos(math.pi/4)*old_dy)
+      dx = diagx;
+      dy = diagy;
+    end
+    if movecount % 4 >= 2 then
+      old_dx = dx
+      dx = -dy;
+      dy = old_dx;
+    end
+    if movecount % 8 >= 4 then
+      dx = -dx;
+      dy = -dy;
+    end
   end
   
   local move_dx, move_dy = dx, dy;
