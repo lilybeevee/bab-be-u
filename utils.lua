@@ -1028,6 +1028,8 @@ function setRainbowModeColor(value, brightness)
 end
 
 function shakeScreen(dur, intensity)
-  shake_dur = dur
-  shake_intensity = shake_intensity + intensity
+  shake_dur = dur+shake_dur/4
+  if intensity > shake_intensity then
+    shake_intensity = shake_intensity + intensity/2
+  end
 end
