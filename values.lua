@@ -1911,4 +1911,14 @@ tiles_list = {
     color = {5, 3},
     layer = 20,
   },
+  -- 180
+  {
+    name = "text_undo",
+    sprite = "text_undo",
+    type = "text",
+    texttype = "property",
+    grid = {15, 9},
+    color = {6, 1},
+    layer = 20,
+  },
 }

@@ -10,6 +10,7 @@ function clear()
   units_by_name = {}
   units_by_tile = {}
   units_by_layer = {}
+  backers_cache = {}
   empties_by_tile = {}
   still_converting = {}
   referenced_objects = {}

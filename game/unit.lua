@@ -233,6 +233,39 @@ function updateUnits(undoing, big_update)
   
     local to_destroy = {}
     
+    --UNDO logic:
+    --the first time something becomes UNDO, we track what turn it became UNDO on.
+    --then every turn thereafter until it stops being UNDO, we undo the update (move backwards) and create (destroy units) events of a turn 2 turns further back (+1 so we keep undoing into the past, +1 because the undo_buffer gained a real turn as well!)
+    --We have to keep track of the turn we started backing on in the undo buffer, so that if we undo to a past where a unit was UNDO, then we know what turn to pick back up from.
+    --(The cache is not necessary for the logic, it just removes our need to check ALL units to see if they need to be cleaned up.)
+    
+    local backed_this_turn = {};
+    local not_backed_this_turn = {};
+    
+    local isback = getUnitsWithEffect("undo");
+    for _,unit in ipairs(isback) do
+      backed_this_turn[unit] = true;
+      if (unit.backer_turn == nil or unit.backer_turn > #undo_buffer) then
+        addUndo({"backer_turn", unit.id, nil})
+        unit.backer_turn = #undo_buffer;
+        backers_cache[unit] = #undo_buffer;
+      end
+      doBack(unit, 2*(#undo_buffer-unit.backer_turn));
+    end
+    
+    for unit,turn in pairs(backers_cache) do
+      if turn ~= nil and not backed_this_turn[unit] then
+        not_backed_this_turn[unit] = true;
+      end
+    end
+    
+    for unit,_ in pairs(not_backed_this_turn) do
+      addUndo({"backer_turn", unit.id, unit.backer_turn})
+      backers_cache[unit] = nil;
+    end
+    
+    to_destroy = handleDels(to_destroy);
+    
     local issink = getUnitsWithEffect("no swim");
     for _,unit in ipairs(issink) do
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
