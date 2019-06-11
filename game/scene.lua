@@ -311,15 +311,15 @@ function scene.draw(dt)
             newcolor[2] = newcolor[2]*255
             newcolor[3] = newcolor[3]*255
             unit.color = newcolor
-          elseif unit.red and unit.blue then
+          elseif unit.reed and unit.bleu then
             unit.color = {3, 1}
-          elseif unit.red then
+          elseif unit.reed then
             unit.color = {2, 2}
-          elseif unit.red then
+          elseif unit.bleu then
             unit.color = {1, 3}
           end
 
-          if not unit.colrful and unit.red and not unit.blue and not rainbowmode then
+          if not (unit.colrful or unit.reed or unit.bleu or rainbowmode) then
             unit.color = copyTable(tiles_list[unit.tile].color)
           end
 

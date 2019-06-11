@@ -602,8 +602,8 @@ function updateUnits(undoing, big_update)
       -- for optimisation in drawing
       unit.stelth = hasProperty(unit,"stelth")
       unit.colrful = hasProperty(unit,"colrful")
-      unit.red = hasProperty(unit,"reed")
-      unit.blue = hasProperty(unit,"bleu")
+      unit.reed = hasProperty(unit,"reed")
+      unit.bleu = hasProperty(unit,"bleu")
 
       if not units_by_layer[unit.layer] then
         units_by_layer[unit.layer] = {}
