@@ -128,7 +128,7 @@ function scanAndRecreateOldUnit(turn, i, unit_id, created_from_id, ignore_no_und
             return
           end
         end
-        local _, new_unit = undoOneAction(v, ignore_no_undo);
+        local _, new_unit = undoOneAction(turn, i, v, ignore_no_undo);
         if (new_unit ~= nil) then
           addUndo({"create", new_unit.id, true, created_from_id = unit_id})
         end

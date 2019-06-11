@@ -252,15 +252,22 @@ function updateUnits(undoing, big_update)
     local backed_this_turn = {};
     local not_backed_this_turn = {};
     
-    local isback = getUnitsWithEffect("undo");
-    for _,unit in ipairs(isback) do
+    local isback = getUnitsWithEffectAndCount("undo");
+    for unit,amt in pairs(isback) do
       backed_this_turn[unit] = true;
-      if (unit.backer_turn == nil --[[or unit.backer_turn > #undo_buffer]]) then
+      if (unit.backer_turn == nil) then
         addUndo({"backer_turn", unit.id, nil})
-        unit.backer_turn = #undo_buffer;
-        backers_cache[unit] = #undo_buffer;
+        unit.backer_turn = #undo_buffer+(0.5*(amt-1));
+        backers_cache[unit] = unit.backer_turn;
       end
+      print(2*(#undo_buffer-unit.backer_turn))
       doBack(unit, 2*(#undo_buffer-unit.backer_turn));
+      for i = 2,amt do
+        addUndo({"backer_turn", unit.id, unit.backer_turn})
+        unit.backer_turn = unit.backer_turn - 0.5;
+        print(2*(#undo_buffer-unit.backer_turn))
+        doBack(unit, 2*(#undo_buffer-unit.backer_turn));
+      end
     end
     
     for unit,turn in pairs(backers_cache) do
