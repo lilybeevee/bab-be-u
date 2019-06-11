@@ -1,6 +1,7 @@
 function newUndo()
   table.insert(undo_buffer, 1, {})
   undo_buffer[1].last_move = last_move
+  print("new undo:"..tostring(#undo_buffer))
 end
 
 function addUndo(data)
@@ -12,9 +13,10 @@ end
 function undoOneAction(v, ignore_no_undo)
   local update_rules = false
   local action = v[1]
+  local unit = nil
 
   if action == "update" then
-    local unit = units_by_id[v[2]]
+    unit = units_by_id[v[2]]
 
     if unit ~= nil and (ignore_no_undo or not hasProperty(unit, "no undo")) then
       moveUnit(unit,v[3],v[4])
@@ -26,7 +28,7 @@ function undoOneAction(v, ignore_no_undo)
     end
   elseif action == "create" then
   local convert = v[3];
-    local unit = units_by_id[v[2]]
+    unit = units_by_id[v[2]]
 
     if unit.type == "text" then
       update_rules = true
@@ -37,7 +39,7 @@ function undoOneAction(v, ignore_no_undo)
     end
   elseif action == "remove" then
     local convert = v[6];
-    local unit = createUnit(v[2], v[3], v[4], v[5], convert, v[7])
+    unit = createUnit(v[2], v[3], v[4], v[5], convert, v[7])
     --If the unit was actually a destroyed 'no undo', oops. Don't actually bring it back. It's dead, Jim.
     if (unit ~= nil and not convert and (not ignore_no_undo and hasProperty(unit, "no undo"))) then
       deleteUnit(unit, convert, true)
@@ -48,7 +50,7 @@ function undoOneAction(v, ignore_no_undo)
     end
     --TODO: If roc be no undo and we form water be roc then undo, should the water come back? If it shouldn't, then the 'remove, convert' event needs to 'know' what it came from so that if it came from a 'no undo' object then we can delete it in that circumstance too.
     --TODO: We also want a similar mechanic for undo, now. If we form grass be roc then later form roc be undo, when the roc un-converts into gras, we want gras to come back.
-    --TODO: test mous vs no undo interactions
+    --TODO: test MOUS vs NO UNDO interactions
   elseif action == "create_cursor" then
     --love.mouse.setPosition(v[2], v[3])
     deleteMouse(v[2]) --id
@@ -56,14 +58,15 @@ function undoOneAction(v, ignore_no_undo)
     --love.mouse.setPosition(v[2], v[3])
     createMouse_direct(v[2], v[3], v[4]) --x, y, id
   elseif action == "backer_turn" then
-    local unit = units_by_id[v[2]]
-    
+    unit = units_by_id[v[2]]
+    print("changing backer_turn:"..tostring(v[3]))
     if (unit ~= nil and (ignore_no_undo or not hasProperty(unit, "no undo"))) then
       backers_cache[unit] = v[3];
       unit.backer_turn = v[3];
+      print(unit.backer_turn)
     end
   end
-  return update_rules;
+  return update_rules, unit;
 end
 
 function doBack(unit, turn)
@@ -82,21 +85,61 @@ function doBack(unit, turn)
       if units_by_id[v[2]] == unit then
         if (action == "update") then
           addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
-          undoOneAction(v, respect_do_undo);
+          undoOneAction(v, ignore_do_undo);
         elseif (action == "create") then
           local convert = v[6];
+          local created_from_id = v.created_from_id;
+          if (unit.backer_turn ~= nil) then
+            addUndo({"backer_turn", unit.id, unit.backer_turn})
+          end
           addUndo({"remove", unit.tile, unit.x, unit.y, unit.dir, convert or false, unit.id})
-          undoOneAction(v, respect_do_undo);
+          undoOneAction(v, ignore_do_undo);
+          scanAndRecreateOldUnit(turn, _, unit.id, created_from_id, ignore_no_undo);
         elseif (action == "create_cursor") then
           addUndo({"remove_cursor", unit.screenx, unit.screeny, unit.id})
-          undoOneAction(v, respect_do_undo);
+          undoOneAction(v, ignore_do_undo);
+          --TODO: test MOUS vs UNDO interactions
         end
       end
     end
   end
 end
 
+--If gras becomes roc, then later roc becomes undo, when it disappears we want the gras to come back. This is how we code that - by scanning for the related remove event and undoing that too.
+function scanAndRecreateOldUnit(turn, i, unit_id, created_from_id, ignore_no_undo)
+  while (true) do
+    print("a")
+    local v = undo_buffer[turn][i]
+    if (v == nil) then
+      print("b")
+      return
+    end
+    local action = v[1]
+    print("c")
+    if (action == "remove" or action == "remove_cursor") then
+      local old_creator_id = v[7];
+      print(tostring(v[7])..","..tostring(created_from_id))
+      if v[7] == created_from_id then
+        --no exponential cloning if gras turned into 2 rocs - abort if there's already a unit with that name on that tile
+        local tile, x, y = v[2], v[3], v[4];
+        local data = tiles_list[tile];
+        local stuff = getUnitsOnTile(x, y, nil, true);
+        for _,on in ipairs(stuff) do
+          if on.name == data.name then
+            return
+          end
+        end
+        local _, new_unit = undoOneAction(v, ignore_no_undo);
+        addUndo({"create", new_unit.id, true, created_from_id = unit_id})
+        return
+      end
+    end
+    i = i - 1;
+  end
+end
+
 function undo()
+  print("undo:"..tostring(#undo_buffer))
   if undo_buffer[1] ~= nil then
     local update_rules = false
     

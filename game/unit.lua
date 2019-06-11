@@ -236,7 +236,7 @@ function updateUnits(undoing, big_update)
     --UNDO logic:
     --the first time something becomes UNDO, we track what turn it became UNDO on.
     --then every turn thereafter until it stops being UNDO, we undo the update (move backwards) and create (destroy units) events of a turn 2 turns further back (+1 so we keep undoing into the past, +1 because the undo_buffer gained a real turn as well!)
-    --We have to keep track of the turn we started backing on in the undo buffer, so that if we undo to a past where a unit was UNDO, then we know what turn to pick back up from.
+    --We have to keep track of the turn we started backing on in the undo buffer, so that if we undo to a past where a unit was UNDO, then we know what turn to pick back up from. We also have to save/restore backer_turn on destroy, so if we undo the unit's destruction it comes back with the right backer_turn.
     --(The cache is not necessary for the logic, it just removes our need to check ALL units to see if they need to be cleaned up.)
     
     local backed_this_turn = {};
@@ -245,11 +245,14 @@ function updateUnits(undoing, big_update)
     local isback = getUnitsWithEffect("undo");
     for _,unit in ipairs(isback) do
       backed_this_turn[unit] = true;
-      if (unit.backer_turn == nil or unit.backer_turn > #undo_buffer) then
+      print(unit.backer_turn)
+      if (unit.backer_turn == nil --[[or unit.backer_turn > #undo_buffer]]) then
         addUndo({"backer_turn", unit.id, nil})
+        print("setting unit.backer_turn");
         unit.backer_turn = #undo_buffer;
         backers_cache[unit] = #undo_buffer;
       end
+      print(tostring(#undo_buffer)..","..tostring(unit.backer_turn)..","..tostring(2*(#undo_buffer-unit.backer_turn)))
       doBack(unit, 2*(#undo_buffer-unit.backer_turn));
     end
     
@@ -261,6 +264,8 @@ function updateUnits(undoing, big_update)
     
     for unit,_ in pairs(not_backed_this_turn) do
       addUndo({"backer_turn", unit.id, unit.backer_turn})
+      print("unsetting unit.backer_turn");
+      unit.backer_turn = nil;
       backers_cache[unit] = nil;
     end
     
@@ -775,7 +780,10 @@ function convertUnits()
         unit.removed = true
         local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
         if (new_unit ~= nil) then
-          addUndo({"create", new_unit.id, true})
+          print(dump(unit))
+          print(dump(new_unit))
+          print("create:"..tostring(unit.id))
+          addUndo({"create", new_unit.id, true, created_from_id = unit.id})
         end
       elseif rule[3] == "mous" then
         if not unit.removed then
@@ -783,7 +791,7 @@ function convertUnits()
         end
         unit.removed = true
         local new_mouse = createMouse(unit.x, unit.y)
-        addUndo({"create_cursor", new_mouse.id})
+        addUndo({"create_cursor", new_mouse.id, created_from_id = unit.id})
       end
     end
   end
@@ -794,7 +802,12 @@ end
 function deleteUnits(del_units,convert)
   for _,unit in ipairs(del_units) do
     if (not unit.removed_final) then
+      print("delete:"..tostring(unit.id))
+      if (unit.backer_turn ~= nil) then
+        addUndo({"backer_turn", unit.id, unit.backer_turn})
+      end
       addUndo({"remove", unit.tile, unit.x, unit.y, unit.dir, convert or false, unit.id})
+      print(unit.backer_turn)
     end
     deleteUnit(unit,convert)
   end
