@@ -49,35 +49,37 @@ dirs_by_offset[-1][0] = 3
 dirs_by_offset[0][-1] = 4
 dirs8 = {{1,0},{1,1},{0,1},{-1,1},{-1,0},{-1,-1},{0,-1},{1,-1}}
 dirs8_by_name = {
-  right = 1,
-  downright = 2,
-  down = 3,
-  downleft = 4,
-  left = 5,
-  upleft = 6,
-  up = 7,
-  upright = 8,
+  "right",
+  "downright",
+  "down",
+  "downleft",
+  "left",
+  "upleft",
+  "up",
+  "upright",
 }
+
 cilindr_names = {
-  cilindr_right = 1,
-  cilindr_downright = 2,
-  cilindr_down = 3,
-  cilindr_downleft = 4,
-  cilindr_left = 5,
-  cilindr_upleft = 6,
-  cilindr_up = 7,
-  cilindr_upright = 8,
+  cilindr_right,
+  cilindr_downright,
+  cilindr_down,
+  cilindr_downleft,
+  cilindr_left,
+  cilindr_upleft,
+  cilindr_up,
+  cilindr_upright,
 }
 mobyus_names = {
-  mobyus_right = 1,
-  mobyus_downright = 2,
-  mobyus_down = 3,
-  mobyus_downleft = 4,
-  mobyus_left = 5,
-  mobyus_upleft = 6,
-  mobyus_up = 7,
-  mobyus_upright = 8,
+  mobyus_right,
+  mobyus_downright,
+  mobyus_down,
+  mobyus_downleft,
+  mobyus_left,
+  mobyus_upleft,
+  mobyus_up,
+  mobyus_upright,
 }
+
 dirs8_by_offset = {}
 dirs8_by_offset[-1],dirs8_by_offset[0],dirs8_by_offset[1] = {},{},{}
 dirs8_by_offset[1][0] = 1
@@ -1939,5 +1941,16 @@ tiles_list = {
     grid = {16, 10},
     color = {0, 2},
     layer = 20,
+  },
+  -- 183
+  {
+    name = "text_spin",
+    sprite = "text_spin",
+    type = "text",
+    texttype = "property",
+    grid = {15, 1},
+    color = {1, 4},
+    layer = 20,
+    rotate = true,
   },
 }

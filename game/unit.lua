@@ -154,6 +154,16 @@ function updateUnits(undoing, big_update)
       end
     end
     
+    --technically spin_8 does nothing, so skip it
+    for i=1,7 do
+      local isspin = getUnitsWithEffectAndCount("spin_" .. tostring(i));
+      for unit,amt in pairs(isspin) do
+        addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
+        unit.olddir = unit.dir
+        updateDir(unit, dirAdd(unit.dir, amt*i));
+      end
+    end
+    
     local folo_wall = getUnitsWithEffectAndCount("folo wal")
     for unit,amt in pairs(folo_wall) do
       local fwd = unit.dir;
@@ -553,38 +563,30 @@ function updateUnits(undoing, big_update)
 
       if not undoing then
         for k,v in pairs(dirs8_by_name) do
-          if hasProperty(unit, k) then
+          if hasProperty(unit, v) then
             unit.olddir = unit.dir
-            if unit.dir ~= v then
+            if unit.dir ~= k then
               addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
             end
-            updateDir(unit, v)
+            updateDir(unit, k)
           end
         end
       end
 
       if unit.fullname == "text_direction" then
-        for k,v in pairs(dirs8_by_name) do
-          if unit.dir == v then
-            unit.textname = k
-          end
-        end
+        unit.textname = dirs8_by_name[unit.dir];
       end
       
       if unit.fullname == "text_cilindr" then
-        for k,v in pairs(cilindr_names) do
-          if unit.dir == v then
-            unit.textname = k
-          end
-        end
+        unit.textname = "cilindr_" .. dirs8_by_name[unit.dir];
       end
       
       if unit.fullname == "text_mobyus" then
-        for k,v in pairs(mobyus_names) do
-          if unit.dir == v then
-            unit.textname = k
-          end
-        end
+        unit.textname = "mobyus_" .. dirs8_by_name[unit.dir];
+      end
+      
+      if unit.fullname == "text_spin" then
+        unit.textname = "spin_" .. tostring(unit.dir);
       end
 
       unit.overlay = {}
@@ -982,11 +984,7 @@ end
 function updateDir(unit,dir)
   unit.dir = dir
   if unit.fullname == "text_direction" then
-    for k,v in pairs(dirs8_by_name) do
-      if unit.dir == v then
-        unit.textname = k
-      end
-    end
+    unit.textname = dirs8_by_name[unit.dir];
   end
 
   unit.draw.rotation = unit.draw.rotation % 360
