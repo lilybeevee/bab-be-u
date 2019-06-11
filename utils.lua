@@ -12,6 +12,7 @@ function clear()
   units_by_layer = {}
   backers_cache = {}
   empties_by_tile = {}
+  outerlvl = nil
   still_converting = {}
   referenced_objects = {}
   referenced_text = {}
@@ -103,7 +104,13 @@ function loadMap()
       end
     end
   end
+  initializeOuterLvl()
   initializeEmpties()
+end
+
+function initializeOuterLvl()
+  outerlvl = createUnit(tiles_by_name["lvl"], -999, -999,
+  -999, nil, nil, true)
 end
 
 function initializeEmpties()
