@@ -1921,4 +1921,23 @@ tiles_list = {
     color = {6, 1},
     layer = 20,
   },
+  -- 181
+  {
+    name = "boy",
+    sprite = "boy",
+    grid = {15, 10},
+    color = {0, 2},
+    layer = 5,
+    rotate = true,
+    eye = {x=16, y=12, w=2, h=4}
+  },
+  -- 182
+  {
+    name = "text_boy",
+    sprite = "text_boy",
+    type = "text",
+    grid = {16, 10},
+    color = {0, 2},
+    layer = 20,
+  },
 }
