@@ -13,7 +13,7 @@ function updateUnits(undoing, big_update)
     if (unit.removed) then
       table.insert(del_units, on)
     --keep empty out of units_by_tile - it will be returned in getUnitsOnTile
-    elseif unit.name ~= "no1" and unit.fullname ~= "no1" then
+    elseif unit.name ~= "no1" and unit.fullname ~= "no1" and unit.type ~= "outerlvl" then
       local tileid = unit.x + unit.y * mapwidth
       table.insert(units_by_tile[tileid], unit)
     end
@@ -26,6 +26,8 @@ function updateUnits(undoing, big_update)
   --(SHIFT, TELE, FOLLOW, BACK are handled in moveblock. FALL is handled in fallblock. But we can just put moveblock in the start here and it's more or less the same thing.)
 
   if (big_update and not undoing) then
+    levelBlock();
+  
     local iszip = getUnitsWithEffect("zip");
     for _,unit in ipairs(iszip) do
       doZip(unit)
@@ -657,6 +659,17 @@ function handleDels(to_destroy, unstoppable)
   return {}
 end
 
+function levelBlock()
+  if hasProperty(outerlvl, "ouch") then
+    for _,unit in ipairs(units) do
+      if sameFloat(unit, outerlvl) then
+        destroyLevel("ouch");
+        return;
+      end
+    end
+  end
+end
+
 function changeDirIfFree(unit, dir)
   if canMove(unit, dirs8[dir][1], dirs8[dir][2], dir, false, false, unit.name, "dir check") then
     addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
@@ -739,7 +752,7 @@ function convertUnits()
  --keep empty out of units_by_tile - it will be returned in getUnitsOnTile
  --TODO: CLEANUP: This is similar to updateUnits.
   for _,unit in ipairs(units) do
-    if unit.name ~= "no1" and unit.fullname ~= "no1" then
+    if unit.name ~= "no1" and unit.fullname ~= "no1" and unit.type ~= "outerlvl" then
       local tileid = unit.x + unit.y * mapwidth
       table.insert(units_by_tile[tileid], unit)
     end
@@ -861,13 +874,23 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty)
     unit.textname = unit.fullname
   end
   
+  --abort if we're trying to create outerlvl outside of the start
+  if (x < -10 or y < -10) and unit.name == "lvl" and not really_create_empty then
+    return
+  end
+  
+  --make outerlvl here
+  if ((unit.name == "lvl" or unit.fullname == "lvl") and really_create_empty) then
+    unit.type = "outerlvl";
+  end
+  
   --abort if we're trying to create empty outside of initialization, to preserve the invariant 'there is exactly empty per tile'
   if ((unit.name == "no1" or unit.fullname == "no1") and not really_create_empty) then
     --print("not placing an empty:"..unit.name..","..unit.fullname..","..unit.textname)
     return nil
   end
 
-  if unit.texttype == "object" and unit.textname ~= "every1" and unit.textname ~= "mous" and unit.textname ~= "no1" then
+  if unit.texttype == "object" and unit.textname ~= "every1" and unit.textname ~= "mous" and unit.textname ~= "no1" and unit.textname ~= "lvl" then
     if not table.has_value(referenced_objects, unit.textname) then
       table.insert(referenced_objects, unit.textname)
     end
@@ -880,7 +903,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty)
 
   units_by_id[unit.id] = unit
 
-  if not units_by_name[unit.name] then
+  if (not units_by_name[unit.name] and not unit.type ~= "outerlvl") then
     units_by_name[unit.name] = {}
   end
   table.insert(units_by_name[unit.name], unit)
@@ -900,7 +923,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty)
 
   local tileid = x + y * mapwidth
   --keep empty out of units_by_tile - it will be returned in getUnitsOnTile
-  if (not (unit.name == "no1" or unit.fullname == "no1")) then
+  if (not (unit.name == "no1" or unit.fullname == "no1" or unit.type == "outerlvl")) then
     table.insert(units_by_tile[tileid], unit)
   end
 
@@ -922,7 +945,7 @@ function deleteUnit(unit,convert,undoing)
     end
   end
   --empty can't really be destroyed, only pretend to be, to preserve the invariant 'there is exactly empty per tile'
-  if (unit.name == "no1" or unit.fullname == "no1") then
+  if (unit.name == "no1" or unit.fullname == "no1" or unit.type == "outerlvl") then
     unit.destroyed = false
     unit.removed = false
     unit.removed_final = false
@@ -948,7 +971,8 @@ end
 function moveUnit(unit,x,y)
   --when empty moves, swap it with the empty in its destination tile, to preserve the invariant 'there is exactly empty per tile'
   --also, keep empty out of units_by_tile - it will be added in getUnitsOnTile
-  if (unit.name == "no1" or unit.fullname == "no1") then
+  if (unit.type == "outerlvl") then
+  elseif (unit.name == "no1" or unit.fullname == "no1") then
     local tileid = unit.x + unit.y * mapwidth
     local oldx = unit.x
     local oldy = unit.y

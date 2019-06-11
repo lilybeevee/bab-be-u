@@ -1953,4 +1953,13 @@ tiles_list = {
     layer = 20,
     rotate = true,
   },
+  -- 184
+  {
+    name = "lvl",
+    sprite = "lvl",
+    type = "object",
+    grid = {-1,-1},
+    color = {0,3},
+    layer = 5,
+  },
 }
