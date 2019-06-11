@@ -1,7 +1,6 @@
 function newUndo()
   table.insert(undo_buffer, 1, {})
   undo_buffer[1].last_move = last_move
-  print("new undo:"..tostring(#undo_buffer))
 end
 
 function addUndo(data)
@@ -49,7 +48,6 @@ function undoOneAction(v, ignore_no_undo)
       update_rules = true
     end
     --TODO: If roc be no undo and we form water be roc then undo, should the water come back? If it shouldn't, then the 'remove, convert' event needs to 'know' what it came from so that if it came from a 'no undo' object then we can delete it in that circumstance too.
-    --TODO: We also want a similar mechanic for undo, now. If we form grass be roc then later form roc be undo, when the roc un-converts into gras, we want gras to come back.
     --TODO: test MOUS vs NO UNDO interactions
   elseif action == "create_cursor" then
     --love.mouse.setPosition(v[2], v[3])
@@ -59,11 +57,9 @@ function undoOneAction(v, ignore_no_undo)
     createMouse_direct(v[2], v[3], v[4]) --x, y, id
   elseif action == "backer_turn" then
     unit = units_by_id[v[2]]
-    print("changing backer_turn:"..tostring(v[3]))
     if (unit ~= nil and (ignore_no_undo or not hasProperty(unit, "no undo"))) then
       backers_cache[unit] = v[3];
       unit.backer_turn = v[3];
-      print(unit.backer_turn)
     end
   end
   return update_rules, unit;
@@ -108,17 +104,13 @@ end
 --If gras becomes roc, then later roc becomes undo, when it disappears we want the gras to come back. This is how we code that - by scanning for the related remove event and undoing that too.
 function scanAndRecreateOldUnit(turn, i, unit_id, created_from_id, ignore_no_undo)
   while (true) do
-    print("a")
     local v = undo_buffer[turn][i]
     if (v == nil) then
-      print("b")
       return
     end
     local action = v[1]
-    print("c")
     if (action == "remove" or action == "remove_cursor") then
       local old_creator_id = v[7];
-      print(tostring(v[7])..","..tostring(created_from_id))
       if v[7] == created_from_id then
         --no exponential cloning if gras turned into 2 rocs - abort if there's already a unit with that name on that tile
         local tile, x, y = v[2], v[3], v[4];
@@ -139,7 +131,6 @@ function scanAndRecreateOldUnit(turn, i, unit_id, created_from_id, ignore_no_und
 end
 
 function undo()
-  print("undo:"..tostring(#undo_buffer))
   if undo_buffer[1] ~= nil then
     local update_rules = false
     

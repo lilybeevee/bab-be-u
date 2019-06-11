@@ -245,14 +245,11 @@ function updateUnits(undoing, big_update)
     local isback = getUnitsWithEffect("undo");
     for _,unit in ipairs(isback) do
       backed_this_turn[unit] = true;
-      print(unit.backer_turn)
       if (unit.backer_turn == nil --[[or unit.backer_turn > #undo_buffer]]) then
         addUndo({"backer_turn", unit.id, nil})
-        print("setting unit.backer_turn");
         unit.backer_turn = #undo_buffer;
         backers_cache[unit] = #undo_buffer;
       end
-      print(tostring(#undo_buffer)..","..tostring(unit.backer_turn)..","..tostring(2*(#undo_buffer-unit.backer_turn)))
       doBack(unit, 2*(#undo_buffer-unit.backer_turn));
     end
     
@@ -264,7 +261,6 @@ function updateUnits(undoing, big_update)
     
     for unit,_ in pairs(not_backed_this_turn) do
       addUndo({"backer_turn", unit.id, unit.backer_turn})
-      print("unsetting unit.backer_turn");
       unit.backer_turn = nil;
       backers_cache[unit] = nil;
     end
@@ -780,9 +776,6 @@ function convertUnits()
         unit.removed = true
         local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
         if (new_unit ~= nil) then
-          print(dump(unit))
-          print(dump(new_unit))
-          print("create:"..tostring(unit.id))
           addUndo({"create", new_unit.id, true, created_from_id = unit.id})
         end
       elseif rule[3] == "mous" then
@@ -802,12 +795,10 @@ end
 function deleteUnits(del_units,convert)
   for _,unit in ipairs(del_units) do
     if (not unit.removed_final) then
-      print("delete:"..tostring(unit.id))
       if (unit.backer_turn ~= nil) then
         addUndo({"backer_turn", unit.id, unit.backer_turn})
       end
       addUndo({"remove", unit.tile, unit.x, unit.y, unit.dir, convert or false, unit.id})
-      print(unit.backer_turn)
     end
     deleteUnit(unit,convert)
   end
