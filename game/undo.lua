@@ -72,10 +72,11 @@ function doBack(unit, turn)
   if (turn <= 1) then
     return
   end
-  print(tostring(turn))
   if undo_buffer[turn] ~= nil then
     --add a dummy action so that undoing happens
-    addUndo({"dummy"});
+    if (#undo_buffer[1] == 0) then
+      addUndo({"dummy"});
+    end
     for _,v in ipairs(undo_buffer[turn]) do 
       local action = v[1]
       if units_by_id[v[2]] == unit then

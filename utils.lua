@@ -480,6 +480,10 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
     elseif condtype == "wait" then
       result = last_move ~= nil and last_move[1] == 0 and last_move[2] == 0
     elseif condtype == "mayb" then
+      --add a dummy action so that undoing happens
+      if (#undo_buffer[1] == 0) then
+        addUndo({"dummy"});
+      end
       rng = deterministicRng(unit, cond_unit);
       result = (rng*100) < threshold_for_dir[cond_unit.dir];
     else
