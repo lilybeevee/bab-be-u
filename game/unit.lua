@@ -668,6 +668,14 @@ function levelBlock()
       end
     end
   end
+  --[[if hasProperty(outerlvl, "sink") then
+    for _,unit in ipairs(units) do
+      if sameFloat(unit, outerlvl) then
+        destroyLevel("sink");
+        return;
+      end
+    end
+  ]]
 end
 
 function changeDirIfFree(unit, dir)
@@ -703,7 +711,11 @@ function readingOrderSort(a, b)
 end
 
 function destroyLevel(reason)
-  playSound("break")
+  if reason == "sink" then
+    playSound("sink")
+  else 
+    playSound("break")
+  end
   for _,unit in ipairs(units) do
     addParticles("destroy", unit.x, unit.y, unit.color)
   end
