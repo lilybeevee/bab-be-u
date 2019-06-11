@@ -9,7 +9,7 @@ function addUndo(data)
   end
 end
 
-function undoOneAction(v, ignore_no_undo)
+function undoOneAction(turn, i, v, ignore_no_undo)
   local update_rules = false
   local action = v[1]
   local unit = nil
@@ -38,16 +38,22 @@ function undoOneAction(v, ignore_no_undo)
     end
   elseif action == "remove" then
     local convert = v[6];
-    unit = createUnit(v[2], v[3], v[4], v[5], convert, v[7])
-    --If the unit was actually a destroyed 'no undo', oops. Don't actually bring it back. It's dead, Jim.
-    if (unit ~= nil and not convert and (not ignore_no_undo and hasProperty(unit, "no undo"))) then
-      deleteUnit(unit, convert, true)
+    --If the unit was converted into 'no undo' byproducts that still exist, don't bring it back.
+    local proceed = true;
+    if (convert and not ignore_no_undo and rules_with["no undo"] ~= nil) then
+      proceed = not turnedIntoOnlyNoUndoUnits(turn, i, v[7]);
     end
+    if (proceed) then
+      unit = createUnit(v[2], v[3], v[4], v[5], convert, v[7])
+      --If the unit was actually a destroyed 'no undo', oops. Don't actually bring it back. It's dead, Jim.
+      if (unit ~= nil and not convert and (not ignore_no_undo and hasProperty(unit, "no undo"))) then
+        deleteUnit(unit, convert, true)
+      end
 
-    if unit ~= nil and unit.type == "text" then
-      update_rules = true
+      if unit ~= nil and unit.type == "text" then
+        update_rules = true
+      end
     end
-    --TODO: If roc be no undo and we form water be roc then undo, should the water come back? If it shouldn't, then the 'remove, convert' event needs to 'know' what it came from so that if it came from a 'no undo' object then we can delete it in that circumstance too.
     --TODO: test MOUS vs NO UNDO interactions
   elseif action == "create_cursor" then
     --love.mouse.setPosition(v[2], v[3])
@@ -81,7 +87,7 @@ function doBack(unit, turn)
       if units_by_id[v[2]] == unit then
         if (action == "update") then
           addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
-          undoOneAction(v, ignore_do_undo);
+          undoOneAction(turn, _, v, ignore_do_undo);
         elseif (action == "create") then
           local convert = v[6];
           local created_from_id = v.created_from_id;
@@ -89,11 +95,11 @@ function doBack(unit, turn)
             addUndo({"backer_turn", unit.id, unit.backer_turn})
           end
           addUndo({"remove", unit.tile, unit.x, unit.y, unit.dir, convert or false, unit.id})
-          undoOneAction(v, ignore_do_undo);
+          undoOneAction(turn, _, v, ignore_do_undo);
           scanAndRecreateOldUnit(turn, _, unit.id, created_from_id, ignore_no_undo);
         elseif (action == "create_cursor") then
           addUndo({"remove_cursor", unit.screenx, unit.screeny, unit.id})
-          undoOneAction(v, ignore_do_undo);
+          undoOneAction(turn, _, v, ignore_do_undo);
           --TODO: test MOUS vs UNDO interactions
         end
       end
@@ -109,7 +115,8 @@ function scanAndRecreateOldUnit(turn, i, unit_id, created_from_id, ignore_no_und
       return
     end
     local action = v[1]
-    if (action == "remove" or action == "remove_cursor") then
+    --TODO: implement for MOUS
+    if (action == "remove") then
       local old_creator_id = v[7];
       if v[7] == created_from_id then
         --no exponential cloning if gras turned into 2 rocs - abort if there's already a unit with that name on that tile
@@ -122,12 +129,41 @@ function scanAndRecreateOldUnit(turn, i, unit_id, created_from_id, ignore_no_und
           end
         end
         local _, new_unit = undoOneAction(v, ignore_no_undo);
-        addUndo({"create", new_unit.id, true, created_from_id = unit_id})
+        if (new_unit ~= nil) then
+          addUndo({"create", new_unit.id, true, created_from_id = unit_id})
+        end
         return
       end
     end
     i = i - 1;
   end
+end
+
+--if water becomes roc, and roc is no undo, if we undo then the water shouldn't come back. This is how we code that - by scanning for all related create events. If we find one existing no undo byproduct and no existing non-no undo byproducts, we return false.
+function turnedIntoOnlyNoUndoUnits(turn, i, unit_id)
+  local found_no_undo = false;
+  local found_non_no_undo = false;
+  while (true) do
+    local v = undo_buffer[turn][i]
+    if (v == nil) then
+      break
+    end
+    local action = v[1];
+    --TODO: implement for MOUS
+    if (action == "create") and v.created_from_id == unit_id then
+      local still_exists = units_by_id[v[2]];
+      if (still_exists ~= nil) then
+        if (hasProperty(still_exists, "no undo")) then
+          found_no_undo = true;
+        else
+          found_non_no_undo = true;
+          break;
+        end
+      end
+    end
+    i = i + 1;
+  end
+  return not (found_non_no_undo or not found_no_undo);
 end
 
 function undo()
@@ -137,7 +173,7 @@ function undo()
     last_move = undo_buffer[1].last_move or {0, 0}
 
     for _,v in ipairs(undo_buffer[1]) do
-      update_rules = undoOneAction(v, false);
+      update_rules = undoOneAction(1, _, v, false);
     end
 
     updateUnits(true)
