@@ -193,6 +193,7 @@ function scene.keyPressed(key, isrepeat)
     displaywords = true
   end
 
+  most_recent_key = key
   key_down[key] = true
 end
 
@@ -745,25 +746,24 @@ function scene.checkInput()
       else
         local x, y = 0, 0
         if key == "udlr" then
-          if key_down["up"] then y = y - 1 end
-          if key_down["down"] then y = y + 1 end
-          if key_down["left"] then x = x - 1 end
-          if key_down["right"] then x = x + 1 end
+          if key_down["up"] and most_recent_key ~= "down" then y = y - 1 end
+          if key_down["down"] and most_recent_key ~= "up" then y = y + 1 end
+          if key_down["left"] and most_recent_key ~= "right" then x = x - 1 end
+          if key_down["right"] and most_recent_key ~= "left" then x = x + 1 end
         elseif key == "wasd" then
-          if key_down["w"] then y = y - 1 end
-          if key_down["s"] then y = y + 1 end
-          if key_down["a"] then x = x - 1 end
-          if key_down["d"] then x = x + 1 end
+          if key_down["w"] and most_recent_key ~= "s" then y = y - 1 end
+          if key_down["s"] and most_recent_key ~= "w" then y = y + 1 end
+          if key_down["a"] and most_recent_key ~= "d" then x = x - 1 end
+          if key_down["d"] and most_recent_key ~= "a" then x = x + 1 end
         elseif key == "numpad" then
-          if key_down["kp1"] then x = x + -1; y = y + 1; end
-          if key_down["kp2"] then x = x + 0; y = y + 1; end
-          if key_down["kp3"] then x = x + 1; y = y + 1; end
-          if key_down["kp4"] then x = x + -1; y = y + 0; end
-          if key_down["kp5"] then x = x + 0; y = y + 0; end
-          if key_down["kp6"] then x = x + 1; y = y + 0; end
-          if key_down["kp7"] then x = x + -1; y = y + -1; end
-          if key_down["kp8"] then x = x + 0; y = y + -1; end
-          if key_down["kp9"] then x = x + 1; y = y + -1; end
+          if key_down["kp1"] and most_recent_key ~= "kp9" then x = x + -1; y = y + 1; end
+          if key_down["kp2"] and most_recent_key ~= "kp8" then x = x + 0; y = y + 1; end
+          if key_down["kp3"] and most_recent_key ~= "kp7" then x = x + 1; y = y + 1; end
+          if key_down["kp4"] and most_recent_key ~= "kp6" then x = x + -1; y = y + 0; end
+          if key_down["kp6"] and most_recent_key ~= "kp4" then x = x + 1; y = y + 0; end
+          if key_down["kp7"] and most_recent_key ~= "kp3" then x = x + -1; y = y + -1; end
+          if key_down["kp8"] and most_recent_key ~= "kp2" then x = x + 0; y = y + -1; end
+          if key_down["kp9"] and most_recent_key ~= "kp1" then x = x + 1; y = y + -1; end
         end
         x = sign(x); y = sign(y);
         newUndo()

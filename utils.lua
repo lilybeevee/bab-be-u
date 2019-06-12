@@ -1,4 +1,5 @@
 function clear()
+  most_recent_key = nil
   just_moved = true
   should_parse_rules = true
   graphical_property_cache = {}
