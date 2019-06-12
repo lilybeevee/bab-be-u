@@ -131,6 +131,8 @@ function scene.keyPressed(key, isrepeat)
   if isrepeat then
     return
   end
+  
+  last_input_time = love.timer.getTime();
 
   if key == "escape" then
     gooi.confirm({
@@ -212,6 +214,8 @@ function scene.keyPressed(key, isrepeat)
   end
 end
 
+--TODO: Releasing a key could signal to instantly run input under certain circumstances.
+--UPDATE: I tested it and it didn't help (the keyReleased function never got called before the 30ms elapsed). I have no idea why.
 function scene.keyReleased(key)
   for _,v in ipairs(repeat_keys) do
     if v == key then
@@ -226,6 +230,37 @@ function scene.keyReleased(key)
   if key == "z" or key == "q" or key == "backspace" or key == "kp0" then
     UNDO_DELAY = MAX_UNDO_DELAY
   end
+  
+  --[[local do_turn_now = false
+  
+  print(key)
+  if key == "w" or key == "s" and not key_down["a"] and not key_down["d"] then
+    print(repeat_timers["wasd"])
+    if repeat_timers["wasd"] <= 30 then
+      do_turn_now = true
+      repeat_timers["wasd"] = 0
+    end
+  elseif key == "a" or key == "d" and not key_down["w"] and not key_down["s"] then
+    if repeat_timers["wasd"] <= 30 then
+      do_turn_now = true
+      repeat_timers["wasd"] = 0
+    end
+  elseif key == "up" or key == "down" and not key_down["left"] and not key_down["right"] then
+    if repeat_timers["udlr"] <= 30 then
+      do_turn_now = true
+      repeat_timers["udlr"] = 0
+    end
+  elseif key == "left" or key == "right" and not key_down["up"] and not key_down["down"] then
+    if repeat_timers["udlr"] <= 30 then
+      do_turn_now = true
+      repeat_timers["udlr"] = 0
+    end
+  end
+  
+  if (do_turn_now) then
+    print("asdf")
+    scene.checkInput()
+  end]]--
 
   key_down[key] = false
 end
@@ -755,6 +790,10 @@ function scene.checkInput()
     if not win and repeat_timers[key] ~= nil and repeat_timers[key] <= 0 then
       if key == "undo" then
         just_moved = true
+        if (last_input_time ~= nil) then
+          print("input latency: "..tostring(round((start_time-last_input_time)*1000)).."ms")
+          last_input_time = nil
+        end
         undo()
         local end_time = love.timer.getTime();
         print("undo took: "..tostring(round((end_time-start_time)*1000)).."ms")
@@ -781,6 +820,10 @@ function scene.checkInput()
           if key_down["kp9"] and most_recent_key ~= "kp1" then x = x + 1; y = y + -1; end
         end
         x = sign(x); y = sign(y);
+        if (last_input_time ~= nil) then
+          print("input latency: "..tostring(round((start_time-last_input_time)*1000)).."ms")
+          last_input_time = nil
+        end
         newUndo()
         last_move = {x, y}
         just_moved = true

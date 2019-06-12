@@ -1,4 +1,5 @@
 function clear()
+  last_input_time = nil
   most_recent_key = nil
   just_moved = true
   should_parse_rules = true
