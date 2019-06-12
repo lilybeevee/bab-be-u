@@ -508,11 +508,28 @@ function updateUnits(undoing, big_update)
   
   DoDiscordRichPresence();
   
+  if units_by_name["os"] then
+    for i,unit in ipairs(units_by_name["os"]) do
+      local os = love.system.getOS()
+      if os == "Windows" then
+        unit.sprite = "os_windous"
+      elseif os == "OS X" or os == "iOS" then
+        unit.sprite = "os_mak"
+      elseif os == "Linux" then
+        unit.sprite = "os_linx"
+      elseif os == "Android" then
+        unit.sprite = "os_androd"
+      else
+        unit.sprite = "wat"
+      end
+      if unit.sprite ~= "wat" and hasProperty(unit,"slep") then
+        unit.sprite = unit.sprite .. "_slep"
+      end
+    end
+  end
+  
   local unitcount = #units
   for i,unit in ipairs(units) do
-    --[[if i > unitcount then
-      break
-    end]]
     local deleted = false
     for _,del in ipairs(del_units) do
       if del == unit then
@@ -525,24 +542,8 @@ function updateUnits(undoing, big_update)
       local tileid = unit.x + unit.y * mapwidth
       unit.layer = tile.layer + (20 * countProperty(unit, "flye"))
 
-      if unit.fullname == "os" then
-        local os = love.system.getOS()
-        if os == "Windows" then
-          unit.sprite = "os_windous"
-        elseif os == "OS X" or os == "iOS" then
-          unit.sprite = "os_mak"
-        elseif os == "Linux" then
-          unit.sprite = "os_linx"
-        elseif os == "Android" then
-          unit.sprite = "os_androd"
-        else
-          unit.sprite = "wat"
-        end
-        if unit.sprite ~= "wat" and hasProperty(unit,"slep") then
-          unit.sprite = unit.sprite .. "_slep"
-        end
-      else
-        if hasProperty(unit,"slep") and tiles_list[unit.tile].sleepsprite then
+      if unit.fullname ~= "os" then
+        if tiles_list[unit.tile].sleepsprite and hasProperty(unit,"slep") then
           unit.sprite = tiles_list[unit.tile].sleepsprite
         else
           unit.sprite = tiles_list[unit.tile].sprite
