@@ -757,6 +757,7 @@ function dropGotUnit(unit, rule)
 end
 
 --TODO: Conversions need to be simultaneous, so that if e.g. bab on bab be hurcane and you stack two babs, they both become hurcanes. Also, I think creat timing should be tested to see if it matches baba's or not. (In Baba, it's pretty much at the end of the turn, but I don't know if it's before or after conversion.)
+--TODO: Possibly convertUnits() should run twice per turn (except it doesn't apply to units made since the previous turn)? I forget how it works in baba but I think it works like that in baba. It would let you do things like X is Y, X sansn't Y is Z and have both conversions happen in the same turn. Probably Baba behaviour needs to be tested and compared here.
 function convertUnits()
   for i,v in pairs(units_by_tile) do
     units_by_tile[i] = {}
