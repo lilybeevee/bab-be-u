@@ -601,19 +601,37 @@ function scene.draw(dt)
   end
 
   if selector_open then
-    love.graphics.setColor(1, 1, 1)
     love.graphics.print(last_hovered_tile[1] .. ', ' .. last_hovered_tile[2], 0, roomheight)
+  end
+
+  love.graphics.pop()
+
+  if selector_open then
+    love.graphics.setColor(1, 1, 1)
     local gridid = last_hovered_tile[1]  + last_hovered_tile[2] * tile_grid_width
     local i = tile_grid[gridid]
     if i ~= nil then
       local tile = tiles_list[i]
       if (tile.desc ~= nil) then
-        love.graphics.printf(tile.desc, 0, roomheight+16, tile_grid_width*TILE_SIZE)
+        local tooltipwidth, ttlines = love.graphics.getFont():getWrap(tile.desc, love.graphics.getWidth() - love.mouse.getX() - 20)
+        local tooltipheight = love.graphics.getFont():getHeight() * #ttlines
+
+        local tooltipyoffset = 0
+
+        if love.mouse.getY() + (tooltipheight + 20) - love.graphics.getHeight() > 0 then
+          tooltipyoffset = love.mouse.getY() + (tooltipheight + 20) - love.graphics.getHeight()
+        end
+
+        love.graphics.setColor(getPaletteColor(1, 3))
+        love.graphics.rectangle("fill", love.mouse.getX()+10, love.mouse.getY()+10-tooltipyoffset, tooltipwidth+13, tooltipheight+13)
+        love.graphics.setColor(getPaletteColor(0, 4))
+        love.graphics.rectangle("fill", love.mouse.getX()+11, love.mouse.getY()+11-tooltipyoffset, tooltipwidth+11, tooltipheight+11)
+
+        love.graphics.setColor(1,1,1)
+        love.graphics.printf(tile.desc, love.mouse.getX()+11, love.mouse.getY()+11-tooltipyoffset, love.graphics.getWidth() - love.mouse.getX() - 20)
       end
     end
   end
-
-  love.graphics.pop()
 
   local btnx = 0
   for _,btn in ipairs(buttons) do
