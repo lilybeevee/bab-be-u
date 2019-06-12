@@ -178,6 +178,7 @@ function undo()
 
     updateUnits(true)
     if update_rules then
+      should_parse_rules = true;
       parseRules(true)
       parseRules(true)
     end

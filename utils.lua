@@ -1,4 +1,5 @@
 function clear()
+  should_parse_rules = true
   debug_values = {}
   rng_cache = {}
   reset_count = 0

@@ -502,6 +502,8 @@ function updateUnits(undoing, big_update)
     end
   end
   
+  local start_time = love.timer.getTime();
+  
   local unitcount = #units
   for i,unit in ipairs(units) do
     --[[if i > unitcount then
@@ -582,7 +584,7 @@ function updateUnits(undoing, big_update)
         end
       end
 
-      if unit.fullname == "text_direction" then
+      --[[if unit.fullname == "text_direction" then
         unit.textname = dirs8_by_name[unit.dir];
       end
       
@@ -596,7 +598,7 @@ function updateUnits(undoing, big_update)
       
       if unit.fullname == "text_spin" then
         unit.textname = "spin_" .. tostring(unit.dir);
-      end
+      end]]
 
       unit.overlay = {}
       if hasProperty(unit,"tranz") then
@@ -623,7 +625,10 @@ function updateUnits(undoing, big_update)
       end
     end
   end
-
+  
+  local end_time = love.timer.getTime();
+  print("updateUnits() blob took: "..tostring(round((end_time-start_time)*1000)).."ms")
+  
   for _,unit in ipairs(still_converting) do
     if not units_by_layer[unit.layer] then
       units_by_layer[unit.layer] = {}
@@ -643,6 +648,7 @@ function updateUnits(undoing, big_update)
     end
     reset_count = reset_count + 1
   end
+  
 end
 
 function handleDels(to_destroy, unstoppable)
@@ -879,6 +885,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty)
 
   unit.fullname = data.name
   if unit.type == "text" then
+    should_parse_rules = true
     unit.name = "text"
     unit.textname = string.sub(unit.fullname, 6)
   else
@@ -963,6 +970,9 @@ function deleteUnit(unit,convert,undoing)
     unit.removed_final = false
     return
   end
+  if unit.type == "text" then
+    should_parse_rules = true
+  end
   removeFromTable(units, unit)
   units_by_id[unit.id] = nil
   removeFromTable(units_by_name[unit.name], unit)
@@ -1002,6 +1012,9 @@ function moveUnit(unit,x,y)
     removeFromTable(units_by_tile[tileid], unit)
 
     if x ~= unit.x or y ~= unit.y then
+      if unit.type == "text" then
+        should_parse_rules = true
+      end
       if math.abs(x - unit.x) < 2 and math.abs(y - unit.y) < 2 then
         addTween(tween.new(0.1, unit.draw, {x = x, y = y}), "unit:pos:" .. unit.tempid)
       else
@@ -1026,10 +1039,21 @@ end
 
 function updateDir(unit,dir)
   unit.dir = dir
+  if unit.type == "text" then
+    should_parse_rules = true
+  end
   if unit.fullname == "text_direction" then
     unit.textname = dirs8_by_name[unit.dir];
   end
-
+  if unit.fullname == "text_cilindr" then
+    unit.textname = "cilindr_" .. dirs8_by_name[unit.dir];
+  end
+  if unit.fullname == "text_mobyus" then
+    unit.textname = "mobyus_" .. dirs8_by_name[unit.dir];
+  end
+  if unit.fullname == "text_spin" then
+    unit.textname = "spin_" .. tostring(unit.dir);
+  end
   unit.draw.rotation = unit.draw.rotation % 360
   local target_rot = (dir - 1) * 45
   if unit.rotate and math.abs(unit.draw.rotation - target_rot) == 180 then

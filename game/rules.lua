@@ -14,6 +14,11 @@ function clearRules()
 end
 
 function parseRules(undoing)
+  if (should_parse_rules) then
+    should_parse_rules = false
+  else
+    return
+  end
   local first_words = {}
   local been_first = {}
   for i=1,8 do
@@ -47,7 +52,7 @@ function parseRules(undoing)
     end
   end
 
-  print("-- begin parse --")
+  local start_time = love.timer.getTime();
 
   local final_rules = {}
   --local already_parsed = {}
@@ -279,6 +284,10 @@ function parseRules(undoing)
   end
 
   postRules()
+  shouldReparseRules()
+  
+  local end_time = love.timer.getTime();
+  print("parseRules() took: "..tostring(round((end_time-start_time)*1000)).."ms")
 end
 
 function addRule(full_rule)
@@ -470,4 +479,49 @@ function postRules()
   if has_new_rule then
     playSound("rule", 0.5)
   end
+end
+
+--[[
+Note to Lily: This just determines if we need to reparse the rules on each successive turn. The logic for 'if after parsing rules, we should immediately parse them again to see if anything new happens' is simple:
+If we formed OR unformed a 'be word', 'be portal' or 'txt be (wrap variant' rule, immediately reparse until we either infinite loop or no new rules are formed/unformed.
+If we do this, we shouldn't need to call parseRules multiple times in a row, since parseRules will always return either with a consistent set of rules or by infinite looping.
+
+---
+
+We only need to parseRules if:
+1) a text was created, destroyed or moved
+2) a möbius or cylinder rule changed directions
+3) a portal or word rule exists
+4) a conditional text is (wrap, mirror, mobius, cylinder) rule exists
+TODO: I know 3 can be further subdivided to 'a word/portal rule exists and a word/portal unit was created, destroyed or moved, or a portal unit changed directions, or the rule has a condition' but that's more complex
+]]
+function shouldReparseRules()
+  if should_parse_rules then return true end
+  if shouldReparseRulesIfRuleExists(nil, "be", "word") then return true end --TODO: change this to whatever the word rule ends up being called
+  if shouldReparseRulesIfRuleExists(nil, "be", "poor toll") then return true end
+  if shouldReparseRulesIfConditionalRuleExists("text", "be", "go arnd") then return true end
+  if shouldReparseRulesIfConditionalRuleExists("text", "be", "mirr arnd") then return true end
+  --TODO: handle all 8 mobius/cylinder simultaneously?
+  return false
+end
+
+function shouldReparseRulesIfRuleExists(r1, r2, r3)
+  if #matchesRule(r1, r2, r3, true) > 0 then
+    should_parse_rules = true;
+    return true;
+  end
+  return false;
+end
+
+function shouldReparseRulesIfConditionalRuleExists(r1, r2, r3)
+  local rules = matchesRule(r1, r2, r3);
+  for _,rule in ipairs(rules) do
+    local subject_cond = rule[1][4][1];
+    if (#subject_cond > 0) then
+      print(r3)
+      should_parse_rules = true;
+    return true;
+    end
+  end
+  return false;
 end
