@@ -221,16 +221,19 @@ function love.keypressed(key,scancode,isrepeat)
     gooi.keypressed(key, scancode)
   end
 
-  if key == "f1" then--and scene == editor then
-    scene = game
-    load_mode = "play"
-    clearGooi()
-    scene.load()
-  elseif key == "f2" and scene == game then
-    scene = editor
-    load_mode = "edit"
-    clearGooi()
-    scene.load()
+  if key == "f1" then
+    --if scene == editor then
+      scene = game
+      load_mode = "play"
+      clearGooi()
+      scene.load()
+  elseif key == "f2" then
+    if scene == game then
+      scene = editor
+      load_mode = "edit"
+      clearGooi()
+      scene.load()
+	end
   elseif key == "g" and love.keyboard.isDown('f3') then
     rainbowmode = not rainbowmode
   elseif key == "f4" then

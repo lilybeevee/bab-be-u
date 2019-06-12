@@ -730,7 +730,7 @@ end
 function dropGotUnit(unit, rule)
   --TODO: CLEANUP: Blatantly copypasta'd from convertUnits.
   local obj_name = rule[3]
-  if (obj_name == "hatt" or obj_name == "gun") then
+  if (obj_name == "hatt" or obj_name == "gun" or obj_name == "katany") then
     return
   end
   
