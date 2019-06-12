@@ -1914,7 +1914,7 @@ tiles_list = {
     grid = {17, 8},
     color = {4, 1},
     layer = 20,
-    desc = "SPLIT: At end of turn, if any other objects are on a SPLIT unit, they are destroyed and recreated on the two adjacent tiles the SPLIT unit faces, facing outwards, but only if that tile is free.",
+    desc = "SPLIT: Objects on a SPLITer are split into two copies on adjacent tiles.",
   },
   -- 173
   {
