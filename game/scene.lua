@@ -142,6 +142,8 @@ function scene.keyPressed(key, isrepeat)
       end
     })
   end
+  
+  local do_turn_now = false
 
   --TODO: PERFORMANCE: Some ways to cut down on input latency:
   --1) If we see a second input before the 30ms is up, then we know the input and we can instantly get rid of the 30ms delay.
@@ -165,16 +167,19 @@ function scene.keyPressed(key, isrepeat)
   key == "kp8" or
   key == "kp9" then
     if not repeat_timers["udlr"] then
+      do_turn_now = true
       repeat_timers["numpad"] = 0
     end
   elseif key == "z" or key == "q" or key == "backspace" or key == "kp0" then
     if not repeat_timers["undo"] then
+      do_turn_now = true
       repeat_timers["undo"] = 0
     end
   end
 
   for _,v in ipairs(repeat_keys) do
     if v == key then
+      do_turn_now = true
       repeat_timers[v] = 0
     end
   end
@@ -195,6 +200,10 @@ function scene.keyPressed(key, isrepeat)
 
   most_recent_key = key
   key_down[key] = true
+  
+  if (do_turn_now) then
+    scene.checkInput()
+  end
 end
 
 function scene.keyReleased(key)
