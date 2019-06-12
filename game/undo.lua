@@ -173,9 +173,8 @@ function undo()
     last_move = undo_buffer[1].last_move or {0, 0}
 
     for _,v in ipairs(undo_buffer[1]) do
-      update_rules = undoOneAction(1, _, v, false);
+      update_rules = update_rules or undoOneAction(1, _, v, false);
     end
-
     updateUnits(true)
     if update_rules then
       should_parse_rules = true;
