@@ -1919,7 +1919,7 @@ tiles_list = {
     color = {4, 1},
     layer = 20,
     desc = "SPLIT: Objects on a SPLITer are split into two copies on adjacent tiles.",
-	},
+  },
   -- 173
   {
     name = "text_cilindr",
