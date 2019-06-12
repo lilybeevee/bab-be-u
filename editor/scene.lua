@@ -627,7 +627,7 @@ function scene.draw(dt)
         love.graphics.setColor(getPaletteColor(0, 4))
         love.graphics.rectangle("fill", love.mouse.getX()+11, love.mouse.getY()+11-tooltipyoffset, tooltipwidth+11, tooltipheight+11)
 
-        love.graphics.setColor(1,1,1)
+        love.graphics.setColor(getPaletteColor(0,3))
         love.graphics.printf(tile.desc, love.mouse.getX()+11, love.mouse.getY()+11-tooltipyoffset, love.graphics.getWidth() - love.mouse.getX() - 20)
       end
     end

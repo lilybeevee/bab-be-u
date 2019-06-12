@@ -113,6 +113,7 @@ tiles_list = {
     layer = 6,
     rotate = true,
     eye = {x=22, y=10, w=2, h=2},
+	tags = {"char"}
   },
   -- 2
   {
@@ -932,6 +933,7 @@ tiles_list = {
     grid = {8, 7},
     color = {0, 3},
     layer = 20,
+	desc = "GUNNE: Any object with GOT GUNNE will wield a GUNNE."
   },
   --81
   {
@@ -1088,6 +1090,7 @@ tiles_list = {
     grid = {8, 9},
     color = {3, 1},
     layer = 20,
+	desc = "HATT: Any object with GOT HATT will wear a HATT."
   },
   -- 93
   {
@@ -1650,6 +1653,7 @@ tiles_list = {
     color = {0, 1},
     layer = 5,
     rotate = true,
+	desc = "KATANY: Any object with GOT KATANY will have a KATANY."
   },
   -- 147
   {
@@ -1914,8 +1918,8 @@ tiles_list = {
     grid = {17, 8},
     color = {4, 1},
     layer = 20,
-    desc = "SPLIT: At end of turn, if any other objects are on a SPLIT unit, they are destroyed and recreated on the two adjacent tiles the SPLIT unit faces, facing outwards, but only if that tile is free.",
-  },
+    desc = "SPLIT: Objects on a SPLITer are split into two copies on adjacent tiles.",
+	},
   -- 173
   {
     name = "text_cilindr",
