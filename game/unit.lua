@@ -504,9 +504,8 @@ function updateUnits(undoing, big_update)
     doDirRules();
   end
   
-  local start_time = love.timer.getTime();
-  
   DoDiscordRichPresence();
+  updateGraphicalPropertyCache();
   
   if units_by_name["os"] then
     for i,unit in ipairs(units_by_name["os"]) do
@@ -522,7 +521,7 @@ function updateUnits(undoing, big_update)
       else
         unit.sprite = "wat"
       end
-      if unit.sprite ~= "wat" and hasProperty(unit,"slep") then
+      if unit.sprite ~= "wat" and graphical_property_cache["slep"][unit] ~= nil then
         unit.sprite = unit.sprite .. "_slep"
       end
     end
@@ -540,10 +539,10 @@ function updateUnits(undoing, big_update)
     if not deleted and not unit.removed_final then
       local tile = tiles_list[unit.tile]
       local tileid = unit.x + unit.y * mapwidth
-      unit.layer = tile.layer + (20 * countProperty(unit, "flye"))
+      unit.layer = tile.layer + (20 * (graphical_property_cache["flye"][unit] or 0))
 
       if unit.fullname ~= "os" then
-        if tiles_list[unit.tile].sleepsprite and hasProperty(unit,"slep") then
+        if tiles_list[unit.tile].sleepsprite and graphical_property_cache["slep"][unit] ~= nil then
           unit.sprite = tiles_list[unit.tile].sleepsprite
         else
           unit.sprite = tiles_list[unit.tile].sprite
@@ -551,18 +550,18 @@ function updateUnits(undoing, big_update)
       end
 
       unit.overlay = {}
-      if hasProperty(unit,"tranz") then
+      if (graphical_property_cache["tranz"][unit] ~= nil) then
         table.insert(unit.overlay, "trans")
       end
-      if hasProperty(unit,"gay") then
+      if (graphical_property_cache["gay"][unit] ~= nil) then
         table.insert(unit.overlay, "gay")
       end
 
       -- for optimisation in drawing
-      unit.stelth = hasProperty(unit,"stelth")
-      unit.colrful = hasProperty(unit,"colrful")
-      unit.reed = hasProperty(unit,"reed")
-      unit.bleu = hasProperty(unit,"bleu")
+      unit.stelth = graphical_property_cache["stelth"][unit] ~= nil
+      unit.colrful = graphical_property_cache["colrful"][unit] ~= nil
+      unit.reed = graphical_property_cache["reed"][unit] ~= nil
+      unit.bleu = graphical_property_cache["bleu"][unit] ~= nil
 
       if not units_by_layer[unit.layer] then
         units_by_layer[unit.layer] = {}
@@ -575,10 +574,7 @@ function updateUnits(undoing, big_update)
       end
     end
   end
-  
-  local end_time = love.timer.getTime();
-  print("updateUnits() blob took: "..tostring(round((end_time-start_time)*1000)).."ms")
-  
+
   for _,unit in ipairs(still_converting) do
     if not units_by_layer[unit.layer] then
       units_by_layer[unit.layer] = {}
@@ -598,7 +594,26 @@ function updateUnits(undoing, big_update)
     end
     reset_count = reset_count + 1
   end
-  
+end
+
+function updateGraphicalPropertyCache()
+  for prop,tbl in pairs(graphical_property_cache) do
+    --only flye has a stacking graphical effect, the rest are boolean
+    local count = prop == "flye";
+    new_tbl = {};
+    if (count) then
+      local isprop = getUnitsWithEffectAndCount(prop);
+      for unit,amt in pairs(isprop) do
+        new_tbl[unit] = amt;
+      end
+    else
+      local isprop = getUnitsWithEffect(prop);
+      for _,unit in pairs(isprop) do
+        new_tbl[unit] = true;
+      end
+    end
+    graphical_property_cache[prop] = new_tbl;
+  end
 end
 
 function DoDiscordRichPresence()

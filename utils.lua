@@ -1,5 +1,8 @@
 function clear()
+  just_moved = true
   should_parse_rules = true
+  graphical_property_cache = {}
+  initializeGraphicalPropertyCache();
   debug_values = {}
   rng_cache = {}
   reset_count = 0
@@ -69,6 +72,17 @@ function clear()
 
   love.mouse.setCursor()
   love.mouse.setGrabbed(false)
+end
+
+function initializeGraphicalPropertyCache()
+  if (graphical_property_cache["flye"] == nil) then graphical_property_cache["flye"] = {} end
+  if (graphical_property_cache["slep"] == nil) then graphical_property_cache["slep"] = {} end
+  if (graphical_property_cache["tranz"] == nil) then graphical_property_cache["tranz"] = {} end
+  if (graphical_property_cache["gay"] == nil) then graphical_property_cache["gay"] = {} end
+  if (graphical_property_cache["stelth"] == nil) then graphical_property_cache["stelth"] = {} end
+  if (graphical_property_cache["colrful"] == nil) then graphical_property_cache["colrful"] = {} end
+  if (graphical_property_cache["reed"] == nil) then graphical_property_cache["reed"] = {} end
+  if (graphical_property_cache["bleu"] == nil) then graphical_property_cache["bleu"] = {} end
 end
 
 function loadMap()

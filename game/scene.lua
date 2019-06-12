@@ -244,6 +244,7 @@ end
 --TODO: PERFORMANCE: Calling hasProperty once per frame means that we have to index rules, check conditions, etc. with O(m*n) performance penalty. But, the results of these calls do not change until a new turn or undo. So, we can cache the values of these calls in a global table and dump the table whenever the turn changes for a nice and easy performance boost.
 --(Though this might not be true for mice, which can change their position mid-frame?? Also for other meta stuff (like windo)? Until there's mouse conditional rules or meta stuff in a puzzle IDK how this should actually work or be displayed. Just keep that in mind tho.)
 function scene.draw(dt)
+  local start_time = love.timer.getTime();
   -- reset canvas if the screen size has changed
   if love.graphics.getWidth() ~= last_width or love.graphics.getHeight() ~= last_height then
     last_width = love.graphics.getWidth()
@@ -701,9 +702,16 @@ function scene.draw(dt)
     love.graphics.setColor(1,1,1)
     love.graphics.printf(rules, 0, love.graphics.getHeight()/2-love.graphics.getFont():getHeight()*lines, love.graphics.getWidth(), "center")
   end
+  
+  if (just_moved) then
+    local end_time = love.timer.getTime();
+      print("scene.draw() took: "..tostring(round((end_time-start_time)*1000)).."ms")
+    just_moved = false;
+  end
 end
 
 function scene.checkInput()
+  local start_time = love.timer.getTime();
   do_move_sound = false
 
   if not (key_down["w"] or key_down["a"] or key_down["s"] or key_down["d"]) then
@@ -730,7 +738,10 @@ function scene.checkInput()
   for _,key in ipairs(repeat_keys) do
     if not win and repeat_timers[key] ~= nil and repeat_timers[key] <= 0 then
       if key == "undo" then
+        just_moved = true
         undo()
+        local end_time = love.timer.getTime();
+        print("undo took: "..tostring(round((end_time-start_time)*1000)).."ms")
       else
         local x, y = 0, 0
         if key == "udlr" then
@@ -757,10 +768,13 @@ function scene.checkInput()
         x = sign(x); y = sign(y);
         newUndo()
         last_move = {x, y}
+        just_moved = true
         doMovement(x, y)
         if #undo_buffer > 0 and #undo_buffer[1] == 0 then
           table.remove(undo_buffer, 1)
         end
+        local end_time = love.timer.getTime();
+        print("gameplay logic took: "..tostring(round((end_time-start_time)*1000)).."ms")
       end
     end
 
