@@ -500,9 +500,13 @@ function updateUnits(undoing, big_update)
         addUndo({"create_cursor", new_mouse.id})
       end
     end
+    
+    doDirRules();
   end
   
   local start_time = love.timer.getTime();
+  
+  DoDiscordRichPresence();
   
   local unitcount = #units
   for i,unit in ipairs(units) do
@@ -519,33 +523,6 @@ function updateUnits(undoing, big_update)
     if not deleted and not unit.removed_final then
       local tile = tiles_list[unit.tile]
       local tileid = unit.x + unit.y * mapwidth
-      local is_u = hasProperty(unit, "u")
-
-      -- rich presence icon
-      if is_u and discordRPC and discordRPC ~= true then
-        if unit.fullname == "bab" or unit.fullname == "keek" or unit.fullname == "meem" then
-          presence["smallImageText"] = unit.fullname
-          presence["smallImageKey"] = unit.fullname
-        elseif unit.fullname == "os" then
-          local os = love.system.getOS()
-
-          if os == "Windows" then
-            presence["smallImageKey"] = "windous"
-          elseif os == "OS X" then
-            presence["smallImageKey"] = "maac" -- i know, the mac name is inconsistent but SHUSH you cant change it after you upload the image
-          elseif os == "Linux" then
-            presence["smallImageKey"] = "linx"
-          else
-            presence["smallImageKey"] = "other"
-          end
-
-          presence["smallImageText"] = "os"
-        else
-          presence["smallImageText"] = "other"
-          presence["smallImageKey"] = "other"
-        end
-      end
-
       unit.layer = tile.layer + (20 * countProperty(unit, "flye"))
 
       if unit.fullname == "os" then
@@ -571,34 +548,6 @@ function updateUnits(undoing, big_update)
           unit.sprite = tiles_list[unit.tile].sprite
         end
       end
-
-      if not undoing then
-        for k,v in pairs(dirs8_by_name) do
-          if hasProperty(unit, v) then
-            unit.olddir = unit.dir
-            if unit.dir ~= k then
-              addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
-            end
-            updateDir(unit, k)
-          end
-        end
-      end
-
-      --[[if unit.fullname == "text_direction" then
-        unit.textname = dirs8_by_name[unit.dir];
-      end
-      
-      if unit.fullname == "text_cilindr" then
-        unit.textname = "cilindr_" .. dirs8_by_name[unit.dir];
-      end
-      
-      if unit.fullname == "text_mobyus" then
-        unit.textname = "mobyus_" .. dirs8_by_name[unit.dir];
-      end
-      
-      if unit.fullname == "text_spin" then
-        unit.textname = "spin_" .. tostring(unit.dir);
-      end]]
 
       unit.overlay = {}
       if hasProperty(unit,"tranz") then
@@ -649,6 +598,36 @@ function updateUnits(undoing, big_update)
     reset_count = reset_count + 1
   end
   
+end
+
+function DoDiscordRichPresence()
+  if (discordRPC ~= true) then
+    local isu = getUnitsWithEffect("u");
+    if (#isu > 0) then
+      local unit = isu[1];
+      if unit.fullname == "bab" or unit.fullname == "keek" or unit.fullname == "meem" then
+          presence["smallImageText"] = unit.fullname
+          presence["smallImageKey"] = unit.fullname
+      elseif unit.fullname == "os" then
+        local os = love.system.getOS()
+
+        if os == "Windows" then
+          presence["smallImageKey"] = "windous"
+        elseif os == "OS X" then
+          presence["smallImageKey"] = "maac" -- i know, the mac name is inconsistent but SHUSH you cant change it after you upload the image
+        elseif os == "Linux" then
+          presence["smallImageKey"] = "linx"
+        else
+          presence["smallImageKey"] = "other"
+        end
+
+        presence["smallImageText"] = "os"
+      else
+        presence["smallImageText"] = "other"
+        presence["smallImageKey"] = "other"
+      end
+    end
+  end
 end
 
 function handleDels(to_destroy, unstoppable)

@@ -32,6 +32,19 @@ function doUpdate(already_added, moving_units_next)
   update_queue = {}
 end
 
+function doDirRules()
+  for k,v in pairs(dirs8_by_name) do
+    local isdir = getUnitsWithEffect(v);
+    for _,unit in ipairs(isdir) do
+      unit.olddir = unit.dir
+      if unit.dir ~= k then
+        addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
+      end
+      updateDir(unit, k)
+    end
+  end
+end
+
 function doMovement(movex, movey)
   local played_sound = {}
   local slippers = {}
