@@ -603,6 +603,14 @@ function scene.draw(dt)
   if selector_open then
     love.graphics.setColor(1, 1, 1)
     love.graphics.print(last_hovered_tile[1] .. ', ' .. last_hovered_tile[2], 0, roomheight)
+    local gridid = last_hovered_tile[1]  + last_hovered_tile[2] * tile_grid_width
+    local i = tile_grid[gridid]
+    if i ~= nil then
+      local tile = tiles_list[i]
+      if (tile.desc ~= nil) then
+        love.graphics.printf(tile.desc, 0, roomheight+16, tile_grid_width*TILE_SIZE)
+      end
+    end
   end
 
   love.graphics.pop()

@@ -132,6 +132,7 @@ tiles_list = {
     grid = {1, 0},
     color = {0, 3},
     layer = 20,
+    desc = "BE: Causes the subject to become an object or have a property.",
   },
   -- 4
   {
@@ -142,6 +143,7 @@ tiles_list = {
     grid = {2, 1},
     color = {4, 1},
     layer = 20,
+    desc = "U: Controlled by you, the player!",
   },
   -- 5
   {
@@ -170,6 +172,7 @@ tiles_list = {
     grid = {2, 5},
     color = {5, 1},
     layer = 20,
+    desc = "NO GO: Can't be entered by objects.",
   },
   -- 8
   {
@@ -198,6 +201,7 @@ tiles_list = {
     grid = {2, 4},
     color = {6, 1},
     layer = 20,
+    desc = "GO AWAY: Pushed by movement into its tile.",
   },
   -- 11
   {
@@ -226,6 +230,7 @@ tiles_list = {
     grid = {5, 2},
     color = {2, 2},
     layer = 20,
+    desc = "NED KEE: When a NED KEE and FOR DOR unit move into each other, they are both destroyed.",
   },
   -- 14
   {
@@ -255,6 +260,7 @@ tiles_list = {
     grid = {5, 1},
     color = {2, 4},
     layer = 20,
+    desc = "FOR DOR: When a NED KEE and FOR DOR unit move into each other, they are both destroyed.",
   },
   -- 17
   {
@@ -265,6 +271,7 @@ tiles_list = {
     grid = {2, 0},
     color = {0, 3},
     layer = 20,
+    desc = "&: Joins multiple conditions, subjects or objects together in a rule.",
   },
   -- 18
   {
@@ -293,6 +300,7 @@ tiles_list = {
     grid = {2, 3},
     color = {2, 4},
     layer = 20,
+    desc = ":): At end of turn, if U is on :) and survives, U R WIN!",
   },
   -- 21
   {
@@ -330,7 +338,9 @@ tiles_list = {
     grid = {2, 6},
     color = {1, 3},
     layer = 20,
+    desc = "NO SWIM: At end of turn, if a NO SWIM unit is touching another object, both are destroyed.",
   },
+
   -- 25
   {
     name = "text_got",
@@ -340,6 +350,7 @@ tiles_list = {
     grid = {3, 0},
     color = {0, 3},
     layer = 20,
+    desc = "GOT: Causes the subject to drop the object when destroyed.",
   },
   --26
   {
@@ -350,6 +361,7 @@ tiles_list = {
     grid = {7, 6},
     color = {0, 3},
     layer = 20,
+    desc = "COLRFUL: Causes the unit to appear a variety of colours.",
   },
   --27
   {
@@ -360,6 +372,7 @@ tiles_list = {
     grid = {9, 6},
     color = {2, 2},
     layer = 20,
+    desc = "REED: Causes the unit to appear red.",
   },
   --28
   {
@@ -370,6 +383,7 @@ tiles_list = {
     grid = {8, 6},
     color = {1, 3},
     layer = 20,
+    desc = "BLEU: Causes the unit to appear blue.",
   },
   --29
   {
@@ -380,6 +394,7 @@ tiles_list = {
     grid = {9, 1},
     color = {255, 255, 255},
     layer = 20,
+    desc = "TRANZ: Causes the unit to appear pink, white and cyan.",
   },
   --30
   {
@@ -390,6 +405,7 @@ tiles_list = {
     grid = {10, 1},
     color = {255, 255, 255},
     layer = 20,
+    desc = "GAY: Causes the unit to appear rainbow coloured.",
   },
   --31
   {
@@ -399,6 +415,7 @@ tiles_list = {
     grid = {10, 0},
     color = {3, 3},
     layer = 20,
+    desc = "MOUS: Refers to the mouse cursor. You can create, destroy and apply properties to mouse cursors!",
   },
   --32
   {
@@ -516,6 +533,7 @@ tiles_list = {
     grid = {7, 0},
     color = {4, 1},
     layer = 20,
+    desc = "TXT: An object class referring to all text objects, or just a specific one if you write e.g. BAB TXT BE GAY.",
   },
   --42
   {
@@ -546,6 +564,7 @@ tiles_list = {
     grid = {8, 3},
     color = {1, 3},
     layer = 20,
+    desc = "SLEP: SLEP units can't move due to being U, WALK or SPOOPed.",
   },
   --45
   {
@@ -684,6 +703,7 @@ tiles_list = {
     grid = {2, 7},
     color = {2, 1},
     layer = 20,
+    desc = ":(: At end of turn, destroys any U objects on it.",
   },
   -- 59
   {
@@ -694,6 +714,7 @@ tiles_list = {
     grid = {2, 2},
     color = {5, 3},
     layer = 20,
+    desc = "WALK: Moves in a straight line each turn, bouncing off walls.",
   },
   -- 60
   {
@@ -761,6 +782,7 @@ tiles_list = {
     grid = {2, 10},
     color = {4, 1},
     layer = 20,
+    desc = ":o: If U is on :o, the :o is collected. Bonus!",
   },
   -- 67
   {
@@ -782,6 +804,7 @@ tiles_list = {
     color = {1, 4},
     layer = 20,
     rotate = true,
+    desc = "GO ->: The unit is forced to face the indicated direction.",
   },
   -- 69
   {
@@ -813,6 +836,7 @@ tiles_list = {
     grid = {8, 2},
     color = {3, 1},
     layer = 20,
+    desc = "BEHIN U: BEHIN U units swap with everything on tiles they move into, and swap with units that move onto their tile, then face their swapee. Nothing personnel, kid.",
   },
   -- 72
   {
@@ -823,6 +847,7 @@ tiles_list = {
     grid = {7, 4},
     color = {0, 3},
     layer = 20,
+    desc = "W/ FREN (Infix Condition): True if the unit shares a tile with this object.",
   },
   -- 73
   {
@@ -833,6 +858,7 @@ tiles_list = {
     grid = {10, 4},
     color = {0, 3},
     layer = 20,
+    desc = "LOOK AT: As an infix condition, true if this object is on the tile in front of the unit As a verb, makes the unit face this object at end of turn.",
   },
   -- 74
   {
@@ -843,6 +869,7 @@ tiles_list = {
     grid = {9, 4},
     color = {2, 2},
     layer = 20,
+    desc = "FRENLES (Prefix Condition): True if the unit is alone on its tile.",
   },
   --75
   {
@@ -853,6 +880,7 @@ tiles_list = {
     grid = {7, 5},
     color = {0, 3},
     layer = 20,
+    desc = "CREAT: At end of turn, the unit makes this object.",
   },
   --76
   {
@@ -864,6 +892,7 @@ tiles_list = {
     grid = {8, 5},
     color = {2, 2},
     layer = 20,
+    desc = "SNACC: At end of turn, the unit destroys any objects on its tile that it SNACCs.",
   },
   --77
   {
@@ -913,6 +942,7 @@ tiles_list = {
     grid = {7, 3},
     color = {1, 2},
     layer = 20,
+    desc = "OUCH: This unit is destroyed if it shares a tile with another object, or if it tries to move/be moved into and can't.",
   },
   -- 82
   {
@@ -944,6 +974,7 @@ tiles_list = {
     grid = {9, 2},
     color = {4, 2},
     layer = 20,
+    desc = "QT: Makes the unit emit love hearts.",
   },
   -- 85
   {
@@ -1077,6 +1108,7 @@ tiles_list = {
     grid = {10, 5},
     color = {0, 3},
     layer = 20,
+    desc = "YEET: This unit will force things it yeets in its tile to hurtle across the level in its facing direction.",
   },
   --- 95
   {
@@ -1087,6 +1119,7 @@ tiles_list = {
     grid = {2, 9},
     color = {1, 3},
     layer = 20,
+    desc = "GO: This unit will force all other objects in its tile to move in its facing direction.",
   },
   --- 96
   {
@@ -1097,6 +1130,7 @@ tiles_list = {
     grid = {11, 1},
     color = {1, 4},
     layer = 20,
+    desc = "ICY: Objects on something ICY are forced to move in their facing direction until they leave the ice or can't move any further.",
   },
   --- 97
   {
@@ -1107,6 +1141,7 @@ tiles_list = {
     grid = {12, 1},
     color = {3, 2},
     layer = 20,
+    desc = "XWX: At end of turn, if U is on XWX, the window crashes.",
   },
   --98
   {
@@ -1117,6 +1152,7 @@ tiles_list = {
     grid = {9, 0},
     color = {0, 3},
     layer = 20,
+    desc = "WINDO: Currently unimplemented, will let you manipulate the game window directly.",
   },
   --- 99
   {
@@ -1127,6 +1163,7 @@ tiles_list = {
     grid = {2, 8},
     color = {6, 1},
     layer = 20,
+    desc = "COME PLS: Pulled by movement on adjacent tiles facing away from this unit.",
   },
   --- 100
   {
@@ -1137,6 +1174,7 @@ tiles_list = {
     grid = {10, 3},
     color ={6, 1},
     layer = 20,
+    desc = "SIDEKIK: If a unit moves perpendicularly away from a SIDEKIK, the SIDEKIK copies that movement. If the SIDEKIK unit is also COME PLS, it copies movement on ANY surrounding tile.",
   },
   --- 101
   {
@@ -1147,6 +1185,7 @@ tiles_list = {
     grid = {8,4},
     color = {0, 3},
     layer = 20,
+    desc = "AROND (Prefix Condition): True if the indicated object is on any of the tiles surrounding the unit. (The unit's own tile is not checked.)",
   },
   --- 102
   {
@@ -1173,8 +1212,9 @@ tiles_list = {
     type = "text",
     texttype = "property",
     grid = {13, 3},
-    color ={3, 2},
+    color = {3, 2},
     layer = 20,
+    desc = "DIAGNAL: Prevents the unit moving orthogonally.",
   },
   --- 105
   {
@@ -1185,6 +1225,7 @@ tiles_list = {
     grid = {13, 4},
     color ={1, 4},
     layer = 20,
+    desc = "DIAGNAL: Prevents movement onto its tile from the tile in front of it and the two tiles 45 degrees to either side.",
   },
   --- 106
   {
@@ -1195,6 +1236,7 @@ tiles_list = {
     grid = {13, 2},
     color ={3, 2},
     layer = 20,
+    desc = "ORTHOGNL: Prevents the unit moving diagonally.",
   },
   --- 107
   {
@@ -1224,6 +1266,7 @@ tiles_list = {
     grid = {6,3},
     color = {2, 3},
     layer = 20,
+    desc = "HOTTE: At end of turn, HOTTE units destroys all units that are FRIGID on their tile.",
   },
   --- 110
   {
@@ -1234,6 +1277,7 @@ tiles_list = {
     grid = {5,3},
     color = {1, 3},
     layer = 20,
+    desc = "FRIDGD: At end of turn, HOTTE units destroys all units that are FRIGID on their tile.",
   },
   --- 111
   {
@@ -1262,6 +1306,7 @@ tiles_list = {
     grid = {11, 2},
     color = {1, 3},
     layer = 20,
+    desc = "GOOOO: The instant an object steps on a GOOOO unit, it is forced to move in the GOOOO unit's direction.",
   },
   --- 114
   {
@@ -1272,6 +1317,7 @@ tiles_list = {
     grid = {12, 2},
     color = {1, 4},
     layer = 20,
+    desc = "ICYYYY: The instant an object steps on an ICYYYY unit, it is forced to move again.",
   },
   -- 115
   {
@@ -1282,6 +1328,7 @@ tiles_list = {
     grid = {9, 3},
     color = {0, 3},
     layer = 20,
+    desc = "PROTECC: Cannot be destroyed (but can be converted).",
   },
   -- 116
   {
@@ -1292,6 +1339,7 @@ tiles_list = {
     grid = {8, 1},
     color = {1, 4},
     layer = 20,
+    desc = "FLYE: A FLYE unit doesn't interact with other objects on its tile, and can ignore the collision of other objects, unless that other object has the same amount of FLYE as the unit. FLYE stacks with itself!",
   },
   --- 117
   {
@@ -1320,6 +1368,7 @@ tiles_list = {
     grid = {4, 0},
     color = {2, 2},
     layer = 20,
+    desc = "N'T: A suffix that negates the meaning of a verb, condition or object class.",
   },
   -- 120
   {
@@ -1330,6 +1379,7 @@ tiles_list = {
     grid = {7,2},
     color = {5, 3},
     layer = 20,
+    desc = "HAET SKYE: After movement, this unit falls down as far as it can.",
   },
   -- 121
   {
@@ -1358,6 +1408,7 @@ tiles_list = {
     grid = {10,2},
     color = {4, 1},
     layer = 20,
+    desc = "MOAR: At end of turn, this unit replicates to all free tiles that are orthogonally adjacent. MOAR stacks with itself!",
   },
   -- 124
   {
@@ -1368,6 +1419,7 @@ tiles_list = {
     grid = {6, 2},
     color = {1, 4},
     layer = 20,
+    desc = "VISIT FREN: At end of turn, all other objects are sent to the next VISIT FREN unit with the same name in reading order (left to right, line by line, wrapping around). Higher levels of VISIT FREN will cause the target to be 1 backward, 2 forward, 2 backward, etc.",
   },
   -- 125
   {
@@ -1387,6 +1439,7 @@ tiles_list = {
     grid = {11, 0},
     color = {0, 3},
     layer = 20,
+    desc = "WAIT... (Prefix Condition): True if the player waited last input.",
   },
   -- 127
   {
@@ -1400,6 +1453,7 @@ tiles_list = {
     grid = {12, 0},
     color = {1, 4},
     layer = 20,
+    desc = "SANS (Infix Condition): True if none of the indicated object exist in the level.",
   },
   -- 128
   {
@@ -1410,6 +1464,7 @@ tiles_list = {
     grid = {9, 5},
     color = {2, 2},
     layer = 20,
+    desc = "SPOOP: A SPOOPY unit forces all objects it SPOOPS on adjacent tiles to move away!",
   },
   -- 129
   {
@@ -1430,6 +1485,7 @@ tiles_list = {
     grid = {10, 6},
     color = {1, 3},
     layer = 20,
+    desc = "STELTH: A STELTHy unit doesn't draw. STELTHy text won't appear in the rules list (once someone gets around to writing that...)",
   },
   -- 131
   {
@@ -1500,6 +1556,7 @@ tiles_list = {
     grid = {5, 0},
     color = {0, 3},
     layer = 20,
+    desc = "EVERY1: Every object type in the level.",
   },
   -- 138
   {
@@ -1510,6 +1567,7 @@ tiles_list = {
     grid = {7, 1},
     color = {0, 1},
     layer = 20,
+    desc = "TALL: Considered to be every FLYE amount at once.",
   },
   --- 139
   {
@@ -1521,6 +1579,7 @@ tiles_list = {
     grid = {13, 1},
     color = {5, 3},
     layer = 20,
+    desc = "BOUNDED: If a unit is BOUNDED, it cannot step onto a tile unless it has at least one object it is BOUNDED to.",
   },
   -- 140
   {
@@ -1531,6 +1590,7 @@ tiles_list = {
     grid = {11, 5},
     color = {5, 3},
     layer = 20,
+    desc = "ZIP: At end of turn, if it is on a tile it couldn't enter or shares a tile with another object of its name, it finds the nearest free tile (preferencing backwards directions) and ejects to it.",
   },
   -- 141
   {
@@ -1541,6 +1601,7 @@ tiles_list = {
     grid = {12, 5},
     color = {6, 2},
     layer = 20,
+    desc = "SHY...: Can't initiate or continue a push, pull or sidekik movement."
   },
   -- 142
   {
@@ -1551,6 +1612,7 @@ tiles_list = {
     grid = {11, 6},
     color = {5, 3},
     layer = 20,
+    desc = "FOLO WAL: At end of turn, faces the first direction that it could enter and that doesn't have another unit of its name: right, forward, left, backward. When combined with WALK, causes the unit to follow the right wall.",
   },
   -- 143
   {
@@ -1561,6 +1623,7 @@ tiles_list = {
     grid = {12, 6},
     color = {5, 3},
     layer = 20,
+    desc = "TURN CORNR: At end of turn, faces the first direction that it could enter and that doesn't have another unit of its name: forward, right, left, backward. When combined with WALK, causes the unit to bounce off walls at 90 degree angles.",
   },
   -- 144
   {
@@ -1622,6 +1685,7 @@ tiles_list = {
     grid = {6, 0},
     color = {0, 3},
     layer = 20,
+    desc = "NO1: Refers to tiles with nothing in them."
   },
   -- 151
   {
@@ -1641,6 +1705,7 @@ tiles_list = {
     grid = {8,0},
     color = {4,1},
     layer = 20,
+    desc = "LVL: Refers to the level you're in, as well as any enterable levels in this level."
   },
   -- 153
   {
@@ -1651,6 +1716,7 @@ tiles_list = {
     grid = {14,1},
     color = {0,3},
     layer = 20,
+    desc = "NXT: LVL IS NXT sends you to the next level. (Unimplemented.)"
   },
   -- 154
   {
@@ -1678,6 +1744,7 @@ tiles_list = {
     grid = {11, 7},
     color = {0, 3},
     layer = 20,
+    desc = "COPKAT: COPKAT units copy the successful movements of the indicated object, no matter how far away."
   },
   --157
   {
@@ -1708,6 +1775,7 @@ tiles_list = {
     grid = {13, 9},
     color = {3, 3},
     layer = 20,
+    desc = "TRY AGAIN: When U is on TRY AGAIN, the level is undone back to the starting state."
   },
   -- 160
   {
@@ -1718,6 +1786,7 @@ tiles_list = {
     grid = {14, 9},
     color = {5, 3},
     layer = 20,
+    desc = "NO UNDO: NO UNDO units aren't affected by undoing.",
   },
   -- 161
   {
@@ -1749,7 +1818,8 @@ tiles_list = {
     grid = {14, 2},
     color = {0, 3},
     layer = 20,
-    rotate = true
+    rotate = true,
+    desc = "? (MAYBE) (Prefix Condition): Has a chance of being true, independent for each MAYBE, affected unit and turn. The number on top indicates the % chance of being true.",
   },
   -- 164
   {
@@ -1760,6 +1830,7 @@ tiles_list = {
     grid = {12, 7},
     color = {1, 4},
     layer = 20,
+    desc = "STUBBN: STUBBN units ignore the special properties of WALK movers (bouncing off of walls, and declining to move if it would die due to being OUCH) and also makes attempted diagonal movement slide along walls. Stacks with itself - the more STUBBN, the more additional angles it will try, up to 180 degrees at 5 stacks!",
   },
   -- 165
   {
@@ -1770,6 +1841,7 @@ tiles_list = {
     grid = {13, 7},
     color = {0, 3},
     layer = 20,
+    desc = "SEEN BY (Infix Condition): True if an indicated object is looking at this unit from an adjacent tile.",
   },
   -- 166
   {
@@ -1801,6 +1873,7 @@ tiles_list = {
     grid = {14, 3},
     color = {3, 2},
     layer = 20,
+    desc = "GO ARND: GO ARND units wrap around the level, as though it were a torus.",
   },
   -- 169
   {
@@ -1811,6 +1884,7 @@ tiles_list = {
     grid = {14, 4},
     color = {3, 2},
     layer = 20,
+    desc = "POOR TOLL: If a unit would enter a POOR TOLL unit, it instead leaves the next POOR TOLL unit of the same name in reading order (left to right, line by line, wrapping around) out the corresponding other side.",
   },
   -- 170
   {
@@ -1840,6 +1914,7 @@ tiles_list = {
     grid = {17, 8},
     color = {4, 1},
     layer = 20,
+    desc = "SPLIT: At end of turn, if any other objects are on a SPLIT unit, they are destroyed and recreated on the two adjacent tiles the SPLIT unit faces, facing outwards, but only if that tile is free.",
   },
   -- 173
   {
@@ -1851,6 +1926,7 @@ tiles_list = {
     color = {3, 2},
     layer = 20,
     rotate = true,
+    desc = "CILINDR: CILINDR units wrap around the level, as though it were a cylinder with the indicated orientation.",
   },
   -- 174
   {
@@ -1862,6 +1938,7 @@ tiles_list = {
     color = {3, 2},
     layer = 20,
     rotate = true,
+    desc = "MOBYUS: MOBYUS units wrap around the level, as though it were a mobius strip with the indicated orientation.",
   },
   -- 175
   {
@@ -1872,6 +1949,7 @@ tiles_list = {
     grid = {14, 7},
     color = {1, 4},
     layer = 20,
+    desc = "MUNWALK: MUNWALK units move 180 degrees opposite of their facing direction.",
   },
   -- 176
   {
@@ -1882,6 +1960,7 @@ tiles_list = {
     grid = {15, 2},
     color = {3, 2},
     layer = 20,
+    desc = "MIRR ARND: MIRR ARND units wrap around the level, as though it were a projective plane.",
   },
   -- 177
   {
@@ -1892,6 +1971,7 @@ tiles_list = {
     grid = {15, 7},
     color = {6, 2},
     layer = 20,
+    desc = "SIDESTEP: SIDESTEP units move 90 degrees off of their facing direction.",
   },
   -- 178
   {
@@ -1902,6 +1982,7 @@ tiles_list = {
     grid = {16, 7},
     color = {3, 1},
     layer = 20,
+    desc = "DIAGSTEP: DIAGSTEP units move 45 degrees off of their facing direction.",
   },
   -- 179
   {
@@ -1912,6 +1993,7 @@ tiles_list = {
     grid = {17, 7},
     color = {5, 3},
     layer = 20,
+    desc = "HOPOVR: HOPOVR units move two tiles ahead, skipping the intermediate tile.",
   },
   -- 180
   {
@@ -1922,6 +2004,7 @@ tiles_list = {
     grid = {15, 9},
     color = {6, 1},
     layer = 20,
+    desc = "UNDO: UNDO units, at end of turn, rewind a turn earlier, cumulatively. Stacks!",
   },
   -- 181
   {
@@ -1952,6 +2035,7 @@ tiles_list = {
     color = {1, 4},
     layer = 20,
     rotate = true,
+    desc = "SPIN: SPIN units rotate clockwise, the number of times indicated on top of the property.",
   },
   -- 184
   {

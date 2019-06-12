@@ -541,6 +541,7 @@ function findSidekikers(unit,dx,dy)
   return result;
 end
 
+--TODO: Maybe being SLEP or having slipped should lock you out of COPYKAT? Or maybe not, I'm not sure.
 function findCopykats(unit)
   local result = {}
   local iscopykat = matchesRule("?", "copkat", unit);
