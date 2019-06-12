@@ -1,3 +1,5 @@
+local startload = love.timer.getTime()
+
 require "lib/gooi"
 json = require "lib/json"
 tick = require "lib/tick"
@@ -23,142 +25,7 @@ local debugDrawText                           -- read the line below
 local headerfont = love.graphics.newFont(32)  -- used for debug
 local regularfont = love.graphics.newFont(16) -- read the line above
 
-local libstatus, liberr = pcall(function() discordRPC = require "lib/discordRPC" end)
-
-if libstatus then
-  discordRPC = require "lib/discordRPC"
-else
-  print("WARNING: failed to require discordrpc: "..liberr)
-end
-
 function love.load()
-  local startload = love.timer.getTime()
-
-  sprites = {}
-  palettes = {}
-  tweens = {}
-  ticks = {}
-  move_sound_data = nil
-  move_sound_source = nil
-  anim_stage = 0
-  next_anim = ANIM_TIMER
-  fullscreen = false
-  winwidth, winheight = love.graphics.getDimensions( )
-
-  empty_sprite = love.image.newImageData(32, 32)
-  if not is_mobile then
-    empty_cursor = love.mouse.newCursor(empty_sprite)
-    gooi.desktopMode()
-  end
-
-  default_font = love.graphics.newFont()
-  game_time_start = love.timer.getTime()
-
-  love.graphics.setDefaultFilter("nearest","nearest")
-
-  local function addsprites(d)
-    local dir = "assets/sprites"
-    if d then
-      dir = dir .. "/" .. d
-    end
-    local files = love.filesystem.getDirectoryItems(dir)
-    for _,file in ipairs(files) do
-      if string.sub(file, -4) == ".png" then
-        local spritename = string.sub(file, 1, -5)
-        local sprite = love.graphics.newImage(dir .. "/" .. file)
-        if d then
-          spritename = d .. "/" .. spritename
-        end
-        sprites[spritename] = sprite
-      elseif love.filesystem.getInfo(dir .. "/" .. file).type == "directory" then
-        print("found sprite dir: " .. file)
-        local newdir = file
-        if d then
-          newdir = d .. "/" .. newdir
-        end
-        addsprites(file)
-      end
-    end
-  end
-  addsprites()
-
-  local function addPalettes(d)
-    local dir = "assets/palettes"
-    if d then
-      dir = dir .. "/" .. d
-    end
-    local files = love.filesystem.getDirectoryItems(dir)
-    for _,file in ipairs(files) do
-      if string.sub(file, -4) == ".png" then
-        local palettename = string.sub(file, 1, -5)
-        local data = love.image.newImageData(dir .. "/" .. file)
-        local sprite = love.graphics.newImage(data)
-        if d then
-          palettename = d .. "/" .. palettename
-        end
-        local palette = {}
-        palettes[palettename] = palette
-        palette.sprite = sprite
-        for x = 0, sprite:getWidth()-1 do
-          for y = 0, sprite:getHeight()-1 do
-            local r, g, b, a = data:getPixel(x, y)
-            palette[x + y * sprite:getWidth()] = {r, g, b, a}
-          end
-        end
-      elseif love.filesystem.getInfo(dir .. "/" .. file).type == "directory" then
-        print("found sprite dir: " .. file)
-        local newdir = file
-        if d then
-          newdir = d .. "/" .. newdir
-        end
-        addPalettes(file)
-      end
-    end
-  end
-  addPalettes()
-  current_palette = "default"
-
-  sound_exists = {}
-  local function addAudio(d)
-    local dir = "assets/audio"
-    if d then
-      dir = dir .. "/" .. d
-    end
-    local files = love.filesystem.getDirectoryItems(dir)
-    for _,file in ipairs(files) do
-      if love.filesystem.getInfo(dir .. "/" .. file).type == "directory" then
-        local newdir = file
-        if d then
-          newdir = d .. "/" .. newdir
-        end
-        addAudio(file)
-      else
-        local audioname = file
-        if file:ends(".wav") then audioname = file:sub(1, -5) end
-        if file:ends(".mp3") then audioname = file:sub(1, -5) end
-        if file:ends(".ogg") then audioname = file:sub(1, -5) end
-        if file:ends(".xm") then audioname = file:sub(1, -4) end
-        if d then
-          audioname = d .. "/" .. audioname
-        end
-        sound_exists[audioname] = true
-      end
-    end
-  end
-  addAudio()
-
-  system_cursor = sprites["ui/mous"]
-  --if love.system.getOS() == "OS X" then
-    --system_cursor = sprites["ui/mous_osx"]
-  --end
-  
-  registerSound("move", 0.4)
-  registerSound("break", 0.5)
-  registerSound("unlock", 0.6)
-  registerSound("sink", 0.5)
-  registerSound("rule", 0.5)
-  registerSound("win", 0.5)
-
   print([[
 
   
@@ -205,15 +72,163 @@ function love.load()
                                    BAB BE U
                                     v. ]]..build_number..[[
                                    ❤ v. ]]..love.getVersion()..'\n\n')
+  
+
+  local libstatus, liberr = pcall(function() discordRPC = require "lib/discordRPC" end)
+  if libstatus then
+    discordRPC = require "lib/discordRPC"
+    print("✓ discord rpc added")
+  else
+    print("⚠ failed to require discordrpc: "..liberr)
+  end
+
+  sprites = {}
+  palettes = {}
+  tweens = {}
+  ticks = {}
+  move_sound_data = nil
+  move_sound_source = nil
+  anim_stage = 0
+  next_anim = ANIM_TIMER
+  fullscreen = false
+  winwidth, winheight = love.graphics.getDimensions( )
+
+  empty_sprite = love.image.newImageData(32, 32)
+  if not is_mobile then
+    empty_cursor = love.mouse.newCursor(empty_sprite)
+    gooi.desktopMode()
+  end
+
+  default_font = love.graphics.newFont()
+  game_time_start = love.timer.getTime()
+
+  love.graphics.setDefaultFilter("nearest","nearest")
+
+  print("✓ startup values added\n")
+
+  local function addsprites(d)
+    local dir = "assets/sprites"
+    if d then
+      dir = dir .. "/" .. d
+    end
+    local files = love.filesystem.getDirectoryItems(dir)
+    for _,file in ipairs(files) do
+      if string.sub(file, -4) == ".png" then
+        local spritename = string.sub(file, 1, -5)
+        local sprite = love.graphics.newImage(dir .. "/" .. file)
+        if d then
+          spritename = d .. "/" .. spritename
+        end
+        sprites[spritename] = sprite
+        --print("ℹ️ added sprite "..spritename)
+      elseif love.filesystem.getInfo(dir .. "/" .. file).type == "directory" then
+        print("ℹ️ found sprite dir: " .. file)
+        local newdir = file
+        if d then
+          newdir = d .. "/" .. newdir
+        end
+        addsprites(file)
+      end
+    end
+  end
+  addsprites()
+
+  print("✓ added sprites\n")
+
+  local function addPalettes(d)
+    local dir = "assets/palettes"
+    if d then
+      dir = dir .. "/" .. d
+    end
+    local files = love.filesystem.getDirectoryItems(dir)
+    for _,file in ipairs(files) do
+      if string.sub(file, -4) == ".png" then
+        local palettename = string.sub(file, 1, -5)
+        local data = love.image.newImageData(dir .. "/" .. file)
+        local sprite = love.graphics.newImage(data)
+        if d then
+          palettename = d .. "/" .. palettename
+        end
+        local palette = {}
+        palettes[palettename] = palette
+        palette.sprite = sprite
+        for x = 0, sprite:getWidth()-1 do
+          for y = 0, sprite:getHeight()-1 do
+            local r, g, b, a = data:getPixel(x, y)
+            palette[x + y * sprite:getWidth()] = {r, g, b, a}
+          end
+        end
+        --print("ℹ️ added palette "..palettename)
+      elseif love.filesystem.getInfo(dir .. "/" .. file).type == "directory" then
+        print("ℹ️ found palette dir: " .. file)
+        local newdir = file
+        if d then
+          newdir = d .. "/" .. newdir
+        end
+        addPalettes(file)
+      end
+    end
+  end
+  addPalettes()
+  current_palette = "default"
+
+  print("✓ added palettes\n")
+
+  sound_exists = {}
+  local function addAudio(d)
+    local dir = "assets/audio"
+    if d then
+      dir = dir .. "/" .. d
+    end
+    local files = love.filesystem.getDirectoryItems(dir)
+    for _,file in ipairs(files) do
+      if love.filesystem.getInfo(dir .. "/" .. file).type == "directory" then
+        local newdir = file
+        if d then
+          newdir = d .. "/" .. newdir
+        end
+        addAudio(file)
+      else
+        local audioname = file
+        if file:ends(".wav") then audioname = file:sub(1, -5) end
+        if file:ends(".mp3") then audioname = file:sub(1, -5) end
+        if file:ends(".ogg") then audioname = file:sub(1, -5) end
+        if file:ends(".xm") then audioname = file:sub(1, -4) end
+        if d then
+          audioname = d .. "/" .. audioname
+        end
+        sound_exists[audioname] = true
+        --print("ℹ️ audio "..audioname.." added")
+      end
+    end
+  end
+  addAudio()
+  print("✓ audio added")
+
+  system_cursor = sprites["ui/mous"]
+  --if love.system.getOS() == "OS X" then
+    --system_cursor = sprites["ui/mous_osx"]
+  --end
+  
+  registerSound("move", 0.4)
+  registerSound("break", 0.5)
+  registerSound("unlock", 0.6)
+  registerSound("sink", 0.5)
+  registerSound("rule", 0.5)
+  registerSound("win", 0.5)
+  print("✓ sounds registered")
+
+  if discordRPC and discordRPC ~= true then
+    discordRPC.initialize("579475239646396436", true) -- app belongs to thefox, contact him if you wish to make any changes
+    print("✓ discord rpc initialized")
+  end
+
+  print("\nboot complete!")
 
   scene = menu
   scene.load()
 
-  if discordRPC and discordRPC ~= true then
-    discordRPC.initialize("579475239646396436", true) -- app belongs to thefox, contact him if you wish to make any changes
-  end
-
-  print("load took "..love.timer.getTime()-startload.."ms")
+  print("load took ~"..(math.floor((love.timer.getTime()-startload)*1000)/1000).."ms")
 end
 
 function love.keypressed(key,scancode,isrepeat)
@@ -233,6 +248,8 @@ function love.keypressed(key,scancode,isrepeat)
     scene.load()
   elseif key == "g" and love.keyboard.isDown('f3') then
     rainbowmode = not rainbowmode
+  elseif key == "q" and love.keyboard.isDown('f3') then
+    superduperdebugmode = not superduperdebugmode
   elseif key == "f4" then
     debug = not debug
   elseif key == "f5" then
@@ -425,12 +442,26 @@ function love.draw()
     '\npress R to restart\n'..
     'F4 to toggle debug menu\n'..
     'F3+G to toggle rainbowmode\n'..
+    'F3+Q for SUPER DUPER DEBUG MODE\n'..
     'F2 for editor mode\n'..
     'F1 for game mode\n'
 
+    if superduperdebugmode then
+      local stats = love.graphics.getStats()
+      local name, version, vendor, device = love.graphics.getRendererInfo()
+      local processorCount = love.system.getProcessorCount()
+
+      debug_values["estimated amount of texture memory used"] = string.format("%.2f MB", stats.texturememory / 1024 / 1024)
+      debug_values["renderer info"] = name..' v'..version..' by '..vendor..' using'..device
+    else
+      debug_values["estimated amount of texture memory used"], debug_values["renderer info"] = nil
+    end
+
     for key, value in pairs(debug_values) do
-      debugtext = debugtext..'\n'..
-      key..': '..value
+      if value ~= nil then
+        debugtext = debugtext..'\n'..
+        key..': '..value
+      end
     end
 
     if debugtext ~= olddebugtext or not debugDrawText then
@@ -455,12 +486,38 @@ function love.draw()
     love.graphics.setFont(regularfont)
 
     love.graphics.setColor(0, 0, 0, 1)
-    love.graphics.printf(debugtext, 1, 1+headerfont:getHeight(), love.graphics.getWidth()-love.graphics.getWidth()/4)
+    love.graphics.printf(debugtext, 1, 1+headerfont:getHeight(), love.graphics.getWidth())
     love.graphics.setColor(1, 1, 1, 0.9)
     setRainbowModeColor(love.timer.getTime()/3)
-    love.graphics.printf(debugtext, 0, 0+headerfont:getHeight(), love.graphics.getWidth()-love.graphics.getWidth()/4)
+    love.graphics.printf(debugtext, 0, 0+headerfont:getHeight(), love.graphics.getWidth())
 
     olddebugtext = debugtext
+  end
+
+  if superduperdebugmode then
+    love.graphics.setColor(1,1,0, 0.7)
+    love.graphics.line(love.mouse.getX()-love.mouse.getY(), 0, love.mouse.getX()+(love.graphics.getHeight()-love.mouse.getY()), love.graphics.getHeight())
+    love.graphics.line(love.mouse.getX()+love.mouse.getY(), 0, love.mouse.getX()-(love.graphics.getHeight()-love.mouse.getY()), love.graphics.getHeight())
+
+    love.graphics.setColor(1,0,0, 0.7)
+    love.graphics.line(love.mouse.getX(), 0, love.mouse.getX(), love.graphics.getHeight())
+    love.graphics.setColor(0,1,0, 0.7)
+    love.graphics.line(0, love.mouse.getY(), love.graphics.getWidth(), love.mouse.getY())
+
+
+    local formula =  "love.graphics.getWidth()-love.graphics.getWidth()/"..math.floor(love.graphics.getWidth()/love.mouse.getX()*100)/100
+    local formula2 = "love.graphics.getHeight()-love.graphics.getHeight()/"..math.floor(love.graphics.getHeight()/love.mouse.getY()*100)/100
+
+    local function drawmousething(x, y)
+      love.graphics.printf('x'..love.mouse.getX()..'\ny'..love.mouse.getY()..'\n'..formula..'\n'..formula2, love.mouse.getX()+10+x, love.mouse.getY()+10+y, love.graphics.getWidth()-love.mouse.getX())
+    end
+
+    love.graphics.setFont(regularfont)
+
+    love.graphics.setColor(0,0,0)
+    drawmousething(1, 1)
+    love.graphics.setColor(0,0,1)
+    drawmousething(0, 0)
   end
 end
 

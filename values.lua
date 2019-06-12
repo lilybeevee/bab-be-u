@@ -24,6 +24,7 @@ if love.filesystem.read("Settings.bab") ~= nil then
 end
 
 debug = false
+superduperdebugmode = false
 debug_values = {
 
 }
