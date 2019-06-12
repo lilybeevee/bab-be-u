@@ -150,12 +150,18 @@ function scene.keyPressed(key, isrepeat)
   --2) If we know what the next move is (either it was an orthogonal move and we can see the 30ms delay already elapsed, or we just got our 2nd input for the move) we can do checkInput() from THIS function instead of waiting for love2d to call update().
   --3) Instead of having this 30ms delay, we could assume it's an orthogonal move, process the next turn as though it was, and then if before the 30ms delay we discover that it was actually a diagonal input, we can undo the orthogonal input and process the next turn with the diagonal input. (But this will behave badly with CRASH/RESET/PERSIST (since those aren't invariant over undo/redo), so we'd have to make sure it works with those features. And you'll also be able to see and hear the ghosts of unintended orthogonal moves for the 0-30ms before they get corrected, like a GGPO netcode game, which might be unsettling.)
   if key == "w" or key == "a" or key == "s" or key == "d" then
-    if not repeat_timers["wasd"] then
+    if not repeat_timers["wasd"] or repeat_timers["wasd"] > 30 then
       repeat_timers["wasd"] = 30
+    elseif repeat_timers["wasd"] <= 30 then
+      do_turn_now = true
+      repeat_timers["wasd"] = 0
     end
   elseif key == "up" or key == "down" or key == "left" or key == "right" then
-    if not repeat_timers["udlr"] then
+    if not repeat_timers["udlr"] or repeat_timers["udlr"] > 30 then
       repeat_timers["udlr"] = 30
+    elseif repeat_timers["udlr"] <= 30 then
+      do_turn_now = true
+      repeat_timers["udlr"] = 0
     end
   elseif key == "kp1" or
   key == "kp2" or
