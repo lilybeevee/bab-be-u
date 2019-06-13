@@ -661,6 +661,8 @@ function handleDels(to_destroy, unstoppable)
 end
 
 function levelBlock()
+  local to_destroy = {}
+  
   if hasProperty(outerlvl, "ouch") then
     for _,unit in ipairs(units) do
       if sameFloat(unit, outerlvl) then
@@ -669,14 +671,66 @@ function levelBlock()
       end
     end
   end
-  --[[if hasProperty(outerlvl, "sink") then
+  
+  if hasProperty(outerlvl, "no swim") then
     for _,unit in ipairs(units) do
       if sameFloat(unit, outerlvl) then
         destroyLevel("sink");
         return;
       end
     end
-  ]]
+  end
+  
+  if hasProperty(outerlvl, "hotte") then
+    local melters = getUnitsWithEffect("fridgd")
+    for _,unit in ipairs(melters) do
+      if sameFloat(unit,outerlvl) then
+        table.insert(to_destroy, unit)
+        playSound("sink")
+        addParticles("destroy", unit.x, unit.y, unit.color)
+        shakeScreen(0.3, 0.1)
+      end
+    end
+  end
+  
+  to_destroy = handleDels(to_destroy)
+  
+  if hasProperty(outerlvl, "fridgd") then
+    if hasProperty(outerlvl, "hotte") then
+      destroyLevel("sink")
+      return
+    end
+    local melters = getUnitsWithEffect("hotte")
+    for _,unit in ipairs(melters) do
+      if sameFloat(unit,outerlvl) then
+        destroyLevel("sink")
+        return
+      end
+    end
+  end
+  
+  if hasProperty(outerlvl, "ned kee") then
+    if hasProperty(outerlvl, "for dor") then
+      destroyLevel("open")
+    end
+    local dors = getUnitsWithEffect("for dor")
+    for _,unit in ipairs(dors) do
+      if sameFloat(unit,outerlvl) then
+        destroyLevel("open")
+        return
+      end
+    end
+  end
+  
+  if hasProperty(outerlvl, "for dor") then
+    local kees = getUnitsWithEffect("ned kee")
+    for _,unit in ipairs(kees) do
+      if sameFloat(unit,outerlvl) then
+        destroyLevel("open")
+        return
+      end
+    end
+  end
 end
 
 function changeDirIfFree(unit, dir)
@@ -714,7 +768,9 @@ end
 function destroyLevel(reason)
   if reason == "sink" then
     playSound("sink")
-  else 
+  elseif reason == "open" then
+    playSound("unlock")
+  else
     playSound("break")
   end
   for _,unit in ipairs(units) do
