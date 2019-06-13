@@ -70,7 +70,7 @@ function doMovement(movex, movey)
         for __,other in ipairs(getUnitsOnTile(unit.x, unit.y)) do
           if other.id ~= unit.id and sameFloat(unit, other) then
             table.insert(other.moves, {reason = "icy", dir = other.dir, times = icyness})
-            if #other.moves > 0 and not already_added[other] then
+            if #other.moves > 0 and not already_added[other] and not hasRule(unit,"got","slippers") then
               table.insert(moving_units, other)
               already_added[other] = true
             end
@@ -359,7 +359,7 @@ function moveIt(mover, dx, dy, facing_dir, move_dir, data, pulling, already_adde
     --applySlide(mover, dx, dy, already_added, moving_units_next);
     applySwap(mover, dx, dy);
     --finishing a slip locks you out of U/WALK for the rest of the turn
-    if (data.reason == "icy") then
+    if data.reason == "icy" and not hasRule(mover,"got","slippers") then
       slippers[mover.id] = true
     end
     --add SIDEKIKERs to move in the next sub-tick
@@ -467,8 +467,10 @@ function applySlide(mover, dx, dy, already_added, moving_units_next)
           end
           did_clear_existing = true
         end
-        movedebug("sliding:"..mover.name..","..mover.dir)
-        table.insert(mover.moves, 1, {reason = "icyyyy", dir = mover.dir, times = slideness})
+        if not hasRule(mover,"got","slippers") then
+          movedebug("sliding:"..mover.name..","..mover.dir)
+          table.insert(mover.moves, 1, {reason = "icyyyy", dir = mover.dir, times = slideness})
+        end
         if not already_added[mover] then
           movedebug("did add slider")
           table.insert(moving_units_next, mover)

@@ -432,8 +432,9 @@ function scene.draw(dt)
           local fulldrawx = (drawx + 0.5)*TILE_SIZE
           local fulldrawy = (drawy + 0.5)*TILE_SIZE
 
-          if hasRule(unit,"be","flye") then
+          if hasRule(unit,"be","flye") or unit.name == "o" then
             local flyenes = countProperty(unit, "flye")
+            if unit.name == "o" then flyenes = flyenes + 1 end
             fulldrawy = fulldrawy - 5 - math.sin(love.timer.getTime())*2.5*(flyenes^2)
           end
 
@@ -489,10 +490,15 @@ function scene.draw(dt)
             love.graphics.setColor(1, 1, 1)
             love.graphics.draw(sprites["gunsmol"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
           end
-		  if hasRule(unit,"got","katany") then
+		      if hasRule(unit,"got","katany") then
             love.graphics.setColor(0.45, 0.45, 0.45)
             love.graphics.draw(sprites["katanysmol"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
-		  end
+          end
+          if hasRule(unit,"got","slippers") then
+            love.graphics.setColor(getPaletteColor(1,4))
+            love.graphics.draw(sprites["slippers"], fulldrawx, fulldrawy+sprite:getHeight()/4, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+          end
+
           if false then -- stupid lua comments
             if hasRule(unit,"got","?") then
               local matchrules = matchesRule(unit,"got","?")
