@@ -559,8 +559,32 @@ function findCopykats(unit)
   return result
 end
 
+--same stubborn logic as canMove, only the puller gets to branch though! also, we can't attempt a pull before going ahead with it, so just do the first one we can I guess.
 function doPull(unit,dx,dy,dir,data, already_added, moving_units, moving_units_next, slippers)
+  local result = doPullCore(unit,dx,dy,dir,data, already_added, moving_units, moving_units_next, slippers)
+  if result > 0 then return result end
+  if dir > 0 then
+   local stubbn = countProperty(unit, "stubbn")
+    if stubbn > 0 and (dir % 2 == 0) or stubbn > 1 then
+      for i = 1,clamp(stubbn-1, 1, 4) do
+        local stubborndir1 = ((dir+i-1)%8)+1
+        local stubborndir2 = ((dir-i-1)%8)+1
+        local result1 = doPullCore(unit,dirs8[stubborndir1][1],dirs8[stubborndir1][2],stubborndir1,data,already_added, moving_units, moving_units_next, slippers);
+        if (result1 > 0) then
+          return result1
+        end
+        local result2 = doPullCore(unit,dirs8[stubborndir2][1],dirs8[stubborndir2][2],stubborndir2,data,already_added, moving_units, moving_units_next, slippers);
+        if (result2 > 0) then
+          return result2
+        end
+      end
+    end
+  end
+end
+
+function doPullCore(unit,dx,dy,dir,data, already_added, moving_units, moving_units_next, slippers)
   --TODO: CLEANUP: This is a big ol mess now and there's no way it needs to be THIS complicated.
+  local result = 0
   local something_moved = not hasProperty(unit, "shy")
   local prev_unit = unit
   while (something_moved) do
@@ -595,12 +619,14 @@ function doPull(unit,dx,dy,dir,data, already_added, moving_units, moving_units_n
               dir = dirAdd(mover.dir, dir_diff);
               changed_unit = true
             end
+            result = result + 1
             moveIt(mover.unit, mover.dx, mover.dy, mover.dir, mover.move_dir, data, true, already_added, moving_units, moving_units_next, slippers)
           end
         end
       end
     end
   end
+  return result
 end
 
 function fallBlock()
