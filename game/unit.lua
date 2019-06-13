@@ -663,19 +663,19 @@ end
 function levelBlock()
   local to_destroy = {}
   
-  if hasProperty(outerlvl, "ouch") then
+  if hasProperty(outerlvl, "no swim") then
     for _,unit in ipairs(units) do
       if sameFloat(unit, outerlvl) then
-        destroyLevel("ouch");
+        destroyLevel("sink");
         return;
       end
     end
   end
   
-  if hasProperty(outerlvl, "no swim") then
+  if hasProperty(outerlvl, "ouch") then
     for _,unit in ipairs(units) do
       if sameFloat(unit, outerlvl) then
-        destroyLevel("sink");
+        destroyLevel("break");
         return;
       end
     end
@@ -708,6 +708,20 @@ function levelBlock()
     end
   end
   
+  if hasProperty(outerlvl, ":(") then
+    local yous = getUnitsWithEffect("u")
+    for _,unit in ipairs(yous) do
+      if sameFloat(unit,outerlvl) then
+        table.insert(to_destroy, unit)
+        playSound("break")
+        addParticles("destroy", unit.x, unit.y, unit.color)
+        shakeScreen(0.3, 0.1)
+      end
+    end
+  end
+  
+  to_destroy = handleDels(to_destroy)
+  
   if hasProperty(outerlvl, "ned kee") then
     if hasProperty(outerlvl, "for dor") then
       destroyLevel("open")
@@ -729,6 +743,71 @@ function levelBlock()
         return
       end
     end
+  end
+  
+  --[[
+  local issnacc = matchesRule(nil, "snacc", "?");
+  for _,ruleparent in ipairs(issnacc) do
+    local unit = ruleparent[2]
+    local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
+    for _,on in ipairs(stuff) do
+      if hasRule(unit, "snacc", on) and sameFloat(unit, on) then
+        table.insert(to_destroy, on)
+        playSound("break")
+        addParticles("destroy", unit.x, unit.y, unit.color)
+        shakeScreen(0.3, 0.15)
+      end
+    end
+  end
+  ]]
+  
+  local will_undo = false
+  if hasProperty(outerlvl, "try again") then
+    local yous = getUnitsWithEffect("u")
+    for _,unit in ipairs(yous) do
+      if sameFloat(unit,outerlvl) then
+        will_undo = true
+        break
+      end
+    end
+  end
+  
+  if hasProperty(outerlvl, "xwx") then
+    local yous = getUnitsWithEffect("u")
+    for _,unit in ipairs(yous) do
+      if sameFloat(unit,outerlvl) then
+        love = {}
+      end
+    end
+  end
+  
+  if hasProperty(outerlvl, ":o") then
+    local yous = getUnitsWithEffect("u")
+    for _,unit in ipairs(yous) do
+      if sameFloat(unit,outerlvl) then
+        destroyLevel("rule")
+        return
+      end
+    end
+  end
+  
+  if hasProperty(outerlvl, ":)") then
+    local yous = getUnitsWithEffect("u")
+    for _,unit in ipairs(yous) do
+      if sameFloat(unit,outerlvl) then
+        win = true
+        music_fading = true
+        playSound("win")
+      end
+    end
+  end
+  
+  if (will_undo) then
+    local can_undo = true;
+    while (can_undo) do
+      can_undo = undo()
+    end
+    reset_count = reset_count + 1
   end
 end
 
@@ -765,19 +844,15 @@ function readingOrderSort(a, b)
 end
 
 function destroyLevel(reason)
-  if reason == "sink" then
-    playSound("sink")
-  elseif reason == "open" then
-    playSound("unlock")
-	playSound("break")
-  else
+  playSound(reason)
+  if reason == "open" then
     playSound("break")
   end
   for _,unit in ipairs(units) do
     addParticles("destroy", unit.x, unit.y, unit.color)
   end
   handleDels(units, true)
-  if (reason == "infloop") then
+  if reason == "infloop" then
     local new_unit = createUnit(tiles_by_name["infloop"], math.floor(mapwidth/2), math.floor(mapheight/2), 0)
     addUndo({"create", new_unit.id, false})
   end
