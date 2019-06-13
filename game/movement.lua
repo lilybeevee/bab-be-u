@@ -704,7 +704,8 @@ function getNextTile(unit,dx,dy,dir,reverse_)
 end
 
 function doWrap(unit, px, py, move_dir, dir)
-  local wrapcount = countProperty(unit, "go arnd")
+  --fast track if we don't need to wrap anyway
+  if inBounds(px,py) then return px, py, move_dir, dir end
   if hasProperty(unit, "cilindr_up") or hasProperty(unit, "cilindr_down") then
     if (px < 0) then
       px = px + mapwidth
@@ -796,7 +797,7 @@ function doPortal(unit, px, py, move_dir, dir, reverse)
   else
     local rs = reverse and -1 or 1
     --arbitrarily pick the first paired portal we find while iterating - can't think of a more 'simultaneousy' logic
-    --TODO: I could make portals go backwards/forwards twice/etc depending on property count. maybe later?
+    --I thought about making portals go backwards/forwards twice/etc depending on property count, but it doesn't play nice with pull - if two portals lead to a portal you move away from, which one do you pull from?
     for _,v in ipairs(getUnitsOnTile(px, py, nil, false)) do
       if hasProperty(v, "poor toll") then
         local portal_rules = matchesRule(v.name, "be", "poor toll");
