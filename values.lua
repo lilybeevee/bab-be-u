@@ -2051,7 +2051,7 @@ tiles_list = {
     color = {0,3},
     layer = 5,
   },
-  --185
+  -- 185
   {
     name = "text_slippers",
     sprite = "text_slippers",
@@ -2061,7 +2061,7 @@ tiles_list = {
     layer = 20,
     desc = "SLIPPERS: An object that GOT SLIPPERS will ignore ICY and ICYYYYY objects."
   },
-  --not 185 but who cares really
+  -- 186
   {
     name = "slippers",
     sprite = "slippers",
@@ -2069,5 +2069,24 @@ tiles_list = {
     grid = {5, 10},
     color = {1, 3},
     layer = 6,
+  },
+  -- 187
+  {
+    name = "ghost fren",
+    sprite = "ghost",
+    grid = {5, 14},
+    color = {4, 2},
+    layer = 5,
+    rotate = true,
+    eye = {x=16, y=12, w=2, h=4}
+  },
+  -- 188
+  {
+    name = "text_ghost fren",
+    sprite = "text_ghost fren",
+    type = "text",
+    grid = {6, 14},
+    color = {4, 2},
+    layer = 20,
   },
 }
