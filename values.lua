@@ -114,7 +114,8 @@ tiles_list = {
     layer = 6,
     rotate = true,
     eye = {x=22, y=10, w=2, h=2},
-	tags = {"char"}
+    tags = {"char"},
+    desc = "its bab bruh"
   },
   -- 2
   {
@@ -124,6 +125,7 @@ tiles_list = {
     grid = {1, 1},
     color = {4, 1},
     layer = 20,
+    desc = "\"BAB\". thats what it says"
   },
   -- 3
   {
@@ -155,6 +157,7 @@ tiles_list = {
     grid = {0, 5},
     color = {1, 1},
     layer = 2,
+    desc = "ston briks"
   },
   -- 6
   {
@@ -164,6 +167,7 @@ tiles_list = {
     grid = {1, 5},
     color = {0, 1},
     layer = 20,
+    desc = "uigi isn't gonna be in smash"
   },
   -- 7
   {
@@ -184,6 +188,7 @@ tiles_list = {
     grid = {0, 4},
     color = {6, 2},
     layer = 3,
+    desc = "roc: not a bord"
   },
   -- 9
   {
