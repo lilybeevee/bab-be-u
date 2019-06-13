@@ -45,8 +45,10 @@ function playMusic(music, volume)
   
   if love.filesystem.getInfo("assets/audio/" .. music .. ".wav") ~= nil then
     music_source = love.audio.newSource("assets/audio/" .. music .. ".wav", "static")
-  else
+  elseif love.filesystem.getInfo("assets/audio/" .. music .. ".xm") ~= nil then
     music_source = love.audio.newSource("assets/audio/" .. music .. ".xm", "static")
+  else
+    music_source = love.audio.newSource("assets/audio/" .. music .. ".mp3", "static")
   end
   music_source:setLooping(true)
   music_source:setVolume(current_volume * music_volume)

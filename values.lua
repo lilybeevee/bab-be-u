@@ -1249,7 +1249,7 @@ tiles_list = {
     type = "object",
     grid = {11, 4},
     color ={0, 3},
-    layer = 1,
+    layer = 2,
     rotate = true,
   },
   --- 108
