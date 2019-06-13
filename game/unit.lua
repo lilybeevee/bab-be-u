@@ -688,7 +688,6 @@ function levelBlock()
         table.insert(to_destroy, unit)
         playSound("sink")
         addParticles("destroy", unit.x, unit.y, unit.color)
-        shakeScreen(0.3, 0.1)
       end
     end
   end
@@ -770,6 +769,7 @@ function destroyLevel(reason)
     playSound("sink")
   elseif reason == "open" then
     playSound("unlock")
+	playSound("break")
   else
     playSound("break")
   end
