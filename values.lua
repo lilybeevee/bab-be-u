@@ -2074,6 +2074,7 @@ tiles_list = {
   {
     name = "ghost fren",
     sprite = "ghost",
+    sleepsprite = "ghost_slep",
     grid = {5, 14},
     color = {4, 2},
     layer = 5,
@@ -2087,6 +2088,26 @@ tiles_list = {
     type = "text",
     grid = {6, 14},
     color = {4, 2},
+    layer = 20,
+  },
+  -- 189
+  {
+    name = "robobot",
+    sprite = "robobot",
+    sleepsprite = "robobot_slep",
+    grid = {7, 14},
+    color = {6, 1},
+    layer = 5,
+    rotate = true,
+    eye = {x=16, y=8, w=2, h=4}
+  },
+  -- 190
+  {
+    name = "text_robobot",
+    sprite = "text_robobot",
+    type = "text",
+    grid = {8, 14},
+    color = {6, 1},
     layer = 20,
   },
 }
