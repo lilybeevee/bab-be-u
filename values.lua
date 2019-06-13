@@ -1229,7 +1229,7 @@ tiles_list = {
     grid = {7, 13},
     color ={1, 4},
     layer = 20,
-    desc = "DIAGNAL: Prevents movement onto its tile from the tile in front of it and the two tiles 45 degrees to either side.",
+    desc = "GO MY WAY: Prevents movement onto its tile from the tile in front of it and the two tiles 45 degrees to either side.",
   },
   --- 106
   {
