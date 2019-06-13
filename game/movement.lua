@@ -983,7 +983,7 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
     if not success then
       for _,update in ipairs(update_queue) do
         if update.reason == "update" then
-          local unit2 = update.unit2
+          local unit2 = update.unit
           local x2 = update.payload.x
           local y2 = update.payload.y
           if x2 == x and y2 == y and hasRule(unit, "bounded", unit2) then
