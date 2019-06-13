@@ -2078,7 +2078,7 @@ tiles_list = {
     color = {4, 2},
     layer = 5,
     rotate = true,
-    eye = {x=16, y=12, w=2, h=4}
+    eye = {x=25, y=11, w=2, h=4}
   },
   -- 188
   {
