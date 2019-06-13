@@ -18,8 +18,7 @@ editor = require 'editor/scene'
 loadscene = require 'editor/loadscene'
 menu = require 'menu/scene'
 presence = {}
-
-local frame = 0
+frame = 0
 
 local debugDrawText                           -- read the line below
 local headerfont = love.graphics.newFont(32)  -- used for debug
