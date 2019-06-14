@@ -686,9 +686,11 @@ function levelBlock()
     for _,unit in ipairs(melters) do
       if sameFloat(unit,outerlvl) then
         table.insert(to_destroy, unit)
-        playSound("sink")
         addParticles("destroy", unit.x, unit.y, unit.color)
       end
+    end
+    if to_destroy ~= nil then
+      playSound("sink")
     end
   end
   
@@ -713,10 +715,12 @@ function levelBlock()
     for _,unit in ipairs(yous) do
       if sameFloat(unit,outerlvl) then
         table.insert(to_destroy, unit)
-        playSound("break")
         addParticles("destroy", unit.x, unit.y, unit.color)
-        shakeScreen(0.3, 0.1)
       end
+    end
+    if to_destroy ~= nil then
+      playSound("break")
+      shakeScreen(0.3, 0.1)
     end
   end
   
@@ -760,6 +764,24 @@ function levelBlock()
     end
   end
   ]]
+  
+  local issnacc = matchesRule(outerlvl,"snacc",nil)
+  for _,ruleparent in ipairs(issnacc) do
+    local snaccs = ruleparent[2]
+    for _,unit in ipairs(units) do
+      if hasRule(outerlvl,"snacc",snaccs) and sameFloat(outerlvl,snaccs) then
+        table.insert(to_destroy, snaccs)
+      end
+    end
+    if to_destroy ~= nil then
+      playSound("break")
+      addParticles("destroy", snaccs.x, snaccs.y, snaccs.color)
+      shakeScreen(0.3, 0.15)
+    end
+  end
+  
+  to_destroy = handleDels(to_destroy)
+  --print(dump(issnacc))
   
   local will_undo = false
   if hasProperty(outerlvl, "try again") then
