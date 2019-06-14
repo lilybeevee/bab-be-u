@@ -689,7 +689,7 @@ function levelBlock()
         addParticles("destroy", unit.x, unit.y, unit.color)
       end
     end
-    if to_destroy ~= nil then
+    if #to_destroy > 0 then
       playSound("sink")
     end
   end
@@ -718,10 +718,7 @@ function levelBlock()
         addParticles("destroy", unit.x, unit.y, unit.color)
       end
     end
-    if to_destroy ~= nil then
-      playSound("break")
-      shakeScreen(0.3, 0.1)
-    end
+    
   end
   
   to_destroy = handleDels(to_destroy)
@@ -739,6 +736,8 @@ function levelBlock()
     end
   end
   
+  to_destroy = handleDels(to_destroy)
+  
   if hasProperty(outerlvl, "for dor") then
     local kees = getUnitsWithEffect("ned kee")
     for _,unit in ipairs(kees) do
@@ -749,39 +748,34 @@ function levelBlock()
     end
   end
   
-  --[[
-  local issnacc = matchesRule(nil, "snacc", "?");
-  for _,ruleparent in ipairs(issnacc) do
-    local unit = ruleparent[2]
-    local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
-    for _,on in ipairs(stuff) do
-      if hasRule(unit, "snacc", on) and sameFloat(unit, on) then
-        table.insert(to_destroy, on)
-        playSound("break")
-        addParticles("destroy", unit.x, unit.y, unit.color)
-        shakeScreen(0.3, 0.15)
-      end
-    end
-  end
-  ]]
+  to_destroy = handleDels(to_destroy)
   
   local issnacc = matchesRule(outerlvl,"snacc",nil)
   for _,ruleparent in ipairs(issnacc) do
-    local snaccs = ruleparent[2]
-    for _,unit in ipairs(units) do
-      if hasRule(outerlvl,"snacc",snaccs) and sameFloat(outerlvl,snaccs) then
-        table.insert(to_destroy, snaccs)
-      end
-    end
-    if to_destroy ~= nil then
-      playSound("break")
-      addParticles("destroy", snaccs.x, snaccs.y, snaccs.color)
-      shakeScreen(0.3, 0.15)
+    local unit = ruleparent[2]
+    if sameFloat(outerlvl,unit) then
+      addParticles("destroy", unit.x, unit.y, unit.color)
+      table.insert(to_destroy, unit)
     end
   end
   
+  local issnacc = matchesRule(nil,"snacc",outerlvl)
+  print (#issnacc)
+  for _,ruleparent in ipairs(issnacc) do
+    local unit = ruleparent[2]
+    print(dump(unit))
+    if sameFloat(outerlvl,unit) then
+      destroyLevel("snacc")
+      return
+    end
+  end
+  
+  if #to_destroy > 0 then
+    playSound("break")
+    shakeScreen(0.3, 0.1)
+  end
+  
   to_destroy = handleDels(to_destroy)
-  --print(dump(issnacc))
   
   local will_undo = false
   if hasProperty(outerlvl, "try again") then
@@ -867,7 +861,7 @@ end
 
 function destroyLevel(reason)
   playSound(reason)
-  if reason == "open" then
+  if reason == "open" or reason == "snacc" then
     playSound("break")
   end
   for _,unit in ipairs(units) do
