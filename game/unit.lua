@@ -901,14 +901,12 @@ end
 
 function convertLevel()
   local deconverts = matchesRule(outerlvl,"ben't","lvl")
-  print (#deconverts)
   if #deconverts > 0 then
     destroyLevel("convert")
     return true
   end
   
   local converts = matchesRule(outerlvl,"be","?")
-  print (#converts)
   for _,match in ipairs(converts) do
     if not nameIs(outerlvl, match[1][3]) then
       --placeholder - just make 'u r win' pop up for now
@@ -928,7 +926,6 @@ function convertUnits()
   end
   
   if convertLevel() then return end
-  print ("b")
 
  --keep empty out of units_by_tile - it will be returned in getUnitsOnTile
  --TODO: CLEANUP: This is similar to updateUnits.
