@@ -262,12 +262,10 @@ function updateUnits(undoing, big_update)
         unit.backer_turn = #undo_buffer+(0.5*(amt-1));
         backers_cache[unit] = unit.backer_turn;
       end
-      print(2*(#undo_buffer-unit.backer_turn))
       doBack(unit, 2*(#undo_buffer-unit.backer_turn));
       for i = 2,amt do
         addUndo({"backer_turn", unit.id, unit.backer_turn})
         unit.backer_turn = unit.backer_turn - 0.5;
-        print(2*(#undo_buffer-unit.backer_turn))
         doBack(unit, 2*(#undo_buffer-unit.backer_turn));
       end
     end
@@ -760,10 +758,8 @@ function levelBlock()
   end
   
   local issnacc = matchesRule(nil,"snacc",outerlvl)
-  print (#issnacc)
   for _,ruleparent in ipairs(issnacc) do
     local unit = ruleparent[2]
-    print(dump(unit))
     if sameFloat(outerlvl,unit) then
       destroyLevel("snacc")
       return
@@ -861,7 +857,7 @@ end
 
 function destroyLevel(reason)
   playSound(reason)
-  if reason == "open" or reason == "snacc" then
+  if reason == "open" or reason == "snacc" or reason == "convert" then
     playSound("break")
   end
   for _,unit in ipairs(units) do
@@ -903,12 +899,36 @@ function dropGotUnit(unit, rule)
   end
 end
 
+function convertLevel()
+  local deconverts = matchesRule(outerlvl,"ben't","lvl")
+  print (#deconverts)
+  if #deconverts > 0 then
+    destroyLevel("convert")
+    return true
+  end
+  
+  local converts = matchesRule(outerlvl,"be","?")
+  print (#converts)
+  for _,match in ipairs(converts) do
+    if not nameIs(outerlvl, match[1][3]) then
+      --placeholder - just make 'u r win' pop up for now
+      win = true
+      music_fading = true
+      playSound("win")
+      return true
+    end
+  end
+end
+
 --TODO: Conversions need to be simultaneous, so that if e.g. bab on bab be hurcane and you stack two babs, they both become hurcanes. Also, I think creat timing should be tested to see if it matches baba's or not. (In Baba, it's pretty much at the end of the turn, but I don't know if it's before or after conversion.)
 --TODO: Possibly convertUnits() should run twice per turn (except it doesn't apply to units made since the previous turn)? I forget how it works in baba but I think it works like that in baba. It would let you do things like X is Y, X sansn't Y is Z and have both conversions happen in the same turn. Probably Baba behaviour needs to be tested and compared here.
 function convertUnits()
   for i,v in pairs(units_by_tile) do
     units_by_tile[i] = {}
   end
+  
+  if convertLevel() then return end
+  print ("b")
 
  --keep empty out of units_by_tile - it will be returned in getUnitsOnTile
  --TODO: CLEANUP: This is similar to updateUnits.
