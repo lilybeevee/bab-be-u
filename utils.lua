@@ -177,6 +177,7 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
   if (debugging) then
     print("matchesRule arguments:"..tostring(rule1)..","..tostring(rule2)..","..tostring(rule3))
   end
+  
   local nrules = {}
   local fnrules = {}
   local rule_units = {}
@@ -416,15 +417,25 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
     local x, y = unit.x, unit.y
 
     if condtype == "wfren" then
-      for _,param in ipairs(params) do
-        local others
-        if param ~= "mous" then
-          others = getUnitsOnTile(x, y, param, false, unit) --currently, conditions only work up to one layer of nesting, so the noun argument of the condition is assumed to be just a noun
-        else
-          others = getCursorsOnTile(x, y, false, unit)
+      if unit == outerlvl then --basically turns into sans n't
+        result = false
+        for _,param in ipairs(params) do
+        local others = findUnitsByName(param)
+        if #others > 1 or #others == 1 and others[1] ~= unit then
+          result = true
         end
-        if #others == 0 then
-          result = false
+      end
+      else
+        for _,param in ipairs(params) do
+          local others
+          if param ~= "mous" then
+            others = getUnitsOnTile(x, y, param, false, unit) --currently, conditions only work up to one layer of nesting, so the noun argument of the condition is assumed to be just a noun
+          else
+            others = getCursorsOnTile(x, y, false, unit)
+          end
+          if #others == 0 then
+            result = false
+          end
         end
       end
     elseif condtype == "sit on" then
