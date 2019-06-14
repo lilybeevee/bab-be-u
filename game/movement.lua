@@ -1,5 +1,6 @@
 --format: {unit = unit, type = "update", payload = {x = x, y = y, dir = dir}} 
 update_queue = {}
+walkdirchangingrulesexist = false
 
 movedebugflag = false
 function movedebug(message)
@@ -46,6 +47,7 @@ function doDirRules()
 end
 
 function doMovement(movex, movey)
+  walkdirchangingrulesexist = rules_with["munwalk"] or rules_with["sidestep"] or rules_with["diagstep"] or rules_with["hopovr"];
   local played_sound = {}
   local slippers = {}
   local flippers = {}
@@ -188,7 +190,7 @@ It is probably possible to do, but lily has decided that it's not important enou
     local loop_stage = 0
     local successes = 1
     --Stage loop continues until nothing moves in the inner loop, and does a doUpdate after each inner loop, to allow for multimoves to exist.
-    while (#moving_units > 0 and successes > 0) do 
+    while (#moving_units > 0 and successes > 0) do
       if (loop_stage > 1000) then
         print("movement infinite loop! (1000 attempts at a stage)")
         destroyLevel("infloop");
@@ -209,6 +211,7 @@ It is probably possible to do, but lily has decided that it's not important enou
         local has_flipped = false
         something_moved = false
         loop_tick = loop_tick + 1
+        --TODO: PERFORMANCE: Iterating through moving_units is the slowest part, unsurprisingly. Investigate if it's due to canMove, moveIt, doPull or something else.
         for _,unit in ipairs(moving_units) do
           while #unit.moves > 0 and unit.moves[1].times <= 0 do
             table.remove(unit.moves, 1)
@@ -422,6 +425,8 @@ function queueMove(mover, dx, dy, dir, priority)
 end
 
 function applySlide(mover, dx, dy, already_added, moving_units_next)
+  --fast track
+  if rules_with["goooo"] == nil and rules_with["icyyyy"] == nil then return end
   --Before we add a new LAUNCH/SLIDE move, deleting all existing LAUNCH/SLIDE moves, so that if we 'move twice in the same tick' (such as because we're being pushed or pulled while also sliding) it doesn't stack. (this also means e.g. SLIDE & SLIDE gives you one extra move at the end, rather than multiplying your movement.)
   local did_clear_existing = false
   --LAUNCH will take precedence over SLIDE, so that puzzles where you move around launchers on an ice rink will behave intuitively.
@@ -482,6 +487,8 @@ function applySlide(mover, dx, dy, already_added, moving_units_next)
 end
 
 function applySwap(mover, dx, dy)
+  --fast track
+  if rules_with["behin u"] == nil then return end
   --we haven't actually moved yet, same as applySlide
   --two priority related things:
   --1) don't swap with things that are already moving, to prevent move order related behaviour
@@ -505,6 +512,8 @@ function applySwap(mover, dx, dy)
 end
 
 function findSidekikers(unit,dx,dy)
+  --fast track
+  if rules_with["sidekik"] == nil then return {} end
   local result = {}
   if hasProperty(unit, "shy") then
     return result;
@@ -545,6 +554,8 @@ end
 
 --TODO: Maybe being SLEP or having slipped should lock you out of COPYKAT? Or maybe not, I'm not sure.
 function findCopykats(unit)
+  --fast track
+  if rules_with["copkat"] == nil then return {} end
   local result = {}
   local iscopykat = matchesRule("?", "copkat", unit);
   for _,ruleparent in ipairs(iscopykat) do
@@ -562,6 +573,8 @@ end
 --same stubborn logic as canMove, only the puller gets to branch though! also, we can't attempt a pull before going ahead with it, so just do the first one we can I guess.
 function doPull(unit,dx,dy,dir,data, already_added, moving_units, moving_units_next, slippers)
   local result = doPullCore(unit,dx,dy,dir,data, already_added, moving_units, moving_units_next, slippers)
+  --fast track
+  if rules_with["come pls"] == nil then return 0 end
   if result > 0 then return result end
   if dir > 0 then
    local stubbn = countProperty(unit, "stubbn")
@@ -946,7 +959,7 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
 	end
   
   --apply munwalk, sidestep and diagstep here (only if making a push move, to not mess up other checks)
-  if (pushing) then
+  if (pushing and walkdirchangingrulesexist) then
     local old_dx, old_dy = dx, dy
     local movecount = 4 * countProperty(unit, "munwalk") + 2 * countProperty(unit, "sidestep") + countProperty(unit, "diagstep")
     if movecount % 2 == 1 then
@@ -997,7 +1010,7 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
   local tileid = x + y * mapwidth
   
   --bounded: if we're bounded and there are no units in the destination that satisfy a bounded rule, AND there's no units at our feet that would be moving there to carry us, we can't go
-  local isbounded = matchesRule(unit, "bounded", "?");
+  local isbounded = rules_with["bounded"] and matchesRule(unit, "bounded", "?") or {}
   if (#isbounded > 0) then
     local success = false
     for _,v in ipairs(getUnitsOnTile(x, y, nil, false)) do
