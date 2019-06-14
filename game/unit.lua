@@ -814,6 +814,12 @@ function levelBlock()
     end
   end
   
+  if hasProperty(outerlvl, "nxt") then
+    win = true
+    music_fading = true
+    playSound("win")
+  end
+  
   if (will_undo) then
     local can_undo = true;
     while (can_undo) do

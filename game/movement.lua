@@ -941,7 +941,7 @@ end
 
 function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_stack_)
   --prevent infinite push loops by returning false if a push intersects an already considered unit
-  --EDIT: let's try returning true instead and allowing them to happen. plays nicely with portal loops.
+  --EDIT: let's try returning true instead and allowing them to happen. plays nicely with portal loops. For stubborn, maybe we just allow max one direction change or something... (So we pass a flag along to know if we've made our one change or not.)
   local push_stack = push_stack_ or {}
   
   if (push_stack[unit] == true) then
