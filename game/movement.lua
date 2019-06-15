@@ -165,7 +165,9 @@ function doMovement(movex, movey)
     end
 
     for _,unit in pairs(moving_units) do
-      addParticles("movement-puff", unit.x, unit.y, unit.color)
+      if not unit.stelth then
+        addParticles("movement-puff", unit.x, unit.y, unit.color)
+      end
     end
     
     --[[

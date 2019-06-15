@@ -897,7 +897,9 @@ function scene.doPassiveParticles(timer,word,effect,delay,chance,count,color)
           real_count = real_count + 1
         end
       end
-      addParticles(effect, unit.x, unit.y, color, real_count)
+      if not unit.stelth then
+        addParticles(effect, unit.x, unit.y, color, real_count)
+      end
     end
   end
 end
