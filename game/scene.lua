@@ -948,11 +948,11 @@ function scene.mouseReleased(x,y,button)
       key = "right"
 	elseif mouseOverBox(screenwidth-squaresprite:getWidth(), screenheight-squaresprite:getHeight()*3, squaresprite:getWidth(), squaresprite:getHeight()) then
 	  key = "kp9"
-	elseif mouseOverBox(screenwidth, screenheight-squaresprite:getHeight(), squaresprite:getWidth(), squaresprite:getHeight()) then
+	elseif mouseOverBox(screenwidth-squaresprite:getWidth(), screenheight-squaresprite:getHeight(), squaresprite:getWidth(), squaresprite:getHeight()) then
 	  key = "kp3"
-    elseif mouseOverBox(screenwidth-squaresprite:getWidth()*2, screenheight, squaresprite:getWidth(), squaresprite:getHeight()) then
+    elseif mouseOverBox(screenwidth-squaresprite:getWidth()*3, screenheight-squaresprite:getHeight(), squaresprite:getWidth(), squaresprite:getHeight()) then
 	  key = "kp1"
-    elseif mouseOverBox(screenwidth-squaresprite:getWidth()*3, screenheight-squaresprite:getHeight()*2, squaresprite:getWidth(), squaresprite:getHeight()) then
+    elseif mouseOverBox(screenwidth-squaresprite:getWidth()*3, screenheight-squaresprite:getHeight()*3, squaresprite:getWidth(), squaresprite:getHeight()) then
 	  key = "kp7"
     elseif mouseOverBox(screenwidth-squaresprite:getWidth()*2, screenheight-squaresprite:getHeight()*5, squaresprite:getWidth(), squaresprite:getHeight()) then
       key = "z"
@@ -986,11 +986,11 @@ function scene.mousePressed(x, y, button)
       key = "right"
 	elseif mouseOverBox(screenwidth-squaresprite:getWidth(), screenheight-squaresprite:getHeight()*3, squaresprite:getWidth(), squaresprite:getHeight()) then
 	  key = "kp9"
-	elseif mouseOverBox(screenwidth, screenheight-squaresprite:getHeight(), squaresprite:getWidth(), squaresprite:getHeight()) then
+	elseif mouseOverBox(screenwidth-squaresprite:getWidth(), screenheight-squaresprite:getHeight(), squaresprite:getWidth(), squaresprite:getHeight()) then
 	  key = "kp3"
-    elseif mouseOverBox(screenwidth-squaresprite:getWidth()*2, screenheight, squaresprite:getWidth(), squaresprite:getHeight()) then
+    elseif mouseOverBox(screenwidth-squaresprite:getWidth()*3, screenheight-squaresprite:getHeight(), squaresprite:getWidth(), squaresprite:getHeight()) then
 	  key = "kp1"
-    elseif mouseOverBox(screenwidth-squaresprite:getWidth()*3, screenheight-squaresprite:getHeight()*2, squaresprite:getWidth(), squaresprite:getHeight()) then
+    elseif mouseOverBox(screenwidth-squaresprite:getWidth()*3, screenheight-squaresprite:getHeight()*3, squaresprite:getWidth(), squaresprite:getHeight()) then
 	  key = "kp7"
     elseif mouseOverBox(screenwidth-squaresprite:getWidth()*2, screenheight-squaresprite:getHeight()*5, squaresprite:getWidth(), squaresprite:getHeight()) then
       key = "z"
