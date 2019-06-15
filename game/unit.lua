@@ -953,6 +953,7 @@ function convertUnits()
 
     if nameIs(unit, rule[3]) then
       if not unit.removed then
+        addParticles("bonus", unit.x, unit.y, unit.color)
         table.insert(converted_units, unit)
       end
       unit.removed = true
