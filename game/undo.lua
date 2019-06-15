@@ -13,7 +13,7 @@ function undoOneAction(turn, i, v, ignore_no_undo)
   local update_rules = false
   local action = v[1]
   local unit = nil
-
+  
   if action == "update" then
     unit = units_by_id[v[2]]
 
@@ -67,6 +67,8 @@ function undoOneAction(turn, i, v, ignore_no_undo)
       backers_cache[unit] = v[3];
       unit.backer_turn = v[3];
     end
+  elseif action == "destroy_level" then
+    level_destroyed = false
   end
   return update_rules, unit;
 end

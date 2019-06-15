@@ -862,6 +862,8 @@ function readingOrderSort(a, b)
 end
 
 function destroyLevel(reason)
+  level_destroyed = true
+  addUndo({"destroy_level", reason});
   playSound(reason)
   if reason == "open" or reason == "snacc" or reason == "convert" then
     playSound("break")

@@ -322,10 +322,12 @@ function scene.draw(dt)
 
   love.graphics.push()
   love.graphics.applyTransform(scene.getTransform())
-
+  
   love.graphics.setColor(getPaletteColor(0, 4))
   if rainbowmode then love.graphics.setColor(hslToRgb(love.timer.getTime()/6%1, .1, .1, .9)) end
-  love.graphics.rectangle("fill", 0, 0, roomwidth, roomheight)
+  if (not level_destroyed) then
+    love.graphics.rectangle("fill", 0, 0, roomwidth, roomheight)
+  end
 
   for i=1,max_layer do
     if units_by_layer[i] then
