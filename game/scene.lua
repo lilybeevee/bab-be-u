@@ -296,6 +296,7 @@ end
 --TODO: PERFORMANCE: Calling hasProperty once per frame means that we have to index rules, check conditions, etc. with O(m*n) performance penalty. But, the results of these calls do not change until a new turn or undo. So, we can cache the values of these calls in a global table and dump the table whenever the turn changes for a nice and easy performance boost.
 --(Though this might not be true for mice, which can change their position mid-frame?? Also for other meta stuff (like windo)? Until there's mouse conditional rules or meta stuff in a puzzle IDK how this should actually work or be displayed. Just keep that in mind tho.)
 function scene.draw(dt)
+  local draw_empty = rules_with["no1"] ~= nil
   local start_time = love.timer.getTime();
   -- reset canvas if the screen size has changed
   if love.graphics.getWidth() ~= last_width or love.graphics.getHeight() ~= last_height then
@@ -330,7 +331,7 @@ function scene.draw(dt)
     if units_by_layer[i] then
       local removed_units = {}
       for _,unit in ipairs(units_by_layer[i]) do
-        if not unit.stelth and (unit.name ~= "no1" or validEmpty(unit)) then
+        if not unit.stelth and (unit.name ~= "no1" or (draw_empty and validEmpty(unit))) then
           local brightness = 1
           if unit.type == "text" and not unit.active then
             brightness = 0.33
