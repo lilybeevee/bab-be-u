@@ -601,6 +601,7 @@ function scene.draw(dt)
   end
 
   if selector_open then
+    love.graphics.setColor(getPaletteColor(0,3))
     love.graphics.print(last_hovered_tile[1] .. ', ' .. last_hovered_tile[2], 0, roomheight)
   end
 
@@ -612,7 +613,7 @@ function scene.draw(dt)
     local i = tile_grid[gridid]
     if i ~= nil then
       local tile = tiles_list[i]
-      if (tile.desc ~= nil) then
+      if (tile.desc ~= nil and hx ~= nil) then
         local tooltipwidth, ttlines = love.graphics.getFont():getWrap(tile.desc, love.graphics.getWidth() - love.mouse.getX() - 20)
         local tooltipheight = love.graphics.getFont():getHeight() * #ttlines
 
