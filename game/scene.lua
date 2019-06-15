@@ -90,9 +90,9 @@ function scene.update(dt)
   end
   
   --TODO: PERFORMANCE: If many things are producing particles, it's laggy as heck.
-  scene.doPassiveParticles(dt, ":)", "bonus", 0.25, 1, 1, {237,226,133})
-  scene.doPassiveParticles(dt, ":o", "bonus", 0.5, 0.8, 1, {257,57,106})
-  scene.doPassiveParticles(dt, "qt", "love", 0.25, 0.5, 1, {235,145,202})
+  scene.doPassiveParticles(dt, ":)", "bonus", 0.25, 1, 1, {2, 4})
+  scene.doPassiveParticles(dt, ":o", "bonus", 0.5, 0.8, 1, {4, 1})
+  scene.doPassiveParticles(dt, "qt", "love", 0.25, 0.5, 1, {4, 2})
 
   debugDisplay('window dir', window_dir)
   if shake_dur > 0 then
@@ -672,13 +672,25 @@ function scene.draw(dt)
     local screenheight = love.graphics.getHeight()
 
     local arrowsprite = sprites["ui/arrow"]
+	local darrowsprite = sprites["ui/darrow"]
     local squaresprite = sprites["ui/square"]
-
+	local undosprite = sprites["ui/undo"]
+	local resetsprite = sprites["ui/reset"]
+	
+	love.graphics.draw(arrowsprite, screenwidth-arrowsprite:getWidth()*2, screenheight-arrowsprite:getHeight()*3)
+	love.graphics.draw(arrowsprite, screenwidth, screenheight-arrowsprite:getHeight()*2, 3.14/2)
     love.graphics.draw(arrowsprite, screenwidth-arrowsprite:getWidth(), screenheight, 3.14)
-    love.graphics.draw(arrowsprite, screenwidth, screenheight-arrowsprite:getHeight()*2, 3.14/2)
     love.graphics.draw(arrowsprite, screenwidth-arrowsprite:getWidth()*3, screenheight-arrowsprite:getHeight(), 3.14*1.5)
-    love.graphics.draw(arrowsprite, screenwidth-arrowsprite:getWidth()*2, screenheight-arrowsprite:getHeight()*3)
+    
+	love.graphics.draw(darrowsprite, screenwidth-darrowsprite:getWidth(), screenheight-darrowsprite:getHeight()*3)
+	love.graphics.draw(darrowsprite, screenwidth, screenheight-darrowsprite:getHeight(), 3.14/2)
+	love.graphics.draw(darrowsprite, screenwidth-darrowsprite:getWidth()*2, screenheight, 3.14)
+	love.graphics.draw(darrowsprite, screenwidth-darrowsprite:getWidth()*3, screenheight-darrowsprite:getHeight()*2, 3.14*1.5)
+	
     love.graphics.draw(squaresprite, screenwidth-squaresprite:getWidth()*2, screenheight-squaresprite:getHeight()*2)
+	
+	love.graphics.draw(undosprite, screenwidth-undosprite:getWidth()*2, screenheight-undosprite:getHeight()*5)
+	love.graphics.draw(resetsprite, screenwidth-resetsprite:getWidth()*2, resetsprite:getHeight())
   end
 
   gooi.draw()
@@ -934,6 +946,18 @@ function scene.mouseReleased(x,y,button)
       key = "down"
     elseif mouseOverBox(screenwidth-squaresprite:getWidth(), screenheight-squaresprite:getHeight()*2, squaresprite:getWidth(), squaresprite:getHeight()) then
       key = "right"
+	elseif mouseOverBox(screenwidth-squaresprite:getWidth(), screenheight-squaresprite:getHeight()*3, squaresprite:getWidth(), squaresprite:getHeight()) then
+	  key = "kp9"
+	elseif mouseOverBox(screenwidth, screenheight-squaresprite:getHeight(), squaresprite:getWidth(), squaresprite:getHeight()) then
+	  key = "kp3"
+    elseif mouseOverBox(screenwidth-squaresprite:getWidth()*2, screenheight, squaresprite:getWidth(), squaresprite:getHeight()) then
+	  key = "kp1"
+    elseif mouseOverBox(screenwidth-squaresprite:getWidth()*3, screenheight-squaresprite:getHeight()*2, squaresprite:getWidth(), squaresprite:getHeight()) then
+	  key = "kp7"
+    elseif mouseOverBox(screenwidth-squaresprite:getWidth()*2, screenheight-squaresprite:getHeight()*5, squaresprite:getWidth(), squaresprite:getHeight()) then
+      key = "z"
+    elseif mouseOverBox(screenwidth-squaresprite:getWidth()*2, squaresprite:getHeight(), squaresprite:getWidth(), squaresprite:getHeight()) then
+      key = "r"
     end
 
     scene.keyReleased(key)
@@ -950,7 +974,7 @@ function scene.mousePressed(x, y, button)
 
     local key = "0"
     
-    if mouseOverBox(screenwidth-squaresprite:getWidth()*2, screenheight-squaresprite:getHeight()*2, squaresprite:getWidth(), squaresprite:getHeight()) then
+	if mouseOverBox(screenwidth-squaresprite:getWidth()*2, screenheight-squaresprite:getHeight()*2, squaresprite:getWidth(), squaresprite:getHeight()) then
       key = "space"
     elseif mouseOverBox(screenwidth-squaresprite:getWidth()*3, screenheight-squaresprite:getHeight()*2, squaresprite:getWidth(), squaresprite:getHeight()) then
       key = "left"
@@ -960,6 +984,18 @@ function scene.mousePressed(x, y, button)
       key = "down"
     elseif mouseOverBox(screenwidth-squaresprite:getWidth(), screenheight-squaresprite:getHeight()*2, squaresprite:getWidth(), squaresprite:getHeight()) then
       key = "right"
+	elseif mouseOverBox(screenwidth-squaresprite:getWidth(), screenheight-squaresprite:getHeight()*3, squaresprite:getWidth(), squaresprite:getHeight()) then
+	  key = "kp9"
+	elseif mouseOverBox(screenwidth, screenheight-squaresprite:getHeight(), squaresprite:getWidth(), squaresprite:getHeight()) then
+	  key = "kp3"
+    elseif mouseOverBox(screenwidth-squaresprite:getWidth()*2, screenheight, squaresprite:getWidth(), squaresprite:getHeight()) then
+	  key = "kp1"
+    elseif mouseOverBox(screenwidth-squaresprite:getWidth()*3, screenheight-squaresprite:getHeight()*2, squaresprite:getWidth(), squaresprite:getHeight()) then
+	  key = "kp7"
+    elseif mouseOverBox(screenwidth-squaresprite:getWidth()*2, screenheight-squaresprite:getHeight()*5, squaresprite:getWidth(), squaresprite:getHeight()) then
+      key = "z"
+    elseif mouseOverBox(screenwidth-squaresprite:getWidth()*2, squaresprite:getHeight(), squaresprite:getWidth(), squaresprite:getHeight()) then
+      key = "r"
     end
 
     scene.keyPressed(key)
