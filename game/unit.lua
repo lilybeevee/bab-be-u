@@ -917,11 +917,16 @@ function convertLevel()
   local converts = matchesRule(outerlvl,"be","?")
   for _,match in ipairs(converts) do
     if not nameIs(outerlvl, match[1][3]) then
-      --placeholder - just make 'u r win' pop up for now
-      win = true
-      music_fading = true
-      playSound("win")
-      return true
+      local rules = match[1]
+      local rule = rules[1]
+      local tile = tiles_by_name[rule[3]]
+      if tile ~= nil then
+        --placeholder - just make 'u r win' pop up for now
+        win = true
+        music_fading = true
+        playSound("win")
+        return true
+      end
     end
   end
 end
