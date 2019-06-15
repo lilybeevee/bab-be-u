@@ -1703,7 +1703,7 @@ tiles_list = {
     sprite = "no1",
     type = "object",
     grid = {-1, -1},
-    color = {0, 0},
+    color = {0, 4},
     layer = 20,
     rotate = true,
   },
