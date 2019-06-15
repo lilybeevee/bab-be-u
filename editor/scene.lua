@@ -331,10 +331,16 @@ function scene.update(dt)
         if not selector_open then
           local painted = false
           local existing = nil
+          local ctrl_first_press = false
+          if key_down["lctrl"] and brush.mode == "none" then
+            ctrl_first_press = true
+          end
           if #hovered >= 1 then
             for _,unit in ipairs(hovered) do
               if unit.tile == brush.id then
-                existing = unit
+                if not key_down["lctrl"] then
+                  existing = unit
+                end
               elseif brush.mode == "placing" and not key_down["lshift"] then
                 deleteUnit(unit)
                 painted = true
@@ -356,7 +362,7 @@ function scene.update(dt)
               if existing then
                 existing.dir = brush.dir
                 painted = true
-              else
+              elseif not key_down["lctrl"] or ctrl_first_press then
                 createUnit(brush.id, hx, hy, brush.dir)
                 painted = true
               end
