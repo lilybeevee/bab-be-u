@@ -1181,7 +1181,13 @@ function moveUnit(unit,x,y)
       if unit.type == "text" then
         should_parse_rules = true
       end
-      if math.abs(x - unit.x) < 2 and math.abs(y - unit.y) < 2 then
+      if (unit.draw.x == x and unit.draw.y == y) then
+        --'bump' effect to show movement failed
+        unit.draw.x = (unit.x+x*2)/3;
+        unit.draw.y = (unit.y+y*2)/3;
+        addTween(tween.new(0.1, unit.draw, {x = x, y = y}), "unit:pos:" .. unit.tempid)
+      elseif math.abs(x - unit.x) < 2 and math.abs(y - unit.y) < 2 then
+        --linear interpolate to adjacent destination
         addTween(tween.new(0.1, unit.draw, {x = x, y = y}), "unit:pos:" .. unit.tempid)
       else
         --fade in, fade out effect
