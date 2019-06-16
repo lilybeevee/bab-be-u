@@ -1018,7 +1018,8 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
   local tileid = x + y * mapwidth
   
   --bounded: if we're bounded and there are no units in the destination that satisfy a bounded rule, AND there's no units at our feet that would be moving there to carry us, we can't go
-  local isbounded = rules_with["bounded"] and matchesRule(unit, "bounded", "?") or {}
+  --we used to have a fast track, but now selector is ALWAYS bounded to stuff, so it's never going to be useful.
+  local isbounded = matchesRule(unit, "bounded", "?")
   if (#isbounded > 0) then
     local success = false
     for _,v in ipairs(getUnitsOnTile(x, y, nil, false)) do
