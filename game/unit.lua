@@ -596,13 +596,13 @@ end
 
 function updateGraphicalPropertyCache()
   for prop,tbl in pairs(graphical_property_cache) do
-    --only flye has a stacking graphical effect, the rest are boolean
+    --only flye has a stacking graphical effect and we want to ignore selector, the rest are boolean
     local count = prop == "flye";
     new_tbl = {};
     if (count) then
       local isprop = getUnitsWithEffectAndCount(prop);
       for unit,amt in pairs(isprop) do
-        new_tbl[unit] = amt;
+        new_tbl[unit] = unit.fullname ~= "selctr" and amt or nil;
       end
     else
       local isprop = getUnitsWithEffect(prop);

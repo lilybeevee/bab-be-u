@@ -11,10 +11,14 @@ function clearRules()
   local selctr_be_u = {{"selctr","be","u",{{},{}}},{},1}
   local selctr_bounded_lvl = {{"selctr","bounded","lvl",{{},{}}},{},1}
   local selctr_bounded_lin = {{"selctr","bounded","lin",{{},{}}},{},1}
+  local selctr_be_flye = {{"selctr","be","flye",{{},{}}},{},1}
+  local lvl_be_no_go = {{"lvl","be","no go",{{},{}}},{},1}
   addRule(text_be_go_away)
   addRule(selctr_be_u)
   addRule(selctr_bounded_lvl)
   addRule(selctr_bounded_lin)
+  addRule(selctr_be_flye)
+  addRule(lvl_be_no_go)
 
   has_new_rule = false
 end
