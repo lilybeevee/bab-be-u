@@ -1,4 +1,5 @@
 function clear()
+  next_level_name = ""
   win_sprite_override = nil
   level_destroyed = false
   last_input_time = nil

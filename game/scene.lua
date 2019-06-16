@@ -316,12 +316,15 @@ function scene.draw(dt)
 
   -- fill the background with the background color
   love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
-
+  
   local roomwidth = mapwidth * TILE_SIZE
   local roomheight = mapheight * TILE_SIZE
 
   love.graphics.push()
   love.graphics.applyTransform(scene.getTransform())
+  
+  love.graphics.setColor(getPaletteColor(0,3))
+  love.graphics.printf(next_level_name, 0, -14, roomwidth)
   
   love.graphics.setColor(getPaletteColor(0, 4))
   if rainbowmode then love.graphics.setColor(hslToRgb(love.timer.getTime()/6%1, .1, .1, .9)) end

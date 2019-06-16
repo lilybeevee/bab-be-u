@@ -55,10 +55,11 @@ function doMovement(movex, movey)
   print("[---- begin turn ----]")
   print("move: " .. movex .. ", " .. movey)
 
-  if movex == 0 and movey == 0 then
-    if doEnterLevel() then
-      return
-    end
+  next_levels = getNextLevels()
+
+  if movex == 0 and movey == 0 and #next_levels > 0 then
+    loadLevels(next_levels)
+    return
   end
 
   local move_stage = -1
@@ -336,6 +337,8 @@ It is probably possible to do, but lily has decided that it's not important enou
   convertUnits()
   updateUnits(false, false)
   parseRules()
+  
+  next_levels = getNextLevels()
 end
 
 function doAction(action)
@@ -1132,7 +1135,7 @@ function goMyWeyPrevents(dir, dx, dy)
   or (dir == 7 and dy ==  1) or (dir == 8 and (dx == -1 or dy ==  1) and (dx ~=  1 and dy ~= -1))
 end
 
-function doEnterLevel()
+function getNextLevels()
   local new_levels = {}
   local us = getUnitsWithEffect("u")
   for _,unit in ipairs(us) do
@@ -1143,9 +1146,16 @@ function doEnterLevel()
       end
     end
   end
-  if #new_levels > 0 then
-    loadLevels(new_levels)
-    return true
+  
+  next_level_name = ""
+  for _,name in ipairs(new_levels) do
+    print("a")
+    if _ > 1 then
+      next_level_name = next_level_name .. " & " .. name;
+    else
+      next_level_name = name;
+    end
   end
-  return false
+  
+  return new_levels
 end
