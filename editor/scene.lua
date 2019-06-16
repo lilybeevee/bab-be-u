@@ -184,6 +184,7 @@ function scene.keyPressed(key)
         okText = "Yes",
         cancelText = "Cancel",
         ok = function()
+          load_mode = "edit"
           new_scene = loadscene
         end
       })
@@ -195,6 +196,7 @@ function scene.keyPressed(key)
     end
   end
   if key == "w" and key_down["lctrl"] then
+    load_mode = "edit"
     new_scene = loadscene
   end
 
@@ -795,6 +797,7 @@ function scene.saveLevel()
 end
 
 function scene.loadLevel()
+  load_mode = "edit"
   new_scene = loadscene
 end
 
