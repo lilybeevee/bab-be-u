@@ -2159,6 +2159,7 @@ tiles_list = {
   {
     name = "text_lin",
     sprite = "text_lin",
+    type = "text",
     grid = {14, 0},
     color = {0, 3},
     layer = 20,
