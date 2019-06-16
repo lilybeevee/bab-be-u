@@ -440,11 +440,11 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
       if unit == outerlvl then --basically turns into sans n't
         result = false
         for _,param in ipairs(params) do
-        local others = findUnitsByName(param)
-        if #others > 1 or #others == 1 and others[1] ~= unit then
-          result = true
+          local others = findUnitsByName(param)
+          if #others > 1 or #others == 1 and others[1] ~= unit then
+            result = true
+          end
         end
-      end
       else
         for _,param in ipairs(params) do
           local others
@@ -528,9 +528,13 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
         end
       end
     elseif condtype == "frenles" then
-      local others = getUnitsOnTile(unit.x, unit.y, nil, false, unit)
-      if #others > 0 then
-        result = false
+      if unit == outerlvl then
+        result = false --kind of by definition, since the text to make the rule exists :p
+      else
+        local others = getUnitsOnTile(unit.x, unit.y, nil, false, unit)
+        if #others > 0 then
+          result = false
+        end
       end
     elseif condtype == "wait" then
       result = last_move ~= nil and last_move[1] == 0 and last_move[2] == 0
