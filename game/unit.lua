@@ -915,15 +915,15 @@ function convertLevel()
   end
   
   local converts = matchesRule(outerlvl,"be","?")
+  print(#converts)
   for _,match in ipairs(converts) do
     if not nameIs(outerlvl, match[1][3]) then
-      local rules = match[1]
-      local rule = rules[1]
-      local tile = tiles_by_name[rule[3]]
+      local tile = tiles_by_name[match[1][3]]
       if tile ~= nil then
         --placeholder - just make 'u r win' pop up for now
         win = true
         music_fading = true
+        win_sprite_override = tiles_list[tile].sprite
         playSound("win")
         return true
       end
@@ -959,7 +959,7 @@ function convertUnits()
     local rule = rules[1]
 
     if nameIs(unit, rule[3]) then
-      if not unit.removed then
+      if not unit.removed and unit.type ~= "outerlvl" then
         addParticles("bonus", unit.x, unit.y, unit.color)
         table.insert(converted_units, unit)
       end
@@ -978,7 +978,7 @@ function convertUnits()
 
     local rule = rules[1]
 
-    if unit.class == "unit" and not nameIs(unit, rule[3]) then
+    if unit.class == "unit" and not nameIs(unit, rule[3]) and unit.type ~= "outerlvl" then
       local tile = tiles_by_name[rule[3]]
       if rule[3] == "text" then
         tile = tiles_by_name["text_" .. rule[1]]

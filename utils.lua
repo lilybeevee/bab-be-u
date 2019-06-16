@@ -1,4 +1,5 @@
 function clear()
+  win_sprite_override = nil
   level_destroyed = false
   last_input_time = nil
   most_recent_key = nil
