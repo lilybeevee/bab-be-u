@@ -13,7 +13,10 @@ repeat_keys = {"wasd","udlr","numpad","space","undo"}
 is_mobile = love.system.getOS() == "Android" or love.system.getOS() == "iOS"
 --is_mobile = true
 
-PACK_UNIT_V1 = "hhhb" -- ID, X, Y, DIR
+PACK_UNIT_V1 = "hhhb" -- TILE, X, Y, DIR
+PACK_UNIT_V2 = "hhhhbs" -- ID, TILE, X, Y, DIR, SPECIALS
+
+PACK_SPECIAL_V2 = "ss" -- KEY, VALUE
 
 settings = {
   music_on = true
@@ -2115,4 +2118,49 @@ tiles_list = {
     color = {6, 1},
     layer = 20,
   },
+  -- 191
+  {
+    name = "lvl",
+    sprite = "lvl",
+    grid = {17, 1},
+    color = {0, 3},
+    layer = 2,
+    rotate = true,
+    desc = "its a lavel"
+  },
+  -- 192
+  {
+    name = "selctr",
+    sprite = "selctr",
+    grid = {17, 0},
+    color = {3, 3},
+    layer = 20,
+    desc = "used to select levis"
+  },
+  -- 193
+  {
+    name = "text_selctr",
+    sprite = "text_selctr",
+    type = "text",
+    grid = {13, 0},
+    color = {2, 3},
+    layer = 20,
+  },
+  -- 194
+  {
+    name = "lin",
+    sprite = "lin",
+    grid = {17, 2},
+    color = {0, 3},
+    layer = 1,
+    desc = "used to connect lovils"
+  },
+  -- 195
+  {
+    name = "text_lin",
+    sprite = "text_lin",
+    grid = {14, 0},
+    color = {0, 3},
+    layer = 20,
+  }
 }

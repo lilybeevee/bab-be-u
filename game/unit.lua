@@ -1022,7 +1022,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty)
   local unit = {}
   unit.class = "unit"
 
-  unit.id = id_ or newUnitID()
+  unit.id = newUnitID(id_)
   unit.tempid = newTempID()
   unit.x = x or 0
   unit.y = y or 0
@@ -1042,6 +1042,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty)
   unit.overlay = {}
   unit.used_as = {} -- list of text types, used for determining sprite transformation
   unit.frame = math.random(1, 3)-1 -- for potential animation
+  unit.special = {} -- for lvl objects
 
   local data = tiles_list[tile]
 
@@ -1253,9 +1254,14 @@ function updateDir(unit,dir)
   end
 end
 
-function newUnitID()
-  max_unit_id = max_unit_id + 1
-  return max_unit_id
+function newUnitID(id)
+  if id then
+    max_unit_id = math.max(id, max_unit_id)
+    return id
+  else
+    max_unit_id = max_unit_id + 1
+    return max_unit_id
+  end
 end
 
 function newTempID()

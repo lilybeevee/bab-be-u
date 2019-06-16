@@ -8,7 +8,13 @@ function clearRules()
   portal_id = ""
 
   local text_be_go_away = {{"text","be","go away",{{},{}}},{},1}
+  local selctr_be_u = {{"selctr","be","u",{{},{}}},{},1}
+  local selctr_bounded_lvl = {{"selctr","bounded","lvl",{{},{}}},{},1}
+  local selctr_bounded_lin = {{"selctr","bounded","lin",{{},{}}},{},1}
   addRule(text_be_go_away)
+  addRule(selctr_be_u)
+  addRule(selctr_bounded_lvl)
+  addRule(selctr_bounded_lin)
 
   has_new_rule = false
 end

@@ -85,6 +85,16 @@ function scene.load()
   if map_ver == 0 then
     scene.updateMap()
   end
+
+  if selected_level then
+    local unit = units_by_id[selected_level.id]
+    if unit then
+      unit.special.level = selected_level.level
+      unit.special.name = selected_level.name
+      scene.updateMap()
+    end
+    selected_level = nil
+  end
 end
 
 function scene.setupGooi()
@@ -330,6 +340,7 @@ function scene.update(dt)
       if love.mouse.isDown(1) then
         if not selector_open then
           local painted = false
+          local new_unit = nil
           local existing = nil
           local ctrl_first_press = false
           if key_down["lctrl"] and brush.mode == "none" then
@@ -362,8 +373,9 @@ function scene.update(dt)
               if existing then
                 existing.dir = brush.dir
                 painted = true
+                new_unit = existing
               elseif not key_down["lctrl"] or ctrl_first_press then
-                createUnit(brush.id, hx, hy, brush.dir)
+                new_unit = createUnit(brush.id, hx, hy, brush.dir)
                 painted = true
               end
             end
@@ -375,6 +387,12 @@ function scene.update(dt)
             end
             paintedtiles = paintedtiles + 1
             scene.updateMap()
+            if new_unit and brush.id == tiles_by_name["lvl"] then
+              new_scene = loadscene
+              load_mode = "select"
+              selected_level = {id = new_unit.id}
+              old_world = {parent = world_parent, world = world}
+            end
           end
         else
           local selected = hx + hy * tile_grid_width
@@ -717,14 +735,18 @@ function scene.draw(dt)
 end
 
 function scene.updateMap()
-  map_ver = 1
+  map_ver = 2
   map = ""
   for x = 0, mapwidth-1 do
     for y = 0, mapheight-1 do
       local tileid = x + y * mapwidth
       if units_by_tile[tileid] then
         for _,unit in ipairs(units_by_tile[tileid]) do
-          map = map .. love.data.pack("string", PACK_UNIT_V1, unit.tile, unit.x, unit.y, unit.dir)
+          local specials = ""
+          for k,v in pairs(unit.special) do
+            specials = specials .. love.data.pack("string", PACK_SPECIAL_V2, k, v)
+          end
+          map = map .. love.data.pack("string", PACK_UNIT_V2, unit.id, unit.tile, unit.x, unit.y, unit.dir, specials)
         end
       end
     end
@@ -745,7 +767,7 @@ function scene.saveLevel()
     music = map_music,
     width = mapwidth,
     height = mapheight,
-    version = 1,
+    version = map_ver,
     map = savestr
   }
 

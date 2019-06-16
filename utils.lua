@@ -107,7 +107,7 @@ function loadMap()
         local new_unit = createUnit(id, x, y, 1)
       end
     end
-  elseif map_ver == 1 then
+  elseif map_ver >= 1 then
     local pos = 1
     for x=0,mapwidth-1 do
       for y=0,mapheight-1 do
@@ -115,10 +115,24 @@ function loadMap()
       end
     end
     while pos <= #map do
-      local id, x, y, dir
-      id, x, y, dir, pos = love.data.unpack(PACK_UNIT_V1, map, pos)
-      if inBounds(x, y) then
-        createUnit(id, x, y, dir)
+      if map_ver == 1 then
+        local tile, x, y, dir
+        tile, x, y, dir, pos = love.data.unpack(PACK_UNIT_V1, map, pos)
+        if inBounds(x, y) then
+          createUnit(tile, x, y, dir)
+        end
+      elseif map_ver == 2 then
+        local id, tile, x, y, dir, specials
+        id, tile, x, y, dir, specials, pos = love.data.unpack(PACK_UNIT_V2, map, pos)
+        if inBounds(x, y) then
+          local unit = createUnit(tile, x, y, dir, false, id)
+          local spos = 1
+          while spos <= #specials do
+            local k, v
+            k, v, spos = love.data.unpack(PACK_SPECIAL_V2, specials, spos)
+            unit.special[k] = v
+          end
+        end
       end
     end
   end

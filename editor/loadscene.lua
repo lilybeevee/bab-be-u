@@ -48,7 +48,10 @@ function scene.keyPressed(key)
     scene.updateTextInput(nil, key)
   else
     if key == "escape" then
-      if world ~= "" then
+      if load_mode == "select" then
+        new_scene = editor
+        selected_level = nil
+      elseif world ~= "" then
         world_parent = ""
         world = ""
         scene.buildUI()
@@ -82,7 +85,13 @@ function scene.mouseReleased(x, y, mouse_button)
             loaded_level = false
             scene.loadLevel(button.data, true)
           else
-            scene.loadLevel(button.data)
+            if load_mode == "select" then
+              new_scene = editor
+              selected_level.level = button.name
+              selected_level.name = button.data.name
+            else
+              scene.loadLevel(button.data)
+            end
           end
         end
       end
@@ -360,41 +369,43 @@ function scene.buildUI()
   end
 
   if world == "" then
-    local worlds = scene.searchDir("officialworlds", "world")
-    if #worlds > 0 then
-      local label_width, label_height = label_font:getWidth("Official Worlds"), label_font:getHeight()
-      table.insert(ui.labels, {
-        font = label_font,
-        text = "Official Worlds",
-        x = 0,
-        y = oy
-      })
-      oy = oy + label_height + 8
-
-      oy = scene.addButtons("world", worlds, oy)
-    end
-
-    worlds = scene.searchDir("worlds", "world")
-    if #worlds > 0 or load_mode == "edit" then
-      label_width, label_height = label_font:getWidth("Custom Worlds"), label_font:getHeight()
-      table.insert(ui.labels, {
-        font = label_font,
-        text = "Custom Worlds",
-        x = 0,
-        y = oy
-      })
-      oy = oy + label_height + 8
-
-      if load_mode == "edit" and world_parent ~= "officialworlds" then
-        table.insert(worlds, 1, {
-          create = true,
-          name = "new world",
-          data = "worlds",
-          icon = sprites["ui/create icon"]
+    if load_mode ~= "select" then
+      local worlds = scene.searchDir("officialworlds", "world")
+      if #worlds > 0 then
+        local label_width, label_height = label_font:getWidth("Official Worlds"), label_font:getHeight()
+        table.insert(ui.labels, {
+          font = label_font,
+          text = "Official Worlds",
+          x = 0,
+          y = oy
         })
+        oy = oy + label_height + 8
+
+        oy = scene.addButtons("world", worlds, oy)
       end
 
-      oy = scene.addButtons("world", worlds, oy)
+      worlds = scene.searchDir("worlds", "world")
+      if #worlds > 0 or load_mode == "edit" then
+        label_width, label_height = label_font:getWidth("Custom Worlds"), label_font:getHeight()
+        table.insert(ui.labels, {
+          font = label_font,
+          text = "Custom Worlds",
+          x = 0,
+          y = oy
+        })
+        oy = oy + label_height + 8
+
+        if load_mode == "edit" and world_parent ~= "officialworlds" then
+          table.insert(worlds, 1, {
+            create = true,
+            name = "new world",
+            data = "worlds",
+            icon = sprites["ui/create icon"]
+          })
+        end
+
+        oy = scene.addButtons("world", worlds, oy)
+      end
     end
 
     local levels = scene.searchDir("levels", "level")

@@ -55,6 +55,12 @@ function doMovement(movex, movey)
   print("[---- begin turn ----]")
   print("move: " .. movex .. ", " .. movey)
 
+  if movex == 0 and movey == 0 then
+    if doEnterLevel() then
+      return
+    end
+  end
+
   local move_stage = -1
   while move_stage < 3 do
     local moving_units = {}
@@ -1123,4 +1129,25 @@ function goMyWeyPrevents(dir, dx, dy)
   or (dir == 3 and dy == -1) or (dir == 4 and (dx ==  1 or dy == -1) and (dx ~= -1 and dy ~=  1))
   or (dir == 5 and dx ==  1) or (dir == 6 and (dx ==  1 or dy ==  1) and (dx ~= -1 and dy ~= -1)) 
   or (dir == 7 and dy ==  1) or (dir == 8 and (dx == -1 or dy ==  1) and (dx ~=  1 and dy ~= -1))
+end
+
+function doEnterLevel()
+  local us = getUnitsWithEffect("u")
+  for _,unit in ipairs(us) do
+    local lvls = getUnitsOnTile(unit.x, unit.y, "lvl", false, unit)
+    for _,lvl in ipairs(lvls) do
+      if lvl.special.level then
+        local dir = "levels/"
+        if world ~= "" then dir = world_parent .. "/" .. world .. "/" end
+        local data = json.decode(love.filesystem.read(dir .. "/" .. lvl.special.level .. ".bab"))
+
+        -- messy for now
+        load_mode = "play"
+        loadscene.loadLevel(data)
+
+        return true
+      end
+    end
+  end
+  return false
 end
