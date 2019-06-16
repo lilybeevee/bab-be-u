@@ -316,9 +316,9 @@ function scene.loadLevel(data, new)
   map_ver = data.version or 0
 
   if map_ver == 0 then
-    map = loadstring("return " .. mapstr)()
+    maps = {{0, loadstring("return " .. mapstr)()}}
   else
-    map = mapstr
+    maps = {{map_ver, mapstr}}
   end
 
   if load_mode == "edit" then

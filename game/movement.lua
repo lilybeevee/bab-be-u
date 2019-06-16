@@ -1133,22 +1133,19 @@ function goMyWeyPrevents(dir, dx, dy)
 end
 
 function doEnterLevel()
+  local new_levels = {}
   local us = getUnitsWithEffect("u")
   for _,unit in ipairs(us) do
     local lvls = getUnitsOnTile(unit.x, unit.y, "lvl", false, unit)
     for _,lvl in ipairs(lvls) do
       if lvl.special.level then
-        local dir = "levels/"
-        if world ~= "" then dir = world_parent .. "/" .. world .. "/" end
-        local data = json.decode(love.filesystem.read(dir .. "/" .. lvl.special.level .. ".bab"))
-
-        -- messy for now
-        load_mode = "play"
-        loadscene.loadLevel(data)
-
-        return true
+        table.insert(new_levels, lvl.special.level)
       end
     end
+  end
+  if #new_levels > 0 then
+    loadLevels(new_levels)
+    return true
   end
   return false
 end

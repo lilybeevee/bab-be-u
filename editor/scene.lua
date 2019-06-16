@@ -243,7 +243,7 @@ function scene.keyPressed(key)
       okText = "Yes",
       cancelText = "Cancel",
       ok = function()
-        map = ""
+        maps = {{2, ""}}
         clear()
         loadMap()
         loaded_level = false
@@ -736,7 +736,7 @@ end
 
 function scene.updateMap()
   map_ver = 2
-  map = ""
+  local map = ""
   for x = 0, mapwidth-1 do
     for y = 0, mapheight-1 do
       local tileid = x + y * mapwidth
@@ -751,10 +751,13 @@ function scene.updateMap()
       end
     end
   end
+  maps = {{map_ver, map}}
 end
 
 function scene.saveLevel()
   scene.updateMap()
+
+  local map = maps[1][2]
 
   local mapdata = love.data.compress("string", "zlib", map)
   local savestr = love.data.encode("string", "base64", mapdata)
@@ -899,9 +902,9 @@ function love.filedropped(file)
   map_ver = mapdata.version or 0
 
   if map_ver == 0 then
-    map = loadstring("return " .. mapstr)()
+    maps = {{0, loadstring("return " .. mapstr)()}}
   else
-    map = mapstr
+    maps = {{map_ver, mapstr}}
   end
 
   clear()

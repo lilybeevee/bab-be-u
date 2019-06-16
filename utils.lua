@@ -89,48 +89,51 @@ function initializeGraphicalPropertyCache()
 end
 
 function loadMap()
-  if map_ver == 0 then
-    if map == nil then
-      map = {}
-      for x=1,mapwidth do
-        for y=1,mapheight do
-          table.insert(map, {})
+  for x=0,mapwidth-1 do
+    for y=0,mapheight-1 do
+      units_by_tile[x + y * mapwidth] = {}
+    end
+  end
+  for _,mapdata in ipairs(maps) do
+    local version = mapdata[1]
+    local map = mapdata[2]
+    if version == 0 then
+      if map == nil then
+        map = {}
+        for x=1,mapwidth do
+          for y=1,mapheight do
+            table.insert(map, {})
+          end
         end
       end
-    end
-    for i,v in ipairs(map) do
-      local tileid = i-1
-      local x = tileid % mapwidth
-      local y = math.floor(tileid / mapwidth)
-      units_by_tile[tileid] = {}
-      for _,id in ipairs(v) do
-        local new_unit = createUnit(id, x, y, 1)
-      end
-    end
-  elseif map_ver >= 1 then
-    local pos = 1
-    for x=0,mapwidth-1 do
-      for y=0,mapheight-1 do
-        units_by_tile[x + y * mapwidth] = {}
-      end
-    end
-    while pos <= #map do
-      if map_ver == 1 then
-        local tile, x, y, dir
-        tile, x, y, dir, pos = love.data.unpack(PACK_UNIT_V1, map, pos)
-        if inBounds(x, y) then
-          createUnit(tile, x, y, dir)
+      for i,v in ipairs(map) do
+        local tileid = i-1
+        local x = tileid % mapwidth
+        local y = math.floor(tileid / mapwidth)
+        for _,id in ipairs(v) do
+          local new_unit = createUnit(id, x, y, 1)
         end
-      elseif map_ver == 2 then
-        local id, tile, x, y, dir, specials
-        id, tile, x, y, dir, specials, pos = love.data.unpack(PACK_UNIT_V2, map, pos)
-        if inBounds(x, y) then
-          local unit = createUnit(tile, x, y, dir, false, id)
-          local spos = 1
-          while spos <= #specials do
-            local k, v
-            k, v, spos = love.data.unpack(PACK_SPECIAL_V2, specials, spos)
-            unit.special[k] = v
+      end
+    elseif version >= 1 then
+      local pos = 1
+      while pos <= #map do
+        if version == 1 then
+          local tile, x, y, dir
+          tile, x, y, dir, pos = love.data.unpack(PACK_UNIT_V1, map, pos)
+          if inBounds(x, y) then
+            createUnit(tile, x, y, dir)
+          end
+        elseif version == 2 then
+          local id, tile, x, y, dir, specials
+          id, tile, x, y, dir, specials, pos = love.data.unpack(PACK_UNIT_V2, map, pos)
+          if inBounds(x, y) then
+            local unit = createUnit(tile, x, y, dir, false, id)
+            local spos = 1
+            while spos <= #specials do
+              local k, v
+              k, v, spos = love.data.unpack(PACK_SPECIAL_V2, specials, spos)
+              unit.special[k] = v
+            end
           end
         end
       end
@@ -1121,4 +1124,53 @@ end
 function endTest()
   local time = love.timer.getTime() - perf_test.time
   print(perf_test.name .. ": " .. time .. "s")
+end
+
+function loadLevels(levels)
+  if #levels == 0 then
+    return
+  end
+
+  local dir = "levels/"
+  if world ~= "" then dir = world_parent .. "/" .. world .. "/" end
+
+  maps = {}
+
+  mapwidth = 0
+  mapheight = 0
+  level_name = nil
+
+  for _,level in ipairs(levels) do
+    local data = json.decode(love.filesystem.read(dir .. "/" .. level .. ".bab"))
+    local loaddata = love.data.decode("string", "base64", data.map)
+    local mapstr = love.data.decompress("string", "zlib", loaddata)
+
+    loaded_level = not new
+
+    if not level_name then
+      level_name = data.name
+    else
+      level_name = level_name .. " & " .. data.name
+    end
+    level_author = data.author or ""
+    current_palette = data.palette or "default"
+    map_music = data.music or "bab be u them"
+    mapwidth = math.max(mapwidth, data.width)
+    mapheight = math.max(mapheight, data.height)
+    map_ver = data.version or 0
+
+    if map_ver == 0 then
+      table.insert(maps, {0, loadstring("return " .. mapstr)()})
+    else
+      table.insert(maps, {map_ver, mapstr})
+    end
+
+    if love.filesystem.getInfo(dir .. level_name .. ".png") then
+      icon_data = love.image.newImageData(dir .. level_name .. ".png")
+    else
+      icon_data = nil
+    end
+  end
+
+  new_scene = game
 end
