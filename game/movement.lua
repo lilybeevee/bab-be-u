@@ -1096,7 +1096,7 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
       elseif hasProperty(v, "come pls") and not hasProperty(v, "go away") and not would_swap_with and not pulling then
         stopped = stopped or sameFloat(unit, v)
       elseif hasProperty(v, "go my wey") and goMyWeyPrevents(v.dir, dx, dy) then
-        stopped = true
+        stopped = stopped or sameFloat(unit, v)
       end
       
       --if thing is ouch, it will not stop things - similar to Baba behaviour. But check safe and float as well.
