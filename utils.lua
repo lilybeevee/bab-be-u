@@ -460,18 +460,28 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
       end
     elseif condtype == "sit on" then
       --on that checks float. special condition for use with reflexive properties/verbs (GIV and NOU). warning: can cause paradoxes that destroy the level!
-      for _,param in ipairs(params) do
-        local others
-        if param ~= "mous" then
-          others = getUnitsOnTile(x, y, param, false, unit) --currently, conditions only work up to one layer of nesting, so the noun argument of the condition is assumed to be just a noun
-        else
-          others = getCursorsOnTile(x, y, false, unit)
-        end
+      if unit == outerlvl then --basically turns into sans n't
         result = false
         for _,on in ipairs(others) do
           if sameFloat(unit, on) then
             result = true
             break
+          end
+        end
+      else
+        for _,param in ipairs(params) do
+          local others
+          if param ~= "mous" then
+            others = getUnitsOnTile(x, y, param, false, unit) --currently, conditions only work up to one layer of nesting, so the noun argument of the condition is assumed to be just a noun
+          else
+            others = getCursorsOnTile(x, y, false, unit)
+          end
+          result = false
+          for _,on in ipairs(others) do
+            if sameFloat(unit, on) then
+              result = true
+              break
+            end
           end
         end
       end
@@ -491,20 +501,30 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
         end
       end
     elseif condtype == "seen by" then
-      for _,param in ipairs(params) do
-        local others = {}
-        for nx=-1,1 do
-          for ny=-1,1 do
-            if (nx ~= 0) or (ny ~= 0) then
-              mergeTable(others, param ~= "mous" and getUnitsOnTile(unit.x+nx,unit.y+ny,param) or {})
-            end
+      if unit == outerlvl then --basically turns into sans n't, unless we want to specify that the unit has to look at the level edge?
+        result = false
+        for _,param in ipairs(params) do
+          local others = findUnitsByName(param)
+          if #others > 1 or #others == 1 and others[1] ~= unit then
+            result = true
           end
         end
-        result = false
-        for _,other in ipairs(others) do
-          if other.x+dirs8[other.dir][1] == unit.x and other.y+dirs8[other.dir][2] == unit.y then
-            result = true
-            break
+      else
+        for _,param in ipairs(params) do
+          local others = {}
+          for nx=-1,1 do
+            for ny=-1,1 do
+              if (nx ~= 0) or (ny ~= 0) then
+                mergeTable(others, param ~= "mous" and getUnitsOnTile(unit.x+nx,unit.y+ny,param) or {})
+              end
+            end
+          end
+          result = false
+          for _,other in ipairs(others) do
+            if other.x+dirs8[other.dir][1] == unit.x and other.y+dirs8[other.dir][2] == unit.y then
+              result = true
+              break
+            end
           end
         end
       end
