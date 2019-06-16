@@ -637,8 +637,9 @@ function scene.draw(dt)
   love.graphics.setColor(1, 1, 1)
   love.graphics.translate(love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
   love.graphics.scale(win_size, win_size)
-  local win_sprite = sprites["ui/u_r_win"]
-  love.graphics.draw(win_sprite, -win_sprite:getWidth() / 2, -win_sprite:getHeight() / 2)
+  local win_sprite = win_sprite_override and sprites[win_sprite_override] or sprites["ui/u_r_win"]
+  local scale = win_sprite_override and 10 or 1
+  love.graphics.draw(win_sprite, scale*-win_sprite:getWidth() / 2, scale*-win_sprite:getHeight() / 2, 0, scale, scale)
 
   if win and win_size < 1 then
     win_size = win_size + dt*2
