@@ -369,7 +369,7 @@ function updateUnits(undoing, big_update)
       local unit = ruleparent[2]
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
       for _,on in ipairs(stuff) do
-        if hasRule(unit, "snacc", on) and sameFloat(unit, on) then
+        if unit ~= on and hasRule(unit, "snacc", on) and sameFloat(unit, on) then
           table.insert(to_destroy, on)
           playSound("break")
           addParticles("destroy", unit.x, unit.y, unit.color)
@@ -751,7 +751,7 @@ function levelBlock()
   local issnacc = matchesRule(outerlvl,"snacc",nil)
   for _,ruleparent in ipairs(issnacc) do
     local unit = ruleparent[2]
-    if sameFloat(outerlvl,unit) then
+    if unit ~= outerlvl and sameFloat(outerlvl,unit) then
       addParticles("destroy", unit.x, unit.y, unit.color)
       table.insert(to_destroy, unit)
     end
@@ -760,7 +760,7 @@ function levelBlock()
   local issnacc = matchesRule(nil,"snacc",outerlvl)
   for _,ruleparent in ipairs(issnacc) do
     local unit = ruleparent[2]
-    if sameFloat(outerlvl,unit) then
+    if unit ~= outerlvl and sameFloat(outerlvl,unit) then
       destroyLevel("snacc")
       return
     end
