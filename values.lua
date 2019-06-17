@@ -2155,4 +2155,16 @@ tiles_list = {
     layer = 20,
     desc = "COPDOG: COPKAT, but it copies ALL of the movement (e.g. if COPDOG ROC and you push 3 ROCs, it moves 3 steps)."
   },
+  --- 197
+  {
+    name = "text_haet",
+    sprite = "text_haet",
+    type = "text",
+    texttype = "verb_object",
+    allowconds = true,
+    grid = {13, 2},
+    color = {5, 3},
+    layer = 20,
+    desc = "HAET: A unit cannot stop onto a tile that has something it HAETs. (x HAET LVL makes x unable to move.)",
+  },
 }
