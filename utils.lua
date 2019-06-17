@@ -567,11 +567,18 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
       result = last_move ~= nil and last_move[1] == 0 and last_move[2] == 0
     elseif condtype == "mayb" then
       --add a dummy action so that undoing happens
-      if (#undo_buffer[1] == 0) then
+      if (#undo_buffer > 0 and #undo_buffer[1] == 0) then
         addUndo({"dummy"});
       end
       rng = deterministicRng(unit, cond_unit);
       result = (rng*100) < threshold_for_dir[cond_unit.dir];
+    elseif condtype == "random" then
+      --add a dummy action so that undoing happens
+      if (#undo_buffer > 0 and #undo_buffer[1] == 0) then
+        addUndo({"dummy"});
+      end
+      rng = deterministicRandom(unit.fullname, cond_unit);
+      result = unit.id == rng;
     elseif condtype == "lit" then
       result = false
       if (successful_brite_cache ~= nil) then
@@ -672,6 +679,16 @@ function hasLineOfSight(brite, lit)
 end
 
 threshold_for_dir = {50, 0.01, 0.1, 1, 2, 5, 10, 25};
+
+function deterministicRandom(fullname, cond)
+  local key = fullname..","..tostring(cond.x)..","..tostring(cond.y)..","..tostring(cond.dir)..","..tostring(#undo_buffer)
+  if rng_cache[key] == nil then
+    local arbitrary_unit_key = math.random();
+    local arbitrary_unit = units_by_name[fullname][math.floor(arbitrary_unit_key*#units_by_name[fullname])+1];
+    rng_cache[key] = arbitrary_unit.id;
+  end
+  return rng_cache[key]
+end
 
 function deterministicRng(unit, cond)
   local key = unit.name..","..tostring(unit.x)..","..tostring(unit.y)..","..tostring(unit.dir)..","..tostring(cond.x)..","..tostring(cond.y)..","..tostring(cond.dir)..","..tostring(#undo_buffer)

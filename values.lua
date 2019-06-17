@@ -1950,7 +1950,7 @@ tiles_list = {
     sprite = "text_mirr arnd",
     type = "text",
     texttype = "property",
-    grid = {15, 2},
+    grid = {15, 3},
     color = {3, 2},
     layer = 20,
     desc = "MIRR ARND: MIRR ARND units wrap around the level, as though it were a projective plane.",
@@ -2210,5 +2210,16 @@ tiles_list = {
     color = {1, 4},
     layer = 20,
     desc = "NO TURN: A NO TURN unit's direction can't change (unless re-oriented by non-euclidean level geometry, i.e. POOR TOLL).",
+  },
+  -- 202
+  {
+    name = "text_random",
+    sprite = "text_random",
+    type = "text",
+    texttype = "cond_prefix",
+    grid = {15, 2},
+    color = {0, 3},
+    layer = 20,
+    desc = "RANDOM (Prefix Condition): True for a single arbitrary unit per turn and condition.",
   },
 }
