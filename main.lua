@@ -4,6 +4,7 @@ require "lib/gooi"
 json = require "lib/json"
 tick = require "lib/tick"
 tween = require "lib/tween"
+require "ui"
 require "values"
 require "utils"
 require "audio"
@@ -390,6 +391,7 @@ function love.update(dt)
     end
   end
 
+  ui.update()
   if scene ~= loadscene then
     gooi.update(dt)
   end
