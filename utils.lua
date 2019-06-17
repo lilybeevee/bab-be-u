@@ -616,69 +616,47 @@ function hasLineOfSight(brite, lit)
   end
   --https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
   local x0, y0, x1, y1 = brite.x, brite.y, lit.x, lit.y;
-  if math.abs(y1 - y0) < math.abs(x1 - x0) then
-    if x0 > x1 then
-      return hasLineOfSightLow(x1, y1, x0, y0)
-    else
-      return hasLineOfSightLow(x0, y0, x1, y1)
-    end
-  elseif y0 > y1 then
-    return hasLineOfSightHigh(x1, y1, x0, y0)
-  else
-    return hasLineOfSightHigh(x0, y0, x1, y1)
-  end
-end
-
-function hasLineOfSightHigh(x0, y0, x1, y1)
-  local dx = x1 - x0
-  local dy = y1 - y0
-  local xi = 1
-  if dx < 0 then
-    xi = -1
-    dx = -dx
-  end
-  local D = 2*dx - dy
-  x = x0
-
-  for y = y0, y1 do
-    for _,v in ipairs(getUnitsOnTile(x, y)) do
-      if hasProperty(v, "opaque") then
-        return false
+  local dx = x1 - x0;
+  local dy = y1 - y0;
+  if (dx == 0 and dy == 0) then return true end
+  if (math.abs(dx) >= math.abs(dy)) then
+    local derr = math.abs(dy / dx);
+    local err = 0;
+    local y = y0
+    for x = x0, x1, sign(dx) do
+      if x ~= x0 or y ~= y0 then
+        for _,v in ipairs(getUnitsOnTile(x, y)) do
+          if hasProperty(v, "opaque") then
+            return false
+          end
+        end
+      end
+      err = err + derr;
+      if err >= 0.5 then
+        y = y + sign(dy);
+        err = err - 1;
       end
     end
-    if D > 0 then
-       x = x + xi
-       D = D - 2*dy
-    end
-    D = D + 2*dx
-  end
-  return true
-end
-
-function hasLineOfSightLow(x0, y0, x1, y1)
-  local dx = x1 - x0
-  local dy = y1 - y0
-  local yi = 1
-  if dy < 0 then
-    yi = -1
-    dy = -dy
-  end
-  local D = 2*dy - dx
-  local y = y0
-
-  for x = x0, x1 do
-    for _,v in ipairs(getUnitsOnTile(x, y)) do
-      if hasProperty(v, "opaque") then
-        return false
+  elseif (math.abs(dy) < math.abs(dx)) then
+    local derr = math.abs(dx / dy);
+    local err = 0;
+    local x = x0
+    for y = y0, y1, sign(dy) do
+      if x ~= x0 or y ~= y0 then
+        for _,v in ipairs(getUnitsOnTile(x, y)) do
+          if hasProperty(v, "opaque") then
+            return false
+          end
+        end
+      end
+      err = err + derr;
+      if err >= 0.5 then
+        x = x + sign(dx);
+        err = err - 1;
       end
     end
-    if D > 0 then
-       y = y + yi
-       D = D - 2*dx
-    end
-    D = D + 2*dy
   end
-  return true
+  return true;
 end
 
 threshold_for_dir = {50, 0.01, 0.1, 1, 2, 5, 10, 25};
