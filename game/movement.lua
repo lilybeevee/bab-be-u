@@ -79,7 +79,7 @@ function doMovement(movex, movey)
         for __,other in ipairs(getUnitsOnTile(unit.x, unit.y)) do
           if other.id ~= unit.id and sameFloat(unit, other) then
             table.insert(other.moves, {reason = "icy", dir = other.dir, times = icyness})
-            if #other.moves > 0 and not already_added[other] and not hasRule(unit,"got","slippers") then
+            if #other.moves > 0 and not already_added[other] and not hasRule(other,"got","slippers") then
               table.insert(moving_units, other)
               already_added[other] = true
             end
