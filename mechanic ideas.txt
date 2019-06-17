@@ -1,4 +1,4 @@
-Vanilla todo list: FACING DIR, WORD, GROUP, LEVEL, save/map/world/selector/meta stuff, letter/combined text
+Vanilla todo list: FACING DIR, WORD, GROUP, save/map/world/meta stuff, letter/combined text
 
 ---
 
@@ -21,17 +21,6 @@ x is NOU: x doesn't get properties when you write x is y. Instead, it gives them
 OUT:
 [11:46 AM] the bab dictator: so what you do is LEVEL IS OUT and the level becomes a file and if you drag it onto the window in the world map the level will appear in a clearly-broken spot of the map, where the flag transformation level used to be in baba
 
-Cursor standardization:
-
-Cursor is now an object like any other rather than being a weird rules-ignoring thing.
-
-The default rules (they're inserted into the rules before anything else like level is stop and text is push) are:
-
-Cursor is you and float, cursor bound level and path
-
-Whenever a thing that is YOU idles on a thing that can be entered as a level, then you enter the level.
-
-If two things that are YOU enter two different levels simultaneously, they are combined. Their largest dimensions are taken, their objects are added together and if the combined level is won, both individual levels are won.
 
 PRESS (key):
 A prefix condition that's true if the last thing you did was press that key. Basically a way to have arbitrarily many special action keys. Not sure how this works with touch screens/controllers - maybe the game detects how many press (key) conditions exists in the level, and creates on-screen virtual buttons/arbitrary controller mappings for them that it displays to you.
@@ -39,6 +28,6 @@ A prefix condition that's true if the last thing you did was press that key. Bas
 modded words from baba mods that could be fun (but obviously not going to add a bunch of stuff unless lily wants it to exist):
 cg5:ACTIVE/BLOCKED, FIND/EVIL/REPENT
 jumbods64: DRIFT/RISE (1 tile per turn FALL/VALL)
-lily: MEANS (well it'd be IMPLIES now), WITH (will become THAT), BAIT/LURE, TURN (45 degrees by default, 90 degrees if you're ORTHO or DIAG?), STILL, AUTO??, reset conds?, ANY?, (probably not STICKY since SIDEKIK exists and STICKY is hard), NEAREST/TOUCH (easy), GRAVITY (I know lily expressed an interest in at least simple GRAVITY stuff), TIMELESS (hard but lily wants it anyway), BEAM/REFLECT/SPLIT/CROSS (hard but could be fun)
-patashu: STUCK (as FREEZ or IN JAIL or something), TOPPLE? (boring ZIP?), (PHASE is unlikely after the FLOAT/NO GO changes, not much special it does anymore), STRAFE?, COLLIDE (this is like... boring BOUNDED lmao), SEND/RECEIVE/RESEND? (if we even want a meta mechanic like that), EVENTURN/ODDTURN? (can be done with a gadget already so), STRONG (as ATTAC and not letting you bulldoze walls? or idk that's just bab snack babn't, why not make it OP then?), MOONWALK/DRUNK/DRUNKER/SKIP?
-unimplemented: MARK/UNMARK/MARKED, ROUND (basically a reflexive new!stubborn heh, where failing to walk into something round triggers the stubborn behaviour), CLIMB, WIELD, CHAINED, VERY/ABSOLUTE (as PLZ) (the n't n't thing kinda does this), SPAWNER/RESPAWN/SPAWN, HASMORE/MASSPROD/PRINT, YOINK, X-AXIS/Y-AXIS (fakeable with bounded), DITTO MARK ("), JUMP, BEHAVE, REPEL, MAGNET, TRAILS, CARRY, NEWTON, FLICK, HEAVY, SAYS/FEELS/LITERAL/THING, NEW/OLD?, BACK??, CHEKPOINT?, DRODBAB???
+lily: MEANS (well it'd be IMPLIES now), WITH (will become THAT), BAIT/LURE, STILL, AUTO??, reset conds?, ANY?, STICKY (hard lily thing, NEAREST/TOUCH (easy but boring), GRAVITY (I know lily expressed an interest in at least simple GRAVITY stuff), TIMELESS (hard lily thing), BEAM/REFLECT/SPLIT/CROSS (hard lily thing)
+patashu: TOPPLE? (boring ZIP?), SEND/RECEIVE/RESEND? (if we even want a meta mechanic like that), EVENTURN/ODDTURN? (can be done with a gadget already so), STRONG (implementable with SNACC), DESTROY (good joke word but not very intersting)
+unimplemented: MARK/UNMARK/MARKED, ROUND (basically a reflexive new!stubborn heh, where failing to walk into something round triggers the stubborn behaviour), CLIMB, WIELD, CHAINED, VERY/ABSOLUTE (as PLZ) (the n't n't thing kinda does this), SPAWNER/RESPAWN/SPAWN, HASMORE/MASSPROD/PRINT, YOINK, X-AXIS/Y-AXIS (fakeable with bounded), DITTO MARK ("), JUMP, BEHAVE, REPEL, MAGNET, TRAILS, CARRY, NEWTON, FLICK, HEAVY, SAYS/FEELS/LITERAL/THING, NEW/OLD?, CHEKPOINT?, DRODBAB???
