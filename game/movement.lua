@@ -407,7 +407,6 @@ end
 
 function moveIt(mover, dx, dy, facing_dir, move_dir, geometry_spin, data, pulling, already_added, moving_units, moving_units_next, slippers, remove_from_moving_units)
   if not mover.removed then
-    print("b:"..tostring(data.geometry_spin))
     local move_dx, move_dy = dirs8[move_dir][1], dirs8[move_dir][2]
     queueMove(mover, dx, dy, facing_dir, false, geometry_spin);
     --applySlide(mover, dx, dy, already_added, moving_units_next);
@@ -471,7 +470,6 @@ function moveIt(mover, dx, dy, facing_dir, move_dir, geometry_spin, data, pullin
 end
 
 function queueMove(mover, dx, dy, dir, priority, geometry_spin)
-  print("c:"..tostring(geometry_spin))
   addUndo({"update", mover.id, mover.x, mover.y, mover.dir})
   mover.olddir = mover.dir
   updateDir(mover, dir)
@@ -1016,7 +1014,6 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
   
   local movers = {}
   local specials = {}
-  print("a:"..tostring(geometry_spin))
   table.insert(movers, {unit = unit, dx = x-unit.x, dy = y-unit.y, dir = dir, move_dx = move_dx, move_dy = move_dy, move_dir = move_dir, geometry_spin = geometry_spin})
   
   if not inBounds(x,y) then

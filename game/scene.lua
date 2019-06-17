@@ -916,11 +916,17 @@ function scene.doPassiveParticles(timer,word,effect,delay,chance,count,color)
           real_count = real_count + 1
         end
       end
-      if not unit.stelth then
+      if not unit.stelth and particlesRngCheck() then
         addParticles(effect, unit.x, unit.y, color, real_count)
       end
     end
   end
+end
+
+--have a probability to produce particles if there are more than 50 emitters, so that performance degradation is capped.
+function particlesRngCheck()
+  if #particles < 50 then return true end
+  return math.random() < math.pow(0.5, (#particles-50)/50)
 end
 
 function scene.mouseReleased(x,y,button)
