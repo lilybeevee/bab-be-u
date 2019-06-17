@@ -764,54 +764,7 @@ end
 function doWrap(unit, px, py, move_dir, dir)
   --fast track if we don't need to wrap anyway
   if inBounds(px,py) then return px, py, move_dir, dir end
-  if hasProperty(unit, "cilindr_up") or hasProperty(unit, "cilindr_down") then
-    if (px < 0) then
-      px = px + mapwidth
-    elseif (px >= mapwidth) then
-      px = px - mapwidth
-    end
-  end
-  if hasProperty(unit, "cilindr_left") or hasProperty(unit, "cilindr_right") then
-    if (py < 0) then
-      py = py + mapheight
-    elseif (py >= mapheight) then
-      py = py - mapheight
-    end
-  end
-  if hasProperty(unit, "cilindr_upleft") then
-    --bleh, i need to wait for portal to be implemented
-    --[[if (py < 0 and ((mapwidth > mapheight and px < mapheight) or (mapwidth <= mapheight))) then
-      dir = 2
-      py = py + 1
-      local temp = px
-      px = py
-      py = temp
-    elseif (px < 0 and ((mapheight > mapwidth and py < mapwidth) or (mapheight <= mapwidth))) then
-      px = px + 1
-      local temp = px
-      px = py
-      py = temp
-    end]]--
-  end
-  if hasProperty(unit, "mobyus_up") or hasProperty(unit, "mobyus_down") then
-    if (px < 0) then
-      px = px + mapwidth
-      py = mapheight - py - 1
-    elseif (px >= mapwidth) then
-      px = px - mapwidth
-      py = mapheight - py - 1
-    end
-  end
-  if hasProperty(unit, "mobyus_left") or hasProperty(unit, "mobyus_right") then
-    if (py < 0) then
-      py = py + mapheight
-      px = mapwidth - px - 1
-    elseif (py >= mapheight) then
-      py = py - mapheight
-      px = mapwidth - px - 1
-    end
-  end
-  if hasProperty(unit, "mirr arnd") then--projective plane wrapping
+  if hasProperty(unit, "mirr arnd") then --projective plane wrapping
     local dx, dy = 0, 0;
     if (px < 0) then
       dx = -px;

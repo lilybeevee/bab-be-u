@@ -1226,12 +1226,6 @@ function updateDir(unit,dir)
   if unit.fullname == "text_direction" then
     unit.textname = dirs8_by_name[unit.dir];
   end
-  if unit.fullname == "text_cilindr" then
-    unit.textname = "cilindr_" .. dirs8_by_name[unit.dir];
-  end
-  if unit.fullname == "text_mobyus" then
-    unit.textname = "mobyus_" .. dirs8_by_name[unit.dir];
-  end
   if unit.fullname == "text_spin" then
     unit.textname = "spin_" .. tostring(unit.dir);
   end

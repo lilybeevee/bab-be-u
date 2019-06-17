@@ -502,7 +502,7 @@ We only need to parseRules if:
 1) a text was created, destroyed or moved
 2) a möbius or cylinder rule changed directions
 3) a portal or word rule exists
-4) a conditional text is (wrap, mirror, mobius, cylinder) rule exists
+4) a conditional text is (wrap, mirror) rule exists
 TODO: I know 3 can be further subdivided to 'a word/portal rule exists and a word/portal unit was created, destroyed or moved, or a portal unit changed directions, or the rule has a condition' but that's more complex
 ]]
 function shouldReparseRules()
@@ -511,7 +511,6 @@ function shouldReparseRules()
   if shouldReparseRulesIfRuleExists(nil, "be", "poor toll") then return true end
   if shouldReparseRulesIfConditionalRuleExists("text", "be", "go arnd") then return true end
   if shouldReparseRulesIfConditionalRuleExists("text", "be", "mirr arnd") then return true end
-  --TODO: handle all 8 mobius/cylinder simultaneously?
   return false
 end
 

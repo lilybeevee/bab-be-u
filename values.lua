@@ -63,27 +63,6 @@ dirs8_by_name = {
   "upright",
 }
 
-cilindr_names = {
-  cilindr_right,
-  cilindr_downright,
-  cilindr_down,
-  cilindr_downleft,
-  cilindr_left,
-  cilindr_upleft,
-  cilindr_up,
-  cilindr_upright,
-}
-mobyus_names = {
-  mobyus_right,
-  mobyus_downright,
-  mobyus_down,
-  mobyus_downleft,
-  mobyus_left,
-  mobyus_upleft,
-  mobyus_up,
-  mobyus_upright,
-}
-
 dirs8_by_offset = {}
 dirs8_by_offset[-1],dirs8_by_offset[0],dirs8_by_offset[1] = {},{},{}
 dirs8_by_offset[1][0] = 1
@@ -1935,7 +1914,7 @@ tiles_list = {
     sprite = "text_cilindr",
     type = "text",
     texttype = "property",
-    grid = {15, 3},
+    grid = {-1, -1},
     color = {3, 2},
     layer = 20,
     rotate = true,
@@ -1947,7 +1926,7 @@ tiles_list = {
     sprite = "text_mobyus",
     type = "text",
     texttype = "property",
-    grid = {15, 4},
+    grid = {-1, -1},
     color = {3, 2},
     layer = 20,
     rotate = true,
