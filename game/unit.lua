@@ -13,7 +13,7 @@ function updateUnits(undoing, big_update)
     if (unit.removed) then
       table.insert(del_units, on)
     --keep empty out of units_by_tile - it will be returned in getUnitsOnTile
-    elseif unit.name ~= "no1" and unit.fullname ~= "no1" and unit.type ~= "outerlvl" then
+    elseif unit.fullname ~= "no1" and unit.type ~= "outerlvl" then
       local tileid = unit.x + unit.y * mapwidth
       table.insert(units_by_tile[tileid], unit)
     end
@@ -52,10 +52,10 @@ function updateUnits(undoing, big_update)
     tele_targets = {};
     --form lists, by tele name, of what all the tele units are
     for unit,amt in pairs(istele) do
-      if teles_by_name[unit.name] == nil then
-        teles_by_name[unit.name] = {}
+      if teles_by_name[unit.fullname] == nil then
+        teles_by_name[unit.fullname] = {}
       end
-      table.insert(teles_by_name[unit.name], unit);
+      table.insert(teles_by_name[unit.fullname], unit);
     end
     --then sort those lists in reading order (tiebreaker is id).
     --skip this step if doing random version, the sorting won't matter then!
@@ -74,9 +74,9 @@ function updateUnits(undoing, big_update)
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
       for _,on in ipairs(stuff) do
         --we're going to deliberately let two same name teles tele if they're on each other, since with the deterministic behaviour it's predictable and interesting
-        if unit ~= on and sameFloat(unit, on) --[[and unit.name ~= on.name]] then
-          local destinations = teles_by_name[unit.name]
-          local source_index = teles_by_name_index[unit.name][unit]
+        if unit ~= on and sameFloat(unit, on) --[[and unit.fullname ~= on.fullname]] then
+          local destinations = teles_by_name[unit.fullname]
+          local source_index = teles_by_name_index[unit.fullname][unit]
           
           --RANDOM VERSION: just pick any tele that isn't us
           --[[local dest = math.floor(math.random()*(#destinations-1))+1 --even distribution of each integer. +1 because lua is 1 indexed, -1 because we want one less than the number of teleporters (since we're going to ignore our own)
@@ -942,7 +942,7 @@ function convertUnits()
  --keep empty out of units_by_tile - it will be returned in getUnitsOnTile
  --TODO: CLEANUP: This is similar to updateUnits.
   for _,unit in ipairs(units) do
-    if unit.name ~= "no1" and unit.fullname ~= "no1" and unit.type ~= "outerlvl" then
+    if unit.fullname ~= "no1" and unit.type ~= "outerlvl" then
       local tileid = unit.x + unit.y * mapwidth
       table.insert(units_by_tile[tileid], unit)
     end
@@ -1078,7 +1078,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty)
   end
   
   --abort if we're trying to create empty outside of initialization, to preserve the invariant 'there is exactly empty per tile'
-  if ((unit.name == "no1" or unit.fullname == "no1") and not really_create_empty) then
+  if ((unit.fullname == "no1") and not really_create_empty) then
     --print("not placing an empty:"..unit.name..","..unit.fullname..","..unit.textname)
     return nil
   end
@@ -1116,7 +1116,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty)
 
   local tileid = x + y * mapwidth
   --keep empty out of units_by_tile - it will be returned in getUnitsOnTile
-  if (not (unit.name == "no1" or unit.fullname == "no1" or unit.type == "outerlvl")) then
+  if (not (unit.fullname == "no1" or unit.type == "outerlvl")) then
     table.insert(units_by_tile[tileid], unit)
   end
 
@@ -1138,7 +1138,7 @@ function deleteUnit(unit,convert,undoing)
     end
   end
   --empty can't really be destroyed, only pretend to be, to preserve the invariant 'there is exactly empty per tile'
-  if (unit.name == "no1" or unit.fullname == "no1" or unit.type == "outerlvl") then
+  if (unit.fullname == "no1" or unit.type == "outerlvl") then
     unit.destroyed = false
     unit.removed = false
     unit.removed_final = false
@@ -1168,7 +1168,7 @@ function moveUnit(unit,x,y)
   --when empty moves, swap it with the empty in its destination tile, to preserve the invariant 'there is exactly empty per tile'
   --also, keep empty out of units_by_tile - it will be added in getUnitsOnTile
   if (unit.type == "outerlvl") then
-  elseif (unit.name == "no1" or unit.fullname == "no1") then
+  elseif (unit.fullname == "no1") then
     local tileid = unit.x + unit.y * mapwidth
     local oldx = unit.x
     local oldy = unit.y

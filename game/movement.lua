@@ -24,7 +24,7 @@ function doUpdate(already_added, moving_units_next)
       if not changedDir then
         updateDir(unit, dirAdd(dir, geometry_spin), true);
       end
-      movedebug("doUpdate:"..tostring(unit.name)..","..tostring(x)..","..tostring(y)..","..tostring(dir))
+      movedebug("doUpdate:"..tostring(unit.fullname)..","..tostring(x)..","..tostring(y)..","..tostring(dir))
       moveUnit(unit, x, y)
       unit.already_moving = false
     elseif update.reason == "dir" then
@@ -282,7 +282,7 @@ It is probably possible to do, but lily has decided that it's not important enou
                 break
               end
             end
-            movedebug("considering:"..unit.name..","..dir)
+            movedebug("considering:"..unit.fullname..","..dir)
             local success,movers,specials = canMove(unit, dx, dy, dir, true, false, nil, data.reason)
             for _,special in ipairs(specials) do
               doAction(special)
@@ -361,7 +361,7 @@ It is probably possible to do, but lily has decided that it's not important enou
       end]]--
       doUpdate(already_added, moving_units_next)
       for _,unit in ipairs(moving_units_next) do
-        movedebug("re-added:"..unit.name)
+        movedebug("re-added:"..unit.fullname)
         table.insert(moving_units, unit);
         already_added[unit] = true;
       end
@@ -473,7 +473,7 @@ function queueMove(mover, dx, dy, dir, priority, geometry_spin)
   addUndo({"update", mover.id, mover.x, mover.y, mover.dir})
   mover.olddir = mover.dir
   updateDir(mover, dir)
-  movedebug("moving:"..mover.name..","..tostring(mover.id)..","..tostring(mover.x)..","..tostring(mover.y)..","..tostring(dx)..","..tostring(dy))
+  movedebug("moving:"..mover.fullname..","..tostring(mover.id)..","..tostring(mover.x)..","..tostring(mover.y)..","..tostring(dx)..","..tostring(dy))
   mover.already_moving = true;
   table.insert(update_queue, (priority and 1 or (#update_queue + 1)), {unit = mover, reason = "update", payload = {x = mover.x + dx, y = mover.y + dy, dir = mover.dir, geometry_spin = geometry_spin}})
 end
@@ -502,7 +502,7 @@ function applySlide(mover, dx, dy, already_added, moving_units_next)
         end
         --the new moves will be at the start of the unit's moves data, so that it takes precedence over what it would have done next otherwise
         --TODO: CLEANUP: Figure out a nice way to not have to pass this around/do this in a million places.
-        movedebug("launching:"..mover.name..","..v.dir)
+        movedebug("launching:"..mover.fullname..","..v.dir)
         table.insert(mover.moves, 1, {reason = "goooo", dir = v.dir, times = launchness})
         if not already_added[mover] then
           movedebug("did add launcher")
@@ -529,7 +529,7 @@ function applySlide(mover, dx, dy, already_added, moving_units_next)
           did_clear_existing = true
         end
         if not hasRule(mover,"got","slippers") then
-          movedebug("sliding:"..mover.name..","..mover.dir)
+          movedebug("sliding:"..mover.fullname..","..mover.dir)
           table.insert(mover.moves, 1, {reason = "icyyyy", dir = mover.dir, times = slideness})
         end
         if not already_added[mover] then
@@ -556,7 +556,7 @@ function applySwap(mover, dx, dy)
     --if not v.already_moving then --this made some things move order dependent, so taking it out
       local swap_v = hasProperty(v, "behin u");
       --Don't swap with non-swap empty.
-      if ((swap_mover and v.name ~= "no1") or swap_v) then
+      if ((swap_mover and v.fullname ~= "no1") or swap_v) then
         queueMove(v, -dx, -dy, swap_v and rotate8(mover.dir) or v.dir, true, 0);
         did_swap = true
       end
@@ -858,12 +858,12 @@ function doPortal(unit, px, py, move_dir, dir, reverse)
     --I thought about making portals go backwards/forwards twice/etc depending on property count, but it doesn't play nice with pull - if two portals lead to a portal you move away from, which one do you pull from?
     for _,v in ipairs(getUnitsOnTile(px, py, nil, false)) do
       if hasProperty(v, "poor toll") then
-        local portal_rules = matchesRule(v.name, "be", "poor toll");
+        local portal_rules = matchesRule(v.fullname, "be", "poor toll");
         local portals_direct = {};
         local portals = {};
         local portal_index = -1;
         for _,rule in ipairs(portal_rules) do
-          for _,s in ipairs(findUnitsByName(v.name)) do
+          for _,s in ipairs(findUnitsByName(v.fullname)) do
             if testConds(s, rule[1][4][1]) then
               portals_direct[s] = true
             end
