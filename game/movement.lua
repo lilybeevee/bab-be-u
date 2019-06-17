@@ -1107,11 +1107,11 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
       
       --if thing is ouch, it will not stop things - similar to Baba behaviour. But check safe and float as well.
       --Funny buggy looking interaction (that also happens in Baba): You can push the 'ouch' of 'wall be ouch' onto a solid wall. This could be fixed by making walking onto an ouch wall destroy it as a reaction to movement, like how keys/doors are destroyed as a reaction to movement right now.
-      if hasProperty(v, "ouch") and not hasProperty(v, "protecc") and sameFloat(unit, v) then
+      if (hasProperty(v, "ouch") or rules_with["snacc"] ~= nil and hasRule(unit, "snacc", v)) and not hasProperty(v, "protecc") and sameFloat(unit, v) then
         stopped = false
       end
       --if a weak thing tries to move and fails, destroy it. movers don't do this though.
-      if stopped and hasProperty(unit, "ouch") and not hasProperty(unit, "protecc") and (reason ~= "walk" or not hasProperty(unit, "stubbn")) then
+      if stopped and (hasProperty(unit, "ouch") or rules_with["snacc"] ~= nil and hasRule(v, "snacc", unit)) and not hasProperty(unit, "protecc") and (reason ~= "walk" or not hasProperty(unit, "stubbn")) then
         table.insert(specials, {"weak", {unit = unit,dx = dx,dy = dy,dir = dir}})
         return true,movers,specials
       end
