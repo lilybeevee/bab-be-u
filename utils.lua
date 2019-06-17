@@ -619,7 +619,7 @@ function hasLineOfSight(brite, lit)
   local dx = x1 - x0;
   local dy = y1 - y0;
   if (dx == 0 and dy == 0) then return true end
-  if (math.abs(dx) >= math.abs(dy)) then
+  if (math.abs(dx) > math.abs(dy)) then
     local derr = math.abs(dy / dx);
     local err = 0;
     local y = y0
@@ -637,7 +637,7 @@ function hasLineOfSight(brite, lit)
         err = err - 1;
       end
     end
-  elseif (math.abs(dy) < math.abs(dx)) then
+  elseif (math.abs(dy) > math.abs(dx)) then
     local derr = math.abs(dx / dy);
     local err = 0;
     local x = x0
@@ -654,6 +654,18 @@ function hasLineOfSight(brite, lit)
         x = x + sign(dx);
         err = err - 1;
       end
+    end
+  else --both equal
+    local x = x0;
+    for y = y0, y1, sign(dy) do
+      if x ~= x0 or y ~= y0 then
+        for _,v in ipairs(getUnitsOnTile(x, y)) do
+          if hasProperty(v, "opaque") then
+            return false
+          end
+        end
+      end
+      x = x + sign(dx);
     end
   end
   return true;
