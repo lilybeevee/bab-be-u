@@ -118,7 +118,7 @@ function doMovement(movex, movey)
           local is_spoopy = hasRule(unit, "spoop", other)
           if (is_spoopy and not hasProperty(other, "slep")) then
             spoop_dir = dirs8_by_offset[sign(other.x - unit.x)][sign(other.y - unit.y)]
-            if (spoop_dir % 2 == 1 or (not hasProperty(unit, "orthongl") and not hasProperty(other, "orthongl"))) then
+            if (spoop_dir % 2 == 1 or (not hasProperty(unit, "ortho") and not hasProperty(other, "ortho"))) then
               addUndo({"update", other.id, other.x, other.y, other.dir})
               other.olddir = other.dir
               updateDir(other, spoop_dir)
@@ -595,7 +595,7 @@ function findSidekikers(unit,dx,dy)
     local curx = x+dirs8[curdir][1];
     local cury = y+dirs8[curdir][2];
     for _,v in ipairs(getUnitsOnTile(curx, cury)) do
-      if hasProperty(v, "sidekik") and hasProperty(v, "come pls") and not hasProperty(v, "orthognl") then
+      if hasProperty(v, "sidekik") and hasProperty(v, "come pls") and not hasProperty(v, "ortho") then
         table.insert(result, v);
       end
     end
@@ -1013,10 +1013,10 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
     return false,{},{}
   end
 
-  if hasProperty(unit, "diagnal") and (not hasProperty(unit, "orthongl")) and (dx == 0 or dy == 0) then
+  if hasProperty(unit, "diag") and (not hasProperty(unit, "ortho")) and (dx == 0 or dy == 0) then
     return false,movers,specials
   end
-  if hasProperty(unit, "orthongl") and (not hasProperty(unit, "diagnal")) and (dx ~= 0 and dy ~= 0) then
+  if hasProperty(unit, "ortho") and (not hasProperty(unit, "diag")) and (dx ~= 0 and dy ~= 0) then
     return false,movers,specials
   end
   

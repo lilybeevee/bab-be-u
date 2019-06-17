@@ -1198,14 +1198,14 @@ tiles_list = {
   },
   --- 104
   {
-    name = "text_diagnal",
-    sprite = "text_diagnal",
+    name = "text_diag",
+    sprite = "text_diag",
     type = "text",
     texttype = "property",
     grid = {2, 13},
     color = {3, 2},
     layer = 20,
-    desc = "DIAGNAL: Prevents the unit moving orthogonally.",
+    desc = "DIAG: Prevents the unit moving orthogonally.",
   },
   --- 105
   {
@@ -1220,14 +1220,14 @@ tiles_list = {
   },
   --- 106
   {
-    name = "text_orthongl",
-    sprite = "text_orthongl",
+    name = "text_ortho",
+    sprite = "text_ortho",
     type = "text",
     texttype = "property",
     grid = {3, 13},
     color ={3, 2},
     layer = 20,
-    desc = "ORTHOGNL: Prevents the unit moving diagonally.",
+    desc = "ORTHO: Prevents the unit moving diagonally.",
   },
   --- 107
   {
