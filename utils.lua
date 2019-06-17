@@ -572,7 +572,7 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
       end
       rng = deterministicRng(unit, cond_unit);
       result = (rng*100) < threshold_for_dir[cond_unit.dir];
-    elseif condtype == "random" then
+    elseif condtype == "an" then
       --add a dummy action so that undoing happens
       if (#undo_buffer > 0 and #undo_buffer[1] == 0) then
         addUndo({"dummy"});

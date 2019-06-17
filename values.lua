@@ -2213,13 +2213,13 @@ tiles_list = {
   },
   -- 202
   {
-    name = "text_random",
-    sprite = "text_random",
+    name = "text_an",
+    sprite = "text_an",
     type = "text",
     texttype = "cond_prefix",
     grid = {15, 2},
     color = {0, 3},
     layer = 20,
-    desc = "RANDOM (Prefix Condition): True for a single arbitrary unit per turn and condition.",
+    desc = "AN (Prefix Condition): True for a single arbitrary unit per turn and condition.",
   },
 }
