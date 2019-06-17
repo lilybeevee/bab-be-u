@@ -2142,5 +2142,16 @@ tiles_list = {
     grid = {14, 0},
     color = {0, 3},
     layer = 20,
-  }
+  },
+  -- 196
+  {
+    name = "text_copdog",
+    sprite = "text_copdog",
+    type = "text",
+    texttype = "verb_object",
+    grid = {15, 6},
+    color = {0, 3},
+    layer = 20,
+    desc = "COPDOG: COPKAT, but it copies ALL of the movement (e.g. if COPDOG ROC and you push 3 ROCs, it moves 3 steps)."
+  },
 }

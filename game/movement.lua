@@ -244,6 +244,34 @@ It is probably possible to do, but lily has decided that it's not important enou
                 dir = dirs8_by_offset[dx][dy];
                 data.dir = dir
               end
+            --dx/dy collation logic for copydog moves
+            elseif (data.reason == "copdog") then
+              --new 'move ALL the way' logic:
+              --1) Split the move into two parts - all the diagonal movement, then all the remaining orthogonal movement.
+              --2) Put the second half in as a new move after this one.
+              local diag_amt = math.min(math.abs(data.dx), math.abs(data.dy));
+              local ortho_amt = math.max(math.abs(data.dx), math.abs(data.dy)) - diag_amt;
+              if (diag_amt == 0 and ortho_amt == 0 or slippers[unit.id] ~= nil or hasProperty(unit, "slep")) then
+                data.times = 0;
+              elseif (diag_amt > 0 and ortho_amt == 0) or (ortho_amt > 0 and diag_amt == 0) then
+                data.times = math.max(diag_amt, ortho_amt);
+                local dir = dirs8_by_offset[sign(data.dx)][sign(data.dy)];
+                data.dir = dir;
+                data.reason = "copkat_result";
+              else
+                local newdir = dirs8_by_offset[sign(math.abs(data.dx)-diag_amt)][sign(math.abs(data.dy)-diag_amt)]
+                table.insert(copykat.moves, 2, {reason = "copkat_result", dir = newdir, times = ortho_amt})
+                data.times = diag_amt;
+                local dir = dirs8_by_offset[sign(data.dx)][sign(data.dy)];
+                data.dir = dir;
+                data.reason = "copkat_result";
+              end
+              if (data.times == 0) then
+                while #unit.moves > 0 and unit.moves[1].times <= 0 do
+                  table.remove(unit.moves, 1)
+                end
+                break
+              end
             end
             movedebug("considering:"..unit.name..","..dir)
             local success,movers,specials = canMove(unit, dx, dy, dir, true, false, nil, data.reason)
@@ -397,7 +425,7 @@ function moveIt(mover, dx, dy, facing_dir, move_dir, data, pulling, already_adde
     --add COPYKATs to move in the next tick
     --basically: if they're currently copying, ignore the first move we find. if we find a non-ignored move, add to it. else, add a new move.
     --On that new move, we add up all dx and dy. The final dx and dy will be the sign (so limited to -1/1) of its dx and dy.
-    for copykat,_ in pairs(findCopykats(mover)) do
+    for copykat,reason in pairs(findCopykats(mover)) do
       local currently_moving = false
       for _,mover2 in ipairs(moving_units) do
         if mover2 == copykat then
@@ -407,7 +435,7 @@ function moveIt(mover, dx, dy, facing_dir, move_dir, data, pulling, already_adde
       end
       local found = false
       for i,move in ipairs(copykat.moves) do
-        if move.reason == "copkat" then
+        if move.reason == "copkat" or move.reason == "copdog" then
           if currently_moving then
             currently_moving = false
           else
@@ -420,7 +448,7 @@ function moveIt(mover, dx, dy, facing_dir, move_dir, data, pulling, already_adde
         end
       end
       if not found then
-        table.insert(copykat.moves, {reason = "copkat", dir = mover.dir, times = 1, dx = move_dx, dy = move_dy})
+        table.insert(copykat.moves, {reason = reason, dir = mover.dir, times = 1, dx = move_dx, dy = move_dy})
         --the reason for this weird check is - we only want to add to moving_units_next if we're not already on it, and we're not already on it if we previously had zero moves OR we haven't been removed from moving units yet. This is pretty ugly imo.
         if (#copykat.moves == 1 or not remove_from_moving_units[copykat]) then
           table.insert(moving_units_next, copykat)
@@ -571,7 +599,7 @@ end
 
 function findCopykats(unit)
   --fast track
-  if rules_with["copkat"] == nil then return {} end
+  if rules_with["copkat"] == nil and rules_with["copdog"] == nil then return {} end
   local result = {}
   local iscopykat = matchesRule("?", "copkat", unit);
   for _,ruleparent in ipairs(iscopykat) do
@@ -579,7 +607,17 @@ function findCopykats(unit)
     local copykat_conds = ruleparent[1][4][1]
     for _,copykat in ipairs(copykats) do
       if testConds(copykat, copykat_conds) then
-        result[copykat] = true;
+        result[copykat] = "copkat";
+      end
+    end
+  end
+  local iscopykat = matchesRule("?", "copdog", unit);
+  for _,ruleparent in ipairs(iscopykat) do
+    local copykats = findUnitsByName(ruleparent[1][1])
+    local copykat_conds = ruleparent[1][4][1]
+    for _,copykat in ipairs(copykats) do
+      if testConds(copykat, copykat_conds) then
+        result[copykat] = "copdog";
       end
     end
   end
