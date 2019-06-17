@@ -1217,7 +1217,10 @@ function moveUnit(unit,x,y)
   do_move_sound = true
 end
 
-function updateDir(unit,dir)
+function updateDir(unit,dir, force)
+  if not force and rules_with ~= nil and hasProperty(unit, "no turn") then
+    return false
+  end
   unit.dir = dir
   if unit.type == "text" then
     should_parse_rules = true
@@ -1245,6 +1248,7 @@ function updateDir(unit,dir)
     end
     addTween(tween.new(0.1, unit.draw, {scalex = 1, rotation = target_rot}), "unit:dir:" .. unit.tempid)
   end
+  return true
 end
 
 function newUnitID(id)

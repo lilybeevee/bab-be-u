@@ -16,10 +16,14 @@ function doUpdate(already_added, moving_units_next)
       local x = update.payload.x
       local y = update.payload.y
       local dir = update.payload.dir
+      local geometry_spin = update.payload.geometry_spin
       --TODO: We need to do all applySlides either totally before or totally after doupdate.
       --Reason: Imagine two units that are ICYYYY step onto the same tile. Right now, one will slip on the other. Do we either want both to to slip or neither to slip? The former is more fun, so we should probably do all applySlides after we're done.
       applySlide(unit, x-unit.x, y-unit.y, already_added, moving_units_next);
-      updateDir(unit, dir)
+      local changedDir = updateDir(unit, dir)
+      if not changedDir then
+        updateDir(unit, dirAdd(dir, geometry_spin), true);
+      end
       movedebug("doUpdate:"..tostring(unit.name)..","..tostring(x)..","..tostring(y)..","..tostring(dir))
       moveUnit(unit, x, y)
       unit.already_moving = false
@@ -288,7 +292,7 @@ It is probably possible to do, but lily has decided that it's not important enou
               successes = successes + 1
               
               for k = #movers, 1, -1 do
-                moveIt(movers[k].unit, movers[k].dx, movers[k].dy, movers[k].dir, movers[k].move_dir, data, false, already_added, moving_units, moving_units_next, slippers, remove_from_moving_units)
+                moveIt(movers[k].unit, movers[k].dx, movers[k].dy, movers[k].dir, movers[k].move_dir, movers[k].geometry_spin, data, false, already_added, moving_units, moving_units_next, slippers, remove_from_moving_units)
               end
               --Patashu: only the mover itself pulls, otherwise it's a mess. stuff like STICKY/STUCK will require ruggedizing this logic.
               --Patashu: TODO: Doing the pull right away means that in a situation like this: https://cdn.discordapp.com/attachments/579519329515732993/582179745006092318/unknown.png the pull could happen before the bounce depending on move order. To fix this... I'm not sure how Baba does this? But it's somewhere in that mess of code.
@@ -401,10 +405,11 @@ function doAction(action)
   end
 end
 
-function moveIt(mover, dx, dy, facing_dir, move_dir, data, pulling, already_added, moving_units, moving_units_next, slippers, remove_from_moving_units)
+function moveIt(mover, dx, dy, facing_dir, move_dir, geometry_spin, data, pulling, already_added, moving_units, moving_units_next, slippers, remove_from_moving_units)
   if not mover.removed then
+    print("b:"..tostring(data.geometry_spin))
     local move_dx, move_dy = dirs8[move_dir][1], dirs8[move_dir][2]
-    queueMove(mover, dx, dy, facing_dir, false);
+    queueMove(mover, dx, dy, facing_dir, false, geometry_spin);
     --applySlide(mover, dx, dy, already_added, moving_units_next);
     applySwap(mover, dx, dy);
     --finishing a slip locks you out of U/WALK for the rest of the turn
@@ -465,13 +470,14 @@ function moveIt(mover, dx, dy, facing_dir, move_dir, data, pulling, already_adde
   end
 end
 
-function queueMove(mover, dx, dy, dir, priority)
+function queueMove(mover, dx, dy, dir, priority, geometry_spin)
+  print("c:"..tostring(geometry_spin))
   addUndo({"update", mover.id, mover.x, mover.y, mover.dir})
   mover.olddir = mover.dir
   updateDir(mover, dir)
   movedebug("moving:"..mover.name..","..tostring(mover.id)..","..tostring(mover.x)..","..tostring(mover.y)..","..tostring(dx)..","..tostring(dy))
   mover.already_moving = true;
-  table.insert(update_queue, (priority and 1 or (#update_queue + 1)), {unit = mover, reason = "update", payload = {x = mover.x + dx, y = mover.y + dy, dir = mover.dir}})
+  table.insert(update_queue, (priority and 1 or (#update_queue + 1)), {unit = mover, reason = "update", payload = {x = mover.x + dx, y = mover.y + dy, dir = mover.dir, geometry_spin = geometry_spin}})
 end
 
 function applySlide(mover, dx, dy, already_added, moving_units_next)
@@ -553,7 +559,7 @@ function applySwap(mover, dx, dy)
       local swap_v = hasProperty(v, "behin u");
       --Don't swap with non-swap empty.
       if ((swap_mover and v.name ~= "no1") or swap_v) then
-        queueMove(v, -dx, -dy, swap_v and rotate8(mover.dir) or v.dir, true);
+        queueMove(v, -dx, -dy, swap_v and rotate8(mover.dir) or v.dir, true, 0);
         did_swap = true
       end
     end
@@ -694,7 +700,7 @@ function doPullCore(unit,dx,dy,dir,data, already_added, moving_units, moving_uni
               changed_unit = true
             end
             result = result + 1
-            moveIt(mover.unit, mover.dx, mover.dy, mover.dir, mover.move_dir, data, true, already_added, moving_units, moving_units_next, slippers, remove_from_moving_units)
+            moveIt(mover.unit, mover.dx, mover.dy, mover.dir, mover.move_dir, mover.geometry_spin, data, true, already_added, moving_units, moving_units_next, slippers, remove_from_moving_units)
           end
         end
       end
@@ -1004,11 +1010,14 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
   
   local move_dx, move_dy = dx, dy;
   local move_dir = dirs8_by_offset[sign(move_dx)][sign(move_dy)] or 0
+  local old_dir = dir;
   local dx, dy, dir, x, y = getNextTile(unit, dx, dy, dir);
+  local geometry_spin = dirDiff(dir, old_dir);
   
   local movers = {}
   local specials = {}
-  table.insert(movers, {unit = unit, dx = x-unit.x, dy = y-unit.y, dir = dir, move_dx = move_dx, move_dy = move_dy, move_dir = move_dir})
+  print("a:"..tostring(geometry_spin))
+  table.insert(movers, {unit = unit, dx = x-unit.x, dy = y-unit.y, dir = dir, move_dx = move_dx, move_dy = move_dy, move_dir = move_dir, geometry_spin = geometry_spin})
   
   if not inBounds(x,y) then
     if hasProperty(unit, "ouch") and not hasProperty(unit, "protecc") and (reason ~= "walk" or hasProperty(unit, "stubbn")) then

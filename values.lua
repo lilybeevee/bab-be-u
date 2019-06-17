@@ -2200,4 +2200,15 @@ tiles_list = {
     layer = 20,
     desc = "OPAQUE: A BRITE object emits light in all directions. LIT will be true for objects on the same FLYE level if nothing OPAQUE is in the way.",
   },
+  -- 201
+  {
+    name = "text_no turn",
+    sprite = "text_no turn",
+    type = "text",
+    texttype = "property",
+    grid = {9, 13},
+    color = {1, 4},
+    layer = 20,
+    desc = "NO TURN: A NO TURN unit's direction can't change (unless re-oriented by non-euclidean level geometry, i.e. POOR TOLL).",
+  },
 }
