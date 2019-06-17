@@ -1562,15 +1562,15 @@ tiles_list = {
   },
   --- 139
   {
-    name = "text_bounded",
-    sprite = "text_bounded",
+    name = "text_liek",
+    sprite = "text_liek",
     type = "text",
     texttype = "verb_object",
     allowconds = true,
     grid = {13, 1},
     color = {5, 3},
     layer = 20,
-    desc = "BOUNDED: If a unit is BOUNDED, it cannot step onto a tile unless it has at least one object it is BOUNDED to.",
+    desc = "LIEK: If a unit LIEKs objects, it is picky, and cannot step onto a tile unless it has at least one object it LIEKs.",
   },
   -- 140
   {

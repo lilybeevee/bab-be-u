@@ -1024,11 +1024,11 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
   
   --bounded: if we're bounded and there are no units in the destination that satisfy a bounded rule, AND there's no units at our feet that would be moving there to carry us, we can't go
   --we used to have a fast track, but now selector is ALWAYS bounded to stuff, so it's never going to be useful.
-  local isbounded = matchesRule(unit, "bounded", "?")
+  local isbounded = matchesRule(unit, "liek", "?")
   if (#isbounded > 0) then
     local success = false
     for _,v in ipairs(getUnitsOnTile(x, y, nil, false)) do
-      if hasRule(unit, "bounded", v) then
+      if hasRule(unit, "liek", v) then
         success = true
         break
       end
@@ -1039,7 +1039,7 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
           local unit2 = update.unit
           local x2 = update.payload.x
           local y2 = update.payload.y
-          if x2 == x and y2 == y and hasRule(unit, "bounded", unit2) then
+          if x2 == x and y2 == y and hasRule(unit, "liek", unit2) then
             success = true
             break
           end
