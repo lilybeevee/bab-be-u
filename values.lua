@@ -553,7 +553,7 @@ tiles_list = {
     grid = {8, 3},
     color = {1, 3},
     layer = 20,
-    desc = "SLEP: SLEP units can't move due to being U, WALK or SPOOPed.",
+    desc = "SLEP: SLEP units can't move due to being U, WALK, COPKAT/COPDOG or SPOOPed.",
   },
   --45
   {
