@@ -881,7 +881,7 @@ tiles_list = {
     grid = {8, 5},
     color = {2, 2},
     layer = 20,
-    desc = "SNACC: At end of turn, the unit destroys any objects on its tile that it SNACCs.",
+    desc = "SNACC: Units destroy any other unit that they SNACC on contact, like a conditional OUCH.",
   },
   --77
   {
