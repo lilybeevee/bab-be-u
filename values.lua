@@ -1748,6 +1748,7 @@ tiles_list = {
     layer = 3,
     rotate = true,
     eye = {x=14, y=14, w=3, h=3},
+    desc = "keek look at'd the clok. 'oh no! im late for school!' keek shouted and raced out of bed."
   },
   -- 158
   {
