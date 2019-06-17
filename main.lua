@@ -26,7 +26,17 @@ local headerfont = love.graphics.newFont(32)  -- used for debug
 local regularfont = love.graphics.newFont(16) -- read the line above
 
 function love.load()
-  print([[
+  local colrstatus, colrerr = pcall(function() require "lib/colr-print/colr-print" end)
+  if not colrstatus then
+    print("⚠ colr-print not found! did you forget to update the submodules?")
+    print("⚠ ('git submodule update' in console)")
+    print("⚠ "..colrerr)
+    love["event"]["quit"]()
+  else
+    colr = require "lib/colr-print/colr-print"
+  end
+
+  print(colr.bright([[
 
   
                                   BBBBBBBBBB
@@ -66,20 +76,19 @@ function love.load()
          BBBBBBBB          BBBBBBBBBB                    BBBBBBBBBB               
          BBBBBBBB          BBBBBBBBBB                      BBBBBBBB               
          BBBBBBBB          BBBBBBBBBB                      BBBBBBBB               
-         BBBBBBBB          BBBBBBBBBB                      BBBBBBBB               
-  ]])
-  print([[
-                                   BAB BE U
-                                    v. ]]..build_number..[[
-                                   ❤ v. ]]..love.getVersion()..'\n\n')
-  
+         BBBBBBBB          BBBBBBBBBB                      BBBBBBBB 
+
+  ]])..colr.magenta([[
+                                   BAB BE U]])..
+"\n                                      v. "..build_number..[[
+                                     ]]..colr.red('❤')..' v. '..love.getVersion()..'\n\n')
 
   local libstatus, liberr = pcall(function() discordRPC = require "lib/discordRPC" end)
   if libstatus then
     discordRPC = require "lib/discordRPC"
-    print("✓ discord rpc added")
+    print(colr.green("✓ discord rpc added"))
   else
-    print("⚠ failed to require discordrpc: "..liberr)
+    print(colr.yellow("⚠ failed to require discordrpc: "..liberr))
   end
 
   sprites = {}
@@ -104,7 +113,7 @@ function love.load()
 
   love.graphics.setDefaultFilter("nearest","nearest")
 
-  print("✓ startup values added\n")
+  print(colr.green("✓ startup values added\n"))
 
   local function addsprites(d)
     local dir = "assets/sprites"
@@ -120,9 +129,9 @@ function love.load()
           spritename = d .. "/" .. spritename
         end
         sprites[spritename] = sprite
-        --print("ℹ️ added sprite "..spritename)
+        --print(colr.cyan("ℹ️ added sprite "..spritename))
       elseif love.filesystem.getInfo(dir .. "/" .. file).type == "directory" then
-        print("ℹ️ found sprite dir: " .. file)
+        print(colr.cyan("ℹ️ found sprite dir: " .. file))
         local newdir = file
         if d then
           newdir = d .. "/" .. newdir
@@ -133,7 +142,7 @@ function love.load()
   end
   addsprites()
 
-  print("✓ added sprites\n")
+  print(colr.green("✓ added sprites\n"))
 
   local function addPalettes(d)
     local dir = "assets/palettes"
@@ -158,9 +167,9 @@ function love.load()
             palette[x + y * sprite:getWidth()] = {r, g, b, a}
           end
         end
-        --print("ℹ️ added palette "..palettename)
+        --print(colr.cyan("ℹ added palette "..palettename))
       elseif love.filesystem.getInfo(dir .. "/" .. file).type == "directory" then
-        print("ℹ️ found palette dir: " .. file)
+        print(colr.cyan("ℹ️ found palette dir: " .. file))
         local newdir = file
         if d then
           newdir = d .. "/" .. newdir
@@ -172,7 +181,7 @@ function love.load()
   addPalettes()
   current_palette = "default"
 
-  print("✓ added palettes\n")
+  print(colr.green("✓ added palettes\n"))
 
   sound_exists = {}
   local function addAudio(d)
@@ -203,7 +212,7 @@ function love.load()
     end
   end
   addAudio()
-  print("✓ audio added")
+  print(colr.green("✓ audio added"))
 
   system_cursor = sprites["ui/mous"]
   --if love.system.getOS() == "OS X" then
@@ -216,19 +225,19 @@ function love.load()
   registerSound("sink", 0.5)
   registerSound("rule", 0.5)
   registerSound("win", 0.5)
-  print("✓ sounds registered")
+  print(colr.green("✓ sounds registered"))
 
   if discordRPC and discordRPC ~= true then
     discordRPC.initialize("579475239646396436", true) -- app belongs to thefox, contact him if you wish to make any changes
-    print("✓ discord rpc initialized")
+    print(colr.green("✓ discord rpc initialized"))
   end
 
-  print("\nboot complete!")
+  print(colr.bright("\nboot complete!"))
 
   scene = menu
   scene.load()
 
-  print("load took ~"..(math.floor((love.timer.getTime()-startload)*1000)/1000).."ms")
+  print(colr.dim("load took ~"..(math.floor((love.timer.getTime()-startload)*1000)/1000).."ms"))
 end
 
 function love.keypressed(key,scancode,isrepeat)
