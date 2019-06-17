@@ -504,12 +504,9 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
       if unit == outerlvl then --basically turns into sans n't BUT the unit has to be looking inbounds as well!
         result = false
         for _,param in ipairs(params) do
-          print("c")
           local others = findUnitsByName(param)
           for _,on in ipairs(others) do
-            print("b")
             if inBounds(on.x + dirs8[on.dir][1], on.y + dirs8[on.dir][2]) then
-              print("a")
               result = true
               break
             end

@@ -801,7 +801,7 @@ end
 function doWrap(unit, px, py, move_dir, dir)
   --fast track if we don't need to wrap anyway
   if inBounds(px,py) then return px, py, move_dir, dir end
-  if hasProperty(unit, "mirr arnd") then --projective plane wrapping
+  if hasProperty(unit, "mirr arnd") or hasProperty(outerlvl, "mirr arnd") then --projective plane wrapping
     local dx, dy = 0, 0;
     if (px < 0) then
       dx = -px;
@@ -822,7 +822,7 @@ function doWrap(unit, px, py, move_dir, dir)
       py = py + (mapheight/2-0.5-py)*2;
     end
   end
-  if hasProperty(unit, "go arnd") then --torus wrapping
+  if hasProperty(unit, "go arnd") or hasProperty(outerlvl, "go arnd") then --torus wrapping
     if (px < 0) then
       px = px + mapwidth
     elseif (px >= mapwidth) then

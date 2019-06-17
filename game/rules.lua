@@ -511,6 +511,8 @@ function shouldReparseRules()
   if shouldReparseRulesIfRuleExists(nil, "be", "poor toll") then return true end
   if shouldReparseRulesIfConditionalRuleExists("text", "be", "go arnd") then return true end
   if shouldReparseRulesIfConditionalRuleExists("text", "be", "mirr arnd") then return true end
+  if shouldReparseRulesIfConditionalRuleExists(outerlvl, "be", "go arnd") then return true end
+  if shouldReparseRulesIfConditionalRuleExists(outerlvl, "be", "mirr arnd") then return true end
   return false
 end
 
