@@ -255,22 +255,22 @@ It is probably possible to do, but lily has decided that it's not important enou
               successes = successes + 1
               
               for k = #movers, 1, -1 do
-                moveIt(movers[k].unit, movers[k].dx, movers[k].dy, movers[k].dir, movers[k].move_dir, data, false, already_added, moving_units, moving_units_next, slippers)
+                moveIt(movers[k].unit, movers[k].dx, movers[k].dy, movers[k].dir, movers[k].move_dir, data, false, already_added, moving_units, moving_units_next, slippers, remove_from_moving_units)
               end
               --Patashu: only the mover itself pulls, otherwise it's a mess. stuff like STICKY/STUCK will require ruggedizing this logic.
               --Patashu: TODO: Doing the pull right away means that in a situation like this: https://cdn.discordapp.com/attachments/579519329515732993/582179745006092318/unknown.png the pull could happen before the bounce depending on move order. To fix this... I'm not sure how Baba does this? But it's somewhere in that mess of code.
-              doPull(unit, dx, dy, dir, data, already_added, moving_units, moving_units_next,  slippers)
+              doPull(unit, dx, dy, dir, data, already_added, moving_units, moving_units_next,  slippers, remove_from_moving_units)
               
-              --we made our move this iteration, wait until the next iteration to move again
-              remove_from_moving_units[unit] = true;
               --add to moving_units_next if we have another pending move
               data.times = data.times - 1;
               while #unit.moves > 0 and unit.moves[1].times <= 0 do
                 table.remove(unit.moves, 1)
               end
-              if #unit.moves > 0 then
+              if #unit.moves > 0 and not remove_from_moving_units[unit] then
                 table.insert(moving_units_next, unit);
               end
+              --we made our move this iteration, wait until the next iteration to move again
+              remove_from_moving_units[unit] = true;
             end
           else
             remove_from_moving_units[unit] = true;
@@ -292,8 +292,10 @@ It is probably possible to do, but lily has decided that it's not important enou
                 flippers[unit.id] = true
                 something_moved = true
                 successes = successes + 1
-                remove_from_moving_units[unit] = true;
-                table.insert(moving_units_next, unit);
+                if not (remove_from_moving_units[unit]) then
+                  table.insert(moving_units_next, unit)
+                  remove_from_moving_units[unit] = true
+                end
               end
             end
           end
@@ -366,7 +368,7 @@ function doAction(action)
   end
 end
 
-function moveIt(mover, dx, dy, facing_dir, move_dir, data, pulling, already_added, moving_units, moving_units_next, slippers)
+function moveIt(mover, dx, dy, facing_dir, move_dir, data, pulling, already_added, moving_units, moving_units_next, slippers, remove_from_moving_units)
   if not mover.removed then
     local move_dx, move_dy = dirs8[move_dir][1], dirs8[move_dir][2]
     queueMove(mover, dx, dy, facing_dir, false);
@@ -418,9 +420,13 @@ function moveIt(mover, dx, dy, facing_dir, move_dir, data, pulling, already_adde
         end
       end
       if not found then
-        table.insert(copykat.moves, {reason = "copkat", dir = mover.dir, times = 1, dx = move_dx, dy = move_dy}) --TODO: dx/dy, dir and mover.dir could possibly all be different, explore advanced movement interactions with copykat and wrap, portal, stubborn
-        table.insert(moving_units_next, copykat)
-        already_added[copykat] = true
+        table.insert(copykat.moves, {reason = "copkat", dir = mover.dir, times = 1, dx = move_dx, dy = move_dy})
+        --the reason for this weird check is - we only want to add to moving_units_next if we're not already on it, and we're not already on it if we previously had zero moves OR we haven't been removed from moving units yet. This is pretty ugly imo.
+        if (#copykat.moves == 1 or not remove_from_moving_units[copykat]) then
+          table.insert(moving_units_next, copykat)
+          remove_from_moving_units[copykat] = true
+          already_added[copykat] = true
+        end
       end
     end
   end
@@ -582,8 +588,8 @@ function findCopykats(unit)
 end
 
 --same stubborn logic as canMove, only the puller gets to branch though! also, we can't attempt a pull before going ahead with it, so just do the first one we can I guess.
-function doPull(unit,dx,dy,dir,data, already_added, moving_units, moving_units_next, slippers)
-  local result = doPullCore(unit,dx,dy,dir,data, already_added, moving_units, moving_units_next, slippers)
+function doPull(unit,dx,dy,dir,data, already_added, moving_units, moving_units_next, slippers, remove_from_moving_units)
+  local result = doPullCore(unit,dx,dy,dir,data, already_added, moving_units, moving_units_next, slippers, remove_from_moving_units)
   --fast track
   if rules_with["come pls"] == nil then return 0 end
   if result > 0 then return result end
@@ -593,11 +599,11 @@ function doPull(unit,dx,dy,dir,data, already_added, moving_units, moving_units_n
       for i = 1,clamp(stubbn-1, 1, 4) do
         local stubborndir1 = ((dir+i-1)%8)+1
         local stubborndir2 = ((dir-i-1)%8)+1
-        local result1 = doPullCore(unit,dirs8[stubborndir1][1],dirs8[stubborndir1][2],stubborndir1,data,already_added, moving_units, moving_units_next, slippers);
+        local result1 = doPullCore(unit,dirs8[stubborndir1][1],dirs8[stubborndir1][2],stubborndir1,data,already_added, moving_units, moving_units_next, slippers, remove_from_moving_units);
         if (result1 > 0) then
           return result1
         end
-        local result2 = doPullCore(unit,dirs8[stubborndir2][1],dirs8[stubborndir2][2],stubborndir2,data,already_added, moving_units, moving_units_next, slippers);
+        local result2 = doPullCore(unit,dirs8[stubborndir2][1],dirs8[stubborndir2][2],stubborndir2,data,already_added, moving_units, moving_units_next, slippers, remove_from_moving_units);
         if (result2 > 0) then
           return result2
         end
@@ -606,7 +612,7 @@ function doPull(unit,dx,dy,dir,data, already_added, moving_units, moving_units_n
   end
 end
 
-function doPullCore(unit,dx,dy,dir,data, already_added, moving_units, moving_units_next, slippers)
+function doPullCore(unit,dx,dy,dir,data, already_added, moving_units, moving_units_next, slippers, remove_from_moving_units)
   --TODO: CLEANUP: This is a big ol mess now and there's no way it needs to be THIS complicated.
   local result = 0
   local something_moved = not hasProperty(unit, "shy")
@@ -644,7 +650,7 @@ function doPullCore(unit,dx,dy,dir,data, already_added, moving_units, moving_uni
               changed_unit = true
             end
             result = result + 1
-            moveIt(mover.unit, mover.dx, mover.dy, mover.dir, mover.move_dir, data, true, already_added, moving_units, moving_units_next, slippers)
+            moveIt(mover.unit, mover.dx, mover.dy, mover.dir, mover.move_dir, data, true, already_added, moving_units, moving_units_next, slippers, remove_from_moving_units)
           end
         end
       end
@@ -1149,7 +1155,6 @@ function getNextLevels()
   
   next_level_name = ""
   for _,name in ipairs(new_levels) do
-    print("a")
     if _ > 1 then
       next_level_name = next_level_name .. " & " .. name;
     else
