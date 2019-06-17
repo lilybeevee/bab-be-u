@@ -4,6 +4,7 @@ require "lib/gooi"
 json = require "lib/json"
 tick = require "lib/tick"
 tween = require "lib/tween"
+colr = require "lib/colr-print"
 require "ui"
 require "values"
 require "utils"
@@ -26,16 +27,6 @@ local headerfont = love.graphics.newFont(32)  -- used for debug
 local regularfont = love.graphics.newFont(16) -- read the line above
 
 function love.load()
-  local colrstatus, colrerr = pcall(function() require "lib/colr-print/colr-print" end)
-  if not colrstatus then
-    print("⚠ colr-print not found! did you forget to update the submodules?")
-    print("⚠ ('git submodule update' in console)")
-    print("⚠ "..colrerr)
-    love["event"]["quit"]()
-  else
-    colr = require "lib/colr-print/colr-print"
-  end
-
   print(colr.bright([[
 
   
