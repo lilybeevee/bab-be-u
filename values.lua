@@ -2167,4 +2167,37 @@ tiles_list = {
     layer = 20,
     desc = "HAET: A unit cannot stop onto a tile that has something it HAETs. (x HAET LVL makes x unable to move.)",
   },
+  -- 198
+  {
+    name = "text_brite",
+    sprite = "text_brite",
+    type = "text",
+    texttype = "property",
+    grid = {11, 3},
+    color = {2, 4},
+    layer = 20,
+    desc = "BRITE: A BRITE object emits light in all directions. LIT will be true for objects on the same FLYE level if nothing OPAQUE is in the way.",
+  },
+  -- 199
+  {
+    name = "text_lit",
+    sprite = "text_lit",
+    type = "text",
+    texttype = "cond_prefix",
+    grid = {12, 3},
+    color = {2, 4},
+    layer = 20,
+    desc = "LIT: A BRITE object emits light in all directions. LIT will be true for objects on the same FLYE level if nothing OPAQUE is in the way.",
+  },
+  -- 200
+  {
+    name = "text_opaque",
+    sprite = "text_opaque",
+    type = "text",
+    texttype = "property",
+    grid = {13, 3},
+    color = {0, 1},
+    layer = 20,
+    desc = "OPAQUE: A BRITE object emits light in all directions. LIT will be true for objects on the same FLYE level if nothing OPAQUE is in the way.",
+  },
 }

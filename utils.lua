@@ -1,4 +1,5 @@
 function clear()
+  successful_brite_cache = nil
   next_level_name = ""
   win_sprite_override = nil
   level_destroyed = false
@@ -571,6 +572,25 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
       end
       rng = deterministicRng(unit, cond_unit);
       result = (rng*100) < threshold_for_dir[cond_unit.dir];
+    elseif condtype == "lit" then
+      result = false
+      if (successful_brite_cache ~= nil) then
+        local cached = units_by_id[successful_brite_cache];
+        if cached ~= nil and hasProperty(cached, "brite") and hasLineOfSight(cached, unit) then
+          result = true
+        end
+      end
+      if not result then
+        --I am tempted to make it so N levels of BRITE can penetrate N-1 layers of OPAQUE but this mechanic would be too... opaque :drum:
+        local others = getUnitsWithEffect("brite")
+        for _,on in ipairs(others) do
+          if hasLineOfSight(on, unit) then
+            successful_brite_cache = on.id;
+            result = true
+            break
+          end
+        end
+      end
     else
       print("unknown condtype: " .. condtype)
       result = false
@@ -585,6 +605,80 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
   end
   reentrance = reentrance - 1
   return endresult
+end
+
+function hasLineOfSight(brite, lit)
+  if (not sameFloat(brite, lit)) then
+    return false;
+  end
+  if (rules_with["opaque"] == nil) then
+    return true;
+  end
+  --https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
+  local x0, y0, x1, y1 = brite.x, brite.y, lit.x, lit.y;
+  if math.abs(y1 - y0) < math.abs(x1 - x0) then
+    if x0 > x1 then
+      return hasLineOfSightLow(x1, y1, x0, y0)
+    else
+      return hasLineOfSightLow(x0, y0, x1, y1)
+    end
+  elseif y0 > y1 then
+    return hasLineOfSightHigh(x1, y1, x0, y0)
+  else
+    return hasLineOfSightHigh(x0, y0, x1, y1)
+  end
+end
+
+function hasLineOfSightHigh(x0, y0, x1, y1)
+  local dx = x1 - x0
+  local dy = y1 - y0
+  local xi = 1
+  if dx < 0 then
+    xi = -1
+    dx = -dx
+  end
+  local D = 2*dx - dy
+  x = x0
+
+  for y = y0, y1 do
+    for _,v in ipairs(getUnitsOnTile(x, y)) do
+      if hasProperty(v, "opaque") then
+        return false
+      end
+    end
+    if D > 0 then
+       x = x + xi
+       D = D - 2*dy
+    end
+    D = D + 2*dx
+  end
+  return true
+end
+
+function hasLineOfSightLow(x0, y0, x1, y1)
+  local dx = x1 - x0
+  local dy = y1 - y0
+  local yi = 1
+  if dy < 0 then
+    yi = -1
+    dy = -dy
+  end
+  local D = 2*dy - dx
+  local y = y0
+
+  for x = x0, x1 do
+    for _,v in ipairs(getUnitsOnTile(x, y)) do
+      if hasProperty(v, "opaque") then
+        return false
+      end
+    end
+    if D > 0 then
+       y = y + yi
+       D = D - 2*dx
+    end
+    D = D + 2*dy
+  end
+  return true
 end
 
 threshold_for_dir = {50, 0.01, 0.1, 1, 2, 5, 10, 25};
