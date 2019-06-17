@@ -569,7 +569,6 @@ function findSidekikers(unit,dx,dy)
   return result;
 end
 
---TODO: Maybe being SLEP or having slipped should lock you out of COPYKAT? Or maybe not, I'm not sure.
 function findCopykats(unit)
   --fast track
   if rules_with["copkat"] == nil then return {} end
@@ -720,7 +719,7 @@ function doZip(unit)
       for _,place in ipairs(places) do
         local dx = place.x
         local dy = place.y
-        --TODO: Fall doesn't use WRAP/PORTAL yet.
+        --TODO: ZIP doesn't interact with WRAP/PORTAL. Maybe it should?
         if canMove(unit, dx, dy, -1, false, false, unit.name, "zip") then
           addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
           moveUnit(unit,unit.x+dx,unit.y+dy)
@@ -801,7 +800,6 @@ function doWrap(unit, px, py, move_dir, dir)
   return px, py, move_dir, dir
 end
 
---TODO: figure out how to fix my cool tween that had bugs =w=
 function doPortal(unit, px, py, move_dir, dir, reverse)
   if not inBounds(px,py) or rules_with["poor toll"] == nil then
     return px, py, move_dir, dir;
