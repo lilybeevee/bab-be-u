@@ -501,12 +501,18 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
         end
       end
     elseif condtype == "seen by" then
-      if unit == outerlvl then --basically turns into sans n't, unless we want to specify that the unit has to look at the level edge?
+      if unit == outerlvl then --basically turns into sans n't BUT the unit has to be looking inbounds as well!
         result = false
         for _,param in ipairs(params) do
+          print("c")
           local others = findUnitsByName(param)
-          if #others > 1 or #others == 1 and others[1] ~= unit then
-            result = true
+          for _,on in ipairs(others) do
+            print("b")
+            if inBounds(on.x + dirs8[on.dir][1], on.y + dirs8[on.dir][2]) then
+              print("a")
+              result = true
+              break
+            end
           end
         end
       else
@@ -531,12 +537,15 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
     elseif condtype == "look at" then
       for _,param in ipairs(params) do
         local others
-        if param ~= "mous" then
+        if param == "lvl" then
+          --if we're looking in-bounds, then we're looking at a level technically!
+          result = inBounds(x + dirs8[unit.dir][1], y + dirs8[unit.dir][2]);
+        elseif param ~= "mous" then
           others = getUnitsOnTile(x + dirs8[unit.dir][1], y + dirs8[unit.dir][2], param, false, unit) --currently, conditions only work up to one layer of nesting, so the noun argument of the condition is assumed to be just a noun
         else
           others = getCursorsOnTile(x + dirs8[unit.dir][1], y + dirs8[unit.dir][2], false, unit)
         end
-        if #others == 0 then
+        if others ~= nil and #others == 0 then
           result = false
         end
       end
