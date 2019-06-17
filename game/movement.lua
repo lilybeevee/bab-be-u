@@ -156,7 +156,7 @@ function doMovement(movex, movey)
           if other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) then
             local is_yeeted = hasRule(unit, "yeet", other)
             if (is_yeeted) then
-              table.insert(other.moves, {reason = "yeet", dir = unit.dir, times = 99})
+              table.insert(other.moves, {reason = "yeet", dir = unit.dir, times = 1002})
               if #other.moves > 0 and not already_added[other] then
                 table.insert(moving_units, other)
                 already_added[other] = true
