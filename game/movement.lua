@@ -234,7 +234,7 @@ It is probably possible to do, but lily has decided that it's not important enou
             if (data.reason == "copkat") then
               dx = sign(data.dx)
               dy = sign(data.dy)
-              if (dx == 0 and dy == 0) then
+              if (dx == 0 and dy == 0) or slippers[unit.id] ~= nil or hasProperty(unit, "slep") then
                 data.times = data.times - 1;
                 while #unit.moves > 0 and unit.moves[1].times <= 0 do
                   table.remove(unit.moves, 1)
