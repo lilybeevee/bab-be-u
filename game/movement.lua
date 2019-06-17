@@ -76,8 +76,9 @@ function doMovement(movex, movey)
     if move_stage == -1 then
       local icy = getUnitsWithEffectAndCount("icy")
       for unit,icyness in pairs(icy) do
-        for __,other in ipairs(getUnitsOnTile(unit.x, unit.y)) do
-          if other.id ~= unit.id and sameFloat(unit, other) then
+        local others = (unit == outerlvl and units or getUnitsOnTile(unit.x, unit.y));
+        for __,other in ipairs(others) do
+          if other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) then
             table.insert(other.moves, {reason = "icy", dir = other.dir, times = icyness})
             if #other.moves > 0 and not already_added[other] and not hasRule(other,"got","slippers") then
               table.insert(moving_units, other)
@@ -141,11 +142,14 @@ function doMovement(movex, movey)
         end
       end
     elseif move_stage == 2 then
+      --local yeeting_level = matchesRule(outerlvl, "yeet", "?")
+      
       local isyeet = matchesRule(nil, "yeet", "?");
       for _,ruleparent in ipairs(isyeet) do
         local unit = ruleparent[2]
-        for __,other in ipairs(getUnitsOnTile(unit.x, unit.y)) do
-          if other.id ~= unit.id and sameFloat(unit, other) then
+        local others = (unit == outerlvl and units or getUnitsOnTile(unit.x, unit.y));
+        for __,other in ipairs(others) do
+          if other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) then
             local is_yeeted = hasRule(unit, "yeet", other)
             if (is_yeeted) then
               table.insert(other.moves, {reason = "yeet", dir = unit.dir, times = 99})
@@ -159,8 +163,9 @@ function doMovement(movex, movey)
       end
       local go = getUnitsWithEffectAndCount("go")
       for unit,goness in pairs(go) do
-        for __,other in ipairs(getUnitsOnTile(unit.x, unit.y)) do
-          if other.id ~= unit.id and sameFloat(unit, other) then
+        local others = (unit == outerlvl and units or getUnitsOnTile(unit.x, unit.y));
+        for __,other in ipairs(others) do 
+          if other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) then
             table.insert(other.moves, {reason = "go", dir = unit.dir, times = goness})
             if #other.moves > 0 and not already_added[other] then
               table.insert(moving_units, other)
@@ -477,7 +482,9 @@ function applySlide(mover, dx, dy, already_added, moving_units_next)
   --LAUNCH will take precedence over SLIDE, so that puzzles where you move around launchers on an ice rink will behave intuitively.
   local did_launch = false
    --we haven't actually moved yet, so check the tile we will be on
-  for _,v in ipairs(getUnitsOnTile(mover.x+dx, mover.y+dy)) do
+  local others = getUnitsOnTile(mover.x+dx, mover.y+dy);
+  table.insert(others, outerlvl);
+  for _,v in ipairs(others) do
     if (sameFloat(mover, v) and not v.already_moving) then
       local launchness = countProperty(v, "goooo");
       if (launchness > 0) then
@@ -505,7 +512,7 @@ function applySlide(mover, dx, dy, already_added, moving_units_next)
   if (did_launch) then
     return
   end
-  for _,v in ipairs(getUnitsOnTile(mover.x+dx, mover.y+dy)) do
+  for _,v in ipairs(others) do
     if (sameFloat(mover, v) and not v.already_moving) then
       local slideness = countProperty(v, "icyyyy");
       if (slideness > 0) then

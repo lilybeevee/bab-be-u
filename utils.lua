@@ -147,7 +147,7 @@ end
 
 function initializeOuterLvl()
   outerlvl = createUnit(tiles_by_name["lvl"], -999, -999,
-  -999, nil, nil, true)
+  1, nil, nil, true)
 end
 
 function initializeEmpties()
