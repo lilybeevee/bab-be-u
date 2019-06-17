@@ -351,8 +351,8 @@ function love.mousereleased(x, y, button)
     local width = love.graphics.getWidth()
     local height = love.graphics.getHeight()
 
-    local buttonheight = height*0.05
-    local buttonwidth = width*0.375
+    local buttonwidth, buttonheight = sprites["ui/button_1"]:getDimensions()
+    
     if mouseOverBox(width/2-buttonwidth/2, height/2-buttonheight/2+buttonheight+10, buttonwidth, buttonheight) then
       scene = loadscene
       load_mode = "play"

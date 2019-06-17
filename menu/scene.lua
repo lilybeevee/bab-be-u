@@ -123,8 +123,7 @@ function scene.update(dt)
   width = love.graphics.getWidth()
   height = love.graphics.getHeight()
 
-  buttonheight = height*0.05
-  buttonwidth = width*0.375
+  local buttonwidth, buttonheight = sprites["ui/button_1"]:getDimensions()
 
   local mousex, mousey = love.mouse.getPosition()
 
