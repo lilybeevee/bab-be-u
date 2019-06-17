@@ -9,8 +9,8 @@ function clearRules()
 
   local text_be_go_away = {{"text","be","go away",{{},{}}},{},1}
   local selctr_be_u = {{"selctr","be","u",{{},{}}},{},1}
-  local selctr_bounded_lvl = {{"selctr","bounded","lvl",{{},{}}},{},1}
-  local selctr_bounded_lin = {{"selctr","bounded","lin",{{},{}}},{},1}
+  local selctr_bounded_lvl = {{"selctr","liek","lvl",{{},{}}},{},1}
+  local selctr_bounded_lin = {{"selctr","liek","lin",{{},{}}},{},1}
   local selctr_be_flye = {{"selctr","be","flye",{{},{}}},{},1}
   local lvl_be_no_go = {{"lvl","be","no go",{{},{}}},{},1}
   addRule(text_be_go_away)
@@ -502,7 +502,7 @@ We only need to parseRules if:
 1) a text was created, destroyed or moved
 2) a möbius or cylinder rule changed directions
 3) a portal or word rule exists
-4) a conditional text is (wrap, mirror, mobius, cylinder) rule exists
+4) a conditional text is (wrap, mirror) rule exists
 TODO: I know 3 can be further subdivided to 'a word/portal rule exists and a word/portal unit was created, destroyed or moved, or a portal unit changed directions, or the rule has a condition' but that's more complex
 ]]
 function shouldReparseRules()
@@ -511,7 +511,8 @@ function shouldReparseRules()
   if shouldReparseRulesIfRuleExists(nil, "be", "poor toll") then return true end
   if shouldReparseRulesIfConditionalRuleExists("text", "be", "go arnd") then return true end
   if shouldReparseRulesIfConditionalRuleExists("text", "be", "mirr arnd") then return true end
-  --TODO: handle all 8 mobius/cylinder simultaneously?
+  if shouldReparseRulesIfConditionalRuleExists(outerlvl, "be", "go arnd") then return true end
+  if shouldReparseRulesIfConditionalRuleExists(outerlvl, "be", "mirr arnd") then return true end
   return false
 end
 

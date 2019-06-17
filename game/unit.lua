@@ -113,7 +113,7 @@ function updateUnits(undoing, big_update)
           if testConds(stalker, stalker_conds) and testConds(stalkee, stalkee_conds) then
             local dist = euclideanDistance(stalker, stalkee)
             local stalk_dir = dist > 0 and dirs8_by_offset[sign(stalkee.x - stalker.x)][sign(stalkee.y - stalker.y)] or stalkee.dir
-            if dist > 0 and hasProperty(stalker, "orthongl") then
+            if dist > 0 and hasProperty(stalker, "ortho") then
               local use_hori = math.abs(stalkee.x - stalker.x) > math.abs(stalkee.y - stalker.y)
               stalk_dir = dirs8_by_offset[use_hori and sign(stalkee.x - stalker.x) or 0][not use_hori and sign(stalkee.y - stalker.y) or 0]
             end
@@ -369,7 +369,7 @@ function updateUnits(undoing, big_update)
       local unit = ruleparent[2]
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
       for _,on in ipairs(stuff) do
-        if hasRule(unit, "snacc", on) and sameFloat(unit, on) then
+        if unit ~= on and hasRule(unit, "snacc", on) and sameFloat(unit, on) then
           table.insert(to_destroy, on)
           playSound("break")
           addParticles("destroy", unit.x, unit.y, unit.color)
@@ -751,7 +751,7 @@ function levelBlock()
   local issnacc = matchesRule(outerlvl,"snacc",nil)
   for _,ruleparent in ipairs(issnacc) do
     local unit = ruleparent[2]
-    if sameFloat(outerlvl,unit) then
+    if unit ~= outerlvl and sameFloat(outerlvl,unit) then
       addParticles("destroy", unit.x, unit.y, unit.color)
       table.insert(to_destroy, unit)
     end
@@ -760,7 +760,7 @@ function levelBlock()
   local issnacc = matchesRule(nil,"snacc",outerlvl)
   for _,ruleparent in ipairs(issnacc) do
     local unit = ruleparent[2]
-    if sameFloat(outerlvl,unit) then
+    if unit ~= outerlvl and sameFloat(outerlvl,unit) then
       destroyLevel("snacc")
       return
     end
@@ -915,7 +915,6 @@ function convertLevel()
   end
   
   local converts = matchesRule(outerlvl,"be","?")
-  print(#converts)
   for _,match in ipairs(converts) do
     if not nameIs(outerlvl, match[1][3]) then
       local tile = tiles_by_name[match[1][3]]
@@ -1225,12 +1224,6 @@ function updateDir(unit,dir)
   end
   if unit.fullname == "text_direction" then
     unit.textname = dirs8_by_name[unit.dir];
-  end
-  if unit.fullname == "text_cilindr" then
-    unit.textname = "cilindr_" .. dirs8_by_name[unit.dir];
-  end
-  if unit.fullname == "text_mobyus" then
-    unit.textname = "mobyus_" .. dirs8_by_name[unit.dir];
   end
   if unit.fullname == "text_spin" then
     unit.textname = "spin_" .. tostring(unit.dir);

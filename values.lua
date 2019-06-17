@@ -63,27 +63,6 @@ dirs8_by_name = {
   "upright",
 }
 
-cilindr_names = {
-  cilindr_right,
-  cilindr_downright,
-  cilindr_down,
-  cilindr_downleft,
-  cilindr_left,
-  cilindr_upleft,
-  cilindr_up,
-  cilindr_upright,
-}
-mobyus_names = {
-  mobyus_right,
-  mobyus_downright,
-  mobyus_down,
-  mobyus_downleft,
-  mobyus_left,
-  mobyus_upleft,
-  mobyus_up,
-  mobyus_upright,
-}
-
 dirs8_by_offset = {}
 dirs8_by_offset[-1],dirs8_by_offset[0],dirs8_by_offset[1] = {},{},{}
 dirs8_by_offset[1][0] = 1
@@ -902,7 +881,7 @@ tiles_list = {
     grid = {8, 5},
     color = {2, 2},
     layer = 20,
-    desc = "SNACC: At end of turn, the unit destroys any objects on its tile that it SNACCs.",
+    desc = "SNACC: Units destroy any other unit that they SNACC on contact, like a conditional OUCH.",
   },
   --77
   {
@@ -1219,14 +1198,14 @@ tiles_list = {
   },
   --- 104
   {
-    name = "text_diagnal",
-    sprite = "text_diagnal",
+    name = "text_diag",
+    sprite = "text_diag",
     type = "text",
     texttype = "property",
     grid = {2, 13},
     color = {3, 2},
     layer = 20,
-    desc = "DIAGNAL: Prevents the unit moving orthogonally.",
+    desc = "DIAG: Prevents the unit moving orthogonally.",
   },
   --- 105
   {
@@ -1241,14 +1220,14 @@ tiles_list = {
   },
   --- 106
   {
-    name = "text_orthongl",
-    sprite = "text_orthongl",
+    name = "text_ortho",
+    sprite = "text_ortho",
     type = "text",
     texttype = "property",
     grid = {3, 13},
     color ={3, 2},
     layer = 20,
-    desc = "ORTHOGNL: Prevents the unit moving diagonally.",
+    desc = "ORTHO: Prevents the unit moving diagonally.",
   },
   --- 107
   {
@@ -1583,15 +1562,15 @@ tiles_list = {
   },
   --- 139
   {
-    name = "text_bounded",
-    sprite = "text_bounded",
+    name = "text_liek",
+    sprite = "text_liek",
     type = "text",
     texttype = "verb_object",
     allowconds = true,
     grid = {13, 1},
     color = {5, 3},
     layer = 20,
-    desc = "BOUNDED: If a unit is BOUNDED, it cannot step onto a tile unless it has at least one object it is BOUNDED to.",
+    desc = "LIEK: If a unit LIEKs objects, it is picky, and cannot step onto a tile unless it has at least one object it LIEKs.",
   },
   -- 140
   {
@@ -1769,6 +1748,7 @@ tiles_list = {
     layer = 3,
     rotate = true,
     eye = {x=14, y=14, w=3, h=3},
+    desc = "keek look at'd the clok. 'oh no! im late for school!' keek shouted and raced out of bed."
   },
   -- 158
   {
@@ -1935,7 +1915,7 @@ tiles_list = {
     sprite = "text_cilindr",
     type = "text",
     texttype = "property",
-    grid = {15, 3},
+    grid = {-1, -1},
     color = {3, 2},
     layer = 20,
     rotate = true,
@@ -1947,7 +1927,7 @@ tiles_list = {
     sprite = "text_mobyus",
     type = "text",
     texttype = "property",
-    grid = {15, 4},
+    grid = {-1, -1},
     color = {3, 2},
     layer = 20,
     rotate = true,
@@ -2163,5 +2143,61 @@ tiles_list = {
     grid = {14, 0},
     color = {0, 3},
     layer = 20,
-  }
+  },
+  -- 196
+  {
+    name = "text_copdog",
+    sprite = "text_copdog",
+    type = "text",
+    texttype = "verb_object",
+    grid = {15, 6},
+    color = {0, 3},
+    layer = 20,
+    desc = "COPDOG: COPKAT, but it copies ALL of the movement (e.g. if COPDOG ROC and you push 3 ROCs, it moves 3 steps)."
+  },
+  --- 197
+  {
+    name = "text_haet",
+    sprite = "text_haet",
+    type = "text",
+    texttype = "verb_object",
+    allowconds = true,
+    grid = {13, 2},
+    color = {5, 3},
+    layer = 20,
+    desc = "HAET: A unit cannot stop onto a tile that has something it HAETs. (x HAET LVL makes x unable to move.)",
+  },
+  -- 198
+  {
+    name = "text_brite",
+    sprite = "text_brite",
+    type = "text",
+    texttype = "property",
+    grid = {11, 3},
+    color = {2, 4},
+    layer = 20,
+    desc = "BRITE: A BRITE object emits light in all directions. LIT will be true for objects on the same FLYE level if nothing OPAQUE is in the way.",
+  },
+  -- 199
+  {
+    name = "text_lit",
+    sprite = "text_lit",
+    type = "text",
+    texttype = "cond_prefix",
+    grid = {12, 3},
+    color = {2, 4},
+    layer = 20,
+    desc = "LIT: A BRITE object emits light in all directions. LIT will be true for objects on the same FLYE level if nothing OPAQUE is in the way.",
+  },
+  -- 200
+  {
+    name = "text_opaque",
+    sprite = "text_opaque",
+    type = "text",
+    texttype = "property",
+    grid = {13, 3},
+    color = {0, 1},
+    layer = 20,
+    desc = "OPAQUE: A BRITE object emits light in all directions. LIT will be true for objects on the same FLYE level if nothing OPAQUE is in the way.",
+  },
 }
