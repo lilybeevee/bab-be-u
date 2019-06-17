@@ -96,6 +96,7 @@ function scene.update(dt)
   scene.doPassiveParticles(dt, "try again", "bonus", 0.25, 0.25, 1, {3, 3})
   scene.doPassiveParticles(dt, "no undo", "bonus", 0.25, 0.25, 1, {5, 3})
   scene.doPassiveParticles(dt, "undo", "bonus", 0.25, 0.25, 1, {6, 1})
+  scene.doPassiveParticles(dt, "brite", "bonus", 0.25, 0.25, 1, {2, 4})
 
   debugDisplay('window dir', window_dir)
   if shake_dur > 0 then
