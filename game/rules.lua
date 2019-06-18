@@ -397,11 +397,11 @@ function addRule(full_rule)
   if object == "every1" then
     if object_not % 2 == 1 then
       return
-    else
+    elseif verb ~= "be" and verb ~= "ben't" then
       --we'll special case x be every1 in convertUnit now
-      --[[for _,v in ipairs(referenced_objects) do
+      for _,v in ipairs(referenced_objects) do
         addRule({{rules[1], rules[2], v, rules[4]}, units, dir})
-      end]]
+      end
     end
   elseif object_not % 2 == 1 then
     if tiles_by_name[object] or object == "text" or object == "mous" then
