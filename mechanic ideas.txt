@@ -1,4 +1,4 @@
-Vanilla todo list: FACING DIR, WORD, GROUP, save/map/world/meta stuff, letter/combined text
+Vanilla todo list: WORD, GROUP, save/map/world/meta stuff, letter/combined text
 
 ---
 

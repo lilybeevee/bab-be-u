@@ -82,7 +82,13 @@ local directions_and_objects = {
           {{name = "up"}},
           {{name = "down"}},
           {{name = "left"}},
-          {{name = "right"}}
+          {{name = "right"}},
+          {{name = "upleft"}},
+          {{name = "downleft"}},
+          {{name = "upright"}},
+          {{name = "downright"}},
+          {{name = "ortho"}},
+          {{name = "diag"}},
         }
       }
     }

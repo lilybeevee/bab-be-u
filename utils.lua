@@ -449,13 +449,22 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
       else
         for _,param in ipairs(params) do
           local others
-          if param ~= "mous" then
-            others = getUnitsOnTile(x, y, param, false, unit) --currently, conditions only work up to one layer of nesting, so the noun argument of the condition is assumed to be just a noun
+          if unit == outerlvl and surrounds ~= nil and surrounds_name == level_name then
+            --use surrounds to remember what was around the level
+            for __,on in ipairs(surrounds[0][0]) do
+              if nameIs(on, param) then
+                table.insert(others, on);
+              end
+            end
           else
-            others = getCursorsOnTile(x, y, false, unit)
-          end
-          if #others == 0 then
-            result = false
+            if param ~= "mous" then
+              others = getUnitsOnTile(x, y, param, false, unit) --currently, conditions only work up to one layer of nesting, so the noun argument of the condition is assumed to be just a noun
+            else
+              others = getCursorsOnTile(x, y, false, unit)
+            end
+            if #others == 0 then
+              result = false
+            end
           end
         end
       end
@@ -493,7 +502,16 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
         for nx=-1,1 do
           for ny=-1,1 do
             if (nx ~= 0) or (ny ~= 0) then
-              mergeTable(others, param ~= "mous" and getUnitsOnTile(unit.x+nx,unit.y+ny,param) or getCursorsOnTile(x+nx, y+ny, false, unit))
+              if unit == outerlvl and surrounds ~= nil and surrounds_name == level_name then
+                --use surrounds to remember what was around the level
+                for __,on in ipairs(surrounds[nx][ny]) do
+                  if nameIs(on, param) then
+                    table.insert(others, on);
+                  end
+                end
+              else
+                mergeTable(others, param ~= "mous" and getUnitsOnTile(unit.x+nx,unit.y+ny,param) or getCursorsOnTile(x+nx, y+ny, false, unit))
+              end
             end
           end
         end
@@ -510,6 +528,19 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
             if inBounds(on.x + dirs8[on.dir][1], on.y + dirs8[on.dir][2]) then
               result = true
               break
+            end
+          end
+          if unit == outerlvl and surrounds ~= nil and surrounds_name == level_name then
+            --use surrounds to remember what was around the level
+            for nx=-1,1 do
+              for ny=-1,1 do
+                for __,on in ipairs(surrounds[nx][ny]) do
+                  if nameIs(on, param) and nx + dirs8[on.dir][1] == 0 and ny + dirs8[on.dir][2] == 0 then
+                    result = true
+                    break
+                  end
+                end
+              end
             end
           end
         end
@@ -534,17 +565,55 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
       end
     elseif condtype == "look at" then
       for _,param in ipairs(params) do
-        local others
-        if param == "lvl" then
-          --if we're looking in-bounds, then we're looking at a level technically!
-          result = inBounds(x + dirs8[unit.dir][1], y + dirs8[unit.dir][2]);
-        elseif param ~= "mous" then
-          others = getUnitsOnTile(x + dirs8[unit.dir][1], y + dirs8[unit.dir][2], param, false, unit) --currently, conditions only work up to one layer of nesting, so the noun argument of the condition is assumed to be just a noun
+        print(param)
+        local isdir = false
+        if param == "ortho" then
+          isdir = true
+          if (unit.dir % 2 == 0) then
+            result = false
+            break
+          end
+        elseif param == "diag" then
+          isdir = true
+          if (unit.dir % 2 == 1) then
+            result = false
+            break
+          end
         else
-          others = getCursorsOnTile(x + dirs8[unit.dir][1], y + dirs8[unit.dir][2], false, unit)
+          for i = 1,8 do
+            if param == dirs8_by_name[i] then
+              isdir = true
+              if (unit.dir ~= i) then
+                result = false
+                break
+              end
+            end
+          end
         end
-        if others ~= nil and #others == 0 then
-          result = false
+        if (not isdir) then
+          local others
+          if unit == outerlvl and surrounds ~= nil and surrounds_name == level_name then
+            others = {}
+            --use surrounds to remember what was around the level
+            for __,on in ipairs(surrounds[dirs8[unit.dir][1]][dirs8[unit.dir][2]]) do
+              if nameIs(on, param) then
+                table.insert(others, on);
+              end
+            end
+          else
+            if param == "lvl" then
+              --if we're looking in-bounds, then we're looking at a level technically!
+              result = inBounds(x + dirs8[unit.dir][1], y + dirs8[unit.dir][2]);
+            elseif param ~= "mous" then
+              others = getUnitsOnTile(x + dirs8[unit.dir][1], y + dirs8[unit.dir][2], param, false, unit) --currently, conditions only work up to one layer of nesting, so the noun argument of the condition is assumed to be just a noun
+            else
+              others = getCursorsOnTile(x + dirs8[unit.dir][1], y + dirs8[unit.dir][2], false, unit)
+            end
+          end
+          if others ~= nil and #others == 0 then
+            result = false
+            break
+          end
         end
       end
     elseif condtype == "sans" then
@@ -580,6 +649,7 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
       rng = deterministicRandom(unit.fullname, cond_unit);
       result = unit.id == rng;
     elseif condtype == "lit" then
+      --TODO: make it so if there are many lit objects then you cache FoV instead of doing many individual LoSes
       result = false
       if (successful_brite_cache ~= nil) then
         local cached = units_by_id[successful_brite_cache];
@@ -630,11 +700,14 @@ function hasLineOfSight(brite, lit)
     local derr = math.abs(dy / dx);
     local err = 0;
     local y = y0
+    local found_opaque = false;
     for x = x0, x1, sign(dx) do
+      if found_opaque then return false end
       if x ~= x0 or y ~= y0 then
         for _,v in ipairs(getUnitsOnTile(x, y)) do
           if hasProperty(v, "opaque") then
-            return false
+            found_opaque = true
+            break
           end
         end
       end
@@ -648,11 +721,14 @@ function hasLineOfSight(brite, lit)
     local derr = math.abs(dx / dy);
     local err = 0;
     local x = x0
+    local found_opaque = false;
     for y = y0, y1, sign(dy) do
+      if found_opaque then return false end
       if x ~= x0 or y ~= y0 then
         for _,v in ipairs(getUnitsOnTile(x, y)) do
           if hasProperty(v, "opaque") then
-            return false
+            found_opaque = true
+            break
           end
         end
       end
@@ -664,11 +740,14 @@ function hasLineOfSight(brite, lit)
     end
   else --both equal
     local x = x0;
+    local found_opaque = false;
     for y = y0, y1, sign(dy) do
       if x ~= x0 or y ~= y0 then
+        if found_opaque then return false end
         for _,v in ipairs(getUnitsOnTile(x, y)) do
           if hasProperty(v, "opaque") then
-            return false
+            found_opaque = true
+            break
           end
         end
       end
@@ -1199,6 +1278,38 @@ function filter(xs, p)
   return newxs
 end
 
+function getAbsolutelyEverythingExcept(except)
+  local result = {}
+
+  --four special objects
+  if "mous" ~= except then
+    table.insert(result, "mous")
+  end
+  if "lvl" ~= except then
+    table.insert(result, "lvl")
+  end
+  if "no1" ~= except then
+    table.insert(result, "no1")
+  end
+  if "text" ~= except then
+    table.insert(result, "text")
+  end
+  
+  for i,ref in ipairs(referenced_objects) do
+    if ref ~= except then
+      table.insert(result, ref)
+    end
+  end
+
+  for i,ref in ipairs(referenced_text) do
+    if ref ~= except then
+      table.insert(result, ref)
+    end
+  end
+
+  return result
+end
+
 function getEverythingExcept(except)
   local result = {}
 
@@ -1270,9 +1381,29 @@ function endTest()
   print(perf_test.name .. ": " .. time .. "s")
 end
 
+<<<<<<< HEAD
 function loadLevels(levels, mode)
+=======
+function loadLevels(levels, level_objs)
+>>>>>>> ec68d99c0a509ed7b75e42fabbae39fe298947f5
   if #levels == 0 then
     return
+  end
+  
+  --setup surrounds
+  surrounds = {};
+  if (level_objs ~= nil) then
+    for i = -1,1 do
+      surrounds[i] = {}
+      for j = -1,1 do
+        surrounds[i][j] = {}
+        for _,lvl in ipairs(level_objs) do
+          for __,stuff in ipairs(getUnitsOnTile(lvl.x+i,lvl.y+j,nil,false,lvl)) do
+            table.insert(surrounds[i][j], stuff);
+          end
+        end
+      end
+    end
   end
 
   local dir = "levels/"
@@ -1321,10 +1452,16 @@ function loadLevels(levels, mode)
       icon_data = nil
     end
   end
+<<<<<<< HEAD
 
   if mode == "edit" then
     new_scene = editor
   else
     new_scene = game
   end
+=======
+  
+  surrounds_name = level_name
+  new_scene = game
+>>>>>>> ec68d99c0a509ed7b75e42fabbae39fe298947f5
 end
