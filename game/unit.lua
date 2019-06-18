@@ -978,11 +978,43 @@ function convertUnits()
 
   converted_units = {}
 
+  local all = matchesRule(nil,"be","every1")
+  for _,match in ipairs(all) do
+    local rules = match[1]
+    local unit = match[2]
+    local rule = rules[1]
+    
+    if unit.class == "unit" and unit.type ~= "outerlvl" and not hasRule(unit, "be", unit.name) then
+      for _,v in ipairs(referenced_objects) do
+        local tile = tiles_by_name[v]
+        if v == "text" then
+          tile = tiles_by_name["text_" .. rule[1]]
+        end
+        if tile ~= nil then
+          if not unit.removed then
+            table.insert(converted_units, unit)
+          end
+          unit.removed = true
+          local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
+          if (new_unit ~= nil) then
+            addUndo({"create", new_unit.id, true, created_from_id = unit.id})
+          end
+        elseif v == "mous" then
+          if not unit.removed then
+            table.insert(converted_units, unit)
+          end
+          unit.removed = true
+          local new_mouse = createMouse(unit.x, unit.y)
+          addUndo({"create_cursor", new_mouse.id, created_from_id = unit.id})
+        end
+      end
+    end
+  end
+  
   local converts = matchesRule(nil,"be","?")
   for _,match in ipairs(converts) do
     local rules = match[1]
     local unit = match[2]
-
     local rule = rules[1]
 
     if unit.class == "unit" and not nameIs(unit, rule[3]) and unit.type ~= "outerlvl" then
