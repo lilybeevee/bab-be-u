@@ -23,6 +23,37 @@ function clearRules()
   has_new_rule = false
 end
 
+function getAllText()
+  local result = units_by_name["text"];
+  if (result == nil) then result = {}; end
+  
+  for name,_ in pairs(rules_effecting_names) do
+    if units_by_name[name] then
+      for __,unit in ipairs(units_by_name[name]) do
+        if hasProperty(unit, "wurd") then
+          print(unit.name)
+          table.insert(result, unit);
+        end
+      end
+    end
+  end
+  return result;
+end
+
+function getTextOnTile(x, y)
+  local result = getUnitsOnTile(x, y, "text");
+  
+  for name,_ in pairs(rules_effecting_names) do
+    for __,unit in ipairs(getUnitsOnTile(x, y, name)) do
+      if hasProperty(unit, "wurd") then
+        table.insert(result, unit);
+      end
+    end
+  end
+  
+  return result;
+end
+
 function parseRules(undoing)
   if (should_parse_rules) then
     should_parse_rules = false
@@ -59,6 +90,9 @@ function parseRules(undoing)
     for i=1,8 do
       been_first[i] = {}
     end
+    
+    local units_to_check = getAllText();
+    
     if units_by_name["text"] then
       for _,unit in ipairs(units_by_name["text"]) do
         local x,y = unit.x,unit.y
@@ -73,7 +107,7 @@ function parseRules(undoing)
           local ntileid = (x+ndx) + (y+ndy) * mapwidth
 
           --print(tostring(x)..","..tostring(y)..","..tostring(dx)..","..tostring(dy)..","..tostring(ndx)..","..tostring(ndy)..","..tostring(#getUnitsOnTile(x+ndx, y+ndy, "text"))..","..tostring(#getUnitsOnTile(x+dx, y+dy, "text")))
-          if #getUnitsOnTile(x+ndx, y+ndy, "text") == 0 then
+          if #getTextOnTile(x+ndx, y+ndy) == 0 then
             if not been_first[i][x + y * mapwidth] then
               table.insert(first_words, {unit, i})
               been_first[i][x + y * mapwidth] = true
@@ -109,7 +143,7 @@ function parseRules(undoing)
           local new_words = {}
           local get_next_later = false
 
-          local units = getUnitsOnTile(x, y, "text")
+          local units = getTextOnTile(x, y)
           if #units > 0 then
             for _,unit in ipairs(units) do
               local new_word = {}
@@ -140,7 +174,7 @@ function parseRules(undoing)
 
       local sentences = getCombinations(words)
       if #sentences > 10 then
-        print(fullDump(words, 2))
+        --print(fullDump(words, 2))
       end
 
       for _,sentence_ in ipairs(sentences) do
@@ -330,13 +364,18 @@ function parseRules(undoing)
     
     for i = 1,#reparse_rule_counts do
       if reparse_rule_counts[i] ~= reparse_rule_counts_new[i] then
-        print(reparse_rule_counts[i]..reparse_rule_counts_new[i])
+        --print(reparse_rule_counts[i]..reparse_rule_counts_new[i])
         changed_reparsing_rule = true
         break
       end
     end
     
     reparse_rule_counts = reparse_rule_counts_new;
+    
+    rules_effecting_names = {}
+  
+    populateRulesEffectingNames("?", "be", "wurd");
+    populateRulesEffectingNames("?", "be", "poor toll");
   end
   
   shouldReparseRules()
@@ -558,11 +597,6 @@ We only need to parseRules if:
 TODO: I know 3 can be further subdivided to 'a word/portal rule exists and a word/portal unit was created, destroyed or moved, or a portal unit changed directions, or the rule has a condition' but that's more complex
 ]]
 function shouldReparseRules()
-  rules_effecting_names = {}
-  
-  populateRulesEffectingNames("?", "be", "wurd");
-  populateRulesEffectingNames("?", "be", "poor toll");
-
   if should_parse_rules then return true end
   if shouldReparseRulesIfConditionalRuleExists("?", "be", "wurd") then return true end --TODO: change this to whatever the word rule ends up being called
   if shouldReparseRulesIfConditionalRuleExists("?", "be", "poor toll") then return true end
@@ -576,9 +610,7 @@ end
 function populateRulesEffectingNames(r1, r2, r3)
   local rules = matchesRule(r1, r2, r3);
   for _,rule in ipairs(rules) do
-    print(dump(rule))
     local subject = rule[1][1];
-    print("a:"..subject);
     rules_effecting_names[subject] = true;
   end
 end
@@ -588,7 +620,6 @@ function shouldReparseRulesIfConditionalRuleExists(r1, r2, r3)
   for _,rule in ipairs(rules) do
     local subject_cond = rule[1][4][1];
     if (#subject_cond > 0) then
-      print(r3)
       should_parse_rules = true;
     return true;
     end
