@@ -2343,4 +2343,23 @@ tiles_list = {
     color = {2, 4},
     layer = 20,
   },
+  -- 212
+  {
+    name = "spik",
+    sprite = "spik",
+    grid = {11, 14},
+    color = {0, 3},
+    layer = 10,
+    rotate = true,
+    desc = "finally, I can make my i wanna be the bab fangame in bab be u",
+  },
+  -- 213
+  {
+    name = "text_spik",
+    sprite = "text_spik",
+    type = "text",
+    grid = {12, 14},
+    color = {0, 3},
+    layer = 20,
+  },
 }
