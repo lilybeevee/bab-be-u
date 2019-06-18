@@ -630,11 +630,14 @@ function hasLineOfSight(brite, lit)
     local derr = math.abs(dy / dx);
     local err = 0;
     local y = y0
+    local found_opaque = false;
     for x = x0, x1, sign(dx) do
+      if found_opaque then return false end
       if x ~= x0 or y ~= y0 then
         for _,v in ipairs(getUnitsOnTile(x, y)) do
           if hasProperty(v, "opaque") then
-            return false
+            found_opaque = true
+            break
           end
         end
       end
@@ -648,11 +651,14 @@ function hasLineOfSight(brite, lit)
     local derr = math.abs(dx / dy);
     local err = 0;
     local x = x0
+    local found_opaque = false;
     for y = y0, y1, sign(dy) do
+      if found_opaque then return false end
       if x ~= x0 or y ~= y0 then
         for _,v in ipairs(getUnitsOnTile(x, y)) do
           if hasProperty(v, "opaque") then
-            return false
+            found_opaque = true
+            break
           end
         end
       end
@@ -664,11 +670,14 @@ function hasLineOfSight(brite, lit)
     end
   else --both equal
     local x = x0;
+    local found_opaque = false;
     for y = y0, y1, sign(dy) do
       if x ~= x0 or y ~= y0 then
+        if found_opaque then return false end
         for _,v in ipairs(getUnitsOnTile(x, y)) do
           if hasProperty(v, "opaque") then
-            return false
+            found_opaque = true
+            break
           end
         end
       end
