@@ -2233,4 +2233,96 @@ tiles_list = {
     layer = 20,
     desc = "WURD: A WURD unit forms rules as though it was its respective text.",
   },
+  -- 204
+  {
+    name = "firbolt",
+    sprite = "firbolt",
+    grid = {9, 12},
+    color = {6, 2},
+    layer = 5,
+    rotate = true,
+    desc = "i cast FIRBOLT at the NO1!",
+  },
+  -- 205
+  {
+    name = "text_firbolt",
+    sprite = "text_firbolt",
+    type = "text",
+    grid = {10, 12},
+    color = {6, 2},
+    layer = 20,
+  },
+  -- 206
+  {
+    name = "icbolt",
+    sprite = "icbolt",
+    grid = {11, 12},
+    color = {1, 4},
+    layer = 5,
+    rotate = true,
+    desc = "its time for u to CHILL out. stay FROSTY.",
+  },
+  -- 207
+  {
+    name = "text_icbolt",
+    sprite = "text_icbolt",
+    type = "text",
+    grid = {12, 12},
+    color = {1, 4},
+    layer = 20,
+  },
+  -- 206
+  {
+    name = "hedg",
+    sprite = "hedg",
+    grid = {11, 11},
+    color = {5, 1},
+    layer = 1,
+    desc = "im hedg the hedg heg",
+  },
+  -- 207
+  {
+    name = "text_hedg",
+    sprite = "text_hedg",
+    type = "text",
+    grid = {12, 11},
+    color = {5, 1},
+    layer = 20,
+  },
+  -- 208
+  {
+    name = "fenss",
+    sprite = "fenss",
+    grid = {11, 9},
+    color = {6, 2},
+    layer = 1,
+    desc = "keeps babs out!!",
+  },
+  -- 209
+  {
+    name = "text_fenss",
+    sprite = "text_fenss",
+    type = "text",
+    grid = {12, 9},
+    color = {6, 2},
+    layer = 20,
+  },
+  -- 210
+  {
+    name = "metl",
+    sprite = "metl",
+    grid = {13, 9},
+    color = {0, 2},
+    layer = 1,
+    desc = "impervious metl...",
+  },
+  -- 211
+  {
+    name = "text_metl",
+    sprite = "text_metl",
+    type = "text",
+    grid = {14, 9},
+    color = {0, 2},
+    layer = 20,
+  },
 }
