@@ -162,7 +162,15 @@ function updateUnits(undoing, big_update)
       for unit,amt in pairs(isspin) do
         addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
         unit.olddir = unit.dir
-        updateDir(unit, dirAdd(unit.dir, amt*i));
+        --if we aren't allowed to rotate to the indicated direction, skip it
+        for j=1,8 do
+          local result = updateDir(unit, dirAdd(unit.dir, amt*i));
+          if not result then
+            amt = amt + 1
+          else
+            break
+          end
+        end
       end
     end
     
@@ -1217,9 +1225,14 @@ function moveUnit(unit,x,y)
   do_move_sound = true
 end
 
-function updateDir(unit,dir, force)
-  if not force and rules_with ~= nil and hasProperty(unit, "no turn") then
-    return false
+function updateDir(unit, dir, force)
+  if not force and rules_with ~= nil then
+    if hasProperty(unit, "no turn") then
+      return false
+    end
+    if hasRule(unit, "ben't", dirs8_by_name[dir]) then
+      return false
+    end
   end
   unit.dir = dir
   if unit.type == "text" then

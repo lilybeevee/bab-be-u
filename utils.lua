@@ -580,6 +580,7 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
       rng = deterministicRandom(unit.fullname, cond_unit);
       result = unit.id == rng;
     elseif condtype == "lit" then
+      --TODO: make it so if there are many lit objects then you cache FoV instead of doing many individual LoSes
       result = false
       if (successful_brite_cache ~= nil) then
         local cached = units_by_id[successful_brite_cache];
