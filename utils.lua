@@ -1250,6 +1250,38 @@ function filter(xs, p)
   return newxs
 end
 
+function getAbsolutelyEverythingExcept(except)
+  local result = {}
+
+  --four special objects
+  if "mous" ~= except then
+    table.insert(result, "mous")
+  end
+  if "lvl" ~= except then
+    table.insert(result, "lvl")
+  end
+  if "no1" ~= except then
+    table.insert(result, "no1")
+  end
+  if "text" ~= except then
+    table.insert(result, "text")
+  end
+  
+  for i,ref in ipairs(referenced_objects) do
+    if ref ~= except then
+      table.insert(result, ref)
+    end
+  end
+
+  for i,ref in ipairs(referenced_text) do
+    if ref ~= except then
+      table.insert(result, ref)
+    end
+  end
+
+  return result
+end
+
 function getEverythingExcept(except)
   local result = {}
 

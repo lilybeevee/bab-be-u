@@ -358,8 +358,14 @@ function addRule(full_rule)
       end
     end
   elseif object_not % 2 == 1 then
-    if tiles_by_name[object] or object == "text" then
-      local new_objects = getEverythingExcept(object)
+    if tiles_by_name[object] or object == "text" or object == "mous" then
+      local new_objects = {}
+      --skul be skul turns into skul ben't skuln't - but this needs to apply even to special objects (specific text, txt, no1, lvl, mous).
+      if verb == "be" and verb_not % 2 == 1 then
+        new_objects = getAbsolutelyEverythingExcept(object)
+      else
+        new_objects = getEverythingExcept(object)
+      end
       for _,v in ipairs(new_objects) do
         addRule({{rules[1], rules[2], v, rules[4]}, units, dir})
       end
