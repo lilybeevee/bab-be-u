@@ -352,6 +352,7 @@ function parseRules(undoing)
     
     postRules()
     
+    --TODO: This works in non-contrived examples, but isn't necessarily robust - for example, if after reparsing, you add one word rule while subtracting another word rule, it'll think nothing has changed. The only way to be ABSOLUTELY robust is to compare that the exact set of parsing effecting rules hasn't changed.
     local reparse_rule_counts_new = 
     {
     #matchesRule(nil, "be", "wurd"),
@@ -582,23 +583,9 @@ function postRules()
   end
 end
 
---[[
-Note to Lily: This just determines if we need to reparse the rules on each successive turn. The logic for 'if after parsing rules, we should immediately parse them again to see if anything new happens' is simple:
-If we formed OR unformed a 'be word', 'be portal' or 'txt be (wrap variant' rule, immediately reparse until we either infinite loop or no new rules are formed/unformed.
-If we do this, we shouldn't need to call parseRules multiple times in a row, since parseRules will always return either with a consistent set of rules or by infinite looping.
-
----
-
-We only need to parseRules if:
-1) a text was created, destroyed or moved
-2) a möbius or cylinder rule changed directions
-3) a portal or word rule exists
-4) a conditional text is (wrap, mirror) rule exists
-TODO: I know 3 can be further subdivided to 'a word/portal rule exists and a word/portal unit was created, destroyed or moved, or a portal unit changed directions, or the rule has a condition' but that's more complex
-]]
 function shouldReparseRules()
   if should_parse_rules then return true end
-  if shouldReparseRulesIfConditionalRuleExists("?", "be", "wurd") then return true end --TODO: change this to whatever the word rule ends up being called
+  if shouldReparseRulesIfConditionalRuleExists("?", "be", "wurd") then return true end
   if shouldReparseRulesIfConditionalRuleExists("?", "be", "poor toll") then return true end
   if shouldReparseRulesIfConditionalRuleExists("text", "be", "go arnd") then return true end
   if shouldReparseRulesIfConditionalRuleExists("text", "be", "mirr arnd") then return true end
