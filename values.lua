@@ -2362,4 +2362,23 @@ tiles_list = {
     color = {0, 3},
     layer = 20,
   },
+  -- 214
+  {
+    name = "spiky",
+    sprite = "spiky",
+    grid = {13, 14},
+    color = {0, 3},
+    layer = 10,
+    rotate = true,
+    desc = "ouch!! many spik at once.",
+  },
+  -- 215
+  {
+    name = "text_spiky",
+    sprite = "text_spiky",
+    type = "text",
+    grid = {14, 14},
+    color = {0, 3},
+    layer = 20,
+  },
 }
