@@ -926,6 +926,9 @@ function convertLevel()
   for _,match in ipairs(converts) do
     if not nameIs(outerlvl, match[1][3]) then
       local tile = tiles_by_name[match[1][3]]
+      if tile == nil and match[1][3] == "every1" and not hasRule(outerlvl, "be", "lvl") then
+        tile = tiles_by_name["text_every1"]
+      end
       if tile ~= nil then
         --placeholder - just make 'u r win' pop up for now
         win = true
