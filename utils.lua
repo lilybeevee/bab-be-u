@@ -1370,8 +1370,9 @@ function loadLevels(levels, mode, level_objs)
   end
   
   --setup surrounds
-  surrounds = {};
+  surrounds = nil;
   if (level_objs ~= nil) then
+    surrounds = {};
     for i = -1,1 do
       surrounds[i] = {}
       for j = -1,1 do
