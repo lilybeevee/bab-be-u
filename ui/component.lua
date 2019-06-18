@@ -6,7 +6,6 @@ function component.new(t)
 
   o.data = {}
   o.children = {}
-  o.color = o.color or {1, 1, 1, 1}
   o.mouse = {x = -1, y = -1, left = "up", right = "up"}
 
   -- Basic Functions
@@ -101,7 +100,7 @@ function component.new(t)
   function o:getText() return self.text or "" end
   function o:setText(val) self.text = val; return self end
 
-  function o:getFont() return self.font end
+  function o:getFont() return self.font or ui.fonts.default end
   function o:setFont(val) self.font = val; return self end
 
   function o:getAlign() return self.align or "center" end
@@ -119,19 +118,61 @@ function component.new(t)
     if not self.color then return {1, 1, 1, 1}
     else return unpack(self.color) end
   end
-  function o:setColor(r, g, b, a) self.color = {r, g, b, a or 1}; return self end
+  function o:setColor(r, g, b, a) 
+    if not r then self.color = nil
+    else self.color = {r, g, b, a or 1} end
+    return self
+  end
 
   function o:getHoverColor()
     if not self.hover_color then return self:getColor()
     else return unpack(self.hover_color) end
   end
-  function o:setHoverColor(r, g, b, a) self.hover_color = {r, g, b, a or 1}; return self end
+  function o:setHoverColor(r, g, b, a) 
+    if not r then self.hover_color = nil
+    else self.hover_color = {r, g, b, a or 1} end
+    return self
+  end
 
   function o:getActiveColor()
     if not self.active_color then return self:getHoverColor()
     else return unpack(self.active_color) end
   end
-  function o:setActiveColor(r, g, b, a) self.active_color = {r, g, b, a or 1}; return self end
+  function o:setActiveColor(r, g, b, a) 
+    if not r then self.active_color = nil
+    else self.active_color = {r, g, b, a or 1} end
+    return self
+  end
+
+  function o:getTextColor()
+    if not self.text_color then return {1, 1, 1, 1}
+    else return unpack(self.text_color) end
+  end
+  function o:setTextColor(r, g, b, a) 
+    if not r then self.text_color = nil
+    else self.text_color = {r, g, b, a or 1} end
+    return self
+  end
+
+  function o:getTextHoverColor()
+    if not self.text_hover_color then return self:getTextColor()
+    else return unpack(self.text_hover_color) end
+  end
+  function o:setTextHoverColor(r, g, b, a) 
+    if not r then self.text_hover_color = nil
+    else self.text_hover_color = {r, g, b, a or 1} end
+    return self
+  end
+
+  function o:getTextActiveColor()
+    if not self.text_active_color then return self:getTextHoverColor()
+    else return unpack(self.text_active_color) end
+  end
+  function o:setTextActiveColor(r, g, b, a) 
+    if not r then self.text_active_color = nil
+    else self.text_active_color = {r, g, b, a or 1} end
+    return self
+  end
 
   function o:hovered()
     return self.mouse.x >= 0 and
@@ -141,23 +182,30 @@ function component.new(t)
   end
 
   function o:pressed(button)
-    if button == 2 then return self.mouse.right == "pressed"
-    else return self.mouse.left == "pressed" end
+    if button == 2 then return self.mouse.right == "pressed" end
+    if button == 1 then return self.mouse.left == "pressed" end
+    return (self.mouse.left == "pressed" and self.mouse.right ~= "down") or
+           (self.mouse.right == "pressed" and self.mouse.left ~= "down")
   end
 
   function o:down(button)
-    if button == 2 then return self.mouse.right == "down"
-    else return self.mouse.left == "down" end
+    if button == 2 then return self.mouse.right == "down" end
+    if button == 1 then return self.mouse.left == "down" end
+    return self.mouse.left == "down" or self.mouse.right == "down"
   end
 
   function o:released(button)
-    if button == 2 then return self.mouse.right == "released"
-    else return self.mouse.left == "released" end
+    if button == 2 then return self.mouse.right == "released" end
+    if button == 1 then return self.mouse.left == "released" end
+    return (self.mouse.left == "released" and self.mouse.right ~= "pressed" and self.mouse.right ~= "down") or
+           (self.mouse.right == "released" and self.mouse.left ~= "pressed" and self.mouse.left ~= "down")
   end
 
   function o:up(button)
-    if button == 2 then return self.mouse.right == "up"
-    else return self.mouse.left == "up" end
+    if button == 2 then return self.mouse.right == "up" end
+    if button == 1 then return self.mouse.left == "up" end
+    return (self.mouse.left == "up" and self.mouse.right ~= "pressed" and self.mouse.right ~= "down") or
+           (self.mouse.right == "up" and self.mouse.left ~= "pressed" and self.mouse.left ~= "down")
   end
 
   function o:onPressed(func) self.on_pressed = func; return self end
@@ -165,33 +213,77 @@ function component.new(t)
 
   function o:draw()
     love.graphics.push()
-    self:preTransform()
+    if self.preDraw then
+      self:preDraw()
+    end
+    self:transform()
     self:updateMouse()
-    self:postTransform()
+    
+    self:useColor()
+    self:drawRect()
+    self:drawSprite()
 
+    self:useTextColor()
+    self:drawText()
+
+    if self.postDraw then
+      self:postDraw()
+    end
+
+    for i,child in ipairs(self.children) do
+      child:draw()
+    end
+
+    love.graphics.pop()
+  end
+
+  -- Internal Functions
+
+  function o:useColor()
+    if self:pressed() or self:down() then
+      love.graphics.setColor(self:getActiveColor())
+    elseif self:hovered() then
+      love.graphics.setColor(self:getHoverColor())
+    else 
+      love.graphics.setColor(self:getColor())
+    end
+  end
+
+  function o:useTextColor()
+    if self:pressed() or self:down() then
+      love.graphics.setColor(self:getTextActiveColor())
+    elseif self:hovered() then
+      love.graphics.setColor(self:getTextHoverColor())
+    else 
+      love.graphics.setColor(self:getTextColor())
+    end
+  end
+
+  function o:drawRect()
+    if self:getFill() then
+      love.graphics.rectangle("fill", 0, 0, self:getWidth(), self:getHeight())
+    end
+  end
+
+  function o:drawSprite()
     local sprite = nil
     if self:pressed() or self:down() then
       sprite = self:getActiveSprite()
-      love.graphics.setColor(self:getActiveColor())
     elseif self:hovered() then
       sprite = self:getHoverSprite()
-      love.graphics.setColor(self:getHoverColor())
     else 
       sprite = self:getSprite()
-      love.graphics.setColor(self:getColor())
-    end
-
-    if self:getFill() then
-      love.graphics.rectangle("fill", 0, 0, self:getWidth(), self:getHeight())
     end
 
     if sprite then
       local sx, sy = self:getWidth() / sprite:getWidth(), self:getHeight() / sprite:getHeight()
       love.graphics.draw(sprite, 0, 0, 0, sx, sy)
     end
+  end
 
+  function o:drawText()
     if self:getText() ~= "" then
-      local font = self:getFont() or love.graphics.getFont()
+      local font = self:getFont()
       love.graphics.setFont(font)
 
       local height
@@ -204,21 +296,10 @@ function component.new(t)
 
       love.graphics.printf(self:getText(), 0, self:getHeight() / 2 - height / 2, self:getWidth(), self:getAlign())
     end
-
-    for i,child in ipairs(self.children) do
-      child:draw()
-    end
-
-    love.graphics.pop()
   end
 
-  -- Internal Functions
-
-  function o:preTransform()
+  function o:transform()
     love.graphics.translate(self:getPos())
-  end
-
-  function o:postTransform()
     love.graphics.translate(self:getWidth() / 2, self:getHeight() / 2)
     love.graphics.scale(self:getScale())
     love.graphics.rotate(self:getRotation())

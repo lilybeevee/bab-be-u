@@ -4,8 +4,7 @@ world_parent = ""
 world = ""
 
 local title_font, label_font, icon_font, name_font
-local ui, world_label
-local text_input
+local components
 
 local scrollx = 0
 local scrolly = 0
@@ -17,9 +16,9 @@ local full_height = 0
 function scene.load()
   clear()
   resetMusic(current_music, 0.1)
+  selected_levels = {}
   scene.buildUI()
   love.keyboard.setKeyRepeat(true)
-  text_input = nil
 end
 
 function scene.update(dt)
@@ -44,116 +43,16 @@ function scene.update(dt)
 end
 
 function scene.keyPressed(key)
-  if text_input then
-    scene.updateTextInput(nil, key)
-  else
-    if key == "escape" then
-      if load_mode == "select" then
-        new_scene = editor
-        selected_level = nil
-      elseif world ~= "" then
-        world_parent = ""
-        world = ""
-        scene.buildUI()
-      else
-        new_scene = menu
-      end
-    end
-  end
-end
-
-function scene.textInput(text)
-  scene.updateTextInput(text)
-end
-
-function scene.mouseReleased(x, y, mouse_button)
-  if gooi.showingDialog then return end
-
-  if mouse_button == 1 then
-    for _,button in ipairs(ui.buttons) do
-      if mouseOverBox(button.x, button.y, button.w, button.h, scene.getTransform()) then
-        if button.type == "world" then
-          world = button.name
-          world_parent = button.data
-          if button.create then
-            love.filesystem.createDirectory(world_parent .. "/" .. world)
-          end
-          scene.buildUI()
-          break
-        elseif button.type == "level" then
-          if button.create then
-            loaded_level = false
-            scene.loadLevel(button.data, true)
-          else
-            if load_mode == "select" then
-              new_scene = editor
-              selected_level.level = button.name
-              selected_level.name = button.data.name
-            else
-              scene.loadLevel(button.data)
-            end
-          end
-        end
-      end
-    end
-    if world_label and world_label.editable and mouseOverBox(world_label.x, world_label.y, world_label.w, world_label.h, scene.getTransform()) then
-      if not text_input then
-        text_input = {
-          label = world_label,
-          text = world_label.text,
-          old_text = world_label.text,
-          position = #world_label.text
-        }
-        love.keyboard.setTextInput(true)
-      end
-    end
-  elseif mouse_button == 2 and world_parent ~= "officialworlds" then
-    for _,button in ipairs(ui.buttons) do
-      if mouseOverBox(button.x, button.y, button.w, button.h, scene.getTransform()) then
-        if button.type == "world" then
-          if not button.create then
-            if not button.deletingconfirm then
-              if not button.deleting then
-			    playSound("move")
-                button.deleting = true
-              else
-				playSound("unlock")
-                button.deletingconfirm = true
-              end
-            else
-              love.filesystem.remove(button.data .. "/" .. button.name)
-              playSound("break")
-              shakeScreen(0.3, 0.1)
-              scene.buildUI()
-            end
-          end
-        elseif button.type == "level" then
-          if not button.create then
-            if not button.deletingconfirm then
-              if not button.deleting then
-				playSound("move")
-                button.deleting = true
-              else
-				playSound("unlock")
-                button.deletingconfirm = true
-			    end
-            else
-              if world == "" then
-                love.filesystem.remove("levels/" .. button.name .. ".bab")
-                love.filesystem.remove("levels/" .. button.name .. ".png")
-                playSound("break")
-                shakeScreen(5, 3)
-              else
-                love.filesystem.remove(world_parent .. "/" .. world .. "/" .. button.name .. ".bab")
-                love.filesystem.remove(world_parent .. "/" .. world .. "/" .. button.name .. ".png")
-                playSound("break")
-                shakeScreen(5, 3)
-              end
-              scene.buildUI()
-            end
-          end
-        end
-      end
+  if key == "escape" then
+    if load_mode == "select" then
+      new_scene = editor
+      selected_level = nil
+    elseif world ~= "" then
+      world_parent = ""
+      world = ""
+      scene.buildUI()
+    else
+      new_scene = menu
     end
   end
 end
@@ -195,106 +94,8 @@ function scene.draw()
   love.graphics.applyTransform(scene.getTransform())
   love.graphics.setColor(1, 1, 1, 1)
 
-  for i,button in ipairs(ui.buttons) do
-    local sprite_name = "ui/" .. button.type .. " box"
-    if button.deletingconfirm then
-      sprite_name = sprite_name .. " deleteconfirm"
-    elseif button.deleting then
-      sprite_name = sprite_name .. " delete"
-    end
-    local sprite = sprites[sprite_name]
-    local btncolor = {1, 1, 1}
-
-    local sx, sy
-
-    if button.icon then
-      local imgw, imgh = button.icon:getWidth(), button.icon:getHeight()
-      --scale factors
-      sx, sy = ICON_WIDTH / imgw, ICON_HEIGHT / imgh
-    end
-
-    love.graphics.push()
-    if mouseOverBox(button.x, button.y, button.w, button.h, scene.getTransform()) then
-      love.graphics.translate(button.x+button.w/2, button.y+button.h/2)
-      love.graphics.scale(1.1)
-      love.graphics.rotate(0.05 * math.sin(love.timer.getTime()*5))
-      love.graphics.translate(-button.x-button.w/2, -button.y-button.h/2)
-    else
-      button.deleting = false
-	  button.deletingconfirm = false
-    end
-
-    if rainbowmode then btncolor = hslToRgb((love.timer.getTime()/6+i*10)%1, .5, .5, .9) end
-    love.graphics.setColor(btncolor)
-
-    if button.type == "world" then
-      love.graphics.draw(sprite, button.x, button.y)
-      love.graphics.setColor(1, 1, 1)
-      if button.icon then
-        love.graphics.draw(button.icon,
-          button.x + (button.w / 2) - (ICON_WIDTH / 2),
-          button.y + (button.h / 2) - (ICON_HEIGHT / 2))
-      else
-        love.graphics.setFont(icon_font)
-
-        local _,lines = icon_font:getWrap(button.name:upper(), 96)
-        local height = #lines * icon_font:getHeight()
-
-        love.graphics.setColor(1, 1, 1)
-        love.graphics.printf(button.name:upper(), button.x + (button.w / 2) - (96 / 2), button.y + (button.h / 2) - (height / 2), 96, "center")
-      end
-    elseif button.type == "level" then
-      local icon_y_multiplier = 2/3
-      if button.create then icon_y_multiplier = 1/2 end
-
-      if button.data.extra then
-        love.graphics.setColor(btncolor[1]-0.4, btncolor[2]-0.4, btncolor[3]-0.4)
-      end
-      love.graphics.draw(sprite, button.x, button.y)
-
-      love.graphics.setColor(1, 1, 1)
-      love.graphics.draw(button.icon,
-        button.x + (button.w / 2) - (ICON_WIDTH / 2),
-        button.y + (button.h * icon_y_multiplier) - (ICON_HEIGHT / 2),
-        0, sx, sy)
-      
-      if not button.create then
-        love.graphics.setFont(name_font)
-
-        local _,lines = name_font:getWrap(button.data.name:upper(), 112)
-        local height = #lines * name_font:getHeight()
-
-        local btnprintname
-        if button.data.extra then
-          btnprintname = button.data.name:lower()
-        else
-          btnprintname = button.data.name:upper()
-        end
-
-        love.graphics.printf(btnprintname, button.x + (button.w / 2) - (112 / 2), button.y + 40 - (height / 2), 112, "center")
-      end
-    end
-    love.graphics.pop()
-  end
-
-  for _,label in ipairs(ui.labels) do
-    love.graphics.setFont(label.font)
-    local text_width = label.font:getWidth(label.text)
-    local font_height = label.font:getHeight()
-    if label.editable and mouseOverBox(label.x, label.y, label.w or love.graphics.getWidth(), label.h or font_height) then
-      love.graphics.setColor(0.75, 0.75, 0.75, 1)
-    else
-      love.graphics.setColor(1, 1, 1, 1)
-    end
-    love.graphics.printf(label.text, label.x, label.y, label.w or love.graphics.getWidth(), label.align or "center")
-
-    if text_input and text_input.label == label then
-      love.graphics.setLineWidth(1)
-      local x = label.x + label.w / 2 - text_width / 2 + label.font:getWidth(label.text:sub(1, text_input.position))
-      if math.floor(love.timer.getTime()*2) % 2 == 0 then
-        love.graphics.line(x, label.y, x, label.y + font_height)
-      end
-    end
+  for i,o in ipairs(components) do
+    o:draw()
   end
 
   love.graphics.pop()
@@ -339,32 +140,23 @@ end
 function scene.buildUI()
   local sw, sh = love.graphics.getWidth(), love.graphics.getHeight()
 
-  title_font = love.graphics.newFont(32)
-  label_font = love.graphics.newFont(24)
-  icon_font = love.graphics.newFont(16)
-  name_font = love.graphics.newFont(12)
-  icon_font:setFilter("nearest","nearest")
-  name_font:setFilter("nearest","nearest")
-
-  ui = {}
-  ui.labels = {}
-  ui.buttons = {}
+  components = {}
 
   local oy = 4
   if world ~= "" then
-    local title_width, title_height = title_font:getWidth(world:upper()), title_font:getHeight()
-    world_label = {
-      font = title_font,
-      text = world:upper(),
-      x = 0,
-      y = oy,
-      w = love.graphics.getWidth(),
-      h = title_height
-    }
+    local title_width, title_height = ui.fonts.title:getWidth(world:upper()), ui.fonts.title:getHeight()
+    local world_label = ui.text_input.new()
+      :setText(world:upper())
+      :setFont(ui.fonts.title)
+      :setPos(0, oy)
+      :setSize(love.graphics.getWidth(), title_height)
+      :onReturn(scene.renameWorld)
+      :onTextEdited(function(o) o:setText(o:getText():upper()) end)
     if load_mode == "edit" and world_parent ~= "officialworlds" and world ~= "" then
-      world_label.editable = true
+      world_label:setTextHoverColor(0.75, 0.75, 0.75)
+      world_label:onReleased(function(o) ui.setEditing(o) end)
     end
-    table.insert(ui.labels, world_label)
+    table.insert(components, world_label)
     oy = oy + title_height + 24
   end
 
@@ -372,13 +164,12 @@ function scene.buildUI()
     if load_mode ~= "select" then
       local worlds = scene.searchDir("officialworlds", "world")
       if #worlds > 0 then
-        local label_width, label_height = label_font:getWidth("Official Worlds"), label_font:getHeight()
-        table.insert(ui.labels, {
-          font = label_font,
-          text = "Official Worlds",
-          x = 0,
-          y = oy
-        })
+        local label_width, label_height = ui.fonts.category:getWidth("Official Worlds"), ui.fonts.category:getHeight()
+        table.insert(components, ui.component.new()
+          :setText("Official Worlds")
+          :setFont(ui.fonts.category)
+          :setPos(0, oy)
+          :setSize(love.graphics.getWidth(), label_height))
         oy = oy + label_height + 8
 
         oy = scene.addButtons("world", worlds, oy)
@@ -386,20 +177,19 @@ function scene.buildUI()
 
       worlds = scene.searchDir("worlds", "world")
       if #worlds > 0 or load_mode == "edit" then
-        label_width, label_height = label_font:getWidth("Custom Worlds"), label_font:getHeight()
-        table.insert(ui.labels, {
-          font = label_font,
-          text = "Custom Worlds",
-          x = 0,
-          y = oy
-        })
+        label_width, label_height = ui.fonts.category:getWidth("Custom Worlds"), ui.fonts.category:getHeight()
+        table.insert(components, ui.component.new()
+          :setText("Custom Worlds")
+          :setFont(ui.fonts.category)
+          :setPos(0, oy)
+          :setSize(love.graphics.getWidth(), label_height))
         oy = oy + label_height + 8
 
         if load_mode == "edit" and world_parent ~= "officialworlds" then
           table.insert(worlds, 1, {
             create = true,
             name = "new world",
-            data = "worlds",
+            path = "worlds",
             icon = sprites["ui/create icon"]
           })
         end
@@ -410,19 +200,18 @@ function scene.buildUI()
 
     local levels = scene.searchDir("levels", "level")
     if #levels > 0 or load_mode == "edit" then
-      label_width, label_height = label_font:getWidth("Custom Levels"), label_font:getHeight()
-      table.insert(ui.labels, {
-        font = label_font,
-        text = "Custom Levels",
-        x = 0,
-        y = oy
-      })
+      label_width, label_height = ui.fonts.category:getWidth("Custom Levels"), ui.fonts.category:getHeight()
+      table.insert(components, ui.component.new()
+        :setText("Custom Levels")
+        :setFont(ui.fonts.category)
+        :setPos(0, oy)
+        :setSize(love.graphics.getWidth(), label_height))
       oy = oy + label_height + 8
 
       if load_mode == "edit" and world_parent ~= "officialworlds" then
         table.insert(levels, 1, {
           create = true,
-          name = "new level",
+          file = default_map,
           data = json.decode(default_map),
           icon = sprites["ui/create icon"]
         })
@@ -433,19 +222,18 @@ function scene.buildUI()
   else
     local levels = scene.searchDir(world_parent .. "/" .. world, "level")
     if #levels > 0 or load_mode == "edit" then
-      label_width, label_height = label_font:getWidth("Levels"), label_font:getHeight()
-      table.insert(ui.labels, {
-        font = label_font,
-        text = "Levels",
-        x = 0,
-        y = oy
-      })
+      label_width, label_height = ui.fonts.category:getWidth("Levels"), ui.fonts.category:getHeight()
+      table.insert(components, ui.component.new()
+        :setText("Levels")
+        :setFont(ui.fonts.category)
+        :setPos(0, oy)
+        :setSize(love.graphics.getWidth(), label_height))
       oy = oy + label_height + 8
 
       if load_mode == "edit" and world_parent ~= "officialworlds" then
         table.insert(levels, 1, {
           create = true,
-          name = "new level",
+          file = default_map,
           data = json.decode(default_map),
           icon = sprites["ui/create icon"]
         })
@@ -483,15 +271,15 @@ function scene.searchDir(dir, type)
     local t = {}
     if type == "world" then
       t.name = file
-      t.data = dir
+      t.path = dir
       if love.filesystem.getInfo(dir .. "/" .. file .. "/icon.png") then
         t.icon = love.graphics.newImage(dir .. "/" .. file .. "/icon.png")
       end
     elseif type == "level" then
-      t.name = file:sub(1, -5)
+      t.file = file:sub(1, -5)
       t.data = json.decode(love.filesystem.read(dir .. "/" .. file))
-      if love.filesystem.getInfo(dir .. "/" .. t.name .. ".png") then
-        t.icon = love.graphics.newImage(dir .. "/" .. t.name .. ".png")
+      if love.filesystem.getInfo(dir .. "/" .. t.file .. ".png") then
+        t.icon = love.graphics.newImage(dir .. "/" .. t.file .. ".png")
       else
         t.icon = sprites["ui/default icon"]
       end
@@ -521,19 +309,23 @@ function scene.addButtons(type, list, oy)
     local width = (btn_width * #cols) + ((#cols - 1) * 8)
     local ox = (sw / 2) - (width / 2)
     for col,v in ipairs(cols) do
-      local button = {
-        type = type,
-        name = v.name,
-        x = ox,
-        y = oy,
-        w = btn_width,
-        h = btn_height,
-        icon = v.icon,
-        data = v.data,
-        create = v.create,
-      }
-      table.insert(ui.buttons, button)
-
+      local button
+      if type == "world" then
+        button = ui.world_button.new(v.path):setName(v.name):setIcon(v.icon):setPos(ox, oy)
+        if v.create then
+          button:onReleased(scene.createWorld)
+        else
+          button:onReleased(scene.selectWorld)
+        end
+      elseif type == "level" then
+        button = ui.level_button.new(v.file, v.data.extra):setName(v.data.name):setIcon(v.icon):setPos(ox, oy)
+        if v.create then
+          button:onReleased(scene.createLevel)
+        else
+          button:onReleased(scene.selectLevel)
+        end
+      end
+      table.insert(components, button)
       ox = ox + btn_width + 8
     end
     oy = oy + btn_height + 8
@@ -545,38 +337,115 @@ function scene.resize(w, h)
   scene.buildUI()
 end
 
-function scene.updateTextInput(text, key)
-  if text_input then
-    if not text then
-      if key == "return" then
-        text_input.label.text = text_input.text:upper()
-        -- hardcoding for now
-        renameDir(world_parent .. "/" .. world, world_parent .. "/" .. text_input.text:lower())
-        world = text_input.text:lower()
-        scene.buildUI()
-        text_input = nil
-      elseif key == "escape" then
-        text_input.label.text = text_input.old_text
-        text_input = nil
-        love.keyboard.setTextInput(false)
-      elseif key == "backspace" then
-        local a = text_input.text:sub(1, math.max(0, text_input.position - 1))
-        local b = text_input.text:sub(text_input.position + 1)
-        text_input.text = a .. b
-        text_input.position = math.max(0, text_input.position - 1)
-      elseif key == "left" then
-        text_input.position = math.max(0, text_input.position - 1)
-      elseif key == "right" then
-        text_input.position = math.min(#text_input.text, text_input.position + 1)
-      end
+function scene.renameWorld(o, text)
+  renameDir(world_parent .. "/" .. world, world_parent .. "/" .. text:lower())
+  world = text:lower()
+  scene.buildUI()
+end
+
+function scene.createWorld(o)
+  world = o:getName()
+  world_parent = o.data.file
+  love.filesystem.createDirectory(world_parent .. "/" .. world)
+  scene.buildUI()
+end
+
+function scene.createLevel(o)
+  loaded_level = false
+  loadLevels({default_map}, load_mode)
+end
+
+function scene.selectWorld(o, button)
+  if button == 1 then
+    if o.data.deleting then
+      o.data.deleting = nil
+      o:setColor()
+      o:setSprite(sprites["ui/world box"])
     else
-      local a = text_input.text:sub(1, text_input.position)
-      local b = text_input.text:sub(text_input.position + 1)
-      text_input.text = a .. text .. b
-      text_input.position = text_input.position + 1
+      world = o:getName()
+      world_parent = o.data.file
+      scene.buildUI()
     end
-    if text_input then
-      text_input.label.text = text_input.text:upper()
+  elseif button == 2 then
+    if o.data.file ~= "officialworlds" then
+      if not o.data.deleting then
+        o.data.deleting = 1
+        o:setColor(1, 1, 1)
+        o:setSprite(sprites["ui/world box delete"])
+        playSound("move")
+      elseif o.data.deleting == 1 then
+        o.data.deleting = 2
+        o:setSprite(sprites["ui/world box deleteconfirm"])
+        playSound("unlock")
+      elseif o.data.deleting == 2 then
+        deleteDir(o.data.file .. "/" .. o:getName())
+        playSound("break")
+        shakeScreen(0.3, 0.1)
+        scene.buildUI()
+      end
+    end
+  end
+end
+
+function scene.selectLevel(o, button)
+  if button == 1 then
+    if o.data.deleting then
+      o.data.deleting = nil
+      o:setColor()
+      o:setSprite(sprites["ui/level box"])
+    else
+      if love.keyboard.isDown("lshift") then
+        if o.data.selected then
+          o:setColor()
+          o.data.selected = false
+          removeFromTable(selected_levels, o.data.file)
+        else
+          o:setColor(0.5, 0.25, 1)
+          o.data.selected = true
+          table.insert(selected_levels, o.data.file)
+        end
+      else
+        if load_mode == "select" then
+          new_scene = editor
+          selected_level.level = o.data.file
+          selected_level.name = o:getName()
+        else
+          if not o.data.selected then
+            o.data.selected = true
+            table.insert(selected_levels, o.data.file)
+          end
+          loadLevels(selected_levels, load_mode)
+        end
+      end
+    end
+  elseif button == 2 then
+    if #selected_levels > 0 then
+      for _,o in ipairs(components) do
+        if o.data.selected then
+          o:setColor()
+          o.data.selected = false
+        end
+      end
+      selected_levels = {}
+    elseif world_parent ~= "officialworlds" then
+      if not o.data.deleting then
+        o.data.deleting = 1
+        o:setColor(1, 1, 1)
+        o:setSprite(sprites["ui/level box delete"])
+        playSound("move")
+      elseif o.data.deleting == 1 then
+        o.data.deleting = 2
+        o:setSprite(sprites["ui/level box deleteconfirm"])
+        playSound("unlock")
+      elseif o.data.deleting == 2 then
+        local dir = "levels/"
+        if world ~= "" then dir = world_parent .. "/" .. world .. "/" end
+        love.filesystem.remove(dir .. o.data.file .. ".bab")
+        love.filesystem.remove(dir .. o.data.file .. ".png")
+        playSound("break")
+        shakeScreen(0.3, 0.1)
+        scene.buildUI()
+      end
     end
   end
 end

@@ -1230,6 +1230,17 @@ function renameDir(from, to, cur_)
   love.filesystem.remove(from .. cur)
 end
 
+function deleteDir(dir)
+  for _,file in ipairs(love.filesystem.getDirectoryItems(dir)) do
+    if love.filesystem.getInfo(file, "directory") then
+      deleteDir(dir .. "/" .. file)
+    else
+      love.filesystem.remove(dir .. "/" .. file)
+    end
+  end
+  love.filesystem.remove(dir)
+end
+
 function setRainbowModeColor(value, brightness)
   brightness = brightness or 0.5
 
@@ -1259,7 +1270,7 @@ function endTest()
   print(perf_test.name .. ": " .. time .. "s")
 end
 
-function loadLevels(levels)
+function loadLevels(levels, mode)
   if #levels == 0 then
     return
   end
@@ -1274,7 +1285,12 @@ function loadLevels(levels)
   level_name = nil
 
   for _,level in ipairs(levels) do
-    local data = json.decode(love.filesystem.read(dir .. "/" .. level .. ".bab"))
+    local data
+    if not level:starts("{") then
+      data = json.decode(love.filesystem.read(dir .. level .. ".bab"))
+    else
+      data = json.decode(level)
+    end
     local loaddata = love.data.decode("string", "base64", data.map)
     local mapstr = love.data.decompress("string", "zlib", loaddata)
 
@@ -1285,6 +1301,7 @@ function loadLevels(levels)
     else
       level_name = level_name .. " & " .. data.name
     end
+    level_name = level_name:sub(1, 100)
     level_author = data.author or ""
     current_palette = data.palette or "default"
     map_music = data.music or "bab be u them"
@@ -1298,12 +1315,16 @@ function loadLevels(levels)
       table.insert(maps, {map_ver, mapstr})
     end
 
-    if love.filesystem.getInfo(dir .. level_name .. ".png") then
-      icon_data = love.image.newImageData(dir .. level_name .. ".png")
+    if love.filesystem.getInfo(dir .. level .. ".png") then
+      icon_data = love.image.newImageData(dir .. level .. ".png")
     else
       icon_data = nil
     end
   end
 
-  new_scene = game
+  if mode == "edit" then
+    new_scene = editor
+  else
+    new_scene = game
+  end
 end

@@ -218,6 +218,9 @@ function love.load()
   registerSound("win", 0.5)
   print(colr.green("✓ sounds registered"))
 
+  ui.init()
+  print(colr.green("✓ ui initialized"))
+
   if discordRPC and discordRPC ~= true then
     discordRPC.initialize("579475239646396436", true) -- app belongs to thefox, contact him if you wish to make any changes
     print(colr.green("✓ discord rpc initialized"))
@@ -232,6 +235,7 @@ function love.load()
 end
 
 function love.keypressed(key,scancode,isrepeat)
+  ui.keyPressed(key)
   if scene ~= loadscene then
     gooi.keypressed(key, scancode)
   end
@@ -305,6 +309,8 @@ function love.keyreleased(key, scancode)
 end
 
 function love.textinput(text)
+  ui.textInput(text)
+  
   if scene ~= loadscene then
     gooi.textinput(text)
   end
@@ -403,6 +409,7 @@ function love.update(dt)
 
   if new_scene then
     scene = new_scene
+    ui.clear()
     clearGooi()
     scene.load()
     new_scene = nil
