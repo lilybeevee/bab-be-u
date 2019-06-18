@@ -59,10 +59,10 @@ function doMovement(movex, movey)
   print("[---- begin turn ----]")
   print("move: " .. movex .. ", " .. movey)
 
-  next_levels = getNextLevels()
+  next_levels, next_level_objs = getNextLevels()
 
   if movex == 0 and movey == 0 and #next_levels > 0 then
-    loadLevels(next_levels)
+    loadLevels(next_levels, next_level_objs)
     return
   end
 
@@ -1151,19 +1151,20 @@ function goMyWeyPrevents(dir, dx, dy)
 end
 
 function getNextLevels()
-  local new_levels = {}
+  local next_levels, next_level_objs = {}, {}
   local us = getUnitsWithEffect("u")
   for _,unit in ipairs(us) do
     local lvls = getUnitsOnTile(unit.x, unit.y, "lvl", false, unit)
     for _,lvl in ipairs(lvls) do
       if lvl.special.level then
-        table.insert(new_levels, lvl.special.level)
+        table.insert(next_level_objs, lvl)
+        table.insert(next_levels, lvl.special.level)
       end
     end
   end
   
   next_level_name = ""
-  for _,name in ipairs(new_levels) do
+  for _,name in ipairs(next_levels) do
     if _ > 1 then
       next_level_name = next_level_name .. " & " .. name;
     else
@@ -1171,5 +1172,5 @@ function getNextLevels()
     end
   end
   
-  return new_levels
+  return next_levels, next_level_objs
 end
