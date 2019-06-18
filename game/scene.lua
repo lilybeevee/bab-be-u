@@ -127,6 +127,7 @@ function scene.resetStuff()
   parseRules()
   parseRules()
   updateUnits(true)
+  next_levels, next_level_objs = getNextLevels()
 
   first_turn = false
   window_dir = 0
