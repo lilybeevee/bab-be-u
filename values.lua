@@ -2381,4 +2381,24 @@ tiles_list = {
     color = {0, 3},
     layer = 20,
   },
+  -- 2216
+  {
+    name = "bordr",
+    sprite = "bordr",
+    type = "object",
+    grid = {15, 14},
+    color = {1, 0},
+    layer = 99,
+    desc = "fake oob to hide stuff under"
+  },
+    -- 217
+  {
+    name = "text_bordr",
+    sprite = "text_bordr",
+    type = "text",
+    texttype = "text",
+    grid = {16, 14},
+    color = {1, 0},
+    layer = 20,
+  },
 }
