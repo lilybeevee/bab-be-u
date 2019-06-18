@@ -1121,7 +1121,7 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
       end
       --if a weak thing tries to move and fails, destroy it. movers don't do this though.
       if stopped and (hasProperty(unit, "ouch") or rules_with["snacc"] ~= nil and hasRule(v, "snacc", unit)) and not hasProperty(unit, "protecc") and (reason ~= "walk" or not hasProperty(unit, "stubbn")) then
-        table.insert(specials, {"weak", {unit = unit,dx = dx,dy = dy,dir = dir}})
+        table.insert(specials, {"weak", {unit}})
         return true,movers,specials
       end
       if stopped then
