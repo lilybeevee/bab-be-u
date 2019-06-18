@@ -911,8 +911,8 @@ end
 
 function dirAdd(dir1, diff)
   dir1 = dir1 + diff;
-  while dir1 < 0 do
-    dir1 = dir1  + 8
+  while dir1 < 1 do
+    dir1 = dir1 + 8
   end
   while dir1 > 8 do
     dir1 = dir1 - 8

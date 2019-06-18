@@ -29,186 +29,182 @@ function parseRules(undoing)
   else
     return
   end
-  local first_words = {}
-  local been_first = {}
-  for i=1,8 do
-    been_first[i] = {}
-  end
-  if units_by_name["text"] then
-    for _,unit in ipairs(units_by_name["text"]) do
-      local x,y = unit.x,unit.y
-      for i=1,3 do
-        local dpos = dirs8[i]
-        local ndpos = dirs8[rotate8(i)]
-
-        local dx,dy = dpos[1],dpos[2]
-        local ndx,ndy = ndpos[1],ndpos[2]
-
-        local tileid = (x+dx) + (y+dy) * mapwidth
-        local ntileid = (x+ndx) + (y+ndy) * mapwidth
-
-        --print(tostring(x)..","..tostring(y)..","..tostring(dx)..","..tostring(dy)..","..tostring(ndx)..","..tostring(ndy)..","..tostring(#getUnitsOnTile(x+ndx, y+ndy, "text"))..","..tostring(#getUnitsOnTile(x+dx, y+dy, "text")))
-        if #getUnitsOnTile(x+ndx, y+ndy, "text") == 0 then
-          if not been_first[i][x + y * mapwidth] then
-            table.insert(first_words, {unit, i})
-            been_first[i][x + y * mapwidth] = true
-          end
-        end
-      end
-      unit.old_active = unit.active
-      unit.active = false
-      unit.blocked = false
-      unit.used_as = {}
-    end
-  end
-
+  
   local start_time = love.timer.getTime();
+  
+  clearRules()
+  loop_rules = 0;
+  changed_reparsing_rule = true
+  
+  local reparse_rule_counts = 
+  {
+    #matchesRule(nil, "be", "wurd"),
+    #matchesRule(nil, "be", "poor toll"),
+    #matchesRule("text", "be", "go arnd"),
+    #matchesRule("text", "be", "mirr arnd"),
+    #matchesRule(outerlvl, "be", "go arnd"),
+    #matchesRule(outerlvl, "be", "mirr arnd"),
+  };
+  
+  while (changed_reparsing_rule) do
+    changed_reparsing_rule = false
+    loop_rules = loop_rules + 1
+    if (loop_rules > 200) then
+      print("parseRules infinite loop! (200 attempts)")
+      destroyLevel("infloop");
+    end
+  
+    local first_words = {}
+    local been_first = {}
+    for i=1,8 do
+      been_first[i] = {}
+    end
+    if units_by_name["text"] then
+      for _,unit in ipairs(units_by_name["text"]) do
+        local x,y = unit.x,unit.y
+        for i=1,3 do
+          local dpos = dirs8[i]
+          local ndpos = dirs8[rotate8(i)]
 
-  local final_rules = {}
-  --local already_parsed = {}
-  local first_words_count = #first_words
-  for _,first in ipairs(first_words) do
-    local first_unit = first[1]
-    local last_unit = first[1]
+          local dx,dy = dpos[1],dpos[2]
+          local ndx,ndy = ndpos[1],ndpos[2]
 
-    local dir = first[2]
-    local x,y = first_unit.x, first_unit.y
-    local dx,dy = dirs8[dir][1], dirs8[dir][2]
+          local tileid = (x+dx) + (y+dy) * mapwidth
+          local ntileid = (x+ndx) + (y+ndy) * mapwidth
 
-    local words = {}
-    local been_here = {}
-
-    local stopped = false
-    while not stopped do
-      if been_here[x + y * mapwidth] == 2 then
-        stopped = true
-      else
-        local new_words = {}
-        local get_next_later = false
-
-        local units = getUnitsOnTile(x, y, "text")
-        if #units > 0 then
-          for _,unit in ipairs(units) do
-            local new_word = {}
-
-            new_word.name = unit.textname
-            new_word.type = unit.texttype
-            new_word.unit = unit
-
-            last_unit = unit
-
-            table.insert(new_words, new_word)
+          --print(tostring(x)..","..tostring(y)..","..tostring(dx)..","..tostring(dy)..","..tostring(ndx)..","..tostring(ndy)..","..tostring(#getUnitsOnTile(x+ndx, y+ndy, "text"))..","..tostring(#getUnitsOnTile(x+dx, y+dy, "text")))
+          if #getUnitsOnTile(x+ndx, y+ndy, "text") == 0 then
+            if not been_first[i][x + y * mapwidth] then
+              table.insert(first_words, {unit, i})
+              been_first[i][x + y * mapwidth] = true
+            end
           end
-
-          table.insert(words, new_words)
-        else
-          stopped = true
         end
-
-        dx, dy, dir, x, y = getNextTile(last_unit, dx, dy, dir)
-
-        if not been_here[x + y * mapwidth] then
-          been_here[x + y * mapwidth] = 1
-        else
-          been_here[x + y * mapwidth] = 2
-        end
+        unit.old_active = unit.active
+        unit.active = false
+        unit.blocked = false
+        unit.used_as = {}
       end
     end
 
-    local sentences = getCombinations(words)
-    if #sentences > 10 then
-      print(fullDump(words, 2))
-    end
+    local final_rules = {}
+    --local already_parsed = {}
+    local first_words_count = #first_words
+    for _,first in ipairs(first_words) do
+      local first_unit = first[1]
+      local last_unit = first[1]
 
-    for _,sentence_ in ipairs(sentences) do
-      local sentence = copyTable(sentence_, 1)
+      local dir = first[2]
+      local x,y = first_unit.x, first_unit.y
+      local dx,dy = dirs8[dir][1], dirs8[dir][2]
 
-      local valid, state = parse(sentence, parser)
+      local words = {}
+      local been_here = {}
 
-      if not valid then
-        if #sentence > 1 then
-          local unit = sentence[2].unit
-          if not been_first[first[2]][unit.x + unit.y * mapwidth] then
-            table.insert(first_words, {sentence[2].unit, first[2]})
-            been_first[first[2]][unit.x + unit.y * mapwidth] = true
+      local stopped = false
+      while not stopped do
+        if been_here[x + y * mapwidth] == 2 then
+          stopped = true
+        else
+          local new_words = {}
+          local get_next_later = false
+
+          local units = getUnitsOnTile(x, y, "text")
+          if #units > 0 then
+            for _,unit in ipairs(units) do
+              local new_word = {}
+
+              new_word.name = unit.textname
+              new_word.type = unit.texttype
+              new_word.unit = unit
+
+              last_unit = unit
+
+              table.insert(new_words, new_word)
+            end
+
+            table.insert(words, new_words)
+          else
+            stopped = true
+          end
+
+          dx, dy, dir, x, y = getNextTile(last_unit, dx, dy, dir)
+
+          if not been_here[x + y * mapwidth] then
+            been_here[x + y * mapwidth] = 1
+          else
+            been_here[x + y * mapwidth] = 2
           end
         end
-      else
-        if state.word_index <= #sentence then
-          local unit = sentence[state.word_index-1].unit
-          if not been_first[first[2]][unit.x + unit.y * mapwidth] then
-            table.insert(first_words, {sentence[state.word_index-1].unit, first[2]})
+      end
+
+      local sentences = getCombinations(words)
+      if #sentences > 10 then
+        print(fullDump(words, 2))
+      end
+
+      for _,sentence_ in ipairs(sentences) do
+        local sentence = copyTable(sentence_, 1)
+
+        local valid, state = parse(sentence, parser)
+
+        if not valid then
+          if #sentence > 1 then
+            local unit = sentence[2].unit
+            if not been_first[first[2]][unit.x + unit.y * mapwidth] then
+              table.insert(first_words, {sentence[2].unit, first[2]})
+              been_first[first[2]][unit.x + unit.y * mapwidth] = true
+            end
+          end
+        else
+          if state.word_index <= #sentence then
+            local unit = sentence[state.word_index-1].unit
+            if not been_first[first[2]][unit.x + unit.y * mapwidth] then
+              table.insert(first_words, {sentence[state.word_index-1].unit, first[2]})
+              been_first[first[2]][unit.x + unit.y * mapwidth] = true
+            end
+          end
+          for i = 1, state.word_index-1 do
+            local unit = sentence[i].unit
+            --print(sentence[i].name)
             been_first[first[2]][unit.x + unit.y * mapwidth] = true
           end
-        end
-        for i = 1, state.word_index-1 do
-          local unit = sentence[i].unit
-          --print(sentence[i].name)
-          been_first[first[2]][unit.x + unit.y * mapwidth] = true
-        end
 
-        local new_rules = {{},{},{},{{},{}}}
+          local new_rules = {{},{},{},{{},{}}}
 
-        local function simplify(t)
-          local name = ""
-          local units = {}
-          for _,v in ipairs(t) do
-            table.insert(units, v.unit)
-            if not v.connector then
-              name = v.name
-              local suffix = ""
-              if v.mods then
-                for _,mod in ipairs(v.mods) do
-                  table.insert(units, mod.unit)
-                  if mod.name == "text" then
-                    name = v.unit.fullname
-                  elseif mod.name == "nt" then
-                    suffix = suffix .. "n't"
+          local function simplify(t)
+            local name = ""
+            local units = {}
+            for _,v in ipairs(t) do
+              table.insert(units, v.unit)
+              if not v.connector then
+                name = v.name
+                local suffix = ""
+                if v.mods then
+                  for _,mod in ipairs(v.mods) do
+                    table.insert(units, mod.unit)
+                    if mod.name == "text" then
+                      name = v.unit.fullname
+                    elseif mod.name == "nt" then
+                      suffix = suffix .. "n't"
+                    end
                   end
                 end
+                name = name .. suffix
               end
-              name = name .. suffix
             end
+            return name, units
           end
-          return name, units
-        end
 
-        for _,matches in ipairs(state.matches) do
-          for _,targets in ipairs(matches.target) do
-            local name, units = simplify(targets, true)
-            table.insert(new_rules[1], {name, units})
-          end
-          if matches.cond then
-            for _,conds in ipairs(matches.cond) do
-              local name, units = simplify(conds)
-
-              local params = {}
-              if conds.target then
-                for _,targets in ipairs(conds.target) do
-                  local name, param_units = simplify(targets, true)
-                  table.insert(params, name)
-                  mergeTable(units, param_units)
-                end
-              end
-
-              table.insert(new_rules[4][1], {name, params, units})
-            end
-          end
-          for _,verbs in ipairs(matches.verb) do
-            local name, units = simplify(verbs)
-            table.insert(new_rules[2], {name, units})
-
-            local verb_rules = {}
-            table.insert(new_rules[3], verb_rules)
-            for _,targets in ipairs(verbs.target) do
+          for _,matches in ipairs(state.matches) do
+            for _,targets in ipairs(matches.target) do
               local name, units = simplify(targets, true)
-              table.insert(verb_rules, {name, units})
+              table.insert(new_rules[1], {name, units})
             end
-
-            if verbs.cond then
-              for _,conds in ipairs(verbs.cond) do
+            if matches.cond then
+              for _,conds in ipairs(matches.cond) do
                 local name, units = simplify(conds)
-      
+
                 local params = {}
                 if conds.target then
                   for _,targets in ipairs(conds.target) do
@@ -217,83 +213,132 @@ function parseRules(undoing)
                     mergeTable(units, param_units)
                   end
                 end
-      
-                table.insert(new_rules[4][2], {name, params, units})
+
+                table.insert(new_rules[4][1], {name, params, units})
+              end
+            end
+            for _,verbs in ipairs(matches.verb) do
+              local name, units = simplify(verbs)
+              table.insert(new_rules[2], {name, units})
+
+              local verb_rules = {}
+              table.insert(new_rules[3], verb_rules)
+              for _,targets in ipairs(verbs.target) do
+                local name, units = simplify(targets, true)
+                table.insert(verb_rules, {name, units})
+              end
+
+              if verbs.cond then
+                for _,conds in ipairs(verbs.cond) do
+                  local name, units = simplify(conds)
+        
+                  local params = {}
+                  if conds.target then
+                    for _,targets in ipairs(conds.target) do
+                      local name, param_units = simplify(targets, true)
+                      table.insert(params, name)
+                      mergeTable(units, param_units)
+                    end
+                  end
+        
+                  table.insert(new_rules[4][2], {name, params, units})
+                end
               end
             end
           end
-        end
 
-        table.insert(final_rules, {new_rules, dir})
+          table.insert(final_rules, {new_rules, dir})
+        end
       end
     end
-  end
+    
+    clearRules()
+    
+    for _,final in ipairs(final_rules) do
+      local new_rules = final[1]
+      local dir = final[2]
+      for _,a in ipairs(new_rules[1]) do
+        for vi,b in ipairs(new_rules[2]) do
+          for _,c in ipairs(new_rules[3][vi]) do
+            local noun = a[1]
+            local noun_texts = a[2]
+            local verb = b[1]
+            local verb_texts = b[2]
+            local prop = c[1]
+            local prop_texts = c[2]
 
-  clearRules()
+            if noun_texts == nil then
+              print("nil on: " .. noun .. " - " .. verb .. " - " .. prop)
+            end
+
+            --if verb == "got" or a[1]:starts("text_") or c[1]:starts("text_") then
+              --print("added rule: " .. noun .. " " .. verb .. " " .. prop)
+            --end
+
+            local all_units = {}
+            for _,unit in ipairs(noun_texts) do
+              if not table.has_value(unit.used_as, "noun") then table.insert(unit.used_as, "noun") end
+              table.insert(all_units, unit)
+            end
+            for _,unit in ipairs(verb_texts) do
+              if not table.has_value(unit.used_as, "verb") then table.insert(unit.used_as, "verb") end
+              table.insert(all_units, unit)
+            end
+            for _,unit in ipairs(prop_texts) do
+              if not table.has_value(unit.used_as, "property") then table.insert(unit.used_as, "property") end
+              table.insert(all_units, unit)
+            end
+
+            local conds = {{},{}}
+            for i=1,2 do
+              for _,cond in ipairs(new_rules[4][i]) do
+                for _,unit in ipairs(cond[3]) do
+                  table.insert(all_units, unit)
+                end
+                table.insert(conds[i], {cond[1], cond[2], cond[3]})
+              end
+            end
+
+            --[[for _,unit in ipairs(stupid_cond_units) do
+              table.insert(all_units, unit)
+              unit.active = true
+              if not unit.old_active and not first_turn and not undoing then
+                addParticles("rule", unit.x, unit.y, unit.color)
+                has_new_rule = true
+              end
+              unit.old_active = unit.active
+            end]]
+
+            local rule = {{noun,verb,prop,conds},all_units,dir}
+            addRule(rule)
+          end
+        end
+      end
+    end
+    
+    postRules()
+    
+    local reparse_rule_counts_new = 
+    {
+    #matchesRule(nil, "be", "wurd"),
+    #matchesRule(nil, "be", "poor toll"),
+    #matchesRule("text", "be", "go arnd"),
+    #matchesRule("text", "be", "mirr arnd"),
+    #matchesRule(outerlvl, "be", "go arnd"),
+    #matchesRule(outerlvl, "be", "mirr arnd"),
+    };
+    
+    for i = 1,#reparse_rule_counts do
+      if reparse_rule_counts[i] ~= reparse_rule_counts_new[i] then
+        print(reparse_rule_counts[i]..reparse_rule_counts_new[i])
+        changed_reparsing_rule = true
+        break
+      end
+    end
+    
+    reparse_rule_counts = reparse_rule_counts_new;
+  end
   
-  for _,final in ipairs(final_rules) do
-    local new_rules = final[1]
-    local dir = final[2]
-    for _,a in ipairs(new_rules[1]) do
-      for vi,b in ipairs(new_rules[2]) do
-        for _,c in ipairs(new_rules[3][vi]) do
-          local noun = a[1]
-          local noun_texts = a[2]
-          local verb = b[1]
-          local verb_texts = b[2]
-          local prop = c[1]
-          local prop_texts = c[2]
-
-          if noun_texts == nil then
-            print("nil on: " .. noun .. " - " .. verb .. " - " .. prop)
-          end
-
-          --if verb == "got" or a[1]:starts("text_") or c[1]:starts("text_") then
-            --print("added rule: " .. noun .. " " .. verb .. " " .. prop)
-          --end
-
-          local all_units = {}
-          for _,unit in ipairs(noun_texts) do
-            if not table.has_value(unit.used_as, "noun") then table.insert(unit.used_as, "noun") end
-            table.insert(all_units, unit)
-          end
-          for _,unit in ipairs(verb_texts) do
-            if not table.has_value(unit.used_as, "verb") then table.insert(unit.used_as, "verb") end
-            table.insert(all_units, unit)
-          end
-          for _,unit in ipairs(prop_texts) do
-            if not table.has_value(unit.used_as, "property") then table.insert(unit.used_as, "property") end
-            table.insert(all_units, unit)
-          end
-
-          local conds = {{},{}}
-          for i=1,2 do
-            for _,cond in ipairs(new_rules[4][i]) do
-              for _,unit in ipairs(cond[3]) do
-                table.insert(all_units, unit)
-              end
-              table.insert(conds[i], {cond[1], cond[2], cond[3]})
-            end
-          end
-
-          --[[for _,unit in ipairs(stupid_cond_units) do
-            table.insert(all_units, unit)
-            unit.active = true
-            if not unit.old_active and not first_turn and not undoing then
-              addParticles("rule", unit.x, unit.y, unit.color)
-              has_new_rule = true
-            end
-            unit.old_active = unit.active
-          end]]
-
-          local rule = {{noun,verb,prop,conds},all_units,dir}
-          addRule(rule)
-        end
-      end
-    end
-  end
-
-  postRules()
   shouldReparseRules()
   
   local end_time = love.timer.getTime();
@@ -513,9 +558,14 @@ We only need to parseRules if:
 TODO: I know 3 can be further subdivided to 'a word/portal rule exists and a word/portal unit was created, destroyed or moved, or a portal unit changed directions, or the rule has a condition' but that's more complex
 ]]
 function shouldReparseRules()
+  rules_effecting_names = {}
+  
+  populateRulesEffectingNames("?", "be", "wurd");
+  populateRulesEffectingNames("?", "be", "poor toll");
+
   if should_parse_rules then return true end
-  if shouldReparseRulesIfRuleExists(nil, "be", "word") then return true end --TODO: change this to whatever the word rule ends up being called
-  if shouldReparseRulesIfRuleExists(nil, "be", "poor toll") then return true end
+  if shouldReparseRulesIfConditionalRuleExists("?", "be", "wurd") then return true end --TODO: change this to whatever the word rule ends up being called
+  if shouldReparseRulesIfConditionalRuleExists("?", "be", "poor toll") then return true end
   if shouldReparseRulesIfConditionalRuleExists("text", "be", "go arnd") then return true end
   if shouldReparseRulesIfConditionalRuleExists("text", "be", "mirr arnd") then return true end
   if shouldReparseRulesIfConditionalRuleExists(outerlvl, "be", "go arnd") then return true end
@@ -523,12 +573,14 @@ function shouldReparseRules()
   return false
 end
 
-function shouldReparseRulesIfRuleExists(r1, r2, r3)
-  if #matchesRule(r1, r2, r3, true) > 0 then
-    should_parse_rules = true;
-    return true;
+function populateRulesEffectingNames(r1, r2, r3)
+  local rules = matchesRule(r1, r2, r3);
+  for _,rule in ipairs(rules) do
+    print(dump(rule))
+    local subject = rule[1][1];
+    print("a:"..subject);
+    rules_effecting_names[subject] = true;
   end
-  return false;
 end
 
 function shouldReparseRulesIfConditionalRuleExists(r1, r2, r3)

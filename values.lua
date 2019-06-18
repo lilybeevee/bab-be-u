@@ -2222,4 +2222,15 @@ tiles_list = {
     layer = 20,
     desc = "AN (Prefix Condition): True for a single arbitrary unit per turn and condition.",
   },
+  -- 203
+  {
+    name = "text_wurd",
+    sprite = "text_wurd",
+    type = "text",
+    texttype = "property",
+    grid = {7, 1},
+    color = {0, 3},
+    layer = 20,
+    desc = "WURD: A WURD unit forms rules as though it was its respective text.",
+  },
 }

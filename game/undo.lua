@@ -21,7 +21,7 @@ function undoOneAction(turn, i, v, ignore_no_undo)
       moveUnit(unit,v[3],v[4])
       updateDir(unit, v[5])
 
-      if unit.type == "text" then
+      if unit.type == "text" or rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname] then
         update_rules = true
       end
     end
@@ -29,7 +29,7 @@ function undoOneAction(turn, i, v, ignore_no_undo)
   local convert = v[3];
     unit = units_by_id[v[2]]
 
-    if unit.type == "text" then
+    if unit.type == "text" or rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname]  then
       update_rules = true
     end
 
@@ -50,7 +50,7 @@ function undoOneAction(turn, i, v, ignore_no_undo)
         deleteUnit(unit, convert, true)
       end
 
-      if unit ~= nil and unit.type == "text" then
+      if unit ~= nil and (unit.type == "text" or rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname])  then
         update_rules = true
       end
     end

@@ -1101,7 +1101,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty)
   unit.eye = data.eye -- eye rectangle used for sans
 
   unit.fullname = data.name
-  if unit.type == "text" then
+  if unit.type == "text" or rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname] then
     should_parse_rules = true
     unit.name = "text"
     unit.textname = string.sub(unit.fullname, 6)
@@ -1187,7 +1187,7 @@ function deleteUnit(unit,convert,undoing)
     unit.removed_final = false
     return
   end
-  if unit.type == "text" then
+  if unit.type == "text" or rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname] then
     should_parse_rules = true
   end
   removeFromTable(units, unit)
@@ -1229,7 +1229,7 @@ function moveUnit(unit,x,y)
     removeFromTable(units_by_tile[tileid], unit)
 
     if x ~= unit.x or y ~= unit.y then
-      if unit.type == "text" then
+      if unit.type == "text" or rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname] then
         should_parse_rules = true
       end
       if (unit.draw.x == x and unit.draw.y == y) then
@@ -1270,7 +1270,7 @@ function updateDir(unit, dir, force)
     end
   end
   unit.dir = dir
-  if unit.type == "text" then
+  if unit.type == "text" or rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname]  then
     should_parse_rules = true
   end
   if unit.fullname == "text_direction" then
