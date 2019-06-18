@@ -125,7 +125,6 @@ function scene.resetStuff()
   loadMap()
   clearRules()
   parseRules()
-  parseRules()
   updateUnits(true)
   next_levels, next_level_objs = getNextLevels()
 
