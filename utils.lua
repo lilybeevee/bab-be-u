@@ -1452,16 +1452,11 @@ function loadLevels(levels, level_objs)
       icon_data = nil
     end
   end
-<<<<<<< HEAD
 
   if mode == "edit" then
     new_scene = editor
   else
+    surrounds_name = level_name
     new_scene = game
   end
-=======
-  
-  surrounds_name = level_name
-  new_scene = game
->>>>>>> ec68d99c0a509ed7b75e42fabbae39fe298947f5
 end
