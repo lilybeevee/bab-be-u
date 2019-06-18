@@ -1284,10 +1284,12 @@ function getAbsolutelyEverythingExcept(except)
       table.insert(result, ref)
     end
   end
-
-  for i,ref in ipairs(referenced_text) do
-    if ref ~= except then
-      table.insert(result, ref)
+  
+  if (except ~= "text") then
+    for i,ref in ipairs(referenced_text) do
+      if ref ~= except then
+        table.insert(result, ref)
+      end
     end
   end
 
