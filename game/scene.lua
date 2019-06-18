@@ -445,7 +445,7 @@ function scene.draw(dt)
           if graphical_property_cache["flye"][unit] ~= nil or unit.name == "o" then
             local flyenes = graphical_property_cache["flye"][unit] or 0
             if unit.name == "o" then flyenes = flyenes + 1 end
-            fulldrawy = fulldrawy - 5 - math.sin(love.timer.getTime())*2.5*(flyenes^2)
+            fulldrawy = fulldrawy - math.sin(love.timer.getTime())*5*flyenes
           end
 
           if shake_dur > 0 then
