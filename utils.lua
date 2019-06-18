@@ -438,61 +438,36 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
     local x, y = unit.x, unit.y
 
     if condtype == "wfren" then
-      if unit == outerlvl then --basically turns into sans n't
-        result = false
-        for _,param in ipairs(params) do
-          local others = findUnitsByName(param)
-          if #others > 1 or #others == 1 and others[1] ~= unit then
-            result = true
-          end
-        end
-      else
-        for _,param in ipairs(params) do
-          local others
-          if unit == outerlvl and surrounds ~= nil and surrounds_name == level_name then
-            --use surrounds to remember what was around the level
-            for __,on in ipairs(surrounds[0][0]) do
-              if nameIs(on, param) then
+      for _,param in ipairs(params) do
+        local others = {}
+        if unit == outerlvl then --basically turns into sansn't
+          if param ~= "lvl" then
+            others = findUnitsByName(param);
+          else
+            for __,on in ipairs(findUnitsByName(param)) do
+              if on ~= outerlvl then
                 table.insert(others, on);
               end
             end
-          else
-            if param ~= "mous" then
-              others = getUnitsOnTile(x, y, param, false, unit) --currently, conditions only work up to one layer of nesting, so the noun argument of the condition is assumed to be just a noun
-            else
-              others = getCursorsOnTile(x, y, false, unit)
-            end
-            if #others == 0 then
-              result = false
-            end
           end
         end
-      end
-    elseif condtype == "sit on" then
-      --on that checks float. special condition for use with reflexive properties/verbs (GIV and NOU). warning: can cause paradoxes that destroy the level!
-      if unit == outerlvl then --basically turns into sans n't
-        result = false
-        for _,on in ipairs(others) do
-          if sameFloat(unit, on) then
-            result = true
-            break
+        if unit == outerlvl and surrounds ~= nil and surrounds_name == level_name then
+          --use surrounds to remember what was around the level
+          for __,on in ipairs(surrounds[0][0]) do
+            if nameIs(on, param) then
+              table.insert(others, on);
+            end
           end
-        end
-      else
-        for _,param in ipairs(params) do
-          local others
+        else
           if param ~= "mous" then
             others = getUnitsOnTile(x, y, param, false, unit) --currently, conditions only work up to one layer of nesting, so the noun argument of the condition is assumed to be just a noun
           else
             others = getCursorsOnTile(x, y, false, unit)
           end
+        end
+        if #others == 0 then
           result = false
-          for _,on in ipairs(others) do
-            if sameFloat(unit, on) then
-              result = true
-              break
-            end
-          end
+          break
         end
       end
     elseif condtype == "arond" then
@@ -517,16 +492,17 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
         end
         if #others == 0 then
           result = false
+          break
         end
       end
     elseif condtype == "seen by" then
       if unit == outerlvl then --basically turns into sans n't BUT the unit has to be looking inbounds as well!
-        result = false
         for _,param in ipairs(params) do
+          local found = false
           local others = findUnitsByName(param)
           for _,on in ipairs(others) do
             if inBounds(on.x + dirs8[on.dir][1], on.y + dirs8[on.dir][2]) then
-              result = true
+              found = true
               break
             end
           end
@@ -536,16 +512,21 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
               for ny=-1,1 do
                 for __,on in ipairs(surrounds[nx][ny]) do
                   if nameIs(on, param) and nx + dirs8[on.dir][1] == 0 and ny + dirs8[on.dir][2] == 0 then
-                    result = true
+                    found = true
                     break
                   end
                 end
               end
             end
           end
+          if not found then
+            result = false
+            break
+          end
         end
       else
         for _,param in ipairs(params) do
+          local found = false
           local others = {}
           for nx=-1,1 do
             for ny=-1,1 do
@@ -554,18 +535,20 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
               end
             end
           end
-          result = false
           for _,other in ipairs(others) do
             if other.x+dirs8[other.dir][1] == unit.x and other.y+dirs8[other.dir][2] == unit.y then
-              result = true
+              found = true
               break
             end
+          end
+          if not found then
+            result = false
+            break
           end
         end
       end
     elseif condtype == "look at" then
       for _,param in ipairs(params) do
-        print(param)
         local isdir = false
         if param == "ortho" then
           isdir = true
