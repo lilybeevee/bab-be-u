@@ -2325,4 +2325,22 @@ tiles_list = {
     color = {0, 2},
     layer = 20,
   },
+  -- 210
+  {
+    name = "sparkl",
+    sprite = "sparkl",
+    grid = {9, 14},
+    color = {2, 4},
+    layer = 10,
+    desc = "as brite as a star... but also as hotte as one!!",
+  },
+  -- 211
+  {
+    name = "text_sparkl",
+    sprite = "text_sparkl",
+    type = "text",
+    grid = {10, 14},
+    color = {2, 4},
+    layer = 20,
+  },
 }
