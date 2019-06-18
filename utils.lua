@@ -1381,11 +1381,7 @@ function endTest()
   print(perf_test.name .. ": " .. time .. "s")
 end
 
-<<<<<<< HEAD
-function loadLevels(levels, mode)
-=======
-function loadLevels(levels, level_objs)
->>>>>>> ec68d99c0a509ed7b75e42fabbae39fe298947f5
+function loadLevels(levels, mode, level_objs)
   if #levels == 0 then
     return
   end

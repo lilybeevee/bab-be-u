@@ -62,7 +62,7 @@ function doMovement(movex, movey)
   next_levels, next_level_objs = getNextLevels()
 
   if movex == 0 and movey == 0 and #next_levels > 0 then
-    loadLevels(next_levels, next_level_objs)
+    loadLevels(next_levels, nil, next_level_objs)
     return
   end
 
