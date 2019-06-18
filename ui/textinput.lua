@@ -14,7 +14,7 @@ function text_input.new()
     return self
   end
 
-  function o:getEditPos() return self.edit_pos or 0 end
+  function o:getEditPos() return self.edit_pos or self:getText():len() end
   function o:setEditPos(val) self.edit_pos = val; return self end
 
   function o:onReturn(func) self.on_return = func; return self end
