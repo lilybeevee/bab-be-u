@@ -574,7 +574,7 @@ function updateUnits(undoing, big_update)
       unit.colrful = graphical_property_cache["colrful"][unit] ~= nil
       unit.reed = graphical_property_cache["reed"][unit] ~= nil
       unit.bleu = graphical_property_cache["bleu"][unit] ~= nil
-      unit.xwx = graphical_property_cache["xwx"][unit] ~= nil
+
       if not units_by_layer[unit.layer] then
         units_by_layer[unit.layer] = {}
       end
@@ -1230,9 +1230,6 @@ end
 function moveUnit(unit,x,y)
   --when empty moves, swap it with the empty in its destination tile, to preserve the invariant 'there is exactly empty per tile'
   --also, keep empty out of units_by_tile - it will be added in getUnitsOnTile
-  if hasProperty(unit, "loop") then
-    return false
-  end
   if (unit.type == "outerlvl") then
   elseif (unit.fullname == "no1") then
     local tileid = unit.x + unit.y * mapwidth
