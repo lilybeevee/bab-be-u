@@ -420,7 +420,7 @@ function updateUnits(undoing, big_update)
         is_u = hasProperty(on, "u")
         if is_u and sameFloat(unit, on) then
           table.insert(to_destroy, unit)
-          playSound("rule")
+          playSound("bonus")
           addParticles("bonus", unit.x, unit.y, unit.color)
         end
       end
@@ -816,7 +816,7 @@ function levelBlock()
     local yous = getUnitsWithEffect("u")
     for _,unit in ipairs(yous) do
       if sameFloat(unit,outerlvl) then
-        destroyLevel("rule")
+        destroyLevel("bonus")
         return
       end
     end

@@ -221,6 +221,7 @@ function love.load()
   registerSound("hotte", 1.0)
   registerSound("undo", 0.8)
   registerSound("fail", 0.5)
+  registerSound("bonus", 0.4)
   print(colr.green("✓ sounds registered"))
 
   ui.init()
