@@ -21,6 +21,19 @@ local paletteshader_0 = love.graphics.newShader[[
     return vec4(r, g, b, texturecolor.a);
   }
 ]]
+
+local xwxShader = love.graphics.newShader[[
+	extern number time;
+
+	vec4 effect( vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords ){
+		vec2 newCoord = texture_coords;
+		float amt = 0.4;
+		newCoord.x = newCoord.x - (amt/2) + (fract(sin(dot(vec2(texture_coords.y, time), vec2(12.9898,78.233))) * 43758.5453) * amt/2);
+		vec4 pixel = Texel(texture, newCoord ); //This is the current pixel color
+		return pixel * color;
+    }
+  ]]
+  
 --local paletteshader_autumn = love.graphics.newShader("paletteshader_autumn.txt")
 --local paletteshader_dunno = love.graphics.newShader("paletteshader_dunno.txt")
 if not is_mobile then
@@ -88,6 +101,8 @@ function scene.update(dt)
   else
     love.mouse.setGrabbed(false)
   end
+	
+  xwxShader:send("time", dt) -- send delta time to the shader
   
   --TODO: PERFORMANCE: If many things are producing particles, it's laggy as heck.
   scene.doPassiveParticles(dt, ":)", "bonus", 0.25, 1, 1, {2, 4})
@@ -464,7 +479,20 @@ function scene.draw(dt)
             local sprite = overlay or sprite
             love.graphics.draw(sprite, fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
           end
-          drawSprite()
+		  
+		  if not unit.xwx then -- xwx takes control of the drawing sprite, so it shouldn't render the normal object
+		    drawSprite()
+		  end
+		  
+          if unit.xwx then -- if we're xwx, apply the special shader to our object
+		    if math.floor(love.timer.getTime() * 9) % 9 == 0 then
+		      love.graphics.setShader(xwxShader)
+			  drawSprite()
+			  love.graphics.setShader()
+			else
+			  drawSprite()
+			end
+		  end
 
           if #unit.overlay > 0 then
             local function overlayStencil()

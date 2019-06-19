@@ -574,7 +574,7 @@ function updateUnits(undoing, big_update)
       unit.colrful = graphical_property_cache["colrful"][unit] ~= nil
       unit.reed = graphical_property_cache["reed"][unit] ~= nil
       unit.bleu = graphical_property_cache["bleu"][unit] ~= nil
-
+      unit.xwx = graphical_property_cache["xwx"][unit] ~= nil
       if not units_by_layer[unit.layer] then
         units_by_layer[unit.layer] = {}
       end
