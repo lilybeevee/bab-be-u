@@ -90,6 +90,7 @@ function initializeGraphicalPropertyCache()
   if (graphical_property_cache["colrful"] == nil) then graphical_property_cache["colrful"] = {} end
   if (graphical_property_cache["reed"] == nil) then graphical_property_cache["reed"] = {} end
   if (graphical_property_cache["bleu"] == nil) then graphical_property_cache["bleu"] = {} end
+  if (graphical_property_cache["xwx"] == nil) then graphical_property_cache["xwx"] = {} end
 end
 
 function loadMap()
