@@ -360,7 +360,7 @@ function scene.draw(dt)
               unit.sprite = "text_tranz"
             end
           end
-		  if unit.fullname == "text_katany" then
+          if unit.fullname == "text_katany" then
             if hasRule("steev","got","katany") then
               unit.sprite = "text_katanya"
             else
@@ -550,6 +550,11 @@ function scene.draw(dt)
           end
 
           love.graphics.pop()
+          
+          if hasProperty(unit,"loop") then
+            love.graphics.setColor(1,1,1,.4)
+            love.graphics.rectangle("fill",fulldrawx-16,fulldrawy-16,32,32)
+          end
         end
       end
       for _,unit in ipairs(removed_units) do

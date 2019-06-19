@@ -507,6 +507,12 @@ function updateUnits(undoing, big_update)
       end
     end
     
+    if hasRule("windo","be","loop") then
+      while true do
+        --haha you're stuck now
+      end
+    end
+    
     doDirRules();
   end
   
@@ -562,7 +568,7 @@ function updateUnits(undoing, big_update)
       if (graphical_property_cache["gay"][unit] ~= nil) then
         table.insert(unit.overlay, "gay")
       end
-
+      
       -- for optimisation in drawing
       unit.stelth = graphical_property_cache["stelth"][unit] ~= nil
       unit.colrful = graphical_property_cache["colrful"][unit] ~= nil
@@ -881,8 +887,22 @@ function destroyLevel(reason)
   end
   handleDels(units, true)
   if reason == "infloop" then
-    local new_unit = createUnit(tiles_by_name["infloop"], math.floor(mapwidth/2), math.floor(mapheight/2), 0)
-    addUndo({"create", new_unit.id, false})
+    if hasRule("loop","be",":)") then
+      win = true
+      music_fading = true
+      playSound("win")
+    elseif hasRule("loop","be","xwx") then
+      love = {}
+    elseif hasRule("loop","be","try again") then
+      local can_undo = true;
+      while (can_undo) do
+        can_undo = undo()
+      end
+      reset_count = reset_count + 1
+    else
+      local new_unit = createUnit(tiles_by_name["infloop"], math.floor(mapwidth/2), math.floor(mapheight/2), 0)
+      addUndo({"create", new_unit.id, false})
+    end
   end
 end
 
@@ -1210,6 +1230,9 @@ end
 function moveUnit(unit,x,y)
   --when empty moves, swap it with the empty in its destination tile, to preserve the invariant 'there is exactly empty per tile'
   --also, keep empty out of units_by_tile - it will be added in getUnitsOnTile
+  if hasProperty(unit, "loop") then
+    return false
+  end
   if (unit.type == "outerlvl") then
   elseif (unit.fullname == "no1") then
     local tileid = unit.x + unit.y * mapwidth
