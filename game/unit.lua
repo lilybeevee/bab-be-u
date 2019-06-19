@@ -314,7 +314,7 @@ function updateUnits(undoing, big_update)
       for _,on in ipairs(stuff) do
         if unit ~= on and sameFloat(unit, on) then
           table.insert(to_destroy, unit)
-          playSound("break")
+          playSound("destroy")
           addParticles("destroy", unit.x, unit.y, unit.color)
           shakeScreen(0.3, 0.1)
         end
@@ -329,7 +329,7 @@ function updateUnits(undoing, big_update)
       for _,on in ipairs(stuff) do
         if hasProperty(on, "fridgd") and sameFloat(unit, on) then
           table.insert(to_destroy, on)
-          playSound("sink")
+          playSound("hotte")
           addParticles("destroy", unit.x, unit.y, unit.color)
           shakeScreen(0.3, 0.1)
         end
@@ -379,7 +379,7 @@ function updateUnits(undoing, big_update)
       for _,on in ipairs(stuff) do
         if unit ~= on and hasRule(unit, "snacc", on) and sameFloat(unit, on) then
           table.insert(to_destroy, on)
-          playSound("break")
+          playSound("snacc")
           addParticles("destroy", unit.x, unit.y, unit.color)
           shakeScreen(0.3, 0.15)
         end
@@ -692,7 +692,7 @@ function levelBlock()
   if hasProperty(outerlvl, "ouch") then
     for _,unit in ipairs(units) do
       if sameFloat(unit, outerlvl) then
-        destroyLevel("break")
+        destroyLevel("snacc")
         return;
       end
     end
@@ -707,7 +707,7 @@ function levelBlock()
       end
     end
     if #to_destroy > 0 then
-      playSound("sink")
+      playSound("hotte")
     end
   end
   
@@ -715,13 +715,13 @@ function levelBlock()
   
   if hasProperty(outerlvl, "fridgd") then
     if hasProperty(outerlvl, "hotte") then
-      destroyLevel("sink")
+      destroyLevel("hotte")
       return
     end
     local melters = getUnitsWithEffect("hotte")
     for _,unit in ipairs(melters) do
       if sameFloat(unit,outerlvl) then
-        destroyLevel("sink")
+        destroyLevel("hotte")
         return
       end
     end
@@ -742,12 +742,12 @@ function levelBlock()
   
   if hasProperty(outerlvl, "ned kee") then
     if hasProperty(outerlvl, "for dor") then
-      destroyLevel("open")
+      destroyLevel("unlock")
     end
     local dors = getUnitsWithEffect("for dor")
     for _,unit in ipairs(dors) do
       if sameFloat(unit,outerlvl) then
-        destroyLevel("open")
+        destroyLevel("unlock")
         return
       end
     end
@@ -759,7 +759,7 @@ function levelBlock()
     local kees = getUnitsWithEffect("ned kee")
     for _,unit in ipairs(kees) do
       if sameFloat(unit,outerlvl) then
-        destroyLevel("open")
+        destroyLevel("unlock")
         return
       end
     end
@@ -786,7 +786,7 @@ function levelBlock()
   end
   
   if #to_destroy > 0 then
-    playSound("break")
+    playSound("snacc")
     shakeScreen(0.3, 0.1)
   end
   
@@ -884,7 +884,7 @@ function destroyLevel(reason)
   level_destroyed = true
   addUndo({"destroy_level", reason});
   playSound(reason)
-  if reason == "open" or reason == "snacc" or reason == "convert" then
+  if reason == "open" or reason == "convert" then
     playSound("break")
   end
   for _,unit in ipairs(units) do

@@ -402,6 +402,16 @@ function doAction(action)
       unit.removed = true
       unit.destroyed = true
     end
+  elseif action_name == "snacc" then
+    playSound("snacc", 0.5)
+    local victims = action[2]
+    for _,unit in ipairs(victims) do
+      addParticles("destroy", unit.x, unit.y, unit.color)
+      if not hasProperty(unit, "protecc") then
+        unit.removed = true
+        unit.destroyed = true
+      end
+    end
   end
 end
 
@@ -1123,9 +1133,13 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
         stopped = false
       end
       --if a weak thing tries to move and fails, destroy it. movers don't do this though.
-      if stopped and (hasProperty(unit, "ouch") or rules_with["snacc"] ~= nil and hasRule(v, "snacc", unit)) and not hasProperty(unit, "protecc") and (reason ~= "walk" or not hasProperty(unit, "stubbn")) then
-        table.insert(specials, {"weak", {unit}})
-        return true,movers,specials
+      if stopped then
+        local ouch = hasProperty(unit, "ouch");
+        local snacc = rules_with["snacc"] ~= nil and hasRule(v, "snacc", unit);
+        if (ouch or snacc) and not hasProperty(unit, "protecc") and (reason ~= "walk" or not hasProperty(unit, "stubbn")) then
+          table.insert(specials, {ouch and "weak" or "snacc", {unit}})
+          return true,movers,specials
+        end
       end
       if stopped then
         return false,movers,specials

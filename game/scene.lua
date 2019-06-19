@@ -857,7 +857,9 @@ function scene.checkInput()
           print("input latency: "..tostring(round((start_time-last_input_time)*1000)).."ms")
           last_input_time = nil
         end
-        undo()
+        local result = undo()
+        if result then playSound("undo") else playSound("fail") end
+        do_move_sound = false;
         local end_time = love.timer.getTime();
         print("undo took: "..tostring(round((end_time-start_time)*1000)).."ms")
       else
