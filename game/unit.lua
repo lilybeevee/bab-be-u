@@ -675,10 +675,14 @@ end
 function levelBlock()
   local to_destroy = {}
   
+  if hasProperty(outerlvl, "loop") then
+    destroyLevel("infloop")
+  end
+  
   if hasProperty(outerlvl, "no swim") then
     for _,unit in ipairs(units) do
       if sameFloat(unit, outerlvl) then
-        destroyLevel("sink");
+        destroyLevel("sink")
         return;
       end
     end
@@ -687,7 +691,7 @@ function levelBlock()
   if hasProperty(outerlvl, "ouch") then
     for _,unit in ipairs(units) do
       if sameFloat(unit, outerlvl) then
-        destroyLevel("break");
+        destroyLevel("break")
         return;
       end
     end
@@ -835,7 +839,7 @@ function levelBlock()
   end
   
   if (will_undo) then
-    local can_undo = true;
+    local can_undo = true
     while (can_undo) do
       can_undo = undo()
     end
