@@ -181,7 +181,7 @@ function doMovement(movex, movey)
     end
 
     for _,unit in pairs(moving_units) do
-      if not unit.stelth then
+      if not unit.stelth and not hasProperty(unit, "loop") then
         addParticles("movement-puff", unit.x, unit.y, unit.color)
       end
     end
