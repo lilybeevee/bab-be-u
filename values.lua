@@ -1417,7 +1417,7 @@ tiles_list = {
     name = "infloop",
     sprite = "text_infloop",
     type = "object",
-    grid = {-1, -1},
+    grid = {-1,-1},
     color = {0, 3},
     layer = 20,
   },
@@ -2400,5 +2400,15 @@ tiles_list = {
     grid = {16, 14},
     color = {1, 0},
     layer = 20,
+  },
+  -- 218
+  {
+    name = "text_loop",
+    sprite = "text_infloop",
+    type = "text",
+    grid = {15,0},
+    color = {0, 3},
+    layer = 20,
+    desc = "INFLOOP: A special word that describes the infinite loop state."
   },
 }
