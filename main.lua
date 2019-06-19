@@ -219,7 +219,7 @@ function love.load()
   registerSound("infloop", 0.5)
   registerSound("snacc", 1.0)
   registerSound("hotte", 1.0)
-  registerSound("undo", 1.0)
+  registerSound("undo", 0.8)
   registerSound("fail", 0.5)
   print(colr.green("✓ sounds registered"))
 
