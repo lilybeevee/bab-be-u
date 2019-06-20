@@ -866,8 +866,9 @@ function doPortal(unit, px, py, move_dir, dir, reverse)
     local rs = reverse and -1 or 1
     --arbitrarily pick the first paired portal we find while iterating - can't think of a more 'simultaneousy' logic
     --I thought about making portals go backwards/forwards twice/etc depending on property count, but it doesn't play nice with pull - if two portals lead to a portal you move away from, which one do you pull from?
+    --This was already implemented in cg5's mod, but I overlooked it the first time around - PORTAL is FLOAT respecting, so now POOR TOLL is FLYE respecting. Spooky! (I already know this will have weird behaviour with PULL and SIDEKIK, so looking forward to that.)
     for _,v in ipairs(getUnitsOnTile(px, py, nil, false)) do
-      if hasProperty(v, "poor toll") then
+      if hasProperty(v, "poor toll") and sameFloat(unit, v) then
         local portal_rules = matchesRule(v.fullname, "be", "poor toll");
         local portals_direct = {};
         local portals = {};
@@ -893,6 +894,11 @@ function doPortal(unit, px, py, move_dir, dir, reverse)
         --did I ever mention I hate 1 indexed arrays?
         local dest_index = ((portal_index + rs - 1) % #portals) + 1;
         local dest_portal = portals[dest_index];
+        --I don't know how this bug happens, but it'll be easier to debug if it doesn't immediately crash the game LOL
+        if (dest_portal == nil) then
+          print("Expected to find a portal destination and didn't!"..","..tostring(#portals)..","..tostring(dest_index))
+          break
+        end
         local dir1 = v.dir
         local dir2 = dest_portal.dir
         move_dir = move_dir > 0 and dirAdd(move_dir, dirDiff(dir1, dir2)) or 0

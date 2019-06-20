@@ -10,6 +10,7 @@ function clearRules()
   --text and level basically alrady exist, so no need to be picky.
   addRule({{"text","be","go away",{{},{}}},{},1})
   addRule({{"lvl","be","no go",{{},{}}},{},1})
+  --TODO: This will need to be automatic on levels with letters/combined words, since a selectr/bordr might be made in a surprising way, and it will need to have its implicit rules apply immediately.
   if (units_by_name["selctr"] or units_by_name["text_selctr"]) then
     addRule({{"selctr","be","u",{{},{}}},{},1})
     addRule({{"selctr","liek","lvl",{{},{}}},{},1})
@@ -76,13 +77,16 @@ function parseRules(undoing)
     #matchesRule("text", "be", "mirr arnd"),
     #matchesRule(outerlvl, "be", "go arnd"),
     #matchesRule(outerlvl, "be", "mirr arnd"),
+    --If and only if poor tolls exist, flyeness changing can affect rules parsing, because the text and portal have to match flyeness to go through.
+    rules_with["poor toll"] and #matchesRule(nil, "be", "flye") or 0,
+    rules_with["poor toll"] and #matchesRule(nil, "be", "tall") or 0,
   };
   
   while (changed_reparsing_rule) do
     changed_reparsing_rule = false
     loop_rules = loop_rules + 1
-    if (loop_rules > 200) then
-      print("parseRules infinite loop! (200 attempts)")
+    if (loop_rules > 100) then
+      print("parseRules infinite loop! (100 attempts)")
       destroyLevel("infloop");
     end
   
@@ -362,6 +366,8 @@ function parseRules(undoing)
     #matchesRule("text", "be", "mirr arnd"),
     #matchesRule(outerlvl, "be", "go arnd"),
     #matchesRule(outerlvl, "be", "mirr arnd"),
+    --If and only if poor tolls exist, flyeness changing can affect rules parsing, because the text and portal have to match flyeness to go through.
+    rules_with["poor toll"] and #matchesRule(nil, "be", "flye") or 0
     };
     
     for i = 1,#reparse_rule_counts do
@@ -592,6 +598,10 @@ function shouldReparseRules()
   if shouldReparseRulesIfConditionalRuleExists("text", "be", "mirr arnd") then return true end
   if shouldReparseRulesIfConditionalRuleExists(outerlvl, "be", "go arnd") then return true end
   if shouldReparseRulesIfConditionalRuleExists(outerlvl, "be", "mirr arnd") then return true end
+  if rules_with["poor toll"] then
+    if shouldReparseRulesIfConditionalRuleExists("?", "be", "flye") then return true end
+    if shouldReparseRulesIfConditionalRuleExists("?", "be", "tall") then return true end
+  end
   return false
 end
 
