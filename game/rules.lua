@@ -7,19 +7,20 @@ function clearRules()
   max_not_rules = 0
   portal_id = ""
 
-  local text_be_go_away = {{"text","be","go away",{{},{}}},{},1}
-  local selctr_be_u = {{"selctr","be","u",{{},{}}},{},1}
-  local selctr_bounded_lvl = {{"selctr","liek","lvl",{{},{}}},{},1}
-  local selctr_bounded_lin = {{"selctr","liek","lin",{{},{}}},{},1}
-  local selctr_be_flye = {{"selctr","be","flye",{{},{}}},{},1}
-  local lvl_be_no_go = {{"lvl","be","no go",{{},{}}},{},1}
-  addRule(text_be_go_away)
-  addRule(selctr_be_u)
-  addRule(selctr_bounded_lvl)
-  addRule(selctr_bounded_lin)
-  addRule(selctr_be_flye)
-  addRule(lvl_be_no_go)
-
+  --text and level basically alrady exist, so no need to be picky.
+  addRule({{"text","be","go away",{{},{}}},{},1})
+  addRule({{"lvl","be","no go",{{},{}}},{},1})
+  if (units_by_name["selctr"] or units_by_name["text_selctr"]) then
+    addRule({{"selctr","be","u",{{},{}}},{},1})
+    addRule({{"selctr","liek","lvl",{{},{}}},{},1})
+    addRule({{"selctr","liek","lin",{{},{}}},{},1})
+    addRule({{"selctr","be","flye",{{},{}}},{},1})
+  end
+  if (units_by_name["bordr"] or units_by_name["text_bordr"]) then
+    addRule({{"bordr","be","no go",{{},{}}},{},1})
+    addRule({{"bordr","be","tall",{{},{}}},{},1})
+  end
+  
   has_new_rule = false
 end
 
