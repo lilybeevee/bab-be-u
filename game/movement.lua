@@ -741,32 +741,75 @@ function fallBlock()
   local fallers = getUnitsWithEffect("haet skye")
   table.sort(fallers, function(a, b) return a.y > b.y end )
   
+  local vallers = getUnitsWithEffect("haet flor")
+  table.sort(vallers, function(a, b) return a.y < b.y end )
+  
   for _,unit in ipairs(fallers) do
     local caught = false
-	
-    addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
-    local loop_fall = 0
-    local dx, dy, dir, px, py = 0, 1, 3, -1, -1
-    local old_dir = 3;
-    while (caught == false) do
-      loop_fall = loop_fall + 1;
-      if (loop_fall > 1000) then
-        print("movement infinite loop! (1000 attempts at a faller)")
-        destroyLevel("infloop");
-        return;
+    
+    local fallcount = countProperty(unit,"haet skye")
+    local vallcount = countProperty(unit,"haet flor")
+    
+    if fallcount > vallcount then
+      addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
+      local loop_fall = 0
+      local dx, dy, dir, px, py = 0, 1, 3, -1, -1
+      local old_dir = 3;
+      while (caught == false) do
+        loop_fall = loop_fall + 1;
+        if (loop_fall > 1000) then
+          print("movement infinite loop! (1000 attempts at a faller)")
+          destroyLevel("infloop");
+          return;
+        end
+        dx, dy, dir, px, py = getNextTile(unit, dx, dy, dir);
+        --local catchers = getUnitsOnTile(px,py)
+        if not inBounds(px,py) then
+          caught = true
+        end
+        if not canMove(unit, dx, dy, dir, false, false, nil, "haet skye") then
+          caught = true
+        end
+        if caught == false then
+          updateDir(unit, dirAdd(unit.dir, dirDiff(old_dir, dir)));
+          old_dir = dir;
+          moveUnit(unit,px,py)
+        end
       end
-      dx, dy, dir, px, py = getNextTile(unit, dx, dy, dir);
-      --local catchers = getUnitsOnTile(px,py)
-      if not inBounds(px,py) then
-        caught = true
-      end
-      if not canMove(unit, dx, dy, dir, false, false, nil, "haet skye") then
-        caught = true
-      end
-      if caught == false then
-        updateDir(unit, dirAdd(unit.dir, dirDiff(old_dir, dir)));
-        old_dir = dir;
-        moveUnit(unit,px,py)
+    end
+  end
+  
+  for _,unit in ipairs(vallers) do
+    local caught = false
+    
+    local fallcount = countProperty(unit,"haet skye")
+    local vallcount = countProperty(unit,"haet flor")
+    
+    if vallcount > fallcount then
+      addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
+      local loop_fall = 0
+      local dx, dy, dir, px, py = 0, -1, 3, -1, -1
+      local old_dir = 3;
+      while (caught == false) do
+        loop_fall = loop_fall + 1;
+        if (loop_fall > 1000) then
+          print("movement infinite loop! (1000 attempts at a faller)")
+          destroyLevel("infloop");
+          return;
+        end
+        dx, dy, dir, px, py = getNextTile(unit, dx, dy, dir);
+        --local catchers = getUnitsOnTile(px,py)
+        if not inBounds(px,py) then
+          caught = true
+        end
+        if not canMove(unit, dx, dy, dir, false, false, nil, "haet skye") then
+          caught = true
+        end
+        if caught == false then
+          updateDir(unit, dirAdd(unit.dir, dirDiff(old_dir, dir)));
+          old_dir = dir;
+          moveUnit(unit,px,py)
+        end
       end
     end
   end
