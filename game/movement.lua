@@ -427,7 +427,7 @@ function moveIt(mover, dx, dy, facing_dir, move_dir, geometry_spin, data, pullin
     end
     --add SIDEKIKERs to move in the next sub-tick
     --move_dir is more accurate in the presence of WRAP/PORTAL than dx/dy (which can fling you across the map)
-    for __,sidekiker in ipairs(findSidekikers(mover, move_dx, move_dy)) do
+    for sidekiker,skdir in pairs(findSidekikers(mover, move_dx, move_dy)) do
       local currently_moving = false
       for _,mover2 in ipairs(moving_units) do
         if mover2 == sidekiker then
@@ -436,7 +436,7 @@ function moveIt(mover, dx, dy, facing_dir, move_dir, geometry_spin, data, pullin
         end
       end
       if not currently_moving then
-        table.insert(sidekiker.moves, {reason = "sidekik", dir = move_dir, times = 1}) --TODO: dx/dy, dir and mover.dir could possibly all be different, explore advanced movement interactions with sidekik and wrap, portal, stubborn
+        table.insert(sidekiker.moves, {reason = "sidekik", dir = skdir, times = 1}) --TODO: dx/dy, dir and mover.dir could possibly all be different, explore advanced movement interactions with sidekik and wrap, portal, stubborn
         table.insert(moving_units, sidekiker) --Patashu: I think moving_units is correct (since it should happen 'at the same time' like a push or pull) but maybe changing this to moving_units_next will fix a bug in the future...?
         already_added[sidekiker] = true
       end
@@ -593,11 +593,14 @@ function findSidekikers(unit,dx,dy)
   local dir90 = (dir + 2 - 1) % 8 + 1;
   for i = 1,2 do
     local curdir = (dir90 + 4*i - 1) % 8 + 1;
-    local curx = x+dirs8[curdir][1];
-    local cury = y+dirs8[curdir][2];
-    for _,v in ipairs(getUnitsOnTile(curx, cury)) do
+    local curdx = dirs8[curdir][1];
+    local curdy = dirs8[curdir][2];
+    local curx = x+curdx;
+    local cury = y+curdy;
+    local _dx, _dy, _dir, _x, _y = getNextTile(unit, curdx, curdy, curdir);
+    for _,v in ipairs(getUnitsOnTile(_x, _y)) do
       if hasProperty(v, "sidekik") then
-        table.insert(result, v);
+        result[v] = dirAdd(dir, dirDiff(_dir, curdir));
       end
     end
   end
@@ -606,11 +609,14 @@ function findSidekikers(unit,dx,dy)
   local dir45 = (dir + 1 - 1) % 8 + 1;
   for i = 1,4 do
     local curdir = (dir45 + 2*i - 1) % 8 + 1;
-    local curx = x+dirs8[curdir][1];
-    local cury = y+dirs8[curdir][2];
-    for _,v in ipairs(getUnitsOnTile(curx, cury)) do
+    local curdx = dirs8[curdir][1];
+    local curdy = dirs8[curdir][2];
+    local curx = x+curdx;
+    local cury = y+curdy;
+    local _dx, _dy, _dir, _x, _y = getNextTile(unit, curdx, curdy, curdir);
+    for _,v in ipairs(getUnitsOnTile(_x, _y)) do
       if hasProperty(v, "sidekik") and hasProperty(v, "come pls") and not hasProperty(v, "ortho") then
-        table.insert(result, v);
+        result[v] = dirAdd(dir, dirDiff(_dir, curdir));
       end
     end
   end
