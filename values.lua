@@ -2381,7 +2381,7 @@ tiles_list = {
     color = {0, 2},
     layer = 20,
   },
-  -- 2216
+  -- 216
   {
     name = "bordr",
     sprite = "bordr",
@@ -2391,7 +2391,7 @@ tiles_list = {
     layer = 99,
     desc = "fake oob to hide stuff under"
   },
-    -- 217
+  -- 217
   {
     name = "text_bordr",
     sprite = "text_bordr",
@@ -2428,6 +2428,24 @@ tiles_list = {
     type = "text",
     grid = {12, 13},
     color = {6, 2},
+    layer = 20,
+  },
+  -- 221
+  {
+    name = "jail",
+    sprite = "jail",
+    grid = {13, 13},
+    color = {0, 2},
+    layer = 21,
+    desc = "EVERY1 W/FREN JAIL HAET LVL. now bab's in jail :(",
+  },
+  -- 222
+  {
+    name = "text_jail",
+    sprite = "text_jail",
+    type = "text",
+    grid = {14, 13},
+    color = {0, 2},
     layer = 20,
   },
 }
