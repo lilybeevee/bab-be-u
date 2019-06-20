@@ -178,6 +178,19 @@ function doMovement(movex, movey)
           end
         end
       end
+      local go = getUnitsWithEffectAndCount("goooo")
+      for unit,goness in pairs(go) do
+        local others = (unit == outerlvl and units or getUnitsOnTile(unit.x, unit.y));
+        for __,other in ipairs(others) do 
+          if other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) then
+            table.insert(other.moves, {reason = "goooo", dir = unit.dir, times = goness})
+            if #other.moves > 0 and not already_added[other] then
+              table.insert(moving_units, other)
+              already_added[other] = true
+            end
+          end
+        end
+      end
     end
 
     for _,unit in pairs(moving_units) do
