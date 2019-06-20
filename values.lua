@@ -2398,7 +2398,7 @@ tiles_list = {
     type = "text",
     texttype = "text",
     grid = {16, 14},
-    color = {1, 0},
+    color = {2, 0},
     layer = 20,
   },
   -- 218
@@ -2410,5 +2410,24 @@ tiles_list = {
     color = {0, 3},
     layer = 20,
     desc = "INFLOOP: A special word that describes the infinite loop state."
+  },
+  -- 219
+  {
+    name = "platfor",
+    sprite = "platfor",
+    grid = {11, 13},
+    color = {6, 2},
+    layer = 5,
+    desc = "good for use with go my way",
+    rotate = true
+  },
+  -- 220
+  {
+    name = "text_platfor",
+    sprite = "text_platfor",
+    type = "text",
+    grid = {12, 13},
+    color = {6, 2},
+    layer = 20,
   },
 }
