@@ -45,6 +45,18 @@ function updateUnits(undoing, big_update)
       end
     end
     
+    local isshift = getUnitsWithEffect("goooo");
+    for _,unit in ipairs(isshift) do
+      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
+      for _,on in ipairs(stuff) do
+        if unit ~= on and sameFloat(unit, on) then
+          addUndo({"update", on.id, on.x, on.y, on.dir})
+          on.olddir = on.dir
+          updateDir(on, unit.dir)
+        end
+      end
+    end
+    
     --Currently using deterministic tele version. Number of teles a teleporter has influences whether it goes forwards or backwards and by how many steps.
     local istele = getUnitsWithEffectAndCount("visit fren");
     teles_by_name = {};
