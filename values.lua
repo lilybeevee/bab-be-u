@@ -1877,7 +1877,7 @@ tiles_list = {
     grid = {14, 4},
     color = {3, 2},
     layer = 20,
-    desc = "POOR TOLL: If a unit would enter a POOR TOLL unit, it instead leaves the next POOR TOLL unit of the same name in reading order (left to right, line by line, wrapping around) out the corresponding other side.",
+    desc = "POOR TOLL: If a unit would enter a POOR TOLL unit, it instead leaves the next POOR TOLL unit of the same name in reading order (left to right, line by line, wrapping around) out the corresponding same side. Respects FLYE!",
   },
   -- 170
   {

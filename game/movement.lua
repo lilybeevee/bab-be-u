@@ -900,7 +900,8 @@ function doPortal(unit, px, py, move_dir, dir, reverse)
           break
         end
         local dir1 = v.dir
-        local dir2 = dest_portal.dir
+        --At Vitellary's request, and as a baba/bab difference, let's try making it so when you go in a (side), you come out the same (side) on the destination. Front to front, back to back, left side to left side and so on.
+        local dir2 = rotate8(dest_portal.dir)
         move_dir = move_dir > 0 and dirAdd(move_dir, dirDiff(dir1, dir2)) or 0
         dir = dir > 0 and dirAdd(dir, dirDiff(dir1, dir2)) or 0
         local dx, dy = 0, 0;
