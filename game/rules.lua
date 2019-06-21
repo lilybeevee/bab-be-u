@@ -75,6 +75,8 @@ function parseRules(undoing)
     #matchesRule(nil, "be", "poor toll"),
     #matchesRule("text", "be", "go arnd"),
     #matchesRule("text", "be", "mirr arnd"),
+    #matchesRule("text", "be", "ortho"),
+    #matchesRule("text", "be", "diag"),
     #matchesRule(outerlvl, "be", "go arnd"),
     #matchesRule(outerlvl, "be", "mirr arnd"),
     --If and only if poor tolls exist, flyeness changing can affect rules parsing, because the text and portal have to match flyeness to go through.
@@ -110,9 +112,19 @@ function parseRules(undoing)
 
           local tileid = (x+dx) + (y+dy) * mapwidth
           local ntileid = (x+ndx) + (y+ndy) * mapwidth
+          
+          local validdir = true
+          
+          if ((i == 1) or (i == 3)) and hasRule("text","be","diag") and not hasRule("text","be","ortho") then
+            validdir = false
+          end
+          
+          if (i == 2) and hasRule("text","be","ortho") and not hasRule("text","be","diag") then
+            validdir = false
+          end
 
           --print(tostring(x)..","..tostring(y)..","..tostring(dx)..","..tostring(dy)..","..tostring(ndx)..","..tostring(ndy)..","..tostring(#getUnitsOnTile(x+ndx, y+ndy, "text"))..","..tostring(#getUnitsOnTile(x+dx, y+dy, "text")))
-          if #getTextOnTile(x+ndx, y+ndy) == 0 then
+          if (#getTextOnTile(x+ndx, y+ndy) == 0) and validdir then
             if not been_first[i][x + y * mapwidth] then
               table.insert(first_words, {unit, i})
               been_first[i][x + y * mapwidth] = true
@@ -364,6 +376,8 @@ function parseRules(undoing)
     #matchesRule(nil, "be", "poor toll"),
     #matchesRule("text", "be", "go arnd"),
     #matchesRule("text", "be", "mirr arnd"),
+    #matchesRule("text", "be", "ortho"),
+    #matchesRule("text", "be", "diag"),
     #matchesRule(outerlvl, "be", "go arnd"),
     #matchesRule(outerlvl, "be", "mirr arnd"),
     --If and only if poor tolls exist, flyeness changing can affect rules parsing, because the text and portal have to match flyeness to go through.
@@ -596,6 +610,8 @@ function shouldReparseRules()
   if shouldReparseRulesIfConditionalRuleExists("?", "be", "poor toll") then return true end
   if shouldReparseRulesIfConditionalRuleExists("text", "be", "go arnd") then return true end
   if shouldReparseRulesIfConditionalRuleExists("text", "be", "mirr arnd") then return true end
+  if shouldReparseRulesIfConditionalRuleExists("text", "be", "ortho") then return true end
+  if shouldReparseRulesIfConditionalRuleExists("text", "be", "diag") then return true end
   if shouldReparseRulesIfConditionalRuleExists(outerlvl, "be", "go arnd") then return true end
   if shouldReparseRulesIfConditionalRuleExists(outerlvl, "be", "mirr arnd") then return true end
   if rules_with["poor toll"] then
