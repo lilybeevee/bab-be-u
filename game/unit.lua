@@ -1139,11 +1139,10 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty)
   unit.eye = data.eye -- eye rectangle used for sans
 
   unit.fullname = data.name
-  
   if rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname] then
     should_parse_rules = true
   end
-  
+
   if unit.type == "text" then
     should_parse_rules = true
     unit.name = "text"
@@ -1170,7 +1169,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty)
   end
 
   if unit.texttype == "object" and unit.textname ~= "every1" and unit.textname ~= "mous" and unit.textname ~= "no1" and unit.textname ~= "lvl" and unit.textname ~= "text" then
-    if not table.has_value(referenced_objects, unit.textname) then  
+    if not table.has_value(referenced_objects, unit.textname) then
       table.insert(referenced_objects, unit.textname)
     end
   end

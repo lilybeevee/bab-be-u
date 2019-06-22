@@ -362,7 +362,11 @@ function scene.draw(dt)
       for _,unit in ipairs(units_by_layer[i]) do
         if not unit.stelth and (unit.name ~= "no1" or (draw_empty and validEmpty(unit))) then
           local brightness = 1
-          if unit.type == "text" and not unit.active then
+          if ((unit.type == "text") or (unit.name == "this")) and not unit.active then
+            brightness = 0.33
+          end
+          
+          if (unit.name == "steev") and not hasRule("steev","be","u") then
             brightness = 0.33
           end
 
