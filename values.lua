@@ -2459,4 +2459,13 @@ tiles_list = {
     layer = 20,
     desc = "HAET FLOR: After movement, this unit falls UP as far as it can.",
   },
+  -- 224
+  {
+    name = "this",
+    sprite = "this",
+    grid = {16,0},
+    color = {0,3},
+    layer = 20,
+    desc = "THIS: An object that pretends like it's text."
+  },
 }
