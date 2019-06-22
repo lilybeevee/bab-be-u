@@ -53,6 +53,7 @@ function ui.update()
   if love.mouse.isDown(1) then
     if ui.mouse.left == "up" or ui.mouse.left == "released" then
       ui.mouse.left = "pressed"
+      playSound("mous kicc")
     else
       ui.mouse.left = "down"
     end
@@ -67,6 +68,22 @@ function ui.update()
   if love.mouse.isDown(2) then
     if ui.mouse.right == "up" or ui.mouse.right == "released" then
       ui.mouse.right = "pressed"
+      playSound("mous snar")
+    else
+      ui.mouse.right = "down"
+    end
+  else
+    if ui.mouse.right == "down" or ui.mouse.right == "pressed" then
+      ui.mouse.right = "released"
+    else
+      ui.mouse.right = "up"
+    end
+  end
+
+  if love.mouse.isDown(3) then
+    if ui.mouse.right == "up" or ui.mouse.right == "released" then
+      ui.mouse.right = "pressed"
+      playSound("mous hihet")
     else
       ui.mouse.right = "down"
     end

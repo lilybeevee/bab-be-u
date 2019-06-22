@@ -29,7 +29,7 @@ local regularfont = love.graphics.newFont(16) -- read the line above
 function love.load()
   print(colr.bright([[
 
-  
+
                                   BBBBBBBBBB
                                   BBBBBBBBBBBBB            BBBBBBBBBB
                                   BBBBBBBBBBBBB            BBBBBBBBBB
@@ -41,33 +41,33 @@ function love.load()
                       BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
                  BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB        BBBBBBBBBB
                  BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB        BBBBBBBBBB
-              BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB        BBBBBBBBBB          
-              BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB        BBBBBBBBBB          
-            BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB        BBBBBBBBBB          
-         BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB        BBBBBBBBBBBBBBBBBBBBBB             
-         BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB        BBBBBBBBBBBBBBBBBBBBBB             
-         BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB        BBBBBBBBBBBBBBBBBBBBBB             
-         BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB        BBBBBBBBBBBBBBBBBBBBBB             
-         BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB        BBBBBBBBBBBBBBBBBBBBBB             
-         BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB             
-         BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB             
-         BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB             
-         BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB               
-         BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB               
-              BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB                    
-            BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB                  
-            BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB                  
-            BBBBBBBBBB  BBBBBBBB               BBBBBBBBBBBBBBBBB                  
-           BBBBBBBBBBB  BBBBBBBB               BBBBBBBBBBBBBBBBB                  
-         BBBBBBBBBBBBB  BBBBBBBB               BBBBBBB   BBBBBBB                  
-         BBBBBBBBBB     BBBBBBBBBB             BBBBBBB   BBBBBBBBBB               
-         BBBBBBBBBB     BBBBBBBBBB             BBBBBBB   BBBBBBBBBB               
-         BBBBBBBB       BBBBBBBBBB                       BBBBBBBBBB               
-         BBBBBBBB          BBBBBBBBBB                    BBBBBBBBBB               
-         BBBBBBBB          BBBBBBBBBB                    BBBBBBBBBB               
-         BBBBBBBB          BBBBBBBBBB                      BBBBBBBB               
-         BBBBBBBB          BBBBBBBBBB                      BBBBBBBB               
-         BBBBBBBB          BBBBBBBBBB                      BBBBBBBB 
+              BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB        BBBBBBBBBB
+              BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB        BBBBBBBBBB
+            BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB        BBBBBBBBBB
+         BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB        BBBBBBBBBBBBBBBBBBBBBB
+         BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB        BBBBBBBBBBBBBBBBBBBBBB
+         BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB        BBBBBBBBBBBBBBBBBBBBBB
+         BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB        BBBBBBBBBBBBBBBBBBBBBB
+         BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB        BBBBBBBBBBBBBBBBBBBBBB
+         BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+         BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+         BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+         BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+         BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+              BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+            BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+            BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+            BBBBBBBBBB  BBBBBBBB               BBBBBBBBBBBBBBBBB
+           BBBBBBBBBBB  BBBBBBBB               BBBBBBBBBBBBBBBBB
+         BBBBBBBBBBBBB  BBBBBBBB               BBBBBBB   BBBBBBB
+         BBBBBBBBBB     BBBBBBBBBB             BBBBBBB   BBBBBBBBBB
+         BBBBBBBBBB     BBBBBBBBBB             BBBBBBB   BBBBBBBBBB
+         BBBBBBBB       BBBBBBBBBB                       BBBBBBBBBB
+         BBBBBBBB          BBBBBBBBBB                    BBBBBBBBBB
+         BBBBBBBB          BBBBBBBBBB                    BBBBBBBBBB
+         BBBBBBBB          BBBBBBBBBB                      BBBBBBBB
+         BBBBBBBB          BBBBBBBBBB                      BBBBBBBB
+         BBBBBBBB          BBBBBBBBBB                      BBBBBBBB
 
   ]])..colr.magenta([[
                                    BAB BE U]])..
@@ -209,8 +209,13 @@ function love.load()
   --if love.system.getOS() == "OS X" then
     --system_cursor = sprites["ui/mous_osx"]
   --end
-  
+
   registerSound("move", 0.4)
+  registerSound("mous sele", 1.0)
+  registerSound("mous hovvr", 1.0)
+  registerSound("mous kicc", 0.5)
+  registerSound("mous snar", 0.5)
+  registerSound("mous hihet", 0.5)
   registerSound("break", 0.5)
   registerSound("unlock", 0.6)
   registerSound("sink", 0.5)
@@ -316,7 +321,7 @@ end
 
 function love.textinput(text)
   ui.textInput(text)
-  
+
   if scene ~= loadscene then
     gooi.textinput(text)
   end
@@ -364,7 +369,7 @@ function love.mousereleased(x, y, button)
     local height = love.graphics.getHeight()
 
     local buttonwidth, buttonheight = sprites["ui/button_1"]:getDimensions()
-    
+
     if mouseOverBox(width/2-buttonwidth/2, height/2-buttonheight/2+buttonheight+10, buttonwidth, buttonheight) then
       scene = loadscene
       load_mode = "play"
