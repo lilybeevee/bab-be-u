@@ -30,6 +30,7 @@ function clearRules()
 end
 
 function getAllText()
+  local hasCopied = false
   local result = units_by_name["text"];
   if (result == nil) then result = {}; end
   
@@ -37,7 +38,10 @@ function getAllText()
     if units_by_name[name] then
       for __,unit in ipairs(units_by_name[name]) do
         if hasProperty(unit, "wurd") then
-          print(unit.name)
+          if not hasCopied then
+            result = copyTable(result);
+            hasCopied = true;
+          end
           table.insert(result, unit);
         end
       end
@@ -105,8 +109,8 @@ function parseRules(undoing)
     
     local units_to_check = getAllText();
     
-    if units_by_name["text"] then
-      for _,unit in ipairs(units_by_name["text"]) do
+    if units_to_check then
+      for _,unit in ipairs(units_to_check) do
         local x,y = unit.x,unit.y
         for i=1,3 do
           local dpos = dirs8[i]
@@ -140,7 +144,9 @@ function parseRules(undoing)
             end
           end
         end
-        unit.old_active = unit.active
+        if (loop_rules == 1) then
+          unit.old_active = unit.active
+        end
         unit.active = false
         unit.blocked = false
         unit.used_as = {}
@@ -636,7 +642,9 @@ function populateRulesEffectingNames(r1, r2, r3)
   local rules = matchesRule(r1, r2, r3);
   for _,rule in ipairs(rules) do
     local subject = rule[1][1];
-    rules_effecting_names[subject] = true;
+    if (subject:sub(1, 4) ~= "text") then
+      rules_effecting_names[subject] = true;
+    end
   end
 end
 
