@@ -138,7 +138,6 @@ end
 
 function scene.mousePressed(x, y, button)
   if mouseOverBox(10, height - sprites["ui/music-on"]:getHeight(), sprites["ui/music-on"]:getWidth(), sprites["ui/music-on"]:getHeight()) and button == 1 then
-    playSound("mous sele")
     settings["music_on"] = not settings["music_on"]
     saveAll()
   end
