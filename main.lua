@@ -22,6 +22,26 @@ menu = require 'menu/scene'
 presence = {}
 frame = 0
 
+currentfps = 0
+peakfps = 0
+averagefps = 0
+fps_captures = {}
+averagefps = 0
+
+function tableAverage(table)
+  local sum = 0
+  local ave = 0
+  local elements = #table
+
+  for i = 1, elements do
+    sum = sum + table[i]
+  end
+
+  ave = sum / elements
+
+  return ave
+end
+
 local debugDrawText                           -- read the line below
 local headerfont = love.graphics.newFont(32)  -- used for debug
 local regularfont = love.graphics.newFont(16) -- read the line above
@@ -401,6 +421,19 @@ function addTick(name, delay, fn)
 end
 
 function love.update(dt)
+
+  currentfps = love.timer.getFPS()
+
+  table.insert(fps_captures, currentfps)
+
+  averagefps = tableAverage(fps_captures)
+
+  if currentfps > peakfps then
+    peakfps = currentfps
+  end
+
+
+
   for k,v in pairs(tweens) do
     if v[1]:update(dt) then
       tweens[k] = nil
@@ -458,9 +491,11 @@ function love.draw()
   if debug then
     local mousex, mousey = love.mouse.getPosition()
 
-    local debugheader = "SUPER DEBUG MENU V2.0"
-    local debugtext = 'bab be u commit n'..build_number..'\n'..
-    'fps: '..love.timer.getFPS()..'\n'..
+    local debugheader = "SUPER DEBUG MENU V2.1"
+    local debugtext = 'bab be u commit numero '..build_number..'\n'..
+    'current fps: '..love.timer.getFPS()..'\n'..
+    'peak fps: '..peakfps..'\n'..
+    'average fps: '..averagefps..'\n'..
     '\npress R to restart\n'..
     'F4 to toggle debug menu\n'..
     'F3+G to toggle rainbowmode\n'..
