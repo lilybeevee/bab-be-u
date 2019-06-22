@@ -63,9 +63,10 @@ function scene.draw(dt)
     local buttony = height/2-buttonheight/2+(buttonheight+10)*i
 
     love.graphics.setColor(buttoncolor[1], buttoncolor[2], buttoncolor[3])
-    if mouseOverBox(width/2-sprites["ui/button_1"]:getWidth()/2, height/2-buttonheight/2+(buttonheight+10)*i, buttonwidth, buttonheight) then 
+    if mouseOverBox(width/2-sprites["ui/button_1"]:getWidth()/2, height/2-buttonheight/2+(buttonheight+10)*i, buttonwidth, buttonheight) then
       love.graphics.setColor(buttoncolor[1]-0.1, buttoncolor[2]-0.1, buttoncolor[3]-0.1) --i know this is horrible
       love.graphics.translate(buttonx+buttonwidth/2, buttony+buttonheight/2)
+      playSound("mous hovvr")
       love.graphics.rotate(0.05 * math.sin(love.timer.getTime()*3))
       love.graphics.translate(-buttonx-buttonwidth/2, -buttony-buttonheight/2)
     end
@@ -100,7 +101,7 @@ function scene.draw(dt)
   end
 
   love.graphics.draw(sprites["ui/music-"..onstate], 10, height - sprites["ui/music-"..onstate]:getHeight() - 10)
-  
+
   love.graphics.setColor(1, 1, 1)
   if mouseOverBox(20+sprites["ui/github"]:getWidth(), height-sprites["ui/github"]:getHeight() - 10, sprites["ui/github"]:getWidth(), sprites["ui/github"]:getHeight()) then
     love.graphics.setColor(.7, .7, .7)
@@ -130,13 +131,14 @@ function scene.update(dt)
   scrollx = scrollx+dt*50
   scrolly = scrolly+dt*50
 
-  if mouseOverBox(width/2-buttonwidth/2, height/2-buttonheight/2+(buttonheight+10)*3, buttonwidth, buttonheight) then 
-    love.mouse.setPosition(mousex, mousey-(buttonheight+10)) 
+  if mouseOverBox(width/2-buttonwidth/2, height/2-buttonheight/2+(buttonheight+10)*3, buttonwidth, buttonheight) then
+    love.mouse.setPosition(mousex, mousey-(buttonheight+10))
   end
 end
 
 function scene.mousePressed(x, y, button)
   if mouseOverBox(10, height - sprites["ui/music-on"]:getHeight(), sprites["ui/music-on"]:getWidth(), sprites["ui/music-on"]:getHeight()) and button == 1 then
+    playSound("mous sele")
     settings["music_on"] = not settings["music_on"]
     saveAll()
   end
