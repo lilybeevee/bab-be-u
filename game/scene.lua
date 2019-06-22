@@ -116,13 +116,13 @@ function scene.update(dt)
   debugDisplay('window dir', window_dir)
   if shake_dur > 0 then
     shake_dur = shake_dur-dt
-    shake_intensity = shake_intensity-dt/2
+    --shake_intensity = shake_intensity-dt/2
 
-    local windowx, windowy = love.window.getPosition()
+    --[[local windowx, windowy = love.window.getPosition()
     if shake_intensity > 0.6 and not fullscreen and frame%2 == 1 then
       love.window.setPosition(windowx+(math.random(0.00, 20.00)*shake_intensity*2)-shake_intensity*20.0,
                               windowy+(math.random(0.00, 20.00)*shake_intensity*2)-shake_intensity*20.0)
-    end
+    end]]
   else
     shake_intensity = 0
     shake_dur = 0
@@ -308,6 +308,11 @@ function scene.getTransform()
 
   transform:scale(scale, scale)
   transform:translate(scaledwidth / 2 - roomwidth / 2, scaledheight / 2 - roomheight / 2)
+  
+  if shake_dur > 0 then
+    local range = 1
+    transform:translate(math.random(-range, range), math.random(-range, range))
+  end
 
   return transform
 end
@@ -464,8 +469,11 @@ function scene.draw(dt)
           end
 
           if shake_dur > 0 then
-            fulldrawx = fulldrawx + (math.random(0.00, TILE_SIZE)*shake_intensity*2)-shake_intensity*TILE_SIZE
-            fulldrawy = fulldrawy + (math.random(0.00, TILE_SIZE)*shake_intensity*2)-shake_intensity*TILE_SIZE
+            local range = 0.5
+            fulldrawx = fulldrawx + math.random(-range, range)
+            fulldrawy = fulldrawy + math.random(-range, range)
+            --fulldrawx = fulldrawx + (math.random(0.00, TILE_SIZE)*shake_intensity*2)-shake_intensity*TILE_SIZE
+            --fulldrawy = fulldrawy + (math.random(0.00, TILE_SIZE)*shake_intensity*2)-shake_intensity*TILE_SIZE
           end
 
           love.graphics.push()
