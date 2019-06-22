@@ -2468,4 +2468,15 @@ tiles_list = {
     layer = 20,
     desc = "THIS: An object that pretends like it's text."
   },
+
+  {
+    name = "text_caiyan",
+    sprite = "text_caiyan",
+    type = "text",
+    texttype = "property",
+    grid = {15, 11},
+    color = {0, 255, 255},
+    layer = 20,
+    desc = "CAIYAN: Causes the unit to appear cyan.",
+  },
 }
