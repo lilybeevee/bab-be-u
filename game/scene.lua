@@ -1069,7 +1069,7 @@ function scene.setStackBox(x, y)
         stack_box.x, stack_box.y = unit.x, unit.y
         addTween(tween.new(0.1, stack_box, {scale = 1}), "stack box")
       elseif stack_box.x ~= unit.x or stack_box.y ~= unit.y then
-        addTween(tween.new(0.1, stack_box, {scale = 0}), "stack box", function()
+        addTween(tween.new(0.05, stack_box, {scale = 0}), "stack box", function()
           stack_box.enabled = true
           stack_box.units = units
           stack_box.x, stack_box.y = unit.x, unit.y

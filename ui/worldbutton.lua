@@ -17,9 +17,6 @@ function world_button.new(file)
   function o:getName() return self.name end
   function o:setName(val) self.name = val; return self end
 
-  function o:getIcon() return self.icon end
-  function o:setIcon(val) self.icon = val; return self end
-
   function o:preDraw()
     if self:hovered() then
       if self:pressed() or self:down() then
@@ -37,9 +34,7 @@ function world_button.new(file)
   function o:postDraw()
     love.graphics.setColor(1, 1, 1, 1)
 
-    if self:getIcon() then
-      love.graphics.draw(self:getIcon(), self:getWidth() / 2 - self:getIcon():getWidth() / 2, self:getHeight() / 2 - self:getIcon():getHeight() / 2)
-    elseif self:getName() then
+    if self:getName() and not self:getIcon() then
       local font = self:getFont()
       love.graphics.setFont(font)
 

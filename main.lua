@@ -354,6 +354,12 @@ function love.mousepressed(x, y, button)
     love.mouse.setPosition(x, y)
   end
 
+  if not ui.hovered and scene ~= editor then
+    if button == 1 then playSound("mous kicc") end
+    if button == 2 then playSound("mous snar") end
+    if button == 3 then playSound("mous hihet") end
+  end
+
   if scene and scene.mousePressed then
     scene.mousePressed(x, y, button)
   end

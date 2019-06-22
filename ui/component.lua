@@ -7,6 +7,7 @@ function component.new(t)
   o.data = {}
   o.children = {}
   o.mouse = {x = -1, y = -1, left = "up", right = "up"}
+  o.frame = 0
 
   -- Basic Functions
 
@@ -95,6 +96,9 @@ function component.new(t)
   function o:getActiveSprite() return self.active_sprite or self:getHoverSprite() end
   function o:setActiveSprite(val) self.active_sprite = val; return self end
 
+  function o:getIcon() return self.icon end
+  function o:setIcon(val) self.icon = val; return self end
+
   -- Text Functions
 
   function o:getText() return self.text or "" end
@@ -174,7 +178,20 @@ function component.new(t)
     return self
   end
 
+  -- Mouse Functions
+
+  function o:getFocus()
+    if self.focus == nil then return true
+    else return self.focus end
+  end
+  function o:setFocus(val) self.focus = val; return self end
+
   function o:hovered()
+    if ui.hovered and ui.hovered ~= self then
+      if not self.parent or (self.parent and not self.parent:hovered()) then
+        return false
+      end
+    end
     return self.mouse.x >= 0 and
            self.mouse.y >= 0 and
            self.mouse.x < self:getWidth() and 
@@ -208,10 +225,14 @@ function component.new(t)
            (self.mouse.right == "up" and self.mouse.left ~= "pressed" and self.mouse.left ~= "down")
   end
 
+  function o:onHovered(func) self.on_hovered = func; return self end
   function o:onPressed(func) self.on_pressed = func; return self end
   function o:onReleased(func) self.on_released = func; return self end
 
-  function o:draw()
+  function o:draw(parent)
+    self.frame = frame
+    self.parent = parent
+
     love.graphics.push()
     if self.preDraw then
       self:preDraw()
@@ -223,6 +244,9 @@ function component.new(t)
     self:drawRect()
     self:drawSprite()
 
+    love.graphics.setColor(1, 1, 1)
+    self:drawIcon()
+
     self:useTextColor()
     self:drawText()
 
@@ -231,7 +255,7 @@ function component.new(t)
     end
 
     for i,child in ipairs(self.children) do
-      child:draw()
+      child:draw(self)
     end
 
     love.graphics.pop()
@@ -281,6 +305,13 @@ function component.new(t)
     end
   end
 
+  function o:drawIcon()
+    if self:getIcon() then
+      local x, y = self:getWidth() / 2 - self:getIcon():getWidth() / 2, self:getHeight() / 2 - self:getIcon():getHeight() / 2
+      love.graphics.draw(self:getIcon(), x, y)
+    end
+  end
+
   function o:drawText()
     if self:getText() ~= "" then
       local font = self:getFont()
@@ -317,9 +348,16 @@ function component.new(t)
     if self.mouse.left ~= "up" then self.mouse.left = ui.mouse.left end
     if self.mouse.right ~= "up" then self.mouse.right = ui.mouse.right end
     if self:hovered() then
+      if self:getFocus() then ui.hovered = self end
+      if not self.last_hovered then
+        self.last_hovered = true
+        if self.on_hovered then self.on_hovered(self) end
+      end
       if ui.mouse.left == "pressed" then self.mouse.left = "pressed" end
       if ui.mouse.right == "pressed" then self.mouse.right = "pressed" end
     else
+      if ui.hovered == self then ui.hovered = nil end
+      self.last_hovered = false
       if self.mouse.left == "released" then self.mouse.left = "up" end
       if self.mouse.right == "released" then self.mouse.right = "up" end
     end

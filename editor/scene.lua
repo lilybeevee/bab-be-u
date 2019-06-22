@@ -9,7 +9,7 @@ local name_font = nil
 local typing_name = false
 local ignore_mouse = true
 
-local settings_open, settings
+local settings_open, settings, properties
 local label_palette, label_music
 local input_name, input_author, input_palette, input_music, input_width, input_height, input_extra
 
@@ -18,11 +18,15 @@ local screenshot, screenshot_image
 
 local saved_popup
 
+-- for retaining information cross-scene
+editor_save = {}
+
 ICON_WIDTH = 96
 ICON_HEIGHT = 96
 
 function scene.load()
   brush = {id = nil, dir = 1, mode = "none", picked_tile = nil, picked_index = 0}
+  properties = {enabled = false, scale = 0, x = 0, y = 0, w = 0, h = 0, components = {}} -- will do this later
   saved_popup = {sprite = sprites["ui/level_saved"], y = 16, alpha = 0}
   key_down = {}
   buttons = {}
@@ -59,6 +63,9 @@ function scene.load()
   width = love.graphics.getWidth()
   height = love.graphics.getHeight()
   name_font = love.graphics.newFont(24)
+  
+  if editor_save.brush then brush = editor_save.brush end
+  editor_save = {}
 
   scene.setupGooi()
 
@@ -394,6 +401,8 @@ function scene.update(dt)
               load_mode = "select"
               selected_level = {id = new_unit.id}
               old_world = {parent = world_parent, world = world}
+
+              editor_save.brush = brush
             end
           end
         else

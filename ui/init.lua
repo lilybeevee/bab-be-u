@@ -7,6 +7,7 @@ ui.world_button = require 'ui/worldbutton'
 
 ui.fonts = {}
 ui.mouse = {left = "up", right = "up"}
+ui.hovered = nil
 ui.editing = nil
 
 function ui.init()
@@ -19,6 +20,7 @@ function ui.init()
 end
 
 function ui.clear()
+  ui.hovered = nil
   ui.setEditing()
 end
 
@@ -50,10 +52,17 @@ function ui.textInput(text)
 end
 
 function ui.update()
+  -- clear references to UI elements that did not exist last draw
+  if ui.editing and ui.editing.frame ~= frame then
+    ui.setEditing()
+  end
+  if ui.hovered and ui.hovered.frame ~= frame then
+    ui.hovered = nil
+  end
+
   if love.mouse.isDown(1) then
     if ui.mouse.left == "up" or ui.mouse.left == "released" then
       ui.mouse.left = "pressed"
-      playSound("mous kicc")
     else
       ui.mouse.left = "down"
     end
@@ -68,22 +77,6 @@ function ui.update()
   if love.mouse.isDown(2) then
     if ui.mouse.right == "up" or ui.mouse.right == "released" then
       ui.mouse.right = "pressed"
-      playSound("mous snar")
-    else
-      ui.mouse.right = "down"
-    end
-  else
-    if ui.mouse.right == "down" or ui.mouse.right == "pressed" then
-      ui.mouse.right = "released"
-    else
-      ui.mouse.right = "up"
-    end
-  end
-
-  if love.mouse.isDown(3) then
-    if ui.mouse.right == "up" or ui.mouse.right == "released" then
-      ui.mouse.right = "pressed"
-      playSound("mous hihet")
     else
       ui.mouse.right = "down"
     end

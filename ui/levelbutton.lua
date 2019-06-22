@@ -23,9 +23,6 @@ function level_button.new(file, extra)
   function o:getName() return self.name end
   function o:setName(val) self.name = val; return self end
 
-  function o:getIcon() return self.icon end
-  function o:setIcon(val) self.icon = val; return self end
-
   function o:preDraw()
     if self:hovered() then
       if self:pressed() or self:down() then
@@ -40,14 +37,23 @@ function level_button.new(file, extra)
     end
   end
 
-  function o:postDraw()
-    local icon_y_mult = 1/2
+  function o:drawIcon()
+    local y_mult = 1/2
+    if self:getName() then
+      y_mult = 2/3
+    end
 
+    if self:getIcon() then
+      local iconw, iconh = 96, 96
+      local sx, sy = iconw / self:getIcon():getWidth(), iconh / self:getIcon():getHeight()
+      love.graphics.draw(self:getIcon(), self:getWidth() / 2 - iconw / 2, self:getHeight() * y_mult - iconh / 2, 0, sx, sy)
+    end
+  end
+
+  function o:postDraw()
     love.graphics.setColor(1, 1, 1, 1)
 
     if self:getName() then
-      icon_y_mult = 2/3
-
       local font = self:getFont()
       love.graphics.setFont(font)
 
@@ -55,12 +61,6 @@ function level_button.new(file, extra)
       local height = #lines * font:getHeight()
 
       love.graphics.printf(self:getName():upper(), 6, 40 - height / 2, self:getWidth() - 12, "center")
-    end
-
-    if self:getIcon() then
-      local iconw, iconh = 96, 96
-      local sx, sy = iconw / self:getIcon():getWidth(), iconh / self:getIcon():getHeight()
-      love.graphics.draw(self:getIcon(), self:getWidth() / 2 - iconw / 2, self:getHeight() * icon_y_mult - iconh / 2, 0, sx, sy)
     end
   end
 
