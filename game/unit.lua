@@ -327,7 +327,7 @@ function updateUnits(undoing, big_update)
       for _,on in ipairs(stuff) do
         if unit ~= on and sameFloat(unit, on) then
           table.insert(to_destroy, unit)
-          playSound("destroy")
+          playSound("break")
           addParticles("destroy", unit.x, unit.y, unit.color)
           shakeScreen(0.3, 0.1)
         end
