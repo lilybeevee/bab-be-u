@@ -239,6 +239,7 @@ function love.load()
   registerSound("mous snar", 0.5)
   registerSound("mous hihet", 0.5)
   registerSound("mous crash", 0.5)
+  -- there is a more efficient way, i know.
   registerSound("mous special 1", 0.5)
   registerSound("mous special 2", 0.5)
   registerSound("mous special 3", 0.5)
