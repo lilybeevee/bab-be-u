@@ -21,11 +21,16 @@ function clearRules()
     addRule({{"bordr","be","no go",{{},{}}},{},1})
     addRule({{"bordr","be","tall",{{},{}}},{},1})
   end
+  if units_by_name["this"] then
+    addRule({{"this","be","go away",{{},{}}},{},1})
+    addRule({{"this","be","wurd",{{},{}}},{},1})
+  end
   
   has_new_rule = false
 end
 
 function getAllText()
+  local hasCopied = false
   local result = units_by_name["text"];
   if (result == nil) then result = {}; end
   
@@ -33,7 +38,10 @@ function getAllText()
     if units_by_name[name] then
       for __,unit in ipairs(units_by_name[name]) do
         if hasProperty(unit, "wurd") then
-          print(unit.name)
+          if not hasCopied then
+            result = copyTable(result);
+            hasCopied = true;
+          end
           table.insert(result, unit);
         end
       end
@@ -77,6 +85,7 @@ function parseRules(undoing)
     #matchesRule("text", "be", "mirr arnd"),
     #matchesRule("text", "be", "ortho"),
     #matchesRule("text", "be", "diag"),
+    #matchesRule("text", "ben't", "wurd"),
     #matchesRule(outerlvl, "be", "go arnd"),
     #matchesRule(outerlvl, "be", "mirr arnd"),
     --If and only if poor tolls exist, flyeness changing can affect rules parsing, because the text and portal have to match flyeness to go through.
@@ -100,8 +109,8 @@ function parseRules(undoing)
     
     local units_to_check = getAllText();
     
-    if units_by_name["text"] then
-      for _,unit in ipairs(units_by_name["text"]) do
+    if units_to_check then
+      for _,unit in ipairs(units_to_check) do
         local x,y = unit.x,unit.y
         for i=1,3 do
           local dpos = dirs8[i]
@@ -113,25 +122,31 @@ function parseRules(undoing)
           local tileid = (x+dx) + (y+dy) * mapwidth
           local ntileid = (x+ndx) + (y+ndy) * mapwidth
           
-          local validdir = true
+          local validrule = true
           
-          if ((i == 1) or (i == 3)) and hasRule("text","be","diag") and not hasRule("text","be","ortho") then
-            validdir = false
+          if ((i == 1) or (i == 3)) and hasRule(unit,"be","diag") and not hasRule(unit,"be","ortho") then
+            validrule = false
           end
           
-          if (i == 2) and hasRule("text","be","ortho") and not hasRule("text","be","diag") then
-            validdir = false
+          if (i == 2) and hasRule(unit,"be","ortho") and not hasRule(unit,"be","diag") then
+            validrule = false
+          end
+          
+          if hasRule(unit,"ben't","wurd") then
+            validrule = false
           end
 
           --print(tostring(x)..","..tostring(y)..","..tostring(dx)..","..tostring(dy)..","..tostring(ndx)..","..tostring(ndy)..","..tostring(#getUnitsOnTile(x+ndx, y+ndy, "text"))..","..tostring(#getUnitsOnTile(x+dx, y+dy, "text")))
-          if (#getTextOnTile(x+ndx, y+ndy) == 0) and validdir then
+          if (#getTextOnTile(x+ndx, y+ndy) == 0) and validrule then
             if not been_first[i][x + y * mapwidth] then
               table.insert(first_words, {unit, i})
               been_first[i][x + y * mapwidth] = true
             end
           end
         end
-        unit.old_active = unit.active
+        if (loop_rules == 1) then
+          unit.old_active = unit.active
+        end
         unit.active = false
         unit.blocked = false
         unit.used_as = {}
@@ -378,6 +393,7 @@ function parseRules(undoing)
     #matchesRule("text", "be", "mirr arnd"),
     #matchesRule("text", "be", "ortho"),
     #matchesRule("text", "be", "diag"),
+    #matchesRule("text", "ben't", "wurd"),
     #matchesRule(outerlvl, "be", "go arnd"),
     #matchesRule(outerlvl, "be", "mirr arnd"),
     --If and only if poor tolls exist, flyeness changing can affect rules parsing, because the text and portal have to match flyeness to go through.
@@ -612,6 +628,7 @@ function shouldReparseRules()
   if shouldReparseRulesIfConditionalRuleExists("text", "be", "mirr arnd") then return true end
   if shouldReparseRulesIfConditionalRuleExists("text", "be", "ortho") then return true end
   if shouldReparseRulesIfConditionalRuleExists("text", "be", "diag") then return true end
+  if shouldReparseRulesIfConditionalRuleExists("text", "ben't", "wurd") then return true end
   if shouldReparseRulesIfConditionalRuleExists(outerlvl, "be", "go arnd") then return true end
   if shouldReparseRulesIfConditionalRuleExists(outerlvl, "be", "mirr arnd") then return true end
   if rules_with["poor toll"] then
@@ -625,7 +642,9 @@ function populateRulesEffectingNames(r1, r2, r3)
   local rules = matchesRule(r1, r2, r3);
   for _,rule in ipairs(rules) do
     local subject = rule[1][1];
-    rules_effecting_names[subject] = true;
+    if (subject:sub(1, 4) ~= "text") then
+      rules_effecting_names[subject] = true;
+    end
   end
 end
 

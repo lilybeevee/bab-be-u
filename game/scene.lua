@@ -33,7 +33,7 @@ local xwxShader = love.graphics.newShader[[
 		return pixel * color;
     }
   ]]
-  
+
 --local paletteshader_autumn = love.graphics.newShader("paletteshader_autumn.txt")
 --local paletteshader_dunno = love.graphics.newShader("paletteshader_dunno.txt")
 if not is_mobile then
@@ -84,15 +84,15 @@ end
 function scene.update(dt)
   mouse_X = love.mouse.getX()
   mouse_Y = love.mouse.getY()
-  
+
   --mouse_movedX = love.mouse.getX() - love.graphics.getWidth()*0.5
   --mouse_movedY = love.mouse.getY() - love.graphics.getHeight()*0.5
 
   sound_volume = {}
-  
+
   scene.checkInput()
   updateCursors()
-  
+
   mouse_oldX = mouse_X
   mouse_oldY = mouse_Y
 
@@ -101,9 +101,9 @@ function scene.update(dt)
   else
     love.mouse.setGrabbed(false)
   end
-	
+
   xwxShader:send("time", dt) -- send delta time to the shader
-  
+
   --TODO: PERFORMANCE: If many things are producing particles, it's laggy as heck.
   scene.doPassiveParticles(dt, ":)", "bonus", 0.25, 1, 1, {2, 4})
   scene.doPassiveParticles(dt, ":o", "bonus", 0.5, 0.8, 1, {4, 1})
@@ -151,7 +151,7 @@ function scene.keyPressed(key, isrepeat)
   if isrepeat then
     return
   end
-  
+
   last_input_time = love.timer.getTime();
 
   if key == "escape" then
@@ -164,7 +164,7 @@ function scene.keyPressed(key, isrepeat)
       end
     })
   end
-  
+
   local do_turn_now = false
 
   --TODO: PERFORMANCE: Some ways to cut down on input latency:
@@ -215,7 +215,7 @@ function scene.keyPressed(key, isrepeat)
   if key == "r" then
     scene.resetStuff()
   end
-  
+
   if key == "y" then
     level_shader = shader_zawarudo
     shader_time = 0
@@ -228,7 +228,7 @@ function scene.keyPressed(key, isrepeat)
 
   most_recent_key = key
   key_down[key] = true
-  
+
   if (do_turn_now) then
     scene.checkInput()
   end
@@ -250,9 +250,9 @@ function scene.keyReleased(key)
   if key == "z" or key == "q" or key == "backspace" or key == "kp0" then
     UNDO_DELAY = MAX_UNDO_DELAY
   end
-  
+
   --[[local do_turn_now = false
-  
+
   print(key)
   if key == "w" or key == "s" and not key_down["a"] and not key_down["d"] then
     print(repeat_timers["wasd"])
@@ -276,7 +276,7 @@ function scene.keyReleased(key)
       repeat_timers["udlr"] = 0
     end
   end
-  
+
   if (do_turn_now) then
     print("asdf")
     scene.checkInput()
@@ -308,7 +308,7 @@ function scene.getTransform()
 
   transform:scale(scale, scale)
   transform:translate(scaledwidth / 2 - roomwidth / 2, scaledheight / 2 - roomheight / 2)
-  
+
   if shake_dur > 0 then
     local range = 1
     transform:translate(math.random(-range, range), math.random(-range, range))
@@ -340,16 +340,16 @@ function scene.draw(dt)
 
   -- fill the background with the background color
   love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
-  
+
   local roomwidth = mapwidth * TILE_SIZE
   local roomheight = mapheight * TILE_SIZE
 
   love.graphics.push()
   love.graphics.applyTransform(scene.getTransform())
-  
+
   love.graphics.setColor(getPaletteColor(0,3))
   love.graphics.printf(next_level_name, 0, -14, roomwidth)
-  
+
   love.graphics.setColor(getPaletteColor(0, 4))
   if rainbowmode then love.graphics.setColor(hslToRgb(love.timer.getTime()/6%1, .1, .1, .9)) end
   if (not level_destroyed) then
@@ -362,7 +362,11 @@ function scene.draw(dt)
       for _,unit in ipairs(units_by_layer[i]) do
         if not unit.stelth and (unit.name ~= "no1" or (draw_empty and validEmpty(unit))) then
           local brightness = 1
-          if unit.type == "text" and not unit.active then
+          if ((unit.type == "text") or (unit.name == "this")) and not unit.active then
+            brightness = 0.33
+          end
+
+          if (unit.name == "steev") and not hasRule("steev","be","u") then
             brightness = 0.33
           end
 
@@ -400,14 +404,16 @@ function scene.draw(dt)
             unit.color = {2, 2}
           elseif unit.bleu then
             unit.color = {1, 3}
+          elseif unit.caiyan then
+            unit.color = {0, 255, 255}
           end
 
-          if not (unit.colrful or unit.reed or unit.bleu or rainbowmode) then
+          if not (unit.colrful or unit.reed or unit.bleu or unit.caiyan or rainbowmode) then
             unit.color = copyTable(tiles_list[unit.tile].color)
           end
 
           local sprite_name = unit.sprite
-          
+
           for type,name in pairs(unit.sprite_transforms) do
             if table.has_value(unit.used_as, type) then
               sprite_name = name
@@ -428,7 +434,7 @@ function scene.draw(dt)
           if unit.rotate then
             rotation = math.rad(unit.draw.rotation)
           end
-          
+
           --no tweening empty for now - it's buggy!
           --TODO: it's still a little buggy if you push/pull empties.
           if (unit.name == "no1") then
@@ -487,11 +493,11 @@ function scene.draw(dt)
             local sprite = overlay or sprite
             love.graphics.draw(sprite, fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
           end
-		  
+
 		  if not unit.xwx then -- xwx takes control of the drawing sprite, so it shouldn't render the normal object
 		    drawSprite()
 		  end
-		  
+
           if unit.xwx then -- if we're xwx, apply the special shader to our object
 		    if math.floor(love.timer.getTime() * 9) % 9 == 0 then
 		      love.graphics.setShader(xwxShader)
@@ -515,8 +521,8 @@ function scene.draw(dt)
               love.graphics.setBlendMode("multiply", "premultiplied")
               drawSprite(sprites["overlay/" .. overlay])
               love.graphics.setBlendMode("alpha", "alphamultiply")
-              love.graphics.setStencilTest() 
-            end 
+              love.graphics.setStencilTest()
+            end
           end
 
           if hasRule(unit,"be","sans") and unit.eye then
@@ -548,7 +554,7 @@ function scene.draw(dt)
           if false then -- stupid lua comments
             if hasRule(unit,"got","?") then
               local matchrules = matchesRule(unit,"got","?")
-              
+
               for _,matchrule in ipairs(matchrules) do
                 local tile = tiles_list[tiles_by_name[matchrule[1][3]]]
 
@@ -586,7 +592,7 @@ function scene.draw(dt)
           end
 
           love.graphics.pop()
-          
+
           if hasProperty(unit,"loop") then
             love.graphics.setColor(1,1,1,.4)
             love.graphics.rectangle("fill",fulldrawx-16,fulldrawy-16,32,32)
@@ -693,7 +699,7 @@ function scene.draw(dt)
     win_size = win_size + dt*2
   end
   love.graphics.pop()
-  
+
   if mouseOverBox(0,0,sprites["ui/cog"]:getHeight(),sprites["ui/cog"]:getWidth()) then
     if love.mouse.isDown(1) then
       love.graphics.draw(sprites["ui/cog_a"], 0, 0)
@@ -725,19 +731,19 @@ function scene.draw(dt)
     local squaresprite = sprites["ui/square"]
 	local undosprite = sprites["ui/undo"]
 	local resetsprite = sprites["ui/reset"]
-	
+
 	love.graphics.draw(arrowsprite, screenwidth-arrowsprite:getWidth()*2, screenheight-arrowsprite:getHeight()*3)
 	love.graphics.draw(arrowsprite, screenwidth, screenheight-arrowsprite:getHeight()*2, 3.14/2)
     love.graphics.draw(arrowsprite, screenwidth-arrowsprite:getWidth(), screenheight, 3.14)
     love.graphics.draw(arrowsprite, screenwidth-arrowsprite:getWidth()*3, screenheight-arrowsprite:getHeight(), 3.14*1.5)
-    
+
 	love.graphics.draw(darrowsprite, screenwidth-darrowsprite:getWidth(), screenheight-darrowsprite:getHeight()*3)
 	love.graphics.draw(darrowsprite, screenwidth, screenheight-darrowsprite:getHeight(), 3.14/2)
 	love.graphics.draw(darrowsprite, screenwidth-darrowsprite:getWidth()*2, screenheight, 3.14)
 	love.graphics.draw(darrowsprite, screenwidth-darrowsprite:getWidth()*3, screenheight-darrowsprite:getHeight()*2, 3.14*1.5)
-	
+
     love.graphics.draw(squaresprite, screenwidth-squaresprite:getWidth()*2, screenheight-squaresprite:getHeight()*2)
-	
+
 	love.graphics.draw(undosprite, undosprite:getWidth(), screenheight-undosprite:getHeight()*2)
 	love.graphics.draw(resetsprite, screenwidth-resetsprite:getWidth()*2, resetsprite:getHeight())
   end
@@ -758,8 +764,8 @@ function scene.draw(dt)
         color = {3, 1}
       elseif hasProperty(cursor,"reed") then
         color = {2, 2}
-      elseif hasProperty(cursor,"bleu") then
-        color = {1, 3}
+      elseif hasProperty(cursor,"caiyan") then
+        color = {0, 255, 255}
       end
 
       if not color then
@@ -775,7 +781,7 @@ function scene.draw(dt)
       if rainbowmode then love.graphics.setColor(hslToRgb((love.timer.getTime()/6+i*10)%1, .5, .5, .9)) end
 
       love.graphics.draw(system_cursor, cursor.screenx, cursor.screeny)
-      
+
       love.graphics.setColor(1,1,1)
       color = nil
 
@@ -792,7 +798,7 @@ function scene.draw(dt)
           love.graphics.setBlendMode("multiply", "premultiplied")
           love.graphics.draw(sprites["overlay/" .. overlay], cursor.screenx, cursor.screeny, 0, 14/32, 14/32)
           love.graphics.setBlendMode("alpha", "alphamultiply")
-          love.graphics.setStencilTest() 
+          love.graphics.setStencilTest()
         end
       end
     end
@@ -818,13 +824,13 @@ function scene.draw(dt)
         rules = rules..'   '
       end
     end
-	
+
 	rules = 'da rulz:\n'..rules
 
     love.graphics.setColor(1,1,1)
     love.graphics.printf(rules, 0, love.graphics.getHeight()/2-love.graphics.getFont():getHeight()*lines, love.graphics.getWidth(), "center")
   end
-  
+
   if (just_moved) then
     local end_time = love.timer.getTime();
       print("scene.draw() took: "..tostring(round((end_time-start_time)*1000)).."ms")
@@ -992,13 +998,13 @@ function scene.mouseReleased(x,y,button)
     local squaresprite = sprites["ui/square"]
 
     local key = "0"
-    
+
     if     mouseOverBox(screenwidth-squaresprite:getWidth()*2, screenheight-squaresprite:getHeight()*2, squaresprite:getWidth(), squaresprite:getHeight()) then
       key = "space"
 	elseif mouseOverBox(screenwidth-squaresprite:getWidth()*2, screenheight-squaresprite:getHeight()*3, squaresprite:getWidth(), squaresprite:getHeight()) then
-      key = "kp8"  
+      key = "kp8"
 	elseif mouseOverBox(screenwidth-squaresprite:getWidth(),   screenheight-squaresprite:getHeight()*3, squaresprite:getWidth(), squaresprite:getHeight()) then
-	  key = "kp9"	
+	  key = "kp9"
     elseif mouseOverBox(screenwidth-squaresprite:getWidth(),   screenheight-squaresprite:getHeight()*2, squaresprite:getWidth(), squaresprite:getHeight()) then
       key = "kp6"
 	elseif mouseOverBox(screenwidth-squaresprite:getWidth(),   screenheight-squaresprite:getHeight(),   squaresprite:getWidth(), squaresprite:getHeight()) then
@@ -1030,13 +1036,13 @@ function scene.mousePressed(x, y, button)
     local squaresprite = sprites["ui/square"]
 
     local key = "0"
-    
+
 	if     mouseOverBox(screenwidth-squaresprite:getWidth()*2, screenheight-squaresprite:getHeight()*2, squaresprite:getWidth(), squaresprite:getHeight()) then
       key = "space"
 	elseif mouseOverBox(screenwidth-squaresprite:getWidth()*2, screenheight-squaresprite:getHeight()*3, squaresprite:getWidth(), squaresprite:getHeight()) then
-      key = "kp8"  
+      key = "kp8"
 	elseif mouseOverBox(screenwidth-squaresprite:getWidth(),   screenheight-squaresprite:getHeight()*3, squaresprite:getWidth(), squaresprite:getHeight()) then
-	  key = "kp9"	
+	  key = "kp9"
     elseif mouseOverBox(screenwidth-squaresprite:getWidth(),   screenheight-squaresprite:getHeight()*2, squaresprite:getWidth(), squaresprite:getHeight()) then
       key = "kp6"
 	elseif mouseOverBox(screenwidth-squaresprite:getWidth(),   screenheight-squaresprite:getHeight(),   squaresprite:getWidth(), squaresprite:getHeight()) then

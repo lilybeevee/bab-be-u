@@ -1139,7 +1139,11 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty)
   unit.eye = data.eye -- eye rectangle used for sans
 
   unit.fullname = data.name
-  if unit.type == "text" or rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname] then
+  if rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname] then
+    should_parse_rules = true
+  end
+
+  if unit.type == "text" then
     should_parse_rules = true
     unit.name = "text"
     unit.textname = string.sub(unit.fullname, 6)
