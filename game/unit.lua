@@ -583,11 +583,21 @@ function updateUnits(undoing, big_update)
       end
       
       -- for optimisation in drawing
-      unit.stelth = graphical_property_cache["stelth"][unit] ~= nil
-      unit.colrful = graphical_property_cache["colrful"][unit] ~= nil
-      unit.reed = graphical_property_cache["reed"][unit] ~= nil
-      unit.bleu = graphical_property_cache["bleu"][unit] ~= nil
-      unit.xwx = graphical_property_cache["xwx"][unit] ~= nil
+	  local objects_to_check = {
+		"stelth", "colrful", "xwx", "rave",
+		"reed", "bleu", "grun", "yello", "purp", "orang", "cyeann", "whit", "blacc"
+	  }
+	  -- if tostring(unit.name) ~= "no1" then
+	    -- print("unit " .. tostring(unit.name) .. " properties @ updateUnits:")
+	  -- end
+	  for i = 1, #objects_to_check do
+	    local prop = objects_to_check[i]
+		unit[prop] = graphical_property_cache[prop][unit] ~= nil
+		
+		-- if tostring(unit.name) ~= "no1" then
+		  -- print("property " .. prop .. " = " .. tostring(unit[prop]))
+		-- end
+	  end
 
       if not units_by_layer[unit.layer] then
         units_by_layer[unit.layer] = {}

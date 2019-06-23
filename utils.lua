@@ -83,15 +83,15 @@ function clear()
 end
 
 function initializeGraphicalPropertyCache()
-  if (graphical_property_cache["flye"] == nil) then graphical_property_cache["flye"] = {} end
-  if (graphical_property_cache["slep"] == nil) then graphical_property_cache["slep"] = {} end
-  if (graphical_property_cache["tranz"] == nil) then graphical_property_cache["tranz"] = {} end
-  if (graphical_property_cache["gay"] == nil) then graphical_property_cache["gay"] = {} end
-  if (graphical_property_cache["stelth"] == nil) then graphical_property_cache["stelth"] = {} end
-  if (graphical_property_cache["colrful"] == nil) then graphical_property_cache["colrful"] = {} end
-  if (graphical_property_cache["reed"] == nil) then graphical_property_cache["reed"] = {} end
-  if (graphical_property_cache["bleu"] == nil) then graphical_property_cache["bleu"] = {} end
-  if (graphical_property_cache["xwx"] == nil) then graphical_property_cache["xwx"] = {} end
+  local properties_to_init = -- list of properties that require the graphical cache
+    {
+	  "flye", "slep", "tranz", "gay", "stelth", "colrful", "xwx", "rave", -- miscelleaneous graphical effects
+	  "reed", "bleu", "grun", "yello", "purp", "orang", "cyeann", "whit", "blacc" -- colouration effects
+	}
+  for i = 1, #properties_to_init do
+	local prop = properties_to_init[i]
+	if (graphical_property_cache[prop] == nil) then graphical_property_cache[prop] = {} end
+  end
 end
 
 function loadMap()

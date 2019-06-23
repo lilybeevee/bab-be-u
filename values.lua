@@ -2385,6 +2385,7 @@ tiles_list = {
   {
     name = "bordr",
     sprite = "bordr",
+    type = "object",
     grid = {15, 14},
     color = {1, 0},
     layer = 99,
@@ -2395,6 +2396,7 @@ tiles_list = {
     name = "text_bordr",
     sprite = "text_bordr",
     type = "text",
+    texttype = "text",
     grid = {16, 14},
     color = {2, 0},
     layer = 20,
@@ -2459,22 +2461,99 @@ tiles_list = {
   },
   -- 224
   {
+    name = "text_grun",
+	sprite = "text_grun",
+	type = "text",
+	texttype = "property",
+	grid = {16, 9},
+	color = {5, 2},
+	layer = 20,
+	desc = "GRUN: Causes the unit to appear green."
+  },
+  -- 225
+  {
+    name = "text_yello",
+	sprite = "text_yello",
+	type = "text",
+	texttype = "property",
+	grid = {17, 9},
+	color = {2, 4},
+	layer = 20,
+	desc = "YELLO: Causes the unit to appear yellow."
+  },
+  -- 226
+  {
+    name = "text_purp",
+	sprite = "text_purp",
+	type = "text",
+	texttype = "property",
+	grid = {16, 10},
+	color = {3, 2},
+	layer = 20,
+	desc = "PURP: Causes the unit to appear purple."
+  },
+  -- 227
+  {
+    name = "text_orang",
+	sprite = "text_orang",
+	type = "text",
+	texttype = "property",
+	grid = {17, 10},
+	color = {2, 3},
+	layer = 20,
+	desc = "ORANG: Causes the unit to appear orange."
+  },
+  -- 228
+  {
+    name = "text_cyeann",
+	sprite = "text_cyeann",
+	type = "text",
+	texttype = "property",
+	grid = {16, 11},
+	color = {1, 4},
+	layer = 20,
+	desc = "CYEANN: Causes the unit to appear cyan."
+  },
+  -- 229
+  {
+    name = "text_whit",
+	sprite = "text_whit",
+	type = "text",
+	texttype = "property",
+	grid = {17, 11},
+	color = {0, 3},
+	layer = 20,
+	desc = "WHIT: Causes the unit to appear white."
+  },
+  -- 230
+  {
+    name = "text_blacc",
+	sprite = "text_blacc",
+	type = "text",
+	texttype = "property",
+	grid = {16, 12},
+	color = {0, 4},
+	layer = 20,
+	desc = "BLACC: Causes the unit to appear black."
+  },
+  -- 230
+  {
+    name = "text_rave",
+	sprite = "text_rave",
+	type = "text",
+	texttype = "property",
+	grid = {17, 12},
+	color = {0, 3},
+	layer = 20,
+	desc = "RAVE: Causes the unit to flash through the rainbow extremely quickly."
+  },
+  -- 231
+  {
     name = "this",
     sprite = "this",
     grid = {16,0},
     color = {0,3},
     layer = 20,
     desc = "THIS: An object that pretends like it's text."
-  },
-
-  {
-    name = "text_caiyan",
-    sprite = "text_caiyan",
-    type = "text",
-    texttype = "property",
-    grid = {15, 11},
-    color = {0, 255, 255},
-    layer = 20,
-    desc = "CAIYAN: Causes the unit to appear cyan.",
   },
 }
