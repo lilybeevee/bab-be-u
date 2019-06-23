@@ -616,8 +616,9 @@ function updateUnits(undoing, big_update)
   if (will_undo) then
     local can_undo = true;
     while (can_undo) do
-      can_undo = undo()
+      can_undo = undo(true)
     end
+    parseRules(true)
     reset_count = reset_count + 1
   end
 end
@@ -855,8 +856,9 @@ function levelBlock()
   if (will_undo) then
     local can_undo = true
     while (can_undo) do
-      can_undo = undo()
+      can_undo = undo(true)
     end
+    parseRules(true)
     reset_count = reset_count + 1
   end
 end
@@ -914,8 +916,9 @@ function destroyLevel(reason)
     elseif hasRule("loop","be","try again") then
       local can_undo = true;
       while (can_undo) do
-        can_undo = undo()
+        can_undo = undo(true)
       end
+      parseRules(true)
       reset_count = reset_count + 1
     else
       local new_unit = createUnit(tiles_by_name["infloop"], math.floor(mapwidth/2), math.floor(mapheight/2), 0)

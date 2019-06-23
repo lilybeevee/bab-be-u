@@ -168,7 +168,7 @@ function turnedIntoOnlyNoUndoUnits(turn, i, unit_id)
   return not (found_non_no_undo or not found_no_undo);
 end
 
-function undo()
+function undo(dont_update_rules)
   if undo_buffer[1] ~= nil then
     local update_rules = false
     
@@ -179,7 +179,7 @@ function undo()
       update_rules = update_rules or new_update_rules;
     end
     updateUnits(true)
-    if update_rules then
+    if (dont_update_rules ~= true) and update_rules then
       should_parse_rules = true;
       parseRules(true)
     end
