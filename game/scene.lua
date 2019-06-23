@@ -393,25 +393,49 @@ function scene.draw(dt)
           end
 
           if unit.colrful or rainbowmode then
+			-- print("unit " .. unit.name .. " is colourful or rainbowmode")
             local newcolor = hslToRgb((love.timer.getTime()/15+#undo_buffer/45+unit.x/18+unit.y/18)%1, .5, .5, 1)
             newcolor[1] = newcolor[1]*255
             newcolor[2] = newcolor[2]*255
             newcolor[3] = newcolor[3]*255
             unit.color = newcolor
-          elseif unit.reed and unit.bleu then
+		  elseif unit.rave then
+		    -- print("unit " .. unit.name .. " is rave")
+            local newcolor = hslToRgb((love.timer.getTime()/1000+#undo_buffer/45+unit.x/18+unit.y/18)%1, .5, .5, 1)
+            newcolor[1] = newcolor[1]*255
+            newcolor[2] = newcolor[2]*255
+            newcolor[3] = newcolor[3]*255
+          elseif (unit.reed and unit.bleu) or (unit.purp) then
+		    -- print("unit " .. unit.name .. " is red & blue, or purple")
             unit.color = {3, 1}
           elseif unit.reed then
+		    -- print("unit " .. unit.name .. " is red")
             unit.color = {2, 2}
           elseif unit.bleu then
+		    -- print("unit " .. unit.name .. " is blue")
             unit.color = {1, 3}
-          elseif unit.caiyan then
-            unit.color = {0, 255, 255}
+		  elseif unit.grun then
+		    -- print("unit " .. unit.name .. " is green")
+			unit.color = {5, 2}
+		  elseif (unit.reed and unit.grun) or unit.yello then
+		    -- print("unit " .. unit.name .. " is red & green, or yellow")
+			unit.color = {2, 4}
+		  elseif unit.orang then
+		    -- print("unit " .. unit.name .. " is orange")
+			unit.color = {2, 3}
+		  elseif (unit.bleu and unit.grun) or  unit.cyeann then
+		    -- print("unit " .. unit.name .. " is blue & green, or cyan")
+			unit.color = {1, 4}
+		  elseif (unit.reed and unit.grun and unit.bleu) or unit.whit then
+		    -- print("unit " .. unit.name .. " is red & green & blue, or white")
+			unit.color = {0, 3}
+		  elseif unit.blacc then
+		    -- print("unit " .. unit.name .. " is black")
+			unit.color = {0, 4}
+		  else
+		    unit.color = copyTable(tiles_list[unit.tile].color)
           end
-
-          if not (unit.colrful or unit.reed or unit.bleu or unit.caiyan or rainbowmode) then
-            unit.color = copyTable(tiles_list[unit.tile].color)
-          end
-
+			
           local sprite_name = unit.sprite
 
           for type,name in pairs(unit.sprite_transforms) do
