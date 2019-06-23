@@ -1,4 +1,5 @@
 function clear()
+  undoing = false
   successful_brite_cache = nil
   next_level_name = ""
   win_sprite_override = nil
@@ -745,7 +746,8 @@ end
 threshold_for_dir = {50, 0.01, 0.1, 1, 2, 5, 10, 25};
 
 function deterministicRandom(fullname, cond)
-  local key = fullname..","..tostring(cond.x)..","..tostring(cond.y)..","..tostring(cond.dir)..","..tostring(#undo_buffer)
+  --have to adjust #undo_buffer by 1 during undoing since we're in the process of rewinding to the previous turn
+  local key = fullname..","..tostring(cond.x)..","..tostring(cond.y)..","..tostring(cond.dir)..","..tostring(undoing and #undo_buffer - 1 or #undo_buffer)
   if rng_cache[key] == nil then
     local arbitrary_unit_key = math.random();
     local arbitrary_unit = units_by_name[fullname][math.floor(arbitrary_unit_key*#units_by_name[fullname])+1];
@@ -755,7 +757,8 @@ function deterministicRandom(fullname, cond)
 end
 
 function deterministicRng(unit, cond)
-  local key = unit.name..","..tostring(unit.x)..","..tostring(unit.y)..","..tostring(unit.dir)..","..tostring(cond.x)..","..tostring(cond.y)..","..tostring(cond.dir)..","..tostring(#undo_buffer)
+  --have to adjust #undo_buffer by 1 during undoing since we're in the process of rewinding to the previous turn
+  local key = unit.name..","..tostring(unit.x)..","..tostring(unit.y)..","..tostring(unit.dir)..","..tostring(cond.x)..","..tostring(cond.y)..","..tostring(cond.dir)..","..tostring(undoing and #undo_buffer - 1 or #undo_buffer)
   if rng_cache[key] == nil then
      rng_cache[key] = math.random();
   end

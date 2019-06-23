@@ -169,6 +169,7 @@ function turnedIntoOnlyNoUndoUnits(turn, i, unit_id)
 end
 
 function undo(dont_update_rules)
+  undoing = true
   if undo_buffer[1] ~= nil then
     local update_rules = false
     
@@ -187,7 +188,9 @@ function undo(dont_update_rules)
 
     table.remove(undo_buffer, 1)
   else
+      undoing = false
       return false
   end
+  undoing = false
   return true
 end
