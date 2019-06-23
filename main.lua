@@ -28,6 +28,8 @@ averagefps = 0
 fps_captures = {}
 averagefps = 0
 
+special_no = 1
+
 function tableAverage(table)
   local sum = 0
   local ave = 0
@@ -237,6 +239,16 @@ function love.load()
   registerSound("mous snar", 0.5)
   registerSound("mous hihet", 0.5)
   registerSound("mous crash", 0.5)
+  registerSound("mous special 1", 0.5)
+  registerSound("mous special 2", 0.5)
+  registerSound("mous special 3", 0.5)
+  registerSound("mous special 4", 0.5)
+  registerSound("mous special 5", 0.5)
+  registerSound("mous special 6", 0.5)
+  registerSound("mous special 7", 0.5)
+  registerSound("mous special 8", 0.5)
+  registerSound("mous special 9", 0.5)
+  registerSound("mous special 10", 0.5)
   registerSound("break", 0.5)
   registerSound("unlock", 0.6)
   registerSound("sink", 0.5)
@@ -380,6 +392,16 @@ function love.mousepressed(x, y, button)
     if button == 2 then playSound("mous snar") end
     if button == 3 then playSound("mous hihet") end
     if button == 4 then playSound("mous crash") end
+    if button == 5 then
+      playSound("mous special "..special_no)
+
+      if special_no == 10 then
+        special_no = 1
+      else
+        special_no = special_no + 1
+      end
+
+    end
   end
 
   if scene and scene.mousePressed then
