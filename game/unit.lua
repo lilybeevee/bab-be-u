@@ -613,6 +613,28 @@ function updateUnits(undoing, big_update)
 
   deleteUnits(del_units,false)
   
+  --Fix the 'txt be undo' bug by checking an additional time if we need to unset backer_turn for a unit.
+  
+  local backed_this_turn = {};
+  local not_backed_this_turn = {};
+  
+  local isback = getUnitsWithEffectAndCount("undo");
+  for unit,amt in pairs(isback) do
+    backed_this_turn[unit] = true;
+  end
+  
+  for unit,turn in pairs(backers_cache) do
+    if turn ~= nil and not backed_this_turn[unit] then
+      not_backed_this_turn[unit] = true;
+    end
+  end
+  
+  for unit,_ in pairs(not_backed_this_turn) do
+    addUndo({"backer_turn", unit.id, unit.backer_turn})
+    unit.backer_turn = nil;
+    backers_cache[unit] = nil;
+  end
+  
   if (will_undo) then
     local can_undo = true;
     while (can_undo) do
