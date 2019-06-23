@@ -7,7 +7,7 @@ function clearRules()
   max_not_rules = 0
   portal_id = ""
 
-  --text and level basically alrady exist, so no need to be picky.
+  --text and level basically already exist, so no need to be picky.
   addRule({{"text","be","go away",{{},{}}},{},1})
   addRule({{"lvl","be","no go",{{},{}}},{},1})
   --TODO: This will need to be automatic on levels with letters/combined words, since a selectr/bordr might be made in a surprising way, and it will need to have its implicit rules apply immediately.
@@ -81,6 +81,7 @@ function parseRules(undoing)
   {
     #matchesRule(nil, "be", "wurd"),
     #matchesRule(nil, "be", "poor toll"),
+    --TODO: If any wurd rules exist, then these need to check things that are wurd, too - though at that point we may as well just make it easy on ourselves and check everything.
     #matchesRule("text", "be", "go arnd"),
     #matchesRule("text", "be", "mirr arnd"),
     #matchesRule("text", "be", "ortho"),
@@ -624,6 +625,7 @@ function shouldReparseRules()
   if should_parse_rules then return true end
   if shouldReparseRulesIfConditionalRuleExists("?", "be", "wurd") then return true end
   if shouldReparseRulesIfConditionalRuleExists("?", "be", "poor toll") then return true end
+  --TODO: If any wurd rules exist, then these need to check things that are wurd, too - though at that point we may as well just make it easy on ourselves and check everything.
   if shouldReparseRulesIfConditionalRuleExists("text", "be", "go arnd") then return true end
   if shouldReparseRulesIfConditionalRuleExists("text", "be", "mirr arnd") then return true end
   if shouldReparseRulesIfConditionalRuleExists("text", "be", "ortho") then return true end
