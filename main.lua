@@ -236,6 +236,7 @@ function love.load()
   registerSound("mous kicc", 0.5)
   registerSound("mous snar", 0.5)
   registerSound("mous hihet", 0.5)
+  registerSound("mous crash", 0.5)
   registerSound("break", 0.5)
   registerSound("unlock", 0.6)
   registerSound("sink", 0.5)
@@ -378,6 +379,7 @@ function love.mousepressed(x, y, button)
     if button == 1 then playSound("mous kicc") end
     if button == 2 then playSound("mous snar") end
     if button == 3 then playSound("mous hihet") end
+    if button == 4 then playSound("mous crash") end
   end
 
   if scene and scene.mousePressed then
