@@ -2385,7 +2385,6 @@ tiles_list = {
   {
     name = "bordr",
     sprite = "bordr",
-    type = "object",
     grid = {15, 14},
     color = {1, 0},
     layer = 99,
@@ -2396,7 +2395,6 @@ tiles_list = {
     name = "text_bordr",
     sprite = "text_bordr",
     type = "text",
-    texttype = "text",
     grid = {16, 14},
     color = {2, 0},
     layer = 20,
