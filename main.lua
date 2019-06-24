@@ -557,7 +557,7 @@ function love.draw()
     'F4 to toggle debug menu\n'..
     'F3+G to toggle rainbowmode\n'..
     'F3+Q for SUPER DUPER DEBUG MODE\n'..
-    'F3+Q for MOUS DRUM KIT MODE\n'..
+    'F3+D for MOUS DRUM KIT MODE\n'..
     'F2 for editor mode\n'..
     'F1 for game mode\n'
 
