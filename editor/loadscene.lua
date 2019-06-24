@@ -18,6 +18,7 @@ function scene.load()
   resetMusic(current_music, 0.1)
   selected_levels = {}
   scene.buildUI()
+  love.mouse.setGrabbed(false)
   love.keyboard.setKeyRepeat(true)
 end
 

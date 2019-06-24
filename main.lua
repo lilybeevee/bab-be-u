@@ -297,7 +297,7 @@ function love.keypressed(key,scancode,isrepeat)
       load_mode = "edit"
       clearGooi()
       scene.load()
-	end
+    end
   elseif key == "g" and love.keyboard.isDown('f3') then
     rainbowmode = not rainbowmode
   elseif key == "q" and love.keyboard.isDown('f3') then
@@ -379,6 +379,24 @@ function love.touchreleased(id, x, y, dx, dy, pressure)
   love.mousereleased(x,y,1)
 end
 
+function love.mousemoved(x, y, dx, dy, istouch)
+  if scene and scene.mouseMoved then
+    scene.mouseMoved(x, y, dx, dy, istouch)
+  end
+end
+
+function love.focus(f)
+  if scene and scene.focus then
+    scene.focus(f)
+  end
+end
+
+function love.mousefocus(f)
+  if scene and scene.mouseFocus then
+    scene.mouseFocus(f)
+  end
+end
+
 function love.mousepressed(x, y, button)
   if scene ~= loadscene then
     gooi.pressed()
@@ -406,13 +424,17 @@ function love.mousepressed(x, y, button)
   end
 
   if scene and scene.mousePressed then
-    scene.mousePressed(x, y, button)
+    for i,pos in ipairs(getMousePositions()) do
+      scene.mousePressed(pos.x, pos.y, button)
+    end
   end
 end
 
 function love.mousereleased(x, y, button)
   if scene and scene.mouseReleased then
-    scene.mouseReleased(x, y, button)
+    for i,pos in ipairs(getMousePositions()) do
+      scene.mouseReleased(pos.x, pos.y, button)
+    end
   end
 
   if scene == menu and button == 1 then

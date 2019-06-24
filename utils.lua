@@ -79,7 +79,6 @@ function clear()
   end
 
   love.mouse.setCursor()
-  love.mouse.setGrabbed(false)
 end
 
 function initializeGraphicalPropertyCache()
@@ -1106,12 +1105,21 @@ function eq(a,b)
   end
 end
 
-function mouseOverBox(x,y,w,h,t)
-  local mousex, mousey = love.mouse.getPosition()
+function pointInside(px_,py_,x,y,w,h,t)
+  local px, py = px_, py_
   if t then
-    mousex, mousey = t:inverseTransformPoint(mousex, mousey)
+    px, py = t:inverseTransformPoint(px, py)
   end
-  return mousex > x and mousex < x+w and mousey > y and mousey < y+h
+  return px > x and px < x+w and py > y and py < y+h
+end
+
+function mouseOverBox(x,y,w,h,t)
+  for i,pos in ipairs(getMousePositions()) do
+    if pointInside(pos.x, pos.y, x, y, w, h, t) then
+      return true
+    end
+  end
+  return false
 end
 
 function HSL(h, s, l, a)
@@ -1190,6 +1198,20 @@ function clamp(x, min_, max_)
     return max_
   end
   return x
+end
+
+function getNearestPointInPerimeter(l,t,w,h,x,y)
+  local r, b = l+w, t+h
+
+  x, y = clamp(x, l, r), clamp(y, t, b)
+
+  local dl, dr, dt, db = math.abs(x-l), math.abs(x-r), math.abs(y-t), math.abs(y-b)
+  local m = math.min(dl, dr, dt, db)
+
+  if m == dt then return x, t end
+  if m == db then return x, b end
+  if m == dl then return l, y end
+  return r, y
 end
 
 function sign(x)
@@ -1445,5 +1467,17 @@ function loadLevels(levels, mode, level_objs)
   else
     surrounds_name = level_name
     new_scene = game
+  end
+end
+
+function getMousePositions()
+  if scene ~= game then
+    return {{x = love.mouse.getX(), y = love.mouse.getY()}}
+  else
+    local t = {}
+    for i,cursor in ipairs(cursors) do
+      table.insert(t, {x = cursor.screenx, y = cursor.screeny})
+    end
+    return t
   end
 end

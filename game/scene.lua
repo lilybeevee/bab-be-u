@@ -79,11 +79,16 @@ function scene.load()
   if level_name then
     presence["details"] = "playing level: "..level_name
   end
+
+  mouse_grabbed = false
+  love.mouse.setGrabbed(false)
 end
 
 function scene.update(dt)
   mouse_X = love.mouse.getX()
   mouse_Y = love.mouse.getY()
+
+  updateMousePosition()
 
   --mouse_movedX = love.mouse.getX() - love.graphics.getWidth()*0.5
   --mouse_movedY = love.mouse.getY() - love.graphics.getHeight()*0.5
@@ -95,12 +100,6 @@ function scene.update(dt)
 
   mouse_oldX = mouse_X
   mouse_oldY = mouse_Y
-
-  if #cursors == 0 then
-    love.mouse.setGrabbed(true)
-  else
-    love.mouse.setGrabbed(false)
-  end
 
   xwxShader:send("time", dt) -- send delta time to the shader
 
@@ -147,6 +146,25 @@ function scene.resetStuff()
   window_dir = 0
 end
 
+function scene.mouseMoved(x, y, dx, dy, istouch)
+  if not just_released_mouse then
+    moveMouse(x, y, dx, dy)
+    if not just_released_mouse then
+      --print("grabby grabby")
+      grabMouse(true)
+    end
+  end
+end
+
+function scene.focus(f)
+  if not f then grabMouse(false) end
+end
+
+function scene.mouseFocus(f)
+  --print("focus changed! " .. tostring(f))
+  grabMouse(f)
+end
+
 function scene.keyPressed(key, isrepeat)
   if isrepeat then
     return
@@ -155,14 +173,7 @@ function scene.keyPressed(key, isrepeat)
   last_input_time = love.timer.getTime();
 
   if key == "escape" then
-    gooi.confirm({
-      text = "Go back to level selector?",
-      okText = "Yes",
-      cancelText = "Cancel",
-      ok = function()
-        new_scene = loadscene
-      end
-    })
+    new_scene = loadscene
   end
 
   local do_turn_now = false
@@ -1009,7 +1020,7 @@ end
 function scene.mouseReleased(x,y,button)
   scene.setStackBox(screenToGameTile(x, y))
 
-  if mouseOverBox(0,0,sprites["ui/cog"]:getHeight(),sprites["ui/cog"]:getWidth()) then
+  if pointInside(x,y,0,0,sprites["ui/cog"]:getHeight(),sprites["ui/cog"]:getWidth()) then
     --love.keypressed("f2")
     new_scene = editor
     load_mode = "edit"
@@ -1023,27 +1034,27 @@ function scene.mouseReleased(x,y,button)
 
     local key = "0"
 
-    if     mouseOverBox(screenwidth-squaresprite:getWidth()*2, screenheight-squaresprite:getHeight()*2, squaresprite:getWidth(), squaresprite:getHeight()) then
+    if     pointInside(x, y, screenwidth-squaresprite:getWidth()*2, screenheight-squaresprite:getHeight()*2, squaresprite:getWidth(), squaresprite:getHeight()) then
       key = "space"
-	elseif mouseOverBox(screenwidth-squaresprite:getWidth()*2, screenheight-squaresprite:getHeight()*3, squaresprite:getWidth(), squaresprite:getHeight()) then
+	elseif pointInside(x, y, screenwidth-squaresprite:getWidth()*2, screenheight-squaresprite:getHeight()*3, squaresprite:getWidth(), squaresprite:getHeight()) then
       key = "kp8"
-	elseif mouseOverBox(screenwidth-squaresprite:getWidth(),   screenheight-squaresprite:getHeight()*3, squaresprite:getWidth(), squaresprite:getHeight()) then
+	elseif pointInside(x, y, screenwidth-squaresprite:getWidth(),   screenheight-squaresprite:getHeight()*3, squaresprite:getWidth(), squaresprite:getHeight()) then
 	  key = "kp9"
-    elseif mouseOverBox(screenwidth-squaresprite:getWidth(),   screenheight-squaresprite:getHeight()*2, squaresprite:getWidth(), squaresprite:getHeight()) then
+    elseif pointInside(x, y, screenwidth-squaresprite:getWidth(),   screenheight-squaresprite:getHeight()*2, squaresprite:getWidth(), squaresprite:getHeight()) then
       key = "kp6"
-	elseif mouseOverBox(screenwidth-squaresprite:getWidth(),   screenheight-squaresprite:getHeight(),   squaresprite:getWidth(), squaresprite:getHeight()) then
+	elseif pointInside(x, y, screenwidth-squaresprite:getWidth(),   screenheight-squaresprite:getHeight(),   squaresprite:getWidth(), squaresprite:getHeight()) then
 	  key = "kp3"
-	 elseif mouseOverBox(screenwidth-squaresprite:getWidth()*2, screenheight-squaresprite:getHeight(),   squaresprite:getWidth(), squaresprite:getHeight()) then
+	 elseif pointInside(x, y, screenwidth-squaresprite:getWidth()*2, screenheight-squaresprite:getHeight(),   squaresprite:getWidth(), squaresprite:getHeight()) then
       key = "kp2"
-    elseif mouseOverBox(screenwidth-squaresprite:getWidth()*3, screenheight-squaresprite:getHeight(),   squaresprite:getWidth(), squaresprite:getHeight()) then
+    elseif pointInside(x, y, screenwidth-squaresprite:getWidth()*3, screenheight-squaresprite:getHeight(),   squaresprite:getWidth(), squaresprite:getHeight()) then
 	  key = "kp1"
-	elseif mouseOverBox(screenwidth-squaresprite:getWidth()*3, screenheight-squaresprite:getHeight()*2, squaresprite:getWidth(), squaresprite:getHeight()) then
+	elseif pointInside(x, y, screenwidth-squaresprite:getWidth()*3, screenheight-squaresprite:getHeight()*2, squaresprite:getWidth(), squaresprite:getHeight()) then
       key = "kp4"
-    elseif mouseOverBox(screenwidth-squaresprite:getWidth()*3, screenheight-squaresprite:getHeight()*3, squaresprite:getWidth(), squaresprite:getHeight()) then
+    elseif pointInside(x, y, screenwidth-squaresprite:getWidth()*3, screenheight-squaresprite:getHeight()*3, squaresprite:getWidth(), squaresprite:getHeight()) then
 	  key = "kp7"
-    elseif mouseOverBox(screenwidth-squaresprite:getWidth()*2, screenheight-squaresprite:getHeight()*5, squaresprite:getWidth(), squaresprite:getHeight()) then
+    elseif pointInside(x, y, screenwidth-squaresprite:getWidth()*2, screenheight-squaresprite:getHeight()*5, squaresprite:getWidth(), squaresprite:getHeight()) then
       key = "z"
-    elseif mouseOverBox(screenwidth-squaresprite:getWidth()*2, squaresprite:getHeight(),                squaresprite:getWidth(), squaresprite:getHeight()) then
+    elseif pointInside(x, y, screenwidth-squaresprite:getWidth()*2, squaresprite:getHeight(),                squaresprite:getWidth(), squaresprite:getHeight()) then
       key = "r"
     end
 

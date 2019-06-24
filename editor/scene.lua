@@ -87,6 +87,7 @@ function scene.load()
     presence["details"] = "working on "..level_name..".bab"
   end
 
+  love.mouse.setGrabbed(false)
   love.keyboard.setKeyRepeat(true)
 
   if map_ver == 0 then

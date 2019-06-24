@@ -22,6 +22,7 @@ function scene.load()
     startTimestamp = now
   }
   nextPresenceUpdate = 0
+  love.mouse.setGrabbed(false)
   love.keyboard.setKeyRepeat(false)
 end
 
@@ -137,12 +138,12 @@ function scene.update(dt)
 end
 
 function scene.mousePressed(x, y, button)
-  if mouseOverBox(10, height - sprites["ui/music-on"]:getHeight(), sprites["ui/music-on"]:getWidth(), sprites["ui/music-on"]:getHeight()) and button == 1 then
+  if pointInside(x, y, 10, height - sprites["ui/music-on"]:getHeight(), sprites["ui/music-on"]:getWidth(), sprites["ui/music-on"]:getHeight()) and button == 1 then
     settings["music_on"] = not settings["music_on"]
     saveAll()
   end
 
-  if mouseOverBox(20+sprites["ui/github"]:getWidth(), height-sprites["ui/github"]:getHeight() - 10, sprites["ui/github"]:getWidth(), sprites["ui/github"]:getHeight()) and button == 1 then
+  if pointInside(x, y, 20+sprites["ui/github"]:getWidth(), height-sprites["ui/github"]:getHeight() - 10, sprites["ui/github"]:getWidth(), sprites["ui/github"]:getHeight()) and button == 1 then
     love.system.openURL("https://github.com/lilybeevee/bab-be-u")
   end
 end

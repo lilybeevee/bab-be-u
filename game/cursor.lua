@@ -38,8 +38,8 @@ function updateCursors()
     end
 
     if not deleted then
-      cursor.screenx = cursor.screenx + mouse_X - mouse_oldX
-      cursor.screeny = cursor.screeny + mouse_Y - mouse_oldY
+      --cursor.screenx = cursor.screenx + mouse_X - mouse_oldX
+      --cursor.screeny = cursor.screeny + mouse_Y - mouse_oldY
 
       local x, y = screenToGameTile(cursor.screenx, cursor.screeny)
       
@@ -93,7 +93,7 @@ function createMouse_direct(x,y,id_)
     mouse.primary = true
     mouse_X, mouse_Y = x, y
     mouse_oldX, mouse_oldY = x, y
-    love.mouse.setPosition(x, y)
+    --love.mouse.setPosition(x, y)
   else
     mouse.primary = false
   end
@@ -124,7 +124,7 @@ function deleteMouse(id)
       mous.primary = true
       mouse_X, mouse_Y = mous.screenx, mous.screeny
       mouse_oldX, mouse_oldY = mous.screenx, mous.screeny
-      love.mouse.setPosition(mous.screenx, mous.screeny)
+      --love.mouse.setPosition(mous.screenx, mous.screeny)
     end
   end
 end
@@ -144,3 +144,99 @@ end
   end
   return numberDeleted
 end]]--
+
+function updateMousePosition()
+  if mouse_grabbed then
+    love.mouse.setPosition(love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
+  end
+  if just_released_mouse == 1 then
+    just_released_mouse = 2
+  elseif just_released_mouse == 2 then
+    just_released_mouse = nil
+  end
+end
+
+function moveMouse(x, y, dx, dy)
+  if not mouse_grabbed then return end
+  if x == math.floor(love.graphics.getWidth() / 2) and y == math.floor(love.graphics.getHeight() / 2) then return end
+
+  if just_grabbed_mouse then
+    resetCursors(x, y)
+    just_grabbed_mouse = false
+  else
+    if #cursors > 0 then
+      local all_out = true
+      local last_out = nil
+      for i,cursor in ipairs(cursors) do
+        local was_offscreen = cursor.offscreen
+
+        cursor.screenx = cursor.screenx + dx
+        cursor.screeny = cursor.screeny + dy
+
+        cursor.offscreen = cursor.screenx < 0 or cursor.screenx > love.graphics.getWidth() or cursor.screeny < 0 or cursor.screeny > love.graphics.getHeight()
+        if not cursor.offscreen then
+          all_out = false
+        elseif not was_offscreen then
+          last_out = cursor
+        end
+      end
+      if all_out and last_out then
+        grabMouse(false)
+        love.mouse.setPosition(last_out.screenx, last_out.screeny)
+      end
+    end
+  end
+end
+
+function grabMouse(val)
+  if mouse_grabbed == val then return end
+  if not val then
+    love.mouse.setGrabbed(false)
+    mouse_grabbed = false
+    just_released_mouse = 1
+    --print("released mouse")
+  else
+    love.mouse.setGrabbed(true)
+    mouse_grabbed = true
+    just_grabbed_mouse = true
+    --print("grabbed mouse")
+  end
+end
+
+function resetCursors(x, y)
+  local p = {x = 0, y = 0}
+
+  local px, py = getNearestPointInPerimeter(0, 0, love.graphics.getWidth(), love.graphics.getHeight(), x, y)
+  if px == 0 then p.x = 1 end
+  if py == 0 then p.y = 1 end
+  if px == love.graphics.getWidth() then p.x = -1 end
+  if py == love.graphics.getHeight() then p.y = -1 end
+
+  local best_cursor = nil
+  for i,cursor in ipairs(cursors) do
+    if cursor.offscreen then
+      if not best_cursor then
+        best_cursor = cursor
+      else
+        if (p.x >= 0 or cursor.screenx < best_cursor.screenx) and
+           (p.x <= 0 or cursor.screenx > best_cursor.screenx) and
+           (p.y >= 0 or cursor.screeny < best_cursor.screeny) and
+           (p.y <= 0 or cursor.screeny > best_cursor.screeny) then
+          best_cursor = cursor
+        end
+      end
+    end
+  end
+
+  local ox, oy = 0, 0
+  if best_cursor then
+    ox, oy = x - best_cursor.screenx, y - best_cursor.screeny
+  end
+
+  for i,cursor in ipairs(cursors) do
+    if cursor.offscreen then
+      cursor.screenx = cursor.screenx + ox
+      cursor.screeny = cursor.screeny + oy
+    end
+  end
+end
