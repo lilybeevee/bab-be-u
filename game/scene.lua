@@ -140,6 +140,7 @@ function scene.resetStuff()
   clearRules()
   parseRules()
   updateUnits(true)
+  updateHols()
   next_levels, next_level_objs = getNextLevels()
 
   first_turn = false
@@ -345,9 +346,9 @@ function scene.draw(dt)
 
   --background color
   local bg_color = {getPaletteColor(1, 0)}
+  if rainbowmode then bg_color = {hslToRgb(love.timer.getTime()/6%1, .2, .2, .9), 1} end
 
   love.graphics.setColor(bg_color[1], bg_color[2], bg_color[3], bg_color[4])
-  if rainbowmode then love.graphics.setColor(hslToRgb(love.timer.getTime()/6%1, .2, .2, .9)) end
 
   -- fill the background with the background color
   love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
@@ -361,277 +362,326 @@ function scene.draw(dt)
   love.graphics.setColor(getPaletteColor(0,3))
   love.graphics.printf(next_level_name, 0, -14, roomwidth)
 
-  love.graphics.setColor(getPaletteColor(0, 4))
-  if rainbowmode then love.graphics.setColor(hslToRgb(love.timer.getTime()/6%1, .1, .1, .9)) end
+  local lvl_color = {getPaletteColor(0, 4)}
+  if rainbowmode then lvl_color = {hslToRgb(love.timer.getTime()/6%1, .1, .1, .9), 1} end
+
+  love.graphics.setColor(lvl_color[1], lvl_color[2], lvl_color[3], lvl_color[4])
   if (not level_destroyed) then
     love.graphics.rectangle("fill", 0, 0, roomwidth, roomheight)
+  end
+
+  local function drawUnit(unit, drawx, drawy, rotation, loop)
+    if unit.name == "no1" and not (draw_empty and validEmpty(unit)) then return end
+
+    local brightness = 1
+    if ((unit.type == "text") or (unit.name == "this")) and not unit.active then
+      brightness = 0.33
+    end
+
+    if (unit.name == "steev") and not hasRule("steev","be","u") then
+      brightness = 0.33
+    end
+
+    if unit.fullname == "text_gay" then
+      if unit.active then
+        unit.sprite = "text_gay-colored"
+      else
+        unit.sprite = "text_gay"
+      end
+    end
+    if unit.fullname == "text_tranz" then
+      if unit.active then
+        unit.sprite = "text_tranz-colored"
+      else
+        unit.sprite = "text_tranz"
+      end
+    end
+    if unit.fullname == "text_katany" then
+      if hasRule("steev","got","katany") then
+        unit.sprite = "text_katanya"
+      else
+        unit.sprite = "text_katany"
+      end
+    end
+
+    if unit.colrful or rainbowmode then
+      -- print("unit " .. unit.name .. " is colourful or rainbowmode")
+      local newcolor = hslToRgb((love.timer.getTime()/15+#undo_buffer/45+unit.x/18+unit.y/18)%1, .5, .5, 1)
+      newcolor[1] = newcolor[1]*255
+      newcolor[2] = newcolor[2]*255
+      newcolor[3] = newcolor[3]*255
+      unit.color = newcolor
+    elseif unit.rave then
+      -- print("unit " .. unit.name .. " is rave")
+      local newcolor = hslToRgb((love.timer.getTime()/1000+#undo_buffer/45+unit.x/18+unit.y/18)%1, .5, .5, 1)
+      newcolor[1] = newcolor[1]*255
+      newcolor[2] = newcolor[2]*255
+      newcolor[3] = newcolor[3]*255
+    elseif (unit.reed and unit.bleu) or (unit.purp) then
+      -- print("unit " .. unit.name .. " is red & blue, or purple")
+      unit.color = {3, 1}
+    elseif unit.reed then
+      -- print("unit " .. unit.name .. " is red")
+      unit.color = {2, 2}
+    elseif unit.bleu then
+      -- print("unit " .. unit.name .. " is blue")
+      unit.color = {1, 3}
+    elseif unit.grun then
+      -- print("unit " .. unit.name .. " is green")
+      unit.color = {5, 2}
+    elseif (unit.reed and unit.grun) or unit.yello then
+      -- print("unit " .. unit.name .. " is red & green, or yellow")
+      unit.color = {2, 4}
+    elseif unit.orang then
+      -- print("unit " .. unit.name .. " is orange")
+      unit.color = {2, 3}
+    elseif (unit.bleu and unit.grun) or  unit.cyeann then
+      -- print("unit " .. unit.name .. " is blue & green, or cyan")
+      unit.color = {1, 4}
+    elseif (unit.reed and unit.grun and unit.bleu) or unit.whit then
+      -- print("unit " .. unit.name .. " is red & green & blue, or white")
+      unit.color = {0, 3}
+    elseif unit.blacc then
+      -- print("unit " .. unit.name .. " is black")
+      unit.color = {0, 4}
+    else
+      unit.color = copyTable(tiles_list[unit.tile].color)
+    end
+
+    local sprite_name = unit.sprite
+
+    for type,name in pairs(unit.sprite_transforms) do
+      if table.has_value(unit.used_as, type) then
+        sprite_name = name
+        break
+      end
+    end
+    local frame = (unit.frame + anim_stage) % 3 + 1
+    if sprites[sprite_name .. "_" .. frame] then
+      sprite_name = sprite_name .. "_" .. frame
+    end
+    if not sprites[sprite_name] then sprite_name = "wat" end
+
+    local sprite = sprites[sprite_name]
+
+    --no tweening empty for now - it's buggy!
+    --TODO: it's still a little buggy if you push/pull empties.
+    if (unit.name == "no1") then
+      --drawx = unit.x
+      --drawy = unit.y
+      --rotation = math.rad((unit.dir - 1) * 45)
+      unit.draw.scalex = 1
+      unit.draw.scaley = 1
+    end
+
+    local color
+    if #unit.color == 3 then
+      color = {unit.color[1]/255, unit.color[2]/255, unit.color[3]/255, 1}
+    else
+      color = {getPaletteColor(unit.color[1], unit.color[2])}
+    end
+
+    -- multiply brightness by darkened bg color
+    for i,c in ipairs(bg_color) do
+      if i < 4 then
+        color[i] = (1 - brightness) * (bg_color[i] * 0.5) + brightness * color[i]
+      end
+    end
+
+    if #unit.overlay > 0 and eq(unit.color, tiles_list[unit.tile].color) then
+      love.graphics.setColor(1, 1, 1)
+    else
+      love.graphics.setColor(color[1], color[2], color[3], color[4])
+    end
+
+    local fulldrawx = (drawx + 0.5)*TILE_SIZE
+    local fulldrawy = (drawy + 0.5)*TILE_SIZE
+
+    if graphical_property_cache["flye"][unit] ~= nil or unit.name == "o" then
+      local flyenes = graphical_property_cache["flye"][unit] or 0
+      if unit.name == "o" then flyenes = flyenes + 1 end
+      fulldrawy = fulldrawy - math.sin(love.timer.getTime())*5*flyenes
+    end
+
+    if shake_dur > 0 then
+      local range = 0.5
+      fulldrawx = fulldrawx + math.random(-range, range)
+      fulldrawy = fulldrawy + math.random(-range, range)
+      --fulldrawx = fulldrawx + (math.random(0.00, TILE_SIZE)*shake_intensity*2)-shake_intensity*TILE_SIZE
+      --fulldrawy = fulldrawy + (math.random(0.00, TILE_SIZE)*shake_intensity*2)-shake_intensity*TILE_SIZE
+    end
+
+    love.graphics.push()
+    love.graphics.translate(fulldrawx, fulldrawy)
+
+    love.graphics.push()
+    love.graphics.rotate(math.rad(rotation))
+    love.graphics.translate(-fulldrawx, -fulldrawy)
+
+    local function drawSprite(overlay)
+      local sprite = overlay or sprite
+      love.graphics.draw(sprite, fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+    end
+
+    if not unit.xwx then -- xwx takes control of the drawing sprite, so it shouldn't render the normal object
+      drawSprite()
+    end
+
+    if unit.xwx then -- if we're xwx, apply the special shader to our object
+      if math.floor(love.timer.getTime() * 9) % 9 == 0 then
+        love.graphics.setShader(xwxShader)
+        drawSprite()
+        love.graphics.setShader()
+      else
+        drawSprite()
+      end
+    end
+
+    if #unit.overlay > 0 then
+      local function overlayStencil()
+         love.graphics.setShader(mask_shader)
+         drawSprite()
+         love.graphics.setShader()
+      end
+      for _,overlay in ipairs(unit.overlay) do
+        love.graphics.setColor(1, 1, 1)
+        love.graphics.stencil(overlayStencil, "replace")
+        local old_test_mode, old_test_value = love.graphics.getStencilTest()
+        love.graphics.setStencilTest("greater", 0)
+        love.graphics.setBlendMode("multiply", "premultiplied")
+        drawSprite(sprites["overlay/" .. overlay])
+        love.graphics.setBlendMode("alpha", "alphamultiply")
+        love.graphics.setStencilTest(old_test_mode, old_test_value)
+      end
+    end
+
+    if unit.name == "hol" then
+      if loop or not unit.hol.objects then
+        love.graphics.setColor(color[1] * 0.75, color[2] * 0.75, color[3] * 0.75, color[4])
+        drawSprite(sprites["hol_bg"])
+      else
+        love.graphics.setColor(lvl_color[1], lvl_color[2], lvl_color[3], lvl_color[4])
+        drawSprite(sprites["hol_bg"])
+        love.graphics.setColor(1, 1, 1)
+        local function holStencil()
+          love.graphics.setShader(mask_shader)
+          drawSprite(sprites["hol_mask"])
+          love.graphics.setShader()
+        end
+        love.graphics.stencil(holStencil, "replace", 2)
+        love.graphics.setStencilTest("greater", 1)
+
+        love.graphics.push()
+        love.graphics.translate(fulldrawx, fulldrawy)
+        love.graphics.rotate(-math.rad(rotation))
+        love.graphics.rotate(math.rad(unit.hol.dir * 45))
+        love.graphics.translate(-fulldrawx, -fulldrawy)
+
+        for _,peek in ipairs(unit.hol.objects) do
+          local x, y, rot = unit.draw.x, unit.draw.y, 0
+          if peek.name ~= "no1" then
+            x, y = (peek.draw.x - peek.x) + (peek.x - unit.hol.x) + x, (peek.draw.y - peek.y) + (peek.y - unit.hol.y) + y
+            if peek.rotate then rot = peek.draw.rotation
+            else rot = -unit.hol.dir * 45 end
+          else
+            if peek.rotate then rot = (peek.dir - 1 + unit.hol.dir) * 45
+            else rot = -unit.hol.dir * 45 end
+          end
+          drawUnit(peek, x, y, rot, true)
+        end
+
+        love.graphics.pop()
+        love.graphics.setStencilTest()
+      end
+    end
+
+    if hasRule(unit,"be","sans") and unit.eye then
+      local topleft = {x = drawx * TILE_SIZE, y = drawy * TILE_SIZE}
+      love.graphics.setColor(0, 1, 1, 1)
+      love.graphics.rectangle("fill", topleft.x + unit.eye.x, topleft.y + unit.eye.y, unit.eye.w, unit.eye.h)
+      for i = 1, unit.eye.w-1 do
+        love.graphics.rectangle("fill", topleft.x + unit.eye.x + i, topleft.y + unit.eye.y - i, unit.eye.w - i, 1)
+      end
+    end
+
+    if hasRule(unit,"got","hatt") then
+      love.graphics.setColor(color[1], color[2], color[3], color[4])
+      love.graphics.draw(sprites["hatsmol"], fulldrawx, fulldrawy - 0.5*TILE_SIZE, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+    end
+    if hasRule(unit,"got","gun") then
+      love.graphics.setColor(1, 1, 1)
+      love.graphics.draw(sprites["gunsmol"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+    end
+    if hasRule(unit,"got","katany") then
+      love.graphics.setColor(0.45, 0.45, 0.45)
+      love.graphics.draw(sprites["katanysmol"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+    end
+    if hasRule(unit,"got","slippers") then
+      love.graphics.setColor(getPaletteColor(1,4))
+      love.graphics.draw(sprites["slippers"], fulldrawx, fulldrawy+sprite:getHeight()/4, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+    end
+
+    if false then -- stupid lua comments
+      if hasRule(unit,"got","?") then
+        local matchrules = matchesRule(unit,"got","?")
+
+        for _,matchrule in ipairs(matchrules) do
+          local tile = tiles_list[tiles_by_name[matchrule[1][3]]]
+
+          if #tile.color == 3 then
+            gotcolor = {tile.color[1]/255 * brightness, tile.color[2]/255 * brightness, tile.color[3]/255 * brightness, 1}
+          else
+            local r,g,b,a = getPaletteColor(tile.color[1], tile.color[2])
+            gotcolor = {r * brightness, g * brightness, b * brightness, a}
+          end
+
+          love.graphics.setColor(gotcolor[1], gotcolor[2], gotcolor[3], gotcolor[4])
+          love.graphics.draw(sprites[tile.sprite], fulldrawx/4*3, fulldrawy/4*3, 0, 1/4, 1/4, sprite:getWidth() / 2, sprite:getHeight() / 2)
+        end
+      end
+    end
+
+    love.graphics.pop()
+
+    if unit.blocked then
+      local rotation = (unit.blocked_dir - 1) * 45
+
+      love.graphics.push()
+      love.graphics.rotate(math.rad(rotation))
+      love.graphics.translate(-fulldrawx, -fulldrawy)
+
+      local scalex = 1
+      if unit.blocked_dir % 2 == 0 then
+        scalex = math.sqrt(2)
+      end
+
+      love.graphics.setColor(getPaletteColor(2, 2))
+      love.graphics.draw(sprites["scribble_" .. anim_stage+1], fulldrawx, fulldrawy, 0, unit.draw.scalex * scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+
+      love.graphics.pop()
+    end
+
+    love.graphics.pop()
+
+    if hasProperty(unit,"loop") then
+      love.graphics.setColor(1,1,1,.4)
+      love.graphics.rectangle("fill",fulldrawx-16,fulldrawy-16,32,32)
+    end
   end
 
   for i=1,max_layer do
     if units_by_layer[i] then
       local removed_units = {}
       for _,unit in ipairs(units_by_layer[i]) do
-        if not unit.stelth and (unit.name ~= "no1" or (draw_empty and validEmpty(unit))) then
-          local brightness = 1
-          if ((unit.type == "text") or (unit.name == "this")) and not unit.active then
-            brightness = 0.33
-          end
-
-          if (unit.name == "steev") and not hasRule("steev","be","u") then
-            brightness = 0.33
-          end
-
-          if unit.fullname == "text_gay" then
-            if unit.active then
-              unit.sprite = "text_gay-colored"
-            else
-              unit.sprite = "text_gay"
-            end
-          end
-          if unit.fullname == "text_tranz" then
-            if unit.active then
-              unit.sprite = "text_tranz-colored"
-            else
-              unit.sprite = "text_tranz"
-            end
-          end
-          if unit.fullname == "text_katany" then
-            if hasRule("steev","got","katany") then
-              unit.sprite = "text_katanya"
-            else
-              unit.sprite = "text_katany"
-            end
-          end
-
-          if unit.colrful or rainbowmode then
-			-- print("unit " .. unit.name .. " is colourful or rainbowmode")
-            local newcolor = hslToRgb((love.timer.getTime()/15+#undo_buffer/45+unit.x/18+unit.y/18)%1, .5, .5, 1)
-            newcolor[1] = newcolor[1]*255
-            newcolor[2] = newcolor[2]*255
-            newcolor[3] = newcolor[3]*255
-            unit.color = newcolor
-		  elseif unit.rave then
-		    -- print("unit " .. unit.name .. " is rave")
-            local newcolor = hslToRgb((love.timer.getTime()/1000+#undo_buffer/45+unit.x/18+unit.y/18)%1, .5, .5, 1)
-            newcolor[1] = newcolor[1]*255
-            newcolor[2] = newcolor[2]*255
-            newcolor[3] = newcolor[3]*255
-          elseif (unit.reed and unit.bleu) or (unit.purp) then
-		    -- print("unit " .. unit.name .. " is red & blue, or purple")
-            unit.color = {3, 1}
-          elseif unit.reed then
-		    -- print("unit " .. unit.name .. " is red")
-            unit.color = {2, 2}
-          elseif unit.bleu then
-		    -- print("unit " .. unit.name .. " is blue")
-            unit.color = {1, 3}
-		  elseif unit.grun then
-		    -- print("unit " .. unit.name .. " is green")
-			unit.color = {5, 2}
-		  elseif (unit.reed and unit.grun) or unit.yello then
-		    -- print("unit " .. unit.name .. " is red & green, or yellow")
-			unit.color = {2, 4}
-		  elseif unit.orang then
-		    -- print("unit " .. unit.name .. " is orange")
-			unit.color = {2, 3}
-		  elseif (unit.bleu and unit.grun) or  unit.cyeann then
-		    -- print("unit " .. unit.name .. " is blue & green, or cyan")
-			unit.color = {1, 4}
-		  elseif (unit.reed and unit.grun and unit.bleu) or unit.whit then
-		    -- print("unit " .. unit.name .. " is red & green & blue, or white")
-			unit.color = {0, 3}
-		  elseif unit.blacc then
-		    -- print("unit " .. unit.name .. " is black")
-			unit.color = {0, 4}
-		  else
-		    unit.color = copyTable(tiles_list[unit.tile].color)
-          end
-			
-          local sprite_name = unit.sprite
-
-          for type,name in pairs(unit.sprite_transforms) do
-            if table.has_value(unit.used_as, type) then
-              sprite_name = name
-              break
-            end
-          end
-          local frame = (unit.frame + anim_stage) % 3 + 1
-          if sprites[sprite_name .. "_" .. frame] then
-            sprite_name = sprite_name .. "_" .. frame
-          end
-          if not sprites[sprite_name] then sprite_name = "wat" end
-
-          local sprite = sprites[sprite_name]
-
-          local drawx, drawy = unit.draw.x, unit.draw.y
-
-          local rotation = 0
-          if unit.rotate then
-            rotation = math.rad(unit.draw.rotation)
-          end
-
-          --no tweening empty for now - it's buggy!
-          --TODO: it's still a little buggy if you push/pull empties.
-          if (unit.name == "no1") then
-            drawx = unit.x
-            drawy = unit.y
-            rotation = math.rad((unit.dir - 1) * 45)
-            unit.draw.scalex = 1
-            unit.draw.scaley = 1
-          end
-
-          local color
-          if #unit.color == 3 then
-            color = {unit.color[1]/255, unit.color[2]/255, unit.color[3]/255, 1}
+        if not unit.stelth then
+          local x, y, rot = unit.x, unit.y, 0
+          if unit.name ~= "no1" then
+            x, y = unit.draw.x, unit.draw.y
+            if unit.rotate then rot = unit.draw.rotation end
           else
-            color = {getPaletteColor(unit.color[1], unit.color[2])}
+            if unit.rotate then rot = (unit.dir - 1) * 45 end
           end
-
-          -- multiply brightness by darkened bg color
-          for i,c in ipairs(bg_color) do
-            if i < 4 then
-              color[i] = (1 - brightness) * (bg_color[i] * 0.5) + brightness * color[i]
-            end
-          end
-
-          if #unit.overlay > 0 and eq(unit.color, tiles_list[unit.tile].color) then
-            love.graphics.setColor(1, 1, 1)
-          else
-            love.graphics.setColor(color[1], color[2], color[3], color[4])
-          end
-
-          local fulldrawx = (drawx + 0.5)*TILE_SIZE
-          local fulldrawy = (drawy + 0.5)*TILE_SIZE
-
-          if graphical_property_cache["flye"][unit] ~= nil or unit.name == "o" then
-            local flyenes = graphical_property_cache["flye"][unit] or 0
-            if unit.name == "o" then flyenes = flyenes + 1 end
-            fulldrawy = fulldrawy - math.sin(love.timer.getTime())*5*flyenes
-          end
-
-          if shake_dur > 0 then
-            local range = 0.5
-            fulldrawx = fulldrawx + math.random(-range, range)
-            fulldrawy = fulldrawy + math.random(-range, range)
-            --fulldrawx = fulldrawx + (math.random(0.00, TILE_SIZE)*shake_intensity*2)-shake_intensity*TILE_SIZE
-            --fulldrawy = fulldrawy + (math.random(0.00, TILE_SIZE)*shake_intensity*2)-shake_intensity*TILE_SIZE
-          end
-
-          love.graphics.push()
-          love.graphics.translate(fulldrawx, fulldrawy)
-
-          love.graphics.push()
-          love.graphics.rotate(rotation)
-          love.graphics.translate(-fulldrawx, -fulldrawy)
-
-          local function drawSprite(overlay)
-            local sprite = overlay or sprite
-            love.graphics.draw(sprite, fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
-          end
-
-		  if not unit.xwx then -- xwx takes control of the drawing sprite, so it shouldn't render the normal object
-		    drawSprite()
-		  end
-
-          if unit.xwx then -- if we're xwx, apply the special shader to our object
-		    if math.floor(love.timer.getTime() * 9) % 9 == 0 then
-		      love.graphics.setShader(xwxShader)
-			  drawSprite()
-			  love.graphics.setShader()
-			else
-			  drawSprite()
-			end
-		  end
-
-          if #unit.overlay > 0 then
-            local function overlayStencil()
-               love.graphics.setShader(mask_shader)
-               drawSprite()
-               love.graphics.setShader()
-            end
-            for _,overlay in ipairs(unit.overlay) do
-              love.graphics.setColor(1, 1, 1)
-              love.graphics.stencil(overlayStencil, "replace")
-              love.graphics.setStencilTest("greater", 0)
-              love.graphics.setBlendMode("multiply", "premultiplied")
-              drawSprite(sprites["overlay/" .. overlay])
-              love.graphics.setBlendMode("alpha", "alphamultiply")
-              love.graphics.setStencilTest()
-            end
-          end
-
-          if hasRule(unit,"be","sans") and unit.eye then
-            local topleft = {x = drawx * TILE_SIZE, y = drawy * TILE_SIZE}
-            love.graphics.setColor(0, 1, 1, 1)
-            love.graphics.rectangle("fill", topleft.x + unit.eye.x, topleft.y + unit.eye.y, unit.eye.w, unit.eye.h)
-            for i = 1, unit.eye.w-1 do
-              love.graphics.rectangle("fill", topleft.x + unit.eye.x + i, topleft.y + unit.eye.y - i, unit.eye.w - i, 1)
-            end
-          end
-
-          if hasRule(unit,"got","hatt") then
-            love.graphics.setColor(color[1], color[2], color[3], color[4])
-            love.graphics.draw(sprites["hatsmol"], fulldrawx, fulldrawy - 0.5*TILE_SIZE, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
-          end
-          if hasRule(unit,"got","gun") then
-            love.graphics.setColor(1, 1, 1)
-            love.graphics.draw(sprites["gunsmol"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
-          end
-		      if hasRule(unit,"got","katany") then
-            love.graphics.setColor(0.45, 0.45, 0.45)
-            love.graphics.draw(sprites["katanysmol"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
-          end
-          if hasRule(unit,"got","slippers") then
-            love.graphics.setColor(getPaletteColor(1,4))
-            love.graphics.draw(sprites["slippers"], fulldrawx, fulldrawy+sprite:getHeight()/4, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
-          end
-
-          if false then -- stupid lua comments
-            if hasRule(unit,"got","?") then
-              local matchrules = matchesRule(unit,"got","?")
-
-              for _,matchrule in ipairs(matchrules) do
-                local tile = tiles_list[tiles_by_name[matchrule[1][3]]]
-
-                if #tile.color == 3 then
-                  gotcolor = {tile.color[1]/255 * brightness, tile.color[2]/255 * brightness, tile.color[3]/255 * brightness, 1}
-                else
-                  local r,g,b,a = getPaletteColor(tile.color[1], tile.color[2])
-                  gotcolor = {r * brightness, g * brightness, b * brightness, a}
-                end
-
-                love.graphics.setColor(gotcolor[1], gotcolor[2], gotcolor[3], gotcolor[4])
-                love.graphics.draw(sprites[tile.sprite], fulldrawx/4*3, fulldrawy/4*3, 0, 1/4, 1/4, sprite:getWidth() / 2, sprite:getHeight() / 2)
-              end
-            end
-          end
-
-          love.graphics.pop()
-
-          if unit.blocked then
-            local rotation = (unit.blocked_dir - 1) * 45
-
-            love.graphics.push()
-            love.graphics.rotate(math.rad(rotation))
-            love.graphics.translate(-fulldrawx, -fulldrawy)
-
-            local scalex = 1
-            if unit.blocked_dir % 2 == 0 then
-              scalex = math.sqrt(2)
-            end
-
-            love.graphics.setColor(getPaletteColor(2, 2))
-            love.graphics.draw(sprites["scribble_" .. anim_stage+1], fulldrawx, fulldrawy, 0, unit.draw.scalex * scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
-
-            love.graphics.pop()
-          end
-
-          love.graphics.pop()
-
-          if hasProperty(unit,"loop") then
-            love.graphics.setColor(1,1,1,.4)
-            love.graphics.rectangle("fill",fulldrawx-16,fulldrawy-16,32,32)
-          end
+          drawUnit(unit, x, y, rot)
         end
       end
       for _,unit in ipairs(removed_units) do

@@ -1874,7 +1874,7 @@ tiles_list = {
     sprite = "text_poor_toll",
     type = "text",
     texttype = "property",
-    grid = {14, 4},
+    grid = {15, 8},
     color = {3, 2},
     layer = 20,
     desc = "POOR TOLL: If a unit would enter a POOR TOLL unit, it instead leaves the next POOR TOLL unit of the same name in reading order (left to right, line by line, wrapping around) out the corresponding same side. Respects FLYE!",
@@ -2553,5 +2553,24 @@ tiles_list = {
 	color = {0, 3},
 	layer = 20,
 	desc = "RAVE: Causes the unit to flash through the rainbow extremely quickly."
+  },
+  -- 233
+  {
+    name = "hol",
+    sprite = "hol",
+    grid = {13, 8},
+    color = {3, 3},
+    layer = 3,
+    rotate = true,
+    desc = "the real poor toll"
+  },
+  -- 234
+  {
+    name = "text_hol",
+    sprite = "text_hol",
+    type = "text",
+    grid = {14, 8},
+    color = {3, 2},
+    layer = 20,
   },
 }

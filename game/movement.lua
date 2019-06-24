@@ -389,6 +389,7 @@ It is probably possible to do, but lily has decided that it's not important enou
   convertUnits()
   updateUnits(false, false)
   parseRules()
+  updateHols()
   
   next_levels = getNextLevels()
 end

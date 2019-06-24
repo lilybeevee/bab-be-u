@@ -185,6 +185,7 @@ function undo(dont_update_rules)
       parseRules(true)
     end
     updateUnits(true)
+    updateHols()
 
     table.remove(undo_buffer, 1)
   else

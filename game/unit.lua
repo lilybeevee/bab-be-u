@@ -675,6 +675,32 @@ function updateGraphicalPropertyCache()
   end
 end
 
+function updateHols()
+  if units_by_name["hol"] then
+    for i,unit in ipairs(units_by_name["hol"]) do
+      if hasProperty(unit, "poor toll") then
+        local px, py, move_dir, dir = doPortal(unit, unit.x, unit.y, rotate8(unit.dir), rotate8(unit.dir), false)
+        unit.hol.x, unit.hol.y = px, py
+        local portal_objects = getUnitsOnTile(px, py, nil, true)
+        unit.hol.objects = portal_objects
+        unit.hol.dir = rotate8(unit.dir) - dir
+        local new_last_objs = copyTable(unit.hol.objects)
+        for _,v in ipairs(unit.hol.last) do
+          if not table.has_value(unit.hol.objects, v) then
+            print("yesss")
+            table.insert(unit.hol.objects, v)
+          end
+        end
+        table.sort(portal_objects, function(a, b) return a.layer < b.layer end)
+        unit.hol.last = new_last_objs
+      else
+        unit.hol.objects = nil
+        unit.hol.last = {}
+      end
+    end
+  end
+end
+
 function DoDiscordRichPresence()
   if (discordRPC ~= true) then
     local isu = getUnitsWithEffect("u");
@@ -1158,6 +1184,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty)
   unit.used_as = {} -- list of text types, used for determining sprite transformation
   unit.frame = math.random(1, 3)-1 -- for potential animation
   unit.special = {} -- for lvl objects
+  unit.hol = {dir = 1, last = {}} -- for hol objects
 
   local data = tiles_list[tile]
 
