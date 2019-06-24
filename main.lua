@@ -302,6 +302,8 @@ function love.keypressed(key,scancode,isrepeat)
     rainbowmode = not rainbowmode
   elseif key == "q" and love.keyboard.isDown('f3') then
     superduperdebugmode = not superduperdebugmode
+  elseif key == "d" and love.keyboard.isDown('f3') then
+    drumMode = not drumMode
   elseif key == "f4" then
     debug = not debug
   elseif key == "f5" then
@@ -407,20 +409,22 @@ function love.mousepressed(x, y, button)
   end
 
   if not ui.hovered and scene ~= editor then
-    if button == 1 then playSound("mous kicc") end
-    if button == 2 then playSound("mous snar") end
-    if button == 3 then playSound("mous hihet") end
-    if button == 4 then playSound("mous crash") end
-    if button == 5 then
-      playSound("mous special "..special_no)
+    if drumMode then
+      if button == 1 then playSound("mous kicc") end
+      if button == 2 then playSound("mous snar") end
+      if button == 3 then playSound("mous hihet") end
+      if button == 4 then playSound("mous crash") end
+      if button == 5 then
+        playSound("mous special "..special_no)
 
-      if special_no == 10 then
-        special_no = 1
-      else
-        special_no = special_no + 1
+        if special_no == 10 then
+          special_no = 1
+        else
+          special_no = special_no + 1
+        end
+
       end
-
-    end
+  end
   end
 
   if scene and scene.mousePressed then
@@ -553,6 +557,7 @@ function love.draw()
     'F4 to toggle debug menu\n'..
     'F3+G to toggle rainbowmode\n'..
     'F3+Q for SUPER DUPER DEBUG MODE\n'..
+    'F3+D for MOUS DRUM KIT MODE\n'..
     'F2 for editor mode\n'..
     'F1 for game mode\n'
 
