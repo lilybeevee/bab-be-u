@@ -675,28 +675,25 @@ function updateGraphicalPropertyCache()
   end
 end
 
-function updateHols()
-  if units_by_name["hol"] then
-    for i,unit in ipairs(units_by_name["hol"]) do
-      if hasProperty(unit, "poor toll") then
-        local px, py, move_dir, dir = doPortal(unit, unit.x, unit.y, rotate8(unit.dir), rotate8(unit.dir), false)
-        unit.hol.x, unit.hol.y = px, py
-        local portal_objects = getUnitsOnTile(px, py, nil, true)
-        unit.hol.objects = portal_objects
-        unit.hol.dir = rotate8(unit.dir) - dir
-        local new_last_objs = copyTable(unit.hol.objects)
-        for _,v in ipairs(unit.hol.last) do
-          if not table.has_value(unit.hol.objects, v) then
-            print("yesss")
-            table.insert(unit.hol.objects, v)
-          end
+function updatePortals()
+  for i,unit in ipairs(units) do
+    if unit.is_portal and hasProperty(unit, "poor toll") then
+      local px, py, move_dir, dir = doPortal(unit, unit.x, unit.y, rotate8(unit.dir), rotate8(unit.dir), true)
+      unit.portal.x, unit.portal.y = px, py
+      local portal_objects = getUnitsOnTile(px, py, nil, true)
+      unit.portal.objects = portal_objects
+      unit.portal.dir = rotate8(unit.dir) - dir
+      local new_last_objs = copyTable(unit.portal.objects)
+      for _,v in ipairs(unit.portal.last) do
+        if not table.has_value(unit.portal.objects, v) then
+          table.insert(unit.portal.objects, v)
         end
-        table.sort(portal_objects, function(a, b) return a.layer < b.layer end)
-        unit.hol.last = new_last_objs
-      else
-        unit.hol.objects = nil
-        unit.hol.last = {}
       end
+      table.sort(portal_objects, function(a, b) return a.layer < b.layer end)
+      unit.portal.last = new_last_objs
+    else
+      unit.portal.objects = nil
+      unit.portal.last = {}
     end
   end
 end
@@ -1184,7 +1181,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty)
   unit.used_as = {} -- list of text types, used for determining sprite transformation
   unit.frame = math.random(1, 3)-1 -- for potential animation
   unit.special = {} -- for lvl objects
-  unit.hol = {dir = 1, last = {}} -- for hol objects
+  unit.portal = {dir = 1, last = {}, extra = {}} -- for hol objects
 
   local data = tiles_list[tile]
 
@@ -1199,6 +1196,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty)
   unit.got_objects = {}
   unit.sprite_transforms = data.sprite_transforms or {}
   unit.eye = data.eye -- eye rectangle used for sans
+  unit.is_portal = data.portal or false
 
   unit.fullname = data.name
   if rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname] then
@@ -1311,7 +1309,7 @@ function deleteUnit(unit,convert,undoing)
   end
 end
 
-function moveUnit(unit,x,y)
+function moveUnit(unit,x,y,portal)
   --when empty moves, swap it with the empty in its destination tile, to preserve the invariant 'there is exactly empty per tile'
   --also, keep empty out of units_by_tile - it will be added in getUnitsOnTile
   if (unit.type == "outerlvl") then
@@ -1332,7 +1330,19 @@ function moveUnit(unit,x,y)
     local tileid = unit.x + unit.y * mapwidth
     removeFromTable(units_by_tile[tileid], unit)
 
-    if x ~= unit.x or y ~= unit.y then
+    -- putting portal check above same-position check to give portal effect through one-tile gap
+    if portal and portal.is_portal and x - portal.x == dirs8[portal.dir][1] and y - portal.y == dirs8[portal.dir][2] then
+      if unit.type == "text" or rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname] then
+        should_parse_rules = true
+      end
+      portaling[unit] = portal
+      -- set draw positions to portal offset to interprolate through portals
+      unit.draw.x, unit.draw.y = portal.draw.x, portal.draw.y
+      addTween(tween.new(0.1, unit.draw, {x = x, y = y}), "unit:pos:" .. unit.tempid)
+      -- instantly change object's rotation, weirdness ensues otherwise
+      unit.draw.rotation = (unit.dir - 1) * 45
+      tweens["unit:dir:" .. unit.tempid] = nil
+    elseif x ~= unit.x or y ~= unit.y then
       if unit.type == "text" or rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname] then
         should_parse_rules = true
       end

@@ -461,7 +461,7 @@ tiles_list = {
     type = "object",
     grid = {9, 9},
     color = {2, 3},
-    layer = 2,
+    layer = 1,
   },
   --38
   {
@@ -2560,8 +2560,9 @@ tiles_list = {
     sprite = "hol",
     grid = {13, 8},
     color = {3, 3},
-    layer = 3,
+    layer = 8,
     rotate = true,
+    portal = true,
     desc = "the real poor toll"
   },
   -- 234

@@ -146,13 +146,18 @@ end
 end]]--
 
 function updateMousePosition()
-  if mouse_grabbed then
-    love.mouse.setPosition(love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
-  end
-  if just_released_mouse == 1 then
-    just_released_mouse = 2
-  elseif just_released_mouse == 2 then
-    just_released_mouse = nil
+  if #cursors == 1 then
+    love.mouse.setGrabbed(false)
+    cursors[1].screenx, cursors[1].screeny = love.mouse.getPosition()
+  else
+    if mouse_grabbed then
+      love.mouse.setPosition(love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
+    end
+    if just_released_mouse == 1 then
+      just_released_mouse = 2
+    elseif just_released_mouse == 2 then
+      just_released_mouse = nil
+    end
   end
 end
 
@@ -164,7 +169,7 @@ function moveMouse(x, y, dx, dy)
     resetCursors(x, y)
     just_grabbed_mouse = false
   else
-    if #cursors > 0 then
+    if #cursors > 1 then
       local all_out = true
       local last_out = nil
       for i,cursor in ipairs(cursors) do
@@ -196,14 +201,18 @@ function grabMouse(val)
     just_released_mouse = 1
     --print("released mouse")
   else
-    love.mouse.setGrabbed(true)
-    mouse_grabbed = true
-    just_grabbed_mouse = true
-    --print("grabbed mouse")
+    if #cursors ~= 1 then
+      love.mouse.setGrabbed(true)
+      mouse_grabbed = true
+      just_grabbed_mouse = true
+      --print("grabbed mouse")
+    end
   end
 end
 
 function resetCursors(x, y)
+  if #cursors == 1 then return end
+
   local p = {x = 0, y = 0}
 
   local px, py = getNearestPointInPerimeter(0, 0, love.graphics.getWidth(), love.graphics.getHeight(), x, y)

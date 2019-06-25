@@ -25,6 +25,7 @@ function clear()
   empties_by_tile = {}
   outerlvl = nil
   still_converting = {}
+  portaling = {}
   rules_effecting_names = {}
   referenced_objects = {}
   referenced_text = {}
@@ -487,20 +488,18 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
       for _,param in ipairs(params) do
         --Vitellary: Deliberately ignore the tile we're on. This is different from baba.
         local others = {}
-        for nx=-1,1 do
-          for ny=-1,1 do
-            if (nx ~= 0) or (ny ~= 0) then
-              if unit == outerlvl and surrounds ~= nil and surrounds_name == level_name then
-                --use surrounds to remember what was around the level
-                for __,on in ipairs(surrounds[nx][ny]) do
-                  if nameIs(on, param) then
-                    table.insert(others, on);
-                  end
-                end
-              else
-                mergeTable(others, param ~= "mous" and getUnitsOnTile(unit.x+nx,unit.y+ny,param) or getCursorsOnTile(x+nx, y+ny, false, unit))
+        for ndir=1,8 do
+          local nx, ny = dirs8[ndir][1], dirs8[ndir][2]
+          if unit == outerlvl and surrounds ~= nil and surrounds_name == level_name then
+            --use surrounds to remember what was around the level
+            for __,on in ipairs(surrounds[nx][ny]) do
+              if nameIs(on, param) then
+                table.insert(others, on);
               end
             end
+          else
+            local dx, dy, dir, px, py = getNextTile(unit, nx, ny, ndir)
+            mergeTable(others, param ~= "mous" and getUnitsOnTile(px,py,param) or getCursorsOnTile(px, py, false, unit))
           end
         end
         if #others == 0 then
@@ -541,17 +540,18 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
         for _,param in ipairs(params) do
           local found = false
           local others = {}
-          for nx=-1,1 do
-            for ny=-1,1 do
-              if (nx ~= 0) or (ny ~= 0) then
-                mergeTable(others, param ~= "mous" and getUnitsOnTile(unit.x+nx,unit.y+ny,param) or {})
-              end
-            end
+          for ndir=1,8 do
+            local dx, dy, dir, px, py = getNextTile(unit, dirs8[ndir][1], dirs8[ndir][2], ndir)
+            mergeTable(others, param ~= "mous" and getUnitsOnTile(px,py,param) or {})
           end
           for _,other in ipairs(others) do
-            if other.x+dirs8[other.dir][1] == unit.x and other.y+dirs8[other.dir][2] == unit.y then
+            local dx, dy, dir, px, py = getNextTile(other, dirs8[other.dir][1], dirs8[other.dir][2], other.dir)
+            if px == unit.x and py == unit.y then
               found = true
               break
+            else
+              print(unit.x, unit.y)
+              print(px, py)
             end
           end
           if not found then
@@ -597,13 +597,14 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
               end
             end
           else
+            local dx, dy, dir, px, py = getNextTile(unit, dirs8[unit.dir][1], dirs8[unit.dir][2], unit.dir)
             if param == "lvl" then
               --if we're looking in-bounds, then we're looking at a level technically!
-              result = inBounds(x + dirs8[unit.dir][1], y + dirs8[unit.dir][2]);
+              result = inBounds(px, py)
             elseif param ~= "mous" then
-              others = getUnitsOnTile(x + dirs8[unit.dir][1], y + dirs8[unit.dir][2], param, false, unit) --currently, conditions only work up to one layer of nesting, so the noun argument of the condition is assumed to be just a noun
+              others = getUnitsOnTile(px, py, param, false, unit) --currently, conditions only work up to one layer of nesting, so the noun argument of the condition is assumed to be just a noun
             else
-              others = getCursorsOnTile(x + dirs8[unit.dir][1], y + dirs8[unit.dir][2], false, unit)
+              others = getCursorsOnTile(px, py, false, unit)
             end
           end
           if others ~= nil and #others == 0 then

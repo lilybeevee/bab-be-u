@@ -16,6 +16,7 @@ function doUpdate(already_added, moving_units_next)
       local x = update.payload.x
       local y = update.payload.y
       local dir = update.payload.dir
+      local portal = update.payload.portal
       local geometry_spin = update.payload.geometry_spin
       --TODO: We need to do all applySlides either totally before or totally after doupdate.
       --Reason: Imagine two units that are ICYYYY step onto the same tile. Right now, one will slip on the other. Do we either want both to to slip or neither to slip? The former is more fun, so we should probably do all applySlides after we're done.
@@ -25,7 +26,7 @@ function doUpdate(already_added, moving_units_next)
         updateDir(unit, dirAdd(dir, geometry_spin), true);
       end
       movedebug("doUpdate:"..tostring(unit.fullname)..","..tostring(x)..","..tostring(y)..","..tostring(dir))
-      moveUnit(unit, x, y)
+      moveUnit(unit, x, y, update.payload.portal)
       unit.already_moving = false
     elseif update.reason == "dir" then
       local unit = update.unit
@@ -65,6 +66,8 @@ function doMovement(movex, movey)
     loadLevels(next_levels, nil, next_level_objs)
     return
   end
+
+  portaling = {}
 
   local move_stage = -1
   while move_stage < 3 do
@@ -305,7 +308,7 @@ It is probably possible to do, but lily has decided that it's not important enou
               successes = successes + 1
               
               for k = #movers, 1, -1 do
-                moveIt(movers[k].unit, movers[k].dx, movers[k].dy, movers[k].dir, movers[k].move_dir, movers[k].geometry_spin, data, false, already_added, moving_units, moving_units_next, slippers, remove_from_moving_units)
+                moveIt(movers[k].unit, movers[k].dx, movers[k].dy, movers[k].dir, movers[k].move_dir, movers[k].geometry_spin, data, false, already_added, moving_units, moving_units_next, slippers, remove_from_moving_units, movers[k].portal)
               end
               --Patashu: only the mover itself pulls, otherwise it's a mess. stuff like STICKY/STUCK will require ruggedizing this logic.
               --Patashu: TODO: Doing the pull right away means that in a situation like this: https://cdn.discordapp.com/attachments/579519329515732993/582179745006092318/unknown.png the pull could happen before the bounce depending on move order. To fix this... I'm not sure how Baba does this? But it's somewhere in that mess of code.
@@ -389,7 +392,7 @@ It is probably possible to do, but lily has decided that it's not important enou
   convertUnits()
   updateUnits(false, false)
   parseRules()
-  updateHols()
+  updatePortals()
   
   next_levels = getNextLevels()
 end
@@ -429,10 +432,10 @@ function doAction(action)
   end
 end
 
-function moveIt(mover, dx, dy, facing_dir, move_dir, geometry_spin, data, pulling, already_added, moving_units, moving_units_next, slippers, remove_from_moving_units)
+function moveIt(mover, dx, dy, facing_dir, move_dir, geometry_spin, data, pulling, already_added, moving_units, moving_units_next, slippers, remove_from_moving_units, portal)
   if not mover.removed then
     local move_dx, move_dy = dirs8[move_dir][1], dirs8[move_dir][2]
-    queueMove(mover, dx, dy, facing_dir, false, geometry_spin);
+    queueMove(mover, dx, dy, facing_dir, false, geometry_spin, portal);
     --applySlide(mover, dx, dy, already_added, moving_units_next);
     applySwap(mover, dx, dy);
     --finishing a slip locks you out of U/WALK for the rest of the turn
@@ -493,13 +496,13 @@ function moveIt(mover, dx, dy, facing_dir, move_dir, geometry_spin, data, pullin
   end
 end
 
-function queueMove(mover, dx, dy, dir, priority, geometry_spin)
-  addUndo({"update", mover.id, mover.x, mover.y, mover.dir})
+function queueMove(mover, dx, dy, dir, priority, geometry_spin, portal)
+  addUndo({"update", mover.id, mover.x, mover.y, mover.dir, portal})
   mover.olddir = mover.dir
   updateDir(mover, dir)
   movedebug("moving:"..mover.fullname..","..tostring(mover.id)..","..tostring(mover.x)..","..tostring(mover.y)..","..tostring(dx)..","..tostring(dy))
   mover.already_moving = true;
-  table.insert(update_queue, (priority and 1 or (#update_queue + 1)), {unit = mover, reason = "update", payload = {x = mover.x + dx, y = mover.y + dy, dir = mover.dir, geometry_spin = geometry_spin}})
+  table.insert(update_queue, (priority and 1 or (#update_queue + 1)), {unit = mover, reason = "update", payload = {x = mover.x + dx, y = mover.y + dy, dir = mover.dir, geometry_spin = geometry_spin, portal = portal}})
 end
 
 function applySlide(mover, dx, dy, already_added, moving_units_next)
@@ -728,7 +731,7 @@ function doPullCore(unit,dx,dy,dir,data, already_added, moving_units, moving_uni
               changed_unit = true
             end
             result = result + 1
-            moveIt(mover.unit, mover.dx, mover.dy, mover.dir, mover.move_dir, mover.geometry_spin, data, true, already_added, moving_units, moving_units_next, slippers, remove_from_moving_units)
+            moveIt(mover.unit, mover.dx, mover.dy, mover.dir, mover.move_dir, mover.geometry_spin, data, true, already_added, moving_units, moving_units_next, slippers, remove_from_moving_units, mover.portal)
           end
         end
       end
@@ -857,6 +860,7 @@ function getNextTile(unit,dx,dy,dir,reverse_)
   --we have to loop because a portal might put us oob, which wraps and puts us in another portal, which puts us oob... etc
   local did_update = true
   local loop_portal = 0
+  local portal_unit = nil
   while (did_update) do
     local pxold, pyold = px, py
     did_update = false
@@ -866,14 +870,17 @@ function getNextTile(unit,dx,dy,dir,reverse_)
       destroyLevel("infloop");
     end
     px, py, move_dir, dir = doWrap(unit, px, py, move_dir, dir);
-    px, py, move_dir, dir = doPortal(unit, px, py, move_dir, dir, reverse)
+    px, py, move_dir, dir, punit = doPortal(unit, px, py, move_dir, dir, reverse)
+    if punit then
+      portal_unit = punit
+    end
     if (px ~= pxold or py ~= pyold) then
       did_update = true
     end
   end
   dx = move_dir > 0 and dirs8[move_dir][1] or 0;
   dy = move_dir > 0 and dirs8[move_dir][2] or 0;
-  return rs*dx, rs*dy, dir, px, py
+  return rs*dx, rs*dy, dir, px, py, portal_unit
 end
 
 function doWrap(unit, px, py, move_dir, dir)
@@ -968,11 +975,11 @@ function doPortal(unit, px, py, move_dir, dir, reverse)
         end
         px = dest_portal.x + dx;
         py = dest_portal.y + dy;
-        return px, py, move_dir, dir;
+        return px, py, move_dir, dir, dest_portal;
       end
     end
   end
-  return px, py, move_dir, dir;
+  return px, py, move_dir, dir, nil;
 end
 
 function dirDiff(dir1, dir2)
@@ -1086,12 +1093,12 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
   local move_dx, move_dy = dx, dy;
   local move_dir = dirs8_by_offset[sign(move_dx)][sign(move_dy)] or 0
   local old_dir = dir;
-  local dx, dy, dir, x, y = getNextTile(unit, dx, dy, dir);
+  local dx, dy, dir, x, y, portal_unit = getNextTile(unit, dx, dy, dir);
   local geometry_spin = dirDiff(dir, old_dir);
   
   local movers = {}
   local specials = {}
-  table.insert(movers, {unit = unit, dx = x-unit.x, dy = y-unit.y, dir = dir, move_dx = move_dx, move_dy = move_dy, move_dir = move_dir, geometry_spin = geometry_spin})
+  table.insert(movers, {unit = unit, dx = x-unit.x, dy = y-unit.y, dir = dir, move_dx = move_dx, move_dy = move_dy, move_dir = move_dir, geometry_spin = geometry_spin, portal = portal_unit})
   
   if not inBounds(x,y) then
     if hasProperty(unit, "ouch") and not hasProperty(unit, "protecc") and (reason ~= "walk" or hasProperty(unit, "stubbn")) then
