@@ -2562,6 +2562,7 @@ tiles_list = {
     color = {3, 3},
     layer = 3,
     rotate = true,
+    portal = true,
     desc = "the real poor toll"
   },
   -- 234

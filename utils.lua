@@ -25,6 +25,7 @@ function clear()
   empties_by_tile = {}
   outerlvl = nil
   still_converting = {}
+  portaling = {}
   rules_effecting_names = {}
   referenced_objects = {}
   referenced_text = {}

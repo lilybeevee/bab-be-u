@@ -140,7 +140,7 @@ function scene.resetStuff()
   clearRules()
   parseRules()
   updateUnits(true)
-  updateHols()
+  updatePortals()
   next_levels, next_level_objs = getNextLevels()
 
   first_turn = false
@@ -555,42 +555,63 @@ function scene.draw(dt)
       end
     end
 
-    if unit.name == "hol" then
-      if loop or not unit.hol.objects then
+    if unit.is_portal then
+      if loop or not unit.portal.objects then
         love.graphics.setColor(color[1] * 0.75, color[2] * 0.75, color[3] * 0.75, color[4])
-        drawSprite(sprites["hol_bg"])
+        drawSprite(sprites[sprite_name .. "_bg"])
       else
         love.graphics.setColor(lvl_color[1], lvl_color[2], lvl_color[3], lvl_color[4])
-        drawSprite(sprites["hol_bg"])
+        drawSprite(sprites[sprite_name .. "_bg"])
         love.graphics.setColor(1, 1, 1)
         local function holStencil()
           love.graphics.setShader(mask_shader)
-          drawSprite(sprites["hol_mask"])
+          drawSprite(sprites[sprite_name .. "_mask"])
           love.graphics.setShader()
         end
+        local function holStencil2()
+          love.graphics.rectangle("fill", fulldrawx + 0.5 * TILE_SIZE, fulldrawy - 0.5 * TILE_SIZE, TILE_SIZE, TILE_SIZE)
+        end
         love.graphics.stencil(holStencil, "replace", 2)
-        love.graphics.setStencilTest("greater", 1)
+        love.graphics.stencil(holStencil2, "replace", 1, true)
 
-        love.graphics.push()
-        love.graphics.translate(fulldrawx, fulldrawy)
-        love.graphics.rotate(-math.rad(rotation))
-        love.graphics.rotate(math.rad(unit.hol.dir * 45))
-        love.graphics.translate(-fulldrawx, -fulldrawy)
+        for _,peek in ipairs(unit.portal.objects) do
+          if not portaling[peek] then
+            love.graphics.setStencilTest("greater", 1)
+          else
+            love.graphics.setStencilTest("greater", 0)
+          end
 
-        for _,peek in ipairs(unit.hol.objects) do
+          love.graphics.push()
+          love.graphics.translate(fulldrawx, fulldrawy)
+          love.graphics.rotate(-math.rad(rotation))
+          if portaling[peek] ~= unit then
+            love.graphics.rotate(math.rad(unit.portal.dir * 45))
+          end
+          love.graphics.translate(-fulldrawx, -fulldrawy)
+
           local x, y, rot = unit.draw.x, unit.draw.y, 0
           if peek.name ~= "no1" then
-            x, y = (peek.draw.x - peek.x) + (peek.x - unit.hol.x) + x, (peek.draw.y - peek.y) + (peek.y - unit.hol.y) + y
-            if peek.rotate then rot = peek.draw.rotation
-            else rot = -unit.hol.dir * 45 end
+            if portaling[peek] ~= unit then
+              x, y = (peek.draw.x - peek.x) + (peek.x - unit.portal.x) + x, (peek.draw.y - peek.y) + (peek.y - unit.portal.y) + y
+              if peek.rotate then rot = peek.draw.rotation
+              else rot = -unit.portal.dir * 45 end
+            else
+              x, y = peek.draw.x, peek.draw.y
+              rot = peek.draw.rotation
+            end
           else
-            if peek.rotate then rot = (peek.dir - 1 + unit.hol.dir) * 45
-            else rot = -unit.hol.dir * 45 end
+            if peek.rotate then rot = (peek.dir - 1 + unit.portal.dir) * 45
+            else rot = -unit.portal.dir * 45 end
           end
-          drawUnit(peek, x, y, rot, true)
+          if portaling[peek] == unit and peek.draw.x == peek.x and peek.draw.y == peek.y then
+            portaling[peek] = nil
+          else
+            drawUnit(peek, x, y, rot, true)
+          end
+
+          love.graphics.pop()
         end
 
-        love.graphics.pop()
         love.graphics.setStencilTest()
       end
     end
@@ -673,7 +694,7 @@ function scene.draw(dt)
     if units_by_layer[i] then
       local removed_units = {}
       for _,unit in ipairs(units_by_layer[i]) do
-        if not unit.stelth then
+        if not unit.stelth and not portaling[unit] then
           local x, y, rot = unit.x, unit.y, 0
           if unit.name ~= "no1" then
             x, y = unit.draw.x, unit.draw.y
