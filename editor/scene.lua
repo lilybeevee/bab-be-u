@@ -96,6 +96,7 @@ function scene.load()
 
   if selected_level then
     local unit = units_by_id[selected_level.id]
+    print(unit, selected_level, selected_level.id)
     if unit then
       unit.special.level = selected_level.level
       unit.special.name = selected_level.name
@@ -767,6 +768,7 @@ function scene.updateMap()
 end
 
 function scene.saveLevel()
+  compactIds()
   scene.updateMap()
 
   local map = maps[1][2]

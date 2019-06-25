@@ -1214,6 +1214,8 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty)
     unit.textname = unit.fullname
   end
   
+  print("creating:",unit.name,unit.id)
+  
   --abort if we're trying to create outerlvl outside of the start
   if (x < -10 or y < -10) and unit.name == "lvl" and not really_create_empty then
     return
