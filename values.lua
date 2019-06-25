@@ -461,7 +461,7 @@ tiles_list = {
     type = "object",
     grid = {9, 9},
     color = {2, 3},
-    layer = 2,
+    layer = 1,
   },
   --38
   {
