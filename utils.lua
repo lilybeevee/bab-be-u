@@ -170,7 +170,6 @@ function compactIds()
   for i,unit in ipairs(units) do
     unit.id = i;
     units_by_id[i] = unit;
-    print(unit.name, unit.id)
   end
   max_unit_id = #units + 1;
 end
