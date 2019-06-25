@@ -763,11 +763,7 @@ function fallBlock()
           destroyLevel("infloop");
           return;
         end
-        dx, dy, dir, px, py = getNextTile(unit, dx, dy, dir);
-        --local catchers = getUnitsOnTile(px,py)
-        if not inBounds(px,py) then
-          caught = true
-        end
+        new_dx, new_dy, new_dir, px, py = getNextTile(unit, dx, dy, dir);
         if not canMove(unit, dx, dy, dir, false, false, nil, "haet skye") then
           caught = true
         end
@@ -776,6 +772,7 @@ function fallBlock()
           old_dir = dir;
           moveUnit(unit,px,py)
         end
+        dx, dy, dir = new_dx, new_dy, new_dir
       end
     end
   end
@@ -798,12 +795,8 @@ function fallBlock()
           destroyLevel("infloop");
           return;
         end
-        dx, dy, dir, px, py = getNextTile(unit, dx, dy, dir);
-        --local catchers = getUnitsOnTile(px,py)
-        if not inBounds(px,py) then
-          caught = true
-        end
-        if not canMove(unit, dx, dy, dir, false, false, nil, "haet skye") then
+        new_dx, new_dy, new_dir, px, py = getNextTile(unit, dx, dy, dir);
+        if canMove(unit, dx, dy, dir, false, false, nil, "haet skye") then
           caught = true
         end
         if caught == false then
@@ -811,6 +804,7 @@ function fallBlock()
           old_dir = dir;
           moveUnit(unit,px,py)
         end
+        dx, dy, dir = new_dx, new_dy, new_dir
       end
     end
   end
