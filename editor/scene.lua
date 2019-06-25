@@ -767,6 +767,7 @@ function scene.updateMap()
 end
 
 function scene.saveLevel()
+  compactIds()
   scene.updateMap()
 
   local map = maps[1][2]

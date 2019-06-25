@@ -145,8 +145,10 @@ function loadMap()
       end
     end
   end
-  initializeOuterLvl()
-  initializeEmpties()
+  if (load_mode == "play") then
+    initializeOuterLvl()
+    initializeEmpties()
+  end
 end
 
 function initializeOuterLvl()
@@ -162,6 +164,15 @@ function initializeEmpties()
       (((tileid - 1) % 8) + 1), nil, nil, true)
     end
   end
+end
+
+function compactIds()
+  units_by_id = {};
+  for i,unit in ipairs(units) do
+    unit.id = i;
+    units_by_id[i] = unit;
+  end
+  max_unit_id = #units + 1;
 end
 
 --[[

@@ -493,6 +493,14 @@ function addRule(full_rule)
       for _,v in ipairs(new_objects) do
         addRule({{rules[1], rules[2], v, rules[4]}, units, dir})
       end
+      --txt be txt needs to also apply for flog txt, bab txt, etc.
+      if (object == "text" and verb == "be" and verb_not % 2 == 1) then
+        for i,ref in ipairs(referenced_text) do
+          for _,v in ipairs(new_objects) do
+            addRule({{ref, rules[2], v, rules[4]}, units, dir})
+          end
+        end
+      end
       return
     end
   end
