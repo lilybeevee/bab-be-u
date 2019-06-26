@@ -215,6 +215,7 @@ function love.load()
         if file:ends(".wav") then audioname = file:sub(1, -5) end
         if file:ends(".mp3") then audioname = file:sub(1, -5) end
         if file:ends(".ogg") then audioname = file:sub(1, -5) end
+        if file:ends(".flac") then audioname = file:sub(1, -5) end
         if file:ends(".xm") then audioname = file:sub(1, -4) end
         if d then
           audioname = d .. "/" .. audioname
