@@ -117,6 +117,7 @@ function scene.setupGooi()
   end):setBGImage(sprites["ui/cog"], sprites["ui/cog_h"], sprites["ui/cog_a"]):bg({0, 0, 0, 0})
   gooi.newButton({text = "", x = 40*3, y = 0, w = 40, h = 40}):onRelease(function()
     new_scene = game
+    load_mode = "play"
   end):setBGImage(sprites["ui/play"],sprites["ui/play_h"], sprites["ui/play_a"]):bg({0, 0, 0, 0})
   gooi.newButton({text = "", x = 40*4, y = 0, w = 40, h = 40}):onRelease(function()
     love.graphics.captureScreenshot(function(s)
