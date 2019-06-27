@@ -799,7 +799,7 @@ function fallBlock()
           return;
         end
         new_dx, new_dy, new_dir, px, py = getNextTile(unit, dx, dy, dir);
-        if canMove(unit, dx, dy, dir, false, false, nil, "haet skye") then
+        if not canMove(unit, dx, dy, dir, false, false, nil, "haet skye") then
           caught = true
         end
         if caught == false then
