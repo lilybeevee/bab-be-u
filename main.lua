@@ -305,6 +305,8 @@ function love.keypressed(key,scancode,isrepeat)
     superduperdebugmode = not superduperdebugmode
   elseif key == "d" and love.keyboard.isDown('f3') then
     drumMode = not drumMode
+  elseif key == "r" and love.keyboard.isDown('f3') then
+    remasterMode = not remasterMode
   elseif key == "f4" then
     debug = not debug
   elseif key == "f5" then
@@ -557,8 +559,9 @@ function love.draw()
     '\npress R to restart\n'..
     'F4 to toggle debug menu\n'..
     'F3+G to toggle rainbowmode\n'..
-    'F3+Q for SUPER DUPER DEBUG MODE\n'..
+    'F3+Q for SUPER DUPER DEBUG MODE (wip)\n'..
     'F3+D for MOUS DRUM KIT MODE\n'..
+    'F3+R for REMASTER MODE\n'..
     'F2 for editor mode\n'..
     'F1 for game mode\n'
 

@@ -9,9 +9,11 @@ local scrolly = 0
 
 local music_on = true
 
+
+
 function scene.load()
   clear()
-  resetMusic("bab be u them", 0.5)
+  resetMusic("bab be u them REEEMAZTUR", 0.5)
   love.graphics.setBackgroundColor(0.10, 0.1, 0.11)
   local now = os.time(os.date("*t"))
   presence = {
