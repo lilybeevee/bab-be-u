@@ -2469,90 +2469,90 @@ tiles_list = {
   -- 225
   {
     name = "text_grun",
-	sprite = "text_grun",
-	type = "text",
-	texttype = "property",
-	grid = {16, 9},
-	color = {5, 2},
-	layer = 20,
-	desc = "GRUN: Causes the unit to appear green."
+    sprite = "text_grun",
+    type = "text",
+    texttype = "property",
+    grid = {16, 9},
+    color = {5, 2},
+    layer = 20,
+    desc = "GRUN: Causes the unit to appear green."
   },
   -- 226
   {
     name = "text_yello",
-	sprite = "text_yello",
-	type = "text",
-	texttype = "property",
-	grid = {17, 9},
-	color = {2, 4},
-	layer = 20,
-	desc = "YELLO: Causes the unit to appear yellow."
+    sprite = "text_yello",
+    type = "text",
+    texttype = "property",
+    grid = {17, 9},
+    color = {2, 4},
+    layer = 20,
+    desc = "YELLO: Causes the unit to appear yellow."
   },
   -- 227
   {
     name = "text_purp",
-	sprite = "text_purp",
-	type = "text",
-	texttype = "property",
-	grid = {16, 10},
-	color = {3, 2},
-	layer = 20,
-	desc = "PURP: Causes the unit to appear purple."
+    sprite = "text_purp",
+    type = "text",
+    texttype = "property",
+    grid = {16, 10},
+    color = {3, 2},
+    layer = 20,
+    desc = "PURP: Causes the unit to appear purple."
   },
   -- 228
   {
     name = "text_orang",
-	sprite = "text_orang",
-	type = "text",
-	texttype = "property",
-	grid = {17, 10},
-	color = {2, 3},
-	layer = 20,
-	desc = "ORANG: Causes the unit to appear orange."
+    sprite = "text_orang",
+    type = "text",
+    texttype = "property",
+    grid = {17, 10},
+    color = {2, 3},
+    layer = 20,
+    desc = "ORANG: Causes the unit to appear orange."
   },
   -- 229
   {
     name = "text_cyeann",
-	sprite = "text_cyeann",
-	type = "text",
-	texttype = "property",
-	grid = {16, 11},
-	color = {1, 4},
-	layer = 20,
-	desc = "CYEANN: Causes the unit to appear cyan."
+    sprite = "text_cyeann",
+    type = "text",
+    texttype = "property",
+    grid = {16, 11},
+    color = {1, 4},
+    layer = 20,
+    desc = "CYEANN: Causes the unit to appear cyan."
   },
   -- 230
   {
     name = "text_whit",
-	sprite = "text_whit",
-	type = "text",
-	texttype = "property",
-	grid = {17, 11},
-	color = {0, 3},
-	layer = 20,
-	desc = "WHIT: Causes the unit to appear white."
+    sprite = "text_whit",
+    type = "text",
+    texttype = "property",
+    grid = {17, 11},
+    color = {0, 3},
+    layer = 20,
+    desc = "WHIT: Causes the unit to appear white."
   },
   -- 231
   {
     name = "text_blacc",
-	sprite = "text_blacc",
-	type = "text",
-	texttype = "property",
-	grid = {16, 12},
-	color = {0, 4},
-	layer = 20,
-	desc = "BLACC: Causes the unit to appear black."
+    sprite = "text_blacc",
+    type = "text",
+    texttype = "property",
+    grid = {16, 12},
+    color = {0, 4},
+    layer = 20,
+    desc = "BLACC: Causes the unit to appear black."
   },
   -- 232
   {
     name = "text_rave",
-	sprite = "text_rave",
-	type = "text",
-	texttype = "property",
-	grid = {17, 12},
-	color = {0, 3},
-	layer = 20,
-	desc = "RAVE: Causes the unit to flash through the rainbow extremely quickly."
+    sprite = "text_rave",
+    type = "text",
+    texttype = "property",
+    grid = {17, 12},
+    color = {0, 3},
+    layer = 20,
+    desc = "RAVE: Causes the unit to flash through the rainbow extremely quickly."
   },
   -- 233
   {
@@ -2573,5 +2573,30 @@ tiles_list = {
     grid = {14, 8},
     color = {3, 2},
     layer = 20,
+  },
+  -- 235
+  {
+    name = "text_corekt",
+    sprite = "text_corekt",
+    type = "text",
+    texttype = "cond_prefix",
+    grid = {13,5},
+    color = {5,2},
+    layer = 20,
+    desc = "COREKT: Prefix condition that is true if the unit is in an active rule.",
+  },
+  -- 236
+  {
+    name = "text_rong",
+    sprite = "text_rong",
+    sprite_transforms = {
+      property = "text_rong_prop"
+    },
+    type = "text",
+    texttype = "cond_prefix",
+    grid = {13,6},
+    color = {2,2},
+    layer = 20,
+    desc = "RONG: As a prefix, true if the unit is in a negated rule. As a property, causes associated units to return a negated form of the rule.",
   },
 }

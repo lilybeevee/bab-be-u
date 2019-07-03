@@ -665,6 +665,14 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
           end
         end
       end
+    elseif condtype == "corekt" then
+      if not unit.blocked then
+        result = unit.active
+      else
+        result = false
+      end
+    elseif condtype == "rong" then
+      result = unit.blocked
     else
       print("unknown condtype: " .. condtype)
       result = false
