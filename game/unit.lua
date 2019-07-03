@@ -951,16 +951,20 @@ function readingOrderSort(a, b)
 end
 
 function destroyLevel(reason)
-  level_destroyed = true
+	if not hasRule(outerlvl,"got","lvl") and not (reason == "infloop") then
+    level_destroyed = true
+    for _,unit in ipairs(units) do
+      addParticles("destroy", unit.x, unit.y, unit.color)
+    end
+    handleDels(units, true)
+  end
+  
   addUndo({"destroy_level", reason});
   playSound(reason)
   if reason == "open" or reason == "convert" then
     playSound("break")
   end
-  for _,unit in ipairs(units) do
-    addParticles("destroy", unit.x, unit.y, unit.color)
-  end
-  handleDels(units, true)
+  
   if reason == "infloop" then
     if hasRule("loop","be",":)") then
       win = true
