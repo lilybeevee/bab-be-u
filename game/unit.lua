@@ -951,7 +951,7 @@ function readingOrderSort(a, b)
 end
 
 function destroyLevel(reason)
-	if not hasRule(outerlvl,"got","lvl") and not (reason == "infloop") then
+	if not hasRule(outerlvl,"got","lvl") or (reason == "infloop") then
     level_destroyed = true
     for _,unit in ipairs(units) do
       addParticles("destroy", unit.x, unit.y, unit.color)
