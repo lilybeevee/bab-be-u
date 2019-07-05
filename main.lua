@@ -241,16 +241,12 @@ function love.load()
   registerSound("mous hihet", 0.5)
   registerSound("mous crash", 0.5)
   -- there is a more efficient way, i know.
-  registerSound("mous special 1", 0.5)
-  registerSound("mous special 2", 0.5)
-  registerSound("mous special 3", 0.5)
-  registerSound("mous special 4", 0.5)
-  registerSound("mous special 5", 0.5)
-  registerSound("mous special 6", 0.5)
-  registerSound("mous special 7", 0.5)
-  registerSound("mous special 8", 0.5)
-  registerSound("mous special 9", 0.5)
-  registerSound("mous special 10", 0.5)
+
+  -- WHY NOT DO IT THEN
+  -- ugh ill do it for you
+  for i=1, 10 do
+    registerSound("mous special "..i, 0.5)
+  end
   registerSound("break", 0.5)
   registerSound("unlock", 0.6)
   registerSound("sink", 0.5)
