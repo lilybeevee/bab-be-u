@@ -744,6 +744,7 @@ end
 
 function levelBlock()
   local to_destroy = {}
+  local lvlsafe = hasRule(outerlvl,"got","lvl") or hasProperty(outerlvl,"protecc")
   
   if hasProperty(outerlvl, "loop") then
     destroyLevel("infloop")
@@ -753,7 +754,7 @@ function levelBlock()
     for _,unit in ipairs(units) do
       if sameFloat(unit, outerlvl) then
         destroyLevel("sink")
-        return;
+        if not lvlsafe then return end
       end
     end
   end
@@ -762,7 +763,7 @@ function levelBlock()
     for _,unit in ipairs(units) do
       if sameFloat(unit, outerlvl) then
         destroyLevel("snacc")
-        return;
+        if not lvlsafe then return end
       end
     end
   end
@@ -785,13 +786,13 @@ function levelBlock()
   if hasProperty(outerlvl, "fridgd") then
     if hasProperty(outerlvl, "hotte") then
       destroyLevel("hotte")
-      return
+      if not lvlsafe then return end
     end
     local melters = getUnitsWithEffect("hotte")
     for _,unit in ipairs(melters) do
       if sameFloat(unit,outerlvl) then
         destroyLevel("hotte")
-        return
+        if not lvlsafe then return end
       end
     end
   end
@@ -804,7 +805,6 @@ function levelBlock()
         addParticles("destroy", unit.x, unit.y, unit.color)
       end
     end
-    
   end
   
   to_destroy = handleDels(to_destroy)
@@ -812,13 +812,21 @@ function levelBlock()
   if hasProperty(outerlvl, "ned kee") then
     if hasProperty(outerlvl, "for dor") then
       destroyLevel("unlock")
+      if not lvlsafe then return end
     end
     local dors = getUnitsWithEffect("for dor")
     for _,unit in ipairs(dors) do
       if sameFloat(unit,outerlvl) then
         destroyLevel("unlock")
-        return
+        if lvlsafe then
+          table.insert(to_destroy, unit)
+          addParticles("destroy", unit.x, unit.y, unit.color)
+        else return end
       end
+    end
+    if #to_destroy > 0 then
+      playSound("unlock",0.5)
+      playSound("break",0.5)
     end
   end
   
@@ -829,8 +837,15 @@ function levelBlock()
     for _,unit in ipairs(kees) do
       if sameFloat(unit,outerlvl) then
         destroyLevel("unlock")
-        return
+        if lvlsafe then
+          table.insert(to_destroy, unit)
+          addParticles("destroy", unit.x, unit.y, unit.color)
+        else return end
       end
+    end
+    if #to_destroy > 0 then
+      playSound("unlock",0.5)
+      playSound("break",0.5)
     end
   end
   
@@ -850,7 +865,7 @@ function levelBlock()
     local unit = ruleparent[2]
     if unit ~= outerlvl and sameFloat(outerlvl,unit) then
       destroyLevel("snacc")
-      return
+      if not lvlsafe then return end
     end
   end
   
@@ -886,7 +901,7 @@ function levelBlock()
     for _,unit in ipairs(yous) do
       if sameFloat(unit,outerlvl) then
         destroyLevel("bonus")
-        return
+        if not lvlsafe then return end
       end
     end
   end
@@ -951,7 +966,7 @@ function readingOrderSort(a, b)
 end
 
 function destroyLevel(reason)
-	if not hasRule(outerlvl,"got","lvl") or (reason == "infloop") then
+	if (not hasRule(outerlvl,"got","lvl") and not hasProperty(outerlvl,"protecc")) or (reason == "infloop") then
     level_destroyed = true
     for _,unit in ipairs(units) do
       addParticles("destroy", unit.x, unit.y, unit.color)
@@ -961,7 +976,7 @@ function destroyLevel(reason)
   
   addUndo({"destroy_level", reason});
   playSound(reason)
-  if reason == "open" or reason == "convert" then
+  if reason == "unlock" or reason == "convert" then
     playSound("break")
   end
   
