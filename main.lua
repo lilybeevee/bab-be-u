@@ -283,11 +283,12 @@ function love.keypressed(key,scancode,isrepeat)
   end
 
   if key == "f1" then
-    --if scene == editor then
+    if scene == editor then
       scene = game
       load_mode = "play"
       clearGooi()
       scene.load()
+    end
   elseif key == "f2" then
     if scene == game then
       scene = editor
