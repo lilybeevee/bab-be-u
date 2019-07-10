@@ -179,6 +179,10 @@ function parse(words, parser, state_)
 
   local rule = state.parent_rule.options[state.option][state.index]
   local word = words[state.word_index]
+  while word and word.name == "..." do
+    state.word_index = state.word_index + 1
+    word = words[state.word_index]
+  end
 
   if not rule then
     if keyCount(state.current_matches) > 0 then
@@ -416,6 +420,13 @@ local function testParser()
       {name = "be", type = "verb"},
       {name = "u", type = "property"},
       {name = "be", type = "verb"}
+    },
+    { -- Test 11 - TRUE
+      {name = "bab", type = "object"},
+      {name = "...", type = "ellipses"},
+      {name = "be", type = "verb"},
+      {name = "...", type = "ellipses"},
+      {name = "u", type = "property"},
     },
   }
 

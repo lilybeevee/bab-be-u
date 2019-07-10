@@ -2599,4 +2599,15 @@ tiles_list = {
     layer = 20,
     desc = "RONG: As a prefix, true if the unit is in a negated rule. As a property, causes associated units to return a negated form of the rule.",
   },
+  -- 237
+  {
+    name = "text_...",
+    sprite = "text_...",
+    type = "text",
+    texttype = "ellipses",
+    grid = {14, 1},
+    color = {0, 3},
+    layer = 20,
+    desc = "... (ELLIPSES): Extends rules. BAB .. BE ... ... U is the same as BAB BE U.",
+  },
 }
