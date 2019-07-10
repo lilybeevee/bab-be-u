@@ -1,4 +1,5 @@
 function clear()
+  new_units_cache = {}
   undoing = false
   successful_brite_cache = nil
   next_level_name = ""
@@ -149,6 +150,7 @@ function loadMap()
     initializeOuterLvl()
     initializeEmpties()
   end
+  unsetNewUnits()
 end
 
 function initializeOuterLvl()
@@ -1501,4 +1503,11 @@ function getMousePositions()
     end
     return t
   end
+end
+
+function unsetNewUnits()
+  for unit,_ in pairs(new_units_cache) do
+    unit.new = false
+  end
+  new_units_cache = {}
 end

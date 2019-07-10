@@ -981,6 +981,7 @@ function scene.checkInput()
         if result then playSound("undo") else playSound("fail") end
         do_move_sound = false;
         local end_time = love.timer.getTime();
+        unsetNewUnits()
         print("undo took: "..tostring(round((end_time-start_time)*1000)).."ms")
       else
         local x, y = 0, 0
@@ -1017,6 +1018,7 @@ function scene.checkInput()
           table.remove(undo_buffer, 1)
         end
         local end_time = love.timer.getTime();
+        unsetNewUnits()
         print("gameplay logic took: "..tostring(round((end_time-start_time)*1000)).."ms")
       end
     end

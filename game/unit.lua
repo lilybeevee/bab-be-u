@@ -1,3 +1,225 @@
+function moveBlock()
+  --baba order: FOLLOW, BACK, TELE, SHIFT
+  --bab order: zip, look at, undo, visit fren, go, goooo, shy, spin, folo wal, turn cornr
+
+  local iszip = getUnitsWithEffect("zip");
+  for _,unit in ipairs(iszip) do
+    doZip(unit)
+  end
+  
+  local isstalk = matchesRule("?", "look at", "?");
+  for _,ruleparent in ipairs(isstalk) do
+    local stalkers = findUnitsByName(ruleparent[1][1])
+    local stalkees = copyTable(findUnitsByName(ruleparent[1][3]))
+    local stalker_conds = ruleparent[1][4][1]
+    local stalkee_conds = ruleparent[1][4][2]
+    for _,stalker in ipairs(stalkers) do
+      table.sort(stalkees, function(a, b) return euclideanDistance(a, stalker) < euclideanDistance(b, stalker) end )
+      for _,stalkee in ipairs(stalkees) do
+        if testConds(stalker, stalker_conds) and testConds(stalkee, stalkee_conds) then
+          local dist = euclideanDistance(stalker, stalkee)
+          local stalk_dir = dist > 0 and dirs8_by_offset[sign(stalkee.x - stalker.x)][sign(stalkee.y - stalker.y)] or stalkee.dir
+          if dist > 0 and hasProperty(stalker, "ortho") then
+            local use_hori = math.abs(stalkee.x - stalker.x) > math.abs(stalkee.y - stalker.y)
+            stalk_dir = dirs8_by_offset[use_hori and sign(stalkee.x - stalker.x) or 0][not use_hori and sign(stalkee.y - stalker.y) or 0]
+          end
+          addUndo({"update", stalker.id, stalker.x, stalker.y, stalker.dir})
+          stalker.olddir = stalker.dir
+          updateDir(stalker, stalk_dir)
+          break
+        end
+      end
+    end
+  end
+  
+  local to_destroy = {}
+  
+  --UNDO logic:
+  --the first time something becomes UNDO, we track what turn it became UNDO on.
+  --then every turn thereafter until it stops being UNDO, we undo the update (move backwards) and create (destroy units) events of a turn 2 turns further back (+1 so we keep undoing into the past, +1 because the undo_buffer gained a real turn as well!)
+  --We have to keep track of the turn we started backing on in the undo buffer, so that if we undo to a past where a unit was UNDO, then we know what turn to pick back up from. We also have to save/restore backer_turn on destroy, so if we undo the unit's destruction it comes back with the right backer_turn.
+  --(The cache is not necessary for the logic, it just removes our need to check ALL units to see if they need to be cleaned up.)
+  
+  local backed_this_turn = {};
+  local not_backed_this_turn = {};
+  
+  local isback = getUnitsWithEffectAndCount("undo");
+  for unit,amt in pairs(isback) do
+    backed_this_turn[unit] = true;
+    if (unit.backer_turn == nil) then
+      addUndo({"backer_turn", unit.id, nil})
+      unit.backer_turn = #undo_buffer+(0.5*(amt-1));
+      backers_cache[unit] = unit.backer_turn;
+    end
+    doBack(unit, 2*(#undo_buffer-unit.backer_turn));
+    for i = 2,amt do
+      addUndo({"backer_turn", unit.id, unit.backer_turn})
+      unit.backer_turn = unit.backer_turn - 0.5;
+      doBack(unit, 2*(#undo_buffer-unit.backer_turn));
+    end
+  end
+  
+  for unit,turn in pairs(backers_cache) do
+    if turn ~= nil and not backed_this_turn[unit] then
+      not_backed_this_turn[unit] = true;
+    end
+  end
+  
+  for unit,_ in pairs(not_backed_this_turn) do
+    addUndo({"backer_turn", unit.id, unit.backer_turn})
+    unit.backer_turn = nil;
+    backers_cache[unit] = nil;
+  end
+  
+  to_destroy = handleDels(to_destroy);
+  
+  --Currently using deterministic tele version. Number of teles a teleporter has influences whether it goes forwards or backwards and by how many steps.
+  local istele = getUnitsWithEffectAndCount("visit fren");
+  teles_by_name = {};
+  teles_by_name_index = {};
+  tele_targets = {};
+  --form lists, by tele name, of what all the tele units are
+  for unit,amt in pairs(istele) do
+    if teles_by_name[unit.fullname] == nil then
+      teles_by_name[unit.fullname] = {}
+    end
+    table.insert(teles_by_name[unit.fullname], unit);
+  end
+  --then sort those lists in reading order (tiebreaker is id).
+  --skip this step if doing random version, the sorting won't matter then!
+  for name,tbl in pairs(teles_by_name) do
+    table.sort(tbl, readingOrderSort)
+  end
+  --form a lookup index for each of those lists
+  for name,tbl in pairs(teles_by_name) do
+    teles_by_name_index[name] = {}
+    for k,v in ipairs(tbl) do
+      teles_by_name_index[name][v] = k
+    end
+  end
+  --now do the actual teleports. we can use the index to know our own place in the list so we can skip ourselves
+  for unit,amt in pairs(istele) do
+    local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
+    for _,on in ipairs(stuff) do
+      --we're going to deliberately let two same name teles tele if they're on each other, since with the deterministic behaviour it's predictable and interesting
+      if unit ~= on and sameFloat(unit, on) --[[and unit.fullname ~= on.fullname]] then
+        local destinations = teles_by_name[unit.fullname]
+        local source_index = teles_by_name_index[unit.fullname][unit]
+        
+        --RANDOM VERSION: just pick any tele that isn't us
+        --[[local dest = math.floor(math.random()*(#destinations-1))+1 --even distribution of each integer. +1 because lua is 1 indexed, -1 because we want one less than the number of teleporters (since we're going to ignore our own)
+        if (dest >= source_index) then
+          dest = dest + 1
+        end]]
+        
+        --DETERMINISTIC VERSION: 1/-1/2/-2/3/-3... based on amount of TELE, in reading order.
+        local dest = source_index + (math.floor(amt/2+0.5) * (amt % 2 == 1 and 1 or -1))
+        --have to subtract 1/add 1 because arrays are 1 indexed but modulo arithmetic is 0 indexed.
+        dest = ((dest-1) % (#destinations))+1
+        if dest == source_index then
+          dest = dest + 1
+        end
+        dest = ((dest-1) % (#destinations))+1
+        tele_targets[on] = destinations[dest]
+      end
+    end
+  end
+  for a,b in pairs(tele_targets) do
+    addUndo({"update", a.id, a.x, a.y, a.dir})
+    moveUnit(a, b.x, b.y)
+  end
+  
+  local isshift = getUnitsWithEffect("go");
+  for _,unit in ipairs(isshift) do
+    local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
+    for _,on in ipairs(stuff) do
+      if unit ~= on and sameFloat(unit, on) then
+        addUndo({"update", on.id, on.x, on.y, on.dir})
+        on.olddir = on.dir
+        updateDir(on, unit.dir)
+      end
+    end
+  end
+  
+  local isshift = getUnitsWithEffect("goooo");
+  for _,unit in ipairs(isshift) do
+    local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
+    for _,on in ipairs(stuff) do
+      if unit ~= on and sameFloat(unit, on) then
+        addUndo({"update", on.id, on.x, on.y, on.dir})
+        on.olddir = on.dir
+        updateDir(on, unit.dir)
+      end
+    end
+  end
+  
+  local isshy = getUnitsWithEffect("shy");
+  for _,unit in ipairs(isshy) do
+    if not hasProperty("folo wal") and not hasProperty("turn cornr") then
+      local dpos = dirs8[unit.dir];
+      local dx, dy = dpos[1], dpos[2];
+      local stuff = getUnitsOnTile(unit.x+dx, unit.y+dy, nil, true)
+      local stuff2 = getUnitsOnTile(unit.x-dx, unit.y-dy, nil, true)
+      local pushfront = false
+      local pushbehin = false
+      for _,on in ipairs(stuff) do
+        if hasProperty(on, "go away") then
+          pushfront = true
+          break
+        end
+      end
+      if pushfront then
+        for _,on in ipairs(stuff2) do
+          if hasProperty(on, "go away") then
+            pushbehin = true
+            break
+          end
+        end
+      end
+      if pushfront and not pushbehin then
+        addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
+        updateDir(unit, rotate8(unit.dir))
+      end
+    end
+  end
+  
+  --technically spin_8 does nothing, so skip it
+  for i=1,7 do
+    local isspin = getUnitsWithEffectAndCount("spin_" .. tostring(i));
+    for unit,amt in pairs(isspin) do
+      addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
+      unit.olddir = unit.dir
+      --if we aren't allowed to rotate to the indicated direction, skip it
+      for j=1,8 do
+        local result = updateDir(unit, dirAdd(unit.dir, amt*i));
+        if not result then
+          amt = amt + 1
+        else
+          break
+        end
+      end
+    end
+  end
+  
+  local folo_wall = getUnitsWithEffectAndCount("folo wal")
+  for unit,amt in pairs(folo_wall) do
+    local fwd = unit.dir;
+    local right = (((unit.dir + 2)-1)%8)+1;
+    local bwd = (((unit.dir + 4)-1)%8)+1;
+    local left = (((unit.dir + 6)-1)%8)+1;
+    local result = changeDirIfFree(unit, right) or changeDirIfFree(unit, fwd) or changeDirIfFree(unit, left) or changeDirIfFree(unit, bwd);
+  end
+  
+  local turn_cornr = getUnitsWithEffectAndCount("turn cornr")
+  for unit,amt in pairs(turn_cornr) do
+    local fwd = unit.dir;
+    local right = (((unit.dir + 2)-1)%8)+1;
+    local bwd = (((unit.dir + 4)-1)%8)+1;
+    local left = (((unit.dir + 6)-1)%8)+1;
+    local result = changeDirIfFree(unit, fwd) or changeDirIfFree(unit, right) or changeDirIfFree(unit, left) or changeDirIfFree(unit, bwd);
+  end
+end
+
 function updateUnits(undoing, big_update)
   max_layer = 1
   units_by_layer = {}
@@ -23,186 +245,10 @@ function updateUnits(undoing, big_update)
   
   --handle non-monotonic (creative, destructive) effects one at a time, so that we can process them in a set order instead of unit order
   --BABA order is as follows: DONE, BLUE, RED, MORE, SINK, WEAK, MELT, DEFEAT, SHUT, EAT, BONUS, END, WIN, MAKE, HIDE
-  --(SHIFT, TELE, FOLLOW, BACK are handled in moveblock. FALL is handled in fallblock. But we can just put moveblock in the start here and it's more or less the same thing.)
+  --(FOLLOW, BACK, TELE, SHIFT are handled in moveblock. FALL is handled in fallblock.)
 
   if (big_update and not undoing) then
     levelBlock();
-  
-    local iszip = getUnitsWithEffect("zip");
-    for _,unit in ipairs(iszip) do
-      doZip(unit)
-    end
-  
-    local isshift = getUnitsWithEffect("go");
-    for _,unit in ipairs(isshift) do
-      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
-      for _,on in ipairs(stuff) do
-        if unit ~= on and sameFloat(unit, on) then
-          addUndo({"update", on.id, on.x, on.y, on.dir})
-          on.olddir = on.dir
-          updateDir(on, unit.dir)
-        end
-      end
-    end
-    
-    local isshift = getUnitsWithEffect("goooo");
-    for _,unit in ipairs(isshift) do
-      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
-      for _,on in ipairs(stuff) do
-        if unit ~= on and sameFloat(unit, on) then
-          addUndo({"update", on.id, on.x, on.y, on.dir})
-          on.olddir = on.dir
-          updateDir(on, unit.dir)
-        end
-      end
-    end
-    
-    --Currently using deterministic tele version. Number of teles a teleporter has influences whether it goes forwards or backwards and by how many steps.
-    local istele = getUnitsWithEffectAndCount("visit fren");
-    teles_by_name = {};
-    teles_by_name_index = {};
-    tele_targets = {};
-    --form lists, by tele name, of what all the tele units are
-    for unit,amt in pairs(istele) do
-      if teles_by_name[unit.fullname] == nil then
-        teles_by_name[unit.fullname] = {}
-      end
-      table.insert(teles_by_name[unit.fullname], unit);
-    end
-    --then sort those lists in reading order (tiebreaker is id).
-    --skip this step if doing random version, the sorting won't matter then!
-    for name,tbl in pairs(teles_by_name) do
-      table.sort(tbl, readingOrderSort)
-    end
-    --form a lookup index for each of those lists
-    for name,tbl in pairs(teles_by_name) do
-      teles_by_name_index[name] = {}
-      for k,v in ipairs(tbl) do
-        teles_by_name_index[name][v] = k
-      end
-    end
-    --now do the actual teleports. we can use the index to know our own place in the list so we can skip ourselves
-    for unit,amt in pairs(istele) do
-      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
-      for _,on in ipairs(stuff) do
-        --we're going to deliberately let two same name teles tele if they're on each other, since with the deterministic behaviour it's predictable and interesting
-        if unit ~= on and sameFloat(unit, on) --[[and unit.fullname ~= on.fullname]] then
-          local destinations = teles_by_name[unit.fullname]
-          local source_index = teles_by_name_index[unit.fullname][unit]
-          
-          --RANDOM VERSION: just pick any tele that isn't us
-          --[[local dest = math.floor(math.random()*(#destinations-1))+1 --even distribution of each integer. +1 because lua is 1 indexed, -1 because we want one less than the number of teleporters (since we're going to ignore our own)
-          if (dest >= source_index) then
-            dest = dest + 1
-          end]]
-          
-          --DETERMINISTIC VERSION: 1/-1/2/-2/3/-3... based on amount of TELE, in reading order.
-          local dest = source_index + (math.floor(amt/2+0.5) * (amt % 2 == 1 and 1 or -1))
-          --have to subtract 1/add 1 because arrays are 1 indexed but modulo arithmetic is 0 indexed.
-          dest = ((dest-1) % (#destinations))+1
-          if dest == source_index then
-            dest = dest + 1
-          end
-          dest = ((dest-1) % (#destinations))+1
-          tele_targets[on] = destinations[dest]
-        end
-      end
-    end
-    for a,b in pairs(tele_targets) do
-      addUndo({"update", a.id, a.x, a.y, a.dir})
-      moveUnit(a, b.x, b.y)
-    end
-    
-    local isstalk = matchesRule("?", "look at", "?");
-    for _,ruleparent in ipairs(isstalk) do
-      local stalkers = findUnitsByName(ruleparent[1][1])
-      local stalkees = copyTable(findUnitsByName(ruleparent[1][3]))
-      local stalker_conds = ruleparent[1][4][1]
-      local stalkee_conds = ruleparent[1][4][2]
-      for _,stalker in ipairs(stalkers) do
-        table.sort(stalkees, function(a, b) return euclideanDistance(a, stalker) < euclideanDistance(b, stalker) end )
-        for _,stalkee in ipairs(stalkees) do
-          if testConds(stalker, stalker_conds) and testConds(stalkee, stalkee_conds) then
-            local dist = euclideanDistance(stalker, stalkee)
-            local stalk_dir = dist > 0 and dirs8_by_offset[sign(stalkee.x - stalker.x)][sign(stalkee.y - stalker.y)] or stalkee.dir
-            if dist > 0 and hasProperty(stalker, "ortho") then
-              local use_hori = math.abs(stalkee.x - stalker.x) > math.abs(stalkee.y - stalker.y)
-              stalk_dir = dirs8_by_offset[use_hori and sign(stalkee.x - stalker.x) or 0][not use_hori and sign(stalkee.y - stalker.y) or 0]
-            end
-            addUndo({"update", stalker.id, stalker.x, stalker.y, stalker.dir})
-            stalker.olddir = stalker.dir
-            updateDir(stalker, stalk_dir)
-            break
-          end
-        end
-      end
-    end
-    
-    local isshy = getUnitsWithEffect("shy");
-    for _,unit in ipairs(isshy) do
-      if not hasProperty("folo wal") and not hasProperty("turn cornr") then
-        local dpos = dirs8[unit.dir];
-        local dx, dy = dpos[1], dpos[2];
-        local stuff = getUnitsOnTile(unit.x+dx, unit.y+dy, nil, true)
-        local stuff2 = getUnitsOnTile(unit.x-dx, unit.y-dy, nil, true)
-        local pushfront = false
-        local pushbehin = false
-        for _,on in ipairs(stuff) do
-          if hasProperty(on, "go away") then
-            pushfront = true
-            break
-          end
-        end
-        if pushfront then
-          for _,on in ipairs(stuff2) do
-            if hasProperty(on, "go away") then
-              pushbehin = true
-              break
-            end
-          end
-        end
-        if pushfront and not pushbehin then
-          addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
-          updateDir(unit, rotate8(unit.dir))
-        end
-      end
-    end
-    
-    --technically spin_8 does nothing, so skip it
-    for i=1,7 do
-      local isspin = getUnitsWithEffectAndCount("spin_" .. tostring(i));
-      for unit,amt in pairs(isspin) do
-        addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
-        unit.olddir = unit.dir
-        --if we aren't allowed to rotate to the indicated direction, skip it
-        for j=1,8 do
-          local result = updateDir(unit, dirAdd(unit.dir, amt*i));
-          if not result then
-            amt = amt + 1
-          else
-            break
-          end
-        end
-      end
-    end
-    
-    local folo_wall = getUnitsWithEffectAndCount("folo wal")
-    for unit,amt in pairs(folo_wall) do
-      local fwd = unit.dir;
-      local right = (((unit.dir + 2)-1)%8)+1;
-      local bwd = (((unit.dir + 4)-1)%8)+1;
-      local left = (((unit.dir + 6)-1)%8)+1;
-      local result = changeDirIfFree(unit, right) or changeDirIfFree(unit, fwd) or changeDirIfFree(unit, left) or changeDirIfFree(unit, bwd);
-    end
-    
-    local turn_cornr = getUnitsWithEffectAndCount("turn cornr")
-    for unit,amt in pairs(turn_cornr) do
-      local fwd = unit.dir;
-      local right = (((unit.dir + 2)-1)%8)+1;
-      local bwd = (((unit.dir + 4)-1)%8)+1;
-      local left = (((unit.dir + 6)-1)%8)+1;
-      local result = changeDirIfFree(unit, fwd) or changeDirIfFree(unit, right) or changeDirIfFree(unit, left) or changeDirIfFree(unit, bwd);
-    end
     
     --MOAR is 4-way growth, MOARx2 is 8-way growth, MOARx3 is 2x 4-way growth, MOARx4 is 2x 8-way growth, MOARx5 is 3x 4-way growth, etc.
     --TODO: If you write txt be moar, it's ambiguous which of a stacked text pair will be the one to grow into an adjacent tile first. But if you make it simultaneous, then you get double growth into corners which turns into exponential growth, which is even worse. It might need to be special cased in a clever way.
@@ -263,47 +309,8 @@ function updateUnits(undoing, big_update)
       end
       moar_repeats = moar_repeats + 1
     end
-  
+    
     local to_destroy = {}
-    
-    --UNDO logic:
-    --the first time something becomes UNDO, we track what turn it became UNDO on.
-    --then every turn thereafter until it stops being UNDO, we undo the update (move backwards) and create (destroy units) events of a turn 2 turns further back (+1 so we keep undoing into the past, +1 because the undo_buffer gained a real turn as well!)
-    --We have to keep track of the turn we started backing on in the undo buffer, so that if we undo to a past where a unit was UNDO, then we know what turn to pick back up from. We also have to save/restore backer_turn on destroy, so if we undo the unit's destruction it comes back with the right backer_turn.
-    --(The cache is not necessary for the logic, it just removes our need to check ALL units to see if they need to be cleaned up.)
-    
-    local backed_this_turn = {};
-    local not_backed_this_turn = {};
-    
-    local isback = getUnitsWithEffectAndCount("undo");
-    for unit,amt in pairs(isback) do
-      backed_this_turn[unit] = true;
-      if (unit.backer_turn == nil) then
-        addUndo({"backer_turn", unit.id, nil})
-        unit.backer_turn = #undo_buffer+(0.5*(amt-1));
-        backers_cache[unit] = unit.backer_turn;
-      end
-      doBack(unit, 2*(#undo_buffer-unit.backer_turn));
-      for i = 2,amt do
-        addUndo({"backer_turn", unit.id, unit.backer_turn})
-        unit.backer_turn = unit.backer_turn - 0.5;
-        doBack(unit, 2*(#undo_buffer-unit.backer_turn));
-      end
-    end
-    
-    for unit,turn in pairs(backers_cache) do
-      if turn ~= nil and not backed_this_turn[unit] then
-        not_backed_this_turn[unit] = true;
-      end
-    end
-    
-    for unit,_ in pairs(not_backed_this_turn) do
-      addUndo({"backer_turn", unit.id, unit.backer_turn})
-      unit.backer_turn = nil;
-      backers_cache[unit] = nil;
-    end
-    
-    to_destroy = handleDels(to_destroy);
     
     local issink = getUnitsWithEffect("no swim");
     for _,unit in ipairs(issink) do
@@ -1083,7 +1090,7 @@ function convertUnits()
 
     local rule = rules[1]
 
-    if nameIs(unit, rule[3]) then
+    if not unit.new and nameIs(unit, rule[3]) then
       if not unit.removed and unit.type ~= "outerlvl" then
         addParticles("bonus", unit.x, unit.y, unit.color)
         table.insert(converted_units, unit)
@@ -1102,7 +1109,7 @@ function convertUnits()
     local unit = match[2]
     local rule = rules[1]
     
-    if unit.class == "unit" and unit.type ~= "outerlvl" and not hasRule(unit, "be", unit.name) then
+    if not unit.new and unit.class == "unit" and unit.type ~= "outerlvl" and not hasRule(unit, "be", unit.name) then
       for _,v in ipairs(referenced_objects) do
         local tile = tiles_by_name[v]
         if v == "text" then
@@ -1135,7 +1142,7 @@ function convertUnits()
     local unit = match[2]
     local rule = rules[1]
 
-    if unit.class == "unit" and not nameIs(unit, rule[3]) and unit.type ~= "outerlvl" then
+    if not unit.new and unit.class == "unit" and not nameIs(unit, rule[3]) and unit.type ~= "outerlvl" then
       local tile = tiles_by_name[rule[3]]
       if rule[3] == "text" then
         tile = tiles_by_name["text_" .. rule[1]]
@@ -1287,7 +1294,8 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty)
   table.insert(units, unit)
 
   updateDir(unit, unit.dir)
-
+  new_units_cache[unit] = true
+  unit.new = true
   return unit
 end
 

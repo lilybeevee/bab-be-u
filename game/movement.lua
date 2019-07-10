@@ -385,12 +385,18 @@ It is probably possible to do, but lily has decided that it's not important enou
     end
     move_stage = move_stage + 1
   end
-  parseRules()
-  fallBlock()
-  updateUnits(false, true)
+  --https://babaiswiki.fandom.com/wiki/Advanced_rulebook
   parseRules()
   convertUnits()
-  updateUnits(false, false)
+  parseRules()
+  moveBlock()
+  parseRules()
+  fallBlock()
+  parseRules()
+  convertUnits()
+  fallBlock()
+  parseRules()
+  updateUnits(false, true)
   parseRules()
   updatePortals()
   

@@ -780,7 +780,6 @@ function scene.saveLevel()
 
   local map = maps[1][2]
 
-  print("scene.saveLevel", level_compression)
   local mapdata = level_compression == "zlib" and love.data.compress("string", "zlib", map) or map
   local savestr = love.data.encode("string", "base64", mapdata)
   
@@ -916,7 +915,6 @@ function love.filedropped(file)
   local mapdata = json.decode(data)
 
   level_compression = mapdata.compression or "zlib"
-  print(level_compression)
   local loaddata = love.data.decode("string", "base64", mapdata.map)
   local mapstr = level_compression == "zlib" and love.data.decompress("string", "zlib", loaddata) or loaddata
 
