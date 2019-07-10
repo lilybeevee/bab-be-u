@@ -915,8 +915,8 @@ function love.filedropped(file)
   local data = file:read()
   local mapdata = json.decode(data)
 
-  level_compression = data.compression or "zlib"
-  
+  level_compression = mapdata.compression or "zlib"
+  print(level_compression)
   local loaddata = love.data.decode("string", "base64", mapdata.map)
   local mapstr = level_compression == "zlib" and love.data.decompress("string", "zlib", loaddata) or loaddata
 
@@ -940,8 +940,10 @@ function love.filedropped(file)
   clear()
   loadMap()
 
-  brush.picked_tile = nil
-  brush.picked_index = 0
+  if (brush ~= nil) then
+    brush.picked_tile = nil
+    brush.picked_index = 0
+  end
 
   local dir = "levels/"
   if world ~= "" then dir = world_parent .. "/" .. world .. "/" end
