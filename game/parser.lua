@@ -179,7 +179,7 @@ function parse(words, parser, state_)
 
   local rule = state.parent_rule.options[state.option][state.index]
   local word = words[state.word_index]
-  while word and word.name == "..." do
+  while word and word.type == "ellipses" do
     state.word_index = state.word_index + 1
     word = words[state.word_index]
   end
