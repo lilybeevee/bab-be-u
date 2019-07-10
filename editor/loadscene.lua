@@ -105,7 +105,9 @@ end
 
 function scene.loadLevel(data, new)
   local loaddata = love.data.decode("string", "base64", data.map)
-  local mapstr = love.data.decompress("string", "zlib", loaddata)
+  level_compression = data.compression or "zlib"
+  print("scene.loadLevel", level_compression)
+  local mapstr = level_compression == "zlib" and love.data.decompress("string", "zlib", loaddata) or loaddata
 
   loaded_level = not new
 

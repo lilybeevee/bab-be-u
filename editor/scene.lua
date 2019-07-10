@@ -11,7 +11,7 @@ local ignore_mouse = true
 
 local settings_open, settings, properties
 local label_palette, label_music
-local input_name, input_author, input_palette, input_music, input_width, input_height, input_extra
+local input_name, input_author, input_compression, input_palette, input_music, input_width, input_height, input_extra
 
 local capturing, start_drag, end_drag
 local screenshot, screenshot_image
@@ -34,6 +34,9 @@ function scene.load()
   settings_open = false
   selector_open = false
   
+  if not level_compression then
+    level_compression = "zlib"
+  end
   if not level_name then
     level_name = "unnamed"
   end
@@ -162,6 +165,10 @@ function scene.setupGooi()
   input_width = gooi.newSpinner({value = mapwidth, min = 1, max = 512, x = 4, y = y, w = 98, h = 24}):setGroup("settings")
   input_height = gooi.newSpinner({value = mapwidth, min = 1, max = 512, x = 106, y = y, w = 98, h = 24}):setGroup("settings")
 
+  y = y + 24 + 4
+  gooi.newLabel({text = "Compression", x = 4, y = y, w = 200, h = 24}):center():setGroup("settings")
+  y = y + 24 + 4
+  input_compression = gooi.newText({text = level_compression, x = 4, y = y, w = 200, h = 24}):setGroup("settings")
   
   y = y + 24 + 4
   gooi.newLabel({text = "Extra", x = 4, y = y, w = 200, h = 24}):center():setGroup("settings")
@@ -773,12 +780,14 @@ function scene.saveLevel()
 
   local map = maps[1][2]
 
-  local mapdata = love.data.compress("string", "zlib", map)
+  print("scene.saveLevel", level_compression)
+  local mapdata = level_compression == "zlib" and love.data.compress("string", "zlib", map) or map
   local savestr = love.data.encode("string", "base64", mapdata)
-
+  
   local data = {
     name = level_name,
     author = level_author,
+    compression = level_compression,
     extra = level_extra,
     palette = current_palette,
     music = map_music,
@@ -787,6 +796,8 @@ function scene.saveLevel()
     version = map_ver,
     map = savestr
   }
+  
+  print(level_compression, data.compression)
 
   if world == "" or world_parent == "officialworlds" then
     love.filesystem.createDirectory("levels")
@@ -818,6 +829,7 @@ function scene.openSettings()
     settings_open = true
 
     input_name:setText(level_name)
+    input_compression:setText(level_compression)
     input_author:setText(level_author)
     input_palette:setText(current_palette)
     input_music:setText(map_music)
@@ -863,6 +875,7 @@ function scene.saveSettings()
   end
 
   level_name = input_name:getText()
+  level_compression = input_compression:getText()
   level_author = input_author:getText()
   current_palette = input_palette:getText()
   map_music = input_music:getText()
@@ -902,8 +915,10 @@ function love.filedropped(file)
   local data = file:read()
   local mapdata = json.decode(data)
 
+  level_compression = data.compression or "zlib"
+  
   local loaddata = love.data.decode("string", "base64", mapdata.map)
-  local mapstr = love.data.decompress("string", "zlib", loaddata)
+  local mapstr = level_compression == "zlib" and love.data.decompress("string", "zlib", loaddata) or loaddata
 
   loaded_level = true
 

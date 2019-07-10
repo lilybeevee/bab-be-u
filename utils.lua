@@ -1451,8 +1451,9 @@ function loadLevels(levels, mode, level_objs)
     else
       data = json.decode(level)
     end
+    level_compression = data.compression or "zlib"
     local loaddata = love.data.decode("string", "base64", data.map)
-    local mapstr = love.data.decompress("string", "zlib", loaddata)
+    local mapstr = level_compression == "zlib" and love.data.decompress("string", "zlib", loaddata) or loaddata
 
     loaded_level = not new
 
