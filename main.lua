@@ -247,6 +247,8 @@ function love.load()
   for i=1, 10 do
     registerSound("mous special "..i, 0.5)
   end
+
+  -- ty. much appreciated
   registerSound("break", 0.5)
   registerSound("unlock", 0.6)
   registerSound("sink", 0.5)
