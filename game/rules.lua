@@ -43,6 +43,8 @@ function getAllText()
             hasCopied = true;
           end
           table.insert(result, unit);
+        else
+          unit.active = false
         end
       end
     end
