@@ -2608,6 +2608,28 @@ tiles_list = {
     grid = {14, 1},
     color = {0, 3},
     layer = 20,
-    desc = "... (ELLIPSES): Extends rules. BAB .. BE ... ... U is the same as BAB BE U.",
+    desc = "... (ELLIPSES): Extends rules. BAB ... BE ... ... U is the same as BAB BE U.",
+  },
+  -- 238
+  {
+	name = "text_u too",
+	sprite = "text_utoo",
+	type = "text",
+	texttype = "property",
+	grid = {15,1},
+	color = {4,1},
+	layer = 20,
+	desc = "player 2 has joined the game",
+  },
+  -- 239
+  {
+	name = "text_u tres",
+	sprite = "text_utres",
+	type = "text",
+	texttype = "property",
+	grid = {16,1},
+	color = {4,1},
+	layer = 20,
+	desc = "and player 3",
   },
 }
