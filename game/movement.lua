@@ -233,7 +233,7 @@ function doMovement(movex, movey, key)
     end
 
     for _,unit in pairs(moving_units) do
-      if not unit.stelth and not hasProperty(unit, "loop") then
+      if not unit.stelth and not hasProperty(unit, "loop") and timecheck(unit) then
         addParticles("movement-puff", unit.x, unit.y, unit.color)
       end
     end
@@ -283,86 +283,88 @@ It is probably possible to do, but lily has decided that it's not important enou
         loop_tick = loop_tick + 1
         --TODO: PERFORMANCE: Iterating through moving_units is the slowest part, unsurprisingly. Investigate if it's due to canMove, moveIt, doPull or something else.
         for _,unit in ipairs(moving_units) do
-          while #unit.moves > 0 and unit.moves[1].times <= 0 do
-            table.remove(unit.moves, 1)
-          end
-          if #unit.moves > 0 and not unit.removed then
-            local data = unit.moves[1]
-            local dir = data.dir
-            local dpos = dirs8[dir]
-            local dx,dy = dpos[1],dpos[2]
-            --dx/dy collation logic for copykat moves
-            if (data.reason == "copkat") then
-              dx = sign(data.dx)
-              dy = sign(data.dy)
-              if (dx == 0 and dy == 0) or slippers[unit.id] ~= nil or hasProperty(unit, "slep") then
+          if timecheck(unit) then
+            while #unit.moves > 0 and unit.moves[1].times <= 0 do
+              table.remove(unit.moves, 1)
+            end
+            if #unit.moves > 0 and not unit.removed then
+              local data = unit.moves[1]
+              local dir = data.dir
+              local dpos = dirs8[dir]
+              local dx,dy = dpos[1],dpos[2]
+              --dx/dy collation logic for copykat moves
+              if (data.reason == "copkat") then
+                dx = sign(data.dx)
+                dy = sign(data.dy)
+                if (dx == 0 and dy == 0) or slippers[unit.id] ~= nil or hasProperty(unit, "slep") then
+                  data.times = data.times - 1;
+                  while #unit.moves > 0 and unit.moves[1].times <= 0 do
+                    table.remove(unit.moves, 1)
+                  end
+                  break
+                else
+                  dir = dirs8_by_offset[dx][dy];
+                  data.dir = dir
+                end
+              --dx/dy collation logic for copydog moves
+              elseif (data.reason == "copdog") then
+                --new 'move ALL the way' logic:
+                --1) Split the move into two parts - all the diagonal movement, then all the remaining orthogonal movement.
+                --2) Put the second half in as a new move after this one.
+                local diag_amt = math.min(math.abs(data.dx), math.abs(data.dy));
+                local ortho_amt = math.max(math.abs(data.dx), math.abs(data.dy)) - diag_amt;
+                if (diag_amt == 0 and ortho_amt == 0 or slippers[unit.id] ~= nil or hasProperty(unit, "slep")) then
+                  data.times = 0;
+                elseif (diag_amt > 0 and ortho_amt == 0) or (ortho_amt > 0 and diag_amt == 0) then
+                  data.times = math.max(diag_amt, ortho_amt);
+                  local dir = dirs8_by_offset[sign(data.dx)][sign(data.dy)];
+                  data.dir = dir;
+                  data.reason = "copkat_result";
+                else
+                  local newdir = dirs8_by_offset[sign(math.abs(data.dx)-diag_amt)][sign(math.abs(data.dy)-diag_amt)]
+                  table.insert(copykat.moves, 2, {reason = "copkat_result", dir = newdir, times = ortho_amt})
+                  data.times = diag_amt;
+                  local dir = dirs8_by_offset[sign(data.dx)][sign(data.dy)];
+                  data.dir = dir;
+                  data.reason = "copkat_result";
+                end
+                if (data.times == 0) then
+                  while #unit.moves > 0 and unit.moves[1].times <= 0 do
+                    table.remove(unit.moves, 1)
+                  end
+                  break
+                end
+              end
+              movedebug("considering:"..unit.fullname..","..dir)
+              local success,movers,specials = canMove(unit, dx, dy, dir, true, false, nil, data.reason)
+              for _,special in ipairs(specials) do
+                doAction(special)
+              end
+              if success then
+                something_moved = true
+                successes = successes + 1
+                
+                for k = #movers, 1, -1 do
+                  moveIt(movers[k].unit, movers[k].dx, movers[k].dy, movers[k].dir, movers[k].move_dir, movers[k].geometry_spin, data, false, already_added, moving_units, moving_units_next, slippers, remove_from_moving_units, movers[k].portal)
+                end
+                --Patashu: only the mover itself pulls, otherwise it's a mess. stuff like STICKY/STUCK will require ruggedizing this logic.
+                --Patashu: TODO: Doing the pull right away means that in a situation like this: https://cdn.discordapp.com/attachments/579519329515732993/582179745006092318/unknown.png the pull could happen before the bounce depending on move order. To fix this... I'm not sure how Baba does this? But it's somewhere in that mess of code.
+                doPull(unit, dx, dy, dir, data, already_added, moving_units, moving_units_next,  slippers, remove_from_moving_units)
+                
+                --add to moving_units_next if we have another pending move
                 data.times = data.times - 1;
                 while #unit.moves > 0 and unit.moves[1].times <= 0 do
                   table.remove(unit.moves, 1)
                 end
-                break
-              else
-                dir = dirs8_by_offset[dx][dy];
-                data.dir = dir
-              end
-            --dx/dy collation logic for copydog moves
-            elseif (data.reason == "copdog") then
-              --new 'move ALL the way' logic:
-              --1) Split the move into two parts - all the diagonal movement, then all the remaining orthogonal movement.
-              --2) Put the second half in as a new move after this one.
-              local diag_amt = math.min(math.abs(data.dx), math.abs(data.dy));
-              local ortho_amt = math.max(math.abs(data.dx), math.abs(data.dy)) - diag_amt;
-              if (diag_amt == 0 and ortho_amt == 0 or slippers[unit.id] ~= nil or hasProperty(unit, "slep")) then
-                data.times = 0;
-              elseif (diag_amt > 0 and ortho_amt == 0) or (ortho_amt > 0 and diag_amt == 0) then
-                data.times = math.max(diag_amt, ortho_amt);
-                local dir = dirs8_by_offset[sign(data.dx)][sign(data.dy)];
-                data.dir = dir;
-                data.reason = "copkat_result";
-              else
-                local newdir = dirs8_by_offset[sign(math.abs(data.dx)-diag_amt)][sign(math.abs(data.dy)-diag_amt)]
-                table.insert(copykat.moves, 2, {reason = "copkat_result", dir = newdir, times = ortho_amt})
-                data.times = diag_amt;
-                local dir = dirs8_by_offset[sign(data.dx)][sign(data.dy)];
-                data.dir = dir;
-                data.reason = "copkat_result";
-              end
-              if (data.times == 0) then
-                while #unit.moves > 0 and unit.moves[1].times <= 0 do
-                  table.remove(unit.moves, 1)
+                if #unit.moves > 0 and not remove_from_moving_units[unit] then
+                  table.insert(moving_units_next, unit);
                 end
-                break
+                --we made our move this iteration, wait until the next iteration to move again
+                remove_from_moving_units[unit] = true;
               end
-            end
-            movedebug("considering:"..unit.fullname..","..dir)
-            local success,movers,specials = canMove(unit, dx, dy, dir, true, false, nil, data.reason)
-            for _,special in ipairs(specials) do
-              doAction(special)
-            end
-            if success then
-              something_moved = true
-              successes = successes + 1
-              
-              for k = #movers, 1, -1 do
-                moveIt(movers[k].unit, movers[k].dx, movers[k].dy, movers[k].dir, movers[k].move_dir, movers[k].geometry_spin, data, false, already_added, moving_units, moving_units_next, slippers, remove_from_moving_units, movers[k].portal)
-              end
-              --Patashu: only the mover itself pulls, otherwise it's a mess. stuff like STICKY/STUCK will require ruggedizing this logic.
-              --Patashu: TODO: Doing the pull right away means that in a situation like this: https://cdn.discordapp.com/attachments/579519329515732993/582179745006092318/unknown.png the pull could happen before the bounce depending on move order. To fix this... I'm not sure how Baba does this? But it's somewhere in that mess of code.
-              doPull(unit, dx, dy, dir, data, already_added, moving_units, moving_units_next,  slippers, remove_from_moving_units)
-              
-              --add to moving_units_next if we have another pending move
-              data.times = data.times - 1;
-              while #unit.moves > 0 and unit.moves[1].times <= 0 do
-                table.remove(unit.moves, 1)
-              end
-              if #unit.moves > 0 and not remove_from_moving_units[unit] then
-                table.insert(moving_units_next, unit);
-              end
-              --we made our move this iteration, wait until the next iteration to move again
+            else
               remove_from_moving_units[unit] = true;
             end
-          else
-            remove_from_moving_units[unit] = true;
           end
         end
         --do flips if we failed to move anything
@@ -374,7 +376,7 @@ It is probably possible to do, but lily has decided that it's not important enou
             end
             if #unit.moves > 0 and not unit.removed and unit.moves[1].times > 0 then
               local data = unit.moves[1]
-              if data.reason == "walk" and flippers[unit.id] ~= true and not hasProperty(unit, "stubbn") and not hasProperty(unit,"loop") then
+              if data.reason == "walk" and flippers[unit.id] ~= true and not hasProperty(unit, "stubbn") and not hasProperty(unit,"loop") and timecheck(unit) then
                 dir = rotate8(data.dir); data.dir = dir;
                 addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
                 table.insert(update_queue, {unit = unit, reason = "update", payload = {x = unit.x, y = unit.y, dir = data.dir}})
@@ -1203,8 +1205,15 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
       local would_swap_with = swap_mover or hasProperty(v, "behin u") and pushing
       --pushing a key into a door automatically works
       if (fordor and hasProperty(v, "ned kee")) or (nedkee and hasProperty(v, "for dor")) then
-        table.insert(specials, {"open", {unit, v}})
-        return true,movers,specials
+        if timecheck(unit) and timecheck(v) then
+          table.insert(specials, {"open", {unit, v}})
+          return true,movers,specials
+        else
+          table.insert(time_destroy,unit)
+          table.insert(time_destroy,v)
+          table.insert(time_sfx,"break")
+          table.insert(time_sfx,"unlock")
+        end
       end
       --New FLYE mechanic, as decreed by the bab dictator - if you aren't sameFloat as a push/pull/sidekik, you can enter it.
       if hasProperty(v, "go away") and not would_swap_with then

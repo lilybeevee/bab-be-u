@@ -33,6 +33,7 @@ function moveBlock()
   end
   
   local to_destroy = {}
+  local time_destroy = {}
   
   --UNDO logic:
   --the first time something becomes UNDO, we track what turn it became UNDO on.
@@ -250,6 +251,10 @@ function updateUnits(undoing, big_update)
   if (big_update and not undoing) then
     levelBlock();
     
+    if not hasProperty(nil,"za warudo") then
+      timeless = false
+    end
+    
     --MOAR is 4-way growth, MOARx2 is 8-way growth, MOARx3 is 2x 4-way growth, MOARx4 is 2x 8-way growth, MOARx5 is 3x 4-way growth, etc.
     --TODO: If you write txt be moar, it's ambiguous which of a stacked text pair will be the one to grow into an adjacent tile first. But if you make it simultaneous, then you get double growth into corners which turns into exponential growth, which is even worse. It might need to be special cased in a clever way.
     local give_me_moar = true;
@@ -258,50 +263,52 @@ function updateUnits(undoing, big_update)
       give_me_moar = false;
       local ismoar = getUnitsWithEffectAndCount("moar");
       for unit,amt in pairs(ismoar) do
-        amt = amt - 2*moar_repeats;
-        if amt > 0 then
-          if (amt % 2) == 1 then
-            for i=1,4 do
-              local ndir = dirs[i];
-              local dx = ndir[1];
-              local dy = ndir[2];
-              if canMove(unit, dx, dy, i*2-1, false, false, unit.name) then
-                if unit.class == "unit" then
-                  local new_unit = createUnit(tiles_by_name[unit.fullname], unit.x, unit.y, unit.dir)
-                  addUndo({"create", new_unit.id, false})
-                  _, __, ___, x, y = getNextTile(unit, dx, dy, i*2-1, false);
-                  moveUnit(new_unit,x,y)
-                  addUndo({"update", new_unit.id, unit.x, unit.y, unit.dir})
-                elseif unit.class == "cursor" then
-                  local others = getCursorsOnTile(unit.x + dx, unit.y + dy)
-                  if #others == 0 then
-                    local new_mouse = createMouse(unit.x + dx, unit.y + dy)
-                    addUndo({"create_cursor", new_mouse.id})
+        if timecheck(unit) then
+          amt = amt - 2*moar_repeats;
+          if amt > 0 then
+            if (amt % 2) == 1 then
+              for i=1,4 do
+                local ndir = dirs[i];
+                local dx = ndir[1];
+                local dy = ndir[2];
+                if canMove(unit, dx, dy, i*2-1, false, false, unit.name) then
+                  if unit.class == "unit" then
+                    local new_unit = createUnit(tiles_by_name[unit.fullname], unit.x, unit.y, unit.dir)
+                    addUndo({"create", new_unit.id, false})
+                    _, __, ___, x, y = getNextTile(unit, dx, dy, i*2-1, false);
+                    moveUnit(new_unit,x,y)
+                    addUndo({"update", new_unit.id, unit.x, unit.y, unit.dir})
+                  elseif unit.class == "cursor" then
+                    local others = getCursorsOnTile(unit.x + dx, unit.y + dy)
+                    if #others == 0 then
+                      local new_mouse = createMouse(unit.x + dx, unit.y + dy)
+                      addUndo({"create_cursor", new_mouse.id})
+                    end
                   end
+                  give_me_moar = give_me_moar or amt >= 3;
                 end
-                give_me_moar = give_me_moar or amt >= 3;
               end
-            end
-          else
-            for i=1,8 do
-              local ndir = dirs8[i];
-              local dx = ndir[1];
-              local dy = ndir[2];
-              if canMove(unit, dx, dy, i, false, false, unit.name) then
-                if unit.class == "unit" then
-                  local new_unit = createUnit(tiles_by_name[unit.fullname], unit.x, unit.y, unit.dir)
-                  addUndo({"create", new_unit.id, false})
-                  _, __, ___, x, y = getNextTile(unit, dx, dy, i, false);
-                  moveUnit(new_unit,x,y);
-                  addUndo({"update", new_unit.id, unit.x, unit.y, unit.dir})
-                elseif unit.class == "cursor" then
-                  local others = getCursorsOnTile(unit.x + dx, unit.y + dy)
-                  if #others == 0 then
-                    local new_mouse = createMouse(unit.x + dx, unit.y + dy)
-                    addUndo({"create_cursor", new_mouse.id})
+            else
+              for i=1,8 do
+                local ndir = dirs8[i];
+                local dx = ndir[1];
+                local dy = ndir[2];
+                if canMove(unit, dx, dy, i, false, false, unit.name) then
+                  if unit.class == "unit" then
+                    local new_unit = createUnit(tiles_by_name[unit.fullname], unit.x, unit.y, unit.dir)
+                    addUndo({"create", new_unit.id, false})
+                    _, __, ___, x, y = getNextTile(unit, dx, dy, i, false);
+                    moveUnit(new_unit,x,y);
+                    addUndo({"update", new_unit.id, unit.x, unit.y, unit.dir})
+                  elseif unit.class == "cursor" then
+                    local others = getCursorsOnTile(unit.x + dx, unit.y + dy)
+                    if #others == 0 then
+                      local new_mouse = createMouse(unit.x + dx, unit.y + dy)
+                      addUndo({"create_cursor", new_mouse.id})
+                    end
                   end
+                  give_me_moar = give_me_moar or amt >= 3;
                 end
-                give_me_moar = give_me_moar or amt >= 3;
               end
             end
           end
@@ -311,17 +318,26 @@ function updateUnits(undoing, big_update)
     end
     
     local to_destroy = {}
+    if time_destroy == nil then
+      time_destroy = {}
+    end
     
     local issink = getUnitsWithEffect("no swim");
     for _,unit in ipairs(issink) do
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
       for _,on in ipairs(stuff) do
         if unit ~= on and sameFloat(unit, on) then
-          table.insert(to_destroy, unit)
-          table.insert(to_destroy, on)
-          playSound("sink")
-          addParticles("destroy", unit.x, unit.y, on.color)
-          shakeScreen(0.3, 0.1)
+          if timecheck(unit) and timecheck(on) then
+            table.insert(to_destroy, unit)
+            table.insert(to_destroy, on)
+            playSound("sink")
+            addParticles("destroy", unit.x, unit.y, on.color)
+            shakeScreen(0.3, 0.1)
+          else
+            table.insert(time_destroy,unit)
+            table.insert(time_destroy,on)
+            table.insert(time_sfx,"sink")
+          end
         end
       end
     end
@@ -333,10 +349,15 @@ function updateUnits(undoing, big_update)
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
       for _,on in ipairs(stuff) do
         if unit ~= on and sameFloat(unit, on) then
-          table.insert(to_destroy, unit)
-          playSound("break")
-          addParticles("destroy", unit.x, unit.y, unit.color)
-          shakeScreen(0.3, 0.1)
+          if timecheck(unit) and timecheck(on) then
+            table.insert(to_destroy, unit)
+            playSound("break")
+            addParticles("destroy", unit.x, unit.y, unit.color)
+            shakeScreen(0.3, 0.1)
+          else
+            table.insert(time_destroy,unit)
+            table.insert(time_sfx,"break")
+          end
         end
       end
     end
@@ -348,10 +369,15 @@ function updateUnits(undoing, big_update)
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
       for _,on in ipairs(stuff) do
         if hasProperty(on, "fridgd") and sameFloat(unit, on) then
-          table.insert(to_destroy, on)
-          playSound("hotte")
-          addParticles("destroy", unit.x, unit.y, unit.color)
-          shakeScreen(0.3, 0.1)
+          if timecheck(unit) and timecheck(on) then
+            table.insert(to_destroy, on)
+            playSound("hotte")
+            addParticles("destroy", unit.x, unit.y, unit.color)
+            shakeScreen(0.3, 0.1)
+          else
+            table.insert(time_destroy,on)
+            table.insert(time_sfx,"hotte")
+          end
         end
       end
     end
@@ -364,10 +390,15 @@ function updateUnits(undoing, big_update)
       for _,on in ipairs(stuff) do
         is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
         if is_u and sameFloat(unit, on) then
-          table.insert(to_destroy, on)
-          playSound("break")
-          addParticles("destroy", unit.x, unit.y, unit.color)
-          shakeScreen(0.3, 0.2)
+          if timecheck(unit) and timecheck(on) then
+            table.insert(to_destroy, on)
+            playSound("break")
+            addParticles("destroy", unit.x, unit.y, unit.color)
+            shakeScreen(0.3, 0.2)
+          else
+            table.insert(time_destroy,on)
+            table.insert(time_sfx,"break")
+          end
         end
       end
     end
@@ -379,13 +410,20 @@ function updateUnits(undoing, big_update)
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
       for _,on in ipairs(stuff) do
         if hasProperty(unit, "for dor") and sameFloat(unit, on) then
-          table.insert(to_destroy, unit)
-          table.insert(to_destroy, on)
-          playSound("break")
-          playSound("unlock")
-          addParticles("destroy", unit.x, unit.y, unit.color)
-          addParticles("destroy", on.x, on.y, on.color)
-          shakeScreen(0.3, 0.1)
+          if timecheck(unit) and timecheck(on) then
+            table.insert(to_destroy, unit)
+            table.insert(to_destroy, on)
+            playSound("break")
+            playSound("unlock")
+            addParticles("destroy", unit.x, unit.y, unit.color)
+            addParticles("destroy", on.x, on.y, on.color)
+            shakeScreen(0.3, 0.1)
+          else
+            table.insert(time_destroy,unit)
+            table.insert(time_destroy,on)
+            table.insert(time_sfx,"break")
+            table.insert(time_sfx,"unlock")
+          end
         end
       end
     end
@@ -398,10 +436,15 @@ function updateUnits(undoing, big_update)
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
       for _,on in ipairs(stuff) do
         if unit ~= on and hasRule(unit, "snacc", on) and sameFloat(unit, on) then
-          table.insert(to_destroy, on)
-          playSound("snacc")
-          addParticles("destroy", unit.x, unit.y, unit.color)
-          shakeScreen(0.3, 0.15)
+          if timecheck(unit) and timecheck(on) then
+            table.insert(to_destroy, on)
+            playSound("snacc")
+            addParticles("destroy", unit.x, unit.y, unit.color)
+            shakeScreen(0.3, 0.15)
+          else
+            table.insert(time_destroy,on)
+            table.insert(time_sfx,"snacc")
+          end
         end
       end
     end
@@ -412,8 +455,12 @@ function updateUnits(undoing, big_update)
       for _,on in ipairs(stuff) do
         is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
         if is_u and sameFloat(unit, on) then
-          will_undo = true
-          break
+          if timecheck(unit) and timecheck(on) then
+            will_undo = true
+            break
+          else
+            timeless_reset = true
+          end
         end
       end
     end
@@ -426,7 +473,11 @@ function updateUnits(undoing, big_update)
       for _,on in ipairs(stuff) do
         is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
         if is_u and sameFloat(unit, on) then
-          love = {}
+          if timecheck(unit) and timecheck(on) then
+            love = {}
+          else
+            timeless_crash = true
+          end
         end
       end
     end
@@ -439,9 +490,14 @@ function updateUnits(undoing, big_update)
       for _,on in ipairs(stuff) do
         is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
         if is_u and sameFloat(unit, on) then
-          table.insert(to_destroy, unit)
-          playSound("bonus")
-          addParticles("bonus", unit.x, unit.y, unit.color)
+          if timecheck(unit) and timecheck(on) then
+            table.insert(to_destroy, unit)
+            playSound("bonus")
+            addParticles("bonus", unit.x, unit.y, unit.color)
+          else
+            table.insert(time_destroy,unit)
+            table.insert(time_sfx,"bonus")
+          end
         end
       end
     end
@@ -453,6 +509,100 @@ function updateUnits(undoing, big_update)
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
       for _,on in ipairs(stuff) do
         if unit ~= on and sameFloat(unit, on) then
+          if timecheck(unit) and timecheck(on) then
+            local dir1 = dirAdd(unit.dir,0)
+            local dx1 = dirs8[dir1][1]
+            local dy1 = dirs8[dir1][2]
+            local dir2 = dirAdd(unit.dir,4)
+            local dx2 = dirs8[dir2][1]
+            local dy2 = dirs8[dir2][2]
+            if canMove(on, dx1, dy1, dir1, false, false, on.name) then
+              if on.class == "unit" then
+                local new_unit = createUnit(tiles_by_name[on.fullname], on.x, on.y, dir1)
+                addUndo({"create", new_unit.id, false})
+                _, __, ___, x, y = getNextTile(on, dx1, dy1, dir1, false);
+                moveUnit(new_unit,x,y)
+                addUndo({"update", new_unit.id, on.x, on.y, dir1})
+              elseif unit.class == "cursor" then
+                local others = getCursorsOnTile(on.x + dx1, on.y + dy1)
+                if #others == 0 then
+                  local new_mouse = createMouse(on.x + dx1, on.y + dy1)
+                  addUndo({"create_cursor", new_mouse.id})
+                end
+              end
+            end
+            if canMove(on, dx2, dy2, dir2, false, false, on.name) then
+              if on.class == "unit" then
+                local new_unit = createUnit(tiles_by_name[on.fullname], on.x, on.y, dir2)
+                addUndo({"create", new_unit.id, false})
+                _, __, ___, x, y = getNextTile(on, dx2, dy2, dir2, false);
+                moveUnit(new_unit,x,y)
+                addUndo({"update", new_unit.id, on.x, on.y, dir2})
+              elseif unit.class == "cursor" then
+                local others = getCursorsOnTile(on.x + dx2, on.y + dy2)
+                if #others == 0 then
+                  local new_mouse = createMouse(on.x + dx2, on.y + dy2)
+                  addUndo({"create_cursor", new_mouse.id})
+                end
+              end
+            end
+            table.insert(to_destroy, on)
+          else
+            table.insert(timeless_splitter,unit)
+            table.insert(timeless_splittee,on)
+          end
+        end
+      end
+    end
+    
+    to_destroy = handleDels(to_destroy);
+    
+    local iswin = getUnitsWithEffect(":)");
+    for _,unit in ipairs(iswin) do
+      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
+      for _,on in ipairs(stuff) do
+        is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
+        if is_u and sameFloat(unit, on) then
+          if timecheck(unit) and timecheck(on) then
+            win = true
+            music_fading = true
+            playSound("win")
+          else
+            timeless_win = true
+          end
+        end
+      end
+    end
+    
+    if timeless_win and not timeless then
+      win = true
+      music_fading = true
+      playSound("win")
+    end
+
+    local creators = matchesRule(nil, "creat", "?")
+    for _,match in ipairs(creators) do
+      local creator = match[2]
+      local createe = match[1][1][3]
+
+      local tile = tiles_by_name[createe]
+      if timecheck(creator) then
+        if tile ~= nil then
+          local others = getUnitsOnTile(creator.x, creator.y, createe, true, creator)
+          if #others == 0 then
+            local new_unit = createUnit(tile, creator.x, creator.y, creator.dir)
+            addUndo({"create", new_unit.id, false})
+          end
+        elseif createe == "mous" then
+          local new_mouse = createMouse(creator.x, creator.y)
+          addUndo({"create_cursor", new_mouse.id})
+        end
+      end
+    end
+    
+    if not timeless then
+      for _,unit in ipairs(timeless_splitter) do
+        for _,on in ipairs(timeless_splittee) do
           local dir1 = dirAdd(unit.dir,0)
           local dx1 = dirs8[dir1][1]
           local dy1 = dirs8[dir1][2]
@@ -489,42 +639,12 @@ function updateUnits(undoing, big_update)
               end
             end
           end
-          table.insert(to_destroy, on)
+          table.insert(time_destroy, on)
+          timeless_splitter = {}
+          timeless_splittee = {}
         end
       end
-    end
-    
-    to_destroy = handleDels(to_destroy);
-    
-    local iswin = getUnitsWithEffect(":)");
-    for _,unit in ipairs(iswin) do
-      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
-      for _,on in ipairs(stuff) do
-        is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
-        if is_u and sameFloat(unit, on) then
-          win = true
-          music_fading = true
-          playSound("win")
-        end
-      end
-    end
-
-    local creators = matchesRule(nil, "creat", "?")
-    for _,match in ipairs(creators) do
-      local creator = match[2]
-      local createe = match[1][1][3]
-
-      local tile = tiles_by_name[createe]
-      if tile ~= nil then
-        local others = getUnitsOnTile(creator.x, creator.y, createe, true, creator)
-        if #others == 0 then
-          local new_unit = createUnit(tile, creator.x, creator.y, creator.dir)
-          addUndo({"create", new_unit.id, false})
-        end
-      elseif createe == "mous" then
-        local new_mouse = createMouse(creator.x, creator.y)
-        addUndo({"create_cursor", new_mouse.id})
-      end
+      time_destroy = handleTimeDels(time_destroy)
     end
     
     if hasRule("windo","be","loop") then
@@ -652,13 +772,17 @@ function updateUnits(undoing, big_update)
     backers_cache[unit] = nil;
   end
   
-  if (will_undo) then
+  if (will_undo) or (timeless_reset and not timeless) then
     local can_undo = true;
     while (can_undo) do
       can_undo = undo(true)
     end
     parseRules(true)
     reset_count = reset_count + 1
+  end
+  
+  if timeless_crash and not timeless then
+    love = {}
   end
 end
 
@@ -745,7 +869,26 @@ function handleDels(to_destroy, unstoppable)
       table.insert(del_units, unit)
     end
   end
-  deleteUnits(del_units, false);
+  deleteUnits(del_units, false)
+  return {}
+end
+
+function handleTimeDels(time_destroy)
+  local convert = false
+  local del_units = {}
+  for _,unit in ipairs(time_destroy) do
+    if not hasProperty(unit, "protecc") then
+      addParticles("destroy",unit.x,unit.y,unit.color)
+      unit.destroyed = true
+      unit.removed = true
+      table.insert(del_units, unit)
+    end
+  end
+  for _,sound in ipairs(time_sfx) do
+    playSound(sound,1/#time_sfx)
+  end
+  time_sfx = {}
+  deleteUnits(del_units, false)
   return {}
 end
 

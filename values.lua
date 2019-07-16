@@ -2632,4 +2632,15 @@ tiles_list = {
 	layer = 20,
 	desc = "and player 3",
   },
+  -- 240
+  {
+    name = "text_za warudo",
+    sprite = "text_zawarudo",
+    type = "text",
+    texttype = "property",
+    grid = {14,3},
+    color = {2,4},
+    layer = 20,
+    desc = "ZA WARUDO: Can stop time and move without anything else moving. Faster than rule parsing itself!",
+  },
 }

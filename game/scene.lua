@@ -129,6 +129,7 @@ function scene.update(dt)
 end
 
 function scene.resetStuff()
+  timeless = false
   clear()
   if not is_mobile then
     love.mouse.setCursor(empty_cursor)
@@ -235,10 +236,21 @@ function scene.keyPressed(key, isrepeat)
     scene.resetStuff()
   end
 
-  if key == "y" then
-    level_shader = shader_zawarudo
-    shader_time = 0
-    doin_the_world = true
+  if key == "e" then
+    if hasProperty(nil,"za warudo") then
+      --[[
+      level_shader = shader_zawarudo
+      shader_time = 0
+      doin_the_world = true
+      ]]
+      timeless = not timeless
+      if not timeless then
+        parseRules()
+        doMovement(0,0,"e")
+      end
+    else
+      timeless = false
+    end
   end
 
   if key == "tab" then
@@ -251,8 +263,6 @@ function scene.keyPressed(key, isrepeat)
   if (do_turn_now) then
     scene.checkInput()
   end
-  
-  print(key)
 end
 
 --TODO: Releasing a key could signal to instantly run input under certain circumstances.
@@ -388,6 +398,10 @@ function scene.draw(dt)
     end
 
     if (unit.name == "steev") and not hasRule("steev","be","u") then
+      brightness = 0.33
+    end
+    
+    if timeless and not hasProperty(unit,"za warudo") and not (unit.type == text) then
       brightness = 0.33
     end
 
@@ -827,10 +841,12 @@ function scene.draw(dt)
 
   love.graphics.setCanvas()
   love.graphics.setShader(level_shader)
+  --[[
   if doin_the_world then
     level_shader:send("time", shader_time)
     shader_time = shader_time + 1
   end
+  ]]
   love.graphics.draw(canv,0,0)
   if shader_time == 600 then
     love.graphics.setShader(paletteshader_0)
@@ -1084,7 +1100,7 @@ function scene.doPassiveParticles(timer,word,effect,delay,chance,count,color)
     end
   end
 
-  if do_particles then
+  if do_particles and not timeless then
     local matches = matchesRule(nil,"be",word)
     for _,match in ipairs(matches) do
       local unit = match[2]

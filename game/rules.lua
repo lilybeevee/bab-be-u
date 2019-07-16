@@ -67,6 +67,9 @@ function getTextOnTile(x, y)
 end
 
 function parseRules(undoing)
+  if timeless and not hasProperty("text","za warudo") then
+    return
+  end
   if (should_parse_rules) then
     should_parse_rules = false
   else

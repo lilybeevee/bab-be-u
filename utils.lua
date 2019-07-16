@@ -46,6 +46,17 @@ function clear()
   cursors = {}
   shake_dur = 0
   shake_intensity = 0.5
+  
+  --za warudo needs a lot
+  timeless = false
+  time_destroy = {}
+  time_delfx = {}
+  time_sfx = {}
+  timeless_splitter = {}
+  timeless_splittee = {}
+  timeless_win = false
+  timeless_reset = false
+  timeless_crash = false
 
   if scene == game then
     createMouse_direct(love.mouse.getX(), love.mouse.getY())
@@ -1510,4 +1521,14 @@ function unsetNewUnits()
     unit.new = false
   end
   new_units_cache = {}
+end
+
+function timecheck(unit)
+  if timeless and hasProperty(unit,"za warudo") then
+    return true
+  elseif not timeless then
+    return true
+  else
+    return false
+  end
 end
