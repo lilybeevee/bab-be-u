@@ -103,7 +103,7 @@ function moveBlock()
     local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
     for _,on in ipairs(stuff) do
       --we're going to deliberately let two same name teles tele if they're on each other, since with the deterministic behaviour it's predictable and interesting
-      if unit ~= on and sameFloat(unit, on) --[[and unit.fullname ~= on.fullname]] then
+      if unit ~= on and sameFloat(unit, on) and timecheck(unit) --[[and unit.fullname ~= on.fullname]] then
         local destinations = teles_by_name[unit.fullname]
         local source_index = teles_by_name_index[unit.fullname][unit]
         
@@ -134,7 +134,7 @@ function moveBlock()
   for _,unit in ipairs(isshift) do
     local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
     for _,on in ipairs(stuff) do
-      if unit ~= on and sameFloat(unit, on) then
+      if unit ~= on and sameFloat(unit, on) and timecheck(unit) then
         addUndo({"update", on.id, on.x, on.y, on.dir})
         on.olddir = on.dir
         updateDir(on, unit.dir)
@@ -146,7 +146,7 @@ function moveBlock()
   for _,unit in ipairs(isshift) do
     local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
     for _,on in ipairs(stuff) do
-      if unit ~= on and sameFloat(unit, on) then
+      if unit ~= on and sameFloat(unit, on) and timecheck(unit) then
         addUndo({"update", on.id, on.x, on.y, on.dir})
         on.olddir = on.dir
         updateDir(on, unit.dir)
@@ -773,6 +773,7 @@ function updateUnits(undoing, big_update)
   end
   
   if (will_undo) or (timeless_reset and not timeless) then
+    timeless_reset = false
     local can_undo = true;
     while (can_undo) do
       can_undo = undo(true)
@@ -1253,7 +1254,7 @@ function convertUnits()
 
     local rule = rules[1]
 
-    if not unit.new and nameIs(unit, rule[3]) then
+    if not unit.new and nameIs(unit, rule[3]) and timecheck(unit) then
       if not unit.removed and unit.type ~= "outerlvl" then
         addParticles("bonus", unit.x, unit.y, unit.color)
         table.insert(converted_units, unit)
@@ -1272,7 +1273,7 @@ function convertUnits()
     local unit = match[2]
     local rule = rules[1]
     
-    if not unit.new and unit.class == "unit" and unit.type ~= "outerlvl" and not hasRule(unit, "be", unit.name) then
+    if not unit.new and unit.class == "unit" and unit.type ~= "outerlvl" and not hasRule(unit, "be", unit.name) and timecheck(unit) then
       for _,v in ipairs(referenced_objects) do
         local tile = tiles_by_name[v]
         if v == "text" then
@@ -1305,7 +1306,7 @@ function convertUnits()
     local unit = match[2]
     local rule = rules[1]
 
-    if not unit.new and unit.class == "unit" and not nameIs(unit, rule[3]) and unit.type ~= "outerlvl" then
+    if not unit.new and unit.class == "unit" and not nameIs(unit, rule[3]) and unit.type ~= "outerlvl" and timecheck(unit) then
       local tile = tiles_by_name[rule[3]]
       if rule[3] == "text" then
         tile = tiles_by_name["text_" .. rule[1]]
@@ -1565,6 +1566,9 @@ function moveUnit(unit,x,y,portal)
 end
 
 function updateDir(unit, dir, force)
+  if not timecheck(unit) then
+    return false
+  end
   if not force and rules_with ~= nil then
     if hasProperty(unit, "no turn") then
       return false
