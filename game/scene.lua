@@ -236,7 +236,7 @@ function scene.keyPressed(key, isrepeat)
     scene.resetStuff()
   end
 
-  if key == "e" then
+  if key == "e" and not win then
     if hasProperty(nil,"za warudo") then
       --[[
       level_shader = shader_zawarudo
