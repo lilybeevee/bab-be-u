@@ -248,7 +248,7 @@ function scene.keyPressed(key, isrepeat)
         parseRules()
         doMovement(0,0,"e")
       end
-      addUndo({"update",timeless})
+      addUndo({"za warudo",timeless})
     else
       timeless = false
     end

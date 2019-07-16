@@ -69,6 +69,8 @@ function undoOneAction(turn, i, v, ignore_no_undo)
     end
   elseif action == "destroy_level" then
     level_destroyed = false
+  elseif action == "za warudo" then
+    timeless = not timeless
   end
   return update_rules, unit;
 end
