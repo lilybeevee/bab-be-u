@@ -98,7 +98,7 @@ function doMovement(movex, movey, key)
       local u = getUnitsWithEffectAndCount("u")
       for unit,uness in pairs(u) do
         if not hasProperty(unit, "slep") and slippers[unit.id] == nil then
-          if (key == "wasd") or ((key == "udlr") and not hasProperty(nil,"u too")) or ((key == "numpad") and not hasProperty(nil,"u tres")) then
+          if (key == "wasd") or ((key == "udlr") and not hasProperty(nil,"u too")) or ((key == "numpad" or key == "ijkl") and not hasProperty(nil,"u tres")) then
             local dir = dirs8_by_offset[movex][movey]
             --If you want baba style 'when you moves, even if it fails to move, it changes direction', uncomment this.
             table.insert(unit.moves, {reason = "u", dir = dir, times = 1})
@@ -115,7 +115,7 @@ function doMovement(movex, movey, key)
       local utoo = getUnitsWithEffectAndCount("u too")
       for unit,uness in pairs(utoo) do
         if not hasProperty(unit, "slep") and slippers[unit.id] == nil then
-          if ((key == "wasd") and not hasProperty(nil,"u")) or (key == "udlr") or ((key == "numpad") and not hasProperty(nil,"u tres")) then
+          if ((key == "wasd") and not hasProperty(nil,"u")) or (key == "udlr") or ((key == "numpad" or key == "ijkl") and not hasProperty(nil,"u tres")) then
             local dir = dirs8_by_offset[movex][movey]
             --If you want baba style 'when you moves, even if it fails to move, it changes direction', uncomment this.
             table.insert(unit.moves, {reason = "u", dir = dir, times = 1})
@@ -132,7 +132,7 @@ function doMovement(movex, movey, key)
       local utres = getUnitsWithEffectAndCount("u tres")
       for unit,uness in pairs(utres) do
         if not hasProperty(unit, "slep") and slippers[unit.id] == nil then
-          if ((key == "wasd") and not hasProperty(nil,"u")) or ((key == "udlr") and not hasProperty(nil,"u too")) or (key == "numpad") then
+          if ((key == "wasd") and not hasProperty(nil,"u")) or ((key == "udlr") and not hasProperty(nil,"u too")) or (key == "numpad") or (key == "ijkl") then
             local dir = dirs8_by_offset[movex][movey]
             --If you want baba style 'when you moves, even if it fails to move, it changes direction', uncomment this.
             table.insert(unit.moves, {reason = "u", dir = dir, times = 1})

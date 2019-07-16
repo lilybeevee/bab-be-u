@@ -197,6 +197,13 @@ function scene.keyPressed(key, isrepeat)
       do_turn_now = true
       repeat_timers["udlr"] = 0
     end
+  elseif key == "i" or key == "j" or key == "k" or key == "l" then
+    if not repeat_timers["ijkl"] or repeat_timers["ijkl"] > 30 then
+      repeat_timers["ijkl"] = 30
+    elseif repeat_timers["ijkl"] <= 30 then
+      do_turn_now = true
+      repeat_timers["ijkl"] = 0
+    end
   elseif key == "kp1" or
   key == "kp2" or
   key == "kp3" or
@@ -210,7 +217,7 @@ function scene.keyPressed(key, isrepeat)
       do_turn_now = true
       repeat_timers["numpad"] = 0
     end
-  elseif key == "z" or key == "q" or key == "backspace" or key == "kp0" then
+  elseif key == "z" or key == "q" or key == "backspace" or key == "kp0" or key == "o" then
     if not repeat_timers["undo"] then
       do_turn_now = true
       repeat_timers["undo"] = 0
@@ -244,6 +251,8 @@ function scene.keyPressed(key, isrepeat)
   if (do_turn_now) then
     scene.checkInput()
   end
+  
+  print(key)
 end
 
 --TODO: Releasing a key could signal to instantly run input under certain circumstances.
@@ -259,7 +268,7 @@ function scene.keyReleased(key)
     displaywords = false
   end
 
-  if key == "z" or key == "q" or key == "backspace" or key == "kp0" then
+  if key == "z" or key == "q" or key == "backspace" or key == "kp0" or key == "o" then
     UNDO_DELAY = MAX_UNDO_DELAY
   end
 
@@ -954,6 +963,9 @@ function scene.checkInput()
   if not (key_down["up"] or key_down["down"] or key_down["left"] or key_down["right"]) then
     repeat_timers["udlr"] = nil
   end
+  if not (key_down["i"] or key_down["j"] or key_down["k"] or key_down["l"]) then
+    repeat_timers["ijkl"] = nil
+  end
   if not (key_down["kp1"] or
   key_down["kp2"] or
   key_down["kp3"] or
@@ -965,7 +977,7 @@ function scene.checkInput()
   key_down["kp9"]) then
     repeat_timers["numpad"] = nil
   end
-  if not (key_down["z"] or key_down["q"] or key_down["backspace"] or key_down["kp0"]) then
+  if not (key_down["z"] or key_down["q"] or key_down["backspace"] or key_down["kp0"] or key_down["o"]) then
     repeat_timers["undo"] = nil
   end
 
@@ -995,6 +1007,11 @@ function scene.checkInput()
           if key_down["s"] and most_recent_key ~= "w" then y = y + 1 end
           if key_down["a"] and most_recent_key ~= "d" then x = x - 1 end
           if key_down["d"] and most_recent_key ~= "a" then x = x + 1 end
+        elseif key == "ijkl" then
+          if key_down["i"] and most_recent_key ~= "k" then y = y - 1 end
+          if key_down["k"] and most_recent_key ~= "i" then y = y + 1 end
+          if key_down["j"] and most_recent_key ~= "l" then x = x - 1 end
+          if key_down["l"] and most_recent_key ~= "j" then x = x + 1 end
         elseif key == "numpad" then
           if key_down["kp1"] and most_recent_key ~= "kp9" then x = x + -1; y = y + 1; end
           if key_down["kp2"] and most_recent_key ~= "kp8" then x = x + 0; y = y + 1; end
