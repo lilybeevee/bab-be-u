@@ -362,7 +362,7 @@ function updateUnits(undoing, big_update)
     for _,unit in ipairs(isdefeat) do
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
       for _,on in ipairs(stuff) do
-        is_u = hasProperty(on, "u")
+        is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
         if is_u and sameFloat(unit, on) then
           table.insert(to_destroy, on)
           playSound("break")
@@ -410,7 +410,7 @@ function updateUnits(undoing, big_update)
     for _,unit in ipairs(isreset) do
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
       for _,on in ipairs(stuff) do
-        is_u = hasProperty(on, "u")
+        is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
         if is_u and sameFloat(unit, on) then
           will_undo = true
           break
@@ -424,7 +424,7 @@ function updateUnits(undoing, big_update)
     for _,unit in ipairs(iscrash) do
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
       for _,on in ipairs(stuff) do
-        is_u = hasProperty(on, "u")
+        is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
         if is_u and sameFloat(unit, on) then
           love = {}
         end
@@ -437,7 +437,7 @@ function updateUnits(undoing, big_update)
     for _,unit in ipairs(isbonus) do
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
       for _,on in ipairs(stuff) do
-        is_u = hasProperty(on, "u")
+        is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
         if is_u and sameFloat(unit, on) then
           table.insert(to_destroy, unit)
           playSound("bonus")
@@ -500,7 +500,7 @@ function updateUnits(undoing, big_update)
     for _,unit in ipairs(iswin) do
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
       for _,on in ipairs(stuff) do
-        is_u = hasProperty(on, "u")
+        is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
         if is_u and sameFloat(unit, on) then
           win = true
           music_fading = true
@@ -806,6 +806,10 @@ function levelBlock()
   
   if hasProperty(outerlvl, ":(") then
     local yous = getUnitsWithEffect("u")
+    local youtoos = getUnitsWithEffect("u too")
+    local youtres = getUnitsWithEffect("u tres")
+    mergeTable(yous, youtoos)
+    mergeTable(yous, youtres)
     for _,unit in ipairs(yous) do
       if sameFloat(unit,outerlvl) then
         table.insert(to_destroy, unit)
@@ -886,6 +890,10 @@ function levelBlock()
   local will_undo = false
   if hasProperty(outerlvl, "try again") then
     local yous = getUnitsWithEffect("u")
+    local youtoos = getUnitsWithEffect("u too")
+    local youtres = getUnitsWithEffect("u tres")
+    mergeTable(yous, youtoos)
+    mergeTable(yous, youtres)
     for _,unit in ipairs(yous) do
       if sameFloat(unit,outerlvl) then
         will_undo = true
@@ -896,6 +904,10 @@ function levelBlock()
   
   if hasProperty(outerlvl, "xwx") then
     local yous = getUnitsWithEffect("u")
+    local youtoos = getUnitsWithEffect("u too")
+    local youtres = getUnitsWithEffect("u tres")
+    mergeTable(yous, youtoos)
+    mergeTable(yous, youtres)
     for _,unit in ipairs(yous) do
       if sameFloat(unit,outerlvl) then
         love = {}
@@ -905,6 +917,10 @@ function levelBlock()
   
   if hasProperty(outerlvl, ":o") then
     local yous = getUnitsWithEffect("u")
+    local youtoos = getUnitsWithEffect("u too")
+    local youtres = getUnitsWithEffect("u tres")
+    mergeTable(yous, youtoos)
+    mergeTable(yous, youtres)
     for _,unit in ipairs(yous) do
       if sameFloat(unit,outerlvl) then
         destroyLevel("bonus")
@@ -915,6 +931,10 @@ function levelBlock()
   
   if hasProperty(outerlvl, ":)") then
     local yous = getUnitsWithEffect("u")
+    local youtoos = getUnitsWithEffect("u too")
+    local youtres = getUnitsWithEffect("u tres")
+    mergeTable(yous, youtoos)
+    mergeTable(yous, youtres)
     for _,unit in ipairs(yous) do
       if sameFloat(unit,outerlvl) then
         win = true
