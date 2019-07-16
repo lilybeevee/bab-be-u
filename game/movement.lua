@@ -51,7 +51,7 @@ function doDirRules()
   end
 end
 
-function doMovement(movex, movey)
+function doMovement(movex, movey, key)
   walkdirchangingrulesexist = rules_with["munwalk"] or rules_with["sidestep"] or rules_with["diagstep"] or rules_with["hopovr"];
   local played_sound = {}
   local slippers = {}
@@ -98,14 +98,50 @@ function doMovement(movex, movey)
       local u = getUnitsWithEffectAndCount("u")
       for unit,uness in pairs(u) do
         if not hasProperty(unit, "slep") and slippers[unit.id] == nil then
-          local dir = dirs8_by_offset[movex][movey]
-          --If you want baba style 'when you moves, even if it fails to move, it changes direction', uncomment this.
-          table.insert(unit.moves, {reason = "u", dir = dir, times = 1})
-          --[[addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
-          updateDir(unit, dir);]]
-          if #unit.moves > 0 and not already_added[unit] then
-            table.insert(moving_units, unit)
-            already_added[unit] = true
+          if (key == "wasd") or ((key == "udlr") and not hasProperty(nil,"u too")) or ((key == "numpad") and not hasProperty(nil,"u tres")) then
+            local dir = dirs8_by_offset[movex][movey]
+            --If you want baba style 'when you moves, even if it fails to move, it changes direction', uncomment this.
+            table.insert(unit.moves, {reason = "u", dir = dir, times = 1})
+            --[[addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
+            updateDir(unit, dir);]]
+            if #unit.moves > 0 and not already_added[unit] then
+              table.insert(moving_units, unit)
+              already_added[unit] = true
+            end
+          end
+        end
+      end
+      
+      local utoo = getUnitsWithEffectAndCount("u too")
+      for unit,uness in pairs(utoo) do
+        if not hasProperty(unit, "slep") and slippers[unit.id] == nil then
+          if ((key == "wasd") and not hasProperty(nil,"u")) or (key == "udlr") or ((key == "numpad") and not hasProperty(nil,"u tres")) then
+            local dir = dirs8_by_offset[movex][movey]
+            --If you want baba style 'when you moves, even if it fails to move, it changes direction', uncomment this.
+            table.insert(unit.moves, {reason = "u", dir = dir, times = 1})
+            --[[addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
+            updateDir(unit, dir);]]
+            if #unit.moves > 0 and not already_added[unit] then
+              table.insert(moving_units, unit)
+              already_added[unit] = true
+            end
+          end
+        end
+      end
+      
+      local utres = getUnitsWithEffectAndCount("u tres")
+      for unit,uness in pairs(utres) do
+        if not hasProperty(unit, "slep") and slippers[unit.id] == nil then
+          if ((key == "wasd") and not hasProperty(nil,"u")) or ((key == "udlr") and not hasProperty(nil,"u too")) or (key == "numpad") then
+            local dir = dirs8_by_offset[movex][movey]
+            --If you want baba style 'when you moves, even if it fails to move, it changes direction', uncomment this.
+            table.insert(unit.moves, {reason = "u", dir = dir, times = 1})
+            --[[addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
+            updateDir(unit, dir);]]
+            if #unit.moves > 0 and not already_added[unit] then
+              table.insert(moving_units, unit)
+              already_added[unit] = true
+            end
           end
         end
       end

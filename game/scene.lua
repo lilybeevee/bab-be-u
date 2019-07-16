@@ -374,7 +374,7 @@ function scene.draw(dt)
     if unit.name == "no1" and not (draw_empty and validEmpty(unit)) then return end
 
     local brightness = 1
-    if ((unit.type == "text") or hasProperty(unit,"wurd")) and not unit.active then
+    if ((unit.type == "text") or hasRule(unit,"be","wurd")) and not unit.active then
       brightness = 0.33
     end
 
@@ -1013,7 +1013,7 @@ function scene.checkInput()
         newUndo()
         last_move = {x, y}
         just_moved = true
-        doMovement(x, y)
+        doMovement(x, y, key)
         if #undo_buffer > 0 and #undo_buffer[1] == 0 then
           table.remove(undo_buffer, 1)
         end
