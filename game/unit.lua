@@ -1151,6 +1151,23 @@ function destroyLevel(reason)
     handleDels(units, true)
   end
   
+  local holds = matchesRule(outerlvl,"got","?")
+  for _,match in ipairs(holds) do
+    if not nameIs(outerlvl, match[1][3]) then
+      local tile = tiles_by_name[match[1][3]]
+      if tile == nil and match[1][3] == "every1" then
+        tile = tiles_by_name["text_every1"]
+      end
+      if tile ~= nil then
+        --placeholder - just make 'u r win' pop up for now
+        win = true
+        music_fading = true
+        win_sprite_override = tiles_list[tile].sprite
+        playSound("win")
+      end
+    end
+  end
+  
   addUndo({"destroy_level", reason});
   playSound(reason)
   if reason == "unlock" or reason == "convert" then
@@ -1181,7 +1198,7 @@ end
 function dropGotUnit(unit, rule)
   --TODO: CLEANUP: Blatantly copypasta'd from convertUnits.
   local obj_name = rule[3]
-  if (obj_name == "hatt" or obj_name == "gun" or obj_name == "katany") then
+  if (obj_name == "hatt" or obj_name == "gun" or obj_name == "katany" or unit == outerlvl) then
     return
   end
   
