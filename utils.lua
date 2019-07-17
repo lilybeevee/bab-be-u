@@ -54,7 +54,7 @@ function clear()
   time_sfx = {}
   timeless_splitter = {}
   timeless_splittee = {}
-  timeless_win = false
+  timeless_win = {}
   timeless_reset = false
   timeless_crash = false
 

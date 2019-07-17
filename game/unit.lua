@@ -555,51 +555,6 @@ function updateUnits(undoing, big_update)
       end
     end
     
-    to_destroy = handleDels(to_destroy);
-    
-    local iswin = getUnitsWithEffect(":)");
-    for _,unit in ipairs(iswin) do
-      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
-      for _,on in ipairs(stuff) do
-        is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
-        if is_u and sameFloat(unit, on) then
-          if timecheck(unit) and timecheck(on) then
-            win = true
-            music_fading = true
-            playSound("win")
-          else
-            timeless_win = true
-          end
-        end
-      end
-    end
-    
-    if timeless_win and not timeless then
-      win = true
-      music_fading = true
-      playSound("win")
-    end
-
-    local creators = matchesRule(nil, "creat", "?")
-    for _,match in ipairs(creators) do
-      local creator = match[2]
-      local createe = match[1][1][3]
-
-      local tile = tiles_by_name[createe]
-      if timecheck(creator) then
-        if tile ~= nil then
-          local others = getUnitsOnTile(creator.x, creator.y, createe, true, creator)
-          if #others == 0 then
-            local new_unit = createUnit(tile, creator.x, creator.y, creator.dir)
-            addUndo({"create", new_unit.id, false})
-          end
-        elseif createe == "mous" then
-          local new_mouse = createMouse(creator.x, creator.y)
-          addUndo({"create_cursor", new_mouse.id})
-        end
-      end
-    end
-    
     if not timeless then
       for _,unit in ipairs(timeless_splitter) do
         for _,on in ipairs(timeless_splittee) do
@@ -639,12 +594,61 @@ function updateUnits(undoing, big_update)
               end
             end
           end
-          table.insert(time_destroy, on)
+          table.insert(to_destroy, on)
           timeless_splitter = {}
           timeless_splittee = {}
         end
       end
+    end
+    
+    to_destroy = handleDels(to_destroy);
+    
+    local iswin = getUnitsWithEffect(":)");
+    for _,unit in ipairs(iswin) do
+      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
+      for _,on in ipairs(stuff) do
+        is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
+        if is_u and sameFloat(unit, on) then
+          if timecheck(unit) and timecheck(on) then
+            win = true
+            music_fading = true
+            playSound("win")
+          else
+            table.insert(timeless_win,on)
+          end
+        end
+      end
+    end
+
+    local creators = matchesRule(nil, "creat", "?")
+    for _,match in ipairs(creators) do
+      local creator = match[2]
+      local createe = match[1][1][3]
+
+      local tile = tiles_by_name[createe]
+      if timecheck(creator) then
+        if tile ~= nil then
+          local others = getUnitsOnTile(creator.x, creator.y, createe, true, creator)
+          if #others == 0 then
+            local new_unit = createUnit(tile, creator.x, creator.y, creator.dir)
+            addUndo({"create", new_unit.id, false})
+          end
+        elseif createe == "mous" then
+          local new_mouse = createMouse(creator.x, creator.y)
+          addUndo({"create_cursor", new_mouse.id})
+        end
+      end
+    end
+    
+    if not timeless then
       time_destroy = handleTimeDels(time_destroy)
+    end
+    
+    print(dump(timeless_win))
+    if (#timeless_win > 0) and not timeless then
+      win = true
+      music_fading = true
+      playSound("win")
     end
     
     if hasRule("windo","be","loop") then
@@ -882,7 +886,12 @@ function handleTimeDels(time_destroy)
       addParticles("destroy",unit.x,unit.y,unit.color)
       unit.destroyed = true
       unit.removed = true
-      table.insert(del_units, unit)
+      table.insert(del_units,unit)
+      for index,win in ipairs(timeless_win) do
+        if unit == win then
+          table.remove(timeless_win,index)
+        end
+      end
     end
   end
   for _,sound in ipairs(time_sfx) do
