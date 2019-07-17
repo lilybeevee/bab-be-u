@@ -85,7 +85,7 @@ function doMovement(movex, movey, key)
       for unit,icyness in pairs(icy) do
         local others = (unit == outerlvl and units or getUnitsOnTile(unit.x, unit.y));
         for __,other in ipairs(others) do
-          if other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) then
+          if other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) and timecheck(unit) then
             table.insert(other.moves, {reason = "icy", dir = other.dir, times = icyness})
             if #other.moves > 0 and not already_added[other] and not hasRule(other,"got","slippers") then
               table.insert(moving_units, other)
@@ -423,6 +423,7 @@ It is probably possible to do, but lily has decided that it's not important enou
   end
   --https://babaiswiki.fandom.com/wiki/Advanced_rulebook
   parseRules()
+  levelBlock()
   convertUnits()
   parseRules()
   moveBlock()
@@ -430,6 +431,7 @@ It is probably possible to do, but lily has decided that it's not important enou
   fallBlock()
   parseRules()
   convertUnits()
+  levelBlock()
   fallBlock()
   parseRules()
   updateUnits(false, true)
@@ -558,7 +560,7 @@ function applySlide(mover, dx, dy, already_added, moving_units_next)
   local others = getUnitsOnTile(mover.x+dx, mover.y+dy);
   table.insert(others, outerlvl);
   for _,v in ipairs(others) do
-    if (sameFloat(mover, v) and not v.already_moving) then
+    if (sameFloat(mover, v) and not v.already_moving) and timecheck(mover) and timecheck(v) then
       local launchness = countProperty(v, "goooo");
       if (launchness > 0) then
         if (not did_clear_existing) then
@@ -586,7 +588,7 @@ function applySlide(mover, dx, dy, already_added, moving_units_next)
     return
   end
   for _,v in ipairs(others) do
-    if (sameFloat(mover, v) and not v.already_moving) then
+    if (sameFloat(mover, v) and not v.already_moving) and timecheck(mover) and timecheck(v) then
       local slideness = countProperty(v, "icyyyy");
       if (slideness > 0) then
         if (not did_clear_existing) then

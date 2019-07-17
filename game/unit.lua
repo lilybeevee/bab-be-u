@@ -249,8 +249,6 @@ function updateUnits(undoing, big_update)
   --(FOLLOW, BACK, TELE, SHIFT are handled in moveblock. FALL is handled in fallblock.)
 
   if (big_update and not undoing) then
-    levelBlock();
-    
     if not hasProperty(nil,"za warudo") then
       timeless = false
     end
@@ -644,7 +642,6 @@ function updateUnits(undoing, big_update)
       time_destroy = handleTimeDels(time_destroy)
     end
     
-    print(dump(timeless_win))
     if (#timeless_win > 0) and not timeless then
       win = true
       music_fading = true
@@ -1243,6 +1240,7 @@ function convertUnits()
     units_by_tile[i] = {}
   end
   
+  if level_destroyed then return end
   if convertLevel() then return end
 
  --keep empty out of units_by_tile - it will be returned in getUnitsOnTile

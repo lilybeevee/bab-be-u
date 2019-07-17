@@ -243,15 +243,16 @@ function scene.keyPressed(key, isrepeat)
       shader_time = 0
       doin_the_world = true
       ]]
+      newUndo()
       timeless = not timeless
       if not timeless then
         parseRules()
         doMovement(0,0,"e")
       end
-      addUndo({"za warudo",timeless})
     else
       timeless = false
     end
+    addUndo({"za warudo",timeless})
   end
 
   if key == "tab" then
