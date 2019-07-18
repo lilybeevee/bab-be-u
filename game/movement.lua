@@ -230,7 +230,7 @@ function doMovement(movex, movey, key)
         print(tostring(unit.x)..","..tostring(unit.y)..","..tostring(dir)..","..tostring(dx)..","..tostring(dy))
         if timeless then
           if canMove(unit,dx,dy,dir,true,true,nil,"timeless yeet") then
-            table.insert(unit.moves, {reason = "timeless yeet", dir = unit.dir, times = 1})
+            table.insert(unit.moves, {reason = "timeless yeet", dir = dir, times = 1})
             if #unit.moves > 0 and not already_added[unit] then
               table.insert(moving_units, unit)
               already_added[unit] = true
