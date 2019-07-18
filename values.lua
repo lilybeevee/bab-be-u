@@ -103,9 +103,11 @@ selector_grid_contents = {
     "clowd", "text_clowd", "text_flye", "text_tall", "text_haet skye", "ghost fren", "text_ghost fren", "robobot", "text_robobot", "sparkl", "text_sparkl", "spik", "text_spik", "spiky", "text_spiky", "bordr", "text_bordr", 0,
     nil
   },
-  -- page 2
+  -- page 2: letters
   {
-    
+    "letter_a","letter_b","letter_c","letter_d","letter_e","letter_f","letter_g","letter_hori","letter_j","letter_k","letter_l","letter_m","letter_norz","text_o","letter_p","letter_q","letter_r","letter_s",
+    "letter_t","letter_u","letter_v","letter_w","letter_x","letter_y","letter_.","letter_colon","letter_paranthesis","letter_'",0,0,0,0,0,0,0,0,
+    "letter_go","letter_come","letter_pls","letter_away","letter_my","letter_no","letter_way",0,0,0,0,0,0,0,0,0,0
   },
   -- page 3
   {
@@ -2461,5 +2463,315 @@ tiles_list = {
     color = {4, 1},
     layer = 20,
 		desc = "TXT TXT: The same as having these two text tiles in a row."
+  },
+  -- 244
+  {
+    name = "letter_a",
+    sprite = "letter_a",
+    type = "text",
+    texttype = "letter",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 245
+  {
+    name = "letter_b",
+    sprite = "letter_b",
+    type = "text",
+    texttype = "letter",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 246
+  {
+    name = "letter_c",
+    sprite = "letter_c",
+    type = "text",
+    texttype = "letter",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 247
+  {
+    name = "letter_d",
+    sprite = "letter_d",
+    type = "text",
+    texttype = "letter",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 248
+  {
+    name = "letter_e",
+    sprite = "letter_e",
+    type = "text",
+    texttype = "letter",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 249
+  {
+    name = "letter_f",
+    sprite = "letter_f",
+    type = "text",
+    texttype = "letter",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 250
+  {
+    name = "letter_g",
+    sprite = "letter_g",
+    type = "text",
+    texttype = "letter",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 251
+  {
+    name = "letter_hori",
+    sprite = "letter_h",
+    type = "text",
+    texttype = "letter",
+    rotate = true,
+    color = {0,3},
+    layer = 20,
+  },
+  -- 252
+  {
+    name = "letter_j",
+    sprite = "letter_j",
+    type = "text",
+    texttype = "letter",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 253
+  {
+    name = "letter_k",
+    sprite = "letter_k",
+    type = "text",
+    texttype = "letter",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 254
+  {
+    name = "letter_l",
+    sprite = "letter_l",
+    type = "text",
+    texttype = "letter",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 255
+  {
+    name = "letter_m",
+    sprite = "letter_m",
+    type = "text",
+    texttype = "letter",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 256
+  {
+    name = "letter_norz",
+    sprite = "letter_n",
+    type = "text",
+    texttype = "letter",
+    rotate = true,
+    color = {0,3},
+    layer = 20,
+  },
+  -- 257
+  {
+    name = "letter_p",
+    sprite = "letter_p",
+    type = "text",
+    texttype = "letter",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 258
+  {
+    name = "letter_q",
+    sprite = "letter_q",
+    type = "text",
+    texttype = "letter",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 259
+  {
+    name = "letter_r",
+    sprite = "letter_r",
+    type = "text",
+    texttype = "letter",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 260
+  {
+    name = "letter_s",
+    sprite = "letter_s",
+    type = "text",
+    texttype = "letter",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 261
+  {
+    name = "letter_t",
+    sprite = "letter_t",
+    type = "text",
+    texttype = "letter",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 262
+  {
+    name = "letter_u",
+    sprite = "letter_u",
+    type = "text",
+    texttype = "letter",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 263
+  {
+    name = "letter_v",
+    sprite = "letter_v",
+    type = "text",
+    texttype = "letter",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 264
+  {
+    name = "letter_w",
+    sprite = "letter_w",
+    type = "text",
+    texttype = "letter",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 265
+  {
+    name = "letter_x",
+    sprite = "letter_x",
+    type = "text",
+    texttype = "letter",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 266
+  {
+    name = "letter_y",
+    sprite = "letter_y",
+    type = "text",
+    texttype = "letter",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 267
+  {
+    name = "letter_.",
+    sprite = "letter_period",
+    type = "text",
+    texttype = "letter",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 268
+  {
+    name = "letter_colon",
+    sprite = "letter_colon",
+    type = "text",
+    texttype = "letter",
+    rotate = true,
+    color = {0,3},
+    layer = 20,
+  },
+  -- 269
+  {
+    name = "letter_paranthesis",
+    sprite = "letter_paranthesis",
+    type = "text",
+    texttype = "letter",
+    rotate = true,
+    color = {0,3},
+    layer = 20,
+  },
+  -- 270
+  {
+    name = "letter_'",
+    sprite = "letter_apostrophe",
+    type = "text",
+    texttype = "letter",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 271
+  {
+    name = "letter_go",
+    sprite = "letter_go",
+    type = "text",
+    texttype = "letter",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 272
+  {
+    name = "letter_come",
+    sprite = "letter_come",
+    type = "text",
+    texttype = "letter",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 273
+  {
+    name = "letter_pls",
+    sprite = "letter_pls",
+    type = "text",
+    texttype = "letter",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 274
+  {
+    name = "letter_away",
+    sprite = "letter_away",
+    type = "text",
+    texttype = "letter",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 275
+  {
+    name = "letter_my",
+    sprite = "letter_my",
+    type = "text",
+    texttype = "letter",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 276
+  {
+    name = "letter_no",
+    sprite = "letter_no",
+    type = "text",
+    texttype = "letter",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 277
+  {
+    name = "letter_way",
+    sprite = "letter_way",
+    type = "text",
+    texttype = "letter",
+    color = {0,3},
+    layer = 20,
   },
 }

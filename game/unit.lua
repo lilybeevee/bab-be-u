@@ -1438,7 +1438,11 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty)
   if unit.type == "text" then
     should_parse_rules = true
     unit.name = "text"
-    unit.textname = string.sub(unit.fullname, 6)
+    if unit.texttype == letter then
+      unit.textname = string.sub(unit.fullname, 8)
+    else
+      unit.textname = string.sub(unit.fullname, 6)
+    end
   else
     unit.name = unit.fullname
     unit.textname = unit.fullname
@@ -1628,6 +1632,25 @@ function updateDir(unit, dir, force)
   end
   if unit.fullname == "text_spin" then
     unit.textname = "spin_" .. tostring(unit.dir);
+  end
+  if unit.fullname == "letter_hori" then
+    if unit.dir == 1 or unit.dir == 5 then
+      unit.textname = "h"
+    elseif unit.dir == 3 or unit.dir == 7 then
+      unit.textname = "i"
+    else
+      unit.textname = "  "
+    end
+  end
+  
+  if unit.fullname == "letter_norz" then
+    if unit.dir == 1 or unit.dir == 5 then
+      unit.textname = "n"
+    elseif unit.dir == 3 or unit.dir == 7 then
+      unit.textname = "z"
+    else
+      unit.textname = "  "
+    end
   end
   unit.draw.rotation = unit.draw.rotation % 360
   local target_rot = (dir - 1) * 45
