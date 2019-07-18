@@ -1250,9 +1250,19 @@ function convertLevel()
   end
 end
 
---TODO: Conversions need to be simultaneous, so that if e.g. bab on bab be hurcane and you stack two babs, they both become hurcanes. Also, I think creat timing should be tested to see if it matches baba's or not. (In Baba, it's pretty much at the end of the turn, but I don't know if it's before or after conversion.)
---TODO: Possibly convertUnits() should run twice per turn (except it doesn't apply to units made since the previous turn)? I forget how it works in baba but I think it works like that in baba. It would let you do things like X is Y, X sansn't Y is Z and have both conversions happen in the same turn. Probably Baba behaviour needs to be tested and compared here.
-function convertUnits()
+function ruleHasCondition(rule, cond_name)
+	if rule[4] == nil then return false end
+	if rule[4][1] == nil then return false end
+	if rule[4][1][1] == nil then return false end
+	if rule[4][1][1][1] == nil then return false end
+	for _,cond in ipairs(rule[4][1]) do
+		print(cond[1])
+		if cond[1] == cond_name then return true end
+	end
+	return false
+end
+
+function convertUnits(pass)
   for i,v in pairs(units_by_tile) do
     units_by_tile[i] = {}
   end
@@ -1278,18 +1288,13 @@ function convertUnits()
 
     local rule = rules[1]
 
-    if not unit.new and nameIs(unit, rule[3]) and timecheck(unit) then
+    if not unit.new and nameIs(unit, rule[3]) and timecheck(unit) and (pass < 2 or not ruleHasCondition(rule, "arond")) then
       if not unit.removed and unit.type ~= "outerlvl" then
         addParticles("bonus", unit.x, unit.y, unit.color)
         table.insert(converted_units, unit)
       end
-      unit.removed = true
     end
   end
-
-  deleteUnits(converted_units,true)
-
-  converted_units = {}
 
   local all = matchesRule(nil,"be","every1")
   for _,match in ipairs(all) do
@@ -1297,7 +1302,7 @@ function convertUnits()
     local unit = match[2]
     local rule = rules[1]
     
-    if not unit.new and unit.class == "unit" and unit.type ~= "outerlvl" and not hasRule(unit, "be", unit.name) and timecheck(unit) then
+    if not unit.new and unit.class == "unit" and unit.type ~= "outerlvl" and not hasRule(unit, "be", unit.name) and timecheck(unit and (pass < 2 or not ruleHasCondition(rule, "arond"))) then
       for _,v in ipairs(referenced_objects) do
         local tile = tiles_by_name[v]
         if v == "text" then
@@ -1307,7 +1312,6 @@ function convertUnits()
           if not unit.removed then
             table.insert(converted_units, unit)
           end
-          unit.removed = true
           local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
           if (new_unit ~= nil) then
             addUndo({"create", new_unit.id, true, created_from_id = unit.id})
@@ -1330,7 +1334,7 @@ function convertUnits()
     local unit = match[2]
     local rule = rules[1]
 
-    if not unit.new and unit.class == "unit" and not nameIs(unit, rule[3]) and unit.type ~= "outerlvl" and timecheck(unit) then
+    if not unit.new and unit.class == "unit" and not nameIs(unit, rule[3]) and unit.type ~= "outerlvl" and timecheck(unit) and (pass < 2 or not ruleHasCondition(rule, "arond")) then
       local tile = tiles_by_name[rule[3]]
       if rule[3] == "text" then
         tile = tiles_by_name["text_" .. rule[1]]
@@ -1339,7 +1343,6 @@ function convertUnits()
         if not unit.removed then
           table.insert(converted_units, unit)
         end
-        unit.removed = true
         local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
         if (new_unit ~= nil) then
           addUndo({"create", new_unit.id, true, created_from_id = unit.id})
