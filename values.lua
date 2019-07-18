@@ -88,8 +88,8 @@ selector_grid_contents = {
   {
     0, "text_be", "text_&", "text_got", "text_nt", "text_every1", "text_no1", "text_text", "text_lvl", "text_windo", "text_mous", "text_wait", "text_sans", "text_selctr", "text_lin", "text_loop", "this", "selctr",
     "bab", "text_bab", "text_u", "kee", "text_kee", "text_for dor", "text_direction", "text_wurd", "text_tranz", "text_gay", "text_icy", "text_xwx", "text_liek", "text_nxt", "text_...", "text_u too", "text_u tres", "lvl",
-    "keek", "text_keek", "text_walk", "dor", "text_dor", "text_ned kee", "text_visit fren", "text_behin u", "text_qt", "text_moar", "text_goooo", "text_icyyyy", "text_haet", "text_mayb", "text_an", 0, 0, "lin",
-    "flog", "text_flog", "text_:)", "colld", "text_colld", "text_fridgd", "text_hotte", "text_ouch", "text_slep", "text_protecc", "text_sidekik", "text_brite", "text_lit", "text_opaque", "text_za warudo", 0, 0, 0,
+    "keek", "text_keek", "text_walk", "dor", "text_dor", "text_ned kee", "text_visit fren", "text_behin u", "text_qt", "text_moar", "text_goooo", "text_icyyyy", "text_haet", "text_mayb", "text_an", "text_babn't", "text_ben't", "lin",
+    "flog", "text_flog", "text_:)", "colld", "text_colld", "text_fridgd", "text_hotte", "text_ouch", "text_slep", "text_protecc", "text_sidekik", "text_brite", "text_lit", "text_opaque", "text_za warudo", "text_text_bab", 0, 0,
     "roc", "text_roc", "text_go away", "gras", "text_gras", "dayzy", "text_dayzy", "text_wfren", "text_arond", "text_frenles", "text_look at", "text_seen by", "text_go arnd", "text_mirr arnd", 0, 0, 0, 0,
     "wal", "text_wal", "text_no go", "luv", "text_luv", "hurcane", "text_hurcane", "text_creat", "text_snacc", "text_spoop", "text_yeet", "text_zip", "text_shy", "text_corekt", 0, 0, 0, 0,
     "watr", "text_watr", "text_no swim", "meem", "text_meem", "o", "text_o", "text_colrful", "text_bleu", "text_reed", "text_stelth", "text_folo wal", "text_turn cornr", "text_rong", "text_stalk", 0, 0, 0,
@@ -2424,5 +2424,33 @@ tiles_list = {
     color = {2,4},
     layer = 20,
     desc = "ZA WARUDO: Can stop time and move without anything else moving. Faster than rule parsing itself!",
+  },
+	-- 241
+  {
+    name = "text_babn't",
+    sprite = "text_bab n't",
+    type = "text",
+    color = {0, 3},
+    layer = 20,
+		desc = "BAB N'T: The same as having these two text tiles in a row."
+  },
+	-- 242
+  {
+    name = "text_ben't",
+    sprite = "text_be n't",
+    type = "text",
+    texttype = "verb_all",
+    color = {0, 3},
+    layer = 20,
+		desc = "BE N'T: The same as having these two text tiles in a row."
+  },
+	-- 243
+  {
+    name = "text_text_bab",
+    sprite = "text_bab txt",
+    type = "text",
+    color = {4, 1},
+    layer = 20,
+		desc = "BAB TXT: The same as having these two text tiles in a row."
   },
 }
