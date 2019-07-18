@@ -239,7 +239,7 @@ function doMovement(movex, movey, key)
             table.remove(timeless_yote,index)
           end
         else
-          table.insert(unit.moves, {reason = "yeet", dir = unit.dir, times = 1002})
+          table.insert(unit.moves, {reason = "yeet", dir = dir, times = 1002})
           if #unit.moves > 0 and not already_added[unit] then
             table.insert(moving_units, unit)
             already_added[unit] = true
