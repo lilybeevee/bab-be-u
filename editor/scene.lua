@@ -198,14 +198,17 @@ function scene.setupGooi()
   
   for i=1,#tile_grid do
     local j = i
-    local button = gooi.newButton({text = i, x = x + 64*i, y = y, w = 64, h = 32}):onRelease(function()
+    local button = gooi.newButton({text = "", x = x + 64*i, y = y, w = 64, h = 32}):onRelease(function()
+      selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..selector_page], sprites["ui/selector_tab_"..selector_page.."_h"])
       selector_page = j
+      selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..j.."_a"], sprites["ui/selector_tab_"..j.."_h"])
     end)
-    button:setBGImage(sprites["ui/button_2"]):bg({0, 0, 0, 0})
+    button:setBGImage(sprites["ui/selector_tab_"..i], sprites["ui/selector_tab_"..i.."_h"]):bg({0, 0, 0, 0})
     button:setVisible(selector_open)
     button:setEnabled(selector_open)
     selector_tab_buttons_list[i] = button
   end
+  selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..selector_page.."_a"], sprites["ui/selector_tab_"..selector_page.."_h"])
   -- gooi.setGroupVisible("selectortabs", selector_open)
   -- gooi.setGroupEnabled("selectortabs", selector_open)
   
@@ -303,7 +306,9 @@ function scene.keyPressed(key)
   end
   
   if selector_open and tonumber(key) and tonumber(key) <= #tile_grid and tonumber(key) > 0 then
+    selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..selector_page], sprites["ui/selector_tab_"..selector_page.."_h"])
     selector_page = tonumber(key)
+    selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..tonumber(key).."_a"], sprites["ui/selector_tab_"..tonumber(key).."_h"])
   end
 end
 
