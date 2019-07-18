@@ -1263,6 +1263,8 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
         else
           table.insert(time_destroy,unit)
           table.insert(time_destroy,v)
+					addUndo({"time_destroy",unit.id});
+					addUndo({"time_destroy",v.id});
           table.insert(time_sfx,"break")
           table.insert(time_sfx,"unlock")
         end

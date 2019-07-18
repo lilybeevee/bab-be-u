@@ -334,6 +334,8 @@ function updateUnits(undoing, big_update)
           else
             table.insert(time_destroy,unit)
             table.insert(time_destroy,on)
+						addUndo({"time_destroy",unit.id});
+						addUndo({"time_destroy",on.id});
             table.insert(time_sfx,"sink")
           end
         end
@@ -354,6 +356,7 @@ function updateUnits(undoing, big_update)
             shakeScreen(0.3, 0.1)
           else
             table.insert(time_destroy,unit)
+						addUndo({"time_destroy",unit.id});
             table.insert(time_sfx,"break")
           end
         end
@@ -374,6 +377,7 @@ function updateUnits(undoing, big_update)
             shakeScreen(0.3, 0.1)
           else
             table.insert(time_destroy,on)
+						addUndo({"time_destroy",on.id});
             table.insert(time_sfx,"hotte")
           end
         end
@@ -395,6 +399,7 @@ function updateUnits(undoing, big_update)
             shakeScreen(0.3, 0.2)
           else
             table.insert(time_destroy,on)
+						addUndo({"time_destroy",on.id});
             table.insert(time_sfx,"break")
           end
         end
@@ -441,6 +446,7 @@ function updateUnits(undoing, big_update)
             shakeScreen(0.3, 0.15)
           else
             table.insert(time_destroy,on)
+						addUndo({"time_destroy",on.id});
             table.insert(time_sfx,"snacc")
           end
         end
@@ -494,6 +500,7 @@ function updateUnits(undoing, big_update)
             addParticles("bonus", unit.x, unit.y, unit.color)
           else
             table.insert(time_destroy,unit)
+						addUndo({"time_destroy",unit.id});
             table.insert(time_sfx,"bonus")
           end
         end

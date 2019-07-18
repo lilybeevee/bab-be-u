@@ -292,7 +292,6 @@ function scene.keyPressed(key)
 
   if key == "tab" then
     selector_open = not selector_open
-    print("selector_open:",selector_open)
     for i=1,#tile_grid do
       local button = selector_tab_buttons_list[i]
       button:setVisible(selector_open)

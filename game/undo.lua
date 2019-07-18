@@ -71,7 +71,18 @@ function undoOneAction(turn, i, v, ignore_no_undo)
     level_destroyed = false
   elseif action == "za warudo" then
     timeless = not timeless
-  end
+  elseif action == "time_destroy" then
+		unit = units_by_id[v[2]]
+    if (unit ~= nil and (ignore_no_undo or not hasProperty(unit, "no undo"))) then
+			--iterate backwards because we probably got added to the end (but maybe not due to no undo shenanigans e.g.)
+			for i=#time_destroy,1,-1 do
+				if time_destroy[i] == unit then
+					table.remove(time_destroy, i)
+					break
+				end
+			end
+		end
+	end
   return update_rules, unit;
 end
 
