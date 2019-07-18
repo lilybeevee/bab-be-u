@@ -1124,6 +1124,14 @@ function taxicabDistance(a, b)
   return math.abs(a.x - b.x) + math.abs(a.y - b.y)
 end
 
+function bishopDistance(a, b)
+  if ((a.x + a.y) % 2) == ((b.x + b.y) % 2) then
+    return kingDistance(a, b)
+  else
+    return -1
+  end
+end
+
 function kingDistance(a, b)
   return math.max(math.abs(a.x - b.x), math.abs(a.y - b.y))
 end
@@ -1446,7 +1454,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty)
   end
 
   if unit.texttype == "object" and unit.textname ~= "every1" and unit.textname ~= "mous" and unit.textname ~= "no1" and unit.textname ~= "lvl" and unit.textname ~= "text" then
-    if not unit.textname:ends("n't") and not unit.textname:starts("text_") and not table.has_value(referenced_objects, unit.textname) then
+    if not table.has_value(referenced_objects, unit.textname) then
       table.insert(referenced_objects, unit.textname)
     end
   end

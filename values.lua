@@ -1461,11 +1461,12 @@ tiles_list = {
   {
     name = "text_stalk",
     sprite = "text_stalk",
-    texttype = "verb_object",
     type = "text",
-    grid = {-1, -1},
+    texttype = "verb_object",
+    grid = {14, 6},
     color = {5, 2},
     layer = 20,
+    desc = "STALK: If X stalks Y, X becomes an intelligent AI determined to get to Y."
   },
   -- 130
   {
@@ -2642,36 +2643,5 @@ tiles_list = {
     color = {2,4},
     layer = 20,
     desc = "ZA WARUDO: Can stop time and move without anything else moving. Faster than rule parsing itself!",
-  },
-	-- 241
-  {
-    name = "text_babn't",
-    sprite = "text_bab n't",
-    type = "text",
-    grid = {15, 2},
-    color = {0, 3},
-    layer = 20,
-		desc = "BAB N'T: The same as having these two text tiles in a row."
-  },
-	-- 242
-  {
-    name = "text_ben't",
-    sprite = "text_be n't",
-    type = "text",
-    texttype = "verb_all",
-    grid = {16, 2},
-    color = {0, 3},
-    layer = 20,
-		desc = "BE N'T: The same as having these two text tiles in a row."
-  },
-	-- 243
-  {
-    name = "text_text_bab",
-    sprite = "text_bab txt",
-    type = "text",
-    grid = {15, 3},
-    color = {4, 1},
-    layer = 20,
-		desc = "BAB TXT: The same as having these two text tiles in a row."
   },
 }
