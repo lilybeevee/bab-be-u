@@ -33,6 +33,7 @@ function scene.load()
 
   settings_open = false
   selector_open = false
+  selector_page = 1
   
   if not level_compression then
     level_compression = "zlib"
@@ -108,6 +109,7 @@ function scene.load()
   end
 end
 
+selector_tab_buttons_list = {}
 function scene.setupGooi()
   gooi.newButton({text = "", x = 40*0, y = 0, w = 40, h = 40}):onRelease(function()
     scene.loadLevel()
@@ -190,6 +192,23 @@ function scene.setupGooi()
 
   gooi.setGroupVisible("settings", settings_open)
   gooi.setGroupEnabled("settings", settings_open)
+  
+  local x = love.graphics.getWidth()/2 - tile_grid_width*16 - 64
+  y = love.graphics.getHeight()/2 - tile_grid_height*16 - 32
+  
+  for i=1,#tile_grid do
+    local j = i
+    local button = gooi.newButton({text = i, x = x + 64*i, y = y, w = 64, h = 32}):onRelease(function()
+      selector_page = j
+    end)
+    button:setBGImage(sprites["ui/button_2"]):bg({0, 0, 0, 0})
+    button:setVisible(selector_open)
+    button:setEnabled(selector_open)
+    selector_tab_buttons_list[i] = button
+  end
+  -- gooi.setGroupVisible("selectortabs", selector_open)
+  -- gooi.setGroupEnabled("selectortabs", selector_open)
+  
 end
 
 function scene.keyPressed(key)
@@ -273,9 +292,19 @@ function scene.keyPressed(key)
 
   if key == "tab" then
     selector_open = not selector_open
+    print("selector_open:",selector_open)
+    for i=1,#tile_grid do
+      local button = selector_tab_buttons_list[i]
+      button:setVisible(selector_open)
+      button:setEnabled(selector_open)
+    end
     if selector_open then
       presence["details"] = "browsing selector"
     end
+  end
+  
+  if selector_open and tonumber(key) and tonumber(key) <= #tile_grid and tonumber(key) > 0 then
+    selector_page = tonumber(key)
   end
 end
 
@@ -416,8 +445,8 @@ function scene.update(dt)
           end
         else
           local selected = hx + hy * tile_grid_width
-          if tile_grid[selected] then
-            brush.id = tile_grid[selected]
+          if tile_grid[selector_page][selected] then
+            brush.id = tile_grid[selector_page][selected]
             brush.picked_tile = nil
             brush.picked_index = 0
           else
@@ -534,17 +563,21 @@ function scene.draw(dt)
   love.graphics.push()
   love.graphics.applyTransform(scene.getTransform())
 
-  if selector_open then
-    for i=1,3 do
-      love.graphics.setColor(getPaletteColor(1, 3))
-      setRainbowModeColor(love.timer.getTime()/3+i*1.3, .5)
+  -- if selector_open then
+  --   for i=1,#tile_grid do
+  --     love.graphics.setColor(getPaletteColor(1, 3))
+  --     setRainbowModeColor(love.timer.getTime()/3+i*1.3, .5)
       
-      love.graphics.draw(sprites["ui/button_white_"..i%2+1], (sprites["ui/button_1"]:getHeight()+5)*i, 0-sprites["ui/button_1"]:getHeight(), math.pi/2)
-
-      love.graphics.setColor(1, 1, 1)
-      love.graphics.printf(i, (sprites["ui/button_1"]:getHeight()+5)*(i-1), 0-sprites["ui/button_1"]:getHeight()/3*2, sprites["ui/button_1"]:getHeight()+5, "center")
-    end
-  end
+  --     -- love.graphics.draw(sprites["ui/button_white_"..i%2+1], (sprites["ui/button_1"]:getHeight()+5)*i, 0-sprites["ui/button_1"]:getHeight(), math.pi/2)
+  --     local j = i
+  --     gooi.newButton({text = i, x = 45*i, y = 0, w = 40, h = 40, group = "selectortabs"}):onRelease(function()
+  --       selector_page = j
+  --     end):setBGImage(sprites["ui/button_1"], sprites["ui/button_1_h"], sprites["ui/button_1_a"]):bg({0, 0, 0, 0})
+      
+  --     -- love.graphics.setColor(1, 1, 1)
+  --     -- love.graphics.printf(i, (sprites["ui/button_1"]:getHeight()+5)*(i-1), 0-sprites["ui/button_1"]:getHeight()/3*2, sprites["ui/button_1"]:getHeight()+5, "center")
+  --   end
+  -- end
 
   love.graphics.setColor(getPaletteColor(0, 4))
   love.graphics.rectangle("fill", 0, 0, roomwidth, roomheight)
@@ -583,14 +616,14 @@ function scene.draw(dt)
     for x=0,tile_grid_width-1 do
       for y=0,tile_grid_height-1 do
         local gridid = x + y * tile_grid_width
-        local i = tile_grid[gridid]
-          if i ~= nil then
+        local i = tile_grid[selector_page][gridid]
+        if i ~= nil then
           local tile = tiles_list[i]
           local sprite = sprites[tile.sprite]
           if not sprite then sprite = sprites["wat"] end
 
-          local x = tile.grid[1]
-          local y = tile.grid[2]
+          -- local x = tile.grid[1]
+          -- local y = tile.grid[2]
 
           if #tile.color == 3 then
             love.graphics.setColor(tile.color[1]/255, tile.color[2]/255, tile.color[3]/255)
@@ -654,7 +687,7 @@ function scene.draw(dt)
   if selector_open then
     love.graphics.setColor(1, 1, 1)
     local gridid = last_hovered_tile[1]  + last_hovered_tile[2] * tile_grid_width
-    local i = tile_grid[gridid]
+    local i = tile_grid[selector_page][gridid]
     if i ~= nil then
       local tile = tiles_list[i]
       if (tile.desc ~= nil and hx ~= nil) then
