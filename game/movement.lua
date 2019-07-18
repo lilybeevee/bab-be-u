@@ -423,19 +423,16 @@ It is probably possible to do, but lily has decided that it's not important enou
   end
   --https://babaiswiki.fandom.com/wiki/Advanced_rulebook
   parseRules()
-  levelBlock()
-  convertUnits(1)
-  parseRules()
   moveBlock()
   parseRules()
   fallBlock()
   parseRules()
-  convertUnits(2)
   levelBlock()
-  fallBlock()
   parseRules()
   updateUnits(false, true)
   parseRules()
+	convertUnits(1)
+	parseRules()
   updatePortals()
   
   next_levels = getNextLevels()
