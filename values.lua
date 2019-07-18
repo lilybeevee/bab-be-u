@@ -2643,4 +2643,35 @@ tiles_list = {
     layer = 20,
     desc = "ZA WARUDO: Can stop time and move without anything else moving. Faster than rule parsing itself!",
   },
+	-- 241
+  {
+    name = "text_babn't",
+    sprite = "text_bab n't",
+    type = "text",
+    grid = {15, 2},
+    color = {0, 3},
+    layer = 20,
+		desc = "BAB N'T: The same as having these two text tiles in a row."
+  },
+	-- 242
+  {
+    name = "text_ben't",
+    sprite = "text_be n't",
+    type = "text",
+    texttype = "verb_all",
+    grid = {16, 2},
+    color = {0, 3},
+    layer = 20,
+		desc = "BE N'T: The same as having these two text tiles in a row."
+  },
+	-- 243
+  {
+    name = "text_text_bab",
+    sprite = "text_bab txt",
+    type = "text",
+    grid = {15, 3},
+    color = {4, 1},
+    layer = 20,
+		desc = "BAB TXT: The same as having these two text tiles in a row."
+  },
 }
