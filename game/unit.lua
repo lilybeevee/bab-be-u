@@ -1674,7 +1674,7 @@ function updateDir(unit, dir, force)
       if umlauts ~= nil then
         for _,umlaut in ipairs(umlauts) do
           if umlaut.fullname == "letter_colon" and umlaut.dir == 3 then
-            unit.textname = "..u"
+            unit.textname = "..i"
             break
           end
         end
