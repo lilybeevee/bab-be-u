@@ -94,6 +94,19 @@ function doMovement(movex, movey, key)
           end
         end
       end
+      local icy = getUnitsWithEffectAndCount("icyyyy")
+      for unit,icyness in pairs(icy) do
+        local others = (unit == outerlvl and units or getUnitsOnTile(unit.x, unit.y));
+        for __,other in ipairs(others) do
+          if other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) then
+            table.insert(other.moves, {reason = "icy", dir = other.dir, times = icyness})
+            if #other.moves > 0 and not already_added[other] and not hasRule(other,"got","slippers") then
+              table.insert(moving_units, other)
+              already_added[other] = true
+            end
+          end
+        end
+      end
     elseif move_stage == 0 and (movex ~= 0 or movey ~= 0) then
       local u = getUnitsWithEffectAndCount("u")
       for unit,uness in pairs(u) do
@@ -194,14 +207,44 @@ function doMovement(movex, movey, key)
         for __,other in ipairs(others) do
           if other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) then
             local is_yeeted = hasRule(unit, "yeet", other)
-            if (is_yeeted) and timecheck(unit) then
-              table.insert(other.moves, {reason = "yeet", dir = unit.dir, times = 1002})
-              if #other.moves > 0 and not already_added[other] then
-                table.insert(moving_units, other)
-                already_added[other] = true
+            if (is_yeeted) then
+              if timecheck(unit) and timecheck(other) then
+                table.insert(other.moves, {reason = "yeet", dir = unit.dir, times = 1002})
+                if #other.moves > 0 and not already_added[other] then
+                  table.insert(moving_units, other)
+                  already_added[other] = true
+                end
+              elseif timecheck(unit) then
+                other.dir = unit.dir
+                table.insert(timeless_yote, {unit = other, dir = unit.dir})
               end
             end
           end
+        end
+      end
+      for index,unit in ipairs(timeless_yote) do
+        local unit = timeless_yote[index].unit
+        local dir = timeless_yote[index].dir
+        local dx = dirs8[dir][1]
+        local dy = dirs8[dir][2]
+        print(tostring(unit.x)..","..tostring(unit.y)..","..tostring(dir)..","..tostring(dx)..","..tostring(dy))
+        if timeless then
+          if canMove(unit,dx,dy,dir,true,true,nil,"timeless yeet") then
+            table.insert(unit.moves, {reason = "timeless yeet", dir = unit.dir, times = 1})
+            if #unit.moves > 0 and not already_added[unit] then
+              table.insert(moving_units, unit)
+              already_added[unit] = true
+            end
+          else
+            table.remove(timeless_yote,index)
+          end
+        else
+          table.insert(unit.moves, {reason = "yeet", dir = unit.dir, times = 1002})
+          if #unit.moves > 0 and not already_added[unit] then
+            table.insert(moving_units, unit)
+            already_added[unit] = true
+          end
+          table.remove(timeless_yote,index)
         end
       end
       local go = getUnitsWithEffectAndCount("go")
@@ -221,7 +264,7 @@ function doMovement(movex, movey, key)
       for unit,goness in pairs(go) do
         local others = (unit == outerlvl and units or getUnitsOnTile(unit.x, unit.y));
         for __,other in ipairs(others) do 
-          if other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) and timecheck(unit) then
+          if other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) then
             table.insert(other.moves, {reason = "goooo", dir = unit.dir, times = goness})
             if #other.moves > 0 and not already_added[other] then
               table.insert(moving_units, other)
@@ -557,7 +600,7 @@ function applySlide(mover, dx, dy, already_added, moving_units_next)
   local others = getUnitsOnTile(mover.x+dx, mover.y+dy);
   table.insert(others, outerlvl);
   for _,v in ipairs(others) do
-    if (sameFloat(mover, v) and not v.already_moving) and timecheck(mover) and timecheck(v) then
+    if (sameFloat(mover, v) and not v.already_moving) and timecheck(v) then
       local launchness = countProperty(v, "goooo");
       if (launchness > 0) then
         if (not did_clear_existing) then
@@ -585,7 +628,7 @@ function applySlide(mover, dx, dy, already_added, moving_units_next)
     return
   end
   for _,v in ipairs(others) do
-    if (sameFloat(mover, v) and not v.already_moving) and timecheck(mover) and timecheck(v) then
+    if (sameFloat(mover, v) and not v.already_moving) and timecheck(v) then
       local slideness = countProperty(v, "icyyyy");
       if (slideness > 0) then
         if (not did_clear_existing) then
@@ -795,28 +838,34 @@ function fallBlock()
     local fallcount = countProperty(unit,"haet skye")
     local vallcount = countProperty(unit,"haet flor")
     
-    if (fallcount > vallcount) and timecheck(unit) then
+    if (fallcount > vallcount) then
       addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
-      local loop_fall = 0
-      local dx, dy, dir, px, py = 0, 1, 3, -1, -1
-      local old_dir = 3;
-      while (caught == false) do
-        loop_fall = loop_fall + 1;
-        if (loop_fall > 1000) then
-          print("movement infinite loop! (1000 attempts at a faller)")
-          destroyLevel("infloop");
-          return;
+      if timecheck(unit) then
+        local loop_fall = 0
+        local dx, dy, dir, px, py = 0, 1, 3, -1, -1
+        local old_dir = 3;
+        while (caught == false) do
+          loop_fall = loop_fall + 1;
+          if (loop_fall > 1000) then
+            print("movement infinite loop! (1000 attempts at a faller)")
+            destroyLevel("infloop");
+            return;
+          end
+          new_dx, new_dy, new_dir, px, py = getNextTile(unit, dx, dy, dir);
+          if not canMove(unit, dx, dy, dir, false, false, nil, "haet skye") then
+            caught = true
+          end
+          if caught == false then
+            updateDir(unit, dirAdd(unit.dir, dirDiff(old_dir, dir)));
+            old_dir = dir;
+            moveUnit(unit,px,py)
+          end
+          dx, dy, dir = new_dx, new_dy, new_dir
         end
-        new_dx, new_dy, new_dir, px, py = getNextTile(unit, dx, dy, dir);
-        if not canMove(unit, dx, dy, dir, false, false, nil, "haet skye") then
-          caught = true
+      else
+        if canMove(unit, 0, 1, 3, false, false, nil, "haet skye") then
+          moveUnit(unit,unit.x,unit.y+1)
         end
-        if caught == false then
-          updateDir(unit, dirAdd(unit.dir, dirDiff(old_dir, dir)));
-          old_dir = dir;
-          moveUnit(unit,px,py)
-        end
-        dx, dy, dir = new_dx, new_dy, new_dir
       end
     end
   end
@@ -827,28 +876,34 @@ function fallBlock()
     local fallcount = countProperty(unit,"haet skye")
     local vallcount = countProperty(unit,"haet flor")
     
-    if (vallcount > fallcount) and timecheck(unit) then
-      addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
-      local loop_fall = 0
-      local dx, dy, dir, px, py = 0, -1, 3, -1, -1
-      local old_dir = 3;
-      while (caught == false) do
-        loop_fall = loop_fall + 1;
-        if (loop_fall > 1000) then
-          print("movement infinite loop! (1000 attempts at a faller)")
-          destroyLevel("infloop");
-          return;
+    if (vallcount > fallcount) then
+      if timecheck(unit) then
+        addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
+        local loop_fall = 0
+        local dx, dy, dir, px, py = 0, -1, 3, -1, -1
+        local old_dir = 3;
+        while (caught == false) do
+          loop_fall = loop_fall + 1;
+          if (loop_fall > 1000) then
+            print("movement infinite loop! (1000 attempts at a faller)")
+            destroyLevel("infloop");
+            return;
+          end
+          new_dx, new_dy, new_dir, px, py = getNextTile(unit, dx, dy, dir);
+          if not canMove(unit, dx, dy, dir, false, false, nil, "haet skye") then
+            caught = true
+          end
+          if caught == false then
+            updateDir(unit, dirAdd(unit.dir, dirDiff(old_dir, dir)));
+            old_dir = dir;
+            moveUnit(unit,px,py)
+          end
+          dx, dy, dir = new_dx, new_dy, new_dir
         end
-        new_dx, new_dy, new_dir, px, py = getNextTile(unit, dx, dy, dir);
-        if not canMove(unit, dx, dy, dir, false, false, nil, "haet skye") then
-          caught = true
+      else
+        if canMove(unit, 0, -1, 3, false, false, nil, "haet skye") then
+          moveUnit(unit,unit.x,unit.y-1)
         end
-        if caught == false then
-          updateDir(unit, dirAdd(unit.dir, dirDiff(old_dir, dir)));
-          old_dir = dir;
-          moveUnit(unit,px,py)
-        end
-        dx, dy, dir = new_dx, new_dy, new_dir
       end
     end
   end

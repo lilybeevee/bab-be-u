@@ -57,6 +57,7 @@ function clear()
   timeless_win = {}
   timeless_reset = false
   timeless_crash = false
+  timeless_yote = {}
 
   if scene == game then
     createMouse_direct(love.mouse.getX(), love.mouse.getY())
