@@ -215,8 +215,8 @@ function doMovement(movex, movey, key)
                   already_added[other] = true
                 end
               elseif timecheck(unit) then
-                other.dir = unit.dir
                 table.insert(timeless_yote, {unit = other, dir = unit.dir})
+                addUndo({"timeless_yeet_add",other.id})
               end
             end
           end
@@ -227,7 +227,6 @@ function doMovement(movex, movey, key)
         local dir = timeless_yote[index].dir
         local dx = dirs8[dir][1]
         local dy = dirs8[dir][2]
-        print(tostring(unit.x)..","..tostring(unit.y)..","..tostring(dir)..","..tostring(dx)..","..tostring(dy))
         if timeless then
           if canMove(unit,dx,dy,dir,true,true,nil,"timeless yeet") then
             table.insert(unit.moves, {reason = "timeless yeet", dir = dir, times = 1})
@@ -237,6 +236,7 @@ function doMovement(movex, movey, key)
             end
           else
             table.remove(timeless_yote,index)
+            addUndo({"timeless_yeet_remove",unit.id})
           end
         else
           table.insert(unit.moves, {reason = "yeet", dir = dir, times = 1002})
@@ -245,6 +245,7 @@ function doMovement(movex, movey, key)
             already_added[unit] = true
           end
           table.remove(timeless_yote,index)
+          addUndo({"timeless_yeet_remove",unit.id})
         end
       end
       local go = getUnitsWithEffectAndCount("go")
@@ -1270,10 +1271,10 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
         end
       end
       --New FLYE mechanic, as decreed by the bab dictator - if you aren't sameFloat as a push/pull/sidekik, you can enter it.
-      if hasProperty(v, "go away") and not would_swap_with then
+      if hasProperty(v, "go away pls") and not would_swap_with then
         if pushing then
           push_stack[unit] = true
-          local success,new_movers,new_specials = canMove(v, dx, dy, dir, pushing, pulling, solid_name, "go away", push_stack)
+          local success,new_movers,new_specials = canMove(v, dx, dy, dir, pushing, pulling, solid_name, "go away pls", push_stack)
           push_stack[unit] = nil
           for _,special in ipairs(new_specials) do
             table.insert(specials, special)
@@ -1295,9 +1296,9 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
         stopped = true;
       elseif hasProperty(v, "no go") then --Things that are STOP stop being PUSH or PULL, unlike in Baba. Also unlike Baba, a wall can be floated across if it is not tall!
         stopped = stopped or sameFloat(unit, v)
-      elseif hasProperty(v, "sidekik") and not hasProperty(v, "go away") and not would_swap_with then
+      elseif hasProperty(v, "sidekik") and not hasProperty(v, "go away pls") and not would_swap_with then
         stopped = stopped or sameFloat(unit, v)
-      elseif hasProperty(v, "come pls") and not hasProperty(v, "go away") and not would_swap_with and not pulling then
+      elseif hasProperty(v, "come pls") and not hasProperty(v, "go away pls") and not would_swap_with and not pulling then
         stopped = stopped or sameFloat(unit, v)
       elseif hasProperty(v, "go my wey") and goMyWeyPrevents(v.dir, dx, dy) then
         stopped = stopped or sameFloat(unit, v)

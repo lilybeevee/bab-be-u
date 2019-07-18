@@ -164,14 +164,14 @@ function moveBlock()
       local pushfront = false
       local pushbehin = false
       for _,on in ipairs(stuff) do
-        if hasProperty(on, "go away") then
+        if hasProperty(on, "go away pls") then
           pushfront = true
           break
         end
       end
       if pushfront then
         for _,on in ipairs(stuff2) do
-          if hasProperty(on, "go away") then
+          if hasProperty(on, "go away pls") then
             pushbehin = true
             break
           end
@@ -727,7 +727,7 @@ function updateUnits(undoing, big_update)
 	  -- end
 	  for i = 1, #objects_to_check do
 	    local prop = objects_to_check[i]
-		unit[prop] = graphical_property_cache[prop][unit] ~= nil
+      unit[prop] = graphical_property_cache[prop][unit] ~= nil
 		
 		-- if tostring(unit.name) ~= "no1" then
 		  -- print("property " .. prop .. " = " .. tostring(unit[prop]))
@@ -1633,11 +1633,54 @@ function updateDir(unit, dir, force)
   if unit.fullname == "text_spin" then
     unit.textname = "spin_" .. tostring(unit.dir);
   end
+  
+  if unit.fullname == "letter_colon" then
+    if unit.dir == 1 or unit.dir == 2 then
+      unit.textname = ":"
+    elseif unit.dir == 3 then
+      local isumlaut = getTextOnTile(unit.x,unit.y+1)
+      if isumlaut ~= nil then
+        for _,umlautee in ipairs(isumlaut) do
+          if umlautee.fullname == "letter_u" or (umlautee.fullname == "letter_h" and (umlautee.dir == 3 or umlautee.dir == 7)) then
+            unit.textname = ""
+            break
+          else
+            unit.textname = ".."
+          end
+        end
+      else
+        unit.textname = ".."
+      end
+    else
+      unit.textname = "  "
+    end
+  end
+  
+  if unit.fullname == "letter_u" then
+    local umlauts = getTextOnTile(unit.x,unit.y-1)
+    for _,umlaut in ipairs(umlauts) do
+      if umlaut.fullname == "letter_colon" and umlaut.dir == 3 then
+        unit.textname = "..u"
+        break
+      end
+    end
+  end
+  
   if unit.fullname == "letter_hori" then
     if unit.dir == 1 or unit.dir == 5 then
       unit.textname = "h"
     elseif unit.dir == 3 or unit.dir == 7 then
-      unit.textname = "i"
+      local umlauts = getTextOnTile(unit.x,unit.y-1)
+      if umlauts ~= nil then
+        for _,umlaut in ipairs(umlauts) do
+          if umlaut.fullname == "letter_colon" and umlaut.dir == 3 then
+            unit.textname = "..u"
+            break
+          end
+        end
+      else
+        unit.textname = "i"
+      end
     else
       unit.textname = "  "
     end
@@ -1652,6 +1695,15 @@ function updateDir(unit, dir, force)
       unit.textname = "  "
     end
   end
+  
+  if unit.fullname == "letter_parenthesis" then
+    if unit.dir == 1 or unit.dir == 2 or unit.dir == 3 then
+      unit.textname = "("
+    elseif unit.dir == 5 or unit.dir == 6 or unit.dir == 7 then
+      unit.textname = ")"
+    end
+  end
+  
   unit.draw.rotation = unit.draw.rotation % 360
   local target_rot = (dir - 1) * 45
   if unit.rotate and math.abs(unit.draw.rotation - target_rot) == 180 then

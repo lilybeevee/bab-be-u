@@ -8,7 +8,7 @@ function clearRules()
   portal_id = ""
 
   --text and level basically already exist, so no need to be picky.
-  addRule({{"text","be","go away",{{},{}}},{},1})
+  addRule({{"text","be","go away pls",{{},{}}},{},1})
   addRule({{"lvl","be","no go",{{},{}}},{},1})
   --TODO: This will need to be automatic on levels with letters/combined words, since a selectr/bordr might be made in a surprising way, and it will need to have its implicit rules apply immediately.
   if (units_by_name["selctr"] or units_by_name["text_selctr"]) then
@@ -22,7 +22,7 @@ function clearRules()
     addRule({{"bordr","be","tall",{{},{}}},{},1})
   end
   if units_by_name["this"] then
-    addRule({{"this","be","go away",{{},{}}},{},1})
+    addRule({{"this","be","go away pls",{{},{}}},{},1})
     addRule({{"this","be","wurd",{{},{}}},{},1})
   end
   
