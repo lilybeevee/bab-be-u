@@ -68,28 +68,37 @@ function clear()
   win_size = 0
 
   tile_grid = {}
-  tile_grid_width = 1
-  tile_grid_height = 1
 
-  local add_to_grid = {}
+  -- local add_to_grid = {}
   for i,v in ipairs(tiles_list) do
     tiles_by_name[v.name] = i
-    if v.grid then
-      if (v.grid[1]+1 < 100) then
-        tile_grid_width = math.max(tile_grid_width, v.grid[1]+1)
-      end
-      if (v.grid[2]+1 < 100) then 
-        tile_grid_height = math.max(tile_grid_height, v.grid[2]+1)
-      end
-      table.insert(add_to_grid, {i, v.grid[1], v.grid[2]})
-    end
+    -- if v.grid then
+    --   if (v.grid[1]+1 < 100) then
+    --     tile_grid_width = math.max(tile_grid_width, v.grid[1]+1)
+    --   end
+    --   if (v.grid[2]+1 < 100) then 
+    --     tile_grid_height = math.max(tile_grid_height, v.grid[2]+1)
+    --   end
+    --   table.insert(add_to_grid, {i, v.grid[1], v.grid[2]})
+    -- end
   end
-  for _,v in ipairs(add_to_grid) do
-    local gridid = v[2] + v[3] * tile_grid_width
-    if (tile_grid[gridid] ~= nil and v[2] >= 0) then
-      print("WARNING: "..tostring(v[2])..","..tostring(v[3]).." used by multiple tiles!")
+  -- for _,v in ipairs(add_to_grid) do
+  --   local gridid = v[2] + v[3] * tile_grid_width
+  --   if (tile_grid[gridid] ~= nil and v[2] >= 0) then
+  --     print("WARNING: "..tostring(v[2])..","..tostring(v[3]).." used by multiple tiles!")
+  --   end
+  --   tile_grid[gridid] = v[1]
+  -- end
+  
+  for i,page in ipairs(selector_grid_contents) do
+    tile_grid[i] = {}
+    for j,tile_name in ipairs(page) do
+      if j and tiles_by_name[tile_name] then
+        tile_grid[i][j-1] = tiles_by_name[tile_name]
+      else
+        tile_grid[i][j-1] = nil
+      end
     end
-    tile_grid[gridid] = v[1]
   end
 
   love.mouse.setCursor()
