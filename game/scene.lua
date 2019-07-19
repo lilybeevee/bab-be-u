@@ -499,25 +499,29 @@ function scene.draw(dt)
       unit.draw.scaley = 1
     end
 
-    local color
-    if #unit.color == 3 then
-      color = {unit.color[1]/255, unit.color[2]/255, unit.color[3]/255, 1}
-    else
-      color = {getPaletteColor(unit.color[1], unit.color[2])}
-    end
+		local function setColor(color)
+			if #color == 3 then
+				color = {color[1]/255, color[2]/255, color[3]/255, 1}
+			else
+				color = {getPaletteColor(color[1], color[2])}
+			end
 
-    -- multiply brightness by darkened bg color
-    for i,c in ipairs(bg_color) do
-      if i < 4 then
-        color[i] = (1 - brightness) * (bg_color[i] * 0.5) + brightness * color[i]
-      end
-    end
+			-- multiply brightness by darkened bg color
+			for i,c in ipairs(bg_color) do
+				if i < 4 then
+					color[i] = (1 - brightness) * (bg_color[i] * 0.5) + brightness * color[i]
+				end
+			end
 
-    if #unit.overlay > 0 and eq(unit.color, tiles_list[unit.tile].color) then
-      love.graphics.setColor(1, 1, 1)
-    else
-      love.graphics.setColor(color[1], color[2], color[3], color[4])
-    end
+			if #unit.overlay > 0 and eq(unit.color, tiles_list[unit.tile].color) then
+				love.graphics.setColor(1, 1, 1)
+			else
+				love.graphics.setColor(color[1], color[2], color[3], color[4])
+			end
+			return color
+		end
+		
+		local color = setColor(unit.color)
 
     local fulldrawx = (drawx + 0.5)*TILE_SIZE
     local fulldrawy = (drawy + 0.5)*TILE_SIZE
@@ -546,6 +550,15 @@ function scene.draw(dt)
     local function drawSprite(overlay)
       local sprite = overlay or sprite
       love.graphics.draw(sprite, fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+			if (unit.meta ~= nil) then
+				setColor({4, 1})
+				local metasprite = unit.meta == 2 and sprites["meta2"] or sprites["meta1"]
+				love.graphics.draw(metasprite, fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+				if unit.meta > 2 then
+					love.graphics.printf(tostring(unit.meta), fulldrawx-1, fulldrawy+6, 32, "center")
+				end
+				setColor(unit.color)
+			end
     end
 
     if not unit.xwx then -- xwx takes control of the drawing sprite, so it shouldn't render the normal object

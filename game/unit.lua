@@ -1421,6 +1421,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty)
   unit.sprite = data.sprite
   unit.type = data.type
   unit.texttype = data.texttype or "object"
+	unit.meta = data.meta
   unit.allowconds = data.allowconds or false
   unit.color = data.color
   unit.layer = data.layer

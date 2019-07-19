@@ -2453,6 +2453,7 @@ tiles_list = {
     type = "text",
     color = {4, 1},
     layer = 20,
+		meta = 1,
 		desc = "BAB TXT: The same as having these two text tiles in a row."
   },
 	-- 243
@@ -2462,6 +2463,7 @@ tiles_list = {
     type = "text",
     color = {4, 1},
     layer = 20,
+		meta = 1,
 		desc = "TXT TXT: The same as having these two text tiles in a row."
   },
   -- 244
