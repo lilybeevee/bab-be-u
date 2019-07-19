@@ -812,7 +812,7 @@ function scene.draw(dt)
 end
 
 function scene.updateMap()
-  map_ver = 2
+  map_ver = 3
   local map = ""
   for x = 0, mapwidth-1 do
     for y = 0, mapheight-1 do
@@ -823,7 +823,7 @@ function scene.updateMap()
           for k,v in pairs(unit.special) do
             specials = specials .. love.data.pack("string", PACK_SPECIAL_V2, k, v)
           end
-          map = map .. love.data.pack("string", PACK_UNIT_V2, unit.id, unit.tile, unit.x, unit.y, unit.dir, specials)
+          map = map .. love.data.pack("string", PACK_UNIT_V3, unit.id, unit.tile, unit.x, unit.y, unit.dir, specials)
         end
       end
     end

@@ -151,9 +151,9 @@ function loadMap()
           if inBounds(x, y) then
             createUnit(tile, x, y, dir)
           end
-        elseif version == 2 then
+        elseif version == 2 or version == 3 then
           local id, tile, x, y, dir, specials
-          id, tile, x, y, dir, specials, pos = love.data.unpack(PACK_UNIT_V2, map, pos)
+          id, tile, x, y, dir, specials, pos = love.data.unpack(version == 2 and PACK_UNIT_V2 or PACK_UNIT_V3, map, pos)
           if inBounds(x, y) then
             local unit = createUnit(tile, x, y, dir, false, id)
             local spos = 1

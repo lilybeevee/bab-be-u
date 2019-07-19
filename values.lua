@@ -15,6 +15,7 @@ is_mobile = love.system.getOS() == "Android" or love.system.getOS() == "iOS"
 
 PACK_UNIT_V1 = "hhhb" -- TILE, X, Y, DIR
 PACK_UNIT_V2 = "hhhhbs" -- ID, TILE, X, Y, DIR, SPECIALS
+PACK_UNIT_V3 = "llhhbs" -- ID, TILE, X, Y, DIR, SPECIALS
 
 PACK_SPECIAL_V2 = "ss" -- KEY, VALUE
 
