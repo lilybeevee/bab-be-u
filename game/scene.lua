@@ -140,6 +140,7 @@ function scene.resetStuff()
   loadMap()
   clearRules()
   parseRules()
+  calculateLight()
   updateUnits(true)
   updatePortals()
   next_levels, next_level_objs = getNextLevels()
@@ -817,6 +818,13 @@ function scene.draw(dt)
     love.graphics.pop()
   end
   love.graphics.pop()
+  
+  if (lightcanvas ~= nil) then
+    love.graphics.setColor(0.05, 0.05, 0.05, 1)
+    love.graphics.setBlendMode("add", "premultiplied")
+    love.graphics.draw(lightcanvas, love.graphics.getWidth()/2-mapwidth*16, love.graphics.getHeight()/2-mapheight*16)
+    love.graphics.setBlendMode("alpha")
+  end
 
   love.graphics.push()
   love.graphics.setColor(1, 1, 1)
