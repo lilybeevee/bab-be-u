@@ -463,20 +463,27 @@ It is probably possible to do, but lily has decided that it's not important enou
       end
       moving_units_next = {}
     end
+    calculateLight()
     move_stage = move_stage + 1
   end
   --https://babaiswiki.fandom.com/wiki/Advanced_rulebook
   parseRules()
+  calculateLight()
   moveBlock()
   parseRules()
+  calculateLight()
   fallBlock()
   parseRules()
+  calculateLight()
   levelBlock()
   parseRules()
+  calculateLight()
   updateUnits(false, true)
   parseRules()
+  calculateLight()
 	convertUnits(1)
 	parseRules()
+  calculateLight()
   updatePortals()
   
   next_levels = getNextLevels()
