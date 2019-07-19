@@ -804,7 +804,6 @@ function calculateLight()
     lightcanvas_height = mapheight
     lightcanvas_width = mapwidth
   end
-  if timeless then return end
   local brites = getUnitsWithEffect("brite")
   if (#brites == 0) then
     love.graphics.setCanvas(lightcanvas)
