@@ -216,15 +216,15 @@ function doMovement(movex, movey, key)
                 end
               elseif timecheck(unit) then
                 table.insert(timeless_yote, {unit = other, dir = unit.dir})
-                addUndo({"timeless_yeet_add",other.id})
+                addUndo({"timeless_yeet_add",{yote = other}})
               end
             end
           end
         end
       end
-      for index,unit in ipairs(timeless_yote) do
-        local unit = timeless_yote[index].unit
-        local dir = timeless_yote[index].dir
+      for i,unit in ipairs(timeless_yote) do
+        local unit = timeless_yote[i].unit
+        local dir = timeless_yote[i].dir
         local dx = dirs8[dir][1]
         local dy = dirs8[dir][2]
         if timeless then
@@ -235,8 +235,8 @@ function doMovement(movex, movey, key)
               already_added[unit] = true
             end
           else
-            table.remove(timeless_yote,index)
-            addUndo({"timeless_yeet_remove",unit.id})
+            table.remove(timeless_yote,i)
+            addUndo({"timeless_yeet_remove",{yote = unit, dir = dir}})
           end
         else
           table.insert(unit.moves, {reason = "yeet", dir = dir, times = 1002})
@@ -244,8 +244,8 @@ function doMovement(movex, movey, key)
             table.insert(moving_units, unit)
             already_added[unit] = true
           end
-          table.remove(timeless_yote,index)
-          addUndo({"timeless_yeet_remove",unit.id})
+          table.remove(timeless_yote,i)
+          addUndo({"timeless_yeet_remove",{yote = unit, dir = dir}})
         end
       end
       local go = getUnitsWithEffectAndCount("go")

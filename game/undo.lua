@@ -72,7 +72,7 @@ function undoOneAction(turn, i, v, ignore_no_undo)
   elseif action == "za warudo" then
     timeless = not timeless
   elseif action == "time_destroy" then
-		unit = units_by_id[v[2]]
+		unit = units_by_id[v[2].unit]
     if (unit ~= nil and (ignore_no_undo or not hasProperty(unit, "no undo"))) then
 			--iterate backwards because we probably got added to the end (but maybe not due to no undo shenanigans e.g.)
 			for i=#time_destroy,1,-1 do
@@ -82,6 +82,28 @@ function undoOneAction(turn, i, v, ignore_no_undo)
 				end
 			end
 		end
+  elseif action == "timeless_yeet_add" then
+    unit = v[2].yote
+    for i,yote in ipairs(timeless_yote) do
+      if yote.unit == unit and (ignore_no_undo or not hasProperty(yote.unit, "no undo")) then
+        table.remove(timeless_yote, i)
+        break
+      end
+    end
+  elseif action == "timeless_yeet_remove" then
+    unit = v[2].yote
+    dir = v[2].dir
+    local found = 0
+    for i,yote in ipairs(timeless_yote) do
+      if yote.unit == unit and (ignore_no_undo or not hasProperty(yote.unit, "no undo")) then
+        found = found + 1
+      end
+    end
+    if found > 0 then
+      for i=1,found do
+        table.insert(timeless_yote,{unit = unit, dir = dir})
+      end
+    end
 	end
   return update_rules, unit;
 end
