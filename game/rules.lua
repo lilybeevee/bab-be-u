@@ -118,9 +118,9 @@ function parseRules(undoing)
     if units_to_check then
       for _,unit in ipairs(units_to_check) do
         local x,y = unit.x,unit.y
-        for i=1,3 do
+        for i=1,3 do --right, down-right, down
           local dpos = dirs8[i]
-          local ndpos = dirs8[rotate8(i)]
+          local ndpos = dirs8[rotate8(i)] --opposite direction
 
           local dx,dy = dpos[1],dpos[2]
           local ndx,ndy = ndpos[1],ndpos[2]
@@ -162,8 +162,8 @@ function parseRules(undoing)
     local final_rules = {}
     --local already_parsed = {}
     local first_words_count = #first_words
-    for _,first in ipairs(first_words) do
-      local first_unit = first[1]
+    for _,first in ipairs(first_words) do 
+      local first_unit = first[1] -- {unit,direction}
       local last_unit = first[1]
 
       local dir = first[2]
@@ -202,125 +202,21 @@ function parseRules(undoing)
 
           dx, dy, dir, x, y = getNextTile(last_unit, dx, dy, dir)
 
-          if not been_here[x + y * mapwidth] then
+          if not been_here[x + y * mapwidth] then --can only go to each tile twice each first word; why?
             been_here[x + y * mapwidth] = 1
           else
             been_here[x + y * mapwidth] = 2
           end
         end
-      end
+      end --while not stopped
 
       local sentences = getCombinations(words)
       if #sentences > 10 then
         --print(fullDump(words, 2))
       end
 
-      for _,sentence_ in ipairs(sentences) do
-        local sentence = copyTable(sentence_, 1)
-
-        local valid, state = parse(sentence, parser)
-
-        if not valid then
-          if #sentence > 1 then
-            local unit = sentence[2].unit
-            if not been_first[first[2]][unit.x + unit.y * mapwidth] then
-              table.insert(first_words, {sentence[2].unit, first[2]})
-              been_first[first[2]][unit.x + unit.y * mapwidth] = true
-            end
-          end
-        else
-          if state.word_index <= #sentence then
-            local unit = sentence[state.word_index-1].unit
-            if not been_first[first[2]][unit.x + unit.y * mapwidth] then
-              table.insert(first_words, {sentence[state.word_index-1].unit, first[2]})
-              been_first[first[2]][unit.x + unit.y * mapwidth] = true
-            end
-          end
-          for i = 1, state.word_index-1 do
-            local unit = sentence[i].unit
-            --print(sentence[i].name)
-            been_first[first[2]][unit.x + unit.y * mapwidth] = true
-          end
-
-          local new_rules = {{},{},{},{{},{}}}
-
-          local function simplify(t)
-            local name = ""
-            local units = {}
-            for _,v in ipairs(t) do
-              table.insert(units, v.unit)
-              if not v.connector then
-                name = v.name
-                local suffix = ""
-                if v.mods then
-                  for _,mod in ipairs(v.mods) do
-                    table.insert(units, mod.unit)
-                    if mod.name == "text" then
-                      name = v.unit.fullname
-                    elseif mod.name == "nt" then
-                      suffix = suffix .. "n't"
-                    end
-                  end
-                end
-                name = name .. suffix
-              end
-            end
-            return name, units
-          end
-
-          for _,matches in ipairs(state.matches) do
-            for _,targets in ipairs(matches.target) do
-              local name, units = simplify(targets, true)
-              table.insert(new_rules[1], {name, units})
-            end
-            if matches.cond then
-              for _,conds in ipairs(matches.cond) do
-                local name, units = simplify(conds)
-
-                local params = {}
-                if conds.target then
-                  for _,targets in ipairs(conds.target) do
-                    local name, param_units = simplify(targets, true)
-                    table.insert(params, name)
-                    mergeTable(units, param_units)
-                  end
-                end
-
-                table.insert(new_rules[4][1], {name, params, units})
-              end
-            end
-            for _,verbs in ipairs(matches.verb) do
-              local name, units = simplify(verbs)
-              table.insert(new_rules[2], {name, units})
-
-              local verb_rules = {}
-              table.insert(new_rules[3], verb_rules)
-              for _,targets in ipairs(verbs.target) do
-                local name, units = simplify(targets, true)
-                table.insert(verb_rules, {name, units})
-              end
-
-              if verbs.cond then
-                for _,conds in ipairs(verbs.cond) do
-                  local name, units = simplify(conds)
-        
-                  local params = {}
-                  if conds.target then
-                    for _,targets in ipairs(conds.target) do
-                      local name, param_units = simplify(targets, true)
-                      table.insert(params, name)
-                      mergeTable(units, param_units)
-                    end
-                  end
-        
-                  table.insert(new_rules[4][2], {name, params, units})
-                end
-              end
-            end
-          end
-
-          table.insert(final_rules, {new_rules, dir})
-        end
+      for _,sentence in ipairs(sentences) do
+        parseSentence(sentence, been_first, first_words, final_rules) -- split into a new function located below to organize this slightly more
       end
     end
     
@@ -426,6 +322,165 @@ function parseRules(undoing)
   
   local end_time = love.timer.getTime();
   print("parseRules() took: "..tostring(round((end_time-start_time)*1000)).."ms")
+end
+
+function parseSentence (sentence_, been_first, first_words, final_rules)
+  local sentence = copyTable(sentence_, 1)
+
+  for orig_index,word in ipairs(sentence) do
+    if word.type == "letter" then --letter handling
+      local new_word = ""
+      local word_index = orig_index
+      local word = words[word_index]
+      while word.type == "letter" do --find out where the letters end, throw all of them into a string tho
+        new_word = new_word..word.textname
+        word_index = word_index + 1
+        word = words[word_index]
+      end
+      
+      local lsentences = findLetterSentences(new_word) --get everything valid out of the letter string
+
+      local before_sentence = {}
+      for i=1,orig_index-1 do
+        table.insert(after_sentence,sentence[i])
+      end
+      local after_sentence = {}
+      for i=word_index,#sentence do
+        table.insert(after_sentence,sentence[i])
+      end
+
+      for _,s in ipairs(lsentences.middle) do
+        local words = fillTextDetails(s)
+        parseSentence(words, been_first, first_words, final_rules)
+      end
+      for _,s in ipairs(lsentences.start) do
+        local words = fillTextDetails(s)
+        local before_copy = copyTable(before_sentence) --copying is required because table.add puts results in the first table
+        table.add(before_copy, words)
+        parseSentence(before_copy, been_first, first_words, final_rules)
+      end
+      for _,s in ipairs(lsentences.endd) do
+        local words = fillTextDetails(s)
+        table.add(words, after_sentence)
+        parseSentence(words, been_first, first_words, final_rules)
+      end
+      for _,s in ipairs(lsentences.both) do
+        local words = fillTextDetails(s)
+        local before_copy = copyTable(before_sentence)
+        table.add(words, after_sentence)
+        table.add(before_copy, words)
+        parseSentence(before_copy, been_first, first_words, final_rules)
+      end
+
+      parseSentence(before_sentence, been_first, first_words, final_rules)
+      parseSentence(after_sentence, been_first, first_words, final_rules)
+      return --no need to continue past this point, since the letters suffice
+    end
+  end
+
+  local valid, state = parse(sentence, parser)
+
+  if not valid then
+    if #sentence > 1 then
+      local unit = sentence[2].unit
+      if not been_first[first[2]][unit.x + unit.y * mapwidth] then
+        table.insert(first_words, {sentence[2].unit, first[2]})
+        been_first[first[2]][unit.x + unit.y * mapwidth] = true
+      end
+    end
+  else
+    if state.word_index <= #sentence then
+      local unit = sentence[state.word_index-1].unit
+      if not been_first[first[2]][unit.x + unit.y * mapwidth] then
+        table.insert(first_words, {sentence[state.word_index-1].unit, first[2]})
+        been_first[first[2]][unit.x + unit.y * mapwidth] = true
+      end
+    end
+    for i = 1, state.word_index-1 do
+      local unit = sentence[i].unit
+      --print(sentence[i].name)
+      been_first[first[2]][unit.x + unit.y * mapwidth] = true
+    end
+
+    local new_rules = {{},{},{},{{},{}}}
+
+    local function simplify(t)
+      local name = ""
+      local units = {}
+      for _,v in ipairs(t) do
+        table.insert(units, v.unit)
+        if not v.connector then
+          name = v.name
+          local suffix = ""
+          if v.mods then
+            for _,mod in ipairs(v.mods) do
+              table.insert(units, mod.unit)
+              if mod.name == "text" then
+                name = v.unit.fullname
+              elseif mod.name == "nt" then
+                suffix = suffix .. "n't"
+              end
+            end
+          end
+          name = name .. suffix
+        end
+      end
+      return name, units
+    end
+
+    for _,matches in ipairs(state.matches) do
+      for _,targets in ipairs(matches.target) do
+        local name, units = simplify(targets, true)
+        table.insert(new_rules[1], {name, units})
+      end
+      if matches.cond then
+        for _,conds in ipairs(matches.cond) do
+          local name, units = simplify(conds)
+
+          local params = {}
+          if conds.target then
+            for _,targets in ipairs(conds.target) do
+              local name, param_units = simplify(targets, true)
+              table.insert(params, name)
+              mergeTable(units, param_units)
+            end
+          end
+
+          table.insert(new_rules[4][1], {name, params, units})
+        end
+      end
+      for _,verbs in ipairs(matches.verb) do
+        local name, units = simplify(verbs)
+        table.insert(new_rules[2], {name, units})
+
+        local verb_rules = {}
+        table.insert(new_rules[3], verb_rules)
+        for _,targets in ipairs(verbs.target) do
+          local name, units = simplify(targets, true)
+          table.insert(verb_rules, {name, units})
+        end
+
+        if verbs.cond then
+          for _,conds in ipairs(verbs.cond) do
+            local name, units = simplify(conds)
+
+            local params = {}
+            if conds.target then
+              for _,targets in ipairs(conds.target) do
+                local name, param_units = simplify(targets, true)
+                table.insert(params, name)
+                mergeTable(units, param_units)
+              end
+            end
+
+            table.insert(new_rules[4][2], {name, params, units})
+          end
+        end
+      end
+    end
+
+    table.insert(final_rules, {new_rules, dir})
+  end
 end
 
 function addRule(full_rule)

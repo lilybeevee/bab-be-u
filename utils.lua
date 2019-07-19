@@ -1299,6 +1299,8 @@ function clearGooi()
 end
 
 function getCombinations(t, param_)
+-- t = {{tile1 words}, {tile2 words}, (until out of text)}
+-- places the list of words into a full table of phrases (amount of words) long, {{11,21,31,41},{11,21,31,42},{11,21,32,41},...}
   local param = param_ or {}
   local ret = param.ret or {}
   local i = param.i or 1
@@ -1541,4 +1543,13 @@ function timecheck(unit)
   else
     return false
   end
+end
+
+function fillTextDetails(sentence)
+  --changes a sentence of pure text into a valid sentence.
+  local ret = {}
+  for _,word in ipairs(sentence) do
+    table.insert(ret,text_list[word])
+  end
+  return ret
 end
