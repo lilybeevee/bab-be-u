@@ -926,9 +926,10 @@ tiles_list = {
   },
   -- 86
   {
-    name = "text_o",
+    name = "letter_o",
     sprite = "text_o",
     type = "text",
+    texttype = "letter",
     color = {2, 4},
     layer = 20,
   },

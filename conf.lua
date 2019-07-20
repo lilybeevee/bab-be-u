@@ -15,4 +15,6 @@ function love.conf(t)
     t.modules.joystick = false
     t.modules.physics = false
     t.modules.video = false
+
+    t.console = true -- i mean, why turn it off?
 end

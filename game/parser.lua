@@ -151,7 +151,7 @@ local verbs = {
   }
 }
 
-parser = {
+parser = { --default parent_rule for parser
   options = {
     {
       cond_prefixes,
@@ -164,7 +164,58 @@ parser = {
 
 --print(dump(parser))
 
+function findLetterSentences(str, index_, sentences_, curr_sentence_, start_) --hey this function can be made local too
+  -- finds words out of letters
+  local index = index_ or 1
+  local initial_index = index
+  local sentences = sentences_ or {
+    start = {},
+    endd = {}, --sadly, end is a reserved word in lua
+    both = {},
+    middle = {},
+  }
+  local curr_sentence = copyTable(curr_sentence_ or {})
+  local start = start_ or false
+
+  if #curr_sentence == 0 and not index == string.len(str) then --go to the next letter if we don't have anything in this one... or if we do
+    findLetterSentences(str, index+1, sentences, {}, false)
+  end
+
+  for i=0,string.len(str)-index do
+    local substr = str.sub(str,index,index+i)
+    for _,word in ipairs(text_in_tiles) do
+      if substr == word then
+        --print("found word: "..substr)
+        if index == 1 then
+          start = true
+        end
+        table.insert(curr_sentence, substr)
+        if index+i == string.len(str) then --last letter, this sentence is valid to connect to other words
+          if start then
+            table.insert(sentences.both, curr_sentence) --connected to both the start and end, so the parser has to treat this like a string of words
+          else
+            table.insert(sentences.endd, curr_sentence)
+          end
+          return sentences --just in case there's a 1 letter U that gets used or something idk
+        else
+          if start then
+            table.insert(sentences.start,curr_sentence)
+          else
+            table.insert(sentences.middle,curr_sentence)
+          end
+          findLetterSentences(str, index+i+1, sentences, curr_sentence, start) --we got one word, now keep going
+        end
+      end
+    end
+  end
+
+  return sentences -- i can do this like this because the first function call is the one that gets passed back, and it finishes last
+end
+
 function parse(words, parser, state_)
+  -- words - in a single sentence (directly from getCombinations) to be parsed
+  -- can find whether a sentence is valid, ignoring words farther to the right but invalidating rules that don't start on the index 1 word
+  -- returns valid,state
   local state = state_ or {}
 
   state.parent_rule = state.parent_rule or parser
@@ -177,8 +228,9 @@ function parse(words, parser, state_)
   state.word_index = state.word_index or 1
   state.is_repeat = state.is_repeat or false
 
-  local rule = state.parent_rule.options[state.option][state.index]
-  local word = words[state.word_index]
+  local rule = state.parent_rule.options[state.option][state.index] -- goes to a specific rule; at first, group = cond
+  local word = words[state.word_index] --we looking at one word at a time
+
   while word and word.type == "ellipses" do
     state.word_index = state.word_index + 1
     word = words[state.word_index]
