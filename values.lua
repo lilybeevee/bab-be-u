@@ -93,7 +93,7 @@ selector_grid_contents = {
     "flog", "text_flog", "text_:)", "colld", "text_colld", "text_fridgd", "text_hotte", "text_ouch", "text_slep", "text_protecc", "text_sidekik", "text_brite", "text_lit", "text_opaque", "text_za warudo", "text_text_bab", "text_text_text", 0,
     "roc", "text_roc", "text_go away pls", "gras", "text_gras", "dayzy", "text_dayzy", "text_wfren", "text_arond", "text_frenles", "text_look at", "text_seen by", "text_go arnd", "text_mirr arnd", 0, 0, 0, 0,
     "wal", "text_wal", "text_no go", "l..uv", "text_l..uv", "hurcane", "text_hurcane", "text_creat", "text_snacc", "text_spoop", "text_yeet", "text_zip", "text_shy", "text_corekt", 0, 0, 0, 0,
-    "watr", "text_watr", "text_no swim", "meem", "text_meem", "o", "text_o", "text_colrful", "text_bleu", "text_reed", "text_stelth", "text_folo wal", "text_turn cornr", "text_rong", "text_stalk", 0, 0, 0,
+    "watr", "text_watr", "text_no swim", "meem", "text_meem", "o", "letter_o", "text_colrful", "text_bleu", "text_reed", "text_stelth", "text_folo wal", "text_turn cornr", "text_rong", "text_stalk", 0, 0, 0,
     "skul", "text_skul", "text_:(", "til", "text_til", "kirb", "text_kirb", "gun", "text_gun", "wog", "text_wog", "text_copkat", "text_copdog", "text_munwalk", "text_sidestep", "text_diagstep", "text_hopovr", 0,
     "boux", "text_boux", "text_come pls", "os", "text_os", "fax", "text_fax", "han", "text_han", "tot", "text_tot", "lila", "text_lila", "hol", "text_hol", "text_poor toll", 0, 0,
     "bellt", "text_bellt", "text_go", "tre", "text_tre", "piler", "text_piler", "hatt", "text_hatt", "laav", "text_laav", "fenss", "text_fenss", "metl", "text_metl", 0, "text_grun", "text_yello",
@@ -106,7 +106,7 @@ selector_grid_contents = {
   },
   -- page 2: letters
   {
-    "letter_a","letter_b","letter_c","letter_d","letter_e","letter_f","letter_g","letter_hori","letter_j","letter_k","letter_l","letter_m","letter_norz","text_o","letter_p","letter_q","letter_r","letter_s",
+    "letter_a","letter_b","letter_c","letter_d","letter_e","letter_f","letter_g","letter_hori","letter_j","letter_k","letter_l","letter_m","letter_norz","letter_o","letter_p","letter_q","letter_r","letter_s",
     "letter_t","letter_u","letter_v","letter_w","letter_x","letter_y","letter_.","letter_colon","letter_parenthesis","letter_'",0,0,0,0,0,0,0,0,
     "letter_go","letter_come","letter_pls","letter_away","letter_my","letter_no","letter_way",0,0,0,0,0,0,0,0,0,0
   },
