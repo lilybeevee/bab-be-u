@@ -216,7 +216,7 @@ function parseRules(undoing)
       end
 
       for _,sentence in ipairs(sentences) do
-        parseSentence(sentence, been_first, first_words, final_rules) -- split into a new function located below to organize this slightly more
+        parseSentence(sentence, {been_first, first_words, final_rules,first}) -- split into a new function located below to organize this slightly more
       end
     end
     
@@ -324,56 +324,74 @@ function parseRules(undoing)
   print("parseRules() took: "..tostring(round((end_time-start_time)*1000)).."ms")
 end
 
-function parseSentence (sentence_, been_first, first_words, final_rules)
+function parseSentence (sentence_, params_) --prob make this a local function? idk
+  --print("parsing... "..fullDump(sentence_))
+  local been_first = params_[1] --splitting up the params like this was because i was too lazy
+  local first_words = params_[2] -- all of them are tables anyway, so it ends up referencing properly
+  local final_rules = params_[3]
+  local first = params_[4]
   local sentence = copyTable(sentence_, 1)
 
   for orig_index,word in ipairs(sentence) do
     if word.type == "letter" then --letter handling
+      --print("found a letter"..orig_index)
+
       local new_word = ""
       local word_index = orig_index
-      local word = words[word_index]
-      while word.type == "letter" do --find out where the letters end, throw all of them into a string tho
-        new_word = new_word..word.textname
+      local letter = sentence[word_index]
+      while letter.type == "letter" do --find out where the letters end, throw all of them into a string tho
+        new_word = new_word..letter.name
         word_index = word_index + 1
-        word = words[word_index]
+        letter = sentence[word_index]
+        --print("looping... "..new_word.." "..word_index)
+        if letter == nil then break end --end of array ends up hitting this case
       end
       
-      local lsentences = findLetterSentences(new_word) --get everything valid out of the letter string
+      params_.insert(true)
+
+      local lsentences = findLetterSentences(new_word) --get everything valid out of the letter string (this should be [both], hmm)
+      if (#lsentences.start ~= 0 or #lsentences.endd ~= 0 or #lsentences.middle ~= 0 or #lsentences.both ~= 0) then
+        print(new_word.." --> "..fullDump(lsentences))
+      end
 
       local before_sentence = {}
       for i=1,orig_index-1 do
-        table.insert(after_sentence,sentence[i])
+        table.insert(before_sentence,sentence[i])
       end
       local after_sentence = {}
-      for i=word_index,#sentence do
-        table.insert(after_sentence,sentence[i])
+      if word_index <= #sentence then
+        for i=word_index,#sentence do
+          table.insert(after_sentence,sentence[i])
+        end
       end
 
+      local pos_x = sentence[orig_index-1].x
+      local pos_y = sentence[orig_index-1].y
       for _,s in ipairs(lsentences.middle) do
-        local words = fillTextDetails(s)
-        parseSentence(words, been_first, first_words, final_rules)
+        local words = fillTextDetails(s, pos_x, pos_y, first[2], #after_sentence)
+        parseSentence(words, params_)
       end
       for _,s in ipairs(lsentences.start) do
         local words = fillTextDetails(s)
-        local before_copy = copyTable(before_sentence) --copying is required because table.add puts results in the first table
-        table.add(before_copy, words)
-        parseSentence(before_copy, been_first, first_words, final_rules)
+        local before_copy = copyTable(before_sentence) --copying is required because addTables puts results in the first table
+        addTables(before_copy, words)
+        parseSentence(before_copy, params_)
       end
       for _,s in ipairs(lsentences.endd) do
         local words = fillTextDetails(s)
-        table.add(words, after_sentence)
-        parseSentence(words, been_first, first_words, final_rules)
+        addTables(words, after_sentence)
+        parseSentence(words, params_)
       end
       for _,s in ipairs(lsentences.both) do
         local words = fillTextDetails(s)
         local before_copy = copyTable(before_sentence)
-        table.add(words, after_sentence)
-        table.add(before_copy, words)
-        parseSentence(before_copy, been_first, first_words, final_rules)
+        addTables(words, after_sentence)
+        addTables(before_copy, words)
+        parseSentence(before_copy, params_)
       end
 
-      parseSentence(before_sentence, been_first, first_words, final_rules)
-      parseSentence(after_sentence, been_first, first_words, final_rules)
+      parseSentence(before_sentence, params_)
+      parseSentence(after_sentence, params_)
       return --no need to continue past this point, since the letters suffice
     end
   end
@@ -382,8 +400,8 @@ function parseSentence (sentence_, been_first, first_words, final_rules)
 
   if not valid then
     if #sentence > 1 then
-      local unit = sentence[2].unit
-      if not been_first[first[2]][unit.x + unit.y * mapwidth] then
+      local unit = sentence[2].unit --the second word, so the condition?
+      if not been_first[first[2]][unit.x + unit.y * mapwidth] then --first[2] is direction
         table.insert(first_words, {sentence[2].unit, first[2]})
         been_first[first[2]][unit.x + unit.y * mapwidth] = true
       end

@@ -1545,11 +1545,31 @@ function timecheck(unit)
   end
 end
 
-function fillTextDetails(sentence)
+function fillTextDetails(sentence, x, y, dir, elip)
   --changes a sentence of pure text into a valid sentence.
   local ret = {}
+  local w = 0
   for _,word in ipairs(sentence) do
-    table.insert(ret,text_list[word])
+    w = w+1
+    for i,tile in ipairs(tiles_list) do --full search to get id
+      if tile.type == "text" and tile.texttype ~= "letter" and word == string.sub(tile.name:gsub("%s+", ""),6) then
+        local unit = createUnit(i, x+dirs8[dir][1]*w, y+dirs8[dir][2]*w ,1)
+        table.insert(ret,unit)
+        break
+      end
+    end
+  end
+  for i=1,elip do
+    local unit = createUnit(237, x+dirs8[dir][1]*(i+w), y+dirs8[dir][2]*(i+w) ,1) --237 is ellipsis as of my local copy. If there's a way to refer by name, please change it to that.
+    table.insert(ret,unit)
   end
   return ret
+end
+
+function addTables(source, to_add)
+  --adds to_add to the end of source. Seperate from table.insert because this adds multiple entries. Also returns itself.
+  for _,x in ipairs(to_add) do
+    table.insert(source, x)
+  end
+  return source
 end

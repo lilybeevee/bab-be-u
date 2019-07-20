@@ -164,8 +164,7 @@ parser = { --default parent_rule for parser
 
 --print(dump(parser))
 
-
-function findLetterSentences(str, index_, sentences_, curr_sentence_, start_)
+function findLetterSentences(str, index_, sentences_, curr_sentence_, start_) --hey this function can be made local too
   -- finds words out of letters
   local index = index_ or 1
   local initial_index = index
@@ -175,7 +174,7 @@ function findLetterSentences(str, index_, sentences_, curr_sentence_, start_)
     both = {},
     middle = {},
   }
-  local curr_sentence = curr_sentence_ or {}
+  local curr_sentence = copyTable(curr_sentence_ or {})
   local start = start_ or false
 
   if #curr_sentence == 0 and not index == string.len(str) then --go to the next letter if we don't have anything in this one... or if we do
@@ -186,7 +185,8 @@ function findLetterSentences(str, index_, sentences_, curr_sentence_, start_)
     local substr = str.sub(str,index,index+i)
     for _,word in ipairs(text_in_tiles) do
       if substr == word then
-        if index == 1 and i == 0 then
+        print("found word: "..substr)
+        if index == 1 then
           start = true
         end
         table.insert(curr_sentence, substr)
@@ -198,16 +198,15 @@ function findLetterSentences(str, index_, sentences_, curr_sentence_, start_)
           end
           return sentences --just in case there's a 1 letter U that gets used or something idk
         else
-          findLetterSentences(str, index+1, sentences, curr_sentence, start) --we got one word, now keep going
+          if start then
+            table.insert(sentences.start,curr_sentence)
+          else
+            table.insert(sentences.middle,curr_sentence)
+          end
+          findLetterSentences(str, index+i+1, sentences, curr_sentence, start) --we got one word, now keep going
         end
       end
     end
-  end
-  
-  if start then
-    table.insert(sentences.start,curr_sentence)
-  else
-    table.insert(sentences.middle,curr_sentence)
   end
 
   return sentences -- i can do this like this because the first function call is the one that gets passed back, and it finishes last
@@ -244,7 +243,7 @@ function parse(words, parser, state_)
     if state.parent_rule.repeatable then
       local new_state = {
         parent = state.parent,
-        parent_rule = state.parent_rule
+        parent_rule = state.parent_rule,
         group = state.group,
         current_matches = {},
         matches = state.matches,

@@ -925,9 +925,10 @@ tiles_list = {
   },
   -- 86
   {
-    name = "text_o",
+    name = "letter_o",
     sprite = "text_o",
     type = "text",
+    texttype = "letter",
     color = {2, 4},
     layer = 20,
   },
@@ -2780,7 +2781,7 @@ text_in_tiles = {} --list of text in an array, and textname only
 for _,tile in ipairs(tiles_list) do
   if tile.type == "text" and tile.texttype ~= "letter" then
     local textname = string.sub(tile.name:gsub("%s+", ""),6) --removes spaces too
-    table.insert = (text_in_tiles,textname)
+    table.insert(text_in_tiles,textname)
   end
 end
 

@@ -1438,7 +1438,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty)
   if unit.type == "text" then
     should_parse_rules = true
     unit.name = "text"
-    if unit.texttype == letter then
+    if unit.texttype == "letter" then
       unit.textname = string.sub(unit.fullname, 8)
     else
       unit.textname = string.sub(unit.fullname, 6)
