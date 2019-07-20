@@ -216,7 +216,7 @@ function parseRules(undoing)
       end
 
       for _,sentence in ipairs(sentences) do
-        parseSentence(sentence, {been_first, first_words, final_rules,first}) -- split into a new function located below to organize this slightly more
+        parseSentence(sentence, {been_first, first_words, final_rules, first}) -- split into a new function located below to organize this slightly more
       end
     end
     
@@ -346,13 +346,11 @@ function parseSentence (sentence_, params_) --prob make this a local function? i
         --print("looping... "..new_word.." "..word_index)
         if letter == nil then break end --end of array ends up hitting this case
       end
-      
-      params_.insert(true)
 
       local lsentences = findLetterSentences(new_word) --get everything valid out of the letter string (this should be [both], hmm)
-      if (#lsentences.start ~= 0 or #lsentences.endd ~= 0 or #lsentences.middle ~= 0 or #lsentences.both ~= 0) then
+      --[[if (#lsentences.start ~= 0 or #lsentences.endd ~= 0 or #lsentences.middle ~= 0 or #lsentences.both ~= 0) then
         print(new_word.." --> "..fullDump(lsentences))
-      end
+      end]]
 
       local before_sentence = {}
       for i=1,orig_index-1 do
@@ -365,28 +363,32 @@ function parseSentence (sentence_, params_) --prob make this a local function? i
         end
       end
 
-      local pos_x = sentence[orig_index-1].x
-      local pos_y = sentence[orig_index-1].y
+      local pos_x = sentence[orig_index].unit.x
+      local pos_y = sentence[orig_index].unit.y
+      --print("coords: "..pos_x..", "..pos_y)
+
+      local len = word_index-orig_index
       for _,s in ipairs(lsentences.middle) do
-        local words = fillTextDetails(s, pos_x, pos_y, first[2], #after_sentence)
+        local words = fillTextDetails(s, pos_x, pos_y, first[2], len)
         parseSentence(words, params_)
       end
       for _,s in ipairs(lsentences.start) do
-        local words = fillTextDetails(s)
+        local words = fillTextDetails(s, pos_x, pos_y, first[2], len)
         local before_copy = copyTable(before_sentence) --copying is required because addTables puts results in the first table
         addTables(before_copy, words)
         parseSentence(before_copy, params_)
       end
       for _,s in ipairs(lsentences.endd) do
-        local words = fillTextDetails(s)
+        local words = fillTextDetails(s, pos_x, pos_y, first[2], len)
         addTables(words, after_sentence)
         parseSentence(words, params_)
       end
       for _,s in ipairs(lsentences.both) do
-        local words = fillTextDetails(s)
+        local words = fillTextDetails(s, pos_x, pos_y, first[2], len)
         local before_copy = copyTable(before_sentence)
         addTables(words, after_sentence)
         addTables(before_copy, words)
+        --print("end dump: "..dumpOfProperty(before_copy, "name"))
         parseSentence(before_copy, params_)
       end
 

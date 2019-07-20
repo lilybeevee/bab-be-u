@@ -185,7 +185,7 @@ function findLetterSentences(str, index_, sentences_, curr_sentence_, start_) --
     local substr = str.sub(str,index,index+i)
     for _,word in ipairs(text_in_tiles) do
       if substr == word then
-        print("found word: "..substr)
+        --print("found word: "..substr)
         if index == 1 then
           start = true
         end

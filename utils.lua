@@ -1545,25 +1545,52 @@ function timecheck(unit)
   end
 end
 
-function fillTextDetails(sentence, x, y, dir, elip)
+--[[function fillTextDetails(sentence, x, y, dir, len)
   --changes a sentence of pure text into a valid sentence.
   local ret = {}
   local w = 0
   for _,word in ipairs(sentence) do
-    w = w+1
     for i,tile in ipairs(tiles_list) do --full search to get id
       if tile.type == "text" and tile.texttype ~= "letter" and word == string.sub(tile.name:gsub("%s+", ""),6) then
-        local unit = createUnit(i, x+dirs8[dir][1]*w, y+dirs8[dir][2]*w ,1)
+        print("x: "..x)
+        local unit = createUnit(i, x+ dirs8[dir][1]*w, y+ dirs8[dir][2]*w ,1)
         table.insert(ret,unit)
         break
       end
     end
+    w = w+1
   end
-  for i=1,elip do
-    local unit = createUnit(237, x+dirs8[dir][1]*(i+w), y+dirs8[dir][2]*(i+w) ,1) --237 is ellipsis as of my local copy. If there's a way to refer by name, please change it to that.
+  for i=w+1,len do
+    local unit = createUnit(237, x+dirs8[dir][1]*i, y+dirs8[dir][2]*i ,1) --237 is ellipsis as of my local copy. If there's a way to refer by name, please change it to that.
     table.insert(ret,unit)
   end
   return ret
+end]]
+
+function fillTextDetails(sentence, x, y, dir, len)
+  --changes a sentence of pure text into a valid sentence.
+  local ret = {}
+  local w = 0
+  for _,word in ipairs(sentence) do
+    print("sentence: "..fullDump(sentence))
+    local u = createFakeUnit(word, x+ dirs8[dir][1]*w, y+ dirs8[dir][2]*w)
+    table.insert(ret,{unit=u})
+    w = w+1
+  end
+  for i=w,len do --extra ellipses for the purposes of making sure the parser gets it properly.
+    local u = createFakeUnit("...", x+ dirs8[dir][1]*i, y+ dirs8[dir][2]*i)
+    table.insert(ret,{unit=u})
+  end
+  return ret
+end
+
+function createFakeUnit(name, x, y)
+  --Creates a fake unit, from the names used in the text_list. Used for letters.
+  local unit = text_list[name]
+  unit.x = x
+  unit.y = y
+  if unit.type == "text" then unit.name = string.sub(unit.name,6) end --no letters support, beware when using
+  return unit
 end
 
 function addTables(source, to_add)
@@ -1573,3 +1600,35 @@ function addTables(source, to_add)
   end
   return source
 end
+
+text_in_tiles = {} --list of text in an array, and textname only
+for _,tile in ipairs(tiles_list) do
+  if tile.type == "text" and tile.texttype ~= "letter" then
+    local textname = string.sub(tile.name:gsub("%s+", ""),6) --removes spaces too
+    table.insert(text_in_tiles,textname)
+  end
+end
+
+text_list = {} --list of text with named keys (by textname)
+for _,tile in ipairs(tiles_list) do
+  if tile.type == "text" and tile.texttype ~= "letter" then
+    local textname = string.sub(tile.name:gsub("%s+", ""),6)
+    text_list[textname] = tile
+    text_list[textname].textname = string.sub(tile.name,6)
+  end
+end
+
+--[[function dumpOfProperty(table, searchterm)
+  -- a dump that's easier to search through.
+  local ret = ""
+  for _,first in pairs(table) do
+    for _,second in pairs(first) do
+      for key,param in pairs(second) do
+        if key == searchterm then
+          ret = ret..", "..fullDump(param)
+        end
+      end
+    end
+  end
+  return "{"..string.sub(ret,3).."}"
+end]]
