@@ -151,9 +151,9 @@ function loadMap()
           if inBounds(x, y) then
             createUnit(tile, x, y, dir)
           end
-        elseif version == 2 then
+        elseif version == 2 or version == 3 then
           local id, tile, x, y, dir, specials
-          id, tile, x, y, dir, specials, pos = love.data.unpack(PACK_UNIT_V2, map, pos)
+          id, tile, x, y, dir, specials, pos = love.data.unpack(version == 2 and PACK_UNIT_V2 or PACK_UNIT_V3, map, pos)
           if inBounds(x, y) then
             local unit = createUnit(tile, x, y, dir, false, id)
             local spos = 1
@@ -670,24 +670,31 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
       result = unit.id == rng;
     elseif condtype == "lit" then
       --TODO: make it so if there are many lit objects then you cache FoV instead of doing many individual LoSes
-      result = false
-      if (successful_brite_cache ~= nil) then
-        local cached = units_by_id[successful_brite_cache];
-        if cached ~= nil and hasProperty(cached, "brite") and hasLineOfSight(cached, unit) then
-          result = true
-        end
-      end
-      if not result then
-        --I am tempted to make it so N levels of BRITE can penetrate N-1 layers of OPAQUE but this mechanic would be too... opaque :drum:
-        local others = getUnitsWithEffect("brite")
-        for _,on in ipairs(others) do
-          if hasLineOfSight(on, unit) then
-            successful_brite_cache = on.id;
-            result = true
-            break
-          end
-        end
-      end
+      -- result = false
+      -- if (successful_brite_cache ~= nil) then
+      --   local cached = units_by_id[successful_brite_cache];
+      --   if cached ~= nil and hasProperty(cached, "brite") and hasLineOfSight(cached, unit) then
+      --     result = true
+      --   end
+      -- end
+      -- if not result then
+      --   --I am tempted to make it so N levels of BRITE can penetrate N-1 layers of OPAQUE but this mechanic would be too... opaque :drum:
+      --   local others = getUnitsWithEffect("brite")
+      --   for _,on in ipairs(others) do
+      --     if hasLineOfSight(on, unit) then
+      --       successful_brite_cache = on.id;
+      --       result = true
+      --       break
+      --     end
+      --   end
+      -- end
+      if (lightcanvas == nil) then calculateLight() end
+      local pixelData = lightcanvas:newImageData(1, 1, unit.x*32+15, unit.y*32+15, 2, 2)
+      local r1 = pixelData:getPixel(0, 0)
+      local r2 = pixelData:getPixel(0, 1)
+      local r3 = pixelData:getPixel(1, 0)
+      local r4 = pixelData:getPixel(1, 1)
+      result = (r1+r2+r3+r4 >= 2)
     elseif condtype == "corekt" then
       if not unit.blocked then
         result = unit.active
@@ -783,6 +790,81 @@ function hasLineOfSight(brite, lit)
     end
   end
   return true;
+end
+
+lightcanvas = nil
+temp_lightcanvas = nil
+lightcanvas_width = 0
+lightcanvas_height = 0
+
+function calculateLight()
+  if lightcanvas_width ~= mapwidth or lightcanvas_height ~= mapheight then
+    lightcanvas = love.graphics.newCanvas(mapwidth*32, mapheight*32)
+    temp_lightcanvas = love.graphics.newCanvas(mapwidth*32, mapheight*32)
+    lightcanvas_height = mapheight
+    lightcanvas_width = mapwidth
+  end
+  local brites = getUnitsWithEffect("brite")
+  if (#brites == 0) then
+    love.graphics.setCanvas(lightcanvas)
+    love.graphics.clear(0, 0, 0, 1)
+    love.graphics.setCanvas()
+    return
+  end
+  local opaques = getUnitsWithEffect("opaque")
+  if (#opaques == 0) then
+    love.graphics.setCanvas(lightcanvas)
+    love.graphics.clear(1, 1, 1, 1)
+    love.graphics.setCanvas()
+    return
+  end
+  love.graphics.setCanvas(lightcanvas)
+  love.graphics.clear(0, 0, 0, 1)
+  for _,source in ipairs(brites) do
+    love.graphics.setCanvas(temp_lightcanvas)
+    love.graphics.clear(1, 1, 1, 1)
+    love.graphics.setColor(0, 0, 0, 1)
+    for _,opaque in ipairs(opaques) do
+      local sourceX = source.x*32+16
+      local sourceY = source.y*32+16
+      local closeX = (opaque.x*32) + (opaque.x<source.x and 32 or 0)
+      local farX = (opaque.x*32) + (opaque.x>=source.x and 32 or 0)
+      local edgeX = (opaque.x>=source.x and mapwidth*32 or 0)
+      local closeY = (opaque.y*32) + (opaque.y<source.y and 32 or 0)
+      local farY = (opaque.y*32) + (opaque.y>=source.y and 32 or 0)
+      local edgeY = (opaque.y>=source.y and mapheight*32 or 0)
+      if opaque.x == source.x and opaque.y == source.y then
+        love.graphics.clear(0, 0, 0, 1)
+        love.graphics.setColor(1, 1, 1, 1)
+        love.graphics.rectangle("fill", closeX, closeY, 32, 32)
+        break -- no light escapes this, no need to check other farther opaques from this light source
+      elseif opaque.x == source.x then
+        local diag2 = sourceX + (farX-sourceX)/(closeY-sourceY)*(edgeY-sourceY)
+        local diag1 = sourceX + (closeX-sourceX)/(closeY-sourceY)*(edgeY-sourceY)
+        -- love.graphics.polygon("fill", farX, farY, closeX, farY, closeX, closeY, diag1, edgeY, diag2, edgeY, farX, closeY)
+        love.graphics.polygon("fill", closeX, farY, closeX, closeY, diag1, edgeY, farX, edgeY, farX, farY)
+        love.graphics.polygon("fill", farX, edgeY, diag2, edgeY, farX, closeY)
+      elseif opaque.y == source.y then
+        local diag2 = sourceY + (farY-sourceY)/(closeX-sourceX)*(edgeX-sourceX)
+        local diag1 = sourceY + (closeY-sourceY)/(closeX-sourceX)*(edgeX-sourceX)
+        -- love.graphics.polygon("fill", farX, farY, closeX, farY, edgeX, diag1, edgeX, diag2, closeX, closeY, farX, closeY)
+        love.graphics.polygon("fill", farX, closeY, closeX, closeY, edgeX, diag1, edgeX, farY, farX, farY)
+        love.graphics.polygon("fill", edgeX, farY, edgeX, diag2, closeX, farY)
+      else
+        local diagX = sourceX + (closeX-sourceX)/(farY-sourceY)*(edgeY-sourceY) -- using triangle math here
+        local diagY = sourceY + (closeY-sourceY)/(farX-sourceX)*(edgeX-sourceX) -- (not trigonometry, the other one)
+        local cornerX = (edgeX > 0) and math.max(diagX, edgeX) or math.min(diagX, edgeX)
+        local cornerY = (edgeY > 0) and math.max(diagY, edgeY) or math.min(diagY, edgeY)
+        love.graphics.polygon("fill", farX, farY, closeX, farY, diagX, edgeY, cornerX, cornerY, edgeX, diagY, farX, closeY)
+      end
+    end
+    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.setCanvas(lightcanvas)
+    love.graphics.setBlendMode("add", "premultiplied")
+    love.graphics.draw(temp_lightcanvas)
+    love.graphics.setBlendMode("alpha")
+  end
+  love.graphics.setCanvas()
 end
 
 threshold_for_dir = {50, 0.01, 0.1, 1, 2, 5, 10, 25};

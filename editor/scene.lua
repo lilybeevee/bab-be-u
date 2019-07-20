@@ -586,6 +586,16 @@ function scene.draw(dt)
   love.graphics.setColor(getPaletteColor(0, 4))
   love.graphics.rectangle("fill", 0, 0, roomwidth, roomheight)
 
+	local function setColor(color)
+		if #color == 3 then
+			color = {color[1]/255, color[2]/255, color[3]/255, 1}
+		else
+			color = {getPaletteColor(color[1], color[2])}
+		end
+		love.graphics.setColor(color)
+		return color
+	end
+	
   if not selector_open then
     for i=1,max_layer do
       if units_by_layer[i] then
@@ -598,11 +608,7 @@ function scene.draw(dt)
             rotation = (unit.dir - 1) * 45
           end
           
-          if #unit.color == 3 then
-            love.graphics.setColor(unit.color[1]/255, unit.color[2]/255, unit.color[3]/255)
-          else
-            love.graphics.setColor(getPaletteColor(unit.color[1], unit.color[2]))
-          end
+					local color = setColor(unit.color);
 
           if rainbowmode then
             local newcolor = hslToRgb((love.timer.getTime()/3+unit.x/18+unit.y/18)%1, .5, .5, 1)
@@ -613,6 +619,15 @@ function scene.draw(dt)
           end
 
           love.graphics.draw(sprite, (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+					if (unit.meta ~= nil) then
+						setColor({4, 1})
+						local metasprite = unit.meta == 2 and sprites["meta2"] or sprites["meta1"]
+						love.graphics.draw(metasprite, (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+						if unit.meta > 2 then
+							love.graphics.printf(tostring(unit.meta), (unit.x + 0.5)*TILE_SIZE-1, (unit.y + 0.5)*TILE_SIZE+6, 32, "center")
+						end
+						setColor(unit.color)
+					end
         end
       end
     end
@@ -629,15 +644,20 @@ function scene.draw(dt)
           -- local x = tile.grid[1]
           -- local y = tile.grid[2]
 
-          if #tile.color == 3 then
-            love.graphics.setColor(tile.color[1]/255, tile.color[2]/255, tile.color[3]/255)
-          else
-            love.graphics.setColor(getPaletteColor(tile.color[1], tile.color[2]))
-          end
+          local color = setColor(tile.color);
 
           if rainbowmode then love.graphics.setColor(hslToRgb((love.timer.getTime()/3+x/tile_grid_width+y/tile_grid_height)%1, .5, .5, 1)) end
 
           love.graphics.draw(sprite, (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+					if (tile.meta ~= nil) then
+						setColor({4, 1})
+						local metasprite = tile.meta == 2 and sprites["meta2"] or sprites["meta1"]
+						love.graphics.draw(metasprite, (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+						if tile.meta > 2 then
+							love.graphics.printf(tostring(tile.meta), (x + 0.5)*TILE_SIZE-1, (y + 0.5)*TILE_SIZE+6, 32, "center")
+						end
+						setColor(tile.color)
+					end
 
           if brush.id == i then
             love.graphics.setColor(1, 0, 0)
@@ -792,7 +812,7 @@ function scene.draw(dt)
 end
 
 function scene.updateMap()
-  map_ver = 2
+  map_ver = 3
   local map = ""
   for x = 0, mapwidth-1 do
     for y = 0, mapheight-1 do
@@ -803,7 +823,7 @@ function scene.updateMap()
           for k,v in pairs(unit.special) do
             specials = specials .. love.data.pack("string", PACK_SPECIAL_V2, k, v)
           end
-          map = map .. love.data.pack("string", PACK_UNIT_V2, unit.id, unit.tile, unit.x, unit.y, unit.dir, specials)
+          map = map .. love.data.pack("string", PACK_UNIT_V3, unit.id, unit.tile, unit.x, unit.y, unit.dir, specials)
         end
       end
     end

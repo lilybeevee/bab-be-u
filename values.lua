@@ -15,6 +15,7 @@ is_mobile = love.system.getOS() == "Android" or love.system.getOS() == "iOS"
 
 PACK_UNIT_V1 = "hhhb" -- TILE, X, Y, DIR
 PACK_UNIT_V2 = "hhhhbs" -- ID, TILE, X, Y, DIR, SPECIALS
+PACK_UNIT_V3 = "llhhbs" -- ID, TILE, X, Y, DIR, SPECIALS
 
 PACK_SPECIAL_V2 = "ss" -- KEY, VALUE
 
@@ -2454,6 +2455,7 @@ tiles_list = {
     type = "text",
     color = {4, 1},
     layer = 20,
+		meta = 1,
 		desc = "BAB TXT: The same as having these two text tiles in a row."
   },
 	-- 243
@@ -2463,6 +2465,7 @@ tiles_list = {
     type = "text",
     color = {4, 1},
     layer = 20,
+		meta = 1,
 		desc = "TXT TXT: The same as having these two text tiles in a row."
   },
   -- 244
