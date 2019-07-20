@@ -250,10 +250,10 @@ function scene.keyPressed(key, isrepeat)
         parseRules()
         doMovement(0,0,"e")
       end
+      addUndo({"za warudo"})
     else
       timeless = false
     end
-    addUndo({"za warudo",timeless})
   end
 
   if key == "tab" then
