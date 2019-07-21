@@ -74,7 +74,7 @@ function scene.load()
   scene.setupGooi()
 
   clear()
-  resetMusic(map_music, 0.1)
+  resetMusic(map_music, 0.5)
   loadMap()
   local now = os.time(os.date("*t"))
   presence = {

@@ -136,7 +136,7 @@ function scene.resetStuff()
   end
   --love.mouse.setGrabbed(true)
   --resetMusic("bab be u them", 0.5)
-  resetMusic(map_music, 0.5)
+  resetMusic(map_music, 0.9)
   loadMap()
   clearRules()
   parseRules()

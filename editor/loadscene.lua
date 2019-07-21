@@ -15,7 +15,7 @@ local full_height = 0
 
 function scene.load()
   clear()
-  resetMusic(current_music, 0.1)
+  resetMusic(current_music, 0.8)
   selected_levels = {}
   scene.buildUI()
   love.mouse.setGrabbed(false)
