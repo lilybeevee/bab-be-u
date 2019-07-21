@@ -365,6 +365,8 @@ end
 function scene.createLevel(o)
   loaded_level = false
   loadLevels({default_map}, load_mode)
+	--default new levels to 'none' compression to fix zlib corruption bug
+	level_compression = "none"
 end
 
 function scene.selectWorld(o, button)
