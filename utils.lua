@@ -16,7 +16,6 @@ function clear()
   reset_count = 0
   last_move = nil
   particles = {}
-  tiles_by_name = {}
   units = {}
   units_by_id = {}
   units_by_name = {}
@@ -68,27 +67,6 @@ function clear()
   win_size = 0
 
   tile_grid = {}
-
-  -- local add_to_grid = {}
-  for i,v in ipairs(tiles_list) do
-    tiles_by_name[v.name] = i
-    -- if v.grid then
-    --   if (v.grid[1]+1 < 100) then
-    --     tile_grid_width = math.max(tile_grid_width, v.grid[1]+1)
-    --   end
-    --   if (v.grid[2]+1 < 100) then 
-    --     tile_grid_height = math.max(tile_grid_height, v.grid[2]+1)
-    --   end
-    --   table.insert(add_to_grid, {i, v.grid[1], v.grid[2]})
-    -- end
-  end
-  -- for _,v in ipairs(add_to_grid) do
-  --   local gridid = v[2] + v[3] * tile_grid_width
-  --   if (tile_grid[gridid] ~= nil and v[2] >= 0) then
-  --     print("WARNING: "..tostring(v[2])..","..tostring(v[3]).." used by multiple tiles!")
-  --   end
-  --   tile_grid[gridid] = v[1]
-  -- end
   
   for i,page in ipairs(selector_grid_contents) do
     tile_grid[i] = {}
@@ -399,6 +377,23 @@ function getUnitsWithEffectAndCount(effect)
   end
   return result
 end
+
+function getUnitsWithRuleAndCount(rule1, rule2, rule3)
+  local result = {}
+  local rules = matchesRule(rule1, rule2, rule3);
+  --print ("h:"..tostring(#rules))
+  for _,dat in ipairs(rules) do
+    local unit = dat[2];
+    if not unit.removed then
+      if result[unit] == nil then
+        result[unit] = 0
+      end
+      result[unit] = result[unit] + 1
+    end
+  end
+  return result
+end
+
 
 function hasRule(rule1,rule2,rule3)
   return #matchesRule(rule1,rule2,rule3, true) > 0
@@ -1440,12 +1435,14 @@ function getAbsolutelyEverythingExcept(except)
   
   if (except ~= "text") then
     for i,ref in ipairs(referenced_text) do
-      if ref ~= except then
+      --TODO: BEN'T text being returned here causes a stack overflow. Prevent it until a better solution is found.
+      if ref ~= except and not ref:ends("n't") then
         table.insert(result, ref)
       end
     end
   end
 
+  --print(dump(result))
   return result
 end
 
@@ -1458,11 +1455,14 @@ function getEverythingExcept(except)
   end
 
   for i,ref in ipairs(ref_list) do
-    if ref ~= except then
+    --TODO: BEN'T text being returned here causes a stack overflow. Prevent it until a better solution is found.
+    if ref ~= except and not ref:ends("n't") then
       table.insert(result, ref)
     end
   end
-
+  
+  print(except)
+  print(dump(result))
   return result
 end
 

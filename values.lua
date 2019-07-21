@@ -90,8 +90,8 @@ selector_grid_contents = {
     0, "text_be", "text_&", "text_got", "text_nt", "text_every1", "text_no1", "text_text", "text_lvl", "text_windo", "text_mous", "text_wait", "text_sans", "text_selctr", "text_lin", "text_loop", "this", "selctr",
     "bab", "text_bab", "text_u", "kee", "text_kee", "text_for dor", "text_direction", "text_wurd", "text_tranz", "text_gay", "text_icy", "text_xwx", "text_liek", "text_nxt", "text_...", "text_u too", "text_u tres", "lvl",
     "keek", "text_keek", "text_walk", "dor", "text_dor", "text_ned kee", "text_visit fren", "text_behin u", "text_qt", "text_moar", "text_goooo", "text_icyyyy", "text_haet", "text_mayb", "text_an", "text_babn't", "text_ben't", "lin",
-    "flog", "text_flog", "text_:)", "colld", "text_colld", "text_fridgd", "text_hotte", "text_ouch", "text_slep", "text_protecc", "text_sidekik", "text_brite", "text_lit", "text_opaque", "text_za warudo", "text_text_bab", "text_text_text", 0,
-    "roc", "text_roc", "text_go away pls", "gras", "text_gras", "dayzy", "text_dayzy", "text_wfren", "text_arond", "text_frenles", "text_look at", "text_seen by", "text_go arnd", "text_mirr arnd", 0, 0, 0, 0,
+    "flog", "text_flog", "text_:)", "colld", "text_colld", "text_fridgd", "text_hotte", "text_ouch", "text_slep", "text_protecc", "text_sidekik", "text_brite", "text_lit", "text_opaque", "text_za warudo", "text_rocn't", "text_waln't", "text_ditto",
+    "roc", "text_roc", "text_go away pls", "gras", "text_gras", "dayzy", "text_dayzy", "text_wfren", "text_arond", "text_frenles", "text_look at", "text_seen by", "text_go arnd", "text_mirr arnd", "text_meta", 0, 0, 0,
     "wal", "text_wal", "text_no go", "l..uv", "text_l..uv", "hurcane", "text_hurcane", "text_creat", "text_snacc", "text_spoop", "text_yeet", "text_zip", "text_shy", "text_corekt", 0, 0, 0, 0,
     "watr", "text_watr", "text_no swim", "meem", "text_meem", "o", "letter_o", "text_colrful", "text_bleu", "text_reed", "text_stelth", "text_folo wal", "text_turn cornr", "text_rong", "text_stalk", 0, 0, 0,
     "skul", "text_skul", "text_:(", "til", "text_til", "kirb", "text_kirb", "gun", "text_gun", "wog", "text_wog", "text_copkat", "text_copdog", "text_munwalk", "text_sidestep", "text_diagstep", "text_hopovr", 0,
@@ -136,6 +136,7 @@ tiles_list = {
   {
     name = "text_bab",
     sprite = "text_bab",
+    metasprite = "text_bab meta",
     type = "text",
     color = {4, 1},
     layer = 20,
@@ -165,6 +166,7 @@ tiles_list = {
   {
     name = "wal",
     sprite = "wal",
+    metasprite = "text_wal meta",
     type = "object",
     color = {1, 1},
     layer = 2,
@@ -202,6 +204,7 @@ tiles_list = {
   {
     name = "text_roc",
     sprite = "text_roc",
+    metasprite = "text_roc meta",
     type = "text",
     color = {6, 1},
     layer = 20,
@@ -228,6 +231,7 @@ tiles_list = {
   {
     name = "text_dor",
     sprite = "text_dor",
+    metasprite = "text_dor meta",
     type = "text",
     color = {2, 2},
     layer = 20,
@@ -255,6 +259,7 @@ tiles_list = {
   {
     name = "text_kee",
     sprite = "text_kee",
+    metasprite = "text_kee meta",
     type = "text",
     color = {2, 4},
     layer = 20,
@@ -502,6 +507,7 @@ tiles_list = {
   {
     name = "text_til",
     sprite = "text_til",
+    metasprite = "text_til meta",
     type = "text",
     color = {0, 1},
     layer = 20
@@ -510,6 +516,7 @@ tiles_list = {
   {
     name = "text_text",
     sprite = "text_txt",
+    metasprite = "text_txt meta",
     type = "text",
     color = {4, 1},
     layer = 20,
@@ -1572,6 +1579,7 @@ tiles_list = {
   {
     name = "text_lvl",
     sprite = "text_lvl",
+    metasprite = "text_lvl meta",
     type = "text",
     color = {4,1},
     layer = 20,
@@ -2449,24 +2457,22 @@ tiles_list = {
 		desc = "BE N'T: The same as having these two text tiles in a row."
   },
 	-- 243
-  {
-    name = "text_text_bab",
-    sprite = "text_bab txt",
+   {
+    name = "text_rocn't",
+    sprite = "text_roc n't",
     type = "text",
-    color = {4, 1},
+    color = {0, 3},
     layer = 20,
-		meta = 1,
-		desc = "BAB TXT: The same as having these two text tiles in a row."
+		desc = "ROC N'T: The same as having these two text tiles in a row."
   },
 	-- 243
-  {
-    name = "text_text_text",
-    sprite = "text_txt txt",
+   {
+    name = "text_waln't",
+    sprite = "text_wal n't",
     type = "text",
-    color = {4, 1},
+    color = {0, 3},
     layer = 20,
-		meta = 1,
-		desc = "TXT TXT: The same as having these two text tiles in a row."
+		desc = "WAL N'T: The same as having these two text tiles in a row."
   },
   -- 244
   {
@@ -2778,4 +2784,28 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
+  -- 278
+  {
+    name = "text_ditto",
+    sprite = "text_ditto",
+    type = "text",
+    texttype = "ditto",
+    color = {0,3},
+    layer = 20
+  },
+  -- 279
+  {
+    name = "text_meta",
+    sprite = "text_meta",
+    type = "text",
+    texttype = "property",
+    color = {4, 1},
+    layer = 20,
+    desc = "META: BE META causes that object to be turned into its corresponding metatext. BEN'T META does the opposite and goes down one meta layer (disappearing if that is impossible).",
+  },
 }
+
+tiles_by_name = {}
+for i,v in ipairs(tiles_list) do
+  tiles_by_name[v.name] = i
+end
