@@ -471,7 +471,11 @@ function scene.draw(dt)
       -- print("unit " .. unit.name .. " is black")
       unit.color = {0, 4}
     else
-      unit.color = copyTable(tiles_list[unit.tile].color)
+      if unit.color_override ~= nil then
+        unit.color = unit.color_override
+      else
+        unit.color = copyTable(tiles_list[unit.tile].color)
+      end
     end
 
     local sprite_name = unit.sprite
