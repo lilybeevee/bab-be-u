@@ -20,6 +20,16 @@ function scene.load()
   scene.buildUI()
   love.mouse.setGrabbed(false)
   love.keyboard.setKeyRepeat(true)
+
+  presence = {
+    state = "in "..(load_mode == "edit" and "editor" or "game"),
+    details = "browsing levels. .......... . .. ...",
+    largeImageKey = "cover",
+    largeimageText = "bab be u",
+    smallImageKey = load_mode == "edit" and "edit" or "icon",
+    smallImageText = load_mode == "edit" and "editor" or "game",
+    startTimestamp = now
+  }
 end
 
 function scene.update(dt)
