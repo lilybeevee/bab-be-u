@@ -1246,6 +1246,31 @@ function convertLevel()
     return true
   end
   
+  local demeta = matchesRule(outerlvl,"ben't","meta")
+  if #demeta > 0 then
+    destroyLevel("convert")
+    return true
+  end
+  
+  local meta = matchesRule(outerlvl, "be","meta")
+  if (#meta > 0) then
+   local tile = nil
+    local nametocreate = outerlvl.fullname;
+    for i = 1,#meta do
+      nametocreate = "text_"..nametocreate;
+    end
+    tile = tiles_by_namePossiblyMeta(nametocreate)
+    if tile ~= nil then
+      --placeholder - just make 'u r win' pop up for now
+      win = true
+      music_fading = true
+      win_sprite_override = tiles_list[tile].sprite
+      print(tiles_list[tile].name)
+      playSound("win")
+      return true
+    end
+  end
+  
   local converts = matchesRule(outerlvl,"be","?")
   for _,match in ipairs(converts) do
     if not nameIs(outerlvl, match[1][3]) then
@@ -1295,6 +1320,69 @@ function convertUnits(pass)
   end
 
   local converted_units = {}
+  
+  local meta = getUnitsWithRuleAndCount(nil, "be","meta")
+  for unit,amt in pairs(meta) do
+    if not unit.new and unit.type ~= "outerlvl" and timecheck(unit) then
+      table.insert(converted_units, unit)
+      addParticles("bonus", unit.x, unit.y, unit.color)
+      local tile = nil
+      local nametocreate = unit.fullname;
+      for i = 1,amt do
+        nametocreate = "text_"..nametocreate;
+      end
+      tile = tiles_by_namePossiblyMeta(nametocreate)
+      if tile ~= nil then
+        local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
+        if (new_unit ~= nil) then
+          addUndo({"create", new_unit.id, true, created_from_id = unit.id})
+        end
+      end
+    end
+  end
+  
+  --[[local meta = matchesRule(nil, "be", "meta")
+  for _,match in ipairs(meta) do
+    local rules = match[1]
+    local unit = match[2]
+    local rule = rules[1]
+    if not unit.new and unit.type ~= "outerlvl" and timecheck(unit) then
+      table.insert(converted_units, unit)
+      addParticles("bonus", unit.x, unit.y, unit.color)
+      tile = tiles_by_namePossiblyMeta("text_" .. unit.fullname)
+      if tile ~= nil then
+        local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
+        if (new_unit ~= nil) then
+          addUndo({"create", new_unit.id, true, created_from_id = unit.id})
+        end
+      end
+    end
+  end]]
+  
+  local demeta = getUnitsWithRuleAndCount(nil, "ben't","meta")
+  for unit,amt in pairs(demeta) do
+    if not unit.new and unit.type ~= "outerlvl" and timecheck(unit) then
+      table.insert(converted_units, unit)
+      addParticles("bonus", unit.x, unit.y, unit.color)
+      --remove "text_" as many times as we're de-metaing
+      local nametocreate = unit.fullname;
+      for i = 1,amt do
+        if nametocreate:starts("text_") then
+          nametocreate = nametocreate:sub(6, -1);
+        else
+          nametocreate = "no1"
+          break
+        end
+      end
+      local tile = tiles_by_name[nametocreate];
+      if tile ~= nil then
+        local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
+        if (new_unit ~= nil) then
+          addUndo({"create", new_unit.id, true, created_from_id = unit.id})
+        end
+      end
+    end
+  end
 
   local deconverts = matchesRule(nil,"ben't","?")
   for _,match in ipairs(deconverts) do
@@ -1415,7 +1503,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty)
   unit.special = {} -- for lvl objects
   unit.portal = {dir = 1, last = {}, extra = {}} -- for hol objects
 
-  local data = tiles_list[tile]
+  local data = tiles_listPossiblyMeta(tile)
 
   unit.tile = tile
   unit.sprite = data.sprite
@@ -1743,4 +1831,50 @@ end
 function newMouseID()
   max_mouse_id = max_mouse_id + 1
   return max_mouse_id
+end
+
+meta_offset = 100000
+function tiles_listPossiblyMeta(tile_id)
+  local tile = tiles_list[tile_id];
+  if (tile ~= nil) then
+    return tile
+  end
+  --recursively make all less meta tiles
+  if (tile_id > 100000) then
+    local premeta_tile = tiles_listPossiblyMeta(tile_id-meta_offset);
+    --now we can make our new meta tile!
+    tile = makeMetaTile(premeta_tile);
+    tiles_by_name[tile.name] = tile_id;
+    tiles_list[tile_id] = tile;
+  end
+  return tile;
+end
+
+function tiles_by_namePossiblyMeta(name)
+  local tile_id = tiles_by_name[name];
+  if (tile_id ~= nil) then
+    return tile_id
+  end
+  --recursively make all less meta tiles
+  if name:starts("text_") then
+    local premeta_tile_id = tiles_by_namePossiblyMeta(name:sub(6, -1));
+    local premeta_tile = tiles_list[premeta_tile_id];
+    tile_id = premeta_tile_id+meta_offset;
+    --now we can make our new meta tile!
+    local tile = makeMetaTile(premeta_tile);
+    tiles_by_name[name] = tile_id;
+    tiles_list[tile_id] = tile;
+  end
+  return tile_id;
+end
+
+function makeMetaTile(premeta_tile)
+  return {
+    name = "text_" .. premeta_tile.name,
+    sprite = premeta_tile.metasprite or premeta_tile.sprite,
+    type = "text",
+    color = premeta_tile.color,
+    layer = 20,
+    meta = premeta_tile.meta ~= nil and premeta_tile.meta + 1 or 1
+  }
 end

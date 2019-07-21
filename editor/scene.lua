@@ -34,6 +34,7 @@ function scene.load()
   settings_open = false
   selector_open = false
   selector_page = 1
+  current_tile_grid = tile_grid[selector_page];
   
   if not level_compression then
     level_compression = "zlib"
@@ -201,6 +202,7 @@ function scene.setupGooi()
     local button = gooi.newButton({text = "", x = x + 64*i, y = y, w = 64, h = 32}):onRelease(function()
       selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..selector_page], sprites["ui/selector_tab_"..selector_page.."_h"])
       selector_page = j
+      current_tile_grid = tile_grid[selector_page];
       selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..j.."_a"], sprites["ui/selector_tab_"..j.."_h"])
     end)
     button:setBGImage(sprites["ui/selector_tab_"..i], sprites["ui/selector_tab_"..i.."_h"]):bg({0, 0, 0, 0})
@@ -308,7 +310,29 @@ function scene.keyPressed(key)
   if selector_open and tonumber(key) and tonumber(key) <= #tile_grid and tonumber(key) > 0 then
     selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..selector_page], sprites["ui/selector_tab_"..selector_page.."_h"])
     selector_page = tonumber(key)
+    current_tile_grid = tile_grid[selector_page];
     selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..tonumber(key).."_a"], sprites["ui/selector_tab_"..tonumber(key).."_h"])
+  end
+  
+  --create and display meta tiles 1 higher
+  if selector_open and key == "lshift" then
+  --copy so we don't override original list
+  current_tile_grid = copyTable(current_tile_grid)
+    for i = 1,tile_grid_width*tile_grid_height do
+      if current_tile_grid[i] ~= nil and current_tile_grid[i] > 0 then
+        local new_tile_id = tiles_by_name["text_" .. tiles_list[current_tile_grid[i]].name];
+        if (new_tile_id ~= nil) then
+          current_tile_grid[i] = new_tile_id
+        else
+          current_tile_grid[i] = current_tile_grid[i] + meta_offset;
+          tiles_listPossiblyMeta(current_tile_grid[i])
+        end
+      end
+    end
+  end
+  
+  if selector_open and key == "rshift" then
+    current_tile_grid = tile_grid[selector_page];
   end
 end
 
@@ -449,8 +473,8 @@ function scene.update(dt)
           end
         else
           local selected = hx + hy * tile_grid_width
-          if tile_grid[selector_page][selected] then
-            brush.id = tile_grid[selector_page][selected]
+          if current_tile_grid[selected] then
+            brush.id = current_tile_grid[selected]
             brush.picked_tile = nil
             brush.picked_index = 0
           else
@@ -563,25 +587,8 @@ function scene.draw(dt)
     roomheight = tile_grid_height * TILE_SIZE
   end
 
-
   love.graphics.push()
   love.graphics.applyTransform(scene.getTransform())
-
-  -- if selector_open then
-  --   for i=1,#tile_grid do
-  --     love.graphics.setColor(getPaletteColor(1, 3))
-  --     setRainbowModeColor(love.timer.getTime()/3+i*1.3, .5)
-      
-  --     -- love.graphics.draw(sprites["ui/button_white_"..i%2+1], (sprites["ui/button_1"]:getHeight()+5)*i, 0-sprites["ui/button_1"]:getHeight(), math.pi/2)
-  --     local j = i
-  --     gooi.newButton({text = i, x = 45*i, y = 0, w = 40, h = 40, group = "selectortabs"}):onRelease(function()
-  --       selector_page = j
-  --     end):setBGImage(sprites["ui/button_1"], sprites["ui/button_1_h"], sprites["ui/button_1_a"]):bg({0, 0, 0, 0})
-      
-  --     -- love.graphics.setColor(1, 1, 1)
-  --     -- love.graphics.printf(i, (sprites["ui/button_1"]:getHeight()+5)*(i-1), 0-sprites["ui/button_1"]:getHeight()/3*2, sprites["ui/button_1"]:getHeight()+5, "center")
-  --   end
-  -- end
 
   love.graphics.setColor(getPaletteColor(0, 4))
   love.graphics.rectangle("fill", 0, 0, roomwidth, roomheight)
@@ -635,7 +642,7 @@ function scene.draw(dt)
     for x=0,tile_grid_width-1 do
       for y=0,tile_grid_height-1 do
         local gridid = x + y * tile_grid_width
-        local i = tile_grid[selector_page][gridid]
+        local i = current_tile_grid[gridid]
         if i ~= nil then
           local tile = tiles_list[i]
           local sprite = sprites[tile.sprite]
@@ -704,6 +711,7 @@ function scene.draw(dt)
   if selector_open then
     love.graphics.setColor(getPaletteColor(0,3))
     love.graphics.print(last_hovered_tile[1] .. ', ' .. last_hovered_tile[2], 0, roomheight)
+    love.graphics.print("LSHIFT to get meta text, RSHIFT to refresh", 0, roomheight+12)
   end
 
   love.graphics.pop()
@@ -711,7 +719,7 @@ function scene.draw(dt)
   if selector_open then
     love.graphics.setColor(1, 1, 1)
     local gridid = last_hovered_tile[1]  + last_hovered_tile[2] * tile_grid_width
-    local i = tile_grid[selector_page][gridid]
+    local i = current_tile_grid[gridid]
     if i ~= nil then
       local tile = tiles_list[i]
       if (tile.desc ~= nil and hx ~= nil) then

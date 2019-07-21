@@ -76,21 +76,23 @@ function parseRules(undoing)
     return
   end
   
+  --refresh name/type/color of dittos in reading order (top to bottom)
   local dittos = units_by_name["text_ditto"]
-  table.sort(dittos, function(a, b) return a.y < b.y end )
-  
-  for _,unit in ipairs(dittos) do
-    local mimic = getTextOnTile(unit.x,unit.y-1)
-    if #mimic == 1 then
-      unit.textname = mimic[1].textname
-      unit.texttype = mimic[1].texttype
-      if mimic[1].color_override ~= nil then
-        unit.color_override = mimic[1].color_override
+  if (dittos ~= nil) then
+  table.sort(dittos, function(a, b) return a.y < b.y end ) 
+    for _,unit in ipairs(dittos) do
+      local mimic = getTextOnTile(unit.x,unit.y-1)
+      if #mimic == 1 then
+        unit.textname = mimic[1].textname
+        unit.texttype = mimic[1].texttype
+        if mimic[1].color_override ~= nil then
+          unit.color_override = mimic[1].color_override
+        else
+          unit.color_override = mimic[1].color
+        end
       else
-        unit.color_override = mimic[1].color
+        unit.textname = "  "
       end
-    else
-      unit.textname = "  "
     end
   end
   
@@ -538,7 +540,7 @@ function addRule(full_rule)
   while subject:ends("n't") do subject, subject_not = subject:sub(1, -4), subject_not + 1 end
   while verb:ends("n't")    do verb,       verb_not =    verb:sub(1, -4),    verb_not + 1 end
   while object:ends("n't")  do object,   object_not =  object:sub(1, -4),  object_not + 1 end
-	print(subject, verb, object, subject_not, verb_not, object_not)
+	--print(subject, verb, object, subject_not, verb_not, object_not)
 
   if verb_not > 0 then
     verb = rules[2]:sub(1, -4)

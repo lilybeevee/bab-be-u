@@ -559,7 +559,7 @@ function scene.draw(dt)
 				setColor({4, 1})
 				local metasprite = unit.meta == 2 and sprites["meta2"] or sprites["meta1"]
 				love.graphics.draw(metasprite, fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
-				if unit.meta > 2 then
+				if unit.meta > 2 and unit.draw.scalex == 1 and unit.draw.scaley == 1 then
 					love.graphics.printf(tostring(unit.meta), fulldrawx-1, fulldrawy+6, 32, "center")
 				end
 				setColor(unit.color)
@@ -767,6 +767,7 @@ function scene.draw(dt)
   for _,ps in ipairs(removed_particles) do
     removeFromTable(particles, ps)
   end
+  --draw the stack box (shows what units are on a tile)
   if stack_box.scale > 0 then
     love.graphics.push()
     love.graphics.translate((stack_box.x + 0.5) * TILE_SIZE, stack_box.y * TILE_SIZE)
@@ -814,6 +815,16 @@ function scene.draw(dt)
 
       local sprite = sprites[draw.unit.sprite]
       love.graphics.draw(sprite, 0, 0, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      local unit = draw.unit;
+      
+      if (unit.meta ~= nil) then
+				love.graphics.setColor(getPaletteColor(4, 1))
+				local metasprite = unit.meta == 2 and sprites["meta2"] or sprites["meta1"]
+				love.graphics.draw(metasprite, 0, 0, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+				if unit.meta > 2 then
+					love.graphics.printf(tostring(unit.meta), -1, 6, 32, "center")
+				end
+			end
       love.graphics.pop()
 
       if draw.count > 1 then

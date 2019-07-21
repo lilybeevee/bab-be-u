@@ -580,6 +580,7 @@ function addRule(full_rule)
       return
     elseif verb ~= "be" and verb ~= "ben't" then
       --we'll special case x be every1 in convertUnit now
+      print(dump(referenced_objects))
       for _,v in ipairs(referenced_objects) do
         addRule({{rules[1], rules[2], v, rules[4]}, units, dir})
       end
