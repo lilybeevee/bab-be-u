@@ -340,11 +340,18 @@ function scene.mousePressed(x, y, button)
   if capturing and button == 1 then
     start_drag = {x = love.mouse.getX(), y = love.mouse.getY()}
   end
+  if selector_open and button == 1 then
+    selectorhold = true
+  end
 end
 
 function scene.mouseReleased(x, y, button)
   if capturing and button == 1 then
     scene.captureIcon()
+  end
+
+  if button == 1 then
+    selectorhold = false
   end
 end
 
@@ -424,10 +431,10 @@ function scene.update(dt)
           if #hovered >= 1 then
             for _,unit in ipairs(hovered) do
               if unit.tile == brush.id then
-                if not key_down["lctrl"] then
+                if not key_down["lctrl"] and not selectorhold then
                   existing = unit
                 end
-              elseif brush.mode == "placing" and not key_down["lshift"] then
+              elseif brush.mode == "placing" and not key_down["lshift"] and not selectorhold then
                 deleteUnit(unit)
                 painted = true
               end
@@ -440,11 +447,11 @@ function scene.update(dt)
           end
           if brush.id ~= nil then
             if brush.mode == "erasing" then
-              if existing then
+              if existing and not selectorhold then
                 deleteUnit(existing)
                 painted = true
               end
-            elseif brush.mode == "placing" then
+            elseif brush.mode == "placing" and not selectorhold then
               if existing then
                 existing.dir = brush.dir
                 painted = true
