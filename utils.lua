@@ -1714,3 +1714,20 @@ end
   end
   return "{"..string.sub(ret,3).."}"
 end]]
+
+function pcallNewShader(code)
+  local libstatus, liberr = pcall(function() love.graphics.newShader(code) end)
+
+  if libstatus then
+    return love.graphics.newShader(code)
+  else
+    print(colr.yellow("⚠ failed to create new shader: "..liberr))
+    return nil
+  end
+end
+
+function pcallSetShader(shader)
+  if shader ~= nil then
+    love.graphics.setShader(shader)
+  end
+end

@@ -1,7 +1,7 @@
 local scene = {}
 window_dir = 0
 
-local mask_shader = love.graphics.newShader[[
+local mask_shader = pcallNewShader[[
   vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords) {
      if (Texel(texture, texture_coords).rgb == vec3(0.0)) {
         // a discarded pixel wont be applied as the stencil.
@@ -11,7 +11,7 @@ local mask_shader = love.graphics.newShader[[
   }
 ]]
 
-local paletteshader_0 = love.graphics.newShader[[
+local paletteshader_0 = pcallNewShader[[
   vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords) {
     vec4 texturecolor = Texel(texture, texture_coords);
     texturecolor = texturecolor * color;
@@ -22,7 +22,7 @@ local paletteshader_0 = love.graphics.newShader[[
   }
 ]]
 
-local xwxShader = love.graphics.newShader[[
+local xwxShader = pcallNewShader[[
 	extern number time;
 
 	vec4 effect( vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords ){
@@ -36,9 +36,8 @@ local xwxShader = love.graphics.newShader[[
 
 --local paletteshader_autumn = love.graphics.newShader("paletteshader_autumn.txt")
 --local paletteshader_dunno = love.graphics.newShader("paletteshader_dunno.txt")
-if not is_mobile then
-  local shader_zawarudo = love.graphics.newShader("shader_pucker.txt")
-end
+local shader_zawarudo = pcallNewShader("shader_pucker.txt")
+
 local level_shader = paletteshader_0
 local doin_the_world = false
 local shader_time = 0
@@ -101,7 +100,9 @@ function scene.update(dt)
   mouse_oldX = mouse_X
   mouse_oldY = mouse_Y
 
-  xwxShader:send("time", dt) -- send delta time to the shader
+  if xwxShader then
+    xwxShader:send("time", dt) -- send delta time to the shader
+  end
 
   --TODO: PERFORMANCE: If many things are producing particles, it's laggy as heck.
   scene.doPassiveParticles(dt, ":)", "bonus", 0.25, 1, 1, {2, 4})
@@ -572,7 +573,7 @@ function scene.draw(dt)
 
     if unit.xwx then -- if we're xwx, apply the special shader to our object
       if math.floor(love.timer.getTime() * 9) % 9 == 0 then
-        love.graphics.setShader(xwxShader)
+        pcallSetShader(xwxShader)
         drawSprite()
         love.graphics.setShader()
       else
@@ -582,7 +583,7 @@ function scene.draw(dt)
 
     if #unit.overlay > 0 then
       local function overlayStencil()
-         love.graphics.setShader(mask_shader)
+         pcallSetShader(mask_shader)
          drawSprite()
          love.graphics.setShader()
       end
@@ -607,7 +608,7 @@ function scene.draw(dt)
         drawSprite(sprites[sprite_name .. "_bg"])
         love.graphics.setColor(1, 1, 1)
         local function holStencil()
-          love.graphics.setShader(mask_shader)
+          pcallSetShader(mask_shader)
           drawSprite(sprites[sprite_name .. "_mask"])
           love.graphics.setShader()
         end
@@ -878,7 +879,7 @@ function scene.draw(dt)
   end
 
   love.graphics.setCanvas()
-  love.graphics.setShader(level_shader)
+  pcallSetShader(level_shader)
   --[[
   if doin_the_world then
     level_shader:send("time", shader_time)
@@ -887,7 +888,7 @@ function scene.draw(dt)
   ]]
   love.graphics.draw(canv,0,0)
   if shader_time == 600 then
-    love.graphics.setShader(paletteshader_0)
+    pcallSetShader(paletteshader_0)
     doin_the_world = false
   end
 
@@ -956,7 +957,7 @@ function scene.draw(dt)
 
       if #cursor.overlay > 0 then
         local function overlayStencil()
-          love.graphics.setShader(mask_shader)
+          pcallSetShader(mask_shader)
           love.graphics.draw(system_cursor, cursor.screenx, cursor.screeny)
           love.graphics.setShader()
         end
