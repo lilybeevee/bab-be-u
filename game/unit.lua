@@ -615,9 +615,7 @@ function updateUnits(undoing, big_update)
         is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
         if is_u and sameFloat(unit, on) then
           if timecheck(unit) and timecheck(on) then
-            win = true
-            music_fading = true
-            playSound("win")
+            doWin()
           else
             table.insert(timeless_win,on)
           end
@@ -650,9 +648,7 @@ function updateUnits(undoing, big_update)
     end
     
     if (#timeless_win > 0) and not timeless then
-      win = true
-      music_fading = true
-      playSound("win")
+      doWin()
     end
     
     if hasRule("windo","be","loop") then
@@ -1094,17 +1090,14 @@ function levelBlock()
     mergeTable(yous, youtres)
     for _,unit in ipairs(yous) do
       if sameFloat(unit,outerlvl) then
-        win = true
-        music_fading = true
-        playSound("win")
+        doWin()
       end
     end
   end
   
   if hasProperty(outerlvl, "nxt") then
-    win = true
-    music_fading = true
-    playSound("win")
+		--placeholder until NXT is coded
+    doWin()
   end
   
   if (will_undo) then
@@ -1175,10 +1168,8 @@ function destroyLevel(reason)
       end
       if tile ~= nil then
         --placeholder - just make 'u r win' pop up for now
-        win = true
-        music_fading = true
+        doWin()
         win_sprite_override = tiles_list[tile].sprite
-        playSound("win")
       end
     end
   end
@@ -1191,9 +1182,7 @@ function destroyLevel(reason)
   
   if reason == "infloop" then
     if hasRule("loop","be",":)") then
-      win = true
-      music_fading = true
-      playSound("win")
+      doWin()
     elseif hasRule("loop","be","xwx") then
       love = {}
     elseif hasRule("loop","be","try again") then
@@ -1262,11 +1251,8 @@ function convertLevel()
     tile = tiles_by_namePossiblyMeta(nametocreate)
     if tile ~= nil then
       --placeholder - just make 'u r win' pop up for now
-      win = true
-      music_fading = true
+      doWin()
       win_sprite_override = tiles_list[tile].sprite
-      print(tiles_list[tile].name)
-      playSound("win")
       return true
     end
   end
@@ -1280,10 +1266,8 @@ function convertLevel()
       end
       if tile ~= nil then
         --placeholder - just make 'u r win' pop up for now
-        win = true
-        music_fading = true
+        doWin()
         win_sprite_override = tiles_list[tile].sprite
-        playSound("win")
         return true
       end
     end
@@ -1877,4 +1861,15 @@ function makeMetaTile(premeta_tile)
     layer = 20,
     meta = premeta_tile.meta ~= nil and premeta_tile.meta + 1 or 1
   }
+end
+
+function doWin()
+	if not win then
+		win = true
+		music_fading = true
+		playSound("win")
+		love.filesystem.createDirectory("levels")
+    love.filesystem.write("levels/" .. level_name .. ".replay", replay_string)
+		print("Replay successfully saved to ".."levels/" .. level_name .. ".replay")
+	end
 end

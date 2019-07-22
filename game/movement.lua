@@ -52,6 +52,7 @@ function doDirRules()
 end
 
 function doMovement(movex, movey, key)
+	replay_string = replay_string..tostring(movex)..","..tostring(movey)..","..tostring(key)..";"
   walkdirchangingrulesexist = rules_with["munwalk"] or rules_with["sidestep"] or rules_with["diagstep"] or rules_with["hopovr"];
   local played_sound = {}
   local slippers = {}

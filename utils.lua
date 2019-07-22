@@ -1,4 +1,5 @@
 function clear()
+	replay_string = ""
   new_units_cache = {}
   undoing = false
   successful_brite_cache = nil

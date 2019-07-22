@@ -1045,6 +1045,7 @@ function scene.checkInput()
           last_input_time = nil
         end
         local result = undo()
+				replay_string = replay_string..string(0)..","..string(0)..","..string("undo")..";"
         if result then playSound("undo") else playSound("fail") end
         do_move_sound = false;
         local end_time = love.timer.getTime();
