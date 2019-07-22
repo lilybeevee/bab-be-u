@@ -1226,28 +1226,34 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
   --we used to have a fast track, but now selector is ALWAYS bounded to stuff, so it's never going to be useful.
   local isbounded = matchesRule(unit, "liek", "?")
   if (#isbounded > 0) then
-    local success = false
-    for _,v in ipairs(getUnitsOnTile(x, y, nil, false)) do
-      if hasRule(unit, "liek", v) then
+    for i,ruleparent in ipairs(isbounded) do
+      local liek = ruleparent[1][3]
+      local success = false
+      if hasRule(unit,"liek",liek) and hasRule(unit,"haet",liek) then
         success = true
-        break
       end
-    end
-    if not success then
-      for _,update in ipairs(update_queue) do
-        if update.reason == "update" then
-          local unit2 = update.unit
-          local x2 = update.payload.x
-          local y2 = update.payload.y
-          if x2 == x and y2 == y and hasRule(unit, "liek", unit2) then
-            success = true
-            break
+      for _,v in ipairs(getUnitsOnTile(x, y, nil, false)) do
+        if hasRule(unit, "liek", v) then
+          success = true
+          break
+        end
+      end
+      if not success then
+        for _,update in ipairs(update_queue) do
+          if update.reason == "update" then
+            local unit2 = update.unit
+            local x2 = update.payload.x
+            local y2 = update.payload.y
+            if x2 == x and y2 == y and hasRule(unit, "liek", unit2) then
+              success = true
+              break
+            end
           end
         end
       end
-    end
-    if not success then
-      return false,{},{}
+      if not success then
+        return false,{},{}
+      end
     end
   end
   
@@ -1300,7 +1306,7 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
       end
       
       --if/elseif chain for everything that sets stopped to true if it's true - no need to check the remainders after all! (but if anything ignores flye, put it first, like haet!)
-      if rules_with["haet"] ~= nil and hasRule(unit, "haet", v) then
+      if rules_with["haet"] ~= nil and hasRule(unit, "haet", v) and not hasRule(unit,"liek",v) then
         stopped = true;
       elseif hasProperty(v, "no go") then --Things that are STOP stop being PUSH or PULL, unlike in Baba. Also unlike Baba, a wall can be floated across if it is not tall!
         stopped = stopped or sameFloat(unit, v)
