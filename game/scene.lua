@@ -1204,7 +1204,7 @@ function doOneMove(x, y, key)
     end
 	elseif (key == "undo") then
 		local result = undo()
-		replay_string = replay_string..string(0)..","..string(0)..","..string("undo")..";"
+		replay_string = replay_string..tostring(0)..","..tostring(0)..","..tostring("undo")..";"
 		return result
 	else
 		newUndo()
