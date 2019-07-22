@@ -318,7 +318,7 @@ function scene.keyPressed(key)
   if selector_open and key == "lshift" then
   --copy so we don't override original list
   current_tile_grid = copyTable(current_tile_grid)
-    for i = 1,tile_grid_width*tile_grid_height do
+    for i = 0,tile_grid_width*tile_grid_height do
       if current_tile_grid[i] ~= nil and current_tile_grid[i] > 0 then
         local new_tile_id = tiles_by_name["text_" .. tiles_list[current_tile_grid[i]].name];
         if (new_tile_id ~= nil) then
