@@ -236,7 +236,7 @@ function parseRules(undoing)
       end
 
       for _,sentence in ipairs(sentences) do
-        parseSentence(sentence, {been_first, first_words, final_rules, first}) -- split into a new function located below to organize this slightly more
+        parseSentence(sentence, {been_first, first_words, final_rules, first}, dir) -- split into a new function located below to organize this slightly more
       end
     end
     
@@ -344,7 +344,7 @@ function parseRules(undoing)
   print("parseRules() took: "..tostring(round((end_time-start_time)*1000)).."ms")
 end
 
-function parseSentence (sentence_, params_) --prob make this a local function? idk
+function parseSentence(sentence_, params_, dir) --prob make this a local function? idk
   --print("parsing... "..fullDump(sentence_))
   local been_first = params_[1] --splitting up the params like this was because i was too lazy
   local first_words = params_[2] -- all of them are tables anyway, so it ends up referencing properly
@@ -390,18 +390,18 @@ function parseSentence (sentence_, params_) --prob make this a local function? i
       local len = word_index-orig_index
       for _,s in ipairs(lsentences.middle) do
         local words = fillTextDetails(s, pos_x, pos_y, first[2], len)
-        parseSentence(words, params_)
+        parseSentence(words, params_, dir)
       end
       for _,s in ipairs(lsentences.start) do
         local words = fillTextDetails(s, pos_x, pos_y, first[2], len)
         local before_copy = copyTable(before_sentence) --copying is required because addTables puts results in the first table
         addTables(before_copy, words)
-        parseSentence(before_copy, params_)
+        parseSentence(before_copy, params_, dir)
       end
       for _,s in ipairs(lsentences.endd) do
         local words = fillTextDetails(s, pos_x, pos_y, first[2], len)
         addTables(words, after_sentence)
-        parseSentence(words, params_)
+        parseSentence(words, params_, dir)
       end
       for _,s in ipairs(lsentences.both) do
         local words = fillTextDetails(s, pos_x, pos_y, first[2], len)
@@ -409,11 +409,11 @@ function parseSentence (sentence_, params_) --prob make this a local function? i
         addTables(words, after_sentence)
         addTables(before_copy, words)
         --print("end dump: "..dumpOfProperty(before_copy, "name"))
-        parseSentence(before_copy, params_)
+        parseSentence(before_copy, params_, dir)
       end
 
-      parseSentence(before_sentence, params_)
-      parseSentence(after_sentence, params_)
+      parseSentence(before_sentence, params_, dir)
+      parseSentence(after_sentence, params_, dir)
       return --no need to continue past this point, since the letters suffice
     end
   end
@@ -518,7 +518,7 @@ function parseSentence (sentence_, params_) --prob make this a local function? i
         end
       end
     end
-
+		
     table.insert(final_rules, {new_rules, dir})
   end
 end
