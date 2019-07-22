@@ -1,4 +1,9 @@
 function clear()
+	replay_playback = false
+	replay_playback_string = nil
+	replay_playback_turn = 1
+	replay_playback_time = love.timer.getTime()
+	replay_playback_interval = 0.3
 	replay_string = ""
   new_units_cache = {}
   undoing = false

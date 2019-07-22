@@ -127,6 +127,58 @@ function scene.update(dt)
     shake_intensity = 0
     shake_dur = 0
   end
+	
+	scene.doReplay(dt)
+end
+
+function scene.doReplay(dt)
+	if win or not replay_playback then return end
+	if love.timer.getTime() > (replay_playback_time + replay_playback_interval) then
+		replay_playback_time = replay_playback_time + replay_playback_interval
+		doReplayTurn(replay_playback_turn);
+		replay_playback_turn = replay_playback_turn + 1;
+	end
+end
+
+function doReplayTurn(turn)
+	local turns = replay_playback_string:split(";")
+	local turn_string = turns[turn];
+	if (turn_string == nil or turn_string == "") then
+		replay_playback = false;
+		print("Finished playback at turn: "..tostring(turn));
+	end
+	local turn_parts = turn_string:split(",")
+	x, y, key = tonumber(turn_parts[1]), tonumber(turn_parts[2]), turn_parts[3];
+	if (x == nil or y == nil) then
+		replay_playback = false;
+		print("Finished playback at turn: "..tostring(turn));
+	end
+	doOneMove(x, y, key);
+end
+
+function string:split(sSeparator, nMax, bRegexp)
+   assert(sSeparator ~= '')
+   assert(nMax == nil or nMax >= 1)
+
+   local aRecord = {}
+
+   if self:len() > 0 then
+      local bPlain = not bRegexp
+      nMax = nMax or -1
+
+      local nField, nStart = 1, 1
+      local nFirst,nLast = self:find(sSeparator, nStart, bPlain)
+      while nFirst and nMax ~= 0 do
+         aRecord[nField] = self:sub(nStart, nFirst-1)
+         nField = nField+1
+         nStart = nLast+1
+         nFirst,nLast = self:find(sSeparator, nStart, bPlain)
+         nMax = nMax-1
+      end
+      aRecord[nField] = self:sub(nStart)
+   end
+
+   return aRecord
 end
 
 function scene.resetStuff()
@@ -237,24 +289,34 @@ function scene.keyPressed(key, isrepeat)
   if key == "r" then
     scene.resetStuff()
   end
+	
+	if key == "+" or key == "=" then
+		replay_playback_interval = replay_playback_interval * 0.8;
+	end
+	
+	if key == "-" or key == "_" then
+		replay_playback_interval = replay_playback_interval / 0.8;
+	end
+	
+	if key == "f12" then
+		scene.resetStuff()
+		local dir = "levels/"
+		if world ~= "" then dir = world_parent .. "/" .. world .. "/" end
+		if love.filesystem.getInfo(dir .. level_name .. ".replay") then
+			replay_playback_string = love.filesystem.read(dir .. level_name .. ".replay")
+			replay_playback = true
+			print("Started replay from: "..dir .. level_name .. ".replay");
+		elseif love.filesystem.getInfo("levels/" .. level_name .. ".replay") then
+			replay_playback_string = love.filesystem.read("levels/" .. level_name .. ".replay")
+			replay_playback = true
+			print("Started replay from: ".."levels/" .. level_name .. ".replay");
+		else
+			print("Failed to find replay: "..dir .. level_name .. ".replay");
+		end
+	end
 
-  if key == "e" and not win then
-    if hasProperty(nil,"za warudo") then
-      --[[
-      level_shader = shader_zawarudo
-      shader_time = 0
-      doin_the_world = true
-      ]]
-      newUndo()
-      timeless = not timeless
-      if not timeless then
-        parseRules()
-        doMovement(0,0,"e")
-      end
-      addUndo({"za warudo"})
-    else
-      timeless = false
-    end
+  if key == "e" and not win and not replay_playback then
+    doOneMove(0, 0, "e")
   end
 
   if key == "tab" then
@@ -1009,6 +1071,8 @@ function scene.draw(dt)
 end
 
 function scene.checkInput()
+	if (replay_playback) then return end
+	
   local start_time = love.timer.getTime();
   do_move_sound = false
 
@@ -1044,12 +1108,11 @@ function scene.checkInput()
           print("input latency: "..tostring(round((start_time-last_input_time)*1000)).."ms")
           last_input_time = nil
         end
-        local result = undo()
-				replay_string = replay_string..string(0)..","..string(0)..","..string("undo")..";"
+        local result = doOneMove(0, 0, "undo")
         if result then playSound("undo") else playSound("fail") end
         do_move_sound = false;
-        local end_time = love.timer.getTime();
         unsetNewUnits()
+				local end_time = love.timer.getTime();
         print("undo took: "..tostring(round((end_time-start_time)*1000)).."ms")
       else
         local x, y = 0, 0
@@ -1083,15 +1146,8 @@ function scene.checkInput()
           print("input latency: "..tostring(round((start_time-last_input_time)*1000)).."ms")
           last_input_time = nil
         end
-        newUndo()
-        last_move = {x, y}
-        just_moved = true
-        doMovement(x, y, key)
-        if #undo_buffer > 0 and #undo_buffer[1] == 0 then
-          table.remove(undo_buffer, 1)
-        end
+        doOneMove(x, y, key);
         local end_time = love.timer.getTime();
-        unsetNewUnits()
         print("gameplay logic took: "..tostring(round((end_time-start_time)*1000)).."ms")
       end
     end
@@ -1126,6 +1182,41 @@ function scene.checkInput()
       stack_box.units = getUnitsOnTile(stack_box.x, stack_box.y)
     end
   end
+end
+
+function doOneMove(x, y, key)
+	if (key == "e") then
+		if hasProperty(nil,"za warudo") then
+      --[[
+      level_shader = shader_zawarudo
+      shader_time = 0
+      doin_the_world = true
+      ]]
+      newUndo()
+      timeless = not timeless
+      if not timeless then
+        parseRules()
+        doMovement(0,0,"e")
+      end
+      addUndo({"za warudo"})
+    else
+      timeless = false
+    end
+	elseif (key == "undo") then
+		local result = undo()
+		replay_string = replay_string..string(0)..","..string(0)..","..string("undo")..";"
+		return result
+	else
+		newUndo()
+		last_move = {x, y}
+		just_moved = true
+		doMovement(x, y, key)
+		if #undo_buffer > 0 and #undo_buffer[1] == 0 then
+			table.remove(undo_buffer, 1)
+		end
+		unsetNewUnits()
+		return rtue
+	end
 end
 
 function scene.doPassiveParticles(timer,word,effect,delay,chance,count,color)
