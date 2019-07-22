@@ -110,9 +110,13 @@ selector_grid_contents = {
     "letter_t","letter_u","letter_v","letter_w","letter_x","letter_y","letter_.","letter_colon","letter_parenthesis","letter_'",0,0,0,0,0,0,0,0,
     "letter_go","letter_come","letter_pls","letter_away","letter_my","letter_no","letter_way",0,0,0,0,0,0,0,0,0,0
   },
-  -- page 3
+  -- page 3: ui / instructions
   {
-    
+    "ui_1","ui_2","ui_3","ui_4","ui_6","ui_7","ui_8","ui_9","ui_w","ui_a","ui_s","ui_d","ui_i","ui_j","ui_k","ui_l","ui_e","ui_arrow",
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,"ui_walk",0,0,"ui_activat",0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    "text_press","text_f1","text_play","text_f2","text_edit",0,0,0,0,0,0,0,0,0,0,0,0,0,
   }
 }
 tile_grid_width = 18
@@ -2791,7 +2795,8 @@ tiles_list = {
     type = "text",
     texttype = "ditto",
     color = {0,3},
-    layer = 20
+    layer = 20,
+    desc = "DITTO: Acts like the text above it."
   },
   -- 279
   {
@@ -2802,6 +2807,167 @@ tiles_list = {
     color = {4, 1},
     layer = 20,
     desc = "META: BE META causes that object to be turned into its corresponding metatext. BEN'T META does the opposite and goes down one meta layer (disappearing if that is impossible).",
+  },
+  -- 280
+  {
+    name = "ui_1",
+    sprite = "ui_1",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 281
+  {
+    name = "ui_2",
+    sprite = "ui_2",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 282
+  {
+    name = "ui_3",
+    sprite = "ui_3",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 283
+  {
+    name = "ui_4",
+    sprite = "ui_4",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 284
+  {
+    name = "ui_6",
+    sprite = "ui_6",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 285
+  {
+    name = "ui_7",
+    sprite = "ui_7",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 286
+  {
+    name = "ui_8",
+    sprite = "ui_8",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 287
+  {
+    name = "ui_9",
+    sprite = "ui_9",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 288
+  {
+    name = "ui_w",
+    sprite = "ui_w",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 289
+  {
+    name = "ui_a",
+    sprite = "ui_a",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 290
+  {
+    name = "ui_s",
+    sprite = "ui_s",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 291
+  {
+    name = "ui_d",
+    sprite = "ui_d",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 292
+  {
+    name = "ui_arrow",
+    sprite = "ui_right",
+    type = "object",
+    rotate = true,
+    color = {0,3},
+    layer = 20,
+  },
+  -- 293
+  {
+    name = "ui_i",
+    sprite = "ui_i",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 294
+  {
+    name = "ui_j",
+    sprite = "ui_j",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 295
+  {
+    name = "ui_k",
+    sprite = "ui_k",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 296
+  {
+    name = "ui_l",
+    sprite = "ui_l",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 297
+  {
+    name = "ui_e",
+    sprite = "ui_e",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 298
+  {
+    name = "ui_walk",
+    sprite = "ui_walk",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 299
+  {
+    name = "ui_activat",
+    sprite = "ui_activat",
+    type = "object",
+    color = {0,3},
+    layer = 20,
   },
 }
 
