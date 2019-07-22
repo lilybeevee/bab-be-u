@@ -412,7 +412,7 @@ function updateUnits(undoing, big_update)
     for _,unit in ipairs(isshut) do
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
       for _,on in ipairs(stuff) do
-        if hasProperty(unit, "for dor") and sameFloat(unit, on) then
+        if hasProperty(on, "for dor") and sameFloat(unit, on) then
           if timecheck(unit) and timecheck(on) then
             table.insert(to_destroy, unit)
             table.insert(to_destroy, on)
