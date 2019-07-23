@@ -198,6 +198,101 @@ function doMovement(movex, movey, key)
           end
         end
       end
+  
+      local isactualstalk = matchesRule("?", "stalk", "?");
+      for _,ruleparent in ipairs(isactualstalk) do
+        local stalkers = findUnitsByName(ruleparent[1][1])
+        local stalker_conds = ruleparent[1][4][1]
+        local stalkee_conds = ruleparent[1][4][2]
+        if #findUnitsByName(ruleparent[1][3]) > 0 then
+          for _,stalker in ipairs(stalkers) do
+            if testConds(stalker, stalker_conds) then
+              local found_target = nil
+              for _,stalkee in ipairs(getUnitsOnTile(stalker.x, stalker.y, ruleparent[1][3])) do -- is it standing on the target
+                if testConds(stalkee, stalkee_conds) and stalker.id ~= stalkee.id then
+                  found_target = 0
+                  break
+                end
+              end
+              if not found_target then
+                local visited = {} -- 2d array the size of the map
+                for i = 1,mapwidth do
+                  visited[i] = {}
+                  for j = 1,mapheight do
+                    visited[i][j] = 0
+                  end
+                end
+                visited[stalker.x+1][stalker.y+1] = 1
+                local queue = {{x = stalker.x, y = stalker.y}}
+                (function () -- 'return' allows breaking from the outer loop, skipping inner loops
+                  local first_loop = true
+                  while (queue[1]) do
+                    local pos = table.remove(queue, 1)
+                    for i=1,8 do
+                      local dx = ({1,0,-1,0,1,-1,-1,1})[i]
+                      local dy = ({0,1,0,-1,1,1,-1,-1})[i]
+                      local dir = dirs8_by_offset[dx][dy]
+                      local dx_next, dy_next, dir_next, x, y, portal_unit = getNextTile(stalker, dx, dy, dir, nil, pos.x, pos.y)
+                      if inBounds(x,y) and visited[x+1][y+1] == 0 then
+                        print(x, y)
+                        visited[x+1][y+1] = first_loop and dir or visited[pos.x+1][pos.y+1] -- value depicts which way to travel to get there
+                        local success, movers, specials = canMove(stalker,dx,dy,dir,false,false,nil,nil,nil,pos.x,pos.y)
+                        if success then
+                          local stalkees = getUnitsOnTile(x, y, ruleparent[1][3])
+                          for _,stalkee in ipairs(stalkees) do
+                            if testConds(stalkee, stalkee_conds) and stalker.id ~= stalkee.id  then
+                              found_target = visited[x+1][y+1]
+                              return
+                            end
+                          end
+                          table.insert(queue, {x = x, y = y})
+                        end
+                      end
+                    end
+                    first_loop = false
+                  end
+                end)()
+              end
+              -- print(dump(visited))
+              if found_target then
+                if found_target ~= 0 then
+                  addUndo({"update", stalker.id, stalker.x, stalker.y, stalker.dir})
+                  stalker.olddir = stalker.dir
+                  updateDir(stalker, found_target)
+                  table.insert(stalker.moves, {reason = "stalk", dir = stalker.dir, times = 1})
+                  if #stalker.moves > 0 and not already_added[stalker] then
+                    table.insert(moving_units, stalker)
+                    already_added[stalker] = true
+                  end
+                end
+              -- else
+              --   TODO: Make this depend on it being stubborn.
+              --   local stalkees = copyTable(findUnitsByName(ruleparent[1][3]))
+              --   table.sort(stalkees, function(a, b) return euclideanDistance(a, stalker) < euclideanDistance(b, stalker) end )
+              --   for _,stalkee in ipairs(stalkees) do
+              --     if testConds(stalkee, stalkee_conds) then
+              --       local dist = euclideanDistance(stalker, stalkee)
+              --       local stalk_dir = dist > 0 and dirs8_by_offset[sign(stalkee.x - stalker.x)][sign(stalkee.y - stalker.y)] or stalkee.dir
+              --       if dist > 0 and hasProperty(stalker, "ortho") then
+              --         local use_hori = math.abs(stalkee.x - stalker.x) > math.abs(stalkee.y - stalker.y)
+              --         stalk_dir = dirs8_by_offset[use_hori and sign(stalkee.x - stalker.x) or 0][not use_hori and sign(stalkee.y - stalker.y) or 0]
+              --       end
+              --       addUndo({"update", stalker.id, stalker.x, stalker.y, stalker.dir})
+              --       stalker.olddir = stalker.dir
+              --       updateDir(stalker, stalk_dir)
+              --       table.insert(stalker.moves, {reason = "stalk", dir = stalker.dir, times = 1})
+              --       if #stalker.moves > 0 and not already_added[stalker] then
+              --         table.insert(moving_units, stalker)
+              --         already_added[stalker] = true
+              --       end
+              --       break
+              --     end
+              --   end
+              end
+            end
+          end
+        end
+      end
     elseif move_stage == 2 then
       --local yeeting_level = matchesRule(outerlvl, "yeet", "?")
       
@@ -955,13 +1050,13 @@ function doZip(unit)
 end
 
 --for use with wrap and portal. portals can change the facing dir, and facing dir can already be different from dx and dy, so we need to keep track of everything.
-function getNextTile(unit,dx,dy,dir,reverse_)
+function getNextTile(unit,dx,dy,dir,reverse_,start_x,start_y)
   local reverse = reverse_ or false
   local rs = reverse and -1 or 1
   dx = dx*rs
   dy = dy*rs
   local move_dir = dirs8_by_offset[sign(dx)][sign(dy)] or 0
-  local px, py = unit.x+dx, unit.y+dy
+  local px, py = (start_x or unit.x)+dx, (start_y or unit.y)+dy
   --we have to loop because a portal might put us oob, which wraps and puts us in another portal, which puts us oob... etc
   local did_update = true
   local loop_portal = 0
@@ -1113,11 +1208,11 @@ end
 --3 stacks: up to 90 degrees
 --4 stacks: up to 135 degrees
 --5 stacks: up to 180 degrees (e.g. all directions)
-function canMove(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_stack_)
+function canMove(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_stack_,start_x,start_y)
   if hasProperty(unit, "loop") then
     return false,{},{}
   end
-  local success, movers, specials = canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_stack_);
+  local success, movers, specials = canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_stack_,start_x,start_y);
   if success then
     return success, movers, specials;
   elseif dir > 0 and pushing_ then
@@ -1126,8 +1221,8 @@ function canMove(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_stack_)
       for i = 1,clamp(stubbn-1, 1, 4) do
         local stubborndir1 = ((dir+i-1)%8)+1
         local stubborndir2 = ((dir-i-1)%8)+1
-        local success1, movers1, specials1 = canMoveCore(unit,dirs8[stubborndir1][1],dirs8[stubborndir1][2],dir,pushing_,pulling_,solid_name,reason,push_stack_);
-        local success2, movers2, specials2 = canMoveCore(unit,dirs8[stubborndir2][1],dirs8[stubborndir2][2],dir,pushing_,pulling_,solid_name,reason,push_stack_);
+        local success1, movers1, specials1 = canMoveCore(unit,dirs8[stubborndir1][1],dirs8[stubborndir1][2],dir,pushing_,pulling_,solid_name,reason,push_stack_,start_x,start_y);
+        local success2, movers2, specials2 = canMoveCore(unit,dirs8[stubborndir2][1],dirs8[stubborndir2][2],dir,pushing_,pulling_,solid_name,reason,push_stack_,start_x,start_y);
         if (success1 and not success2) then
           return success1,movers1,specials1
         elseif (success2 and not success1) then
@@ -1145,7 +1240,7 @@ function canMove(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_stack_)
   return success, movers, specials;
 end
 
-function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_stack_)
+function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_stack_,start_x,start_y)
   --if we haet outerlvl, we can't move, period.
   if rules_with["haet"] ~= nil and hasRule(unit, "haet", outerlvl) then
     return false,{},{}
@@ -1198,7 +1293,7 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
   local move_dx, move_dy = dx, dy;
   local move_dir = dirs8_by_offset[sign(move_dx)][sign(move_dy)] or 0
   local old_dir = dir;
-  local dx, dy, dir, x, y, portal_unit = getNextTile(unit, dx, dy, dir);
+  local dx, dy, dir, x, y, portal_unit = getNextTile(unit, dx, dy, dir, nil, start_x, start_y);
   local geometry_spin = dirDiff(dir, old_dir);
   
   local movers = {}
