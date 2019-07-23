@@ -20,6 +20,10 @@ local function common(arg, group)
         {type = "object"},
         not_suffix
       },
+			{
+        {type = "group"},
+        not_suffix
+      },
       {
         {type = "any"},
         {name = "text", mod = 1},
@@ -32,6 +36,9 @@ local function common(arg, group)
     local options = {
       {
         {type = "property"}
+      },
+			{
+        {type = "group"}
       },
       {
         {name = "sans"}

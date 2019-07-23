@@ -626,6 +626,37 @@ end
 function postRules()
   local all_units = {}
 
+	-- Step 0:
+	-- Determine group membership, and rewrite rules involving groups into their membership versions
+	group_membership = {}
+	
+	for _,group in ipairs(group_names) do
+		group_membership[group] = {}
+		for _,rules in ipairs(full_rules) do
+			local rule = rules[1]
+
+			local subject, verb, object = rule[1], rule[2], rule[3]
+			if verb == "be" and object == group then
+				group_membership[group][subject] = true
+			end
+		end
+	end
+	
+	for _,group in ipairs(group_names) do
+		for _,rules in ipairs(full_rules) do
+			local rule = rules[1]
+
+			local subject, verb, object = rule[1], rule[2], rule[3]
+			if subject == group then
+				for member,_ in pairs(group_membership[group]) do
+					local newRules = copyTable(rules);
+					newRules[1][1] = member;
+					addRule(newRules);
+				end
+			end
+		end
+	end
+	
   -- Step 1:
   -- Block & remove rules if they're N'T'd out
   for n = max_not_rules, 1, -1 do
