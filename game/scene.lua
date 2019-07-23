@@ -200,6 +200,10 @@ function scene.resetStuff()
 
   first_turn = false
   window_dir = 0
+	--we need to call updateDir to initialize things like units that change their names when their direction changes, in particular this needs to be the same as starting the level anew (which does create every unit and therefore call updateDir on them), so do it now
+	for _,unit in ipairs(units) do
+		updateDir(unit, unit.dir, true);
+	end
 end
 
 function scene.mouseMoved(x, y, dx, dy, istouch)
