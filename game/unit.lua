@@ -32,6 +32,65 @@ function moveBlock()
     end
   end
   
+  local isactualstalk = matchesRule("?", "stalk", "?");
+  for _,ruleparent in ipairs(isactualstalk) do
+    local stalkers = findUnitsByName(ruleparent[1][1])
+    -- local stalkees = copyTable(findUnitsByName(ruleparent[1][3]))
+    local stalker_conds = ruleparent[1][4][1]
+    local stalkee_conds = ruleparent[1][4][2]
+    for _,stalker in ipairs(stalkers) do
+      if testConds(stalker, stalker_conds) then
+        local visited = {} -- 2d array the size of the map
+        for i = 1,mapwidth do
+          visited[i] = {}
+          for j = 1,mapheight do
+            visited[i][j] = 0
+          end
+        end
+        visited[stalker.x+1][stalker.y+1] = 1
+        local queue = {{x = stalker.x, y = stalker.y}}
+        local found_target = nil
+        (function () -- 'return' allows breaking from the outer loop, skipping inner loops
+          local first_loop = true
+          while (queue[1]) do
+            local pos = table.remove(queue, 1)
+            for i=1,8 do
+              local dx = ({1,0,-1,0,1,-1,-1,1})[i]
+              local dy = ({0,1,0,-1,1,1,-1,-1})[i]
+              local dir = dirs8_by_offset[dx][dy]
+              local dx_next, dy_next, dir_next, x, y, portal_unit = getNextTile(stalker, dx, dy, dir, nil, pos.x, pos.y)
+              if inBounds(x,y) and visited[x+1][y+1] == 0 then
+                print(x, y, first_loop and dir or visited[pos.x+1][pos.y+1])
+                visited[x+1][y+1] = first_loop and dir or visited[pos.x+1][pos.y+1] -- value depicts which way to travel to get there
+                local success, movers, specials = canMove(stalker,dx,dy,dir,false,false,stalker.name,nil,nil,pos.x,pos.y)
+                if success then
+                  local stalkees = getUnitsOnTile(x, y, ruleparent[1][3])
+                  for _,stalkee in ipairs(stalkees) do
+                    if testConds(stalkee, stalkee_conds) then
+                      found_target = visited[pos.x+1][pos.y+1]
+                      return
+                    end
+                  end
+                  table.insert(queue, {x = x, y = y})
+                end
+              end
+            end
+            first_loop = false
+          end
+        end)()
+        print(dump(visited))
+        if found_target then
+          addUndo({"update", stalker.id, stalker.x, stalker.y, stalker.dir})
+          stalker.olddir = stalker.dir
+          updateDir(stalker, found_target)
+          print("found bab")
+        else
+          print("not found")
+        end
+      end
+    end
+  end
+  
   local to_destroy = {}
   local time_destroy = {}
   

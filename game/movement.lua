@@ -955,13 +955,13 @@ function doZip(unit)
 end
 
 --for use with wrap and portal. portals can change the facing dir, and facing dir can already be different from dx and dy, so we need to keep track of everything.
-function getNextTile(unit,dx,dy,dir,reverse_)
+function getNextTile(unit,dx,dy,dir,reverse_,start_x,start_y)
   local reverse = reverse_ or false
   local rs = reverse and -1 or 1
   dx = dx*rs
   dy = dy*rs
   local move_dir = dirs8_by_offset[sign(dx)][sign(dy)] or 0
-  local px, py = unit.x+dx, unit.y+dy
+  local px, py = (start_x or unit.x)+dx, (start_y or unit.y)+dy
   --we have to loop because a portal might put us oob, which wraps and puts us in another portal, which puts us oob... etc
   local did_update = true
   local loop_portal = 0
@@ -1113,11 +1113,11 @@ end
 --3 stacks: up to 90 degrees
 --4 stacks: up to 135 degrees
 --5 stacks: up to 180 degrees (e.g. all directions)
-function canMove(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_stack_)
+function canMove(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_stack_,start_x,start_y)
   if hasProperty(unit, "loop") then
     return false,{},{}
   end
-  local success, movers, specials = canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_stack_);
+  local success, movers, specials = canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_stack_,start_x,start_y);
   if success then
     return success, movers, specials;
   elseif dir > 0 and pushing_ then
@@ -1126,8 +1126,8 @@ function canMove(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_stack_)
       for i = 1,clamp(stubbn-1, 1, 4) do
         local stubborndir1 = ((dir+i-1)%8)+1
         local stubborndir2 = ((dir-i-1)%8)+1
-        local success1, movers1, specials1 = canMoveCore(unit,dirs8[stubborndir1][1],dirs8[stubborndir1][2],dir,pushing_,pulling_,solid_name,reason,push_stack_);
-        local success2, movers2, specials2 = canMoveCore(unit,dirs8[stubborndir2][1],dirs8[stubborndir2][2],dir,pushing_,pulling_,solid_name,reason,push_stack_);
+        local success1, movers1, specials1 = canMoveCore(unit,dirs8[stubborndir1][1],dirs8[stubborndir1][2],dir,pushing_,pulling_,solid_name,reason,push_stack_,start_x,start_y);
+        local success2, movers2, specials2 = canMoveCore(unit,dirs8[stubborndir2][1],dirs8[stubborndir2][2],dir,pushing_,pulling_,solid_name,reason,push_stack_,start_x,start_y);
         if (success1 and not success2) then
           return success1,movers1,specials1
         elseif (success2 and not success1) then
@@ -1145,7 +1145,7 @@ function canMove(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_stack_)
   return success, movers, specials;
 end
 
-function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_stack_)
+function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_stack_,start_x,start_y)
   --if we haet outerlvl, we can't move, period.
   if rules_with["haet"] ~= nil and hasRule(unit, "haet", outerlvl) then
     return false,{},{}
@@ -1198,7 +1198,7 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
   local move_dx, move_dy = dx, dy;
   local move_dir = dirs8_by_offset[sign(move_dx)][sign(move_dy)] or 0
   local old_dir = dir;
-  local dx, dy, dir, x, y, portal_unit = getNextTile(unit, dx, dy, dir);
+  local dx, dy, dir, x, y, portal_unit = getNextTile(unit, dx, dy, dir, nil, star_x, start_y);
   local geometry_spin = dirDiff(dir, old_dir);
   
   local movers = {}
