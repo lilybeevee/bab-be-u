@@ -234,7 +234,6 @@ function doMovement(movex, movey, key)
                       local dir = dirs8_by_offset[dx][dy]
                       local dx_next, dy_next, dir_next, x, y, portal_unit = getNextTile(stalker, dx, dy, dir, nil, pos.x, pos.y)
                       if inBounds(x,y) and visited[x+1][y+1] == 0 then
-                        print(x, y)
                         visited[x+1][y+1] = first_loop and dir or visited[pos.x+1][pos.y+1] -- value depicts which way to travel to get there
                         local success, movers, specials = canMove(stalker,dx,dy,dir,false,false,nil,nil,nil,pos.x,pos.y)
                         if success then

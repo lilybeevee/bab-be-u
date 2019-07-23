@@ -1280,7 +1280,6 @@ function ruleHasCondition(rule, cond_name)
 	if rule[4][1][1] == nil then return false end
 	if rule[4][1][1][1] == nil then return false end
 	for _,cond in ipairs(rule[4][1]) do
-		print(cond[1])
 		if cond[1] == cond_name then return true end
 	end
 	return false

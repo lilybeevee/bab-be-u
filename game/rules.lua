@@ -13,13 +13,15 @@ function clearRules()
   --TODO: This will need to be automatic on levels with letters/combined words, since a selectr/bordr might be made in a surprising way, and it will need to have its implicit rules apply immediately.
   if (units_by_name["selctr"] or units_by_name["text_selctr"]) then
     addRule({{"selctr","be","u",{{},{}}},{},1})
-    addRule({{"selctr","liek","lvl",{{},{}}},{},1})
-    addRule({{"selctr","liek","lin",{{},{}}},{},1})
+    addRule({{"selctr","liek","pathz",{{},{}}},{},1})
+    addRule({{"lvl","be","pathz",{{},{}}},{},1})
+		addRule({{"lin","be","pathz",{{},{}}},{},1})
     addRule({{"selctr","be","flye",{{},{}}},{},1})
   end
   if (units_by_name["bordr"] or units_by_name["text_bordr"]) then
     addRule({{"bordr","be","no go",{{},{}}},{},1})
     addRule({{"bordr","be","tall",{{},{}}},{},1})
+		addRule({{"bordr","be","opaque",{{},{}}},{},1})
   end
   if units_by_name["this"] then
     addRule({{"this","be","go away pls",{{},{}}},{},1})
@@ -628,6 +630,7 @@ function postRules()
 
 	-- Step 0:
 	-- Determine group membership, and rewrite rules involving groups into their membership versions
+	-- TODO: this probably malfunctions horribly if you reference two different groups in the same rule, and it doesn't handle groups in conditions, and it doesn't handle conditional membership, and it doesn't handle ben't group, and whatever other special cases you can come up with
 	group_membership = {}
 	
 	for _,group in ipairs(group_names) do
@@ -647,7 +650,24 @@ function postRules()
 			local rule = rules[1]
 
 			local subject, verb, object = rule[1], rule[2], rule[3]
-			if subject == group then
+			if object == group and verb ~= "be" then
+				if subject == group then
+					for member1,_ in pairs(group_membership[group]) do
+						for member2,_ in pairs(group_membership[group]) do
+							local newRules = copyTable(rules);
+							newRules[1][1] = member1;
+							newRules[1][3] = member2;
+							addRule(newRules);
+						end
+					end
+				else
+					for member,_ in pairs(group_membership[group]) do
+						local newRules = copyTable(rules);
+						newRules[1][3] = member;
+						addRule(newRules);
+					end
+				end
+			elseif subject == group then
 				for member,_ in pairs(group_membership[group]) do
 					local newRules = copyTable(rules);
 					newRules[1][1] = member;
