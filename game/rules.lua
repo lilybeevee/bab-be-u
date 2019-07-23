@@ -313,6 +313,7 @@ function parseRules(undoing)
     {
     #matchesRule(nil, "be", "wurd"),
     #matchesRule(nil, "be", "poor toll"),
+    --TODO: If any wurd rules exist, then these need to check things that are wurd, too - though at that point we may as well just make it easy on ourselves and check everything.
     #matchesRule("text", "be", "go arnd"),
     #matchesRule("text", "be", "mirr arnd"),
     #matchesRule("text", "be", "ortho"),
@@ -321,7 +322,8 @@ function parseRules(undoing)
     #matchesRule(outerlvl, "be", "go arnd"),
     #matchesRule(outerlvl, "be", "mirr arnd"),
     --If and only if poor tolls exist, flyeness changing can affect rules parsing, because the text and portal have to match flyeness to go through.
-    rules_with["poor toll"] and #matchesRule(nil, "be", "flye") or 0
+    rules_with["poor toll"] and #matchesRule(nil, "be", "flye") or 0,
+    rules_with["poor toll"] and #matchesRule(nil, "be", "tall") or 0,
     };
     
     for i = 1,#reparse_rule_counts do
@@ -654,7 +656,7 @@ function postRules()
 				if subject == group then
 					for member1,_ in pairs(group_membership[group]) do
 						for member2,_ in pairs(group_membership[group]) do
-							local newRules = copyTable(rules);
+							local newRules = deepCopy(rules);
 							newRules[1][1] = member1;
 							newRules[1][3] = member2;
 							addRule(newRules);
@@ -662,14 +664,14 @@ function postRules()
 					end
 				else
 					for member,_ in pairs(group_membership[group]) do
-						local newRules = copyTable(rules);
+						local newRules = deepCopy(rules);
 						newRules[1][3] = member;
 						addRule(newRules);
 					end
 				end
 			elseif subject == group then
 				for member,_ in pairs(group_membership[group]) do
-					local newRules = copyTable(rules);
+					local newRules = deepCopy(rules);
 					newRules[1][1] = member;
 					addRule(newRules);
 				end
