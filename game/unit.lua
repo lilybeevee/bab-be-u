@@ -230,7 +230,7 @@ function moveBlock()
         --while it hasn't found a wall, check the next tile until is finds one, updating tx and ty each time
         local stopped = false
         while not stopped do
-          if canMove(there,dx,dy,dir,false,false,nil,nil,nil,tx,ty) then
+          if canMove(unit,dx,dy,dir,false,false,nil,nil,nil,tx,ty) then
             dx,dy,dir,tx,ty = getNextTile(there, dx, dy, dir, nil, tx, ty)
           else
             stopped = true
