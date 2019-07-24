@@ -710,8 +710,8 @@ function postRules()
             if n then
               fverb = fverb .. "n't"
             end
-            if frule[1] == rule[1] and fverb == rule[2] and frule[3] == rule[3] then
-              --print("matching rule", rule[1], rule[2], rule[3])
+            if frule[1] == rule[1] and fverb == rule[2] and frule[3] == rule[3] and frule[3] ~= "her" and frule[3] ~= "thr" then
+              print("matching rule", rule[1], rule[2], rule[3])
               if has_conds then
                 for i=1,2 do
                   for _,cond in ipairs(inverse_conds[i]) do

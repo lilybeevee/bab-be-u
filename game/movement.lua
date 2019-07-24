@@ -1282,11 +1282,11 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
       dx = -dx
       dy = -dy
     end
-	if hasProperty(unit, "hopovr") then
-	  local hops = countProperty(unit, "hopovr")
-	  dx = dx * (hops + 1)
-	  dy = dy * (hops + 1)
-	end
+    if hasProperty(unit, "hopovr") then
+      local hops = countProperty(unit, "hopovr")
+      dx = dx * (hops + 1)
+      dy = dy * (hops + 1)
+    end
   end
   
   local move_dx, move_dy = dx, dy;
@@ -1347,6 +1347,46 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
       end
       if not success then
         return false,{},{}
+      end
+    end
+  end
+  
+  local isnthere = matchesRule(unit,"ben't","her")
+  if (#isnthere > 0) then
+    for _,ruleparent in ipairs(isnthere) do
+      local fullrule = ruleparent[2]
+      local here = fullrule[#fullrule]
+      local hx = dirs8[here.dir][1]
+      local hy = dirs8[here.dir][2]
+      
+      if (x == here.x+hx) and (y == here.y+hy) then
+        return false,movers,specials
+      end
+    end
+  end
+  
+  local isntthere = matchesRule(unit,"ben't","thr")
+  if (#isntthere > 0) then
+    for _,ruleparent in ipairs(isntthere) do
+      local fullrule = ruleparent[2]
+      local there = fullrule[#fullrule]
+      
+      local tx = there.x
+      local ty = there.y
+      local tdir = there.dir
+      local tdx = dirs8[there.dir][1]
+      local tdy = dirs8[there.dir][2]
+      
+      local tstopped = false
+      while not tstopped do
+        if canMove(there,tdx,tdy,tdir,false,false,nil,nil,nil,tx,ty) then
+          tdx,tdy,tdir,tx,ty = getNextTile(there, tdx, tdy, tdir, nil, tx, ty)
+          if (x == tx) and (y == ty) then
+            return false,movers,specials
+          end
+        else
+          tstopped = true
+        end
       end
     end
   end

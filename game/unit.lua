@@ -138,54 +138,126 @@ function moveBlock()
     for _,moved in ipairs(hashered) do
       if unit == moved then
         already = true
-        break
       end
     end
-    --if it has, then break
-    if already then break end
     
-    local getheres = matchesRule(unit,"be","her")
-    local heres = {}
-    local found = false
-    
-    --gets each destination the unit needs to go to
-    for i,ruleparent in ipairs(getheres) do
-      local fullrule = ruleparent[2]
-      local hereword = fullrule[#fullrule]
-      table.insert(heres, hereword)
-    end
-    --sorts it like "visitfren"
-    for name,tbl in pairs(heres) do
-      table.sort(tbl, readingOrderSort)
-    end
-    
-    --actual teleport
-    for i,here in ipairs(heres) do
-      local dx = dirs8[here.dir][1]
-      local dy = dirs8[here.dir][2]
+    --if it has, then don't run code this iteration
+    if not already then
+      local getheres = matchesRule(unit,"be","her")
+      local heres = {}
+      local found = false
       
-      if found then
+      --gets each destination the unit needs to go to
+      for i,ruleparent in ipairs(getheres) do
+        local fullrule = ruleparent[2]
+        local hereword = fullrule[#fullrule]
+        table.insert(heres, hereword)
+      end
+      --sorts it like "visitfren"
+      for name,tbl in pairs(heres) do
+        table.sort(tbl, readingOrderSort)
+      end
+      
+      --actual teleport
+      for i,here in ipairs(heres) do
+        local dx = dirs8[here.dir][1]
+        local dy = dirs8[here.dir][2]
+        
+        --if this is true, it means that on the last iteration it found a unit at a destination, so on this iteration it teleports it to the following one
+        if found then
+          addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
+          moveUnit(unit,here.x+dx,here.y+dy)
+          table.insert(hashered,unit)
+          break
+        end
+        
+        --if i == #heres, that means it's at the last one in line, meaning we can just use the system that sends it to the first word
+        --otherwise, if it finds unit at one of the places, that means that it should send it to the next one on the next turn
+        if (unit.x == here.x+dx) and (unit.y == here.y+dy) and (i ~= #heres) then
+          found = true
+        end
+      end
+      
+      --sends it to the first "here" if it isn't at any existing destination or if it's at the last
+      if not found then
+        local firsthere = heres[1]
+        local dx = dirs8[firsthere.dir][1]
+        local dy = dirs8[firsthere.dir][2]
+        
         addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
-        moveUnit(unit,here.x+dx,here.y+dy)
+        moveUnit(unit,firsthere.x+dx,firsthere.y+dy)
         table.insert(hashered,unit)
-        break
       end
-      
-      --if i == #heres, that means it's at the last one in line, meaning we can just use the system that sends it to the first word
-      if (unit.x == here.x+dx) and (unit.y == here.y+dy) and (i ~= #heres) then
-        found = true
+    end
+  end
+  
+  local isthere = getUnitsWithEffect("thr")
+  local hasthered = {}
+  for _,unit in ipairs(isthere) do
+    --the early stuff is the same as "her"; finds "thr"s and sort them
+    local already = false
+    for _,moved in ipairs(hasthered) do
+      if unit == moved then
+        already = true
       end
     end
     
-    --sends it to the first "here" if it isn't at any existing destination or if it's at the last
-    if not found then
-      local firsthere = heres[1]
-      local dx = dirs8[firsthere.dir][1]
-      local dy = dirs8[firsthere.dir][2]
+    if not already then
+      local gettheres = matchesRule(unit,"be","thr")
+      local theres = {}
+      local found = false
       
-      addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
-      moveUnit(unit,firsthere.x+dx,firsthere.y+dy)
-      table.insert(hashered,unit)
+      for i,ruleparent in ipairs(gettheres) do
+        local fullrule = ruleparent[2]
+        local thereword = fullrule[#fullrule]
+        table.insert(theres, thereword)
+      end
+      for name,tbl in pairs(theres) do
+        table.sort(tbl, readingOrderSort)
+      end
+      
+      --starts differing from "her"
+      local ftx,fty = 0,0
+      for i,there in ipairs(theres) do
+        local dx = dirs8[there.dir][1]
+        local dy = dirs8[there.dir][2]
+        local dir = there.dir
+        
+        --get first position of there destination, which is the tile in front of the text, since that interpretation makes the most sense to me
+        local tx = there.x+dx
+        local ty = there.y+dy
+        
+        --while it hasn't found a wall, check the next tile until is finds one, updating tx and ty each time
+        local stopped = false
+        while not stopped do
+          if canMove(there,dx,dy,dir,false,false,nil,nil,nil,tx,ty) then
+            dx,dy,dir,tx,ty = getNextTile(there, dx, dy, dir, nil, tx, ty)
+          else
+            stopped = true
+          end
+        end
+        
+        --stores the first destination for use later so we don't have to run the while loop twice
+        if i == 1 then
+          ftx,fty = tx,ty
+        end
+        
+        if found then
+          addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
+          moveUnit(unit,tx,ty)
+          table.insert(hasthered,unit)
+        end
+        
+        if (unit.x == tx) and (unit.y == ty) and (i ~= #theres) then
+          found = true
+        end
+      end
+      
+      if not found then
+        addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
+        moveUnit(unit,ftx,fty)
+        table.insert(hasthered,unit)
+      end
     end
   end
   
