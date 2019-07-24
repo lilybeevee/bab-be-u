@@ -6,8 +6,8 @@ function love.conf(t)
     t.window.title = 'bab be u'
     t.window.resizable = true
     t.window.vsync = false
-    t.window.minwidth = 705
-    t.window.minheight = 510 
+    t.window.minwidth = 640
+    t.window.minheight = 360 
 
     --t.gammacorrect = true
     --t.window.msaa = 4

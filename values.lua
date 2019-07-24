@@ -11,7 +11,7 @@ UNDO_DELAY = MAX_UNDO_DELAY
 repeat_keys = {"wasd","udlr","numpad","ijkl","space","undo"}
 
 is_mobile = love.system.getOS() == "Android" or love.system.getOS() == "iOS"
---is_mobile = true
+is_mobile = true
 
 PACK_UNIT_V1 = "hhhb" -- TILE, X, Y, DIR
 PACK_UNIT_V2 = "hhhhbs" -- ID, TILE, X, Y, DIR, SPECIALS
