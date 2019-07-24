@@ -130,6 +130,65 @@ function moveBlock()
     moveUnit(a, b.x, b.y)
   end
   
+  local ishere = getUnitsWithEffect("her")
+  local hashered = {}
+  for _,unit in ipairs(ishere) do
+    --checks to see if the unit has already been moved by "her"
+    local already = false
+    for _,moved in ipairs(hashered) do
+      if unit == moved then
+        already = true
+        break
+      end
+    end
+    --if it has, then break
+    if already then break end
+    
+    local getheres = matchesRule(unit,"be","her")
+    local heres = {}
+    local found = false
+    
+    --gets each destination the unit needs to go to
+    for i,ruleparent in ipairs(getheres) do
+      local fullrule = ruleparent[2]
+      local hereword = fullrule[#fullrule]
+      table.insert(heres, hereword)
+    end
+    --sorts it like "visitfren"
+    for name,tbl in pairs(heres) do
+      table.sort(tbl, readingOrderSort)
+    end
+    
+    --actual teleport
+    for i,here in ipairs(heres) do
+      local dx = dirs8[here.dir][1]
+      local dy = dirs8[here.dir][2]
+      
+      if found then
+        addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
+        moveUnit(unit,here.x+dx,here.y+dy)
+        table.insert(hashered,unit)
+        break
+      end
+      
+      --if i == #heres, that means it's at the last one in line, meaning we can just use the system that sends it to the first word
+      if (unit.x == here.x+dx) and (unit.y == here.y+dy) and (i ~= #heres) then
+        found = true
+      end
+    end
+    
+    --sends it to the first "here" if it isn't at any existing destination or if it's at the last
+    if not found then
+      local firsthere = heres[1]
+      local dx = dirs8[firsthere.dir][1]
+      local dy = dirs8[firsthere.dir][2]
+      
+      addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
+      moveUnit(unit,firsthere.x+dx,firsthere.y+dy)
+      table.insert(hashered,unit)
+    end
+  end
+  
   local isshift = getUnitsWithEffect("go");
   for _,unit in ipairs(isshift) do
     local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)

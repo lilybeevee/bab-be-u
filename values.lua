@@ -91,9 +91,9 @@ selector_grid_contents = {
     "bab", "text_bab", "text_u", "kee", "text_kee", "text_for dor", "text_direction", "text_wurd", "text_tranz", "text_gay", "text_icy", "text_xwx", "text_liek", "text_nxt", "text_...", "text_u too", "text_u tres", "lvl",
     "keek", "text_keek", "text_walk", "dor", "text_dor", "text_ned kee", "text_visit fren", "text_behin u", "text_qt", "text_moar", "text_goooo", "text_icyyyy", "text_haet", "text_mayb", "text_an", "text_babn't", "text_ben't", "lin",
     "flog", "text_flog", "text_:)", "colld", "text_colld", "text_fridgd", "text_hotte", "text_ouch", "text_slep", "text_protecc", "text_sidekik", "text_brite", "text_lit", "text_opaque", "text_za warudo", "text_rocn't", "text_waln't", "text_ditto",
-    "roc", "text_roc", "text_go away pls", "gras", "text_gras", "dayzy", "text_dayzy", "text_wfren", "text_arond", "text_frenles", "text_look at", "text_seen by", "text_go arnd", "text_mirr arnd", "text_meta", "text_frens", 0, 0,
-    "wal", "text_wal", "text_no go", "l..uv", "text_l..uv", "hurcane", "text_hurcane", "text_creat", "text_snacc", "text_spoop", "text_yeet", "text_zip", "text_shy", "text_corekt", 0, 0, 0, 0,
-    "watr", "text_watr", "text_no swim", "meem", "text_meem", "o", "text_o", "text_colrful", "text_bleu", "text_reed", "text_stelth", "text_folo wal", "text_turn cornr", "text_rong", "text_stalk", 0, 0, 0,
+    "roc", "text_roc", "text_go away pls", "gras", "text_gras", "dayzy", "text_dayzy", "text_wfren", "text_arond", "text_frenles", "text_look at", "text_seen by", "text_go arnd", "text_mirr arnd", "text_meta", "text_frens", "text_pathz", "text_groop",
+    "wal", "text_wal", "text_no go", "l..uv", "text_l..uv", "hurcane", "text_hurcane", "text_creat", "text_snacc", "text_spoop", "text_yeet", "text_zip", "text_shy", "text_corekt", 0, 0, 0, "text_the",
+    "watr", "text_watr", "text_no swim", "meem", "text_meem", "o", "text_o", "text_colrful", "text_bleu", "text_reed", "text_stelth", "text_folo wal", "text_turn cornr", "text_rong", "text_stalk", "text_her", "text_thr", 0,
     "skul", "text_skul", "text_:(", "til", "text_til", "kirb", "text_kirb", "gun", "text_gun", "wog", "text_wog", "text_copkat", "text_copdog", "text_munwalk", "text_sidestep", "text_diagstep", "text_hopovr", 0,
     "boux", "text_boux", "text_come pls", "os", "text_os", "fax", "text_fax", "han", "text_han", "tot", "text_tot", "lila", "text_lila", "hol", "text_hol", "text_poor toll", 0, 0,
     "bellt", "text_bellt", "text_go", "tre", "text_tre", "piler", "text_piler", "hatt", "text_hatt", "laav", "text_laav", "fenss", "text_fenss", "metl", "text_metl", 0, "text_grun", "text_yello",
@@ -2989,7 +2989,7 @@ tiles_list = {
     texttype = "group",
     color = {3, 3},
     layer = 20,
-    desc = "PATHZ: A group you can be a member of. 'x BE FRENS' adds you to the FRENS group. 'FRENS BE x' applies the property to all FRENS.",
+    desc = "PATHZ: A variant of FRENZ. SELCTR inherently lieks PATHZ.",
   },
 	-- 302
   {
@@ -2999,7 +2999,39 @@ tiles_list = {
     texttype = "group",
     color = {3, 3},
     layer = 20,
-    desc = "GROOP: A group you can be a member of. 'x BE FRENS' adds you to the FRENS group. 'FRENS BE x' applies the property to all FRENS.",
+    desc = "GROOP: A variant of FRENZ.",
+  },
+  -- 303
+  {
+    name = "text_her",
+    sprite = "text_her",
+    type = "text",
+    texttype = "property",
+    rotate = true,
+    color = {1,3},
+    layer = 20,
+    desc = "HER ->: Sends objects to where the text indicates.",
+  },
+  -- 304
+  {
+    name = "text_thr",
+    sprite = "text_thr",
+    type = "text",
+    texttype = "property",
+    rotate = true,
+    color = {1,3},
+    layer = 20,
+    desc = "THR ->: Sends objects as far away from it as possible in the indicated direction. Currently not functional.",
+  },
+  -- 305
+  {
+    name = "text_the",
+    sprite = "text_the",
+    type = "text",
+    rotate = true,
+    color = {0,3},
+    layer = 20,
+    desc = "THE: Refers to the object it's pointing at. Currently not functional.",
   },
 }
 
