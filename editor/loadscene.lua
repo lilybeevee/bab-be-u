@@ -141,6 +141,12 @@ function scene.draw()
     love.graphics.rectangle("fill", love.graphics.getWidth()-10-sprites["ui/arrow"]:getWidth(), love.graphics.getHeight()-10-sprites["ui/arrow"]:getHeight(), sprites["ui/arrow"]:getWidth(), sprites["ui/arrow"]:getHeight())
     love.graphics.setColor(0.1,0.1,0.1)
     love.graphics.draw(sprites["ui/arrow"], love.graphics.getWidth()-10, love.graphics.getHeight()-10, math.pi)
+  elseif scroll_height > love.graphics.getHeight() then
+    love.graphics.setColor(0.6,0.6,0.6,0.3)
+    love.graphics.rectangle("fill", love.graphics.getWidth()-5, 0, 5, love.graphics.getHeight())
+
+    love.graphics.setColor(0.6,0.6,0.6)
+    love.graphics.rectangle("fill", love.graphics.getWidth()-5, scrolloffset/scroll_height*(love.graphics.getHeight()-20), 5, 20)
   end
 
   gooi.draw()
