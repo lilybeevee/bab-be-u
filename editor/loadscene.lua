@@ -55,6 +55,11 @@ function scene.update(dt)
   debugDisplay("scrolloffset", scrolloffset)
 
   scroll_height = math.max(0, full_height - love.graphics.getHeight())
+
+  if mouseOverBox(love.graphics.getWidth()-5, 0, 5, love.graphics.getHeight()) and love.mouse.isDown(1) and not is_mobile then
+    scrolloffset = love.mouse.getY()/(love.graphics.getHeight()-20)*scroll_height
+  end
+
   if scrolloffset > scroll_height then
     scrolloffset = scroll_height
     scrollvel = 0
