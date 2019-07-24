@@ -148,10 +148,14 @@ function moveBlock()
       local found = false
       
       --gets each destination the unit needs to go to
-      for i,ruleparent in ipairs(getheres) do
+      for _,ruleparent in ipairs(getheres) do
         local fullrule = ruleparent[2]
-        local hereword = fullrule[#fullrule]
-        table.insert(heres, hereword)
+        for i,hererule in ipairs(fullrule) do
+          if hererule.fullname == "text_her" then
+            table.insert(heres,hererule)
+            break
+          end
+        end
       end
       --sorts it like "visitfren"
       for name,tbl in pairs(heres) do
@@ -209,8 +213,13 @@ function moveBlock()
       
       for i,ruleparent in ipairs(gettheres) do
         local fullrule = ruleparent[2]
-        local thereword = fullrule[#fullrule]
-        table.insert(theres, thereword)
+        for i,thererule in ipairs(fullrule) do
+          if thererule.fullname == "text_thr" then
+            table.insert(theres,thererule)
+            break
+          end
+        end
+      end
       end
       for name,tbl in pairs(theres) do
         table.sort(tbl, readingOrderSort)
