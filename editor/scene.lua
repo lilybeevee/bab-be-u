@@ -133,6 +133,11 @@ function scene.setupGooi()
       screenshot_image = love.graphics.newImage(s)
     end)
   end):setBGImage(sprites["ui/camera"],sprites["ui/camera_h"], sprites["ui/camera_a"]):bg({0, 0, 0, 0})
+  if is_mobile then
+    gooi.newButton({text = "", x = 40*5, y = 0, w = 40, h = 40}):onRelease(function()
+      selector_open = not selector_open
+    end):setBGImage(sprites["ui/selector"],sprites["ui/selector_h"], sprites["ui/selector_a"]):bg({0, 0, 0, 0})
+  end
 
   settings = {x = 0, y = 0, w = 208, h = 336}
 
