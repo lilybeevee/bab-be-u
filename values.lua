@@ -3021,7 +3021,7 @@ tiles_list = {
     rotate = true,
     color = {1,3},
     layer = 20,
-    desc = "THR ->: Sends objects as far away from it as possible in the indicated direction. Currently not functional.",
+    desc = "THR ->: Sends objects as far away from it as possible in the indicated direction.",
   },
   -- 305
   {
