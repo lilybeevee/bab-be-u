@@ -55,6 +55,7 @@ function scene.update(dt)
   debugDisplay("scrolloffset", scrolloffset)
 
   scroll_height = math.max(0, full_height - love.graphics.getHeight())
+  debugDisplay("scrollheight", scroll_height)
 
   if mouseOverBox(love.graphics.getWidth()-5, 0, 5, love.graphics.getHeight()) and love.mouse.isDown(1) and not is_mobile then
     scrolloffset = love.mouse.getY()/(love.graphics.getHeight()-20)*scroll_height
@@ -146,7 +147,7 @@ function scene.draw()
     love.graphics.rectangle("fill", love.graphics.getWidth()-10-sprites["ui/arrow"]:getWidth(), love.graphics.getHeight()-10-sprites["ui/arrow"]:getHeight(), sprites["ui/arrow"]:getWidth(), sprites["ui/arrow"]:getHeight())
     love.graphics.setColor(0.1,0.1,0.1)
     love.graphics.draw(sprites["ui/arrow"], love.graphics.getWidth()-10, love.graphics.getHeight()-10, math.pi)
-  elseif scroll_height > love.graphics.getHeight() then
+  elseif scroll_height > 0 then
     love.graphics.setColor(0.6,0.6,0.6,0.3)
     love.graphics.rectangle("fill", love.graphics.getWidth()-5, 0, 5, love.graphics.getHeight())
 
