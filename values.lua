@@ -1957,7 +1957,7 @@ tiles_list = {
     name = "lvl",
     sprite = "lvl",
     color = {0, 3},
-    layer = 2,
+    layer = 18,
     rotate = true,
     desc = "its a lavel"
   },
@@ -1982,7 +1982,7 @@ tiles_list = {
     name = "lin",
     sprite = "lin",
     color = {0, 3},
-    layer = 1,
+    layer = 17,
     desc = "used to connect lovils"
   },
   -- 195
