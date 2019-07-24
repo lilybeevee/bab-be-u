@@ -461,7 +461,7 @@ function scene.draw(dt)
 
   local function drawUnit(unit, drawx, drawy, rotation, loop)
     if unit.name == "no1" and not (draw_empty and validEmpty(unit)) then return end
-
+    
     local brightness = 1
     if ((unit.type == "text") or hasRule(unit,"be","wurd")) and not unit.active then
       brightness = 0.33
@@ -618,7 +618,7 @@ function scene.draw(dt)
     love.graphics.push()
     love.graphics.rotate(math.rad(rotation))
     love.graphics.translate(-fulldrawx, -fulldrawy)
-
+    
     local function drawSprite(overlay)
       local sprite = overlay or sprite
       love.graphics.draw(sprite, fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
@@ -632,8 +632,78 @@ function scene.draw(dt)
 				setColor(unit.color)
 			end
     end
+    
+    --performance todos: each line gets drawn twice (both ways), so there's probably a way to stop that. might not be necessary though, since there is virtually no lag so far
+    if unit.name == "lin" and scene ~= editor then
+      love.graphics.setLineWidth(3)
+      local orthos = {}
+      local line = {}
+      local oobline = {}
+      for ndir=1,4 do
+        local nx,ny = dirs[ndir][1],dirs[ndir][2]
+        local dx,dy,dir,px,py = getNextTile(unit,nx,ny,2*ndir-1)
+        if inBounds(px,py) then
+          local around = getUnitsOnTile(px,py)
+          for _,other in ipairs(around) do
+            if other.name == "lin" or other.name == "lvl" then
+              orthos[ndir] = true
+              table.insert(line,other)
+              break
+            else
+              orthos[ndir] = false
+            end
+          end
+        else
+          orthos[ndir] = true
+          table.insert(oobline,{px,py})
+        end
+      end
+      for ndir=2,8,2 do
+        local nx,ny = dirs8[ndir][1],dirs8[ndir][2]
+        local dx,dy,dir,px,py = getNextTile(unit,nx,ny,ndir)
+        local around = getUnitsOnTile(px,py)
+        for _,other in ipairs(around) do
+          if other.name == "lin" or other.name == "lvl" then
+            if ((ndir == 2) and not orthos[1] and not orthos[2])
+            or ((ndir == 4) and not orthos[2] and not orthos[3])
+            or ((ndir == 6) and not orthos[3] and not orthos[4])
+            or ((ndir == 8) and not orthos[4] and not orthos[1]) then
+              table.insert(line,other)
+            end
+          end
+        end
+      end
+      if (#line > 0) then
+        for _,point in ipairs(line) do
+          local dx = unit.x-point.x
+          local dy = unit.y-point.y
+          local odx = 32*dx
+          local ody = 32*dy
+          
+          love.graphics.line(fulldrawx,fulldrawy,fulldrawx-odx,fulldrawy-ody)
+        end
+      end
+      if (#oobline > 0) then
+        for _,point in ipairs(oobline) do
+          local dx = unit.x-point[1]
+          local dy = unit.y-point[2]
+          local odx = 16*dx
+          local ody = 16*dy
+          
+          --draws it twice to make it look the same as the other lines. should be reduced to one once we figure out that performance todo above
+          love.graphics.line(fulldrawx,fulldrawy,fulldrawx-odx,fulldrawy-ody)
+          love.graphics.line(fulldrawx,fulldrawy,fulldrawx-odx,fulldrawy-ody)
+        end
+      end
+      if (#line == 0) and (#oobline == 0) then
+        drawSprite()
+      end
+    end
+    
+    --reset back to values being used before
+    love.graphics.setLineWidth(2)
 
-    if not unit.xwx then -- xwx takes control of the drawing sprite, so it shouldn't render the normal object
+    if not unit.xwx and not (unit.name == "lin" and scene ~= editor) then -- xwx takes control of the drawing sprite, so it shouldn't render the normal object
       drawSprite()
     end
 
