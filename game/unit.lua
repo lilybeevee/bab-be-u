@@ -220,7 +220,6 @@ function moveBlock()
           end
         end
       end
-      end
       for name,tbl in pairs(theres) do
         table.sort(tbl, readingOrderSort)
       end
