@@ -94,7 +94,7 @@ selector_grid_contents = {
     "roc", "text_roc", "text_go away pls", "gras", "text_gras", "dayzy", "text_dayzy", "text_wfren", "text_arond", "text_frenles", "text_look at", "text_seen by", "text_go arnd", "text_mirr arnd", "text_meta", "text_frens", "text_pathz", "text_groop",
     "wal", "text_wal", "text_no go", "l..uv", "text_l..uv", "hurcane", "text_hurcane", "text_creat", "text_snacc", "text_spoop", "text_yeet", "text_zip", "text_shy", "text_corekt", 0, "text_the", 0, 0,
     "watr", "text_watr", "text_no swim", "meem", "text_meem", "o", "text_o", "text_colrful", "text_bleu", "text_reed", "text_stelth", "text_folo wal", "text_turn cornr", "text_rong", "text_stalk", "text_her", "text_thr", 0,
-    "skul", "text_skul", "text_:(", "til", "text_til", "kirb", "text_kirb", "gun", "text_gun", "wog", "text_wog", "text_copkat", "text_copdog", "text_munwalk", "text_sidestep", "text_diagstep", "text_hopovr", 0,
+    "skul", "text_skul", "text_:(", "til", "text_til", "kirb", "text_kirb", "gun", "text_gun", "wog", "text_wog", "text_copkat", "text_copdog", "text_munwalk", "text_sidestep", "text_diagstep", "text_hopovr", "text_knightstep",
     "boux", "text_boux", "text_come pls", "os", "text_os", "fax", "text_fax", "han", "text_han", "tot", "text_tot", "lila", "text_lila", "hol", "text_hol", "text_poor toll", 0, 0,
     "bellt", "text_bellt", "text_go", "tre", "text_tre", "piler", "text_piler", "hatt", "text_hatt", "laav", "text_laav", "fenss", "text_fenss", "metl", "text_metl", 0, "text_grun", "text_yello",
     "boll", "text_boll", "text_:o", "frut", "text_frut", "slippers", "text_slippers", "pata", "text_pata", "larry", "text_larry", "pepis", "text_pepis", 0, 0, 0, "text_purp", "text_orang",
@@ -3032,6 +3032,16 @@ tiles_list = {
     color = {0,3},
     layer = 20,
     desc = "THE: Refers to the object it's pointing at. Currently not functional.",
+  },
+  -- 306
+  {
+    name = "text_knightstep",
+    sprite = "text_knightstep",
+    type = "text",
+    texttype = "property",
+    color = {0, 2},
+    layer = 20,
+    desc = "KNIGHTSTEP: KNIGHTSTEP units move like the Knight chess piece.",
   },
 }
 

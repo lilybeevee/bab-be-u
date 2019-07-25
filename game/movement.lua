@@ -53,7 +53,7 @@ end
 
 function doMovement(movex, movey, key)
 	replay_string = replay_string..tostring(movex)..","..tostring(movey)..","..tostring(key)..";"
-  walkdirchangingrulesexist = rules_with["munwalk"] or rules_with["sidestep"] or rules_with["diagstep"] or rules_with["hopovr"];
+  walkdirchangingrulesexist = rules_with["munwalk"] or rules_with["sidestep"] or rules_with["diagstep"] or rules_with["hopovr"] or rules_with["knightstep"];
   local played_sound = {}
   local slippers = {}
   local flippers = {}
@@ -1287,8 +1287,15 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
       dx = dx * (hops + 1)
       dy = dy * (hops + 1)
     end
+	if hasProperty(unit, "knightstep") then
+	  local diagx = round(math.cos(math.pi/4)*old_dx-math.sin(math.pi/4)*old_dy)
+      local diagy = round(math.sin(math.pi/4)*old_dx+math.cos(math.pi/4)*old_dy)
+	  dx = dx + diagx
+	  dy = dy + diagy
+	end
   end
-  
+	
+	
   local move_dx, move_dy = dx, dy;
   local move_dir = dirs8_by_offset[sign(move_dx)][sign(move_dy)] or 0
   local old_dir = dir;
