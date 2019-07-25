@@ -1282,17 +1282,17 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
       dx = -dx
       dy = -dy
     end
+	if hasProperty(unit, "knightstep") then
+	  local diagx = round(math.cos(math.pi/4)*dx-math.sin(math.pi/4)*dy)
+      local diagy = round(math.sin(math.pi/4)*dx+math.cos(math.pi/4)*dy)
+	  dx = dx + diagx
+	  dy = dy + diagy
+	end
     if hasProperty(unit, "hopovr") then
       local hops = countProperty(unit, "hopovr")
       dx = dx * (hops + 1)
       dy = dy * (hops + 1)
     end
-	if hasProperty(unit, "knightstep") then
-	  local diagx = round(math.cos(math.pi/4)*old_dx-math.sin(math.pi/4)*old_dy)
-      local diagy = round(math.sin(math.pi/4)*old_dx+math.cos(math.pi/4)*old_dy)
-	  dx = dx + diagx
-	  dy = dy + diagy
-	end
   end
 	
 	
