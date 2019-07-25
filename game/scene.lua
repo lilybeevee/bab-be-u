@@ -1269,9 +1269,13 @@ function doOneMove(x, y, key)
       ]]
       newUndo()
       timeless = not timeless
+	  if timeless then
+	    playSound("bonus")
+	  end
       if not timeless then
         parseRules()
         doMovement(0,0,"e")
+		playSound("infloop")
       end
       addUndo({"za warudo"})
     else
