@@ -133,6 +133,11 @@ function scene.setupGooi()
       screenshot_image = love.graphics.newImage(s)
     end)
   end):setBGImage(sprites["ui/camera"],sprites["ui/camera_h"], sprites["ui/camera_a"]):bg({0, 0, 0, 0})
+  if is_mobile then
+    gooi.newButton({text = "", x = 40*5, y = 0, w = 40, h = 40}):onRelease(function()
+      selector_open = not selector_open
+    end):setBGImage(sprites["ui/selector"],sprites["ui/selector_h"], sprites["ui/selector_a"]):bg({0, 0, 0, 0})
+  end
 
   settings = {x = 0, y = 0, w = 208, h = 336}
 
@@ -235,7 +240,7 @@ function scene.keyPressed(key)
       ignore_mouse = true
     end
   end
-  if key == "w" and key_down["lctrl"] then
+  if key == "w" and (key_down["lctrl"] or key_down["rctrl"]) then
     load_mode = "edit"
     new_scene = loadscene
   end
@@ -273,13 +278,13 @@ function scene.keyPressed(key)
   end
 
 
-  if key == "s" and key_down["lctrl"] then
+  if key == "s" and (key_down["lctrl"] or key_down["rctrl"]) then
     scene.saveLevel()
-  elseif key == "l" and key_down["lctrl"] then
+  elseif key == "l" and (key_down["lctrl"] or key_down["rctrl"]) then
     scene.loadLevel()
-  elseif key == "o" and key_down["lctrl"] then
+  elseif key == "o" and (key_down["lctrl"] or key_down["rctrl"]) then
     scene.openSettings()
-  elseif key == "r" and key_down["lctrl"] then
+  elseif key == "r" and (key_down["lctrl"] or key_down["rctrl"]) then
     gooi.confirm({
       text = "Clear the level?",
       okText = "Yes",
@@ -425,13 +430,13 @@ function scene.update(dt)
           local new_unit = nil
           local existing = nil
           local ctrl_first_press = false
-          if key_down["lctrl"] and brush.mode == "none" then
+          if (key_down["lctrl"] or key_down["rctrl"]) and brush.mode == "none" then
             ctrl_first_press = true
           end
           if #hovered >= 1 then
             for _,unit in ipairs(hovered) do
               if unit.tile == brush.id then
-                if not key_down["lctrl"] and not selectorhold then
+                if not key_down["lctrl"] and not key_down["rctrl"] and not selectorhold then
                   existing = unit
                 end
               elseif brush.mode == "placing" and not key_down["lshift"] and not selectorhold then
@@ -456,7 +461,7 @@ function scene.update(dt)
                 existing.dir = brush.dir
                 painted = true
                 new_unit = existing
-              elseif not key_down["lctrl"] or ctrl_first_press then
+              elseif (not key_down["lctrl"] and not key_down["rctrl"]) or ctrl_first_press then
                 new_unit = createUnit(brush.id, hx, hy, brush.dir)
                 painted = true
               end

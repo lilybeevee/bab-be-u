@@ -270,6 +270,10 @@ function love.load()
     print(colr.green("✓ discord rpc initialized"))
   end
 
+  if is_mobile then
+    love.window.setMode(640, 360)
+  end
+
   print(colr.bright("\nboot complete!"))
 
   scene = menu
@@ -375,13 +379,13 @@ function love.wheelmoved(whx, why)
   end
 end
 
-function love.touchpressed(id, x, y)
+--[[function love.touchpressed(id, x, y)
   love.mousepressed(x,y,1)
 end
 
 function love.touchreleased(id, x, y, dx, dy, pressure)
   love.mousereleased(x,y,1)
-end
+end]]
 
 function love.mousemoved(x, y, dx, dy, istouch)
   if scene and scene.mouseMoved then

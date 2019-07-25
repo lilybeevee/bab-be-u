@@ -13,6 +13,8 @@ local scrollvel = 0
 
 local full_height = 0
 
+local scroll_height
+
 function scene.load()
   clear()
   resetMusic(current_music, 0.8)
@@ -35,12 +37,30 @@ end
 function scene.update(dt)
   scrolloffset = scrolloffset + scrollvel * dt
 
+  if is_mobile and love.mouse.isDown(1) then
+    x, y = love.mouse.getPosition()
+
+    if pointInside(x, y, love.graphics.getWidth()-10-sprites["ui/arrow"]:getWidth(), 10, sprites["ui/arrow"]:getWidth(), sprites["ui/arrow"]:getHeight()) then
+      scrollvel = scrollvel - 100
+    end
+
+    if pointInside(x, y, love.graphics.getWidth()-10-sprites["ui/arrow"]:getWidth(), love.graphics.getHeight()-10-sprites["ui/arrow"]:getHeight(), sprites["ui/arrow"]:getWidth(), sprites["ui/arrow"]:getHeight()) then
+      scrollvel = scrollvel + 100
+    end
+  end
+
   scrollvel = scrollvel - scrollvel * math.min(dt * 10, 1)
   if scrollvel < 0.1 and scrollvel > -0.1 then scrollvel = 0 end
   debugDisplay("scrollvel", scrollvel)
   debugDisplay("scrolloffset", scrolloffset)
 
-  local scroll_height = math.max(0, full_height - love.graphics.getHeight())
+  scroll_height = math.max(0, full_height - love.graphics.getHeight())
+  debugDisplay("scrollheight", scroll_height)
+
+  if mouseOverBox(love.graphics.getWidth()-5, 0, 5, love.graphics.getHeight()) and love.mouse.isDown(1) and not is_mobile then
+    scrolloffset = love.mouse.getY()/(love.graphics.getHeight()-20)*scroll_height
+  end
+
   if scrolloffset > scroll_height then
     scrolloffset = scroll_height
     scrollvel = 0
@@ -110,6 +130,31 @@ function scene.draw()
   end
 
   love.graphics.pop()
+  
+  if is_mobile then
+    love.graphics.setColor(0.6,0.6,0.6)
+    love.graphics.rectangle("fill", love.graphics.getWidth()-10-sprites["ui/arrow"]:getWidth(), 10, sprites["ui/arrow"]:getWidth(), love.graphics.getHeight()-20)
+
+    love.graphics.setColor(0.9,0.9,0.9)
+    love.graphics.rectangle("fill", love.graphics.getWidth()-10-sprites["ui/arrow"]:getWidth(), 10+sprites["ui/arrow"]:getHeight()+scrolloffset/scroll_height*(love.graphics.getHeight()-20-sprites["ui/arrow"]:getHeight()*2.5), sprites["ui/arrow"]:getWidth(), sprites["ui/arrow"]:getHeight()/2)
+
+    love.graphics.setColor(1,1,1)
+    love.graphics.rectangle("fill", love.graphics.getWidth()-10-sprites["ui/arrow"]:getWidth(), 10, sprites["ui/arrow"]:getWidth(), sprites["ui/arrow"]:getHeight())
+    love.graphics.setColor(0.1,0.1,0.1)
+    love.graphics.draw(sprites["ui/arrow"], love.graphics.getWidth()-10-sprites["ui/arrow"]:getWidth(), 10)
+
+    love.graphics.setColor(1,1,1)
+    love.graphics.rectangle("fill", love.graphics.getWidth()-10-sprites["ui/arrow"]:getWidth(), love.graphics.getHeight()-10-sprites["ui/arrow"]:getHeight(), sprites["ui/arrow"]:getWidth(), sprites["ui/arrow"]:getHeight())
+    love.graphics.setColor(0.1,0.1,0.1)
+    love.graphics.draw(sprites["ui/arrow"], love.graphics.getWidth()-10, love.graphics.getHeight()-10, math.pi)
+  elseif scroll_height > 0 then
+    love.graphics.setColor(0.6,0.6,0.6,0.3)
+    love.graphics.rectangle("fill", love.graphics.getWidth()-5, 0, 5, love.graphics.getHeight())
+
+    love.graphics.setColor(0.6,0.6,0.6)
+    love.graphics.rectangle("fill", love.graphics.getWidth()-5, scrolloffset/scroll_height*(love.graphics.getHeight()-20), 5, 20)
+  end
+
   gooi.draw()
 end
 
@@ -397,6 +442,18 @@ function scene.selectWorld(o, button)
         shakeScreen(0.3, 0.1)
         scene.buildUI()
       end
+    end
+  end
+end
+
+function scene.mousePressed(x, y, button)
+  if is_mobile then
+    if pointInside(x, y, love.graphics.getWidth()-10-sprites["ui/arrow"]:getWidth(), 10, sprites["ui/arrow"]:getWidth(), sprites["ui/arrow"]:getHeight()) then
+      scrollvel = scrollvel - 400
+    end
+
+    if pointInside(x, y, love.graphics.getWidth()-10-sprites["ui/arrow"]:getWidth(), love.graphics.getHeight()-10-sprites["ui/arrow"]:getHeight(), sprites["ui/arrow"]:getWidth(), sprites["ui/arrow"]:getHeight()) then
+      scrollvel = scrollvel + 400
     end
   end
 end
