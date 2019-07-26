@@ -1053,6 +1053,17 @@ function scene.draw(dt)
 
 	love.graphics.draw(undosprite, undosprite:getWidth(), screenheight-undosprite:getHeight()*2)
 	love.graphics.draw(resetsprite, screenwidth-resetsprite:getWidth()*2, resetsprite:getHeight())
+	
+	if rules_with["za warudo"] then
+	  local timestopsprite = sprites["ui/timestop"]
+	  local timeresumeprite = sprites["ui/time resume"]
+	  
+	  if timeless then
+	    love.graphics.draw(timeresumeprite, timeresumeprite:getWidth(), timeresumeprite:getHeight())
+	  elseif not timeless then
+	    love.graphics.draw(timestopsprite, timestopsprite:getWidth(), timestopsprite:getHeight())
+	  end
+	end
   end
 
   gooi.draw()
@@ -1363,7 +1374,7 @@ function scene.mouseReleased(x,y,button)
       key = "kp6"
 	elseif pointInside(x, y, screenwidth-squaresprite:getWidth(),   screenheight-squaresprite:getHeight(),   squaresprite:getWidth(), squaresprite:getHeight()) then
 	  key = "kp3"
-	 elseif pointInside(x, y, screenwidth-squaresprite:getWidth()*2, screenheight-squaresprite:getHeight(),   squaresprite:getWidth(), squaresprite:getHeight()) then
+	elseif pointInside(x, y, screenwidth-squaresprite:getWidth()*2, screenheight-squaresprite:getHeight(),   squaresprite:getWidth(), squaresprite:getHeight()) then
       key = "kp2"
     elseif pointInside(x, y, screenwidth-squaresprite:getWidth()*3, screenheight-squaresprite:getHeight(),   squaresprite:getWidth(), squaresprite:getHeight()) then
 	  key = "kp1"
@@ -1371,11 +1382,17 @@ function scene.mouseReleased(x,y,button)
       key = "kp4"
     elseif pointInside(x, y, screenwidth-squaresprite:getWidth()*3, screenheight-squaresprite:getHeight()*3, squaresprite:getWidth(), squaresprite:getHeight()) then
 	  key = "kp7"
-    elseif pointInside(x, y, screenwidth-squaresprite:getWidth()*2, screenheight-squaresprite:getHeight()*5, squaresprite:getWidth(), squaresprite:getHeight()) then
-      key = "z"
-    elseif pointInside(x, y, screenwidth-squaresprite:getWidth()*2, squaresprite:getHeight(),                squaresprite:getWidth(), squaresprite:getHeight()) then
+    elseif pointInside(x, y,             squaresprite:getWidth()*2, screenheight-squaresprite:getHeight()*2, squaresprite:getWidth(), squaresprite:getHeight()) then
+      doOneMove(0,0,"undo")
+    elseif pointInside(x, y, screenwidth-squaresprite:getWidth()*2,              squaresprite:getHeight(),   squaresprite:getWidth(), squaresprite:getHeight()) then
       key = "r"
     end
+	
+	if rules_with["za warudo"] then
+	  if pointInside(x, y, squaresprite:getWidth(), squaresprite:getHeight(), squaresprite:getWidth(), squaresprite:getHeight()) then
+        key = "e"
+	  end
+	end
 
     scene.keyReleased(key)
   end
@@ -1401,7 +1418,7 @@ function scene.mousePressed(x, y, button)
       key = "kp6"
 	elseif mouseOverBox(screenwidth-squaresprite:getWidth(),   screenheight-squaresprite:getHeight(),   squaresprite:getWidth(), squaresprite:getHeight()) then
 	  key = "kp3"
-	 elseif mouseOverBox(screenwidth-squaresprite:getWidth()*2, screenheight-squaresprite:getHeight(),   squaresprite:getWidth(), squaresprite:getHeight()) then
+	elseif mouseOverBox(screenwidth-squaresprite:getWidth()*2, screenheight-squaresprite:getHeight(),   squaresprite:getWidth(), squaresprite:getHeight()) then
       key = "kp2"
     elseif mouseOverBox(screenwidth-squaresprite:getWidth()*3, screenheight-squaresprite:getHeight(),   squaresprite:getWidth(), squaresprite:getHeight()) then
 	  key = "kp1"
@@ -1409,11 +1426,17 @@ function scene.mousePressed(x, y, button)
       key = "kp4"
     elseif mouseOverBox(screenwidth-squaresprite:getWidth()*3, screenheight-squaresprite:getHeight()*3, squaresprite:getWidth(), squaresprite:getHeight()) then
 	  key = "kp7"
-    elseif mouseOverBox(squaresprite:getWidth(),               screenheight-squaresprite:getHeight()*2, squaresprite:getWidth(), squaresprite:getHeight()) then
-      key = "z"
-    elseif mouseOverBox(screenwidth-squaresprite:getWidth()*2, squaresprite:getHeight(),                squaresprite:getWidth(), squaresprite:getHeight()) then
+    elseif mouseOverBox(             squaresprite:getWidth(),  screenheight-squaresprite:getHeight()*2, squaresprite:getWidth(), squaresprite:getHeight()) then
+      doOneMove(0,0,"undo")
+    elseif mouseOverBox(screenwidth-squaresprite:getWidth()*2,              squaresprite:getHeight(),   squaresprite:getWidth(), squaresprite:getHeight()) then
       key = "r"
     end
+	
+	if rules_with["za warudo"] then
+	  if mouseOverBox(squaresprite:getWidth(), squaresprite:getHeight(), squaresprite:getWidth(), squaresprite:getHeight()) then
+        key = "e"
+	  end
+	end
 
     scene.keyPressed(key)
   end
