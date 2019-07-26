@@ -1268,8 +1268,9 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
     local old_dx, old_dy = dx, dy
     local movecount = 4 * countProperty(unit, "munwalk") + 2 * countProperty(unit, "sidestep") + countProperty(unit, "diagstep")
     if movecount % 2 == 1 then
-      local diagx = round(math.cos(math.pi/4)*old_dx-math.sin(math.pi/4)*old_dy)
-      local diagy = round(math.sin(math.pi/4)*old_dx+math.cos(math.pi/4)*old_dy)
+	  local root2 = math.sqrt(0.5)
+      local diagx = round(root2*old_dx-root2*old_dy)
+      local diagy = round(root2*old_dx+root2*old_dy)
       dx = diagx
       dy = diagy
     end
@@ -1283,8 +1284,9 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
       dy = -dy
     end
 	if hasProperty(unit, "knightstep") then
-	  local diagx = round(math.cos(math.pi/4)*dx-math.sin(math.pi/4)*dy)
-      local diagy = round(math.sin(math.pi/4)*dx+math.cos(math.pi/4)*dy)
+	  local root2 = math.sqrt(0.5)
+	  local diagx = round(root2*dx-root2*dy)
+      local diagy = round(root2*dx+root2*dy)
 	  dx = dx + diagx
 	  dy = dy + diagy
 	end
