@@ -800,29 +800,7 @@ function updateUnits(undoing, big_update)
   end
   
   DoDiscordRichPresence();
-  updateGraphicalPropertyCache();
   
-  if units_by_name["os"] then
-    for i,unit in ipairs(units_by_name["os"]) do
-      local os = love.system.getOS()
-      if os == "Windows" then
-        unit.sprite = "os_windous"
-      elseif os == "OS X" or os == "iOS" then
-        unit.sprite = "os_mak"
-      elseif os == "Linux" then
-        unit.sprite = "os_linx"
-      elseif os == "Android" then
-        unit.sprite = "os_androd"
-      else
-        unit.sprite = "wat"
-      end
-      if unit.sprite ~= "wat" and graphical_property_cache["slep"][unit] ~= nil then
-        unit.sprite = unit.sprite .. "_slep"
-      end
-    end
-  end
-  
-  local unitcount = #units
   for i,unit in ipairs(units) do
     local deleted = false
     for _,del in ipairs(del_units) do
@@ -830,65 +808,12 @@ function updateUnits(undoing, big_update)
         deleted = true
       end
     end
-
+    
     if not deleted and not unit.removed_final then
-      local tile = tiles_list[unit.tile]
-      local tileid = unit.x + unit.y * mapwidth
-      unit.layer = tile.layer + (20 * (graphical_property_cache["flye"][unit] or 0))
-
-      if unit.fullname ~= "os" then
-        if tiles_list[unit.tile].sleepsprite and graphical_property_cache["slep"][unit] ~= nil then
-          unit.sprite = tiles_list[unit.tile].sleepsprite
-        else
-          unit.sprite = tiles_list[unit.tile].sprite
-        end
-      end
-
-      unit.overlay = {}
-      if (graphical_property_cache["tranz"][unit] ~= nil) then
-        table.insert(unit.overlay, "trans")
-      end
-      if (graphical_property_cache["gay"][unit] ~= nil) then
-        table.insert(unit.overlay, "gay")
-      end
-      
-      -- for optimisation in drawing
-	  local objects_to_check = {
-		"stelth", "colrful", "xwx", "rave",
-		"reed", "bleu", "grun", "yello", "purp", "orang", "cyeann", "whit", "blacc"
-	  }
-	  -- if tostring(unit.name) ~= "no1" then
-	    -- print("unit " .. tostring(unit.name) .. " properties @ updateUnits:")
-	  -- end
-	  for i = 1, #objects_to_check do
-	    local prop = objects_to_check[i]
-      unit[prop] = graphical_property_cache[prop][unit] ~= nil
-		
-		-- if tostring(unit.name) ~= "no1" then
-		  -- print("property " .. prop .. " = " .. tostring(unit[prop]))
-		-- end
-	  end
-
-      if not units_by_layer[unit.layer] then
-        units_by_layer[unit.layer] = {}
-      end
-      table.insert(units_by_layer[unit.layer], unit)
-      max_layer = math.max(max_layer, unit.layer)
-      
       if unit.removed then
         table.insert(del_units, unit)
       end
     end
-  end
-
-  for _,unit in ipairs(still_converting) do
-    if not units_by_layer[unit.layer] then
-      units_by_layer[unit.layer] = {}
-    end
-    if not table.has_value(units_by_layer[unit.layer], unit) then
-      table.insert(units_by_layer[unit.layer], unit)
-    end
-    max_layer = math.max(max_layer, unit.layer)
   end
 
   deleteUnits(del_units,false)
@@ -927,6 +852,79 @@ function updateUnits(undoing, big_update)
   
   if timeless_crash and not timeless then
     love = {}
+  end
+end
+
+function miscUpdates()
+  updateGraphicalPropertyCache();
+
+  if units_by_name["os"] then
+    for i,unit in ipairs(units_by_name["os"]) do
+      local os = love.system.getOS()
+      if os == "Windows" then
+        unit.sprite = "os_windous"
+      elseif os == "OS X" or os == "iOS" then
+        unit.sprite = "os_mak"
+      elseif os == "Linux" then
+        unit.sprite = "os_linx"
+      elseif os == "Android" then
+        unit.sprite = "os_androd"
+      else
+        unit.sprite = "wat"
+      end
+      if unit.sprite ~= "wat" and graphical_property_cache["slep"][unit] ~= nil then
+        unit.sprite = unit.sprite .. "_slep"
+      end
+    end
+  end
+  
+  for i,unit in ipairs(units) do
+    if not deleted and not unit.removed_final then
+      local tile = tiles_list[unit.tile]
+      unit.layer = tile.layer + (20 * (graphical_property_cache["flye"][unit] or 0))
+
+      if unit.fullname ~= "os" then
+        if tiles_list[unit.tile].sleepsprite and graphical_property_cache["slep"][unit] ~= nil then
+          unit.sprite = tiles_list[unit.tile].sleepsprite
+        else
+          unit.sprite = tiles_list[unit.tile].sprite
+        end
+      end
+
+      unit.overlay = {}
+      if (graphical_property_cache["tranz"][unit] ~= nil) then
+        table.insert(unit.overlay, "trans")
+      end
+      if (graphical_property_cache["gay"][unit] ~= nil) then
+        table.insert(unit.overlay, "gay")
+      end
+      
+      -- for optimisation in drawing
+      local objects_to_check = {
+      "stelth", "colrful", "xwx", "rave",
+      "reed", "bleu", "grun", "yello", "purp", "orang", "cyeann", "whit", "blacc"
+      }
+      for i = 1, #objects_to_check do
+        local prop = objects_to_check[i]
+        unit[prop] = graphical_property_cache[prop][unit] ~= nil
+      end
+
+      if not units_by_layer[unit.layer] then
+        units_by_layer[unit.layer] = {}
+      end
+      table.insert(units_by_layer[unit.layer], unit)
+      max_layer = math.max(max_layer, unit.layer)
+    end
+  end
+
+  for _,unit in ipairs(still_converting) do
+    if not units_by_layer[unit.layer] then
+      units_by_layer[unit.layer] = {}
+    end
+    if not table.has_value(units_by_layer[unit.layer], unit) then
+      table.insert(units_by_layer[unit.layer], unit)
+    end
+    max_layer = math.max(max_layer, unit.layer)
   end
 end
 

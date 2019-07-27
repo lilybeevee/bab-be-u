@@ -580,6 +580,7 @@ It is probably possible to do, but lily has decided that it's not important enou
 	parseRules()
   calculateLight()
   updatePortals()
+  miscUpdates()
   
   next_levels = getNextLevels()
 end

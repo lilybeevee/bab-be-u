@@ -196,6 +196,7 @@ function scene.resetStuff()
   calculateLight()
   updateUnits(true)
   updatePortals()
+  miscUpdates()
   next_levels, next_level_objs = getNextLevels()
 
   first_turn = false

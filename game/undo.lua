@@ -222,6 +222,7 @@ function undo(dont_update_rules)
     calculateLight()
     updateUnits(true)
     updatePortals()
+    miscUpdates()
 
     table.remove(undo_buffer, 1)
   else
