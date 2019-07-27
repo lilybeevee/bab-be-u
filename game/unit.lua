@@ -575,7 +575,7 @@ function updateUnits(undoing, big_update)
     local issnacc = matchesRule(nil, "snacc", "?");
     for _,ruleparent in ipairs(issnacc) do
       local unit = ruleparent[2]
-      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
+      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, true)
       for _,on in ipairs(stuff) do
         if unit ~= on and hasRule(unit, "snacc", on) and sameFloat(unit, on) then
           if timecheck(unit) and timecheck(on) then

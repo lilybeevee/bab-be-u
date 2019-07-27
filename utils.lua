@@ -931,7 +931,7 @@ function tileHasUnitName(name,x,y)
   end
 end
 
-function getUnitsOnTile(x,y,name,not_destroyed,exclude)
+function getUnitsOnTile(x,y,name,not_destroyed,exclude,checkmous)
   if not inBounds(x,y) then
     return {}
   else
@@ -947,6 +947,17 @@ function getUnitsOnTile(x,y,name,not_destroyed,exclude)
       end
     end
     --If we care about no1 and the tile is empty, find the no1 that's there.
+    if (name == "mous") or checkmous then
+      for _,cursor in ipairs(cursors) do
+        if cursor ~= exclude then
+          if not not_destroyed or (not_destroyed and not cursor.removed) then
+            if cursor.x == x and cursor.y == y then
+              table.insert(result, cursor)
+            end
+          end
+        end
+      end
+    end
     if (#units_by_tile[tileid] == 0 and (name == "no1" or name == nil) and empties_by_tile[tileid] ~= exclude) then
       table.insert(result, empties_by_tile[tileid]);
     end

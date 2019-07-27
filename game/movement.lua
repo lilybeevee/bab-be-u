@@ -1335,7 +1335,7 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
       if hasRule(unit,"liek",liek) and hasRule(unit,"haet",liek) then
         success = true
       end
-      for _,v in ipairs(getUnitsOnTile(x, y, nil, false)) do
+      for _,v in ipairs(getUnitsOnTile(x, y, nil, false, nil, true)) do
         if hasRule(unit, "liek", v) then
           success = true
           break
@@ -1405,7 +1405,7 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
   local swap_mover = hasProperty(unit, "behin u")
   
   --normal checks
-  for _,v in ipairs(getUnitsOnTile(x, y, nil, false)) do
+  for _,v in ipairs(getUnitsOnTile(x, y, nil, false, nil, true)) do
     --Patashu: treat moving things as intangible in general. also, ignore ourselves for zip purposes
     if (v ~= unit and not v.already_moving) then
       local stopped = false
