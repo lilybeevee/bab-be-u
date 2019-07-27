@@ -711,6 +711,8 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
       end
     elseif condtype == "rong" then
       result = unit.blocked
+    elseif condtype == "timles" then
+      result = timeless
     else
       print("unknown condtype: " .. condtype)
       result = false
@@ -1640,13 +1642,21 @@ function unsetNewUnits()
   new_units_cache = {}
 end
 
-function timecheck(unit)
-  if timeless and hasProperty(unit,"za warudo") then
-    return true
-  elseif not timeless then
-    return true
+function timecheck(unit,verb,prop)
+  if timeless then
+    if hasProperty(unit,"za warudo") then
+      return true
+    elseif verb ~= nil and prop ~= nil then
+      print("timles test")
+      local rulecheck = matchesRule(unit,verb,prop)
+      for _,ruleparent in ipairs(rulecheck) do
+        if ruleparent[1][4][1][1][1] == "timles" then
+          return true
+        end
+      end
+    end
   else
-    return false
+    return true
   end
 end
 

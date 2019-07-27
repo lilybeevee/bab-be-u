@@ -103,7 +103,7 @@ function moveBlock()
     local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
     for _,on in ipairs(stuff) do
       --we're going to deliberately let two same name teles tele if they're on each other, since with the deterministic behaviour it's predictable and interesting
-      if unit ~= on and sameFloat(unit, on) and timecheck(unit) --[[and unit.fullname ~= on.fullname]] then
+      if unit ~= on and sameFloat(unit, on) and timecheck(unit,"be","visitfren") --[[and unit.fullname ~= on.fullname]] then
         local destinations = teles_by_name[unit.fullname]
         local source_index = teles_by_name_index[unit.fullname][unit]
         
@@ -273,7 +273,7 @@ function moveBlock()
   for _,unit in ipairs(isshift) do
     local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
     for _,on in ipairs(stuff) do
-      if unit ~= on and sameFloat(unit, on) and timecheck(unit) then
+      if unit ~= on and sameFloat(unit, on) and timecheck(unit,"be","go") then
         addUndo({"update", on.id, on.x, on.y, on.dir})
         on.olddir = on.dir
         updateDir(on, unit.dir)
@@ -285,7 +285,7 @@ function moveBlock()
   for _,unit in ipairs(isshift) do
     local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
     for _,on in ipairs(stuff) do
-      if unit ~= on and sameFloat(unit, on) and timecheck(unit) then
+      if unit ~= on and sameFloat(unit, on) and timecheck(unit,"be","goooo") then
         addUndo({"update", on.id, on.x, on.y, on.dir})
         on.olddir = on.dir
         updateDir(on, unit.dir)
@@ -400,7 +400,7 @@ function updateUnits(undoing, big_update)
       give_me_moar = false;
       local ismoar = getUnitsWithEffectAndCount("moar");
       for unit,amt in pairs(ismoar) do
-        if timecheck(unit) then
+        if timecheck(unit,"be","moar") then
           amt = amt - 2*moar_repeats;
           if amt > 0 then
             if (amt % 2) == 1 then
@@ -464,7 +464,7 @@ function updateUnits(undoing, big_update)
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
       for _,on in ipairs(stuff) do
         if unit ~= on and sameFloat(unit, on) then
-          if timecheck(unit) and timecheck(on) then
+          if timecheck(unit,"be","no swim") and timecheck(on) then
             table.insert(to_destroy, unit)
             table.insert(to_destroy, on)
             playSound("sink")
@@ -488,7 +488,7 @@ function updateUnits(undoing, big_update)
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
       for _,on in ipairs(stuff) do
         if unit ~= on and sameFloat(unit, on) then
-          if timecheck(unit) and timecheck(on) then
+          if timecheck(unit,"be","ouch") and timecheck(on) then
             table.insert(to_destroy, unit)
             playSound("break")
             addParticles("destroy", unit.x, unit.y, unit.color)
@@ -509,7 +509,7 @@ function updateUnits(undoing, big_update)
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
       for _,on in ipairs(stuff) do
         if hasProperty(on, "fridgd") and sameFloat(unit, on) then
-          if timecheck(unit) and timecheck(on) then
+          if timecheck(unit,"be","hotte") and timecheck(on) then
             table.insert(to_destroy, on)
             playSound("hotte")
             addParticles("destroy", unit.x, unit.y, unit.color)
@@ -531,7 +531,7 @@ function updateUnits(undoing, big_update)
       for _,on in ipairs(stuff) do
         is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
         if is_u and sameFloat(unit, on) then
-          if timecheck(unit) and timecheck(on) then
+          if timecheck(unit,"be",":(") and timecheck(on) then
             table.insert(to_destroy, on)
             playSound("break")
             addParticles("destroy", unit.x, unit.y, unit.color)
@@ -552,7 +552,7 @@ function updateUnits(undoing, big_update)
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
       for _,on in ipairs(stuff) do
         if hasProperty(on, "for dor") and sameFloat(unit, on) then
-          if timecheck(unit) and timecheck(on) then
+          if timecheck(unit,"be","ned kee") and timecheck(on) then
             table.insert(to_destroy, unit)
             table.insert(to_destroy, on)
             playSound("break")
@@ -578,7 +578,7 @@ function updateUnits(undoing, big_update)
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, true)
       for _,on in ipairs(stuff) do
         if unit ~= on and hasRule(unit, "snacc", on) and sameFloat(unit, on) then
-          if timecheck(unit) and timecheck(on) then
+          if timecheck(unit,"snacc",on) and timecheck(on) then
             table.insert(to_destroy, on)
             playSound("snacc")
             addParticles("destroy", unit.x, unit.y, unit.color)
@@ -598,7 +598,7 @@ function updateUnits(undoing, big_update)
       for _,on in ipairs(stuff) do
         is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
         if is_u and sameFloat(unit, on) then
-          if timecheck(unit) and timecheck(on) then
+          if timecheck(unit,"be","try again") and timecheck(on) then
             will_undo = true
             break
           else
@@ -616,7 +616,7 @@ function updateUnits(undoing, big_update)
       for _,on in ipairs(stuff) do
         is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
         if is_u and sameFloat(unit, on) then
-          if timecheck(unit) and timecheck(on) then
+          if timecheck(unit,"be","xwx") and timecheck(on) then
             love = {}
           else
             timeless_crash = true
@@ -633,7 +633,7 @@ function updateUnits(undoing, big_update)
       for _,on in ipairs(stuff) do
         is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
         if is_u and sameFloat(unit, on) then
-          if timecheck(unit) and timecheck(on) then
+          if timecheck(unit,"be",":o") and timecheck(on) then
             table.insert(to_destroy, unit)
             playSound("bonus")
             addParticles("bonus", unit.x, unit.y, unit.color)
@@ -653,7 +653,7 @@ function updateUnits(undoing, big_update)
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
       for _,on in ipairs(stuff) do
         if unit ~= on and sameFloat(unit, on) then
-          if timecheck(unit) and timecheck(on) then
+          if timecheck(unit,"be","split") and timecheck(on) then
             local dir1 = dirAdd(unit.dir,0)
             local dx1 = dirs8[dir1][1]
             local dy1 = dirs8[dir1][2]
@@ -753,7 +753,7 @@ function updateUnits(undoing, big_update)
       for _,on in ipairs(stuff) do
         is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
         if is_u and sameFloat(unit, on) then
-          if timecheck(unit) and timecheck(on) then
+          if timecheck(unit,"be",":)") and timecheck(on) then
             doWin()
           else
             table.insert(timeless_win,on)
@@ -768,7 +768,7 @@ function updateUnits(undoing, big_update)
       local createe = match[1][1][3]
 
       local tile = tiles_by_name[createe]
-      if timecheck(creator) then
+      if timecheck(creator,"creat",createe) then
         if tile ~= nil then
           local others = getUnitsOnTile(creator.x, creator.y, createe, true, creator)
           if #others == 0 then
@@ -1443,7 +1443,7 @@ function convertUnits(pass)
   
   local meta = getUnitsWithRuleAndCount(nil, "be","meta")
   for unit,amt in pairs(meta) do
-    if not unit.new and unit.type ~= "outerlvl" and timecheck(unit) then
+    if not unit.new and unit.type ~= "outerlvl" and timecheck(unit,"be","meta") then
       table.insert(converted_units, unit)
       addParticles("bonus", unit.x, unit.y, unit.color)
       local tile = nil
@@ -1481,7 +1481,7 @@ function convertUnits(pass)
   
   local demeta = getUnitsWithRuleAndCount(nil, "ben't","meta")
   for unit,amt in pairs(demeta) do
-    if not unit.new and unit.type ~= "outerlvl" and timecheck(unit) then
+    if not unit.new and unit.type ~= "outerlvl" and timecheck(unit,"ben't","meta") then
       table.insert(converted_units, unit)
       addParticles("bonus", unit.x, unit.y, unit.color)
       --remove "text_" as many times as we're de-metaing

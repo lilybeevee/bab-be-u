@@ -92,7 +92,7 @@ selector_grid_contents = {
     "keek", "text_keek", "text_walk", "dor", "text_dor", "text_ned kee", "text_visit fren", "text_behin u", "text_qt", "text_moar", "text_goooo", "text_icyyyy", "text_haet", "text_mayb", "text_an", "text_babn't", "text_ben't", "lin",
     "flog", "text_flog", "text_:)", "colld", "text_colld", "text_fridgd", "text_hotte", "text_ouch", "text_slep", "text_protecc", "text_sidekik", "text_brite", "text_lit", "text_opaque", "text_za warudo", "text_rocn't", "text_waln't", "text_ditto",
     "roc", "text_roc", "text_go away pls", "gras", "text_gras", "dayzy", "text_dayzy", "text_wfren", "text_arond", "text_frenles", "text_shy", "text_go arnd", "text_mirr arnd", "text_meta", "text_frens", "text_pathz", "text_groop", 0,
-    "wal", "text_wal", "text_no go", "l..uv", "text_l..uv", "hurcane", "text_hurcane", "text_creat", "text_look at", "text_spoop", "text_yeet", "text_turn cornr", "text_corekt", 0, "text_the", "text_that", "text_that be", 0,
+    "wal", "text_wal", "text_no go", "l..uv", "text_l..uv", "hurcane", "text_hurcane", "text_creat", "text_look at", "text_spoop", "text_yeet", "text_turn cornr", "text_corekt", "text_timles", "text_the", "text_that", "text_that be", 0,
     "watr", "text_watr", "text_no swim", "meem", "text_meem", "o", "text_o", "text_snacc", "text_seen by" , "text_stalk", "text_zip", "text_folo wal", "text_rong", "text_her", "text_thr", 0, 0, 0,
     "skul", "text_skul", "text_:(", "til", "text_til", "kirb", "text_kirb", "gun", "text_gun", "wog", "text_wog", "text_copkat", "text_copdog", "text_munwalk", "text_sidestep", "text_diagstep", "text_hopovr", "text_knightstep",
     "boux", "text_boux", "text_come pls", "os", "text_os", "fax", "text_fax", "han", "text_han", "tot", "text_tot", "lila", "text_lila", "hol", "text_hol", "text_poor toll", "text_blacc", "text_reed",
@@ -3062,6 +3062,16 @@ tiles_list = {
     color = {0, 3},
     layer = 20,
     desc = "THAT BE (Infix Condition): x THAT BE y is true if x BE y."
+  },
+  -- 308
+  {
+    name = "text_timles",
+    sprite = "text_timles",
+    type = "text",
+    texttype = "cond_prefix",
+    color = {2,4},
+    layer = 20,
+    desc = "TIMLES: A prefix condition that is true if ZA WARUDO is active."
   },
 }
 
