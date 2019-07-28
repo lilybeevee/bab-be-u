@@ -1297,16 +1297,15 @@ function doOneMove(x, y, key)
       ]]
       newUndo()
       timeless = not timeless
-	  if timeless then
-		replay_string = replay_string..tostring(0)..","..tostring(0)..","..tostring("e")..";"
-	    playSound("timestop")
-		print("ZA WARUDO! Time has stopped")
-	  end
-      if not timeless then
+      if timeless then
+        replay_string = replay_string..tostring(0)..","..tostring(0)..","..tostring("e")..";"
+        playSound("timestop",0.5)
+        print("ZA WARUDO! Time has stopped")
+      else
         parseRules()
         doMovement(0,0,"e")
-		playSound("time resume")
-		print("And time resumes")
+        playSound("time resume",0.5)
+        print("And time resumes")
       end
       addUndo({"za warudo"})
     else

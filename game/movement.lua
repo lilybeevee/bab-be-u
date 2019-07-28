@@ -86,25 +86,43 @@ function doMovement(movex, movey, key)
       for unit,icyness in pairs(icy) do
         local others = (unit == outerlvl and units or getUnitsOnTile(unit.x, unit.y));
         for __,other in ipairs(others) do
-          if other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) and timecheck(unit,"be","icy") then
-            table.insert(other.moves, {reason = "icy", dir = other.dir, times = icyness})
-            if #other.moves > 0 and not already_added[other] and not hasRule(other,"got","slippers") then
-              table.insert(moving_units, other)
-              already_added[other] = true
+          if other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) and timecheck(unit,"be","icy") and undo_buffer[2] ~= nil then
+            for _,undo in ipairs(undo_buffer[2]) do
+              if undo[1] == "update" and undo[2] == other.id and ((undo[3] ~= other.x) or (undo[4] ~= other.y)) then
+                local dx = other.x-undo[3]
+                local dy = other.y-undo[4]
+                local slipdir = dirs8_by_offset[dx][dy]
+                table.insert(other.moves, {reason = "icy", dir = slipdir, times = icyness})
+                if #other.moves > 0 and not already_added[other] and not hasRule(other,"got","slippers") then
+                  table.insert(moving_units, other)
+                  already_added[other] = true
+                end
+                break
+              end
             end
           end
         end
       end
-      local icy = getUnitsWithEffectAndCount("icyyyy")
-      for unit,icyness in pairs(icy) do
-        local others = (unit == outerlvl and units or getUnitsOnTile(unit.x, unit.y));
-        for __,other in ipairs(others) do
-          if other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) then
-            table.insert(other.moves, {reason = "icy", dir = other.dir, times = icyness})
-            if #other.moves > 0 and not already_added[other] and not hasRule(other,"got","slippers") then
-              table.insert(moving_units, other)
-              already_added[other] = true
+      local icyyyy = getUnitsWithEffectAndCount("icyyyy")
+      for unit,icyness in pairs(icyyyy) do
+        if timeless and not timecheck(unit,"be","icyyyy") then
+          local others = (unit == outerlvl and units or getUnitsOnTile(unit.x, unit.y));
+          for __,other in ipairs(others) do
+            if other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) and undo_buffer[2] ~= nil then
+            for _,undo in ipairs(undo_buffer[2]) do
+              if undo[1] == "update" and undo[2] == other.id and ((undo[3] ~= other.x) or (undo[4] ~= other.y)) then
+                local dx = other.x-undo[3]
+                local dy = other.y-undo[4]
+                local slipdir = dirs8_by_offset[dx][dy]
+                table.insert(other.moves, {reason = "icy", dir = slipdir, times = icyness})
+                if #other.moves > 0 and not already_added[other] and not hasRule(other,"got","slippers") then
+                  table.insert(moving_units, other)
+                  already_added[other] = true
+                end
+                break
+              end
             end
+          end
           end
         end
       end
@@ -383,7 +401,7 @@ Simultaneous movement algorithm, basically a simple version of Baba's:
 2a) Try to move each of them once. For each success, move it to moving_units_next and set it already_moving with one less move point and an update queued. If there was at least one success, repeat 2 until there are no successes. (During this process, things that are currently moving are considered intangible in canMove.)
 2b) But wait, we're still not done! Flip all walkers that failed to flip, then continue until we once again have no successes. (Flipping still only happens once per turn.)
 2c) Finally, if we had at least one success, everything left is moved to moving_units_next with one less move point and we repeat from 2a). If we had no successes, the stage is totally resolved. doupdate() and unset all current_moving.
-3) when SLIDE/LAUNCH/BOUNCE exists, we'll need to figure out where to insert it... but if it's like baba, it goes after the move succeeds but before do_update(), and it adds either another update or another movement as appropriate.
+3) if SLIDE/LAUNCH/BOUNCE gets made, we'll need to figure out where to insert it... but if it's like baba, it goes after the move succeeds but before do_update(), and it adds either another update or another movement as appropriate.
 
 ALTERNATE MOVEMENT ALGORITHM that would preserve properties like 'x is move and stop pulls apart' and is mostly move order independent:
 1) Do it as before, except instead of moving a unit when you discover it can be moved, mark it and wait until the inner loop is over.
