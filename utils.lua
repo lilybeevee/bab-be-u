@@ -450,16 +450,9 @@ function countProperty(unit,prop)
 end
 
 --to prevent infinite loops where a set of rules/conditions is self referencing
---TODO: If we end up with infinite loops for stuff that isn't pardoxical (should form a closed loop of false -> false or true -> true), then we can try improving it by tracking what conditions we're already testing, and if we re-entrantly test a condition, assume it's (false I guess? real world testing will be required since I'm not sure)
-reentrance = 0
+withrecursion = {}
 
 function testConds(unit,conds) --cond should be a {condtype,{object types},{cond_units}}
-  if reentrance > 10 then
-    print("testConds infinite loop!")
-    destroyLevel("infloop");
-    return false
-  end
-  reentrance = reentrance + 1
   local endresult = true
   for _,cond in ipairs(conds) do
     local condtype = cond[1]
@@ -475,7 +468,21 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
 
     local x, y = unit.x, unit.y
 
-    if condtype == "wfren" then
+    if condtype:starts("that") then
+      result = false
+      if not withrecursion[cond] then
+        result = true
+        withrecursion[cond] = true
+        local verb = condtype:sub(6)
+        for _,param in ipairs(params) do
+          if not hasRule(unit,verb,param) then
+            result = false
+            break
+          end
+        end
+        withrecursion[cond] = false
+      end
+    elseif condtype == "wfren" then
       for _,param in ipairs(params) do
         local others = {}
         if unit == outerlvl then --basically turns into sansn't
@@ -704,6 +711,8 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
       end
     elseif condtype == "rong" then
       result = unit.blocked
+    elseif condtype == "timles" then
+      result = timeless
     else
       print("unknown condtype: " .. condtype)
       result = false
@@ -716,7 +725,6 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
       endresult = false
     end
   end
-  reentrance = reentrance - 1
   return endresult
 end
 
@@ -1634,13 +1642,22 @@ function unsetNewUnits()
   new_units_cache = {}
 end
 
-function timecheck(unit)
-  if timeless and hasProperty(unit,"za warudo") then
-    return true
-  elseif not timeless then
-    return true
+function timecheck(unit,verb,prop)
+  if timeless then
+    if hasProperty(unit,"za warudo") then
+      return true
+    elseif verb ~= nil and prop ~= nil then
+      local rulecheck = matchesRule(unit,verb,prop)
+      for _,ruleparent in ipairs(rulecheck) do
+        for i=1,#ruleparent[1][4][1] do
+          if ruleparent[1][4][1][i][1] == "timles" then
+            return true
+          end
+        end
+      end
+    end
   else
-    return false
+    return true
   end
 end
 

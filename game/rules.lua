@@ -463,6 +463,8 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
                 name = v.unit.fullname
               elseif mod.name == "nt" then
                 suffix = suffix .. "n't"
+              else
+                suffix = suffix .. " " .. mod.name
               end
             end
           end

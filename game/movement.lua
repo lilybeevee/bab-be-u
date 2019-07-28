@@ -86,7 +86,7 @@ function doMovement(movex, movey, key)
       for unit,icyness in pairs(icy) do
         local others = (unit == outerlvl and units or getUnitsOnTile(unit.x, unit.y));
         for __,other in ipairs(others) do
-          if other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) and timecheck(unit) then
+          if other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) and timecheck(unit,"be","icy") then
             table.insert(other.moves, {reason = "icy", dir = other.dir, times = icyness})
             if #other.moves > 0 and not already_added[other] and not hasRule(other,"got","slippers") then
               table.insert(moving_units, other)
@@ -111,7 +111,7 @@ function doMovement(movex, movey, key)
     elseif move_stage == 0 and (movex ~= 0 or movey ~= 0) then
       local u = getUnitsWithEffectAndCount("u")
       for unit,uness in pairs(u) do
-        if not hasProperty(unit, "slep") and slippers[unit.id] == nil and timecheck(unit) then
+        if not hasProperty(unit, "slep") and slippers[unit.id] == nil and timecheck(unit,"be","u") then
           if (key == "wasd") or ((key == "udlr") and not hasProperty(nil,"u too")) or ((key == "numpad" or key == "ijkl") and not hasProperty(nil,"u tres")) then
             local dir = dirs8_by_offset[movex][movey]
             --If you want baba style 'when you moves, even if it fails to move, it changes direction', uncomment this.
@@ -128,7 +128,7 @@ function doMovement(movex, movey, key)
       
       local utoo = getUnitsWithEffectAndCount("u too")
       for unit,uness in pairs(utoo) do
-        if not hasProperty(unit, "slep") and slippers[unit.id] == nil and timecheck(unit) then
+        if not hasProperty(unit, "slep") and slippers[unit.id] == nil and timecheck(unit,"be","u too") then
           if ((key == "wasd") and not hasProperty(nil,"u")) or (key == "udlr") or ((key == "numpad" or key == "ijkl") and not hasProperty(nil,"u tres")) then
             local dir = dirs8_by_offset[movex][movey]
             --If you want baba style 'when you moves, even if it fails to move, it changes direction', uncomment this.
@@ -145,7 +145,7 @@ function doMovement(movex, movey, key)
       
       local utres = getUnitsWithEffectAndCount("u tres")
       for unit,uness in pairs(utres) do
-        if not hasProperty(unit, "slep") and slippers[unit.id] == nil and timecheck(unit) then
+        if not hasProperty(unit, "slep") and slippers[unit.id] == nil and timecheck(unit,"be","u tres") then
           if ((key == "wasd") and not hasProperty(nil,"u")) or ((key == "udlr") and not hasProperty(nil,"u too")) or (key == "numpad") or (key == "ijkl") then
             local dir = dirs8_by_offset[movex][movey]
             --If you want baba style 'when you moves, even if it fails to move, it changes direction', uncomment this.
@@ -173,7 +173,7 @@ function doMovement(movex, movey, key)
         end
         for _,other in ipairs(others) do
           local is_spoopy = hasRule(unit, "spoop", other)
-          if (is_spoopy and not hasProperty(other, "slep")) and timecheck(unit) and timecheck(other) then
+          if (is_spoopy and not hasProperty(other, "slep")) and timecheck(unit,"spoop",other) and timecheck(other) then
             spoop_dir = dirs8_by_offset[sign(other.x - unit.x)][sign(other.y - unit.y)]
             if (spoop_dir % 2 == 1 or (not hasProperty(unit, "ortho") and not hasProperty(other, "ortho"))) then
               addUndo({"update", other.id, other.x, other.y, other.dir})
@@ -190,7 +190,7 @@ function doMovement(movex, movey, key)
       end
       local walk = getUnitsWithEffectAndCount("walk")
       for unit,walkness in pairs(walk) do
-        if not hasProperty(unit, "slep") and slippers[unit.id] == nil and timecheck(unit) then
+        if not hasProperty(unit, "slep") and slippers[unit.id] == nil and timecheck(unit,"be","walk") then
           table.insert(unit.moves, {reason = "walk", dir = unit.dir, times = walkness})
           if #unit.moves > 0 and not already_added[unit] then
             table.insert(moving_units, unit)
@@ -303,13 +303,13 @@ function doMovement(movex, movey, key)
           if other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) then
             local is_yeeted = hasRule(unit, "yeet", other)
             if (is_yeeted) then
-              if timecheck(unit) and timecheck(other) then
+              if timecheck(unit,"yeet",other) and timecheck(other) then
                 table.insert(other.moves, {reason = "yeet", dir = unit.dir, times = 1002})
                 if #other.moves > 0 and not already_added[other] then
                   table.insert(moving_units, other)
                   already_added[other] = true
                 end
-              elseif timecheck(unit) then
+              elseif timecheck(unit,"yeet",other) then
                 table.insert(timeless_yote, {unit = other, dir = unit.dir})
                 addUndo({"timeless_yeet_add",{yote = other}})
               end
@@ -347,7 +347,7 @@ function doMovement(movex, movey, key)
       for unit,goness in pairs(go) do
         local others = (unit == outerlvl and units or getUnitsOnTile(unit.x, unit.y));
         for __,other in ipairs(others) do 
-          if other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) and timecheck(unit) then
+          if other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) and timecheck(unit,"be","go") then
             table.insert(other.moves, {reason = "go", dir = unit.dir, times = goness})
             if #other.moves > 0 and not already_added[other] then
               table.insert(moving_units, other)
@@ -513,7 +513,7 @@ It is probably possible to do, but lily has decided that it's not important enou
             end
             if #unit.moves > 0 and not unit.removed and unit.moves[1].times > 0 then
               local data = unit.moves[1]
-              if data.reason == "walk" and flippers[unit.id] ~= true and not hasProperty(unit, "stubbn") and not hasProperty(unit,"loop") and timecheck(unit) then
+              if data.reason == "walk" and flippers[unit.id] ~= true and not hasProperty(unit, "stubbn") and not hasProperty(unit,"loop") and timecheck(unit,"be","walk") then
                 dir = rotate8(data.dir); data.dir = dir;
                 addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
                 table.insert(update_queue, {unit = unit, reason = "update", payload = {x = unit.x, y = unit.y, dir = data.dir}})
@@ -580,6 +580,7 @@ It is probably possible to do, but lily has decided that it's not important enou
 	parseRules()
   calculateLight()
   updatePortals()
+  miscUpdates()
   
   next_levels = getNextLevels()
 end
@@ -943,7 +944,7 @@ function fallBlock()
     
     if (fallcount > vallcount) then
       addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
-      if timecheck(unit) then
+      if timecheck(unit,"be","haetskye") then
         local loop_fall = 0
         local dx, dy, dir, px, py = 0, 1, 3, -1, -1
         local old_dir = 3;
@@ -980,7 +981,7 @@ function fallBlock()
     local vallcount = countProperty(unit,"haet flor")
     
     if (vallcount > fallcount) then
-      if timecheck(unit) then
+      if timecheck(unit,"be","haetflor") then
         addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
         local loop_fall = 0
         local dx, dy, dir, px, py = 0, -1, 3, -1, -1
@@ -1415,7 +1416,7 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
       local would_swap_with = swap_mover or hasProperty(v, "behin u") and pushing
       --pushing a key into a door automatically works
       if (fordor and hasProperty(v, "ned kee")) or (nedkee and hasProperty(v, "for dor")) then
-        if timecheck(unit) and timecheck(v) then
+        if timecheck(unit,"be","ned kee") and timecheck(v,"be","for dor") then
           table.insert(specials, {"open", {unit, v}})
           return true,movers,specials
         else
