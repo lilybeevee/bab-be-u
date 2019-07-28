@@ -1199,7 +1199,7 @@ tiles_list = {
     sprite = "text_fridgd",
     type = "text",
     texttype = "property",
-    color = {1, 3},
+    color = {1, 4},
     layer = 20,
     desc = "FRIDGD: At end of turn, HOTTE units destroys all units that are FRIGID on their tile.",
   },
@@ -1208,7 +1208,7 @@ tiles_list = {
     name = "text_colld",
     sprite = "text_colld",
     type = "text",
-    color = {1, 3},
+    color = {1, 4},
     layer = 20,
   },
   --- 112
@@ -1216,7 +1216,7 @@ tiles_list = {
     name = "colld",
     sprite = "colld",
     type = "object",
-    color = {1, 2},
+    color = {1, 4},
     layer = 1,
   },
   --- 113
