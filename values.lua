@@ -106,11 +106,11 @@ selector_grid_contents = {
   },
   -- page 2: letters
   {
-    "letter_a","letter_b","letter_c","letter_d","letter_e","letter_f","letter_g","letter_hori","letter_j","letter_k","letter_l","letter_m","letter_norz","text_o","letter_p","letter_q","letter_r","letter_s",
-    "letter_t","letter_u","letter_v","letter_w","letter_x","letter_y","letter_.","letter_colon","letter_parenthesis","letter_'",0,0,0,0,0,0,0,0,
+    "letter_a","letter_b","letter_c","letter_d","letter_e","letter_f","letter_g","letter_h","letter_i","letter_j","letter_k","letter_l","letter_m","letter_n","text_o","letter_p","letter_q","letter_r",
+    "letter_s","letter_t","letter_u","letter_v","letter_w","letter_x","letter_y","letter_z","letter_.","letter_colon","letter_parenthesis","letter_'",0,0,0,0,0,0,
     "letter_go","letter_come","letter_pls","letter_away","letter_my","letter_no","letter_way",0,0,0,0,0,0,0,0,0,0,0,
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-		"text_pathz","text_groop",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   },
   -- page 3: ui / instructions
   {
@@ -2546,11 +2546,10 @@ tiles_list = {
   },
   -- 251
   {
-    name = "letter_hori",
+    name = "letter_h",
     sprite = "letter_h",
     type = "text",
     texttype = "letter",
-    rotate = true,
     color = {0,3},
     layer = 20,
   },
@@ -2592,11 +2591,10 @@ tiles_list = {
   },
   -- 256
   {
-    name = "letter_norz",
+    name = "letter_n",
     sprite = "letter_n",
     type = "text",
     texttype = "letter",
-    rotate = true,
     color = {0,3},
     layer = 20,
   },
@@ -3074,6 +3072,25 @@ tiles_list = {
     color = {2,4},
     layer = 20,
     desc = "TIMLES: A prefix condition that is true if ZA WARUDO is active."
+  },
+  --vitellary: added down here because i did not want to have to change the numbers for everything beyond "h", plus i think i heard that it would mess things up if i added it up there
+  -- 309
+  {
+    name = "letter_i",
+    sprite = "letter_i",
+    type = "text",
+    texttype = "letter",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 310
+  {
+    name = "letter_z",
+    sprite = "letter_z",
+    type = "text",
+    texttype = "letter",
+    color = {0,3},
+    layer = 20,
   },
 }
 

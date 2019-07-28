@@ -1893,33 +1893,19 @@ function updateDir(unit, dir, force)
     end
   end
   
-  if unit.fullname == "letter_hori" then
-    if unit.dir == 1 or unit.dir == 5 then
-      unit.textname = "h"
-    elseif unit.dir == 3 or unit.dir == 7 then
-      local umlauts = getTextOnTile(unit.x,unit.y-1)
-      if umlauts ~= nil then
-        for _,umlaut in ipairs(umlauts) do
-          if umlaut.fullname == "letter_colon" and umlaut.dir == 3 then
-            unit.textname = "..i"
-            break
-          end
+  if unit.fullname == "letter_i" then
+    local umlauts = getTextOnTile(unit.x,unit.y-1)
+    if umlauts ~= nil then
+      for _,umlaut in ipairs(umlauts) do
+        if umlaut.fullname == "letter_colon" and umlaut.dir == 3 then
+          unit.textname = "..i"
+          break
+        else
+          unit.textname = "i"
         end
-      else
-        unit.textname = "i"
       end
     else
-      unit.textname = "  "
-    end
-  end
-  
-  if unit.fullname == "letter_norz" then
-    if unit.dir == 1 or unit.dir == 5 then
-      unit.textname = "n"
-    elseif unit.dir == 3 or unit.dir == 7 then
-      unit.textname = "z"
-    else
-      unit.textname = "  "
+      unit.textname = "i"
     end
   end
   
