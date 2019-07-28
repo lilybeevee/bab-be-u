@@ -388,6 +388,23 @@ function doMovement(movex, movey, key)
         end
       end
     end
+    local ismoov = matchesRule(nil, "moov", "?")
+      for _,ruleparent in ipairs(ismoov) do
+        local unit = ruleparent[2]
+        local others = getUnitsOnTile(unit.x,unit.y)
+        for _,other in ipairs(others) do
+          local is_moover = hasRule(unit, "moov", other)
+          if is_moover and timecheck(unit,"moov",other) and timecheck(other) then
+            if other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) then
+              table.insert(other.moves, {reason = "go", dir = unit.dir, times = 1})
+              if #other.moves > 0 and not already_added[other] then
+                table.insert(moving_units, other)
+                already_added[other] = true
+              end
+            end
+          end
+        end
+      end
 
     for _,unit in pairs(moving_units) do
       if not unit.stelth and not hasProperty(unit, "loop") and timecheck(unit) then
@@ -461,34 +478,6 @@ It is probably possible to do, but lily has decided that it's not important enou
               else
                 dir = dirs8_by_offset[dx][dy];
                 data.dir = dir
-              end
-            --dx/dy collation logic for copydog moves
-            elseif (data.reason == "copdog") and timecheck(unit) then
-              --new 'move ALL the way' logic:
-              --1) Split the move into two parts - all the diagonal movement, then all the remaining orthogonal movement.
-              --2) Put the second half in as a new move after this one.
-              local diag_amt = math.min(math.abs(data.dx), math.abs(data.dy));
-              local ortho_amt = math.max(math.abs(data.dx), math.abs(data.dy)) - diag_amt;
-              if (diag_amt == 0 and ortho_amt == 0 or slippers[unit.id] ~= nil or hasProperty(unit, "slep")) then
-                data.times = 0;
-              elseif (diag_amt > 0 and ortho_amt == 0) or (ortho_amt > 0 and diag_amt == 0) then
-                data.times = math.max(diag_amt, ortho_amt);
-                local dir = dirs8_by_offset[sign(data.dx)][sign(data.dy)];
-                data.dir = dir;
-                data.reason = "copkat_result";
-              else
-                local newdir = dirs8_by_offset[sign(math.abs(data.dx)-diag_amt)][sign(math.abs(data.dy)-diag_amt)]
-                table.insert(copykat.moves, 2, {reason = "copkat_result", dir = newdir, times = ortho_amt})
-                data.times = diag_amt;
-                local dir = dirs8_by_offset[sign(data.dx)][sign(data.dy)];
-                data.dir = dir;
-                data.reason = "copkat_result";
-              end
-              if (data.times == 0) then
-                while #unit.moves > 0 and unit.moves[1].times <= 0 do
-                  table.remove(unit.moves, 1)
-                end
-                break
               end
             end
             movedebug("considering:"..unit.fullname..","..dir)
@@ -677,7 +666,7 @@ function moveIt(mover, dx, dy, facing_dir, move_dir, geometry_spin, data, pullin
       end
       local found = false
       for i,move in ipairs(copykat.moves) do
-        if move.reason == "copkat" or move.reason == "copdog" then
+        if move.reason == "copkat" then
           if currently_moving then
             currently_moving = false
           else
@@ -849,7 +838,7 @@ end
 
 function findCopykats(unit)
   --fast track
-  if rules_with["copkat"] == nil and rules_with["copdog"] == nil then return {} end
+  if rules_with["copkat"] == nil then return {} end
   local result = {}
   local iscopykat = matchesRule("?", "copkat", unit);
   for _,ruleparent in ipairs(iscopykat) do
@@ -858,16 +847,6 @@ function findCopykats(unit)
     for _,copykat in ipairs(copykats) do
       if testConds(copykat, copykat_conds) then
         result[copykat] = "copkat";
-      end
-    end
-  end
-  local iscopykat = matchesRule("?", "copdog", unit);
-  for _,ruleparent in ipairs(iscopykat) do
-    local copykats = findUnitsByName(ruleparent[1][1])
-    local copykat_conds = ruleparent[1][4][1]
-    for _,copykat in ipairs(copykats) do
-      if testConds(copykat, copykat_conds) then
-        result[copykat] = "copdog";
       end
     end
   end
