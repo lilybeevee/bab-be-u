@@ -132,7 +132,7 @@ function undoOneAction(turn, i, v, ignore_no_undo)
     --meaningless by definition
     --timeless_crash = true
   elseif action == "timeless_yeet_add" then
-    unit = v[2].yote
+    unit = v[2]
     for i,yote in ipairs(timeless_yote) do
       if yote.unit == unit and (ignore_no_undo or not hasProperty(yote.unit, "no undo")) then
         table.remove(timeless_yote, i)
@@ -140,19 +140,7 @@ function undoOneAction(turn, i, v, ignore_no_undo)
       end
     end
   elseif action == "timeless_yeet_remove" then
-    unit = v[2].yote
-    dir = v[2].dir
-    local found = 0
-    for i,yote in ipairs(timeless_yote) do
-      if yote.unit == unit and (ignore_no_undo or not hasProperty(yote.unit, "no undo")) then
-        found = found + 1
-      end
-    end
-    if found > 0 then
-      for i=1,found do
-        table.insert(timeless_yote,{unit = unit, dir = dir})
-      end
-    end
+    table.insert(timeless_yote, {unit = v[2], dir = v[3]})
 	end
   return update_rules, unit;
 end

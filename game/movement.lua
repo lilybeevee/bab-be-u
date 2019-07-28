@@ -329,7 +329,7 @@ function doMovement(movex, movey, key)
                 end
               elseif timecheck(unit,"yeet",other) then
                 table.insert(timeless_yote, {unit = other, dir = unit.dir})
-                addUndo({"timeless_yeet_add",{yote = other}})
+                addUndo({"timeless_yeet_add",other})
               end
             end
           end
@@ -349,7 +349,7 @@ function doMovement(movex, movey, key)
             end
           else
             table.remove(timeless_yote,i)
-            addUndo({"timeless_yeet_remove",{yote = unit, dir = dir}})
+            addUndo({"timeless_yeet_remove",unit,dir})
           end
         else
           table.insert(unit.moves, {reason = "yeet", dir = dir, times = 1002})
@@ -358,7 +358,7 @@ function doMovement(movex, movey, key)
             already_added[unit] = true
           end
           table.remove(timeless_yote,i)
-          addUndo({"timeless_yeet_remove",{yote = unit, dir = dir}})
+          addUndo({"timeless_yeet_remove",unit,dir})
         end
       end
       local go = getUnitsWithEffectAndCount("go")
