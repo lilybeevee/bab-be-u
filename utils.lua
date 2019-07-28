@@ -1647,11 +1647,12 @@ function timecheck(unit,verb,prop)
     if hasProperty(unit,"za warudo") then
       return true
     elseif verb ~= nil and prop ~= nil then
-      print("timles test")
       local rulecheck = matchesRule(unit,verb,prop)
       for _,ruleparent in ipairs(rulecheck) do
-        if ruleparent[1][4][1][1][1] == "timles" then
-          return true
+        for i=1,#ruleparent[1][4][1] do
+          if ruleparent[1][4][1][i][1] == "timles" then
+            return true
+          end
         end
       end
     end
