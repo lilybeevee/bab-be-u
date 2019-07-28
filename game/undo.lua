@@ -4,14 +4,12 @@ function newUndo()
 end
 
 function addUndo(data)
-  print("addUndo:",data[1],data[2],data[7])
   if #undo_buffer > 0 then 
     table.insert(undo_buffer[1], 1, data)
   end
 end
 
 function undoOneAction(turn, i, v, ignore_no_undo)
-  print("undoOneAction:",v[1],v[2],v[7])
   local update_rules = false
   local action = v[1]
   local unit = nil
