@@ -74,6 +74,9 @@ function undoOneAction(turn, i, v, ignore_no_undo)
     level_destroyed = false
   elseif action == "za warudo" then
     timeless = not v[2]
+    if timeless then playSound("timestop", 0.5)
+    else playSound("time resume", 0.5)
+    end
   elseif action == "time_destroy" then
 		unitid = v[2]
     --iterate backwards because we probably got added to the end (but maybe not due to no undo shenanigans e.g.)
