@@ -1839,10 +1839,10 @@ function moveUnit(unit,x,y,portal)
 end
 
 function updateDir(unit, dir, force)
-  if not timecheck(unit) then
-    return false
-  end
   if not force and rules_with ~= nil then
+    if not timecheck(unit) then
+      return false
+    end
     if hasProperty(unit, "no turn") then
       return false
     end

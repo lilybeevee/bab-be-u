@@ -4,12 +4,14 @@ function newUndo()
 end
 
 function addUndo(data)
+  --print("addUndo:",data[1],data[2],data[3],data[4],data[5],data[6],data[7])
   if #undo_buffer > 0 then 
     table.insert(undo_buffer[1], 1, data)
   end
 end
 
 function undoOneAction(turn, i, v, ignore_no_undo)
+  --print("undoOneAction:",v[1],v[2],v[3],v[4],v[5],v[6],v[7])
   local update_rules = false
   local action = v[1]
   local unit = nil
@@ -19,7 +21,8 @@ function undoOneAction(turn, i, v, ignore_no_undo)
 
     if unit ~= nil and (ignore_no_undo or not hasProperty(unit, "no undo")) then
       moveUnit(unit,v[3],v[4])
-      updateDir(unit, v[5])
+      --force updates when we're rewinding time - it ABSOLUTELY had that direction in the past
+      updateDir(unit, v[5], true)
 
       if unit.type == "text" or rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname] then
         update_rules = true
