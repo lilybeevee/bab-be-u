@@ -114,6 +114,7 @@ function parseRules(undoing)
     #matchesRule("text", "be", "ortho"),
     #matchesRule("text", "be", "diag"),
     #matchesRule("text", "ben't", "wurd"),
+    #matchesRule("text", "be", "za warudo"),
     #matchesRule(outerlvl, "be", "go arnd"),
     #matchesRule(outerlvl, "be", "mirr arnd"),
     --If and only if poor tolls exist, flyeness changing can affect rules parsing, because the text and portal have to match flyeness to go through.
@@ -319,6 +320,7 @@ function parseRules(undoing)
     #matchesRule("text", "be", "ortho"),
     #matchesRule("text", "be", "diag"),
     #matchesRule("text", "ben't", "wurd"),
+    #matchesRule("text", "be", "za warudo"),
     #matchesRule(outerlvl, "be", "go arnd"),
     #matchesRule(outerlvl, "be", "mirr arnd"),
     --If and only if poor tolls exist, flyeness changing can affect rules parsing, because the text and portal have to match flyeness to go through.
@@ -795,6 +797,7 @@ function shouldReparseRules()
   if shouldReparseRulesIfConditionalRuleExists("text", "be", "ortho") then return true end
   if shouldReparseRulesIfConditionalRuleExists("text", "be", "diag") then return true end
   if shouldReparseRulesIfConditionalRuleExists("text", "ben't", "wurd") then return true end
+  if shouldReparseRulesIfConditionalRuleExists("text", "be", "za warudo") then return true end
   if shouldReparseRulesIfConditionalRuleExists(outerlvl, "be", "go arnd") then return true end
   if shouldReparseRulesIfConditionalRuleExists(outerlvl, "be", "mirr arnd") then return true end
   if rules_with["poor toll"] then
