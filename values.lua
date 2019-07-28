@@ -95,7 +95,7 @@ selector_grid_contents = {
     "wal", "text_wal", "text_no go", "l..uv", "text_l..uv", "hurcane", "text_hurcane", "text_creat", "text_look at", "text_spoop", "text_yeet", "text_turn cornr", "text_corekt", 0, "text_the", 0, 0, 0,
     "watr", "text_watr", "text_no swim", "meem", "text_meem", "o", "text_o", "text_snacc", "text_seen by" , "text_stalk", "text_zip", "text_folo wal", "text_rong", "text_her", "text_thr", 0, 0, 0,
     "skul", "text_skul", "text_:(", "til", "text_til", "kirb", "text_kirb", "gun", "text_gun", "wog", "text_wog", "text_copkat", "text_copdog", "text_munwalk", "text_sidestep", "text_diagstep", "text_hopovr", "text_knightstep",
-    "boux", "text_boux", "text_come pls", "os", "text_os", "fax", "text_fax", "han", "text_han", "tot", "text_tot", "lila", "text_lila", "hol", "text_hol", "text_poor toll", "text_blacc", "text_reed",
+    "boux", "text_boux", "text_come pls", "os", "text_os", "bup", "text_bup", "han", "text_han", "tot", "text_tot", "lila", "text_lila", "hol", "text_hol", "text_poor toll", "text_blacc", "text_reed",
     "bellt", "text_bellt", "text_go", "tre", "text_tre", "piler", "text_piler", "hatt", "text_hatt", "laav", "text_laav", "fenss", "text_fenss", "metl", "text_metl", 0, "text_whit", "text_orang",
     "boll", "text_boll", "text_:o", "frut", "text_frut", "slippers", "text_slippers", "pata", "text_pata", "larry", "text_larry", "pepis", "text_pepis", 0, 0, 0, "text_colrful", "text_yello",
     "clok", "text_clok", "text_try again", "text_no undo", "text_undo", "zsoob", "text_zsoob", "katany", "text_katany", "petnygrame", "text_petnygrame", "hedg", "text_hedg", 0, 0, 0, "text_rave", "text_grun",
@@ -693,21 +693,23 @@ tiles_list = {
   },
   -- 60
   {
-    name = "text_fax",
-    sprite = "text_fax",
+    name = "text_bup",
+    sprite = "text_bup",
     type = "text",
-    color = {3, 1},
+    color = {6, 2},
     layer = 20,
   },
   -- 61
   {
-    name = "fax",
-    sprite = "fax",
-    sleepsprite = "fax_slep",
+    name = "bup",
+    sprite = "bup",
+    sleepsprite = "bup_slep",
     type = "object",
-    color = {3, 1},
+    color = {6, 2},
     layer = 5,
-    eye = {x=21, y=13, w=2, h=3},
+    rotate = true,
+    eye = {x=23, y=18, w=3, h=3},
+    desc = "BUP: HELLO or BUP DOES NOT WANT\nBUP DOES NOT DREAM\nPLEASE HELP HIM\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n",
   },
   -- 62
   {

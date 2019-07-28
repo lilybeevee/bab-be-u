@@ -1264,7 +1264,11 @@ function scene.checkInput()
   end
 
   if do_move_sound then
-    playSound("move")
+    if hasRule("bup","be","u") then
+      playSound("bup")
+    else
+      playSound("move")
+    end
   end
 
   if stack_box.enabled then
