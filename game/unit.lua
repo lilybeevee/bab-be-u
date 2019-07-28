@@ -471,8 +471,8 @@ function updateUnits(undoing, big_update)
             addParticles("destroy", unit.x, unit.y, on.color)
             shakeScreen(0.3, 0.1)
           else
-            table.insert(time_destroy,unit)
-            table.insert(time_destroy,on)
+            table.insert(time_destroy,unit.id)
+            table.insert(time_destroy,on.id)
 						addUndo({"time_destroy",unit.id});
 						addUndo({"time_destroy",on.id});
             table.insert(time_sfx,"sink")
@@ -494,7 +494,7 @@ function updateUnits(undoing, big_update)
             addParticles("destroy", unit.x, unit.y, unit.color)
             shakeScreen(0.3, 0.1)
           else
-            table.insert(time_destroy,unit)
+            table.insert(time_destroy,unit.id)
 						addUndo({"time_destroy",unit.id});
             table.insert(time_sfx,"break")
           end
@@ -515,7 +515,7 @@ function updateUnits(undoing, big_update)
             addParticles("destroy", unit.x, unit.y, unit.color)
             shakeScreen(0.3, 0.1)
           else
-            table.insert(time_destroy,on)
+            table.insert(time_destroy,on.id)
 						addUndo({"time_destroy",on.id});
             table.insert(time_sfx,"hotte")
           end
@@ -537,7 +537,7 @@ function updateUnits(undoing, big_update)
             addParticles("destroy", unit.x, unit.y, unit.color)
             shakeScreen(0.3, 0.2)
           else
-            table.insert(time_destroy,on)
+            table.insert(time_destroy,on.id)
 						addUndo({"time_destroy",on.id});
             table.insert(time_sfx,"break")
           end
@@ -561,8 +561,8 @@ function updateUnits(undoing, big_update)
             addParticles("destroy", on.x, on.y, on.color)
             shakeScreen(0.3, 0.1)
           else
-            table.insert(time_destroy,unit)
-            table.insert(time_destroy,on)
+            table.insert(time_destroy,unit.id)
+            table.insert(time_destroy,on.id)
             table.insert(time_sfx,"break")
             table.insert(time_sfx,"unlock")
           end
@@ -584,7 +584,7 @@ function updateUnits(undoing, big_update)
             addParticles("destroy", unit.x, unit.y, unit.color)
             shakeScreen(0.3, 0.15)
           else
-            table.insert(time_destroy,on)
+            table.insert(time_destroy,on.id)
 						addUndo({"time_destroy",on.id});
             table.insert(time_sfx,"snacc")
           end
@@ -602,6 +602,7 @@ function updateUnits(undoing, big_update)
             will_undo = true
             break
           else
+          addUndo({"timeless_reset_add"});
             timeless_reset = true
           end
         end
@@ -619,6 +620,7 @@ function updateUnits(undoing, big_update)
           if timecheck(unit,"be","xwx") and timecheck(on) then
             love = {}
           else
+            addUndo({"timeless_crash_add"});
             timeless_crash = true
           end
         end
@@ -638,7 +640,7 @@ function updateUnits(undoing, big_update)
             playSound("bonus")
             addParticles("bonus", unit.x, unit.y, unit.color)
           else
-            table.insert(time_destroy,unit)
+            table.insert(time_destroy,unit.id)
 						addUndo({"time_destroy",unit.id});
             table.insert(time_sfx,"bonus")
           end
@@ -692,8 +694,10 @@ function updateUnits(undoing, big_update)
             end
             table.insert(to_destroy, on)
           else
-            table.insert(timeless_splitter,unit)
-            table.insert(timeless_splittee,on)
+            addUndo({"timeless_splitter_add", unit.id});
+            table.insert(timeless_splitter,unit.id)
+            addUndo({"timeless_splittee_add", on.id});
+            table.insert(timeless_splittee,on.id)
           end
         end
       end
@@ -701,48 +705,56 @@ function updateUnits(undoing, big_update)
     
     if not timeless then
       for _,unit in ipairs(timeless_splitter) do
+        addUndo({"timeless_splitter_remove", unit});
+        unit = units_by_id[unit];
         for _,on in ipairs(timeless_splittee) do
-          local dir1 = dirAdd(unit.dir,0)
-          local dx1 = dirs8[dir1][1]
-          local dy1 = dirs8[dir1][2]
-          local dir2 = dirAdd(unit.dir,4)
-          local dx2 = dirs8[dir2][1]
-          local dy2 = dirs8[dir2][2]
-          if canMove(on, dx1, dy1, dir1, false, false, on.name) then
-            if on.class == "unit" then
-              local new_unit = createUnit(tiles_by_name[on.fullname], on.x, on.y, dir1)
-              addUndo({"create", new_unit.id, false})
-              _, __, ___, x, y = getNextTile(on, dx1, dy1, dir1, false);
-              moveUnit(new_unit,x,y)
-              addUndo({"update", new_unit.id, on.x, on.y, dir1})
-            elseif unit.class == "cursor" then
-              local others = getCursorsOnTile(on.x + dx1, on.y + dy1)
-              if #others == 0 then
-                local new_mouse = createMouse(on.x + dx1, on.y + dy1)
-                addUndo({"create_cursor", new_mouse.id})
+          on = units_by_id[on];
+          if (unit ~= nil and on ~= nil) then
+            table.insert(to_destroy, on)
+            local dir1 = dirAdd(unit.dir,0)
+            local dx1 = dirs8[dir1][1]
+            local dy1 = dirs8[dir1][2]
+            local dir2 = dirAdd(unit.dir,4)
+            local dx2 = dirs8[dir2][1]
+            local dy2 = dirs8[dir2][2]
+            if canMove(on, dx1, dy1, dir1, false, false, on.name) then
+              if on.class == "unit" then
+                local new_unit = createUnit(tiles_by_name[on.fullname], on.x, on.y, dir1)
+                addUndo({"create", new_unit.id, false})
+                _, __, ___, x, y = getNextTile(on, dx1, dy1, dir1, false);
+                moveUnit(new_unit,x,y)
+                addUndo({"update", new_unit.id, on.x, on.y, dir1})
+              elseif unit.class == "cursor" then
+                local others = getCursorsOnTile(on.x + dx1, on.y + dy1)
+                if #others == 0 then
+                  local new_mouse = createMouse(on.x + dx1, on.y + dy1)
+                  addUndo({"create_cursor", new_mouse.id})
+                end
+              end
+            end
+            if canMove(on, dx2, dy2, dir2, false, false, on.name) then
+              if on.class == "unit" then
+                local new_unit = createUnit(tiles_by_name[on.fullname], on.x, on.y, dir2)
+                addUndo({"create", new_unit.id, false})
+                _, __, ___, x, y = getNextTile(on, dx2, dy2, dir2, false);
+                moveUnit(new_unit,x,y)
+                addUndo({"update", new_unit.id, on.x, on.y, dir2})
+              elseif unit.class == "cursor" then
+                local others = getCursorsOnTile(on.x + dx2, on.y + dy2)
+                if #others == 0 then
+                  local new_mouse = createMouse(on.x + dx2, on.y + dy2)
+                  addUndo({"create_cursor", new_mouse.id})
+                end
               end
             end
           end
-          if canMove(on, dx2, dy2, dir2, false, false, on.name) then
-            if on.class == "unit" then
-              local new_unit = createUnit(tiles_by_name[on.fullname], on.x, on.y, dir2)
-              addUndo({"create", new_unit.id, false})
-              _, __, ___, x, y = getNextTile(on, dx2, dy2, dir2, false);
-              moveUnit(new_unit,x,y)
-              addUndo({"update", new_unit.id, on.x, on.y, dir2})
-            elseif unit.class == "cursor" then
-              local others = getCursorsOnTile(on.x + dx2, on.y + dy2)
-              if #others == 0 then
-                local new_mouse = createMouse(on.x + dx2, on.y + dy2)
-                addUndo({"create_cursor", new_mouse.id})
-              end
-            end
-          end
-          table.insert(to_destroy, on)
-          timeless_splitter = {}
-          timeless_splittee = {}
         end
       end
+      for _,on in ipairs(timeless_splittee) do
+        addUndo({"timeless_splittee_remove", on});
+      end
+      timeless_splitter = {}
+      timeless_splittee = {}
     end
     
     to_destroy = handleDels(to_destroy);
@@ -756,7 +768,8 @@ function updateUnits(undoing, big_update)
           if timecheck(unit,"be",":)") and timecheck(on) then
             doWin()
           else
-            table.insert(timeless_win,on)
+            addUndo({"timeless_win_add", on.id});
+            table.insert(timeless_win,on.id)
           end
         end
       end
@@ -841,6 +854,7 @@ function updateUnits(undoing, big_update)
   end
   
   if (will_undo) or (timeless_reset and not timeless) then
+    addUndo({"timeless_reset_remove"});
     timeless_reset = false
     local can_undo = true;
     while (can_undo) do
@@ -851,6 +865,7 @@ function updateUnits(undoing, big_update)
   end
   
   if timeless_crash and not timeless then
+    addUndo({"timeless_crash_remove"});
     love = {}
   end
 end
@@ -1018,15 +1033,17 @@ end
 function handleTimeDels(time_destroy)
   local convert = false
   local del_units = {}
-  for _,unit in ipairs(time_destroy) do
-    addUndo({"time_destroy_remove", unit.id});
-    if not hasProperty(unit, "protecc") then
+  for _,unitid in ipairs(time_destroy) do
+    unit = units_by_id[unitid];
+    addUndo({"time_destroy_remove", unitid});
+    if unit ~= nil and not hasProperty(unit, "protecc") then
       addParticles("destroy",unit.x,unit.y,unit.color)
       unit.destroyed = true
       unit.removed = true
       table.insert(del_units,unit)
       for index,win in ipairs(timeless_win) do
-        if unit == win then
+        if unit.id == win then
+          addUndo({"timeless_win_remove", win});
           table.remove(timeless_win,index)
         end
       end

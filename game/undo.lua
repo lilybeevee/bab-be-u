@@ -4,12 +4,14 @@ function newUndo()
 end
 
 function addUndo(data)
+  print("addUndo:",data[1],data[2],data[7])
   if #undo_buffer > 0 then 
     table.insert(undo_buffer[1], 1, data)
   end
 end
 
 function undoOneAction(turn, i, v, ignore_no_undo)
+  print("undoOneAction:",v[1],v[2],v[7])
   local update_rules = false
   local action = v[1]
   local unit = nil
@@ -70,21 +72,61 @@ function undoOneAction(turn, i, v, ignore_no_undo)
   elseif action == "destroy_level" then
     level_destroyed = false
   elseif action == "za warudo" then
-    timeless = not timeless
+    timeless = not v[2]
   elseif action == "time_destroy" then
 		unitid = v[2]
     --iterate backwards because we probably got added to the end (but maybe not due to no undo shenanigans e.g.)
     for i=#time_destroy,1,-1 do
-      if time_destroy[i].id == unitid then
+      if time_destroy[i] == unitid then
         table.remove(time_destroy, i)
         break
       end
     end
   elseif action == "time_destroy_remove" then
-    local unit = units_by_id[v[2]];
-    if (unit ~= nil and (ignore_no_undo or not hasProperty(unit, "no undo"))) then
-      table.insert(time_destroy, unit);
+    table.insert(time_destroy, v[2]);
+  elseif action == "timeless_win_add" then
+		unitid = v[2]
+    --iterate backwards because we probably got added to the end (but maybe not due to no undo shenanigans e.g.)
+    for i=#timeless_win,1,-1 do
+      if timeless_win[i] == unitid then
+        table.remove(timeless_win, i)
+        break
+      end
     end
+  elseif action == "timeless_win_remove" then
+    table.insert(timeless_win, v[2]);  
+  elseif action == "timeless_splitter_add" then
+		unitid = v[2]
+    --iterate backwards because we probably got added to the end (but maybe not due to no undo shenanigans e.g.)
+    for i=#timeless_splitter,1,-1 do
+      if timeless_splitter[i] == unitid then
+        table.remove(timeless_splitter, i)
+        break
+      end
+    end
+  elseif action == "timeless_splitter_remove" then
+    table.insert(timeless_splitter, v[2]);
+  elseif action == "timeless_splittee_add" then
+		unitid = v[2]
+    --iterate backwards because we probably got added to the end (but maybe not due to no undo shenanigans e.g.)
+    for i=#timeless_splittee,1,-1 do
+      if timeless_splittee[i] == unitid then
+        table.remove(timeless_splittee, i)
+        break
+      end
+    end
+  elseif action == "timeless_splittee_remove" then
+     table.insert(timeless_splittee, v[2]);
+  elseif action == "timeless_reset_add" then
+		timeless_reset = false
+  elseif action == "timeless_reset_remove" then
+    --causes an infinite loop, and kind of meaningless by definition I guess
+    --timeless_reset = true
+  elseif action == "timeless_crash_add" then
+		timeless_crash = false
+  elseif action == "timeless_crash_remove" then
+    --meaningless by definition
+    --timeless_crash = true
   elseif action == "timeless_yeet_add" then
     unit = v[2].yote
     for i,yote in ipairs(timeless_yote) do

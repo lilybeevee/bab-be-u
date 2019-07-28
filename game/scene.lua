@@ -1307,7 +1307,7 @@ function doOneMove(x, y, key)
         playSound("time resume",0.5)
         print("And time resumes")
       end
-      addUndo({"za warudo"})
+      addUndo({"za warudo", timeless})
     else
       timeless = false
     end
