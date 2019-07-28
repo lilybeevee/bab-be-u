@@ -1019,6 +1019,7 @@ function handleTimeDels(time_destroy)
   local convert = false
   local del_units = {}
   for _,unit in ipairs(time_destroy) do
+    addUndo({"time_destroy_remove", unit.id});
     if not hasProperty(unit, "protecc") then
       addParticles("destroy",unit.x,unit.y,unit.color)
       unit.destroyed = true
