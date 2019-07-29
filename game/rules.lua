@@ -347,7 +347,7 @@ function parseRules(undoing)
   shouldReparseRules()
   
   local end_time = love.timer.getTime();
-  print("parseRules() took: "..tostring(round((end_time-start_time)*1000)).."ms")
+  if not unit_tests then print("parseRules() took: "..tostring(round((end_time-start_time)*1000)).."ms") end
 end
 
 function parseSentence(sentence_, params_, dir) --prob make this a local function? idk
@@ -715,7 +715,7 @@ function postRules()
               fverb = fverb .. "n't"
             end
             if frule[1] == rule[1] and fverb == rule[2] and frule[3] == rule[3] and frule[3] ~= "her" and frule[3] ~= "thr" then
-              print("matching rule", rule[1], rule[2], rule[3])
+              --print("matching rule", rule[1], rule[2], rule[3])
               if has_conds then
                 for i=1,2 do
                   for _,cond in ipairs(inverse_conds[i]) do

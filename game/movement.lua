@@ -58,8 +58,10 @@ function doMovement(movex, movey, key)
   local slippers = {}
   local flippers = {}
 
-  print("[---- begin turn ----]")
-  print("move: " .. movex .. ", " .. movey)
+  if not unit_tests then
+    print("[---- begin turn ----]")
+    print("move: " .. movex .. ", " .. movey)
+  end
 
   next_levels, next_level_objs = getNextLevels()
 

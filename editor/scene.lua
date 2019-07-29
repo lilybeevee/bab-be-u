@@ -870,7 +870,7 @@ function scene.saveLevel()
     map = savestr
   }
   
-  print(level_compression, data.compression)
+  --print(level_compression, data.compression)
 
   if world == "" or world_parent == "officialworlds" then
     love.filesystem.createDirectory("levels")

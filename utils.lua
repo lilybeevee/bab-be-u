@@ -1499,8 +1499,8 @@ function getEverythingExcept(except)
     end
   end
   
-  print(except)
-  print(dump(result))
+  --print(except)
+  --print(dump(result))
   return result
 end
 

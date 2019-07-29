@@ -85,7 +85,43 @@ function scene.keyPressed(key)
     else
       new_scene = menu
     end
+  elseif key == "f12" then
+    print("Entering Unit Test mode.")
+    runUnitTests()
   end
+end
+
+function runUnitTests()
+  unit_tests = true
+  local levels = scene.searchDir("officialworlds/solo levels", "level")
+  local fail_levels = {}
+  local succ_levels = {}
+  local noreplay_levels = {}
+  load_mode = "play"
+  for _,v in ipairs(levels) do
+    scene.loadLevel(v.data, "play")
+    game.load()
+    tryStartReplay()
+    if replay_playback then
+      replay_playback_interval = 0
+      local still_going = true;
+      while (still_going) do
+        still_going = doReplay(0)
+      end
+      if not win then
+        table.insert(fail_levels, v.file)
+      else
+        table.insert(succ_levels, v.file)
+      end
+    else
+      table.insert(noreplay_levels, v.file)
+    end
+  end
+  print ("Unit tested " .. tostring(#succ_levels + #fail_levels) .. " levels!");
+  print (tostring(#noreplay_levels) .. " levels lacked a replay: " .. dump(noreplay_levels));
+  print (tostring(#succ_levels) .. " levels passed: " .. dump(succ_levels));
+  print (tostring(#fail_levels) .. " levels failed: " .. dump(fail_levels));
+  unit_tests = false
 end
 
 function scene.wheelMoved(whx, why) -- The wheel moved, Why?

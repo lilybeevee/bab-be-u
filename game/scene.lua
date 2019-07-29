@@ -128,16 +128,17 @@ function scene.update(dt)
     shake_dur = 0
   end
 	
-	scene.doReplay(dt)
+	doReplay(dt)
 end
 
-function scene.doReplay(dt)
-	if win or not replay_playback then return end
+function doReplay(dt)
+	if win or not replay_playback then return false end
 	if love.timer.getTime() > (replay_playback_time + replay_playback_interval) then
 		replay_playback_time = replay_playback_time + replay_playback_interval
 		doReplayTurn(replay_playback_turn);
 		replay_playback_turn = replay_playback_turn + 1;
 	end
+  return true
 end
 
 function doReplayTurn(turn)
@@ -152,8 +153,9 @@ function doReplayTurn(turn)
 	if (x == nil or y == nil) then
 		replay_playback = false;
 		print("Finished playback at turn: "..tostring(turn));
-	end
-	doOneMove(x, y, key);
+	else
+    doOneMove(x, y, key);
+  end
 end
 
 function string:split(sSeparator, nMax, bRegexp)
@@ -304,20 +306,7 @@ function scene.keyPressed(key, isrepeat)
 	end
 	
 	if key == "f12" then
-		scene.resetStuff()
-		local dir = "levels/"
-		if world ~= "" then dir = world_parent .. "/" .. world .. "/" end
-		if love.filesystem.getInfo(dir .. level_name .. ".replay") then
-			replay_playback_string = love.filesystem.read(dir .. level_name .. ".replay")
-			replay_playback = true
-			print("Started replay from: "..dir .. level_name .. ".replay");
-		elseif love.filesystem.getInfo("levels/" .. level_name .. ".replay") then
-			replay_playback_string = love.filesystem.read("levels/" .. level_name .. ".replay")
-			replay_playback = true
-			print("Started replay from: ".."levels/" .. level_name .. ".replay");
-		else
-			print("Failed to find replay: "..dir .. level_name .. ".replay");
-		end
+		tryStartReplay()
 	end
 
   if key == "e" and not win and not replay_playback then
@@ -333,6 +322,23 @@ function scene.keyPressed(key, isrepeat)
 
   if (do_turn_now) then
     scene.checkInput()
+  end
+end
+
+function tryStartReplay()
+  scene.resetStuff()
+  local dir = "levels/"
+  if world ~= "" then dir = world_parent .. "/" .. world .. "/" end
+  if love.filesystem.getInfo(dir .. level_name .. ".replay") then
+    replay_playback_string = love.filesystem.read(dir .. level_name .. ".replay")
+    replay_playback = true
+    print("Started replay from: "..dir .. level_name .. ".replay");
+  elseif love.filesystem.getInfo("levels/" .. level_name .. ".replay") then
+    replay_playback_string = love.filesystem.read("levels/" .. level_name .. ".replay")
+    replay_playback = true
+    print("Started replay from: ".."levels/" .. level_name .. ".replay");
+  else
+    print("Failed to find replay: "..dir .. level_name .. ".replay");
   end
 end
 
@@ -1162,7 +1168,7 @@ function scene.draw(dt)
     love.graphics.printf(rules, 0, love.graphics.getHeight()/2-love.graphics.getFont():getHeight()*lines, love.graphics.getWidth(), "center")
   end
 
-  if (just_moved) then
+  if (just_moved and not unit_tests) then
     local end_time = love.timer.getTime();
       print("scene.draw() took: "..tostring(round((end_time-start_time)*1000)).."ms")
     just_moved = false;
@@ -1212,7 +1218,7 @@ function scene.checkInput()
         do_move_sound = false;
         unsetNewUnits()
 				local end_time = love.timer.getTime();
-        print("undo took: "..tostring(round((end_time-start_time)*1000)).."ms")
+        if not unit_tests then print("undo took: "..tostring(round((end_time-start_time)*1000)).."ms") end
       else
         local x, y = 0, 0
         if key == "udlr" then
@@ -1247,7 +1253,7 @@ function scene.checkInput()
         end
         doOneMove(x, y, key);
         local end_time = love.timer.getTime();
-        print("gameplay logic took: "..tostring(round((end_time-start_time)*1000)).."ms")
+        if not unit_tests then print("gameplay logic took: "..tostring(round((end_time-start_time)*1000)).."ms") end
       end
     end
 
@@ -1300,12 +1306,12 @@ function doOneMove(x, y, key)
       if timeless then
         replay_string = replay_string..tostring(0)..","..tostring(0)..","..tostring("e")..";"
         playSound("timestop",0.5)
-        print("ZA WARUDO! Time has stopped")
+       -- print("ZA WARUDO! Time has stopped")
       else
         parseRules()
         doMovement(0,0,"e")
         playSound("time resume",0.5)
-        print("And time resumes")
+        --print("And time resumes")
       end
       addUndo({"za warudo", timeless})
     else
