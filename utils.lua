@@ -152,6 +152,9 @@ function loadMap()
     else
       local ok = nil
       ok, map = serpent.load(map);
+      if (ok ~= true) then
+        print("Serpent error while loading:", ok, dump(map))
+      end
       for _,unit in ipairs(map) do
         id, tile, x, y, dir, specials = unit.id, unit.tile, unit.x, unit.y, unit.dir, unit.special
         if inBounds(x, y) then
