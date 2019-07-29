@@ -1,5 +1,6 @@
 local startload = love.timer.getTime()
 
+serpent = require "serpent"
 require "lib/gooi"
 json = require "lib/json"
 tick = require "lib/tick"

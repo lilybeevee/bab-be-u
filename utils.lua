@@ -126,7 +126,7 @@ function loadMap()
           local new_unit = createUnit(id, x, y, 1)
         end
       end
-    elseif version >= 1 then
+    elseif version >= 1 and version <= 3 then
       local pos = 1
       while pos <= #map do
         if version == 1 then
@@ -147,6 +147,16 @@ function loadMap()
               unit.special[k] = v
             end
           end
+        end
+      end
+    else
+      local ok = nil
+      ok, map = serpent.load(map);
+      for _,unit in ipairs(map) do
+        id, tile, x, y, dir, specials = unit.id, unit.tile, unit.x, unit.y, unit.dir, unit.special
+        if inBounds(x, y) then
+          local unit = createUnit(tile, x, y, dir, false, id)
+          unit.special = specials
         end
       end
     end

@@ -832,22 +832,19 @@ function scene.draw(dt)
 end
 
 function scene.updateMap()
-  map_ver = 3
-  local map = ""
+  map_ver = 4
+  local map = {}
   for x = 0, mapwidth-1 do
     for y = 0, mapheight-1 do
       local tileid = x + y * mapwidth
       if units_by_tile[tileid] then
         for _,unit in ipairs(units_by_tile[tileid]) do
-          local specials = ""
-          for k,v in pairs(unit.special) do
-            specials = specials .. love.data.pack("string", PACK_SPECIAL_V2, k, v)
-          end
-          map = map .. love.data.pack("string", PACK_UNIT_V3, unit.id, unit.tile, unit.x, unit.y, unit.dir, specials)
+          table.insert(map, {id = unit.id, tile = unit.tile, x = unit.x, y = unit.y, dir = unit.dir, special = unit.special});
         end
       end
     end
   end
+  map = serpent.dump(map);
   maps = {{map_ver, map}}
 end
 
