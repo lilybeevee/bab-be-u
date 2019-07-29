@@ -1023,10 +1023,19 @@ function scene.draw(dt)
   end
   love.graphics.pop()
   
-  if replay_playback and not replay_pause then
-    love.graphics.draw(sprites["ui/replay_play"], love.graphics.getWidth() - sprites["ui/replay_play"]:getWidth())
-  elseif replay_playback and replay_pause then
-    love.graphics.draw(sprites["ui/replay_pause"], love.graphics.getWidth() - sprites["ui/replay_pause"]:getWidth())
+  if replay_playback then
+    if not replay_pause then
+        if replay_playback_interval < 0.2 then
+            love.graphics.draw(sprites["ui/replay_ff"], love.graphics.getWidth() - sprites["ui/replay_ff"]:getWidth())
+        elseif replay_playback_interval > 0.5 then
+            love.graphics.draw(sprites["ui/replay_slow"], love.graphics.getWidth() - sprites["ui/replay_slow"]:getWidth())
+        else
+            love.graphics.draw(sprites["ui/replay_play"], love.graphics.getWidth() - sprites["ui/replay_play"]:getWidth())
+        end
+    elseif replay_pause then
+        love.graphics.draw(sprites["ui/replay_pause"], love.graphics.getWidth() - sprites["ui/replay_pause"]:getWidth())
+    end
+    -- print(replay_playback_interval)
   end
   
   if mouseOverBox(0,0,sprites["ui/cog"]:getHeight(),sprites["ui/cog"]:getWidth()) then
