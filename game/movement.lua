@@ -1242,6 +1242,10 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
   if rules_with["haet"] ~= nil and hasRule(unit, "haet", outerlvl) then
     return false,{},{}
   end
+  
+  if rules_with["go my way"] ~= nil and hasProperty(outerlvl,"go my way") and goMyWayPrevents(outerlvl.dir,dx,dy) then
+    return false,{},{}
+  end
 
   --prevent infinite push loops by returning false if a push intersects an already considered unit
   --EDIT: let's try returning true instead and allowing them to happen. plays nicely with portal loops. For stubborn, maybe we just allow max one direction change or something... (So we pass a flag along to know if we've made our one change or not.)
@@ -1455,7 +1459,7 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
         stopped = stopped or sameFloat(unit, v)
       elseif hasProperty(v, "come pls") and not hasProperty(v, "go away pls") and not would_swap_with and not pulling then
         stopped = stopped or sameFloat(unit, v)
-      elseif hasProperty(v, "go my wey") and goMyWeyPrevents(v.dir, dx, dy) then
+      elseif hasProperty(v, "go my way") and goMyWayPrevents(v.dir, dx, dy) then
         stopped = stopped or sameFloat(unit, v)
       end
       
@@ -1479,9 +1483,9 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
     end
   end
   
-  --go my wey DOES Not also prevents things from leaving them against their direction
+  --go my way DOES Not also prevents things from leaving them against their direction
   --[[for _,v in ipairs(getUnitsOnTile(unit.x, unit.y, nil, false)) do
-    if hasProperty(v, "go my wey") and goMyWeyPrevents(v.dir, dx, dy) then
+    if hasProperty(v, "go my way") and goMyWayPrevents(v.dir, dx, dy) then
       return false,movers,specials
     end
   end]]--
@@ -1489,7 +1493,7 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
   return true,movers,specials
 end
 
-function goMyWeyPrevents(dir, dx, dy)
+function goMyWayPrevents(dir, dx, dy)
   dx = sign(dx)
   dy = sign(dy)
   return

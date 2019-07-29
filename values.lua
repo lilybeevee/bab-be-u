@@ -100,7 +100,7 @@ selector_grid_contents = {
     "boll", "text_boll", "text_:o", "frut", "text_frut", "slippers", "text_slippers", "pata", "text_pata", "larry", "text_larry", "pepis", "text_pepis", 0, 0, 0, "text_colrful", "text_yello",
     "clok", "text_clok", "text_try again", "text_no undo", "text_undo", "zsoob", "text_zsoob", "katany", "text_katany", "petnygrame", "text_petnygrame", "hedg", "text_hedg", 0, 0, 0, "text_rave", "text_grun",
     "splittr", "text_splittr", "text_split", "steev", "text_steev", "boy", "text_boy", "scarr", "text_scarr", "firbolt", "text_firbolt", "icbolt", "text_icbolt", 0, 0, 0, "text_stelth", "text_cyeann",
-    "chekr", "text_chekr", "text_diag", "text_ortho", "text_haet flor", "arro", "text_arro", "text_go my wey", "text_spin", "text_no turn", "text_stubbn", "platfor", "text_platfor", "jail", "text_jail", 0, 0, "text_bleu",
+    "chekr", "text_chekr", "text_diag", "text_ortho", "text_haet flor", "arro", "text_arro", "text_go my way", "text_spin", "text_no turn", "text_stubbn", "platfor", "text_platfor", "jail", "text_jail", 0, 0, "text_bleu",
     "clowd", "text_clowd", "text_flye", "text_tall", "text_haet skye", "ghost fren", "text_ghost fren", "robobot", "text_robobot", "sparkl", "text_sparkl", "spik", "text_spik", "spiky", "text_spiky", "bordr", "text_bordr", "text_purp",
     nil
   },
@@ -1148,8 +1148,8 @@ tiles_list = {
   },
   --- 105
   {
-    name = "text_go my wey",
-    sprite = "text_go my wey",
+    name = "text_go my way",
+    sprite = "text_go my way",
     type = "text",
     texttype = "property",
     color ={1, 3},
