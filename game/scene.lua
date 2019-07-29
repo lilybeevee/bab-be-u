@@ -300,6 +300,7 @@ function scene.keyPressed(key, isrepeat)
   if key == "r" then
     scene.resetStuff()
   end
+  
 	-- Replay keys
 	if key == "+" or key == "=" or key == "d" then
 		replay_playback_interval = replay_playback_interval * 0.8
@@ -307,6 +308,10 @@ function scene.keyPressed(key, isrepeat)
 	
 	if key == "-" or key == "_" or key == "a" then
 		replay_playback_interval = replay_playback_interval / 0.8
+	end
+    
+    if key == "0" or key == ")" then
+		replay_playback_interval = 0.3
 	end
 	
 	if key == "f12" then
@@ -325,6 +330,7 @@ function scene.keyPressed(key, isrepeat)
     if key == "z" and replay_playback then
     end
     ]]
+    
   if key == "e" and not win and not replay_playback then
     doOneMove(0, 0, "e")
   end
@@ -1025,10 +1031,14 @@ function scene.draw(dt)
   
   if replay_playback then
     if not replay_pause then
-        if replay_playback_interval < 0.2 then
+        if replay_playback_interval < 0.05 then
+            love.graphics.draw(sprites["ui/replay_fff"], love.graphics.getWidth() - sprites["ui/replay_fff"]:getWidth())
+        elseif replay_playback_interval < 0.2 and replay_playback_interval > 0.05 then
             love.graphics.draw(sprites["ui/replay_ff"], love.graphics.getWidth() - sprites["ui/replay_ff"]:getWidth())
-        elseif replay_playback_interval > 0.5 then
+        elseif replay_playback_interval > 0.5 and replay_playback_interval < 1 then
             love.graphics.draw(sprites["ui/replay_slow"], love.graphics.getWidth() - sprites["ui/replay_slow"]:getWidth())
+        elseif replay_playback_interval > 1 then
+            love.graphics.draw(sprites["ui/replay_snail"], love.graphics.getWidth() - sprites["ui/replay_snail"]:getWidth())
         else
             love.graphics.draw(sprites["ui/replay_play"], love.graphics.getWidth() - sprites["ui/replay_play"]:getWidth())
         end
