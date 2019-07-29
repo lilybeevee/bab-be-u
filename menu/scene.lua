@@ -12,6 +12,7 @@ local music_on = true
 
 
 function scene.load()
+  metaClear()
   clear()
   resetMusic("bab be u them REEEMAZTUR", 0.5)
   love.graphics.setBackgroundColor(0.10, 0.1, 0.11)

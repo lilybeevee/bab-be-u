@@ -25,6 +25,7 @@ ICON_WIDTH = 96
 ICON_HEIGHT = 96
 
 function scene.load()
+  metaClear()
   brush = {id = nil, dir = 1, mode = "none", picked_tile = nil, picked_index = 0}
   properties = {enabled = false, scale = 0, x = 0, y = 0, w = 0, h = 0, components = {}} -- will do this later
   saved_popup = {sprite = sprites["ui/level_saved"], y = 16, alpha = 0}

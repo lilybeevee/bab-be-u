@@ -88,6 +88,11 @@ function clear()
   love.mouse.setCursor()
 end
 
+function metaClear()
+  stay_ther = nil;
+  surrounds = nil;
+end
+
 function initializeGraphicalPropertyCache()
   local properties_to_init = -- list of properties that require the graphical cache
     {
@@ -167,8 +172,20 @@ function loadMap()
   if (load_mode == "play") then
     initializeOuterLvl()
     initializeEmpties()
+    loadStayTher()
   end
   unsetNewUnits()
+end
+
+function loadStayTher()
+  if stay_ther ~= nil then
+    for _,unit in ipairs(stay_ther) do
+      if inBounds(unit.x, unit.y) then
+        local newunit = createUnit(unit.tile, unit.x, unit.y, unit.dir)
+        newunit.special = unit.special
+      end
+    end
+  end
 end
 
 function initializeOuterLvl()
@@ -1561,6 +1578,16 @@ end
 function loadLevels(levels, mode, level_objs)
   if #levels == 0 then
     return
+  end
+  
+  --setup stay ther
+  stay_ther = nil
+  if (rules_with ~= nil) then
+    stay_ther = {}
+    local isstayther = getUnitsWithEffect("stay ther");
+    for _,unit in ipairs(isstayther) do
+      table.insert(stay_ther, unit);
+    end
   end
   
   --setup surrounds

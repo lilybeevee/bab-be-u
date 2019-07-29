@@ -16,6 +16,7 @@ local full_height = 0
 local scroll_height
 
 function scene.load()
+  metaClear()
   clear()
   resetMusic(current_music, 0.8)
   selected_levels = {}
