@@ -404,7 +404,7 @@ function updateUnits(undoing, big_update)
       give_me_moar = false;
       local ismoar = getUnitsWithEffectAndCount("moar");
       for unit,amt in pairs(ismoar) do
-        if timecheck(unit,"be","moar") then
+        if unit.name ~= "lie/8" and timecheck(unit,"be","moar") then
           amt = amt - 2*moar_repeats;
           if amt > 0 then
             if (amt % 2) == 1 then
@@ -1607,6 +1607,18 @@ function convertUnits(pass)
         local new_mouse = createMouse(unit.x, unit.y)
         addUndo({"create_cursor", new_mouse.id, created_from_id = unit.id})
       end
+    end
+  end
+  
+  local moars = getUnitsWithEffect("moar")
+  for _,slice in  ipairs(moars) do
+    if slice.name == "lie/8" then
+      if not slice.removed then
+        table.insert(converted_units, slice)
+      end
+      local tile = tiles_by_name["lie"]
+      local new_unit = createUnit(tile, slice.x, slice.y, slice.dir, true)
+      addUndo({"create", new_unit.id, true, created_from_id = slice.id})
     end
   end
 

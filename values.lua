@@ -98,8 +98,8 @@ selector_grid_contents = {
     "boux", "text_boux", "text_come pls", "os", "text_os", "bup", "text_bup", "han", "text_han", "tot", "text_tot", "lila", "text_lila", "hol", "text_hol", "text_poor toll", "text_blacc", "text_reed",
     "bellt", "text_bellt", "text_go", "tre", "text_tre", "piler", "text_piler", "hatt", "text_hatt", "laav", "text_laav", "fenss", "text_fenss", "riff", "text_riff", 0, "text_whit", "text_orang",
     "boll", "text_boll", "text_:o", "frut", "text_frut", "slippers", "text_slippers", "pata", "text_pata", "larry", "text_larry", "pepis", "text_pepis", "metl", "text_metl", 0, "text_colrful", "text_yello",
-    "clok", "text_clok", "text_try again", "text_no undo", "text_undo", "zsoob", "text_zsoob", "katany", "text_katany", "petnygrame", "text_petnygrame", "hedg", "text_hedg", 0, 0, 0, "text_rave", "text_grun",
-    "splittr", "text_splittr", "text_split", "steev", "text_steev", "boy", "text_boy", "scarr", "text_scarr", "firbolt", "text_firbolt", "icbolt", "text_icbolt", 0, 0, 0, "text_stelth", "text_cyeann",
+    "clok", "text_clok", "text_try again", "text_no undo", "text_undo", "zsoob", "text_zsoob", "katany", "text_katany", "petnygrame", "text_petnygrame", "hedg", "text_hedg", "lie", "text_lie", 0, "text_rave", "text_grun",
+    "splittr", "text_splittr", "text_split", "steev", "text_steev", "boy", "text_boy", "scarr", "text_scarr", "firbolt", "text_firbolt", "icbolt", "text_icbolt", "lie/8", "text_lie/8", 0, "text_stelth", "text_cyeann",
     "chekr", "text_chekr", "text_diag", "text_ortho", "text_haet flor", "arro", "text_arro", "text_go my way", "text_spin", "text_no turn", "text_stubbn", "platfor", "text_platfor", "jail", "text_jail", 0, 0, "text_bleu",
     "clowd", "text_clowd", "text_flye", "text_tall", "text_haet skye", "ghost fren", "text_ghost fren", "robobot", "text_robobot", "sparkl", "text_sparkl", "spik", "text_spik", "spiky", "text_spiky", "bordr", "text_bordr", "text_purp",
     nil
@@ -3139,6 +3139,41 @@ tiles_list = {
     color = {0, 3},
     layer = 20,
     desc = "STAY THER: Will be taken with you the next time you change levels.",
+  },
+  -- 313? why are the numbers weird
+  {
+    name = "lie",
+    sprite = "caek",
+    type = "object",
+    color = {4,1},
+    layer = 5,
+    desc = "caek be lie",
+  },
+  -- 314 happy pi day, have some caek
+  {
+    name = "text_lie",
+    sprite = "text_caek",
+    type = "text",
+    color = {4,1},
+    layer = 20,
+  },
+  -- 315
+  {
+    name = "lie/8",
+    sprite = "slis",
+    type = "object",
+    color = {4,2},
+    rotate = true,
+    layer = 4,
+    desc = "idc if it's a lie, it tastes good",
+  },
+  -- 316
+  {
+    name = "text_lie/8",
+    sprite = "text_slis",
+    type = "text",
+    color = {4,2},
+    layer = 20,
   },
 }
 

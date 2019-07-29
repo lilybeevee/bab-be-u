@@ -183,6 +183,7 @@ function doMovement(movex, movey, key)
       local isspoop = matchesRule(nil, "spoop", "?")
       for _,ruleparent in ipairs(isspoop) do
         local unit = ruleparent[2]
+        local othername = ruleparent[1][1][3]
         local others = {}
         for nx=-1,1 do
           for ny=-1,1 do
@@ -192,8 +193,8 @@ function doMovement(movex, movey, key)
           end
         end
         for _,other in ipairs(others) do
-          local is_spoopy = hasRule(unit, "spoop", other)
-          if (is_spoopy and not hasProperty(other, "slep")) and timecheck(unit,"spoop",other) and timecheck(other) then
+          local is_spoopy = hasRule(unit, "spoop", othername)
+          if (other.name == othername and is_spoopy and not hasProperty(other, "slep")) and timecheck(unit,"spoop",other) and timecheck(other) then
             spoop_dir = dirs8_by_offset[sign(other.x - unit.x)][sign(other.y - unit.y)]
             if (spoop_dir % 2 == 1 or (not hasProperty(unit, "ortho") and not hasProperty(other, "ortho"))) then
               addUndo({"update", other.id, other.x, other.y, other.dir})
@@ -389,15 +390,15 @@ function doMovement(movex, movey, key)
           end
         end
       end
-    end
-    local ismoov = matchesRule(nil, "moov", "?")
+      local ismoov = matchesRule(nil, "moov", "?")
       for _,ruleparent in ipairs(ismoov) do
         local unit = ruleparent[2]
+        local othername = ruleparent[1][1][3]
         local others = getUnitsOnTile(unit.x,unit.y)
         for _,other in ipairs(others) do
-          local is_moover = hasRule(unit, "moov", other)
-          if is_moover and timecheck(unit,"moov",other) and other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) then
-            table.insert(other.moves, {reason = "go", dir = unit.dir, times = 1})
+          local is_moover = hasRule(unit, "moov", othername)
+          if (other.name == othername) and is_moover and timecheck(unit,"moov",other) and other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) then
+            table.insert(other.moves, {reason = "moov", dir = unit.dir, times = 1})
             if #other.moves > 0 and not already_added[other] then
               table.insert(moving_units, other)
               already_added[other] = true
@@ -405,6 +406,7 @@ function doMovement(movex, movey, key)
           end
         end
       end
+    end
 
     for _,unit in pairs(moving_units) do
       if not unit.stelth and not hasProperty(unit, "loop") and timecheck(unit) then
