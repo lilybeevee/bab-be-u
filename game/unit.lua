@@ -459,6 +459,115 @@ function updateUnits(undoing, big_update)
       time_destroy = {}
     end
     
+    local split = getUnitsWithEffect("split");
+    for _,unit in ipairs(split) do
+      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
+      for _,on in ipairs(stuff) do
+        if unit ~= on and sameFloat(unit, on) then
+          if timecheck(unit,"be","split") and timecheck(on) then
+            local dir1 = dirAdd(unit.dir,0)
+            local dx1 = dirs8[dir1][1]
+            local dy1 = dirs8[dir1][2]
+            local dir2 = dirAdd(unit.dir,4)
+            local dx2 = dirs8[dir2][1]
+            local dy2 = dirs8[dir2][2]
+            if canMove(on, dx1, dy1, dir1, false, false, on.name) then
+              if on.class == "unit" then
+                local new_unit = createUnit(tiles_by_name[on.fullname], on.x, on.y, dir1)
+                addUndo({"create", new_unit.id, false})
+                _, __, ___, x, y = getNextTile(on, dx1, dy1, dir1, false);
+                moveUnit(new_unit,x,y)
+                addUndo({"update", new_unit.id, on.x, on.y, dir1})
+              elseif unit.class == "cursor" then
+                local others = getCursorsOnTile(on.x + dx1, on.y + dy1)
+                if #others == 0 then
+                  local new_mouse = createMouse(on.x + dx1, on.y + dy1)
+                  addUndo({"create_cursor", new_mouse.id})
+                end
+              end
+            end
+            if canMove(on, dx2, dy2, dir2, false, false, on.name) then
+              if on.class == "unit" then
+                local new_unit = createUnit(tiles_by_name[on.fullname], on.x, on.y, dir2)
+                addUndo({"create", new_unit.id, false})
+                _, __, ___, x, y = getNextTile(on, dx2, dy2, dir2, false);
+                moveUnit(new_unit,x,y)
+                addUndo({"update", new_unit.id, on.x, on.y, dir2})
+              elseif unit.class == "cursor" then
+                local others = getCursorsOnTile(on.x + dx2, on.y + dy2)
+                if #others == 0 then
+                  local new_mouse = createMouse(on.x + dx2, on.y + dy2)
+                  addUndo({"create_cursor", new_mouse.id})
+                end
+              end
+            end
+            table.insert(to_destroy, on)
+          else
+            addUndo({"timeless_splitter_add", unit.id});
+            table.insert(timeless_splitter,unit.id)
+            addUndo({"timeless_splittee_add", on.id});
+            table.insert(timeless_splittee,on.id)
+          end
+        end
+      end
+    end
+    
+    if not timeless then
+      for _,unit in ipairs(timeless_splitter) do
+        addUndo({"timeless_splitter_remove", unit});
+        unit = units_by_id[unit];
+        for _,on in ipairs(timeless_splittee) do
+          on = units_by_id[on];
+          if (unit ~= nil and on ~= nil) then
+            table.insert(to_destroy, on)
+            local dir1 = dirAdd(unit.dir,0)
+            local dx1 = dirs8[dir1][1]
+            local dy1 = dirs8[dir1][2]
+            local dir2 = dirAdd(unit.dir,4)
+            local dx2 = dirs8[dir2][1]
+            local dy2 = dirs8[dir2][2]
+            if canMove(on, dx1, dy1, dir1, false, false, on.name) then
+              if on.class == "unit" then
+                local new_unit = createUnit(tiles_by_name[on.fullname], on.x, on.y, dir1)
+                addUndo({"create", new_unit.id, false})
+                _, __, ___, x, y = getNextTile(on, dx1, dy1, dir1, false);
+                moveUnit(new_unit,x,y)
+                addUndo({"update", new_unit.id, on.x, on.y, dir1})
+              elseif unit.class == "cursor" then
+                local others = getCursorsOnTile(on.x + dx1, on.y + dy1)
+                if #others == 0 then
+                  local new_mouse = createMouse(on.x + dx1, on.y + dy1)
+                  addUndo({"create_cursor", new_mouse.id})
+                end
+              end
+            end
+            if canMove(on, dx2, dy2, dir2, false, false, on.name) then
+              if on.class == "unit" then
+                local new_unit = createUnit(tiles_by_name[on.fullname], on.x, on.y, dir2)
+                addUndo({"create", new_unit.id, false})
+                _, __, ___, x, y = getNextTile(on, dx2, dy2, dir2, false);
+                moveUnit(new_unit,x,y)
+                addUndo({"update", new_unit.id, on.x, on.y, dir2})
+              elseif unit.class == "cursor" then
+                local others = getCursorsOnTile(on.x + dx2, on.y + dy2)
+                if #others == 0 then
+                  local new_mouse = createMouse(on.x + dx2, on.y + dy2)
+                  addUndo({"create_cursor", new_mouse.id})
+                end
+              end
+            end
+          end
+        end
+      end
+      for _,on in ipairs(timeless_splittee) do
+        addUndo({"timeless_splittee_remove", on});
+      end
+      timeless_splitter = {}
+      timeless_splittee = {}
+    end
+    
+    to_destroy = handleDels(to_destroy);
+    
     local issink = getUnitsWithEffect("no swim");
     for _,unit in ipairs(issink) do
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
@@ -650,114 +759,9 @@ function updateUnits(undoing, big_update)
     
     to_destroy = handleDels(to_destroy);
     
-    local split = getUnitsWithEffect("split");
-    for _,unit in ipairs(split) do
-      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
-      for _,on in ipairs(stuff) do
-        if unit ~= on and sameFloat(unit, on) then
-          if timecheck(unit,"be","split") and timecheck(on) then
-            local dir1 = dirAdd(unit.dir,0)
-            local dx1 = dirs8[dir1][1]
-            local dy1 = dirs8[dir1][2]
-            local dir2 = dirAdd(unit.dir,4)
-            local dx2 = dirs8[dir2][1]
-            local dy2 = dirs8[dir2][2]
-            if canMove(on, dx1, dy1, dir1, false, false, on.name) then
-              if on.class == "unit" then
-                local new_unit = createUnit(tiles_by_name[on.fullname], on.x, on.y, dir1)
-                addUndo({"create", new_unit.id, false})
-                _, __, ___, x, y = getNextTile(on, dx1, dy1, dir1, false);
-                moveUnit(new_unit,x,y)
-                addUndo({"update", new_unit.id, on.x, on.y, dir1})
-              elseif unit.class == "cursor" then
-                local others = getCursorsOnTile(on.x + dx1, on.y + dy1)
-                if #others == 0 then
-                  local new_mouse = createMouse(on.x + dx1, on.y + dy1)
-                  addUndo({"create_cursor", new_mouse.id})
-                end
-              end
-            end
-            if canMove(on, dx2, dy2, dir2, false, false, on.name) then
-              if on.class == "unit" then
-                local new_unit = createUnit(tiles_by_name[on.fullname], on.x, on.y, dir2)
-                addUndo({"create", new_unit.id, false})
-                _, __, ___, x, y = getNextTile(on, dx2, dy2, dir2, false);
-                moveUnit(new_unit,x,y)
-                addUndo({"update", new_unit.id, on.x, on.y, dir2})
-              elseif unit.class == "cursor" then
-                local others = getCursorsOnTile(on.x + dx2, on.y + dy2)
-                if #others == 0 then
-                  local new_mouse = createMouse(on.x + dx2, on.y + dy2)
-                  addUndo({"create_cursor", new_mouse.id})
-                end
-              end
-            end
-            table.insert(to_destroy, on)
-          else
-            addUndo({"timeless_splitter_add", unit.id});
-            table.insert(timeless_splitter,unit.id)
-            addUndo({"timeless_splittee_add", on.id});
-            table.insert(timeless_splittee,on.id)
-          end
-        end
-      end
-    end
-    
     if not timeless then
-      for _,unit in ipairs(timeless_splitter) do
-        addUndo({"timeless_splitter_remove", unit});
-        unit = units_by_id[unit];
-        for _,on in ipairs(timeless_splittee) do
-          on = units_by_id[on];
-          if (unit ~= nil and on ~= nil) then
-            table.insert(to_destroy, on)
-            local dir1 = dirAdd(unit.dir,0)
-            local dx1 = dirs8[dir1][1]
-            local dy1 = dirs8[dir1][2]
-            local dir2 = dirAdd(unit.dir,4)
-            local dx2 = dirs8[dir2][1]
-            local dy2 = dirs8[dir2][2]
-            if canMove(on, dx1, dy1, dir1, false, false, on.name) then
-              if on.class == "unit" then
-                local new_unit = createUnit(tiles_by_name[on.fullname], on.x, on.y, dir1)
-                addUndo({"create", new_unit.id, false})
-                _, __, ___, x, y = getNextTile(on, dx1, dy1, dir1, false);
-                moveUnit(new_unit,x,y)
-                addUndo({"update", new_unit.id, on.x, on.y, dir1})
-              elseif unit.class == "cursor" then
-                local others = getCursorsOnTile(on.x + dx1, on.y + dy1)
-                if #others == 0 then
-                  local new_mouse = createMouse(on.x + dx1, on.y + dy1)
-                  addUndo({"create_cursor", new_mouse.id})
-                end
-              end
-            end
-            if canMove(on, dx2, dy2, dir2, false, false, on.name) then
-              if on.class == "unit" then
-                local new_unit = createUnit(tiles_by_name[on.fullname], on.x, on.y, dir2)
-                addUndo({"create", new_unit.id, false})
-                _, __, ___, x, y = getNextTile(on, dx2, dy2, dir2, false);
-                moveUnit(new_unit,x,y)
-                addUndo({"update", new_unit.id, on.x, on.y, dir2})
-              elseif unit.class == "cursor" then
-                local others = getCursorsOnTile(on.x + dx2, on.y + dy2)
-                if #others == 0 then
-                  local new_mouse = createMouse(on.x + dx2, on.y + dy2)
-                  addUndo({"create_cursor", new_mouse.id})
-                end
-              end
-            end
-          end
-        end
-      end
-      for _,on in ipairs(timeless_splittee) do
-        addUndo({"timeless_splittee_remove", on});
-      end
-      timeless_splitter = {}
-      timeless_splittee = {}
+      time_destroy = handleTimeDels(time_destroy)
     end
-    
-    to_destroy = handleDels(to_destroy);
     
     local iswin = getUnitsWithEffect(":)");
     for _,unit in ipairs(iswin) do
@@ -793,10 +797,6 @@ function updateUnits(undoing, big_update)
           addUndo({"create_cursor", new_mouse.id})
         end
       end
-    end
-    
-    if not timeless then
-      time_destroy = handleTimeDels(time_destroy)
     end
     
     if (#timeless_win > 0) and not timeless then
