@@ -392,6 +392,10 @@ function updateUnits(undoing, big_update)
       timeless = false
     end
     
+    if not timeless then
+      time_destroy = handleTimeDels(time_destroy)
+    end
+    
     --MOAR is 4-way growth, MOARx2 is 8-way growth, MOARx3 is 2x 4-way growth, MOARx4 is 2x 8-way growth, MOARx5 is 3x 4-way growth, etc.
     --TODO: If you write txt be moar, it's ambiguous which of a stacked text pair will be the one to grow into an adjacent tile first. But if you make it simultaneous, then you get double growth into corners which turns into exponential growth, which is even worse. It might need to be special cased in a clever way.
     local give_me_moar = true;
@@ -759,10 +763,6 @@ function updateUnits(undoing, big_update)
     
     to_destroy = handleDels(to_destroy);
     
-    if not timeless then
-      time_destroy = handleTimeDels(time_destroy)
-    end
-    
     local iswin = getUnitsWithEffect(":)");
     for _,unit in ipairs(iswin) do
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
@@ -1041,10 +1041,16 @@ function handleTimeDels(time_destroy)
       unit.destroyed = true
       unit.removed = true
       table.insert(del_units,unit)
-      for index,win in ipairs(timeless_win) do
+      for i,win in ipairs(timeless_win) do
         if unit.id == win then
           addUndo({"timeless_win_remove", win});
-          table.remove(timeless_win,index)
+          table.remove(timeless_win,i)
+        end
+      end
+      for i,split in ipairs(timeless_splittee) do
+        if unit.id == win then
+          addUndo({"timeless_splittee_remove", split});
+          table.remove(timeless_splittee,i)
         end
       end
     end
@@ -1306,7 +1312,7 @@ function readingOrderSort(a, b)
 end
 
 function destroyLevel(reason)
-	if (not hasRule(outerlvl,"got","lvl") and not hasProperty(outerlvl,"protecc")) or (reason == "infloop") then
+	if not hasRule(outerlvl,"got","lvl") and not hasProperty(outerlvl,"protecc") and (reason ~= "infloop") then
     level_destroyed = true
     for _,unit in ipairs(units) do
       addParticles("destroy", unit.x, unit.y, unit.color)
@@ -1348,6 +1354,11 @@ function destroyLevel(reason)
       parseRules(true)
       reset_count = reset_count + 1
     else
+      level_destroyed = true
+      for _,unit in ipairs(units) do
+        addParticles("destroy", unit.x, unit.y, unit.color)
+      end
+      handleDels(units, true)
       local new_unit = createUnit(tiles_by_name["infloop"], math.floor(mapwidth/2), math.floor(mapheight/2), 0)
       addUndo({"create", new_unit.id, false})
     end
