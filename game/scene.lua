@@ -302,19 +302,11 @@ function scene.keyPressed(key, isrepeat)
   end
 	-- Replay keys
 	if key == "+" or key == "=" or key == "d" then
-        if not replay_pause then
-		    replay_playback_interval = replay_playback_interval * 0.8
-        else
-            old_replay_playback_interval = old_replay_playback_interval * 0.8
-        end
+		replay_playback_interval = replay_playback_interval * 0.8
 	end
 	
 	if key == "-" or key == "_" or key == "a" then
-		if not replay_pause then
-		    replay_playback_interval = replay_playback_interval / 0.8
-        else
-            old_replay_playback_interval = old_replay_playback_interval / 0.8
-        end
+		replay_playback_interval = replay_playback_interval / 0.8
 	end
 	
 	if key == "f12" then
