@@ -803,12 +803,6 @@ function updateUnits(undoing, big_update)
       doWin()
     end
     
-    if hasRule("windo","be","loop") then
-      while true do
-        --haha you're stuck now
-      end
-    end
-    
     doDirRules();
   end
   

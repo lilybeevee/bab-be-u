@@ -87,7 +87,7 @@ default_map = '{"map":"eJwlzEEOgCAMRNEpGNSwEriLqPe/l39Cunjpb9Kk8GQlE7ArNmVvt04Vx
 selector_grid_contents = {
   -- page 1: default
   {
-    0, "text_be", "text_&", "text_got", "text_nt", "text_every1", "text_no1", "text_text", "text_lvl", "text_windo", "text_mous", "text_wait", "text_sans", "text_selctr", "text_lin", "text_loop", "this", "selctr",
+    0, "text_be", "text_&", "text_got", "text_nt", "text_every1", "text_no1", "text_text", "text_lvl", "text_sublvl", "text_mous", "text_wait", "text_sans", "text_selctr", "text_lin", "text_loop", "this", "selctr",
     "bab", "text_bab", "text_u", "kee", "text_kee", "text_for dor", "text_direction", "text_wurd", "text_tranz", "text_gay", "text_icy", "text_xwx", "text_liek", "text_nxt", "text_...", "text_u too", "text_u tres", "lvl",
     "keek", "text_keek", "text_walk", "dor", "text_dor", "text_ned kee", "text_visit fren", "text_behin u", "text_qt", "text_moar", "text_goooo", "text_icyyyy", "text_haet", "text_mayb", "text_an", "text_babn't", "text_ben't", "lin",
     "flog", "text_flog", "text_:)", "colld", "text_colld", "text_fridgd", "text_hotte", "text_ouch", "text_slep", "text_protecc", "text_sidekik", "text_brite", "text_lit", "text_opaque", "text_za warudo", "text_rocn't", "text_waln't", "text_ditto",
@@ -1078,17 +1078,17 @@ tiles_list = {
     texttype = "property",
     color = {3, 2},
     layer = 20,
-    desc = "XWX: At end of turn, if U is on XWX, the window crashes.",
+    desc = "XWX: At end of turn, if U is on XWX, the game crashes.",
   },
   --98
   {
-    name = "text_windo",
-    sprite = "text_windo",
+    name = "text_sublvl",
+    sprite = "text_sublvl",
     type = "text",
     texttype = "object",
-    color = {0, 3},
+    color = {4,1},
     layer = 20,
-    desc = "WINDO: Currently unimplemented, will let you manipulate the game window directly.",
+    desc = "SUBLVL: An object that is sublvl will become enterable. Currently unimplemented, and mostly undecided on how it should work.",
   },
   --- 99
   {
