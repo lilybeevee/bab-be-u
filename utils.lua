@@ -4,6 +4,8 @@ function clear()
 	replay_playback_turn = 1
 	replay_playback_time = love.timer.getTime()
 	replay_playback_interval = 0.3
+    old_replay_playback_interval = 0.3
+    replay_pause = false
 	replay_string = ""
   new_units_cache = {}
   undoing = false

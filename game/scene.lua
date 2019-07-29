@@ -134,9 +134,13 @@ end
 function doReplay(dt)
 	if win or not replay_playback then return false end
 	if love.timer.getTime() > (replay_playback_time + replay_playback_interval) then
-		replay_playback_time = replay_playback_time + replay_playback_interval
-		doReplayTurn(replay_playback_turn);
-		replay_playback_turn = replay_playback_turn + 1;
+        if not replay_pause then
+            replay_playback_time = replay_playback_time + replay_playback_interval
+            doReplayTurn(replay_playback_turn);
+            replay_playback_turn = replay_playback_turn + 1;
+        else
+            replay_playback_time = love.timer.getTime()
+        end
 	end
   return true
 end
@@ -296,20 +300,39 @@ function scene.keyPressed(key, isrepeat)
   if key == "r" then
     scene.resetStuff()
   end
-	
-	if key == "+" or key == "=" then
-		replay_playback_interval = replay_playback_interval * 0.8;
+	-- Replay keys
+	if key == "+" or key == "=" or key == "d" then
+        if not replay_pause then
+		    replay_playback_interval = replay_playback_interval * 0.8
+        else
+            old_replay_playback_interval = old_replay_playback_interval * 0.8
+        end
 	end
 	
-	if key == "-" or key == "_" then
-		replay_playback_interval = replay_playback_interval / 0.8;
+	if key == "-" or key == "_" or key == "a" then
+		if not replay_pause then
+		    replay_playback_interval = replay_playback_interval / 0.8
+        else
+            old_replay_playback_interval = old_replay_playback_interval / 0.8
+        end
 	end
 	
 	if key == "f12" then
-		if not replay_playback then tryStartReplay()
-        else replay_playback = false end
+		if not replay_playback then
+            tryStartReplay()
+        else
+            replay_playback = false
+        end
 	end
-
+    
+    if key == "space" and replay_playback then
+        replay_pause = not replay_pause
+    end
+    
+    --[[
+    if key == "z" and replay_playback then
+    end
+    ]]
   if key == "e" and not win and not replay_playback then
     doOneMove(0, 0, "e")
   end
