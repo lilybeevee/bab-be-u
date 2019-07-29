@@ -306,7 +306,8 @@ function scene.keyPressed(key, isrepeat)
 	end
 	
 	if key == "f12" then
-		tryStartReplay()
+		if not replay_playback then tryStartReplay()
+        else replay_playback = false end
 	end
 
   if key == "e" and not win and not replay_playback then
