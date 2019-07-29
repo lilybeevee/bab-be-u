@@ -1022,7 +1022,13 @@ function scene.draw(dt)
     win_size = win_size + dt*2
   end
   love.graphics.pop()
-
+  
+  if replay_playback and not replay_pause then
+    love.graphics.draw(sprites["ui/replay_play"], love.graphics.getWidth() - sprites["ui/replay_play"]:getWidth())
+  elseif replay_playback and replay_pause then
+    love.graphics.draw(sprites["ui/replay_pause"], love.graphics.getWidth() - sprites["ui/replay_pause"]:getWidth())
+  end
+  
   if mouseOverBox(0,0,sprites["ui/cog"]:getHeight(),sprites["ui/cog"]:getWidth()) then
     if love.mouse.isDown(1) then
       love.graphics.draw(sprites["ui/cog_a"], 0, 0)
