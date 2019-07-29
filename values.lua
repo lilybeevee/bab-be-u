@@ -116,9 +116,9 @@ selector_grid_contents = {
   {
     "ui_1","ui_2","ui_3","ui_4","ui_6","ui_7","ui_8","ui_9","ui_w","ui_a","ui_s","ui_d","ui_i","ui_j","ui_k","ui_l","ui_e","ui_arrow",
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,"ui_walk",0,0,"ui_activat",0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,"ui_walk",0,0,"ui_activat",0,0,"ui_clik",0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    "text_press","text_f1","text_play","text_f2","text_edit",0,0,0,0,0,0,0,0,0,0,0,0,0,
+    "text_press","text_f1","text_play","text_f2","text_edit","ui_left click","ui_right click",0,0,0,0,0,0,0,0,0,0,0,
   }
 }
 tile_grid_width = 18
@@ -3173,6 +3173,30 @@ tiles_list = {
     sprite = "text_slis",
     type = "text",
     color = {4,2},
+    layer = 20,
+  },
+  -- 317
+  {
+    name = "ui_left click",
+    sprite = "ui_left_click",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 318
+  {
+    name = "ui_right click",
+    sprite = "ui_right_click",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 319
+  {
+    name = "ui_clik",
+    sprite = "ui_clik",
+    type = "object",
+    color = {0,3},
     layer = 20,
   },
 }
