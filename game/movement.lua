@@ -394,13 +394,11 @@ function doMovement(movex, movey, key)
         local others = getUnitsOnTile(unit.x,unit.y)
         for _,other in ipairs(others) do
           local is_moover = hasRule(unit, "moov", other)
-          if is_moover and timecheck(unit,"moov",other) and timecheck(other) then
-            if other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) then
-              table.insert(other.moves, {reason = "go", dir = unit.dir, times = 1})
-              if #other.moves > 0 and not already_added[other] then
-                table.insert(moving_units, other)
-                already_added[other] = true
-              end
+          if is_moover and timecheck(unit,"moov",other) and other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) then
+            table.insert(other.moves, {reason = "go", dir = unit.dir, times = 1})
+            if #other.moves > 0 and not already_added[other] then
+              table.insert(moving_units, other)
+              already_added[other] = true
             end
           end
         end
