@@ -1868,6 +1868,7 @@ tiles_list = {
   {
     name = "boy",
     sprite = "boy",
+    type = "object",
     color = {0, 2},
     layer = 5,
     rotate = true,
@@ -1922,6 +1923,7 @@ tiles_list = {
     name = "ghost fren",
     sprite = "ghost",
     sleepsprite = "ghost_slep",
+    type = "object",
     color = {4, 2},
     layer = 5,
     rotate = true,
@@ -1940,6 +1942,7 @@ tiles_list = {
     name = "robobot",
     sprite = "robobot",
     sleepsprite = "robobot_slep",
+    type = "object",
     color = {6, 1},
     layer = 5,
     rotate = true,
@@ -1957,6 +1960,7 @@ tiles_list = {
   {
     name = "lvl",
     sprite = "lvl",
+    type = "object",
     color = {0, 3},
     layer = 18,
     rotate = true,
@@ -1966,6 +1970,7 @@ tiles_list = {
   {
     name = "selctr",
     sprite = "selctr",
+    type = "object",
     color = {3, 3},
     layer = 20,
     desc = "used to select levis"
@@ -1982,6 +1987,7 @@ tiles_list = {
   {
     name = "lin",
     sprite = "lin",
+    type = "object",
     color = {0, 3},
     layer = 17,
     desc = "used to connect lovils"
@@ -2079,6 +2085,7 @@ tiles_list = {
   {
     name = "firbolt",
     sprite = "firbolt",
+    type = "object",
     color = {6, 2},
     layer = 5,
     rotate = true,
@@ -2096,6 +2103,7 @@ tiles_list = {
   {
     name = "icbolt",
     sprite = "icbolt",
+    type = "object",
     color = {1, 4},
     layer = 5,
     rotate = true,
@@ -2113,6 +2121,7 @@ tiles_list = {
   {
     name = "hedg",
     sprite = "hedg",
+    type = "object",
     color = {5, 1},
     layer = 1,
     desc = "im hedg the hedg heg",
@@ -2129,6 +2138,7 @@ tiles_list = {
   {
     name = "fenss",
     sprite = "fenss",
+    type = "object",
     color = {6, 2},
     layer = 1,
     desc = "keeps babs out!!",
@@ -2145,6 +2155,7 @@ tiles_list = {
   {
     name = "metl",
     sprite = "metl",
+    type = "object",
     color = {0, 2},
     layer = 1,
     desc = "impervious metl...",
@@ -2161,6 +2172,7 @@ tiles_list = {
   {
     name = "sparkl",
     sprite = "sparkl",
+    type = "object",
     color = {2, 4},
     layer = 10,
     desc = "as brite as a star... but also as hotte as one!!",
@@ -2177,6 +2189,7 @@ tiles_list = {
   {
     name = "spik",
     sprite = "spik",
+    type = "object",
     color = {0, 2},
     layer = 10,
     rotate = true,
@@ -2194,6 +2207,7 @@ tiles_list = {
   {
     name = "spiky",
     sprite = "spiky",
+    type = "object",
     color = {0, 2},
     layer = 10,
     rotate = true,
@@ -2211,6 +2225,7 @@ tiles_list = {
   {
     name = "bordr",
     sprite = "bordr",
+    type = "object",
     color = {1, 0},
     layer = 99,
     desc = "fake oob to hide stuff under"
@@ -2236,6 +2251,7 @@ tiles_list = {
   {
     name = "platfor",
     sprite = "platfor",
+    type = "object",
     color = {6, 2},
     layer = 5,
     desc = "good for use with go my way",
@@ -2253,6 +2269,7 @@ tiles_list = {
   {
     name = "jail",
     sprite = "jail",
+    type = "object",
     color = {0, 2},
     layer = 21,
     desc = "EVERY1 W/FREN JAIL HAET LVL. now bab's in jail :(",
@@ -2279,6 +2296,7 @@ tiles_list = {
   {
     name = "this",
     sprite = "this",
+    type = "object",
     color = {0,3},
     layer = 20,
     desc = "THIS: An object that pretends like it's text."
@@ -2367,6 +2385,7 @@ tiles_list = {
   {
     name = "hol",
     sprite = "hol",
+    type = "object",
     color = {3, 3},
     layer = 8,
     rotate = true,
