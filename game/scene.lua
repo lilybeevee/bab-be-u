@@ -1098,11 +1098,12 @@ function scene.draw(dt)
 	    color = {1, 3}
 	  elseif hasProperty(cursor,"grun") then
 	    color = {5, 2}
-      
       elseif hasProperty(cursor,"reed") then
         color = {2, 2}
       elseif hasProperty(cursor,"cyeann") then
         color = {1, 4}
+      elseif hasProperty(cursor,"blacc") then
+        color = {0, 4}
       end
 
       if not color then
@@ -1116,8 +1117,10 @@ function scene.draw(dt)
       end
 
       if rainbowmode then love.graphics.setColor(hslToRgb((love.timer.getTime()/6+i*10)%1, .5, .5, .9)) end
-
-      love.graphics.draw(system_cursor, cursor.screenx, cursor.screeny)
+      
+      if not hasProperty(cursor,"stelth") then
+        love.graphics.draw(system_cursor, cursor.screenx, cursor.screeny)
+      end
 
       love.graphics.setColor(1,1,1)
       color = nil
