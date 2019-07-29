@@ -2367,7 +2367,7 @@ tiles_list = {
     sprite = "text_blacc",
     type = "text",
     texttype = "property",
-    color = {0, 4},
+    color = {0, 0},
     layer = 20,
     desc = "BLACC: Causes the unit to appear black."
   },
