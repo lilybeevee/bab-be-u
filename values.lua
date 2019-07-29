@@ -1149,7 +1149,7 @@ tiles_list = {
   --- 105
   {
     name = "text_go my way",
-    sprite = "text_go my way",
+    sprite = "text_go my wey",
     type = "text",
     texttype = "property",
     color ={1, 3},
