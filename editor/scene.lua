@@ -61,14 +61,16 @@ function scene.load()
   if not level_level_number then
     level_level_number = 0
   end
-
-  if not loaded_level then
-    if love.filesystem.getInfo("author_name") then
-      level_author = love.filesystem.read("author_name")
-    end
-    default_author = level_author
+  
+  default_author = ""
+  if love.filesystem.getInfo("author_name") then
+    default_author = love.filesystem.read("author_name")
   end
 
+  if (level_author == nil or level_author == "") then
+    level_author = default_author
+  end
+  
   typing_name = false
   ignore_mouse = true
   capturing = false
@@ -197,7 +199,6 @@ function scene.setupGooi()
   gooi.newLabel({text = "Extra", x = 4+dx*i, y = y, w = 200, h = 24}):center():setGroup("settings")
   y = y + 24 + 4
   input_extra = gooi.newCheck({checked = level_extra, x = 90+dx*i, y = y}):setGroup("settings")
-
   input_extra.checked = level_extra
 
   y = y + (24 * 2) + 4
