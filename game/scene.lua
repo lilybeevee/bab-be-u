@@ -487,10 +487,43 @@ function scene.draw(dt)
   love.graphics.printf(next_level_name, 0, -14, roomwidth)
 
   local lvl_color = {getPaletteColor(0, 4)}
-  if rainbowmode then -- or hasProperty(outerlvl, "colrful") then
+  
+  --[[if hasProperty(outerlvl,"tranz") then
+    love.graphics.draw(sprites["overlay/trans"], 0, 0, 0, roomwidth / sprites["overlay/trans"]:getWidth(), roomheight / sprites["overlay/trans"]:getHeight()) 
+  end
+  if hasProperty(outerlvl,"gay") then
+    table.insert(outerlvl.overlay, "gay")
+  end]]
+  
+  -- Lvl be colors
+  if hasProperty(outerlvl,"rave") then
+    lvl_color = {hslToRgb((love.timer.getTime()/3+#undo_buffer/45)%1, 0.1, 0.1, .9), 1}
+  elseif hasProperty(outerlvl,"colrful") or rainbowmode then
     lvl_color = {hslToRgb(love.timer.getTime()/6%1, .1, .1, .9), 1}
-  elseif hasProperty(outerlvl, "reed") then
-    lvl_color = {getPaletteColor(2,2)}
+  elseif (hasProperty(outerlvl,"reed") and hasProperty(outerlvl,"whit")) then
+    lvl_color = {getPaletteColor(4, 2)}
+  elseif (hasProperty(outerlvl,"grun") and hasProperty(outerlvl,"whit")) then
+    lvl_color = {getPaletteColor(5, 3)}
+  elseif hasProperty(outerlvl,"whit") then
+    lvl_color = {getPaletteColor(0, 3)}
+  elseif (hasProperty(outerlvl,"bleu") and hasProperty(outerlvl,"reed")) or hasProperty(outerlvl,"purp") then
+    lvl_color = {getPaletteColor(3, 1)}
+  elseif (hasProperty(outerlvl,"reed") and hasProperty(outerlvl,"grun")) or hasProperty(outerlvl,"yello") then
+    lvl_color = {getPaletteColor(2, 4)}
+  elseif (hasProperty(outerlvl,"reed") and hasProperty(outerlvl,"yello")) or hasProperty(outerlvl,"orang") then
+    lvl_color = {getPaletteColor(2, 3)}
+  elseif (hasProperty(outerlvl,"bleu") and hasProperty(outerlvl,"grun")) or hasProperty(outerlvl,"cyeann") then
+    lvl_color = {getPaletteColor(1, 4)}
+  elseif hasProperty(outerlvl,"reed") then
+    lvl_color = {getPaletteColor(2, 2)}
+  elseif hasProperty(outerlvl,"bleu") then
+    lvl_color = {getPaletteColor(1, 3)}
+  elseif hasProperty(outerlvl,"grun") then
+    lvl_color = {getPaletteColor(5, 2)}
+  elseif hasProperty(outerlvl,"cyeann") then
+    lvl_color = {getPaletteColor(1, 4)}
+  elseif hasProperty(outerlvl,"blacc") then
+    lvl_color = {getPaletteColor(0, 4)}
   end
 
   love.graphics.setColor(lvl_color[1], lvl_color[2], lvl_color[3], lvl_color[4])
@@ -535,7 +568,7 @@ function scene.draw(dt)
         unit.sprite = "text_katany"
       end
     end
-
+    
     if unit.rave then
       -- print("unit " .. unit.name .. " is rave")
       local newcolor = hslToRgb((love.timer.getTime()/0.75+#undo_buffer/45+unit.x/18+unit.y/18)%1, .5, .5, 1)
@@ -550,7 +583,7 @@ function scene.draw(dt)
       newcolor[2] = newcolor[2]*255
       newcolor[3] = newcolor[3]*255
       unit.color = newcolor
-	elseif unit.whit and unit.reed then
+    elseif unit.whit and unit.reed then
 	  unit.color = {4, 2}
 	elseif unit.whit and unit.grun then
 	  unit.color = {5, 3}
@@ -1124,9 +1157,16 @@ function scene.draw(dt)
   if love.window.hasMouseFocus() then
     for i,cursor in ipairs(cursors) do
       local color
-
-      if hasProperty(cursor,"colrful") or hasProperty(cursor,"rave") or rainbowmode then
-        local newcolor = hslToRgb((#undo_buffer/45+cursor.screenx/18+cursor.screeny/18)%1, .5, .5, 1)
+      
+      -- Mous be colors
+      if hasProperty(cursor,"rave") then
+        local newcolor = hslToRgb((love.timer.getTime()/0.75+#undo_buffer/45+cursor.screenx/18+cursor.screeny/18)%1, .5, .5, 1)
+        newcolor[1] = newcolor[1]*255
+        newcolor[2] = newcolor[2]*255
+        newcolor[3] = newcolor[3]*255
+        color = newcolor
+      elseif hasProperty(cursor,"colrful") or rainbowmode then
+        local newcolor = hslToRgb((love.timer.getTime()/15+#undo_buffer/45+cursor.screenx/18+cursor.screeny/18)%1, .5, .5, 1)
         newcolor[1] = newcolor[1]*255
         newcolor[2] = newcolor[2]*255
         newcolor[3] = newcolor[3]*255
@@ -1149,8 +1189,6 @@ function scene.draw(dt)
 	    color = {1, 3}
 	  elseif hasProperty(cursor,"grun") then
 	    color = {5, 2}
-      elseif hasProperty(cursor,"reed") then
-        color = {2, 2}
       elseif hasProperty(cursor,"cyeann") then
         color = {1, 4}
       elseif hasProperty(cursor,"blacc") then
