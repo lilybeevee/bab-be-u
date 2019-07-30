@@ -19,7 +19,7 @@ this saves some persistent-until-you-leave-the-editor state: whatever item is cu
 3) implement save file:
 * one save file per world.
 * needs to be a simple file format (because save doctoring will happen nonstop). key,value store.
-* data that needs to be stored: current overworld, previous level/submap entered on that overworld, which levels are cleared, which levels are completed, which levels are bonused, which levels are transformed (and into what are they transformed). other information should be possible to compute when necessary (like total puff count, puffs in a specific overworld, etc).
+* data that needs to be stored: current overworld, previous level/submap entered on that overworld (NOTE: don't get confused by levels within levels or overworlds within overworlds!), which levels are cleared, which levels are completed, which levels are bonused, which levels are transformed (and into what are they transformed). other information should be possible to compute when necessary (like total puff count, puffs in a specific overworld, etc).
 * all of these lines are saved when the appropriate event happens, and loaded when they need to be checked for.
 
 4) implement logic for laying out an overworld:
@@ -36,3 +36,8 @@ this saves some persistent-until-you-leave-the-editor state: whatever item is cu
 6) implement escape menu and return to parent/level after win:
 * pressing esc brings up a pause menu. it shows the rules (like tab but cleaned up to look good), and has buttons that can be highlighted with the mouse or with the cursor keys: resume, restart level, return to map (grayed out if not applicable), settings (grayed out until we write some), exit to menu. selecting the appropriate button does the appropriate thing.
 * returning to map/beating a level and idling to confirm the win takes you to the appropriate next map.
+
+7) start in overworld:
+* you can define in a text file in a world the main overworld that new games start in.
+* if you play such a world, then you go to the main overworld if you have no save file, or it loads your save file and places you in the appropriate place otherwise. you don't get to see the level picker.
+* edit mode gets to see the level picker as normal. worlds with no main overworld always see the level picker.
