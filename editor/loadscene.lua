@@ -460,7 +460,7 @@ end
 function scene.selectWorld(o, button)
   if button == 1 then
     if o.data.deleting then
-      o.data.deleting = nil
+      o.data.deleting = 0
       o:setColor()
       o:setSprite(sprites["ui/world box"])
     else
@@ -477,7 +477,7 @@ function scene.selectWorld(o, button)
         playSound("move")
       elseif o.data.deleting == 1 then
         o.data.deleting = 2
-        o:setSprite(sprites["ui/world box deleteconfirm"])
+        o:setSprite(sprites["ui/world box delete 2"])
         playSound("unlock")
       elseif o.data.deleting == 2 then
         deleteDir(o.data.file .. "/" .. o:getName())
@@ -485,6 +485,8 @@ function scene.selectWorld(o, button)
         shakeScreen(0.3, 0.1)
         scene.buildUI()
       end
+    else
+      playSound("fail")
     end
   end
 end
@@ -549,7 +551,7 @@ function scene.selectLevel(o, button)
         playSound("move")
       elseif o.data.deleting == 1 then
         o.data.deleting = 2
-        o:setSprite(sprites["ui/level box deleteconfirm"])
+        o:setSprite(sprites["ui/level box delete 2"])
         playSound("unlock")
       elseif o.data.deleting == 2 then
         local dir = "levels/"
@@ -560,6 +562,8 @@ function scene.selectLevel(o, button)
         shakeScreen(0.3, 0.1)
         scene.buildUI()
       end
+    else
+      playSound("fail")
     end
   end
 end

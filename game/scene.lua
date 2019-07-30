@@ -284,9 +284,14 @@ function scene.keyPressed(key, isrepeat)
       repeat_timers["numpad"] = 0
     end
   elseif key == "z" or key == "q" or key == "backspace" or key == "kp0" or key == "o" then
-    if not repeat_timers["undo"] then
-      do_turn_now = true
-      repeat_timers["undo"] = 0
+    if not hasProperty(outerlvl, "no undo") then
+        if not repeat_timers["undo"] then
+        do_turn_now = true
+        repeat_timers["undo"] = 0
+        end
+    else
+        do_turn_now = true
+        playSound("fail")
     end
   end
 
