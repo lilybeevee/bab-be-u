@@ -1068,6 +1068,7 @@ function levelBlock()
   if hasProperty(outerlvl, "visit fren") then
     for _,unit in ipairs(units) do
       if sameFloat(unit,outerlvl) then
+        addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
         if inBounds(unit.x+1,unit.y) then
           moveUnit(unit,unit.x+1,unit.y)
         else
@@ -1077,7 +1078,6 @@ function levelBlock()
             moveUnit(unit,0,0)
           end
         end
-        addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
       end
     end
   end
