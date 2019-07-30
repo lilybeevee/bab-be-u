@@ -464,6 +464,7 @@ function scene.draw(dt)
 
   --background color
   local bg_color = {getPaletteColor(1, 0)}
+  
   if rainbowmode then bg_color = {hslToRgb(love.timer.getTime()/6%1, .2, .2, .9), 1} end
 
   love.graphics.setColor(bg_color[1], bg_color[2], bg_color[3], bg_color[4])
@@ -481,10 +482,14 @@ function scene.draw(dt)
   love.graphics.printf(next_level_name, 0, -14, roomwidth)
 
   local lvl_color = {getPaletteColor(0, 4)}
-  if rainbowmode then lvl_color = {hslToRgb(love.timer.getTime()/6%1, .1, .1, .9), 1} end
+  if rainbowmode then -- or hasProperty(outerlvl, "colrful") then
+    lvl_color = {hslToRgb(love.timer.getTime()/6%1, .1, .1, .9), 1}
+  elseif hasProperty(outerlvl, "reed") then
+    lvl_color = {getPaletteColor(2,2)}
+  end
 
   love.graphics.setColor(lvl_color[1], lvl_color[2], lvl_color[3], lvl_color[4])
-  if (not level_destroyed) then
+  if not (level_destroyed or hasProperty(outerlvl, "stelth")) then
     love.graphics.rectangle("fill", 0, 0, roomwidth, roomheight)
   end
 
@@ -899,7 +904,7 @@ function scene.draw(dt)
     if units_by_layer[i] then
       local removed_units = {}
       for _,unit in ipairs(units_by_layer[i]) do
-        if not unit.stelth and not portaling[unit] then
+        if not (unit.stelth or portaling[unit] or hasProperty(outerlvl, "stelth")) then
           local x, y, rot = unit.x, unit.y, 0
           if unit.name ~= "no1" then
             x, y = unit.draw.x, unit.draw.y
