@@ -2461,7 +2461,7 @@ tiles_list = {
     texttype = "property",
     color = {2,4},
     layer = 20,
-    desc = "ZA WARUDO: Can stop time and move without anything else moving. Faster than rule parsing itself!",
+    desc = "ZA WARUDO: Can stop time and move without anything else moving. Faster than rule parsing itself! After forming the rule, press E (hourglass on mobile) to toggle.",
   },
 	-- 241
   {

@@ -1643,6 +1643,10 @@ function loadLevels(levels, mode, level_objs)
     mapwidth = math.max(mapwidth, data.width)
     mapheight = math.max(mapheight, data.height)
     map_ver = data.version or 0
+    level_next_level_after_win = data.next_level_after_win or ""
+    level_is_overworld = data.is_overworld or false
+    level_level_sprite = data.level_sprite or ""
+    level_level_number = data.level_number or 0
 
     if map_ver == 0 then
       table.insert(maps, {0, loadstring("return " .. mapstr)()})
