@@ -1539,7 +1539,6 @@ tiles_list = {
     color = {0, 1},
     layer = 5,
     rotate = true,
-	desc = "KATANY: Any object with GOT KATANY will have a KATANY."
   },
   -- 147
   {
@@ -1548,6 +1547,7 @@ tiles_list = {
     type = "text",
     color = {0, 1},
     layer = 20,
+	desc = "KATANY: Any object with GOT KATANY will have a KATANY."
   },
   -- 148
   {
