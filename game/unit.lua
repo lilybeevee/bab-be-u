@@ -1065,6 +1065,22 @@ function levelBlock()
     destroyLevel("infloop")
   end
   
+  if hasProperty(outerlvl, "visit fren") then
+    for _,unit in ipairs(units) do
+      if sameFloat(unit,outerlvl) then
+        if inBounds(unit.x+1,unit.y) then
+          moveUnit(unit,unit.x+1,unit.y)
+        else
+          if inBounds(0,unit.y+1) then
+            moveUnit(unit,0,unit.y+1)
+          else
+            moveUnit(unit,0,0)
+          end
+        end
+      end
+    end
+  end
+  
   if hasProperty(outerlvl, "no swim") then
     for _,unit in ipairs(units) do
       if sameFloat(unit, outerlvl) then
