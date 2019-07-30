@@ -11,7 +11,7 @@ local ignore_mouse = true
 
 local settings_open, settings, properties
 local label_palette, label_music
-local input_name, input_author, input_compression, input_palette, input_music, input_width, input_height, input_extra, input_next_level_after_win, input_is_overworld, input_level_sprite, input_level_number
+local input_name, input_author, input_compression, input_palette, input_music, input_width, input_height, input_extra, input_next_level_after_win, input_is_overworld, input_puffs_to_clear, input_level_sprite, input_level_number
 
 local capturing, start_drag, end_drag
 local screenshot, screenshot_image
@@ -54,6 +54,9 @@ function scene.load()
   end
   if not level_is_overworld then
     level_is_overworld = false
+  end
+   if not level_puffs_to_clear then
+    level_puffs_to_clear = 0
   end
   if not level_level_sprite then
     level_level_sprite = ""
@@ -234,6 +237,11 @@ function scene.setupGooi()
   input_is_overworld.checked = level_is_overworld
   
   y = y + 4
+  gooi.newLabel({text = "Puffs to Clear", x = 4+dx*i, y = y, w = 200, h = 24}):center():setGroup("settings")
+  y = y + 24 + 4
+  input_puffs_to_clear = gooi.newSpinner({value = level_puffs_to_clear, min = 0, max = 999, x = 50+dx*i, y = y, w = 98, h = 24}):setGroup("settings")
+  
+  y = y + 24
   gooi.newLabel({text = "Level Sprite", x = 4+dx*i, y = y, w = 200, h = 24}):center():setGroup("settings")
   y = y + 24 + 4
   input_level_sprite = gooi.newText({text = level_level_sprite, x = 4+dx*i, y = y, w = 200, h = 24}):setGroup("settings")
@@ -917,6 +925,7 @@ function scene.saveLevel()
     map = savestr,
     next_level_after_win = level_next_level_after_win,
     is_overworld = level_is_overworld,
+    puffs_to_clear = level_puffs_to_clear,
     level_sprite = level_level_sprite,
     level_number = level_level_number,
   }
@@ -959,6 +968,7 @@ function scene.openSettings()
     input_height:setValue(mapheight)
     input_next_level_after_win:setText(level_next_level_after_win)
     input_is_overworld.checked = level_is_overworld
+    input_puffs_to_clear:setValue(level_puffs_to_clear)
     input_level_sprite:setText(level_level_sprite)
     input_level_number:setValue(level_level_number)
     input_extra.checked = level_extra
@@ -1007,6 +1017,7 @@ function scene.saveSettings()
   map_music = input_music:getText()
   level_next_level_after_win = input_next_level_after_win:getText()
   level_is_overworld = input_is_overworld.checked
+  level_puffs_to_clear = input_puffs_to_clear:getValue()
   level_level_sprite = input_level_sprite:getText()
   level_level_number = input_level_number:getValue()
 
@@ -1061,6 +1072,7 @@ function love.filedropped(file)
   map_ver = mapdata.version or 0
   level_next_level_after_win = mapdata.next_level_after_win or ""
   level_is_overworld = mapdata.is_overworld or false
+  level_puffs_to_clear = mapdata.level_puffs_to_clear or 0
   level_level_sprite = mapdata.level_sprite or ""
   level_level_number = mapdata.level_number or 0
 
