@@ -3,6 +3,9 @@ undoing win behaviour:
 2) But instead of doing that, you can undo. (No other inputs besides waiting and undo do anything on this screen.) The level is STILL won - it can't be unwon. The level is STILL transformed, also. BUT, if you do a DIFFERENT transform, the OLD transform is overwritten.
 
 TODO list for save file/overworld stuff:
+0) any other level settings I forgot:
+* background for the level! (so we can have custom backgrounds like baba's island)
+
 1) Implement level-in-level settings:
 * what level it is (string)
 * icon colour (TODO: not sure what the picker or data format for this is but this is obviously useful... maybe two integer pickers that are the palette co-ordinates? lol. and it defaults to 0,3 then.)
