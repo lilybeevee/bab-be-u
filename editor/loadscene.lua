@@ -204,6 +204,7 @@ function scene.loadLevel(data, new)
 
   level_name = data.name
   level_author = data.author or ""
+  level_extra = data.extra
   current_palette = data.palette or "default"
   map_music = data.music or "bab be u them"
   mapwidth = data.width
