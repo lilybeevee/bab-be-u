@@ -1688,6 +1688,8 @@ function timecheck(unit,verb,prop)
   if timeless then
     if hasProperty(unit,"za warudo") then
       return true
+    elseif hasProperty(outerlvl,"za warudo") and not hasRule(unit,"ben't","za warudo") then
+      return true
     elseif verb ~= nil and prop ~= nil then
       local rulecheck = matchesRule(unit,verb,prop)
       for _,ruleparent in ipairs(rulecheck) do

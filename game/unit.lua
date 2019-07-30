@@ -1077,6 +1077,7 @@ function levelBlock()
             moveUnit(unit,0,0)
           end
         end
+        addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
       end
     end
   end
