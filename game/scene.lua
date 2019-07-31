@@ -1405,12 +1405,14 @@ function doOneMove(x, y, key)
         --print("And time resumes")
       end
       addUndo({"za warudo", timeless})
+      unsetNewUnits()
     else
       timeless = false
     end
 	elseif (key == "undo") then
 		local result = undo()
 		replay_string = replay_string..tostring(0)..","..tostring(0)..","..tostring("undo")..";"
+    unsetNewUnits()
 		return result
 	else
 		newUndo()
@@ -1421,8 +1423,8 @@ function doOneMove(x, y, key)
 			table.remove(undo_buffer, 1)
 		end
 		unsetNewUnits()
-		return rtue
 	end
+  return true
 end
 
 function scene.doPassiveParticles(timer,word,effect,delay,chance,count,color)
