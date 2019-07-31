@@ -94,7 +94,7 @@ selector_grid_contents = {
     "roc", "text_roc", "text_go away pls", "gras", "text_gras", "dayzy", "text_dayzy", "text_wfren", "text_arond", "text_frenles", "text_copkat", "text_go arnd", "text_mirr arnd", "text_meta", "text_frens", "text_pathz", "text_groop", "text_stay ther",
     "wal", "text_wal", "text_no go", "l..uv", "text_l..uv", "hurcane", "text_hurcane", "text_creat", "text_look at", "text_spoop", "text_yeet", "text_turn cornr", "text_corekt", "text_timles", "text_the", "text_that", "text_that be", "text_clikt",
     "watr", "text_watr", "text_no swim", "meem", "text_meem", "o", "text_o", "text_snacc", "text_seen by" , "text_stalk", "text_moov", "text_folo wal", "text_rong", "text_her", "text_thr", 0, 0, 0,
-    "skul", "text_skul", "text_:(", "til", "text_til", "kirb", "text_kirb", "gun", "text_gun", "wog", "text_wog", "text_zip", "text_shy", "text_munwalk", "text_sidestep", "text_diagstep", "text_hopovr", "text_knightstep",
+    "skul", "text_skul", "text_:(", "til", "text_til", "kirb", "text_kirb", "gunne", "text_gunne", "wog", "text_wog", "text_zip", "text_shy", "text_munwalk", "text_sidestep", "text_diagstep", "text_hopovr", "text_knightstep",
     "boux", "text_boux", "text_come pls", "os", "text_os", "bup", "text_bup", "han", "text_han", "tot", "text_tot", "lila", "text_lila", "hol", "text_hol", "text_poor toll", "text_blacc", "text_reed",
     "bellt", "text_bellt", "text_go", "tre", "text_tre", "piler", "text_piler", "hatt", "text_hatt", "laav", "text_laav", "fenss", "text_fenss", "riff", "text_riff", 0, "text_whit", "text_orang",
     "boll", "text_boll", "text_:o", "frut", "text_frut", "slippers", "text_slippers", "pata", "text_pata", "larry", "text_larry", "pepis", "text_pepis", "metl", "text_metl", 0, "text_colrful", "text_yello",
@@ -119,7 +119,29 @@ selector_grid_contents = {
     0,"ui_walk",0,0,"ui_activat",0,0,"ui_clik",0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     "text_press","text_f1","text_play","text_f2","text_edit","ui_left click","ui_right click",0,0,0,0,0,0,0,0,0,0,0,
-  }
+  },
+  -- page 4: objects
+  {
+    "bab","text_bab","flog","text_flog","wal","text_wal","gras","text_gras",0,0,0,0,0,0,"selctr","text_selctr","lvl","text_lvl",
+    "keek","text_keek","roc","text_roc","til","text_til","sparkl","text_sparkl",0,0,0,0,0,0,"this","text_mous","lin","text_lin",
+    "meem","text_meem","boux","text_boux","watr","text_watr","scarr","text_scarr","petnygrame","text_petnygrame",0,0,0,0,"text_text","text_frens","text_groop","text_pathz",
+    "skul","text_skul","boll","text_boll","laav","text_laav","katany","text_katany","gunne","text_gunne",0,0,0,0,0,0,"text_every1","text_no1",
+    "ghost fren","text_ghost fren","kee","text_kee","dor","text_dor","hatt","text_hatt","slippers","text_slippers",0,0,0,0,0,0,0,0,
+    "robobot","text_robobot","l..uv","text_l..uv","hedg","text_hedg","hol","text_hol","riff","text_riff",0,0,0,0,0,0,0,0,
+    "wog","text_wog","tre","text_tre","metl","text_metl","clok","text_clok",0,0,0,0,0,0,0,0,0,0,
+    "kirb","text_kirb","frut","text_frut","jail","text_jail","sine","text_sine",0,0,0,0,0,0,0,0,0,0,
+    "bup","text_bup","piler","text_piler","fenss","text_fenss","buble","text_buble","creb","text_creb","icecub","text_icecub",0,0,0,0,0,0,
+    "boy","text_boy","dayzy","text_dayzy","platfor","text_platfor",0,0,0,0,0,0,0,0,"lila","text_lila","tot","text_tot",
+    "steev","text_steev","splittr","text_splittr","colld","text_colld",0,0,0,0,0,0,0,0,"pata","text_pata","o","text_o",
+    "han","text_han","clowd","text_clowd","bellt","text_bellt","arro","text_arro",0,0,0,0,0,0,"larry","text_larry","zsoob","text_zsoob",
+    "os","text_os","hurcane","text_hurcane","spik","text_spik",0,0,0,0,0,0,0,0,0,0,0,0,
+    "firbolt","text_firbolt","lie","text_lie","spiky","text_spiky",0,0,0,0,0,0,0,0,0,0,0,0,
+    "icbolt","text_icbolt","lie/8","text_lie/8","bordr","text_bordr",0,0,0,0,0,0,0,0,0,0,0,0,
+  },
+  -- page 5: properties, verbs and conditions
+  {
+    "text_u","text_walk",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+  },
 }
 tile_grid_width = 18
 tile_grid_height = 15
@@ -875,7 +897,7 @@ tiles_list = {
   },
   --79
   {
-    name = "gun",
+    name = "gunne",
     sprite = "gun",
     type = "object",
     color = {0, 3},
@@ -883,7 +905,7 @@ tiles_list = {
   },
   --80
   {
-    name = "text_gun",
+    name = "text_gunne",
     sprite = "text_gun",
     type = "text",
     color = {0, 3},
@@ -3208,7 +3230,71 @@ tiles_list = {
     color = {0, 3},
     layer = 20,
     desc = "CLIKT (Prefix Condition): CLIKT objects will be true when left-clicked. Passes a turn if successful.",
-  }
+  },
+  -- 321
+  {
+    name = "sine",
+    sprite = "sine",
+    type = "object",
+    color = {6,2},
+    layer = 4
+  },
+  -- 322
+  {
+    name = "text_sine",
+    sprite = "text_sine",
+    type = "text",
+    color = {6,2},
+    layer = 20,
+  },
+  -- 323
+  {
+    name = "buble",
+    sprite = "buble",
+    type = "object",
+    color = {1,3},
+    layer = 3,
+  },
+  -- 324
+  {
+    name = "text_buble",
+    sprite = "text_buble",
+    type = "text",
+    color = {1,3},
+    layer = 20,
+  },
+  -- 325
+  {
+    name = "creb",
+    sprite = "creb",
+    type = "object",
+    color = {2,2},
+    layer = 5,
+  },
+  -- 326
+  {
+    name = "text_creb",
+    sprite = "text_creb",
+    type = "text",
+    color = {2,2},
+    layer = 20,
+  },
+  -- 327
+  {
+    name = "icecub",
+    sprite = "icecub",
+    type = "object",
+    color = {1,4},
+    layer = 4,
+  },
+  -- 328
+  {
+    name = "text_icecub",
+    sprite = "text_icecub",
+    type = "text",
+    color = {1,4},
+    layer = 20,
+  },
 }
 
 tiles_by_name = {}
