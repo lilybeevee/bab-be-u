@@ -48,6 +48,8 @@ function clear()
   cursor_converted = false
   mouse_X = love.mouse.getX()
   mouse_Y = love.mouse.getY()
+      last_click_x = nil
+      last_click_y = nil
   mouse_oldX = mouse_X
   mouse_oldY = mouse_Y
   cursors = {}
@@ -745,6 +747,15 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
       result = unit.blocked
     elseif condtype == "timles" then
       result = timeless
+    elseif condtype == "clikt" then
+        if unit.x == last_click_x and unit.y == last_click_y then
+            result = true
+        else
+            result = false
+        end
+        --print(result)
+        --print(x, y)
+        --print(last_click_x, last_click_y)
     else
       print("unknown condtype: " .. condtype)
       result = false

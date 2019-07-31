@@ -1519,7 +1519,14 @@ function particlesRngCheck()
 end
 
 function scene.mouseReleased(x, y, button)
-  if button == 2 then
+  if button == 1 then
+    if units_by_name["text_clikt"] then
+        last_click_x, last_click_y = screenToGameTile(love.mouse.getX(), love.mouse.getY())
+        newUndo()
+        doMovement(0,0,nil)
+        last_click_x, last_click_y = nil, nil
+    end
+  elseif button == 2 then
     scene.setStackBox(screenToGameTile(x, y))
   end
 
