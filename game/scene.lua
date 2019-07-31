@@ -89,17 +89,17 @@ function scene.load()
 
   mobile_controls_activekeys = "wasd"
 
-  gooi.newButton({text = "",x = 10*twelfth,y = screenheight-3*twelfth,w = twelfth,h = twelfth,group = "mobile-controls"}):onPress(function(c) doMovement(0,-1,mobile_controls_activekeys) end):setBGImage(sprites["ui/arrow up"]):bg({0, 0, 0, 0})
-  gooi.newButton({text = "",x = 11*twelfth,y = screenheight-2*twelfth,w = twelfth,h = twelfth,group = "mobile-controls"}):onPress(function(c) doMovement(1,0,mobile_controls_activekeys) end):setBGImage(sprites["ui/arrow right"]):bg({0, 0, 0, 0})
-  gooi.newButton({text = "",x = 10*twelfth,y = screenheight-1*twelfth,w = twelfth,h = twelfth,group = "mobile-controls"}):onPress(function(c) doMovement(0,1,mobile_controls_activekeys) end):setBGImage(sprites["ui/arrow down"]):bg({0, 0, 0, 0})
-  gooi.newButton({text = "",x =  9*twelfth,y = screenheight-2*twelfth,w = twelfth,h = twelfth,group = "mobile-controls"}):onPress(function(c) doMovement(-1,0,mobile_controls_activekeys) end):setBGImage(sprites["ui/arrow left"]):bg({0, 0, 0, 0})
+  gooi.newButton({text = "",x = 10*twelfth,y = screenheight-3*twelfth,w = twelfth,h = twelfth,group = "mobile-controls"}):onPress(function(c) doOneMove(0,-1,mobile_controls_activekeys) end):setBGImage(sprites["ui/arrow up"]):bg({0, 0, 0, 0})
+  gooi.newButton({text = "",x = 11*twelfth,y = screenheight-2*twelfth,w = twelfth,h = twelfth,group = "mobile-controls"}):onPress(function(c) doOneMove(1,0,mobile_controls_activekeys) end):setBGImage(sprites["ui/arrow right"]):bg({0, 0, 0, 0})
+  gooi.newButton({text = "",x = 10*twelfth,y = screenheight-1*twelfth,w = twelfth,h = twelfth,group = "mobile-controls"}):onPress(function(c) doOneMove(0,1,mobile_controls_activekeys) end):setBGImage(sprites["ui/arrow down"]):bg({0, 0, 0, 0})
+  gooi.newButton({text = "",x =  9*twelfth,y = screenheight-2*twelfth,w = twelfth,h = twelfth,group = "mobile-controls"}):onPress(function(c) doOneMove(-1,0,mobile_controls_activekeys) end):setBGImage(sprites["ui/arrow left"]):bg({0, 0, 0, 0})
 
-  gooi.newButton({text = "",x = 11*twelfth,y = screenheight-3*twelfth,w = twelfth,h = twelfth,group = "mobile-controls"}):onPress(function(c) doMovement(1,-1,mobile_controls_activekeys) end):setBGImage(sprites["ui/arrow ur"]):bg({0, 0, 0, 0})
-  gooi.newButton({text = "",x = 11*twelfth,y = screenheight-1*twelfth,w = twelfth,h = twelfth,group = "mobile-controls"}):onPress(function(c) doMovement(1,1,mobile_controls_activekeys) end):setBGImage(sprites["ui/arrow dr"]):bg({0, 0, 0, 0})
-  gooi.newButton({text = "",x = 9*twelfth,y = screenheight-1*twelfth,w = twelfth,h = twelfth,group = "mobile-controls"}):onPress(function(c) doMovement(-1,1,mobile_controls_activekeys) end):setBGImage(sprites["ui/arrow dl"]):bg({0, 0, 0, 0})
-  gooi.newButton({text = "",x = 9*twelfth,y = screenheight-3*twelfth,w = twelfth,h = twelfth,group = "mobile-controls"}):onPress(function(c) doMovement(-1,-1,mobile_controls_activekeys) end):setBGImage(sprites["ui/arrow ul"]):bg({0, 0, 0, 0})
+  gooi.newButton({text = "",x = 11*twelfth,y = screenheight-3*twelfth,w = twelfth,h = twelfth,group = "mobile-controls"}):onPress(function(c) doOneMove(1,-1,mobile_controls_activekeys) end):setBGImage(sprites["ui/arrow ur"]):bg({0, 0, 0, 0})
+  gooi.newButton({text = "",x = 11*twelfth,y = screenheight-1*twelfth,w = twelfth,h = twelfth,group = "mobile-controls"}):onPress(function(c) doOneMove(1,1,mobile_controls_activekeys) end):setBGImage(sprites["ui/arrow dr"]):bg({0, 0, 0, 0})
+  gooi.newButton({text = "",x = 9*twelfth,y = screenheight-1*twelfth,w = twelfth,h = twelfth,group = "mobile-controls"}):onPress(function(c) doOneMove(-1,1,mobile_controls_activekeys) end):setBGImage(sprites["ui/arrow dl"]):bg({0, 0, 0, 0})
+  gooi.newButton({text = "",x = 9*twelfth,y = screenheight-3*twelfth,w = twelfth,h = twelfth,group = "mobile-controls"}):onPress(function(c) doOneMove(-1,-1,mobile_controls_activekeys) end):setBGImage(sprites["ui/arrow ul"]):bg({0, 0, 0, 0})
 
-  gooi.newButton({text = "",x = 10*twelfth,y = screenheight-2*twelfth,w = twelfth,h = twelfth,group = "mobile-controls"}):onPress(function(c) doMovement(0,0,mobile_controls_activekeys) end):setBGImage(sprites["ui/square"]):bg({0, 0, 0, 0})
+  gooi.newButton({text = "",x = 10*twelfth,y = screenheight-2*twelfth,w = twelfth,h = twelfth,group = "mobile-controls"}):onPress(function(c) doOneMove(0,0,mobile_controls_activekeys) end):setBGImage(sprites["ui/square"]):bg({0, 0, 0, 0})
 
   gooi.newButton({text = "",x = 9.25*twelfth,y = 0.25*twelfth,w = twelfth,h = twelfth,group = "mobile-controls"}):onPress(function(c) doOneMove(0, 0, "undo") end):setBGImage(sprites["ui/undo"]):bg({0, 0, 0, 0})
   gooi.newButton({text = "",x = 10.75*twelfth,y = 0.25*twelfth,w = twelfth,h = twelfth,group = "mobile-controls"}):onPress(function(c) scene.resetStuff() end):setBGImage(sprites["ui/reset"]):bg({0, 0, 0, 0})
@@ -1179,14 +1179,14 @@ function scene.draw(dt)
         else
           mobile_controls_p1:setBGImage(sprites["ui_1"])
           mobile_controls_p2:setBGImage(sprites["ui_2"])
-          mobile_controls_p3:setBGImage(sprites["text_and"])
+          mobile_controls_p3:setBGImage(sprites["ui_plus"])
         end
       elseif rules_with["u tres"] then
         mobile_controls_p1:setVisible(true)
         mobile_controls_p2:setVisible(true)
         mobile_controls_p3:setVisible(true)
         mobile_controls_p1:setBGImage(sprites["ui_1"])
-        mobile_controls_p2:setBGImage(sprites["text_and"])
+        mobile_controls_p2:setBGImage(sprites["ui_plus"])
         mobile_controls_p3:setBGImage(sprites["ui_3"])
       else
         mobile_controls_p1:setVisible(false)
@@ -1197,7 +1197,7 @@ function scene.draw(dt)
       mobile_controls_p1:setVisible(true)
       mobile_controls_p2:setVisible(true)
       mobile_controls_p3:setVisible(true)
-      mobile_controls_p1:setBGImage(sprites["text_and"])
+      mobile_controls_p1:setBGImage(sprites["ui_plus"])
       mobile_controls_p2:setBGImage(sprites["ui_2"])
       mobile_controls_p3:setBGImage(sprites["ui_3"])
     else
@@ -1527,91 +1527,6 @@ function scene.mouseReleased(x, y, button)
     --love.keypressed("f2")
     new_scene = editor
     load_mode = "edit"
-  end
-  if is_mobile and false then
-    local screenwidth = love.graphics.getWidth()
-    local screenheight = love.graphics.getHeight()
-
-    local arrowsprite = sprites["ui/arrow"]
-    local squaresprite = sprites["ui/square"]
-
-    local key = "0"
-
-    if     pointInside(x, y, screenwidth-squaresprite:getWidth()*2, screenheight-squaresprite:getHeight()*2, squaresprite:getWidth(), squaresprite:getHeight()) then
-      key = "space"
-	elseif pointInside(x, y, screenwidth-squaresprite:getWidth()*2, screenheight-squaresprite:getHeight()*3, squaresprite:getWidth(), squaresprite:getHeight()) then
-      key = "kp8"
-	elseif pointInside(x, y, screenwidth-squaresprite:getWidth(),   screenheight-squaresprite:getHeight()*3, squaresprite:getWidth(), squaresprite:getHeight()) then
-	  key = "kp9"
-    elseif pointInside(x, y, screenwidth-squaresprite:getWidth(),   screenheight-squaresprite:getHeight()*2, squaresprite:getWidth(), squaresprite:getHeight()) then
-      key = "kp6"
-	elseif pointInside(x, y, screenwidth-squaresprite:getWidth(),   screenheight-squaresprite:getHeight(),   squaresprite:getWidth(), squaresprite:getHeight()) then
-	  key = "kp3"
-	elseif pointInside(x, y, screenwidth-squaresprite:getWidth()*2, screenheight-squaresprite:getHeight(),   squaresprite:getWidth(), squaresprite:getHeight()) then
-      key = "kp2"
-    elseif pointInside(x, y, screenwidth-squaresprite:getWidth()*3, screenheight-squaresprite:getHeight(),   squaresprite:getWidth(), squaresprite:getHeight()) then
-	  key = "kp1"
-	elseif pointInside(x, y, screenwidth-squaresprite:getWidth()*3, screenheight-squaresprite:getHeight()*2, squaresprite:getWidth(), squaresprite:getHeight()) then
-      key = "kp4"
-    elseif pointInside(x, y, screenwidth-squaresprite:getWidth()*3, screenheight-squaresprite:getHeight()*3, squaresprite:getWidth(), squaresprite:getHeight()) then
-	  key = "kp7"
-    elseif pointInside(x, y,             squaresprite:getWidth()*2, screenheight-squaresprite:getHeight()*2, squaresprite:getWidth(), squaresprite:getHeight()) then
-      doOneMove(0,0,"undo")
-    elseif pointInside(x, y, screenwidth-squaresprite:getWidth()*2,              squaresprite:getHeight(),   squaresprite:getWidth(), squaresprite:getHeight()) then
-      key = "r"
-    end
-	
-	if rules_with["za warudo"] then
-	  if pointInside(x, y, squaresprite:getWidth(), squaresprite:getHeight(), squaresprite:getWidth(), squaresprite:getHeight()) then
-        key = "e"
-	  end
-	end
-
-    scene.keyReleased(key)
-  end
-end
-
-function scene.mousePressed(x, y, button)
-  if is_mobile and false then
-    local screenwidth = love.graphics.getWidth()
-    local screenheight = love.graphics.getHeight()
-
-    local arrowsprite = sprites["ui/arrow"]
-    local squaresprite = sprites["ui/square"]
-
-    local key = "0"
-
-	if     mouseOverBox(screenwidth-squaresprite:getWidth()*2, screenheight-squaresprite:getHeight()*2, squaresprite:getWidth(), squaresprite:getHeight()) then
-      key = "space"
-	elseif mouseOverBox(screenwidth-squaresprite:getWidth()*2, screenheight-squaresprite:getHeight()*3, squaresprite:getWidth(), squaresprite:getHeight()) then
-      key = "kp8"
-	elseif mouseOverBox(screenwidth-squaresprite:getWidth(),   screenheight-squaresprite:getHeight()*3, squaresprite:getWidth(), squaresprite:getHeight()) then
-	  key = "kp9"
-    elseif mouseOverBox(screenwidth-squaresprite:getWidth(),   screenheight-squaresprite:getHeight()*2, squaresprite:getWidth(), squaresprite:getHeight()) then
-      key = "kp6"
-	elseif mouseOverBox(screenwidth-squaresprite:getWidth(),   screenheight-squaresprite:getHeight(),   squaresprite:getWidth(), squaresprite:getHeight()) then
-	  key = "kp3"
-	elseif mouseOverBox(screenwidth-squaresprite:getWidth()*2, screenheight-squaresprite:getHeight(),   squaresprite:getWidth(), squaresprite:getHeight()) then
-      key = "kp2"
-    elseif mouseOverBox(screenwidth-squaresprite:getWidth()*3, screenheight-squaresprite:getHeight(),   squaresprite:getWidth(), squaresprite:getHeight()) then
-	  key = "kp1"
-	elseif mouseOverBox(screenwidth-squaresprite:getWidth()*3, screenheight-squaresprite:getHeight()*2, squaresprite:getWidth(), squaresprite:getHeight()) then
-      key = "kp4"
-    elseif mouseOverBox(screenwidth-squaresprite:getWidth()*3, screenheight-squaresprite:getHeight()*3, squaresprite:getWidth(), squaresprite:getHeight()) then
-	  key = "kp7"
-    elseif mouseOverBox(             squaresprite:getWidth(),  screenheight-squaresprite:getHeight()*2, squaresprite:getWidth(), squaresprite:getHeight()) then
-      doOneMove(0,0,"undo")
-    elseif mouseOverBox(screenwidth-squaresprite:getWidth()*2,              squaresprite:getHeight(),   squaresprite:getWidth(), squaresprite:getHeight()) then
-      key = "r"
-    end
-	
-	if rules_with["za warudo"] then
-	  if mouseOverBox(squaresprite:getWidth(), squaresprite:getHeight(), squaresprite:getWidth(), squaresprite:getHeight()) then
-        key = "e"
-	  end
-	end
-
-    scene.keyPressed(key)
   end
 end
 
