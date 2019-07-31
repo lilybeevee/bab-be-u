@@ -562,7 +562,7 @@ tiles_list = {
     sprite = "luv",
     type = "object",
     color = {4, 2},
-    layer = 3,
+    layer = 6,
     rotate = "true",
   },
   --46
