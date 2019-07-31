@@ -41,11 +41,11 @@ function scene.update(dt)
   if is_mobile and love.mouse.isDown(1) then
     x, y = love.mouse.getPosition()
 
-    if pointInside(x, y, love.graphics.getWidth()-10-sprites["ui/arrow"]:getWidth(), 10, sprites["ui/arrow"]:getWidth(), sprites["ui/arrow"]:getHeight()) then
+    if pointInside(x, y, love.graphics.getWidth()-10-sprites["ui/arrow up"]:getWidth(), 10, sprites["ui/arrow up"]:getWidth(), sprites["ui/arrow up"]:getHeight()) then
       scrollvel = scrollvel - 100
     end
 
-    if pointInside(x, y, love.graphics.getWidth()-10-sprites["ui/arrow"]:getWidth(), love.graphics.getHeight()-10-sprites["ui/arrow"]:getHeight(), sprites["ui/arrow"]:getWidth(), sprites["ui/arrow"]:getHeight()) then
+    if pointInside(x, y, love.graphics.getWidth()-10-sprites["ui/arrow down"]:getWidth(), love.graphics.getHeight()-10-sprites["ui/arrow down"]:getHeight(), sprites["ui/arrow down"]:getWidth(), sprites["ui/arrow down"]:getHeight()) then
       scrollvel = scrollvel + 100
     end
   end
@@ -170,20 +170,20 @@ function scene.draw()
   
   if is_mobile then
     love.graphics.setColor(0.6,0.6,0.6)
-    love.graphics.rectangle("fill", love.graphics.getWidth()-10-sprites["ui/arrow"]:getWidth(), 10, sprites["ui/arrow"]:getWidth(), love.graphics.getHeight()-20)
+    love.graphics.rectangle("fill", love.graphics.getWidth()-10-sprites["ui/arrow up"]:getWidth(), 10, sprites["ui/arrow up"]:getWidth(), love.graphics.getHeight()-20)
 
     love.graphics.setColor(0.9,0.9,0.9)
-    love.graphics.rectangle("fill", love.graphics.getWidth()-10-sprites["ui/arrow"]:getWidth(), 10+sprites["ui/arrow"]:getHeight()+scrolloffset/scroll_height*(love.graphics.getHeight()-20-sprites["ui/arrow"]:getHeight()*2.5), sprites["ui/arrow"]:getWidth(), sprites["ui/arrow"]:getHeight()/2)
+    love.graphics.rectangle("fill", love.graphics.getWidth()-10-sprites["ui/arrow up"]:getWidth(), 10+sprites["ui/arrow up"]:getHeight()+scrolloffset/scroll_height*(love.graphics.getHeight()-20-sprites["ui/arrow up"]:getHeight()*2.5), sprites["ui/arrow up"]:getWidth(), sprites["ui/arrow up"]:getHeight()/2)
 
     love.graphics.setColor(1,1,1)
-    love.graphics.rectangle("fill", love.graphics.getWidth()-10-sprites["ui/arrow"]:getWidth(), 10, sprites["ui/arrow"]:getWidth(), sprites["ui/arrow"]:getHeight())
+    love.graphics.rectangle("fill", love.graphics.getWidth()-10-sprites["ui/arrow ul"]:getWidth(), 10, sprites["ui/arrow up"]:getWidth(), sprites["ui/arrow up"]:getHeight())
     love.graphics.setColor(0.1,0.1,0.1)
-    love.graphics.draw(sprites["ui/arrow"], love.graphics.getWidth()-10-sprites["ui/arrow"]:getWidth(), 10)
+    love.graphics.draw(sprites["ui/arrow up"], love.graphics.getWidth()-10-sprites["ui/arrow up"]:getWidth(), 10)
 
     love.graphics.setColor(1,1,1)
-    love.graphics.rectangle("fill", love.graphics.getWidth()-10-sprites["ui/arrow"]:getWidth(), love.graphics.getHeight()-10-sprites["ui/arrow"]:getHeight(), sprites["ui/arrow"]:getWidth(), sprites["ui/arrow"]:getHeight())
+    love.graphics.rectangle("fill", love.graphics.getWidth()-10-sprites["ui/arrow down"]:getWidth(), love.graphics.getHeight()-10-sprites["ui/arrow down"]:getHeight(), sprites["ui/arrow down"]:getWidth(), sprites["ui/arrow down"]:getHeight())
     love.graphics.setColor(0.1,0.1,0.1)
-    love.graphics.draw(sprites["ui/arrow"], love.graphics.getWidth()-10, love.graphics.getHeight()-10, math.pi)
+    love.graphics.draw(sprites["ui/arrow down"], love.graphics.getWidth()-10-sprites["ui/arrow down"]:getWidth(), love.graphics.getHeight()-10-sprites["ui/arrow down"]:getHeight())
   elseif scroll_height > 0 then
     love.graphics.setColor(0.6,0.6,0.6,0.3)
     love.graphics.rectangle("fill", love.graphics.getWidth()-5, 0, 5, love.graphics.getHeight())
@@ -493,11 +493,11 @@ end
 
 function scene.mousePressed(x, y, button)
   if is_mobile then
-    if pointInside(x, y, love.graphics.getWidth()-10-sprites["ui/arrow"]:getWidth(), 10, sprites["ui/arrow"]:getWidth(), sprites["ui/arrow"]:getHeight()) then
+    if pointInside(x, y, love.graphics.getWidth()-10-sprites["ui/arrow up"]:getWidth(), 10, sprites["ui/arrow up"]:getWidth(), sprites["ui/arrow up"]:getHeight()) then
       scrollvel = scrollvel - 400
     end
 
-    if pointInside(x, y, love.graphics.getWidth()-10-sprites["ui/arrow"]:getWidth(), love.graphics.getHeight()-10-sprites["ui/arrow"]:getHeight(), sprites["ui/arrow"]:getWidth(), sprites["ui/arrow"]:getHeight()) then
+    if pointInside(x, y, love.graphics.getWidth()-10-sprites["ui/arrow down"]:getWidth(), love.graphics.getHeight()-10-sprites["ui/arrow down"]:getHeight(), sprites["ui/arrow down"]:getWidth(), sprites["ui/arrow down"]:getHeight()) then
       scrollvel = scrollvel + 400
     end
   end

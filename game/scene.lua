@@ -81,6 +81,51 @@ function scene.load()
 
   mouse_grabbed = false
   love.mouse.setGrabbed(false)
+
+  -- mobile buttons
+  local screenwidth = love.graphics.getWidth()
+  local screenheight = love.graphics.getHeight()
+  local twelfth = screenwidth/12
+
+  mobile_controls_activekeys = "wasd"
+
+  gooi.newButton({text = "",x = 10*twelfth,y = screenheight-3*twelfth,w = twelfth,h = twelfth,group = "mobile-controls"}):onPress(function(c) doMovement(0,-1,mobile_controls_activekeys) end):setBGImage(sprites["ui/arrow up"]):bg({0, 0, 0, 0})
+  gooi.newButton({text = "",x = 11*twelfth,y = screenheight-2*twelfth,w = twelfth,h = twelfth,group = "mobile-controls"}):onPress(function(c) doMovement(1,0,mobile_controls_activekeys) end):setBGImage(sprites["ui/arrow right"]):bg({0, 0, 0, 0})
+  gooi.newButton({text = "",x = 10*twelfth,y = screenheight-1*twelfth,w = twelfth,h = twelfth,group = "mobile-controls"}):onPress(function(c) doMovement(0,1,mobile_controls_activekeys) end):setBGImage(sprites["ui/arrow down"]):bg({0, 0, 0, 0})
+  gooi.newButton({text = "",x =  9*twelfth,y = screenheight-2*twelfth,w = twelfth,h = twelfth,group = "mobile-controls"}):onPress(function(c) doMovement(-1,0,mobile_controls_activekeys) end):setBGImage(sprites["ui/arrow left"]):bg({0, 0, 0, 0})
+
+  gooi.newButton({text = "",x = 11*twelfth,y = screenheight-3*twelfth,w = twelfth,h = twelfth,group = "mobile-controls"}):onPress(function(c) doMovement(1,-1,mobile_controls_activekeys) end):setBGImage(sprites["ui/arrow ur"]):bg({0, 0, 0, 0})
+  gooi.newButton({text = "",x = 11*twelfth,y = screenheight-1*twelfth,w = twelfth,h = twelfth,group = "mobile-controls"}):onPress(function(c) doMovement(1,1,mobile_controls_activekeys) end):setBGImage(sprites["ui/arrow dr"]):bg({0, 0, 0, 0})
+  gooi.newButton({text = "",x = 9*twelfth,y = screenheight-1*twelfth,w = twelfth,h = twelfth,group = "mobile-controls"}):onPress(function(c) doMovement(-1,1,mobile_controls_activekeys) end):setBGImage(sprites["ui/arrow dl"]):bg({0, 0, 0, 0})
+  gooi.newButton({text = "",x = 9*twelfth,y = screenheight-3*twelfth,w = twelfth,h = twelfth,group = "mobile-controls"}):onPress(function(c) doMovement(-1,-1,mobile_controls_activekeys) end):setBGImage(sprites["ui/arrow ul"]):bg({0, 0, 0, 0})
+
+  gooi.newButton({text = "",x = 10*twelfth,y = screenheight-2*twelfth,w = twelfth,h = twelfth,group = "mobile-controls"}):onPress(function(c) doMovement(0,0,mobile_controls_activekeys) end):setBGImage(sprites["ui/square"]):bg({0, 0, 0, 0})
+
+  gooi.newButton({text = "",x = 9.25*twelfth,y = 0.25*twelfth,w = twelfth,h = twelfth,group = "mobile-controls"}):onPress(function(c) doOneMove(0, 0, "undo") end):setBGImage(sprites["ui/undo"]):bg({0, 0, 0, 0})
+  gooi.newButton({text = "",x = 10.75*twelfth,y = 0.25*twelfth,w = twelfth,h = twelfth,group = "mobile-controls"}):onPress(function(c) scene.resetStuff() end):setBGImage(sprites["ui/reset"]):bg({0, 0, 0, 0})
+
+  mobile_controls_timeless = gooi.newButton({text = "",x = 10*twelfth,y = 1.5*twelfth,w = twelfth,h = twelfth,group = "mobile-controls"}):onPress(function(c) doOneMove(0, 0, "e") end):setBGImage(sprites["ui/timestop"]):bg({0, 0, 0, 0})
+
+  mobile_controls_p1 = gooi.newButton({text = "",x = 9*twelfth,y = screenheight-4.15*twelfth,w = twelfth,h = twelfth,group = "mobile-controls"}):onPress(function(c)
+    mobile_controls_activekeys = "wasd"
+    mobile_controls_p1:setBounds(9*twelfth, screenheight-4.15*twelfth)
+    mobile_controls_p2:setBounds(10*twelfth, screenheight-4.25*twelfth)
+    mobile_controls_p3:setBounds(11*twelfth, screenheight-4.25*twelfth)
+  end):setBGImage(sprites["ui_1"]):bg({0, 0, 0, 0})
+  mobile_controls_p2 = gooi.newButton({text = "",x = 10*twelfth,y = screenheight-4.25*twelfth,w = twelfth,h = twelfth,group = "mobile-controls"}):onPress(function(c)
+    mobile_controls_activekeys = "udlr"
+    mobile_controls_p1:setBounds(9*twelfth, screenheight-4.25*twelfth)
+    mobile_controls_p2:setBounds(10*twelfth, screenheight-4.15*twelfth)
+    mobile_controls_p3:setBounds(11*twelfth, screenheight-4.25*twelfth)
+  end):setBGImage(sprites["ui_2"]):bg({0, 0, 0, 0})
+  mobile_controls_p3 = gooi.newButton({text = "",x = 11*twelfth,y = screenheight-4.25*twelfth,w = twelfth,h = twelfth,group = "mobile-controls"}):onPress(function(c)
+    mobile_controls_activekeys = "numpad"
+    mobile_controls_p1:setBounds(9*twelfth, screenheight-4.25*twelfth)
+    mobile_controls_p2:setBounds(10*twelfth, screenheight-4.25*twelfth)
+    mobile_controls_p3:setBounds(11*twelfth, screenheight-4.15*twelfth)
+  end):setBGImage(sprites["ui_3"]):bg({0, 0, 0, 0})
+
+  gooi.setGroupVisible("mobile-controls", is_mobile)
 end
 
 function scene.update(dt)
@@ -426,7 +471,7 @@ function scene.getTransform()
   local roomwidth = mapwidth * TILE_SIZE
   local roomheight = mapheight * TILE_SIZE
 
-  local screenwidth = love.graphics.getWidth()
+  local screenwidth = love.graphics.getWidth() * (is_mobile and 0.75 or 1)
   local screenheight = love.graphics.getHeight()
 
   local scale = 1
@@ -1115,44 +1160,54 @@ function scene.draw(dt)
     doin_the_world = false
   end
 
+  gooi.draw()
   if is_mobile then
-    local screenwidth = love.graphics.getWidth()
-    local screenheight = love.graphics.getHeight()
-
-    local arrowsprite = sprites["ui/arrow"]
-	local darrowsprite = sprites["ui/darrow"]
-    local squaresprite = sprites["ui/square"]
-	local undosprite = sprites["ui/undo"]
-	local resetsprite = sprites["ui/reset"]
-
-	love.graphics.draw(arrowsprite, screenwidth-arrowsprite:getWidth()*2, screenheight-arrowsprite:getHeight()*3)
-	love.graphics.draw(arrowsprite, screenwidth, screenheight-arrowsprite:getHeight()*2, 3.14/2)
-    love.graphics.draw(arrowsprite, screenwidth-arrowsprite:getWidth(), screenheight, 3.14)
-    love.graphics.draw(arrowsprite, screenwidth-arrowsprite:getWidth()*3, screenheight-arrowsprite:getHeight(), 3.14*1.5)
-
-	love.graphics.draw(darrowsprite, screenwidth-darrowsprite:getWidth(), screenheight-darrowsprite:getHeight()*3)
-	love.graphics.draw(darrowsprite, screenwidth, screenheight-darrowsprite:getHeight(), 3.14/2)
-	love.graphics.draw(darrowsprite, screenwidth-darrowsprite:getWidth()*2, screenheight, 3.14)
-	love.graphics.draw(darrowsprite, screenwidth-darrowsprite:getWidth()*3, screenheight-darrowsprite:getHeight()*2, 3.14*1.5)
-
-    love.graphics.draw(squaresprite, screenwidth-squaresprite:getWidth()*2, screenheight-squaresprite:getHeight()*2)
-
-	love.graphics.draw(undosprite, undosprite:getWidth(), screenheight-undosprite:getHeight()*2)
-	love.graphics.draw(resetsprite, screenwidth-resetsprite:getWidth()*2, resetsprite:getHeight())
-	
-	if rules_with["za warudo"] then
-	  local timestopsprite = sprites["ui/timestop"]
-	  local timeresumeprite = sprites["ui/time resume"]
-	  
-	  if timeless then
-	    love.graphics.draw(timeresumeprite, timeresumeprite:getWidth(), timeresumeprite:getHeight())
-	  elseif not timeless then
-	    love.graphics.draw(timestopsprite, timestopsprite:getWidth(), timestopsprite:getHeight())
-	  end
-	end
+    if rules_with["za warudo"] then
+      mobile_controls_timeless:setVisible(true)
+    else
+      mobile_controls_timeless:setVisible(false)
+    end
+    if rules_with["u"] then
+      if rules_with["u too"] then
+          mobile_controls_p1:setVisible(true)
+          mobile_controls_p2:setVisible(true)
+          mobile_controls_p3:setVisible(true)
+        if rules_with["u tres"] then
+          mobile_controls_p1:setBGImage(sprites["ui_1"])
+          mobile_controls_p2:setBGImage(sprites["ui_2"])
+          mobile_controls_p3:setBGImage(sprites["ui_3"])
+        else
+          mobile_controls_p1:setBGImage(sprites["ui_1"])
+          mobile_controls_p2:setBGImage(sprites["ui_2"])
+          mobile_controls_p3:setBGImage(sprites["text_and"])
+        end
+      elseif rules_with["u tres"] then
+        mobile_controls_p1:setVisible(true)
+        mobile_controls_p2:setVisible(true)
+        mobile_controls_p3:setVisible(true)
+        mobile_controls_p1:setBGImage(sprites["ui_1"])
+        mobile_controls_p2:setBGImage(sprites["text_and"])
+        mobile_controls_p3:setBGImage(sprites["ui_3"])
+      else
+        mobile_controls_p1:setVisible(false)
+        mobile_controls_p2:setVisible(false)
+        mobile_controls_p3:setVisible(false)
+      end
+    elseif rules_with["u too"] and rules_with["u tres"] then
+      mobile_controls_p1:setVisible(true)
+      mobile_controls_p2:setVisible(true)
+      mobile_controls_p3:setVisible(true)
+      mobile_controls_p1:setBGImage(sprites["text_and"])
+      mobile_controls_p2:setBGImage(sprites["ui_2"])
+      mobile_controls_p3:setBGImage(sprites["ui_3"])
+    else
+      mobile_controls_p1:setVisible(false)
+      mobile_controls_p2:setVisible(false)
+      mobile_controls_p3:setVisible(false)
+    end
   end
 
-  gooi.draw()
+  gooi.draw("mobile-controls")
 
   if love.window.hasMouseFocus() then
     for i,cursor in ipairs(cursors) do
@@ -1409,6 +1464,7 @@ function doOneMove(x, y, key)
     else
       timeless = false
     end
+      mobile_controls_timeless:setBGImage(sprites[timeless and "ui/time resume" or "ui/timestop"])
 	elseif (key == "undo") then
 		local result = undo()
 		replay_string = replay_string..tostring(0)..","..tostring(0)..","..tostring("undo")..";"
@@ -1472,7 +1528,7 @@ function scene.mouseReleased(x, y, button)
     new_scene = editor
     load_mode = "edit"
   end
-  if is_mobile then
+  if is_mobile and false then
     local screenwidth = love.graphics.getWidth()
     local screenheight = love.graphics.getHeight()
 
@@ -1516,7 +1572,7 @@ function scene.mouseReleased(x, y, button)
 end
 
 function scene.mousePressed(x, y, button)
-  if is_mobile then
+  if is_mobile and false then
     local screenwidth = love.graphics.getWidth()
     local screenheight = love.graphics.getHeight()
 
