@@ -1462,8 +1462,10 @@ function particlesRngCheck()
   return math.random() < math.pow(0.5, (#particles-50)/50)
 end
 
-function scene.mouseReleased(x,y,button)
-  scene.setStackBox(screenToGameTile(x, y))
+function scene.mouseReleased(x, y, button)
+  if button == 2 then
+    scene.setStackBox(screenToGameTile(x, y))
+  end
 
   if pointInside(x,y,0,0,sprites["ui/cog"]:getHeight(),sprites["ui/cog"]:getWidth()) then
     --love.keypressed("f2")
