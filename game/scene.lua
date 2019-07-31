@@ -1308,7 +1308,6 @@ function scene.checkInput()
         local result = doOneMove(0, 0, "undo")
         if result then playSound("undo") else playSound("fail") end
         do_move_sound = false;
-        unsetNewUnits()
 				local end_time = love.timer.getTime();
         if not unit_tests then print("undo took: "..tostring(round((end_time-start_time)*1000)).."ms") end
       else
