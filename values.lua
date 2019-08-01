@@ -108,7 +108,7 @@ selector_grid_contents = {
     "boll", "text_boll", "text_:o", "frut", "text_frut", "slippers", "text_slippers", "pata", "text_pata", "larry", "text_larry", "pepis", "text_pepis", "metl", "text_metl", 0, "text_colrful", "text_yello",
     "clok", "text_clok", "text_try again", "text_no undo", "text_undo", "zsoob", "text_zsoob", "katany", "text_katany", "petnygrame", "text_petnygrame", "hedg", "text_hedg", "lie", "text_lie", 0, "text_rave", "text_grun",
     "splittr", "text_splittr", "text_split", "steev", "text_steev", "boy", "text_boy", "scarr", "text_scarr", "firbolt", "text_firbolt", "icbolt", "text_icbolt", "lie/8", "text_lie/8", 0, "text_stelth", "text_cyeann",
-    "chekr", "text_chekr", "text_diag", "text_ortho", "text_haet flor", "arro", "text_arro", "text_go my way", "text_spin", "text_no turn", "text_stubbn", "platfor", "text_platfor", "jail", "text_jail", 0, 0, "text_bleu",
+    "chekr", "text_chekr", "text_diag", "text_ortho", "text_haet flor", "arro", "text_arro", "text_go my way", "text_spin", "text_no turn", "text_stubbn", "platfor", "text_platfor", "jail", "text_jail", 0, "text_paint", "text_bleu",
     "clowd", "text_clowd", "text_flye", "text_tall", "text_haet skye", "ghost fren", "text_ghost fren", "robobot", "text_robobot", "sparkl", "text_sparkl", "spik", "text_spik", "spiky", "text_spiky", "bordr", "text_bordr", "text_purp",
     nil
   },
@@ -3251,7 +3251,7 @@ tiles_list = {
     texttype = "cond_prefix",
     color = {3, 3},
     layer = 20,
-    desc = "CLIKT (Prefix Condition): CLIKT objects will be true when left-clicked. Passes a turn if successful.",
+    desc = "CLIKT (Prefix Condition): CLIKT objects will be true when left-clicked. Clicks will pass a turn if this text exists.",
   },
   -- 321
   {
@@ -3328,6 +3328,7 @@ tiles_list = {
     layer = 5,
     rotate = true,
     eye = {x=17, y=8, w=2, h=3},
+    desc = "it time 2 mix drincc & chaeng life"
   },
   -- 330
   {
@@ -3336,6 +3337,25 @@ tiles_list = {
     type = "text",
     color = {1,3},
     layer = 20,
+  },
+  -- 331
+  {
+    name = "text_paint",
+    sprite = "text_paint",
+    type = "text",
+    texttype = "cond_infix",
+    color = {4, 2},
+    layer = 20,
+    desc = "PAINT (Infix Condition): changes the second object's color to match."
+  },
+  -- 332
+  {
+    name = "paint",
+    sprite = "paint",
+    type = "object",
+    color = {0, 3},
+    layer = 4,
+    desc = "X be PAINT turns into a paint bucket with the color of X."
   },
 }
 
