@@ -235,18 +235,18 @@ function love.load()
   --end
 
   registerSound("move", 0.4)
-  registerSound("mous sele", 0.5)
-  registerSound("mous hovvr", 0.5)
-  registerSound("mous kicc", 0.5)
-  registerSound("mous snar", 0.5)
-  registerSound("mous hihet", 0.5)
-  registerSound("mous crash", 0.5)
+  registerSound("mous sele", 0.3)
+  registerSound("mous hovvr", 0.3)
+  registerSound("mous kicc", 0.3)
+  registerSound("mous snar", 0.3)
+  registerSound("mous hihet", 0.3)
+  registerSound("mous crash", 0.3)
   -- there is a more efficient way, i know.
 
   -- WHY NOT DO IT THEN
   -- ugh ill do it for you
   for i=1, 10 do
-    registerSound("mous special "..i, 0.5)
+    registerSound("mous special "..i, 0.3)
   end
 
   -- ty. much appreciated
