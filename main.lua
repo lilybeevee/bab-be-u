@@ -218,9 +218,9 @@ function love.load()
         if file:ends(".ogg") then audioname = file:sub(1, -5) end
         if file:ends(".flac") then audioname = file:sub(1, -5) end
         if file:ends(".xm") then audioname = file:sub(1, -4) end
-        if d then
+        --[[if d then
           audioname = d .. "/" .. audioname
-        end
+        end]]
         sound_exists[audioname] = true
         --print("ℹ️ audio "..audioname.." added")
       end
@@ -458,19 +458,6 @@ function love.mousereleased(x, y, button)
     local height = love.graphics.getHeight()
 
     local buttonwidth, buttonheight = sprites["ui/button_1"]:getDimensions()
-
-    if mouseOverBox(width/2-buttonwidth/2, height/2-buttonheight/2+buttonheight+10, buttonwidth, buttonheight) then
-      scene = loadscene
-      load_mode = "play"
-      clearGooi()
-      scene.load()
-    end
-    if mouseOverBox(width/2-buttonwidth/2, height/2-buttonheight/2+(buttonheight+10)*2, buttonwidth, buttonheight) then
-      scene = loadscene
-      load_mode = "edit"
-      clearGooi()
-      scene.load()
-    end
   end
 
   if scene ~= loadscene then
@@ -489,6 +476,13 @@ function addTick(name, delay, fn)
   return ret
 end
 
+function switchScene(name)
+  scene = loadscene
+  load_mode = name
+  clearGooi()
+  scene.load()
+end
+
 function love.update(dt)
 
   currentfps = love.timer.getFPS()
@@ -501,7 +495,12 @@ function love.update(dt)
     peakfps = currentfps
   end
 
-
+  if shake_dur > 0 then
+    shake_dur = shake_dur-dt
+  else
+    shake_intensity = 0
+    shake_dur = 0
+  end
 
   for k,v in pairs(tweens) do
     if v[1]:update(dt) then

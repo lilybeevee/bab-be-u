@@ -1576,8 +1576,8 @@ function shakeScreen(dur, intensity)
   shake_dur = dur+shake_dur/4
   shake_intensity = shake_intensity + intensity/2
 
-  if shake_intensity > 0.2 then
-    shake_intensity = 0.2
+  if shake_intensity > 0.4 then
+    shake_intensity = 0.4
   end
 end
 

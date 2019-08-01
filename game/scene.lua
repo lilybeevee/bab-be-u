@@ -157,21 +157,6 @@ function scene.update(dt)
   scene.doPassiveParticles(dt, "no undo", "bonus", 0.25, 0.25, 1, {5, 3})
   scene.doPassiveParticles(dt, "undo", "bonus", 0.25, 0.25, 1, {6, 1})
   scene.doPassiveParticles(dt, "brite", "bonus", 0.25, 0.25, 1, {2, 4})
-
-  debugDisplay('window dir', window_dir)
-  if shake_dur > 0 then
-    shake_dur = shake_dur-dt
-    --shake_intensity = shake_intensity-dt/2
-
-    --[[local windowx, windowy = love.window.getPosition()
-    if shake_intensity > 0.6 and not fullscreen and frame%2 == 1 then
-      love.window.setPosition(windowx+(math.random(0.00, 20.00)*shake_intensity*2)-shake_intensity*20.0,
-                              windowy+(math.random(0.00, 20.00)*shake_intensity*2)-shake_intensity*20.0)
-    end]]
-  else
-    shake_intensity = 0
-    shake_dur = 0
-  end
 	
 	doReplay(dt)
 end
@@ -1044,6 +1029,15 @@ function scene.draw(dt)
   for _,ps in ipairs(removed_particles) do
     removeFromTable(particles, ps)
   end
+
+  --lightning !
+  if (lightcanvas ~= nil) then
+    love.graphics.setColor(0.05, 0.05, 0.05, 1)
+    love.graphics.setBlendMode("add", "premultiplied")
+    love.graphics.draw(lightcanvas, 0, 0)
+    love.graphics.setBlendMode("alpha")
+  end
+
   --draw the stack box (shows what units are on a tile)
   if stack_box.scale > 0 then
     love.graphics.push()
@@ -1123,13 +1117,6 @@ function scene.draw(dt)
     love.graphics.pop()
   end
   love.graphics.pop()
-  
-  if (lightcanvas ~= nil) then
-    love.graphics.setColor(0.05, 0.05, 0.05, 1)
-    love.graphics.setBlendMode("add", "premultiplied")
-    love.graphics.draw(lightcanvas, love.graphics.getWidth()/2-mapwidth*16, love.graphics.getHeight()/2-mapheight*16)
-    love.graphics.setBlendMode("alpha")
-  end
 
   love.graphics.push()
   love.graphics.setColor(1, 1, 1)

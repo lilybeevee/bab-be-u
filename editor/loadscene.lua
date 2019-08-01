@@ -15,6 +15,8 @@ local full_height = 0
 
 local scroll_height
 
+local oldmousex, oldmousey = love.mouse.getPosition()
+
 function scene.load()
   metaClear()
   clear()
@@ -73,6 +75,8 @@ function scene.update(dt)
 
   scrollx = scrollx+75*dt
   scrolly = scrolly+75*dt
+
+  oldmousex, oldmousey = love.mouse.getPosition()
 end
 
 function scene.keyPressed(key)
@@ -154,6 +158,12 @@ function scene.draw()
     for y = -1, cells_y do
       local draw_x = scrollx % bgsprite:getWidth() + x * bgsprite:getWidth()
       local draw_y = scrolly % bgsprite:getHeight() + y * bgsprite:getHeight()
+
+      if shake_dur > 0.1 then
+        draw_x = draw_x + math.random(-shake_intensity*16, shake_intensity*16)
+        draw_y = draw_y + math.random(-shake_intensity*16, shake_intensity*16)
+      end
+
       love.graphics.draw(bgsprite, draw_x, draw_y)
     end
   end
@@ -164,7 +174,18 @@ function scene.draw()
   love.graphics.setColor(1, 1, 1, 1)
 
   for i,o in ipairs(components) do
+    local xoffset = 0
+    local yoffset = 0
+
+    if shake_dur > 0.1 then
+      xoffset = xoffset + math.random(-shake_intensity*6, shake_intensity*6)
+      yoffset = yoffset + math.random(-shake_intensity*6, shake_intensity*6)
+    end
+
+    love.graphics.push()
+    love.graphics.translate(xoffset, yoffset)
     o:draw()
+    love.graphics.pop()
   end
 
   love.graphics.pop()
@@ -481,15 +502,17 @@ function scene.selectWorld(o, button)
         o.data.deleting = 1
         o:setColor(1, 1, 1)
         o:setSprite(sprites["ui/world box delete"])
+        shakeScreen(0.4, 0.2)
         playSound("move")
       elseif o.data.deleting == 1 then
         o.data.deleting = 2
         o:setSprite(sprites["ui/world box delete 2"])
+        shakeScreen(0.4, 0.3)
         playSound("unlock")
       elseif o.data.deleting == 2 then
         deleteDir(o.data.file .. "/" .. o:getName())
         playSound("break")
-        shakeScreen(0.3, 0.1)
+        shakeScreen(0.5, 0.4)
         scene.buildUI()
       end
     else
@@ -555,10 +578,12 @@ function scene.selectLevel(o, button)
         o.data.deleting = 1
         o:setColor(1, 1, 1)
         o:setSprite(sprites["ui/level box delete"])
+        shakeScreen(0.3, 0.1)
         playSound("move")
       elseif o.data.deleting == 1 then
         o.data.deleting = 2
         o:setSprite(sprites["ui/level box delete 2"])
+        shakeScreen(0.3, 0.2)
         playSound("unlock")
       elseif o.data.deleting == 2 then
         local dir = "levels/"
@@ -566,7 +591,7 @@ function scene.selectLevel(o, button)
         love.filesystem.remove(dir .. o.data.file .. ".bab")
         love.filesystem.remove(dir .. o.data.file .. ".png")
         playSound("break")
-        shakeScreen(0.3, 0.1)
+        shakeScreen(0.4, 0.3)
         scene.buildUI()
       end
     else
