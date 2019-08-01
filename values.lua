@@ -19,12 +19,20 @@ PACK_UNIT_V3 = "llhhbs" -- ID, TILE, X, Y, DIR, SPECIALS
 
 PACK_SPECIAL_V2 = "ss" -- KEY, VALUE
 
-settings = {
-  music_on = true
+local defaultsettings = {
+  music_on = true,
+  fullscreen = false
 }
 
 if love.filesystem.read("Settings.bab") ~= nil then
   settings = json.decode(love.filesystem.read("Settings.bab"))
+  for i in pairs(defaultsettings) do
+    if settings[i] == nil then
+      settings[i] = defaultsettings[i]
+    end
+  end
+else
+  settings = defaultsettings
 end
 
 debug = false

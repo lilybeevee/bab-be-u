@@ -204,7 +204,7 @@ function scene.mouseReleased(x, y, button)
         elseif buttons[i] == "play" then
           switchScene("play")
         elseif buttons[i] == "editor" then
-          switchScene("editor")
+          switchScene("edit")
         elseif buttons[i] == "windowed" or buttons[i] == "fullscreen" then
           if fullscreen == false then
             if not love.window.isMaximized( ) then
@@ -219,6 +219,9 @@ function scene.mouseReleased(x, y, button)
             love.window.restore( )
             fullscreen = false
           end
+
+          settings["fullscreen"] = fullscreen
+          saveAll()
         elseif string.starts(buttons[i], "music") then
           settings["music_on"] = not settings["music_on"]
           saveAll()

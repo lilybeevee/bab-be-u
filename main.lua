@@ -113,8 +113,16 @@ function love.load()
   move_sound_source = nil
   anim_stage = 0
   next_anim = ANIM_TIMER
-  fullscreen = false
+  fullscreen = settings["fullscreen"]
   winwidth, winheight = love.graphics.getDimensions( )
+
+  if fullscreen and love.window then
+    if not love.window.isMaximized( ) then
+      winwidth, winheight = love.graphics.getDimensions( )
+    end
+    love.window.setMode(0, 0, {borderless=false})
+    love.window.maximize( )
+  end
 
   empty_sprite = love.image.newImageData(32, 32)
   if not is_mobile then
