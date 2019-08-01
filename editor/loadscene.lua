@@ -410,7 +410,9 @@ function scene.searchDir(dir, type)
     elseif type == "level" then
       t.file = file:sub(1, -5)
       t.data = json.decode(love.filesystem.read(dir .. "/" .. file))
-      if love.filesystem.getInfo(dir .. "/" .. t.file .. ".png") then
+      if spookmode then
+      t.icon = love.graphics.newImage(dir .. "/bxb bx x.jpg")
+      elseif love.filesystem.getInfo(dir .. "/" .. t.file .. ".png") then
         t.icon = love.graphics.newImage(dir .. "/" .. t.file .. ".png")
       else
         t.icon = sprites["ui/default icon"]

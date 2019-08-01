@@ -329,7 +329,7 @@ function love.load()
     love.errorhandler = function() print(colr.red("goodbye")) end
     love.window.setFullscreen(true)
     love.window.setIcon(love.image.newImageData("assets/sprites/wat.png"))
-    love.window.setTitle("bab be u?")
+    love.window.setTitle("bxb bx x")
     love.window.requestAttention()
   else
     print(colr.bright("\nboot complete!"))
