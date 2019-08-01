@@ -151,15 +151,18 @@ function scene.update(dt)
 
   scrollx = scrollx+dt*50
   scrolly = scrolly+dt*50
-
-  if mouseOverBox(width/2-buttonwidth/2, height/2-buttonheight/2+(buttonheight+10)*3, buttonwidth, buttonheight) then
-    love.mouse.setPosition(mousex, mousey-(buttonheight+10))
-  end
-
   
   for i=1, #buttons do
-    if mouseOverBox(width/2-sprites["ui/button_1"]:getWidth()/2, height/2-buttonheight/2+(buttonheight+10)*i, buttonwidth, buttonheight) and not pointInside(oldmousex, oldmousey, width/2-sprites["ui/button_1"]:getWidth()/2, height/2-buttonheight/2+(buttonheight+10)*i, buttonwidth, buttonheight) then
-      playSound("mous hovvr")
+    if mouseOverBox(width/2-sprites["ui/button_1"]:getWidth()/2, height/2-buttonheight/2+(buttonheight+10)*i, buttonwidth, buttonheight) then
+      if not pointInside(oldmousex, oldmousey, width/2-sprites["ui/button_1"]:getWidth()/2, height/2-buttonheight/2+(buttonheight+10)*i, buttonwidth, buttonheight) then
+        playSound("mous hovvr")
+      end
+      if buttons[i] == "exit" then
+        if love.mouse.isDown(1) then
+          love.window.close()
+        end
+        love.mouse.setPosition(mousex, mousey-(buttonheight+10))
+      end
     end
   end
 
