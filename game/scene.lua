@@ -52,7 +52,11 @@ local displaywords = false
 local stack_box, stack_font
 local initialwindoposition
 
+local sessionseed
+
 function scene.load()
+  sessionseed = math.random(0,100000000)/100000000
+
   repeat_timers = {}
   key_down = {}
   selector_open = false
@@ -272,9 +276,9 @@ function scene.keyPressed(key, isrepeat)
   if key == "escape" then
     
     gooi.confirm({
-        text = "Go back to "..escResult(false).."?",
+        text = spookmode and "G̴͔̭͇͎͕͔ͪ̾ͬͦ̇͑͋͟͡o̵̸͓̠̦̱̭̘͍̱͑̃̀ͅ ̱̫͉̆͐̇ͥ̽͆͂͑̿͜b̸̵͈̼̜̅͗̄̆ͅa͚̠͚̣̺̗͖͈̓̿̈́͆͐̉ͯ̀̚c͉̜̙̤͍̞̳̬ͪ̇k̙͙̼̀̓̂̑̈́̌ͯ̕͢ͅ ̶̛̠̹̈̒ͫ͐t̙͉͍͚̠̗̰͗͊͛ͫ͒ͥ̏ͫ͢͜ȍ̙͙̪̬̎̊ͫͭͫ͗̔̚ ̴̪͖͔̖̙̬͍̥ͪ̾̾͂͂l̪͉͙̪̩͙̎̏͌̽ͤ̈́̀͜͠e̡͓͍͉̖̤ͬ̓̏ͥͫ̀ͅv̱͈͍̞̼̀͋̂̃͋́̚͠ͅḛ̷̷̱̿͂l̢̮͇̫̗͍̱͈̟͌̐̎̑̈́ ̵̠͖̣̟̲̖̇̈̓ͭͫ͠s͚̝̻ͤ̓̀̀e̅͑̐̄͏̤̫̕͠lͨ͋͌ͤͩ̋̓͏̘̼̠̪̖͓͔̹e̵͖̤̒͒ͥ̓ͬ̓͘c͖͈̏̄̐̅̎ͨ͢ṫ͔̥͓̊̌̓̇ọ̞̤͔̩̒͗ͨ́̓͟ŗ̖͉̹̻̮̬̦͌̿͂?̶̡͈̫̗̈́̒̎̃̎̓" or "Go back to "..escResult(false).."?",
         okText = "Yes",
-        cancelText = "Cancel",
+        cancelText = spookmode and "Yes" or "Cancel",
         ok = function()
           escResult(true)
         end
@@ -749,7 +753,10 @@ function scene.draw(dt)
       love.graphics.draw(sprite, fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
 			if (unit.meta ~= nil) then
 				setColor({4, 1})
-				local metasprite = unit.meta == 2 and sprites["meta2"] or sprites["meta1"]
+        local metasprite = unit.meta == 2 and sprites["meta2"] or sprites["meta1"]
+        if spookmode and sessionseed < drawx/3%0.5*2 then
+          love.graphics.setColor(0,0,0)
+        end
 				love.graphics.draw(metasprite, fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
 				if unit.meta > 2 and unit.draw.scalex == 1 and unit.draw.scaley == 1 then
 					love.graphics.printf(tostring(unit.meta), fulldrawx-1, fulldrawy+6, 32, "center")
@@ -828,11 +835,11 @@ function scene.draw(dt)
     --reset back to values being used before
     love.graphics.setLineWidth(2)
 
-    if not unit.xwx and not (unit.name == "lin" and scene ~= editor) then -- xwx takes control of the drawing sprite, so it shouldn't render the normal object
+    if not (unit.xwx or spookmode) and not (unit.name == "lin" and scene ~= editor) then -- xwx takes control of the drawing sprite, so it shouldn't render the normal object
       drawSprite()
     end
 
-    if unit.xwx then -- if we're xwx, apply the special shader to our object
+    if unit.xwx or spookmode then -- if we're xwx, apply the special shader to our object
       if math.floor(love.timer.getTime() * 9) % 9 == 0 then
         pcallSetShader(xwxShader)
         drawSprite()

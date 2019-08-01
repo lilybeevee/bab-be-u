@@ -144,7 +144,7 @@ function scene.getTransform()
 end
 
 function scene.draw()
-  love.graphics.clear(0.10, 0.1, 0.11, 1)
+  love.graphics.clear(0, 0, 0, 1)
 
   local bgsprite = sprites["ui/menu_background"]
 
@@ -154,17 +154,19 @@ function scene.draw()
   love.graphics.setColor(1, 1, 1, 0.6)
   setRainbowModeColor(love.timer.getTime()/6, .4)
   
-  for x = -1, cells_x do
-    for y = -1, cells_y do
-      local draw_x = scrollx % bgsprite:getWidth() + x * bgsprite:getWidth()
-      local draw_y = scrolly % bgsprite:getHeight() + y * bgsprite:getHeight()
+  if not spookmode then
+    for x = -1, cells_x do
+      for y = -1, cells_y do
+        local draw_x = scrollx % bgsprite:getWidth() + x * bgsprite:getWidth()
+        local draw_y = scrolly % bgsprite:getHeight() + y * bgsprite:getHeight()
 
-      if shake_dur > 0.1 then
-        draw_x = draw_x + math.random(-shake_intensity*16, shake_intensity*16)
-        draw_y = draw_y + math.random(-shake_intensity*16, shake_intensity*16)
+        if shake_dur > 0.1 then
+          draw_x = draw_x + math.random(-shake_intensity*16, shake_intensity*16)
+          draw_y = draw_y + math.random(-shake_intensity*16, shake_intensity*16)
+        end
+
+        love.graphics.draw(bgsprite, draw_x, draw_y)
       end
-
-      love.graphics.draw(bgsprite, draw_x, draw_y)
     end
   end
 
@@ -294,9 +296,9 @@ function scene.buildUI()
     if load_mode ~= "select" then
       local worlds = scene.searchDir("officialworlds", "world")
       if #worlds > 0 then
-        local label_width, label_height = ui.fonts.category:getWidth("Official Worlds"), ui.fonts.category:getHeight()
+        local label_width, label_height = ui.fonts.category:getWidth(spookmode and "no" or "Official Worlds"), ui.fonts.category:getHeight()
         table.insert(components, ui.component.new()
-          :setText("Official Worlds")
+          :setText(spookmode and "no" or "Official Worlds")
           :setFont(ui.fonts.category)
           :setPos(0, oy)
           :setSize(love.graphics.getWidth(), label_height))
@@ -307,9 +309,9 @@ function scene.buildUI()
 
       worlds = scene.searchDir("worlds", "world")
       if #worlds > 0 or load_mode == "edit" then
-        label_width, label_height = ui.fonts.category:getWidth("Custom Worlds"), ui.fonts.category:getHeight()
+        label_width, label_height = ui.fonts.category:getWidth(spookmode and "stop" or "Official Worlds"), ui.fonts.category:getHeight()
         table.insert(components, ui.component.new()
-          :setText("Custom Worlds")
+          :setText(spookmode and "stop" or "Official Worlds")
           :setFont(ui.fonts.category)
           :setPos(0, oy)
           :setSize(love.graphics.getWidth(), label_height))
@@ -330,9 +332,9 @@ function scene.buildUI()
 
     local levels = scene.searchDir("levels", "level")
     if #levels > 0 or load_mode == "edit" then
-      label_width, label_height = ui.fonts.category:getWidth("Custom Levels"), ui.fonts.category:getHeight()
+      label_width, label_height = ui.fonts.category:getWidth(spookmode and "what is this" or "Official Worlds"), ui.fonts.category:getHeight()
       table.insert(components, ui.component.new()
-        :setText("Custom Levels")
+        :setText(spookmode and "what is this" or "Official Worlds")
         :setFont(ui.fonts.category)
         :setPos(0, oy)
         :setSize(love.graphics.getWidth(), label_height))

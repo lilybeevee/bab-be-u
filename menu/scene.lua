@@ -41,8 +41,12 @@ function scene.draw(dt)
   local cells_x = math.ceil(love.graphics.getWidth() / bgsprite:getWidth())
   local cells_y = math.ceil(love.graphics.getHeight() / bgsprite:getHeight())
 
-  love.graphics.setColor(1, 1, 1, 1)
-  setRainbowModeColor(love.timer.getTime()/6, .4)
+  if not spookmode then
+    love.graphics.setColor(1, 1, 1, 1)
+    setRainbowModeColor(love.timer.getTime()/6, .4)
+  else
+    love.graphics.setColor(0.2,0.2,0.2,1)
+  end
 
   for x = -1, cells_x do
     for y = -1, cells_y do
@@ -65,7 +69,11 @@ function scene.draw(dt)
 
     if rainbowmode then buttoncolor = hslToRgb((love.timer.getTime()/6+i/10)%1, .5, .5, .9) end
 
-    love.graphics.setColor(buttoncolor[1], buttoncolor[2], buttoncolor[3])
+    if not spookmode then
+      love.graphics.setColor(buttoncolor[1], buttoncolor[2], buttoncolor[3])
+    else
+      love.graphics.setColor(0.5,0.5,0.5)
+    end
     if mouseOverBox(width/2-sprites["ui/button_1"]:getWidth()/2, height/2-buttonheight/2+(buttonheight+10)*i, buttonwidth, buttonheight) then
       love.graphics.setColor(buttoncolor[1]-0.1, buttoncolor[2]-0.1, buttoncolor[3]-0.1) --i know this is horrible
       love.graphics.translate(buttonx+buttonwidth/2, buttony+buttonheight/2)
@@ -77,8 +85,12 @@ function scene.draw(dt)
 
     love.graphics.pop()
 
-    love.graphics.setColor(1,1,1)
-    love.graphics.printf(buttons[i], width/2-buttonwidth/2, height/2-buttonheight/2+(buttonheight+10)*i+5, buttonwidth, "center")
+    if not spookmode then
+      love.graphics.setColor(1,1,1)
+    else
+      love.graphics.setColor(0,0,0)
+    end
+    love.graphics.printf(spookmode and (math.random(1,100) == 1 and "stop it" or "help") or buttons[i], width/2-buttonwidth/2, height/2-buttonheight/2+(buttonheight+10)*i+5, buttonwidth, "center")
   end
 
   love.graphics.setColor(1, 1, 1)
@@ -97,9 +109,11 @@ function scene.draw(dt)
     love.graphics.draw(sprites["ui/bab_be_u"], width/2 - sprites["ui/bab_be_u"]:getWidth() / 2 + pair[1], height/20 + pair[2])
   end
 
-  love.graphics.setColor(1, 1, 1)
-  setRainbowModeColor(love.timer.getTime()/3, .5)
-  love.graphics.draw(sprites["ui/bab_be_u"], width/2 - sprites["ui/bab_be_u"]:getWidth() / 2, height/20)
+  if not spookmode then
+    love.graphics.setColor(1, 1, 1)
+    setRainbowModeColor(love.timer.getTime()/3, .5)
+    love.graphics.draw(sprites["ui/bab_be_u"], width/2 - sprites["ui/bab_be_u"]:getWidth() / 2, height/20)
+  end
 
   if is_mobile then
     love.graphics.push()
@@ -123,7 +137,7 @@ function scene.draw(dt)
     if string.find(build_number, "420") or string.find(build_number, "1337") or string.find(build_number, "666") or string.find(build_number, "69") then
       love.graphics.setColor(hslToRgb(love.timer.getTime()%1, .5, .5, .9))
     end
-    love.graphics.print('v'..build_number)
+    love.graphics.print(spookmode and "error" or 'v'..build_number)
   end
 
   if is_mobile then

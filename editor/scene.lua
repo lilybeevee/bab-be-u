@@ -130,6 +130,11 @@ function scene.load()
     end
     selected_level = nil
   end
+
+  if spookmode then
+    new_scene = game
+    load_mode = "play"
+  end
 end
 
 selector_tab_buttons_list = {}
@@ -272,9 +277,9 @@ function scene.keyPressed(key)
   if key == "escape" then
     if not capturing then
       gooi.confirm({
-        text = "Go back to level selector?",
+        text = spookmode and "Ģ͖̙̗̳̟̩̱̹̥̓͌͂ͤͫͫo̟̗͓̞̪̬͒̀ ̤̯̺̹͙̮̇bͯͣ̚͏̹̮a̸̡̯̜̦̝͓͑͋̾̊̾̏̔͢cͨ̿̏̔̆ͣ̎̊ͫ͟҉̗ǩ̬̰͕̭͊ͣͣ̈̇̀ ̩̖̮̹̣̰̫̫̏͐́͊̓̉̓̃͟ͅť̜̤̤̫ͯ͟ó̷͕̩̻̼͕̽͑̀̕ ̧̨͚̻̭̜̜͓̆̎͐͌͊̔l̷̰̖̳͈̰̞̄́̕e̷̫̾͑͌ͣ̎ͩ̍̑͞v̷̢̥̰̪͋͗̀̊ͤ͢é̛̼͖͖͓͕̖ͥ̔͑̐̔ͫ̿ļ̷̵̩̞̩̀͛͒̇͗̊̉̔̄ ̵͈ͪ̂̏ͧͨ͘͘ŝ̶̷̮̠͙͓̬̦̗ͭẽ͙̩͔͕͊̔ͯͮͤ̑͟ļ̗͈̈́̐ͨ̄̑ͪͪ͘ȩ͕̘̱͙̻̣̦̉̈ͨ̐ͪ̑̿̃̾ͅc͍̯͈̀ͥ̕͢t̨̩̹̲͍͕͇̊̇̈́̏ͮͬ̿͆͘ͅo̯̮͉̜͓͇̎̂̄ͧͭ̒ͫͫ͘͠͠r̰͍̝̯̿̆ͦ?ͪ͋͒ͩ̇̚҉̶̠̘̦" or "Go back to level selector?",
         okText = "Yes",
-        cancelText = "Cancel",
+        cancelText = spookmode and "Yes" or "Cancel",
         ok = function()
           load_mode = "edit"
           new_scene = loadscene

@@ -1567,7 +1567,7 @@ end
 function setRainbowModeColor(value, brightness)
   brightness = brightness or 0.5
 
-  if rainbowmode then
+  if rainbowmode and not spookmode then
     love.graphics.setColor(hslToRgb(value%1, brightness, brightness, .9))
   end
 end
@@ -1575,10 +1575,6 @@ end
 function shakeScreen(dur, intensity)
   shake_dur = dur+shake_dur/4
   shake_intensity = shake_intensity + intensity/2
-
-  if shake_intensity > 0.4 then
-    shake_intensity = 0.4
-  end
 end
 
 function startTest(name)

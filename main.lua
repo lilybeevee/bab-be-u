@@ -31,6 +31,8 @@ averagefps = 0
 
 special_no = 1
 
+spookmode = false
+
 function tableAverage(table)
   local sum = 0
   local ave = 0
@@ -50,6 +52,40 @@ local headerfont = love.graphics.newFont(32)  -- used for debug
 local regularfont = love.graphics.newFont(16) -- read the line above
 
 function love.load()
+  local babfound = false
+
+  function searchbab(d)
+    local dir = "assets/sprites"
+    if d then
+      dir = dir .. "/" .. d
+    end
+    local files = love.filesystem.getDirectoryItems(dir)
+    for _,file in ipairs(files) do
+      if string.sub(file, -4) == ".png" then
+        local spritename = string.sub(file, 1, -5)
+        local sprite = love.graphics.newImage(dir .. "/" .. file)
+        if d then
+          spritename = d .. "/" .. spritename
+        end
+        if spritename == "bab" then
+          babfound = true
+        end
+      elseif love.filesystem.getInfo(dir .. "/" .. file).type == "directory" then
+        local newdir = file
+        if d then
+          newdir = d .. "/" .. newdir
+        end
+        searchbab(file)
+      end
+    end
+  end
+
+  searchbab()
+
+  if not babfound then
+    spookmode = true
+  end
+
   print(colr.bright([[
 
 
@@ -93,7 +129,7 @@ function love.load()
          BBBBBBBB          BBBBBBBBBB                      BBBBBBBB
 
   ]])..colr.magenta([[
-                                   BAB BE U]])..
+                                   ]])..(spookmode and "  help" or "BAB BE U")..
 "\n                                      v. "..build_number..[[
                                      ]]..colr.red('❤')..' v. '..love.getVersion()..'\n\n')
 
@@ -286,7 +322,13 @@ function love.load()
     love.window.setMode(640, 360)
   end
 
-  print(colr.bright("\nboot complete!"))
+  if spookmode then
+    for i=1, 20 do
+      print(colr.red("⚠ bab not found"))
+    end
+  else
+    print(colr.bright("\nboot complete!"))
+  end
 
   scene = menu
   scene.load()
@@ -487,11 +529,30 @@ end
 function switchScene(name)
   scene = loadscene
   load_mode = name
+  if spookmode then
+    load_mode = "game"
+  end
   clearGooi()
   scene.load()
 end
 
+local gettimetime = 0
+
+love.timer.getRealTime = love.timer.getTime
+love.timer.getTime = function()
+  if spookmode then
+    return gettimetime
+  else
+    return love.timer.getRealTime()
+  end
+end
+
 function love.update(dt)
+  if spookmode then
+    dt = math.tan(love.timer.getRealTime()*20)/200
+  end
+
+  gettimetime = gettimetime + dt
 
   currentfps = love.timer.getFPS()
 
@@ -508,6 +569,14 @@ function love.update(dt)
   else
     shake_intensity = 0
     shake_dur = 0
+  end
+  if shake_intensity > 0.4 then
+    shake_intensity = 0.4
+  end
+  
+  if spookmode then
+    shake_intensity = 0.02
+    shake_dur = 1000
   end
 
   for k,v in pairs(tweens) do

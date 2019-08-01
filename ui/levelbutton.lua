@@ -18,6 +18,9 @@ function level_button.new(file, extra)
   end
 
   function o:getColor()
+    if spookmode then
+      return {0,0,0}
+    end
     if rainbowmode then
       return self.data.extra and hslToRgb((love.timer.getTime()/3+self.rainbowoffset/20)%1, 0.25, 0.25, .9) or hslToRgb((love.timer.getTime()/3+self.rainbowoffset/20)%1, 0.4, 0.5, .9)
     end
@@ -51,6 +54,9 @@ function level_button.new(file, extra)
     if self:getIcon() then
       local iconw, iconh = 96, 96
       local sx, sy = iconw / self:getIcon():getWidth(), iconh / self:getIcon():getHeight()
+      if spookmode then
+        love.graphics.setColor(0.2,0.2,0.2)
+      end
       love.graphics.draw(self:getIcon(), self:getWidth() / 2 - iconw / 2, self:getHeight() * y_mult - iconh / 2, 0, sx, sy)
     end
   end
@@ -65,7 +71,7 @@ function level_button.new(file, extra)
       local _,lines = font:getWrap(self:getName():upper(), self:getWidth() - 12)
       local height = #lines * font:getHeight()
 
-      love.graphics.printf(self:getName():upper(), 6, 40 - height / 2, self:getWidth() - 12, "center")
+      love.graphics.printf(spookmode and (math.random(1,100) == 1 and "stop it" or "help") or self:getName():upper(), 6, 40 - height / 2, self:getWidth() - 12, "center")
     end
   end
 
