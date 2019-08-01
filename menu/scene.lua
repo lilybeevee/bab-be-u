@@ -14,6 +14,7 @@ local music_on = true
 function scene.load()
   metaClear()
   clear()
+  was_using_editor = false
   resetMusic("bab be u them REEEMAZTUR", 0.5)
   love.graphics.setBackgroundColor(0.10, 0.1, 0.11)
   local now = os.time(os.date("*t"))

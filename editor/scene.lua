@@ -11,7 +11,7 @@ local ignore_mouse = true
 
 local settings_open, settings, properties
 local label_palette, label_music
-local input_name, input_author, input_compression, input_palette, input_music, input_width, input_height, input_extra, input_next_level_after_win, input_is_overworld, input_puffs_to_clear, input_level_sprite, input_level_number
+local input_name, input_author, input_palette, input_music, input_width, input_height, input_extra, input_parent_level, input_next_level, input_is_overworld, input_puffs_to_clear, input_background_sprite
 
 local capturing, start_drag, end_drag
 local screenshot, screenshot_image
@@ -26,6 +26,7 @@ ICON_HEIGHT = 96
 
 function scene.load()
   metaClear()
+  was_using_editor = true
   brush = {id = nil, dir = 1, mode = "none", picked_tile = nil, picked_index = 0}
   properties = {enabled = false, scale = 0, x = 0, y = 0, w = 0, h = 0, components = {}} -- will do this later
   saved_popup = {sprite = sprites["ui/level_saved"], y = 16, alpha = 0}
@@ -42,6 +43,9 @@ function scene.load()
   end
   if not level_name then
     level_name = "unnamed"
+  end
+  if not level_filename then
+    level_filename = ""
   end
   if not level_author then
     level_author = ""
@@ -193,11 +197,6 @@ function scene.setupGooi()
   y = y + 24 + 4
   input_width = gooi.newSpinner({value = mapwidth, min = 1, max = 512, x = 4+dx*i, y = y, w = 98, h = 24}):setGroup("settings")
   input_height = gooi.newSpinner({value = mapwidth, min = 1, max = 512, x = 106+dx*i, y = y, w = 98, h = 24}):setGroup("settings")
-
-  y = y + 24 + 4
-  gooi.newLabel({text = "Compression", x = 4+dx*i, y = y, w = 200, h = 24}):center():setGroup("settings")
-  y = y + 24 + 4
-  input_compression = gooi.newText({text = level_compression, x = 4+dx*i, y = y, w = 200, h = 24}):setGroup("settings")
   
   y = y + 24 + 4
   gooi.newLabel({text = "Extra", x = 4+dx*i, y = y, w = 200, h = 24}):center():setGroup("settings")
@@ -216,18 +215,16 @@ function scene.setupGooi()
   y = (love.graphics.getHeight() - settings.h) / 2
   
   i = 1;
-  
-  --[[
-  * Next Level After Win (string)
-  * Is Overworld (boolean)
-  * Level Sprite (string)
-  * Level Number (integer)
-  ]]--
-  
+    
   y = y + 4
-  gooi.newLabel({text = "Next Level After Win", x = 4+dx*i, y = y, w = 200, h = 24}):center():setGroup("settings")
+  gooi.newLabel({text = "Parent Level", x = 4+dx*i, y = y, w = 200, h = 24}):center():setGroup("settings")
   y = y + 24 + 4
-  input_next_level_after_win = gooi.newText({text = level_next_level_after_win, x = 4+dx*i, y = y, w = 200, h = 24}):setGroup("settings")
+  input_parent_level = gooi.newText({text = level_parent_level, x = 4+dx*i, y = y, w = 200, h = 24}):setGroup("settings")
+  
+  y = y + 24 + 4
+  gooi.newLabel({text = "Next Level", x = 4+dx*i, y = y, w = 200, h = 24}):center():setGroup("settings")
+  y = y + 24 + 4
+  input_next_level = gooi.newText({text = level_next_level, x = 4+dx*i, y = y, w = 200, h = 24}):setGroup("settings")
   
   y = y + 24 + 4
   gooi.newLabel({text = "Is Overworld", x = 4+dx*i, y = y, w = 200, h = 24}):center():setGroup("settings")
@@ -242,15 +239,10 @@ function scene.setupGooi()
   y = y + 24 + 4
   input_puffs_to_clear = gooi.newSpinner({value = level_puffs_to_clear, min = 0, max = 999, x = 50+dx*i, y = y, w = 98, h = 24}):setGroup("settings")
   
-  y = y + 24
-  gooi.newLabel({text = "Level Sprite", x = 4+dx*i, y = y, w = 200, h = 24}):center():setGroup("settings")
   y = y + 24 + 4
-  input_level_sprite = gooi.newText({text = level_level_sprite, x = 4+dx*i, y = y, w = 200, h = 24}):setGroup("settings")
-  
+  gooi.newLabel({text = "Background Sprite", x = 4+dx*i, y = y, w = 200, h = 24}):center():setGroup("settings")
   y = y + 24 + 4
-  gooi.newLabel({text = "Level Number", x = 4+dx*i, y = y, w = 200, h = 24}):center():setGroup("settings")
-  y = y + 24 + 4
-  input_level_number = gooi.newSpinner({value = level_level_number, min = 0, max = 999, x = 50+dx*i, y = y, w = 98, h = 24}):setGroup("settings")
+  input_background_sprite = gooi.newText({text = level_background_sprite, x = 4+dx*i, y = y, w = 200, h = 24}):setGroup("settings")
 
   gooi.setGroupVisible("settings", settings_open)
   gooi.setGroupEnabled("settings", settings_open)
@@ -662,7 +654,7 @@ function scene.getTransform()
   local screenwidth = love.graphics.getWidth() * (is_mobile and 0.75 or 1)
   local screenheight = love.graphics.getHeight() - (is_mobile and sprites["ui/cog"]:getHeight() or 0)
 
-  local scales = {0.5, 0.75, 1, 1.5, 2, 3, 4}
+  local scales = {0.25, 0.375, 0.5, 0.75, 1, 1.5, 2, 3, 4}
 
   local scale = scales[1]
   for _,s in ipairs(scales) do
@@ -706,6 +698,11 @@ function scene.draw(dt)
 
   love.graphics.setColor(getPaletteColor(0, 4))
   love.graphics.rectangle("fill", 0, 0, roomwidth, roomheight)
+  if level_background_sprite ~= nil and level_background_sprite ~= "" and sprites[level_background_sprite] then
+    love.graphics.setColor(1, 1, 1)
+    local sprite = sprites[level_background_sprite]
+    love.graphics.draw(sprite, 0, 0, 0, 1, 1, 0, 0)
+  end
 
 	local function setColor(color)
 		if #color == 3 then
@@ -988,7 +985,6 @@ function scene.saveLevel()
   local data = {
     name = level_name,
     author = level_author,
-    compression = level_compression,
     extra = level_extra,
     palette = current_palette,
     music = map_music,
@@ -996,11 +992,11 @@ function scene.saveLevel()
     height = mapheight,
     version = map_ver,
     map = savestr,
-    next_level_after_win = level_next_level_after_win,
+    parent_level = level_parent_level,
+    next_level = level_next_level,
     is_overworld = level_is_overworld,
     puffs_to_clear = level_puffs_to_clear,
-    level_sprite = level_level_sprite,
-    level_number = level_level_number,
+    background_sprite = level_background_sprite,
   }
 
   if world == "" or world_parent == "officialworlds" then
@@ -1033,17 +1029,16 @@ function scene.openSettings()
     settings_open = true
 
     input_name:setText(level_name)
-    input_compression:setText(level_compression)
     input_author:setText(level_author)
     input_palette:setText(current_palette)
     input_music:setText(map_music)
     input_width:setValue(mapwidth)
     input_height:setValue(mapheight)
-    input_next_level_after_win:setText(level_next_level_after_win)
+    input_parent_level:setText(level_parent_level)
+    input_next_level:setText(level_next_level)
     input_is_overworld.checked = level_is_overworld
     input_puffs_to_clear:setValue(level_puffs_to_clear)
-    input_level_sprite:setText(level_level_sprite)
-    input_level_number:setValue(level_level_number)
+    input_background_sprite:setText(level_background_sprite)
     input_extra.checked = level_extra
 
     gooi.setGroupVisible("settings", true)
@@ -1084,15 +1079,14 @@ function scene.saveSettings()
   end
 
   level_name = input_name:getText()
-  level_compression = input_compression:getText()
   level_author = input_author:getText()
   current_palette = input_palette:getText()
   map_music = input_music:getText()
-  level_next_level_after_win = input_next_level_after_win:getText()
+  level_parent_level = input_parent_level:getText()
+  level_next_level = input_next_level:getText()
   level_is_overworld = input_is_overworld.checked
   level_puffs_to_clear = input_puffs_to_clear:getValue()
-  level_level_sprite = input_level_sprite:getText()
-  level_level_number = input_level_number:getValue()
+  level_background_sprite = input_background_sprite:getText()
 
   scene.updateMap()
 
@@ -1143,11 +1137,11 @@ function love.filedropped(file)
   mapwidth = mapdata.width
   mapheight = mapdata.height
   map_ver = mapdata.version or 0
-  level_next_level_after_win = mapdata.next_level_after_win or ""
+  level_parent_level = mapdata.parent_level or ""
+  level_next_level = mapdata.next_level or ""
   level_is_overworld = mapdata.is_overworld or false
   level_puffs_to_clear = mapdata.level_puffs_to_clear or 0
-  level_level_sprite = mapdata.level_sprite or ""
-  level_level_number = mapdata.level_number or 0
+  level_background_sprite = mapdata.background_sprite or ""
 
   if map_ver == 0 then
     maps = {{0, loadstring("return " .. mapstr)()}}

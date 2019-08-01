@@ -48,6 +48,8 @@ function clear()
   cursor_converted = false
   mouse_X = love.mouse.getX()
   mouse_Y = love.mouse.getY()
+      last_click_x = nil
+      last_click_y = nil
   mouse_oldX = mouse_X
   mouse_oldY = mouse_Y
   cursors = {}
@@ -71,7 +73,10 @@ function clear()
   end
   --createMouse_direct(20, 20)
 
-  win = false
+  currently_winning = false
+  music_fading = false
+  won_this_session = false
+  level_ending = false
   win_size = 0
 
   tile_grid = {}
@@ -91,6 +96,7 @@ function clear()
 end
 
 function metaClear()
+  parent_filename = nil;
   stay_ther = nil;
   surrounds = nil;
 end
@@ -745,6 +751,15 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
       result = unit.blocked
     elseif condtype == "timles" then
       result = timeless
+    elseif condtype == "clikt" then
+        if unit.x == last_click_x and unit.y == last_click_y then
+            result = true
+        else
+            result = false
+        end
+        --print(result)
+        --print(x, y)
+        --print(last_click_x, last_click_y)
     else
       print("unknown condtype: " .. condtype)
       result = false
@@ -1616,7 +1631,10 @@ function loadLevels(levels, mode, level_objs)
 
   mapwidth = 0
   mapheight = 0
+  --if we're entering a level object, then the level we were in is the parent
+  parent_filename = level_objs ~= nil and level_filename or nil
   level_name = nil
+  level_filename = nil
 
   for _,level in ipairs(levels) do
     local data
@@ -1636,6 +1654,13 @@ function loadLevels(levels, mode, level_objs)
     else
       level_name = level_name .. " & " .. data.name
     end
+    
+    if not level_filename then
+      level_filename = level
+    else
+      level_filename = level_filename .. "|" .. level
+    end
+    
     level_name = level_name:sub(1, 100)
     level_author = data.author or ""
     level_extra = data.extra or false
@@ -1644,11 +1669,11 @@ function loadLevels(levels, mode, level_objs)
     mapwidth = math.max(mapwidth, data.width)
     mapheight = math.max(mapheight, data.height)
     map_ver = data.version or 0
-    level_next_level_after_win = data.next_level_after_win or ""
+    level_parent_level = data.parent_level or ""
+    level_next_level = data.next_level or ""
     level_is_overworld = data.is_overworld or false
-    level_puffs_to_clear = data.level_puffs_to_clear or 0
-    level_level_sprite = data.level_sprite or ""
-    level_level_number = data.level_number or 0
+    level_puffs_to_clear = data.puffs_to_clear or 0
+    level_background_sprite = data.background_sprite or ""
 
     if map_ver == 0 then
       table.insert(maps, {0, loadstring("return " .. mapstr)()})

@@ -5,6 +5,7 @@ music_volume = 1
 current_music = ""
 music_fading = false
 local current_volume = 1
+local old_volume = 1
 local sounds = {}
 local sound_instances = {}
 
@@ -42,6 +43,7 @@ function playMusic(music, volume)
   end
 
   current_volume = volume or 1
+  old_volume = volume or 1
   
   if love.filesystem.getInfo("assets/audio/" .. music .. ".wav") ~= nil then
     music_source = love.audio.newSource("assets/audio/" .. music .. ".wav", "static")
@@ -71,6 +73,7 @@ function resetMusic(name,volume)
       playMusic(name,volume)
     else
       current_volume = volume
+      old_volume = volume
     end
   end
 end
@@ -79,8 +82,12 @@ function updateMusic()
   if music_source ~= nil then
     music_source:setVolume(current_volume * music_volume)
   end
-  if music_fading and current_volume > 0 then
-    current_volume = math.max(0, current_volume - 0.01)
+  if music_fading then
+    if current_volume > 0 then
+      current_volume = math.max(0, current_volume - 0.01)
+    end
+  else
+    current_volume = old_volume;
   end
 end
 

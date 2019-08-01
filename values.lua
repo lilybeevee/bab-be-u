@@ -94,7 +94,7 @@ selector_grid_contents = {
     "roc", "text_roc", "text_go away pls", "gras", "text_gras", "dayzy", "text_dayzy", "text_wfren", "text_arond", "text_frenles", "text_copkat", "text_go arnd", "text_mirr arnd", "text_meta", "text_frens", "text_pathz", "text_groop", "text_stay ther",
     "wal", "text_wal", "text_no go", "l..uv", "text_l..uv", "hurcane", "text_hurcane", "text_creat", "text_look at", "text_spoop", "text_yeet", "text_turn cornr", "text_corekt", "text_timles", "text_the", "text_that", "text_that be", "text_clikt",
     "watr", "text_watr", "text_no swim", "meem", "text_meem", "o", "text_o", "text_snacc", "text_seen by" , "text_stalk", "text_moov", "text_folo wal", "text_rong", "text_her", "text_thr", 0, 0, 0,
-    "skul", "text_skul", "text_:(", "til", "text_til", "kirb", "text_kirb", "gun", "text_gun", "wog", "text_wog", "text_zip", "text_shy", "text_munwalk", "text_sidestep", "text_diagstep", "text_hopovr", "text_knightstep",
+    "skul", "text_skul", "text_:(", "til", "text_til", "kirb", "text_kirb", "gunne", "text_gunne", "wog", "text_wog", "text_zip", "text_shy", "text_munwalk", "text_sidestep", "text_diagstep", "text_hopovr", "text_knightstep",
     "boux", "text_boux", "text_come pls", "os", "text_os", "bup", "text_bup", "han", "text_han", "tot", "text_tot", "lila", "text_lila", "hol", "text_hol", "text_poor toll", "text_blacc", "text_reed",
     "bellt", "text_bellt", "text_go", "tre", "text_tre", "piler", "text_piler", "hatt", "text_hatt", "laav", "text_laav", "fenss", "text_fenss", "riff", "text_riff", 0, "text_whit", "text_orang",
     "boll", "text_boll", "text_:o", "frut", "text_frut", "slippers", "text_slippers", "pata", "text_pata", "larry", "text_larry", "pepis", "text_pepis", "metl", "text_metl", 0, "text_colrful", "text_yello",
@@ -119,7 +119,43 @@ selector_grid_contents = {
     0,"ui_walk",0,0,"ui_activat",0,0,"ui_clik",0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     "text_press","text_f1","text_play","text_f2","text_edit","ui_left click","ui_right click",0,0,0,0,0,0,0,0,0,0,0,
-  }
+  },
+  -- page 4: objects
+  {
+    "bab","text_bab","flog","text_flog","wal","text_wal","gras","text_gras",0,0,0,0,0,0,"selctr","text_selctr","lvl","text_lvl",
+    "keek","text_keek","roc","text_roc","til","text_til","sparkl","text_sparkl",0,0,0,0,0,0,"this","text_mous","lin","text_lin",
+    "meem","text_meem","boux","text_boux","watr","text_watr","scarr","text_scarr","petnygrame","text_petnygrame",0,0,0,0,"text_text","text_frens","text_groop","text_pathz",
+    "skul","text_skul","boll","text_boll","laav","text_laav","katany","text_katany","gunne","text_gunne",0,0,0,0,0,0,"text_every1","text_no1",
+    "ghost fren","text_ghost fren","kee","text_kee","dor","text_dor","hatt","text_hatt","slippers","text_slippers",0,0,0,0,0,0,0,0,
+    "robobot","text_robobot","l..uv","text_l..uv","hedg","text_hedg","hol","text_hol","riff","text_riff",0,0,0,0,0,0,0,0,
+    "wog","text_wog","tre","text_tre","metl","text_metl","clok","text_clok",0,0,0,0,0,0,0,0,0,0,
+    "kirb","text_kirb","frut","text_frut","jail","text_jail","sine","text_sine",0,0,0,0,0,0,0,0,0,0,
+    "bup","text_bup","piler","text_piler","fenss","text_fenss","buble","text_buble","creb","text_creb","icecub","text_icecub",0,0,0,0,0,0,
+    "boy","text_boy","dayzy","text_dayzy","platfor","text_platfor",0,0,0,0,0,0,0,0,"lila","text_lila","tot","text_tot",
+    "steev","text_steev","splittr","text_splittr","colld","text_colld",0,0,0,0,0,0,0,0,"pata","text_pata","o","text_o",
+    "han","text_han","clowd","text_clowd","bellt","text_bellt","arro","text_arro",0,0,0,0,0,0,"larry","text_larry","zsoob","text_zsoob",
+    "os","text_os","hurcane","text_hurcane","spik","text_spik",0,0,0,0,0,0,0,0,0,0,"jill","text_jill",
+    "firbolt","text_firbolt","lie","text_lie","spiky","text_spiky",0,0,0,0,0,0,0,0,0,0,0,0,
+    "icbolt","text_icbolt","lie/8","text_lie/8","bordr","text_bordr",0,0,0,0,0,0,0,0,0,0,0,0,
+  },
+  -- page 5: properties, verbs and conditions
+  {
+    "text_be","text_&","text_got","text_creat","text_snacc","text_spoop","text_copkat","text_moov","text_yeet","text_liek","text_haet","text_stalk","text_look at","text_wfren","text_arond","text_sans","text_seen by","text_that",
+    "text_u","text_u too","text_u tres","text_walk",0,"text_:)","text_:(","text_no swim","text_ouch",0,"text_nxt","text_stay ther","text_sublvl","text_loop",0,"text_frenles","text_corekt","text_rong",
+    "text_go","text_goooo","text_icy","text_icyyyy",0,"text_ned kee","text_for dor","text_hotte","text_fridgd",0,0,0,0,0,0,"text_lit","text_timles","text_clikt",
+    "text_no go","text_go away pls","text_come pls","text_sidekik",0,"text_protecc","text_:o","text_xwx",0,0,0,0,0,0,0,"text_mayb","text_an","text_wait",
+    "text_visit fren","text_slep","text_shy","text_behin u",0,"text_moar","text_split","text_wurd","text_meta",0,0,0,0,0,0,0,0,0,
+    "text_flye","text_tall","text_haet skye","text_haet flor",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    "text_diag","text_ortho","text_go my way","text_direction",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    "text_turn cornr","text_folo wal","text_zip","text_hopovr",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    "text_munwalk","text_sidestep","text_diagstep","text_knightstep",0,0,0,0,0,0,0,0,0,0,0,0,0,"text_reed",
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_orang",
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_yello",
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_gay","text_tranz","text_grun",
+    0,0,0,0,0,"text_try again","text_no undo","text_undo","text_za warudo",0,0,0,0,0,0,"text_stelth","text_qt","text_cyeann",
+    0,0,0,0,0,"text_poor toll","text_go arnd","text_mirr arnd","text_brite",0,0,0,0,0,0,"text_blacc","text_whit","text_bleu",
+    0,0,0,0,0,"text_her","text_thr","text_the","text_opaque",0,0,0,0,0,0,"text_colrful","text_rave","text_purp",
+  },
 }
 tile_grid_width = 18
 tile_grid_height = 15
@@ -875,7 +911,7 @@ tiles_list = {
   },
   --79
   {
-    name = "gun",
+    name = "gunne",
     sprite = "gun",
     type = "object",
     color = {0, 3},
@@ -883,7 +919,7 @@ tiles_list = {
   },
   --80
   {
-    name = "text_gun",
+    name = "text_gunne",
     sprite = "text_gun",
     type = "text",
     color = {0, 3},
@@ -1088,7 +1124,7 @@ tiles_list = {
     texttype = "property",
     color = {4,1},
     layer = 20,
-    desc = "SUBLVL: An object that is sublvl will become enterable. Currently unimplemented, and mostly undecided on how it should work.",
+    desc = "SUBLVL: An object that is sublvl will become enterable. Currently unimplemented.",
   },
   --- 99
   {
@@ -3037,7 +3073,7 @@ tiles_list = {
     type = "text",
     texttype = "property",
     rotate = true,
-    color = {1,3},
+    color = {3,2},
     layer = 20,
     desc = "THR ->: Sends objects as far away from it as possible in the indicated direction.",
   },
@@ -3205,10 +3241,94 @@ tiles_list = {
     sprite = "text_clikt",
     type = "text",
     texttype = "cond_prefix",
-    color = {0, 3},
+    color = {3, 3},
     layer = 20,
     desc = "CLIKT (Prefix Condition): CLIKT objects will be true when left-clicked. Passes a turn if successful.",
-  }
+  },
+  -- 321
+  {
+    name = "sine",
+    sprite = "sine",
+    type = "object",
+    color = {6,2},
+    layer = 4
+  },
+  -- 322
+  {
+    name = "text_sine",
+    sprite = "text_sine",
+    type = "text",
+    color = {6,2},
+    layer = 20,
+  },
+  -- 323
+  {
+    name = "buble",
+    sprite = "buble",
+    type = "object",
+    color = {1,3},
+    layer = 3,
+  },
+  -- 324
+  {
+    name = "text_buble",
+    sprite = "text_buble",
+    type = "text",
+    color = {1,3},
+    layer = 20,
+  },
+  -- 325
+  {
+    name = "creb",
+    sprite = "creb",
+    type = "object",
+    color = {2,2},
+    layer = 5,
+    eye = {x=17, y=5, w=9, h=7},
+  },
+  -- 326
+  {
+    name = "text_creb",
+    sprite = "text_creb",
+    type = "text",
+    color = {2,2},
+    layer = 20,
+  },
+  -- 327
+  {
+    name = "icecub",
+    sprite = "icecub",
+    type = "object",
+    color = {1,4},
+    layer = 4,
+  },
+  -- 328
+  {
+    name = "text_icecub",
+    sprite = "text_icecub",
+    type = "text",
+    color = {1,4},
+    layer = 20,
+  },
+  -- 329
+  {
+    name = "jill",
+    sprite = "jill",
+    sleepsprite = "jill_slep";
+    type = "object",
+    color = {1,3},
+    layer = 5,
+    rotate = true,
+    eye = {x=17, y=8, w=2, h=3},
+  },
+  -- 330
+  {
+    name = "text_jill",
+    sprite = "text_jill",
+    type = "text",
+    color = {1,3},
+    layer = 20,
+  },
 }
 
 tiles_by_name = {}

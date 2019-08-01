@@ -18,6 +18,7 @@ local scroll_height
 function scene.load()
   metaClear()
   clear()
+  was_using_editor = false
   resetMusic(current_music, 0.8)
   selected_levels = {}
   scene.buildUI()
@@ -109,7 +110,7 @@ function runUnitTests()
       while (still_going) do
         still_going = doReplay(0)
       end
-      if not win then
+      if not won_this_playthrough then
         table.insert(fail_levels, v.file)
       else
         table.insert(succ_levels, v.file)
@@ -210,11 +211,11 @@ function scene.loadLevel(data, new)
   mapwidth = data.width
   mapheight = data.height
   map_ver = data.version or 0
-  level_next_level_after_win = data.next_level_after_win or ""
+  level_parent_level = data.parent_level or ""
+  level_next_level = data.next_level or ""
   level_is_overworld = data.is_overworld or false
   level_puffs_to_clear = data.puffs_to_clear or 0
-  level_level_sprite = data.level_sprite or ""
-  level_level_number = data.level_number or 0
+  level_background_sprite = data.background_sprite or ""
 
   if map_ver == 0 then
     maps = {{0, loadstring("return " .. mapstr)()}}
@@ -453,8 +454,7 @@ end
 function scene.createLevel(o)
   loaded_level = false
   loadLevels({default_map}, load_mode)
-	--default new levels to 'none' compression to fix zlib corruption bug
-	level_compression = "none"
+	level_compression = "zlib"
 end
 
 function scene.selectWorld(o, button)
