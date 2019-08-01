@@ -1424,7 +1424,6 @@ function scene.checkInput()
         doOneMove(x, y, key);
         local end_time = love.timer.getTime();
         if not unit_tests then print("gameplay logic took: "..tostring(round((end_time-start_time)*1000)).."ms") end
-        print("replay_playback: " .. tostring(replay_playback) .. ", replay_undo: " .. tostring(replay_undo))
       end
     end
 
