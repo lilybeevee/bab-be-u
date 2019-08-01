@@ -10,6 +10,9 @@ function world_button.new(file)
   o:setFont(ui.fonts.world_name)
 
   function o:getColor()
+    if rainbowmode then
+      return hslToRgb(love.timer.getTime()/3%1, 0.4, 0.5, .9)
+    end
     if not self.color then return {0.25, 0.5, 1, 1}
     else return unpack(self.color) end
   end

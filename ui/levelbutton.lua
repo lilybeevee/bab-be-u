@@ -6,6 +6,8 @@ function level_button.new(file, extra)
   o.data.type = "level"
   o.data.file = file
 
+  o.rainbowoffset = 0
+
   o:setSprite(sprites["ui/level box"])
   o:setFont(ui.fonts.default)
 
@@ -16,6 +18,9 @@ function level_button.new(file, extra)
   end
 
   function o:getColor()
+    if rainbowmode then
+      return self.data.extra and hslToRgb((love.timer.getTime()/3+self.rainbowoffset/20)%1, 0.25, 0.25, .9) or hslToRgb((love.timer.getTime()/3+self.rainbowoffset/20)%1, 0.4, 0.5, .9)
+    end
     if not self.color then return default_color
     else return unpack(self.color) end
   end

@@ -184,6 +184,7 @@ function scene.draw()
 
     love.graphics.push()
     love.graphics.translate(xoffset, yoffset)
+    o.rainbowoffset = i
     o:draw()
     love.graphics.pop()
   end
