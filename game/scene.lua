@@ -1487,6 +1487,9 @@ function escResult(do_actual)
         if (do_actual) then
           load_mode = "play"
           new_scene = loadscene
+          if (love.filesystem.getInfo(world_parent .. "/" .. world .. "/" .. "overworld.txt")) then
+            world = ""
+          end
         else
           return "the level selection menu"
         end

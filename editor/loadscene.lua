@@ -95,7 +95,7 @@ end
 
 function runUnitTests()
   unit_tests = true
-  local levels = scene.searchDir("officialworlds/solo levels", "level")
+  local levels = scene.searchDir(world_parent .. "/" .. world, "level")
   local fail_levels = {}
   local succ_levels = {}
   local noreplay_levels = {}
@@ -245,6 +245,13 @@ function scene.buildUI()
 
   local oy = 4
   if world ~= "" then
+    if load_mode == "play" and love.filesystem.getInfo(world_parent .. "/" .. world .. "/" .. "overworld.txt") then
+      local overworld_file_name = love.filesystem.read(world_parent .. "/" .. world .. "/" .. "overworld.txt")
+      if love.filesystem.getInfo(world_parent .. "/" .. world .. "/" .. overworld_file_name .. ".bab") then
+        loadLevels({overworld_file_name}, "play")
+      end
+    end
+  
     local title_width, title_height = ui.fonts.title:getWidth(world:upper()), ui.fonts.title:getHeight()
     local world_label = ui.text_input.new()
       :setText(world:upper())
