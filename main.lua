@@ -501,7 +501,12 @@ function love.update(dt)
     peakfps = currentfps
   end
 
-
+  if shake_dur > 0 then
+    shake_dur = shake_dur-dt
+  else
+    shake_intensity = 0
+    shake_dur = 0
+  end
 
   for k,v in pairs(tweens) do
     if v[1]:update(dt) then

@@ -155,6 +155,9 @@ function scene.update(dt)
   for i=1, #buttons do
     if mouseOverBox(width/2-sprites["ui/button_1"]:getWidth()/2, height/2-buttonheight/2+(buttonheight+10)*i, buttonwidth, buttonheight) then
       if not pointInside(oldmousex, oldmousey, width/2-sprites["ui/button_1"]:getWidth()/2, height/2-buttonheight/2+(buttonheight+10)*i, buttonwidth, buttonheight) then
+        -- im sorry
+        playSound("mous hovvr")
+        playSound("mous hovvr")
         playSound("mous hovvr")
       end
       if buttons[i] == "exit" then
