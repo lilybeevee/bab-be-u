@@ -676,7 +676,7 @@ function scene.draw(dt)
 
     love.graphics.setColor(getPaletteColor(0, 4))
     love.graphics.rectangle("fill", 0, 0, roomwidth, roomheight)
-    if level_background_sprite ~= nil and level_background_sprite ~= "" and sprites[level_background_sprite] then
+    if not selector_open and level_background_sprite ~= nil and level_background_sprite ~= "" and sprites[level_background_sprite] then
       love.graphics.setColor(1, 1, 1)
       local sprite = sprites[level_background_sprite]
       love.graphics.draw(sprite, 0, 0, 0, 1, 1, 0, 0)
