@@ -55,7 +55,7 @@ function level_button.new(file, extra)
       local iconw, iconh = 96, 96
       local sx, sy = iconw / self:getIcon():getWidth(), iconh / self:getIcon():getHeight()
       if spookmode then
-        love.graphics.setColor(0.2,0.2,0.2)
+        love.graphics.setColor(math.random(1,3)/10,math.random(0,5)/100,math.random(0,5)/100)
       end
       love.graphics.draw(self:getIcon(), self:getWidth() / 2 - iconw / 2, self:getHeight() * y_mult - iconh / 2, 0, sx, sy)
     end

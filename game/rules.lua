@@ -27,9 +27,6 @@ function clearRules()
     addRule({{"this","be","go away pls",{{},{}}},{},1})
     addRule({{"this","be","wurd",{{},{}}},{},1})
   end
-  if spookmode then
-    addRule({{"lvl","be","ouch",{{},{}}},{},1})
-  end
 
   has_new_rule = false
 end

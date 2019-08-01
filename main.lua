@@ -33,6 +33,8 @@ special_no = 1
 
 spookmode = false
 
+bxb = nil
+
 function tableAverage(table)
   local sum = 0
   local ave = 0
@@ -326,7 +328,7 @@ function love.load()
     for i=1, 20 do
       print(colr.red("⚠ bab not found"))
     end
-    love.errorhandler = function() print(colr.red("goodbye")) end
+    --love.errorhandler = function() print(colr.red("goodbye")) end
     love.window.setFullscreen(true)
     love.window.setIcon(love.image.newImageData("assets/sprites/wat.png"))
     love.window.setTitle("bxb bx x")
@@ -642,7 +644,7 @@ function love.draw()
     scene.draw(dt)
   end
 
-  if debug then
+  if debug and not spookmode then
     local mousex, mousey = love.mouse.getPosition()
 
     local debugheader = "SUPER DEBUG MENU V2.1"
@@ -708,7 +710,7 @@ function love.draw()
     olddebugtext = debugtext
   end
 
-  if superduperdebugmode then
+  if superduperdebugmode and not spookmode then
     love.graphics.setColor(1,1,0, 0.7)
     love.graphics.line(love.mouse.getX()-love.mouse.getY(), 0, love.mouse.getX()+(love.graphics.getHeight()-love.mouse.getY()), love.graphics.getHeight())
     love.graphics.line(love.mouse.getX()+love.mouse.getY(), 0, love.mouse.getX()-(love.graphics.getHeight()-love.mouse.getY()), love.graphics.getHeight())
@@ -732,6 +734,11 @@ function love.draw()
     drawmousething(1, 1)
     love.graphics.setColor(0,0,1)
     drawmousething(0, 0)
+  end
+
+  if spookmode and math.random(1000) == 500 then
+    local bab = love.graphics.newImage("assets/sprites/ui/bxb bx x.jpg")
+    love.graphics.draw(bab, 0, 0, 0, bab:getWidth()/love.graphics.getWidth(), bab:getHeight()/love.graphics.getHeight())
   end
 end
 

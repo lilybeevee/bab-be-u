@@ -411,7 +411,7 @@ function scene.searchDir(dir, type)
       t.file = file:sub(1, -5)
       t.data = json.decode(love.filesystem.read(dir .. "/" .. file))
       if spookmode then
-      t.icon = love.graphics.newImage(dir .. "/bxb bx x.jpg")
+      t.icon = love.graphics.newImage("assets/sprites/ui/bxb bx x.jpg")
       elseif love.filesystem.getInfo(dir .. "/" .. t.file .. ".png") then
         t.icon = love.graphics.newImage(dir .. "/" .. t.file .. ".png")
       else

@@ -1433,7 +1433,7 @@ function convertLevel()
       return true
     end
   end
-  
+
   local converts = matchesRule(outerlvl,"be","?")
   for _,match in ipairs(converts) do
     if not nameIs(outerlvl, match[1][3]) then
