@@ -475,10 +475,18 @@ function scene.getTransform()
   local screenheight = love.graphics.getHeight()
 
   local scale = 1
-  if roomwidth >= screenwidth or roomheight >= screenheight then
+  if roomwidth*0.625 >= screenwidth or roomheight*0.625 >= screenheight then
     scale = 0.5
+  elseif roomwidth*0.75 >= screenwidth or roomheight*0.75 >= screenheight then
+    scale = 0.625
+  elseif roomwidth*0.875 >= screenwidth or roomheight*0.875 >= screenheight then
+    scale = 0.75
+  elseif roomwidth >= screenwidth or roomheight >= screenheight then
+    scale = 0.875
   elseif screenwidth >= roomwidth * 4 and screenheight >= roomheight * 4 then
     scale = 4
+  elseif screenwidth >= roomwidth * 3 and screenheight >= roomheight * 3 then
+    scale = 3
   elseif screenwidth >= roomwidth * 2 and screenheight >= roomheight * 2 then
     scale = 2
   end
