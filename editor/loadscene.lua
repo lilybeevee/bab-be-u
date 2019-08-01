@@ -114,7 +114,7 @@ function runUnitTests()
       while (still_going) do
         still_going = doReplay(0)
       end
-      if not won_this_playthrough then
+      if not won_this_session then
         table.insert(fail_levels, v.file)
       else
         table.insert(succ_levels, v.file)
