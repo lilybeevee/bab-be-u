@@ -7,7 +7,7 @@ function love.conf(t)
     t.window.resizable = true
     t.window.vsync = false
     t.window.minwidth = 640
-    t.window.minheight = 360 
+    t.window.minheight = 360
 
     --t.gammacorrect = true
     --t.window.msaa = 4
@@ -16,5 +16,6 @@ function love.conf(t)
     t.modules.physics = false
     t.modules.video = false
 
-    t.console = true -- i mean, why turn it off?
+    t.console = false -- i mean, why turn it off?
+    -- because it looks weird and unprofessional to non-devs. just launch the game with lovec
 end
