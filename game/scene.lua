@@ -285,7 +285,16 @@ function scene.keyPressed(key, isrepeat)
   last_input_time = love.timer.getTime();
 
   if key == "escape" then
-    new_scene = loadscene
+    
+    gooi.confirm({
+        text = "Go back to "..escResult(false).."?",
+        okText = "Yes",
+        cancelText = "Cancel",
+        ok = function()
+          escResult(true)
+        end
+      })
+      return
   end
 
   local do_turn_now = false
@@ -1456,6 +1465,40 @@ function scene.checkInput()
   end
 end
 
+function escResult(do_actual)
+  if (was_using_editor) then
+    if (do_actual) then
+      load_mode = "edit"
+      new_scene = editor
+    else
+      return "the editor"
+    end
+  else
+    if (level_parent_level == nil or level_parent_level == "") then
+      if (parent_filename ~= nil and parent_filename ~= "") then
+        if (do_actual) then
+          loadLevels(parent_filename:split("|"), "play");
+        else
+          return parent_filename
+        end
+      else
+        if (do_actual) then
+          load_mode = "play"
+          new_scene = loadscene
+        else
+          return "the level selection menu"
+        end
+      end
+    else
+      if (do_actual) then
+        loadLevels({level_parent_level}, "play");
+      else
+        return level_parent_level
+      end
+    end
+  end
+end
+
 function doOneMove(x, y, key)
 	if (currently_winning) then
     --undo: undo win.
@@ -1464,21 +1507,7 @@ function doOneMove(x, y, key)
       undoWin()
     else
       if x == 0 and y == 0 and key ~= "e" then
-        if (was_using_editor) then
-          new_scene = editor
-          load_mode = "edit"
-        else
-          if (level_parent_level == nil or level_parent_level == "") then
-            if (parent_filename ~= nil and parent_filename ~= "") then
-              loadLevels(parent_filename:split("|"), "play");
-            else
-              load_mode = "play"
-              new_scene = loadscene
-            end
-          else
-            loadLevels({level_parent_level}, "play");
-          end
-        end
+        escResult(true)
       end
       return
     end
