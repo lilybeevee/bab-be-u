@@ -2037,10 +2037,18 @@ function makeMetaTile(premeta_tile)
   }
 end
 
+function undoWin()
+  currently_winning = false
+	music_fading = false
+  win_size = 0
+end
+
 function doWin()
-	if not win then
-		win = true
+	if not currently_winning then
+		won_this_session = true
+    currently_winning = true
 		music_fading = true
+    win_size = 0
 		playSound("win")
 		love.filesystem.createDirectory("levels")
     love.filesystem.write("levels/" .. level_name .. ".replay", replay_string)

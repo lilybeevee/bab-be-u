@@ -73,7 +73,8 @@ function clear()
   end
   --createMouse_direct(20, 20)
 
-  win = false
+  won_this_session = false
+  level_ending = false
   win_size = 0
 
   tile_grid = {}
