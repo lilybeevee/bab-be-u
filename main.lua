@@ -328,6 +328,9 @@ function love.load()
     end
     love.errorhandler = function() print(colr.red("goodbye")) end
     love.window.setFullscreen(true)
+    love.window.setIcon(love.image.newImageData("assets/sprites/wat.png"))
+    love.window.setTitle("bab be u?")
+    love.window.requestAttention()
   else
     print(colr.bright("\nboot complete!"))
   end
@@ -552,6 +555,10 @@ end
 function love.update(dt)
   if spookmode then
     dt = math.tan(love.timer.getRealTime()*20)/200
+  end
+
+  if not (love.window.isVisible or love.window.hasFocus or love.window.hasMouseFoxus) and spookmode then
+    love.window.requestAttention()
   end
 
   gettimetime = gettimetime + dt
