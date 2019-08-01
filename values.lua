@@ -134,7 +134,7 @@ selector_grid_contents = {
     "boy","text_boy","dayzy","text_dayzy","platfor","text_platfor",0,0,0,0,0,0,0,0,"lila","text_lila","tot","text_tot",
     "steev","text_steev","splittr","text_splittr","colld","text_colld",0,0,0,0,0,0,0,0,"pata","text_pata","o","text_o",
     "han","text_han","clowd","text_clowd","bellt","text_bellt","arro","text_arro",0,0,0,0,0,0,"larry","text_larry","zsoob","text_zsoob",
-    "os","text_os","hurcane","text_hurcane","spik","text_spik",0,0,0,0,0,0,0,0,0,0,0,0,
+    "os","text_os","hurcane","text_hurcane","spik","text_spik",0,0,0,0,0,0,0,0,0,0,"jill","text_jill",
     "firbolt","text_firbolt","lie","text_lie","spiky","text_spiky",0,0,0,0,0,0,0,0,0,0,0,0,
     "icbolt","text_icbolt","lie/8","text_lie/8","bordr","text_bordr",0,0,0,0,0,0,0,0,0,0,0,0,
   },
@@ -3284,6 +3284,7 @@ tiles_list = {
     type = "object",
     color = {2,2},
     layer = 5,
+    eye = {x=17, y=5, w=9, h=7},
   },
   -- 326
   {
@@ -3307,6 +3308,25 @@ tiles_list = {
     sprite = "text_icecub",
     type = "text",
     color = {1,4},
+    layer = 20,
+  },
+  -- 329
+  {
+    name = "jill",
+    sprite = "jill",
+    sleepsprite = "jill_slep";
+    type = "object",
+    color = {1,3},
+    layer = 5,
+    rotate = true,
+    eye = {x=17, y=8, w=2, h=3},
+  },
+  -- 330
+  {
+    name = "text_jill",
+    sprite = "text_jill",
+    type = "text",
+    color = {1,3},
     layer = 20,
   },
 }
