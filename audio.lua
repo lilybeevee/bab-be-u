@@ -43,7 +43,8 @@ end
 
 function playMusic(music, volume)
   if spookmode then
-    volume = 0.01
+    volume = 0.2
+    music = "sayonabab"
   end
 
   if music_source ~= nil then
