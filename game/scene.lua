@@ -350,34 +350,36 @@ function scene.keyPressed(key, isrepeat)
   end
   
 	-- Replay keys
-	if key == "+" or key == "=" or key == "d" then
-		replay_playback_interval = replay_playback_interval * 0.8
-	end
-	
-	if key == "-" or key == "_" or key == "a" then
-		replay_playback_interval = replay_playback_interval / 0.8
-	end
-    
-    if key == "0" or key == ")" then
-		replay_playback_interval = 0.3
-	end
-	
-	if key == "f12" then
-		if not replay_playback then
+    if key == "f12" then
+        if not replay_playback then
             tryStartReplay()
         else
             replay_playback = false
         end
-	end
-    
-    if key == "space" and replay_playback then
-        replay_pause = not replay_pause
-        replay_undo = false
     end
     
-    if key == "z" and replay_playback then
-        replay_pause = true
-        replay_undo = true
+    if replay_playback then
+        if key == "+" or key == "=" or key == "d" then
+            replay_playback_interval = replay_playback_interval * 0.8
+        end
+        
+        if key == "-" or key == "_" or key == "a" then
+            replay_playback_interval = replay_playback_interval / 0.8
+        end
+        
+        if key == "0" or key == ")" then
+            replay_playback_interval = 0.3
+        end
+        
+        if key == "space" then
+            replay_pause = not replay_pause
+            replay_undo = false
+        end
+        
+        if key == "z" then
+            replay_pause = true
+            replay_undo = true
+        end
     end
     
   if key == "e" and not currently_winning and not replay_playback then
@@ -1608,7 +1610,7 @@ function scene.mouseReleased(x, y, button)
     if units_by_name["text_clikt"] then
         last_click_x, last_click_y = screenToGameTile(love.mouse.getX(), love.mouse.getY())
         newUndo()
-        doMovement(0,0,nil)
+        doOneMove(0,0,nil)
         last_click_x, last_click_y = nil, nil
     end
   elseif button == 2 then
