@@ -383,13 +383,12 @@ function scene.keyPressed(key, isrepeat)
     
     if key == "space" and replay_playback then
         replay_pause = not replay_pause
+        replay_undo = false
     end
     
     if key == "z" and replay_playback then
         replay_pause = true
-        if replay_playback_turn > 1 then
-            replay_playback_turn = replay_playback_turn - 1
-        end
+        replay_undo = true
     end
     
   if key == "e" and not currently_winning and not replay_playback then
@@ -1159,7 +1158,11 @@ function scene.draw(dt)
             love.graphics.draw(sprites["ui/replay_play"], love.graphics.getWidth() - sprites["ui/replay_play"]:getWidth())
         end
     elseif replay_pause then
-        love.graphics.draw(sprites["ui/replay_pause"], love.graphics.getWidth() - sprites["ui/replay_pause"]:getWidth())
+        if replay_undo then
+            love.graphics.draw(sprites["ui/replay_undo"], love.graphics.getWidth() - sprites["ui/replay_undo"]:getWidth())
+        else
+            love.graphics.draw(sprites["ui/replay_pause"], love.graphics.getWidth() - sprites["ui/replay_pause"]:getWidth())
+        end
     end
     -- print(replay_playback_interval)
   end
@@ -1351,31 +1354,32 @@ function scene.draw(dt)
 end
 
 function scene.checkInput()
-	if (replay_playback) then return end
-	
   local start_time = love.timer.getTime();
   do_move_sound = false
-
-  if not (key_down["w"] or key_down["a"] or key_down["s"] or key_down["d"]) then
-    repeat_timers["wasd"] = nil
+  
+  if not (replay_playback and replay_undo) then
+    if not (key_down["w"] or key_down["a"] or key_down["s"] or key_down["d"]) then
+        repeat_timers["wasd"] = nil
+    end
+    if not (key_down["up"] or key_down["down"] or key_down["left"] or key_down["right"]) then
+        repeat_timers["udlr"] = nil
+    end
+    if not (key_down["i"] or key_down["j"] or key_down["k"] or key_down["l"]) then
+        repeat_timers["ijkl"] = nil
+    end
+    if not (key_down["kp1"] or
+    key_down["kp2"] or
+    key_down["kp3"] or
+    key_down["kp4"] or
+    key_down["kp5"] or
+    key_down["kp6"] or
+    key_down["kp7"] or
+    key_down["kp8"] or
+    key_down["kp9"]) then
+        repeat_timers["numpad"] = nil
+    end
   end
-  if not (key_down["up"] or key_down["down"] or key_down["left"] or key_down["right"]) then
-    repeat_timers["udlr"] = nil
-  end
-  if not (key_down["i"] or key_down["j"] or key_down["k"] or key_down["l"]) then
-    repeat_timers["ijkl"] = nil
-  end
-  if not (key_down["kp1"] or
-  key_down["kp2"] or
-  key_down["kp3"] or
-  key_down["kp4"] or
-  key_down["kp5"] or
-  key_down["kp6"] or
-  key_down["kp7"] or
-  key_down["kp8"] or
-  key_down["kp9"]) then
-    repeat_timers["numpad"] = nil
-  end
+  
   if not (key_down["z"] or key_down["q"] or key_down["backspace"] or key_down["kp0"] or key_down["o"]) then
     repeat_timers["undo"] = nil
   end
@@ -1393,32 +1397,37 @@ function scene.checkInput()
         do_move_sound = false;
 				local end_time = love.timer.getTime();
         if not unit_tests then print("undo took: "..tostring(round((end_time-start_time)*1000)).."ms") end
+        if replay_playback_turn > 1 then
+            replay_playback_turn = replay_playback_turn - 1
+        end
       else
         local x, y = 0, 0
-        if key == "udlr" then
-          if key_down["up"] and most_recent_key ~= "down" then y = y - 1 end
-          if key_down["down"] and most_recent_key ~= "up" then y = y + 1 end
-          if key_down["left"] and most_recent_key ~= "right" then x = x - 1 end
-          if key_down["right"] and most_recent_key ~= "left" then x = x + 1 end
-        elseif key == "wasd" then
-          if key_down["w"] and most_recent_key ~= "s" then y = y - 1 end
-          if key_down["s"] and most_recent_key ~= "w" then y = y + 1 end
-          if key_down["a"] and most_recent_key ~= "d" then x = x - 1 end
-          if key_down["d"] and most_recent_key ~= "a" then x = x + 1 end
-        elseif key == "ijkl" then
-          if key_down["i"] and most_recent_key ~= "k" then y = y - 1 end
-          if key_down["k"] and most_recent_key ~= "i" then y = y + 1 end
-          if key_down["j"] and most_recent_key ~= "l" then x = x - 1 end
-          if key_down["l"] and most_recent_key ~= "j" then x = x + 1 end
-        elseif key == "numpad" then
-          if key_down["kp1"] and most_recent_key ~= "kp9" then x = x + -1; y = y + 1; end
-          if key_down["kp2"] and most_recent_key ~= "kp8" then x = x + 0; y = y + 1; end
-          if key_down["kp3"] and most_recent_key ~= "kp7" then x = x + 1; y = y + 1; end
-          if key_down["kp4"] and most_recent_key ~= "kp6" then x = x + -1; y = y + 0; end
-          if key_down["kp6"] and most_recent_key ~= "kp4" then x = x + 1; y = y + 0; end
-          if key_down["kp7"] and most_recent_key ~= "kp3" then x = x + -1; y = y + -1; end
-          if key_down["kp8"] and most_recent_key ~= "kp2" then x = x + 0; y = y + -1; end
-          if key_down["kp9"] and most_recent_key ~= "kp1" then x = x + 1; y = y + -1; end
+        if not replay_playback then
+            if key == "udlr" then
+            if key_down["up"] and most_recent_key ~= "down" then y = y - 1 end
+            if key_down["down"] and most_recent_key ~= "up" then y = y + 1 end
+            if key_down["left"] and most_recent_key ~= "right" then x = x - 1 end
+            if key_down["right"] and most_recent_key ~= "left" then x = x + 1 end
+            elseif key == "wasd" then
+            if key_down["w"] and most_recent_key ~= "s" then y = y - 1 end
+            if key_down["s"] and most_recent_key ~= "w" then y = y + 1 end
+            if key_down["a"] and most_recent_key ~= "d" then x = x - 1 end
+            if key_down["d"] and most_recent_key ~= "a" then x = x + 1 end
+            elseif key == "ijkl" then
+            if key_down["i"] and most_recent_key ~= "k" then y = y - 1 end
+            if key_down["k"] and most_recent_key ~= "i" then y = y + 1 end
+            if key_down["j"] and most_recent_key ~= "l" then x = x - 1 end
+            if key_down["l"] and most_recent_key ~= "j" then x = x + 1 end
+            elseif key == "numpad" then
+            if key_down["kp1"] and most_recent_key ~= "kp9" then x = x + -1; y = y + 1; end
+            if key_down["kp2"] and most_recent_key ~= "kp8" then x = x + 0; y = y + 1; end
+            if key_down["kp3"] and most_recent_key ~= "kp7" then x = x + 1; y = y + 1; end
+            if key_down["kp4"] and most_recent_key ~= "kp6" then x = x + -1; y = y + 0; end
+            if key_down["kp6"] and most_recent_key ~= "kp4" then x = x + 1; y = y + 0; end
+            if key_down["kp7"] and most_recent_key ~= "kp3" then x = x + -1; y = y + -1; end
+            if key_down["kp8"] and most_recent_key ~= "kp2" then x = x + 0; y = y + -1; end
+            if key_down["kp9"] and most_recent_key ~= "kp1" then x = x + 1; y = y + -1; end
+            end
         end
         x = sign(x); y = sign(y);
         if (last_input_time ~= nil) then
@@ -1428,6 +1437,7 @@ function scene.checkInput()
         doOneMove(x, y, key);
         local end_time = love.timer.getTime();
         if not unit_tests then print("gameplay logic took: "..tostring(round((end_time-start_time)*1000)).."ms") end
+        print("replay_playback: " .. tostring(replay_playback) .. ", replay_undo: " .. tostring(replay_undo))
       end
     end
 
