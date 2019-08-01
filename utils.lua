@@ -1,4 +1,12 @@
 function clear()
+	replay_playback = false
+	replay_playback_string = nil
+	replay_playback_turn = 1
+	replay_playback_time = love.timer.getTime()
+	replay_playback_interval = 0.3
+    old_replay_playback_interval = 0.3
+    replay_pause = false
+	replay_string = ""
   new_units_cache = {}
   undoing = false
   successful_brite_cache = nil
@@ -40,6 +48,8 @@ function clear()
   cursor_converted = false
   mouse_X = love.mouse.getX()
   mouse_Y = love.mouse.getY()
+      last_click_x = nil
+      last_click_y = nil
   mouse_oldX = mouse_X
   mouse_oldY = mouse_Y
   cursors = {}
@@ -82,6 +92,11 @@ function clear()
   love.mouse.setCursor()
 end
 
+function metaClear()
+  stay_ther = nil;
+  surrounds = nil;
+end
+
 function initializeGraphicalPropertyCache()
   local properties_to_init = -- list of properties that require the graphical cache
     {
@@ -120,7 +135,7 @@ function loadMap()
           local new_unit = createUnit(id, x, y, 1)
         end
       end
-    elseif version >= 1 then
+    elseif version >= 1 and version <= 3 then
       local pos = 1
       while pos <= #map do
         if version == 1 then
@@ -143,13 +158,38 @@ function loadMap()
           end
         end
       end
+    else
+      local ok = nil
+      ok, map = serpent.load(map);
+      if (ok ~= true) then
+        print("Serpent error while loading:", ok, dump(map))
+      end
+      for _,unit in ipairs(map) do
+        id, tile, x, y, dir, specials = unit.id, unit.tile, unit.x, unit.y, unit.dir, unit.special
+        if inBounds(x, y) then
+          local unit = createUnit(tile, x, y, dir, false, id)
+          unit.special = specials
+        end
+      end
     end
   end
   if (load_mode == "play") then
     initializeOuterLvl()
     initializeEmpties()
+    loadStayTher()
   end
   unsetNewUnits()
+end
+
+function loadStayTher()
+  if stay_ther ~= nil then
+    for _,unit in ipairs(stay_ther) do
+      if inBounds(unit.x, unit.y) then
+        local newunit = createUnit(unit.tile, unit.x, unit.y, unit.dir)
+        newunit.special = unit.special
+      end
+    end
+  end
 end
 
 function initializeOuterLvl()
@@ -444,16 +484,9 @@ function countProperty(unit,prop)
 end
 
 --to prevent infinite loops where a set of rules/conditions is self referencing
---TODO: If we end up with infinite loops for stuff that isn't pardoxical (should form a closed loop of false -> false or true -> true), then we can try improving it by tracking what conditions we're already testing, and if we re-entrantly test a condition, assume it's (false I guess? real world testing will be required since I'm not sure)
-reentrance = 0
+withrecursion = {}
 
 function testConds(unit,conds) --cond should be a {condtype,{object types},{cond_units}}
-  if reentrance > 10 then
-    print("testConds infinite loop!")
-    destroyLevel("infloop");
-    return false
-  end
-  reentrance = reentrance + 1
   local endresult = true
   for _,cond in ipairs(conds) do
     local condtype = cond[1]
@@ -469,7 +502,21 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
 
     local x, y = unit.x, unit.y
 
-    if condtype == "wfren" then
+    if condtype:starts("that") then
+      result = false
+      if not withrecursion[cond] then
+        result = true
+        withrecursion[cond] = true
+        local verb = condtype:sub(6)
+        for _,param in ipairs(params) do
+          if not hasRule(unit,verb,param) then
+            result = false
+            break
+          end
+        end
+        withrecursion[cond] = false
+      end
+    elseif condtype == "wfren" then
       for _,param in ipairs(params) do
         local others = {}
         if unit == outerlvl then --basically turns into sansn't
@@ -698,6 +745,17 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
       end
     elseif condtype == "rong" then
       result = unit.blocked
+    elseif condtype == "timles" then
+      result = timeless
+    elseif condtype == "clikt" then
+        if unit.x == last_click_x and unit.y == last_click_y then
+            result = true
+        else
+            result = false
+        end
+        --print(result)
+        --print(x, y)
+        --print(last_click_x, last_click_y)
     else
       print("unknown condtype: " .. condtype)
       result = false
@@ -710,7 +768,6 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
       endresult = false
     end
   end
-  reentrance = reentrance - 1
   return endresult
 end
 
@@ -925,7 +982,7 @@ function tileHasUnitName(name,x,y)
   end
 end
 
-function getUnitsOnTile(x,y,name,not_destroyed,exclude)
+function getUnitsOnTile(x,y,name,not_destroyed,exclude,checkmous)
   if not inBounds(x,y) then
     return {}
   else
@@ -941,6 +998,17 @@ function getUnitsOnTile(x,y,name,not_destroyed,exclude)
       end
     end
     --If we care about no1 and the tile is empty, find the no1 that's there.
+    if (name == "mous") or checkmous then
+      for _,cursor in ipairs(cursors) do
+        if cursor ~= exclude then
+          if not not_destroyed or (not_destroyed and not cursor.removed) then
+            if cursor.x == x and cursor.y == y then
+              table.insert(result, cursor)
+            end
+          end
+        end
+      end
+    end
     if (#units_by_tile[tileid] == 0 and (name == "no1" or name == nil) and empties_by_tile[tileid] ~= exclude) then
       table.insert(result, empties_by_tile[tileid]);
     end
@@ -1461,8 +1529,8 @@ function getEverythingExcept(except)
     end
   end
   
-  print(except)
-  print(dump(result))
+  --print(except)
+  --print(dump(result))
   return result
 end
 
@@ -1525,6 +1593,16 @@ function loadLevels(levels, mode, level_objs)
     return
   end
   
+  --setup stay ther
+  stay_ther = nil
+  if (rules_with ~= nil) then
+    stay_ther = {}
+    local isstayther = getUnitsWithEffect("stay ther");
+    for _,unit in ipairs(isstayther) do
+      table.insert(stay_ther, unit);
+    end
+  end
+  
   --setup surrounds
   surrounds = nil;
   if (level_objs ~= nil) then
@@ -1571,11 +1649,17 @@ function loadLevels(levels, mode, level_objs)
     end
     level_name = level_name:sub(1, 100)
     level_author = data.author or ""
+    level_extra = data.extra or false
     current_palette = data.palette or "default"
     map_music = data.music or "bab be u them"
     mapwidth = math.max(mapwidth, data.width)
     mapheight = math.max(mapheight, data.height)
     map_ver = data.version or 0
+    level_next_level_after_win = data.next_level_after_win or ""
+    level_is_overworld = data.is_overworld or false
+    level_puffs_to_clear = data.level_puffs_to_clear or 0
+    level_level_sprite = data.level_sprite or ""
+    level_level_number = data.level_number or 0
 
     if map_ver == 0 then
       table.insert(maps, {0, loadstring("return " .. mapstr)()})
@@ -1617,13 +1701,24 @@ function unsetNewUnits()
   new_units_cache = {}
 end
 
-function timecheck(unit)
-  if timeless and hasProperty(unit,"za warudo") then
-    return true
-  elseif not timeless then
-    return true
+function timecheck(unit,verb,prop)
+  if timeless then
+    if hasProperty(unit,"za warudo") then
+      return true
+    elseif hasProperty(outerlvl,"za warudo") and not hasRule(unit,"ben't","za warudo") then
+      return true
+    elseif verb ~= nil and prop ~= nil then
+      local rulecheck = matchesRule(unit,verb,prop)
+      for _,ruleparent in ipairs(rulecheck) do
+        for i=1,#ruleparent[1][4][1] do
+          if ruleparent[1][4][1][i][1] == "timles" then
+            return true
+          end
+        end
+      end
+    end
   else
-    return false
+    return true
   end
 end
 

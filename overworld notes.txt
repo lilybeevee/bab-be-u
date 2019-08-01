@@ -1,0 +1,46 @@
+undoing win behaviour:
+1) When you win/TF a level, you can exit the level by waiting one turn. (This does the same as esc/return to map.) This carries the result to the overworld.
+2) But instead of doing that, you can undo. (No other inputs besides waiting and undo do anything on this screen.) The level is STILL won - it can't be unwon. The level is STILL transformed, also. BUT, if you do a DIFFERENT transform, the OLD transform is overwritten.
+
+TODO list for save file/overworld stuff:
+0) any other level settings I forgot:
+* background for the level! (so we can have custom backgrounds like baba's island)
+
+1) Implement level-in-level settings:
+* what level it is (string)
+* icon colour (TODO: not sure what the picker or data format for this is but this is obviously useful... maybe two integer pickers that are the palette co-ordinates? lol. and it defaults to 0,3 then.)
+* initial state (hidden, normal, opened)
+we can read the rest from its level_extra, level_level_sprite and level_level_number and use that to decide what style, number and sprite it displays.
+basically the way it works is, you can click a button then click a tile, and it opens up a menu like settings but for that specific level, and saves/loads from that level's settings.
+it'll just arbitrarily pick whatever non-no1 is first in the tile, but later you might need to be able to pick a tile that's under stuff, so that's a TODO.
+
+2) implement path settings:
+* is hidden (boolean)
+* is it a gate, and if so what kind (no/puffs/flowers/orbs string, integer requirement)
+this saves some persistent-until-you-leave-the-editor state: whatever item is currently on the picker is edited to have this behaviour every time you place it down. goes in specials, again.
+
+3) implement save file:
+* one save file per world.
+* needs to be a simple file format (because save doctoring will happen nonstop). key,value store.
+* data that needs to be stored: current overworld, previous level/submap entered on that overworld (NOTE: don't get confused by levels within levels or overworlds within overworlds!), which levels are cleared, which levels are completed, which levels are bonused, which levels are transformed (and into what are they transformed). other information should be possible to compute when necessary (like total puff count, puffs in a specific overworld, etc).
+* all of these lines are saved when the appropriate event happens, and loaded when they need to be checked for.
+
+4) implement logic for laying out an overworld:
+* find all levels and all paths.
+* flood fill out from and through all levels that are opened/won and all paths that are revealed, opening/revealing adjacent paths. don't flood fill past unwon hidden/normal levels. if floodfill reaches a path designated as a gate, open it and floodfill past if applicable.
+* I guess levels/paths not touched by the flood fill are either deleted or automatically fail canMove checks, depending on whether you can see them or not? hmm. either way, you're not allowed to enter them somehow.
+* level transforms happen, and the post-TF level have the specials carry over.
+
+5) implement main cursor logic:
+* an arbitrary cursor is declared the main cursor.
+* when you exit/enter the game or exit a level (winning or giving up), the 'previous level/submap entered on that overworld' save file lines are used to place the main cursor on the level/submap you just left.
+* if not applicable or information not available, the main cursor isn't moved.
+
+6) implement escape menu and return to parent/level after win:
+* pressing esc brings up a pause menu. it shows the rules (like tab but cleaned up to look good), and has buttons that can be highlighted with the mouse or with the cursor keys: resume, restart level, return to map (grayed out if not applicable), settings (grayed out until we write some), exit to menu. selecting the appropriate button does the appropriate thing.
+* returning to map/beating a level and idling to confirm the win takes you to the appropriate next map.
+
+7) start in overworld:
+* you can define in a text file in a world the main overworld that new games start in.
+* if you play such a world, then you go to the main overworld if you have no save file, or it loads your save file and places you in the appropriate place otherwise. you don't get to see the level picker.
+* edit mode gets to see the level picker as normal. worlds with no main overworld always see the level picker.

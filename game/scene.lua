@@ -81,6 +81,51 @@ function scene.load()
 
   mouse_grabbed = false
   love.mouse.setGrabbed(false)
+
+  -- mobile buttons
+  local screenwidth = love.graphics.getWidth()
+  local screenheight = love.graphics.getHeight()
+  local twelfth = screenwidth/12
+
+  mobile_controls_activekeys = "wasd"
+
+  gooi.newButton({text = "",x = 10*twelfth,y = screenheight-3*twelfth,w = twelfth,h = twelfth,group = "mobile-controls"}):onPress(function(c) doOneMove(0,-1,mobile_controls_activekeys) end):setBGImage(sprites["ui/arrow up"]):bg({0, 0, 0, 0})
+  gooi.newButton({text = "",x = 11*twelfth,y = screenheight-2*twelfth,w = twelfth,h = twelfth,group = "mobile-controls"}):onPress(function(c) doOneMove(1,0,mobile_controls_activekeys) end):setBGImage(sprites["ui/arrow right"]):bg({0, 0, 0, 0})
+  gooi.newButton({text = "",x = 10*twelfth,y = screenheight-1*twelfth,w = twelfth,h = twelfth,group = "mobile-controls"}):onPress(function(c) doOneMove(0,1,mobile_controls_activekeys) end):setBGImage(sprites["ui/arrow down"]):bg({0, 0, 0, 0})
+  gooi.newButton({text = "",x =  9*twelfth,y = screenheight-2*twelfth,w = twelfth,h = twelfth,group = "mobile-controls"}):onPress(function(c) doOneMove(-1,0,mobile_controls_activekeys) end):setBGImage(sprites["ui/arrow left"]):bg({0, 0, 0, 0})
+
+  gooi.newButton({text = "",x = 11*twelfth,y = screenheight-3*twelfth,w = twelfth,h = twelfth,group = "mobile-controls"}):onPress(function(c) doOneMove(1,-1,mobile_controls_activekeys) end):setBGImage(sprites["ui/arrow ur"]):bg({0, 0, 0, 0})
+  gooi.newButton({text = "",x = 11*twelfth,y = screenheight-1*twelfth,w = twelfth,h = twelfth,group = "mobile-controls"}):onPress(function(c) doOneMove(1,1,mobile_controls_activekeys) end):setBGImage(sprites["ui/arrow dr"]):bg({0, 0, 0, 0})
+  gooi.newButton({text = "",x = 9*twelfth,y = screenheight-1*twelfth,w = twelfth,h = twelfth,group = "mobile-controls"}):onPress(function(c) doOneMove(-1,1,mobile_controls_activekeys) end):setBGImage(sprites["ui/arrow dl"]):bg({0, 0, 0, 0})
+  gooi.newButton({text = "",x = 9*twelfth,y = screenheight-3*twelfth,w = twelfth,h = twelfth,group = "mobile-controls"}):onPress(function(c) doOneMove(-1,-1,mobile_controls_activekeys) end):setBGImage(sprites["ui/arrow ul"]):bg({0, 0, 0, 0})
+
+  gooi.newButton({text = "",x = 10*twelfth,y = screenheight-2*twelfth,w = twelfth,h = twelfth,group = "mobile-controls"}):onPress(function(c) doOneMove(0,0,mobile_controls_activekeys) end):setBGImage(sprites["ui/square"]):bg({0, 0, 0, 0})
+
+  gooi.newButton({text = "",x = 9.25*twelfth,y = 0.25*twelfth,w = twelfth,h = twelfth,group = "mobile-controls"}):onPress(function(c) doOneMove(0, 0, "undo") end):setBGImage(sprites["ui/undo"]):bg({0, 0, 0, 0})
+  gooi.newButton({text = "",x = 10.75*twelfth,y = 0.25*twelfth,w = twelfth,h = twelfth,group = "mobile-controls"}):onPress(function(c) scene.resetStuff() end):setBGImage(sprites["ui/reset"]):bg({0, 0, 0, 0})
+
+  mobile_controls_timeless = gooi.newButton({text = "",x = 10*twelfth,y = 1.5*twelfth,w = twelfth,h = twelfth,group = "mobile-controls"}):onPress(function(c) doOneMove(0, 0, "e") end):setBGImage(sprites["ui/timestop"]):bg({0, 0, 0, 0})
+
+  mobile_controls_p1 = gooi.newButton({text = "",x = 9*twelfth,y = screenheight-4.15*twelfth,w = twelfth,h = twelfth,group = "mobile-controls"}):onPress(function(c)
+    mobile_controls_activekeys = "wasd"
+    mobile_controls_p1:setBounds(9*twelfth, screenheight-4.15*twelfth)
+    mobile_controls_p2:setBounds(10*twelfth, screenheight-4.25*twelfth)
+    mobile_controls_p3:setBounds(11*twelfth, screenheight-4.25*twelfth)
+  end):setBGImage(sprites["ui_1"]):bg({0, 0, 0, 0})
+  mobile_controls_p2 = gooi.newButton({text = "",x = 10*twelfth,y = screenheight-4.25*twelfth,w = twelfth,h = twelfth,group = "mobile-controls"}):onPress(function(c)
+    mobile_controls_activekeys = "udlr"
+    mobile_controls_p1:setBounds(9*twelfth, screenheight-4.25*twelfth)
+    mobile_controls_p2:setBounds(10*twelfth, screenheight-4.15*twelfth)
+    mobile_controls_p3:setBounds(11*twelfth, screenheight-4.25*twelfth)
+  end):setBGImage(sprites["ui_2"]):bg({0, 0, 0, 0})
+  mobile_controls_p3 = gooi.newButton({text = "",x = 11*twelfth,y = screenheight-4.25*twelfth,w = twelfth,h = twelfth,group = "mobile-controls"}):onPress(function(c)
+    mobile_controls_activekeys = "numpad"
+    mobile_controls_p1:setBounds(9*twelfth, screenheight-4.25*twelfth)
+    mobile_controls_p2:setBounds(10*twelfth, screenheight-4.25*twelfth)
+    mobile_controls_p3:setBounds(11*twelfth, screenheight-4.15*twelfth)
+  end):setBGImage(sprites["ui_3"]):bg({0, 0, 0, 0})
+
+  gooi.setGroupVisible("mobile-controls", is_mobile)
 end
 
 function scene.update(dt)
@@ -127,6 +172,64 @@ function scene.update(dt)
     shake_intensity = 0
     shake_dur = 0
   end
+	
+	doReplay(dt)
+end
+
+function doReplay(dt)
+	if win or not replay_playback then return false end
+	if love.timer.getTime() > (replay_playback_time + replay_playback_interval) then
+        if not replay_pause then
+            replay_playback_time = replay_playback_time + replay_playback_interval
+            doReplayTurn(replay_playback_turn);
+            replay_playback_turn = replay_playback_turn + 1;
+        else
+            replay_playback_time = love.timer.getTime()
+        end
+	end
+  return true
+end
+
+function doReplayTurn(turn)
+	local turns = replay_playback_string:split(";")
+	local turn_string = turns[turn];
+	if (turn_string == nil or turn_string == "") then
+		replay_playback = false;
+		print("Finished playback at turn: "..tostring(turn));
+	end
+	local turn_parts = turn_string:split(",")
+	x, y, key = tonumber(turn_parts[1]), tonumber(turn_parts[2]), turn_parts[3];
+	if (x == nil or y == nil) then
+		replay_playback = false;
+		print("Finished playback at turn: "..tostring(turn));
+	else
+    doOneMove(x, y, key);
+  end
+end
+
+function string:split(sSeparator, nMax, bRegexp)
+   assert(sSeparator ~= '')
+   assert(nMax == nil or nMax >= 1)
+
+   local aRecord = {}
+
+   if self:len() > 0 then
+      local bPlain = not bRegexp
+      nMax = nMax or -1
+
+      local nField, nStart = 1, 1
+      local nFirst,nLast = self:find(sSeparator, nStart, bPlain)
+      while nFirst and nMax ~= 0 do
+         aRecord[nField] = self:sub(nStart, nFirst-1)
+         nField = nField+1
+         nStart = nLast+1
+         nFirst,nLast = self:find(sSeparator, nStart, bPlain)
+         nMax = nMax-1
+      end
+      aRecord[nField] = self:sub(nStart)
+   end
+
+   return aRecord
 end
 
 function scene.resetStuff()
@@ -144,10 +247,15 @@ function scene.resetStuff()
   calculateLight()
   updateUnits(true)
   updatePortals()
+  miscUpdates()
   next_levels, next_level_objs = getNextLevels()
 
   first_turn = false
   window_dir = 0
+	--we need to call updateDir to initialize things like units that change their names when their direction changes, in particular this needs to be the same as starting the level anew (which does create every unit and therefore call updateDir on them), so do it now
+	for _,unit in ipairs(units) do
+		updateDir(unit, unit.dir, true);
+	end
 end
 
 function scene.mouseMoved(x, y, dx, dy, istouch)
@@ -221,9 +329,14 @@ function scene.keyPressed(key, isrepeat)
       repeat_timers["numpad"] = 0
     end
   elseif key == "z" or key == "q" or key == "backspace" or key == "kp0" or key == "o" then
-    if not repeat_timers["undo"] then
-      do_turn_now = true
-      repeat_timers["undo"] = 0
+    if not hasProperty(outerlvl, "no undo") then
+        if not repeat_timers["undo"] then
+        do_turn_now = true
+        repeat_timers["undo"] = 0
+        end
+    else
+        do_turn_now = true
+        playSound("fail")
     end
   end
 
@@ -237,24 +350,39 @@ function scene.keyPressed(key, isrepeat)
   if key == "r" then
     scene.resetStuff()
   end
-
-  if key == "e" and not win then
-    if hasProperty(nil,"za warudo") then
-      --[[
-      level_shader = shader_zawarudo
-      shader_time = 0
-      doin_the_world = true
-      ]]
-      newUndo()
-      timeless = not timeless
-      if not timeless then
-        parseRules()
-        doMovement(0,0,"e")
-      end
-      addUndo({"za warudo"})
-    else
-      timeless = false
+  
+	-- Replay keys
+	if key == "+" or key == "=" or key == "d" then
+		replay_playback_interval = replay_playback_interval * 0.8
+	end
+	
+	if key == "-" or key == "_" or key == "a" then
+		replay_playback_interval = replay_playback_interval / 0.8
+	end
+    
+    if key == "0" or key == ")" then
+		replay_playback_interval = 0.3
+	end
+	
+	if key == "f12" then
+		if not replay_playback then
+            tryStartReplay()
+        else
+            replay_playback = false
+        end
+	end
+    
+    if key == "space" and replay_playback then
+        replay_pause = not replay_pause
     end
+    
+    --[[
+    if key == "z" and replay_playback then
+    end
+    ]]
+    
+  if key == "e" and not win and not replay_playback then
+    doOneMove(0, 0, "e")
   end
 
   if key == "tab" then
@@ -266,6 +394,23 @@ function scene.keyPressed(key, isrepeat)
 
   if (do_turn_now) then
     scene.checkInput()
+  end
+end
+
+function tryStartReplay()
+  scene.resetStuff()
+  local dir = "levels/"
+  if world ~= "" then dir = world_parent .. "/" .. world .. "/" end
+  if love.filesystem.getInfo(dir .. level_name .. ".replay") then
+    replay_playback_string = love.filesystem.read(dir .. level_name .. ".replay")
+    replay_playback = true
+    print("Started replay from: "..dir .. level_name .. ".replay");
+  elseif love.filesystem.getInfo("levels/" .. level_name .. ".replay") then
+    replay_playback_string = love.filesystem.read("levels/" .. level_name .. ".replay")
+    replay_playback = true
+    print("Started replay from: ".."levels/" .. level_name .. ".replay");
+  else
+    print("Failed to find replay: "..dir .. level_name .. ".replay");
   end
 end
 
@@ -326,14 +471,26 @@ function scene.getTransform()
   local roomwidth = mapwidth * TILE_SIZE
   local roomheight = mapheight * TILE_SIZE
 
-  local screenwidth = love.graphics.getWidth()
+  local screenwidth = love.graphics.getWidth() * (is_mobile and 0.75 or 1)
   local screenheight = love.graphics.getHeight()
 
   local scale = 1
-  if roomwidth >= screenwidth or roomheight >= screenheight then
+  if roomwidth*0.375 >= screenwidth or roomheight*0.375 >= screenheight then
+    scale = 0.25
+  elseif roomwidth*0.5 >= screenwidth or roomheight*0.5 >= screenheight then
+    scale = 0.375
+  elseif roomwidth*0.625 >= screenwidth or roomheight*0.625 >= screenheight then
     scale = 0.5
+  elseif roomwidth*0.75 >= screenwidth or roomheight*0.75 >= screenheight then
+    scale = 0.625
+  elseif roomwidth*0.875 >= screenwidth or roomheight*0.875 >= screenheight then
+    scale = 0.75
+  elseif roomwidth >= screenwidth or roomheight >= screenheight then
+    scale = 0.875
   elseif screenwidth >= roomwidth * 4 and screenheight >= roomheight * 4 then
     scale = 4
+  elseif screenwidth >= roomwidth * 3 and screenheight >= roomheight * 3 then
+    scale = 3
   elseif screenwidth >= roomwidth * 2 and screenheight >= roomheight * 2 then
     scale = 2
   end
@@ -369,6 +526,7 @@ function scene.draw(dt)
 
   --background color
   local bg_color = {getPaletteColor(1, 0)}
+  
   if rainbowmode then bg_color = {hslToRgb(love.timer.getTime()/6%1, .2, .2, .9), 1} end
 
   love.graphics.setColor(bg_color[1], bg_color[2], bg_color[3], bg_color[4])
@@ -386,16 +544,53 @@ function scene.draw(dt)
   love.graphics.printf(next_level_name, 0, -14, roomwidth)
 
   local lvl_color = {getPaletteColor(0, 4)}
-  if rainbowmode then lvl_color = {hslToRgb(love.timer.getTime()/6%1, .1, .1, .9), 1} end
+  
+  --[[if hasProperty(outerlvl,"tranz") then
+    love.graphics.draw(sprites["overlay/trans"], 0, 0, 0, roomwidth / sprites["overlay/trans"]:getWidth(), roomheight / sprites["overlay/trans"]:getHeight()) 
+  end
+  if hasProperty(outerlvl,"gay") then
+    table.insert(outerlvl.overlay, "gay")
+  end]]
+  
+  -- Lvl be colors
+  if hasProperty(outerlvl,"rave") then
+    lvl_color = {hslToRgb((love.timer.getTime()/3+#undo_buffer/45)%1, 0.1, 0.1, .9), 1}
+  elseif hasProperty(outerlvl,"colrful") or rainbowmode then
+    lvl_color = {hslToRgb(love.timer.getTime()/6%1, .1, .1, .9), 1}
+  elseif (hasProperty(outerlvl,"reed") and hasProperty(outerlvl,"whit")) then
+    lvl_color = {getPaletteColor(4, 2)}
+  elseif (hasProperty(outerlvl,"grun") and hasProperty(outerlvl,"whit")) then
+    lvl_color = {getPaletteColor(5, 3)}
+  elseif hasProperty(outerlvl,"whit") then
+    lvl_color = {getPaletteColor(0, 3)}
+  elseif (hasProperty(outerlvl,"bleu") and hasProperty(outerlvl,"reed")) or hasProperty(outerlvl,"purp") then
+    lvl_color = {getPaletteColor(3, 1)}
+  elseif (hasProperty(outerlvl,"reed") and hasProperty(outerlvl,"grun")) or hasProperty(outerlvl,"yello") then
+    lvl_color = {getPaletteColor(2, 4)}
+  elseif (hasProperty(outerlvl,"reed") and hasProperty(outerlvl,"yello")) or hasProperty(outerlvl,"orang") then
+    lvl_color = {getPaletteColor(2, 3)}
+  elseif (hasProperty(outerlvl,"bleu") and hasProperty(outerlvl,"grun")) or hasProperty(outerlvl,"cyeann") then
+    lvl_color = {getPaletteColor(1, 4)}
+  elseif hasProperty(outerlvl,"reed") then
+    lvl_color = {getPaletteColor(2, 2)}
+  elseif hasProperty(outerlvl,"bleu") then
+    lvl_color = {getPaletteColor(1, 3)}
+  elseif hasProperty(outerlvl,"grun") then
+    lvl_color = {getPaletteColor(5, 2)}
+  elseif hasProperty(outerlvl,"cyeann") then
+    lvl_color = {getPaletteColor(1, 4)}
+  elseif hasProperty(outerlvl,"blacc") then
+    lvl_color = {getPaletteColor(0, 4)}
+  end
 
   love.graphics.setColor(lvl_color[1], lvl_color[2], lvl_color[3], lvl_color[4])
-  if (not level_destroyed) then
+  if not (level_destroyed or hasProperty(outerlvl, "stelth")) then
     love.graphics.rectangle("fill", 0, 0, roomwidth, roomheight)
   end
 
   local function drawUnit(unit, drawx, drawy, rotation, loop)
     if unit.name == "no1" and not (draw_empty and validEmpty(unit)) then return end
-
+    
     local brightness = 1
     if ((unit.type == "text") or hasRule(unit,"be","wurd")) and not unit.active then
       brightness = 0.33
@@ -405,7 +600,7 @@ function scene.draw(dt)
       brightness = 0.33
     end
     
-    if timeless and not hasProperty(unit,"za warudo") and not (unit.type == text) then
+    if timeless and not hasProperty(unit,"za warudo") and not (unit.type == "text") then
       brightness = 0.33
     end
 
@@ -430,46 +625,42 @@ function scene.draw(dt)
         unit.sprite = "text_katany"
       end
     end
-
-    if unit.colrful or rainbowmode then
+    
+    if unit.rave then
+      -- print("unit " .. unit.name .. " is rave")
+      local newcolor = hslToRgb((love.timer.getTime()/0.75+#undo_buffer/45+unit.x/18+unit.y/18)%1, .5, .5, 1)
+      newcolor[1] = newcolor[1]*255
+      newcolor[2] = newcolor[2]*255
+      newcolor[3] = newcolor[3]*255
+	  unit.color = newcolor
+    elseif unit.colrful or rainbowmode then
       -- print("unit " .. unit.name .. " is colourful or rainbowmode")
       local newcolor = hslToRgb((love.timer.getTime()/15+#undo_buffer/45+unit.x/18+unit.y/18)%1, .5, .5, 1)
       newcolor[1] = newcolor[1]*255
       newcolor[2] = newcolor[2]*255
       newcolor[3] = newcolor[3]*255
       unit.color = newcolor
-    elseif unit.rave then
-      -- print("unit " .. unit.name .. " is rave")
-      local newcolor = hslToRgb((love.timer.getTime()/1000+#undo_buffer/45+unit.x/18+unit.y/18)%1, .5, .5, 1)
-      newcolor[1] = newcolor[1]*255
-      newcolor[2] = newcolor[2]*255
-      newcolor[3] = newcolor[3]*255
-    elseif (unit.reed and unit.bleu) or (unit.purp) then
-      -- print("unit " .. unit.name .. " is red & blue, or purple")
+    elseif unit.whit and unit.reed then
+	  unit.color = {4, 2}
+	elseif unit.whit and unit.grun then
+	  unit.color = {5, 3}
+	elseif unit.whit or (unit.reed and unit.grun and unit.bleu) or (unit.reed and unit.cyeann) or (unit.bleu and unit.yello) or (unit.grun and unit.purp) then
+      unit.color = {0, 3}	
+	elseif unit.purp or (unit.reed and unit.bleu) then
       unit.color = {3, 1}
+	elseif unit.yello or (unit.reed and unit.grun) then
+      unit.color = {2, 4}
+	elseif unit.orang or (unit.reed and unit.yello) then
+      unit.color = {2, 3}
+    elseif unit.cyeann or (unit.bleu and unit.grun) then
+      unit.color = {1, 4}
     elseif unit.reed then
-      -- print("unit " .. unit.name .. " is red")
       unit.color = {2, 2}
     elseif unit.bleu then
-      -- print("unit " .. unit.name .. " is blue")
       unit.color = {1, 3}
     elseif unit.grun then
-      -- print("unit " .. unit.name .. " is green")
       unit.color = {5, 2}
-    elseif (unit.reed and unit.grun) or unit.yello then
-      -- print("unit " .. unit.name .. " is red & green, or yellow")
-      unit.color = {2, 4}
-    elseif unit.orang then
-      -- print("unit " .. unit.name .. " is orange")
-      unit.color = {2, 3}
-    elseif (unit.bleu and unit.grun) or  unit.cyeann then
-      -- print("unit " .. unit.name .. " is blue & green, or cyan")
-      unit.color = {1, 4}
-    elseif (unit.reed and unit.grun and unit.bleu) or unit.whit then
-      -- print("unit " .. unit.name .. " is red & green & blue, or white")
-      unit.color = {0, 3}
     elseif unit.blacc then
-      -- print("unit " .. unit.name .. " is black")
       unit.color = {0, 4}
     else
       if unit.color_override ~= nil then
@@ -552,7 +743,7 @@ function scene.draw(dt)
     love.graphics.push()
     love.graphics.rotate(math.rad(rotation))
     love.graphics.translate(-fulldrawx, -fulldrawy)
-
+    
     local function drawSprite(overlay)
       local sprite = overlay or sprite
       love.graphics.draw(sprite, fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
@@ -566,8 +757,78 @@ function scene.draw(dt)
 				setColor(unit.color)
 			end
     end
+    
+    --performance todos: each line gets drawn twice (both ways), so there's probably a way to stop that. might not be necessary though, since there is virtually no lag so far
+    if unit.name == "lin" and scene ~= editor then
+      love.graphics.setLineWidth(3)
+      local orthos = {}
+      local line = {}
+      local oobline = {}
+      for ndir=1,4 do
+        local nx,ny = dirs[ndir][1],dirs[ndir][2]
+        local dx,dy,dir,px,py = getNextTile(unit,nx,ny,2*ndir-1)
+        if inBounds(px,py) then
+          local around = getUnitsOnTile(px,py)
+          for _,other in ipairs(around) do
+            if other.name == "lin" or other.name == "lvl" then
+              orthos[ndir] = true
+              table.insert(line,other)
+              break
+            else
+              orthos[ndir] = false
+            end
+          end
+        else
+          orthos[ndir] = true
+          table.insert(oobline,{px,py})
+        end
+      end
+      for ndir=2,8,2 do
+        local nx,ny = dirs8[ndir][1],dirs8[ndir][2]
+        local dx,dy,dir,px,py = getNextTile(unit,nx,ny,ndir)
+        local around = getUnitsOnTile(px,py)
+        for _,other in ipairs(around) do
+          if other.name == "lin" or other.name == "lvl" then
+            if ((ndir == 2) and not orthos[1] and not orthos[2])
+            or ((ndir == 4) and not orthos[2] and not orthos[3])
+            or ((ndir == 6) and not orthos[3] and not orthos[4])
+            or ((ndir == 8) and not orthos[4] and not orthos[1]) then
+              table.insert(line,other)
+            end
+          end
+        end
+      end
+      if (#line > 0) then
+        for _,point in ipairs(line) do
+          local dx = unit.x-point.x
+          local dy = unit.y-point.y
+          local odx = 32*dx
+          local ody = 32*dy
+          
+          love.graphics.line(fulldrawx,fulldrawy,fulldrawx-odx,fulldrawy-ody)
+        end
+      end
+      if (#oobline > 0) then
+        for _,point in ipairs(oobline) do
+          local dx = unit.x-point[1]
+          local dy = unit.y-point[2]
+          local odx = 16*dx
+          local ody = 16*dy
+          
+          --draws it twice to make it look the same as the other lines. should be reduced to one once we figure out that performance todo above
+          love.graphics.line(fulldrawx,fulldrawy,fulldrawx-odx,fulldrawy-ody)
+          love.graphics.line(fulldrawx,fulldrawy,fulldrawx-odx,fulldrawy-ody)
+        end
+      end
+      if (#line == 0) and (#oobline == 0) then
+        drawSprite()
+      end
+    end
+    
+    --reset back to values being used before
+    love.graphics.setLineWidth(2)
 
-    if not unit.xwx then -- xwx takes control of the drawing sprite, so it shouldn't render the normal object
+    if not unit.xwx and not (unit.name == "lin" and scene ~= editor) then -- xwx takes control of the drawing sprite, so it shouldn't render the normal object
       drawSprite()
     end
 
@@ -738,7 +999,7 @@ function scene.draw(dt)
     if units_by_layer[i] then
       local removed_units = {}
       for _,unit in ipairs(units_by_layer[i]) do
-        if not unit.stelth and not portaling[unit] then
+        if not (unit.stelth or portaling[unit] or hasProperty(outerlvl, "stelth")) then
           local x, y, rot = unit.x, unit.y, 0
           if unit.name ~= "no1" then
             x, y = unit.draw.x, unit.draw.y
@@ -867,7 +1128,26 @@ function scene.draw(dt)
     win_size = win_size + dt*2
   end
   love.graphics.pop()
-
+  
+  if replay_playback then
+    if not replay_pause then
+        if replay_playback_interval < 0.05 then
+            love.graphics.draw(sprites["ui/replay_fff"], love.graphics.getWidth() - sprites["ui/replay_fff"]:getWidth())
+        elseif replay_playback_interval < 0.2 and replay_playback_interval > 0.05 then
+            love.graphics.draw(sprites["ui/replay_ff"], love.graphics.getWidth() - sprites["ui/replay_ff"]:getWidth())
+        elseif replay_playback_interval > 0.5 and replay_playback_interval < 1 then
+            love.graphics.draw(sprites["ui/replay_slow"], love.graphics.getWidth() - sprites["ui/replay_slow"]:getWidth())
+        elseif replay_playback_interval > 1 then
+            love.graphics.draw(sprites["ui/replay_snail"], love.graphics.getWidth() - sprites["ui/replay_snail"]:getWidth())
+        else
+            love.graphics.draw(sprites["ui/replay_play"], love.graphics.getWidth() - sprites["ui/replay_play"]:getWidth())
+        end
+    elseif replay_pause then
+        love.graphics.draw(sprites["ui/replay_pause"], love.graphics.getWidth() - sprites["ui/replay_pause"]:getWidth())
+    end
+    -- print(replay_playback_interval)
+  end
+  
   if mouseOverBox(0,0,sprites["ui/cog"]:getHeight(),sprites["ui/cog"]:getWidth()) then
     if love.mouse.isDown(1) then
       love.graphics.draw(sprites["ui/cog_a"], 0, 0)
@@ -892,50 +1172,94 @@ function scene.draw(dt)
     doin_the_world = false
   end
 
+  gooi.draw()
   if is_mobile then
-    local screenwidth = love.graphics.getWidth()
-    local screenheight = love.graphics.getHeight()
-
-    local arrowsprite = sprites["ui/arrow"]
-	local darrowsprite = sprites["ui/darrow"]
-    local squaresprite = sprites["ui/square"]
-	local undosprite = sprites["ui/undo"]
-	local resetsprite = sprites["ui/reset"]
-
-	love.graphics.draw(arrowsprite, screenwidth-arrowsprite:getWidth()*2, screenheight-arrowsprite:getHeight()*3)
-	love.graphics.draw(arrowsprite, screenwidth, screenheight-arrowsprite:getHeight()*2, 3.14/2)
-    love.graphics.draw(arrowsprite, screenwidth-arrowsprite:getWidth(), screenheight, 3.14)
-    love.graphics.draw(arrowsprite, screenwidth-arrowsprite:getWidth()*3, screenheight-arrowsprite:getHeight(), 3.14*1.5)
-
-	love.graphics.draw(darrowsprite, screenwidth-darrowsprite:getWidth(), screenheight-darrowsprite:getHeight()*3)
-	love.graphics.draw(darrowsprite, screenwidth, screenheight-darrowsprite:getHeight(), 3.14/2)
-	love.graphics.draw(darrowsprite, screenwidth-darrowsprite:getWidth()*2, screenheight, 3.14)
-	love.graphics.draw(darrowsprite, screenwidth-darrowsprite:getWidth()*3, screenheight-darrowsprite:getHeight()*2, 3.14*1.5)
-
-    love.graphics.draw(squaresprite, screenwidth-squaresprite:getWidth()*2, screenheight-squaresprite:getHeight()*2)
-
-	love.graphics.draw(undosprite, undosprite:getWidth(), screenheight-undosprite:getHeight()*2)
-	love.graphics.draw(resetsprite, screenwidth-resetsprite:getWidth()*2, resetsprite:getHeight())
+    if rules_with["za warudo"] then
+      mobile_controls_timeless:setVisible(true)
+    else
+      mobile_controls_timeless:setVisible(false)
+    end
+    if rules_with["u"] then
+      if rules_with["u too"] then
+          mobile_controls_p1:setVisible(true)
+          mobile_controls_p2:setVisible(true)
+          mobile_controls_p3:setVisible(true)
+        if rules_with["u tres"] then
+          mobile_controls_p1:setBGImage(sprites["ui_1"])
+          mobile_controls_p2:setBGImage(sprites["ui_2"])
+          mobile_controls_p3:setBGImage(sprites["ui_3"])
+        else
+          mobile_controls_p1:setBGImage(sprites["ui_1"])
+          mobile_controls_p2:setBGImage(sprites["ui_2"])
+          mobile_controls_p3:setBGImage(sprites["ui_plus"])
+        end
+      elseif rules_with["u tres"] then
+        mobile_controls_p1:setVisible(true)
+        mobile_controls_p2:setVisible(true)
+        mobile_controls_p3:setVisible(true)
+        mobile_controls_p1:setBGImage(sprites["ui_1"])
+        mobile_controls_p2:setBGImage(sprites["ui_plus"])
+        mobile_controls_p3:setBGImage(sprites["ui_3"])
+      else
+        mobile_controls_p1:setVisible(false)
+        mobile_controls_p2:setVisible(false)
+        mobile_controls_p3:setVisible(false)
+      end
+    elseif rules_with["u too"] and rules_with["u tres"] then
+      mobile_controls_p1:setVisible(true)
+      mobile_controls_p2:setVisible(true)
+      mobile_controls_p3:setVisible(true)
+      mobile_controls_p1:setBGImage(sprites["ui_plus"])
+      mobile_controls_p2:setBGImage(sprites["ui_2"])
+      mobile_controls_p3:setBGImage(sprites["ui_3"])
+    else
+      mobile_controls_p1:setVisible(false)
+      mobile_controls_p2:setVisible(false)
+      mobile_controls_p3:setVisible(false)
+    end
   end
 
-  gooi.draw()
+  gooi.draw("mobile-controls")
 
   if love.window.hasMouseFocus() then
     for i,cursor in ipairs(cursors) do
       local color
-
-      if hasProperty(cursor,"colrful") or rainbowmode then
-        local newcolor = hslToRgb((#undo_buffer/45+cursor.screenx/18+cursor.screeny/18)%1, .5, .5, 1)
+      
+      -- Mous be colors
+      if hasProperty(cursor,"rave") then
+        local newcolor = hslToRgb((love.timer.getTime()/0.75+#undo_buffer/45+cursor.screenx/18+cursor.screeny/18)%1, .5, .5, 1)
         newcolor[1] = newcolor[1]*255
         newcolor[2] = newcolor[2]*255
         newcolor[3] = newcolor[3]*255
         color = newcolor
-      elseif hasProperty(cursor,"bleu") and hasProperty(cursor,"reed") then
+      elseif hasProperty(cursor,"colrful") or rainbowmode then
+        local newcolor = hslToRgb((love.timer.getTime()/15+#undo_buffer/45+cursor.screenx/18+cursor.screeny/18)%1, .5, .5, 1)
+        newcolor[1] = newcolor[1]*255
+        newcolor[2] = newcolor[2]*255
+        newcolor[3] = newcolor[3]*255
+        color = newcolor
+	  elseif (hasProperty(cursor,"reed") and hasProperty(cursor,"whit")) then
+	    color = {4, 2}
+	  elseif (hasProperty(cursor,"grun") and hasProperty(cursor,"whit")) then
+	    color = {5, 3}
+	  elseif (hasProperty(cursor,"bleu") and hasProperty(cursor,"reed")) or hasProperty(cursor,"purp") then
         color = {3, 1}
-      elseif hasProperty(cursor,"reed") then
+	  elseif (hasProperty(cursor,"reed") and hasProperty(cursor,"grun")) or hasProperty(cursor,"yello") then
+	    color = {2, 4}
+	  elseif (hasProperty(cursor,"reed") and hasProperty(cursor,"yello")) or hasProperty(cursor,"orang") then
+	    color = {2, 3}
+	  elseif (hasProperty(cursor,"bleu") and hasProperty(cursor,"grun")) or hasProperty(cursor,"cyeann") then
+	    color = {1, 4}
+	  elseif hasProperty(cursor,"reed") then
         color = {2, 2}
-      elseif hasProperty(cursor,"caiyan") then
-        color = {0, 255, 255}
+	  elseif hasProperty(cursor,"bleu") then
+	    color = {1, 3}
+	  elseif hasProperty(cursor,"grun") then
+	    color = {5, 2}
+      elseif hasProperty(cursor,"cyeann") then
+        color = {1, 4}
+      elseif hasProperty(cursor,"blacc") then
+        color = {0, 4}
       end
 
       if not color then
@@ -949,8 +1273,10 @@ function scene.draw(dt)
       end
 
       if rainbowmode then love.graphics.setColor(hslToRgb((love.timer.getTime()/6+i*10)%1, .5, .5, .9)) end
-
-      love.graphics.draw(system_cursor, cursor.screenx, cursor.screeny)
+      
+      if not hasProperty(cursor,"stelth") then
+        love.graphics.draw(system_cursor, cursor.screenx, cursor.screeny)
+      end
 
       love.graphics.setColor(1,1,1)
       color = nil
@@ -1001,7 +1327,7 @@ function scene.draw(dt)
     love.graphics.printf(rules, 0, love.graphics.getHeight()/2-love.graphics.getFont():getHeight()*lines, love.graphics.getWidth(), "center")
   end
 
-  if (just_moved) then
+  if (just_moved and not unit_tests) then
     local end_time = love.timer.getTime();
       print("scene.draw() took: "..tostring(round((end_time-start_time)*1000)).."ms")
     just_moved = false;
@@ -1009,6 +1335,8 @@ function scene.draw(dt)
 end
 
 function scene.checkInput()
+	if (replay_playback) then return end
+	
   local start_time = love.timer.getTime();
   do_move_sound = false
 
@@ -1044,12 +1372,11 @@ function scene.checkInput()
           print("input latency: "..tostring(round((start_time-last_input_time)*1000)).."ms")
           last_input_time = nil
         end
-        local result = undo()
+        local result = doOneMove(0, 0, "undo")
         if result then playSound("undo") else playSound("fail") end
         do_move_sound = false;
-        local end_time = love.timer.getTime();
-        unsetNewUnits()
-        print("undo took: "..tostring(round((end_time-start_time)*1000)).."ms")
+				local end_time = love.timer.getTime();
+        if not unit_tests then print("undo took: "..tostring(round((end_time-start_time)*1000)).."ms") end
       else
         local x, y = 0, 0
         if key == "udlr" then
@@ -1082,16 +1409,9 @@ function scene.checkInput()
           print("input latency: "..tostring(round((start_time-last_input_time)*1000)).."ms")
           last_input_time = nil
         end
-        newUndo()
-        last_move = {x, y}
-        just_moved = true
-        doMovement(x, y, key)
-        if #undo_buffer > 0 and #undo_buffer[1] == 0 then
-          table.remove(undo_buffer, 1)
-        end
+        doOneMove(x, y, key);
         local end_time = love.timer.getTime();
-        unsetNewUnits()
-        print("gameplay logic took: "..tostring(round((end_time-start_time)*1000)).."ms")
+        if not unit_tests then print("gameplay logic took: "..tostring(round((end_time-start_time)*1000)).."ms") end
       end
     end
 
@@ -1109,7 +1429,11 @@ function scene.checkInput()
   end
 
   if do_move_sound then
-    playSound("move")
+    if hasRule("bup","be","u") then
+      playSound("bup")
+    else
+      playSound("move")
+    end
   end
 
   if stack_box.enabled then
@@ -1125,6 +1449,50 @@ function scene.checkInput()
       stack_box.units = getUnitsOnTile(stack_box.x, stack_box.y)
     end
   end
+end
+
+function doOneMove(x, y, key)
+	if (key == "e") then
+		if hasProperty(nil,"za warudo") then
+      --[[
+      level_shader = shader_zawarudo
+      shader_time = 0
+      doin_the_world = true
+      ]]
+      newUndo()
+      timeless = not timeless
+      if timeless then
+        replay_string = replay_string..tostring(0)..","..tostring(0)..","..tostring("e")..";"
+        playSound("timestop",0.5)
+       -- print("ZA WARUDO! Time has stopped")
+      else
+        parseRules()
+        doMovement(0,0,"e")
+        playSound("time resume",0.5)
+        --print("And time resumes")
+      end
+      addUndo({"za warudo", timeless})
+      unsetNewUnits()
+    else
+      timeless = false
+    end
+      mobile_controls_timeless:setBGImage(sprites[timeless and "ui/time resume" or "ui/timestop"])
+	elseif (key == "undo") then
+		local result = undo()
+		replay_string = replay_string..tostring(0)..","..tostring(0)..","..tostring("undo")..";"
+    unsetNewUnits()
+		return result
+	else
+		newUndo()
+		last_move = {x, y}
+		just_moved = true
+		doMovement(x, y, key)
+		if #undo_buffer > 0 and #undo_buffer[1] == 0 then
+			table.remove(undo_buffer, 1)
+		end
+		unsetNewUnits()
+	end
+  return true
 end
 
 function scene.doPassiveParticles(timer,word,effect,delay,chance,count,color)
@@ -1162,86 +1530,22 @@ function particlesRngCheck()
   return math.random() < math.pow(0.5, (#particles-50)/50)
 end
 
-function scene.mouseReleased(x,y,button)
-  scene.setStackBox(screenToGameTile(x, y))
+function scene.mouseReleased(x, y, button)
+  if button == 1 then
+    if units_by_name["text_clikt"] then
+        last_click_x, last_click_y = screenToGameTile(love.mouse.getX(), love.mouse.getY())
+        newUndo()
+        doMovement(0,0,nil)
+        last_click_x, last_click_y = nil, nil
+    end
+  elseif button == 2 then
+    scene.setStackBox(screenToGameTile(x, y))
+  end
 
   if pointInside(x,y,0,0,sprites["ui/cog"]:getHeight(),sprites["ui/cog"]:getWidth()) then
     --love.keypressed("f2")
     new_scene = editor
     load_mode = "edit"
-  end
-  if is_mobile then
-    local screenwidth = love.graphics.getWidth()
-    local screenheight = love.graphics.getHeight()
-
-    local arrowsprite = sprites["ui/arrow"]
-    local squaresprite = sprites["ui/square"]
-
-    local key = "0"
-
-    if     pointInside(x, y, screenwidth-squaresprite:getWidth()*2, screenheight-squaresprite:getHeight()*2, squaresprite:getWidth(), squaresprite:getHeight()) then
-      key = "space"
-	elseif pointInside(x, y, screenwidth-squaresprite:getWidth()*2, screenheight-squaresprite:getHeight()*3, squaresprite:getWidth(), squaresprite:getHeight()) then
-      key = "kp8"
-	elseif pointInside(x, y, screenwidth-squaresprite:getWidth(),   screenheight-squaresprite:getHeight()*3, squaresprite:getWidth(), squaresprite:getHeight()) then
-	  key = "kp9"
-    elseif pointInside(x, y, screenwidth-squaresprite:getWidth(),   screenheight-squaresprite:getHeight()*2, squaresprite:getWidth(), squaresprite:getHeight()) then
-      key = "kp6"
-	elseif pointInside(x, y, screenwidth-squaresprite:getWidth(),   screenheight-squaresprite:getHeight(),   squaresprite:getWidth(), squaresprite:getHeight()) then
-	  key = "kp3"
-	 elseif pointInside(x, y, screenwidth-squaresprite:getWidth()*2, screenheight-squaresprite:getHeight(),   squaresprite:getWidth(), squaresprite:getHeight()) then
-      key = "kp2"
-    elseif pointInside(x, y, screenwidth-squaresprite:getWidth()*3, screenheight-squaresprite:getHeight(),   squaresprite:getWidth(), squaresprite:getHeight()) then
-	  key = "kp1"
-	elseif pointInside(x, y, screenwidth-squaresprite:getWidth()*3, screenheight-squaresprite:getHeight()*2, squaresprite:getWidth(), squaresprite:getHeight()) then
-      key = "kp4"
-    elseif pointInside(x, y, screenwidth-squaresprite:getWidth()*3, screenheight-squaresprite:getHeight()*3, squaresprite:getWidth(), squaresprite:getHeight()) then
-	  key = "kp7"
-    elseif pointInside(x, y, screenwidth-squaresprite:getWidth()*2, screenheight-squaresprite:getHeight()*5, squaresprite:getWidth(), squaresprite:getHeight()) then
-      key = "z"
-    elseif pointInside(x, y, screenwidth-squaresprite:getWidth()*2, squaresprite:getHeight(),                squaresprite:getWidth(), squaresprite:getHeight()) then
-      key = "r"
-    end
-
-    scene.keyReleased(key)
-  end
-end
-
-function scene.mousePressed(x, y, button)
-  if is_mobile then
-    local screenwidth = love.graphics.getWidth()
-    local screenheight = love.graphics.getHeight()
-
-    local arrowsprite = sprites["ui/arrow"]
-    local squaresprite = sprites["ui/square"]
-
-    local key = "0"
-
-	if     mouseOverBox(screenwidth-squaresprite:getWidth()*2, screenheight-squaresprite:getHeight()*2, squaresprite:getWidth(), squaresprite:getHeight()) then
-      key = "space"
-	elseif mouseOverBox(screenwidth-squaresprite:getWidth()*2, screenheight-squaresprite:getHeight()*3, squaresprite:getWidth(), squaresprite:getHeight()) then
-      key = "kp8"
-	elseif mouseOverBox(screenwidth-squaresprite:getWidth(),   screenheight-squaresprite:getHeight()*3, squaresprite:getWidth(), squaresprite:getHeight()) then
-	  key = "kp9"
-    elseif mouseOverBox(screenwidth-squaresprite:getWidth(),   screenheight-squaresprite:getHeight()*2, squaresprite:getWidth(), squaresprite:getHeight()) then
-      key = "kp6"
-	elseif mouseOverBox(screenwidth-squaresprite:getWidth(),   screenheight-squaresprite:getHeight(),   squaresprite:getWidth(), squaresprite:getHeight()) then
-	  key = "kp3"
-	 elseif mouseOverBox(screenwidth-squaresprite:getWidth()*2, screenheight-squaresprite:getHeight(),   squaresprite:getWidth(), squaresprite:getHeight()) then
-      key = "kp2"
-    elseif mouseOverBox(screenwidth-squaresprite:getWidth()*3, screenheight-squaresprite:getHeight(),   squaresprite:getWidth(), squaresprite:getHeight()) then
-	  key = "kp1"
-	elseif mouseOverBox(screenwidth-squaresprite:getWidth()*3, screenheight-squaresprite:getHeight()*2, squaresprite:getWidth(), squaresprite:getHeight()) then
-      key = "kp4"
-    elseif mouseOverBox(screenwidth-squaresprite:getWidth()*3, screenheight-squaresprite:getHeight()*3, squaresprite:getWidth(), squaresprite:getHeight()) then
-	  key = "kp7"
-    elseif mouseOverBox(squaresprite:getWidth(),               screenheight-squaresprite:getHeight()*2, squaresprite:getWidth(), squaresprite:getHeight()) then
-      key = "z"
-    elseif mouseOverBox(screenwidth-squaresprite:getWidth()*2, squaresprite:getHeight(),                squaresprite:getWidth(), squaresprite:getHeight()) then
-      key = "r"
-    end
-
-    scene.keyPressed(key)
   end
 end
 

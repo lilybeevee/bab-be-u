@@ -13,13 +13,15 @@ function clearRules()
   --TODO: This will need to be automatic on levels with letters/combined words, since a selectr/bordr might be made in a surprising way, and it will need to have its implicit rules apply immediately.
   if (units_by_name["selctr"] or units_by_name["text_selctr"]) then
     addRule({{"selctr","be","u",{{},{}}},{},1})
-    addRule({{"selctr","liek","lvl",{{},{}}},{},1})
-    addRule({{"selctr","liek","lin",{{},{}}},{},1})
+    addRule({{"selctr","liek","pathz",{{},{}}},{},1})
+    addRule({{"lvl","be","pathz",{{},{}}},{},1})
+		addRule({{"lin","be","pathz",{{},{}}},{},1})
     addRule({{"selctr","be","flye",{{},{}}},{},1})
   end
   if (units_by_name["bordr"] or units_by_name["text_bordr"]) then
     addRule({{"bordr","be","no go",{{},{}}},{},1})
     addRule({{"bordr","be","tall",{{},{}}},{},1})
+		addRule({{"bordr","be","opaque",{{},{}}},{},1})
   end
   if units_by_name["this"] then
     addRule({{"this","be","go away pls",{{},{}}},{},1})
@@ -112,6 +114,7 @@ function parseRules(undoing)
     #matchesRule("text", "be", "ortho"),
     #matchesRule("text", "be", "diag"),
     #matchesRule("text", "ben't", "wurd"),
+    #matchesRule("text", "be", "za warudo"),
     #matchesRule(outerlvl, "be", "go arnd"),
     #matchesRule(outerlvl, "be", "mirr arnd"),
     --If and only if poor tolls exist, flyeness changing can affect rules parsing, because the text and portal have to match flyeness to go through.
@@ -311,15 +314,18 @@ function parseRules(undoing)
     {
     #matchesRule(nil, "be", "wurd"),
     #matchesRule(nil, "be", "poor toll"),
+    --TODO: If any wurd rules exist, then these need to check things that are wurd, too - though at that point we may as well just make it easy on ourselves and check everything.
     #matchesRule("text", "be", "go arnd"),
     #matchesRule("text", "be", "mirr arnd"),
     #matchesRule("text", "be", "ortho"),
     #matchesRule("text", "be", "diag"),
     #matchesRule("text", "ben't", "wurd"),
+    #matchesRule("text", "be", "za warudo"),
     #matchesRule(outerlvl, "be", "go arnd"),
     #matchesRule(outerlvl, "be", "mirr arnd"),
     --If and only if poor tolls exist, flyeness changing can affect rules parsing, because the text and portal have to match flyeness to go through.
-    rules_with["poor toll"] and #matchesRule(nil, "be", "flye") or 0
+    rules_with["poor toll"] and #matchesRule(nil, "be", "flye") or 0,
+    rules_with["poor toll"] and #matchesRule(nil, "be", "tall") or 0,
     };
     
     for i = 1,#reparse_rule_counts do
@@ -341,7 +347,7 @@ function parseRules(undoing)
   shouldReparseRules()
   
   local end_time = love.timer.getTime();
-  print("parseRules() took: "..tostring(round((end_time-start_time)*1000)).."ms")
+  if not unit_tests then print("parseRules() took: "..tostring(round((end_time-start_time)*1000)).."ms") end
 end
 
 function parseSentence(sentence_, params_, dir) --prob make this a local function? idk
@@ -459,6 +465,8 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
                 name = v.unit.fullname
               elseif mod.name == "nt" then
                 suffix = suffix .. "n't"
+              else
+                suffix = suffix .. " " .. mod.name
               end
             end
           end
@@ -626,6 +634,55 @@ end
 function postRules()
   local all_units = {}
 
+	-- Step 0:
+	-- Determine group membership, and rewrite rules involving groups into their membership versions
+	-- TODO: this probably malfunctions horribly if you reference two different groups in the same rule, and it doesn't handle groups in conditions, and it doesn't handle conditional membership, and it doesn't handle ben't group, and whatever other special cases you can come up with
+	group_membership = {}
+	
+	for _,group in ipairs(group_names) do
+		group_membership[group] = {}
+		for _,rules in ipairs(full_rules) do
+			local rule = rules[1]
+
+			local subject, verb, object = rule[1], rule[2], rule[3]
+			if verb == "be" and object == group then
+				group_membership[group][subject] = true
+			end
+		end
+	end
+	
+	for _,group in ipairs(group_names) do
+		for _,rules in ipairs(full_rules) do
+			local rule = rules[1]
+
+			local subject, verb, object = rule[1], rule[2], rule[3]
+			if object == group and verb ~= "be" then
+				if subject == group then
+					for member1,_ in pairs(group_membership[group]) do
+						for member2,_ in pairs(group_membership[group]) do
+							local newRules = deepCopy(rules);
+							newRules[1][1] = member1;
+							newRules[1][3] = member2;
+							addRule(newRules);
+						end
+					end
+				else
+					for member,_ in pairs(group_membership[group]) do
+						local newRules = deepCopy(rules);
+						newRules[1][3] = member;
+						addRule(newRules);
+					end
+				end
+			elseif subject == group then
+				for member,_ in pairs(group_membership[group]) do
+					local newRules = deepCopy(rules);
+					newRules[1][1] = member;
+					addRule(newRules);
+				end
+			end
+		end
+	end
+	
   -- Step 1:
   -- Block & remove rules if they're N'T'd out
   for n = max_not_rules, 1, -1 do
@@ -657,7 +714,7 @@ function postRules()
             if n then
               fverb = fverb .. "n't"
             end
-            if frule[1] == rule[1] and fverb == rule[2] and frule[3] == rule[3] then
+            if frule[1] == rule[1] and fverb == rule[2] and frule[3] == rule[3] and frule[3] ~= "her" and frule[3] ~= "thr" then
               --print("matching rule", rule[1], rule[2], rule[3])
               if has_conds then
                 for i=1,2 do
@@ -740,6 +797,7 @@ function shouldReparseRules()
   if shouldReparseRulesIfConditionalRuleExists("text", "be", "ortho") then return true end
   if shouldReparseRulesIfConditionalRuleExists("text", "be", "diag") then return true end
   if shouldReparseRulesIfConditionalRuleExists("text", "ben't", "wurd") then return true end
+  if shouldReparseRulesIfConditionalRuleExists("text", "be", "za warudo") then return true end
   if shouldReparseRulesIfConditionalRuleExists(outerlvl, "be", "go arnd") then return true end
   if shouldReparseRulesIfConditionalRuleExists(outerlvl, "be", "mirr arnd") then return true end
   if rules_with["poor toll"] then

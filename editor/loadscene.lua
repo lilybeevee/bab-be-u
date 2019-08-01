@@ -13,7 +13,10 @@ local scrollvel = 0
 
 local full_height = 0
 
+local scroll_height
+
 function scene.load()
+  metaClear()
   clear()
   resetMusic(current_music, 0.8)
   selected_levels = {}
@@ -35,12 +38,30 @@ end
 function scene.update(dt)
   scrolloffset = scrolloffset + scrollvel * dt
 
+  if is_mobile and love.mouse.isDown(1) then
+    x, y = love.mouse.getPosition()
+
+    if pointInside(x, y, love.graphics.getWidth()-10-sprites["ui/arrow up"]:getWidth(), 10, sprites["ui/arrow up"]:getWidth(), sprites["ui/arrow up"]:getHeight()) then
+      scrollvel = scrollvel - 100
+    end
+
+    if pointInside(x, y, love.graphics.getWidth()-10-sprites["ui/arrow down"]:getWidth(), love.graphics.getHeight()-10-sprites["ui/arrow down"]:getHeight(), sprites["ui/arrow down"]:getWidth(), sprites["ui/arrow down"]:getHeight()) then
+      scrollvel = scrollvel + 100
+    end
+  end
+
   scrollvel = scrollvel - scrollvel * math.min(dt * 10, 1)
   if scrollvel < 0.1 and scrollvel > -0.1 then scrollvel = 0 end
   debugDisplay("scrollvel", scrollvel)
   debugDisplay("scrolloffset", scrolloffset)
 
-  local scroll_height = math.max(0, full_height - love.graphics.getHeight())
+  scroll_height = math.max(0, full_height - love.graphics.getHeight())
+  debugDisplay("scrollheight", scroll_height)
+
+  if mouseOverBox(love.graphics.getWidth()-5, 0, 5, love.graphics.getHeight()) and love.mouse.isDown(1) and not is_mobile then
+    scrolloffset = love.mouse.getY()/(love.graphics.getHeight()-20)*scroll_height
+  end
+
   if scrolloffset > scroll_height then
     scrolloffset = scroll_height
     scrollvel = 0
@@ -65,7 +86,43 @@ function scene.keyPressed(key)
     else
       new_scene = menu
     end
+  elseif key == "f12" then
+    print("Entering Unit Test mode.")
+    runUnitTests()
   end
+end
+
+function runUnitTests()
+  unit_tests = true
+  local levels = scene.searchDir("officialworlds/solo levels", "level")
+  local fail_levels = {}
+  local succ_levels = {}
+  local noreplay_levels = {}
+  load_mode = "play"
+  for _,v in ipairs(levels) do
+    scene.loadLevel(v.data, "play")
+    game.load()
+    tryStartReplay()
+    if replay_playback then
+      replay_playback_interval = 0
+      local still_going = true;
+      while (still_going) do
+        still_going = doReplay(0)
+      end
+      if not win then
+        table.insert(fail_levels, v.file)
+      else
+        table.insert(succ_levels, v.file)
+      end
+    else
+      table.insert(noreplay_levels, v.file)
+    end
+  end
+  print ("Unit tested " .. tostring(#succ_levels + #fail_levels) .. " levels!");
+  print (tostring(#noreplay_levels) .. " levels lacked a replay: " .. dump(noreplay_levels));
+  print (tostring(#succ_levels) .. " levels passed: " .. dump(succ_levels));
+  print (tostring(#fail_levels) .. " levels failed: " .. dump(fail_levels));
+  unit_tests = false
 end
 
 function scene.wheelMoved(whx, why) -- The wheel moved, Why?
@@ -110,6 +167,31 @@ function scene.draw()
   end
 
   love.graphics.pop()
+  
+  if is_mobile then
+    love.graphics.setColor(0.6,0.6,0.6)
+    love.graphics.rectangle("fill", love.graphics.getWidth()-10-sprites["ui/arrow up"]:getWidth(), 10, sprites["ui/arrow up"]:getWidth(), love.graphics.getHeight()-20)
+
+    love.graphics.setColor(0.9,0.9,0.9)
+    love.graphics.rectangle("fill", love.graphics.getWidth()-10-sprites["ui/arrow up"]:getWidth(), 10+sprites["ui/arrow up"]:getHeight()+scrolloffset/scroll_height*(love.graphics.getHeight()-20-sprites["ui/arrow up"]:getHeight()*2.5), sprites["ui/arrow up"]:getWidth(), sprites["ui/arrow up"]:getHeight()/2)
+
+    love.graphics.setColor(1,1,1)
+    love.graphics.rectangle("fill", love.graphics.getWidth()-10-sprites["ui/arrow ul"]:getWidth(), 10, sprites["ui/arrow up"]:getWidth(), sprites["ui/arrow up"]:getHeight())
+    love.graphics.setColor(0.1,0.1,0.1)
+    love.graphics.draw(sprites["ui/arrow up"], love.graphics.getWidth()-10-sprites["ui/arrow up"]:getWidth(), 10)
+
+    love.graphics.setColor(1,1,1)
+    love.graphics.rectangle("fill", love.graphics.getWidth()-10-sprites["ui/arrow down"]:getWidth(), love.graphics.getHeight()-10-sprites["ui/arrow down"]:getHeight(), sprites["ui/arrow down"]:getWidth(), sprites["ui/arrow down"]:getHeight())
+    love.graphics.setColor(0.1,0.1,0.1)
+    love.graphics.draw(sprites["ui/arrow down"], love.graphics.getWidth()-10-sprites["ui/arrow down"]:getWidth(), love.graphics.getHeight()-10-sprites["ui/arrow down"]:getHeight())
+  elseif scroll_height > 0 then
+    love.graphics.setColor(0.6,0.6,0.6,0.3)
+    love.graphics.rectangle("fill", love.graphics.getWidth()-5, 0, 5, love.graphics.getHeight())
+
+    love.graphics.setColor(0.6,0.6,0.6)
+    love.graphics.rectangle("fill", love.graphics.getWidth()-5, scrolloffset/scroll_height*(love.graphics.getHeight()-20), 5, 20)
+  end
+
   gooi.draw()
 end
 
@@ -122,11 +204,17 @@ function scene.loadLevel(data, new)
 
   level_name = data.name
   level_author = data.author or ""
+  level_extra = data.extra
   current_palette = data.palette or "default"
   map_music = data.music or "bab be u them"
   mapwidth = data.width
   mapheight = data.height
   map_ver = data.version or 0
+  level_next_level_after_win = data.next_level_after_win or ""
+  level_is_overworld = data.is_overworld or false
+  level_puffs_to_clear = data.puffs_to_clear or 0
+  level_level_sprite = data.level_sprite or ""
+  level_level_number = data.level_number or 0
 
   if map_ver == 0 then
     maps = {{0, loadstring("return " .. mapstr)()}}
@@ -372,7 +460,7 @@ end
 function scene.selectWorld(o, button)
   if button == 1 then
     if o.data.deleting then
-      o.data.deleting = nil
+      o.data.deleting = 0
       o:setColor()
       o:setSprite(sprites["ui/world box"])
     else
@@ -389,7 +477,7 @@ function scene.selectWorld(o, button)
         playSound("move")
       elseif o.data.deleting == 1 then
         o.data.deleting = 2
-        o:setSprite(sprites["ui/world box deleteconfirm"])
+        o:setSprite(sprites["ui/world box delete 2"])
         playSound("unlock")
       elseif o.data.deleting == 2 then
         deleteDir(o.data.file .. "/" .. o:getName())
@@ -397,6 +485,20 @@ function scene.selectWorld(o, button)
         shakeScreen(0.3, 0.1)
         scene.buildUI()
       end
+    else
+      playSound("fail")
+    end
+  end
+end
+
+function scene.mousePressed(x, y, button)
+  if is_mobile then
+    if pointInside(x, y, love.graphics.getWidth()-10-sprites["ui/arrow up"]:getWidth(), 10, sprites["ui/arrow up"]:getWidth(), sprites["ui/arrow up"]:getHeight()) then
+      scrollvel = scrollvel - 400
+    end
+
+    if pointInside(x, y, love.graphics.getWidth()-10-sprites["ui/arrow down"]:getWidth(), love.graphics.getHeight()-10-sprites["ui/arrow down"]:getHeight(), sprites["ui/arrow down"]:getWidth(), sprites["ui/arrow down"]:getHeight()) then
+      scrollvel = scrollvel + 400
     end
   end
 end
@@ -449,7 +551,7 @@ function scene.selectLevel(o, button)
         playSound("move")
       elseif o.data.deleting == 1 then
         o.data.deleting = 2
-        o:setSprite(sprites["ui/level box deleteconfirm"])
+        o:setSprite(sprites["ui/level box delete 2"])
         playSound("unlock")
       elseif o.data.deleting == 2 then
         local dir = "levels/"
@@ -460,6 +562,8 @@ function scene.selectLevel(o, button)
         shakeScreen(0.3, 0.1)
         scene.buildUI()
       end
+    else
+      playSound("fail")
     end
   end
 end

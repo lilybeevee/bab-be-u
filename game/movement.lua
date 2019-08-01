@@ -52,13 +52,16 @@ function doDirRules()
 end
 
 function doMovement(movex, movey, key)
-  walkdirchangingrulesexist = rules_with["munwalk"] or rules_with["sidestep"] or rules_with["diagstep"] or rules_with["hopovr"];
+	replay_string = replay_string..tostring(movex)..","..tostring(movey)..","..tostring(key)..";"
+  walkdirchangingrulesexist = rules_with["munwalk"] or rules_with["sidestep"] or rules_with["diagstep"] or rules_with["hopovr"] or rules_with["knightstep"];
   local played_sound = {}
   local slippers = {}
   local flippers = {}
 
-  print("[---- begin turn ----]")
-  print("move: " .. movex .. ", " .. movey)
+  if not unit_tests then
+    print("[---- begin turn ----]")
+    print("move: " .. movex .. ", " .. movey)
+  end
 
   next_levels, next_level_objs = getNextLevels()
 
@@ -85,32 +88,50 @@ function doMovement(movex, movey, key)
       for unit,icyness in pairs(icy) do
         local others = (unit == outerlvl and units or getUnitsOnTile(unit.x, unit.y));
         for __,other in ipairs(others) do
-          if other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) and timecheck(unit) then
-            table.insert(other.moves, {reason = "icy", dir = other.dir, times = icyness})
-            if #other.moves > 0 and not already_added[other] and not hasRule(other,"got","slippers") then
-              table.insert(moving_units, other)
-              already_added[other] = true
+          if other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) and timecheck(unit,"be","icy") and undo_buffer[2] ~= nil then
+            for _,undo in ipairs(undo_buffer[2]) do
+              if undo[1] == "update" and undo[2] == other.id and ((undo[3] ~= other.x) or (undo[4] ~= other.y)) then
+                local dx = other.x-undo[3]
+                local dy = other.y-undo[4]
+                local slipdir = dirs8_by_offset[dx][dy]
+                table.insert(other.moves, {reason = "icy", dir = slipdir, times = icyness})
+                if #other.moves > 0 and not already_added[other] and not hasRule(other,"got","slippers") then
+                  table.insert(moving_units, other)
+                  already_added[other] = true
+                end
+                break
+              end
             end
           end
         end
       end
-      local icy = getUnitsWithEffectAndCount("icyyyy")
-      for unit,icyness in pairs(icy) do
-        local others = (unit == outerlvl and units or getUnitsOnTile(unit.x, unit.y));
-        for __,other in ipairs(others) do
-          if other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) then
-            table.insert(other.moves, {reason = "icy", dir = other.dir, times = icyness})
-            if #other.moves > 0 and not already_added[other] and not hasRule(other,"got","slippers") then
-              table.insert(moving_units, other)
-              already_added[other] = true
+      local icyyyy = getUnitsWithEffectAndCount("icyyyy")
+      for unit,icyness in pairs(icyyyy) do
+        if timeless and not timecheck(unit,"be","icyyyy") then
+          local others = (unit == outerlvl and units or getUnitsOnTile(unit.x, unit.y));
+          for __,other in ipairs(others) do
+            if other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) and undo_buffer[2] ~= nil then
+            for _,undo in ipairs(undo_buffer[2]) do
+              if undo[1] == "update" and undo[2] == other.id and ((undo[3] ~= other.x) or (undo[4] ~= other.y)) then
+                local dx = other.x-undo[3]
+                local dy = other.y-undo[4]
+                local slipdir = dirs8_by_offset[dx][dy]
+                table.insert(other.moves, {reason = "icy", dir = slipdir, times = icyness})
+                if #other.moves > 0 and not already_added[other] and not hasRule(other,"got","slippers") then
+                  table.insert(moving_units, other)
+                  already_added[other] = true
+                end
+                break
+              end
             end
+          end
           end
         end
       end
     elseif move_stage == 0 and (movex ~= 0 or movey ~= 0) then
       local u = getUnitsWithEffectAndCount("u")
       for unit,uness in pairs(u) do
-        if not hasProperty(unit, "slep") and slippers[unit.id] == nil and timecheck(unit) then
+        if not hasProperty(unit, "slep") and slippers[unit.id] == nil and timecheck(unit,"be","u") then
           if (key == "wasd") or ((key == "udlr") and not hasProperty(nil,"u too")) or ((key == "numpad" or key == "ijkl") and not hasProperty(nil,"u tres")) then
             local dir = dirs8_by_offset[movex][movey]
             --If you want baba style 'when you moves, even if it fails to move, it changes direction', uncomment this.
@@ -127,7 +148,7 @@ function doMovement(movex, movey, key)
       
       local utoo = getUnitsWithEffectAndCount("u too")
       for unit,uness in pairs(utoo) do
-        if not hasProperty(unit, "slep") and slippers[unit.id] == nil and timecheck(unit) then
+        if not hasProperty(unit, "slep") and slippers[unit.id] == nil and timecheck(unit,"be","u too") then
           if ((key == "wasd") and not hasProperty(nil,"u")) or (key == "udlr") or ((key == "numpad" or key == "ijkl") and not hasProperty(nil,"u tres")) then
             local dir = dirs8_by_offset[movex][movey]
             --If you want baba style 'when you moves, even if it fails to move, it changes direction', uncomment this.
@@ -144,7 +165,7 @@ function doMovement(movex, movey, key)
       
       local utres = getUnitsWithEffectAndCount("u tres")
       for unit,uness in pairs(utres) do
-        if not hasProperty(unit, "slep") and slippers[unit.id] == nil and timecheck(unit) then
+        if not hasProperty(unit, "slep") and slippers[unit.id] == nil and timecheck(unit,"be","u tres") then
           if ((key == "wasd") and not hasProperty(nil,"u")) or ((key == "udlr") and not hasProperty(nil,"u too")) or (key == "numpad") or (key == "ijkl") then
             local dir = dirs8_by_offset[movex][movey]
             --If you want baba style 'when you moves, even if it fails to move, it changes direction', uncomment this.
@@ -162,6 +183,7 @@ function doMovement(movex, movey, key)
       local isspoop = matchesRule(nil, "spoop", "?")
       for _,ruleparent in ipairs(isspoop) do
         local unit = ruleparent[2]
+        local othername = ruleparent[1][1][3]
         local others = {}
         for nx=-1,1 do
           for ny=-1,1 do
@@ -171,8 +193,8 @@ function doMovement(movex, movey, key)
           end
         end
         for _,other in ipairs(others) do
-          local is_spoopy = hasRule(unit, "spoop", other)
-          if (is_spoopy and not hasProperty(other, "slep")) and timecheck(unit) and timecheck(other) then
+          local is_spoopy = hasRule(unit, "spoop", othername)
+          if (other.name == othername and is_spoopy and not hasProperty(other, "slep")) and timecheck(unit,"spoop",other) and timecheck(other) then
             spoop_dir = dirs8_by_offset[sign(other.x - unit.x)][sign(other.y - unit.y)]
             if (spoop_dir % 2 == 1 or (not hasProperty(unit, "ortho") and not hasProperty(other, "ortho"))) then
               addUndo({"update", other.id, other.x, other.y, other.dir})
@@ -189,11 +211,105 @@ function doMovement(movex, movey, key)
       end
       local walk = getUnitsWithEffectAndCount("walk")
       for unit,walkness in pairs(walk) do
-        if not hasProperty(unit, "slep") and slippers[unit.id] == nil and timecheck(unit) then
+        if not hasProperty(unit, "slep") and slippers[unit.id] == nil and timecheck(unit,"be","walk") then
           table.insert(unit.moves, {reason = "walk", dir = unit.dir, times = walkness})
           if #unit.moves > 0 and not already_added[unit] then
             table.insert(moving_units, unit)
             already_added[unit] = true
+          end
+        end
+      end
+  
+      local isactualstalk = matchesRule("?", "stalk", "?");
+      for _,ruleparent in ipairs(isactualstalk) do
+        local stalkers = findUnitsByName(ruleparent[1][1])
+        local stalker_conds = ruleparent[1][4][1]
+        local stalkee_conds = ruleparent[1][4][2]
+        if #findUnitsByName(ruleparent[1][3]) > 0 then
+          for _,stalker in ipairs(stalkers) do
+            if testConds(stalker, stalker_conds) then
+              local found_target = nil
+              for _,stalkee in ipairs(getUnitsOnTile(stalker.x, stalker.y, ruleparent[1][3])) do -- is it standing on the target
+                if testConds(stalkee, stalkee_conds) and stalker.id ~= stalkee.id then
+                  found_target = 0
+                  break
+                end
+              end
+              if not found_target then
+                local visited = {} -- 2d array the size of the map
+                for i = 1,mapwidth do
+                  visited[i] = {}
+                  for j = 1,mapheight do
+                    visited[i][j] = 0
+                  end
+                end
+                visited[stalker.x+1][stalker.y+1] = 1
+                local queue = {{x = stalker.x, y = stalker.y}}
+                (function () -- 'return' allows breaking from the outer loop, skipping inner loops
+                  local first_loop = true
+                  while (queue[1]) do
+                    local pos = table.remove(queue, 1)
+                    for i=1,8 do
+                      local dx = ({1,0,-1,0,1,-1,-1,1})[i]
+                      local dy = ({0,1,0,-1,1,1,-1,-1})[i]
+                      local dir = dirs8_by_offset[dx][dy]
+                      local dx_next, dy_next, dir_next, x, y, portal_unit = getNextTile(stalker, dx, dy, dir, nil, pos.x, pos.y)
+                      if inBounds(x,y) and visited[x+1][y+1] == 0 then
+                        visited[x+1][y+1] = first_loop and dir or visited[pos.x+1][pos.y+1] -- value depicts which way to travel to get there
+                        local success, movers, specials = canMove(stalker,dx,dy,dir,false,false,nil,nil,nil,pos.x,pos.y)
+                        if success then
+                          local stalkees = getUnitsOnTile(x, y, ruleparent[1][3])
+                          for _,stalkee in ipairs(stalkees) do
+                            if testConds(stalkee, stalkee_conds) and stalker.id ~= stalkee.id  then
+                              found_target = visited[x+1][y+1]
+                              return
+                            end
+                          end
+                          table.insert(queue, {x = x, y = y})
+                        end
+                      end
+                    end
+                    first_loop = false
+                  end
+                end)()
+              end
+              -- print(dump(visited))
+              if found_target then
+                if found_target ~= 0 then
+                  addUndo({"update", stalker.id, stalker.x, stalker.y, stalker.dir})
+                  stalker.olddir = stalker.dir
+                  updateDir(stalker, found_target)
+                  table.insert(stalker.moves, {reason = "stalk", dir = stalker.dir, times = 1})
+                  if #stalker.moves > 0 and not already_added[stalker] then
+                    table.insert(moving_units, stalker)
+                    already_added[stalker] = true
+                  end
+                end
+              -- else
+              --   TODO: Make this depend on it being stubborn.
+              --   local stalkees = copyTable(findUnitsByName(ruleparent[1][3]))
+              --   table.sort(stalkees, function(a, b) return euclideanDistance(a, stalker) < euclideanDistance(b, stalker) end )
+              --   for _,stalkee in ipairs(stalkees) do
+              --     if testConds(stalkee, stalkee_conds) then
+              --       local dist = euclideanDistance(stalker, stalkee)
+              --       local stalk_dir = dist > 0 and dirs8_by_offset[sign(stalkee.x - stalker.x)][sign(stalkee.y - stalker.y)] or stalkee.dir
+              --       if dist > 0 and hasProperty(stalker, "ortho") then
+              --         local use_hori = math.abs(stalkee.x - stalker.x) > math.abs(stalkee.y - stalker.y)
+              --         stalk_dir = dirs8_by_offset[use_hori and sign(stalkee.x - stalker.x) or 0][not use_hori and sign(stalkee.y - stalker.y) or 0]
+              --       end
+              --       addUndo({"update", stalker.id, stalker.x, stalker.y, stalker.dir})
+              --       stalker.olddir = stalker.dir
+              --       updateDir(stalker, stalk_dir)
+              --       table.insert(stalker.moves, {reason = "stalk", dir = stalker.dir, times = 1})
+              --       if #stalker.moves > 0 and not already_added[stalker] then
+              --         table.insert(moving_units, stalker)
+              --         already_added[stalker] = true
+              --       end
+              --       break
+              --     end
+              --   end
+              end
+            end
           end
         end
       end
@@ -208,15 +324,15 @@ function doMovement(movex, movey, key)
           if other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) then
             local is_yeeted = hasRule(unit, "yeet", other)
             if (is_yeeted) then
-              if timecheck(unit) and timecheck(other) then
+              if timecheck(unit,"yeet",other) and timecheck(other) then
                 table.insert(other.moves, {reason = "yeet", dir = unit.dir, times = 1002})
                 if #other.moves > 0 and not already_added[other] then
                   table.insert(moving_units, other)
                   already_added[other] = true
                 end
-              elseif timecheck(unit) then
+              elseif timecheck(unit,"yeet",other) then
                 table.insert(timeless_yote, {unit = other, dir = unit.dir})
-                addUndo({"timeless_yeet_add",{yote = other}})
+                addUndo({"timeless_yeet_add",other})
               end
             end
           end
@@ -236,7 +352,7 @@ function doMovement(movex, movey, key)
             end
           else
             table.remove(timeless_yote,i)
-            addUndo({"timeless_yeet_remove",{yote = unit, dir = dir}})
+            addUndo({"timeless_yeet_remove",unit,dir})
           end
         else
           table.insert(unit.moves, {reason = "yeet", dir = dir, times = 1002})
@@ -245,14 +361,14 @@ function doMovement(movex, movey, key)
             already_added[unit] = true
           end
           table.remove(timeless_yote,i)
-          addUndo({"timeless_yeet_remove",{yote = unit, dir = dir}})
+          addUndo({"timeless_yeet_remove",unit,dir})
         end
       end
       local go = getUnitsWithEffectAndCount("go")
       for unit,goness in pairs(go) do
         local others = (unit == outerlvl and units or getUnitsOnTile(unit.x, unit.y));
         for __,other in ipairs(others) do 
-          if other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) and timecheck(unit) then
+          if other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) and timecheck(unit,"be","go") then
             table.insert(other.moves, {reason = "go", dir = unit.dir, times = goness})
             if #other.moves > 0 and not already_added[other] then
               table.insert(moving_units, other)
@@ -274,6 +390,22 @@ function doMovement(movex, movey, key)
           end
         end
       end
+      local ismoov = matchesRule(nil, "moov", "?")
+      for _,ruleparent in ipairs(ismoov) do
+        local unit = ruleparent[2]
+        local othername = ruleparent[1][1][3]
+        local others = getUnitsOnTile(unit.x,unit.y)
+        for _,other in ipairs(others) do
+          local is_moover = hasRule(unit, "moov", othername)
+          if (other.name == othername) and is_moover and timecheck(unit,"moov",other) and other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) then
+            table.insert(other.moves, {reason = "moov", dir = unit.dir, times = 1})
+            if #other.moves > 0 and not already_added[other] then
+              table.insert(moving_units, other)
+              already_added[other] = true
+            end
+          end
+        end
+      end
     end
 
     for _,unit in pairs(moving_units) do
@@ -288,7 +420,7 @@ Simultaneous movement algorithm, basically a simple version of Baba's:
 2a) Try to move each of them once. For each success, move it to moving_units_next and set it already_moving with one less move point and an update queued. If there was at least one success, repeat 2 until there are no successes. (During this process, things that are currently moving are considered intangible in canMove.)
 2b) But wait, we're still not done! Flip all walkers that failed to flip, then continue until we once again have no successes. (Flipping still only happens once per turn.)
 2c) Finally, if we had at least one success, everything left is moved to moving_units_next with one less move point and we repeat from 2a). If we had no successes, the stage is totally resolved. doupdate() and unset all current_moving.
-3) when SLIDE/LAUNCH/BOUNCE exists, we'll need to figure out where to insert it... but if it's like baba, it goes after the move succeeds but before do_update(), and it adds either another update or another movement as appropriate.
+3) if SLIDE/LAUNCH/BOUNCE gets made, we'll need to figure out where to insert it... but if it's like baba, it goes after the move succeeds but before do_update(), and it adds either another update or another movement as appropriate.
 
 ALTERNATE MOVEMENT ALGORITHM that would preserve properties like 'x is move and stop pulls apart' and is mostly move order independent:
 1) Do it as before, except instead of moving a unit when you discover it can be moved, mark it and wait until the inner loop is over.
@@ -349,34 +481,6 @@ It is probably possible to do, but lily has decided that it's not important enou
                 dir = dirs8_by_offset[dx][dy];
                 data.dir = dir
               end
-            --dx/dy collation logic for copydog moves
-            elseif (data.reason == "copdog") and timecheck(unit) then
-              --new 'move ALL the way' logic:
-              --1) Split the move into two parts - all the diagonal movement, then all the remaining orthogonal movement.
-              --2) Put the second half in as a new move after this one.
-              local diag_amt = math.min(math.abs(data.dx), math.abs(data.dy));
-              local ortho_amt = math.max(math.abs(data.dx), math.abs(data.dy)) - diag_amt;
-              if (diag_amt == 0 and ortho_amt == 0 or slippers[unit.id] ~= nil or hasProperty(unit, "slep")) then
-                data.times = 0;
-              elseif (diag_amt > 0 and ortho_amt == 0) or (ortho_amt > 0 and diag_amt == 0) then
-                data.times = math.max(diag_amt, ortho_amt);
-                local dir = dirs8_by_offset[sign(data.dx)][sign(data.dy)];
-                data.dir = dir;
-                data.reason = "copkat_result";
-              else
-                local newdir = dirs8_by_offset[sign(math.abs(data.dx)-diag_amt)][sign(math.abs(data.dy)-diag_amt)]
-                table.insert(copykat.moves, 2, {reason = "copkat_result", dir = newdir, times = ortho_amt})
-                data.times = diag_amt;
-                local dir = dirs8_by_offset[sign(data.dx)][sign(data.dy)];
-                data.dir = dir;
-                data.reason = "copkat_result";
-              end
-              if (data.times == 0) then
-                while #unit.moves > 0 and unit.moves[1].times <= 0 do
-                  table.remove(unit.moves, 1)
-                end
-                break
-              end
             end
             movedebug("considering:"..unit.fullname..","..dir)
             local success,movers,specials = canMove(unit, dx, dy, dir, true, false, nil, data.reason)
@@ -418,7 +522,7 @@ It is probably possible to do, but lily has decided that it's not important enou
             end
             if #unit.moves > 0 and not unit.removed and unit.moves[1].times > 0 then
               local data = unit.moves[1]
-              if data.reason == "walk" and flippers[unit.id] ~= true and not hasProperty(unit, "stubbn") and not hasProperty(unit,"loop") and timecheck(unit) then
+              if data.reason == "walk" and flippers[unit.id] ~= true and not hasProperty(unit, "stubbn") and not hasProperty(unit,"loop") and timecheck(unit,"be","walk") then
                 dir = rotate8(data.dir); data.dir = dir;
                 addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
                 table.insert(update_queue, {unit = unit, reason = "update", payload = {x = unit.x, y = unit.y, dir = data.dir}})
@@ -485,6 +589,7 @@ It is probably possible to do, but lily has decided that it's not important enou
 	parseRules()
   calculateLight()
   updatePortals()
+  miscUpdates()
   
   next_levels = getNextLevels()
 end
@@ -563,7 +668,7 @@ function moveIt(mover, dx, dy, facing_dir, move_dir, geometry_spin, data, pullin
       end
       local found = false
       for i,move in ipairs(copykat.moves) do
-        if move.reason == "copkat" or move.reason == "copdog" then
+        if move.reason == "copkat" then
           if currently_moving then
             currently_moving = false
           else
@@ -735,7 +840,7 @@ end
 
 function findCopykats(unit)
   --fast track
-  if rules_with["copkat"] == nil and rules_with["copdog"] == nil then return {} end
+  if rules_with["copkat"] == nil then return {} end
   local result = {}
   local iscopykat = matchesRule("?", "copkat", unit);
   for _,ruleparent in ipairs(iscopykat) do
@@ -744,16 +849,6 @@ function findCopykats(unit)
     for _,copykat in ipairs(copykats) do
       if testConds(copykat, copykat_conds) then
         result[copykat] = "copkat";
-      end
-    end
-  end
-  local iscopykat = matchesRule("?", "copdog", unit);
-  for _,ruleparent in ipairs(iscopykat) do
-    local copykats = findUnitsByName(ruleparent[1][1])
-    local copykat_conds = ruleparent[1][4][1]
-    for _,copykat in ipairs(copykats) do
-      if testConds(copykat, copykat_conds) then
-        result[copykat] = "copdog";
       end
     end
   end
@@ -848,7 +943,7 @@ function fallBlock()
     
     if (fallcount > vallcount) then
       addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
-      if timecheck(unit) then
+      if timecheck(unit,"be","haetskye") then
         local loop_fall = 0
         local dx, dy, dir, px, py = 0, 1, 3, -1, -1
         local old_dir = 3;
@@ -885,7 +980,7 @@ function fallBlock()
     local vallcount = countProperty(unit,"haet flor")
     
     if (vallcount > fallcount) then
-      if timecheck(unit) then
+      if timecheck(unit,"be","haetflor") then
         addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
         local loop_fall = 0
         local dx, dy, dir, px, py = 0, -1, 3, -1, -1
@@ -954,13 +1049,13 @@ function doZip(unit)
 end
 
 --for use with wrap and portal. portals can change the facing dir, and facing dir can already be different from dx and dy, so we need to keep track of everything.
-function getNextTile(unit,dx,dy,dir,reverse_)
+function getNextTile(unit,dx,dy,dir,reverse_,start_x,start_y)
   local reverse = reverse_ or false
   local rs = reverse and -1 or 1
   dx = dx*rs
   dy = dy*rs
   local move_dir = dirs8_by_offset[sign(dx)][sign(dy)] or 0
-  local px, py = unit.x+dx, unit.y+dy
+  local px, py = (start_x or unit.x)+dx, (start_y or unit.y)+dy
   --we have to loop because a portal might put us oob, which wraps and puts us in another portal, which puts us oob... etc
   local did_update = true
   local loop_portal = 0
@@ -1036,7 +1131,7 @@ function doPortal(unit, px, py, move_dir, dir, reverse)
     --I thought about making portals go backwards/forwards twice/etc depending on property count, but it doesn't play nice with pull - if two portals lead to a portal you move away from, which one do you pull from?
     --This was already implemented in cg5's mod, but I overlooked it the first time around - PORTAL is FLOAT respecting, so now POOR TOLL is FLYE respecting. Spooky! (I already know this will have weird behaviour with PULL and SIDEKIK, so looking forward to that.)
     for _,v in ipairs(getUnitsOnTile(px, py, nil, false)) do
-      if hasProperty(v, "poor toll") and sameFloat(unit, v) then
+      if hasProperty(v, "poor toll") and sameFloat(unit, v) and not hasRule(unit,"haet",v) then
         local portal_rules = matchesRule(v.fullname, "be", "poor toll");
         local portals_direct = {};
         local portals = {};
@@ -1112,11 +1207,11 @@ end
 --3 stacks: up to 90 degrees
 --4 stacks: up to 135 degrees
 --5 stacks: up to 180 degrees (e.g. all directions)
-function canMove(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_stack_)
+function canMove(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_stack_,start_x,start_y)
   if hasProperty(unit, "loop") then
     return false,{},{}
   end
-  local success, movers, specials = canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_stack_);
+  local success, movers, specials = canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_stack_,start_x,start_y);
   if success then
     return success, movers, specials;
   elseif dir > 0 and pushing_ then
@@ -1125,8 +1220,8 @@ function canMove(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_stack_)
       for i = 1,clamp(stubbn-1, 1, 4) do
         local stubborndir1 = ((dir+i-1)%8)+1
         local stubborndir2 = ((dir-i-1)%8)+1
-        local success1, movers1, specials1 = canMoveCore(unit,dirs8[stubborndir1][1],dirs8[stubborndir1][2],dir,pushing_,pulling_,solid_name,reason,push_stack_);
-        local success2, movers2, specials2 = canMoveCore(unit,dirs8[stubborndir2][1],dirs8[stubborndir2][2],dir,pushing_,pulling_,solid_name,reason,push_stack_);
+        local success1, movers1, specials1 = canMoveCore(unit,dirs8[stubborndir1][1],dirs8[stubborndir1][2],dir,pushing_,pulling_,solid_name,reason,push_stack_,start_x,start_y);
+        local success2, movers2, specials2 = canMoveCore(unit,dirs8[stubborndir2][1],dirs8[stubborndir2][2],dir,pushing_,pulling_,solid_name,reason,push_stack_,start_x,start_y);
         if (success1 and not success2) then
           return success1,movers1,specials1
         elseif (success2 and not success1) then
@@ -1144,9 +1239,13 @@ function canMove(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_stack_)
   return success, movers, specials;
 end
 
-function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_stack_)
+function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_stack_,start_x,start_y)
   --if we haet outerlvl, we can't move, period.
   if rules_with["haet"] ~= nil and hasRule(unit, "haet", outerlvl) then
+    return false,{},{}
+  end
+  
+  if rules_with["go my way"] ~= nil and hasProperty(outerlvl,"go my way") and goMyWayPrevents(outerlvl.dir,dx,dy) then
     return false,{},{}
   end
 
@@ -1173,8 +1272,9 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
     local old_dx, old_dy = dx, dy
     local movecount = 4 * countProperty(unit, "munwalk") + 2 * countProperty(unit, "sidestep") + countProperty(unit, "diagstep")
     if movecount % 2 == 1 then
-      local diagx = round(math.cos(math.pi/4)*old_dx-math.sin(math.pi/4)*old_dy)
-      local diagy = round(math.sin(math.pi/4)*old_dx+math.cos(math.pi/4)*old_dy)
+	  local root2 = math.sqrt(0.5)
+      local diagx = round(root2*old_dx-root2*old_dy)
+      local diagy = round(root2*old_dx+root2*old_dy)
       dx = diagx
       dy = diagy
     end
@@ -1187,17 +1287,25 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
       dx = -dx
       dy = -dy
     end
-	if hasProperty(unit, "hopovr") then
-	  local hops = countProperty(unit, "hopovr")
-	  dx = dx * (hops + 1)
-	  dy = dy * (hops + 1)
+	if hasProperty(unit, "knightstep") then
+	  local root2 = math.sqrt(0.5)
+	  local diagx = round(root2*dx-root2*dy)
+      local diagy = round(root2*dx+root2*dy)
+	  dx = dx + diagx
+	  dy = dy + diagy
 	end
+    if hasProperty(unit, "hopovr") then
+      local hops = countProperty(unit, "hopovr")
+      dx = dx * (hops + 1)
+      dy = dy * (hops + 1)
+    end
   end
-  
+	
+	
   local move_dx, move_dy = dx, dy;
   local move_dir = dirs8_by_offset[sign(move_dx)][sign(move_dy)] or 0
   local old_dir = dir;
-  local dx, dy, dir, x, y, portal_unit = getNextTile(unit, dx, dy, dir);
+  local dx, dy, dir, x, y, portal_unit = getNextTile(unit, dx, dy, dir, nil, start_x, start_y);
   local geometry_spin = dirDiff(dir, old_dir);
   
   local movers = {}
@@ -1225,28 +1333,74 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
   --we used to have a fast track, but now selector is ALWAYS bounded to stuff, so it's never going to be useful.
   local isbounded = matchesRule(unit, "liek", "?")
   if (#isbounded > 0) then
-    local success = false
-    for _,v in ipairs(getUnitsOnTile(x, y, nil, false)) do
-      if hasRule(unit, "liek", v) then
+    for i,ruleparent in ipairs(isbounded) do
+      local liek = ruleparent[1][3]
+      local success = false
+      if hasRule(unit,"liek",liek) and hasRule(unit,"haet",liek) then
         success = true
-        break
       end
-    end
-    if not success then
-      for _,update in ipairs(update_queue) do
-        if update.reason == "update" then
-          local unit2 = update.unit
-          local x2 = update.payload.x
-          local y2 = update.payload.y
-          if x2 == x and y2 == y and hasRule(unit, "liek", unit2) then
-            success = true
-            break
+      for _,v in ipairs(getUnitsOnTile(x, y, nil, false, nil, true)) do
+        if hasRule(unit, "liek", v) then
+          success = true
+          break
+        end
+      end
+      if not success then
+        for _,update in ipairs(update_queue) do
+          if update.reason == "update" then
+            local unit2 = update.unit
+            local x2 = update.payload.x
+            local y2 = update.payload.y
+            if x2 == x and y2 == y and hasRule(unit, "liek", unit2) then
+              success = true
+              break
+            end
           end
         end
       end
+      if not success then
+        return false,{},{}
+      end
     end
-    if not success then
-      return false,{},{}
+  end
+  
+  local isnthere = matchesRule(unit,"ben't","her")
+  if (#isnthere > 0) then
+    for _,ruleparent in ipairs(isnthere) do
+      local fullrule = ruleparent[2]
+      local here = fullrule[#fullrule]
+      local hx = dirs8[here.dir][1]
+      local hy = dirs8[here.dir][2]
+      
+      if (x == here.x+hx) and (y == here.y+hy) then
+        return false,movers,specials
+      end
+    end
+  end
+  
+  local isntthere = matchesRule(unit,"ben't","thr")
+  if (#isntthere > 0) then
+    for _,ruleparent in ipairs(isntthere) do
+      local fullrule = ruleparent[2]
+      local there = fullrule[#fullrule]
+      
+      local tx = there.x
+      local ty = there.y
+      local tdir = there.dir
+      local tdx = dirs8[there.dir][1]
+      local tdy = dirs8[there.dir][2]
+      
+      local tstopped = false
+      while not tstopped do
+        if canMove(there,tdx,tdy,tdir,false,false,nil,nil,nil,tx,ty) then
+          tdx,tdy,tdir,tx,ty = getNextTile(there, tdx, tdy, tdir, nil, tx, ty)
+          if (x == tx) and (y == ty) then
+            return false,movers,specials
+          end
+        else
+          tstopped = true
+        end
+      end
     end
   end
   
@@ -1255,7 +1409,7 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
   local swap_mover = hasProperty(unit, "behin u")
   
   --normal checks
-  for _,v in ipairs(getUnitsOnTile(x, y, nil, false)) do
+  for _,v in ipairs(getUnitsOnTile(x, y, nil, false, nil, true)) do
     --Patashu: treat moving things as intangible in general. also, ignore ourselves for zip purposes
     if (v ~= unit and not v.already_moving) then
       local stopped = false
@@ -1265,7 +1419,7 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
       local would_swap_with = swap_mover or hasProperty(v, "behin u") and pushing
       --pushing a key into a door automatically works
       if (fordor and hasProperty(v, "ned kee")) or (nedkee and hasProperty(v, "for dor")) then
-        if timecheck(unit) and timecheck(v) then
+        if timecheck(unit,"be","ned kee") and timecheck(v,"be","for dor") then
           table.insert(specials, {"open", {unit, v}})
           return true,movers,specials
         else
@@ -1299,7 +1453,7 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
       end
       
       --if/elseif chain for everything that sets stopped to true if it's true - no need to check the remainders after all! (but if anything ignores flye, put it first, like haet!)
-      if rules_with["haet"] ~= nil and hasRule(unit, "haet", v) then
+      if rules_with["haet"] ~= nil and hasRule(unit, "haet", v) and not hasRule(unit,"liek",v) then
         stopped = true;
       elseif hasProperty(v, "no go") then --Things that are STOP stop being PUSH or PULL, unlike in Baba. Also unlike Baba, a wall can be floated across if it is not tall!
         stopped = stopped or sameFloat(unit, v)
@@ -1307,7 +1461,7 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
         stopped = stopped or sameFloat(unit, v)
       elseif hasProperty(v, "come pls") and not hasProperty(v, "go away pls") and not would_swap_with and not pulling then
         stopped = stopped or sameFloat(unit, v)
-      elseif hasProperty(v, "go my wey") and goMyWeyPrevents(v.dir, dx, dy) then
+      elseif hasProperty(v, "go my way") and goMyWayPrevents(v.dir, dx, dy) then
         stopped = stopped or sameFloat(unit, v)
       end
       
@@ -1331,9 +1485,9 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
     end
   end
   
-  --go my wey DOES Not also prevents things from leaving them against their direction
+  --go my way DOES Not also prevents things from leaving them against their direction
   --[[for _,v in ipairs(getUnitsOnTile(unit.x, unit.y, nil, false)) do
-    if hasProperty(v, "go my wey") and goMyWeyPrevents(v.dir, dx, dy) then
+    if hasProperty(v, "go my way") and goMyWayPrevents(v.dir, dx, dy) then
       return false,movers,specials
     end
   end]]--
@@ -1341,7 +1495,7 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
   return true,movers,specials
 end
 
-function goMyWeyPrevents(dir, dx, dy)
+function goMyWayPrevents(dir, dx, dy)
   dx = sign(dx)
   dy = sign(dy)
   return

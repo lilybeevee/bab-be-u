@@ -1,5 +1,6 @@
 local startload = love.timer.getTime()
 
+serpent = require "serpent"
 require "lib/gooi"
 json = require "lib/json"
 tick = require "lib/tick"
@@ -260,6 +261,9 @@ function love.load()
   registerSound("undo", 0.8)
   registerSound("fail", 0.5)
   registerSound("bonus", 0.4)
+  registerSound("timestop", 1)
+  registerSound("time resume", 1)
+  registerSound("bup", 1)
   print(colr.green("✓ sounds registered"))
 
   ui.init()
@@ -268,6 +272,10 @@ function love.load()
   if discordRPC and discordRPC ~= true then
     discordRPC.initialize("579475239646396436", true) -- app belongs to thefox, contact him if you wish to make any changes
     print(colr.green("✓ discord rpc initialized"))
+  end
+
+  if is_mobile then
+    love.window.setMode(640, 360)
   end
 
   print(colr.bright("\nboot complete!"))
@@ -302,6 +310,8 @@ function love.keypressed(key,scancode,isrepeat)
     rainbowmode = not rainbowmode
   elseif key == "q" and love.keyboard.isDown('f3') then
     superduperdebugmode = not superduperdebugmode
+  elseif key == "m" and love.keyboard.isDown('f3') then
+    is_mobile = not is_mobile
   elseif key == "d" and love.keyboard.isDown('f3') then
     drumMode = not drumMode
   elseif key == "r" and love.keyboard.isDown('f3') then
@@ -375,13 +385,13 @@ function love.wheelmoved(whx, why)
   end
 end
 
-function love.touchpressed(id, x, y)
+--[[function love.touchpressed(id, x, y)
   love.mousepressed(x,y,1)
 end
 
 function love.touchreleased(id, x, y, dx, dy, pressure)
   love.mousereleased(x,y,1)
-end
+end]]
 
 function love.mousemoved(x, y, dx, dy, istouch)
   if scene and scene.mouseMoved then
@@ -559,6 +569,7 @@ function love.draw()
     'F4 to toggle debug menu\n'..
     'F3+G to toggle rainbowmode\n'..
     'F3+Q for SUPER DUPER DEBUG MODE (wip)\n'..
+	'F3+M to toggle mobile\n'..
     'F3+D for MOUS DRUM KIT MODE\n'..
     'F3+R for REMASTER MODE\n'..
     'F2 for editor mode\n'..

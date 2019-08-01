@@ -12,6 +12,7 @@ local music_on = true
 
 
 function scene.load()
+  metaClear()
   clear()
   resetMusic("bab be u them REEEMAZTUR", 0.5)
   love.graphics.setBackgroundColor(0.10, 0.1, 0.11)
@@ -88,12 +89,27 @@ function scene.draw(dt)
     pair[2] = pair[2] * outlineSize
 
     love.graphics.setColor(0,0,0)
-    love.graphics.draw(sprites["ui/bab_be_u"], width/2 - sprites["ui/bab_be_u"]:getWidth() / 2 + pair[1], height/2 - sprites["ui/bab_be_u"]:getHeight() / 2 - 200 + pair[2])
+    love.graphics.draw(sprites["ui/bab_be_u"], width/2 - sprites["ui/bab_be_u"]:getWidth() / 2 + pair[1], height/20 + pair[2])
   end
 
   love.graphics.setColor(1, 1, 1)
   setRainbowModeColor(love.timer.getTime()/3, .5)
-  love.graphics.draw(sprites["ui/bab_be_u"], width/2 - sprites["ui/bab_be_u"]:getWidth() / 2, height/2 - sprites["ui/bab_be_u"]:getHeight() / 2 - 200)
+  love.graphics.draw(sprites["ui/bab_be_u"], width/2 - sprites["ui/bab_be_u"]:getWidth() / 2, height/20)
+
+  if is_mobile then
+    love.graphics.push()
+
+    local textx = width/2 + sprites["ui/bab_be_u"]:getWidth() / 2
+    local texty = height/20+sprites["ui/bab_be_u"]:getHeight()
+
+    love.graphics.translate(textx+love.graphics.getFont():getWidth("4mobile!")/2, texty+love.graphics.getFont():getHeight()/2)
+    love.graphics.rotate(0.7*math.sin(love.timer.getTime()*2))
+    love.graphics.translate(-textx-love.graphics.getFont():getWidth("4mobile!")/2, -texty-love.graphics.getFont():getHeight()/2)
+
+    love.graphics.print("4mobile!", textx, texty)
+    
+    love.graphics.pop()
+  end
 
   onstate = "on"
   if not settings["music_on"] then onstate = "off" end

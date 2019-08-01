@@ -20,6 +20,10 @@ local function common(arg, group)
         {type = "object"},
         not_suffix
       },
+			{
+        {type = "group"},
+        not_suffix
+      },
       {
         {type = "any"},
         {name = "text", mod = 1},
@@ -32,6 +36,9 @@ local function common(arg, group)
     local options = {
       {
         {type = "property"}
+      },
+			{
+        {type = "group"}
       },
       {
         {name = "sans"}
@@ -113,7 +120,30 @@ local cond_infixes = {
             {name = "look at"},
             not_suffix,
             directions_and_objects
-          }
+          },
+          {
+            {type = "cond_infix_verb"},
+            {type = "verb_all", mod = 1},
+            not_suffix,
+            commons({"object", "property"}, "target"),
+          },
+          {
+            {type = "cond_infix_verb"},
+            {type = "verb_object", mod = 1},
+            not_suffix,
+            commons({"object"}, "target"),
+          },
+          {
+            {type = "cond_infix_verb"},
+            {type = "verb_property", mod = 1},
+            not_suffix,
+            commons({"property"}, "target"),
+          },
+          {
+            {name = "that be"},
+            not_suffix,
+            commons({"object", "property"}, "target")
+          },
         }
       }
     }

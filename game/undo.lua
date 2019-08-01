@@ -4,12 +4,14 @@ function newUndo()
 end
 
 function addUndo(data)
+  --print("addUndo:",data[1],data[2],data[3],data[4],data[5],data[6],data[7])
   if #undo_buffer > 0 then 
     table.insert(undo_buffer[1], 1, data)
   end
 end
 
 function undoOneAction(turn, i, v, ignore_no_undo)
+  --print("undoOneAction:",v[1],v[2],v[3],v[4],v[5],v[6],v[7])
   local update_rules = false
   local action = v[1]
   local unit = nil
@@ -19,7 +21,8 @@ function undoOneAction(turn, i, v, ignore_no_undo)
 
     if unit ~= nil and (ignore_no_undo or not hasProperty(unit, "no undo")) then
       moveUnit(unit,v[3],v[4])
-      updateDir(unit, v[5])
+      --force updates when we're rewinding time - it ABSOLUTELY had that direction in the past
+      updateDir(unit, v[5], true)
 
       if unit.type == "text" or rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname] then
         update_rules = true
@@ -70,20 +73,66 @@ function undoOneAction(turn, i, v, ignore_no_undo)
   elseif action == "destroy_level" then
     level_destroyed = false
   elseif action == "za warudo" then
-    timeless = not timeless
+    timeless = not v[2]
+    if timeless then playSound("timestop", 0.5)
+    else playSound("time resume", 0.5)
+    end
   elseif action == "time_destroy" then
-		unit = units_by_id[v[2].unit]
-    if (unit ~= nil and (ignore_no_undo or not hasProperty(unit, "no undo"))) then
-			--iterate backwards because we probably got added to the end (but maybe not due to no undo shenanigans e.g.)
-			for i=#time_destroy,1,-1 do
-				if time_destroy[i] == unit then
-					table.remove(time_destroy, i)
-					break
-				end
-			end
-		end
+		unitid = v[2]
+    --iterate backwards because we probably got added to the end (but maybe not due to no undo shenanigans e.g.)
+    for i=#time_destroy,1,-1 do
+      if time_destroy[i] == unitid then
+        table.remove(time_destroy, i)
+        break
+      end
+    end
+  elseif action == "time_destroy_remove" then
+    table.insert(time_destroy, v[2]);
+  elseif action == "timeless_win_add" then
+		unitid = v[2]
+    --iterate backwards because we probably got added to the end (but maybe not due to no undo shenanigans e.g.)
+    for i=#timeless_win,1,-1 do
+      if timeless_win[i] == unitid then
+        table.remove(timeless_win, i)
+        break
+      end
+    end
+  elseif action == "timeless_win_remove" then
+    table.insert(timeless_win, v[2]);  
+  elseif action == "timeless_splitter_add" then
+		unitid = v[2]
+    --iterate backwards because we probably got added to the end (but maybe not due to no undo shenanigans e.g.)
+    for i=#timeless_splitter,1,-1 do
+      if timeless_splitter[i] == unitid then
+        table.remove(timeless_splitter, i)
+        break
+      end
+    end
+  elseif action == "timeless_splitter_remove" then
+    table.insert(timeless_splitter, v[2]);
+  elseif action == "timeless_splittee_add" then
+		unitid = v[2]
+    --iterate backwards because we probably got added to the end (but maybe not due to no undo shenanigans e.g.)
+    for i=#timeless_splittee,1,-1 do
+      if timeless_splittee[i] == unitid then
+        table.remove(timeless_splittee, i)
+        break
+      end
+    end
+  elseif action == "timeless_splittee_remove" then
+     table.insert(timeless_splittee, v[2]);
+  elseif action == "timeless_reset_add" then
+		timeless_reset = false
+  elseif action == "timeless_reset_remove" then
+    --causes an infinite loop, and kind of meaningless by definition I guess
+    --timeless_reset = true
+  elseif action == "timeless_crash_add" then
+		timeless_crash = false
+  elseif action == "timeless_crash_remove" then
+    --meaningless by definition
+    --timeless_crash = true
   elseif action == "timeless_yeet_add" then
-    unit = v[2].yote
+    unit = v[2]
     for i,yote in ipairs(timeless_yote) do
       if yote.unit == unit and (ignore_no_undo or not hasProperty(yote.unit, "no undo")) then
         table.remove(timeless_yote, i)
@@ -91,19 +140,7 @@ function undoOneAction(turn, i, v, ignore_no_undo)
       end
     end
   elseif action == "timeless_yeet_remove" then
-    unit = v[2].yote
-    dir = v[2].dir
-    local found = 0
-    for i,yote in ipairs(timeless_yote) do
-      if yote.unit == unit and (ignore_no_undo or not hasProperty(yote.unit, "no undo")) then
-        found = found + 1
-      end
-    end
-    if found > 0 then
-      for i=1,found do
-        table.insert(timeless_yote,{unit = unit, dir = dir})
-      end
-    end
+    table.insert(timeless_yote, {unit = v[2], dir = v[3]})
 	end
   return update_rules, unit;
 end
@@ -222,6 +259,7 @@ function undo(dont_update_rules)
     calculateLight()
     updateUnits(true)
     updatePortals()
+    miscUpdates()
 
     table.remove(undo_buffer, 1)
   else

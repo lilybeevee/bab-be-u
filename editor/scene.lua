@@ -11,7 +11,7 @@ local ignore_mouse = true
 
 local settings_open, settings, properties
 local label_palette, label_music
-local input_name, input_author, input_compression, input_palette, input_music, input_width, input_height, input_extra
+local input_name, input_author, input_compression, input_palette, input_music, input_width, input_height, input_extra, input_next_level_after_win, input_is_overworld, input_puffs_to_clear, input_level_sprite, input_level_number
 
 local capturing, start_drag, end_drag
 local screenshot, screenshot_image
@@ -25,6 +25,7 @@ ICON_WIDTH = 96
 ICON_HEIGHT = 96
 
 function scene.load()
+  metaClear()
   brush = {id = nil, dir = 1, mode = "none", picked_tile = nil, picked_index = 0}
   properties = {enabled = false, scale = 0, x = 0, y = 0, w = 0, h = 0, components = {}} -- will do this later
   saved_popup = {sprite = sprites["ui/level_saved"], y = 16, alpha = 0}
@@ -48,14 +49,31 @@ function scene.load()
   if not level_extra then
     level_extra = false
   end
-
-  if not loaded_level then
-    if love.filesystem.getInfo("author_name") then
-      level_author = love.filesystem.read("author_name")
-    end
-    default_author = level_author
+  if not level_next_level_after_win then
+    level_next_level_after_win = ""
+  end
+  if not level_is_overworld then
+    level_is_overworld = false
+  end
+   if not level_puffs_to_clear then
+    level_puffs_to_clear = 0
+  end
+  if not level_level_sprite then
+    level_level_sprite = ""
+  end
+  if not level_level_number then
+    level_level_number = 0
+  end
+  
+  default_author = ""
+  if love.filesystem.getInfo("author_name") then
+    default_author = love.filesystem.read("author_name")
   end
 
+  if (level_author == nil or level_author == "") then
+    level_author = default_author
+  end
+  
   typing_name = false
   ignore_mouse = true
   capturing = false
@@ -133,51 +151,57 @@ function scene.setupGooi()
       screenshot_image = love.graphics.newImage(s)
     end)
   end):setBGImage(sprites["ui/camera"],sprites["ui/camera_h"], sprites["ui/camera_a"]):bg({0, 0, 0, 0})
+  if is_mobile then
+    gooi.newButton({text = "", x = 40*5, y = 0, w = 40, h = 40}):onRelease(function()
+      selector_open = not selector_open
+    end):setBGImage(sprites["ui/selector"],sprites["ui/selector_h"], sprites["ui/selector_a"]):bg({0, 0, 0, 0})
+  end
 
-  settings = {x = 0, y = 0, w = 208, h = 336}
+  local dx = 208;
+  local i = 0;
+  settings = {x = 0, y = 0, w = dx*2, h = 450}
 
   local y = (love.graphics.getHeight() - settings.h) / 2
 
   settings.y = y
 
   y = y + 4
-  gooi.newLabel({text = "Name", x = 4, y = y, w = 200, h = 24}):center():setGroup("settings")
+  gooi.newLabel({text = "Name", x = 4+dx*i, y = y, w = 200, h = 24}):center():setGroup("settings")
   y = y + 24 + 4
-  input_name = gooi.newText({text = level_name, x = 4, y = y, w = 200, h = 24}):setGroup("settings")
+  input_name = gooi.newText({text = level_name, x = 4+dx*i, y = y, w = 200, h = 24}):setGroup("settings")
 
   y = y + 24 + 4
-  gooi.newLabel({text = "Author", x = 4, y = y, w = 200, h = 24}):center():setGroup("settings")
+  gooi.newLabel({text = "Author", x = 4+dx*i, y = y, w = 200, h = 24}):center():setGroup("settings")
   y = y + 24 + 4
-  input_author = gooi.newText({text = level_author, x = 4, y = y, w = 200, h = 24}):setGroup("settings")
+  input_author = gooi.newText({text = level_author, x = 4+dx*i, y = y, w = 200, h = 24}):setGroup("settings")
 
   y = y + 24 + 4
-  label_palette = gooi.newLabel({text = "Palette", x = 4, y = y, w = 200, h = 24}):center():setGroup("settings")
+  label_palette = gooi.newLabel({text = "Palette", x = 4+dx*i, y = y, w = 200, h = 24}):center():setGroup("settings")
   y = y + 24 + 4
-  input_palette = gooi.newText({text = current_palette, x = 4, y = y, w = 200, h = 24}):setGroup("settings")
+  input_palette = gooi.newText({text = current_palette, x = 4+dx*i, y = y, w = 200, h = 24}):setGroup("settings")
 
   y = y + 24 + 4
-  label_music = gooi.newLabel({text = "Music", x = 4, y = y, w = 200, h = 24}):center():setGroup("settings")
+  label_music = gooi.newLabel({text = "Music", x = 4+dx*i, y = y, w = 200, h = 24}):center():setGroup("settings")
   y = y + 24 + 4
-  input_music = gooi.newText({text = map_music, x = 4, y = y, w = 200, h = 24}):setGroup("settings")
+  input_music = gooi.newText({text = map_music, x = 4+dx*i, y = y, w = 200, h = 24}):setGroup("settings")
 
   -- Arbitrary limits of 512 until i come up with a reasonable limit
   y = y + 24 + 4
-  gooi.newLabel({text = "Width", x = 4, y = y, w = 98, h = 24}):center():setGroup("settings")
-  gooi.newLabel({text = "Height", x = 106, y = y, w = 98, h = 24}):center():setGroup("settings")
+  gooi.newLabel({text = "Width", x = 4+dx*i, y = y, w = 98, h = 24}):center():setGroup("settings")
+  gooi.newLabel({text = "Height", x = 106+dx*i, y = y, w = 98, h = 24}):center():setGroup("settings")
   y = y + 24 + 4
-  input_width = gooi.newSpinner({value = mapwidth, min = 1, max = 512, x = 4, y = y, w = 98, h = 24}):setGroup("settings")
-  input_height = gooi.newSpinner({value = mapwidth, min = 1, max = 512, x = 106, y = y, w = 98, h = 24}):setGroup("settings")
+  input_width = gooi.newSpinner({value = mapwidth, min = 1, max = 512, x = 4+dx*i, y = y, w = 98, h = 24}):setGroup("settings")
+  input_height = gooi.newSpinner({value = mapwidth, min = 1, max = 512, x = 106+dx*i, y = y, w = 98, h = 24}):setGroup("settings")
 
   y = y + 24 + 4
-  gooi.newLabel({text = "Compression", x = 4, y = y, w = 200, h = 24}):center():setGroup("settings")
+  gooi.newLabel({text = "Compression", x = 4+dx*i, y = y, w = 200, h = 24}):center():setGroup("settings")
   y = y + 24 + 4
-  input_compression = gooi.newText({text = level_compression, x = 4, y = y, w = 200, h = 24}):setGroup("settings")
+  input_compression = gooi.newText({text = level_compression, x = 4+dx*i, y = y, w = 200, h = 24}):setGroup("settings")
   
   y = y + 24 + 4
-  gooi.newLabel({text = "Extra", x = 4, y = y, w = 200, h = 24}):center():setGroup("settings")
+  gooi.newLabel({text = "Extra", x = 4+dx*i, y = y, w = 200, h = 24}):center():setGroup("settings")
   y = y + 24 + 4
-  input_extra = gooi.newCheck({checked = level_extra, x = 4, y = y}):setGroup("settings")
-
+  input_extra = gooi.newCheck({checked = level_extra, x = 90+dx*i, y = y}):setGroup("settings")
   input_extra.checked = level_extra
 
   y = y + (24 * 2) + 4
@@ -188,8 +212,44 @@ function scene.setupGooi()
     scene.openSettings()
   end):center():danger():setGroup("settings")
 
+  y = (love.graphics.getHeight() - settings.h) / 2
+  
+  i = 1;
+  
+  --[[
+  * Next Level After Win (string)
+  * Is Overworld (boolean)
+  * Level Sprite (string)
+  * Level Number (integer)
+  ]]--
+  
+  y = y + 4
+  gooi.newLabel({text = "Next Level After Win", x = 4+dx*i, y = y, w = 200, h = 24}):center():setGroup("settings")
   y = y + 24 + 4
-  --print("height: " .. y - settings.y)
+  input_next_level_after_win = gooi.newText({text = level_next_level_after_win, x = 4+dx*i, y = y, w = 200, h = 24}):setGroup("settings")
+  
+  y = y + 24 + 4
+  gooi.newLabel({text = "Is Overworld", x = 4+dx*i, y = y, w = 200, h = 24}):center():setGroup("settings")
+  y = y + 24 + 4
+  input_is_overworld = gooi.newCheck({checked = level_is_overworld, x = 90+dx*i, y = y}):setGroup("settings")
+  y = y + 24 + 4
+
+  input_is_overworld.checked = level_is_overworld
+  
+  y = y + 4
+  gooi.newLabel({text = "Puffs to Clear", x = 4+dx*i, y = y, w = 200, h = 24}):center():setGroup("settings")
+  y = y + 24 + 4
+  input_puffs_to_clear = gooi.newSpinner({value = level_puffs_to_clear, min = 0, max = 999, x = 50+dx*i, y = y, w = 98, h = 24}):setGroup("settings")
+  
+  y = y + 24
+  gooi.newLabel({text = "Level Sprite", x = 4+dx*i, y = y, w = 200, h = 24}):center():setGroup("settings")
+  y = y + 24 + 4
+  input_level_sprite = gooi.newText({text = level_level_sprite, x = 4+dx*i, y = y, w = 200, h = 24}):setGroup("settings")
+  
+  y = y + 24 + 4
+  gooi.newLabel({text = "Level Number", x = 4+dx*i, y = y, w = 200, h = 24}):center():setGroup("settings")
+  y = y + 24 + 4
+  input_level_number = gooi.newSpinner({value = level_level_number, min = 0, max = 999, x = 50+dx*i, y = y, w = 98, h = 24}):setGroup("settings")
 
   gooi.setGroupVisible("settings", settings_open)
   gooi.setGroupEnabled("settings", settings_open)
@@ -235,7 +295,7 @@ function scene.keyPressed(key)
       ignore_mouse = true
     end
   end
-  if key == "w" and key_down["lctrl"] then
+  if key == "w" and (key_down["lctrl"] or key_down["rctrl"]) then
     load_mode = "edit"
     new_scene = loadscene
   end
@@ -273,13 +333,13 @@ function scene.keyPressed(key)
   end
 
 
-  if key == "s" and key_down["lctrl"] then
+  if key == "s" and (key_down["lctrl"] or key_down["rctrl"]) then
     scene.saveLevel()
-  elseif key == "l" and key_down["lctrl"] then
+  elseif key == "l" and (key_down["lctrl"] or key_down["rctrl"]) then
     scene.loadLevel()
-  elseif key == "o" and key_down["lctrl"] then
+  elseif key == "o" and (key_down["lctrl"] or key_down["rctrl"]) then
     scene.openSettings()
-  elseif key == "r" and key_down["lctrl"] then
+  elseif key == "r" and (key_down["lctrl"] or key_down["rctrl"]) then
     gooi.confirm({
       text = "Clear the level?",
       okText = "Yes",
@@ -318,7 +378,7 @@ function scene.keyPressed(key)
   if selector_open and key == "lshift" then
   --copy so we don't override original list
   current_tile_grid = copyTable(current_tile_grid)
-    for i = 1,tile_grid_width*tile_grid_height do
+    for i = 0,tile_grid_width*tile_grid_height do
       if current_tile_grid[i] ~= nil and current_tile_grid[i] > 0 then
         local new_tile_id = tiles_by_name["text_" .. tiles_list[current_tile_grid[i]].name];
         if (new_tile_id ~= nil) then
@@ -425,13 +485,13 @@ function scene.update(dt)
           local new_unit = nil
           local existing = nil
           local ctrl_first_press = false
-          if key_down["lctrl"] and brush.mode == "none" then
+          if (key_down["lctrl"] or key_down["rctrl"]) and brush.mode == "none" then
             ctrl_first_press = true
           end
           if #hovered >= 1 then
             for _,unit in ipairs(hovered) do
               if unit.tile == brush.id then
-                if not key_down["lctrl"] and not selectorhold then
+                if not key_down["lctrl"] and not key_down["rctrl"] and not selectorhold then
                   existing = unit
                 end
               elseif brush.mode == "placing" and not key_down["lshift"] and not selectorhold then
@@ -456,7 +516,7 @@ function scene.update(dt)
                 existing.dir = brush.dir
                 painted = true
                 new_unit = existing
-              elseif not key_down["lctrl"] or ctrl_first_press then
+              elseif (not key_down["lctrl"] and not key_down["rctrl"]) or ctrl_first_press then
                 new_unit = createUnit(brush.id, hx, hy, brush.dir)
                 painted = true
               end
@@ -557,10 +617,22 @@ function scene.getTransform()
   local screenheight = love.graphics.getHeight()
 
   local scale = 1
-  if roomwidth >= screenwidth or roomheight >= screenheight then
+  if roomwidth*0.375 >= screenwidth or roomheight*0.375 >= screenheight then
+    scale = 0.25
+  elseif roomwidth*0.5 >= screenwidth or roomheight*0.5 >= screenheight then
+    scale = 0.375
+  elseif roomwidth*0.625 >= screenwidth or roomheight*0.625 >= screenheight then
     scale = 0.5
+  elseif roomwidth*0.75 >= screenwidth or roomheight*0.75 >= screenheight then
+    scale = 0.625
+  elseif roomwidth*0.875 >= screenwidth or roomheight*0.875 >= screenheight then
+    scale = 0.75
+  elseif roomwidth >= screenwidth or roomheight >= screenheight then
+    scale = 0.875
   elseif screenwidth >= roomwidth * 4 and screenheight >= roomheight * 4 then
     scale = 4
+  elseif screenwidth >= roomwidth * 3 and screenheight >= roomheight * 3 then
+    scale = 3
   elseif screenwidth >= roomwidth * 2 and screenheight >= roomheight * 2 then
     scale = 2
   end
@@ -827,22 +899,19 @@ function scene.draw(dt)
 end
 
 function scene.updateMap()
-  map_ver = 3
-  local map = ""
+  map_ver = 4
+  local map = {}
   for x = 0, mapwidth-1 do
     for y = 0, mapheight-1 do
       local tileid = x + y * mapwidth
       if units_by_tile[tileid] then
         for _,unit in ipairs(units_by_tile[tileid]) do
-          local specials = ""
-          for k,v in pairs(unit.special) do
-            specials = specials .. love.data.pack("string", PACK_SPECIAL_V2, k, v)
-          end
-          map = map .. love.data.pack("string", PACK_UNIT_V3, unit.id, unit.tile, unit.x, unit.y, unit.dir, specials)
+          table.insert(map, {id = unit.id, tile = unit.tile, x = unit.x, y = unit.y, dir = unit.dir, special = unit.special});
         end
       end
     end
   end
+  map = serpent.dump(map);
   maps = {{map_ver, map}}
 end
 
@@ -865,10 +934,13 @@ function scene.saveLevel()
     width = mapwidth,
     height = mapheight,
     version = map_ver,
-    map = savestr
+    map = savestr,
+    next_level_after_win = level_next_level_after_win,
+    is_overworld = level_is_overworld,
+    puffs_to_clear = level_puffs_to_clear,
+    level_sprite = level_level_sprite,
+    level_number = level_level_number,
   }
-  
-  print(level_compression, data.compression)
 
   if world == "" or world_parent == "officialworlds" then
     love.filesystem.createDirectory("levels")
@@ -906,6 +978,11 @@ function scene.openSettings()
     input_music:setText(map_music)
     input_width:setValue(mapwidth)
     input_height:setValue(mapheight)
+    input_next_level_after_win:setText(level_next_level_after_win)
+    input_is_overworld.checked = level_is_overworld
+    input_puffs_to_clear:setValue(level_puffs_to_clear)
+    input_level_sprite:setText(level_level_sprite)
+    input_level_number:setValue(level_level_number)
     input_extra.checked = level_extra
 
     gooi.setGroupVisible("settings", true)
@@ -950,6 +1027,11 @@ function scene.saveSettings()
   level_author = input_author:getText()
   current_palette = input_palette:getText()
   map_music = input_music:getText()
+  level_next_level_after_win = input_next_level_after_win:getText()
+  level_is_overworld = input_is_overworld.checked
+  level_puffs_to_clear = input_puffs_to_clear:getValue()
+  level_level_sprite = input_level_sprite:getText()
+  level_level_number = input_level_number:getValue()
 
   scene.updateMap()
 
@@ -1000,6 +1082,11 @@ function love.filedropped(file)
   mapwidth = mapdata.width
   mapheight = mapdata.height
   map_ver = mapdata.version or 0
+  level_next_level_after_win = mapdata.next_level_after_win or ""
+  level_is_overworld = mapdata.is_overworld or false
+  level_puffs_to_clear = mapdata.level_puffs_to_clear or 0
+  level_level_sprite = mapdata.level_sprite or ""
+  level_level_number = mapdata.level_number or 0
 
   if map_ver == 0 then
     maps = {{0, loadstring("return " .. mapstr)()}}

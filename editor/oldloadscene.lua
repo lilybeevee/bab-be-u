@@ -175,6 +175,11 @@ function scene.loadLevel(data)
   mapwidth = data.width
   mapheight = data.height
   map_ver = data.version or 0
+  level_next_level_after_win = data.next_level_after_win or ""
+  level_is_overworld = data.is_overworld or false
+  level_puffs_to_clear = data.puffs_to_clear or false
+  level_level_sprite = data.level_sprite or ""
+  level_level_number = data.level_number or 0
 
   if map_ver == 0 then
     map = loadstring("return " .. mapstr)()
