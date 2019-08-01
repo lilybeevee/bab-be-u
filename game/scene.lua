@@ -376,10 +376,12 @@ function scene.keyPressed(key, isrepeat)
         replay_pause = not replay_pause
     end
     
-    --[[
     if key == "z" and replay_playback then
+        replay_pause = true
+        if replay_playback_turn > 1 then
+            replay_playback_turn = replay_playback_turn - 1
+        end
     end
-    ]]
     
   if key == "e" and not win and not replay_playback then
     doOneMove(0, 0, "e")
