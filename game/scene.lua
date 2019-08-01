@@ -1609,7 +1609,6 @@ function scene.mouseReleased(x, y, button)
   if button == 1 then
     if units_by_name["text_clikt"] then
         last_click_x, last_click_y = screenToGameTile(love.mouse.getX(), love.mouse.getY())
-        newUndo()
         doOneMove(0,0,nil)
         last_click_x, last_click_y = nil, nil
     end
