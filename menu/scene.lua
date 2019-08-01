@@ -9,7 +9,10 @@ local scrolly = 0
 
 local music_on = true
 
+local oldmousex = 0
+local oldmousey = 0
 
+local buttons = {"play", "editor", "exit"}
 
 function scene.load()
   metaClear()
@@ -31,7 +34,6 @@ function scene.load()
 end
 
 function scene.draw(dt)
-  local buttons = {"play", "editor", "exit"}
   local bgsprite = sprites["ui/menu_background"]
 
   if is_mobile then
@@ -71,7 +73,6 @@ function scene.draw(dt)
     if mouseOverBox(width/2-sprites["ui/button_1"]:getWidth()/2, height/2-buttonheight/2+(buttonheight+10)*i, buttonwidth, buttonheight) then
       love.graphics.setColor(buttoncolor[1]-0.1, buttoncolor[2]-0.1, buttoncolor[3]-0.1) --i know this is horrible
       love.graphics.translate(buttonx+buttonwidth/2, buttony+buttonheight/2)
-      playSound("mous hovvr")
       love.graphics.rotate(0.05 * math.sin(love.timer.getTime()*3))
       love.graphics.translate(-buttonx-buttonwidth/2, -buttony-buttonheight/2)
     end
@@ -154,6 +155,15 @@ function scene.update(dt)
   if mouseOverBox(width/2-buttonwidth/2, height/2-buttonheight/2+(buttonheight+10)*3, buttonwidth, buttonheight) then
     love.mouse.setPosition(mousex, mousey-(buttonheight+10))
   end
+
+  
+  for i=1, #buttons do
+    if mouseOverBox(width/2-sprites["ui/button_1"]:getWidth()/2, height/2-buttonheight/2+(buttonheight+10)*i, buttonwidth, buttonheight) and not pointInside(oldmousex, oldmousey, width/2-sprites["ui/button_1"]:getWidth()/2, height/2-buttonheight/2+(buttonheight+10)*i, buttonwidth, buttonheight) then
+      playSound("mous hovvr")
+    end
+  end
+
+  oldmousex, oldmousey = love.mouse.getPosition()
 end
 
 function scene.mousePressed(x, y, button)
