@@ -177,7 +177,7 @@ function scene.update(dt)
 end
 
 function doReplay(dt)
-	if win or not replay_playback then return false end
+	if not replay_playback then return false end
 	if love.timer.getTime() > (replay_playback_time + replay_playback_interval) then
         if not replay_pause then
             replay_playback_time = replay_playback_time + replay_playback_interval
@@ -285,7 +285,16 @@ function scene.keyPressed(key, isrepeat)
   last_input_time = love.timer.getTime();
 
   if key == "escape" then
-    new_scene = loadscene
+    
+    gooi.confirm({
+        text = "Go back to "..escResult(false).."?",
+        okText = "Yes",
+        cancelText = "Cancel",
+        ok = function()
+          escResult(true)
+        end
+      })
+      return
   end
 
   local do_turn_now = false
@@ -383,7 +392,7 @@ function scene.keyPressed(key, isrepeat)
         end
     end
     
-  if key == "e" and not win and not replay_playback then
+  if key == "e" and not currently_winning and not replay_playback then
     doOneMove(0, 0, "e")
   end
 
@@ -1131,7 +1140,7 @@ function scene.draw(dt)
   local scale = win_sprite_override and 10 or 1
   love.graphics.draw(win_sprite, scale*-win_sprite:getWidth() / 2, scale*-win_sprite:getHeight() / 2, 0, scale, scale)
 
-  if win and win_size < 1 then
+  if currently_winning and win_size < 1 then
     win_size = win_size + dt*2
   end
   love.graphics.pop()
@@ -1372,7 +1381,7 @@ function scene.checkInput()
   end
 
   for _,key in ipairs(repeat_keys) do
-    if not win and repeat_timers[key] ~= nil and repeat_timers[key] <= 0 then
+    if repeat_timers[key] ~= nil and repeat_timers[key] <= 0 then
       if key == "undo" then
         just_moved = true
         if (last_input_time ~= nil) then
@@ -1458,8 +1467,55 @@ function scene.checkInput()
   end
 end
 
+function escResult(do_actual)
+  if (was_using_editor) then
+    if (do_actual) then
+      load_mode = "edit"
+      new_scene = editor
+    else
+      return "the editor"
+    end
+  else
+    if (level_parent_level == nil or level_parent_level == "") then
+      if (parent_filename ~= nil and parent_filename ~= "") then
+        if (do_actual) then
+          loadLevels(parent_filename:split("|"), "play");
+        else
+          return parent_filename
+        end
+      else
+        if (do_actual) then
+          load_mode = "play"
+          new_scene = loadscene
+        else
+          return "the level selection menu"
+        end
+      end
+    else
+      if (do_actual) then
+        loadLevels({level_parent_level}, "play");
+      else
+        return level_parent_level
+      end
+    end
+  end
+end
+
 function doOneMove(x, y, key)
-	if (key == "e") then
+	if (currently_winning) then
+    --undo: undo win.
+    --idle on the winning screen: go to the editor, if we were editing; go to the parent level, if known (prefer explicit to implicit), else go back to the world we were looking at.
+    if (key == "undo") then
+      undoWin()
+    else
+      if x == 0 and y == 0 and key ~= "e" then
+        escResult(true)
+      end
+      return
+    end
+  end
+  
+  if (key == "e") then
 		if hasProperty(nil,"za warudo") then
       --[[
       level_shader = shader_zawarudo

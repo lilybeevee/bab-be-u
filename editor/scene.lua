@@ -26,6 +26,7 @@ ICON_HEIGHT = 96
 
 function scene.load()
   metaClear()
+  was_using_editor = true
   brush = {id = nil, dir = 1, mode = "none", picked_tile = nil, picked_index = 0}
   properties = {enabled = false, scale = 0, x = 0, y = 0, w = 0, h = 0, components = {}} -- will do this later
   saved_popup = {sprite = sprites["ui/level_saved"], y = 16, alpha = 0}
@@ -42,6 +43,9 @@ function scene.load()
   end
   if not level_name then
     level_name = "unnamed"
+  end
+  if not level_filename then
+    level_filename = ""
   end
   if not level_author then
     level_author = ""

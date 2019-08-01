@@ -73,7 +73,10 @@ function clear()
   end
   --createMouse_direct(20, 20)
 
-  win = false
+  currently_winning = false
+  music_fading = false
+  won_this_session = false
+  level_ending = false
   win_size = 0
 
   tile_grid = {}
@@ -93,6 +96,7 @@ function clear()
 end
 
 function metaClear()
+  parent_filename = nil;
   stay_ther = nil;
   surrounds = nil;
 end
@@ -1627,7 +1631,10 @@ function loadLevels(levels, mode, level_objs)
 
   mapwidth = 0
   mapheight = 0
+  --if we're entering a level object, then the level we were in is the parent
+  parent_filename = level_objs ~= nil and level_filename or nil
   level_name = nil
+  level_filename = nil
 
   for _,level in ipairs(levels) do
     local data
@@ -1647,6 +1654,13 @@ function loadLevels(levels, mode, level_objs)
     else
       level_name = level_name .. " & " .. data.name
     end
+    
+    if not level_filename then
+      level_filename = level
+    else
+      level_filename = level_filename .. "|" .. level
+    end
+    
     level_name = level_name:sub(1, 100)
     level_author = data.author or ""
     level_extra = data.extra or false
