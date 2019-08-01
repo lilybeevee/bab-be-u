@@ -11,7 +11,7 @@ local ignore_mouse = true
 
 local settings_open, settings, properties
 local label_palette, label_music
-local input_name, input_author, input_compression, input_palette, input_music, input_width, input_height, input_extra, input_next_level_after_win, input_is_overworld, input_puffs_to_clear, input_level_sprite, input_level_number
+local input_name, input_author, input_palette, input_music, input_width, input_height, input_extra, input_next_level_after_win, input_is_overworld, input_puffs_to_clear, input_level_sprite, input_level_number
 
 local capturing, start_drag, end_drag
 local screenshot, screenshot_image
@@ -192,11 +192,6 @@ function scene.setupGooi()
   y = y + 24 + 4
   input_width = gooi.newSpinner({value = mapwidth, min = 1, max = 512, x = 4+dx*i, y = y, w = 98, h = 24}):setGroup("settings")
   input_height = gooi.newSpinner({value = mapwidth, min = 1, max = 512, x = 106+dx*i, y = y, w = 98, h = 24}):setGroup("settings")
-
-  y = y + 24 + 4
-  gooi.newLabel({text = "Compression", x = 4+dx*i, y = y, w = 200, h = 24}):center():setGroup("settings")
-  y = y + 24 + 4
-  input_compression = gooi.newText({text = level_compression, x = 4+dx*i, y = y, w = 200, h = 24}):setGroup("settings")
   
   y = y + 24 + 4
   gooi.newLabel({text = "Extra", x = 4+dx*i, y = y, w = 200, h = 24}):center():setGroup("settings")
@@ -927,7 +922,6 @@ function scene.saveLevel()
   local data = {
     name = level_name,
     author = level_author,
-    compression = level_compression,
     extra = level_extra,
     palette = current_palette,
     music = map_music,
@@ -972,7 +966,6 @@ function scene.openSettings()
     settings_open = true
 
     input_name:setText(level_name)
-    input_compression:setText(level_compression)
     input_author:setText(level_author)
     input_palette:setText(current_palette)
     input_music:setText(map_music)
@@ -1023,7 +1016,6 @@ function scene.saveSettings()
   end
 
   level_name = input_name:getText()
-  level_compression = input_compression:getText()
   level_author = input_author:getText()
   current_palette = input_palette:getText()
   map_music = input_music:getText()
