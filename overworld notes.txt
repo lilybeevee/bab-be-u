@@ -44,3 +44,46 @@ this saves some persistent-until-you-leave-the-editor state: whatever item is cu
 * you can define in a text file in a world the main overworld that new games start in.
 * if you play such a world, then you go to the main overworld if you have no save file, or it loads your save file and places you in the appropriate place otherwise. you don't get to see the level picker.
 * edit mode gets to see the level picker as normal. worlds with no main overworld always see the level picker.
+
+random note: if you're playtesting a level in the editor, it should be hard to accidentally leave it by winning because then changes could be lost
+
+other things that need to go in the save file: which maps have been entered (so you can't use 'return to map' to go to super-meta before you've won meta and reached it legitimately), last known good parent map (so that if you're doing lvl be nxt shenanigans the game can keep track of where you can DEFINITELY go back to)
+
+oh BUT
+
+2:15 PM] vitellary: i was thinking that's probably a bad idea though
+[2:15 PM] vitellary: since 02 technically isn't unlocked so you wouldn't be able to re-enter it
+
+so it needs to save the last level you normally entered and what map you entered that level from
+
+level hidden in a rock rules:
+not entered: you have to turn it into a level first
+entered: you can always enter it
+this prevents transformation softlocks.
+(alternatively, won or transformed. but I like entered)
+
+it might also be a good idea to explicitly specify what level 'level be nxt' will go to.
+
+another thing we need: non-visible levels/paths 100% need to fuck off out of the level, so that they don't sink e.g.
+
+also:
+2:43 PM] Patashu: would you like 'level be nxt' to work by explicitly specifying what level is the destination of that rule for each level you can form it in
+[2:44 PM] Patashu: (as opposed to doing some magic by going to the parent map and scanning for the level with the numeral one higher or whatever)
+[2:44 PM] vitellary: hm
+that would probably be the best option, yeah
+
+also: we might want an inherent 'selctr be shy'. but we might not do it.
+
+random: do I still want to add MARK/UNMARK/MARKED? better idea: have colours do it
+
+10:56 AM] willing to help out: i think maybe colors could be repurposed into markings? would at least make them useful (and having more than one mark could be used somehow)
+
+next set of TODOs:
+1) coding the save file
+2) saving/loading seen, won, cleared, complete, bonus, TFs per level, and level filename player was in, last known safe parent level filename
+3) coding path settings/level object settings
+4) path/level floodfill/main cursor/transform TF'd levels/begone hidden stuff algorithms
+5) gates
+6) hidden levels
+7) making it so you can't 'return to parent' to a parent you haven't visited yet
+8) code NXT
