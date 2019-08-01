@@ -1642,7 +1642,7 @@ function loadLevels(levels, mode, level_objs)
     end
     level_compression = data.compression or "zlib"
     local loaddata = love.data.decode("string", "base64", data.map)
-    local mapstr = level_compression == "zlib" and love.data.decompress("string", "zlib", loaddata) or loaddata
+    local mapstr = loadMaybeCompressedData(loaddata)
 
     loaded_level = not new
 
@@ -1835,5 +1835,14 @@ end
 function pcallSetShader(shader)
   if shader ~= nil then
     love.graphics.setShader(shader)
+  end
+end
+
+function loadMaybeCompressedData(loaddata)
+  local mapstr = nil
+  if pcall(function() mapstr = love.data.decompress("string", "zlib", loaddata) end) then
+    return mapstr
+  else
+    return loaddata
   end
 end
