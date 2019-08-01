@@ -55,7 +55,6 @@ function scene.draw(dt)
   local buttonwidth, buttonheight = sprites["ui/button_1"]:getDimensions()
 
   local buttoncolor = {84/255, 109/255, 255/255} --terrible but it works so /shrug
-  if rainbowmode then buttoncolor = hslToRgb(love.timer.getTime()/6%1, .5, .5, .9) end
 
   for i=1, #buttons do
     love.graphics.push()
@@ -63,6 +62,8 @@ function scene.draw(dt)
 
     local buttonx = width/2-buttonwidth/2
     local buttony = height/2-buttonheight/2+(buttonheight+10)*i
+
+    if rainbowmode then buttoncolor = hslToRgb((love.timer.getTime()/6+i/10)%1, .5, .5, .9) end
 
     love.graphics.setColor(buttoncolor[1], buttoncolor[2], buttoncolor[3])
     if mouseOverBox(width/2-sprites["ui/button_1"]:getWidth()/2, height/2-buttonheight/2+(buttonheight+10)*i, buttonwidth, buttonheight) then
