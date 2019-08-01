@@ -18,6 +18,7 @@ local scroll_height
 function scene.load()
   metaClear()
   clear()
+  was_using_editor = false
   resetMusic(current_music, 0.8)
   selected_levels = {}
   scene.buildUI()

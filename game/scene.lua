@@ -1458,9 +1458,28 @@ end
 
 function doOneMove(x, y, key)
 	if (currently_winning) then
+    --undo: undo win.
+    --idle on the winning screen: go to the editor, if we were editing; go to the parent level, if known (prefer explicit to implicit), else go back to the world we were looking at.
     if (key == "undo") then
       undoWin()
     else
+      if x == 0 and y == 0 and key ~= "e" then
+        if (was_using_editor) then
+          new_scene = editor
+          load_mode = "edit"
+        else
+          if (level_parent_level == nil or level_parent_level == "") then
+            if (parent_filename ~= nil and parent_filename ~= "") then
+              loadLevels(parent_filename:split("|"), "play");
+            else
+              load_mode = "play"
+              new_scene = loadscene
+            end
+          else
+            loadLevels({level_parent_level}, "play");
+          end
+        end
+      end
       return
     end
   end
