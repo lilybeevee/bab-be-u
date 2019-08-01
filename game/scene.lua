@@ -522,7 +522,8 @@ function scene.draw(dt)
   --background color
   local bg_color = {getPaletteColor(1, 0)}
   
-  if rainbowmode then bg_color = {hslToRgb(love.timer.getTime()/6%1, .2, .2, .9), 1} end
+  if timeless then bg_color = {getPaletteColor(0, 3)}
+  elseif rainbowmode then bg_color = {hslToRgb(love.timer.getTime()/6%1, .2, .2, .9), 1} end
 
   love.graphics.setColor(bg_color[1], bg_color[2], bg_color[3], bg_color[4])
 
@@ -579,6 +580,7 @@ function scene.draw(dt)
   end
 
   love.graphics.setColor(lvl_color[1], lvl_color[2], lvl_color[3], lvl_color[4])
+  
   if not (level_destroyed or hasProperty(outerlvl, "stelth")) then
     love.graphics.rectangle("fill", 0, 0, roomwidth, roomheight)
     if level_background_sprite ~= nil and level_background_sprite ~= "" and sprites[level_background_sprite] then
@@ -665,11 +667,13 @@ function scene.draw(dt)
     else
       if unit.color_override ~= nil then
         unit.color = unit.color_override
+      elseif unit.name == "bordr" and timeless then
+        unit.color = {0,3}
       else
         unit.color = copyTable(tiles_list[unit.tile].color)
       end
     end
-
+    
     local sprite_name = unit.sprite
 
     for type,name in pairs(unit.sprite_transforms) do
