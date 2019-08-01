@@ -586,6 +586,11 @@ function scene.draw(dt)
   love.graphics.setColor(lvl_color[1], lvl_color[2], lvl_color[3], lvl_color[4])
   if not (level_destroyed or hasProperty(outerlvl, "stelth")) then
     love.graphics.rectangle("fill", 0, 0, roomwidth, roomheight)
+    if level_background_sprite ~= nil and level_background_sprite ~= "" and sprites[level_background_sprite] then
+      love.graphics.setColor(1, 1, 1)
+      local sprite = sprites[level_background_sprite]
+      love.graphics.draw(sprite, 0, 0, 0, 1, 1, 0, 0)
+    end
   end
 
   local function drawUnit(unit, drawx, drawy, rotation, loop)
