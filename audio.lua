@@ -47,6 +47,8 @@ function playMusic(music, volume)
   
   if love.filesystem.getInfo("assets/audio/" .. music .. ".wav") ~= nil then
     music_source = love.audio.newSource("assets/audio/" .. music .. ".wav", "static")
+  elseif love.filesystem.getInfo("assets/audio/" .. music .. ".ogg") ~= nil then
+    music_source = love.audio.newSource("assets/audio/" .. music .. ".ogg", "static")
   elseif love.filesystem.getInfo("assets/audio/" .. music .. ".xm") ~= nil then
     music_source = love.audio.newSource("assets/audio/" .. music .. ".xm", "static")
   else
