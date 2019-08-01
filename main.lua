@@ -322,16 +322,16 @@ function love.keypressed(key,scancode,isrepeat)
     love.event.quit("restart")
   elseif key == "f11" then
     if fullscreen == false then
-	  if not love.window.isMaximized( ) then
-		winwidth, winheight = love.graphics.getDimensions( )
-	  end
-	  love.window.setMode(0, 0, {borderless=false})
-	  love.window.maximize( )
-	  fullscreen = true
+	    if not love.window.isMaximized( ) then
+	  	  winwidth, winheight = love.graphics.getDimensions( )
+	    end
+	    love.window.setMode(0, 0, {borderless=false})
+	    love.window.maximize( )
+	    fullscreen = true
     elseif fullscreen == true then
       love.window.setMode(winwidth, winheight, {borderless=false, resizable=true, minwidth=705, minheight=510})
-	  love.window.maximize( )
-	  love.window.restore( )
+	    love.window.maximize()
+	    love.window.restore()
       fullscreen = false
     end
   elseif key == "f" and love.keyboard.isDown('lctrl') then
