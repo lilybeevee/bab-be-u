@@ -458,19 +458,6 @@ function love.mousereleased(x, y, button)
     local height = love.graphics.getHeight()
 
     local buttonwidth, buttonheight = sprites["ui/button_1"]:getDimensions()
-
-    if mouseOverBox(width/2-buttonwidth/2, height/2-buttonheight/2+buttonheight+10, buttonwidth, buttonheight) then
-      scene = loadscene
-      load_mode = "play"
-      clearGooi()
-      scene.load()
-    end
-    if mouseOverBox(width/2-buttonwidth/2, height/2-buttonheight/2+(buttonheight+10)*2, buttonwidth, buttonheight) then
-      scene = loadscene
-      load_mode = "edit"
-      clearGooi()
-      scene.load()
-    end
   end
 
   if scene ~= loadscene then
@@ -487,6 +474,13 @@ function addTick(name, delay, fn)
   local ret = tick.delay(fn, delay)
   ticks[name] = ret
   return ret
+end
+
+function switchScene(name)
+  scene = loadscene
+  load_mode = name
+  clearGooi()
+  scene.load()
 end
 
 function love.update(dt)

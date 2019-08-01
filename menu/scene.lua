@@ -12,7 +12,9 @@ local music_on = true
 local oldmousex = 0
 local oldmousey = 0
 
-local buttons = {"play", "editor", "exit"}
+local buttons = {"play", "editor", "options", "exit"}
+
+local options = false
 
 function scene.load()
   metaClear()
@@ -35,13 +37,6 @@ end
 
 function scene.draw(dt)
   local bgsprite = sprites["ui/menu_background"]
-
-  if is_mobile then
-    local cursorx, cursory = love.mouse.getPosition()
-    love.graphics.setColor(1, 1, 1)
-    setRainbowModeColor(love.timer.getTime()/6, .5)
-    love.graphics.draw(system_cursor, cursorx, cursory)
-  end
 
   local cells_x = math.ceil(love.graphics.getWidth() / bgsprite:getWidth())
   local cells_y = math.ceil(love.graphics.getHeight() / bgsprite:getHeight())
@@ -85,6 +80,13 @@ function scene.draw(dt)
     love.graphics.printf(buttons[i], width/2-buttonwidth/2, height/2-buttonheight/2+(buttonheight+10)*i+5, buttonwidth, "center")
   end
 
+  love.graphics.setColor(1, 1, 1)
+  if mouseOverBox(10, height - sprites["ui/github"]:getHeight() - 10, sprites["ui/github"]:getWidth(), sprites["ui/github"]:getHeight()) then
+    love.graphics.setColor(.7, .7, .7)
+  end
+
+  love.graphics.draw(sprites["ui/github"], 10, height-sprites["ui/github"]:getHeight() - 10)
+
   for _,pair in pairs({{1,0},{0,1},{1,1},{-1,0},{0,-1},{-1,-1},{1,-1},{-1,1}}) do
     local outlineSize = 2
     pair[1] = pair[1] * outlineSize
@@ -113,23 +115,6 @@ function scene.draw(dt)
     love.graphics.pop()
   end
 
-  onstate = "on"
-  if not settings["music_on"] then onstate = "off" end
-
-  love.graphics.setColor(1, 1, 1)
-  if mouseOverBox(10, height - sprites["ui/music-on"]:getHeight(), sprites["ui/music-on"]:getWidth(), sprites["ui/music-on"]:getHeight()) then
-    love.graphics.setColor(.7, .7, .7)
-  end
-
-  love.graphics.draw(sprites["ui/music-"..onstate], 10, height - sprites["ui/music-"..onstate]:getHeight() - 10)
-
-  love.graphics.setColor(1, 1, 1)
-  if mouseOverBox(20+sprites["ui/github"]:getWidth(), height-sprites["ui/github"]:getHeight() - 10, sprites["ui/github"]:getWidth(), sprites["ui/github"]:getHeight()) then
-    love.graphics.setColor(.7, .7, .7)
-  end
-
-  love.graphics.draw(sprites["ui/github"], 20+sprites["ui/github"]:getWidth(), height-sprites["ui/github"]:getHeight() - 10)
-
   if build_number and not debug then
     love.graphics.setColor(1, 1, 1)
     setRainbowModeColor(love.timer.getTime()/6, .6)
@@ -139,9 +124,22 @@ function scene.draw(dt)
     end
     love.graphics.print('v'..build_number)
   end
+
+  if is_mobile then
+    local cursorx, cursory = love.mouse.getPosition()
+    love.graphics.setColor(1, 1, 1)
+    setRainbowModeColor(love.timer.getTime()/6, .5)
+    love.graphics.draw(system_cursor, cursorx, cursory)
+  end
 end
 
 function scene.update(dt)
+  if options then
+    buttons = {"music: on", "fullscreen", "exit"}
+  else
+    buttons = {"play", "editor", "options", "exit"}
+  end
+  
   width = love.graphics.getWidth()
   height = love.graphics.getHeight()
 
@@ -160,12 +158,20 @@ function scene.update(dt)
         playSound("mous hovvr")
         playSound("mous hovvr")
       end
-      if buttons[i] == "exit" then
-        if love.mouse.isDown(1) then
-          love.window.close()
-        end
+      if buttons[i] == "exit" and not options then
         love.mouse.setPosition(mousex, mousey-(buttonheight+10))
       end
+    end
+
+    if buttons[i] == "windowed" or buttons[i] == "fullscreen" then
+      if not fullscreen then
+        buttons[i] = "fullscreen"
+      else
+        buttons[i] = "windowed"
+      end
+    end
+    if string.starts(buttons[i], "music") then
+      buttons[i] = "music: " .. (settings["music_on"] and "on" or "off")
     end
   end
 
@@ -173,13 +179,58 @@ function scene.update(dt)
 end
 
 function scene.mousePressed(x, y, button)
-  if pointInside(x, y, 10, height - sprites["ui/music-on"]:getHeight(), sprites["ui/music-on"]:getWidth(), sprites["ui/music-on"]:getHeight()) and button == 1 then
-    settings["music_on"] = not settings["music_on"]
-    saveAll()
-  end
-
-  if pointInside(x, y, 20+sprites["ui/github"]:getWidth(), height-sprites["ui/github"]:getHeight() - 10, sprites["ui/github"]:getWidth(), sprites["ui/github"]:getHeight()) and button == 1 then
+  if pointInside(x, y, 10, height - sprites["ui/github"]:getHeight() - 10, sprites["ui/github"]:getWidth(), sprites["ui/github"]:getHeight()) and button == 1 then
     love.system.openURL("https://github.com/lilybeevee/bab-be-u")
+  end
+end
+
+function scene.mouseReleased(x, y, button)
+  width = love.graphics.getWidth()
+  height = love.graphics.getHeight()
+
+  local buttonwidth, buttonheight = sprites["ui/button_1"]:getDimensions()
+
+  local mousex, mousey = love.mouse.getPosition()
+
+  for i=1, #buttons do
+    if mouseOverBox(width/2-sprites["ui/button_1"]:getWidth()/2, height/2-buttonheight/2+(buttonheight+10)*i, buttonwidth, buttonheight) then
+      if button == 1 then
+        if buttons[i] == "exit" and not options then
+          love.window.close()
+        elseif buttons[i] == "exit" and options then
+          options = false
+        elseif buttons[i] == "options" then
+          options = true
+        elseif buttons[i] == "play" then
+          switchScene("play")
+        elseif buttons[i] == "editor" then
+          switchScene("editor")
+        elseif buttons[i] == "windowed" or buttons[i] == "fullscreen" then
+          if fullscreen == false then
+            if not love.window.isMaximized( ) then
+              winwidth, winheight = love.graphics.getDimensions( )
+            end
+            love.window.setMode(0, 0, {borderless=false})
+            love.window.maximize( )
+            fullscreen = true
+          elseif fullscreen == true then
+            love.window.setMode(winwidth, winheight, {borderless=false, resizable=true, minwidth=705, minheight=510})
+            love.window.maximize( )
+            love.window.restore( )
+            fullscreen = false
+          end
+        elseif string.starts(buttons[i], "music") then
+          settings["music_on"] = not settings["music_on"]
+          saveAll()
+        end
+      end
+    end
+  end
+end
+
+function scene.keyPressed(key)
+  if key == "escape" and options then
+    options = false
   end
 end
 
