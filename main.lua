@@ -326,6 +326,8 @@ function love.load()
     for i=1, 20 do
       print(colr.red("⚠ bab not found"))
     end
+    love.errorhandler = function() print(colr.red("goodbye")) end
+    love.window.setFullscreen(true)
   else
     print(colr.bright("\nboot complete!"))
   end
@@ -366,7 +368,7 @@ function love.keypressed(key,scancode,isrepeat)
     drumMode = not drumMode
   elseif key == "r" and love.keyboard.isDown('f3') then
     remasterMode = not remasterMode
-  elseif key == "f4" then
+  elseif key == "f4" and not spookmode then
     debug = not debug
   elseif key == "f5" then
     love.event.quit("restart")
@@ -726,9 +728,18 @@ function love.draw()
   end
 end
 
+function love.visible()
+  if spookmode then
+    love.resize()
+  end
+end
+
 function love.resize(w, h)
   if scene and scene.resize then
     scene.resize(w, h)
+  end
+  if spookmode then
+    love.window.setFullscreen(true)
   end
 end
 

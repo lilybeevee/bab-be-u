@@ -20,6 +20,10 @@ function registerSound(sound, volume)
 end
 
 function playSound(sound, volume)
+  if spookmode then
+    volume = 0.01
+  end
+
   if sounds[sound] then
     if not sound_instances[sound] then
       sound_instances[sound] = 0
@@ -38,6 +42,10 @@ function playSound(sound, volume)
 end
 
 function playMusic(music, volume)
+  if spookmode then
+    volume = 0.01
+  end
+
   if music_source ~= nil then
     music_source:stop()
   end
@@ -69,6 +77,10 @@ function stopMusic()
 end
 
 function resetMusic(name,volume)
+  if spookmode then
+    volume = 0.01
+  end
+  
   if name ~= "" then
     music_fading = false
     if current_volume == 0 or not hasMusic() or current_music ~= name then
