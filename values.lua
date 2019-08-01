@@ -3343,10 +3343,10 @@ tiles_list = {
     name = "text_paint",
     sprite = "text_paint",
     type = "text",
-    texttype = "cond_infix",
+    texttype = "verb_object",
     color = {4, 2},
     layer = 20,
-    desc = "PAINT (Infix Condition): changes the second object's color to match."
+    desc = "PAINT: changes the second object's color to match."
   },
   -- 332
   {
