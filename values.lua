@@ -146,7 +146,7 @@ colour_for_palette[6][0] = nil;
 colour_for_palette[6][1] = nil;
 colour_for_palette[6][2] = "orang";
 colour_for_palette[6][3] = nil;
-colour_for_palette[6][4] = "blak";
+colour_for_palette[6][4] = "blacc";
 
 selector_grid_contents = {
   -- page 1: default
