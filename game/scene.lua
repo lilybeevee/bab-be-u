@@ -1122,24 +1122,28 @@ function scene.draw(dt)
   end
   love.graphics.pop()
   
+  -- Replay UI
   if replay_playback then
+    local height, width = love.graphics.getHeight(), love.graphics.getWidth()
+    local box = sprites["ui/32x32"]:getWidth()
+  
     if not replay_pause then
         if replay_playback_interval < 0.05 then
-            love.graphics.draw(sprites["ui/replay_fff"], love.graphics.getWidth() - sprites["ui/replay_fff"]:getWidth())
+            love.graphics.draw(sprites["ui/replay_fff"], width/2 - box, height - box * 2)
         elseif replay_playback_interval < 0.2 and replay_playback_interval > 0.05 then
-            love.graphics.draw(sprites["ui/replay_ff"], love.graphics.getWidth() - sprites["ui/replay_ff"]:getWidth())
+            love.graphics.draw(sprites["ui/replay_ff"], width/2 - box, height - box * 2)
         elseif replay_playback_interval > 0.5 and replay_playback_interval < 1 then
-            love.graphics.draw(sprites["ui/replay_slow"], love.graphics.getWidth() - sprites["ui/replay_slow"]:getWidth())
+            love.graphics.draw(sprites["ui/replay_slow"], width/2 - box, height - box * 2)
         elseif replay_playback_interval > 1 then
-            love.graphics.draw(sprites["ui/replay_snail"], love.graphics.getWidth() - sprites["ui/replay_snail"]:getWidth())
+            love.graphics.draw(sprites["ui/replay_snail"], width/2 - box, height - box * 2)
         else
-            love.graphics.draw(sprites["ui/replay_play"], love.graphics.getWidth() - sprites["ui/replay_play"]:getWidth())
+            love.graphics.draw(sprites["ui/replay_play"], width/2 - box, height - box * 2)
         end
     elseif replay_pause then
         if replay_undo then
-            love.graphics.draw(sprites["ui/replay_undo"], love.graphics.getWidth() - sprites["ui/replay_undo"]:getWidth())
+            love.graphics.draw(sprites["ui/replay_undo"], width/2 - box, height - box * 2)
         else
-            love.graphics.draw(sprites["ui/replay_pause"], love.graphics.getWidth() - sprites["ui/replay_pause"]:getWidth())
+            love.graphics.draw(sprites["ui/replay_pause"], width/2 - box, height - box * 2)
         end
     end
     -- print(replay_playback_interval)
@@ -1584,17 +1588,26 @@ function particlesRngCheck()
 end
 
 function scene.mouseReleased(x, y, button)
+  local height, width = love.graphics.getHeight(), love.graphics.getWidth()
+  local box = sprites["ui/32x32"]:getWidth()
+  
   if button == 1 then
+    -- CLIKT prefix
     if units_by_name["text_clikt"] then
         last_click_x, last_click_y = screenToGameTile(love.mouse.getX(), love.mouse.getY())
         doOneMove(0,0,nil)
         last_click_x, last_click_y = nil, nil
     end
+    -- Replay buttons
+    if pointInside(x, y, width/2 - box, height - box * 2, box, box) then
+        replay_pause = not replay_pause
+    end
   elseif button == 2 then
+    -- Stacks preview
     scene.setStackBox(screenToGameTile(x, y))
   end
-
-  if pointInside(x,y,0,0,sprites["ui/cog"]:getHeight(),sprites["ui/cog"]:getWidth()) then
+  
+  if pointInside(x,y,0,0,box,box) then
     --love.keypressed("f2")
     new_scene = editor
     load_mode = "edit"
