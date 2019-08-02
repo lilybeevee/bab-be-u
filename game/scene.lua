@@ -528,7 +528,7 @@ function scene.draw(dt)
   --background color
   local bg_color = {getPaletteColor(1, 0)}
   
-  if timeless then bg_color = {getPaletteColor(0, 3)}
+  if timeless then bg_color = {getPaletteColor(0, 0)}
   elseif rainbowmode then bg_color = {hslToRgb(love.timer.getTime()/6%1, .2, .2, .9), 1} end
 
   love.graphics.setColor(bg_color[1], bg_color[2], bg_color[3], bg_color[4])
