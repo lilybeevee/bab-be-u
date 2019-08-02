@@ -1599,28 +1599,30 @@ function scene.mouseReleased(x, y, button)
         last_click_x, last_click_y = nil, nil
     end
     -- Replay buttons
-    if pointInside(x, y, width - box*3, 0, box, box) then
-        replay_pause = not replay_pause
-    end
-    if not replay_pause then
-        if pointInside(x, y, width - box*4, 0, box, box) then
-            replay_playback_interval = replay_playback_interval / 0.8
-        elseif pointInside(x, y, width - box*2, 0, box, box) then
-            replay_playback_interval = replay_playback_interval * 0.8
+    if replay_playback then
+        if pointInside(x, y, width - box*3, 0, box, box) then
+            replay_pause = not replay_pause
         end
-    elseif replay_pause then
-        if pointInside(x, y, width - box*4, 0, box, box) then
-            if replay_playback_turn > 1 then
-                replay_playback_turn = replay_playback_turn - 1
-                doOneMove(0,0,"undo")
+        if not replay_pause then
+            if pointInside(x, y, width - box*4, 0, box, box) then
+                replay_playback_interval = replay_playback_interval / 0.8
+            elseif pointInside(x, y, width - box*2, 0, box, box) then
+                replay_playback_interval = replay_playback_interval * 0.8
             end
-        elseif pointInside(x, y, width - box*2, 0, box, box) then
-            doReplayTurn(replay_playback_turn)
-            replay_playback_turn = replay_playback_turn + 1
+        elseif replay_pause then
+            if pointInside(x, y, width - box*4, 0, box, box) then
+                if replay_playback_turn > 1 then
+                    replay_playback_turn = replay_playback_turn - 1
+                    doOneMove(0,0,"undo")
+                end
+            elseif pointInside(x, y, width - box*2, 0, box, box) then
+                doReplayTurn(replay_playback_turn)
+                replay_playback_turn = replay_playback_turn + 1
+            end
         end
-    end
-    if pointInside(x, y, width - box, 0, box, box) then
-        replay_playback = false
+        if pointInside(x, y, width - box, 0, box, box) then
+            replay_playback = false
+        end
     end
   elseif button == 2 then
     -- Stacks preview
