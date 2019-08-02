@@ -1413,6 +1413,10 @@ function scene.checkInput()
         doOneMove(x, y, key);
         local end_time = love.timer.getTime();
         if not unit_tests then print("gameplay logic took: "..tostring(round((end_time-start_time)*1000)).."ms") end
+        -- BUP
+        if hasRule("bup","be","u") and units_by_name["bup"] then
+            playSound("bup")
+        end
       end
     end
 
@@ -1430,12 +1434,7 @@ function scene.checkInput()
   end
 
   if do_move_sound then
-    if hasRule("bup","be","u") and units_by_name["bup"] then
-      playSound("bup")
-      playSound("move")
-    else
-      playSound("move")
-    end
+    playSound("move")
   end
 
   if stack_box.enabled then
