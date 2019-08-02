@@ -309,7 +309,7 @@ function love.load()
   registerSound("bonus", 0.4)
   registerSound("timestop", 1)
   registerSound("time resume", 1)
-  registerSound("bup", 1)
+  registerSound("bup", 0.5)
   print(colr.green("✓ sounds registered"))
 
   ui.init()

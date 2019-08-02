@@ -676,7 +676,7 @@ function scene.draw(dt)
 
     love.graphics.setColor(getPaletteColor(0, 4))
     love.graphics.rectangle("fill", 0, 0, roomwidth, roomheight)
-    if level_background_sprite ~= nil and level_background_sprite ~= "" and sprites[level_background_sprite] then
+    if not selector_open and level_background_sprite ~= nil and level_background_sprite ~= "" and sprites[level_background_sprite] then
       love.graphics.setColor(1, 1, 1)
       local sprite = sprites[level_background_sprite]
       love.graphics.draw(sprite, 0, 0, 0, 1, 1, 0, 0)
@@ -954,12 +954,14 @@ function scene.saveLevel()
 
   local map = maps[1][2]
 
+  level_compression = "zlib"
   local mapdata = level_compression == "zlib" and love.data.compress("string", "zlib", map) or map
   local savestr = love.data.encode("string", "base64", mapdata)
   
   local data = {
     name = level_name,
     author = level_author,
+    compression = level_compression,
     extra = level_extra,
     palette = current_palette,
     music = map_music,
@@ -1100,7 +1102,7 @@ function love.filedropped(file)
 
   level_compression = mapdata.compression or "zlib"
   local loaddata = love.data.decode("string", "base64", mapdata.map)
-  local mapstr = level_compression == "zlib" and love.data.decompress("string", "zlib", loaddata) or loaddata
+  local mapstr = loadMaybeCompressedData(loaddata)
 
   loaded_level = true
 
