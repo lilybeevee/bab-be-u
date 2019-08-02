@@ -373,12 +373,10 @@ function scene.keyPressed(key, isrepeat)
         
         if key == "space" then
             replay_pause = not replay_pause
-            replay_undo = false
         end
         
         if key == "z" then
             replay_pause = true
-            replay_undo = true
         end
     end
     
@@ -1128,24 +1126,26 @@ function scene.draw(dt)
     local box = sprites["ui/32x32"]:getWidth()
   
     if not replay_pause then
+        -- Play speeds
         if replay_playback_interval < 0.05 then
-            love.graphics.draw(sprites["ui/replay_fff"], width/2 - box, height - box * 2)
+            love.graphics.draw(sprites["ui/replay_fff"], width - box*3)
         elseif replay_playback_interval < 0.2 and replay_playback_interval > 0.05 then
-            love.graphics.draw(sprites["ui/replay_ff"], width/2 - box, height - box * 2)
+            love.graphics.draw(sprites["ui/replay_ff"], width - box*3)
         elseif replay_playback_interval > 0.5 and replay_playback_interval < 1 then
-            love.graphics.draw(sprites["ui/replay_slow"], width/2 - box, height - box * 2)
+            love.graphics.draw(sprites["ui/replay_slow"], width - box*3)
         elseif replay_playback_interval > 1 then
-            love.graphics.draw(sprites["ui/replay_snail"], width/2 - box, height - box * 2)
+            love.graphics.draw(sprites["ui/replay_snail"], width - box*3)
         else
-            love.graphics.draw(sprites["ui/replay_play"], width/2 - box, height - box * 2)
+            love.graphics.draw(sprites["ui/replay_play"], width - box*3)
         end
+        love.graphics.draw(sprites["ui/replay_minus"], width - box*4)
+        love.graphics.draw(sprites["ui/replay_plus"], width - box*2)
     elseif replay_pause then
-        if replay_undo then
-            love.graphics.draw(sprites["ui/replay_undo"], width/2 - box, height - box * 2)
-        else
-            love.graphics.draw(sprites["ui/replay_pause"], width/2 - box, height - box * 2)
-        end
+        love.graphics.draw(sprites["ui/replay_pause"], width - box*3)
+        love.graphics.draw(sprites["ui/replay_undo"], width - box*4)
+        love.graphics.draw(sprites["ui/replay_skip"], width - box*2)
     end
+    love.graphics.draw(sprites["ui/replay_stop"], width - box)
     -- print(replay_playback_interval)
   end
   
@@ -1339,7 +1339,7 @@ function scene.checkInput()
   local start_time = love.timer.getTime();
   do_move_sound = false
   
-  if not (replay_playback and replay_undo) then
+  if not replay_playback then
     if not (key_down["w"] or key_down["a"] or key_down["s"] or key_down["d"]) then
         repeat_timers["wasd"] = nil
     end
@@ -1599,8 +1599,27 @@ function scene.mouseReleased(x, y, button)
         last_click_x, last_click_y = nil, nil
     end
     -- Replay buttons
-    if pointInside(x, y, width/2 - box, height - box * 2, box, box) then
+    if pointInside(x, y, width - box*3, 0, box, box) then
         replay_pause = not replay_pause
+    end
+    if not replay_pause then
+        if pointInside(x, y, width - box*4, 0, box, box) then
+            replay_playback_interval = replay_playback_interval / 0.8
+        elseif pointInside(x, y, width - box*2, 0, box, box) then
+            replay_playback_interval = replay_playback_interval * 0.8
+        end
+    elseif replay_pause then
+        if pointInside(x, y, width - box*4, 0, box, box) then
+            if replay_playback_turn > 1 then
+                replay_playback_turn = replay_playback_turn - 1
+                doOneMove(0,0,"undo")
+            end
+        elseif pointInside(x, y, width - box*2, 0, box, box) then
+        
+        end
+    end
+    if pointInside(x, y, width - box, 0, box, box) then
+        replay_playback = false
     end
   elseif button == 2 then
     -- Stacks preview

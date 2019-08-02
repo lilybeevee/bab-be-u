@@ -6,7 +6,6 @@ function clear()
 	replay_playback_interval = 0.3
     old_replay_playback_interval = 0.3
     replay_pause = false
-    replay_undo = false
 	replay_string = ""
   new_units_cache = {}
   undoing = false
