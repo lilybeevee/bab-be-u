@@ -188,6 +188,20 @@ function scene.draw()
     love.graphics.translate(xoffset, yoffset)
     o.rainbowoffset = i
     o:draw()
+
+    if o.data.type == "level" then
+      local level_name = o:getName()
+
+      if level_name .. '.replay' and love.keyboard.isDown("r") then
+        local dir = "levels/"
+        if world ~= "" then dir = world_parent .. "/" .. world .. "/" end
+        if not (love.filesystem.getInfo(dir .. level_name .. ".replay") or love.filesystem.getInfo("levels/" .. level_name .. ".replay")) then
+          love.graphics.setColor(1, 0, 0)
+          love.graphics.draw(sprites["ui/x"], o.x-16, o.y-16)
+        end
+      end
+    end
+
     love.graphics.pop()
   end
 
