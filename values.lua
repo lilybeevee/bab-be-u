@@ -122,7 +122,7 @@ colour_for_palette[2][0] = "reed";
 colour_for_palette[2][1] = "reed";
 colour_for_palette[2][2] = "reed";
 colour_for_palette[2][3] = "orang";
-colour_for_palette[2][4] = "yelo";
+colour_for_palette[2][4] = "yello";
 colour_for_palette[3] = {};
 colour_for_palette[3][0] = "purp";
 colour_for_palette[3][1] = "purp";
@@ -146,7 +146,7 @@ colour_for_palette[6][0] = nil;
 colour_for_palette[6][1] = nil;
 colour_for_palette[6][2] = "orang";
 colour_for_palette[6][3] = nil;
-colour_for_palette[6][4] = "blak";
+colour_for_palette[6][4] = "blacc";
 
 selector_grid_contents = {
   -- page 1: default
@@ -3399,7 +3399,7 @@ tiles_list = {
     name = "text_paint",
     sprite = "text_paint",
     type = "text",
-    texttype = "verb_object",
+    texttype = "cond_prefix_or_property",
     color = {4, 2},
     layer = 20,
     desc = "PAINT: changes the second object's color to match."
