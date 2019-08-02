@@ -960,52 +960,59 @@ end
 
 --Colour logic:
 --If a unit be colour, it becomes that colour until it ben't that colour or it be a different colour. It persists even after breaking the rule.
---TODO: Make it so you can colour mix by making it so changing to certain colours doesn't unset other colours that it mixes with? (e.g. if you're reed, setting whit doesn't unset reed, but setting blacc does)
 function updateUnitColours()
   to_update = {}
+  
   for colour,palette in pairs(main_palette_for_colour) do
     local decolour = matchesRule(nil,"ben't",colour)
     for _,match in ipairs(decolour) do
-      local rules = match[1]
       local unit = match[2]
-
-      local rule = rules[1]
-
       if (unit[colour] == true) then
         addUndo({"colour_change", unit.id, colour, true});
         unit[colour] = false
-        to_update[unit] = true
+        to_update[unit] = {}
       end
       --If a unit ben't its native colour, make it blacc.
       if palette[1] == tiles_list[unit.tile].color[1] and palette[2] == tiles_list[unit.tile].color[2]  and unitNotRecoloured(unit) then
         addUndo({"colour_change", unit.id, "blacc", false});
         unit["blacc"] = true
-        to_update[unit] = true
+        to_update[unit] = {}
       end
     end
     
     local newcolour = matchesRule(nil,"be",colour)
     for _,match in ipairs(newcolour) do
-      local rules = match[1]
       local unit = match[2]
-
-      local rule = rules[1]
-
       if (unit[colour] ~= true) then
-        unitUnsetOtherColours(unit, colour);
-        addUndo({"colour_change", unit.id, colour, false});
-        unit[colour] = true
-        to_update[unit] = true
+        if to_update[unit] == nil then
+          to_update[unit] = {}
+        end
+        table.insert(to_update[unit], colour)
       end
     end
   end
   
-  for unit,_ in pairs(to_update) do
+  --BEN'T PAINT removes and prevents all other colour shenanigans.
+  local depaint = matchesRule(nil,"ben't","paint")
+  for _,match in ipairs(depaint) do
+    local unit = match[2]
+    unitUnsetColours(unit);
+    to_update[unit] = {}
+  end
+  
+  for unit,colours in pairs(to_update) do
+    unitUnsetColours(unit)
+    for _,colour in ipairs(colours) do
+      if (unit[colour] ~= true) then
+        addUndo({"colour_change", unit.id, colour, false});
+        unit[colour] = true
+      end
+    end
     updateUnitColourOverride(unit)
   end
 end
 
-function unitUnsetOtherColours(unit, colour)
+function unitUnsetColours(unit)
   for colour,palette in pairs(main_palette_for_colour) do
     if unit[colour] == true then
       addUndo({"colour_change", unit.id, colour, true});
