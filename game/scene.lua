@@ -1615,7 +1615,8 @@ function scene.mouseReleased(x, y, button)
                 doOneMove(0,0,"undo")
             end
         elseif pointInside(x, y, width - box*2, 0, box, box) then
-        
+            doReplayTurn(replay_playback_turn)
+            replay_playback_turn = replay_playback_turn + 1
         end
     end
     if pointInside(x, y, width - box, 0, box, box) then
