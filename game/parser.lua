@@ -37,6 +37,9 @@ local function common(arg, group)
       {
         {type = "property"}
       },
+      {
+        {type = "cond_prefix_or_property"}
+      },
 			{
         {type = "group"}
       },
@@ -71,7 +74,12 @@ local cond_prefixes = {
   options = {
     {
       and_repeat,
-      {type = "cond_prefix"},
+      {
+        options = {
+          {{type = "cond_prefix"}},
+          {{type = "cond_prefix_or_property"}},
+        }
+      },
       not_suffix
     }
   }

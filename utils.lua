@@ -106,7 +106,6 @@ function initializeGraphicalPropertyCache()
   local properties_to_init = -- list of properties that require the graphical cache
     {
 	  "flye", "slep", "tranz", "gay", "stelth", "colrful", "xwx", "rave", -- miscelleaneous graphical effects
-	  "reed", "bleu", "grun", "yello", "purp", "orang", "cyeann", "whit", "blacc" -- colouration effects
 	}
   for i = 1, #properties_to_init do
 	local prop = properties_to_init[i]
@@ -761,6 +760,17 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
         --print(result)
         --print(x, y)
         --print(last_click_x, last_click_y)
+    elseif condtype == "reed" or condtype == "bleu" or condtype == "blacc"
+    or condtype == "grun" or condtype == "yello" or condtype == "orang"
+    or condtype == "purp" or condtype == "whit" or condtype == "cyeann" then
+      local colour = unit.color_override or unit.color;
+      if (unit.stelth) then
+        result = false
+      elseif (unit.rave or unit.colrful or unit.gay) then
+        result = true
+      else
+        result = colour_for_palette[colour[1]][colour[2]] == condtype
+      end
     else
       print("unknown condtype: " .. condtype)
       result = false

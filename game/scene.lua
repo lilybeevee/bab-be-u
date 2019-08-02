@@ -647,29 +647,7 @@ function scene.draw(dt)
       newcolor[1] = newcolor[1]*255
       newcolor[2] = newcolor[2]*255
       newcolor[3] = newcolor[3]*255
-      unit.color = newcolor
-    elseif unit.whit and unit.reed then
-	  unit.color = {4, 2}
-	elseif unit.whit and unit.grun then
-	  unit.color = {5, 3}
-	elseif unit.whit or (unit.reed and unit.grun and unit.bleu) or (unit.reed and unit.cyeann) or (unit.bleu and unit.yello) or (unit.grun and unit.purp) then
-      unit.color = {0, 3}	
-	elseif unit.purp or (unit.reed and unit.bleu) then
-      unit.color = {3, 1}
-	elseif unit.yello or (unit.reed and unit.grun) then
-      unit.color = {2, 4}
-	elseif unit.orang or (unit.reed and unit.yello) then
-      unit.color = {2, 3}
-    elseif unit.cyeann or (unit.bleu and unit.grun) then
-      unit.color = {1, 4}
-    elseif unit.reed then
-      unit.color = {2, 2}
-    elseif unit.bleu then
-      unit.color = {1, 3}
-    elseif unit.grun then
-      unit.color = {5, 2}
-    elseif unit.blacc then
-      unit.color = {0, 4}
+      unit.color = newcolor 
     else
       if unit.color_override ~= nil then
         unit.color = unit.color_override
