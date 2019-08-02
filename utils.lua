@@ -6,6 +6,7 @@ function clear()
 	replay_playback_interval = 0.3
     old_replay_playback_interval = 0.3
     replay_pause = false
+    replay_undo = false
 	replay_string = ""
   new_units_cache = {}
   undoing = false
@@ -73,7 +74,10 @@ function clear()
   end
   --createMouse_direct(20, 20)
 
-  win = false
+  currently_winning = false
+  music_fading = false
+  won_this_session = false
+  level_ending = false
   win_size = 0
 
   tile_grid = {}
@@ -93,6 +97,7 @@ function clear()
 end
 
 function metaClear()
+  parent_filename = nil;
   stay_ther = nil;
   surrounds = nil;
 end
@@ -101,7 +106,6 @@ function initializeGraphicalPropertyCache()
   local properties_to_init = -- list of properties that require the graphical cache
     {
 	  "flye", "slep", "tranz", "gay", "stelth", "colrful", "xwx", "rave", -- miscelleaneous graphical effects
-	  "reed", "bleu", "grun", "yello", "purp", "orang", "cyeann", "whit", "blacc" -- colouration effects
 	}
   for i = 1, #properties_to_init do
 	local prop = properties_to_init[i]
@@ -756,6 +760,17 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
         --print(result)
         --print(x, y)
         --print(last_click_x, last_click_y)
+    elseif condtype == "reed" or condtype == "bleu" or condtype == "blacc"
+    or condtype == "grun" or condtype == "yello" or condtype == "orang"
+    or condtype == "purp" or condtype == "whit" or condtype == "cyeann" then
+      local colour = unit.color_override or unit.color;
+      if (unit.stelth) then
+        result = false
+      elseif (unit.rave or unit.colrful or unit.gay) then
+        result = true
+      else
+        result = colour_for_palette[colour[1]][colour[2]] == condtype
+      end
     else
       print("unknown condtype: " .. condtype)
       result = false
@@ -1562,7 +1577,7 @@ end
 function setRainbowModeColor(value, brightness)
   brightness = brightness or 0.5
 
-  if rainbowmode then
+  if rainbowmode and not spookmode then
     love.graphics.setColor(hslToRgb(value%1, brightness, brightness, .9))
   end
 end
@@ -1570,10 +1585,6 @@ end
 function shakeScreen(dur, intensity)
   shake_dur = dur+shake_dur/4
   shake_intensity = shake_intensity + intensity/2
-
-  if shake_intensity > 0.2 then
-    shake_intensity = 0.2
-  end
 end
 
 function startTest(name)
@@ -1627,7 +1638,10 @@ function loadLevels(levels, mode, level_objs)
 
   mapwidth = 0
   mapheight = 0
+  --if we're entering a level object, then the level we were in is the parent
+  parent_filename = level_objs ~= nil and level_filename or nil
   level_name = nil
+  level_filename = nil
 
   for _,level in ipairs(levels) do
     local data
@@ -1638,7 +1652,7 @@ function loadLevels(levels, mode, level_objs)
     end
     level_compression = data.compression or "zlib"
     local loaddata = love.data.decode("string", "base64", data.map)
-    local mapstr = level_compression == "zlib" and love.data.decompress("string", "zlib", loaddata) or loaddata
+    local mapstr = loadMaybeCompressedData(loaddata)
 
     loaded_level = not new
 
@@ -1647,6 +1661,13 @@ function loadLevels(levels, mode, level_objs)
     else
       level_name = level_name .. " & " .. data.name
     end
+    
+    if not level_filename then
+      level_filename = level
+    else
+      level_filename = level_filename .. "|" .. level
+    end
+    
     level_name = level_name:sub(1, 100)
     level_author = data.author or ""
     level_extra = data.extra or false
@@ -1655,11 +1676,11 @@ function loadLevels(levels, mode, level_objs)
     mapwidth = math.max(mapwidth, data.width)
     mapheight = math.max(mapheight, data.height)
     map_ver = data.version or 0
-    level_next_level_after_win = data.next_level_after_win or ""
+    level_parent_level = data.parent_level or ""
+    level_next_level = data.next_level or ""
     level_is_overworld = data.is_overworld or false
-    level_puffs_to_clear = data.level_puffs_to_clear or 0
-    level_level_sprite = data.level_sprite or ""
-    level_level_number = data.level_number or 0
+    level_puffs_to_clear = data.puffs_to_clear or 0
+    level_background_sprite = data.background_sprite or ""
 
     if map_ver == 0 then
       table.insert(maps, {0, loadstring("return " .. mapstr)()})
@@ -1824,5 +1845,14 @@ end
 function pcallSetShader(shader)
   if shader ~= nil then
     love.graphics.setShader(shader)
+  end
+end
+
+function loadMaybeCompressedData(loaddata)
+  local mapstr = nil
+  if pcall(function() mapstr = love.data.decompress("string", "zlib", loaddata) end) then
+    return mapstr
+  else
+    return loaddata
   end
 end

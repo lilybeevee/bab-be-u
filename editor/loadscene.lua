@@ -15,9 +15,12 @@ local full_height = 0
 
 local scroll_height
 
+local oldmousex, oldmousey = love.mouse.getPosition()
+
 function scene.load()
   metaClear()
   clear()
+  was_using_editor = false
   resetMusic(current_music, 0.8)
   selected_levels = {}
   scene.buildUI()
@@ -72,6 +75,8 @@ function scene.update(dt)
 
   scrollx = scrollx+75*dt
   scrolly = scrolly+75*dt
+
+  oldmousex, oldmousey = love.mouse.getPosition()
 end
 
 function scene.keyPressed(key)
@@ -94,7 +99,7 @@ end
 
 function runUnitTests()
   unit_tests = true
-  local levels = scene.searchDir("officialworlds/solo levels", "level")
+  local levels = scene.searchDir(world_parent .. "/" .. world, "level")
   local fail_levels = {}
   local succ_levels = {}
   local noreplay_levels = {}
@@ -109,7 +114,7 @@ function runUnitTests()
       while (still_going) do
         still_going = doReplay(0)
       end
-      if not win then
+      if not won_this_session then
         table.insert(fail_levels, v.file)
       else
         table.insert(succ_levels, v.file)
@@ -139,7 +144,7 @@ function scene.getTransform()
 end
 
 function scene.draw()
-  love.graphics.clear(0.10, 0.1, 0.11, 1)
+  love.graphics.clear(0, 0, 0, 1)
 
   local bgsprite = sprites["ui/menu_background"]
 
@@ -149,11 +154,19 @@ function scene.draw()
   love.graphics.setColor(1, 1, 1, 0.6)
   setRainbowModeColor(love.timer.getTime()/6, .4)
   
-  for x = -1, cells_x do
-    for y = -1, cells_y do
-      local draw_x = scrollx % bgsprite:getWidth() + x * bgsprite:getWidth()
-      local draw_y = scrolly % bgsprite:getHeight() + y * bgsprite:getHeight()
-      love.graphics.draw(bgsprite, draw_x, draw_y)
+  if not spookmode then
+    for x = -1, cells_x do
+      for y = -1, cells_y do
+        local draw_x = scrollx % bgsprite:getWidth() + x * bgsprite:getWidth()
+        local draw_y = scrolly % bgsprite:getHeight() + y * bgsprite:getHeight()
+
+        if shake_dur > 0.1 then
+          draw_x = draw_x + math.random(-shake_intensity*16, shake_intensity*16)
+          draw_y = draw_y + math.random(-shake_intensity*16, shake_intensity*16)
+        end
+
+        love.graphics.draw(bgsprite, draw_x, draw_y)
+      end
     end
   end
 
@@ -163,7 +176,19 @@ function scene.draw()
   love.graphics.setColor(1, 1, 1, 1)
 
   for i,o in ipairs(components) do
+    local xoffset = 0
+    local yoffset = 0
+
+    if shake_dur > 0.1 then
+      xoffset = xoffset + math.random(-shake_intensity*6, shake_intensity*6)
+      yoffset = yoffset + math.random(-shake_intensity*6, shake_intensity*6)
+    end
+
+    love.graphics.push()
+    love.graphics.translate(xoffset, yoffset)
+    o.rainbowoffset = i
     o:draw()
+    love.graphics.pop()
   end
 
   love.graphics.pop()
@@ -198,7 +223,7 @@ end
 function scene.loadLevel(data, new)
   local loaddata = love.data.decode("string", "base64", data.map)
   level_compression = data.compression or "zlib"
-  local mapstr = level_compression == "zlib" and love.data.decompress("string", "zlib", loaddata) or loaddata
+  local mapstr = loadMaybeCompressedData(loaddata)
 
   loaded_level = not new
 
@@ -210,11 +235,11 @@ function scene.loadLevel(data, new)
   mapwidth = data.width
   mapheight = data.height
   map_ver = data.version or 0
-  level_next_level_after_win = data.next_level_after_win or ""
+  level_parent_level = data.parent_level or ""
+  level_next_level = data.next_level or ""
   level_is_overworld = data.is_overworld or false
   level_puffs_to_clear = data.puffs_to_clear or 0
-  level_level_sprite = data.level_sprite or ""
-  level_level_number = data.level_number or 0
+  level_background_sprite = data.background_sprite or ""
 
   if map_ver == 0 then
     maps = {{0, loadstring("return " .. mapstr)()}}
@@ -244,6 +269,13 @@ function scene.buildUI()
 
   local oy = 4
   if world ~= "" then
+    if load_mode == "play" and love.filesystem.getInfo(world_parent .. "/" .. world .. "/" .. "overworld.txt") then
+      local overworld_file_name = love.filesystem.read(world_parent .. "/" .. world .. "/" .. "overworld.txt")
+      if love.filesystem.getInfo(world_parent .. "/" .. world .. "/" .. overworld_file_name .. ".bab") then
+        loadLevels({overworld_file_name}, "play")
+      end
+    end
+  
     local title_width, title_height = ui.fonts.title:getWidth(world:upper()), ui.fonts.title:getHeight()
     local world_label = ui.text_input.new()
       :setText(world:upper())
@@ -264,9 +296,9 @@ function scene.buildUI()
     if load_mode ~= "select" then
       local worlds = scene.searchDir("officialworlds", "world")
       if #worlds > 0 then
-        local label_width, label_height = ui.fonts.category:getWidth("Official Worlds"), ui.fonts.category:getHeight()
+        local label_width, label_height = ui.fonts.category:getWidth(spookmode and "no" or "Official Worlds"), ui.fonts.category:getHeight()
         table.insert(components, ui.component.new()
-          :setText("Official Worlds")
+          :setText(spookmode and "no" or "Official Worlds")
           :setFont(ui.fonts.category)
           :setPos(0, oy)
           :setSize(love.graphics.getWidth(), label_height))
@@ -277,9 +309,9 @@ function scene.buildUI()
 
       worlds = scene.searchDir("worlds", "world")
       if #worlds > 0 or load_mode == "edit" then
-        label_width, label_height = ui.fonts.category:getWidth("Custom Worlds"), ui.fonts.category:getHeight()
+        label_width, label_height = ui.fonts.category:getWidth(spookmode and "stop" or "Official Worlds"), ui.fonts.category:getHeight()
         table.insert(components, ui.component.new()
-          :setText("Custom Worlds")
+          :setText(spookmode and "stop" or "Official Worlds")
           :setFont(ui.fonts.category)
           :setPos(0, oy)
           :setSize(love.graphics.getWidth(), label_height))
@@ -300,9 +332,9 @@ function scene.buildUI()
 
     local levels = scene.searchDir("levels", "level")
     if #levels > 0 or load_mode == "edit" then
-      label_width, label_height = ui.fonts.category:getWidth("Custom Levels"), ui.fonts.category:getHeight()
+      label_width, label_height = ui.fonts.category:getWidth(spookmode and "what is this" or "Official Worlds"), ui.fonts.category:getHeight()
       table.insert(components, ui.component.new()
-        :setText("Custom Levels")
+        :setText(spookmode and "what is this" or "Official Worlds")
         :setFont(ui.fonts.category)
         :setPos(0, oy)
         :setSize(love.graphics.getWidth(), label_height))
@@ -378,7 +410,9 @@ function scene.searchDir(dir, type)
     elseif type == "level" then
       t.file = file:sub(1, -5)
       t.data = json.decode(love.filesystem.read(dir .. "/" .. file))
-      if love.filesystem.getInfo(dir .. "/" .. t.file .. ".png") then
+      if spookmode then
+      t.icon = love.graphics.newImage("assets/sprites/ui/bxb bx x.jpg")
+      elseif love.filesystem.getInfo(dir .. "/" .. t.file .. ".png") then
         t.icon = love.graphics.newImage(dir .. "/" .. t.file .. ".png")
       else
         t.icon = sprites["ui/default icon"]
@@ -453,8 +487,7 @@ end
 function scene.createLevel(o)
   loaded_level = false
   loadLevels({default_map}, load_mode)
-	--default new levels to 'none' compression to fix zlib corruption bug
-	level_compression = "none"
+	level_compression = "zlib"
 end
 
 function scene.selectWorld(o, button)
@@ -474,15 +507,17 @@ function scene.selectWorld(o, button)
         o.data.deleting = 1
         o:setColor(1, 1, 1)
         o:setSprite(sprites["ui/world box delete"])
+        shakeScreen(0.4, 0.2)
         playSound("move")
       elseif o.data.deleting == 1 then
         o.data.deleting = 2
         o:setSprite(sprites["ui/world box delete 2"])
+        shakeScreen(0.4, 0.3)
         playSound("unlock")
       elseif o.data.deleting == 2 then
         deleteDir(o.data.file .. "/" .. o:getName())
         playSound("break")
-        shakeScreen(0.3, 0.1)
+        shakeScreen(0.5, 0.4)
         scene.buildUI()
       end
     else
@@ -548,10 +583,12 @@ function scene.selectLevel(o, button)
         o.data.deleting = 1
         o:setColor(1, 1, 1)
         o:setSprite(sprites["ui/level box delete"])
+        shakeScreen(0.3, 0.1)
         playSound("move")
       elseif o.data.deleting == 1 then
         o.data.deleting = 2
         o:setSprite(sprites["ui/level box delete 2"])
+        shakeScreen(0.3, 0.2)
         playSound("unlock")
       elseif o.data.deleting == 2 then
         local dir = "levels/"
@@ -559,7 +596,7 @@ function scene.selectLevel(o, button)
         love.filesystem.remove(dir .. o.data.file .. ".bab")
         love.filesystem.remove(dir .. o.data.file .. ".png")
         playSound("break")
-        shakeScreen(0.3, 0.1)
+        shakeScreen(0.4, 0.3)
         scene.buildUI()
       end
     else

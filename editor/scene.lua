@@ -11,7 +11,7 @@ local ignore_mouse = true
 
 local settings_open, settings, properties
 local label_palette, label_music
-local input_name, input_author, input_compression, input_palette, input_music, input_width, input_height, input_extra, input_next_level_after_win, input_is_overworld, input_puffs_to_clear, input_level_sprite, input_level_number
+local input_name, input_author, input_palette, input_music, input_width, input_height, input_extra, input_parent_level, input_next_level, input_is_overworld, input_puffs_to_clear, input_background_sprite
 
 local capturing, start_drag, end_drag
 local screenshot, screenshot_image
@@ -26,6 +26,7 @@ ICON_HEIGHT = 96
 
 function scene.load()
   metaClear()
+  was_using_editor = true
   brush = {id = nil, dir = 1, mode = "none", picked_tile = nil, picked_index = 0}
   properties = {enabled = false, scale = 0, x = 0, y = 0, w = 0, h = 0, components = {}} -- will do this later
   saved_popup = {sprite = sprites["ui/level_saved"], y = 16, alpha = 0}
@@ -42,6 +43,9 @@ function scene.load()
   end
   if not level_name then
     level_name = "unnamed"
+  end
+  if not level_filename then
+    level_filename = ""
   end
   if not level_author then
     level_author = ""
@@ -126,6 +130,11 @@ function scene.load()
     end
     selected_level = nil
   end
+
+  if spookmode then
+    new_scene = game
+    load_mode = "play"
+  end
 end
 
 selector_tab_buttons_list = {}
@@ -192,11 +201,6 @@ function scene.setupGooi()
   y = y + 24 + 4
   input_width = gooi.newSpinner({value = mapwidth, min = 1, max = 512, x = 4+dx*i, y = y, w = 98, h = 24}):setGroup("settings")
   input_height = gooi.newSpinner({value = mapwidth, min = 1, max = 512, x = 106+dx*i, y = y, w = 98, h = 24}):setGroup("settings")
-
-  y = y + 24 + 4
-  gooi.newLabel({text = "Compression", x = 4+dx*i, y = y, w = 200, h = 24}):center():setGroup("settings")
-  y = y + 24 + 4
-  input_compression = gooi.newText({text = level_compression, x = 4+dx*i, y = y, w = 200, h = 24}):setGroup("settings")
   
   y = y + 24 + 4
   gooi.newLabel({text = "Extra", x = 4+dx*i, y = y, w = 200, h = 24}):center():setGroup("settings")
@@ -215,18 +219,16 @@ function scene.setupGooi()
   y = (love.graphics.getHeight() - settings.h) / 2
   
   i = 1;
-  
-  --[[
-  * Next Level After Win (string)
-  * Is Overworld (boolean)
-  * Level Sprite (string)
-  * Level Number (integer)
-  ]]--
-  
+    
   y = y + 4
-  gooi.newLabel({text = "Next Level After Win", x = 4+dx*i, y = y, w = 200, h = 24}):center():setGroup("settings")
+  gooi.newLabel({text = "Parent Level", x = 4+dx*i, y = y, w = 200, h = 24}):center():setGroup("settings")
   y = y + 24 + 4
-  input_next_level_after_win = gooi.newText({text = level_next_level_after_win, x = 4+dx*i, y = y, w = 200, h = 24}):setGroup("settings")
+  input_parent_level = gooi.newText({text = level_parent_level, x = 4+dx*i, y = y, w = 200, h = 24}):setGroup("settings")
+  
+  y = y + 24 + 4
+  gooi.newLabel({text = "Next Level", x = 4+dx*i, y = y, w = 200, h = 24}):center():setGroup("settings")
+  y = y + 24 + 4
+  input_next_level = gooi.newText({text = level_next_level, x = 4+dx*i, y = y, w = 200, h = 24}):setGroup("settings")
   
   y = y + 24 + 4
   gooi.newLabel({text = "Is Overworld", x = 4+dx*i, y = y, w = 200, h = 24}):center():setGroup("settings")
@@ -241,15 +243,10 @@ function scene.setupGooi()
   y = y + 24 + 4
   input_puffs_to_clear = gooi.newSpinner({value = level_puffs_to_clear, min = 0, max = 999, x = 50+dx*i, y = y, w = 98, h = 24}):setGroup("settings")
   
-  y = y + 24
-  gooi.newLabel({text = "Level Sprite", x = 4+dx*i, y = y, w = 200, h = 24}):center():setGroup("settings")
   y = y + 24 + 4
-  input_level_sprite = gooi.newText({text = level_level_sprite, x = 4+dx*i, y = y, w = 200, h = 24}):setGroup("settings")
-  
+  gooi.newLabel({text = "Background Sprite", x = 4+dx*i, y = y, w = 200, h = 24}):center():setGroup("settings")
   y = y + 24 + 4
-  gooi.newLabel({text = "Level Number", x = 4+dx*i, y = y, w = 200, h = 24}):center():setGroup("settings")
-  y = y + 24 + 4
-  input_level_number = gooi.newSpinner({value = level_level_number, min = 0, max = 999, x = 50+dx*i, y = y, w = 98, h = 24}):setGroup("settings")
+  input_background_sprite = gooi.newText({text = level_background_sprite, x = 4+dx*i, y = y, w = 200, h = 24}):setGroup("settings")
 
   gooi.setGroupVisible("settings", settings_open)
   gooi.setGroupEnabled("settings", settings_open)
@@ -279,15 +276,20 @@ end
 function scene.keyPressed(key)
   if key == "escape" then
     if not capturing then
-      gooi.confirm({
-        text = "Go back to level selector?",
-        okText = "Yes",
-        cancelText = "Cancel",
-        ok = function()
-          load_mode = "edit"
-          new_scene = loadscene
-        end
-      })
+      if not spookmode then
+        gooi.confirm({
+          text = spookmode and "Ģ͖̙̗̳̟̩̱̹̥̓͌͂ͤͫͫo̟̗͓̞̪̬͒̀ ̤̯̺̹͙̮̇bͯͣ̚͏̹̮a̸̡̯̜̦̝͓͑͋̾̊̾̏̔͢cͨ̿̏̔̆ͣ̎̊ͫ͟҉̗ǩ̬̰͕̭͊ͣͣ̈̇̀ ̩̖̮̹̣̰̫̫̏͐́͊̓̉̓̃͟ͅť̜̤̤̫ͯ͟ó̷͕̩̻̼͕̽͑̀̕ ̧̨͚̻̭̜̜͓̆̎͐͌͊̔l̷̰̖̳͈̰̞̄́̕e̷̫̾͑͌ͣ̎ͩ̍̑͞v̷̢̥̰̪͋͗̀̊ͤ͢é̛̼͖͖͓͕̖ͥ̔͑̐̔ͫ̿ļ̷̵̩̞̩̀͛͒̇͗̊̉̔̄ ̵͈ͪ̂̏ͧͨ͘͘ŝ̶̷̮̠͙͓̬̦̗ͭẽ͙̩͔͕͊̔ͯͮͤ̑͟ļ̗͈̈́̐ͨ̄̑ͪͪ͘ȩ͕̘̱͙̻̣̦̉̈ͨ̐ͪ̑̿̃̾ͅc͍̯͈̀ͥ̕͢t̨̩̹̲͍͕͇̊̇̈́̏ͮͬ̿͆͘ͅo̯̮͉̜͓͇̎̂̄ͧͭ̒ͫͫ͘͠͠r̰͍̝̯̿̆ͦ?ͪ͋͒ͩ̇̚҉̶̠̘̦" or "Go back to level selector?",
+          okText = "Yes",
+          cancelText = spookmode and "Yes" or "Cancel",
+          ok = function()
+            load_mode = "edit"
+            new_scene = loadscene
+          end
+        })
+      else
+        load_mode = "play"
+        new_scene = loadscene
+      end
       return
     else
       capturing = false
@@ -420,182 +422,184 @@ function scene.keyReleased(key)
 end
 
 function scene.update(dt)
-  if capturing then
-    if start_drag then
-      local rect = {
-        x = start_drag.x, 
-        y = start_drag.y,
-        w = love.mouse.getX() - start_drag.x,
-        h = love.mouse.getY() - start_drag.y
-      }
-      local highest = math.max(math.abs(rect.w), math.abs(rect.h))
-      if math.abs(rect.w) < highest then
-        if rect.w < 0 then rect.w = -highest end
-        if rect.w > 0 then rect.w = highest end
-      end
-      if math.abs(rect.h) < highest then
-        if rect.h < 0 then rect.h = -highest end
-        if rect.h > 0 then rect.h = highest end
-      end
-      end_drag = {x = rect.x + rect.w, y = rect.y + rect.h}
-    end
-    return
-  end
-
-  if gooi.showingDialog then
-    return
-  end
-
-  if ignore_mouse then
-    if not love.mouse.isDown(1) then
-      ignore_mouse = false
-    end
-    return
-  end
-
-  width = love.graphics.getWidth()
-  height = love.graphics.getHeight()
-
-  if settings_open then
-    if not palettes[input_palette:getText()] then
-      label_palette:setIcon(sprites["ui/smol warning"])
-    else
-      label_palette:setIcon()
-    end
-    if not sound_exists[input_music:getText()] then
-      label_music:setIcon(sprites["ui/smol warning"])
-    else
-      label_music:setIcon()
-    end
-  elseif not settings_open or not mouseOverBox(settings.x, settings.y, settings.w, settings.h) then
-    local hx,hy = getHoveredTile()
-    if hx ~= nil then
-      local tileid = hx + hy * mapwidth
-
-      local hovered = {}
-      if units_by_tile[tileid] then
-        for _,v in ipairs(units_by_tile[tileid]) do
-          table.insert(hovered, v)
+  if not spookmode then
+    if capturing then
+      if start_drag then
+        local rect = {
+          x = start_drag.x, 
+          y = start_drag.y,
+          w = love.mouse.getX() - start_drag.x,
+          h = love.mouse.getY() - start_drag.y
+        }
+        local highest = math.max(math.abs(rect.w), math.abs(rect.h))
+        if math.abs(rect.w) < highest then
+          if rect.w < 0 then rect.w = -highest end
+          if rect.w > 0 then rect.w = highest end
         end
+        if math.abs(rect.h) < highest then
+          if rect.h < 0 then rect.h = -highest end
+          if rect.h > 0 then rect.h = highest end
+        end
+        end_drag = {x = rect.x + rect.w, y = rect.y + rect.h}
       end
+      return
+    end
 
-      if love.mouse.isDown(1) then
-        if not selector_open then
-          local painted = false
-          local new_unit = nil
-          local existing = nil
-          local ctrl_first_press = false
-          if (key_down["lctrl"] or key_down["rctrl"]) and brush.mode == "none" then
-            ctrl_first_press = true
+    if gooi.showingDialog then
+      return
+    end
+
+    if ignore_mouse then
+      if not love.mouse.isDown(1) then
+        ignore_mouse = false
+      end
+      return
+    end
+
+    width = love.graphics.getWidth()
+    height = love.graphics.getHeight()
+
+    if settings_open then
+      if not palettes[input_palette:getText()] then
+        label_palette:setIcon(sprites["ui/smol warning"])
+      else
+        label_palette:setIcon()
+      end
+      if not sound_exists[input_music:getText()] then
+        label_music:setIcon(sprites["ui/smol warning"])
+      else
+        label_music:setIcon()
+      end
+    elseif not settings_open or not mouseOverBox(settings.x, settings.y, settings.w, settings.h) then
+      local hx,hy = getHoveredTile()
+      if hx ~= nil then
+        local tileid = hx + hy * mapwidth
+
+        local hovered = {}
+        if units_by_tile[tileid] then
+          for _,v in ipairs(units_by_tile[tileid]) do
+            table.insert(hovered, v)
           end
-          if #hovered >= 1 then
-            for _,unit in ipairs(hovered) do
-              if unit.tile == brush.id then
-                if not key_down["lctrl"] and not key_down["rctrl"] and not selectorhold then
-                  existing = unit
+        end
+
+        if love.mouse.isDown(1) then
+          if not selector_open then
+            local painted = false
+            local new_unit = nil
+            local existing = nil
+            local ctrl_first_press = false
+            if (key_down["lctrl"] or key_down["rctrl"]) and brush.mode == "none" then
+              ctrl_first_press = true
+            end
+            if #hovered >= 1 then
+              for _,unit in ipairs(hovered) do
+                if unit.tile == brush.id then
+                  if not key_down["lctrl"] and not key_down["rctrl"] and not selectorhold then
+                    existing = unit
+                  end
+                elseif brush.mode == "placing" and not key_down["lshift"] and not selectorhold then
+                  deleteUnit(unit)
+                  painted = true
                 end
-              elseif brush.mode == "placing" and not key_down["lshift"] and not selectorhold then
-                deleteUnit(unit)
-                painted = true
               end
             end
-          end
-          if existing and brush.mode == "none" then
-            brush.mode = "erasing"
-          elseif not existing and brush.mode == "none" then
-            brush.mode = "placing"
-          end
-          if brush.id ~= nil then
-            if brush.mode == "erasing" then
-              if existing and not selectorhold then
-                deleteUnit(existing)
-                painted = true
-              end
-            elseif brush.mode == "placing" and not selectorhold then
-              if existing then
-                existing.dir = brush.dir
-                painted = true
-                new_unit = existing
-              elseif (not key_down["lctrl"] and not key_down["rctrl"]) or ctrl_first_press then
-                new_unit = createUnit(brush.id, hx, hy, brush.dir)
-                painted = true
+            if existing and brush.mode == "none" then
+              brush.mode = "erasing"
+            elseif not existing and brush.mode == "none" then
+              brush.mode = "placing"
+            end
+            if brush.id ~= nil then
+              if brush.mode == "erasing" then
+                if existing and not selectorhold then
+                  deleteUnit(existing)
+                  painted = true
+                end
+              elseif brush.mode == "placing" and not selectorhold then
+                if existing then
+                  existing.dir = brush.dir
+                  painted = true
+                  new_unit = existing
+                elseif (not key_down["lctrl"] and not key_down["rctrl"]) or ctrl_first_press then
+                  new_unit = createUnit(brush.id, hx, hy, brush.dir)
+                  painted = true
+                end
               end
             end
-          end
-          if painted then
-            if tileid == brush.picked_tile then
+            if painted then
+              if tileid == brush.picked_tile then
+                brush.picked_tile = nil
+                brush.picked_index = 0
+              end
+              paintedtiles = paintedtiles + 1
+              scene.updateMap()
+              if new_unit and brush.id == tiles_by_name["lvl"] then
+                new_scene = loadscene
+                load_mode = "select"
+                selected_level = {id = new_unit.id}
+                old_world = {parent = world_parent, world = world}
+
+                editor_save.brush = brush
+              end
+            end
+          else
+            local selected = hx + hy * tile_grid_width
+            if current_tile_grid[selected] then
+              brush.id = current_tile_grid[selected]
+              brush.picked_tile = nil
+              brush.picked_index = 0
+            else
+              brush.id = nil
               brush.picked_tile = nil
               brush.picked_index = 0
             end
-            paintedtiles = paintedtiles + 1
-            scene.updateMap()
-            if new_unit and brush.id == tiles_by_name["lvl"] then
-              new_scene = loadscene
-              load_mode = "select"
-              selected_level = {id = new_unit.id}
-              old_world = {parent = world_parent, world = world}
-
-              editor_save.brush = brush
-            end
-          end
-        else
-          local selected = hx + hy * tile_grid_width
-          if current_tile_grid[selected] then
-            brush.id = current_tile_grid[selected]
-            brush.picked_tile = nil
-            brush.picked_index = 0
-          else
-            brush.id = nil
-            brush.picked_tile = nil
-            brush.picked_index = 0
           end
         end
-      end
-      if love.mouse.isDown(2) and not selector_open then
-        if brush.mode ~= "picking" then
-          if #hovered >= 1 then
-            brush.picked_tile = tileid
-            if brush.picked_tile == tileid and brush.picked_index > 0 then
-              local new_index = brush.picked_index + 1
-              if new_index > #hovered then
-                new_index = 1
+        if love.mouse.isDown(2) and not selector_open then
+          if brush.mode ~= "picking" then
+            if #hovered >= 1 then
+              brush.picked_tile = tileid
+              if brush.picked_tile == tileid and brush.picked_index > 0 then
+                local new_index = brush.picked_index + 1
+                if new_index > #hovered then
+                  new_index = 1
+                end
+                brush.picked_index = new_index
+                brush.id = hovered[new_index].tile
+              else
+                brush.id = hovered[1].tile
+                brush.picked_index = 1
               end
-              brush.picked_index = new_index
-              brush.id = hovered[new_index].tile
+              brush.mode = "picking"
             else
-              brush.id = hovered[1].tile
-              brush.picked_index = 1
+              brush.id = nil
+              brush.picked_tile = nil
+              brush.picked_index = 0
             end
-            brush.mode = "picking"
-          else
-            brush.id = nil
-            brush.picked_tile = nil
-            brush.picked_index = 0
           end
         end
       end
     end
-  end
 
-  max_layer = 1
-  units_by_layer = {}
-  for _,unit in ipairs(units) do
-    if not units_by_layer[unit.layer] then
-      units_by_layer[unit.layer] = {}
+    max_layer = 1
+    units_by_layer = {}
+    for _,unit in ipairs(units) do
+      if not units_by_layer[unit.layer] then
+        units_by_layer[unit.layer] = {}
+      end
+
+      table.insert(units_by_layer[unit.layer], unit)
+      max_layer = math.max(max_layer, unit.layer)
     end
 
-    table.insert(units_by_layer[unit.layer], unit)
-    max_layer = math.max(max_layer, unit.layer)
-  end
-
-  if not love.mouse.isDown(1) then
-    if brush.mode == "placing" or brush.mode == "erasing" then
-      brush.mode = "none"
+    if not love.mouse.isDown(1) then
+      if brush.mode == "placing" or brush.mode == "erasing" then
+        brush.mode = "none"
+      end
     end
-  end
-  if not love.mouse.isDown(2) then
-    if brush.mode == "picking" then
-      brush.mode = "none"
+    if not love.mouse.isDown(2) then
+      if brush.mode == "picking" then
+        brush.mode = "none"
+      end
     end
   end
 end
@@ -648,253 +652,282 @@ end
 
 last_hovered_tile = {0,0}
 function scene.draw(dt)
-  --background color
-  local bg_color = {getPaletteColor(1, 0)}
+  if not spookmode then
+    --background color
+    local bg_color = {getPaletteColor(1, 0)}
 
-  love.graphics.setColor(bg_color[1], bg_color[2], bg_color[3], bg_color[4])
-  setRainbowModeColor(love.timer.getTime()/6, .2)
+    love.graphics.setColor(bg_color[1], bg_color[2], bg_color[3], bg_color[4])
+    setRainbowModeColor(love.timer.getTime()/6, .2)
 
-  -- fill the background with the background color
-  love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
+    -- fill the background with the background color
+    love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
 
-  local roomwidth, roomheight
-  if not selector_open then
-    roomwidth = mapwidth * TILE_SIZE
-    roomheight = mapheight * TILE_SIZE
-  else
-    roomwidth = tile_grid_width * TILE_SIZE
-    roomheight = tile_grid_height * TILE_SIZE
-  end
+    local roomwidth, roomheight
+    if not selector_open then
+      roomwidth = mapwidth * TILE_SIZE
+      roomheight = mapheight * TILE_SIZE
+    else
+      roomwidth = tile_grid_width * TILE_SIZE
+      roomheight = tile_grid_height * TILE_SIZE
+    end
 
-  love.graphics.push()
-  love.graphics.applyTransform(scene.getTransform())
+    love.graphics.push()
+    love.graphics.applyTransform(scene.getTransform())
 
-  love.graphics.setColor(getPaletteColor(0, 4))
-  love.graphics.rectangle("fill", 0, 0, roomwidth, roomheight)
+    love.graphics.setColor(getPaletteColor(0, 4))
+    love.graphics.rectangle("fill", 0, 0, roomwidth, roomheight)
+    if not selector_open and level_background_sprite ~= nil and level_background_sprite ~= "" and sprites[level_background_sprite] then
+      love.graphics.setColor(1, 1, 1)
+      local sprite = sprites[level_background_sprite]
+      love.graphics.draw(sprite, 0, 0, 0, 1, 1, 0, 0)
+    end
 
-	local function setColor(color)
-		if #color == 3 then
-			color = {color[1]/255, color[2]/255, color[3]/255, 1}
-		else
-			color = {getPaletteColor(color[1], color[2])}
-		end
-		love.graphics.setColor(color)
-		return color
-	end
-	
-  if not selector_open then
-    for i=1,max_layer do
-      if units_by_layer[i] then
-        for _,unit in ipairs(units_by_layer[i]) do
-          local sprite = sprites[unit.sprite]
-          if not sprite then sprite = sprites["wat"] end
-          
-          local rotation = 0
-          if unit.rotate then
-            rotation = (unit.dir - 1) * 45
+    local function setColor(color)
+      if #color == 3 then
+        color = {color[1]/255, color[2]/255, color[3]/255, 1}
+      else
+        color = {getPaletteColor(color[1], color[2])}
+      end
+      love.graphics.setColor(color)
+      return color
+    end
+    
+    if not selector_open then
+      for i=1,max_layer do
+        if units_by_layer[i] then
+          for _,unit in ipairs(units_by_layer[i]) do
+            local sprite = sprites[unit.sprite]
+            if not sprite then sprite = sprites["wat"] end
+            
+            local rotation = 0
+            if unit.rotate then
+              rotation = (unit.dir - 1) * 45
+            end
+            
+            local color = setColor(unit.color);
+
+            if rainbowmode then
+              local newcolor = hslToRgb((love.timer.getTime()/3+unit.x/18+unit.y/18)%1, .5, .5, 1)
+              newcolor[1] = newcolor[1]*255
+              newcolor[2] = newcolor[2]*255
+              newcolor[3] = newcolor[3]*255
+              unit.color = newcolor
+            end
+
+            love.graphics.draw(sprite, (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+            if (unit.meta ~= nil) then
+              setColor({4, 1})
+              local metasprite = unit.meta == 2 and sprites["meta2"] or sprites["meta1"]
+              love.graphics.draw(metasprite, (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+              if unit.meta > 2 then
+                love.graphics.printf(tostring(unit.meta), (unit.x + 0.5)*TILE_SIZE-1, (unit.y + 0.5)*TILE_SIZE+6, 32, "center")
+              end
+              setColor(unit.color)
+            end
           end
-          
-					local color = setColor(unit.color);
-
-          if rainbowmode then
-            local newcolor = hslToRgb((love.timer.getTime()/3+unit.x/18+unit.y/18)%1, .5, .5, 1)
-            newcolor[1] = newcolor[1]*255
-            newcolor[2] = newcolor[2]*255
-            newcolor[3] = newcolor[3]*255
-            unit.color = newcolor
-          end
-
-          love.graphics.draw(sprite, (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
-					if (unit.meta ~= nil) then
-						setColor({4, 1})
-						local metasprite = unit.meta == 2 and sprites["meta2"] or sprites["meta1"]
-						love.graphics.draw(metasprite, (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
-						if unit.meta > 2 then
-							love.graphics.printf(tostring(unit.meta), (unit.x + 0.5)*TILE_SIZE-1, (unit.y + 0.5)*TILE_SIZE+6, 32, "center")
-						end
-						setColor(unit.color)
-					end
         end
       end
-    end
-  else
-    for x=0,tile_grid_width-1 do
-      for y=0,tile_grid_height-1 do
-        local gridid = x + y * tile_grid_width
-        local i = current_tile_grid[gridid]
-        if i ~= nil then
-          local tile = tiles_list[i]
-          local sprite = sprites[tile.sprite]
-          if not sprite then sprite = sprites["wat"] end
+    else
+      for x=0,tile_grid_width-1 do
+        for y=0,tile_grid_height-1 do
+          local gridid = x + y * tile_grid_width
+          local i = current_tile_grid[gridid]
+          if i ~= nil then
+            local tile = tiles_list[i]
+            local sprite = sprites[tile.sprite]
+            if not sprite then sprite = sprites["wat"] end
 
-          -- local x = tile.grid[1]
-          -- local y = tile.grid[2]
+            -- local x = tile.grid[1]
+            -- local y = tile.grid[2]
 
-          local color = setColor(tile.color);
+            local color = setColor(tile.color);
 
-          if rainbowmode then love.graphics.setColor(hslToRgb((love.timer.getTime()/3+x/tile_grid_width+y/tile_grid_height)%1, .5, .5, 1)) end
+            if rainbowmode then love.graphics.setColor(hslToRgb((love.timer.getTime()/3+x/tile_grid_width+y/tile_grid_height)%1, .5, .5, 1)) end
 
-          love.graphics.draw(sprite, (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
-					if (tile.meta ~= nil) then
-						setColor({4, 1})
-						local metasprite = tile.meta == 2 and sprites["meta2"] or sprites["meta1"]
-						love.graphics.draw(metasprite, (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
-						if tile.meta > 2 then
-							love.graphics.printf(tostring(tile.meta), (x + 0.5)*TILE_SIZE-1, (y + 0.5)*TILE_SIZE+6, 32, "center")
-						end
-						setColor(tile.color)
-					end
+            love.graphics.draw(sprite, (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+            if (tile.meta ~= nil) then
+              setColor({4, 1})
+              local metasprite = tile.meta == 2 and sprites["meta2"] or sprites["meta1"]
+              love.graphics.draw(metasprite, (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+              if tile.meta > 2 then
+                love.graphics.printf(tostring(tile.meta), (x + 0.5)*TILE_SIZE-1, (y + 0.5)*TILE_SIZE+6, 32, "center")
+              end
+              setColor(tile.color)
+            end
 
-          if brush.id == i then
+            if brush.id == i then
+              love.graphics.setColor(1, 0, 0)
+              love.graphics.rectangle("line", x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
+            end
+          elseif gridid == 0 and brush.id == nil then
             love.graphics.setColor(1, 0, 0)
             love.graphics.rectangle("line", x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
           end
-        elseif gridid == 0 and brush.id == nil then
-          love.graphics.setColor(1, 0, 0)
-          love.graphics.rectangle("line", x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
         end
       end
     end
-  end
 
-  local hx,hy = getHoveredTile()
-  if hx ~= nil then
-    if not (gooi.showingDialog or capturing) then
-      if brush.id and not selector_open then
-        local sprite = sprites[tiles_list[brush.id].sprite]
-        if not sprite then sprite = sprites["wat"] end
+    local hx,hy = getHoveredTile()
+    if hx ~= nil then
+      if not (gooi.showingDialog or capturing) then
+        if brush.id and not selector_open then
+          local sprite = sprites[tiles_list[brush.id].sprite]
+          if not sprite then sprite = sprites["wat"] end
 
-        local rotation = 0
-        if tiles_list[brush.id].rotate then
-          rotation = (brush.dir - 1) * 45
+          local rotation = 0
+          if tiles_list[brush.id].rotate then
+            rotation = (brush.dir - 1) * 45
+          end
+          
+          local color = tiles_list[brush.id].color
+          if #color == 3 then
+            love.graphics.setColor(color[1]/255, color[2]/255, color[3]/255, 0.25)
+          else
+            local r, g, b, a = getPaletteColor(color[1], color[2])
+            love.graphics.setColor(r, g, b, a * 0.25)
+          end
+
+          love.graphics.draw(sprite, (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, math.rad(rotation), 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
         end
-        
-        local color = tiles_list[brush.id].color
-        if #color == 3 then
-          love.graphics.setColor(color[1]/255, color[2]/255, color[3]/255, 0.25)
+
+        love.graphics.setColor(1, 1, 0)
+        love.graphics.rectangle("line", hx * TILE_SIZE, hy * TILE_SIZE, TILE_SIZE, TILE_SIZE)
+      end
+
+      last_hovered_tile = {hx, hy}
+    end
+
+    if selector_open then
+      love.graphics.setColor(getPaletteColor(0,3))
+      love.graphics.print(last_hovered_tile[1] .. ', ' .. last_hovered_tile[2], 0, roomheight)
+      love.graphics.print("LSHIFT to get meta text, RSHIFT to refresh", 0, roomheight+12)
+    end
+
+    love.graphics.pop()
+
+    if selector_open then
+      love.graphics.setColor(1, 1, 1)
+      local gridid = last_hovered_tile[1]  + last_hovered_tile[2] * tile_grid_width
+      local i = current_tile_grid[gridid]
+      if i ~= nil then
+        local tile = tiles_list[i]
+        if (tile.desc ~= nil and hx ~= nil) then
+          local tooltipwidth, ttlines = love.graphics.getFont():getWrap(tile.desc, love.graphics.getWidth() - love.mouse.getX() - 20)
+          local tooltipheight = love.graphics.getFont():getHeight() * #ttlines
+
+          local tooltipyoffset = 0
+
+          if love.mouse.getY() + (tooltipheight + 20) - love.graphics.getHeight() > 0 then
+            tooltipyoffset = love.mouse.getY() + (tooltipheight + 20) - love.graphics.getHeight()
+          end
+
+          love.graphics.setColor(getPaletteColor(1, 3))
+          love.graphics.rectangle("fill", love.mouse.getX()+10, love.mouse.getY()+10-tooltipyoffset, tooltipwidth+13, tooltipheight+13)
+          love.graphics.setColor(getPaletteColor(0, 4))
+          love.graphics.rectangle("fill", love.mouse.getX()+11, love.mouse.getY()+11-tooltipyoffset, tooltipwidth+11, tooltipheight+11)
+
+          love.graphics.setColor(getPaletteColor(0,3))
+          love.graphics.printf(tile.desc, love.mouse.getX()+11, love.mouse.getY()+11-tooltipyoffset, love.graphics.getWidth() - love.mouse.getX() - 20)
+        end
+      end
+    end
+
+    local btnx = 0
+    for _,btn in ipairs(buttons) do
+      local sprite = sprites["ui/" .. btn[1]]
+
+      if button_pressed then
+        if button_pressed == btn then
+          love.graphics.setColor(0.5, 0.5, 0.5)
         else
-          local r, g, b, a = getPaletteColor(color[1], color[2])
-          love.graphics.setColor(r, g, b, a * 0.25)
+          love.graphics.setColor(1, 1, 1)
         end
-
-        love.graphics.draw(sprite, (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, math.rad(rotation), 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      else
+        if button_over == btn then
+          love.graphics.setColor(0.8, 0.8, 0.8)
+        else
+          love.graphics.setColor(1, 1, 1)
+        end
       end
 
-      love.graphics.setColor(1, 1, 0)
-      love.graphics.rectangle("line", hx * TILE_SIZE, hy * TILE_SIZE, TILE_SIZE, TILE_SIZE)
+      love.graphics.draw(sprite, btnx, 0)
+
+      btnx = btnx + sprite:getWidth() + 4
     end
 
-    last_hovered_tile = {hx, hy}
-  end
+    love.graphics.push()
+    gooi.draw()
 
-  if selector_open then
-    love.graphics.setColor(getPaletteColor(0,3))
-    love.graphics.print(last_hovered_tile[1] .. ', ' .. last_hovered_tile[2], 0, roomheight)
-    love.graphics.print("LSHIFT to get meta text, RSHIFT to refresh", 0, roomheight+12)
-  end
-
-  love.graphics.pop()
-
-  if selector_open then
+    love.graphics.setFont(name_font)
     love.graphics.setColor(1, 1, 1)
-    local gridid = last_hovered_tile[1]  + last_hovered_tile[2] * tile_grid_width
-    local i = current_tile_grid[gridid]
-    if i ~= nil then
-      local tile = tiles_list[i]
-      if (tile.desc ~= nil and hx ~= nil) then
-        local tooltipwidth, ttlines = love.graphics.getFont():getWrap(tile.desc, love.graphics.getWidth() - love.mouse.getX() - 20)
-        local tooltipheight = love.graphics.getFont():getHeight() * #ttlines
 
-        local tooltipyoffset = 0
+    love.graphics.printf(level_name, 0, name_font:getLineHeight() / 2, love.graphics.getWidth(), "center")
 
-        if love.mouse.getY() + (tooltipheight + 20) - love.graphics.getHeight() > 0 then
-          tooltipyoffset = love.mouse.getY() + (tooltipheight + 20) - love.graphics.getHeight()
-        end
-
-        love.graphics.setColor(getPaletteColor(1, 3))
-        love.graphics.rectangle("fill", love.mouse.getX()+10, love.mouse.getY()+10-tooltipyoffset, tooltipwidth+13, tooltipheight+13)
-        love.graphics.setColor(getPaletteColor(0, 4))
-        love.graphics.rectangle("fill", love.mouse.getX()+11, love.mouse.getY()+11-tooltipyoffset, tooltipwidth+11, tooltipheight+11)
-
-        love.graphics.setColor(getPaletteColor(0,3))
-        love.graphics.printf(tile.desc, love.mouse.getX()+11, love.mouse.getY()+11-tooltipyoffset, love.graphics.getWidth() - love.mouse.getX() - 20)
-      end
-    end
-  end
-
-  local btnx = 0
-  for _,btn in ipairs(buttons) do
-    local sprite = sprites["ui/" .. btn[1]]
-
-    if button_pressed then
-      if button_pressed == btn then
-        love.graphics.setColor(0.5, 0.5, 0.5)
-      else
-        love.graphics.setColor(1, 1, 1)
-      end
+    love.graphics.setColor(1, 1, 1, saved_popup.alpha)
+    if is_mobile then
+      love.graphics.draw(saved_popup.sprite, 44, 40 + saved_popup.y)
     else
-      if button_over == btn then
-        love.graphics.setColor(0.8, 0.8, 0.8)
-      else
-        love.graphics.setColor(1, 1, 1)
+      love.graphics.draw(saved_popup.sprite, 0, 40 + saved_popup.y)
+    end
+
+    if settings_open then
+      love.graphics.setColor(0.1, 0.1, 0.1, 1)
+      love.graphics.rectangle("fill", settings.x, settings.y, settings.w, settings.h)
+      love.graphics.setColor(1, 1, 1, 1)
+      gooi.draw("settings")
+    end
+    love.graphics.pop()
+
+    if capturing then
+      love.graphics.setColor(0.5, 0.5, 0.5, 1)
+      love.graphics.draw(screenshot_image)
+
+      if start_drag and end_drag then
+        local rect = {
+          x = math.min(start_drag.x, end_drag.x), 
+          y = math.min(start_drag.y, end_drag.y),
+          w = math.abs(end_drag.x - start_drag.x),
+          h = math.abs(end_drag.y - start_drag.y)
+        }
+        love.graphics.setColor(1, 1, 1, 1)
+        love.graphics.rectangle("line", rect.x, rect.y, rect.w, rect.h)
+        love.graphics.setScissor(rect.x, rect.y, rect.w, rect.h)
+        love.graphics.draw(screenshot_image)
+        love.graphics.setScissor()
       end
     end
 
-    love.graphics.draw(sprite, btnx, 0)
-
-    btnx = btnx + sprite:getWidth() + 4
-  end
-
-  love.graphics.push()
-  gooi.draw()
-
-  love.graphics.setFont(name_font)
-  love.graphics.setColor(1, 1, 1)
-
-  love.graphics.printf(level_name, 0, name_font:getLineHeight() / 2, love.graphics.getWidth(), "center")
-
-  love.graphics.setColor(1, 1, 1, saved_popup.alpha)
-  if is_mobile then
-    love.graphics.draw(saved_popup.sprite, 44, 40 + saved_popup.y)
-  else
-    love.graphics.draw(saved_popup.sprite, 0, 40 + saved_popup.y)
-  end
-
-  if settings_open then
-    love.graphics.setColor(0.1, 0.1, 0.1, 1)
-    love.graphics.rectangle("fill", settings.x, settings.y, settings.w, settings.h)
-    love.graphics.setColor(1, 1, 1, 1)
-    gooi.draw("settings")
-  end
-  love.graphics.pop()
-
-  if capturing then
-    love.graphics.setColor(0.5, 0.5, 0.5, 1)
-    love.graphics.draw(screenshot_image)
-
-    if start_drag and end_drag then
-      local rect = {
-        x = math.min(start_drag.x, end_drag.x), 
-        y = math.min(start_drag.y, end_drag.y),
-        w = math.abs(end_drag.x - start_drag.x),
-        h = math.abs(end_drag.y - start_drag.y)
-      }
-      love.graphics.setColor(1, 1, 1, 1)
-      love.graphics.rectangle("line", rect.x, rect.y, rect.w, rect.h)
-      love.graphics.setScissor(rect.x, rect.y, rect.w, rect.h)
-      love.graphics.draw(screenshot_image)
-      love.graphics.setScissor()
+    if is_mobile then
+      local cursorx, cursory = love.mouse.getPosition()
+      love.graphics.draw(system_cursor, cursorx, cursory)
     end
-  end
 
-  if is_mobile then
-    local cursorx, cursory = love.mouse.getPosition()
-    love.graphics.draw(system_cursor, cursorx, cursory)
-  end
+    if is_mobile then
+      local cursorx, cursory = love.mouse.getPosition()
+      love.graphics.draw(system_cursor, cursorx, cursory)
+    end
+  else
+    love.graphics.setBackgroundColor(math.random(0,10)/1000,math.random(0,10)/1000,math.random(0,10)/1000)
 
-  if is_mobile then
-    local cursorx, cursory = love.mouse.getPosition()
-    love.graphics.draw(system_cursor, cursorx, cursory)
+    love.graphics.setColor(math.sin(love.timer.getRealTime()*5), 0, 0)
+
+    local yoverride = false
+    local y = 0
+
+    while not yoverride do
+      yoverride = y > love.graphics.getHeight()
+
+      local xoverride = false
+      local x = 0
+
+      while not xoverride do
+        xoverride = x > love.graphics.getWidth()
+        love.graphics.print("esc", x, y)
+        x = x + love.graphics.getFont():getWidth("esc")
+      end
+
+      y = y + love.graphics.getFont():getHeight()
+    end
   end
 end
 
@@ -921,6 +954,7 @@ function scene.saveLevel()
 
   local map = maps[1][2]
 
+  level_compression = "zlib"
   local mapdata = level_compression == "zlib" and love.data.compress("string", "zlib", map) or map
   local savestr = love.data.encode("string", "base64", mapdata)
   
@@ -935,11 +969,11 @@ function scene.saveLevel()
     height = mapheight,
     version = map_ver,
     map = savestr,
-    next_level_after_win = level_next_level_after_win,
+    parent_level = level_parent_level,
+    next_level = level_next_level,
     is_overworld = level_is_overworld,
     puffs_to_clear = level_puffs_to_clear,
-    level_sprite = level_level_sprite,
-    level_number = level_level_number,
+    background_sprite = level_background_sprite,
   }
 
   if world == "" or world_parent == "officialworlds" then
@@ -972,17 +1006,16 @@ function scene.openSettings()
     settings_open = true
 
     input_name:setText(level_name)
-    input_compression:setText(level_compression)
     input_author:setText(level_author)
     input_palette:setText(current_palette)
     input_music:setText(map_music)
     input_width:setValue(mapwidth)
     input_height:setValue(mapheight)
-    input_next_level_after_win:setText(level_next_level_after_win)
+    input_parent_level:setText(level_parent_level)
+    input_next_level:setText(level_next_level)
     input_is_overworld.checked = level_is_overworld
     input_puffs_to_clear:setValue(level_puffs_to_clear)
-    input_level_sprite:setText(level_level_sprite)
-    input_level_number:setValue(level_level_number)
+    input_background_sprite:setText(level_background_sprite)
     input_extra.checked = level_extra
 
     gooi.setGroupVisible("settings", true)
@@ -1023,15 +1056,14 @@ function scene.saveSettings()
   end
 
   level_name = input_name:getText()
-  level_compression = input_compression:getText()
   level_author = input_author:getText()
   current_palette = input_palette:getText()
   map_music = input_music:getText()
-  level_next_level_after_win = input_next_level_after_win:getText()
+  level_parent_level = input_parent_level:getText()
+  level_next_level = input_next_level:getText()
   level_is_overworld = input_is_overworld.checked
   level_puffs_to_clear = input_puffs_to_clear:getValue()
-  level_level_sprite = input_level_sprite:getText()
-  level_level_number = input_level_number:getValue()
+  level_background_sprite = input_background_sprite:getText()
 
   scene.updateMap()
 
@@ -1070,7 +1102,7 @@ function love.filedropped(file)
 
   level_compression = mapdata.compression or "zlib"
   local loaddata = love.data.decode("string", "base64", mapdata.map)
-  local mapstr = level_compression == "zlib" and love.data.decompress("string", "zlib", loaddata) or loaddata
+  local mapstr = loadMaybeCompressedData(loaddata)
 
   loaded_level = true
 
@@ -1082,11 +1114,11 @@ function love.filedropped(file)
   mapwidth = mapdata.width
   mapheight = mapdata.height
   map_ver = mapdata.version or 0
-  level_next_level_after_win = mapdata.next_level_after_win or ""
+  level_parent_level = mapdata.parent_level or ""
+  level_next_level = mapdata.next_level or ""
   level_is_overworld = mapdata.is_overworld or false
   level_puffs_to_clear = mapdata.level_puffs_to_clear or 0
-  level_level_sprite = mapdata.level_sprite or ""
-  level_level_number = mapdata.level_number or 0
+  level_background_sprite = mapdata.background_sprite or ""
 
   if map_ver == 0 then
     maps = {{0, loadstring("return " .. mapstr)()}}

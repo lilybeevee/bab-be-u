@@ -52,7 +52,11 @@ local displaywords = false
 local stack_box, stack_font
 local initialwindoposition
 
+local sessionseed
+
 function scene.load()
+  sessionseed = math.random(0,100000000)/100000000
+
   repeat_timers = {}
   key_down = {}
   selector_open = false
@@ -157,27 +161,12 @@ function scene.update(dt)
   scene.doPassiveParticles(dt, "no undo", "bonus", 0.25, 0.25, 1, {5, 3})
   scene.doPassiveParticles(dt, "undo", "bonus", 0.25, 0.25, 1, {6, 1})
   scene.doPassiveParticles(dt, "brite", "bonus", 0.25, 0.25, 1, {2, 4})
-
-  debugDisplay('window dir', window_dir)
-  if shake_dur > 0 then
-    shake_dur = shake_dur-dt
-    --shake_intensity = shake_intensity-dt/2
-
-    --[[local windowx, windowy = love.window.getPosition()
-    if shake_intensity > 0.6 and not fullscreen and frame%2 == 1 then
-      love.window.setPosition(windowx+(math.random(0.00, 20.00)*shake_intensity*2)-shake_intensity*20.0,
-                              windowy+(math.random(0.00, 20.00)*shake_intensity*2)-shake_intensity*20.0)
-    end]]
-  else
-    shake_intensity = 0
-    shake_dur = 0
-  end
 	
 	doReplay(dt)
 end
 
 function doReplay(dt)
-	if win or not replay_playback then return false end
+	if not replay_playback then return false end
 	if love.timer.getTime() > (replay_playback_time + replay_playback_interval) then
         if not replay_pause then
             replay_playback_time = replay_playback_time + replay_playback_interval
@@ -285,7 +274,16 @@ function scene.keyPressed(key, isrepeat)
   last_input_time = love.timer.getTime();
 
   if key == "escape" then
-    new_scene = loadscene
+    
+    gooi.confirm({
+        text = spookmode and "G̴͔̭͇͎͕͔ͪ̾ͬͦ̇͑͋͟͡o̵̸͓̠̦̱̭̘͍̱͑̃̀ͅ ̱̫͉̆͐̇ͥ̽͆͂͑̿͜b̸̵͈̼̜̅͗̄̆ͅa͚̠͚̣̺̗͖͈̓̿̈́͆͐̉ͯ̀̚c͉̜̙̤͍̞̳̬ͪ̇k̙͙̼̀̓̂̑̈́̌ͯ̕͢ͅ ̶̛̠̹̈̒ͫ͐t̙͉͍͚̠̗̰͗͊͛ͫ͒ͥ̏ͫ͢͜ȍ̙͙̪̬̎̊ͫͭͫ͗̔̚ ̴̪͖͔̖̙̬͍̥ͪ̾̾͂͂l̪͉͙̪̩͙̎̏͌̽ͤ̈́̀͜͠e̡͓͍͉̖̤ͬ̓̏ͥͫ̀ͅv̱͈͍̞̼̀͋̂̃͋́̚͠ͅḛ̷̷̱̿͂l̢̮͇̫̗͍̱͈̟͌̐̎̑̈́ ̵̠͖̣̟̲̖̇̈̓ͭͫ͠s͚̝̻ͤ̓̀̀e̅͑̐̄͏̤̫̕͠lͨ͋͌ͤͩ̋̓͏̘̼̠̪̖͓͔̹e̵͖̤̒͒ͥ̓ͬ̓͘c͖͈̏̄̐̅̎ͨ͢ṫ͔̥͓̊̌̓̇ọ̞̤͔̩̒͗ͨ́̓͟ŗ̖͉̹̻̮̬̦͌̿͂?̶̡͈̫̗̈́̒̎̃̎̓" or "Go back to "..escResult(false).."?",
+        okText = "Yes",
+        cancelText = spookmode and "Yes" or "Cancel",
+        ok = function()
+          escResult(true)
+        end
+      })
+      return
   end
 
   local do_turn_now = false
@@ -352,36 +350,39 @@ function scene.keyPressed(key, isrepeat)
   end
   
 	-- Replay keys
-	if key == "+" or key == "=" or key == "d" then
-		replay_playback_interval = replay_playback_interval * 0.8
-	end
-	
-	if key == "-" or key == "_" or key == "a" then
-		replay_playback_interval = replay_playback_interval / 0.8
-	end
-    
-    if key == "0" or key == ")" then
-		replay_playback_interval = 0.3
-	end
-	
-	if key == "f12" then
-		if not replay_playback then
+    if key == "f12" then
+        if not replay_playback then
             tryStartReplay()
         else
             replay_playback = false
         end
-	end
-    
-    if key == "space" and replay_playback then
-        replay_pause = not replay_pause
     end
     
-    --[[
-    if key == "z" and replay_playback then
+    if replay_playback then
+        if key == "+" or key == "=" or key == "d" then
+            replay_playback_interval = replay_playback_interval * 0.8
+        end
+        
+        if key == "-" or key == "_" or key == "a" then
+            replay_playback_interval = replay_playback_interval / 0.8
+        end
+        
+        if key == "0" or key == ")" then
+            replay_playback_interval = 0.3
+        end
+        
+        if key == "space" then
+            replay_pause = not replay_pause
+            replay_undo = false
+        end
+        
+        if key == "z" then
+            replay_pause = true
+            replay_undo = true
+        end
     end
-    ]]
     
-  if key == "e" and not win and not replay_playback then
+  if key == "e" and not currently_winning and not replay_playback then
     doOneMove(0, 0, "e")
   end
 
@@ -527,7 +528,8 @@ function scene.draw(dt)
   --background color
   local bg_color = {getPaletteColor(1, 0)}
   
-  if rainbowmode then bg_color = {hslToRgb(love.timer.getTime()/6%1, .2, .2, .9), 1} end
+  if timeless then bg_color = {getPaletteColor(0, 3)}
+  elseif rainbowmode then bg_color = {hslToRgb(love.timer.getTime()/6%1, .2, .2, .9), 1} end
 
   love.graphics.setColor(bg_color[1], bg_color[2], bg_color[3], bg_color[4])
 
@@ -584,8 +586,14 @@ function scene.draw(dt)
   end
 
   love.graphics.setColor(lvl_color[1], lvl_color[2], lvl_color[3], lvl_color[4])
+  
   if not (level_destroyed or hasProperty(outerlvl, "stelth")) then
     love.graphics.rectangle("fill", 0, 0, roomwidth, roomheight)
+    if level_background_sprite ~= nil and level_background_sprite ~= "" and sprites[level_background_sprite] then
+      love.graphics.setColor(1, 1, 1)
+      local sprite = sprites[level_background_sprite]
+      love.graphics.draw(sprite, 0, 0, 0, 1, 1, 0, 0)
+    end
   end
 
   local function drawUnit(unit, drawx, drawy, rotation, loop)
@@ -639,37 +647,17 @@ function scene.draw(dt)
       newcolor[1] = newcolor[1]*255
       newcolor[2] = newcolor[2]*255
       newcolor[3] = newcolor[3]*255
-      unit.color = newcolor
-    elseif unit.whit and unit.reed then
-	  unit.color = {4, 2}
-	elseif unit.whit and unit.grun then
-	  unit.color = {5, 3}
-	elseif unit.whit or (unit.reed and unit.grun and unit.bleu) or (unit.reed and unit.cyeann) or (unit.bleu and unit.yello) or (unit.grun and unit.purp) then
-      unit.color = {0, 3}	
-	elseif unit.purp or (unit.reed and unit.bleu) then
-      unit.color = {3, 1}
-	elseif unit.yello or (unit.reed and unit.grun) then
-      unit.color = {2, 4}
-	elseif unit.orang or (unit.reed and unit.yello) then
-      unit.color = {2, 3}
-    elseif unit.cyeann or (unit.bleu and unit.grun) then
-      unit.color = {1, 4}
-    elseif unit.reed then
-      unit.color = {2, 2}
-    elseif unit.bleu then
-      unit.color = {1, 3}
-    elseif unit.grun then
-      unit.color = {5, 2}
-    elseif unit.blacc then
-      unit.color = {0, 4}
+      unit.color = newcolor 
     else
       if unit.color_override ~= nil then
         unit.color = unit.color_override
+      elseif unit.name == "bordr" and timeless then
+        unit.color = {0,3}
       else
         unit.color = copyTable(tiles_list[unit.tile].color)
       end
     end
-
+    
     local sprite_name = unit.sprite
 
     for type,name in pairs(unit.sprite_transforms) do
@@ -749,7 +737,10 @@ function scene.draw(dt)
       love.graphics.draw(sprite, fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
 			if (unit.meta ~= nil) then
 				setColor({4, 1})
-				local metasprite = unit.meta == 2 and sprites["meta2"] or sprites["meta1"]
+        local metasprite = unit.meta == 2 and sprites["meta2"] or sprites["meta1"]
+        if spookmode and sessionseed < drawx/3%0.5*2 then
+          love.graphics.setColor(0,0,0)
+        end
 				love.graphics.draw(metasprite, fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
 				if unit.meta > 2 and unit.draw.scalex == 1 and unit.draw.scaley == 1 then
 					love.graphics.printf(tostring(unit.meta), fulldrawx-1, fulldrawy+6, 32, "center")
@@ -828,11 +819,11 @@ function scene.draw(dt)
     --reset back to values being used before
     love.graphics.setLineWidth(2)
 
-    if not unit.xwx and not (unit.name == "lin" and scene ~= editor) then -- xwx takes control of the drawing sprite, so it shouldn't render the normal object
+    if not (unit.xwx or spookmode) and not (unit.name == "lin" and scene ~= editor) then -- xwx takes control of the drawing sprite, so it shouldn't render the normal object
       drawSprite()
     end
 
-    if unit.xwx then -- if we're xwx, apply the special shader to our object
+    if unit.xwx or spookmode then -- if we're xwx, apply the special shader to our object
       if math.floor(love.timer.getTime() * 9) % 9 == 0 then
         pcallSetShader(xwxShader)
         drawSprite()
@@ -1029,6 +1020,15 @@ function scene.draw(dt)
   for _,ps in ipairs(removed_particles) do
     removeFromTable(particles, ps)
   end
+
+  --lightning !
+  if (lightcanvas ~= nil) then
+    love.graphics.setColor(0.05, 0.05, 0.05, 1)
+    love.graphics.setBlendMode("add", "premultiplied")
+    love.graphics.draw(lightcanvas, 0, 0)
+    love.graphics.setBlendMode("alpha")
+  end
+
   --draw the stack box (shows what units are on a tile)
   if stack_box.scale > 0 then
     love.graphics.push()
@@ -1108,13 +1108,6 @@ function scene.draw(dt)
     love.graphics.pop()
   end
   love.graphics.pop()
-  
-  if (lightcanvas ~= nil) then
-    love.graphics.setColor(0.05, 0.05, 0.05, 1)
-    love.graphics.setBlendMode("add", "premultiplied")
-    love.graphics.draw(lightcanvas, love.graphics.getWidth()/2-mapwidth*16, love.graphics.getHeight()/2-mapheight*16)
-    love.graphics.setBlendMode("alpha")
-  end
 
   love.graphics.push()
   love.graphics.setColor(1, 1, 1)
@@ -1124,7 +1117,7 @@ function scene.draw(dt)
   local scale = win_sprite_override and 10 or 1
   love.graphics.draw(win_sprite, scale*-win_sprite:getWidth() / 2, scale*-win_sprite:getHeight() / 2, 0, scale, scale)
 
-  if win and win_size < 1 then
+  if currently_winning and win_size < 1 then
     win_size = win_size + dt*2
   end
   love.graphics.pop()
@@ -1143,7 +1136,11 @@ function scene.draw(dt)
             love.graphics.draw(sprites["ui/replay_play"], love.graphics.getWidth() - sprites["ui/replay_play"]:getWidth())
         end
     elseif replay_pause then
-        love.graphics.draw(sprites["ui/replay_pause"], love.graphics.getWidth() - sprites["ui/replay_pause"]:getWidth())
+        if replay_undo then
+            love.graphics.draw(sprites["ui/replay_undo"], love.graphics.getWidth() - sprites["ui/replay_undo"]:getWidth())
+        else
+            love.graphics.draw(sprites["ui/replay_pause"], love.graphics.getWidth() - sprites["ui/replay_pause"]:getWidth())
+        end
     end
     -- print(replay_playback_interval)
   end
@@ -1335,37 +1332,38 @@ function scene.draw(dt)
 end
 
 function scene.checkInput()
-	if (replay_playback) then return end
-	
   local start_time = love.timer.getTime();
   do_move_sound = false
-
-  if not (key_down["w"] or key_down["a"] or key_down["s"] or key_down["d"]) then
-    repeat_timers["wasd"] = nil
+  
+  if not (replay_playback and replay_undo) then
+    if not (key_down["w"] or key_down["a"] or key_down["s"] or key_down["d"]) then
+        repeat_timers["wasd"] = nil
+    end
+    if not (key_down["up"] or key_down["down"] or key_down["left"] or key_down["right"]) then
+        repeat_timers["udlr"] = nil
+    end
+    if not (key_down["i"] or key_down["j"] or key_down["k"] or key_down["l"]) then
+        repeat_timers["ijkl"] = nil
+    end
+    if not (key_down["kp1"] or
+    key_down["kp2"] or
+    key_down["kp3"] or
+    key_down["kp4"] or
+    key_down["kp5"] or
+    key_down["kp6"] or
+    key_down["kp7"] or
+    key_down["kp8"] or
+    key_down["kp9"]) then
+        repeat_timers["numpad"] = nil
+    end
   end
-  if not (key_down["up"] or key_down["down"] or key_down["left"] or key_down["right"]) then
-    repeat_timers["udlr"] = nil
-  end
-  if not (key_down["i"] or key_down["j"] or key_down["k"] or key_down["l"]) then
-    repeat_timers["ijkl"] = nil
-  end
-  if not (key_down["kp1"] or
-  key_down["kp2"] or
-  key_down["kp3"] or
-  key_down["kp4"] or
-  key_down["kp5"] or
-  key_down["kp6"] or
-  key_down["kp7"] or
-  key_down["kp8"] or
-  key_down["kp9"]) then
-    repeat_timers["numpad"] = nil
-  end
+  
   if not (key_down["z"] or key_down["q"] or key_down["backspace"] or key_down["kp0"] or key_down["o"]) then
     repeat_timers["undo"] = nil
   end
 
   for _,key in ipairs(repeat_keys) do
-    if not win and repeat_timers[key] ~= nil and repeat_timers[key] <= 0 then
+    if repeat_timers[key] ~= nil and repeat_timers[key] <= 0 then
       if key == "undo" then
         just_moved = true
         if (last_input_time ~= nil) then
@@ -1377,32 +1375,37 @@ function scene.checkInput()
         do_move_sound = false;
 				local end_time = love.timer.getTime();
         if not unit_tests then print("undo took: "..tostring(round((end_time-start_time)*1000)).."ms") end
+        if replay_playback_turn > 1 then
+            replay_playback_turn = replay_playback_turn - 1
+        end
       else
         local x, y = 0, 0
-        if key == "udlr" then
-          if key_down["up"] and most_recent_key ~= "down" then y = y - 1 end
-          if key_down["down"] and most_recent_key ~= "up" then y = y + 1 end
-          if key_down["left"] and most_recent_key ~= "right" then x = x - 1 end
-          if key_down["right"] and most_recent_key ~= "left" then x = x + 1 end
-        elseif key == "wasd" then
-          if key_down["w"] and most_recent_key ~= "s" then y = y - 1 end
-          if key_down["s"] and most_recent_key ~= "w" then y = y + 1 end
-          if key_down["a"] and most_recent_key ~= "d" then x = x - 1 end
-          if key_down["d"] and most_recent_key ~= "a" then x = x + 1 end
-        elseif key == "ijkl" then
-          if key_down["i"] and most_recent_key ~= "k" then y = y - 1 end
-          if key_down["k"] and most_recent_key ~= "i" then y = y + 1 end
-          if key_down["j"] and most_recent_key ~= "l" then x = x - 1 end
-          if key_down["l"] and most_recent_key ~= "j" then x = x + 1 end
-        elseif key == "numpad" then
-          if key_down["kp1"] and most_recent_key ~= "kp9" then x = x + -1; y = y + 1; end
-          if key_down["kp2"] and most_recent_key ~= "kp8" then x = x + 0; y = y + 1; end
-          if key_down["kp3"] and most_recent_key ~= "kp7" then x = x + 1; y = y + 1; end
-          if key_down["kp4"] and most_recent_key ~= "kp6" then x = x + -1; y = y + 0; end
-          if key_down["kp6"] and most_recent_key ~= "kp4" then x = x + 1; y = y + 0; end
-          if key_down["kp7"] and most_recent_key ~= "kp3" then x = x + -1; y = y + -1; end
-          if key_down["kp8"] and most_recent_key ~= "kp2" then x = x + 0; y = y + -1; end
-          if key_down["kp9"] and most_recent_key ~= "kp1" then x = x + 1; y = y + -1; end
+        if not replay_playback then
+            if key == "udlr" then
+            if key_down["up"] and most_recent_key ~= "down" then y = y - 1 end
+            if key_down["down"] and most_recent_key ~= "up" then y = y + 1 end
+            if key_down["left"] and most_recent_key ~= "right" then x = x - 1 end
+            if key_down["right"] and most_recent_key ~= "left" then x = x + 1 end
+            elseif key == "wasd" then
+            if key_down["w"] and most_recent_key ~= "s" then y = y - 1 end
+            if key_down["s"] and most_recent_key ~= "w" then y = y + 1 end
+            if key_down["a"] and most_recent_key ~= "d" then x = x - 1 end
+            if key_down["d"] and most_recent_key ~= "a" then x = x + 1 end
+            elseif key == "ijkl" then
+            if key_down["i"] and most_recent_key ~= "k" then y = y - 1 end
+            if key_down["k"] and most_recent_key ~= "i" then y = y + 1 end
+            if key_down["j"] and most_recent_key ~= "l" then x = x - 1 end
+            if key_down["l"] and most_recent_key ~= "j" then x = x + 1 end
+            elseif key == "numpad" then
+            if key_down["kp1"] and most_recent_key ~= "kp9" then x = x + -1; y = y + 1; end
+            if key_down["kp2"] and most_recent_key ~= "kp8" then x = x + 0; y = y + 1; end
+            if key_down["kp3"] and most_recent_key ~= "kp7" then x = x + 1; y = y + 1; end
+            if key_down["kp4"] and most_recent_key ~= "kp6" then x = x + -1; y = y + 0; end
+            if key_down["kp6"] and most_recent_key ~= "kp4" then x = x + 1; y = y + 0; end
+            if key_down["kp7"] and most_recent_key ~= "kp3" then x = x + -1; y = y + -1; end
+            if key_down["kp8"] and most_recent_key ~= "kp2" then x = x + 0; y = y + -1; end
+            if key_down["kp9"] and most_recent_key ~= "kp1" then x = x + 1; y = y + -1; end
+            end
         end
         x = sign(x); y = sign(y);
         if (last_input_time ~= nil) then
@@ -1451,8 +1454,58 @@ function scene.checkInput()
   end
 end
 
+function escResult(do_actual)
+  if (was_using_editor) then
+    if (do_actual) then
+      load_mode = "edit"
+      new_scene = editor
+    else
+      return "the editor"
+    end
+  else
+    if (level_parent_level == nil or level_parent_level == "") then
+      if (parent_filename ~= nil and parent_filename ~= "") then
+        if (do_actual) then
+          loadLevels(parent_filename:split("|"), "play");
+        else
+          return parent_filename
+        end
+      else
+        if (do_actual) then
+          load_mode = "play"
+          new_scene = loadscene
+          if (love.filesystem.getInfo(world_parent .. "/" .. world .. "/" .. "overworld.txt")) then
+            world = ""
+          end
+        else
+          return "the level selection menu"
+        end
+      end
+    else
+      if (do_actual) then
+        loadLevels({level_parent_level}, "play");
+      else
+        return level_parent_level
+      end
+    end
+  end
+end
+
 function doOneMove(x, y, key)
-	if (key == "e") then
+	if (currently_winning) then
+    --undo: undo win.
+    --idle on the winning screen: go to the editor, if we were editing; go to the parent level, if known (prefer explicit to implicit), else go back to the world we were looking at.
+    if (key == "undo") then
+      undoWin()
+    else
+      if x == 0 and y == 0 and key ~= "e" then
+        escResult(true)
+      end
+      return
+    end
+  end
+  
+  if (key == "e") then
 		if hasProperty(nil,"za warudo") then
       --[[
       level_shader = shader_zawarudo
@@ -1534,8 +1587,7 @@ function scene.mouseReleased(x, y, button)
   if button == 1 then
     if units_by_name["text_clikt"] then
         last_click_x, last_click_y = screenToGameTile(love.mouse.getX(), love.mouse.getY())
-        newUndo()
-        doMovement(0,0,nil)
+        doOneMove(0,0,nil)
         last_click_x, last_click_y = nil, nil
     end
   elseif button == 2 then

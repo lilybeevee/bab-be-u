@@ -9,11 +9,17 @@ local scrolly = 0
 
 local music_on = true
 
+local oldmousex = 0
+local oldmousey = 0
 
+local buttons = {"play", "editor", "options", "exit"}
+
+local options = false
 
 function scene.load()
   metaClear()
   clear()
+  was_using_editor = false
   resetMusic("bab be u them REEEMAZTUR", 0.5)
   love.graphics.setBackgroundColor(0.10, 0.1, 0.11)
   local now = os.time(os.date("*t"))
@@ -30,21 +36,17 @@ function scene.load()
 end
 
 function scene.draw(dt)
-  local buttons = {"play", "editor", "exit"}
   local bgsprite = sprites["ui/menu_background"]
-
-  if is_mobile then
-    local cursorx, cursory = love.mouse.getPosition()
-    love.graphics.setColor(1, 1, 1)
-    setRainbowModeColor(love.timer.getTime()/6, .5)
-    love.graphics.draw(system_cursor, cursorx, cursory)
-  end
 
   local cells_x = math.ceil(love.graphics.getWidth() / bgsprite:getWidth())
   local cells_y = math.ceil(love.graphics.getHeight() / bgsprite:getHeight())
 
-  love.graphics.setColor(1, 1, 1, 1)
-  setRainbowModeColor(love.timer.getTime()/6, .4)
+  if not spookmode then
+    love.graphics.setColor(1, 1, 1, 1)
+    setRainbowModeColor(love.timer.getTime()/6, .4)
+  else
+    love.graphics.setColor(0.2,0.2,0.2,1)
+  end
 
   for x = -1, cells_x do
     for y = -1, cells_y do
@@ -57,7 +59,6 @@ function scene.draw(dt)
   local buttonwidth, buttonheight = sprites["ui/button_1"]:getDimensions()
 
   local buttoncolor = {84/255, 109/255, 255/255} --terrible but it works so /shrug
-  if rainbowmode then buttoncolor = hslToRgb(love.timer.getTime()/6%1, .5, .5, .9) end
 
   for i=1, #buttons do
     love.graphics.push()
@@ -66,11 +67,16 @@ function scene.draw(dt)
     local buttonx = width/2-buttonwidth/2
     local buttony = height/2-buttonheight/2+(buttonheight+10)*i
 
-    love.graphics.setColor(buttoncolor[1], buttoncolor[2], buttoncolor[3])
+    if rainbowmode then buttoncolor = hslToRgb((love.timer.getTime()/6+i/10)%1, .5, .5, .9) end
+
+    if not spookmode then
+      love.graphics.setColor(buttoncolor[1], buttoncolor[2], buttoncolor[3])
+    else
+      love.graphics.setColor(0.5,0.5,0.5)
+    end
     if mouseOverBox(width/2-sprites["ui/button_1"]:getWidth()/2, height/2-buttonheight/2+(buttonheight+10)*i, buttonwidth, buttonheight) then
       love.graphics.setColor(buttoncolor[1]-0.1, buttoncolor[2]-0.1, buttoncolor[3]-0.1) --i know this is horrible
       love.graphics.translate(buttonx+buttonwidth/2, buttony+buttonheight/2)
-      playSound("mous hovvr")
       love.graphics.rotate(0.05 * math.sin(love.timer.getTime()*3))
       love.graphics.translate(-buttonx-buttonwidth/2, -buttony-buttonheight/2)
     end
@@ -79,9 +85,20 @@ function scene.draw(dt)
 
     love.graphics.pop()
 
-    love.graphics.setColor(1,1,1)
-    love.graphics.printf(buttons[i], width/2-buttonwidth/2, height/2-buttonheight/2+(buttonheight+10)*i+5, buttonwidth, "center")
+    if not spookmode then
+      love.graphics.setColor(1,1,1)
+    else
+      love.graphics.setColor(0,0,0)
+    end
+    love.graphics.printf(spookmode and (math.random(1,100) == 1 and "stop it" or "help") or buttons[i], width/2-buttonwidth/2, height/2-buttonheight/2+(buttonheight+10)*i+5, buttonwidth, "center")
   end
+
+  love.graphics.setColor(1, 1, 1)
+  if mouseOverBox(10, height - sprites["ui/github"]:getHeight() - 10, sprites["ui/github"]:getWidth(), sprites["ui/github"]:getHeight()) then
+    love.graphics.setColor(.7, .7, .7)
+  end
+
+  love.graphics.draw(sprites["ui/github"], 10, height-sprites["ui/github"]:getHeight() - 10)
 
   for _,pair in pairs({{1,0},{0,1},{1,1},{-1,0},{0,-1},{-1,-1},{1,-1},{-1,1}}) do
     local outlineSize = 2
@@ -92,9 +109,11 @@ function scene.draw(dt)
     love.graphics.draw(sprites["ui/bab_be_u"], width/2 - sprites["ui/bab_be_u"]:getWidth() / 2 + pair[1], height/20 + pair[2])
   end
 
-  love.graphics.setColor(1, 1, 1)
-  setRainbowModeColor(love.timer.getTime()/3, .5)
-  love.graphics.draw(sprites["ui/bab_be_u"], width/2 - sprites["ui/bab_be_u"]:getWidth() / 2, height/20)
+  if not spookmode then
+    love.graphics.setColor(1, 1, 1)
+    setRainbowModeColor(love.timer.getTime()/3, .5)
+    love.graphics.draw(sprites["ui/bab_be_u"], width/2 - sprites["ui/bab_be_u"]:getWidth() / 2, height/20)
+  end
 
   if is_mobile then
     love.graphics.push()
@@ -111,23 +130,6 @@ function scene.draw(dt)
     love.graphics.pop()
   end
 
-  onstate = "on"
-  if not settings["music_on"] then onstate = "off" end
-
-  love.graphics.setColor(1, 1, 1)
-  if mouseOverBox(10, height - sprites["ui/music-on"]:getHeight(), sprites["ui/music-on"]:getWidth(), sprites["ui/music-on"]:getHeight()) then
-    love.graphics.setColor(.7, .7, .7)
-  end
-
-  love.graphics.draw(sprites["ui/music-"..onstate], 10, height - sprites["ui/music-"..onstate]:getHeight() - 10)
-
-  love.graphics.setColor(1, 1, 1)
-  if mouseOverBox(20+sprites["ui/github"]:getWidth(), height-sprites["ui/github"]:getHeight() - 10, sprites["ui/github"]:getWidth(), sprites["ui/github"]:getHeight()) then
-    love.graphics.setColor(.7, .7, .7)
-  end
-
-  love.graphics.draw(sprites["ui/github"], 20+sprites["ui/github"]:getWidth(), height-sprites["ui/github"]:getHeight() - 10)
-
   if build_number and not debug then
     love.graphics.setColor(1, 1, 1)
     setRainbowModeColor(love.timer.getTime()/6, .6)
@@ -135,11 +137,24 @@ function scene.draw(dt)
     if string.find(build_number, "420") or string.find(build_number, "1337") or string.find(build_number, "666") or string.find(build_number, "69") then
       love.graphics.setColor(hslToRgb(love.timer.getTime()%1, .5, .5, .9))
     end
-    love.graphics.print('v'..build_number)
+    love.graphics.print(spookmode and "error" or 'v'..build_number)
+  end
+
+  if is_mobile then
+    local cursorx, cursory = love.mouse.getPosition()
+    love.graphics.setColor(1, 1, 1)
+    setRainbowModeColor(love.timer.getTime()/6, .5)
+    love.graphics.draw(system_cursor, cursorx, cursory)
   end
 end
 
 function scene.update(dt)
+  if options then
+    buttons = {"music: on", "fullscreen", "exit"}
+  else
+    buttons = {"play", "editor", "options", "exit"}
+  end
+  
   width = love.graphics.getWidth()
   height = love.graphics.getHeight()
 
@@ -149,20 +164,91 @@ function scene.update(dt)
 
   scrollx = scrollx+dt*50
   scrolly = scrolly+dt*50
+  
+  for i=1, #buttons do
+    if mouseOverBox(width/2-sprites["ui/button_1"]:getWidth()/2, height/2-buttonheight/2+(buttonheight+10)*i, buttonwidth, buttonheight) then
+      if not pointInside(oldmousex, oldmousey, width/2-sprites["ui/button_1"]:getWidth()/2, height/2-buttonheight/2+(buttonheight+10)*i, buttonwidth, buttonheight) then
+        -- im sorry
+        playSound("mous hovvr")
+        playSound("mous hovvr")
+        playSound("mous hovvr")
+      end
+      if buttons[i] == "exit" and not options then
+        love.mouse.setPosition(mousex, mousey-(buttonheight+10))
+      end
+    end
 
-  if mouseOverBox(width/2-buttonwidth/2, height/2-buttonheight/2+(buttonheight+10)*3, buttonwidth, buttonheight) then
-    love.mouse.setPosition(mousex, mousey-(buttonheight+10))
+    if buttons[i] == "windowed" or buttons[i] == "fullscreen" then
+      if not fullscreen then
+        buttons[i] = "fullscreen"
+      else
+        buttons[i] = "windowed"
+      end
+    end
+    if string.starts(buttons[i], "music") then
+      buttons[i] = "music: " .. (settings["music_on"] and "on" or "off")
+    end
   end
+
+  oldmousex, oldmousey = love.mouse.getPosition()
 end
 
 function scene.mousePressed(x, y, button)
-  if pointInside(x, y, 10, height - sprites["ui/music-on"]:getHeight(), sprites["ui/music-on"]:getWidth(), sprites["ui/music-on"]:getHeight()) and button == 1 then
-    settings["music_on"] = not settings["music_on"]
-    saveAll()
-  end
-
-  if pointInside(x, y, 20+sprites["ui/github"]:getWidth(), height-sprites["ui/github"]:getHeight() - 10, sprites["ui/github"]:getWidth(), sprites["ui/github"]:getHeight()) and button == 1 then
+  if pointInside(x, y, 10, height - sprites["ui/github"]:getHeight() - 10, sprites["ui/github"]:getWidth(), sprites["ui/github"]:getHeight()) and button == 1 then
     love.system.openURL("https://github.com/lilybeevee/bab-be-u")
+  end
+end
+
+function scene.mouseReleased(x, y, button)
+  width = love.graphics.getWidth()
+  height = love.graphics.getHeight()
+
+  local buttonwidth, buttonheight = sprites["ui/button_1"]:getDimensions()
+
+  local mousex, mousey = love.mouse.getPosition()
+
+  for i=1, #buttons do
+    if mouseOverBox(width/2-sprites["ui/button_1"]:getWidth()/2, height/2-buttonheight/2+(buttonheight+10)*i, buttonwidth, buttonheight) then
+      if button == 1 then
+        if buttons[i] == "exit" and not options then
+          love.window.close()
+        elseif buttons[i] == "exit" and options then
+          options = false
+        elseif buttons[i] == "options" then
+          options = true
+        elseif buttons[i] == "play" then
+          switchScene("play")
+        elseif buttons[i] == "editor" then
+          switchScene("edit")
+        elseif buttons[i] == "windowed" or buttons[i] == "fullscreen" then
+          if fullscreen == false then
+            if not love.window.isMaximized( ) then
+              winwidth, winheight = love.graphics.getDimensions( )
+            end
+            love.window.setMode(0, 0, {borderless=false})
+            love.window.maximize( )
+            fullscreen = true
+          elseif fullscreen == true then
+            love.window.setMode(winwidth, winheight, {borderless=false, resizable=true, minwidth=705, minheight=510})
+            love.window.maximize( )
+            love.window.restore( )
+            fullscreen = false
+          end
+
+          settings["fullscreen"] = fullscreen
+          saveAll()
+        elseif string.starts(buttons[i], "music") then
+          settings["music_on"] = not settings["music_on"]
+          saveAll()
+        end
+      end
+    end
+  end
+end
+
+function scene.keyPressed(key)
+  if key == "escape" and options then
+    options = false
   end
 end
 

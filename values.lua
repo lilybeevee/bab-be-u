@@ -19,12 +19,20 @@ PACK_UNIT_V3 = "llhhbs" -- ID, TILE, X, Y, DIR, SPECIALS
 
 PACK_SPECIAL_V2 = "ss" -- KEY, VALUE
 
-settings = {
-  music_on = true
+local defaultsettings = {
+  music_on = true,
+  fullscreen = false
 }
 
 if love.filesystem.read("Settings.bab") ~= nil then
   settings = json.decode(love.filesystem.read("Settings.bab"))
+  for i in pairs(defaultsettings) do
+    if settings[i] == nil then
+      settings[i] = defaultsettings[i]
+    end
+  end
+else
+  settings = defaultsettings
 end
 
 debug = false
@@ -84,6 +92,62 @@ map_ver = 1
 
 default_map = '{"map":"eJwlzEEOgCAMRNEpGNSwEriLqPe/l39Cunjpb9Kk8GQlE7ArNmVvt04VxQTiA4djdfyA+AKx61pfmmnAbah7+wFtgAJz","width":21,"music":"bab be go","version":1,"height":15,"author":"","name":"new level","palette":"default"}'
 
+main_palette_for_colour = {
+blacc = {0, 4},
+reed = {2, 2}, 
+orang = {2, 3},
+yello = {2, 4},
+grun = {5, 2},
+cyeann = {1, 4},
+bleu = {1, 3},
+purp = {3, 1},
+whit = {0, 3},
+}
+
+colour_for_palette = {}
+colour_for_palette[0] = {};
+colour_for_palette[0][0] = "blacc";
+colour_for_palette[0][1] = nil;
+colour_for_palette[0][2] = nil;
+colour_for_palette[0][3] = "whit";
+colour_for_palette[0][4] = "blacc";
+colour_for_palette[1] = {};
+colour_for_palette[1][0] = "blacc";
+colour_for_palette[1][1] = "bleu";
+colour_for_palette[1][2] = "bleu";
+colour_for_palette[1][3] = "bleu";
+colour_for_palette[1][4] = "cyeann";
+colour_for_palette[2] = {};
+colour_for_palette[2][0] = "reed";
+colour_for_palette[2][1] = "reed";
+colour_for_palette[2][2] = "reed";
+colour_for_palette[2][3] = "orang";
+colour_for_palette[2][4] = "yelo";
+colour_for_palette[3] = {};
+colour_for_palette[3][0] = "purp";
+colour_for_palette[3][1] = "purp";
+colour_for_palette[3][2] = "purp";
+colour_for_palette[3][3] = "purp";
+colour_for_palette[3][4] = nil;
+colour_for_palette[4] = {};
+colour_for_palette[4][0] = "purp";
+colour_for_palette[4][1] = nil;
+colour_for_palette[4][2] = nil;
+colour_for_palette[4][3] = nil;
+colour_for_palette[4][4] = nil;
+colour_for_palette[5] = {};
+colour_for_palette[5][0] = "grun";
+colour_for_palette[5][1] = "grun";
+colour_for_palette[5][2] = "grun";
+colour_for_palette[5][3] = "grun";
+colour_for_palette[5][4] = nil;
+colour_for_palette[6] = {};
+colour_for_palette[6][0] = nil;
+colour_for_palette[6][1] = nil;
+colour_for_palette[6][2] = "orang";
+colour_for_palette[6][3] = nil;
+colour_for_palette[6][4] = "blak";
+
 selector_grid_contents = {
   -- page 1: default
   {
@@ -100,7 +164,7 @@ selector_grid_contents = {
     "boll", "text_boll", "text_:o", "frut", "text_frut", "slippers", "text_slippers", "pata", "text_pata", "larry", "text_larry", "pepis", "text_pepis", "metl", "text_metl", 0, "text_colrful", "text_yello",
     "clok", "text_clok", "text_try again", "text_no undo", "text_undo", "zsoob", "text_zsoob", "katany", "text_katany", "petnygrame", "text_petnygrame", "hedg", "text_hedg", "lie", "text_lie", 0, "text_rave", "text_grun",
     "splittr", "text_splittr", "text_split", "steev", "text_steev", "boy", "text_boy", "scarr", "text_scarr", "firbolt", "text_firbolt", "icbolt", "text_icbolt", "lie/8", "text_lie/8", 0, "text_stelth", "text_cyeann",
-    "chekr", "text_chekr", "text_diag", "text_ortho", "text_haet flor", "arro", "text_arro", "text_go my way", "text_spin", "text_no turn", "text_stubbn", "platfor", "text_platfor", "jail", "text_jail", 0, 0, "text_bleu",
+    "chekr", "text_chekr", "text_diag", "text_ortho", "text_haet flor", "arro", "text_arro", "text_go my way", "text_spin", "text_no turn", "text_stubbn", "platfor", "text_platfor", "jail", "text_jail", 0, "text_paint", "text_bleu",
     "clowd", "text_clowd", "text_flye", "text_tall", "text_haet skye", "ghost fren", "text_ghost fren", "robobot", "text_robobot", "sparkl", "text_sparkl", "spik", "text_spik", "spiky", "text_spiky", "bordr", "text_bordr", "text_purp",
     nil
   },
@@ -134,7 +198,7 @@ selector_grid_contents = {
     "boy","text_boy","dayzy","text_dayzy","platfor","text_platfor",0,0,0,0,0,0,0,0,"lila","text_lila","tot","text_tot",
     "steev","text_steev","splittr","text_splittr","colld","text_colld",0,0,0,0,0,0,0,0,"pata","text_pata","o","text_o",
     "han","text_han","clowd","text_clowd","bellt","text_bellt","arro","text_arro",0,0,0,0,0,0,"larry","text_larry","zsoob","text_zsoob",
-    "os","text_os","hurcane","text_hurcane","spik","text_spik",0,0,0,0,0,0,0,0,0,0,0,0,
+    "os","text_os","hurcane","text_hurcane","spik","text_spik",0,0,0,0,0,0,0,0,0,0,"jill","text_jill",
     "firbolt","text_firbolt","lie","text_lie","spiky","text_spiky",0,0,0,0,0,0,0,0,0,0,0,0,
     "icbolt","text_icbolt","lie/8","text_lie/8","bordr","text_bordr",0,0,0,0,0,0,0,0,0,0,0,0,
   },
@@ -412,7 +476,7 @@ tiles_list = {
     name = "text_reed",
     sprite = "text_reed",
     type = "text",
-    texttype = "property",
+    texttype = "cond_prefix_or_property",
     color = {2, 2},
     layer = 20,
     desc = "REED: Causes the unit to appear red.",
@@ -422,7 +486,7 @@ tiles_list = {
     name = "text_bleu",
     sprite = "text_bleu",
     type = "text",
-    texttype = "property",
+    texttype = "cond_prefix_or_property",
     color = {1, 3},
     layer = 20,
     desc = "BLEU: Causes the unit to appear blue.",
@@ -2342,7 +2406,7 @@ tiles_list = {
     name = "text_grun",
     sprite = "text_grun",
     type = "text",
-    texttype = "property",
+    texttype = "cond_prefix_or_property",
     color = {5, 2},
     layer = 20,
     desc = "grun: Causes the unit to appear green."
@@ -2352,7 +2416,7 @@ tiles_list = {
     name = "text_yello",
     sprite = "text_yello",
     type = "text",
-    texttype = "property",
+    texttype = "cond_prefix_or_property",
     color = {2, 4},
     layer = 20,
     desc = "YELLO: Causes the unit to appear yellow."
@@ -2362,7 +2426,7 @@ tiles_list = {
     name = "text_purp",
     sprite = "text_purp",
     type = "text",
-    texttype = "property",
+    texttype = "cond_prefix_or_property",
     color = {3, 2},
     layer = 20,
     desc = "PURP: Causes the unit to appear purple."
@@ -2372,7 +2436,7 @@ tiles_list = {
     name = "text_orang",
     sprite = "text_orang",
     type = "text",
-    texttype = "property",
+    texttype = "cond_prefix_or_property",
     color = {2, 3},
     layer = 20,
     desc = "ORANG: Causes the unit to appear orange."
@@ -2382,7 +2446,7 @@ tiles_list = {
     name = "text_cyeann",
     sprite = "text_cyeann",
     type = "text",
-    texttype = "property",
+    texttype = "cond_prefix_or_property",
     color = {1, 4},
     layer = 20,
     desc = "CYEANN: Causes the unit to appear cyan."
@@ -2392,7 +2456,7 @@ tiles_list = {
     name = "text_whit",
     sprite = "text_whit",
     type = "text",
-    texttype = "property",
+    texttype = "cond_prefix_or_property",
     color = {0, 3},
     layer = 20,
     desc = "whit: Causes the unit to appear white."
@@ -2402,7 +2466,7 @@ tiles_list = {
     name = "text_blacc",
     sprite = "text_blacc",
     type = "text",
-    texttype = "property",
+    texttype = "cond_prefix_or_property",
     color = {0, 0},
     layer = 20,
     desc = "BLACC: Causes the unit to appear black."
@@ -3243,7 +3307,7 @@ tiles_list = {
     texttype = "cond_prefix",
     color = {3, 3},
     layer = 20,
-    desc = "CLIKT (Prefix Condition): CLIKT objects will be true when left-clicked. Passes a turn if successful.",
+    desc = "CLIKT (Prefix Condition): CLIKT objects will be true when left-clicked. Clicks will pass a turn if this text exists.",
   },
   -- 321
   {
@@ -3284,6 +3348,7 @@ tiles_list = {
     type = "object",
     color = {2,2},
     layer = 5,
+    eye = {x=17, y=5, w=9, h=7},
   },
   -- 326
   {
@@ -3308,6 +3373,45 @@ tiles_list = {
     type = "text",
     color = {1,4},
     layer = 20,
+  },
+  -- 329
+  {
+    name = "jill",
+    sprite = "jill",
+    sleepsprite = "jill_slep";
+    type = "object",
+    color = {1,3},
+    layer = 5,
+    rotate = true,
+    eye = {x=17, y=8, w=2, h=3},
+    desc = "it time 2 mix drincc & chaeng life"
+  },
+  -- 330
+  {
+    name = "text_jill",
+    sprite = "text_jill",
+    type = "text",
+    color = {1,3},
+    layer = 20,
+  },
+  -- 331
+  {
+    name = "text_paint",
+    sprite = "text_paint",
+    type = "text",
+    texttype = "verb_object",
+    color = {4, 2},
+    layer = 20,
+    desc = "PAINT: changes the second object's color to match."
+  },
+  -- 332
+  {
+    name = "paint",
+    sprite = "paint",
+    type = "object",
+    color = {0, 3},
+    layer = 4,
+    desc = "X be PAINT turns into a paint bucket with the color of X."
   },
 }
 

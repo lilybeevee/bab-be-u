@@ -911,7 +911,6 @@ function miscUpdates()
       -- for optimisation in drawing
       local objects_to_check = {
       "stelth", "colrful", "xwx", "rave",
-      "reed", "bleu", "grun", "yello", "purp", "orang", "cyeann", "whit", "blacc"
       }
       for i = 1, #objects_to_check do
         local prop = objects_to_check[i]
@@ -954,6 +953,95 @@ function updateGraphicalPropertyCache()
       end
     end
     graphical_property_cache[prop] = new_tbl;
+  end
+  
+  updateUnitColours()
+end
+
+--Colour logic:
+--If a unit be colour, it becomes that colour until it ben't that colour or it be a different colour. It persists even after breaking the rule.
+--TODO: Make it so you can colour mix by making it so changing to certain colours doesn't unset other colours that it mixes with? (e.g. if you're reed, setting whit doesn't unset reed, but setting blacc does)
+function updateUnitColours()
+  for colour,palette in pairs(main_palette_for_colour) do
+    local decolour = matchesRule(nil,"ben't",colour)
+    for _,match in ipairs(decolour) do
+      local rules = match[1]
+      local unit = match[2]
+
+      local rule = rules[1]
+
+      if (unit[colour] == true) then
+        addUndo({"colour_change", unit.id, colour, true});
+        unit[colour] = false
+        updateUnitColourOverride(unit)
+      end
+      --If a unit ben't its native colour, make it blacc.
+      if palette[1] == tiles_list[unit.tile].color[1] and palette[2] == tiles_list[unit.tile].color[2]  and unitNotRecoloured(unit) then
+        addUndo({"colour_change", unit.id, "blacc", false});
+        unit["blacc"] = true
+        updateUnitColourOverride(unit)
+      end
+    end
+    
+    local newcolour = matchesRule(nil,"be",colour)
+    for _,match in ipairs(newcolour) do
+      local rules = match[1]
+      local unit = match[2]
+
+      local rule = rules[1]
+
+      if (unit[colour] ~= true) then
+        unitUnsetOtherColours(unit, colour);
+        addUndo({"colour_change", unit.id, colour, false});
+        unit[colour] = true
+        updateUnitColourOverride(unit)
+      end
+    end
+  end
+end
+
+function unitUnsetOtherColours(unit, colour)
+  for colour,palette in pairs(main_palette_for_colour) do
+    if unit[colour] == true then
+      addUndo({"colour_change", unit.id, colour, true});
+      unit[colour] = false
+    end
+  end
+end
+
+function unitNotRecoloured(unit)
+  for colour,palette in pairs(main_palette_for_colour) do
+    if unit[colour] == true then
+      return false
+    end
+  end
+  return true
+end
+
+function updateUnitColourOverride(unit)
+  unit.color_override = nil
+  if unit.whit and unit.reed then
+	  unit.color_override = {4, 2}
+	elseif unit.whit and unit.grun then
+	  unit.color_override = {5, 3}
+	elseif unit.whit or (unit.reed and unit.grun and unit.bleu) or (unit.reed and unit.cyeann) or (unit.bleu and unit.yello) or (unit.grun and unit.purp) then
+      unit.color_override = {0, 3}	
+	elseif unit.purp or (unit.reed and unit.bleu) then
+      unit.color_override = {3, 1}
+	elseif unit.yello or (unit.reed and unit.grun) then
+      unit.color_override = {2, 4}
+	elseif unit.orang or (unit.reed and unit.yello) then
+      unit.color_override = {2, 3}
+  elseif unit.cyeann or (unit.bleu and unit.grun) then
+    unit.color_override = {1, 4}
+  elseif unit.reed then
+    unit.color_override = {2, 2}
+  elseif unit.bleu then
+    unit.color_override = {1, 3}
+  elseif unit.grun then
+    unit.color_override = {5, 2}
+  elseif unit.blacc then
+    unit.color_override = {0, 4}
   end
 end
 
@@ -1433,7 +1521,7 @@ function convertLevel()
       return true
     end
   end
-  
+
   local converts = matchesRule(outerlvl,"be","?")
   for _,match in ipairs(converts) do
     if not nameIs(outerlvl, match[1][3]) then
@@ -2037,10 +2125,18 @@ function makeMetaTile(premeta_tile)
   }
 end
 
+function undoWin()
+  currently_winning = false
+	music_fading = false
+  win_size = 0
+end
+
 function doWin()
-	if not win then
-		win = true
+	if not currently_winning then
+		won_this_session = true
+    currently_winning = true
 		music_fading = true
+    win_size = 0
 		playSound("win")
 		love.filesystem.createDirectory("levels")
     love.filesystem.write("levels/" .. level_name .. ".replay", replay_string)
