@@ -17,6 +17,8 @@ local scroll_height
 
 local oldmousex, oldmousey = love.mouse.getPosition()
 
+local hasreplaylist = {}
+
 function scene.load()
   metaClear()
   clear()
@@ -26,6 +28,8 @@ function scene.load()
   scene.buildUI()
   love.mouse.setGrabbed(false)
   love.keyboard.setKeyRepeat(true)
+
+  hasreplaylist = {}
 
   presence = {
     state = "in "..(load_mode == "edit" and "editor" or "game"),
@@ -189,16 +193,22 @@ function scene.draw()
     o.rainbowoffset = i
     o:draw()
 
-    if o.data.type == "level" then
+    if love.keyboard.isDown("r") and o.data.type == "level" then
       local level_name = o:getName()
 
-      if level_name .. '.replay' and love.keyboard.isDown("r") then
+      if hasreplaylist[level_name] == nil then
         local dir = "levels/"
         if world ~= "" then dir = world_parent .. "/" .. world .. "/" end
         if not (love.filesystem.getInfo(dir .. level_name .. ".replay") or love.filesystem.getInfo("levels/" .. level_name .. ".replay")) then
-          love.graphics.setColor(1, 0, 0)
-          love.graphics.draw(sprites["ui/x"], o.x-16, o.y-16)
+          hasreplaylist[level_name] = true
+        else
+          hasreplaylist[level_name] = false
         end
+      end
+
+      if hasreplaylist[level_name] then
+        love.graphics.setColor(1, 0, 0)
+        love.graphics.draw(sprites["ui/x"], o.x-16, o.y-16)
       end
     end
 
@@ -511,6 +521,7 @@ function scene.selectWorld(o, button)
       o:setColor()
       o:setSprite(sprites["ui/world box"])
     else
+      hasreplaylist = {}
       world = o:getName()
       world_parent = o.data.file
       scene.buildUI()
