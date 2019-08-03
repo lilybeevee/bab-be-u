@@ -570,7 +570,7 @@ It is probably possible to do, but lily has decided that it's not important enou
     calculateLight()
     move_stage = move_stage + 1
   end
-  --https://babaiswiki.fandom.com/wiki/Advanced_rulebook
+  --https://babaiswiki.fandom.com/wiki/Advanced_rulebook (for comparison)
   parseRules()
   calculateLight()
   moveBlock()
@@ -635,6 +635,7 @@ function moveIt(mover, dx, dy, facing_dir, move_dir, geometry_spin, data, pullin
     queueMove(mover, dx, dy, facing_dir, false, geometry_spin, portal);
     --applySlide(mover, dx, dy, already_added, moving_units_next);
     applySwap(mover, dx, dy);
+    applyPortalHoover(mover, dx, dy);
     --finishing a slip locks you out of U/WALK for the rest of the turn
     if data.reason == "icy" and not hasRule(mover,"got","slippers") then
       slippers[mover.id] = true
@@ -788,6 +789,24 @@ function applySwap(mover, dx, dy)
   --end
   if (swap_mover and did_swap) then
      table.insert(update_queue, {unit = mover, reason = "dir", payload = {dir = rotate8(mover.dir)}})
+  end
+end
+
+--Explanation: At Vitellary's request, a moving portal hoovers everything it moves onto (passing through it as though it moved into the portal vountarily).
+function applyPortalHoover(mover, dx, dy)
+  --fast track
+  if rules_with["poor toll"] == nil then return end
+  if (not hasProperty(mover, "poor toll")) then return end
+  
+  local xx, yy = mover.x+dx, mover.y+dy;
+  
+  for _,v in ipairs(getUnitsOnTile(mover.x+dx, mover.y+dy, nil, false)) do
+    if sameFloat(mover, v) then
+      local dx, dy, dir, px, py = getNextTile(v, -dx, -dy, v.dir);
+      if (px ~= xx and py ~= yy) then
+        queueMove(v, px-v.x, py-v.y, v.dir, false, 0, mover);
+      end
+    end
   end
 end
 
@@ -1131,7 +1150,8 @@ function doPortal(unit, px, py, move_dir, dir, reverse)
     --I thought about making portals go backwards/forwards twice/etc depending on property count, but it doesn't play nice with pull - if two portals lead to a portal you move away from, which one do you pull from?
     --This was already implemented in cg5's mod, but I overlooked it the first time around - PORTAL is FLOAT respecting, so now POOR TOLL is FLYE respecting. Spooky! (I already know this will have weird behaviour with PULL and SIDEKIK, so looking forward to that.)
     for _,v in ipairs(getUnitsOnTile(px, py, nil, false)) do
-      if hasProperty(v, "poor toll") and sameFloat(unit, v) and not hasRule(unit,"haet",v) then
+      --At Vitellary's request, make it so you can only enter the front of a portal.
+      if dirAdd(v.dir, 4) == move_dir and hasProperty(v, "poor toll") and sameFloat(unit, v) and not hasRule(unit,"haet",v) then
         local portal_rules = matchesRule(v.fullname, "be", "poor toll");
         local portals_direct = {};
         local portals = {};
