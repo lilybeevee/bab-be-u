@@ -301,7 +301,7 @@ function moveBlock()
       for i,righthere in ipairs(rightheres) do
         
         if found then
-          addUndo({"update", unit.id, unit.x, unit.y})
+          addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
           moveUnit(unit,righthere.x,righthere.y)
           table.insert(hasrighthered,unit)
           break
@@ -315,7 +315,7 @@ function moveBlock()
       if not found then
         local firstrighthere = rightheres[1]
         
-        addUndo({"update", unit.id, unit.x, unit.y})
+        addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
         moveUnit(unit,firstrighthere.x,firstrighthere.y)
         table.insert(hasrighthered,unit)
       end
