@@ -10,6 +10,12 @@ function world_button.new(file)
   o:setFont(ui.fonts.world_name)
 
   function o:getColor()
+    if spookmode then
+      return {0,0,0}
+    end
+    if rainbowmode then
+      return hslToRgb(love.timer.getTime()/3%1, 0.4, 0.5, .9)
+    end
     if not self.color then return {0.25, 0.5, 1, 1}
     else return unpack(self.color) end
   end
@@ -41,7 +47,7 @@ function world_button.new(file)
       local _,lines = font:getWrap(self:getName():upper(), self:getWidth() - 24)
       local height = #lines * font:getHeight()
 
-      love.graphics.printf(self:getName():upper(), 12, self:getHeight() / 2 - height / 2, self:getWidth() - 24, "center")
+      love.graphics.printf(spookmode and (math.random(1,100) == 1 and "stop it" or "help") or self:getName():upper(), 12, self:getHeight() / 2 - height / 2, self:getWidth() - 24, "center")
     end
   end
 

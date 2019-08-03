@@ -31,6 +31,10 @@ averagefps = 0
 
 special_no = 1
 
+spookmode = false
+
+bxb = nil
+
 function tableAverage(table)
   local sum = 0
   local ave = 0
@@ -50,6 +54,40 @@ local headerfont = love.graphics.newFont(32)  -- used for debug
 local regularfont = love.graphics.newFont(16) -- read the line above
 
 function love.load()
+  local babfound = false
+
+  function searchbab(d)
+    local dir = "assets/sprites"
+    if d then
+      dir = dir .. "/" .. d
+    end
+    local files = love.filesystem.getDirectoryItems(dir)
+    for _,file in ipairs(files) do
+      if string.sub(file, -4) == ".png" then
+        local spritename = string.sub(file, 1, -5)
+        local sprite = love.graphics.newImage(dir .. "/" .. file)
+        if d then
+          spritename = d .. "/" .. spritename
+        end
+        if spritename == "bab" then
+          babfound = true
+        end
+      elseif love.filesystem.getInfo(dir .. "/" .. file).type == "directory" then
+        local newdir = file
+        if d then
+          newdir = d .. "/" .. newdir
+        end
+        searchbab(file)
+      end
+    end
+  end
+
+  searchbab()
+
+  if not babfound then
+    spookmode = true
+  end
+
   print(colr.bright([[
 
 
@@ -93,7 +131,7 @@ function love.load()
          BBBBBBBB          BBBBBBBBBB                      BBBBBBBB
 
   ]])..colr.magenta([[
-                                   BAB BE U]])..
+                                   ]])..(spookmode and "  help" or "BAB BE U")..
 "\n                                      v. "..build_number..[[
                                      ]]..colr.red('❤')..' v. '..love.getVersion()..'\n\n')
 
@@ -113,8 +151,16 @@ function love.load()
   move_sound_source = nil
   anim_stage = 0
   next_anim = ANIM_TIMER
-  fullscreen = false
+  fullscreen = settings["fullscreen"]
   winwidth, winheight = love.graphics.getDimensions( )
+
+  if fullscreen and love.window then
+    if not love.window.isMaximized( ) then
+      winwidth, winheight = love.graphics.getDimensions( )
+    end
+    love.window.setMode(0, 0, {borderless=false})
+    love.window.maximize( )
+  end
 
   empty_sprite = love.image.newImageData(32, 32)
   if not is_mobile then
@@ -218,9 +264,9 @@ function love.load()
         if file:ends(".ogg") then audioname = file:sub(1, -5) end
         if file:ends(".flac") then audioname = file:sub(1, -5) end
         if file:ends(".xm") then audioname = file:sub(1, -4) end
-        if d then
+        --[[if d then
           audioname = d .. "/" .. audioname
-        end
+        end]]
         sound_exists[audioname] = true
         --print("ℹ️ audio "..audioname.." added")
       end
@@ -235,18 +281,18 @@ function love.load()
   --end
 
   registerSound("move", 0.4)
-  registerSound("mous sele", 0.5)
-  registerSound("mous hovvr", 0.5)
-  registerSound("mous kicc", 0.5)
-  registerSound("mous snar", 0.5)
-  registerSound("mous hihet", 0.5)
-  registerSound("mous crash", 0.5)
+  registerSound("mous sele", 0.3)
+  registerSound("mous hovvr", 0.3)
+  registerSound("mous kicc", 0.3)
+  registerSound("mous snar", 0.3)
+  registerSound("mous hihet", 0.3)
+  registerSound("mous crash", 0.3)
   -- there is a more efficient way, i know.
 
   -- WHY NOT DO IT THEN
   -- ugh ill do it for you
   for i=1, 10 do
-    registerSound("mous special "..i, 0.5)
+    registerSound("mous special "..i, 0.3)
   end
 
   -- ty. much appreciated
@@ -278,7 +324,18 @@ function love.load()
     love.window.setMode(640, 360)
   end
 
-  print(colr.bright("\nboot complete!"))
+  if spookmode then
+    for i=1, 20 do
+      print(colr.red("⚠ bab not found"))
+    end
+    --love.errorhandler = function() print(colr.red("goodbye")) end
+    love.window.setFullscreen(true)
+    love.window.setIcon(love.image.newImageData("assets/sprites/wat.png"))
+    love.window.setTitle("bxb bx x")
+    love.window.requestAttention()
+  else
+    print(colr.bright("\nboot complete!"))
+  end
 
   scene = menu
   scene.load()
@@ -316,22 +373,22 @@ function love.keypressed(key,scancode,isrepeat)
     drumMode = not drumMode
   elseif key == "r" and love.keyboard.isDown('f3') then
     remasterMode = not remasterMode
-  elseif key == "f4" then
+  elseif key == "f4" and not spookmode then
     debug = not debug
   elseif key == "f5" then
     love.event.quit("restart")
   elseif key == "f11" then
     if fullscreen == false then
-	  if not love.window.isMaximized( ) then
-		winwidth, winheight = love.graphics.getDimensions( )
-	  end
-	  love.window.setMode(0, 0, {borderless=false})
-	  love.window.maximize( )
-	  fullscreen = true
+	    if not love.window.isMaximized( ) then
+	  	  winwidth, winheight = love.graphics.getDimensions( )
+	    end
+	    love.window.setMode(0, 0, {borderless=false})
+	    love.window.maximize( )
+	    fullscreen = true
     elseif fullscreen == true then
       love.window.setMode(winwidth, winheight, {borderless=false, resizable=true, minwidth=705, minheight=510})
-	  love.window.maximize( )
-	  love.window.restore( )
+	    love.window.maximize()
+	    love.window.restore()
       fullscreen = false
     end
   elseif key == "f" and love.keyboard.isDown('lctrl') then
@@ -458,19 +515,6 @@ function love.mousereleased(x, y, button)
     local height = love.graphics.getHeight()
 
     local buttonwidth, buttonheight = sprites["ui/button_1"]:getDimensions()
-
-    if mouseOverBox(width/2-buttonwidth/2, height/2-buttonheight/2+buttonheight+10, buttonwidth, buttonheight) then
-      scene = loadscene
-      load_mode = "play"
-      clearGooi()
-      scene.load()
-    end
-    if mouseOverBox(width/2-buttonwidth/2, height/2-buttonheight/2+(buttonheight+10)*2, buttonwidth, buttonheight) then
-      scene = loadscene
-      load_mode = "edit"
-      clearGooi()
-      scene.load()
-    end
   end
 
   if scene ~= loadscene then
@@ -489,7 +533,37 @@ function addTick(name, delay, fn)
   return ret
 end
 
+function switchScene(name)
+  scene = loadscene
+  load_mode = name
+  if spookmode then
+    load_mode = "game"
+  end
+  clearGooi()
+  scene.load()
+end
+
+local gettimetime = 0
+
+love.timer.getRealTime = love.timer.getTime
+love.timer.getTime = function()
+  if spookmode then
+    return gettimetime
+  else
+    return love.timer.getRealTime()
+  end
+end
+
 function love.update(dt)
+  if spookmode then
+    dt = math.tan(love.timer.getRealTime()*20)/200
+  end
+
+  if not (love.window.isVisible or love.window.hasFocus or love.window.hasMouseFoxus) and spookmode then
+    love.window.requestAttention()
+  end
+
+  gettimetime = gettimetime + dt
 
   currentfps = love.timer.getFPS()
 
@@ -501,7 +575,20 @@ function love.update(dt)
     peakfps = currentfps
   end
 
-
+  if shake_dur > 0 then
+    shake_dur = shake_dur-dt
+  else
+    shake_intensity = 0
+    shake_dur = 0
+  end
+  if shake_intensity > 0.4 then
+    shake_intensity = 0.4
+  end
+  
+  if spookmode then
+    shake_intensity = 0.02
+    shake_dur = 1000
+  end
 
   for k,v in pairs(tweens) do
     if v[1]:update(dt) then
@@ -557,7 +644,7 @@ function love.draw()
     scene.draw(dt)
   end
 
-  if debug then
+  if debug and not spookmode then
     local mousex, mousey = love.mouse.getPosition()
 
     local debugheader = "SUPER DEBUG MENU V2.1"
@@ -623,7 +710,7 @@ function love.draw()
     olddebugtext = debugtext
   end
 
-  if superduperdebugmode then
+  if superduperdebugmode and not spookmode then
     love.graphics.setColor(1,1,0, 0.7)
     love.graphics.line(love.mouse.getX()-love.mouse.getY(), 0, love.mouse.getX()+(love.graphics.getHeight()-love.mouse.getY()), love.graphics.getHeight())
     love.graphics.line(love.mouse.getX()+love.mouse.getY(), 0, love.mouse.getX()-(love.graphics.getHeight()-love.mouse.getY()), love.graphics.getHeight())
@@ -648,11 +735,25 @@ function love.draw()
     love.graphics.setColor(0,0,1)
     drawmousething(0, 0)
   end
+
+  if spookmode and math.random(1000) == 500 then
+    local bab = love.graphics.newImage("assets/sprites/ui/bxb bx x.jpg")
+    love.graphics.draw(bab, 0, 0, 0, bab:getWidth()/love.graphics.getWidth(), bab:getHeight()/love.graphics.getHeight())
+  end
+end
+
+function love.visible()
+  if spookmode then
+    love.resize()
+  end
 end
 
 function love.resize(w, h)
   if scene and scene.resize then
     scene.resize(w, h)
+  end
+  if spookmode then
+    love.window.setFullscreen(true)
   end
 end
 

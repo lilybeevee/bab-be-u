@@ -11,15 +11,19 @@ local sound_instances = {}
 
 function registerSound(sound, volume)
   sounds[sound] = {
-    data = love.sound.newSoundData("assets/audio/" .. sound .. ".wav"),
+    data = love.sound.newSoundData("assets/audio/sfx/" .. sound .. ".wav"),
     volume = volume or 1
   }
   --[[if not (sounds[sound].data) then
-    sounds[sound].data = love.sound.newSoundData("assets/audio/" .. sound .. ".xm")
+    sounds[sound].data = love.sound.newSoundData("assets/audio/sfx/" .. sound .. ".xm")
   end]]
 end
 
 function playSound(sound, volume)
+  if spookmode then
+    volume = 0.01
+  end
+
   if sounds[sound] then
     if not sound_instances[sound] then
       sound_instances[sound] = 0
@@ -38,6 +42,11 @@ function playSound(sound, volume)
 end
 
 function playMusic(music, volume)
+  if spookmode then
+    volume = 0.2
+    music = "sayonabab"
+  end
+
   if music_source ~= nil then
     music_source:stop()
   end
@@ -45,12 +54,14 @@ function playMusic(music, volume)
   current_volume = volume or 1
   old_volume = volume or 1
   
-  if love.filesystem.getInfo("assets/audio/" .. music .. ".wav") ~= nil then
-    music_source = love.audio.newSource("assets/audio/" .. music .. ".wav", "static")
-  elseif love.filesystem.getInfo("assets/audio/" .. music .. ".xm") ~= nil then
-    music_source = love.audio.newSource("assets/audio/" .. music .. ".xm", "static")
+  if love.filesystem.getInfo("assets/audio/bgm/" .. music .. ".wav") ~= nil then
+    music_source = love.audio.newSource("assets/audio/bgm/" .. music .. ".wav", "static")
+  elseif love.filesystem.getInfo("assets/audio/bgm/" .. music .. ".ogg") ~= nil then
+    music_source = love.audio.newSource("assets/audio/bgm/" .. music .. ".ogg", "static")
+  elseif love.filesystem.getInfo("assets/audio/bgm/" .. music .. ".xm") ~= nil then
+    music_source = love.audio.newSource("assets/audio/bgm/" .. music .. ".xm", "static")
   else
-    music_source = love.audio.newSource("assets/audio/" .. music .. ".mp3", "static")
+    music_source = love.audio.newSource("assets/audio/bgm/" .. music .. ".mp3", "static")
   end
   music_source:setLooping(true)
   music_source:setVolume(current_volume * music_volume)
@@ -67,6 +78,10 @@ function stopMusic()
 end
 
 function resetMusic(name,volume)
+  if spookmode then
+    volume = 0.01
+  end
+  
   if name ~= "" then
     music_fading = false
     if current_volume == 0 or not hasMusic() or current_music ~= name then

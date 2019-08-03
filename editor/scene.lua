@@ -130,6 +130,11 @@ function scene.load()
     end
     selected_level = nil
   end
+
+  if spookmode then
+    new_scene = game
+    load_mode = "play"
+  end
 end
 
 selector_tab_buttons_list = {}
@@ -307,15 +312,20 @@ mobile_stackmode = "none"
 function scene.keyPressed(key)
   if key == "escape" then
     if not capturing then
-      gooi.confirm({
-        text = "Go back to level selector?",
-        okText = "Yes",
-        cancelText = "Cancel",
-        ok = function()
-          load_mode = "edit"
-          new_scene = loadscene
-        end
-      })
+      if not spookmode then
+        gooi.confirm({
+          text = spookmode and "Ģ͖̙̗̳̟̩̱̹̥̓͌͂ͤͫͫo̟̗͓̞̪̬͒̀ ̤̯̺̹͙̮̇bͯͣ̚͏̹̮a̸̡̯̜̦̝͓͑͋̾̊̾̏̔͢cͨ̿̏̔̆ͣ̎̊ͫ͟҉̗ǩ̬̰͕̭͊ͣͣ̈̇̀ ̩̖̮̹̣̰̫̫̏͐́͊̓̉̓̃͟ͅť̜̤̤̫ͯ͟ó̷͕̩̻̼͕̽͑̀̕ ̧̨͚̻̭̜̜͓̆̎͐͌͊̔l̷̰̖̳͈̰̞̄́̕e̷̫̾͑͌ͣ̎ͩ̍̑͞v̷̢̥̰̪͋͗̀̊ͤ͢é̛̼͖͖͓͕̖ͥ̔͑̐̔ͫ̿ļ̷̵̩̞̩̀͛͒̇͗̊̉̔̄ ̵͈ͪ̂̏ͧͨ͘͘ŝ̶̷̮̠͙͓̬̦̗ͭẽ͙̩͔͕͊̔ͯͮͤ̑͟ļ̗͈̈́̐ͨ̄̑ͪͪ͘ȩ͕̘̱͙̻̣̦̉̈ͨ̐ͪ̑̿̃̾ͅc͍̯͈̀ͥ̕͢t̨̩̹̲͍͕͇̊̇̈́̏ͮͬ̿͆͘ͅo̯̮͉̜͓͇̎̂̄ͧͭ̒ͫͫ͘͠͠r̰͍̝̯̿̆ͦ?ͪ͋͒ͩ̇̚҉̶̠̘̦" or "Go back to level selector?",
+          okText = "Yes",
+          cancelText = spookmode and "Yes" or "Cancel",
+          ok = function()
+            load_mode = "edit"
+            new_scene = loadscene
+          end
+        })
+      else
+        load_mode = "play"
+        new_scene = loadscene
+      end
       return
     else
       capturing = false
@@ -456,188 +466,190 @@ function scene.keyReleased(key)
 end
 
 function scene.update(dt)
-  if capturing then
-    if start_drag then
-      local rect = {
-        x = start_drag.x, 
-        y = start_drag.y,
-        w = love.mouse.getX() - start_drag.x,
-        h = love.mouse.getY() - start_drag.y
-      }
-      local highest = math.max(math.abs(rect.w), math.abs(rect.h))
-      if math.abs(rect.w) < highest then
-        if rect.w < 0 then rect.w = -highest end
-        if rect.w > 0 then rect.w = highest end
-      end
-      if math.abs(rect.h) < highest then
-        if rect.h < 0 then rect.h = -highest end
-        if rect.h > 0 then rect.h = highest end
-      end
-      end_drag = {x = rect.x + rect.w, y = rect.y + rect.h}
-    end
-    return
-  end
-
-  if gooi.showingDialog then
-    return
-  end
-
-  if ignore_mouse then
-    if not love.mouse.isDown(1) then
-      ignore_mouse = false
-    end
-    return
-  end
-
-  width = love.graphics.getWidth()
-  height = love.graphics.getHeight()
-
-  if settings_open then
-    if not palettes[input_palette:getText()] then
-      label_palette:setIcon(sprites["ui/smol warning"])
-    else
-      label_palette:setIcon()
-    end
-    if not sound_exists[input_music:getText()] then
-      label_music:setIcon(sprites["ui/smol warning"])
-    else
-      label_music:setIcon()
-    end
-  elseif not settings_open or not mouseOverBox(settings.x, settings.y, settings.w, settings.h) then
-    local hx,hy = getHoveredTile()
-    if hx ~= nil then
-      local tileid = hx + hy * mapwidth
-
-      local hovered = {}
-      if units_by_tile[tileid] then
-        for _,v in ipairs(units_by_tile[tileid]) do
-          table.insert(hovered, v)
+  if not spookmode then
+    if capturing then
+      if start_drag then
+        local rect = {
+          x = start_drag.x, 
+          y = start_drag.y,
+          w = love.mouse.getX() - start_drag.x,
+          h = love.mouse.getY() - start_drag.y
+        }
+        local highest = math.max(math.abs(rect.w), math.abs(rect.h))
+        if math.abs(rect.w) < highest then
+          if rect.w < 0 then rect.w = -highest end
+          if rect.w > 0 then rect.w = highest end
         end
+        if math.abs(rect.h) < highest then
+          if rect.h < 0 then rect.h = -highest end
+          if rect.h > 0 then rect.h = highest end
+        end
+        end_drag = {x = rect.x + rect.w, y = rect.y + rect.h}
       end
+      return
+    end
 
-      if love.mouse.isDown(1) and not (is_mobile and mobile_picking and brush.mode ~= "picking") then
-        if not selector_open then
-          local painted = false
-          local new_unit = nil
-          local existing = nil
-          local ctrl_first_press = false
-          local ctrl_active = key_down["lctrl"] or key_down["rctrl"] or (is_mobile and mobile_stackmode == "ctrl")
-          local shift_active = key_down["lshift"] or (is_mobile and mobile_stackmode == "shift") or ctrl_active
-          if ctrl_active then
-            ctrl_first_press = true
+    if gooi.showingDialog then
+      return
+    end
+
+    if ignore_mouse then
+      if not love.mouse.isDown(1) then
+        ignore_mouse = false
+      end
+      return
+    end
+
+    width = love.graphics.getWidth()
+    height = love.graphics.getHeight()
+
+    if settings_open then
+      if not palettes[input_palette:getText()] then
+        label_palette:setIcon(sprites["ui/smol warning"])
+      else
+        label_palette:setIcon()
+      end
+      if not sound_exists[input_music:getText()] then
+        label_music:setIcon(sprites["ui/smol warning"])
+      else
+        label_music:setIcon()
+      end
+    elseif not settings_open or not mouseOverBox(settings.x, settings.y, settings.w, settings.h) then
+      local hx,hy = getHoveredTile()
+      if hx ~= nil then
+        local tileid = hx + hy * mapwidth
+
+        local hovered = {}
+        if units_by_tile[tileid] then
+          for _,v in ipairs(units_by_tile[tileid]) do
+            table.insert(hovered, v)
           end
-          if #hovered >= 1 then
-            for _,unit in ipairs(hovered) do
-              if unit.tile == brush.id then
-                if not (ctrl_active or selectorhold) then
-                  existing = unit
+        end
+
+        if love.mouse.isDown(1) and not (is_mobile and mobile_picking or brush.mode == "picking") then
+          if not selector_open then
+            local painted = false
+            local new_unit = nil
+            local existing = nil
+            local ctrl_first_press = false
+            local ctrl_active = key_down["lctrl"] or key_down["rctrl"] or (is_mobile and mobile_stackmode == "ctrl")
+            local shift_active = key_down["lshift"] or (is_mobile and mobile_stackmode == "shift") or ctrl_active
+            if ctrl_active and brush.mode == "none" then
+              ctrl_first_press = true
+            end
+            if #hovered >= 1 then
+              for _,unit in ipairs(hovered) do
+                if unit.tile == brush.id then
+                  if not (ctrl_active or selectorhold) then
+                    existing = unit
+                  end
+                elseif brush.mode == "placing" and not (shift_active or selectorhold) then
+                  deleteUnit(unit)
+                  painted = true
                 end
-              elseif brush.mode == "placing" and not (shift_active or selectorhold) then
-                deleteUnit(unit)
-                painted = true
+              end
+              if existing and brush.mode == "none" then
+                brush.mode = "erasing"
+              elseif not existing and brush.mode == "none" then
+                brush.mode = "placing"
+              end
+              if brush.id ~= nil then
+                if brush.mode == "erasing" then
+                  if existing and not selectorhold then
+                    deleteUnit(existing)
+                    painted = true
+                  end
+                elseif brush.mode == "placing" and not selectorhold then
+                  if existing then
+                    existing.dir = brush.dir
+                    painted = true
+                    new_unit = existing
+                  elseif (not control_active or ctrl_first_press) and (not is_mobile or mobile_firstpress) then
+                    new_unit = createUnit(brush.id, hx, hy, brush.dir)
+                    painted = true
+                  end
+                end
+              end
+              if painted then
+                if tileid == brush.picked_tile then
+                  brush.picked_tile = nil
+                  brush.picked_index = 0
+                end
+                paintedtiles = paintedtiles + 1
+                scene.updateMap()
+                if new_unit and brush.id == tiles_by_name["lvl"] then
+                  new_scene = loadscene
+                  load_mode = "select"
+                  selected_level = {id = new_unit.id}
+                  old_world = {parent = world_parent, world = world}
+
+                  editor_save.brush = brush
+                end
               end
             end
-          end
-          if existing and brush.mode == "none" then
-            brush.mode = "erasing"
-          elseif not existing and brush.mode == "none" then
-            brush.mode = "placing"
-          end
-          if brush.id ~= nil then
-            if brush.mode == "erasing" then
-              if existing and not selectorhold then
-                deleteUnit(existing)
-                painted = true
-              end
-            elseif brush.mode == "placing" and not selectorhold then
-              if existing then
-                existing.dir = brush.dir
-                painted = true
-                new_unit = existing
-              elseif not ctrl_active or  not is_mobile or (is_mobile and mobile_firstpress) then
-                new_unit = createUnit(brush.id, hx, hy, brush.dir)
-                painted = true
-              end
-            end
-          end
-          if painted then
-            if tileid == brush.picked_tile then
+          else
+            local selected = hx + hy * tile_grid_width
+            if current_tile_grid[selected] then
+              brush.id = current_tile_grid[selected]
+              brush.picked_tile = nil
+              brush.picked_index = 0
+            else
+              brush.id = nil
               brush.picked_tile = nil
               brush.picked_index = 0
             end
-            paintedtiles = paintedtiles + 1
-            scene.updateMap()
-            if new_unit and brush.id == tiles_by_name["lvl"] then
-              new_scene = loadscene
-              load_mode = "select"
-              selected_level = {id = new_unit.id}
-              old_world = {parent = world_parent, world = world}
-
-              editor_save.brush = brush
-            end
           end
-        else
-          local selected = hx + hy * tile_grid_width
-          if current_tile_grid[selected] then
-            brush.id = current_tile_grid[selected]
-            brush.picked_tile = nil
-            brush.picked_index = 0
-          else
-            brush.id = nil
-            brush.picked_tile = nil
-            brush.picked_index = 0
-          end
+          mobile_firstpress = false
         end
-        mobile_firstpress = false
-      end
-      if (love.mouse.isDown(2) or (is_mobile and mobile_picking and love.mouse.isDown(1))) and not selector_open then
-        if brush.mode ~= "picking" then
-          if #hovered >= 1 then
-            brush.picked_tile = tileid
-            if brush.picked_tile == tileid and brush.picked_index > 0 then
-              local new_index = brush.picked_index + 1
-              if new_index > #hovered then
-                new_index = 1
+        if (love.mouse.isDown(2) or (is_mobile and mobile_picking and love.mouse.isDown(1))) and not selector_open then
+          if brush.mode ~= "picking" then
+            if #hovered >= 1 then
+              brush.picked_tile = tileid
+              if brush.picked_tile == tileid and brush.picked_index > 0 then
+                local new_index = brush.picked_index + 1
+                if new_index > #hovered then
+                  new_index = 1
+                end
+                brush.picked_index = new_index
+                brush.id = hovered[new_index].tile
+              else
+                brush.id = hovered[1].tile
+                brush.picked_index = 1
               end
-              brush.picked_index = new_index
-              brush.id = hovered[new_index].tile
+              brush.mode = "picking"
             else
-              brush.id = hovered[1].tile
-              brush.picked_index = 1
+              brush.id = nil
+              brush.picked_tile = nil
+              brush.picked_index = 0
+              mobile_picking = false
             end
-            brush.mode = "picking"
-          else
-            brush.id = nil
-            brush.picked_tile = nil
-            brush.picked_index = 0
-            mobile_picking = false
           end
         end
       end
     end
-  end
 
-  max_layer = 1
-  units_by_layer = {}
-  for _,unit in ipairs(units) do
-    if not units_by_layer[unit.layer] then
-      units_by_layer[unit.layer] = {}
+    max_layer = 1
+    units_by_layer = {}
+    for _,unit in ipairs(units) do
+      if not units_by_layer[unit.layer] then
+        units_by_layer[unit.layer] = {}
+      end
+
+      table.insert(units_by_layer[unit.layer], unit)
+      max_layer = math.max(max_layer, unit.layer)
     end
 
-    table.insert(units_by_layer[unit.layer], unit)
-    max_layer = math.max(max_layer, unit.layer)
-  end
-
-  if not (love.mouse.isDown(1) and not (is_mobile and mobile_picking and brush.mode ~= "picking")) then
-    if brush.mode == "placing" or brush.mode == "erasing" then
-      brush.mode = "none"
+    if not (love.mouse.isDown(1) and not (is_mobile and mobile_picking and brush.mode ~= "picking")) then
+      if brush.mode == "placing" or brush.mode == "erasing" then
+        brush.mode = "none"
+      end
+      mobile_firstpress = true
     end
-    mobile_firstpress = true
-  end
-  if not (love.mouse.isDown(2) or (is_mobile and love.mouse.isDown(1) and mobile_picking)) then
-    if brush.mode == "picking" then
-      brush.mode = "none"
-      mobile_picking = false
+    if not (love.mouse.isDown(2) or (is_mobile and love.mouse.isDown(1) and mobile_picking)) then
+      if brush.mode == "picking" then
+        brush.mode = "none"
+        mobile_picking = false
+      end
     end
   end
 end
@@ -679,298 +691,319 @@ end
 
 last_hovered_tile = {0,0}
 function scene.draw(dt)
-  --background color
-  local bg_color = {getPaletteColor(1, 0)}
+  if not spookmode then
+    --background color
+    local bg_color = {getPaletteColor(1, 0)}
 
-  love.graphics.setColor(bg_color[1], bg_color[2], bg_color[3], bg_color[4])
-  setRainbowModeColor(love.timer.getTime()/6, .2)
+    love.graphics.setColor(bg_color[1], bg_color[2], bg_color[3], bg_color[4])
+    setRainbowModeColor(love.timer.getTime()/6, .2)
 
-  -- fill the background with the background color
-  love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
+    -- fill the background with the background color
+    love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
 
-  local roomwidth, roomheight
-  if not selector_open then
-    roomwidth = mapwidth * TILE_SIZE
-    roomheight = mapheight * TILE_SIZE
-  else
-    roomwidth = tile_grid_width * TILE_SIZE
-    roomheight = tile_grid_height * TILE_SIZE
-  end
+    local roomwidth, roomheight
+    if not selector_open then
+      roomwidth = mapwidth * TILE_SIZE
+      roomheight = mapheight * TILE_SIZE
+    else
+      roomwidth = tile_grid_width * TILE_SIZE
+      roomheight = tile_grid_height * TILE_SIZE
+    end
 
-  love.graphics.push()
-  love.graphics.applyTransform(scene.getTransform())
+    love.graphics.push()
+    love.graphics.applyTransform(scene.getTransform())
 
-  love.graphics.setColor(getPaletteColor(0, 4))
-  love.graphics.rectangle("fill", 0, 0, roomwidth, roomheight)
-  if level_background_sprite ~= nil and level_background_sprite ~= "" and sprites[level_background_sprite] then
-    love.graphics.setColor(1, 1, 1)
-    local sprite = sprites[level_background_sprite]
-    love.graphics.draw(sprite, 0, 0, 0, 1, 1, 0, 0)
-  end
+    love.graphics.setColor(getPaletteColor(0, 4))
+    love.graphics.rectangle("fill", 0, 0, roomwidth, roomheight)
+    if not selector_open and level_background_sprite ~= nil and level_background_sprite ~= "" and sprites[level_background_sprite] then
+      love.graphics.setColor(1, 1, 1)
+      local sprite = sprites[level_background_sprite]
+      love.graphics.draw(sprite, 0, 0, 0, 1, 1, 0, 0)
+    end
 
-	local function setColor(color)
-		if #color == 3 then
-			color = {color[1]/255, color[2]/255, color[3]/255, 1}
-		else
-			color = {getPaletteColor(color[1], color[2])}
-		end
-		love.graphics.setColor(color)
-		return color
-	end
-	
-  if not selector_open then
-    for i=1,max_layer do
-      if units_by_layer[i] then
-        for _,unit in ipairs(units_by_layer[i]) do
-          local sprite = sprites[unit.sprite]
-          if not sprite then sprite = sprites["wat"] end
-          
-          local rotation = 0
-          if unit.rotate then
-            rotation = (unit.dir - 1) * 45
+    local function setColor(color)
+      if #color == 3 then
+        color = {color[1]/255, color[2]/255, color[3]/255, 1}
+      else
+        color = {getPaletteColor(color[1], color[2])}
+      end
+      love.graphics.setColor(color)
+      return color
+    end
+    
+    if not selector_open then
+      for i=1,max_layer do
+        if units_by_layer[i] then
+          for _,unit in ipairs(units_by_layer[i]) do
+            local sprite = sprites[unit.sprite]
+            if not sprite then sprite = sprites["wat"] end
+            
+            local rotation = 0
+            if unit.rotate then
+              rotation = (unit.dir - 1) * 45
+            end
+            
+            local color = setColor(unit.color);
+
+            if rainbowmode then
+              local newcolor = hslToRgb((love.timer.getTime()/3+unit.x/18+unit.y/18)%1, .5, .5, 1)
+              newcolor[1] = newcolor[1]*255
+              newcolor[2] = newcolor[2]*255
+              newcolor[3] = newcolor[3]*255
+              unit.color = newcolor
+            end
+
+            love.graphics.draw(sprite, (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+            if (unit.meta ~= nil) then
+              setColor({4, 1})
+              local metasprite = unit.meta == 2 and sprites["meta2"] or sprites["meta1"]
+              love.graphics.draw(metasprite, (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+              if unit.meta > 2 then
+                love.graphics.printf(tostring(unit.meta), (unit.x + 0.5)*TILE_SIZE-1, (unit.y + 0.5)*TILE_SIZE+6, 32, "center")
+              end
+              setColor(unit.color)
+            end
           end
-          
-					local color = setColor(unit.color);
-
-          if rainbowmode then
-            local newcolor = hslToRgb((love.timer.getTime()/3+unit.x/18+unit.y/18)%1, .5, .5, 1)
-            newcolor[1] = newcolor[1]*255
-            newcolor[2] = newcolor[2]*255
-            newcolor[3] = newcolor[3]*255
-            unit.color = newcolor
-          end
-
-          love.graphics.draw(sprite, (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
-					if (unit.meta ~= nil) then
-						setColor({4, 1})
-						local metasprite = unit.meta == 2 and sprites["meta2"] or sprites["meta1"]
-						love.graphics.draw(metasprite, (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
-						if unit.meta > 2 then
-							love.graphics.printf(tostring(unit.meta), (unit.x + 0.5)*TILE_SIZE-1, (unit.y + 0.5)*TILE_SIZE+6, 32, "center")
-						end
-						setColor(unit.color)
-					end
         end
       end
-    end
-  else
-    for x=0,tile_grid_width-1 do
-      for y=0,tile_grid_height-1 do
-        local gridid = x + y * tile_grid_width
-        local i = current_tile_grid[gridid]
-        if i ~= nil then
-          local tile = tiles_list[i]
-          local sprite = sprites[tile.sprite]
-          if not sprite then sprite = sprites["wat"] end
+    else
+      for x=0,tile_grid_width-1 do
+        for y=0,tile_grid_height-1 do
+          local gridid = x + y * tile_grid_width
+          local i = current_tile_grid[gridid]
+          if i ~= nil then
+            local tile = tiles_list[i]
+            local sprite = sprites[tile.sprite]
+            if not sprite then sprite = sprites["wat"] end
 
-          -- local x = tile.grid[1]
-          -- local y = tile.grid[2]
+            -- local x = tile.grid[1]
+            -- local y = tile.grid[2]
 
-          local color = setColor(tile.color);
+            local color = setColor(tile.color);
 
-          if rainbowmode then love.graphics.setColor(hslToRgb((love.timer.getTime()/3+x/tile_grid_width+y/tile_grid_height)%1, .5, .5, 1)) end
+            if rainbowmode then love.graphics.setColor(hslToRgb((love.timer.getTime()/3+x/tile_grid_width+y/tile_grid_height)%1, .5, .5, 1)) end
 
-          love.graphics.draw(sprite, (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
-					if (tile.meta ~= nil) then
-						setColor({4, 1})
-						local metasprite = tile.meta == 2 and sprites["meta2"] or sprites["meta1"]
-						love.graphics.draw(metasprite, (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
-						if tile.meta > 2 then
-							love.graphics.printf(tostring(tile.meta), (x + 0.5)*TILE_SIZE-1, (y + 0.5)*TILE_SIZE+6, 32, "center")
-						end
-						setColor(tile.color)
-					end
+            love.graphics.draw(sprite, (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+            if (tile.meta ~= nil) then
+              setColor({4, 1})
+              local metasprite = tile.meta == 2 and sprites["meta2"] or sprites["meta1"]
+              love.graphics.draw(metasprite, (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+              if tile.meta > 2 then
+                love.graphics.printf(tostring(tile.meta), (x + 0.5)*TILE_SIZE-1, (y + 0.5)*TILE_SIZE+6, 32, "center")
+              end
+              setColor(tile.color)
+            end
 
-          if brush.id == i then
+            if brush.id == i then
+              love.graphics.setColor(1, 0, 0)
+              love.graphics.rectangle("line", x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
+            end
+          elseif gridid == 0 and brush.id == nil then
             love.graphics.setColor(1, 0, 0)
             love.graphics.rectangle("line", x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
           end
-        elseif gridid == 0 and brush.id == nil then
-          love.graphics.setColor(1, 0, 0)
-          love.graphics.rectangle("line", x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE, TILE_SIZE)
         end
       end
     end
-  end
 
-  local hx,hy = getHoveredTile()
-  if hx ~= nil then
-    if not (gooi.showingDialog or capturing) then
-      if brush.id and not selector_open then
+    local hx,hy = getHoveredTile()
+    if hx ~= nil then
+      if not (gooi.showingDialog or capturing) then
+        if brush.id and not selector_open then
+          local sprite = sprites[tiles_list[brush.id].sprite]
+          if not sprite then sprite = sprites["wat"] end
+
+          local rotation = 0
+          if tiles_list[brush.id].rotate then
+            rotation = (brush.dir - 1) * 45
+          end
+          
+          local color = tiles_list[brush.id].color
+          if #color == 3 then
+            love.graphics.setColor(color[1]/255, color[2]/255, color[3]/255, 0.25)
+          else
+            local r, g, b, a = getPaletteColor(color[1], color[2])
+            love.graphics.setColor(r, g, b, a * 0.25)
+          end
+
+          love.graphics.draw(sprite, (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, math.rad(rotation), 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+        end
+
+        love.graphics.setColor(1, 1, 0)
+        love.graphics.rectangle("line", hx * TILE_SIZE, hy * TILE_SIZE, TILE_SIZE, TILE_SIZE)
+      end
+
+      last_hovered_tile = {hx, hy}
+    end
+
+    if selector_open then
+      love.graphics.setColor(getPaletteColor(0,3))
+      love.graphics.print(last_hovered_tile[1] .. ', ' .. last_hovered_tile[2], 0, roomheight)
+      if not is_mobile then
+          love.graphics.print("LSHIFT to get meta text, RSHIFT to refresh", 0, roomheight+12)
+      end
+    end
+
+    love.graphics.pop()
+
+    if selector_open then
+      love.graphics.setColor(1, 1, 1)
+      local gridid = last_hovered_tile[1]  + last_hovered_tile[2] * tile_grid_width
+      local i = current_tile_grid[gridid]
+      if i ~= nil then
+        local tile = tiles_list[i]
+        if (tile.desc ~= nil and hx ~= nil) then
+          local tooltipwidth, ttlines = love.graphics.getFont():getWrap(tile.desc, love.graphics.getWidth() - love.mouse.getX() - 20)
+          local tooltipheight = love.graphics.getFont():getHeight() * #ttlines
+
+          local tooltipyoffset = 0
+
+          if love.mouse.getY() + (tooltipheight + 20) - love.graphics.getHeight() > 0 then
+            tooltipyoffset = love.mouse.getY() + (tooltipheight + 20) - love.graphics.getHeight()
+          end
+
+          love.graphics.setColor(getPaletteColor(1, 3))
+          love.graphics.rectangle("fill", love.mouse.getX()+10, love.mouse.getY()+10-tooltipyoffset, tooltipwidth+13, tooltipheight+13)
+          love.graphics.setColor(getPaletteColor(0, 4))
+          love.graphics.rectangle("fill", love.mouse.getX()+11, love.mouse.getY()+11-tooltipyoffset, tooltipwidth+11, tooltipheight+11)
+
+          love.graphics.setColor(getPaletteColor(0,3))
+          love.graphics.printf(tile.desc, love.mouse.getX()+11, love.mouse.getY()+11-tooltipyoffset, love.graphics.getWidth() - love.mouse.getX() - 20)
+        end
+      end
+    end
+
+    local btnx = 0
+    for _,btn in ipairs(buttons) do
+      local sprite = sprites["ui/" .. btn[1]]
+
+      if button_pressed then
+        if button_pressed == btn then
+          love.graphics.setColor(0.5, 0.5, 0.5)
+        else
+          love.graphics.setColor(1, 1, 1)
+        end
+      else
+        if button_over == btn then
+          love.graphics.setColor(0.8, 0.8, 0.8)
+        else
+          love.graphics.setColor(1, 1, 1)
+        end
+      end
+
+      love.graphics.draw(sprite, btnx, 0)
+
+      btnx = btnx + sprite:getWidth() + 4
+    end
+
+    love.graphics.push()
+    gooi.draw()
+    gooi.draw("mobile-controls-selector")
+    gooi.draw("mobile-controls-editor")
+    if is_mobile then
+      local twelfth = love.graphics.getWidth()/12
+      if mobile_picking then
+          love.graphics.setColor(1, 1, 1, 1)
+          love.graphics.draw(sprites["ui_plus"],10*twelfth,love.graphics.getHeight()-2*twelfth,0,twelfth/32,twelfth/32)
+      elseif brush.id then
         local sprite = sprites[tiles_list[brush.id].sprite]
         if not sprite then sprite = sprites["wat"] end
-
+        
         local rotation = 0
         if tiles_list[brush.id].rotate then
-          rotation = (brush.dir - 1) * 45
+            rotation = (brush.dir - 1) * 45
         end
         
         local color = tiles_list[brush.id].color
         if #color == 3 then
-          love.graphics.setColor(color[1]/255, color[2]/255, color[3]/255, 0.25)
+          love.graphics.setColor(color[1]/255, color[2]/255, color[3]/255, 1)
         else
           local r, g, b, a = getPaletteColor(color[1], color[2])
-          love.graphics.setColor(r, g, b, a * 0.25)
+          love.graphics.setColor(r, g, b, a)
         end
 
-        love.graphics.draw(sprite, (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, math.rad(rotation), 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+        love.graphics.draw(sprite, 10.5*twelfth, love.graphics.getHeight()-1.5*twelfth,math.rad(rotation),twelfth/32,twelfth/32,twelfth/4,twelfth/4)
       end
-
-      love.graphics.setColor(1, 1, 0)
-      love.graphics.rectangle("line", hx * TILE_SIZE, hy * TILE_SIZE, TILE_SIZE, TILE_SIZE)
-    end
-
-    last_hovered_tile = {hx, hy}
-  end
-
-  if selector_open then
-    love.graphics.setColor(getPaletteColor(0,3))
-    love.graphics.print(last_hovered_tile[1] .. ', ' .. last_hovered_tile[2], 0, roomheight)
-    if not is_mobile then love.graphics.print("LSHIFT to get meta text, RSHIFT to refresh", 0, roomheight+12) end
-  end
-
-  love.graphics.pop()
-
-  if selector_open then
-    love.graphics.setColor(1, 1, 1)
-    local gridid = last_hovered_tile[1]  + last_hovered_tile[2] * tile_grid_width
-    local i = current_tile_grid[gridid]
-    if i ~= nil then
-      local tile = tiles_list[i]
-      if (tile.desc ~= nil and hx ~= nil) then
-        local tooltipwidth, ttlines = love.graphics.getFont():getWrap(tile.desc, love.graphics.getWidth() - love.mouse.getX() - 20)
-        local tooltipheight = love.graphics.getFont():getHeight() * #ttlines
-
-        local tooltipyoffset = 0
-
-        if love.mouse.getY() + (tooltipheight + 20) - love.graphics.getHeight() > 0 then
-          tooltipyoffset = love.mouse.getY() + (tooltipheight + 20) - love.graphics.getHeight()
-        end
-
-        love.graphics.setColor(getPaletteColor(1, 3))
-        love.graphics.rectangle("fill", love.mouse.getX()+10, love.mouse.getY()+10-tooltipyoffset, tooltipwidth+13, tooltipheight+13)
-        love.graphics.setColor(getPaletteColor(0, 4))
-        love.graphics.rectangle("fill", love.mouse.getX()+11, love.mouse.getY()+11-tooltipyoffset, tooltipwidth+11, tooltipheight+11)
-
-        love.graphics.setColor(getPaletteColor(0,3))
-        love.graphics.printf(tile.desc, love.mouse.getX()+11, love.mouse.getY()+11-tooltipyoffset, love.graphics.getWidth() - love.mouse.getX() - 20)
-      end
-    end
-  end
-
-  local btnx = 0
-  for _,btn in ipairs(buttons) do
-    local sprite = sprites["ui/" .. btn[1]]
-
-    if button_pressed then
-      if button_pressed == btn then
-        love.graphics.setColor(0.5, 0.5, 0.5)
-      else
-        love.graphics.setColor(1, 1, 1)
-      end
-    else
-      if button_over == btn then
-        love.graphics.setColor(0.8, 0.8, 0.8)
-      else
-        love.graphics.setColor(1, 1, 1)
-      end
-    end
-
-    love.graphics.draw(sprite, btnx, 0)
-
-    btnx = btnx + sprite:getWidth() + 4
-  end
-
-  love.graphics.push()
-  gooi.draw()
-  gooi.draw("mobile-controls-selector")
-  gooi.draw("mobile-controls-editor")
-  if is_mobile then
-      local twelfth = love.graphics.getWidth()/12
-    if mobile_picking then
-        love.graphics.setColor(1, 1, 1, 1)
-      love.graphics.draw(sprites["ui_plus"],10*twelfth,love.graphics.getHeight()-2*twelfth,0,twelfth/32,twelfth/32)
-    elseif brush.id then
-      local sprite = sprites[tiles_list[brush.id].sprite]
-      if not sprite then sprite = sprites["wat"] end
-
-      local rotation = 0
-      if tiles_list[brush.id].rotate then
-        rotation = (brush.dir - 1) * 45
-      end
-
-      local color = tiles_list[brush.id].color
-      if #color == 3 then
-        love.graphics.setColor(color[1]/255, color[2]/255, color[3]/255, 1)
-      else
-        local r, g, b, a = getPaletteColor(color[1], color[2])
-        love.graphics.setColor(r, g, b, a)
-      end
-
-      love.graphics.draw(sprite, 10.5*twelfth, love.graphics.getHeight()-1.5*twelfth,math.rad(rotation),twelfth/32,twelfth/32,twelfth/4,twelfth/4)
-    end
-    if mobile_stackmode == "none" then
-      mobile_controls_stackmode_none:setBounds(9*twelfth, love.graphics.getHeight()-4.05*twelfth)
-      mobile_controls_stackmode_shift:setBounds(10*twelfth, love.graphics.getHeight()-4.25*twelfth)
-      mobile_controls_stackmode_ctrl:setBounds(11*twelfth, love.graphics.getHeight()-4.25*twelfth)
-    elseif mobile_stackmode == "shift" then
+      if mobile_stackmode == "none" then
+        mobile_controls_stackmode_none:setBounds(9*twelfth, love.graphics.getHeight()-4.05*twelfth)
+        mobile_controls_stackmode_shift:setBounds(10*twelfth, love.graphics.getHeight()-4.25*twelfth)
+        mobile_controls_stackmode_ctrl:setBounds(11*twelfth, love.graphics.getHeight()-4.25*twelfth)
+      elseif mobile_stackmode == "shift" then
         mobile_controls_stackmode_none:setBounds(9*twelfth, love.graphics.getHeight()-4.15*twelfth)
-      mobile_controls_stackmode_shift:setBounds(10*twelfth, love.graphics.getHeight()-4.15*twelfth)
-      mobile_controls_stackmode_ctrl:setBounds(11*twelfth, love.graphics.getHeight()-4.25*twelfth)
-    elseif mobile_stackmode == "ctrl" then
-      mobile_controls_stackmode_none:setBounds(9*twelfth, love.graphics.getHeight()-4.15*twelfth)
-      mobile_controls_stackmode_shift:setBounds(10*twelfth, love.graphics.getHeight()-4.25*twelfth)
-      mobile_controls_stackmode_ctrl:setBounds(11*twelfth, love.graphics.getHeight()-4.15*twelfth)
+        mobile_controls_stackmode_shift:setBounds(10*twelfth, love.graphics.getHeight()-4.15*twelfth)
+        mobile_controls_stackmode_ctrl:setBounds(11*twelfth, love.graphics.getHeight()-4.25*twelfth)
+      elseif mobile_stackmode == "ctrl" then
+        mobile_controls_stackmode_none:setBounds(9*twelfth, love.graphics.getHeight()-4.15*twelfth)
+        mobile_controls_stackmode_shift:setBounds(10*twelfth, love.graphics.getHeight()-4.25*twelfth)
+        mobile_controls_stackmode_ctrl:setBounds(11*twelfth, love.graphics.getHeight()-4.15*twelfth)
+      end
     end
-  end
 
-  love.graphics.setFont(name_font)
-  love.graphics.setColor(1, 1, 1)
+    love.graphics.setFont(name_font)
+    love.graphics.setColor(1, 1, 1)
 
-  love.graphics.printf(level_name, 0, name_font:getLineHeight() / 2, love.graphics.getWidth(), "center")
+    love.graphics.printf(level_name, 0, name_font:getLineHeight() / 2, love.graphics.getWidth(), "center")
 
-  love.graphics.setColor(1, 1, 1, saved_popup.alpha)
-  if is_mobile then
-    love.graphics.draw(saved_popup.sprite, 44, 40 + saved_popup.y)
-  else
-    love.graphics.draw(saved_popup.sprite, 0, 40 + saved_popup.y)
-  end
+    love.graphics.setColor(1, 1, 1, saved_popup.alpha)
+    if is_mobile then
+      love.graphics.draw(saved_popup.sprite, 44, 40 + saved_popup.y)
+    else
+      love.graphics.draw(saved_popup.sprite, 0, 40 + saved_popup.y)
+    end
 
-  if settings_open then
-    love.graphics.setColor(0.1, 0.1, 0.1, 1)
-    love.graphics.rectangle("fill", settings.x, settings.y, settings.w, settings.h)
-    love.graphics.setColor(1, 1, 1, 1)
-    gooi.draw("settings")
-  end
-  love.graphics.pop()
-
-  if capturing then
-    love.graphics.setColor(0.5, 0.5, 0.5, 1)
-    love.graphics.draw(screenshot_image)
-
-    if start_drag and end_drag then
-      local rect = {
-        x = math.min(start_drag.x, end_drag.x), 
-        y = math.min(start_drag.y, end_drag.y),
-        w = math.abs(end_drag.x - start_drag.x),
-        h = math.abs(end_drag.y - start_drag.y)
-      }
+    if settings_open then
+      love.graphics.setColor(0.1, 0.1, 0.1, 1)
+      love.graphics.rectangle("fill", settings.x, settings.y, settings.w, settings.h)
       love.graphics.setColor(1, 1, 1, 1)
-      love.graphics.rectangle("line", rect.x, rect.y, rect.w, rect.h)
-      love.graphics.setScissor(rect.x, rect.y, rect.w, rect.h)
-      love.graphics.draw(screenshot_image)
-      love.graphics.setScissor()
+      gooi.draw("settings")
     end
-  end
+    love.graphics.pop()
 
-  if is_mobile then
-    local cursorx, cursory = love.mouse.getPosition()
-    love.graphics.draw(system_cursor, cursorx, cursory)
-  end
+    if capturing then
+      love.graphics.setColor(0.5, 0.5, 0.5, 1)
+      love.graphics.draw(screenshot_image)
 
-  if is_mobile then
-    local cursorx, cursory = love.mouse.getPosition()
-    love.graphics.draw(system_cursor, cursorx, cursory)
+      if start_drag and end_drag then
+        local rect = {
+          x = math.min(start_drag.x, end_drag.x), 
+          y = math.min(start_drag.y, end_drag.y),
+          w = math.abs(end_drag.x - start_drag.x),
+          h = math.abs(end_drag.y - start_drag.y)
+        }
+        love.graphics.setColor(1, 1, 1, 1)
+        love.graphics.rectangle("line", rect.x, rect.y, rect.w, rect.h)
+        love.graphics.setScissor(rect.x, rect.y, rect.w, rect.h)
+        love.graphics.draw(screenshot_image)
+        love.graphics.setScissor()
+      end
+    end
+
+    if is_mobile then
+      local cursorx, cursory = love.mouse.getPosition()
+      love.graphics.draw(system_cursor, cursorx, cursory)
+    end
+  else
+    love.graphics.setBackgroundColor(math.random(0,10)/1000,math.random(0,10)/1000,math.random(0,10)/1000)
+
+    love.graphics.setColor(math.sin(love.timer.getRealTime()*5), 0, 0)
+
+    local yoverride = false
+    local y = 0
+
+    while not yoverride do
+      yoverride = y > love.graphics.getHeight()
+
+      local xoverride = false
+      local x = 0
+
+      while not xoverride do
+        xoverride = x > love.graphics.getWidth()
+        love.graphics.print("esc", x, y)
+        x = x + love.graphics.getFont():getWidth("esc")
+      end
+
+      y = y + love.graphics.getFont():getHeight()
+    end
   end
 end
 
@@ -997,12 +1030,14 @@ function scene.saveLevel()
 
   local map = maps[1][2]
 
+  level_compression = "zlib"
   local mapdata = level_compression == "zlib" and love.data.compress("string", "zlib", map) or map
   local savestr = love.data.encode("string", "base64", mapdata)
   
   local data = {
     name = level_name,
     author = level_author,
+    compression = level_compression,
     extra = level_extra,
     palette = current_palette,
     music = map_music,
@@ -1143,7 +1178,7 @@ function love.filedropped(file)
 
   level_compression = mapdata.compression or "zlib"
   local loaddata = love.data.decode("string", "base64", mapdata.map)
-  local mapstr = level_compression == "zlib" and love.data.decompress("string", "zlib", loaddata) or loaddata
+  local mapstr = loadMaybeCompressedData(loaddata)
 
   loaded_level = true
 

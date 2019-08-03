@@ -6,6 +6,7 @@ function clear()
 	replay_playback_interval = 0.3
     old_replay_playback_interval = 0.3
     replay_pause = false
+    replay_undo = false
 	replay_string = ""
   new_units_cache = {}
   undoing = false
@@ -1566,7 +1567,7 @@ end
 function setRainbowModeColor(value, brightness)
   brightness = brightness or 0.5
 
-  if rainbowmode then
+  if rainbowmode and not spookmode then
     love.graphics.setColor(hslToRgb(value%1, brightness, brightness, .9))
   end
 end
@@ -1574,10 +1575,6 @@ end
 function shakeScreen(dur, intensity)
   shake_dur = dur+shake_dur/4
   shake_intensity = shake_intensity + intensity/2
-
-  if shake_intensity > 0.2 then
-    shake_intensity = 0.2
-  end
 end
 
 function startTest(name)
@@ -1645,7 +1642,7 @@ function loadLevels(levels, mode, level_objs)
     end
     level_compression = data.compression or "zlib"
     local loaddata = love.data.decode("string", "base64", data.map)
-    local mapstr = level_compression == "zlib" and love.data.decompress("string", "zlib", loaddata) or loaddata
+    local mapstr = loadMaybeCompressedData(loaddata)
 
     loaded_level = not new
 
@@ -1838,5 +1835,14 @@ end
 function pcallSetShader(shader)
   if shader ~= nil then
     love.graphics.setShader(shader)
+  end
+end
+
+function loadMaybeCompressedData(loaddata)
+  local mapstr = nil
+  if pcall(function() mapstr = love.data.decompress("string", "zlib", loaddata) end) then
+    return mapstr
+  else
+    return loaddata
   end
 end

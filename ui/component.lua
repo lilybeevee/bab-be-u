@@ -245,6 +245,9 @@ function component.new(t)
     self:drawSprite()
 
     love.graphics.setColor(1, 1, 1)
+    if spookmode then
+      love.graphics.setColor(0.2,0.2,0.2)
+    end
     self:drawIcon()
 
     self:useTextColor()
