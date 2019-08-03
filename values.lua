@@ -474,7 +474,10 @@ tiles_list = {
   --27
   {
     name = "text_reed",
-    sprite = "text_reed",
+    sprite = "text_reed_cond",
+    sprite_transforms = {
+      property = "text_reed"
+    },
     type = "text",
     texttype = "cond_prefix_or_property",
     color = {2, 2},
@@ -484,7 +487,10 @@ tiles_list = {
   --28
   {
     name = "text_bleu",
-    sprite = "text_bleu",
+    sprite = "text_bleu_cond",
+    sprite_transforms = {
+      property = "text_bleu"
+    },
     type = "text",
     texttype = "cond_prefix_or_property",
     color = {1, 3},
@@ -2404,7 +2410,10 @@ tiles_list = {
   -- 225
   {
     name = "text_grun",
-    sprite = "text_grun",
+    sprite = "text_grun_cond",
+    sprite_transforms = {
+      property = "text_grun"
+    },
     type = "text",
     texttype = "cond_prefix_or_property",
     color = {5, 2},
@@ -2414,7 +2423,10 @@ tiles_list = {
   -- 226
   {
     name = "text_yello",
-    sprite = "text_yello",
+    sprite = "text_yello_cond",
+    sprite_transforms = {
+      property = "text_yello"
+    },
     type = "text",
     texttype = "cond_prefix_or_property",
     color = {2, 4},
@@ -2424,7 +2436,10 @@ tiles_list = {
   -- 227
   {
     name = "text_purp",
-    sprite = "text_purp",
+    sprite = "text_purp_cond",
+    sprite_transforms = {
+      property = "text_purp"
+    },
     type = "text",
     texttype = "cond_prefix_or_property",
     color = {3, 2},
@@ -2434,7 +2449,10 @@ tiles_list = {
   -- 228
   {
     name = "text_orang",
-    sprite = "text_orang",
+    sprite = "text_orang_cond",
+    sprite_transforms = {
+      property = "text_orang"
+    },
     type = "text",
     texttype = "cond_prefix_or_property",
     color = {2, 3},
@@ -2444,7 +2462,10 @@ tiles_list = {
   -- 229
   {
     name = "text_cyeann",
-    sprite = "text_cyeann",
+    sprite = "text_cyeann_cond",
+    sprite_transforms = {
+      property = "text_cyeann"
+    },
     type = "text",
     texttype = "cond_prefix_or_property",
     color = {1, 4},
@@ -2454,7 +2475,10 @@ tiles_list = {
   -- 230
   {
     name = "text_whit",
-    sprite = "text_whit",
+    sprite = "text_whit_cond",
+    sprite_transforms = {
+      property = "text_whit"
+    },
     type = "text",
     texttype = "cond_prefix_or_property",
     color = {0, 3},
@@ -2464,7 +2488,10 @@ tiles_list = {
   -- 231
   {
     name = "text_blacc",
-    sprite = "text_blacc",
+    sprite = "text_blacc_cond",
+    sprite_transforms = {
+      property = "text_blacc"
+    },
     type = "text",
     texttype = "cond_prefix_or_property",
     color = {0, 0},
@@ -2518,7 +2545,7 @@ tiles_list = {
       property = "text_rong_prop"
     },
     type = "text",
-    texttype = "cond_prefix",
+    texttype = "cond_prefix_or_property",
     color = {2,2},
     layer = 20,
     desc = "RONG: As a prefix, true if the unit is in a negated rule. As a property, causes associated units to return a negated form of the rule.",
