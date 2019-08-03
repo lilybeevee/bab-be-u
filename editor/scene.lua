@@ -270,6 +270,7 @@ function scene.setupGooi()
   selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..selector_page.."_a"], sprites["ui/selector_tab_"..selector_page.."_h"])
   -- gooi.setGroupVisible("selectortabs", selector_open)
   -- gooi.setGroupEnabled("selectortabs", selector_open)
+  updateSelectorTabs();
   
   local twelfth = love.graphics.getWidth()/12
 
@@ -395,14 +396,7 @@ function scene.keyPressed(key)
 
   if key == "tab" then
     selector_open = not selector_open
-    local x = love.graphics.getWidth()*3/8 - (tile_grid_width*16 + 64)*roomscale
-    local y = love.graphics.getHeight()/2 - (tile_grid_height*16 + 32)*roomscale+(is_mobile and sprites["ui/cog"]:getHeight()/2 or 0)
-    for i=1,#tile_grid do
-      local button = selector_tab_buttons_list[i]
-      button:setVisible(selector_open)
-      button:setEnabled(selector_open)
-      button:setBounds(x+64*i*roomscale, y, 64*roomscale, 32*roomscale)
-    end
+    updateSelectorTabs()
     if selector_open then
       presence["details"] = "browsing selector"
       gooi.setGroupVisible("mobile-controls-selector", is_mobile)
@@ -463,6 +457,18 @@ end
 
 function scene.keyReleased(key)
   key_down[key] = false
+end
+
+function updateSelectorTabs()
+  local scale, dx, dy = scene.transformParameters();
+    local x = (dx-64)*scale
+    local y = (dy-32)*scale
+    for i=1,#tile_grid do
+      local button = selector_tab_buttons_list[i]
+      button:setVisible(selector_open)
+      button:setEnabled(selector_open)
+      button:setBounds(x+64*i*scale, y, 64*scale, 32*scale)
+    end
 end
 
 function scene.update(dt)
