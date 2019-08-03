@@ -1599,6 +1599,8 @@ function FindEntireGluedUnit(unit, dx, dy)
   local visited = {}
   visited[tostring(unit.x)..","..tostring(unit.y)] = unit
   local mycolor = unit.color_override or unit.color;
+  local myorthook = not hasProperty(unit,"diag") or hasProperty(unit,"ortho")
+  local mydiagok = not hasProperty(unit,"ortho") or hasProperty(unit,"diag")
   
   --base case - add the original unit
   table.insert(units, unit);
@@ -1639,7 +1641,7 @@ function FindEntireGluedUnit(unit, dx, dy)
     --print("a.5:",#unchecked_tiles)
     
     --check all 8 directions
-    for i = 1,8 do
+    for i = 1,8 do if (i % 2 == 1 and myorthook) or (i % 2 == 0 and mydiagok) then
       local cur_dx, cur_dy = dirs8[i][1], dirs8[i][2];
       local xx, yy = x+cur_dx, y+cur_dy;
       --print("b:",cur_dx,cur_dy,xx,yy,tostring(xx)..","..tostring(yy),visited[tostring(xx)..","..tostring(yy)])
@@ -1682,11 +1684,23 @@ function FindEntireGluedUnit(unit, dx, dy)
         table.insert(pullers, cur_unit);
       end
 
-    end
+    end end
     --END check all 8 directions 
     --print("final:",#unchecked_tiles)
   end
   --END check all unchecked tiles
+
+  --failsafe: return the original unit in case we couldn't floodfill at all for whatever reason
+  
+  if #units == 0 then
+    table.insert(units, unit)
+  end
+  if #pushers == 0 then
+    table.insert(pushers, unit)
+  end
+  if #pullers == 0 then
+    table.insert(pullers, unit)
+  end
 
   return units, pushers, pullers
 end
