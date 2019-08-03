@@ -157,7 +157,7 @@ selector_grid_contents = {
     "flog", "text_flog", "text_:)", "colld", "text_colld", "text_fridgd", "text_hotte", "text_ouch", "text_slep", "text_protecc", "text_sidekik", "text_brite", "text_lit", "text_opaque", "text_za warudo", "text_rocn't", "text_waln't", "text_ditto",
     "roc", "text_roc", "text_go away pls", "gras", "text_gras", "dayzy", "text_dayzy", "text_wfren", "text_arond", "text_frenles", "text_copkat", "text_go arnd", "text_mirr arnd", "text_meta", "text_frens", "text_pathz", "text_groop", "text_stay ther",
     "wal", "text_wal", "text_no go", "l..uv", "text_l..uv", "hurcane", "text_hurcane", "text_creat", "text_look at", "text_spoop", "text_yeet", "text_turn cornr", "text_corekt", "text_timles", "text_the", "text_that", "text_that be", "text_clikt",
-    "watr", "text_watr", "text_no swim", "meem", "text_meem", "o", "text_o", "text_snacc", "text_seen by" , "text_stalk", "text_moov", "text_folo wal", "text_rong", "text_her", "text_thr", 0, 0, 0,
+    "watr", "text_watr", "text_no swim", "meem", "text_meem", "o", "text_o", "text_snacc", "text_seen by" , "text_stalk", "text_moov", "text_folo wal", "text_rong", "text_her", "text_thr", "text_rithere", 0, 0,
     "skul", "text_skul", "text_:(", "til", "text_til", "kirb", "text_kirb", "gunne", "text_gunne", "wog", "text_wog", "text_zip", "text_shy", "text_munwalk", "text_sidestep", "text_diagstep", "text_hopovr", "text_knightstep",
     "boux", "text_boux", "text_come pls", "os", "text_os", "bup", "text_bup", "han", "text_han", "tot", "text_tot", "lila", "text_lila", "hol", "text_hol", "text_poor toll", "text_blacc", "text_reed",
     "bellt", "text_bellt", "text_go", "tre", "text_tre", "piler", "text_piler", "hatt", "text_hatt", "laav", "text_laav", "fenss", "text_fenss", "riff", "text_riff", "text_glued", "text_whit", "text_orang",
@@ -208,7 +208,7 @@ selector_grid_contents = {
     "text_u","text_u too","text_u tres","text_walk",0,"text_:)","text_:(","text_no swim","text_ouch",0,"text_nxt","text_stay ther","text_sublvl","text_loop",0,"text_frenles","text_corekt","text_rong",
     "text_go","text_goooo","text_icy","text_icyyyy",0,"text_ned kee","text_for dor","text_hotte","text_fridgd",0,0,0,0,0,0,"text_lit","text_timles","text_clikt",
     "text_no go","text_go away pls","text_come pls","text_sidekik",0,"text_protecc","text_:o","text_xwx",0,0,0,0,0,0,0,"text_mayb","text_an","text_wait",
-    "text_visit fren","text_slep","text_shy","text_behin u",0,"text_moar","text_split","text_wurd","text_meta",0,0,0,0,0,0,0,0,0,
+    "text_visit fren","text_slep","text_shy","text_behin u",0,"text_moar","text_split","text_wurd","text_meta",0,0,0,0,0,0,0,0,"text_the",
     "text_flye","text_tall","text_haet skye","text_haet flor",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     "text_diag","text_ortho","text_go my way","text_direction",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     "text_turn cornr","text_folo wal","text_zip","text_hopovr",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -218,7 +218,7 @@ selector_grid_contents = {
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_gay","text_tranz","text_grun",
     0,0,0,0,0,"text_try again","text_no undo","text_undo","text_za warudo",0,0,0,0,0,0,"text_stelth","text_qt","text_cyeann",
     0,0,0,0,0,"text_poor toll","text_go arnd","text_mirr arnd","text_brite",0,0,0,0,0,0,"text_blacc","text_whit","text_bleu",
-    0,0,0,0,0,"text_her","text_thr","text_the","text_opaque",0,0,0,0,0,0,"text_colrful","text_rave","text_purp",
+    0,0,0,0,0,"text_her","text_thr","text_rithere","text_opaque",0,0,0,0,0,0,"text_colrful","text_rave","text_purp",
   },
 }
 tile_grid_width = 18
@@ -3468,6 +3468,16 @@ tiles_list = {
     type = "text",
     color = {6,1},
     layer = 20
+  },
+  -- 336
+  {
+    name = "text_rithere",
+    sprite = "text_rithere",
+    type = "text",
+    texttype = "property",
+    color = {4,0},
+    layer = 20,
+    desc = "RIT HERE: Sends objects to where the text is.",
   },
 }
 
