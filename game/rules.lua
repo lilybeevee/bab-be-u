@@ -549,24 +549,28 @@ function addRule(full_rule)
   local verb_not = 0
   local object_not = 0
   
-  local rong = false
-  
   for _,unit in ipairs(units) do
-    if (not rong and old_rules_with["rong"] ~= nil) then
-      local temp = rules_with; rules_with = old_rules_with;
-      if hasProperty(unit, "rong") then
-        verb = verb.."n't"
-        rules[2] = verb
-        rong = true;
-      end
-      rules_with = temp;
-    end
     unit.active = true
     if not unit.old_active and not first_turn then
       addParticles("rule", unit.x, unit.y, unit.color)
       has_new_rule = true
     end
     unit.old_active = unit.active
+  end
+  
+  for _,unit in ipairs(units) do
+    if (not rong and old_rules_with["rong"] ~= nil) then
+      local temp = rules_with; rules_with = old_rules_with;
+      if hasProperty(unit, "rong") then
+        for __,unit2 in ipairs(units) do
+          unit2.blocked = true;
+          unit2.blocked_dir = dir
+        end
+        rules_with = temp;
+        return;
+      end
+      rules_with = temp;
+    end
   end
   
   while subject:ends("n't") do subject, subject_not = subject:sub(1, -4), subject_not + 1 end
