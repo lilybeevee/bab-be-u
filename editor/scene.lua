@@ -252,7 +252,7 @@ function scene.setupGooi()
   gooi.setGroupVisible("settings", settings_open)
   gooi.setGroupEnabled("settings", settings_open)
   local x = love.graphics.getWidth()/2 - tile_grid_width*16 - 64
-  y = love.graphics.getHeight()/2 - tile_grid_height*16 - 32
+  local y = love.graphics.getHeight()/2 - tile_grid_height*16 - 32
   
   for i=1,#tile_grid do
     local j = i
@@ -270,6 +270,7 @@ function scene.setupGooi()
   selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..selector_page.."_a"], sprites["ui/selector_tab_"..selector_page.."_h"])
   -- gooi.setGroupVisible("selectortabs", selector_open)
   -- gooi.setGroupEnabled("selectortabs", selector_open)
+  updateSelectorTabs();
   
   local twelfth = love.graphics.getWidth()/12
 
@@ -304,7 +305,7 @@ function scene.setupGooi()
   mobile_controls_stackmode_shift = gooi.newButton({text = "",x = 10*twelfth,y = screenheight-4.25*twelfth,w = twelfth,h = twelfth,group = "mobile-controls-editor"}):onPress(function(c) mobile_stackmode = "shift" end):setBGImage(sprites["ui/stack"]):bg({0, 0, 0, 0})
   mobile_controls_stackmode_ctrl = gooi.newButton({text = "",x = 11*twelfth,y = screenheight-4.25*twelfth,w = twelfth,h = twelfth,group = "mobile-controls-editor"}):onPress(function(c) mobile_stackmode = "ctrl" end):setBGImage(sprites["ui/stack_same"]):bg({0, 0, 0, 0})
 
-  gooi.setGroupVisible("mobile-controls-editor", true)
+  gooi.setGroupVisible("mobile-controls-editor", is_mobile)
 end
 mobile_picking = false
 mobile_stackmode = "none"
@@ -395,21 +396,14 @@ function scene.keyPressed(key)
 
   if key == "tab" then
     selector_open = not selector_open
-    local x = love.graphics.getWidth()*3/8 - (tile_grid_width*16 + 64)*roomscale
-    local y = love.graphics.getHeight()/2 - (tile_grid_height*16 + 32)*roomscale+(is_mobile and sprites["ui/cog"]:getHeight()/2 or 0)
-    for i=1,#tile_grid do
-      local button = selector_tab_buttons_list[i]
-      button:setVisible(selector_open)
-      button:setEnabled(selector_open)
-      button:setBounds(x+64*i*roomscale, y, 64*roomscale, 32*roomscale)
-    end
+    updateSelectorTabs()
     if selector_open then
       presence["details"] = "browsing selector"
-      gooi.setGroupVisible("mobile-controls-selector", true)
+      gooi.setGroupVisible("mobile-controls-selector", is_mobile)
       gooi.setGroupVisible("mobile-controls-editor", false)
     else
       gooi.setGroupVisible("mobile-controls-selector", false)
-      gooi.setGroupVisible("mobile-controls-editor", true)
+      gooi.setGroupVisible("mobile-controls-editor", is_mobile)
     end
   end
   
@@ -463,6 +457,18 @@ end
 
 function scene.keyReleased(key)
   key_down[key] = false
+end
+
+function updateSelectorTabs()
+  local scale, dx, dy = scene.transformParameters();
+    local x = (dx-64)*scale
+    local y = (dy-32)*scale
+    for i=1,#tile_grid do
+      local button = selector_tab_buttons_list[i]
+      button:setVisible(selector_open)
+      button:setEnabled(selector_open)
+      button:setBounds(x+64*i*scale, y, 64*scale, 32*scale)
+    end
 end
 
 function scene.update(dt)
@@ -548,26 +554,26 @@ function scene.update(dt)
                   painted = true
                 end
               end
-              if existing and brush.mode == "none" then
-                brush.mode = "erasing"
-              elseif not existing and brush.mode == "none" then
-                brush.mode = "placing"
-              end
-              if brush.id ~= nil then
-                if brush.mode == "erasing" then
-                  if existing and not selectorhold then
-                    deleteUnit(existing)
-                    painted = true
-                  end
-                elseif brush.mode == "placing" and not selectorhold then
-                  if existing then
-                    existing.dir = brush.dir
-                    painted = true
-                    new_unit = existing
-                  elseif (not control_active or ctrl_first_press) and (not is_mobile or mobile_firstpress) then
-                    new_unit = createUnit(brush.id, hx, hy, brush.dir)
-                    painted = true
-                  end
+            end
+            if existing and brush.mode == "none" then
+              brush.mode = "erasing"
+            elseif not existing and brush.mode == "none" then
+              brush.mode = "placing"
+            end
+            if brush.id ~= nil then
+              if brush.mode == "erasing" then
+                if existing and not selectorhold then
+                  deleteUnit(existing)
+                  painted = true
+                end
+              elseif brush.mode == "placing" and not selectorhold then
+                if existing then
+                  existing.dir = brush.dir
+                  painted = true
+                  new_unit = existing
+                elseif (not control_active or ctrl_first_press) and (not is_mobile or mobile_firstpress) then
+                  new_unit = createUnit(brush.id, hx, hy, brush.dir)
+                  painted = true
                 end
               end
               if painted then
@@ -654,9 +660,7 @@ function scene.update(dt)
   end
 end
 
-function scene.getTransform()
-  local transform = love.math.newTransform()
-
+function scene.transformParameters()
   local roomwidth, roomheight
 
   if not selector_open then
@@ -682,8 +686,19 @@ function scene.getTransform()
   local scaledwidth = screenwidth * (1/scale)
   local scaledheight = screenheight * (1/scale)
 
+  local dx = scaledwidth / 2 - roomwidth / 2
+  local dy = scaledheight / 2 - roomheight / 2 + (is_mobile and sprites["ui/cog"]:getHeight()/scale or 0)
+  
+  return scale, dx, dy;
+end
+
+function scene.getTransform()
+  local transform = love.math.newTransform()
+
+  local scale, dx, dy = scene.transformParameters();
+
   transform:scale(scale, scale)
-  transform:translate(scaledwidth / 2 - roomwidth / 2, scaledheight / 2 - roomheight / 2 + (is_mobile and sprites["ui/cog"]:getHeight()/scale or 0))
+  transform:translate(dx, dy);
   
   roomscale = scale
   return transform

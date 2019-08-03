@@ -911,7 +911,6 @@ function miscUpdates()
       -- for optimisation in drawing
       local objects_to_check = {
       "stelth", "colrful", "xwx", "rave",
-      "reed", "bleu", "grun", "yello", "purp", "orang", "cyeann", "whit", "blacc"
       }
       for i = 1, #objects_to_check do
         local prop = objects_to_check[i]
@@ -954,6 +953,107 @@ function updateGraphicalPropertyCache()
       end
     end
     graphical_property_cache[prop] = new_tbl;
+  end
+  
+  updateUnitColours()
+end
+
+--Colour logic:
+--If a unit be colour, it becomes that colour until it ben't that colour or it be a different colour. It persists even after breaking the rule.
+function updateUnitColours()
+  to_update = {}
+  
+  for colour,palette in pairs(main_palette_for_colour) do
+    local decolour = matchesRule(nil,"ben't",colour)
+    for _,match in ipairs(decolour) do
+      local unit = match[2]
+      if (unit[colour] == true) then
+        addUndo({"colour_change", unit.id, colour, true});
+        unit[colour] = false
+        to_update[unit] = {}
+      end
+      --If a unit ben't its native colour, make it blacc.
+      if palette[1] == tiles_list[unit.tile].color[1] and palette[2] == tiles_list[unit.tile].color[2]  and unitNotRecoloured(unit) then
+        addUndo({"colour_change", unit.id, "blacc", false});
+        unit["blacc"] = true
+        to_update[unit] = {}
+      end
+    end
+    
+    local newcolour = matchesRule(nil,"be",colour)
+    for _,match in ipairs(newcolour) do
+      local unit = match[2]
+      if (unit[colour] ~= true) then
+        if to_update[unit] == nil then
+          to_update[unit] = {}
+        end
+        table.insert(to_update[unit], colour)
+      end
+    end
+  end
+  
+  --BEN'T PAINT removes and prevents all other colour shenanigans.
+  local depaint = matchesRule(nil,"ben't","paint")
+  for _,match in ipairs(depaint) do
+    local unit = match[2]
+    unitUnsetColours(unit);
+    to_update[unit] = {}
+  end
+  
+  for unit,colours in pairs(to_update) do
+    unitUnsetColours(unit)
+    for _,colour in ipairs(colours) do
+      if (unit[colour] ~= true) then
+        addUndo({"colour_change", unit.id, colour, false});
+        unit[colour] = true
+      end
+    end
+    updateUnitColourOverride(unit)
+  end
+end
+
+function unitUnsetColours(unit)
+  for colour,palette in pairs(main_palette_for_colour) do
+    if unit[colour] == true then
+      addUndo({"colour_change", unit.id, colour, true});
+      unit[colour] = false
+    end
+  end
+end
+
+function unitNotRecoloured(unit)
+  for colour,palette in pairs(main_palette_for_colour) do
+    if unit[colour] == true then
+      return false
+    end
+  end
+  return true
+end
+
+function updateUnitColourOverride(unit)
+  unit.color_override = nil
+  if unit.whit and unit.reed then
+	  unit.color_override = {4, 2}
+	elseif unit.whit and unit.grun then
+	  unit.color_override = {5, 3}
+	elseif unit.whit or (unit.reed and unit.grun and unit.bleu) or (unit.reed and unit.cyeann) or (unit.bleu and unit.yello) or (unit.grun and unit.purp) then
+      unit.color_override = {0, 3}	
+	elseif unit.purp or (unit.reed and unit.bleu) then
+      unit.color_override = {3, 1}
+	elseif unit.yello or (unit.reed and unit.grun) then
+      unit.color_override = {2, 4}
+	elseif unit.orang or (unit.reed and unit.yello) then
+      unit.color_override = {2, 3}
+  elseif unit.cyeann or (unit.bleu and unit.grun) then
+    unit.color_override = {1, 4}
+  elseif unit.reed then
+    unit.color_override = {2, 2}
+  elseif unit.bleu then
+    unit.color_override = {1, 3}
+  elseif unit.grun then
+    unit.color_override = {5, 2}
+  elseif unit.blacc then
+    unit.color_override = {0, 4}
   end
 end
 
