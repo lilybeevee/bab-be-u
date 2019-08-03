@@ -162,7 +162,8 @@ function scene.setupGooi()
   end):setBGImage(sprites["ui/camera"],sprites["ui/camera_h"], sprites["ui/camera_a"]):bg({0, 0, 0, 0})
   if is_mobile then
     gooi.newButton({text = "", x = 40*5, y = 0, w = 40, h = 40}):onRelease(function()
-      selector_open = not selector_open
+      scene.keyPressed("tab")
+      scene.keyReleased("tab")
     end):setBGImage(sprites["ui/selector"],sprites["ui/selector_h"], sprites["ui/selector_a"]):bg({0, 0, 0, 0})
   end
 
@@ -250,9 +251,8 @@ function scene.setupGooi()
 
   gooi.setGroupVisible("settings", settings_open)
   gooi.setGroupEnabled("settings", settings_open)
-  
   local x = love.graphics.getWidth()/2 - tile_grid_width*16 - 64
-  y = love.graphics.getHeight()/2 - tile_grid_height*16 - 32
+  local y = love.graphics.getHeight()/2 - tile_grid_height*16 - 32
   
   for i=1,#tile_grid do
     local j = i
@@ -260,7 +260,7 @@ function scene.setupGooi()
       selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..selector_page], sprites["ui/selector_tab_"..selector_page.."_h"])
       selector_page = j
       current_tile_grid = tile_grid[selector_page];
-      selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..j.."_a"], sprites["ui/selector_tab_"..j.."_h"])
+      selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..j.."_a"])
     end)
     button:setBGImage(sprites["ui/selector_tab_"..i], sprites["ui/selector_tab_"..i.."_h"]):bg({0, 0, 0, 0})
     button:setVisible(selector_open)
@@ -271,7 +271,43 @@ function scene.setupGooi()
   -- gooi.setGroupVisible("selectortabs", selector_open)
   -- gooi.setGroupEnabled("selectortabs", selector_open)
   
+  local twelfth = love.graphics.getWidth()/12
+
+  --metatext (lshift)
+  gooi.newButton({text = "", x = 9.25*twelfth, y = 0.25*twelfth, w = twelfth, h = twelfth, group = "mobile-controls-selector"}):setBGImage(sprites["text_meta"]):onPress(function()
+      scene.keyPressed("lshift")
+      scene.keyReleased("lshift")
+  end):bg({0, 0, 0, 0})
+  --reload tab (rshift)
+  gooi.newButton({text = "", x = 10.75*twelfth, y = 0.25*twelfth, w = twelfth, h = twelfth, group = "mobile-controls-selector"}):setBGImage(sprites["ui/reset"]):onPress(function()                                                               scene.keyPressed("rshift")                                 scene.keyReleased("rshift")                            end):bg({0, 0, 0, 0})
+
+  gooi.setGroupVisible("mobile-controls-selector", false)
+
+  local screenheight = love.graphics.getHeight()
+
+  --rotate brush
+  gooi.newButton({text = "",x = 10*twelfth,y = screenheight-3*twelfth,w = twelfth,h = twelfth,group = "mobile-controls-editor"}):onPress(function(c) brush.dir = dirs8_by_offset[0][-1] end):setBGImage(sprites["ui/arrow up"]):bg({0, 0, 0, 0})
+  gooi.newButton({text = "",x = 11*twelfth,y = screenheight-2*twelfth,w = twelfth,h = twelfth,group = "mobile-controls-editor"}):onPress(function(c) brush.dir = dirs8_by_offset[1][0] end):setBGImage(sprites["ui/arrow right"]):bg({0, 0, 0, 0})
+  gooi.newButton({text = "",x = 10*twelfth,y = screenheight-1*twelfth,w = twelfth,h = twelfth,group = "mobile-controls-editor"}):onPress(function(c) brush.dir = dirs8_by_offset[0][1] end):setBGImage(sprites["ui/arrow down"]):bg({0, 0, 0, 0})
+  gooi.newButton({text = "",x =  9*twelfth,y = screenheight-2*twelfth,w = twelfth,h = twelfth,group = "mobile-controls-editor"}):onPress(function(c) brush.dir = dirs8_by_offset[-1][0] end):setBGImage(sprites["ui/arrow left"]):bg({0, 0, 0, 0})
+  --(diag)
+  gooi.newButton({text = "",x = 11*twelfth,y = screenheight-3*twelfth,w = twelfth,h = twelfth,group = "mobile-controls-editor"}):onPress(function(c) brush.dir = dirs8_by_offset[1][-1] end):setBGImage(sprites["ui/arrow ur"]):bg({0, 0, 0, 0})
+  gooi.newButton({text = "",x = 11*twelfth,y = screenheight-1*twelfth,w = twelfth,h = twelfth,group = "mobile-controls-editor"}):onPress(function(c) brush.dir = dirs8_by_offset[1][1] end):setBGImage(sprites["ui/arrow dr"]):bg({0, 0, 0, 0})
+  gooi.newButton({text = "",x = 9*twelfth,y = screenheight-1*twelfth,w = twelfth,h = twelfth,group = "mobile-controls-editor"}):onPress(function(c) brush.dir = dirs8_by_offset[-1][1] end):setBGImage(sprites["ui/arrow dl"]):bg({0, 0, 0, 0})
+  gooi.newButton({text = "",x = 9*twelfth,y = screenheight-3*twelfth,w = twelfth,h = twelfth,group = "mobile-controls-editor"}):onPress(function(c) brush.dir = dirs8_by_offset[-1][-1] end):setBGImage(sprites["ui/arrow ul"]):bg({0, 0, 0, 0})
+
+  --picker (visuals are down in scene.draw())
+  gooi.newButton({text = "",x = 10*twelfth,y = screenheight-2*twelfth,w = twelfth,h = twelfth,group = "mobile-controls-editor"}):onPress(function(c) mobile_picking = not mobile_picking end):bg({0, 0, 0, 0})
+
+  --stacking (shift/ctrl click)
+  mobile_controls_stackmode_none = gooi.newButton({text = "",x = 9*twelfth,y = screenheight-4.15*twelfth,w = twelfth,h = twelfth,group = "mobile-controls-editor"}):onPress(function(c) mobile_stackmode = "none" end):setBGImage(sprites["bab"]):bg({0, 0, 0, 0})
+  mobile_controls_stackmode_shift = gooi.newButton({text = "",x = 10*twelfth,y = screenheight-4.25*twelfth,w = twelfth,h = twelfth,group = "mobile-controls-editor"}):onPress(function(c) mobile_stackmode = "shift" end):setBGImage(sprites["ui/stack"]):bg({0, 0, 0, 0})
+  mobile_controls_stackmode_ctrl = gooi.newButton({text = "",x = 11*twelfth,y = screenheight-4.25*twelfth,w = twelfth,h = twelfth,group = "mobile-controls-editor"}):onPress(function(c) mobile_stackmode = "ctrl" end):setBGImage(sprites["ui/stack_same"]):bg({0, 0, 0, 0})
+
+  gooi.setGroupVisible("mobile-controls-editor", is_mobile)
 end
+mobile_picking = false
+mobile_stackmode = "none"
 
 function scene.keyPressed(key)
   if key == "escape" then
@@ -359,13 +395,21 @@ function scene.keyPressed(key)
 
   if key == "tab" then
     selector_open = not selector_open
+    local x = love.graphics.getWidth()*3/8 - (tile_grid_width*16 + 64)*roomscale
+    local y = love.graphics.getHeight()/2 - (tile_grid_height*16 + 32)*roomscale+(is_mobile and sprites["ui/cog"]:getHeight()/2 or 0)
     for i=1,#tile_grid do
       local button = selector_tab_buttons_list[i]
       button:setVisible(selector_open)
       button:setEnabled(selector_open)
+      button:setBounds(x+64*i*roomscale, y, 64*roomscale, 32*roomscale)
     end
     if selector_open then
       presence["details"] = "browsing selector"
+      gooi.setGroupVisible("mobile-controls-selector", is_mobile)
+      gooi.setGroupVisible("mobile-controls-editor", false)
+    else
+      gooi.setGroupVisible("mobile-controls-selector", false)
+      gooi.setGroupVisible("mobile-controls-editor", is_mobile)
     end
   end
   
@@ -482,22 +526,24 @@ function scene.update(dt)
           end
         end
 
-        if love.mouse.isDown(1) then
+        if love.mouse.isDown(1) and not (is_mobile and mobile_picking or brush.mode == "picking") then
           if not selector_open then
             local painted = false
             local new_unit = nil
             local existing = nil
             local ctrl_first_press = false
-            if (key_down["lctrl"] or key_down["rctrl"]) and brush.mode == "none" then
+            local ctrl_active = key_down["lctrl"] or key_down["rctrl"] or (is_mobile and mobile_stackmode == "ctrl")
+            local shift_active = key_down["lshift"] or (is_mobile and mobile_stackmode == "shift") or ctrl_active
+            if ctrl_active and brush.mode == "none" then
               ctrl_first_press = true
             end
             if #hovered >= 1 then
               for _,unit in ipairs(hovered) do
                 if unit.tile == brush.id then
-                  if not key_down["lctrl"] and not key_down["rctrl"] and not selectorhold then
+                  if not (ctrl_active or selectorhold) then
                     existing = unit
                   end
-                elseif brush.mode == "placing" and not key_down["lshift"] and not selectorhold then
+                elseif brush.mode == "placing" and not (shift_active or selectorhold) then
                   deleteUnit(unit)
                   painted = true
                 end
@@ -519,7 +565,7 @@ function scene.update(dt)
                   existing.dir = brush.dir
                   painted = true
                   new_unit = existing
-                elseif (not key_down["lctrl"] and not key_down["rctrl"]) or ctrl_first_press then
+                elseif (not control_active or ctrl_first_press) and (not is_mobile or mobile_firstpress) then
                   new_unit = createUnit(brush.id, hx, hy, brush.dir)
                   painted = true
                 end
@@ -553,8 +599,9 @@ function scene.update(dt)
               brush.picked_index = 0
             end
           end
+          mobile_firstpress = false
         end
-        if love.mouse.isDown(2) and not selector_open then
+        if (love.mouse.isDown(2) or (is_mobile and mobile_picking and love.mouse.isDown(1))) and not selector_open then
           if brush.mode ~= "picking" then
             if #hovered >= 1 then
               brush.picked_tile = tileid
@@ -574,6 +621,7 @@ function scene.update(dt)
               brush.id = nil
               brush.picked_tile = nil
               brush.picked_index = 0
+              mobile_picking = false
             end
           end
         end
@@ -591,22 +639,22 @@ function scene.update(dt)
       max_layer = math.max(max_layer, unit.layer)
     end
 
-    if not love.mouse.isDown(1) then
+    if not (love.mouse.isDown(1) and not (is_mobile and mobile_picking and brush.mode ~= "picking")) then
       if brush.mode == "placing" or brush.mode == "erasing" then
         brush.mode = "none"
       end
+      mobile_firstpress = true
     end
-    if not love.mouse.isDown(2) then
+    if not (love.mouse.isDown(2) or (is_mobile and love.mouse.isDown(1) and mobile_picking)) then
       if brush.mode == "picking" then
         brush.mode = "none"
+        mobile_picking = false
       end
     end
   end
 end
 
-function scene.getTransform()
-  local transform = love.math.newTransform()
-
+function scene.transformParameters()
   local roomwidth, roomheight
 
   if not selector_open then
@@ -617,36 +665,36 @@ function scene.getTransform()
     roomheight = tile_grid_height * TILE_SIZE
   end
 
-  local screenwidth = love.graphics.getWidth()
-  local screenheight = love.graphics.getHeight()
+  local screenwidth = love.graphics.getWidth() * (is_mobile and 0.75 or 1)
+  local screenheight = love.graphics.getHeight() - (is_mobile and sprites["ui/cog"]:getHeight() or 0)
 
-  local scale = 1
-  if roomwidth*0.375 >= screenwidth or roomheight*0.375 >= screenheight then
-    scale = 0.25
-  elseif roomwidth*0.5 >= screenwidth or roomheight*0.5 >= screenheight then
-    scale = 0.375
-  elseif roomwidth*0.625 >= screenwidth or roomheight*0.625 >= screenheight then
-    scale = 0.5
-  elseif roomwidth*0.75 >= screenwidth or roomheight*0.75 >= screenheight then
-    scale = 0.625
-  elseif roomwidth*0.875 >= screenwidth or roomheight*0.875 >= screenheight then
-    scale = 0.75
-  elseif roomwidth >= screenwidth or roomheight >= screenheight then
-    scale = 0.875
-  elseif screenwidth >= roomwidth * 4 and screenheight >= roomheight * 4 then
-    scale = 4
-  elseif screenwidth >= roomwidth * 3 and screenheight >= roomheight * 3 then
-    scale = 3
-  elseif screenwidth >= roomwidth * 2 and screenheight >= roomheight * 2 then
-    scale = 2
+  local scales = {0.25, 0.375, 0.5, 0.75, 1, 1.5, 2, 3, 4}
+
+  local scale = scales[1]
+  for _,s in ipairs(scales) do
+    if screenwidth >= roomwidth * s and screenheight >= roomheight * s then
+        scale = s
+    else break end
   end
 
   local scaledwidth = screenwidth * (1/scale)
   local scaledheight = screenheight * (1/scale)
 
-  transform:scale(scale, scale)
-  transform:translate(scaledwidth / 2 - roomwidth / 2, scaledheight / 2 - roomheight / 2)
+  local dx = scaledwidth / 2 - roomwidth / 2
+  local dy = scaledheight / 2 - roomheight / 2 + (is_mobile and sprites["ui/cog"]:getHeight()/scale or 0)
+  
+  return scale, dx, dy;
+end
 
+function scene.getTransform()
+  local transform = love.math.newTransform()
+
+  local scale, dx, dy = scene.transformParameters();
+
+  transform:scale(scale, scale)
+  transform:translate(dx, dy);
+  
+  roomscale = scale
   return transform
 end
 
@@ -800,7 +848,9 @@ function scene.draw(dt)
     if selector_open then
       love.graphics.setColor(getPaletteColor(0,3))
       love.graphics.print(last_hovered_tile[1] .. ', ' .. last_hovered_tile[2], 0, roomheight)
-      love.graphics.print("LSHIFT to get meta text, RSHIFT to refresh", 0, roomheight+12)
+      if not is_mobile then
+          love.graphics.print("LSHIFT to get meta text, RSHIFT to refresh", 0, roomheight+12)
+      end
     end
 
     love.graphics.pop()
@@ -857,6 +907,46 @@ function scene.draw(dt)
 
     love.graphics.push()
     gooi.draw()
+    gooi.draw("mobile-controls-selector")
+    gooi.draw("mobile-controls-editor")
+    if is_mobile then
+      local twelfth = love.graphics.getWidth()/12
+      if mobile_picking then
+          love.graphics.setColor(1, 1, 1, 1)
+          love.graphics.draw(sprites["ui_plus"],10*twelfth,love.graphics.getHeight()-2*twelfth,0,twelfth/32,twelfth/32)
+      elseif brush.id then
+        local sprite = sprites[tiles_list[brush.id].sprite]
+        if not sprite then sprite = sprites["wat"] end
+        
+        local rotation = 0
+        if tiles_list[brush.id].rotate then
+            rotation = (brush.dir - 1) * 45
+        end
+        
+        local color = tiles_list[brush.id].color
+        if #color == 3 then
+          love.graphics.setColor(color[1]/255, color[2]/255, color[3]/255, 1)
+        else
+          local r, g, b, a = getPaletteColor(color[1], color[2])
+          love.graphics.setColor(r, g, b, a)
+        end
+
+        love.graphics.draw(sprite, 10.5*twelfth, love.graphics.getHeight()-1.5*twelfth,math.rad(rotation),twelfth/32,twelfth/32,twelfth/4,twelfth/4)
+      end
+      if mobile_stackmode == "none" then
+        mobile_controls_stackmode_none:setBounds(9*twelfth, love.graphics.getHeight()-4.05*twelfth)
+        mobile_controls_stackmode_shift:setBounds(10*twelfth, love.graphics.getHeight()-4.25*twelfth)
+        mobile_controls_stackmode_ctrl:setBounds(11*twelfth, love.graphics.getHeight()-4.25*twelfth)
+      elseif mobile_stackmode == "shift" then
+        mobile_controls_stackmode_none:setBounds(9*twelfth, love.graphics.getHeight()-4.15*twelfth)
+        mobile_controls_stackmode_shift:setBounds(10*twelfth, love.graphics.getHeight()-4.15*twelfth)
+        mobile_controls_stackmode_ctrl:setBounds(11*twelfth, love.graphics.getHeight()-4.25*twelfth)
+      elseif mobile_stackmode == "ctrl" then
+        mobile_controls_stackmode_none:setBounds(9*twelfth, love.graphics.getHeight()-4.15*twelfth)
+        mobile_controls_stackmode_shift:setBounds(10*twelfth, love.graphics.getHeight()-4.25*twelfth)
+        mobile_controls_stackmode_ctrl:setBounds(11*twelfth, love.graphics.getHeight()-4.15*twelfth)
+      end
+    end
 
     love.graphics.setFont(name_font)
     love.graphics.setColor(1, 1, 1)
@@ -895,11 +985,6 @@ function scene.draw(dt)
         love.graphics.draw(screenshot_image)
         love.graphics.setScissor()
       end
-    end
-
-    if is_mobile then
-      local cursorx, cursory = love.mouse.getPosition()
-      love.graphics.draw(system_cursor, cursorx, cursory)
     end
 
     if is_mobile then
