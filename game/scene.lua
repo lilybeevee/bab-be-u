@@ -168,13 +168,13 @@ end
 function doReplay(dt)
 	if not replay_playback then return false end
 	if love.timer.getTime() > (replay_playback_time + replay_playback_interval) then
-        if not replay_pause then
-            replay_playback_time = replay_playback_time + replay_playback_interval
-            doReplayTurn(replay_playback_turn);
-            replay_playback_turn = replay_playback_turn + 1;
-        else
-            replay_playback_time = love.timer.getTime()
-        end
+    if not replay_pause then
+      replay_playback_time = replay_playback_time + replay_playback_interval
+      doReplayTurn(replay_playback_turn);
+      replay_playback_turn = replay_playback_turn + 1;
+    else
+      replay_playback_time = love.timer.getTime()
+    end
 	end
   return true
 end
@@ -382,6 +382,10 @@ function scene.keyPressed(key, isrepeat)
     
   if key == "e" and not currently_winning and not replay_playback then
     doOneMove(0, 0, "e")
+  end
+  
+  if key == "f" and hasRule("press","f2",":)") and not currently_winning and not replay_playback then
+    doOneMove(0, 0, "f")
   end
 
   if key == "tab" then
@@ -1527,7 +1531,10 @@ function doOneMove(x, y, key)
     else
       timeless = false
     end
-      mobile_controls_timeless:setBGImage(sprites[timeless and "ui/time resume" or "ui/timestop"])
+    mobile_controls_timeless:setBGImage(sprites[timeless and "ui/time resume" or "ui/timestop"])
+  elseif (key == "f") then
+    replay_string = replay_string..tostring(0)..","..tostring(0)..","..tostring("f")..";"
+    doWin()
 	elseif (key == "undo") then
 		local result = undo()
 		replay_string = replay_string..tostring(0)..","..tostring(0)..","..tostring("undo")..";"
