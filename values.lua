@@ -198,7 +198,7 @@ selector_grid_contents = {
     "boy","text_boy","dayzy","text_dayzy","platfor","text_platfor",0,0,0,0,0,0,0,0,"lila","text_lila","tot","text_tot",
     "steev","text_steev","splittr","text_splittr","colld","text_colld",0,0,0,0,0,0,0,0,"pata","text_pata","o","text_o",
     "han","text_han","clowd","text_clowd","bellt","text_bellt","arro","text_arro",0,0,0,0,0,0,"larry","text_larry","zsoob","text_zsoob",
-    "os","text_os","hurcane","text_hurcane","spik","text_spik",0,0,0,0,0,0,0,0,0,0,"jill","text_jill",
+    "os","text_os","hurcane","text_hurcane","spik","text_spik","ger","text_ger",0,0,0,0,0,0,0,0,"jill","text_jill",
     "firbolt","text_firbolt","lie","text_lie","spiky","text_spiky",0,0,0,0,0,0,0,0,0,0,0,0,
     "icbolt","text_icbolt","lie/8","text_lie/8","bordr","text_bordr",0,0,0,0,0,0,0,0,0,0,0,0,
   },
@@ -595,6 +595,7 @@ tiles_list = {
     layer = 5,
     rotate = true,
     eye = {x=19, y=7, w=2, h=2},
+    desc = "babs bff"
   },
   --38
   {
@@ -970,6 +971,7 @@ tiles_list = {
     layer = 5,
     rotate = true,
     eye = {x=21, y=9, w=2, h=2},
+    desc = "1, 2 oatmeal kirb be be a pincc guy"
   },
   --78
   {
@@ -3427,7 +3429,7 @@ tiles_list = {
     sprite = "text_paint",
     type = "text",
     texttype = "cond_prefix_or_property",
-    color = {4, 2},
+    color = {4,2},
     layer = 20,
     desc = "PAINT: changes the second object's color to match."
   },
@@ -3436,7 +3438,7 @@ tiles_list = {
     name = "paint",
     sprite = "paint",
     type = "object",
-    color = {0, 3},
+    color = {0,3},
     layer = 4,
     desc = "X be PAINT turns into a paint bucket with the color of X."
   },
@@ -3449,6 +3451,23 @@ tiles_list = {
     color = {2, 4},
     layer = 20,
     desc = "GLUED: Stuck to adjacent units sharing its colour, and can't move unless the entire block can simultaneously move.",
+  },
+  --- 334
+  {
+    name = "ger",
+    sprite = "ger",
+    type = "object",
+    color = {6,1},
+    layer = 4,
+    rotate = true
+  },
+  -- 335
+  {
+    name = "text_ger",
+    sprite = "text_ger",
+    type = "text",
+    color = {6,1},
+    layer = 20
   },
 }
 
