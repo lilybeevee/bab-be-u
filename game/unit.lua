@@ -1739,6 +1739,11 @@ end
 function deleteUnits(del_units,convert)
   for _,unit in ipairs(del_units) do
     if (not unit.removed_final) then
+      for colour,_ in pairs(main_palette_for_colour) do
+        if unit[colour] == true then
+          addUndo({"colour_change", unit.id, colour, true});
+        end
+      end
       if (unit.backer_turn ~= nil) then
         addUndo({"backer_turn", unit.id, unit.backer_turn})
       end

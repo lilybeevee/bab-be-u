@@ -160,7 +160,7 @@ selector_grid_contents = {
     "watr", "text_watr", "text_no swim", "meem", "text_meem", "o", "text_o", "text_snacc", "text_seen by" , "text_stalk", "text_moov", "text_folo wal", "text_rong", "text_her", "text_thr", 0, 0, 0,
     "skul", "text_skul", "text_:(", "til", "text_til", "kirb", "text_kirb", "gunne", "text_gunne", "wog", "text_wog", "text_zip", "text_shy", "text_munwalk", "text_sidestep", "text_diagstep", "text_hopovr", "text_knightstep",
     "boux", "text_boux", "text_come pls", "os", "text_os", "bup", "text_bup", "han", "text_han", "tot", "text_tot", "lila", "text_lila", "hol", "text_hol", "text_poor toll", "text_blacc", "text_reed",
-    "bellt", "text_bellt", "text_go", "tre", "text_tre", "piler", "text_piler", "hatt", "text_hatt", "laav", "text_laav", "fenss", "text_fenss", "riff", "text_riff", 0, "text_whit", "text_orang",
+    "bellt", "text_bellt", "text_go", "tre", "text_tre", "piler", "text_piler", "hatt", "text_hatt", "laav", "text_laav", "fenss", "text_fenss", "riff", "text_riff", "text_glued", "text_whit", "text_orang",
     "boll", "text_boll", "text_:o", "frut", "text_frut", "slippers", "text_slippers", "pata", "text_pata", "larry", "text_larry", "pepis", "text_pepis", "metl", "text_metl", 0, "text_colrful", "text_yello",
     "clok", "text_clok", "text_try again", "text_no undo", "text_undo", "zsoob", "text_zsoob", "katany", "text_katany", "petnygrame", "text_petnygrame", "hedg", "text_hedg", "lie", "text_lie", 0, "text_rave", "text_grun",
     "splittr", "text_splittr", "text_split", "steev", "text_steev", "boy", "text_boy", "scarr", "text_scarr", "firbolt", "text_firbolt", "icbolt", "text_icbolt", "lie/8", "text_lie/8", 0, "text_stelth", "text_cyeann",
@@ -3439,6 +3439,16 @@ tiles_list = {
     color = {0, 3},
     layer = 4,
     desc = "X be PAINT turns into a paint bucket with the color of X."
+  },
+  -- 333
+  {
+    name = "text_glued",
+    sprite = "text_glued",
+    type = "text",
+    texttype = "property",
+    color = {2, 4},
+    layer = 20,
+    desc = "GLUED: Stuck to adjacent units sharing its colour, and can't move unless the entire block can simultaneously move.",
   },
 }
 
