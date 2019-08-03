@@ -1,5 +1,8 @@
+old_rules_with = {}
+
 function clearRules()
   full_rules = {}
+  old_rules_with = rules_with
   rules_with = {}
   not_rules = {}
   protect_rules = {}
@@ -115,6 +118,7 @@ function parseRules(undoing)
     #matchesRule("text", "be", "diag"),
     #matchesRule("text", "ben't", "wurd"),
     #matchesRule("text", "be", "za warudo"),
+    #matchesRule("text", "be", "rong"),
     #matchesRule(outerlvl, "be", "go arnd"),
     #matchesRule(outerlvl, "be", "mirr arnd"),
     --If and only if poor tolls exist, flyeness changing can affect rules parsing, because the text and portal have to match flyeness to go through.
@@ -321,6 +325,7 @@ function parseRules(undoing)
     #matchesRule("text", "be", "diag"),
     #matchesRule("text", "ben't", "wurd"),
     #matchesRule("text", "be", "za warudo"),
+    #matchesRule("text", "be", "rong"),
     #matchesRule(outerlvl, "be", "go arnd"),
     #matchesRule(outerlvl, "be", "mirr arnd"),
     --If and only if poor tolls exist, flyeness changing can affect rules parsing, because the text and portal have to match flyeness to go through.
@@ -330,7 +335,6 @@ function parseRules(undoing)
     
     for i = 1,#reparse_rule_counts do
       if reparse_rule_counts[i] ~= reparse_rule_counts_new[i] then
-        --print(reparse_rule_counts[i]..reparse_rule_counts_new[i])
         changed_reparsing_rule = true
         break
       end
@@ -544,7 +548,27 @@ function addRule(full_rule)
   local subject_not = 0
   local verb_not = 0
   local object_not = 0
-
+  
+  local rong = false
+  
+  for _,unit in ipairs(units) do
+    if (not rong and old_rules_with["rong"] ~= nil) then
+      local temp = rules_with; rules_with = old_rules_with;
+      if hasProperty(unit, "rong") then
+        verb = verb.."n't"
+        rules[2] = verb
+        rong = true;
+      end
+      rules_with = temp;
+    end
+    unit.active = true
+    if not unit.old_active and not first_turn then
+      addParticles("rule", unit.x, unit.y, unit.color)
+      has_new_rule = true
+    end
+    unit.old_active = unit.active
+  end
+  
   while subject:ends("n't") do subject, subject_not = subject:sub(1, -4), subject_not + 1 end
   while verb:ends("n't")    do verb,       verb_not =    verb:sub(1, -4),    verb_not + 1 end
   while object:ends("n't")  do object,   object_not =  object:sub(1, -4),  object_not + 1 end
@@ -552,15 +576,6 @@ function addRule(full_rule)
 
   if verb_not > 0 then
     verb = rules[2]:sub(1, -4)
-  end
-
-  for _,unit in ipairs(units) do
-    unit.active = true
-    if not unit.old_active and not first_turn then
-      addParticles("rule", unit.x, unit.y, unit.color)
-      has_new_rule = true
-    end
-    unit.old_active = unit.active
   end
 
   if subject == "every1" then
@@ -798,6 +813,7 @@ function shouldReparseRules()
   if shouldReparseRulesIfConditionalRuleExists("text", "be", "diag") then return true end
   if shouldReparseRulesIfConditionalRuleExists("text", "ben't", "wurd") then return true end
   if shouldReparseRulesIfConditionalRuleExists("text", "be", "za warudo") then return true end
+  if shouldReparseRulesIfConditionalRuleExists("text", "be", "rong") then return true end
   if shouldReparseRulesIfConditionalRuleExists(outerlvl, "be", "go arnd") then return true end
   if shouldReparseRulesIfConditionalRuleExists(outerlvl, "be", "mirr arnd") then return true end
   if rules_with["poor toll"] then
