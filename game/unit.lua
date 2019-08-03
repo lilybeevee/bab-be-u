@@ -269,6 +269,59 @@ function moveBlock()
     end
   end
   
+  local isrighthere = getUnitsWithEffect("rithere")
+  local hasrighthered = {}
+  for _,unit in ipairs(isrighthere) do
+    local already = false
+    for _,moved in ipairs(hasrighthered) do
+      if unit == moved then
+        already = true
+      end
+    end
+    
+    if not already then
+      local getrightheres = matchesRule(unit,"be","rithere")
+      local rightheres = {}
+      local found = false
+      
+      for _,ruleparent in ipairs(getrightheres) do
+        local fullrule = ruleparent[2]
+        for i,righthererule in ipairs(fullrule) do
+          if righthererule.fullname == "text_rithere" then
+            table.insert(rightheres,righthererule)
+            break
+          end
+        end
+      end
+      
+      for name,tbl in pairs(rightheres) do
+        table.sort(tbl, readingOrderSort)
+      end
+      
+      for i,righthere in ipairs(rightheres) do
+        
+        if found then
+          addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
+          moveUnit(unit,righthere.x,righthere.y)
+          table.insert(hasrighthered,unit)
+          break
+        end
+        
+        if (unit.x == righthere.x) and (unit.y == righthere.y) and (i ~= #rightheres) then
+          found = true
+        end
+      end
+      
+      if not found then
+        local firstrighthere = rightheres[1]
+        
+        addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
+        moveUnit(unit,firstrighthere.x,firstrighthere.y)
+        table.insert(hasrighthered,unit)
+      end
+    end
+  end
+  
   local isshift = getUnitsWithEffect("go");
   for _,unit in ipairs(isshift) do
     local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
@@ -1739,6 +1792,11 @@ end
 function deleteUnits(del_units,convert)
   for _,unit in ipairs(del_units) do
     if (not unit.removed_final) then
+      for colour,_ in pairs(main_palette_for_colour) do
+        if unit[colour] == true then
+          addUndo({"colour_change", unit.id, colour, true});
+        end
+      end
       if (unit.backer_turn ~= nil) then
         addUndo({"backer_turn", unit.id, unit.backer_turn})
       end

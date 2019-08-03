@@ -157,11 +157,11 @@ selector_grid_contents = {
     "flog", "text_flog", "text_:)", "colld", "text_colld", "text_fridgd", "text_hotte", "text_ouch", "text_slep", "text_protecc", "text_sidekik", "text_brite", "text_lit", "text_opaque", "text_za warudo", "text_rocn't", "text_waln't", "text_ditto",
     "roc", "text_roc", "text_go away pls", "gras", "text_gras", "dayzy", "text_dayzy", "text_wfren", "text_arond", "text_frenles", "text_copkat", "text_go arnd", "text_mirr arnd", "text_meta", "text_frens", "text_pathz", "text_groop", "text_stay ther",
     "wal", "text_wal", "text_no go", "l..uv", "text_l..uv", "hurcane", "text_hurcane", "text_creat", "text_look at", "text_spoop", "text_yeet", "text_turn cornr", "text_corekt", "text_timles", "text_the", "text_that", "text_that be", "text_clikt",
-    "watr", "text_watr", "text_no swim", "meem", "text_meem", "o", "text_o", "text_snacc", "text_seen by" , "text_stalk", "text_moov", "text_folo wal", "text_rong", "text_her", "text_thr", 0, 0, 0,
+    "watr", "text_watr", "text_no swim", "meem", "text_meem", "o", "text_o", "text_snacc", "text_seen by" , "text_stalk", "text_moov", "text_folo wal", "text_rong", "text_her", "text_thr", "text_rithere", 0, 0,
     "skul", "text_skul", "text_:(", "til", "text_til", "kirb", "text_kirb", "gunne", "text_gunne", "wog", "text_wog", "text_zip", "text_shy", "text_munwalk", "text_sidestep", "text_diagstep", "text_hopovr", "text_knightstep",
     "boux", "text_boux", "text_come pls", "os", "text_os", "bup", "text_bup", "han", "text_han", "tot", "text_tot", "lila", "text_lila", "hol", "text_hol", "text_poor toll", "text_blacc", "text_reed",
-    "bellt", "text_bellt", "text_go", "tre", "text_tre", "piler", "text_piler", "hatt", "text_hatt", "laav", "text_laav", "fenss", "text_fenss", "riff", "text_riff", 0, "text_whit", "text_orang",
-    "boll", "text_boll", "text_:o", "frut", "text_frut", "slippers", "text_slippers", "pata", "text_pata", "larry", "text_larry", "pepis", "text_pepis", "metl", "text_metl", 0, "text_colrful", "text_yello",
+    "bellt", "text_bellt", "text_go", "tre", "text_tre", "piler", "text_piler", "hatt", "text_hatt", "laav", "text_laav", "fenss", "text_fenss", "riff", "text_riff", "text_glued", "text_whit", "text_orang",
+    "boll", "text_boll", "text_:o", "frut", "text_frut", "slippers", "text_slippers", "pata", "text_pata", "larry", "text_larry", "pepis", "text_pepis", "metl", "text_metl", "text_torc", "text_colrful", "text_yello",
     "clok", "text_clok", "text_try again", "text_no undo", "text_undo", "zsoob", "text_zsoob", "katany", "text_katany", "petnygrame", "text_petnygrame", "hedg", "text_hedg", "lie", "text_lie", 0, "text_rave", "text_grun",
     "splittr", "text_splittr", "text_split", "steev", "text_steev", "boy", "text_boy", "scarr", "text_scarr", "firbolt", "text_firbolt", "icbolt", "text_icbolt", "lie/8", "text_lie/8", 0, "text_stelth", "text_cyeann",
     "chekr", "text_chekr", "text_diag", "text_ortho", "text_haet flor", "arro", "text_arro", "text_go my way", "text_spin", "text_no turn", "text_stubbn", "platfor", "text_platfor", "jail", "text_jail", 0, "text_paint", "text_bleu",
@@ -198,7 +198,7 @@ selector_grid_contents = {
     "boy","text_boy","dayzy","text_dayzy","platfor","text_platfor",0,0,0,0,0,0,0,0,"lila","text_lila","tot","text_tot",
     "steev","text_steev","splittr","text_splittr","colld","text_colld",0,0,0,0,0,0,0,0,"pata","text_pata","o","text_o",
     "han","text_han","clowd","text_clowd","bellt","text_bellt","arro","text_arro",0,0,0,0,0,0,"larry","text_larry","zsoob","text_zsoob",
-    "os","text_os","hurcane","text_hurcane","spik","text_spik",0,0,0,0,0,0,0,0,0,0,"jill","text_jill",
+    "os","text_os","hurcane","text_hurcane","spik","text_spik","ger","text_ger",0,0,0,0,0,0,0,0,"jill","text_jill",
     "firbolt","text_firbolt","lie","text_lie","spiky","text_spiky",0,0,0,0,0,0,0,0,0,0,0,0,
     "icbolt","text_icbolt","lie/8","text_lie/8","bordr","text_bordr",0,0,0,0,0,0,0,0,0,0,0,0,
   },
@@ -208,7 +208,7 @@ selector_grid_contents = {
     "text_u","text_u too","text_u tres","text_walk",0,"text_:)","text_:(","text_no swim","text_ouch",0,"text_nxt","text_stay ther","text_sublvl","text_loop",0,"text_frenles","text_corekt","text_rong",
     "text_go","text_goooo","text_icy","text_icyyyy",0,"text_ned kee","text_for dor","text_hotte","text_fridgd",0,0,0,0,0,0,"text_lit","text_timles","text_clikt",
     "text_no go","text_go away pls","text_come pls","text_sidekik",0,"text_protecc","text_:o","text_xwx",0,0,0,0,0,0,0,"text_mayb","text_an","text_wait",
-    "text_visit fren","text_slep","text_shy","text_behin u",0,"text_moar","text_split","text_wurd","text_meta",0,0,0,0,0,0,0,0,0,
+    "text_visit fren","text_slep","text_shy","text_behin u",0,"text_moar","text_split","text_wurd","text_meta",0,0,0,0,0,0,0,0,"text_the",
     "text_flye","text_tall","text_haet skye","text_haet flor",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     "text_diag","text_ortho","text_go my way","text_direction",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     "text_turn cornr","text_folo wal","text_zip","text_hopovr",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -217,8 +217,8 @@ selector_grid_contents = {
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_yello",
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_gay","text_tranz","text_grun",
     0,0,0,0,0,"text_try again","text_no undo","text_undo","text_za warudo",0,0,0,0,0,0,"text_stelth","text_qt","text_cyeann",
-    0,0,0,0,0,"text_poor toll","text_go arnd","text_mirr arnd","text_brite","text_torc",0,0,0,0,0,"text_blacc","text_whit","text_bleu",
-    0,0,0,0,0,"text_her","text_thr","text_the","text_opaque",0,0,0,0,0,0,"text_colrful","text_rave","text_purp",
+    0,0,0,0,0,"text_poor toll","text_go arnd","text_mirr arnd","text_brite","text_torc",0,0,0,0,0,0,"text_blacc","text_whit","text_bleu",
+    0,0,0,0,0,"text_her","text_thr","text_rithere","text_opaque",0,0,0,0,0,0,"text_colrful","text_rave","text_purp",
   },
 }
 tile_grid_width = 18
@@ -474,7 +474,10 @@ tiles_list = {
   --27
   {
     name = "text_reed",
-    sprite = "text_reed",
+    sprite = "text_reed_cond",
+    sprite_transforms = {
+      property = "text_reed"
+    },
     type = "text",
     texttype = "cond_prefix_or_property",
     color = {2, 2},
@@ -484,7 +487,10 @@ tiles_list = {
   --28
   {
     name = "text_bleu",
-    sprite = "text_bleu",
+    sprite = "text_bleu_cond",
+    sprite_transforms = {
+      property = "text_bleu"
+    },
     type = "text",
     texttype = "cond_prefix_or_property",
     color = {1, 3},
@@ -589,6 +595,7 @@ tiles_list = {
     layer = 5,
     rotate = true,
     eye = {x=19, y=7, w=2, h=2},
+    desc = "babs bff"
   },
   --38
   {
@@ -964,6 +971,7 @@ tiles_list = {
     layer = 5,
     rotate = true,
     eye = {x=21, y=9, w=2, h=2},
+    desc = "1, 2 oatmeal kirb be be a pincc guy"
   },
   --78
   {
@@ -2404,7 +2412,10 @@ tiles_list = {
   -- 225
   {
     name = "text_grun",
-    sprite = "text_grun",
+    sprite = "text_grun_cond",
+    sprite_transforms = {
+      property = "text_grun"
+    },
     type = "text",
     texttype = "cond_prefix_or_property",
     color = {5, 2},
@@ -2414,7 +2425,10 @@ tiles_list = {
   -- 226
   {
     name = "text_yello",
-    sprite = "text_yello",
+    sprite = "text_yello_cond",
+    sprite_transforms = {
+      property = "text_yello"
+    },
     type = "text",
     texttype = "cond_prefix_or_property",
     color = {2, 4},
@@ -2424,7 +2438,10 @@ tiles_list = {
   -- 227
   {
     name = "text_purp",
-    sprite = "text_purp",
+    sprite = "text_purp_cond",
+    sprite_transforms = {
+      property = "text_purp"
+    },
     type = "text",
     texttype = "cond_prefix_or_property",
     color = {3, 2},
@@ -2434,7 +2451,10 @@ tiles_list = {
   -- 228
   {
     name = "text_orang",
-    sprite = "text_orang",
+    sprite = "text_orang_cond",
+    sprite_transforms = {
+      property = "text_orang"
+    },
     type = "text",
     texttype = "cond_prefix_or_property",
     color = {2, 3},
@@ -2444,7 +2464,10 @@ tiles_list = {
   -- 229
   {
     name = "text_cyeann",
-    sprite = "text_cyeann",
+    sprite = "text_cyeann_cond",
+    sprite_transforms = {
+      property = "text_cyeann"
+    },
     type = "text",
     texttype = "cond_prefix_or_property",
     color = {1, 4},
@@ -2454,7 +2477,10 @@ tiles_list = {
   -- 230
   {
     name = "text_whit",
-    sprite = "text_whit",
+    sprite = "text_whit_cond",
+    sprite_transforms = {
+      property = "text_whit"
+    },
     type = "text",
     texttype = "cond_prefix_or_property",
     color = {0, 3},
@@ -2464,7 +2490,10 @@ tiles_list = {
   -- 231
   {
     name = "text_blacc",
-    sprite = "text_blacc",
+    sprite = "text_blacc_cond",
+    sprite_transforms = {
+      property = "text_blacc"
+    },
     type = "text",
     texttype = "cond_prefix_or_property",
     color = {0, 0},
@@ -2518,7 +2547,7 @@ tiles_list = {
       property = "text_rong_prop"
     },
     type = "text",
-    texttype = "cond_prefix",
+    texttype = "cond_prefix_or_property",
     color = {2,2},
     layer = 20,
     desc = "RONG: As a prefix, true if the unit is in a negated rule. As a property, causes associated units to return a negated form of the rule.",
@@ -3400,7 +3429,7 @@ tiles_list = {
     sprite = "text_paint",
     type = "text",
     texttype = "cond_prefix_or_property",
-    color = {4, 2},
+    color = {4,2},
     layer = 20,
     desc = "PAINT: changes the second object's color to match."
   },
@@ -3409,20 +3438,57 @@ tiles_list = {
     name = "paint",
     sprite = "paint",
     type = "object",
-    color = {0, 3},
+    color = {0,3},
     layer = 4,
     desc = "X be PAINT turns into a paint bucket with the color of X."
   },
   -- 333
   {
-    name = "text_torc",
-    sprite = "brite", --temp
+    name = "text_glued",
+    sprite = "text_glued",
     type = "text",
     texttype = "property",
-    color = {5,3},
+    color = {2, 4},
     layer = 20,
-    desc = "TORC: casts light in an angled beam in front of the object. Stack multiple to increase the angle."
-  }
+    desc = "GLUED: Stuck to adjacent units sharing its colour, and can't move unless the entire block can simultaneously move.",
+  },
+  --- 334
+  {
+    name = "ger",
+    sprite = "ger",
+    type = "object",
+    color = {6,1},
+    layer = 4,
+    rotate = true
+  },
+  -- 335
+  {
+    name = "text_ger",
+    sprite = "text_ger",
+    type = "text",
+    color = {6,1},
+    layer = 20
+  },
+  -- 336
+  {
+    name = "text_rithere",
+    sprite = "text_rithere",
+    type = "text",
+    texttype = "property",
+    color = {4,0},
+    layer = 20,
+    desc = "RIT HERE: Sends objects to where the text is.",
+  },
+  -- 337
+  {
+    name = "text_torc",
+    sprite = "text_torc",
+    type = "text",
+    texttype = "property",
+    color = {2,2},
+    layer = 20,
+    desc = "TORC: A TORC object emits light in the direction they're facing. The angle of the light determined by the number of TORC stacks. (WIP)",
+  },
 }
 
 tiles_by_name = {}

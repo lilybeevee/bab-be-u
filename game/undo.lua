@@ -249,6 +249,7 @@ function turnedIntoOnlyNoUndoUnits(turn, i, unit_id)
 end
 
 function undo(dont_update_rules)
+  if hasProperty(outerlvl, "no undo") then return end
   undoing = true
   if undo_buffer[1] ~= nil then
     local update_rules = false

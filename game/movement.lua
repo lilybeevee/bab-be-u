@@ -483,7 +483,24 @@ It is probably possible to do, but lily has decided that it's not important enou
               end
             end
             movedebug("considering:"..unit.fullname..","..dir)
-            local success,movers,specials = canMove(unit, dx, dy, dir, true, false, nil, data.reason)
+            local success,movers,specials = true,{},{}
+            if hasProperty(unit,"glued") then
+              --Glued units get moved as a single group.
+              local units, pushers, pullers = FindEntireGluedUnit(unit, dx, dy)
+              for _,pusher in ipairs(pushers) do
+                local success_,movers_,specials_ = canMove(pusher, dx, dy, dir, true, false, nil, data.reason)
+                mergeTable(movers,movers_)
+                mergeTable(specials,specials_)
+                success = success and success_
+              end
+              if #movers > 0 then
+                for _,add in ipairs(units) do
+                  table.insert(movers, {unit = add, dx = dx, dy = dy, dir = dir, move_dx = movers[1].move_dx, move_dy = movers[1].move_dy, move_dir = movers[1].move_dir, geometry_spin = movers[1].geometry_spin, portal = movers[1].portal_unit})
+                end
+              end
+            else
+              success,movers,specials = canMove(unit, dx, dy, dir, true, false, nil, data.reason)
+            end
             for _,special in ipairs(specials) do
               doAction(special)
             end
@@ -570,7 +587,7 @@ It is probably possible to do, but lily has decided that it's not important enou
     calculateLight()
     move_stage = move_stage + 1
   end
-  --https://babaiswiki.fandom.com/wiki/Advanced_rulebook
+  --https://babaiswiki.fandom.com/wiki/Advanced_rulebook (for comparison)
   parseRules()
   calculateLight()
   moveBlock()
@@ -635,6 +652,7 @@ function moveIt(mover, dx, dy, facing_dir, move_dir, geometry_spin, data, pullin
     queueMove(mover, dx, dy, facing_dir, false, geometry_spin, portal);
     --applySlide(mover, dx, dy, already_added, moving_units_next);
     applySwap(mover, dx, dy);
+    applyPortalHoover(mover, dx, dy);
     --finishing a slip locks you out of U/WALK for the rest of the turn
     if data.reason == "icy" and not hasRule(mover,"got","slippers") then
       slippers[mover.id] = true
@@ -788,6 +806,24 @@ function applySwap(mover, dx, dy)
   --end
   if (swap_mover and did_swap) then
      table.insert(update_queue, {unit = mover, reason = "dir", payload = {dir = rotate8(mover.dir)}})
+  end
+end
+
+--Explanation: At Vitellary's request, a moving portal hoovers everything it moves onto (passing through it as though it moved into the portal vountarily).
+function applyPortalHoover(mover, dx, dy)
+  --fast track
+  if rules_with["poor toll"] == nil then return end
+  if (not hasProperty(mover, "poor toll")) then return end
+  
+  local xx, yy = mover.x+dx, mover.y+dy;
+  
+  for _,v in ipairs(getUnitsOnTile(mover.x+dx, mover.y+dy, nil, false)) do
+    if sameFloat(mover, v) then
+      local dx, dy, dir, px, py = getNextTile(v, -dx, -dy, v.dir);
+      if (px ~= xx and py ~= yy) then
+        queueMove(v, px-v.x, py-v.y, v.dir, false, 0, mover);
+      end
+    end
   end
 end
 
@@ -1131,7 +1167,8 @@ function doPortal(unit, px, py, move_dir, dir, reverse)
     --I thought about making portals go backwards/forwards twice/etc depending on property count, but it doesn't play nice with pull - if two portals lead to a portal you move away from, which one do you pull from?
     --This was already implemented in cg5's mod, but I overlooked it the first time around - PORTAL is FLOAT respecting, so now POOR TOLL is FLYE respecting. Spooky! (I already know this will have weird behaviour with PULL and SIDEKIK, so looking forward to that.)
     for _,v in ipairs(getUnitsOnTile(px, py, nil, false)) do
-      if hasProperty(v, "poor toll") and sameFloat(unit, v) and not hasRule(unit,"haet",v) then
+      --At Vitellary's request, make it so you can only enter the front of a portal.
+      if dirAdd(v.dir, 4) == move_dir and hasProperty(v, "poor toll") and sameFloat(unit, v) and not hasRule(unit,"haet",v) then
         local portal_rules = matchesRule(v.fullname, "be", "poor toll");
         local portals_direct = {};
         local portals = {};
@@ -1434,18 +1471,44 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
       --New FLYE mechanic, as decreed by the bab dictator - if you aren't sameFloat as a push/pull/sidekik, you can enter it.
       if hasProperty(v, "go away pls") and not would_swap_with then
         if pushing then
-          push_stack[unit] = true
-          local success,new_movers,new_specials = canMove(v, dx, dy, dir, pushing, pulling, solid_name, "go away pls", push_stack)
-          push_stack[unit] = nil
-          for _,special in ipairs(new_specials) do
-            table.insert(specials, special)
-          end
-          if success then
-            for _,mover in ipairs(new_movers) do
-              table.insert(movers, mover)
+          --glued units are pushed all at once or not at all
+          if hasProperty(v, "glued") then
+            local units, pushers, pullers = FindEntireGluedUnit(v, dx, dy)
+            
+            local all_success = true
+            local newer_movers = {}
+            for _,v2 in ipairs(pushers) do
+              push_stack[unit] = true
+              local success,new_movers,new_specials = canMove(v2, dx, dy, dir, pushing, pulling, solid_name, "go away pls", push_stack)
+              push_stack[unit] = nil
+              mergeTable(specials, new_specials);
+              mergeTable(newer_movers, new_movers);
+              if not success then all_success = false end
+            end
+            if all_success then
+              mergeTable(movers, newer_movers);
+              for _,add in ipairs(units) do
+                table.insert(movers, {unit = add, dx = dx, dy = dy, dir = dir, move_dx = move_dx, move_dy = move_dy, move_dir = move_dir, geometry_spin = geometry_spin, portal = portal_unit})
+              end
+              --print(dump(movers))
+            else
+              stopped = stopped or sameFloat(unit, v)
             end
           else
-            stopped = stopped or sameFloat(unit, v)
+            --single units have to be able to move themselves to be pushed
+            push_stack[unit] = true
+            local success,new_movers,new_specials = canMove(v, dx, dy, dir, pushing, pulling, solid_name, "go away pls", push_stack)
+            push_stack[unit] = nil
+            for _,special in ipairs(new_specials) do
+              table.insert(specials, special)
+            end
+            if success then
+              for _,mover in ipairs(new_movers) do
+                table.insert(movers, mover)
+              end
+            else
+              stopped = stopped or sameFloat(unit, v)
+            end
           end
         else
           stopped = stopped or sameFloat(unit, v)
@@ -1528,4 +1591,116 @@ function getNextLevels()
   end
   
   return next_levels, next_level_objs
+end
+
+function FindEntireGluedUnit(unit, dx, dy)
+  --print("0:",unit.x,unit.y,dx,dy)
+  local units, pushers, pullers = {}, {}, {}
+  local visited = {}
+  visited[tostring(unit.x)..","..tostring(unit.y)] = unit
+  local mycolor = unit.color_override or unit.color;
+  local myorthook = not hasProperty(unit,"diag") or hasProperty(unit,"ortho")
+  local mydiagok = not hasProperty(unit,"ortho") or hasProperty(unit,"diag")
+  
+  --base case - add the original unit
+  table.insert(units, unit);
+  
+  --base case - add the original unit and check if it's a pusher and/or puller
+  --[[table.insert(units, unit);
+  
+  local others = getUnitsOnTile(x+dx, y+dy, unit.name);
+  for _,other in others do
+    if hasProperty(other,"glued") then
+      local ocolor = other.color_override or other.color;
+      if (mycolor[1] == ocolor[1] and mycolor[2] == ocolor[2]) then
+        table.insert(pushers, unit);
+        break;
+      end
+    end
+  end
+  
+  local others = getUnitsOnTile(x-dx, y-dy, unit.name);
+  for _,other in others do
+    if hasProperty(other,"glued") then
+      local ocolor = other.color_override or other.color;
+      if (mycolor[1] == ocolor[1] and mycolor[2] == ocolor[2]) then
+        table.insert(pullers, unit);
+        break;
+      end
+    end
+  end]]
+  
+  --on with the floodfill!
+  local unchecked_tiles = {{unit.x, unit.y}}
+  
+  while #unchecked_tiles > 0 do
+    local x, y = unchecked_tiles[1][1], unchecked_tiles[1][2];
+    local cur_unit = visited[tostring(x)..","..tostring(y)]
+    --print("a:",x,y,cur_unit)
+    table.remove(unchecked_tiles, 1);
+    --print("a.5:",#unchecked_tiles)
+    
+    --check all 8 directions
+    for i = 1,8 do if (i % 2 == 1 and myorthook) or (i % 2 == 0 and mydiagok) then
+      local cur_dx, cur_dy = dirs8[i][1], dirs8[i][2];
+      local xx, yy = x+cur_dx, y+cur_dy;
+      --print("b:",cur_dx,cur_dy,xx,yy,tostring(xx)..","..tostring(yy),visited[tostring(xx)..","..tostring(yy)])
+      --visit surrounding tiles if we don't know their status yet
+      if visited[tostring(xx)..","..tostring(yy)] == nil then
+        --print("c")
+        visited[tostring(xx)..","..tostring(yy)] = false
+        local others = getUnitsOnTile(xx, yy, unit.name);
+        local first = false
+        for _,other in ipairs(others) do
+          --print("d:",other.name)
+          if hasProperty(other,"glued") then
+            local ocolor = other.color_override or other.color;
+            --print("e:", dump(mycolor),dump(ocolor))
+            if (mycolor[1] == ocolor[1] and mycolor[2] == ocolor[2]) then
+              --print("f, we did it")
+              table.insert(units, other);
+              --print(#units)
+              --we haven't expanded out from this tile yet - queue it
+              if not first then
+                table.insert(unchecked_tiles, {xx, yy})
+                --print("f.5:",#unchecked_tiles)
+                first = true
+                visited[tostring(xx)..","..tostring(yy)] = other
+              end
+            end
+          end
+        end
+        --END iterate units on that tile
+      end
+      --END visit surrounding unvisited tile
+        
+      --while checking the forward/backward direction, add the current unit to pushers/pullers if we know the tile ahead of/behind it is vacant
+      --print("g", dx, cur_dx, dy, cur_dy, visited[tostring(xx)..","..tostring(yy)], not visited[tostring(xx)..","..tostring(yy)])
+      if dx == cur_dx and dy == cur_dy and not visited[tostring(xx)..","..tostring(yy)] then
+        --print("added a pusher:",cur_unit.x,cur_unit.y)
+        table.insert(pushers, cur_unit);
+      elseif -dx == cur_dx and -dy == cur_dy and not visited[tostring(xx)..","..tostring(yy)] then
+        --print("added a puller")
+        table.insert(pullers, cur_unit);
+      end
+
+    end end
+    --END check all 8 directions 
+    --print("final:",#unchecked_tiles)
+  end
+  --END check all unchecked tiles
+
+  --failsafe: return the original unit in case we couldn't floodfill at all for whatever reason
+  
+  if #units == 0 then
+    table.insert(units, unit)
+  end
+  if #pushers == 0 then
+    table.insert(pushers, unit)
+  end
+  if #pullers == 0 then
+    table.insert(pullers, unit)
+  end
+
+  return units, pushers, pullers
 end
