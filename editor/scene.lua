@@ -1129,6 +1129,17 @@ function scene.updateMap()
   maps = {{map_ver, map}}
 end
 
+function sanitize(filename)
+  -- Bad as defined by wikipedia: https://en.wikipedia.org/wiki/Filename#Reserved_characters_and_words
+  -- Also have to escape the backslash
+  -- and the % and . since they have special meaning in lua regexes
+  bad_chars = { '/', '\\', '?', '%%', '*', ':', '|', '"', '<', '>', '%.'}
+  for _,bad_char in ipairs(bad_chars) do
+    filename = filename:gsub(bad_char, '_')
+  end
+  return filename
+end
+
 function scene.saveLevel()
   compactIds()
   scene.updateMap()
@@ -1156,18 +1167,22 @@ function scene.saveLevel()
     puffs_to_clear = level_puffs_to_clear,
     background_sprite = level_background_sprite,
   }
+  
+  local file_name = sanitize(level_name);
 
   if world == "" or world_parent == "officialworlds" then
     love.filesystem.createDirectory("levels")
-    love.filesystem.write("levels/" .. level_name .. ".bab", json.encode(data))
+    love.filesystem.write("levels/" .. file_name .. ".bab", json.encode(data))
+    print("Saved to:","levels/" .. file_name .. ".bab")
     if icon_data then
-      icon_data:encode("png", "levels/" .. level_name .. ".png")
+      icon_data:encode("png", "levels/" .. file_name .. ".png")
     end
   else
     love.filesystem.createDirectory(world_parent .. "/" .. world)
-    love.filesystem.write(world_parent .. "/" .. world .. "/" .. level_name .. ".bab", json.encode(data))
+    love.filesystem.write(world_parent .. "/" .. world .. "/" ..file_name .. ".bab", json.encode(data))
+    print("Saved to:",world_parent .. "/" .. world .. "/" ..file_name .. ".bab")
     if icon_data then
-      icon_data:encode("png", world_parent .. "/" .. world .. "/" .. level_name .. ".png")
+      icon_data:encode("png", world_parent .. "/" .. world .. "/" .. file_name .. ".png")
     end
   end
 
