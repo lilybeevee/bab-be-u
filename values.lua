@@ -246,6 +246,7 @@ tiles_list = {
     type = "text",
     color = {4, 1},
     layer = 20,
+    tags = {"baba"},
     desc = "\"BAB\". thats what it says"
   },
   -- 3
@@ -256,6 +257,7 @@ tiles_list = {
     texttype = "verb_all",
     color = {0, 3},
     layer = 20,
+    tags = {"is"},
     desc = "BE: Causes the subject to become an object or have a property.",
   },
   -- 4
@@ -266,6 +268,7 @@ tiles_list = {
     texttype = "property",
     color = {4, 1},
     layer = 20,
+    tags = {"you"},
     desc = "U: Controlled by you, the player!",
   },
   -- 5
@@ -276,6 +279,7 @@ tiles_list = {
     type = "object",
     color = {1, 1},
     layer = 2,
+    tags = {"wall"},
     desc = "ston briks"
   },
   -- 6
@@ -285,6 +289,7 @@ tiles_list = {
     type = "text",
     color = {0, 1},
     layer = 20,
+    tags = {"wall"},
     desc = "uigi isn't gonna be in smash"
   },
   -- 7
@@ -295,6 +300,7 @@ tiles_list = {
     texttype = "property",
     color = {5, 1},
     layer = 20,
+    tags = {"stop"},
     desc = "NO GO: Can't be entered by objects.",
   },
   -- 8
@@ -304,6 +310,7 @@ tiles_list = {
     type = "object",
     color = {6, 2},
     layer = 3,
+    tags = {"rock"},
     desc = "roc: not a bord"
   },
   -- 9
@@ -314,6 +321,7 @@ tiles_list = {
     type = "text",
     color = {6, 1},
     layer = 20,
+    tags = {"rock"},
   },
   -- 10
   {
@@ -323,6 +331,7 @@ tiles_list = {
     texttype = "property",
     color = {6, 1},
     layer = 20,
+    tags = {"push"},
     desc = "GO AWAY: Pushed by movement into its tile.",
   },
   -- 11
@@ -332,6 +341,7 @@ tiles_list = {
     type = "object",
     color = {2, 2},
     layer = 3,
+    tags = {"door"},
   },
   -- 12
   {
@@ -341,6 +351,7 @@ tiles_list = {
     type = "text",
     color = {2, 2},
     layer = 20,
+    tags = {"door"},
   },
   -- 13
   {
@@ -350,6 +361,7 @@ tiles_list = {
     texttype = "property",
     color = {2, 2},
     layer = 20,
+    tags = {"shut"},
     desc = "NED KEE: When a NED KEE and FOR DOR unit move into each other, they are both destroyed.",
   },
   -- 14
@@ -360,6 +372,7 @@ tiles_list = {
     color = {2, 4},
     layer = 4,
     rotate = true,
+    tags = {"key"},
   },
   -- 15
   {
@@ -369,6 +382,7 @@ tiles_list = {
     type = "text",
     color = {2, 4},
     layer = 20,
+    tags = {"key"},
   },
   -- 16
   {
@@ -378,6 +392,7 @@ tiles_list = {
     texttype = "property",
     color = {2, 4},
     layer = 20,
+    tags = {"open"},
     desc = "FOR DOR: When a NED KEE and FOR DOR unit move into each other, they are both destroyed.",
   },
   -- 17
@@ -388,6 +403,7 @@ tiles_list = {
     texttype = "and",
     color = {0, 3},
     layer = 20,
+    tags = {"and"},
     desc = "&: Joins multiple conditions, subjects or objects together in a rule.",
   },
   -- 18
@@ -397,6 +413,7 @@ tiles_list = {
     type = "object",
     color = {2, 4},
     layer = 3,
+    tags = {"flag"},
   },
   -- 19
   {
@@ -405,6 +422,7 @@ tiles_list = {
     type = "text",
     color = {2, 4},
     layer = 20,
+    tags = {"flag"},
   },
   -- 20
   {
@@ -414,6 +432,7 @@ tiles_list = {
     texttype = "property",
     color = {2, 4},
     layer = 20,
+    tags = {"win", "smiley"},
     desc = ":): At end of turn, if U is on :) and survives, U R WIN!",
   },
   -- 21
@@ -423,6 +442,7 @@ tiles_list = {
     type = "object",
     color = {1, 0},
     layer = 1,
+    tags = {"tile"},
   },
   -- 22
   {
@@ -431,6 +451,7 @@ tiles_list = {
     type = "object",
     color = {1, 3},
     layer = 1,
+    tags = {"water"},
   },
   -- 23
   {
@@ -439,6 +460,7 @@ tiles_list = {
     type = "text",
     color = {1, 3},
     layer = 20,
+    tags = {"water"},
   },
   -- 24
   {
@@ -448,6 +470,7 @@ tiles_list = {
     texttype = "property",
     color = {1, 3},
     layer = 20,
+    tags = {"sink"},
     desc = "NO SWIM: At end of turn, if a NO SWIM unit is touching another object, both are destroyed.",
   },
 
@@ -459,6 +482,7 @@ tiles_list = {
     texttype = "verb_object",
     color = {0, 3},
     layer = 20,
+    tags = {"has"},
     desc = "GOT: Causes the subject to drop the object when destroyed.",
   },
   --26
@@ -482,6 +506,7 @@ tiles_list = {
     texttype = "cond_prefix_or_property",
     color = {2, 2},
     layer = 20,
+    tags = {"red", "color"},
     desc = "REED: Causes the unit to appear red.",
   },
   --28
@@ -495,6 +520,7 @@ tiles_list = {
     texttype = "cond_prefix_or_property",
     color = {1, 3},
     layer = 20,
+    tags = {"blue", "color"},
     desc = "BLEU: Causes the unit to appear blue.",
   },
   --29
@@ -505,6 +531,7 @@ tiles_list = {
     texttype = "property",
     color = {255, 255, 255},
     layer = 20,
+    tags = {"trans"},
     desc = "TRANZ: Causes the unit to appear pink, white and cyan.",
   },
   --30
@@ -533,6 +560,7 @@ tiles_list = {
     type = "text",
     color = {6, 1},
     layer = 20,
+    tags = {"box"},
   },
   --33
   {
@@ -541,6 +569,7 @@ tiles_list = {
     type = "object",
     color = {6, 2},
     layer = 3,
+    tags = {"box"},
   },
   --34
   {
@@ -549,6 +578,8 @@ tiles_list = {
     type = "text",
     color = {2, 1},
     layer = 20,
+    tags = {"skull"},
+    desc = "evillllll",
   },
   --35
   {
@@ -560,6 +591,7 @@ tiles_list = {
     layer = 5,
     rotate = true,
     eye = {x=21, y=8, w=4, h=4},
+    tags = {"skull"},
   },
   --36
   {
@@ -568,6 +600,7 @@ tiles_list = {
     type = "text",
     color = {2, 3},
     layer = 20,
+    tags = {"lava"},
   },
   --37
   {
@@ -576,6 +609,7 @@ tiles_list = {
     type = "object",
     color = {2, 3},
     layer = 1,
+    tags = {"lava"},
   },
   --38
   {
@@ -584,6 +618,7 @@ tiles_list = {
     type = "text",
     color = {2, 2},
     layer = 20,
+    tags = {"keke"},
   },
   --39
   {
@@ -595,6 +630,7 @@ tiles_list = {
     layer = 5,
     rotate = true,
     eye = {x=19, y=7, w=2, h=2},
+    tags = {"keke"},
     desc = "babs bff"
   },
   --38
@@ -1006,6 +1042,7 @@ tiles_list = {
     texttype = "property",
     color = {1, 2},
     layer = 20,
+    tags = {"weak"},
     desc = "OUCH: This unit is destroyed if it shares a tile with another object, or if it tries to move/be moved into and can't.",
   },
   -- 82
@@ -1035,6 +1072,7 @@ tiles_list = {
     texttype = "property",
     color = {4, 2},
     layer = 20,
+    tags = {"cute"},
     desc = "QT: Makes the unit emit love hearts.",
   },
   -- 85
@@ -1046,6 +1084,7 @@ tiles_list = {
     color = {2, 4},
     layer = 5,
     eye = {x=19, y=7, w=2, h=2},
+    tags = {"dev"},
   },
   -- 86
   {
@@ -1054,6 +1093,7 @@ tiles_list = {
     type = "text",
     color = {2, 4},
     layer = 20,
+    tags = {"dev"},
   },
   -- 87
   {
@@ -1510,6 +1550,7 @@ tiles_list = {
     layer = 5,
     rotate = true,
     eye = {x=17, y=4, w=1, h=2},
+    tags = {"dev"},
   },
   -- 132
   {
@@ -1518,6 +1559,7 @@ tiles_list = {
     type = "text",
     color = {3, 3},
     layer = 20,
+    tags = {"dev"},
   },
   -- 133
   {
@@ -1529,6 +1571,7 @@ tiles_list = {
     layer = 5,
     rotate = true,
     eye = {x=18, y=4, w=2, h=2},
+    tags = {"dev"},
   },
   -- 134
   {
@@ -1537,6 +1580,7 @@ tiles_list = {
     type = "text",
     color = {2, 4},
     layer = 20,
+    tags = {"dev"},
   },
   -- 135
   {
@@ -1545,7 +1589,8 @@ tiles_list = {
     color = {4, 2},
     layer = 5,
     rotate = true,
-    eye = {x=19, y=8, w=2, h=2}
+    eye = {x=19, y=8, w=2, h=2},
+    tags = {"dev"},
   },
   -- 136
   {
@@ -1554,6 +1599,7 @@ tiles_list = {
     type = "text",
     color = {4, 2},
     layer = 20,
+    tags = {"dev"},
   },
   -- 137
   {
@@ -3422,6 +3468,7 @@ tiles_list = {
     sprite = "text_jill",
     type = "text",
     color = {1,3},
+    tags = {"dev"},
     layer = 20,
   },
   -- 331

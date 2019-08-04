@@ -892,7 +892,9 @@ function scene.draw(dt)
                         found_matching_tag = true
                     end
                 end
-            elseif string.match(tile.name, searchstr) then
+            end
+            
+            if string.match(tile.name, searchstr) then
                 found_matching_tag = true
             end
             
