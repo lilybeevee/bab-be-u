@@ -18,6 +18,8 @@ local screenshot, screenshot_image
 
 local saved_popup
 
+local searchstr = ""
+
 -- for retaining information cross-scene
 editor_save = {}
 
@@ -169,85 +171,146 @@ function scene.setupGooi()
 
   local dx = 208;
   local i = 0;
-  settings = {x = 0, y = 0, w = dx*2, h = 450}
 
-  local y = (love.graphics.getHeight() - settings.h) / 2
+  settings = {x = 0, y = y_top, w = dx*2, h = 450}
+  local y_top = (love.graphics.getHeight() - settings.h) / 2
+  settings.y = y_top
 
-  settings.y = y
+  local w = 200
+  local w_half = w/2 - 2 -- 98
+  local h = 24
+  local p = 4 -- padding
 
-  y = y + 4
-  gooi.newLabel({text = "Name", x = 4+dx*i, y = y, w = 200, h = 24}):center():setGroup("settings")
-  y = y + 24 + 4
-  input_name = gooi.newText({text = level_name, x = 4+dx*i, y = y, w = 200, h = 24}):setGroup("settings")
+  if is_mobile then
+    y_top = 0
+    p = 8
+    w = love.graphics.getWidth()/3 - 10
+    w_half = w/2 - 2
+    h = 50
+    dx = w+8
+    settings.y = 0
+    settings.w = love.graphics.getWidth()
+    settings.h = love.graphics.getHeight()
+  end
 
-  y = y + 24 + 4
-  gooi.newLabel({text = "Author", x = 4+dx*i, y = y, w = 200, h = 24}):center():setGroup("settings")
-  y = y + 24 + 4
-  input_author = gooi.newText({text = level_author, x = 4+dx*i, y = y, w = 200, h = 24}):setGroup("settings")
+  local y = y_top
 
-  y = y + 24 + 4
-  label_palette = gooi.newLabel({text = "Palette", x = 4+dx*i, y = y, w = 200, h = 24}):center():setGroup("settings")
-  y = y + 24 + 4
-  input_palette = gooi.newText({text = current_palette, x = 4+dx*i, y = y, w = 200, h = 24}):setGroup("settings")
+  y = y + p
+  gooi.newLabel({text = "Name", x = 4+dx*i, y = y, w = w, h = h}):center():setGroup("settings")
+  y = y + h + p
+  input_name = gooi.newText({text = level_name, x = 4+dx*i, y = y, w = w, h = h}):setGroup("settings")
 
-  y = y + 24 + 4
-  label_music = gooi.newLabel({text = "Music", x = 4+dx*i, y = y, w = 200, h = 24}):center():setGroup("settings")
-  y = y + 24 + 4
-  input_music = gooi.newText({text = map_music, x = 4+dx*i, y = y, w = 200, h = 24}):setGroup("settings")
+  y = y + h + p
+  gooi.newLabel({text = "Author", x = 4+dx*i, y = y, w = w, h = h}):center():setGroup("settings")
+  y = y + h + p
+  input_author = gooi.newText({text = level_author, x = 4+dx*i, y = y, w = w, h = h}):setGroup("settings")
+
+  y = y + h + p
+  label_palette = gooi.newLabel({text = "Palette", x = 4+dx*i, y = y, w = w, h = h}):center():setGroup("settings")
+  y = y + h + p
+  input_palette = gooi.newText({text = current_palette, x = 4+dx*i, y = y, w = w, h = h}):setGroup("settings")
+
+  y = y + h + p
+  label_music = gooi.newLabel({text = "Music", x = 4+dx*i, y = y, w = w, h = h}):center():setGroup("settings")
+  y = y + h + p
+  input_music = gooi.newText({text = map_music, x = 4+dx*i, y = y, w = w, h = h}):setGroup("settings")
+
+  if is_mobile then
+    y = y_top - h
+    i = 1
+  end
 
   -- Arbitrary limits of 512 until i come up with a reasonable limit
-  y = y + 24 + 4
-  gooi.newLabel({text = "Width", x = 4+dx*i, y = y, w = 98, h = 24}):center():setGroup("settings")
-  gooi.newLabel({text = "Height", x = 106+dx*i, y = y, w = 98, h = 24}):center():setGroup("settings")
-  y = y + 24 + 4
-  input_width = gooi.newSpinner({value = mapwidth, min = 1, max = 512, x = 4+dx*i, y = y, w = 98, h = 24}):setGroup("settings")
-  input_height = gooi.newSpinner({value = mapwidth, min = 1, max = 512, x = 106+dx*i, y = y, w = 98, h = 24}):setGroup("settings")
+  if not is_mobile then
+    y = y + h + p
+    gooi.newLabel({text = "Width", x = 4+dx*i, y = y, w = w_half, h = h}):center():setGroup("settings")
+    gooi.newLabel({text = "Height", x = 4+w_half+4+dx*i, y = y, w = w_half, h = h}):center():setGroup("settings")
+    y = y + h + p
+    input_width = gooi.newSpinner({value = mapwidth, min = 1, max = 512, x = 4+dx*i, y = y, w = w_half, h = h}):setGroup("settings")
+    input_height = gooi.newSpinner({value = mapwidth, min = 1, max = 512, x = 4+w_half+4+dx*i, y = y, w = w_half, h = h}):setGroup("settings")
   
-  y = y + 24 + 4
-  gooi.newLabel({text = "Extra", x = 4+dx*i, y = y, w = 200, h = 24}):center():setGroup("settings")
-  y = y + 24 + 4
-  input_extra = gooi.newCheck({checked = level_extra, x = 90+dx*i, y = y}):setGroup("settings")
-  input_extra.checked = level_extra
+    y = y + h + p
+    gooi.newLabel({text = "Extra", x = 4+dx*i, y = y, w = w, h = h}):center():setGroup("settings")
+    y = y + h + p
+    input_extra = gooi.newCheck({checked = level_extra, x = (w-h)/2+dx*i, y = y, w = h, h = h}):setGroup("settings")
+    input_extra.checked = level_extra
+  else
+    y = y + h + p
+    gooi.newLabel({text = "Width", x = 4+dx*i, y = y, w = w, h = h}):center():setGroup("settings")
+    y = y + h + p
+    input_width = gooi.newSpinner({value = mapwidth, min = 1, max = 512, x = 4+dx*i, y = y, w = w, h = h}):setGroup("settings")
+    y = y + h + p
+    gooi.newLabel({text = "Height", x = 4+dx*i, y = y, w = w, h = h}):center():setGroup("settings")
+    y = y + h + p
+    input_height = gooi.newSpinner({value = mapwidth, min = 1, max = 512, x = 4+dx*i, y = y, w = w, h = h}):setGroup("settings")
+  end
 
-  y = y + (24 * 2) + 4
-  gooi.newButton({text = "Save", x = 4, y = y, w = 98, h = 24}):onRelease(function()
-    scene.saveSettings()
-  end):center():success():setGroup("settings")
-  gooi.newButton({text = "Cancel", x = 106, y = y, w = 98, h = 24}):onRelease(function()
-    scene.openSettings()
-  end):center():danger():setGroup("settings")
-
-  y = (love.graphics.getHeight() - settings.h) / 2
-  
-  i = 1;
+  if not is_mobile then
+    y = y_top - h
+    i = 1;
+  end
     
-  y = y + 4
-  gooi.newLabel({text = "Parent Level", x = 4+dx*i, y = y, w = 200, h = 24}):center():setGroup("settings")
-  y = y + 24 + 4
-  input_parent_level = gooi.newText({text = level_parent_level, x = 4+dx*i, y = y, w = 200, h = 24}):setGroup("settings")
+  y = y + h + p
+  gooi.newLabel({text = "Parent Level", x = 4+dx*i, y = y, w = w, h = h}):center():setGroup("settings")
+  y = y + h + p
+  input_parent_level = gooi.newText({text = level_parent_level, x = 4+dx*i, y = y, w = w, h = h}):setGroup("settings")
   
-  y = y + 24 + 4
-  gooi.newLabel({text = "Next Level", x = 4+dx*i, y = y, w = 200, h = 24}):center():setGroup("settings")
-  y = y + 24 + 4
-  input_next_level = gooi.newText({text = level_next_level, x = 4+dx*i, y = y, w = 200, h = 24}):setGroup("settings")
-  
-  y = y + 24 + 4
-  gooi.newLabel({text = "Is Overworld", x = 4+dx*i, y = y, w = 200, h = 24}):center():setGroup("settings")
-  y = y + 24 + 4
-  input_is_overworld = gooi.newCheck({checked = level_is_overworld, x = 90+dx*i, y = y}):setGroup("settings")
-  y = y + 24 + 4
+  y = y + h + p
+  gooi.newLabel({text = "Next Level", x = 4+dx*i, y = y, w = w, h = h}):center():setGroup("settings")
+  y = y + h + p
+  input_next_level = gooi.newText({text = level_next_level, x = 4+dx*i, y = y, w = w, h = h}):setGroup("settings")
 
-  input_is_overworld.checked = level_is_overworld
+  if is_mobile then
+    y = y_top - h
+    i = 2
+  end
   
-  y = y + 4
-  gooi.newLabel({text = "Puffs to Clear", x = 4+dx*i, y = y, w = 200, h = 24}):center():setGroup("settings")
-  y = y + 24 + 4
-  input_puffs_to_clear = gooi.newSpinner({value = level_puffs_to_clear, min = 0, max = 999, x = 50+dx*i, y = y, w = 98, h = 24}):setGroup("settings")
+  if not is_mobile then
+    y = y + h + p
+    gooi.newLabel({text = "Is Overworld", x = 4+dx*i, y = y, w = w, h = h}):center():setGroup("settings")
+    y = y + h + p
+    input_is_overworld = gooi.newCheck({checked = level_is_overworld, x = (w-h)/2+dx*i, y = y, w = h, h = h}):setGroup("settings")
+    input_is_overworld.checked = level_is_overworld
+  else
+    y = y + h + p
+    gooi.newLabel({text = "Extra", x = 4+dx*i, y = y, w = w-h, h = h}):center():setGroup("settings")
+    input_extra = gooi.newCheck({checked = level_extra, x = w-h+dx*i, y = y, w = h, h = h}):setGroup("settings")
+    y = y + h + p
+    gooi.newLabel({text = "Is Map", x = 4+dx*i, y = y,
+w = w-h, h = h}):center():setGroup("settings")
+    input_is_overworld = gooi.newCheck({checked = level_is_overworld, x = w-h+dx*i, y = y, w = h, h = h}):setGroup("settings")
+    input_is_overworld.checked = level_is_overworld
+    input_extra.checked = level_extra
+  end
   
-  y = y + 24 + 4
-  gooi.newLabel({text = "Background Sprite", x = 4+dx*i, y = y, w = 200, h = 24}):center():setGroup("settings")
-  y = y + 24 + 4
-  input_background_sprite = gooi.newText({text = level_background_sprite, x = 4+dx*i, y = y, w = 200, h = 24}):setGroup("settings")
+  y = y + h + p
+  gooi.newLabel({text = "Puffs to Clear", x = 4+dx*i, y = y, w = w, h = h}):center():setGroup("settings")
+  y = y + h + p
+  input_puffs_to_clear = gooi.newSpinner({value = level_puffs_to_clear, min = 0, max = 999, x = 4+dx*i, y = y, w = w, h = h}):setGroup("settings")
+  
+  y = y + h + p
+  gooi.newLabel({text = "Background", x = 4+dx*i, y = y, w = w, h = h}):center():setGroup("settings")
+  y = y + h + p
+  input_background_sprite = gooi.newText({text = level_background_sprite, x = 4+dx*i, y = y, w = w, h = h}):setGroup("settings")
+
+  if not is_mobile then
+    y = y_top + (h+p)*(is_mobile and 7 or 11) + p
+    gooi.newButton({text = "Save", x = 4+dx*i, y = y, w = w_half, h = h}):onRelease(function()
+      scene.saveSettings()
+    end):center():success():setGroup("settings")
+    gooi.newButton({text = "Cancel", x = 4+w_half+4+dx*i, y = y, w = w_half, h = h}):onRelease(function()
+      scene.openSettings()
+    end):center():danger():setGroup("settings")
+  else
+    y = y_top + (h+p)*(is_mobile and 6 or 10) + p
+    gooi.newButton({text = "Save", x = 4+w/8+dx*i, y = y, w = w*3/4, h = h}):onRelease(function()
+      scene.saveSettings()
+    end):center():success():setGroup("settings")
+    y = y + h + p
+    gooi.newButton({text = "Cancel", x = 4+w/8+dx*i, y = y, w = w*3/4, h = h}):onRelease(function()
+      scene.openSettings()
+    end):center():danger():setGroup("settings")
+  end
 
   gooi.setGroupVisible("settings", settings_open)
   gooi.setGroupEnabled("settings", settings_open)
@@ -311,6 +374,14 @@ mobile_picking = false
 mobile_stackmode = "none"
 
 function scene.keyPressed(key)
+  if (#key == 1 or key == "space") and selector_open then
+    if key == "space" then key = " " end
+    searchstr = searchstr..key
+  end
+  if key == "backspace" and selector_open then
+    searchstr = string.sub(searchstr, 1, #searchstr-1)
+  end
+
   if key == "escape" then
     if not capturing then
       if not spookmode then
@@ -366,6 +437,7 @@ function scene.keyPressed(key)
           for _,unit in ipairs(units_by_tile[tileid]) do
             unit.dir = brush.dir
           end
+          scene.updateMap()
         end
       end
     end
@@ -551,6 +623,7 @@ function scene.update(dt)
                   end
                 elseif brush.mode == "placing" and not (shift_active or selectorhold) then
                   deleteUnit(unit)
+                  scene.updateMap()
                   painted = true
                 end
               end
@@ -564,6 +637,7 @@ function scene.update(dt)
               if brush.mode == "erasing" then
                 if existing and not selectorhold then
                   deleteUnit(existing)
+                  scene.updateMap()
                   painted = true
                 end
               elseif brush.mode == "placing" and not selectorhold then
@@ -573,24 +647,24 @@ function scene.update(dt)
                   new_unit = existing
                 elseif (not control_active or ctrl_first_press) and (not is_mobile or mobile_firstpress) then
                   new_unit = createUnit(brush.id, hx, hy, brush.dir)
+                  scene.updateMap()
                   painted = true
                 end
               end
-            end
-            if painted then
-              if tileid == brush.picked_tile then
-                brush.picked_tile = nil
-                brush.picked_index = 0
-              end
-              paintedtiles = paintedtiles + 1
-              scene.updateMap()
-              if new_unit and brush.id == tiles_by_name["lvl"] then
-                new_scene = loadscene
-                load_mode = "select"
-                selected_level = {id = new_unit.id}
-                old_world = {parent = world_parent, world = world}
+              if painted then
+                if tileid == brush.picked_tile then
+                  brush.picked_tile = nil
+                  brush.picked_index = 0
+                end
+                paintedtiles = paintedtiles + 1
+                if new_unit and brush.id == tiles_by_name["lvl"] then
+                  new_scene = loadscene
+                  load_mode = "select"
+                  selected_level = {id = new_unit.id}
+                  old_world = {parent = world_parent, world = world}
 
-                editor_save.brush = brush
+                  editor_save.brush = brush
+                end
               end
             end
           else
@@ -798,6 +872,9 @@ function scene.draw(dt)
 
             if rainbowmode then love.graphics.setColor(hslToRgb((love.timer.getTime()/3+x/tile_grid_width+y/tile_grid_height)%1, .5, .5, 1)) end
 
+            if not string.match(tile.name, searchstr) then
+              love.graphics.setColor(0.2,0.2,0.2)
+            end
             love.graphics.draw(sprite, (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
             if (tile.meta ~= nil) then
               setColor({4, 1})
@@ -912,9 +989,12 @@ function scene.draw(dt)
     end
 
     love.graphics.push()
-    gooi.draw()
-    gooi.draw("mobile-controls-selector")
-    gooi.draw("mobile-controls-editor")
+    if searchstr == "" or not selector_open then
+      gooi.draw()
+      gooi.draw("mobile-controls-selector")
+      gooi.draw("mobile-controls-editor")
+    end
+    
     if is_mobile then
       local twelfth = love.graphics.getWidth()/12
       if mobile_picking then
@@ -1019,6 +1099,11 @@ function scene.draw(dt)
 
       y = y + love.graphics.getFont():getHeight()
     end
+  end
+
+  if searchstr and selector_open then
+    love.graphics.setColor(1,1,1)
+    love.graphics.print(searchstr)
   end
 end
 

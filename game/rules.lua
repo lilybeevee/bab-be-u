@@ -38,6 +38,16 @@ function getAllText()
   local hasCopied = false
   local result = units_by_name["text"];
   if (result == nil) then result = {}; end
+  --remove ben't wurd text from result
+  if rules_with["wurd"] ~= nil then
+    result = copyTable(result);
+    hasCopied = true;
+    for i = #result,1,-1 do
+      if hasRule(result[i],"ben't","wurd") then
+        table.remove(result, i)
+      end
+    end
+  end
   
   for name,_ in pairs(rules_effecting_names) do
     if units_by_name[name] then
@@ -59,6 +69,14 @@ end
 
 function getTextOnTile(x, y)
   local result = getUnitsOnTile(x, y, "text");
+  --remove ben't wurd text from result
+  if rules_with["wurd"] ~= nil then
+    for i = #result,1,-1 do
+      if hasRule(result[i],"ben't","wurd") then
+        table.remove(result, i)
+      end
+    end
+  end
   
   for name,_ in pairs(rules_effecting_names) do
     for __,unit in ipairs(getUnitsOnTile(x, y, name)) do
@@ -111,16 +129,14 @@ function parseRules(undoing)
   {
     #matchesRule(nil, "be", "wurd"),
     #matchesRule(nil, "be", "poor toll"),
-    --TODO: If any wurd rules exist, then these need to check things that are wurd, too - though at that point we may as well just make it easy on ourselves and check everything.
-    #matchesRule("text", "be", "go arnd"),
-    #matchesRule("text", "be", "mirr arnd"),
-    #matchesRule("text", "be", "ortho"),
-    #matchesRule("text", "be", "diag"),
-    #matchesRule("text", "ben't", "wurd"),
-    #matchesRule("text", "be", "za warudo"),
-    #matchesRule("text", "be", "rong"),
-    #matchesRule(outerlvl, "be", "go arnd"),
-    #matchesRule(outerlvl, "be", "mirr arnd"),
+    --TODO: We care about text, specific text and wurd units - this can't be easily specified to matchesRule.
+    #matchesRule(nil, "be", "go arnd"),
+    #matchesRule(nil, "be", "mirr arnd"),
+    #matchesRule(nil, "be", "ortho"),
+    #matchesRule(nil, "be", "diag"),
+    #matchesRule(nil, "ben't", "wurd"),
+    #matchesRule(nil, "be", "za warudo"),
+    #matchesRule(nil, "be", "rong"),
     --If and only if poor tolls exist, flyeness changing can affect rules parsing, because the text and portal have to match flyeness to go through.
     rules_with["poor toll"] and #matchesRule(nil, "be", "flye") or 0,
     rules_with["poor toll"] and #matchesRule(nil, "be", "tall") or 0,
@@ -164,11 +180,6 @@ function parseRules(undoing)
           if (i == 2) and hasRule(unit,"be","ortho") and not hasRule(unit,"be","diag") then
             validrule = false
           end
-          
-          if hasRule(unit,"ben't","wurd") then
-            validrule = false
-          end
-
           --print(tostring(x)..","..tostring(y)..","..tostring(dx)..","..tostring(dy)..","..tostring(ndx)..","..tostring(ndy)..","..tostring(#getUnitsOnTile(x+ndx, y+ndy, "text"))..","..tostring(#getUnitsOnTile(x+dx, y+dy, "text")))
           if (#getTextOnTile(x+ndx, y+ndy) == 0) and validrule then
             if not been_first[i][x + y * mapwidth] then
@@ -318,14 +329,14 @@ function parseRules(undoing)
     {
     #matchesRule(nil, "be", "wurd"),
     #matchesRule(nil, "be", "poor toll"),
-    --TODO: If any wurd rules exist, then these need to check things that are wurd, too - though at that point we may as well just make it easy on ourselves and check everything.
-    #matchesRule("text", "be", "go arnd"),
-    #matchesRule("text", "be", "mirr arnd"),
-    #matchesRule("text", "be", "ortho"),
-    #matchesRule("text", "be", "diag"),
-    #matchesRule("text", "ben't", "wurd"),
-    #matchesRule("text", "be", "za warudo"),
-    #matchesRule("text", "be", "rong"),
+    --TODO: We care about text, specific text and wurd units - this can't be easily specified to matchesRule.
+    #matchesRule(nil, "be", "go arnd"),
+    #matchesRule(nil, "be", "mirr arnd"),
+    #matchesRule(nil, "be", "ortho"),
+    #matchesRule(nil, "be", "diag"),
+    #matchesRule(nil, "ben't", "wurd"),
+    #matchesRule(nil, "be", "za warudo"),
+    #matchesRule(nil, "be", "rong"),
     #matchesRule(outerlvl, "be", "go arnd"),
     #matchesRule(outerlvl, "be", "mirr arnd"),
     --If and only if poor tolls exist, flyeness changing can affect rules parsing, because the text and portal have to match flyeness to go through.
@@ -810,16 +821,14 @@ function shouldReparseRules()
   if should_parse_rules then return true end
   if shouldReparseRulesIfConditionalRuleExists("?", "be", "wurd") then return true end
   if shouldReparseRulesIfConditionalRuleExists("?", "be", "poor toll") then return true end
-  --TODO: If any wurd rules exist, then these need to check things that are wurd, too - though at that point we may as well just make it easy on ourselves and check everything.
-  if shouldReparseRulesIfConditionalRuleExists("text", "be", "go arnd") then return true end
-  if shouldReparseRulesIfConditionalRuleExists("text", "be", "mirr arnd") then return true end
-  if shouldReparseRulesIfConditionalRuleExists("text", "be", "ortho") then return true end
-  if shouldReparseRulesIfConditionalRuleExists("text", "be", "diag") then return true end
-  if shouldReparseRulesIfConditionalRuleExists("text", "ben't", "wurd") then return true end
-  if shouldReparseRulesIfConditionalRuleExists("text", "be", "za warudo") then return true end
-  if shouldReparseRulesIfConditionalRuleExists("text", "be", "rong") then return true end
-  if shouldReparseRulesIfConditionalRuleExists(outerlvl, "be", "go arnd") then return true end
-  if shouldReparseRulesIfConditionalRuleExists(outerlvl, "be", "mirr arnd") then return true end
+  --TODO: We care about text, specific text and wurd units - this can't be easily specified to matchesRule.
+  if shouldReparseRulesIfConditionalRuleExists("?", "be", "go arnd") then return true end
+  if shouldReparseRulesIfConditionalRuleExists("?", "be", "mirr arnd") then return true end
+  if shouldReparseRulesIfConditionalRuleExists("?", "be", "ortho") then return true end
+  if shouldReparseRulesIfConditionalRuleExists("?", "be", "diag") then return true end
+  if shouldReparseRulesIfConditionalRuleExists("?", "ben't", "wurd") then return true end
+  if shouldReparseRulesIfConditionalRuleExists("?", "be", "za warudo") then return true end
+  if shouldReparseRulesIfConditionalRuleExists("?", "be", "rong") then return true end
   if rules_with["poor toll"] then
     if shouldReparseRulesIfConditionalRuleExists("?", "be", "flye") then return true end
     if shouldReparseRulesIfConditionalRuleExists("?", "be", "tall") then return true end
