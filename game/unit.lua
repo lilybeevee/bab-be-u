@@ -2242,9 +2242,10 @@ function makeMetaTile(premeta_tile)
 end
 
 function undoWin()
-  currently_winning = false
+    if hasProperty(outerlvl, "no undo") then return end
+    currently_winning = false
 	music_fading = false
-  win_size = 0
+    win_size = 0
 end
 
 function doWin()
