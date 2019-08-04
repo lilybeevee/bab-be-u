@@ -375,7 +375,7 @@ mobile_stackmode = "none"
 
 function scene.keyPressed(key)
   if selector_open then
-    if key == "escape" or (key == "a" and key_down["lctrl"]) then
+    if key == "escape" or (key == "a" and key_down["lctrl"]) or (key == "backspace" and key_down["lctrl"]) then
         searchstr = ""
     elseif key == "backspace" or  (key == "z" and key_down["lctrl"]) then
         searchstr = string.sub(searchstr, 1, #searchstr-1)
@@ -484,19 +484,20 @@ end
     end
   end
   
-  if key == "tab" and key_down["lctrl"] or key_down["rctrl"] and not key_down["lshift"] or key_down["rshift"] then
+  -- ctrl tab shortcuts
+  if key == "tab" and key_down["lctrl"] or key_down["rctrl"] and not (key_down["lshift"] or key_down["rshift"]) then
     selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..selector_page], sprites["ui/selector_tab_"..selector_page.."_h"])
     selector_page = selector_page % #tile_grid + 1
     current_tile_grid = tile_grid[selector_page];
     selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..selector_page.."_a"], sprites["ui/selector_tab_"..selector_page.."_h"])
   end
+  
   if selector_open and tonumber(key) and tonumber(key) <= #tile_grid and tonumber(key) > 0 and key_down["lctrl"] or key_down["rctrl"] then
     selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..selector_page], sprites["ui/selector_tab_"..selector_page.."_h"])
     selector_page = tonumber(key)
     current_tile_grid = tile_grid[selector_page];
     selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..tonumber(key).."_a"], sprites["ui/selector_tab_"..tonumber(key).."_h"])
   end
-    
   
   --create and display meta tiles 1 higher
   if selector_open and key == "lshift" then
@@ -941,11 +942,17 @@ function scene.draw(dt)
     end
 
     if selector_open then
-      love.graphics.setColor(getPaletteColor(0,3))
-      love.graphics.print(last_hovered_tile[1] .. ', ' .. last_hovered_tile[2], 0, roomheight)
-      if not is_mobile then
-          love.graphics.print("LSHIFT to get meta text, RSHIFT to refresh", 0, roomheight+12)
-      end
+        love.graphics.setColor(getPaletteColor(0,3))
+        love.graphics.print(last_hovered_tile[1] .. ', ' .. last_hovered_tile[2], 0, roomheight)
+        if not is_mobile then
+          love.graphics.printf("LSHIFT to get meta text, RSHIFT to refresh", 0, roomheight, roomwidth, "right")
+          love.graphics.printf("CTRL + TAB or CTRL + NUMBER to change tabs", 0, roomheight+12, roomwidth, "right")
+          if #searchstr > 0 then
+            love.graphics.print("Searching for: " .. searchstr, 0, roomheight+12)
+          else
+            love.graphics.print("Type to search", 0, roomheight+12)
+          end
+        end
     end
 
     love.graphics.pop()
@@ -1001,11 +1008,10 @@ function scene.draw(dt)
     end
 
     love.graphics.push()
-    if searchstr == "" or not selector_open then
-      gooi.draw()
-      gooi.draw("mobile-controls-selector")
-      gooi.draw("mobile-controls-editor")
-    end
+    
+    gooi.draw()
+    gooi.draw("mobile-controls-selector")
+    gooi.draw("mobile-controls-editor")
     
     if is_mobile then
       local twelfth = love.graphics.getWidth()/12
@@ -1111,11 +1117,6 @@ function scene.draw(dt)
 
       y = y + love.graphics.getFont():getHeight()
     end
-  end
-
-  if searchstr and selector_open then
-    love.graphics.setColor(1,1,1)
-    love.graphics.print(searchstr, 0, TILE_SIZE)
   end
 end
 
