@@ -1043,6 +1043,19 @@ function updateUnitColours()
         table.insert(to_update[unit], colour)
       end
     end
+    
+    local painting = matchesRule(nil, "paint", "?")
+    for _,ruleparent in ipairs(painting) do
+        local unit = ruleparent[2]
+        local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, true)
+        for _,on in ipairs(stuff) do
+            if unit ~= on and hasRule(unit, "paint", on) and sameFloat(unit, on) then
+                if timecheck(unit,"paint",on) and timecheck(on) then
+                    table.insert(to_update[on], colour)
+                end
+            end
+        end
+    end
   end
   
   --BEN'T PAINT removes and prevents all other colour shenanigans.
@@ -1086,16 +1099,16 @@ end
 function updateUnitColourOverride(unit)
   unit.color_override = nil
   if unit.whit and unit.reed then
-	  unit.color_override = {4, 2}
-	elseif unit.whit and unit.grun then
-	  unit.color_override = {5, 3}
-	elseif unit.whit or (unit.reed and unit.grun and unit.bleu) or (unit.reed and unit.cyeann) or (unit.bleu and unit.yello) or (unit.grun and unit.purp) then
-      unit.color_override = {0, 3}	
-	elseif unit.purp or (unit.reed and unit.bleu) then
-      unit.color_override = {3, 1}
-	elseif unit.yello or (unit.reed and unit.grun) then
-      unit.color_override = {2, 4}
-	elseif unit.orang or (unit.reed and unit.yello) then
+	unit.color_override = {4, 2}
+  elseif unit.whit and unit.grun then
+    unit.color_override = {5, 3}
+  elseif unit.whit or (unit.reed and unit.grun and unit.bleu) or (unit.reed and unit.cyeann) or (unit.bleu and unit.yello) or (unit.grun and unit.purp) then
+    unit.color_override = {0, 3}
+  elseif unit.purp or (unit.reed and unit.bleu) then
+    unit.color_override = {3, 1}
+  elseif unit.yello or (unit.reed and unit.grun) then
+    unit.color_override = {2, 4}
+  elseif unit.orang or (unit.reed and unit.yello) then
       unit.color_override = {2, 3}
   elseif unit.cyeann or (unit.bleu and unit.grun) then
     unit.color_override = {1, 4}
