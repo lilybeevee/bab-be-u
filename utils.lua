@@ -874,6 +874,7 @@ temp_lightcanvas = nil
 lightcanvas_width = 0
 lightcanvas_height = 0
 
+torc_angles = {20,45,90,120,180, 210, 270, }
 function calculateLight()
   if lightcanvas_width ~= mapwidth or lightcanvas_height ~= mapheight then
     lightcanvas = love.graphics.newCanvas(mapwidth*32, mapheight*32)
@@ -882,14 +883,15 @@ function calculateLight()
     lightcanvas_width = mapwidth
   end
   local brites = getUnitsWithEffect("brite")
-  if (#brites == 0) then
+  local torcs = getUnitsWithEffect("torc")
+  if (#brites == 0 and #torcs == 0) then
     love.graphics.setCanvas(lightcanvas)
     love.graphics.clear(0, 0, 0, 1)
     love.graphics.setCanvas()
     return
   end
   local opaques = getUnitsWithEffect("opaque")
-  if (#opaques == 0) then
+  if (#opaques == 0 and #brites ~= 0) then
     love.graphics.setCanvas(lightcanvas)
     love.graphics.clear(1, 1, 1, 1)
     love.graphics.setCanvas()
@@ -897,51 +899,108 @@ function calculateLight()
   end
   love.graphics.setCanvas(lightcanvas)
   love.graphics.clear(0, 0, 0, 1)
-  for _,source in ipairs(brites) do
+  for _,unit in ipairs(brites) do
     love.graphics.setCanvas(temp_lightcanvas)
     love.graphics.clear(1, 1, 1, 1)
-    love.graphics.setColor(0, 0, 0, 1)
-    for _,opaque in ipairs(opaques) do
-      local sourceX = source.x*32+16
-      local sourceY = source.y*32+16
-      local closeX = (opaque.x*32) + (opaque.x<source.x and 32 or 0)
-      local farX = (opaque.x*32) + (opaque.x>=source.x and 32 or 0)
-      local edgeX = (opaque.x>=source.x and mapwidth*32 or 0)
-      local closeY = (opaque.y*32) + (opaque.y<source.y and 32 or 0)
-      local farY = (opaque.y*32) + (opaque.y>=source.y and 32 or 0)
-      local edgeY = (opaque.y>=source.y and mapheight*32 or 0)
-      if opaque.x == source.x and opaque.y == source.y then
-        love.graphics.clear(0, 0, 0, 1)
-        love.graphics.setColor(1, 1, 1, 1)
-        love.graphics.rectangle("fill", closeX, closeY, 32, 32)
-        break -- no light escapes this, no need to check other farther opaques from this light source
-      elseif opaque.x == source.x then
-        local diag2 = sourceX + (farX-sourceX)/(closeY-sourceY)*(edgeY-sourceY)
-        local diag1 = sourceX + (closeX-sourceX)/(closeY-sourceY)*(edgeY-sourceY)
-        -- love.graphics.polygon("fill", farX, farY, closeX, farY, closeX, closeY, diag1, edgeY, diag2, edgeY, farX, closeY)
-        love.graphics.polygon("fill", closeX, farY, closeX, closeY, diag1, edgeY, farX, edgeY, farX, farY)
-        love.graphics.polygon("fill", farX, edgeY, diag2, edgeY, farX, closeY)
-      elseif opaque.y == source.y then
-        local diag2 = sourceY + (farY-sourceY)/(closeX-sourceX)*(edgeX-sourceX)
-        local diag1 = sourceY + (closeY-sourceY)/(closeX-sourceX)*(edgeX-sourceX)
-        -- love.graphics.polygon("fill", farX, farY, closeX, farY, edgeX, diag1, edgeX, diag2, closeX, closeY, farX, closeY)
-        love.graphics.polygon("fill", farX, closeY, closeX, closeY, edgeX, diag1, edgeX, farY, farX, farY)
-        love.graphics.polygon("fill", edgeX, farY, edgeX, diag2, closeX, farY)
-      else
-        local diagX = sourceX + (closeX-sourceX)/(farY-sourceY)*(edgeY-sourceY) -- using triangle math here
-        local diagY = sourceY + (closeY-sourceY)/(farX-sourceX)*(edgeX-sourceX) -- (not trigonometry, the other one)
-        local cornerX = (edgeX > 0) and math.max(diagX, edgeX) or math.min(diagX, edgeX)
-        local cornerY = (edgeY > 0) and math.max(diagY, edgeY) or math.min(diagY, edgeY)
-        love.graphics.polygon("fill", farX, farY, closeX, farY, diagX, edgeY, cornerX, cornerY, edgeX, diagY, farX, closeY)
-      end
-    end
+    drawShadows(uniy, opaques)
+    love.graphics.setCanvas(lightcanvas)
+    love.graphics.setBlendMode("add", "premultiplied")
+    love.graphics.draw(temp_lightcanvas)
+    love.graphics.setBlendMode("alpha")
+  end
+  for _,unit in ipairs(torcs) do
+    love.graphics.setCanvas(temp_lightcanvas)
+    love.graphics.clear(0, 0, 0, 1)
     love.graphics.setColor(1, 1, 1, 1)
+    local width = torc_angles[countProperty(unit,"torc")]
+    if width then
+      local facing = (1-unit.dir) * 45
+      local cx = unit.x*32+16
+      local cy = unit.y*32+16
+      local ex = mapwidth*32
+      local ey = mapheight*32
+      local angle1 = (math.rad(facing - width/2)+math.pi*2) % (math.pi*2)
+      local angle2 = (math.rad(facing + width/2)+math.pi*2) % (math.pi*2)
+      local ur = math.atan2(unit.y+0.5, mapwidth-unit.x-0.5)
+      local ul = math.atan2(unit.y+0.5, -unit.x-0.5)
+      local dl = math.atan2(unit.y-mapheight+0.5, -unit.x-0.5)+math.pi*2
+      local dr = math.atan2(unit.y-mapheight+0.5, mapwidth-unit.x-0.5)+math.pi*2
+      if angle1 < ur or angle1 > dr then
+        if angle2 < ur or angle2 > dr then
+          love.graphics.polygon("fill", cx, cy, ex, cy+math.tan(angle1)*(cx-ex), ex, cy+math.tan(angle2)*(cx-ex))
+        elseif angle2 < ul then
+          love.graphics.polygon("fill", cx, cy, ex, cy+math.tan(angle1)*(cx-ex), ex, 0, cx+cy/math.tan(angle2), 0)
+        elseif angle2 < dl then
+        else
+        end
+      elseif angle1 < ul then
+        if angle2 < ur or angle2 > dr then
+        elseif angle2 < ul then
+        elseif angle2 < dl then
+        else
+        end
+      elseif angle1 < dl then
+        if angle2 < ur or angle2 > dr then
+        elseif angle2 < ul then
+        elseif angle2 < dl then
+        else
+        end
+      else
+        if angle2 < ur or angle2 > dr then
+        elseif angle2 < ul then
+        elseif angle2 < dl then
+        else
+        end
+      end
+    else
+      love.graphics.clear(1, 1, 1, 1)
+    end
+    drawShadows(unit, opaques)
     love.graphics.setCanvas(lightcanvas)
     love.graphics.setBlendMode("add", "premultiplied")
     love.graphics.draw(temp_lightcanvas)
     love.graphics.setBlendMode("alpha")
   end
   love.graphics.setCanvas()
+end
+
+function drawShadows(source, opaques)
+  love.graphics.setColor(0, 0, 0, 1)
+  for _,opaque in ipairs(opaques) do
+    local sourceX = source.x*32+16
+    local sourceY = source.y*32+16
+    local closeX = (opaque.x*32) + (opaque.x<source.x and 32 or 0)
+    local farX = (opaque.x*32) + (opaque.x>=source.x and 32 or 0)
+    local edgeX = (opaque.x>=source.x and mapwidth*32 or 0)
+    local closeY = (opaque.y*32) + (opaque.y<source.y and 32 or 0)
+    local farY = (opaque.y*32) + (opaque.y>=source.y and 32 or 0)
+    local edgeY = (opaque.y>=source.y and mapheight*32 or 0)
+    if opaque.x == source.x and opaque.y == source.y then
+      love.graphics.clear(0, 0, 0, 1)
+      love.graphics.setColor(1, 1, 1, 1)
+      love.graphics.rectangle("fill", closeX, closeY, 32, 32)
+      return -- no light escapes this, no need to check other farther opaques from this light source
+    elseif opaque.x == source.x then
+      local diag2 = sourceX + (farX-sourceX)/(closeY-sourceY)*(edgeY-sourceY)
+      local diag1 = sourceX + (closeX-sourceX)/(closeY-sourceY)*(edgeY-sourceY)
+      -- love.graphics.polygon("fill", farX, farY, closeX, farY, closeX, closeY, diag1, edgeY, diag2, edgeY, farX, closeY)
+      love.graphics.polygon("fill", closeX, farY, closeX, closeY, diag1, edgeY, farX, edgeY, farX, farY)
+      love.graphics.polygon("fill", farX, edgeY, diag2, edgeY, farX, closeY)
+    elseif opaque.y == source.y then
+      local diag2 = sourceY + (farY-sourceY)/(closeX-sourceX)*(edgeX-sourceX)
+      local diag1 = sourceY + (closeY-sourceY)/(closeX-sourceX)*(edgeX-sourceX)
+      -- love.graphics.polygon("fill", farX, farY, closeX, farY, edgeX, diag1, edgeX, diag2, closeX, closeY, farX, closeY)
+      love.graphics.polygon("fill", farX, closeY, closeX, closeY, edgeX, diag1, edgeX, farY, farX, farY)
+      love.graphics.polygon("fill", edgeX, farY, edgeX, diag2, closeX, farY)
+    else
+      local diagX = sourceX + (closeX-sourceX)/(farY-sourceY)*(edgeY-sourceY) -- using triangle math here
+      local diagY = sourceY + (closeY-sourceY)/(farX-sourceX)*(edgeX-sourceX) -- (not trigonometry, the other one)
+      local cornerX = (edgeX > 0) and math.max(diagX, edgeX) or math.min(diagX, edgeX)
+      local cornerY = (edgeY > 0) and math.max(diagY, edgeY) or math.min(diagY, edgeY)
+      love.graphics.polygon("fill", farX, farY, closeX, farY, diagX, edgeY, cornerX, cornerY, edgeX, diagY, farX, closeY)
+    end
+  end
+  love.graphics.setColor(1, 1, 1, 1)
 end
 
 threshold_for_dir = {50, 0.01, 0.1, 1, 2, 5, 10, 25};

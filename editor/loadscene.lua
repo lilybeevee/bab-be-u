@@ -40,20 +40,33 @@ function scene.load()
     smallImageText = load_mode == "edit" and "editor" or "game",
     startTimestamp = now
   }
+  mobile_scroll_time = 0 -- when you started to press
+  mobile_scroll_start = 0 -- where you started to press
+  mobile_scroll_pos = 0 -- where the scroll bar started
 end
+mobile_scroll_delay = 0.1 -- how long you have to press to not click on a level
 
 function scene.update(dt)
   scrolloffset = scrolloffset + scrollvel * dt
 
-  if is_mobile and love.mouse.isDown(1) then
-    x, y = love.mouse.getPosition()
+  if is_mobile then
+    if love.mouse.isDown(1) then
+      x, y = love.mouse.getPosition()
 
-    if pointInside(x, y, love.graphics.getWidth()-10-sprites["ui/arrow up"]:getWidth(), 10, sprites["ui/arrow up"]:getWidth(), sprites["ui/arrow up"]:getHeight()) then
-      scrollvel = scrollvel - 100
-    end
+      local scrollbutton = false
 
-    if pointInside(x, y, love.graphics.getWidth()-10-sprites["ui/arrow down"]:getWidth(), love.graphics.getHeight()-10-sprites["ui/arrow down"]:getHeight(), sprites["ui/arrow down"]:getWidth(), sprites["ui/arrow down"]:getHeight()) then
-      scrollvel = scrollvel + 100
+      if pointInside(x, y, love.graphics.getWidth()-10-sprites["ui/arrow up"]:getWidth(), 10, sprites["ui/arrow up"]:getWidth(), sprites["ui/arrow up"]:getHeight()) and mobile_scroll_timer == 0 then
+        scrollvel = scrollvel - 100
+        scrollbutton = true
+      end
+      if pointInside(x, y, love.graphics.getWidth()-10-sprites["ui/arrow down"]:getWidth(), love.graphics.getHeight()-10-sprites["ui/arrow down"]:getHeight(), sprites["ui/arrow down"]:getWidth(), sprites["ui/arrow down"]:getHeight()) and mobile_scroll_timer == 0 then
+        scrollvel = scrollvel + 100
+        scrollbutton = true
+      end
+
+      if not scrollbutton then
+        scrolloffset = mobile_scroll_pos + (mobile_scroll_start - y)
+      end
     end
   end
 
@@ -502,6 +515,7 @@ function scene.renameWorld(o, text)
 end
 
 function scene.createWorld(o)
+  if is_mobile and love.timer.getTime() - mobile_scroll_time > mobile_scroll_delay then return end
   world = o:getName()
   world_parent = o.data.file
   love.filesystem.createDirectory(world_parent .. "/" .. world)
@@ -509,12 +523,14 @@ function scene.createWorld(o)
 end
 
 function scene.createLevel(o)
+  if is_mobile and love.timer.getTime() -mobile_scroll_time > mobile_scroll_delay then return end
   loaded_level = false
   loadLevels({default_map}, load_mode)
 	level_compression = "zlib"
 end
 
 function scene.selectWorld(o, button)
+  if is_mobile and love.timer.getTime() -mobile_scroll_time > mobile_scroll_delay then return end
   if button == 1 then
     if o.data.deleting then
       o.data.deleting = 0
@@ -553,17 +569,27 @@ end
 
 function scene.mousePressed(x, y, button)
   if is_mobile then
+    local scrollbutton = false
+
     if pointInside(x, y, love.graphics.getWidth()-10-sprites["ui/arrow up"]:getWidth(), 10, sprites["ui/arrow up"]:getWidth(), sprites["ui/arrow up"]:getHeight()) then
       scrollvel = scrollvel - 400
+      scrollbutton = true
     end
-
     if pointInside(x, y, love.graphics.getWidth()-10-sprites["ui/arrow down"]:getWidth(), love.graphics.getHeight()-10-sprites["ui/arrow down"]:getHeight(), sprites["ui/arrow down"]:getWidth(), sprites["ui/arrow down"]:getHeight()) then
       scrollvel = scrollvel + 400
+      scrollbutton = true
+    end
+
+    if not scrollbutton then
+      mobile_scroll_start = y
+      mobile_scroll_pos = scrolloffset
+      mobile_scroll_time = love.timer.getTime()
     end
   end
 end
 
 function scene.selectLevel(o, button)
+  if is_mobile and love.timer.getTime() -mobile_scroll_time > mobile_scroll_delay then return end
   if button == 1 then
     if o.data.deleting then
       o.data.deleting = nil
