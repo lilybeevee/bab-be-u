@@ -1043,6 +1043,19 @@ function updateUnitColours()
         table.insert(to_update[unit], colour)
       end
     end
+    
+    local painting = matchesRule(nil, "paint", "?")
+    for _,ruleparent in ipairs(painting) do
+        local unit = ruleparent[2]
+        local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, true)
+        for _,on in ipairs(stuff) do
+            if unit ~= on and hasRule(unit, "paint", on) and sameFloat(unit, on) then
+                if timecheck(unit,"paint",on) and timecheck(on) then
+                    table.insert(to_update[on], colour)
+                end
+            end
+        end
+    end
   end
   
   --BEN'T PAINT removes and prevents all other colour shenanigans.
@@ -1086,16 +1099,16 @@ end
 function updateUnitColourOverride(unit)
   unit.color_override = nil
   if unit.whit and unit.reed then
-	  unit.color_override = {4, 2}
-	elseif unit.whit and unit.grun then
-	  unit.color_override = {5, 3}
-	elseif unit.whit or (unit.reed and unit.grun and unit.bleu) or (unit.reed and unit.cyeann) or (unit.bleu and unit.yello) or (unit.grun and unit.purp) then
-      unit.color_override = {0, 3}	
-	elseif unit.purp or (unit.reed and unit.bleu) then
-      unit.color_override = {3, 1}
-	elseif unit.yello or (unit.reed and unit.grun) then
-      unit.color_override = {2, 4}
-	elseif unit.orang or (unit.reed and unit.yello) then
+	unit.color_override = {4, 2}
+  elseif unit.whit and unit.grun then
+    unit.color_override = {5, 3}
+  elseif unit.whit or (unit.reed and unit.grun and unit.bleu) or (unit.reed and unit.cyeann) or (unit.bleu and unit.yello) or (unit.grun and unit.purp) then
+    unit.color_override = {0, 3}
+  elseif unit.purp or (unit.reed and unit.bleu) then
+    unit.color_override = {3, 1}
+  elseif unit.yello or (unit.reed and unit.grun) then
+    unit.color_override = {2, 4}
+  elseif unit.orang or (unit.reed and unit.yello) then
       unit.color_override = {2, 3}
   elseif unit.cyeann or (unit.bleu and unit.grun) then
     unit.color_override = {1, 4}
@@ -1591,6 +1604,9 @@ function convertLevel()
   for _,match in ipairs(converts) do
     if not nameIs(outerlvl, match[1][3]) then
       local tile = tiles_by_name[match[1][3]]
+      if match[1][3] == "text" then
+        tile = tiles_by_name["text_lvl"]
+      end
       if tile == nil and match[1][3] == "every1" and not hasRule(outerlvl, "be", "lvl") then
         tile = tiles_by_name["text_every1"]
       end
@@ -1783,6 +1799,36 @@ function convertUnits(pass)
       local tile = tiles_by_name["lie"]
       local new_unit = createUnit(tile, slice.x, slice.y, slice.dir, true)
       addUndo({"create", new_unit.id, true, created_from_id = slice.id})
+    end
+  end
+  
+  local thes = matchesRule(nil,"be","the")
+  for _,ruleparent in ipairs(thes) do
+    local unit = ruleparent[2]
+    local the = ruleparent[1][2][3]
+    
+    local tx = the.x
+    local ty = the.y
+    local dir = the.dir
+    local dx = dirs8[dir][1]
+    local dy = dirs8[dir][2]
+    dx,dy,dir,tx,ty = getNextTile(the,dx,dy,dir)
+    
+    local tfd = false
+    local tfs = getUnitsOnTile(tx,ty)
+    for _,other in ipairs(tfs) do
+      if not hasRule(unit,"be",unit.name) and not hasRule(unit,"ben't",other.fullname) then
+        local tile = tiles_by_name[other.fullname]
+        local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
+        if new_unit ~= nil then
+          tfd = true
+          addUndo({"create", new_unit.id, true, created_from_id = unit.id})
+        end
+      end
+    end
+    
+    if tfd and not unit.removed then
+      table.insert(converted_units, unit)
     end
   end
 
@@ -2196,9 +2242,10 @@ function makeMetaTile(premeta_tile)
 end
 
 function undoWin()
-  currently_winning = false
+    if hasProperty(outerlvl, "no undo") then return end
+    currently_winning = false
 	music_fading = false
-  win_size = 0
+    win_size = 0
 end
 
 function doWin()

@@ -327,14 +327,9 @@ function scene.keyPressed(key, isrepeat)
       repeat_timers["numpad"] = 0
     end
   elseif key == "z" or key == "q" or key == "backspace" or key == "kp0" or key == "o" then
-    if not hasProperty(outerlvl, "no undo") then
-        if not repeat_timers["undo"] then
+    if not repeat_timers["undo"] then
         do_turn_now = true
         repeat_timers["undo"] = 0
-        end
-    else
-        do_turn_now = true
-        playSound("fail")
     end
   end
 
@@ -477,25 +472,13 @@ function scene.getTransform()
   local screenwidth = love.graphics.getWidth() * (is_mobile and 0.75 or 1)
   local screenheight = love.graphics.getHeight()
 
-  local scale = 1
-  if roomwidth*0.375 >= screenwidth or roomheight*0.375 >= screenheight then
-    scale = 0.25
-  elseif roomwidth*0.5 >= screenwidth or roomheight*0.5 >= screenheight then
-    scale = 0.375
-  elseif roomwidth*0.625 >= screenwidth or roomheight*0.625 >= screenheight then
-    scale = 0.5
-  elseif roomwidth*0.75 >= screenwidth or roomheight*0.75 >= screenheight then
-    scale = 0.625
-  elseif roomwidth*0.875 >= screenwidth or roomheight*0.875 >= screenheight then
-    scale = 0.75
-  elseif roomwidth >= screenwidth or roomheight >= screenheight then
-    scale = 0.875
-  elseif screenwidth >= roomwidth * 4 and screenheight >= roomheight * 4 then
-    scale = 4
-  elseif screenwidth >= roomwidth * 3 and screenheight >= roomheight * 3 then
-    scale = 3
-  elseif screenwidth >= roomwidth * 2 and screenheight >= roomheight * 2 then
-    scale = 2
+  local scales = {0.25, 0.375, 0.5, 0.75, 1, 1.5, 2, 3, 4}
+
+  local scale = scales[1]
+  for _,s in ipairs(scales) do
+    if screenwidth >= roomwidth * s and screenheight >= roomheight * s then
+      scale = s
+    else break end
   end
 
   local scaledwidth = screenwidth * (1/scale)
@@ -927,7 +910,7 @@ function scene.draw(dt)
       love.graphics.setColor(color[1], color[2], color[3], color[4])
       love.graphics.draw(sprites["hatsmol"], fulldrawx, fulldrawy - 0.5*TILE_SIZE, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
     end
-    if hasRule(unit,"got","gun") then
+    if hasRule(unit,"got","gunne") then
       love.graphics.setColor(1, 1, 1)
       love.graphics.draw(sprites["gunsmol"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
     end
@@ -1181,6 +1164,7 @@ function scene.draw(dt)
   if is_mobile then
     if rules_with["za warudo"] then
       mobile_controls_timeless:setVisible(true)
+      mobile_controls_timeless:setBGImage(sprites[timeless and "ui/time resume" or "ui/timestop"])
     else
       mobile_controls_timeless:setVisible(false)
     end
@@ -1635,6 +1619,9 @@ function scene.mouseReleased(x, y, button)
     new_scene = editor
     load_mode = "edit"
   end
+end
+
+function scene.mousePressed(x, y, button)
 end
 
 function scene.setStackBox(x, y)
