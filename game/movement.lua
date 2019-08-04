@@ -798,7 +798,7 @@ function applySwap(mover, dx, dy)
     --if not v.already_moving then --this made some things move order dependent, so taking it out
       local swap_v = hasProperty(v, "behin u");
       --Don't swap with non-swap empty.
-      if ((swap_mover and v.fullname ~= "no1") or swap_v) and not (hasRule(mover,"ignor",v) or hasRule(mover,"ignor",outerlvl)) then
+      if ((swap_mover and v.fullname ~= "no1") or swap_v) and sameFloat(unit,v,true) then
         queueMove(v, -dx, -dy, swap_v and rotate8(mover.dir) or v.dir, true, 0);
         did_swap = true
       end
@@ -849,7 +849,7 @@ function findSidekikers(unit,dx,dy)
     local cury = y+curdy;
     local _dx, _dy, _dir, _x, _y = getNextTile(unit, curdx, curdy, curdir);
     for _,v in ipairs(getUnitsOnTile(_x, _y)) do
-      if hasProperty(v, "sidekik") and not (hasRule(unit,"ignor",v) or hasRule(unit,"ignor",outerlvl)) then
+      if hasProperty(v, "sidekik") and sameFloat(unit,v,true) then
         result[v] = dirAdd(dir, dirDiff(_dir, curdir));
       end
     end
@@ -865,7 +865,7 @@ function findSidekikers(unit,dx,dy)
     local cury = y+curdy;
     local _dx, _dy, _dir, _x, _y = getNextTile(unit, curdx, curdy, curdir);
     for _,v in ipairs(getUnitsOnTile(_x, _y)) do
-      if hasProperty(v, "sidekik") and hasProperty(v, "come pls") and not hasProperty(v, "ortho") then
+      if hasProperty(v, "sidekik") and hasProperty(v, "come pls") and not hasProperty(v, "ortho") and sameFloat(unit,v,true) then
         result[v] = dirAdd(dir, dirDiff(_dir, curdir));
       end
     end
@@ -934,7 +934,7 @@ function doPullCore(unit,dx,dy,dir,data, already_added, moving_units, moving_uni
     dx, dy, dir, x, y = getNextTile(unit, dx, dy, dir, true);
     local dir_diff = dirDiff(old_dir, dir);
     for _,v in ipairs(getUnitsOnTile(x, y)) do
-      if hasProperty(v, "come pls") and not (hasRule(unit,"ignor",v) or hasRule(unit,"ignor",outerlvl)) then
+      if hasProperty(v, "come pls") and sameFloat(unit,v,true) then
         local success,movers,specials = canMove(v, dx, dy, dir, true) --TODO: I can't remember why pushing is set but pulling isn't LOL, but if nothing's broken then shrug??
         for _,special in ipairs(specials) do
           doAction(special)
@@ -1452,7 +1452,7 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
   --normal checks
   for _,v in ipairs(getUnitsOnTile(x, y, nil, false, nil, true)) do
     --Patashu: treat moving things as intangible in general. also, ignore ourselves for zip purposes
-    if (v ~= unit and not v.already_moving and not hasRule(unit,"ignor",v)) then
+    if (v ~= unit and not v.already_moving and sameFloat(unit,v,true)) then
       local stopped = false
       if (v.name == solid_name) then
         return false,movers,specials
