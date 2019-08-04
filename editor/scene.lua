@@ -379,7 +379,7 @@ function scene.keyPressed(key)
         searchstr = ""
     elseif key == "backspace" or  (key == "z" and key_down["lctrl"]) then
         searchstr = string.sub(searchstr, 1, #searchstr-1)
-    elseif #key == 1 or key == "space" then
+    elseif (#key == 1 or key == "space") and not (key_down["lctrl"] or key_down["rctrl"]) then
         if key == "space" then key = " " end
         searchstr = searchstr..key
     end
@@ -471,7 +471,7 @@ end
     end
   end
 
-  if key == "tab" then
+  if key == "tab" and not key_down["lctrl"] or key_down["rctrl"] then
     selector_open = not selector_open
     updateSelectorTabs()
     if selector_open then
@@ -484,12 +484,19 @@ end
     end
   end
   
-  if selector_open and tonumber(key) and tonumber(key) <= #tile_grid and tonumber(key) > 0 then
+  if key == "tab" and key_down["lctrl"] or key_down["rctrl"] and not key_down["lshift"] or key_down["rshift"] then
+    selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..selector_page], sprites["ui/selector_tab_"..selector_page.."_h"])
+    selector_page = selector_page % #tile_grid + 1
+    current_tile_grid = tile_grid[selector_page];
+    selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..selector_page.."_a"], sprites["ui/selector_tab_"..selector_page.."_h"])
+  end
+  if selector_open and tonumber(key) and tonumber(key) <= #tile_grid and tonumber(key) > 0 and key_down["lctrl"] or key_down["rctrl"] then
     selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..selector_page], sprites["ui/selector_tab_"..selector_page.."_h"])
     selector_page = tonumber(key)
     current_tile_grid = tile_grid[selector_page];
     selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..tonumber(key).."_a"], sprites["ui/selector_tab_"..tonumber(key).."_h"])
   end
+    
   
   --create and display meta tiles 1 higher
   if selector_open and key == "lshift" then
@@ -1108,7 +1115,7 @@ function scene.draw(dt)
 
   if searchstr and selector_open then
     love.graphics.setColor(1,1,1)
-    love.graphics.print(searchstr)
+    love.graphics.print(searchstr, 0, TILE_SIZE)
   end
 end
 
