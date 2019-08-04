@@ -485,17 +485,24 @@ end
   end
   
   -- ctrl tab shortcuts
-  if key == "tab" and key_down["lctrl"] or key_down["rctrl"] and not (key_down["lshift"] or key_down["rshift"]) then
+  if key == "tab" and (key_down["lctrl"] or key_down["rctrl"]) and not (key_down["lshift"] or key_down["rshift"]) then
     selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..selector_page], sprites["ui/selector_tab_"..selector_page.."_h"])
     selector_page = selector_page % #tile_grid + 1
-    current_tile_grid = tile_grid[selector_page];
+    current_tile_grid = tile_grid[selector_page]
+    selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..selector_page.."_a"], sprites["ui/selector_tab_"..selector_page.."_h"])
+  end
+  
+  if key == "tab" and (key_down["lctrl"] or key_down["rctrl"]) and (key_down["lshift"] or key_down["rshift"]) then
+    selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..selector_page], sprites["ui/selector_tab_"..selector_page.."_h"])
+    selector_page = (selector_page - 2) % #tile_grid + 1
+    current_tile_grid = tile_grid[selector_page]
     selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..selector_page.."_a"], sprites["ui/selector_tab_"..selector_page.."_h"])
   end
   
   if selector_open and tonumber(key) and tonumber(key) <= #tile_grid and tonumber(key) > 0 and key_down["lctrl"] or key_down["rctrl"] then
     selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..selector_page], sprites["ui/selector_tab_"..selector_page.."_h"])
     selector_page = tonumber(key)
-    current_tile_grid = tile_grid[selector_page];
+    current_tile_grid = tile_grid[selector_page]
     selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..tonumber(key).."_a"], sprites["ui/selector_tab_"..tonumber(key).."_h"])
   end
   
