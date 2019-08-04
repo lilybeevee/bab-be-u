@@ -798,7 +798,7 @@ function applySwap(mover, dx, dy)
     --if not v.already_moving then --this made some things move order dependent, so taking it out
       local swap_v = hasProperty(v, "behin u");
       --Don't swap with non-swap empty.
-      if ((swap_mover and v.fullname ~= "no1") or swap_v) then
+      if ((swap_mover and v.fullname ~= "no1") or swap_v) and not (hasRule(mover,"ignor",v) or hasRule(mover,"ignor",outerlvl)) then
         queueMove(v, -dx, -dy, swap_v and rotate8(mover.dir) or v.dir, true, 0);
         did_swap = true
       end
@@ -849,7 +849,7 @@ function findSidekikers(unit,dx,dy)
     local cury = y+curdy;
     local _dx, _dy, _dir, _x, _y = getNextTile(unit, curdx, curdy, curdir);
     for _,v in ipairs(getUnitsOnTile(_x, _y)) do
-      if hasProperty(v, "sidekik") then
+      if hasProperty(v, "sidekik") and not (hasRule(unit,"ignor",v) or hasRule(unit,"ignor",outerlvl)) then
         result[v] = dirAdd(dir, dirDiff(_dir, curdir));
       end
     end
@@ -934,7 +934,7 @@ function doPullCore(unit,dx,dy,dir,data, already_added, moving_units, moving_uni
     dx, dy, dir, x, y = getNextTile(unit, dx, dy, dir, true);
     local dir_diff = dirDiff(old_dir, dir);
     for _,v in ipairs(getUnitsOnTile(x, y)) do
-      if hasProperty(v, "come pls") then
+      if hasProperty(v, "come pls") and not (hasRule(unit,"ignor",v) or hasRule(unit,"ignor",outerlvl)) then
         local success,movers,specials = canMove(v, dx, dy, dir, true) --TODO: I can't remember why pushing is set but pulling isn't LOL, but if nothing's broken then shrug??
         for _,special in ipairs(specials) do
           doAction(special)
@@ -1278,11 +1278,11 @@ end
 
 function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_stack_,start_x,start_y)
   --if we haet outerlvl, we can't move, period.
-  if rules_with["haet"] ~= nil and hasRule(unit, "haet", outerlvl) then
+  if rules_with["haet"] ~= nil and hasRule(unit, "haet", outerlvl) and not hasRule(unit,"ignor",outerlvl) then
     return false,{},{}
   end
   
-  if rules_with["go my way"] ~= nil and hasProperty(outerlvl,"go my way") and goMyWayPrevents(outerlvl.dir,dx,dy) then
+  if rules_with["go my way"] ~= nil and hasProperty(outerlvl,"go my way") and not hasRule(unit,"ignor",outerlvl) and goMyWayPrevents(outerlvl.dir,dx,dy) then
     return false,{},{}
   end
 
@@ -1309,7 +1309,7 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
     local old_dx, old_dy = dx, dy
     local movecount = 4 * countProperty(unit, "munwalk") + 2 * countProperty(unit, "sidestep") + countProperty(unit, "diagstep")
     if movecount % 2 == 1 then
-	  local root2 = math.sqrt(0.5)
+      local root2 = math.sqrt(0.5)
       local diagx = round(root2*old_dx-root2*old_dy)
       local diagy = round(root2*old_dx+root2*old_dy)
       dx = diagx
@@ -1324,13 +1324,13 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
       dx = -dx
       dy = -dy
     end
-	if hasProperty(unit, "knightstep") then
-	  local root2 = math.sqrt(0.5)
-	  local diagx = round(root2*dx-root2*dy)
+    if hasProperty(unit, "knightstep") then
+      local root2 = math.sqrt(0.5)
+      local diagx = round(root2*dx-root2*dy)
       local diagy = round(root2*dx+root2*dy)
-	  dx = dx + diagx
-	  dy = dy + diagy
-	end
+      dx = dx + diagx
+      dy = dy + diagy
+    end
     if hasProperty(unit, "hopovr") then
       local hops = countProperty(unit, "hopovr")
       dx = dx * (hops + 1)
@@ -1348,6 +1348,10 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
   local movers = {}
   local specials = {}
   table.insert(movers, {unit = unit, dx = x-unit.x, dy = y-unit.y, dir = dir, move_dx = move_dx, move_dy = move_dy, move_dir = move_dir, geometry_spin = geometry_spin, portal = portal_unit})
+  
+  if rules_with["ignor"] ~= nil and hasRule(unit,"ignor",outerlvl) then
+    return (inBounds(unit.x+dx,unit.y+dy)),movers,{}
+  end
   
   if not inBounds(x,y) then
     if pushing and hasProperty(unit, "ouch") and not hasProperty(unit, "protecc") and (reason ~= "walk" or hasProperty(unit, "stubbn")) then
@@ -1448,7 +1452,7 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
   --normal checks
   for _,v in ipairs(getUnitsOnTile(x, y, nil, false, nil, true)) do
     --Patashu: treat moving things as intangible in general. also, ignore ourselves for zip purposes
-    if (v ~= unit and not v.already_moving) then
+    if (v ~= unit and not v.already_moving and not hasRule(unit,"ignor",v)) then
       local stopped = false
       if (v.name == solid_name) then
         return false,movers,specials
