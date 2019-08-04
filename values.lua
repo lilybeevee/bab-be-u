@@ -235,7 +235,7 @@ tiles_list = {
     layer = 6,
     rotate = true,
     eye = {x=22, y=10, w=2, h=2},
-    tags = {"char"},
+    tags = {"char", "baba"},
     desc = "its bab bruh"
   },
   -- 2
@@ -3413,6 +3413,7 @@ tiles_list = {
     layer = 5,
     rotate = true,
     eye = {x=17, y=8, w=2, h=3},
+    tags = {"dev"},
     desc = "it time 2 mix drincc & chaeng life"
   },
   -- 330

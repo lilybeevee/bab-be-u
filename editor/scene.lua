@@ -883,10 +883,21 @@ function scene.draw(dt)
             local color = setColor(tile.color);
 
             if rainbowmode then love.graphics.setColor(hslToRgb((love.timer.getTime()/3+x/tile_grid_width+y/tile_grid_height)%1, .5, .5, 1)) end
-
-            if not string.match(tile.name, searchstr) then
-              love.graphics.setColor(0.2,0.2,0.2)
+            
+            local found_matching_tag = false
+            
+            if tile.tags ~= nil then
+                for _,tag in ipairs(tile.tags) do
+                    if string.match(tag, searchstr) then
+                        found_matching_tag = true
+                    end
+                end
+            elseif string.match(tile.name, searchstr) then
+                found_matching_tag = true
             end
+            
+            if not found_matching_tag then love.graphics.setColor(0.2,0.2,0.2) end
+            
             love.graphics.draw(sprite, (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
             if (tile.meta ~= nil) then
               setColor({4, 1})
