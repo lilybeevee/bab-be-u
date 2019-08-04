@@ -1785,6 +1785,36 @@ function convertUnits(pass)
       addUndo({"create", new_unit.id, true, created_from_id = slice.id})
     end
   end
+  
+  local thes = matchesRule(nil,"be","the")
+  for _,ruleparent in ipairs(thes) do
+    local unit = ruleparent[2]
+    local the = ruleparent[1][2][3]
+    
+    local tx = the.x
+    local ty = the.y
+    local dir = the.dir
+    local dx = dirs8[dir][1]
+    local dy = dirs8[dir][2]
+    dx,dy,dir,tx,ty = getNextTile(the,dx,dy,dir)
+    
+    local tfd = false
+    local tfs = getUnitsOnTile(tx,ty)
+    for _,other in ipairs(tfs) do
+      if not hasRule(unit,"be",unit.name) and not hasRule(unit,"ben't",other.fullname) then
+        local tile = tiles_by_name[other.fullname]
+        local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
+        if new_unit ~= nil then
+          tfd = true
+          addUndo({"create", new_unit.id, true, created_from_id = unit.id})
+        end
+      end
+    end
+    
+    if tfd and not unit.removed then
+      table.insert(converted_units, unit)
+    end
+  end
 
   deleteUnits(converted_units,true)
 end

@@ -78,6 +78,7 @@ local cond_prefixes = {
         options = {
           {{type = "cond_prefix"}},
           {{type = "cond_prefix_or_property"}},
+          {{name = "the"}},
         }
       },
       not_suffix

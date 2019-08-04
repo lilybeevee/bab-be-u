@@ -770,6 +770,17 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
       else
         result = colour_for_palette[colour[1]][colour[2]] == condtype
       end
+    elseif condtype == "the" then
+      local the = cond[3][1]
+      
+      local tx = the.x
+      local ty = the.y
+      local dir = the.dir
+      local dx = dirs8[dir][1]
+      local dy = dirs8[dir][2]
+      
+      dx,dy,dir,tx,ty = getNextTile(the,dx,dy,dir)
+      result = ((unit.x == tx) and (unit.y == ty))
     else
       print("unknown condtype: " .. condtype)
       result = false
