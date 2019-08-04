@@ -217,7 +217,7 @@ selector_grid_contents = {
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_yello",
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_gay","text_tranz","text_grun",
     0,0,0,0,0,"text_try again","text_no undo","text_undo","text_za warudo",0,0,0,0,0,0,"text_stelth","text_qt","text_cyeann",
-    0,0,0,0,0,"text_poor toll","text_go arnd","text_mirr arnd","text_brite","text_torc",0,0,0,0,0,0,"text_blacc","text_whit","text_bleu",
+    0,0,0,0,0,"text_poor toll","text_go arnd","text_mirr arnd","text_brite","text_torc",0,0,0,0,0,"text_blacc","text_whit","text_bleu",
     0,0,0,0,0,"text_her","text_thr","text_rithere","text_opaque",0,0,0,0,0,0,"text_colrful","text_rave","text_purp",
   },
 }
@@ -3428,7 +3428,7 @@ tiles_list = {
     name = "text_paint",
     sprite = "text_paint",
     type = "text",
-    texttype = "verb_object",
+    texttype = "cond_prefix_or_property",
     color = {4,2},
     layer = 20,
     desc = "PAINT: changes the second object's color to match."
