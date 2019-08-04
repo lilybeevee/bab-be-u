@@ -1496,7 +1496,11 @@ function sign(x)
 end
 
 function sameFloat(a, b)
-  return (countProperty(a, "flye") == countProperty(b, "flye")) or hasProperty(a, "tall") or hasProperty(b, "tall")
+  if hasRule(a,"ignor",b) or hasRule(b,"ignor",a) or hasRule(a,"ignor",outerlvl) or hasRule(b,"ignor",outerlvl) then
+    return false
+  else
+    return (countProperty(a, "flye") == countProperty(b, "flye")) or hasProperty(a, "tall") or hasProperty(b, "tall")
+  end
 end
 
 function getPaletteColor(x, y, name_)
