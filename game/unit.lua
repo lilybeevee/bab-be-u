@@ -1588,9 +1588,7 @@ function convertLevel()
   end
 
   local converts = matchesRule(outerlvl,"be","?")
-  print(#converts)
   for _,match in ipairs(converts) do
-    print(match[1][1], match[1][2], match[1][3])
     if not nameIs(outerlvl, match[1][3]) then
       local tile = tiles_by_name[match[1][3]]
       if match[1][3] == "text" then
