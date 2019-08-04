@@ -427,6 +427,7 @@ function scene.keyPressed(key)
           for _,unit in ipairs(units_by_tile[tileid]) do
             unit.dir = brush.dir
           end
+          scene.updateMap()
         end
       end
     end
@@ -612,6 +613,7 @@ function scene.update(dt)
                   end
                 elseif brush.mode == "placing" and not (shift_active or selectorhold) then
                   deleteUnit(unit)
+                  scene.updateMap()
                   painted = true
                 end
               end
@@ -625,6 +627,7 @@ function scene.update(dt)
               if brush.mode == "erasing" then
                 if existing and not selectorhold then
                   deleteUnit(existing)
+                  scene.updateMap()
                   painted = true
                 end
               elseif brush.mode == "placing" and not selectorhold then
@@ -634,6 +637,7 @@ function scene.update(dt)
                   new_unit = existing
                 elseif (not control_active or ctrl_first_press) and (not is_mobile or mobile_firstpress) then
                   new_unit = createUnit(brush.id, hx, hy, brush.dir)
+                  scene.updateMap()
                   painted = true
                 end
               end
@@ -643,7 +647,6 @@ function scene.update(dt)
                   brush.picked_index = 0
                 end
                 paintedtiles = paintedtiles + 1
-                scene.updateMap()
                 if new_unit and brush.id == tiles_by_name["lvl"] then
                   new_scene = loadscene
                   load_mode = "select"
