@@ -18,6 +18,8 @@ local screenshot, screenshot_image
 
 local saved_popup
 
+local searchstr = ""
+
 -- for retaining information cross-scene
 editor_save = {}
 
@@ -372,6 +374,14 @@ mobile_picking = false
 mobile_stackmode = "none"
 
 function scene.keyPressed(key)
+  if (#key == 1 or key == "space") and selector_open then
+    if key == "space" then key = " " end
+    searchstr = searchstr..key
+  end
+  if key == "backspace" and selector_open then
+    searchstr = string.sub(searchstr, 1, #searchstr-1)
+  end
+
   if key == "escape" then
     if not capturing then
       if not spookmode then
@@ -862,6 +872,9 @@ function scene.draw(dt)
 
             if rainbowmode then love.graphics.setColor(hslToRgb((love.timer.getTime()/3+x/tile_grid_width+y/tile_grid_height)%1, .5, .5, 1)) end
 
+            if not string.match(tile.name, searchstr) then
+              love.graphics.setColor(0.2,0.2,0.2)
+            end
             love.graphics.draw(sprite, (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
             if (tile.meta ~= nil) then
               setColor({4, 1})
@@ -976,9 +989,12 @@ function scene.draw(dt)
     end
 
     love.graphics.push()
-    gooi.draw()
-    gooi.draw("mobile-controls-selector")
-    gooi.draw("mobile-controls-editor")
+    if searchstr == "" or not selector_open then
+      gooi.draw()
+      gooi.draw("mobile-controls-selector")
+      gooi.draw("mobile-controls-editor")
+    end
+    
     if is_mobile then
       local twelfth = love.graphics.getWidth()/12
       if mobile_picking then
@@ -1083,6 +1099,11 @@ function scene.draw(dt)
 
       y = y + love.graphics.getFont():getHeight()
     end
+  end
+
+  if searchstr and selector_open then
+    love.graphics.setColor(1,1,1)
+    love.graphics.print(searchstr)
   end
 end
 
