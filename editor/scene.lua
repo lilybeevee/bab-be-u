@@ -374,15 +374,18 @@ mobile_picking = false
 mobile_stackmode = "none"
 
 function scene.keyPressed(key)
-  if (#key == 1 or key == "space") and selector_open then
-    if key == "space" then key = " " end
-    searchstr = searchstr..key
-  end
-  if key == "backspace" and selector_open then
-    searchstr = string.sub(searchstr, 1, #searchstr-1)
+  if selector_open then
+    if key == "escape" or (key == "a" and key_down["lctrl"]) then
+        searchstr = ""
+    elseif key == "backspace" or  (key == "z" and key_down["lctrl"]) then
+        searchstr = string.sub(searchstr, 1, #searchstr-1)
+    elseif #key == 1 or key == "space" then
+        if key == "space" then key = " " end
+        searchstr = searchstr..key
+    end
   end
 
-  if key == "escape" then
+  if key == "escape" and not selector_open then
     if not capturing then
       if not spookmode then
         gooi.confirm({
@@ -404,8 +407,9 @@ function scene.keyPressed(key)
       screenshot, screenshot_image = nil, nil
       ignore_mouse = true
     end
-  end
-  if key == "w" and (key_down["lctrl"] or key_down["rctrl"]) then
+end
+  
+  if key == "w" and (key_down["lctrl"] or key_down["rctrl"]) and not selector_open then
     load_mode = "edit"
     new_scene = loadscene
   end
@@ -443,27 +447,28 @@ function scene.keyPressed(key)
     end
   end
 
-
-  if key == "s" and (key_down["lctrl"] or key_down["rctrl"]) then
-    scene.saveLevel()
-  elseif key == "l" and (key_down["lctrl"] or key_down["rctrl"]) then
-    scene.loadLevel()
-  elseif key == "o" and (key_down["lctrl"] or key_down["rctrl"]) then
-    scene.openSettings()
-  elseif key == "r" and (key_down["lctrl"] or key_down["rctrl"]) then
-    gooi.confirm({
-      text = "Clear the level?",
-      okText = "Yes",
-      cancelText = "Cancel",
-      ok = function()
+  if not selector_open then
+    if key == "s" and (key_down["lctrl"] or key_down["rctrl"]) then
+        scene.saveLevel()
+    elseif key == "l" and (key_down["lctrl"] or key_down["rctrl"]) then
+        scene.loadLevel()
+    elseif key == "o" and (key_down["lctrl"] or key_down["rctrl"]) then
+        scene.openSettings()
+    elseif key == "r" and (key_down["lctrl"] or key_down["rctrl"]) then
+        gooi.confirm({
+        text = "Clear the level?",
+        okText = "Yes",
+        cancelText = "Cancel",
+        ok = function()
         maps = {{2, ""}}
         clear()
         loadMap()
         loaded_level = false
       end
     })
-  elseif key == "return" and settings_open then
-    scene.saveSettings()
+    elseif key == "return" and settings_open then
+        scene.saveSettings()
+    end
   end
 
   if key == "tab" then
