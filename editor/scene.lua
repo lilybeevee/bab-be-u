@@ -376,6 +376,7 @@ mobile_stackmode = "none"
 function scene.keyPressed(key)
   if selector_open then
     if key == "escape" or (key == "a" and key_down["lctrl"]) or (key == "backspace" and key_down["lctrl"]) then
+        if #searchstr == 0 then selector_open = false end
         searchstr = ""
     elseif key == "backspace" or  (key == "z" and key_down["lctrl"]) then
         searchstr = string.sub(searchstr, 1, #searchstr-1)
@@ -961,14 +962,14 @@ function scene.draw(dt)
 
     if selector_open then
         love.graphics.setColor(getPaletteColor(0,3))
-        love.graphics.print(last_hovered_tile[1] .. ', ' .. last_hovered_tile[2], 0, roomheight)
+        if infomode then love.graphics.printf(last_hovered_tile[1] .. ', ' .. last_hovered_tile[2], 0, roomheight+24, roomwidth, "right") end
         if not is_mobile then
             love.graphics.printf("LSHIFT to get meta text, RSHIFT to refresh", 0, roomheight, roomwidth, "right")
             love.graphics.printf("CTRL + TAB or CTRL + NUMBER to change tabs", 0, roomheight+12, roomwidth, "right")
             if #searchstr > 0 then
-                love.graphics.print("Searching for: " .. searchstr, 0, roomheight+12)
+                love.graphics.print("Searching for: " .. searchstr, 0, roomheight)
             else
-                love.graphics.print("Type to search", 0, roomheight+12)
+                love.graphics.print("Type to search", 0, roomheight)
             end
         end
     end
@@ -999,8 +1000,14 @@ function scene.draw(dt)
           love.graphics.setColor(getPaletteColor(0,3))
           love.graphics.printf(tile.desc, love.mouse.getX()+11, love.mouse.getY()+11-tooltipyoffset, love.graphics.getWidth() - love.mouse.getX() - 20)
         end
-        if tile.tags ~= nil and infomode then
-          love.graphics.print("Tags: " .. table.concat(tile.tags,", "), 0, roomheight+24)
+        if infomode then
+            love.graphics.push()
+            love.graphics.applyTransform(scene.getTransform())
+            love.graphics.print("Name: " .. tile.name, 0, roomheight+12)
+            if tile.tags ~= nil then
+                love.graphics.print("Tags: " .. table.concat(tile.tags,", "), 0, roomheight+24)
+            end
+            love.graphics.pop()
         end
       end
     end
