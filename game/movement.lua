@@ -250,8 +250,11 @@ function doMovement(movex, movey, key)
                   while (queue[1]) do
                     local pos = table.remove(queue, 1)
                     for i=1,8 do
-                      local dx = ({1,0,-1,0,1,-1,-1,1})[i]
-                      local dy = ({0,1,0,-1,1,1,-1,-1})[i]
+                      if hasProperty(stalker, "ortho") and not hasProperty(stalker, "diag") and i % 2 == 0 then i = i + 1 end
+                      if hasProperty(stalker, "diag") and not hasProperty(stalker, "ortho") and i % 2 == 1 then i = i + 1 end
+                      if i > 8 then break end
+                      local dx = ({1,1,0,-1,-1,-1,0,1})[i]
+                      local dy = ({0,1,1,1,0,-1,-1,-1})[i]
                       local dir = dirs8_by_offset[dx][dy]
                       local dx_next, dy_next, dir_next, x, y, portal_unit = getNextTile(stalker, dx, dy, dir, nil, pos.x, pos.y)
                       if inBounds(x,y) and visited[x+1][y+1] == 0 then
@@ -1278,11 +1281,11 @@ end
 
 function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_stack_,start_x,start_y)
   --if we haet outerlvl, we can't move, period.
-  if rules_with["haet"] ~= nil and hasRule(unit, "haet", outerlvl) and not hasRule(unit,"ignor",outerlvl) then
+  if rules_with["haet"] ~= nil and hasRule(unit, "haet", outerlvl) and not (hasRule(unit,"ignor",outerlvl) or hasRule(outerlvl,"ignor",unit)) then
     return false,{},{}
   end
   
-  if rules_with["go my way"] ~= nil and hasProperty(outerlvl,"go my way") and not hasRule(unit,"ignor",outerlvl) and goMyWayPrevents(outerlvl.dir,dx,dy) then
+  if rules_with["go my way"] ~= nil and hasProperty(outerlvl,"go my way") and not (hasRule(unit,"ignor",outerlvl) or hasRule(outerlvl,"ignor",unit)) and goMyWayPrevents(outerlvl.dir,dx,dy) then
     return false,{},{}
   end
 
@@ -1349,7 +1352,7 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
   local specials = {}
   table.insert(movers, {unit = unit, dx = x-unit.x, dy = y-unit.y, dir = dir, move_dx = move_dx, move_dy = move_dy, move_dir = move_dir, geometry_spin = geometry_spin, portal = portal_unit})
   
-  if rules_with["ignor"] ~= nil and hasRule(unit,"ignor",outerlvl) then
+  if rules_with["ignor"] ~= nil and (hasRule(unit,"ignor",outerlvl) or hasRule(outerlvl,"ignor",unit)) then
     return (inBounds(unit.x+dx,unit.y+dy)),movers,{}
   end
   

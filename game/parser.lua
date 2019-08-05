@@ -40,12 +40,15 @@ local function common(arg, group)
       {
         {type = "cond_prefix_or_property"}
       },
-			{
+      {
         {type = "group"}
       },
       {
         {name = "sans"}
-      }
+      },
+      {
+        {type = "verb_object_or_property"}
+      },
     }
     mergeTable(full_options, options)
   end
@@ -183,6 +186,12 @@ local verbs = {
           not_suffix,
           cond_prefixes,
           commons({"property"}, "target"),
+        },
+        {
+          {type = "verb_object_or_property"},
+          not_suffix,
+          cond_prefixes,
+          commons({"object"}, "target"),
         },
       }},
       cond_infixes
