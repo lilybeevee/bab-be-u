@@ -1091,7 +1091,7 @@ tiles_list = {
     layer = 5,
     rotate = true,
     eye = {x=18, y=8, w=2, h=2},
-    tags = {"anni", "chars"},
+    tags = {"anni", "chars", "devs"},
   },
   -- 83
   {
@@ -1100,7 +1100,7 @@ tiles_list = {
     type = "text",
     color = {4, 2},
     layer = 20,
-    tags = {"anni", "chars"},
+    tags = {"anni", "chars", "devs"},
   },
   -- 84
   {
@@ -1110,7 +1110,7 @@ tiles_list = {
     texttype = "property",
     color = {4, 2},
     layer = 20,
-    tags = {"cute"},
+    tags = {"cute","lily"},
     desc = "QT: Makes the unit emit love hearts.",
   },
   -- 85
@@ -1263,7 +1263,7 @@ tiles_list = {
     texttype = "property",
     color = {1, 4},
     layer = 20,
-    tags = {"slip"},
+    tags = {"slip", "patashu"},
     desc = "ICY: Objects on something ICY are forced to move in their facing direction until they leave the ice or can't move any further.",
   },
   --- 97
@@ -1443,7 +1443,7 @@ tiles_list = {
     texttype = "property",
     color = {1, 4},
     layer = 20,
-    tags = {"slip"},
+    tags = {"slip", "slide", "patashu"},
     desc = "ICYYYY: The instant an object steps on an ICYYYY unit, it is forced to move again.",
   },
   -- 115
@@ -1624,7 +1624,7 @@ tiles_list = {
     layer = 5,
     rotate = true,
     eye = {x=17, y=4, w=1, h=2},
-    tags = {"devs", "chars"},
+    tags = {"devs", "chars", "patashu"},
   },
   -- 132
   {
@@ -1633,7 +1633,7 @@ tiles_list = {
     type = "text",
     color = {3, 3},
     layer = 20,
-    tags = {"devs", "chars"},
+    tags = {"devs", "chars", "patashu"},
   },
   -- 133
   {
@@ -1645,7 +1645,7 @@ tiles_list = {
     layer = 5,
     rotate = true,
     eye = {x=18, y=4, w=2, h=2},
-    tags = {"devs", "chars"},
+    tags = {"devs", "chars", "vitellary"},
   },
   -- 134
   {
@@ -1654,7 +1654,7 @@ tiles_list = {
     type = "text",
     color = {2, 4},
     layer = 20,
-    tags = {"devs", "chars"},
+    tags = {"devs", "chars", "vitellary"},
   },
   -- 135
   {
@@ -1664,7 +1664,7 @@ tiles_list = {
     layer = 5,
     rotate = true,
     eye = {x=19, y=8, w=2, h=2},
-    tags = {"devs", "chars"},
+    tags = {"devs", "chars", "lily"},
   },
   -- 136
   {
@@ -1673,7 +1673,7 @@ tiles_list = {
     type = "text",
     color = {4, 2},
     layer = 20,
-    tags = {"devs", "chars"},
+    tags = {"devs", "chars", "lily"},
   },
   -- 137
   {
@@ -1724,6 +1724,7 @@ tiles_list = {
     texttype = "property",
     color = {6, 2},
     layer = 20,
+    tags = {"patashu"},
     desc = "SHY...: Can't initiate or continue a push, pull or sidekik movement."
   },
   -- 142
@@ -1863,6 +1864,7 @@ tiles_list = {
     texttype = "verb_object",
     color = {0, 3},
     layer = 20,
+    tags = {"lily"},
     desc = "COPKAT: COPKAT units copy the successful movements of the indicated object, no matter how far away."
   },
   --157
@@ -1894,7 +1896,7 @@ tiles_list = {
     texttype = "property",
     color = {3, 3},
     layer = 20,
-    tags = {"retry", "time", "reset"},
+    tags = {"retry", "time", "reset", "lily"},
     desc = "TRY AGAIN: When U is on TRY AGAIN, the level is undone back to the starting state."
   },
   -- 160
@@ -1905,7 +1907,7 @@ tiles_list = {
     texttype = "property",
     color = {5, 3},
     layer = 20,
-    tags = {"persist", "time"},
+    tags = {"persist", "time", "lily"},
     desc = "NO UNDO: NO UNDO units aren't affected by undoing.",
   },
   -- 161
@@ -1918,7 +1920,7 @@ tiles_list = {
     layer = 5,
     rotate = true,
     eye = {x=17, y=9, w=2, h=2},
-    tags = {"chars"},
+    tags = {"devs","chars","szoob"},
   },
   -- 162
   {
@@ -1927,7 +1929,7 @@ tiles_list = {
     type = "text",
     color = {4,1},
     layer = 20,
-    tags = {"chars"},
+    tags = {"devs","chars","szoob"},
   },
   -- 163
   {
@@ -1938,7 +1940,7 @@ tiles_list = {
     color = {0, 3},
     layer = 20,
     rotate = true,
-    tags = {"/", "maybe", "random", "rng"},
+    tags = {"/", "maybe", "random", "rng", "patashu"},
     desc = "? (MAYBE) (Prefix Condition): Has a chance of being true, independent for each MAYBE, affected unit and turn. The number on top indicates the % chance of being true.",
   },
   -- 164
@@ -1949,6 +1951,7 @@ tiles_list = {
     texttype = "property",
     color = {6, 1},
     layer = 20,
+    tags = {"patashu"},
     desc = "STUBBN: STUBBN units ignore the special properties of WALK movers (bouncing off of walls, and declining to move if it would die due to being OUCH) and also makes attempted diagonal movement slide along walls. Stacks with itself - the more STUBBN, the more additional angles it will try, up to 180 degrees at 5 stacks!",
   },
   -- 165
@@ -1990,7 +1993,7 @@ tiles_list = {
     texttype = "property",
     color = {3, 2},
     layer = 20,
-    tags = {"wrap around"},
+    tags = {"wrap around","cg5"},
     desc = "GO ARND: GO ARND units wrap around the level, as though it were a torus.",
   },
   -- 169
@@ -2001,7 +2004,7 @@ tiles_list = {
     texttype = "property",
     color = {3, 2},
     layer = 20,
-    tags = {"portal"},
+    tags = {"portal","cg5"},
     desc = "POOR TOLL: If a unit would enter a POOR TOLL unit, it instead leaves the next POOR TOLL unit of the same name in reading order (left to right, line by line, wrapping around) out the corresponding same side. Respects FLYE!",
   },
   -- 170
@@ -2061,7 +2064,7 @@ tiles_list = {
     texttype = "property",
     color = {1, 4},
     layer = 20,
-    tags = {"moonwalk"},
+    tags = {"moonwalk","patashu"},
     desc = "MUNWALK: MUNWALK units move 180 degrees opposite of their facing direction.",
   },
   -- 176
@@ -2072,7 +2075,7 @@ tiles_list = {
     texttype = "property",
     color = {3, 2},
     layer = 20,
-    tags = {"mirror around"},
+    tags = {"mirror around","cg5"},
     desc = "MIRR ARND: MIRR ARND units wrap around the level, as though it were a projective plane.",
   },
   -- 177
@@ -2083,6 +2086,7 @@ tiles_list = {
     texttype = "property",
     color = {6, 2},
     layer = 20,
+    tags = {"patashu"},
     desc = "SIDESTEP: SIDESTEP units move 90 degrees off of their facing direction.",
   },
   -- 178
@@ -2093,6 +2097,7 @@ tiles_list = {
     texttype = "property",
     color = {3, 1},
     layer = 20,
+    tags = {"patashu"},
     desc = "DIAGSTEP: DIAGSTEP units move 45 degrees off of their facing direction.",
   },
   -- 179
@@ -2103,6 +2108,7 @@ tiles_list = {
     texttype = "property",
     color = {5, 3},
     layer = 20,
+    tags = {"patashu"},
     desc = "HOPOVR: HOPOVR units move two tiles ahead, skipping the intermediate tile.",
   },
   -- 180
@@ -2145,7 +2151,7 @@ tiles_list = {
     color = {4, 1},
     layer = 20,
     rotate = true,
-    tags = {"rotate"},
+    tags = {"rotate","lily"},
     desc = "SPIN: SPIN units rotate clockwise, the number of times indicated on top of the property.",
   },
   -- 184
@@ -2281,6 +2287,7 @@ tiles_list = {
     allowconds = true,
     color = {5, 3},
     layer = 20,
+    tags = {"patashu"},
     desc = "HAET: A unit cannot stop onto a tile that has something it HAETs. (x HAET LVL makes x unable to move.)",
   },
   -- 198
@@ -2705,6 +2712,7 @@ tiles_list = {
     texttype = "cond_prefix",
     color = {5,2},
     layer = 20,
+    tags = {"cg5"},
     desc = "COREKT: Prefix condition that is true if the unit is in an active rule.",
   },
   -- 236
@@ -2718,6 +2726,7 @@ tiles_list = {
     texttype = "cond_prefix_or_property",
     color = {2,2},
     layer = 20,
+    tags = {"cg5"},
     desc = "RONG: As a prefix, true if the unit is in a negated rule. As a property, causes associated units to return a negated form of the rule.",
   },
   -- 237
@@ -2758,7 +2767,7 @@ tiles_list = {
     texttype = "property",
     color = {2,4},
     layer = 20,
-    tags = {"time", "the world", "dio"},
+    tags = {"timeless", "the world", "dio", "lily"},
     desc = "ZA WARUDO: Can stop time and move without anything else moving. Faster than rule parsing itself! After forming the rule, press E (hourglass on mobile) to toggle.",
   },
 	-- 241
@@ -3330,7 +3339,7 @@ tiles_list = {
     rotate = true,
     color = {1,3},
     layer = 20,
-    tags = {"here"},
+    tags = {"here","cg5"},
     desc = "HER ->: Sends objects to where the text indicates.",
   },
   -- 304
@@ -3342,7 +3351,7 @@ tiles_list = {
     rotate = true,
     color = {3,2},
     layer = 20,
-    tags = {"there"},
+    tags = {"there","cg5"},
     desc = "THR ->: Sends objects as far away from it as possible in the indicated direction.",
   },
   -- 305
@@ -3353,6 +3362,7 @@ tiles_list = {
     rotate = true,
     color = {0,3},
     layer = 20,
+    tags = {"cg5"},
     desc = "THE: Refers to the object it's pointing at. Currently not functional.",
   },
   -- 306
@@ -3373,6 +3383,7 @@ tiles_list = {
     texttype = "cond_infix_verb",
     color = {0, 3},
     layer = 20,
+    tags = {"lily"},
     desc = "THAT (Infix Condition): x THAT BE y is true if x BE y. x THAT GOT Y is true if x GOT y. And so on."
   },
   -- 307
@@ -3384,6 +3395,7 @@ tiles_list = {
     texttype = "hideous_amalgamation",
     color = {0, 3},
     layer = 20,
+    tags = {"lily"},
     desc = "THAT BE (Infix Condition): x THAT BE y is true if x BE y."
   },
   -- 308
@@ -3639,7 +3651,7 @@ tiles_list = {
     texttype = "property",
     color = {2, 4},
     layer = 20,
-    tags = {"sticky"},
+    tags = {"sticky","lily"},
     desc = "GLUED: Stuck to adjacent units sharing its colour, and can't move unless the entire block can simultaneously move.",
   },
   --- 334
