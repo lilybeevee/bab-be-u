@@ -374,15 +374,18 @@ mobile_picking = false
 mobile_stackmode = "none"
 
 function scene.keyPressed(key)
-  if (#key == 1 or key == "space") and selector_open then
-    if key == "space" then key = " " end
-    searchstr = searchstr..key
-  end
-  if key == "backspace" and selector_open then
-    searchstr = string.sub(searchstr, 1, #searchstr-1)
+  if selector_open then
+    if key == "escape" or (key == "a" and key_down["lctrl"]) or (key == "backspace" and key_down["lctrl"]) then
+        searchstr = ""
+    elseif key == "backspace" or  (key == "z" and key_down["lctrl"]) then
+        searchstr = string.sub(searchstr, 1, #searchstr-1)
+    elseif (#key == 1 or key == "space") and not (key_down["lctrl"] or key_down["rctrl"]) then
+        if key == "space" then key = " " end
+        searchstr = searchstr..key
+    end
   end
 
-  if key == "escape" then
+  if key == "escape" and not selector_open then
     if not capturing then
       if not spookmode then
         gooi.confirm({
@@ -404,8 +407,9 @@ function scene.keyPressed(key)
       screenshot, screenshot_image = nil, nil
       ignore_mouse = true
     end
-  end
-  if key == "w" and (key_down["lctrl"] or key_down["rctrl"]) then
+end
+  
+  if key == "w" and (key_down["lctrl"] or key_down["rctrl"]) and not selector_open then
     load_mode = "edit"
     new_scene = loadscene
   end
@@ -443,30 +447,31 @@ function scene.keyPressed(key)
     end
   end
 
-
-  if key == "s" and (key_down["lctrl"] or key_down["rctrl"]) then
-    scene.saveLevel()
-  elseif key == "l" and (key_down["lctrl"] or key_down["rctrl"]) then
-    scene.loadLevel()
-  elseif key == "o" and (key_down["lctrl"] or key_down["rctrl"]) then
-    scene.openSettings()
-  elseif key == "r" and (key_down["lctrl"] or key_down["rctrl"]) then
-    gooi.confirm({
-      text = "Clear the level?",
-      okText = "Yes",
-      cancelText = "Cancel",
-      ok = function()
+  if not selector_open then
+    if key == "s" and (key_down["lctrl"] or key_down["rctrl"]) then
+        scene.saveLevel()
+    elseif key == "l" and (key_down["lctrl"] or key_down["rctrl"]) then
+        scene.loadLevel()
+    elseif key == "o" and (key_down["lctrl"] or key_down["rctrl"]) then
+        scene.openSettings()
+    elseif key == "r" and (key_down["lctrl"] or key_down["rctrl"]) then
+        gooi.confirm({
+        text = "Clear the level?",
+        okText = "Yes",
+        cancelText = "Cancel",
+        ok = function()
         maps = {{2, ""}}
         clear()
         loadMap()
         loaded_level = false
       end
     })
-  elseif key == "return" and settings_open then
-    scene.saveSettings()
+    elseif key == "return" and settings_open then
+        scene.saveSettings()
+    end
   end
 
-  if key == "tab" then
+  if key == "tab" and not key_down["lctrl"] or key_down["rctrl"] then
     selector_open = not selector_open
     updateSelectorTabs()
     if selector_open then
@@ -479,17 +484,28 @@ function scene.keyPressed(key)
     end
   end
   
-  if selector_open and tonumber(key) and tonumber(key) <= #tile_grid and tonumber(key) > 0 then
-    selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..selector_page], sprites["ui/selector_tab_"..selector_page.."_h"])
+  -- ctrl tab shortcuts
+  local old_selector_page = selector_page;
+  selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..selector_page], sprites["ui/selector_tab_"..selector_page.."_h"])
+  
+  if key == "tab" and (key_down["lctrl"] or key_down["rctrl"]) and not (key_down["lshift"] or key_down["rshift"]) then
+    selector_page = selector_page % #tile_grid + 1
+  elseif key == "tab" and (key_down["lctrl"] or key_down["rctrl"]) and (key_down["lshift"] or key_down["rshift"]) then
+    selector_page = (selector_page - 2) % #tile_grid + 1
+  elseif selector_open and tonumber(key) and tonumber(key) <= #tile_grid and tonumber(key) > 0 and key_down["lctrl"] or key_down["rctrl"] then
     selector_page = tonumber(key)
-    current_tile_grid = tile_grid[selector_page];
-    selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..tonumber(key).."_a"], sprites["ui/selector_tab_"..tonumber(key).."_h"])
+  end
+  
+  --only refresh tile grid if the page actually changed to preserve meta text levels
+  if (old_selector_page ~= selector_page) then
+    current_tile_grid = tile_grid[selector_page]
+    selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..selector_page.."_a"], sprites["ui/selector_tab_"..selector_page.."_h"])
   end
   
   --create and display meta tiles 1 higher
   if selector_open and key == "lshift" then
-  --copy so we don't override original list
-  current_tile_grid = copyTable(current_tile_grid)
+    --copy so we don't override original list
+    current_tile_grid = copyTable(current_tile_grid)
     for i = 0,tile_grid_width*tile_grid_height do
       if current_tile_grid[i] ~= nil and current_tile_grid[i] > 0 then
         local new_tile_id = tiles_by_name["text_" .. tiles_list[current_tile_grid[i]].name];
@@ -504,6 +520,7 @@ function scene.keyPressed(key)
   end
   
   if selector_open and key == "rshift" then
+    print("-1")
     current_tile_grid = tile_grid[selector_page];
   end
 end
@@ -871,10 +888,23 @@ function scene.draw(dt)
             local color = setColor(tile.color);
 
             if rainbowmode then love.graphics.setColor(hslToRgb((love.timer.getTime()/3+x/tile_grid_width+y/tile_grid_height)%1, .5, .5, 1)) end
-
-            if not string.match(tile.name, searchstr) then
-              love.graphics.setColor(0.2,0.2,0.2)
+            
+            local found_matching_tag = false
+            
+            if tile.tags ~= nil then
+                for _,tag in ipairs(tile.tags) do
+                    if string.match(tag, searchstr) then
+                        found_matching_tag = true
+                    end
+                end
             end
+            
+            if string.match(tile.name, searchstr) then
+                found_matching_tag = true
+            end
+            
+            if not found_matching_tag then love.graphics.setColor(0.2,0.2,0.2) end
+            
             love.graphics.draw(sprite, (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
             if (tile.meta ~= nil) then
               setColor({4, 1})
@@ -929,11 +959,17 @@ function scene.draw(dt)
     end
 
     if selector_open then
-      love.graphics.setColor(getPaletteColor(0,3))
-      love.graphics.print(last_hovered_tile[1] .. ', ' .. last_hovered_tile[2], 0, roomheight)
-      if not is_mobile then
-          love.graphics.print("LSHIFT to get meta text, RSHIFT to refresh", 0, roomheight+12)
-      end
+        love.graphics.setColor(getPaletteColor(0,3))
+        love.graphics.print(last_hovered_tile[1] .. ', ' .. last_hovered_tile[2], 0, roomheight)
+        if not is_mobile then
+          love.graphics.printf("LSHIFT to get meta text, RSHIFT to refresh", 0, roomheight, roomwidth, "right")
+          love.graphics.printf("CTRL + TAB or CTRL + NUMBER to change tabs", 0, roomheight+12, roomwidth, "right")
+          if #searchstr > 0 then
+            love.graphics.print("Searching for: " .. searchstr, 0, roomheight+12)
+          else
+            love.graphics.print("Type to search", 0, roomheight+12)
+          end
+        end
     end
 
     love.graphics.pop()
@@ -989,11 +1025,10 @@ function scene.draw(dt)
     end
 
     love.graphics.push()
-    if searchstr == "" or not selector_open then
-      gooi.draw()
-      gooi.draw("mobile-controls-selector")
-      gooi.draw("mobile-controls-editor")
-    end
+    
+    gooi.draw()
+    gooi.draw("mobile-controls-selector")
+    gooi.draw("mobile-controls-editor")
     
     if is_mobile then
       local twelfth = love.graphics.getWidth()/12
@@ -1100,11 +1135,6 @@ function scene.draw(dt)
       y = y + love.graphics.getFont():getHeight()
     end
   end
-
-  if searchstr and selector_open then
-    love.graphics.setColor(1,1,1)
-    love.graphics.print(searchstr)
-  end
 end
 
 function scene.updateMap()
@@ -1122,6 +1152,17 @@ function scene.updateMap()
   end
   map = serpent.dump(map);
   maps = {{map_ver, map}}
+end
+
+function sanitize(filename)
+  -- Bad as defined by wikipedia: https://en.wikipedia.org/wiki/Filename#Reserved_characters_and_words
+  -- Also have to escape the backslash
+  -- and the % and . since they have special meaning in lua regexes
+  bad_chars = { '/', '\\', '?', '%%', '*', ':', '|', '"', '<', '>', '%.'}
+  for _,bad_char in ipairs(bad_chars) do
+    filename = filename:gsub(bad_char, '_')
+  end
+  return filename
 end
 
 function scene.saveLevel()
@@ -1151,18 +1192,22 @@ function scene.saveLevel()
     puffs_to_clear = level_puffs_to_clear,
     background_sprite = level_background_sprite,
   }
+  
+  local file_name = sanitize(level_name);
 
   if world == "" or world_parent == "officialworlds" then
     love.filesystem.createDirectory("levels")
-    love.filesystem.write("levels/" .. level_name .. ".bab", json.encode(data))
+    love.filesystem.write("levels/" .. file_name .. ".bab", json.encode(data))
+    print("Saved to:","levels/" .. file_name .. ".bab")
     if icon_data then
-      icon_data:encode("png", "levels/" .. level_name .. ".png")
+      icon_data:encode("png", "levels/" .. file_name .. ".png")
     end
   else
     love.filesystem.createDirectory(world_parent .. "/" .. world)
-    love.filesystem.write(world_parent .. "/" .. world .. "/" .. level_name .. ".bab", json.encode(data))
+    love.filesystem.write(world_parent .. "/" .. world .. "/" ..file_name .. ".bab", json.encode(data))
+    print("Saved to:",world_parent .. "/" .. world .. "/" ..file_name .. ".bab")
     if icon_data then
-      icon_data:encode("png", world_parent .. "/" .. world .. "/" .. level_name .. ".png")
+      icon_data:encode("png", world_parent .. "/" .. world .. "/" .. file_name .. ".png")
     end
   end
 
