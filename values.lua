@@ -1316,7 +1316,7 @@ tiles_list = {
     texttype = "cond_infix",
     color = {0, 3},
     layer = 20,
-    tags = {"near"},
+    tags = {"near", "around"},
     desc = "AROND (Prefix Condition): True if the indicated object is on any of the tiles surrounding the unit. (The unit's own tile is not checked.)",
   },
   --- 102
@@ -1664,7 +1664,7 @@ tiles_list = {
     layer = 5,
     rotate = true,
     eye = {x=19, y=8, w=2, h=2},
-    tags = {"devs", "chars", "lily"},
+    tags = {"devs", "chars", "lily", "lili"},
   },
   -- 136
   {
@@ -1673,7 +1673,7 @@ tiles_list = {
     type = "text",
     color = {4, 2},
     layer = 20,
-    tags = {"devs", "chars", "lily"},
+    tags = {"devs", "chars", "lily", "lili"},
   },
   -- 137
   {
@@ -3373,6 +3373,7 @@ tiles_list = {
     texttype = "property",
     color = {0, 2},
     layer = 20,
+    tags = {"chess"},
     desc = "KNIGHTSTEP: KNIGHTSTEP units move like the Knight chess piece.",
   },
   -- 307
@@ -3383,7 +3384,7 @@ tiles_list = {
     texttype = "cond_infix_verb",
     color = {0, 3},
     layer = 20,
-    tags = {"lily"},
+    tags = {"lily", "with", "w/"},
     desc = "THAT (Infix Condition): x THAT BE y is true if x BE y. x THAT GOT Y is true if x GOT y. And so on."
   },
   -- 307
@@ -3395,7 +3396,7 @@ tiles_list = {
     texttype = "hideous_amalgamation",
     color = {0, 3},
     layer = 20,
-    tags = {"lily"},
+    tags = {"lily", "with", "w/"},
     desc = "THAT BE (Infix Condition): x THAT BE y is true if x BE y."
   },
   -- 308
@@ -3629,7 +3630,7 @@ tiles_list = {
     name = "text_paint",
     sprite = "text_paint",
     type = "text",
-    texttype = "cond_prefix_or_property",
+    texttype = "verb_object_or_property",
     color = {4,2},
     layer = 20,
     desc = "PAINT: changes the second object's color to match."
