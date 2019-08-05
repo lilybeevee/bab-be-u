@@ -2082,10 +2082,7 @@ function moveUnit(unit,x,y,portal)
 end
 
 function updateDir(unit, dir, force)
-  if rules_with ~= nil and hasProperty(unit,"rotatbl") then
-    unit.rotate = true
-  end
-  if not unit.rotate then
+  if not unit.rotate and rules_with ~= nil and not hasProperty(unit,"rotatbl") then
     return false
   end
   if not force and rules_with ~= nil then
