@@ -1278,11 +1278,11 @@ end
 
 function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_stack_,start_x,start_y)
   --if we haet outerlvl, we can't move, period.
-  if rules_with["haet"] ~= nil and hasRule(unit, "haet", outerlvl) and not hasRule(unit,"ignor",outerlvl) then
+  if rules_with["haet"] ~= nil and hasRule(unit, "haet", outerlvl) and not (hasRule(unit,"ignor",outerlvl) or hasRule(outerlvl,"ignor",unit)) then
     return false,{},{}
   end
   
-  if rules_with["go my way"] ~= nil and hasProperty(outerlvl,"go my way") and not hasRule(unit,"ignor",outerlvl) and goMyWayPrevents(outerlvl.dir,dx,dy) then
+  if rules_with["go my way"] ~= nil and hasProperty(outerlvl,"go my way") and not (hasRule(unit,"ignor",outerlvl) or hasRule(outerlvl,"ignor",unit)) and goMyWayPrevents(outerlvl.dir,dx,dy) then
     return false,{},{}
   end
 
@@ -1349,7 +1349,7 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
   local specials = {}
   table.insert(movers, {unit = unit, dx = x-unit.x, dy = y-unit.y, dir = dir, move_dx = move_dx, move_dy = move_dy, move_dir = move_dir, geometry_spin = geometry_spin, portal = portal_unit})
   
-  if rules_with["ignor"] ~= nil and hasRule(unit,"ignor",outerlvl) then
+  if rules_with["ignor"] ~= nil and (hasRule(unit,"ignor",outerlvl) or hasRule(outerlvl,"ignor",unit)) then
     return (inBounds(unit.x+dx,unit.y+dy)),movers,{}
   end
   

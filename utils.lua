@@ -1496,7 +1496,7 @@ function sign(x)
 end
 
 function sameFloat(a, b, ignorefloat)
-  if hasRule(a,"ignor",b) or hasRule(b,"ignor",a) or hasRule(a,"ignor",outerlvl) or hasRule(b,"ignor",outerlvl) then
+  if hasRule(a,"ignor",b) or hasRule(b,"ignor",a) or hasRule(a,"ignor",outerlvl) or hasRule(b,"ignor",outerlvl) or hasRule(outerlvl,"ignor",a) or hasRule(outerlvl,"ignor",b) then
     return false
   else
     if ignorefloat then
