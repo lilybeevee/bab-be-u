@@ -250,8 +250,11 @@ function doMovement(movex, movey, key)
                   while (queue[1]) do
                     local pos = table.remove(queue, 1)
                     for i=1,8 do
-                      local dx = ({1,0,-1,0,1,-1,-1,1})[i]
-                      local dy = ({0,1,0,-1,1,1,-1,-1})[i]
+                      if hasProperty(stalker, "ortho") and not hasProperty(stalker, "diag") and i % 2 == 0 then i = i + 1 end
+                      if hasProperty(stalker, "diag") and not hasProperty(stalker, "ortho") and i % 2 == 1 then i = i + 1 end
+                      if i > 8 then break end
+                      local dx = ({1,1,0,-1,-1,-1,0,1})[i]
+                      local dy = ({0,1,1,1,0,-1,-1,-1})[i]
                       local dir = dirs8_by_offset[dx][dy]
                       local dx_next, dy_next, dir_next, x, y, portal_unit = getNextTile(stalker, dx, dy, dir, nil, pos.x, pos.y)
                       if inBounds(x,y) and visited[x+1][y+1] == 0 then
