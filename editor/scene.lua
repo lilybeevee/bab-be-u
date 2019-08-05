@@ -379,7 +379,8 @@ function scene.keyPressed(key)
         searchstr = ""
     elseif key == "backspace" or  (key == "z" and key_down["lctrl"]) then
         searchstr = string.sub(searchstr, 1, #searchstr-1)
-    elseif (#key == 1 or key == "space") and not (key_down["lctrl"] or key_down["rctrl"]) then
+    elseif (#key == 1 or key == "space") and not (key_down["lctrl"] or key_down["rctrl"] or key_down["f3"]) then
+        if #searchstr > 15 then return end
         if key == "space" then key = " " end
         searchstr = searchstr..key
     end
@@ -962,13 +963,13 @@ function scene.draw(dt)
         love.graphics.setColor(getPaletteColor(0,3))
         love.graphics.print(last_hovered_tile[1] .. ', ' .. last_hovered_tile[2], 0, roomheight)
         if not is_mobile then
-          love.graphics.printf("LSHIFT to get meta text, RSHIFT to refresh", 0, roomheight, roomwidth, "right")
-          love.graphics.printf("CTRL + TAB or CTRL + NUMBER to change tabs", 0, roomheight+12, roomwidth, "right")
-          if #searchstr > 0 then
-            love.graphics.print("Searching for: " .. searchstr, 0, roomheight+12)
-          else
-            love.graphics.print("Type to search", 0, roomheight+12)
-          end
+            love.graphics.printf("LSHIFT to get meta text, RSHIFT to refresh", 0, roomheight, roomwidth, "right")
+            love.graphics.printf("CTRL + TAB or CTRL + NUMBER to change tabs", 0, roomheight+12, roomwidth, "right")
+            if #searchstr > 0 then
+                love.graphics.print("Searching for: " .. searchstr, 0, roomheight+12)
+            else
+                love.graphics.print("Type to search", 0, roomheight+12)
+            end
         end
     end
 
@@ -997,6 +998,9 @@ function scene.draw(dt)
 
           love.graphics.setColor(getPaletteColor(0,3))
           love.graphics.printf(tile.desc, love.mouse.getX()+11, love.mouse.getY()+11-tooltipyoffset, love.graphics.getWidth() - love.mouse.getX() - 20)
+        end
+        if tile.tags ~= nil and infomode then
+          love.graphics.print("Tags: " .. table.concat(tile.tags,", "), 0, roomheight+24)
         end
       end
     end

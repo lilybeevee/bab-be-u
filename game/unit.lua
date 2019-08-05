@@ -1051,7 +1051,12 @@ function updateUnitColours()
         for _,on in ipairs(stuff) do
             if unit ~= on and hasRule(unit, "paint", on) and sameFloat(unit, on) then
                 if timecheck(unit,"paint",on) and timecheck(on) then
-                    table.insert(to_update[on], colour)
+                    if (on[colour] ~= true) then
+                        if to_update[on] == nil then
+                            to_update[on] = {}
+                        end
+                        table.insert(to_update[on], colour)
+                    end
                 end
             end
         end
@@ -1098,11 +1103,11 @@ end
 
 function updateUnitColourOverride(unit)
   unit.color_override = nil
-  if unit.whit and unit.reed then
+  --[[if unit.whit and unit.reed then
 	unit.color_override = {4, 2}
-  elseif unit.whit and unit.grun then
-    unit.color_override = {5, 3}
-  elseif unit.whit or (unit.reed and unit.grun and unit.bleu) or (unit.reed and unit.cyeann) or (unit.bleu and unit.yello) or (unit.grun and unit.purp) then
+  if unit.whit and unit.grun then
+    unit.color_override = {5, 3} ]]
+  if unit.whit or (unit.reed and unit.grun and unit.bleu) or (unit.reed and unit.cyeann) or (unit.bleu and unit.yello) or (unit.grun and unit.purp) then
     unit.color_override = {0, 3}
   elseif unit.purp or (unit.reed and unit.bleu) then
     unit.color_override = {3, 1}

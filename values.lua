@@ -1122,7 +1122,7 @@ tiles_list = {
     color = {2, 4},
     layer = 5,
     eye = {x=19, y=7, w=2, h=2},
-    tags = {"dev", "chars"},
+    tags = {"dev", "chars", "thefox"},
   },
   -- 86
   {
@@ -1131,7 +1131,7 @@ tiles_list = {
     type = "text",
     color = {2, 4},
     layer = 20,
-    tags = {"dev", "chars"},
+    tags = {"dev", "chars", "thefox"},
   },
   -- 87
   {
@@ -3123,7 +3123,7 @@ tiles_list = {
     texttype = "ditto",
     color = {0,3},
     layer = 20,
-    tags = {"\""},
+    tags = {"\'"},
     desc = "DITTO: Acts like the text above it."
   },
   -- 279
@@ -3613,7 +3613,7 @@ tiles_list = {
     layer = 5,
     rotate = true,
     eye = {x=17, y=8, w=2, h=3},
-    tags = {"devs", "chars", "va11 hall-a", "cynthia"},
+    tags = {"devs", "chars", "valhalla", "cynthia"},
     desc = "it time 2 mix drincc & chaeng life"
   },
   -- 330
@@ -3663,7 +3663,7 @@ tiles_list = {
     color = {6,1},
     layer = 4,
     rotate = true,
-    tags = {"gear", "time"},
+    tags = {"gear", "time", "cog"},
   },
   -- 335
   {
@@ -3672,7 +3672,7 @@ tiles_list = {
     type = "text",
     color = {6,1},
     layer = 20,
-    tags = {"gear", "time"},
+    tags = {"gear", "time", "cog"},
   },
   -- 336
   {
