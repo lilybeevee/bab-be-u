@@ -485,6 +485,7 @@ end
   end
   
   -- ctrl tab shortcuts
+  local old_selector_page = selector_page;
   selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..selector_page], sprites["ui/selector_tab_"..selector_page.."_h"])
   
   if key == "tab" and (key_down["lctrl"] or key_down["rctrl"]) and not (key_down["lshift"] or key_down["rshift"]) then
@@ -495,13 +496,16 @@ end
     selector_page = tonumber(key)
   end
   
-  current_tile_grid = tile_grid[selector_page]
-  selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..selector_page.."_a"], sprites["ui/selector_tab_"..selector_page.."_h"])
+  --only refresh tile grid if the page actually changed to preserve meta text levels
+  if (old_selector_page ~= selector_page) then
+    current_tile_grid = tile_grid[selector_page]
+    selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..selector_page.."_a"], sprites["ui/selector_tab_"..selector_page.."_h"])
+  end
   
   --create and display meta tiles 1 higher
   if selector_open and key == "lshift" then
-  --copy so we don't override original list
-  current_tile_grid = copyTable(current_tile_grid)
+    --copy so we don't override original list
+    current_tile_grid = copyTable(current_tile_grid)
     for i = 0,tile_grid_width*tile_grid_height do
       if current_tile_grid[i] ~= nil and current_tile_grid[i] > 0 then
         local new_tile_id = tiles_by_name["text_" .. tiles_list[current_tile_grid[i]].name];
@@ -516,6 +520,7 @@ end
   end
   
   if selector_open and key == "rshift" then
+    print("-1")
     current_tile_grid = tile_grid[selector_page];
   end
 end
@@ -883,10 +888,23 @@ function scene.draw(dt)
             local color = setColor(tile.color);
 
             if rainbowmode then love.graphics.setColor(hslToRgb((love.timer.getTime()/3+x/tile_grid_width+y/tile_grid_height)%1, .5, .5, 1)) end
-
-            if not string.match(tile.name, searchstr) then
-              love.graphics.setColor(0.2,0.2,0.2)
+            
+            local found_matching_tag = false
+            
+            if tile.tags ~= nil then
+                for _,tag in ipairs(tile.tags) do
+                    if string.match(tag, searchstr) then
+                        found_matching_tag = true
+                    end
+                end
             end
+            
+            if string.match(tile.name, searchstr) then
+                found_matching_tag = true
+            end
+            
+            if not found_matching_tag then love.graphics.setColor(0.2,0.2,0.2) end
+            
             love.graphics.draw(sprite, (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
             if (tile.meta ~= nil) then
               setColor({4, 1})

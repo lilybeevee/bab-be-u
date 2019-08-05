@@ -1495,11 +1495,15 @@ function sign(x)
   return 0
 end
 
-function sameFloat(a, b)
-  if hasRule(a,"ignor",b) or hasRule(b,"ignor",a) or hasRule(a,"ignor",outerlvl) or hasRule(b,"ignor",outerlvl) then
+function sameFloat(a, b, ignorefloat)
+  if hasRule(a,"ignor",b) or hasRule(b,"ignor",a) or hasRule(a,"ignor",outerlvl) or hasRule(b,"ignor",outerlvl) or hasRule(outerlvl,"ignor",a) or hasRule(outerlvl,"ignor",b) then
     return false
   else
-    return (countProperty(a, "flye") == countProperty(b, "flye")) or hasProperty(a, "tall") or hasProperty(b, "tall")
+    if ignorefloat then
+      return true
+    else
+      return (countProperty(a, "flye") == countProperty(b, "flye")) or hasProperty(a, "tall") or hasProperty(b, "tall")
+    end
   end
 end
 
