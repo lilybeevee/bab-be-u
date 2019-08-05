@@ -151,20 +151,20 @@ colour_for_palette[6][4] = "blacc";
 selector_grid_contents = {
   -- page 1: default
   {
-    0, "text_be", "text_&", "text_got", "text_nt", "text_every1", "text_no1", "text_text", "text_wurd", "text_sublvl", "text_mous", "text_wait", "text_sans", "text_u too", "text_u tres", "text_nxt", "lvl", "text_lvl",
-    "bab", "text_bab", "text_u", "kee", "text_kee", "text_for dor", 0, 0, 0, 0, "text_icy", "text_xwx", "text_liek", "text_...", "lin", "text_lin", "selctr", "text_selctr",
-    "keek", "text_keek", "text_walk", "dor", "text_dor", "text_ned kee", 0, "text_behin u", "text_qt", "text_moar", "text_goooo", "text_icyyyy", "text_haet", "text_mayb", "text_an", "text_babn't", "text_ben't", "text_loop",
-    "flog", "text_flog", "text_:)", "colld", "text_colld", "text_fridgd", "text_direction", "text_ouch", "text_slep", "text_protecc", "text_sidekik", "text_brite", "text_lit", "text_opaque", "text_za warudo", "text_rocn't", "text_waln't", "text_ditto",
-    "roc", "text_roc", "text_go away pls", "laav", "text_laav", "text_hotte","text_visit fren", "text_wfren", "text_arond", "text_frenles", "text_copkat", "text_go arnd", "text_mirr arnd", "text_meta", "text_frens", "text_pathz", "text_groop", "text_stay ther",
-    "wal", "text_wal", "text_no go", "l..uv", "text_l..uv", "gras", "text_gras", "text_creat", "text_look at", "text_spoop", "text_yeet", "text_turn cornr", "text_corekt", "text_timles", "text_the", "text_that", "text_that be", "text_clikt",
-    "watr", "text_watr", "text_no swim", "meem", "text_meem", "dayzy", "text_dayzy", "text_snacc", "text_seen by" , "text_stalk", "text_moov", "text_folo wal", "text_rong", "text_her", "text_thr", "text_rithere", "text_ignor", "this",
+    0, "text_be", "text_&", "text_got", "text_nt", "text_every1", "text_no1", "text_text", "text_wurd", "text_meta", "text_sublvl", "text_wait", "text_mous", "text_clikt", "text_nxt", "text_stay ther", "lvl", "text_lvl",
+    "bab", "text_bab", "text_u", "kee", "text_kee", "text_for dor", "text_goooo", "text_icy", "text_icyyyy", "text_behin u", "text_moar", "text_sans", "text_liek", "text_loop", "lin", "text_lin", "selctr", "text_selctr",
+    "keek", "text_keek", "text_walk", "dor", "text_dor", "text_ned kee", "text_frens", "text_pathz", "text_groop", "text_u too", "text_u tres", "text_xwx", "text_haet", "text_mayb", "text_an", "text_that", "text_ignor", "text_...",
+    "flog", "text_flog", "text_:)", "colld", "text_colld", "text_fridgd", "text_direction", "text_ouch", "text_slep", "text_protecc", "text_sidekik", "text_brite", "text_lit", "text_opaque", "text_torc", 0, 0, "text_ditto",
+    "roc", "text_roc", "text_go away pls", "laav", "text_laav", "text_hotte","text_visit fren", "text_wfren", "text_arond", "text_frenles", "text_copkat", "text_za warudo", "text_timles", 0, 0, 0, 0, "this",
+    "wal", "text_wal", "text_no go", "l..uv", "text_l..uv", "gras", "text_gras", "text_creat", "text_look at", "text_spoop", "text_yeet", "text_turn cornr", "text_corekt", "text_go arnd", "text_mirr arnd", 0, 0, 0,
+    "watr", "text_watr", "text_no swim", "meem", "text_meem", "dayzy", "text_dayzy", "text_snacc", "text_seen by" , "text_stalk", "text_moov", "text_folo wal", "text_rong", "text_her", "text_thr", "text_rithere", "text_the", 0,
     "skul", "text_skul", "text_:(", "til", "text_til", "hurcane", "text_hurcane", "gunne", "text_gunne", "wog", "text_wog", "text_zip", "text_shy", "text_munwalk", "text_sidestep", "text_diagstep", "text_hopovr", "text_knightstep",
-    "boux", "text_boux", "text_come pls", "os", "text_os", "bup", "text_bup", "han", "text_han", 0, 0, 0, 0, "hol", "text_hol", "text_poor toll", "text_blacc", "text_reed",
-    "bellt", "text_bellt", "text_go", "tre", "text_tre", "piler", "text_piler", "hatt", "text_hatt", 0, 0, "fenss", "text_fenss", "riff", "text_riff", "text_glued", "text_whit", "text_orang",
-    "boll", "text_boll", "text_:o", "frut", "text_frut", "kirb", "text_kirb", "bup", "text_bup", "dayzy", "text_dayzy", "pepis", "text_pepis", "metl", "text_metl", "text_torc", "text_colrful", "text_yello",
-    "clok", "text_clok", "text_try again", "text_no undo", "text_undo", "slippers", "text_slippers", "katany", "text_katany", "piler", "text_piler", "hedg", "text_hedg", "lie", "text_lie", "text_tranz", "text_rave", "text_grun",
-    "splittr", "text_splittr", "text_split", "steev", "text_steev", "boy", "text_boy", "scarr", "text_scarr", "firbolt", "text_firbolt", "icbolt", "text_icbolt", "lie/8", "text_lie/8", "text_gay", "text_stelth", "text_cyeann",
-    "chekr", "text_chekr", "text_diag", "text_ortho", "text_haet flor", "arro", "text_arro", "text_go my way", "text_spin", "text_no turn", "text_stubbn", "platfor", "text_platfor", "jail", "text_jail", 0, "text_paint", "text_bleu",
+    "boux", "text_boux", "text_come pls", "os", "text_os", "bup", "text_bup", "han", "text_han", "fenss", "text_fenss", 0, 0, "hol", "text_hol", "text_poor toll", "text_blacc", "text_reed",
+    "bellt", "text_bellt", "text_go", "tre", "text_tre", "piler", "text_piler", "hatt", "text_hatt", "hedg", "text_hedg", 0, 0, "riff", "text_riff", "text_glued", "text_whit", "text_orang",
+    "boll", "text_boll", "text_:o", "frut", "text_frut", "kirb", "text_kirb", "katany", "text_katany", "metl", "text_metl", 0, 0, 0, 0, 0, "text_colrful", "text_yello",
+    "clok", "text_clok", "text_try again", "text_no undo", "text_undo", "slippers", "text_slippers", "firbolt", "text_firbolt", "jail", "text_jail", 0, 0, 0, 0, "text_tranz", "text_rave", "text_grun",
+    "splittr", "text_splittr", "text_split", "steev", "text_steev", "boy", "text_boy", "icbolt", "text_icbolt", "platfor", "text_platfor", 0, 0, 0, 0, "text_gay", "text_stelth", "text_cyeann",
+    "chekr", "text_chekr", "text_diag", "text_ortho", "text_haet flor", "arro", "text_arro", "text_go my way", "text_spin", "text_no turn", "text_stubbn", 0, 0, 0, 0, "text_qt", "text_paint", "text_bleu",
     "clowd", "text_clowd", "text_flye", "text_tall", "text_haet skye", "ghost fren", "text_ghost fren", "robobot", "text_robobot", "sparkl", "text_sparkl", "spik", "text_spik", "spiky", "text_spiky", "bordr", "text_bordr", "text_purp",
     nil
   },
@@ -196,9 +196,9 @@ selector_grid_contents = {
     "kirb","text_kirb","frut","text_frut","jail","text_jail","sine","text_sine",0,0,0,0,0,0,0,0,0,0,
     "bup","text_bup","piler","text_piler","fenss","text_fenss","buble","text_buble","creb","text_creb","icecub","text_icecub",0,0,0,0,0,0,
     "boy","text_boy","dayzy","text_dayzy","platfor","text_platfor","pepis","text_pepis",0,0,0,0,0,0,"lila","text_lila","tot","text_tot",
-    "steev","text_steev","splittr","text_splittr","colld","text_colld",0,0,0,0,0,0,0,0,"pata","text_pata","o","text_o",
-    "han","text_han","clowd","text_clowd","bellt","text_bellt","arro","text_arro",0,0,0,0,0,0,"larry","text_larry","zsoob","text_zsoob",
-    "os","text_os","hurcane","text_hurcane","spik","text_spik","ger","text_ger",0,0,0,0,0,0,0,0,"jill","text_jill",
+    "steev","text_steev","splittr","text_splittr","colld","text_colld","arro","text_arro",0,0,0,0,0,0,"pata","text_pata","o","text_o",
+    "han","text_han","clowd","text_clowd","bellt","text_bellt","ger","text_ger",0,0,0,0,0,0,"larry","text_larry","zsoob","text_zsoob",
+    "os","text_os","hurcane","text_hurcane","spik","text_spik",0,0,0,0,0,0,0,0,0,0,"jill","text_jill",
     "firbolt","text_firbolt","lie","text_lie","spiky","text_spiky",0,0,0,0,0,0,0,0,0,0,0,0,
     "icbolt","text_icbolt","lie/8","text_lie/8","bordr","text_bordr",0,0,0,0,0,0,0,0,0,0,0,0,
   },
@@ -216,8 +216,8 @@ selector_grid_contents = {
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_orang",
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_yello",
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_gay","text_tranz","text_grun",
-    0,0,0,0,0,"text_try again","text_no undo","text_undo","text_za warudo","text_brite",0,0,0,0,0,"text_stelth","text_qt","text_cyeann",
-    0,0,0,0,0,"text_poor toll","text_go arnd","text_mirr arnd","text_glued","text_torc",0,0,0,0,0,"text_blacc","text_whit","text_bleu",
+    "text_babn't", "text_ben't",0,0,0,"text_try again","text_no undo","text_undo","text_za warudo","text_brite",0,0,0,0,0,"text_stelth","text_qt","text_cyeann",
+    "text_rocn't","text_waln't",0,0,0,"text_poor toll","text_go arnd","text_mirr arnd","text_glued","text_torc",0,0,0,0,0,"text_blacc","text_whit","text_bleu",
     "text_...","text_ditto",0,0,0,"text_her","text_thr","text_rithere","text_the","text_opaque",0,0,0,0,0,"text_colrful","text_rave","text_purp",
   },
 }
@@ -1058,6 +1058,7 @@ tiles_list = {
     type = "object",
     color = {0, 3},
     layer = 3,
+    rotate = true,
     tags = {"weapon"},
   },
   --80
@@ -1068,7 +1069,7 @@ tiles_list = {
     color = {0, 3},
     layer = 20,
     tags = {"weapon"},
-	desc = "GUNNE: Any object with GOT GUNNE will wield a GUNNE."
+    desc = "GUNNE: Any object with GOT GUNNE will wield a GUNNE."
   },
   --81
   {
@@ -3543,6 +3544,7 @@ tiles_list = {
     color = {6,2},
     layer = 4,
     tags = {"sign"},
+    desc = "the sine says \"shoutouts to simpleflips\"",
   },
   -- 322
   {
