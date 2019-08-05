@@ -164,7 +164,7 @@ selector_grid_contents = {
     "boll", "text_boll", "text_:o", "frut", "text_frut", "kirb", "text_kirb", "katany", "text_katany", "metl", "text_metl", 0, 0, 0, 0, 0, "text_colrful", "text_yello",
     "clok", "text_clok", "text_try again", "text_no undo", "text_undo", "slippers", "text_slippers", "firbolt", "text_firbolt", "jail", "text_jail", 0, 0, 0, 0, "text_tranz", "text_rave", "text_grun",
     "splittr", "text_splittr", "text_split", "steev", "text_steev", "boy", "text_boy", "icbolt", "text_icbolt", "platfor", "text_platfor", 0, 0, 0, 0, "text_gay", "text_stelth", "text_cyeann",
-    "chekr", "text_chekr", "text_diag", "text_ortho", "text_haet flor", "arro", "text_arro", "text_go my way", "text_spin", "text_no turn", "text_stubbn", 0, 0, 0, 0, "text_qt", "text_paint", "text_bleu",
+    "chekr", "text_chekr", "text_diag", "text_ortho", "text_haet flor", "arro", "text_arro", "text_go my way", "text_spin", "text_no turn", "text_stubbn", "text_rotatbl", 0, 0, 0, "text_qt", "text_paint", "text_bleu",
     "clowd", "text_clowd", "text_flye", "text_tall", "text_haet skye", "ghost fren", "text_ghost fren", "robobot", "text_robobot", "sparkl", "text_sparkl", "spik", "text_spik", "spiky", "text_spiky", "bordr", "text_bordr", "text_purp",
     nil
   },
@@ -213,7 +213,7 @@ selector_grid_contents = {
     "text_diag","text_ortho","text_go my way","text_direction",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     "text_turn cornr","text_folo wal","text_zip","text_hopovr",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     "text_munwalk","text_sidestep","text_diagstep","text_knightstep",0,0,0,0,0,0,0,0,0,0,0,0,0,"text_reed",
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_orang",
+    "text_rotatbl",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_orang",
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_yello",
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_gay","text_tranz","text_grun",
     "text_babn't", "text_ben't",0,0,0,"text_try again","text_no undo","text_undo","text_za warudo","text_brite",0,0,0,0,0,"text_stelth","text_qt","text_cyeann",
@@ -3708,6 +3708,16 @@ tiles_list = {
     color = {0,1},
     layer = 20,
     desc = "IGNOR: x IGNOR y causes x to not be able to interact with or move y in any way."
+  },
+  -- 339
+  {
+    name = "text_rotatbl",
+    sprite = "text_rotatbl",
+    type = "text",
+    texttype = "property",
+    color = {6,2},
+    layer = 20,
+    desc = "ROTATBL: Makes any object able to be rotated."
   },
 }
 
