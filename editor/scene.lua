@@ -662,7 +662,7 @@ function scene.update(dt)
                   existing.dir = brush.dir
                   painted = true
                   new_unit = existing
-                elseif (not control_active or ctrl_first_press) and (not is_mobile or mobile_firstpress) then
+                elseif (not ctrl_active or ctrl_first_press) and (not is_mobile or mobile_firstpress) then
                   new_unit = createUnit(brush.id, hx, hy, brush.dir)
                   scene.updateMap()
                   painted = true
