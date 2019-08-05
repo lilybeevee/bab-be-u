@@ -20,6 +20,7 @@ local saved_popup
 
 local searchstr = ""
 
+local nt = false
 -- for retaining information cross-scene
 editor_save = {}
 
@@ -34,6 +35,8 @@ function scene.load()
   saved_popup = {sprite = sprites["ui/level_saved"], y = 16, alpha = 0}
   key_down = {}
   buttons = {}
+  
+  nt = false
 
   settings_open = false
   selector_open = false
@@ -505,7 +508,7 @@ end
   end
   
   --create and display meta tiles 1 higher
-  if selector_open and key == "lshift" then
+  if selector_open and (key == "lshift" or key == "m" and (key_down["lctrl"] or key_down["rctrl"])) then
     --copy so we don't override original list
     current_tile_grid = copyTable(current_tile_grid)
     for i = 0,tile_grid_width*tile_grid_height do
@@ -514,16 +517,33 @@ end
         if (new_tile_id ~= nil) then
           current_tile_grid[i] = new_tile_id
         else
-          current_tile_grid[i] = current_tile_grid[i] + meta_offset;
+          current_tile_grid[i] = current_tile_grid[i] + meta_offset
           tiles_listPossiblyMeta(current_tile_grid[i])
         end
       end
     end
   end
   
-  if selector_open and key == "rshift" then
+  if selector_open and key == "rshift" or key == "r" and (key_down["lctrl"] or key_down["rctrl"]) then
     print("-1")
-    current_tile_grid = tile_grid[selector_page];
+    current_tile_grid = tile_grid[selector_page]
+  end
+  
+  if selector_open and key == "n" and (key_down["lctrl"] or key_down["rctrl"]) then
+    nt = not nt
+    current_tile_grid = copyTable(current_tile_grid)
+    if nt then
+        for i = 0,tile_grid_width*tile_grid_height do
+            if current_tile_grid[i] ~= nil and current_tile_grid[i] > 0 then
+                local new_tile_id = tiles_by_name[tiles_list[current_tile_grid[i]].name .. "n't"];
+                if (new_tile_id ~= nil) then
+                    current_tile_grid[i] = new_tile_id
+                end
+            end
+        end
+    else
+        current_tile_grid = tile_grid[selector_page]
+    end
   end
 end
 
@@ -871,6 +891,12 @@ function scene.draw(dt)
               end
               setColor(unit.color)
             end
+            if (unit.nt ~= nil) then
+              setColor({2, 2})
+              local ntsprite = sprites["nt"]
+              love.graphics.draw(ntprite, (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+              setColor(unit.color)
+            end
           end
         end
       end
@@ -917,6 +943,13 @@ function scene.draw(dt)
               end
               setColor(tile.color)
             end
+            if (tile.nt ~= nil) then
+              setColor({2, 2})
+              local ntsprite = sprites["nt"]
+              love.graphics.draw(ntprite, (tile.x + 0.5)*TILE_SIZE, (tile.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+              setColor(tile.color)
+            end
+            
 
             if brush.id == i then
               love.graphics.setColor(1, 0, 0)
@@ -964,8 +997,9 @@ function scene.draw(dt)
         love.graphics.setColor(getPaletteColor(0,3))
         if infomode then love.graphics.printf(last_hovered_tile[1] .. ', ' .. last_hovered_tile[2], 0, roomheight+24, roomwidth, "right") end
         if not is_mobile then
-            love.graphics.printf("LSHIFT to get meta text, RSHIFT to refresh", 0, roomheight, roomwidth, "right")
-            love.graphics.printf("CTRL + TAB or CTRL + NUMBER to change tabs", 0, roomheight+12, roomwidth, "right")
+            love.graphics.printf("CTRL + TAB or CTRL + NUMBER to change tabs", 0, roomheight, roomwidth, "right")
+            love.graphics.printf("CTLR + M to get meta text, CTRL + R to refresh", 0, roomheight+12, roomwidth, "right")
+            love.graphics.printf("CTLR + N to toggle n't text", 0, roomheight+24, roomwidth, "right")
             if #searchstr > 0 then
                 love.graphics.print("Searching for: " .. searchstr, 0, roomheight)
             else
