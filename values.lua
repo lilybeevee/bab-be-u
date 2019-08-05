@@ -204,11 +204,11 @@ selector_grid_contents = {
   },
   -- page 5: properties, verbs and conditions
   {
-    "text_be","text_&","text_got","text_creat","text_snacc","text_spoop","text_copkat","text_moov","text_yeet","text_liek","text_haet","text_stalk","text_look at","text_wfren","text_arond","text_sans","text_seen by","text_that",
-    "text_u","text_u too","text_u tres","text_walk",0,"text_:)","text_:(","text_no swim","text_ouch",0,"text_nxt","text_stay ther","text_sublvl","text_loop",0,"text_frenles","text_corekt","text_rong",
-    "text_go","text_goooo","text_icy","text_icyyyy",0,"text_ned kee","text_for dor","text_hotte","text_fridgd",0,0,0,0,0,0,"text_lit","text_timles","text_clikt",
-    "text_no go","text_go away pls","text_come pls","text_sidekik",0,"text_protecc","text_:o","text_xwx",0,0,0,0,0,0,0,"text_mayb","text_an","text_wait",
-    "text_visit fren","text_slep","text_shy","text_behin u",0,"text_moar","text_split","text_wurd","text_meta",0,0,0,0,0,0,0,0,"text_the",
+    "text_be","text_&","text_got","text_creat","text_snacc","text_spoop","text_copkat","text_moov","text_yeet","text_liek","text_haet","text_stalk","text_ignor","text_paint","text_look at",0,0,0,
+    "text_u","text_u too","text_u tres","text_walk",0,"text_:)","text_:(","text_no swim","text_ouch",0,"text_nxt","text_stay ther","text_sublvl",0,"text_wfren","text_arond","text_frenles","text_sans",
+    "text_go","text_goooo","text_icy","text_icyyyy",0,"text_ned kee","text_for dor","text_hotte","text_fridgd",0,"text_loop",0,0,0,"text_seen by","text_that","text_that be","text_wait",
+    "text_no go","text_go away pls","text_come pls","text_sidekik",0,"text_protecc","text_:o","text_xwx",0,0,0,0,0,0,"text_corekt","text_rong","text_timles","text_lit",
+    "text_visit fren","text_slep","text_shy","text_behin u",0,"text_moar","text_split","text_wurd","text_meta",0,0,0,0,0,0,"text_clikt","text_mayb","text_an",
     "text_flye","text_tall","text_haet skye","text_haet flor",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     "text_diag","text_ortho","text_go my way","text_direction",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     "text_turn cornr","text_folo wal","text_zip","text_hopovr",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -216,9 +216,9 @@ selector_grid_contents = {
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_orang",
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_yello",
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_gay","text_tranz","text_grun",
-    0,0,0,0,0,"text_try again","text_no undo","text_undo","text_za warudo",0,0,0,0,0,0,"text_stelth","text_qt","text_cyeann",
-    0,0,0,0,0,"text_poor toll","text_go arnd","text_mirr arnd","text_brite","text_torc",0,0,0,0,0,"text_blacc","text_whit","text_bleu",
-    0,0,0,0,0,"text_her","text_thr","text_rithere","text_opaque",0,0,0,0,0,0,"text_colrful","text_rave","text_purp",
+    0,0,0,0,0,"text_try again","text_no undo","text_undo","text_za warudo","text_brite",0,0,0,0,0,"text_stelth","text_qt","text_cyeann",
+    0,0,0,0,0,"text_poor toll","text_go arnd","text_mirr arnd","text_glued","text_torc",0,0,0,0,0,"text_blacc","text_whit","text_bleu",
+    "text_...","text_ditto",0,0,0,"text_her","text_thr","text_rithere","text_the","text_opaque",0,0,0,0,0,"text_colrful","text_rave","text_purp",
   },
 }
 tile_grid_width = 18
@@ -2518,6 +2518,7 @@ tiles_list = {
     type = "text",
     color = {0, 3},
     layer = 20,
+    tags = {"infloop"},
     desc = "INFLOOP: A special word that describes the infinite loop state."
   },
   -- 219
