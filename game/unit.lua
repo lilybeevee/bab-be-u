@@ -1550,7 +1550,7 @@ end
 function dropGotUnit(unit, rule)
   --TODO: CLEANUP: Blatantly copypasta'd from convertUnits.
   local obj_name = rule[3]
-  if (obj_name == "hatt" or obj_name == "gun" or obj_name == "katany" or unit == outerlvl) then
+  if (obj_name == "hatt" or obj_name == "gunne" or obj_name == "katany" or unit == outerlvl) then
     return
   end
   
@@ -1561,6 +1561,9 @@ function dropGotUnit(unit, rule)
   end
   if rule[3]:starts("text_") then
     istext = true
+  end
+  if rule[3]:starts("this") then
+    obj_name = "this"
   end
   local obj_id = tiles_by_name[obj_name]
   local obj_tile = tiles_list[obj_id]
@@ -1614,6 +1617,9 @@ function convertLevel()
       end
       if tile == nil and match[1][3] == "every1" and not hasRule(outerlvl, "be", "lvl") then
         tile = tiles_by_name["text_every1"]
+      end
+      if match[1][3]:starts("this" then
+        tile = tiles_by_name["this"]
       end
       if tile ~= nil then
         --placeholder - just make 'u r win' pop up for now
@@ -1775,7 +1781,7 @@ function convertUnits(pass)
       local tile = tiles_by_name[rule[3]]
       if rule[3] == "text" then
         tile = tiles_by_name["text_" .. rule[1]]
-      elseif string.sub(rule[3],1,4) == "this" then
+      elseif rule[3]:starts("this") then
         tile = tiles_by_name["this"]
       end
       if tile ~= nil then
