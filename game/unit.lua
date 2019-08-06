@@ -1775,6 +1775,8 @@ function convertUnits(pass)
       local tile = tiles_by_name[rule[3]]
       if rule[3] == "text" then
         tile = tiles_by_name["text_" .. rule[1]]
+      elseif string.sub(rule[3],1,4) == "this" then
+        tile = tiles_by_name["this"]
       end
       if tile ~= nil then
         if not unit.removed then
@@ -1932,6 +1934,11 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty)
   if ((unit.fullname == "no1") and not really_create_empty) then
     --print("not placing an empty:"..unit.name..","..unit.fullname..","..unit.textname)
     return nil
+  end
+  
+  if unit.fullname == "this" then
+    unit.name = unit.name .. unit.id
+    unit.textname = unit.textname .. unit.id
   end
 
   if unit.texttype == "object" and unit.textname ~= "every1" and unit.textname ~= "mous" and unit.textname ~= "no1" and unit.textname ~= "lvl" and unit.textname ~= "text" then
