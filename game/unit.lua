@@ -299,14 +299,12 @@ function moveBlock()
       end
       
       for i,righthere in ipairs(rightheres) do
-        
         if found then
           addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
           moveUnit(unit,righthere.x,righthere.y)
           table.insert(hasrighthered,unit)
           break
         end
-        
         if (unit.x == righthere.x) and (unit.y == righthere.y) and (i ~= #rightheres) then
           found = true
         end
@@ -314,7 +312,6 @@ function moveBlock()
       
       if not found then
         local firstrighthere = rightheres[1]
-        
         addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
         moveUnit(unit,firstrighthere.x,firstrighthere.y)
         table.insert(hasrighthered,unit)
@@ -624,6 +621,48 @@ function updateUnits(undoing, big_update)
     end
     
     to_destroy = handleDels(to_destroy);
+    
+    local isvs = matchesRule(nil,"vs","?")
+    for _,ruleparent in ipairs(isvs) do
+      local unit = ruleparent[2]
+      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, true)
+      for _,on in ipairs(stuff) do
+        if unit ~= on and hasRule(unit, "vs", on) and sameFloat(unit, on) then
+          local unitmoved = false
+          local onmoved = false
+          for _,undo in ipairs(undo_buffer[2]) do
+            if undo[1] == "update" and undo[2] == unit.id and ((undo[3] ~= unit.x) or (undo[4] ~= unit.y)) then
+              unitmoved = true
+            end
+            if undo[1] == "update" and undo[2] == on.id and ((undo[3] ~= on.x) or (undo[4] ~= on.y)) then
+              onmoved = true
+            end
+          end
+          if unitmoved then
+            if timecheck(on,"vs",unit) then
+              table.insert(to_destroy,on)
+              playSound("break")
+              addParticles("destroy", on.x, on.y, on.color)
+            else
+              table.insert(time_destroy,on.id)
+              addUndo({"time_destroy",on.id})
+            end
+          end
+          if onmoved then
+            if timecheck(unit,"vs",on) then
+              table.insert(to_destroy,unit)
+              playSound("break")
+              addParticles("destroy", unit.x, unit.y, unit.color)
+            else
+              table.insert(time_destroy,unit.id)
+              addUndo({"time_destroy",unit.id})
+            end
+          end
+        end
+      end
+    end
+    
+    to_destroy = handleDels(to_destroy)
     
     local issink = getUnitsWithEffect("no swim");
     for _,unit in ipairs(issink) do
