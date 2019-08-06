@@ -912,7 +912,7 @@ function scene.draw(dt)
     end
     if hasRule(unit,"got","gunne") then
       love.graphics.setColor(1, 1, 1)
-      love.graphics.draw(sprites["gunsmol"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      love.graphics.draw(sprites["gunnesmol"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
     end
     if hasRule(unit,"got","katany") then
       love.graphics.setColor(0.45, 0.45, 0.45)

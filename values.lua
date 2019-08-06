@@ -198,8 +198,8 @@ selector_grid_contents = {
     "boy","text_boy","dayzy","text_dayzy","platfor","text_platfor","pepis","text_pepis",0,0,0,0,0,0,"lila","text_lila","tot","text_tot",
     "steev","text_steev","splittr","text_splittr","colld","text_colld","arro","text_arro",0,0,0,0,0,0,"pata","text_pata","o","text_o",
     "han","text_han","clowd","text_clowd","bellt","text_bellt","ger","text_ger",0,0,0,0,0,0,"larry","text_larry","zsoob","text_zsoob",
-    "os","text_os","hurcane","text_hurcane","spik","text_spik",0,0,0,0,0,0,0,0,0,0,"jill","text_jill",
-    "firbolt","text_firbolt","lie","text_lie","spiky","text_spiky",0,0,0,0,0,0,0,0,0,0,0,0,
+    "os","text_os","hurcane","text_hurcane","spik","text_spik","hors","text_hors",0,0,0,0,0,0,0,0,"jill","text_jill",
+    "firbolt","text_firbolt","lie","text_lie","spiky","text_spiky","can","text_can",0,0,0,0,0,0,0,0,0,0,
     "icbolt","text_icbolt","lie/8","text_lie/8","bordr","text_bordr",0,0,0,0,0,0,0,0,0,0,0,0,
   },
   -- page 5: properties, verbs and conditions
@@ -1057,7 +1057,7 @@ tiles_list = {
   --79
   {
     name = "gunne",
-    sprite = "gun",
+    sprite = "gunne",
     type = "object",
     color = {0, 3},
     layer = 3,
@@ -1067,7 +1067,7 @@ tiles_list = {
   --80
   {
     name = "text_gunne",
-    sprite = "text_gun",
+    sprite = "text_gunne",
     type = "text",
     color = {0, 3},
     layer = 20,
@@ -3752,6 +3752,43 @@ tiles_list = {
     color = {2,1},
     layer = 20,
     desc = "VS: The two objects enter a 1 on 1 battle: whoever steps on the other wins.",
+  },
+  --- 334
+  {
+    name = "hors",
+    sprite = "hors",
+    type = "object",
+    color = {6,1},
+    layer = 5,
+    tags = {"chess", "knight"},
+  },
+  -- 335
+  {
+    name = "text_hors",
+    sprite = "text_hors",
+    type = "text",
+    color = {6,1},
+    layer = 20,
+    tags = {"chess", "knight"},
+  },
+  --- 334
+  {
+    name = "can",
+    sprite = "can",
+    type = "object",
+    color = {2,1},
+    layer = 4,
+    rotate = true,
+    tags = {"valhalla"},
+  },
+  -- 335
+  {
+    name = "text_can",
+    sprite = "text_can",
+    type = "text",
+    color = {2,1},
+    layer = 20,
+    tags = {"valhalla"},
   },
 }
 
