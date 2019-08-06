@@ -379,14 +379,14 @@ mobile_stackmode = "none"
 function scene.keyPressed(key)
   if selector_open then
     if key == "escape" or (key == "a" and key_down["lctrl"]) or (key == "backspace" and key_down["lctrl"]) then
-        if #searchstr == 0 then selector_open = false end
-        searchstr = ""
+      if #searchstr == 0 then selector_open = false end
+      searchstr = ""
     elseif key == "backspace" or  (key == "z" and key_down["lctrl"]) then
-        searchstr = string.sub(searchstr, 1, #searchstr-1)
+      searchstr = string.sub(searchstr, 1, #searchstr-1)
     elseif (#key == 1 or key == "space") and not (key_down["lctrl"] or key_down["rctrl"] or key_down["f3"]) then
-        if #searchstr > 15 then return end
-        if key == "space" then key = " " end
-        searchstr = searchstr..key
+      if #searchstr > 15 then return end
+      if key == "space" then key = " " end
+      searchstr = searchstr..key
     end
   end
 
@@ -454,29 +454,29 @@ end
 
   if not selector_open then
     if key == "s" and (key_down["lctrl"] or key_down["rctrl"]) then
-        scene.saveLevel()
+      scene.saveLevel()
     elseif key == "l" and (key_down["lctrl"] or key_down["rctrl"]) then
-        scene.loadLevel()
+      scene.loadLevel()
     elseif key == "o" and (key_down["lctrl"] or key_down["rctrl"]) then
-        scene.openSettings()
+      scene.openSettings()
     elseif key == "r" and (key_down["lctrl"] or key_down["rctrl"]) then
-        gooi.confirm({
+      gooi.confirm({
         text = "Clear the level?",
         okText = "Yes",
         cancelText = "Cancel",
         ok = function()
-        maps = {{2, ""}}
-        clear()
-        loadMap()
-        loaded_level = false
-      end
-    })
+          maps = {{2, ""}}
+          clear()
+          loadMap()
+          loaded_level = false
+        end
+      })
     elseif key == "return" and settings_open then
-        scene.saveSettings()
+      scene.saveSettings()
     end
   end
 
-  if key == "tab" and not key_down["lctrl"] or key_down["rctrl"] then
+  if key == "tab" and not (key_down["lctrl"] or key_down["rctrl"]) then
     selector_open = not selector_open
     updateSelectorTabs()
     if selector_open then
@@ -497,13 +497,14 @@ end
     selector_page = selector_page % #tile_grid + 1
   elseif key == "tab" and (key_down["lctrl"] or key_down["rctrl"]) and (key_down["lshift"] or key_down["rshift"]) then
     selector_page = (selector_page - 2) % #tile_grid + 1
-  elseif selector_open and tonumber(key) and tonumber(key) <= #tile_grid and tonumber(key) > 0 and key_down["lctrl"] or key_down["rctrl"] then
+  elseif selector_open and tonumber(key) and tonumber(key) <= #tile_grid and tonumber(key) > 0 and (key_down["lctrl"] or key_down["rctrl"]) then
     selector_page = tonumber(key)
   end
   
   --only refresh tile grid if the page actually changed to preserve meta text levels
   if (old_selector_page ~= selector_page) then
     current_tile_grid = tile_grid[selector_page]
+    print(dump(selector_tab_buttons_list))
     selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..selector_page.."_a"], sprites["ui/selector_tab_"..selector_page.."_h"])
   end
   
