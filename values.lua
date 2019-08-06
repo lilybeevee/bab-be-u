@@ -204,7 +204,7 @@ selector_grid_contents = {
   },
   -- page 5: properties, verbs and conditions
   {
-    "text_be","text_&","text_got","text_creat","text_snacc","text_spoop","text_copkat","text_moov","text_yeet","text_liek","text_haet","text_stalk","text_ignor","text_paint","text_look at",0,0,0,
+    "text_be","text_&","text_got","text_creat","text_snacc","text_spoop","text_copkat","text_moov","text_yeet","text_liek","text_haet","text_stalk","text_ignor","text_paint","text_vs","text_look at",0,0,
     "text_u","text_u too","text_u tres","text_walk",0,"text_:)","text_:(","text_no swim","text_ouch",0,"text_nxt","text_stay ther","text_sublvl",0,"text_wfren","text_arond","text_frenles","text_sans",
     "text_go","text_goooo","text_icy","text_icyyyy",0,"text_ned kee","text_for dor","text_hotte","text_fridgd",0,"text_loop",0,0,0,"text_seen by","text_that","text_that be","text_wait",
     "text_no go","text_go away pls","text_come pls","text_sidekik",0,"text_protecc","text_:o","text_xwx",0,0,0,0,0,0,"text_corekt","text_rong","text_timles","text_lit",
