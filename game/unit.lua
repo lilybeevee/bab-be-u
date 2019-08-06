@@ -1618,7 +1618,7 @@ function convertLevel()
       if tile == nil and match[1][3] == "every1" and not hasRule(outerlvl, "be", "lvl") then
         tile = tiles_by_name["text_every1"]
       end
-      if match[1][3]:starts("this" then
+      if match[1][3]:starts("this") then
         tile = tiles_by_name["this"]
       end
       if tile ~= nil then
