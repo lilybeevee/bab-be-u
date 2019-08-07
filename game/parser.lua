@@ -271,6 +271,7 @@ function parse(words, parser, state_)
   state.current_matches = copyTable(state.current_matches or {})
   state.matches = copyTable(state.matches or {})
   state.all_words = copyTable(state.all_words or {})
+  state.extra_words = copyTable(state.extra_words or {})
   state.option = state.option or 1
   state.index = state.index or 1
   state.word_index = state.word_index or 1
@@ -280,6 +281,7 @@ function parse(words, parser, state_)
   local word = words[state.word_index] --we looking at one word at a time
 
   while word and word.type == "ellipses" do
+    table.insert(state.extra_words, word)
     state.word_index = state.word_index + 1
     word = words[state.word_index]
   end
@@ -296,6 +298,7 @@ function parse(words, parser, state_)
         current_matches = {},
         matches = state.matches,
         all_words = state.all_words,
+        extra_words = state.extra_words,
         index = 1,
         word_index = state.word_index,
         is_repeat = true
@@ -328,6 +331,7 @@ function parse(words, parser, state_)
         current_matches = new_matches,
         matches = state.parent.matches,
         all_words = state.all_words,
+        extra_words = state.extra_words,
         option = state.parent.option,
         index = state.parent.index + 1,
         word_index = state.word_index,
@@ -345,6 +349,7 @@ function parse(words, parser, state_)
       current_matches = state.current_matches,
       matches = state.matches,
       all_words = state.all_words,
+      extra_words = state.extra_words,
       option = state.option,
       index = state.index + 1,
       word_index = state.word_index
@@ -411,6 +416,7 @@ function parse(words, parser, state_)
             current_matches = {},
             matches = {},
             all_words = state.all_words,
+            extra_words = state.extra_words,
             option = i,
             index = 1,
             word_index = state.word_index

@@ -441,6 +441,7 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
 
   --print("just after letters:", dump(sentence))
   local valid, state = parse(sentence, parser)
+  --print(dump(state))
 
   if not valid then
     if #sentence > 1 then
@@ -493,15 +494,19 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
       return name, units
     end
 
+    --print(dump(state.extra_words))
+    
     for _,matches in ipairs(state.matches) do
       for _,targets in ipairs(matches.target) do
         local name, units = simplify(targets, true)
+        for _,extra_word in ipairs(state.extra_words) do
+          table.insert(units, extra_word.unit);
+        end
         table.insert(new_rules[1], {name, units})
       end
       if matches.cond then
         for _,conds in ipairs(matches.cond) do
           local name, units = simplify(conds)
-
           local params = {}
           if conds.target then
             for _,targets in ipairs(conds.target) do
