@@ -1082,23 +1082,24 @@ function updateUnitColours()
         table.insert(to_update[unit], colour)
       end
     end
-    
-    local painting = matchesRule(nil, "paint", "?")
-    for _,ruleparent in ipairs(painting) do
-        local unit = ruleparent[2]
-        local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, true)
-        for _,on in ipairs(stuff) do
-            if unit ~= on and hasRule(unit, "paint", on) and sameFloat(unit, on) then
-                if timecheck(unit,"paint",on) and timecheck(on) then
-                    if (on[colour] ~= true) then
-                        if to_update[on] == nil then
-                            to_update[on] = {}
-                        end
-                        table.insert(to_update[on], colour)
-                    end
-                end
+  end
+  
+  local painting = matchesRule(nil, "paint", "?")
+  for _,ruleparent in ipairs(painting) do
+    local unit = ruleparent[2]
+    local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, true)
+    for _,on in ipairs(stuff) do
+      if unit ~= on and hasRule(unit, "paint", on) and sameFloat(unit, on) then
+        if timecheck(unit,"paint",on) and timecheck(on) then
+          local colour = colour_for_palette[unit.color[1]][unit.color[2]];
+          if (colour ~= nil and on[colour] ~= true) then
+            if to_update[on] == nil then
+              to_update[on] = {}
             end
+            table.insert(to_update[on], colour)
+          end
         end
+      end
     end
   end
   
