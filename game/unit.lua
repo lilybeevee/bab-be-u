@@ -2313,8 +2313,10 @@ function doWin()
 		music_fading = true
     win_size = 0
 		playSound("win")
-		love.filesystem.createDirectory("levels")
-    love.filesystem.write("levels/" .. level_name .. ".replay", replay_string)
-		print("Replay successfully saved to ".."levels/" .. level_name .. ".replay")
+    if (not replay_playback) then
+      love.filesystem.createDirectory("levels")
+      love.filesystem.write("levels/" .. level_name .. ".replay", replay_string)
+      print("Replay successfully saved to ".."levels/" .. level_name .. ".replay")
+    end
 	end
 end
