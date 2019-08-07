@@ -70,7 +70,7 @@ end
 function getTextOnTile(x, y)
   local result = getUnitsOnTile(x, y, "text");
   --remove ben't wurd text from result
-  if rules_with["wurd"] ~= nil then
+  if rules_with ~= nil and rules_with["wurd"] ~= nil then
     for i = #result,1,-1 do
       if hasRule(result[i],"ben't","wurd") then
         table.remove(result, i)
@@ -410,22 +410,22 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
 
       local len = word_index-orig_index
       for _,s in ipairs(lsentences.middle) do
-        local words = fillTextDetails(s, pos_x, pos_y, first[2], len)
+        local words = fillTextDetails(s, sentence, orig_index, word_index)
         parseSentence(words, params_, dir)
       end
       for _,s in ipairs(lsentences.start) do
-        local words = fillTextDetails(s, pos_x, pos_y, first[2], len)
+        local words = fillTextDetails(s, sentence, orig_index, word_index)
         local before_copy = copyTable(before_sentence) --copying is required because addTables puts results in the first table
         addTables(before_copy, words)
         parseSentence(before_copy, params_, dir)
       end
       for _,s in ipairs(lsentences.endd) do
-        local words = fillTextDetails(s, pos_x, pos_y, first[2], len)
+        local words = fillTextDetails(s, sentence, orig_index, word_index)
         addTables(words, after_sentence)
         parseSentence(words, params_, dir)
       end
       for _,s in ipairs(lsentences.both) do
-        local words = fillTextDetails(s, pos_x, pos_y, first[2], len)
+        local words = fillTextDetails(s, sentence, orig_index, word_index)
         local before_copy = copyTable(before_sentence)
         addTables(words, after_sentence)
         addTables(before_copy, words)
@@ -439,7 +439,9 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
     end
   end
 
+  --print("just after letters:", dump(sentence))
   local valid, state = parse(sentence, parser)
+  --print(dump(state))
 
   if not valid then
     if #sentence > 1 then
@@ -460,6 +462,7 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
     for i = 1, state.word_index-1 do
       local unit = sentence[i].unit
       --print(sentence[i].name)
+      --print(dump(sentence[i]))
       been_first[first[2]][unit.x + unit.y * mapwidth] = true
     end
 
@@ -491,15 +494,19 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
       return name, units
     end
 
+    --print(dump(state.extra_words))
+    
     for _,matches in ipairs(state.matches) do
       for _,targets in ipairs(matches.target) do
         local name, units = simplify(targets, true)
+        for _,extra_word in ipairs(state.extra_words) do
+          table.insert(units, extra_word.unit);
+        end
         table.insert(new_rules[1], {name, units})
       end
       if matches.cond then
         for _,conds in ipairs(matches.cond) do
           local name, units = simplify(conds)
-
           local params = {}
           if conds.target then
             for _,targets in ipairs(conds.target) do
@@ -592,6 +599,12 @@ function addRule(full_rule)
   if verb_not > 0 then
     verb = rules[2]:sub(1, -4)
   end
+  
+  --Special THIS check - if we write this be this or this ben't this, it should work like the tautology/paradox it does for other objects, even though they are TECHNICALLY different thises.
+  if subject:starts("this") and object:starts("this") and subject_not == 0 and object_not == 0 and subject ~= object then
+    addRule({{rules[1], rules[2], rules[1], rules[4]}, units, dir})
+    return
+  end
 
   if subject == "every1" then
     if subject_not % 2 == 1 then
@@ -621,7 +634,7 @@ function addRule(full_rule)
       end
     end
   elseif object_not % 2 == 1 then
-    if tiles_by_name[object] or object == "text" or object == "mous" then
+    if tiles_by_name[object] or object:starts("this") or object == "text" or object == "mous" then
       local new_objects = {}
       --skul be skul turns into skul ben't skuln't - but this needs to apply even to special objects (specific text, txt, no1, lvl, mous).
       if verb == "be" and verb_not % 2 == 1 then

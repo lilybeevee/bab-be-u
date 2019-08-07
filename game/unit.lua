@@ -1143,11 +1143,9 @@ end
 
 function updateUnitColourOverride(unit)
   unit.color_override = nil
-  --[[if unit.whit and unit.reed then
-	unit.color_override = {4, 2}
-  if unit.whit and unit.grun then
-    unit.color_override = {5, 3} ]]
-  if unit.whit or (unit.reed and unit.grun and unit.bleu) or (unit.reed and unit.cyeann) or (unit.bleu and unit.yello) or (unit.grun and unit.purp) then
+  if unit.pinc or (unit.reed and unit.whit) then
+    unit.color_override = {4, 1}
+  elseif unit.whit or (unit.reed and unit.grun and unit.bleu) or (unit.reed and unit.cyeann) or (unit.bleu and unit.yello) or (unit.grun and unit.purp) then
     unit.color_override = {0, 3}
   elseif unit.purp or (unit.reed and unit.bleu) then
     unit.color_override = {3, 1}
@@ -1790,7 +1788,9 @@ function convertUnits(pass)
         local tile = tiles_by_name[v]
         if v == "text" then
           tile = tiles_by_name["text_" .. rule[1]]
-        end
+        else
+        
+        end 
         if tile ~= nil then
           if not unit.removed then
             table.insert(converted_units, unit)
@@ -1821,7 +1821,7 @@ function convertUnits(pass)
       local tile = tiles_by_name[rule[3]]
       if rule[3] == "text" then
         tile = tiles_by_name["text_" .. rule[1]]
-      elseif rule[3]:starts("this") then
+      elseif rule[3]:starts("this") and not rule[3]:ends("n't") then
         tile = tiles_by_name["this"]
       end
       if tile ~= nil then
@@ -1982,16 +1982,18 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty)
     return nil
   end
   
-  if unit.fullname == "this" then
-    unit.name = unit.name .. unit.id
-    unit.textname = unit.textname .. unit.id
-  end
-
+  --do this before the 'this' change to textname so that we only get 'this' in referenced_objects
   if unit.texttype == "object" and unit.textname ~= "every1" and unit.textname ~= "mous" and unit.textname ~= "no1" and unit.textname ~= "lvl" and unit.textname ~= "text" then
     if not unit.textname:ends("n't") and not unit.textname:starts("text_") and not table.has_value(referenced_objects, unit.textname) then
       table.insert(referenced_objects, unit.textname)
     end
   end
+  
+  if unit.fullname == "this" then
+    unit.name = unit.name .. unit.id
+    unit.textname = unit.textname .. unit.id
+  end
+  
   if unit.type == "text" then
     if not table.has_value(referenced_text, unit.fullname) then
       table.insert(referenced_text, unit.fullname)
@@ -2313,8 +2315,10 @@ function doWin()
 		music_fading = true
     win_size = 0
 		playSound("win")
-		love.filesystem.createDirectory("levels")
-    love.filesystem.write("levels/" .. level_name .. ".replay", replay_string)
-		print("Replay successfully saved to ".."levels/" .. level_name .. ".replay")
+    if (not replay_playback) then
+      love.filesystem.createDirectory("levels")
+      love.filesystem.write("levels/" .. level_name .. ".replay", replay_string)
+      print("Replay successfully saved to ".."levels/" .. level_name .. ".replay")
+    end
 	end
 end

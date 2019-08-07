@@ -698,7 +698,7 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
         end
       end
     elseif condtype == "wait" then
-      result = last_move ~= nil and last_move[1] == 0 and last_move[2] == 0
+      result = last_move ~= nil and last_move[1] == 0 and last_move[2] == 0 and last_click_x == nil and last_click_y == nil
     elseif condtype == "mayb" then
       --add a dummy action so that undoing happens
       if (#undo_buffer > 0 and #undo_buffer[1] == 0) then
@@ -761,7 +761,7 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
         --print(last_click_x, last_click_y)
     elseif condtype == "reed" or condtype == "bleu" or condtype == "blacc"
     or condtype == "grun" or condtype == "yello" or condtype == "orang"
-    or condtype == "purp" or condtype == "whit" or condtype == "cyeann" then
+    or condtype == "purp" or condtype == "whit" or condtype == "cyeann" or condtype == "pinc" then
       local colour = unit.color_override or unit.color;
       if (unit.fullname == "no1" or unit.stelth) then
         result = false
@@ -1145,10 +1145,13 @@ end
 
 function lerp(a,b,t) return (1-t)*a + t*b end
 
-function fullDump(o, r)
+function fullDump(o, r, fulldump)
   if type(o) == 'table' and (not r or r > 0) then
     local s = '{'
     local first = true
+    if not fulldump and o["new"] ~= nil then --abridged print for table
+      o = {fullname = o.textname, id = o.id, x = o.x, y = o.y, dir = o.dir};
+    end
     for k,v in pairs(o) do
       if not first then
         s = s .. ', '
@@ -1172,21 +1175,30 @@ function fullDump(o, r)
   end
 end
 
-function dump(o)
+function dump(o, fulldump)
   if type(o) == 'table' then
     local s = '{'
     local cn = 1
     if #o ~= 0 then
       for _,v in ipairs(o) do
         if cn > 1 then s = s .. ',' end
-        s = s .. dump(v)
+        s = s .. dump(v, fulldump)
         cn = cn + 1
       end
     else
-      for k,v in pairs(o) do
-        if cn > 1 then s = s .. ',' end
-        s = s .. tostring(k) .. ' = ' .. dump(v)
-        cn = cn + 1
+      if not fulldump and o["new"] ~= nil then --abridged print for table
+        local tbl = {fullname = o.textname, id = o.id, x = o.x, y = o.y, dir = o.dir};
+        for k,v in pairs(tbl) do
+           if cn > 1 then s = s .. ',' end
+          s = s .. tostring(k) .. ' = ' .. dump(v, fulldump)
+          cn = cn + 1
+        end
+      else
+        for k,v in pairs(o) do
+          if cn > 1 then s = s .. ',' end
+          s = s .. tostring(k) .. ' = ' .. dump(v, fulldump)
+          cn = cn + 1
+        end
       end
     end
     return s .. '}'
@@ -1588,7 +1600,7 @@ function getAbsolutelyEverythingExcept(except)
   end
   
   for i,ref in ipairs(referenced_objects) do
-    if ref ~= except then
+    if ref ~= except and (ref ~= "this" or not except:starts("this")) then
       table.insert(result, ref)
     end
   end
@@ -1842,30 +1854,27 @@ end
   return ret
 end]]
 
-function fillTextDetails(sentence, x, y, dir, len)
+function fillTextDetails(sentence, old_sentence, orig_index, word_index)
+  --print(#old_sentence, orig_index, word_index)
   --changes a sentence of pure text into a valid sentence.
+  --print("what we started with:",dump(sentence))
   local ret = {}
   local w = 0
   for _,word in ipairs(sentence) do
-    print("sentence: "..fullDump(sentence))
-    local u = createFakeUnit(word, x+ dirs8[dir][1]*w, y+ dirs8[dir][2]*w)
-    table.insert(ret,{unit=u})
+    --print("sentence: "..fullDump(sentence))
+    --print(text_list[word], old_sentence)
+    local newname = text_list[word].name;
+    if newname:starts("text_") then
+      newname = newname:sub(6);
+    end
+    table.insert(ret,{type = text_list[word].texttype or "object", name = newname, unit=old_sentence[orig_index].unit})
     w = w+1
   end
-  for i=w,len do --extra ellipses for the purposes of making sure the parser gets it properly.
-    local u = createFakeUnit("...", x+ dirs8[dir][1]*i, y+ dirs8[dir][2]*i)
-    table.insert(ret,{unit=u})
+  for i=orig_index+1,(word_index-1) do --extra ellipses for the purposes of making sure the parser gets it properly.
+    --print("aa:",old_sentence[i])
+    table.insert(ret,{type = text_list["..."].texttype or "object", name = "...", unit=old_sentence[i].unit})
   end
   return ret
-end
-
-function createFakeUnit(name, x, y)
-  --Creates a fake unit, from the names used in the text_list. Used for letters.
-  local unit = text_list[name]
-  unit.x = x
-  unit.y = y
-  if unit.type == "text" then unit.name = string.sub(unit.name,6) end --no letters support, beware when using
-  return unit
 end
 
 function addTables(source, to_add)

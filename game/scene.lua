@@ -544,8 +544,8 @@ function scene.draw(dt)
     lvl_color = {hslToRgb((love.timer.getTime()/3+#undo_buffer/45)%1, 0.1, 0.1, .9), 1}
   elseif hasProperty(outerlvl,"colrful") or rainbowmode then
     lvl_color = {hslToRgb(love.timer.getTime()/6%1, .1, .1, .9), 1}
-  elseif (hasProperty(outerlvl,"reed") and hasProperty(outerlvl,"whit")) then
-    lvl_color = {getPaletteColor(4, 2)}
+  elseif (hasProperty(outerlvl,"reed") and hasProperty(outerlvl,"whit")) or hasProperty(outerlvl,"pinc") then
+    lvl_color = {getPaletteColor(4, 1)}
   elseif (hasProperty(outerlvl,"grun") and hasProperty(outerlvl,"whit")) then
     lvl_color = {getPaletteColor(5, 3)}
   elseif hasProperty(outerlvl,"whit") then
@@ -1227,8 +1227,8 @@ function scene.draw(dt)
         newcolor[2] = newcolor[2]*255
         newcolor[3] = newcolor[3]*255
         color = newcolor
-	  elseif (hasProperty(cursor,"reed") and hasProperty(cursor,"whit")) then
-	    color = {4, 2}
+	  elseif (hasProperty(cursor,"reed") and hasProperty(cursor,"whit")) or hasProperty(cursor,"pinc") then
+	    color = {4, 1}
 	  elseif (hasProperty(cursor,"grun") and hasProperty(cursor,"whit")) then
 	    color = {5, 3}
 	  elseif (hasProperty(cursor,"bleu") and hasProperty(cursor,"reed")) or hasProperty(cursor,"purp") then
@@ -1582,6 +1582,7 @@ function scene.mouseReleased(x, y, button)
         last_click_x, last_click_y = screenToGameTile(love.mouse.getX(), love.mouse.getY())
         doOneMove(0,0,nil)
         last_click_x, last_click_y = nil, nil
+        playSound("clicc")
     end
     -- Replay buttons
     if replay_playback then

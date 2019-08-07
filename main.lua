@@ -310,6 +310,7 @@ function love.load()
   registerSound("timestop", 1)
   registerSound("time resume", 1)
   registerSound("bup", 0.5)
+  registerSound("clicc", 1.0)
   print(colr.green("✓ sounds registered"))
 
   ui.init()
