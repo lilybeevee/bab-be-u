@@ -592,6 +592,12 @@ function addRule(full_rule)
   if verb_not > 0 then
     verb = rules[2]:sub(1, -4)
   end
+  
+  --Special THIS check - if we write this be this or this ben't this, it should work like the tautology/paradox it does for other objects, even though they are TECHNICALLY different thises.
+  if subject:starts("this") and object:starts("this") and subject_not == 0 and object_not == 0 and subject ~= object then
+    addRule({{rules[1], rules[2], rules[1], rules[4]}, units, dir})
+    return
+  end
 
   if subject == "every1" then
     if subject_not % 2 == 1 then
@@ -621,7 +627,7 @@ function addRule(full_rule)
       end
     end
   elseif object_not % 2 == 1 then
-    if tiles_by_name[object] or object == "text" or object == "mous" then
+    if tiles_by_name[object] or object:starts("this") or object == "text" or object == "mous" then
       local new_objects = {}
       --skul be skul turns into skul ben't skuln't - but this needs to apply even to special objects (specific text, txt, no1, lvl, mous).
       if verb == "be" and verb_not % 2 == 1 then

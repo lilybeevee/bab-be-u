@@ -1588,7 +1588,7 @@ function getAbsolutelyEverythingExcept(except)
   end
   
   for i,ref in ipairs(referenced_objects) do
-    if ref ~= except then
+    if ref ~= except and (ref ~= "this" or not except:starts("this")) then
       table.insert(result, ref)
     end
   end
