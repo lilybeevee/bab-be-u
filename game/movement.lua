@@ -1331,8 +1331,9 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
       local root2 = math.sqrt(0.5)
       local diagx = round(root2*dx-root2*dy)
       local diagy = round(root2*dx+root2*dy)
-      dx = dx + diagx
-      dy = dy + diagy
+      local knights = countProperty(unit,"knightstep")
+      dx = knights*(dx + diagx)
+      dy = knights*(dy + diagy)
     end
     if hasProperty(unit, "hopovr") then
       local hops = countProperty(unit, "hopovr")
