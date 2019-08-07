@@ -1145,10 +1145,13 @@ end
 
 function lerp(a,b,t) return (1-t)*a + t*b end
 
-function fullDump(o, r)
+function fullDump(o, r, fulldump)
   if type(o) == 'table' and (not r or r > 0) then
     local s = '{'
     local first = true
+    if not fulldump and o["new"] ~= nil then --abridged print for table
+      o = {fullname = o.textname, id = o.id, x = o.x, y = o.y, dir = o.dir};
+    end
     for k,v in pairs(o) do
       if not first then
         s = s .. ', '
