@@ -102,6 +102,7 @@ cyeann = {1, 4},
 bleu = {1, 3},
 purp = {3, 1},
 whit = {0, 3},
+pinc = {4, 1},
 }
 
 colour_for_palette = {}
@@ -124,15 +125,15 @@ colour_for_palette[2][2] = "reed";
 colour_for_palette[2][3] = "orang";
 colour_for_palette[2][4] = "yello";
 colour_for_palette[3] = {};
-colour_for_palette[3][0] = "purp";
+colour_for_palette[3][0] = "pinc";
 colour_for_palette[3][1] = "purp";
 colour_for_palette[3][2] = "purp";
 colour_for_palette[3][3] = "purp";
 colour_for_palette[3][4] = nil;
 colour_for_palette[4] = {};
-colour_for_palette[4][0] = "purp";
-colour_for_palette[4][1] = nil;
-colour_for_palette[4][2] = nil;
+colour_for_palette[4][0] = "pinc";
+colour_for_palette[4][1] = "pinc";
+colour_for_palette[4][2] = "pinc";
 colour_for_palette[4][3] = nil;
 colour_for_palette[4][4] = nil;
 colour_for_palette[5] = {};
@@ -161,7 +162,7 @@ selector_grid_contents = {
     "skul", "text_skul", "text_:(", "til", "text_til", "hurcane", "text_hurcane", "gunne", "text_gunne", "wog", "text_wog", "text_zip", "text_shy", "text_munwalk", "text_sidestep", "text_diagstep", "text_hopovr", "text_knightstep",
     "boux", "text_boux", "text_come pls", "os", "text_os", "bup", "text_bup", "han", "text_han", "fenss", "text_fenss", 0, 0, "hol", "text_hol", "text_poor toll", "text_blacc", "text_reed",
     "bellt", "text_bellt", "text_go", "tre", "text_tre", "piler", "text_piler", "hatt", "text_hatt", "hedg", "text_hedg", 0, 0, "riff", "text_riff", "text_glued", "text_whit", "text_orang",
-    "boll", "text_boll", "text_:o", "frut", "text_frut", "kirb", "text_kirb", "katany", "text_katany", "metl", "text_metl", 0, 0, 0, 0, 0, "text_colrful", "text_yello",
+    "boll", "text_boll", "text_:o", "frut", "text_frut", "kirb", "text_kirb", "katany", "text_katany", "metl", "text_metl", 0, 0, 0, 0, "text_pinc", "text_colrful", "text_yello",
     "clok", "text_clok", "text_try again", "text_no undo", "text_undo", "slippers", "text_slippers", "firbolt", "text_firbolt", "jail", "text_jail", 0, 0, 0, 0, "text_tranz", "text_rave", "text_grun",
     "splittr", "text_splittr", "text_split", "steev", "text_steev", "boy", "text_boy", "icbolt", "text_icbolt", "platfor", "text_platfor", 0, 0, 0, 0, "text_gay", "text_stelth", "text_cyeann",
     "chekr", "text_chekr", "text_diag", "text_ortho", "text_haet flor", "arro", "text_arro", "text_go my way", "text_spin", "text_no turn", "text_stubbn", "text_rotatbl", 0, 0, 0, "text_qt", "text_paint", "text_bleu",
@@ -200,7 +201,7 @@ selector_grid_contents = {
     "han","text_han","clowd","text_clowd","bellt","text_bellt","ger","text_ger",0,0,0,0,0,0,"larry","text_larry","zsoob","text_zsoob",
     "os","text_os","hurcane","text_hurcane","spik","text_spik","hors","text_hors",0,0,0,0,0,0,0,0,"jill","text_jill",
     "firbolt","text_firbolt","lie","text_lie","spiky","text_spiky","can","text_can",0,0,0,0,0,0,0,0,0,0,
-    "icbolt","text_icbolt","lie/8","text_lie/8","bordr","text_bordr",0,0,0,0,0,0,0,0,0,0,0,0,
+    "icbolt","text_icbolt","lie/8","text_lie/8","bordr","text_bordr","togll","text_togll",0,0,0,0,0,0,0,0,0,0,
   },
   -- page 5: properties, verbs and conditions
   {
@@ -211,7 +212,7 @@ selector_grid_contents = {
     "text_visit fren","text_slep","text_shy","text_behin u",0,"text_moar","text_split","text_wurd","text_meta",0,0,0,0,0,0,"text_clikt","text_mayb","text_an",
     "text_flye","text_tall","text_haet skye","text_haet flor",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     "text_diag","text_ortho","text_go my way","text_direction",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    "text_turn cornr","text_folo wal","text_zip","text_hopovr",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    "text_turn cornr","text_folo wal","text_zip","text_hopovr",0,0,0,0,0,0,0,0,0,0,0,0,0,"text_pinc",
     "text_munwalk","text_sidestep","text_diagstep","text_knightstep",0,0,0,0,0,0,0,0,0,0,0,0,0,"text_reed",
     "text_rotatbl",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_orang",
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_yello",
@@ -3789,6 +3790,39 @@ tiles_list = {
     color = {2,1},
     layer = 20,
     tags = {"valhalla"},
+  },
+  --- 336
+  {
+    name = "togll",
+    sprite = "togll",
+    type = "object",
+    color = {0,3},
+    layer = 4,
+    rotate = true,
+    tags = {"toggle","lightswitch"},
+  },
+  -- 337
+  {
+    name = "text_togll",
+    sprite = "text_togll",
+    type = "text",
+    color = {0,3},
+    layer = 20,
+    tags = {"toggle","lightswitch"},
+  },
+  -- 338
+  {
+    name = "text_pinc",
+    sprite = "text_pinc_cond",
+    sprite_transforms = {
+      property = "text_pinc"
+    },
+    type = "text",
+    texttype = "cond_prefix_or_property",
+    color = {4, 1},
+    layer = 20,
+    tags = {"colors", "colours", "pink"},
+    desc = "PINC: Causes the unit to become pink!"
   },
 }
 

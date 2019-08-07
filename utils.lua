@@ -761,7 +761,7 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
         --print(last_click_x, last_click_y)
     elseif condtype == "reed" or condtype == "bleu" or condtype == "blacc"
     or condtype == "grun" or condtype == "yello" or condtype == "orang"
-    or condtype == "purp" or condtype == "whit" or condtype == "cyeann" then
+    or condtype == "purp" or condtype == "whit" or condtype == "cyeann" or condtype == "pinc" then
       local colour = unit.color_override or unit.color;
       if (unit.fullname == "no1" or unit.stelth) then
         result = false

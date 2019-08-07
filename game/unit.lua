@@ -1143,11 +1143,9 @@ end
 
 function updateUnitColourOverride(unit)
   unit.color_override = nil
-  --[[if unit.whit and unit.reed then
-	unit.color_override = {4, 2}
-  if unit.whit and unit.grun then
-    unit.color_override = {5, 3} ]]
-  if unit.whit or (unit.reed and unit.grun and unit.bleu) or (unit.reed and unit.cyeann) or (unit.bleu and unit.yello) or (unit.grun and unit.purp) then
+  if unit.pinc or (unit.reed and unit.whit) then
+    unit.color_override = {4, 1}
+  elseif unit.whit or (unit.reed and unit.grun and unit.bleu) or (unit.reed and unit.cyeann) or (unit.bleu and unit.yello) or (unit.grun and unit.purp) then
     unit.color_override = {0, 3}
   elseif unit.purp or (unit.reed and unit.bleu) then
     unit.color_override = {3, 1}
