@@ -28,7 +28,11 @@ local function common(arg, group)
         {type = "any"},
         {name = "text", mod = 1},
         not_suffix
-      }
+      },
+      {
+        {type = "verb_object_or_property_or_object"},
+        not_suffix
+      },
     }
     mergeTable(full_options, options)
   end
@@ -49,6 +53,9 @@ local function common(arg, group)
       {
         {type = "verb_object_or_property"}
       },
+      {
+        {type = "verb_object_or_property_or_object"}
+      }
     }
     mergeTable(full_options, options)
   end
@@ -189,6 +196,12 @@ local verbs = {
         },
         {
           {type = "verb_object_or_property"},
+          not_suffix,
+          cond_prefixes,
+          commons({"object"}, "target"),
+        },
+        {
+          {type = "verb_object_or_property_or_object"},
           not_suffix,
           cond_prefixes,
           commons({"object"}, "target"),
