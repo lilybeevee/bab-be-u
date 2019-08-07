@@ -70,7 +70,7 @@ end
 function getTextOnTile(x, y)
   local result = getUnitsOnTile(x, y, "text");
   --remove ben't wurd text from result
-  if rules_with["wurd"] ~= nil then
+  if rules_with ~= nil and rules_with["wurd"] ~= nil then
     for i = #result,1,-1 do
       if hasRule(result[i],"ben't","wurd") then
         table.remove(result, i)
@@ -439,6 +439,7 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
     end
   end
 
+  --print(dump(sentence))
   local valid, state = parse(sentence, parser)
 
   if not valid then
