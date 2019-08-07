@@ -410,22 +410,22 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
 
       local len = word_index-orig_index
       for _,s in ipairs(lsentences.middle) do
-        local words = fillTextDetails(s, pos_x, pos_y, first[2], len)
+        local words = fillTextDetails(s, sentence, orig_index, word_index)
         parseSentence(words, params_, dir)
       end
       for _,s in ipairs(lsentences.start) do
-        local words = fillTextDetails(s, pos_x, pos_y, first[2], len)
+        local words = fillTextDetails(s, sentence, orig_index, word_index)
         local before_copy = copyTable(before_sentence) --copying is required because addTables puts results in the first table
         addTables(before_copy, words)
         parseSentence(before_copy, params_, dir)
       end
       for _,s in ipairs(lsentences.endd) do
-        local words = fillTextDetails(s, pos_x, pos_y, first[2], len)
+        local words = fillTextDetails(s, sentence, orig_index, word_index)
         addTables(words, after_sentence)
         parseSentence(words, params_, dir)
       end
       for _,s in ipairs(lsentences.both) do
-        local words = fillTextDetails(s, pos_x, pos_y, first[2], len)
+        local words = fillTextDetails(s, sentence, orig_index, word_index)
         local before_copy = copyTable(before_sentence)
         addTables(words, after_sentence)
         addTables(before_copy, words)
@@ -439,7 +439,7 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
     end
   end
 
-  --print(dump(sentence))
+  --print("just after letters:", dump(sentence))
   local valid, state = parse(sentence, parser)
 
   if not valid then
@@ -461,6 +461,7 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
     for i = 1, state.word_index-1 do
       local unit = sentence[i].unit
       --print(sentence[i].name)
+      --print(dump(sentence[i]))
       been_first[first[2]][unit.x + unit.y * mapwidth] = true
     end
 

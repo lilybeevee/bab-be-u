@@ -1851,30 +1851,27 @@ end
   return ret
 end]]
 
-function fillTextDetails(sentence, x, y, dir, len)
+function fillTextDetails(sentence, old_sentence, orig_index, word_index)
+  --print(#old_sentence, orig_index, word_index)
   --changes a sentence of pure text into a valid sentence.
+  --print("what we started with:",dump(sentence))
   local ret = {}
   local w = 0
   for _,word in ipairs(sentence) do
-    print("sentence: "..fullDump(sentence))
-    local u = createFakeUnit(word, x+ dirs8[dir][1]*w, y+ dirs8[dir][2]*w)
-    table.insert(ret,{unit=u})
+    --print("sentence: "..fullDump(sentence))
+    --print(text_list[word], old_sentence)
+    local newname = text_list[word].name;
+    if newname:starts("text_") then
+      newname = newname:sub(6);
+    end
+    table.insert(ret,{type = text_list[word].texttype or "object", name = newname, unit=old_sentence[orig_index].unit})
     w = w+1
   end
-  for i=w,len do --extra ellipses for the purposes of making sure the parser gets it properly.
-    local u = createFakeUnit("...", x+ dirs8[dir][1]*i, y+ dirs8[dir][2]*i)
-    table.insert(ret,{unit=u})
+  for i=orig_index+1,(word_index-1) do --extra ellipses for the purposes of making sure the parser gets it properly.
+    --print("aa:",old_sentence[i])
+    table.insert(ret,{type = text_list["..."].texttype or "object", name = "...", unit=old_sentence[i].unit})
   end
   return ret
-end
-
-function createFakeUnit(name, x, y)
-  --Creates a fake unit, from the names used in the text_list. Used for letters.
-  local unit = text_list[name]
-  unit.x = x
-  unit.y = y
-  if unit.type == "text" then unit.name = string.sub(unit.name,6) end --no letters support, beware when using
-  return unit
 end
 
 function addTables(source, to_add)
