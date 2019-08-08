@@ -180,18 +180,43 @@ function doReplay(dt)
 end
 
 function doReplayTurn(turn)
-	local turns = replay_playback_string:split(";")
-	local turn_string = turns[turn];
+    if (replay_playback_turns == nil) then
+    replay_playback_turns = replay_playback_string:split(";")
+  end
+	local turn_string = replay_playback_turns[turn]
 	if (turn_string == nil or turn_string == "") then
 		replay_playback = false;
 		print("Finished playback at turn: "..tostring(turn));
+    return
 	end
 	local turn_parts = turn_string:split(",")
 	x, y, key = tonumber(turn_parts[1]), tonumber(turn_parts[2]), turn_parts[3];
 	if (x == nil or y == nil) then
 		replay_playback = false;
 		print("Finished playback at turn: "..tostring(turn));
+    return
 	else
+    if (turn_parts[4] ~= nil) then
+      local ok, cursor_table = serpent.load(love.data.decode("string", "base64", turn_parts[4]));
+      if (not ok) then
+        print("Serpent error while loading:", ok, fullDump(cursor_table))
+      else
+        for i,coords in ipairs(cursor_table) do
+          local cursor = cursors[i]
+          if (cursor == nil) then
+            print("Couldn't find cursor while doing replay, halp")
+          else
+            cursor.x = coords[1];
+            cursor.y = coords[2];
+            --[[if (not unit_tests) then
+              local screenx, screeny = gameTileToScreen(cursor.x, cursor.y)
+              cursor.screenx = screenx;
+              cursor.screeny = screeny;
+            end]]
+          end
+        end
+      end
+    end
     doOneMove(x, y, key);
   end
 end
@@ -1501,7 +1526,7 @@ function doOneMove(x, y, key)
       newUndo()
       timeless = not timeless
       if timeless then
-        replay_string = replay_string..tostring(0)..","..tostring(0)..","..tostring("e")..";"
+        extendReplayString(0, 0, "e")
         playSound("timestop",0.5)
        -- print("ZA WARUDO! Time has stopped")
       else
@@ -1517,11 +1542,11 @@ function doOneMove(x, y, key)
     end
     mobile_controls_timeless:setBGImage(sprites[timeless and "ui/time resume" or "ui/timestop"])
   elseif (key == "f") then
-    replay_string = replay_string..tostring(0)..","..tostring(0)..","..tostring("f")..";"
+    extendReplayString(0, 0, "f")
     doWin()
 	elseif (key == "undo") then
 		local result = undo()
-		replay_string = replay_string..tostring(0)..","..tostring(0)..","..tostring("undo")..";"
+		extendReplayString(0, 0, "undo")
     unsetNewUnits()
 		return result
 	else

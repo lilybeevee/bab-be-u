@@ -1,5 +1,6 @@
 function clear()
 	replay_playback = false
+  replay_playback_turns = nil
 	replay_playback_string = nil
 	replay_playback_turn = 1
 	replay_playback_time = love.timer.getTime()
@@ -68,7 +69,8 @@ function clear()
   timeless_crash = false
   timeless_yote = {}
 
-  if scene == game then
+  --if scene == game then
+  if load_mode == "play" then
     createMouse_direct(love.mouse.getX(), love.mouse.getY())
   end
   --createMouse_direct(20, 20)
@@ -165,7 +167,7 @@ function loadMap()
       local ok = nil
       ok, map = serpent.load(map);
       if (ok ~= true) then
-        print("Serpent error while loading:", ok, dump(map))
+        print("Serpent error while loading:", ok, fullDump(map))
       end
       for _,unit in ipairs(map) do
         id, tile, x, y, dir, specials = unit.id, unit.tile, unit.x, unit.y, unit.dir, unit.special
@@ -1944,5 +1946,19 @@ function loadMaybeCompressedData(loaddata)
     return mapstr
   else
     return loaddata
+  end
+end
+
+function extendReplayString(movex, movey, key)
+  if (not unit_tests and not replay_playback) then
+    replay_string = replay_string..tostring(movex)..","..tostring(movey)..","..tostring(key)
+    if (rules_with["mous"] ~= nil) then
+      local cursor_table = {}
+      for _,cursor in ipairs(cursors) do
+        table.insert(cursor_table, {cursor.x, cursor.y})
+      end
+      replay_string = replay_string..","..love.data.encode("string", "base64", serpent.line(cursor_table))
+    end
+    replay_string = replay_string..";"
   end
 end

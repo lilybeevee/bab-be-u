@@ -115,6 +115,7 @@ function scene.keyPressed(key)
 end
 
 function runUnitTests()
+  local start_time = love.timer.getTime();
   unit_tests = true
   local dir = "levels/"
   if world ~= "" then dir = world_parent .. "/" .. world .. "/" end
@@ -142,10 +143,12 @@ function runUnitTests()
       table.insert(noreplay_levels, v.file)
     end
   end
+  local end_time = love.timer.getTime();
   print ("Unit tested " .. tostring(#succ_levels + #fail_levels) .. " levels!");
   print (tostring(#noreplay_levels) .. " levels lacked a replay: " .. dump(noreplay_levels));
   print (tostring(#succ_levels) .. " levels passed: " .. dump(succ_levels));
   print (tostring(#fail_levels) .. " levels failed: " .. dump(fail_levels));
+  print("Unit tests took: "..tostring(round((end_time-start_time))).."s")
   unit_tests = false
 end
 
