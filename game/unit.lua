@@ -542,6 +542,11 @@ function updateUnits(undoing, big_update)
           end
         end
       end
+    else
+      local fires = findUnitsByName("xplod")
+      for _,fire in ipairs(fires) do
+        table.insert(to_destroy,fire)
+      end
     end
     
     to_destroy = handleDels(to_destroy)
