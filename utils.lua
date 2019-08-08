@@ -257,8 +257,8 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
     print("matchesRule arguments:"..tostring(rule1)..","..tostring(rule2)..","..tostring(rule3))
   end
   
-  local nrules = {}
-  local fnrules = {}
+  local nrules = {} -- name
+  local fnrules = {} -- fullname
   local rule_units = {}
 
   local function getnrule(o,i)
@@ -321,15 +321,15 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
   end
   if #rules_list > 0 then
     for _,rules in ipairs(rules_list) do
-      local rule = rules[1]
+      local rule = rules.rule
       if (debugging) then
         for i=1,3 do
-          print("checking this rule,"..tostring(i)..":"..tostring(rule[i]))
+          print("checking this rule,"..tostring(i)..":"..tostring(rule[ruleparts[i]].name))
         end
       end
       local result = true
       for i=1,3 do
-        if nrules[i] ~= nil and nrules[i] ~= rule[i] and (fnrules[i] == nil or (fnrules[i] ~= nil and fnrules[i] ~= rule[i])) then
+        if nrules[ruleparts[i]] ~= nil and nrules[ruleparts[i]] ~= (i==2 and rule[ruleparts[i]] or rule[ruleparts[i]][1]) and (fnrules[ruleparts[i]] == nil or (fnrules[ruleparts[i]] ~= nil and fnrules[ruleparts[i]] ~= (i==2 and rule[ruleparts[i]] or rule[ruleparts[i]][1]))) then
           if (debugging) then
             print("false due to nrules/fnrules mismatch")
           end
@@ -338,14 +338,9 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
       end
       --don't test condition until the rule fully matches
       if result then
-        for i=1,3 do
+        for i=1,3,2 do
           if rule_units[i] ~= nil then
-            if i == 1 then
-              cond = 1
-            elseif i == 3 then
-              cond = 2
-            end
-            if cond and not testConds(rule_units[i], rule[4][cond]) then
+            if testConds(rule_units[i], rule[ruleparts[i]].conds) then
               if (debugging) then
                 print("false due to cond")
               end
@@ -362,23 +357,18 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
           table.insert(ret, rules)
           if stopafterone then return ret end
         elseif find == 1 then
-          for _,unit in ipairs(findUnitsByName(rule[find_arg])) do
+          for _,unit in ipairs(findUnitsByName(rule[ruleparts[find_arg]].name)) do
             local cond
-            if find_arg == 1 then
-              cond = 1
-            elseif find_arg == 3 then
-              cond = 2
-            end
-            if testConds(unit, rule[4][cond]) then
+            if testConds(unit, rule[ruleparts[find_arg]].conds) then
               table.insert(ret, {rules, unit})
               if stopafterone then return ret end
             end
           end
         elseif find == 2 then
           local found1, found2
-          for _,unit1 in ipairs(findUnitsByName(rule[1])) do
-            for _,unit2 in ipairs(findUnitsByName(rule[3])) do
-              if testConds(unit1, rule[4][1]) and testConds(unit2, rule[4][2]) then
+          for _,unit1 in ipairs(findUnitsByName(rule.subject)) do
+            for _,unit2 in ipairs(findUnitsByName(rule.object)) do
+              if testConds(unit1, rule.subject.conds) and testConds(unit2, rule.object.conds) then
                 table.insert(ret, {rules, unit1, unit2})
                 if stopafterone then return ret end
               end
@@ -491,7 +481,7 @@ withrecursion = {}
 
 function testConds(unit,conds) --cond should be a {condtype,{object types},{cond_units}}
   local endresult = true
-  for _,cond in ipairs(conds) do
+  for _,cond in ipairs(conds or {}) do
     local condtype = cond[1]
     local params = cond[2]
     local cond_unit = cond[3][1]
@@ -1941,4 +1931,39 @@ function loadMaybeCompressedData(loaddata)
   else
     return loaddata
   end
+end
+
+function addBaseRule(subject, verb, object)
+  addRule({
+    rule = {
+      subject = {
+        name = subject
+      },
+      verb = verb,
+      object = {
+        name = object
+      }
+    },
+    units = {},
+    dir = 1,
+    hide_in_list = true
+  })
+end
+
+function addRuleSimple(subject, verb, object, units, dir)
+  addRule({
+    rule = {
+      subject = {
+        name = subject[1],
+        conds = subject[2]
+      },
+      verb = verb,
+      object = {
+        name = object[1],
+        conds = object[2]
+      }
+    },
+    units = units,
+    dir = dir
+  })
 end

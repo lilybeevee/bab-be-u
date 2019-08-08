@@ -47,6 +47,8 @@ else
   build_number = "HEY, READ THE README!"
 end
 
+ruleparts = {"subject", "verb", "object"}
+
 dirs = {{1,0},{0,1},{-1,0},{0,-1}}
 dirs_by_name = {
   right = 1,

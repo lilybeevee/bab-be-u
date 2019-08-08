@@ -223,9 +223,9 @@ function doMovement(movex, movey, key)
       local isactualstalk = matchesRule("?", "stalk", "?");
       for _,ruleparent in ipairs(isactualstalk) do
         local stalkers = findUnitsByName(ruleparent[1][1])
-        local stalker_conds = ruleparent[1][4][1]
-        local stalkee_conds = ruleparent[1][4][2]
-        if #findUnitsByName(ruleparent[1][3]) > 0 then
+        local stalker_conds = ruleparent[1].subject.conds
+        local stalkee_conds = ruleparent[1].object.conds
+        if #findUnitsByName(ruleparent[1][3][1]) > 0 then
           for _,stalker in ipairs(stalkers) do
             if testConds(stalker, stalker_conds) then
               local found_target = nil
@@ -883,8 +883,8 @@ function findCopykats(unit)
   local result = {}
   local iscopykat = matchesRule("?", "copkat", unit);
   for _,ruleparent in ipairs(iscopykat) do
-    local copykats = findUnitsByName(ruleparent[1][1])
-    local copykat_conds = ruleparent[1][4][1]
+    local copykats = findUnitsByName(ruleparent[1][1][1])
+    local copykat_conds = ruleparent[1][1][2]
     for _,copykat in ipairs(copykats) do
       if testConds(copykat, copykat_conds) then
         result[copykat] = "copkat";
@@ -1178,7 +1178,7 @@ function doPortal(unit, px, py, move_dir, dir, reverse)
         local portal_index = -1;
         for _,rule in ipairs(portal_rules) do
           for _,s in ipairs(findUnitsByName(v.fullname)) do
-            if testConds(s, rule[1][4][1]) then
+            if testConds(s, rule[1].subject.conds) then
               portals_direct[s] = true
             end
           end

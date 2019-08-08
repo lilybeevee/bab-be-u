@@ -1299,14 +1299,16 @@ function scene.draw(dt)
     local lines = 0.5
 
     for i,rule in pairs(full_rules) do
-      rules = rules..rule[1][1]..' '..rule[1][2]..' '..rule[1][3]
-      rulesnum = rulesnum + 1
+      if not rule.hide_in_list then
+        rules = rules..rule.rule.subject.name..' '..rule.rule.verb..' '..rule.rule.object.name
+        rulesnum = rulesnum + 1
 
-      if rulesnum % 4 >= 3 then
-        rules = rules..'\n'
-        lines = lines + 1
-      else
-        rules = rules..'   '
+        if rulesnum % 4 >= 3 then
+          rules = rules..'\n'
+          lines = lines + 1
+        else
+          rules = rules..'   '
+        end
       end
     end
 

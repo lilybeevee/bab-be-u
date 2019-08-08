@@ -3,21 +3,21 @@ function updateCursors()
   cursor_convert_to = nil
 
   for i,rules in ipairs(full_rules) do
-    local rule = rules[1]
-    local obj_name = rule[3]
+    local rule = rules.rule
+    local obj_name = rule.object
 
     local istext = false
-    if rule[3] == "text" then
+    if rule.object == "text" then
       istext = true
-      obj_name = "text_" .. rule[1]
+      obj_name = "text_" .. rule.subject
     end
     local obj_id = tiles_by_name[obj_name]
     local obj_tile = tiles_list[obj_id]
 
-    if rule[1] == "mous" then
+    if rule.subject == "mous" then
       if obj_tile ~= nil and (obj_tile.type == "object" or istext) then
-        if rule[2] == "be" then
-          if rule[3] ~= "mous" then
+        if rule.verb == "be" then
+          if rule.object ~= "mous" then
             cursor_convert_to = obj_id
           end
         end
