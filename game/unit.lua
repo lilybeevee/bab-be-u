@@ -513,6 +513,39 @@ function updateUnits(undoing, big_update)
       time_destroy = {}
     end
     
+    local nuke = getUnitsWithEffect("nuek")
+    if #nuke > 0 then
+      for _,unit in ipairs(nuke) do
+        local started = false
+        local fire = getUnitsOnTile(unit.x,unit.y)
+        for _,other in ipairs(fire) do
+          if other.name == "xplod" then
+            started = true
+            break
+          end
+        end
+        if not started then
+          local new_unit = createUnit(tiles_by_name["xplod"], unit.x, unit.y, 1, false)
+          addUndo({"create", new_unit.id, false})
+        end
+      end
+      local fires = findUnitsByName("xplod")
+      for _,fire in ipairs(fires) do
+        local burn = getUnitsOnTile(fire.x,fire.y)
+        for _,on in ipairs(burn) do
+          for _,unit in ipairs(nuke) do
+            if (on.name ~= unit.name) and (on.name ~= "no1") and (on.name ~= "xplod") and sameFloat(on,unit) then
+              table.insert(to_destroy,on)
+              playSound("hotte")
+              addParticles("destroy", on.x, on.y, {2,2})
+            end
+          end
+        end
+      end
+    end
+    
+    to_destroy = handleDels(to_destroy)
+    
     local split = getUnitsWithEffect("split");
     for _,unit in ipairs(split) do
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
