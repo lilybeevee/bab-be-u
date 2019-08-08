@@ -1768,8 +1768,7 @@ function convertUnits(pass)
     local unit = match[2]
 
     local rule = rules[1]
-
-    if not unit.new and nameIs(unit, rule[3]) and timecheck(unit) and (pass < 2 or not ruleHasCondition(rule, "arond")) then
+    if not unit.new and nameIs(unit, rule[3]) and timecheck(unit) then
       if not unit.removed and unit.type ~= "outerlvl" then
         addParticles("bonus", unit.x, unit.y, unit.color)
         table.insert(converted_units, unit)
@@ -1783,7 +1782,7 @@ function convertUnits(pass)
     local unit = match[2]
     local rule = rules[1]
     
-    if not unit.new and unit.class == "unit" and unit.type ~= "outerlvl" and not hasRule(unit, "be", unit.name) and timecheck(unit and (pass < 2 or not ruleHasCondition(rule, "arond"))) then
+    if not unit.new and unit.class == "unit" and unit.type ~= "outerlvl" and not hasRule(unit, "be", unit.name) and timecheck(unit) then
       for _,v in ipairs(referenced_objects) do
         local tile = tiles_by_name[v]
         if v == "text" then
@@ -1817,7 +1816,7 @@ function convertUnits(pass)
     local unit = match[2]
     local rule = rules[1]
 
-    if not unit.new and unit.class == "unit" and not nameIs(unit, rule[3]) and unit.type ~= "outerlvl" and timecheck(unit) and (pass < 2 or not ruleHasCondition(rule, "arond")) then
+    if not unit.new and unit.class == "unit" and not nameIs(unit, rule[3]) and unit.type ~= "outerlvl" and timecheck(unit) then
       local tile = tiles_by_name[rule[3]]
       if rule[3] == "text" then
         tile = tiles_by_name["text_" .. rule[1]]

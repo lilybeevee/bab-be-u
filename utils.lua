@@ -1598,7 +1598,8 @@ function getAbsolutelyEverythingExcept(except)
   if "no1" ~= except then
     table.insert(result, "no1")
   end
-  if "text" ~= except then
+  --don't specify generic text if it's already a type of text
+  if not except:starts("text") then
     table.insert(result, "text")
   end
   
