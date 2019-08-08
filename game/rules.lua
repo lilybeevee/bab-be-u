@@ -30,6 +30,11 @@ function clearRules()
     addRule({{"this","be","go away pls",{{},{}}},{},1})
     addRule({{"this","be","wurd",{{},{}}},{},1})
   end
+  if units_by_name["text_nuek"] then
+    addRule({{"xplod","be","protecc",{{},{}}},{},1})
+    addRule({{"xplod","be","moar",{{},{}}},{},1})
+    addRule({{"xplod","ignor","lvl",{{},{}}},{},1})
+  end
 
   has_new_rule = false
 end
