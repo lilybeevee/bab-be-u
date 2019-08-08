@@ -171,7 +171,7 @@ selector_grid_contents = {
   },
   -- page 2: letters
   {
-    "letter_a","letter_b","letter_c","letter_d","letter_e","letter_f","letter_g","letter_h","letter_i","letter_j","letter_k","letter_l","letter_m","letter_n","text_o","letter_p","letter_q","letter_r",
+    "letter_a","letter_b","letter_c","letter_d","letter_e","letter_f","letter_g","letter_h","letter_i","letter_j","letter_k","letter_l","letter_m","letter_n","letter_o","letter_p","letter_q","letter_r",
     "letter_s","letter_t","letter_u","letter_v","letter_w","letter_x","letter_y","letter_z","letter_.","letter_colon","letter_parenthesis","letter_'",0,0,0,0,0,0,
     "letter_go","letter_come","letter_pls","letter_away","letter_my","letter_no","letter_way",0,0,0,0,0,0,0,0,0,0,0,
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -3891,6 +3891,15 @@ tiles_list = {
     layer = 20,
     tags = {"nuke", "bomb"},
     desc = "NUEK: A NUEK will begin destroying everything around it, its radius growing once per turn."
+  },
+  -- 340
+  {
+    name = "letter_o",
+    sprite = "text_o",
+    type = "text",
+    texttype = "letter",
+    color = {0,3},
+    layer = 20,
   },
 }
 
