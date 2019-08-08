@@ -505,19 +505,20 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
 
     local x, y = unit.x, unit.y
 
-    if condtype:starts("that") then
+    local old_withrecursioncond = withrecursion[cond];
+    
+    withrecursion[cond] = true
+    
+    if (old_withrecursioncond) then
       result = false
-      if not withrecursion[cond] then
-        result = true
-        withrecursion[cond] = true
-        local verb = condtype:sub(6)
-        for _,param in ipairs(params) do
-          if not hasRule(unit,verb,param) then
-            result = false
-            break
-          end
+    elseif condtype:starts("that") then
+      result = true
+      local verb = condtype:sub(6)
+      for _,param in ipairs(params) do
+        if not hasRule(unit,verb,param) then
+          result = false
+          break
         end
-        withrecursion[cond] = false
       end
     elseif condtype == "wfren" then
       for _,param in ipairs(params) do
@@ -792,6 +793,8 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
     if not result then
       endresult = false
     end
+    
+    withrecursion[cond] = old_withrecursioncond
   end
   return endresult
 end
