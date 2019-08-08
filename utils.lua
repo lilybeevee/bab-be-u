@@ -691,6 +691,17 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
           result = false
         end
       end
+    elseif condtype == "samefloat" then
+      for _,param in ipairs(params) do
+        local others = findUnitsByName(param)
+        local yes = false
+        for _,other in ipairs(others) do
+          if sameFloat(unit,other) then
+            yes = true
+          end
+        end
+        if not yes then result = false end
+      end
     elseif condtype == "frenles" then
       if unit == outerlvl then
         result = false --kind of by definition, since the text to make the rule exists :p
