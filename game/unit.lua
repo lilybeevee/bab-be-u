@@ -1689,7 +1689,7 @@ function convertUnits(pass)
   if convertLevel() then return end
 
  --keep empty out of units_by_tile - it will be returned in getUnitsOnTile
- --TODO: CLEANUP: This is similar to updateUnits.
+ --TODO: CLEANUP: looots of duplicated code around here
   for _,unit in ipairs(units) do
     if unit.fullname ~= "no1" and unit.type ~= "outerlvl" then
       local tileid = unit.x + unit.y * mapwidth
@@ -1698,10 +1698,23 @@ function convertUnits(pass)
   end
 
   local converted_units = {}
+  local del_cursors = {}
   
   local meta = getUnitsWithRuleAndCount(nil, "be","meta")
   for unit,amt in pairs(meta) do
-    if not unit.new and unit.type ~= "outerlvl" and timecheck(unit,"be","meta") then
+    if (unit.fullname == "mous") then
+      local cursor = unit
+      if inBounds(cursor.x, cursor.y) then
+        local tile = tiles_by_name["text_mous"]
+        if tile ~= nil then
+          table.insert(del_cursors, cursor);
+        end
+        local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
+        if (new_unit ~= nil) then
+          addUndo({"create", new_unit.id, true, created_from_id = unit.id})
+        end
+      end
+    elseif not unit.new and unit.type ~= "outerlvl" and timecheck(unit,"be","meta") then
       table.insert(converted_units, unit)
       addParticles("bonus", unit.x, unit.y, unit.color)
       local tile = nil
@@ -1719,27 +1732,12 @@ function convertUnits(pass)
     end
   end
   
-  --[[local meta = matchesRule(nil, "be", "meta")
-  for _,match in ipairs(meta) do
-    local rules = match[1]
-    local unit = match[2]
-    local rule = rules[1]
-    if not unit.new and unit.type ~= "outerlvl" and timecheck(unit) then
-      table.insert(converted_units, unit)
-      addParticles("bonus", unit.x, unit.y, unit.color)
-      tile = tiles_by_namePossiblyMeta("text_" .. unit.fullname)
-      if tile ~= nil then
-        local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
-        if (new_unit ~= nil) then
-          addUndo({"create", new_unit.id, true, created_from_id = unit.id})
-        end
-      end
-    end
-  end]]
-  
   local demeta = getUnitsWithRuleAndCount(nil, "ben't","meta")
   for unit,amt in pairs(demeta) do
-    if not unit.new and unit.type ~= "outerlvl" and timecheck(unit,"ben't","meta") then
+    if (unit.name == "mous" and inBounds(unit.x, unit.y)) then
+      addParticles("bonus", unit.x, unit.y, unit.color)
+      table.insert(del_cursors, unit);
+    elseif not unit.new and unit.type ~= "outerlvl" and timecheck(unit,"ben't","meta") then
       table.insert(converted_units, unit)
       addParticles("bonus", unit.x, unit.y, unit.color)
       --remove "text_" as many times as we're de-metaing
@@ -1752,11 +1750,16 @@ function convertUnits(pass)
           break
         end
       end
-      local tile = tiles_by_name[nametocreate];
-      if tile ~= nil then
-        local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
-        if (new_unit ~= nil) then
-          addUndo({"create", new_unit.id, true, created_from_id = unit.id})
+      if (nametocreate == "mous") then
+        local new_mouse = createMouse(unit.x, unit.y)
+        addUndo({"create_cursor", new_mouse.id, created_from_id = unit.id})
+      else
+        local tile = tiles_by_name[nametocreate];
+        if tile ~= nil then
+          local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
+          if (new_unit ~= nil) then
+            addUndo({"create", new_unit.id, true, created_from_id = unit.id})
+          end
         end
       end
     end
@@ -1768,7 +1771,15 @@ function convertUnits(pass)
     local unit = match[2]
 
     local rule = rules[1]
-    if not unit.new and nameIs(unit, rule[3]) and timecheck(unit) then
+    
+    if (rule[1] == "mous" and rule[3] == "mous") then
+      for _,cursor in ipairs(cursors) do
+        if inBounds(cursor.x, cursor.y) and testConds(cursor, rule[4][1]) then
+          addParticles("bonus", unit.x, unit.y, unit.color)
+          table.insert(del_cursors, cursor);
+        end
+      end
+    elseif not unit.new and nameIs(unit, rule[3]) and timecheck(unit) then
       if not unit.removed and unit.type ~= "outerlvl" then
         addParticles("bonus", unit.x, unit.y, unit.color)
         table.insert(converted_units, unit)
@@ -1782,14 +1793,30 @@ function convertUnits(pass)
     local unit = match[2]
     local rule = rules[1]
     
-    if not unit.new and unit.class == "unit" and unit.type ~= "outerlvl" and not hasRule(unit, "be", unit.name) and timecheck(unit) then
+    if (rule[1] == "mous" and rule[3] ~= "mous") then
+      for _,cursor in ipairs(cursors) do
+        if inBounds(cursor.x, cursor.y) and testConds(cursor, rule[4][1]) then
+          for _,v in ipairs(referenced_objects) do
+            local tile = tiles_by_name[v]
+            if v == "text" then
+              tile = tiles_by_name["text_" .. rule[1]]
+            end
+            if tile ~= nil then
+              table.insert(del_cursors, cursor);
+            end
+            local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
+            if (new_unit ~= nil) then
+              addUndo({"create", new_unit.id, true, created_from_id = unit.id})
+            end
+          end
+        end
+      end
+    elseif not unit.new and unit.class == "unit" and unit.type ~= "outerlvl" and not hasRule(unit, "be", unit.name) and timecheck(unit) then
       for _,v in ipairs(referenced_objects) do
         local tile = tiles_by_name[v]
         if v == "text" then
           tile = tiles_by_name["text_" .. rule[1]]
-        else
-        
-        end 
+        end
         if tile ~= nil then
           if not unit.removed then
             table.insert(converted_units, unit)
@@ -1815,8 +1842,26 @@ function convertUnits(pass)
     local rules = match[1]
     local unit = match[2]
     local rule = rules[1]
-
-    if not unit.new and unit.class == "unit" and not nameIs(unit, rule[3]) and unit.type ~= "outerlvl" and timecheck(unit) then
+    
+    if (rule[1] == "mous" and rule[3] ~= "mous") then
+      for _,cursor in ipairs(cursors) do
+        if inBounds(cursor.x, cursor.y) and testConds(cursor, rule[4][1]) then
+          local tile = tiles_by_name[rule[3]]
+          if rule[3] == "text" then
+            tile = tiles_by_name["text_" .. rule[1]]
+          elseif rule[3]:starts("this") and not rule[3]:ends("n't") then
+            tile = tiles_by_name["this"]
+          end
+          if tile ~= nil then
+            table.insert(del_cursors, cursor);
+            local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
+            if (new_unit ~= nil) then
+              addUndo({"create", new_unit.id, true, created_from_id = unit.id})
+            end
+          end
+        end
+      end
+    elseif not unit.new and unit.class == "unit" and not nameIs(unit, rule[3]) and unit.type ~= "outerlvl" and timecheck(unit) then
       local tile = tiles_by_name[rule[3]]
       if rule[3] == "text" then
         tile = tiles_by_name["text_" .. rule[1]]
@@ -1881,6 +1926,13 @@ function convertUnits(pass)
     
     if tfd and not unit.removed then
       table.insert(converted_units, unit)
+    end
+  end
+  
+  for i,cursor in ipairs(del_cursors) do
+    if (not cursor.removed) then  
+      addUndo({"remove_cursor", cursor.screenx, cursor.screeny, cursor.id})
+      deleteMouse(cursor.id)
     end
   end
 
