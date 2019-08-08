@@ -1464,7 +1464,7 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
       local would_swap_with = swap_mover or hasProperty(v, "behin u") and pushing
       --pushing a key into a door automatically works
       if (fordor and hasProperty(v, "ned kee")) or (nedkee and hasProperty(v, "for dor")) then
-        if timecheck(unit,"be","ned kee") and timecheck(v,"be","for dor") then
+        if timecheck(unit,"be","ned kee") and timecheck(v,"be","for dor") and sameFloat(unit, v) then
           table.insert(specials, {"open", {unit, v}})
           return true,movers,specials
         else
