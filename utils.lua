@@ -902,7 +902,7 @@ function calculateLight()
   for _,unit in ipairs(brites) do
     love.graphics.setCanvas(temp_lightcanvas)
     love.graphics.clear(1, 1, 1, 1)
-    drawShadows(uniy, opaques)
+    drawShadows(unit, opaques)
     love.graphics.setCanvas(lightcanvas)
     love.graphics.setBlendMode("add", "premultiplied")
     love.graphics.draw(temp_lightcanvas)
