@@ -437,8 +437,6 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
         --print("looping... "..new_word.." "..word_index)
         if letter == nil then break end --end of array ends up hitting this case
       end
-      
-      print(new_word)
 
       local lsentences = findLetterSentences(new_word) --get everything valid out of the letter string (this should be [both], hmm)
       --[[if (#lsentences.start ~= 0 or #lsentences.endd ~= 0 or #lsentences.middle ~= 0 or #lsentences.both ~= 0) then
