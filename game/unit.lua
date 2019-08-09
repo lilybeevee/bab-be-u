@@ -1257,9 +1257,12 @@ function DoDiscordRichPresence()
     local isu = getUnitsWithEffect("u");
     if (#isu > 0) then
       local unit = isu[1];
-      if unit.fullname == "bab" or unit.fullname == "keek" or unit.fullname == "meem" then
+      if unit.fullname == "bab" or unit.fullname == "keek" or unit.fullname == "meem" or unit.fullname == "bup" or unit.fullname == "jill" or unit.fullname == "o" then
           presence["smallImageText"] = unit.fullname
           presence["smallImageKey"] = unit.fullname
+      elseif unit.type == "text" then
+        presence["smallImageKey"] = "txt"
+        presence["smallImageText"] = unit.name
       elseif unit.fullname == "os" then
         local os = love.system.getOS()
 
@@ -1278,6 +1281,9 @@ function DoDiscordRichPresence()
         presence["smallImageText"] = "other"
         presence["smallImageKey"] = "other"
       end
+    else
+      presence["smallImageText"] = "nothing :("
+      presence["smallImageKey"] = "nothing"
     end
   end
 end
