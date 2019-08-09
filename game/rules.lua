@@ -386,24 +386,59 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
       local new_word = ""
       local word_index = orig_index
       local letter = sentence[word_index]
+      local prevletter = {}
       while letter.type == "letter" do --find out where the letters end, throw all of them into a string tho
-        --if the letter is u, check if there's an umlaut above it; if it is, change the character to be a ü
+        --here's how umlauts / colons work: for every letter that could be affected by the presence of a colon, special case it here
+        --when special casing, change the name to include the umlaut / colon in it. then, later, don't count colons when adding to the string, since the letter already accounts for it
+        --for the letter u, it always needs to check the tile above it, so we don't need to use prevletter, since the umlaut might not be in the rule directly
+        --for letters relating to making a face, such as ":)", the colon needs to be the letter before it, so just before we change letter we store it as prevletter for the next letter to use
+        --then, when we find something like a parantheses, we check the previous letter to see if it's a colon and if it was facing the right direction, and if it meets both of those, set the name of the unit to both
+        --since this all happens per rule, crosswording should be unaffected
+        --...doesn't work yet but that was my plan
+        local unit = letter.unit
+        local prevunit = prevletter.unit
         if letter.name == "u" then
-          local umlauts = getTextOnTile(letter.unit.x,letter.unit.y-1)
+          local umlauts = getTextOnTile(unit.x,unit.y-1)
           for _,umlaut in ipairs(umlauts) do
             if umlaut.fullname == "letter_colon" and umlaut.dir == 3 then
-              letter.name = "ü"
+              letter.name = "..u"
               break
             end
           end
         end
         
-        new_word = new_word..letter.name
+        if letter.name == "o" then
+          if prevletter.name == ":" and prevunit.dir == dir then
+            letter.name = ":o"
+            break
+          end
+        end
+        
+        if letter.name == ")" then
+          if prevletter.name == ":" and prevunit.dir == dir then
+            letter.name = ":)"
+            break
+          end
+        end
+        
+        if letter.name == "(" then
+          if prevletter.name == ":" and prevunit.dir == dir then
+            letter.name = ":("
+            break
+          end
+        end
+        
+        if letter.name ~= ":" then
+          new_word = new_word..letter.name
+        end
+        prevletter = letter
         word_index = word_index + 1
         letter = sentence[word_index]
         --print("looping... "..new_word.." "..word_index)
         if letter == nil then break end --end of array ends up hitting this case
       end
+      
+      print(new_word)
 
       local lsentences = findLetterSentences(new_word) --get everything valid out of the letter string (this should be [both], hmm)
       --[[if (#lsentences.start ~= 0 or #lsentences.endd ~= 0 or #lsentences.middle ~= 0 or #lsentences.both ~= 0) then
