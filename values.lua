@@ -259,7 +259,7 @@ tiles_list = {
     color = {0, 3},
     layer = 20,
     tags = {"is"},
-    desc = "BE: Causes the subject to become an object or have a property.",
+    desc = "BE (Verb): Causes the subject to become an object or have a property.",
   },
   -- 4
   {
@@ -1030,7 +1030,7 @@ tiles_list = {
     color = {0, 3},
     layer = 20,
     tags = {"make", "create"},
-    desc = "CREAT (Infix Condition): At end of turn, the unit makes this object.",
+    desc = "CREAT (Verb): At end of turn, the unit makes this object.",
   },
   --76
   {
@@ -1263,7 +1263,7 @@ tiles_list = {
     color = {0, 3},
     layer = 20,
     tags = {"throw"},
-    desc = "YEET (Infix Condition): This unit will force things it yeets in its tile to hurtle across the level in its facing direction.",
+    desc = "YEET (Verb): This unit will force things it yeets in its tile to hurtle across the level in its facing direction.",
   },
   --- 95
   {
@@ -1622,7 +1622,7 @@ tiles_list = {
     color = {2, 2},
     layer = 20,
     tags = {"fear", "spook"},
-    desc = "SPOOP (Infix Condition): A SPOOPY unit forces all objects it SPOOPS on adjacent tiles to move away!",
+    desc = "SPOOP (Verb): A SPOOPY unit forces all objects it SPOOPS on adjacent tiles to move away!",
   },
   -- 129
   {
@@ -3716,7 +3716,7 @@ tiles_list = {
     texttype = "verb_object_or_property_or_object",
     color = {4,2},
     layer = 20,
-    desc = "PAINT: changes the second object's color to match."
+    desc = "PAINT (Verb): changes the second object's color to match."
   },
   -- 332
   {
