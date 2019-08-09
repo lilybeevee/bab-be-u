@@ -2419,7 +2419,16 @@ function doWin()
 		playSound("win")
     if (not replay_playback) then
       love.filesystem.createDirectory("levels")
-      love.filesystem.write("levels/" .. level_name .. ".replay", replay_string)
+      local to_save = replay_string;
+      local rng_cache_populated = false;
+      for _,__ in pairs(rng_cache) do
+        rng_cache_populated = true;
+        break;
+      end
+      if (rng_cache_populated) then
+        to_save = to_save.."|"..love.data.encode("string", "base64", serpent.line(rng_cache))
+      end
+      love.filesystem.write("levels/" .. level_name .. ".replay", to_save)
       print("Replay successfully saved to ".."levels/" .. level_name .. ".replay")
     end
 	end

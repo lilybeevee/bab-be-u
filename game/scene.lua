@@ -181,7 +181,15 @@ end
 
 function doReplayTurn(turn)
     if (replay_playback_turns == nil) then
-    replay_playback_turns = replay_playback_string:split(";")
+    replay_playback_string_parts = replay_playback_string:split("|")
+    replay_playback_turns = replay_playback_string_parts[1]:split(";")
+    if (replay_playback_string_parts[2] ~= nil) then
+      local ok, loaded_rng_cache = serpent.load(love.data.decode("string", "base64", replay_playback_string_parts[2]));
+      if (not ok) then
+        print("Serpent error while loading:", ok, fullDump(loaded_rng_cache))
+      end
+      rng_cache = loaded_rng_cache
+    end
   end
 	local turn_string = replay_playback_turns[turn]
 	if (turn_string == nil or turn_string == "") then
