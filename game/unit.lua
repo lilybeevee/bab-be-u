@@ -2287,48 +2287,10 @@ function updateDir(unit, dir, force)
     unit.textname = "spin_" .. tostring(unit.dir);
     should_parse_rules = true
   elseif unit.fullname == "letter_colon" then
-    if unit.dir == 1 or unit.dir == 2 then
+    if unit.dir == 1 or unit.dir == 2 or unit.dir == 3 then
       unit.textname = ":"
-    elseif unit.dir == 3 then
-      local isumlaut = getTextOnTile(unit.x,unit.y+1)
-      if isumlaut ~= nil then
-        for _,umlautee in ipairs(isumlaut) do
-          if umlautee.fullname == "letter_u" or (umlautee.fullname == "letter_h" and (umlautee.dir == 3 or umlautee.dir == 7)) then
-            unit.textname = ""
-            break
-          else
-            unit.textname = ".."
-          end
-        end
-      else
-        unit.textname = ".."
-      end
     else
       unit.textname = "  "
-    end
-    should_parse_rules = true
-  elseif unit.fullname == "letter_u" then
-    local umlauts = getTextOnTile(unit.x,unit.y-1)
-    for _,umlaut in ipairs(umlauts) do
-      if umlaut.fullname == "letter_colon" and umlaut.dir == 3 then
-        unit.textname = "..u"
-        break
-      end
-    end
-    should_parse_rules = true
-  elseif unit.fullname == "letter_i" then
-    local umlauts = getTextOnTile(unit.x,unit.y-1)
-    if umlauts ~= nil then
-      for _,umlaut in ipairs(umlauts) do
-        if umlaut.fullname == "letter_colon" and umlaut.dir == 3 then
-          unit.textname = "..i"
-          break
-        else
-          unit.textname = "i"
-        end
-      end
-    else
-      unit.textname = "i"
     end
     should_parse_rules = true
   elseif unit.fullname == "letter_parenthesis" then
