@@ -727,7 +727,7 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
               end
             end
           else
-            local dx, dy, dir, px, py = getNextTile(unit, -dirs8[unit.dir][1], -dirs8[unit.dir][2], unit.dir)
+            local dx, dy, dir, px, py = getNextTile(unit, dirs8[unit.dir][1], dirs8[unit.dir][2], unit.dir)
             if param == "lvl" then
               --if we're looking in-bounds, then we're looking at a level technically!
               result = not inBounds(px, py)
