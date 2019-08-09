@@ -382,11 +382,22 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
   for orig_index,word in ipairs(sentence) do
     if word.type == "letter" then --letter handling
       --print("found a letter"..orig_index)
-
+      
       local new_word = ""
       local word_index = orig_index
       local letter = sentence[word_index]
       while letter.type == "letter" do --find out where the letters end, throw all of them into a string tho
+        --if the letter is u, check if there's an umlaut above it; if it is, change the character to be a ü
+        if letter.name == "u" then
+          local umlauts = getTextOnTile(letter.unit.x,letter.unit.y-1)
+          for _,umlaut in ipairs(umlauts) do
+            if umlaut.fullname == "letter_colon" and umlaut.dir == 3 then
+              letter.name = "ü"
+              break
+            end
+          end
+        end
+        
         new_word = new_word..letter.name
         word_index = word_index + 1
         letter = sentence[word_index]
