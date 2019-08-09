@@ -58,6 +58,11 @@ function doMovement(movex, movey, key)
   end
 
 	extendReplayString(movex, movey, key)
+  if (key == "clikt") then
+    last_click_x, last_click_y = movex, movey
+    movex = 0
+    movey = 0
+  end
   walkdirchangingrulesexist = rules_with["munwalk"] or rules_with["sidestep"] or rules_with["diagstep"] or rules_with["hopovr"] or rules_with["knightstep"];
   local played_sound = {}
   local slippers = {}

@@ -1591,6 +1591,7 @@ function doOneMove(x, y, key)
 		last_move = {x, y}
 		just_moved = true
 		doMovement(x, y, key)
+    last_click_x, last_click_y = nil, nil
 		if #undo_buffer > 0 and #undo_buffer[1] == 0 then
 			table.remove(undo_buffer, 1)
 		end
@@ -1642,7 +1643,7 @@ function scene.mouseReleased(x, y, button)
     -- CLIKT prefix
     if units_by_name["text_clikt"] then
         last_click_x, last_click_y = screenToGameTile(love.mouse.getX(), love.mouse.getY())
-        doOneMove(0,0,nil)
+        doOneMove(last_click_x,last_click_y,"clikt")
         last_click_x, last_click_y = nil, nil
         playSound("clicc")
     end
