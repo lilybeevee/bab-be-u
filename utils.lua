@@ -627,8 +627,8 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
               found = true
               break
             else
-              print(unit.x, unit.y)
-              print(px, py)
+              --print(unit.x, unit.y)
+              --print(px, py)
             end
           end
           if not found then
@@ -785,8 +785,8 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
                   found = true
                   break
                 else
-                  print(unit.x, unit.y)
-                  print(px, py)
+                  --print(unit.x, unit.y)
+                  --print(px, py)
                 end
               end
               if not found then
@@ -838,8 +838,8 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
                   found = true
                   break
                 else
-                  print(unit.x, unit.y)
-                  print(px, py)
+                  --print(unit.x, unit.y)
+                  --print(px, py)
                 end
               end
               if not found then

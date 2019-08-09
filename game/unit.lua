@@ -1257,9 +1257,15 @@ function DoDiscordRichPresence()
     local isu = getUnitsWithEffect("u");
     if (#isu > 0) then
       local unit = isu[1];
-      if unit.fullname == "bab" or unit.fullname == "keek" or unit.fullname == "meem" or unit.fullname == "bup" or unit.fullname == "jill" or unit.fullname == "o" then
-          presence["smallImageText"] = unit.fullname
-          presence["smallImageKey"] = unit.fullname
+      if love.filesystem.read("author_name") == "jill" or unit.fullname == "jill" then
+        presence["smallImageText"] = "jill"
+        presence["smallImageKey"] = "jill"
+      elseif love.filesystem.read("author_name") == "fox" or unit.fullname == "o" then
+        presence["smallImageText"] = "o"
+        presence["smallImageKey"] = "o"
+      elseif unit.fullname == "bab" or unit.fullname == "keek" or unit.fullname == "meem" or unit.fullname == "bup" then
+        presence["smallImageText"] = unit.fullname
+        presence["smallImageKey"] = unit.fullname
       elseif unit.type == "text" then
         presence["smallImageKey"] = "txt"
         presence["smallImageText"] = unit.name
