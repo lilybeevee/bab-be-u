@@ -258,7 +258,7 @@ tiles_list = {
     texttype = "verb_all",
     color = {0, 3},
     layer = 20,
-    tags = {"is"},
+    tags = {"is", "verb"},
     desc = "BE (Verb): Causes the subject to become an object or have a property.",
   },
   -- 4
@@ -485,7 +485,7 @@ tiles_list = {
     texttype = "verb_object",
     color = {0, 3},
     layer = 20,
-    tags = {"has"},
+    tags = {"has", "verb"},
     desc = "GOT (Verb): Causes the subject to drop the object when destroyed.",
   },
   --26
@@ -509,7 +509,7 @@ tiles_list = {
     texttype = "cond_prefix_or_property",
     color = {2, 2},
     layer = 20,
-    tags = {"colors", "colours", "red"},
+    tags = {"colors", "colours", "red", "prefix"},
     desc = "REED: Causes the unit to appear red.",
   },
   --28
@@ -523,7 +523,7 @@ tiles_list = {
     texttype = "cond_prefix_or_property",
     color = {1, 3},
     layer = 20,
-    tags = {"colors", "colours", "blue"},
+    tags = {"colors", "colours", "blue", "prefix"},
     desc = "BLEU: Causes the unit to appear blue.",
   },
   --29
@@ -996,7 +996,7 @@ tiles_list = {
     texttype = "cond_infix",
     color = {0, 3},
     layer = 20,
-    tags = {"on", "w/fren"},
+    tags = {"on", "w/fren", "infix"},
     desc = "W/ FREN (Infix Condition): True if the unit shares a tile with this object.",
   },
   -- 73
@@ -1007,7 +1007,7 @@ tiles_list = {
     texttype = "verb_object",
     color = {0, 3},
     layer = 20,
-    tags = {"follow", "facing", "lookat"},
+    tags = {"follow", "facing", "lookat", "infix", "verb"},
     desc = "LOOK AT: As an infix condition, true if this object is on the tile in front of the unit As a verb, makes the unit face this object at end of turn.",
   },
   -- 74
@@ -1018,7 +1018,7 @@ tiles_list = {
     texttype = "cond_prefix",
     color = {2, 2},
     layer = 20,
-    tags = {"lonely", "friendless"},
+    tags = {"lonely", "friendless", "prefix"},
     desc = "FRENLES (Prefix Condition): True if the unit is alone on its tile.",
   },
   --75
@@ -1029,7 +1029,7 @@ tiles_list = {
     texttype = "verb_object",
     color = {0, 3},
     layer = 20,
-    tags = {"make", "create"},
+    tags = {"make", "create", "verb"},
     desc = "CREAT (Verb): At end of turn, the unit makes this object.",
   },
   --76
@@ -1041,8 +1041,8 @@ tiles_list = {
     allowconds = true,
     color = {2, 2},
     layer = 20,
-    tags = {"eat", "consume"},
-    desc = "SNACC (Infix Condition): Units destroy any other unit that they SNACC on contact, like a conditional OUCH.",
+    tags = {"eat", "consume", "verb"},
+    desc = "SNACC (Verb): Units destroy any other unit that they SNACC on contact, like a conditional OUCH.",
   },
   --77
   {
@@ -1262,7 +1262,7 @@ tiles_list = {
     allowconds = true,
     color = {0, 3},
     layer = 20,
-    tags = {"throw"},
+    tags = {"throw", "verb"},
     desc = "YEET (Verb): This unit will force things it yeets in its tile to hurtle across the level in its facing direction.",
   },
   --- 95
@@ -1339,7 +1339,7 @@ tiles_list = {
     texttype = "cond_infix",
     color = {0, 3},
     layer = 20,
-    tags = {"near", "around"},
+    tags = {"near", "around", "infix"},
     desc = "AROND (Infix Condition): True if the indicated object is on any of the tiles surrounding the unit. (The unit's own tile is not checked.)",
   },
   --- 102
@@ -1596,7 +1596,7 @@ tiles_list = {
     texttype = "cond_prefix",
     color = {0, 3},
     layer = 20,
-    tags = {"idle", "wait..."},
+    tags = {"idle", "wait...", "prefix"},
     desc = "WAIT... (Prefix Condition): True if the player waited last input.",
   },
   -- 127
@@ -1610,7 +1610,7 @@ tiles_list = {
     texttype = "cond_infix",
     color = {1, 4},
     layer = 20,
-    tags = {"without"},
+    tags = {"without", "w/o", "infix"},
     desc = "SANS (Infix Condition): True if none of the indicated object exist in the level.",
   },
   -- 128
@@ -1621,7 +1621,7 @@ tiles_list = {
     texttype = "verb_object",
     color = {2, 2},
     layer = 20,
-    tags = {"fear", "spook"},
+    tags = {"fear", "spook", "verb", "verb"},
     desc = "SPOOP (Verb): A SPOOPY unit forces all objects it SPOOPS on adjacent tiles to move away!",
   },
   -- 129
@@ -1632,8 +1632,8 @@ tiles_list = {
     texttype = "verb_object",
     color = {5, 2},
     layer = 20,
-    tags = {"follow", "find", "cg5"},
-    desc = "STALK (Infix Condition): If X stalks Y, X becomes an intelligent AI determined to get to Y."
+    tags = {"follow", "find", "cg5", "verb"},
+    desc = "STALK (Verb): If X stalks Y, X becomes an intelligent AI determined to get to Y."
   },
   -- 130
   {
@@ -1736,7 +1736,7 @@ tiles_list = {
     allowconds = true,
     color = {5, 3},
     layer = 20,
-    tags = {"like", "bounded"},
+    tags = {"like", "bounded", "verb"},
     desc = "LIEK (Verb): If a unit LIEKs objects, it is picky, and cannot step onto a tile unless it has at least one object it LIEKs.",
   },
   -- 140
@@ -1900,7 +1900,7 @@ tiles_list = {
     texttype = "verb_object",
     color = {0, 3},
     layer = 20,
-    tags = {"copycat", "lily"},
+    tags = {"copycat", "lily", "verb"},
     desc = "COPKAT (Verb): COPKAT units copy the successful movements of the indicated object, no matter how far away."
   },
   --157
@@ -1976,7 +1976,7 @@ tiles_list = {
     color = {0, 3},
     layer = 20,
     rotate = true,
-    tags = {"/", "maybe", "random", "rng", "patashu"},
+    tags = {"/", "maybe", "random", "rng", "patashu", "prefix"},
     desc = "? (MAYBE) (Prefix Condition): Has a chance of being true, independent for each MAYBE, affected unit and turn. The number on top indicates the % chance of being true.",
   },
   -- 164
@@ -1998,7 +1998,7 @@ tiles_list = {
     texttype = "cond_infix",
     color = {0, 3},
     layer = 20,
-    tags = {"seenby"},
+    tags = {"seenby", "infix"},
     desc = "SEEN BY (Infix Condition): True if an indicated object is looking at this unit from an adjacent tile.",
   },
   -- 166
@@ -2321,7 +2321,7 @@ tiles_list = {
     texttype = "verb_object",
     color = {1,3},
     layer = 20,
-    tags = {"shift"},
+    tags = {"shift", "verb"},
     desc = "MOOV (Verb): A verbified GO. x MOOV y means that only x can shift y around.",
   },
   --- 197
@@ -2333,7 +2333,7 @@ tiles_list = {
     allowconds = true,
     color = {5, 3},
     layer = 20,
-    tags = {"patashu"},
+    tags = {"patashu", "hate", "verb"},
     desc = "HAET (Verb): A unit cannot stop onto a tile that has something it HAETs. (x HAET LVL makes x unable to move.)",
   },
   -- 198
@@ -2355,8 +2355,8 @@ tiles_list = {
     texttype = "cond_prefix",
     color = {2, 4},
     layer = 20,
-    tags = {"powered"},
-    desc = "LIT: A BRITE object emits light in all directions. LIT will be true for objects on the same FLYE level if nothing OPAQUE is in the way.",
+    tags = {"powered", "prefix"},
+    desc = "LIT (Prefix Condition): A BRITE object emits light in all directions. LIT will be true for objects on the same FLYE level if nothing OPAQUE is in the way.",
   },
   -- 200
   {
@@ -2387,7 +2387,7 @@ tiles_list = {
     texttype = "cond_prefix",
     color = {0, 3},
     layer = 20,
-    tags = {"rng", "random"},
+    tags = {"rng", "random", "prefix"},
     desc = "AN (Prefix Condition): True for a single arbitrary unit per turn and condition.",
   },
   -- 203
@@ -2654,7 +2654,7 @@ tiles_list = {
     texttype = "cond_prefix_or_property",
     color = {5, 2},
     layer = 20,
-    tags = {"colors", "colours", "green"},
+    tags = {"colors", "colours", "green", "prefix"},
     desc = "grun: Causes the unit to appear green."
   },
   -- 226
@@ -2668,7 +2668,7 @@ tiles_list = {
     texttype = "cond_prefix_or_property",
     color = {2, 4},
     layer = 20,
-    tags = {"colors", "colours", "yellow"},
+    tags = {"colors", "colours", "yellow", "prefix"},
     desc = "YELLO: Causes the unit to appear yellow."
   },
   -- 227
@@ -2682,7 +2682,7 @@ tiles_list = {
     texttype = "cond_prefix_or_property",
     color = {3, 2},
     layer = 20,
-    tags = {"colors", "colours", "purple"},
+    tags = {"colors", "colours", "purple", "prefix"},
     desc = "PURP: Causes the unit to appear purple."
   },
   -- 228
@@ -2696,7 +2696,7 @@ tiles_list = {
     texttype = "cond_prefix_or_property",
     color = {2, 3},
     layer = 20,
-    tags = {"colors", "colours", "orange"},
+    tags = {"colors", "colours", "orange", "prefix"},
     desc = "ORANG: Causes the unit to appear orange."
   },
   -- 229
@@ -2710,7 +2710,7 @@ tiles_list = {
     texttype = "cond_prefix_or_property",
     color = {1, 4},
     layer = 20,
-    tags = {"colors", "colours", "cyan"},
+    tags = {"colors", "colours", "cyan", "prefix"},
     desc = "CYEANN: Causes the unit to appear cyan."
   },
   -- 230
@@ -2724,7 +2724,7 @@ tiles_list = {
     texttype = "cond_prefix_or_property",
     color = {0, 3},
     layer = 20,
-    tags = {"colors", "colours", "white"},
+    tags = {"colors", "colours", "white", "prefix"},
     desc = "whit: Causes the unit to appear white."
   },
   -- 231
@@ -2738,7 +2738,7 @@ tiles_list = {
     texttype = "cond_prefix_or_property",
     color = {0, 0},
     layer = 20,
-    tags = {"colors", "colours", "black"},
+    tags = {"colors", "colours", "black", "prefix"},
     desc = "BLACC: Causes the unit to appear black."
   },
   -- 232
@@ -2780,7 +2780,7 @@ tiles_list = {
     texttype = "cond_prefix",
     color = {5,2},
     layer = 20,
-    tags = {"correct", "cg5"},
+    tags = {"correct", "cg5", "prefix"},
     desc = "COREKT (Prefix Condition): True if the unit is in an active rule.",
   },
   -- 236
@@ -2794,7 +2794,7 @@ tiles_list = {
     texttype = "cond_prefix_or_property",
     color = {2,2},
     layer = 20,
-    tags = {"wrong", "false", "cg5"},
+    tags = {"wrong", "false", "cg5", "prefix"},
     desc = "RONG: As a prefix, true if the unit is in a negated rule. As a property, causes associated units to return a negated form of the rule.",
   },
   -- 237
@@ -2858,7 +2858,8 @@ tiles_list = {
     texttype = "verb_all",
     color = {0, 3},
     layer = 20,
-		desc = "BE N'T: The same as having these two text tiles in a row."
+    tags = {"isn't", "is not", "verb"},
+		desc = "BE N'T (Verb): The same as having these two text tiles in a row."
   },
 	-- 243
    {
@@ -3458,7 +3459,7 @@ tiles_list = {
     texttype = "cond_infix_verb",
     color = {0, 3},
     layer = 20,
-    tags = {"lily", "with", "w/"},
+    tags = {"lily", "with", "w/", "infix"},
     desc = "THAT (Infix Condition): x THAT BE y is true if x BE y. x THAT GOT Y is true if x GOT y. And so on."
   },
   -- 307
@@ -3470,7 +3471,7 @@ tiles_list = {
     texttype = "hideous_amalgamation",
     color = {0, 3},
     layer = 20,
-    tags = {"lily", "with", "w/"},
+    tags = {"lily", "with", "w/", "infix"},
     desc = "THAT BE (Infix Condition): x THAT BE y is true if x BE y."
   },
   -- 308
@@ -3481,7 +3482,7 @@ tiles_list = {
     texttype = "cond_prefix",
     color = {2,4},
     layer = 20,
-    tags = {"timeless"},
+    tags = {"timeless", "prefix"},
     desc = "TIMLES (Prefix Condition): True if ZA WARUDO is active."
   },
   --vitellary: added down here because i did not want to have to change the numbers for everything beyond "h", plus i think i heard that it would mess things up if i added it up there
@@ -3609,7 +3610,7 @@ tiles_list = {
     texttype = "cond_prefix",
     color = {3, 3},
     layer = 20,
-    tags = {"clicked", "mouse"},
+    tags = {"clicked", "mouse", "prefix"},
     desc = "CLIKT (Prefix Condition): CLIKT objects will be true when left-clicked. Clicks will pass a turn if this text exists.",
   },
   -- 321
@@ -3716,6 +3717,7 @@ tiles_list = {
     texttype = "verb_object_or_property_or_object",
     color = {4,2},
     layer = 20,
+    tags = {"colors", "colours", "verb"},
     desc = "PAINT (Verb): changes the second object's color to match."
   },
   -- 332
@@ -3787,6 +3789,7 @@ tiles_list = {
     texttype = "verb_object",
     color = {0,1},
     layer = 20,
+    tags = {"ignore", "verb"},
     desc = "IGNOR (Verb): x IGNOR y causes x to not be able to interact with or move y in any way."
   },
   -- 339
@@ -3808,7 +3811,7 @@ tiles_list = {
     texttype = "verb_object",
     color = {2,1},
     layer = 20,
-    tags = {"versus"},
+    tags = {"versus", "verb"},
     desc = "VS (Verb): The two objects enter a 1 on 1 battle: whoever steps on the other wins.",
   },
   --- 334
@@ -3878,7 +3881,7 @@ tiles_list = {
     texttype = "cond_prefix_or_property",
     color = {4, 1},
     layer = 20,
-    tags = {"colors", "colours", "pink"},
+    tags = {"colors", "colours", "pink", "prefix"},
     desc = "PINC: Causes the unit to become pink!"
   },
   -- 339
@@ -3909,7 +3912,7 @@ tiles_list = {
     texttype = "cond_infix",
     color = {1,4},
     layer = 20,
-    tags = {"same float", "sameflye", "same flye"},
+    tags = {"same float", "sameflye", "same flye", "infix"},
     desc = "SAMEFLOAT( (Infix Condition): True if the subject is on the same amount of flye as the object.",
   },
   -- 342
