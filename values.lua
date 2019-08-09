@@ -486,7 +486,7 @@ tiles_list = {
     color = {0, 3},
     layer = 20,
     tags = {"has"},
-    desc = "GOT: Causes the subject to drop the object when destroyed.",
+    desc = "GOT (Verb): Causes the subject to drop the object when destroyed.",
   },
   --26
   {
@@ -1030,7 +1030,7 @@ tiles_list = {
     color = {0, 3},
     layer = 20,
     tags = {"make", "create"},
-    desc = "CREAT: At end of turn, the unit makes this object.",
+    desc = "CREAT (Infix Condition): At end of turn, the unit makes this object.",
   },
   --76
   {
@@ -1042,7 +1042,7 @@ tiles_list = {
     color = {2, 2},
     layer = 20,
     tags = {"eat", "consume"},
-    desc = "SNACC: Units destroy any other unit that they SNACC on contact, like a conditional OUCH.",
+    desc = "SNACC (Infix Condition): Units destroy any other unit that they SNACC on contact, like a conditional OUCH.",
   },
   --77
   {
@@ -1263,7 +1263,7 @@ tiles_list = {
     color = {0, 3},
     layer = 20,
     tags = {"throw"},
-    desc = "YEET: This unit will force things it yeets in its tile to hurtle across the level in its facing direction.",
+    desc = "YEET (Infix Condition): This unit will force things it yeets in its tile to hurtle across the level in its facing direction.",
   },
   --- 95
   {
@@ -1622,7 +1622,7 @@ tiles_list = {
     color = {2, 2},
     layer = 20,
     tags = {"fear", "spook"},
-    desc = "SPOOP: A SPOOPY unit forces all objects it SPOOPS on adjacent tiles to move away!",
+    desc = "SPOOP (Infix Condition): A SPOOPY unit forces all objects it SPOOPS on adjacent tiles to move away!",
   },
   -- 129
   {
@@ -1633,7 +1633,7 @@ tiles_list = {
     color = {5, 2},
     layer = 20,
     tags = {"follow", "find", "cg5"},
-    desc = "STALK: If X stalks Y, X becomes an intelligent AI determined to get to Y."
+    desc = "STALK (Infix Condition): If X stalks Y, X becomes an intelligent AI determined to get to Y."
   },
   -- 130
   {
@@ -1737,7 +1737,7 @@ tiles_list = {
     color = {5, 3},
     layer = 20,
     tags = {"like", "bounded"},
-    desc = "LIEK: If a unit LIEKs objects, it is picky, and cannot step onto a tile unless it has at least one object it LIEKs.",
+    desc = "LIEK (Verb): If a unit LIEKs objects, it is picky, and cannot step onto a tile unless it has at least one object it LIEKs.",
   },
   -- 140
   {
@@ -1900,8 +1900,8 @@ tiles_list = {
     texttype = "verb_object",
     color = {0, 3},
     layer = 20,
-    tags = {"copy", "lily"},
-    desc = "COPKAT: COPKAT units copy the successful movements of the indicated object, no matter how far away."
+    tags = {"copycat", "lily"},
+    desc = "COPKAT (Verb): COPKAT units copy the successful movements of the indicated object, no matter how far away."
   },
   --157
   {
@@ -2322,7 +2322,7 @@ tiles_list = {
     color = {1,3},
     layer = 20,
     tags = {"shift"},
-    desc = "MOOV: A verbified GO. x MOOV y means that only x can shift y around.",
+    desc = "MOOV (Verb): A verbified GO. x MOOV y means that only x can shift y around.",
   },
   --- 197
   {
@@ -2334,7 +2334,7 @@ tiles_list = {
     color = {5, 3},
     layer = 20,
     tags = {"patashu"},
-    desc = "HAET: A unit cannot stop onto a tile that has something it HAETs. (x HAET LVL makes x unable to move.)",
+    desc = "HAET (Verb): A unit cannot stop onto a tile that has something it HAETs. (x HAET LVL makes x unable to move.)",
   },
   -- 198
   {
@@ -2781,7 +2781,7 @@ tiles_list = {
     color = {5,2},
     layer = 20,
     tags = {"correct", "cg5"},
-    desc = "COREKT: Prefix condition that is true if the unit is in an active rule.",
+    desc = "COREKT (Prefix Condition): True if the unit is in an active rule.",
   },
   -- 236
   {
@@ -3482,7 +3482,7 @@ tiles_list = {
     color = {2,4},
     layer = 20,
     tags = {"timeless"},
-    desc = "TIMLES: A prefix condition that is true if ZA WARUDO is active."
+    desc = "TIMLES (Prefix Condition): True if ZA WARUDO is active."
   },
   --vitellary: added down here because i did not want to have to change the numbers for everything beyond "h", plus i think i heard that it would mess things up if i added it up there
   -- 309
@@ -3787,7 +3787,7 @@ tiles_list = {
     texttype = "verb_object",
     color = {0,1},
     layer = 20,
-    desc = "IGNOR: x IGNOR y causes x to not be able to interact with or move y in any way."
+    desc = "IGNOR (Verb): x IGNOR y causes x to not be able to interact with or move y in any way."
   },
   -- 339
   {
@@ -3809,7 +3809,7 @@ tiles_list = {
     color = {2,1},
     layer = 20,
     tags = {"versus"},
-    desc = "VS: The two objects enter a 1 on 1 battle: whoever steps on the other wins.",
+    desc = "VS (Verb): The two objects enter a 1 on 1 battle: whoever steps on the other wins.",
   },
   --- 334
   {
@@ -3910,7 +3910,7 @@ tiles_list = {
     color = {1,4},
     layer = 20,
     tags = {"same float", "sameflye", "same flye"},
-    desc = "SAMEFLOAT(: True if the subject is on the same amount of flye as the object.",
+    desc = "SAMEFLOAT( (Infix Condition): True if the subject is on the same amount of flye as the object.",
   },
   -- 342
   {
