@@ -744,51 +744,109 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
         end
       end
     elseif condtype == "behind" then
-        for _,param in ipairs(params) do
-          local found = false
-          local others = {}
-          for ndir=1,8 do
-            local dx, dy, dir, px, py = getNextTile(unit, dirs8[ndir][1], dirs8[ndir][2], ndir)
-            mergeTable(others, param ~= "mous" and getUnitsOnTile(px,py,param) or {})
-          end
-          for _,other in ipairs(others) do
-            local dx, dy, dir, px, py = getNextTile(other, -dirs8[other.dir][1], -dirs8[other.dir][2], other.dir)
-            if px == unit.x and py == unit.y then
-              found = true
-              break
-            else
-              print(unit.x, unit.y)
-              print(px, py)
+        if unit == outerlvl then -- SANS n't but not when the unit is looking directly away from the border
+            for _,param in ipairs(params) do
+              local found = false
+              local others = findUnitsByName(param)
+              for _,on in ipairs(others) do
+                if inBounds(on.x - dirs8[on.dir][1], on.y - dirs8[on.dir][2]) then
+                  found = true
+                  break
+                end
+              end
+              if unit == outerlvl and surrounds ~= nil and surrounds_name == level_name then
+                for nx=-1,1 do
+                  for ny=-1,1 do
+                    for __,on in ipairs(surrounds[nx][ny]) do
+                      if not nameIs(on, param) and nx + dirs8[on.dir][1] == 0 and ny + dirs8[on.dir][2] == 0 then
+                        found = true
+                        break
+                      end
+                    end
+                  end
+                end
+              end
+              if not found then
+                result = false
+                break
+              end
             end
-          end
-          if not found then
-            result = false
-            break
-          end
+        else
+            for _,param in ipairs(params) do
+              local found = false
+              local others = {}
+              for ndir=1,8 do
+                local dx, dy, dir, px, py = getNextTile(unit, dirs8[ndir][1], dirs8[ndir][2], ndir)
+                mergeTable(others, param ~= "mous" and getUnitsOnTile(px,py,param) or {})
+              end
+              for _,other in ipairs(others) do
+                local dx, dy, dir, px, py = getNextTile(other, -dirs8[other.dir][1], -dirs8[other.dir][2], other.dir)
+                if px == unit.x and py == unit.y then
+                  found = true
+                  break
+                else
+                  print(unit.x, unit.y)
+                  print(px, py)
+                end
+              end
+              if not found then
+                result = false
+                break
+              end
+            end
         end
     elseif condtype == "beside" then
-        for _,param in ipairs(params) do
-          local found = false
-          local others = {}
-          for ndir=1,8 do
-            local dx, dy, dir, px, py = getNextTile(unit, dirs8[ndir][1], dirs8[ndir][2], ndir)
-            mergeTable(others, param ~= "mous" and getUnitsOnTile(px,py,param) or {})
-          end
-          for _,other in ipairs(others) do
-            local dx, dy, dir, px, py = getNextTile(other, dirs8[other.dir][2], -dirs8[other.dir][1], other.dir)
-            local dx, dy, dir, qx, qy = getNextTile(other, -dirs8[other.dir][2], dirs8[other.dir][1], other.dir)
-            if px == unit.x and py == unit.y or qx == unit.x and qy == unit.y then
-              found = true
-              break
-            else
-              print(unit.x, unit.y)
-              print(px, py)
+        if unit == outerlvl then -- literally just SANS n't except when the unit is at the corner of the level and facing in/out
+            for _,param in ipairs(params) do
+              local found = false
+              local others = findUnitsByName(param)
+              for _,on in ipairs(others) do
+                if inBounds(on.x - dirs8[on.dir][2], on.y + dirs8[on.dir][1]) or inBounds(on.x + dirs8[on.dir][2], on.y - dirs8[on.dir][1])then
+                  found = true
+                  break
+                end
+              end
+              if unit == outerlvl and surrounds ~= nil and surrounds_name == level_name then
+                for nx=-1,1 do
+                  for ny=-1,1 do
+                    for __,on in ipairs(surrounds[nx][ny]) do
+                      if nameIs(on, param) and nx + dirs8[on.dir][1] == 0 and ny + dirs8[on.dir][2] == 0 then
+                        found = true
+                        break
+                      end
+                    end
+                  end
+                end
+              end
+              if not found then
+                result = false
+                break
+              end
             end
-          end
-          if not found then
-            result = false
-            break
-          end
+        else
+            for _,param in ipairs(params) do
+              local found = false
+              local others = {}
+              for ndir=1,8 do
+                local dx, dy, dir, px, py = getNextTile(unit, dirs8[ndir][1], dirs8[ndir][2], ndir)
+                mergeTable(others, param ~= "mous" and getUnitsOnTile(px,py,param) or {})
+              end
+              for _,other in ipairs(others) do
+                local dx, dy, dir, px, py = getNextTile(other, dirs8[other.dir][2], -dirs8[other.dir][1], other.dir)
+                local dx, dy, dir, qx, qy = getNextTile(other, -dirs8[other.dir][2], dirs8[other.dir][1], other.dir)
+                if px == unit.x and py == unit.y or qx == unit.x and qy == unit.y then
+                  found = true
+                  break
+                else
+                  print(unit.x, unit.y)
+                  print(px, py)
+                end
+              end
+              if not found then
+                result = false
+                break
+              end
+            end
         end
     elseif condtype == "sans" then
       for _,param in ipairs(params) do
