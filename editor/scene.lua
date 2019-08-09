@@ -526,7 +526,6 @@ end
   end
   
   if selector_open and key == "rshift" or key == "r" and (key_down["lctrl"] or key_down["rctrl"]) then
-    print("-1")
     current_tile_grid = tile_grid[selector_page]
   end
   

@@ -3973,7 +3973,7 @@ tiles_list = {
     texttype = "verb_object",
     color = {0, 3},
     layer = 20,
-    tags = {"unfollow", "facing away", "    lookaway", "behind", "infix condition", "verb"},
+    tags = {"unfollow", "facing away", "lookaway", "behind", "infix condition", "verb"},
     desc = "LOOK AWAY: As an infix condition, true if this object is on the tile behind the unit As a verb, makes the unit face away from this object at end of turn.",
   },
   --348

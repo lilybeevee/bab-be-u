@@ -7,8 +7,8 @@ function moveBlock()
     doZip(unit)
   end
   
-  local isstalk = matchesRule("?", "look at", "?");
-  for _,ruleparent in ipairs(isstalk) do
+  local isstalknt = matchesRule("?", "look at", "?");
+  for _,ruleparent in ipairs(isstalknt) do
     local stalkers = findUnitsByName(ruleparent[1][1])
     local stalkees = copyTable(findUnitsByName(ruleparent[1][3]))
     local stalker_conds = ruleparent[1][4][1]
@@ -32,8 +32,8 @@ function moveBlock()
     end
   end
   
-  local unstalk = matchesRule("?", "look away", "?");
-  for _,ruleparent in ipairs(unstalk) do
+  local isstalk = matchesRule("?", "look away", "?");
+  for _,ruleparent in ipairs(isstalk) do
     local stalkers = findUnitsByName(ruleparent[1][1])
     local stalkees = copyTable(findUnitsByName(ruleparent[1][3]))
     local stalker_conds = ruleparent[1][4][1]
@@ -46,7 +46,7 @@ function moveBlock()
           local stalk_dir = dist > 0 and dirs8_by_offset[-sign(stalkee.x - stalker.x)][-sign(stalkee.y - stalker.y)] or stalkee.dir
           if dist > 0 and hasProperty(stalker, "ortho") then
             local use_hori = math.abs(stalkee.x - stalker.x) > math.abs(stalkee.y - stalker.y)
-            stalk_dir = dirs8_by_offset[use_hori and -sign(stalkee.x - stalker.x) or 0][not use_hori and -sign(stalkee.y - stalker.y) or 0]
+            stalk_dir = dirs8_by_offset[use_hori and sign(stalkee.x - stalker.x) or 0][not use_hori and sign(stalkee.y - stalker.y) or 0]
           end
           addUndo({"update", stalker.id, stalker.x, stalker.y, stalker.dir})
           stalker.olddir = stalker.dir

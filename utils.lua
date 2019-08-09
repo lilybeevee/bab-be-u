@@ -744,7 +744,7 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
         end
       end
     elseif condtype == "behind" then
-        if unit == outerlvl then -- SANS n't but not when the unit is looking directly away from the border
+        if unit == outerlvl then -- SANS n't but not when the unit is looking directly at the border
             for _,param in ipairs(params) do
               local found = false
               local others = findUnitsByName(param)
