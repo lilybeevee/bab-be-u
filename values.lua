@@ -197,11 +197,11 @@ selector_grid_contents = {
     "kirb","text_kirb","frut","text_frut","jail","text_jail","sine","text_sine",0,0,0,0,0,0,0,0,0,0,
     "bup","text_bup","piler","text_piler","fenss","text_fenss","buble","text_buble","creb","text_creb","icecub","text_icecub",0,0,0,0,0,0,
     "boy","text_boy","dayzy","text_dayzy","platfor","text_platfor","pepis","text_pepis",0,0,0,0,0,0,"lila","text_lila","tot","text_tot",
-    "steev","text_steev","splittr","text_splittr","colld","text_colld","arro","text_arro",0,0,0,0,0,0,"pata","text_pata","o","text_o",
+    "steev","text_steev","splittr","text_splittr","colld","text_colld","arro","text_arro",0,0,0,0,0,0,"pata","text_pata","jill","text_jill",
     "han","text_han","clowd","text_clowd","bellt","text_bellt","ger","text_ger",0,0,0,0,0,0,"larry","text_larry","zsoob","text_zsoob",
-    "os","text_os","hurcane","text_hurcane","spik","text_spik","hors","text_hors",0,0,0,0,0,0,0,0,"jill","text_jill",
-    "firbolt","text_firbolt","lie","text_lie","spiky","text_spiky","can","text_can",0,0,0,0,0,0,0,0,0,0,
-    "icbolt","text_icbolt","lie/8","text_lie/8","bordr","text_bordr","togll","text_togll",0,0,0,0,0,0,0,0,0,0,
+    "os","text_os","hurcane","text_hurcane","spik","text_spik","hors","text_hors",0,0,0,0,0,0,0,0,"o","text_o",
+    "firbolt","text_firbolt","lie","text_lie","spiky","text_spiky","can","text_can",0,0,0,0,0,0,0,0,"square","text_square",
+    "icbolt","text_icbolt","lie/8","text_lie/8","bordr","text_bordr","togll","text_togll",0,0,0,0,0,0,0,0,"triangle","text_triangle",
   },
   -- page 5: properties, verbs and conditions
   {
@@ -1139,6 +1139,7 @@ tiles_list = {
     layer = 5,
     eye = {x=19, y=7, w=2, h=2},
     tags = {"dev", "chars", "thefox"},
+    desc = "pi pi piiii!!!",
   },
   -- 86
   {
@@ -3974,6 +3975,48 @@ tiles_list = {
     layer = 20,
     tags = {"unfollow", "facing away", "    lookaway", "behind", "infix condition", "verb"},
     desc = "LOOK AWAY: As an infix condition, true if this object is on the tile behind the unit As a verb, makes the unit face away from this object at end of turn.",
+  },
+  --348
+  {
+    name = "square",
+    sprite = "square",
+    type = "object",
+    color = {2, 4},
+    layer = 5,
+    eye = {x=19, y=7, w=2, h=2},
+    tags = {"dev", "chars", "thefox"},
+    desc = "oh no am square????"
+  },
+  --349
+  {
+    name = "triangle",
+    sprite = "triangle",
+    type = "object",
+    color = {2, 4},
+    layer = 5,
+    eye = {x=19, y=7, w=2, h=2},
+    tags = {"dev", "chars", "thefox"},
+    desc = "TRIASNGLE?????? this is ridicouuolus"
+  },
+  --350
+  {
+    name = "text_square",
+    sprite = "text_square",
+    type = "text",
+    color = {2, 4},
+    layer = 20,
+    eye = {x=19, y=7, w=2, h=2},
+    tags = {"dev", "chars", "thefox"},
+  },
+  --351
+  {
+    name = "text_triangle",
+    sprite = "text_triangle",
+    type = "text",
+    color = {2, 4},
+    layer = 20,
+    eye = {x=19, y=7, w=2, h=2},
+    tags = {"dev", "chars", "thefox"},
   },
 }
 
