@@ -690,6 +690,29 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
           end
         end
       end
+    elseif condtype == "behind" then
+        for _,param in ipairs(params) do
+          local found = false
+          local others = {}
+          for ndir=1,8 do
+            local dx, dy, dir, px, py = getNextTile(unit, dirs8[ndir][1], dirs8[ndir][2], ndir)
+            mergeTable(others, param ~= "mous" and getUnitsOnTile(px,py,param) or {})
+          end
+          for _,other in ipairs(others) do
+            local dx, dy, dir, px, py = getNextTile(other, -dirs8[other.dir][1], -dirs8[other.dir][2], other.dir)
+            if px == unit.x and py == unit.y then
+              found = true
+              break
+            else
+              print(unit.x, unit.y)
+              print(px, py)
+            end
+          end
+          if not found then
+            result = false
+            break
+          end
+        end
     elseif condtype == "sans" then
       for _,param in ipairs(params) do
         local others = findUnitsByName(param)
