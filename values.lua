@@ -173,7 +173,7 @@ selector_grid_contents = {
   },
   -- page 2: letters
   {
-    "letter_a","letter_b","letter_c","letter_d","letter_e","letter_f","letter_g","letter_h","letter_i","letter_j","letter_k","letter_l","letter_m","letter_n","text_o","letter_p","letter_q","letter_r",
+    "letter_a","letter_b","letter_c","letter_d","letter_e","letter_f","letter_g","letter_h","letter_i","letter_j","letter_k","letter_l","letter_m","letter_n","letter_o","letter_p","letter_q","letter_r",
     "letter_s","letter_t","letter_u","letter_v","letter_w","letter_x","letter_y","letter_z","letter_.","letter_colon","letter_parenthesis","letter_'",0,0,0,0,0,0,
     "letter_go","letter_come","letter_pls","letter_away","letter_my","letter_no","letter_way",0,0,0,0,0,0,0,0,0,0,0,
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -416,6 +416,7 @@ tiles_list = {
     type = "object",
     color = {2, 4},
     layer = 3,
+    desc = "i want 1!!!",
     tags = {"flag"},
   },
   -- 19
@@ -454,6 +455,7 @@ tiles_list = {
     type = "object",
     color = {1, 3},
     layer = 1,
+    desc = "splish sploosh",
     tags = {"water"},
   },
   -- 23
@@ -574,6 +576,7 @@ tiles_list = {
     type = "object",
     color = {6, 2},
     layer = 3,
+    desc = "ce n'est pas une boîte, c'est quelque chose DE MIEUX",
     tags = {"box"},
   },
   --34
@@ -614,6 +617,7 @@ tiles_list = {
     type = "object",
     color = {2, 3},
     layer = 1,
+    desc = "very hot. not hotte tho unless u make it",
     tags = {"lava"},
   },
   --38
@@ -646,6 +650,7 @@ tiles_list = {
     color = {3, 1},
     layer = 20,
     tags = {"chars"},
+    desc = "meem is the true philosopher of our time",
   },
   --39
   {
@@ -700,7 +705,7 @@ tiles_list = {
     rotate = "true",
     eye = {x=14, y=8, w=2, h=2},
     tags = {"apple", "android", "windows", "linux"},
-    desc = "OS: Its sprites changes with the user's Operating System!",
+    desc = "OS: Its sprites change depending on the user's Operating System!",
   },
   --44
   {
@@ -740,6 +745,7 @@ tiles_list = {
     color = {2, 2},
     layer = 3,
     rotate = "true",
+    desc = "babs favorite snacc",
     tags = {"fruit"},
   },
   --48
@@ -780,6 +786,7 @@ tiles_list = {
     layer = 5,
     rotate = "true",
     eye = {x=16, y=9, w=3, h=3},
+    desc = "smol frens who own pointy tridents, play with explosives, and bake good cake. nobody knows how to describe more than one of them",
     tags = {"wug", "chars"},
   },
   --52
@@ -789,6 +796,7 @@ tiles_list = {
     type = "text",
     color = {2, 4},
     layer = 20,
+    desc = "wogs dream is to be a mad scientist and go evil with power using nothing but sheer linguistics. linguists' evil career options may be limited but that wont stop wog from trying their best",
     tags = {"wug", "chars"},
   },
   --tutorial sprites
@@ -898,7 +906,7 @@ tiles_list = {
     color = {4, 1},
     layer = 3,
     tags = {"orb", "ball"},
-    desc = "colecc",
+    desc = "hnmm... roun. colecc",
   },
   -- 64
   {
@@ -917,6 +925,7 @@ tiles_list = {
     color = {1, 1},
     layer = 1,
     rotate = true,
+    desc = "bells and bellts are both metal so theyre basically the same thing right? dont tell anyone",
     tags = {"belt"},
   },
   -- 66
@@ -1168,6 +1177,7 @@ tiles_list = {
     type = "object",
     color = {5, 1},
     layer = 1,
+    desc = "don step on it. or do step on it. ur choice",
     tags = {"grass"},
   },
   -- 88
@@ -1207,6 +1217,7 @@ tiles_list = {
     layer = 3,
     tags = {"hurricane", "tornado"},
     eye = {x=15, y=15, w=3, h=3},
+    desc = "woosh swoosh vwoosh aaaa",
   },
   -- 92
   {
@@ -1442,6 +1453,7 @@ tiles_list = {
     type = "object",
     color = {1, 4},
     layer = 1,
+    desc = "nothin says colld like diagonal lines",
     tags = {"ice"},
   },
   --- 113
@@ -1504,6 +1516,7 @@ tiles_list = {
     type = "object",
     color = {0, 1},
     layer = 3,
+    desc = "secretly made from several pairs of pliers sacrificed to keepin babs out (or in)",
     tags = {"pillar"},
   },
   -- 119
@@ -2218,6 +2231,7 @@ tiles_list = {
     layer = 5,
     rotate = true,
     eye = {x=25, y=11, w=2, h=4},
+    desc = "its not spooky, its a fren.",
     tags = {"chars"},
   },
   -- 188
@@ -2227,6 +2241,7 @@ tiles_list = {
     type = "text",
     color = {4, 2},
     layer = 20,
+    desc = "this text is very spooky tho",
     tags = {"chars"},
   },
   -- 189
@@ -2239,6 +2254,7 @@ tiles_list = {
     layer = 5,
     rotate = true,
     eye = {x=16, y=8, w=2, h=4},
+    desc = "the super scan mouth lazers that copy abilities are missing because they forgot to design a mouth",
     tags = {"robot", "chars"},
   },
   -- 190
@@ -3877,6 +3893,15 @@ tiles_list = {
     layer = 20,
     tags = {"nuke", "bomb"},
     desc = "NUEK: A NUEK will begin destroying everything around it, its radius growing once per turn."
+  },
+  -- 340
+  {
+    name = "letter_o",
+    sprite = "text_o",
+    type = "text",
+    texttype = "letter",
+    color = {0,3},
+    layer = 20,
   },
 }
 

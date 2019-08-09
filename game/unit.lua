@@ -9,10 +9,10 @@ function moveBlock()
   
   local isstalk = matchesRule("?", "look at", "?");
   for _,ruleparent in ipairs(isstalk) do
-    local stalkers = findUnitsByName(ruleparent[1][1])
-    local stalkees = copyTable(findUnitsByName(ruleparent[1][3]))
-    local stalker_conds = ruleparent[1][4][1]
-    local stalkee_conds = ruleparent[1][4][2]
+    local stalkers = findUnitsByName(ruleparent.rule.subject.name)
+    local stalkees = copyTable(findUnitsByName(ruleparent.rule.object.name))
+    local stalker_conds = ruleparent.rule.subject.conds
+    local stalkee_conds = ruleparent.rule.object.conds
     for _,stalker in ipairs(stalkers) do
       table.sort(stalkees, function(a, b) return euclideanDistance(a, stalker) < euclideanDistance(b, stalker) end )
       for _,stalkee in ipairs(stalkees) do
@@ -149,7 +149,7 @@ function moveBlock()
       
       --gets each destination the unit needs to go to
       for _,ruleparent in ipairs(getheres) do
-        local fullrule = ruleparent[2]
+        local fullrule = ruleparent.units
         for i,hererule in ipairs(fullrule) do
           if hererule.fullname == "text_her" then
             table.insert(heres,hererule)
@@ -212,7 +212,7 @@ function moveBlock()
       local found = false
       
       for i,ruleparent in ipairs(gettheres) do
-        local fullrule = ruleparent[2]
+        local fullrule = ruleparent.units
         for i,thererule in ipairs(fullrule) do
           if thererule.fullname == "text_thr" then
             table.insert(theres,thererule)
@@ -285,7 +285,7 @@ function moveBlock()
       local found = false
       
       for _,ruleparent in ipairs(getrightheres) do
-        local fullrule = ruleparent[2]
+        local fullrule = ruleparent.units
         for i,righthererule in ipairs(fullrule) do
           if righthererule.fullname == "text_rithere" then
             table.insert(rightheres,righthererule)
@@ -874,7 +874,7 @@ function updateUnits(undoing, big_update)
     local creators = matchesRule(nil, "creat", "?")
     for _,match in ipairs(creators) do
       local creator = match[2]
-      local createe = match[1][1][3]
+      local createe = match[1].rule.object.name
 
       local tile = tiles_by_name[createe]
       if timecheck(creator,"creat",createe) then
@@ -1767,9 +1767,8 @@ function convertUnits(pass)
     local rules = match[1]
     local unit = match[2]
 
-    local rule = rules[1]
-
-    if not unit.new and nameIs(unit, rule[3]) and timecheck(unit) and (pass < 2 or not ruleHasCondition(rule, "arond")) then
+    local rule = rules.rule
+    if not unit.new and nameIs(unit, rule.object.name) and timecheck(unit) then
       if not unit.removed and unit.type ~= "outerlvl" then
         addParticles("bonus", unit.x, unit.y, unit.color)
         table.insert(converted_units, unit)
@@ -1783,7 +1782,7 @@ function convertUnits(pass)
     local unit = match[2]
     local rule = rules[1]
     
-    if not unit.new and unit.class == "unit" and unit.type ~= "outerlvl" and not hasRule(unit, "be", unit.name) and timecheck(unit and (pass < 2 or not ruleHasCondition(rule, "arond"))) then
+    if not unit.new and unit.class == "unit" and unit.type ~= "outerlvl" and not hasRule(unit, "be", unit.name) and timecheck(unit) then
       for _,v in ipairs(referenced_objects) do
         local tile = tiles_by_name[v]
         if v == "text" then
@@ -1817,8 +1816,7 @@ function convertUnits(pass)
     local unit = match[2]
     local rule = rules.rule
 
-    if not unit.new and unit.class == "unit" and not nameIs(unit, rule.object) and
-    unit.type ~= "outerlvl" and timecheck(unit) and (pass < 2 or not ruleHasCondition(rule, "arond")) then
+    if not unit.new and unit.class == "unit" and not nameIs(unit, rule.object) and unit.type ~= "outerlvl" and timecheck(unit) then
       local tile = tiles_by_name[rule.object.name]
       if rule.object.name == "text" then
         tile = tiles_by_name["text_" .. rule.subject.name]
@@ -2041,7 +2039,7 @@ function deleteUnit(unit,convert,undoing)
   if not undoing and not convert and rules_with ~= nil then
     gotters = matchesRule(unit, "got", "?");
     for _,ruleparent in ipairs(gotters) do
-      local rule = ruleparent[1]
+      local rule = ruleparent.rule
       dropGotUnit(unit, rule);
     end
   end

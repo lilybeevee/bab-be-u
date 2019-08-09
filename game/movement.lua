@@ -183,7 +183,7 @@ function doMovement(movex, movey, key)
       local isspoop = matchesRule(nil, "spoop", "?")
       for _,ruleparent in ipairs(isspoop) do
         local unit = ruleparent[2]
-        local othername = ruleparent[1][1][3]
+        local othername = ruleparent[1].rule.object.name
         local others = {}
         for nx=-1,1 do
           for ny=-1,1 do
@@ -222,14 +222,14 @@ function doMovement(movex, movey, key)
   
       local isactualstalk = matchesRule("?", "stalk", "?");
       for _,ruleparent in ipairs(isactualstalk) do
-        local stalkers = findUnitsByName(ruleparent[1][1])
-        local stalker_conds = ruleparent[1].subject.conds
-        local stalkee_conds = ruleparent[1].object.conds
-        if #findUnitsByName(ruleparent[1][3][1]) > 0 then
+        local stalkers = findUnitsByName(ruleparent.rule.subject)
+        local stalker_conds = ruleparent.rule.subject.conds
+        local stalkee_conds = ruleparent.rule.object.conds
+        if #findUnitsByName(ruleparent.rule.object.name) > 0 then
           for _,stalker in ipairs(stalkers) do
             if testConds(stalker, stalker_conds) then
               local found_target = nil
-              for _,stalkee in ipairs(getUnitsOnTile(stalker.x, stalker.y, ruleparent[1][3])) do -- is it standing on the target
+              for _,stalkee in ipairs(getUnitsOnTile(stalker.x, stalker.y, ruleparent.rule.object.name)) do -- is it standing on the target
                 if testConds(stalkee, stalkee_conds) and stalker.id ~= stalkee.id then
                   found_target = 0
                   break
@@ -261,7 +261,7 @@ function doMovement(movex, movey, key)
                         visited[x+1][y+1] = first_loop and dir or visited[pos.x+1][pos.y+1] -- value depicts which way to travel to get there
                         local success, movers, specials = canMove(stalker,dx,dy,dir,false,false,nil,nil,nil,pos.x,pos.y)
                         if success then
-                          local stalkees = getUnitsOnTile(x, y, ruleparent[1][3])
+                          local stalkees = getUnitsOnTile(x, y, ruleparent.rule.object.name)
                           for _,stalkee in ipairs(stalkees) do
                             if testConds(stalkee, stalkee_conds) and stalker.id ~= stalkee.id  then
                               found_target = visited[x+1][y+1]
@@ -396,7 +396,7 @@ function doMovement(movex, movey, key)
       local ismoov = matchesRule(nil, "moov", "?")
       for _,ruleparent in ipairs(ismoov) do
         local unit = ruleparent[2]
-        local othername = ruleparent[1][1][3]
+        local othername = ruleparent[1].rule.object.name
         local others = getUnitsOnTile(unit.x,unit.y)
         for _,other in ipairs(others) do
           local is_moover = hasRule(unit, "moov", othername)
@@ -883,8 +883,8 @@ function findCopykats(unit)
   local result = {}
   local iscopykat = matchesRule("?", "copkat", unit);
   for _,ruleparent in ipairs(iscopykat) do
-    local copykats = findUnitsByName(ruleparent[1][1][1])
-    local copykat_conds = ruleparent[1][1][2]
+    local copykats = findUnitsByName(ruleparent.rule.subject.name)
+    local copykat_conds = ruleparent.rule.subject.conds
     for _,copykat in ipairs(copykats) do
       if testConds(copykat, copykat_conds) then
         result[copykat] = "copkat";
@@ -1178,7 +1178,7 @@ function doPortal(unit, px, py, move_dir, dir, reverse)
         local portal_index = -1;
         for _,rule in ipairs(portal_rules) do
           for _,s in ipairs(findUnitsByName(v.fullname)) do
-            if testConds(s, rule[1].subject.conds) then
+            if testConds(s, rule.rule.subject.conds) then
               portals_direct[s] = true
             end
           end
@@ -1379,7 +1379,8 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
   local isbounded = matchesRule(unit, "liek", "?")
   if (#isbounded > 0) then
     for i,ruleparent in ipairs(isbounded) do
-      local liek = ruleparent[1][3]
+      print(fullDump(ruleparent))
+      local liek = ruleparent.rule.object.name
       local success = false
       if hasRule(unit,"liek",liek) and hasRule(unit,"haet",liek) then
         success = true
@@ -1477,7 +1478,9 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
         end
       end
       --New FLYE mechanic, as decreed by the bab dictator - if you aren't sameFloat as a push/pull/sidekik, you can enter it.
+      -- print("checking if",v.name,"has goawaypls")
       if hasProperty(v, "go away pls") and not would_swap_with then
+        -- print("success")
         if pushing then
           --glued units are pushed all at once or not at all
           if hasProperty(v, "glued") then
@@ -1521,6 +1524,8 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
         else
           stopped = stopped or sameFloat(unit, v)
         end
+      else
+        -- print("fail (or would_swap_with)")
       end
       
       --if/elseif chain for everything that sets stopped to true if it's true - no need to check the remainders after all! (but if anything ignores flye, put it first, like haet!)

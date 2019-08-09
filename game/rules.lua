@@ -365,7 +365,7 @@ function parseRules(undoing)
 end
 
 function parseSentence(sentence_, params_, dir) --prob make this a local function? idk
-  --print("parsing... "..fullDump(sentence_))
+  -- print("parsing... "..fullDump(sentence_))
   local been_first = params_[1] --splitting up the params like this was because i was too lazy
   local first_words = params_[2] -- all of them are tables anyway, so it ends up referencing properly
   local final_rules = params_[3]
@@ -610,14 +610,14 @@ function addRule(full_rule)
       return
     else
       for _,v in ipairs(referenced_objects) do
-        addRuleSimple({v, rules.subject.conds}, rules.verbs, rules.object, units, dir)
+        addRuleSimple({v, rules.subject.conds}, rules.verb, rules.object, units, dir)
       end
     end
   elseif subject_not % 2 == 1 then
     if tiles_by_name[subject] or subject == "text" then
       local new_subjects = getEverythingExcept(subject)
       for _,v in ipairs(new_subjects) do
-        addRuleSimple({v, rules.subject.conds}, rules.verbs, rules.object, units, dir)
+        addRuleSimple({v, rules.subject.conds}, rules.verb, rules.object, units, dir)
       end
       return
     end
@@ -763,9 +763,11 @@ function postRules()
               -- print("matching rule", rule[1][1], rule[2], rule[3][1])
               if has_conds then
                 for _,cond in ipairs(inverse_conds[1]) do
+                  if not frule.subject.conds then frule.subject.conds = {} end
                   table.insert(frule.subject.conds, cond)
                 end
                 for _,cond in ipairs(inverse_conds[2]) do
+                  if not frule.object.conds then frule.object.conds = {} end
                   table.insert(frule.object.conds, cond)
                 end
               else
@@ -787,7 +789,7 @@ function postRules()
         if not_rules[n - 1] then
           blockRules(not_rules[n - 1], true)
         end
-        blockRules(full_rules)
+        blockRules(full_rules, true)
 
         mergeTable(all_units, rules[2])
       end
@@ -866,7 +868,7 @@ end
 function shouldReparseRulesIfConditionalRuleExists(r1, r2, r3)
   local rules = matchesRule(r1, r2, r3);
   for _,rule in ipairs(rules) do
-    local subject_cond = rule.rule.subject.conds;
+    local subject_cond = rule.rule.subject.conds or {};
     if (#subject_cond > 0) then
       should_parse_rules = true;
     return true;

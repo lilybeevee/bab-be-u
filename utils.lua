@@ -323,13 +323,13 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
     for _,rules in ipairs(rules_list) do
       local rule = rules.rule
       if (debugging) then
-        for i=1,3 do
-          print("checking this rule,"..tostring(i)..":"..tostring(rule[ruleparts[i]].name))
-        end
+        print("checking this rule,"..tostring(1)..":"..tostring(rule[ruleparts[1]].name))
+        print("checking this rule,"..tostring(2)..":"..tostring(rule[ruleparts[2]]))
+        print("checking this rule,"..tostring(3)..":"..tostring(rule[ruleparts[3]].name))
       end
       local result = true
       for i=1,3 do
-        if nrules[ruleparts[i]] ~= nil and nrules[ruleparts[i]] ~= (i==2 and rule[ruleparts[i]] or rule[ruleparts[i]][1]) and (fnrules[ruleparts[i]] == nil or (fnrules[ruleparts[i]] ~= nil and fnrules[ruleparts[i]] ~= (i==2 and rule[ruleparts[i]] or rule[ruleparts[i]][1]))) then
+        if nrules[i] ~= nil and nrules[i] ~= (i == 2 and rule.verb or rule[ruleparts[i]].name) and (fnrules[i] == nil or (fnrules[i] ~= nil and fnrules[i] ~= (i == 2 and rule.verb or rule[ruleparts[i]].name))) then
           if (debugging) then
             print("false due to nrules/fnrules mismatch")
           end
@@ -340,9 +340,10 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
       if result then
         for i=1,3,2 do
           if rule_units[i] ~= nil then
-            if testConds(rule_units[i], rule[ruleparts[i]].conds) then
+            if not testConds(rule_units[i], rule[ruleparts[i]].conds) then
               if (debugging) then
-                print("false due to cond")
+                print("false due to cond", i)
+                print(fullDump(rule_units[i]), fullDump(rule[ruleparts[i]].conds))
               end
               result = false
             end
@@ -495,19 +496,20 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
 
     local x, y = unit.x, unit.y
 
-    if condtype:starts("that") then
+    local old_withrecursioncond = withrecursion[cond];
+    
+    withrecursion[cond] = true
+    
+    if (old_withrecursioncond) then
       result = false
-      if not withrecursion[cond] then
-        result = true
-        withrecursion[cond] = true
-        local verb = condtype:sub(6)
-        for _,param in ipairs(params) do
-          if not hasRule(unit,verb,param) then
-            result = false
-            break
-          end
+    elseif condtype:starts("that") then
+      result = true
+      local verb = condtype:sub(6)
+      for _,param in ipairs(params) do
+        if not hasRule(unit,verb,param) then
+          result = false
+          break
         end
-        withrecursion[cond] = false
       end
     elseif condtype == "wfren" then
       for _,param in ipairs(params) do
@@ -782,6 +784,8 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
     if not result then
       endresult = false
     end
+    
+    withrecursion[cond] = old_withrecursioncond
   end
   return endresult
 end
@@ -892,7 +896,7 @@ function calculateLight()
   for _,unit in ipairs(brites) do
     love.graphics.setCanvas(temp_lightcanvas)
     love.graphics.clear(1, 1, 1, 1)
-    drawShadows(uniy, opaques)
+    drawShadows(unit, opaques)
     love.graphics.setCanvas(lightcanvas)
     love.graphics.setBlendMode("add", "premultiplied")
     love.graphics.draw(temp_lightcanvas)
@@ -1585,7 +1589,8 @@ function getAbsolutelyEverythingExcept(except)
   if "no1" ~= except then
     table.insert(result, "no1")
   end
-  if "text" ~= except then
+  --don't specify generic text if it's already a type of text
+  if not except:starts("text") then
     table.insert(result, "text")
   end
   
@@ -1810,8 +1815,8 @@ function timecheck(unit,verb,prop)
     elseif verb ~= nil and prop ~= nil then
       local rulecheck = matchesRule(unit,verb,prop)
       for _,ruleparent in ipairs(rulecheck) do
-        for i=1,#ruleparent[1][4][1] do
-          if ruleparent[1][4][1][i][1] == "timles" then
+        for i=1,#ruleparent.rule.subject.conds do
+          if ruleparent.rule.subjects.conds[i][1] == "timles" then
             return true
           end
         end
@@ -1954,13 +1959,13 @@ function addRuleSimple(subject, verb, object, units, dir)
   addRule({
     rule = {
       subject = {
-        name = subject[1],
-        conds = subject[2]
+        name = subject.name or subject[1],
+        conds = subject.conds or subject[2]
       },
       verb = verb,
       object = {
-        name = object[1],
-        conds = object[2]
+        name = object.name or object[1],
+        conds = object.conds or object[2]
       }
     },
     units = units,
