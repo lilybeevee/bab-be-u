@@ -509,7 +509,7 @@ tiles_list = {
     texttype = "cond_prefix_or_property",
     color = {2, 2},
     layer = 20,
-    tags = {"colors", "colours", "red", "prefix"},
+    tags = {"colors", "colours", "red", "prefix condition"},
     desc = "REED: Causes the unit to appear red.",
   },
   --28
@@ -523,7 +523,7 @@ tiles_list = {
     texttype = "cond_prefix_or_property",
     color = {1, 3},
     layer = 20,
-    tags = {"colors", "colours", "blue", "prefix"},
+    tags = {"colors", "colours", "blue", "prefix condition"},
     desc = "BLEU: Causes the unit to appear blue.",
   },
   --29
@@ -996,7 +996,7 @@ tiles_list = {
     texttype = "cond_infix",
     color = {0, 3},
     layer = 20,
-    tags = {"on", "w/fren", "infix"},
+    tags = {"on", "w/fren", "infix condition"},
     desc = "W/ FREN (Infix Condition): True if the unit shares a tile with this object.",
   },
   -- 73
@@ -1007,7 +1007,7 @@ tiles_list = {
     texttype = "verb_object",
     color = {0, 3},
     layer = 20,
-    tags = {"follow", "facing", "lookat", "infix", "verb"},
+    tags = {"follow", "facing", "lookat", "infix condition", "verb"},
     desc = "LOOK AT: As an infix condition, true if this object is on the tile in front of the unit As a verb, makes the unit face this object at end of turn.",
   },
   -- 74
@@ -1018,7 +1018,7 @@ tiles_list = {
     texttype = "cond_prefix",
     color = {2, 2},
     layer = 20,
-    tags = {"lonely", "friendless", "prefix"},
+    tags = {"lonely", "friendless", "prefix condition"},
     desc = "FRENLES (Prefix Condition): True if the unit is alone on its tile.",
   },
   --75
@@ -1339,7 +1339,7 @@ tiles_list = {
     texttype = "cond_infix",
     color = {0, 3},
     layer = 20,
-    tags = {"near", "around", "infix"},
+    tags = {"near", "around", "infix condition"},
     desc = "AROND (Infix Condition): True if the indicated object is on any of the tiles surrounding the unit. (The unit's own tile is not checked.)",
   },
   --- 102
@@ -1596,7 +1596,7 @@ tiles_list = {
     texttype = "cond_prefix",
     color = {0, 3},
     layer = 20,
-    tags = {"idle", "wait...", "prefix"},
+    tags = {"idle", "wait...", "prefix condition"},
     desc = "WAIT... (Prefix Condition): True if the player waited last input.",
   },
   -- 127
@@ -1610,7 +1610,7 @@ tiles_list = {
     texttype = "cond_infix",
     color = {1, 4},
     layer = 20,
-    tags = {"without", "w/o", "infix"},
+    tags = {"without", "w/o", "infix condition"},
     desc = "SANS (Infix Condition): True if none of the indicated object exist in the level.",
   },
   -- 128
@@ -1976,7 +1976,7 @@ tiles_list = {
     color = {0, 3},
     layer = 20,
     rotate = true,
-    tags = {"/", "maybe", "random", "rng", "patashu", "prefix"},
+    tags = {"/", "maybe", "random", "rng", "patashu", "prefix condition"},
     desc = "? (MAYBE) (Prefix Condition): Has a chance of being true, independent for each MAYBE, affected unit and turn. The number on top indicates the % chance of being true.",
   },
   -- 164
@@ -1998,7 +1998,7 @@ tiles_list = {
     texttype = "cond_infix",
     color = {0, 3},
     layer = 20,
-    tags = {"seenby", "infix"},
+    tags = {"seenby", "infix condition"},
     desc = "SEEN BY (Infix Condition): True if an indicated object is looking at this unit from an adjacent tile.",
   },
   -- 166
@@ -2355,7 +2355,7 @@ tiles_list = {
     texttype = "cond_prefix",
     color = {2, 4},
     layer = 20,
-    tags = {"powered", "prefix"},
+    tags = {"powered", "prefix condition"},
     desc = "LIT (Prefix Condition): A BRITE object emits light in all directions. LIT will be true for objects on the same FLYE level if nothing OPAQUE is in the way.",
   },
   -- 200
@@ -2387,7 +2387,7 @@ tiles_list = {
     texttype = "cond_prefix",
     color = {0, 3},
     layer = 20,
-    tags = {"rng", "random", "prefix"},
+    tags = {"rng", "random", "prefix condition"},
     desc = "AN (Prefix Condition): True for a single arbitrary unit per turn and condition.",
   },
   -- 203
@@ -2654,7 +2654,7 @@ tiles_list = {
     texttype = "cond_prefix_or_property",
     color = {5, 2},
     layer = 20,
-    tags = {"colors", "colours", "green", "prefix"},
+    tags = {"colors", "colours", "green", "prefix condition"},
     desc = "grun: Causes the unit to appear green."
   },
   -- 226
@@ -2668,7 +2668,7 @@ tiles_list = {
     texttype = "cond_prefix_or_property",
     color = {2, 4},
     layer = 20,
-    tags = {"colors", "colours", "yellow", "prefix"},
+    tags = {"colors", "colours", "yellow", "prefix condition"},
     desc = "YELLO: Causes the unit to appear yellow."
   },
   -- 227
@@ -2682,7 +2682,7 @@ tiles_list = {
     texttype = "cond_prefix_or_property",
     color = {3, 2},
     layer = 20,
-    tags = {"colors", "colours", "purple", "prefix"},
+    tags = {"colors", "colours", "purple", "prefix condition"},
     desc = "PURP: Causes the unit to appear purple."
   },
   -- 228
@@ -2696,7 +2696,7 @@ tiles_list = {
     texttype = "cond_prefix_or_property",
     color = {2, 3},
     layer = 20,
-    tags = {"colors", "colours", "orange", "prefix"},
+    tags = {"colors", "colours", "orange", "prefix condition"},
     desc = "ORANG: Causes the unit to appear orange."
   },
   -- 229
@@ -2710,7 +2710,7 @@ tiles_list = {
     texttype = "cond_prefix_or_property",
     color = {1, 4},
     layer = 20,
-    tags = {"colors", "colours", "cyan", "prefix"},
+    tags = {"colors", "colours", "cyan", "prefix condition"},
     desc = "CYEANN: Causes the unit to appear cyan."
   },
   -- 230
@@ -2724,7 +2724,7 @@ tiles_list = {
     texttype = "cond_prefix_or_property",
     color = {0, 3},
     layer = 20,
-    tags = {"colors", "colours", "white", "prefix"},
+    tags = {"colors", "colours", "white", "prefix condition"},
     desc = "whit: Causes the unit to appear white."
   },
   -- 231
@@ -2738,7 +2738,7 @@ tiles_list = {
     texttype = "cond_prefix_or_property",
     color = {0, 0},
     layer = 20,
-    tags = {"colors", "colours", "black", "prefix"},
+    tags = {"colors", "colours", "black", "prefix condition"},
     desc = "BLACC: Causes the unit to appear black."
   },
   -- 232
@@ -2780,7 +2780,7 @@ tiles_list = {
     texttype = "cond_prefix",
     color = {5,2},
     layer = 20,
-    tags = {"correct", "cg5", "prefix"},
+    tags = {"correct", "cg5", "prefix condition"},
     desc = "COREKT (Prefix Condition): True if the unit is in an active rule.",
   },
   -- 236
@@ -2794,7 +2794,7 @@ tiles_list = {
     texttype = "cond_prefix_or_property",
     color = {2,2},
     layer = 20,
-    tags = {"wrong", "false", "cg5", "prefix"},
+    tags = {"wrong", "false", "cg5", "prefix condition"},
     desc = "RONG: As a prefix, true if the unit is in a negated rule. As a property, causes associated units to return a negated form of the rule.",
   },
   -- 237
@@ -3459,7 +3459,7 @@ tiles_list = {
     texttype = "cond_infix_verb",
     color = {0, 3},
     layer = 20,
-    tags = {"lily", "with", "w/", "infix"},
+    tags = {"lily", "with", "w/", "infix condition"},
     desc = "THAT (Infix Condition): x THAT BE y is true if x BE y. x THAT GOT Y is true if x GOT y. And so on."
   },
   -- 307
@@ -3471,7 +3471,7 @@ tiles_list = {
     texttype = "hideous_amalgamation",
     color = {0, 3},
     layer = 20,
-    tags = {"lily", "with", "w/", "infix"},
+    tags = {"lily", "with", "w/", "infix condition"},
     desc = "THAT BE (Infix Condition): x THAT BE y is true if x BE y."
   },
   -- 308
@@ -3482,7 +3482,7 @@ tiles_list = {
     texttype = "cond_prefix",
     color = {2,4},
     layer = 20,
-    tags = {"timeless", "prefix"},
+    tags = {"timeless", "prefix condition"},
     desc = "TIMLES (Prefix Condition): True if ZA WARUDO is active."
   },
   --vitellary: added down here because i did not want to have to change the numbers for everything beyond "h", plus i think i heard that it would mess things up if i added it up there
@@ -3610,7 +3610,7 @@ tiles_list = {
     texttype = "cond_prefix",
     color = {3, 3},
     layer = 20,
-    tags = {"clicked", "mouse", "prefix"},
+    tags = {"clicked", "mouse", "prefix condition"},
     desc = "CLIKT (Prefix Condition): CLIKT objects will be true when left-clicked. Clicks will pass a turn if this text exists.",
   },
   -- 321
@@ -3881,7 +3881,7 @@ tiles_list = {
     texttype = "cond_prefix_or_property",
     color = {4, 1},
     layer = 20,
-    tags = {"colors", "colours", "pink", "prefix"},
+    tags = {"colors", "colours", "pink", "prefix condition"},
     desc = "PINC: Causes the unit to become pink!"
   },
   -- 339
@@ -3912,7 +3912,7 @@ tiles_list = {
     texttype = "cond_infix",
     color = {1,4},
     layer = 20,
-    tags = {"same float", "sameflye", "same flye", "infix"},
+    tags = {"same float", "sameflye", "same flye", "infix condition"},
     desc = "SAMEFLOAT( (Infix Condition): True if the subject is on the same amount of flye as the object.",
   },
   -- 342
