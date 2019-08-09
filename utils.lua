@@ -1,12 +1,13 @@
 function clear()
+  letters_exist = false
 	replay_playback = false
   replay_playback_turns = nil
 	replay_playback_string = nil
 	replay_playback_turn = 1
 	replay_playback_time = love.timer.getTime()
 	replay_playback_interval = 0.3
-    old_replay_playback_interval = 0.3
-    replay_pause = false
+  old_replay_playback_interval = 0.3
+  replay_pause = false
 	replay_string = ""
   new_units_cache = {}
   undoing = false
@@ -17,7 +18,7 @@ function clear()
   last_input_time = nil
   most_recent_key = nil
   just_moved = true
-  should_parse_rules = true
+  should_parse_rules = false--true
   graphical_property_cache = {}
   initializeGraphicalPropertyCache();
   debug_values = {}
@@ -49,8 +50,8 @@ function clear()
   cursor_converted = false
   mouse_X = love.mouse.getX()
   mouse_Y = love.mouse.getY()
-      last_click_x = nil
-      last_click_y = nil
+  last_click_x = nil
+  last_click_y = nil
   mouse_oldX = mouse_X
   mouse_oldY = mouse_Y
   cursors = {}
@@ -204,6 +205,9 @@ function initializeOuterLvl()
 end
 
 function initializeEmpties()
+  --TODO: other ways to make a text_no1 could be to have a text_text_no1 but that seems contrived that you'd have text_text_no1 but not text_no1?
+  --text_her counts because it looks for no1, I think. similarly we could have text_text_her but again, contrived
+  if ((not letters_exist) and (not units_by_name["text_no1"]) and (not units_by_name["text_her"])) then return end
   for x=0,mapwidth-1 do
     for y=0,mapheight-1 do
       local tileid = x + y * mapwidth

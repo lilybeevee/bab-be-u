@@ -2001,12 +2001,14 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty)
   unit.active = false
   unit.blocked = false
   unit.removed = false
+  
+  if (not unit_tests) then
+    unit.draw = {x = unit.x, y = unit.y, scalex = 1, scaley = 1, rotation = (unit.dir - 1) * 45}
 
-  unit.draw = {x = unit.x, y = unit.y, scalex = 1, scaley = 1, rotation = (unit.dir - 1) * 45}
-
-  if convert then
-    unit.draw.scaley = 0
-    addTween(tween.new(0.1, unit.draw, {scaley = 1}), "unit:scale:" .. unit.tempid)
+    if convert then
+      unit.draw.scaley = 0
+      addTween(tween.new(0.1, unit.draw, {scaley = 1}), "unit:scale:" .. unit.tempid)
+    end
   end
 
   unit.old_active = unit.active
@@ -2033,7 +2035,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty)
   unit.is_portal = data.portal or false
 
   unit.fullname = data.name
-  if rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname] then
+  if rules_effecting_names[unit.name] then
     should_parse_rules = true
   end
 
@@ -2041,6 +2043,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty)
     should_parse_rules = true
     unit.name = "text"
     if unit.texttype == "letter" then
+      letters_exist = true
       unit.textname = string.sub(unit.fullname, 8)
     else
       unit.textname = string.sub(unit.fullname, 6)
@@ -2135,7 +2138,7 @@ function deleteUnit(unit,convert,undoing)
     unit.removed_final = false
     return
   end
-  if unit.type == "text" or rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname] then
+  if unit.type == "text" or rules_effecting_names[unit.name] then
     should_parse_rules = true
   end
   removeFromTable(units, unit)
@@ -2148,7 +2151,7 @@ function deleteUnit(unit,convert,undoing)
   removeFromTable(units_by_tile[tileid], unit)
   if not convert then
     removeFromTable(units_by_layer[unit.layer], unit)
-  else
+  elseif not unit_tests then
     table.insert(still_converting, unit)
     addTween(tween.new(0.1, unit.draw, {scaley = 0}), "unit:scale:" .. unit.tempid)
     tick.delay(function() removeFromTable(still_converting, unit) end, 0.1)
@@ -2181,32 +2184,36 @@ function moveUnit(unit,x,y,portal)
       if unit.type == "text" or rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname] then
         should_parse_rules = true
       end
-      portaling[unit] = portal
-      -- set draw positions to portal offset to interprolate through portals
-      unit.draw.x, unit.draw.y = portal.draw.x, portal.draw.y
-      addTween(tween.new(0.1, unit.draw, {x = x, y = y}), "unit:pos:" .. unit.tempid)
-      -- instantly change object's rotation, weirdness ensues otherwise
-      unit.draw.rotation = (unit.dir - 1) * 45
-      tweens["unit:dir:" .. unit.tempid] = nil
+      if (not unit_tests) then
+        portaling[unit] = portal
+        -- set draw positions to portal offset to interprolate through portals
+        unit.draw.x, unit.draw.y = portal.draw.x, portal.draw.y
+        addTween(tween.new(0.1, unit.draw, {x = x, y = y}), "unit:pos:" .. unit.tempid)
+        -- instantly change object's rotation, weirdness ensues otherwise
+        unit.draw.rotation = (unit.dir - 1) * 45
+        tweens["unit:dir:" .. unit.tempid] = nil
+      end
     elseif x ~= unit.x or y ~= unit.y then
       if unit.type == "text" or rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname] then
         should_parse_rules = true
       end
-      if (unit.draw.x == x and unit.draw.y == y) then
-        --'bump' effect to show movement failed
-        unit.draw.x = (unit.x+x*2)/3;
-        unit.draw.y = (unit.y+y*2)/3;
-        addTween(tween.new(0.1, unit.draw, {x = x, y = y}), "unit:pos:" .. unit.tempid)
-      elseif math.abs(x - unit.x) < 2 and math.abs(y - unit.y) < 2 then
-        --linear interpolate to adjacent destination
-        addTween(tween.new(0.1, unit.draw, {x = x, y = y}), "unit:pos:" .. unit.tempid)
-      else
-        --fade in, fade out effect
-        addTween(tween.new(0.05, unit.draw, {scalex = 0}), "unit:pos:" .. unit.tempid, function()
-        unit.draw.x = x
-        unit.draw.y = y
-        addTween(tween.new(0.05, unit.draw, {scalex = 1}), "unit:pos:" .. unit.tempid)
-        end)
+      if (not unit_tests) then
+        if (unit.draw.x == x and unit.draw.y == y) then
+          --'bump' effect to show movement failed
+          unit.draw.x = (unit.x+x*2)/3;
+          unit.draw.y = (unit.y+y*2)/3;
+          addTween(tween.new(0.1, unit.draw, {x = x, y = y}), "unit:pos:" .. unit.tempid)
+        elseif math.abs(x - unit.x) < 2 and math.abs(y - unit.y) < 2 then
+          --linear interpolate to adjacent destination
+          addTween(tween.new(0.1, unit.draw, {x = x, y = y}), "unit:pos:" .. unit.tempid)
+        else
+          --fade in, fade out effect
+          addTween(tween.new(0.05, unit.draw, {scalex = 0}), "unit:pos:" .. unit.tempid, function()
+          unit.draw.x = x
+          unit.draw.y = y
+          addTween(tween.new(0.05, unit.draw, {scalex = 1}), "unit:pos:" .. unit.tempid)
+          end)
+        end
       end
     end
 
@@ -2222,6 +2229,7 @@ end
 
 function updateDir(unit, dir, force)
   if not force and rules_with ~= nil then
+    if unit.dir == dir then return false end
     if not timecheck(unit) then
       return false
     end
@@ -2232,18 +2240,18 @@ function updateDir(unit, dir, force)
       return false
     end
   end
-  unit.dir = dir
-  if unit.type == "text" or rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname]  then
-    should_parse_rules = true
-  end
-  if unit.fullname == "text_direction" then
-    unit.textname = dirs8_by_name[unit.dir];
-  end
-  if unit.fullname == "text_spin" then
-    unit.textname = "spin_" .. tostring(unit.dir);
-  end
   
-  if unit.fullname == "letter_colon" then
+  unit.dir = dir
+  
+  if unit.fullname == "text_mayb" then
+    should_parse_rules = true
+  elseif unit.fullname == "text_direction" then
+    unit.textname = dirs8_by_name[unit.dir];
+    should_parse_rules = true
+  elseif unit.fullname == "text_spin" then
+    unit.textname = "spin_" .. tostring(unit.dir);
+    should_parse_rules = true
+  elseif unit.fullname == "letter_colon" then
     if unit.dir == 1 or unit.dir == 2 then
       unit.textname = ":"
     elseif unit.dir == 3 then
@@ -2263,9 +2271,8 @@ function updateDir(unit, dir, force)
     else
       unit.textname = "  "
     end
-  end
-  
-  if unit.fullname == "letter_u" then
+    should_parse_rules = true
+  elseif unit.fullname == "letter_u" then
     local umlauts = getTextOnTile(unit.x,unit.y-1)
     for _,umlaut in ipairs(umlauts) do
       if umlaut.fullname == "letter_colon" and umlaut.dir == 3 then
@@ -2273,9 +2280,8 @@ function updateDir(unit, dir, force)
         break
       end
     end
-  end
-  
-  if unit.fullname == "letter_i" then
+    should_parse_rules = true
+  elseif unit.fullname == "letter_i" then
     local umlauts = getTextOnTile(unit.x,unit.y-1)
     if umlauts ~= nil then
       for _,umlaut in ipairs(umlauts) do
@@ -2289,32 +2295,34 @@ function updateDir(unit, dir, force)
     else
       unit.textname = "i"
     end
-  end
-  
-  if unit.fullname == "letter_parenthesis" then
+    should_parse_rules = true
+  elseif unit.fullname == "letter_parenthesis" then
     if unit.dir == 1 or unit.dir == 2 or unit.dir == 3 then
       unit.textname = "("
     elseif unit.dir == 5 or unit.dir == 6 or unit.dir == 7 then
       unit.textname = ")"
     end
+    should_parse_rules = true
   end
   
-  unit.draw.rotation = unit.draw.rotation % 360
-  local target_rot = (dir - 1) * 45
-  if unit.rotate and math.abs(unit.draw.rotation - target_rot) == 180 then
-    -- flip "mirror" effect
-    addTween(tween.new(0.05, unit.draw, {scalex = 0}), "unit:dir:" .. unit.tempid, function()
-      unit.draw.rotation = target_rot
-      addTween(tween.new(0.05, unit.draw, {scalex = 1}), "unit:dir:" .. unit.tempid)
-    end)
-  else
-    -- smooth angle rotation
-    if unit.draw.rotation - target_rot > 180 then
-      target_rot = target_rot + 360
-    elseif target_rot - unit.draw.rotation > 180 then
-      target_rot = target_rot - 360
+  if (not unit_tests) then
+    unit.draw.rotation = unit.draw.rotation % 360
+    local target_rot = (dir - 1) * 45
+    if unit.rotate and math.abs(unit.draw.rotation - target_rot) == 180 then
+      -- flip "mirror" effect
+      addTween(tween.new(0.05, unit.draw, {scalex = 0}), "unit:dir:" .. unit.tempid, function()
+        unit.draw.rotation = target_rot
+        addTween(tween.new(0.05, unit.draw, {scalex = 1}), "unit:dir:" .. unit.tempid)
+      end)
+    else
+      -- smooth angle rotation
+      if unit.draw.rotation - target_rot > 180 then
+        target_rot = target_rot + 360
+      elseif target_rot - unit.draw.rotation > 180 then
+        target_rot = target_rot - 360
+      end
+      addTween(tween.new(0.1, unit.draw, {scalex = 1, rotation = target_rot}), "unit:dir:" .. unit.tempid)
     end
-    addTween(tween.new(0.1, unit.draw, {scalex = 1, rotation = target_rot}), "unit:dir:" .. unit.tempid)
   end
   return true
 end

@@ -245,7 +245,7 @@ function parseRules(undoing)
 
           dx, dy, dir, x, y = getNextTile(last_unit, dx, dy, dir)
 
-          if not been_here[x + y * mapwidth] then --can only go to each tile twice each first word; why?
+          if not been_here[x + y * mapwidth] then --can only go to each tile twice each first word; so that if we have a wrap/portal infinite loop we don't softlock
             been_here[x + y * mapwidth] = 1
           else
             been_here[x + y * mapwidth] = 2
@@ -868,9 +868,12 @@ function shouldReparseRulesIfConditionalRuleExists(r1, r2, r3)
   local rules = matchesRule(r1, r2, r3);
   for _,rule in ipairs(rules) do
     local subject_cond = rule[1][4][1];
-    if (#subject_cond > 0) then
+    local subject = rule[1][1];
+    --We only care about conditional rules that effect text, specific text, wurd units and maybe portals too.
+    --We can also distinguish between different conditions (todo).
+    if (#subject_cond > 0 and (subject:starts("text") or rules_effecting_names[subject])) then
       should_parse_rules = true;
-    return true;
+      return true;
     end
   end
   return false;
