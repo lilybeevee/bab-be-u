@@ -18,7 +18,8 @@ function clear()
   last_input_time = nil
   most_recent_key = nil
   just_moved = true
-  should_parse_rules = false--true
+  should_parse_rules_at_turn_boundary = false
+  should_parse_rules = false
   graphical_property_cache = {}
   initializeGraphicalPropertyCache();
   debug_values = {}

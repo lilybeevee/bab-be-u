@@ -52,6 +52,11 @@ function doDirRules()
 end
 
 function doMovement(movex, movey, key)
+  --I guess this is the right place to do this?
+  if (should_parse_rules_at_turn_boundary) then
+    should_parse_rules = true
+  end
+
 	extendReplayString(movex, movey, key)
   walkdirchangingrulesexist = rules_with["munwalk"] or rules_with["sidestep"] or rules_with["diagstep"] or rules_with["hopovr"] or rules_with["knightstep"];
   local played_sound = {}

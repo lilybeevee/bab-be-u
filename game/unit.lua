@@ -2248,6 +2248,11 @@ function updateDir(unit, dir, force)
   
   unit.dir = dir
   
+  --Some units in rules_effecting_names are there because their direction matters (a portal or part of a parse-effecting look at/seen by condition).
+  if rules_effecting_names[unit.fullname] then
+    should_parse_rules = true
+  end
+  
   if unit.fullname == "text_mayb" then
     should_parse_rules = true
   elseif unit.fullname == "text_direction" then

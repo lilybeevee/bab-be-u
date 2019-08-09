@@ -1340,7 +1340,7 @@ tiles_list = {
     color = {0, 3},
     layer = 20,
     tags = {"near", "around"},
-    desc = "AROND (Prefix Condition): True if the indicated object is on any of the tiles surrounding the unit. (The unit's own tile is not checked.)",
+    desc = "AROND (Infix Condition): True if the indicated object is on any of the tiles surrounding the unit. (The unit's own tile is not checked.)",
   },
   --- 102
   {

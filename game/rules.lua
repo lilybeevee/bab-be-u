@@ -100,6 +100,7 @@ function parseRules(undoing)
   end
   if (should_parse_rules) then
     should_parse_rules = false
+    should_parse_rules_at_turn_boundary = false
   else
     return
   end
@@ -842,14 +843,16 @@ function shouldReparseRules()
   --TODO: We care about text, specific text and wurd units - this can't be easily specified to matchesRule.
   if shouldReparseRulesIfConditionalRuleExists("?", "be", "go arnd") then return true end
   if shouldReparseRulesIfConditionalRuleExists("?", "be", "mirr arnd") then return true end
+  if shouldReparseRulesIfConditionalRuleExists("lvl", "be", "go arnd", true) then return true end
+  if shouldReparseRulesIfConditionalRuleExists("lvl", "be", "mirr arnd", true) then return true end
   if shouldReparseRulesIfConditionalRuleExists("?", "be", "ortho") then return true end
   if shouldReparseRulesIfConditionalRuleExists("?", "be", "diag") then return true end
   if shouldReparseRulesIfConditionalRuleExists("?", "ben't", "wurd") then return true end
   if shouldReparseRulesIfConditionalRuleExists("?", "be", "za warudo") then return true end
   if shouldReparseRulesIfConditionalRuleExists("?", "be", "rong") then return true end
   if rules_with["poor toll"] then
-    if shouldReparseRulesIfConditionalRuleExists("?", "be", "flye") then return true end
-    if shouldReparseRulesIfConditionalRuleExists("?", "be", "tall") then return true end
+    if shouldReparseRulesIfConditionalRuleExists("?", "be", "flye", true) then return true end
+    if shouldReparseRulesIfConditionalRuleExists("?", "be", "tall", true) then return true end
   end
   return false
 end
@@ -864,16 +867,42 @@ function populateRulesEffectingNames(r1, r2, r3)
   end
 end
 
-function shouldReparseRulesIfConditionalRuleExists(r1, r2, r3)
+function shouldReparseRulesIfConditionalRuleExists(r1, r2, r3, even_non_wurd)
   local rules = matchesRule(r1, r2, r3);
   for _,rule in ipairs(rules) do
     local subject_cond = rule[1][4][1];
     local subject = rule[1][1];
     --We only care about conditional rules that effect text, specific text, wurd units and maybe portals too.
     --We can also distinguish between different conditions (todo).
-    if (#subject_cond > 0 and (subject:starts("text") or rules_effecting_names[subject])) then
-      should_parse_rules = true;
-      return true;
+    if (#subject_cond > 0 and (even_non_wurd or subject:starts("text") or rules_effecting_names[subject])) then
+      for _,cond in ipairs(subject_cond) do
+        local cond_name = cond[1]
+        local cond_units = cond[2]
+        --TODO: This needs to change for condition stacking.
+        --An infix condition that references another unit just dumps the second unit into rules_effecting_names (This is fine for all infix conditions, for now, but maybe not perpetually? for example sameFloat() might malfunction since the floatness of the other unit could change unexpectedly due to a SECOND conditional rule).
+        if (#cond_units > 0) then
+          for _,unit in ipairs(cond_units) do
+            rules_effecting_names[unit] = true
+            if unit == "mous" then
+              should_parse_rules_at_turn_boundary = true;
+            end
+          end
+        else
+          --Handle specific prefix conditions.
+          --Frenles is hard to do since it could theoretically be triggered by ANY other unit. Instead, just make it reparse rules all the time, sorry.
+          if cond_name == "frenles" or cond_name == "frenlesn't" then
+            should_parse_rules = true;
+            return true;
+          else
+            --What are the others? WAIT... only changes at turn boundary. MAYBE can only change on turn boundary or if the unit or text moves (by definition these already reparse rules). AN only changes on turn boundary. COREKT/RONG can only change when text reparses anyway by definition, so it should never trigger it. TIMELES only changes at turn boundary. CLIKT only changes at turn boundary. Colours only change at turn boundary. So every other prefix condition, for now, just needs one check per turn, but new ones will need to be considered.
+            should_parse_rules_at_turn_boundary = true;
+          end
+          
+          --As another edge to consider, what if the level geometry changes suddenly? Well, portals already trigger reparsing rules when they update, which is the only kind of external level geometry change. In addition, text/wurds changing flye/tall surprisingly would already trigger rule reparsing since we checked those rules. But, what about a non-wurd changing flye/tall, allowing it to go through a portal, changing the condition of a different parse effecting rule? This can also happen with level be go arnd/mirr arnd turning on or off. parseRules should fire in such cases. So specifically for these cases, even though they aren't wurd/text, we do want to fire     parseRules when their conditions change.
+          
+          --One final edge case to consider: MOUS, which just moves around on its own. This also triggers should_parse_rules_at_turn_boundary, since that's how often we care about MOUS moving.
+        end
+      end
     end
   end
   return false;
