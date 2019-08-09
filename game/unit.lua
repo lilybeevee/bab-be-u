@@ -32,6 +32,31 @@ function moveBlock()
     end
   end
   
+  local unstalk = matchesRule("?", "look away", "?");
+  for _,ruleparent in ipairs(unstalk) do
+    local stalkers = findUnitsByName(ruleparent[1][1])
+    local stalkees = copyTable(findUnitsByName(ruleparent[1][3]))
+    local stalker_conds = ruleparent[1][4][1]
+    local stalkee_conds = ruleparent[1][4][2]
+    for _,stalker in ipairs(stalkers) do
+      table.sort(stalkees, function(a, b) return euclideanDistance(a, stalker) < euclideanDistance(b, stalker) end )
+      for _,stalkee in ipairs(stalkees) do
+        if testConds(stalker, stalker_conds) and testConds(stalkee, stalkee_conds) then
+          local dist = euclideanDistance(stalker, stalkee)
+          local stalk_dir = dist > 0 and dirs8_by_offset[-sign(stalkee.x - stalker.x)][-sign(stalkee.y - stalker.y)] or stalkee.dir
+          if dist > 0 and hasProperty(stalker, "ortho") then
+            local use_hori = math.abs(stalkee.x - stalker.x) > math.abs(stalkee.y - stalker.y)
+            stalk_dir = dirs8_by_offset[use_hori and -sign(stalkee.x - stalker.x) or 0][not use_hori and -sign(stalkee.y - stalker.y) or 0]
+          end
+          addUndo({"update", stalker.id, stalker.x, stalker.y, stalker.dir})
+          stalker.olddir = stalker.dir
+          updateDir(stalker, stalk_dir)
+          break
+        end
+      end
+    end
+  end
+  
   local to_destroy = {}
   local time_destroy = {}
   

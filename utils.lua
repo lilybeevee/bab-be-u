@@ -690,6 +690,59 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
           end
         end
       end
+    elseif condtype == "look away" then
+      for _,param in ipairs(params) do
+        local isdir = false
+        if param == "ortho" then
+          isdir = true
+          if (unit.dir % 2 == 0) then
+            result = false
+            break
+          end
+        elseif param == "diag" then
+          isdir = true
+          if (unit.dir % 2 == 1) then
+            result = false
+            break
+          end
+        else
+          for i = 1,8 do
+            if param == dirs8_by_name[i] then
+              isdir = true
+              if (unit.dir ~= i) then
+                result = false
+                break
+              end
+            end
+          end
+        end
+        if (not isdir) then
+          local others
+          if unit == outerlvl and surrounds ~= nil and surrounds_name == level_name then
+            others = {}
+            --use surrounds to remember what was around the level
+            for __,on in ipairs(surrounds[dirs8[unit.dir][1]][dirs8[unit.dir][2]]) do
+              if nameIs(on, param) then
+                table.insert(others, on);
+              end
+            end
+          else
+            local dx, dy, dir, px, py = getNextTile(unit, -dirs8[unit.dir][1], -dirs8[unit.dir][2], unit.dir)
+            if param == "lvl" then
+              --if we're looking in-bounds, then we're looking at a level technically!
+              result = not inBounds(px, py)
+            elseif param ~= "mous" then
+              others = getUnitsOnTile(px, py, param, false, unit) --currently, conditions only work up to one layer of nesting, so the noun argument of the condition is assumed to be just a noun
+            else
+              others = getCursorsOnTile(px, py, false, unit)
+            end
+          end
+          if others ~= nil and #others == 0 then
+            result = false
+            break
+          end
+        end
+      end
     elseif condtype == "behind" then
         for _,param in ipairs(params) do
           local found = false

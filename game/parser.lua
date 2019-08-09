@@ -141,6 +141,11 @@ local cond_infixes = {
             directions_and_objects
           },
           {
+            {name = "look away"},
+            not_suffix,
+            directions_and_objects
+          },
+          {
             {type = "cond_infix_verb"},
             {type = "verb_all", mod = 1},
             not_suffix,
