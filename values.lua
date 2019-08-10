@@ -152,7 +152,7 @@ colour_for_palette[6][4] = "blacc";
 selector_grid_contents = {
   -- page 1: default
   {
-    0, "text_be", "text_&", "text_got", "text_nt", "text_every1", "text_no1", "text_text", "text_wurd", "text_meta", "text_sublvl", "text_wait...", "text_mous", "text_clikt", "text_nxt", "text_stay ther", "lvl", "text_lvl",
+    0, "text_be", "text_&", "text_got", "text_n't", "text_every1", "text_no1", "text_text", "text_wurd", "text_meta", "text_sublvl", "text_wait...", "text_mous", "text_clikt", "text_nxt", "text_stay ther", "lvl", "text_lvl",
     "bab", "text_bab", "text_u", "kee", "text_kee", "text_for dor", "text_goooo", "text_icy", "text_icyyyy", "text_behin u", "text_moar", "text_sans", "text_liek", "text_loop", "lin", "text_lin", "selctr", "text_selctr",
     "keek", "text_keek", "text_walk", "dor", "text_dor", "text_ned kee", "text_frens", "text_pathz", "text_groop", "text_u too", "text_u tres", "text_xwx", "text_haet", "text_mayb", "text_an", "text_that", "text_ignor", "text_...",
     "flog", "text_flog", "text_:)", "colld", "text_colld", "text_fridgd", "text_direction", "text_ouch", "text_slep", "text_protecc", "text_sidekik", "text_brite", "text_lit", "text_opaque", "text_torc", "text_vs", "text_nuek", "text_ditto",
@@ -216,7 +216,7 @@ selector_grid_contents = {
     "text_munwalk","text_sidestep","text_diagstep","text_knightstep",0,0,0,0,0,0,0,0,0,0,0,0,0,"text_reed",
     "text_rotatbl",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_orang",
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_yello",
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_gay","text_tranz","text_grun",
+    "text_n't",0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_gay","text_tranz","text_grun",
     "text_babn't", "text_ben't",0,0,0,"text_try again","text_no undo","text_undo","text_za warudo","text_brite",0,0,0,0,0,"text_stelth","text_qt","text_cyeann",
     "text_rocn't","text_waln't",0,0,0,"text_poor toll","text_go arnd","text_mirr arnd","text_glued","text_torc",0,0,0,0,0,"text_blacc","text_whit","text_bleu",
     "text_...","text_ditto",0,0,0,"text_her","text_thr","text_rithere","text_the","text_opaque",0,0,0,0,0,"text_colrful","text_rave","text_purp",
@@ -1525,13 +1525,13 @@ tiles_list = {
   },
   -- 119
   {
-    name = "text_nt",
+    name = "text_n't",
     sprite = "text_nt",
     type = "text",
     texttype = "not",
     color = {2, 2},
     layer = 20,
-    tags = {"not", "n't"},
+    tags = {"not", "nt"},
     desc = "N'T: A suffix that negates the meaning of a verb, condition or object class.",
   },
   -- 120

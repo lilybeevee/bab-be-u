@@ -523,7 +523,7 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
               table.insert(units, mod.unit)
               if mod.name == "text" then
                 name = v.unit.fullname
-              elseif mod.name == "nt" then
+              elseif mod.name == "nt'" then
                 suffix = suffix .. "n't"
               else
                 suffix = suffix .. " " .. mod.name
