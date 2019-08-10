@@ -198,7 +198,7 @@ selector_grid_contents = {
     "bup","text_bup","piler","text_piler","fenss","text_fenss","buble","text_buble","creb","text_creb","icecub","text_icecub",0,0,0,0,0,0,
     "boy","text_boy","dayzy","text_dayzy","platfor","text_platfor","pepis","text_pepis",0,0,0,0,0,0,"lila","text_lila","tot","text_tot",
     "steev","text_steev","splittr","text_splittr","colld","text_colld","arro","text_arro",0,0,0,0,0,0,"pata","text_pata","jill","text_jill",
-    "han","text_han","clowd","text_clowd","bellt","text_bellt","ger","text_ger",0,0,0,0,0,0,"larry","text_larry","zsoob","text_zsoob",
+    "han","text_han","clowd","text_clowd","bellt","text_bellt","ger","text_ger","sno","text_sno","snoman","text_snoman",0,0,"larry","text_larry","zsoob","text_zsoob",
     "os","text_os","hurcane","text_hurcane","spik","text_spik","hors","text_hors",0,0,0,0,0,0,0,0,"o","text_o",
     "firbolt","text_firbolt","lie","text_lie","spiky","text_spiky","can","text_can",0,0,0,0,0,0,0,0,"square","text_square",
     "icbolt","text_icbolt","lie/8","text_lie/8","bordr","text_bordr","togll","text_togll",0,0,0,0,0,0,0,0,"triangle","text_triangle",
@@ -4101,6 +4101,46 @@ tiles_list = {
     color = {0,3},
     layer = 20,
     tags = {"number", "digit", "eight"},
+  },
+  -- 360
+  {
+    name = "snoman",
+    sprite = "snoman",
+    sleepsprite = "snoman_slep",
+    type = "object",
+    color = {0, 3},
+    layer = 5,
+    eye = {x=17, y=8, w=3, h=3},
+    tags = {"chars", "snowman"},
+    desc = "hes magiccal",
+  },
+  -- 361
+  {
+    name = "text_snoman",
+    sprite = "text_snoman",
+    type = "text",
+    color = {0,3},
+    layer = 20,
+    tags = {"chars", "snowman"},
+  },
+  -- 362
+  {
+    name = "sno",
+    sprite = "sno",
+    type = "object",
+    color = {0,3},
+    layer = 4,
+    tags = {"snowflake", "ice", "hail"},
+    desc = "no 2 r the same...\nor is it?",
+  },
+  -- 363
+  {
+    name = "text_sno",
+    sprite = "text_sno",
+    type = "text",
+    color = {0,3},
+    layer = 20,
+    tags = {"snowflake", "ice", "hail"},
   },
 }
 
