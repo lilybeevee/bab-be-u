@@ -2302,7 +2302,7 @@ function updateDir(unit, dir, force)
     if unit.dir == 1 or unit.dir == 2 or unit.dir == 3 then
       unit.textname = ":"
     else
-      unit.textname = "  "
+      unit.textname = ".."
     end
     should_parse_rules = true
   elseif unit.fullname == "letter_parenthesis" then

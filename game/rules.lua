@@ -397,16 +397,31 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
         --...doesn't work yet but that was my plan
         local unit = letter.unit
         local prevunit = prevletter.unit or {}
+        local name = letter.name
         if letter.name == "u" then
           local umlauts = getTextOnTile(unit.x,unit.y-1)
           for _,umlaut in ipairs(umlauts) do
             if umlaut.fullname == "letter_colon" and umlaut.dir == 3 then
-              letter.name = "..u"
+              name = "..u"
             end
+          end
+        elseif letter.name == "o" then
+          if prevletter.name == ":" and prevunit.dir == dir then
+            name = ":o"
+          end
+        elseif letter.name == ")" then
+          if prevletter.name == ":" and prevunit.dir == dir then
+            name = ":)"
+          end
+        elseif letter.name == "(" then
+          if prevletter.name == ":" and prevunit.dir == dir then
+            name = ":("
           end
         end
         
-        new_word = new_word..letter.name
+        if name ~= ":" then
+          new_word = new_word..name
+        end
         
         prevletter = letter
         word_index = word_index + 1
