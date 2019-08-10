@@ -214,7 +214,7 @@ selector_grid_contents = {
     "text_diag","text_ortho","text_go my way","text_direction",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     "text_turn cornr","text_folo wal","text_zip","text_hopovr",0,0,0,0,0,0,0,0,0,0,0,0,0,"text_pinc",
     "text_munwalk","text_sidestep","text_diagstep","text_knightstep",0,0,0,0,0,0,0,0,0,0,0,0,0,"text_reed",
-    "text_rotatbl",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_orang",
+    "text_spin","text_rotatbl",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_orang",
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_yello",
     "text_n't",0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_gay","text_tranz","text_grun",
     "text_babn't", "text_ben't",0,0,0,"text_try again","text_no undo","text_undo","text_za warudo","text_brite",0,0,0,0,0,"text_stelth","text_qt","text_cyeann",
