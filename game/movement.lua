@@ -39,14 +39,26 @@ function doUpdate(already_added, moving_units_next)
 end
 
 function doDirRules()
+  --Algorithm: Similar to COPCAT, we add up all direction rules that apply. Then the final direction is what the unit faces. If it's 0,0 then nothing happens. Numbers are clamped to -1,1.
+  units_to_change = {}
   for k,v in pairs(dirs8_by_name) do
     local isdir = getUnitsWithEffect(v);
     for _,unit in ipairs(isdir) do
-      unit.olddir = unit.dir
+      if (units_to_change[unit] == nil) then
+        units_to_change[unit] = {0, 0}
+      end
+      units_to_change[unit][1] = units_to_change[unit][1] + dirs8[k][1];
+      units_to_change[unit][2] = units_to_change[unit][2] + dirs8[k][2];
+    end
+  end
+  
+  for unit,dir in pairs(units_to_change) do
+    if dir[1] ~= 0 or dir[2] ~= 0 then
+      k = dirs8_by_offset[sign(dir[1])][sign(dir[2])];
       if unit.dir ~= k then
         addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
       end
-      updateDir(unit, k)
+      updateDir(unit, k);
     end
   end
 end
