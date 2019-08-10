@@ -242,7 +242,7 @@ function findLetterSentences(str, index_, sentences_, curr_sentence_, start_) --
   }
   local curr_sentence = copyTable(curr_sentence_ or {})
   local start = start_ or false
-  print("start of findLetterSentences:",str,index,fullDump(sentences),fullDump(curr_sentence),start, sentences.start, sentences.endd, sentences.both, sentences.middle)
+  --print("start of findLetterSentences:",str,index,fullDump(sentences),fullDump(curr_sentence),start, sentences.start, sentences.endd, sentences.both, sentences.middle)
 
   if #curr_sentence == 0 and not index == string.len(str) then --go to the next letter if we don't have anything in this one... or if we do
     findLetterSentences(str, index+1, sentences, {}, false)
