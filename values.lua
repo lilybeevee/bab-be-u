@@ -1139,7 +1139,7 @@ tiles_list = {
     color = {2, 4},
     layer = 5,
     eye = {x=19, y=7, w=2, h=2},
-    tags = {"dev", "chars", "thefox"},
+    tags = {"dev", "chars", "thefox", "puyopuyo tetris"},
     desc = "pi pi piiii!!!",
   },
   -- 86
@@ -1149,7 +1149,7 @@ tiles_list = {
     type = "text",
     color = {2, 4},
     layer = 20,
-    tags = {"dev", "chars", "thefox"},
+    tags = {"dev", "chars", "thefox", "puyopuyo tetris"},
   },
   -- 87
   {
@@ -3985,7 +3985,7 @@ tiles_list = {
     color = {2, 4},
     layer = 5,
     eye = {x=19, y=7, w=2, h=2},
-    tags = {"dev", "chars", "thefox"},
+    tags = {"dev", "chars", "thefox", "puyopuyo tetris"},
     desc = "oh no am square????"
   },
   --349
@@ -3996,7 +3996,7 @@ tiles_list = {
     color = {2, 4},
     layer = 5,
     eye = {x=19, y=7, w=2, h=2},
-    tags = {"dev", "chars", "thefox"},
+    tags = {"dev", "chars", "thefox", "puyopuyo tetris"},
     desc = "TRIASNGLE?????? this is ridicouuolus"
   },
   --350
@@ -4007,7 +4007,7 @@ tiles_list = {
     color = {2, 4},
     layer = 20,
     eye = {x=19, y=7, w=2, h=2},
-    tags = {"dev", "chars", "thefox"},
+    tags = {"dev", "chars", "thefox", "puyopuyo tetris"},
   },
   --351
   {
@@ -4017,7 +4017,7 @@ tiles_list = {
     color = {2, 4},
     layer = 20,
     eye = {x=19, y=7, w=2, h=2},
-    tags = {"dev", "chars", "thefox"},
+    tags = {"dev", "chars", "thefox", "puyopuyo tetris"},
   },
   --just adding these so they exist for letters
   -- 352
