@@ -302,7 +302,7 @@ function parse(words, parser, state_)
   local rule = state.parent_rule.options[state.option][state.index] -- goes to a specific rule; at first, group = cond
   local word = words[state.word_index] --we looking at one word at a time
 
-  while word and word.type == "ellipses" do
+  while word and word.type == "ellipsis" do
     table.insert(state.extra_words, word)
     state.word_index = state.word_index + 1
     word = words[state.word_index]
@@ -551,9 +551,9 @@ local function testParser()
     },
     { -- Test 11 - TRUE
       {name = "bab", type = "object"},
-      {name = "...", type = "ellipses"},
+      {name = "...", type = "ellipsis"},
       {name = "be", type = "verb"},
-      {name = "...", type = "ellipses"},
+      {name = "...", type = "ellipsis"},
       {name = "u", type = "property"},
     },
   }

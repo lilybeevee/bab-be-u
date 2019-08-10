@@ -152,7 +152,7 @@ colour_for_palette[6][4] = "blacc";
 selector_grid_contents = {
   -- page 1: default
   {
-    0, "text_be", "text_&", "text_got", "text_nt", "text_every1", "text_no1", "text_text", "text_wurd", "text_meta", "text_sublvl", "text_wait", "text_mous", "text_clikt", "text_nxt", "text_stay ther", "lvl", "text_lvl",
+    0, "text_be", "text_&", "text_got", "text_nt", "text_every1", "text_no1", "text_text", "text_wurd", "text_meta", "text_sublvl", "text_wait...", "text_mous", "text_clikt", "text_nxt", "text_stay ther", "lvl", "text_lvl",
     "bab", "text_bab", "text_u", "kee", "text_kee", "text_for dor", "text_goooo", "text_icy", "text_icyyyy", "text_behin u", "text_moar", "text_sans", "text_liek", "text_loop", "lin", "text_lin", "selctr", "text_selctr",
     "keek", "text_keek", "text_walk", "dor", "text_dor", "text_ned kee", "text_frens", "text_pathz", "text_groop", "text_u too", "text_u tres", "text_xwx", "text_haet", "text_mayb", "text_an", "text_that", "text_ignor", "text_...",
     "flog", "text_flog", "text_:)", "colld", "text_colld", "text_fridgd", "text_direction", "text_ouch", "text_slep", "text_protecc", "text_sidekik", "text_brite", "text_lit", "text_opaque", "text_torc", "text_vs", "text_nuek", "text_ditto",
@@ -207,7 +207,7 @@ selector_grid_contents = {
   {
     "text_be","text_&","text_got","text_creat","text_snacc","text_spoop","text_copkat","text_moov","text_yeet","text_liek","text_haet","text_stalk","text_ignor","text_paint","text_vs","text_look at","text_behind","text_look away",
     "text_u","text_u too","text_u tres","text_walk",0,"text_:)","text_:(","text_no swim","text_ouch",0,"text_nxt","text_stay ther","text_sublvl",0,"text_w/fren","text_arond","text_frenles","text_sans",
-    "text_go","text_goooo","text_icy","text_icyyyy",0,"text_ned kee","text_for dor","text_hotte","text_fridgd",0,"text_loop",0,0,0,"text_seen by","text_that","text_that be","text_wait",
+    "text_go","text_goooo","text_icy","text_icyyyy",0,"text_ned kee","text_for dor","text_hotte","text_fridgd",0,"text_loop",0,0,0,"text_seen by","text_that","text_that be","text_wait...",
     "text_no go","text_go away pls","text_come pls","text_sidekik",0,"text_protecc","text_:o","text_xwx","text_wurd",0,0,0,0,0,"text_corekt","text_rong","text_timles","text_lit",
     "text_visit fren","text_slep","text_shy","text_behin u",0,"text_moar","text_split","text_nuek","text_meta",0,0,0,0,0,"text_samefloat","text_clikt","text_mayb","text_an",
     "text_flye","text_tall","text_haet skye","text_haet flor",0,0,0,0,0,0,0,0,0,0,0,0,0,"text_beside",
@@ -1596,13 +1596,13 @@ tiles_list = {
   },
   -- 126
   {
-    name = "text_wait",
+    name = "text_wait...",
     sprite = "text_wait",
     type = "text",
     texttype = "cond_prefix",
     color = {0, 3},
     layer = 20,
-    tags = {"idle", "wait...", "prefix condition"},
+    tags = {"idle", "prefix condition"},
     desc = "WAIT... (Prefix Condition): True if the player waited last input.",
   },
   -- 127
@@ -2808,11 +2808,11 @@ tiles_list = {
     name = "text_...",
     sprite = "text_...",
     type = "text",
-    texttype = "ellipses",
+    texttype = "ellipsis",
     color = {0, 3},
     layer = 20,
-    tags = {"ellipses", "dot dot dot", "dotdotdot", "period"},
-    desc = "... (ELLIPSES): Extends rules. BAB ... BE ... ... U is the same as BAB BE U.",
+    tags = {"ellipsis", "dot dot dot", "dotdotdot", "period"},
+    desc = "... (ELLIPSIS): Extends rules. BAB ... BE ... ... U is the same as BAB BE U.",
   },
   -- 238
   {

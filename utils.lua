@@ -875,7 +875,7 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
           result = false
         end
       end
-    elseif condtype == "wait" then
+    elseif condtype == "wait..." then
       result = last_move ~= nil and last_move[1] == 0 and last_move[2] == 0 and last_click_x == nil and last_click_y == nil
     elseif condtype == "mayb" then
       --add a dummy action so that undoing happens
