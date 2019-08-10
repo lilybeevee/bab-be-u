@@ -404,23 +404,9 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
               letter.name = "..u"
             end
           end
-        elseif letter.name == "o" then
-          if prevletter.name == ":" --[[and prevunit.dir == dir]] then
-            letter.name = ":o"
-          end
-        elseif letter.name == ")" then
-          if prevletter.name == ":" --[[and prevunit.dir == dir]] then
-            letter.name = ":)"
-          end
-        elseif letter.name == "(" then
-          if prevletter.name == ":" --[[and prevunit.dir == dir]] then
-            letter.name = ":("
-          end
         end
         
-        if letter.name ~= ":" then
-          new_word = new_word..letter.name
-        end
+        new_word = new_word..letter.name
         
         prevletter = letter
         word_index = word_index + 1
