@@ -430,11 +430,12 @@ tiles_list = {
   {
     name = "text_:)",
     sprite = "text_good",
+    sleepsprite = "text_good_slep",
     type = "text",
     texttype = "property",
     color = {2, 4},
     layer = 20,
-    tags = {"win", "smiley"},
+    tags = {"win", "smiley", "face", "happy"},
     desc = ":): At end of turn, if U is on :) and survives, U R WIN!",
   },
   -- 21
@@ -847,11 +848,12 @@ tiles_list = {
   {
     name = "text_:(",
     sprite = "text_bad",
+    sleepsprite = "text_bad_slep",
     type = "text",
     texttype = "property",
     color = {2, 1},
     layer = 20,
-    tags = {"defeat", "sad"},
+    tags = {"defeat", "sad", "face"},
     desc = ":(: At end of turn, destroys any U objects on it.",
   },
   -- 59
@@ -930,11 +932,12 @@ tiles_list = {
   {
     name = "text_:o",
     sprite = "text_whoa",
+    sleepsprite = "text_whoa_slep",
     type = "text",
     texttype = "property",
     color = {4, 1},
     layer = 20,
-    tags = {"bonus", "woah", "whoa"},
+    tags = {"bonus", "woah", "whoa", "face"},
     desc = ":o: If U is on :o, the :o is collected. Bonus!",
   },
   -- 67
@@ -1139,7 +1142,7 @@ tiles_list = {
     color = {2, 4},
     layer = 5,
     eye = {x=19, y=7, w=2, h=2},
-    tags = {"dev", "chars", "thefox"},
+    tags = {"dev", "chars", "thefox", "puyopuyo tetris"},
     desc = "pi pi piiii!!!",
   },
   -- 86
@@ -1149,7 +1152,7 @@ tiles_list = {
     type = "text",
     color = {2, 4},
     layer = 20,
-    tags = {"dev", "chars", "thefox"},
+    tags = {"dev", "chars", "thefox", "puyopuyo tetris"},
   },
   -- 87
   {
@@ -1293,11 +1296,12 @@ tiles_list = {
   {
     name = "text_xwx",
     sprite = "text_xwx",
+    sleepsprite = "text_xwx_slep",
     type = "text",
     texttype = "property",
     color = {3, 2},
     layer = 20,
-    tags = {"crash"},
+    tags = {"crash", "oops", "fucky wucky", "face"},
     desc = "XWX: At end of turn, if U is on XWX, the game crashes.",
   },
   --98
@@ -3985,7 +3989,7 @@ tiles_list = {
     color = {2, 4},
     layer = 5,
     eye = {x=19, y=7, w=2, h=2},
-    tags = {"dev", "chars", "thefox"},
+    tags = {"dev", "chars", "thefox", "puyopuyo tetris"},
     desc = "oh no am square????"
   },
   --349
@@ -3996,7 +4000,7 @@ tiles_list = {
     color = {2, 4},
     layer = 5,
     eye = {x=19, y=7, w=2, h=2},
-    tags = {"dev", "chars", "thefox"},
+    tags = {"dev", "chars", "thefox", "puyopuyo tetris"},
     desc = "TRIASNGLE?????? this is ridicouuolus"
   },
   --350
@@ -4007,7 +4011,7 @@ tiles_list = {
     color = {2, 4},
     layer = 20,
     eye = {x=19, y=7, w=2, h=2},
-    tags = {"dev", "chars", "thefox"},
+    tags = {"dev", "chars", "thefox", "puyopuyo tetris"},
   },
   --351
   {
@@ -4017,7 +4021,7 @@ tiles_list = {
     color = {2, 4},
     layer = 20,
     eye = {x=19, y=7, w=2, h=2},
-    tags = {"dev", "chars", "thefox"},
+    tags = {"dev", "chars", "thefox", "puyopuyo tetris"},
   },
   --just adding these so they exist for letters
   -- 352
