@@ -141,6 +141,8 @@ function undoOneAction(turn, i, v, ignore_no_undo)
     end
   elseif action == "timeless_yeet_remove" then
     table.insert(timeless_yote, {unit = v[2], dir = v[3]})
+  elseif action == "timeless_rules" then
+    rules_with = v[2]
 	elseif action == "colour_change" then
     unit = units_by_id[v[2]]
     colour = v[3]
@@ -183,6 +185,12 @@ function doBack(unit, turn)
           addUndo({"remove_cursor", unit.screenx, unit.screeny, unit.id})
           undoOneAction(turn, _, v, ignore_do_undo);
           --TODO: test MOUS vs UNDO interactions
+        elseif (action == "colour_change") then
+          colour = v[3]
+          value = v[4]
+          addUndo({"colour_change", unit.id, colour, unit[colour]})
+          unit[colour] = value
+          updateUnitColourOverride(unit)
         end
       end
     end

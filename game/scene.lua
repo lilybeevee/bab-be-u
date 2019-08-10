@@ -180,18 +180,51 @@ function doReplay(dt)
 end
 
 function doReplayTurn(turn)
-	local turns = replay_playback_string:split(";")
-	local turn_string = turns[turn];
+    if (replay_playback_turns == nil) then
+    replay_playback_string_parts = replay_playback_string:split("|")
+    replay_playback_turns = replay_playback_string_parts[1]:split(";")
+    if (replay_playback_string_parts[2] ~= nil) then
+      local ok, loaded_rng_cache = serpent.load(love.data.decode("string", "base64", replay_playback_string_parts[2]));
+      if (not ok) then
+        print("Serpent error while loading:", ok, fullDump(loaded_rng_cache))
+      end
+      rng_cache = loaded_rng_cache
+    end
+  end
+	local turn_string = replay_playback_turns[turn]
 	if (turn_string == nil or turn_string == "") then
 		replay_playback = false;
 		print("Finished playback at turn: "..tostring(turn));
+    return
 	end
 	local turn_parts = turn_string:split(",")
 	x, y, key = tonumber(turn_parts[1]), tonumber(turn_parts[2]), turn_parts[3];
 	if (x == nil or y == nil) then
 		replay_playback = false;
 		print("Finished playback at turn: "..tostring(turn));
+    return
 	else
+    if (turn_parts[4] ~= nil) then
+      local ok, cursor_table = serpent.load(love.data.decode("string", "base64", turn_parts[4]));
+      if (not ok) then
+        print("Serpent error while loading:", ok, fullDump(cursor_table))
+      else
+        for i,coords in ipairs(cursor_table) do
+          local cursor = cursors[i]
+          if (cursor == nil) then
+            print("Couldn't find cursor while doing replay, halp")
+          else
+            cursor.x = coords[1];
+            cursor.y = coords[2];
+            --[[if (not unit_tests) then
+              local screenx, screeny = gameTileToScreen(cursor.x, cursor.y)
+              cursor.screenx = screenx;
+              cursor.screeny = screeny;
+            end]]
+          end
+        end
+      end
+    end
     doOneMove(x, y, key);
   end
 end
@@ -696,9 +729,9 @@ function scene.draw(dt)
     local fulldrawx = (drawx + 0.5)*TILE_SIZE
     local fulldrawy = (drawy + 0.5)*TILE_SIZE
 
-    if graphical_property_cache["flye"][unit] ~= nil or unit.name == "o" then
+    if graphical_property_cache["flye"][unit] ~= nil or unit.name == "o" or unit.name == "square" or unit.name == "triangle" then
       local flyenes = graphical_property_cache["flye"][unit] or 0
-      if unit.name == "o" then flyenes = flyenes + 1 end
+      if unit.name == "o" or unit.name == "square" or unit.name == "triangle" then flyenes = flyenes + 1 end
       fulldrawy = fulldrawy - math.sin(love.timer.getTime())*5*flyenes
     end
 
@@ -734,29 +767,48 @@ function scene.draw(dt)
 			end
     end
     
-    --performance todos: each line gets drawn twice (both ways), so there's probably a way to stop that. might not be necessary though, since there is virtually no lag so far
+    --performance todos: each line gets drawn twice (both ways), so there's probably a way to stop that. might not be necessary though, since there is no lag so far
+    --in fact, the double lines add to the pixelated look, so for now i'm going to make it intentional and actually add it in a couple places to be consistent
     if unit.name == "lin" and scene ~= editor then
       love.graphics.setLineWidth(3)
       local orthos = {}
       local line = {}
-      local oobline = {}
+      local halfline = {}
       for ndir=1,4 do
         local nx,ny = dirs[ndir][1],dirs[ndir][2]
-        local dx,dy,dir,px,py = getNextTile(unit,nx,ny,2*ndir-1)
+        local dx,dy,dir,px,py,portal = getNextTile(unit,nx,ny,2*ndir-1)
         if inBounds(px,py) then
           local around = getUnitsOnTile(px,py)
-          for _,other in ipairs(around) do
-            if other.name == "lin" or other.name == "lvl" then
-              orthos[ndir] = true
-              table.insert(line,other)
-              break
-            else
-              orthos[ndir] = false
+          if portal == nil then
+            for _,other in ipairs(around) do
+              if other.name == "lin" then
+                orthos[ndir] = true
+                table.insert(line,other)
+                break
+              elseif other.name == "lvl" then
+                orthos[ndir] = true
+                --add it twice to make it look the same as the other lines. should be reduced to one if we figure out that performance todo above 
+                table.insert(line,other)
+                table.insert(line,other)
+                break
+              else
+                orthos[ndir] = false
+              end
+            end
+          else
+            for _,other in ipairs(around) do
+              if other.name == "lin" or other.name == "lvl" then
+                orthos[ndir] = true
+                table.insert(halfline,{unit.x+nx,unit.y+ny})
+                break
+              else
+                orthos[ndir] = false
+              end
             end
           end
         else
           orthos[ndir] = true
-          table.insert(oobline,{px,py})
+          table.insert(halfline,{px,py})
         end
       end
       for ndir=2,8,2 do
@@ -764,11 +816,14 @@ function scene.draw(dt)
         local dx,dy,dir,px,py = getNextTile(unit,nx,ny,ndir)
         local around = getUnitsOnTile(px,py)
         for _,other in ipairs(around) do
-          if other.name == "lin" or other.name == "lvl" then
-            if ((ndir == 2) and not orthos[1] and not orthos[2])
-            or ((ndir == 4) and not orthos[2] and not orthos[3])
-            or ((ndir == 6) and not orthos[3] and not orthos[4])
-            or ((ndir == 8) and not orthos[4] and not orthos[1]) then
+          if other.name == "lin" then
+            if not orthos[ndir/2] and not orthos[((ndir/2)+1)%4] then
+              table.insert(line,other)
+            end
+          elseif other.name == "lvl" then
+            if not orthos[ndir/2] and not orthos[((ndir/2)+1)%4] then
+              --add it twice to make it look the same as the other lines. should be reduced to one if we figure out that performance todo above
+              table.insert(line,other)
               table.insert(line,other)
             end
           end
@@ -784,19 +839,19 @@ function scene.draw(dt)
           love.graphics.line(fulldrawx,fulldrawy,fulldrawx-odx,fulldrawy-ody)
         end
       end
-      if (#oobline > 0) then
-        for _,point in ipairs(oobline) do
+      if (#halfline > 0) then
+        for _,point in ipairs(halfline) do
           local dx = unit.x-point[1]
           local dy = unit.y-point[2]
           local odx = 16*dx
           local ody = 16*dy
           
-          --draws it twice to make it look the same as the other lines. should be reduced to one once we figure out that performance todo above
+          --draws it twice to make it look the same as the other lines. should be reduced to one if we figure out that performance todo above
           love.graphics.line(fulldrawx,fulldrawy,fulldrawx-odx,fulldrawy-ody)
           love.graphics.line(fulldrawx,fulldrawy,fulldrawx-odx,fulldrawy-ody)
         end
       end
-      if (#line == 0) and (#oobline == 0) then
+      if (#line == 0) and (#halfline == 0) then
         drawSprite()
       end
     end
@@ -1501,27 +1556,36 @@ function doOneMove(x, y, key)
       newUndo()
       timeless = not timeless
       if timeless then
-        replay_string = replay_string..tostring(0)..","..tostring(0)..","..tostring("e")..";"
-        playSound("timestop",0.5)
+        extendReplayString(0, 0, "e")
+        if firsttimestop then
+            playSound("timestop long",0.5)
+        else playSound("timestop",0.5)
+            end
        -- print("ZA WARUDO! Time has stopped")
       else
+        addUndo({"timeless_rules", rules_with})
         parseRules()
         doMovement(0,0,"e")
-        playSound("time resume",0.5)
+        if firsttimestop then
+            playSound("time resume long",0.5)
+            firsttimestop = false
+        else playSound("time resume",0.5)
+            end
         --print("And time resumes")
       end
       addUndo({"za warudo", timeless})
       unsetNewUnits()
     else
+      addUndo({"timeless_rules", rules_with})
       timeless = false
     end
     mobile_controls_timeless:setBGImage(sprites[timeless and "ui/time resume" or "ui/timestop"])
   elseif (key == "f") then
-    replay_string = replay_string..tostring(0)..","..tostring(0)..","..tostring("f")..";"
+    extendReplayString(0, 0, "f")
     doWin()
 	elseif (key == "undo") then
 		local result = undo()
-		replay_string = replay_string..tostring(0)..","..tostring(0)..","..tostring("undo")..";"
+		extendReplayString(0, 0, "undo")
     unsetNewUnits()
 		return result
 	else
@@ -1529,6 +1593,7 @@ function doOneMove(x, y, key)
 		last_move = {x, y}
 		just_moved = true
 		doMovement(x, y, key)
+    last_click_x, last_click_y = nil, nil
 		if #undo_buffer > 0 and #undo_buffer[1] == 0 then
 			table.remove(undo_buffer, 1)
 		end
@@ -1580,7 +1645,7 @@ function scene.mouseReleased(x, y, button)
     -- CLIKT prefix
     if units_by_name["text_clikt"] then
         last_click_x, last_click_y = screenToGameTile(love.mouse.getX(), love.mouse.getY())
-        doOneMove(0,0,nil)
+        doOneMove(last_click_x,last_click_y,"clikt")
         last_click_x, last_click_y = nil, nil
         playSound("clicc")
     end

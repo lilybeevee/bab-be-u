@@ -39,20 +39,42 @@ function doUpdate(already_added, moving_units_next)
 end
 
 function doDirRules()
+  --Algorithm: Similar to COPCAT, we add up all direction rules that apply. Then the final direction is what the unit faces. If it's 0,0 then nothing happens. Numbers are clamped to -1,1.
+  units_to_change = {}
   for k,v in pairs(dirs8_by_name) do
     local isdir = getUnitsWithEffect(v);
     for _,unit in ipairs(isdir) do
-      unit.olddir = unit.dir
+      if (units_to_change[unit] == nil) then
+        units_to_change[unit] = {0, 0}
+      end
+      units_to_change[unit][1] = units_to_change[unit][1] + dirs8[k][1];
+      units_to_change[unit][2] = units_to_change[unit][2] + dirs8[k][2];
+    end
+  end
+  
+  for unit,dir in pairs(units_to_change) do
+    if dir[1] ~= 0 or dir[2] ~= 0 then
+      k = dirs8_by_offset[sign(dir[1])][sign(dir[2])];
       if unit.dir ~= k then
         addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
       end
-      updateDir(unit, k)
+      updateDir(unit, k);
     end
   end
 end
 
 function doMovement(movex, movey, key)
-	replay_string = replay_string..tostring(movex)..","..tostring(movey)..","..tostring(key)..";"
+  --I guess this is the right place to do this?
+  if (should_parse_rules_at_turn_boundary) then
+    should_parse_rules = true
+  end
+
+	extendReplayString(movex, movey, key)
+  if (key == "clikt") then
+    last_click_x, last_click_y = movex, movey
+    movex = 0
+    movey = 0
+  end
   walkdirchangingrulesexist = rules_with["munwalk"] or rules_with["sidestep"] or rules_with["diagstep"] or rules_with["hopovr"] or rules_with["knightstep"];
   local played_sound = {}
   local slippers = {}
@@ -1464,7 +1486,7 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
       local would_swap_with = swap_mover or hasProperty(v, "behin u") and pushing
       --pushing a key into a door automatically works
       if (fordor and hasProperty(v, "ned kee")) or (nedkee and hasProperty(v, "for dor")) then
-        if timecheck(unit,"be","ned kee") and timecheck(v,"be","for dor") then
+        if timecheck(unit,"be","ned kee") and timecheck(v,"be","for dor") and sameFloat(unit, v) then
           table.insert(specials, {"open", {unit, v}})
           return true,movers,specials
         else

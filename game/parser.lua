@@ -141,6 +141,11 @@ local cond_infixes = {
             directions_and_objects
           },
           {
+            {name = "look away"},
+            not_suffix,
+            directions_and_objects
+          },
+          {
             {type = "cond_infix_verb"},
             {type = "verb_all", mod = 1},
             not_suffix,
@@ -237,6 +242,7 @@ function findLetterSentences(str, index_, sentences_, curr_sentence_, start_) --
   }
   local curr_sentence = copyTable(curr_sentence_ or {})
   local start = start_ or false
+  --print("start of findLetterSentences:",str,index,fullDump(sentences),fullDump(curr_sentence),start, sentences.start, sentences.endd, sentences.both, sentences.middle)
 
   if #curr_sentence == 0 and not index == string.len(str) then --go to the next letter if we don't have anything in this one... or if we do
     findLetterSentences(str, index+1, sentences, {}, false)
@@ -244,28 +250,31 @@ function findLetterSentences(str, index_, sentences_, curr_sentence_, start_) --
 
   for i=0,string.len(str)-index do
     local substr = str.sub(str,index,index+i)
-    for _,word in ipairs(text_in_tiles) do
-      if substr == word then
-        --print("found word: "..substr)
-        if index == 1 then
-          start = true
-        end
-        table.insert(curr_sentence, substr)
-        if index+i == string.len(str) then --last letter, this sentence is valid to connect to other words
-          if start then
-            table.insert(sentences.both, curr_sentence) --connected to both the start and end, so the parser has to treat this like a string of words
-          else
-            table.insert(sentences.endd, curr_sentence)
-          end
-          return sentences --just in case there's a 1 letter U that gets used or something idk
+    --print("trying:",i,index,substr)
+    --print(substr, text_in_tiles[substr])
+    if text_in_tiles[substr] then
+      --print("found word: "..substr, sentences.start, fullDump(sentences.start), sentences.both, fullDump(sentences.both))
+      if index == 1 then
+        start = true
+      end
+      table.insert(curr_sentence, substr)
+      if index+i == string.len(str) then --last letter, this sentence is valid to connect to other words
+        --print("last letter:",index,i,str,substr)
+        if start then
+          table.insert(sentences.both, copyTable(curr_sentence)) --connected to both the start and end, so the parser has to treat this like a string of words
         else
-          if start then
-            table.insert(sentences.start,curr_sentence)
-          else
-            table.insert(sentences.middle,curr_sentence)
-          end
-          findLetterSentences(str, index+i+1, sentences, curr_sentence, start) --we got one word, now keep going
+          table.insert(sentences.endd, copyTable(curr_sentence))
         end
+        return sentences --just in case there's a 1 letter U that gets used or something idk
+      else
+        --print("not last letter:",index,i,str,substr)
+        if start then
+          table.insert(sentences.start,copyTable(curr_sentence))
+        else
+          table.insert(sentences.middle,copyTable(curr_sentence))
+        end
+        findLetterSentences(str, index+i+1, sentences, curr_sentence, start) --we got one word, now keep going
+        curr_sentence = {}; --now we're done with that particular sentence attempt, so we're back to no words in the sentence
       end
     end
   end
@@ -293,7 +302,7 @@ function parse(words, parser, state_)
   local rule = state.parent_rule.options[state.option][state.index] -- goes to a specific rule; at first, group = cond
   local word = words[state.word_index] --we looking at one word at a time
 
-  while word and word.type == "ellipses" do
+  while word and word.type == "ellipsis" do
     table.insert(state.extra_words, word)
     state.word_index = state.word_index + 1
     word = words[state.word_index]
@@ -542,9 +551,9 @@ local function testParser()
     },
     { -- Test 11 - TRUE
       {name = "bab", type = "object"},
-      {name = "...", type = "ellipses"},
+      {name = "...", type = "ellipsis"},
       {name = "be", type = "verb"},
-      {name = "...", type = "ellipses"},
+      {name = "...", type = "ellipsis"},
       {name = "u", type = "property"},
     },
   }

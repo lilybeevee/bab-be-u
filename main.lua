@@ -308,7 +308,9 @@ function love.load()
   registerSound("fail", 0.5)
   registerSound("bonus", 0.4)
   registerSound("timestop", 1)
+  registerSound("timestop long", 1)
   registerSound("time resume", 1)
+  registerSound("time resume long", 1)
   registerSound("bup", 0.5)
   registerSound("clicc", 1.0)
   print(colr.green("✓ sounds registered"))
@@ -660,7 +662,7 @@ function love.draw()
     'F3+G to toggle rainbowmode\n'..
     'F3+Q for SUPER DUPER DEBUG MODE (wip)\n'..
 	'F3+M to toggle mobile\n'..
-    'F3+H to toggle info boxes\n'..
+    'F3+H to toggle additional tile info\n'..
     'F3+D for MOUS DRUM KIT MODE\n'..
     'F3+R for REMASTER MODE\n'..
     'F2 for editor mode\n'..

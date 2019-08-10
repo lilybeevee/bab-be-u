@@ -526,7 +526,6 @@ end
   end
   
   if selector_open and key == "rshift" or key == "r" and (key_down["lctrl"] or key_down["rctrl"]) then
-    print("-1")
     current_tile_grid = tile_grid[selector_page]
   end
   
@@ -932,6 +931,12 @@ function scene.draw(dt)
                 found_matching_tag = true
             end
             
+            if tile.texttype ~= nil then
+                if string.match(tile.texttype, searchstr) then
+                    found_matching_tag = true
+                end
+            end
+            
             if not found_matching_tag then love.graphics.setColor(0.2,0.2,0.2) end
             
             love.graphics.draw(sprite, (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
@@ -996,11 +1001,11 @@ function scene.draw(dt)
 
     if selector_open then
         love.graphics.setColor(getPaletteColor(0,3))
-        if infomode then love.graphics.printf(last_hovered_tile[1] .. ', ' .. last_hovered_tile[2], 0, roomheight+24, roomwidth, "right") end
+        if infomode then love.graphics.print(last_hovered_tile[1] .. ', ' .. last_hovered_tile[2], 0, roomheight+36) end
         if not is_mobile then
             love.graphics.printf("CTRL + TAB or CTRL + NUMBER to change tabs", 0, roomheight, roomwidth, "right")
             love.graphics.printf("CTLR + M to get meta text, CTRL + R to refresh", 0, roomheight+12, roomwidth, "right")
-            love.graphics.printf("CTLR + N to toggle n't text", 0, roomheight+24, roomwidth, "right")
+            love.graphics.printf("CTRL + N to get n't text", 0, roomheight+24, roomwidth, "right")
             if #searchstr > 0 then
                 love.graphics.print("Searching for: " .. searchstr, 0, roomheight)
             else
@@ -1028,12 +1033,12 @@ function scene.draw(dt)
           end
 
           love.graphics.setColor(getPaletteColor(1, 3))
-          love.graphics.rectangle("fill", love.mouse.getX()+10, love.mouse.getY()+10-tooltipyoffset, tooltipwidth+13, tooltipheight+13)
+          love.graphics.rectangle("fill", love.mouse.getX()+10, love.mouse.getY()+10-tooltipyoffset, tooltipwidth+14, tooltipheight+12)
           love.graphics.setColor(getPaletteColor(0, 4))
-          love.graphics.rectangle("fill", love.mouse.getX()+11, love.mouse.getY()+11-tooltipyoffset, tooltipwidth+11, tooltipheight+11)
+          love.graphics.rectangle("fill", love.mouse.getX()+11, love.mouse.getY()+11-tooltipyoffset, tooltipwidth+12, tooltipheight+10)
 
           love.graphics.setColor(getPaletteColor(0,3))
-          love.graphics.printf(tile.desc, love.mouse.getX()+11, love.mouse.getY()+11-tooltipyoffset, love.graphics.getWidth() - love.mouse.getX() - 20)
+          love.graphics.printf(tile.desc, love.mouse.getX()+16, love.mouse.getY()+14-tooltipyoffset, love.graphics.getWidth() - love.mouse.getX() - 20)
         end
         if infomode then
             love.graphics.push()

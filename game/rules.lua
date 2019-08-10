@@ -30,6 +30,11 @@ function clearRules()
     addRule({{"this","be","go away pls",{{},{}}},{},1})
     addRule({{"this","be","wurd",{{},{}}},{},1})
   end
+  if units_by_name["text_nuek"] then
+    addRule({{"xplod","be","protecc",{{},{}}},{},1})
+    addRule({{"xplod","be","moar",{{},{}}},{},1})
+    addRule({{"xplod","ignor","lvl",{{},{}}},{},1})
+  end
 
   has_new_rule = false
 end
@@ -95,12 +100,13 @@ function parseRules(undoing)
   end
   if (should_parse_rules) then
     should_parse_rules = false
+    should_parse_rules_at_turn_boundary = false
   else
     return
   end
   
   --refresh name/type/color of dittos in reading order (top to bottom)
-  local dittos = units_by_name["text_ditto"]
+  local dittos = units_by_name["text_''"]
   if (dittos ~= nil) then
   table.sort(dittos, function(a, b) return a.y < b.y end ) 
     for _,unit in ipairs(dittos) do
@@ -240,7 +246,7 @@ function parseRules(undoing)
 
           dx, dy, dir, x, y = getNextTile(last_unit, dx, dy, dir)
 
-          if not been_here[x + y * mapwidth] then --can only go to each tile twice each first word; why?
+          if not been_here[x + y * mapwidth] then --can only go to each tile twice each first word; so that if we have a wrap/portal infinite loop we don't softlock
             been_here[x + y * mapwidth] = 1
           else
             been_here[x + y * mapwidth] = 2
@@ -376,12 +382,48 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
   for orig_index,word in ipairs(sentence) do
     if word.type == "letter" then --letter handling
       --print("found a letter"..orig_index)
-
+      
       local new_word = ""
       local word_index = orig_index
       local letter = sentence[word_index]
+      local prevletter = {}
       while letter.type == "letter" do --find out where the letters end, throw all of them into a string tho
-        new_word = new_word..letter.name
+        --here's how umlauts / colons work: for every letter that could be affected by the presence of a colon, special case it here
+        --when special casing, change the name to include the umlaut / colon in it. then, later, don't count colons when adding to the string, since the letter already accounts for it
+        --for the letter u, it always needs to check the tile above it, so we don't need to use prevletter, since the umlaut might not be in the rule directly
+        --for letters relating to making a face, such as ":)", the colon needs to be the letter before it, so just before we change letter we store it as prevletter for the next letter to use
+        --then, when we find something like a parantheses, we check the previous letter to see if it's a colon and if it was facing the right direction, and if it meets both of those, set the name of the unit to both
+        --since this all happens per rule, crosswording should be unaffected
+        --...doesn't work yet but that was my plan
+        local unit = letter.unit
+        local prevunit = prevletter.unit or {}
+        local name = letter.name
+        if letter.name == "u" then
+          local umlauts = getTextOnTile(unit.x,unit.y-1)
+          for _,umlaut in ipairs(umlauts) do
+            if umlaut.fullname == "letter_colon" and umlaut.dir == 3 then
+              name = "..u"
+            end
+          end
+        elseif letter.name == "o" then
+          if prevletter.name == ":" and prevunit.dir == dir then
+            name = ":o"
+          end
+        elseif letter.name == ")" then
+          if prevletter.name == ":" and prevunit.dir == dir then
+            name = ":)"
+          end
+        elseif letter.name == "(" then
+          if prevletter.name == ":" and prevunit.dir == dir then
+            name = ":("
+          end
+        end
+        
+        if name ~= ":" then
+          new_word = new_word..name
+        end
+        
+        prevletter = letter
         word_index = word_index + 1
         letter = sentence[word_index]
         --print("looping... "..new_word.." "..word_index)
@@ -481,7 +523,7 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
               table.insert(units, mod.unit)
               if mod.name == "text" then
                 name = v.unit.fullname
-              elseif mod.name == "nt" then
+              elseif mod.name == "nt'" then
                 suffix = suffix .. "n't"
               else
                 suffix = suffix .. " " .. mod.name
@@ -837,14 +879,16 @@ function shouldReparseRules()
   --TODO: We care about text, specific text and wurd units - this can't be easily specified to matchesRule.
   if shouldReparseRulesIfConditionalRuleExists("?", "be", "go arnd") then return true end
   if shouldReparseRulesIfConditionalRuleExists("?", "be", "mirr arnd") then return true end
+  if shouldReparseRulesIfConditionalRuleExists("lvl", "be", "go arnd", true) then return true end
+  if shouldReparseRulesIfConditionalRuleExists("lvl", "be", "mirr arnd", true) then return true end
   if shouldReparseRulesIfConditionalRuleExists("?", "be", "ortho") then return true end
   if shouldReparseRulesIfConditionalRuleExists("?", "be", "diag") then return true end
   if shouldReparseRulesIfConditionalRuleExists("?", "ben't", "wurd") then return true end
   if shouldReparseRulesIfConditionalRuleExists("?", "be", "za warudo") then return true end
   if shouldReparseRulesIfConditionalRuleExists("?", "be", "rong") then return true end
   if rules_with["poor toll"] then
-    if shouldReparseRulesIfConditionalRuleExists("?", "be", "flye") then return true end
-    if shouldReparseRulesIfConditionalRuleExists("?", "be", "tall") then return true end
+    if shouldReparseRulesIfConditionalRuleExists("?", "be", "flye", true) then return true end
+    if shouldReparseRulesIfConditionalRuleExists("?", "be", "tall", true) then return true end
   end
   return false
 end
@@ -859,13 +903,42 @@ function populateRulesEffectingNames(r1, r2, r3)
   end
 end
 
-function shouldReparseRulesIfConditionalRuleExists(r1, r2, r3)
+function shouldReparseRulesIfConditionalRuleExists(r1, r2, r3, even_non_wurd)
   local rules = matchesRule(r1, r2, r3);
   for _,rule in ipairs(rules) do
     local subject_cond = rule[1][4][1];
-    if (#subject_cond > 0) then
-      should_parse_rules = true;
-    return true;
+    local subject = rule[1][1];
+    --We only care about conditional rules that effect text, specific text, wurd units and maybe portals too.
+    --We can also distinguish between different conditions (todo).
+    if (#subject_cond > 0 and (even_non_wurd or subject:starts("text") or rules_effecting_names[subject])) then
+      for _,cond in ipairs(subject_cond) do
+        local cond_name = cond[1]
+        local cond_units = cond[2]
+        --TODO: This needs to change for condition stacking.
+        --An infix condition that references another unit just dumps the second unit into rules_effecting_names (This is fine for all infix conditions, for now, but maybe not perpetually? for example sameFloat() might malfunction since the floatness of the other unit could change unexpectedly due to a SECOND conditional rule).
+        if (#cond_units > 0) then
+          for _,unit in ipairs(cond_units) do
+            rules_effecting_names[unit] = true
+            if unit == "mous" then
+              should_parse_rules_at_turn_boundary = true;
+            end
+          end
+        else
+          --Handle specific prefix conditions.
+          --Frenles is hard to do since it could theoretically be triggered by ANY other unit. Instead, just make it reparse rules all the time, sorry.
+          if cond_name == "frenles" or cond_name == "frenlesn't" then
+            should_parse_rules = true;
+            return true;
+          else
+            --What are the others? WAIT... only changes at turn boundary. MAYBE can only change on turn boundary or if the unit or text moves (by definition these already reparse rules). AN only changes on turn boundary. COREKT/RONG can only change when text reparses anyway by definition, so it should never trigger it. TIMELES only changes at turn boundary. CLIKT only changes at turn boundary. Colours only change at turn boundary. So every other prefix condition, for now, just needs one check per turn, but new ones will need to be considered.
+            should_parse_rules_at_turn_boundary = true;
+          end
+          
+          --As another edge to consider, what if the level geometry changes suddenly? Well, portals already trigger reparsing rules when they update, which is the only kind of external level geometry change. In addition, text/wurds changing flye/tall surprisingly would already trigger rule reparsing since we checked those rules. But, what about a non-wurd changing flye/tall, allowing it to go through a portal, changing the condition of a different parse effecting rule? This can also happen with level be go arnd/mirr arnd turning on or off. parseRules should fire in such cases. So specifically for these cases, even though they aren't wurd/text, we do want to fire     parseRules when their conditions change.
+          
+          --One final edge case to consider: MOUS, which just moves around on its own. This also triggers should_parse_rules_at_turn_boundary, since that's how often we care about MOUS moving.
+        end
+      end
     end
   end
   return false;

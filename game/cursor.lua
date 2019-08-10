@@ -1,29 +1,5 @@
 function updateCursors()
   local del_cursors = {}
-  cursor_convert_to = nil
-
-  for i,rules in ipairs(full_rules) do
-    local rule = rules[1]
-    local obj_name = rule[3]
-
-    local istext = false
-    if rule[3] == "text" then
-      istext = true
-      obj_name = "text_" .. rule[1]
-    end
-    local obj_id = tiles_by_name[obj_name]
-    local obj_tile = tiles_list[obj_id]
-
-    if rule[1] == "mous" then
-      if obj_tile ~= nil and (obj_tile.type == "object" or istext) then
-        if rule[2] == "be" then
-          if rule[3] ~= "mous" then
-            cursor_convert_to = obj_id
-          end
-        end
-      end
-    end
-  end
 
   for i,cursor in ipairs(cursors) do
     local deleted = false
@@ -45,15 +21,6 @@ function updateCursors()
       
       cursor.x = x
       cursor.y = y
-
-      if inBounds(x, y) then
-        if cursor_convert_to ~= nil then
-          local new_unit = createUnit(cursor_convert_to, x, y, 1, true)
-          addUndo({"create", new_unit.id, true})
-          addUndo({"remove_cursor", cursor.screenx, cursor.screeny, cursor.id})
-          table.insert(del_cursors, cursor.id)
-        end
-      end
 
       cursor.overlay = {}
       if hasProperty(cursor,"tranz") then
@@ -115,7 +82,7 @@ function deleteMouse(id)
       end
       mous.removed = true
       table.remove(cursors,i)
-      return
+      break
     end
   end
   if needs_new_primary then
