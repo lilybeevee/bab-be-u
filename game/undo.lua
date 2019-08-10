@@ -141,6 +141,8 @@ function undoOneAction(turn, i, v, ignore_no_undo)
     end
   elseif action == "timeless_yeet_remove" then
     table.insert(timeless_yote, {unit = v[2], dir = v[3]})
+  elseif action == "timeless_rules" then
+    rules_with = v[2]
 	elseif action == "colour_change" then
     unit = units_by_id[v[2]]
     colour = v[3]
