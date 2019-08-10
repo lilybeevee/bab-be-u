@@ -4019,6 +4019,52 @@ tiles_list = {
     eye = {x=19, y=7, w=2, h=2},
     tags = {"dev", "chars", "thefox"},
   },
+  --just adding these so they exist for letters
+  -- 352
+  {
+    name = "text_right",
+    sprite = "text_goup",
+    type = "text",
+    texttype = "property",
+    color = {1, 4},
+    layer = 20,
+  },
+  -- 353
+  {
+    name = "text_upleft",
+    sprite = "text_goup",
+    type = "text",
+    texttype = "property",
+    color = {1, 4},
+    layer = 20,
+  },
+  -- 354
+  {
+    name = "text_upright",
+    sprite = "text_goup",
+    type = "text",
+    texttype = "property",
+    color = {1, 4},
+    layer = 20,
+  },
+  -- 355
+  {
+    name = "text_downleft",
+    sprite = "text_goup",
+    type = "text",
+    texttype = "property",
+    color = {1, 4},
+    layer = 20,
+  },
+  -- 356
+  {
+    name = "text_downright",
+    sprite = "text_goup",
+    type = "text",
+    texttype = "property",
+    color = {1, 4},
+    layer = 20,
+  },
 }
 
 tiles_by_name = {}

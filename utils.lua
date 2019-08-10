@@ -2070,9 +2070,14 @@ text_in_tiles = {} --list of text in an array, and textname only
 for _,tile in ipairs(tiles_list) do
   if tile.type == "text" and tile.texttype ~= "letter" then
     local textname = string.sub(tile.name:gsub("%s+", ""),6) --removes spaces too
-    table.insert(text_in_tiles,textname)
+    text_in_tiles[textname] = tile
   end
 end
+
+print(text_in_tiles["left"])
+print(text_in_tiles["right"])
+print(text_in_tiles["down"])
+print(text_in_tiles["up"])
 
 text_list = {} --list of text with named keys (by textname)
 for _,tile in ipairs(tiles_list) do
