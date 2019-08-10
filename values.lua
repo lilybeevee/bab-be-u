@@ -1135,6 +1135,7 @@ tiles_list = {
     sprite = "o",
     sleepsprite = "o_slep",
     type = "object",
+    texttype = "letter",
     color = {2, 4},
     layer = 5,
     eye = {x=19, y=7, w=2, h=2},
