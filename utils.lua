@@ -528,7 +528,7 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
           break
         end
       end
-    elseif condtype == "wfren" then
+    elseif condtype == "w/fren" then
       for _,param in ipairs(params) do
         local others = {}
         if unit == outerlvl then --basically turns into sansn't

@@ -172,7 +172,7 @@ selector_grid_contents = {
   -- page 2: letters
   {
     "letter_a","letter_b","letter_c","letter_d","letter_e","letter_f","letter_g","letter_h","letter_i","letter_j","letter_k","letter_l","letter_m","letter_n","letter_o","letter_p","letter_q","letter_r",
-    "letter_s","letter_t","letter_u","letter_v","letter_w","letter_x","letter_y","letter_z","letter_.","letter_colon","letter_parenthesis","letter_'",0,0,0,0,0,0,
+    "letter_s","letter_t","letter_u","letter_v","letter_w","letter_x","letter_y","letter_z","letter_.","letter_colon","letter_parenthesis","letter_'","letter_1","letter_/","letter_8",0,0,0,
     "letter_go","letter_come","letter_pls","letter_away","letter_my","letter_no","letter_way",0,0,0,0,0,0,0,0,0,0,0,
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -993,13 +993,13 @@ tiles_list = {
   },
   -- 72
   {
-    name = "text_wfren",
+    name = "text_w/fren",
     sprite = "text_wfren",
     type = "text",
     texttype = "cond_infix",
     color = {0, 3},
     layer = 20,
-    tags = {"on", "w/fren", "infix condition"},
+    tags = {"on", "wfren", "infix condition"},
     desc = "W/ FREN (Infix Condition): True if the unit shares a tile with this object.",
   },
   -- 73
@@ -2938,6 +2938,7 @@ tiles_list = {
     texttype = "letter",
     color = {0,3},
     layer = 20,
+    desc = "press F to pay respects",
   },
   -- 250
   {
@@ -3100,6 +3101,7 @@ tiles_list = {
     texttype = "letter",
     color = {0,3},
     layer = 20,
+    tags = {"dot", "fullstop"},
   },
   -- 268
   {
@@ -3110,6 +3112,7 @@ tiles_list = {
     rotate = true,
     color = {0,3},
     layer = 20,
+    tags = {";", "umlaut", "diaeresis"},
     desc = ":: Can also be an umlaut, or '..', if rotated in that way.",
   },
   -- 269
@@ -3121,6 +3124,7 @@ tiles_list = {
     rotate = true,
     color = {0,3},
     layer = 20,
+    tags = {"9", "0", "brackets"},
   },
   -- 270
   {
@@ -3194,6 +3198,7 @@ tiles_list = {
     texttype = "letter",
     color = {0,3},
     layer = 20,
+    tags = {"wey"}
   },
   -- 278
   {
@@ -3203,7 +3208,7 @@ tiles_list = {
     texttype = "ditto",
     color = {0,3},
     layer = 20,
-    tags = {"\'"},
+    tags = {"''", "quotation marks"},
     desc = "DITTO: Acts like the text above it."
   },
   -- 279
@@ -3500,7 +3505,6 @@ tiles_list = {
     texttype = "letter",
     color = {0,3},
     layer = 20,
-    desc = "I: it's just a rotated H"
   },
   -- 310
   {
@@ -3510,7 +3514,6 @@ tiles_list = {
     texttype = "letter",
     color = {0,3},
     layer = 20,
-    desc = "Z: it's just a rotated Z"
   },
   -- 311
   {
@@ -4068,6 +4071,36 @@ tiles_list = {
     texttype = "property",
     color = {1, 4},
     layer = 20,
+  },
+  -- 357
+  {
+    name = "letter_1",
+    sprite = "letter_1",
+    type = "text",
+    texttype = "letter",
+    color = {0,3},
+    layer = 20,
+    tags = {"number", "digit", "one"},
+  },
+  -- 358
+  {
+    name = "letter_/",
+    sprite = "letter_slash",
+    type = "text",
+    texttype = "letter",
+    color = {0,3},
+    layer = 20,
+    tags = {"slash"},
+  },
+  -- 359
+  {
+    name = "letter_8",
+    sprite = "letter_8",
+    type = "text",
+    texttype = "letter",
+    color = {0,3},
+    layer = 20,
+    tags = {"number", "digit", "eight"},
   },
 }
 
