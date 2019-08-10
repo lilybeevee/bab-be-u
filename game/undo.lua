@@ -183,6 +183,12 @@ function doBack(unit, turn)
           addUndo({"remove_cursor", unit.screenx, unit.screeny, unit.id})
           undoOneAction(turn, _, v, ignore_do_undo);
           --TODO: test MOUS vs UNDO interactions
+        elseif (action == "colour_change") then
+          colour = v[3]
+          value = v[4]
+          addUndo({"colour_change", unit.id, colour, unit[colour]})
+          unit[colour] = value
+          updateUnitColourOverride(unit)
         end
       end
     end

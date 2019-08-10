@@ -932,6 +932,12 @@ function scene.draw(dt)
                 found_matching_tag = true
             end
             
+            if tile.texttype ~= nil then
+                if string.match(tile.texttype, searchstr) then
+                    found_matching_tag = true
+                end
+            end
+            
             if not found_matching_tag then love.graphics.setColor(0.2,0.2,0.2) end
             
             love.graphics.draw(sprite, (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)

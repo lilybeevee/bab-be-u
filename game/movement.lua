@@ -52,7 +52,17 @@ function doDirRules()
 end
 
 function doMovement(movex, movey, key)
-	replay_string = replay_string..tostring(movex)..","..tostring(movey)..","..tostring(key)..";"
+  --I guess this is the right place to do this?
+  if (should_parse_rules_at_turn_boundary) then
+    should_parse_rules = true
+  end
+
+	extendReplayString(movex, movey, key)
+  if (key == "clikt") then
+    last_click_x, last_click_y = movex, movey
+    movex = 0
+    movey = 0
+  end
   walkdirchangingrulesexist = rules_with["munwalk"] or rules_with["sidestep"] or rules_with["diagstep"] or rules_with["hopovr"] or rules_with["knightstep"];
   local played_sound = {}
   local slippers = {}
@@ -1465,7 +1475,7 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
       local would_swap_with = swap_mover or hasProperty(v, "behin u") and pushing
       --pushing a key into a door automatically works
       if (fordor and hasProperty(v, "ned kee")) or (nedkee and hasProperty(v, "for dor")) then
-        if timecheck(unit,"be","ned kee") and timecheck(v,"be","for dor") then
+        if timecheck(unit,"be","ned kee") and timecheck(v,"be","for dor") and sameFloat(unit, v) then
           table.insert(specials, {"open", {unit, v}})
           return true,movers,specials
         else

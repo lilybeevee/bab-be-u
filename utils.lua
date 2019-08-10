@@ -1,11 +1,13 @@
 function clear()
+  letters_exist = false
 	replay_playback = false
+  replay_playback_turns = nil
 	replay_playback_string = nil
 	replay_playback_turn = 1
 	replay_playback_time = love.timer.getTime()
 	replay_playback_interval = 0.3
-    old_replay_playback_interval = 0.3
-    replay_pause = false
+  old_replay_playback_interval = 0.3
+  replay_pause = false
 	replay_string = ""
   new_units_cache = {}
   undoing = false
@@ -16,7 +18,8 @@ function clear()
   last_input_time = nil
   most_recent_key = nil
   just_moved = true
-  should_parse_rules = true
+  should_parse_rules_at_turn_boundary = false
+  should_parse_rules = false
   graphical_property_cache = {}
   initializeGraphicalPropertyCache();
   debug_values = {}
@@ -48,8 +51,8 @@ function clear()
   cursor_converted = false
   mouse_X = love.mouse.getX()
   mouse_Y = love.mouse.getY()
-      last_click_x = nil
-      last_click_y = nil
+  last_click_x = nil
+  last_click_y = nil
   mouse_oldX = mouse_X
   mouse_oldY = mouse_Y
   cursors = {}
@@ -67,8 +70,10 @@ function clear()
   timeless_reset = false
   timeless_crash = false
   timeless_yote = {}
+  firsttimestop = true
 
-  if scene == game then
+  --if scene == game then
+  if load_mode == "play" then
     createMouse_direct(love.mouse.getX(), love.mouse.getY())
   end
   --createMouse_direct(20, 20)
@@ -165,7 +170,7 @@ function loadMap()
       local ok = nil
       ok, map = serpent.load(map);
       if (ok ~= true) then
-        print("Serpent error while loading:", ok, dump(map))
+        print("Serpent error while loading:", ok, fullDump(map))
       end
       for _,unit in ipairs(map) do
         id, tile, x, y, dir, specials = unit.id, unit.tile, unit.x, unit.y, unit.dir, unit.special
@@ -201,6 +206,9 @@ function initializeOuterLvl()
 end
 
 function initializeEmpties()
+  --TODO: other ways to make a text_no1 could be to have a text_text_no1 but that seems contrived that you'd have text_text_no1 but not text_no1?
+  --text_her counts because it looks for no1, I think. similarly we could have text_text_her but again, contrived
+  if ((not letters_exist) and (not units_by_name["text_no1"]) and (not units_by_name["text_her"])) then return end
   for x=0,mapwidth-1 do
     for y=0,mapheight-1 do
       local tileid = x + y * mapwidth
@@ -323,13 +331,13 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
     for _,rules in ipairs(rules_list) do
       local rule = rules.rule
       if (debugging) then
-        print("checking this rule,"..tostring(1)..":"..tostring(rule[ruleparts[1]].name))
-        print("checking this rule,"..tostring(2)..":"..tostring(rule[ruleparts[2]]))
-        print("checking this rule,"..tostring(3)..":"..tostring(rule[ruleparts[3]].name))
+        for i=1,3 do
+          print("checking this rule,"..tostring(i)..":"..tostring(rule[ruleparts[i]].name))
+        end
       end
       local result = true
       for i=1,3 do
-        if nrules[i] ~= nil and nrules[i] ~= (i == 2 and rule.verb or rule[ruleparts[i]].name) and (fnrules[i] == nil or (fnrules[i] ~= nil and fnrules[i] ~= (i == 2 and rule.verb or rule[ruleparts[i]].name))) then
+        if nrules[i] ~= nil and nrules[i] ~= rule[ruleparts[i]].name and (fnrules[i] == nil or (fnrules[i] ~= nil and fnrules[i] ~= rule[ruleparts[i]].name)) then
           if (debugging) then
             print("false due to nrules/fnrules mismatch")
           end
@@ -482,6 +490,7 @@ withrecursion = {}
 
 function testConds(unit,conds) --cond should be a {condtype,{object types},{cond_units}}
   local endresult = true
+  return true end function foo()-- temp so it doesn't crash because of the changed condition format
   for _,cond in ipairs(conds or {}) do
     local condtype = cond[1]
     local params = cond[2]
@@ -673,12 +682,181 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
           end
         end
       end
+    elseif condtype == "look away" then
+      for _,param in ipairs(params) do
+        local isdir = false
+        if param == "ortho" then
+          isdir = true
+          if (unit.dir % 2 == 0) then
+            result = false
+            break
+          end
+        elseif param == "diag" then
+          isdir = true
+          if (unit.dir % 2 == 1) then
+            result = false
+            break
+          end
+        else
+          for i = 1,8 do
+            if param == dirs8_by_name[i] then
+              isdir = true
+              if (unit.dir ~= i) then
+                result = false
+                break
+              end
+            end
+          end
+        end
+        if (not isdir) then
+          local others
+          if unit == outerlvl and surrounds ~= nil and surrounds_name == level_name then
+            others = {}
+            --use surrounds to remember what was around the level
+            for __,on in ipairs(surrounds[dirs8[unit.dir][1]][dirs8[unit.dir][2]]) do
+              if nameIs(on, param) then
+                table.insert(others, on);
+              end
+            end
+          else
+            local dx, dy, dir, px, py = getNextTile(unit, -dirs8[unit.dir][1], -dirs8[unit.dir][2], unit.dir)
+            if param == "lvl" then
+              _, _, _, px, py = getNextTile(unit, dirs8[unit.dir][1], dirs8[unit.dir][2], unit.dir)
+              result = not inBounds(px, py)
+            elseif param ~= "mous" then
+              others = getUnitsOnTile(px, py, param, false, unit) --currently, conditions only work up to one layer of nesting, so the noun argument of the condition is assumed to be just a noun
+            else
+              others = getCursorsOnTile(px, py, false, unit)
+            end
+          end
+          if others ~= nil and #others == 0 then
+            result = false
+            break
+          end
+        end
+      end
+    elseif condtype == "behind" then
+        if unit == outerlvl then -- SANS n't but not when the unit is looking directly away from the border
+            for _,param in ipairs(params) do
+              local found = false
+              local others = findUnitsByName(param)
+              for _,on in ipairs(others) do
+                if inBounds(on.x - dirs8[on.dir][1], on.y - dirs8[on.dir][2]) then
+                  found = true
+                  break
+                end
+              end
+              if unit == outerlvl and surrounds ~= nil and surrounds_name == level_name then
+                for nx=-1,1 do
+                  for ny=-1,1 do
+                    for __,on in ipairs(surrounds[nx][ny]) do
+                      if not nameIs(on, param) and nx + dirs8[on.dir][1] == 0 and ny + dirs8[on.dir][2] == 0 then
+                        found = true
+                        break
+                      end
+                    end
+                  end
+                end
+              end
+              if not found then
+                result = false
+                break
+              end
+            end
+        else
+            for _,param in ipairs(params) do
+              local found = false
+              local others = {}
+              for ndir=1,8 do
+                local dx, dy, dir, px, py = getNextTile(unit, dirs8[ndir][1], dirs8[ndir][2], ndir)
+                mergeTable(others, param ~= "mous" and getUnitsOnTile(px,py,param) or {})
+              end
+              for _,other in ipairs(others) do
+                local dx, dy, dir, px, py = getNextTile(other, -dirs8[other.dir][1], -dirs8[other.dir][2], other.dir)
+                if px == unit.x and py == unit.y then
+                  found = true
+                  break
+                else
+                  print(unit.x, unit.y)
+                  print(px, py)
+                end
+              end
+              if not found then
+                result = false
+                break
+              end
+            end
+        end
+    elseif condtype == "beside" then
+        if unit == outerlvl then -- literally just SANS n't except when the unit is at the corner of the level and facing in/out
+            for _,param in ipairs(params) do
+              local found = false
+              local others = findUnitsByName(param)
+              for _,on in ipairs(others) do
+                if inBounds(on.x - dirs8[on.dir][2], on.y + dirs8[on.dir][1]) or inBounds(on.x + dirs8[on.dir][2], on.y - dirs8[on.dir][1])then
+                  found = true
+                  break
+                end
+              end
+              if unit == outerlvl and surrounds ~= nil and surrounds_name == level_name then
+                for nx=-1,1 do
+                  for ny=-1,1 do
+                    for __,on in ipairs(surrounds[nx][ny]) do
+                      if nameIs(on, param) and nx + dirs8[on.dir][1] == 0 and ny + dirs8[on.dir][2] == 0 then
+                        found = true
+                        break
+                      end
+                    end
+                  end
+                end
+              end
+              if not found then
+                result = false
+                break
+              end
+            end
+        else
+            for _,param in ipairs(params) do
+              local found = false
+              local others = {}
+              for ndir=1,8 do
+                local dx, dy, dir, px, py = getNextTile(unit, dirs8[ndir][1], dirs8[ndir][2], ndir)
+                mergeTable(others, param ~= "mous" and getUnitsOnTile(px,py,param) or {})
+              end
+              for _,other in ipairs(others) do
+                local dx, dy, dir, px, py = getNextTile(other, dirs8[other.dir][2], -dirs8[other.dir][1], other.dir)
+                local dx, dy, dir, qx, qy = getNextTile(other, -dirs8[other.dir][2], dirs8[other.dir][1], other.dir)
+                if px == unit.x and py == unit.y or qx == unit.x and qy == unit.y then
+                  found = true
+                  break
+                else
+                  print(unit.x, unit.y)
+                  print(px, py)
+                end
+              end
+              if not found then
+                result = false
+                break
+              end
+            end
+        end
     elseif condtype == "sans" then
       for _,param in ipairs(params) do
         local others = findUnitsByName(param)
         if #others > 1 or #others == 1 and others[1] ~= unit then
           result = false
         end
+      end
+    elseif condtype == "samefloat" then
+      for _,param in ipairs(params) do
+        local others = findUnitsByName(param)
+        local yes = false
+        for _,other in ipairs(others) do
+          if sameFloat(unit,other) then
+            yes = true
+          end
+        end
+        if not yes then result = false end
       end
     elseif condtype == "frenles" then
       if unit == outerlvl then
@@ -1938,13 +2116,29 @@ function loadMaybeCompressedData(loaddata)
   end
 end
 
+function extendReplayString(movex, movey, key)
+  if (not unit_tests and not replay_playback) then
+    replay_string = replay_string..tostring(movex)..","..tostring(movey)..","..tostring(key)
+    if (rules_with["mous"] ~= nil) then
+      local cursor_table = {}
+      for _,cursor in ipairs(cursors) do
+        table.insert(cursor_table, {cursor.x, cursor.y})
+      end
+      replay_string = replay_string..","..love.data.encode("string", "base64", serpent.line(cursor_table))
+    end
+    replay_string = replay_string..";"
+  end
+end
+
 function addBaseRule(subject, verb, object)
   addRule({
     rule = {
       subject = {
         name = subject
       },
-      verb = verb,
+      verb = {
+        name = verb
+      },
       object = {
         name = object
       }
@@ -1956,13 +2150,17 @@ function addBaseRule(subject, verb, object)
 end
 
 function addRuleSimple(subject, verb, object, units, dir)
+  -- print(subject.name, verb.name, object.name)
+  -- print(subject, verb, object)
   addRule({
     rule = {
       subject = {
         name = subject.name or subject[1],
         conds = subject.conds or subject[2]
       },
-      verb = verb,
+      verb = {
+        name = verb.name or verb[1] or verb
+      },
       object = {
         name = object.name or object[1],
         conds = object.conds or object[2]

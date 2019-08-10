@@ -52,21 +52,7 @@ function scene.update(dt)
   if is_mobile then
     if love.mouse.isDown(1) then
       x, y = love.mouse.getPosition()
-
-      local scrollbutton = false
-
-      if pointInside(x, y, love.graphics.getWidth()-10-sprites["ui/arrow up"]:getWidth(), 10, sprites["ui/arrow up"]:getWidth(), sprites["ui/arrow up"]:getHeight()) and mobile_scroll_timer == 0 then
-        scrollvel = scrollvel - 100
-        scrollbutton = true
-      end
-      if pointInside(x, y, love.graphics.getWidth()-10-sprites["ui/arrow down"]:getWidth(), love.graphics.getHeight()-10-sprites["ui/arrow down"]:getHeight(), sprites["ui/arrow down"]:getWidth(), sprites["ui/arrow down"]:getHeight()) and mobile_scroll_timer == 0 then
-        scrollvel = scrollvel + 100
-        scrollbutton = true
-      end
-
-      if not scrollbutton then
-        scrolloffset = mobile_scroll_pos + (mobile_scroll_start - y)
-      end
+      scrolloffset = mobile_scroll_pos + (mobile_scroll_start - y)
     end
   end
 
@@ -78,7 +64,7 @@ function scene.update(dt)
   scroll_height = math.max(0, full_height - love.graphics.getHeight())
   debugDisplay("scrollheight", scroll_height)
 
-  if mouseOverBox(love.graphics.getWidth()-5, 0, 5, love.graphics.getHeight()) and love.mouse.isDown(1) and not is_mobile then
+  if mouseOverBox(love.graphics.getWidth()-5, 0, 5, love.graphics.getHeight()) and love.mouse.isDown(1) then
     scrolloffset = love.mouse.getY()/(love.graphics.getHeight()-20)*scroll_height
   end
 
@@ -115,6 +101,7 @@ function scene.keyPressed(key)
 end
 
 function runUnitTests()
+  local start_time = love.timer.getTime();
   unit_tests = true
   local dir = "levels/"
   if world ~= "" then dir = world_parent .. "/" .. world .. "/" end
@@ -142,10 +129,12 @@ function runUnitTests()
       table.insert(noreplay_levels, v.file)
     end
   end
+  local end_time = love.timer.getTime();
   print ("Unit tested " .. tostring(#succ_levels + #fail_levels) .. " levels!");
   print (tostring(#noreplay_levels) .. " levels lacked a replay: " .. dump(noreplay_levels));
   print (tostring(#succ_levels) .. " levels passed: " .. dump(succ_levels));
   print (tostring(#fail_levels) .. " levels failed: " .. dump(fail_levels));
+  print("Unit tests took: "..tostring(round((end_time-start_time))).."s")
   unit_tests = false
 end
 
@@ -232,23 +221,7 @@ function scene.draw()
 
   love.graphics.pop()
   
-  if is_mobile then
-    love.graphics.setColor(0.6,0.6,0.6)
-    love.graphics.rectangle("fill", love.graphics.getWidth()-10-sprites["ui/arrow up"]:getWidth(), 10, sprites["ui/arrow up"]:getWidth(), love.graphics.getHeight()-20)
-
-    love.graphics.setColor(0.9,0.9,0.9)
-    love.graphics.rectangle("fill", love.graphics.getWidth()-10-sprites["ui/arrow up"]:getWidth(), 10+sprites["ui/arrow up"]:getHeight()+scrolloffset/scroll_height*(love.graphics.getHeight()-20-sprites["ui/arrow up"]:getHeight()*2.5), sprites["ui/arrow up"]:getWidth(), sprites["ui/arrow up"]:getHeight()/2)
-
-    love.graphics.setColor(1,1,1)
-    love.graphics.rectangle("fill", love.graphics.getWidth()-10-sprites["ui/arrow ul"]:getWidth(), 10, sprites["ui/arrow up"]:getWidth(), sprites["ui/arrow up"]:getHeight())
-    love.graphics.setColor(0.1,0.1,0.1)
-    love.graphics.draw(sprites["ui/arrow up"], love.graphics.getWidth()-10-sprites["ui/arrow up"]:getWidth(), 10)
-
-    love.graphics.setColor(1,1,1)
-    love.graphics.rectangle("fill", love.graphics.getWidth()-10-sprites["ui/arrow down"]:getWidth(), love.graphics.getHeight()-10-sprites["ui/arrow down"]:getHeight(), sprites["ui/arrow down"]:getWidth(), sprites["ui/arrow down"]:getHeight())
-    love.graphics.setColor(0.1,0.1,0.1)
-    love.graphics.draw(sprites["ui/arrow down"], love.graphics.getWidth()-10-sprites["ui/arrow down"]:getWidth(), love.graphics.getHeight()-10-sprites["ui/arrow down"]:getHeight())
-  elseif scroll_height > 0 then
+  if scroll_height > 0 then
     love.graphics.setColor(0.6,0.6,0.6,0.3)
     love.graphics.rectangle("fill", love.graphics.getWidth()-5, 0, 5, love.graphics.getHeight())
 
