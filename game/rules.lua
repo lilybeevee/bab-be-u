@@ -396,41 +396,32 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
         --since this all happens per rule, crosswording should be unaffected
         --...doesn't work yet but that was my plan
         local unit = letter.unit
-        local prevunit = prevletter.unit
+        local prevunit = prevletter.unit or {}
         if letter.name == "u" then
           local umlauts = getTextOnTile(unit.x,unit.y-1)
           for _,umlaut in ipairs(umlauts) do
             if umlaut.fullname == "letter_colon" and umlaut.dir == 3 then
               letter.name = "..u"
-              break
             end
           end
-        end
-        
-        if letter.name == "o" then
-          if prevletter.name == ":" and prevunit.dir == dir then
+        elseif letter.name == "o" then
+          if prevletter.name == ":" --[[and prevunit.dir == dir]] then
             letter.name = ":o"
-            break
           end
-        end
-        
-        if letter.name == ")" then
-          if prevletter.name == ":" and prevunit.dir == dir then
+        elseif letter.name == ")" then
+          if prevletter.name == ":" --[[and prevunit.dir == dir]] then
             letter.name = ":)"
-            break
           end
-        end
-        
-        if letter.name == "(" then
-          if prevletter.name == ":" and prevunit.dir == dir then
+        elseif letter.name == "(" then
+          if prevletter.name == ":" --[[and prevunit.dir == dir]] then
             letter.name = ":("
-            break
           end
         end
         
         if letter.name ~= ":" then
           new_word = new_word..letter.name
         end
+        
         prevletter = letter
         word_index = word_index + 1
         letter = sentence[word_index]
