@@ -729,9 +729,9 @@ function scene.draw(dt)
     local fulldrawx = (drawx + 0.5)*TILE_SIZE
     local fulldrawy = (drawy + 0.5)*TILE_SIZE
 
-    if graphical_property_cache["flye"][unit] ~= nil or unit.name == "o" then
+    if graphical_property_cache["flye"][unit] ~= nil or unit.name == "o" or unit.name == "square" or unit.name == "triangle" then
       local flyenes = graphical_property_cache["flye"][unit] or 0
-      if unit.name == "o" then flyenes = flyenes + 1 end
+      if unit.name == "o" or unit.name == "square" or unit.name == "triangle" then flyenes = flyenes + 1 end
       fulldrawy = fulldrawy - math.sin(love.timer.getTime())*5*flyenes
     end
 
@@ -1565,6 +1565,7 @@ function doOneMove(x, y, key)
             end
        -- print("ZA WARUDO! Time has stopped")
       else
+        addUndo({"timeless_rules", rules_with})
         parseRules()
         doMovement(0,0,"e")
         if firsttimestop then
@@ -1577,6 +1578,7 @@ function doOneMove(x, y, key)
       addUndo({"za warudo", timeless})
       unsetNewUnits()
     else
+      addUndo({"timeless_rules", rules_with})
       timeless = false
     end
     mobile_controls_timeless:setBGImage(sprites[timeless and "ui/time resume" or "ui/timestop"])

@@ -158,8 +158,8 @@ selector_grid_contents = {
     "bab", "text_bab", "text_u", "kee", "text_kee", "text_for dor", "text_goooo", "text_icy", "text_icyyyy", "text_behin u", "text_moar", "text_sans", "text_liek", "text_loop", "lin", "text_lin", "selctr", "text_selctr",
     "keek", "text_keek", "text_walk", "dor", "text_dor", "text_ned kee", "text_frens", "text_pathz", "text_groop", "text_u too", "text_u tres", "text_xwx", "text_haet", "text_mayb", "text_an", "text_that", "text_ignor", "text_...",
     "flog", "text_flog", "text_:)", "colld", "text_colld", "text_fridgd", "text_direction", "text_ouch", "text_slep", "text_protecc", "text_sidekik", "text_brite", "text_lit", "text_opaque", "text_torc", "text_vs", "text_nuek", "text_ditto",
-    "roc", "text_roc", "text_go away pls", "laav", "text_laav", "text_hotte","text_visit fren", "text_wfren", "text_arond", "text_frenles", "text_copkat", "text_za warudo", "text_timles", "text_behind", "text_beside", "text_look away", 0, "this",
-    "wal", "text_wal", "text_no go", "lüv", "text_lüv", "gras", "text_gras", "text_creat", "text_look at", "text_spoop", "text_yeet", "text_turn cornr", "text_corekt", "text_go arnd", "text_mirr arnd", 0, 0, 0,
+    "roc", "text_roc", "text_go away pls", "laav", "text_laav", "text_hotte","text_visit fren", "text_w/fren", "text_arond", "text_frenles", "text_copkat", "text_za warudo", "text_timles", "text_behind", "text_beside", "text_look away", 0, "this",
+    "wal", "text_wal", "text_no go", "l..uv", "text_l..uv", "gras", "text_gras", "text_creat", "text_look at", "text_spoop", "text_yeet", "text_turn cornr", "text_corekt", "text_go arnd", "text_mirr arnd", 0, 0, 0,
     "watr", "text_watr", "text_no swim", "meem", "text_meem", "dayzy", "text_dayzy", "text_snacc", "text_seen by" , "text_stalk", "text_moov", "text_folo wal", "text_rong", "text_her", "text_thr", "text_rithere", "text_the", 0,
     "skul", "text_skul", "text_:(", "til", "text_til", "hurcane", "text_hurcane", "gunne", "text_gunne", "wog", "text_wog", "text_zip", "text_shy", "text_munwalk", "text_sidestep", "text_diagstep", "text_hopovr", "text_knightstep",
     "boux", "text_boux", "text_come pls", "os", "text_os", "bup", "text_bup", "han", "text_han", "fenss", "text_fenss", 0, 0, "hol", "text_hol", "text_poor toll", "text_blacc", "text_reed",
@@ -174,7 +174,7 @@ selector_grid_contents = {
   -- page 2: letters
   {
     "letter_a","letter_b","letter_c","letter_d","letter_e","letter_f","letter_g","letter_h","letter_i","letter_j","letter_k","letter_l","letter_m","letter_n","letter_o","letter_p","letter_q","letter_r",
-    "letter_s","letter_t","letter_u","letter_v","letter_w","letter_x","letter_y","letter_z","letter_.","letter_colon","letter_parenthesis","letter_'",0,0,0,0,0,0,
+    "letter_s","letter_t","letter_u","letter_v","letter_w","letter_x","letter_y","letter_z","letter_.","letter_colon","letter_parenthesis","letter_'","letter_1","letter_/","letter_8",0,0,0,
     "letter_go","letter_come","letter_pls","letter_away","letter_my","letter_no","letter_way",0,0,0,0,0,0,0,0,0,0,0,
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -194,21 +194,21 @@ selector_grid_contents = {
     "meem","text_meem","boux","text_boux","watr","text_watr","scarr","text_scarr","petnygrame","text_petnygrame",0,0,0,0,"text_text","text_frens","text_groop","text_pathz",
     "skul","text_skul","boll","text_boll","laav","text_laav","katany","text_katany","gunne","text_gunne",0,0,0,0,0,0,"text_every1","text_no1",
     "ghost fren","text_ghost fren","kee","text_kee","dor","text_dor","hatt","text_hatt","slippers","text_slippers",0,0,0,0,0,0,0,0,
-    "robobot","text_robobot","lüv","text_lüv","hedg","text_hedg","hol","text_hol","riff","text_riff",0,0,0,0,0,0,0,0,
+    "robobot","text_robobot","l..uv","text_l..uv","hedg","text_hedg","hol","text_hol","riff","text_riff",0,0,0,0,0,0,0,0,
     "wog","text_wog","tre","text_tre","metl","text_metl","clok","text_clok","bom","text_bom",0,0,0,0,0,0,0,0,
     "kirb","text_kirb","frut","text_frut","jail","text_jail","sine","text_sine",0,0,0,0,0,0,0,0,0,0,
     "bup","text_bup","piler","text_piler","fenss","text_fenss","buble","text_buble","creb","text_creb","icecub","text_icecub",0,0,0,0,0,0,
     "boy","text_boy","dayzy","text_dayzy","platfor","text_platfor","pepis","text_pepis",0,0,0,0,0,0,"lila","text_lila","tot","text_tot",
-    "steev","text_steev","splittr","text_splittr","colld","text_colld","arro","text_arro",0,0,0,0,0,0,"pata","text_pata","o","text_o",
+    "steev","text_steev","splittr","text_splittr","colld","text_colld","arro","text_arro",0,0,0,0,0,0,"pata","text_pata","jill","text_jill",
     "han","text_han","clowd","text_clowd","bellt","text_bellt","ger","text_ger",0,0,0,0,0,0,"larry","text_larry","zsoob","text_zsoob",
-    "os","text_os","hurcane","text_hurcane","spik","text_spik","hors","text_hors",0,0,0,0,0,0,0,0,"jill","text_jill",
-    "firbolt","text_firbolt","lie","text_lie","spiky","text_spiky","can","text_can",0,0,0,0,0,0,0,0,0,0,
-    "icbolt","text_icbolt","lie/8","text_lie/8","bordr","text_bordr","togll","text_togll",0,0,0,0,0,0,0,0,0,0,
+    "os","text_os","hurcane","text_hurcane","spik","text_spik","hors","text_hors",0,0,0,0,0,0,0,0,"o","text_o",
+    "firbolt","text_firbolt","lie","text_lie","spiky","text_spiky","can","text_can",0,0,0,0,0,0,0,0,"square","text_square",
+    "icbolt","text_icbolt","lie/8","text_lie/8","bordr","text_bordr","togll","text_togll",0,0,0,0,0,0,0,0,"triangle","text_triangle",
   },
   -- page 5: properties, verbs and conditions
   {
     "text_be","text_&","text_got","text_creat","text_snacc","text_spoop","text_copkat","text_moov","text_yeet","text_liek","text_haet","text_stalk","text_ignor","text_paint","text_vs","text_look at","text_behind","text_look away",
-    "text_u","text_u too","text_u tres","text_walk",0,"text_:)","text_:(","text_no swim","text_ouch",0,"text_nxt","text_stay ther","text_sublvl",0,"text_wfren","text_arond","text_frenles","text_sans",
+    "text_u","text_u too","text_u tres","text_walk",0,"text_:)","text_:(","text_no swim","text_ouch",0,"text_nxt","text_stay ther","text_sublvl",0,"text_w/fren","text_arond","text_frenles","text_sans",
     "text_go","text_goooo","text_icy","text_icyyyy",0,"text_ned kee","text_for dor","text_hotte","text_fridgd",0,"text_loop",0,0,0,"text_seen by","text_that","text_that be","text_wait",
     "text_no go","text_go away pls","text_come pls","text_sidekik",0,"text_protecc","text_:o","text_xwx","text_wurd",0,0,0,0,0,"text_corekt","text_rong","text_timles","text_lit",
     "text_visit fren","text_slep","text_shy","text_behin u",0,"text_moar","text_split","text_nuek","text_meta",0,0,0,0,0,"text_samefloat","text_clikt","text_mayb","text_an",
@@ -432,11 +432,12 @@ tiles_list = {
   {
     name = "text_:)",
     sprite = "text_good",
+    sleepsprite = "text_good_slep",
     type = "text",
     texttype = "property",
     color = {2, 4},
     layer = 20,
-    tags = {"win", "smiley"},
+    tags = {"win", "smiley", "face", "happy"},
     desc = ":): At end of turn, if U is on :) and survives, U R WIN!",
   },
   -- 21
@@ -720,7 +721,7 @@ tiles_list = {
   },
   --45
   {
-    name = "lüv",
+    name = "l..uv",
     sprite = "luv",
     type = "object",
     color = {4, 2},
@@ -730,7 +731,7 @@ tiles_list = {
   },
   --46
   {
-    name = "text_lüv",
+    name = "text_l..uv",
     sprite = "text_luv",
     type = "text",
     color = {4, 2},
@@ -849,11 +850,12 @@ tiles_list = {
   {
     name = "text_:(",
     sprite = "text_bad",
+    sleepsprite = "text_bad_slep",
     type = "text",
     texttype = "property",
     color = {2, 1},
     layer = 20,
-    tags = {"defeat", "sad"},
+    tags = {"defeat", "sad", "face"},
     desc = ":(: At end of turn, destroys any U objects on it.",
   },
   -- 59
@@ -932,11 +934,12 @@ tiles_list = {
   {
     name = "text_:o",
     sprite = "text_whoa",
+    sleepsprite = "text_whoa_slep",
     type = "text",
     texttype = "property",
     color = {4, 1},
     layer = 20,
-    tags = {"bonus", "woah", "whoa"},
+    tags = {"bonus", "woah", "whoa", "face"},
     desc = ":o: If U is on :o, the :o is collected. Bonus!",
   },
   -- 67
@@ -992,13 +995,13 @@ tiles_list = {
   },
   -- 72
   {
-    name = "text_wfren",
+    name = "text_w/fren",
     sprite = "text_wfren",
     type = "text",
     texttype = "cond_infix",
     color = {0, 3},
     layer = 20,
-    tags = {"on", "w/fren", "infix condition"},
+    tags = {"on", "wfren", "infix condition"},
     desc = "W/ FREN (Infix Condition): True if the unit shares a tile with this object.",
   },
   -- 73
@@ -1137,10 +1140,12 @@ tiles_list = {
     sprite = "o",
     sleepsprite = "o_slep",
     type = "object",
+    texttype = "letter",
     color = {2, 4},
     layer = 5,
     eye = {x=19, y=7, w=2, h=2},
-    tags = {"dev", "chars", "thefox"},
+    tags = {"dev", "chars", "thefox", "puyopuyo tetris"},
+    desc = "pi pi piiii!!!",
   },
   -- 86
   {
@@ -1149,7 +1154,7 @@ tiles_list = {
     type = "text",
     color = {2, 4},
     layer = 20,
-    tags = {"dev", "chars", "thefox"},
+    tags = {"dev", "chars", "thefox", "puyopuyo tetris"},
   },
   -- 87
   {
@@ -1293,11 +1298,12 @@ tiles_list = {
   {
     name = "text_xwx",
     sprite = "text_xwx",
+    sleepsprite = "text_xwx_slep",
     type = "text",
     texttype = "property",
     color = {3, 2},
     layer = 20,
-    tags = {"crash"},
+    tags = {"crash", "oops", "fucky wucky", "face"},
     desc = "XWX: At end of turn, if U is on XWX, the game crashes.",
   },
   --98
@@ -2934,6 +2940,7 @@ tiles_list = {
     texttype = "letter",
     color = {0,3},
     layer = 20,
+    desc = "press F to pay respects",
   },
   -- 250
   {
@@ -3096,6 +3103,7 @@ tiles_list = {
     texttype = "letter",
     color = {0,3},
     layer = 20,
+    tags = {"dot", "fullstop"},
   },
   -- 268
   {
@@ -3106,6 +3114,7 @@ tiles_list = {
     rotate = true,
     color = {0,3},
     layer = 20,
+    tags = {";", "umlaut", "diaeresis"},
     desc = ":: Can also be an umlaut, or '..', if rotated in that way.",
   },
   -- 269
@@ -3117,6 +3126,7 @@ tiles_list = {
     rotate = true,
     color = {0,3},
     layer = 20,
+    tags = {"9", "0", "brackets"},
   },
   -- 270
   {
@@ -3190,6 +3200,7 @@ tiles_list = {
     texttype = "letter",
     color = {0,3},
     layer = 20,
+    tags = {"wey"}
   },
   -- 278
   {
@@ -3199,7 +3210,7 @@ tiles_list = {
     texttype = "ditto",
     color = {0,3},
     layer = 20,
-    tags = {"\'"},
+    tags = {"''", "quotation marks"},
     desc = "DITTO: Acts like the text above it."
   },
   -- 279
@@ -3496,7 +3507,6 @@ tiles_list = {
     texttype = "letter",
     color = {0,3},
     layer = 20,
-    desc = "I: it's just a rotated H"
   },
   -- 310
   {
@@ -3506,7 +3516,6 @@ tiles_list = {
     texttype = "letter",
     color = {0,3},
     layer = 20,
-    desc = "Z: it's just a rotated Z"
   },
   -- 311
   {
@@ -3974,10 +3983,128 @@ tiles_list = {
     texttype = "verb_object",
     color = {0, 3},
     layer = 20,
-    tags = {"unfollow", "facing away", "    lookaway", "behind", "infix condition", "verb"},
+    tags = {"unfollow", "facing away", "lookaway", "behind", "infix condition", "verb"},
     desc = "LOOK AWAY: As an infix condition, true if this object is on the tile behind the unit As a verb, makes the unit face away from this object at end of turn.",
   },
-  -- 348
+  --348
+  {
+    name = "square",
+    sprite = "square",
+    type = "object",
+    color = {2, 4},
+    layer = 5,
+    eye = {x=19, y=7, w=2, h=2},
+    tags = {"dev", "chars", "thefox", "puyopuyo tetris"},
+    desc = "oh no am square????"
+  },
+  --349
+  {
+    name = "triangle",
+    sprite = "triangle",
+    type = "object",
+    color = {2, 4},
+    layer = 5,
+    eye = {x=19, y=7, w=2, h=2},
+    tags = {"dev", "chars", "thefox", "puyopuyo tetris"},
+    desc = "TRIASNGLE?????? this is ridicouuolus"
+  },
+  --350
+  {
+    name = "text_square",
+    sprite = "text_square",
+    type = "text",
+    color = {2, 4},
+    layer = 20,
+    eye = {x=19, y=7, w=2, h=2},
+    tags = {"dev", "chars", "thefox", "puyopuyo tetris"},
+  },
+  --351
+  {
+    name = "text_triangle",
+    sprite = "text_triangle",
+    type = "text",
+    color = {2, 4},
+    layer = 20,
+    eye = {x=19, y=7, w=2, h=2},
+    tags = {"dev", "chars", "thefox", "puyopuyo tetris"},
+  },
+  --just adding these so they exist for letters
+  -- 352
+  {
+    name = "text_right",
+    sprite = "text_goup",
+    type = "text",
+    texttype = "property",
+    color = {1, 4},
+    layer = 20,
+  },
+  -- 353
+  {
+    name = "text_upleft",
+    sprite = "text_goup",
+    type = "text",
+    texttype = "property",
+    color = {1, 4},
+    layer = 20,
+  },
+  -- 354
+  {
+    name = "text_upright",
+    sprite = "text_goup",
+    type = "text",
+    texttype = "property",
+    color = {1, 4},
+    layer = 20,
+  },
+  -- 355
+  {
+    name = "text_downleft",
+    sprite = "text_goup",
+    type = "text",
+    texttype = "property",
+    color = {1, 4},
+    layer = 20,
+  },
+  -- 356
+  {
+    name = "text_downright",
+    sprite = "text_goup",
+    type = "text",
+    texttype = "property",
+    color = {1, 4},
+    layer = 20,
+  },
+  -- 357
+  {
+    name = "letter_1",
+    sprite = "letter_1",
+    type = "text",
+    texttype = "letter",
+    color = {0,3},
+    layer = 20,
+    tags = {"number", "digit", "one"},
+  },
+  -- 358
+  {
+    name = "letter_/",
+    sprite = "letter_slash",
+    type = "text",
+    texttype = "letter",
+    color = {0,3},
+    layer = 20,
+    tags = {"slash"},
+  },
+  -- 359
+  {
+    name = "letter_8",
+    sprite = "letter_8",
+    type = "text",
+    texttype = "letter",
+    color = {0,3},
+    layer = 20,
+    tags = {"number", "digit", "eight"},
+  },
+  -- 360
   {
     name = "text_(", -- these are here so that ( and ) don't get stripped by parseLetterSentences before it gets to parseRules
     sprite = "letter_paranthesis",
@@ -3987,7 +4114,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
-  -- 349
+  -- 361
   {
     name = "text_)",
     sprite = "letter_paranthesis",
@@ -3996,7 +4123,7 @@ tiles_list = {
     rotate = true,
     color = {0,3},
     layer = 20,
-  },
+  }
 }
 
 tiles_by_name = {}

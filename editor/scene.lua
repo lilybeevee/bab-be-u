@@ -526,7 +526,6 @@ end
   end
   
   if selector_open and key == "rshift" or key == "r" and (key_down["lctrl"] or key_down["rctrl"]) then
-    print("-1")
     current_tile_grid = tile_grid[selector_page]
   end
   
@@ -1034,12 +1033,12 @@ function scene.draw(dt)
           end
 
           love.graphics.setColor(getPaletteColor(1, 3))
-          love.graphics.rectangle("fill", love.mouse.getX()+10, love.mouse.getY()+10-tooltipyoffset, tooltipwidth+13, tooltipheight+13)
+          love.graphics.rectangle("fill", love.mouse.getX()+10, love.mouse.getY()+10-tooltipyoffset, tooltipwidth+14, tooltipheight+12)
           love.graphics.setColor(getPaletteColor(0, 4))
-          love.graphics.rectangle("fill", love.mouse.getX()+11, love.mouse.getY()+11-tooltipyoffset, tooltipwidth+11, tooltipheight+11)
+          love.graphics.rectangle("fill", love.mouse.getX()+11, love.mouse.getY()+11-tooltipyoffset, tooltipwidth+12, tooltipheight+10)
 
           love.graphics.setColor(getPaletteColor(0,3))
-          love.graphics.printf(tile.desc, love.mouse.getX()+11, love.mouse.getY()+11-tooltipyoffset, love.graphics.getWidth() - love.mouse.getX() - 20)
+          love.graphics.printf(tile.desc, love.mouse.getX()+16, love.mouse.getY()+14-tooltipyoffset, love.graphics.getWidth() - love.mouse.getX() - 20)
         end
         if infomode then
             love.graphics.push()
