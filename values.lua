@@ -199,7 +199,7 @@ selector_grid_contents = {
     "boy","text_boy","dayzy","text_dayzy","platfor","text_platfor","pepis","text_pepis",0,0,0,0,0,0,"lila","text_lila","tot","text_tot",
     "steev","text_steev","splittr","text_splittr","colld","text_colld","arro","text_arro",0,0,0,0,0,0,"pata","text_pata","jill","text_jill",
     "han","text_han","clowd","text_clowd","bellt","text_bellt","ger","text_ger","sno","text_sno","snoman","text_snoman",0,0,"larry","text_larry","zsoob","text_zsoob",
-    "os","text_os","hurcane","text_hurcane","spik","text_spik","hors","text_hors",0,0,0,0,0,0,0,0,"o","text_o",
+    "os","text_os","hurcane","text_hurcane","spik","text_spik","hors","text_hors","fir","text_fir",0,0,0,0,0,0,"o","text_o",
     "firbolt","text_firbolt","lie","text_lie","spiky","text_spiky","can","text_can",0,0,0,0,0,0,0,0,"square","text_square",
     "icbolt","text_icbolt","lie/8","text_lie/8","bordr","text_bordr","togll","text_togll",0,0,0,0,0,0,0,0,"triangle","text_triangle",
   },
@@ -4141,6 +4141,25 @@ tiles_list = {
     color = {0,3},
     layer = 20,
     tags = {"snowflake", "ice", "hail"},
+  },
+  -- 364
+  {
+    name = "fir",
+    sprite = "fir",
+    type = "object",
+    color = {2,2},
+    layer = 4,
+    tags = {"hot", "fire", "flame"},
+    desc = "CAUTION HOTTE!!!",
+  },
+  -- 365
+  {
+    name = "text_fir",
+    sprite = "text_fir",
+    type = "text",
+    color = {2,2},
+    layer = 20,
+    tags = {"hot", "fire", "flame"},
   },
 }
 
