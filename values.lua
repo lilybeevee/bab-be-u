@@ -179,11 +179,13 @@ selector_grid_contents = {
   },
   -- page 3: ui / instructions
   {
-    "ui_1","ui_2","ui_3","ui_4","ui_6","ui_7","ui_8","ui_9","ui_w","ui_a","ui_s","ui_d","ui_i","ui_j","ui_k","ui_l","ui_e","ui_arrow",
+    0 ,"ui_w","ui_e","ui_r",0,0,0,"ui_i",0,0,0,0,0,0,0,"ui_7","ui_8","ui_9",
+    "ui_a","ui_s","ui_d",0,0,0,"ui_j","ui_k","ui_l",0,0,0,0,0,0,"ui_4","ui_5","ui_6",
+    "ui_z",0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ui_1","ui_2","ui_3",
+    0,0,0,0,"ui_space",0,0,0,0,0,0,0,0,0,0,"ui_arrow",0,0,
+    "text_press","text_f1","text_play","text_f2","text_edit","ui_left click","ui_right click",0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,"ui_walk",0,0,"ui_activat",0,0,"ui_clik",0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    "text_press","text_f1","text_play","text_f2","text_edit","ui_left click","ui_right click",0,0,0,0,0,0,0,0,0,0,0,
   },
   -- page 4: objects
   {
@@ -3279,6 +3281,7 @@ tiles_list = {
     rotate = true,
     color = {0,3},
     layer = 20,
+    tags = {"dpad", "d-pad", "directional pad", "arrow keys"},
   },
   -- 293
   {
@@ -4129,6 +4132,38 @@ tiles_list = {
     color = {2,4},
     layer = 20,
     tags = {"time", "hourglass"},
+  },
+  -- 368
+  {
+    name = "ui_5",
+    sprite = "ui_5",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 369
+  {
+    name = "ui_space",
+    sprite = "ui_space",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 370
+  {
+    name = "ui_z",
+    sprite = "ui_z",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 371
+  {
+    name = "ui_r",
+    sprite = "ui_r",
+    type = "object",
+    color = {0,3},
+    layer = 20,
   },
 }
 
