@@ -1341,7 +1341,7 @@ function fullDump(o, r, fulldump)
         nr = r - 1
       end
       if type(k) ~= 'number' then
-        s = s .. k .. ' = ' .. fullDump(v, nr)
+        s = s .. tostring(k) .. ' = ' .. fullDump(v, nr)
       else
         s = s .. fullDump(v, nr)
       end
