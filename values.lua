@@ -164,7 +164,7 @@ selector_grid_contents = {
     "bellt", "text_bellt", "text_go", "tre", "text_tre", "piler", "text_piler", "hatt", "text_hatt", "hedg", "text_hedg", 0, 0, "riff", "text_riff", "text_glued", "text_whit", "text_orang",
     "boll", "text_boll", "text_:o", "frut", "text_frut", "kirb", "text_kirb", "katany", "text_katany", "metl", "text_metl", 0, 0, 0, 0, "text_pinc", "text_colrful", "text_yello",
     "clok", "text_clok", "text_try again", "text_no undo", "text_undo", "slippers", "text_slippers", "firbolt", "text_firbolt", "jail", "text_jail", 0, 0, 0, 0, "text_tranz", "text_rave", "text_grun",
-    "splittr", "text_splittr", "text_split", "steev", "text_steev", "boy", "text_boy", "icbolt", "text_icbolt", "platfor", "text_platfor", 0, 0, 0, 0, "text_gay", "text_stelth", "text_cyeann",
+    "splittr", "text_splittr", "text_split", "steev", "text_steev", "boy", "text_boy", "icbolt", "text_icbolt", "platfor", "text_platfor", "ladr", "text_ladr", 0, 0, "text_gay", "text_stelth", "text_cyeann",
     "chekr", "text_chekr", "text_diag", "text_ortho", "text_haet flor", "arro", "text_arro", "text_go my way", "text_spin", "text_no turn", "text_stubbn", "text_rotatbl", 0, 0, 0, "text_qt", "text_paint", "text_bleu",
     "clowd", "text_clowd", "text_flye", "text_tall", "text_haet skye", "ghost fren", "text_ghost fren", "robobot", "text_robobot", "sparkl", "text_sparkl", "spik", "text_spik", "spiky", "text_spiky", "bordr", "text_bordr", "text_purp",
     nil
@@ -202,7 +202,7 @@ selector_grid_contents = {
     "steev","text_steev","splittr","text_splittr","colld","text_colld","arro","text_arro",0,0,0,0,0,0,"pata","text_pata","jill","text_jill",
     "han","text_han","clowd","text_clowd","bellt","text_bellt","ger","text_ger","sno","text_sno","snoman","text_snoman",0,0,"larry","text_larry","zsoob","text_zsoob",
     "os","text_os","hurcane","text_hurcane","spik","text_spik","hors","text_hors","fir","text_fir",0,0,0,0,0,0,"o","text_o",
-    "firbolt","text_firbolt","lie","text_lie","spiky","text_spiky","can","text_can",0,0,0,0,0,0,0,0,"square","text_square",
+    "firbolt","text_firbolt","lie","text_lie","spiky","text_spiky","can","text_can","ladr", "text_ladr",0,0,0,0,0,"square","text_square",
     "icbolt","text_icbolt","lie/8","text_lie/8","bordr","text_bordr","togll","text_togll",0,0,0,0,0,0,0,0,"triangle","text_triangle",
   },
   -- page 5: properties, verbs and conditions
@@ -4256,6 +4256,26 @@ tiles_list = {
     texttype = "letter",
     color = {0,3},
     layer = 20,
+  },
+  -- 382
+  {
+    name = "ladr",
+    sprite = "ladr",
+    type = "object",
+    color = {6,0},
+    layer = 3,
+    rotate = true,
+    tags = {"ladder", "stairs", "climb"},
+    desc = "jumpman be u",
+  },
+  -- 383
+  {
+    name = "text_ladr",
+    sprite = "text_ladr",
+    type = "text",
+    color = {6,0},
+    layer = 20,
+    tags = {"ladder", "stairs", "climb"},
   },
 }
 
