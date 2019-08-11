@@ -194,7 +194,7 @@ selector_grid_contents = {
     "ghost fren","text_ghost fren","kee","text_kee","dor","text_dor","hatt","text_hatt","slippers","text_slippers",0,0,0,0,0,0,0,0,
     "robobot","text_robobot","l..uv","text_l..uv","hedg","text_hedg","hol","text_hol","riff","text_riff",0,0,0,0,0,0,0,0,
     "wog","text_wog","tre","text_tre","metl","text_metl","clok","text_clok","bom","text_bom",0,0,0,0,0,0,0,0,
-    "kirb","text_kirb","frut","text_frut","jail","text_jail","sine","text_sine",0,0,0,0,0,0,0,0,0,0,
+    "kirb","text_kirb","frut","text_frut","jail","text_jail","sine","text_sine","sanglas","text_sanglas",0,0,0,0,0,0,0,0,
     "bup","text_bup","piler","text_piler","fenss","text_fenss","buble","text_buble","creb","text_creb","icecub","text_icecub",0,0,0,0,0,0,
     "boy","text_boy","dayzy","text_dayzy","platfor","text_platfor","pepis","text_pepis",0,0,0,0,0,0,"lila","text_lila","tot","text_tot",
     "steev","text_steev","splittr","text_splittr","colld","text_colld","arro","text_arro",0,0,0,0,0,0,"pata","text_pata","jill","text_jill",
@@ -3685,7 +3685,7 @@ tiles_list = {
     type = "object",
     color = {1,4},
     layer = 4,
-    tags = {"icecube"},
+    tags = {"icecube", "ice cube"},
   },
   -- 328
   {
@@ -4160,6 +4160,26 @@ tiles_list = {
     color = {2,2},
     layer = 20,
     tags = {"hot", "fire", "flame"},
+  },
+  -- 366
+  {
+    name = "sanglas",
+    sprite = "sanglas",
+    type = "object",
+    color = {2,4},
+    layer = 4,
+    rotate = true,
+    tags = {"time", "hourglass"},
+    desc = "tim got broken",
+  },
+  -- 367
+  {
+    name = "text_sanglas",
+    sprite = "text_sanglas",
+    type = "text",
+    color = {2,4},
+    layer = 20,
+    tags = {"time", "hourglass"},
   },
 }
 
