@@ -4106,7 +4106,7 @@ tiles_list = {
   },
   -- 360
   {
-    name = "text_(", -- these are here so that ( and ) don't get stripped by parseLetterSentences before it gets to parseRules
+    name = "text_(", -- these are here so that ( and ) don't get stripped by parseLetterSentences before it gets to the main parser
     sprite = "letter_paranthesis",
     type = "text",
     texttype = "parenthesis",
@@ -4123,7 +4123,17 @@ tiles_list = {
     rotate = true,
     color = {0,3},
     layer = 20,
-  }
+  },
+  -- 362
+  {
+    name = "text_parenthesis",
+    sprite = "letter_paranthesis",
+    type = "text",
+    texttype = "parenthesis",
+    rotate = true,
+    color = {0,3},
+    layer = 20,
+  },
 }
 
 tiles_by_name = {}

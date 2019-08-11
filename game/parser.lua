@@ -53,7 +53,7 @@
   }
 ]]
 
-function parse(words)
+function parse(words, dir)
   local extra_words = {}
   for i = #words,1,-1 do
     if words[i].type == "ellipses" then
@@ -62,14 +62,14 @@ function parse(words)
     end
   end
   if #words < 3 then return false end -- smallest rules are 3 words long (subject, verb, object)
-  print(fullDump(words))
+  -- print(fullDump(words))
   
   local units = {}
   local verbs = {}
   while words[1].type ~= "verb_all"
   and   words[1].type ~= "verb_object"
   and   words[1].type ~= "verb_object_or_property_or_object" do
-    local unit = findUnit(words, extra_words, true) -- outer unit doesn't need to worry about enclosure (nothing farther out to confuse it with)
+    local unit = findUnit(words, extra_words, dir, true) -- outer unit doesn't need to worry about enclosure (nothing farther out to confuse it with)
     if not unit then
       return false
     end
@@ -87,7 +87,7 @@ function parse(words)
   while words[1] and ( words[1].type == "verb_all"
   or words[1].type == "verb_object"
   or words[1].type == "verb_object_or_property_or_object" ) do
-    local verb = findVerbPhrase(words, extra_words)
+    local verb = findVerbPhrase(words, extra_words, dir, true)
     if not verb then break end
     table.insert(verbs, verb)
     if words[1] and words[1].type == "and" then
@@ -113,7 +113,7 @@ function parse(words)
   return true, rules, extra_words
 end
 
-function findUnit(words, extra_words, outer)
+function findUnit(words, extra_words, dir, outer)
   -- find all the prefix conditions
   -- find the unit itself
   -- find all the infix conditions, including nesting
@@ -124,10 +124,10 @@ function findUnit(words, extra_words, outer)
   local parenthesis = false
   -- print(enclosed, words[1].name)
   -- print("finding unit")
-  if words[1].name == "(" then
+  if (words[1].name == "(" or words[1].name == "parenthesis") and words[1].unit and words[1].unit.dir == dir then
     enclosed = true
     parenthesis = true
-    print("(")
+    -- print("(")
     table.insert(extra_words, words[1])
     table.remove(words, 1)
     if #words == 0 then return nil end
@@ -151,7 +151,7 @@ function findUnit(words, extra_words, outer)
     end -- we're not breaking here to allow "frenles lit bab" - add "else break" here if we want there to always be an and: "frenles & lit bab"
   end
   
-  unit = findClass(words, extra_words)
+  unit = findClass(words, extra_words, dir)
   
   -- print(unit and unit.name.."?")
   
@@ -172,7 +172,7 @@ function findUnit(words, extra_words, outer)
       if #words == 0 then return nil end
     end
     
-    local other = findUnit(words, extra_words, enclosed)
+    local other = findUnit(words, extra_words, dir)
     if other == nil then return unit end
     infix.others = {other}
     table.insert(conds, infix)
@@ -181,7 +181,7 @@ function findUnit(words, extra_words, outer)
       table.insert(extra_words, words[1])
       table.remove(words, 1)
       if #words == 0 then return nil end
-      local other = findUnit(words, extra_words, enclosed)
+      local other = findUnit(words, extra_words)
       if other == nil then return unit end
       table.insert(infix.others, other)
     end
@@ -193,8 +193,9 @@ function findUnit(words, extra_words, outer)
     first_infix = false
   end
   
-  if enclosed and words[1] and words[1].name == ")" then
-    print(")")
+  -- print(fullDump(words[1]), dir)
+  if parenthesis and words[1] and (words[1].name == ")" or words[1].name == "parenthesis") and words[1].unit and words[1].unit.dir == (rotate8(dir)) then
+    -- print(")")
     table.insert(extra_words, words[1])
     table.remove(words, 1)
   end
@@ -204,7 +205,7 @@ function findUnit(words, extra_words, outer)
   return unit
 end
 
-function findClass(words, extra_words)
+function findClass(words, extra_words, dir)
   if words[2] and words[2].name == "text" then
     if not words[1].mods then words[1].mods = {} end
     table.insert(words[1].mods, words[2].unit)
@@ -225,7 +226,7 @@ function findClass(words, extra_words)
   return unit
 end
 
-function findVerbPhrase(words, extra_words, enclosed)
+function findVerbPhrase(words, extra_words, dir, enclosed)
   local objects = {}
   local verb = words[1]
   table.remove(words, 1)
@@ -273,8 +274,8 @@ function findVerbPhrase(words, extra_words, enclosed)
       end
     end
   elseif verb.type == "verb_object" or verb.type == "verb_object_or_property_or_object" then -- (unit)
-    while findUnit(copyTable(words)) do -- there has to be a better way to do this
-      table.insert(objects, findUnit(words, extra_words, enclosed))
+    while findUnit(copyTable(words), {}, dir, enclosed) do -- there has to be a better way to do this
+      table.insert(objects, findUnit(words, extra_words, dir, enclosed))
       if words[1] and words[1].type == "and" and words[2] and words[2].type ~= "verb_all" and words[2].type ~= "verb_object" then
         table.insert(extra_words, words[1])
         table.remove(words, 1)
@@ -300,7 +301,7 @@ function findLetterSentences(str, index_, sentences_, curr_sentence_, start_) --
   }
   local curr_sentence = copyTable(curr_sentence_ or {})
   local start = start_ or false
-  --print("start of findLetterSentences:",str,index,fullDump(sentences),fullDump(curr_sentence),start, sentences.start, sentences.endd, sentences.both, sentences.middle)
+  -- print("start of findLetterSentences:",str,index,fullDump(sentences),fullDump(curr_sentence),start, sentences.start, sentences.endd, sentences.both, sentences.middle)
 
   if #curr_sentence == 0 and not index == string.len(str) then --go to the next letter if we don't have anything in this one... or if we do
     findLetterSentences(str, index+1, sentences, {}, false)
@@ -463,4 +464,4 @@ local function testParser()
   end
 end
 
-testParser()
+-- testParser()

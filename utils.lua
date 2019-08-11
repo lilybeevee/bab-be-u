@@ -351,7 +351,7 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
             if not testConds(rule_units[i], rule[ruleparts[i]].conds) then
               if (debugging) then
                 print("false due to cond", i)
-                print(fullDump(rule_units[i]), fullDump(rule[ruleparts[i]].conds))
+                -- print(fullDump(rule_units[i]), fullDump(rule[ruleparts[i]].conds))
               end
               result = false
             end
@@ -490,11 +490,30 @@ withrecursion = {}
 
 function testConds(unit,conds) --cond should be a {condtype,{object types},{cond_units}}
   local endresult = true
-  return true end function foo()-- temp so it doesn't crash because of the changed condition format
   for _,cond in ipairs(conds or {}) do
-    local condtype = cond[1]
-    local params = cond[2]
-    local cond_unit = cond[3][1]
+    local condtype = cond.name
+    local lists = {} -- for iterating
+    local sets = {} -- for checking
+    if cond.others then
+      for _,other in ipairs(cond.others) do
+        local list = {}
+        local set = {}
+        if other.name == "lvl" then -- probably have to account for group/every1 here too, maybe more
+          table.insert(list, outerlvl)
+          set[outerlvl] = true
+        else
+          for _,unit in ipairs(findUnitsByName(other.name)) do -- findUnitsByName handles mous and no1 already
+            if testConds(unit, other.conds) then
+              table.insert(list, unit)
+              set[unit] = true
+            end
+          end
+        end
+        table.insert(lists, list)
+        table.insert(sets, set)
+      end
+    end
+    
 
     local result = true
     local cond_not = false
@@ -511,7 +530,7 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
     
     if (old_withrecursioncond) then
       result = false
-    elseif condtype:starts("that") then
+    elseif condtype:starts("that") then -- TODO
       result = true
       local verb = condtype:sub(6)
       for _,param in ipairs(params) do
@@ -521,62 +540,77 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
         end
       end
     elseif condtype == "w/fren" then
-      for _,param in ipairs(params) do
-        local others = {}
-        if unit == outerlvl then --basically turns into sansn't
-          if param ~= "lvl" then
-            others = findUnitsByName(param);
-          else
-            for __,on in ipairs(findUnitsByName(param)) do
-              if on ~= outerlvl then
-                table.insert(others, on);
+      if unit ~= outerlvl then
+        local frens = getUnitsOnTile(x, y, nil, false, unit, true)
+        for _,other in ipairs(sets) do
+          if not other[outerlvl] then
+            local found = false
+            for _,fren in ipairs(frens) do
+              if other[fren] then
+                found = true
+                break
               end
+            end
+            if not found then
+              result = false
+              break
             end
           end
         end
+      else -- something something surrounds maybe?
+        for _,other in ipairs(lists) do
+          if #other == 0 then
+            result = false
+            break
+          end
+        end
+      end
+    elseif condtype == "arond" then
+      --Vitellary: Deliberately ignore the tile we're on. This is different from baba.
+      local others = {}
+      for ndir=1,8 do
+        local nx, ny = dirs8[ndir][1], dirs8[ndir][2]
         if unit == outerlvl and surrounds ~= nil and surrounds_name == level_name then
           --use surrounds to remember what was around the level
-          for __,on in ipairs(surrounds[0][0]) do
+          for __,on in ipairs(surrounds[nx][ny]) do -- this part hasn't been updated, but it's not important yet
             if nameIs(on, param) then
               table.insert(others, on);
             end
           end
         else
-          if param ~= "mous" then
-            others = getUnitsOnTile(x, y, param, false, unit) --currently, conditions only work up to one layer of nesting, so the noun argument of the condition is assumed to be just a noun
-          else
-            others = getCursorsOnTile(x, y, false, unit)
-          end
-        end
-        if #others == 0 then
-          result = false
-          break
+          local dx, dy, dir, px, py = getNextTile(unit, nx, ny, ndir)
+          mergeTable(others, getUnitsOnTile(px, py, nil, false, unit, true))
         end
       end
-    elseif condtype == "arond" then
-      for _,param in ipairs(params) do
-        --Vitellary: Deliberately ignore the tile we're on. This is different from baba.
-        local others = {}
-        for ndir=1,8 do
-          local nx, ny = dirs8[ndir][1], dirs8[ndir][2]
-          if unit == outerlvl and surrounds ~= nil and surrounds_name == level_name then
-            --use surrounds to remember what was around the level
-            for __,on in ipairs(surrounds[nx][ny]) do
-              if nameIs(on, param) then
-                table.insert(others, on);
-              end
-            end
-          else
-            local dx, dy, dir, px, py = getNextTile(unit, nx, ny, ndir)
-            mergeTable(others, param ~= "mous" and getUnitsOnTile(px,py,param) or getCursorsOnTile(px, py, false, unit))
+      for _,set in ipairs(sets) do
+        local found = false
+        for _,other in ipairs(others) do
+          if set[other] then
+            found = true
+            break
           end
         end
-        if #others == 0 then
+        if not found then
           result = false
           break
         end
       end
     elseif condtype == "seen by" then
+      local others = {}
+      for ndir=1,8 do
+        local nx, ny = dirs8[ndir][1], dirs8[ndir][2]
+        if unit == outerlvl and surrounds ~= nil and surrounds_name == level_name then
+          --use surrounds to remember what was around the level
+          for __,on in ipairs(surrounds[nx][ny]) do -- this part hasn't been updated, but it's not important yet
+            if nameIs(on, param) then
+              table.insert(others, on);
+            end
+          end
+        else
+          local dx, dy, dir, px, py = getNextTile(unit, nx, ny, ndir)
+          mergeTable(others, getUnitsOnTile(px, py, nil, false, unit, true))
+        end
+      end
       if unit == outerlvl then --basically turns into sans n't BUT the unit has to be looking inbounds as well!
         for _,param in ipairs(params) do
           local found = false
@@ -606,21 +640,18 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
           end
         end
       else
-        for _,param in ipairs(params) do
+        for _,set in ipairs(sets) do
           local found = false
-          local others = {}
-          for ndir=1,8 do
-            local dx, dy, dir, px, py = getNextTile(unit, dirs8[ndir][1], dirs8[ndir][2], ndir)
-            mergeTable(others, param ~= "mous" and getUnitsOnTile(px,py,param) or {})
-          end
           for _,other in ipairs(others) do
-            local dx, dy, dir, px, py = getNextTile(other, dirs8[other.dir][1], dirs8[other.dir][2], other.dir)
-            if px == unit.x and py == unit.y then
-              found = true
-              break
-            else
-              --print(unit.x, unit.y)
-              --print(px, py)
+            if set[other] then
+              local dx, dy, dir, px, py = getNextTile(other, dirs8[other.dir][1], dirs8[other.dir][2], other.dir)
+              if px == unit.x and py == unit.y then
+                found = true
+                break
+              else
+                -- print(unit.x, unit.y)
+                -- print(px, py)
+              end
             end
           end
           if not found then

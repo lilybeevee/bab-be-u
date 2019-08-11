@@ -422,10 +422,6 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
       return --no need to continue past this point, since the letters suffice
     end
   end
-
-  -- print("just after letters:", dump(sentence))
-  local valid, rules, extra_words = parse(sentence)
-  --print(dump(state))
   
   local function addUnits(list, set, root)
     if root.unit and not set[root.unit] then
@@ -449,19 +445,29 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
     end
   end
 
-  if valid then
-    for i,rule in ipairs(rules) do
-      local list = {}
-      local set = {}
-      for _,word in ipairs(extra_words) do
-        addUnits(list, set, word)
+  -- print("just after letters:", dump(sentence))
+  while (#sentence > 2) do
+    local words = copyTable(sentence)
+    local valid, rules, extra_words = parse(words, dir)
+    --print(dump(state))
+
+    if valid then
+      for i,rule in ipairs(rules) do
+        local list = {}
+        local set = {}
+        for _,word in ipairs(extra_words) do
+          addUnits(list, set, word)
+        end
+        addUnits(list, set, rule.subject)
+        addUnits(list, set, rule.verb)
+        addUnits(list, set, rule.object)
+        local full_rule = {rule = rule, units = list, dir = dir}
+        -- print(fullDump(full_rule))
+        table.insert(final_rules, full_rule)
       end
-      addUnits(list, set, rule.subject)
-      addUnits(list, set, rule.verb)
-      addUnits(list, set, rule.object)
-      local full_rule = {rule = rule, units = list, dir = dir}
-      -- print(fullDump(full_rule))
-      table.insert(final_rules, full_rule)
+      sentence = words
+    else
+      table.remove(sentence, 1)
     end
   end
 end
