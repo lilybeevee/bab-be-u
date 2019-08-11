@@ -106,7 +106,7 @@ function parseRules(undoing)
   end
   
   --refresh name/type/color of dittos in reading order (top to bottom)
-  local dittos = units_by_name["text_ditto"]
+  local dittos = units_by_name["text_''"]
   if (dittos ~= nil) then
   table.sort(dittos, function(a, b) return a.y < b.y end ) 
     for _,unit in ipairs(dittos) do

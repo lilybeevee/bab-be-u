@@ -185,6 +185,9 @@ function loadMap()
     initializeOuterLvl()
     initializeEmpties()
     loadStayTher()
+    if (not unit_tests) then
+      writeSaveFile(level_name, "seen", true)
+    end
   end
   unsetNewUnits()
 end
@@ -898,7 +901,7 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
           result = false
         end
       end
-    elseif condtype == "wait" then
+    elseif condtype == "wait..." then
       result = last_move ~= nil and last_move[1] == 0 and last_move[2] == 0 and last_click_x == nil and last_click_y == nil
     elseif condtype == "mayb" then
       --add a dummy action so that undoing happens
@@ -1364,7 +1367,7 @@ function fullDump(o, r, fulldump)
         nr = r - 1
       end
       if type(k) ~= 'number' then
-        s = s .. k .. ' = ' .. fullDump(v, nr)
+        s = s .. tostring(k) .. ' = ' .. fullDump(v, nr)
       else
         s = s .. fullDump(v, nr)
       end
@@ -2164,6 +2167,39 @@ function extendReplayString(movex, movey, key)
     end
     replay_string = replay_string..";"
   end
+end
+
+function writeSaveFile(category, key, value)
+  --e.g. "new level", "won", true
+  save = {}
+  local filename = world;
+  if (world == "" or world == nil) then
+    filename = "levels"
+  end
+  if love.filesystem.read(filename..".savebab") ~= nil then
+    save = json.decode(love.filesystem.read(filename..".savebab"))
+  end
+  if save[category] == nil then
+    save[category] = {}
+  end
+  save[category][key] = value;
+  love.filesystem.write(filename..".savebab", json.encode(save))
+  return true;
+end
+
+function readSaveFile(category, key)
+  save = {}
+  local filename = world;
+  if (world == "" or world == nil) then
+    filename = "levels"
+  end
+  if love.filesystem.read(filename..".savebab") ~= nil then
+    save = json.decode(love.filesystem.read(filename..".savebab"))
+  end
+  if save[category] ~= nil then
+    return save[category][key];
+  end
+  return nil
 end
 
 function addBaseRule(subject, verb, object)

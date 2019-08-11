@@ -154,10 +154,10 @@ colour_for_palette[6][4] = "blacc";
 selector_grid_contents = {
   -- page 1: default
   {
-    0, "text_be", "text_&", "text_got", "text_nt", "text_every1", "text_no1", "text_text", "text_wurd", "text_meta", "text_sublvl", "text_wait", "text_mous", "text_clikt", "text_nxt", "text_stay ther", "lvl", "text_lvl",
+    0, "text_be", "text_&", "text_got", "text_n't", "text_every1", "text_no1", "text_text", "text_wurd", "text_meta", "text_sublvl", "text_wait...", "text_mous", "text_clikt", "text_nxt", "text_stay ther", "lvl", "text_lvl",
     "bab", "text_bab", "text_u", "kee", "text_kee", "text_for dor", "text_goooo", "text_icy", "text_icyyyy", "text_behin u", "text_moar", "text_sans", "text_liek", "text_loop", "lin", "text_lin", "selctr", "text_selctr",
     "keek", "text_keek", "text_walk", "dor", "text_dor", "text_ned kee", "text_frens", "text_pathz", "text_groop", "text_u too", "text_u tres", "text_xwx", "text_haet", "text_mayb", "text_an", "text_that", "text_ignor", "text_...",
-    "flog", "text_flog", "text_:)", "colld", "text_colld", "text_fridgd", "text_direction", "text_ouch", "text_slep", "text_protecc", "text_sidekik", "text_brite", "text_lit", "text_opaque", "text_torc", "text_vs", "text_nuek", "text_ditto",
+    "flog", "text_flog", "text_:)", "colld", "text_colld", "text_fridgd", "text_direction", "text_ouch", "text_slep", "text_protecc", "text_sidekik", "text_brite", "text_lit", "text_opaque", "text_torc", "text_vs", "text_nuek", "text_''",
     "roc", "text_roc", "text_go away pls", "laav", "text_laav", "text_hotte","text_visit fren", "text_w/fren", "text_arond", "text_frenles", "text_copkat", "text_za warudo", "text_timles", "text_behind", "text_beside", "text_look away", 0, "this",
     "wal", "text_wal", "text_no go", "l..uv", "text_l..uv", "gras", "text_gras", "text_creat", "text_look at", "text_spoop", "text_yeet", "text_turn cornr", "text_corekt", "text_go arnd", "text_mirr arnd", 0, 0, 0,
     "watr", "text_watr", "text_no swim", "meem", "text_meem", "dayzy", "text_dayzy", "text_snacc", "text_seen by" , "text_stalk", "text_moov", "text_folo wal", "text_rong", "text_her", "text_thr", "text_rithere", "text_the", 0,
@@ -175,17 +175,19 @@ selector_grid_contents = {
   {
     "letter_a","letter_b","letter_c","letter_d","letter_e","letter_f","letter_g","letter_h","letter_i","letter_j","letter_k","letter_l","letter_m","letter_n","letter_o","letter_p","letter_q","letter_r",
     "letter_s","letter_t","letter_u","letter_v","letter_w","letter_x","letter_y","letter_z","letter_.","letter_colon","letter_parenthesis","letter_'","letter_1","letter_/","letter_8",0,0,0,
-    "letter_go","letter_come","letter_pls","letter_away","letter_my","letter_no","letter_way",0,0,0,0,0,0,0,0,0,0,0,
+    "letter_go","letter_come","letter_pls","letter_away","letter_my","letter_no","letter_way","letter_ee","letter_fren","letter_ll",0,0,0,0,0,0,0,0,
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   },
   -- page 3: ui / instructions
   {
-    "ui_1","ui_2","ui_3","ui_4","ui_6","ui_7","ui_8","ui_9","ui_w","ui_a","ui_s","ui_d","ui_i","ui_j","ui_k","ui_l","ui_e","ui_arrow",
+    0 ,"ui_w","ui_e","ui_r",0,0,0,"ui_i",0,0,0,0,0,0,0,"ui_7","ui_8","ui_9",
+    "ui_a","ui_s","ui_d",0,0,0,"ui_j","ui_k","ui_l",0,0,0,0,0,0,"ui_4","ui_5","ui_6",
+    "ui_z",0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ui_1","ui_2","ui_3",
+    0,0,0,0,"ui_space",0,0,0,0,0,0,0,0,0,0,"ui_arrow",0,0,
+    "text_press","text_f1","text_play","text_f2","text_edit","ui_left click","ui_right click",0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,"ui_walk",0,0,"ui_activat",0,0,"ui_clik",0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    "text_press","text_f1","text_play","text_f2","text_edit","ui_left click","ui_right click",0,0,0,0,0,0,0,0,0,0,0,
   },
   -- page 4: objects
   {
@@ -196,12 +198,12 @@ selector_grid_contents = {
     "ghost fren","text_ghost fren","kee","text_kee","dor","text_dor","hatt","text_hatt","slippers","text_slippers",0,0,0,0,0,0,0,0,
     "robobot","text_robobot","l..uv","text_l..uv","hedg","text_hedg","hol","text_hol","riff","text_riff",0,0,0,0,0,0,0,0,
     "wog","text_wog","tre","text_tre","metl","text_metl","clok","text_clok","bom","text_bom",0,0,0,0,0,0,0,0,
-    "kirb","text_kirb","frut","text_frut","jail","text_jail","sine","text_sine",0,0,0,0,0,0,0,0,0,0,
+    "kirb","text_kirb","frut","text_frut","jail","text_jail","sine","text_sine","sanglas","text_sanglas",0,0,0,0,0,0,0,0,
     "bup","text_bup","piler","text_piler","fenss","text_fenss","buble","text_buble","creb","text_creb","icecub","text_icecub",0,0,0,0,0,0,
     "boy","text_boy","dayzy","text_dayzy","platfor","text_platfor","pepis","text_pepis",0,0,0,0,0,0,"lila","text_lila","tot","text_tot",
     "steev","text_steev","splittr","text_splittr","colld","text_colld","arro","text_arro",0,0,0,0,0,0,"pata","text_pata","jill","text_jill",
-    "han","text_han","clowd","text_clowd","bellt","text_bellt","ger","text_ger",0,0,0,0,0,0,"larry","text_larry","zsoob","text_zsoob",
-    "os","text_os","hurcane","text_hurcane","spik","text_spik","hors","text_hors",0,0,0,0,0,0,0,0,"o","text_o",
+    "han","text_han","clowd","text_clowd","bellt","text_bellt","ger","text_ger","sno","text_sno","snoman","text_snoman",0,0,"larry","text_larry","zsoob","text_zsoob",
+    "os","text_os","hurcane","text_hurcane","spik","text_spik","hors","text_hors","fir","text_fir",0,0,0,0,0,0,"o","text_o",
     "firbolt","text_firbolt","lie","text_lie","spiky","text_spiky","can","text_can",0,0,0,0,0,0,0,0,"square","text_square",
     "icbolt","text_icbolt","lie/8","text_lie/8","bordr","text_bordr","togll","text_togll",0,0,0,0,0,0,0,0,"triangle","text_triangle",
   },
@@ -209,19 +211,19 @@ selector_grid_contents = {
   {
     "text_be","text_&","text_got","text_creat","text_snacc","text_spoop","text_copkat","text_moov","text_yeet","text_liek","text_haet","text_stalk","text_ignor","text_paint","text_vs","text_look at","text_behind","text_look away",
     "text_u","text_u too","text_u tres","text_walk",0,"text_:)","text_:(","text_no swim","text_ouch",0,"text_nxt","text_stay ther","text_sublvl",0,"text_w/fren","text_arond","text_frenles","text_sans",
-    "text_go","text_goooo","text_icy","text_icyyyy",0,"text_ned kee","text_for dor","text_hotte","text_fridgd",0,"text_loop",0,0,0,"text_seen by","text_that","text_that be","text_wait",
+    "text_go","text_goooo","text_icy","text_icyyyy",0,"text_ned kee","text_for dor","text_hotte","text_fridgd",0,"text_loop",0,0,0,"text_seen by","text_that","text_that be","text_wait...",
     "text_no go","text_go away pls","text_come pls","text_sidekik",0,"text_protecc","text_:o","text_xwx","text_wurd",0,0,0,0,0,"text_corekt","text_rong","text_timles","text_lit",
     "text_visit fren","text_slep","text_shy","text_behin u",0,"text_moar","text_split","text_nuek","text_meta",0,0,0,0,0,"text_samefloat","text_clikt","text_mayb","text_an",
     "text_flye","text_tall","text_haet skye","text_haet flor",0,0,0,0,0,0,0,0,0,0,0,0,0,"text_beside",
     "text_diag","text_ortho","text_go my way","text_direction",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     "text_turn cornr","text_folo wal","text_zip","text_hopovr",0,0,0,0,0,0,0,0,0,0,0,0,0,"text_pinc",
     "text_munwalk","text_sidestep","text_diagstep","text_knightstep",0,0,0,0,0,0,0,0,0,0,0,0,0,"text_reed",
-    "text_rotatbl",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_orang",
+    "text_spin","text_rotatbl",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_orang",
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_yello",
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_gay","text_tranz","text_grun",
+    "text_n't",0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_gay","text_tranz","text_grun",
     "text_babn't", "text_ben't",0,0,0,"text_try again","text_no undo","text_undo","text_za warudo","text_brite",0,0,0,0,0,"text_stelth","text_qt","text_cyeann",
     "text_rocn't","text_waln't",0,0,0,"text_poor toll","text_go arnd","text_mirr arnd","text_glued","text_torc",0,0,0,0,0,"text_blacc","text_whit","text_bleu",
-    "text_...","text_ditto",0,0,0,"text_her","text_thr","text_rithere","text_the","text_opaque",0,0,0,0,0,"text_colrful","text_rave","text_purp",
+    "text_...","text_''",0,0,0,"text_her","text_thr","text_rithere","text_the","text_opaque",0,0,0,0,0,"text_colrful","text_rave","text_purp",
   },
 }
 tile_grid_width = 18
@@ -416,7 +418,6 @@ tiles_list = {
     type = "object",
     color = {2, 4},
     layer = 3,
-    desc = "i want 1!!!",
     tags = {"flag"},
   },
   -- 19
@@ -456,7 +457,6 @@ tiles_list = {
     type = "object",
     color = {1, 3},
     layer = 1,
-    desc = "splish sploosh",
     tags = {"water"},
   },
   -- 23
@@ -548,7 +548,6 @@ tiles_list = {
     texttype = "property",
     color = {255, 255, 255},
     layer = 20,
-    tags = {"best"},
     desc = "GAY: Causes the unit to appear rainbow coloured.",
   },
   --31
@@ -577,7 +576,6 @@ tiles_list = {
     type = "object",
     color = {6, 2},
     layer = 3,
-    desc = "ce n'est pas une boîte, c'est quelque chose DE MIEUX",
     tags = {"box"},
   },
   --34
@@ -588,6 +586,7 @@ tiles_list = {
     color = {2, 1},
     layer = 20,
     tags = {"skull"},
+    desc = "evillllll",
   },
   --35
   {
@@ -600,7 +599,6 @@ tiles_list = {
     rotate = true,
     eye = {x=21, y=8, w=4, h=4},
     tags = {"skull"},
-    desc = "evillllll",
   },
   --36
   {
@@ -618,7 +616,6 @@ tiles_list = {
     type = "object",
     color = {2, 3},
     layer = 1,
-    desc = "very hot. not hotte tho unless u make it",
     tags = {"lava"},
   },
   --38
@@ -651,7 +648,6 @@ tiles_list = {
     color = {3, 1},
     layer = 20,
     tags = {"chars"},
-    desc = "meem is the true philosopher of our time",
   },
   --39
   {
@@ -694,7 +690,6 @@ tiles_list = {
     type = "text",
     color = {4, 1},
     layer = 20,
-    tags = {"apple", "android", "windows", "linux"},
   },
   --43
   {
@@ -706,7 +701,7 @@ tiles_list = {
     rotate = "true",
     eye = {x=14, y=8, w=2, h=2},
     tags = {"apple", "android", "windows", "linux"},
-    desc = "OS: Its sprites change depending on the user's Operating System!",
+    desc = "OS: Its sprites changes with the user's Operating System!",
   },
   --44
   {
@@ -746,7 +741,6 @@ tiles_list = {
     color = {2, 2},
     layer = 3,
     rotate = "true",
-    desc = "babs favorite snacc",
     tags = {"fruit"},
   },
   --48
@@ -787,7 +781,6 @@ tiles_list = {
     layer = 5,
     rotate = "true",
     eye = {x=16, y=9, w=3, h=3},
-    desc = "smol frens who own pointy tridents, play with explosives, and bake good cake. nobody knows how to describe more than one of them",
     tags = {"wug", "chars"},
   },
   --52
@@ -797,7 +790,6 @@ tiles_list = {
     type = "text",
     color = {2, 4},
     layer = 20,
-    desc = "wogs dream is to be a mad scientist and go evil with power using nothing but sheer linguistics. linguists' evil career options may be limited but that wont stop wog from trying their best",
     tags = {"wug", "chars"},
   },
   --tutorial sprites
@@ -889,7 +881,7 @@ tiles_list = {
     rotate = true,
     eye = {x=23, y=18, w=3, h=3},
     tags = {"toad", "chars"},
-    desc = "BUP: HELLO or BUP DOES NOT WANT\nBUP DOES NOT DREAM\nPLEASE HELP HIM\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    desc = "BUP: HELLO or BUP DOES NOT WANT\nBUP DOES NOT DREAM\nPLEASE HELP HIM\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n",
   },
   -- 62
   {
@@ -908,7 +900,7 @@ tiles_list = {
     color = {4, 1},
     layer = 3,
     tags = {"orb", "ball"},
-    desc = "hnmm... roun. colecc",
+    desc = "colecc",
   },
   -- 64
   {
@@ -927,7 +919,6 @@ tiles_list = {
     color = {1, 1},
     layer = 1,
     rotate = true,
-    desc = "bells and bellts are both metal so theyre basically the same thing right? dont tell anyone",
     tags = {"belt"},
   },
   -- 66
@@ -1059,7 +1050,7 @@ tiles_list = {
     layer = 5,
     rotate = true,
     eye = {x=21, y=9, w=2, h=2},
-    tags = {"kirby", "chars"},
+    tags = {"chars"},
     desc = "1, 2 oatmeal kirb be be a pincc guy"
   },
   --78
@@ -1069,7 +1060,7 @@ tiles_list = {
     type = "text",
     color = {4, 2},
     layer = 20,
-    tags = {"kirby", "chars"},
+    tags = {"chars"},
   },
   --79
   {
@@ -1131,7 +1122,7 @@ tiles_list = {
     texttype = "property",
     color = {4, 2},
     layer = 20,
-    tags = {"cute", "lily"},
+    tags = {"cute","lily"},
     desc = "QT: Makes the unit emit love hearts.",
   },
   -- 85
@@ -1182,7 +1173,6 @@ tiles_list = {
     type = "object",
     color = {5, 1},
     layer = 1,
-    desc = "don step on it. or do step on it. ur choice",
     tags = {"grass"},
   },
   -- 88
@@ -1202,7 +1192,7 @@ tiles_list = {
     color = {3, 3},
     layer = 5,
     eye = {x=10, y=7, w=3, h=3},
-    tags = {"violet", "daisy", "flower"},
+    tags = {"violet","daisy"},
   },
   -- 90
   {
@@ -1211,7 +1201,7 @@ tiles_list = {
     type = "text",
     color = {3, 3},
     layer = 20,
-    tags = {"violet", "daisy", "flower"},
+    tags = {"violet","daisy"},
   },
   -- 91
   {
@@ -1220,9 +1210,8 @@ tiles_list = {
     type = "object",
     color = {3, 1},
     layer = 3,
-    tags = {"hurricane", "tornado"},
+    tags = {"hurricane","tornado"},
     eye = {x=15, y=15, w=3, h=3},
-    desc = "woosh swoosh vwoosh aaaa",
   },
   -- 92
   {
@@ -1231,7 +1220,7 @@ tiles_list = {
     type = "text",
     color = {3, 1},
     layer = 20,
-    tags = {"hurricane", "tornado"},
+    tags = {"hurricane","tornado"},
   },
   -- 91
   {
@@ -1291,7 +1280,7 @@ tiles_list = {
     texttype = "property",
     color = {1, 4},
     layer = 20,
-    tags = {"slip", "slide", "patashu"},
+    tags = {"slip", "patashu"},
     desc = "ICY: Objects on something ICY are forced to move in their facing direction until they leave the ice or can't move any further.",
   },
   --- 97
@@ -1314,7 +1303,6 @@ tiles_list = {
     texttype = "property",
     color = {4,1},
     layer = 20,
-    tags = {"lvl", "level", "sublevel"},
     desc = "SUBLVL: An object that is sublvl will become enterable. Currently unimplemented.",
   },
   --- 99
@@ -1387,7 +1375,6 @@ tiles_list = {
     texttype = "property",
     color ={1, 3},
     layer = 20,
-    tags = {"gomyway", "go my wey"},
     desc = "GO MY WAY: Prevents movement onto its tile from the tile in front of it and the two tiles 45 degrees to either side.",
   },
   --- 106
@@ -1459,7 +1446,6 @@ tiles_list = {
     type = "object",
     color = {1, 4},
     layer = 1,
-    desc = "nothin says colld like diagonal lines",
     tags = {"ice"},
   },
   --- 113
@@ -1492,7 +1478,7 @@ tiles_list = {
     texttype = "property",
     color = {0, 3},
     layer = 20,
-    tags = {"safe", "protect"},
+    tags = {"safe"},
     desc = "PROTECC: Cannot be destroyed (but can be converted).",
   },
   -- 116
@@ -1522,18 +1508,17 @@ tiles_list = {
     type = "object",
     color = {0, 1},
     layer = 3,
-    desc = "secretly made from several pairs of pliers sacrificed to keepin babs out (or in)",
     tags = {"pillar"},
   },
   -- 119
   {
-    name = "text_nt",
+    name = "text_n't",
     sprite = "text_nt",
     type = "text",
     texttype = "not",
     color = {2, 2},
     layer = 20,
-    tags = {"not", "n't"},
+    tags = {"not", "nt"},
     desc = "N'T: A suffix that negates the meaning of a verb, condition or object class.",
   },
   -- 120
@@ -1594,17 +1579,17 @@ tiles_list = {
     type = "object",
     color = {0, 3},
     layer = 20,
-    tags = {"infinity", "infinite", "loop"},
+    tags = {"infinity", "infinite"},
   },
   -- 126
   {
-    name = "text_wait",
+    name = "text_wait...",
     sprite = "text_wait",
     type = "text",
     texttype = "cond_prefix",
     color = {0, 3},
     layer = 20,
-    tags = {"idle", "wait...", "prefix condition"},
+    tags = {"idle", "prefix condition"},
     desc = "WAIT... (Prefix Condition): True if the player waited last input.",
   },
   -- 127
@@ -1722,7 +1707,7 @@ tiles_list = {
     type = "text",
     color = {0, 3},
     layer = 20,
-    tags = {"all", "everyone", "evry1"},
+    tags = {"all"},
     desc = "EVERY1: Every object type in the level, aside from special objects like TXT, NO1, LVL, SELCTR, THIS, and MOUS.",
   },
   -- 138
@@ -1786,7 +1771,6 @@ tiles_list = {
     texttype = "property",
     color = {5, 3},
     layer = 20,
-    tags = {"turncornr", "turn corner"},
     desc = "TURN CORNR: At end of turn, faces the first direction that it could enter and that doesn't have another unit of its name: forward, right, left, backward. When combined with WALK, causes the unit to bounce off walls at 90 degree angles.",
   },
   -- 144
@@ -1795,7 +1779,7 @@ tiles_list = {
     sprite = "petnygrame",
     color = {2, 1},
     layer = 5,
-    tags = {"pentagram", "edgy"},
+    tags = {"pentagram"},
   },
   -- 145
   {
@@ -1804,7 +1788,7 @@ tiles_list = {
     type = "text",
     color = {2, 1},
     layer = 20,
-    tags = {"pentagram", "edgy"},
+    tags = {"pentagram"},
   },
   -- 146
   {
@@ -1813,7 +1797,7 @@ tiles_list = {
     color = {0, 1},
     layer = 5,
     rotate = true,
-    tags = {"weapon", "edgy"},
+    tags = {"weapon"},
   },
   -- 147
   {
@@ -1822,8 +1806,8 @@ tiles_list = {
     type = "text",
     color = {0, 1},
     layer = 20,
-    tags = {"weapon", "edgy"},
-    desc = "KATANY: Any object with GOT KATANY will have a KATANY."
+    tags = {"weapon"},
+	desc = "KATANY: Any object with GOT KATANY will have a KATANY."
   },
   -- 148
   {
@@ -1831,7 +1815,6 @@ tiles_list = {
     sprite = "scarr",
     color = {2, 1},
     layer = 5,
-    tags = {"edgy"},
   },
   -- 149
   {
@@ -1840,7 +1823,6 @@ tiles_list = {
     type = "text",
     color = {2, 1},
     layer = 20,
-    tags = {"edgy"},
   },
   -- 150
   {
@@ -1849,7 +1831,7 @@ tiles_list = {
     type = "text",
     color = {0, 3},
     layer = 20,
-    tags = {"none", "empty", "no one", "noone"},
+    tags = {"none","empty"},
     desc = "NO1: Refers to tiles with nothing in them."
   },
   -- 151
@@ -1964,7 +1946,7 @@ tiles_list = {
     layer = 5,
     rotate = true,
     eye = {x=17, y=9, w=2, h=2},
-    tags = {"devs", "chars", "szoob"},
+    tags = {"devs","chars","szoob"},
   },
   -- 162
   {
@@ -1973,7 +1955,7 @@ tiles_list = {
     type = "text",
     color = {4,1},
     layer = 20,
-    tags = {"devs", "chars", "szoob"},
+    tags = {"devs","chars","szoob"},
   },
   -- 163
   {
@@ -1995,7 +1977,7 @@ tiles_list = {
     texttype = "property",
     color = {6, 1},
     layer = 20,
-    tags = {"stubborn", "patashu"},
+    tags = {"stubborn","patashu"},
     desc = "STUBBN: STUBBN units ignore the special properties of WALK movers (bouncing off of walls, and declining to move if it would die due to being OUCH) and also makes attempted diagonal movement slide along walls. Stacks with itself - the more STUBBN, the more additional angles it will try, up to 180 degrees at 5 stacks!",
   },
   -- 165
@@ -2019,7 +2001,7 @@ tiles_list = {
     layer = 5,
     rotate = true,
     eye = {x=20, y=13, w=2, h=2},
-    tags = {"steve", "chars", "5 step"},
+    tags = {"steve", "chars"},
   },
   -- 167
   {
@@ -2028,7 +2010,7 @@ tiles_list = {
     type = "text",
     color = {2,3},
     layer = 20,
-    tags = {"steve", "chars", "5 step"},
+    tags = {"steve", "chars"},
   },
   -- 168
   {
@@ -2038,7 +2020,7 @@ tiles_list = {
     texttype = "property",
     color = {3, 2},
     layer = 20,
-    tags = {"wrap around", "go around", "cg5"},
+    tags = {"wrap around","cg5"},
     desc = "GO ARND: GO ARND units wrap around the level, as though it were a torus.",
   },
   -- 169
@@ -2049,7 +2031,7 @@ tiles_list = {
     texttype = "property",
     color = {3, 2},
     layer = 20,
-    tags = {"portal", "cg5"},
+    tags = {"portal","cg5"},
     desc = "POOR TOLL: If a unit would enter a POOR TOLL unit, it instead leaves the next POOR TOLL unit of the same name in reading order (left to right, line by line, wrapping around) out the corresponding same side. Respects FLYE!",
   },
   -- 170
@@ -2060,7 +2042,6 @@ tiles_list = {
     color = {0, 3},
     layer = 2,
     rotate = true,
-    tags = {"splitter", "5 step"},
   },
   -- 171
   {
@@ -2069,7 +2050,6 @@ tiles_list = {
     type = "text",
     color = {0, 3},
     layer = 20,
-    tags = {"splitter", "5 step"},
   },
   -- 172
   {
@@ -2079,7 +2059,6 @@ tiles_list = {
     texttype = "property",
     color = {4, 1},
     layer = 20,
-    tags = {"5 step"},
     desc = "SPLIT: Objects on a SPLITer are split into two copies on adjacent tiles.",
   },
   -- 173
@@ -2112,7 +2091,7 @@ tiles_list = {
     texttype = "property",
     color = {1, 4},
     layer = 20,
-    tags = {"moonwalk", "patashu"},
+    tags = {"moonwalk","patashu"},
     desc = "MUNWALK: MUNWALK units move 180 degrees opposite of their facing direction.",
   },
   -- 176
@@ -2123,7 +2102,7 @@ tiles_list = {
     texttype = "property",
     color = {3, 2},
     layer = 20,
-    tags = {"mirror around", "cg5"},
+    tags = {"mirror around","cg5"},
     desc = "MIRR ARND: MIRR ARND units wrap around the level, as though it were a projective plane.",
   },
   -- 177
@@ -2167,7 +2146,7 @@ tiles_list = {
     texttype = "property",
     color = {6, 1},
     layer = 20,
-    tags = {"time", "back"},
+    tags = {"time"},
     desc = "UNDO: UNDO units, at end of turn, rewind a turn earlier, cumulatively. Stacks!",
   },
   -- 181
@@ -2199,7 +2178,7 @@ tiles_list = {
     color = {4, 1},
     layer = 20,
     rotate = true,
-    tags = {"rotate", "lily"},
+    tags = {"rotate","lily"},
     desc = "SPIN: SPIN units rotate clockwise, the number of times indicated on top of the property.",
   },
   -- 184
@@ -2237,7 +2216,6 @@ tiles_list = {
     layer = 5,
     rotate = true,
     eye = {x=25, y=11, w=2, h=4},
-    desc = "its not spooky, its a fren.",
     tags = {"chars"},
   },
   -- 188
@@ -2247,7 +2225,6 @@ tiles_list = {
     type = "text",
     color = {4, 2},
     layer = 20,
-    desc = "this text is very spooky tho",
     tags = {"chars"},
   },
   -- 189
@@ -2260,7 +2237,6 @@ tiles_list = {
     layer = 5,
     rotate = true,
     eye = {x=16, y=8, w=2, h=4},
-    desc = "the super scan mouth lazers that copy abilities are missing because they forgot to design a mouth",
     tags = {"robot", "chars"},
   },
   -- 190
@@ -2352,7 +2328,6 @@ tiles_list = {
     texttype = "property",
     color = {2, 4},
     layer = 20,
-    tags = {"bright", "power"},
     desc = "BRITE: A BRITE object emits light in all directions. LIT will be true for objects on the same FLYE level if nothing OPAQUE is in the way.",
   },
   -- 199
@@ -2384,7 +2359,6 @@ tiles_list = {
     texttype = "property",
     color = {2, 3},
     layer = 20,
-    tags = {"strafe"},
     desc = "NO TURN: A NO TURN unit's direction can't change (unless re-oriented by non-euclidean level geometry, i.e. POOR TOLL).",
   },
   -- 202
@@ -2417,7 +2391,6 @@ tiles_list = {
     color = {6, 2},
     layer = 5,
     rotate = true,
-    tags = {"firebolt"},
     desc = "i cast FIRBOLT at the NO1!",
   },
   -- 205
@@ -2427,7 +2400,6 @@ tiles_list = {
     type = "text",
     color = {6, 2},
     layer = 20,
-    tags = {"firebolt"},
   },
   -- 206
   {
@@ -2437,7 +2409,6 @@ tiles_list = {
     color = {1, 4},
     layer = 5,
     rotate = true,
-    tags = {"icebolt"},
     desc = "its time for u to CHILL out. stay FROSTY.",
   },
   -- 207
@@ -2447,7 +2418,6 @@ tiles_list = {
     type = "text",
     color = {1, 4},
     layer = 20,
-    tags = {"icebolt"},
   },
   -- 206
   {
@@ -2456,7 +2426,6 @@ tiles_list = {
     type = "object",
     color = {5, 1},
     layer = 1,
-    tags = {"hedge"},
     desc = "im hedg the hedg heg",
   },
   -- 207
@@ -2466,7 +2435,6 @@ tiles_list = {
     type = "text",
     color = {5, 1},
     layer = 20,
-    tags = {"hedge"},
   },
   -- 208
   {
@@ -2494,7 +2462,6 @@ tiles_list = {
     type = "object",
     color = {0, 2},
     layer = 1,
-    tags = {"metal"},
     desc = "impervious metl...",
   },
   -- 211
@@ -2504,7 +2471,6 @@ tiles_list = {
     type = "text",
     color = {0, 2},
     layer = 20,
-    tags = {"metal"},
   },
   -- 210
   {
@@ -2513,7 +2479,6 @@ tiles_list = {
     type = "object",
     color = {2, 4},
     layer = 10,
-    tags = {"sparkle", "dust"},
     desc = "as brite as a star... but also as hotte as one!!",
   },
   -- 211
@@ -2523,7 +2488,6 @@ tiles_list = {
     type = "text",
     color = {2, 4},
     layer = 20,
-    tags = {"sparkle", "dust"},
   },
   -- 212
   {
@@ -2533,7 +2497,6 @@ tiles_list = {
     color = {0, 2},
     layer = 10,
     rotate = true,
-    tags = {"spike"},
     desc = "finally, I can make my i wanna be the bab fangame in bab be u",
   },
   -- 213
@@ -2543,7 +2506,6 @@ tiles_list = {
     type = "text",
     color = {0, 2},
     layer = 20,
-    tags = {"spike"},
   },
   -- 214
   {
@@ -2553,7 +2515,6 @@ tiles_list = {
     color = {0, 2},
     layer = 10,
     rotate = true,
-    tags = {"spike"},
     desc = "ouch!! many spik at once.",
   },
   -- 215
@@ -2563,7 +2524,6 @@ tiles_list = {
     type = "text",
     color = {0, 2},
     layer = 20,
-    tags = {"spike"},
   },
   -- 216
   {
@@ -2572,7 +2532,6 @@ tiles_list = {
     type = "object",
     color = {1, 0},
     layer = 99,
-    tags = {"border"},
     desc = "BORDR: Fake oob to hide stuff under. STOP, TALL and immune to conversion by default."
   },
   -- 217
@@ -2582,7 +2541,6 @@ tiles_list = {
     type = "text",
     color = {2, 0},
     layer = 20,
-    tags = {"border"},
   },
   -- 218
   {
@@ -2591,7 +2549,7 @@ tiles_list = {
     type = "text",
     color = {0, 3},
     layer = 20,
-    tags = {"infloop", "infinity", "infinite loop", "infiniteloop"},
+    tags = {"infloop"},
     desc = "INFLOOP: A special word that describes the infinite loop state."
   },
   -- 219
@@ -2602,8 +2560,7 @@ tiles_list = {
     color = {6, 2},
     layer = 5,
     desc = "good for use with go my way",
-    rotate = true,
-    tags = {"platform"},
+    rotate = true
   },
   -- 220
   {
@@ -2612,7 +2569,6 @@ tiles_list = {
     type = "text",
     color = {6, 2},
     layer = 20,
-    tags = {"platform"},
   },
   -- 221
   {
@@ -2649,7 +2605,7 @@ tiles_list = {
     type = "object",
     color = {0,3},
     layer = 20,
-    desc = "THIS: A word that refers to itself."
+    desc = "THIS: An object that pretends like it's text."
   },
   -- 225
   {
@@ -2810,11 +2766,11 @@ tiles_list = {
     name = "text_...",
     sprite = "text_...",
     type = "text",
-    texttype = "ellipses",
+    texttype = "ellipsis",
     color = {0, 3},
     layer = 20,
-    tags = {"ellipses", "dot dot dot", "dotdotdot", "period"},
-    desc = "... (ELLIPSES): Extends rules. BAB ... BE ... ... U is the same as BAB BE U.",
+    tags = {"ellipsis", "dot dot dot", "dotdotdot", "period"},
+    desc = "... (ELLIPSIS): Extends rules. BAB ... BE ... ... U is the same as BAB BE U.",
   },
   -- 238
   {
@@ -2824,7 +2780,7 @@ tiles_list = {
 	texttype = "property",
 	color = {4,1},
   layer = 20,
-  tags = {"you2", "p2", "u2", "you 2", "p 2", "u 2"},
+  tags = {"you2","p2","u2"},
 	desc = "player 2 has joined the game",
   },
   -- 239
@@ -2835,7 +2791,7 @@ tiles_list = {
 	texttype = "property",
 	color = {4,1},
   layer = 20,
-  tags = {"you3", "p3", "u3", "you 3", "p 3", "u 3"},
+  tags = {"you3","p3","u3"},
 	desc = "and player 3",
   },
   -- 240
@@ -3204,13 +3160,13 @@ tiles_list = {
   },
   -- 278
   {
-    name = "text_ditto",
+    name = "text_''",
     sprite = "text_ditto",
     type = "text",
     texttype = "ditto",
     color = {0,3},
     layer = 20,
-    tags = {"''", "quotation marks"},
+    tags = {"ditto", "quotation marks"},
     desc = "DITTO: Acts like the text above it."
   },
   -- 279
@@ -3221,7 +3177,6 @@ tiles_list = {
     texttype = "property",
     color = {4, 1},
     layer = 20,
-    tags = {"notnat"},
     desc = "META: BE META causes that object to be turned into its corresponding metatext. BEN'T META does the opposite and goes down one meta layer (disappearing if that is impossible).",
   },
   -- 280
@@ -3328,6 +3283,7 @@ tiles_list = {
     rotate = true,
     color = {0,3},
     layer = 20,
+    tags = {"dpad", "d-pad", "directional pad", "arrow keys"},
   },
   -- 293
   {
@@ -3404,7 +3360,7 @@ tiles_list = {
     texttype = "group",
     color = {3, 3},
     layer = 20,
-    tags = {"group", "paths"},
+    tags = {"group","paths"},
     desc = "PATHZ: A variant of FRENS. SELCTR inherently lieks PATHZ.",
   },
 	-- 302
@@ -3427,7 +3383,7 @@ tiles_list = {
     rotate = true,
     color = {1,3},
     layer = 20,
-    tags = {"here", "cg5"},
+    tags = {"here","cg5"},
     desc = "HER ->: Sends objects to where the text indicates.",
   },
   -- 304
@@ -3439,7 +3395,7 @@ tiles_list = {
     rotate = true,
     color = {3,2},
     layer = 20,
-    tags = {"there", "cg5"},
+    tags = {"there","cg5"},
     desc = "THR ->: Sends objects as far away from it as possible in the indicated direction.",
   },
   -- 305
@@ -3450,7 +3406,7 @@ tiles_list = {
     rotate = true,
     color = {0,3},
     layer = 20,
-    tags = {"that", "those", "cg5"},
+    tags = {"that","cg5"},
     desc = "THE: Refers to the object it's pointing at. Currently not functional.",
   },
   -- 306
@@ -3650,7 +3606,6 @@ tiles_list = {
     type = "object",
     color = {1,3},
     layer = 3,
-    tags = {"bubble"},
   },
   -- 324
   {
@@ -3659,7 +3614,6 @@ tiles_list = {
     type = "text",
     color = {1,3},
     layer = 20,
-    tags = {"bubble"},
   },
   -- 325
   {
@@ -3687,7 +3641,7 @@ tiles_list = {
     type = "object",
     color = {1,4},
     layer = 4,
-    tags = {"icecube"},
+    tags = {"icecube", "ice cube"},
   },
   -- 328
   {
@@ -3696,7 +3650,6 @@ tiles_list = {
     type = "text",
     color = {1,4},
     layer = 20,
-    tags = {"icecube"},
   },
   -- 329
   {
@@ -3748,7 +3701,7 @@ tiles_list = {
     texttype = "property",
     color = {2, 4},
     layer = 20,
-    tags = {"sticky", "lily"},
+    tags = {"sticky","lily"},
     desc = "GLUED: Stuck to adjacent units sharing its colour, and can't move unless the entire block can simultaneously move.",
   },
   --- 334
@@ -3811,7 +3764,6 @@ tiles_list = {
     texttype = "property",
     color = {6,2},
     layer = 20,
-    tags = {"rotatable"},
     desc = "ROTATBL: Makes any object able to be rotated."
   },
   -- 340
@@ -3870,7 +3822,7 @@ tiles_list = {
     color = {0,3},
     layer = 4,
     rotate = true,
-    tags = {"toggle", "lightswitch"},
+    tags = {"toggle","lightswitch"},
   },
   -- 337
   {
@@ -3879,7 +3831,7 @@ tiles_list = {
     type = "text",
     color = {0,3},
     layer = 20,
-    tags = {"toggle", "lightswitch"},
+    tags = {"toggle","lightswitch"},
   },
   -- 338
   {
@@ -4106,6 +4058,146 @@ tiles_list = {
   },
   -- 360
   {
+    name = "snoman",
+    sprite = "snoman",
+    sleepsprite = "snoman_slep",
+    type = "object",
+    color = {0, 3},
+    layer = 5,
+    eye = {x=17, y=8, w=3, h=3},
+    tags = {"chars", "snowman"},
+    desc = "hes magiccal",
+  },
+  -- 361
+  {
+    name = "text_snoman",
+    sprite = "text_snoman",
+    type = "text",
+    color = {0,3},
+    layer = 20,
+    tags = {"chars", "snowman"},
+  },
+  -- 362
+  {
+    name = "sno",
+    sprite = "sno",
+    type = "object",
+    color = {0,3},
+    layer = 4,
+    tags = {"snowflake", "ice", "hail"},
+    desc = "no 2 r the same...\nor is it?",
+  },
+  -- 363
+  {
+    name = "text_sno",
+    sprite = "text_sno",
+    type = "text",
+    color = {0,3},
+    layer = 20,
+    tags = {"snowflake", "ice", "hail"},
+  },
+  -- 364
+  {
+    name = "fir",
+    sprite = "fir",
+    type = "object",
+    color = {2,2},
+    layer = 4,
+    tags = {"hot", "fire", "flame"},
+    desc = "CAUTION HOTTE!!!",
+  },
+  -- 365
+  {
+    name = "text_fir",
+    sprite = "text_fir",
+    type = "text",
+    color = {2,2},
+    layer = 20,
+    tags = {"hot", "fire", "flame"},
+  },
+  -- 366
+  {
+    name = "sanglas",
+    sprite = "sanglas",
+    type = "object",
+    color = {2,4},
+    layer = 4,
+    rotate = true,
+    tags = {"time", "hourglass"},
+    desc = "tim got broken",
+  },
+  -- 367
+  {
+    name = "text_sanglas",
+    sprite = "text_sanglas",
+    type = "text",
+    color = {2,4},
+    layer = 20,
+    tags = {"time", "hourglass"},
+  },
+  -- 368
+  {
+    name = "ui_5",
+    sprite = "ui_5",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 369
+  {
+    name = "ui_space",
+    sprite = "ui_space",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 370
+  {
+    name = "ui_z",
+    sprite = "ui_z",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 371
+  {
+    name = "ui_r",
+    sprite = "ui_r",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 372
+  {
+    name = "letter_ee",
+    sprite = "letter_ee",
+    type = "text",
+    texttype = "letter",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 373
+  {
+    name = "letter_fren",
+    sprite = "letter_fren",
+    type = "text",
+    texttype = "letter",
+    color = {0,3},
+    layer = 20,
+    desc = "its a fren",
+  },
+  -- 374
+  {
+    name = "letter_ll",
+    sprite = "letter_ll",
+    type = "text",
+    texttype = "letter",
+    color = {0,3},
+    layer = 20,
+    desc = "welcome <3 he11",
+  },
+  -- 375
+  {
     name = "text_(", -- these are here so that ( and ) don't get stripped by parseLetterSentences before it gets to the main parser
     sprite = "letter_paranthesis",
     type = "text",
@@ -4114,7 +4206,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
-  -- 361
+  -- 376
   {
     name = "text_)",
     sprite = "letter_paranthesis",
@@ -4124,7 +4216,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
-  -- 362
+  -- 377
   {
     name = "text_parenthesis",
     sprite = "letter_paranthesis",
@@ -4133,7 +4225,7 @@ tiles_list = {
     rotate = true,
     color = {0,3},
     layer = 20,
-  },
+  }
 }
 
 tiles_by_name = {}

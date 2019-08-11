@@ -56,7 +56,7 @@
 function parse(words, dir)
   local extra_words = {}
   for i = #words,1,-1 do
-    if words[i].type == "ellipses" then
+    if words[i].type == "ellipsis" then
       table.insert(extra_words, words[i])
       table.remove(words,i)
     end
@@ -341,6 +341,7 @@ function findLetterSentences(str, index_, sentences_, curr_sentence_, start_) --
   return sentences -- i can do this like this because the first function call is the one that gets passed back, and it finishes last
 end
 
+
 local function testParser()
   local tests = {
     { -- Test 1 - TRUE
@@ -412,9 +413,9 @@ local function testParser()
     },
     { -- Test 12 - TRUE
       {name = "bab", type = "object"},
-      {name = "...", type = "ellipses"},
-      {name = "be", type = "verb_all"},
-      {name = "...", type = "ellipses"},
+      {name = "...", type = "ellipsis"},
+      {name = "be", type = "verb"},
+      {name = "...", type = "ellipsis"},
       {name = "u", type = "property"},
     },
     { -- Test 13 - TRUE
