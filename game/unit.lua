@@ -1024,12 +1024,7 @@ function updateUnits(undoing, big_update)
   if (will_undo) or (timeless_reset and not timeless) then
     addUndo({"timeless_reset_remove"});
     timeless_reset = false
-    local can_undo = true;
-    while (can_undo) do
-      can_undo = undo(true)
-    end
-    parseRules(true)
-    reset_count = reset_count + 1
+    doTryAgain();
   end
   
   if timeless_crash and not timeless then
@@ -1577,12 +1572,7 @@ function levelBlock()
   end
   
   if (will_undo) then
-    local can_undo = true
-    while (can_undo) do
-      can_undo = undo(true)
-    end
-    parseRules(true)
-    reset_count = reset_count + 1
+    doTryAgain();
   end
 end
 
@@ -1666,12 +1656,7 @@ function destroyLevel(reason)
     elseif hasRule("loop","be","xwx") then
       love = {}
     elseif hasRule("loop","be","try again") then
-      local can_undo = true;
-      while (can_undo) do
-        can_undo = undo(true)
-      end
-      parseRules(true)
-      reset_count = reset_count + 1
+      doTryAgain()
     else
       level_destroyed = true
       for _,unit in ipairs(units) do

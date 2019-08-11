@@ -19,7 +19,7 @@ function undoOneAction(turn, i, v, ignore_no_undo)
   if action == "update" then
     unit = units_by_id[v[2]]
 
-    if unit ~= nil and (ignore_no_undo or not hasProperty(unit, "no undo")) then
+    if unit ~= nil and (ignore_no_undo or not isNoUndo(unit)) then
       moveUnit(unit,v[3],v[4])
       --force updates when we're rewinding time - it ABSOLUTELY had that direction in the past
       updateDir(unit, v[5], true)
@@ -36,7 +36,7 @@ function undoOneAction(turn, i, v, ignore_no_undo)
       update_rules = true
     end
 
-    if unit ~= nil and (ignore_no_undo or not hasProperty(unit, "no undo")) then
+    if unit ~= nil and (ignore_no_undo or not isNoUndo(unit)) then
       deleteUnit(unit, convert, true)
     end
   elseif action == "remove" then
@@ -49,7 +49,7 @@ function undoOneAction(turn, i, v, ignore_no_undo)
     if (proceed) then
       unit = createUnit(v[2], v[3], v[4], v[5], convert, v[7])
       --If the unit was actually a destroyed 'no undo', oops. Don't actually bring it back. It's dead, Jim.
-      if (unit ~= nil and not convert and (not ignore_no_undo and hasProperty(unit, "no undo"))) then
+      if (unit ~= nil and not convert and (not ignore_no_undo and isNoUndo(unit))) then
         deleteUnit(unit, convert, true)
       end
 
@@ -66,7 +66,7 @@ function undoOneAction(turn, i, v, ignore_no_undo)
     createMouse_direct(v[2], v[3], v[4]) --x, y, id
   elseif action == "backer_turn" then
     unit = units_by_id[v[2]]
-    if (unit ~= nil and (ignore_no_undo or not hasProperty(unit, "no undo"))) then
+    if (unit ~= nil and (ignore_no_undo or not isNoUndo(unit))) then
       backers_cache[unit] = v[3];
       unit.backer_turn = v[3];
     end
@@ -134,7 +134,7 @@ function undoOneAction(turn, i, v, ignore_no_undo)
   elseif action == "timeless_yeet_add" then
     unit = v[2]
     for i,yote in ipairs(timeless_yote) do
-      if yote.unit == unit and (ignore_no_undo or not hasProperty(yote.unit, "no undo")) then
+      if yote.unit == unit and (ignore_no_undo or not isNoUndo(yote.unit)) then
         table.remove(timeless_yote, i)
         break
       end
@@ -147,7 +147,7 @@ function undoOneAction(turn, i, v, ignore_no_undo)
     unit = units_by_id[v[2]]
     colour = v[3]
     value = v[4]
-    if (unit ~= nil and (ignore_no_undo or not hasProperty(unit, "no undo"))) then
+    if (unit ~= nil and (ignore_no_undo or not isNoUndo(unit))) then
       unit[colour] = value
       updateUnitColourOverride(unit)
     end
@@ -243,7 +243,7 @@ function turnedIntoOnlyNoUndoUnits(turn, i, unit_id)
     if (action == "create") and v.created_from_id == unit_id then
       local still_exists = units_by_id[v[2]];
       if (still_exists ~= nil) then
-        if (hasProperty(still_exists, "no undo")) then
+        if (isNoUndo(still_exists)) then
           found_no_undo = true;
         else
           found_non_no_undo = true;
@@ -257,7 +257,7 @@ function turnedIntoOnlyNoUndoUnits(turn, i, unit_id)
 end
 
 function undo(dont_update_rules)
-  if hasProperty(outerlvl, "no undo") and not replay_pause then return end
+  if isNoUndo(outerlvl) and not replay_pause then return end
   undoing = true
   if undo_buffer[1] ~= nil then
     local update_rules = false
@@ -285,4 +285,30 @@ function undo(dont_update_rules)
   end
   undoing = false
   return true
+end
+
+function doTryAgain()
+  in_try_again = true
+  try_again_cache = {}
+  --cache units that are no undo so even if it's conditional they remain that way the entire time
+  local isnoundo = getUnitsWithEffect("no undo");
+  for _,unit in ipairs(isnoundo) do
+    try_again_cache[unit] = true
+  end
+  local can_undo = true;
+  while (can_undo) do
+    can_undo = undo(true)
+  end
+  parseRules(true)
+  reset_count = reset_count + 1
+  in_try_again = false
+  try_again_cache = nil
+end
+
+function isNoUndo(unit)
+  if in_try_again then
+    return try_again_cache[unit] == true
+  else
+    return hasProperty(unit, "no undo")
+  end
 end
