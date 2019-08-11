@@ -1046,7 +1046,7 @@ function fallBlock()
       if timecheck(unit,"be","haetflor") then
         addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
         local loop_fall = 0
-        local dx, dy, dir, px, py = gravity_dir[1], -gravity_dir[2], 3, -1, -1
+        local dx, dy, dir, px, py = -gravity_dir[1], -gravity_dir[2], 3, -1, -1
         local old_dir = 3;
         while (caught == false) do
           loop_fall = loop_fall + 1;
