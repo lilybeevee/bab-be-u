@@ -173,7 +173,7 @@ selector_grid_contents = {
   {
     "letter_a","letter_b","letter_c","letter_d","letter_e","letter_f","letter_g","letter_h","letter_i","letter_j","letter_k","letter_l","letter_m","letter_n","letter_o","letter_p","letter_q","letter_r",
     "letter_s","letter_t","letter_u","letter_v","letter_w","letter_x","letter_y","letter_z","letter_.","letter_colon","letter_parenthesis","letter_'","letter_1","letter_/","letter_8",0,0,0,
-    "letter_go","letter_come","letter_pls","letter_away","letter_my","letter_no","letter_way",0,0,0,0,0,0,0,0,0,0,0,
+    "letter_go","letter_come","letter_pls","letter_away","letter_my","letter_no","letter_way","letter_ee","letter_fren","letter_ll",0,0,0,0,0,0,0,0,
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   },
@@ -4164,6 +4164,35 @@ tiles_list = {
     type = "object",
     color = {0,3},
     layer = 20,
+  },
+  -- 372
+  {
+    name = "letter_ee",
+    sprite = "letter_ee",
+    type = "text",
+    texttype = "letter",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 373
+  {
+    name = "letter_fren",
+    sprite = "letter_fren",
+    type = "text",
+    texttype = "letter",
+    color = {0,3},
+    layer = 20,
+    desc = "its a fren",
+  },
+  -- 374
+  {
+    name = "letter_ll",
+    sprite = "letter_ll",
+    type = "text",
+    texttype = "letter",
+    color = {0,3},
+    layer = 20,
+    desc = "welcome <3 he11",
   },
 }
 
