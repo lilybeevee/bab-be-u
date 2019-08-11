@@ -990,6 +990,8 @@ end
 
 function fallBlock()
   --TODO: If we have multiple gravity directions, then we probably want a simultaneous single step algorithm to resolve everything neatly.
+  local gravity_dir = {0,1}
+  
   local fallers = getUnitsWithEffect("haet skye")
   table.sort(fallers, function(a, b) return a.y > b.y end )
   
@@ -1006,7 +1008,7 @@ function fallBlock()
       addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
       if timecheck(unit,"be","haetskye") then
         local loop_fall = 0
-        local dx, dy, dir, px, py = 0, 1, 3, -1, -1
+        local dx, dy, dir, px, py = gravity_dir[1], gravity_dir[2], 3, -1, -1
         local old_dir = 3;
         while (caught == false) do
           loop_fall = loop_fall + 1;
@@ -1044,7 +1046,7 @@ function fallBlock()
       if timecheck(unit,"be","haetflor") then
         addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
         local loop_fall = 0
-        local dx, dy, dir, px, py = 0, -1, 3, -1, -1
+        local dx, dy, dir, px, py = -gravity_dir[1], -gravity_dir[2], 3, -1, -1
         local old_dir = 3;
         while (caught == false) do
           loop_fall = loop_fall + 1;
