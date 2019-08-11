@@ -925,6 +925,7 @@ function updateUnits(undoing, big_update)
             table.insert(to_destroy, unit)
             playSound("bonus")
             addParticles("bonus", unit.x, unit.y, unit.color)
+            writeSaveFile(level_name, "bonus", true);
           else
             table.insert(time_destroy,unit.id)
 						addUndo({"time_destroy",unit.id});
@@ -943,7 +944,7 @@ function updateUnits(undoing, big_update)
         is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
         if is_u and sameFloat(unit, on) then
           if timecheck(unit,"be",":)") and timecheck(on) then
-            doWin()
+            doWin("won")
           else
             addUndo({"timeless_win_add", on.id});
             table.insert(timeless_win,on.id)
@@ -973,7 +974,7 @@ function updateUnits(undoing, big_update)
     end
     
     if (#timeless_win > 0) and not timeless then
-      doWin()
+      doWin("won")
     end
     
     doDirRules();
@@ -1550,6 +1551,7 @@ function levelBlock()
     mergeTable(yous, youtres)
     for _,unit in ipairs(yous) do
       if sameFloat(unit,outerlvl) then
+        writeSaveFile(level_name, "bonus", true);
         destroyLevel("bonus")
         if not lvlsafe then return end
       end
@@ -1564,14 +1566,14 @@ function levelBlock()
     mergeTable(yous, youtres)
     for _,unit in ipairs(yous) do
       if sameFloat(unit,outerlvl) then
-        doWin()
+        doWin("won")
       end
     end
   end
   
   if hasProperty(outerlvl, "nxt") then
 		--placeholder until NXT is coded
-    doWin()
+    doWin("nxt")
   end
   
   if (will_undo) then
@@ -1633,6 +1635,7 @@ function destroyLevel(reason)
     handleDels(units, true)
   end
   
+  transform_results = {}
   local holds = matchesRule(outerlvl,"got","?")
   for _,match in ipairs(holds) do
     if not nameIs(outerlvl, match[1][3]) then
@@ -1642,10 +1645,13 @@ function destroyLevel(reason)
       end
       if tile ~= nil then
         --placeholder - just make 'u r win' pop up for now
-        doWin()
+        table.insert(transform_results, tiles_list[tile].name)
         win_sprite_override = tiles_list[tile].sprite
       end
     end
+  end
+  if (#transform_results > 0) then
+    doWin("transform", transform_results)
   end
   
   addUndo({"destroy_level", reason});
@@ -1656,7 +1662,7 @@ function destroyLevel(reason)
   
   if reason == "infloop" then
     if hasRule("loop","be",":)") then
-      doWin()
+      doWin("won")
     elseif hasRule("loop","be","xwx") then
       love = {}
     elseif hasRule("loop","be","try again") then
@@ -1723,6 +1729,8 @@ function convertLevel()
     return true
   end
   
+  transform_results = {}
+  
   local meta = matchesRule(outerlvl, "be","meta")
   if (#meta > 0) then
    local tile = nil
@@ -1733,9 +1741,9 @@ function convertLevel()
     tile = tiles_by_namePossiblyMeta(nametocreate)
     if tile ~= nil then
       --placeholder - just make 'u r win' pop up for now
-      doWin()
+       table.insert(transform_results, tiles_list[tile].name)
+      --doWin("transform", {tiles_list[tile].name})
       win_sprite_override = tiles_list[tile].sprite
-      return true
     end
   end
 
@@ -1754,11 +1762,15 @@ function convertLevel()
       end
       if tile ~= nil then
         --placeholder - just make 'u r win' pop up for now
-        doWin()
+         table.insert(transform_results, tiles_list[tile].name)
+        --doWin("transform", {tiles_list[tile].name})
         win_sprite_override = tiles_list[tile].sprite
-        return true
       end
     end
+  end
+  
+  if (#transform_results > 0) then
+    doWin("transform", transform_results)
   end
 end
 
@@ -2427,13 +2439,16 @@ function undoWin()
     win_size = 0
 end
 
-function doWin()
+function doWin(result_, payload_)
 	if not currently_winning then
+    local result = result_ or "won"
+    local payload = payload_ or true
 		won_this_session = true
     currently_winning = true
 		music_fading = true
     win_size = 0
 		playSound("win")
+    writeSaveFile(level_name, result, payload)
     if (not replay_playback) then
       love.filesystem.createDirectory("levels")
       local to_save = replay_string;

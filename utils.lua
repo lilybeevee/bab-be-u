@@ -185,6 +185,9 @@ function loadMap()
     initializeOuterLvl()
     initializeEmpties()
     loadStayTher()
+    if (not unit_tests) then
+      writeSaveFile(level_name, "seen", true)
+    end
   end
   unsetNewUnits()
 end
@@ -2141,4 +2144,37 @@ function extendReplayString(movex, movey, key)
     end
     replay_string = replay_string..";"
   end
+end
+
+function writeSaveFile(category, key, value)
+  --e.g. "new level", "won", true
+  save = {}
+  local filename = world;
+  if (world == "" or world == nil) then
+    filename = "levels"
+  end
+  if love.filesystem.read(filename..".savebab") ~= nil then
+    save = json.decode(love.filesystem.read(filename..".savebab"))
+  end
+  if save[category] == nil then
+    save[category] = {}
+  end
+  save[category][key] = value;
+  love.filesystem.write(filename..".savebab", json.encode(save))
+  return true;
+end
+
+function readSaveFile(category, key)
+  save = {}
+  local filename = world;
+  if (world == "" or world == nil) then
+    filename = "levels"
+  end
+  if love.filesystem.read(filename..".savebab") ~= nil then
+    save = json.decode(love.filesystem.read(filename..".savebab"))
+  end
+  if save[category] ~= nil then
+    return save[category][key];
+  end
+  return nil
 end
