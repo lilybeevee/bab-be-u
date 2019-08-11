@@ -3117,7 +3117,7 @@ tiles_list = {
     texttype = "letter",
     color = {0,3},
     layer = 20,
-    desc = "Used exclusively for COME PLS."
+    desc = "Used exclusively for COME PLS.",
   },
   -- 273
   {
@@ -3127,7 +3127,7 @@ tiles_list = {
     texttype = "letter",
     color = {0,3},
     layer = 20,
-    desc = "Used exclusively for GO AWAY PLS and COME PLS."
+    desc = "Used for GO AWAY PLS and COME PLS.",
   },
   -- 274
   {
@@ -3137,7 +3137,7 @@ tiles_list = {
     texttype = "letter",
     color = {0,3},
     layer = 20,
-    desc = "Used for GO AWAY PLS and LOOK AWAY."
+    desc = "Used for GO AWAY PLS and LOOK AWAY.",
   },
   -- 275
   {
@@ -3147,7 +3147,7 @@ tiles_list = {
     texttype = "letter",
     color = {0,3},
     layer = 20,
-    desc = "Used exclusively for GO MY WAY."
+    desc = "Used exclusively for GO MY WAY.",
   },
   -- 276
   {
@@ -3157,7 +3157,7 @@ tiles_list = {
     texttype = "letter",
     color = {0,3},
     layer = 20,
-    desc = "Used for NO GO and NO1."
+    desc = "Used for NO GO and NO1.",
   },
   -- 277
   {
@@ -3167,7 +3167,7 @@ tiles_list = {
     texttype = "letter",
     color = {0,3},
     layer = 20,
-    tags = {"wey"}
+    tags = {"wey"},
   },
   -- 278
   {
@@ -3178,7 +3178,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
     tags = {"ditto", "quotation marks"},
-    desc = "DITTO: Acts like the text above it."
+    desc = "DITTO: Acts like the text above it.",
   },
   -- 279
   {
@@ -3197,7 +3197,7 @@ tiles_list = {
     type = "object",
     color = {0,3},
     layer = 20,
-    desc = "U TRES controls. Down left."
+    desc = "U TRES controls. Down left.",
   },
   -- 281
   {
@@ -3206,7 +3206,7 @@ tiles_list = {
     type = "object",
     color = {0,3},
     layer = 20,
-    desc = "U TRES controls. Down."
+    desc = "U TRES controls. Down.",
   },
   -- 282
   {
@@ -3215,7 +3215,7 @@ tiles_list = {
     type = "object",
     color = {0,3},
     layer = 20,
-    desc = "U TRES controls. Down right."
+    desc = "U TRES controls. Down right.",
   },
   -- 283
   {
@@ -3224,7 +3224,7 @@ tiles_list = {
     type = "object",
     color = {0,3},
     layer = 20,
-    desc = "U TRES controls. Left."
+    desc = "U TRES controls. Left.",
   },
   -- 284
   {
@@ -3233,7 +3233,7 @@ tiles_list = {
     type = "object",
     color = {0,3},
     layer = 20,
-    desc = "U TRES controls. Right."
+    desc = "U TRES controls. Right.",
   },
   -- 285
   {
@@ -3242,7 +3242,7 @@ tiles_list = {
     type = "object",
     color = {0,3},
     layer = 20,
-    desc = "U TRES controls. Up left."
+    desc = "U TRES controls. Up left.",
   },
   -- 286
   {
@@ -3251,7 +3251,7 @@ tiles_list = {
     type = "object",
     color = {0,3},
     layer = 20,
-    desc = "U TRES controls. Up."
+    desc = "U TRES controls. Up.",
   },
   -- 287
   {
@@ -3260,7 +3260,7 @@ tiles_list = {
     type = "object",
     color = {0,3},
     layer = 20,
-    desc = "U TRES controls. Up right."
+    desc = "U TRES controls. Up right.",
   },
   -- 288
   {
@@ -3269,7 +3269,7 @@ tiles_list = {
     type = "object",
     color = {0,3},
     layer = 20,
-    desc = "U controls. Up."
+    desc = "U controls. Up.",
   },
   -- 289
   {
@@ -3278,7 +3278,7 @@ tiles_list = {
     type = "object",
     color = {0,3},
     layer = 20,
-    desc = "U controls. Left."
+    desc = "U controls. Left.",
   },
   -- 290
   {
@@ -3287,7 +3287,7 @@ tiles_list = {
     type = "object",
     color = {0,3},
     layer = 20,
-    desc = "U controls. Down."
+    desc = "U controls. Down.",
   },
   -- 291
   {
@@ -3296,7 +3296,7 @@ tiles_list = {
     type = "object",
     color = {0,3},
     layer = 20,
-    desc = "U controls. Right."
+    desc = "U controls. Right.",
   },
   -- 292
   {
@@ -3307,6 +3307,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
     tags = {"dpad", "d-pad", "directional pad", "arrow keys"},
+    desc = "U TOO controls. Rotatable!",
   },
   -- 293
   {
@@ -3315,7 +3316,7 @@ tiles_list = {
     type = "object",
     color = {0,3},
     layer = 20,
-    desc = "U TRES controls. Up."
+    desc = "U TRES controls. Up.",
   },
   -- 294
   {
@@ -3324,7 +3325,7 @@ tiles_list = {
     type = "object",
     color = {0,3},
     layer = 20,
-    desc = "U TRES controls. Left."
+    desc = "U TRES controls. Left.",
   },
   -- 295
   {
@@ -3333,7 +3334,7 @@ tiles_list = {
     type = "object",
     color = {0,3},
     layer = 20,
-    desc = "U TRES controls. Down."
+    desc = "U TRES controls. Down.",
   },
   -- 296
   {
@@ -3342,7 +3343,7 @@ tiles_list = {
     type = "object",
     color = {0,3},
     layer = 20,
-    desc = "U TRES controls. Right."
+    desc = "U TRES controls. Right.",
   },
   -- 297
   {
@@ -3351,7 +3352,7 @@ tiles_list = {
     type = "object",
     color = {0,3},
     layer = 20,
-    desc = "The ZA WARUDO button."
+    desc = "The ZA WARUDO button.",
   },
   -- 298
   {
@@ -4176,6 +4177,7 @@ tiles_list = {
     type = "object",
     color = {0,3},
     layer = 20,
+    desc = "The other wait key.",
   },
   -- 369
   {
@@ -4184,6 +4186,7 @@ tiles_list = {
     type = "object",
     color = {0,3},
     layer = 20,
+    desc = "The wait key.",
   },
   -- 370
   {
@@ -4192,6 +4195,7 @@ tiles_list = {
     type = "object",
     color = {0,3},
     layer = 20,
+    desc = "The undo key.",
   },
   -- 371
   {
@@ -4200,6 +4204,7 @@ tiles_list = {
     type = "object",
     color = {0,3},
     layer = 20,
+    desc = "The restart key.",
   },
   -- 372
   {
