@@ -308,8 +308,26 @@ function scene.keyPressed(key, isrepeat)
 
   if key == "escape" then
     
+    local current_level = level_name;
+    if readSaveFile(level_name, "won") then
+      current_level = current_level.." (won) "
+    end
+    if readSaveFile(level_name, "clear") then
+      current_level = current_level.." (cleared) "
+    end
+    if readSaveFile(level_name, "complete") then
+      current_level = current_level.." (complete) "
+    end
+    if readSaveFile(level_name, "bonus") then
+      current_level = current_level.." (bonused) "
+    end
+    local tfs = readSaveFile(level_name, "transform")
+    if tfs then
+      current_level = current_level.." (transformed into " .. fullDump(tfs) .. ") "
+    end
+    
     gooi.confirm({
-        text = spookmode and "G̴͔̭͇͎͕͔ͪ̾ͬͦ̇͑͋͟͡o̵̸͓̠̦̱̭̘͍̱͑̃̀ͅ ̱̫͉̆͐̇ͥ̽͆͂͑̿͜b̸̵͈̼̜̅͗̄̆ͅa͚̠͚̣̺̗͖͈̓̿̈́͆͐̉ͯ̀̚c͉̜̙̤͍̞̳̬ͪ̇k̙͙̼̀̓̂̑̈́̌ͯ̕͢ͅ ̶̛̠̹̈̒ͫ͐t̙͉͍͚̠̗̰͗͊͛ͫ͒ͥ̏ͫ͢͜ȍ̙͙̪̬̎̊ͫͭͫ͗̔̚ ̴̪͖͔̖̙̬͍̥ͪ̾̾͂͂l̪͉͙̪̩͙̎̏͌̽ͤ̈́̀͜͠e̡͓͍͉̖̤ͬ̓̏ͥͫ̀ͅv̱͈͍̞̼̀͋̂̃͋́̚͠ͅḛ̷̷̱̿͂l̢̮͇̫̗͍̱͈̟͌̐̎̑̈́ ̵̠͖̣̟̲̖̇̈̓ͭͫ͠s͚̝̻ͤ̓̀̀e̅͑̐̄͏̤̫̕͠lͨ͋͌ͤͩ̋̓͏̘̼̠̪̖͓͔̹e̵͖̤̒͒ͥ̓ͬ̓͘c͖͈̏̄̐̅̎ͨ͢ṫ͔̥͓̊̌̓̇ọ̞̤͔̩̒͗ͨ́̓͟ŗ̖͉̹̻̮̬̦͌̿͂?̶̡͈̫̗̈́̒̎̃̎̓" or "Go back to "..escResult(false).."?",
+        text = current_level .. "\r\n\r\n" .. (spookmode and "G̴͔̭͇͎͕͔ͪ̾ͬͦ̇͑͋͟͡o̵̸͓̠̦̱̭̘͍̱͑̃̀ͅ ̱̫͉̆͐̇ͥ̽͆͂͑̿͜b̸̵͈̼̜̅͗̄̆ͅa͚̠͚̣̺̗͖͈̓̿̈́͆͐̉ͯ̀̚c͉̜̙̤͍̞̳̬ͪ̇k̙͙̼̀̓̂̑̈́̌ͯ̕͢ͅ ̶̛̠̹̈̒ͫ͐t̙͉͍͚̠̗̰͗͊͛ͫ͒ͥ̏ͫ͢͜ȍ̙͙̪̬̎̊ͫͭͫ͗̔̚ ̴̪͖͔̖̙̬͍̥ͪ̾̾͂͂l̪͉͙̪̩͙̎̏͌̽ͤ̈́̀͜͠e̡͓͍͉̖̤ͬ̓̏ͥͫ̀ͅv̱͈͍̞̼̀͋̂̃͋́̚͠ͅḛ̷̷̱̿͂l̢̮͇̫̗͍̱͈̟͌̐̎̑̈́ ̵̠͖̣̟̲̖̇̈̓ͭͫ͠s͚̝̻ͤ̓̀̀e̅͑̐̄͏̤̫̕͠lͨ͋͌ͤͩ̋̓͏̘̼̠̪̖͓͔̹e̵͖̤̒͒ͥ̓ͬ̓͘c͖͈̏̄̐̅̎ͨ͢ṫ͔̥͓̊̌̓̇ọ̞̤͔̩̒͗ͨ́̓͟ŗ̖͉̹̻̮̬̦͌̿͂?̶̡͈̫̗̈́̒̎̃̎̓" or "Go back to "..escResult(false).."?"),
         okText = "Yes",
         cancelText = spookmode and "Yes" or "Cancel",
         ok = function()
@@ -1582,7 +1600,7 @@ function doOneMove(x, y, key)
     mobile_controls_timeless:setBGImage(sprites[timeless and "ui/time resume" or "ui/timestop"])
   elseif (key == "f") then
     extendReplayString(0, 0, "f")
-    doWin()
+    doWin("won")
 	elseif (key == "undo") then
 		local result = undo()
 		extendReplayString(0, 0, "undo")
