@@ -172,8 +172,8 @@ selector_grid_contents = {
   -- page 2: letters
   {
     "letter_a","letter_b","letter_c","letter_d","letter_e","letter_f","letter_g","letter_h","letter_i","letter_j","letter_k","letter_l","letter_m","letter_n","letter_o","letter_p","letter_q","letter_r",
-    "letter_s","letter_t","letter_u","letter_v","letter_w","letter_x","letter_y","letter_z","letter_.","letter_colon","letter_parenthesis","letter_'","letter_1","letter_/","letter_8",0,0,0,
-    "letter_go","letter_come","letter_pls","letter_away","letter_my","letter_no","letter_way","letter_ee","letter_fren","letter_ll",0,0,0,0,0,0,0,0,
+    "letter_s","letter_t","letter_u","letter_v","letter_w","letter_x","letter_y","letter_z","letter_.","letter_colon","letter_parenthesis","letter_'","letter_/","letter_1","letter_2","letter_3","letter_4","letter_5",
+    "letter_go","letter_come","letter_pls","letter_away","letter_my","letter_no","letter_way","letter_ee","letter_fren","letter_ll",0,0,0,"letter_6","letter_7","letter_8","letter_9","letter_o",
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   },
@@ -4193,6 +4193,69 @@ tiles_list = {
     color = {0,3},
     layer = 20,
     desc = "welcome <3 he11",
+  },
+  -- 375
+  {
+    name = "letter_2",
+    sprite = "letter_2",
+    type = "text",
+    texttype = "letter",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 376
+  {
+    name = "letter_3",
+    sprite = "letter_3",
+    type = "text",
+    texttype = "letter",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 377
+  {
+    name = "letter_4",
+    sprite = "letter_4",
+    type = "text",
+    texttype = "letter",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 378
+  {
+    name = "letter_5",
+    sprite = "letter_5",
+    type = "text",
+    texttype = "letter",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 379
+  {
+    name = "letter_6",
+    sprite = "letter_6",
+    type = "text",
+    texttype = "letter",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 380
+  {
+    name = "letter_7",
+    sprite = "letter_7",
+    type = "text",
+    texttype = "letter",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 381
+  {
+    name = "letter_9",
+    sprite = "letter_9",
+    type = "text",
+    texttype = "letter",
+    color = {0,3},
+    layer = 20,
   },
 }
 
