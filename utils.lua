@@ -451,6 +451,8 @@ end
 function findUnitsByName(name)
   if name == "mous" then
     return cursors
+  elseif group_lists[name] ~= nil then
+    return group_lists[name]
   elseif name == "no1" then
     local result = {}
     for _,unit in ipairs(units_by_name["no1"]) do
