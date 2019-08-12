@@ -880,6 +880,7 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
     elseif condtype == "wait..." then
       result = last_move ~= nil and last_move[1] == 0 and last_move[2] == 0 and last_click_x == nil and last_click_y == nil
     elseif condtype == "mayb" then
+      local cond_unit = cond.unit
       --add a dummy action so that undoing happens
       if (#undo_buffer > 0 and #undo_buffer[1] == 0) then
         addUndo({"dummy"});
@@ -887,6 +888,7 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
       rng = deterministicRng(unit, cond.unit);
       result = (rng*100) < threshold_for_dir[cond.unit.dir];
     elseif condtype == "an" then
+      local cond_unit = cond.unit
       --add a dummy action so that undoing happens
       if (#undo_buffer > 0 and #undo_buffer[1] == 0) then
         addUndo({"dummy"});
