@@ -835,11 +835,11 @@ function scene.draw(dt)
         local around = getUnitsOnTile(px,py)
         for _,other in ipairs(around) do
           if other.name == "lin" then
-            if not orthos[ndir/2] and not orthos[((ndir/2)+1)%4] then
+            if not orthos[ndir/2] and not orthos[dirAdd(ndir,2)/2] then
               table.insert(line,other)
             end
           elseif other.name == "lvl" then
-            if not orthos[ndir/2] and not orthos[((ndir/2)+1)%4] then
+            if not orthos[ndir/2] and not orthos[dirAdd(ndir,2)/2] then
               --add it twice to make it look the same as the other lines. should be reduced to one if we figure out that performance todo above
               table.insert(line,other)
               table.insert(line,other)
