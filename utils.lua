@@ -564,6 +564,13 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
           end
         end
       else -- something something surrounds maybe?
+        --[[if unit == outerlvl and surrounds ~= nil and surrounds_name == level_name then
+          --use surrounds to remember what was around the level
+          for __,on in ipairs(surrounds[0][0]) do
+            if nameIs(on, param) then
+              table.insert(others, on);
+            end
+          end]]
         for _,other in ipairs(lists) do
           if #other == 0 then
             result = false
@@ -654,9 +661,6 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
               if px == unit.x and py == unit.y then
                 found = true
                 break
-              else
-                -- print(unit.x, unit.y)
-                -- print(px, py)
               end
             end
           end
@@ -666,111 +670,51 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
           end
         end
       end
-    elseif condtype == "look at" and false then -- TODO: parsing is broken for this (and look away) because they can be used as verbs as well, not gonna bother fixing this until that works
-      for _,param in ipairs(params) do
-        local isdir = false
-        if param == "ortho" then
-          isdir = true
-          if (unit.dir % 2 == 0) then
-            result = false
-            break
-          end
-        elseif param == "diag" then
-          isdir = true
-          if (unit.dir % 2 == 1) then
-            result = false
-            break
-          end
-        else
-          for i = 1,8 do
-            if param == dirs8_by_name[i] then
-              isdir = true
-              if (unit.dir ~= i) then
-                result = false
+    elseif condtype == "look at" then
+      --TODO: look at dir, ortho, diag, surrounds
+      if unit ~= outerlvl then
+        local dx, dy, dir, px, py = getNextTile(unit, dirs8[unit.dir][1], dirs8[unit.dir][2], unit.dir)
+        local frens = getUnitsOnTile(px, py, param, false, unit)
+        for _,other in ipairs(sets) do
+          if not other[outerlvl] then
+            local found = false
+            for _,fren in ipairs(frens) do
+              if other[fren] then
+                found = true
                 break
               end
             end
-          end
-        end
-        if (not isdir) then
-          local others
-          if unit == outerlvl and surrounds ~= nil and surrounds_name == level_name then
-            others = {}
-            --use surrounds to remember what was around the level
-            for __,on in ipairs(surrounds[dirs8[unit.dir][1]][dirs8[unit.dir][2]]) do
-              if nameIs(on, param) then
-                table.insert(others, on);
-              end
-            end
-          else
-            local dx, dy, dir, px, py = getNextTile(unit, dirs8[unit.dir][1], dirs8[unit.dir][2], unit.dir)
-            if param == "lvl" then
-              --if we're looking in-bounds, then we're looking at a level technically!
-              result = inBounds(px, py)
-            elseif param ~= "mous" then
-              others = getUnitsOnTile(px, py, param, false, unit) --currently, conditions only work up to one layer of nesting, so the noun argument of the condition is assumed to be just a noun
-            else
-              others = getCursorsOnTile(px, py, false, unit)
+            if not found then
+              result = false
+              break
             end
           end
-          if others ~= nil and #others == 0 then
-            result = false
-            break
-          end
         end
+      else --something something surrounds
+        result = false
       end
-    elseif condtype == "look away" and false then -- TODO: see above
-      for _,param in ipairs(params) do
-        local isdir = false
-        if param == "ortho" then
-          isdir = true
-          if (unit.dir % 2 == 0) then
-            result = false
-            break
-          end
-        elseif param == "diag" then
-          isdir = true
-          if (unit.dir % 2 == 1) then
-            result = false
-            break
-          end
-        else
-          for i = 1,8 do
-            if param == dirs8_by_name[i] then
-              isdir = true
-              if (unit.dir ~= i) then
-                result = false
+    elseif condtype == "look away" then
+      --TODO: look at dir, ortho, diag, surrounds
+      if unit ~= outerlvl then
+        local dx, dy, dir, px, py = getNextTile(unit, -dirs8[unit.dir][1], -dirs8[unit.dir][2], unit.dir)
+        local frens = getUnitsOnTile(px, py, param, false, unit)
+        for _,other in ipairs(sets) do
+          if not other[outerlvl] then
+            local found = false
+            for _,fren in ipairs(frens) do
+              if other[fren] then
+                found = true
                 break
               end
             end
-          end
-        end
-        if (not isdir) then
-          local others
-          if unit == outerlvl and surrounds ~= nil and surrounds_name == level_name then
-            others = {}
-            --use surrounds to remember what was around the level
-            for __,on in ipairs(surrounds[dirs8[unit.dir][1]][dirs8[unit.dir][2]]) do
-              if nameIs(on, param) then
-                table.insert(others, on);
-              end
-            end
-          else
-            local dx, dy, dir, px, py = getNextTile(unit, -dirs8[unit.dir][1], -dirs8[unit.dir][2], unit.dir)
-            if param == "lvl" then
-              _, _, _, px, py = getNextTile(unit, dirs8[unit.dir][1], dirs8[unit.dir][2], unit.dir)
-              result = not inBounds(px, py)
-            elseif param ~= "mous" then
-              others = getUnitsOnTile(px, py, param, false, unit) --currently, conditions only work up to one layer of nesting, so the noun argument of the condition is assumed to be just a noun
-            else
-              others = getCursorsOnTile(px, py, false, unit)
+            if not found then
+              result = false
+              break
             end
           end
-          if others ~= nil and #others == 0 then
-            result = false
-            break
-          end
         end
+      else --something something surrounds
+        result = false
       end
     elseif condtype == "behind" then
       local others = {}
@@ -788,12 +732,12 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
           mergeTable(others, getUnitsOnTile(px, py, nil, false, unit, true))
         end
       end
-      if unit == outerlvl then --basically turns into sans n't BUT the unit has to be looking inbounds as well!
+      if unit == outerlvl then --basically turns into sans n't BUT the unit's rear has to be looking inbounds as well!
         for _,param in ipairs(params) do
           local found = false
           local others = findUnitsByName(param)
           for _,on in ipairs(others) do
-            if inBounds(on.x + dirs8[on.dir][1], on.y + dirs8[on.dir][2]) then
+            if inBounds(on.x + -dirs8[on.dir][1], on.y + -dirs8[on.dir][2]) then
               found = true
               break
             end
@@ -803,7 +747,7 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
             for nx=-1,1 do
               for ny=-1,1 do
                 for __,on in ipairs(surrounds[nx][ny]) do
-                  if nameIs(on, param) and nx + dirs8[on.dir][1] == 0 and ny + dirs8[on.dir][2] == 0 then
+                  if nameIs(on, param) and nx + -dirs8[on.dir][1] == 0 and ny + -dirs8[on.dir][2] == 0 then
                     found = true
                     break
                   end
@@ -821,7 +765,7 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
           local found = false
           for _,other in ipairs(others) do
             if set[other] then
-              local dx, dy, dir, px, py = getNextTile(other, rotate8(dirs8[other.dir][1]), rotate8(dirs8[other.dir][2]), rotate8(other.dir))
+              local dx, dy, dir, px, py = getNextTile(other, -dirs8[other.dir][1], -dirs8[other.dir][2], other.dir)
               if px == unit.x and py == unit.y then
                 found = true
                 break
@@ -838,75 +782,86 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
         end
       end
     elseif condtype == "beside" then
-        if unit == outerlvl then -- literally just SANS n't except when the unit is at the corner of the level and facing in/out
-            for _,param in ipairs(params) do
-              local found = false
-              local others = findUnitsByName(param)
-              for _,on in ipairs(others) do
-                if inBounds(on.x - dirs8[on.dir][2], on.y + dirs8[on.dir][1]) or inBounds(on.x + dirs8[on.dir][2], on.y - dirs8[on.dir][1])then
-                  found = true
-                  break
-                end
-              end
-              if unit == outerlvl and surrounds ~= nil and surrounds_name == level_name then
-                for nx=-1,1 do
-                  for ny=-1,1 do
-                    for __,on in ipairs(surrounds[nx][ny]) do
-                      if nameIs(on, param) and nx + dirs8[on.dir][1] == 0 and ny + dirs8[on.dir][2] == 0 then
-                        found = true
-                        break
-                      end
-                    end
+      local others = {}
+      for ndir=1,8 do
+        local nx, ny = dirs8[ndir][1], dirs8[ndir][2]
+        if unit == outerlvl and surrounds ~= nil and surrounds_name == level_name then
+          --use surrounds to remember what was around the level
+          for __,on in ipairs(surrounds[nx][ny]) do -- this part hasn't been updated, but it's not important yet
+            if nameIs(on, param) then
+              table.insert(others, on);
+            end
+          end
+        else
+          local dx, dy, dir, px, py = getNextTile(unit, nx, ny, ndir)
+          mergeTable(others, getUnitsOnTile(px, py, nil, false, unit, true))
+        end
+      end
+      if unit == outerlvl then --basically turns into sans n't BUT the unit's side has to be looking inbounds as well!
+        for _,param in ipairs(params) do
+          local found = false
+          local others = findUnitsByName(param)
+          for _,on in ipairs(others) do
+            if inBounds(on.x - dirs8[on.dir][2], on.y + dirs8[on.dir][1]) or inBounds(on.x + dirs8[on.dir][2], on.y - dirs8[on.dir][1]) then
+              found = true
+              break
+            end
+          end
+          if unit == outerlvl and surrounds ~= nil and surrounds_name == level_name then
+            --use surrounds to remember what was around the level
+            for nx=-1,1 do
+              for ny=-1,1 do
+                for __,on in ipairs(surrounds[nx][ny]) do
+                  if nameIs(on, param) and ((nx - dirs8[on.dir][2] == 0 and ny + dirs8[on.dir][1] == 0) or (nx + dirs8[on.dir][2] == 0 and ny - dirs8[on.dir][1] == 0)) then
+                    found = true
+                    break
                   end
                 end
               end
-              if not found then
-                result = false
-                break
-              end
             end
-        else
-            for _,param in ipairs(params) do
-              local found = false
-              local others = {}
-              for ndir=1,8 do
-                local dx, dy, dir, px, py = getNextTile(unit, dirs8[ndir][1], dirs8[ndir][2], ndir)
-                mergeTable(others, param ~= "mous" and getUnitsOnTile(px,py,param) or {})
-              end
-              for _,other in ipairs(others) do
-                local dx, dy, dir, px, py = getNextTile(other, dirs8[other.dir][2], -dirs8[other.dir][1], other.dir)
-                local dx, dy, dir, qx, qy = getNextTile(other, -dirs8[other.dir][2], dirs8[other.dir][1], other.dir)
-                if px == unit.x and py == unit.y or qx == unit.x and qy == unit.y then
-                  found = true
-                  break
-                else
-                  --print(unit.x, unit.y)
-                  --print(px, py)
-                end
-              end
-              if not found then
-                result = false
-                break
-              end
-            end
+          end
+          if not found then
+            result = false
+            break
+          end
         end
+      else
+        for _,set in ipairs(sets) do
+          local found = false
+          for _,other in ipairs(others) do
+            if set[other] then
+              local dx, dy, dir, px, py = getNextTile(other, dirs8[other.dir][2], -dirs8[other.dir][1], other.dir)
+              local dx, dy, dir, qx, qy = getNextTile(other, -dirs8[other.dir][2], dirs8[other.dir][1], other.dir)
+              if px == unit.x and py == unit.y or qx == unit.x and qy == unit.y then
+                found = true
+                break
+              end
+            end
+          end
+          if not found then
+            result = false
+            break
+          end
+        end
+      end
     elseif condtype == "sans" then
-      for _,param in ipairs(params) do
-        local others = findUnitsByName(param)
-        if #others > 1 or #others == 1 and others[1] ~= unit then
+      for _,other in ipairs(lists) do
+        if #other > 1 or #other == 1 and other[1] ~= unit then
           result = false
+          break
         end
       end
     elseif condtype == "samefloat" then
-      for _,param in ipairs(params) do
-        local others = findUnitsByName(param)
-        local yes = false
-        for _,other in ipairs(others) do
+      print(fullDump(lists))
+      result = false
+      for _,list in ipairs(lists) do
+        for _,other in ipairs(list) do
           if sameFloat(unit,other) then
-            yes = true
+            print(unit.name, other.name)
+            result = true
+            break
           end
         end
-        if not yes then result = false end
       end
     elseif condtype == "frenles" then
       if unit == outerlvl then
