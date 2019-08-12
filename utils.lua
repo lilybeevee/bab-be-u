@@ -2214,19 +2214,35 @@ function addRuleSimple(subject, verb, object, units, dir)
   })
 end
 
-function updateGroup()
-  group_lists = {}
-  group_sets = {}
+
+group_lists = {}
+group_sets = {}
+
+function updateGroup(n)
+  local n = n or 0
+  local changed = false
   for _,group in ipairs(group_names) do
     local list = {}
-    group_lists[group] = list
     local set = {}
-    group_sets[group] = set
     for _,unit in ipairs(units) do
       if hasRule(unit, "be", group) then
         table.insert(list, unit)
         set[unit] = true
       end
+    end
+    local old_size = #(group_lists[group] or {})
+    group_lists[group] = list
+    group_sets[group] = set
+    if #group_lists[group] ~= old_size then
+      changed = true
+    end
+  end
+  if changed then
+    if n >= 1000 then
+      print("group infinite loop! (1000 attempts to update list)")
+      destroyLevel("infloop")
+    else
+      updateGroup(n+1)
     end
   end
 end
