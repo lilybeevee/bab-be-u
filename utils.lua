@@ -1246,14 +1246,14 @@ end
 function inScreen(x,y)
   local xmin,xmax,ymin,ymax = getCorners()
   
-  return x >= xmin and x < xmax and y >= ymin and y < ymax
+  return x >= xmin and x <= xmax and y >= ymin and y <= ymax
 end
 
 function getCorners()
   local width = love.graphics.getWidth()
   local height = love.graphics.getHeight()
-  local xmin,ymin = screenToGameTile(0,0)
-  local xmax,ymax = screenToGameTile(width,height)
+  local xmin,ymin = screenToGameTile(1,1)
+  local xmax,ymax = screenToGameTile(width-1,height-1)
   
   return xmin,xmax,ymin,ymax
 end
