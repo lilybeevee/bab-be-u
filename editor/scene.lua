@@ -932,9 +932,11 @@ function scene.draw(dt)
             end
             
             if tile.texttype ~= nil then
-                if string.match(tile.texttype, searchstr) then
+              for type,_ in pairs(tile.texttype) do
+                if string.match(type, searchstr) then
                     found_matching_tag = true
                 end
+              end
             end
             
             if not found_matching_tag then love.graphics.setColor(0.2,0.2,0.2) end

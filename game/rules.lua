@@ -447,8 +447,7 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
 
   -- print("just after letters:", dump(sentence))
   while (#sentence > 2) do
-    local words = copyTable(sentence)
-    local valid, rules, extra_words = parse(words, dir)
+    local valid, words, rules, extra_words = parse(copyTable(sentence), dir)
     --print(dump(state))
 
     if valid then
@@ -465,6 +464,9 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
         -- print(fullDump(full_rule))
         table.insert(final_rules, full_rule)
       end
+      
+      local last_word = sentence[#sentence - #words]
+      table.insert(words, 1, last_word)
       sentence = words
     else
       table.remove(sentence, 1)

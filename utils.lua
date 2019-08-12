@@ -2047,12 +2047,12 @@ function fillTextDetails(sentence, old_sentence, orig_index, word_index)
     if newname:starts("text_") then
       newname = newname:sub(6);
     end
-    table.insert(ret,{type = text_list[word].texttype or "object", name = newname, unit=old_sentence[orig_index].unit})
+    table.insert(ret,{type = text_list[word].texttype or {object = true}, name = newname, unit=old_sentence[orig_index].unit})
     w = w+1
   end
   for i=orig_index+1,(word_index-1) do --extra ellipses for the purposes of making sure the parser gets it properly.
     --print("aa:",old_sentence[i])
-    table.insert(ret,{type = text_list["..."].texttype or "object", name = "...", unit=old_sentence[i].unit})
+    table.insert(ret,{type = text_list["..."].texttype or {object = true}, name = "...", unit=old_sentence[i].unit})
   end
   return ret
 end
@@ -2067,7 +2067,7 @@ end
 
 text_in_tiles = {} --list of text in an array, and textname only
 for _,tile in ipairs(tiles_list) do
-  if tile.type == "text" and tile.texttype ~= "letter" then
+  if tile.type == "text" and not tile.texttype.letter then
     local textname = string.sub(tile.name:gsub("%s+", ""),6) --removes spaces too
     text_in_tiles[textname] = tile
   end
@@ -2080,7 +2080,7 @@ print(text_in_tiles["up"])
 
 text_list = {} --list of text with named keys (by textname)
 for _,tile in ipairs(tiles_list) do
-  if tile.type == "text" and tile.texttype ~= "letter" then
+  if tile.type == "text" and not tile.texttype.letter then
     local textname = string.sub(tile.name:gsub("%s+", ""),6)
     text_list[textname] = tile
     text_list[textname].textname = string.sub(tile.name,6)

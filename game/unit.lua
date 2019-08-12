@@ -2080,7 +2080,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty)
   unit.tile = tile
   unit.sprite = data.sprite
   unit.type = data.type
-  unit.texttype = data.texttype or "object"
+  unit.texttype = data.texttype or {object = true}
 	unit.meta = data.meta
   unit.allowconds = data.allowconds or false
   unit.color = data.color
@@ -2099,7 +2099,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty)
   if unit.type == "text" then
     should_parse_rules = true
     unit.name = "text"
-    if unit.texttype == "letter" then
+    if unit.texttype.letter then
       letters_exist = true
       unit.textname = string.sub(unit.fullname, 8)
     else
@@ -2127,7 +2127,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty)
   end
   
   --do this before the 'this' change to textname so that we only get 'this' in referenced_objects
-  if unit.texttype == "object" and unit.textname ~= "every1" and unit.textname ~= "mous" and unit.textname ~= "no1" and unit.textname ~= "lvl" and unit.textname ~= "text" then
+  if unit.texttype.object and unit.textname ~= "every1" and unit.textname ~= "mous" and unit.textname ~= "no1" and unit.textname ~= "lvl" and unit.textname ~= "text" then
     if not unit.textname:ends("n't") and not unit.textname:starts("text_") and not table.has_value(referenced_objects, unit.textname) then
       table.insert(referenced_objects, unit.textname)
     end

@@ -56,7 +56,7 @@
 function parse(words, dir)
   local extra_words = {}
   for i = #words,1,-1 do
-    if words[i].type == "ellipsis" then
+    if words[i].type.ellipsis then
       table.insert(extra_words, words[i])
       table.remove(words,i)
     end
@@ -66,16 +66,14 @@ function parse(words, dir)
   
   local units = {}
   local verbs = {}
-  while words[1].type ~= "verb_all"
-  and   words[1].type ~= "verb_object"
-  and   words[1].type ~= "verb_object_or_property_or_object" do
-    local unit = findUnit(words, extra_words, dir, true) -- outer unit doesn't need to worry about enclosure (nothing farther out to confuse it with)
-    if not unit then
-      return false
-    end
+  while words[1].type.object or words[1].type.cond_prefix or words[2].name == "txt" do
+    local unit, words_ = findUnit(copyTable(words), extra_words, dir, true) -- outer unit doesn't need to worry about enclosure (nothing farther out to confuse it with)
+    if not unit then break end
+    words = words_
+    if not unit then return false end
     if #words == 0 then return false end
     table.insert(units, unit)
-    if words[1].type == "and" then
+    if words[1].type["and"] and words[2] then
       table.insert(extra_words, words[1])
       table.remove(words, 1)
       if #words == 0 then return false end
@@ -83,22 +81,22 @@ function parse(words, dir)
       break -- prevents "bab keek be u"
     end
   end
+  if #units == 0 then return false end
   
-  while words[1] and ( words[1].type == "verb_all"
-  or words[1].type == "verb_object"
-  or words[1].type == "verb_object_or_property_or_object" ) do
-    local verb = findVerbPhrase(words, extra_words, dir, true)
+  while words[1] and words[1].type.verb do
+    local verb, words_ = findVerbPhrase(copyTable(words), extra_words, dir, true)
     if not verb then break end
+    words = words_
     table.insert(verbs, verb)
-    if words[1] and words[1].type == "and" then
+    if words[1] and words[1].type["and"] and words[2] and words[3] then
       table.insert(extra_words, words[1])
       table.remove(words, 1)
       if #words == 0 then return false end
     else
-      break -- prevents "bab keek be u"
+      break -- prevents "bab be u :)"
     end
   end
-  if #verbs == 0 then return false, {units, verbs}, extra_words end
+  if #verbs == 0 then return false end
   
   local rules = {}
   for _,subject in ipairs(units) do
@@ -110,10 +108,11 @@ function parse(words, dir)
     end
   end
   
-  return true, rules, extra_words
+  return true, words, rules, extra_words
 end
 
-function findUnit(words, extra_words, dir, outer)
+function findUnit(words, extra_words_, dir, outer)
+  local extra_words = {}
   -- find all the prefix conditions
   -- find the unit itself
   -- find all the infix conditions, including nesting
@@ -133,59 +132,77 @@ function findUnit(words, extra_words, dir, outer)
     if #words == 0 then return nil end
   end
   
-  while words[1].type == "cond_prefix" or words[1].type == "cond_prefix_or_property" do
-    local prefix = words[1]
+  print(fullDump(words[1].type))
+  while words[1].type.cond_prefix do
+    print(words[1].name)
+    local prefix = copyTable(words[1])
     table.remove(words, 1)
     if #words == 0 then return nil end
-    while words[1].type == "not" do
-      prefix = {type = prefix.type, name = prefix.name.."n't", unit = prefix.unit, mods = prefix.mods or {}}
+    prefix.mods = prefix.mods or {}
+    local nt = false
+    while words[1].type["not"] do
+      nt = not nt
       table.insert(prefix.mods, words[1])
       table.remove(words, 1)
       if #words == 0 then return nil end
     end
+    if nt then
+      prefix.name = prefix.name.."n't"
+    end
     table.insert(conds, prefix)
-    if enclosed and words[1].type == "and" and words[2] and words[2].type == "cond_prefix" then
+    if enclosed and words[1].type["and"] and words[2] and words[2].type.cond_prefix then
       table.insert(extra_words, words[1])
       table.remove(words, 1)
       if #words == 0 then return nil end
     end -- we're not breaking here to allow "frenles lit bab" - add "else break" here if we want there to always be an and: "frenles & lit bab"
   end
   
-  unit = findClass(words, extra_words, dir)
-  
-  -- print(unit and unit.name.."?")
-  
-  if not unit then
-    return nil 
-  end
+  local words_
+  unit, words_ = findClass(copyTable(words), extra_words, dir)
+  if not unit then return end
+  words = words_
   
   local first_infix = true
-  while words[1] and words[1].type == "cond_infix" and (first_infix or enclosed) do -- TODO: cond_infix_verb (that), hideous_amalgamation (thatbe)
-    local infix = words[1]
+  while words[1] and words[1].type.cond_infix and (first_infix or enclosed) do -- TODO: cond_infix_verb (that), hideous_amalgamation (thatbe)
+    local infix = copyTable(words[1])
     infix.mods = infix.mods or {}
     table.remove(words, 1)
     if #words == 0 then return nil end
-    while words[1].type == "not" do
-      infix = {type = infix.type, name = infix.name.."n't", unit = infix.unit, mods = infix.mods}
+    local nt = false
+    while words[1].type["not"] do
+      nt = not nt
       table.insert(infix.mods, words[1])
       table.remove(words, 1)
       if #words == 0 then return nil end
     end
+    if nt then
+      infix.name = infix.name.."n't"
+    end
     
-    local other = findUnit(words, extra_words, dir)
-    if other == nil then return unit end
+    local other, words_ = findUnit(copyTable(words), extra_words, dir)
+    if not other then break end
+    words = words_
     infix.others = {other}
     table.insert(conds, infix)
     -- print(enclosed, words[1] and words[1].type, words[2] and words[2].type)
-    while enclosed and words[1] and words[1].type == "and" and words[2].type ~= "cond_infix" do
+    while enclosed and words[1] and words[1].type["and"] and words[2] and not words[2].type.cond_infix and not words[2].type.verb do
       table.insert(extra_words, words[1])
       table.remove(words, 1)
       if #words == 0 then return nil end
-      local other = findUnit(words, extra_words)
-      if other == nil then return unit end
+      local other, words_ = findUnit(copyTable(words), extra_words)
+      if not other then
+        if parenthesis then
+          return
+        end
+        unit.conds = conds
+        mergeTable(extra_words_, extra_words)
+        return unit, words
+      end
+      words = words_
+      table.insert(extra_words, words[1])
       table.insert(infix.others, other)
     end
-    if enclosed and words[1] and words[1].type == "and" and words[2].type == "cond_infix" then
+    if enclosed and words[1] and words[1].type["and"] and words[2] and words[2].type.cond_infix then
       table.insert(extra_words, words[1])
       table.remove(words, 1)
       if #words == 0 then return nil end
@@ -194,99 +211,132 @@ function findUnit(words, extra_words, dir, outer)
   end
   
   -- print(fullDump(words[1]), dir)
-  if parenthesis and words[1] and (words[1].name == ")" or words[1].name == "parenthesis") and words[1].unit and words[1].unit.dir == (rotate8(dir)) then
+  if parenthesis then
+    if words[1] and (words[1].name == ")" or words[1].name == "parenthesis") and words[1].unit and words[1].unit.dir == (rotate8(dir)) then
     -- print(")")
-    table.insert(extra_words, words[1])
-    table.remove(words, 1)
+      table.insert(extra_words, words[1])
+      table.remove(words, 1)
+    else
+      return
+    end
   end
   -- print("found "..unit.name)
     
   unit.conds = conds
-  return unit
+  mergeTable(extra_words_, extra_words)
+  return unit, words
 end
 
-function findClass(words, extra_words, dir)
+function findClass(words, extra_words_, dir)
+  local extra_words = {}
   if words[2] and words[2].name == "text" then
     if not words[1].mods then words[1].mods = {} end
     table.insert(words[1].mods, words[2].unit)
     words[1].name = (words[1].unit or {}).fullname or "no unit"
     table.remove(words, 2)
-  elseif  words[1].type ~= "object"
-  and words[1].type ~= "verb_object_or_property_or_object"
-  and words[1].type ~= "group" then -- TODO: are there any other types that fit here?
+  elseif not words[1].type.object then -- TODO: are there any other types that fit here?
     return nil
   end
-  local unit = words[1]
+  local unit = copyTable(words[1])
+  unit.mods = unit.mods or {}
+  
   table.remove(words, 1)
-  while words[1] and words[1].type == "not" do
-    unit = {type = unit.type, name = unit.name.."n't", unit = unit.unit, mods = unit.mods or {}}
+  local nt = false
+  while words[1] and words[1].type["not"] do
+    nt = not nt
     table.insert(unit.mods, words[1])
     table.remove(words, 1)
   end
-  return unit
+  if nt then
+    unit.name = unit.name.."n't"
+  end
+  return unit, words
 end
 
-function findVerbPhrase(words, extra_words, dir, enclosed)
+function findVerbPhrase(words, extra_words_, dir, enclosed)
   local objects = {}
-  local verb = words[1]
+  local verb = copyTable(words[1])
+  verb.mods = verb.mods or {}
   table.remove(words, 1)
   if #words == 0 then return nil end
-  while words[1].type == "not" do
-    verb = {type = verb.type, name = verb.name.."n't", unit = verb.unit, mods = verb.mods or {}}
+  while words[1].type["not"] do
+    verb.name = verb.name.."n't"
     table.insert(verb.mods, words[1])
     table.remove(words, 1)
     if #words == 0 then return nil end
   end
-  if verb.type == "verb_all" then -- be (prop or class)
+  if verb.type.verb_be then -- be (prop or class)
     while true do
-      if words[1].type == "object"
-      or words[1].type == "verb_object_or_property_or_object"
-      or words[1].type == "group"
-      or words[2] and words[2].name == "text" then
-        table.insert(objects, findClass(words))
-      elseif words[1].type == "property"
-      or     words[1].type == "verb_object_or_property_or_object"
-      or     words[1].type == "cond_prefix_or_property" then -- TODO: are there any other types that fit here?
+      if words[1].type.object or words[2] and words[2].name == "text" then
+        local object, words_ = findClass(words)
+        if not object then
+          break
+        end
+        words = words_
+        table.insert(objects, object)
+      elseif words[1].type.property then -- TODO: are there any other types that fit here?
         table.insert(objects, words[1])
         table.remove(words, 1)
         -- "bab be u n't" isn't valid, no need to allow nots here
       else
         return nil
       end
-      if words[1] and words[1].type == "and" and words[2] and words[2].type ~= "verb_all" and words[2].type ~= "verb_object" then
+      if words[1] and words[1].type["and"] and words[2] and not words[2].type.verb then
         table.insert(extra_words, words[1])
         table.remove(words, 1)
       else
         break
       end
     end
-  elseif verb.name == "got" or verb.name == "creat" then -- is this all? are there more? (class)
+  elseif verb.type.verb_class then -- is this all? are there more? (class)
     while words[1].type == "object"
     or    words[1].type == "verb_object_or_property_or_object"
     or    words[1].type == "group"
     or    words[2] and words[2].name == "text" do
-      table.insert(objects, findClass(words))
-      if words[1] and words[1].type == "and" and words[2] and words[2].type ~= "verb_all" and words[2].type ~= "verb_object" then
+      local object, words_ = findClass(words)
+      if not object then
+        break
+      end
+      words = words_
+      table.insert(objects, object)
+      if words[1] and words[1].type["and"] and words[2] and not words[2].type.verb then
         table.insert(extra_words, words[1])
         table.remove(words, 1)
       else
         break
       end
     end
-  elseif verb.type == "verb_object" or verb.type == "verb_object_or_property_or_object" then -- (unit)
-    while findUnit(copyTable(words), {}, dir, enclosed) do -- there has to be a better way to do this
-      table.insert(objects, findUnit(words, extra_words, dir, enclosed))
-      if words[1] and words[1].type == "and" and words[2] and words[2].type ~= "verb_all" and words[2].type ~= "verb_object" then
-        table.insert(extra_words, words[1])
+  elseif verb.type.verb_object then -- (unit)
+    local found = false
+    local unit, words_ = findUnit(copyTable(words), extra_words, dir, enclosed)
+    local andd
+    while unit do
+      words = words_
+      if andd then
+        table.insert(extra_words, andd)
+        andd = nil
+      end
+      found = true
+      table.insert(objects, unit)
+      if words[1] and words[1].type["and"] and words[2] and not words[2].type.verb then
+        andd = words[1]
         table.remove(words, 1)
       else
         break
       end
+      unit, words_ = findUnit(copyTable(words), extra_words, dir, enclosed)
+    end
+    if andd then
+      table.insert(words, andd)
+    end
+    if not found then
+      return
     end
   else
     return
   end
-  return {verb, objects}
+  mergeTable(extra_words_, extra_words)
+  return {verb, objects}, words
 end
 
 function findLetterSentences(str, index_, sentences_, curr_sentence_, start_) --copied from parser_old.lua
