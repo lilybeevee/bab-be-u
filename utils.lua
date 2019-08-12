@@ -858,7 +858,6 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
         end
       end
     elseif condtype == "samefloat" then
-      print(fullDump(lists))
       result = false
       for _,list in ipairs(lists) do
         for _,other in ipairs(list) do
@@ -881,6 +880,7 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
     elseif condtype == "wait..." then
       result = last_move ~= nil and last_move[1] == 0 and last_move[2] == 0 and last_click_x == nil and last_click_y == nil
     elseif condtype == "mayb" then
+      local cond_unit = cond.unit
       --add a dummy action so that undoing happens
       if (#undo_buffer > 0 and #undo_buffer[1] == 0) then
         addUndo({"dummy"});
@@ -888,6 +888,7 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
       rng = deterministicRng(unit, cond_unit);
       result = (rng*100) < threshold_for_dir[cond_unit.dir];
     elseif condtype == "an" then
+      local cond_unit = cond.unit
       --add a dummy action so that undoing happens
       if (#undo_buffer > 0 and #undo_buffer[1] == 0) then
         addUndo({"dummy"});
