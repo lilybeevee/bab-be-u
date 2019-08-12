@@ -340,11 +340,15 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
       end
       local result = true
       for i=1,3 do
-        if nrules[i] ~= nil and nrules[i] ~= rule[ruleparts[i]].name and (fnrules[i] == nil or (fnrules[i] ~= nil and fnrules[i] ~= rule[ruleparts[i]].name)) then
-          if (debugging) then
-            print("false due to nrules/fnrules mismatch")
+        local name = rule[ruleparts[i]].name
+        --special case for stuff like 'group be x' - if we are in that group, we do match that rule
+        if not (i == 1 and group_sets[name] and group_sets[name][rule1]) then
+          if nrules[i] ~= nil and nrules[i] ~= name and (fnrules[i] == nil or (fnrules[i] ~= nil and fnrules[i] ~= name)) then
+            if (debugging) then
+              print("false due to nrules/fnrules mismatch")
+            end
+            result = false
           end
-          result = false
         end
       end
       --don't test condition until the rule fully matches
