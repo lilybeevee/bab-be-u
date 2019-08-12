@@ -592,6 +592,28 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
           break
         end
       end
+    elseif condtype == "w/neighbor" then
+      for _,param in ipairs(params) do
+        local others = {}
+        for ndir=1,4 do
+          local nx, ny = dirs8[ndir*2-1][1], dirs8[ndir*2-1][2]
+          if unit == outerlvl and surrounds ~= nil and surrounds_name == level_name then
+            --use surrounds to remember what was around the level
+            for __,on in ipairs(surrounds[nx][ny]) do
+              if nameIs(on, param) then
+                table.insert(others, on);
+              end
+            end
+          else
+            local dx, dy, dir, px, py = getNextTile(unit, nx, ny, ndir)
+            mergeTable(others, param ~= "mous" and getUnitsOnTile(px,py,param) or getCursorsOnTile(px, py, false, unit))
+          end
+        end
+        if #others == 0 then
+          result = false
+          break
+        end
+      end
     elseif condtype == "seen by" then
       if unit == outerlvl then --basically turns into sans n't BUT the unit has to be looking inbounds as well!
         for _,param in ipairs(params) do
