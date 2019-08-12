@@ -1412,7 +1412,6 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
   local isbounded = matchesRule(unit, "liek", "?")
   if (#isbounded > 0) then
     for i,ruleparent in ipairs(isbounded) do
-      print(fullDump(ruleparent))
       local liek = ruleparent.rule.object.name
       local success = false
       if hasRule(unit,"liek",liek) and hasRule(unit,"haet",liek) then

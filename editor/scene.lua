@@ -504,7 +504,7 @@ end
   --only refresh tile grid if the page actually changed to preserve meta text levels
   if (old_selector_page ~= selector_page) then
     current_tile_grid = tile_grid[selector_page]
-    print(dump(selector_tab_buttons_list))
+    -- print(dump(selector_tab_buttons_list))
     selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..selector_page.."_a"], sprites["ui/selector_tab_"..selector_page.."_h"])
   end
   

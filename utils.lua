@@ -858,7 +858,6 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
         end
       end
     elseif condtype == "samefloat" then
-      print(fullDump(lists))
       result = false
       for _,list in ipairs(lists) do
         for _,other in ipairs(list) do
@@ -885,14 +884,14 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
       if (#undo_buffer > 0 and #undo_buffer[1] == 0) then
         addUndo({"dummy"});
       end
-      rng = deterministicRng(unit, cond_unit);
-      result = (rng*100) < threshold_for_dir[cond_unit.dir];
+      rng = deterministicRng(unit, cond.unit);
+      result = (rng*100) < threshold_for_dir[cond.unit.dir];
     elseif condtype == "an" then
       --add a dummy action so that undoing happens
       if (#undo_buffer > 0 and #undo_buffer[1] == 0) then
         addUndo({"dummy"});
       end
-      rng = deterministicRandom(unit.fullname, cond_unit);
+      rng = deterministicRandom(unit.fullname, cond.unit);
       result = unit.id == rng;
     elseif condtype == "lit" then
       --TODO: make it so if there are many lit objects then you cache FoV instead of doing many individual LoSes
