@@ -1378,7 +1378,7 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
   table.insert(movers, {unit = unit, dx = x-unit.x, dy = y-unit.y, dir = dir, move_dx = move_dx, move_dy = move_dy, move_dir = move_dir, geometry_spin = geometry_spin, portal = portal_unit})
   
   if rules_with["ignor"] ~= nil and (hasRule(unit,"ignor",outerlvl) or hasRule(outerlvl,"ignor",unit)) then
-    return (inBounds(unit.x+dx,unit.y+dy)),movers,{}
+    return (inScreen(unit.x+dx,unit.y+dy)),movers,{}
   end
   
   if not inBounds(x,y) then
