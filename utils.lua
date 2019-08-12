@@ -215,10 +215,9 @@ function initializeEmpties()
   --TODO: other ways to make a text_no1 could be to have a text_text_no1 but that seems contrived that you'd have text_text_no1 but not text_no1?
   --text_the counts because it looks for no1 too. similarly we could have text_text_the but again, contrived
   if ((not letters_exist) and (not units_by_name["text_no1"]) and (not units_by_name["text_the"])) then return end
-  local xmin,xmax,ymin,ymax = getCorners()
+  --empties_by_tile doesn't use the same system as units_by_tile because empty cannot be oob by nature, so there's no need to allow it to be oob
   for x=0,mapwidth-1 do
     for y=0,mapheight-1 do
-      --we keep tileid here because the direction depends on it, but we change it to depend on xmax instead of mapwidth
       local tileid = x + y * mapwidth
       empties_by_tile[tileid] = createUnit(tiles_by_name["no1"], x, y,
       (((tileid - 1) % 8) + 1), nil, nil, true)
