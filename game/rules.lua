@@ -601,51 +601,51 @@ function postRules()
 	-- Step 0:
 	-- Determine group membership, and rewrite rules involving groups into their membership versions
 	-- TODO: this probably malfunctions horribly if you reference two different groups in the same rule, and it doesn't handle groups in conditions, and it doesn't handle conditional membership, and it doesn't handle ben't group, and whatever other special cases you can come up with
-	group_membership = {}
+	-- group_membership = {}
 	
-	for _,group in ipairs(group_names) do
-		group_membership[group] = {}
-		for _,rules in ipairs(full_rules) do
-			local rule = rules.rule
+	-- for _,group in ipairs(group_names) do
+	-- 	group_membership[group] = {}
+	-- 	for _,rules in ipairs(full_rules) do
+	-- 		local rule = rules.rule
 
-			local subject, verb, object = rule.subject, rule.verb, rule.object
-			if verb == "be" and object == group then
-				group_membership[group][subject] = true
-			end
-		end
-	end
+	-- 		local subject, verb, object = rule.subject, rule.verb, rule.object
+	-- 		if verb == "be" and object == group then
+	-- 			group_membership[group][subject] = true
+	-- 		end
+	-- 	end
+	-- end
 	
-	for _,group in ipairs(group_names) do
-		for _,rules in ipairs(full_rules) do
-			local rule = rules.rule
+	-- for _,group in ipairs(group_names) do
+	-- 	for _,rules in ipairs(full_rules) do
+	-- 		local rule = rules.rule
 
-			local subject, verb, object = rule.subject, rule.verb, rule.object
-			if object == group and verb ~= "be" then
-				if subject == group then
-					for member1,_ in pairs(group_membership[group]) do
-						for member2,_ in pairs(group_membership[group]) do
-							local newRules = deepCopy(rules);
-							newRules.subject.name = member1;
-							newRules.object.name = member2;
-							addRuleSimple(unpack(newRules));
-						end
-					end
-				else
-					for member,_ in pairs(group_membership[group]) do
-						local newRules = deepCopy(rules);
-						newRules.object.name = member;
-						addRuleSimple(unpack(newRules));
-					end
-				end
-			elseif subject == group then
-				for member,_ in pairs(group_membership[group]) do
-					local newRules = deepCopy(rules);
-					newRules.subject.name = member;
-					addRuleSimple(unpack(newRules));
-				end
-			end
-		end
-	end
+	-- 		local subject, verb, object = rule.subject, rule.verb, rule.object
+	-- 		if object == group and verb ~= "be" then
+	-- 			if subject == group then
+	-- 				for member1,_ in pairs(group_membership[group]) do
+	-- 					for member2,_ in pairs(group_membership[group]) do
+	-- 						local newRules = deepCopy(rules);
+	-- 						newRules.subject.name = member1;
+	-- 						newRules.object.name = member2;
+	-- 						addRuleSimple(unpack(newRules));
+	-- 					end
+	-- 				end
+	-- 			else
+	-- 				for member,_ in pairs(group_membership[group]) do
+	-- 					local newRules = deepCopy(rules);
+	-- 					newRules.object.name = member;
+	-- 					addRuleSimple(unpack(newRules));
+	-- 				end
+	-- 			end
+	-- 		elseif subject == group then
+	-- 			for member,_ in pairs(group_membership[group]) do
+	-- 				local newRules = deepCopy(rules);
+	-- 				newRules.subject.name = member;
+	-- 				addRuleSimple(unpack(newRules));
+	-- 			end
+	-- 		end
+	-- 	end
+	-- end
 	
   -- Step 1:
   -- Block & remove rules if they're N'T'd out

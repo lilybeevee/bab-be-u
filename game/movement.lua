@@ -93,6 +93,8 @@ function doMovement(movex, movey, key)
   end
 
   portaling = {}
+  
+  updateGroup()
 
   local move_stage = -1
   while move_stage < 3 do
@@ -609,26 +611,33 @@ It is probably possible to do, but lily has decided that it's not important enou
       end
       moving_units_next = {}
     end
+    updateGroup()
     calculateLight()
     move_stage = move_stage + 1
   end
   --https://babaiswiki.fandom.com/wiki/Advanced_rulebook (for comparison)
   parseRules()
+  updateGroup()
   calculateLight()
   moveBlock()
   parseRules()
+  updateGroup()
   calculateLight()
   fallBlock()
   parseRules()
+  updateGroup()
   calculateLight()
   levelBlock()
   parseRules()
+  updateGroup()
   calculateLight()
   updateUnits(false, true)
   parseRules()
+  updateGroup()
   calculateLight()
 	convertUnits(1)
-	parseRules()
+  parseRules()
+  updateGroup()
   calculateLight()
   updatePortals()
   miscUpdates()
