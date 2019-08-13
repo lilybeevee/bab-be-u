@@ -11,29 +11,29 @@ function clearRules()
   portal_id = ""
 
   --text and level basically already exist, so no need to be picky.
-  addRule({{"text","be","go away pls",{{},{}}},{},1})
-  addRule({{"lvl","be","no go",{{},{}}},{},1})
+  addBaseRule("text","be","go away pls")
+  addBaseRule("lvl","be","no go")
   --TODO: This will need to be automatic on levels with letters/combined words, since a selectr/bordr might be made in a surprising way, and it will need to have its implicit rules apply immediately.
   if (units_by_name["selctr"] or units_by_name["text_selctr"]) then
-    addRule({{"selctr","be","u",{{},{}}},{},1})
-    addRule({{"selctr","liek","pathz",{{},{}}},{},1})
-    addRule({{"lvl","be","pathz",{{},{}}},{},1})
-		addRule({{"lin","be","pathz",{{},{}}},{},1})
-    addRule({{"selctr","be","flye",{{},{}}},{},1})
+    addBaseRule("selctr","be","u")
+    addBaseRule("selctr","liek","pathz")
+    addBaseRule("lvl","be","pathz")
+		addBaseRule("lin","be","pathz")
+    addBaseRule("selctr","be","flye")
   end
   if (units_by_name["bordr"] or units_by_name["text_bordr"]) then
-    addRule({{"bordr","be","no go",{{},{}}},{},1})
-    addRule({{"bordr","be","tall",{{},{}}},{},1})
-		addRule({{"bordr","be","opaque",{{},{}}},{},1})
+    addBaseRule("bordr","be","no go")
+    addBaseRule("bordr","be","tall")
+		addBaseRule("bordr","be","opaque")
   end
   if units_by_name["this"] then
-    addRule({{"this","be","go away pls",{{},{}}},{},1})
-    addRule({{"this","be","wurd",{{},{}}},{},1})
+    addBaseRule("this","be","go away pls")
+    addBaseRule("this","be","wurd")
   end
   if units_by_name["text_nuek"] then
-    addRule({{"xplod","be","protecc",{{},{}}},{},1})
-    addRule({{"xplod","be","moar",{{},{}}},{},1})
-    addRule({{"xplod","ignor","lvl",{{},{}}},{},1})
+    addBaseRule("xplod","be","protecc")
+    addBaseRule("xplod","be","moar")
+    addBaseRule("xplod","ignor","lvl")
   end
 
   has_new_rule = false
@@ -267,65 +267,7 @@ function parseRules(undoing)
     clearRules()
     
     for _,final in ipairs(final_rules) do
-      local new_rules = final[1]
-      local dir = final[2]
-      for _,a in ipairs(new_rules[1]) do
-        for vi,b in ipairs(new_rules[2]) do
-          for _,c in ipairs(new_rules[3][vi]) do
-            local noun = a[1]
-            local noun_texts = a[2]
-            local verb = b[1]
-            local verb_texts = b[2]
-            local prop = c[1]
-            local prop_texts = c[2]
-
-            if noun_texts == nil then
-              print("nil on: " .. noun .. " - " .. verb .. " - " .. prop)
-            end
-
-            --if verb == "got" or a[1]:starts("text_") or c[1]:starts("text_") then
-              --print("added rule: " .. noun .. " " .. verb .. " " .. prop)
-            --end
-
-            local all_units = {}
-            for _,unit in ipairs(noun_texts) do
-              if not table.has_value(unit.used_as, "noun") then table.insert(unit.used_as, "noun") end
-              table.insert(all_units, unit)
-            end
-            for _,unit in ipairs(verb_texts) do
-              if not table.has_value(unit.used_as, "verb") then table.insert(unit.used_as, "verb") end
-              table.insert(all_units, unit)
-            end
-            for _,unit in ipairs(prop_texts) do
-              if not table.has_value(unit.used_as, "property") then table.insert(unit.used_as, "property") end
-              table.insert(all_units, unit)
-            end
-
-            local conds = {{},{}}
-            for i=1,2 do
-              for _,cond in ipairs(new_rules[4][i]) do
-                for _,unit in ipairs(cond[3]) do
-                  table.insert(all_units, unit)
-                end
-                table.insert(conds[i], {cond[1], cond[2], cond[3]})
-              end
-            end
-
-            --[[for _,unit in ipairs(stupid_cond_units) do
-              table.insert(all_units, unit)
-              unit.active = true
-              if not unit.old_active and not first_turn and not undoing then
-                addParticles("rule", unit.x, unit.y, unit.color)
-                has_new_rule = true
-              end
-              unit.old_active = unit.active
-            end]]
-
-            local rule = {{noun,verb,prop,conds},all_units,dir}
-            addRule(rule)
-          end
-        end
-      end
+      addRule(final)
     end
     
     postRules()
@@ -372,22 +314,23 @@ function parseRules(undoing)
 end
 
 function parseSentence(sentence_, params_, dir) --prob make this a local function? idk
-  --print("parsing... "..fullDump(sentence_))
+  -- print("parsing... "..fullDump(sentence_))
   local been_first = params_[1] --splitting up the params like this was because i was too lazy
   local first_words = params_[2] -- all of them are tables anyway, so it ends up referencing properly
   local final_rules = params_[3]
   local first = params_[4]
   local sentence = copyTable(sentence_, 1)
+  --print(fullDump(sentence))
 
   for orig_index,word in ipairs(sentence) do
-    if word.type == "letter" then --letter handling
+    if word.type["letter"] then --letter handling
       --print("found a letter"..orig_index)
       
       local new_word = ""
       local word_index = orig_index
       local letter = sentence[word_index]
       local prevletter = {}
-      while letter.type == "letter" do --find out where the letters end, throw all of them into a string tho
+      while letter.type["letter"] do --find out where the letters end, throw all of them into a string tho
         --here's how umlauts / colons work: for every letter that could be affected by the presence of a colon, special case it here
         --when special casing, change the name to include the umlaut / colon in it. then, later, don't count colons when adding to the string, since the letter already accounts for it
         --for the letter u, it always needs to check the tile above it, so we don't need to use prevletter, since the umlaut might not be in the rule directly
@@ -480,130 +423,70 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
       return --no need to continue past this point, since the letters suffice
     end
   end
-
-  --print("just after letters:", dump(sentence))
-  local valid, state = parse(sentence, parser)
-  --print(dump(state))
-
-  if not valid then
-    if #sentence > 1 then
-      local unit = sentence[2].unit --the second word, so the condition?
-      if not been_first[first[2]][unit.x + unit.y * mapwidth] then --first[2] is direction
-        table.insert(first_words, {sentence[2].unit, first[2]})
-        been_first[first[2]][unit.x + unit.y * mapwidth] = true
-      end
-    end
-  else
-    if state.word_index <= #sentence then
-      local unit = sentence[state.word_index-1].unit
-      if not been_first[first[2]][unit.x + unit.y * mapwidth] then
-        table.insert(first_words, {sentence[state.word_index-1].unit, first[2]})
-        been_first[first[2]][unit.x + unit.y * mapwidth] = true
-      end
-    end
-    for i = 1, state.word_index-1 do
-      local unit = sentence[i].unit
-      --print(sentence[i].name)
-      --print(dump(sentence[i]))
-      been_first[first[2]][unit.x + unit.y * mapwidth] = true
-    end
-
-    local new_rules = {{},{},{},{{},{}}}
-
-    local function simplify(t)
-      local name = ""
-      local units = {}
-      for _,v in ipairs(t) do
-        table.insert(units, v.unit)
-        if not v.connector then
-          name = v.name
-          local suffix = ""
-          if v.mods then
-            for _,mod in ipairs(v.mods) do
-              table.insert(units, mod.unit)
-              if mod.name == "text" then
-                name = v.unit.fullname
-              elseif mod.name == "n't" then
-                suffix = suffix .. "n't"
-              else
-                suffix = suffix .. " " .. mod.name
-              end
-            end
-          end
-          name = name .. suffix
+  
+  local function addUnits(list, set, root)
+    if root.unit and not set[root.unit] then
+      table.insert(list, root.unit)
+      set[root.unit] = true
+      if root.conds then
+        for _,cond in ipairs(root.conds) do
+          addUnits(list, set, cond)
         end
       end
-      return name, units
-    end
-
-    --print(dump(state.extra_words))
-    
-    for _,matches in ipairs(state.matches) do
-      for _,targets in ipairs(matches.target) do
-        local name, units = simplify(targets, true)
-        for _,extra_word in ipairs(state.extra_words) do
-          table.insert(units, extra_word.unit);
-        end
-        table.insert(new_rules[1], {name, units})
-      end
-      if matches.cond then
-        for _,conds in ipairs(matches.cond) do
-          local name, units = simplify(conds)
-          local params = {}
-          if conds.target then
-            for _,targets in ipairs(conds.target) do
-              local name, param_units = simplify(targets, true)
-              table.insert(params, name)
-              mergeTable(units, param_units)
-            end
-          end
-
-          table.insert(new_rules[4][1], {name, params, units})
+      if root.others then
+        for _,other in ipairs(root.others) do
+          addUnits(list, set, other)
         end
       end
-      for _,verbs in ipairs(matches.verb) do
-        local name, units = simplify(verbs)
-        table.insert(new_rules[2], {name, units})
-
-        local verb_rules = {}
-        table.insert(new_rules[3], verb_rules)
-        for _,targets in ipairs(verbs.target) do
-          local name, units = simplify(targets, true)
-          table.insert(verb_rules, {name, units})
-        end
-
-        if verbs.cond then
-          for _,conds in ipairs(verbs.cond) do
-            local name, units = simplify(conds)
-
-            local params = {}
-            if conds.target then
-              for _,targets in ipairs(conds.target) do
-                local name, param_units = simplify(targets, true)
-                table.insert(params, name)
-                mergeTable(units, param_units)
-              end
-            end
-
-            table.insert(new_rules[4][2], {name, params, units})
-          end
+      if root.mods then
+        for _,mod in ipairs(root.mods) do
+          addUnits(list, set, mod)
         end
       end
     end
-		
-    table.insert(final_rules, {new_rules, dir})
+  end
+
+  -- print("just after letters:", dump(sentence))
+  while (#sentence > 2) do
+    local valid, words, rules, extra_words = parse(copyTable(sentence), dir)
+    if not valid then -- probably not too great for performance, it'd be good to only do this if "lookat" etc is in the rule
+      valid, words, rules, extra_words = parse(copyTable(sentence), dir, true) -- check lookat as a verb instead of a condition
+    end
+    --print(dump(state))
+
+    if valid then
+      for i,rule in ipairs(rules) do
+        local list = {}
+        local set = {}
+        for _,word in ipairs(extra_words) do
+          addUnits(list, set, word)
+        end
+        addUnits(list, set, rule.subject)
+        addUnits(list, set, rule.verb)
+        addUnits(list, set, rule.object)
+        local full_rule = {rule = rule, units = list, dir = dir}
+        -- print(fullDump(full_rule))
+        table.insert(final_rules, full_rule)
+      end
+      
+      local last_word = sentence[#sentence - #words]
+      table.insert(words, 1, last_word)
+      sentence = words
+    else
+      table.remove(sentence, 1)
+    end
   end
 end
 
 function addRule(full_rule)
-  local rules = full_rule[1]
-  local units = full_rule[2]
-  local dir = full_rule[3]
+  -- print(fullDump(full_rule))
+  local rules = full_rule.rule
+  local units = full_rule.units
+  local dir = full_rule.dir
 
-  local subject = rules[1]
-  local verb = rules[2]
-  local object = rules[3]
-  local conds = rules[4]
+  local subject = rules.subject.name
+  local verb = rules.verb.name
+  local object = rules.object.name
 
   local subject_not = 0
   local verb_not = 0
@@ -639,12 +522,12 @@ function addRule(full_rule)
 	--print(subject, verb, object, subject_not, verb_not, object_not)
 
   if verb_not > 0 then
-    verb = rules[2]:sub(1, -4)
+    verb = rules.verb.name:sub(1, -4)
   end
   
   --Special THIS check - if we write this be this or this ben't this, it should work like the tautology/paradox it does for other objects, even though they are TECHNICALLY different thises.
   if subject:starts("this") and object:starts("this") and subject_not == 0 and object_not == 0 and subject ~= object then
-    addRule({{rules[1], rules[2], rules[1], rules[4]}, units, dir})
+    addRuleSimple(rules.subject, rules.verb, {rules.subject.name, rules.object.conds}, units, dir)
     return
   end
 
@@ -653,14 +536,14 @@ function addRule(full_rule)
       return
     else
       for _,v in ipairs(referenced_objects) do
-        addRule({{v, rules[2], rules[3], rules[4]}, units, dir})
+        addRuleSimple({v, rules.subject.conds}, rules.verb, rules.object, units, dir)
       end
     end
   elseif subject_not % 2 == 1 then
     if tiles_by_name[subject] or subject == "text" then
       local new_subjects = getEverythingExcept(subject)
       for _,v in ipairs(new_subjects) do
-        addRule({{v, rules[2], rules[3], rules[4]}, units, dir})
+        addRuleSimple({v, rules.subject.conds}, rules.verb, rules.object, units, dir)
       end
       return
     end
@@ -672,7 +555,7 @@ function addRule(full_rule)
     elseif verb ~= "be" and verb ~= "ben't" then
       --we'll special case x be every1 in convertUnit now
       for _,v in ipairs(referenced_objects) do
-        addRule({{rules[1], rules[2], v, rules[4]}, units, dir})
+        addRuleSimple(rules.subject, rules.verb, {v, rules.object.conds}, units, dir)
       end
     end
   elseif object_not % 2 == 1 then
@@ -685,13 +568,14 @@ function addRule(full_rule)
         new_objects = getEverythingExcept(object)
       end
       for _,v in ipairs(new_objects) do
-        addRule({{rules[1], rules[2], v, rules[4]}, units, dir})
+        -- print(fullDump(rules))
+        addRuleSimple(rules.subject, rules.verb, {v, rules.object.conds}, units, dir)
       end
       --txt be txt needs to also apply for flog txt, bab txt, etc.
       if (object == "text" and verb == "be" and verb_not % 2 == 1) then
         for i,ref in ipairs(referenced_text) do
           for _,v in ipairs(new_objects) do
-            addRule({{ref, rules[2], v, rules[4]}, units, dir})
+            addRuleSimple({ref, rules.subject.conds}, rules.verb, {v, rules.object.conds}, units, dir)
           end
         end
       end
@@ -704,15 +588,16 @@ function addRule(full_rule)
       not_rules[verb_not] = {}
       max_not_rules = math.max(max_not_rules, verb_not)
     end
-    table.insert(not_rules[verb_not], {{subject, verb, object, conds}, units, dir})
+    -- print("full_rule:", fullDump(full_rule))
+    table.insert(not_rules[verb_not], full_rule)
 
     -- for specifically checking NOT rules
-    table.insert(full_rules, {{subject, verb .. "n't", object, conds}, units, dir})
+    table.insert(full_rules, {rule = {subject = rules.subject, verb = {name = verb .. "n't"}, object = rules.object}, units = units, dir = dir})
   elseif (verb == "be") and (subject == object or (subject:starts("text_") and object == "text")) then
     --print("protecting: " .. subject .. ", " .. object)
-    addRule({{subject, "ben't", object .. "n't", conds}, units, dir})
+    addRuleSimple(rules.subject, {"ben't"}, {object .. "n't", rules.object.conds}, units, dir)
   else
-    table.insert(full_rules, {{subject, verb, object, conds}, units, dir})
+    table.insert(full_rules, full_rule)
   end
 end
 
@@ -722,68 +607,68 @@ function postRules()
 	-- Step 0:
 	-- Determine group membership, and rewrite rules involving groups into their membership versions
 	-- TODO: this probably malfunctions horribly if you reference two different groups in the same rule, and it doesn't handle groups in conditions, and it doesn't handle conditional membership, and it doesn't handle ben't group, and whatever other special cases you can come up with
-	group_membership = {}
+	-- group_membership = {}
 	
-	for _,group in ipairs(group_names) do
-		group_membership[group] = {}
-		for _,rules in ipairs(full_rules) do
-			local rule = rules[1]
+	-- for _,group in ipairs(group_names) do
+	-- 	group_membership[group] = {}
+	-- 	for _,rules in ipairs(full_rules) do
+	-- 		local rule = rules.rule
 
-			local subject, verb, object = rule[1], rule[2], rule[3]
-			if verb == "be" and object == group then
-				group_membership[group][subject] = true
-			end
-		end
-	end
+	-- 		local subject, verb, object = rule.subject, rule.verb, rule.object
+	-- 		if verb == "be" and object == group then
+	-- 			group_membership[group][subject] = true
+	-- 		end
+	-- 	end
+	-- end
 	
-	for _,group in ipairs(group_names) do
-		for _,rules in ipairs(full_rules) do
-			local rule = rules[1]
+	-- for _,group in ipairs(group_names) do
+	-- 	for _,rules in ipairs(full_rules) do
+	-- 		local rule = rules.rule
 
-			local subject, verb, object = rule[1], rule[2], rule[3]
-			if object == group and verb ~= "be" then
-				if subject == group then
-					for member1,_ in pairs(group_membership[group]) do
-						for member2,_ in pairs(group_membership[group]) do
-							local newRules = deepCopy(rules);
-							newRules[1][1] = member1;
-							newRules[1][3] = member2;
-							addRule(newRules);
-						end
-					end
-				else
-					for member,_ in pairs(group_membership[group]) do
-						local newRules = deepCopy(rules);
-						newRules[1][3] = member;
-						addRule(newRules);
-					end
-				end
-			elseif subject == group then
-				for member,_ in pairs(group_membership[group]) do
-					local newRules = deepCopy(rules);
-					newRules[1][1] = member;
-					addRule(newRules);
-				end
-			end
-		end
-	end
+	-- 		local subject, verb, object = rule.subject, rule.verb, rule.object
+	-- 		if object == group and verb ~= "be" then
+	-- 			if subject == group then
+	-- 				for member1,_ in pairs(group_membership[group]) do
+	-- 					for member2,_ in pairs(group_membership[group]) do
+	-- 						local newRules = deepCopy(rules);
+	-- 						newRules.subject.name = member1;
+	-- 						newRules.object.name = member2;
+	-- 						addRuleSimple(unpack(newRules));
+	-- 					end
+	-- 				end
+	-- 			else
+	-- 				for member,_ in pairs(group_membership[group]) do
+	-- 					local newRules = deepCopy(rules);
+	-- 					newRules.object.name = member;
+	-- 					addRuleSimple(unpack(newRules));
+	-- 				end
+	-- 			end
+	-- 		elseif subject == group then
+	-- 			for member,_ in pairs(group_membership[group]) do
+	-- 				local newRules = deepCopy(rules);
+	-- 				newRules.subject.name = member;
+	-- 				addRuleSimple(unpack(newRules));
+	-- 			end
+	-- 		end
+	-- 	end
+	-- end
 	
   -- Step 1:
   -- Block & remove rules if they're N'T'd out
   for n = max_not_rules, 1, -1 do
     if not_rules[n] then
       for _,rules in ipairs(not_rules[n]) do
-        local rule = rules[1]
-        local conds = rule[4]
+        local rule = rules.rule
+        local conds = {rule.subject.conds or {}, rule.object.conds or {}}
 
         local inverse_conds = {{},{}}
         for i=1,2 do
           for _,cond in ipairs(conds[i]) do
             local new_cond = copyTable(cond)
-            if new_cond[1]:ends("n't") then
-              new_cond[1] = new_cond[1]:sub(1, -4)
+            if new_cond.name:ends("n't") then
+              new_cond.name = new_cond.name:sub(1, -4)
             else
-              new_cond[1] = new_cond[1] .. "n't"
+              new_cond.name = new_cond.name .. "n't"
             end
             table.insert(inverse_conds[i], new_cond)
           end
@@ -794,18 +679,24 @@ function postRules()
         local function blockRules(t, n)
           local blocked_rules = {}
           for _,frules in ipairs(t) do
-            local frule = frules[1]
-            local fverb = frule[2]
+            local frule = frules.rule
+            -- print(fullDump(frule))
+            local fverb = frule.verb.name
             if n then
               fverb = fverb .. "n't"
             end
-            if frule[1] == rule[1] and fverb == rule[2] and frule[3] == rule[3] and frule[3] ~= "her" and frule[3] ~= "thr" then
-              --print("matching rule", rule[1], rule[2], rule[3])
+            -- print("frule:", fullDump(frule))
+            if frule.subject.name == rule.subject.name and fverb == rule.verb.name and
+            frule.object.name == rule.object.name and frule.object.name ~= "her" and frule.object.name ~= "thr" then
+              -- print("matching rule", rule[1][1], rule[2], rule[3][1])
               if has_conds then
-                for i=1,2 do
-                  for _,cond in ipairs(inverse_conds[i]) do
-                    table.insert(frule[4][i], cond)
-                  end
+                for _,cond in ipairs(inverse_conds[1]) do
+                  if not frule.subject.conds then frule.subject.conds = {} end
+                  table.insert(frule.subject.conds, cond)
+                end
+                for _,cond in ipairs(inverse_conds[2]) do
+                  if not frule.object.conds then frule.object.conds = {} end
+                  table.insert(frule.object.conds, cond)
                 end
               else
                 table.insert(blocked_rules, frules)
@@ -814,10 +705,11 @@ function postRules()
           end
 
           for _,blocked in ipairs(blocked_rules) do
-            for _,unit in ipairs(blocked[2]) do
+            for _,unit in ipairs(blocked.units) do
               unit.blocked = true
-              unit.blocked_dir = blocked[3]
+              unit.blocked_dir = blocked.dir
             end
+            -- print("blocked:", fullDump(blocked))
             removeFromTable(t, blocked)
           end
         end
@@ -825,7 +717,7 @@ function postRules()
         if not_rules[n - 1] then
           blockRules(not_rules[n - 1], true)
         end
-        blockRules(full_rules)
+        blockRules(full_rules, true)
 
         mergeTable(all_units, rules[2])
       end
@@ -835,9 +727,9 @@ function postRules()
   -- Step 2:
   -- Add all remaining rules to lookup tables
   for _,rules in ipairs(full_rules) do
-    local rule = rules[1]
+    local rule = rules.rule
 
-    local subject, verb, object = rule[1], rule[2], rule[3]
+    local subject, verb, object = rule.subject.name, rule.verb.name, rule.object.name
 
     if not rules_with[subject] then
       rules_with[subject] = {}
@@ -896,7 +788,7 @@ end
 function populateRulesEffectingNames(r1, r2, r3)
   local rules = matchesRule(r1, r2, r3);
   for _,rule in ipairs(rules) do
-    local subject = rule[1][1];
+    local subject = rule.rule.subject.name;
     if (subject:sub(1, 4) ~= "text") then
       rules_effecting_names[subject] = true;
     end
@@ -906,20 +798,20 @@ end
 function shouldReparseRulesIfConditionalRuleExists(r1, r2, r3, even_non_wurd)
   local rules = matchesRule(r1, r2, r3);
   for _,rule in ipairs(rules) do
-    local subject_cond = rule[1][4][1];
-    local subject = rule[1][1];
+    local subject_cond = rule.rule.subject.conds or {}
+    local subject = rule.rule.subject.name;
     --We only care about conditional rules that effect text, specific text, wurd units and maybe portals too.
     --We can also distinguish between different conditions (todo).
     if (#subject_cond > 0 and (even_non_wurd or subject:starts("text") or rules_effecting_names[subject])) then
       for _,cond in ipairs(subject_cond) do
-        local cond_name = cond[1]
-        local cond_units = cond[2]
+        local cond_name = cond.name
+        local params = cond.others or {}
         --TODO: This needs to change for condition stacking.
         --An infix condition that references another unit just dumps the second unit into rules_effecting_names (This is fine for all infix conditions, for now, but maybe not perpetually? for example sameFloat() might malfunction since the floatness of the other unit could change unexpectedly due to a SECOND conditional rule).
-        if (#cond_units > 0) then
-          for _,unit in ipairs(cond_units) do
-            rules_effecting_names[unit] = true
-            if unit == "mous" then
+        if (#params > 0) then
+          for _,param in ipairs(params) do
+            rules_effecting_names[param.name] = true
+            if param.name == "mous" then
               should_parse_rules_at_turn_boundary = true;
             end
           end

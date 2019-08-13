@@ -441,8 +441,9 @@ end
       brush.dir = dir
       local hx,hy = getHoveredTile()
       if hx ~= nil then
-        if units_by_tile[hx][hy] and #units_by_tile[hx][hy] > 0 then
-          for _,unit in ipairs(units_by_tile[hx][hy]) do
+        local tileid = hx + hy * mapwidth
+        if units_by_tile[tileid] and #units_by_tile[tileid] > 0 then
+          for _,unit in ipairs(units_by_tile[tileid]) do
             unit.dir = brush.dir
           end
           scene.updateMap()
@@ -503,7 +504,7 @@ end
   --only refresh tile grid if the page actually changed to preserve meta text levels
   if (old_selector_page ~= selector_page) then
     current_tile_grid = tile_grid[selector_page]
-    print(dump(selector_tab_buttons_list))
+    -- print(dump(selector_tab_buttons_list))
     selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..selector_page.."_a"], sprites["ui/selector_tab_"..selector_page.."_h"])
   end
   
@@ -633,9 +634,11 @@ function scene.update(dt)
     elseif not settings_open or not mouseOverBox(settings.x, settings.y, settings.w, settings.h) then
       local hx,hy = getHoveredTile()
       if hx ~= nil then
+        local tileid = hx + hy * mapwidth
+
         local hovered = {}
-        if units_by_tile[hx][hy] then
-          for _,v in ipairs(units_by_tile[hx][hy]) do
+        if units_by_tile[tileid] then
+          for _,v in ipairs(units_by_tile[tileid]) do
             table.insert(hovered, v)
           end
         end
@@ -929,9 +932,11 @@ function scene.draw(dt)
             end
             
             if tile.texttype ~= nil then
-                if string.match(tile.texttype, searchstr) then
+              for type,_ in pairs(tile.texttype) do
+                if string.match(type, searchstr) then
                     found_matching_tag = true
                 end
+              end
             end
             
             if not found_matching_tag then love.graphics.setColor(0.2,0.2,0.2) end
@@ -1188,12 +1193,11 @@ end
 function scene.updateMap()
   map_ver = 4
   local map = {}
-  
-  local xmin,xmax,ymin,ymax = getCorners()
-  for x=xmin,xmax do
-    for y=ymin,ymax do
-      if units_by_tile[x][y] then
-        for _,unit in ipairs(units_by_tile[x][y]) do
+  for x = 0, mapwidth-1 do
+    for y = 0, mapheight-1 do
+      local tileid = x + y * mapwidth
+      if units_by_tile[tileid] then
+        for _,unit in ipairs(units_by_tile[tileid]) do
           table.insert(map, {id = unit.id, tile = unit.tile, x = unit.x, y = unit.y, dir = unit.dir, special = unit.special});
         end
       end

@@ -25,7 +25,7 @@ function doUpdate(already_added, moving_units_next)
       if not changedDir then
         updateDir(unit, dirAdd(dir, geometry_spin), true);
       end
-      movedebug("doUpdate:"..tostring(unit.fullname)..","..tostring(x)..","..tostring(y)..","..tostring(dir))
+      --movedebug("doUpdate:"..tostring(unit.fullname)..","..tostring(x)..","..tostring(y)..","..tostring(dir))
       moveUnit(unit, x, y, update.payload.portal)
       unit.already_moving = false
     elseif update.reason == "dir" then
@@ -93,6 +93,8 @@ function doMovement(movex, movey, key)
   end
 
   portaling = {}
+  
+  updateGroup()
 
   local move_stage = -1
   while move_stage < 3 do
@@ -203,9 +205,12 @@ function doMovement(movex, movey, key)
       end
     elseif move_stage == 1 then
       local isspoop = matchesRule(nil, "spoop", "?")
+      local spoopunits = {}
       for _,ruleparent in ipairs(isspoop) do
         local unit = ruleparent[2]
-        local othername = ruleparent[1][1][3]
+        spoopunits[unit] = true
+      end
+      for unit,_ in pairs(spoopunits) do
         local others = {}
         for nx=-1,1 do
           for ny=-1,1 do
@@ -215,14 +220,14 @@ function doMovement(movex, movey, key)
           end
         end
         for _,other in ipairs(others) do
-          local is_spoopy = hasRule(unit, "spoop", othername)
-          if (other.name == othername and is_spoopy and not hasProperty(other, "slep")) and timecheck(unit,"spoop",other) and timecheck(other) then
+          local is_spoopy = #matchesRule(unit, "spoop", other)
+          if (is_spoopy > 0 and not hasProperty(other, "slep")) and timecheck(unit,"spoop",other) and timecheck(other) then
             spoop_dir = dirs8_by_offset[sign(other.x - unit.x)][sign(other.y - unit.y)]
             if (spoop_dir % 2 == 1 or (not hasProperty(unit, "ortho") and not hasProperty(other, "ortho"))) then
               addUndo({"update", other.id, other.x, other.y, other.dir})
               other.olddir = other.dir
               updateDir(other, spoop_dir)
-              table.insert(other.moves, {reason = "spoop", dir = other.dir, times = 1})
+              table.insert(other.moves, {reason = "spoop", dir = other.dir, times = is_spoopy})
               if #other.moves > 0 and not already_added[other] then
                 table.insert(moving_units, other)
                 already_added[other] = true
@@ -244,14 +249,14 @@ function doMovement(movex, movey, key)
   
       local isactualstalk = matchesRule("?", "stalk", "?");
       for _,ruleparent in ipairs(isactualstalk) do
-        local stalkers = findUnitsByName(ruleparent[1][1])
-        local stalker_conds = ruleparent[1][4][1]
-        local stalkee_conds = ruleparent[1][4][2]
-        if #findUnitsByName(ruleparent[1][3]) > 0 then
+        local stalkers = findUnitsByName(ruleparent.rule.subject.name)
+        local stalker_conds = ruleparent.rule.subject.conds
+        local stalkee_conds = ruleparent.rule.object.conds
+        if #findUnitsByName(ruleparent.rule.object.name) > 0 then
           for _,stalker in ipairs(stalkers) do
             if testConds(stalker, stalker_conds) then
               local found_target = nil
-              for _,stalkee in ipairs(getUnitsOnTile(stalker.x, stalker.y, ruleparent[1][3])) do -- is it standing on the target
+              for _,stalkee in ipairs(getUnitsOnTile(stalker.x, stalker.y, ruleparent.rule.object.name)) do -- is it standing on the target
                 if testConds(stalkee, stalkee_conds) and stalker.id ~= stalkee.id then
                   found_target = 0
                   break
@@ -283,7 +288,7 @@ function doMovement(movex, movey, key)
                         visited[x+1][y+1] = first_loop and dir or visited[pos.x+1][pos.y+1] -- value depicts which way to travel to get there
                         local success, movers, specials = canMove(stalker,dx,dy,dir,false,false,nil,nil,nil,pos.x,pos.y)
                         if success then
-                          local stalkees = getUnitsOnTile(x, y, ruleparent[1][3])
+                          local stalkees = getUnitsOnTile(x, y, ruleparent.rule.object.name)
                           for _,stalkee in ipairs(stalkees) do
                             if testConds(stalkee, stalkee_conds) and stalker.id ~= stalkee.id  then
                               found_target = visited[x+1][y+1]
@@ -416,14 +421,17 @@ function doMovement(movex, movey, key)
         end
       end
       local ismoov = matchesRule(nil, "moov", "?")
+      local moovunits = {}
       for _,ruleparent in ipairs(ismoov) do
         local unit = ruleparent[2]
-        local othername = ruleparent[1][1][3]
+        moovunits[unit] = true
+      end
+      for unit,_ in pairs(moovunits) do
         local others = getUnitsOnTile(unit.x,unit.y)
         for _,other in ipairs(others) do
-          local is_moover = hasRule(unit, "moov", othername)
-          if (other.name == othername) and is_moover and timecheck(unit,"moov",other) and other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) then
-            table.insert(other.moves, {reason = "moov", dir = unit.dir, times = 1})
+          local is_moover = #matchesRule(unit, "moov", other)
+          if is_moover > 0 and timecheck(unit,"moov",other) and other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) then
+            table.insert(other.moves, {reason = "moov", dir = unit.dir, times = is_moover})
             if #other.moves > 0 and not already_added[other] then
               table.insert(moving_units, other)
               already_added[other] = true
@@ -466,7 +474,7 @@ It is probably possible to do, but lily has decided that it's not important enou
         print("movement infinite loop! (1000 attempts at a stage)")
         destroyLevel("infloop");
       end
-      movedebug("loop_stage:"..tostring(loop_stage))
+      --movedebug("loop_stage:"..tostring(loop_stage))
       successes = 0
       local loop_tick = 0
       loop_stage = loop_stage + 1
@@ -477,7 +485,7 @@ It is probably possible to do, but lily has decided that it's not important enou
           print("movement infinite loop! (1000 attempts at a single tick)")
           destroyLevel("infloop");
         end
-        movedebug("loop_tick:"..tostring(loop_tick))
+        --movedebug("loop_tick:"..tostring(loop_tick))
         local remove_from_moving_units = {}
         local has_flipped = false
         something_moved = false
@@ -507,7 +515,7 @@ It is probably possible to do, but lily has decided that it's not important enou
                 data.dir = dir
               end
             end
-            movedebug("considering:"..unit.fullname..","..dir)
+            --movedebug("considering:"..unit.fullname..","..dir)
             local success,movers,specials = true,{},{}
             if hasProperty(unit,"glued") then
               --Glued units get moved as a single group.
@@ -603,32 +611,39 @@ It is probably possible to do, but lily has decided that it's not important enou
       end]]--
       doUpdate(already_added, moving_units_next)
       for _,unit in ipairs(moving_units_next) do
-        movedebug("re-added:"..unit.fullname)
+        --movedebug("re-added:"..unit.fullname)
         table.insert(moving_units, unit);
         already_added[unit] = true;
       end
       moving_units_next = {}
     end
+    updateGroup()
     calculateLight()
     move_stage = move_stage + 1
   end
   --https://babaiswiki.fandom.com/wiki/Advanced_rulebook (for comparison)
   parseRules()
+  updateGroup()
   calculateLight()
   moveBlock()
   parseRules()
+  updateGroup()
   calculateLight()
   fallBlock()
   parseRules()
+  updateGroup()
   calculateLight()
   levelBlock()
   parseRules()
+  updateGroup()
   calculateLight()
   updateUnits(false, true)
   parseRules()
+  updateGroup()
   calculateLight()
 	convertUnits(1)
-	parseRules()
+  parseRules()
+  updateGroup()
   calculateLight()
   updatePortals()
   miscUpdates()
@@ -717,7 +732,7 @@ function moveIt(mover, dx, dy, facing_dir, move_dir, geometry_spin, data, pullin
           else
             move.dx = move.dx + move_dx
             move.dy = move.dy + move_dy
-            movedebug("copykat collate:"..tostring(move.dx)..","..tostring(move.dy))
+            --movedebug("copykat collate:"..tostring(move.dx)..","..tostring(move.dy))
             found = true
             break
           end
@@ -740,7 +755,7 @@ function queueMove(mover, dx, dy, dir, priority, geometry_spin, portal)
   addUndo({"update", mover.id, mover.x, mover.y, mover.dir, portal})
   mover.olddir = mover.dir
   updateDir(mover, dir)
-  movedebug("moving:"..mover.fullname..","..tostring(mover.id)..","..tostring(mover.x)..","..tostring(mover.y)..","..tostring(dx)..","..tostring(dy))
+  --movedebug("moving:"..mover.fullname..","..tostring(mover.id)..","..tostring(mover.x)..","..tostring(mover.y)..","..tostring(dx)..","..tostring(dy))
   mover.already_moving = true;
   table.insert(update_queue, (priority and 1 or (#update_queue + 1)), {unit = mover, reason = "update", payload = {x = mover.x + dx, y = mover.y + dy, dir = mover.dir, geometry_spin = geometry_spin, portal = portal}})
 end
@@ -769,10 +784,10 @@ function applySlide(mover, dx, dy, already_added, moving_units_next)
         end
         --the new moves will be at the start of the unit's moves data, so that it takes precedence over what it would have done next otherwise
         --TODO: CLEANUP: Figure out a nice way to not have to pass this around/do this in a million places.
-        movedebug("launching:"..mover.fullname..","..v.dir)
+        --movedebug("launching:"..mover.fullname..","..v.dir)
         table.insert(mover.moves, 1, {reason = "goooo", dir = v.dir, times = launchness})
         if not already_added[mover] then
-          movedebug("did add launcher")
+          --movedebug("did add launcher")
           table.insert(moving_units_next, mover)
           already_added[mover] = true
         end
@@ -796,11 +811,11 @@ function applySlide(mover, dx, dy, already_added, moving_units_next)
           did_clear_existing = true
         end
         if not hasRule(mover,"got","slippers") then
-          movedebug("sliding:"..mover.fullname..","..mover.dir)
+          --movedebug("sliding:"..mover.fullname..","..mover.dir)
           table.insert(mover.moves, 1, {reason = "icyyyy", dir = mover.dir, times = slideness})
         end
         if not already_added[mover] then
-          movedebug("did add slider")
+          --movedebug("did add slider")
           table.insert(moving_units_next, mover)
           already_added[mover] = true
         end
@@ -905,8 +920,8 @@ function findCopykats(unit)
   local result = {}
   local iscopykat = matchesRule("?", "copkat", unit);
   for _,ruleparent in ipairs(iscopykat) do
-    local copykats = findUnitsByName(ruleparent[1][1])
-    local copykat_conds = ruleparent[1][4][1]
+    local copykats = findUnitsByName(ruleparent.rule.subject.name)
+    local copykat_conds = ruleparent.rule.subject.conds
     for _,copykat in ipairs(copykats) do
       if testConds(copykat, copykat_conds) then
         result[copykat] = "copkat";
@@ -1202,7 +1217,7 @@ function doPortal(unit, px, py, move_dir, dir, reverse)
         local portal_index = -1;
         for _,rule in ipairs(portal_rules) do
           for _,s in ipairs(findUnitsByName(v.fullname)) do
-            if testConds(s, rule[1][4][1]) then
+            if testConds(s, rule.rule.subject.conds) then
               portals_direct[s] = true
             end
           end
@@ -1383,7 +1398,7 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
   table.insert(movers, {unit = unit, dx = x-unit.x, dy = y-unit.y, dir = dir, move_dx = move_dx, move_dy = move_dy, move_dir = move_dir, geometry_spin = geometry_spin, portal = portal_unit})
   
   if rules_with["ignor"] ~= nil and (hasRule(unit,"ignor",outerlvl) or hasRule(outerlvl,"ignor",unit)) then
-    return (inScreen(unit.x+dx,unit.y+dy)),movers,{}
+    return (inBounds(unit.x+dx,unit.y+dy)),movers,{}
   end
   
   if not inBounds(x,y) then
@@ -1408,7 +1423,7 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
   local isbounded = matchesRule(unit, "liek", "?")
   if (#isbounded > 0) then
     for i,ruleparent in ipairs(isbounded) do
-      local liek = ruleparent[1][3]
+      local liek = ruleparent.rule.object.name
       local success = false
       if hasRule(unit,"liek",liek) and hasRule(unit,"haet",liek) then
         success = true
@@ -1442,7 +1457,7 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
   if (#isnthere > 0) then
     for _,ruleparent in ipairs(isnthere) do
       local fullrule = ruleparent[2]
-      local here = fullrule[#fullrule]
+      local here = ruleparent[1].rule.object.unit
       local hx = dirs8[here.dir][1]
       local hy = dirs8[here.dir][2]
       
@@ -1456,7 +1471,7 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
   if (#isntthere > 0) then
     for _,ruleparent in ipairs(isntthere) do
       local fullrule = ruleparent[2]
-      local there = fullrule[#fullrule]
+      local there = ruleparent[1].rule.object.unit
       
       local tx = there.x
       local ty = there.y
@@ -1506,7 +1521,9 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
         end
       end
       --New FLYE mechanic, as decreed by the bab dictator - if you aren't sameFloat as a push/pull/sidekik, you can enter it.
+      -- print("checking if",v.name,"has goawaypls")
       if hasProperty(v, "go away pls") and not would_swap_with then
+        -- print("success")
         if pushing then
           --glued units are pushed all at once or not at all
           if hasProperty(v, "glued") then
@@ -1550,6 +1567,8 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
         else
           stopped = stopped or sameFloat(unit, v)
         end
+      else
+        -- print("fail (or would_swap_with)")
       end
       
       --if/elseif chain for everything that sets stopped to true if it's true - no need to check the remainders after all! (but if anything ignores flye, put it first, like haet!)

@@ -29,10 +29,10 @@ function undoOneAction(turn, i, v, ignore_no_undo)
       end
     end
   elseif action == "create" then
-    local convert = v[3];
+  local convert = v[3];
     unit = units_by_id[v[2]]
-    
-    if units_by_id ~= nil and unit ~= nil and unit.type == "text" or rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname]  then
+
+    if unit.type == "text" or rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname]  then
       update_rules = true
     end
 
@@ -273,6 +273,7 @@ function undo(dont_update_rules)
       should_parse_rules = true;
       parseRules(true)
     end
+    updateGroup()
     calculateLight()
     updateUnits(true)
     updatePortals()
