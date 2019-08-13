@@ -905,7 +905,7 @@ function findSidekikers(unit,dx,dy)
     local cury = y+curdy;
     local _dx, _dy, _dir, _x, _y = getNextTile(unit, curdx, curdy, curdir);
     for _,v in ipairs(getUnitsOnTile(_x, _y)) do
-      if hasProperty(v, "sidekik") and hasProperty(v, "come pls") and not hasProperty(v, "ortho") and sameFloat(unit,v,true) then
+      if hasProperty(v, "sidekik") and hasProperty(v, (i > 2 and "go away pls" or "come pls")) and not hasProperty(v, "ortho") and sameFloat(unit,v,true) then
         result[v] = dirAdd(dir, dirDiff(_dir, curdir));
       end
     end
