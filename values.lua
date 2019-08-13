@@ -2378,7 +2378,7 @@ tiles_list = {
     type = "text",
     texttype = {verb = true, verb_unit = true},
     allowconds = true,
-    color = {5, 3},
+    color = {2, 3},
     layer = 20,
     tags = {"patashu", "hate", "verb"},
     desc = "HAET (Verb): A unit cannot stop onto a tile that has something it HAETs. (x HAET LVL makes x unable to move.)",
