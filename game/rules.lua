@@ -448,6 +448,9 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
   -- print("just after letters:", dump(sentence))
   while (#sentence > 2) do
     local valid, words, rules, extra_words = parse(copyTable(sentence), dir)
+    if not valid then -- probably not too great for performance, it'd be good to only do this if "lookat" etc is in the rule
+      valid, words, rules, extra_words = parse(copyTable(sentence), dir, true) -- check lookat as a verb instead of a condition
+    end
     --print(dump(state))
 
     if valid then

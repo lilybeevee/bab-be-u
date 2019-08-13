@@ -35,7 +35,7 @@
   }
 ]]
 
-function parse(words, dir)
+function parse(words, dir, no_verb_cond)
   local extra_words = {}
   for i = #words,1,-1 do
     if words[i].type.ellipsis then
@@ -49,7 +49,7 @@ function parse(words, dir)
   local units = {}
   local verbs = {}
   while words[1].type.object or words[1].type.cond_prefix or (words[2] and words[2].name == "text") do
-    local unit, words_ = findUnit(copyTable(words), extra_words, dir, true) -- outer unit doesn't need to worry about enclosure (nothing farther out to confuse it with)
+    local unit, words_ = findUnit(copyTable(words), extra_words, dir, true, no_verb_cond) -- outer unit doesn't need to worry about enclosure (nothing farther out to confuse it with)
     if not unit then break end
     words = words_
     if not unit then return false end
@@ -66,7 +66,7 @@ function parse(words, dir)
   if #units == 0 then return false end
   
   while words[1] and words[1].type.verb do
-    local verb, words_ = findVerbPhrase(copyTable(words), extra_words, dir, true)
+    local verb, words_ = findVerbPhrase(copyTable(words), extra_words, dir, true, false, no_verb_cond)
     if not verb then break end
     words = words_
     table.insert(verbs, verb)
@@ -93,7 +93,7 @@ function parse(words, dir)
   return true, words, rules, extra_words
 end
 
-function findUnit(words, extra_words_, dir, outer)
+function findUnit(words, extra_words_, dir, outer, no_verb_cond)
   local extra_words = {}
   -- find all the prefix conditions
   -- find the unit itself
@@ -148,7 +148,7 @@ function findUnit(words, extra_words_, dir, outer)
   
   local first_infix = true
   local andd
-  while words[1] and words[1].type.cond_infix and (first_infix or enclosed) do -- TODO: cond_infix_verb (that), cond_infix_verb_plus (thatbe)
+  while words[1] and words[1].type.cond_infix and (first_infix or enclosed) and (not no_verb_cond or not words[1].type.verb) do
     local infix = copyTable(words[1])
     local infix_orig = infix
     infix.mods = infix.mods or {}
@@ -229,7 +229,7 @@ function findUnit(words, extra_words_, dir, outer)
       end
       if #words == 0 then break end
     end
-    if enclosed and words[1] and words[1].type["and"] and words[2] and words[2].type.cond_infix and words[3] then
+    if enclosed and words[1] and words[1].type["and"] and words[2] and words[2].type.cond_infix and (not no_verb_cond or not words[1].type.verb)  then
       andd = words[1]
       table.remove(words, 1)
       if #words == 0 then break end
@@ -287,7 +287,7 @@ function findClass(words)
   return unit, words
 end
 
-function findVerbPhrase(words, extra_words_, dir, enclosed, noconds)
+function findVerbPhrase(words, extra_words_, dir, enclosed, noconds, no_verb_cond)
   local extra_words = {}
   local objects = {}
   local verb = copyTable(words[1])
@@ -342,7 +342,7 @@ function findVerbPhrase(words, extra_words_, dir, enclosed, noconds)
     print("verb lookat dir")
   elseif verb.type.verb_unit then
     local found = false
-    local unit, words_ = (noconds and findClass or findUnit)(copyTable(words), extra_words, dir, enclosed)
+    local unit, words_ = (noconds and findClass or findUnit)(copyTable(words), extra_words, dir, enclosed, no_verb_cond)
     local andd
     while unit do
       words = words_
@@ -358,7 +358,7 @@ function findVerbPhrase(words, extra_words_, dir, enclosed, noconds)
       else
         break
       end
-      unit, words_ = noconds and (noconds and findClass or findUnit)(copyTable(words), extra_words, dir, enclosed)
+      unit, words_ = noconds and (noconds and findClass or findUnit)(copyTable(words), extra_words, dir, enclosed, no_verb_cond)
     end
     if andd then
       table.insert(words, andd)

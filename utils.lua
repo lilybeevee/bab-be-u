@@ -324,7 +324,7 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
   local rules_list
 
   --there are more properties than there are nouns, so we're more likely to miss based on a property not existing than based on a noun not existing
-  rules_list = rules_with[(nrules[2] ~= "be" and nrules[2]) or nrules[3] or nrules[1]] or {}
+  rules_list = rules_with[nrules[3] or nrules[1] or nrules[2]] or {}
   mergeTable(rules_list, rules_with[fnrules[3] or fnrules[1] or fnrules[2]] or {})
 
   if (debugging) then
