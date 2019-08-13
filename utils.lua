@@ -710,8 +710,33 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
       if unit ~= outerlvl then
         local dx, dy, dir, px, py = getNextTile(unit, dirs8[unit.dir][1], dirs8[unit.dir][2], unit.dir)
         local frens = getUnitsOnTile(px, py, param, false, unit)
-        for _,other in ipairs(sets) do
-          if not other[outerlvl] then
+        for i,other in ipairs(sets) do
+          local isdir = false
+          print(cond.others[i].name)
+          if cond.others[i].name == "ortho" then
+            isdir = true
+            if (unit.dir % 2 == 0) then
+              result = false
+              break
+            end
+          elseif cond.others[i].name == "diag" then
+            isdir = true
+            if (unit.dir % 2 == 1) then
+              result = false
+              break
+            end
+          else
+            for j = 1,8 do
+              if cond.others[i].name == dirs8_by_name[j] then
+                isdir = true
+                if unit.dir ~= j then
+                  result = false
+                  break
+                end
+              end
+            end
+          end
+          if not isdir and not other[outerlvl] then
             local found = false
             for _,fren in ipairs(frens) do
               if other[fren] then

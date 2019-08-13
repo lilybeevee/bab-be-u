@@ -194,40 +194,42 @@ function findUnit(words, extra_words_, dir, outer, no_verb_cond)
       end
       
       if infix.type.cond_infix_dir and words[1].type.direction then
-        print("cond lookat dir")
-      end
-      
-      local other, words_ = findUnit(copyTable(words), extra_words, dir)
-      if not other then
-        table.insert(words, 1, infix_orig)
-        break
-      end
-      if andd then
-        table.insert(extra_words, andd)
-        andd = nil
-      end
-      words = words_
-      infix.others = {other}
-      table.insert(conds, infix)
-      -- print(enclosed, words[1] and words[1].type, words[2] and words[2].type)
-      if #words == 0 then break end
-      while enclosed and words[1] and words[1].type["and"] and words[2] and words[3] and (words[2].type.object or words[3].name == "text") do
-        table.insert(extra_words, words[1])
+        infix.others = {words[1]}
         table.remove(words, 1)
-        if #words == 0 then break end
-        local other, words_ = findUnit(copyTable(words), extra_words)
+        table.insert(conds, infix)
+      else
+        local other, words_ = findUnit(copyTable(words), extra_words, dir)
         if not other then
-          if parenthesis then
-            return
-          end
-          unit.conds = conds
-          mergeTable(extra_words_, extra_words)
-          return unit, words
+          table.insert(words, 1, infix_orig)
+          break
+        end
+        if andd then
+          table.insert(extra_words, andd)
+          andd = nil
         end
         words = words_
-        table.insert(infix.others, other)
+        infix.others = {other}
+        table.insert(conds, infix)
+        -- print(enclosed, words[1] and words[1].type, words[2] and words[2].type)
+        if #words == 0 then break end
+        while enclosed and words[1] and words[1].type["and"] and words[2] and words[3] and (words[2].type.object or words[3].name == "text") do
+          table.insert(extra_words, words[1])
+          table.remove(words, 1)
+          if #words == 0 then break end
+          local other, words_ = findUnit(copyTable(words), extra_words)
+          if not other then
+            if parenthesis then
+              return
+            end
+            unit.conds = conds
+            mergeTable(extra_words_, extra_words)
+            return unit, words
+          end
+          words = words_
+          table.insert(infix.others, other)
+        end
+        if #words == 0 then break end
       end
-      if #words == 0 then break end
     end
     if enclosed and words[1] and words[1].type["and"] and words[2] and words[2].type.cond_infix and (not no_verb_cond or not words[1].type.verb)  then
       andd = words[1]
@@ -338,8 +340,6 @@ function findVerbPhrase(words, extra_words_, dir, enclosed, noconds, no_verb_con
         break
       end
     end
-  elseif verb.type.verb_direction and words[1].type.direction then
-    print("verb lookat dir")
   elseif verb.type.verb_unit then
     local found = false
     local unit, words_ = (noconds and findClass or findUnit)(copyTable(words), extra_words, dir, enclosed, no_verb_cond)
@@ -358,7 +358,7 @@ function findVerbPhrase(words, extra_words_, dir, enclosed, noconds, no_verb_con
       else
         break
       end
-      unit, words_ = noconds and (noconds and findClass or findUnit)(copyTable(words), extra_words, dir, enclosed, no_verb_cond)
+      unit, words_ = (noconds and findClass or findUnit)(copyTable(words), extra_words, dir, enclosed, no_verb_cond)
     end
     if andd then
       table.insert(words, andd)

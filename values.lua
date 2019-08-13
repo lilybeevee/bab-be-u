@@ -1024,7 +1024,7 @@ tiles_list = {
     name = "text_look at",
     sprite = "text_look at",
     type = "text",
-    texttype = {cond_infix = true, cond_infix_dir = true, verb = true, verb_unit = true, verb_direction = true},
+    texttype = {cond_infix = true, cond_infix_dir = true, verb = true, verb_unit = true},
     color = {0, 3},
     layer = 20,
     tags = {"follow", "facing", "lookat", "infix condition", "verb"},
