@@ -264,20 +264,22 @@ function scene.resetStuff()
   --resetMusic("bab be u them", 0.5)
   resetMusic(map_music, 0.9)
   loadMap()
+  --we need to call updateDir to initialize things like units that change their names when their direction changes, in particular this needs to be the same as starting the level anew (which does create every unit and therefore call updateDir on them), so do it now
+  --most happen before we parse rules for the first time
+	for _,unit in ipairs(units) do
+		updateDir(unit, unit.dir, true);
+	end
   clearRules()
   parseRules()
+  updateGroup()
   calculateLight()
   updateUnits(true)
   updatePortals()
   miscUpdates()
   next_levels, next_level_objs = getNextLevels()
-
   first_turn = false
   window_dir = 0
-	--we need to call updateDir to initialize things like units that change their names when their direction changes, in particular this needs to be the same as starting the level anew (which does create every unit and therefore call updateDir on them), so do it now
-	for _,unit in ipairs(units) do
-		updateDir(unit, unit.dir, true);
-	end
+	
 end
 
 function scene.mouseMoved(x, y, dx, dy, istouch)
@@ -636,7 +638,7 @@ function scene.draw(dt)
     if unit.name == "no1" and not (draw_empty and validEmpty(unit)) then return end
     
     local brightness = 1
-    if ((unit.type == "text") or hasRule(unit,"be","wurd")) and not unit.active then
+    if ((unit.type == "text" and not hasRule(unit,"ben't","wurd")) or hasRule(unit,"be","wurd")) and not unit.active then
       brightness = 0.33
     end
 
@@ -1382,14 +1384,16 @@ function scene.draw(dt)
     local lines = 0.5
 
     for i,rule in pairs(full_rules) do
-      rules = rules..rule[1][1]..' '..rule[1][2]..' '..rule[1][3]
-      rulesnum = rulesnum + 1
+      if not rule.hide_in_list then
+        rules = rules..rule.rule.subject.name..' '..rule.rule.verb.name..' '..rule.rule.object.name
+        rulesnum = rulesnum + 1
 
-      if rulesnum % 4 >= 3 then
-        rules = rules..'\n'
-        lines = lines + 1
-      else
-        rules = rules..'   '
+        if rulesnum % 4 >= 3 then
+          rules = rules..'\n'
+          lines = lines + 1
+        else
+          rules = rules..'   '
+        end
       end
     end
 

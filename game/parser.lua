@@ -1,236 +1,379 @@
-local not_suffix = {
-  repeatable = true,
-  optional = true,
-  options = {{{type = "not", mod = 1}}}
-}
+--[[ rule format:
+  main: unit nt* (& unit nt*)* verb_phrase (& verb_phrase)*
+  verb_phrase:
+  ( "be" nt* (property|class nt*) (& property|& class nt*)*
+  | ("got"|"creat") nt* class (& class)*
+  | otherverb nt* unit (& unit)*
+  )
+  unit: (prefix nt* (&? prefix nt*)*)? class nt* (infix unit (& infix unit)*)?
+  
+  verbs will have to be in 3 categories now, not 2
+  BE - x be property, x be class
+  GOT/CREAT - x got/creat class
+  everything else - x spoop unit
+    
+  class - a type of object, doesn't require there to be any units of that type - the concept of "bab"
+  unit - an individual (or a list) of units - each individual "frenles bab arond keek"
+]]
 
-local and_repeat = {type = "and", connector = true}
-
-local function common(arg, group)
-  local has = {}
-  for i,v in ipairs(arg) do
-    has[v] = true
-  end
-
-  local full_options = {}
-
-  if has["object"] then
-    local options = {
-      {
-        {type = "object"},
-        not_suffix
-      },
-			{
-        {type = "group"},
-        not_suffix
-      },
-      {
-        {type = "any"},
-        {name = "text", mod = 1},
-        not_suffix
-      },
-      {
-        {type = "verb_object_or_property_or_object"},
-        not_suffix
-      },
-    }
-    mergeTable(full_options, options)
-  end
-  if has["property"] then
-    local options = {
-      {
-        {type = "property"}
-      },
-      {
-        {type = "cond_prefix_or_property"}
-      },
-      {
-        {type = "group"}
-      },
-      {
-        {name = "sans"}
-      },
-      {
-        {type = "verb_object_or_property"}
-      },
-      {
-        {type = "verb_object_or_property_or_object"}
-      }
-    }
-    mergeTable(full_options, options)
-  end
-
-  return {group = group, options = full_options}
-end
-
-local function commons(arg, group)
-  local option = {
-    group = group,
-    repeatable = true,
-    options = {
-      {
-        and_repeat,
-        common(arg)
-      }
-    }
-  }
-  return option
-end
-
-local cond_prefixes = {
-  group = "cond",
-  optional = true,
-  repeatable = true,
-  options = {
+--[[ words structure:
+  {
     {
-      and_repeat,
-      {
-        options = {
-          {{type = "cond_prefix"}},
-          {{type = "cond_prefix_or_property"}},
-          {{name = "the"}},
-        }
-      },
-      not_suffix
-    }
-  }
-}
-
-local directions_and_objects = {
-  group = "target",
-  repeatable = true,
-  options = {
-    {
-      and_repeat,
-      {
-        options = {
-          {common({"object"})},
-          {{name = "up"}},
-          {{name = "down"}},
-          {{name = "left"}},
-          {{name = "right"}},
-          {{name = "upleft"}},
-          {{name = "downleft"}},
-          {{name = "upright"}},
-          {{name = "downright"}},
-          {{name = "ortho"}},
-          {{name = "diag"}},
-        }
-      }
-    }
-  }
-}
-
-local cond_infixes = {
-  group = "cond",
-  optional = true,
-  repeatable = true,
-  options = {
-    {
-      and_repeat,
-      {
-        options = {
-          {
-            {type = "cond_infix"},
-            not_suffix,
-            commons({"object"}, "target")
-          },
-          {
-            {name = "look at"},
-            not_suffix,
-            directions_and_objects
-          },
-          {
-            {name = "look away"},
-            not_suffix,
-            directions_and_objects
-          },
-          {
-            {type = "cond_infix_verb"},
-            {type = "verb_all", mod = 1},
-            not_suffix,
-            commons({"object", "property"}, "target"),
-          },
-          {
-            {type = "cond_infix_verb"},
-            {type = "verb_object", mod = 1},
-            not_suffix,
-            commons({"object"}, "target"),
-          },
-          {
-            {type = "cond_infix_verb"},
-            {type = "verb_property", mod = 1},
-            not_suffix,
-            commons({"property"}, "target"),
-          },
-          {
-            {name = "that be"},
-            not_suffix,
-            commons({"object", "property"}, "target")
-          },
-        }
-      }
-    }
-  }
-}
-
-local verbs = {
-  group = "verb",
-  repeatable = true,
-  options = {
-    {
-      and_repeat,
-      {options={
-        {
-          {type = "verb_all"},
-          not_suffix,
-          cond_prefixes,
-          commons({"object", "property"}, "target"),
-        },
-        {
-          {type = "verb_object"},
-          not_suffix,
-          cond_prefixes,
-          commons({"object"}, "target"),
-        },
-        {
-          {type = "verb_property"},
-          not_suffix,
-          cond_prefixes,
-          commons({"property"}, "target"),
-        },
-        {
-          {type = "verb_object_or_property"},
-          not_suffix,
-          cond_prefixes,
-          commons({"object"}, "target"),
-        },
-        {
-          {type = "verb_object_or_property_or_object"},
-          not_suffix,
-          cond_prefixes,
-          commons({"object"}, "target"),
-        },
-      }},
-      cond_infixes
-    }
-  }
-}
-
-parser = { --default parent_rule for parser
-  options = {
-    {
-      cond_prefixes,
-      commons({"object"}, "target"),
-      cond_infixes,
-      verbs,
+      type = "object",
+      name = "bab",
+      unit = {...}
     },
+    {
+      type = "verb_all",
+      name = "be",
+      unit = {...},
+    {
+      type = "property",
+      name = "u",
+      unit = {...}
+    }
   }
-}
+]]
 
---print(dump(parser))
+function parse(words, dir, no_verb_cond)
+  local extra_words = {}
+  for i = #words,1,-1 do
+    if words[i].type.ellipsis then
+      table.insert(extra_words, words[i])
+      table.remove(words,i)
+    end
+  end
+  if #words < 3 then return false end -- smallest rules are 3 words long (subject, verb, object)
+  -- print(fullDump(words))
+  
+  local units = {}
+  local verbs = {}
+  while words[1].type.object or words[1].type.cond_prefix or (words[2] and words[2].name == "text") do
+    local unit, words_ = findUnit(copyTable(words), extra_words, dir, true, no_verb_cond) -- outer unit doesn't need to worry about enclosure (nothing farther out to confuse it with)
+    if not unit then break end
+    words = words_
+    if not unit then return false end
+    if #words == 0 then return false end
+    table.insert(units, unit)
+    if words[1].type["and"] and words[2] then
+      table.insert(extra_words, words[1])
+      table.remove(words, 1)
+      if #words == 0 then return false end
+    else
+      break -- prevents "bab keek be u"
+    end
+  end
+  if #units == 0 then return false end
+  
+  while words[1] and words[1].type.verb do
+    local verb, words_ = findVerbPhrase(copyTable(words), extra_words, dir, true, false, no_verb_cond)
+    if not verb then break end
+    words = words_
+    table.insert(verbs, verb)
+    if words[1] and words[1].type["and"] and words[2] and words[2].type.verb and words[3] then
+      table.insert(extra_words, words[1])
+      table.remove(words, 1)
+      if #words == 0 then return false end
+    else
+      break -- prevents "bab be u :)"
+    end
+  end
+  if #verbs == 0 then return false end
+  
+  local rules = {}
+  for _,subject in ipairs(units) do
+    for _,verb_phrase in ipairs(verbs) do
+      local verb = verb_phrase[1]
+      for _,object in ipairs(verb_phrase[2]) do
+        table.insert(rules, {subject = subject, verb = verb, object = object})
+      end
+    end
+  end
+  
+  return true, words, rules, extra_words
+end
 
-function findLetterSentences(str, index_, sentences_, curr_sentence_, start_) --hey this function can be made local too
+function findUnit(words, extra_words_, dir, outer, no_verb_cond)
+  local extra_words = {}
+  -- find all the prefix conditions
+  -- find the unit itself
+  -- find all the infix conditions, including nesting
+  local conds = {}
+  local unit
+  -- print(fullDump(words))
+  local enclosed = outer
+  local parenthesis = false
+  -- print(enclosed, words[1].name)
+  -- print("finding unit")
+  if words[1].name == "(" and words[1].unit and words[1].unit.dir == dir then
+    enclosed = true
+    parenthesis = true
+    -- print("(")
+    table.insert(extra_words, words[1])
+    table.remove(words, 1)
+    if #words == 0 then return end
+  end
+  
+  while words[1].type.cond_prefix do
+    local prefix = copyTable(words[1])
+    table.remove(words, 1)
+    if #words == 0 then return end
+    prefix.mods = prefix.mods or {}
+    local nt = false
+    while words[1].type["not"] do
+      nt = not nt
+      table.insert(prefix.mods, words[1])
+      table.remove(words, 1)
+      if #words == 0 then return end
+    end
+    if nt then
+      if prefix.name:ends("n't") then
+        prefix.name = prefix.name:sub(1, -4)
+      else
+        prefix.name = prefix.name.."n't"
+      end
+    end
+    table.insert(conds, prefix)
+    if enclosed and words[1].type["and"] and words[2] and words[2].type.cond_prefix then
+      table.insert(extra_words, words[1])
+      table.remove(words, 1)
+      if #words == 0 then return end
+    end -- we're not breaking here to allow "frenles lit bab" - add "else break" here if we want there to always be an and: "frenles & lit bab"
+  end
+  
+  local words_
+  unit, words_ = findClass(copyTable(words))
+  if not unit then return end
+  words = words_
+  
+  local first_infix = true
+  local andd
+  while words[1] and words[1].type.cond_infix and (first_infix or enclosed) and (not no_verb_cond or not words[1].type.verb) do
+    local infix = copyTable(words[1])
+    local infix_orig = infix
+    infix.mods = infix.mods or {}
+    table.remove(words, 1)
+    if #words == 0 then break end
+    if infix.type.cond_infix_verb then
+      local words_ = copyTable(words)
+      if infix.type.cond_infix_verb_plus then
+        local verb = infix.name:sub(6)
+        table.insert(words_, 1, {name = verb, type = tiles_list[tiles_by_name["text_"..verb]].texttype})
+      end
+      local verb
+      verb_phrase, words_ = findVerbPhrase(words_, extra_words, dir, enclosed, true)
+      if not verb_phrase then
+        break
+      end
+      words = words_
+      if not infix.type.cond_infix_verb_plus then
+        local verb = verb_phrase[1]
+        infix.name = infix.name.." "..verb.name
+        table.insert(infix.mods, verb)
+      end
+      infix.others = {}
+      for _,object in ipairs(verb_phrase[2]) do
+        table.insert(infix.mods, object)
+        table.insert(infix.others, object)
+      end
+      table.insert(conds, infix)
+    else
+      local nt = false
+      while words[1].type["not"] do
+        nt = not nt
+        table.insert(infix.mods, words[1])
+        table.remove(words, 1)
+        if #words == 0 then break end
+      end
+      if nt then
+        if infix.name:ends("n't") then
+          infix.name = infix.name:sub(1, -4)
+        else
+          infix.name = infix.name.."n't"
+        end
+      end
+      
+      if infix.type.cond_infix_dir and words[1].type.direction then
+        infix.others = {words[1]}
+        table.remove(words, 1)
+        table.insert(conds, infix)
+      else
+        local other, words_ = findUnit(copyTable(words), extra_words, dir)
+        if not other then
+          table.insert(words, 1, infix_orig)
+          break
+        end
+        if andd then
+          table.insert(extra_words, andd)
+          andd = nil
+        end
+        words = words_
+        infix.others = {other}
+        table.insert(conds, infix)
+        -- print(enclosed, words[1] and words[1].type, words[2] and words[2].type)
+        if #words == 0 then break end
+        while enclosed and words[1] and words[1].type["and"] and words[2] and words[3] and (words[2].type.object or words[3].name == "text") do
+          table.insert(extra_words, words[1])
+          table.remove(words, 1)
+          if #words == 0 then break end
+          local other, words_ = findUnit(copyTable(words), extra_words)
+          if not other then
+            if parenthesis then
+              return
+            end
+            unit.conds = conds
+            mergeTable(extra_words_, extra_words)
+            return unit, words
+          end
+          words = words_
+          table.insert(infix.others, other)
+        end
+        if #words == 0 then break end
+      end
+    end
+    if enclosed and words[1] and words[1].type["and"] and words[2] and words[2].type.cond_infix and (not no_verb_cond or not words[1].type.verb)  then
+      andd = words[1]
+      table.remove(words, 1)
+      if #words == 0 then break end
+    else
+      break -- need to break for the case of "bab that got keek w/fren bab" (should need an & in there)
+    end
+    first_infix = false
+  end
+  if andd then
+    table.insert(words, 1, andd)
+  end
+  
+  -- print(fullDump(words[1]), dir)
+  if parenthesis then
+    if words[1] and words[1].name == ")" and words[1].unit and words[1].unit.dir == (rotate8(dir)) then
+    -- print(")")
+      table.insert(extra_words, words[1])
+      table.remove(words, 1)
+    else
+      return
+    end
+  end
+  -- print("found "..unit.name)
+    
+  unit.conds = conds
+  mergeTable(extra_words_, extra_words)
+  return unit, words
+end
+
+function findClass(words)
+  local unit = copyTable(words[1])
+  unit.mods = unit.mods or {}
+  if words[2] and words[2].name == "text" then
+    table.insert(unit.mods, words[2])
+    unit.name = (unit.unit or {}).fullname or "no unit"
+    table.remove(words, 2)
+  elseif not words[1].type.object then
+    return nil
+  end
+  
+  table.remove(words, 1)
+  local nt = false
+  while words[1] and words[1].type["not"] do
+    nt = not nt
+    table.insert(unit.mods, words[1])
+    table.remove(words, 1)
+  end
+  if nt then
+    if unit.name:ends("n't") then
+    unit.name = unit.name:sub(1, -4)
+  else
+    unit.name = unit.name.."n't"
+  end
+  end
+  return unit, words
+end
+
+function findVerbPhrase(words, extra_words_, dir, enclosed, noconds, no_verb_cond)
+  local extra_words = {}
+  local objects = {}
+  local verb = copyTable(words[1])
+  verb.mods = verb.mods or {}
+  table.remove(words, 1)
+  if #words == 0 then return nil end
+  while words[1].type["not"] do
+    verb.name = verb.name.."n't"
+    table.insert(verb.mods, words[1])
+    table.remove(words, 1)
+    if #words == 0 then return nil end
+  end
+  if verb.type.verb_be then -- can be prop or class
+    while true do
+      if words[1].type.object or words[2] and words[2].name == "text" then
+        local object, words_ = findClass(copyTable(words))
+        if not object then
+          break
+        end
+        words = words_
+        table.insert(objects, object)
+      elseif words[1].type.property then
+        table.insert(objects, words[1])
+        table.remove(words, 1)
+        -- "bab be u n't" isn't valid, no need to allow nots here
+      else
+        return nil
+      end
+      if not noconds and words[1] and words[1].type["and"] and words[2] and not words[2].type.verb then
+        table.insert(extra_words, words[1])
+        table.remove(words, 1)
+      else
+        break
+      end
+    end
+  elseif verb.type.verb_class then
+    while words[1].type.object or words[2] and words[2].name == "text" do
+      local object, words_ = findClass(copyTable(words))
+      if not object then
+        break
+      end
+      words = words_
+      table.insert(objects, object)
+      if not noconds and words[1] and words[1].type["and"] and words[2] and not words[2].type.verb then
+        table.insert(extra_words, words[1])
+        table.remove(words, 1)
+      else
+        break
+      end
+    end
+  elseif verb.type.verb_unit then
+    local found = false
+    local unit, words_ = (noconds and findClass or findUnit)(copyTable(words), extra_words, dir, enclosed, no_verb_cond)
+    local andd
+    while unit do
+      words = words_
+      if andd then
+        table.insert(extra_words, andd)
+        andd = nil
+      end
+      found = true
+      table.insert(objects, unit)
+      if not noconds and words[1] and words[1].type["and"] and words[2] and not words[2].type.verb then
+        andd = words[1]
+        table.remove(words, 1)
+      else
+        break
+      end
+      unit, words_ = (noconds and findClass or findUnit)(copyTable(words), extra_words, dir, enclosed, no_verb_cond)
+    end
+    if andd then
+      table.insert(words, andd)
+    end
+    if not found then
+      return
+    end
+  else
+    return
+  end
+  mergeTable(extra_words_, extra_words)
+  return {verb, objects}, words
+end
+
+function findLetterSentences(str, index_, sentences_, curr_sentence_, start_) --copied from parser_old.lua
   -- finds words out of letters
   local index = index_ or 1
   local initial_index = index
@@ -242,7 +385,7 @@ function findLetterSentences(str, index_, sentences_, curr_sentence_, start_) --
   }
   local curr_sentence = copyTable(curr_sentence_ or {})
   local start = start_ or false
-  --print("start of findLetterSentences:",str,index,fullDump(sentences),fullDump(curr_sentence),start, sentences.start, sentences.endd, sentences.both, sentences.middle)
+  -- print("start of findLetterSentences:",str,index,fullDump(sentences),fullDump(curr_sentence),start, sentences.start, sentences.endd, sentences.both, sentences.middle)
 
   if #curr_sentence == 0 and not index == string.len(str) then --go to the next letter if we don't have anything in this one... or if we do
     findLetterSentences(str, index+1, sentences, {}, false)
@@ -282,209 +425,12 @@ function findLetterSentences(str, index_, sentences_, curr_sentence_, start_) --
   return sentences -- i can do this like this because the first function call is the one that gets passed back, and it finishes last
 end
 
-function parse(words, parser, state_)
-  -- words - in a single sentence (directly from getCombinations) to be parsed
-  -- can find whether a sentence is valid, ignoring words farther to the right but invalidating rules that don't start on the index 1 word
-  -- returns valid,state
-  local state = state_ or {}
-
-  state.parent_rule = state.parent_rule or parser
-  state.group = state.group or "root"
-  state.current_matches = copyTable(state.current_matches or {})
-  state.matches = copyTable(state.matches or {})
-  state.all_words = copyTable(state.all_words or {})
-  state.extra_words = copyTable(state.extra_words or {})
-  state.option = state.option or 1
-  state.index = state.index or 1
-  state.word_index = state.word_index or 1
-  state.is_repeat = state.is_repeat or false
-
-  local rule = state.parent_rule.options[state.option][state.index] -- goes to a specific rule; at first, group = cond
-  local word = words[state.word_index] --we looking at one word at a time
-
-  while word and word.type == "ellipsis" do
-    table.insert(state.extra_words, word)
-    state.word_index = state.word_index + 1
-    word = words[state.word_index]
-  end
-
-  if not rule then
-    if keyCount(state.current_matches) > 0 then
-      table.insert(state.matches, state.current_matches)
-    end
-    if state.parent_rule.repeatable then
-      local new_state = {
-        parent = state.parent,
-        parent_rule = state.parent_rule,
-        group = state.group,
-        current_matches = {},
-        matches = state.matches,
-        all_words = state.all_words,
-        extra_words = state.extra_words,
-        index = 1,
-        word_index = state.word_index,
-        is_repeat = true
-      }
-      local valid, ret_state = parse(words, parser, new_state)
-      if valid then
-        return true, ret_state
-      end
-    end
-    if state.parent then
-      local new_matches = copyTable(state.parent.current_matches)
-      if state.parent_rule.group then
-        if not new_matches[state.group] then
-          new_matches[state.group] = {}
-        end
-        if keyCount(state.matches) > 0 then
-          mergeTable(new_matches[state.group], state.matches)
-        end
-      else
-        if keyCount(state.matches) > 0 then
-          for _,a in ipairs(state.matches) do
-            mergeTable(new_matches, a)
-          end
-        end
-      end
-      local new_state = {
-        parent = state.parent.parent,
-        parent_rule = state.parent.parent_rule,
-        group = state.parent.group,
-        current_matches = new_matches,
-        matches = state.parent.matches,
-        all_words = state.all_words,
-        extra_words = state.extra_words,
-        option = state.parent.option,
-        index = state.parent.index + 1,
-        word_index = state.word_index,
-        is_repeat = state.parent.is_repeat
-      }
-      return parse(words, parser, new_state)
-    else
-      return true, state
-    end
-  else
-    local next_state = {
-      parent = state.parent,
-      parent_rule = state.parent_rule,
-      group = state.group,
-      current_matches = state.current_matches,
-      matches = state.matches,
-      all_words = state.all_words,
-      extra_words = state.extra_words,
-      option = state.option,
-      index = state.index + 1,
-      word_index = state.word_index
-    }
-    if rule.type or rule.name then
-      local valid = true
-      if not rule.connector or state.is_repeat then
-        if not word then
-          if not rule.optional then
-            --print(dump(rule))
-            --print("FAILED AT TYPE/NAME - WORD IS NIL")
-            return false, state
-          end
-        else
-          if rule.type and rule.type ~= word.type and rule.type ~= "any" then
-            valid = false
-          elseif rule.name and rule.name ~= word.name then
-            valid = false
-          else
-            if rule.connector then
-              word.connector = true
-            end
-            if rule.mod then
-              local mod_word = state.all_words[#state.all_words - rule.mod + 1]
-              if mod_word ~= nil then
-                if mod_word.mods == nil then
-                  mod_word.mods = {}
-                end
-                table.insert(mod_word.mods, word)
-              end
-            else
-              table.insert(state.current_matches, word)
-              table.insert(state.all_words, word)
-            end
-          end
-          if valid then
-            next_state.word_index = state.word_index + 1
-          end
-        end
-      elseif rule.connector and not state.is_repeat then
-        valid = true
-      end
-      if valid or rule.optional then
-        return parse(words, parser, next_state)
-      else
-        --print(fullDump(rule, 1))
-        --print(fullDump(word, 1))
-        --print("FAILED AT TYPE/NAME")
-      end
-    elseif rule.options then
-      local valid = false
-      local failed_state
-      local ret_state
-      if #rule.options == 0 then
-        valid = true
-        ret_state = state
-      else
-        local best_word_index = 0
-        for i = 1, #rule.options do
-          local new_state = {
-            parent = state,
-            parent_rule = rule,
-            group = rule.group or state.group,
-            current_matches = {},
-            matches = {},
-            all_words = state.all_words,
-            extra_words = state.extra_words,
-            option = i,
-            index = 1,
-            word_index = state.word_index
-          }
-          if rule.repeatable then
-            new_state.is_repeat = false
-          else
-            new_state.is_repeat = state.is_repeat
-          end
-          local new_ret_state
-          valid, new_ret_state = parse(words, parser, new_state)
-          if valid then
-            if new_ret_state.word_index > best_word_index then
-              best_word_index = new_ret_state.word_index
-              ret_state = new_ret_state
-            end
-          else
-            failed_state = ret_state
-          end
-        end
-        if best_word_index > 0 then
-          valid = true
-        end
-      end
-      if valid then
-        return true, ret_state
-      elseif rule.optional then
-        return parse(words, parser, next_state)
-      else
-        if failed_state then
-          return false, failed_state
-        end
-      end
-    else
-      return true, state
-    end
-  end
-
-  return false, state
-end
 
 local function testParser()
   local tests = {
     { -- Test 1 - TRUE
       {name = "bab", type = "object"},
-      {name = "be", type = "verb"},
+      {name = "be", type = "verb_all"},
       {name = "u", type = "property"}
     },
     { -- Test 2 - FALSE
@@ -495,49 +441,49 @@ local function testParser()
     { -- Test 3 - TRUE
       {name = "frenles", type = "cond_prefix"},
       {name = "bab", type = "object"},
-      {name = "be", type = "verb"},
+      {name = "be", type = "verb_all"},
       {name = "u", type = "property"}
     },
     { -- Test 4 - TRUE
       {name = "frenles", type = "cond_prefix"},
       {name = "bab", type = "object"},
-      {name = "be", type = "verb"},
+      {name = "be", type = "verb_all"},
       {name = "keek", type = "object"}
     },
     { -- Test 5 - TRUE
-      {name = "bab", type = "object"},
+      {name = "bab", type = "object", unit = {fullname = "text_bab"}},
       {name = "text", type = "object"},
       {name = "&", type = "and"},
       {name = "keek", type = "object"},
-      {name = "be", type = "verb"},
+      {name = "be", type = "verb_all"},
       {name = "u", type = "property"}
     },
     { -- Test 6 - FALSE
       {name = "bab", type = "object"},
       {name = "keek", type = "object"},
-      {name = "be", type = "verb"},
+      {name = "be", type = "verb_all"},
       {name = "u", type = "property"}
     },
     { -- Test 7 - TRUE
-      {name = "bab", type = "object"},
+      {name = "bab", type = "object", unit = {fullname = "text_bab"}},
       {name = "text", type = "object"},
-      {name = "be", type = "verb"},
+      {name = "be", type = "verb_all"},
       {name = "u", type = "property"}
     },
     { -- Test 8 - FALSE
       {name = "frenles", type = "cond_prefix"},
-      {name = "be", type = "verb"},
+      {name = "be", type = "verb_all"},
       {name = "u", type = "property"}
     },
     { -- Test 9 - TRUE
-      {name = "be", type = "property"},
+      {name = "be", type = "property", unit = {fullname = "text_be"}},
       {name = "text", type = "object"},
-      {name = "be", type = "verb"},
+      {name = "be", type = "verb_all"},
       {name = "u", type = "property"}
     },
     { -- Test 10 - TRUE
       {name = "bab", type = "object"},
-      {name = "be", type = "verb"},
+      {name = "be", type = "verb_all"},
       {name = "u", type = "property"},
       {name = "be", type = "verb"}
     },
@@ -545,26 +491,62 @@ local function testParser()
       {name = "bab", type = "object"},
       {name = "on", type = "cond_infix"},
       {name = "til", type = "object"},
-      {name = "be", type = "verb"},
+      {name = "be", type = "verb_all"},
       {name = "u", type = "property"},
-      {name = "be", type = "verb"}
+      {name = "be", type = "verb_all"}
     },
-    { -- Test 11 - TRUE
+    { -- Test 12 - TRUE
       {name = "bab", type = "object"},
       {name = "...", type = "ellipsis"},
       {name = "be", type = "verb"},
       {name = "...", type = "ellipsis"},
       {name = "u", type = "property"},
     },
+    { -- Test 13 - TRUE
+      {name = "bab", type = "object"},
+      {name = "arond", type = "cond_infix"},
+      {name = "keek", type = "object"},
+      {name = "arond", type = "cond_infix"},
+      {name = "roc", type = "object"},
+      {name = "be", type = "verb_all"},
+      {name = "u", type = "property"},
+    },
+    { -- Test 14 - TRUE
+      {name = "bab", type = "object"},
+      {name = "arond", type = "cond_infix"},
+      {name = "keek", type = "object"},
+      {name = "arond", type = "cond_infix"},
+      {name = "roc", type = "object"},
+      {name = "and", type = "and"},
+      {name = "facing", type = "cond_infix"},
+      {name = "wal", type = "object"},
+      {name = "be", type = "verb_all"},
+      {name = "u", type = "property"},
+    },
+    { -- Test 14 - TRUE
+      {name = "bab", type = "object"},
+      {name = "arond", type = "cond_infix"},
+      {name = "(", type = "I forget but it doesn't matter"},
+      {name = "keek", type = "object"},
+      {name = "arond", type = "cond_infix"},
+      {name = "roc", type = "object"},
+      {name = "and", type = "and"},
+      {name = "facing", type = "cond_infix"},
+      {name = "wal", type = "object"},
+      {name = ")", type = "I forget but it doesn't matter"},
+      {name = "be", type = "verb_all"},
+      {name = "u", type = "property"},
+    },
   }
 
-  for i,v in ipairs(tests) do
+  for i,test in ipairs(tests) do
     print("--- TEST " .. i .. " ---")
-    local result, state = parse(v, parser)
+    local result, rule = parse(test)
     print("Result: " .. tostring(result))
-    print("Words: " .. state.word_index-1 .. "/" .. #v)
-    print("Matches: " .. fullDump(state.matches))
+    -- print("Words: " .. state.word_index-1 .. "/" .. #v)
+    -- print("Matches: " .. fullDump(state.matches))
+    print("Rule:" .. fullDump(rule))
   end
 end
 
---testParser()
+-- testParser()

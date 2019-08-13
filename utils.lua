@@ -1,4 +1,5 @@
 function clear()
+  --groups_exist = false
   letters_exist = false
 	replay_playback = false
   replay_playback_turns = nil
@@ -189,6 +190,18 @@ function loadMap()
       writeSaveFile(level_name, "seen", true)
     end
   end
+  
+  --I don't know why, but this is slower by a measurable amount (70-84 seconds for example).
+  --[[groups_exist = letters_exist
+  if not groups_exist then
+    for _,group_name in ipairs(group_names) do
+      if units_by_name["text_"..group_name] then
+        groups_exist = true
+        break
+      end
+    end
+  end]]
+  
   unsetNewUnits()
 end
 
@@ -264,12 +277,12 @@ end
   Note that the rules returned are full rules, formatted like: {{subject,verb,object,{preconds,postconds}}, {ids}} 
 ]]
 function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
-  if (debugging) then
+  --[[if (debugging) then
     print("matchesRule arguments:"..tostring(rule1)..","..tostring(rule2)..","..tostring(rule3))
-  end
+  end]]
   
-  local nrules = {}
-  local fnrules = {}
+  local nrules = {} -- name
+  local fnrules = {} -- fullname
   local rule_units = {}
 
   local function getnrule(o,i)
@@ -297,14 +310,14 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
   end
 
   getnrule(rule1,1)
-  getnrule(rule2,2)
+  nrules[2] = rule2
   getnrule(rule3,3)
   
-  if (debugging) then
+  --[[if (debugging) then
     for x,y in ipairs(nrules) do
       print("in nrules:"..tostring(x)..","..tostring(y))
     end
-  end
+  end]]
 
   local ret = {}
 
@@ -324,42 +337,56 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
   local rules_list
 
   --there are more properties than there are nouns, so we're more likely to miss based on a property not existing than based on a noun not existing
-  rules_list = rules_with[nrules[3] or nrules[1] or nrules[2]] or {}
-  mergeTable(rules_list, rules_with[fnrules[3] or fnrules[1] or fnrules[2]] or {})
+  rules_list = rules_with[(nrules[2] ~= "be" and nrules[2]) or nrules[3] or nrules[1] or nrules[2]] or {}
+  mergeTable(rules_list, rules_with[fnrules[3] or fnrules[1]] or {})
 
-  if (debugging) then
+  --[[if (debugging) then
     print ("found this many rules:"..tostring(#rules_list))
-  end
+  end]]
   if #rules_list > 0 then
     for _,rules in ipairs(rules_list) do
-      local rule = rules[1]
-      if (debugging) then
+      local rule = rules.rule
+      --[[if (debugging) then
         for i=1,3 do
-          print("checking this rule,"..tostring(i)..":"..tostring(rule[i]))
+          print("checking this rule,"..tostring(i)..":"..tostring(rule[ruleparts[i] ].name))
         end
-      end
+      end]]
       local result = true
       for i=1,3 do
-        if nrules[i] ~= nil and nrules[i] ~= rule[i] and (fnrules[i] == nil or (fnrules[i] ~= nil and fnrules[i] ~= rule[i])) then
-          if (debugging) then
-            print("false due to nrules/fnrules mismatch")
+        local name = rule[ruleparts[i]].name
+        --special case for stuff like 'group be x' - if we are in that group, we do match that rule
+        --we also need to handle groupn't
+        --seems to not impact performance much?
+        local group_match = false
+        if rule_units[i] ~= nil then
+          if group_sets[name] and group_sets[name][rule_units[i] ] then
+            group_match = true
+          else
+            if rule_units[i].type == "object" and group_names_set_nt[name] then
+              local nament = name:sub(1, -4);
+              if not group_sets[nament][rule_units[i] ] then
+                group_match = true
+              end
+            end
           end
-          result = false
+        end
+        if not (group_match) then
+          if nrules[i] ~= nil and nrules[i] ~= name and (fnrules[i] == nil or (fnrules[i] ~= nil and fnrules[i] ~= name)) then
+            --[[if (debugging) then
+              print("false due to nrules/fnrules mismatch")
+            end]]
+            result = false
+          end
         end
       end
-      --don't test condition until the rule fully matches
+      --don't test conditions until the rule fully matches
       if result then
-        for i=1,3 do
+        for i=1,3,2 do
           if rule_units[i] ~= nil then
-            if i == 1 then
-              cond = 1
-            elseif i == 3 then
-              cond = 2
-            end
-            if cond and not testConds(rule_units[i], rule[4][cond]) then
-              if (debugging) then
-                print("false due to cond")
-              end
+            if not testConds(rule_units[i], rule[ruleparts[i]].conds) then
+              --[[if (debugging) then
+                print("false due to cond", i)
+              end]]
               result = false
             end
           end
@@ -373,23 +400,22 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
           table.insert(ret, rules)
           if stopafterone then return ret end
         elseif find == 1 then
-          for _,unit in ipairs(findUnitsByName(rule[find_arg])) do
+          for _,unit in ipairs(findUnitsByName(rule[ruleparts[find_arg]].name)) do
             local cond
-            if find_arg == 1 then
-              cond = 1
-            elseif find_arg == 3 then
-              cond = 2
-            end
-            if testConds(unit, rule[4][cond]) then
-              table.insert(ret, {rules, unit})
-              if stopafterone then return ret end
+            if testConds(unit, rule[ruleparts[find_arg]].conds) then
+              --check that there isn't a verbn't rule - edge cases where this might happen: test vs specific text, group vs unit. This is slow (15% longer unit tests, 0.1 second per unit test) but it fixes old and new bugs so I think we just have to suck it up.
+              if rules_with[rule2.."n't"] ~= nil and #matchesRule(unit, rule2.."n't", rule.object.name, true) > 0 then
+              else
+                table.insert(ret, {rules, unit})
+                if stopafterone then return ret end
+              end
             end
           end
         elseif find == 2 then
           local found1, found2
-          for _,unit1 in ipairs(findUnitsByName(rule[1])) do
-            for _,unit2 in ipairs(findUnitsByName(rule[3])) do
-              if testConds(unit1, rule[4][1]) and testConds(unit2, rule[4][2]) then
+          for _,unit1 in ipairs(findUnitsByName(rule.subject)) do
+            for _,unit2 in ipairs(findUnitsByName(rule.object)) do
+              if testConds(unit1, rule.subject.conds) and testConds(unit2, rule.object.conds) then
                 table.insert(ret, {rules, unit1, unit2})
                 if stopafterone then return ret end
               end
@@ -458,8 +484,23 @@ function validEmpty(unit)
 end
 
 function findUnitsByName(name)
-  if name == "mous" then
+  if group_names_set_nt["n't"] then
+    local everything_else_list = findUnitsByName(name:sub(1, -4));
+    local everything_else_set = {};
+    for _,unit in ipairs(everything_else_list) do
+      everything_else_set[unit] = true
+    end
+    local result = {}
+    for _,unit in ipairs(units) do
+      if unit.type == "object" and not everything_else_set[unit] then
+        table.insert(result, unit);
+      end
+    end
+    return result
+  elseif name == "mous" then
     return cursors
+  elseif group_lists[name] ~= nil then
+    return group_lists[name]
   elseif name == "no1" then
     local result = {}
     for _,unit in ipairs(units_by_name["no1"]) do
@@ -502,10 +543,35 @@ withrecursion = {}
 
 function testConds(unit,conds) --cond should be a {condtype,{object types},{cond_units}}
   local endresult = true
-  for _,cond in ipairs(conds) do
-    local condtype = cond[1]
-    local params = cond[2]
-    local cond_unit = cond[3][1]
+  for _,cond in ipairs(conds or {}) do
+    local condtype = cond.name
+    local lists = {} -- for iterating
+    local sets = {} -- for checking
+    if condtype:starts("that") then
+      lists = cond.others or {} -- using "lists" to store the names, since THAT doesn't allow nesting, and we need the name for hasRule
+    elseif cond.others then
+      for _,other in ipairs(cond.others) do
+        local list = {}
+        local set = {}
+        if other.name == "lvl" then -- probably have to account for group/every1 here too, maybe more
+          table.insert(list, outerlvl)
+          set[outerlvl] = true
+        elseif group_lists[other.name] then
+          list = group_lists[other.name]
+          set = group_sets[other.name]
+        else
+          for _,unit in ipairs(findUnitsByName(other.name)) do -- findUnitsByName handles mous and no1 already
+            if testConds(unit, other.conds) then
+              table.insert(list, unit)
+              set[unit] = true
+            end
+          end
+        end
+        table.insert(lists, list)
+        table.insert(sets, set)
+      end
+    end
+    
 
     local result = true
     local cond_not = false
@@ -525,64 +591,71 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
     elseif condtype:starts("that") then
       result = true
       local verb = condtype:sub(6)
-      for _,param in ipairs(params) do
-        if not hasRule(unit,verb,param) then
+      for _,param in ipairs(lists) do -- using "lists" to store the names, since THAT doesn't allow nesting, and we need the name for hasRule
+        if not hasRule(unit,verb,param.name) then
           result = false
           break
         end
       end
     elseif condtype == "w/fren" then
-      for _,param in ipairs(params) do
-        local others = {}
-        if unit == outerlvl then --basically turns into sansn't
-          if param ~= "lvl" then
-            others = findUnitsByName(param);
-          else
-            for __,on in ipairs(findUnitsByName(param)) do
-              if on ~= outerlvl then
-                table.insert(others, on);
+      if unit ~= outerlvl then
+        local frens = getUnitsOnTile(x, y, nil, false, unit, true)
+        for _,other in ipairs(sets) do
+          if not other[outerlvl] then
+            local found = false
+            for _,fren in ipairs(frens) do
+              if other[fren] then
+                found = true
+                break
               end
+            end
+            if not found then
+              result = false
+              break
             end
           end
         end
-        if unit == outerlvl and surrounds ~= nil and surrounds_name == level_name then
+      else -- something something surrounds maybe?
+        --[[if unit == outerlvl and surrounds ~= nil and surrounds_name == level_name then
           --use surrounds to remember what was around the level
           for __,on in ipairs(surrounds[0][0]) do
             if nameIs(on, param) then
               table.insert(others, on);
             end
+          end]]
+        for _,other in ipairs(lists) do
+          if #other == 0 then
+            result = false
+            break
           end
-        else
-          if param ~= "mous" then
-            others = getUnitsOnTile(x, y, param, false, unit) --currently, conditions only work up to one layer of nesting, so the noun argument of the condition is assumed to be just a noun
-          else
-            others = getCursorsOnTile(x, y, false, unit)
-          end
-        end
-        if #others == 0 then
-          result = false
-          break
         end
       end
     elseif condtype == "arond" then
-      for _,param in ipairs(params) do
-        --Vitellary: Deliberately ignore the tile we're on. This is different from baba.
-        local others = {}
-        for ndir=1,8 do
-          local nx, ny = dirs8[ndir][1], dirs8[ndir][2]
-          if unit == outerlvl and surrounds ~= nil and surrounds_name == level_name then
-            --use surrounds to remember what was around the level
-            for __,on in ipairs(surrounds[nx][ny]) do
-              if nameIs(on, param) then
-                table.insert(others, on);
-              end
+      --Vitellary: Deliberately ignore the tile we're on. This is different from baba.
+      local others = {}
+      for ndir=1,8 do
+        local nx, ny = dirs8[ndir][1], dirs8[ndir][2]
+        if unit == outerlvl and surrounds ~= nil and surrounds_name == level_name then
+          --use surrounds to remember what was around the level
+          for __,on in ipairs(surrounds[nx][ny]) do -- this part hasn't been updated, but it's not important yet
+            if nameIs(on, param) then
+              table.insert(others, on);
             end
-          else
-            local dx, dy, dir, px, py = getNextTile(unit, nx, ny, ndir)
-            mergeTable(others, param ~= "mous" and getUnitsOnTile(px,py,param) or getCursorsOnTile(px, py, false, unit))
+          end
+        else
+          local dx, dy, dir, px, py = getNextTile(unit, nx, ny, ndir)
+          mergeTable(others, getUnitsOnTile(px, py, nil, false, unit, true))
+        end
+      end
+      for _,set in ipairs(sets) do
+        local found = false
+        for _,other in ipairs(others) do
+          if set[other] then
+            found = true
+            break
           end
         end
-        if #others == 0 then
+        if not found then
           result = false
           break
         end
@@ -610,6 +683,21 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
         end
       end
     elseif condtype == "seen by" then
+      local others = {}
+      for ndir=1,8 do
+        local nx, ny = dirs8[ndir][1], dirs8[ndir][2]
+        if unit == outerlvl and surrounds ~= nil and surrounds_name == level_name then
+          --use surrounds to remember what was around the level
+          for __,on in ipairs(surrounds[nx][ny]) do -- this part hasn't been updated, but it's not important yet
+            if nameIs(on, param) then
+              table.insert(others, on);
+            end
+          end
+        else
+          local dx, dy, dir, px, py = getNextTile(unit, nx, ny, ndir)
+          mergeTable(others, getUnitsOnTile(px, py, nil, false, unit, true))
+        end
+      end
       if unit == outerlvl then --basically turns into sans n't BUT the unit has to be looking inbounds as well!
         for _,param in ipairs(params) do
           local found = false
@@ -639,21 +727,15 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
           end
         end
       else
-        for _,param in ipairs(params) do
+        for _,set in ipairs(sets) do
           local found = false
-          local others = {}
-          for ndir=1,8 do
-            local dx, dy, dir, px, py = getNextTile(unit, dirs8[ndir][1], dirs8[ndir][2], ndir)
-            mergeTable(others, param ~= "mous" and getUnitsOnTile(px,py,param) or {})
-          end
           for _,other in ipairs(others) do
-            local dx, dy, dir, px, py = getNextTile(other, dirs8[other.dir][1], dirs8[other.dir][2], other.dir)
-            if px == unit.x and py == unit.y then
-              found = true
-              break
-            else
-              --print(unit.x, unit.y)
-              --print(px, py)
+            if set[other] then
+              local dx, dy, dir, px, py = getNextTile(other, dirs8[other.dir][1], dirs8[other.dir][2], other.dir)
+              if px == unit.x and py == unit.y then
+                found = true
+                break
+              end
             end
           end
           if not found then
@@ -663,233 +745,220 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
         end
       end
     elseif condtype == "look at" then
-      for _,param in ipairs(params) do
-        local isdir = false
-        if param == "ortho" then
-          isdir = true
-          if (unit.dir % 2 == 0) then
-            result = false
-            break
+      --TODO: look at dir, ortho, diag, surrounds
+      if unit ~= outerlvl then
+        local dx, dy, dir, px, py = getNextTile(unit, dirs8[unit.dir][1], dirs8[unit.dir][2], unit.dir)
+        local frens = getUnitsOnTile(px, py, param, false, unit)
+        for i,other in ipairs(sets) do
+          local isdir = false
+          if cond.others[i].name == "ortho" then
+            isdir = true
+            if (unit.dir % 2 == 0) then
+              result = false
+              break
+            end
+          elseif cond.others[i].name == "diag" then
+            isdir = true
+            if (unit.dir % 2 == 1) then
+              result = false
+              break
+            end
+          else
+            for j = 1,8 do
+              if cond.others[i].name == dirs8_by_name[j] then
+                isdir = true
+                if unit.dir ~= j then
+                  result = false
+                  break
+                end
+              end
+            end
           end
-        elseif param == "diag" then
-          isdir = true
-          if (unit.dir % 2 == 1) then
-            result = false
-            break
-          end
-        else
-          for i = 1,8 do
-            if param == dirs8_by_name[i] then
-              isdir = true
-              if (unit.dir ~= i) then
-                result = false
+          if not isdir and not other[outerlvl] then
+            local found = false
+            for _,fren in ipairs(frens) do
+              if other[fren] then
+                found = true
                 break
               end
             end
-          end
-        end
-        if (not isdir) then
-          local others
-          if unit == outerlvl and surrounds ~= nil and surrounds_name == level_name then
-            others = {}
-            --use surrounds to remember what was around the level
-            for __,on in ipairs(surrounds[dirs8[unit.dir][1]][dirs8[unit.dir][2]]) do
-              if nameIs(on, param) then
-                table.insert(others, on);
-              end
-            end
-          else
-            local dx, dy, dir, px, py = getNextTile(unit, dirs8[unit.dir][1], dirs8[unit.dir][2], unit.dir)
-            if param == "lvl" then
-              --if we're looking in-bounds, then we're looking at a level technically!
-              result = inBounds(px, py)
-            elseif param ~= "mous" then
-              others = getUnitsOnTile(px, py, param, false, unit) --currently, conditions only work up to one layer of nesting, so the noun argument of the condition is assumed to be just a noun
-            else
-              others = getCursorsOnTile(px, py, false, unit)
+            if not found then
+              result = false
+              break
             end
           end
-          if others ~= nil and #others == 0 then
-            result = false
-            break
-          end
         end
+      else --something something surrounds
+        result = false
       end
     elseif condtype == "look away" then
-      for _,param in ipairs(params) do
-        local isdir = false
-        if param == "ortho" then
-          isdir = true
-          if (unit.dir % 2 == 0) then
-            result = false
-            break
-          end
-        elseif param == "diag" then
-          isdir = true
-          if (unit.dir % 2 == 1) then
-            result = false
-            break
-          end
-        else
-          for i = 1,8 do
-            if param == dirs8_by_name[i] then
-              isdir = true
-              if (unit.dir ~= i) then
-                result = false
+      --TODO: look at dir, ortho, diag, surrounds
+      if unit ~= outerlvl then
+        local dx, dy, dir, px, py = getNextTile(unit, -dirs8[unit.dir][1], -dirs8[unit.dir][2], unit.dir)
+        local frens = getUnitsOnTile(px, py, param, false, unit)
+        for _,other in ipairs(sets) do
+          if not other[outerlvl] then
+            local found = false
+            for _,fren in ipairs(frens) do
+              if other[fren] then
+                found = true
                 break
               end
             end
+            if not found then
+              result = false
+              break
+            end
           end
         end
-        if (not isdir) then
-          local others
-          if unit == outerlvl and surrounds ~= nil and surrounds_name == level_name then
-            others = {}
-            --use surrounds to remember what was around the level
-            for __,on in ipairs(surrounds[dirs8[unit.dir][1]][dirs8[unit.dir][2]]) do
-              if nameIs(on, param) then
-                table.insert(others, on);
-              end
-            end
-          else
-            local dx, dy, dir, px, py = getNextTile(unit, -dirs8[unit.dir][1], -dirs8[unit.dir][2], unit.dir)
-            if param == "lvl" then
-              _, _, _, px, py = getNextTile(unit, dirs8[unit.dir][1], dirs8[unit.dir][2], unit.dir)
-              result = not inBounds(px, py)
-            elseif param ~= "mous" then
-              others = getUnitsOnTile(px, py, param, false, unit) --currently, conditions only work up to one layer of nesting, so the noun argument of the condition is assumed to be just a noun
-            else
-              others = getCursorsOnTile(px, py, false, unit)
+      else --something something surrounds
+        result = false
+      end
+    elseif condtype == "behind" then
+      local others = {}
+      for ndir=1,8 do
+        local nx, ny = dirs8[ndir][1], dirs8[ndir][2]
+        if unit == outerlvl and surrounds ~= nil and surrounds_name == level_name then
+          --use surrounds to remember what was around the level
+          for __,on in ipairs(surrounds[nx][ny]) do -- this part hasn't been updated, but it's not important yet
+            if nameIs(on, param) then
+              table.insert(others, on);
             end
           end
-          if others ~= nil and #others == 0 then
+        else
+          local dx, dy, dir, px, py = getNextTile(unit, nx, ny, ndir)
+          mergeTable(others, getUnitsOnTile(px, py, nil, false, unit, true))
+        end
+      end
+      if unit == outerlvl then --basically turns into sans n't BUT the unit's rear has to be looking inbounds as well!
+        for _,param in ipairs(params) do
+          local found = false
+          local others = findUnitsByName(param)
+          for _,on in ipairs(others) do
+            if inBounds(on.x + -dirs8[on.dir][1], on.y + -dirs8[on.dir][2]) then
+              found = true
+              break
+            end
+          end
+          if unit == outerlvl and surrounds ~= nil and surrounds_name == level_name then
+            --use surrounds to remember what was around the level
+            for nx=-1,1 do
+              for ny=-1,1 do
+                for __,on in ipairs(surrounds[nx][ny]) do
+                  if nameIs(on, param) and nx + -dirs8[on.dir][1] == 0 and ny + -dirs8[on.dir][2] == 0 then
+                    found = true
+                    break
+                  end
+                end
+              end
+            end
+          end
+          if not found then
+            result = false
+            break
+          end
+        end
+      else
+        for _,set in ipairs(sets) do
+          local found = false
+          for _,other in ipairs(others) do
+            if set[other] then
+              local dx, dy, dir, px, py = getNextTile(other, -dirs8[other.dir][1], -dirs8[other.dir][2], other.dir)
+              if px == unit.x and py == unit.y then
+                found = true
+                break
+              else
+                -- print(unit.x, unit.y)
+                -- print(px, py)
+              end
+            end
+          end
+          if not found then
             result = false
             break
           end
         end
       end
-    elseif condtype == "behind" then
-        if unit == outerlvl then -- SANS n't but not when the unit is looking directly at the border
-            for _,param in ipairs(params) do
-              local found = false
-              local others = findUnitsByName(param)
-              for _,on in ipairs(others) do
-                if inBounds(on.x - dirs8[on.dir][1], on.y - dirs8[on.dir][2]) then
-                  found = true
-                  break
-                end
-              end
-              if unit == outerlvl and surrounds ~= nil and surrounds_name == level_name then
-                for nx=-1,1 do
-                  for ny=-1,1 do
-                    for __,on in ipairs(surrounds[nx][ny]) do
-                      if not nameIs(on, param) and nx + dirs8[on.dir][1] == 0 and ny + dirs8[on.dir][2] == 0 then
-                        found = true
-                        break
-                      end
-                    end
-                  end
-                end
-              end
-              if not found then
-                result = false
-                break
-              end
-            end
-        else
-            for _,param in ipairs(params) do
-              local found = false
-              local others = {}
-              for ndir=1,8 do
-                local dx, dy, dir, px, py = getNextTile(unit, dirs8[ndir][1], dirs8[ndir][2], ndir)
-                mergeTable(others, param ~= "mous" and getUnitsOnTile(px,py,param) or {})
-              end
-              for _,other in ipairs(others) do
-                local dx, dy, dir, px, py = getNextTile(other, -dirs8[other.dir][1], -dirs8[other.dir][2], other.dir)
-                if px == unit.x and py == unit.y then
-                  found = true
-                  break
-                else
-                  --print(unit.x, unit.y)
-                  --print(px, py)
-                end
-              end
-              if not found then
-                result = false
-                break
-              end
-            end
-        end
     elseif condtype == "beside" then
-        if unit == outerlvl then -- literally just SANS n't except when the unit is at the corner of the level and facing in/out
-            for _,param in ipairs(params) do
-              local found = false
-              local others = findUnitsByName(param)
-              for _,on in ipairs(others) do
-                if inBounds(on.x - dirs8[on.dir][2], on.y + dirs8[on.dir][1]) or inBounds(on.x + dirs8[on.dir][2], on.y - dirs8[on.dir][1])then
-                  found = true
-                  break
-                end
-              end
-              if unit == outerlvl and surrounds ~= nil and surrounds_name == level_name then
-                for nx=-1,1 do
-                  for ny=-1,1 do
-                    for __,on in ipairs(surrounds[nx][ny]) do
-                      if nameIs(on, param) and nx + dirs8[on.dir][1] == 0 and ny + dirs8[on.dir][2] == 0 then
-                        found = true
-                        break
-                      end
-                    end
+      local others = {}
+      for ndir=1,8 do
+        local nx, ny = dirs8[ndir][1], dirs8[ndir][2]
+        if unit == outerlvl and surrounds ~= nil and surrounds_name == level_name then
+          --use surrounds to remember what was around the level
+          for __,on in ipairs(surrounds[nx][ny]) do -- this part hasn't been updated, but it's not important yet
+            if nameIs(on, param) then
+              table.insert(others, on);
+            end
+          end
+        else
+          local dx, dy, dir, px, py = getNextTile(unit, nx, ny, ndir)
+          mergeTable(others, getUnitsOnTile(px, py, nil, false, unit, true))
+        end
+      end
+      if unit == outerlvl then --basically turns into sans n't BUT the unit's side has to be looking inbounds as well!
+        for _,param in ipairs(params) do
+          local found = false
+          local others = findUnitsByName(param)
+          for _,on in ipairs(others) do
+            if inBounds(on.x - dirs8[on.dir][2], on.y + dirs8[on.dir][1]) or inBounds(on.x + dirs8[on.dir][2], on.y - dirs8[on.dir][1]) then
+              found = true
+              break
+            end
+          end
+          if unit == outerlvl and surrounds ~= nil and surrounds_name == level_name then
+            --use surrounds to remember what was around the level
+            for nx=-1,1 do
+              for ny=-1,1 do
+                for __,on in ipairs(surrounds[nx][ny]) do
+                  if nameIs(on, param) and ((nx - dirs8[on.dir][2] == 0 and ny + dirs8[on.dir][1] == 0) or (nx + dirs8[on.dir][2] == 0 and ny - dirs8[on.dir][1] == 0)) then
+                    found = true
+                    break
                   end
                 end
               end
-              if not found then
-                result = false
-                break
-              end
             end
-        else
-            for _,param in ipairs(params) do
-              local found = false
-              local others = {}
-              for ndir=1,8 do
-                local dx, dy, dir, px, py = getNextTile(unit, dirs8[ndir][1], dirs8[ndir][2], ndir)
-                mergeTable(others, param ~= "mous" and getUnitsOnTile(px,py,param) or {})
-              end
-              for _,other in ipairs(others) do
-                local dx, dy, dir, px, py = getNextTile(other, dirs8[other.dir][2], -dirs8[other.dir][1], other.dir)
-                local dx, dy, dir, qx, qy = getNextTile(other, -dirs8[other.dir][2], dirs8[other.dir][1], other.dir)
-                if px == unit.x and py == unit.y or qx == unit.x and qy == unit.y then
-                  found = true
-                  break
-                else
-                  --print(unit.x, unit.y)
-                  --print(px, py)
-                end
-              end
-              if not found then
-                result = false
-                break
-              end
-            end
+          end
+          if not found then
+            result = false
+            break
+          end
         end
+      else
+        for _,set in ipairs(sets) do
+          local found = false
+          for _,other in ipairs(others) do
+            if set[other] then
+              local dx, dy, dir, px, py = getNextTile(other, dirs8[other.dir][2], -dirs8[other.dir][1], other.dir)
+              local dx, dy, dir, qx, qy = getNextTile(other, -dirs8[other.dir][2], dirs8[other.dir][1], other.dir)
+              if px == unit.x and py == unit.y or qx == unit.x and qy == unit.y then
+                found = true
+                break
+              end
+            end
+          end
+          if not found then
+            result = false
+            break
+          end
+        end
+      end
     elseif condtype == "sans" then
-      for _,param in ipairs(params) do
-        local others = findUnitsByName(param)
-        if #others > 1 or #others == 1 and others[1] ~= unit then
+      for _,other in ipairs(lists) do
+        if #other > 1 or #other == 1 and other[1] ~= unit then
           result = false
+          break
         end
       end
     elseif condtype == "samefloat" then
-      for _,param in ipairs(params) do
-        local others = findUnitsByName(param)
-        local yes = false
-        for _,other in ipairs(others) do
+      result = false
+      for _,list in ipairs(lists) do
+        for _,other in ipairs(list) do
           if sameFloat(unit,other) then
-            yes = true
+            print(unit.name, other.name)
+            result = true
+            break
           end
         end
-        if not yes then result = false end
       end
     elseif condtype == "frenles" then
       if unit == outerlvl then
@@ -903,18 +972,20 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
     elseif condtype == "wait..." then
       result = last_move ~= nil and last_move[1] == 0 and last_move[2] == 0 and last_click_x == nil and last_click_y == nil
     elseif condtype == "mayb" then
+      local cond_unit = cond.unit
       --add a dummy action so that undoing happens
       if (#undo_buffer > 0 and #undo_buffer[1] == 0) then
         addUndo({"dummy"});
       end
-      rng = deterministicRng(unit, cond_unit);
-      result = (rng*100) < threshold_for_dir[cond_unit.dir];
+      rng = deterministicRng(unit, cond.unit);
+      result = (rng*100) < threshold_for_dir[cond.unit.dir];
     elseif condtype == "an" then
+      local cond_unit = cond.unit
       --add a dummy action so that undoing happens
       if (#undo_buffer > 0 and #undo_buffer[1] == 0) then
         addUndo({"dummy"});
       end
-      rng = deterministicRandom(unit.fullname, cond_unit);
+      rng = deterministicRandom(unit.fullname, cond.unit);
       result = unit.id == rng;
     elseif condtype == "lit" then
       --TODO: make it so if there are many lit objects then you cache FoV instead of doing many individual LoSes
@@ -974,7 +1045,7 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
         result = colour_for_palette[colour[1]][colour[2]] == condtype
       end
     elseif condtype == "the" then
-      local the = cond[3][1]
+      local the = cond.unit
       
       local tx = the.x
       local ty = the.y
@@ -1274,7 +1345,7 @@ function rotate8(dir)
 end
 
 function nameIs(unit,name)
-  return unit.name == name or unit.fullname == name
+  return unit.name == name or unit.fullname == name or (group_sets[name] and group_sets[name][unit])
 end
 
 function tileHasUnitName(name,x,y)
@@ -2041,8 +2112,8 @@ function timecheck(unit,verb,prop)
     elseif verb ~= nil and prop ~= nil then
       local rulecheck = matchesRule(unit,verb,prop)
       for _,ruleparent in ipairs(rulecheck) do
-        for i=1,#ruleparent[1][4][1] do
-          if ruleparent[1][4][1][i][1] == "timles" then
+        for i=1,#ruleparent.rule.subject.conds do
+          if ruleparent.rule.subject.conds[i][1] == "timles" then
             return true
           end
         end
@@ -2052,28 +2123,6 @@ function timecheck(unit,verb,prop)
     return true
   end
 end
-
---[[function fillTextDetails(sentence, x, y, dir, len)
-  --changes a sentence of pure text into a valid sentence.
-  local ret = {}
-  local w = 0
-  for _,word in ipairs(sentence) do
-    for i,tile in ipairs(tiles_list) do --full search to get id
-      if tile.type == "text" and tile.texttype ~= "letter" and word == string.sub(tile.name:gsub("%s+", ""),6) then
-        print("x: "..x)
-        local unit = createUnit(i, x+ dirs8[dir][1]*w, y+ dirs8[dir][2]*w ,1)
-        table.insert(ret,unit)
-        break
-      end
-    end
-    w = w+1
-  end
-  for i=w+1,len do
-    local unit = createUnit(237, x+dirs8[dir][1]*i, y+dirs8[dir][2]*i ,1) --237 is ellipsis as of my local copy. If there's a way to refer by name, please change it to that.
-    table.insert(ret,unit)
-  end
-  return ret
-end]]
 
 function fillTextDetails(sentence, old_sentence, orig_index, word_index)
   --print(#old_sentence, orig_index, word_index)
@@ -2088,12 +2137,12 @@ function fillTextDetails(sentence, old_sentence, orig_index, word_index)
     if newname:starts("text_") then
       newname = newname:sub(6);
     end
-    table.insert(ret,{type = text_list[word].texttype or "object", name = newname, unit=old_sentence[orig_index].unit})
+    table.insert(ret,{type = text_list[word].texttype or {object = true}, name = newname, unit=old_sentence[orig_index].unit})
     w = w+1
   end
   for i=orig_index+1,(word_index-1) do --extra ellipses for the purposes of making sure the parser gets it properly.
     --print("aa:",old_sentence[i])
-    table.insert(ret,{type = text_list["..."].texttype or "object", name = "...", unit=old_sentence[i].unit})
+    table.insert(ret,{type = text_list["..."].texttype or {object = true}, name = "...", unit=old_sentence[i].unit})
   end
   return ret
 end
@@ -2108,20 +2157,15 @@ end
 
 text_in_tiles = {} --list of text in an array, and textname only
 for _,tile in ipairs(tiles_list) do
-  if tile.type == "text" and tile.texttype ~= "letter" then
+  if tile.type == "text" and not tile.texttype.letter then
     local textname = string.sub(tile.name:gsub("%s+", ""),6) --removes spaces too
     text_in_tiles[textname] = tile
   end
 end
 
-print(text_in_tiles["left"])
-print(text_in_tiles["right"])
-print(text_in_tiles["down"])
-print(text_in_tiles["up"])
-
 text_list = {} --list of text with named keys (by textname)
 for _,tile in ipairs(tiles_list) do
-  if tile.type == "text" and tile.texttype ~= "letter" then
+  if tile.type == "text" and not tile.texttype.letter then
     local textname = string.sub(tile.name:gsub("%s+", ""),6)
     text_list[textname] = tile
     text_list[textname].textname = string.sub(tile.name,6)
@@ -2185,6 +2229,7 @@ end
 
 function writeSaveFile(category, key, value)
   --e.g. "new level", "won", true
+  if (unit_tests) then return false end
   save = {}
   local filename = world;
   if (world == "" or world == nil) then
@@ -2202,6 +2247,7 @@ function writeSaveFile(category, key, value)
 end
 
 function readSaveFile(category, key)
+  if (unit_tests) then return nil end
   save = {}
   local filename = world;
   if (world == "" or world == nil) then
@@ -2214,4 +2260,89 @@ function readSaveFile(category, key)
     return save[category][key];
   end
   return nil
+end
+
+function addBaseRule(subject, verb, object)
+  addRule({
+    rule = {
+      subject = {
+        name = subject
+      },
+      verb = {
+        name = verb
+      },
+      object = {
+        name = object
+      }
+    },
+    units = {},
+    dir = 1,
+    hide_in_list = true
+  })
+end
+
+function addRuleSimple(subject, verb, object, units, dir)
+  -- print(subject.name, verb.name, object.name)
+  -- print(subject, verb, object)
+  addRule({
+    rule = {
+      subject = {
+        name = subject.name or subject[1],
+        conds = subject.conds or subject[2]
+      },
+      verb = {
+        name = verb.name or verb[1] or verb
+      },
+      object = {
+        name = object.name or object[1],
+        conds = object.conds or object[2]
+      }
+    },
+    units = units,
+    dir = dir
+  })
+end
+
+
+group_lists = {}
+group_sets = {}
+
+function updateGroup(n)
+  --if not groups_exist then return end
+  local n = n or 0
+  local changed = false
+  for _,group in ipairs(group_names) do
+    local list = {}
+    local set = {}
+    if (rules_with[group] ~= nil) then
+      local rules = matchesRule(nil, "be", group);
+      for _,rule in ipairs(rules) do
+        local unit = rule[2];
+        --by doing it this way, conds has already been tested, etc
+        set[unit] = true;
+      end
+      local rulesnt = matchesRule(nil, "ben't", group);
+      for _,rule in ipairs(rulesnt) do
+        local unit = rule[2];
+        set[unit] = nil;
+      end
+    end
+    for unit,_ in pairs(set) do
+      table.insert(list, unit);
+    end
+    local old_size = #(group_lists[group] or {})
+    group_lists[group] = list
+    group_sets[group] = set
+    if #group_lists[group] ~= old_size then
+      changed = true
+    end
+  end
+  if changed then
+    if n >= 1000 then
+      print("group infinite loop! (1000 attempts to update list)")
+      destroyLevel("infloop")
+    else
+      updateGroup(n+1)
+    end
+  end
 end
