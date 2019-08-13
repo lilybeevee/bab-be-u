@@ -2107,11 +2107,6 @@ for _,tile in ipairs(tiles_list) do
   end
 end
 
-print(text_in_tiles["left"])
-print(text_in_tiles["right"])
-print(text_in_tiles["down"])
-print(text_in_tiles["up"])
-
 text_list = {} --list of text with named keys (by textname)
 for _,tile in ipairs(tiles_list) do
   if tile.type == "text" and not tile.texttype.letter then
@@ -2262,12 +2257,20 @@ function updateGroup(n)
     local list = {}
     local set = {}
     if (rules_with[group] ~= nil) then
-      for _,unit in ipairs(units) do
-        if hasRule(unit, "be", group) then
-          table.insert(list, unit)
-          set[unit] = true
-        end
+      local rules = matchesRule(nil, "be", group);
+      for _,rule in ipairs(rules) do
+        local unit = rule[2];
+        --by doing it this way, conds has already been tested, etc
+        set[unit] = true;
       end
+      local rulesnt = matchesRule(nil, "ben't", group);
+      for _,rule in ipairs(rulesnt) do
+        local unit = rule[2];
+        set[unit] = nil;
+      end
+    end
+    for unit,_ in pairs(set) do
+      table.insert(list, unit);
     end
     local old_size = #(group_lists[group] or {})
     group_lists[group] = list
