@@ -324,7 +324,7 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
   local rules_list
 
   --there are more properties than there are nouns, so we're more likely to miss based on a property not existing than based on a noun not existing
-  rules_list = rules_with[nrules[3] or nrules[1] or nrules[2]] or {}
+  rules_list = rules_with[(nrules[2] ~= "be" and nrules[2]) or nrules[3] or nrules[1]] or {}
   mergeTable(rules_list, rules_with[fnrules[3] or fnrules[1] or fnrules[2]] or {})
 
   if (debugging) then
@@ -342,7 +342,21 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
       for i=1,3 do
         local name = rule[ruleparts[i]].name
         --special case for stuff like 'group be x' - if we are in that group, we do match that rule
-        if not (i == 1 and group_sets[name] and group_sets[name][rule1]) then
+        --we also need to handle groupn't
+        local group_match = false
+        if rule_units[i] ~= nil then
+          if group_sets[name] and group_sets[name][rule_units[i]] then
+            group_match = true
+          else
+            if rule_units[i].type == "object" and name:ends("n't") then
+              local nament = name:sub(1, -4);
+              if group_sets[nament] and not group_sets[nament][rule_units[i]] then
+                group_match = true
+              end
+            end
+          end
+        end
+        if not (group_match) then
           if nrules[i] ~= nil and nrules[i] ~= name and (fnrules[i] == nil or (fnrules[i] ~= nil and fnrules[i] ~= name)) then
             if (debugging) then
               print("false due to nrules/fnrules mismatch")
@@ -392,15 +406,6 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
           end
         end
       end
-    end
-  end
-  
-  for _,group in ipairs(group_names) do
-    if group_sets[group] and group_sets[group][rule3] then
-      mergeTable(ret, matchesRule(rule1, rule2, group))
-    end
-    if group_sets[group] and group_sets[group][rule1] then
-      mergeTable(ret, matchesRule(group, rule2, rule3))
     end
   end
 
@@ -470,7 +475,7 @@ function findUnitsByName(name)
     end
     local result = {}
     for _,unit in ipairs(units) do
-      if unit.type ~= "text" and not everything_else_set[unit] then
+      if unit.type == "object" and not everything_else_set[unit] then
         table.insert(result, unit);
       end
     end
