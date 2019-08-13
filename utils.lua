@@ -390,16 +390,14 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
           for _,unit in ipairs(findUnitsByName(rule[ruleparts[find_arg]].name)) do
             local cond
             if testConds(unit, rule[ruleparts[find_arg]].conds) then
-              table.insert(ret, {rules, unit})
-              if stopafterone then return ret end
-            end
-          end
-              --check that there isn't a verbn't rule - edge cases where this might happen: test vs specific text, group vs unit
-              --[[if rules_with[rule2.."n't"] ~= nil and #matchesRule(unit, rule2.."n't", rule3, true) > 0 then
+              --check that there isn't a verbn't rule - edge cases where this might happen: test vs specific text, group vs unit. This is slow (15% longer unit tests, 0.1 second per unit test) but it fixes old and new bugs so I think we just have to suck it up.
+              if rules_with[rule2.."n't"] ~= nil and #matchesRule(unit, rule2.."n't", rule.object.name, true) > 0 then
               else
                 table.insert(ret, {rules, unit})
                 if stopafterone then return ret end
-              end]]
+              end
+            end
+          end
         elseif find == 2 then
           local found1, found2
           for _,unit1 in ipairs(findUnitsByName(rule.subject)) do
