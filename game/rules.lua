@@ -800,14 +800,14 @@ function shouldReparseRulesIfConditionalRuleExists(r1, r2, r3, even_non_wurd)
     --We can also distinguish between different conditions (todo).
     if (#subject_cond > 0 and (even_non_wurd or subject:starts("text") or rules_effecting_names[subject])) then
       for _,cond in ipairs(subject_cond) do
-        local cond_name = cond[1]
-        local cond_units = cond[2]
+        local cond_name = cond.name
+        local params = cond.others or {}
         --TODO: This needs to change for condition stacking.
         --An infix condition that references another unit just dumps the second unit into rules_effecting_names (This is fine for all infix conditions, for now, but maybe not perpetually? for example sameFloat() might malfunction since the floatness of the other unit could change unexpectedly due to a SECOND conditional rule).
-        if (#cond_units > 0) then
-          for _,unit in ipairs(cond_units) do
-            rules_effecting_names[unit] = true
-            if unit == "mous" then
+        if (#params > 0) then
+          for _,param in ipairs(params) do
+            rules_effecting_names[param.name] = true
+            if param.name == "mous" then
               should_parse_rules_at_turn_boundary = true;
             end
           end
