@@ -365,7 +365,7 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
           end
         end
       end
-      --don't test condition until the rule fully matches
+      --don't test conditions until the rule fully matches
       if result then
         for i=1,3,2 do
           if rule_units[i] ~= nil then
@@ -394,6 +394,12 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
               if stopafterone then return ret end
             end
           end
+              --check that there isn't a verbn't rule - edge cases where this might happen: test vs specific text, group vs unit
+              --[[if rules_with[rule2.."n't"] ~= nil and #matchesRule(unit, rule2.."n't", rule3, true) > 0 then
+              else
+                table.insert(ret, {rules, unit})
+                if stopafterone then return ret end
+              end]]
         elseif find == 2 then
           local found1, found2
           for _,unit1 in ipairs(findUnitsByName(rule.subject)) do
@@ -2173,6 +2179,7 @@ end
 
 function writeSaveFile(category, key, value)
   --e.g. "new level", "won", true
+  if (unit_tests) then return false end
   save = {}
   local filename = world;
   if (world == "" or world == nil) then
@@ -2190,6 +2197,7 @@ function writeSaveFile(category, key, value)
 end
 
 function readSaveFile(category, key)
+  if (unit_tests) then return nil end
   save = {}
   local filename = world;
   if (world == "" or world == nil) then
