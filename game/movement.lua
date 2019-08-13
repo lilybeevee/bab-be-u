@@ -25,7 +25,7 @@ function doUpdate(already_added, moving_units_next)
       if not changedDir then
         updateDir(unit, dirAdd(dir, geometry_spin), true);
       end
-      movedebug("doUpdate:"..tostring(unit.fullname)..","..tostring(x)..","..tostring(y)..","..tostring(dir))
+      --movedebug("doUpdate:"..tostring(unit.fullname)..","..tostring(x)..","..tostring(y)..","..tostring(dir))
       moveUnit(unit, x, y, update.payload.portal)
       unit.already_moving = false
     elseif update.reason == "dir" then
@@ -474,7 +474,7 @@ It is probably possible to do, but lily has decided that it's not important enou
         print("movement infinite loop! (1000 attempts at a stage)")
         destroyLevel("infloop");
       end
-      movedebug("loop_stage:"..tostring(loop_stage))
+      --movedebug("loop_stage:"..tostring(loop_stage))
       successes = 0
       local loop_tick = 0
       loop_stage = loop_stage + 1
@@ -485,7 +485,7 @@ It is probably possible to do, but lily has decided that it's not important enou
           print("movement infinite loop! (1000 attempts at a single tick)")
           destroyLevel("infloop");
         end
-        movedebug("loop_tick:"..tostring(loop_tick))
+        --movedebug("loop_tick:"..tostring(loop_tick))
         local remove_from_moving_units = {}
         local has_flipped = false
         something_moved = false
@@ -515,7 +515,7 @@ It is probably possible to do, but lily has decided that it's not important enou
                 data.dir = dir
               end
             end
-            movedebug("considering:"..unit.fullname..","..dir)
+            --movedebug("considering:"..unit.fullname..","..dir)
             local success,movers,specials = true,{},{}
             if hasProperty(unit,"glued") then
               --Glued units get moved as a single group.
@@ -611,7 +611,7 @@ It is probably possible to do, but lily has decided that it's not important enou
       end]]--
       doUpdate(already_added, moving_units_next)
       for _,unit in ipairs(moving_units_next) do
-        movedebug("re-added:"..unit.fullname)
+        --movedebug("re-added:"..unit.fullname)
         table.insert(moving_units, unit);
         already_added[unit] = true;
       end
@@ -732,7 +732,7 @@ function moveIt(mover, dx, dy, facing_dir, move_dir, geometry_spin, data, pullin
           else
             move.dx = move.dx + move_dx
             move.dy = move.dy + move_dy
-            movedebug("copykat collate:"..tostring(move.dx)..","..tostring(move.dy))
+            --movedebug("copykat collate:"..tostring(move.dx)..","..tostring(move.dy))
             found = true
             break
           end
@@ -755,7 +755,7 @@ function queueMove(mover, dx, dy, dir, priority, geometry_spin, portal)
   addUndo({"update", mover.id, mover.x, mover.y, mover.dir, portal})
   mover.olddir = mover.dir
   updateDir(mover, dir)
-  movedebug("moving:"..mover.fullname..","..tostring(mover.id)..","..tostring(mover.x)..","..tostring(mover.y)..","..tostring(dx)..","..tostring(dy))
+  --movedebug("moving:"..mover.fullname..","..tostring(mover.id)..","..tostring(mover.x)..","..tostring(mover.y)..","..tostring(dx)..","..tostring(dy))
   mover.already_moving = true;
   table.insert(update_queue, (priority and 1 or (#update_queue + 1)), {unit = mover, reason = "update", payload = {x = mover.x + dx, y = mover.y + dy, dir = mover.dir, geometry_spin = geometry_spin, portal = portal}})
 end
@@ -784,10 +784,10 @@ function applySlide(mover, dx, dy, already_added, moving_units_next)
         end
         --the new moves will be at the start of the unit's moves data, so that it takes precedence over what it would have done next otherwise
         --TODO: CLEANUP: Figure out a nice way to not have to pass this around/do this in a million places.
-        movedebug("launching:"..mover.fullname..","..v.dir)
+        --movedebug("launching:"..mover.fullname..","..v.dir)
         table.insert(mover.moves, 1, {reason = "goooo", dir = v.dir, times = launchness})
         if not already_added[mover] then
-          movedebug("did add launcher")
+          --movedebug("did add launcher")
           table.insert(moving_units_next, mover)
           already_added[mover] = true
         end
@@ -811,11 +811,11 @@ function applySlide(mover, dx, dy, already_added, moving_units_next)
           did_clear_existing = true
         end
         if not hasRule(mover,"got","slippers") then
-          movedebug("sliding:"..mover.fullname..","..mover.dir)
+          --movedebug("sliding:"..mover.fullname..","..mover.dir)
           table.insert(mover.moves, 1, {reason = "icyyyy", dir = mover.dir, times = slideness})
         end
         if not already_added[mover] then
-          movedebug("did add slider")
+          --movedebug("did add slider")
           table.insert(moving_units_next, mover)
           already_added[mover] = true
         end
