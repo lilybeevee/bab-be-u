@@ -1,4 +1,5 @@
 function clear()
+  --groups_exist = false
   letters_exist = false
 	replay_playback = false
   replay_playback_turns = nil
@@ -189,6 +190,18 @@ function loadMap()
       writeSaveFile(level_name, "seen", true)
     end
   end
+  
+  --I don't know why, but this is slower by a measurable amount (70-84 seconds for example).
+  --[[groups_exist = letters_exist
+  if not groups_exist then
+    for _,group_name in ipairs(group_names) do
+      if units_by_name["text_"..group_name] then
+        groups_exist = true
+        break
+      end
+    end
+  end]]
+  
   unsetNewUnits()
 end
 
@@ -1271,7 +1284,7 @@ function rotate8(dir)
 end
 
 function nameIs(unit,name)
-  return unit.name == name or unit.fullname == name or (group_names_set[name] and group_sets[name][unit])
+  return unit.name == name or unit.fullname == name or (group_sets[name] and group_sets[name][unit])
 end
 
 function tileHasUnitName(name,x,y)
