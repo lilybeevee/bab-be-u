@@ -273,6 +273,7 @@ function undo(dont_update_rules)
       should_parse_rules = true;
       parseRules(true)
     end
+    updateGroup()
     calculateLight()
     updateUnits(true)
     updatePortals()

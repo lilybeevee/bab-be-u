@@ -111,23 +111,25 @@ function runUnitTests()
   local noreplay_levels = {}
   load_mode = "play"
   for _,v in ipairs(levels) do
-    scene.loadLevel(v.data, "play")
-    game.load()
-    tryStartReplay()
-    if replay_playback then
-      replay_playback_interval = 0
-      local still_going = true;
-      while (still_going) do
-        still_going = doReplay(0)
-      end
-      if not won_this_session then
-        table.insert(fail_levels, v.file)
+    --if (v.file == "it's about time") then
+      scene.loadLevel(v.data, "play")
+      game.load()
+      tryStartReplay()
+      if replay_playback then
+        replay_playback_interval = 0
+        local still_going = true;
+        while (still_going) do
+          still_going = doReplay(0)
+        end
+        if not won_this_session then
+          table.insert(fail_levels, v.file)
+        else
+          table.insert(succ_levels, v.file)
+        end
       else
-        table.insert(succ_levels, v.file)
+        table.insert(noreplay_levels, v.file)
       end
-    else
-      table.insert(noreplay_levels, v.file)
-    end
+    --end
   end
   local end_time = love.timer.getTime();
   print ("Unit tested " .. tostring(#succ_levels + #fail_levels) .. " levels!");

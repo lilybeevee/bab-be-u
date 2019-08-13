@@ -264,20 +264,22 @@ function scene.resetStuff()
   --resetMusic("bab be u them", 0.5)
   resetMusic(map_music, 0.9)
   loadMap()
+  --we need to call updateDir to initialize things like units that change their names when their direction changes, in particular this needs to be the same as starting the level anew (which does create every unit and therefore call updateDir on them), so do it now
+  --most happen before we parse rules for the first time
+	for _,unit in ipairs(units) do
+		updateDir(unit, unit.dir, true);
+	end
   clearRules()
   parseRules()
+  updateGroup()
   calculateLight()
   updateUnits(true)
   updatePortals()
   miscUpdates()
   next_levels, next_level_objs = getNextLevels()
-
   first_turn = false
   window_dir = 0
-	--we need to call updateDir to initialize things like units that change their names when their direction changes, in particular this needs to be the same as starting the level anew (which does create every unit and therefore call updateDir on them), so do it now
-	for _,unit in ipairs(units) do
-		updateDir(unit, unit.dir, true);
-	end
+	
 end
 
 function scene.mouseMoved(x, y, dx, dy, istouch)
@@ -636,7 +638,7 @@ function scene.draw(dt)
     if unit.name == "no1" and not (draw_empty and validEmpty(unit)) then return end
     
     local brightness = 1
-    if ((unit.type == "text") or hasRule(unit,"be","wurd")) and not unit.active then
+    if ((unit.type == "text" and not hasRule(unit,"ben't","wurd")) or hasRule(unit,"be","wurd")) and not unit.active then
       brightness = 0.33
     end
 
@@ -831,18 +833,27 @@ function scene.draw(dt)
       end
       for ndir=2,8,2 do
         local nx,ny = dirs8[ndir][1],dirs8[ndir][2]
-        local dx,dy,dir,px,py = getNextTile(unit,nx,ny,ndir)
+        local dx,dy,dir,px,py,portal = getNextTile(unit,nx,ny,ndir)
         local around = getUnitsOnTile(px,py)
-        for _,other in ipairs(around) do
-          if other.name == "lin" then
-            if not orthos[ndir/2] and not orthos[((ndir/2)+1)%4] then
-              table.insert(line,other)
+        if portal == nil then
+          for _,other in ipairs(around) do
+            if other.name == "lin" then
+              if not orthos[ndir/2] and not orthos[dirAdd(ndir,2)/2] then
+                table.insert(line,other)
+              end
+            elseif other.name == "lvl" then
+              if not orthos[ndir/2] and not orthos[dirAdd(ndir,2)/2] then
+                --add it twice to make it look the same as the other lines. should be reduced to one if we figure out that performance todo above
+                table.insert(line,other)
+                table.insert(line,other)
+              end
             end
-          elseif other.name == "lvl" then
-            if not orthos[ndir/2] and not orthos[((ndir/2)+1)%4] then
-              --add it twice to make it look the same as the other lines. should be reduced to one if we figure out that performance todo above
-              table.insert(line,other)
-              table.insert(line,other)
+          end
+        else
+          for _,other in ipairs(around) do
+            if other.name == "lin" or other.name == "lvl" then
+              table.insert(halfline,{unit.x+nx,unit.y+ny})
+              break
             end
           end
         end
@@ -851,18 +862,19 @@ function scene.draw(dt)
         for _,point in ipairs(line) do
           local dx = unit.x-point.x
           local dy = unit.y-point.y
-          local odx = 32*dx
-          local ody = 32*dy
+          local odx = TILE_SIZE*dx
+          local ody = TILE_SIZE*dy
           
           love.graphics.line(fulldrawx,fulldrawy,fulldrawx-odx,fulldrawy-ody)
         end
       end
       if (#halfline > 0) then
         for _,point in ipairs(halfline) do
+          --no need to change the rendering to account for movement, since all halflines are drawn to static objects (portals and oob)
           local dx = unit.x-point[1]
           local dy = unit.y-point[2]
-          local odx = 16*dx
-          local ody = 16*dy
+          local odx = TILE_SIZE*dx/2
+          local ody = TILE_SIZE*dy/2
           
           --draws it twice to make it look the same as the other lines. should be reduced to one if we figure out that performance todo above
           love.graphics.line(fulldrawx,fulldrawy,fulldrawx-odx,fulldrawy-ody)
@@ -1372,14 +1384,16 @@ function scene.draw(dt)
     local lines = 0.5
 
     for i,rule in pairs(full_rules) do
-      rules = rules..rule[1][1]..' '..rule[1][2]..' '..rule[1][3]
-      rulesnum = rulesnum + 1
+      if not rule.hide_in_list then
+        rules = rules..rule.rule.subject.name..' '..rule.rule.verb.name..' '..rule.rule.object.name
+        rulesnum = rulesnum + 1
 
-      if rulesnum % 4 >= 3 then
-        rules = rules..'\n'
-        lines = lines + 1
-      else
-        rules = rules..'   '
+        if rulesnum % 4 >= 3 then
+          rules = rules..'\n'
+          lines = lines + 1
+        else
+          rules = rules..'   '
+        end
       end
     end
 
