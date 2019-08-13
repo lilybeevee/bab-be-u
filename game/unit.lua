@@ -7,8 +7,8 @@ function moveBlock()
     doZip(unit)
   end
   
-  local isstalknt = matchesRule("?", "look at", "?");
-  for _,ruleparent in ipairs(isstalknt) do
+  local isstalk = matchesRule("?", "look at", "?");
+  for _,ruleparent in ipairs(isstalk) do
     local stalkers = findUnitsByName(ruleparent.rule.subject.name)
     local stalkees = copyTable(findUnitsByName(ruleparent.rule.object.name))
     local stalker_conds = ruleparent.rule.subject.conds
@@ -32,12 +32,12 @@ function moveBlock()
     end
   end
   
-  local isstalk = matchesRule("?", "look away", "?");
-  for _,ruleparent in ipairs(isstalk) do
-    local stalkers = findUnitsByName(ruleparent[1][1])
-    local stalkees = copyTable(findUnitsByName(ruleparent[1][3]))
-    local stalker_conds = ruleparent[1][4][1]
-    local stalkee_conds = ruleparent[1][4][2]
+  local isstalknt = matchesRule("?", "look away", "?");
+  for _,ruleparent in ipairs(isstalknt) do
+    local stalkers = findUnitsByName(ruleparent.rule.subject.name)
+    local stalkees = copyTable(findUnitsByName(ruleparent.rule.object.name))
+    local stalker_conds = ruleparent.rule.subject.conds
+    local stalkee_conds = ruleparent.rule.object.conds
     for _,stalker in ipairs(stalkers) do
       table.sort(stalkees, function(a, b) return euclideanDistance(a, stalker) < euclideanDistance(b, stalker) end )
       for _,stalkee in ipairs(stalkees) do
