@@ -320,16 +320,17 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
   local final_rules = params_[3]
   local first = params_[4]
   local sentence = copyTable(sentence_, 1)
+  --print(fullDump(sentence))
 
   for orig_index,word in ipairs(sentence) do
-    if word.type == "letter" then --letter handling
+    if word.type["letter"] then --letter handling
       --print("found a letter"..orig_index)
       
       local new_word = ""
       local word_index = orig_index
       local letter = sentence[word_index]
       local prevletter = {}
-      while letter.type == "letter" do --find out where the letters end, throw all of them into a string tho
+      while letter.type["letter"] do --find out where the letters end, throw all of them into a string tho
         --here's how umlauts / colons work: for every letter that could be affected by the presence of a colon, special case it here
         --when special casing, change the name to include the umlaut / colon in it. then, later, don't count colons when adding to the string, since the letter already accounts for it
         --for the letter u, it always needs to check the tile above it, so we don't need to use prevletter, since the umlaut might not be in the rule directly

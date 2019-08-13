@@ -2087,28 +2087,6 @@ function timecheck(unit,verb,prop)
   end
 end
 
---[[function fillTextDetails(sentence, x, y, dir, len)
-  --changes a sentence of pure text into a valid sentence.
-  local ret = {}
-  local w = 0
-  for _,word in ipairs(sentence) do
-    for i,tile in ipairs(tiles_list) do --full search to get id
-      if tile.type == "text" and tile.texttype ~= "letter" and word == string.sub(tile.name:gsub("%s+", ""),6) then
-        print("x: "..x)
-        local unit = createUnit(i, x+ dirs8[dir][1]*w, y+ dirs8[dir][2]*w ,1)
-        table.insert(ret,unit)
-        break
-      end
-    end
-    w = w+1
-  end
-  for i=w+1,len do
-    local unit = createUnit(237, x+dirs8[dir][1]*i, y+dirs8[dir][2]*i ,1) --237 is ellipsis as of my local copy. If there's a way to refer by name, please change it to that.
-    table.insert(ret,unit)
-  end
-  return ret
-end]]
-
 function fillTextDetails(sentence, old_sentence, orig_index, word_index)
   --print(#old_sentence, orig_index, word_index)
   --changes a sentence of pure text into a valid sentence.
