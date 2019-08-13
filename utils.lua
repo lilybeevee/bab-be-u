@@ -345,12 +345,12 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
         --we also need to handle groupn't
         local group_match = false
         if rule_units[i] ~= nil then
-          if group_sets[name] and group_sets[name][rule_units[i]] then
+          if group_sets[name] and group_sets[name][rule_units[i] ] then
             group_match = true
           else
-            if rule_units[i].type == "object" and name:ends("n't") then
+            if rule_units[i].type == "object" and group_names_set_nt[name] then
               local nament = name:sub(1, -4);
-              if group_sets[nament] and not group_sets[nament][rule_units[i]] then
+              if not group_sets[nament][rule_units[i] ] then
                 group_match = true
               end
             end
@@ -467,7 +467,7 @@ function validEmpty(unit)
 end
 
 function findUnitsByName(name)
-  if name:ends("n't") then
+  if group_names_set_nt["n't"] then
     local everything_else_list = findUnitsByName(name:sub(1, -4));
     local everything_else_set = {};
     for _,unit in ipairs(everything_else_list) do
@@ -2255,15 +2255,18 @@ group_lists = {}
 group_sets = {}
 
 function updateGroup(n)
+  --if not groups_exist then return end
   local n = n or 0
   local changed = false
   for _,group in ipairs(group_names) do
     local list = {}
     local set = {}
-    for _,unit in ipairs(units) do
-      if hasRule(unit, "be", group) then
-        table.insert(list, unit)
-        set[unit] = true
+    if (rules_with[group] ~= nil) then
+      for _,unit in ipairs(units) do
+        if hasRule(unit, "be", group) then
+          table.insert(list, unit)
+          set[unit] = true
+        end
       end
     end
     local old_size = #(group_lists[group] or {})

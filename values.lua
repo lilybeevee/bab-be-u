@@ -4420,8 +4420,14 @@ for i,v in ipairs(tiles_list) do
 end
 
 group_names = {}
+group_names_nt = {}
+group_names_set = {}
+group_names_set_nt = {}
 for i,tile in ipairs(tiles_list) do
   if tile.texttype and tile.texttype.group then
 		table.insert(group_names, tile.name:sub(6, -1));
+    table.insert(group_names_nt, tile.name:sub(6, -1).."n't");
+    group_names_set[tile.name:sub(6, -1)] = true;
+    group_names_set_nt[tile.name:sub(6, -1).."n't"] = true;
 	end
 end
