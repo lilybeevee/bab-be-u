@@ -453,7 +453,20 @@ function validEmpty(unit)
 end
 
 function findUnitsByName(name)
-  if name == "mous" then
+  if name:ends("n't") then
+    local everything_else_list = findUnitsByName(name:sub(1, -4));
+    local everything_else_set = {};
+    for _,unit in ipairs(everything_else_list) do
+      everything_else_set[unit] = true
+    end
+    local result = {}
+    for _,unit in ipairs(units) do
+      if unit.type ~= "text" and not everything_else_set[unit] then
+        table.insert(result, unit);
+      end
+    end
+    return result
+  elseif name == "mous" then
     return cursors
   elseif group_lists[name] ~= nil then
     return group_lists[name]
