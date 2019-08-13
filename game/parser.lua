@@ -127,7 +127,11 @@ function findUnit(words, extra_words_, dir, outer)
       if #words == 0 then return end
     end
     if nt then
-      prefix.name = prefix.name.."n't"
+      if prefix.name:ends("n't") then
+        prefix.name = prefix.name:sub(1, -4)
+      else
+        prefix.name = prefix.name.."n't"
+      end
     end
     table.insert(conds, prefix)
     if enclosed and words[1].type["and"] and words[2] and words[2].type.cond_prefix then
@@ -138,65 +142,100 @@ function findUnit(words, extra_words_, dir, outer)
   end
   
   local words_
-  unit, words_ = findClass(copyTable(words), extra_words, dir)
+  unit, words_ = findClass(copyTable(words))
   if not unit then return end
   words = words_
   
   local first_infix = true
   local andd
-  while words[1] and words[1].type.cond_infix and (first_infix or enclosed) do -- TODO: cond_infix_verb (that), hideous_amalgamation (thatbe)
+  while words[1] and words[1].type.cond_infix and (first_infix or enclosed) do -- TODO: cond_infix_verb (that), cond_infix_verb_plus (thatbe)
     local infix = copyTable(words[1])
     local infix_orig = infix
     infix.mods = infix.mods or {}
     table.remove(words, 1)
     if #words == 0 then break end
-    local nt = false
-    while words[1].type["not"] do
-      nt = not nt
-      table.insert(infix.mods, words[1])
-      table.remove(words, 1)
-      if #words == 0 then break end
-    end
-    if nt then
-      infix.name = infix.name.."n't"
-    end
-    
-    local other, words_ = findUnit(copyTable(words), extra_words, dir)
-    if not other then
-      table.insert(words, 1, infix_orig)
-      break
-    end
-    if andd then
-      table.insert(extra_words, andd)
-      andd = nil
-    end
-    words = words_
-    infix.others = {other}
-    table.insert(conds, infix)
-    -- print(enclosed, words[1] and words[1].type, words[2] and words[2].type)
-    if #words == 0 then break end
-    while enclosed and words[1] and words[1].type["and"] and words[2] and words[3] and (words[2].type.object or words[3].name == "text") do
-      table.insert(extra_words, words[1])
-      table.remove(words, 1)
-      if #words == 0 then break end
-      local other, words_ = findUnit(copyTable(words), extra_words)
-      if not other then
-        if parenthesis then
-          return
-        end
-        unit.conds = conds
-        mergeTable(extra_words_, extra_words)
-        return unit, words
+    if infix.type.cond_infix_verb then
+      local words_ = copyTable(words)
+      if infix.type.cond_infix_verb_plus then
+        local verb = infix.name:sub(6)
+        table.insert(words_, 1, {name = verb, type = tiles_list[tiles_by_name["text_"..verb]].texttype})
+      end
+      local verb
+      verb_phrase, words_ = findVerbPhrase(words_, extra_words, dir, enclosed, true)
+      if not verb_phrase then
+        break
       end
       words = words_
-      table.insert(infix.others, other)
+      if not infix.type.cond_infix_verb_plus then
+        local verb = verb_phrase[1]
+        infix.name = infix.name.." "..verb.name
+        table.insert(infix.mods, verb)
+      end
+      infix.others = {}
+      for _,object in ipairs(verb_phrase[2]) do
+        table.insert(infix.mods, object)
+        table.insert(infix.others, object)
+      end
+      table.insert(conds, infix)
+    else
+      local nt = false
+      while words[1].type["not"] do
+        nt = not nt
+        table.insert(infix.mods, words[1])
+        table.remove(words, 1)
+        if #words == 0 then break end
+      end
+      if nt then
+        if infix.name:ends("n't") then
+          infix.name = infix.name:sub(1, -4)
+        else
+          infix.name = infix.name.."n't"
+        end
+      end
+      
+      if infix.type.cond_infix_dir and words[1].type.direction then
+        print("cond lookat dir")
+      end
+      
+      local other, words_ = findUnit(copyTable(words), extra_words, dir)
+      if not other then
+        table.insert(words, 1, infix_orig)
+        break
+      end
+      if andd then
+        table.insert(extra_words, andd)
+        andd = nil
+      end
+      words = words_
+      infix.others = {other}
+      table.insert(conds, infix)
+      -- print(enclosed, words[1] and words[1].type, words[2] and words[2].type)
+      if #words == 0 then break end
+      while enclosed and words[1] and words[1].type["and"] and words[2] and words[3] and (words[2].type.object or words[3].name == "text") do
+        table.insert(extra_words, words[1])
+        table.remove(words, 1)
+        if #words == 0 then break end
+        local other, words_ = findUnit(copyTable(words), extra_words)
+        if not other then
+          if parenthesis then
+            return
+          end
+          unit.conds = conds
+          mergeTable(extra_words_, extra_words)
+          return unit, words
+        end
+        words = words_
+        table.insert(infix.others, other)
+      end
+      if #words == 0 then break end
     end
-    if #words == 0 then break end
     if enclosed and words[1] and words[1].type["and"] and words[2] and words[2].type.cond_infix and words[3] then
       andd = words[1]
       table.remove(words, 1)
       if #words == 0 then break end
-    end -- no need to break here because "bab w/fren keek arond roc" is already covered, and is valid
+    else
+      break -- need to break for the case of "bab that got keek w/fren bab" (should need an & in there)
+    end
     first_infix = false
   end
   if andd then
@@ -220,15 +259,14 @@ function findUnit(words, extra_words_, dir, outer)
   return unit, words
 end
 
-function findClass(words, extra_words_, dir)
-  local extra_words = {}
+function findClass(words)
   local unit = copyTable(words[1])
   unit.mods = unit.mods or {}
   if words[2] and words[2].name == "text" then
     table.insert(unit.mods, words[2])
     unit.name = (unit.unit or {}).fullname or "no unit"
     table.remove(words, 2)
-  elseif not words[1].type.object then -- TODO: are there any other types that fit here?
+  elseif not words[1].type.object then
     return nil
   end
   
@@ -240,12 +278,16 @@ function findClass(words, extra_words_, dir)
     table.remove(words, 1)
   end
   if nt then
+    if unit.name:ends("n't") then
+    unit.name = unit.name:sub(1, -4)
+  else
     unit.name = unit.name.."n't"
+  end
   end
   return unit, words
 end
 
-function findVerbPhrase(words, extra_words_, dir, enclosed)
+function findVerbPhrase(words, extra_words_, dir, enclosed, noconds)
   local extra_words = {}
   local objects = {}
   local verb = copyTable(words[1])
@@ -258,16 +300,16 @@ function findVerbPhrase(words, extra_words_, dir, enclosed)
     table.remove(words, 1)
     if #words == 0 then return nil end
   end
-  if verb.type.verb_be then -- be (prop or class)
+  if verb.type.verb_be then -- can be prop or class
     while true do
       if words[1].type.object or words[2] and words[2].name == "text" then
-        local object, words_ = findClass(words)
+        local object, words_ = findClass(copyTable(words))
         if not object then
           break
         end
         words = words_
         table.insert(objects, object)
-      elseif words[1].type.property then -- TODO: are there any other types that fit here?
+      elseif words[1].type.property then
         table.insert(objects, words[1])
         table.remove(words, 1)
         -- "bab be u n't" isn't valid, no need to allow nots here
@@ -281,9 +323,9 @@ function findVerbPhrase(words, extra_words_, dir, enclosed)
         break
       end
     end
-  elseif verb.type.verb_class then -- is this all? are there more? (class)
+  elseif verb.type.verb_class then
     while words[1].type.object or words[2] and words[2].name == "text" do
-      local object, words_ = findClass(words)
+      local object, words_ = findClass(copyTable(words))
       if not object then
         break
       end
@@ -296,9 +338,11 @@ function findVerbPhrase(words, extra_words_, dir, enclosed)
         break
       end
     end
-  elseif verb.type.verb_unit then -- (unit)
+  elseif verb.type.verb_direction and words[1].type.direction then
+    print("verb lookat dir")
+  elseif verb.type.verb_unit then
     local found = false
-    local unit, words_ = findUnit(copyTable(words), extra_words, dir, enclosed)
+    local unit, words_ = (noconds and findClass or findUnit)(copyTable(words), extra_words, dir, enclosed)
     local andd
     while unit do
       words = words_
@@ -314,7 +358,7 @@ function findVerbPhrase(words, extra_words_, dir, enclosed)
       else
         break
       end
-      unit, words_ = findUnit(copyTable(words), extra_words, dir, enclosed)
+      unit, words_ = noconds and (noconds and findClass or findUnit)(copyTable(words), extra_words, dir, enclosed)
     end
     if andd then
       table.insert(words, andd)

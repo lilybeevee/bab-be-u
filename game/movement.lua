@@ -207,7 +207,6 @@ function doMovement(movex, movey, key)
       local isspoop = matchesRule(nil, "spoop", "?")
       for _,ruleparent in ipairs(isspoop) do
         local unit = ruleparent[2]
-        local othername = ruleparent[1].rule.object.name
         local others = {}
         for nx=-1,1 do
           for ny=-1,1 do
@@ -217,8 +216,8 @@ function doMovement(movex, movey, key)
           end
         end
         for _,other in ipairs(others) do
-          local is_spoopy = hasRule(unit, "spoop", othername)
-          if (other.name == othername and is_spoopy and not hasProperty(other, "slep")) and timecheck(unit,"spoop",other) and timecheck(other) then
+          local is_spoopy = hasRule(unit, "spoop", other.name)
+          if (is_spoopy and not hasProperty(other, "slep")) and timecheck(unit,"spoop",other) and timecheck(other) then
             spoop_dir = dirs8_by_offset[sign(other.x - unit.x)][sign(other.y - unit.y)]
             if (spoop_dir % 2 == 1 or (not hasProperty(unit, "ortho") and not hasProperty(other, "ortho"))) then
               addUndo({"update", other.id, other.x, other.y, other.dir})
@@ -246,7 +245,7 @@ function doMovement(movex, movey, key)
   
       local isactualstalk = matchesRule("?", "stalk", "?");
       for _,ruleparent in ipairs(isactualstalk) do
-        local stalkers = findUnitsByName(ruleparent.rule.subject)
+        local stalkers = findUnitsByName(ruleparent.rule.subject.name)
         local stalker_conds = ruleparent.rule.subject.conds
         local stalkee_conds = ruleparent.rule.object.conds
         if #findUnitsByName(ruleparent.rule.object.name) > 0 then
@@ -1446,7 +1445,7 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
   if (#isnthere > 0) then
     for _,ruleparent in ipairs(isnthere) do
       local fullrule = ruleparent[2]
-      local here = fullrule[#fullrule]
+      local here = ruleparent[1].rule.object.unit
       local hx = dirs8[here.dir][1]
       local hy = dirs8[here.dir][2]
       
@@ -1460,7 +1459,7 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
   if (#isntthere > 0) then
     for _,ruleparent in ipairs(isntthere) do
       local fullrule = ruleparent[2]
-      local there = fullrule[#fullrule]
+      local there = ruleparent[1].rule.object.unit
       
       local tx = there.x
       local ty = there.y

@@ -394,6 +394,15 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
       end
     end
   end
+  
+  for _,group in ipairs(group_names) do
+    if group_sets[group] and group_sets[group][rule3] then
+      mergeTable(ret, matchesRule(rule1, rule2, group))
+    end
+    if group_sets[group] and group_sets[group][rule1] then
+      mergeTable(ret, matchesRule(group, rule2, rule3))
+    end
+  end
 
   return ret
 end
@@ -503,7 +512,9 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
     local condtype = cond.name
     local lists = {} -- for iterating
     local sets = {} -- for checking
-    if cond.others then
+    if condtype:starts("that") then
+      lists = cond.others or {} -- using "lists" to store the names, since THAT doesn't allow nesting, and we need the name for hasRule
+    elseif cond.others then
       for _,other in ipairs(cond.others) do
         local list = {}
         local set = {}
@@ -542,11 +553,11 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
     
     if (old_withrecursioncond) then
       result = false
-    elseif condtype:starts("that") and false then -- TODO: parsing for this isn't finished, not gonna bother with this until that works
+    elseif condtype:starts("that") then
       result = true
       local verb = condtype:sub(6)
-      for _,param in ipairs(params) do
-        if not hasRule(unit,verb,param) then
+      for _,param in ipairs(lists) do -- using "lists" to store the names, since THAT doesn't allow nesting, and we need the name for hasRule
+        if not hasRule(unit,verb,param.name) then
           result = false
           break
         end
@@ -953,7 +964,7 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
         result = colour_for_palette[colour[1]][colour[2]] == condtype
       end
     elseif condtype == "the" then
-      local the = cond[3][1]
+      local the = cond.unit
       
       local tx = the.x
       local ty = the.y
@@ -2006,7 +2017,7 @@ function timecheck(unit,verb,prop)
       local rulecheck = matchesRule(unit,verb,prop)
       for _,ruleparent in ipairs(rulecheck) do
         for i=1,#ruleparent.rule.subject.conds do
-          if ruleparent.rule.subjects.conds[i][1] == "timles" then
+          if ruleparent.rule.subject.conds[i][1] == "timles" then
             return true
           end
         end

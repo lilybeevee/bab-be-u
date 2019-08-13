@@ -1992,7 +1992,7 @@ function convertUnits(pass)
   local thes = matchesRule(nil,"be","the")
   for _,ruleparent in ipairs(thes) do
     local unit = ruleparent[2]
-    local the = ruleparent[1].units[3]
+    local the = ruleparent[1].rule.object.unit
     
     local tx = the.x
     local ty = the.y
