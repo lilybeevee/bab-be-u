@@ -441,9 +441,8 @@ end
       brush.dir = dir
       local hx,hy = getHoveredTile()
       if hx ~= nil then
-        local tileid = hx + hy * mapwidth
-        if units_by_tile[tileid] and #units_by_tile[tileid] > 0 then
-          for _,unit in ipairs(units_by_tile[tileid]) do
+        if units_by_tile[hx][hy] and #units_by_tile[hx][hy] > 0 then
+          for _,unit in ipairs(units_by_tile[hx][hy]) do
             unit.dir = brush.dir
           end
           scene.updateMap()
@@ -634,11 +633,9 @@ function scene.update(dt)
     elseif not settings_open or not mouseOverBox(settings.x, settings.y, settings.w, settings.h) then
       local hx,hy = getHoveredTile()
       if hx ~= nil then
-        local tileid = hx + hy * mapwidth
-
         local hovered = {}
-        if units_by_tile[tileid] then
-          for _,v in ipairs(units_by_tile[tileid]) do
+        if units_by_tile[hx][hy] then
+          for _,v in ipairs(units_by_tile[hx][hy]) do
             table.insert(hovered, v)
           end
         end
@@ -1193,11 +1190,12 @@ end
 function scene.updateMap()
   map_ver = 4
   local map = {}
-  for x = 0, mapwidth-1 do
-    for y = 0, mapheight-1 do
-      local tileid = x + y * mapwidth
-      if units_by_tile[tileid] then
-        for _,unit in ipairs(units_by_tile[tileid]) do
+  
+  local xmin,xmax,ymin,ymax = getCorners()
+  for x=xmin,xmax do
+    for y=ymin,ymax do
+      if units_by_tile[x][y] then
+        for _,unit in ipairs(units_by_tile[x][y]) do
           table.insert(map, {id = unit.id, tile = unit.tile, x = unit.x, y = unit.y, dir = unit.dir, special = unit.special});
         end
       end

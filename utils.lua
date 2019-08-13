@@ -119,9 +119,12 @@ function initializeGraphicalPropertyCache()
 end
 
 function loadMap()
-  for x=0,mapwidth-1 do
-    for y=0,mapheight-1 do
-      units_by_tile[x + y * mapwidth] = {}
+  local xmin,xmax,ymin,ymax = getCorners()
+  
+  for x=xmin,xmax do
+    units_by_tile[x] = {}
+    for y=ymin,ymax do
+      units_by_tile[x][y] = {}
     end
   end
   for _,mapdata in ipairs(maps) do
@@ -223,8 +226,9 @@ end
 
 function initializeEmpties()
   --TODO: other ways to make a text_no1 could be to have a text_text_no1 but that seems contrived that you'd have text_text_no1 but not text_no1?
-  --text_her counts because it looks for no1, I think. similarly we could have text_text_her but again, contrived
-  if ((not letters_exist) and (not units_by_name["text_no1"]) and (not units_by_name["text_her"])) then return end
+  --text_the counts because it looks for no1 too. similarly we could have text_text_the but again, contrived
+  if ((not letters_exist) and (not units_by_name["text_no1"]) and (not units_by_name["text_the"])) then return end
+  --empties_by_tile doesn't use the same system as units_by_tile because empty cannot be oob by nature, so there's no need to allow it to be oob
   for x=0,mapwidth-1 do
     for y=0,mapheight-1 do
       local tileid = x + y * mapwidth
@@ -480,7 +484,7 @@ function hasRule(rule1,rule2,rule3)
 end
 
 function validEmpty(unit)
-  return #units_by_tile[unit.x + unit.y * mapwidth] == 0
+  return #units_by_tile[unit.x][unit.y] == 0
 end
 
 function findUnitsByName(name)
@@ -656,6 +660,28 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
           end
         end
         if not found then
+          result = false
+          break
+        end
+      end
+    elseif condtype == "w/neighbor" then
+      for _,param in ipairs(params) do
+        local others = {}
+        for ndir=1,4 do
+          local nx, ny = dirs8[ndir*2-1][1], dirs8[ndir*2-1][2]
+          if unit == outerlvl and surrounds ~= nil and surrounds_name == level_name then
+            --use surrounds to remember what was around the level
+            for __,on in ipairs(surrounds[nx][ny]) do
+              if nameIs(on, param) then
+                table.insert(others, on);
+              end
+            end
+          else
+            local dx, dy, dir, px, py = getNextTile(unit, nx, ny, ndir)
+            mergeTable(others, param ~= "mous" and getUnitsOnTile(px,py,param) or getCursorsOnTile(px, py, false, unit))
+          end
+        end
+        if #others == 0 then
           result = false
           break
         end
@@ -1287,6 +1313,21 @@ function inBounds(x,y)
   end
 end
 
+function inScreen(x,y)
+  local xmin,xmax,ymin,ymax = getCorners()
+  
+  return x >= xmin and x <= xmax and y >= ymin and y <= ymax
+end
+
+function getCorners()
+  local width = love.graphics.getWidth()
+  local height = love.graphics.getHeight()
+  local xmin,ymin = screenToGameTile(1,1)
+  local xmax,ymax = screenToGameTile(width-1,height-1)
+  
+  return xmin,xmax,ymin,ymax
+end
+
 function removeFromTable(t, obj)
   if not t then
     return
@@ -1312,8 +1353,7 @@ function nameIs(unit,name)
 end
 
 function tileHasUnitName(name,x,y)
-  local tileid = x + y * mapwidth
-  for _,v in ipairs(units_by_tile[tileid]) do
+  for _,v in ipairs(units_by_tile[x][y]) do
     if nameIs(v, name) then
       return true
     end
@@ -1321,12 +1361,9 @@ function tileHasUnitName(name,x,y)
 end
 
 function getUnitsOnTile(x,y,name,not_destroyed,exclude,checkmous)
-  if not inBounds(x,y) then
-    return {}
-  else
-    local result = {}
-    local tileid = x + y * mapwidth
-    for _,unit in ipairs(units_by_tile[tileid]) do
+  local result = {}
+  if units_by_tile[x] ~= nil and units_by_tile[x][y] ~= nil then
+    for _,unit in ipairs(units_by_tile[x][y]) do
       if unit ~= exclude then
         if not not_destroyed or (not_destroyed and not unit.removed) then
           if not name or (name and nameIs(unit, name)) then
@@ -1335,23 +1372,25 @@ function getUnitsOnTile(x,y,name,not_destroyed,exclude,checkmous)
         end
       end
     end
-    --If we care about no1 and the tile is empty, find the no1 that's there.
-    if (name == "mous") or checkmous then
-      for _,cursor in ipairs(cursors) do
-        if cursor ~= exclude then
-          if not not_destroyed or (not_destroyed and not cursor.removed) then
-            if cursor.x == x and cursor.y == y then
-              table.insert(result, cursor)
-            end
+  end
+  if (name == "mous") or checkmous then
+    for _,cursor in ipairs(cursors) do
+      if cursor ~= exclude then
+        if not not_destroyed or (not_destroyed and not cursor.removed) then
+          if cursor.x == x and cursor.y == y then
+            table.insert(result, cursor)
           end
         end
       end
     end
-    if (#units_by_tile[tileid] == 0 and (name == "no1" or name == nil) and empties_by_tile[tileid] ~= exclude) then
-      table.insert(result, empties_by_tile[tileid]);
-    end
-    return result
   end
+  --If we care about no1 and the tile is empty, find the no1 that's there.
+  --empties_by_tile still uses tileid instead of the matrix because empty cannot be oob by definition, since oob is defined by the border
+  local tileid = x + y * mapwidth
+  if (units_by_tile[x] ~= nil and units_by_tile[x][y] ~= nil and #units_by_tile[x][y] == 0 and (name == "no1" or name == nil) and empties_by_tile[tileid] ~= exclude) then
+    table.insert(result, empties_by_tile[tileid])
+  end
+  return result
 end
 
 function getCursorsOnTile(x, y, not_destroyed, exclude)
