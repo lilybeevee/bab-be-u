@@ -1371,8 +1371,13 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
       local diagx = round(root2*dx-root2*dy)
       local diagy = round(root2*dx+root2*dy)
       local knights = countProperty(unit,"knightstep")
-      dx = knights*(dx + diagx)
-      dy = knights*(dy + diagy)
+      if (dx - dy) % 2 == 1 then
+        dx = knights * diagx + dx
+        dy = knights * diagy + dy
+      elseif (dx - dy) % 2 == 0 then
+        dx = diagx + dx * knights
+        dy = diagy + dy * knights
+      end
     end
     if hasProperty(unit, "hopovr") then
       local hops = countProperty(unit, "hopovr")
@@ -1393,7 +1398,7 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
   table.insert(movers, {unit = unit, dx = x-unit.x, dy = y-unit.y, dir = dir, move_dx = move_dx, move_dy = move_dy, move_dir = move_dir, geometry_spin = geometry_spin, portal = portal_unit})
   
   if rules_with["ignor"] ~= nil and (hasRule(unit,"ignor",outerlvl) or hasRule(outerlvl,"ignor",unit)) then
-    return (inBounds(unit.x+dx,unit.y+dy)),movers,{}
+    return (inScreen(unit.x+dx,unit.y+dy)),movers,{}
   end
   
   if not inBounds(x,y) then

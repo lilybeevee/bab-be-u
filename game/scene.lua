@@ -833,34 +833,44 @@ function scene.draw(dt)
       end
       for ndir=2,8,2 do
         local nx,ny = dirs8[ndir][1],dirs8[ndir][2]
-        local dx,dy,dir,px,py = getNextTile(unit,nx,ny,ndir)
+        local dx,dy,dir,px,py,portal = getNextTile(unit,nx,ny,ndir)
         local around = getUnitsOnTile(px,py)
-        for _,other in ipairs(around) do
-          if other.name == "lin" then
-            if not orthos[ndir/2] and not orthos[((ndir/2)+1)%4] then
-              table.insert(line,other)
+        if portal == nil then
+          for _,other in ipairs(around) do
+            if other.name == "lin" then
+              if not orthos[ndir/2] and not orthos[dirAdd(ndir,2)/2] then
+                table.insert(line,other)
+              end
+            elseif other.name == "lvl" then
+              if not orthos[ndir/2] and not orthos[dirAdd(ndir,2)/2] then
+                --add it twice to make it look the same as the other lines. should be reduced to one if we figure out that performance todo above
+                table.insert(line,other)
+                table.insert(line,other)
+              end
             end
-          elseif other.name == "lvl" then
-            if not orthos[ndir/2] and not orthos[((ndir/2)+1)%4] then
-              --add it twice to make it look the same as the other lines. should be reduced to one if we figure out that performance todo above
-              table.insert(line,other)
-              table.insert(line,other)
+          end
+        else
+          for _,other in ipairs(around) do
+            if other.name == "lin" or other.name == "lvl" then
+              table.insert(halfline,{unit.x+nx,unit.y+ny})
+              break
             end
           end
         end
       end
       if (#line > 0) then
         for _,point in ipairs(line) do
-          local dx = unit.x-point.x
-          local dy = unit.y-point.y
-          local odx = 32*dx
-          local ody = 32*dy
+          local pointdrawx,pointdrawy = gameTileToScreen(point.x,point.y)
           
-          love.graphics.line(fulldrawx,fulldrawy,fulldrawx-odx,fulldrawy-ody)
+          pointdrawx = pointdrawx-48
+          pointdrawy = pointdrawy-44
+          
+          love.graphics.line(fulldrawx,fulldrawy,pointdrawx,pointdrawy)
         end
       end
       if (#halfline > 0) then
         for _,point in ipairs(halfline) do
+          --no need to change the rendering to account for movement, since all halflines are drawn to static objects (portals and oob)
           local dx = unit.x-point[1]
           local dy = unit.y-point[2]
           local odx = 16*dx
