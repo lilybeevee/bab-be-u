@@ -858,12 +858,12 @@ function scene.draw(dt)
       end
       if (#line > 0) then
         for _,point in ipairs(line) do
-          local pointdrawx,pointdrawy = gameTileToScreen(point.x,point.y)
+          local dx = unit.x-point.x
+          local dy = unit.y-point.y
+          local odx = TILE_SIZE*dx
+          local ody = TILE_SIZE*dy
           
-          pointdrawx = pointdrawx-48
-          pointdrawy = pointdrawy-44
-          
-          love.graphics.line(fulldrawx,fulldrawy,pointdrawx,pointdrawy)
+          love.graphics.line(fulldrawx,fulldrawy,fulldrawx-odx,fulldrawy-ody)
         end
       end
       if (#halfline > 0) then
@@ -871,8 +871,8 @@ function scene.draw(dt)
           --no need to change the rendering to account for movement, since all halflines are drawn to static objects (portals and oob)
           local dx = unit.x-point[1]
           local dy = unit.y-point[2]
-          local odx = 16*dx
-          local ody = 16*dy
+          local odx = TILE_SIZE*dx/2
+          local ody = TILE_SIZE*dy/2
           
           --draws it twice to make it look the same as the other lines. should be reduced to one if we figure out that performance todo above
           love.graphics.line(fulldrawx,fulldrawy,fulldrawx-odx,fulldrawy-ody)
