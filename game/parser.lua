@@ -316,7 +316,7 @@ function findVerbPhrase(words, extra_words_, dir, enclosed, noconds, no_verb_con
       else
         return nil
       end
-      if words[1] and words[1].type["and"] and words[2] and not words[2].type.verb then
+      if not noconds and words[1] and words[1].type["and"] and words[2] and not words[2].type.verb then
         table.insert(extra_words, words[1])
         table.remove(words, 1)
       else
@@ -331,7 +331,7 @@ function findVerbPhrase(words, extra_words_, dir, enclosed, noconds, no_verb_con
       end
       words = words_
       table.insert(objects, object)
-      if words[1] and words[1].type["and"] and words[2] and not words[2].type.verb then
+      if not noconds and words[1] and words[1].type["and"] and words[2] and not words[2].type.verb then
         table.insert(extra_words, words[1])
         table.remove(words, 1)
       else
@@ -352,7 +352,7 @@ function findVerbPhrase(words, extra_words_, dir, enclosed, noconds, no_verb_con
       end
       found = true
       table.insert(objects, unit)
-      if words[1] and words[1].type["and"] and words[2] and not words[2].type.verb then
+      if not noconds and words[1] and words[1].type["and"] and words[2] and not words[2].type.verb then
         andd = words[1]
         table.remove(words, 1)
       else
