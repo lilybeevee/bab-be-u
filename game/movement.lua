@@ -205,8 +205,12 @@ function doMovement(movex, movey, key)
       end
     elseif move_stage == 1 then
       local isspoop = matchesRule(nil, "spoop", "?")
+      local spoopunits = {}
       for _,ruleparent in ipairs(isspoop) do
         local unit = ruleparent[2]
+        spoopunits[unit] = true
+      end
+      for unit,_ in pairs(spoopunits) do
         local others = {}
         for nx=-1,1 do
           for ny=-1,1 do
@@ -216,14 +220,14 @@ function doMovement(movex, movey, key)
           end
         end
         for _,other in ipairs(others) do
-          local is_spoopy = hasRule(unit, "spoop", other.name)
-          if (is_spoopy and not hasProperty(other, "slep")) and timecheck(unit,"spoop",other) and timecheck(other) then
+          local is_spoopy = #matchesRule(unit, "spoop", other)
+          if (is_spoopy > 0 and not hasProperty(other, "slep")) and timecheck(unit,"spoop",other) and timecheck(other) then
             spoop_dir = dirs8_by_offset[sign(other.x - unit.x)][sign(other.y - unit.y)]
             if (spoop_dir % 2 == 1 or (not hasProperty(unit, "ortho") and not hasProperty(other, "ortho"))) then
               addUndo({"update", other.id, other.x, other.y, other.dir})
               other.olddir = other.dir
               updateDir(other, spoop_dir)
-              table.insert(other.moves, {reason = "spoop", dir = other.dir, times = 1})
+              table.insert(other.moves, {reason = "spoop", dir = other.dir, times = is_spoopy})
               if #other.moves > 0 and not already_added[other] then
                 table.insert(moving_units, other)
                 already_added[other] = true
@@ -248,17 +252,23 @@ function doMovement(movex, movey, key)
         local stalkers = findUnitsByName(ruleparent.rule.subject.name)
         local stalker_conds = ruleparent.rule.subject.conds
         local stalkee_conds = ruleparent.rule.object.conds
+        print(ruleparent.rule.object.name, #findUnitsByName(ruleparent.rule.object.name))
         if #findUnitsByName(ruleparent.rule.object.name) > 0 then
           for _,stalker in ipairs(stalkers) do
+            print("a")
             if testConds(stalker, stalker_conds) then
+              print("b")
               local found_target = nil
               for _,stalkee in ipairs(getUnitsOnTile(stalker.x, stalker.y, ruleparent.rule.object.name)) do -- is it standing on the target
+                print("c")
                 if testConds(stalkee, stalkee_conds) and stalker.id ~= stalkee.id then
                   found_target = 0
                   break
                 end
               end
+              print("d")
               if not found_target then
+                print("e")
                 local visited = {} -- 2d array the size of the map
                 for i = 1,mapwidth do
                   visited[i] = {}
@@ -286,6 +296,7 @@ function doMovement(movex, movey, key)
                         if success then
                           local stalkees = getUnitsOnTile(x, y, ruleparent.rule.object.name)
                           for _,stalkee in ipairs(stalkees) do
+                            print("f")
                             if testConds(stalkee, stalkee_conds) and stalker.id ~= stalkee.id  then
                               found_target = visited[x+1][y+1]
                               return
@@ -417,14 +428,17 @@ function doMovement(movex, movey, key)
         end
       end
       local ismoov = matchesRule(nil, "moov", "?")
+      local moovunits = {}
       for _,ruleparent in ipairs(ismoov) do
         local unit = ruleparent[2]
-        local othername = ruleparent[1].rule.object.name
+        moovunits[unit] = true
+      end
+      for unit,_ in pairs(moovunits) do
         local others = getUnitsOnTile(unit.x,unit.y)
         for _,other in ipairs(others) do
-          local is_moover = hasRule(unit, "moov", othername)
-          if (other.name == othername) and is_moover and timecheck(unit,"moov",other) and other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) then
-            table.insert(other.moves, {reason = "moov", dir = unit.dir, times = 1})
+          local is_moover = #matchesRule(unit, "moov", other)
+          if is_moover > 0 and timecheck(unit,"moov",other) and other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) then
+            table.insert(other.moves, {reason = "moov", dir = unit.dir, times = is_moover})
             if #other.moves > 0 and not already_added[other] then
               table.insert(moving_units, other)
               already_added[other] = true

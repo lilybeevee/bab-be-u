@@ -324,7 +324,7 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
   local rules_list
 
   --there are more properties than there are nouns, so we're more likely to miss based on a property not existing than based on a noun not existing
-  rules_list = rules_with[(nrules[2] ~= "be" and nrules[2]) or nrules[3] or nrules[1]] or {}
+  rules_list = rules_with[fnrules[3] or fnrules[1] or fnrules[2]] or {}
   mergeTable(rules_list, rules_with[fnrules[3] or fnrules[1] or fnrules[2]] or {})
 
   if (debugging) then
@@ -1267,7 +1267,7 @@ function rotate8(dir)
 end
 
 function nameIs(unit,name)
-  return unit.name == name or unit.fullname == name
+  return unit.name == name or unit.fullname == name or (group_names_set[name] and group_sets[name][unit])
 end
 
 function tileHasUnitName(name,x,y)
