@@ -729,7 +729,6 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
         local frens = getUnitsOnTile(px, py, param, false, unit)
         for i,other in ipairs(sets) do
           local isdir = false
-          print(cond.others[i].name)
           if cond.others[i].name == "ortho" then
             isdir = true
             if (unit.dir % 2 == 0) then

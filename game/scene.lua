@@ -264,6 +264,11 @@ function scene.resetStuff()
   --resetMusic("bab be u them", 0.5)
   resetMusic(map_music, 0.9)
   loadMap()
+  --we need to call updateDir to initialize things like units that change their names when their direction changes, in particular this needs to be the same as starting the level anew (which does create every unit and therefore call updateDir on them), so do it now
+  --most happen before we parse rules for the first time
+	for _,unit in ipairs(units) do
+		updateDir(unit, unit.dir, true);
+	end
   clearRules()
   parseRules()
   updateGroup()
@@ -272,13 +277,9 @@ function scene.resetStuff()
   updatePortals()
   miscUpdates()
   next_levels, next_level_objs = getNextLevels()
-
   first_turn = false
   window_dir = 0
-	--we need to call updateDir to initialize things like units that change their names when their direction changes, in particular this needs to be the same as starting the level anew (which does create every unit and therefore call updateDir on them), so do it now
-	for _,unit in ipairs(units) do
-		updateDir(unit, unit.dir, true);
-	end
+	
 end
 
 function scene.mouseMoved(x, y, dx, dy, istouch)
