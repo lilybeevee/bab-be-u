@@ -795,7 +795,7 @@ function updateUnits(undoing, big_update)
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
       for _,on in ipairs(stuff) do
         if hasProperty(on, "fridgd") and sameFloat(unit, on) then
-          if timecheck(unit,"be","hotte") and timecheck(on) then
+          if timecheck(unit,"be","hotte") and timecheck(on,"be","fridgd") then
             table.insert(to_destroy, on)
             playSound("hotte")
             addParticles("destroy", unit.x, unit.y, unit.color)
@@ -817,7 +817,7 @@ function updateUnits(undoing, big_update)
       for _,on in ipairs(stuff) do
         is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
         if is_u and sameFloat(unit, on) then
-          if timecheck(unit,"be",":(") and timecheck(on) then
+          if timecheck(unit,"be",":(") and (timecheck(on,"be","u") or timecheck(on,"be","u too") or timecheck(on,"be","u tres")) then
             table.insert(to_destroy, on)
             playSound("break")
             addParticles("destroy", unit.x, unit.y, unit.color)
@@ -838,7 +838,7 @@ function updateUnits(undoing, big_update)
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
       for _,on in ipairs(stuff) do
         if hasProperty(on, "for dor") and sameFloat(unit, on) then
-          if timecheck(unit,"be","ned kee") and timecheck(on) then
+          if timecheck(unit,"be","ned kee") and timecheck(on,"be","for dor") then
             table.insert(to_destroy, unit)
             table.insert(to_destroy, on)
             playSound("break")
@@ -884,7 +884,7 @@ function updateUnits(undoing, big_update)
       for _,on in ipairs(stuff) do
         is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
         if is_u and sameFloat(unit, on) then
-          if timecheck(unit,"be","try again") and timecheck(on) then
+          if timecheck(unit,"be","try again") and (timecheck(on,"be","u") or timecheck(on,"be","u too") or timecheck(on,"be","u tres")) then
             will_undo = true
             break
           else
@@ -903,7 +903,7 @@ function updateUnits(undoing, big_update)
       for _,on in ipairs(stuff) do
         is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
         if is_u and sameFloat(unit, on) then
-          if timecheck(unit,"be","xwx") and timecheck(on) then
+          if timecheck(unit,"be","xwx") and (timecheck(on,"be","u") or timecheck(on,"be","u too") or timecheck(on,"be","u tres")) then
             love = {}
           else
             addUndo({"timeless_crash_add"});
@@ -921,7 +921,7 @@ function updateUnits(undoing, big_update)
       for _,on in ipairs(stuff) do
         is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
         if is_u and sameFloat(unit, on) then
-          if timecheck(unit,"be",":o") and timecheck(on) then
+          if timecheck(unit,"be",":o") and (timecheck(on,"be","u") or timecheck(on,"be","u too") or timecheck(on,"be","u tres")) then
             table.insert(to_destroy, unit)
             playSound("bonus")
             addParticles("bonus", unit.x, unit.y, unit.color)
@@ -943,7 +943,7 @@ function updateUnits(undoing, big_update)
       for _,on in ipairs(stuff) do
         is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
         if is_u and sameFloat(unit, on) then
-          if timecheck(unit,"be",":)") and timecheck(on) then
+          if timecheck(unit,"be",":)") and (timecheck(on,"be","u") or timecheck(on,"be","u too") or timecheck(on,"be","u tres")) then
             doWin("won")
           else
             addUndo({"timeless_win_add", on.id});
