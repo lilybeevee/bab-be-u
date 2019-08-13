@@ -105,7 +105,7 @@ function findUnit(words, extra_words_, dir, outer, no_verb_cond)
   local parenthesis = false
   -- print(enclosed, words[1].name)
   -- print("finding unit")
-  if (words[1].name == "(" or words[1].name == "parenthesis") and words[1].unit and words[1].unit.dir == dir then
+  if words[1].name == "(" and words[1].unit and words[1].unit.dir == dir then
     enclosed = true
     parenthesis = true
     -- print("(")
@@ -246,7 +246,7 @@ function findUnit(words, extra_words_, dir, outer, no_verb_cond)
   
   -- print(fullDump(words[1]), dir)
   if parenthesis then
-    if words[1] and (words[1].name == ")" or words[1].name == "parenthesis") and words[1].unit and words[1].unit.dir == (rotate8(dir)) then
+    if words[1] and words[1].name == ")" and words[1].unit and words[1].unit.dir == (rotate8(dir)) then
     -- print(")")
       table.insert(extra_words, words[1])
       table.remove(words, 1)
