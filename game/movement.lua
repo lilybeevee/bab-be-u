@@ -252,23 +252,17 @@ function doMovement(movex, movey, key)
         local stalkers = findUnitsByName(ruleparent.rule.subject.name)
         local stalker_conds = ruleparent.rule.subject.conds
         local stalkee_conds = ruleparent.rule.object.conds
-        print(ruleparent.rule.object.name, #findUnitsByName(ruleparent.rule.object.name))
         if #findUnitsByName(ruleparent.rule.object.name) > 0 then
           for _,stalker in ipairs(stalkers) do
-            print("a")
             if testConds(stalker, stalker_conds) then
-              print("b")
               local found_target = nil
               for _,stalkee in ipairs(getUnitsOnTile(stalker.x, stalker.y, ruleparent.rule.object.name)) do -- is it standing on the target
-                print("c")
                 if testConds(stalkee, stalkee_conds) and stalker.id ~= stalkee.id then
                   found_target = 0
                   break
                 end
               end
-              print("d")
               if not found_target then
-                print("e")
                 local visited = {} -- 2d array the size of the map
                 for i = 1,mapwidth do
                   visited[i] = {}
@@ -296,7 +290,6 @@ function doMovement(movex, movey, key)
                         if success then
                           local stalkees = getUnitsOnTile(x, y, ruleparent.rule.object.name)
                           for _,stalkee in ipairs(stalkees) do
-                            print("f")
                             if testConds(stalkee, stalkee_conds) and stalker.id ~= stalkee.id  then
                               found_target = visited[x+1][y+1]
                               return
