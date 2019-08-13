@@ -711,7 +711,7 @@ function updateUnits(undoing, big_update)
         if unit ~= on and hasRule(unit, "vs", on) and sameFloat(unit, on) then
           local unitmoved = false
           local onmoved = false
-          for _,undo in ipairs(undo_buffer[2]) do
+          for _,undo in ipairs(undo_buffer[1]) do
             if undo[1] == "update" and undo[2] == unit.id and ((undo[3] ~= unit.x) or (undo[4] ~= unit.y)) then
               unitmoved = true
             end
