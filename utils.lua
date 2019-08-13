@@ -277,9 +277,9 @@ end
   Note that the rules returned are full rules, formatted like: {{subject,verb,object,{preconds,postconds}}, {ids}} 
 ]]
 function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
-  if (debugging) then
+  --[[if (debugging) then
     print("matchesRule arguments:"..tostring(rule1)..","..tostring(rule2)..","..tostring(rule3))
-  end
+  end]]
   
   local nrules = {} -- name
   local fnrules = {} -- fullname
@@ -310,14 +310,14 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
   end
 
   getnrule(rule1,1)
-  getnrule(rule2,2)
+  nrules[2] = rule2
   getnrule(rule3,3)
   
-  if (debugging) then
+  --[[if (debugging) then
     for x,y in ipairs(nrules) do
       print("in nrules:"..tostring(x)..","..tostring(y))
     end
-  end
+  end]]
 
   local ret = {}
 
@@ -338,24 +338,25 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
 
   --there are more properties than there are nouns, so we're more likely to miss based on a property not existing than based on a noun not existing
   rules_list = rules_with[(nrules[2] ~= "be" and nrules[2]) or nrules[3] or nrules[1] or nrules[2]] or {}
-  mergeTable(rules_list, rules_with[fnrules[3] or fnrules[1] or fnrules[2]] or {})
+  mergeTable(rules_list, rules_with[fnrules[3] or fnrules[1]] or {})
 
-  if (debugging) then
+  --[[if (debugging) then
     print ("found this many rules:"..tostring(#rules_list))
-  end
+  end]]
   if #rules_list > 0 then
     for _,rules in ipairs(rules_list) do
       local rule = rules.rule
-      if (debugging) then
+      --[[if (debugging) then
         for i=1,3 do
-          print("checking this rule,"..tostring(i)..":"..tostring(rule[ruleparts[i]].name))
+          print("checking this rule,"..tostring(i)..":"..tostring(rule[ruleparts[i] ].name))
         end
-      end
+      end]]
       local result = true
       for i=1,3 do
         local name = rule[ruleparts[i]].name
         --special case for stuff like 'group be x' - if we are in that group, we do match that rule
         --we also need to handle groupn't
+        --seems to not impact performance much?
         local group_match = false
         if rule_units[i] ~= nil then
           if group_sets[name] and group_sets[name][rule_units[i] ] then
@@ -371,9 +372,9 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
         end
         if not (group_match) then
           if nrules[i] ~= nil and nrules[i] ~= name and (fnrules[i] == nil or (fnrules[i] ~= nil and fnrules[i] ~= name)) then
-            if (debugging) then
+            --[[if (debugging) then
               print("false due to nrules/fnrules mismatch")
-            end
+            end]]
             result = false
           end
         end
@@ -383,10 +384,9 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
         for i=1,3,2 do
           if rule_units[i] ~= nil then
             if not testConds(rule_units[i], rule[ruleparts[i]].conds) then
-              if (debugging) then
+              --[[if (debugging) then
                 print("false due to cond", i)
-                -- print(fullDump(rule_units[i]), fullDump(rule[ruleparts[i]].conds))
-              end
+              end]]
               result = false
             end
           end
@@ -729,7 +729,6 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
         local frens = getUnitsOnTile(px, py, param, false, unit)
         for i,other in ipairs(sets) do
           local isdir = false
-          print(cond.others[i].name)
           if cond.others[i].name == "ortho" then
             isdir = true
             if (unit.dir % 2 == 0) then
