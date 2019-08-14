@@ -343,7 +343,6 @@ function doTryAgain()
   in_try_again = false
   try_again_cache = nil
   consolidateUndo(1);
-  print(fullDump(undo_buffer[1]))
 end
 
 function isNoUndo(unit)
