@@ -584,6 +584,9 @@ function addRule(full_rule)
   end
 
   if verb_not > 0 then
+    if (verb == "be") and (subject == object or (subject:starts("text_") and object == "text")) then
+      verb_not = verb_not + 1
+    end
     if not not_rules[verb_not] then
       not_rules[verb_not] = {}
       max_not_rules = math.max(max_not_rules, verb_not)
@@ -595,7 +598,15 @@ function addRule(full_rule)
     table.insert(full_rules, {rule = {subject = rules.subject, verb = {name = verb .. "n't"}, object = rules.object}, units = units, dir = dir})
   elseif (verb == "be") and (subject == object or (subject:starts("text_") and object == "text")) then
     --print("protecting: " .. subject .. ", " .. object)
-    addRuleSimple(rules.subject, {"ben't"}, {object .. "n't", rules.object.conds}, units, dir)
+    print("a")
+    addRuleSimple(rules.subject, {"be"}, {"notransform", rules.object.conds}, units, dir)
+  elseif object == "notransform" then -- no "n't" here, but still blocks other rules so we need to count it
+    if not not_rules[1] then
+      not_rules[1] = {}
+      max_not_rules = math.max(max_not_rules, 1)
+    end
+    table.insert(not_rules[1], full_rule)
+    table.insert(full_rules, full_rule)
   else
     table.insert(full_rules, full_rule)
   end
@@ -603,62 +614,13 @@ end
 
 function postRules()
   local all_units = {}
-
-	-- Step 0:
-	-- Determine group membership, and rewrite rules involving groups into their membership versions
-	-- TODO: this probably malfunctions horribly if you reference two different groups in the same rule, and it doesn't handle groups in conditions, and it doesn't handle conditional membership, and it doesn't handle ben't group, and whatever other special cases you can come up with
-	-- group_membership = {}
-	
-	-- for _,group in ipairs(group_names) do
-	-- 	group_membership[group] = {}
-	-- 	for _,rules in ipairs(full_rules) do
-	-- 		local rule = rules.rule
-
-	-- 		local subject, verb, object = rule.subject, rule.verb, rule.object
-	-- 		if verb == "be" and object == group then
-	-- 			group_membership[group][subject] = true
-	-- 		end
-	-- 	end
-	-- end
-	
-	-- for _,group in ipairs(group_names) do
-	-- 	for _,rules in ipairs(full_rules) do
-	-- 		local rule = rules.rule
-
-	-- 		local subject, verb, object = rule.subject, rule.verb, rule.object
-	-- 		if object == group and verb ~= "be" then
-	-- 			if subject == group then
-	-- 				for member1,_ in pairs(group_membership[group]) do
-	-- 					for member2,_ in pairs(group_membership[group]) do
-	-- 						local newRules = deepCopy(rules);
-	-- 						newRules.subject.name = member1;
-	-- 						newRules.object.name = member2;
-	-- 						addRuleSimple(unpack(newRules));
-	-- 					end
-	-- 				end
-	-- 			else
-	-- 				for member,_ in pairs(group_membership[group]) do
-	-- 					local newRules = deepCopy(rules);
-	-- 					newRules.object.name = member;
-	-- 					addRuleSimple(unpack(newRules));
-	-- 				end
-	-- 			end
-	-- 		elseif subject == group then
-	-- 			for member,_ in pairs(group_membership[group]) do
-	-- 				local newRules = deepCopy(rules);
-	-- 				newRules.subject.name = member;
-	-- 				addRuleSimple(unpack(newRules));
-	-- 			end
-	-- 		end
-	-- 	end
-	-- end
 	
   -- Step 1:
   -- Block & remove rules if they're N'T'd out
   for n = max_not_rules, 1, -1 do
     if not_rules[n] then
       for _,rules in ipairs(not_rules[n]) do
-        local rule = rules.rule
+        local rule = rules.rule -- rule = the current rule we're looking at
         local conds = {rule.subject.conds or {}, rule.object.conds or {}}
 
         local inverse_conds = {{},{}}
@@ -675,19 +637,29 @@ function postRules()
         end
 
         local has_conds = (#conds[1] > 0 or #conds[2] > 0)
+        
+        local specialmatch = 0
+        if rule.verb.name == "be" and rule.object.name == "notransform" then -- "bab be bab" should cross out "bab be keek"
+          specialmatch = 1
+        elseif rule.verb.name == "ben't" and rule.object.name == rule.subject.name then -- "bab be n't bab" should cross out "bab be bab" (bab be notransform)
+          specialmatch = 2
+        end
 
-        local function blockRules(t, n)
+        local function blockRules(t)
           local blocked_rules = {}
           for _,frules in ipairs(t) do
-            local frule = frules.rule
+            local frule = frules.rule -- frule = potential matching rule to cancel
             -- print(fullDump(frule))
             local fverb = frule.verb.name
-            if n then
+            if specialmatch ~= 1 then
               fverb = fverb .. "n't"
             end
             -- print("frule:", fullDump(frule))
-            if frule.subject.name == rule.subject.name and fverb == rule.verb.name and
-            frule.object.name == rule.object.name and frule.object.name ~= "her" and frule.object.name ~= "thr" then
+            if (frule.subject.name == rule.subject.name or (rule.subject.name == "text" and frule.subject.name:starts("text_"))) and fverb == rule.verb.name and (
+              (specialmatch == 0 and frule.object.name == rule.object.name and frule.object.name ~= "her" and frule.object.name ~= "thr") or
+              (specialmatch == 1 and (tiles_by_name[frule.object.name] or frule.object.name == "mous" or frule.object.name == "text" or frule.object.name == "every1")) or -- possibly more special cases needed
+              (specialmatch == 2 and frule.object.name == "notransform")
+            ) then
               -- print("matching rule", rule[1][1], rule[2], rule[3][1])
               if has_conds then
                 for _,cond in ipairs(inverse_conds[1]) do
@@ -715,9 +687,9 @@ function postRules()
         end
 
         if not_rules[n - 1] then
-          blockRules(not_rules[n - 1], true)
+          blockRules(not_rules[n - 1])
         end
-        blockRules(full_rules, true)
+        blockRules(full_rules)
 
         mergeTable(all_units, rules[2])
       end

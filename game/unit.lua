@@ -1734,7 +1734,7 @@ function convertLevel()
 
   local converts = matchesRule(outerlvl,"be","?")
   for _,match in ipairs(converts) do
-    if not nameIs(outerlvl, match.rule.object.name) then
+    if not hasProperty(outerlvl, "notransform") then
       local tile = tiles_by_name[match.rule.object.name]
       if match.rule.object.name == "text" then
         tile = tiles_by_name["text_lvl"]
@@ -1882,46 +1882,47 @@ function convertUnits(pass)
     local rules = match[1]
     local unit = match[2]
     local rule = rules.rule
-    
-    if (rule.subject.name == "mous" and rule.object.name ~= "mous") then
-      for _,cursor in ipairs(cursors) do
-        if inBounds(cursor.x, cursor.y) and testConds(cursor, rule.subject.conds) then
-          for _,v in ipairs(referenced_objects) do
-            local tile = tiles_by_name[v]
-            if v == "text" then
-              tile = tiles_by_name["text_" .. rule.subject.name]
+    if not hasProperty(unit, "notransform") then
+      if (rule.subject.name == "mous" and rule.object.name ~= "mous") then
+        for _,cursor in ipairs(cursors) do
+          if inBounds(cursor.x, cursor.y) and testConds(cursor, rule.subject.conds) then
+            for _,v in ipairs(referenced_objects) do
+              local tile = tiles_by_name[v]
+              if v == "text" then
+                tile = tiles_by_name["text_" .. rule.subject.name]
+              end
+              if tile ~= nil then
+                table.insert(del_cursors, cursor);
+              end
+              local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
+              if (new_unit ~= nil) then
+                addUndo({"create", new_unit.id, true, created_from_id = unit.id})
+              end
             end
-            if tile ~= nil then
-              table.insert(del_cursors, cursor);
+          end
+        end
+      elseif not unit.new and unit.class == "unit" and unit.type ~= "outerlvl" and not hasRule(unit, "be", unit.name) and timecheck(unit) then
+        for _,v in ipairs(referenced_objects) do
+          local tile = tiles_by_name[v]
+          if v == "text" then
+            tile = tiles_by_name["text_" .. rule.subject.name]
+          end
+          if tile ~= nil then
+            if not unit.removed then
+              table.insert(converted_units, unit)
             end
             local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
             if (new_unit ~= nil) then
               addUndo({"create", new_unit.id, true, created_from_id = unit.id})
             end
+          elseif v == "mous" then
+            if not unit.removed then
+              table.insert(converted_units, unit)
+            end
+            unit.removed = true
+            local new_mouse = createMouse(unit.x, unit.y)
+            addUndo({"create_cursor", new_mouse.id, created_from_id = unit.id})
           end
-        end
-      end
-    elseif not unit.new and unit.class == "unit" and unit.type ~= "outerlvl" and not hasRule(unit, "be", unit.name) and timecheck(unit) then
-      for _,v in ipairs(referenced_objects) do
-        local tile = tiles_by_name[v]
-        if v == "text" then
-          tile = tiles_by_name["text_" .. rule.subject.name]
-        end
-        if tile ~= nil then
-          if not unit.removed then
-            table.insert(converted_units, unit)
-          end
-          local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
-          if (new_unit ~= nil) then
-            addUndo({"create", new_unit.id, true, created_from_id = unit.id})
-          end
-        elseif v == "mous" then
-          if not unit.removed then
-            table.insert(converted_units, unit)
-          end
-          unit.removed = true
-          local new_mouse = createMouse(unit.x, unit.y)
-          addUndo({"create_cursor", new_mouse.id, created_from_id = unit.id})
         end
       end
     end
@@ -1933,46 +1934,48 @@ function convertUnits(pass)
     local unit = match[2]
     local rule = rules.rule
     
-    if (rule.subject.name == "mous" and rule.object.name ~= "mous") then
-      for _,cursor in ipairs(cursors) do
-        if inBounds(cursor.x, cursor.y) and testConds(cursor, rule.subject.conds) then
-          local tile = tiles_by_name[rule.object.name]
-          if rule.object.name == "text" then
-            tile = tiles_by_name["text_" .. rule.subject.name]
-          elseif rule.object.name:starts("this") and not rule.object.name:ends("n't") then
-            tile = tiles_by_name["this"]
-          end
-          if tile ~= nil then
-            table.insert(del_cursors, cursor);
-            local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
-            if (new_unit ~= nil) then
-              addUndo({"create", new_unit.id, true, created_from_id = unit.id})
+    if not hasProperty(unit, "notransform") then
+      if (rule.subject.name == "mous" and rule.object.name ~= "mous") then
+        for _,cursor in ipairs(cursors) do
+          if inBounds(cursor.x, cursor.y) and testConds(cursor, rule.subject.conds) then
+            local tile = tiles_by_name[rule.object.name]
+            if rule.object.name == "text" then
+              tile = tiles_by_name["text_" .. rule.subject.name]
+            elseif rule.object.name:starts("this") and not rule.object.name:ends("n't") then
+              tile = tiles_by_name["this"]
+            end
+            if tile ~= nil then
+              table.insert(del_cursors, cursor);
+              local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
+              if (new_unit ~= nil) then
+                addUndo({"create", new_unit.id, true, created_from_id = unit.id})
+              end
             end
           end
         end
-      end
-    elseif not unit.new and unit.class == "unit" and not nameIs(unit, rule.object.name) and unit.type ~= "outerlvl" and timecheck(unit) then
-      local tile = tiles_by_name[rule.object.name]
-      if rule.object.name == "text" then
-        tile = tiles_by_name["text_" .. rule.subject.name]
-      elseif rule.object.name:starts("this") and not rule.object.name:ends("n't") then
-        tile = tiles_by_name["this"]
-      end
-      if tile ~= nil then
-        if not unit.removed then
-          table.insert(converted_units, unit)
+      elseif not unit.new and unit.class == "unit" and not nameIs(unit, rule.object.name) and unit.type ~= "outerlvl" and timecheck(unit) then
+        local tile = tiles_by_name[rule.object.name]
+        if rule.object.name == "text" then
+          tile = tiles_by_name["text_" .. rule.subject.name]
+        elseif rule.object.name:starts("this") and not rule.object.name:ends("n't") then
+          tile = tiles_by_name["this"]
         end
-        local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
-        if (new_unit ~= nil) then
-          addUndo({"create", new_unit.id, true, created_from_id = unit.id})
+        if tile ~= nil then
+          if not unit.removed then
+            table.insert(converted_units, unit)
+          end
+          local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
+          if (new_unit ~= nil) then
+            addUndo({"create", new_unit.id, true, created_from_id = unit.id})
+          end
+        elseif rule.object.name == "mous" then
+          if not unit.removed then
+            table.insert(converted_units, unit)
+          end
+          unit.removed = true
+          local new_mouse = createMouse(unit.x, unit.y)
+          addUndo({"create_cursor", new_mouse.id, created_from_id = unit.id})
         end
-      elseif rule.object.name == "mous" then
-        if not unit.removed then
-          table.insert(converted_units, unit)
-        end
-        unit.removed = true
-        local new_mouse = createMouse(unit.x, unit.y)
-        addUndo({"create_cursor", new_mouse.id, created_from_id = unit.id})
       end
     end
   end
@@ -1992,30 +1995,32 @@ function convertUnits(pass)
   local thes = matchesRule(nil,"be","the")
   for _,ruleparent in ipairs(thes) do
     local unit = ruleparent[2]
-    local the = ruleparent[1].rule.object.unit
-    
-    local tx = the.x
-    local ty = the.y
-    local dir = the.dir
-    local dx = dirs8[dir][1]
-    local dy = dirs8[dir][2]
-    dx,dy,dir,tx,ty = getNextTile(the,dx,dy,dir)
-    
-    local tfd = false
-    local tfs = getUnitsOnTile(tx,ty)
-    for _,other in ipairs(tfs) do
-      if not hasRule(unit,"be",unit.name) and not hasRule(unit,"ben't",other.fullname) then
-        local tile = tiles_by_name[other.fullname]
-        local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
-        if new_unit ~= nil then
-          tfd = true
-          addUndo({"create", new_unit.id, true, created_from_id = unit.id})
+    if not hasProperty(unit, "notransform") then
+      local the = ruleparent[1].rule.object.unit
+      
+      local tx = the.x
+      local ty = the.y
+      local dir = the.dir
+      local dx = dirs8[dir][1]
+      local dy = dirs8[dir][2]
+      dx,dy,dir,tx,ty = getNextTile(the,dx,dy,dir)
+      
+      local tfd = false
+      local tfs = getUnitsOnTile(tx,ty)
+      for _,other in ipairs(tfs) do
+        if not hasRule(unit,"be",unit.name) and not hasRule(unit,"ben't",other.fullname) then
+          local tile = tiles_by_name[other.fullname]
+          local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
+          if new_unit ~= nil then
+            tfd = true
+            addUndo({"create", new_unit.id, true, created_from_id = unit.id})
+          end
         end
       end
-    end
-    
-    if tfd and not unit.removed then
-      table.insert(converted_units, unit)
+      
+      if tfd and not unit.removed then
+        table.insert(converted_units, unit)
+      end
     end
   end
   
