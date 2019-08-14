@@ -10,6 +10,37 @@ function addUndo(data)
   end
 end
 
+function consolidateUndo(turn)
+  --Goal of this function - if we ended on a trivial movement infinite loop, consolidate the 1000 updates into one.
+  if #undo_buffer > 0 then 
+    local buff = undo_buffer[1];
+    local prev_undo = nil;
+    local cur_undo = nil;
+    for i = #buff,1,-1 do
+      cur_undo = buff[i];
+      if (prev_undo ~= nil and prev_undo[1] == "update" and cur_undo[1] == "update" and prev_undo[2] == cur_undo[2]) then
+        --we found two updates for the same unit in a row - we can ditch the older one
+        table.remove(buff, i);
+      else
+        prev_undo = cur_undo;
+      end
+    end
+  end
+end
+
+function addUndoMaybeOverwrite(data)
+  --to save space when crazy infloop/try again stuff happens
+  if #undo_buffer > 0 then 
+    local most_recent_undo = undo_buffer[1][1];
+    if most_recent_undo[1] == data[1] and most_recent_undo[2] == data[2] then
+      --this causes bugs, need to investigate I guess
+      --print("replacing:", fullDump(most_recent_undo), "with:", fullDump(data))
+      table.remove(undo_buffer[1], 1)
+    end
+    table.insert(undo_buffer[1], 1, data)
+  end
+end
+
 function undoOneAction(turn, i, v, ignore_no_undo)
   --print("undoOneAction:",v[1],v[2],v[3],v[4],v[5],v[6],v[7])
   local update_rules = false
@@ -155,11 +186,12 @@ function undoOneAction(turn, i, v, ignore_no_undo)
   return update_rules, unit;
 end
 
-function doBack(unit, turn)
+function doBack(unitid, turn, _ignore_no_undo)
   --UNDO being able to supercede NO UNDO sounds more interesting than if it's a non-interaction imo, means you could make a puzzle where you have to rewind something that was otherwise impossible to rewind
-  local ignore_do_undo = true;
+  local ignore_no_undo = _ignore_no_undo;
+  if (ignore_no_undo == nil) then ignore_no_undo = true end
   if (turn <= 1) then
-    return
+    return false
   end
   if undo_buffer[turn] ~= nil then
     --add a dummy action so that undoing happens
@@ -168,10 +200,11 @@ function doBack(unit, turn)
     end
     for _,v in ipairs(undo_buffer[turn]) do 
       local action = v[1]
-      if units_by_id[v[2]] == unit then
+      local unit = units_by_id[v[2]];
+      if unit ~= nil and (unit.id == unitid or unitid == nil) then
         if (action == "update") then
-          addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
-          undoOneAction(turn, _, v, ignore_do_undo);
+          addUndoMaybeOverwrite({"update", unit.id, unit.x, unit.y, unit.dir})
+          undoOneAction(turn, _, v, ignore_no_undo);
         elseif (action == "create") then
           local convert = v[6];
           local created_from_id = v.created_from_id;
@@ -179,11 +212,11 @@ function doBack(unit, turn)
             addUndo({"backer_turn", unit.id, unit.backer_turn})
           end
           addUndo({"remove", unit.tile, unit.x, unit.y, unit.dir, convert or false, unit.id})
-          undoOneAction(turn, _, v, ignore_do_undo);
+          undoOneAction(turn, _, v, ignore_no_undo);
           scanAndRecreateOldUnit(turn, _, unit.id, created_from_id, ignore_no_undo);
         elseif (action == "create_cursor") then
           addUndo({"remove_cursor", unit.screenx, unit.screeny, unit.id})
-          undoOneAction(turn, _, v, ignore_do_undo);
+          undoOneAction(turn, _, v, ignore_no_undo);
           --TODO: test MOUS vs UNDO interactions
         elseif (action == "colour_change") then
           colour = v[3]
@@ -194,7 +227,9 @@ function doBack(unit, turn)
         end
       end
     end
+    return true
   end
+  return false
 end
 
 --If gras becomes roc, then later roc becomes undo, when it disappears we want the gras to come back. This is how we code that - by scanning for the related remove event and undoing that too.
@@ -297,13 +332,17 @@ function doTryAgain()
     try_again_cache[unit] = true
   end
   local can_undo = true;
+  local i = 2;
+  --instead of literally undoing everything, use BACK code to create new undo events. That way 1) TRY AGAIN can be undone. 2) Units don't forget their previous history each TRY AGAIN, should they be NO UNDO now but not in the future.
   while (can_undo) do
-    can_undo = undo(true)
+    can_undo = doBack(nil, i, false)
+    i = i + 1
   end
   parseRules(true)
   reset_count = reset_count + 1
   in_try_again = false
   try_again_cache = nil
+  consolidateUndo(1);
 end
 
 function isNoUndo(unit)

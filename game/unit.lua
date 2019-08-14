@@ -77,11 +77,11 @@ function moveBlock()
       unit.backer_turn = #undo_buffer+(0.5*(amt-1));
       backers_cache[unit] = unit.backer_turn;
     end
-    doBack(unit, 2*(#undo_buffer-unit.backer_turn));
+    doBack(unit.id, 2*(#undo_buffer-unit.backer_turn));
     for i = 2,amt do
       addUndo({"backer_turn", unit.id, unit.backer_turn})
       unit.backer_turn = unit.backer_turn - 0.5;
-      doBack(unit, 2*(#undo_buffer-unit.backer_turn));
+      doBack(unit.id, 2*(#undo_buffer-unit.backer_turn));
     end
   end
   
@@ -795,7 +795,7 @@ function updateUnits(undoing, big_update)
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
       for _,on in ipairs(stuff) do
         if hasProperty(on, "fridgd") and sameFloat(unit, on) then
-          if timecheck(unit,"be","hotte") and timecheck(on) then
+          if timecheck(unit,"be","hotte") and timecheck(on,"be","fridgd") then
             table.insert(to_destroy, on)
             playSound("hotte")
             addParticles("destroy", unit.x, unit.y, unit.color)
@@ -817,7 +817,7 @@ function updateUnits(undoing, big_update)
       for _,on in ipairs(stuff) do
         is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
         if is_u and sameFloat(unit, on) then
-          if timecheck(unit,"be",":(") and timecheck(on) then
+          if timecheck(unit,"be",":(") and (timecheck(on,"be","u") or timecheck(on,"be","u too") or timecheck(on,"be","u tres")) then
             table.insert(to_destroy, on)
             playSound("break")
             addParticles("destroy", unit.x, unit.y, unit.color)
@@ -838,7 +838,7 @@ function updateUnits(undoing, big_update)
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
       for _,on in ipairs(stuff) do
         if hasProperty(on, "for dor") and sameFloat(unit, on) then
-          if timecheck(unit,"be","ned kee") and timecheck(on) then
+          if timecheck(unit,"be","ned kee") and timecheck(on,"be","for dor") then
             table.insert(to_destroy, unit)
             table.insert(to_destroy, on)
             playSound("break")
@@ -884,7 +884,7 @@ function updateUnits(undoing, big_update)
       for _,on in ipairs(stuff) do
         is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
         if is_u and sameFloat(unit, on) then
-          if timecheck(unit,"be","try again") and timecheck(on) then
+          if timecheck(unit,"be","try again") and (timecheck(on,"be","u") or timecheck(on,"be","u too") or timecheck(on,"be","u tres")) then
             will_undo = true
             break
           else
@@ -903,7 +903,7 @@ function updateUnits(undoing, big_update)
       for _,on in ipairs(stuff) do
         is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
         if is_u and sameFloat(unit, on) then
-          if timecheck(unit,"be","xwx") and timecheck(on) then
+          if timecheck(unit,"be","xwx") and (timecheck(on,"be","u") or timecheck(on,"be","u too") or timecheck(on,"be","u tres")) then
             love = {}
           else
             addUndo({"timeless_crash_add"});
@@ -921,7 +921,7 @@ function updateUnits(undoing, big_update)
       for _,on in ipairs(stuff) do
         is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
         if is_u and sameFloat(unit, on) then
-          if timecheck(unit,"be",":o") and timecheck(on) then
+          if timecheck(unit,"be",":o") and (timecheck(on,"be","u") or timecheck(on,"be","u too") or timecheck(on,"be","u tres")) then
             table.insert(to_destroy, unit)
             playSound("bonus")
             addParticles("bonus", unit.x, unit.y, unit.color)
@@ -943,7 +943,7 @@ function updateUnits(undoing, big_update)
       for _,on in ipairs(stuff) do
         is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
         if is_u and sameFloat(unit, on) then
-          if timecheck(unit,"be",":)") and timecheck(on) then
+          if timecheck(unit,"be",":)") and (timecheck(on,"be","u") or timecheck(on,"be","u too") or timecheck(on,"be","u tres")) then
             doWin("won")
           else
             addUndo({"timeless_win_add", on.id});
@@ -1734,7 +1734,7 @@ function convertLevel()
 
   local converts = matchesRule(outerlvl,"be","?")
   for _,match in ipairs(converts) do
-    if not nameIs(outerlvl, match.rule.object.name) then
+    if not hasProperty(outerlvl, "notransform") then
       local tile = tiles_by_name[match.rule.object.name]
       if match.rule.object.name == "text" then
         tile = tiles_by_name["text_lvl"]
@@ -1882,46 +1882,47 @@ function convertUnits(pass)
     local rules = match[1]
     local unit = match[2]
     local rule = rules.rule
-    
-    if (rule.subject.name == "mous" and rule.object.name ~= "mous") then
-      for _,cursor in ipairs(cursors) do
-        if inBounds(cursor.x, cursor.y) and testConds(cursor, rule.subject.conds) then
-          for _,v in ipairs(referenced_objects) do
-            local tile = tiles_by_name[v]
-            if v == "text" then
-              tile = tiles_by_name["text_" .. rule.subject.name]
+    if not hasProperty(unit, "notransform") then
+      if (rule.subject.name == "mous" and rule.object.name ~= "mous") then
+        for _,cursor in ipairs(cursors) do
+          if inBounds(cursor.x, cursor.y) and testConds(cursor, rule.subject.conds) then
+            for _,v in ipairs(referenced_objects) do
+              local tile = tiles_by_name[v]
+              if v == "text" then
+                tile = tiles_by_name["text_" .. rule.subject.name]
+              end
+              if tile ~= nil then
+                table.insert(del_cursors, cursor);
+              end
+              local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
+              if (new_unit ~= nil) then
+                addUndo({"create", new_unit.id, true, created_from_id = unit.id})
+              end
             end
-            if tile ~= nil then
-              table.insert(del_cursors, cursor);
+          end
+        end
+      elseif not unit.new and unit.class == "unit" and unit.type ~= "outerlvl" and not hasRule(unit, "be", unit.name) and timecheck(unit) then
+        for _,v in ipairs(referenced_objects) do
+          local tile = tiles_by_name[v]
+          if v == "text" then
+            tile = tiles_by_name["text_" .. rule.subject.name]
+          end
+          if tile ~= nil then
+            if not unit.removed then
+              table.insert(converted_units, unit)
             end
             local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
             if (new_unit ~= nil) then
               addUndo({"create", new_unit.id, true, created_from_id = unit.id})
             end
+          elseif v == "mous" then
+            if not unit.removed then
+              table.insert(converted_units, unit)
+            end
+            unit.removed = true
+            local new_mouse = createMouse(unit.x, unit.y)
+            addUndo({"create_cursor", new_mouse.id, created_from_id = unit.id})
           end
-        end
-      end
-    elseif not unit.new and unit.class == "unit" and unit.type ~= "outerlvl" and not hasRule(unit, "be", unit.name) and timecheck(unit) then
-      for _,v in ipairs(referenced_objects) do
-        local tile = tiles_by_name[v]
-        if v == "text" then
-          tile = tiles_by_name["text_" .. rule.subject.name]
-        end
-        if tile ~= nil then
-          if not unit.removed then
-            table.insert(converted_units, unit)
-          end
-          local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
-          if (new_unit ~= nil) then
-            addUndo({"create", new_unit.id, true, created_from_id = unit.id})
-          end
-        elseif v == "mous" then
-          if not unit.removed then
-            table.insert(converted_units, unit)
-          end
-          unit.removed = true
-          local new_mouse = createMouse(unit.x, unit.y)
-          addUndo({"create_cursor", new_mouse.id, created_from_id = unit.id})
         end
       end
     end
@@ -1933,46 +1934,48 @@ function convertUnits(pass)
     local unit = match[2]
     local rule = rules.rule
     
-    if (rule.subject.name == "mous" and rule.object.name ~= "mous") then
-      for _,cursor in ipairs(cursors) do
-        if inBounds(cursor.x, cursor.y) and testConds(cursor, rule.subject.conds) then
-          local tile = tiles_by_name[rule.object.name]
-          if rule.object.name == "text" then
-            tile = tiles_by_name["text_" .. rule.subject.name]
-          elseif rule.object.name:starts("this") and not rule.object.name:ends("n't") then
-            tile = tiles_by_name["this"]
-          end
-          if tile ~= nil then
-            table.insert(del_cursors, cursor);
-            local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
-            if (new_unit ~= nil) then
-              addUndo({"create", new_unit.id, true, created_from_id = unit.id})
+    if not hasProperty(unit, "notransform") then
+      if (rule.subject.name == "mous" and rule.object.name ~= "mous") then
+        for _,cursor in ipairs(cursors) do
+          if inBounds(cursor.x, cursor.y) and testConds(cursor, rule.subject.conds) then
+            local tile = tiles_by_name[rule.object.name]
+            if rule.object.name == "text" then
+              tile = tiles_by_name["text_" .. rule.subject.name]
+            elseif rule.object.name:starts("this") and not rule.object.name:ends("n't") then
+              tile = tiles_by_name["this"]
+            end
+            if tile ~= nil then
+              table.insert(del_cursors, cursor);
+              local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
+              if (new_unit ~= nil) then
+                addUndo({"create", new_unit.id, true, created_from_id = unit.id})
+              end
             end
           end
         end
-      end
-    elseif not unit.new and unit.class == "unit" and not nameIs(unit, rule.object.name) and unit.type ~= "outerlvl" and timecheck(unit) then
-      local tile = tiles_by_name[rule.object.name]
-      if rule.object.name == "text" then
-        tile = tiles_by_name["text_" .. rule.subject.name]
-      elseif rule.object.name:starts("this") and not rule.object.name:ends("n't") then
-        tile = tiles_by_name["this"]
-      end
-      if tile ~= nil then
-        if not unit.removed then
-          table.insert(converted_units, unit)
+      elseif not unit.new and unit.class == "unit" and not nameIs(unit, rule.object.name) and unit.type ~= "outerlvl" and timecheck(unit) then
+        local tile = tiles_by_name[rule.object.name]
+        if rule.object.name == "text" then
+          tile = tiles_by_name["text_" .. rule.subject.name]
+        elseif rule.object.name:starts("this") and not rule.object.name:ends("n't") then
+          tile = tiles_by_name["this"]
         end
-        local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
-        if (new_unit ~= nil) then
-          addUndo({"create", new_unit.id, true, created_from_id = unit.id})
+        if tile ~= nil then
+          if not unit.removed then
+            table.insert(converted_units, unit)
+          end
+          local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
+          if (new_unit ~= nil) then
+            addUndo({"create", new_unit.id, true, created_from_id = unit.id})
+          end
+        elseif rule.object.name == "mous" then
+          if not unit.removed then
+            table.insert(converted_units, unit)
+          end
+          unit.removed = true
+          local new_mouse = createMouse(unit.x, unit.y)
+          addUndo({"create_cursor", new_mouse.id, created_from_id = unit.id})
         end
-      elseif rule.object.name == "mous" then
-        if not unit.removed then
-          table.insert(converted_units, unit)
-        end
-        unit.removed = true
-        local new_mouse = createMouse(unit.x, unit.y)
-        addUndo({"create_cursor", new_mouse.id, created_from_id = unit.id})
       end
     end
   end
@@ -1992,30 +1995,32 @@ function convertUnits(pass)
   local thes = matchesRule(nil,"be","the")
   for _,ruleparent in ipairs(thes) do
     local unit = ruleparent[2]
-    local the = ruleparent[1].rule.object.unit
-    
-    local tx = the.x
-    local ty = the.y
-    local dir = the.dir
-    local dx = dirs8[dir][1]
-    local dy = dirs8[dir][2]
-    dx,dy,dir,tx,ty = getNextTile(the,dx,dy,dir)
-    
-    local tfd = false
-    local tfs = getUnitsOnTile(tx,ty)
-    for _,other in ipairs(tfs) do
-      if not hasRule(unit,"be",unit.name) and not hasRule(unit,"ben't",other.fullname) then
-        local tile = tiles_by_name[other.fullname]
-        local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
-        if new_unit ~= nil then
-          tfd = true
-          addUndo({"create", new_unit.id, true, created_from_id = unit.id})
+    if not hasProperty(unit, "notransform") then
+      local the = ruleparent[1].rule.object.unit
+      
+      local tx = the.x
+      local ty = the.y
+      local dir = the.dir
+      local dx = dirs8[dir][1]
+      local dy = dirs8[dir][2]
+      dx,dy,dir,tx,ty = getNextTile(the,dx,dy,dir)
+      
+      local tfd = false
+      local tfs = getUnitsOnTile(tx,ty)
+      for _,other in ipairs(tfs) do
+        if not hasRule(unit,"be",unit.name) and not hasRule(unit,"ben't",other.fullname) then
+          local tile = tiles_by_name[other.fullname]
+          local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
+          if new_unit ~= nil then
+            tfd = true
+            addUndo({"create", new_unit.id, true, created_from_id = unit.id})
+          end
         end
       end
-    end
-    
-    if tfd and not unit.removed then
-      table.insert(converted_units, unit)
+      
+      if tfd and not unit.removed then
+        table.insert(converted_units, unit)
+      end
     end
   end
   
@@ -2139,6 +2144,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty)
   end
   
   if unit.type == "text" then
+    updateNameBasedOnDir(unit);
     if not table.has_value(referenced_text, unit.fullname) then
       table.insert(referenced_text, unit.fullname)
     end
@@ -2172,7 +2178,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty)
 
   table.insert(units, unit)
 
-  updateDir(unit, unit.dir)
+  --updateDir(unit, unit.dir)
   new_units_cache[unit] = true
   unit.new = true
   return unit
@@ -2181,7 +2187,7 @@ end
 function deleteUnit(unit,convert,undoing)
   unit.removed = true
   unit.removed_final = true
-  if not undoing and not convert and rules_with ~= nil then
+  if not undoing and not convert and not level_destroyed and rules_with ~= nil then
     gotters = matchesRule(unit, "got", "?");
     for _,ruleparent in ipairs(gotters) do
       local rule = ruleparent.rule
@@ -2305,6 +2311,31 @@ function updateDir(unit, dir, force)
     should_parse_rules = true
   end
   
+  updateNameBasedOnDir(unit);
+  
+  if (not unit_tests) then
+    unit.draw.rotation = unit.draw.rotation % 360
+    local target_rot = (dir - 1) * 45
+    if unit.rotate and math.abs(unit.draw.rotation - target_rot) == 180 then
+      -- flip "mirror" effect
+      addTween(tween.new(0.05, unit.draw, {scalex = 0}), "unit:dir:" .. unit.tempid, function()
+        unit.draw.rotation = target_rot
+        addTween(tween.new(0.05, unit.draw, {scalex = 1}), "unit:dir:" .. unit.tempid)
+      end)
+    else
+      -- smooth angle rotation
+      if unit.draw.rotation - target_rot > 180 then
+        target_rot = target_rot + 360
+      elseif target_rot - unit.draw.rotation > 180 then
+        target_rot = target_rot - 360
+      end
+      addTween(tween.new(0.1, unit.draw, {scalex = 1, rotation = target_rot}), "unit:dir:" .. unit.tempid)
+    end
+  end
+  return true
+end
+
+function updateNameBasedOnDir(unit)
   if unit.fullname == "text_mayb" then
     should_parse_rules = true
   elseif unit.fullname == "text_direction" then
@@ -2328,27 +2359,6 @@ function updateDir(unit, dir, force)
     end
     should_parse_rules = true
   end
-  
-  if (not unit_tests) then
-    unit.draw.rotation = unit.draw.rotation % 360
-    local target_rot = (dir - 1) * 45
-    if unit.rotate and math.abs(unit.draw.rotation - target_rot) == 180 then
-      -- flip "mirror" effect
-      addTween(tween.new(0.05, unit.draw, {scalex = 0}), "unit:dir:" .. unit.tempid, function()
-        unit.draw.rotation = target_rot
-        addTween(tween.new(0.05, unit.draw, {scalex = 1}), "unit:dir:" .. unit.tempid)
-      end)
-    else
-      -- smooth angle rotation
-      if unit.draw.rotation - target_rot > 180 then
-        target_rot = target_rot + 360
-      elseif target_rot - unit.draw.rotation > 180 then
-        target_rot = target_rot - 360
-      end
-      addTween(tween.new(0.1, unit.draw, {scalex = 1, rotation = target_rot}), "unit:dir:" .. unit.tempid)
-    end
-  end
-  return true
 end
 
 function newUnitID(id)

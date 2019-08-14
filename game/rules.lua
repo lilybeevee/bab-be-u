@@ -373,54 +373,57 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
         if letter == nil then break end --end of array ends up hitting this case
       end
 
-      local lsentences = findLetterSentences(new_word) --get everything valid out of the letter string (this should be [both], hmm)
-      --[[if (#lsentences.start ~= 0 or #lsentences.endd ~= 0 or #lsentences.middle ~= 0 or #lsentences.both ~= 0) then
-        print(new_word.." --> "..fullDump(lsentences))
-      end]]
+      --parens hack - don't try to make letters out of a single parenthesis
+      if not (new_word:len() < 2 and text_in_tiles[new_word] == nil) then
+        local lsentences = findLetterSentences(new_word) --get everything valid out of the letter string (this should be [both], hmm)
+        --[[if (#lsentences.start ~= 0 or #lsentences.endd ~= 0 or #lsentences.middle ~= 0 or #lsentences.both ~= 0) then
+          print(new_word.." --> "..fullDump(lsentences))
+        end]]
 
-      local before_sentence = {}
-      for i=1,orig_index-1 do
-        table.insert(before_sentence,sentence[i])
-      end
-      local after_sentence = {}
-      if word_index <= #sentence then
-        for i=word_index,#sentence do
-          table.insert(after_sentence,sentence[i])
+        local before_sentence = {}
+        for i=1,orig_index-1 do
+          table.insert(before_sentence,sentence[i])
         end
-      end
+        local after_sentence = {}
+        if word_index <= #sentence then
+          for i=word_index,#sentence do
+            table.insert(after_sentence,sentence[i])
+          end
+        end
 
-      local pos_x = sentence[orig_index].unit.x
-      local pos_y = sentence[orig_index].unit.y
-      --print("coords: "..pos_x..", "..pos_y)
+        local pos_x = sentence[orig_index].unit.x
+        local pos_y = sentence[orig_index].unit.y
+        --print("coords: "..pos_x..", "..pos_y)
 
-      local len = word_index-orig_index
-      for _,s in ipairs(lsentences.middle) do
-        local words = fillTextDetails(s, sentence, orig_index, word_index)
-        parseSentence(words, params_, dir)
-      end
-      for _,s in ipairs(lsentences.start) do
-        local words = fillTextDetails(s, sentence, orig_index, word_index)
-        local before_copy = copyTable(before_sentence) --copying is required because addTables puts results in the first table
-        addTables(before_copy, words)
-        parseSentence(before_copy, params_, dir)
-      end
-      for _,s in ipairs(lsentences.endd) do
-        local words = fillTextDetails(s, sentence, orig_index, word_index)
-        addTables(words, after_sentence)
-        parseSentence(words, params_, dir)
-      end
-      for _,s in ipairs(lsentences.both) do
-        local words = fillTextDetails(s, sentence, orig_index, word_index)
-        local before_copy = copyTable(before_sentence)
-        addTables(words, after_sentence)
-        addTables(before_copy, words)
-        --print("end dump: "..dumpOfProperty(before_copy, "name"))
-        parseSentence(before_copy, params_, dir)
-      end
+        local len = word_index-orig_index
+        for _,s in ipairs(lsentences.middle) do
+          local words = fillTextDetails(s, sentence, orig_index, word_index)
+          parseSentence(words, params_, dir)
+        end
+        for _,s in ipairs(lsentences.start) do
+          local words = fillTextDetails(s, sentence, orig_index, word_index)
+          local before_copy = copyTable(before_sentence) --copying is required because addTables puts results in the first table
+          addTables(before_copy, words)
+          parseSentence(before_copy, params_, dir)
+        end
+        for _,s in ipairs(lsentences.endd) do
+          local words = fillTextDetails(s, sentence, orig_index, word_index)
+          addTables(words, after_sentence)
+          parseSentence(words, params_, dir)
+        end
+        for _,s in ipairs(lsentences.both) do
+          local words = fillTextDetails(s, sentence, orig_index, word_index)
+          local before_copy = copyTable(before_sentence)
+          addTables(words, after_sentence)
+          addTables(before_copy, words)
+          --print("end dump: "..dumpOfProperty(before_copy, "name"))
+          parseSentence(before_copy, params_, dir)
+        end
 
-      parseSentence(before_sentence, params_, dir)
-      parseSentence(after_sentence, params_, dir)
-      return --no need to continue past this point, since the letters suffice
+        parseSentence(before_sentence, params_, dir)
+        parseSentence(after_sentence, params_, dir)
+        return --no need to continue past this point, since the letters suffice
+      end
     end
   end
   
@@ -584,6 +587,9 @@ function addRule(full_rule)
   end
 
   if verb_not > 0 then
+    if (verb == "be") and (subject == object or (subject:starts("text_") and object == "text")) then
+      verb_not = verb_not + 1
+    end
     if not not_rules[verb_not] then
       not_rules[verb_not] = {}
       max_not_rules = math.max(max_not_rules, verb_not)
@@ -595,7 +601,14 @@ function addRule(full_rule)
     table.insert(full_rules, {rule = {subject = rules.subject, verb = {name = verb .. "n't"}, object = rules.object}, units = units, dir = dir})
   elseif (verb == "be") and (subject == object or (subject:starts("text_") and object == "text")) then
     --print("protecting: " .. subject .. ", " .. object)
-    addRuleSimple(rules.subject, {"ben't"}, {object .. "n't", rules.object.conds}, units, dir)
+    addRuleSimple(rules.subject, {"be"}, {"notransform", rules.object.conds}, units, dir)
+  elseif object == "notransform" then -- no "n't" here, but still blocks other rules so we need to count it
+    if not not_rules[1] then
+      not_rules[1] = {}
+      max_not_rules = math.max(max_not_rules, 1)
+    end
+    table.insert(not_rules[1], full_rule)
+    table.insert(full_rules, full_rule)
   else
     table.insert(full_rules, full_rule)
   end
@@ -603,62 +616,13 @@ end
 
 function postRules()
   local all_units = {}
-
-	-- Step 0:
-	-- Determine group membership, and rewrite rules involving groups into their membership versions
-	-- TODO: this probably malfunctions horribly if you reference two different groups in the same rule, and it doesn't handle groups in conditions, and it doesn't handle conditional membership, and it doesn't handle ben't group, and whatever other special cases you can come up with
-	-- group_membership = {}
-	
-	-- for _,group in ipairs(group_names) do
-	-- 	group_membership[group] = {}
-	-- 	for _,rules in ipairs(full_rules) do
-	-- 		local rule = rules.rule
-
-	-- 		local subject, verb, object = rule.subject, rule.verb, rule.object
-	-- 		if verb == "be" and object == group then
-	-- 			group_membership[group][subject] = true
-	-- 		end
-	-- 	end
-	-- end
-	
-	-- for _,group in ipairs(group_names) do
-	-- 	for _,rules in ipairs(full_rules) do
-	-- 		local rule = rules.rule
-
-	-- 		local subject, verb, object = rule.subject, rule.verb, rule.object
-	-- 		if object == group and verb ~= "be" then
-	-- 			if subject == group then
-	-- 				for member1,_ in pairs(group_membership[group]) do
-	-- 					for member2,_ in pairs(group_membership[group]) do
-	-- 						local newRules = deepCopy(rules);
-	-- 						newRules.subject.name = member1;
-	-- 						newRules.object.name = member2;
-	-- 						addRuleSimple(unpack(newRules));
-	-- 					end
-	-- 				end
-	-- 			else
-	-- 				for member,_ in pairs(group_membership[group]) do
-	-- 					local newRules = deepCopy(rules);
-	-- 					newRules.object.name = member;
-	-- 					addRuleSimple(unpack(newRules));
-	-- 				end
-	-- 			end
-	-- 		elseif subject == group then
-	-- 			for member,_ in pairs(group_membership[group]) do
-	-- 				local newRules = deepCopy(rules);
-	-- 				newRules.subject.name = member;
-	-- 				addRuleSimple(unpack(newRules));
-	-- 			end
-	-- 		end
-	-- 	end
-	-- end
 	
   -- Step 1:
   -- Block & remove rules if they're N'T'd out
   for n = max_not_rules, 1, -1 do
     if not_rules[n] then
       for _,rules in ipairs(not_rules[n]) do
-        local rule = rules.rule
+        local rule = rules.rule -- rule = the current rule we're looking at
         local conds = {rule.subject.conds or {}, rule.object.conds or {}}
 
         local inverse_conds = {{},{}}
@@ -675,19 +639,29 @@ function postRules()
         end
 
         local has_conds = (#conds[1] > 0 or #conds[2] > 0)
+        
+        local specialmatch = 0
+        if rule.verb.name == "be" and rule.object.name == "notransform" then -- "bab be bab" should cross out "bab be keek"
+          specialmatch = 1
+        elseif rule.verb.name == "ben't" and rule.object.name == rule.subject.name then -- "bab be n't bab" should cross out "bab be bab" (bab be notransform)
+          specialmatch = 2
+        end
 
-        local function blockRules(t, n)
+        local function blockRules(t)
           local blocked_rules = {}
           for _,frules in ipairs(t) do
-            local frule = frules.rule
+            local frule = frules.rule -- frule = potential matching rule to cancel
             -- print(fullDump(frule))
             local fverb = frule.verb.name
-            if n then
+            if specialmatch ~= 1 then
               fverb = fverb .. "n't"
             end
             -- print("frule:", fullDump(frule))
-            if frule.subject.name == rule.subject.name and fverb == rule.verb.name and
-            frule.object.name == rule.object.name and frule.object.name ~= "her" and frule.object.name ~= "thr" then
+            if (frule.subject.name == rule.subject.name or (rule.subject.name == "text" and frule.subject.name:starts("text_"))) and fverb == rule.verb.name and (
+              (specialmatch == 0 and frule.object.name == rule.object.name and frule.object.name ~= "her" and frule.object.name ~= "thr") or
+              (specialmatch == 1 and (tiles_by_name[frule.object.name] or frule.object.name == "mous" or frule.object.name == "text" or frule.object.name == "every1")) or -- possibly more special cases needed
+              (specialmatch == 2 and frule.object.name == "notransform")
+            ) then
               -- print("matching rule", rule[1][1], rule[2], rule[3][1])
               if has_conds then
                 for _,cond in ipairs(inverse_conds[1]) do
@@ -715,9 +689,9 @@ function postRules()
         end
 
         if not_rules[n - 1] then
-          blockRules(not_rules[n - 1], true)
+          blockRules(not_rules[n - 1])
         end
-        blockRules(full_rules, true)
+        blockRules(full_rules)
 
         mergeTable(all_units, rules[2])
       end

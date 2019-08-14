@@ -136,8 +136,6 @@ function scene.update(dt)
   mouse_X = love.mouse.getX()
   mouse_Y = love.mouse.getY()
 
-  updateMousePosition()
-
   --mouse_movedX = love.mouse.getX() - love.graphics.getWidth()*0.5
   --mouse_movedY = love.mouse.getY() - love.graphics.getHeight()*0.5
 
@@ -212,7 +210,7 @@ function doReplayTurn(turn)
         for i,coords in ipairs(cursor_table) do
           local cursor = cursors[i]
           if (cursor == nil) then
-            print("Couldn't find cursor while doing replay, halp")
+            --print("Couldn't find cursor while doing replay, halp")
           else
             cursor.x = coords[1];
             cursor.y = coords[2];
@@ -264,11 +262,6 @@ function scene.resetStuff()
   --resetMusic("bab be u them", 0.5)
   resetMusic(map_music, 0.9)
   loadMap()
-  --we need to call updateDir to initialize things like units that change their names when their direction changes, in particular this needs to be the same as starting the level anew (which does create every unit and therefore call updateDir on them), so do it now
-  --most happen before we parse rules for the first time
-	for _,unit in ipairs(units) do
-		updateDir(unit, unit.dir, true);
-	end
   clearRules()
   parseRules()
   updateGroup()
@@ -280,25 +273,6 @@ function scene.resetStuff()
   first_turn = false
   window_dir = 0
 	
-end
-
-function scene.mouseMoved(x, y, dx, dy, istouch)
-  if not just_released_mouse then
-    moveMouse(x, y, dx, dy)
-    if not just_released_mouse then
-      --print("grabby grabby")
-      grabMouse(true)
-    end
-  end
-end
-
-function scene.focus(f)
-  if not f then grabMouse(false) end
-end
-
-function scene.mouseFocus(f)
-  --print("focus changed! " .. tostring(f))
-  grabMouse(f)
 end
 
 function scene.keyPressed(key, isrepeat)
@@ -1385,7 +1359,7 @@ function scene.draw(dt)
 
     for i,rule in pairs(full_rules) do
       if not rule.hide_in_list then
-        rules = rules..rule.rule.subject.name..' '..rule.rule.verb.name..' '..rule.rule.object.name
+        rules = rules..serializeRule(rule.rule)
         rulesnum = rulesnum + 1
 
         if rulesnum % 4 >= 3 then

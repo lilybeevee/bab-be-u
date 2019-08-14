@@ -48,14 +48,14 @@ function parse(words, dir, no_verb_cond)
   
   local units = {}
   local verbs = {}
-  while words[1].type.object or words[1].type.cond_prefix or (words[2] and words[2].name == "text") do
+  while words[1].type.object or words[1].type.cond_prefix or words[1].type.parenthesis or (words[2] and words[2].name == "text") do
     local unit, words_ = findUnit(copyTable(words), extra_words, dir, true, no_verb_cond) -- outer unit doesn't need to worry about enclosure (nothing farther out to confuse it with)
     if not unit then break end
     words = words_
     if not unit then return false end
     if #words == 0 then return false end
     table.insert(units, unit)
-    if words[1].type["and"] and words[2] then
+    if words[1].type["and"] and words[2] and (words[2].type.object or words[2].type.parenthesis or words[3] and words[3].name == "text") then
       table.insert(extra_words, words[1])
       table.remove(words, 1)
       if #words == 0 then return false end
@@ -105,7 +105,9 @@ function findUnit(words, extra_words_, dir, outer, no_verb_cond)
   local parenthesis = false
   -- print(enclosed, words[1].name)
   -- print("finding unit")
-  if words[1].name == "(" and words[1].unit and words[1].unit.dir == dir then
+  if #words == 0 then return end
+  
+  if (words[1].name == "(" or words[1].name == "parenthesis") and words[1].unit and words[1].unit.dir == dir then
     enclosed = true
     parenthesis = true
     -- print("(")
@@ -212,7 +214,7 @@ function findUnit(words, extra_words_, dir, outer, no_verb_cond)
         table.insert(conds, infix)
         -- print(enclosed, words[1] and words[1].type, words[2] and words[2].type)
         if #words == 0 then break end
-        while enclosed and words[1] and words[1].type["and"] and words[2] and words[3] and (words[2].type.object or words[3].name == "text") do
+        while enclosed and words[1] and words[1].type["and"] and words[2] and words[3] and (words[2].type.object or words[2].type.parenthesis or words[3].name == "text") do
           table.insert(extra_words, words[1])
           table.remove(words, 1)
           if #words == 0 then break end
@@ -246,7 +248,7 @@ function findUnit(words, extra_words_, dir, outer, no_verb_cond)
   
   -- print(fullDump(words[1]), dir)
   if parenthesis then
-    if words[1] and words[1].name == ")" and words[1].unit and words[1].unit.dir == (rotate8(dir)) then
+    if words[1] and (words[1].name == ")" or words[1].name == "parenthesis") and words[1].unit and words[1].unit.dir == (rotate8(dir)) then
     -- print(")")
       table.insert(extra_words, words[1])
       table.remove(words, 1)

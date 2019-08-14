@@ -26,7 +26,6 @@ function scene.load()
   resetMusic(current_music, 0.8)
   selected_levels = {}
   scene.buildUI()
-  love.mouse.setGrabbed(false)
   love.keyboard.setKeyRepeat(true)
 
   hasreplaylist = {}

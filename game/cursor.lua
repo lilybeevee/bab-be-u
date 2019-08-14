@@ -14,8 +14,8 @@ function updateCursors()
     end
 
     if not deleted then
-      --cursor.screenx = cursor.screenx + mouse_X - mouse_oldX
-      --cursor.screeny = cursor.screeny + mouse_Y - mouse_oldY
+      cursor.screenx = cursor.screenx + mouse_X - mouse_oldX
+      cursor.screeny = cursor.screeny + mouse_Y - mouse_oldY
 
       local x, y = screenToGameTile(cursor.screenx, cursor.screeny)
       
@@ -60,7 +60,9 @@ function createMouse_direct(x,y,id_)
     mouse.primary = true
     mouse_X, mouse_Y = x, y
     mouse_oldX, mouse_oldY = x, y
-    --love.mouse.setPosition(x, y)
+    if (not unit_tests) then
+      love.mouse.setPosition(x, y)
+    end
   else
     mouse.primary = false
   end
@@ -91,26 +93,12 @@ function deleteMouse(id)
       mous.primary = true
       mouse_X, mouse_Y = mous.screenx, mous.screeny
       mouse_oldX, mouse_oldY = mous.screenx, mous.screeny
-      --love.mouse.setPosition(mous.screenx, mous.screeny)
+      if (not unit_tests) then
+        love.mouse.setPosition(mous.screenx, mous.screeny)
+      end
     end
   end
 end
-
---[[function deleteMice(gamex,gamey)
-  local toBeDeleted = {}
-  local numberDeleted = 0
-  local hx,hy = gameTileToScreen(gamex,gamey)
-  for i,mous in ipairs(cursors) do
-  	if cursors[i].x >= hx and cursors[i].x <= hx + TILE_SIZE and cursors[i].y >= hy and cursors[i].y <= hy + TILE_SIZE then
-  	  table.insert(toBeDeleted, i)
-  	end
-  end
-  for i=table.getn(toBeDeleted),1,-1 do
-    table.remove(toBeDeleted)
-    numberDeleted = numberDeleted + 2
-  end
-  return numberDeleted
-end]]--
 
 function updateMousePosition()
   if #cursors == 1 then
@@ -118,7 +106,9 @@ function updateMousePosition()
     cursors[1].screenx, cursors[1].screeny = love.mouse.getPosition()
   else
     if mouse_grabbed then
-      love.mouse.setPosition(love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
+      if (not unit_tests) then
+        love.mouse.setPosition(love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
+      end
     end
     if just_released_mouse == 1 then
       just_released_mouse = 2
