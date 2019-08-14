@@ -174,9 +174,9 @@ function loadMap()
         print("Serpent error while loading:", ok, fullDump(map))
       end
       for _,unit in ipairs(map) do
-        id, tile, x, y, dir, specials = unit.id, unit.tile, unit.x, unit.y, unit.dir, unit.special
+        id, tile, x, y, dir, specials, color = unit.id, unit.tile, unit.x, unit.y, unit.dir, unit.special, unit.color
         if inBounds(x, y) then
-          local unit = createUnit(tile, x, y, dir, false, id)
+          local unit = createUnit(tile, x, y, dir, false, id, nil, color and {{name=color}})
           unit.special = specials
         end
       end

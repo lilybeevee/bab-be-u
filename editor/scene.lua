@@ -43,6 +43,9 @@ function scene.load()
   selector_page = 1
   current_tile_grid = tile_grid[selector_page];
   
+  paint_open = false
+  paint_colors = {}
+  
   if not level_compression then
     level_compression = "zlib"
   end
@@ -143,20 +146,25 @@ end
 
 selector_tab_buttons_list = {}
 function scene.setupGooi()
-  gooi.newButton({text = "", x = 40*0, y = 0, w = 40, h = 40}):onRelease(function()
+  local x = 0
+  gooi.newButton({text = "", x = x, y = 0, w = 40, h = 40}):onRelease(function()
     scene.loadLevel()
   end):setBGImage(sprites["ui/load"], sprites["ui/load_h"], sprites["ui/load_a"]):bg({0, 0, 0, 0})
-  gooi.newButton({text = "", x = 40*1, y = 0, w = 40, h = 40}):onRelease(function()
+  x = x + 40
+  gooi.newButton({text = "", x = x, y = 0, w = 40, h = 40}):onRelease(function()
     scene.saveLevel()
   end):setBGImage(sprites["ui/save"], sprites["ui/save_h"], sprites["ui/save_a"]):bg({0, 0, 0, 0})
-  gooi.newButton({text = "", x = 40*2, y = 0, w = 40, h = 40}):onRelease(function()
+  x = x + 40
+  gooi.newButton({text = "", x = x, y = 0, w = 40, h = 40}):onRelease(function()
     scene.openSettings()
   end):setBGImage(sprites["ui/cog"], sprites["ui/cog_h"], sprites["ui/cog_a"]):bg({0, 0, 0, 0})
-  gooi.newButton({text = "", x = 40*3, y = 0, w = 40, h = 40}):onRelease(function()
+  x = x + 40
+  gooi.newButton({text = "", x = x, y = 0, w = 40, h = 40}):onRelease(function()
     new_scene = game
     load_mode = "play"
   end):setBGImage(sprites["ui/play"],sprites["ui/play_h"], sprites["ui/play_a"]):bg({0, 0, 0, 0})
-  gooi.newButton({text = "", x = 40*4, y = 0, w = 40, h = 40}):onRelease(function()
+  x = x + 40
+  gooi.newButton({text = "", x = x, y = 0, w = 40, h = 40}):onRelease(function()
     love.graphics.captureScreenshot(function(s)
       capturing = true
       start_drag, end_drag = nil, nil
@@ -164,11 +172,39 @@ function scene.setupGooi()
       screenshot_image = love.graphics.newImage(s)
     end)
   end):setBGImage(sprites["ui/camera"],sprites["ui/camera_h"], sprites["ui/camera_a"]):bg({0, 0, 0, 0})
+  x = x + 40
   if is_mobile then
-    gooi.newButton({text = "", x = 40*5, y = 0, w = 40, h = 40}):onRelease(function()
+    gooi.newButton({text = "", x = x, y = 0, w = 40, h = 40}):onRelease(function()
       scene.keyPressed("tab")
       scene.keyReleased("tab")
     end):setBGImage(sprites["ui/selector"],sprites["ui/selector_h"], sprites["ui/selector_a"]):bg({0, 0, 0, 0})
+    x = x + 40
+  end
+  
+  paint_button = gooi.newButton({text = "", x = x, y = 0, w = 40, h = 40}):onPress(function()
+    if paint_open then
+      paint_open = false
+      paint_button:setBGImage(sprites["ui/paint"], sprites["ui/paint_h"])
+      gooi:setGroupVisible("paint_colors",false)
+    else
+      paint_open = true
+      paint_button:setBGImage(sprites["ui/paint_a"], sprites["ui/paint_h"])
+      gooi:setGroupVisible("paint_colors",true)
+    end
+  end):setBGImage(sprites["ui/paint"], sprites["ui/paint_h"]):bg({0, 0, 0, 0})
+  x = x + 40
+  paint_colors[1] = {x}
+  gooi.newButton({text = "", x = x, y = 4, h = 32, w = 32, group = "paint_colors"}):onPress(function()
+    print("a")
+    brush.color = nil
+  end):bg({0,0,0,0}) -- no BGImage since it needs to be recolored
+  x = x + 36
+  for _,color in pairs(color_names) do
+    gooi.newButton({text = "", x = x, y = 4, h = 32, w = 32, group = "paint_colors"}):onPress(function()
+      brush.color = color
+    end):bg({0,0,0,0}) -- no BGImage since it needs to be recolored
+    table.insert(paint_colors, {x, main_palette_for_colour[color]})
+    x = x + 36 -- 4px padding
   end
 
   local dx = 208;
@@ -655,7 +691,7 @@ function scene.update(dt)
             end
             if #hovered >= 1 then
               for _,unit in ipairs(hovered) do
-                if unit.tile == brush.id then
+                if unit.tile == brush.id and (unit.color_override and (colour_for_palette[unit.color_override[1]][unit.color_override[2]] == brush.color) or (unit.color_override == nil and brush.color == nil)) then
                   if not (ctrl_active or selectorhold) then
                     existing = unit
                   end
@@ -685,6 +721,10 @@ function scene.update(dt)
                   new_unit = existing
                 elseif (not ctrl_active or ctrl_first_press) and (not is_mobile or mobile_firstpress) then
                   new_unit = createUnit(brush.id, hx, hy, brush.dir)
+                  if brush.color then
+                    new_unit[brush.color] = true
+                    updateUnitColourOverride(new_unit)
+                  end
                   scene.updateMap()
                   painted = true
                 end
@@ -730,8 +770,10 @@ function scene.update(dt)
                 end
                 brush.picked_index = new_index
                 brush.id = hovered[new_index].tile
+                brush.color = hovered[new_index].color_override and colour_for_palette[hovered[new_index].color_override[1]][hovered[new_index].color_override[2]] or nil
               else
                 brush.id = hovered[1].tile
+                brush.color = hovered[1].color_override and colour_for_palette[hovered[1].color_override[1]][hovered[1].color_override[2]] or nil
                 brush.picked_index = 1
               end
               brush.mode = "picking"
@@ -870,7 +912,7 @@ function scene.draw(dt)
               rotation = (unit.dir - 1) * 45
             end
             
-            local color = setColor(unit.color);
+            local color = setColor(unit.color_override or unit.color);
 
             if rainbowmode then
               local newcolor = hslToRgb((love.timer.getTime()/3+unit.x/18+unit.y/18)%1, .5, .5, 1)
@@ -912,7 +954,7 @@ function scene.draw(dt)
             -- local x = tile.grid[1]
             -- local y = tile.grid[2]
 
-            local color = setColor(tile.color);
+            local color = setColor(brush.color and main_palette_for_colour[brush.color] or tile.color);
 
             if rainbowmode then love.graphics.setColor(hslToRgb((love.timer.getTime()/3+x/tile_grid_width+y/tile_grid_height)%1, .5, .5, 1)) end
             
@@ -982,7 +1024,7 @@ function scene.draw(dt)
             rotation = (brush.dir - 1) * 45
           end
           
-          local color = tiles_list[brush.id].color
+          local color = brush.color and main_palette_for_colour[brush.color] or tiles_list[brush.id].color
           if #color == 3 then
             love.graphics.setColor(color[1]/255, color[2]/255, color[3]/255, 0.25)
           else
@@ -1120,6 +1162,15 @@ function scene.draw(dt)
         mobile_controls_stackmode_ctrl:setBounds(11*twelfth, love.graphics.getHeight()-4.15*twelfth)
       end
     end
+    
+    if paint_open and brush.id then
+      for _,button in ipairs(paint_colors) do
+        local x = button[1]
+        local pal = button[2] or tiles_list[brush.id].color
+        love.graphics.setColor(getPaletteColor(pal[1], pal[2]))
+        love.graphics.draw(sprites[tiles_list[brush.id].sprite], x, 4)
+      end
+    end
 
     love.graphics.setFont(name_font)
     love.graphics.setColor(1, 1, 1)
@@ -1197,7 +1248,7 @@ function scene.updateMap()
       local tileid = x + y * mapwidth
       if units_by_tile[tileid] then
         for _,unit in ipairs(units_by_tile[tileid]) do
-          table.insert(map, {id = unit.id, tile = unit.tile, x = unit.x, y = unit.y, dir = unit.dir, special = unit.special});
+          table.insert(map, {id = unit.id, tile = unit.tile, x = unit.x, y = unit.y, dir = unit.dir, special = unit.special, color = unit.color_override and colour_for_palette[unit.color_override[1]][unit.color_override[2]]});
         end
       end
     end
