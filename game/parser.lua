@@ -332,18 +332,20 @@ function findVerbPhrase(words, extra_words_, dir, enclosed, noconds, no_verb_con
   end
   if verb.type.verb_be then -- can be prop or class
     while true do
+      local foundObject = false
       if words[1].type.object or words[2] and words[2].name == "text" or words[1].type.class_prefix then
         local object, words_ = findClass(copyTable(words))
-        if not object then
-          break
+        if object then
+          words = words_
+          table.insert(objects, object)
+          foundObject = true
         end
-        words = words_
-        table.insert(objects, object)
-      elseif words[1].type.property then
+      end
+      if not foundObject and words[1].type.property then
         table.insert(objects, words[1])
         table.remove(words, 1)
         -- "bab be u n't" isn't valid, no need to allow nots here
-      else
+      elseif not foundObject then
         return nil
       end
       if not noconds and words[1] and words[1].type["and"] and words[2] and not words[2].type.verb then
