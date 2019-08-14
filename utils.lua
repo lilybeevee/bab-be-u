@@ -598,24 +598,21 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
         end
       end
     elseif condtype == "w/fren" then
-      if unit ~= outerlvl then
-        local frens = getUnitsOnTile(x, y, nil, false, unit, true)
+      if unit == outerlvl then
         for _,other in ipairs(sets) do
-          if not other[outerlvl] then
-            local found = false
-            for _,fren in ipairs(frens) do
-              if other[fren] then
-                found = true
-                break
-              end
-            end
-            if not found then
-              result = false
+          local found = false
+          for _,fren in ipairs(units) do
+            if inBounds(fren.x,fren.y) and other[fren] then
+              found = true
               break
             end
           end
+          if not found then
+            result = false
+            break
+          end
         end
-      else -- something something surrounds maybe?
+        --something something surrounds maybe?
         --[[if unit == outerlvl and surrounds ~= nil and surrounds_name == level_name then
           --use surrounds to remember what was around the level
           for __,on in ipairs(surrounds[0][0]) do
@@ -629,18 +626,49 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
             break
           end
         end
+      else
+        local frens = getUnitsOnTile(x, y, nil, false, unit, true)
+        for _,other in ipairs(sets) do
+          if other[outerlvl] then
+            if not inBounds(unit.x,unit.y) then
+              result = false
+            end
+          else
+            local found = false
+            for _,fren in ipairs(frens) do
+              if other[fren] then
+                found = true
+                break
+              end
+            end
+            if not found then
+              result = false
+              break
+            end
+          end
+        end
       end
     elseif condtype == "arond" then
       --Vitellary: Deliberately ignore the tile we're on. This is different from baba.
       local others = {}
       for ndir=1,8 do
         local nx, ny = dirs8[ndir][1], dirs8[ndir][2]
-        if unit == outerlvl and surrounds ~= nil and surrounds_name == level_name then
-          --use surrounds to remember what was around the level
-          for __,on in ipairs(surrounds[nx][ny]) do -- this part hasn't been updated, but it's not important yet
-            if nameIs(on, param) then
-              table.insert(others, on);
+        if unit == outerlvl then
+          if surrounds ~= nil and surrounds_name == level_name then
+            --use surrounds to remember what was around the level
+            for __,on in ipairs(surrounds[nx][ny]) do -- this part hasn't been updated, but it's not important yet
+              if nameIs(on, param) then
+                table.insert(others, on);
+              end
             end
+          end
+          for i=-1,mapwidth do
+            mergeTable(others, getUnitsOnTile(i, -1, nil, false, unit, true))
+            mergeTable(others, getUnitsOnTile(i, mapheight, nil, false, unit, true))
+          end
+          for i=0,mapheight-1 do
+            mergeTable(others, getUnitsOnTile(-1, i, nil, false, unit, true))
+            mergeTable(others, getUnitsOnTile(mapwidth, i, nil, false, unit, true))
           end
         else
           local dx, dy, dir, px, py = getNextTile(unit, nx, ny, ndir)
@@ -954,15 +982,21 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
       for _,list in ipairs(lists) do
         for _,other in ipairs(list) do
           if sameFloat(unit,other) then
-            print(unit.name, other.name)
             result = true
             break
           end
         end
       end
     elseif condtype == "frenles" then
-      if unit == outerlvl then
-        result = false --kind of by definition, since the text to make the rule exists :p
+      if unit == outerlvl then --no longer by definition, since you can technically have the rules be oob!
+        local found = false
+        for _,fren in ipairs(units) do
+          if inBounds(fren.x,fren.y) then
+            found = true
+            break
+          end
+        end
+        if found then result = false end
       else
         local others = getUnitsOnTile(unit.x, unit.y, nil, false, unit)
         if #others > 0 then

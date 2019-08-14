@@ -3160,7 +3160,7 @@ tiles_list = {
     name = "letter_parenthesis",
     sprite = "letter_paranthesis",
     type = "text",
-    texttype = {letter = true},
+    texttype = {letter = true, parenthesis = true},
     rotate = true,
     color = {0,3},
     layer = 20,
@@ -4437,36 +4437,6 @@ tiles_list = {
     layer = 20,
     tags = {"near", "around", "infix condition", "touching", "adjacent"},
     desc = "W/ NEIGHBOR (Infix Condition): True if the indicated object is on any of orthogonal tiles surrounding the unit. (The unit's own tile is not checked.)",
-  },
-  --- 386
-  {
-    name = "text_parenthesis", -- these are here so that ( and ) don't get stripped by parseLetterSentences before it gets to the main parser
-    sprite = "letter_paranthesis",
-    type = "text",
-    texttype = {parenthesis = true},
-    rotate = true,
-    color = {0,3},
-    layer = 20,
-  },
-  --- 387
-  {
-    name = "text_(", -- these are here so that ( and ) don't get stripped by parseLetterSentences before it gets to the main parser
-    sprite = "letter_paranthesis",
-    type = "text",
-    texttype = {parenthesis = true},
-    rotate = true,
-    color = {0,3},
-    layer = 20,
-  },
-  --- 388
-  {
-    name = "text_)", -- these are here so that ( and ) don't get stripped by parseLetterSentences before it gets to the main parser
-    sprite = "letter_paranthesis",
-    type = "text",
-    texttype = {parenthesis = true},
-    rotate = true,
-    color = {0,3},
-    layer = 20,
   },
 }
 
