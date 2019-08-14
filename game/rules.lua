@@ -598,7 +598,6 @@ function addRule(full_rule)
     table.insert(full_rules, {rule = {subject = rules.subject, verb = {name = verb .. "n't"}, object = rules.object}, units = units, dir = dir})
   elseif (verb == "be") and (subject == object or (subject:starts("text_") and object == "text")) then
     --print("protecting: " .. subject .. ", " .. object)
-    print("a")
     addRuleSimple(rules.subject, {"be"}, {"notransform", rules.object.conds}, units, dir)
   elseif object == "notransform" then -- no "n't" here, but still blocks other rules so we need to count it
     if not not_rules[1] then
