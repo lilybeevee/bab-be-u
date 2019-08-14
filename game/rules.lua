@@ -443,6 +443,11 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
           addUnits(list, set, mod)
         end
       end
+      if root.prefix then
+        for _,pfix in ipairs(root.prefix) do
+          addUnits(list, set, pfix)
+        end
+      end
     end
   end
 

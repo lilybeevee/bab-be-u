@@ -963,7 +963,7 @@ function updateUnits(undoing, big_update)
         if tile ~= nil then
           local others = getUnitsOnTile(creator.x, creator.y, createe, true, creator)
           if #others == 0 then
-            local new_unit = createUnit(tile, creator.x, creator.y, creator.dir)
+            local new_unit = createUnit(tile, creator.x, creator.y, creator.dir, nil, nil, nil, match[1].rule.object.prefix)
             addUndo({"create", new_unit.id, false})
           end
         elseif createe == "mous" then
@@ -1695,7 +1695,7 @@ function dropGotUnit(unit, rule)
       local new_mouse = createMouse(unit.x, unit.y)
       addUndo({"create_cursor", new_mouse.id})
     else
-      local new_unit = createUnit(obj_id, unit.x, unit.y, unit.dir, false)
+      local new_unit = createUnit(obj_id, unit.x, unit.y, unit.dir, false, nil, nil, rule.object.prefix)
       addUndo({"create", new_unit.id, false})
     end
   end
@@ -1946,7 +1946,7 @@ function convertUnits(pass)
             end
             if tile ~= nil then
               table.insert(del_cursors, cursor);
-              local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
+              local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true, nil, nil, rule.object.prefix)
               if (new_unit ~= nil) then
                 addUndo({"create", new_unit.id, true, created_from_id = unit.id})
               end
@@ -1964,7 +1964,7 @@ function convertUnits(pass)
           if not unit.removed then
             table.insert(converted_units, unit)
           end
-          local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
+          local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true, nil, nil, rule.object.prefix)
           if (new_unit ~= nil) then
             addUndo({"create", new_unit.id, true, created_from_id = unit.id})
           end
@@ -2051,7 +2051,7 @@ function deleteUnits(del_units,convert)
   end
 end
 
-function createUnit(tile,x,y,dir,convert,id_,really_create_empty)
+function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
   local unit = {}
   unit.class = "unit"
 
@@ -2113,6 +2113,13 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty)
   else
     unit.name = unit.fullname
     unit.textname = unit.fullname
+  end
+  
+  if prefix then
+    for _,pfix in ipairs(prefix) do
+      unit[pfix.name] = true
+    end
+    updateUnitColourOverride(unit)
   end
   
   --abort if we're trying to create outerlvl outside of the start

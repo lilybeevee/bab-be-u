@@ -106,6 +106,7 @@ purp = {3, 1},
 whit = {0, 3},
 pinc = {4, 1},
 }
+color_names = {"reed", "orang", "yello", "grun", "cyeann", "bleu", "purp", "pinc", "whit", "blacc"}
 
 colour_for_palette = {}
 colour_for_palette[0] = {};
@@ -516,7 +517,7 @@ tiles_list = {
       property = "text_reed"
     },
     type = "text",
-    texttype = {cond_prefix = true, property = true},
+    texttype = {cond_prefix = true, property = true, class_prefix = true},
     color = {2, 2},
     layer = 20,
     tags = {"colors", "colours", "red", "prefix condition"},
@@ -530,7 +531,7 @@ tiles_list = {
       property = "text_bleu"
     },
     type = "text",
-    texttype = {cond_prefix = true, property = true},
+    texttype = {cond_prefix = true, property = true, class_prefix = true},
     color = {1, 3},
     layer = 20,
     tags = {"colors", "colours", "blue", "prefix condition"},
@@ -2690,7 +2691,7 @@ tiles_list = {
       property = "text_grun"
     },
     type = "text",
-    texttype = {cond_prefix = true, property = true},
+    texttype = {cond_prefix = true, property = true, class_prefix = true},
     color = {5, 2},
     layer = 20,
     tags = {"colors", "colours", "green", "prefix condition"},
@@ -2704,7 +2705,7 @@ tiles_list = {
       property = "text_yello"
     },
     type = "text",
-    texttype = {cond_prefix = true, property = true},
+    texttype = {cond_prefix = true, property = true, class_prefix = true},
     color = {2, 4},
     layer = 20,
     tags = {"colors", "colours", "yellow", "prefix condition"},
@@ -2718,7 +2719,7 @@ tiles_list = {
       property = "text_purp"
     },
     type = "text",
-    texttype = {cond_prefix = true, property = true},
+    texttype = {cond_prefix = true, property = true, class_prefix = true},
     color = {3, 2},
     layer = 20,
     tags = {"colors", "colours", "purple", "prefix condition"},
@@ -2732,7 +2733,7 @@ tiles_list = {
       property = "text_orang"
     },
     type = "text",
-    texttype = {cond_prefix = true, property = true},
+    texttype = {cond_prefix = true, property = true, class_prefix = true},
     color = {2, 3},
     layer = 20,
     tags = {"colors", "colours", "orange", "prefix condition"},
@@ -2746,7 +2747,7 @@ tiles_list = {
       property = "text_cyeann"
     },
     type = "text",
-    texttype = {cond_prefix = true, property = true},
+    texttype = {cond_prefix = true, property = true, class_prefix = true},
     color = {1, 4},
     layer = 20,
     tags = {"colors", "colours", "cyan", "prefix condition"},
@@ -2760,7 +2761,7 @@ tiles_list = {
       property = "text_whit"
     },
     type = "text",
-    texttype = {cond_prefix = true, property = true},
+    texttype = {cond_prefix = true, property = true, class_prefix = true},
     color = {0, 3},
     layer = 20,
     tags = {"colors", "colours", "white", "prefix condition"},
@@ -2774,7 +2775,7 @@ tiles_list = {
       property = "text_blacc"
     },
     type = "text",
-    texttype = {cond_prefix = true, property = true},
+    texttype = {cond_prefix = true, property = true, class_prefix = true},
     color = {0, 0},
     layer = 20,
     tags = {"colors", "colours", "black", "prefix condition"},
@@ -3962,7 +3963,7 @@ tiles_list = {
       property = "text_pinc"
     },
     type = "text",
-    texttype = {cond_prefix = true, property = true},
+    texttype = {cond_prefix = true, property = true, class_prefix = true},
     color = {4, 1},
     layer = 20,
     tags = {"colors", "colours", "pink", "prefix condition"},

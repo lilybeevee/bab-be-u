@@ -264,6 +264,28 @@ function findUnit(words, extra_words_, dir, outer, no_verb_cond)
 end
 
 function findClass(words)
+  local prefix = {}
+  while words[1].type.class_prefix do -- in cases where conditions can also be used, things should be caught there first
+    local pfix = copyTable(words[1])
+    table.remove(words, 1)
+    pfix.mods = pfix.mods or {}
+    local nt = false
+    while words[1] and words[1].type["not"] do
+      nt = not nt
+      table.insert(pfix.mods, words[1])
+      table.remove(words, 1)
+    end
+    if nt then
+      if pfix.name:ends("n't") then
+        pfix.name = pfix.name:sub(1, -4)
+      else
+        pfix.name = pfix.name.."n't"
+      end
+    end
+    table.insert(prefix, pfix)
+    if #words == 0 then return end
+  end
+  
   local unit = copyTable(words[1])
   unit.mods = unit.mods or {}
   if words[2] and words[2].name == "text" then
@@ -283,10 +305,14 @@ function findClass(words)
   end
   if nt then
     if unit.name:ends("n't") then
-    unit.name = unit.name:sub(1, -4)
-  else
-    unit.name = unit.name.."n't"
+      unit.name = unit.name:sub(1, -4)
+    else
+      unit.name = unit.name.."n't"
+    end
   end
+  
+  if prefix then
+    unit.prefix = prefix
   end
   return unit, words
 end
@@ -306,7 +332,7 @@ function findVerbPhrase(words, extra_words_, dir, enclosed, noconds, no_verb_con
   end
   if verb.type.verb_be then -- can be prop or class
     while true do
-      if words[1].type.object or words[2] and words[2].name == "text" then
+      if words[1].type.object or words[2] and words[2].name == "text" or words[1].type.class_prefix then
         local object, words_ = findClass(copyTable(words))
         if not object then
           break
@@ -328,7 +354,7 @@ function findVerbPhrase(words, extra_words_, dir, enclosed, noconds, no_verb_con
       end
     end
   elseif verb.type.verb_class then
-    while words[1].type.object or words[2] and words[2].name == "text" do
+    while words[1].type.object or words[2] and words[2].name == "text" or words[1].type.class_prefix do
       local object, words_ = findClass(copyTable(words))
       if not object then
         break
