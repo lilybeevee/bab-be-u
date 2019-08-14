@@ -1359,7 +1359,7 @@ function scene.draw(dt)
 
     for i,rule in pairs(full_rules) do
       if not rule.hide_in_list then
-        rules = rules..rule.rule.subject.name..' '..rule.rule.verb.name..' '..rule.rule.object.name
+        rules = rules..serializeRule(rule.rule)
         rulesnum = rulesnum + 1
 
         if rulesnum % 4 >= 3 then

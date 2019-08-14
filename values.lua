@@ -4446,7 +4446,27 @@ tiles_list = {
     rotate = true,
     color = {0,3},
     layer = 20,
-  }
+  },
+  --- 387
+  {
+    name = "text_(", -- these are here so that ( and ) don't get stripped by parseLetterSentences before it gets to the main parser
+    sprite = "letter_paranthesis",
+    type = "text",
+    texttype = {parenthesis = true},
+    rotate = true,
+    color = {0,3},
+    layer = 20,
+  },
+  --- 388
+  {
+    name = "text_)", -- these are here so that ( and ) don't get stripped by parseLetterSentences before it gets to the main parser
+    sprite = "letter_paranthesis",
+    type = "text",
+    texttype = {parenthesis = true},
+    rotate = true,
+    color = {0,3},
+    layer = 20,
+  },
 }
 
 tiles_by_name = {}
