@@ -639,12 +639,9 @@ function postRules()
         local has_conds = (#conds[1] > 0 or #conds[2] > 0)
         
         local specialmatch = 0
-        print("0", fullDump(rule))
         if rule.verb.name == "be" and rule.object.name == "notransform" then -- "bab be bab" should cross out "bab be keek"
-          print("a", fullDump(rule))
           specialmatch = 1
         elseif rule.verb.name == "ben't" and rule.object.name == rule.subject.name then -- "bab be n't bab" should cross out "bab be bab" (bab be notransform)
-          print("b", fullDump(rule))
           specialmatch = 2
         end
 
