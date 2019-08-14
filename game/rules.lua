@@ -374,7 +374,7 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
       end
 
       --parens hack - don't try to make letters out of a single parenthesis
-      if not (new_word:len() < 2 and tiles_by_name[new_word] == nil) then
+      if not (new_word:len() < 2 and text_in_tiles[new_word] == nil) then
         local lsentences = findLetterSentences(new_word) --get everything valid out of the letter string (this should be [both], hmm)
         --[[if (#lsentences.start ~= 0 or #lsentences.endd ~= 0 or #lsentences.middle ~= 0 or #lsentences.both ~= 0) then
           print(new_word.." --> "..fullDump(lsentences))
