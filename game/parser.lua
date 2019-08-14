@@ -105,6 +105,8 @@ function findUnit(words, extra_words_, dir, outer, no_verb_cond)
   local parenthesis = false
   -- print(enclosed, words[1].name)
   -- print("finding unit")
+  if #words == 0 then return end
+  
   if words[1].name == "(" and words[1].unit and words[1].unit.dir == dir then
     enclosed = true
     parenthesis = true
