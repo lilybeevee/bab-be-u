@@ -117,7 +117,8 @@ function doMovement(movex, movey, key)
               if undo[1] == "update" and undo[2] == other.id and ((undo[3] ~= other.x) or (undo[4] ~= other.y)) then
                 local dx = other.x-undo[3]
                 local dy = other.y-undo[4]
-                local slipdir = dirs8_by_offset[dx][dy]
+                local slipdir = dirs8_by_offset[sign(dx)][sign(dy)]
+                print(slipdir)
                 table.insert(other.moves, {reason = "icy", dir = slipdir, times = icyness})
                 if #other.moves > 0 and not already_added[other] and not hasRule(other,"got","slippers") then
                   table.insert(moving_units, other)
@@ -139,7 +140,7 @@ function doMovement(movex, movey, key)
               if undo[1] == "update" and undo[2] == other.id and ((undo[3] ~= other.x) or (undo[4] ~= other.y)) then
                 local dx = other.x-undo[3]
                 local dy = other.y-undo[4]
-                local slipdir = dirs8_by_offset[dx][dy]
+                local slipdir = dirs8_by_offset[sign(dx)][sign(dy)]
                 table.insert(other.moves, {reason = "icy", dir = slipdir, times = icyness})
                 if #other.moves > 0 and not already_added[other] and not hasRule(other,"got","slippers") then
                   table.insert(moving_units, other)
@@ -473,6 +474,7 @@ It is probably possible to do, but lily has decided that it's not important enou
       if (loop_stage > 1000) then
         print("movement infinite loop! (1000 attempts at a stage)")
         destroyLevel("infloop");
+        break;
       end
       --movedebug("loop_stage:"..tostring(loop_stage))
       successes = 0
@@ -484,6 +486,7 @@ It is probably possible to do, but lily has decided that it's not important enou
          if (loop_tick > 1000) then
           print("movement infinite loop! (1000 attempts at a single tick)")
           destroyLevel("infloop");
+          break;
         end
         --movedebug("loop_tick:"..tostring(loop_tick))
         local remove_from_moving_units = {}

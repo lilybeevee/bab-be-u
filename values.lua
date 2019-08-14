@@ -2149,7 +2149,7 @@ tiles_list = {
     color = {1, 4},
     layer = 20,
     tags = {"moonwalk","patashu"},
-    desc = "MUNWALK: MUNWALK units move 180 degrees opposite of their facing direction.",
+    desc = "MUNWALK: MUNWALK units move 180 degrees opposite of their facing direction. Stacks will cancel each other out.",
   },
   -- 176
   {
@@ -2168,10 +2168,10 @@ tiles_list = {
     sprite = "text_sidestep",
     type = "text",
     texttype = {property = true},
-    color = {6, 2},
+    color = {1, 3},
     layer = 20,
     tags = {"patashu", "drunk"},
-    desc = "SIDESTEP: SIDESTEP units move 90 degrees off of their facing direction.",
+    desc = "SIDESTEP: SIDESTEP units move 90 degrees clockwise off of their facing direction. Stacks!",
   },
   -- 178
   {
@@ -2179,10 +2179,10 @@ tiles_list = {
     sprite = "text_diagstep",
     type = "text",
     texttype = {property = true},
-    color = {3, 1},
+    color = {3, 2},
     layer = 20,
     tags = {"patashu", "drunker"},
-    desc = "DIAGSTEP: DIAGSTEP units move 45 degrees off of their facing direction.",
+    desc = "DIAGSTEP: DIAGSTEP units move 45 degrees clockwise off of their facing direction. Stacks!",
   },
   -- 179
   {
@@ -2190,10 +2190,10 @@ tiles_list = {
     sprite = "text_hopovr",
     type = "text",
     texttype = {property = true},
-    color = {5, 3},
+    color = {5, 2},
     layer = 20,
-    tags = {"patashu"},
-    desc = "HOPOVR: HOPOVR units move two tiles ahead, skipping the intermediate tile.",
+    tags = {"patashu", "skip"},
+    desc = "HOPOVR: HOPOVR units move two tiles ahead, skipping the intermediate tile. Stacks!",
   },
   -- 180
   {
@@ -2378,7 +2378,7 @@ tiles_list = {
     type = "text",
     texttype = {verb = true, verb_unit = true},
     allowconds = true,
-    color = {5, 3},
+    color = {2, 3},
     layer = 20,
     tags = {"patashu", "hate", "verb"},
     desc = "HAET (Verb): A unit cannot stop onto a tile that has something it HAETs. (x HAET LVL makes x unable to move.)",
@@ -3524,7 +3524,7 @@ tiles_list = {
     color = {0, 2},
     layer = 20,
     tags = {"chess"},
-    desc = "KNIGHTSTEP: KNIGHTSTEP units move like the Knight chess piece, rotated 22.5 degrees clockwise.",
+    desc = "KNIGHTSTEP: KNIGHTSTEP units move like the Knight chess piece, rotated 22.5 degrees clockwise. Stacks add additional 1, 1 hops.",
   },
   -- 307
   {
@@ -4424,7 +4424,7 @@ tiles_list = {
     color = {6,2},
     layer = 20,
     tags = {"gravity", "fall", "lily"},
-    desc = "GRAVY: Changes the direction of HAET SKYE and HAET FLOR."
+    desc = "GRAVY: Changes the direction of HAET SKYE and HAET FLOR. (Unimplemented)"
   },
   --- 385
   {

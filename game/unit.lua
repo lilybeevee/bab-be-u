@@ -7,8 +7,8 @@ function moveBlock()
     doZip(unit)
   end
   
-  local isstalknt = matchesRule("?", "look at", "?");
-  for _,ruleparent in ipairs(isstalknt) do
+  local isstalk = matchesRule("?", "look at", "?");
+  for _,ruleparent in ipairs(isstalk) do
     local stalkers = findUnitsByName(ruleparent.rule.subject.name)
     local stalkees = copyTable(findUnitsByName(ruleparent.rule.object.name))
     local stalker_conds = ruleparent.rule.subject.conds
@@ -32,12 +32,12 @@ function moveBlock()
     end
   end
   
-  local isstalk = matchesRule("?", "look away", "?");
-  for _,ruleparent in ipairs(isstalk) do
-    local stalkers = findUnitsByName(ruleparent[1][1])
-    local stalkees = copyTable(findUnitsByName(ruleparent[1][3]))
-    local stalker_conds = ruleparent[1][4][1]
-    local stalkee_conds = ruleparent[1][4][2]
+  local isstalknt = matchesRule("?", "look away", "?");
+  for _,ruleparent in ipairs(isstalknt) do
+    local stalkers = findUnitsByName(ruleparent.rule.subject.name)
+    local stalkees = copyTable(findUnitsByName(ruleparent.rule.object.name))
+    local stalker_conds = ruleparent.rule.subject.conds
+    local stalkee_conds = ruleparent.rule.object.conds
     for _,stalker in ipairs(stalkers) do
       table.sort(stalkees, function(a, b) return euclideanDistance(a, stalker) < euclideanDistance(b, stalker) end )
       for _,stalkee in ipairs(stalkees) do
@@ -77,11 +77,11 @@ function moveBlock()
       unit.backer_turn = #undo_buffer+(0.5*(amt-1));
       backers_cache[unit] = unit.backer_turn;
     end
-    doBack(unit, 2*(#undo_buffer-unit.backer_turn));
+    doBack(unit.id, 2*(#undo_buffer-unit.backer_turn));
     for i = 2,amt do
       addUndo({"backer_turn", unit.id, unit.backer_turn})
       unit.backer_turn = unit.backer_turn - 0.5;
-      doBack(unit, 2*(#undo_buffer-unit.backer_turn));
+      doBack(unit.id, 2*(#undo_buffer-unit.backer_turn));
     end
   end
   
@@ -795,7 +795,7 @@ function updateUnits(undoing, big_update)
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
       for _,on in ipairs(stuff) do
         if hasProperty(on, "fridgd") and sameFloat(unit, on) then
-          if timecheck(unit,"be","hotte") and timecheck(on) then
+          if timecheck(unit,"be","hotte") and timecheck(on,"be","fridgd") then
             table.insert(to_destroy, on)
             playSound("hotte")
             addParticles("destroy", unit.x, unit.y, unit.color)
@@ -817,7 +817,7 @@ function updateUnits(undoing, big_update)
       for _,on in ipairs(stuff) do
         is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
         if is_u and sameFloat(unit, on) then
-          if timecheck(unit,"be",":(") and timecheck(on) then
+          if timecheck(unit,"be",":(") and (timecheck(on,"be","u") or timecheck(on,"be","u too") or timecheck(on,"be","u tres")) then
             table.insert(to_destroy, on)
             playSound("break")
             addParticles("destroy", unit.x, unit.y, unit.color)
@@ -838,7 +838,7 @@ function updateUnits(undoing, big_update)
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
       for _,on in ipairs(stuff) do
         if hasProperty(on, "for dor") and sameFloat(unit, on) then
-          if timecheck(unit,"be","ned kee") and timecheck(on) then
+          if timecheck(unit,"be","ned kee") and timecheck(on,"be","for dor") then
             table.insert(to_destroy, unit)
             table.insert(to_destroy, on)
             playSound("break")
@@ -884,7 +884,7 @@ function updateUnits(undoing, big_update)
       for _,on in ipairs(stuff) do
         is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
         if is_u and sameFloat(unit, on) then
-          if timecheck(unit,"be","try again") and timecheck(on) then
+          if timecheck(unit,"be","try again") and (timecheck(on,"be","u") or timecheck(on,"be","u too") or timecheck(on,"be","u tres")) then
             will_undo = true
             break
           else
@@ -903,7 +903,7 @@ function updateUnits(undoing, big_update)
       for _,on in ipairs(stuff) do
         is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
         if is_u and sameFloat(unit, on) then
-          if timecheck(unit,"be","xwx") and timecheck(on) then
+          if timecheck(unit,"be","xwx") and (timecheck(on,"be","u") or timecheck(on,"be","u too") or timecheck(on,"be","u tres")) then
             love = {}
           else
             addUndo({"timeless_crash_add"});
@@ -921,7 +921,7 @@ function updateUnits(undoing, big_update)
       for _,on in ipairs(stuff) do
         is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
         if is_u and sameFloat(unit, on) then
-          if timecheck(unit,"be",":o") and timecheck(on) then
+          if timecheck(unit,"be",":o") and (timecheck(on,"be","u") or timecheck(on,"be","u too") or timecheck(on,"be","u tres")) then
             table.insert(to_destroy, unit)
             playSound("bonus")
             addParticles("bonus", unit.x, unit.y, unit.color)
@@ -943,7 +943,7 @@ function updateUnits(undoing, big_update)
       for _,on in ipairs(stuff) do
         is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
         if is_u and sameFloat(unit, on) then
-          if timecheck(unit,"be",":)") and timecheck(on) then
+          if timecheck(unit,"be",":)") and (timecheck(on,"be","u") or timecheck(on,"be","u too") or timecheck(on,"be","u tres")) then
             doWin("won")
           else
             addUndo({"timeless_win_add", on.id});
@@ -2139,6 +2139,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty)
   end
   
   if unit.type == "text" then
+    updateNameBasedOnDir(unit);
     if not table.has_value(referenced_text, unit.fullname) then
       table.insert(referenced_text, unit.fullname)
     end
@@ -2172,7 +2173,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty)
 
   table.insert(units, unit)
 
-  updateDir(unit, unit.dir)
+  --updateDir(unit, unit.dir)
   new_units_cache[unit] = true
   unit.new = true
   return unit
@@ -2181,7 +2182,7 @@ end
 function deleteUnit(unit,convert,undoing)
   unit.removed = true
   unit.removed_final = true
-  if not undoing and not convert and rules_with ~= nil then
+  if not undoing and not convert and not level_destroyed and rules_with ~= nil then
     gotters = matchesRule(unit, "got", "?");
     for _,ruleparent in ipairs(gotters) do
       local rule = ruleparent.rule
@@ -2305,6 +2306,31 @@ function updateDir(unit, dir, force)
     should_parse_rules = true
   end
   
+  updateNameBasedOnDir(unit);
+  
+  if (not unit_tests) then
+    unit.draw.rotation = unit.draw.rotation % 360
+    local target_rot = (dir - 1) * 45
+    if unit.rotate and math.abs(unit.draw.rotation - target_rot) == 180 then
+      -- flip "mirror" effect
+      addTween(tween.new(0.05, unit.draw, {scalex = 0}), "unit:dir:" .. unit.tempid, function()
+        unit.draw.rotation = target_rot
+        addTween(tween.new(0.05, unit.draw, {scalex = 1}), "unit:dir:" .. unit.tempid)
+      end)
+    else
+      -- smooth angle rotation
+      if unit.draw.rotation - target_rot > 180 then
+        target_rot = target_rot + 360
+      elseif target_rot - unit.draw.rotation > 180 then
+        target_rot = target_rot - 360
+      end
+      addTween(tween.new(0.1, unit.draw, {scalex = 1, rotation = target_rot}), "unit:dir:" .. unit.tempid)
+    end
+  end
+  return true
+end
+
+function updateNameBasedOnDir(unit)
   if unit.fullname == "text_mayb" then
     should_parse_rules = true
   elseif unit.fullname == "text_direction" then
@@ -2328,27 +2354,6 @@ function updateDir(unit, dir, force)
     end
     should_parse_rules = true
   end
-  
-  if (not unit_tests) then
-    unit.draw.rotation = unit.draw.rotation % 360
-    local target_rot = (dir - 1) * 45
-    if unit.rotate and math.abs(unit.draw.rotation - target_rot) == 180 then
-      -- flip "mirror" effect
-      addTween(tween.new(0.05, unit.draw, {scalex = 0}), "unit:dir:" .. unit.tempid, function()
-        unit.draw.rotation = target_rot
-        addTween(tween.new(0.05, unit.draw, {scalex = 1}), "unit:dir:" .. unit.tempid)
-      end)
-    else
-      -- smooth angle rotation
-      if unit.draw.rotation - target_rot > 180 then
-        target_rot = target_rot + 360
-      elseif target_rot - unit.draw.rotation > 180 then
-        target_rot = target_rot - 360
-      end
-      addTween(tween.new(0.1, unit.draw, {scalex = 1, rotation = target_rot}), "unit:dir:" .. unit.tempid)
-    end
-  end
-  return true
 end
 
 function newUnitID(id)

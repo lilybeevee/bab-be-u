@@ -136,8 +136,6 @@ function scene.update(dt)
   mouse_X = love.mouse.getX()
   mouse_Y = love.mouse.getY()
 
-  updateMousePosition()
-
   --mouse_movedX = love.mouse.getX() - love.graphics.getWidth()*0.5
   --mouse_movedY = love.mouse.getY() - love.graphics.getHeight()*0.5
 
@@ -212,7 +210,7 @@ function doReplayTurn(turn)
         for i,coords in ipairs(cursor_table) do
           local cursor = cursors[i]
           if (cursor == nil) then
-            print("Couldn't find cursor while doing replay, halp")
+            --print("Couldn't find cursor while doing replay, halp")
           else
             cursor.x = coords[1];
             cursor.y = coords[2];
@@ -264,11 +262,6 @@ function scene.resetStuff()
   --resetMusic("bab be u them", 0.5)
   resetMusic(map_music, 0.9)
   loadMap()
-  --we need to call updateDir to initialize things like units that change their names when their direction changes, in particular this needs to be the same as starting the level anew (which does create every unit and therefore call updateDir on them), so do it now
-  --most happen before we parse rules for the first time
-	for _,unit in ipairs(units) do
-		updateDir(unit, unit.dir, true);
-	end
   clearRules()
   parseRules()
   updateGroup()
@@ -280,25 +273,6 @@ function scene.resetStuff()
   first_turn = false
   window_dir = 0
 	
-end
-
-function scene.mouseMoved(x, y, dx, dy, istouch)
-  if not just_released_mouse then
-    moveMouse(x, y, dx, dy)
-    if not just_released_mouse then
-      --print("grabby grabby")
-      grabMouse(true)
-    end
-  end
-end
-
-function scene.focus(f)
-  if not f then grabMouse(false) end
-end
-
-function scene.mouseFocus(f)
-  --print("focus changed! " .. tostring(f))
-  grabMouse(f)
 end
 
 function scene.keyPressed(key, isrepeat)
@@ -860,12 +834,12 @@ function scene.draw(dt)
       end
       if (#line > 0) then
         for _,point in ipairs(line) do
-          local pointdrawx,pointdrawy = gameTileToScreen(point.x,point.y)
+          local dx = unit.x-point.x
+          local dy = unit.y-point.y
+          local odx = TILE_SIZE*dx
+          local ody = TILE_SIZE*dy
           
-          pointdrawx = pointdrawx-48
-          pointdrawy = pointdrawy-44
-          
-          love.graphics.line(fulldrawx,fulldrawy,pointdrawx,pointdrawy)
+          love.graphics.line(fulldrawx,fulldrawy,fulldrawx-odx,fulldrawy-ody)
         end
       end
       if (#halfline > 0) then
@@ -873,8 +847,8 @@ function scene.draw(dt)
           --no need to change the rendering to account for movement, since all halflines are drawn to static objects (portals and oob)
           local dx = unit.x-point[1]
           local dy = unit.y-point[2]
-          local odx = 16*dx
-          local ody = 16*dy
+          local odx = TILE_SIZE*dx/2
+          local ody = TILE_SIZE*dy/2
           
           --draws it twice to make it look the same as the other lines. should be reduced to one if we figure out that performance todo above
           love.graphics.line(fulldrawx,fulldrawy,fulldrawx-odx,fulldrawy-ody)

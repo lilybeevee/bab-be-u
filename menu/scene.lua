@@ -31,7 +31,6 @@ function scene.load()
     startTimestamp = now
   }
   nextPresenceUpdate = 0
-  love.mouse.setGrabbed(false)
   love.keyboard.setKeyRepeat(false)
 end
 
