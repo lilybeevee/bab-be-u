@@ -2181,7 +2181,7 @@ end
 function deleteUnit(unit,convert,undoing)
   unit.removed = true
   unit.removed_final = true
-  if not undoing and not convert and rules_with ~= nil then
+  if not undoing and not convert and not level_destroyed and rules_with ~= nil then
     gotters = matchesRule(unit, "got", "?");
     for _,ruleparent in ipairs(gotters) do
       local rule = ruleparent.rule
