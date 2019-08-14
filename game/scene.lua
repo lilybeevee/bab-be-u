@@ -210,7 +210,7 @@ function doReplayTurn(turn)
         for i,coords in ipairs(cursor_table) do
           local cursor = cursors[i]
           if (cursor == nil) then
-            print("Couldn't find cursor while doing replay, halp")
+            --print("Couldn't find cursor while doing replay, halp")
           else
             cursor.x = coords[1];
             cursor.y = coords[2];
