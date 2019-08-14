@@ -136,8 +136,6 @@ function scene.update(dt)
   mouse_X = love.mouse.getX()
   mouse_Y = love.mouse.getY()
 
-  updateMousePosition()
-
   --mouse_movedX = love.mouse.getX() - love.graphics.getWidth()*0.5
   --mouse_movedY = love.mouse.getY() - love.graphics.getHeight()*0.5
 
@@ -280,25 +278,6 @@ function scene.resetStuff()
   first_turn = false
   window_dir = 0
 	
-end
-
-function scene.mouseMoved(x, y, dx, dy, istouch)
-  if not just_released_mouse then
-    moveMouse(x, y, dx, dy)
-    if not just_released_mouse then
-      --print("grabby grabby")
-      grabMouse(true)
-    end
-  end
-end
-
-function scene.focus(f)
-  if not f then grabMouse(false) end
-end
-
-function scene.mouseFocus(f)
-  --print("focus changed! " .. tostring(f))
-  grabMouse(f)
 end
 
 function scene.keyPressed(key, isrepeat)
