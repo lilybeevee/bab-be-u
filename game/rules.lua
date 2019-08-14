@@ -373,54 +373,57 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
         if letter == nil then break end --end of array ends up hitting this case
       end
 
-      local lsentences = findLetterSentences(new_word) --get everything valid out of the letter string (this should be [both], hmm)
-      --[[if (#lsentences.start ~= 0 or #lsentences.endd ~= 0 or #lsentences.middle ~= 0 or #lsentences.both ~= 0) then
-        print(new_word.." --> "..fullDump(lsentences))
-      end]]
+      --parens hack - don't try to make letters out of a single parenthesis
+      if not (new_word:len() < 2 and tiles_by_name[new_word] == nil) then
+        local lsentences = findLetterSentences(new_word) --get everything valid out of the letter string (this should be [both], hmm)
+        --[[if (#lsentences.start ~= 0 or #lsentences.endd ~= 0 or #lsentences.middle ~= 0 or #lsentences.both ~= 0) then
+          print(new_word.." --> "..fullDump(lsentences))
+        end]]
 
-      local before_sentence = {}
-      for i=1,orig_index-1 do
-        table.insert(before_sentence,sentence[i])
-      end
-      local after_sentence = {}
-      if word_index <= #sentence then
-        for i=word_index,#sentence do
-          table.insert(after_sentence,sentence[i])
+        local before_sentence = {}
+        for i=1,orig_index-1 do
+          table.insert(before_sentence,sentence[i])
         end
-      end
+        local after_sentence = {}
+        if word_index <= #sentence then
+          for i=word_index,#sentence do
+            table.insert(after_sentence,sentence[i])
+          end
+        end
 
-      local pos_x = sentence[orig_index].unit.x
-      local pos_y = sentence[orig_index].unit.y
-      --print("coords: "..pos_x..", "..pos_y)
+        local pos_x = sentence[orig_index].unit.x
+        local pos_y = sentence[orig_index].unit.y
+        --print("coords: "..pos_x..", "..pos_y)
 
-      local len = word_index-orig_index
-      for _,s in ipairs(lsentences.middle) do
-        local words = fillTextDetails(s, sentence, orig_index, word_index)
-        parseSentence(words, params_, dir)
-      end
-      for _,s in ipairs(lsentences.start) do
-        local words = fillTextDetails(s, sentence, orig_index, word_index)
-        local before_copy = copyTable(before_sentence) --copying is required because addTables puts results in the first table
-        addTables(before_copy, words)
-        parseSentence(before_copy, params_, dir)
-      end
-      for _,s in ipairs(lsentences.endd) do
-        local words = fillTextDetails(s, sentence, orig_index, word_index)
-        addTables(words, after_sentence)
-        parseSentence(words, params_, dir)
-      end
-      for _,s in ipairs(lsentences.both) do
-        local words = fillTextDetails(s, sentence, orig_index, word_index)
-        local before_copy = copyTable(before_sentence)
-        addTables(words, after_sentence)
-        addTables(before_copy, words)
-        --print("end dump: "..dumpOfProperty(before_copy, "name"))
-        parseSentence(before_copy, params_, dir)
-      end
+        local len = word_index-orig_index
+        for _,s in ipairs(lsentences.middle) do
+          local words = fillTextDetails(s, sentence, orig_index, word_index)
+          parseSentence(words, params_, dir)
+        end
+        for _,s in ipairs(lsentences.start) do
+          local words = fillTextDetails(s, sentence, orig_index, word_index)
+          local before_copy = copyTable(before_sentence) --copying is required because addTables puts results in the first table
+          addTables(before_copy, words)
+          parseSentence(before_copy, params_, dir)
+        end
+        for _,s in ipairs(lsentences.endd) do
+          local words = fillTextDetails(s, sentence, orig_index, word_index)
+          addTables(words, after_sentence)
+          parseSentence(words, params_, dir)
+        end
+        for _,s in ipairs(lsentences.both) do
+          local words = fillTextDetails(s, sentence, orig_index, word_index)
+          local before_copy = copyTable(before_sentence)
+          addTables(words, after_sentence)
+          addTables(before_copy, words)
+          --print("end dump: "..dumpOfProperty(before_copy, "name"))
+          parseSentence(before_copy, params_, dir)
+        end
 
-      parseSentence(before_sentence, params_, dir)
-      parseSentence(after_sentence, params_, dir)
-      return --no need to continue past this point, since the letters suffice
+        parseSentence(before_sentence, params_, dir)
+        parseSentence(after_sentence, params_, dir)
+        return --no need to continue past this point, since the letters suffice
+      end
     end
   end
   
