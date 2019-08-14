@@ -612,6 +612,20 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
             break
           end
         end
+        --something something surrounds maybe?
+        --[[if unit == outerlvl and surrounds ~= nil and surrounds_name == level_name then
+          --use surrounds to remember what was around the level
+          for __,on in ipairs(surrounds[0][0]) do
+            if nameIs(on, param) then
+              table.insert(others, on);
+            end
+          end]]
+        for _,other in ipairs(lists) do
+          if #other == 0 then
+            result = false
+            break
+          end
+        end
       else
         local frens = getUnitsOnTile(x, y, nil, false, unit, true)
         for _,other in ipairs(sets) do
@@ -631,20 +645,6 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
               result = false
               break
             end
-          end
-        end
-      else -- something something surrounds maybe?
-        --[[if unit == outerlvl and surrounds ~= nil and surrounds_name == level_name then
-          --use surrounds to remember what was around the level
-          for __,on in ipairs(surrounds[0][0]) do
-            if nameIs(on, param) then
-              table.insert(others, on);
-            end
-          end]]
-        for _,other in ipairs(lists) do
-          if #other == 0 then
-            result = false
-            break
           end
         end
       end
