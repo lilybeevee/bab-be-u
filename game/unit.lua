@@ -539,39 +539,31 @@ function updateUnits(undoing, big_update)
     end
     
     local nuke = getUnitsWithEffect("nuek")
-    if #nuke > 0 then
-      for _,unit in ipairs(nuke) do
-        local started = false
-        local fire = getUnitsOnTile(unit.x,unit.y)
-        for _,other in ipairs(fire) do
-          if other.name == "xplod" then
-            started = true
-            break
-          end
-        end
-        if not started then
-          local new_unit = createUnit(tiles_by_name["xplod"], unit.x, unit.y, 1, false)
-          addUndo({"create", new_unit.id, false})
+    for _,unit in ipairs(nuke) do
+      for _,other in ipairs(units) do
+        if other ~= unit and sameFloat(unit,other) then
+          table.insert(to_destroy, other)
+          addParticles("destroy", other.x, other.y, {2,2})
         end
       end
-      local fires = findUnitsByName("xplod")
-      for _,fire in ipairs(fires) do
-        local burn = getUnitsOnTile(fire.x,fire.y)
-        for _,on in ipairs(burn) do
-          for _,unit in ipairs(nuke) do
-            if (on.name ~= unit.name) and (on.name ~= "no1") and (on.name ~= "xplod") and sameFloat(on,unit) then
-              table.insert(to_destroy,on)
-              playSound("hotte")
-              addParticles("destroy", on.x, on.y, {2,2})
-            end
+      table.insert(to_destroy, unit)
+      playSound("break")
+      for i=-1,1 do
+        for j=-1,1 do
+          addParticles("destroy", unit.x+i, unit.y+j, {2,2})
+          if math.abs(i) ~= math.abs(j) then
+            addParticles("destroy", unit.x+i, unit.y+j, {2,3})
+          end
+          if i == 0 then
+            addParticles("destroy", unit.x, unit.y+j*2, {2,2})
+          end
+          if j == 0 then
+            addParticles("destroy", unit.x+i*2, unit.y, {2,2})
           end
         end
       end
-    else
-      local fires = findUnitsByName("xplod")
-      for _,fire in ipairs(fires) do
-        table.insert(to_destroy,fire)
-      end
+      addParticles("destroy", unit.x, unit.y, {2,3})
+      addParticles("destroy", unit.x, unit.y, unit.color)
     end
     
     to_destroy = handleDels(to_destroy)

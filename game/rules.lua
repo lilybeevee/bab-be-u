@@ -30,11 +30,6 @@ function clearRules()
     addBaseRule("this","be","go away pls")
     addBaseRule("this","be","wurd")
   end
-  if units_by_name["text_nuek"] then
-    addBaseRule("xplod","be","protecc")
-    addBaseRule("xplod","be","moar")
-    addBaseRule("xplod","ignor","lvl")
-  end
 
   has_new_rule = false
 end
