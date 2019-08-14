@@ -2346,3 +2346,43 @@ function updateGroup(n)
     end
   end
 end
+
+function serializeRule(rule)
+  local result = ""
+  result = result..serializeUnit(rule.subject, true)
+  result = result.." "..rule.verb.name.." "
+  result = result..serializeUnit(rule.object, true) -- there's no reason for separate serializeClass/Property since the structure is the same
+  return result
+end
+
+function serializeUnit(unit, outer)
+  local prefix = ""
+  local infix = " "
+  local name = unit.name
+  while name:starts("text_") do
+    name = name:sub(6).." txt"
+  end
+  if not unit.conds then
+    return name
+  end
+  for i,cond in ipairs(unit.conds) do
+    if not cond.others or #cond.others == 0 then
+      prefix = prefix..cond.name.." "
+    else
+      infix = infix..cond.name.." "
+      local infix_other = ""
+      for j,other in ipairs(cond.others) do
+        infix_other = infix_other..serializeUnit(other)
+        infix_other = infix_other.." & "
+      end
+      infix_other = infix_other:sub(1,-4) -- remove last &
+      infix = infix..infix_other.." & "
+    end
+  end
+  infix = infix:sub(1,-4) -- remove last &
+  local full = prefix..name..infix
+  if not outer and full:find("&", 1) then
+    full = "("..full..")"
+  end
+  return full
+end

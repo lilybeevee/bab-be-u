@@ -48,16 +48,17 @@ function parse(words, dir, no_verb_cond)
   
   local units = {}
   local verbs = {}
-  while words[1].type.object or words[1].type.cond_prefix or (words[2] and words[2].name == "text") do
+  while words[1].type.object or words[1].type.cond_prefix or words[1].type.parenthesis or (words[2] and words[2].name == "text") do
     local unit, words_ = findUnit(copyTable(words), extra_words, dir, true, no_verb_cond) -- outer unit doesn't need to worry about enclosure (nothing farther out to confuse it with)
     if not unit then break end
     words = words_
     if not unit then return false end
     if #words == 0 then return false end
     table.insert(units, unit)
-    if words[1].type["and"] and words[2] then
+    if words[1].type["and"] and words[2] and (words[2].type.object or words[2].type.parenthesis or words[3] and words[3].name == "text") then
       table.insert(extra_words, words[1])
       table.remove(words, 1)
+      print(words[1].name, "1")
       if #words == 0 then return false end
     else
       break -- prevents "bab keek be u"
@@ -73,6 +74,7 @@ function parse(words, dir, no_verb_cond)
     if words[1] and words[1].type["and"] and words[2] and words[2].type.verb and words[3] then
       table.insert(extra_words, words[1])
       table.remove(words, 1)
+      print(words[1].name, "2")
       if #words == 0 then return false end
     else
       break -- prevents "bab be u :)"
@@ -107,7 +109,7 @@ function findUnit(words, extra_words_, dir, outer, no_verb_cond)
   -- print("finding unit")
   if #words == 0 then return end
   
-  if words[1].name == "(" and words[1].unit and words[1].unit.dir == dir then
+  if (words[1].name == "(" or words[1].name == "parenthesis") and words[1].unit and words[1].unit.dir == dir then
     enclosed = true
     parenthesis = true
     -- print("(")
@@ -139,6 +141,7 @@ function findUnit(words, extra_words_, dir, outer, no_verb_cond)
     if enclosed and words[1].type["and"] and words[2] and words[2].type.cond_prefix then
       table.insert(extra_words, words[1])
       table.remove(words, 1)
+      print(words[1].name, "3")
       if #words == 0 then return end
     end -- we're not breaking here to allow "frenles lit bab" - add "else break" here if we want there to always be an and: "frenles & lit bab"
   end
@@ -214,9 +217,10 @@ function findUnit(words, extra_words_, dir, outer, no_verb_cond)
         table.insert(conds, infix)
         -- print(enclosed, words[1] and words[1].type, words[2] and words[2].type)
         if #words == 0 then break end
-        while enclosed and words[1] and words[1].type["and"] and words[2] and words[3] and (words[2].type.object or words[3].name == "text") do
+        while enclosed and words[1] and words[1].type["and"] and words[2] and words[3] and (words[2].type.object or words[2].type.parenthesis or words[3].name == "text") do
           table.insert(extra_words, words[1])
           table.remove(words, 1)
+          print(words[1].name, "4")
           if #words == 0 then break end
           local other, words_ = findUnit(copyTable(words), extra_words)
           if not other then
@@ -236,6 +240,7 @@ function findUnit(words, extra_words_, dir, outer, no_verb_cond)
     if enclosed and words[1] and words[1].type["and"] and words[2] and words[2].type.cond_infix and (not no_verb_cond or not words[1].type.verb)  then
       andd = words[1]
       table.remove(words, 1)
+      print(words[1].name, "5")
       if #words == 0 then break end
     else
       break -- need to break for the case of "bab that got keek w/fren bab" (should need an & in there)
@@ -248,7 +253,7 @@ function findUnit(words, extra_words_, dir, outer, no_verb_cond)
   
   -- print(fullDump(words[1]), dir)
   if parenthesis then
-    if words[1] and words[1].name == ")" and words[1].unit and words[1].unit.dir == (rotate8(dir)) then
+    if words[1] and (words[1].name == ")" or words[1].name == "parenthesis") and words[1].unit and words[1].unit.dir == (rotate8(dir)) then
     -- print(")")
       table.insert(extra_words, words[1])
       table.remove(words, 1)
@@ -323,6 +328,7 @@ function findVerbPhrase(words, extra_words_, dir, enclosed, noconds, no_verb_con
       if not noconds and words[1] and words[1].type["and"] and words[2] and not words[2].type.verb then
         table.insert(extra_words, words[1])
         table.remove(words, 1)
+        print(words[1].name, "6")
       else
         break
       end
@@ -338,6 +344,7 @@ function findVerbPhrase(words, extra_words_, dir, enclosed, noconds, no_verb_con
       if not noconds and words[1] and words[1].type["and"] and words[2] and not words[2].type.verb then
         table.insert(extra_words, words[1])
         table.remove(words, 1)
+        print(words[1].name, "7")
       else
         break
       end
@@ -357,6 +364,7 @@ function findVerbPhrase(words, extra_words_, dir, enclosed, noconds, no_verb_con
       if not noconds and words[1] and words[1].type["and"] and words[2] and not words[2].type.verb then
         andd = words[1]
         table.remove(words, 1)
+        print(words[1].name, "8")
       else
         break
       end
