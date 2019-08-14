@@ -58,7 +58,6 @@ function parse(words, dir, no_verb_cond)
     if words[1].type["and"] and words[2] and (words[2].type.object or words[2].type.parenthesis or words[3] and words[3].name == "text") then
       table.insert(extra_words, words[1])
       table.remove(words, 1)
-      print(words[1].name, "1")
       if #words == 0 then return false end
     else
       break -- prevents "bab keek be u"
@@ -74,7 +73,6 @@ function parse(words, dir, no_verb_cond)
     if words[1] and words[1].type["and"] and words[2] and words[2].type.verb and words[3] then
       table.insert(extra_words, words[1])
       table.remove(words, 1)
-      print(words[1].name, "2")
       if #words == 0 then return false end
     else
       break -- prevents "bab be u :)"
@@ -141,7 +139,6 @@ function findUnit(words, extra_words_, dir, outer, no_verb_cond)
     if enclosed and words[1].type["and"] and words[2] and words[2].type.cond_prefix then
       table.insert(extra_words, words[1])
       table.remove(words, 1)
-      print(words[1].name, "3")
       if #words == 0 then return end
     end -- we're not breaking here to allow "frenles lit bab" - add "else break" here if we want there to always be an and: "frenles & lit bab"
   end
@@ -220,7 +217,6 @@ function findUnit(words, extra_words_, dir, outer, no_verb_cond)
         while enclosed and words[1] and words[1].type["and"] and words[2] and words[3] and (words[2].type.object or words[2].type.parenthesis or words[3].name == "text") do
           table.insert(extra_words, words[1])
           table.remove(words, 1)
-          print(words[1].name, "4")
           if #words == 0 then break end
           local other, words_ = findUnit(copyTable(words), extra_words)
           if not other then
@@ -240,7 +236,6 @@ function findUnit(words, extra_words_, dir, outer, no_verb_cond)
     if enclosed and words[1] and words[1].type["and"] and words[2] and words[2].type.cond_infix and (not no_verb_cond or not words[1].type.verb)  then
       andd = words[1]
       table.remove(words, 1)
-      print(words[1].name, "5")
       if #words == 0 then break end
     else
       break -- need to break for the case of "bab that got keek w/fren bab" (should need an & in there)
@@ -328,7 +323,6 @@ function findVerbPhrase(words, extra_words_, dir, enclosed, noconds, no_verb_con
       if not noconds and words[1] and words[1].type["and"] and words[2] and not words[2].type.verb then
         table.insert(extra_words, words[1])
         table.remove(words, 1)
-        print(words[1].name, "6")
       else
         break
       end
@@ -344,7 +338,6 @@ function findVerbPhrase(words, extra_words_, dir, enclosed, noconds, no_verb_con
       if not noconds and words[1] and words[1].type["and"] and words[2] and not words[2].type.verb then
         table.insert(extra_words, words[1])
         table.remove(words, 1)
-        print(words[1].name, "7")
       else
         break
       end
@@ -364,7 +357,6 @@ function findVerbPhrase(words, extra_words_, dir, enclosed, noconds, no_verb_con
       if not noconds and words[1] and words[1].type["and"] and words[2] and not words[2].type.verb then
         andd = words[1]
         table.remove(words, 1)
-        print(words[1].name, "8")
       else
         break
       end
