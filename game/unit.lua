@@ -2139,6 +2139,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty)
   end
   
   if unit.type == "text" then
+    updateNameBasedOnDir(unit);
     if not table.has_value(referenced_text, unit.fullname) then
       table.insert(referenced_text, unit.fullname)
     end
@@ -2172,7 +2173,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty)
 
   table.insert(units, unit)
 
-  updateDir(unit, unit.dir)
+  --updateDir(unit, unit.dir)
   new_units_cache[unit] = true
   unit.new = true
   return unit
@@ -2305,6 +2306,31 @@ function updateDir(unit, dir, force)
     should_parse_rules = true
   end
   
+  updateNameBasedOnDir(unit);
+  
+  if (not unit_tests) then
+    unit.draw.rotation = unit.draw.rotation % 360
+    local target_rot = (dir - 1) * 45
+    if unit.rotate and math.abs(unit.draw.rotation - target_rot) == 180 then
+      -- flip "mirror" effect
+      addTween(tween.new(0.05, unit.draw, {scalex = 0}), "unit:dir:" .. unit.tempid, function()
+        unit.draw.rotation = target_rot
+        addTween(tween.new(0.05, unit.draw, {scalex = 1}), "unit:dir:" .. unit.tempid)
+      end)
+    else
+      -- smooth angle rotation
+      if unit.draw.rotation - target_rot > 180 then
+        target_rot = target_rot + 360
+      elseif target_rot - unit.draw.rotation > 180 then
+        target_rot = target_rot - 360
+      end
+      addTween(tween.new(0.1, unit.draw, {scalex = 1, rotation = target_rot}), "unit:dir:" .. unit.tempid)
+    end
+  end
+  return true
+end
+
+function updateNameBasedOnDir(unit)
   if unit.fullname == "text_mayb" then
     should_parse_rules = true
   elseif unit.fullname == "text_direction" then
@@ -2328,27 +2354,6 @@ function updateDir(unit, dir, force)
     end
     should_parse_rules = true
   end
-  
-  if (not unit_tests) then
-    unit.draw.rotation = unit.draw.rotation % 360
-    local target_rot = (dir - 1) * 45
-    if unit.rotate and math.abs(unit.draw.rotation - target_rot) == 180 then
-      -- flip "mirror" effect
-      addTween(tween.new(0.05, unit.draw, {scalex = 0}), "unit:dir:" .. unit.tempid, function()
-        unit.draw.rotation = target_rot
-        addTween(tween.new(0.05, unit.draw, {scalex = 1}), "unit:dir:" .. unit.tempid)
-      end)
-    else
-      -- smooth angle rotation
-      if unit.draw.rotation - target_rot > 180 then
-        target_rot = target_rot + 360
-      elseif target_rot - unit.draw.rotation > 180 then
-        target_rot = target_rot - 360
-      end
-      addTween(tween.new(0.1, unit.draw, {scalex = 1, rotation = target_rot}), "unit:dir:" .. unit.tempid)
-    end
-  end
-  return true
 end
 
 function newUnitID(id)
