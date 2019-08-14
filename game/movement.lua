@@ -474,6 +474,7 @@ It is probably possible to do, but lily has decided that it's not important enou
       if (loop_stage > 1000) then
         print("movement infinite loop! (1000 attempts at a stage)")
         destroyLevel("infloop");
+        break;
       end
       --movedebug("loop_stage:"..tostring(loop_stage))
       successes = 0
@@ -485,6 +486,7 @@ It is probably possible to do, but lily has decided that it's not important enou
          if (loop_tick > 1000) then
           print("movement infinite loop! (1000 attempts at a single tick)")
           destroyLevel("infloop");
+          break;
         end
         --movedebug("loop_tick:"..tostring(loop_tick))
         local remove_from_moving_units = {}

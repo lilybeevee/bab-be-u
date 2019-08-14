@@ -77,11 +77,11 @@ function moveBlock()
       unit.backer_turn = #undo_buffer+(0.5*(amt-1));
       backers_cache[unit] = unit.backer_turn;
     end
-    doBack(unit, 2*(#undo_buffer-unit.backer_turn));
+    doBack(unit.id, 2*(#undo_buffer-unit.backer_turn));
     for i = 2,amt do
       addUndo({"backer_turn", unit.id, unit.backer_turn})
       unit.backer_turn = unit.backer_turn - 0.5;
-      doBack(unit, 2*(#undo_buffer-unit.backer_turn));
+      doBack(unit.id, 2*(#undo_buffer-unit.backer_turn));
     end
   end
   
