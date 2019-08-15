@@ -614,7 +614,7 @@ function scene.draw(dt)
     if unit.name == "no1" and not (draw_empty and validEmpty(unit)) then return end
     
     local brightness = 1
-    if ((unit.type == "text" and not hasRule(unit,"ben't","wurd")) or hasRule(unit,"be","wurd")) and not unit.active then
+    if ((unit.type == "text" and not hasRule(unit,"ben't","wurd")) or hasRule(unit,"be","wurd")) and not unit.active and not level_destroyed then
       brightness = 0.33
     end
 
@@ -721,6 +721,10 @@ function scene.draw(dt)
 		end
 		
 		local color = setColor(unit.color)
+    --check level_destroyed so that the object created by infloop is always white; needs to be changed if we want objects to be able to survive level destruction
+    if level_destroyed then
+      setColor({0,3})
+    end
 
     local fulldrawx = (drawx + 0.5)*TILE_SIZE
     local fulldrawy = (drawy + 0.5)*TILE_SIZE
