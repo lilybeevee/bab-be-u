@@ -1103,7 +1103,7 @@ function scene.draw(dt)
       end
     end
 
-    local width = (40 + 4) * #draw_units - 4
+    local width = 44 * #draw_units - 4
     love.graphics.rectangle("fill", -width / 2, -48, width, 40)
 
     love.graphics.setColor(getPaletteColor(3, 3))
@@ -1163,7 +1163,7 @@ function scene.draw(dt)
   love.graphics.setColor(1, 1, 1)
   love.graphics.translate(love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
   love.graphics.scale(win_size, win_size)
-  local win_sprite = win_sprite_override and sprites["ui/u_r_thing"] or sprites["ui/u_r_win"]
+  local win_sprite = #win_sprite_override > 0 and sprites["ui/u_r_thing"] or sprites["ui/u_r_win"]
   love.graphics.draw(win_sprite, -win_sprite:getWidth() / 2, -win_sprite:getHeight() / 2, 0, 1, 1)
 
   if currently_winning and win_size < 1 then
@@ -1171,14 +1171,16 @@ function scene.draw(dt)
   end
   love.graphics.pop()
   
-  if win_sprite_override then
-    love.graphics.push()
-    love.graphics.setColor(0.92, 0.92, 1)
-    love.graphics.translate(love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
-    love.graphics.scale(win_size, win_size)
-    local tf_sprite = sprites[win_sprite_override]
-    love.graphics.draw(tf_sprite, -tf_sprite:getWidth() / 2 + 40, -tf_sprite:getHeight() / 2 - 45, 0, 4, 4)
-    love.graphics.pop()
+  if #win_sprite_override > 0 then
+    for _,image in ipairs(win_sprite_override) do
+      love.graphics.push()
+      love.graphics.setColor(0.92, 0.92, 1)
+      love.graphics.translate(love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
+      love.graphics.scale(win_size, win_size)
+      local tf_sprite = sprites[image]
+      love.graphics.draw(tf_sprite, -tf_sprite:getWidth() / 2 + 40, -tf_sprite:getHeight() / 2 - 45, 0, 4, 4)
+      love.graphics.pop()
+    end
   end
   
   -- Replay UI

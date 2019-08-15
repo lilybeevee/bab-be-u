@@ -1647,7 +1647,7 @@ function destroyLevel(reason)
       if tile ~= nil then
         --placeholder - just make 'u r win' pop up for now
         table.insert(transform_results, tiles_list[tile].name)
-        win_sprite_override = tiles_list[tile].sprite
+        table.insert(win_sprite_override,tiles_list[tile].sprite)
       end
     end
   end
@@ -1746,7 +1746,7 @@ function convertLevel()
       --placeholder - just make 'u r win' pop up for now
        table.insert(transform_results, tiles_list[tile].name)
       --doWin("transform", {tiles_list[tile].name})
-      win_sprite_override = tiles_list[tile].sprite
+      table.insert(win_sprite_override,tiles_list[tile].sprite)
     end
   end
 
@@ -1767,7 +1767,7 @@ function convertLevel()
         --placeholder - just make 'u r win' pop up for now
          table.insert(transform_results, tiles_list[tile].name)
         --doWin("transform", {tiles_list[tile].name})
-        win_sprite_override = tiles_list[tile].sprite
+        table.insert(win_sprite_override,tiles_list[tile].sprite)
       end
     end
   end
@@ -2457,7 +2457,7 @@ function undoWin()
     currently_winning = false
     music_fading = false
     win_size = 0
-    win_sprite_override = nil
+    win_sprite_override = {}
 end
 
 function doWin(result_, payload_)

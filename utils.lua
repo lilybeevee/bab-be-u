@@ -14,7 +14,7 @@ function clear()
   undoing = false
   successful_brite_cache = nil
   next_level_name = ""
-  win_sprite_override = nil
+  win_sprite_override = {}
   level_destroyed = false
   last_input_time = nil
   most_recent_key = nil
