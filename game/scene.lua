@@ -406,7 +406,7 @@ function scene.keyPressed(key, isrepeat)
     doOneMove(0, 0, "e")
   end
   
-  if key == "f" and hasRule("press","f2",":)") and not currently_winning and not replay_playback then
+  if key == "f" and not currently_winning and not replay_playback then
     doOneMove(0, 0, "f")
   end
 
@@ -1605,7 +1605,53 @@ function doOneMove(x, y, key)
     mobile_controls_timeless:setBGImage(sprites[timeless and "ui/time resume" or "ui/timestop"])
   elseif (key == "f") then
     extendReplayString(0, 0, "f")
-    doWin("won")
+
+    if hasRule("press","f2",":)") then
+      doWin("won")
+    end
+    local will_undo = false
+    if hasRule("press","f2","try again") then
+      will_undo = true
+    end
+    if hasRule("press","f2","xwx") then
+      love = {}
+    end
+    if hasRule("press","f2","nxt") then
+      doWin("nxt")
+    end
+
+    local to_destroy = {}
+
+    if hasRule("press","f2","hotte") then
+      local melters = getUnitsWithEffect("fridgd")
+      for _,unit in ipairs(melters) do
+        if sameFloat(unit,outerlvl) then
+          table.insert(to_destroy, unit)
+          addParticles("destroy", unit.x, unit.y, unit.color)
+        end
+      end
+      if #to_destroy > 0 then
+        playSound("hotte")
+      end
+    end
+    if hasRule("press","f2",":(") then
+      local yous = getUnitsWithEffect("u")
+      local youtoos = getUnitsWithEffect("u too")
+      local youtres = getUnitsWithEffect("u tres")
+      mergeTable(yous, youtoos)
+      mergeTable(yous, youtres)
+      for _,unit in ipairs(yous) do
+        table.insert(to_destroy, unit)
+        addParticles("destroy", unit.x, unit.y, unit.color)
+      end
+    end
+    to_destroy = handleDels(to_destroy)
+
+    if (will_undo) then
+      doTryAgain();
+    end
+
+    
 	elseif (key == "undo") then
 		local result = undo()
 		extendReplayString(0, 0, "undo")
