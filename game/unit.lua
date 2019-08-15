@@ -1374,7 +1374,7 @@ function levelBlock()
   
   if hasProperty(outerlvl, "no swim") then
     for _,unit in ipairs(units) do
-      if sameFloat(unit, outerlvl) then
+      if sameFloat(unit, outerlvl) and inBounds(unit.x,unit.y) then
         destroyLevel("sink")
         if not lvlsafe then return end
       end
@@ -1383,7 +1383,7 @@ function levelBlock()
   
   if hasProperty(outerlvl, "ouch") then
     for _,unit in ipairs(units) do
-      if sameFloat(unit, outerlvl) then
+      if sameFloat(unit, outerlvl) and inBounds(unit.x,unit.y) then
         destroyLevel("snacc")
         if not lvlsafe then return end
       end
@@ -1393,7 +1393,7 @@ function levelBlock()
   if hasProperty(outerlvl, "hotte") then
     local melters = getUnitsWithEffect("fridgd")
     for _,unit in ipairs(melters) do
-      if sameFloat(unit,outerlvl) then
+      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
         table.insert(to_destroy, unit)
         addParticles("destroy", unit.x, unit.y, unit.color)
       end
@@ -1412,7 +1412,7 @@ function levelBlock()
     end
     local melters = getUnitsWithEffect("hotte")
     for _,unit in ipairs(melters) do
-      if sameFloat(unit,outerlvl) then
+      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
         destroyLevel("hotte")
         if not lvlsafe then return end
       end
@@ -1426,7 +1426,7 @@ function levelBlock()
     mergeTable(yous, youtoos)
     mergeTable(yous, youtres)
     for _,unit in ipairs(yous) do
-      if sameFloat(unit,outerlvl) then
+      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
         table.insert(to_destroy, unit)
         addParticles("destroy", unit.x, unit.y, unit.color)
       end
@@ -1442,7 +1442,7 @@ function levelBlock()
     end
     local dors = getUnitsWithEffect("for dor")
     for _,unit in ipairs(dors) do
-      if sameFloat(unit,outerlvl) then
+      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
         destroyLevel("unlock")
         if lvlsafe then
           table.insert(to_destroy, unit)
@@ -1461,7 +1461,7 @@ function levelBlock()
   if hasProperty(outerlvl, "for dor") then
     local kees = getUnitsWithEffect("ned kee")
     for _,unit in ipairs(kees) do
-      if sameFloat(unit,outerlvl) then
+      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
         destroyLevel("unlock")
         if lvlsafe then
           table.insert(to_destroy, unit)
@@ -1480,7 +1480,7 @@ function levelBlock()
   local issnacc = matchesRule(outerlvl,"snacc",nil)
   for _,ruleparent in ipairs(issnacc) do
     local unit = ruleparent[2]
-    if unit ~= outerlvl and sameFloat(outerlvl,unit) then
+    if unit ~= outerlvl and sameFloat(outerlvl,unit) and inBounds(unit.x,unit.y) then
       addParticles("destroy", unit.x, unit.y, unit.color)
       table.insert(to_destroy, unit)
     end
@@ -1489,7 +1489,7 @@ function levelBlock()
   local issnacc = matchesRule(nil,"snacc",outerlvl)
   for _,ruleparent in ipairs(issnacc) do
     local unit = ruleparent[2]
-    if unit ~= outerlvl and sameFloat(outerlvl,unit) then
+    if unit ~= outerlvl and sameFloat(outerlvl,unit) and inBounds(unit.x,unit.y) then
       destroyLevel("snacc")
       if not lvlsafe then return end
     end
@@ -1510,9 +1510,8 @@ function levelBlock()
     mergeTable(yous, youtoos)
     mergeTable(yous, youtres)
     for _,unit in ipairs(yous) do
-      if sameFloat(unit,outerlvl) then
-        will_undo = true
-        break
+      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
+        doTryAgain()
       end
     end
   end
@@ -1524,7 +1523,7 @@ function levelBlock()
     mergeTable(yous, youtoos)
     mergeTable(yous, youtres)
     for _,unit in ipairs(yous) do
-      if sameFloat(unit,outerlvl) then
+      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
         love = {}
       end
     end
@@ -1537,7 +1536,7 @@ function levelBlock()
     mergeTable(yous, youtoos)
     mergeTable(yous, youtres)
     for _,unit in ipairs(yous) do
-      if sameFloat(unit,outerlvl) then
+      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
         writeSaveFile(level_name, "bonus", true);
         destroyLevel("bonus")
         if not lvlsafe then return end
@@ -1552,7 +1551,7 @@ function levelBlock()
     mergeTable(yous, youtoos)
     mergeTable(yous, youtres)
     for _,unit in ipairs(yous) do
-      if sameFloat(unit,outerlvl) then
+      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
         doWin("won")
       end
     end
@@ -1561,10 +1560,6 @@ function levelBlock()
   if hasProperty(outerlvl, "nxt") then
 		--placeholder until NXT is coded
     doWin("nxt")
-  end
-  
-  if (will_undo) then
-    doTryAgain();
   end
 end
 
