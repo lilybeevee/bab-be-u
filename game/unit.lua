@@ -538,32 +538,56 @@ function updateUnits(undoing, big_update)
       time_destroy = {}
     end
     
-    local nuke = getUnitsWithEffect("nuek")
-    for _,unit in ipairs(nuke) do
-      for _,other in ipairs(units) do
-        if other ~= unit and sameFloat(unit,other) then
-          table.insert(to_destroy, other)
-          addParticles("destroy", other.x, other.y, {2,2})
-        end
-      end
-      table.insert(to_destroy, unit)
-      playSound("break")
-      for i=-1,1 do
-        for j=-1,1 do
-          addParticles("destroy", unit.x+i, unit.y+j, {2,2})
-          if math.abs(i) ~= math.abs(j) then
-            addParticles("destroy", unit.x+i, unit.y+j, {2,3})
-          end
-          if i == 0 then
-            addParticles("destroy", unit.x, unit.y+j*2, {2,2})
-          end
-          if j == 0 then
-            addParticles("destroy", unit.x+i*2, unit.y, {2,2})
+    local nukes = getUnitsWithEffect("nuek")
+    local fires = findUnitsByName("xplod")
+    if #nukes > 0 then
+      for _,nuke in ipairs(nukes) do
+        local check = getUnitsOnTile(nuke.x,nuke.y)
+        local lit = false
+        for _,other in ipairs(check) do
+          if other.name == "xplod" then
+            lit = true
           end
         end
+        if not lit then
+          local new_unit = createUnit(tiles_by_name["xplod"], nuke.x, nuke.y, nuke.dir)
+          addUndo({"create", new_unit.id, false})
+          for _,other in ipairs(check) do
+            if other ~= nuke then
+              table.insert(to_destroy,other)
+              playSound("break")
+              addParticles("destroy", other.x, other.y, {2,2})
+            end
+          end
+        end
       end
-      addParticles("destroy", unit.x, unit.y, {2,3})
-      addParticles("destroy", unit.x, unit.y, unit.color)
+      for _,fire in ipairs(fires) do
+        for i=1,7,2 do
+          local dx = dirs8[i][1]
+          local dy = dirs8[i][2]
+          local lit = false
+          local others = getUnitsOnTile(fire.x+dx,fire.y+dy)
+          if inBounds(fire.x+dx,fire.y+dy) then
+            for _,on in ipairs(others) do
+              if on.name == "xplod" then
+                lit = true
+              else
+                table.insert(to_destroy,on)
+                playSound("break")
+                addParticles("destroy", on.x, on.y, {2,2})
+              end
+            end
+            if not lit then
+              local new_unit = createUnit(tiles_by_name["xplod"], fire.x+dx, fire.y+dy, 1)
+              addUndo({"create", new_unit.id, false})
+            end
+          end
+        end
+      end
+    else
+      for _,fire in ipairs(fires) do
+        table.insert(to_destroy,fire)
+      end
     end
     
     to_destroy = handleDels(to_destroy)
@@ -1649,8 +1673,15 @@ function destroyLevel(reason)
       for _,unit in ipairs(units) do
         addParticles("destroy", unit.x, unit.y, unit.color)
       end
+      tile = "infloop"
+      if hasRule("loop","be",nil) then
+        local ruleparent = matchesRule("loop","be",nil)
+        print(dump(ruleparent[1][1]))
+        tile = ruleparent[1][1].rule.object.name
+        --vitellary: new rule stuff is ridiculous, i love it
+      end
       handleDels(units, true)
-      local new_unit = createUnit(tiles_by_name["infloop"], math.floor(mapwidth/2), math.floor(mapheight/2), 0)
+      local new_unit = createUnit(tiles_by_name[tile], math.floor(mapwidth/2), math.floor(mapheight/2), 1)
       addUndo({"create", new_unit.id, false})
     end
   end
