@@ -600,7 +600,9 @@ function scene.draw(dt)
   love.graphics.setColor(lvl_color[1], lvl_color[2], lvl_color[3], lvl_color[4])
   
   if not (level_destroyed or hasProperty(outerlvl, "stelth")) then
-    love.graphics.rectangle("fill", 0, 0, roomwidth, roomheight)
+    local flyenes = countProperty(outerlvl,"flye")
+    local mapy = 0 - math.sin(love.timer.getTime())*5*flyenes
+    love.graphics.rectangle("fill", 0, mapy, roomwidth, roomheight)
     if level_background_sprite ~= nil and level_background_sprite ~= "" and sprites[level_background_sprite] then
       love.graphics.setColor(1, 1, 1)
       local sprite = sprites[level_background_sprite]
@@ -612,7 +614,7 @@ function scene.draw(dt)
     if unit.name == "no1" and not (draw_empty and validEmpty(unit)) then return end
     
     local brightness = 1
-    if ((unit.type == "text" and not hasRule(unit,"ben't","wurd")) or hasRule(unit,"be","wurd")) and not unit.active then
+    if ((unit.type == "text" and not hasRule(unit,"ben't","wurd")) or hasRule(unit,"be","wurd")) and not unit.active and not level_destroyed then
       brightness = 0.33
     end
 
@@ -719,6 +721,10 @@ function scene.draw(dt)
 		end
 		
 		local color = setColor(unit.color)
+    --check level_destroyed so that the object created by infloop is always white; needs to be changed if we want objects to be able to survive level destruction
+    if level_destroyed then
+      setColor({0,3})
+    end
 
     local fulldrawx = (drawx + 0.5)*TILE_SIZE
     local fulldrawy = (drawy + 0.5)*TILE_SIZE
@@ -1157,14 +1163,23 @@ function scene.draw(dt)
   love.graphics.setColor(1, 1, 1)
   love.graphics.translate(love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
   love.graphics.scale(win_size, win_size)
-  local win_sprite = win_sprite_override and sprites[win_sprite_override] or sprites["ui/u_r_win"]
-  local scale = win_sprite_override and 10 or 1
-  love.graphics.draw(win_sprite, scale*-win_sprite:getWidth() / 2, scale*-win_sprite:getHeight() / 2, 0, scale, scale)
+  local win_sprite = win_sprite_override and sprites["ui/u_r_thing"] or sprites["ui/u_r_win"]
+  love.graphics.draw(win_sprite, -win_sprite:getWidth() / 2, -win_sprite:getHeight() / 2, 0, 1, 1)
 
   if currently_winning and win_size < 1 then
     win_size = win_size + dt*2
   end
   love.graphics.pop()
+  
+  if win_sprite_override then
+    love.graphics.push()
+    love.graphics.setColor(0.92, 0.92, 1)
+    love.graphics.translate(love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
+    love.graphics.scale(win_size, win_size)
+    local tf_sprite = sprites[win_sprite_override]
+    love.graphics.draw(tf_sprite, -tf_sprite:getWidth() / 2 + 40, -tf_sprite:getHeight() / 2 - 45, 0, 4, 4)
+    love.graphics.pop()
+  end
   
   -- Replay UI
   if replay_playback then

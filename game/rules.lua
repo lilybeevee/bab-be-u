@@ -30,11 +30,6 @@ function clearRules()
     addBaseRule("this","be","go away pls")
     addBaseRule("this","be","wurd")
   end
-  if units_by_name["text_nuek"] then
-    addBaseRule("xplod","be","protecc")
-    addBaseRule("xplod","be","moar")
-    addBaseRule("xplod","ignor","lvl")
-  end
 
   has_new_rule = false
 end
@@ -444,6 +439,11 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
       if root.mods then
         for _,mod in ipairs(root.mods) do
           addUnits(list, set, mod)
+        end
+      end
+      if root.prefix then
+        for _,pfix in ipairs(root.prefix) do
+          addUnits(list, set, pfix)
         end
       end
     end

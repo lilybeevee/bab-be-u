@@ -538,37 +538,53 @@ function updateUnits(undoing, big_update)
       time_destroy = {}
     end
     
-    local nuke = getUnitsWithEffect("nuek")
-    if #nuke > 0 then
-      for _,unit in ipairs(nuke) do
-        local started = false
-        local fire = getUnitsOnTile(unit.x,unit.y)
-        for _,other in ipairs(fire) do
+    local nukes = getUnitsWithEffect("nuek")
+    local fires = findUnitsByName("xplod")
+    if #nukes > 0 then
+      for _,nuke in ipairs(nukes) do
+        local check = getUnitsOnTile(nuke.x,nuke.y)
+        local lit = false
+        for _,other in ipairs(check) do
           if other.name == "xplod" then
-            started = true
-            break
+            lit = true
           end
         end
-        if not started then
-          local new_unit = createUnit(tiles_by_name["xplod"], unit.x, unit.y, 1, false)
+        if not lit then
+          local new_unit = createUnit(tiles_by_name["xplod"], nuke.x, nuke.y, nuke.dir)
           addUndo({"create", new_unit.id, false})
+          for _,other in ipairs(check) do
+            if other ~= nuke then
+              table.insert(to_destroy,other)
+              playSound("break")
+              addParticles("destroy", other.x, other.y, {2,2})
+            end
+          end
         end
       end
-      local fires = findUnitsByName("xplod")
       for _,fire in ipairs(fires) do
-        local burn = getUnitsOnTile(fire.x,fire.y)
-        for _,on in ipairs(burn) do
-          for _,unit in ipairs(nuke) do
-            if (on.name ~= unit.name) and (on.name ~= "no1") and (on.name ~= "xplod") and sameFloat(on,unit) then
-              table.insert(to_destroy,on)
-              playSound("hotte")
-              addParticles("destroy", on.x, on.y, {2,2})
+        for i=1,7,2 do
+          local dx = dirs8[i][1]
+          local dy = dirs8[i][2]
+          local lit = false
+          local others = getUnitsOnTile(fire.x+dx,fire.y+dy)
+          if inBounds(fire.x+dx,fire.y+dy) then
+            for _,on in ipairs(others) do
+              if on.name == "xplod" then
+                lit = true
+              else
+                table.insert(to_destroy,on)
+                playSound("break")
+                addParticles("destroy", on.x, on.y, {2,2})
+              end
+            end
+            if not lit then
+              local new_unit = createUnit(tiles_by_name["xplod"], fire.x+dx, fire.y+dy, 1)
+              addUndo({"create", new_unit.id, false})
             end
           end
         end
       end
     else
-      local fires = findUnitsByName("xplod")
       for _,fire in ipairs(fires) do
         table.insert(to_destroy,fire)
       end
@@ -963,7 +979,7 @@ function updateUnits(undoing, big_update)
         if tile ~= nil then
           local others = getUnitsOnTile(creator.x, creator.y, createe, true, creator)
           if #others == 0 then
-            local new_unit = createUnit(tile, creator.x, creator.y, creator.dir)
+            local new_unit = createUnit(tile, creator.x, creator.y, creator.dir, nil, nil, nil, match[1].rule.object.prefix)
             addUndo({"create", new_unit.id, false})
           end
         elseif createe == "mous" then
@@ -1382,7 +1398,7 @@ function levelBlock()
   
   if hasProperty(outerlvl, "no swim") then
     for _,unit in ipairs(units) do
-      if sameFloat(unit, outerlvl) then
+      if sameFloat(unit, outerlvl) and inBounds(unit.x,unit.y) then
         destroyLevel("sink")
         if not lvlsafe then return end
       end
@@ -1391,7 +1407,7 @@ function levelBlock()
   
   if hasProperty(outerlvl, "ouch") then
     for _,unit in ipairs(units) do
-      if sameFloat(unit, outerlvl) then
+      if sameFloat(unit, outerlvl) and inBounds(unit.x,unit.y) then
         destroyLevel("snacc")
         if not lvlsafe then return end
       end
@@ -1401,7 +1417,7 @@ function levelBlock()
   if hasProperty(outerlvl, "hotte") then
     local melters = getUnitsWithEffect("fridgd")
     for _,unit in ipairs(melters) do
-      if sameFloat(unit,outerlvl) then
+      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
         table.insert(to_destroy, unit)
         addParticles("destroy", unit.x, unit.y, unit.color)
       end
@@ -1420,7 +1436,7 @@ function levelBlock()
     end
     local melters = getUnitsWithEffect("hotte")
     for _,unit in ipairs(melters) do
-      if sameFloat(unit,outerlvl) then
+      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
         destroyLevel("hotte")
         if not lvlsafe then return end
       end
@@ -1434,7 +1450,7 @@ function levelBlock()
     mergeTable(yous, youtoos)
     mergeTable(yous, youtres)
     for _,unit in ipairs(yous) do
-      if sameFloat(unit,outerlvl) then
+      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
         table.insert(to_destroy, unit)
         addParticles("destroy", unit.x, unit.y, unit.color)
       end
@@ -1450,7 +1466,7 @@ function levelBlock()
     end
     local dors = getUnitsWithEffect("for dor")
     for _,unit in ipairs(dors) do
-      if sameFloat(unit,outerlvl) then
+      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
         destroyLevel("unlock")
         if lvlsafe then
           table.insert(to_destroy, unit)
@@ -1469,7 +1485,7 @@ function levelBlock()
   if hasProperty(outerlvl, "for dor") then
     local kees = getUnitsWithEffect("ned kee")
     for _,unit in ipairs(kees) do
-      if sameFloat(unit,outerlvl) then
+      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
         destroyLevel("unlock")
         if lvlsafe then
           table.insert(to_destroy, unit)
@@ -1488,7 +1504,7 @@ function levelBlock()
   local issnacc = matchesRule(outerlvl,"snacc",nil)
   for _,ruleparent in ipairs(issnacc) do
     local unit = ruleparent[2]
-    if unit ~= outerlvl and sameFloat(outerlvl,unit) then
+    if unit ~= outerlvl and sameFloat(outerlvl,unit) and inBounds(unit.x,unit.y) then
       addParticles("destroy", unit.x, unit.y, unit.color)
       table.insert(to_destroy, unit)
     end
@@ -1497,7 +1513,7 @@ function levelBlock()
   local issnacc = matchesRule(nil,"snacc",outerlvl)
   for _,ruleparent in ipairs(issnacc) do
     local unit = ruleparent[2]
-    if unit ~= outerlvl and sameFloat(outerlvl,unit) then
+    if unit ~= outerlvl and sameFloat(outerlvl,unit) and inBounds(unit.x,unit.y) then
       destroyLevel("snacc")
       if not lvlsafe then return end
     end
@@ -1518,9 +1534,8 @@ function levelBlock()
     mergeTable(yous, youtoos)
     mergeTable(yous, youtres)
     for _,unit in ipairs(yous) do
-      if sameFloat(unit,outerlvl) then
-        will_undo = true
-        break
+      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
+        doTryAgain()
       end
     end
   end
@@ -1532,7 +1547,7 @@ function levelBlock()
     mergeTable(yous, youtoos)
     mergeTable(yous, youtres)
     for _,unit in ipairs(yous) do
-      if sameFloat(unit,outerlvl) then
+      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
         love = {}
       end
     end
@@ -1545,7 +1560,7 @@ function levelBlock()
     mergeTable(yous, youtoos)
     mergeTable(yous, youtres)
     for _,unit in ipairs(yous) do
-      if sameFloat(unit,outerlvl) then
+      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
         writeSaveFile(level_name, "bonus", true);
         destroyLevel("bonus")
         if not lvlsafe then return end
@@ -1560,7 +1575,7 @@ function levelBlock()
     mergeTable(yous, youtoos)
     mergeTable(yous, youtres)
     for _,unit in ipairs(yous) do
-      if sameFloat(unit,outerlvl) then
+      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
         doWin("won")
       end
     end
@@ -1569,10 +1584,6 @@ function levelBlock()
   if hasProperty(outerlvl, "nxt") then
 		--placeholder until NXT is coded
     doWin("nxt")
-  end
-  
-  if (will_undo) then
-    doTryAgain();
   end
 end
 
@@ -1662,8 +1673,15 @@ function destroyLevel(reason)
       for _,unit in ipairs(units) do
         addParticles("destroy", unit.x, unit.y, unit.color)
       end
+      tile = "infloop"
+      if hasRule("loop","be",nil) then
+        local ruleparent = matchesRule("loop","be",nil)
+        print(dump(ruleparent[1][1]))
+        tile = ruleparent[1][1].rule.object.name
+        --vitellary: new rule stuff is ridiculous, i love it
+      end
       handleDels(units, true)
-      local new_unit = createUnit(tiles_by_name["infloop"], math.floor(mapwidth/2), math.floor(mapheight/2), 0)
+      local new_unit = createUnit(tiles_by_name[tile], math.floor(mapwidth/2), math.floor(mapheight/2), 1)
       addUndo({"create", new_unit.id, false})
     end
   end
@@ -1695,7 +1713,7 @@ function dropGotUnit(unit, rule)
       local new_mouse = createMouse(unit.x, unit.y)
       addUndo({"create_cursor", new_mouse.id})
     else
-      local new_unit = createUnit(obj_id, unit.x, unit.y, unit.dir, false)
+      local new_unit = createUnit(obj_id, unit.x, unit.y, unit.dir, false, nil, nil, rule.object.prefix)
       addUndo({"create", new_unit.id, false})
     end
   end
@@ -1946,7 +1964,7 @@ function convertUnits(pass)
             end
             if tile ~= nil then
               table.insert(del_cursors, cursor);
-              local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
+              local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true, nil, nil, rule.object.prefix)
               if (new_unit ~= nil) then
                 addUndo({"create", new_unit.id, true, created_from_id = unit.id})
               end
@@ -1964,7 +1982,7 @@ function convertUnits(pass)
           if not unit.removed then
             table.insert(converted_units, unit)
           end
-          local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
+          local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true, nil, nil, rule.object.prefix)
           if (new_unit ~= nil) then
             addUndo({"create", new_unit.id, true, created_from_id = unit.id})
           end
@@ -2051,7 +2069,7 @@ function deleteUnits(del_units,convert)
   end
 end
 
-function createUnit(tile,x,y,dir,convert,id_,really_create_empty)
+function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
   local unit = {}
   unit.class = "unit"
 
@@ -2113,6 +2131,13 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty)
   else
     unit.name = unit.fullname
     unit.textname = unit.fullname
+  end
+  
+  if prefix then
+    for _,pfix in ipairs(prefix) do
+      unit[pfix.name] = true
+    end
+    updateUnitColourOverride(unit)
   end
   
   --abort if we're trying to create outerlvl outside of the start
@@ -2430,8 +2455,9 @@ end
 function undoWin()
     if hasProperty(outerlvl, "no undo") then return end
     currently_winning = false
-	music_fading = false
+    music_fading = false
     win_size = 0
+    win_sprite_override = nil
 end
 
 function doWin(result_, payload_)
