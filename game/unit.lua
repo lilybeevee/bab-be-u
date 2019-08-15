@@ -2455,8 +2455,9 @@ end
 function undoWin()
     if hasProperty(outerlvl, "no undo") then return end
     currently_winning = false
-	music_fading = false
+    music_fading = false
     win_size = 0
+    win_sprite_override = nil
 end
 
 function doWin(result_, payload_)

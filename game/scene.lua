@@ -1163,14 +1163,23 @@ function scene.draw(dt)
   love.graphics.setColor(1, 1, 1)
   love.graphics.translate(love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
   love.graphics.scale(win_size, win_size)
-  local win_sprite = win_sprite_override and sprites[win_sprite_override] or sprites["ui/u_r_win"]
-  local scale = win_sprite_override and 10 or 1
-  love.graphics.draw(win_sprite, scale*-win_sprite:getWidth() / 2, scale*-win_sprite:getHeight() / 2, 0, scale, scale)
+  local win_sprite = win_sprite_override and sprites["ui/u_r_thing"] or sprites["ui/u_r_win"]
+  love.graphics.draw(win_sprite, -win_sprite:getWidth() / 2, -win_sprite:getHeight() / 2, 0, 1, 1)
 
   if currently_winning and win_size < 1 then
     win_size = win_size + dt*2
   end
   love.graphics.pop()
+  
+  if win_sprite_override then
+    love.graphics.push()
+    love.graphics.setColor(0.92, 0.92, 1)
+    love.graphics.translate(love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
+    love.graphics.scale(win_size, win_size)
+    local tf_sprite = sprites[win_sprite_override]
+    love.graphics.draw(tf_sprite, -tf_sprite:getWidth() / 2 + 40, -tf_sprite:getHeight() / 2 - 45, 0, 4, 4)
+    love.graphics.pop()
+  end
   
   -- Replay UI
   if replay_playback then
