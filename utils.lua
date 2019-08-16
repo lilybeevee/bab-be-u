@@ -1185,7 +1185,7 @@ temp_lightcanvas = nil
 lightcanvas_width = 0
 lightcanvas_height = 0
 
-torc_angles = {45,90,135,180,225,270,315,360}
+torc_angles = {20,30,45,60,75,90,120,150,180,225,270,315,360}
 function calculateLight()
   if lightcanvas_width ~= mapwidth or lightcanvas_height ~= mapheight then
     lightcanvas = love.graphics.newCanvas(mapwidth*32, mapheight*32)
