@@ -1258,7 +1258,7 @@ function calculateLight()
           love.graphics.polygon("fill", cx, cy, cx+math.tan(math.pi/2-angle1)*(cy), 0, cx+math.tan(math.pi/2-angle2)*(cy), 0)
         elseif angle2 < dl then
           --print("2-c")
-          love.graphics.polygon("fill", cx, cy, cx+math.tan(math.pi/2-angle1)*(cy), 0, cx+math.tan(math.pi/2-angle2)*(cy), 0)
+          love.graphics.polygon("fill", cx, cy, 0, cy+math.tan(angle1)*(cx), 0, cy+math.tan(angle2)*(cx))
         else
           --print("2-d")
           love.graphics.polygon("fill", cx, cy, 0, cy+math.tan(angle1)*(cx), 0, cy+math.tan(angle2)*(cx))
