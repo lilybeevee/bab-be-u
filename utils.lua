@@ -1185,7 +1185,7 @@ temp_lightcanvas = nil
 lightcanvas_width = 0
 lightcanvas_height = 0
 
-torc_angles = {20,30,45,60,90,120,150,180,225,270,315,360}
+torc_angles = {20,30,45,60,75,90,120,150,180,225,270,315,360}
 function calculateLight()
   if lightcanvas_width ~= mapwidth or lightcanvas_height ~= mapheight then
     lightcanvas = love.graphics.newCanvas(mapwidth*32, mapheight*32)
@@ -1258,7 +1258,8 @@ function calculateLight()
           love.graphics.polygon("fill", cx, cy, cx+math.tan(math.pi/2-angle1)*(cy), 0, cx+math.tan(math.pi/2-angle2)*(cy), 0)
         elseif angle2 < dl then
           --print("2-c")
-          love.graphics.polygon("fill", cx, cy, 0, cy+math.tan(angle1)*(cx), 0, cy+math.tan(angle2)*(cx))
+          if (unit.dir == 5) then love.graphics.polygon("fill", cx, cy, 0, cy+math.tan(angle1)*(cx), 0, cy+math.tan(angle2)*(cx)) else love.graphics.polygon("fill", cx, cy, cx+math.tan(math.pi/2-angle1)*(cy), 0, cx+math.tan(math.pi/2-angle2)*(cy), 0) end
+          
         else
           --print("2-d")
           love.graphics.polygon("fill", cx, cy, 0, cy+math.tan(angle1)*(cx), 0, cy+math.tan(angle2)*(cx))
@@ -1274,12 +1275,12 @@ function calculateLight()
           love.graphics.polygon("fill", cx, cy, 0, cy+math.tan(angle1)*(cx), 0, cy+math.tan(angle2)*(cx))
         else
           --print("3-d")
-          love.graphics.polygon("fill", cx, cy, 0, cy+math.tan(angle1)*(cx), 0, cy+math.tan(angle2)*(cx))
+          if (unit.dir == 3) then love.graphics.polygon("fill", cx, cy, cx+math.tan(math.pi/2-angle1)*(cy-ey), ey, cx+math.tan(math.pi/2-angle2)*(cy-ey), ey) else love.graphics.polygon("fill", cx, cy, 0, cy+math.tan(angle1)*(cx), 0, cy+math.tan(angle2)*(cx)) end
         end
       else
         if angle2 < ur or angle2 > dr then
           --print("4-a")
-          love.graphics.polygon("fill", cx, cy, ex, cy+math.tan(angle1)*(cx-ex), ex, cy+math.tan(angle2)*(cx-ex))
+          if (unit.dir == 3) then love.graphics.polygon("fill", cx, cy, cx+math.tan(math.pi/2-angle1)*(cy-ey), ey, cx+math.tan(math.pi/2-angle2)*(cy-ey), ey) else love.graphics.polygon("fill", cx, cy, ex, cy+math.tan(angle1)*(cx-ex), ex, cy+math.tan(angle2)*(cx-ex)) end
         elseif angle2 < ul then
           --print("4-b")
           love.graphics.polygon("fill", cx, cy, ex, cy+math.tan(angle1)*(cx-ex), ex, cy+math.tan(angle2)*(cx-ex))
