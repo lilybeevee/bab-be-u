@@ -1366,7 +1366,7 @@ function levelBlock()
   
   if hasProperty(outerlvl, "visit fren") then
     for _,unit in ipairs(units) do
-      if sameFloat(unit,outerlvl) then
+      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
         addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
         if inBounds(unit.x+1,unit.y) then
           moveUnit(unit,unit.x+1,unit.y)
@@ -1377,6 +1377,11 @@ function levelBlock()
             moveUnit(unit,0,0)
           end
         end
+        --random version for fun
+        --[[
+        local tx,ty = math.random(0,mapwidth-1),math.random(0,mapheight-1)
+        moveUnit(unit,tx,ty)
+        ]]
       end
     end
   end
