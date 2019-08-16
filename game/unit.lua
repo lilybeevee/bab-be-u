@@ -440,21 +440,6 @@ function updateUnits(undoing, big_update)
   units_by_layer = {}
   local del_units = {}
   local will_undo = false
-
-  for i,v in pairs(units_by_tile) do
-    units_by_tile[i] = {}
-  end
-
-  for _,unit in ipairs(units) do
-    --delete units that were deleted during movement (like from walking oob while ouch)
-    if (unit.removed) then
-      table.insert(del_units, on)
-    --keep empty out of units_by_tile - it will be returned in getUnitsOnTile
-    elseif unit.fullname ~= "no1" and unit.type ~= "outerlvl" then
-      local tileid = unit.x + unit.y * mapwidth
-      table.insert(units_by_tile[tileid], unit)
-    end
-  end
   
   deleteUnits(del_units,false)
   
@@ -1777,33 +1762,10 @@ function convertLevel()
   end
 end
 
-function ruleHasCondition(rule, cond_name)
-	if rule[4] == nil then return false end
-	if rule[4][1] == nil then return false end
-	if rule[4][1][1] == nil then return false end
-	if rule[4][1][1][1] == nil then return false end
-	for _,cond in ipairs(rule[4][1]) do
-		if cond[1] == cond_name then return true end
-	end
-	return false
-end
-
 function convertUnits(pass)
-  for i,v in pairs(units_by_tile) do
-    units_by_tile[i] = {}
-  end
   
   if level_destroyed then return end
   if convertLevel() then return end
-
- --keep empty out of units_by_tile - it will be returned in getUnitsOnTile
- --TODO: CLEANUP: looots of duplicated code around here
-  for _,unit in ipairs(units) do
-    if unit.fullname ~= "no1" and unit.type ~= "outerlvl" then
-      local tileid = unit.x + unit.y * mapwidth
-      table.insert(units_by_tile[tileid], unit)
-    end
-  end
 
   local converted_units = {}
   local del_cursors = {}
@@ -2194,11 +2156,10 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
   end
   table.insert(units_by_layer[unit.layer], unit)
   max_layer = math.max(max_layer, unit.layer)
-
-  local tileid = x + y * mapwidth
+  
   --keep empty out of units_by_tile - it will be returned in getUnitsOnTile
   if (not (unit.fullname == "no1" or unit.type == "outerlvl")) then
-    table.insert(units_by_tile[tileid], unit)
+    table.insert(unitsByTile(x, y), unit)
   end
 
   table.insert(units, unit)
@@ -2235,8 +2196,7 @@ function deleteUnit(unit,convert,undoing)
   if unit.name ~= unit.fullname then
     removeFromTable(units_by_name[unit.fullname], unit)
   end
-  local tileid = unit.x + unit.y * mapwidth
-  removeFromTable(units_by_tile[tileid], unit)
+  removeFromTable(unitsByTile(unit.x, unit.y), unit)
   if not convert then
     removeFromTable(units_by_layer[unit.layer], unit)
   elseif not unit_tests then
@@ -2250,7 +2210,7 @@ function moveUnit(unit,x,y,portal)
   --when empty moves, swap it with the empty in its destination tile, to preserve the invariant 'there is exactly empty per tile'
   --also, keep empty out of units_by_tile - it will be added in getUnitsOnTile
   if (unit.type == "outerlvl") then
-  elseif (unit.fullname == "no1") then
+  elseif (unit.fullname == "no1") and inBounds(x, y) then
     local tileid = unit.x + unit.y * mapwidth
     local oldx = unit.x
     local oldy = unit.y
@@ -2264,8 +2224,7 @@ function moveUnit(unit,x,y,portal)
     empties_by_tile[tileid] = dest_empty;
     empties_by_tile[dest_tileid] = unit;
   else
-    local tileid = unit.x + unit.y * mapwidth
-    removeFromTable(units_by_tile[tileid], unit)
+    removeFromTable(unitsByTile(unit.x, unit.y), unit)
 
     -- putting portal check above same-position check to give portal effect through one-tile gap
     if portal and portal.is_portal and x - portal.x == dirs8[portal.dir][1] and y - portal.y == dirs8[portal.dir][2] then
@@ -2307,9 +2266,8 @@ function moveUnit(unit,x,y,portal)
 
     unit.x = x
     unit.y = y
-
-    tileid = unit.x + unit.y * mapwidth
-    table.insert(units_by_tile[tileid], unit)
+    
+    table.insert(unitsByTile(unit.x, unit.y), unit)
   end
 
   do_move_sound = true
