@@ -524,7 +524,7 @@ function updateUnits(undoing, big_update)
     end
     
     local nukes = getUnitsWithEffect("nuek")
-    local fires = findUnitsByName("xplod")
+    local fires = copyTable(findUnitsByName("xplod"))
     if #nukes > 0 then
       for _,nuke in ipairs(nukes) do
         local check = getUnitsOnTile(nuke.x,nuke.y)
@@ -554,7 +554,7 @@ function updateUnits(undoing, big_update)
           local others = getUnitsOnTile(fire.x+dx,fire.y+dy)
           if inBounds(fire.x+dx,fire.y+dy) then
             for _,on in ipairs(others) do
-              if on.name == "xplod" then
+              if on.name == "xplod" or hasProperty(on, "nuek") then
                 lit = true
               else
                 table.insert(to_destroy,on)
