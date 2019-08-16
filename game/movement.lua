@@ -1,6 +1,7 @@
 --format: {unit = unit, type = "update", payload = {x = x, y = y, dir = dir}} 
 update_queue = {}
 walkdirchangingrulesexist = false
+sliderulesexist = false
 
 movedebugflag = false
 function movedebug(message)
@@ -10,6 +11,7 @@ function movedebug(message)
 end
 
 function doUpdate(already_added, moving_units_next)
+  local sliders = {}
   for _,update in ipairs(update_queue) do
     if update.reason == "update" then
       local unit = update.unit
@@ -18,9 +20,10 @@ function doUpdate(already_added, moving_units_next)
       local dir = update.payload.dir
       local portal = update.payload.portal
       local geometry_spin = update.payload.geometry_spin
-      --TODO: We need to do all applySlides either totally before or totally after doupdate.
-      --Reason: Imagine two units that are ICYYYY step onto the same tile. Right now, one will slip on the other. Do we either want both to to slip or neither to slip? The former is more fun, so we should probably do all applySlides after we're done.
-      applySlide(unit, x-unit.x, y-unit.y, already_added, moving_units_next);
+      if (sliderulesexist) then
+        table.insert(sliders, unit);
+      end
+      --applySlide(unit, x-unit.x, y-unit.y, already_added, moving_units_next);
       local changedDir = updateDir(unit, dir)
       if not changedDir then
         updateDir(unit, dirAdd(dir, geometry_spin), true);
@@ -34,6 +37,9 @@ function doUpdate(already_added, moving_units_next)
       unit.olddir = unit.dir
       updateDir(unit, dir);
     end
+  end
+  for _,unit in ipairs(sliders) do
+    applySlide(unit, already_added, moving_units_next);
   end
   update_queue = {}
 end
@@ -76,6 +82,7 @@ function doMovement(movex, movey, key)
     movey = 0
   end
   walkdirchangingrulesexist = rules_with["munwalk"] or rules_with["sidestep"] or rules_with["diagstep"] or rules_with["hopovr"] or rules_with["knightstep"];
+  sliderulesexist = rules_with["icyyyy"] or rules_with["goooo"];
   local played_sound = {}
   local slippers = {}
   local flippers = {}
@@ -763,15 +770,13 @@ function queueMove(mover, dx, dy, dir, priority, geometry_spin, portal)
   table.insert(update_queue, (priority and 1 or (#update_queue + 1)), {unit = mover, reason = "update", payload = {x = mover.x + dx, y = mover.y + dy, dir = mover.dir, geometry_spin = geometry_spin, portal = portal}})
 end
 
-function applySlide(mover, dx, dy, already_added, moving_units_next)
-  --fast track
-  if rules_with["goooo"] == nil and rules_with["icyyyy"] == nil then return end
+function applySlide(mover, already_added, moving_units_next)
   --Before we add a new LAUNCH/SLIDE move, deleting all existing LAUNCH/SLIDE moves, so that if we 'move twice in the same tick' (such as because we're being pushed or pulled while also sliding) it doesn't stack. (this also means e.g. SLIDE & SLIDE gives you one extra move at the end, rather than multiplying your movement.)
   local did_clear_existing = false
   --LAUNCH will take precedence over SLIDE, so that puzzles where you move around launchers on an ice rink will behave intuitively.
   local did_launch = false
    --we haven't actually moved yet, so check the tile we will be on
-  local others = getUnitsOnTile(mover.x+dx, mover.y+dy);
+  local others = getUnitsOnTile(mover.x, mover.y, nil, false, mover);
   table.insert(others, outerlvl);
   for _,v in ipairs(others) do
     if (sameFloat(mover, v) and not v.already_moving) and timecheck(v) then
