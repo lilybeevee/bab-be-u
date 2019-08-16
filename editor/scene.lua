@@ -477,7 +477,7 @@ end
       local hx,hy = getHoveredTile()
       if hx ~= nil then
         local tileid = hx + hy * mapwidth
-        if unitsByTile(hx, hy) and #units_by_tile(hx, hy) > 0 then
+        if unitsByTile(hx, hy) and #unitsByTile(hx, hy) > 0 then
           for _,unit in ipairs(unitsByTile(hx, hy)) do
             unit.dir = brush.dir
           end
