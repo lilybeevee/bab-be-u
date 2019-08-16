@@ -1185,7 +1185,7 @@ temp_lightcanvas = nil
 lightcanvas_width = 0
 lightcanvas_height = 0
 
-torc_angles = {20,45,90,120,180, 210, 270, }
+torc_angles = {20,30,45,60,90,120,150,180,225,270,315,360}
 function calculateLight()
   if lightcanvas_width ~= mapwidth or lightcanvas_height ~= mapheight then
     lightcanvas = love.graphics.newCanvas(mapwidth*32, mapheight*32)
@@ -1246,6 +1246,7 @@ function calculateLight()
           love.graphics.polygon("fill", cx, cy, ex, cy+math.tan(angle1)*(cx-ex), ex, 0, cx+cy/math.tan(angle2), 0)
         elseif angle2 < dl then
           --print("1-c")
+          love.graphics.polygon("fill", cx, cy, cx+math.tan(math.pi/2-angle1)*(cy), 0, cx+math.tan(math.pi/2-angle2)*(cy), 0)
         else
           --print("1-d")
         end
@@ -1260,10 +1261,12 @@ function calculateLight()
           love.graphics.polygon("fill", cx, cy, cx+math.tan(math.pi/2-angle1)*(cy), 0, cx+math.tan(math.pi/2-angle2)*(cy), 0)
         else
           --print("2-d")
+          love.graphics.polygon("fill", cx, cy, 0, cy+math.tan(angle1)*(cx), 0, cy+math.tan(angle2)*(cx))
         end
       elseif angle1 < dl then
         if angle2 < ur or angle2 > dr then
           --print("3-a")
+          love.graphics.polygon("fill", cx, cy, cx+math.tan(math.pi/2-angle1)*(cy-ey), ey, cx+math.tan(math.pi/2-angle2)*(cy-ey), ey)
         elseif angle2 < ul then
           --print("3-b")
         elseif angle2 < dl then
@@ -1276,9 +1279,10 @@ function calculateLight()
       else
         if angle2 < ur or angle2 > dr then
           --print("4-a")
-          love.graphics.polygon("fill", cx, cy, cx+math.tan(math.pi/2-angle1)*(cy-ey), ey, cx+math.tan(math.pi/2-angle2)*(cy-ey), ey)
+          love.graphics.polygon("fill", cx, cy, ex, cy+math.tan(angle1)*(cx-ex), ex, cy+math.tan(angle2)*(cx-ex))
         elseif angle2 < ul then
           --print("4-b")
+          love.graphics.polygon("fill", cx, cy, ex, cy+math.tan(angle1)*(cx-ex), ex, cy+math.tan(angle2)*(cx-ex))
         elseif angle2 < dl then
           --print("4-c")
         else
