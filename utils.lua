@@ -1242,7 +1242,7 @@ function calculateLight()
         elseif angle2 < ul then
           love.graphics.polygon("fill", cx, cy, ex, cy+math.tan(angle1)*(cx-ex), ex, 0, cx+cy/math.tan(angle2), 0)
         elseif angle2 < dl then
-          love.graphics.polygon("fill", cx, cy, ex, cy+math.tan(angle1)*(cx-ex), ex, 0, 0, 0, 0, cy-math.tan(angle2)*(cx-ex))
+          love.graphics.polygon("fill", cx, cy, ex, cy+math.tan(angle1)*(cx-ex), ex, 0, 0, 0, 0, cy+math.tan(angle2)*cx)
         else
           love.graphics.polygon("fill", cx, cy, ex, cy+math.tan(angle1)*(cx-ex), ex, 0, 0, 0, 0, ey, cx-(ey-cy)/math.tan(angle2), ey)
         end
@@ -1252,19 +1252,19 @@ function calculateLight()
         elseif angle2 < ul then
           love.graphics.polygon("fill", cx, cy, cx+cy/math.tan(angle1), 0, cx+cy/math.tan(angle2), 0)
         elseif angle2 < dl then
-          love.graphics.polygon("fill", cx, cy, cx+cy/math.tan(angle1), 0, 0, 0, 0, cy-math.tan(angle2)*(cx-ex))
+          love.graphics.polygon("fill", cx, cy, cx+cy/math.tan(angle1), 0, 0, 0, 0, cy+math.tan(angle2)*cx)
         else
           love.graphics.polygon("fill", cx, cy, cx+cy/math.tan(angle1), 0, 0, 0, 0, ey, cx-(ey-cy)/math.tan(angle2), ey)
         end
       elseif angle1 < dl then
         if angle2 < ur or angle2 > dr then
-          love.graphics.polygon("fill", cx, cy, 0, cy-math.tan(angle1)*(cx-ex), 0, ey, ex, ey, ex, cy+math.tan(angle2)*(cx-ex))
+          love.graphics.polygon("fill", cx, cy, 0, cy+math.tan(angle1)*cx, 0, ey, ex, ey, ex, cy+math.tan(angle2)*(cx-ex))
         elseif angle2 < ul then
-          love.graphics.polygon("fill", cx, cy, 0, cy-math.tan(angle1)*(cx-ex), 0, ey, ex, ey, ex, 0, cx+cy/math.tan(angle2), 0)
+          love.graphics.polygon("fill", cx, cy, 0, cy+math.tan(angle1)*cx, 0, ey, ex, ey, ex, 0, cx+cy/math.tan(angle2), 0)
         elseif angle2 < dl then
-          love.graphics.polygon("fill", cx, cy, 0, cy-math.tan(angle1)*(cx-ex), 0, cy-math.tan(angle2)*(cx-ex))
+          love.graphics.polygon("fill", cx, cy, 0, cy+math.tan(angle1)*cx, 0, cy+math.tan(angle2)*cx)
         else
-          love.graphics.polygon("fill", cx, cy, 0, cy-math.tan(angle1)*(cx-ex), 0, ey, cx-(ey-cy)/math.tan(angle2), ey)
+          love.graphics.polygon("fill", cx, cy, 0, cy+math.tan(angle1)*cx, 0, ey, cx-(ey-cy)/math.tan(angle2), ey)
         end
       else
         if angle2 < ur or angle2 > dr then
@@ -1272,7 +1272,7 @@ function calculateLight()
         elseif angle2 < ul then
           love.graphics.polygon("fill", cx, cy, cx-(ey-cy)/math.tan(angle1), ey, ex, ey, ex, 0, cx+cy/math.tan(angle2), 0)
         elseif angle2 < dl then
-          love.graphics.polygon("fill", cx, cy, cx-(ey-cy)/math.tan(angle1), ey, ex, ey, ex, 0, 0, 0, 0, cy-math.tan(angle2)*(cx-ex))
+          love.graphics.polygon("fill", cx, cy, cx-(ey-cy)/math.tan(angle1), ey, ex, ey, ex, 0, 0, 0, 0, cy+math.tan(angle2)*cx)
         else
           love.graphics.polygon("fill", cx, cy, cx-(ey-cy)/math.tan(angle1), ey, cx-(ey-cy)/math.tan(angle2), ey)
         end
