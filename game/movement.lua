@@ -1409,7 +1409,8 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
     return (hasRule(unit,"ignor",outerlvl) and true or inBounds(unit.x+dx,unit.y+dy)),movers,{}
   end
   
-  if not inBounds(x,y) then
+  --STUB: We probably want to do something more explicit like synthesize bordr units around the border so they can be explicitly moved/created/destroyed/have conditional rules apply to them.
+  if not (inBounds(x,y) or hasRule("bordr","ben't","no go")) then
     if pushing and hasProperty(unit, "ouch") and not hasProperty(unit, "protecc") and (reason ~= "walk" or hasProperty(unit, "stubbn")) then
       table.insert(specials, {"weak", {unit}})
       return true,movers,specials
