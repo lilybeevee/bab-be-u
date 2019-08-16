@@ -14,13 +14,13 @@ function clear()
   undoing = false
   successful_brite_cache = nil
   next_level_name = ""
-  win_sprite_override = nil
+  win_sprite_override = {}
   level_destroyed = false
   last_input_time = nil
   most_recent_key = nil
   just_moved = true
   should_parse_rules_at_turn_boundary = false
-  should_parse_rules = false
+  should_parse_rules = true
   graphical_property_cache = {}
   initializeGraphicalPropertyCache();
   debug_values = {}
@@ -119,11 +119,12 @@ function initializeGraphicalPropertyCache()
 end
 
 function loadMap()
-  for x=0,mapwidth-1 do
+  --no longer necessary, we now lazy initialize these
+  --[[for x=0,mapwidth-1 do
     for y=0,mapheight-1 do
       units_by_tile[x + y * mapwidth] = {}
     end
-  end
+  end]]
   for _,mapdata in ipairs(maps) do
     local version = mapdata[1]
     local map = mapdata[2]
@@ -480,7 +481,7 @@ function hasRule(rule1,rule2,rule3)
 end
 
 function validEmpty(unit)
-  return #units_by_tile[unit.x + unit.y * mapwidth] == 0
+  return #unitsByTile(unit.x, unit.y) == 0
 end
 
 function findUnitsByName(name)
@@ -1383,8 +1384,7 @@ function nameIs(unit,name)
 end
 
 function tileHasUnitName(name,x,y)
-  local tileid = x + y * mapwidth
-  for _,v in ipairs(units_by_tile[tileid]) do
+  for _,v in ipairs(unitsByTile(x, y)) do
     if nameIs(v, name) then
       return true
     end
@@ -1396,8 +1396,7 @@ function getUnitsOnTile(x,y,name,not_destroyed,exclude,checkmous)
     return {}
   else
     local result = {}
-    local tileid = x + y * mapwidth
-    for _,unit in ipairs(units_by_tile[tileid]) do
+    for _,unit in ipairs(unitsByTile(x, y)) do
       if unit ~= exclude then
         if not not_destroyed or (not_destroyed and not unit.removed) then
           if not name or (name and nameIs(unit, name)) then
@@ -1418,8 +1417,8 @@ function getUnitsOnTile(x,y,name,not_destroyed,exclude,checkmous)
         end
       end
     end
-    if (#units_by_tile[tileid] == 0 and (name == "no1" or name == nil) and empties_by_tile[tileid] ~= exclude) then
-      table.insert(result, empties_by_tile[tileid]);
+    if (#unitsByTile(x, y) == 0 and (name == "no1" or name == nil) and inBounds(x, y) and empties_by_tile[x + y * mapwidth] ~= exclude) then
+      table.insert(result, empties_by_tile[x + y * mapwidth]);
     end
     return result
   end
@@ -2419,4 +2418,15 @@ function serializeUnit(unit, outer)
     full = "("..full..")"
   end
   return full
+end
+
+function unitsByTile(x, y)
+  if units_by_tile[x] == nil then
+    units_by_tile[x] = {}
+  end
+  if units_by_tile[x][y] == nil then
+    units_by_tile[x][y] = {}
+  end
+  --print(x, y, fullDump(units_by_tile[x][y]))
+  return units_by_tile[x][y]
 end

@@ -477,8 +477,8 @@ end
       local hx,hy = getHoveredTile()
       if hx ~= nil then
         local tileid = hx + hy * mapwidth
-        if units_by_tile[tileid] and #units_by_tile[tileid] > 0 then
-          for _,unit in ipairs(units_by_tile[tileid]) do
+        if unitsByTile(hx, hy) and #units_by_tile(hx, hy) > 0 then
+          for _,unit in ipairs(unitsByTile(hx, hy)) do
             unit.dir = brush.dir
           end
           scene.updateMap()
@@ -672,8 +672,8 @@ function scene.update(dt)
         local tileid = hx + hy * mapwidth
 
         local hovered = {}
-        if units_by_tile[tileid] then
-          for _,v in ipairs(units_by_tile[tileid]) do
+        if unitsByTile(hx, hy) then
+          for _,v in ipairs(unitsByTile(hx, hy)) do
             table.insert(hovered, v)
           end
         end
@@ -1246,8 +1246,8 @@ function scene.updateMap()
   for x = 0, mapwidth-1 do
     for y = 0, mapheight-1 do
       local tileid = x + y * mapwidth
-      if units_by_tile[tileid] then
-        for _,unit in ipairs(units_by_tile[tileid]) do
+      if unitsByTile(x, y) then
+        for _,unit in ipairs(unitsByTile(x, y)) do
           table.insert(map, {id = unit.id, tile = unit.tile, x = unit.x, y = unit.y, dir = unit.dir, special = unit.special, color = unit.color_override and colour_for_palette[unit.color_override[1]][unit.color_override[2]]});
         end
       end
