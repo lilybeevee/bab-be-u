@@ -1465,7 +1465,6 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
   local isnthere = matchesRule(unit,"ben't","her")
   if (#isnthere > 0) then
     for _,ruleparent in ipairs(isnthere) do
-      local fullrule = ruleparent[2]
       local here = ruleparent.rule.object.unit
       local hx = dirs8[here.dir][1]
       local hy = dirs8[here.dir][2]
@@ -1479,7 +1478,6 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
   local isntthere = matchesRule(unit,"ben't","thr")
   if (#isntthere > 0) then
     for _,ruleparent in ipairs(isntthere) do
-      local fullrule = ruleparent[2]
       local there = ruleparent.rule.object.unit
       
       local tx = there.x
@@ -1505,9 +1503,7 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
   local isntrithere = matchesRule(unit,"ben't","rit here")
   if (#isntrithere > 0) then
     for _,ruleparent in ipairs(isntrithere) do
-      local fullrule = ruleparent[2]
       local here = ruleparent.rule.object.unit
-      
       if (x == here.x) and (y == here.y) then
         return false,movers,specials
       end
