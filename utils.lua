@@ -20,7 +20,7 @@ function clear()
   most_recent_key = nil
   just_moved = true
   should_parse_rules_at_turn_boundary = false
-  should_parse_rules = false
+  should_parse_rules = true
   graphical_property_cache = {}
   initializeGraphicalPropertyCache();
   debug_values = {}
