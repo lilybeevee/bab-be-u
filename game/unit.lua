@@ -2077,9 +2077,6 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
   unit.is_portal = data.portal or false
 
   unit.fullname = data.name
-  if rules_effecting_names[unit.name] then
-    should_parse_rules = true
-  end
 
   if unit.type == "text" then
     should_parse_rules = true
@@ -2093,6 +2090,10 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
   else
     unit.name = unit.fullname
     unit.textname = unit.fullname
+  end
+  
+  if rules_effecting_names[unit.name] then
+    should_parse_rules = true
   end
   
   if prefix then
