@@ -1674,7 +1674,6 @@ function FindEntireGluedUnit(unit, dx, dy)
   local mycolor = unit.color_override or unit.color;
   local myorthook = not hasProperty(unit,"diag") or hasProperty(unit,"ortho")
   local mydiagok = not hasProperty(unit,"ortho") or hasProperty(unit,"diag")
-  local myglued = countProperty(unit, "glued")
   
   --base case - add the original unit
   table.insert(units, unit);
@@ -1723,14 +1722,14 @@ function FindEntireGluedUnit(unit, dx, dy)
       if visited[tostring(xx)..","..tostring(yy)] == nil then
         --print("c")
         visited[tostring(xx)..","..tostring(yy)] = false
-        local others = getUnitsOnTile(xx, yy, myglued < 2 and unit.name or nil);
+        local others = getUnitsOnTile(xx, yy);
         local first = false
         for _,other in ipairs(others) do
           --print("d:",other.name)
           if hasProperty(other,"glued") then
             local ocolor = other.color_override or other.color;
             --print("e:", dump(mycolor),dump(ocolor))
-            if myglued >= 2 or (mycolor[1] == ocolor[1] and mycolor[2] == ocolor[2]) then
+            if (mycolor[1] == ocolor[1] and mycolor[2] == ocolor[2]) then
               --print("f, we did it")
               table.insert(units, other);
               --print(#units)
