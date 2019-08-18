@@ -467,9 +467,40 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
         addUnits(list, set, rule.subject)
         addUnits(list, set, rule.verb)
         addUnits(list, set, rule.object)
-        local full_rule = {rule = rule, units = list, dir = dir}
+        local full_rule = {rule = rule, units = list, dir = dir, units_set = set}
         -- print(fullDump(full_rule))
-        table.insert(final_rules, full_rule)
+        
+        local add = true
+        for i = #final_rules,1,-1 do
+          local other = final_rules[i]
+          if other.dir == full_rule.dir then
+            local subset = true
+            for _,u in ipairs(other.units) do
+              if not full_rule.units_set[u] then 
+                subset = false
+                break
+              end
+            end
+            if subset then
+              table.remove(final_rules, i)
+            else
+              local subset = true
+              for _,u in ipairs(full_rule.units) do
+                if not other.units_set[u] then
+                  subset = false
+                  break
+                end
+              end
+              if subset then
+                add = false
+                break
+              end
+            end
+          end
+        end
+        if add then
+          table.insert(final_rules, full_rule)
+        end
       end
       
       local last_word = sentence[#sentence - #words]

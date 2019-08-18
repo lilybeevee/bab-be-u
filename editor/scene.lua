@@ -185,23 +185,24 @@ function scene.setupGooi()
     if paint_open then
       paint_open = false
       paint_button:setBGImage(sprites["ui/paint"], sprites["ui/paint_h"])
-      gooi:setGroupVisible("paint_colors",false)
     else
       paint_open = true
       paint_button:setBGImage(sprites["ui/paint_a"], sprites["ui/paint_h"])
-      gooi:setGroupVisible("paint_colors",true)
     end
   end):setBGImage(sprites["ui/paint"], sprites["ui/paint_h"]):bg({0, 0, 0, 0})
   x = x + 40
   paint_colors[1] = {x}
-  gooi.newButton({text = "", x = x, y = 4, h = 32, w = 32, group = "paint_colors"}):onPress(function()
-    print("a")
-    brush.color = nil
+  gooi.newButton({text = "", x = x, y = 4, h = 32, w = 32}):onPress(function()
+    if paint_open then
+      brush.color = nil
+    end
   end):bg({0,0,0,0}) -- no BGImage since it needs to be recolored
   x = x + 36
   for _,color in pairs(color_names) do
-    gooi.newButton({text = "", x = x, y = 4, h = 32, w = 32, group = "paint_colors"}):onPress(function()
-      brush.color = color
+    gooi.newButton({text = "", x = x, y = 4, h = 32, w = 32}):onPress(function()
+      if paint_open then
+        brush.color = color
+      end
     end):bg({0,0,0,0}) -- no BGImage since it needs to be recolored
     table.insert(paint_colors, {x, main_palette_for_colour[color]})
     x = x + 36 -- 4px padding
@@ -1175,8 +1176,10 @@ function scene.draw(dt)
     love.graphics.setFont(name_font)
     love.graphics.setColor(1, 1, 1)
 
-    love.graphics.printf(level_name, 0, name_font:getLineHeight() / 2, love.graphics.getWidth(), "center")
-
+    if not paint_open then
+      love.graphics.printf(level_name, 0, name_font:getLineHeight() / 2, love.graphics.getWidth(), "center")
+    end
+    
     love.graphics.setColor(1, 1, 1, saved_popup.alpha)
     if is_mobile then
       love.graphics.draw(saved_popup.sprite, 44, 40 + saved_popup.y)
