@@ -663,19 +663,22 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
               end
             end
           end
-          for i=-1,mapwidth do
-            mergeTable(others, getUnitsOnTile(i, -1, nil, false, unit, true))
-            mergeTable(others, getUnitsOnTile(i, mapheight, nil, false, unit, true))
-          end
-          for i=0,mapheight-1 do
-            mergeTable(others, getUnitsOnTile(-1, i, nil, false, unit, true))
-            mergeTable(others, getUnitsOnTile(mapwidth, i, nil, false, unit, true))
-          end
         else
           local dx, dy, dir, px, py = getNextTile(unit, nx, ny, ndir)
           mergeTable(others, getUnitsOnTile(px, py, nil, false, unit, true))
         end
       end
+      if unit == outerlvl then
+        for i=-1,mapwidth do
+          mergeTable(others, getUnitsOnTile(i, -1, nil, false, unit, true))
+          mergeTable(others, getUnitsOnTile(i, mapheight, nil, false, unit, true))
+        end
+        for i=0,mapheight-1 do
+          mergeTable(others, getUnitsOnTile(-1, i, nil, false, unit, true))
+          mergeTable(others, getUnitsOnTile(mapwidth, i, nil, false, unit, true))
+        end
+      end
+      print(dump(others))
       for _,set in ipairs(sets) do
         local found = false
         for _,other in ipairs(others) do
@@ -803,17 +806,24 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
               end
             end
           end
-          if not isdir and not other[outerlvl] then
-            local found = false
-            for _,fren in ipairs(frens) do
-              if other[fren] then
-                found = true
+          if not isdir then
+            if other[outerlvl] then
+              if not inBounds(px,py) then
+                result = false
                 break
               end
-            end
-            if not found then
-              result = false
-              break
+            else
+              local found = false
+              for _,fren in ipairs(frens) do
+                if other[fren] then
+                  found = true
+                  break
+                end
+              end
+              if not found then
+                result = false
+                break
+              end
             end
           end
         end
