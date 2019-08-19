@@ -649,9 +649,16 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
           end
         end
       end
-    elseif condtype == "arond" then
+    elseif condtype:ends("arond") then
       --Vitellary: Deliberately ignore the tile we're on. This is different from baba.
       local others = {}
+      for i=-1,1 do
+        others[i] = {}
+        for j=-1,1 do
+          others[i][j] = {}
+        end
+      end
+      local found = false
       for ndir=1,8 do
         local nx, ny = dirs8[ndir][1], dirs8[ndir][2]
         if unit == outerlvl then
@@ -659,60 +666,43 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
             --use surrounds to remember what was around the level
             for __,on in ipairs(surrounds[nx][ny]) do -- this part hasn't been updated, but it's not important yet
               if nameIs(on, param) then
-                table.insert(others, on);
+                others[nx][ny] = on
               end
             end
           end
         else
           local dx, dy, dir, px, py = getNextTile(unit, nx, ny, ndir)
-          mergeTable(others, getUnitsOnTile(px, py, nil, false, unit, true))
+          others[nx][ny] = getUnitsOnTile(px, py, nil, false, unit, true)
         end
       end
-      if unit == outerlvl then
-        for i=-1,mapwidth do
-          mergeTable(others, getUnitsOnTile(i, -1, nil, false, unit, true))
-          mergeTable(others, getUnitsOnTile(i, mapheight, nil, false, unit, true))
-        end
-        for i=0,mapheight-1 do
-          mergeTable(others, getUnitsOnTile(-1, i, nil, false, unit, true))
-          mergeTable(others, getUnitsOnTile(mapwidth, i, nil, false, unit, true))
-        end
-      end
-      print(dump(others))
-      for _,set in ipairs(sets) do
-        local found = false
-        for _,other in ipairs(others) do
-          if set[other] then
-            found = true
-            break
-          end
-        end
-        if not found then
-          result = false
-          break
-        end
-      end
-    elseif condtype == "w/neighbor" then
-      for _,param in ipairs(params) do
-        local others = {}
-        for ndir=1,4 do
-          local nx, ny = dirs8[ndir*2-1][1], dirs8[ndir*2-1][2]
-          if unit == outerlvl and surrounds ~= nil and surrounds_name == level_name then
-            --use surrounds to remember what was around the level
-            for __,on in ipairs(surrounds[nx][ny]) do
-              if nameIs(on, param) then
-                table.insert(others, on);
+      for i,tdir in ipairs(dirs8_by_name) do
+        if condtype:starts(tdir.." ") then
+          local nx,ny = dirs8[i][1],dirs8[i][2]
+          for _,set in ipairs(sets) do
+            for _,other in ipairs(others[-nx][-ny]) do
+              if set[other] then
+                found = true
+                break
               end
             end
-          else
-            local dx, dy, dir, px, py = getNextTile(unit, nx, ny, ndir)
-            mergeTable(others, param ~= "mous" and getUnitsOnTile(px,py,param) or getCursorsOnTile(px, py, false, unit))
           end
         end
-        if #others == 0 then
-          result = false
-          break
+      end
+      for i=1,8 do
+        if (condtype == "arond") or (condtype:starts("ortho") and i%2==1) or (condtype:starts("diag") and i%2==0) then
+          local nx,ny = dirs8[i][1],dirs8[i][2]
+          for _,set in ipairs(sets) do
+            for _,other in ipairs(others[nx][ny]) do
+              if set[other] then
+                found = true
+                break
+              end
+            end
+          end
         end
+      end
+      if not found then
+        result = false
       end
     elseif condtype == "seen by" then
       local others = {}

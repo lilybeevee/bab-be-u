@@ -150,11 +150,18 @@ function findUnit(words, extra_words_, dir, outer, no_verb_cond)
   
   local first_infix = true
   local andd
-  while words[1] and words[1].type.cond_infix and (first_infix or enclosed) and (not no_verb_cond or not words[1].type.verb) do
+  while words[1] and (words[1].type.cond_infix or (words[1].type.direction and words[2].name == "arond")) and (first_infix or enclosed) and (not no_verb_cond or not words[1].type.verb) do
     local infix = copyTable(words[1])
     local infix_orig = infix
     infix.mods = infix.mods or {}
+    if words[1].type.direction and words[2].name == "arond" then
+      infix.name = infix.name.." arond"
+      table.insert(infix.mods, words[2])
+    end
     table.remove(words, 1)
+    if words[1].name == "arond" then
+      table.remove(words, 1)
+    end
     if #words == 0 then break end
     if infix.type.cond_infix_verb then
       local words_ = copyTable(words)
@@ -233,7 +240,7 @@ function findUnit(words, extra_words_, dir, outer, no_verb_cond)
         if #words == 0 then break end
       end
     end
-    if enclosed and words[1] and words[1].type["and"] and words[2] and words[2].type.cond_infix and (not no_verb_cond or not words[1].type.verb)  then
+    if enclosed and words[1] and words[1].type["and"] and words[2] and (words[2].type.cond_infix or (words[2].type.direction and words[3].name == "arond")) and (not no_verb_cond or not words[1].type.verb)  then
       andd = words[1]
       table.remove(words, 1)
       if #words == 0 then break end
