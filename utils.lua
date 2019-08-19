@@ -690,7 +690,6 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
       end
       for i=1,8 do
         if (condtype == "arond") or (condtype:starts("ortho") and i%2==1) or (condtype:starts("diag") and i%2==0) then
-          print(condtype.." is being checked")
           local nx,ny = dirs8[i][1],dirs8[i][2]
           for _,set in ipairs(sets) do
             for _,other in ipairs(others[nx][ny]) do
