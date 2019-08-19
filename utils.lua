@@ -109,12 +109,12 @@ end
 
 function initializeGraphicalPropertyCache()
   local properties_to_init = -- list of properties that require the graphical cache
-    {
+  {
 	  "flye", "slep", "tranz", "gay", "stelth", "colrful", "xwx", "rave", -- miscelleaneous graphical effects
 	}
   for i = 1, #properties_to_init do
-	local prop = properties_to_init[i]
-	if (graphical_property_cache[prop] == nil) then graphical_property_cache[prop] = {} end
+    local prop = properties_to_init[i]
+    if (graphical_property_cache[prop] == nil) then graphical_property_cache[prop] = {} end
   end
 end
 
@@ -218,8 +218,7 @@ function loadStayTher()
 end
 
 function initializeOuterLvl()
-  outerlvl = createUnit(tiles_by_name["lvl"], -999, -999,
-  1, nil, nil, true)
+  outerlvl = createUnit(tiles_by_name["lvl"], -999, -999, 1, nil, nil, true)
 end
 
 function initializeEmpties()
@@ -229,8 +228,7 @@ function initializeEmpties()
   for x=0,mapwidth-1 do
     for y=0,mapheight-1 do
       local tileid = x + y * mapwidth
-      empties_by_tile[tileid] = createUnit(tiles_by_name["no1"], x, y,
-      (((tileid - 1) % 8) + 1), nil, nil, true)
+      empties_by_tile[tileid] = createUnit(tiles_by_name["no1"], x, y, (((tileid - 1) % 8) + 1), nil, nil, true)
     end
   end
 end
@@ -1060,14 +1058,14 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
     elseif condtype == "timles" then
       result = timeless
     elseif condtype == "clikt" then
-        if unit.x == last_click_x and unit.y == last_click_y then
-            result = true
-        else
-            result = false
-        end
-        --print(result)
-        --print(x, y)
-        --print(last_click_x, last_click_y)
+      if unit.x == last_click_x and unit.y == last_click_y then
+        result = true
+      else
+        result = false
+      end
+      --print(result)
+      --print(x, y)
+      --print(last_click_x, last_click_y)
     elseif condtype == "reed" or condtype == "bleu" or condtype == "blacc"
     or condtype == "grun" or condtype == "yello" or condtype == "orang"
     or condtype == "purp" or condtype == "whit" or condtype == "cyeann" or condtype == "pinc" then
@@ -1350,9 +1348,24 @@ function deterministicRng(unit, cond)
   return rng_cache[key]
 end
 
-function inBounds(x,y)
-  if not selector_open then
+function inBounds(x,y,getting)
+  if getting then
     return x >= 0 and x < mapwidth and y >= 0 and y < mapheight
+  end
+  if not selector_open then
+    if x >= 0 and x < mapwidth and y >= 0 and y < mapheight then
+      local borders = getUnitsOnTile(x,y)
+      if borders ~= nil then
+        for _,unit in ipairs(borders) do
+          if unit.name == "bordr" then
+            return false
+          end
+        end
+      end
+      return true
+    else
+      return false
+    end
   else
     return x >=0 and x < tile_grid_width and y >= 0 and y < tile_grid_height
   end
@@ -1406,43 +1419,18 @@ function tileHasUnitName(name,x,y)
 end
 
 function getUnitsOnTile(x,y,name,not_destroyed,exclude,checkmous)
-  if not inBounds(x,y) then
-    return {}
-  else
-    local result = {}
-    for _,unit in ipairs(unitsByTile(x, y)) do
-      if unit ~= exclude then
-        if not not_destroyed or (not_destroyed and not unit.removed) then
-          if not name or (name and nameIs(unit, name)) then
-            table.insert(result, unit)
-          end
+  local result = {}
+  for _,unit in ipairs(unitsByTile(x, y)) do
+    if unit ~= exclude then
+      if not not_destroyed or (not_destroyed and not unit.removed) then
+        if not name or (name and nameIs(unit, name)) then
+          table.insert(result, unit)
         end
       end
     end
-    --If we care about no1 and the tile is empty, find the no1 that's there.
-    if (name == "mous") or checkmous then
-      for _,cursor in ipairs(cursors) do
-        if cursor ~= exclude then
-          if not not_destroyed or (not_destroyed and not cursor.removed) then
-            if cursor.x == x and cursor.y == y then
-              table.insert(result, cursor)
-            end
-          end
-        end
-      end
-    end
-    if (#unitsByTile(x, y) == 0 and (name == "no1" or name == nil) and inBounds(x, y) and empties_by_tile[x + y * mapwidth] ~= exclude) then
-      table.insert(result, empties_by_tile[x + y * mapwidth]);
-    end
-    return result
   end
-end
-
-function getCursorsOnTile(x, y, not_destroyed, exclude)
-  if not inBounds(x, y) then
-    return {}
-  else
-    local result = {}
+  --If we care about no1 and the tile is empty, find the no1 that's there.
+  if (name == "mous") or checkmous then
     for _,cursor in ipairs(cursors) do
       if cursor ~= exclude then
         if not not_destroyed or (not_destroyed and not cursor.removed) then
@@ -1452,8 +1440,25 @@ function getCursorsOnTile(x, y, not_destroyed, exclude)
         end
       end
     end
-    return result
   end
+  if (#unitsByTile(x, y) == 0 and (name == "no1" or name == nil) and inBounds(x, y, true) and empties_by_tile[x + y * mapwidth] ~= exclude) then
+    table.insert(result, empties_by_tile[x + y * mapwidth]);
+  end
+  return result
+end
+
+function getCursorsOnTile(x, y, not_destroyed, exclude)
+  local result = {}
+  for _,cursor in ipairs(cursors) do
+    if cursor ~= exclude then
+      if not not_destroyed or (not_destroyed and not cursor.removed) then
+        if cursor.x == x and cursor.y == y then
+          table.insert(result, cursor)
+        end
+      end
+    end
+  end
+  return result
 end
 
 function copyTable(t, l_)
@@ -1698,10 +1703,7 @@ end
 
 function getHoveredTile()
   if not cursor_converted then
-    local x, y = screenToGameTile(love.mouse.getX(), love.mouse.getY())
-    if inBounds(x, y) then
-      return x, y
-    end
+    return screenToGameTile(love.mouse.getX(), love.mouse.getY())
   end
 end
 
