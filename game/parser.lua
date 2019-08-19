@@ -240,7 +240,7 @@ function findUnit(words, extra_words_, dir, outer, no_verb_cond)
         if #words == 0 then break end
       end
     end
-    if enclosed and words[1] and words[1].type["and"] and words[2] and words[2].type.cond_infix and (not no_verb_cond or not words[1].type.verb)  then
+    if enclosed and words[1] and words[1].type["and"] and words[2] and (words[2].type.cond_infix or (words[2].type.direction and words[3].name == "arond")) and (not no_verb_cond or not words[1].type.verb)  then
       andd = words[1]
       table.remove(words, 1)
       if #words == 0 then break end
