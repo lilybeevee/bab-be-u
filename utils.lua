@@ -1070,7 +1070,7 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
     or condtype == "grun" or condtype == "yello" or condtype == "orang"
     or condtype == "purp" or condtype == "whit" or condtype == "cyeann" or condtype == "pinc" then
       local colour = unit.color_override or unit.color;
-      if (unit.fullname == "no1" or unit.stelth) then
+      if (unit.fullname == "no1") then
         result = false
       elseif (unit.rave or unit.colrful or unit.gay) then
         result = true
