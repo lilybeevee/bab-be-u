@@ -377,8 +377,28 @@ function findVerbPhrase(words, extra_words_, dir, enclosed, noconds, no_verb_con
         break
       end
     end
+  elseif verb.name == "haet" or verb.name == "liek" then
+    while true do
+      local foundObject = false
+      local unit = findUnit(copyTable(words), extra_words, dir, enclosed, no_verb_cond)
+      if (words[1].type.direction and words[1].name ~= "ortho" and words[1].name ~= "diag") or unit then
+        table.insert(objects, words[1])
+        table.remove(words, 1)
+        foundObject = true
+      end
+      if not foundObject then
+        return nil
+      end
+      if not noconds and words[1] and words[1].type["and"] and words[2] and not words[2].type.verb then
+        table.insert(extra_words, words[1])
+        table.remove(words, 1)
+      else
+        break
+      end
+    end
   elseif verb.type.verb_unit then
     local found = false
+    --magic function switching: runs findClass if noconds is true otherwise findUnit with the same arguments
     local unit, words_ = (noconds and findClass or findUnit)(copyTable(words), extra_words, dir, enclosed, no_verb_cond)
     local andd
     while unit do

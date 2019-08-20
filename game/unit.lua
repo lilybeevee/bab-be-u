@@ -978,7 +978,7 @@ function updateUnits(undoing, big_update)
       doWin("won")
     end
     
-    doDirRules();
+    doDirRules()
   end
   
   DoDiscordRichPresence();
