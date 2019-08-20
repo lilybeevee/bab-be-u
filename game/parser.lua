@@ -377,7 +377,7 @@ function findVerbPhrase(words, extra_words_, dir, enclosed, noconds, no_verb_con
         break
       end
     end
-  elseif verb.name == "haet" or verb.name == "liek" then
+  elseif verb.name == "haet" or verb.name == "liek" or verb.name == "moov" then
     while true do
       local foundObject = false
       local unit = findUnit(copyTable(words), extra_words, dir, enclosed, no_verb_cond)

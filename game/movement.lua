@@ -254,7 +254,17 @@ function doMovement(movex, movey, key)
           end
         end
       end
-  
+      for mdir,mdirname in ipairs(dirs8_by_name) do
+        local isshift = matchesRule(nil, "moov", mdirname)
+        for _,ruleparent in ipairs(isshift) do
+          local unit = ruleparent[2]
+          table.insert(unit.moves, {reason = "moov dir", dir = mdir, times = 1})
+          if #unit.moves > 0 and not already_added[unit] then
+            table.insert(moving_units, unit)
+            already_added[unit] = true
+          end
+        end
+      end
       local isactualstalk = matchesRule("?", "stalk", "?");
       for _,ruleparent in ipairs(isactualstalk) do
         local stalkers = findUnitsByName(ruleparent.rule.subject.name)
@@ -552,7 +562,7 @@ It is probably possible to do, but lily has decided that it's not important enou
               successes = successes + 1
               
               for k = #movers, 1, -1 do
-                moveIt(movers[k].unit, movers[k].dx, movers[k].dy, movers[k].dir, movers[k].move_dir, movers[k].geometry_spin, data, false, already_added, moving_units, moving_units_next, slippers, remove_from_moving_units, movers[k].portal)
+                moveIt(movers[k].unit, movers[k].dx, movers[k].dy, data.reason == "moov dir" and movers[k].unit.dir or movers[k].dir, movers[k].move_dir, movers[k].geometry_spin, data, false, already_added, moving_units, moving_units_next, slippers, remove_from_moving_units, movers[k].portal)
               end
               --Patashu: only the mover itself pulls, otherwise it's a mess. stuff like STICKY/STUCK will require ruggedizing this logic.
               --Patashu: TODO: Doing the pull right away means that in a situation like this: https://cdn.discordapp.com/attachments/579519329515732993/582179745006092318/unknown.png the pull could happen before the bounce depending on move order. To fix this... I'm not sure how Baba does this? But it's somewhere in that mess of code.
