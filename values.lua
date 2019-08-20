@@ -192,8 +192,8 @@ selector_grid_contents = {
   },
   -- page 4: objects
   {
-    "bab","text_bab","flog","text_flog","wal","text_wal","gras","text_gras",0,0,0,0,0,0,"selctr","text_selctr","lvl","text_lvl",
-    "keek","text_keek","roc","text_roc","til","text_til","sparkl","text_sparkl",0,0,0,0,0,0,"this","text_mous","lin","text_lin",
+    "bab","text_bab","flog","text_flog","wal","text_wal","gras","text_gras","cobll","text_cobll",0,0,0,0,"selctr","text_selctr","lvl","text_lvl",
+    "keek","text_keek","roc","text_roc","til","text_til","sparkl","text_sparkl","wuud","text_wuud",0,0,0,0,"this","text_mous","lin","text_lin",
     "meem","text_meem","boux","text_boux","watr","text_watr","scarr","text_scarr","petnygrame","text_petnygrame",0,0,0,0,"text_text","text_frens","text_groop","text_pathz",
     "skul","text_skul","boll","text_boll","laav","text_laav","katany","text_katany","gunne","text_gunne",0,0,0,0,0,0,"text_every1","text_no1",
     "ghost fren","text_ghost fren","kee","text_kee","dor","text_dor","hatt","text_hatt","slippers","text_slippers",0,0,0,0,0,0,0,0,
@@ -4438,7 +4438,48 @@ tiles_list = {
     tags = {"near", "around", "infix condition", "touching", "adjacent"},
     desc = "W/ NEIGHBOR (Infix Condition): True if the indicated object is on any of orthogonal tiles surrounding the unit. (The unit's own tile is not checked.)",
   },
+  -- 386
+  {
+    name = "cobll",
+    sprite = "cobll",
+    type = "object",
+    color = {0, 1},
+    layer = 2,
+    tags = {"cobblestone"},
+    desc = "so we back in the mine"
+  },
+  -- 387
+  {
+    name = "text_cobll",
+    sprite = "text_cobll",
+    type = "text",
+    texttype = {object = true},
+    color = {0, 1},
+    layer = 20,
+    tags = {"cobblestone"},
+  },
+  -- 388
+  {
+    name = "wuud",
+    sprite = "wuud",
+    type = "object",
+    color = {6, 2},
+    layer = 2,
+    tags = {"wood", "planks"},
+    desc = "wuud u cuud u"
+  },
+  -- 389
+  {
+    name = "text_wuud",
+    sprite = "text_wuud",
+    type = "text",
+    texttype = {object = true},
+    color = {6, 2},
+    layer = 20,
+    tags = {"wood", "planks"},
+  },
 }
+
 
 tiles_by_name = {}
 for i,v in ipairs(tiles_list) do
