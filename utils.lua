@@ -673,21 +673,8 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
           others[nx][ny] = getUnitsOnTile(px, py, nil, false, unit, true)
         end
       end
-      for i,tdir in ipairs(dirs8_by_name) do
-        if condtype:starts(tdir.." ") then
-          local nx,ny = dirs8[i][1],dirs8[i][2]
-          for _,set in ipairs(sets) do
-            for _,other in ipairs(others[-nx][-ny]) do
-              if set[other] then
-                found = true
-                break
-              end
-            end
-          end
-        end
-      end
       for i=1,8 do
-        if (condtype == "arond") or (condtype:starts("ortho") and i%2==1) or (condtype:starts("diag") and i%2==0) then
+        if (condtype == "arond") or (condtype == "ortho arond" and i%2==1) or (condtype == "diag arond" and i%2==0) or (condtype == dirs8_by_name[i].." arond") then
           local nx,ny = dirs8[i][1],dirs8[i][2]
           for _,set in ipairs(sets) do
             for _,other in ipairs(others[nx][ny]) do
