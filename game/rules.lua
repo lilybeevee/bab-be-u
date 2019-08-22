@@ -724,7 +724,7 @@ function postRules()
         end
         blockRules(full_rules)
 
-        mergeTable(all_units, rules[2])
+        mergeTable(all_units, rules.units)
       end
     end
   end
@@ -755,7 +755,7 @@ function postRules()
       table.insert(rules_with[object], rules)
     end
 
-    mergeTable(all_units, rules[2])
+    mergeTable(all_units, rules.units)
   end
 
   -- Step 3:
