@@ -188,7 +188,7 @@ selector_grid_contents = {
     0,0,0,0,"ui_space",0,0,0,0,0,0,0,0,0,0,"ui_arrow",0,0,
     "text_press","text_f1","text_play","text_f2","text_edit","ui_left click","ui_right click",0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,"ui_walk",0,0,"ui_activat",0,0,"ui_clik",0,0,0,0,0,0,0,0,0,0,
+    0,"ui_walk",0,0,"ui_reset",0,0,"ui_undo",0,0,"ui_wait",0,0,"ui_activat",0,0,"ui_clik",0,0,0,0,
   },
   -- page 4: objects
   {
@@ -4477,6 +4477,30 @@ tiles_list = {
     color = {6, 2},
     layer = 20,
     tags = {"wood", "planks"},
+  },
+  -- 390
+  {
+    name = "ui_reset",
+    sprite = "ui_reset",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 391
+  {
+    name = "ui_undo",
+    sprite = "ui_undo",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 392
+  {
+    name = "ui_wait",
+    sprite = "ui_wait",
+    type = "object",
+    color = {0,3},
+    layer = 20,
   },
 }
 
