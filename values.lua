@@ -206,7 +206,7 @@ selector_grid_contents = {
     "han","text_han","clowd","text_clowd","bellt","text_bellt","ger","text_ger","sno","text_sno","snoman","text_snoman",0,0,"larry","text_larry","zsoob","text_zsoob",
     "os","text_os","hurcane","text_hurcane","spik","text_spik","hors","text_hors","fir","text_fir",0,0,0,0,0,0,"o","text_o",
     "firbolt","text_firbolt","lie","text_lie","spiky","text_spiky","can","text_can","ladr", "text_ladr",0,0,0,0,0,0,"square","text_square",
-    "icbolt","text_icbolt","lie/8","text_lie/8","bordr","text_bordr","togll","text_togll",0,0,0,0,0,0,0,0,"triangle","text_triangle",
+    "icbolt","text_icbolt","lie/8","text_lie/8","bordr","text_bordr","togll","text_togll","wut","text_wut","wat","text_wat",0,0,0,0,"triangle","text_triangle",
   },
   -- page 5: properties, verbs and conditions
   {
@@ -4501,6 +4501,45 @@ tiles_list = {
     type = "object",
     color = {0,3},
     layer = 20,
+  },
+  -- 393
+  {
+    name = "wut",
+    sprite = "wut",
+    type = "object",
+    color = {0,3},
+    layer = 6,
+    tags = {"what"},
+    desc = "im confuse",
+  },
+  -- 394
+  {
+    name = "text_wut",
+    sprite = "text_wut",
+    type = "text",
+    texttype = {object = true},
+    color = {0,3},
+    layer = 20,
+    tags = {"what"},
+  },
+  -- 395
+  {
+    name = "wat",
+    type = "object",
+    color = {0,3},
+    layer = 5,
+    tags = {"what", "error"},
+    desc = "whoops error"
+  },
+  -- 396
+  {
+    name = "text_wat",
+    sprite = "text_wat",
+    type = "text",
+    texttype = {object = true},
+    color = {0,3},
+    layer = 20,
+    tags = {"what", "error"},
   },
 }
 
