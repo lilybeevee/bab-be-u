@@ -1611,19 +1611,30 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
         stopped = stopped or sameFloat(unit, v)
       end
       
-      --if thing is ouch, it will not stop things - similar to Baba behaviour. But check safe and float as well.
-      --Funny buggy looking interaction (that also happens in Baba): You can push the 'ouch' of 'wall be ouch' onto a solid wall. This could be fixed by making walking onto an ouch wall destroy it as a reaction to movement, like how keys/doors are destroyed as a reaction to movement right now.
-      if (hasProperty(v, "ouch") or rules_with["snacc"] ~= nil and hasRule(unit, "snacc", v)) and not hasProperty(v, "protecc") and sameFloat(unit, v) then
-        stopped = false
-      end
-      --if a weak thing tries to move and fails, destroy it. movers don't do this though.
+      --ouch/snacc logic:
+      --1) if mover can destroy wall via ouch/snacc, then allow movement AND destroy the wall immediately
+      --2) if mover will be destroyed by walking into a wall, prevent movement AND destroy mover immediately
+      --3) if both are true, then block movement AND destroy BOTH immediately
+      
       if stopped then
+        local exploding = false
+        --Case 1 or 3 - wall will be destroyed by us walking onto it.
+        local ouch = hasProperty(v, "ouch");
+        local snacc = rules_with["snacc"] ~= nil and hasRule(unit, "snacc", v);
+        if (ouch or snacc) and not hasProperty(v, "protecc") and sameFloat(unit, v) then
+          table.insert(specials, {ouch and "weak" or "snacc", {v}})
+          exploding = true
+        end
+      
+        --Case 2 or 3 - we will be destroyed by walking onto a wall.
         local ouch = hasProperty(unit, "ouch");
         local snacc = rules_with["snacc"] ~= nil and hasRule(v, "snacc", unit);
         if (ouch or snacc) and not hasProperty(unit, "protecc") and (reason ~= "walk" or not hasProperty(unit, "stubbn")) then
           table.insert(specials, {ouch and "weak" or "snacc", {unit}})
-          return true,movers,specials
+          exploding = true
         end
+        
+        if exploding then return true,movers,specials end
       end
       if stopped then
         return false,movers,specials
