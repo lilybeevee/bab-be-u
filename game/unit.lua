@@ -400,7 +400,7 @@ function moveBlock()
   
   --technically spin_8 does nothing, so skip it
   for i=1,7 do
-    local isspin = getUnitsWithEffectAndCount("spin_" .. tostring(i));
+    local isspin = getUnitsWithEffectAndCount("spin" .. tostring(i));
     for unit,amt in pairs(isspin) do
       addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
       unit.olddir = unit.dir
@@ -2325,13 +2325,14 @@ function updateDir(unit, dir, force)
 end
 
 function updateNameBasedOnDir(unit)
+  local rotatbl = rules_with ~= nil and hasProperty(unit,"rotatbl")
   if unit.fullname == "text_mayb" then
     should_parse_rules = true
   elseif unit.fullname == "text_direction" then
-    unit.textname = dirs8_by_name[unit.dir];
+    unit.textname = dirs8_by_name[unit.dir]
     should_parse_rules = true
   elseif unit.fullname == "text_spin" then
-    unit.textname = "spin_" .. tostring(unit.dir);
+    unit.textname = "spin" .. tostring(unit.dir)
     should_parse_rules = true
   elseif unit.fullname == "letter_colon" then
     if unit.dir == 1 or unit.dir == 2 or unit.dir == 3 then
@@ -2347,6 +2348,60 @@ function updateNameBasedOnDir(unit)
       unit.textname = ")"
     end
     should_parse_rules = true
+  elseif unit.fullname == "letter_h" and rotatbl then
+    if unit.dir == 3 or unit.dir == 7 then
+      unit.textname = "i"
+    else
+      unit.textname = "h"
+    end
+  elseif unit.fullname == "letter_i" and rotatbl then
+    if unit.dir == 3 or unit.dir == 7 then
+      unit.textname = "h"
+    else
+      unit.textname = "i"
+    end
+  elseif unit.fullname == "letter_n" and rotatbl then
+    if unit.dir == 3 or unit.dir == 7 then
+      unit.textname = "z"
+    else
+      unit.textname = "n"
+    end
+  elseif unit.fullname == "letter_z" and rotatbl then
+    if unit.dir == 3 or unit.dir == 7 then
+      unit.textname = "n"
+    else
+      unit.textname = "z"
+    end
+  elseif unit.fullname == "letter_m" and rotatbl then
+    if unit.dir == 5 then
+      unit.textname = "w"
+    else
+      unit.textname = "m"
+    end
+  elseif unit.fullname == "letter_w" and rotatbl then
+    if unit.dir == 5 then
+      unit.textname = "m"
+    else
+      unit.textname = "w"
+    end
+  elseif unit.fullname == "letter_6" and rotatbl then
+    if unit.dir == 5 then
+      unit.textname = "9"
+    else
+      unit.textname = "6"
+    end
+  elseif unit.fullname == "letter_9" and rotatbl then
+    if unit.dir == 5 then
+      unit.textname = "6"
+    else
+      unit.textname = "9"
+    end
+  elseif unit.fullname == "letter_no" and rotatbl then
+    if unit.dir == 5 then
+      unit.textname = "on"
+    else
+      unit.textname = "no"
+    end
   end
 end
 
