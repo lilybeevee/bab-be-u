@@ -163,7 +163,7 @@ selector_grid_contents = {
     "wal", "text_wal", "text_no go", "l..uv", "text_l..uv", "gras", "text_gras", "text_creat", "text_look at", "text_spoop", "text_yeet", "text_turn cornr", "text_corekt", "text_go arnd", "text_mirr arnd", 0, 0, 0,
     "watr", "text_watr", "text_no swim", "meem", "text_meem", "dayzy", "text_dayzy", "text_snacc", "text_seen by" , "text_stalk", "text_moov", "text_folo wal", "text_rong", "text_her", "text_thr", "text_rithere", "text_the", 0,
     "skul", "text_skul", "text_:(", "til", "text_til", "hurcane", "text_hurcane", "gunne", "text_gunne", "wog", "text_wog", "text_zip", "text_shy", "text_munwalk", "text_sidestep", "text_diagstep", "text_hopovr", "text_knightstep",
-    "boux", "text_boux", "text_come pls", "os", "text_os", "bup", "text_bup", "han", "text_han", "fenss", "text_fenss", 0, 0, "hol", "text_hol", "text_poor toll", "text_blacc", "text_reed",
+    "boux", "text_boux", "text_come pls", "os", "text_os", "bup", "text_bup", "han", "text_han", "fenss", "text_fenss", "brik", "text_brik", "hol", "text_hol", "text_poor toll", "text_blacc", "text_reed",
     "bellt", "text_bellt", "text_go", "tre", "text_tre", "piler", "text_piler", "hatt", "text_hatt", "hedg", "text_hedg", 0, 0, "riff", "text_riff", "text_glued", "text_whit", "text_orang",
     "boll", "text_boll", "text_:o", "frut", "text_frut", "kirb", "text_kirb", "katany", "text_katany", "metl", "text_metl", 0, 0, 0, 0, "text_pinc", "text_colrful", "text_yello",
     "clok", "text_clok", "text_try again", "text_no undo", "text_undo", "slippers", "text_slippers", "firbolt", "text_firbolt", "jail", "text_jail", 0, 0, 0, 0, "text_tranz", "text_rave", "text_grun",
@@ -192,7 +192,7 @@ selector_grid_contents = {
   },
   -- page 4: objects
   {
-    "bab","text_bab","flog","text_flog","wal","text_wal","gras","text_gras","cobll","text_cobll",0,0,0,0,"selctr","text_selctr","lvl","text_lvl",
+    "bab","text_bab","flog","text_flog","wal","text_wal","gras","text_gras","cobll","text_cobll","brik","text_brik",0,0,"selctr","text_selctr","lvl","text_lvl",
     "keek","text_keek","roc","text_roc","til","text_til","sparkl","text_sparkl","wuud","text_wuud",0,0,0,0,"this","text_mous","lin","text_lin",
     "meem","text_meem","boux","text_boux","watr","text_watr","scarr","text_scarr","petnygrame","text_petnygrame",0,0,0,0,"text_text","text_frens","text_groop","text_pathz",
     "skul","text_skul","boll","text_boll","laav","text_laav","katany","text_katany","gunne","text_gunne",0,0,0,0,0,0,"text_every1","text_no1",
@@ -4546,6 +4546,27 @@ tiles_list = {
     color = {0,3},
     layer = 20,
     tags = {"what", "error"},
+  },
+  -- 397
+  {
+    name = "brik",
+    sprite = "brik",
+    type = "object",
+    color = {2, 1},
+    layer = 2,
+    tags = {"bricks", "wall"},
+    desc = "just another brik in the wal",
+  },
+  -- 398
+  {
+    name = "text_brik",
+    sprite = "text_brik",
+    type = "text",
+    texttype = {object = true},
+    color = {2, 1},
+    layer = 20,
+    tags = {"bricks", "wall"},
+    desc = "reverse kirb",
   },
 }
 
