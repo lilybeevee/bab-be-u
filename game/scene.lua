@@ -961,10 +961,10 @@ function scene.draw(dt)
         love.graphics.setStencilTest()
       end
     end
-
+    
     if hasRule(unit,"be","sans") and unit.eye then
-      local topleft = {x = drawx * TILE_SIZE, y = drawy * TILE_SIZE}
-      love.graphics.setColor(0, 1, 1, 1)
+      local topleft = {x = fulldrawx - 16, y = fulldrawy - 16}
+      love.graphics.setColor(getPaletteColor(1,4))
       love.graphics.rectangle("fill", topleft.x + unit.eye.x, topleft.y + unit.eye.y, unit.eye.w, unit.eye.h)
       for i = 1, unit.eye.w-1 do
         love.graphics.rectangle("fill", topleft.x + unit.eye.x + i, topleft.y + unit.eye.y - i, unit.eye.w - i, 1)
@@ -980,14 +980,14 @@ function scene.draw(dt)
       love.graphics.draw(sprites["gunnesmol"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
     end
     if hasRule(unit,"got","katany") then
-      love.graphics.setColor(0.45, 0.45, 0.45)
+      love.graphics.setColor(getPaletteColor(0,1))
       love.graphics.draw(sprites["katanysmol"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
     end
     if hasRule(unit,"got","slippers") then
       love.graphics.setColor(getPaletteColor(1,4))
       love.graphics.draw(sprites["slippers"], fulldrawx, fulldrawy+sprite:getHeight()/4, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
     end
-
+    
     if false then -- stupid lua comments
       if hasRule(unit,"got","?") then
         local matchrules = matchesRule(unit,"got","?")
