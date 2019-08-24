@@ -163,7 +163,7 @@ selector_grid_contents = {
     "wal", "text_wal", "text_no go", "l..uv", "text_l..uv", "gras", "text_gras", "text_creat", "text_look at", "text_spoop", "text_yeet", "text_turn cornr", "text_corekt", "text_go arnd", "text_mirr arnd", 0, 0, 0,
     "watr", "text_watr", "text_no swim", "meem", "text_meem", "dayzy", "text_dayzy", "text_snacc", "text_seen by" , "text_stalk", "text_moov", "text_folo wal", "text_rong", "text_her", "text_thr", "text_rithere", "text_the", 0,
     "skul", "text_skul", "text_:(", "til", "text_til", "hurcane", "text_hurcane", "gunne", "text_gunne", "wog", "text_wog", "text_zip", "text_shy", "text_munwalk", "text_sidestep", "text_diagstep", "text_hopovr", "text_knightstep",
-    "boux", "text_boux", "text_come pls", "os", "text_os", "bup", "text_bup", "han", "text_han", "fenss", "text_fenss", 0, 0, "hol", "text_hol", "text_poor toll", "text_blacc", "text_reed",
+    "boux", "text_boux", "text_come pls", "os", "text_os", "bup", "text_bup", "han", "text_han", "fenss", "text_fenss", "brik", "text_brik", "hol", "text_hol", "text_poor toll", "text_blacc", "text_reed",
     "bellt", "text_bellt", "text_go", "tre", "text_tre", "piler", "text_piler", "hatt", "text_hatt", "hedg", "text_hedg", 0, 0, "riff", "text_riff", "text_glued", "text_whit", "text_orang",
     "boll", "text_boll", "text_:o", "frut", "text_frut", "kirb", "text_kirb", "katany", "text_katany", "metl", "text_metl", 0, 0, 0, 0, "text_pinc", "text_colrful", "text_yello",
     "clok", "text_clok", "text_try again", "text_no undo", "text_undo", "slippers", "text_slippers", "firbolt", "text_firbolt", "jail", "text_jail", 0, 0, 0, 0, "text_tranz", "text_rave", "text_grun",
@@ -192,7 +192,7 @@ selector_grid_contents = {
   },
   -- page 4: objects
   {
-    "bab","text_bab","flog","text_flog","wal","text_wal","gras","text_gras","cobll","text_cobll",0,0,0,0,"selctr","text_selctr","lvl","text_lvl",
+    "bab","text_bab","flog","text_flog","wal","text_wal","gras","text_gras","cobll","text_cobll","brik","text_brik",0,0,"selctr","text_selctr","lvl","text_lvl",
     "keek","text_keek","roc","text_roc","til","text_til","sparkl","text_sparkl","wuud","text_wuud",0,0,0,0,"this","text_mous","lin","text_lin",
     "meem","text_meem","boux","text_boux","watr","text_watr","scarr","text_scarr","petnygrame","text_petnygrame",0,0,0,0,"text_text","text_frens","text_groop","text_pathz",
     "skul","text_skul","boll","text_boll","laav","text_laav","katany","text_katany","gunne","text_gunne",0,0,0,0,0,0,"text_every1","text_no1",
@@ -210,12 +210,12 @@ selector_grid_contents = {
   },
   -- page 5: properties, verbs and conditions
   {
-    "text_be","text_&","text_got","text_creat","text_snacc","text_spoop","text_copkat","text_moov","text_yeet","text_liek","text_haet","text_stalk","text_ignor","text_paint","text_vs","text_look at","text_behind","text_look away",
+    "text_be","text_&","text_got","text_creat","text_snacc","text_spoop","text_copkat","text_moov","text_yeet","text_liek","text_haet","text_stalk","text_ignor","text_paint","text_vs","text_look at",0,0,
     "text_u","text_u too","text_u tres","text_walk",0,"text_:)","text_:(","text_no swim","text_ouch",0,"text_nxt","text_stay ther","text_sublvl",0,"text_w/fren","text_arond","text_frenles","text_sans",
     "text_go","text_goooo","text_icy","text_icyyyy",0,"text_ned kee","text_for dor","text_hotte","text_fridgd",0,"text_loop",0,0,0,"text_seen by","text_that","text_that be","text_wait...",
     "text_no go","text_go away pls","text_come pls","text_sidekik",0,"text_protecc","text_:o","text_xwx","text_wurd",0,0,0,0,0,"text_corekt","text_rong","text_timles","text_lit",
     "text_visit fren","text_slep","text_shy","text_behin u",0,"text_moar","text_split","text_nuek","text_meta",0,0,0,0,0,"text_samefloat","text_clikt","text_mayb","text_an",
-    "text_flye","text_tall","text_haet skye","text_haet flor",0,0,0,0,0,0,0,0,0,0,0,0,0,"text_beside",
+    "text_flye","text_tall","text_haet skye","text_haet flor",0,0,0,0,0,0,0,0,0,0,0,"text_behind","text_look away","text_beside",
     "text_diag","text_ortho","text_go my way","text_direction",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     "text_turn cornr","text_folo wal","text_zip","text_hopovr",0,0,0,0,0,0,0,0,0,0,0,0,0,"text_pinc",
     "text_munwalk","text_sidestep","text_diagstep","text_knightstep",0,0,0,0,0,0,0,0,0,0,0,0,0,"text_reed",
@@ -445,7 +445,8 @@ tiles_list = {
     texttype = {property = true},
     color = {2, 4},
     layer = 20,
-    tags = {"win", "smiley", "face", "happy"},
+    eye = {x=21, y=6, w=3, h=4},
+    tags = {"win", "smiley", "face", "happy", "yay"},
     desc = ":): At end of turn, if U is on :) and survives, U R WIN!",
   },
   -- 21
@@ -597,7 +598,6 @@ tiles_list = {
     color = {2, 1},
     layer = 20,
     tags = {"skull"},
-    desc = "evillllll",
   },
   --35
   {
@@ -610,6 +610,7 @@ tiles_list = {
     rotate = true,
     eye = {x=21, y=8, w=4, h=4},
     tags = {"skull"},
+    desc = "evillllll",
   },
   --36
   {
@@ -870,7 +871,8 @@ tiles_list = {
     texttype = {property = true},
     color = {2, 1},
     layer = 20,
-    tags = {"defeat", "sad", "face"},
+    eye = {x=20, y=6, w=4, h=4},
+    tags = {"defeat", "sad", "face", "aw"},
     desc = ":(: At end of turn, destroys any U objects on it.",
   },
   -- 59
@@ -903,9 +905,9 @@ tiles_list = {
     color = {6, 2},
     layer = 5,
     rotate = true,
-    eye = {x=23, y=18, w=3, h=3},
+    eye = {x=23, y=19, w=3, h=3},
     tags = {"toad", "chars"},
-    desc = "BUP: HELLO or BUP DOES NOT WANT\nBUP DOES NOT DREAM\nPLEASE HELP HIM\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n",
+    desc = "BUP: HELLO\nBUP DOES NOT WANT, BUP DOES NOT DREAM\nPLEASE HELP HIM\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
   },
   -- 62
   {
@@ -956,6 +958,7 @@ tiles_list = {
     texttype = {property = true},
     color = {4, 1},
     layer = 20,
+    eye = {x=20, y=7, w=3, h=4},
     tags = {"bonus", "woah", "whoa", "face"},
     desc = ":o: If U is on :o, the :o is collected. Bonus!",
   },
@@ -1327,6 +1330,7 @@ tiles_list = {
     texttype = {property = true},
     color = {3, 2},
     layer = 20,
+    eye = {x=19, y=5, w=4, h=5},
     tags = {"crash", "oops", "fucky wucky", "face"},
     desc = "XWX: At end of turn, if U is on XWX, the game crashes.",
   },
@@ -1641,7 +1645,7 @@ tiles_list = {
       property = "text_sans_property"
     },
     type = "text",
-    texttype = {cond_infix = true},
+    texttype = {cond_infix = true, property = true},
     color = {1, 4},
     layer = 20,
     tags = {"without", "w/o", "infix condition"},
@@ -2096,6 +2100,7 @@ tiles_list = {
     color = {0, 3},
     layer = 2,
     rotate = true,
+    eye = {x=22,y=12,w=3,h=5},
     desc = "specifically made to be used with SPLIT because it looks horrible otherwise"
   },
   -- 171
@@ -2215,7 +2220,7 @@ tiles_list = {
     color = {0, 2},
     layer = 5,
     rotate = true,
-    eye = {x=16, y=12, w=2, h=4},
+    eye = {x=14, y=14, w=2, h=4},
     tags = {"chars"},
   },
   -- 182
@@ -2275,7 +2280,7 @@ tiles_list = {
     color = {4, 2},
     layer = 5,
     rotate = true,
-    eye = {x=25, y=11, w=2, h=4},
+    eye = {x=26, y=10, w=2, h=4},
     tags = {"chars"},
   },
   -- 188
@@ -2297,7 +2302,7 @@ tiles_list = {
     color = {6, 1},
     layer = 5,
     rotate = true,
-    eye = {x=16, y=8, w=2, h=4},
+    eye = {x=17, y=7, w=2, h=4},
     tags = {"robot", "chars"},
   },
   -- 190
@@ -2681,7 +2686,7 @@ tiles_list = {
     type = "object",
     color = {0,3},
     layer = 20,
-    desc = "THIS: An object that pretends like it's text. Each THIS is independant. THIS TXT refers to all THISs."
+    desc = "THIS: Text that refers to itself. Each THIS is independant. THIS TXT refers to all THISs."
   },
   -- 225
   {
@@ -3737,7 +3742,7 @@ tiles_list = {
     type = "object",
     color = {2,2},
     layer = 5,
-    eye = {x=17, y=5, w=9, h=7},
+    eye = {x=20, y=4, w=4, h=5},
     tags = {"crab"},
   },
   -- 326
@@ -3903,6 +3908,7 @@ tiles_list = {
     type = "object",
     color = {6,1},
     layer = 5,
+    eye = {x=23,y=4,w=1,h=3},
     tags = {"chess", "knight"},
   },
   -- 335
@@ -4079,7 +4085,7 @@ tiles_list = {
     type = "object",
     color = {2, 4},
     layer = 5,
-    eye = {x=19, y=7, w=2, h=2},
+    eye = {x=17, y=7, w=2, h=2},
     tags = {"dev", "chars", "thefox", "puyopuyo tetris"},
     desc = "TRIASNGLE?????? this is ridicouuolus",
   },
@@ -4541,23 +4547,40 @@ tiles_list = {
     layer = 20,
     tags = {"what", "error"},
   },
+  -- 397
+  {
+    name = "brik",
+    sprite = "brik",
+    type = "object",
+    color = {2, 1},
+    layer = 2,
+    tags = {"bricks", "wall"},
+    desc = "just another brik in the wal",
+  },
+  -- 398
+  {
+    name = "text_brik",
+    sprite = "text_brik",
+    type = "text",
+    texttype = {object = true},
+    color = {2, 1},
+    layer = 20,
+    tags = {"bricks", "wall"},
+    desc = "reverse kirb",
+  },
 }
 
-
 tiles_by_name = {}
-for i,v in ipairs(tiles_list) do
-  tiles_by_name[v.name] = i
-end
-
 group_names = {}
 group_names_nt = {}
 group_names_set = {}
 group_names_set_nt = {}
-for i,tile in ipairs(tiles_list) do
-  if tile.texttype and tile.texttype.group then
-		table.insert(group_names, tile.name:sub(6, -1));
-    table.insert(group_names_nt, tile.name:sub(6, -1).."n't");
-    group_names_set[tile.name:sub(6, -1)] = true;
-    group_names_set_nt[tile.name:sub(6, -1).."n't"] = true;
+for i,v in ipairs(tiles_list) do
+  tiles_by_name[v.name] = i
+  if v.texttype and v.texttype.group then
+		table.insert(group_names, v.name:sub(6, -1));
+    table.insert(group_names_nt, v.name:sub(6, -1).."n't");
+    group_names_set[v.name:sub(6, -1)] = true;
+    group_names_set_nt[v.name:sub(6, -1).."n't"] = true;
 	end
 end
