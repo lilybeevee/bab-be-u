@@ -1951,7 +1951,6 @@ function convertUnits(pass)
           end
           local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true, nil, nil, rule.object.prefix)
           if (new_unit ~= nil) then
-            print(rule.object.name, rule.object.prefix)
             if rule.object.name == "lvl" and not new_unit.color_override then
               new_unit.color_override = unit.color_override or unit.color
             end

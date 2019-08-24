@@ -79,7 +79,9 @@ function undoOneAction(turn, i, v, ignore_no_undo)
     end
     if (proceed) then
       unit = createUnit(v[2], v[3], v[4], v[5], convert, v[7])
-      unit.special = v[8]
+      if unit ~= nil then
+        unit.special = v[8]
+      end
       --If the unit was actually a destroyed 'no undo', oops. Don't actually bring it back. It's dead, Jim.
       if (unit ~= nil and not convert and (not ignore_no_undo and isNoUndo(unit))) then
         deleteUnit(unit, convert, true)
