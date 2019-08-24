@@ -1951,6 +1951,11 @@ function convertUnits(pass)
           end
           local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true, nil, nil, rule.object.prefix)
           if (new_unit ~= nil) then
+            print(rule.object.name, rule.object.prefix)
+            if rule.object.name == "lvl" and not new_unit.color_override then
+              new_unit.color_override = unit.color_override or unit.color
+            end
+            new_unit.special = unit.special
             addUndo({"create", new_unit.id, true, created_from_id = unit.id})
           end
         elseif rule.object.name == "mous" then
@@ -2030,7 +2035,7 @@ function deleteUnits(del_units,convert)
       if (unit.backer_turn ~= nil) then
         addUndo({"backer_turn", unit.id, unit.backer_turn})
       end
-      addUndo({"remove", unit.tile, unit.x, unit.y, unit.dir, convert or false, unit.id})
+      addUndo({"remove", unit.tile, unit.x, unit.y, unit.dir, convert or false, unit.id, unit.special})
     end
     deleteUnit(unit,convert)
   end
