@@ -1173,7 +1173,7 @@ tiles_list = {
   -- 86
   {
     name = "text_o",
-    sprite = "text_o",
+    sprite = "letter_o",
     type = "text",
     texttype = {object = true},
     color = {2, 4},
@@ -3989,7 +3989,7 @@ tiles_list = {
   -- 340
   {
     name = "letter_o",
-    sprite = "text_o",
+    sprite = "letter_o",
     type = "text",
     texttype = {letter = true},
     color = {0,3},
