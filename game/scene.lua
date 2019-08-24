@@ -882,6 +882,27 @@ function scene.draw(dt)
         drawSprite()
       end
     end
+    
+    if unit.name == "lvl" then
+      if not unit.special.level_iconstyle or unit.special.level_iconstyle == "number" then
+        local num = tostring(unit.special.level_number or 1)
+        if #num == 1 then
+          num = "0"..num
+        end
+        love.graphics.draw(sprites["levelicon_"..num:sub(1,1)], fulldrawx+(4*unit.draw.scalex), fulldrawy+(4*unit.draw.scaley), 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+        love.graphics.draw(sprites["levelicon_"..num:sub(2,2)], fulldrawx+(16*unit.draw.scalex), fulldrawy+(4*unit.draw.scaley), 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      elseif unit.special.level_iconstyle == "dots" then
+        local num = tostring(unit.special.level_number or 1)
+        love.graphics.draw(sprites["levelicon_dots_"..num], fulldrawx+(4*unit.draw.scalex), fulldrawy+(4*unit.draw.scaley), 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      elseif unit.special.level_iconstyle == "letter" then
+        local num = unit.special.level_number or 1
+        local letter = ("abcdefghijklmnopqrstuvwxyz"):sub(num, num)
+        love.graphics.draw(sprites["letter_"..letter], fulldrawx, fulldrawy, 0, unit.draw.scalex*3/4, unit.draw.scaley*3/4, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      elseif unit.special.level_iconstyle == "other" then
+        local sprite = sprites[unit.special.level_iconname or "wat"] or sprites["wat"]
+        love.graphics.draw(sprite, fulldrawx, fulldrawy, 0, unit.draw.scalex*3/4, unit.draw.scaley*3/4, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      end
+    end
 
     if #unit.overlay > 0 then
       local function overlayStencil()
