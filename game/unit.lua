@@ -2048,15 +2048,6 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
   unit.active = false
   unit.blocked = false
   unit.removed = false
-  
-  if (not unit_tests) then
-    unit.draw = {x = unit.x, y = unit.y, scalex = 1, scaley = 1, rotation = (unit.dir - 1) * 45}
-
-    if convert then
-      unit.draw.scaley = 0
-      addTween(tween.new(0.1, unit.draw, {scaley = 1}), "unit:scale:" .. unit.tempid)
-    end
-  end
 
   unit.old_active = unit.active
   unit.overlay = {}
@@ -2080,6 +2071,15 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
   unit.sprite_transforms = data.sprite_transforms or {}
   unit.eye = data.eye -- eye rectangle used for sans
   unit.is_portal = data.portal or false
+  unit.rotatdir = unit.rotate and unit.dir or 1
+  
+  if (not unit_tests) then
+    unit.draw = {x = unit.x, y = unit.y, scalex = 1, scaley = 1, rotation = (unit.rotatdir - 1) * 45}
+    if convert then
+      unit.draw.scaley = 0
+      addTween(tween.new(0.1, unit.draw, {scaley = 1}), "unit:scale:" .. unit.tempid)
+    end
+  end
 
   unit.fullname = data.name
 
@@ -2243,7 +2243,7 @@ function moveUnit(unit,x,y,portal)
         unit.draw.x, unit.draw.y = portal.draw.x, portal.draw.y
         addTween(tween.new(0.1, unit.draw, {x = x, y = y}), "unit:pos:" .. unit.tempid)
         -- instantly change object's rotation, weirdness ensues otherwise
-        unit.draw.rotation = (unit.dir - 1) * 45
+        unit.draw.rotation = (unit.rotatdir - 1) * 45
         tweens["unit:dir:" .. unit.tempid] = nil
       end
     elseif x ~= unit.x or y ~= unit.y then
@@ -2294,6 +2294,9 @@ function updateDir(unit, dir, force)
   end
   
   unit.dir = dir
+  if (unit.rotate and not hasRule(unit,"ben't","rotatbl")) or (rules_with ~= nil and hasProperty(unit,"rotatbl")) then
+    unit.rotatdir = dir
+  end
   
   --Some units in rules_effecting_names are there because their direction matters (a portal or part of a parse-effecting look at/seen by condition).
   if rules_effecting_names[unit.fullname] then
@@ -2304,8 +2307,8 @@ function updateDir(unit, dir, force)
   
   if (not unit_tests) then
     unit.draw.rotation = unit.draw.rotation % 360
-    local target_rot = (dir - 1) * 45
-    if unit.rotate and math.abs(unit.draw.rotation - target_rot) == 180 then
+    local target_rot = (unit.rotatdir - 1) * 45
+    if (unit.rotate or (rules_with ~= nil and hasProperty(unit,"rotatbl"))) and math.abs(unit.draw.rotation - target_rot) == 180 then
       -- flip "mirror" effect
       addTween(tween.new(0.05, unit.draw, {scalex = 0}), "unit:dir:" .. unit.tempid, function()
         unit.draw.rotation = target_rot
@@ -2325,7 +2328,6 @@ function updateDir(unit, dir, force)
 end
 
 function updateNameBasedOnDir(unit)
-  local rotatbl = rules_with ~= nil and hasProperty(unit,"rotatbl")
   if unit.fullname == "text_mayb" then
     should_parse_rules = true
   elseif unit.fullname == "text_direction" then
@@ -2348,56 +2350,56 @@ function updateNameBasedOnDir(unit)
       unit.textname = ")"
     end
     should_parse_rules = true
-  elseif unit.fullname == "letter_h" and rotatbl then
-    if unit.dir == 3 or unit.dir == 7 then
+  elseif unit.fullname == "letter_h" then
+    if unit.rotatdir == 3 or unit.rotatdir == 7 then
       unit.textname = "i"
     else
       unit.textname = "h"
     end
-  elseif unit.fullname == "letter_i" and rotatbl then
-    if unit.dir == 3 or unit.dir == 7 then
+  elseif unit.fullname == "letter_i" then
+    if unit.rotatdir == 3 or unit.rotatdir == 7 then
       unit.textname = "h"
     else
       unit.textname = "i"
     end
-  elseif unit.fullname == "letter_n" and rotatbl then
-    if unit.dir == 3 or unit.dir == 7 then
+  elseif unit.fullname == "letter_n" then
+    if unit.rotatdir == 3 or unit.rotatdir == 7 then
       unit.textname = "z"
     else
       unit.textname = "n"
     end
-  elseif unit.fullname == "letter_z" and rotatbl then
-    if unit.dir == 3 or unit.dir == 7 then
+  elseif unit.fullname == "letter_z" then
+    if unit.rotatdir == 3 or unit.rotatdir == 7 then
       unit.textname = "n"
     else
       unit.textname = "z"
     end
-  elseif unit.fullname == "letter_m" and rotatbl then
-    if unit.dir == 5 then
+  elseif unit.fullname == "letter_m" then
+    if unit.rotatdir == 5 then
       unit.textname = "w"
     else
       unit.textname = "m"
     end
-  elseif unit.fullname == "letter_w" and rotatbl then
-    if unit.dir == 5 then
+  elseif unit.fullname == "letter_w" then
+    if unit.rotatdir == 5 then
       unit.textname = "m"
     else
       unit.textname = "w"
     end
-  elseif unit.fullname == "letter_6" and rotatbl then
-    if unit.dir == 5 then
+  elseif unit.fullname == "letter_6" then
+    if unit.rotatdir == 5 then
       unit.textname = "9"
     else
       unit.textname = "6"
     end
-  elseif unit.fullname == "letter_9" and rotatbl then
-    if unit.dir == 5 then
+  elseif unit.fullname == "letter_9" then
+    if unit.rotatdir == 5 then
       unit.textname = "6"
     else
       unit.textname = "9"
     end
-  elseif unit.fullname == "letter_no" and rotatbl then
-    if unit.dir == 5 then
+  elseif unit.fullname == "letter_no" then
+    if unit.rotatdir == 5 then
       unit.textname = "on"
     else
       unit.textname = "no"

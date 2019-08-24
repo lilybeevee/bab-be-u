@@ -1044,7 +1044,7 @@ function scene.draw(dt)
           local x, y, rot = unit.x, unit.y, 0
           if unit.name ~= "no1" then
             x, y = unit.draw.x, unit.draw.y
-            if (unit.rotate or hasProperty(unit,"rotatbl")) then rot = unit.draw.rotation end
+            rot = unit.draw.rotation
           else
             if (unit.rotate or hasProperty(unit,"rotatbl")) then rot = (unit.dir - 1) * 45 end
           end
