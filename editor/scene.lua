@@ -523,7 +523,7 @@ function scene.keyPressed(key)
     end
   end
   
-  if not selector_open then
+  if not selector_open and not settings_open and not level_dialogue.enabled then
     if key == "w" and not (key_down["lctrl"] or key_down["rctrl"]) then
       scene.translateLevel(0, -1)
     elseif key == "a" and not (key_down["lctrl"] or key_down["rctrl"]) then
