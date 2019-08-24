@@ -459,7 +459,7 @@ function scene.keyPressed(key)
       screenshot, screenshot_image = nil, nil
       ignore_mouse = true
     end
-end
+  end
   
   if key == "w" and (key_down["lctrl"] or key_down["rctrl"]) and not selector_open then
     load_mode = "edit"
@@ -520,6 +520,18 @@ end
       })
     elseif key == "return" and settings_open then
       scene.saveSettings()
+    end
+  end
+  
+  if not selector_open then
+    if key == "w" and not (key_down["lctrl"] or key_down["rctrl"]) then
+      scene.translateLevel(0, -1)
+    elseif key == "a" and not (key_down["lctrl"] or key_down["rctrl"]) then
+      scene.translateLevel(-1, 0)
+    elseif key == "s" and not (key_down["lctrl"] or key_down["rctrl"]) then
+      scene.translateLevel(0, 1)
+    elseif key == "d" and not (key_down["lctrl"] or key_down["rctrl"]) then
+      scene.translateLevel(1, 0)
     end
   end
 
@@ -1764,6 +1776,17 @@ end
 function scene.resize(w, h)
   clearGooi()
   scene.setupGooi()
+end
+
+function scene.translateLevel(dx, dy)
+  for _,unit in ipairs(units) do
+    local x, y = unit.x+dx, unit.y+dy
+    if x > mapwidth-1 then x = 0 end
+    if y > mapheight-1 then y = 0 end
+    if x < 0 then x = mapwidth-1 end
+    if y < 0 then y = mapheight-1 end
+    moveUnit(unit, x, y)
+  end
 end
 
 return scene
