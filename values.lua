@@ -2496,7 +2496,7 @@ tiles_list = {
     sprite = "hedg",
     type = "object",
     color = {5, 1},
-    layer = 1,
+    layer = 2,
     desc = "im hedg the hedg heg",
   },
   -- 207
@@ -3587,7 +3587,7 @@ tiles_list = {
   },
   -- 311
   {
-    name = "riff",
+    name = "rif",
     sprite = "riff",
     type = "object",
     rotate = true,
@@ -3599,8 +3599,8 @@ tiles_list = {
   },
   -- 312
   {
-    name = "text_riff",
-    sprite = "text_riff",
+    name = "text_rif",
+    sprite = "text_rif",
     type = "text",
     texttype = {object = true},
     color = {2,4},
