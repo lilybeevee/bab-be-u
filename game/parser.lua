@@ -150,11 +150,18 @@ function findUnit(words, extra_words_, dir, outer, no_verb_cond)
   
   local first_infix = true
   local andd
-  while words[1] and words[1].type.cond_infix and (first_infix or enclosed) and (not no_verb_cond or not words[1].type.verb) do
+  while words[1] and (words[1].type.cond_infix or (words[1].type.direction and words[2].name == "arond")) and (first_infix or enclosed) and (not no_verb_cond or not words[1].type.verb) do
     local infix = copyTable(words[1])
     local infix_orig = infix
     infix.mods = infix.mods or {}
+    if words[1].type.direction and words[2].name == "arond" then
+      infix.name = infix.name.." arond"
+      table.insert(infix.mods, words[2])
+    end
     table.remove(words, 1)
+    if words[1].name == "arond" then
+      table.remove(words, 1)
+    end
     if #words == 0 then break end
     if infix.type.cond_infix_verb then
       local words_ = copyTable(words)
@@ -233,7 +240,7 @@ function findUnit(words, extra_words_, dir, outer, no_verb_cond)
         if #words == 0 then break end
       end
     end
-    if enclosed and words[1] and words[1].type["and"] and words[2] and words[2].type.cond_infix and (not no_verb_cond or not words[1].type.verb)  then
+    if enclosed and words[1] and words[1].type["and"] and words[2] and (words[2].type.cond_infix or (words[2].type.direction and words[3].name == "arond")) and (not no_verb_cond or not words[1].type.verb)  then
       andd = words[1]
       table.remove(words, 1)
       if #words == 0 then break end
@@ -370,8 +377,28 @@ function findVerbPhrase(words, extra_words_, dir, enclosed, noconds, no_verb_con
         break
       end
     end
+  elseif verb.name == "haet" or verb.name == "liek" or verb.name == "moov" then
+    while true do
+      local foundObject = false
+      local unit = findUnit(copyTable(words), extra_words, dir, enclosed, no_verb_cond)
+      if (words[1].type.direction and words[1].name ~= "ortho" and words[1].name ~= "diag") or unit then
+        table.insert(objects, words[1])
+        table.remove(words, 1)
+        foundObject = true
+      end
+      if not foundObject then
+        return nil
+      end
+      if not noconds and words[1] and words[1].type["and"] and words[2] and not words[2].type.verb then
+        table.insert(extra_words, words[1])
+        table.remove(words, 1)
+      else
+        break
+      end
+    end
   elseif verb.type.verb_unit then
     local found = false
+    --magic function switching: runs findClass if noconds is true otherwise findUnit with the same arguments
     local unit, words_ = (noconds and findClass or findUnit)(copyTable(words), extra_words, dir, enclosed, no_verb_cond)
     local andd
     while unit do

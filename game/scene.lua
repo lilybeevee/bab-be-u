@@ -882,6 +882,27 @@ function scene.draw(dt)
         drawSprite()
       end
     end
+    
+    if unit.name == "lvl" then
+      if not unit.special.level_iconstyle or unit.special.level_iconstyle == "number" then
+        local num = tostring(unit.special.level_number or 1)
+        if #num == 1 then
+          num = "0"..num
+        end
+        love.graphics.draw(sprites["levelicon_"..num:sub(1,1)], fulldrawx+(4*unit.draw.scalex), fulldrawy+(4*unit.draw.scaley), 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+        love.graphics.draw(sprites["levelicon_"..num:sub(2,2)], fulldrawx+(16*unit.draw.scalex), fulldrawy+(4*unit.draw.scaley), 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      elseif unit.special.level_iconstyle == "dots" then
+        local num = tostring(unit.special.level_number or 1)
+        love.graphics.draw(sprites["levelicon_dots_"..num], fulldrawx+(4*unit.draw.scalex), fulldrawy+(4*unit.draw.scaley), 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      elseif unit.special.level_iconstyle == "letter" then
+        local num = unit.special.level_number or 1
+        local letter = ("abcdefghijklmnopqrstuvwxyz"):sub(num, num)
+        love.graphics.draw(sprites["letter_"..letter], fulldrawx, fulldrawy, 0, unit.draw.scalex*3/4, unit.draw.scaley*3/4, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      elseif unit.special.level_iconstyle == "other" then
+        local sprite = sprites[unit.special.level_iconname or "wat"] or sprites["wat"]
+        love.graphics.draw(sprite, fulldrawx, fulldrawy, 0, unit.draw.scalex*3/4, unit.draw.scaley*3/4, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      end
+    end
 
     if #unit.overlay > 0 then
       local function overlayStencil()
@@ -961,10 +982,10 @@ function scene.draw(dt)
         love.graphics.setStencilTest()
       end
     end
-
+    
     if hasRule(unit,"be","sans") and unit.eye then
-      local topleft = {x = drawx * TILE_SIZE, y = drawy * TILE_SIZE}
-      love.graphics.setColor(0, 1, 1, 1)
+      local topleft = {x = fulldrawx - 16, y = fulldrawy - 16}
+      love.graphics.setColor(getPaletteColor(1,4))
       love.graphics.rectangle("fill", topleft.x + unit.eye.x, topleft.y + unit.eye.y, unit.eye.w, unit.eye.h)
       for i = 1, unit.eye.w-1 do
         love.graphics.rectangle("fill", topleft.x + unit.eye.x + i, topleft.y + unit.eye.y - i, unit.eye.w - i, 1)
@@ -980,14 +1001,14 @@ function scene.draw(dt)
       love.graphics.draw(sprites["gunnesmol"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
     end
     if hasRule(unit,"got","katany") then
-      love.graphics.setColor(0.45, 0.45, 0.45)
+      love.graphics.setColor(getPaletteColor(0,1))
       love.graphics.draw(sprites["katanysmol"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
     end
     if hasRule(unit,"got","slippers") then
       love.graphics.setColor(getPaletteColor(1,4))
       love.graphics.draw(sprites["slippers"], fulldrawx, fulldrawy+sprite:getHeight()/4, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
     end
-
+    
     if false then -- stupid lua comments
       if hasRule(unit,"got","?") then
         local matchrules = matchesRule(unit,"got","?")
@@ -1044,7 +1065,7 @@ function scene.draw(dt)
           local x, y, rot = unit.x, unit.y, 0
           if unit.name ~= "no1" then
             x, y = unit.draw.x, unit.draw.y
-            if (unit.rotate or hasProperty(unit,"rotatbl")) then rot = unit.draw.rotation end
+            rot = unit.draw.rotation
           else
             if (unit.rotate or hasProperty(unit,"rotatbl")) then rot = (unit.dir - 1) * 45 end
           end

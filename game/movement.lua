@@ -254,7 +254,17 @@ function doMovement(movex, movey, key)
           end
         end
       end
-  
+      for mdir,mdirname in ipairs(dirs8_by_name) do
+        local isshift = matchesRule(nil, "moov", mdirname)
+        for _,ruleparent in ipairs(isshift) do
+          local unit = ruleparent[2]
+          table.insert(unit.moves, {reason = "moov dir", dir = mdir, times = 1})
+          if #unit.moves > 0 and not already_added[unit] then
+            table.insert(moving_units, unit)
+            already_added[unit] = true
+          end
+        end
+      end
       local isactualstalk = matchesRule("?", "stalk", "?");
       for _,ruleparent in ipairs(isactualstalk) do
         local stalkers = findUnitsByName(ruleparent.rule.subject.name)
@@ -552,7 +562,7 @@ It is probably possible to do, but lily has decided that it's not important enou
               successes = successes + 1
               
               for k = #movers, 1, -1 do
-                moveIt(movers[k].unit, movers[k].dx, movers[k].dy, movers[k].dir, movers[k].move_dir, movers[k].geometry_spin, data, false, already_added, moving_units, moving_units_next, slippers, remove_from_moving_units, movers[k].portal)
+                moveIt(movers[k].unit, movers[k].dx, movers[k].dy, data.reason == "moov dir" and movers[k].unit.dir or movers[k].dir, movers[k].move_dir, movers[k].geometry_spin, data, false, already_added, moving_units, moving_units_next, slippers, remove_from_moving_units, movers[k].portal)
               end
               --Patashu: only the mover itself pulls, otherwise it's a mess. stuff like STICKY/STUCK will require ruggedizing this logic.
               --Patashu: TODO: Doing the pull right away means that in a situation like this: https://cdn.discordapp.com/attachments/579519329515732993/582179745006092318/unknown.png the pull could happen before the bounce depending on move order. To fix this... I'm not sure how Baba does this? But it's somewhere in that mess of code.
@@ -1601,19 +1611,30 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
         stopped = stopped or sameFloat(unit, v)
       end
       
-      --if thing is ouch, it will not stop things - similar to Baba behaviour. But check safe and float as well.
-      --Funny buggy looking interaction (that also happens in Baba): You can push the 'ouch' of 'wall be ouch' onto a solid wall. This could be fixed by making walking onto an ouch wall destroy it as a reaction to movement, like how keys/doors are destroyed as a reaction to movement right now.
-      if (hasProperty(v, "ouch") or rules_with["snacc"] ~= nil and hasRule(unit, "snacc", v)) and not hasProperty(v, "protecc") and sameFloat(unit, v) then
-        stopped = false
-      end
-      --if a weak thing tries to move and fails, destroy it. movers don't do this though.
+      --ouch/snacc logic:
+      --1) if mover can destroy wall via ouch/snacc, then allow movement AND destroy the wall immediately
+      --2) if mover will be destroyed by walking into a wall, prevent movement AND destroy mover immediately
+      --3) if both are true, then block movement AND destroy BOTH immediately
+      
       if stopped then
+        local exploding = false
+        --Case 1 or 3 - wall will be destroyed by us walking onto it.
+        local ouch = hasProperty(v, "ouch");
+        local snacc = rules_with["snacc"] ~= nil and hasRule(unit, "snacc", v);
+        if (ouch or snacc) and not hasProperty(v, "protecc") and sameFloat(unit, v) then
+          table.insert(specials, {ouch and "weak" or "snacc", {v}})
+          exploding = true
+        end
+      
+        --Case 2 or 3 - we will be destroyed by walking onto a wall.
         local ouch = hasProperty(unit, "ouch");
         local snacc = rules_with["snacc"] ~= nil and hasRule(v, "snacc", unit);
         if (ouch or snacc) and not hasProperty(unit, "protecc") and (reason ~= "walk" or not hasProperty(unit, "stubbn")) then
           table.insert(specials, {ouch and "weak" or "snacc", {unit}})
-          return true,movers,specials
+          exploding = true
         end
+        
+        if exploding then return true,movers,specials end
       end
       if stopped then
         return false,movers,specials
