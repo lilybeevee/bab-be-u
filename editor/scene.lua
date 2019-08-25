@@ -629,79 +629,89 @@ function scene.mouseReleased(x, y, button)
     if hx ~= nil then
       local tileid = hx + hy * mapwidth
 
+      local lvl = {}
+      local lin = {}
       local hovered = {}
       if unitsByTile(hx, hy) then
         for _,v in ipairs(unitsByTile(hx, hy)) do
+          if v.name == "lvl" then
+            table.insert(lvl, v)
+          end
+          if v.name == "lin" then
+            table.insert(lin, v)
+          end
           table.insert(hovered, v)
         end
       end
-      if #hovered == 1 then
+      if #lvl == 1 then
+        scene.setLevelDialogue(lvl[1])
+      elseif #lvl == 0 and #lin == 1 then
+        scene.setLevelDialogue(lin[1])
+      elseif #lvl == 0 and #lin == 0 and #hovered == 1 then
         scene.setLevelDialogue(hovered[1])
       elseif level_dialogue.enabled then
         scene.setLevelDialogue()
       end
     end
-  else
+  elseif level_dialogue.enabled then
     local t = love.math.newTransform():translate(gameTileToScreen(level_dialogue.x + 0.5, level_dialogue.y))
-    if level_dialogue.enabled and mouseOverBox(-100, -118, 200, 110, t) then
+    if level_dialogue.unit.name ~= "lin" and mouseOverBox(-100, -118, 200, 110, t) then
       -- icon style
       if mouseOverBox(-56, -95, 16, 16, t) then
-        level_dialogue.unit.special.level_iconstyle = "number"
-        if level_dialogue.unit.special.level_number and level_dialogue.unit.special.level_number > 99 then
-          level_dialogue.unit.special.level_number = 99
+        level_dialogue.unit.special.iconstyle = "number"
+        if level_dialogue.unit.special.number and level_dialogue.unit.special.number > 99 then
+          level_dialogue.unit.special.number = 99
         end
         level_dialogue.iconnamebox:setVisible(false)
         level_dialogue.iconnamebox:setEnabled(false)
       end
       if mouseOverBox(-38, -95, 16, 16, t) then
-        level_dialogue.unit.special.level_iconstyle = "dots"
-        if level_dialogue.unit.special.level_number and level_dialogue.unit.special.level_number < 1 then
-          level_dialogue.unit.special.level_number = 1
+        level_dialogue.unit.special.iconstyle = "dots"
+        if level_dialogue.unit.special.number and level_dialogue.unit.special.number < 1 then
+          level_dialogue.unit.special.number = 1
         end
-        if level_dialogue.unit.special.level_number and level_dialogue.unit.special.level_number > 9 then
-          level_dialogue.unit.special.level_number = 9
+        if level_dialogue.unit.special.number and level_dialogue.unit.special.number > 9 then
+          level_dialogue.unit.special.number = 9
         end
         level_dialogue.iconnamebox:setVisible(false)
         level_dialogue.iconnamebox:setEnabled(false)
       end
       if mouseOverBox(-20, -95, 16, 16, t) then
-        level_dialogue.unit.special.level_iconstyle = "letter"
-        if level_dialogue.unit.special.level_number and level_dialogue.unit.special.level_number > 26 then
-          level_dialogue.unit.special.level_number = 26
+        level_dialogue.unit.special.iconstyle = "letter"
+        if level_dialogue.unit.special.number and level_dialogue.unit.special.number > 26 then
+          level_dialogue.unit.special.number = 26
         end
         level_dialogue.iconnamebox:setVisible(false)
         level_dialogue.iconnamebox:setEnabled(false)
       end
       if mouseOverBox(-2, -95, 16, 16, t) then
-        level_dialogue.unit.special.level_iconstyle = "other"
+        level_dialogue.unit.special.iconstyle = "other"
         level_dialogue.iconnamebox:setVisible(true)
         level_dialogue.iconnamebox:setEnabled(true)
-        level_dialogue.iconnamebox:setText(level_dialogue.unit.special.level_iconname)
+        level_dialogue.iconnamebox:setText(level_dialogue.unit.special.iconname)
       end
       -- number
-      if level_dialogue.unit.special.level_iconstyle ~= "other" then
+      if level_dialogue.unit.special.iconstyle ~= "other" then
         if mouseOverBox(-38, -70, 11, 16, t) then
           local min = 1
-          if level_dialogue.unit.special.level_iconstyle == "number" then min = 0 end
-          if (level_dialogue.unit.special.level_number or 1) > min then
-            level_dialogue.unit.special.level_number = (level_dialogue.unit.special.level_number or 1) - 1
+          if level_dialogue.unit.special.iconstyle == "number" then min = 0 end
+          if (level_dialogue.unit.special.number or 1) > min then
+            level_dialogue.unit.special.number = (level_dialogue.unit.special.number or 1) - 1
           end
         end
         if mouseOverBox(3, -70, 11, 16, t) then
           local max = 99
-          if level_dialogue.unit.special.level_iconstyle == "dots" then max = 9 end
-          if level_dialogue.unit.special.level_iconstyle == "letter" then max = 26 end
-          if (level_dialogue.unit.special.level_number or 1) < max then
-            level_dialogue.unit.special.level_number = (level_dialogue.unit.special.level_number or 1) + 1
+          if level_dialogue.unit.special.iconstyle == "dots" then max = 9 end
+          if level_dialogue.unit.special.iconstyle == "letter" then max = 26 end
+          if (level_dialogue.unit.special.number or 1) < max then
+            level_dialogue.unit.special.number = (level_dialogue.unit.special.number or 1) + 1
           end
         end
-      else
-        -- TODO: help text boxes are hard
       end
       -- hidden/locked/open
-      if mouseOverBox(-38, -45, 16, 16, t) then level_dialogue.unit.special.level_visibility = "hidden" end
-      if mouseOverBox(-20, -45, 16, 16, t) then level_dialogue.unit.special.level_visibility = "locked" end
-      if mouseOverBox(-2, -45, 16, 16, t) then level_dialogue.unit.special.level_visibility = "open" end
+      if mouseOverBox(-38, -45, 16, 16, t) then level_dialogue.unit.special.visibility = "hidden" end
+      if mouseOverBox(-20, -45, 16, 16, t) then level_dialogue.unit.special.visibility = "locked" end
+      if mouseOverBox(-2, -45, 16, 16, t) then level_dialogue.unit.special.visibility = "open" end
       
       if mouseOverBox(30, -96, 62, 62, t) then -- level picture
         new_scene = loadscene
@@ -714,7 +724,27 @@ function scene.mouseReleased(x, y, button)
       if mouseOverBox(30, -30, 62, 14, t) then -- go to level
         loadLevels({level_dialogue.unit.special.name}, "edit", level_dialogue.unit)
       end
-    elseif level_dialogue.enabled then
+    elseif level_dialogue.unit.name == "lin" and mouseOverBox(-75, -58, 150, 50, t) then
+      -- hidden/locked/open
+      if mouseOverBox(-59, -50, 16, 16, t) then level_dialogue.unit.special.visibility = "hidden" end
+      if mouseOverBox(-41, -50, 16, 16, t) then level_dialogue.unit.special.visibility = "open" end
+      -- path lock
+      if mouseOverBox(-2, -50, 16, 16, t) then level_dialogue.unit.special.pathlock = "none" end
+      if mouseOverBox(16, -50, 16, 16, t) then level_dialogue.unit.special.pathlock = "puffs" end
+      if mouseOverBox(34, -50, 16, 16, t) then level_dialogue.unit.special.pathlock = "blossoms" end
+      if mouseOverBox(52, -50, 16, 16, t) then level_dialogue.unit.special.pathlock = "orbs" end
+      -- number
+      if level_dialogue.unit.special.pathlock ~= "none" then
+        if mouseOverBox(7, -30, 11, 16, t) then
+          if (level_dialogue.unit.special.number or 1) > 1 then
+            level_dialogue.unit.special.number = (level_dialogue.unit.special.number or 1) - 1
+          end
+        end
+        if mouseOverBox(48, -30, 11, 16, t) then
+          level_dialogue.unit.special.number = (level_dialogue.unit.special.number or 1) + 1
+        end
+      end
+    else
       scene.setLevelDialogue()
     end
   end
@@ -728,8 +758,8 @@ function scene.setLevelDialogue(unit)
       level_dialogue.x, level_dialogue.y = unit.x, unit.y
       addTween(tween.new(0.1, level_dialogue, {scale = 1}), "level dialogue", function()
         level_dialogue.iconnamebox:setBounds(love.math.newTransform():translate(gameTileToScreen(unit.x + 0.5, unit.y)):transformPoint(-60, -72))
-        if unit.special.level_iconstyle == "other" then
-          level_dialogue.iconnamebox:setText(level_dialogue.unit.special.level_iconname)
+        if unit.special.iconstyle == "other" then
+          level_dialogue.iconnamebox:setText(level_dialogue.unit.special.iconname)
           level_dialogue.iconnamebox:setVisible(true)
           level_dialogue.iconnamebox:setEnabled(true)
         end
@@ -743,8 +773,8 @@ function scene.setLevelDialogue(unit)
         level_dialogue.x, level_dialogue.y = unit.x, unit.y
         addTween(tween.new(0.1, level_dialogue, {scale = 1}), "level dialogue", function()
           level_dialogue.iconnamebox:setBounds(love.math.newTransform():translate(gameTileToScreen(unit.x + 0.5, unit.y)):transformPoint(-60, -72))
-          if unit.special.level_iconstyle == "other" then
-            level_dialogue.iconnamebox:setText(level_dialogue.unit.special.level_iconname)
+          if unit.special.iconstyle == "other" then
+            level_dialogue.iconnamebox:setText(level_dialogue.unit.special.iconname)
             level_dialogue.iconnamebox:setVisible(true)
             level_dialogue.iconnamebox:setEnabled(true)
           end
@@ -945,18 +975,18 @@ function scene.update(dt)
       end
     end
     
-    if level_dialogue.enabled and level_dialogue.unit.special.level_iconstyle == "other" then
+    if level_dialogue.enabled and level_dialogue.unit.name ~= "lin" and level_dialogue.unit.special.iconstyle == "other" then
       if level_dialogue.lastUnit == level_dialogue.unit then
         local iconname = level_dialogue.iconnamebox:getText()
         if sprites[iconname] or iconname == "" then
-          level_dialogue.unit.special.level_iconname = iconname
+          level_dialogue.unit.special.iconname = iconname
           level_dialogue.iconnamebox.style.bgColor = {getPaletteColor(0, 0)}
         else
           level_dialogue.iconnamebox.style.bgColor = {getPaletteColor(2, 2)}
         end
       else
         level_dialogue.lastUnit = level_dialogue.unit
-        local iconname = level_dialogue.iconnamebox:setText(level_dialogue.unit.special.level_iconname or "")
+        local iconname = level_dialogue.iconnamebox:setText(level_dialogue.unit.special.iconname or "")
       end
     end
       
@@ -1078,6 +1108,16 @@ function scene.draw(dt)
         if units_by_layer[i] then
           for _,unit in ipairs(units_by_layer[i]) do
             local sprite = sprites[unit.sprite]
+            local color = setColor(unit.color_override or unit.color);
+            if unit.name == "lin" then
+              local name = "lin"
+              if unit.special.pathlock and unit.special.pathlock ~= "none" then
+                name = name.."_gate"
+                setColor({2, 2})
+              end
+              if unit.special.visibility == "hidden" then name = name.."_hidden" end
+              sprite = sprites[name]
+            end
             if not sprite then sprite = sprites["wat"] end
             
             local rotation = 0
@@ -1085,7 +1125,6 @@ function scene.draw(dt)
               rotation = (unit.dir - 1) * 45
             end
             
-            local color = setColor(unit.color_override or unit.color);
 
             if rainbowmode then
               local newcolor = hslToRgb((love.timer.getTime()/3+unit.x/18+unit.y/18)%1, .5, .5, 1)
@@ -1273,86 +1312,145 @@ function scene.draw(dt)
       love.graphics.translate(gameTileToScreen(level_dialogue.x + 0.5, level_dialogue.y))
       love.graphics.scale(level_dialogue.scale)
       
-      local width, height = 200, 110
       local unit = level_dialogue.unit
-  
-      love.graphics.setColor(getPaletteColor(0, 4))
-      love.graphics.polygon("fill", -4, -8, 0, 0, 4, -8)
-      love.graphics.rectangle("fill", -width/2, -height-8, width, height)
-  
-      love.graphics.setColor(getPaletteColor(3, 3))
-      love.graphics.setLineWidth(2)
-      love.graphics.line(-width/2, -height-8, -width/2, -8, -4, -8, 0, 0, 4, -8, width/2, -8, width/2, -height-8, -width/2, -height-8)
-      love.graphics.line(22, -height-0.5, 22, -15.5)
       
-      love.graphics.setColor(1,1,1,1)
-      love.graphics.print("Style", -92, -95)
-      love.graphics.print(({number = "Number", dots = "Number", letter = "Letter", other = "Icon"})[unit.special.level_iconstyle or "number"], -92, -70)
-      love.graphics.print(({hidden = "Hidden", locked = "Locked", open = "Open"})[unit.special.level_visibility or "open"], -92, -45)
-      
-      
-      love.graphics.setColor(getPaletteColor(0, 0))
-      -- style
-      love.graphics.rectangle("fill", -56, -95, 16, 16)
-      love.graphics.rectangle("fill", -38, -95, 16, 16)
-      love.graphics.rectangle("fill", -20, -95, 16, 16)
-      love.graphics.rectangle("fill", -2, -95, 16, 16)
-      -- number
-      if unit.special.level_iconstyle ~= "other" then
-        love.graphics.rectangle("fill", -27, -70, 30, 16) -- TODO: textbox
+      if unit.name ~= "lin" then
+        local width, height = 200, 110
+        love.graphics.setColor(getPaletteColor(0, 4))
+        love.graphics.polygon("fill", -4, -8, 0, 0, 4, -8)
+        love.graphics.rectangle("fill", -width/2, -height-8, width, height)
+    
+        love.graphics.setColor(getPaletteColor(3, 3))
+        love.graphics.setLineWidth(2)
+        love.graphics.line(-width/2, -height-8, -width/2, -8, -4, -8, 0, 0, 4, -8, width/2, -8, width/2, -height-8, -width/2, -height-8)
+        love.graphics.line(22, -height-0.5, 22, -15.5)
+        
+        love.graphics.setColor(1,1,1,1)
+        love.graphics.print("Style", -92, -95)
+        love.graphics.print(({number = "Number", dots = "Number", letter = "Letter", other = "Icon"})[unit.special.iconstyle or "number"], -92, -70)
+        love.graphics.print(({hidden = "Hidden", locked = "Locked", open = "Open"})[unit.special.visibility or "open"], -92, -45)
+        
+        
+        love.graphics.setColor(getPaletteColor(0, 0))
+        -- style
+        love.graphics.rectangle("fill", -56, -95, 16, 16)
+        love.graphics.rectangle("fill", -38, -95, 16, 16)
+        love.graphics.rectangle("fill", -20, -95, 16, 16)
+        love.graphics.rectangle("fill", -2, -95, 16, 16)
+        -- number
+        if unit.special.iconstyle ~= "other" then
+          love.graphics.rectangle("fill", -27, -70, 30, 16)
+        end
+        -- hidden/locked/open
+        love.graphics.rectangle("fill", -38, -45, 16, 16)
+        love.graphics.rectangle("fill", -20, -45, 16, 16)
+        love.graphics.rectangle("fill", -2, -45, 16, 16)
+        
+        love.graphics.rectangle("fill", 30, -96, 62, 62) -- level picture
+        love.graphics.rectangle("fill", 30, -30, 62, 14) -- go to level
+        
+        love.graphics.setColor(1,1,1,1)
+        love.graphics.draw(sprites["ui/iconstyle_number"], -56, -95)
+        love.graphics.draw(sprites["ui/iconstyle_dots"], -38, -95)
+        love.graphics.draw(sprites["ui/iconstyle_letter"], -20, -95)
+        love.graphics.draw(sprites["ui/iconstyle_other"], -2, -95)
+        
+        if unit.special.iconstyle ~= "other" then
+          love.graphics.draw(sprites["ui/arrow_small"], -38, -70)
+          love.graphics.draw(sprites["ui/arrow_small"], 3, -70, math.pi, 1, 1, 11, 16)
+        end
+        
+        love.graphics.draw(sprites["ui/levelbox_hidden"], -38, -45)
+        love.graphics.draw(sprites["ui/levelbox_locked"], -20, -45)
+        love.graphics.draw(sprites["ui/levelbox_open"], -2, -45)
+        
+        if not unit.special.iconstyle or unit.special.iconstyle == "number" or unit.special.iconstyle == "dots" then
+          love.graphics.printf(tostring(unit.special.number or 1), -27, -70, 30, "center")
+        elseif unit.special.iconstyle == "letter" then
+          love.graphics.printf(("ABCDEFGHIJKLMNOPQRSTUVWXYZ"):sub(unit.special.number or 1, unit.special.number or 1), -27, -70, 30, "center")
+        end
+        love.graphics.setLineWidth(1)
+        love.graphics.setColor(getPaletteColor(5, 2))
+        love.graphics.rectangle("line", 15.5-18*({number = 4, dots = 3, letter = 2, other = 1})[unit.special.iconstyle or "number"], -95.5, 17, 17)
+        love.graphics.rectangle("line", 15.5-18*({hidden = 3, locked = 2, open = 1})[unit.special.visibility or "open"], -45.5, 17, 17)
+        
+        love.graphics.setFont(love.graphics.newFont(8))
+        love.graphics.setColor(1,1,1,1)
+        local _, lines = love.graphics.getFont():getWrap((unit.special.name or "select level"):upper(), 64)
+        love.graphics.printf(lines[1], 31, -110, 60, "center")
+        if lines[2] then
+          love.graphics.printf("...", 31, -106, 60, "center")
+        end
+        local dir = "levels/"
+        if world ~= "" then dir = world_parent .. "/" .. world .. "/" end
+        if unit.special.level and love.filesystem.getInfo(dir .. unit.special.level .. ".png") then
+          icon_data = love.graphics.newImage(dir .. unit.special.level .. ".png")
+        else
+          icon_data = nil
+        end
+        love.graphics.draw(icon_data or sprites["ui/default icon"], 31, -95, 0, 0.625)
+        
+        if unit.special.name then
+          love.graphics.printf("Go to Level", 31, -28, 60, "center")
+        end
+    
+        love.graphics.pop()
+      else -- unit.name == line
+        local width, height = 150, 50
+        love.graphics.setColor(getPaletteColor(0, 4))
+        love.graphics.polygon("fill", -4, -8, 0, 0, 4, -8)
+        love.graphics.rectangle("fill", -width/2, -height-8, width, height)
+    
+        love.graphics.setColor(getPaletteColor(3, 3))
+        love.graphics.setLineWidth(2)
+        love.graphics.line(-width/2, -height-8, -width/2, -8, -4, -8, 0, 0, 4, -8, width/2, -8, width/2, -height-8, -width/2, -height-8)
+        love.graphics.line(-10, -height-0.5, -10, -15.5)
+        
+        love.graphics.setColor(1,1,1,1)
+        love.graphics.printf(({hidden = "Hidden", open = "Open"})[unit.special.visibility or "open"], -70, -31, 55, "center")
+        if not unit.special.pathlock or unit.special.pathlock == "none" then
+          love.graphics.printf("Unlocked", -5, -31, 75, "center")
+        end
+        
+        
+        love.graphics.setColor(getPaletteColor(0, 0))
+        -- hidden/open
+        love.graphics.rectangle("fill", -59, -50, 16, 16)
+        love.graphics.rectangle("fill", -41, -50, 16, 16)
+        -- number
+        if unit.special.pathlock and unit.special.pathlock ~= "none" then
+          love.graphics.rectangle("fill", 18, -30, 30, 16)
+        end
+        -- path lock
+        love.graphics.rectangle("fill", -2, -50, 16, 16)
+        love.graphics.rectangle("fill", 16, -50, 16, 16)
+        love.graphics.rectangle("fill", 34, -50, 16, 16)
+        love.graphics.rectangle("fill", 52, -50, 16, 16)
+        
+        love.graphics.setColor(1,1,1,1)
+        love.graphics.draw(sprites["ui/levelbox_hidden"], -59, -50)
+        love.graphics.draw(sprites["ui/lin_visible"], -41, -50)
+        
+        love.graphics.draw(sprites["ui/pathlock_none"], -2, -50)
+        love.graphics.draw(sprites["ui/pathlock_puffs"], 16, -50)
+        love.graphics.draw(sprites["ui/pathlock_blossoms"], 34, -50)
+        love.graphics.draw(sprites["ui/pathlock_orbs"], 52, -50)
+        
+        if unit.special.pathlock and unit.special.pathlock ~= "none" then
+          love.graphics.draw(sprites["ui/arrow_small"], 7, -30)
+          love.graphics.draw(sprites["ui/arrow_small"], 48, -30, math.pi, 1, 1, 11, 16)
+        end
+        
+        if unit.special.pathlock and unit.special.pathlock ~= "none" then
+          love.graphics.printf(tostring(unit.special.number or 1), 18, -30, 30, "center")
+        end
+        love.graphics.setLineWidth(1)
+        love.graphics.setColor(getPaletteColor(5, 2))
+        love.graphics.rectangle("line", -23.5-18*({hidden = 2, open = 1})[unit.special.visibility or "open"], -50.5, 17, 17)
+        love.graphics.rectangle("line", -20.5+18*({none = 1, puffs = 2, blossoms = 3, orbs = 4})[unit.special.pathlock or "none"], -50.5, 17, 17)
+    
+        love.graphics.pop()
       end
-      -- hidden/locked/open
-      love.graphics.rectangle("fill", -38, -45, 16, 16)
-      love.graphics.rectangle("fill", -20, -45, 16, 16)
-      love.graphics.rectangle("fill", -2, -45, 16, 16)
-      
-      love.graphics.rectangle("fill", 30, -96, 62, 62) -- level picture
-      love.graphics.rectangle("fill", 30, -30, 62, 14) -- go to level
-      
-      love.graphics.setColor(1,1,1,1)
-      love.graphics.draw(sprites["ui/iconstyle_number"], -56, -95)
-      love.graphics.draw(sprites["ui/iconstyle_dots"], -38, -95)
-      love.graphics.draw(sprites["ui/iconstyle_letter"], -20, -95)
-      love.graphics.draw(sprites["ui/iconstyle_other"], -2, -95)
-      
-      love.graphics.draw(sprites["ui/arrow_small"], -38, -70) -- TODO: textbox
-      love.graphics.draw(sprites["ui/arrow_small"], 3, -70, math.pi, 1, 1, 11, 16)
-      
-      love.graphics.draw(sprites["ui/levelbox_hidden"], -38, -45)
-      love.graphics.draw(sprites["ui/levelbox_locked"], -20, -45)
-      love.graphics.draw(sprites["ui/levelbox_open"], -2, -45)
-      
-      if not unit.special.level_iconstyle or unit.special.level_iconstyle == "number" or unit.special.level_iconstyle == "dots" then
-        love.graphics.printf(tostring(unit.special.level_number or 1), -27, -70, 30, "center")
-      elseif unit.special.level_iconstyle == "letter" then
-        love.graphics.printf(("ABCDEFGHIJKLMNOPQRSTUVWXYZ"):sub(unit.special.level_number or 1, unit.special.level_number or 1), -27, -70, 30, "center")
-      end
-      love.graphics.setLineWidth(1)
-      love.graphics.setColor(getPaletteColor(5, 2))
-      love.graphics.rectangle("line", 15.5-18*({number = 4, dots = 3, letter = 2, other = 1})[unit.special.level_iconstyle or "number"], -95.5, 17, 17)
-      love.graphics.rectangle("line", 15.5-18*({hidden = 3, locked = 2, open = 1})[unit.special.level_visibility or "open"], -45.5, 17, 17)
-      
-      love.graphics.setFont(love.graphics.newFont(8))
-      love.graphics.setColor(1,1,1,1)
-      local _, lines = love.graphics.getFont():getWrap((unit.special.name or "select level"):upper(), 64)
-      love.graphics.printf(lines[1], 31, -110, 60, "center")
-      if lines[2] then
-        love.graphics.printf("...", 31, -106, 60, "center")
-      end
-      local dir = "levels/"
-      if world ~= "" then dir = world_parent .. "/" .. world .. "/" end
-      if unit.special.level and love.filesystem.getInfo(dir .. unit.special.level .. ".png") then
-        icon_data = love.graphics.newImage(dir .. unit.special.level .. ".png")
-      else
-        icon_data = nil
-      end
-      love.graphics.draw(icon_data or sprites["ui/default icon"], 31, -95, 0, 0.625)
-      
-      if unit.special.name then
-        love.graphics.printf("Go to Level", 31, -28, 60, "center")
-      end
-  
-      love.graphics.pop()
     end
 
     local btnx = 0
