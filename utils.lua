@@ -276,9 +276,9 @@ end
   Note that the rules returned are full rules, formatted like: {{subject,verb,object,{preconds,postconds}}, {ids}} 
 ]]
 function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
-  --[[if (debugging) then
+  if (debugging) then
     print("matchesRule arguments:"..tostring(rule1)..","..tostring(rule2)..","..tostring(rule3))
-  end]]
+  end
   
   local nrules = {} -- name
   local fnrules = {} -- fullname
@@ -312,11 +312,11 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
   nrules[2] = rule2
   getnrule(rule3,3)
   
-  --[[if (debugging) then
+  if (debugging) then
     for x,y in ipairs(nrules) do
       print("in nrules:"..tostring(x)..","..tostring(y))
     end
-  end]]
+  end
 
   local ret = {}
 
@@ -339,17 +339,17 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
   rules_list = rules_with[(nrules[2] ~= "be" and nrules[2]) or nrules[3] or nrules[1] or nrules[2]] or {}
   mergeTable(rules_list, rules_with[fnrules[3] or fnrules[1]] or {})
 
-  --[[if (debugging) then
+  if (debugging) then
     print ("found this many rules:"..tostring(#rules_list))
-  end]]
+  end
   if #rules_list > 0 then
     for _,rules in ipairs(rules_list) do
       local rule = rules.rule
-      --[[if (debugging) then
+      if (debugging) then
         for i=1,3 do
           print("checking this rule,"..tostring(i)..":"..tostring(rule[ruleparts[i] ].name))
         end
-      end]]
+      end
       local result = true
       for i=1,3 do
         local name = rule[ruleparts[i]].name
@@ -371,9 +371,9 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
         end
         if not (group_match) then
           if nrules[i] ~= nil and nrules[i] ~= name and (fnrules[i] == nil or (fnrules[i] ~= nil and fnrules[i] ~= name)) then
-            --[[if (debugging) then
+            if (debugging) then
               print("false due to nrules/fnrules mismatch")
-            end]]
+            end
             result = false
           end
         end
@@ -383,17 +383,22 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
         for i=1,3,2 do
           if rule_units[i] ~= nil then
             if not testConds(rule_units[i], rule[ruleparts[i]].conds) then
-              --[[if (debugging) then
+              if (debugging) then
                 print("false due to cond", i)
-              end]]
+              end
               result = false
+            else
+              --check that there isn't a verbn't rule - edge cases where this might happen: text vs specific text, group vs unit. This is slow (15% longer unit tests, 0.1 second per unit test) but it fixes old and new bugs so I think we just have to suck it up.
+              if rules_with[rule2.."n't"] ~= nil and #matchesRule(rule_units[i], rule2.."n't", rule.object.name, true) > 0 then
+                result = false
+              end
             end
           end
         end
       end
       if result then
         if (debugging) then
-          print("matched: " .. dump(rule) .. " | find: " .. find)
+          print("matched: " .. dump(rule) .. " | find: " .. find, nrules[1], fnrules[1], rule.subject.name, rule.subject.fullname)
         end
         if find == 0 then
           table.insert(ret, rules)
@@ -402,7 +407,7 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
           for _,unit in ipairs(findUnitsByName(rule[ruleparts[find_arg]].name)) do
             local cond
             if testConds(unit, rule[ruleparts[find_arg]].conds) then
-              --check that there isn't a verbn't rule - edge cases where this might happen: test vs specific text, group vs unit. This is slow (15% longer unit tests, 0.1 second per unit test) but it fixes old and new bugs so I think we just have to suck it up.
+              --check that there isn't a verbn't rule - edge cases where this might happen: text vs specific text, group vs unit. This is slow (15% longer unit tests, 0.1 second per unit test) but it fixes old and new bugs so I think we just have to suck it up.
               if rules_with[rule2.."n't"] ~= nil and #matchesRule(unit, rule2.."n't", rule.object.name, true) > 0 then
               else
                 table.insert(ret, {rules, unit})
