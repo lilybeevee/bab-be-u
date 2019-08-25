@@ -1164,7 +1164,6 @@ function scene.draw(dt)
     love.graphics.setColor(type == "orrb" and {getPaletteColor(4,1)} or {1,1,1,1})
     love.graphics.draw(sprites[type], -30, -44)
     local num = unit.special.number or 1
-    love.graphics.setColor(1,1,1,1)
     love.graphics.setFont(num > 99 and stack_font or pathlock_font)
     love.graphics.printf(tostring(num), 5, -36, 25, "center")
 
