@@ -1118,6 +1118,9 @@ function scene.draw(dt)
               if unit.special.visibility == "hidden" then name = name.."_hidden" end
               sprite = sprites[name]
             end
+            if unit.name == "lvl" and unit.special.visibility == "hidden" then
+              sprite = sprites["lvl_hidden"]
+            end
             if not sprite then sprite = sprites["wat"] end
             
             local rotation = 0

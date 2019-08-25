@@ -845,7 +845,7 @@ function scene.draw(dt)
       end
     end
     
-    if unit.name == "lvl" then
+    if unit.name == "lvl" and unit.special.visibility ~= "locked" then
       if not unit.special.iconstyle or unit.special.iconstyle == "number" then
         local num = tostring(unit.special.number or 1)
         if #num == 1 then

@@ -177,8 +177,12 @@ function loadMap()
       for _,unit in ipairs(map) do
         id, tile, x, y, dir, specials, color = unit.id, unit.tile, unit.x, unit.y, unit.dir, unit.special, unit.color
         if inBounds(x, y) then
-          local unit = createUnit(tile, x, y, dir, false, id, nil, color and {{name=color}})
-          unit.special = specials
+          if scene == editor or (tile ~= tiles_by_name["lin"] and tile ~= tiles_by_name["lvl"]) or specials.visibility ~= "hidden" then
+            local unit = createUnit(tile, x, y, dir, false, id, nil, color and {{name=color}})
+            unit.special = specials
+          else
+            -- floodfill/save etc stuff here
+          end
         end
       end
     end
@@ -1080,6 +1084,13 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
       
       dx,dy,dir,tx,ty = getNextTile(the,dx,dy,dir)
       result = ((unit.x == tx) and (unit.y == ty))
+    elseif condtype == "unlocked" then
+      if unit.name == "lvl" and unit.special.visibility == "locked" then
+        result = false
+      end
+      if unit.name == "lin" and unit.special.pathlock and unit.special.pathlock ~= "none" then
+        result = false
+      end
     else
       print("unknown condtype: " .. condtype)
       result = false
@@ -2303,11 +2314,12 @@ function readSaveFile(category, key)
   return nil
 end
 
-function addBaseRule(subject, verb, object)
+function addBaseRule(subject, verb, object, subjcond)
   addRule({
     rule = {
       subject = {
-        name = subject
+        name = subject,
+        conds = {subjcond}
       },
       verb = {
         name = verb
