@@ -16,7 +16,7 @@ local input_name, input_author, input_palette, input_music, input_width, input_h
 local capturing, start_drag, end_drag
 local screenshot, screenshot_image
 
-local level_dialogue
+local level_dialogue, last_lin_hidden
 
 local saved_popup
 
@@ -729,8 +729,14 @@ function scene.mouseReleased(x, y, button)
       end
     elseif level_dialogue.unit.name == "lin" and mouseOverBox(-75, -58, 150, 50, t) then
       -- hidden/locked/open
-      if mouseOverBox(-59, -50, 16, 16, t) then level_dialogue.unit.special.visibility = "hidden" end
-      if mouseOverBox(-41, -50, 16, 16, t) then level_dialogue.unit.special.visibility = "open" end
+      if mouseOverBox(-59, -50, 16, 16, t) then
+        level_dialogue.unit.special.visibility = "hidden"
+        last_lin_hidden = true
+      end
+      if mouseOverBox(-41, -50, 16, 16, t) then
+        level_dialogue.unit.special.visibility = "open"
+        last_lin_hidden = false
+      end
       -- path lock
       if mouseOverBox(-2, -50, 16, 16, t) then level_dialogue.unit.special.pathlock = "none" end
       if mouseOverBox(16, -50, 16, 16, t) then level_dialogue.unit.special.pathlock = "puffs" end
@@ -924,6 +930,9 @@ function scene.update(dt)
                   if brush.color then
                     new_unit[brush.color] = true
                     updateUnitColourOverride(new_unit)
+                  end
+                  if last_lin_hidden and brush.id == tiles_by_name["lin"] then
+                    new_unit.special.visibility = "hidden"
                   end
                   scene.updateMap()
                   painted = true

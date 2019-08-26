@@ -1814,9 +1814,6 @@ function scene.setPathlockBox(unit)
         pathlock_box.x, pathlock_box.y = unit.x, unit.y
         addTween(tween.new(0.1, pathlock_box, {scale = 1}), "pathlock box")
       end)
-    else
-      pathlock_box.enabled = false
-      addTween(tween.new(0.1, pathlock_box, {scale = 0}), "pathlock box")
     end
     return
   end

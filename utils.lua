@@ -174,14 +174,67 @@ function loadMap()
       if (ok ~= true) then
         print("Serpent error while loading:", ok, fullDump(map))
       end
+      local floodfill = {}
+      local objects = {}
       for _,unit in ipairs(map) do
         id, tile, x, y, dir, specials, color = unit.id, unit.tile, unit.x, unit.y, unit.dir, unit.special, unit.color
         if inBounds(x, y) then
-          if scene == editor or (tile ~= tiles_by_name["lin"] and tile ~= tiles_by_name["lvl"]) or specials.visibility ~= "hidden" then
+          if scene == editor or (
+            (tile ~= tiles_by_name["lvl"] or specials.visibility == "open") and
+            (tile ~= tiles_by_name["lin"] or specials.visibility ~= "hidden")
+          ) then
             local unit = createUnit(tile, x, y, dir, false, id, nil, color and {{name=color}})
             unit.special = specials
+            if tile == tiles_by_name["lvl"] and readSaveFile(specials.level, "won") then
+              table.insert(floodfill, {unit, 1})
+            end
           else
-            -- floodfill/save etc stuff here
+            if tile == tiles_by_name["lvl"] then
+              if readSaveFile(specials.level, "seen") then
+                local unit = createUnit(tile, x, y, dir, false, id, nil, color and {{name=color}})
+                unit.special = specials
+                if readSaveFile(specials.level, "won") then
+                  table.insert(floodfill, {unit, 1})
+                end
+              end
+              table.insert(objects, {id, tile, x, y, dir, specials, color})
+            elseif tile == tiles_by_name["lin"] then
+              table.insert(objects, {id, tile, x, y, dir, specials, color})
+            end
+          end
+        end
+      end
+      local created = {}
+      if scene ~= editor then
+        while #floodfill > 0 do
+          local u, ptype = unpack(table.remove(floodfill, 1))
+          local orthos = {[-1] = {}, [0] = {}, [1] = {}}
+          for a = 0,1 do -- 0 = ortho, 1 = diag
+            for i = #objects,1,-1 do
+              local v = objects[i] -- {id, tile, x, y, dir, specials, color}
+              local dx = u.x-v[3]
+              local dy = u.y-v[4]
+              if not created[v[1]] and (((dx == -1 or dx == 1) and (dy == -a or dy == a)) or ((dx == -a or dx == a) and (dy == -1 or dy == 1)))
+              and (a == 0 or (not orthos[dx][0] and not orthos[0][dy])) then
+                orthos[dx][dy] = true
+                local unit = createUnit(v[2], v[3], v[4], v[5], false, v[1], nil, v[7] and {{name=v[7]}})
+                created[v[1]] = true
+                unit.special = v[6]
+                if v[2] == tiles_by_name["lvl"] then
+                  if ptype == 1 then
+                    unit.special.visibility = "open"
+                    table.insert(floodfill, {unit, 2})
+                  elseif ptype == 2 then
+                    unit.special.visibility = "locked"
+                    table.insert(floodfill, {unit, 2})
+                  elseif ptype == 3 then
+                    unit.special.visibility = "open"
+                  end
+                elseif v[2] == tiles_by_name["lin"] and (not unit.special.pathlock or unit.special.pathlock == "none") then
+                  table.insert(floodfill, {unit, 3})
+                end
+              end
+            end
           end
         end
       end
@@ -1085,7 +1138,7 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
       dx,dy,dir,tx,ty = getNextTile(the,dx,dy,dir)
       result = ((unit.x == tx) and (unit.y == ty))
     elseif condtype == "unlocked" then
-      if unit.name == "lvl" and unit.special.visibility == "locked" then
+      if unit.name == "lvl" and unit.special.visibility ~= "open" then
         result = false
       end
       if unit.name == "lin" and unit.special.pathlock and unit.special.pathlock ~= "none" then
