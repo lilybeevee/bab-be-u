@@ -850,6 +850,8 @@ function updateUnits(undoing, big_update)
           else
             table.insert(time_destroy,unit.id)
             table.insert(time_destroy,on.id)
+            addUndo({"time_destroy",unit.id})
+            addUndo({"time_destroy",on.id})
             table.insert(time_sfx,"break")
             table.insert(time_sfx,"unlock")
           end
@@ -889,7 +891,7 @@ function updateUnits(undoing, big_update)
             will_undo = true
             break
           else
-          addUndo({"timeless_reset_add"});
+            addUndo({"timeless_reset_add"})
             timeless_reset = true
           end
         end
@@ -938,12 +940,32 @@ function updateUnits(undoing, big_update)
     
     to_destroy = handleDels(to_destroy);
     
+    local unwin = getUnitsWithEffect(";d")
+    local isunwon = {}
+    for _,unit in ipairs(unwin) do
+      local stuff = getUnitsOnTile(unit.x,unit.y, nil, true)
+      for _,on in ipairs(stuff) do
+        is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
+        if is_u and sameFloat(unit, on) then
+          if timecheck(unit,"be",";d") and (timecheck(on,"be","u") or timecheck(on,"be","u too") or timecheck(on,"be","u tres")) then
+            isunwon[unit] = true
+            if readSaveFile(level_name, "won") then
+              writeSaveFile(level_name, "won", false)
+            end
+          else
+            addUndo({"timeless_unwin_add", on.id})
+            table.insert(timeless_unwin,on.id)
+          end
+        end
+      end
+    end
+    
     local iswin = getUnitsWithEffect(":)");
     for _,unit in ipairs(iswin) do
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
       for _,on in ipairs(stuff) do
         is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
-        if is_u and sameFloat(unit, on) then
+        if is_u and sameFloat(unit, on) and not isunwon[unit] then
           if timecheck(unit,"be",":)") and (timecheck(on,"be","u") or timecheck(on,"be","u too") or timecheck(on,"be","u tres")) then
             doWin("won")
           else
@@ -974,7 +996,11 @@ function updateUnits(undoing, big_update)
       end
     end
     
-    if (#timeless_win > 0) and not timeless then
+    if (#timeless_unwin > 0) and not timeless and readSaveFile(level_name, "won") then
+      writeSaveFile(level_name, "won", false)
+    end
+    
+    if (#timeless_win > 0) and (#timeless_unwin == 0) and not timeless then
       doWin("won")
     end
     
@@ -1338,6 +1364,12 @@ function handleTimeDels(time_destroy)
         if unit.id == win then
           addUndo({"timeless_win_remove", win});
           table.remove(timeless_win,i)
+        end
+      end
+      for i,unwin in ipairs(timeless_unwin) do
+        if unit.id == unwin then
+          addUndo({"timeless_unwin_remove", unwin})
+          table.remove(timeless_unwin,i)
         end
       end
       for i,split in ipairs(timeless_splittee) do

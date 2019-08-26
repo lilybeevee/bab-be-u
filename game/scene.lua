@@ -769,87 +769,45 @@ function scene.draw(dt)
     
     --performance todos: each line gets drawn twice (both ways), so there's probably a way to stop that. might not be necessary though, since there is no lag so far
     --in fact, the double lines add to the pixelated look, so for now i'm going to make it intentional and actually add it in a couple places to be consistent
-    if unit.name == "lin" and scene ~= editor then
+    if unit.name == "lin" and (not unit.special.pathlock or unit.special.pathlock == "none") and scene ~= editor then
       love.graphics.setLineWidth(3)
+      love.graphics.setLineStyle("rough")
       local orthos = {}
       local line = {}
-      local halfline = {}
       for ndir=1,4 do
         local nx,ny = dirs[ndir][1],dirs[ndir][2]
         local dx,dy,dir,px,py,portal = getNextTile(unit,nx,ny,2*ndir-1)
         if inBounds(px,py) then
           local around = getUnitsOnTile(px,py)
-          if portal == nil then
-            for _,other in ipairs(around) do
-              if other.name == "lin" then
-                orthos[ndir] = true
-                table.insert(line,other)
-                break
-              elseif other.name == "lvl" then
-                orthos[ndir] = true
-                --add it twice to make it look the same as the other lines. should be reduced to one if we figure out that performance todo above 
-                table.insert(line,other)
-                table.insert(line,other)
-                break
-              else
-                orthos[ndir] = false
-              end
-            end
-          else
-            for _,other in ipairs(around) do
-              if other.name == "lin" or other.name == "lvl" then
-                orthos[ndir] = true
-                table.insert(halfline,{unit.x+nx,unit.y+ny})
-                break
-              else
-                orthos[ndir] = false
-              end
+          for _,other in ipairs(around) do
+            if other.name == "lin" or other.name == "lvl" then
+              orthos[ndir] = true
+              table.insert(line,{unit.x+nx,unit.y+ny})
+              break
+            else
+              orthos[ndir] = false
             end
           end
         else
           orthos[ndir] = true
-          table.insert(halfline,{px,py})
+          table.insert(line,{px,py})
         end
       end
       for ndir=2,8,2 do
         local nx,ny = dirs8[ndir][1],dirs8[ndir][2]
         local dx,dy,dir,px,py,portal = getNextTile(unit,nx,ny,ndir)
         local around = getUnitsOnTile(px,py)
-        if portal == nil then
-          for _,other in ipairs(around) do
-            if other.name == "lin" then
-              if not orthos[ndir/2] and not orthos[dirAdd(ndir,2)/2] then
-                table.insert(line,other)
-              end
-            elseif other.name == "lvl" then
-              if not orthos[ndir/2] and not orthos[dirAdd(ndir,2)/2] then
-                --add it twice to make it look the same as the other lines. should be reduced to one if we figure out that performance todo above
-                table.insert(line,other)
-                table.insert(line,other)
-              end
-            end
-          end
-        else
-          for _,other in ipairs(around) do
-            if other.name == "lin" or other.name == "lvl" then
-              table.insert(halfline,{unit.x+nx,unit.y+ny})
-              break
-            end
+        for _,other in ipairs(around) do
+          if (other.name == "lin" or other.name == "lvl") and not orthos[ndir/2] and not orthos[dirAdd(ndir,2)/2] then
+            table.insert(line,{unit.x+nx,unit.y+ny})
+            break
           end
         end
       end
       if (#line > 0) then
+        -- love.graphics.rectangle("fill", fulldrawx-1, fulldrawy-1, 1, 3)
+        -- love.graphics.rectangle("fill", fulldrawx-2, fulldrawy, 3, 1)
         for _,point in ipairs(line) do
-          local dx = unit.x-point.x
-          local dy = unit.y-point.y
-          local odx = TILE_SIZE*dx
-          local ody = TILE_SIZE*dy
-          
-          love.graphics.line(fulldrawx,fulldrawy,fulldrawx-odx,fulldrawy-ody)
-        end
-      end
-      if (#halfline > 0) then
-        for _,point in ipairs(halfline) do
           --no need to change the rendering to account for movement, since all halflines are drawn to static objects (portals and oob)
           local dx = unit.x-point[1]
           local dy = unit.y-point[2]
@@ -857,19 +815,23 @@ function scene.draw(dt)
           local ody = TILE_SIZE*dy/2
           
           --draws it twice to make it look the same as the other lines. should be reduced to one if we figure out that performance todo above
-          love.graphics.line(fulldrawx,fulldrawy,fulldrawx-odx,fulldrawy-ody)
-          love.graphics.line(fulldrawx,fulldrawy,fulldrawx-odx,fulldrawy-ody)
+          love.graphics.line(fulldrawx+dx,fulldrawy+dy,fulldrawx-odx,fulldrawy-ody)
         end
       end
-      if (#line == 0) and (#halfline == 0) then
+      if (#line == 0) then
         drawSprite()
       end
+    end
+    
+    if unit.name == "lin" and unit.special.pathlock and unit.special.pathlock ~= "none" then
+      setColor(unit.color_override or {2, 2})
+      drawSprite(sprites["lin_gate"])
     end
     
     --reset back to values being used before
     love.graphics.setLineWidth(2)
 
-    if not (unit.xwx or spookmode) and not (unit.name == "lin" and scene ~= editor) then -- xwx takes control of the drawing sprite, so it shouldn't render the normal object
+    if not (unit.xwx or spookmode) and unit.name ~= "lin" then -- xwx takes control of the drawing sprite, so it shouldn't render the normal object
       drawSprite()
     end
 
@@ -884,22 +846,22 @@ function scene.draw(dt)
     end
     
     if unit.name == "lvl" then
-      if not unit.special.level_iconstyle or unit.special.level_iconstyle == "number" then
-        local num = tostring(unit.special.level_number or 1)
+      if not unit.special.iconstyle or unit.special.iconstyle == "number" then
+        local num = tostring(unit.special.number or 1)
         if #num == 1 then
           num = "0"..num
         end
         love.graphics.draw(sprites["levelicon_"..num:sub(1,1)], fulldrawx+(4*unit.draw.scalex), fulldrawy+(4*unit.draw.scaley), 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
         love.graphics.draw(sprites["levelicon_"..num:sub(2,2)], fulldrawx+(16*unit.draw.scalex), fulldrawy+(4*unit.draw.scaley), 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
-      elseif unit.special.level_iconstyle == "dots" then
-        local num = tostring(unit.special.level_number or 1)
+      elseif unit.special.iconstyle == "dots" then
+        local num = tostring(unit.special.number or 1)
         love.graphics.draw(sprites["levelicon_dots_"..num], fulldrawx+(4*unit.draw.scalex), fulldrawy+(4*unit.draw.scaley), 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
-      elseif unit.special.level_iconstyle == "letter" then
-        local num = unit.special.level_number or 1
+      elseif unit.special.iconstyle == "letter" then
+        local num = unit.special.number or 1
         local letter = ("abcdefghijklmnopqrstuvwxyz"):sub(num, num)
         love.graphics.draw(sprites["letter_"..letter], fulldrawx, fulldrawy, 0, unit.draw.scalex*3/4, unit.draw.scaley*3/4, sprite:getWidth() / 2, sprite:getHeight() / 2)
-      elseif unit.special.level_iconstyle == "other" then
-        local sprite = sprites[unit.special.level_iconname or "wat"] or sprites["wat"]
+      elseif unit.special.iconstyle == "other" then
+        local sprite = sprites[unit.special.iconname or "wat"] or sprites["wat"]
         love.graphics.draw(sprite, fulldrawx, fulldrawy, 0, unit.draw.scalex*3/4, unit.draw.scaley*3/4, sprite:getWidth() / 2, sprite:getHeight() / 2)
       end
     end

@@ -132,7 +132,18 @@ function undoOneAction(turn, i, v, ignore_no_undo)
       end
     end
   elseif action == "timeless_win_remove" then
-    table.insert(timeless_win, v[2]);  
+    table.insert(timeless_win, v[2])
+  elseif action == "timeless_unwin_add" then
+		unitid = v[2]
+    --iterate backwards because we probably got added to the end (but maybe not due to no undo shenanigans e.g.)
+    for i=#timeless_unwin,1,-1 do
+      if timeless_unwin[i] == unitid then
+        table.remove(timeless_unwin, i)
+        break
+      end
+    end
+  elseif action == "timeless_unwin_remove" then
+    table.insert(timeless_unwin, v[2])
   elseif action == "timeless_splitter_add" then
 		unitid = v[2]
     --iterate backwards because we probably got added to the end (but maybe not due to no undo shenanigans e.g.)
