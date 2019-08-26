@@ -16,7 +16,7 @@ local input_name, input_author, input_palette, input_music, input_width, input_h
 local capturing, start_drag, end_drag
 local screenshot, screenshot_image
 
-local level_dialogue
+local level_dialogue, last_lin_hidden
 
 local saved_popup
 
@@ -692,19 +692,22 @@ function scene.mouseReleased(x, y, button)
       end
       -- number
       if level_dialogue.unit.special.iconstyle ~= "other" then
+        local shift = key_down["lshift"] or key_down["rshift"]
         if mouseOverBox(-38, -70, 11, 16, t) then
           local min = 1
           if level_dialogue.unit.special.iconstyle == "number" then min = 0 end
-          if (level_dialogue.unit.special.number or 1) > min then
-            level_dialogue.unit.special.number = (level_dialogue.unit.special.number or 1) - 1
+          level_dialogue.unit.special.number = (level_dialogue.unit.special.number or 1) - (shift and 10 or 1)
+          if (level_dialogue.unit.special.number or 1) < min then
+            level_dialogue.unit.special.number = min
           end
         end
         if mouseOverBox(3, -70, 11, 16, t) then
           local max = 99
           if level_dialogue.unit.special.iconstyle == "dots" then max = 9 end
           if level_dialogue.unit.special.iconstyle == "letter" then max = 26 end
-          if (level_dialogue.unit.special.number or 1) < max then
-            level_dialogue.unit.special.number = (level_dialogue.unit.special.number or 1) + 1
+          level_dialogue.unit.special.number = (level_dialogue.unit.special.number or 1) + (shift and 10 or 1)
+          if (level_dialogue.unit.special.number or 1) > max then
+            level_dialogue.unit.special.number = max
           end
         end
       end
@@ -726,8 +729,14 @@ function scene.mouseReleased(x, y, button)
       end
     elseif level_dialogue.unit.name == "lin" and mouseOverBox(-75, -58, 150, 50, t) then
       -- hidden/locked/open
-      if mouseOverBox(-59, -50, 16, 16, t) then level_dialogue.unit.special.visibility = "hidden" end
-      if mouseOverBox(-41, -50, 16, 16, t) then level_dialogue.unit.special.visibility = "open" end
+      if mouseOverBox(-59, -50, 16, 16, t) then
+        level_dialogue.unit.special.visibility = "hidden"
+        last_lin_hidden = true
+      end
+      if mouseOverBox(-41, -50, 16, 16, t) then
+        level_dialogue.unit.special.visibility = "open"
+        last_lin_hidden = false
+      end
       -- path lock
       if mouseOverBox(-2, -50, 16, 16, t) then level_dialogue.unit.special.pathlock = "none" end
       if mouseOverBox(16, -50, 16, 16, t) then level_dialogue.unit.special.pathlock = "puffs" end
@@ -735,13 +744,15 @@ function scene.mouseReleased(x, y, button)
       if mouseOverBox(52, -50, 16, 16, t) then level_dialogue.unit.special.pathlock = "orbs" end
       -- number
       if level_dialogue.unit.special.pathlock ~= "none" then
+        local shift = key_down["lshift"] or key_down["rshift"]
         if mouseOverBox(7, -30, 11, 16, t) then
-          if (level_dialogue.unit.special.number or 1) > 1 then
-            level_dialogue.unit.special.number = (level_dialogue.unit.special.number or 1) - 1
+          level_dialogue.unit.special.number = (level_dialogue.unit.special.number or 1) - (shift and 10 or 1)
+          if (level_dialogue.unit.special.number or 1) < 1 then
+            level_dialogue.unit.special.number = 1
           end
         end
         if mouseOverBox(48, -30, 11, 16, t) then
-          level_dialogue.unit.special.number = (level_dialogue.unit.special.number or 1) + 1
+          level_dialogue.unit.special.number = (level_dialogue.unit.special.number or 1) + (shift and 10 or 1)
         end
       end
     else
@@ -919,6 +930,9 @@ function scene.update(dt)
                   if brush.color then
                     new_unit[brush.color] = true
                     updateUnitColourOverride(new_unit)
+                  end
+                  if last_lin_hidden and brush.id == tiles_by_name["lin"] then
+                    new_unit.special.visibility = "hidden"
                   end
                   scene.updateMap()
                   painted = true
@@ -1117,6 +1131,9 @@ function scene.draw(dt)
               end
               if unit.special.visibility == "hidden" then name = name.."_hidden" end
               sprite = sprites[name]
+            end
+            if unit.name == "lvl" and unit.special.visibility == "hidden" then
+              sprite = sprites["lvl_hidden"]
             end
             if not sprite then sprite = sprites["wat"] end
             
@@ -1328,7 +1345,7 @@ function scene.draw(dt)
         love.graphics.setColor(1,1,1,1)
         love.graphics.print("Style", -92, -95)
         love.graphics.print(({number = "Number", dots = "Number", letter = "Letter", other = "Icon"})[unit.special.iconstyle or "number"], -92, -70)
-        love.graphics.print(({hidden = "Hidden", locked = "Locked", open = "Open"})[unit.special.visibility or "open"], -92, -45)
+        love.graphics.print(({hidden = "Hidden", locked = "Locked", open = "Open"})[unit.special.visibility or "locked"], -92, -45)
         
         
         love.graphics.setColor(getPaletteColor(0, 0))
@@ -1372,7 +1389,7 @@ function scene.draw(dt)
         love.graphics.setLineWidth(1)
         love.graphics.setColor(getPaletteColor(5, 2))
         love.graphics.rectangle("line", 15.5-18*({number = 4, dots = 3, letter = 2, other = 1})[unit.special.iconstyle or "number"], -95.5, 17, 17)
-        love.graphics.rectangle("line", 15.5-18*({hidden = 3, locked = 2, open = 1})[unit.special.visibility or "open"], -45.5, 17, 17)
+        love.graphics.rectangle("line", 15.5-18*({hidden = 3, locked = 2, open = 1})[unit.special.visibility or "locked"], -45.5, 17, 17)
         
         love.graphics.setFont(love.graphics.newFont(8))
         love.graphics.setColor(1,1,1,1)

@@ -50,6 +50,7 @@ local last_width,last_height = love.graphics.getWidth(),love.graphics.getHeight(
 local displaywords = false
 
 local stack_box, stack_font
+local pathlock_box, pathlock_font
 local initialwindoposition
 
 local sessionseed
@@ -62,8 +63,10 @@ function scene.load()
   selector_open = false
 
   stack_box = {x = 0, y = 0, scale = 0, units = {}, enabled = false}
+  pathlock_box = {x = 0, y = 0, scale = 0, enabled = false}
   stack_font = love.graphics.newFont(12)
   stack_font:setFilter("nearest","nearest")
+  pathlock_font = love.graphics.newFont(16)
 
   scene.resetStuff()
 
@@ -769,8 +772,8 @@ function scene.draw(dt)
     
     --performance todos: each line gets drawn twice (both ways), so there's probably a way to stop that. might not be necessary though, since there is no lag so far
     --in fact, the double lines add to the pixelated look, so for now i'm going to make it intentional and actually add it in a couple places to be consistent
-    if unit.name == "lin" and (not unit.special.pathlock or unit.special.pathlock == "none") and scene ~= editor then
-      love.graphics.setLineWidth(3)
+    if unit.name == "lin" and (not unit.special.pathlock or unit.special.pathlock == "none") and scene ~= editor and not loop then
+      love.graphics.setLineWidth(4)
       love.graphics.setLineStyle("rough")
       local orthos = {}
       local line = {}
@@ -782,7 +785,7 @@ function scene.draw(dt)
           for _,other in ipairs(around) do
             if other.name == "lin" or other.name == "lvl" then
               orthos[ndir] = true
-              table.insert(line,{unit.x+nx,unit.y+ny})
+              table.insert(line,{unit.x*2-unit.draw.x+nx+other.draw.x-other.x, unit.y*2-unit.draw.y+ny+other.draw.y-other.y, portal})
               break
             else
               orthos[ndir] = false
@@ -799,7 +802,7 @@ function scene.draw(dt)
         local around = getUnitsOnTile(px,py)
         for _,other in ipairs(around) do
           if (other.name == "lin" or other.name == "lvl") and not orthos[ndir/2] and not orthos[dirAdd(ndir,2)/2] then
-            table.insert(line,{unit.x+nx,unit.y+ny})
+            table.insert(line,{unit.x*2-unit.draw.x+nx+other.draw.x-other.x, unit.y*2-unit.draw.y+ny+other.draw.y-other.y, portal})
             break
           end
         end
@@ -811,10 +814,16 @@ function scene.draw(dt)
           --no need to change the rendering to account for movement, since all halflines are drawn to static objects (portals and oob)
           local dx = unit.x-point[1]
           local dy = unit.y-point[2]
-          local odx = TILE_SIZE*dx/2
-          local ody = TILE_SIZE*dy/2
+          local odx = TILE_SIZE*dx/(point[3] and 1 or 2)
+          local ody = TILE_SIZE*dy/(point[3] and 1 or 2)
           
           --draws it twice to make it look the same as the other lines. should be reduced to one if we figure out that performance todo above
+          --   love.graphics.setLineWidth(3)
+          -- if dx == 0 or dy == 0 then
+          --   love.graphics.setLineWidth(3)
+          -- else
+          --   love.graphics.setLineWidth(3)
+          -- end
           love.graphics.line(fulldrawx+dx,fulldrawy+dy,fulldrawx-odx,fulldrawy-ody)
         end
       end
@@ -845,7 +854,7 @@ function scene.draw(dt)
       end
     end
     
-    if unit.name == "lvl" then
+    if unit.name == "lvl" and unit.special.visibility == "open" then
       if not unit.special.iconstyle or unit.special.iconstyle == "number" then
         local num = tostring(unit.special.number or 1)
         if #num == 1 then
@@ -1137,6 +1146,32 @@ function scene.draw(dt)
       end
       love.graphics.pop()
     end
+
+    love.graphics.pop()
+  end
+  if pathlock_box.scale > 0 then
+    love.graphics.push()
+    love.graphics.translate((pathlock_box.x + 0.5) * TILE_SIZE, pathlock_box.y * TILE_SIZE)
+    love.graphics.scale(pathlock_box.scale)
+
+    love.graphics.setColor(getPaletteColor(0, 4))
+    love.graphics.polygon("fill", -4, -8, 0, 0, 4, -8)
+
+    local unit = pathlock_box.unit
+
+    local width = 70
+    love.graphics.rectangle("fill", -width / 2, -48, width, 40)
+
+    love.graphics.setColor(getPaletteColor(3, 3))
+    love.graphics.setLineWidth(2)
+    love.graphics.line(-width / 2, -48, -width / 2, -8, -4, -8, 0, 0, 4, -8, width / 2, -8, width / 2, -48, -width / 2, -48)
+    
+    local type = ({puffs = "puff", blossoms = "blossom", orbs = "orrb"})[unit.special.pathlock]
+    love.graphics.setColor(type == "orrb" and {getPaletteColor(4,1)} or {1,1,1,1})
+    love.graphics.draw(sprites[type], -30, -44)
+    local num = unit.special.number or 1
+    love.graphics.setFont(num > 99 and stack_font or pathlock_font)
+    love.graphics.printf(tostring(num), 5, -36, 25, "center")
 
     love.graphics.pop()
   end
@@ -1768,6 +1803,29 @@ function scene.setStackBox(x, y)
   if stack_box.enabled then
     stack_box.enabled = false
     addTween(tween.new(0.1, stack_box, {scale = 0}), "stack box")
+  end
+end
+
+function scene.setPathlockBox(unit)
+  if unit then
+    if pathlock_box.scale == 0 then
+      pathlock_box.enabled = true
+      pathlock_box.unit = unit
+      pathlock_box.x, pathlock_box.y = unit.x, unit.y
+      addTween(tween.new(0.1, pathlock_box, {scale = 1}), "pathlock box")
+    elseif pathlock_box.x ~= unit.x or pathlock_box.y ~= unit.y then
+      addTween(tween.new(0.05, pathlock_box, {scale = 0}), "pathlock box", function()
+        pathlock_box.enabled = true
+        pathlock_box.unit = unit
+        pathlock_box.x, pathlock_box.y = unit.x, unit.y
+        addTween(tween.new(0.1, pathlock_box, {scale = 1}), "pathlock box")
+      end)
+    end
+    return
+  end
+  if pathlock_box.enabled then
+    pathlock_box.enabled = false
+    addTween(tween.new(0.1, pathlock_box, {scale = 0}), "pathlock box")
   end
 end
 

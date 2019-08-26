@@ -668,6 +668,24 @@ It is probably possible to do, but lily has decided that it's not important enou
   updatePortals()
   miscUpdates()
   
+  if scene.setPathlockBox then 
+    local showlock
+    for _,u in ipairs(getUnitsWithEffect("u")) do
+      for _,dir in ipairs(dirs8) do
+        local _, __, ___, x, y = getNextTile(u, dir[1], dir[2], dirs8_by_offset[dir[1]][dir[2]])
+        local facing = getUnitsOnTile(x, y, "lin")
+        for _,v in ipairs(facing) do
+          if v.special.pathlock and v.special.pathlock ~= "none" then
+            showlock = v
+            break
+          end
+        end
+        if showlock then break end
+      end
+    end
+    scene.setPathlockBox(showlock)
+  end
+  
   next_levels = getNextLevels()
 end
 
