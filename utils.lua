@@ -68,6 +68,7 @@ function clear()
   timeless_splitter = {}
   timeless_splittee = {}
   timeless_win = {}
+  timeless_unwin = {}
   timeless_reset = false
   timeless_crash = false
   timeless_yote = {}
