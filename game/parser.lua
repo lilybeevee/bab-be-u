@@ -474,7 +474,7 @@ function findLetterSentences(str, index_, sentences_, curr_sentence_, start_) --
           table.insert(sentences.middle,copyTable(curr_sentence))
         end
         findLetterSentences(str, index+i+1, sentences, curr_sentence, start) --we got one word, now keep going
-        curr_sentence = {}; --now we're done with that particular sentence attempt, so we're back to no words in the sentence
+        curr_sentence = {} --now we're done with that particular sentence attempt, so we're back to no words in the sentence
       end
     end
   end

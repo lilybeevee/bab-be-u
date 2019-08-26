@@ -43,7 +43,7 @@ function scene.load()
   settings_open = false
   selector_open = false
   selector_page = 1
-  current_tile_grid = tile_grid[selector_page];
+  current_tile_grid = tile_grid[selector_page]
   
   level_dialogue = {x = 0, y = 0, scale = 0, enabled = false}
   
@@ -212,8 +212,8 @@ function scene.setupGooi()
     x = x + 36 -- 4px padding
   end
 
-  local dx = 208;
-  local i = 0;
+  local dx = 208
+  local i = 0
 
   settings = {x = 0, y = y_top, w = dx*2, h = 450}
   local y_top = (love.graphics.getHeight() - settings.h) / 2
@@ -290,7 +290,7 @@ function scene.setupGooi()
 
   if not is_mobile then
     y = y_top - h
-    i = 1;
+    i = 1
   end
     
   y = y + h + p
@@ -365,7 +365,7 @@ w = w-h, h = h}):center():setGroup("settings")
     local button = gooi.newButton({text = "", x = x + 64*i, y = y, w = 64, h = 32}):onRelease(function()
       selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..selector_page], sprites["ui/selector_tab_"..selector_page.."_h"])
       selector_page = j
-      current_tile_grid = tile_grid[selector_page];
+      current_tile_grid = tile_grid[selector_page]
       selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..j.."_a"])
     end)
     button:setBGImage(sprites["ui/selector_tab_"..i], sprites["ui/selector_tab_"..i.."_h"]):bg({0, 0, 0, 0})
@@ -376,7 +376,7 @@ w = w-h, h = h}):center():setGroup("settings")
   selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..selector_page.."_a"], sprites["ui/selector_tab_"..selector_page.."_h"])
   -- gooi.setGroupVisible("selectortabs", selector_open)
   -- gooi.setGroupEnabled("selectortabs", selector_open)
-  updateSelectorTabs();
+  updateSelectorTabs()
   
   local twelfth = love.graphics.getWidth()/12
 
@@ -549,7 +549,7 @@ function scene.keyPressed(key)
   end
   
   -- ctrl tab shortcuts
-  local old_selector_page = selector_page;
+  local old_selector_page = selector_page
   selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..selector_page], sprites["ui/selector_tab_"..selector_page.."_h"])
   
   if key == "tab" and (key_down["lctrl"] or key_down["rctrl"]) and not (key_down["lshift"] or key_down["rshift"]) then
@@ -573,7 +573,7 @@ function scene.keyPressed(key)
     current_tile_grid = copyTable(current_tile_grid)
     for i = 0,tile_grid_width*tile_grid_height do
       if current_tile_grid[i] ~= nil and current_tile_grid[i] > 0 then
-        local new_tile_id = tiles_by_name["text_" .. tiles_list[current_tile_grid[i]].name];
+        local new_tile_id = tiles_by_name["text_" .. tiles_list[current_tile_grid[i]].name]
         if (new_tile_id ~= nil) then
           current_tile_grid[i] = new_tile_id
         else
@@ -594,7 +594,7 @@ function scene.keyPressed(key)
     if nt then
         for i = 0,tile_grid_width*tile_grid_height do
             if current_tile_grid[i] ~= nil and current_tile_grid[i] > 0 then
-                local new_tile_id = tiles_by_name[tiles_list[current_tile_grid[i]].name .. "n't"];
+                local new_tile_id = tiles_by_name[tiles_list[current_tile_grid[i]].name .. "n't"]
                 if (new_tile_id ~= nil) then
                     current_tile_grid[i] = new_tile_id
                 end
@@ -801,7 +801,7 @@ function scene.keyReleased(key)
 end
 
 function updateSelectorTabs()
-  local scale, dx, dy = scene.transformParameters();
+  local scale, dx, dy = scene.transformParameters()
     local x = (dx-64)*scale
     local y = (dy-32)*scale
     for i=1,#tile_grid do
@@ -1046,16 +1046,16 @@ function scene.transformParameters()
   local dx = scaledwidth / 2 - roomwidth / 2
   local dy = scaledheight / 2 - roomheight / 2 + (is_mobile and sprites["ui/cog"]:getHeight()/scale or 0)
   
-  return scale, dx, dy;
+  return scale, dx, dy
 end
 
 function scene.getTransform()
   local transform = love.math.newTransform()
 
-  local scale, dx, dy = scene.transformParameters();
+  local scale, dx, dy = scene.transformParameters()
 
   transform:scale(scale, scale)
-  transform:translate(dx, dy);
+  transform:translate(dx, dy)
   
   roomscale = scale
   return transform
@@ -1108,7 +1108,7 @@ function scene.draw(dt)
         if units_by_layer[i] then
           for _,unit in ipairs(units_by_layer[i]) do
             local sprite = sprites[unit.sprite]
-            local color = setColor(unit.color_override or unit.color);
+            local color = setColor(unit.color_override or unit.color)
             if unit.name == "lin" then
               local name = "lin"
               if unit.special.pathlock and unit.special.pathlock ~= "none" then
@@ -1166,7 +1166,7 @@ function scene.draw(dt)
             -- local x = tile.grid[1]
             -- local y = tile.grid[2]
 
-            local color = setColor(brush.color and main_palette_for_colour[brush.color] or tile.color);
+            local color = setColor(brush.color and main_palette_for_colour[brush.color] or tile.color)
 
             if rainbowmode then love.graphics.setColor(hslToRgb((love.timer.getTime()/3+x/tile_grid_width+y/tile_grid_height)%1, .5, .5, 1)) end
             
@@ -1608,12 +1608,12 @@ function scene.updateMap()
       local tileid = x + y * mapwidth
       if unitsByTile(x, y) then
         for _,unit in ipairs(unitsByTile(x, y)) do
-          table.insert(map, {id = unit.id, tile = unit.tile, x = unit.x, y = unit.y, dir = unit.dir, special = unit.special, color = unit.color_override and colour_for_palette[unit.color_override[1]][unit.color_override[2]]});
+          table.insert(map, {id = unit.id, tile = unit.tile, x = unit.x, y = unit.y, dir = unit.dir, special = unit.special, color = unit.color_override and colour_for_palette[unit.color_override[1]][unit.color_override[2]]})
         end
       end
     end
   end
-  map = serpent.dump(map);
+  map = serpent.dump(map)
   maps = {{map_ver, map}}
 end
 
@@ -1656,7 +1656,7 @@ function scene.saveLevel()
     background_sprite = level_background_sprite,
   }
   
-  local file_name = sanitize(level_name);
+  local file_name = sanitize(level_name)
 
   if world == "" or world_parent == "officialworlds" then
     love.filesystem.createDirectory("levels")

@@ -22,7 +22,7 @@ function clear()
   should_parse_rules_at_turn_boundary = false
   should_parse_rules = true
   graphical_property_cache = {}
-  initializeGraphicalPropertyCache();
+  initializeGraphicalPropertyCache()
   debug_values = {}
   rng_cache = {}
   reset_count = 0
@@ -103,9 +103,9 @@ function clear()
 end
 
 function metaClear()
-  parent_filename = nil;
-  stay_ther = nil;
-  surrounds = nil;
+  parent_filename = nil
+  stay_ther = nil
+  surrounds = nil
 end
 
 function initializeGraphicalPropertyCache()
@@ -171,7 +171,7 @@ function loadMap()
       end
     else
       local ok = nil
-      ok, map = serpent.load(map);
+      ok, map = serpent.load(map)
       if (ok ~= true) then
         print("Serpent error while loading:", ok, fullDump(map))
       end
@@ -235,12 +235,12 @@ function initializeEmpties()
 end
 
 function compactIds()
-  units_by_id = {};
+  units_by_id = {}
   for i,unit in ipairs(units) do
-    unit.id = i;
-    units_by_id[i] = unit;
+    unit.id = i
+    units_by_id[i] = unit
   end
-  max_unit_id = #units + 1;
+  max_unit_id = #units + 1
 end
 
 --[[
@@ -363,7 +363,7 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
             group_match = true
           else
             if rule_units[i].type == "object" and group_names_set_nt[name] then
-              local nament = name:sub(1, -4);
+              local nament = name:sub(1, -4)
               if not group_sets[nament][rule_units[i] ] then
                 group_match = true
               end
@@ -436,10 +436,10 @@ end
 
 function getUnitsWithEffect(effect)
   local result = {}
-  local rules = matchesRule(nil, "be", effect);
+  local rules = matchesRule(nil, "be", effect)
   --print ("h:"..tostring(#rules))
   for _,dat in ipairs(rules) do
-    local unit = dat[2];
+    local unit = dat[2]
     if not unit.removed then
       table.insert(result, unit)
     end
@@ -449,10 +449,10 @@ end
 
 function getUnitsWithEffectAndCount(effect)
   local result = {}
-  local rules = matchesRule(nil, "be", effect);
+  local rules = matchesRule(nil, "be", effect)
   --print ("h:"..tostring(#rules))
   for _,dat in ipairs(rules) do
-    local unit = dat[2];
+    local unit = dat[2]
     if not unit.removed then
       if result[unit] == nil then
         result[unit] = 0
@@ -465,10 +465,10 @@ end
 
 function getUnitsWithRuleAndCount(rule1, rule2, rule3)
   local result = {}
-  local rules = matchesRule(rule1, rule2, rule3);
+  local rules = matchesRule(rule1, rule2, rule3)
   --print ("h:"..tostring(#rules))
   for _,dat in ipairs(rules) do
-    local unit = dat[2];
+    local unit = dat[2]
     if not unit.removed then
       if result[unit] == nil then
         result[unit] = 0
@@ -490,15 +490,15 @@ end
 
 function findUnitsByName(name)
   if group_names_set_nt["n't"] then
-    local everything_else_list = findUnitsByName(name:sub(1, -4));
-    local everything_else_set = {};
+    local everything_else_list = findUnitsByName(name:sub(1, -4))
+    local everything_else_set = {}
     for _,unit in ipairs(everything_else_list) do
       everything_else_set[unit] = true
     end
     local result = {}
     for _,unit in ipairs(units) do
       if unit.type == "object" and not everything_else_set[unit] then
-        table.insert(result, unit);
+        table.insert(result, unit)
       end
     end
     return result
@@ -587,7 +587,7 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
 
     local x, y = unit.x, unit.y
 
-    local old_withrecursioncond = withrecursion[cond];
+    local old_withrecursioncond = withrecursion[cond]
     
     withrecursion[cond] = true
     
@@ -622,7 +622,7 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
           --use surrounds to remember what was around the level
           for __,on in ipairs(surrounds[0][0]) do
             if nameIs(on, param) then
-              table.insert(others, on);
+              table.insert(others, on)
             end
           end]]
         for _,other in ipairs(lists) do
@@ -703,7 +703,7 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
           --use surrounds to remember what was around the level
           for __,on in ipairs(surrounds[nx][ny]) do -- this part hasn't been updated, but it's not important yet
             if nameIs(on, param) then
-              table.insert(others, on);
+              table.insert(others, on)
             end
           end
         else
@@ -842,7 +842,7 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
           --use surrounds to remember what was around the level
           for __,on in ipairs(surrounds[nx][ny]) do -- this part hasn't been updated, but it's not important yet
             if nameIs(on, param) then
-              table.insert(others, on);
+              table.insert(others, on)
             end
           end
         else
@@ -907,7 +907,7 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
           --use surrounds to remember what was around the level
           for __,on in ipairs(surrounds[nx][ny]) do -- this part hasn't been updated, but it's not important yet
             if nameIs(on, param) then
-              table.insert(others, on);
+              table.insert(others, on)
             end
           end
         else
@@ -1001,23 +1001,23 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
       local cond_unit = cond.unit
       --add a dummy action so that undoing happens
       if (#undo_buffer > 0 and #undo_buffer[1] == 0) then
-        addUndo({"dummy"});
+        addUndo({"dummy"})
       end
-      rng = deterministicRng(unit, cond.unit);
-      result = (rng*100) < threshold_for_dir[cond.unit.dir];
+      rng = deterministicRng(unit, cond.unit)
+      result = (rng*100) < threshold_for_dir[cond.unit.dir]
     elseif condtype == "an" then
       local cond_unit = cond.unit
       --add a dummy action so that undoing happens
       if (#undo_buffer > 0 and #undo_buffer[1] == 0) then
-        addUndo({"dummy"});
+        addUndo({"dummy"})
       end
-      rng = deterministicRandom(unit.fullname, cond.unit);
-      result = unit.id == rng;
+      rng = deterministicRandom(unit.fullname, cond.unit)
+      result = unit.id == rng
     elseif condtype == "lit" then
       --TODO: make it so if there are many lit objects then you cache FoV instead of doing many individual LoSes
       -- result = false
       -- if (successful_brite_cache ~= nil) then
-      --   local cached = units_by_id[successful_brite_cache];
+      --   local cached = units_by_id[successful_brite_cache]
       --   if cached ~= nil and hasProperty(cached, "brite") and hasLineOfSight(cached, unit) then
       --     result = true
       --   end
@@ -1027,7 +1027,7 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
       --   local others = getUnitsWithEffect("brite")
       --   for _,on in ipairs(others) do
       --     if hasLineOfSight(on, unit) then
-      --       successful_brite_cache = on.id;
+      --       successful_brite_cache = on.id
       --       result = true
       --       break
       --     end
@@ -1062,7 +1062,7 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
     elseif condtype == "reed" or condtype == "bleu" or condtype == "blacc"
     or condtype == "grun" or condtype == "yello" or condtype == "orang"
     or condtype == "purp" or condtype == "whit" or condtype == "cyeann" or condtype == "pinc" then
-      local colour = unit.color_override or unit.color;
+      local colour = unit.color_override or unit.color
       if (unit.fullname == "no1") then
         result = false
       elseif (unit.rave or unit.colrful or unit.gay) then
@@ -1100,21 +1100,21 @@ end
 
 function hasLineOfSight(brite, lit)
   if (not sameFloat(brite, lit)) then
-    return false;
+    return false
   end
   if (rules_with["opaque"] == nil) then
-    return true;
+    return true
   end
   --https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
-  local x0, y0, x1, y1 = brite.x, brite.y, lit.x, lit.y;
-  local dx = x1 - x0;
-  local dy = y1 - y0;
+  local x0, y0, x1, y1 = brite.x, brite.y, lit.x, lit.y
+  local dx = x1 - x0
+  local dy = y1 - y0
   if (dx == 0 and dy == 0) then return true end
   if (math.abs(dx) > math.abs(dy)) then
-    local derr = math.abs(dy / dx);
-    local err = 0;
+    local derr = math.abs(dy / dx)
+    local err = 0
     local y = y0
-    local found_opaque = false;
+    local found_opaque = false
     for x = x0, x1, sign(dx) do
       if found_opaque then return false end
       if x ~= x0 or y ~= y0 then
@@ -1125,17 +1125,17 @@ function hasLineOfSight(brite, lit)
           end
         end
       end
-      err = err + derr;
+      err = err + derr
       if err >= 0.5 then
-        y = y + sign(dy);
-        err = err - 1;
+        y = y + sign(dy)
+        err = err - 1
       end
     end
   elseif (math.abs(dy) > math.abs(dx)) then
-    local derr = math.abs(dx / dy);
-    local err = 0;
+    local derr = math.abs(dx / dy)
+    local err = 0
     local x = x0
-    local found_opaque = false;
+    local found_opaque = false
     for y = y0, y1, sign(dy) do
       if found_opaque then return false end
       if x ~= x0 or y ~= y0 then
@@ -1146,15 +1146,15 @@ function hasLineOfSight(brite, lit)
           end
         end
       end
-      err = err + derr;
+      err = err + derr
       if err >= 0.5 then
-        x = x + sign(dx);
-        err = err - 1;
+        x = x + sign(dx)
+        err = err - 1
       end
     end
   else --both equal
-    local x = x0;
-    local found_opaque = false;
+    local x = x0
+    local found_opaque = false
     for y = y0, y1, sign(dy) do
       if x ~= x0 or y ~= y0 then
         if found_opaque then return false end
@@ -1165,10 +1165,10 @@ function hasLineOfSight(brite, lit)
           end
         end
       end
-      x = x + sign(dx);
+      x = x + sign(dx)
     end
   end
-  return true;
+  return true
 end
 
 lightcanvas = nil
@@ -1319,15 +1319,15 @@ function drawShadows(source, opaques)
   love.graphics.setColor(1, 1, 1, 1)
 end
 
-threshold_for_dir = {50, 0.01, 0.1, 1, 2, 5, 10, 25};
+threshold_for_dir = {50, 0.01, 0.1, 1, 2, 5, 10, 25}
 
 function deterministicRandom(fullname, cond)
   --have to adjust #undo_buffer by 1 during undoing since we're in the process of rewinding to the previous turn
   local key = fullname..","..tostring(cond.x)..","..tostring(cond.y)..","..tostring(cond.dir)..","..tostring(undoing and #undo_buffer - 1 or #undo_buffer)
   if rng_cache[key] == nil then
-    local arbitrary_unit_key = math.random();
-    local arbitrary_unit = units_by_name[fullname][math.floor(arbitrary_unit_key*#units_by_name[fullname])+1];
-    rng_cache[key] = arbitrary_unit.id;
+    local arbitrary_unit_key = math.random()
+    local arbitrary_unit = units_by_name[fullname][math.floor(arbitrary_unit_key*#units_by_name[fullname])+1]
+    rng_cache[key] = arbitrary_unit.id
   end
   return rng_cache[key]
 end
@@ -1336,7 +1336,7 @@ function deterministicRng(unit, cond)
   --have to adjust #undo_buffer by 1 during undoing since we're in the process of rewinding to the previous turn
   local key = unit.name..","..tostring(unit.x)..","..tostring(unit.y)..","..tostring(unit.dir)..","..tostring(cond.x)..","..tostring(cond.y)..","..tostring(cond.dir)..","..tostring(undoing and #undo_buffer - 1 or #undo_buffer)
   if rng_cache[key] == nil then
-     rng_cache[key] = math.random();
+     rng_cache[key] = math.random()
   end
   return rng_cache[key]
 end
@@ -1435,7 +1435,7 @@ function getUnitsOnTile(x,y,name,not_destroyed,exclude,checkmous)
     end
   end
   if (#unitsByTile(x, y) == 0 and (name == "no1" or name == nil) and inBounds(x, y, true) and empties_by_tile[x + y * mapwidth] ~= exclude) then
-    table.insert(result, empties_by_tile[x + y * mapwidth]);
+    table.insert(result, empties_by_tile[x + y * mapwidth])
   end
   return result
 end
@@ -1486,7 +1486,7 @@ function fullDump(o, r, fulldump)
     local s = '{'
     local first = true
     if not fulldump and o["new"] ~= nil then --abridged print for table
-      o = {fullname = o.textname, id = o.id, x = o.x, y = o.y, dir = o.dir};
+      o = {fullname = o.textname, id = o.id, x = o.x, y = o.y, dir = o.dir}
     end
     for k,v in pairs(o) do
       if not first then
@@ -1523,7 +1523,7 @@ function dump(o, fulldump)
       end
     else
       if not fulldump and o["new"] ~= nil then --abridged print for table
-        local tbl = {fullname = o.textname, id = o.id, x = o.x, y = o.y, dir = o.dir};
+        local tbl = {fullname = o.textname, id = o.id, x = o.x, y = o.y, dir = o.dir}
         for k,v in pairs(tbl) do
            if cn > 1 then s = s .. ',' end
           s = s .. tostring(k) .. ' = ' .. dump(v, fulldump)
@@ -2031,23 +2031,23 @@ function loadLevels(levels, mode, level_objs)
   stay_ther = nil
   if (rules_with ~= nil) then
     stay_ther = {}
-    local isstayther = getUnitsWithEffect("stay ther");
+    local isstayther = getUnitsWithEffect("stay ther")
     for _,unit in ipairs(isstayther) do
-      table.insert(stay_ther, unit);
+      table.insert(stay_ther, unit)
     end
   end
   
   --setup surrounds
-  surrounds = nil;
+  surrounds = nil
   if (level_objs ~= nil) then
-    surrounds = {};
+    surrounds = {}
     for i = -1,1 do
       surrounds[i] = {}
       for j = -1,1 do
         surrounds[i][j] = {}
         for _,lvl in ipairs(level_objs) do
           for __,stuff in ipairs(getUnitsOnTile(lvl.x+i,lvl.y+j,nil,false,lvl)) do
-            table.insert(surrounds[i][j], stuff);
+            table.insert(surrounds[i][j], stuff)
           end
         end
       end
@@ -2175,9 +2175,9 @@ function fillTextDetails(sentence, old_sentence, orig_index, word_index)
   for _,word in ipairs(sentence) do
     --print("sentence: "..fullDump(sentence))
     --print(text_list[word], old_sentence)
-    local newname = text_list[word].name;
+    local newname = text_list[word].name
     if newname:starts("text_") then
-      newname = newname:sub(6);
+      newname = newname:sub(6)
     end
     table.insert(ret,{type = text_list[word].texttype or {object = true}, name = newname, unit=old_sentence[orig_index].unit})
     w = w+1
@@ -2273,7 +2273,7 @@ function writeSaveFile(category, key, value)
   --e.g. "new level", "won", true
   if (unit_tests) then return false end
   save = {}
-  local filename = world;
+  local filename = world
   if (world == "" or world == nil) then
     filename = "levels"
   end
@@ -2283,15 +2283,15 @@ function writeSaveFile(category, key, value)
   if save[category] == nil then
     save[category] = {}
   end
-  save[category][key] = value;
+  save[category][key] = value
   love.filesystem.write(filename..".savebab", json.encode(save))
-  return true;
+  return true
 end
 
 function readSaveFile(category, key)
   if (unit_tests) then return nil end
   save = {}
-  local filename = world;
+  local filename = world
   if (world == "" or world == nil) then
     filename = "levels"
   end
@@ -2299,7 +2299,7 @@ function readSaveFile(category, key)
     save = json.decode(love.filesystem.read(filename..".savebab"))
   end
   if save[category] ~= nil then
-    return save[category][key];
+    return save[category][key]
   end
   return nil
 end
@@ -2357,20 +2357,20 @@ function updateGroup(n)
     local list = {}
     local set = {}
     if (rules_with[group] ~= nil) then
-      local rules = matchesRule(nil, "be", group);
+      local rules = matchesRule(nil, "be", group)
       for _,rule in ipairs(rules) do
-        local unit = rule[2];
+        local unit = rule[2]
         --by doing it this way, conds has already been tested, etc
-        set[unit] = true;
+        set[unit] = true
       end
-      local rulesnt = matchesRule(nil, "ben't", group);
+      local rulesnt = matchesRule(nil, "ben't", group)
       for _,rule in ipairs(rulesnt) do
-        local unit = rule[2];
-        set[unit] = nil;
+        local unit = rule[2]
+        set[unit] = nil
       end
     end
     for unit,_ in pairs(set) do
-      table.insert(list, unit);
+      table.insert(list, unit)
     end
     local old_size = #(group_lists[group] or {})
     group_lists[group] = list

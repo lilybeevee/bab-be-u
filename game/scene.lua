@@ -168,8 +168,8 @@ function doReplay(dt)
 	if love.timer.getTime() > (replay_playback_time + replay_playback_interval) then
     if not replay_pause then
       replay_playback_time = replay_playback_time + replay_playback_interval
-      doReplayTurn(replay_playback_turn);
-      replay_playback_turn = replay_playback_turn + 1;
+      doReplayTurn(replay_playback_turn)
+      replay_playback_turn = replay_playback_turn + 1
     else
       replay_playback_time = love.timer.getTime()
     end
@@ -182,7 +182,7 @@ function doReplayTurn(turn)
     replay_playback_string_parts = replay_playback_string:split("|")
     replay_playback_turns = replay_playback_string_parts[1]:split(";")
     if (replay_playback_string_parts[2] ~= nil) then
-      local ok, loaded_rng_cache = serpent.load(love.data.decode("string", "base64", replay_playback_string_parts[2]));
+      local ok, loaded_rng_cache = serpent.load(love.data.decode("string", "base64", replay_playback_string_parts[2]))
       if (not ok) then
         print("Serpent error while loading:", ok, fullDump(loaded_rng_cache))
       end
@@ -191,19 +191,19 @@ function doReplayTurn(turn)
   end
 	local turn_string = replay_playback_turns[turn]
 	if (turn_string == nil or turn_string == "") then
-		replay_playback = false;
-		print("Finished playback at turn: "..tostring(turn));
+		replay_playback = false
+		print("Finished playback at turn: "..tostring(turn))
     return
 	end
 	local turn_parts = turn_string:split(",")
-	x, y, key = tonumber(turn_parts[1]), tonumber(turn_parts[2]), turn_parts[3];
+	x, y, key = tonumber(turn_parts[1]), tonumber(turn_parts[2]), turn_parts[3]
 	if (x == nil or y == nil) then
-		replay_playback = false;
-		print("Finished playback at turn: "..tostring(turn));
+		replay_playback = false
+		print("Finished playback at turn: "..tostring(turn))
     return
 	else
     if (turn_parts[4] ~= nil) then
-      local ok, cursor_table = serpent.load(love.data.decode("string", "base64", turn_parts[4]));
+      local ok, cursor_table = serpent.load(love.data.decode("string", "base64", turn_parts[4]))
       if (not ok) then
         print("Serpent error while loading:", ok, fullDump(cursor_table))
       else
@@ -212,18 +212,18 @@ function doReplayTurn(turn)
           if (cursor == nil) then
             --print("Couldn't find cursor while doing replay, halp")
           else
-            cursor.x = coords[1];
-            cursor.y = coords[2];
+            cursor.x = coords[1]
+            cursor.y = coords[2]
             --[[if (not unit_tests) then
               local screenx, screeny = gameTileToScreen(cursor.x, cursor.y)
-              cursor.screenx = screenx;
-              cursor.screeny = screeny;
+              cursor.screenx = screenx
+              cursor.screeny = screeny
             end]]
           end
         end
       end
     end
-    doOneMove(x, y, key);
+    doOneMove(x, y, key)
   end
 end
 
@@ -280,11 +280,11 @@ function scene.keyPressed(key, isrepeat)
     return
   end
 
-  last_input_time = love.timer.getTime();
+  last_input_time = love.timer.getTime()
 
   if key == "escape" then
     
-    local current_level = level_name;
+    local current_level = level_name
     if readSaveFile(level_name, "won") then
       current_level = current_level.." (won) "
     end
@@ -429,13 +429,13 @@ function tryStartReplay()
   if love.filesystem.getInfo(dir .. level_name .. ".replay") then
     replay_playback_string = love.filesystem.read(dir .. level_name .. ".replay")
     replay_playback = true
-    print("Started replay from: "..dir .. level_name .. ".replay");
+    print("Started replay from: "..dir .. level_name .. ".replay")
   elseif love.filesystem.getInfo("levels/" .. level_name .. ".replay") then
     replay_playback_string = love.filesystem.read("levels/" .. level_name .. ".replay")
     replay_playback = true
-    print("Started replay from: ".."levels/" .. level_name .. ".replay");
+    print("Started replay from: ".."levels/" .. level_name .. ".replay")
   else
-    print("Failed to find replay: "..dir .. level_name .. ".replay");
+    print("Failed to find replay: "..dir .. level_name .. ".replay")
   end
 end
 
@@ -526,7 +526,7 @@ end
 --(Though this might not be true for mice, which can change their position mid-frame?? Also for other meta stuff (like windo)? Until there's mouse conditional rules or meta stuff in a puzzle IDK how this should actually work or be displayed. Just keep that in mind tho.)
 function scene.draw(dt)
   local draw_empty = rules_with["no1"] ~= nil
-  local start_time = love.timer.getTime();
+  local start_time = love.timer.getTime()
   -- reset canvas if the screen size has changed
   if love.graphics.getWidth() ~= last_width or love.graphics.getHeight() ~= last_height then
     last_width = love.graphics.getWidth()
@@ -721,7 +721,7 @@ function scene.draw(dt)
 		end
 		
 		local color = setColor(unit.color)
-    --check level_destroyed so that the object created by infloop is always white; needs to be changed if we want objects to be able to survive level destruction
+    --check level_destroyed so that the object created by infloop is always white needs to be changed if we want objects to be able to survive level destruction
     if level_destroyed then
       setColor({0,3})
     end
@@ -1110,7 +1110,7 @@ function scene.draw(dt)
 
       local sprite = sprites[draw.unit.sprite]
       love.graphics.draw(sprite, 0, 0, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
-      local unit = draw.unit;
+      local unit = draw.unit
       
       if (unit.meta ~= nil) then
 				love.graphics.setColor(getPaletteColor(4, 1))
@@ -1378,15 +1378,15 @@ function scene.draw(dt)
   end
 
   if (just_moved and not unit_tests) then
-    local end_time = love.timer.getTime();
+    local end_time = love.timer.getTime()
       print("scene.draw() took: "..tostring(round((end_time-start_time)*1000)).."ms")
-    just_moved = false;
+    just_moved = false
   end
 end
 
 function scene.checkInput()
   if replay_playback then return end
-  local start_time = love.timer.getTime();
+  local start_time = love.timer.getTime()
   do_move_sound = false
   
   if not (key_down["w"] or key_down["a"] or key_down["s"] or key_down["d"]) then
@@ -1424,8 +1424,8 @@ function scene.checkInput()
         end
         local result = doOneMove(0, 0, "undo")
         if result then playSound("undo") else playSound("fail") end
-        do_move_sound = false;
-				local end_time = love.timer.getTime();
+        do_move_sound = false
+				local end_time = love.timer.getTime()
         if not unit_tests then print("undo took: "..tostring(round((end_time-start_time)*1000)).."ms") end
       else
         local x, y = 0, 0
@@ -1445,22 +1445,22 @@ function scene.checkInput()
             if key_down["j"] and most_recent_key ~= "l" then x = x - 1 end
             if key_down["l"] and most_recent_key ~= "j" then x = x + 1 end
         elseif key == "numpad" then
-            if key_down["kp1"] and most_recent_key ~= "kp9" then x = x + -1; y = y + 1; end
-            if key_down["kp2"] and most_recent_key ~= "kp8" then x = x + 0; y = y + 1; end
-            if key_down["kp3"] and most_recent_key ~= "kp7" then x = x + 1; y = y + 1; end
-            if key_down["kp4"] and most_recent_key ~= "kp6" then x = x + -1; y = y + 0; end
-            if key_down["kp6"] and most_recent_key ~= "kp4" then x = x + 1; y = y + 0; end
-            if key_down["kp7"] and most_recent_key ~= "kp3" then x = x + -1; y = y + -1; end
-            if key_down["kp8"] and most_recent_key ~= "kp2" then x = x + 0; y = y + -1; end
-            if key_down["kp9"] and most_recent_key ~= "kp1" then x = x + 1; y = y + -1; end
+            if key_down["kp1"] and most_recent_key ~= "kp9" then x = x + -1; y = y + 1 end
+            if key_down["kp2"] and most_recent_key ~= "kp8" then x = x + 0; y = y + 1 end
+            if key_down["kp3"] and most_recent_key ~= "kp7" then x = x + 1; y = y + 1 end
+            if key_down["kp4"] and most_recent_key ~= "kp6" then x = x + -1; y = y + 0 end
+            if key_down["kp6"] and most_recent_key ~= "kp4" then x = x + 1; y = y + 0 end
+            if key_down["kp7"] and most_recent_key ~= "kp3" then x = x + -1; y = y + -1 end
+            if key_down["kp8"] and most_recent_key ~= "kp2" then x = x + 0; y = y + -1 end
+            if key_down["kp9"] and most_recent_key ~= "kp1" then x = x + 1; y = y + -1 end
         end
-        x = sign(x); y = sign(y);
+        x = sign(x); y = sign(y)
         if (last_input_time ~= nil) then
           print("input latency: "..tostring(round((start_time-last_input_time)*1000)).."ms")
           last_input_time = nil
         end
-        doOneMove(x, y, key);
-        local end_time = love.timer.getTime();
+        doOneMove(x, y, key)
+        local end_time = love.timer.getTime()
         if not unit_tests then print("gameplay logic took: "..tostring(round((end_time-start_time)*1000)).."ms") end
         -- BUP
         if hasRule("bup","be","u") and units_by_name["bup"] then
@@ -1513,7 +1513,7 @@ function escResult(do_actual)
     if (level_parent_level == nil or level_parent_level == "") then
       if (parent_filename ~= nil and parent_filename ~= "") then
         if (do_actual) then
-          loadLevels(parent_filename:split("|"), "play");
+          loadLevels(parent_filename:split("|"), "play")
         else
           return parent_filename
         end
@@ -1530,7 +1530,7 @@ function escResult(do_actual)
       end
     else
       if (do_actual) then
-        loadLevels({level_parent_level}, "play");
+        loadLevels({level_parent_level}, "play")
       else
         return level_parent_level
       end
@@ -1631,7 +1631,7 @@ function doOneMove(x, y, key)
     to_destroy = handleDels(to_destroy)
 
     if (will_undo) then
-      doTryAgain();
+      doTryAgain()
     end
 
     

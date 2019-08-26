@@ -2,12 +2,12 @@ function moveBlock()
   --baba order: FOLLOW, BACK, TELE, SHIFT
   --bab order: zip, look at, undo, visit fren, go, goooo, shy, spin, folo wal, turn cornr
 
-  local iszip = getUnitsWithEffect("zip");
+  local iszip = getUnitsWithEffect("zip")
   for _,unit in ipairs(iszip) do
     doZip(unit)
   end
   
-  local isstalk = matchesRule("?", "look at", "?");
+  local isstalk = matchesRule("?", "look at", "?")
   for _,ruleparent in ipairs(isstalk) do
     local stalkers = findUnitsByName(ruleparent.rule.subject.name)
     local stalkees = copyTable(findUnitsByName(ruleparent.rule.object.name))
@@ -32,7 +32,7 @@ function moveBlock()
     end
   end
   
-  local isstalknt = matchesRule("?", "look away", "?");
+  local isstalknt = matchesRule("?", "look away", "?")
   for _,ruleparent in ipairs(isstalknt) do
     local stalkers = findUnitsByName(ruleparent.rule.subject.name)
     local stalkees = copyTable(findUnitsByName(ruleparent.rule.object.name))
@@ -66,50 +66,50 @@ function moveBlock()
   --We have to keep track of the turn we started backing on in the undo buffer, so that if we undo to a past where a unit was UNDO, then we know what turn to pick back up from. We also have to save/restore backer_turn on destroy, so if we undo the unit's destruction it comes back with the right backer_turn.
   --(The cache is not necessary for the logic, it just removes our need to check ALL units to see if they need to be cleaned up.)
   
-  local backed_this_turn = {};
-  local not_backed_this_turn = {};
+  local backed_this_turn = {}
+  local not_backed_this_turn = {}
   
-  local isback = getUnitsWithEffectAndCount("undo");
+  local isback = getUnitsWithEffectAndCount("undo")
   for unit,amt in pairs(isback) do
-    backed_this_turn[unit] = true;
+    backed_this_turn[unit] = true
     if (unit.backer_turn == nil) then
       addUndo({"backer_turn", unit.id, nil})
-      unit.backer_turn = #undo_buffer+(0.5*(amt-1));
-      backers_cache[unit] = unit.backer_turn;
+      unit.backer_turn = #undo_buffer+(0.5*(amt-1))
+      backers_cache[unit] = unit.backer_turn
     end
-    doBack(unit.id, 2*(#undo_buffer-unit.backer_turn));
+    doBack(unit.id, 2*(#undo_buffer-unit.backer_turn))
     for i = 2,amt do
       addUndo({"backer_turn", unit.id, unit.backer_turn})
-      unit.backer_turn = unit.backer_turn - 0.5;
-      doBack(unit.id, 2*(#undo_buffer-unit.backer_turn));
+      unit.backer_turn = unit.backer_turn - 0.5
+      doBack(unit.id, 2*(#undo_buffer-unit.backer_turn))
     end
   end
   
   for unit,turn in pairs(backers_cache) do
     if turn ~= nil and not backed_this_turn[unit] then
-      not_backed_this_turn[unit] = true;
+      not_backed_this_turn[unit] = true
     end
   end
   
   for unit,_ in pairs(not_backed_this_turn) do
     addUndo({"backer_turn", unit.id, unit.backer_turn})
-    unit.backer_turn = nil;
-    backers_cache[unit] = nil;
+    unit.backer_turn = nil
+    backers_cache[unit] = nil
   end
   
-  to_destroy = handleDels(to_destroy);
+  to_destroy = handleDels(to_destroy)
   
   --Currently using deterministic tele version. Number of teles a teleporter has influences whether it goes forwards or backwards and by how many steps.
-  local istele = getUnitsWithEffectAndCount("visit fren");
-  teles_by_name = {};
-  teles_by_name_index = {};
-  tele_targets = {};
+  local istele = getUnitsWithEffectAndCount("visit fren")
+  teles_by_name = {}
+  teles_by_name_index = {}
+  tele_targets = {}
   --form lists, by tele name, of what all the tele units are
   for unit,amt in pairs(istele) do
     if teles_by_name[unit.fullname] == nil then
       teles_by_name[unit.fullname] = {}
     end
-    table.insert(teles_by_name[unit.fullname], unit);
+    table.insert(teles_by_name[unit.fullname], unit)
   end
   --then sort those lists in reading order (tiebreaker is id).
   --skip this step if doing random version, the sorting won't matter then!
@@ -344,7 +344,7 @@ function moveBlock()
     end
   end
   
-  local isshift = getUnitsWithEffect("go");
+  local isshift = getUnitsWithEffect("go")
   for _,unit in ipairs(isshift) do
     local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
     for _,on in ipairs(stuff) do
@@ -356,7 +356,7 @@ function moveBlock()
     end
   end
   
-  local isshift = getUnitsWithEffect("goooo");
+  local isshift = getUnitsWithEffect("goooo")
   for _,unit in ipairs(isshift) do
     local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
     for _,on in ipairs(stuff) do
@@ -368,11 +368,11 @@ function moveBlock()
     end
   end
   
-  local isshy = getUnitsWithEffect("shy");
+  local isshy = getUnitsWithEffect("shy")
   for _,unit in ipairs(isshy) do
     if not hasProperty("folo wal") and not hasProperty("turn cornr") then
-      local dpos = dirs8[unit.dir];
-      local dx, dy = dpos[1], dpos[2];
+      local dpos = dirs8[unit.dir]
+      local dx, dy = dpos[1], dpos[2]
       local stuff = getUnitsOnTile(unit.x+dx, unit.y+dy, nil, true)
       local stuff2 = getUnitsOnTile(unit.x-dx, unit.y-dy, nil, true)
       local pushfront = false
@@ -400,13 +400,13 @@ function moveBlock()
   
   --technically spin_8 does nothing, so skip it
   for i=1,7 do
-    local isspin = getUnitsWithEffectAndCount("spin" .. tostring(i));
+    local isspin = getUnitsWithEffectAndCount("spin" .. tostring(i))
     for unit,amt in pairs(isspin) do
       addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
       unit.olddir = unit.dir
       --if we aren't allowed to rotate to the indicated direction, skip it
       for j=1,8 do
-        local result = updateDir(unit, dirAdd(unit.dir, amt*i));
+        local result = updateDir(unit, dirAdd(unit.dir, amt*i))
         if not result then
           amt = amt + 1
         else
@@ -418,20 +418,20 @@ function moveBlock()
   
   local folo_wall = getUnitsWithEffectAndCount("folo wal")
   for unit,amt in pairs(folo_wall) do
-    local fwd = unit.dir;
-    local right = (((unit.dir + 2)-1)%8)+1;
-    local bwd = (((unit.dir + 4)-1)%8)+1;
-    local left = (((unit.dir + 6)-1)%8)+1;
-    local result = changeDirIfFree(unit, right) or changeDirIfFree(unit, fwd) or changeDirIfFree(unit, left) or changeDirIfFree(unit, bwd);
+    local fwd = unit.dir
+    local right = (((unit.dir + 2)-1)%8)+1
+    local bwd = (((unit.dir + 4)-1)%8)+1
+    local left = (((unit.dir + 6)-1)%8)+1
+    local result = changeDirIfFree(unit, right) or changeDirIfFree(unit, fwd) or changeDirIfFree(unit, left) or changeDirIfFree(unit, bwd)
   end
   
   local turn_cornr = getUnitsWithEffectAndCount("turn cornr")
   for unit,amt in pairs(turn_cornr) do
-    local fwd = unit.dir;
-    local right = (((unit.dir + 2)-1)%8)+1;
-    local bwd = (((unit.dir + 4)-1)%8)+1;
-    local left = (((unit.dir + 6)-1)%8)+1;
-    local result = changeDirIfFree(unit, fwd) or changeDirIfFree(unit, right) or changeDirIfFree(unit, left) or changeDirIfFree(unit, bwd);
+    local fwd = unit.dir
+    local right = (((unit.dir + 2)-1)%8)+1
+    local bwd = (((unit.dir + 4)-1)%8)+1
+    local left = (((unit.dir + 6)-1)%8)+1
+    local result = changeDirIfFree(unit, fwd) or changeDirIfFree(unit, right) or changeDirIfFree(unit, left) or changeDirIfFree(unit, bwd)
   end
 end
 
@@ -458,25 +458,25 @@ function updateUnits(undoing, big_update)
     
     --MOAR is 4-way growth, MOARx2 is 8-way growth, MOARx3 is 2x 4-way growth, MOARx4 is 2x 8-way growth, MOARx5 is 3x 4-way growth, etc.
     --TODO: If you write txt be moar, it's ambiguous which of a stacked text pair will be the one to grow into an adjacent tile first. But if you make it simultaneous, then you get double growth into corners which turns into exponential growth, which is even worse. It might need to be special cased in a clever way.
-    local give_me_moar = true;
-    local moar_repeats = 0;
+    local give_me_moar = true
+    local moar_repeats = 0
     while (give_me_moar) do
-      give_me_moar = false;
-      local ismoar = getUnitsWithEffectAndCount("moar");
+      give_me_moar = false
+      local ismoar = getUnitsWithEffectAndCount("moar")
       for unit,amt in pairs(ismoar) do
         if unit.name ~= "lie/8" and timecheck(unit,"be","moar") then
-          amt = amt - 2*moar_repeats;
+          amt = amt - 2*moar_repeats
           if amt > 0 then
             if (amt % 2) == 1 then
               for i=1,4 do
-                local ndir = dirs[i];
-                local dx = ndir[1];
-                local dy = ndir[2];
+                local ndir = dirs[i]
+                local dx = ndir[1]
+                local dy = ndir[2]
                 if canMove(unit, dx, dy, i*2-1, false, false, unit.name) then
                   if unit.class == "unit" then
                     local new_unit = createUnit(tiles_by_name[unit.fullname], unit.x, unit.y, unit.dir)
                     addUndo({"create", new_unit.id, false})
-                    _, __, ___, x, y = getNextTile(unit, dx, dy, i*2-1, false);
+                    _, __, ___, x, y = getNextTile(unit, dx, dy, i*2-1, false)
                     moveUnit(new_unit,x,y)
                     addUndo({"update", new_unit.id, unit.x, unit.y, unit.dir})
                   elseif unit.class == "cursor" then
@@ -486,20 +486,20 @@ function updateUnits(undoing, big_update)
                       addUndo({"create_cursor", new_mouse.id})
                     end
                   end
-                  give_me_moar = give_me_moar or amt >= 3;
+                  give_me_moar = give_me_moar or amt >= 3
                 end
               end
             else
               for i=1,8 do
-                local ndir = dirs8[i];
-                local dx = ndir[1];
-                local dy = ndir[2];
+                local ndir = dirs8[i]
+                local dx = ndir[1]
+                local dy = ndir[2]
                 if canMove(unit, dx, dy, i, false, false, unit.name) then
                   if unit.class == "unit" then
                     local new_unit = createUnit(tiles_by_name[unit.fullname], unit.x, unit.y, unit.dir)
                     addUndo({"create", new_unit.id, false})
-                    _, __, ___, x, y = getNextTile(unit, dx, dy, i, false);
-                    moveUnit(new_unit,x,y);
+                    _, __, ___, x, y = getNextTile(unit, dx, dy, i, false)
+                    moveUnit(new_unit,x,y)
                     addUndo({"update", new_unit.id, unit.x, unit.y, unit.dir})
                   elseif unit.class == "cursor" then
                     local others = getCursorsOnTile(unit.x + dx, unit.y + dy)
@@ -508,7 +508,7 @@ function updateUnits(undoing, big_update)
                       addUndo({"create_cursor", new_mouse.id})
                     end
                   end
-                  give_me_moar = give_me_moar or amt >= 3;
+                  give_me_moar = give_me_moar or amt >= 3
                 end
               end
             end
@@ -577,7 +577,7 @@ function updateUnits(undoing, big_update)
     
     to_destroy = handleDels(to_destroy)
     
-    local split = getUnitsWithEffect("split");
+    local split = getUnitsWithEffect("split")
     for _,unit in ipairs(split) do
       if unit.name ~= "lie" then
         local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
@@ -594,7 +594,7 @@ function updateUnits(undoing, big_update)
                 if on.class == "unit" then
                   local new_unit = createUnit(tiles_by_name[on.fullname], on.x, on.y, dir1)
                   addUndo({"create", new_unit.id, false})
-                  _, __, ___, x, y = getNextTile(on, dx1, dy1, dir1, false);
+                  _, __, ___, x, y = getNextTile(on, dx1, dy1, dir1, false)
                   moveUnit(new_unit,x,y)
                   addUndo({"update", new_unit.id, on.x, on.y, dir1})
                 elseif unit.class == "cursor" then
@@ -609,7 +609,7 @@ function updateUnits(undoing, big_update)
                 if on.class == "unit" then
                   local new_unit = createUnit(tiles_by_name[on.fullname], on.x, on.y, dir2)
                   addUndo({"create", new_unit.id, false})
-                  _, __, ___, x, y = getNextTile(on, dx2, dy2, dir2, false);
+                  _, __, ___, x, y = getNextTile(on, dx2, dy2, dir2, false)
                   moveUnit(new_unit,x,y)
                   addUndo({"update", new_unit.id, on.x, on.y, dir2})
                 elseif unit.class == "cursor" then
@@ -622,9 +622,9 @@ function updateUnits(undoing, big_update)
               end
               table.insert(to_destroy, on)
             else
-              addUndo({"timeless_splitter_add", unit.id});
+              addUndo({"timeless_splitter_add", unit.id})
               table.insert(timeless_splitter,unit.id)
-              addUndo({"timeless_splittee_add", on.id});
+              addUndo({"timeless_splittee_add", on.id})
               table.insert(timeless_splittee,on.id)
             end
           end
@@ -632,14 +632,14 @@ function updateUnits(undoing, big_update)
       else
         if timecheck(unit,"be","split") then
           for i=1,8 do
-            local ndir = dirs8[i];
-            local dx = ndir[1];
-            local dy = ndir[2];
+            local ndir = dirs8[i]
+            local dx = ndir[1]
+            local dy = ndir[2]
             if canMove(unit, dx, dy, i, false, false, unit.name) then
               local new_unit = createUnit(tiles_by_name["lie/8"], unit.x, unit.y, i)
               addUndo({"create", new_unit.id, false})
-              _, __, ___, x, y = getNextTile(unit, dx, dy, i, false);
-              moveUnit(new_unit,x,y);
+              _, __, ___, x, y = getNextTile(unit, dx, dy, i, false)
+              moveUnit(new_unit,x,y)
               addUndo({"update", new_unit.id, unit.x, unit.y, unit.dir})
             end
           end
@@ -650,10 +650,10 @@ function updateUnits(undoing, big_update)
     
     if not timeless then
       for _,unit in ipairs(timeless_splitter) do
-        addUndo({"timeless_splitter_remove", unit});
-        unit = units_by_id[unit];
+        addUndo({"timeless_splitter_remove", unit})
+        unit = units_by_id[unit]
         for _,on in ipairs(timeless_splittee) do
-          on = units_by_id[on];
+          on = units_by_id[on]
           if (unit ~= nil and on ~= nil) then
             table.insert(to_destroy, on)
             local dir1 = dirAdd(unit.dir,0)
@@ -666,7 +666,7 @@ function updateUnits(undoing, big_update)
               if on.class == "unit" then
                 local new_unit = createUnit(tiles_by_name[on.fullname], on.x, on.y, dir1)
                 addUndo({"create", new_unit.id, false})
-                _, __, ___, x, y = getNextTile(on, dx1, dy1, dir1, false);
+                _, __, ___, x, y = getNextTile(on, dx1, dy1, dir1, false)
                 moveUnit(new_unit,x,y)
                 addUndo({"update", new_unit.id, on.x, on.y, dir1})
               elseif unit.class == "cursor" then
@@ -681,7 +681,7 @@ function updateUnits(undoing, big_update)
               if on.class == "unit" then
                 local new_unit = createUnit(tiles_by_name[on.fullname], on.x, on.y, dir2)
                 addUndo({"create", new_unit.id, false})
-                _, __, ___, x, y = getNextTile(on, dx2, dy2, dir2, false);
+                _, __, ___, x, y = getNextTile(on, dx2, dy2, dir2, false)
                 moveUnit(new_unit,x,y)
                 addUndo({"update", new_unit.id, on.x, on.y, dir2})
               elseif unit.class == "cursor" then
@@ -696,13 +696,13 @@ function updateUnits(undoing, big_update)
         end
       end
       for _,on in ipairs(timeless_splittee) do
-        addUndo({"timeless_splittee_remove", on});
+        addUndo({"timeless_splittee_remove", on})
       end
       timeless_splitter = {}
       timeless_splittee = {}
     end
     
-    to_destroy = handleDels(to_destroy);
+    to_destroy = handleDels(to_destroy)
     
     local isvs = matchesRule(nil,"vs","?")
     for _,ruleparent in ipairs(isvs) do
@@ -746,7 +746,7 @@ function updateUnits(undoing, big_update)
     
     to_destroy = handleDels(to_destroy)
     
-    local issink = getUnitsWithEffect("no swim");
+    local issink = getUnitsWithEffect("no swim")
     for _,unit in ipairs(issink) do
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
       for _,on in ipairs(stuff) do
@@ -760,17 +760,17 @@ function updateUnits(undoing, big_update)
           else
             table.insert(time_destroy,unit.id)
             table.insert(time_destroy,on.id)
-						addUndo({"time_destroy",unit.id});
-						addUndo({"time_destroy",on.id});
+						addUndo({"time_destroy",unit.id})
+						addUndo({"time_destroy",on.id})
             table.insert(time_sfx,"sink")
           end
         end
       end
     end
     
-    to_destroy = handleDels(to_destroy);
+    to_destroy = handleDels(to_destroy)
     
-    local isweak = getUnitsWithEffect("ouch");
+    local isweak = getUnitsWithEffect("ouch")
     for _,unit in ipairs(isweak) do
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
       for _,on in ipairs(stuff) do
@@ -782,16 +782,16 @@ function updateUnits(undoing, big_update)
             shakeScreen(0.3, 0.1)
           else
             table.insert(time_destroy,unit.id)
-						addUndo({"time_destroy",unit.id});
+						addUndo({"time_destroy",unit.id})
             table.insert(time_sfx,"break")
           end
         end
       end
     end
     
-    to_destroy = handleDels(to_destroy);
+    to_destroy = handleDels(to_destroy)
     
-    local ishot = getUnitsWithEffect("hotte");
+    local ishot = getUnitsWithEffect("hotte")
     for _,unit in ipairs(ishot) do
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
       for _,on in ipairs(stuff) do
@@ -803,16 +803,16 @@ function updateUnits(undoing, big_update)
             shakeScreen(0.3, 0.1)
           else
             table.insert(time_destroy,on.id)
-						addUndo({"time_destroy",on.id});
+						addUndo({"time_destroy",on.id})
             table.insert(time_sfx,"hotte")
           end
         end
       end
     end
     
-    to_destroy = handleDels(to_destroy);
+    to_destroy = handleDels(to_destroy)
     
-    local isdefeat = getUnitsWithEffect(":(");
+    local isdefeat = getUnitsWithEffect(":(")
     for _,unit in ipairs(isdefeat) do
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
       for _,on in ipairs(stuff) do
@@ -825,16 +825,16 @@ function updateUnits(undoing, big_update)
             shakeScreen(0.3, 0.2)
           else
             table.insert(time_destroy,on.id)
-						addUndo({"time_destroy",on.id});
+						addUndo({"time_destroy",on.id})
             table.insert(time_sfx,"break")
           end
         end
       end
     end
     
-    to_destroy = handleDels(to_destroy);
+    to_destroy = handleDels(to_destroy)
     
-    local isshut = getUnitsWithEffect("ned kee");
+    local isshut = getUnitsWithEffect("ned kee")
     for _,unit in ipairs(isshut) do
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
       for _,on in ipairs(stuff) do
@@ -859,9 +859,9 @@ function updateUnits(undoing, big_update)
       end
     end
     
-    to_destroy = handleDels(to_destroy);
+    to_destroy = handleDels(to_destroy)
     
-    local issnacc = matchesRule(nil, "snacc", "?");
+    local issnacc = matchesRule(nil, "snacc", "?")
     for _,ruleparent in ipairs(issnacc) do
       local unit = ruleparent[2]
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, true)
@@ -874,14 +874,14 @@ function updateUnits(undoing, big_update)
             shakeScreen(0.3, 0.15)
           else
             table.insert(time_destroy,on.id)
-						addUndo({"time_destroy",on.id});
+						addUndo({"time_destroy",on.id})
             table.insert(time_sfx,"snacc")
           end
         end
       end
     end
     
-    local isreset = getUnitsWithEffect("try again");
+    local isreset = getUnitsWithEffect("try again")
     for _,unit in ipairs(isreset) do
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
       for _,on in ipairs(stuff) do
@@ -898,9 +898,9 @@ function updateUnits(undoing, big_update)
       end
     end
     
-    to_destroy = handleDels(to_destroy);
+    to_destroy = handleDels(to_destroy)
     
-    local iscrash = getUnitsWithEffect("xwx");
+    local iscrash = getUnitsWithEffect("xwx")
     for _,unit in ipairs(iscrash) do
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
       for _,on in ipairs(stuff) do
@@ -909,16 +909,16 @@ function updateUnits(undoing, big_update)
           if timecheck(unit,"be","xwx") and (timecheck(on,"be","u") or timecheck(on,"be","u too") or timecheck(on,"be","u tres")) then
             love = {}
           else
-            addUndo({"timeless_crash_add"});
+            addUndo({"timeless_crash_add"})
             timeless_crash = true
           end
         end
       end
     end
     
-    to_destroy = handleDels(to_destroy);
+    to_destroy = handleDels(to_destroy)
     
-    local isbonus = getUnitsWithEffect(":o");
+    local isbonus = getUnitsWithEffect(":o")
     for _,unit in ipairs(isbonus) do
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
       for _,on in ipairs(stuff) do
@@ -928,17 +928,17 @@ function updateUnits(undoing, big_update)
             table.insert(to_destroy, unit)
             playSound("bonus")
             addParticles("bonus", unit.x, unit.y, unit.color)
-            writeSaveFile(level_name, "bonus", true);
+            writeSaveFile(level_name, "bonus", true)
           else
             table.insert(time_destroy,unit.id)
-						addUndo({"time_destroy",unit.id});
+						addUndo({"time_destroy",unit.id})
             table.insert(time_sfx,"bonus")
           end
         end
       end
     end
     
-    to_destroy = handleDels(to_destroy);
+    to_destroy = handleDels(to_destroy)
     
     local unwin = getUnitsWithEffect(";d")
     local isunwon = {}
@@ -947,7 +947,7 @@ function updateUnits(undoing, big_update)
       for _,on in ipairs(stuff) do
         is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
         if is_u and sameFloat(unit, on) then
-          if timecheck(unit,"be",";d") and (timecheck(on,"be","u") or timecheck(on,"be","u too") or timecheck(on,"be","u tres")) then
+          if timecheck(unit,"be","d") and (timecheck(on,"be","u") or timecheck(on,"be","u too") or timecheck(on,"be","u tres")) then
             isunwon[unit] = true
             if readSaveFile(level_name, "won") then
               writeSaveFile(level_name, "won", false)
@@ -960,7 +960,7 @@ function updateUnits(undoing, big_update)
       end
     end
     
-    local iswin = getUnitsWithEffect(":)");
+    local iswin = getUnitsWithEffect(":)")
     for _,unit in ipairs(iswin) do
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
       for _,on in ipairs(stuff) do
@@ -969,7 +969,7 @@ function updateUnits(undoing, big_update)
           if timecheck(unit,"be",":)") and (timecheck(on,"be","u") or timecheck(on,"be","u too") or timecheck(on,"be","u tres")) then
             doWin("won")
           else
-            addUndo({"timeless_win_add", on.id});
+            addUndo({"timeless_win_add", on.id})
             table.insert(timeless_win,on.id)
           end
         end
@@ -1007,7 +1007,7 @@ function updateUnits(undoing, big_update)
     doDirRules()
   end
   
-  DoDiscordRichPresence();
+  DoDiscordRichPresence()
   
   for i,unit in ipairs(units) do
     local deleted = false
@@ -1028,40 +1028,40 @@ function updateUnits(undoing, big_update)
   
   --Fix the 'txt be undo' bug by checking an additional time if we need to unset backer_turn for a unit.
   
-  local backed_this_turn = {};
-  local not_backed_this_turn = {};
+  local backed_this_turn = {}
+  local not_backed_this_turn = {}
   
-  local isback = getUnitsWithEffectAndCount("undo");
+  local isback = getUnitsWithEffectAndCount("undo")
   for unit,amt in pairs(isback) do
-    backed_this_turn[unit] = true;
+    backed_this_turn[unit] = true
   end
   
   for unit,turn in pairs(backers_cache) do
     if turn ~= nil and not backed_this_turn[unit] then
-      not_backed_this_turn[unit] = true;
+      not_backed_this_turn[unit] = true
     end
   end
   
   for unit,_ in pairs(not_backed_this_turn) do
     addUndo({"backer_turn", unit.id, unit.backer_turn})
-    unit.backer_turn = nil;
-    backers_cache[unit] = nil;
+    unit.backer_turn = nil
+    backers_cache[unit] = nil
   end
   
   if (will_undo) or (timeless_reset and not timeless) then
-    addUndo({"timeless_reset_remove"});
+    addUndo({"timeless_reset_remove"})
     timeless_reset = false
-    doTryAgain();
+    doTryAgain()
   end
   
   if timeless_crash and not timeless then
-    addUndo({"timeless_crash_remove"});
+    addUndo({"timeless_crash_remove"})
     love = {}
   end
 end
 
 function miscUpdates()
-  updateGraphicalPropertyCache();
+  updateGraphicalPropertyCache()
 
   if units_by_name["os"] then
     for i,unit in ipairs(units_by_name["os"]) do
@@ -1135,20 +1135,20 @@ end
 function updateGraphicalPropertyCache()
   for prop,tbl in pairs(graphical_property_cache) do
     --only flye has a stacking graphical effect and we want to ignore selector, the rest are boolean
-    local count = prop == "flye";
-    new_tbl = {};
+    local count = prop == "flye"
+    new_tbl = {}
     if (count) then
-      local isprop = getUnitsWithEffectAndCount(prop);
+      local isprop = getUnitsWithEffectAndCount(prop)
       for unit,amt in pairs(isprop) do
-        new_tbl[unit] = unit.fullname ~= "selctr" and amt or nil;
+        new_tbl[unit] = unit.fullname ~= "selctr" and amt or nil
       end
     else
-      local isprop = getUnitsWithEffect(prop);
+      local isprop = getUnitsWithEffect(prop)
       for _,unit in pairs(isprop) do
-        new_tbl[unit] = true;
+        new_tbl[unit] = true
       end
     end
-    graphical_property_cache[prop] = new_tbl;
+    graphical_property_cache[prop] = new_tbl
   end
   
   updateUnitColours()
@@ -1164,13 +1164,13 @@ function updateUnitColours()
     for _,match in ipairs(decolour) do
       local unit = match[2]
       if (unit[colour] == true) then
-        addUndo({"colour_change", unit.id, colour, true});
+        addUndo({"colour_change", unit.id, colour, true})
         unit[colour] = false
         to_update[unit] = {}
       end
       --If a unit ben't its native colour, make it blacc.
       if palette[1] == tiles_list[unit.tile].color[1] and palette[2] == tiles_list[unit.tile].color[2]  and unitNotRecoloured(unit) then
-        addUndo({"colour_change", unit.id, "blacc", false});
+        addUndo({"colour_change", unit.id, "blacc", false})
         unit["blacc"] = true
         to_update[unit] = {}
       end
@@ -1195,7 +1195,7 @@ function updateUnitColours()
     for _,on in ipairs(stuff) do
       if unit ~= on and hasRule(unit, "paint", on) and sameFloat(unit, on) then
         if timecheck(unit,"paint",on) and timecheck(on) then
-          local colour = colour_for_palette[unit.color[1]][unit.color[2]];
+          local colour = colour_for_palette[unit.color[1]][unit.color[2]]
           if (colour ~= nil and on[colour] ~= true) then
             if to_update[on] == nil then
               to_update[on] = {}
@@ -1211,7 +1211,7 @@ function updateUnitColours()
   local depaint = matchesRule(nil,"ben't","paint")
   for _,match in ipairs(depaint) do
     local unit = match[2]
-    unitUnsetColours(unit);
+    unitUnsetColours(unit)
     to_update[unit] = {}
   end
   
@@ -1219,7 +1219,7 @@ function updateUnitColours()
     unitUnsetColours(unit)
     for _,colour in ipairs(colours) do
       if (unit[colour] ~= true) then
-        addUndo({"colour_change", unit.id, colour, false});
+        addUndo({"colour_change", unit.id, colour, false})
         unit[colour] = true
       end
     end
@@ -1230,7 +1230,7 @@ end
 function unitUnsetColours(unit)
   for colour,palette in pairs(main_palette_for_colour) do
     if unit[colour] == true then
-      addUndo({"colour_change", unit.id, colour, true});
+      addUndo({"colour_change", unit.id, colour, true})
       unit[colour] = false
     end
   end
@@ -1295,9 +1295,9 @@ end
 
 function DoDiscordRichPresence()
   if (discordRPC ~= true) then
-    local isu = getUnitsWithEffect("u");
+    local isu = getUnitsWithEffect("u")
     if (#isu > 0) then
-      local unit = isu[1];
+      local unit = isu[1]
       if love.filesystem.read("author_name") == "jill" or unit.fullname == "jill" then
         presence["smallImageText"] = "jill"
         presence["smallImageKey"] = "jill"
@@ -1353,8 +1353,8 @@ function handleTimeDels(time_destroy)
   local convert = false
   local del_units = {}
   for _,unitid in ipairs(time_destroy) do
-    unit = units_by_id[unitid];
-    addUndo({"time_destroy_remove", unitid});
+    unit = units_by_id[unitid]
+    addUndo({"time_destroy_remove", unitid})
     if unit ~= nil and not hasProperty(unit, "protecc") then
       addParticles("destroy",unit.x,unit.y,unit.color)
       unit.destroyed = true
@@ -1362,7 +1362,7 @@ function handleTimeDels(time_destroy)
       table.insert(del_units,unit)
       for i,win in ipairs(timeless_win) do
         if unit.id == win then
-          addUndo({"timeless_win_remove", win});
+          addUndo({"timeless_win_remove", win})
           table.remove(timeless_win,i)
         end
       end
@@ -1374,7 +1374,7 @@ function handleTimeDels(time_destroy)
       end
       for i,split in ipairs(timeless_splittee) do
         if unit.id == win then
-          addUndo({"timeless_splittee_remove", split});
+          addUndo({"timeless_splittee_remove", split})
           table.remove(timeless_splittee,i)
         end
       end
@@ -1583,7 +1583,7 @@ function levelBlock()
     mergeTable(yous, youtres)
     for _,unit in ipairs(yous) do
       if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
-        writeSaveFile(level_name, "bonus", true);
+        writeSaveFile(level_name, "bonus", true)
         destroyLevel("bonus")
         if not lvlsafe then return end
       end
@@ -1613,7 +1613,7 @@ function changeDirIfFree(unit, dir)
   if canMove(unit, dirs8[dir][1], dirs8[dir][2], dir, false, false, unit.name, "dir check") then
     addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
     unit.olddir = unit.dir
-    updateDir(unit, dir);
+    updateDir(unit, dir)
     return true
   end
   return false
@@ -1677,7 +1677,7 @@ function destroyLevel(reason)
     doWin("transform", transform_results)
   end
   
-  addUndo({"destroy_level", reason});
+  addUndo({"destroy_level", reason})
   playSound(reason)
   if reason == "unlock" or reason == "convert" then
     playSound("break")
@@ -1759,9 +1759,9 @@ function convertLevel()
   local meta = matchesRule(outerlvl, "be","meta")
   if (#meta > 0) then
    local tile = nil
-    local nametocreate = outerlvl.fullname;
+    local nametocreate = outerlvl.fullname
     for i = 1,#meta do
-      nametocreate = "text_"..nametocreate;
+      nametocreate = "text_"..nametocreate
     end
     tile = tiles_by_namePossiblyMeta(nametocreate)
     if tile ~= nil then
@@ -1814,7 +1814,7 @@ function convertUnits(pass)
       if inBounds(cursor.x, cursor.y) then
         local tile = tiles_by_name["text_mous"]
         if tile ~= nil then
-          table.insert(del_cursors, cursor);
+          table.insert(del_cursors, cursor)
         end
         local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
         if (new_unit ~= nil) then
@@ -1825,9 +1825,9 @@ function convertUnits(pass)
       table.insert(converted_units, unit)
       addParticles("bonus", unit.x, unit.y, unit.color)
       local tile = nil
-      local nametocreate = unit.fullname;
+      local nametocreate = unit.fullname
       for i = 1,amt do
-        nametocreate = "text_"..nametocreate;
+        nametocreate = "text_"..nametocreate
       end
       tile = tiles_by_namePossiblyMeta(nametocreate)
       if tile ~= nil then
@@ -1843,15 +1843,15 @@ function convertUnits(pass)
   for unit,amt in pairs(demeta) do
     if (unit.name == "mous" and inBounds(unit.x, unit.y)) then
       addParticles("bonus", unit.x, unit.y, unit.color)
-      table.insert(del_cursors, unit);
+      table.insert(del_cursors, unit)
     elseif not unit.new and unit.type ~= "outerlvl" and timecheck(unit,"ben't","meta") then
       table.insert(converted_units, unit)
       addParticles("bonus", unit.x, unit.y, unit.color)
       --remove "text_" as many times as we're de-metaing
-      local nametocreate = unit.fullname;
+      local nametocreate = unit.fullname
       for i = 1,amt do
         if nametocreate:starts("text_") then
-          nametocreate = nametocreate:sub(6, -1);
+          nametocreate = nametocreate:sub(6, -1)
         else
           nametocreate = "no1"
           break
@@ -1861,7 +1861,7 @@ function convertUnits(pass)
         local new_mouse = createMouse(unit.x, unit.y)
         addUndo({"create_cursor", new_mouse.id, created_from_id = unit.id})
       else
-        local tile = tiles_by_name[nametocreate];
+        local tile = tiles_by_name[nametocreate]
         if tile ~= nil then
           local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
           if (new_unit ~= nil) then
@@ -1883,7 +1883,7 @@ function convertUnits(pass)
       for _,cursor in ipairs(cursors) do
         if inBounds(cursor.x, cursor.y) and testConds(cursor, rule.subject.conds) then
           addParticles("bonus", unit.x, unit.y, unit.color)
-          table.insert(del_cursors, cursor);
+          table.insert(del_cursors, cursor)
         end
       end
     elseif not unit.new and nameIs(unit, rule.object.name) and timecheck(unit) then
@@ -1909,7 +1909,7 @@ function convertUnits(pass)
                 tile = tiles_by_name["text_" .. rule.subject.name]
               end
               if tile ~= nil then
-                table.insert(del_cursors, cursor);
+                table.insert(del_cursors, cursor)
               end
               local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
               if (new_unit ~= nil) then
@@ -1962,7 +1962,7 @@ function convertUnits(pass)
               tile = tiles_by_name["this"]
             end
             if tile ~= nil then
-              table.insert(del_cursors, cursor);
+              table.insert(del_cursors, cursor)
               local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true, nil, nil, rule.object.prefix)
               if (new_unit ~= nil) then
                 addUndo({"create", new_unit.id, true, created_from_id = unit.id})
@@ -2060,7 +2060,7 @@ function deleteUnits(del_units,convert)
     if (not unit.removed_final) then
       for colour,_ in pairs(main_palette_for_colour) do
         if unit[colour] == true then
-          addUndo({"colour_change", unit.id, colour, true});
+          addUndo({"colour_change", unit.id, colour, true})
         end
       end
       if (unit.backer_turn ~= nil) then
@@ -2151,7 +2151,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
   
   --make outerlvl here
   if ((unit.name == "lvl" or unit.fullname == "lvl") and really_create_empty) then
-    unit.type = "outerlvl";
+    unit.type = "outerlvl"
   end
   
   --abort if we're trying to create empty outside of initialization, to preserve the invariant 'there is exactly empty per tile'
@@ -2173,7 +2173,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
   end
   
   if unit.type == "text" then
-    updateNameBasedOnDir(unit);
+    updateNameBasedOnDir(unit)
     if not table.has_value(referenced_text, unit.fullname) then
       table.insert(referenced_text, unit.fullname)
     end
@@ -2216,10 +2216,10 @@ function deleteUnit(unit,convert,undoing)
   unit.removed = true
   unit.removed_final = true
   if not undoing and not convert and not level_destroyed and rules_with ~= nil then
-    gotters = matchesRule(unit, "got", "?");
+    gotters = matchesRule(unit, "got", "?")
     for _,ruleparent in ipairs(gotters) do
       local rule = ruleparent.rule
-      dropGotUnit(unit, rule);
+      dropGotUnit(unit, rule)
     end
   end
   --empty can't really be destroyed, only pretend to be, to preserve the invariant 'there is exactly empty per tile'
@@ -2259,12 +2259,12 @@ function moveUnit(unit,x,y,portal)
     unit.x = x
     unit.y = y
     local dest_tileid = unit.x + unit.y * mapwidth
-    dest_empty = empties_by_tile[dest_tileid];
-    dest_empty.x = oldx;
-    dest_empty.y = oldy;
-    dest_empty.dir = unit.dir;
-    empties_by_tile[tileid] = dest_empty;
-    empties_by_tile[dest_tileid] = unit;
+    dest_empty = empties_by_tile[dest_tileid]
+    dest_empty.x = oldx
+    dest_empty.y = oldy
+    dest_empty.dir = unit.dir
+    empties_by_tile[tileid] = dest_empty
+    empties_by_tile[dest_tileid] = unit
   else
     removeFromTable(unitsByTile(unit.x, unit.y), unit)
 
@@ -2289,8 +2289,8 @@ function moveUnit(unit,x,y,portal)
       if (not unit_tests) then
         if (unit.draw.x == x and unit.draw.y == y) then
           --'bump' effect to show movement failed
-          unit.draw.x = (unit.x+x*2)/3;
-          unit.draw.y = (unit.y+y*2)/3;
+          unit.draw.x = (unit.x+x*2)/3
+          unit.draw.y = (unit.y+y*2)/3
           addTween(tween.new(0.1, unit.draw, {x = x, y = y}), "unit:pos:" .. unit.tempid)
         elseif math.abs(x - unit.x) < 2 and math.abs(y - unit.y) < 2 then
           --linear interpolate to adjacent destination
@@ -2339,7 +2339,7 @@ function updateDir(unit, dir, force)
     should_parse_rules = true
   end
   
-  updateNameBasedOnDir(unit);
+  updateNameBasedOnDir(unit)
   
   if (not unit_tests) then
     unit.draw.rotation = unit.draw.rotation % 360
@@ -2465,37 +2465,37 @@ end
 
 meta_offset = 100000
 function tiles_listPossiblyMeta(tile_id)
-  local tile = tiles_list[tile_id];
+  local tile = tiles_list[tile_id]
   if (tile ~= nil) then
     return tile
   end
   --recursively make all less meta tiles
   if (tile_id > 100000) then
-    local premeta_tile = tiles_listPossiblyMeta(tile_id-meta_offset);
+    local premeta_tile = tiles_listPossiblyMeta(tile_id-meta_offset)
     --now we can make our new meta tile!
-    tile = makeMetaTile(premeta_tile);
-    tiles_by_name[tile.name] = tile_id;
-    tiles_list[tile_id] = tile;
+    tile = makeMetaTile(premeta_tile)
+    tiles_by_name[tile.name] = tile_id
+    tiles_list[tile_id] = tile
   end
-  return tile;
+  return tile
 end
 
 function tiles_by_namePossiblyMeta(name)
-  local tile_id = tiles_by_name[name];
+  local tile_id = tiles_by_name[name]
   if (tile_id ~= nil) then
     return tile_id
   end
   --recursively make all less meta tiles
   if name:starts("text_") then
-    local premeta_tile_id = tiles_by_namePossiblyMeta(name:sub(6, -1));
-    local premeta_tile = tiles_list[premeta_tile_id];
-    tile_id = premeta_tile_id+meta_offset;
+    local premeta_tile_id = tiles_by_namePossiblyMeta(name:sub(6, -1))
+    local premeta_tile = tiles_list[premeta_tile_id]
+    tile_id = premeta_tile_id+meta_offset
     --now we can make our new meta tile!
-    local tile = makeMetaTile(premeta_tile);
-    tiles_by_name[name] = tile_id;
-    tiles_list[tile_id] = tile;
+    local tile = makeMetaTile(premeta_tile)
+    tiles_by_name[name] = tile_id
+    tiles_list[tile_id] = tile
   end
-  return tile_id;
+  return tile_id
 end
 
 function makeMetaTile(premeta_tile)
@@ -2529,11 +2529,11 @@ function doWin(result_, payload_)
     writeSaveFile(level_name, result, payload)
     if (not replay_playback) then
       love.filesystem.createDirectory("levels")
-      local to_save = replay_string;
-      local rng_cache_populated = false;
+      local to_save = replay_string
+      local rng_cache_populated = false
       for _,__ in pairs(rng_cache) do
-        rng_cache_populated = true;
-        break;
+        rng_cache_populated = true
+        break
       end
       if (rng_cache_populated) then
         to_save = to_save.."|"..love.data.encode("string", "base64", serpent.line(rng_cache))

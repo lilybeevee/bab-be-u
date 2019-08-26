@@ -13,16 +13,16 @@ end
 function consolidateUndo(turn)
   --Goal of this function - if we ended on a trivial movement infinite loop, consolidate the 1000 updates into one.
   if #undo_buffer > 0 then 
-    local buff = undo_buffer[1];
-    local prev_undo = nil;
-    local cur_undo = nil;
+    local buff = undo_buffer[1]
+    local prev_undo = nil
+    local cur_undo = nil
     for i = #buff,1,-1 do
-      cur_undo = buff[i];
+      cur_undo = buff[i]
       if (prev_undo ~= nil and prev_undo[1] == "update" and cur_undo[1] == "update" and prev_undo[2] == cur_undo[2]) then
         --we found two updates for the same unit in a row - we can ditch the older one
-        table.remove(buff, i);
+        table.remove(buff, i)
       else
-        prev_undo = cur_undo;
+        prev_undo = cur_undo
       end
     end
   end
@@ -31,7 +31,7 @@ end
 function addUndoMaybeOverwrite(data)
   --to save space when crazy infloop/try again stuff happens
   if #undo_buffer > 0 then 
-    local most_recent_undo = undo_buffer[1][1];
+    local most_recent_undo = undo_buffer[1][1]
     if most_recent_undo[1] == data[1] and most_recent_undo[2] == data[2] then
       --this causes bugs, need to investigate I guess
       --print("replacing:", fullDump(most_recent_undo), "with:", fullDump(data))
@@ -60,7 +60,7 @@ function undoOneAction(turn, i, v, ignore_no_undo)
       end
     end
   elseif action == "create" then
-    local convert = v[3];
+    local convert = v[3]
     unit = units_by_id[v[2]]
 
     if unit.type == "text" or rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname]  then
@@ -71,11 +71,11 @@ function undoOneAction(turn, i, v, ignore_no_undo)
       deleteUnit(unit, convert, true)
     end
   elseif action == "remove" then
-    local convert = v[6];
+    local convert = v[6]
     --If the unit was converted into 'no undo' byproducts that still exist, don't bring it back.
-    local proceed = true;
+    local proceed = true
     if (convert and not ignore_no_undo and rules_with["no undo"] ~= nil) then
-      proceed = not turnedIntoOnlyNoUndoUnits(turn, i, v[7]);
+      proceed = not turnedIntoOnlyNoUndoUnits(turn, i, v[7])
     end
     if (proceed) then
       unit = createUnit(v[2], v[3], v[4], v[5], convert, v[7])
@@ -101,8 +101,8 @@ function undoOneAction(turn, i, v, ignore_no_undo)
   elseif action == "backer_turn" then
     unit = units_by_id[v[2]]
     if (unit ~= nil and (ignore_no_undo or not isNoUndo(unit))) then
-      backers_cache[unit] = v[3];
-      unit.backer_turn = v[3];
+      backers_cache[unit] = v[3]
+      unit.backer_turn = v[3]
     end
   elseif action == "destroy_level" then
     level_destroyed = false
@@ -121,7 +121,7 @@ function undoOneAction(turn, i, v, ignore_no_undo)
       end
     end
   elseif action == "time_destroy_remove" then
-    table.insert(time_destroy, v[2]);
+    table.insert(time_destroy, v[2])
   elseif action == "timeless_win_add" then
 		unitid = v[2]
     --iterate backwards because we probably got added to the end (but maybe not due to no undo shenanigans e.g.)
@@ -154,7 +154,7 @@ function undoOneAction(turn, i, v, ignore_no_undo)
       end
     end
   elseif action == "timeless_splitter_remove" then
-    table.insert(timeless_splitter, v[2]);
+    table.insert(timeless_splitter, v[2])
   elseif action == "timeless_splittee_add" then
 		unitid = v[2]
     --iterate backwards because we probably got added to the end (but maybe not due to no undo shenanigans e.g.)
@@ -165,7 +165,7 @@ function undoOneAction(turn, i, v, ignore_no_undo)
       end
     end
   elseif action == "timeless_splittee_remove" then
-     table.insert(timeless_splittee, v[2]);
+     table.insert(timeless_splittee, v[2])
   elseif action == "timeless_reset_add" then
 		timeless_reset = false
   elseif action == "timeless_reset_remove" then
@@ -197,12 +197,12 @@ function undoOneAction(turn, i, v, ignore_no_undo)
       updateUnitColourOverride(unit)
     end
   end
-  return update_rules, unit;
+  return update_rules, unit
 end
 
 function doBack(unitid, turn, _ignore_no_undo)
   --UNDO being able to supercede NO UNDO sounds more interesting than if it's a non-interaction imo, means you could make a puzzle where you have to rewind something that was otherwise impossible to rewind
-  local ignore_no_undo = _ignore_no_undo;
+  local ignore_no_undo = _ignore_no_undo
   if (ignore_no_undo == nil) then ignore_no_undo = true end
   if (turn <= 1) then
     return false
@@ -210,27 +210,27 @@ function doBack(unitid, turn, _ignore_no_undo)
   if undo_buffer[turn] ~= nil then
     --add a dummy action so that undoing happens
     if (#undo_buffer[1] == 0) then
-      addUndo({"dummy"});
+      addUndo({"dummy"})
     end
     for _,v in ipairs(undo_buffer[turn]) do 
       local action = v[1]
-      local unit = units_by_id[v[2]];
+      local unit = units_by_id[v[2]]
       if unit ~= nil and (unit.id == unitid or unitid == nil) then
         if (action == "update") then
           addUndoMaybeOverwrite({"update", unit.id, unit.x, unit.y, unit.dir})
-          undoOneAction(turn, _, v, ignore_no_undo);
+          undoOneAction(turn, _, v, ignore_no_undo)
         elseif (action == "create") then
-          local convert = v[6];
-          local created_from_id = v.created_from_id;
+          local convert = v[6]
+          local created_from_id = v.created_from_id
           if (unit.backer_turn ~= nil) then
             addUndo({"backer_turn", unit.id, unit.backer_turn})
           end
           addUndo({"remove", unit.tile, unit.x, unit.y, unit.dir, convert or false, unit.id})
-          undoOneAction(turn, _, v, ignore_no_undo);
-          scanAndRecreateOldUnit(turn, _, unit.id, created_from_id, ignore_no_undo);
+          undoOneAction(turn, _, v, ignore_no_undo)
+          scanAndRecreateOldUnit(turn, _, unit.id, created_from_id, ignore_no_undo)
         elseif (action == "create_cursor") then
           addUndo({"remove_cursor", unit.screenx, unit.screeny, unit.id})
-          undoOneAction(turn, _, v, ignore_no_undo);
+          undoOneAction(turn, _, v, ignore_no_undo)
           --TODO: test MOUS vs UNDO interactions
         elseif (action == "colour_change") then
           colour = v[3]
@@ -256,53 +256,53 @@ function scanAndRecreateOldUnit(turn, i, unit_id, created_from_id, ignore_no_und
     local action = v[1]
     --TODO: implement for MOUS
     if (action == "remove") then
-      local old_creator_id = v[7];
+      local old_creator_id = v[7]
       if v[7] == created_from_id then
         --no exponential cloning if gras turned into 2 rocs - abort if there's already a unit with that name on that tile
-        local tile, x, y = v[2], v[3], v[4];
-        local data = tiles_list[tile];
-        local stuff = getUnitsOnTile(x, y, nil, true);
+        local tile, x, y = v[2], v[3], v[4]
+        local data = tiles_list[tile]
+        local stuff = getUnitsOnTile(x, y, nil, true)
         for _,on in ipairs(stuff) do
           if on.name == data.name then
             return
           end
         end
-        local _, new_unit = undoOneAction(turn, i, v, ignore_no_undo);
+        local _, new_unit = undoOneAction(turn, i, v, ignore_no_undo)
         if (new_unit ~= nil) then
           addUndo({"create", new_unit.id, true, created_from_id = unit_id})
         end
         return
       end
     end
-    i = i - 1;
+    i = i - 1
   end
 end
 
 --if water becomes roc, and roc is no undo, if we undo then the water shouldn't come back. This is how we code that - by scanning for all related create events. If we find one existing no undo byproduct and no existing non-no undo byproducts, we return false.
 function turnedIntoOnlyNoUndoUnits(turn, i, unit_id)
-  local found_no_undo = false;
-  local found_non_no_undo = false;
+  local found_no_undo = false
+  local found_non_no_undo = false
   while (true) do
     local v = undo_buffer[turn][i]
     if (v == nil) then
       break
     end
-    local action = v[1];
+    local action = v[1]
     --TODO: implement for MOUS
     if (action == "create") and v.created_from_id == unit_id then
-      local still_exists = units_by_id[v[2]];
+      local still_exists = units_by_id[v[2]]
       if (still_exists ~= nil) then
         if (isNoUndo(still_exists)) then
-          found_no_undo = true;
+          found_no_undo = true
         else
-          found_non_no_undo = true;
-          break;
+          found_non_no_undo = true
+          break
         end
       end
     end
-    i = i + 1;
+    i = i + 1
   end
-  return not (found_non_no_undo or not found_no_undo);
+  return not (found_non_no_undo or not found_no_undo)
 end
 
 function undo(dont_update_rules)
@@ -314,12 +314,12 @@ function undo(dont_update_rules)
     last_move = undo_buffer[1].last_move or {0, 0}
 
     for _,v in ipairs(undo_buffer[1]) do
-      local new_update_rules = undoOneAction(1, _, v, false);
-      update_rules = update_rules or new_update_rules;
+      local new_update_rules = undoOneAction(1, _, v, false)
+      update_rules = update_rules or new_update_rules
     end
     updateUnits(true)
     if (dont_update_rules ~= true) and update_rules then
-      should_parse_rules = true;
+      should_parse_rules = true
       parseRules(true)
     end
     updateGroup()
@@ -341,12 +341,12 @@ function doTryAgain()
   in_try_again = true
   try_again_cache = {}
   --cache units that are no undo so even if it's conditional they remain that way the entire time
-  local isnoundo = getUnitsWithEffect("no undo");
+  local isnoundo = getUnitsWithEffect("no undo")
   for _,unit in ipairs(isnoundo) do
     try_again_cache[unit] = true
   end
-  local can_undo = true;
-  local i = 2;
+  local can_undo = true
+  local i = 2
   --instead of literally undoing everything, use BACK code to create new undo events. That way 1) TRY AGAIN can be undone. 2) Units don't forget their previous history each TRY AGAIN, should they be NO UNDO now but not in the future.
   while (can_undo) do
     can_undo = doBack(nil, i, false)
@@ -356,7 +356,7 @@ function doTryAgain()
   reset_count = reset_count + 1
   in_try_again = false
   try_again_cache = nil
-  consolidateUndo(1);
+  consolidateUndo(1)
 end
 
 function isNoUndo(unit)

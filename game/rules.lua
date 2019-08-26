@@ -36,12 +36,12 @@ end
 
 function getAllText()
   local hasCopied = false
-  local result = units_by_name["text"];
-  if (result == nil) then result = {}; end
+  local result = units_by_name["text"]
+  if (result == nil) then result = {} end
   --remove ben't wurd text from result
   if rules_with["wurd"] ~= nil then
-    result = copyTable(result);
-    hasCopied = true;
+    result = copyTable(result)
+    hasCopied = true
     for i = #result,1,-1 do
       if hasRule(result[i],"ben't","wurd") then
         table.remove(result, i)
@@ -54,21 +54,21 @@ function getAllText()
       for __,unit in ipairs(units_by_name[name]) do
         if hasProperty(unit, "wurd") then
           if not hasCopied then
-            result = copyTable(result);
-            hasCopied = true;
+            result = copyTable(result)
+            hasCopied = true
           end
-          table.insert(result, unit);
+          table.insert(result, unit)
         else
           unit.active = false
         end
       end
     end
   end
-  return result;
+  return result
 end
 
 function getTextOnTile(x, y)
-  local result = getUnitsOnTile(x, y, "text");
+  local result = getUnitsOnTile(x, y, "text")
   --remove ben't wurd text from result
   if rules_with ~= nil and rules_with["wurd"] ~= nil then
     for i = #result,1,-1 do
@@ -81,12 +81,12 @@ function getTextOnTile(x, y)
   for name,_ in pairs(rules_effecting_names) do
     for __,unit in ipairs(getUnitsOnTile(x, y, name)) do
       if hasProperty(unit, "wurd") then
-        table.insert(result, unit);
+        table.insert(result, unit)
       end
     end
   end
   
-  return result;
+  return result
 end
 
 function parseRules(undoing)
@@ -120,10 +120,10 @@ function parseRules(undoing)
     end
   end
   
-  local start_time = love.timer.getTime();
+  local start_time = love.timer.getTime()
   
   clearRules()
-  loop_rules = 0;
+  loop_rules = 0
   changed_reparsing_rule = true
   
   local reparse_rule_counts = 
@@ -141,14 +141,14 @@ function parseRules(undoing)
     --If and only if poor tolls exist, flyeness changing can affect rules parsing, because the text and portal have to match flyeness to go through.
     rules_with["poor toll"] and #matchesRule(nil, "be", "flye") or 0,
     rules_with["poor toll"] and #matchesRule(nil, "be", "tall") or 0,
-  };
+  }
   
   while (changed_reparsing_rule) do
     changed_reparsing_rule = false
     loop_rules = loop_rules + 1
     if (loop_rules > 100) then
       print("parseRules infinite loop! (100 attempts)")
-      destroyLevel("infloop");
+      destroyLevel("infloop")
     end
   
     local first_words = {}
@@ -157,7 +157,7 @@ function parseRules(undoing)
       been_first[i] = {}
     end
     
-    local units_to_check = getAllText();
+    local units_to_check = getAllText()
     
     if units_to_check then
       for _,unit in ipairs(units_to_check) do
@@ -285,7 +285,7 @@ function parseRules(undoing)
     --If and only if poor tolls exist, flyeness changing can affect rules parsing, because the text and portal have to match flyeness to go through.
     rules_with["poor toll"] and #matchesRule(nil, "be", "flye") or 0,
     rules_with["poor toll"] and #matchesRule(nil, "be", "tall") or 0,
-    };
+    }
     
     for i = 1,#reparse_rule_counts do
       if reparse_rule_counts[i] ~= reparse_rule_counts_new[i] then
@@ -294,17 +294,17 @@ function parseRules(undoing)
       end
     end
     
-    reparse_rule_counts = reparse_rule_counts_new;
+    reparse_rule_counts = reparse_rule_counts_new
     
     rules_effecting_names = {}
   
-    populateRulesEffectingNames("?", "be", "wurd");
-    populateRulesEffectingNames("?", "be", "poor toll");
+    populateRulesEffectingNames("?", "be", "wurd")
+    populateRulesEffectingNames("?", "be", "poor toll")
   end
   
   shouldReparseRules()
   
-  local end_time = love.timer.getTime();
+  local end_time = love.timer.getTime()
   if not unit_tests then print("parseRules() took: "..tostring(round((end_time-start_time)*1000)).."ms") end
 end
 
@@ -537,16 +537,16 @@ function addRule(full_rule)
   
   for _,unit in ipairs(units) do
     if (not rong and old_rules_with["rong"] ~= nil) then
-      local temp = rules_with; rules_with = old_rules_with;
+      local temp = rules_with; rules_with = old_rules_with
       if hasProperty(unit, "rong") then
         for __,unit2 in ipairs(units) do
-          unit2.blocked = true;
+          unit2.blocked = true
           unit2.blocked_dir = dir
         end
-        rules_with = temp;
-        return;
+        rules_with = temp
+        return
       end
-      rules_with = temp;
+      rules_with = temp
     end
   end
   
@@ -791,20 +791,20 @@ function shouldReparseRules()
 end
 
 function populateRulesEffectingNames(r1, r2, r3)
-  local rules = matchesRule(r1, r2, r3);
+  local rules = matchesRule(r1, r2, r3)
   for _,rule in ipairs(rules) do
-    local subject = rule.rule.subject.name;
+    local subject = rule.rule.subject.name
     if (subject:sub(1, 4) ~= "text") then
-      rules_effecting_names[subject] = true;
+      rules_effecting_names[subject] = true
     end
   end
 end
 
 function shouldReparseRulesIfConditionalRuleExists(r1, r2, r3, even_non_wurd)
-  local rules = matchesRule(r1, r2, r3);
+  local rules = matchesRule(r1, r2, r3)
   for _,rule in ipairs(rules) do
     local subject_cond = rule.rule.subject.conds or {}
-    local subject = rule.rule.subject.name;
+    local subject = rule.rule.subject.name
     --We only care about conditional rules that effect text, specific text, wurd units and maybe portals too.
     --We can also distinguish between different conditions (todo).
     if (#subject_cond > 0 and (even_non_wurd or subject:starts("text") or rules_effecting_names[subject])) then
@@ -817,18 +817,18 @@ function shouldReparseRulesIfConditionalRuleExists(r1, r2, r3, even_non_wurd)
           for _,param in ipairs(params) do
             rules_effecting_names[param.name] = true
             if param.name == "mous" then
-              should_parse_rules_at_turn_boundary = true;
+              should_parse_rules_at_turn_boundary = true
             end
           end
         else
           --Handle specific prefix conditions.
           --Frenles is hard to do since it could theoretically be triggered by ANY other unit. Instead, just make it reparse rules all the time, sorry.
           if cond_name == "frenles" or cond_name == "frenlesn't" then
-            should_parse_rules = true;
-            return true;
+            should_parse_rules = true
+            return true
           else
             --What are the others? WAIT... only changes at turn boundary. MAYBE can only change on turn boundary or if the unit or text moves (by definition these already reparse rules). AN only changes on turn boundary. COREKT/RONG can only change when text reparses anyway by definition, so it should never trigger it. TIMELES only changes at turn boundary. CLIKT only changes at turn boundary. Colours only change at turn boundary. So every other prefix condition, for now, just needs one check per turn, but new ones will need to be considered.
-            should_parse_rules_at_turn_boundary = true;
+            should_parse_rules_at_turn_boundary = true
           end
           
           --As another edge to consider, what if the level geometry changes suddenly? Well, portals already trigger reparsing rules when they update, which is the only kind of external level geometry change. In addition, text/wurds changing flye/tall surprisingly would already trigger rule reparsing since we checked those rules. But, what about a non-wurd changing flye/tall, allowing it to go through a portal, changing the condition of a different parse effecting rule? This can also happen with level be go arnd/mirr arnd turning on or off. parseRules should fire in such cases. So specifically for these cases, even though they aren't wurd/text, we do want to fire     parseRules when their conditions change.
@@ -838,5 +838,5 @@ function shouldReparseRulesIfConditionalRuleExists(r1, r2, r3, even_non_wurd)
       end
     end
   end
-  return false;
+  return false
 end
