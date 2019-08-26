@@ -205,7 +205,7 @@ selector_grid_contents = {
     "steev","text_steev","splittr","text_splittr","colld","text_colld","arro","text_arro",0,0,0,0,0,0,"pata","text_pata","jill","text_jill",
     "han","text_han","clowd","text_clowd","bellt","text_bellt","ger","text_ger","sno","text_sno","snoman","text_snoman",0,0,"larry","text_larry","zsoob","text_zsoob",
     "os","text_os","hurcane","text_hurcane","spik","text_spik","hors","text_hors","fir","text_fir",0,0,0,0,0,0,"o","text_o",
-    "firbolt","text_firbolt","lie","text_lie","spiky","text_spiky","can","text_can","ladr", "text_ladr",0,0,0,0,0,0,"square","text_square",
+    "firbolt","text_firbolt","lie","text_lie","spiky","text_spiky","can","text_can","ladr", "text_ladr","litbolt","text_litbolt",0,0,0,0,"square","text_square",
     "icbolt","text_icbolt","lie/8","text_lie/8","bordr","text_bordr","togll","text_togll","wut","text_wut","wat","text_wat",0,0,0,0,"triangle","text_triangle",
   },
   -- page 5: properties, verbs and conditions
@@ -4567,6 +4567,25 @@ tiles_list = {
     layer = 20,
     tags = {"bricks", "wall"},
     desc = "reverse kirb",
+  },
+  -- 399
+  {
+    name = "litbolt",
+    sprite = "litbolt",
+    type = "object",
+    color = {2, 4},
+    layer = 5,
+    rotate = true,
+    desc = "made with lightning. REAL LIGHTNING.",
+  },
+  -- 400
+  {
+    name = "text_litbolt",
+    sprite = "text_litbolt",
+    type = "text",
+    texttype = {object = true},
+    color = {2, 4},
+    layer = 20,
   },
 }
 
