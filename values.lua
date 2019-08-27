@@ -165,10 +165,10 @@ selector_grid_contents = {
     "skul", "text_skul", "text_:(", "til", "text_til", "hurcane", "text_hurcane", "gunne", "text_gunne", "wog", "text_wog", "text_zip", "text_shy", "text_munwalk", "text_sidestep", "text_diagstep", "text_hopovr", "text_knightstep",
     "boux", "text_boux", "text_come pls", "os", "text_os", "bup", "text_bup", "han", "text_han", "fenss", "text_fenss", "brik", "text_brik", "hol", "text_hol", "text_poor toll", "text_blacc", "text_reed",
     "bellt", "text_bellt", "text_go", "tre", "text_tre", "piler", "text_piler", "hatt", "text_hatt", "hedg", "text_hedg", 0, 0, "rif", "text_rif", "text_glued", "text_whit", "text_orang",
-    "boll", "text_boll", "text_:o", "frut", "text_frut", "kirb", "text_kirb", "katany", "text_katany", "metl", "text_metl", 0, 0, 0, 0, "text_pinc", "text_colrful", "text_yello",
+    "boll", "text_boll", "text_:o", "frut", "text_frut", "kirb", "text_kirb", "katany", "text_katany", "metl", "text_metl", 0, 0, 0, 0, "text_enby", "text_colrful", "text_yello",
     "clok", "text_clok", "text_try again", "text_no undo", "text_undo", "slippers", "text_slippers", "firbolt", "text_firbolt", "jail", "text_jail", 0, 0, 0, 0, "text_tranz", "text_rave", "text_grun",
     "splittr", "text_splittr", "text_split", "steev", "text_steev", "boy", "text_boy", "icbolt", "text_icbolt", "platfor", "text_platfor", "ladr", "text_ladr", 0, 0, "text_gay", "text_stelth", "text_cyeann",
-    "chekr", "text_chekr", "text_diag", "text_ortho", "text_haet flor", "arro", "text_arro", "text_go my way", "text_spin", "text_no turn", "text_stubbn", "text_rotatbl", 0, 0, 0, "text_qt", "text_paint", "text_bleu",
+    "chekr", "text_chekr", "text_diag", "text_ortho", "text_haet flor", "arro", "text_arro", "text_go my way", "text_spin", "text_no turn", "text_stubbn", "text_rotatbl", 0, 0, "text_pinc", "text_qt", "text_paint", "text_bleu",
     "clowd", "text_clowd", "text_flye", "text_tall", "text_haet skye", "ghost fren", "text_ghost fren", "robobot", "text_robobot", "sparkl", "text_sparkl", "spik", "text_spik", "spiky", "text_spiky", "bordr", "text_bordr", "text_purp",
     nil
   },
@@ -219,9 +219,9 @@ selector_grid_contents = {
     "text_diag","text_ortho","text_go my way","text_direction",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     "text_turn cornr","text_folo wal","text_zip","text_hopovr",0,0,0,0,0,0,0,0,0,0,0,0,0,"text_pinc",
     "text_munwalk","text_sidestep","text_diagstep","text_knightstep",0,0,0,0,0,0,0,0,0,0,0,0,0,"text_reed",
-    "text_spin","text_rotatbl",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_orang",
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_yello",
-    "text_n't",0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_gay","text_tranz","text_grun",
+    "text_spin","text_rotatbl",0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_enby","text_orang",
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_tranz","text_yello",
+    "text_n't",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_gay","text_grun",
     "text_babn't", "text_ben't",0,0,0,"text_try again","text_no undo","text_undo","text_za warudo","text_brite",0,0,0,0,0,"text_stelth","text_qt","text_cyeann",
     "text_rocn't","text_waln't",0,0,0,"text_poor toll","text_go arnd","text_mirr arnd","text_glued","text_torc",0,0,0,0,0,"text_blacc","text_whit","text_bleu",
     "text_...","text_''",0,0,0,"text_her","text_thr","text_rithere","text_the","text_opaque",0,0,0,0,0,"text_colrful","text_rave","text_purp",
@@ -547,7 +547,7 @@ tiles_list = {
     color = {255, 255, 255},
     layer = 20,
     tags = {"trans"},
-    desc = "TRANZ: Causes the unit to appear pink, white and cyan.",
+    desc = "TRANZ: Causes the unit to appear pink, white and baby blue.",
   },
   --30
   {
@@ -4598,6 +4598,16 @@ tiles_list = {
     layer = 20,
     tags = {"unwin", "wink", "face", "unyay", "patashu"},
     desc = ";D: When U touches ;D, the current level will no longer be considered won.",
+  },
+  --402
+  {
+    name = "text_enby",
+    sprite = "text_enby-colored",
+    type = "text",
+    texttype = {property = true},
+    color = {255, 255, 255},
+    layer = 20,
+    desc = "ENBY: Causes the unit to appear yellow, white, purple and black.",
   },
 }
 

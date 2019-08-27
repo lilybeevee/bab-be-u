@@ -643,6 +643,13 @@ function scene.draw(dt)
         unit.sprite = "text_tranz"
       end
     end
+    if unit.fullname == "text_enby" then
+      if unit.active then
+        unit.sprite = "text_enby-colored"
+      else
+        unit.sprite = "text_enby"
+      end
+    end
     if unit.fullname == "text_katany" then
       if hasRule("steev","got","katany") then
         unit.sprite = "text_katanya"
