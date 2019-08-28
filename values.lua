@@ -4074,7 +4074,7 @@ tiles_list = {
     sprite = "square",
     type = "object",
     color = {2, 4},
-    layer = 5,
+    layer = 6,
     eye = {x=19, y=7, w=2, h=2},
     tags = {"dev", "chars", "thefox", "puyopuyo tetris"},
     desc = "oh no am square????"
@@ -4085,7 +4085,7 @@ tiles_list = {
     sprite = "triangle",
     type = "object",
     color = {2, 4},
-    layer = 5,
+    layer = 6,
     eye = {x=17, y=7, w=2, h=2},
     tags = {"dev", "chars", "thefox", "puyopuyo tetris"},
     desc = "TRIASNGLE?????? this is ridicouuolus",
