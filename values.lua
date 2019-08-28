@@ -164,8 +164,8 @@ selector_grid_contents = {
     "watr", "text_watr", "text_no swim", "meem", "text_meem", "dayzy", "text_dayzy", "text_snacc", "text_seen by" , "text_stalk", "text_moov", "text_folo wal", "text_rong", "text_her", "text_thr", "text_rithere", "text_the", 0,
     "skul", "text_skul", "text_:(", "til", "text_til", "hurcane", "text_hurcane", "gunne", "text_gunne", "wog", "text_wog", "text_zip", "text_shy", "text_munwalk", "text_sidestep", "text_diagstep", "text_hopovr", "text_knightstep",
     "boux", "text_boux", "text_come pls", "os", "text_os", "bup", "text_bup", "han", "text_han", "fenss", "text_fenss", "brik", "text_brik", "hol", "text_hol", "text_poor toll", "text_blacc", "text_reed",
-    "bellt", "text_bellt", "text_go", "tre", "text_tre", "piler", "text_piler", "hatt", "text_hatt", "hedg", "text_hedg", 0, 0, "rif", "text_rif", "text_glued", "text_whit", "text_orang",
-    "boll", "text_boll", "text_:o", "frut", "text_frut", "kirb", "text_kirb", "katany", "text_katany", "metl", "text_metl", 0, 0, 0, 0, "text_enby", "text_colrful", "text_yello",
+    "bellt", "text_bellt", "text_go", "tre", "text_tre", "piler", "text_piler", "hatt", "text_hatt", "hedg", "text_hedg", "beeee", "text_beeee", "rif", "text_rif", "text_glued", "text_whit", "text_orang",
+    "boll", "text_boll", "text_:o", "frut", "text_frut", "kirb", "text_kirb", "katany", "text_katany", "metl", "text_metl", "rouz", "text_rouz", 0, 0, "text_enby", "text_colrful", "text_yello",
     "clok", "text_clok", "text_try again", "text_no undo", "text_undo", "slippers", "text_slippers", "firbolt", "text_firbolt", "jail", "text_jail", 0, 0, 0, 0, "text_tranz", "text_rave", "text_grun",
     "splittr", "text_splittr", "text_split", "steev", "text_steev", "boy", "text_boy", "icbolt", "text_icbolt", "platfor", "text_platfor", "ladr", "text_ladr", 0, 0, "text_gay", "text_stelth", "text_cyeann",
     "chekr", "text_chekr", "text_diag", "text_ortho", "text_haet flor", "arro", "text_arro", "text_go my way", "text_spin", "text_no turn", "text_stubbn", "text_rotatbl", 0, 0, "text_pinc", "text_qt", "text_paint", "text_bleu",
@@ -202,9 +202,9 @@ selector_grid_contents = {
     "kirb","text_kirb","frut","text_frut","jail","text_jail","sine","text_sine","sanglas","text_sanglas",0,0,0,0,0,0,0,0,
     "bup","text_bup","piler","text_piler","fenss","text_fenss","buble","text_buble","creb","text_creb","icecub","text_icecub",0,0,0,0,0,0,
     "boy","text_boy","dayzy","text_dayzy","platfor","text_platfor","pepis","text_pepis",0,0,0,0,0,0,"lila","text_lila","tot","text_tot",
-    "steev","text_steev","splittr","text_splittr","colld","text_colld","arro","text_arro",0,0,0,0,0,0,"pata","text_pata","jill","text_jill",
+    "steev","text_steev","splittr","text_splittr","colld","text_colld","arro","text_arro","beeee","text_beeee",0,0,0,0,"pata","text_pata","jill","text_jill",
     "han","text_han","clowd","text_clowd","bellt","text_bellt","ger","text_ger","sno","text_sno","snoman","text_snoman",0,0,"larry","text_larry","zsoob","text_zsoob",
-    "os","text_os","hurcane","text_hurcane","spik","text_spik","hors","text_hors","fir","text_fir",0,0,0,0,0,0,"o","text_o",
+    "os","text_os","hurcane","text_hurcane","spik","text_spik","hors","text_hors","fir","text_fir","rouz","text_rouz",0,0,0,0,"o","text_o",
     "firbolt","text_firbolt","lie","text_lie","spiky","text_spiky","can","text_can","ladr", "text_ladr","litbolt","text_litbolt",0,0,0,0,"square","text_square",
     "icbolt","text_icbolt","lie/8","text_lie/8","bordr","text_bordr","togll","text_togll","wut","text_wut","wat","text_wat",0,0,0,0,"triangle","text_triangle",
   },
@@ -1227,7 +1227,7 @@ tiles_list = {
     color = {3, 3},
     layer = 5,
     eye = {x=10, y=7, w=3, h=3},
-    tags = {"violet","daisy"},
+    tags = {"violet","daisy", "flower"},
   },
   -- 90
   {
@@ -1237,7 +1237,8 @@ tiles_list = {
     texttype = {object = true},
     color = {3, 3},
     layer = 20,
-    tags = {"violet","daisy"},
+    tags = {"violet","daisy", "flower"},
+    desc = "dayzy me rollin, they haetin",
   },
   -- 91
   {
@@ -4608,6 +4609,50 @@ tiles_list = {
     color = {255, 255, 255},
     layer = 20,
     desc = "ENBY: Causes the unit to appear yellow, white, purple and black.",
+  },
+  -- 403
+  {
+    name = "beeee",
+    sprite = "beeee",
+    sleepsprite = "beeee_slep",
+    type = "object",
+    color = {2, 4},
+    layer = 5,
+    rotate = true,
+    eye = {x=25, y=14, w=2, h=2},
+    tags = {"honeybee", "chars", "insect", "trans"},
+    desc = "the bab beeee be tranz",
+  },
+  -- 404
+  {
+    name = "text_beeee",
+    sprite = "text_beeee",
+    type = "text",
+    texttype = {object = true},
+    color = {2, 4},
+    layer = 20,
+    tags = {"honeybee", "chars", "insect", "trans"},
+    desc = "bab beeeeeeeee u",
+  },
+  -- 405
+  {
+    name = "rouz",
+    sprite = "rouz",
+    type = "object",
+    color = {4, 1},
+    layer = 5,
+    eye = {x=10, y=7, w=3, h=3},
+    tags = {"rose", "flower"},
+  },
+  -- 406
+  {
+    name = "text_rouz",
+    sprite = "text_rouz",
+    type = "text",
+    texttype = {object = true},
+    color = {4, 1},
+    layer = 20,
+    tags = {"rose", "flower"},
   },
 }
 
