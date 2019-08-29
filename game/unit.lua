@@ -1097,6 +1097,9 @@ function miscUpdates()
       end
 
       unit.overlay = {}
+      if (graphical_property_cache["enby"][unit] ~= nil) then
+        table.insert(unit.overlay, "enby")
+      end
       if (graphical_property_cache["tranz"][unit] ~= nil) then
         table.insert(unit.overlay, "trans")
       end

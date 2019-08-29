@@ -23,6 +23,9 @@ function updateCursors()
       cursor.y = y
 
       cursor.overlay = {}
+      if hasProperty(cursor,"enby") then
+        table.insert(cursor.overlay, "enby")
+      end
       if hasProperty(cursor,"tranz") then
         table.insert(cursor.overlay, "trans")
       end

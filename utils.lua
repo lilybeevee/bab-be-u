@@ -111,7 +111,7 @@ end
 function initializeGraphicalPropertyCache()
   local properties_to_init = -- list of properties that require the graphical cache
   {
-	  "flye", "slep", "tranz", "gay", "stelth", "colrful", "xwx", "rave", -- miscelleaneous graphical effects
+	  "flye", "slep", "tranz", "gay", "stelth", "colrful", "xwx", "rave", "enby", -- miscelleaneous graphical effects
 	}
   for i = 1, #properties_to_init do
     local prop = properties_to_init[i]

@@ -643,6 +643,13 @@ function scene.draw(dt)
         unit.sprite = "text_tranz"
       end
     end
+    if unit.fullname == "text_enby" then
+      if unit.active then
+        unit.sprite = "text_enby-colored"
+      else
+        unit.sprite = "text_enby"
+      end
+    end
     if unit.fullname == "text_katany" then
       if hasRule("steev","got","katany") then
         unit.sprite = "text_katanya"
@@ -732,9 +739,9 @@ function scene.draw(dt)
     local fulldrawx = (drawx + 0.5)*TILE_SIZE
     local fulldrawy = (drawy + 0.5)*TILE_SIZE
 
-    if graphical_property_cache["flye"][unit] ~= nil or unit.name == "o" or unit.name == "square" or unit.name == "triangle" then
+    if graphical_property_cache["flye"][unit] ~= nil or unit.name == "o" or unit.name == "square" or unit.name == "triangle" or unit.name == "beeee" then
       local flyenes = graphical_property_cache["flye"][unit] or 0
-      if unit.name == "o" or unit.name == "square" or unit.name == "triangle" then flyenes = flyenes + 1 end
+      if unit.name == "o" or unit.name == "square" or unit.name == "triangle" or unit.name == "beeee" then flyenes = flyenes + 1 end
       fulldrawy = fulldrawy - math.sin(love.timer.getTime())*5*flyenes
     end
 
