@@ -695,7 +695,7 @@ function scene.mouseReleased(x, y, button)
         local shift = key_down["lshift"] or key_down["rshift"]
         if mouseOverBox(-38, -70, 11, 16, t) then
           local min = 1
-          if level_dialogue.unit.special.iconstyle == "number" then min = 0 end
+          if not level_dialogue.unit.special.iconstyle or level_dialogue.unit.special.iconstyle == "number" then min = 0 end
           level_dialogue.unit.special.number = (level_dialogue.unit.special.number or 1) - (shift and 10 or 1)
           if (level_dialogue.unit.special.number or 1) < min then
             level_dialogue.unit.special.number = min
