@@ -186,7 +186,7 @@ function loadMap()
           ) then
             local unit = createUnit(tile, x, y, dir, false, id, nil, color and {{name=color}})
             unit.special = specials
-            if readSaveFile(specials.level, "seen") then
+            if scene ~= editor and readSaveFile(specials.level, "seen") then
               unit.special.visibility = "open"
             end
             if tile == tiles_by_name["lvl"] and readSaveFile(specials.level, "won") then
