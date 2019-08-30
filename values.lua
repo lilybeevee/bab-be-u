@@ -165,8 +165,8 @@ selector_grid_contents = {
     "skul", "text_skul", "text_:(", "til", "text_til", "hurcane", "text_hurcane", "gunne", "text_gunne", "wog", "text_wog", "text_zip", "text_shy", "text_munwalk", "text_sidestep", "text_diagstep", "text_hopovr", "text_knightstep",
     "boux", "text_boux", "text_come pls", "os", "text_os", "bup", "text_bup", "han", "text_han", "fenss", "text_fenss", "brik", "text_brik", "hol", "text_hol", "text_poor toll", "text_blacc", "text_reed",
     "bellt", "text_bellt", "text_go", "tre", "text_tre", "piler", "text_piler", "hatt", "text_hatt", "hedg", "text_hedg", "beeee", "text_beeee", "rif", "text_rif", "text_glued", "text_whit", "text_orang",
-    "boll", "text_boll", "text_:o", "frut", "text_frut", "kirb", "text_kirb", "katany", "text_katany", "metl", "text_metl", "rouz", "text_rouz", "fungye", "text_fungye", "text_enby", "text_colrful", "text_yello",
-    "clok", "text_clok", "text_try again", "text_no undo", "text_undo", "slippers", "text_slippers", "firbolt", "text_firbolt", "jail", "text_jail", 0, 0, 0, 0, "text_tranz", "text_rave", "text_grun",
+    "boll", "text_boll", "text_:o", "frut", "text_frut", "kirb", "text_kirb", "katany", "text_katany", "metl", "text_metl", "rouz", "text_rouz", "tor", "text_tor", "text_enby", "text_colrful", "text_yello",
+    "clok", "text_clok", "text_try again", "text_no undo", "text_undo", "slippers", "text_slippers", "firbolt", "text_firbolt", "jail", "text_jail", "fungye", "text_fungye", 0, 0, "text_tranz", "text_rave", "text_grun",
     "splittr", "text_splittr", "text_split", "steev", "text_steev", "boy", "text_boy", "icbolt", "text_icbolt", "platfor", "text_platfor", "ladr", "text_ladr", 0, 0, "text_gay", "text_stelth", "text_cyeann",
     "chekr", "text_chekr", "text_diag", "text_ortho", "text_haet flor", "arro", "text_arro", "text_go my way", "text_spin", "text_no turn", "text_stubbn", "text_rotatbl", 0, 0, "text_pinc", "text_qt", "text_paint", "text_bleu",
     "clowd", "text_clowd", "text_flye", "text_tall", "text_haet skye", "ghost fren", "text_ghost fren", "robobot", "text_robobot", "sparkl", "text_sparkl", "spik", "text_spik", "spiky", "text_spiky", "bordr", "text_bordr", "text_purp",
@@ -206,7 +206,7 @@ selector_grid_contents = {
     "han","text_han","clowd","text_clowd","bellt","text_bellt","ger","text_ger","sno","text_sno","snoman","text_snoman",0,0,"larry","text_larry","zsoob","text_zsoob",
     "os","text_os","hurcane","text_hurcane","spik","text_spik","hors","text_hors","fir","text_fir","rouz","text_rouz",0,0,0,0,"o","text_o",
     "firbolt","text_firbolt","lie","text_lie","spiky","text_spiky","can","text_can","ladr", "text_ladr","litbolt","text_litbolt",0,0,0,0,"square","text_square",
-    "icbolt","text_icbolt","lie/8","text_lie/8","bordr","text_bordr","togll","text_togll","wut","text_wut","wat","text_wat",0,0,0,0,"triangle","text_triangle",
+    "icbolt","text_icbolt","lie/8","text_lie/8","bordr","text_bordr","togll","text_togll","wut","text_wut","wat","text_wat","tor","text_tor",0,0,"triangle","text_triangle",
   },
   -- page 5: properties, verbs and conditions
   {
@@ -350,7 +350,8 @@ tiles_list = {
     type = "object",
     color = {2, 2},
     layer = 3,
-    tags = {"door"},
+    portal = true,
+    tags = {"door"}
   },
   -- 12
   {
@@ -361,7 +362,7 @@ tiles_list = {
     texttype = {object = true},
     color = {2, 2},
     layer = 20,
-    tags = {"door"},
+    tags = {"door"}
   },
   -- 13
   {
@@ -1848,7 +1849,7 @@ tiles_list = {
     color = {0, 1},
     layer = 5,
     rotate = true,
-    tags = {"weapon"},
+    tags = {"weapon", "japan", "asia"},
   },
   -- 147
   {
@@ -1858,7 +1859,7 @@ tiles_list = {
     texttype = {object = true},
     color = {0, 1},
     layer = 20,
-    tags = {"weapon"},
+    tags = {"weapon", "japan", "asia"},
 	desc = "KATANY: Any object with GOT KATANY will have a KATANY."
   },
   -- 148
@@ -3595,7 +3596,7 @@ tiles_list = {
     portal = true,
     color = {2,4},
     layer = 8,
-    tags = {"portal"},
+    tags = {"portal", "rift"},
     desc = "the fake poor toll"
   },
   -- 312
@@ -3606,7 +3607,7 @@ tiles_list = {
     texttype = {object = true},
     color = {2,4},
     layer = 20,
-    tags = {"portal"},
+    tags = {"portal", "rift"},
   },
   -- 306
   {
@@ -4724,6 +4725,27 @@ tiles_list = {
     layer = 20,
     tags = {"car", "vehicle"},
     desc = "awaken my masters",
+  },
+  -- 413
+  {
+    name = "tor",
+    sprite = "tor",
+    type = "object",
+    color = {2, 1},
+    layer = 8,
+    portal = true,
+    tags = {"portal", "japan", "torii", "asia"},
+    desc = "the east poor toll",
+  },
+  -- 414
+  {
+    name = "text_tor",
+    sprite = "text_tor",
+    type = "text",
+    texttype = {object = true},
+    color = {2, 1},
+    layer = 20,
+    tags = {"portal", "japan", "torii", "asia"},
   },
 }
 
