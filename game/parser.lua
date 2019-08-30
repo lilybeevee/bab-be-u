@@ -159,7 +159,7 @@ function findUnit(words, extra_words_, dir, outer, no_verb_cond)
       table.insert(infix.mods, words[2])
     end
     table.remove(words, 1)
-    if words[1].name == "arond" then
+    if words[1] and words[1].name == "arond" then
       table.remove(words, 1)
     end
     if #words == 0 then break end
