@@ -186,6 +186,9 @@ function loadMap()
           ) then
             local unit = createUnit(tile, x, y, dir, false, id, nil, color and {{name=color}})
             unit.special = specials
+            if readSaveFile(specials.level, "seen") then
+              unit.special.visibility = "open"
+            end
             if tile == tiles_by_name["lvl"] and readSaveFile(specials.level, "won") then
               table.insert(floodfill, {unit, 1})
             end
@@ -194,6 +197,7 @@ function loadMap()
               if readSaveFile(specials.level, "seen") then
                 local unit = createUnit(tile, x, y, dir, false, id, nil, color and {{name=color}})
                 unit.special = specials
+                unit.special.visibility = "open"
                 if readSaveFile(specials.level, "won") then
                   table.insert(floodfill, {unit, 1})
                 end
@@ -228,6 +232,7 @@ function loadMap()
                       unit.special.visibility = "open"
                       table.insert(floodfill, {unit, 2})
                     elseif ptype == 2 then
+                      print(unit.special.visibility)
                       unit.special.visibility = "locked"
                       table.insert(floodfill, {unit, 2})
                     elseif ptype == 3 then
