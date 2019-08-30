@@ -1088,7 +1088,7 @@ tiles_list = {
     layer = 5,
     rotate = true,
     eye = {x=21, y=9, w=2, h=2},
-    tags = {"chars"},
+    tags = {"kirby", "chars"},
     desc = "1, 2 oatmeal kirb be be a pincc guy"
   },
   --78
@@ -1354,6 +1354,7 @@ tiles_list = {
     texttype = {property = true},
     color = {4,1},
     layer = 20,
+    tags = {"lvl", "level", "sublevel"},
     desc = "SUBLVL: An object that is sublvl will become enterable. Currently unimplemented.",
   },
   --- 99
@@ -1427,7 +1428,7 @@ tiles_list = {
     texttype = {property = true},
     color ={1, 3},
     layer = 20,
-    tags = {"oneway"},
+    tags = {"oneway", "gomyway", "go my wey"},
     desc = "GO MY WAY: Prevents movement onto its tile from the tile in front of it and the two tiles 45 degrees to either side.",
   },
   --- 106
@@ -1534,7 +1535,7 @@ tiles_list = {
     texttype = {property = true},
     color = {0, 3},
     layer = 20,
-    tags = {"safe"},
+    tags = {"safe", "protect"},
     desc = "PROTECC: Cannot be destroyed (but can be converted).",
   },
   -- 116
@@ -1638,7 +1639,7 @@ tiles_list = {
     type = "object",
     color = {0, 3},
     layer = 20,
-    tags = {"infinity", "infinite"},
+    tags = {"infinity", "infinite", "loop"},
   },
   -- 126
   {
@@ -1770,7 +1771,7 @@ tiles_list = {
     texttype = {object = true},
     color = {0, 3},
     layer = 20,
-    tags = {"all"},
+    tags = {"all", "everyone", "every1"},
     desc = "EVERY1: Every object type in the level, aside from special objects like TXT, NO1, LVL, SELCTR, THIS, and MOUS.",
   },
   -- 138
@@ -1792,7 +1793,7 @@ tiles_list = {
     allowconds = true,
     color = {5, 3},
     layer = 20,
-    tags = {"like", "bounded", "verb"},
+    tags = {"like", "bounded", "likes", "verb"},
     desc = "LIEK (Verb): If a unit LIEKs objects, it is picky, and cannot step onto a tile unless it has at least one object it LIEKs.",
   },
   -- 140
@@ -1834,6 +1835,7 @@ tiles_list = {
     texttype = {property = true},
     color = {5, 3},
     layer = 20,
+    tags = {"turncornr", "turn corner"},
     desc = "TURN CORNR: At end of turn, faces the first direction that it could enter and that doesn't have another unit of its name: forward, right, left, backward. When combined with WALK, causes the unit to bounce off walls at 90 degree angles.",
   },
   -- 144
@@ -1842,7 +1844,7 @@ tiles_list = {
     sprite = "petnygrame",
     color = {2, 1},
     layer = 5,
-    tags = {"pentagram"},
+    tags = {"pentagram", "edgy"},
   },
   -- 145
   {
@@ -1852,7 +1854,7 @@ tiles_list = {
     texttype = {object = true},
     color = {2, 1},
     layer = 20,
-    tags = {"pentagram"},
+    tags = {"pentagram", "edgy"},
   },
   -- 146
   {
@@ -1861,7 +1863,7 @@ tiles_list = {
     color = {0, 1},
     layer = 5,
     rotate = true,
-    tags = {"weapon", "japan", "asia"},
+    tags = {"weapon", "japan", "asia", "edgy"},
   },
   -- 147
   {
@@ -1871,7 +1873,7 @@ tiles_list = {
     texttype = {object = true},
     color = {0, 1},
     layer = 20,
-    tags = {"weapon", "japan", "asia"},
+    tags = {"weapon", "japan", "asia", "edgy"},
 	desc = "KATANY: Any object with GOT KATANY will have a KATANY."
   },
   -- 148
@@ -1880,6 +1882,7 @@ tiles_list = {
     sprite = "scarr",
     color = {2, 1},
     layer = 5,
+    tags = {"scar", "edgy"},
   },
   -- 149
   {
@@ -1889,6 +1892,7 @@ tiles_list = {
     texttype = {object = true},
     color = {2, 1},
     layer = 20,
+    tags = {"scar", "edgy"},
   },
   -- 150
   {
@@ -1898,7 +1902,7 @@ tiles_list = {
     texttype = {object = true},
     color = {0, 3},
     layer = 20,
-    tags = {"none","empty"},
+    tags = {"none","empty", "no one", "noone"},
     desc = "NO1: Refers to tiles with nothing in them. Rotation status is kept on the tile. Cannot be colored."
   },
   -- 151
@@ -1959,7 +1963,7 @@ tiles_list = {
     texttype = {verb = true, verb_unit = true},
     color = {0, 3},
     layer = 20,
-    tags = {"copycat", "lily", "verb"},
+    tags = {"copy", "copycat", "lily", "verb"},
     desc = "COPKAT (Verb): COPKAT units copy the successful movements of the indicated object, no matter how far away."
   },
   --157
@@ -2072,7 +2076,7 @@ tiles_list = {
     layer = 5,
     rotate = true,
     eye = {x=20, y=13, w=2, h=2},
-    tags = {"steve", "chars"},
+    tags = {"steve", "chars", "5 step"},
   },
   -- 167
   {
@@ -2082,7 +2086,7 @@ tiles_list = {
     texttype = {object = true},
     color = {2,3},
     layer = 20,
-    tags = {"steve", "chars"},
+    tags = {"steve", "chars", "5 step"},
   },
   -- 168
   {
@@ -2092,7 +2096,7 @@ tiles_list = {
     texttype = {property = true},
     color = {3, 2},
     layer = 20,
-    tags = {"wrap around","cg5"},
+    tags = {"wrap around", "go around", "cg5"},
     desc = "GO ARND: GO ARND units wrap around the level, as though it were a torus.",
   },
   -- 169
@@ -2114,6 +2118,7 @@ tiles_list = {
     color = {0, 3},
     layer = 2,
     rotate = true,
+    tags = {"splitter", "5 step"},
     eye = {x=22,y=12,w=3,h=5},
     desc = "specifically made to be used with SPLIT because it looks horrible otherwise"
   },
@@ -2125,6 +2130,7 @@ tiles_list = {
     texttype = {object = true},
     color = {0, 3},
     layer = 20,
+    tags = {"splitter", "5 step"},
   },
   -- 172
   {
@@ -2134,6 +2140,7 @@ tiles_list = {
     texttype = {property = true},
     color = {4, 1},
     layer = 20,
+    tags = {"splitter", "5 step"},
     desc = "SPLIT: Objects on a SPLITer are split into two copies on adjacent tiles.",
   },
   -- 173
@@ -2223,7 +2230,7 @@ tiles_list = {
     texttype = {property = true},
     color = {6, 1},
     layer = 20,
-    tags = {"time"},
+    tags = {"time", "back"},
     desc = "UNDO: UNDO units, at end of turn, rewind a turn earlier, cumulatively. Stacks!",
   },
   -- 181
@@ -2403,7 +2410,7 @@ tiles_list = {
     allowconds = true,
     color = {2, 3},
     layer = 20,
-    tags = {"patashu", "hate", "verb"},
+    tags = {"patashu", "hate", "hates", "collide", "verb"},
     desc = "HAET (Verb): A unit cannot stop onto a tile that has something it HAETs. (x HAET LVL makes x unable to move.)",
   },
   -- 198
@@ -2414,6 +2421,7 @@ tiles_list = {
     texttype = {property = true},
     color = {2, 4},
     layer = 20,
+    tags = {"bright", "power"},
     desc = "BRITE: A BRITE object emits light in all directions. LIT will be true for objects on the same FLYE level if nothing OPAQUE is in the way.",
   },
   -- 199
@@ -2445,6 +2453,7 @@ tiles_list = {
     texttype = {property = true},
     color = {2, 3},
     layer = 20,
+    tags = {"strafe"},
     desc = "NO TURN: A NO TURN unit's direction can't change (unless re-oriented by non-euclidean level geometry, i.e. POOR TOLL).",
   },
   -- 202
@@ -2477,6 +2486,7 @@ tiles_list = {
     color = {6, 2},
     layer = 5,
     rotate = true,
+    tags = {"firebolt"},
     desc = "i cast FIRBOLT at the NO1!",
   },
   -- 205
@@ -2487,6 +2497,7 @@ tiles_list = {
     texttype = {object = true},
     color = {6, 2},
     layer = 20,
+    tags = {"firebolt"},
   },
   -- 206
   {
@@ -2497,6 +2508,7 @@ tiles_list = {
     layer = 5,
     rotate = true,
     desc = "its time for u to CHILL out. stay FROSTY.",
+    tags = {"icebolt"},
   },
   -- 207
   {
@@ -2506,6 +2518,7 @@ tiles_list = {
     texttype = {object = true},
     color = {1, 4},
     layer = 20,
+    tags = {"icebolt"},
   },
   -- 206
   {
@@ -2514,6 +2527,7 @@ tiles_list = {
     type = "object",
     color = {5, 1},
     layer = 2,
+    tags = {"hedge"},
     desc = "im hedg the hedg heg",
   },
   -- 207
@@ -2524,6 +2538,7 @@ tiles_list = {
     texttype = {object = true},
     color = {5, 1},
     layer = 20,
+    tags = {"hedge"},
   },
   -- 208
   {
@@ -2552,6 +2567,7 @@ tiles_list = {
     type = "object",
     color = {0, 2},
     layer = 1,
+    tags = {"metal"},
     desc = "impervious metl...",
   },
   -- 211
@@ -2562,6 +2578,7 @@ tiles_list = {
     texttype = {object = true},
     color = {0, 2},
     layer = 20,
+    tags = {"metal"},
   },
   -- 210
   {
@@ -2570,6 +2587,7 @@ tiles_list = {
     type = "object",
     color = {2, 4},
     layer = 10,
+    tags = {"sparkle", "dust"},
     desc = "as brite as a star... but also as hotte as one!!",
   },
   -- 211
@@ -2580,6 +2598,7 @@ tiles_list = {
     texttype = {object = true},
     color = {2, 4},
     layer = 20,
+    tags = {"sparkle", "dust"},
   },
   -- 212
   {
@@ -2589,6 +2608,7 @@ tiles_list = {
     color = {0, 2},
     layer = 10,
     rotate = true,
+    tags = {"spike"},
     desc = "finally, I can make my i wanna be the bab fangame in bab be u",
   },
   -- 213
@@ -2599,6 +2619,7 @@ tiles_list = {
     texttype = {object = true},
     color = {0, 2},
     layer = 20,
+    tags = {"spike"},
   },
   -- 214
   {
@@ -2608,6 +2629,7 @@ tiles_list = {
     color = {0, 2},
     layer = 10,
     rotate = true,
+    tags = {"spike"},
     desc = "ouch!! many spik at once.",
   },
   -- 215
@@ -2618,6 +2640,7 @@ tiles_list = {
     texttype = {object = true},
     color = {0, 2},
     layer = 20,
+    tags = {"spike"},
   },
   -- 216
   {
@@ -2626,6 +2649,7 @@ tiles_list = {
     type = "object",
     color = {1, 0},
     layer = 99,
+    tags = {"border"},
     desc = "BORDR: Fake oob to hide stuff under. NOGO, TALL and BORDR by default."
   },
   -- 217
@@ -2636,6 +2660,7 @@ tiles_list = {
     texttype = {object = true},
     color = {2, 0},
     layer = 20,
+    tags = {"border"},
   },
   -- 218
   {
@@ -2645,7 +2670,7 @@ tiles_list = {
     texttype = {object = true},
     color = {0, 3},
     layer = 20,
-    tags = {"infloop"},
+    tags = {"infloop", "infinity", "infinite loop", "infiniteloop"},
     desc = "INFLOOP: A special word that describes the infinite loop state."
   },
   -- 219
@@ -2657,6 +2682,7 @@ tiles_list = {
     layer = 5,
     desc = "good for use with go my way",
     rotate = true
+    tags = {"platform"},
   },
   -- 220
   {
@@ -2666,6 +2692,7 @@ tiles_list = {
     texttype = {object = true},
     color = {6, 2},
     layer = 20,
+    tags = {"platform"},
   },
   -- 221
   {
@@ -2879,7 +2906,7 @@ tiles_list = {
 	texttype = {property = true},
 	color = {4,1},
   layer = 20,
-  tags = {"you2","p2","u2"},
+  tags = {"you2", "p2", "u2", "you 2", "p 2", "u 2"},
 	desc = "player 2 has joined the game",
   },
   -- 239
@@ -2890,7 +2917,7 @@ tiles_list = {
 	texttype = {property = true},
 	color = {4,1},
   layer = 20,
-  tags = {"you3","p3","u3"},
+  tags = {"you3", "p3", "u3", "you 3", "p 3", "u 3"},
 	desc = "and player 3",
   },
   -- 240
@@ -3287,6 +3314,7 @@ tiles_list = {
     texttype = {property = true},
     color = {4, 1},
     layer = 20,
+    tags = {"notnat"},
     desc = "META: BE META causes that object to be turned into its corresponding metatext. BEN'T META does the opposite and goes down one meta layer (disappearing if that is impossible).",
   },
   -- 280
@@ -3477,7 +3505,7 @@ tiles_list = {
     texttype = {object = true, group = true},
     color = {3, 3},
     layer = 20,
-    tags = {"group"},
+    tags = {"group", "friends"},
     desc = "FRENS: A group you can be a member of. 'x BE FRENS' adds you to the FRENS group. 'FRENS BE x' applies the property to all FRENS.",
   },
 	-- 301
@@ -3601,6 +3629,7 @@ tiles_list = {
     texttype = {letter = true},
     color = {0,3},
     layer = 20,
+    desc = "Z: it's just a rotated Z"
   },
   -- 311
   {
@@ -3742,6 +3771,7 @@ tiles_list = {
     type = "object",
     color = {1,3},
     layer = 3,
+    tags = {"bubble"},
   },
   -- 324
   {
@@ -3751,6 +3781,7 @@ tiles_list = {
     texttype = {object = true},
     color = {1,3},
     layer = 20,
+    tags = {"bubble"},
   },
   -- 325
   {
@@ -3789,6 +3820,7 @@ tiles_list = {
     texttype = {object = true},
     color = {1,4},
     layer = 20,
+    tags = {"icecube", "ice cube"},
   },
   -- 329
   {
@@ -3905,6 +3937,7 @@ tiles_list = {
     texttype = {property = true},
     color = {6,2},
     layer = 20,
+    tags = {"rotatable"},
     desc = "ROTATBL: Makes any object able to be rotated."
   },
   -- 340
