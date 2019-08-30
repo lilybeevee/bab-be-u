@@ -2681,7 +2681,7 @@ tiles_list = {
     color = {6, 2},
     layer = 5,
     desc = "good for use with go my way",
-    rotate = true
+    rotate = true,
     tags = {"platform"},
   },
   -- 220
@@ -5008,7 +5008,7 @@ tiles_list = {
     color = {0, 3},
     layer = 5,
     rotate = "true",
-    eye = {x=24 y=11, w=2, h=2},
+    eye = {x=24, y=11, w=2, h=2},
     tags = {"angelfish", "chars"},
     desc = "fishe be walk?? kinda quirky doe",
   },
