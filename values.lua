@@ -197,11 +197,11 @@ selector_grid_contents = {
     "meem","text_meem","boux","text_boux","watr","text_watr","scarr","text_scarr","petnygrame","text_petnygrame","starre","text_starre",0,0,"text_text","text_frens","text_groop","text_pathz",
     "skul","text_skul","boll","text_boll","laav","text_laav","katany","text_katany","gunne","text_gunne","sunne","text_sunne",0,0,0,0,"text_every1","text_no1",
     "ghost fren","text_ghost fren","kee","text_kee","dor","text_dor","hatt","text_hatt","slippers","text_slippers","moone","text_moone",0,0,0,0,0,0,
-    "robobot","text_robobot","l..uv","text_l..uv","hedg","text_hedg","hol","text_hol","rif","text_rif",0,0,0,0,0,0,0,0,
-    "wog","text_wog","tre","text_tre","metl","text_metl","clok","text_clok","bom","text_bom","kar","text_kar",0,0,0,0,0,0,
+    "robobot","text_robobot","l..uv","text_l..uv","hedg","text_hedg","hol","text_hol","rif","text_rif","pudll","text_pudll","red","text_red",0,0,0,0,
+    "wog","text_wog","tre","text_tre","metl","text_metl","clok","text_clok","bom","text_bom","kar","text_kar","stum","text_stum",0,0,0,0,
     "kirb","text_kirb","frut","text_frut","jail","text_jail","sine","text_sine","sanglas","text_sanglas","shel","text_shel","sancastl","text_sancastl","parsol","text_parsol","pallm","text_pallm",
     "bup","text_bup","piler","text_piler","fenss","text_fenss","buble","text_buble","creb","text_creb","icecub","text_icecub",0,0,"glas","text_glas","coco","text_coco",
-    "boy","text_boy","dayzy","text_dayzy","platfor","text_platfor","pepis","text_pepis","fungye", "text_fungye",0,0,0,0,"lila","text_lila","tot","text_tot",
+    "boy","text_boy","dayzy","text_dayzy","platfor","text_platfor","pepis","text_pepis","fungye", "text_fungye","bullb","text_bullb","text_battry","battry","lila","text_lila","tot","text_tot",
     "steev","text_steev","splittr","text_splittr","colld","text_colld","arro","text_arro","beeee","text_beeee","fishe","text_fishe",0,0,"pata","text_pata","jill","text_jill",
     "han","text_han","clowd","text_clowd","bellt","text_bellt","ger","text_ger","sno","text_sno","snoman","text_snoman",0,0,"larry","text_larry","zsoob","text_zsoob",
     "os","text_os","hurcane","text_hurcane","spik","text_spik","hors","text_hors","fir","text_fir","rouz","text_rouz","leef","text_leef",0,0,"o","text_o",
@@ -2076,7 +2076,7 @@ tiles_list = {
     layer = 5,
     rotate = true,
     eye = {x=20, y=13, w=2, h=2},
-    tags = {"steve", "chars", "5 step"},
+    tags = {"chars", "5 step steve", "cat"},
   },
   -- 167
   {
@@ -2086,7 +2086,7 @@ tiles_list = {
     texttype = {object = true},
     color = {2,3},
     layer = 20,
-    tags = {"steve", "chars", "5 step"},
+    tags = {"chars", "5 step steve", "cat"},
   },
   -- 168
   {
@@ -4752,6 +4752,7 @@ tiles_list = {
     color = {6, 2},
     layer = 20,
     tags = {"fungus", "fungi", "mushroom"},
+    desc = "not a very fun guy",
   },
   -- 411
   {
@@ -5043,6 +5044,107 @@ tiles_list = {
     layer = 20,
     tags = {"vines", "plants", "climb"},
     desc = "so she uploads a VIEN",
+  },
+  -- 439
+  {
+    name = "pudll",
+    sprite = "pudll",
+    type = "object",
+    color = {1, 3},
+    layer = 1,
+    tags = {"water", "puddle"},
+    desc = "its just a single watr",
+  },
+  -- 440
+  {
+    name = "text_pudll",
+    sprite = "text_pudll",
+    type = "text",
+    texttype = {object = true},
+    color = {1, 3},
+    layer = 20,
+    tags = {"water", "puddle"},
+  },
+  -- 441
+  {
+    name = "red",
+    sprite = "red",
+    type = "object",
+    color = {6,2},
+    layer = 3,
+    tags = {"reeds", "plants", "cattail", "swamp"},
+  },
+  -- 442
+  {
+    name = "text_red",
+    sprite = "text_red",
+    type = "text",
+    texttype = {object = true},
+    color = {6,2},
+    layer = 20,
+    tags = {"reeds", "plants", "cattail", "swamp"},
+    desc = "wait what",
+  },
+  -- 443
+  {
+    name = "stum",
+    sprite = "stum",
+    type = "object",
+    color = {6,1},
+    layer = 3,
+    tags = {"plants", "tree stump"},
+  },
+  -- 444
+  {
+    name = "text_stum",
+    sprite = "text_stum",
+    type = "text",
+    texttype = {object = true},
+    color = {6,1},
+    layer = 20,
+    tags = {"plants", "tree stump"},
+    desc = "im stumped",
+    unlucky = true,
+  },
+  -- 445
+  {
+    name = "bullb",
+    sprite = "bullb",
+    type = "object",
+    color = {2, 4},
+    layer = 4,
+    tags = {"light bulb", "lightbulb", "power"},
+  },
+  -- 446
+  {
+    name = "text_bullb",
+    sprite = "text_bullb",
+    type = "text",
+    texttype = {object = true},
+    color = {2, 4},
+    layer = 20,
+    tags = {"light bulb", "lightbulb", "power"},
+  },
+  --447
+  {
+    name = "battry",
+    sprite = "battry",
+    type = "object",
+    color = {4, 1},
+    layer = 4,
+    rotate = "true",
+    tags = {"battery", "power"},
+    desc = "not responsible for hidden states",
+  },
+  --448
+  {
+    name = "text_battry",
+    sprite = "text_battry",
+    type = "text",
+    texttype = {object = true},
+    color = {4, 1},
+    layer = 20,
+    tags = {"battery", "power"},
   },
 }
 
