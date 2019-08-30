@@ -186,6 +186,9 @@ function loadMap()
           ) then
             local unit = createUnit(tile, x, y, dir, false, id, nil, color and {{name=color}})
             unit.special = specials
+            if readSaveFile(specials.level, "seen") then
+              unit.special.visibility = "open"
+            end
             if tile == tiles_by_name["lvl"] and readSaveFile(specials.level, "won") then
               table.insert(floodfill, {unit, 1})
             end
@@ -194,11 +197,13 @@ function loadMap()
               if readSaveFile(specials.level, "seen") then
                 local unit = createUnit(tile, x, y, dir, false, id, nil, color and {{name=color}})
                 unit.special = specials
+                unit.special.visibility = "open"
                 if readSaveFile(specials.level, "won") then
                   table.insert(floodfill, {unit, 1})
                 end
+              else
+                table.insert(objects, {id, tile, x, y, dir, specials, color})
               end
-              table.insert(objects, {id, tile, x, y, dir, specials, color})
             elseif tile == tiles_by_name["lin"] then
               table.insert(objects, {id, tile, x, y, dir, specials, color})
             end
@@ -215,24 +220,30 @@ function loadMap()
               local v = objects[i] -- {id, tile, x, y, dir, specials, color}
               local dx = u.x-v[3]
               local dy = u.y-v[4]
-              if not created[v[1]] and (((dx == -1 or dx == 1) and (dy == -a or dy == a)) or ((dx == -a or dx == a) and (dy == -1 or dy == 1)))
+              if (((dx == -1 or dx == 1) and (dy == -a or dy == a)) or ((dx == -a or dx == a) and (dy == -1 or dy == 1)))
               and (a == 0 or (not orthos[dx][0] and not orthos[0][dy])) then
                 orthos[dx][dy] = true
-                local unit = createUnit(v[2], v[3], v[4], v[5], false, v[1], nil, v[7] and {{name=v[7]}})
-                created[v[1]] = true
-                unit.special = v[6]
-                if v[2] == tiles_by_name["lvl"] then
-                  if ptype == 1 then
-                    unit.special.visibility = "open"
-                    table.insert(floodfill, {unit, 2})
-                  elseif ptype == 2 then
-                    unit.special.visibility = "locked"
-                    table.insert(floodfill, {unit, 2})
-                  elseif ptype == 3 then
-                    unit.special.visibility = "open"
+                if not created[v[1]] then
+                  if v[2] == tiles_by_name["lvl"] then
+                    local unit = createUnit(v[2], v[3], v[4], v[5], false, v[1], nil, v[7] and {{name=v[7]}})
+                    created[v[1]] = true
+                    unit.special = v[6]
+                    if ptype == 1 then
+                      unit.special.visibility = "open"
+                      table.insert(floodfill, {unit, 2})
+                    elseif ptype == 2 then
+                      print(unit.special.visibility)
+                      unit.special.visibility = "locked"
+                      table.insert(floodfill, {unit, 2})
+                    elseif ptype == 3 then
+                      unit.special.visibility = "open"
+                    end
+                  elseif ptype == 1 and v[2] == tiles_by_name["lin"] and (not v[6].pathlock or v[6].pathlock == "none") then
+                    local unit = createUnit(v[2], v[3], v[4], v[5], false, v[1], nil, v[7] and {{name=v[7]}})
+                    created[v[1]] = true
+                    unit.special = v[6]
+                    table.insert(floodfill, {unit, 3})
                   end
-                elseif v[2] == tiles_by_name["lin"] and (not unit.special.pathlock or unit.special.pathlock == "none") then
-                  table.insert(floodfill, {unit, 3})
                 end
               end
             end
