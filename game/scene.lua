@@ -690,6 +690,9 @@ function scene.draw(dt)
         break
       end
     end
+    if sprite_name == "lvl" and readSaveFile(unit.special.level, "won") then
+      sprite_name = "lvl_won"
+    end
     local frame = (unit.frame + anim_stage) % 3 + 1
     if sprites[sprite_name .. "_" .. frame] then
       sprite_name = sprite_name .. "_" .. frame
@@ -862,6 +865,11 @@ function scene.draw(dt)
     end
     
     if unit.name == "lvl" and unit.special.visibility == "open" then
+      love.graphics.push()
+      if readSaveFile(unit.special.level, "won") then
+        local r,g,b,a = love.graphics.getColor()
+        love.graphics.setColor(r,g,b, a*0.4)
+      end
       if not unit.special.iconstyle or unit.special.iconstyle == "number" then
         local num = tostring(unit.special.number or 1)
         if #num == 1 then
@@ -880,6 +888,7 @@ function scene.draw(dt)
         local sprite = sprites[unit.special.iconname or "wat"] or sprites["wat"]
         love.graphics.draw(sprite, fulldrawx, fulldrawy, 0, unit.draw.scalex*3/4, unit.draw.scaley*3/4, sprite:getWidth() / 2, sprite:getHeight() / 2)
       end
+      love.graphics.pop()
     end
 
     if #unit.overlay > 0 then

@@ -804,6 +804,7 @@ function scene.setLevelDialogue(unit)
     level_dialogue.iconnamebox:setVisible(false)
     level_dialogue.iconnamebox:setEnabled(false)
     addTween(tween.new(0.1, level_dialogue, {scale = 0}), "level dialogue")
+    scene.updateMap()
   end
 end
 
@@ -1152,6 +1153,31 @@ function scene.draw(dt)
             end
 
             love.graphics.draw(sprite, (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+            if unit.name == "lvl" then
+              if unit.special.visibility ~= "open" then
+                local r,g,b,a = love.graphics.getColor()
+                love.graphics.setColor(r,g,b, a*0.4)
+              end
+              local fulldrawx, fulldrawy = (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE
+              if not unit.special.iconstyle or unit.special.iconstyle == "number" then
+                local num = tostring(unit.special.number or 1)
+                if #num == 1 then
+                  num = "0"..num
+                end
+                love.graphics.draw(sprites["levelicon_"..num:sub(1,1)], fulldrawx+(4*unit.draw.scalex), fulldrawy+(4*unit.draw.scaley), 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+                love.graphics.draw(sprites["levelicon_"..num:sub(2,2)], fulldrawx+(16*unit.draw.scalex), fulldrawy+(4*unit.draw.scaley), 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+              elseif unit.special.iconstyle == "dots" then
+                local num = tostring(unit.special.number or 1)
+                love.graphics.draw(sprites["levelicon_dots_"..num], fulldrawx+(4*unit.draw.scalex), fulldrawy+(4*unit.draw.scaley), 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+              elseif unit.special.iconstyle == "letter" then
+                local num = unit.special.number or 1
+                local letter = ("abcdefghijklmnopqrstuvwxyz"):sub(num, num)
+                love.graphics.draw(sprites["letter_"..letter], fulldrawx, fulldrawy, 0, unit.draw.scalex*3/4, unit.draw.scaley*3/4, sprite:getWidth() / 2, sprite:getHeight() / 2)
+              elseif unit.special.iconstyle == "other" then
+                local sprite = sprites[unit.special.iconname or "wat"] or sprites["wat"]
+                love.graphics.draw(sprite, fulldrawx, fulldrawy, 0, unit.draw.scalex*3/4, unit.draw.scaley*3/4, sprite:getWidth() / 2, sprite:getHeight() / 2)
+              end
+            end
             if (unit.meta ~= nil) then
               setColor({4, 1})
               local metasprite = unit.meta == 2 and sprites["meta2"] or sprites["meta1"]
@@ -1902,6 +1928,7 @@ function scene.translateLevel(dx, dy)
     if y < 0 then y = mapheight-1 end
     moveUnit(unit, x, y)
   end
+  scene.updateMap()
 end
 
 return scene
