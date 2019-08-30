@@ -425,6 +425,7 @@ tiles_list = {
     type = "object",
     color = {2, 4},
     layer = 3,
+    esc = "i want 1!!!",
     tags = {"flag"},
   },
   -- 19
@@ -466,6 +467,7 @@ tiles_list = {
     type = "object",
     color = {1, 3},
     layer = 1,
+    desc = "splish sploosh",
     tags = {"water"},
   },
   -- 23
@@ -588,6 +590,7 @@ tiles_list = {
     type = "object",
     color = {6, 2},
     layer = 3,
+    desc = "ce n'est pas une boîte, c'est quelque chose DE MIEUX",
     tags = {"box"},
   },
   --34
@@ -621,6 +624,7 @@ tiles_list = {
     texttype = {object = true},
     color = {2, 3},
     layer = 20,
+    desc = "very hot. not hotte tho unless u make it",
     tags = {"lava"},
   },
   --37
@@ -676,7 +680,7 @@ tiles_list = {
     rotate = true,
     eye = {x=18, y=3, w=2, h=2},
     tags = {"chars"},
-    desc = "babs 3ff",
+    desc = "meem is the true philosopher of our time. babs 3ff",
   },
   --40
   {
@@ -763,7 +767,7 @@ tiles_list = {
     layer = 3,
     rotate = "true",
     tags = {"fruit", "apple"},
-    desc = "not to be confused with OS appl",
+    desc = "not to be confused with OS appl. babs favorite snacc",
   },
   --48
   {
@@ -805,6 +809,7 @@ tiles_list = {
     layer = 5,
     rotate = "true",
     eye = {x=16, y=9, w=3, h=3},
+    desc = "smol frens who own pointy tridents, play with explosives, and bake good cake. nobody knows how to describe more than one of them",
     tags = {"wug", "chars"},
   },
   --52
@@ -815,6 +820,7 @@ tiles_list = {
     texttype = {object = true},
     color = {2, 4},
     layer = 20,
+    desc = "wogs dream is to be a mad scientist and go evil with power using nothing but sheer linguistics. linguists' evil career options may be limited but that wont stop wog from trying their best",
     tags = {"wug", "chars"},
   },
   --tutorial sprites
@@ -929,7 +935,7 @@ tiles_list = {
     color = {4, 1},
     layer = 3,
     tags = {"orb", "ball"},
-    desc = "colecc",
+    desc = "hnmm... roun. colecc",
   },
   -- 64
   {
@@ -949,6 +955,7 @@ tiles_list = {
     color = {1, 1},
     layer = 1,
     rotate = true,
+    desc = "bells and bellts are both metal so theyre basically the same thing right? dont tell anyone",
     tags = {"belt"},
   },
   -- 66
@@ -1209,6 +1216,7 @@ tiles_list = {
     type = "object",
     color = {5, 1},
     layer = 1,
+    desc = "don step on it. or do step on it. ur choice",
     tags = {"grass"},
   },
   -- 88
@@ -1250,6 +1258,7 @@ tiles_list = {
     color = {3, 1},
     layer = 3,
     tags = {"hurricane","tornado"},
+    desc = "woosh swoosh vwoosh aaaa",
     eye = {x=15, y=15, w=3, h=3},
   },
   -- 92
@@ -1492,6 +1501,7 @@ tiles_list = {
     type = "object",
     color = {1, 4},
     layer = 1,
+    desc = "nothin says colld like diagonal lines",
     tags = {"ice"},
   },
   --- 113
@@ -1555,6 +1565,7 @@ tiles_list = {
     type = "object",
     color = {0, 1},
     layer = 3,
+     desc = "secretly made from several pairs of pliers sacrificed to keepin babs out (or in)",
     tags = {"pillar"},
   },
   -- 119
@@ -2284,6 +2295,7 @@ tiles_list = {
     layer = 5,
     rotate = true,
     eye = {x=26, y=10, w=2, h=4},
+    desc = "its not spooky, its a fren.",
     tags = {"chars"},
   },
   -- 188
@@ -2294,6 +2306,7 @@ tiles_list = {
     texttype = {object = true},
     color = {4, 2},
     layer = 20,
+    desc = "this text is very spooky tho",
     tags = {"chars"},
   },
   -- 189
@@ -2306,6 +2319,7 @@ tiles_list = {
     layer = 5,
     rotate = true,
     eye = {x=17, y=7, w=2, h=4},
+    desc = "the super scan mouth lazers that copy abilities are missing because they forgot to design a mouth",
     tags = {"robot", "chars"},
   },
   -- 190
