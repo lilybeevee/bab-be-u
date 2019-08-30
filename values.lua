@@ -193,7 +193,7 @@ selector_grid_contents = {
   -- page 4: objects
   {
     "bab","text_bab","flog","text_flog","wal","text_wal","gras","text_gras","cobll","text_cobll","brik","text_brik",0,0,"selctr","text_selctr","lvl","text_lvl",
-    "keek","text_keek","roc","text_roc","til","text_til","sparkl","text_sparkl","wuud","text_wuud",0,0,0,0,"this","text_mous","lin","text_lin",
+    "keek","text_keek","roc","text_roc","til","text_til","sparkl","text_sparkl","wuud","text_wuud","san","text_san",0,0,"this","text_mous","lin","text_lin",
     "meem","text_meem","boux","text_boux","watr","text_watr","scarr","text_scarr","petnygrame","text_petnygrame",0,0,0,0,"text_text","text_frens","text_groop","text_pathz",
     "skul","text_skul","boll","text_boll","laav","text_laav","katany","text_katany","gunne","text_gunne",0,0,0,0,0,0,"text_every1","text_no1",
     "ghost fren","text_ghost fren","kee","text_kee","dor","text_dor","hatt","text_hatt","slippers","text_slippers",0,0,0,0,0,0,0,0,
@@ -1907,7 +1907,7 @@ tiles_list = {
     color = {4,1},
     layer = 20,
     tags = {"level"},
-    desc = "LVL: Refers to the level you're in, as well as any enterable levels in this level."
+    desc = "LVL: Refers to the level you're in, as well as any enterable levels in this level. (Middle-click it to edit.)"
   },
   -- 153
   {
@@ -4653,6 +4653,26 @@ tiles_list = {
     color = {4, 1},
     layer = 20,
     tags = {"rose", "flower"},
+  },
+  -- 407
+  {
+    name = "san",
+    sprite = "san",
+    type = "object",
+    color = {2, 4},
+    layer = 2,
+    tags = {"bricks", "wall"},
+  },
+  -- 408
+  {
+    name = "text_san",
+    sprite = "text_san",
+    type = "text",
+    texttype = {object = true},
+    color = {2, 4},
+    layer = 20,
+    tags = {"sand", "beach", "desert"},
+    desc = "san undertales",
   },
 }
 
