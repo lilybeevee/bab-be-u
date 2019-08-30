@@ -176,9 +176,9 @@ selector_grid_contents = {
   {
     "letter_a","letter_b","letter_c","letter_d","letter_e","letter_f","letter_g","letter_h","letter_i","letter_j","letter_k","letter_l","letter_m","letter_n","letter_o","letter_p","letter_q","letter_r",
     "letter_s","letter_t","letter_u","letter_v","letter_w","letter_x","letter_y","letter_z","letter_.","letter_colon","letter_parenthesis","letter_'","letter_/","letter_1","letter_2","letter_3","letter_4","letter_5",
-    "letter_go","letter_come","letter_pls","letter_away","letter_my","letter_no","letter_way","letter_ee","letter_fren","letter_ll",0,0,0,"letter_6","letter_7","letter_8","letter_9","letter_o",
-		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,"letter_;",0,0,"letter_6","letter_7","letter_8","letter_9","letter_o",
+	"letter_go","letter_come","letter_pls","letter_away","letter_my","letter_no","letter_way","letter_ee","letter_fren","letter_ll",0,0,0,0,0,0,0,0,
+	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   },
   -- page 3: ui / instructions
   {
@@ -4178,7 +4178,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
     tags = {"slash"},
-    desc = "Used in LIE/8.",
+    desc = "Used in W/FREN and LIE/8.",
   },
   -- 359
   {
@@ -4673,6 +4673,17 @@ tiles_list = {
     layer = 20,
     tags = {"sand", "beach", "desert"},
     desc = "san undertales",
+  },
+  -- 409
+  {
+    name = "letter_;",
+    sprite = "letter_semicolon",
+    type = "text",
+    texttype = {letter = true},
+    color = {0,3},
+    layer = 20,
+    tags = {"semicolon", "wink"},
+    desc = "Used in ;D",
   },
 }
 

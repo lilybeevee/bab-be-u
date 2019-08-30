@@ -1307,7 +1307,7 @@ function scene.draw(dt)
         if not is_mobile then
             love.graphics.printf("CTRL + TAB or CTRL + NUMBER to change tabs", 0, roomheight, roomwidth, "right")
             love.graphics.printf("CTLR + M to get meta text, CTRL + R to refresh", 0, roomheight+12, roomwidth, "right")
-            love.graphics.printf("CTRL + N to get n't text", 0, roomheight+24, roomwidth, "right")
+            love.graphics.printf("CTRL + N to toggle n't text", 0, roomheight+24, roomwidth, "right")
             if #searchstr > 0 then
                 love.graphics.print("Searching for: " .. searchstr, 0, roomheight)
             else
