@@ -165,7 +165,7 @@ selector_grid_contents = {
     "skul", "text_skul", "text_:(", "til", "text_til", "hurcane", "text_hurcane", "gunne", "text_gunne", "wog", "text_wog", "text_zip", "text_shy", "text_munwalk", "text_sidestep", "text_diagstep", "text_hopovr", "text_knightstep",
     "boux", "text_boux", "text_come pls", "os", "text_os", "bup", "text_bup", "han", "text_han", "fenss", "text_fenss", "brik", "text_brik", "hol", "text_hol", "text_poor toll", "text_blacc", "text_reed",
     "bellt", "text_bellt", "text_go", "tre", "text_tre", "piler", "text_piler", "hatt", "text_hatt", "hedg", "text_hedg", "beeee", "text_beeee", "rif", "text_rif", "text_glued", "text_whit", "text_orang",
-    "boll", "text_boll", "text_:o", "frut", "text_frut", "kirb", "text_kirb", "katany", "text_katany", "metl", "text_metl", "rouz", "text_rouz", 0, 0, "text_enby", "text_colrful", "text_yello",
+    "boll", "text_boll", "text_:o", "frut", "text_frut", "kirb", "text_kirb", "katany", "text_katany", "metl", "text_metl", "rouz", "text_rouz", "fungye", "text_fungye", "text_enby", "text_colrful", "text_yello",
     "clok", "text_clok", "text_try again", "text_no undo", "text_undo", "slippers", "text_slippers", "firbolt", "text_firbolt", "jail", "text_jail", 0, 0, 0, 0, "text_tranz", "text_rave", "text_grun",
     "splittr", "text_splittr", "text_split", "steev", "text_steev", "boy", "text_boy", "icbolt", "text_icbolt", "platfor", "text_platfor", "ladr", "text_ladr", 0, 0, "text_gay", "text_stelth", "text_cyeann",
     "chekr", "text_chekr", "text_diag", "text_ortho", "text_haet flor", "arro", "text_arro", "text_go my way", "text_spin", "text_no turn", "text_stubbn", "text_rotatbl", 0, 0, "text_pinc", "text_qt", "text_paint", "text_bleu",
@@ -198,10 +198,10 @@ selector_grid_contents = {
     "skul","text_skul","boll","text_boll","laav","text_laav","katany","text_katany","gunne","text_gunne",0,0,0,0,0,0,"text_every1","text_no1",
     "ghost fren","text_ghost fren","kee","text_kee","dor","text_dor","hatt","text_hatt","slippers","text_slippers",0,0,0,0,0,0,0,0,
     "robobot","text_robobot","l..uv","text_l..uv","hedg","text_hedg","hol","text_hol","rif","text_rif",0,0,0,0,0,0,0,0,
-    "wog","text_wog","tre","text_tre","metl","text_metl","clok","text_clok","bom","text_bom",0,0,0,0,0,0,0,0,
+    "wog","text_wog","tre","text_tre","metl","text_metl","clok","text_clok","bom","text_bom","kar","text_kar",0,0,0,0,0,0,
     "kirb","text_kirb","frut","text_frut","jail","text_jail","sine","text_sine","sanglas","text_sanglas",0,0,0,0,0,0,0,0,
     "bup","text_bup","piler","text_piler","fenss","text_fenss","buble","text_buble","creb","text_creb","icecub","text_icecub",0,0,0,0,0,0,
-    "boy","text_boy","dayzy","text_dayzy","platfor","text_platfor","pepis","text_pepis",0,0,0,0,0,0,"lila","text_lila","tot","text_tot",
+    "boy","text_boy","dayzy","text_dayzy","platfor","text_platfor","pepis","text_pepis","fungye", "text_fungye",0,0,0,0,"lila","text_lila","tot","text_tot",
     "steev","text_steev","splittr","text_splittr","colld","text_colld","arro","text_arro","beeee","text_beeee",0,0,0,0,"pata","text_pata","jill","text_jill",
     "han","text_han","clowd","text_clowd","bellt","text_bellt","ger","text_ger","sno","text_sno","snoman","text_snoman",0,0,"larry","text_larry","zsoob","text_zsoob",
     "os","text_os","hurcane","text_hurcane","spik","text_spik","hors","text_hors","fir","text_fir","rouz","text_rouz",0,0,0,0,"o","text_o",
@@ -4684,6 +4684,46 @@ tiles_list = {
     layer = 20,
     tags = {"semicolon", "wink"},
     desc = "Used in ;D",
+  },
+  -- 410
+  {
+    name = "fungye",
+    sprite = "fungye",
+    type = "object",
+    color = {6, 2},
+    layer = 4,
+    tags = {"fungus", "fungi", "mushroom"},
+  },
+  -- 411
+  {
+    name = "text_fungye",
+    sprite = "text_fungye",
+    type = "text",
+    texttype = {object = true},
+    color = {6, 2},
+    layer = 20,
+    tags = {"fungus", "fungi", "mushroom"},
+  },
+  -- 411
+  {
+    name = "kar",
+    sprite = "kar",
+    type = "object",
+    color = {5, 3},
+    layer = 5,
+    rotate = true,
+    tags = {"car", "vehicle"},
+  },
+  -- 412
+  {
+    name = "text_kar",
+    sprite = "text_kar",
+    type = "text",
+    texttype = {object = true},
+    color = {5, 2},
+    layer = 20,
+    tags = {"car", "vehicle"},
+    desc = "awaken my masters",
   },
 }
 
