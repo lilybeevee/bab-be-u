@@ -695,7 +695,7 @@ function scene.mouseReleased(x, y, button)
         local shift = key_down["lshift"] or key_down["rshift"]
         if mouseOverBox(-38, -70, 11, 16, t) then
           local min = 1
-          if level_dialogue.unit.special.iconstyle == "number" then min = 0 end
+          if not level_dialogue.unit.special.iconstyle or level_dialogue.unit.special.iconstyle == "number" then min = 0 end
           level_dialogue.unit.special.number = (level_dialogue.unit.special.number or 1) - (shift and 10 or 1)
           if (level_dialogue.unit.special.number or 1) < min then
             level_dialogue.unit.special.number = min
@@ -1680,14 +1680,14 @@ function scene.saveLevel()
     love.filesystem.write("levels/" .. file_name .. ".bab", json.encode(data))
     print("Saved to:","levels/" .. file_name .. ".bab")
     if icon_data then
-      icon_data:encode("png", "levels/" .. file_name .. ".png")
+      pcall(function() icon_data:encode("png", "levels/" .. file_name .. ".png") end)
     end
   else
     love.filesystem.createDirectory(world_parent .. "/" .. world)
     love.filesystem.write(world_parent .. "/" .. world .. "/" ..file_name .. ".bab", json.encode(data))
     print("Saved to:",world_parent .. "/" .. world .. "/" ..file_name .. ".bab")
     if icon_data then
-      icon_data:encode("png", world_parent .. "/" .. world .. "/" .. file_name .. ".png")
+      pcall(function() icon_data:encode("png", world_parent .. "/" .. world .. "/" .. file_name .. ".png") end)
     end
   end
 
