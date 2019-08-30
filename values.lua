@@ -199,10 +199,10 @@ selector_grid_contents = {
     "ghost fren","text_ghost fren","kee","text_kee","dor","text_dor","hatt","text_hatt","slippers","text_slippers","moone","text_moone",0,0,0,0,0,0,
     "robobot","text_robobot","l..uv","text_l..uv","hedg","text_hedg","hol","text_hol","rif","text_rif",0,0,0,0,0,0,0,0,
     "wog","text_wog","tre","text_tre","metl","text_metl","clok","text_clok","bom","text_bom","kar","text_kar",0,0,0,0,0,0,
-    "kirb","text_kirb","frut","text_frut","jail","text_jail","sine","text_sine","sanglas","text_sanglas",0,0,0,0,0,0,0,0,
-    "bup","text_bup","piler","text_piler","fenss","text_fenss","buble","text_buble","creb","text_creb","icecub","text_icecub",0,0,0,0,0,0,
+    "kirb","text_kirb","frut","text_frut","jail","text_jail","sine","text_sine","sanglas","text_sanglas","shel","text_shel","sancastl","text_sancastl","parsol","text_parsol","pallm","text_pallm",
+    "bup","text_bup","piler","text_piler","fenss","text_fenss","buble","text_buble","creb","text_creb","icecub","text_icecub","coco","text_coco","glas","text_glas",0,0,
     "boy","text_boy","dayzy","text_dayzy","platfor","text_platfor","pepis","text_pepis","fungye", "text_fungye",0,0,0,0,"lila","text_lila","tot","text_tot",
-    "steev","text_steev","splittr","text_splittr","colld","text_colld","arro","text_arro","beeee","text_beeee",0,0,0,0,"pata","text_pata","jill","text_jill",
+    "steev","text_steev","splittr","text_splittr","colld","text_colld","arro","text_arro","beeee","text_beeee","fishe","text_fishe",0,0,"pata","text_pata","jill","text_jill",
     "han","text_han","clowd","text_clowd","bellt","text_bellt","ger","text_ger","sno","text_sno","snoman","text_snoman",0,0,"larry","text_larry","zsoob","text_zsoob",
     "os","text_os","hurcane","text_hurcane","spik","text_spik","hors","text_hors","fir","text_fir","rouz","text_rouz","leef","text_leef",0,0,"o","text_o",
     "firbolt","text_firbolt","lie","text_lie","spiky","text_spiky","can","text_can","ladr", "text_ladr","litbolt","text_litbolt",0,0,0,0,"square","text_square",
@@ -762,7 +762,8 @@ tiles_list = {
     color = {2, 2},
     layer = 3,
     rotate = "true",
-    tags = {"fruit"},
+    tags = {"fruit", "apple"},
+    desc = "not to be confused with OS appl",
   },
   --48
   {
@@ -772,7 +773,7 @@ tiles_list = {
     texttype = {object = true},
     color = {2, 2},
     layer = 20,
-    tags = {"fruit"},
+    tags = {"fruit", "apple"},
   },
   --49
   {
@@ -4202,7 +4203,7 @@ tiles_list = {
     layer = 5,
     eye = {x=17, y=8, w=3, h=3},
     tags = {"chars", "snowman"},
-    desc = "hes magiccal",
+    desc = "do u wanna creat a snoman??",
   },
   -- 361
   {
@@ -4710,7 +4711,7 @@ tiles_list = {
     name = "kar",
     sprite = "kar",
     type = "object",
-    color = {5, 3},
+    color = {5, 2},
     layer = 5,
     rotate = true,
     tags = {"car", "vehicle"},
@@ -4829,6 +4830,150 @@ tiles_list = {
     color = {2,4},
     layer = 20,
     tags = {"star", "night"},
+  },
+  -- 423
+  {
+    name = "shel",
+    sprite = "shel",
+    type = "object",
+    color = {4,2},
+    layer = 4,
+    tags = {"shell", "scallop", "beach"},
+    desc = "gas gas gas",
+  },
+  -- 424
+  {
+    name = "text_shel",
+    sprite = "text_shel",
+    type = "text",
+    texttype = {object = true},
+    color = {4,2},
+    layer = 20,
+    tags = {"shell", "scallop", "beach"},
+  },
+  -- 425
+  {
+    name = "sancastl",
+    sprite = "sancastl",
+    type = "object",
+    color = {2,4},
+    layer = 4,
+    tags = {"sandcastle", "beach"},
+    desc = "lets creat a sancastl",
+  },
+  -- 426
+  {
+    name = "text_sancastl",
+    sprite = "text_sancastl",
+    type = "text",
+    texttype = {object = true},
+    color = {2,4},
+    layer = 20,
+    tags = {"sandcastle", "beach"},
+  },
+  --- 427
+  {
+    name = "parsol",
+    sprite = "parsol",
+    type = "object",
+    color = {2, 2},
+    layer = 8,
+    rotate = true,
+    tags = {"parasol", "umbrella", "beach"},
+    desc = "protecc from sunne thatbe :(",
+  },
+  --- 428
+  {
+    name = "text_parsol",
+    sprite = "text_parsol",
+    type = "text",
+    texttype = {object = true},
+    color = {2,2},
+    layer = 20,
+    tags = {"parasol", "umbrella", "beach"},
+  },
+  --429
+  {
+    name = "pallm",
+    sprite = "pallm",
+    type = "object",
+    color = {5, 2},
+    layer = 2,
+    tags = {"palm tree", "coconut tree", "beach"},
+  },
+  --430
+  {
+    name = "text_pallm",
+    sprite = "text_pallm",
+    type = "text",
+    texttype = {object = true},
+    color = {5, 2},
+    layer = 20,
+    tags = {"palm tree", "coconut tree", "beach"},
+  },
+  --431
+  {
+    name = "coco",
+    sprite = "coco",
+    type = "object",
+    color = {6, 1},
+    layer = 3,
+    rotate = "true",
+    tags = {"fruit", "coconut"},
+    desc = "its a bigg bigg nutt",
+  },
+  --432
+  {
+    name = "text_coco",
+    sprite = "text_coco",
+    type = "text",
+    texttype = {object = true},
+    color = {6, 1},
+    layer = 20,
+    tags = {"fruit", "coconut"},
+  },
+  --433
+  {
+    name = "glas",
+    sprite = "glas",
+    type = "object",
+    color = {0,3},
+    layer = 21,
+    tags = {"glass"},
+  },
+  --434
+  {
+    name = "text_glas",
+    sprite = "text_glas",
+    type = "text",
+    texttype = {object = true},
+    color = {0,2},
+    layer = 20,
+    tags = {"glass"},
+    desc = "a tranzlucent block?!",
+  },
+  --435
+  {
+    name = "fishe",
+    sprite = "fishe",
+    sleepsprite = "fishe_slep",
+    type = "object",
+    color = {0, 3},
+    layer = 5,
+    rotate = "true",
+    eye = {x=24 y=11, w=2, h=2},
+    tags = {"angelfish", "chars"},
+    desc = "fishe be walk?? kinda quirky doe",
+  },
+  --436
+  {
+    name = "text_fishe",
+    sprite = "text_fishe",
+    type = "text",
+    texttype = {object = true},
+    color = {0, 2},
+    layer = 20,
+    tags = {"angelfish", "chars"},
   },
 }
 
