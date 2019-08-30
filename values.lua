@@ -200,11 +200,11 @@ selector_grid_contents = {
     "robobot","text_robobot","l..uv","text_l..uv","hedg","text_hedg","hol","text_hol","rif","text_rif",0,0,0,0,0,0,0,0,
     "wog","text_wog","tre","text_tre","metl","text_metl","clok","text_clok","bom","text_bom","kar","text_kar",0,0,0,0,0,0,
     "kirb","text_kirb","frut","text_frut","jail","text_jail","sine","text_sine","sanglas","text_sanglas","shel","text_shel","sancastl","text_sancastl","parsol","text_parsol","pallm","text_pallm",
-    "bup","text_bup","piler","text_piler","fenss","text_fenss","buble","text_buble","creb","text_creb","icecub","text_icecub","coco","text_coco","glas","text_glas",0,0,
+    "bup","text_bup","piler","text_piler","fenss","text_fenss","buble","text_buble","creb","text_creb","icecub","text_icecub",0,0,"glas","text_glas","coco","text_coco",
     "boy","text_boy","dayzy","text_dayzy","platfor","text_platfor","pepis","text_pepis","fungye", "text_fungye",0,0,0,0,"lila","text_lila","tot","text_tot",
     "steev","text_steev","splittr","text_splittr","colld","text_colld","arro","text_arro","beeee","text_beeee","fishe","text_fishe",0,0,"pata","text_pata","jill","text_jill",
     "han","text_han","clowd","text_clowd","bellt","text_bellt","ger","text_ger","sno","text_sno","snoman","text_snoman",0,0,"larry","text_larry","zsoob","text_zsoob",
-    "os","text_os","hurcane","text_hurcane","spik","text_spik","hors","text_hors","fir","text_fir","rouz","text_rouz","leef","text_leef",0,0,"o","text_o",
+    "os","text_os","hurcane","text_hurcane","spik","text_spik","hors","text_hors","fir","text_fir","rouz","text_rouz","leef","text_leef","vien","text_vien","o","text_o",
     "firbolt","text_firbolt","lie","text_lie","spiky","text_spiky","can","text_can","ladr", "text_ladr","litbolt","text_litbolt",0,0,0,0,"square","text_square",
     "icbolt","text_icbolt","lie/8","text_lie/8","bordr","text_bordr","togll","text_togll","wut","text_wut","wat","text_wat","tor","text_tor",0,0,"triangle","text_triangle",
   },
@@ -2681,7 +2681,7 @@ tiles_list = {
     color = {6, 2},
     layer = 5,
     desc = "good for use with go my way",
-    rotate = true
+    rotate = true,
     tags = {"platform"},
   },
   -- 220
@@ -5008,7 +5008,7 @@ tiles_list = {
     color = {0, 3},
     layer = 5,
     rotate = "true",
-    eye = {x=24 y=11, w=2, h=2},
+    eye = {x=24, y=11, w=2, h=2},
     tags = {"angelfish", "chars"},
     desc = "fishe be walk?? kinda quirky doe",
   },
@@ -5021,6 +5021,28 @@ tiles_list = {
     color = {0, 2},
     layer = 20,
     tags = {"angelfish", "chars"},
+  },
+  -- 437
+  {
+    name = "vien",
+    sprite = "vien",
+    type = "object",
+    color = {5,1},
+    layer = 3,
+    rotate = true,
+    tags = {"vines", "plants", "climb"},
+    desc = "vinny viensauce",
+  },
+  -- 438
+  {
+    name = "text_vien",
+    sprite = "text_vien",
+    type = "text",
+    texttype = {object = true},
+    color = {5,1},
+    layer = 20,
+    tags = {"vines", "plants", "climb"},
+    desc = "so she uploads a VIEN",
   },
 }
 
