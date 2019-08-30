@@ -166,9 +166,9 @@ selector_grid_contents = {
     "boux", "text_boux", "text_come pls", "os", "text_os", "bup", "text_bup", "han", "text_han", "fenss", "text_fenss", "brik", "text_brik", "hol", "text_hol", "text_poor toll", "text_blacc", "text_reed",
     "bellt", "text_bellt", "text_go", "tre", "text_tre", "piler", "text_piler", "hatt", "text_hatt", "hedg", "text_hedg", "beeee", "text_beeee", "rif", "text_rif", "text_glued", "text_whit", "text_orang",
     "boll", "text_boll", "text_:o", "frut", "text_frut", "kirb", "text_kirb", "katany", "text_katany", "metl", "text_metl", "rouz", "text_rouz", "tor", "text_tor", "text_enby", "text_colrful", "text_yello",
-    "clok", "text_clok", "text_try again", "text_no undo", "text_undo", "slippers", "text_slippers", "firbolt", "text_firbolt", "jail", "text_jail", "fungye", "text_fungye", 0, 0, "text_tranz", "text_rave", "text_grun",
-    "splittr", "text_splittr", "text_split", "steev", "text_steev", "boy", "text_boy", "icbolt", "text_icbolt", "platfor", "text_platfor", "ladr", "text_ladr", 0, 0, "text_gay", "text_stelth", "text_cyeann",
-    "chekr", "text_chekr", "text_diag", "text_ortho", "text_haet flor", "arro", "text_arro", "text_go my way", "text_spin", "text_no turn", "text_stubbn", "text_rotatbl", 0, 0, "text_pinc", "text_qt", "text_paint", "text_bleu",
+    "clok", "text_clok", "text_try again", "text_no undo", "text_undo", "slippers", "text_slippers", "firbolt", "text_firbolt", "jail", "text_jail", "fungye", "text_fungye", "sunne", "text_sunne", "text_tranz", "text_rave", "text_grun",
+    "splittr", "text_splittr", "text_split", "steev", "text_steev", "boy", "text_boy", "icbolt", "text_icbolt", "platfor", "text_platfor", "ladr", "text_ladr", "moone", "text_moone", "text_gay", "text_stelth", "text_cyeann",
+    "chekr", "text_chekr", "text_diag", "text_ortho", "text_haet flor", "arro", "text_arro", "text_go my way", "text_spin", "text_no turn", "text_stubbn", "text_rotatbl", "starre","text_starre", "text_pinc", "text_qt", "text_paint", "text_bleu",
     "clowd", "text_clowd", "text_flye", "text_tall", "text_haet skye", "ghost fren", "text_ghost fren", "robobot", "text_robobot", "sparkl", "text_sparkl", "spik", "text_spik", "spiky", "text_spiky", "bordr", "text_bordr", "text_purp",
     nil
   },
@@ -194,9 +194,9 @@ selector_grid_contents = {
   {
     "bab","text_bab","flog","text_flog","wal","text_wal","gras","text_gras","cobll","text_cobll","brik","text_brik",0,0,"selctr","text_selctr","lvl","text_lvl",
     "keek","text_keek","roc","text_roc","til","text_til","sparkl","text_sparkl","wuud","text_wuud","san","text_san",0,0,"this","text_mous","lin","text_lin",
-    "meem","text_meem","boux","text_boux","watr","text_watr","scarr","text_scarr","petnygrame","text_petnygrame",0,0,0,0,"text_text","text_frens","text_groop","text_pathz",
-    "skul","text_skul","boll","text_boll","laav","text_laav","katany","text_katany","gunne","text_gunne",0,0,0,0,0,0,"text_every1","text_no1",
-    "ghost fren","text_ghost fren","kee","text_kee","dor","text_dor","hatt","text_hatt","slippers","text_slippers",0,0,0,0,0,0,0,0,
+    "meem","text_meem","boux","text_boux","watr","text_watr","scarr","text_scarr","petnygrame","text_petnygrame","starre","text_starre",0,0,"text_text","text_frens","text_groop","text_pathz",
+    "skul","text_skul","boll","text_boll","laav","text_laav","katany","text_katany","gunne","text_gunne","sunne","text_sunne",0,0,0,0,"text_every1","text_no1",
+    "ghost fren","text_ghost fren","kee","text_kee","dor","text_dor","hatt","text_hatt","slippers","text_slippers","moone","text_moone",0,0,0,0,0,0,
     "robobot","text_robobot","l..uv","text_l..uv","hedg","text_hedg","hol","text_hol","rif","text_rif",0,0,0,0,0,0,0,0,
     "wog","text_wog","tre","text_tre","metl","text_metl","clok","text_clok","bom","text_bom","kar","text_kar",0,0,0,0,0,0,
     "kirb","text_kirb","frut","text_frut","jail","text_jail","sine","text_sine","sanglas","text_sanglas",0,0,0,0,0,0,0,0,
@@ -204,7 +204,7 @@ selector_grid_contents = {
     "boy","text_boy","dayzy","text_dayzy","platfor","text_platfor","pepis","text_pepis","fungye", "text_fungye",0,0,0,0,"lila","text_lila","tot","text_tot",
     "steev","text_steev","splittr","text_splittr","colld","text_colld","arro","text_arro","beeee","text_beeee",0,0,0,0,"pata","text_pata","jill","text_jill",
     "han","text_han","clowd","text_clowd","bellt","text_bellt","ger","text_ger","sno","text_sno","snoman","text_snoman",0,0,"larry","text_larry","zsoob","text_zsoob",
-    "os","text_os","hurcane","text_hurcane","spik","text_spik","hors","text_hors","fir","text_fir","rouz","text_rouz",0,0,0,0,"o","text_o",
+    "os","text_os","hurcane","text_hurcane","spik","text_spik","hors","text_hors","fir","text_fir","rouz","text_rouz","leef","text_leef",0,0,"o","text_o",
     "firbolt","text_firbolt","lie","text_lie","spiky","text_spiky","can","text_can","ladr", "text_ladr","litbolt","text_litbolt",0,0,0,0,"square","text_square",
     "icbolt","text_icbolt","lie/8","text_lie/8","bordr","text_bordr","togll","text_togll","wut","text_wut","wat","text_wat","tor","text_tor",0,0,"triangle","text_triangle",
   },
@@ -1584,7 +1584,7 @@ tiles_list = {
     sprite = "clowd",
     type = "object",
     color = {0, 3},
-    layer = 7,
+    layer = 8,
     tags = {"cloud"},
   },
   -- 122
@@ -4746,6 +4746,89 @@ tiles_list = {
     color = {2, 1},
     layer = 20,
     tags = {"portal", "japan", "torii", "asia"},
+  },
+  -- 415
+  {
+    name = "sunne",
+    sprite = "sunne",
+    sleepsprite = "sunne_slep",
+    type = "object",
+    color = {2,4},
+    layer = 7,
+    tags = {"hot", "sunny", "day"},
+    desc = "the sunne be a :( lazor",
+  },
+  -- 416
+  {
+    name = "text_sunne",
+    sprite = "text_sunne",
+    type = "text",
+    texttype = {object = true},
+    color = {2,4},
+    layer = 20,
+    tags = {"hot", "sunny", "day"},
+  },
+  -- 417
+  {
+    name = "moone",
+    sprite = "moone",
+    type = "object",
+    color = {1,2},
+    layer = 7,
+    tags = {"moon", "night", "mun", "crescent"},
+    desc = "unaffiliated with munwalk",
+  },
+  -- 418
+  {
+    name = "text_moone",
+    sprite = "text_moone",
+    type = "text",
+    texttype = {object = true},
+    color = {1,2},
+    layer = 20,
+    tags = {"moon", "night", "mun", "crescent"},
+  },
+  -- 419
+  {
+    name = "leef",
+    sprite = "leef",
+    type = "object",
+    color = {5,2},
+    layer = 4,
+    tags = {"leaf", "weed lmao"},
+    desc = "leef meem alone",
+  },
+  -- 420 blaze it
+  {
+    name = "text_leef",
+    sprite = "text_leef",
+    type = "text",
+    texttype = {object = true},
+    color = {5,2},
+    layer = 20,
+    tags = {"leaf", "weed lmao"},
+    desc = "its the 420th object lmao",
+    weed = "true"
+  },
+  -- 421
+  {
+    name = "starre",
+    sprite = "starre",
+    type = "object",
+    color = {2,4},
+    layer = 7,
+    tags = {"star", "night"},
+    desc = "starre starre nite",
+  },
+  -- 422
+  {
+    name = "text_starre",
+    sprite = "text_starre",
+    type = "text",
+    texttype = {object = true},
+    color = {2,4},
+    layer = 20,
+    tags = {"star", "night"},
   },
 }
 
