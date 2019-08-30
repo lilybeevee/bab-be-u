@@ -590,7 +590,14 @@ function scene.keyPressed(key)
     --copy so we don't override original list
     current_tile_grid = copyTable(current_tile_grid)
     --revert if we're already nt'd
-    if ((current_tile_grid[i] % meta_offset) > nt_offset) then
+    local already_nted = false
+    for i = 0,tile_grid_width*tile_grid_height do
+      if (current_tile_grid[i] ~= nil and (current_tile_grid[i] % meta_offset) > nt_offset) then
+        already_nted = true
+        break
+      end
+    end
+    if already_nted then
       current_tile_grid = tile_grid[selector_page]
     else
       for i = 0,tile_grid_width*tile_grid_height do
