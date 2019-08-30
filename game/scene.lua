@@ -778,6 +778,12 @@ function scene.draw(dt)
 				end
 				setColor(unit.color)
 			end
+      if (unit.nt ~= nil) then
+        setColor({2, 2})
+        local ntsprite = sprites["n't"]
+        love.graphics.draw(ntsprite, fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+        setColor(unit.color)
+      end
     end
     
     --performance todos: each line gets drawn twice (both ways), so there's probably a way to stop that. might not be necessary though, since there is no lag so far
@@ -1145,6 +1151,12 @@ function scene.draw(dt)
 					love.graphics.printf(tostring(unit.meta), -1, 6, 32, "center")
 				end
 			end
+      if (unit.nt ~= nil) then
+        setColor({2, 2})
+        local ntsprite = sprites["n't"]
+        love.graphics.draw(ntsprite, 0, 0, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+        setColor(unit.color)
+      end
       love.graphics.pop()
 
       if draw.count > 1 then
