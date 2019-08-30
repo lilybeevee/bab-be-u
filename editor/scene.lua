@@ -1680,14 +1680,14 @@ function scene.saveLevel()
     love.filesystem.write("levels/" .. file_name .. ".bab", json.encode(data))
     print("Saved to:","levels/" .. file_name .. ".bab")
     if icon_data then
-      icon_data:encode("png", "levels/" .. file_name .. ".png")
+      pcall(function() icon_data:encode("png", "levels/" .. file_name .. ".png") end)
     end
   else
     love.filesystem.createDirectory(world_parent .. "/" .. world)
     love.filesystem.write(world_parent .. "/" .. world .. "/" ..file_name .. ".bab", json.encode(data))
     print("Saved to:",world_parent .. "/" .. world .. "/" ..file_name .. ".bab")
     if icon_data then
-      icon_data:encode("png", world_parent .. "/" .. world .. "/" .. file_name .. ".png")
+      pcall(function() icon_data:encode("png", world_parent .. "/" .. world .. "/" .. file_name .. ".png") end)
     end
   end
 
