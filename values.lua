@@ -165,7 +165,7 @@ selector_grid_contents = {
     "skul", "text_skul", "text_:(", "til", "text_til", "hurcane", "text_hurcane", "gunne", "text_gunne", "wog", "text_wog", "text_zip", "text_shy", "text_munwalk", "text_sidestep", "text_diagstep", "text_hopovr", "text_knightstep",
     "boux", "text_boux", "text_come pls", "os", "text_os", "bup", "text_bup", "han", "text_han", "fenss", "text_fenss", "brik", "text_brik", "hol", "text_hol", "text_poor toll", "text_blacc", "text_reed",
     "bellt", "text_bellt", "text_go", "tre", "text_tre", "piler", "text_piler", "hatt", "text_hatt", "hedg", "text_hedg", "beeee", "text_beeee", "rif", "text_rif", "text_glued", "text_whit", "text_orang",
-    "boll", "text_boll", "text_:o", "frut", "text_frut", "kirb", "text_kirb", "katany", "text_katany", "metl", "text_metl", "rouz", "text_rouz", "tor", "text_tor", "text_enby", "text_colrful", "text_yello",
+    "boll", "text_boll", "text_:o", "frut", "text_frut", "kirb", "text_kirb", "katany", "text_katany", "metl", "text_metl", "rouz", "text_rouz", "smol", "text_smol", "text_enby", "text_colrful", "text_yello",
     "clok", "text_clok", "text_try again", "text_no undo", "text_undo", "slippers", "text_slippers", "firbolt", "text_firbolt", "jail", "text_jail", "fungye", "text_fungye", "sunne", "text_sunne", "text_tranz", "text_rave", "text_grun",
     "splittr", "text_splittr", "text_split", "steev", "text_steev", "boy", "text_boy", "icbolt", "text_icbolt", "platfor", "text_platfor", "ladr", "text_ladr", "moone", "text_moone", "text_gay", "text_stelth", "text_cyeann",
     "chekr", "text_chekr", "text_diag", "text_ortho", "text_haet flor", "arro", "text_arro", "text_go my way", "text_spin", "text_no turn", "text_stubbn", "text_rotatbl", "starre","text_starre", "text_pinc", "text_qt", "text_paint", "text_bleu",
@@ -197,16 +197,16 @@ selector_grid_contents = {
     "meem","text_meem","boux","text_boux","watr","text_watr","scarr","text_scarr","petnygrame","text_petnygrame","starre","text_starre",0,0,"text_text","text_frens","text_groop","text_pathz",
     "skul","text_skul","boll","text_boll","laav","text_laav","katany","text_katany","gunne","text_gunne","sunne","text_sunne",0,0,0,0,"text_every1","text_no1",
     "ghost fren","text_ghost fren","kee","text_kee","dor","text_dor","hatt","text_hatt","slippers","text_slippers","moone","text_moone",0,0,0,0,0,0,
-    "robobot","text_robobot","l..uv","text_l..uv","hedg","text_hedg","hol","text_hol","rif","text_rif","pudll","text_pudll","red","text_red",0,0,0,0,
+    "robobot","text_robobot","l..uv","text_l..uv","hedg","text_hedg","hol","text_hol","rif","text_rif","smol","text_smol","tor","text_tor",0,0,0,0,
     "wog","text_wog","tre","text_tre","metl","text_metl","clok","text_clok","bom","text_bom","kar","text_kar","stum","text_stum",0,0,0,0,
     "kirb","text_kirb","frut","text_frut","jail","text_jail","sine","text_sine","sanglas","text_sanglas","shel","text_shel","sancastl","text_sancastl","parsol","text_parsol","pallm","text_pallm",
     "bup","text_bup","piler","text_piler","fenss","text_fenss","buble","text_buble","creb","text_creb","icecub","text_icecub",0,0,"glas","text_glas","coco","text_coco",
     "boy","text_boy","dayzy","text_dayzy","platfor","text_platfor","pepis","text_pepis","fungye", "text_fungye","bullb","text_bullb","text_battry","battry","lila","text_lila","tot","text_tot",
     "steev","text_steev","splittr","text_splittr","colld","text_colld","arro","text_arro","beeee","text_beeee","fishe","text_fishe",0,0,"pata","text_pata","jill","text_jill",
-    "han","text_han","clowd","text_clowd","bellt","text_bellt","ger","text_ger","sno","text_sno","snoman","text_snoman",0,0,"larry","text_larry","zsoob","text_zsoob",
+    "han","text_han","clowd","text_clowd","bellt","text_bellt","ger","text_ger","sno","text_sno","snoman","text_snoman","red","text_red","larry","text_larry","zsoob","text_zsoob",
     "os","text_os","hurcane","text_hurcane","spik","text_spik","hors","text_hors","fir","text_fir","rouz","text_rouz","leef","text_leef",0,0,"o","text_o",
     "firbolt","text_firbolt","lie","text_lie","spiky","text_spiky","can","text_can","ladr", "text_ladr","litbolt","text_litbolt","vien","text_vien",0,0,"square","text_square",
-    "icbolt","text_icbolt","lie/8","text_lie/8","bordr","text_bordr","togll","text_togll","wut","text_wut","wat","text_wat","tor","text_tor",0,0,"triangle","text_triangle",
+    "icbolt","text_icbolt","lie/8","text_lie/8","bordr","text_bordr","togll","text_togll","wut","text_wut","wat","text_wat","pudll","text_pudll",0,0,"triangle","text_triangle",
   },
   -- page 5: properties, verbs and conditions
   {
@@ -5145,6 +5145,28 @@ tiles_list = {
     color = {4, 1},
     layer = 20,
     tags = {"battery", "power"},
+  },
+  --449
+  {
+    name = "smol",
+    sprite = "smol",
+    type = object,
+    color = {5,2},
+    layer = 8,
+    rotate = true,
+    portal = true,
+    tags = {"portal"},
+    desc = "the tini poor toll",
+  },
+  --450
+  {
+    name = "text_smol",
+    sprite = "text_smol",
+    type = "text",
+    texttype = {object = true},
+    color = {5,2},
+    layer = 20,
+    tags = {"portal"},
   },
 }
 
