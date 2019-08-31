@@ -933,14 +933,14 @@ function scene.draw(dt)
         end
         love.graphics.stencil(holStencil, "replace", 2)
         love.graphics.stencil(holStencil2, "replace", 1, true)
-
+        
         for _,peek in ipairs(unit.portal.objects) do
           if not portaling[peek] then
             love.graphics.setStencilTest("greater", 1)
           else
             love.graphics.setStencilTest("greater", 0)
           end
-
+          
           love.graphics.push()
           love.graphics.translate(fulldrawx, fulldrawy)
           love.graphics.rotate(-math.rad(rotation))
@@ -948,7 +948,7 @@ function scene.draw(dt)
             love.graphics.rotate(math.rad(unit.portal.dir * 45))
           end
           love.graphics.translate(-fulldrawx, -fulldrawy)
-
+          
           local x, y, rot = unit.draw.x, unit.draw.y, 0
           if peek.name ~= "no1" then
             if portaling[peek] ~= unit then
@@ -968,10 +968,10 @@ function scene.draw(dt)
           else
             drawUnit(peek, x, y, rot, true)
           end
-
+          
           love.graphics.pop()
         end
-
+        
         love.graphics.setStencilTest()
       end
     end
