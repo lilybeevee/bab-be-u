@@ -196,16 +196,16 @@ selector_grid_contents = {
     "keek","text_keek","roc","text_roc","til","text_til","sparkl","text_sparkl","wuud","text_wuud","san","text_san",0,0,"this","text_mous","lin","text_lin",
     "meem","text_meem","boux","text_boux","watr","text_watr","scarr","text_scarr","petnygrame","text_petnygrame","starr","text_starr",0,0,"text_text","text_frens","text_groop","text_pathz",
     "skul","text_skul","boll","text_boll","laav","text_laav","katany","text_katany","gunne","text_gunne","son","text_son","ufu","text_ufu",0,0,"text_every1","text_no1",
-    "ghost fren","text_ghost fren","kee","text_kee","dor","text_dor","hatt","text_hatt","slippers","text_slippers","muun","text_muun","rockit","text_rockit","rein","text_rein",0,0,
+    "ghost fren","text_ghost fren","kee","text_kee","dor","text_dor","hatt","text_hatt","slippers","text_slippers","muun","text_muun","rockit","text_rockit","rein","text_rein","noet","text_noet",
     "robobot","text_robobot","l..uv","text_l..uv","hedg","text_hedg","hol","text_hol","rif","text_rif","smol","text_smol","tor","text_tor","win","text_win",0,0,
-    "wog","text_wog","tre","text_tre","metl","text_metl","clok","text_clok","bom","text_bom","kar","text_kar","stum","text_stum","algay","text_algay",0,0,
+    "wog","text_wog","tre","text_tre","metl","text_metl","clok","text_clok","bom","text_bom","kar","text_kar","stum","text_stum","algay","text_algay","banboo","text_banboo",
     "kirb","text_kirb","frut","text_frut","jail","text_jail","sine","text_sine","sanglas","text_sanglas","shel","text_shel","sancastl","text_sancastl","parsol","text_parsol","pallm","text_pallm",
     "bup","text_bup","piler","text_piler","fenss","text_fenss","buble","text_buble","creb","text_creb","icecub","text_icecub","statoo","text_statoo","glas","text_glas","coco","text_coco",
     "boy","text_boy","dayzy","text_dayzy","platfor","text_platfor","pepis","text_pepis","fungye", "text_fungye","bullb","text_bullb","text_battry","battry","lila","text_lila","tot","text_tot",
     "steev","text_steev","splittr","text_splittr","colld","text_colld","arro","text_arro","beeee","text_beeee","fishe","text_fishe","bon","text_bon","pata","text_pata","jill","text_jill",
     "han","text_han","clowd","text_clowd","bellt","text_bellt","ger","text_ger","sno","text_sno","snoman","text_snoman","red","text_red","larry","text_larry","zsoob","text_zsoob",
-    "os","text_os","hurcane","text_hurcane","spik","text_spik","hors","text_hors","fir","text_fir","rouz","text_rouz","leef","text_leef",0,0,"o","text_o",
-    "firbolt","text_firbolt","lie","text_lie","spiky","text_spiky","can","text_can","ladr", "text_ladr","litbolt","text_litbolt","vien","text_vien",0,0,"square","text_square",
+    "os","text_os","hurcane","text_hurcane","spik","text_spik","hors","text_hors","fir","text_fir","rouz","text_rouz","leef","text_leef","bunmy","text_bunmy","o","text_o",
+    "firbolt","text_firbolt","lie","text_lie","spiky","text_spiky","can","text_can","ladr", "text_ladr","litbolt","text_litbolt","vien","text_vien","karot","text_karot","square","text_square",
     "icbolt","text_icbolt","lie/8","text_lie/8","bordr","text_bordr","togll","text_togll","wut","text_wut","wat","text_wat","pudll","text_pudll",0,0,"triangle","text_triangle",
   },
   -- page 5: properties, verbs and conditions
@@ -225,6 +225,10 @@ selector_grid_contents = {
     "text_babn't", "text_ben't",0,0,0,"text_try again","text_no undo","text_undo","text_za warudo","text_brite",0,0,0,0,0,"text_stelth","text_qt","text_cyeann",
     "text_rocn't","text_waln't",0,0,0,"text_poor toll","text_go arnd","text_mirr arnd","text_glued","text_torc",0,0,0,0,0,"text_blacc","text_whit","text_bleu",
     "text_...","text_''",0,0,0,"text_her","text_thr","text_rithere","text_the","text_opaque",0,0,0,0,0,"text_colrful","text_rave","text_purp",
+  },
+  -- page 6
+  {
+    0,0,0,
   },
 }
 tile_grid_width = 18
@@ -4844,6 +4848,7 @@ tiles_list = {
     type = "object",
     color = {5,2},
     layer = 4,
+    rotate = true,
     tags = {"leaf", "weed lmao", "plants"},
     desc = "leef meem alone",
   },
@@ -5302,7 +5307,6 @@ tiles_list = {
     type = "object",
     color = {5,1},
     layer = 4,
-    rotate = true,
     tags = {"algae", "plants"},
   },
   -- 464
@@ -5315,6 +5319,90 @@ tiles_list = {
     layer = 20,
     tags = {"algae", "plants"},
     desc = "very gay",
+  },
+  -- 465
+  {
+    name = "noet",
+    sprite = "noet",
+    type = "object",
+    color = {4,1},
+    layer = 8,
+    tags = {"music note", "quarter note"},
+  },
+  -- 466
+  {
+    name = "text_noet",
+    sprite = "text_noet",
+    type = "text",
+    texttype = {object = true},
+    color = {4,1},
+    layer = 20,
+    tags = {"music note", "quarter note"},
+  },
+  -- 467
+  {
+    name = "banboo",
+    sprite = "banboo",
+    type = "object",
+    color = {5,1},
+    layer = 4,
+    tags = {"bamboo", "plants"},
+  },
+  -- 468
+  {
+    name = "text_banboo",
+    sprite = "text_banboo",
+    type = "text",
+    texttype = {object = true},
+    color = {5,1},
+    layer = 20,
+    tags = {"bamboo", "plants"},
+  },
+  -- 469
+  {
+    name = "bunmy",
+    sprite = "bunmy",
+    sleepsprite = "bunmy_slep",
+    type = "object",
+    color = {0, 3},
+    layer = 6,
+    rotate = true,
+    eye = {x=23, y=12, w=2, h=2},
+    tags = {"chars", "bunny rabbit"},
+    desc = "looks kinda like bab???",
+    nice = true,
+  },
+  -- 470
+  {
+    name = "text_bunmy",
+    sprite = "text_bunmy",
+    type = "text",
+    texttype = {object = true},
+    color = {0, 3},
+    layer = 20,
+    tags = {"chars", "bunny rabbit"},
+  },
+  -- 471
+  {
+    name = "karot",
+    sprite = "karot",
+    type = "object",
+    color = {2,2},
+    layer = 4,
+    rotate = true,
+    tags = {"karot", "plants", "fruit"},
+    desc = "bunmy lüv this",
+  },
+  -- 472
+  {
+    name = "text_karot",
+    sprite = "text_karot",
+    type = "text",
+    texttype = {object = true},
+    color = {2,2},
+    layer = 20,
+    tags = {"karot", "plants", "fruit"},
+    desc = "is it a frut? is it a vege? i dont karot all!!!",
   },
 }
 
