@@ -206,7 +206,7 @@ selector_grid_contents = {
     "han","text_han","clowd","text_clowd","bellt","text_bellt","ger","text_ger","sno","text_sno","snoman","text_snoman","red","text_red","larry","text_larry","zsoob","text_zsoob",
     "os","text_os","hurcane","text_hurcane","spik","text_spik","hors","text_hors","fir","text_fir","rouz","text_rouz","leef","text_leef","bunmy","text_bunmy","o","text_o",
     "firbolt","text_firbolt","lie","text_lie","spiky","text_spiky","can","text_can","ladr", "text_ladr","litbolt","text_litbolt","vien","text_vien","karot","text_karot","square","text_square",
-    "icbolt","text_icbolt","lie/8","text_lie/8","bordr","text_bordr","togll","text_togll","wut","text_wut","wat","text_wat","pudll","text_pudll",0,0,"triangle","text_triangle",
+    "icbolt","text_icbolt","lie/8","text_lie/8","bordr","text_bordr","togll","text_togll","wut","text_wut","wat","text_wat","pudll","text_pudll","poisbolt","text_poisbolt","triangle","text_triangle",
   },
   -- page 5: properties, verbs and conditions
   {
@@ -5403,6 +5403,25 @@ tiles_list = {
     layer = 20,
     tags = {"karot", "plants", "fruit"},
     desc = "is it a frut? is it a vege? i dont karot all!!!",
+  },
+  -- 473
+  {
+    name = "poisbolt",
+    sprite = "poisbolt",
+    type = "object",
+    color = {5, 3},
+    layer = 5,
+    rotate = true,
+    desc = "how kids learn the triangular number series",
+  },
+  -- 474
+  {
+    name = "text_poisbolt",
+    sprite = "text_poisbolt",
+    type = "text",
+    texttype = {object = true},
+    color = {5, 3},
+    layer = 20,
   },
 }
 
