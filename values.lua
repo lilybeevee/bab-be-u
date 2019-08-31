@@ -197,7 +197,7 @@ selector_grid_contents = {
     "meem","text_meem","boux","text_boux","watr","text_watr","scarr","text_scarr","petnygrame","text_petnygrame","starr","text_starr",0,0,"text_text","text_frens","text_groop","text_pathz",
     "skul","text_skul","boll","text_boll","laav","text_laav","katany","text_katany","gunne","text_gunne","son","text_son",0,0,0,0,"text_every1","text_no1",
     "ghost fren","text_ghost fren","kee","text_kee","dor","text_dor","hatt","text_hatt","slippers","text_slippers","muun","text_muun",0,0,0,0,0,0,
-    "robobot","text_robobot","l..uv","text_l..uv","hedg","text_hedg","hol","text_hol","rif","text_rif","smol","text_smol","tor","text_tor",0,0,0,0,
+    "robobot","text_robobot","l..uv","text_l..uv","hedg","text_hedg","hol","text_hol","rif","text_rif","smol","text_smol","tor","text_tor","win","text_win",0,0,
     "wog","text_wog","tre","text_tre","metl","text_metl","clok","text_clok","bom","text_bom","kar","text_kar","stum","text_stum",0,0,0,0,
     "kirb","text_kirb","frut","text_frut","jail","text_jail","sine","text_sine","sanglas","text_sanglas","shel","text_shel","sancastl","text_sancastl","parsol","text_parsol","pallm","text_pallm",
     "bup","text_bup","piler","text_piler","fenss","text_fenss","buble","text_buble","creb","text_creb","icecub","text_icecub",0,0,"glas","text_glas","coco","text_coco",
@@ -5167,6 +5167,29 @@ tiles_list = {
     color = {5,2},
     layer = 20,
     tags = {"portal"},
+  },
+  --451
+  {
+    name = "win",
+    sprite = "win",
+    type = object,
+    color = {1,4},
+    layer = 8,
+    rotate = true,
+    portal = true,
+    tags = {"portal", "window", "doorway"},
+    desc = "the skware poor toll",
+  },
+  --452
+  {
+    name = "text_win",
+    sprite = "text_win",
+    type = "text",
+    texttype = {object = true},
+    color = {1,4},
+    layer = 20,
+    tags = {"portal", "window", "doorway"},
+    desc = "not to be confused with :)",
   },
 }
 
