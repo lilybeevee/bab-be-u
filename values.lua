@@ -195,10 +195,10 @@ selector_grid_contents = {
     "bab","text_bab","flog","text_flog","wal","text_wal","gras","text_gras","cobll","text_cobll","brik","text_brik",0,0,"selctr","text_selctr","lvl","text_lvl",
     "keek","text_keek","roc","text_roc","til","text_til","sparkl","text_sparkl","wuud","text_wuud","san","text_san",0,0,"this","text_mous","lin","text_lin",
     "meem","text_meem","boux","text_boux","watr","text_watr","scarr","text_scarr","petnygrame","text_petnygrame","starr","text_starr",0,0,"text_text","text_frens","text_groop","text_pathz",
-    "skul","text_skul","boll","text_boll","laav","text_laav","katany","text_katany","gunne","text_gunne","son","text_son",0,0,0,0,"text_every1","text_no1",
-    "ghost fren","text_ghost fren","kee","text_kee","dor","text_dor","hatt","text_hatt","slippers","text_slippers","muun","text_muun",0,0,0,0,0,0,
+    "skul","text_skul","boll","text_boll","laav","text_laav","katany","text_katany","gunne","text_gunne","son","text_son","ufu","text_ufu",0,0,"text_every1","text_no1",
+    "ghost fren","text_ghost fren","kee","text_kee","dor","text_dor","hatt","text_hatt","slippers","text_slippers","muun","text_muun","rockit","text_rockit","rein","text_rein",0,0,
     "robobot","text_robobot","l..uv","text_l..uv","hedg","text_hedg","hol","text_hol","rif","text_rif","smol","text_smol","tor","text_tor","win","text_win",0,0,
-    "wog","text_wog","tre","text_tre","metl","text_metl","clok","text_clok","bom","text_bom","kar","text_kar","stum","text_stum",0,0,0,0,
+    "wog","text_wog","tre","text_tre","metl","text_metl","clok","text_clok","bom","text_bom","kar","text_kar","stum","text_stum","algay","text_algay",0,0,
     "kirb","text_kirb","frut","text_frut","jail","text_jail","sine","text_sine","sanglas","text_sanglas","shel","text_shel","sancastl","text_sancastl","parsol","text_parsol","pallm","text_pallm",
     "bup","text_bup","piler","text_piler","fenss","text_fenss","buble","text_buble","creb","text_creb","icecub","text_icecub","statoo","text_statoo","glas","text_glas","coco","text_coco",
     "boy","text_boy","dayzy","text_dayzy","platfor","text_platfor","pepis","text_pepis","fungye", "text_fungye","bullb","text_bullb","text_battry","battry","lila","text_lila","tot","text_tot",
@@ -766,7 +766,7 @@ tiles_list = {
     color = {2, 2},
     layer = 3,
     rotate = "true",
-    tags = {"fruit", "apple"},
+    tags = {"fruit", "apple", "plants"},
     desc = "not to be confused with OS appl. babs favorite snacc",
   },
   --48
@@ -777,7 +777,7 @@ tiles_list = {
     texttype = {object = true},
     color = {2, 2},
     layer = 20,
-    tags = {"fruit", "apple"},
+    tags = {"fruit", "apple", "plants"},
   },
   --49
   {
@@ -787,7 +787,7 @@ tiles_list = {
     color = {5, 2},
     layer = 2,
     rotate = "true",
-    tags = {"tree"},
+    tags = {"tree", "plants"},
   },
   --50
   {
@@ -797,7 +797,7 @@ tiles_list = {
     texttype = {object = true},
     color = {5, 2},
     layer = 20,
-    tags = {"tree"},
+    tags = {"tree", "plants"},
   },
   --51
   {
@@ -1217,7 +1217,7 @@ tiles_list = {
     color = {5, 1},
     layer = 1,
     desc = "don step on it. or do step on it. ur choice",
-    tags = {"grass"},
+    tags = {"grass", "plants"},
   },
   -- 88
   {
@@ -1227,7 +1227,7 @@ tiles_list = {
     texttype = {object = true},
     color = {5, 3},
     layer = 20,
-    tags = {"grass"},
+    tags = {"grass", "plants"},
   },
   -- 89
   {
@@ -1237,7 +1237,7 @@ tiles_list = {
     color = {3, 3},
     layer = 4,
     eye = {x=10, y=7, w=3, h=3},
-    tags = {"violet","daisy", "flower"},
+    tags = {"violet", "daisy", "flower", "plants"},
   },
   -- 90
   {
@@ -1247,7 +1247,7 @@ tiles_list = {
     texttype = {object = true},
     color = {3, 3},
     layer = 20,
-    tags = {"violet","daisy", "flower"},
+    tags = {"violet", "daisy", "flower", "plants"},
     desc = "dayzy me rollin, they haetin",
   },
   -- 91
@@ -2527,7 +2527,7 @@ tiles_list = {
     type = "object",
     color = {5, 1},
     layer = 2,
-    tags = {"hedge"},
+    tags = {"hedge", "plants"},
     desc = "im hedg the hedg heg",
   },
   -- 207
@@ -2538,7 +2538,7 @@ tiles_list = {
     texttype = {object = true},
     color = {5, 1},
     layer = 20,
-    tags = {"hedge"},
+    tags = {"hedge", "plants"},
   },
   -- 208
   {
@@ -4691,7 +4691,7 @@ tiles_list = {
     color = {4, 1},
     layer = 4,
     eye = {x=10, y=7, w=3, h=3},
-    tags = {"rose", "flower"},
+    tags = {"rose", "flower", "plants"},
   },
   -- 406
   {
@@ -4701,7 +4701,7 @@ tiles_list = {
     texttype = {object = true},
     color = {4, 1},
     layer = 20,
-    tags = {"rose", "flower"},
+    tags = {"rose", "flower", "plants"},
   },
   -- 407
   {
@@ -4803,7 +4803,7 @@ tiles_list = {
     sleepsprite = "son_slep",
     type = "object",
     color = {2,4},
-    layer = 7,
+    layer = 4,
     tags = {"hot", "sunny", "day"},
     desc = "the son be a :( lazor",
   },
@@ -4823,7 +4823,7 @@ tiles_list = {
     sprite = "muun",
     type = "object",
     color = {1,2},
-    layer = 7,
+    layer = 4,
     tags = {"moon", "night", "mun", "crescent"},
     desc = "unaffiliated with munwalk",
   },
@@ -4844,7 +4844,7 @@ tiles_list = {
     type = "object",
     color = {5,2},
     layer = 4,
-    tags = {"leaf", "weed lmao"},
+    tags = {"leaf", "weed lmao", "plants"},
     desc = "leef meem alone",
   },
   -- 420 blaze it
@@ -4855,7 +4855,7 @@ tiles_list = {
     texttype = {object = true},
     color = {5,2},
     layer = 20,
-    tags = {"leaf", "weed lmao"},
+    tags = {"leaf", "weed lmao", "plants"},
     desc = "its the 420th object lmao",
     weed = "true"
   },
@@ -4865,7 +4865,7 @@ tiles_list = {
     sprite = "starr",
     type = "object",
     color = {2,4},
-    layer = 7,
+    layer = 4,
     tags = {"star", "night"},
     desc = "starr starr nite",
   },
@@ -4947,7 +4947,7 @@ tiles_list = {
     type = "object",
     color = {5, 2},
     layer = 2,
-    tags = {"palm tree", "coconut tree", "beach"},
+    tags = {"palm tree", "coconut tree", "beach", "plants"},
   },
   --430
   {
@@ -4957,7 +4957,7 @@ tiles_list = {
     texttype = {object = true},
     color = {5, 2},
     layer = 20,
-    tags = {"palm tree", "coconut tree", "beach"},
+    tags = {"palm tree", "coconut tree", "beach", "plants"},
   },
   --431
   {
@@ -4967,7 +4967,7 @@ tiles_list = {
     color = {6, 1},
     layer = 3,
     rotate = "true",
-    tags = {"fruit", "coconut"},
+    tags = {"fruit", "coconut", "plants"},
     desc = "its a bigg bigg nutt",
   },
   --432
@@ -4978,7 +4978,7 @@ tiles_list = {
     texttype = {object = true},
     color = {6, 1},
     layer = 20,
-    tags = {"fruit", "coconut"},
+    tags = {"fruit", "coconut", "plants"},
   },
   --433
   {
@@ -5233,6 +5233,88 @@ tiles_list = {
     color = {0, 3},
     layer = 20,
     tags = {"bone"},
+  },
+  --- 457
+  {
+    name = "rockit",
+    sprite = "rockit",
+    type = "object",
+    color = {1, 3},
+    layer = 6,
+    rotate = true,
+    tags = {"rocket", "spaceship"},
+    desc = "goes to spce",
+  },
+  --- 458
+  {
+    name = "text_rockit",
+    sprite = "text_rockit",
+    type = "text",
+    texttype = {object = true},
+    color = {1, 3},
+    layer = 20,
+    tags = {"rocket", "spaceship"},
+  },
+  --- 459
+  {
+    name = "ufu",
+    sprite = "ufu",
+    type = "object",
+    color = {3, 3},
+    layer = 6,
+    tags = {"ufo", "spaceship"},
+    desc = "comes from spce",
+  },
+  --- 460
+  {
+    name = "text_ufu",
+    sprite = "text_ufu",
+    type = "text",
+    texttype = {object = true},
+    color = {3, 3},
+    layer = 20,
+    tags = {"ufo", "spaceship"},
+  },
+  -- 461
+  {
+    name = "rein",
+    sprite = "rein",
+    type = "object",
+    color = {1, 3},
+    layer = 8,
+    tags = {"rain"},
+    desc = "it pours",
+  },
+  -- 462
+  {
+    name = "text_rein",
+    sprite = "text_rein",
+    type = "text",
+    texttype = {object = true},
+    color = {1, 3},
+    layer = 20,
+    tags = {"rain"},
+  },
+  -- 463
+  {
+    name = "algay",
+    sprite = "algay",
+    type = "object",
+    color = {5,1},
+    layer = 4,
+    rotate = true,
+    tags = {"algae", "plants"},
+  },
+  -- 464
+  {
+    name = "text_algay",
+    sprite = "text_algay",
+    type = "text",
+    texttype = {object = true},
+    color = {5,1},
+    layer = 20,
+    tags = {"algae", "plants"},
+    desc = "very gay",
   },
 }
 
