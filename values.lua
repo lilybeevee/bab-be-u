@@ -5146,6 +5146,28 @@ tiles_list = {
     layer = 20,
     tags = {"battery", "power"},
   },
+  --449
+  {
+    name = "smol",
+    sprite = "smol",
+    type = object,
+    color = {5,2},
+    layer = 8,
+    rotate = true,
+    portal = true,
+    tags = {"portal"},
+    desc = "the tini poor toll",
+  },
+  --450
+  {
+    name = "text_smol",
+    sprite = "text_smol",
+    type = "text",
+    texttype = {object = true},
+    color = {5,2},
+    layer = 20,
+    tags = {"portal"},
+  },
 }
 
 tiles_by_name = {}
