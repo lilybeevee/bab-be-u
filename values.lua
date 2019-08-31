@@ -200,9 +200,9 @@ selector_grid_contents = {
     "robobot","text_robobot","l..uv","text_l..uv","hedg","text_hedg","hol","text_hol","rif","text_rif","smol","text_smol","tor","text_tor","win","text_win",0,0,
     "wog","text_wog","tre","text_tre","metl","text_metl","clok","text_clok","bom","text_bom","kar","text_kar","stum","text_stum",0,0,0,0,
     "kirb","text_kirb","frut","text_frut","jail","text_jail","sine","text_sine","sanglas","text_sanglas","shel","text_shel","sancastl","text_sancastl","parsol","text_parsol","pallm","text_pallm",
-    "bup","text_bup","piler","text_piler","fenss","text_fenss","buble","text_buble","creb","text_creb","icecub","text_icecub",0,0,"glas","text_glas","coco","text_coco",
+    "bup","text_bup","piler","text_piler","fenss","text_fenss","buble","text_buble","creb","text_creb","icecub","text_icecub","statoo","text_statoo","glas","text_glas","coco","text_coco",
     "boy","text_boy","dayzy","text_dayzy","platfor","text_platfor","pepis","text_pepis","fungye", "text_fungye","bullb","text_bullb","text_battry","battry","lila","text_lila","tot","text_tot",
-    "steev","text_steev","splittr","text_splittr","colld","text_colld","arro","text_arro","beeee","text_beeee","fishe","text_fishe",0,0,"pata","text_pata","jill","text_jill",
+    "steev","text_steev","splittr","text_splittr","colld","text_colld","arro","text_arro","beeee","text_beeee","fishe","text_fishe","bon","text_bon","pata","text_pata","jill","text_jill",
     "han","text_han","clowd","text_clowd","bellt","text_bellt","ger","text_ger","sno","text_sno","snoman","text_snoman","red","text_red","larry","text_larry","zsoob","text_zsoob",
     "os","text_os","hurcane","text_hurcane","spik","text_spik","hors","text_hors","fir","text_fir","rouz","text_rouz","leef","text_leef",0,0,"o","text_o",
     "firbolt","text_firbolt","lie","text_lie","spiky","text_spiky","can","text_can","ladr", "text_ladr","litbolt","text_litbolt","vien","text_vien",0,0,"square","text_square",
@@ -5190,6 +5190,49 @@ tiles_list = {
     layer = 20,
     tags = {"portal", "window", "doorway"},
     desc = "not to be confused with :)",
+  },
+  --453
+  {
+    name = "statoo",
+    sprite = "statoo",
+    sleepsprite = "statoo_slep",
+    type = "object",
+    color = {0, 1},
+    layer = 5,
+    eye = {x=16, y=6, w=2, h=2},
+    tags = {"statue", "chars", "janitor"},
+    desc = "their occupation is a janitor",
+  },
+  --454
+  {
+    name = "text_statoo",
+    sprite = "text_statoo",
+    type = "text",
+    texttype = {object = true},
+    color = {0, 1},
+    layer = 20,
+    tags = {"statue", "chars", "janitor"},
+  },
+  --- 455
+  {
+    name = "bon",
+    sprite = "bon",
+    type = "object",
+    color = {0, 3},
+    layer = 4,
+    rotate = true,
+    tags = {"bone"},
+    desc = "bonles pizza",
+  },
+  --- 456
+  {
+    name = "text_bon",
+    sprite = "text_bon",
+    type = "text",
+    texttype = {object = true},
+    color = {0, 3},
+    layer = 20,
+    tags = {"bone"},
   },
 }
 
