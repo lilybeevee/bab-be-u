@@ -584,17 +584,47 @@ function scene.keyPressed(key)
     end
   end
   
+  --toggle nt on/off
+  
+  if selector_open and (key == "n" and (key_down["lctrl"] or key_down["rctrl"])) then
+    --copy so we don't override original list
+    current_tile_grid = copyTable(current_tile_grid)
+    --revert if we're already nt'd
+    local already_nted = false
+    for i = 0,tile_grid_width*tile_grid_height do
+      if (current_tile_grid[i] ~= nil and (current_tile_grid[i] % meta_offset) > nt_offset) then
+        already_nted = true
+        break
+      end
+    end
+    if already_nted then
+      current_tile_grid = tile_grid[selector_page]
+    else
+      for i = 0,tile_grid_width*tile_grid_height do
+        if current_tile_grid[i] ~= nil and current_tile_grid[i] > 0 then
+          local new_tile_id = tiles_by_name[tiles_list[current_tile_grid[i]].name .. "n't"]
+          if (new_tile_id ~= nil) then
+            current_tile_grid[i] = new_tile_id
+          else
+            current_tile_grid[i] = current_tile_grid[i] + nt_offset
+            tiles_listPossiblyMeta(current_tile_grid[i])
+          end
+        end
+      end
+    end
+  end
+  
   if selector_open and key == "rshift" or key == "r" and (key_down["lctrl"] or key_down["rctrl"]) then
     current_tile_grid = tile_grid[selector_page]
   end
   
-  if selector_open and key == "n" and (key_down["lctrl"] or key_down["rctrl"]) then
+  --[[if selector_open and key == "n" and (key_down["lctrl"] or key_down["rctrl"]) then
     nt = not nt
     current_tile_grid = copyTable(current_tile_grid)
     if nt then
         for i = 0,tile_grid_width*tile_grid_height do
             if current_tile_grid[i] ~= nil and current_tile_grid[i] > 0 then
-                local new_tile_id = tiles_by_name[tiles_list[current_tile_grid[i]].name .. "n't"]
+                local new_tile_id = tiles_by_name[tiles_list[current_tile_grid[i] ].name .. "n't"]
                 if (new_tile_id ~= nil) then
                     current_tile_grid[i] = new_tile_id
                 end
@@ -603,7 +633,7 @@ function scene.keyPressed(key)
     else
         current_tile_grid = tile_grid[selector_page]
     end
-  end
+  end]]
 end
 
 function scene.mousePressed(x, y, button)
@@ -804,6 +834,7 @@ function scene.setLevelDialogue(unit)
     level_dialogue.iconnamebox:setVisible(false)
     level_dialogue.iconnamebox:setEnabled(false)
     addTween(tween.new(0.1, level_dialogue, {scale = 0}), "level dialogue")
+    scene.updateMap()
   end
 end
 
@@ -1152,6 +1183,31 @@ function scene.draw(dt)
             end
 
             love.graphics.draw(sprite, (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+            if unit.name == "lvl" then
+              if unit.special.visibility ~= "open" then
+                local r,g,b,a = love.graphics.getColor()
+                love.graphics.setColor(r,g,b, a*0.4)
+              end
+              local fulldrawx, fulldrawy = (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE
+              if not unit.special.iconstyle or unit.special.iconstyle == "number" then
+                local num = tostring(unit.special.number or 1)
+                if #num == 1 then
+                  num = "0"..num
+                end
+                love.graphics.draw(sprites["levelicon_"..num:sub(1,1)], fulldrawx+(4*unit.draw.scalex), fulldrawy+(4*unit.draw.scaley), 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+                love.graphics.draw(sprites["levelicon_"..num:sub(2,2)], fulldrawx+(16*unit.draw.scalex), fulldrawy+(4*unit.draw.scaley), 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+              elseif unit.special.iconstyle == "dots" then
+                local num = tostring(unit.special.number or 1)
+                love.graphics.draw(sprites["levelicon_dots_"..num], fulldrawx+(4*unit.draw.scalex), fulldrawy+(4*unit.draw.scaley), 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+              elseif unit.special.iconstyle == "letter" then
+                local num = unit.special.number or 1
+                local letter = ("abcdefghijklmnopqrstuvwxyz"):sub(num, num)
+                love.graphics.draw(sprites["letter_"..letter], fulldrawx, fulldrawy, 0, unit.draw.scalex*3/4, unit.draw.scaley*3/4, sprite:getWidth() / 2, sprite:getHeight() / 2)
+              elseif unit.special.iconstyle == "other" then
+                local sprite = sprites[unit.special.iconname or "wat"] or sprites["wat"]
+                love.graphics.draw(sprite, fulldrawx, fulldrawy, 0, unit.draw.scalex*3/4, unit.draw.scaley*3/4, sprite:getWidth() / 2, sprite:getHeight() / 2)
+              end
+            end
             if (unit.meta ~= nil) then
               setColor({4, 1})
               local metasprite = unit.meta == 2 and sprites["meta2"] or sprites["meta1"]
@@ -1163,8 +1219,8 @@ function scene.draw(dt)
             end
             if (unit.nt ~= nil) then
               setColor({2, 2})
-              local ntsprite = sprites["nt"]
-              love.graphics.draw(ntprite, (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+              local ntsprite = sprites["n't"]
+              love.graphics.draw(ntsprite, (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
               setColor(unit.color)
             end
           end
@@ -1223,8 +1279,8 @@ function scene.draw(dt)
             end
             if (tile.nt ~= nil) then
               setColor({2, 2})
-              local ntsprite = sprites["nt"]
-              love.graphics.draw(ntprite, (tile.x + 0.5)*TILE_SIZE, (tile.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+              local ntsprite = sprites["n't"]
+              love.graphics.draw(ntsprite, (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
               setColor(tile.color)
             end
             
@@ -1277,7 +1333,7 @@ function scene.draw(dt)
         if not is_mobile then
             love.graphics.printf("CTRL + TAB or CTRL + NUMBER to change tabs", 0, roomheight, roomwidth, "right")
             love.graphics.printf("CTLR + M to get meta text, CTRL + R to refresh", 0, roomheight+12, roomwidth, "right")
-            love.graphics.printf("CTRL + N to get n't text", 0, roomheight+24, roomwidth, "right")
+            love.graphics.printf("CTRL + N to toggle n't text", 0, roomheight+24, roomwidth, "right")
             if #searchstr > 0 then
                 love.graphics.print("Searching for: " .. searchstr, 0, roomheight)
             else
@@ -1902,6 +1958,7 @@ function scene.translateLevel(dx, dy)
     if y < 0 then y = mapheight-1 end
     moveUnit(unit, x, y)
   end
+  scene.updateMap()
 end
 
 return scene

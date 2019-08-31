@@ -690,6 +690,9 @@ function scene.draw(dt)
         break
       end
     end
+    if sprite_name == "lvl" and readSaveFile(unit.special.level, "won") then
+      sprite_name = "lvl_won"
+    end
     local frame = (unit.frame + anim_stage) % 3 + 1
     if sprites[sprite_name .. "_" .. frame] then
       sprite_name = sprite_name .. "_" .. frame
@@ -775,6 +778,12 @@ function scene.draw(dt)
 				end
 				setColor(unit.color)
 			end
+      if (unit.nt ~= nil) then
+        setColor({2, 2})
+        local ntsprite = sprites["n't"]
+        love.graphics.draw(ntsprite, fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+        setColor(unit.color)
+      end
     end
     
     --performance todos: each line gets drawn twice (both ways), so there's probably a way to stop that. might not be necessary though, since there is no lag so far
@@ -862,6 +871,11 @@ function scene.draw(dt)
     end
     
     if unit.name == "lvl" and unit.special.visibility == "open" then
+      love.graphics.push()
+      if readSaveFile(unit.special.level, "won") then
+        local r,g,b,a = love.graphics.getColor()
+        love.graphics.setColor(r,g,b, a*0.4)
+      end
       if not unit.special.iconstyle or unit.special.iconstyle == "number" then
         local num = tostring(unit.special.number or 1)
         if #num == 1 then
@@ -880,6 +894,7 @@ function scene.draw(dt)
         local sprite = sprites[unit.special.iconname or "wat"] or sprites["wat"]
         love.graphics.draw(sprite, fulldrawx, fulldrawy, 0, unit.draw.scalex*3/4, unit.draw.scaley*3/4, sprite:getWidth() / 2, sprite:getHeight() / 2)
       end
+      love.graphics.pop()
     end
 
     if #unit.overlay > 0 then
@@ -918,14 +933,14 @@ function scene.draw(dt)
         end
         love.graphics.stencil(holStencil, "replace", 2)
         love.graphics.stencil(holStencil2, "replace", 1, true)
-
+        
         for _,peek in ipairs(unit.portal.objects) do
           if not portaling[peek] then
             love.graphics.setStencilTest("greater", 1)
           else
             love.graphics.setStencilTest("greater", 0)
           end
-
+          
           love.graphics.push()
           love.graphics.translate(fulldrawx, fulldrawy)
           love.graphics.rotate(-math.rad(rotation))
@@ -933,7 +948,7 @@ function scene.draw(dt)
             love.graphics.rotate(math.rad(unit.portal.dir * 45))
           end
           love.graphics.translate(-fulldrawx, -fulldrawy)
-
+          
           local x, y, rot = unit.draw.x, unit.draw.y, 0
           if peek.name ~= "no1" then
             if portaling[peek] ~= unit then
@@ -953,10 +968,10 @@ function scene.draw(dt)
           else
             drawUnit(peek, x, y, rot, true)
           end
-
+          
           love.graphics.pop()
         end
-
+        
         love.graphics.setStencilTest()
       end
     end
@@ -1136,6 +1151,12 @@ function scene.draw(dt)
 					love.graphics.printf(tostring(unit.meta), -1, 6, 32, "center")
 				end
 			end
+      if (unit.nt ~= nil) then
+        setColor({2, 2})
+        local ntsprite = sprites["n't"]
+        love.graphics.draw(ntsprite, 0, 0, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+        setColor(unit.color)
+      end
       love.graphics.pop()
 
       if draw.count > 1 then

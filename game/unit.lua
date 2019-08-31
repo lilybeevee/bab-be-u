@@ -2102,6 +2102,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
   unit.type = data.type
   unit.texttype = data.texttype or {object = true}
 	unit.meta = data.meta
+  unit.nt = data.nt
   unit.allowconds = data.allowconds or false
   unit.color = data.color
   unit.layer = data.layer
@@ -2281,6 +2282,13 @@ function moveUnit(unit,x,y,portal)
         -- set draw positions to portal offset to interprolate through portals
         unit.draw.x, unit.draw.y = portal.draw.x, portal.draw.y
         addTween(tween.new(0.1, unit.draw, {x = x, y = y}), "unit:pos:" .. unit.tempid)
+        if portal.name == "smol" then
+          addTween(tween.new(0.05, unit.draw, {scaley = 0.5}), "unit:pos:" .. unit.tempid, function()
+          unit.draw.x = x
+          unit.draw.y = y
+          addTween(tween.new(0.05, unit.draw, {scaley = 1}), "unit:pos:" .. unit.tempid)
+          end)
+        end
         -- instantly change object's rotation, weirdness ensues otherwise
         unit.draw.rotation = (unit.rotatdir - 1) * 45
         tweens["unit:dir:" .. unit.tempid] = nil
@@ -2467,13 +2475,25 @@ function newMouseID()
 end
 
 meta_offset = 100000
+nt_offset = meta_offset/2 --50000
+custom_offset = nt_offset/2 --25000
+--Explanation: All non-custom tiles should be in range 1-24999. All custom tiles (unique to a specific world) should be in range 25000-49999, so that when a non-custom tile is added they don't become invalid. Then, all tiles 50000-99999 are n't versions of the tiles 50000 less. Then, all tiles beyond that are meta versions of the tiles 100000 less.
 function tiles_listPossiblyMeta(tile_id)
   local tile = tiles_list[tile_id]
   if (tile ~= nil) then
     return tile
   end
+  --check if this is an n't tile
+  if (tile_id % meta_offset > nt_offset) then
+    local premeta_tile = tiles_listPossiblyMeta(tile_id-nt_offset)
+    --now we can make our new n't tile!
+    tile = makeNtTile(premeta_tile)
+    tiles_by_name[tile.name] = tile_id
+    tiles_list[tile_id] = tile
+  end
+  
   --recursively make all less meta tiles
-  if (tile_id > 100000) then
+  if (tile_id > meta_offset) then
     local premeta_tile = tiles_listPossiblyMeta(tile_id-meta_offset)
     --now we can make our new meta tile!
     tile = makeMetaTile(premeta_tile)
@@ -2509,6 +2529,19 @@ function makeMetaTile(premeta_tile)
     color = premeta_tile.color,
     layer = 20,
     meta = premeta_tile.meta ~= nil and premeta_tile.meta + 1 or 1
+  }
+end
+
+function makeNtTile(premeta_tile)
+  return {
+    name = premeta_tile.name .. "n't",
+    sprite = premeta_tile.metasprite or premeta_tile.sprite,
+    type = "text",
+    color = premeta_tile.color,
+    layer = 20,
+    texttype = premeta_tile.texttype,
+    sprite_transforms = premeta_tile.sprite_transforms,
+    nt = true
   }
 end
 

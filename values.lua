@@ -165,10 +165,10 @@ selector_grid_contents = {
     "skul", "text_skul", "text_:(", "til", "text_til", "hurcane", "text_hurcane", "gunne", "text_gunne", "wog", "text_wog", "text_zip", "text_shy", "text_munwalk", "text_sidestep", "text_diagstep", "text_hopovr", "text_knightstep",
     "boux", "text_boux", "text_come pls", "os", "text_os", "bup", "text_bup", "han", "text_han", "fenss", "text_fenss", "brik", "text_brik", "hol", "text_hol", "text_poor toll", "text_blacc", "text_reed",
     "bellt", "text_bellt", "text_go", "tre", "text_tre", "piler", "text_piler", "hatt", "text_hatt", "hedg", "text_hedg", "beeee", "text_beeee", "rif", "text_rif", "text_glued", "text_whit", "text_orang",
-    "boll", "text_boll", "text_:o", "frut", "text_frut", "kirb", "text_kirb", "katany", "text_katany", "metl", "text_metl", "rouz", "text_rouz", 0, 0, "text_enby", "text_colrful", "text_yello",
-    "clok", "text_clok", "text_try again", "text_no undo", "text_undo", "slippers", "text_slippers", "firbolt", "text_firbolt", "jail", "text_jail", 0, 0, 0, 0, "text_tranz", "text_rave", "text_grun",
-    "splittr", "text_splittr", "text_split", "steev", "text_steev", "boy", "text_boy", "icbolt", "text_icbolt", "platfor", "text_platfor", "ladr", "text_ladr", 0, 0, "text_gay", "text_stelth", "text_cyeann",
-    "chekr", "text_chekr", "text_diag", "text_ortho", "text_haet flor", "arro", "text_arro", "text_go my way", "text_spin", "text_no turn", "text_stubbn", "text_rotatbl", 0, 0, "text_pinc", "text_qt", "text_paint", "text_bleu",
+    "boll", "text_boll", "text_:o", "frut", "text_frut", "kirb", "text_kirb", "katany", "text_katany", "metl", "text_metl", "rouz", "text_rouz", "smol", "text_smol", "text_enby", "text_colrful", "text_yello",
+    "clok", "text_clok", "text_try again", "text_no undo", "text_undo", "slippers", "text_slippers", "firbolt", "text_firbolt", "jail", "text_jail", "fungye", "text_fungye", "sunne", "text_sunne", "text_tranz", "text_rave", "text_grun",
+    "splittr", "text_splittr", "text_split", "steev", "text_steev", "boy", "text_boy", "icbolt", "text_icbolt", "platfor", "text_platfor", "ladr", "text_ladr", "moone", "text_moone", "text_gay", "text_stelth", "text_cyeann",
+    "chekr", "text_chekr", "text_diag", "text_ortho", "text_haet flor", "arro", "text_arro", "text_go my way", "text_spin", "text_no turn", "text_stubbn", "text_rotatbl", "starre","text_starre", "text_pinc", "text_qt", "text_paint", "text_bleu",
     "clowd", "text_clowd", "text_flye", "text_tall", "text_haet skye", "ghost fren", "text_ghost fren", "robobot", "text_robobot", "sparkl", "text_sparkl", "spik", "text_spik", "spiky", "text_spiky", "bordr", "text_bordr", "text_purp",
     nil
   },
@@ -176,9 +176,9 @@ selector_grid_contents = {
   {
     "letter_a","letter_b","letter_c","letter_d","letter_e","letter_f","letter_g","letter_h","letter_i","letter_j","letter_k","letter_l","letter_m","letter_n","letter_o","letter_p","letter_q","letter_r",
     "letter_s","letter_t","letter_u","letter_v","letter_w","letter_x","letter_y","letter_z","letter_.","letter_colon","letter_parenthesis","letter_'","letter_/","letter_1","letter_2","letter_3","letter_4","letter_5",
-    "letter_go","letter_come","letter_pls","letter_away","letter_my","letter_no","letter_way","letter_ee","letter_fren","letter_ll",0,0,0,"letter_6","letter_7","letter_8","letter_9","letter_o",
-		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-		0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,"letter_;",0,0,"letter_6","letter_7","letter_8","letter_9","letter_o",
+	"letter_go","letter_come","letter_pls","letter_away","letter_my","letter_no","letter_way","letter_ee","letter_fren","letter_ll",0,0,0,0,0,0,0,0,
+	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   },
   -- page 3: ui / instructions
   {
@@ -193,20 +193,20 @@ selector_grid_contents = {
   -- page 4: objects
   {
     "bab","text_bab","flog","text_flog","wal","text_wal","gras","text_gras","cobll","text_cobll","brik","text_brik",0,0,"selctr","text_selctr","lvl","text_lvl",
-    "keek","text_keek","roc","text_roc","til","text_til","sparkl","text_sparkl","wuud","text_wuud",0,0,0,0,"this","text_mous","lin","text_lin",
-    "meem","text_meem","boux","text_boux","watr","text_watr","scarr","text_scarr","petnygrame","text_petnygrame",0,0,0,0,"text_text","text_frens","text_groop","text_pathz",
-    "skul","text_skul","boll","text_boll","laav","text_laav","katany","text_katany","gunne","text_gunne",0,0,0,0,0,0,"text_every1","text_no1",
-    "ghost fren","text_ghost fren","kee","text_kee","dor","text_dor","hatt","text_hatt","slippers","text_slippers",0,0,0,0,0,0,0,0,
-    "robobot","text_robobot","l..uv","text_l..uv","hedg","text_hedg","hol","text_hol","rif","text_rif",0,0,0,0,0,0,0,0,
-    "wog","text_wog","tre","text_tre","metl","text_metl","clok","text_clok","bom","text_bom",0,0,0,0,0,0,0,0,
-    "kirb","text_kirb","frut","text_frut","jail","text_jail","sine","text_sine","sanglas","text_sanglas",0,0,0,0,0,0,0,0,
-    "bup","text_bup","piler","text_piler","fenss","text_fenss","buble","text_buble","creb","text_creb","icecub","text_icecub",0,0,0,0,0,0,
-    "boy","text_boy","dayzy","text_dayzy","platfor","text_platfor","pepis","text_pepis",0,0,0,0,0,0,"lila","text_lila","tot","text_tot",
-    "steev","text_steev","splittr","text_splittr","colld","text_colld","arro","text_arro","beeee","text_beeee",0,0,0,0,"pata","text_pata","jill","text_jill",
-    "han","text_han","clowd","text_clowd","bellt","text_bellt","ger","text_ger","sno","text_sno","snoman","text_snoman",0,0,"larry","text_larry","zsoob","text_zsoob",
-    "os","text_os","hurcane","text_hurcane","spik","text_spik","hors","text_hors","fir","text_fir","rouz","text_rouz",0,0,0,0,"o","text_o",
-    "firbolt","text_firbolt","lie","text_lie","spiky","text_spiky","can","text_can","ladr", "text_ladr","litbolt","text_litbolt",0,0,0,0,"square","text_square",
-    "icbolt","text_icbolt","lie/8","text_lie/8","bordr","text_bordr","togll","text_togll","wut","text_wut","wat","text_wat",0,0,0,0,"triangle","text_triangle",
+    "keek","text_keek","roc","text_roc","til","text_til","sparkl","text_sparkl","wuud","text_wuud","san","text_san",0,0,"this","text_mous","lin","text_lin",
+    "meem","text_meem","boux","text_boux","watr","text_watr","scarr","text_scarr","petnygrame","text_petnygrame","starre","text_starre",0,0,"text_text","text_frens","text_groop","text_pathz",
+    "skul","text_skul","boll","text_boll","laav","text_laav","katany","text_katany","gunne","text_gunne","sunne","text_sunne",0,0,0,0,"text_every1","text_no1",
+    "ghost fren","text_ghost fren","kee","text_kee","dor","text_dor","hatt","text_hatt","slippers","text_slippers","moone","text_moone",0,0,0,0,0,0,
+    "robobot","text_robobot","l..uv","text_l..uv","hedg","text_hedg","hol","text_hol","rif","text_rif","smol","text_smol","tor","text_tor",0,0,0,0,
+    "wog","text_wog","tre","text_tre","metl","text_metl","clok","text_clok","bom","text_bom","kar","text_kar","stum","text_stum",0,0,0,0,
+    "kirb","text_kirb","frut","text_frut","jail","text_jail","sine","text_sine","sanglas","text_sanglas","shel","text_shel","sancastl","text_sancastl","parsol","text_parsol","pallm","text_pallm",
+    "bup","text_bup","piler","text_piler","fenss","text_fenss","buble","text_buble","creb","text_creb","icecub","text_icecub",0,0,"glas","text_glas","coco","text_coco",
+    "boy","text_boy","dayzy","text_dayzy","platfor","text_platfor","pepis","text_pepis","fungye", "text_fungye","bullb","text_bullb","text_battry","battry","lila","text_lila","tot","text_tot",
+    "steev","text_steev","splittr","text_splittr","colld","text_colld","arro","text_arro","beeee","text_beeee","fishe","text_fishe",0,0,"pata","text_pata","jill","text_jill",
+    "han","text_han","clowd","text_clowd","bellt","text_bellt","ger","text_ger","sno","text_sno","snoman","text_snoman","red","text_red","larry","text_larry","zsoob","text_zsoob",
+    "os","text_os","hurcane","text_hurcane","spik","text_spik","hors","text_hors","fir","text_fir","rouz","text_rouz","leef","text_leef",0,0,"o","text_o",
+    "firbolt","text_firbolt","lie","text_lie","spiky","text_spiky","can","text_can","ladr", "text_ladr","litbolt","text_litbolt","vien","text_vien",0,0,"square","text_square",
+    "icbolt","text_icbolt","lie/8","text_lie/8","bordr","text_bordr","togll","text_togll","wut","text_wut","wat","text_wat","pudll","text_pudll",0,0,"triangle","text_triangle",
   },
   -- page 5: properties, verbs and conditions
   {
@@ -350,7 +350,8 @@ tiles_list = {
     type = "object",
     color = {2, 2},
     layer = 3,
-    tags = {"door"},
+    portal = true,
+    tags = {"door"}
   },
   -- 12
   {
@@ -361,7 +362,7 @@ tiles_list = {
     texttype = {object = true},
     color = {2, 2},
     layer = 20,
-    tags = {"door"},
+    tags = {"door"}
   },
   -- 13
   {
@@ -424,6 +425,7 @@ tiles_list = {
     type = "object",
     color = {2, 4},
     layer = 3,
+    esc = "i want 1!!!",
     tags = {"flag"},
   },
   -- 19
@@ -465,6 +467,7 @@ tiles_list = {
     type = "object",
     color = {1, 3},
     layer = 1,
+    desc = "splish sploosh",
     tags = {"water"},
   },
   -- 23
@@ -587,6 +590,7 @@ tiles_list = {
     type = "object",
     color = {6, 2},
     layer = 3,
+    desc = "ce n'est pas une boîte, c'est quelque chose DE MIEUX",
     tags = {"box"},
   },
   --34
@@ -620,6 +624,7 @@ tiles_list = {
     texttype = {object = true},
     color = {2, 3},
     layer = 20,
+    desc = "very hot. not hotte tho unless u make it",
     tags = {"lava"},
   },
   --37
@@ -675,7 +680,7 @@ tiles_list = {
     rotate = true,
     eye = {x=18, y=3, w=2, h=2},
     tags = {"chars"},
-    desc = "babs 3ff",
+    desc = "meem is the true philosopher of our time. babs 3ff",
   },
   --40
   {
@@ -761,7 +766,8 @@ tiles_list = {
     color = {2, 2},
     layer = 3,
     rotate = "true",
-    tags = {"fruit"},
+    tags = {"fruit", "apple"},
+    desc = "not to be confused with OS appl. babs favorite snacc",
   },
   --48
   {
@@ -771,7 +777,7 @@ tiles_list = {
     texttype = {object = true},
     color = {2, 2},
     layer = 20,
-    tags = {"fruit"},
+    tags = {"fruit", "apple"},
   },
   --49
   {
@@ -803,6 +809,7 @@ tiles_list = {
     layer = 5,
     rotate = "true",
     eye = {x=16, y=9, w=3, h=3},
+    desc = "smol frens who own pointy tridents, play with explosives, and bake good cake. nobody knows how to describe more than one of them",
     tags = {"wug", "chars"},
   },
   --52
@@ -813,6 +820,7 @@ tiles_list = {
     texttype = {object = true},
     color = {2, 4},
     layer = 20,
+    desc = "wogs dream is to be a mad scientist and go evil with power using nothing but sheer linguistics. linguists' evil career options may be limited but that wont stop wog from trying their best",
     tags = {"wug", "chars"},
   },
   --tutorial sprites
@@ -927,7 +935,7 @@ tiles_list = {
     color = {4, 1},
     layer = 3,
     tags = {"orb", "ball"},
-    desc = "colecc",
+    desc = "hnmm... roun. colecc",
   },
   -- 64
   {
@@ -947,6 +955,7 @@ tiles_list = {
     color = {1, 1},
     layer = 1,
     rotate = true,
+    desc = "bells and bellts are both metal so theyre basically the same thing right? dont tell anyone",
     tags = {"belt"},
   },
   -- 66
@@ -1079,7 +1088,7 @@ tiles_list = {
     layer = 5,
     rotate = true,
     eye = {x=21, y=9, w=2, h=2},
-    tags = {"chars"},
+    tags = {"kirby", "chars"},
     desc = "1, 2 oatmeal kirb be be a pincc guy"
   },
   --78
@@ -1207,6 +1216,7 @@ tiles_list = {
     type = "object",
     color = {5, 1},
     layer = 1,
+    desc = "don step on it. or do step on it. ur choice",
     tags = {"grass"},
   },
   -- 88
@@ -1248,6 +1258,7 @@ tiles_list = {
     color = {3, 1},
     layer = 3,
     tags = {"hurricane","tornado"},
+    desc = "woosh swoosh vwoosh aaaa",
     eye = {x=15, y=15, w=3, h=3},
   },
   -- 92
@@ -1343,6 +1354,7 @@ tiles_list = {
     texttype = {property = true},
     color = {4,1},
     layer = 20,
+    tags = {"lvl", "level", "sublevel"},
     desc = "SUBLVL: An object that is sublvl will become enterable. Currently unimplemented.",
   },
   --- 99
@@ -1416,7 +1428,7 @@ tiles_list = {
     texttype = {property = true},
     color ={1, 3},
     layer = 20,
-    tags = {"oneway"},
+    tags = {"oneway", "gomyway", "go my wey"},
     desc = "GO MY WAY: Prevents movement onto its tile from the tile in front of it and the two tiles 45 degrees to either side.",
   },
   --- 106
@@ -1490,6 +1502,7 @@ tiles_list = {
     type = "object",
     color = {1, 4},
     layer = 1,
+    desc = "nothin says colld like diagonal lines",
     tags = {"ice"},
   },
   --- 113
@@ -1522,7 +1535,7 @@ tiles_list = {
     texttype = {property = true},
     color = {0, 3},
     layer = 20,
-    tags = {"safe"},
+    tags = {"safe", "protect"},
     desc = "PROTECC: Cannot be destroyed (but can be converted).",
   },
   -- 116
@@ -1553,6 +1566,7 @@ tiles_list = {
     type = "object",
     color = {0, 1},
     layer = 3,
+     desc = "secretly made from several pairs of pliers sacrificed to keepin babs out (or in)",
     tags = {"pillar"},
   },
   -- 119
@@ -1583,7 +1597,7 @@ tiles_list = {
     sprite = "clowd",
     type = "object",
     color = {0, 3},
-    layer = 7,
+    layer = 8,
     tags = {"cloud"},
   },
   -- 122
@@ -1625,7 +1639,7 @@ tiles_list = {
     type = "object",
     color = {0, 3},
     layer = 20,
-    tags = {"infinity", "infinite"},
+    tags = {"infinity", "infinite", "loop"},
   },
   -- 126
   {
@@ -1757,7 +1771,7 @@ tiles_list = {
     texttype = {object = true},
     color = {0, 3},
     layer = 20,
-    tags = {"all"},
+    tags = {"all", "everyone", "every1"},
     desc = "EVERY1: Every object type in the level, aside from special objects like TXT, NO1, LVL, SELCTR, THIS, and MOUS.",
   },
   -- 138
@@ -1779,7 +1793,7 @@ tiles_list = {
     allowconds = true,
     color = {5, 3},
     layer = 20,
-    tags = {"like", "bounded", "verb"},
+    tags = {"like", "bounded", "likes", "verb"},
     desc = "LIEK (Verb): If a unit LIEKs objects, it is picky, and cannot step onto a tile unless it has at least one object it LIEKs.",
   },
   -- 140
@@ -1821,6 +1835,7 @@ tiles_list = {
     texttype = {property = true},
     color = {5, 3},
     layer = 20,
+    tags = {"turncornr", "turn corner"},
     desc = "TURN CORNR: At end of turn, faces the first direction that it could enter and that doesn't have another unit of its name: forward, right, left, backward. When combined with WALK, causes the unit to bounce off walls at 90 degree angles.",
   },
   -- 144
@@ -1829,7 +1844,7 @@ tiles_list = {
     sprite = "petnygrame",
     color = {2, 1},
     layer = 5,
-    tags = {"pentagram"},
+    tags = {"pentagram", "edgy"},
   },
   -- 145
   {
@@ -1839,7 +1854,7 @@ tiles_list = {
     texttype = {object = true},
     color = {2, 1},
     layer = 20,
-    tags = {"pentagram"},
+    tags = {"pentagram", "edgy"},
   },
   -- 146
   {
@@ -1848,7 +1863,7 @@ tiles_list = {
     color = {0, 1},
     layer = 5,
     rotate = true,
-    tags = {"weapon"},
+    tags = {"weapon", "japan", "asia", "edgy"},
   },
   -- 147
   {
@@ -1858,7 +1873,7 @@ tiles_list = {
     texttype = {object = true},
     color = {0, 1},
     layer = 20,
-    tags = {"weapon"},
+    tags = {"weapon", "japan", "asia", "edgy"},
 	desc = "KATANY: Any object with GOT KATANY will have a KATANY."
   },
   -- 148
@@ -1867,6 +1882,7 @@ tiles_list = {
     sprite = "scarr",
     color = {2, 1},
     layer = 5,
+    tags = {"scar", "edgy"},
   },
   -- 149
   {
@@ -1876,6 +1892,7 @@ tiles_list = {
     texttype = {object = true},
     color = {2, 1},
     layer = 20,
+    tags = {"scar", "edgy"},
   },
   -- 150
   {
@@ -1885,7 +1902,7 @@ tiles_list = {
     texttype = {object = true},
     color = {0, 3},
     layer = 20,
-    tags = {"none","empty"},
+    tags = {"none","empty", "no one", "noone"},
     desc = "NO1: Refers to tiles with nothing in them. Rotation status is kept on the tile. Cannot be colored."
   },
   -- 151
@@ -1907,7 +1924,7 @@ tiles_list = {
     color = {4,1},
     layer = 20,
     tags = {"level"},
-    desc = "LVL: Refers to the level you're in, as well as any enterable levels in this level."
+    desc = "LVL: Refers to the level you're in, as well as any enterable levels in this level. (Middle-click it to edit.)"
   },
   -- 153
   {
@@ -1946,7 +1963,7 @@ tiles_list = {
     texttype = {verb = true, verb_unit = true},
     color = {0, 3},
     layer = 20,
-    tags = {"copycat", "lily", "verb"},
+    tags = {"copy", "copycat", "lily", "verb"},
     desc = "COPKAT (Verb): COPKAT units copy the successful movements of the indicated object, no matter how far away."
   },
   --157
@@ -2059,7 +2076,7 @@ tiles_list = {
     layer = 5,
     rotate = true,
     eye = {x=20, y=13, w=2, h=2},
-    tags = {"steve", "chars"},
+    tags = {"chars", "5 step steve", "cat"},
   },
   -- 167
   {
@@ -2069,7 +2086,7 @@ tiles_list = {
     texttype = {object = true},
     color = {2,3},
     layer = 20,
-    tags = {"steve", "chars"},
+    tags = {"chars", "5 step steve", "cat"},
   },
   -- 168
   {
@@ -2079,7 +2096,7 @@ tiles_list = {
     texttype = {property = true},
     color = {3, 2},
     layer = 20,
-    tags = {"wrap around","cg5"},
+    tags = {"wrap around", "go around", "cg5"},
     desc = "GO ARND: GO ARND units wrap around the level, as though it were a torus.",
   },
   -- 169
@@ -2101,6 +2118,7 @@ tiles_list = {
     color = {0, 3},
     layer = 2,
     rotate = true,
+    tags = {"splitter", "5 step"},
     eye = {x=22,y=12,w=3,h=5},
     desc = "specifically made to be used with SPLIT because it looks horrible otherwise"
   },
@@ -2112,6 +2130,7 @@ tiles_list = {
     texttype = {object = true},
     color = {0, 3},
     layer = 20,
+    tags = {"splitter", "5 step"},
   },
   -- 172
   {
@@ -2121,6 +2140,7 @@ tiles_list = {
     texttype = {property = true},
     color = {4, 1},
     layer = 20,
+    tags = {"splitter", "5 step"},
     desc = "SPLIT: Objects on a SPLITer are split into two copies on adjacent tiles.",
   },
   -- 173
@@ -2210,7 +2230,7 @@ tiles_list = {
     texttype = {property = true},
     color = {6, 1},
     layer = 20,
-    tags = {"time"},
+    tags = {"time", "back"},
     desc = "UNDO: UNDO units, at end of turn, rewind a turn earlier, cumulatively. Stacks!",
   },
   -- 181
@@ -2282,6 +2302,7 @@ tiles_list = {
     layer = 5,
     rotate = true,
     eye = {x=26, y=10, w=2, h=4},
+    desc = "its not spooky, its a fren.",
     tags = {"chars"},
   },
   -- 188
@@ -2292,6 +2313,7 @@ tiles_list = {
     texttype = {object = true},
     color = {4, 2},
     layer = 20,
+    desc = "this text is very spooky tho",
     tags = {"chars"},
   },
   -- 189
@@ -2304,6 +2326,7 @@ tiles_list = {
     layer = 5,
     rotate = true,
     eye = {x=17, y=7, w=2, h=4},
+    desc = "the super scan mouth lazers that copy abilities are missing because they forgot to design a mouth",
     tags = {"robot", "chars"},
   },
   -- 190
@@ -2387,7 +2410,7 @@ tiles_list = {
     allowconds = true,
     color = {2, 3},
     layer = 20,
-    tags = {"patashu", "hate", "verb"},
+    tags = {"patashu", "hate", "hates", "collide", "verb"},
     desc = "HAET (Verb): A unit cannot stop onto a tile that has something it HAETs. (x HAET LVL makes x unable to move.)",
   },
   -- 198
@@ -2398,6 +2421,7 @@ tiles_list = {
     texttype = {property = true},
     color = {2, 4},
     layer = 20,
+    tags = {"bright", "power"},
     desc = "BRITE: A BRITE object emits light in all directions. LIT will be true for objects on the same FLYE level if nothing OPAQUE is in the way.",
   },
   -- 199
@@ -2429,6 +2453,7 @@ tiles_list = {
     texttype = {property = true},
     color = {2, 3},
     layer = 20,
+    tags = {"strafe"},
     desc = "NO TURN: A NO TURN unit's direction can't change (unless re-oriented by non-euclidean level geometry, i.e. POOR TOLL).",
   },
   -- 202
@@ -2461,6 +2486,7 @@ tiles_list = {
     color = {6, 2},
     layer = 5,
     rotate = true,
+    tags = {"firebolt"},
     desc = "i cast FIRBOLT at the NO1!",
   },
   -- 205
@@ -2471,6 +2497,7 @@ tiles_list = {
     texttype = {object = true},
     color = {6, 2},
     layer = 20,
+    tags = {"firebolt"},
   },
   -- 206
   {
@@ -2481,6 +2508,7 @@ tiles_list = {
     layer = 5,
     rotate = true,
     desc = "its time for u to CHILL out. stay FROSTY.",
+    tags = {"icebolt"},
   },
   -- 207
   {
@@ -2490,6 +2518,7 @@ tiles_list = {
     texttype = {object = true},
     color = {1, 4},
     layer = 20,
+    tags = {"icebolt"},
   },
   -- 206
   {
@@ -2498,6 +2527,7 @@ tiles_list = {
     type = "object",
     color = {5, 1},
     layer = 2,
+    tags = {"hedge"},
     desc = "im hedg the hedg heg",
   },
   -- 207
@@ -2508,6 +2538,7 @@ tiles_list = {
     texttype = {object = true},
     color = {5, 1},
     layer = 20,
+    tags = {"hedge"},
   },
   -- 208
   {
@@ -2536,6 +2567,7 @@ tiles_list = {
     type = "object",
     color = {0, 2},
     layer = 1,
+    tags = {"metal"},
     desc = "impervious metl...",
   },
   -- 211
@@ -2546,6 +2578,7 @@ tiles_list = {
     texttype = {object = true},
     color = {0, 2},
     layer = 20,
+    tags = {"metal"},
   },
   -- 210
   {
@@ -2554,6 +2587,7 @@ tiles_list = {
     type = "object",
     color = {2, 4},
     layer = 10,
+    tags = {"sparkle", "dust"},
     desc = "as brite as a star... but also as hotte as one!!",
   },
   -- 211
@@ -2564,6 +2598,7 @@ tiles_list = {
     texttype = {object = true},
     color = {2, 4},
     layer = 20,
+    tags = {"sparkle", "dust"},
   },
   -- 212
   {
@@ -2573,6 +2608,7 @@ tiles_list = {
     color = {0, 2},
     layer = 10,
     rotate = true,
+    tags = {"spike"},
     desc = "finally, I can make my i wanna be the bab fangame in bab be u",
   },
   -- 213
@@ -2583,6 +2619,7 @@ tiles_list = {
     texttype = {object = true},
     color = {0, 2},
     layer = 20,
+    tags = {"spike"},
   },
   -- 214
   {
@@ -2592,6 +2629,7 @@ tiles_list = {
     color = {0, 2},
     layer = 10,
     rotate = true,
+    tags = {"spike"},
     desc = "ouch!! many spik at once.",
   },
   -- 215
@@ -2602,6 +2640,7 @@ tiles_list = {
     texttype = {object = true},
     color = {0, 2},
     layer = 20,
+    tags = {"spike"},
   },
   -- 216
   {
@@ -2610,6 +2649,7 @@ tiles_list = {
     type = "object",
     color = {1, 0},
     layer = 99,
+    tags = {"border"},
     desc = "BORDR: Fake oob to hide stuff under. NOGO, TALL and BORDR by default."
   },
   -- 217
@@ -2620,6 +2660,7 @@ tiles_list = {
     texttype = {object = true},
     color = {2, 0},
     layer = 20,
+    tags = {"border"},
   },
   -- 218
   {
@@ -2629,7 +2670,7 @@ tiles_list = {
     texttype = {object = true},
     color = {0, 3},
     layer = 20,
-    tags = {"infloop"},
+    tags = {"infloop", "infinity", "infinite loop", "infiniteloop"},
     desc = "INFLOOP: A special word that describes the infinite loop state."
   },
   -- 219
@@ -2640,7 +2681,8 @@ tiles_list = {
     color = {6, 2},
     layer = 5,
     desc = "good for use with go my way",
-    rotate = true
+    rotate = true,
+    tags = {"platform"},
   },
   -- 220
   {
@@ -2650,6 +2692,7 @@ tiles_list = {
     texttype = {object = true},
     color = {6, 2},
     layer = 20,
+    tags = {"platform"},
   },
   -- 221
   {
@@ -2863,7 +2906,7 @@ tiles_list = {
 	texttype = {property = true},
 	color = {4,1},
   layer = 20,
-  tags = {"you2","p2","u2"},
+  tags = {"you2", "p2", "u2", "you 2", "p 2", "u 2"},
 	desc = "player 2 has joined the game",
   },
   -- 239
@@ -2874,7 +2917,7 @@ tiles_list = {
 	texttype = {property = true},
 	color = {4,1},
   layer = 20,
-  tags = {"you3","p3","u3"},
+  tags = {"you3", "p3", "u3", "you 3", "p 3", "u 3"},
 	desc = "and player 3",
   },
   -- 240
@@ -3271,6 +3314,7 @@ tiles_list = {
     texttype = {property = true},
     color = {4, 1},
     layer = 20,
+    tags = {"notnat"},
     desc = "META: BE META causes that object to be turned into its corresponding metatext. BEN'T META does the opposite and goes down one meta layer (disappearing if that is impossible).",
   },
   -- 280
@@ -3461,7 +3505,7 @@ tiles_list = {
     texttype = {object = true, group = true},
     color = {3, 3},
     layer = 20,
-    tags = {"group"},
+    tags = {"group", "friends"},
     desc = "FRENS: A group you can be a member of. 'x BE FRENS' adds you to the FRENS group. 'FRENS BE x' applies the property to all FRENS.",
   },
 	-- 301
@@ -3585,6 +3629,7 @@ tiles_list = {
     texttype = {letter = true},
     color = {0,3},
     layer = 20,
+    desc = "Z: it's just a rotated Z"
   },
   -- 311
   {
@@ -3595,7 +3640,7 @@ tiles_list = {
     portal = true,
     color = {2,4},
     layer = 8,
-    tags = {"portal"},
+    tags = {"portal", "rift"},
     desc = "the fake poor toll"
   },
   -- 312
@@ -3606,7 +3651,7 @@ tiles_list = {
     texttype = {object = true},
     color = {2,4},
     layer = 20,
-    tags = {"portal"},
+    tags = {"portal", "rift"},
   },
   -- 306
   {
@@ -3726,6 +3771,7 @@ tiles_list = {
     type = "object",
     color = {1,3},
     layer = 3,
+    tags = {"bubble"},
   },
   -- 324
   {
@@ -3735,6 +3781,7 @@ tiles_list = {
     texttype = {object = true},
     color = {1,3},
     layer = 20,
+    tags = {"bubble"},
   },
   -- 325
   {
@@ -3773,6 +3820,7 @@ tiles_list = {
     texttype = {object = true},
     color = {1,4},
     layer = 20,
+    tags = {"icecube", "ice cube"},
   },
   -- 329
   {
@@ -3889,6 +3937,7 @@ tiles_list = {
     texttype = {property = true},
     color = {6,2},
     layer = 20,
+    tags = {"rotatable"},
     desc = "ROTATBL: Makes any object able to be rotated."
   },
   -- 340
@@ -4178,7 +4227,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
     tags = {"slash"},
-    desc = "Used in LIE/8.",
+    desc = "Used in W/FREN and LIE/8.",
   },
   -- 359
   {
@@ -4201,7 +4250,7 @@ tiles_list = {
     layer = 5,
     eye = {x=17, y=8, w=3, h=3},
     tags = {"chars", "snowman"},
-    desc = "hes magiccal",
+    desc = "do u wanna creat a snoman??",
   },
   -- 361
   {
@@ -4653,6 +4702,471 @@ tiles_list = {
     color = {4, 1},
     layer = 20,
     tags = {"rose", "flower"},
+  },
+  -- 407
+  {
+    name = "san",
+    sprite = "san",
+    type = "object",
+    color = {2, 4},
+    layer = 2,
+    tags = {"bricks", "wall"},
+  },
+  -- 408
+  {
+    name = "text_san",
+    sprite = "text_san",
+    type = "text",
+    texttype = {object = true},
+    color = {2, 4},
+    layer = 20,
+    tags = {"sand", "beach", "desert"},
+    desc = "san undertales",
+  },
+  -- 409
+  {
+    name = "letter_;",
+    sprite = "letter_semicolon",
+    type = "text",
+    texttype = {letter = true},
+    color = {0,3},
+    layer = 20,
+    tags = {"semicolon", "wink"},
+    desc = "Used in ;D",
+  },
+  -- 410
+  {
+    name = "fungye",
+    sprite = "fungye",
+    type = "object",
+    color = {6, 2},
+    layer = 4,
+    tags = {"fungus", "fungi", "mushroom"},
+  },
+  -- 411
+  {
+    name = "text_fungye",
+    sprite = "text_fungye",
+    type = "text",
+    texttype = {object = true},
+    color = {6, 2},
+    layer = 20,
+    tags = {"fungus", "fungi", "mushroom"},
+    desc = "not a very fun guy",
+  },
+  -- 411
+  {
+    name = "kar",
+    sprite = "kar",
+    type = "object",
+    color = {5, 2},
+    layer = 5,
+    rotate = true,
+    tags = {"car", "vehicle"},
+  },
+  -- 412
+  {
+    name = "text_kar",
+    sprite = "text_kar",
+    type = "text",
+    texttype = {object = true},
+    color = {5, 2},
+    layer = 20,
+    tags = {"car", "vehicle"},
+    desc = "awaken my masters",
+  },
+  -- 413
+  {
+    name = "tor",
+    sprite = "tor",
+    type = "object",
+    color = {2, 1},
+    layer = 8,
+    portal = true,
+    tags = {"portal", "japan", "torii", "asia"},
+    desc = "the east poor toll",
+  },
+  -- 414
+  {
+    name = "text_tor",
+    sprite = "text_tor",
+    type = "text",
+    texttype = {object = true},
+    color = {2, 1},
+    layer = 20,
+    tags = {"portal", "japan", "torii", "asia"},
+  },
+  -- 415
+  {
+    name = "sunne",
+    sprite = "sunne",
+    sleepsprite = "sunne_slep",
+    type = "object",
+    color = {2,4},
+    layer = 7,
+    tags = {"hot", "sunny", "day"},
+    desc = "the sunne be a :( lazor",
+  },
+  -- 416
+  {
+    name = "text_sunne",
+    sprite = "text_sunne",
+    type = "text",
+    texttype = {object = true},
+    color = {2,4},
+    layer = 20,
+    tags = {"hot", "sunny", "day"},
+  },
+  -- 417
+  {
+    name = "moone",
+    sprite = "moone",
+    type = "object",
+    color = {1,2},
+    layer = 7,
+    tags = {"moon", "night", "mun", "crescent"},
+    desc = "unaffiliated with munwalk",
+  },
+  -- 418
+  {
+    name = "text_moone",
+    sprite = "text_moone",
+    type = "text",
+    texttype = {object = true},
+    color = {1,2},
+    layer = 20,
+    tags = {"moon", "night", "mun", "crescent"},
+  },
+  -- 419
+  {
+    name = "leef",
+    sprite = "leef",
+    type = "object",
+    color = {5,2},
+    layer = 4,
+    tags = {"leaf", "weed lmao"},
+    desc = "leef meem alone",
+  },
+  -- 420 blaze it
+  {
+    name = "text_leef",
+    sprite = "text_leef",
+    type = "text",
+    texttype = {object = true},
+    color = {5,2},
+    layer = 20,
+    tags = {"leaf", "weed lmao"},
+    desc = "its the 420th object lmao",
+    weed = "true"
+  },
+  -- 421
+  {
+    name = "starre",
+    sprite = "starre",
+    type = "object",
+    color = {2,4},
+    layer = 7,
+    tags = {"star", "night"},
+    desc = "starre starre nite",
+  },
+  -- 422
+  {
+    name = "text_starre",
+    sprite = "text_starre",
+    type = "text",
+    texttype = {object = true},
+    color = {2,4},
+    layer = 20,
+    tags = {"star", "night"},
+  },
+  -- 423
+  {
+    name = "shel",
+    sprite = "shel",
+    type = "object",
+    color = {4,2},
+    layer = 4,
+    tags = {"shell", "scallop", "beach"},
+    desc = "gas gas gas",
+  },
+  -- 424
+  {
+    name = "text_shel",
+    sprite = "text_shel",
+    type = "text",
+    texttype = {object = true},
+    color = {4,2},
+    layer = 20,
+    tags = {"shell", "scallop", "beach"},
+  },
+  -- 425
+  {
+    name = "sancastl",
+    sprite = "sancastl",
+    type = "object",
+    color = {2,4},
+    layer = 4,
+    tags = {"sandcastle", "beach"},
+    desc = "lets creat a sancastl",
+  },
+  -- 426
+  {
+    name = "text_sancastl",
+    sprite = "text_sancastl",
+    type = "text",
+    texttype = {object = true},
+    color = {2,4},
+    layer = 20,
+    tags = {"sandcastle", "beach"},
+  },
+  --- 427
+  {
+    name = "parsol",
+    sprite = "parsol",
+    type = "object",
+    color = {2, 2},
+    layer = 8,
+    rotate = true,
+    tags = {"parasol", "umbrella", "beach"},
+    desc = "protecc from sunne thatbe :(",
+  },
+  --- 428
+  {
+    name = "text_parsol",
+    sprite = "text_parsol",
+    type = "text",
+    texttype = {object = true},
+    color = {2,2},
+    layer = 20,
+    tags = {"parasol", "umbrella", "beach"},
+  },
+  --429
+  {
+    name = "pallm",
+    sprite = "pallm",
+    type = "object",
+    color = {5, 2},
+    layer = 2,
+    tags = {"palm tree", "coconut tree", "beach"},
+  },
+  --430
+  {
+    name = "text_pallm",
+    sprite = "text_pallm",
+    type = "text",
+    texttype = {object = true},
+    color = {5, 2},
+    layer = 20,
+    tags = {"palm tree", "coconut tree", "beach"},
+  },
+  --431
+  {
+    name = "coco",
+    sprite = "coco",
+    type = "object",
+    color = {6, 1},
+    layer = 3,
+    rotate = "true",
+    tags = {"fruit", "coconut"},
+    desc = "its a bigg bigg nutt",
+  },
+  --432
+  {
+    name = "text_coco",
+    sprite = "text_coco",
+    type = "text",
+    texttype = {object = true},
+    color = {6, 1},
+    layer = 20,
+    tags = {"fruit", "coconut"},
+  },
+  --433
+  {
+    name = "glas",
+    sprite = "glas",
+    type = "object",
+    color = {0,3},
+    layer = 21,
+    tags = {"glass"},
+  },
+  --434
+  {
+    name = "text_glas",
+    sprite = "text_glas",
+    type = "text",
+    texttype = {object = true},
+    color = {0,2},
+    layer = 20,
+    tags = {"glass"},
+    desc = "a tranzlucent block?!",
+  },
+  --435
+  {
+    name = "fishe",
+    sprite = "fishe",
+    sleepsprite = "fishe_slep",
+    type = "object",
+    color = {0, 3},
+    layer = 5,
+    rotate = "true",
+    eye = {x=24, y=11, w=2, h=2},
+    tags = {"angelfish", "chars"},
+    desc = "fishe be walk?? kinda quirky doe",
+  },
+  --436
+  {
+    name = "text_fishe",
+    sprite = "text_fishe",
+    type = "text",
+    texttype = {object = true},
+    color = {0, 2},
+    layer = 20,
+    tags = {"angelfish", "chars"},
+  },
+  -- 437
+  {
+    name = "vien",
+    sprite = "vien",
+    type = "object",
+    color = {5,1},
+    layer = 3,
+    rotate = true,
+    tags = {"vines", "plants", "climb"},
+    desc = "vinny viensauce",
+  },
+  -- 438
+  {
+    name = "text_vien",
+    sprite = "text_vien",
+    type = "text",
+    texttype = {object = true},
+    color = {5,1},
+    layer = 20,
+    tags = {"vines", "plants", "climb"},
+    desc = "so she uploads a VIEN",
+  },
+  -- 439
+  {
+    name = "pudll",
+    sprite = "pudll",
+    type = "object",
+    color = {1, 3},
+    layer = 1,
+    tags = {"water", "puddle"},
+    desc = "its just a single watr",
+  },
+  -- 440
+  {
+    name = "text_pudll",
+    sprite = "text_pudll",
+    type = "text",
+    texttype = {object = true},
+    color = {1, 3},
+    layer = 20,
+    tags = {"water", "puddle"},
+  },
+  -- 441
+  {
+    name = "red",
+    sprite = "red",
+    type = "object",
+    color = {6,2},
+    layer = 3,
+    tags = {"reeds", "plants", "cattail", "swamp"},
+  },
+  -- 442
+  {
+    name = "text_red",
+    sprite = "text_red",
+    type = "text",
+    texttype = {object = true},
+    color = {6,2},
+    layer = 20,
+    tags = {"reeds", "plants", "cattail", "swamp"},
+    desc = "wait what",
+  },
+  -- 443
+  {
+    name = "stum",
+    sprite = "stum",
+    type = "object",
+    color = {6,1},
+    layer = 3,
+    tags = {"plants", "tree stump"},
+  },
+  -- 444
+  {
+    name = "text_stum",
+    sprite = "text_stum",
+    type = "text",
+    texttype = {object = true},
+    color = {6,1},
+    layer = 20,
+    tags = {"plants", "tree stump"},
+    desc = "im stumped",
+    unlucky = true,
+  },
+  -- 445
+  {
+    name = "bullb",
+    sprite = "bullb",
+    type = "object",
+    color = {2, 4},
+    layer = 4,
+    tags = {"light bulb", "lightbulb", "power"},
+  },
+  -- 446
+  {
+    name = "text_bullb",
+    sprite = "text_bullb",
+    type = "text",
+    texttype = {object = true},
+    color = {2, 4},
+    layer = 20,
+    tags = {"light bulb", "lightbulb", "power"},
+  },
+  --447
+  {
+    name = "battry",
+    sprite = "battry",
+    type = "object",
+    color = {4, 1},
+    layer = 4,
+    rotate = "true",
+    tags = {"battery", "power"},
+    desc = "not responsible for hidden states",
+  },
+  --448
+  {
+    name = "text_battry",
+    sprite = "text_battry",
+    type = "text",
+    texttype = {object = true},
+    color = {4, 1},
+    layer = 20,
+    tags = {"battery", "power"},
+  },
+  --449
+  {
+    name = "smol",
+    sprite = "smol",
+    type = object,
+    color = {5,2},
+    layer = 8,
+    rotate = true,
+    portal = true,
+    tags = {"portal"},
+    desc = "the tini poor toll",
+  },
+  --450
+  {
+    name = "text_smol",
+    sprite = "text_smol",
+    type = "text",
+    texttype = {object = true},
+    color = {5,2},
+    layer = 20,
+    tags = {"portal"},
   },
 }
 
