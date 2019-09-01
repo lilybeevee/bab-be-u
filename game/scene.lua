@@ -742,9 +742,9 @@ function scene.draw(dt)
     local fulldrawx = (drawx + 0.5)*TILE_SIZE
     local fulldrawy = (drawy + 0.5)*TILE_SIZE
 
-    if graphical_property_cache["flye"][unit] ~= nil or unit.name == "o" or unit.name == "square" or unit.name == "triangle" or unit.name == "beeee" then
+    if graphical_property_cache["flye"][unit] ~= nil or unit.name == "o" or unit.name == "square" or unit.name == "triangle" or unit.name == "beeee" or unit.name == "butflye" then
       local flyenes = graphical_property_cache["flye"][unit] or 0
-      if unit.name == "o" or unit.name == "square" or unit.name == "triangle" or unit.name == "beeee" then flyenes = flyenes + 1 end
+      if unit.name == "o" or unit.name == "square" or unit.name == "triangle" or unit.name == "beeee" or unit.name == "butflye" then flyenes = flyenes + 1 end
       fulldrawy = fulldrawy - math.sin(love.timer.getTime())*5*flyenes
     end
 
@@ -996,6 +996,10 @@ function scene.draw(dt)
     if hasRule(unit,"got","katany") then
       love.graphics.setColor(getPaletteColor(0,1))
       love.graphics.draw(sprites["katanysmol"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+    end
+    if hasRule(unit,"got","knif") then
+      love.graphics.setColor(getPaletteColor(0,3))
+      love.graphics.draw(sprites["knifsmol"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
     end
     if hasRule(unit,"got","slippers") then
       love.graphics.setColor(getPaletteColor(1,4))
