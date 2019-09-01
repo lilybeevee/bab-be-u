@@ -193,20 +193,20 @@ selector_grid_contents = {
   -- page 4: characters and special objects
   {
     "bab","text_bab","bunmy","text_bunmy","moo","text_moo",0,0,0,0,0,0,0,0,"selctr","text_selctr","lvl","text_lvl",
-    "keek","text_keek","creb","text_creb",0,0,0,0,0,0,0,0,0,0,"this","text_mous","lin","text_lin",
-    "meem","text_meem","statoo","text_statoo",0,0,0,0,0,0,0,0,0,0,"text_text","text_frens","text_groop","text_pathz",
-    "skul","text_skul","beeee","text_beeee",0,0,0,0,0,0,0,0,0,0,0,0,"text_every1","text_no1",
-    "ghost fren","text_ghost fren","fishe","text_fishe",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    "robobot","text_robobot","snek","text_snek",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    "keek","text_keek","creb","text_creb","shrim","text_shrim",0,0,0,0,0,0,0,0,"this","text_mous","lin","text_lin",
+    "meem","text_meem","statoo","text_statoo","flamgo","text_flamgo",0,0,0,0,0,0,0,0,"text_text","text_frens","text_groop","text_pathz",
+    "skul","text_skul","beeee","text_beeee","gul","text_gul",0,0,0,0,0,0,0,0,0,0,"text_every1","text_no1",
+    "ghost fren","text_ghost fren","fishe","text_fishe","starrfishe","text_starrfishe",0,0,0,0,0,0,0,0,0,0,0,0,
+    "robobot","text_robobot","snek","text_snek","sneel","text_sneel",0,0,0,0,0,0,0,0,0,0,0,0,
     "wog","text_wog","bog","text_bog","enbybog","text_enbybog",0,0,0,0,0,0,0,0,0,0,0,0,
     "kirb","text_kirb","ripof","text_ripof",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     "bup","text_bup","butflye","text_butflye",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     "boy","text_boy","wurm","text_wurm",0,0,0,0,0,0,0,0,0,0,"lila","text_lila","tot","text_tot",
     "steev","text_steev","ratt","text_ratt",0,0,0,0,0,0,0,0,0,0,"pata","text_pata","jill","text_jill",
     "han","text_han",0,0,0,0,0,0,0,0,0,0,0,0,"larry","text_larry","zsoob","text_zsoob",
-    "os","text_os",0,0,0,0,0,0,0,0,0,0,0,0,0,0,"o","text_o",
+    "hors","text_hors","kapa","text_kapa","urei","text_urei",0,0,0,0,0,0,0,0,0,0,"o","text_o",
     "snoman","text_snoman","pingu","text_pingu",0,0,0,0,0,0,0,0,0,0,0,0,"square","text_square",
-    "hors","text_hors",0,0,0,0,0,0,0,0,0,0,0,0,0,0,"triangle","text_triangle",
+    "os","text_os",0,0,0,0,0,0,0,0,0,0,0,0,0,0,"triangle","text_triangle",
   },
   -- page 5: inanimate objects
   {
@@ -215,14 +215,14 @@ selector_grid_contents = {
     "watr","text_watr","colld","text_colld","rein","text_rein","icecub","text_icecub","slippers","text_slippers","pudll","text_pudll","icbolt","text_icbolt","win","text_win",0,0,
     "laav","text_laav","dor","text_dor","kee","text_kee","roc","text_roc","hatt","text_hatt",0,0,"poisbolt","text_poisbolt","smol","text_smol",0,0,
     "gras","text_gras","algay","text_algay","flog","text_flog","boux","text_boux","knif","text_knif",0,0,"timbolt","text_timbolt","tor","text_tor",0,0,
-    "hedg","text_hedg","banboo","text_banboo","boll","text_boll","l..uv","text_l..uv","cor","text_cor",0,0,0,0,0,0,0,0,
+    "hedg","text_hedg","banboo","text_banboo","boll","text_boll","l..uv","text_l..uv","wips","text_wips",0,0,0,0,0,0,0,0,
     "metl","text_metl","vien","text_vien","leef","text_leef","karot","text_karot","fir","text_fir",0,0,0,0,0,0,0,0,
     "jail","text_jail","ladr","text_ladr","pallm","text_pallm","coco","text_coco","rouz","text_rouz","noet","text_noet",0,0,0,0,0,0,
     "fenss","text_fenss","platfor","text_platfor","tre","text_tre","stum","text_stum","dayzy","text_dayzy","lie","text_lie",0,0,0,0,0,0,
     "cobll","text_cobll","spik","text_spik","frut","text_frut","fungye","text_fungye","red","text_red","lie/8","text_lie/8",0,0,0,0,0,0,
     "wuud","text_wuud","spiky","text_spiky","parsol","text_parsol","clok","text_clok","ufu","text_ufu","rockit","text_rockit",0,0,0,0,0,0,
     "brik","text_brik","sparkl","text_sparkl","sanglas","text_sanglas","bullb","text_bullb","son","text_son","muun","text_muun",0,0,0,0,0,0,
-    "san","text_san","piler","text_piler","sancastl","text_sancastl","shel","text_shel","starr","text_starr",0,0,0,0,0,0,0,0,
+    "san","text_san","piler","text_piler","sancastl","text_sancastl","shel","text_shel","starr","text_starr","cor","text_cor",0,0,0,0,0,0,
     "glas","text_glas","bom","text_bom","sine","text_sine","kar","text_kar","can","text_can","ger","text_ger","sirn","text_sirn",0,0,0,0,
     "bordr","text_bordr","wut","text_wut","wat","text_wat","splittr","text_splittr","togll","text_togll","bon","text_bon","battry","text_battry",0,0,0,0,
   },
@@ -2096,6 +2096,7 @@ tiles_list = {
     rotate = true,
     eye = {x=20, y=13, w=2, h=2},
     tags = {"chars", "5 step steve", "cat"},
+    desc = "can only moov 5 steps b4 dyin nya",
   },
   -- 167
   {
@@ -5519,7 +5520,7 @@ tiles_list = {
     sprite = "text_pingu",
     type = "text",
     texttype = {object = true},
-    color = {0, 1},
+    color = {0, 2},
     layer = 20,
     tags = {"chars", "penguin", "bird"},
   },
@@ -5723,7 +5724,7 @@ tiles_list = {
     tags = {"chars", "cow"},
     desc = "moooooo",
   },
-  -- 479
+  -- 498
   {
     name = "enbybog",
     sprite = "enbybog",
@@ -5736,7 +5737,7 @@ tiles_list = {
     tags = {"chars", "ladybug", "insect", "cockroach"},
     desc = "goes by they/them",
   },
-  -- 480
+  -- 499
   {
     name = "text_enbybog",
     sprite = "text_enbybog",
@@ -5745,6 +5746,187 @@ tiles_list = {
     color = {2, 2},
     layer = 20,
     tags = {"chars", "ladybug", "insect", "cockroach"},
+  },
+  -- 500
+  {
+    name = "shrim",
+    sprite = "shrim",
+    slep = true,
+    type = "object",
+    color = {2, 2},
+    layer = 6,
+    rotate = true,
+    eye = {x=20, y=9, w=2, h=2},
+    tags = {"chars", "shrimp", "prawn"},
+    desc = "shouldnt it be PINC",
+  },
+  -- 501
+  {
+    name = "text_shrim",
+    sprite = "text_shrim",
+    type = "text",
+    texttype = {object = true},
+    color = {2, 2},
+    layer = 20,
+    tags = {"chars", "shrimp", "prawn"},
+    desc = "shrims are pretty rich",
+  },
+  -- 502
+  {
+    name = "flamgo",
+    sprite = "flamgo",
+    slep = true,
+    type = "object",
+    color = {4, 1},
+    layer = 6,
+    eye = {x=23, y=3, w=2, h=2},
+    tags = {"chars", "flamingo", "bird"},
+    desc = "if ur COLRFUL thats cool too!!",
+  },
+  -- 503
+  {
+    name = "text_flamgo",
+    sprite = "text_flamgo",
+    type = "text",
+    texttype = {object = true},
+    color = {4, 1},
+    layer = 20,
+    tags = {"chars", "flamingo", "bird"},
+  },
+  -- 504
+  {
+    name = "gul",
+    sprite = "gul",
+    slep = true,
+    type = "object",
+    color = {0, 3},
+    layer = 7,
+    eye = {x=23, y=3, w=2, h=2},
+    tags = {"chars", "seagull", "bird", "beach"},
+    desc = "7",
+  },
+  -- 505
+  {
+    name = "text_gul",
+    sprite = "text_gul",
+    type = "text",
+    texttype = {object = true},
+    color = {0, 3},
+    layer = 20,
+    tags = {"chars", "seagull", "bird", "beach"},
+  },
+  -- 506
+  {
+    name = "starrfishe",
+    sprite = "starrfishe",
+    slep = true,
+    type = "object",
+    color = {4, 2},
+    layer = 6,
+    rotate = true,
+    eye = {x=16, y=12, w=2, h=2},
+    tags = {"chars", "starfish", "beach"},
+    desc = "she's alive, and has 4 eyes",
+  },
+  -- 507
+  {
+    name = "text_starrfishe",
+    sprite = "text_starrfishe",
+    type = "text",
+    texttype = {object = true},
+    color = {4, 2},
+    layer = 20,
+    tags = {"chars", "starfish", "beach"},
+    desc = "what a long name",
+  },
+  -- 508
+  {
+    name = "sneel",
+    sprite = "sneel",
+    slep = true,
+    type = "object",
+    color = {4, 2},
+    layer = 6,
+    rotate = true,
+    eye = {x=21, y=28, w=2, h=2},
+    tags = {"chars", "snail"},
+    desc = "winner of the undertale snail race gets into BAB",
+  },
+  -- 509
+  {
+    name = "text_sneel",
+    sprite = "text_sneel",
+    type = "text",
+    texttype = {object = true},
+    color = {4, 2},
+    layer = 20,
+    tags = {"chars", "snail"},
+  },
+  -- 510
+  {
+    name = "kapa",
+    sprite = "kapa",
+    slep = true,
+    type = "object",
+    color = {5, 2},
+    layer = 6,
+    rotate = true,
+    eye = {x=24, y=14, w=2, h=2},
+    tags = {"chars", "japan", "youkai", "kappa"},
+    desc = "now we need a CUMBER object",
+  },
+  -- 511
+  {
+    name = "text_kapa",
+    sprite = "text_kapa",
+    type = "text",
+    texttype = {object = true},
+    color = {5, 2},
+    layer = 20,
+    tags = {"chars", "japan", "youkai", "kappa"},
+  },
+  -- 512
+  {
+    name = "urei",
+    sprite = "urei",
+    slep = true,
+    type = "object",
+    color = {0, 3},
+    layer = 7,
+    eye = {x=20, y=19, w=2, h=2},
+    tags = {"chars", "japan", "youkai", "yuurei", "ghost"},
+    desc = "GHOST FREN of the eastern variety",
+  },
+  -- 513
+  {
+    name = "text_urei",
+    sprite = "text_urei",
+    type = "text",
+    texttype = {object = true},
+    color = {0, 3},
+    layer = 20,
+    tags = {"chars", "japan", "youkai", "yuurei", "ghost"},
+  },
+  -- 514
+  {
+    name = "wips",
+    sprite = "wips",
+    type = "object",
+    color = {0, 3},
+    layer = 7,
+    tags = {"will o wisp", "japan", "ghost", "spirit"},
+    desc = "WILL o WIPS?",
+  },
+  -- 515
+  {
+    name = "text_wips",
+    sprite = "text_wips",
+    type = "text",
+    texttype = {object = true},
+    color = {0, 3},
+    layer = 20,
+    tags = {"will o wisp", "japan", "ghost", "spirit"},
+    desc = "work in progress",
   },
 }
 
