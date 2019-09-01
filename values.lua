@@ -163,12 +163,12 @@ selector_grid_contents = {
     "wal", "text_wal", "text_no go", "l..uv", "text_l..uv", "gras", "text_gras", "text_creat", "text_look at", "text_spoop", "text_yeet", "text_turn cornr", "text_corekt", "text_go arnd", "text_mirr arnd", 0, 0, 0,
     "watr", "text_watr", "text_no swim", "meem", "text_meem", "dayzy", "text_dayzy", "text_snacc", "text_seen by" , "text_stalk", "text_moov", "text_folo wal", "text_rong", "text_her", "text_thr", "text_rithere", "text_the", 0,
     "skul", "text_skul", "text_:(", "til", "text_til", "hurcane", "text_hurcane", "gunne", "text_gunne", "wog", "text_wog", "text_zip", "text_shy", "text_munwalk", "text_sidestep", "text_diagstep", "text_hopovr", "text_knightstep",
-    "boux", "text_boux", "text_come pls", "os", "text_os", "bup", "text_bup", "han", "text_han", "fenss", "text_fenss", "brik", "text_brik", "hol", "text_hol", "text_poor toll", "text_blacc", "text_reed",
-    "bellt", "text_bellt", "text_go", "tre", "text_tre", "piler", "text_piler", "hatt", "text_hatt", "hedg", "text_hedg", "beeee", "text_beeee", "rif", "text_rif", "text_glued", "text_whit", "text_orang",
-    "boll", "text_boll", "text_:o", "frut", "text_frut", "kirb", "text_kirb", "katany", "text_katany", "metl", "text_metl", "rouz", "text_rouz", "smol", "text_smol", "text_enby", "text_colrful", "text_yello",
-    "clok", "text_clok", "text_try again", "text_no undo", "text_undo", "slippers", "text_slippers", "firbolt", "text_firbolt", "jail", "text_jail", "fungye", "text_fungye", "son", "text_son", "text_tranz", "text_rave", "text_grun",
-    "splittr", "text_splittr", "text_split", "steev", "text_steev", "boy", "text_boy", "icbolt", "text_icbolt", "platfor", "text_platfor", "ladr", "text_ladr", "muun", "text_muun", "text_gay", "text_stelth", "text_cyeann",
-    "chekr", "text_chekr", "text_diag", "text_ortho", "text_haet flor", "arro", "text_arro", "text_go my way", "text_spin", "text_no turn", "text_stubbn", "text_rotatbl", "starr","text_starr", "text_pinc", "text_qt", "text_paint", "text_bleu",
+    "boux", "text_boux", "text_come pls", "os", "text_os", "bup", "text_bup", "han", "text_han", "fenss", "text_fenss", 0, 0, "hol", "text_hol", "text_poor toll", "text_blacc", "text_reed",
+    "bellt", "text_bellt", "text_go", "tre", "text_tre", "piler", "text_piler", "hatt", "text_hatt", "hedg", "text_hedg", 0, 0, "rif", "text_rif", "text_glued", "text_whit", "text_orang",
+    "boll", "text_boll", "text_:o", "frut", "text_frut", "kirb", "text_kirb", "katany", "text_katany", "metl", "text_metl", 0, 0, 0, 0, "text_enby", "text_colrful", "text_yello",
+    "clok", "text_clok", "text_try again", "text_no undo", "text_undo", "slippers", "text_slippers", "firbolt", "text_firbolt", "jail", "text_jail", 0, 0, 0, 0, "text_tranz", "text_rave", "text_grun",
+    "splittr", "text_splittr", "text_split", "steev", "text_steev", "boy", "text_boy", "icbolt", "text_icbolt", "platfor", "text_platfor", 0, 0, 0, 0, "text_gay", "text_stelth", "text_cyeann",
+    "chekr", "text_chekr", "text_diag", "text_ortho", "text_haet flor", "arro", "text_arro", "text_go my way", "text_spin", "text_no turn", "text_stubbn", "text_rotatbl", 0, 0, "text_pinc", "text_qt", "text_paint", "text_bleu",
     "clowd", "text_clowd", "text_flye", "text_tall", "text_haet skye", "ghost fren", "text_ghost fren", "robobot", "text_robobot", "sparkl", "text_sparkl", "spik", "text_spik", "spiky", "text_spiky", "bordr", "text_bordr", "text_purp",
     nil
   },
@@ -190,25 +190,43 @@ selector_grid_contents = {
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,"ui_walk",0,0,"ui_reset",0,0,"ui_undo",0,0,"ui_wait",0,0,"ui_activat",0,0,"ui_clik",0,0,0,0,
   },
-  -- page 4: objects
+  -- page 4: characters and special objects
   {
-    "bab","text_bab","flog","text_flog","wal","text_wal","gras","text_gras","cobll","text_cobll","brik","text_brik",0,0,"selctr","text_selctr","lvl","text_lvl",
-    "keek","text_keek","roc","text_roc","til","text_til","sparkl","text_sparkl","wuud","text_wuud","san","text_san",0,0,"this","text_mous","lin","text_lin",
-    "meem","text_meem","boux","text_boux","watr","text_watr","scarr","text_scarr","petnygrame","text_petnygrame","starr","text_starr",0,0,"text_text","text_frens","text_groop","text_pathz",
-    "skul","text_skul","boll","text_boll","laav","text_laav","katany","text_katany","gunne","text_gunne","son","text_son","ufu","text_ufu",0,0,"text_every1","text_no1",
-    "ghost fren","text_ghost fren","kee","text_kee","dor","text_dor","hatt","text_hatt","slippers","text_slippers","muun","text_muun","rockit","text_rockit","rein","text_rein","noet","text_noet",
-    "robobot","text_robobot","l..uv","text_l..uv","hedg","text_hedg","hol","text_hol","rif","text_rif","smol","text_smol","tor","text_tor","win","text_win",0,0,
-    "wog","text_wog","tre","text_tre","metl","text_metl","clok","text_clok","bom","text_bom","kar","text_kar","stum","text_stum","algay","text_algay","banboo","text_banboo",
-    "kirb","text_kirb","frut","text_frut","jail","text_jail","sine","text_sine","sanglas","text_sanglas","shel","text_shel","sancastl","text_sancastl","parsol","text_parsol","pallm","text_pallm",
-    "bup","text_bup","piler","text_piler","fenss","text_fenss","buble","text_buble","creb","text_creb","icecub","text_icecub","statoo","text_statoo","glas","text_glas","coco","text_coco",
-    "boy","text_boy","dayzy","text_dayzy","platfor","text_platfor","pepis","text_pepis","fungye", "text_fungye","bullb","text_bullb","text_battry","battry","lila","text_lila","tot","text_tot",
-    "steev","text_steev","splittr","text_splittr","colld","text_colld","arro","text_arro","beeee","text_beeee","fishe","text_fishe","bon","text_bon","pata","text_pata","jill","text_jill",
-    "han","text_han","clowd","text_clowd","bellt","text_bellt","ger","text_ger","sno","text_sno","snoman","text_snoman","red","text_red","larry","text_larry","zsoob","text_zsoob",
-    "os","text_os","hurcane","text_hurcane","spik","text_spik","hors","text_hors","fir","text_fir","rouz","text_rouz","leef","text_leef","bunmy","text_bunmy","o","text_o",
-    "firbolt","text_firbolt","lie","text_lie","spiky","text_spiky","can","text_can","ladr", "text_ladr","litbolt","text_litbolt","vien","text_vien","karot","text_karot","square","text_square",
-    "icbolt","text_icbolt","lie/8","text_lie/8","bordr","text_bordr","togll","text_togll","wut","text_wut","wat","text_wat","pudll","text_pudll","poisbolt","text_poisbolt","triangle","text_triangle",
+    "bab","text_bab","bunmy","text_bunmy",0,0,0,0,0,0,0,0,0,0,"selctr","text_selctr","lvl","text_lvl",
+    "keek","text_keek","creb","text_creb",0,0,0,0,0,0,0,0,0,0,"this","text_mous","lin","text_lin",
+    "meem","text_meem","statoo","text_statoo",0,0,0,0,0,0,0,0,0,0,"text_text","text_frens","text_groop","text_pathz",
+    "skul","text_skul","beeee","text_beeee",0,0,0,0,0,0,0,0,0,0,0,0,"text_every1","text_no1",
+    "ghost fren","text_ghost fren","fishe","text_fishe",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    "robobot","text_robobot",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    "wog","text_wog",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    "kirb","text_kirb",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    "bup","text_bup",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    "boy","text_boy",0,0,0,0,0,0,0,0,0,0,0,0,"lila","text_lila","tot","text_tot",
+    "steev","text_steev",0,0,0,0,0,0,0,0,0,0,0,0,"pata","text_pata","jill","text_jill",
+    "han","text_han",0,0,0,0,0,0,0,0,0,0,0,0,"larry","text_larry","zsoob","text_zsoob",
+    "os","text_os",0,0,0,0,0,0,0,0,0,0,0,0,0,0,"o","text_o",
+    "snoman","text_snoman",0,0,0,0,0,0,0,0,0,0,0,0,0,0,"square","text_square",
+    "hors","text_hors",0,0,0,0,0,0,0,0,0,0,0,0,0,0,"triangle","text_triangle",
   },
-  -- page 5: properties, verbs and conditions
+  -- page 5: inanimate objects
+  {
+    "wal","text_wal","bellt","text_bellt","hurcane","text_hurcane","buble","text_buble","katany","text_katany","petnygrame","text_petnygrame","firbolt","text_firbolt","hol","text_hol",0,0,
+    "til","text_til","arro","text_arro","clowd","text_clowd","sno","text_sno","gunne","text_gunne","scarr","text_scarr","litbolt","text_litbolt","rif","text_rif",0,0,
+    "watr","text_watr","colld","text_colld","rein","text_rein","icecub","text_icecub","slippers","text_slippers","pudll","text_pudll","icbolt","text_icbolt","win","text_win",0,0,
+    "laav","text_laav","dor","text_dor","kee","text_kee","roc","text_roc","hatt","text_hatt",0,0,"poisbolt","text_poisbolt","smol","text_smol",0,0,
+    "gras","text_gras","algay","text_algay","flog","text_flog","boux","text_boux",0,0,0,0,0,0,"tor","text_tor",0,0,
+    "hedg","text_hedg","banboo","text_banboo","boll","text_boll","l..uv","text_l..uv",0,0,0,0,0,0,0,0,0,0,
+    "metl","text_metl","vien","text_vien","leef","text_leef","karot","text_karot","fir","text_fir",0,0,0,0,0,0,0,0,
+    "jail","text_jail","ladr","text_ladr","pallm","text_pallm","coco","text_coco","rouz","text_rouz","noet","text_noet",0,0,0,0,0,0,
+    "fenss","text_fenss","platfor","text_platfor","tre","text_tre","stum","text_stum","dayzy","text_dayzy","lie","text_lie",0,0,0,0,0,0,
+    "cobll","text_cobll","spik","text_spik","frut","text_frut","fungye","text_fungye","red","text_red","lie/8","text_lie/8",0,0,0,0,0,0,
+    "wuud","text_wuud","spiky","text_spiky","parsol","text_parsol","clok","text_clok","ufu","text_ufu","rockit","text_rockit",0,0,0,0,0,0,
+    "brik","text_brik","sparkl","text_sparkl","sanglas","text_sanglas","bullb","text_bullb","son","text_son","muun","text_muun",0,0,0,0,0,0,
+    "san","text_san","piler","text_piler","sancastl","text_sancastl","shel","text_shel","starr","text_starr",0,0,0,0,0,0,0,0,
+    "glas","text_glas","bom","text_bom","sine","text_sine","kar","text_kar","can","text_can","ger","text_ger",0,0,0,0,0,0,
+    "bordr","text_bordr","wut","text_wut","wat","text_wat","splittr","text_splittr","togll","text_togll","bon","text_bon","battry","text_battry",0,0,0,0,
+  },
+  -- page 6: properties, verbs and conditions
   {
     "text_be","text_&","text_got","text_creat","text_snacc","text_spoop","text_copkat","text_moov","text_yeet","text_liek","text_haet","text_stalk","text_ignor","text_paint","text_vs","text_look at",0,0,
     "text_u","text_u too","text_u tres","text_walk",0,"text_:)","text_no swim","text_ouch","text_protecc",0,"text_nxt","text_stay ther","text_sublvl",0,"text_w/fren","text_arond","text_frenles","text_sans",
@@ -221,14 +239,10 @@ selector_grid_contents = {
     "text_munwalk","text_sidestep","text_diagstep","text_knightstep",0,0,0,0,0,0,0,0,0,0,0,0,0,"text_reed",
     "text_spin","text_rotatbl",0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_enby","text_orang",
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_tranz","text_yello",
-    "text_n't",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_gay","text_grun",
-    "text_babn't", "text_ben't",0,0,0,"text_try again","text_no undo","text_undo","text_za warudo","text_brite",0,0,0,0,0,"text_stelth","text_qt","text_cyeann",
-    "text_rocn't","text_waln't",0,0,0,"text_poor toll","text_go arnd","text_mirr arnd","text_glued","text_torc",0,0,0,0,0,"text_blacc","text_whit","text_bleu",
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_gay","text_grun",
+    0,0,0,0,0,"text_try again","text_no undo","text_undo","text_za warudo","text_brite",0,0,0,0,0,"text_stelth","text_qt","text_cyeann",
+    0,0,0,0,0,"text_poor toll","text_go arnd","text_mirr arnd","text_glued","text_torc",0,0,0,0,0,"text_blacc","text_whit","text_bleu",
     "text_...","text_''",0,0,0,"text_her","text_thr","text_rithere","text_the","text_opaque",0,0,0,0,0,"text_colrful","text_rave","text_purp",
-  },
-  -- page 6
-  {
-    0,0,0,
   },
 }
 tile_grid_width = 18
@@ -748,7 +762,6 @@ tiles_list = {
     type = "object",
     color = {4, 2},
     layer = 6,
-    rotate = "true",
     tags = {"love"},
   },
   --46
@@ -1736,6 +1749,7 @@ tiles_list = {
     rotate = true,
     eye = {x=18, y=4, w=2, h=2},
     tags = {"devs", "chars", "vitellary"},
+    desc = "larry be haetflor",
   },
   -- 134
   {
@@ -1756,6 +1770,7 @@ tiles_list = {
     rotate = true,
     eye = {x=19, y=8, w=2, h=2},
     tags = {"devs", "chars", "lily", "lili"},
+    desc = "lila, represents the creator of bab be u herself! all hail lila",
   },
   -- 136
   {
@@ -4767,6 +4782,7 @@ tiles_list = {
     layer = 5,
     rotate = true,
     tags = {"car", "vehicle"},
+    desc = "awaken my masters",
   },
   -- 412
   {
@@ -4777,7 +4793,6 @@ tiles_list = {
     color = {5, 2},
     layer = 20,
     tags = {"car", "vehicle"},
-    desc = "awaken my masters",
   },
   -- 413
   {
@@ -4993,6 +5008,7 @@ tiles_list = {
     color = {0,3},
     layer = 21,
     tags = {"glass"},
+    desc = "a tranzlucent block?!",
   },
   --434
   {
@@ -5003,7 +5019,6 @@ tiles_list = {
     color = {0,2},
     layer = 20,
     tags = {"glass"},
-    desc = "a tranzlucent block?!",
   },
   --435
   {
