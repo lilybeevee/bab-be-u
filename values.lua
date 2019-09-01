@@ -203,10 +203,10 @@ selector_grid_contents = {
     "bup","text_bup","butflye","text_butflye",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     "boy","text_boy","wurm","text_wurm",0,0,0,0,0,0,0,0,0,0,"lila","text_lila","tot","text_tot",
     "steev","text_steev","ratt","text_ratt",0,0,0,0,0,0,0,0,0,0,"pata","text_pata","jill","text_jill",
-    "han","text_han",0,0,0,0,0,0,0,0,0,0,0,0,"larry","text_larry","zsoob","text_zsoob",
-    "hors","text_hors","kapa","text_kapa","urei","text_urei",0,0,0,0,0,0,0,0,0,0,"o","text_o",
-    "snoman","text_snoman","pingu","text_pingu",0,0,0,0,0,0,0,0,0,0,0,0,"square","text_square",
-    "os","text_os",0,0,0,0,0,0,0,0,0,0,0,0,0,0,"triangle","text_triangle",
+    "han","text_han","eyee","text_eyee","lisp","text_lisp",0,0,0,0,0,0,0,0,"larry","text_larry","zsoob","text_zsoob",
+    "snoman","text_snoman","pingu","text_pingu",0,0,0,0,0,0,0,0,0,0,0,0,"o","text_o",
+    "kapa","text_kapa","urei","text_urei","ryugon","text_ryugon",0,0,0,0,0,0,0,0,0,0,"square","text_square",
+    "os","text_os","hors","text_hors",0,0,0,0,0,0,0,0,0,0,0,0,"triangle","text_triangle",
   },
   -- page 5: inanimate objects
   {
@@ -1214,7 +1214,7 @@ tiles_list = {
     color = {0, 3},
     layer = 7,
     rotate = true,
-    tags = {"hand"},
+    tags = {"chars", "hand", "body part"},
   },
   -- 88
   {
@@ -1224,7 +1224,7 @@ tiles_list = {
     texttype = {object = true},
     color = {0, 3},
     layer = 20,
-    tags = {"hand"},
+    tags = {"chars", "hand", "body part"},
   },
   -- 87
   {
@@ -5927,6 +5927,75 @@ tiles_list = {
     layer = 20,
     tags = {"will o wisp", "japan", "ghost", "spirit"},
     desc = "work in progress",
+  },
+  -- 516
+  {
+    name = "ryugon",
+    sprite = "ryugon",
+    slep = true,
+    type = "object",
+    color = {5, 2},
+    layer = 7,
+    rotate = true,
+    eye = {x=21, y=17, w=3, h=2},
+    tags = {"chars", "japan", "youkai", "dragon"},
+    desc = "ryugon no ken wo kurae",
+  },
+  -- 517
+  {
+    name = "text_ryugon",
+    sprite = "text_ryugon",
+    type = "text",
+    texttype = {object = true},
+    color = {5, 2},
+    layer = 20,
+    tags = {"chars", "japan", "youkai", "dragon"},
+  },
+  -- 518
+  {
+    name = "eyee",
+    sprite = "eyee",
+    slep = true,
+    type = "object",
+    color = {0, 3},
+    layer = 5,
+    rotate = true,
+    eye = {x=17, y=12, w=7, h=8},
+    tags = {"chars", "eye", "body part"},
+    desc = "EYEE SEES ALL",
+  },
+  -- 519
+  {
+    name = "text_eyee",
+    sprite = "text_eyee",
+    type = "text",
+    texttype = {object = true},
+    color = {0, 1},
+    layer = 20,
+    tags = {"chars", "eye", "body part"},
+  },
+  -- 520
+  {
+    name = "lisp",
+    sprite = "lisp",
+    slep = true,
+    type = "object",
+    color = {2, 2},
+    layer = 5,
+    rotate = true,
+    tags = {"chars", "mouth", "lips", "body part"},
+    desc = "it speaks",
+  },
+  -- 521
+  {
+    name = "text_lisp",
+    sprite = "text_lisp",
+    type = "text",
+    texttype = {object = true},
+    color = {2, 2},
+    layer = 20,
+    tags = {"chars", "eye", "body part"},
+    desc = "it altho hath a lithp",
   },
 }
 
