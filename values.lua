@@ -253,7 +253,7 @@ tiles_list = {
   {
     name = "bab",
     sprite = "bab",
-    sleepsprite = "bab_slep",
+    slep = true,
     type = "object",
     color = {0, 3},
     layer = 6,
@@ -460,7 +460,7 @@ tiles_list = {
   {
     name = "text_:)",
     sprite = "text_good",
-    sleepsprite = "text_good_slep",
+    slep = true,
     type = "text",
     texttype = {property = true},
     color = {2, 4},
@@ -625,7 +625,7 @@ tiles_list = {
   {
     name = "skul",
     sprite = "skul",
-    sleepsprite = "skul_slep",
+    slep = true,
     type = "object",
     color = {2, 1},
     layer = 5,
@@ -668,7 +668,7 @@ tiles_list = {
   {
     name = "keek",
     sprite = "keek",
-    sleepsprite = "keek_slep",
+    slep = true,
     type = "object",
     color = {2, 2},
     layer = 5,
@@ -691,7 +691,7 @@ tiles_list = {
   {
     name = "meem",
     sprite = "meem",
-    sleepsprite = "meem_slep",
+    slep = true,
     type = "object",
     color = {3, 1},
     layer = 5,
@@ -820,7 +820,7 @@ tiles_list = {
   {
     name = "wog",
     sprite = "wog",
-    sleepsprite = "wog_slep",
+    slep = true,
     type = "object",
     color = {2, 4},
     layer = 5,
@@ -891,7 +891,7 @@ tiles_list = {
   {
     name = "text_:(",
     sprite = "text_bad",
-    sleepsprite = "text_bad_slep",
+    slep = true,
     type = "text",
     texttype = {property = true},
     color = {2, 1},
@@ -925,7 +925,7 @@ tiles_list = {
   {
     name = "bup",
     sprite = "bup",
-    sleepsprite = "bup_slep",
+    slep = true,
     type = "object",
     color = {6, 2},
     layer = 5,
@@ -979,7 +979,7 @@ tiles_list = {
   {
     name = "text_:o",
     sprite = "text_whoa",
-    sleepsprite = "text_whoa_slep",
+    slep = true,
     type = "text",
     texttype = {property = true},
     color = {4, 1},
@@ -1099,7 +1099,7 @@ tiles_list = {
   {
     name = "kirb",
     sprite = "kirb",
-    sleepsprite = "kirb_slep",
+    slep = true,
     type = "object",
     color = {4, 2},
     layer = 5,
@@ -1154,7 +1154,7 @@ tiles_list = {
   {
     name = "tot",
     sprite = "tot",
-    sleepsprite = "tot_slep",
+    slep = true,
     type = "object",
     color = {4, 2},
     layer = 5,
@@ -1187,7 +1187,7 @@ tiles_list = {
   {
     name = "o",
     sprite = "o",
-    sleepsprite = "o_slep",
+    slep = true,
     type = "object",
     texttype = {letter = true},
     color = {2, 4},
@@ -1354,7 +1354,7 @@ tiles_list = {
   {
     name = "text_xwx",
     sprite = "text_xwx",
-    sleepsprite = "text_xwx_slep",
+    slep = true,
     type = "text",
     texttype = {property = true},
     color = {3, 2},
@@ -1720,7 +1720,7 @@ tiles_list = {
   {
     name = "pata",
     sprite = "pata",
-    sleepsprite = "pata_slep",
+    slep = true,
     type = "object",
     color = {3, 3},
     layer = 5,
@@ -1742,7 +1742,7 @@ tiles_list = {
   {
     name = "larry",
     sprite = "larry",
-    sleepsprite = "larry_slep",
+    slep = true,
     type = "object",
     color = {2, 4},
     layer = 5,
@@ -2033,7 +2033,7 @@ tiles_list = {
   {
     name = "zsoob",
     sprite = "zsoob",
-    sleepsprite = "zsoob_slep",
+    slep = true,
     type = "object",
     color = {4,1},
     layer = 5,
@@ -2089,7 +2089,7 @@ tiles_list = {
   {
     name = "steev",
     sprite = "steev",
-    sleepsprite = "steev_slep",
+    slep = true,
     type = "object",
     color = {2,3},
     layer = 5,
@@ -2315,7 +2315,7 @@ tiles_list = {
   {
     name = "ghost fren",
     sprite = "ghost",
-    sleepsprite = "ghost_slep",
+    slep = true,
     type = "object",
     color = {4, 2},
     layer = 5,
@@ -2339,7 +2339,7 @@ tiles_list = {
   {
     name = "robobot",
     sprite = "robobot",
-    sleepsprite = "robobot_slep",
+    slep = true,
     type = "object",
     color = {6, 1},
     layer = 5,
@@ -3845,7 +3845,7 @@ tiles_list = {
   {
     name = "jill",
     sprite = "jill",
-    sleepsprite = "jill_slep",
+    slep = true,
     type = "object",
     color = {1,3},
     layer = 5,
@@ -4263,7 +4263,7 @@ tiles_list = {
   {
     name = "snoman",
     sprite = "snoman",
-    sleepsprite = "snoman_slep",
+    slep = true,
     type = "object",
     color = {0, 3},
     layer = 5,
@@ -4660,7 +4660,7 @@ tiles_list = {
   {
     name = "text_;d",
     sprite = "text_ungood",
-    sleepsprite = "text_ungood_slep",
+    slep = true,
     type = "text",
     texttype = {property = true},
     color = {1,2},
@@ -4682,7 +4682,7 @@ tiles_list = {
   {
     name = "beeee",
     sprite = "beeee",
-    sleepsprite = "beeee_slep",
+    slep = true,
     type = "object",
     color = {2, 4},
     layer = 6,
@@ -4819,7 +4819,7 @@ tiles_list = {
   {
     name = "son",
     sprite = "son",
-    sleepsprite = "son_slep",
+    slep = true,
     type = "object",
     color = {2,4},
     layer = 4,
@@ -5024,7 +5024,7 @@ tiles_list = {
   {
     name = "fishe",
     sprite = "fishe",
-    sleepsprite = "fishe_slep",
+    slep = true,
     type = "object",
     color = {0, 3},
     layer = 5,
@@ -5215,7 +5215,7 @@ tiles_list = {
   {
     name = "statoo",
     sprite = "statoo",
-    sleepsprite = "statoo_slep",
+    slep = true,
     type = "object",
     color = {0, 1},
     layer = 5,
@@ -5377,7 +5377,7 @@ tiles_list = {
   {
     name = "bunmy",
     sprite = "bunmy",
-    sleepsprite = "bunmy_slep",
+    slep = true,
     type = "object",
     color = {0, 3},
     layer = 6,

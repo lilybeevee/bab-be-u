@@ -1089,8 +1089,8 @@ function miscUpdates()
       unit.layer = tile.layer + (20 * (graphical_property_cache["flye"][unit] or 0))
 
       if unit.fullname ~= "os" then
-        if tiles_list[unit.tile].sleepsprite and graphical_property_cache["slep"][unit] ~= nil then
-          unit.sprite = tiles_list[unit.tile].sleepsprite
+        if tiles_list[unit.tile].slep and graphical_property_cache["slep"][unit] ~= nil then
+          unit.sprite = tiles_list[unit.tile].sprite.."_slep"
         else
           unit.sprite = tiles_list[unit.tile].sprite
         end
