@@ -176,8 +176,8 @@ selector_grid_contents = {
   {
     "letter_a","letter_b","letter_c","letter_d","letter_e","letter_f","letter_g","letter_h","letter_i","letter_j","letter_k","letter_l","letter_m","letter_n","letter_o","letter_p","letter_q","letter_r",
     "letter_s","letter_t","letter_u","letter_v","letter_w","letter_x","letter_y","letter_z","letter_.","letter_colon","letter_parenthesis","letter_'","letter_/","letter_1","letter_2","letter_3","letter_4","letter_5",
-    0,0,0,0,0,0,0,0,0,"letter_;",0,0,"letter_6","letter_7","letter_8","letter_9","letter_o",
-	"letter_go","letter_come","letter_pls","letter_away","letter_my","letter_no","letter_way","letter_ee","letter_fren","letter_ll",0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,"letter_;",0,0,0,"letter_6","letter_7","letter_8","letter_9","letter_o",
+	"letter_go","letter_come","letter_pls","letter_away","letter_my","letter_no","letter_way","letter_ee","letter_fren","letter_ll","letter_bolt","letter_ol",0,0,0,0,0,0,
 	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   },
   -- page 3: ui / instructions
@@ -192,17 +192,17 @@ selector_grid_contents = {
   },
   -- page 4: characters and special objects
   {
-    "bab","text_bab","bunmy","text_bunmy",0,0,0,0,0,0,0,0,0,0,"selctr","text_selctr","lvl","text_lvl",
+    "bab","text_bab","bunmy","text_bunmy","moo","text_moo",0,0,0,0,0,0,0,0,"selctr","text_selctr","lvl","text_lvl",
     "keek","text_keek","creb","text_creb",0,0,0,0,0,0,0,0,0,0,"this","text_mous","lin","text_lin",
     "meem","text_meem","statoo","text_statoo",0,0,0,0,0,0,0,0,0,0,"text_text","text_frens","text_groop","text_pathz",
     "skul","text_skul","beeee","text_beeee",0,0,0,0,0,0,0,0,0,0,0,0,"text_every1","text_no1",
     "ghost fren","text_ghost fren","fishe","text_fishe",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     "robobot","text_robobot","snek","text_snek",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    "wog","text_wog","bog","text_bog",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    "wog","text_wog","bog","text_bog","enbybog","text_enbybog",0,0,0,0,0,0,0,0,0,0,0,0,
     "kirb","text_kirb","ripof","text_ripof",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     "bup","text_bup","butflye","text_butflye",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     "boy","text_boy","wurm","text_wurm",0,0,0,0,0,0,0,0,0,0,"lila","text_lila","tot","text_tot",
-    "steev","text_steev",0,0,0,0,0,0,0,0,0,0,0,0,"pata","text_pata","jill","text_jill",
+    "steev","text_steev","ratt","text_ratt",0,0,0,0,0,0,0,0,0,0,"pata","text_pata","jill","text_jill",
     "han","text_han",0,0,0,0,0,0,0,0,0,0,0,0,"larry","text_larry","zsoob","text_zsoob",
     "os","text_os",0,0,0,0,0,0,0,0,0,0,0,0,0,0,"o","text_o",
     "snoman","text_snoman","pingu","text_pingu",0,0,0,0,0,0,0,0,0,0,0,0,"square","text_square",
@@ -215,7 +215,7 @@ selector_grid_contents = {
     "watr","text_watr","colld","text_colld","rein","text_rein","icecub","text_icecub","slippers","text_slippers","pudll","text_pudll","icbolt","text_icbolt","win","text_win",0,0,
     "laav","text_laav","dor","text_dor","kee","text_kee","roc","text_roc","hatt","text_hatt",0,0,"poisbolt","text_poisbolt","smol","text_smol",0,0,
     "gras","text_gras","algay","text_algay","flog","text_flog","boux","text_boux","knif","text_knif",0,0,"timbolt","text_timbolt","tor","text_tor",0,0,
-    "hedg","text_hedg","banboo","text_banboo","boll","text_boll","l..uv","text_l..uv",0,0,0,0,0,0,0,0,0,0,
+    "hedg","text_hedg","banboo","text_banboo","boll","text_boll","l..uv","text_l..uv","cor","text_cor",0,0,0,0,0,0,0,0,
     "metl","text_metl","vien","text_vien","leef","text_leef","karot","text_karot","fir","text_fir",0,0,0,0,0,0,0,0,
     "jail","text_jail","ladr","text_ladr","pallm","text_pallm","coco","text_coco","rouz","text_rouz","noet","text_noet",0,0,0,0,0,0,
     "fenss","text_fenss","platfor","text_platfor","tre","text_tre","stum","text_stum","dayzy","text_dayzy","lie","text_lie",0,0,0,0,0,0,
@@ -223,7 +223,7 @@ selector_grid_contents = {
     "wuud","text_wuud","spiky","text_spiky","parsol","text_parsol","clok","text_clok","ufu","text_ufu","rockit","text_rockit",0,0,0,0,0,0,
     "brik","text_brik","sparkl","text_sparkl","sanglas","text_sanglas","bullb","text_bullb","son","text_son","muun","text_muun",0,0,0,0,0,0,
     "san","text_san","piler","text_piler","sancastl","text_sancastl","shel","text_shel","starr","text_starr",0,0,0,0,0,0,0,0,
-    "glas","text_glas","bom","text_bom","sine","text_sine","kar","text_kar","can","text_can","ger","text_ger",0,0,0,0,0,0,
+    "glas","text_glas","bom","text_bom","sine","text_sine","kar","text_kar","can","text_can","ger","text_ger","sirn","text_sirn",0,0,0,0,
     "bordr","text_bordr","wut","text_wut","wat","text_wat","splittr","text_splittr","togll","text_togll","bon","text_bon","battry","text_battry",0,0,0,0,
   },
   -- page 6: properties, verbs and conditions
@@ -3977,8 +3977,8 @@ tiles_list = {
     type = "object",
     color = {6,1},
     layer = 5,
-    eye = {x=23,y=4,w=1,h=3},
-    tags = {"chess", "knight"},
+    eye = {x=18,y=6,w=1,h=3},
+    tags = {"chess", "knight", "horse"},
   },
   -- 335
   {
@@ -3988,7 +3988,7 @@ tiles_list = {
     texttype = {object = true},
     color = {6,1},
     layer = 20,
-    tags = {"chess", "knight"},
+    tags = {"chess", "knight", "horse"},
   },
   --- 334
   {
@@ -5614,6 +5614,137 @@ tiles_list = {
     color = {3, 3},
     layer = 20,
     tags = {"worm", "caterpillar", "bug", "chars", "insect"},
+  },
+  -- 491
+  {
+    name = "letter_bolt",
+    sprite = "letter_bolt",
+    type = "text",
+    texttype = {letter = true},
+    color = {0,3},
+    layer = 20,
+    desc = "grab your picax shovell and bolt again!!",
+  },
+  -- 492
+  {
+    name = "letter_ol",
+    sprite = "letter_ol",
+    type = "text",
+    texttype = {letter = true},
+    color = {0,3},
+    layer = 20,
+  },
+  -- 493
+  {
+    name = "cor",
+    sprite = "cor",
+    type = "object",
+    color = {4,0},
+    layer = 4,
+    tags = {"coral", "beach"},
+  },
+  -- 494
+  {
+    name = "text_cor",
+    sprite = "text_cor",
+    type = "text",
+    texttype = {object = true},
+    color = {4,0},
+    layer = 20,
+    tags = {"coral", "beach"},
+    desc = "ROC backwards",
+  },
+  -- 494
+  {
+    name = "sirn",
+    sprite = "sirn",
+    type = "object",
+    color = {2,2},
+    layer = 4,
+    rotate = true,
+    tags = {"siren", "alarm"},
+  },
+  -- 495
+  {
+    name = "text_sirn",
+    sprite = "text_sirn",
+    type = "text",
+    texttype = {object = true},
+    color = {2,2},
+    layer = 20,
+    tags = {"siren", "alarm"},
+    desc = "will steal ur tim machine,"
+  },
+  -- 496
+  {
+    name = "ratt",
+    sprite = "ratt",
+    slep = true,
+    type = "object",
+    color = {0, 1},
+    layer = 6,
+    rotate = true,
+    eye = {x=27, y=14, w=2, h=2},
+    tags = {"chars", "rat", "mouse"},
+    desc = "the real MOUS, they STALK at night and SNACC at night, they're the RATTs",
+  },
+  -- 497
+  {
+    name = "text_ratt",
+    sprite = "text_ratt",
+    type = "text",
+    texttype = {object = true},
+    color = {0, 1},
+    layer = 20,
+    tags = {"chars", "rat", "mouse"},
+    desc = "the stand of BOG-SNACCEN",
+  },
+  -- 496
+  {
+    name = "moo",
+    sprite = "moo",
+    slep = true,
+    type = "object",
+    color = {0, 3},
+    layer = 6,
+    rotate = true,
+    eye = {x=27, y=7, w=2, h=2},
+    tags = {"chars", "cow"},
+    desc = "do not harm!",
+  },
+  -- 497
+  {
+    name = "text_moo",
+    sprite = "text_moo",
+    type = "text",
+    texttype = {object = true},
+    color = {0, 3},
+    layer = 20,
+    tags = {"chars", "cow"},
+    desc = "moooooo",
+  },
+  -- 479
+  {
+    name = "enbybog",
+    sprite = "enbybog",
+    slep = true,
+    type = "object",
+    color = {2, 2},
+    layer = 6,
+    rotate = true,
+    eye = {x=23, y=7, w=2, h=2},
+    tags = {"chars", "ladybug", "insect", "cockroach"},
+    desc = "goes by they/them",
+  },
+  -- 480
+  {
+    name = "text_enbybog",
+    sprite = "text_enbybog",
+    type = "text",
+    texttype = {object = true},
+    color = {2, 2},
+    layer = 20,
+    tags = {"chars", "ladybug", "insect", "cockroach"},
   },
 }
 
