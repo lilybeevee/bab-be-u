@@ -1673,9 +1673,8 @@ function destroyLevel(reason)
         tile = tiles_by_name["text_every1"]
       end
       if tile ~= nil then
-        --placeholder - just make 'u r win' pop up for now
         table.insert(transform_results, tiles_list[tile].name)
-        table.insert(win_sprite_override,tiles_list[tile].sprite)
+        table.insert(win_sprite_override,tiles_list[tile])
       end
     end
   end
@@ -1771,10 +1770,8 @@ function convertLevel()
     end
     tile = tiles_by_namePossiblyMeta(nametocreate)
     if tile ~= nil then
-      --placeholder - just make 'u r win' pop up for now
        table.insert(transform_results, tiles_list[tile].name)
-      --doWin("transform", {tiles_list[tile].name})
-      table.insert(win_sprite_override,tiles_list[tile].sprite)
+      table.insert(win_sprite_override,tiles_list[tile])
     end
   end
 
@@ -1792,10 +1789,8 @@ function convertLevel()
         tile = tiles_by_name["this"]
       end
       if tile ~= nil then
-        --placeholder - just make 'u r win' pop up for now
          table.insert(transform_results, tiles_list[tile].name)
-        --doWin("transform", {tiles_list[tile].name})
-        table.insert(win_sprite_override,tiles_list[tile].sprite)
+        table.insert(win_sprite_override,tiles_list[tile])
       end
     end
   end

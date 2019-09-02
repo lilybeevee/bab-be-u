@@ -1224,13 +1224,25 @@ function scene.draw(dt)
   love.graphics.pop()
   
   if #win_sprite_override > 0 then
-    for _,image in ipairs(win_sprite_override) do
+    for _,tile in ipairs(win_sprite_override) do
       love.graphics.push()
       love.graphics.setColor(0.92, 0.92, 1)
       love.graphics.translate(love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
       love.graphics.scale(win_size, win_size)
-      local tf_sprite = sprites[image]
+      local tf_sprite = sprites[tile.sprite]
       love.graphics.draw(tf_sprite, -tf_sprite:getWidth() / 2 + 40, -tf_sprite:getHeight() / 2 - 45, 0, 4, 4)
+      if (tile.meta ~= nil) then
+        local metasprite = tile.meta == 2 and sprites["meta2"] or sprites["meta1"]
+				love.graphics.draw(metasprite, -metasprite:getWidth() / 2 + 40, -metasprite:getHeight() / 2 - 45, 0, 4, 4)
+				if tile.meta > 2 and win_size == 1 then
+          --This doesn't print anything to the screen, though I'm uncertain why not
+					love.graphics.printf(tostring(tile.meta), -metasprite:getWidth() / 2 + 40, -metasprite:getHeight() / 2 - 45, 32, "center")
+				end
+      end
+      if (tile.nt ~= nil) then
+        local nt_sprite = sprites["n't"];
+        love.graphics.draw(nt_sprite, -nt_sprite:getWidth() / 2 + 40, -nt_sprite:getHeight() / 2 - 45, 0, 4, 4)
+      end
       love.graphics.pop()
     end
   end
