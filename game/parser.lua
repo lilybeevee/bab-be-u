@@ -297,7 +297,11 @@ function findClass(words)
   unit.mods = unit.mods or {}
   if words[2] and words[2].name == "text" then
     table.insert(unit.mods, words[2])
-    unit.name = (unit.unit or {}).fullname or "no unit"
+    if (unit.name ~= unit.unit.textname) then --many letters in a row
+      unit.name = "text_"..unit.name
+    else --every other case
+      unit.name = (unit.unit or {}).fullname or "no unit"
+    end
     table.remove(words, 2)
   elseif not words[1].type.object then
     return nil
