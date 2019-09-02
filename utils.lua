@@ -103,6 +103,7 @@ function clear()
 end
 
 function metaClear()
+  rules_with = nil
   parent_filename = nil
   stay_ther = nil
   surrounds = nil

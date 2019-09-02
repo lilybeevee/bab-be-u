@@ -905,7 +905,7 @@ function scene.update(dt)
       end
     elseif (not settings_open or not mouseOverBox(settings.x, settings.y, settings.w, settings.h)) and not level_dialogue.enabled then
       local hx,hy = getHoveredTile()
-      if hx ~= nil then
+      if hx ~= nil and (selector_open or inBounds(hx, hy, true)) then
         local tileid = hx + hy * mapwidth
 
         local hovered = {}
@@ -1348,7 +1348,7 @@ function scene.draw(dt)
       love.graphics.setColor(1, 1, 1)
       local gridid = last_hovered_tile[1]  + last_hovered_tile[2] * tile_grid_width
       local i = current_tile_grid[gridid]
-      if i ~= nil then
+      if inBounds(last_hovered_tile[1], last_hovered_tile[2]) and i ~= nil then
         local tile = tiles_list[i]
         if (tile.desc ~= nil and hx ~= nil) then
           local tooltipwidth, ttlines = love.graphics.getFont():getWrap(tile.desc, love.graphics.getWidth() - love.mouse.getX() - 20)
