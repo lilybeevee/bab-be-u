@@ -125,7 +125,6 @@ function doMovement(movex, movey, key)
                 local dx = other.x-undo[3]
                 local dy = other.y-undo[4]
                 local slipdir = dirs8_by_offset[sign(dx)][sign(dy)]
-                print(slipdir)
                 table.insert(other.moves, {reason = "icy", dir = slipdir, times = icyness})
                 if #other.moves > 0 and not already_added[other] and not hasRule(other,"got","slippers") then
                   table.insert(moving_units, other)
@@ -1528,7 +1527,7 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
     end
   end
   
-  local isntrithere = matchesRule(unit,"ben't","rit here")
+  local isntrithere = matchesRule(unit,"ben't","rithere")
   if (#isntrithere > 0) then
     for _,ruleparent in ipairs(isntrithere) do
       local here = ruleparent.rule.object.unit

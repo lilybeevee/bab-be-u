@@ -742,9 +742,12 @@ function scene.draw(dt)
     local fulldrawx = (drawx + 0.5)*TILE_SIZE
     local fulldrawy = (drawy + 0.5)*TILE_SIZE
 
-    if graphical_property_cache["flye"][unit] ~= nil or unit.name == "o" or unit.name == "square" or unit.name == "triangle" or unit.name == "beeee" then
+    if graphical_property_cache["flye"][unit] ~= nil or unit.name == "o" or unit.name == "square" or unit.name == "triangle" or unit.name == "beeee" or unit.name == "fishe" or unit.name == "butflye" or unit.name == "gul" or unit.name == "urei"
+            or unit.name == "wips" or unit.name == "ryugon" or unit.name == "cavebab" then
       local flyenes = graphical_property_cache["flye"][unit] or 0
-      if unit.name == "o" or unit.name == "square" or unit.name == "triangle" or unit.name == "beeee" then flyenes = flyenes + 1 end
+      if unit.name == "o" or unit.name == "square" or unit.name == "triangle" or unit.name == "beeee" or unit.name == "fishe" or  unit.name == "butflye" or unit.name == "gul" or unit.name == "urei"
+            or unit.name == "wips" or unit.name == "ryugon" or unit.name == "cavebab" 
+            then flyenes = flyenes + 1 end
       fulldrawy = fulldrawy - math.sin(love.timer.getTime())*5*flyenes
     end
 
@@ -897,7 +900,7 @@ function scene.draw(dt)
       love.graphics.pop()
     end
 
-    if #unit.overlay > 0 then
+    if #unit.overlay > 0 and unit.fullname ~= "no1" then
       local function overlayStencil()
          pcallSetShader(mask_shader)
          drawSprite()
@@ -996,6 +999,10 @@ function scene.draw(dt)
     if hasRule(unit,"got","katany") then
       love.graphics.setColor(getPaletteColor(0,1))
       love.graphics.draw(sprites["katanysmol"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+    end
+    if hasRule(unit,"got","knif") then
+      love.graphics.setColor(getPaletteColor(0,3))
+      love.graphics.draw(sprites["knifsmol"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
     end
     if hasRule(unit,"got","slippers") then
       love.graphics.setColor(getPaletteColor(1,4))
@@ -1218,13 +1225,25 @@ function scene.draw(dt)
   love.graphics.pop()
   
   if #win_sprite_override > 0 then
-    for _,image in ipairs(win_sprite_override) do
+    for _,tile in ipairs(win_sprite_override) do
       love.graphics.push()
       love.graphics.setColor(0.92, 0.92, 1)
       love.graphics.translate(love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
       love.graphics.scale(win_size, win_size)
-      local tf_sprite = sprites[image]
+      local tf_sprite = sprites[tile.sprite]
       love.graphics.draw(tf_sprite, -tf_sprite:getWidth() / 2 + 40, -tf_sprite:getHeight() / 2 - 45, 0, 4, 4)
+      if (tile.meta ~= nil) then
+        local metasprite = tile.meta == 2 and sprites["meta2"] or sprites["meta1"]
+				love.graphics.draw(metasprite, -metasprite:getWidth() / 2 + 40, -metasprite:getHeight() / 2 - 45, 0, 4, 4)
+				if tile.meta > 2 and win_size == 1 then
+          --This doesn't print anything to the screen, though I'm uncertain why not
+					love.graphics.printf(tostring(tile.meta), -metasprite:getWidth() / 2 + 40, -metasprite:getHeight() / 2 - 45, 32, "center")
+				end
+      end
+      if (tile.nt ~= nil) then
+        local nt_sprite = sprites["n't"];
+        love.graphics.draw(nt_sprite, -nt_sprite:getWidth() / 2 + 40, -nt_sprite:getHeight() / 2 - 45, 0, 4, 4)
+      end
       love.graphics.pop()
     end
   end

@@ -980,10 +980,20 @@ function updateUnits(undoing, big_update)
     for _,match in ipairs(creators) do
       local creator = match[2]
       local createe = match[1].rule.object.name
-
-      local tile = tiles_by_name[createe]
       if timecheck(creator,"creat",createe) then
-        if tile ~= nil then
+        if (createe == "text") then
+          createe = "text_"..creator.fullname
+        end
+        
+        local tile = tiles_by_namePossiblyMeta(createe)
+        --let x ben't x txt prevent x be txt, and x ben't txt prevent x be y txt
+        local overriden = false;
+        if match[1].rule.object.name == "text" then
+          overriden = hasRule(creator, "creatn't", "text_" .. match[1].rule.subject.name)
+        elseif match[1].rule.object.name:starts("text_") then
+          overriden = hasRule(creator, "creatn't", "text")
+        end
+        if tile ~= nil and not overriden then
           local others = getUnitsOnTile(creator.x, creator.y, createe, true, creator)
           if #others == 0 then
             local new_unit = createUnit(tile, creator.x, creator.y, creator.dir, nil, nil, nil, match[1].rule.object.prefix)
@@ -1089,8 +1099,8 @@ function miscUpdates()
       unit.layer = tile.layer + (20 * (graphical_property_cache["flye"][unit] or 0))
 
       if unit.fullname ~= "os" then
-        if tiles_list[unit.tile].sleepsprite and graphical_property_cache["slep"][unit] ~= nil then
-          unit.sprite = tiles_list[unit.tile].sleepsprite
+        if tiles_list[unit.tile].slep and graphical_property_cache["slep"][unit] ~= nil then
+          unit.sprite = tiles_list[unit.tile].sprite.."_slep"
         else
           unit.sprite = tiles_list[unit.tile].sprite
         end
@@ -1665,14 +1675,22 @@ function destroyLevel(reason)
   local holds = matchesRule(outerlvl,"got","?")
   for _,match in ipairs(holds) do
     if not nameIs(outerlvl, match.rule.object.name) then
-      local tile = tiles_by_name[match.rule.object.name]
-      if tile == nil and match.rule.object.name == "every1" then
-        tile = tiles_by_name["text_every1"]
+      local obj_name = match.rule.object.name
+      if obj_name == "text" then
+        istext = true
+        obj_name = "text_" .. match.rule.subject.name
       end
-      if tile ~= nil then
-        --placeholder - just make 'u r win' pop up for now
+      local tile = tiles_by_name[obj_name]
+      --let x ben't x txt prevent x be txt, and x ben't txt prevent x be y txt
+      local overriden = false;
+      if match.rule.object.name == "text" then
+        overriden = hasRule(outerlvl, "gotn't", "text_" .. match.rule.subject.name)
+      elseif match.rule.object.name:starts("text_") then
+        overriden = hasRule(outerlvl, "gotn't", "text")
+      end
+      if tile ~= nil and not overriden then
         table.insert(transform_results, tiles_list[tile].name)
-        table.insert(win_sprite_override,tiles_list[tile].sprite)
+        table.insert(win_sprite_override,tiles_list[tile])
       end
     end
   end
@@ -1732,7 +1750,14 @@ function dropGotUnit(unit, rule)
   end
   local obj_id = tiles_by_name[obj_name]
   local obj_tile = tiles_list[obj_id]
-  if rule.object.name == "mous" or (obj_tile ~= nil and (obj_tile.type == "object" or istext)) then
+  --let x ben't x txt prevent x be txt, and x ben't txt prevent x be y txt
+  local overriden = false;
+  if rule.object.name == "text" then
+    overriden = hasRule(unit, "gotn't", "text_" .. rule.subject.name)
+  elseif rule.object.name:starts("text_") then
+    overriden = hasRule(unit, "gotn't", "text")
+  end
+  if not overriden and (rule.object.name == "mous" or (obj_tile ~= nil and (obj_tile.type == "object" or istext))) then
     --if testConds(unit,rule[4][1]) then
     if rule.object.name == "mous" then
       local new_mouse = createMouse(unit.x, unit.y)
@@ -1768,10 +1793,8 @@ function convertLevel()
     end
     tile = tiles_by_namePossiblyMeta(nametocreate)
     if tile ~= nil then
-      --placeholder - just make 'u r win' pop up for now
        table.insert(transform_results, tiles_list[tile].name)
-      --doWin("transform", {tiles_list[tile].name})
-      table.insert(win_sprite_override,tiles_list[tile].sprite)
+      table.insert(win_sprite_override,tiles_list[tile])
     end
   end
 
@@ -1783,16 +1806,26 @@ function convertLevel()
         tile = tiles_by_name["text_lvl"]
       end
       if tile == nil and match.rule.object.name == "every1" and not hasRule(outerlvl, "be", "lvl") then
-        tile = tiles_by_name["text_every1"]
+        for _,v in ipairs(referenced_objects) do
+          if not hasRule(outerlvl, "ben't", v) then
+            table.insert(transform_results, tiles_list[tiles_by_name[v]].name)
+            table.insert(win_sprite_override,tiles_list[tiles_by_name[v]])
+          end
+        end
       end
       if match.rule.object.name:starts("this") then
         tile = tiles_by_name["this"]
       end
-      if tile ~= nil then
-        --placeholder - just make 'u r win' pop up for now
-         table.insert(transform_results, tiles_list[tile].name)
-        --doWin("transform", {tiles_list[tile].name})
-        table.insert(win_sprite_override,tiles_list[tile].sprite)
+      --let x ben't x txt prevent x be txt, and x ben't txt prevent x be y txt
+      local overriden = false;
+      if match.rule.object.name == "text" then
+        overriden = hasRule(outerlvl, "ben't", "text_" .. match.rule.subject.name)
+      elseif match.rule.object.name:starts("text_") then
+        overriden = hasRule(outerlvl, "ben't", "text")
+      end
+      if tile ~= nil and not overriden then
+        table.insert(transform_results, tiles_list[tile].name)
+        table.insert(win_sprite_override,tiles_list[tile])
       end
     end
   end
@@ -1980,7 +2013,14 @@ function convertUnits(pass)
         elseif rule.object.name:starts("this") and not rule.object.name:ends("n't") then
           tile = tiles_by_name["this"]
         end
-        if tile ~= nil then
+        --let x ben't x txt prevent x be txt, and x ben't txt prevent x be y txt
+        local overriden = false;
+        if rule.object.name == "text" then
+          overriden = hasRule(unit, "ben't", "text_" .. rule.subject.name)
+        elseif rule.object.name:starts("text_") then
+          overriden = hasRule(unit, "ben't", "text")
+        end
+        if tile ~= nil and not overriden then
           if not unit.removed then
             table.insert(converted_units, unit)
           end
@@ -2165,8 +2205,8 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
   end
   
   --do this before the 'this' change to textname so that we only get 'this' in referenced_objects
-  if unit.texttype.object and unit.textname ~= "every1" and unit.textname ~= "mous" and unit.textname ~= "no1" and unit.textname ~= "lvl" and unit.textname ~= "text" then
-    if not unit.textname:ends("n't") and not unit.textname:starts("text_") and not table.has_value(referenced_objects, unit.textname) then
+  if unit.texttype.object and unit.textname ~= "every1" and unit.textname ~= "mous" and unit.textname ~= "no1" and unit.textname ~= "lvl" and unit.textname ~= "text" and group_names_set[unit.textname] ~= true then
+    if not unit.textname:ends("n't") and not unit.textname:starts("text_") and not unit.textname:starts("letter_") and not table.has_value(referenced_objects, unit.textname) then
       table.insert(referenced_objects, unit.textname)
     end
   end
@@ -2328,7 +2368,6 @@ end
 
 function updateDir(unit, dir, force)
   if not force and rules_with ~= nil then
-    if unit.dir == dir then return false end
     if not timecheck(unit) then
       return false
     end
@@ -2338,6 +2377,7 @@ function updateDir(unit, dir, force)
     if hasRule(unit, "ben't", dirs8_by_name[dir]) then
       return false
     end
+    if unit.dir == dir then return true end
   end
   
   unit.dir = dir
