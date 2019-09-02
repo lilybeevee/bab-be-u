@@ -65,8 +65,7 @@ function clear()
   time_destroy = {}
   time_delfx = {}
   time_sfx = {}
-  timeless_splitter = {}
-  timeless_splittee = {}
+  timeless_split = {}
   timeless_win = {}
   timeless_unwin = {}
   timeless_reset = false
