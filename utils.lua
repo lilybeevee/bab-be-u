@@ -98,6 +98,8 @@ function clear()
       end
     end
   end
+  
+  card_for_id = {}
 
   love.mouse.setCursor()
 end

@@ -2249,6 +2249,10 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
   end
 
   table.insert(units, unit)
+  
+  if unit.name == "byc" and not card_for_id[unit.id] then -- playing cards
+    card_for_id[unit.id] = {math.random(13), ({"spade","heart","clubs","diamond"})[math.random(4)]}
+  end
 
   --updateDir(unit, unit.dir)
   new_units_cache[unit] = true

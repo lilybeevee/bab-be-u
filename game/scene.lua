@@ -859,7 +859,7 @@ function scene.draw(dt)
     --reset back to values being used before
     love.graphics.setLineWidth(2)
 
-    if not (unit.xwx or spookmode) and unit.name ~= "lin" then -- xwx takes control of the drawing sprite, so it shouldn't render the normal object
+    if not (unit.xwx or spookmode) and unit.name ~= "lin" and unit.name ~= "byc" and unit.name ~= "bac" then -- xwx takes control of the drawing sprite, so it shouldn't render the normal object
       drawSprite()
     end
 
@@ -870,6 +870,40 @@ function scene.draw(dt)
         love.graphics.setShader()
       else
         drawSprite()
+      end
+    end
+    
+    if unit.name == "byc" then
+      local num, suit = unpack(card_for_id[unit.id])
+      if eq(unit.color, {0,3}) then
+        setColor({0,0})
+        drawSprite(sprites["byc"])
+        setColor({0,3})
+        drawSprite(sprites["byc_" .. suit])
+        drawSprite(sprites["byc_" .. num])
+      else
+        setColor({0,3})
+        drawSprite(sprites["byc"])
+        if suit == "diamond" or suit == "heart" then
+          setColor(unit.color)
+        else
+          setColor({0,0})
+        end
+        drawSprite(sprites["byc_" .. suit])
+        drawSprite(sprites["byc_" .. num])
+      end
+    end
+    if unit.name == "bac" then
+      if eq(unit.color, {0,3}) then
+        setColor({0,0})
+        drawSprite(sprites["byc"])
+        setColor({0,3})
+        drawSprite(sprites["bac"])
+      else
+        setColor({0,3})
+        drawSprite(sprites["byc"])
+        setColor(unit.color)
+        drawSprite(sprites["bac"])
       end
     end
     
