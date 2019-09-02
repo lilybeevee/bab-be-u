@@ -980,9 +980,12 @@ function updateUnits(undoing, big_update)
     for _,match in ipairs(creators) do
       local creator = match[2]
       local createe = match[1].rule.object.name
-
-      local tile = tiles_by_name[createe]
       if timecheck(creator,"creat",createe) then
+        if (createe == "text") then
+          createe = "text_"..creator.fullname
+        end
+        
+        local tile = tiles_by_namePossiblyMeta(createe)
         if tile ~= nil then
           local others = getUnitsOnTile(creator.x, creator.y, createe, true, creator)
           if #others == 0 then
