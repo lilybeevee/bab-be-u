@@ -962,7 +962,7 @@ function updateUnits(undoing, big_update)
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
       for _,on in ipairs(stuff) do
         is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
-        if is_u and sameFloat(unit, on) and isunwon[unit] and isunwon[unit] < countProperty(unit,":)") then
+        if is_u and sameFloat(unit, on) and not (isunwon[unit] and isunwon[unit] >= countProperty(unit,":)")) then
           if timecheck(unit,"be",":)") and (timecheck(on,"be","u") or timecheck(on,"be","u too") or timecheck(on,"be","u tres")) then
             doWin("won")
           else
