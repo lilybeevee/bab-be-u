@@ -180,7 +180,7 @@ selector_grid_contents = {
 	"letter_go","letter_come","letter_pls","letter_away","letter_my","letter_no","letter_way","letter_ee","letter_fren","letter_ll","letter_bolt","letter_ol",0,0,0,0,0,0,
 	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   },
-  -- page 3: ui / instructions
+  -- page 3: ui / iforeegructions
   {
     0 ,"ui_w","ui_e","ui_r",0,0,0,"ui_i",0,0,0,0,0,0,0,"ui_7","ui_8","ui_9",
     "ui_a","ui_s","ui_d",0,0,0,"ui_j","ui_k","ui_l",0,0,0,0,0,0,"ui_4","ui_5","ui_6",
@@ -199,11 +199,11 @@ selector_grid_contents = {
     "ghost fren","text_ghost fren","fishe","text_fishe","starrfishe","text_starrfishe",0,0,0,0,0,0,0,0,0,0,0,0,
     "robobot","text_robobot","snek","text_snek","sneel","text_sneel",0,0,0,0,0,0,0,0,0,0,0,0,
     "wog","text_wog","bog","text_bog","enbybog","text_enbybog",0,0,0,0,0,0,0,0,0,0,0,0,
-    "kirb","text_kirb","ripof","text_ripof",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    "kirb","text_kirb","ripof","text_ripof","cavebab","text_cavebab",0,0,0,0,0,0,0,0,0,0,0,0,
     "bup","text_bup","butflye","text_butflye",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     "boy","text_boy","wurm","text_wurm",0,0,0,0,0,0,0,0,0,0,"lila","text_lila","tot","text_tot",
     "steev","text_steev","ratt","text_ratt",0,0,0,0,0,0,0,0,0,0,"pata","text_pata","jill","text_jill",
-    "han","text_han","eyee","text_eyee","lisp","text_lisp",0,0,0,0,0,0,0,0,"larry","text_larry","zsoob","text_zsoob",
+    "han","text_han","eyee","text_eyee","lisp","text_lisp","paw","text_paw",0,0,0,0,0,0,"larry","text_larry","zsoob","text_zsoob",
     "snoman","text_snoman","pingu","text_pingu",0,0,0,0,0,0,0,0,0,0,0,0,"o","text_o",
     "kapa","text_kapa","urei","text_urei","ryugon","text_ryugon",0,0,0,0,0,0,0,0,0,0,"square","text_square",
     "os","text_os","hors","text_hors",0,0,0,0,0,0,0,0,0,0,0,0,"triangle","text_triangle",
@@ -213,10 +213,10 @@ selector_grid_contents = {
     "wal","text_wal","bellt","text_bellt","hurcane","text_hurcane","buble","text_buble","katany","text_katany","petnygrame","text_petnygrame","firbolt","text_firbolt","hol","text_hol",0,0,
     "til","text_til","arro","text_arro","clowd","text_clowd","sno","text_sno","gunne","text_gunne","scarr","text_scarr","litbolt","text_litbolt","rif","text_rif",0,0,
     "watr","text_watr","colld","text_colld","rein","text_rein","icecub","text_icecub","slippers","text_slippers","pudll","text_pudll","icbolt","text_icbolt","win","text_win",0,0,
-    "laav","text_laav","dor","text_dor","kee","text_kee","roc","text_roc","hatt","text_hatt",0,0,"poisbolt","text_poisbolt","smol","text_smol",0,0,
-    "gras","text_gras","algay","text_algay","flog","text_flog","boux","text_boux","knif","text_knif",0,0,"timbolt","text_timbolt","tor","text_tor",0,0,
+    "laav","text_laav","dor","text_dor","kee","text_kee","roc","text_roc","hatt","text_hatt","extre","text_extre","poisbolt","text_poisbolt","smol","text_smol",0,0,
+    "gras","text_gras","algay","text_algay","flog","text_flog","boux","text_boux","knif","text_knif","heg","text_heg","timbolt","text_timbolt","tor","text_tor",0,0,
     "hedg","text_hedg","banboo","text_banboo","boll","text_boll","l..uv","text_l..uv","wips","text_wips",0,0,0,0,0,0,0,0,
-    "metl","text_metl","vien","text_vien","leef","text_leef","karot","text_karot","fir","text_fir",0,0,0,0,0,0,0,0,
+    "metl","text_metl","vien","text_vien","leef","text_leef","karot","text_karot","fir","text_fir","eeg","text_eeg","foreeg","text_foreeg",0,0,0,0,
     "jail","text_jail","ladr","text_ladr","pallm","text_pallm","coco","text_coco","rouz","text_rouz","noet","text_noet",0,0,0,0,0,0,
     "fenss","text_fenss","platfor","text_platfor","tre","text_tre","stum","text_stum","dayzy","text_dayzy","lie","text_lie",0,0,0,0,0,0,
     "cobll","text_cobll","spik","text_spik","frut","text_frut","fungye","text_fungye","red","text_red","lie/8","text_lie/8",0,0,0,0,0,0,
@@ -1531,7 +1531,7 @@ tiles_list = {
     color = {1, 3},
     layer = 20,
     tags = {"shift"},
-    desc = "GOOOO: The instant an object steps on a GOOOO unit, it is forced to move in the GOOOO unit's direction.",
+    desc = "GOOOO: The iforeegant an object steps on a GOOOO unit, it is forced to move in the GOOOO unit's direction.",
   },
   --- 114
   {
@@ -1542,7 +1542,7 @@ tiles_list = {
     color = {1, 4},
     layer = 20,
     tags = {"slip", "slide", "patashu"},
-    desc = "ICYYYY: The instant an object steps on an ICYYYY unit, it is forced to move again.",
+    desc = "ICYYYY: The iforeegant an object steps on an ICYYYY unit, it is forced to move again.",
   },
   -- 115
   {
@@ -2128,7 +2128,7 @@ tiles_list = {
     color = {3, 2},
     layer = 20,
     tags = {"portal","cg5"},
-    desc = "POOR TOLL: If a unit would enter a POOR TOLL unit, it instead leaves the next POOR TOLL unit of the same name in reading order (left to right, line by line, wrapping around) out the corresponding same side. Respects FLYE!",
+    desc = "POOR TOLL: If a unit would enter a POOR TOLL unit, it iforeegead leaves the next POOR TOLL unit of the same name in reading order (left to right, line by line, wrapping around) out the corresponding same side. Respects FLYE!",
   },
   -- 170
   {
@@ -3073,7 +3073,7 @@ tiles_list = {
     texttype = {letter = true},
     color = {0,3},
     layer = 20,
-    desc = "This is used in JAIL and JILL. Discrimination against J!"
+    desc = "This is used in JAIL and JILL. Discrimination agaiforeeg J!"
   },
   -- 253
   {
@@ -4074,7 +4074,7 @@ tiles_list = {
     color = {1,4},
     layer = 20,
     tags = {"same float", "sameflye", "same flye", "infix condition"},
-    desc = "SAMEFLOAT( (Infix Condition): True if there is an instance of the subject on the same amount of flye as the object.",
+    desc = "SAMEFLOAT( (Infix Condition): True if there is an iforeegance of the subject on the same amount of flye as the object.",
   },
   -- 342
   {
@@ -5996,6 +5996,129 @@ tiles_list = {
     layer = 20,
     tags = {"chars", "eye", "body part"},
     desc = "it altho hath a lithp",
+  },
+  -- 522
+  {
+    name = "eeg",
+    sprite = "eeg",
+    type = "object",
+    color = {6, 2},
+    layer = 5,
+    rotate = true,
+    tags = {"egg"},
+  },
+  -- 523
+  {
+    name = "text_eeg",
+    sprite = "text_eeg",
+    type = "text",
+    texttype = {object = true},
+    color = {6, 2},
+    layer = 20,
+    tags = {"egg"},
+  },
+  -- 524
+  {
+    name = "foreeg",
+    sprite = "foreeg",
+    type = "object",
+    color = {6, 1},
+    layer = 3,
+    rotate = true,
+    tags = {"nest"},
+  },
+  -- 525
+  {
+    name = "text_foreeg",
+    sprite = "text_foreeg",
+    type = "text",
+    texttype = {object = true},
+    color = {6, 1},
+    layer = 20,
+    tags = {"nest"},
+  },
+  -- 526
+  {
+    name = "paw",
+    sprite = "paw",
+    type = "object",
+    color = {0, 3},
+    layer = 5,
+    rotate = true,
+    tags = {"chars", "paw print"},
+  },
+  -- 527
+  {
+    name = "text_paw",
+    sprite = "text_paw",
+    type = "text",
+    texttype = {object = true},
+    color = {0, 3},
+    layer = 20,
+    tags = {"chars", "paw print"},
+  },
+  -- 528
+  {
+    name = "cavebab",
+    sprite = "cavebab",
+    slep = true,
+    type = "object",
+    color = {3,3},
+    layer = 7,
+    eye = {x=18, y=10, w=2, h=2},
+    tags = {"chars", "bat"},
+    desc = "slep upside down",
+  },
+  -- 529
+  {
+    name = "text_cavebab",
+    sprite = "text_cavebab",
+    type = "text",
+    texttype = {object = true},
+    color = {3,3},
+    layer = 20,
+    tags = {"chars", "bat"},
+  },
+  -- 530
+  {
+    name = "extre",
+    sprite = "extre",
+    type = "object",
+    color = {6, 1},
+    layer = 2,
+    rotate = "true",
+    tags = {"tree", "plants", "husk"},
+    desc = "a ded tre",
+  },
+  -- 531
+  {
+    name = "text_extre",
+    sprite = "text_extre",
+    type = "text",
+    texttype = {object = true},
+    color = {6, 1},
+    layer = 20,
+    tags = {"tree", "plants", "husk"},
+  },
+  -- 532
+  {
+    name = "heg",
+    sprite = "heg",
+    type = "object",
+    color = {5, 2},
+    layer = 2,
+    tags = {"plant", "cactus"},
+    desc = "ouch",
+  },
+  -- 533
+  {
+    name = "text_heg",
+    sprite = "text_heg",
+    type = "text",
+    texttype = {object = true},
+    color = {5, 2},
+    layer = 20,
+    tags = {"plant", "cactus"},
   },
 }
 

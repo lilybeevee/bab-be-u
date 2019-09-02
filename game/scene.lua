@@ -743,10 +743,11 @@ function scene.draw(dt)
     local fulldrawy = (drawy + 0.5)*TILE_SIZE
 
     if graphical_property_cache["flye"][unit] ~= nil or unit.name == "o" or unit.name == "square" or unit.name == "triangle" or unit.name == "beeee" or unit.name == "fishe" or unit.name == "butflye" or unit.name == "gul" or unit.name == "urei"
-            or unit.name == "wips" or unit.name == "ryugon" then
+            or unit.name == "wips" or unit.name == "ryugon" or unit.name == "cavebab" then
       local flyenes = graphical_property_cache["flye"][unit] or 0
       if unit.name == "o" or unit.name == "square" or unit.name == "triangle" or unit.name == "beeee" or unit.name == "fishe" or  unit.name == "butflye" or unit.name == "gul" or unit.name == "urei"
-            or unit.name == "wips" or unit.name == "ryugon" then flyenes = flyenes + 1 end
+            or unit.name == "wips" or unit.name == "ryugon" or unit.name == "cavebab" 
+            then flyenes = flyenes + 1 end
       fulldrawy = fulldrawy - math.sin(love.timer.getTime())*5*flyenes
     end
 
