@@ -125,7 +125,6 @@ function doMovement(movex, movey, key)
                 local dx = other.x-undo[3]
                 local dy = other.y-undo[4]
                 local slipdir = dirs8_by_offset[sign(dx)][sign(dy)]
-                print(slipdir)
                 table.insert(other.moves, {reason = "icy", dir = slipdir, times = icyness})
                 if #other.moves > 0 and not already_added[other] and not hasRule(other,"got","slippers") then
                   table.insert(moving_units, other)

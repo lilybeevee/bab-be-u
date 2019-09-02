@@ -2326,7 +2326,6 @@ end
 
 function updateDir(unit, dir, force)
   if not force and rules_with ~= nil then
-    if unit.dir == dir then return false end
     if not timecheck(unit) then
       return false
     end
@@ -2336,6 +2335,7 @@ function updateDir(unit, dir, force)
     if hasRule(unit, "ben't", dirs8_by_name[dir]) then
       return false
     end
+    if unit.dir == dir then return true end
   end
   
   unit.dir = dir
