@@ -899,7 +899,7 @@ function scene.draw(dt)
       love.graphics.pop()
     end
 
-    if #unit.overlay > 0 then
+    if #unit.overlay > 0 and unit.fullname ~= "no1" then
       local function overlayStencil()
          pcallSetShader(mask_shader)
          drawSprite()
