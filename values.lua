@@ -221,8 +221,8 @@ selector_grid_contents = {
     "fenss","text_fenss","platfor","text_platfor","tre","text_tre","stum","text_stum","dayzy","text_dayzy","lie","text_lie",0,0,0,0,0,0,
     "cobll","text_cobll","spik","text_spik","frut","text_frut","fungye","text_fungye","red","text_red","lie/8","text_lie/8",0,0,0,0,0,0,
     "wuud","text_wuud","spiky","text_spiky","parsol","text_parsol","clok","text_clok","ufu","text_ufu","rockit","text_rockit",0,0,0,0,0,0,
-    "brik","text_brik","sparkl","text_sparkl","sanglas","text_sanglas","bullb","text_bullb","son","text_son","muun","text_muun",0,0,0,0,0,0,
-    "san","text_san","piler","text_piler","sancastl","text_sancastl","shel","text_shel","starr","text_starr","cor","text_cor",0,0,0,0,0,0,
+    "brik","text_brik","sparkl","text_sparkl","sanglas","text_sanglas","bullb","text_bullb","son","text_son","muun","text_muun","bac","text_bac",0,0,0,0,
+    "san","text_san","piler","text_piler","sancastl","text_sancastl","shel","text_shel","starr","text_starr","cor","text_cor","byc","text_byc",0,0,0,0,
     "glas","text_glas","bom","text_bom","sine","text_sine","kar","text_kar","can","text_can","ger","text_ger","sirn","text_sirn",0,0,0,0,
     "bordr","text_bordr","wut","text_wut","wat","text_wat","splittr","text_splittr","togll","text_togll","bon","text_bon","battry","text_battry","chekr","text_chekr",0,0,
   },
@@ -6119,6 +6119,46 @@ tiles_list = {
     color = {5, 2},
     layer = 20,
     tags = {"plant", "cactus"},
+  },
+  -- 534
+  {
+    name = "byc",
+    sprite = "byc",
+    type = "object",
+    color = {2, 2},
+    rotate = true,
+    layer = 20,
+    tags = {"playing card", "bicycle", "ace"},
+  },
+  -- 535
+  {
+    name = "text_byc",
+    sprite = "text_byc",
+    type = "text",
+    texttype = {object = true},
+    color = {2, 2},
+    layer = 5,
+    tags = {"playing card", "bicycle", "ace"},
+  },
+  -- 534
+  {
+    name = "bac",
+    sprite = "bac",
+    type = "object",
+    color = {2, 2},
+    rotate = true,
+    layer = 5,
+    tags = {"playing card back", "bicycle"},
+  },
+  -- 535
+  {
+    name = "text_bac",
+    sprite = "text_bac",
+    type = "text",
+    texttype = {object = true},
+    color = {2, 2},
+    layer = 20,
+    tags = {"playing card back", "bicycle"},
   },
 }
 
