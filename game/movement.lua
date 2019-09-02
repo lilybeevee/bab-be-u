@@ -1528,7 +1528,7 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
     end
   end
   
-  local isntrithere = matchesRule(unit,"ben't","rit here")
+  local isntrithere = matchesRule(unit,"ben't","rithere")
   if (#isntrithere > 0) then
     for _,ruleparent in ipairs(isntrithere) do
       local here = ruleparent.rule.object.unit
