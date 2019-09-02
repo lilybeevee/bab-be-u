@@ -482,9 +482,9 @@ function findLetterSentences(str, index_, sentences_, curr_sentence_, start_) --
       end
     end
     --then try again with index one higher (fixes b b a b be u)
-    if (index < string.len(str)) then
+    --[[if (index < string.len(str)) then
       findLetterSentences(str, index+1, sentences, curr_sentence, start)
-    end
+    end]]
   end
 
   return sentences -- i can do this like this because the first function call is the one that gets passed back, and it finishes last
