@@ -2789,7 +2789,7 @@ tiles_list = {
     },
     type = "text",
     texttype = {cond_prefix = true, property = true, class_prefix = true},
-    color = {3, 2},
+    color = {3, 1},
     layer = 20,
     tags = {"colors", "colours", "purple", "prefix condition"},
     desc = "PURP: Causes the unit to appear purple. Persistent and can be used as a prefix condition."
