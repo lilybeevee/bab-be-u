@@ -948,7 +948,7 @@ function updateUnits(undoing, big_update)
         is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
         if is_u and sameFloat(unit, on) then
           if timecheck(unit,"be","d") and (timecheck(on,"be","u") or timecheck(on,"be","u too") or timecheck(on,"be","u tres")) then
-            isunwon[unit] = true
+            isunwon[unit] = countProperty(unit,";d")
             if readSaveFile(level_name, "won") then
               writeSaveFile(level_name, "won", false)
             end
@@ -965,7 +965,7 @@ function updateUnits(undoing, big_update)
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
       for _,on in ipairs(stuff) do
         is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
-        if is_u and sameFloat(unit, on) and not isunwon[unit] then
+        if is_u and sameFloat(unit, on) and isunwon[unit] and isunwon[unit] < countProperty(unit,":)") then
           if timecheck(unit,"be",":)") and (timecheck(on,"be","u") or timecheck(on,"be","u too") or timecheck(on,"be","u tres")) then
             doWin("won")
           else
@@ -1599,6 +1599,19 @@ function levelBlock()
         writeSaveFile(level_name, "bonus", true)
         destroyLevel("bonus")
         if not lvlsafe then return end
+      end
+    end
+  end
+  
+  if hasProperty(outerlvl, ";d") then
+    local yous = getUnitsWithEffect("u")
+    local youtoos = getUnitsWithEffect("u too")
+    local youtres = getUnitsWithEffect("u tres")
+    mergeTable(yous, youtoos)
+    mergeTable(yous, youtres)
+    for _,unit in ipairs(yous) do
+      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) and readSaveFile(level_name,"won") then
+        writeSaveFile(level_name,"won",false)
       end
     end
   end
