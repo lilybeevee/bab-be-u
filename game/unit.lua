@@ -578,6 +578,7 @@ function updateUnits(undoing, big_update)
     to_destroy = handleDels(to_destroy)
     
     local split = getUnitsWithEffect("split")
+    local split_movers = {}
     for _,unit in ipairs(split) do
       if unit.name ~= "lie" then
         local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
@@ -590,13 +591,12 @@ function updateUnits(undoing, big_update)
               local dir2 = dirAdd(unit.dir,4)
               local dx2 = dirs8[dir2][1]
               local dy2 = dirs8[dir2][2]
-              if canMove(on, dx1, dy1, dir1, false, false, on.name) then
+              if canMove(on, dx1, dy1, dir1, false, false) then
                 if on.class == "unit" then
                   local new_unit = createUnit(tiles_by_name[on.fullname], on.x, on.y, dir1)
                   addUndo({"create", new_unit.id, false})
                   _, __, ___, x, y = getNextTile(on, dx1, dy1, dir1, false)
-                  moveUnit(new_unit,x,y)
-                  addUndo({"update", new_unit.id, on.x, on.y, dir1})
+                  table.insert(split_movers,{unit = new_unit, x = x, y = y, ox = on.x, oy = on.y, dir = dir1})
                 elseif unit.class == "cursor" then
                   local others = getCursorsOnTile(on.x + dx1, on.y + dy1)
                   if #others == 0 then
@@ -605,13 +605,12 @@ function updateUnits(undoing, big_update)
                   end
                 end
               end
-              if canMove(on, dx2, dy2, dir2, false, false, on.name) then
+              if canMove(on, dx2, dy2, dir2, false, false) then
                 if on.class == "unit" then
                   local new_unit = createUnit(tiles_by_name[on.fullname], on.x, on.y, dir2)
                   addUndo({"create", new_unit.id, false})
                   _, __, ___, x, y = getNextTile(on, dx2, dy2, dir2, false)
-                  moveUnit(new_unit,x,y)
-                  addUndo({"update", new_unit.id, on.x, on.y, dir2})
+                  table.insert(split_movers,{unit = new_unit, x = x, y = y, ox = on.x, oy = on.y, dir = dir2})
                 elseif unit.class == "cursor" then
                   local others = getCursorsOnTile(on.x + dx2, on.y + dy2)
                   if #others == 0 then
@@ -635,7 +634,7 @@ function updateUnits(undoing, big_update)
             local ndir = dirs8[i]
             local dx = ndir[1]
             local dy = ndir[2]
-            if canMove(unit, dx, dy, i, false, false, unit.name) then
+            if canMove(unit, dx, dy, i, false, false) then
               local new_unit = createUnit(tiles_by_name["lie/8"], unit.x, unit.y, i)
               addUndo({"create", new_unit.id, false})
               _, __, ___, x, y = getNextTile(unit, dx, dy, i, false)
@@ -662,13 +661,12 @@ function updateUnits(undoing, big_update)
             local dir2 = dirAdd(unit.dir,4)
             local dx2 = dirs8[dir2][1]
             local dy2 = dirs8[dir2][2]
-            if canMove(on, dx1, dy1, dir1, false, false, on.name) then
+            if canMove(on, dx1, dy1, dir1, false, false) then
               if on.class == "unit" then
                 local new_unit = createUnit(tiles_by_name[on.fullname], on.x, on.y, dir1)
                 addUndo({"create", new_unit.id, false})
                 _, __, ___, x, y = getNextTile(on, dx1, dy1, dir1, false)
-                moveUnit(new_unit,x,y)
-                addUndo({"update", new_unit.id, on.x, on.y, dir1})
+                table.insert(split_movers,{unit = new_unit, x = x, y = y, ox = on.x, oy = on.y, dir = dir1})
               elseif unit.class == "cursor" then
                 local others = getCursorsOnTile(on.x + dx1, on.y + dy1)
                 if #others == 0 then
@@ -677,13 +675,12 @@ function updateUnits(undoing, big_update)
                 end
               end
             end
-            if canMove(on, dx2, dy2, dir2, false, false, on.name) then
+            if canMove(on, dx2, dy2, dir2, false, false) then
               if on.class == "unit" then
                 local new_unit = createUnit(tiles_by_name[on.fullname], on.x, on.y, dir2)
                 addUndo({"create", new_unit.id, false})
                 _, __, ___, x, y = getNextTile(on, dx2, dy2, dir2, false)
-                moveUnit(new_unit,x,y)
-                addUndo({"update", new_unit.id, on.x, on.y, dir2})
+                table.insert(split_movers,{unit = new_unit, x = x, y = y, ox = on.x, oy = on.y, dir = dir2})
               elseif unit.class == "cursor" then
                 local others = getCursorsOnTile(on.x + dx2, on.y + dy2)
                 if #others == 0 then
@@ -700,6 +697,11 @@ function updateUnits(undoing, big_update)
       end
       timeless_splitter = {}
       timeless_splittee = {}
+    end
+    
+    for _,move in ipairs(split_movers) do
+      moveUnit(move.unit,move.x,move.y)
+      addUndo({"update", move.unit.id, move.ox, move.oy, move.dir})
     end
     
     to_destroy = handleDels(to_destroy)
