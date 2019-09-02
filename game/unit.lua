@@ -577,6 +577,7 @@ function updateUnits(undoing, big_update)
     
     to_destroy = handleDels(to_destroy)
     
+    local split_movers = {}
     if not timeless then
       for on,unit in pairs(timeless_split) do
         addUndo({"timeless_split_remove", on, unit})
@@ -625,7 +626,6 @@ function updateUnits(undoing, big_update)
     end
     
     local split = getUnitsWithEffect("split")
-    local split_movers = {}
     for _,unit in ipairs(split) do
       if unit.name ~= "lie" then
         local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
