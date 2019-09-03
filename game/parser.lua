@@ -446,7 +446,7 @@ function findLetterSentences(str, index_, sentences_, curr_sentence_, start_) --
   }
   local curr_sentence = copyTable(curr_sentence_ or {})
   local start = start_ or false
-  -- print("start of findLetterSentences:",str,index,fullDump(sentences),fullDump(curr_sentence),start, sentences.start, sentences.endd, sentences.both, sentences.middle)
+  --print("start of findLetterSentences:",str,index,fullDump(sentences),fullDump(curr_sentence),start, sentences.start, sentences.endd, sentences.both, sentences.middle)
 
   if #curr_sentence == 0 and not index == string.len(str) then --go to the next letter if we don't have anything in this one... or if we do
     findLetterSentences(str, index+1, sentences, {}, false)
@@ -481,6 +481,10 @@ function findLetterSentences(str, index_, sentences_, curr_sentence_, start_) --
         curr_sentence = {} --now we're done with that particular sentence attempt, so we're back to no words in the sentence
       end
     end
+    --then try again with index one higher (fixes b b a b be u)
+    --[[if (index < string.len(str)) then
+      findLetterSentences(str, index+1, sentences, curr_sentence, start)
+    end]]
   end
 
   return sentences -- i can do this like this because the first function call is the one that gets passed back, and it finishes last

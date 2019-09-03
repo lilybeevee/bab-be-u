@@ -142,8 +142,7 @@ function parseRules(undoing)
     #matchesRule(nil, "be", "za warudo"),
     #matchesRule(nil, "be", "rong"),
     --If and only if poor tolls exist, flyeness changing can affect rules parsing, because the text and portal have to match flyeness to go through.
-    rules_with["poor toll"] and #matchesRule(nil, "be", "flye") or 0,
-    rules_with["poor toll"] and #matchesRule(nil, "be", "tall") or 0,
+    rules_with["poor toll"] and #matchesRule(nil, "ignor", nil) or 0,
   }
   
   while (changed_reparsing_rule) do
@@ -286,8 +285,7 @@ function parseRules(undoing)
     #matchesRule(outerlvl, "be", "go arnd"),
     #matchesRule(outerlvl, "be", "mirr arnd"),
     --If and only if poor tolls exist, flyeness changing can affect rules parsing, because the text and portal have to match flyeness to go through.
-    rules_with["poor toll"] and #matchesRule(nil, "be", "flye") or 0,
-    rules_with["poor toll"] and #matchesRule(nil, "be", "tall") or 0,
+    rules_with["poor toll"] and #matchesRule(nil, "ignor", nil) or 0,
     }
     
     for i = 1,#reparse_rule_counts do
@@ -479,7 +477,7 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
           if other.dir == full_rule.dir then
             local subset = true
             for _,u in ipairs(other.units) do
-              if not full_rule.units_set[u] then 
+              if not full_rule.units_set[u] and not u.texttype["and"] then 
                 subset = false
                 break
               end
@@ -489,7 +487,7 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
             else
               local subset = true
               for _,u in ipairs(full_rule.units) do
-                if not other.units_set[u] then
+                if not other.units_set[u] and not u.texttype["and"] then
                   subset = false
                   break
                 end
@@ -633,10 +631,10 @@ function addRule(full_rule)
 
     -- for specifically checking NOT rules
     table.insert(full_rules, {rule = {subject = rules.subject, verb = {name = verb .. "n't"}, object = rules.object}, units = units, dir = dir})
-  elseif (verb == "be") and (subject == object or (subject:starts("text_") and object == "text")) then
+  elseif (verb == "be") and (subject == object or (subject:starts("text_") and object == "text")) and subject ~= "lvl" and object ~= "lvl" then
     --print("protecting: " .. subject .. ", " .. object)
-    addRuleSimple(rules.subject, {"be"}, {"notransform", rules.object.conds}, units, dir)
-  elseif object == "notransform" then -- no "n't" here, but still blocks other rules so we need to count it
+    addRuleSimple(rules.subject, {"be"}, {"notranform", rules.object.conds}, units, dir)
+  elseif object == "notranform" or (subject == "lvl" and object == "lvl") then -- no "n't" here, but still blocks other rules so we need to count it
     if not not_rules[1] then
       not_rules[1] = {}
       max_not_rules = math.max(max_not_rules, 1)
@@ -675,9 +673,9 @@ function postRules()
         local has_conds = (#conds[1] > 0 or #conds[2] > 0)
         
         local specialmatch = 0
-        if rule.verb.name == "be" and rule.object.name == "notransform" then -- "bab be bab" should cross out "bab be keek"
+        if rule.verb.name == "be" and rule.object.name == "notranform" then -- "bab be bab" should cross out "bab be keek"
           specialmatch = 1
-        elseif rule.verb.name == "ben't" and rule.object.name == rule.subject.name then -- "bab be n't bab" should cross out "bab be bab" (bab be notransform)
+        elseif rule.verb.name == "ben't" and rule.object.name == rule.subject.name then -- "bab be n't bab" should cross out "bab be bab" (bab be notranform)
           specialmatch = 2
         end
 
@@ -694,7 +692,7 @@ function postRules()
             if (frule.subject.name == rule.subject.name or (rule.subject.name == "text" and frule.subject.name:starts("text_"))) and fverb == rule.verb.name and (
               (specialmatch == 0 and frule.object.name == rule.object.name and frule.object.name ~= "her" and frule.object.name ~= "thr" and frule.object.name ~= "rit here") or
               (specialmatch == 1 and (tiles_by_name[frule.object.name] or frule.object.name == "mous" or frule.object.name == "text" or frule.object.name == "every1")) or -- possibly more special cases needed
-              (specialmatch == 2 and frule.object.name == "notransform")
+              (specialmatch == 2 and frule.object.name == "notranform")
             ) then
               -- print("matching rule", rule[1][1], rule[2], rule[3][1])
               if has_conds then
@@ -787,8 +785,7 @@ function shouldReparseRules()
   if shouldReparseRulesIfConditionalRuleExists("?", "be", "za warudo") then return true end
   if shouldReparseRulesIfConditionalRuleExists("?", "be", "rong") then return true end
   if rules_with["poor toll"] then
-    if shouldReparseRulesIfConditionalRuleExists("?", "be", "flye", true) then return true end
-    if shouldReparseRulesIfConditionalRuleExists("?", "be", "tall", true) then return true end
+    if shouldReparseRulesIfConditionalRuleExists("?", "ignor", "?", true) then return true end
   end
   return false
 end

@@ -65,8 +65,7 @@ function clear()
   time_destroy = {}
   time_delfx = {}
   time_sfx = {}
-  timeless_splitter = {}
-  timeless_splittee = {}
+  timeless_split = {}
   timeless_win = {}
   timeless_unwin = {}
   timeless_reset = false
@@ -98,6 +97,8 @@ function clear()
       end
     end
   end
+  
+  card_for_id = {}
 
   love.mouse.setCursor()
 end
@@ -853,7 +854,7 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
                   result = false
                   break
                 end
-              end
+              end   
             end
           end
           if not isdir then
@@ -886,7 +887,13 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
         local dx, dy, dir, px, py = getNextTile(unit, -dirs8[unit.dir][1], -dirs8[unit.dir][2], unit.dir)
         local frens = getUnitsOnTile(px, py, param, false, unit)
         for _,other in ipairs(sets) do
-          if not other[outerlvl] then
+          if other[outerlvl] then
+              local dx, dy, dir, px, py = getNextTile(unit, dirs8[unit.dir][1], dirs8[unit.dir][2], unit.dir)
+              if inBounds(px,py) then
+                result = false
+                break
+              end
+          else
             local found = false
             for _,fren in ipairs(frens) do
               if other[fren] then
@@ -1156,6 +1163,16 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
       end
       if unit.name == "lin" and unit.special.pathlock and unit.special.pathlock ~= "none" then
         result = false
+      end
+    elseif condtype == "wun" then
+      if unit == outerlvl then
+        if not readSaveFile(level_name,"won") then
+          result = false
+        end
+      else
+        if not readSaveFile(unit.special.name,"won") then
+          result = false
+        end
       end
     else
       print("unknown condtype: " .. condtype)
@@ -1717,6 +1734,25 @@ function addParticles(type,x,y,color,count)
     ps:setSizes(0.5, 0.5, 0.5, 0)
     ps:setSpeed(20)
     ps:setParticleLifetime(1)
+    if #color == 2 then
+      ps:setColors(getPaletteColor(color[1], color[2]))
+    else
+      ps:setColors(color[1]/255, color[2]/255, color[3]/255, (color[4] or 255)/255)
+    end
+    ps:start()
+    ps:emit(count or 10)
+    table.insert(particles, ps)
+  elseif type == "slep" then
+    local ps = love.graphics.newParticleSystem(sprites["letter_z"])
+    local px = (x + 1) * TILE_SIZE
+    local py = y * TILE_SIZE
+    ps:setPosition(px, py)
+    ps:setSpread(0)
+    ps:setEmissionArea("borderrectangle", 0, 0, 0, true)    
+    ps:setSizes(0.5, 0.5, 0.5, 0)
+    ps:setSpeed(10)
+    ps:setLinearAcceleration(0,-50)
+    ps:setParticleLifetime(2)
     if #color == 2 then
       ps:setColors(getPaletteColor(color[1], color[2]))
     else

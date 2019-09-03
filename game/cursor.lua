@@ -26,7 +26,7 @@ function updateCursors()
       if hasProperty(cursor,"enby") then
         table.insert(cursor.overlay, "enby")
       end
-      if hasProperty(cursor,"tranz") then
+      if hasProperty(cursor,"tranz") and not hasProperty(cursor,"notranform") then
         table.insert(cursor.overlay, "trans")
       end
       if hasProperty(cursor,"gay") then

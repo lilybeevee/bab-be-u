@@ -456,6 +456,8 @@ function updateUnits(undoing, big_update)
       time_destroy = handleTimeDels(time_destroy)
     end
     
+    local wins,unwins = levelBlock()
+    
     --MOAR is 4-way growth, MOARx2 is 8-way growth, MOARx3 is 2x 4-way growth, MOARx4 is 2x 8-way growth, MOARx5 is 3x 4-way growth, etc.
     --TODO: If you write txt be moar, it's ambiguous which of a stacked text pair will be the one to grow into an adjacent tile first. But if you make it simultaneous, then you get double growth into corners which turns into exponential growth, which is even worse. It might need to be special cased in a clever way.
     local give_me_moar = true
@@ -577,6 +579,54 @@ function updateUnits(undoing, big_update)
     
     to_destroy = handleDels(to_destroy)
     
+    local split_movers = {}
+    if not timeless then
+      for on,unit in pairs(timeless_split) do
+        addUndo({"timeless_split_remove", on, unit})
+        unit = units_by_id[unit]
+        on = units_by_id[on]
+        if (unit ~= nil and on ~= nil) then
+          table.insert(to_destroy, on)
+          local dir1 = dirAdd(unit.dir,0)
+          local dx1 = dirs8[dir1][1]
+          local dy1 = dirs8[dir1][2]
+          local dir2 = dirAdd(unit.dir,4)
+          local dx2 = dirs8[dir2][1]
+          local dy2 = dirs8[dir2][2]
+          if canMove(on, dx1, dy1, dir1, false, false) then
+            if on.class == "unit" then
+              local new_unit = createUnit(tiles_by_name[on.fullname], on.x, on.y, dir1)
+              addUndo({"create", new_unit.id, false})
+              _, __, ___, x, y = getNextTile(on, dx1, dy1, dir1, false)
+              table.insert(split_movers,{unit = new_unit, x = x, y = y, ox = on.x, oy = on.y, dir = dir1})
+            elseif unit.class == "cursor" then
+              local others = getCursorsOnTile(on.x + dx1, on.y + dy1)
+              if #others == 0 then
+                local new_mouse = createMouse(on.x + dx1, on.y + dy1)
+                addUndo({"create_cursor", new_mouse.id})
+              end
+            end
+          end
+          if canMove(on, dx2, dy2, dir2, false, false) then
+            if on.class == "unit" then
+              local new_unit = createUnit(tiles_by_name[on.fullname], on.x, on.y, dir2)
+              addUndo({"create", new_unit.id, false})
+              _, __, ___, x, y = getNextTile(on, dx2, dy2, dir2, false)
+              table.insert(split_movers,{unit = new_unit, x = x, y = y, ox = on.x, oy = on.y, dir = dir2})
+            elseif unit.class == "cursor" then
+              local others = getCursorsOnTile(on.x + dx2, on.y + dy2)
+              if #others == 0 then
+                local new_mouse = createMouse(on.x + dx2, on.y + dy2)
+                addUndo({"create_cursor", new_mouse.id})
+              end
+            end
+          end
+        end
+      end
+      timeless_splitter = {}
+      timeless_splittee = {}
+    end
+    
     local split = getUnitsWithEffect("split")
     for _,unit in ipairs(split) do
       if unit.name ~= "lie" then
@@ -590,13 +640,12 @@ function updateUnits(undoing, big_update)
               local dir2 = dirAdd(unit.dir,4)
               local dx2 = dirs8[dir2][1]
               local dy2 = dirs8[dir2][2]
-              if canMove(on, dx1, dy1, dir1, false, false, on.name) then
+              if canMove(on, dx1, dy1, dir1, false, false) then
                 if on.class == "unit" then
                   local new_unit = createUnit(tiles_by_name[on.fullname], on.x, on.y, dir1)
                   addUndo({"create", new_unit.id, false})
                   _, __, ___, x, y = getNextTile(on, dx1, dy1, dir1, false)
-                  moveUnit(new_unit,x,y)
-                  addUndo({"update", new_unit.id, on.x, on.y, dir1})
+                  table.insert(split_movers,{unit = new_unit, x = x, y = y, ox = on.x, oy = on.y, dir = dir1})
                 elseif unit.class == "cursor" then
                   local others = getCursorsOnTile(on.x + dx1, on.y + dy1)
                   if #others == 0 then
@@ -605,13 +654,12 @@ function updateUnits(undoing, big_update)
                   end
                 end
               end
-              if canMove(on, dx2, dy2, dir2, false, false, on.name) then
+              if canMove(on, dx2, dy2, dir2, false, false) then
                 if on.class == "unit" then
                   local new_unit = createUnit(tiles_by_name[on.fullname], on.x, on.y, dir2)
                   addUndo({"create", new_unit.id, false})
                   _, __, ___, x, y = getNextTile(on, dx2, dy2, dir2, false)
-                  moveUnit(new_unit,x,y)
-                  addUndo({"update", new_unit.id, on.x, on.y, dir2})
+                  table.insert(split_movers,{unit = new_unit, x = x, y = y, ox = on.x, oy = on.y, dir = dir2})
                 elseif unit.class == "cursor" then
                   local others = getCursorsOnTile(on.x + dx2, on.y + dy2)
                   if #others == 0 then
@@ -622,10 +670,10 @@ function updateUnits(undoing, big_update)
               end
               table.insert(to_destroy, on)
             else
-              addUndo({"timeless_splitter_add", unit.id})
-              table.insert(timeless_splitter,unit.id)
-              addUndo({"timeless_splittee_add", on.id})
-              table.insert(timeless_splittee,on.id)
+              if not timeless_split[on.id] then
+                addUndo({"timeless_split_add", on.id})
+                timeless_split[on.id] = unit.id
+              end
             end
           end
         end
@@ -635,7 +683,7 @@ function updateUnits(undoing, big_update)
             local ndir = dirs8[i]
             local dx = ndir[1]
             local dy = ndir[2]
-            if canMove(unit, dx, dy, i, false, false, unit.name) then
+            if canMove(unit, dx, dy, i, false, false) then
               local new_unit = createUnit(tiles_by_name["lie/8"], unit.x, unit.y, i)
               addUndo({"create", new_unit.id, false})
               _, __, ___, x, y = getNextTile(unit, dx, dy, i, false)
@@ -648,58 +696,9 @@ function updateUnits(undoing, big_update)
       end
     end
     
-    if not timeless then
-      for _,unit in ipairs(timeless_splitter) do
-        addUndo({"timeless_splitter_remove", unit})
-        unit = units_by_id[unit]
-        for _,on in ipairs(timeless_splittee) do
-          on = units_by_id[on]
-          if (unit ~= nil and on ~= nil) then
-            table.insert(to_destroy, on)
-            local dir1 = dirAdd(unit.dir,0)
-            local dx1 = dirs8[dir1][1]
-            local dy1 = dirs8[dir1][2]
-            local dir2 = dirAdd(unit.dir,4)
-            local dx2 = dirs8[dir2][1]
-            local dy2 = dirs8[dir2][2]
-            if canMove(on, dx1, dy1, dir1, false, false, on.name) then
-              if on.class == "unit" then
-                local new_unit = createUnit(tiles_by_name[on.fullname], on.x, on.y, dir1)
-                addUndo({"create", new_unit.id, false})
-                _, __, ___, x, y = getNextTile(on, dx1, dy1, dir1, false)
-                moveUnit(new_unit,x,y)
-                addUndo({"update", new_unit.id, on.x, on.y, dir1})
-              elseif unit.class == "cursor" then
-                local others = getCursorsOnTile(on.x + dx1, on.y + dy1)
-                if #others == 0 then
-                  local new_mouse = createMouse(on.x + dx1, on.y + dy1)
-                  addUndo({"create_cursor", new_mouse.id})
-                end
-              end
-            end
-            if canMove(on, dx2, dy2, dir2, false, false, on.name) then
-              if on.class == "unit" then
-                local new_unit = createUnit(tiles_by_name[on.fullname], on.x, on.y, dir2)
-                addUndo({"create", new_unit.id, false})
-                _, __, ___, x, y = getNextTile(on, dx2, dy2, dir2, false)
-                moveUnit(new_unit,x,y)
-                addUndo({"update", new_unit.id, on.x, on.y, dir2})
-              elseif unit.class == "cursor" then
-                local others = getCursorsOnTile(on.x + dx2, on.y + dy2)
-                if #others == 0 then
-                  local new_mouse = createMouse(on.x + dx2, on.y + dy2)
-                  addUndo({"create_cursor", new_mouse.id})
-                end
-              end
-            end
-          end
-        end
-      end
-      for _,on in ipairs(timeless_splittee) do
-        addUndo({"timeless_splittee_remove", on})
-      end
-      timeless_splitter = {}
-      timeless_splittee = {}
+    for _,move in ipairs(split_movers) do
+      moveUnit(move.unit,move.x,move.y)
+      addUndo({"update", move.unit.id, move.ox, move.oy, move.dir})
     end
     
     to_destroy = handleDels(to_destroy)
@@ -940,18 +939,14 @@ function updateUnits(undoing, big_update)
     
     to_destroy = handleDels(to_destroy)
     
-    local unwin = getUnitsWithEffect(";d")
-    local isunwon = {}
-    for _,unit in ipairs(unwin) do
+    local isunwin = getUnitsWithEffect(";d")
+    for _,unit in ipairs(isunwin) do
       local stuff = getUnitsOnTile(unit.x,unit.y, nil, true)
       for _,on in ipairs(stuff) do
         is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
         if is_u and sameFloat(unit, on) then
           if timecheck(unit,"be","d") and (timecheck(on,"be","u") or timecheck(on,"be","u too") or timecheck(on,"be","u tres")) then
-            isunwon[unit] = true
-            if readSaveFile(level_name, "won") then
-              writeSaveFile(level_name, "won", false)
-            end
+            unwins = unwins + 1
           else
             addUndo({"timeless_unwin_add", on.id})
             table.insert(timeless_unwin,on.id)
@@ -965,9 +960,9 @@ function updateUnits(undoing, big_update)
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
       for _,on in ipairs(stuff) do
         is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
-        if is_u and sameFloat(unit, on) and not isunwon[unit] then
+        if is_u and sameFloat(unit, on) then
           if timecheck(unit,"be",":)") and (timecheck(on,"be","u") or timecheck(on,"be","u too") or timecheck(on,"be","u tres")) then
-            doWin("won")
+            wins = wins + 1
           else
             addUndo({"timeless_win_add", on.id})
             table.insert(timeless_win,on.id)
@@ -980,10 +975,20 @@ function updateUnits(undoing, big_update)
     for _,match in ipairs(creators) do
       local creator = match[2]
       local createe = match[1].rule.object.name
-
-      local tile = tiles_by_name[createe]
       if timecheck(creator,"creat",createe) then
-        if tile ~= nil then
+        if (createe == "text") then
+          createe = "text_"..creator.fullname
+        end
+        
+        local tile = tiles_by_namePossiblyMeta(createe)
+        --let x ben't x txt prevent x be txt, and x ben't txt prevent x be y txt
+        local overriden = false;
+        if match[1].rule.object.name == "text" then
+          overriden = hasRule(creator, "creatn't", "text_" .. match[1].rule.subject.name)
+        elseif match[1].rule.object.name:starts("text_") then
+          overriden = hasRule(creator, "creatn't", "text")
+        end
+        if tile ~= nil and not overriden then
           local others = getUnitsOnTile(creator.x, creator.y, createe, true, creator)
           if #others == 0 then
             local new_unit = createUnit(tile, creator.x, creator.y, creator.dir, nil, nil, nil, match[1].rule.object.prefix)
@@ -996,12 +1001,24 @@ function updateUnits(undoing, big_update)
       end
     end
     
-    if (#timeless_unwin > 0) and not timeless and readSaveFile(level_name, "won") then
-      writeSaveFile(level_name, "won", false)
+    if not timeless then
+      wins = wins + #timeless_win
+      unwins = unwins + #timeless_unwin
+      for i,win in ipairs(timeless_win) do
+        addUndo("timeless_win_remove",win)
+        table.remove(timeless_win,i)
+      end
+      for i,unwin in ipairs(timeless_unwin) do
+        addUndo("timeless_unwin_remove",unwin)
+        table.remove(timeless_unwin,i)
+      end
     end
     
-    if (#timeless_win > 0) and (#timeless_unwin == 0) and not timeless then
+    if wins > unwins then
       doWin("won")
+    elseif unwins > wins and readSaveFile(level_name,"won") then
+      playSound("unwin")
+      writeSaveFile(level_name,"won",false)
     end
     
     doDirRules()
@@ -1100,7 +1117,7 @@ function miscUpdates()
       if (graphical_property_cache["enby"][unit] ~= nil) then
         table.insert(unit.overlay, "enby")
       end
-      if (graphical_property_cache["tranz"][unit] ~= nil) then
+      if (graphical_property_cache["tranz"][unit] ~= nil) and not hasProperty(unit,"notranform") then
         table.insert(unit.overlay, "trans")
       end
       if (graphical_property_cache["gay"][unit] ~= nil) then
@@ -1395,6 +1412,10 @@ function levelBlock()
   local to_destroy = {}
   local lvlsafe = hasRule(outerlvl,"got","lvl") or hasProperty(outerlvl,"protecc")
   
+  if hasProperty(outerlvl,"notranform") then
+    writeSaveFile(level_name,"transform",nil)
+  end
+  
   if hasProperty(outerlvl, "loop") then
     destroyLevel("infloop")
   end
@@ -1425,7 +1446,7 @@ function levelBlock()
     for _,unit in ipairs(units) do
       if sameFloat(unit, outerlvl) and inBounds(unit.x,unit.y) then
         destroyLevel("sink")
-        if not lvlsafe then return end
+        if not lvlsafe then return 0,0 end
       end
     end
   end
@@ -1434,7 +1455,7 @@ function levelBlock()
     for _,unit in ipairs(units) do
       if sameFloat(unit, outerlvl) and inBounds(unit.x,unit.y) then
         destroyLevel("snacc")
-        if not lvlsafe then return end
+        if not lvlsafe then return 0,0 end
       end
     end
   end
@@ -1463,7 +1484,7 @@ function levelBlock()
     for _,unit in ipairs(melters) do
       if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
         destroyLevel("hotte")
-        if not lvlsafe then return end
+        if not lvlsafe then return 0,0 end
       end
     end
   end
@@ -1487,7 +1508,7 @@ function levelBlock()
   if hasProperty(outerlvl, "ned kee") then
     if hasProperty(outerlvl, "for dor") then
       destroyLevel("unlock")
-      if not lvlsafe then return end
+      if not lvlsafe then return 0,0 end
     end
     local dors = getUnitsWithEffect("for dor")
     for _,unit in ipairs(dors) do
@@ -1496,7 +1517,7 @@ function levelBlock()
         if lvlsafe then
           table.insert(to_destroy, unit)
           addParticles("destroy", unit.x, unit.y, unit.color)
-        else return end
+        else return 0,0 end
       end
     end
     if #to_destroy > 0 then
@@ -1515,7 +1536,7 @@ function levelBlock()
         if lvlsafe then
           table.insert(to_destroy, unit)
           addParticles("destroy", unit.x, unit.y, unit.color)
-        else return end
+        else return 0,0 end
       end
     end
     if #to_destroy > 0 then
@@ -1540,7 +1561,7 @@ function levelBlock()
     local unit = ruleparent[2]
     if unit ~= outerlvl and sameFloat(outerlvl,unit) and inBounds(unit.x,unit.y) then
       destroyLevel("snacc")
-      if not lvlsafe then return end
+      if not lvlsafe then return 0,0 end
     end
   end
   
@@ -1588,11 +1609,26 @@ function levelBlock()
       if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
         writeSaveFile(level_name, "bonus", true)
         destroyLevel("bonus")
-        if not lvlsafe then return end
+        if not lvlsafe then return 0,0 end
       end
     end
   end
   
+  local unwins = 0
+  if hasProperty(outerlvl, ";d") then
+    local yous = getUnitsWithEffect("u")
+    local youtoos = getUnitsWithEffect("u too")
+    local youtres = getUnitsWithEffect("u tres")
+    mergeTable(yous, youtoos)
+    mergeTable(yous, youtres)
+    for _,unit in ipairs(yous) do
+      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
+        unwins = unwins + 1
+      end
+    end
+  end
+  
+  local wins = 0
   if hasProperty(outerlvl, ":)") then
     local yous = getUnitsWithEffect("u")
     local youtoos = getUnitsWithEffect("u too")
@@ -1601,7 +1637,7 @@ function levelBlock()
     mergeTable(yous, youtres)
     for _,unit in ipairs(yous) do
       if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
-        doWin("won")
+        wins = wins + 1
       end
     end
   end
@@ -1610,6 +1646,8 @@ function levelBlock()
 		--placeholder until NXT is coded
     doWin("nxt")
   end
+  
+  return wins,unwins
 end
 
 function changeDirIfFree(unit, dir)
@@ -1665,19 +1703,24 @@ function destroyLevel(reason)
   local holds = matchesRule(outerlvl,"got","?")
   for _,match in ipairs(holds) do
     if not nameIs(outerlvl, match.rule.object.name) then
-      local tile = tiles_by_name[match.rule.object.name]
-      if tile == nil and match.rule.object.name == "every1" then
-        tile = tiles_by_name["text_every1"]
+      local obj_name = match.rule.object.name
+      if obj_name == "text" then
+        istext = true
+        obj_name = "text_" .. match.rule.subject.name
       end
-      if tile ~= nil then
-        --placeholder - just make 'u r win' pop up for now
+      local tile = tiles_by_name[obj_name]
+      --let x ben't x txt prevent x be txt, and x ben't txt prevent x be y txt
+      local overriden = false;
+      if match.rule.object.name == "text" then
+        overriden = hasRule(outerlvl, "gotn't", "text_" .. match.rule.subject.name)
+      elseif match.rule.object.name:starts("text_") then
+        overriden = hasRule(outerlvl, "gotn't", "text")
+      end
+      if tile ~= nil and not overriden then
         table.insert(transform_results, tiles_list[tile].name)
-        table.insert(win_sprite_override,tiles_list[tile].sprite)
+        table.insert(win_sprite_override,tiles_list[tile])
       end
     end
-  end
-  if (#transform_results > 0) then
-    doWin("transform", transform_results)
   end
   
   addUndo({"destroy_level", reason})
@@ -1693,29 +1736,32 @@ function destroyLevel(reason)
       love = {}
     elseif hasRule("loop","be","try again") then
       doTryAgain()
-    else
-      level_destroyed = true
-      for _,unit in ipairs(units) do
-        addParticles("destroy", unit.x, unit.y, unit.color)
-      end
-      tile = "infloop"
-      if hasRule("loop","be",nil) then
-        local ruleparent = matchesRule("loop","be",nil)
-        print(dump(ruleparent[1][1]))
-        tile = ruleparent[1][1].rule.object.name
-        --vitellary: new rule stuff is ridiculous, i love it
-      end
-      handleDels(units, true)
-      local new_unit = createUnit(tiles_by_name[tile], math.floor(mapwidth/2), math.floor(mapheight/2), 1)
+    end
+    level_destroyed = true
+    for _,unit in ipairs(units) do
+      addParticles("destroy", unit.x, unit.y, unit.color)
+    end
+    local berule = matchesRule("loop","be","?")
+    for _,rule in ipairs(berule) do
+      table.insert(transform_results,rule.rule.object.name)
+      table.insert(win_sprite_override,tiles_list[tiles_by_name[rule.rule.object.name]])
+    end
+    handleDels(units,true)
+    if #berule == 0 then
+      local new_unit = createUnit(tiles_by_name["infloop"], math.floor(mapwidth/2), math.floor(mapheight/2), 1)
       addUndo({"create", new_unit.id, false})
     end
+  end
+  
+  if (#transform_results > 0) then
+    doWin("transform", transform_results)
   end
 end
 
 function dropGotUnit(unit, rule)
   --TODO: CLEANUP: Blatantly copypasta'd from convertUnits.
   local obj_name = rule.object.name
-  if (obj_name == "hatt" or obj_name == "gunne" or obj_name == "katany" or unit == outerlvl) then
+  if unit == outerlvl then
     return
   end
   
@@ -1732,7 +1778,14 @@ function dropGotUnit(unit, rule)
   end
   local obj_id = tiles_by_name[obj_name]
   local obj_tile = tiles_list[obj_id]
-  if rule.object.name == "mous" or (obj_tile ~= nil and (obj_tile.type == "object" or istext)) then
+  --let x ben't x txt prevent x be txt, and x ben't txt prevent x be y txt
+  local overriden = false;
+  if rule.object.name == "text" then
+    overriden = hasRule(unit, "gotn't", "text_" .. rule.subject.name)
+  elseif rule.object.name:starts("text_") then
+    overriden = hasRule(unit, "gotn't", "text")
+  end
+  if not overriden and (rule.object.name == "mous" or (obj_tile ~= nil and (obj_tile.type == "object" or istext))) then
     --if testConds(unit,rule[4][1]) then
     if rule.object.name == "mous" then
       local new_mouse = createMouse(unit.x, unit.y)
@@ -1768,31 +1821,39 @@ function convertLevel()
     end
     tile = tiles_by_namePossiblyMeta(nametocreate)
     if tile ~= nil then
-      --placeholder - just make 'u r win' pop up for now
        table.insert(transform_results, tiles_list[tile].name)
-      --doWin("transform", {tiles_list[tile].name})
-      table.insert(win_sprite_override,tiles_list[tile].sprite)
+      table.insert(win_sprite_override,tiles_list[tile])
     end
   end
 
   local converts = matchesRule(outerlvl,"be","?")
   for _,match in ipairs(converts) do
-    if not hasProperty(outerlvl, "notransform") then
+    if not (hasProperty(outerlvl, "lvl") or hasProperty(outerlvl, "notranform")) then
       local tile = tiles_by_name[match.rule.object.name]
       if match.rule.object.name == "text" then
         tile = tiles_by_name["text_lvl"]
       end
       if tile == nil and match.rule.object.name == "every1" and not hasRule(outerlvl, "be", "lvl") then
-        tile = tiles_by_name["text_every1"]
+        for _,v in ipairs(referenced_objects) do
+          if not hasRule(outerlvl, "ben't", v) then
+            table.insert(transform_results, tiles_list[tiles_by_name[v]].name)
+            table.insert(win_sprite_override,tiles_list[tiles_by_name[v]])
+          end
+        end
       end
       if match.rule.object.name:starts("this") then
         tile = tiles_by_name["this"]
       end
-      if tile ~= nil then
-        --placeholder - just make 'u r win' pop up for now
-         table.insert(transform_results, tiles_list[tile].name)
-        --doWin("transform", {tiles_list[tile].name})
-        table.insert(win_sprite_override,tiles_list[tile].sprite)
+      --let x ben't x txt prevent x be txt, and x ben't txt prevent x be y txt
+      local overriden = false;
+      if match.rule.object.name == "text" then
+        overriden = hasRule(outerlvl, "ben't", "text_" .. match.rule.subject.name)
+      elseif match.rule.object.name:starts("text_") then
+        overriden = hasRule(outerlvl, "ben't", "text")
+      end
+      if tile ~= nil and not overriden then
+        table.insert(transform_results, tiles_list[tile].name)
+        table.insert(win_sprite_override,tiles_list[tile])
       end
     end
   end
@@ -1902,7 +1963,7 @@ function convertUnits(pass)
     local rules = match[1]
     local unit = match[2]
     local rule = rules.rule
-    if not hasProperty(unit, "notransform") then
+    if not hasProperty(unit, "notranform") then
       if (rule.subject.name == "mous" and rule.object.name ~= "mous") then
         for _,cursor in ipairs(cursors) do
           if inBounds(cursor.x, cursor.y) and testConds(cursor, rule.subject.conds) then
@@ -1954,7 +2015,7 @@ function convertUnits(pass)
     local unit = match[2]
     local rule = rules.rule
     
-    if not hasProperty(unit, "notransform") then
+    if not hasProperty(unit, "notranform") then
       if (rule.subject.name == "mous" and rule.object.name ~= "mous") then
         for _,cursor in ipairs(cursors) do
           if inBounds(cursor.x, cursor.y) and testConds(cursor, rule.subject.conds) then
@@ -1980,7 +2041,14 @@ function convertUnits(pass)
         elseif rule.object.name:starts("this") and not rule.object.name:ends("n't") then
           tile = tiles_by_name["this"]
         end
-        if tile ~= nil then
+        --let x ben't x txt prevent x be txt, and x ben't txt prevent x be y txt
+        local overriden = false;
+        if rule.object.name == "text" then
+          overriden = hasRule(unit, "ben't", "text_" .. rule.subject.name)
+        elseif rule.object.name:starts("text_") then
+          overriden = hasRule(unit, "ben't", "text")
+        end
+        if tile ~= nil and not overriden then
           if not unit.removed then
             table.insert(converted_units, unit)
           end
@@ -2019,7 +2087,7 @@ function convertUnits(pass)
   local thes = matchesRule(nil,"be","the")
   for _,ruleparent in ipairs(thes) do
     local unit = ruleparent[2]
-    if not hasProperty(unit, "notransform") then
+    if not hasProperty(unit, "notranform") then
       local the = ruleparent[1].rule.object.unit
       
       local tx = the.x
@@ -2209,6 +2277,10 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
   end
 
   table.insert(units, unit)
+  
+  if unit.name == "byc" and not card_for_id[unit.id] then -- playing cards
+    card_for_id[unit.id] = {math.random(13), ({"spade","heart","clubs","diamond"})[math.random(4)]}
+  end
 
   --updateDir(unit, unit.dir)
   new_units_cache[unit] = true
@@ -2328,7 +2400,6 @@ end
 
 function updateDir(unit, dir, force)
   if not force and rules_with ~= nil then
-    if unit.dir == dir then return false end
     if not timecheck(unit) then
       return false
     end
@@ -2338,6 +2409,7 @@ function updateDir(unit, dir, force)
     if hasRule(unit, "ben't", dirs8_by_name[dir]) then
       return false
     end
+    if unit.dir == dir then return true end
   end
   
   unit.dir = dir

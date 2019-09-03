@@ -156,8 +156,10 @@ function scene.update(dt)
 
   --TODO: PERFORMANCE: If many things are producing particles, it's laggy as heck.
   scene.doPassiveParticles(dt, ":)", "bonus", 0.25, 1, 1, {2, 4})
+  scene.doPassiveParticles(dt, ";d", "bonus", 0.25, 1, 1, {1, 2})
   scene.doPassiveParticles(dt, ":o", "bonus", 0.5, 0.8, 1, {4, 1})
   scene.doPassiveParticles(dt, "qt", "love", 0.25, 0.5, 1, {4, 2})
+  scene.doPassiveParticles(dt, "slep", "slep", 1, 0.33, 1, {0, 3})
   scene.doPassiveParticles(dt, "try again", "bonus", 0.25, 0.25, 1, {3, 3})
   scene.doPassiveParticles(dt, "no undo", "bonus", 0.25, 0.25, 1, {5, 3})
   scene.doPassiveParticles(dt, "undo", "bonus", 0.25, 0.25, 1, {6, 1})
@@ -743,10 +745,11 @@ function scene.draw(dt)
     local fulldrawy = (drawy + 0.5)*TILE_SIZE
 
     if graphical_property_cache["flye"][unit] ~= nil or unit.name == "o" or unit.name == "square" or unit.name == "triangle" or unit.name == "beeee" or unit.name == "fishe" or unit.name == "butflye" or unit.name == "gul" or unit.name == "urei"
-            or unit.name == "wips" or unit.name == "ryugon" then
+            or unit.name == "wips" or unit.name == "ryugon" or unit.name == "cavebab" then
       local flyenes = graphical_property_cache["flye"][unit] or 0
       if unit.name == "o" or unit.name == "square" or unit.name == "triangle" or unit.name == "beeee" or unit.name == "fishe" or  unit.name == "butflye" or unit.name == "gul" or unit.name == "urei"
-            or unit.name == "wips" or unit.name == "ryugon" then flyenes = flyenes + 1 end
+            or unit.name == "wips" or unit.name == "ryugon" or unit.name == "cavebab" 
+            then flyenes = flyenes + 1 end
       fulldrawy = fulldrawy - math.sin(love.timer.getTime())*5*flyenes
     end
 
@@ -858,7 +861,7 @@ function scene.draw(dt)
     --reset back to values being used before
     love.graphics.setLineWidth(2)
 
-    if not (unit.xwx or spookmode) and unit.name ~= "lin" then -- xwx takes control of the drawing sprite, so it shouldn't render the normal object
+    if not (unit.xwx or spookmode) and unit.name ~= "lin" and unit.name ~= "byc" and unit.name ~= "bac" then -- xwx takes control of the drawing sprite, so it shouldn't render the normal object
       drawSprite()
     end
 
@@ -869,6 +872,40 @@ function scene.draw(dt)
         love.graphics.setShader()
       else
         drawSprite()
+      end
+    end
+    
+    if unit.name == "byc" then
+      local num, suit = unpack(card_for_id[unit.id])
+      if eq(unit.color, {0,3}) then
+        setColor({0,0})
+        drawSprite(sprites["byc"])
+        setColor({0,3})
+        drawSprite(sprites["byc_" .. suit])
+        drawSprite(sprites["byc_" .. num])
+      else
+        setColor({0,3})
+        drawSprite(sprites["byc"])
+        if suit == "diamond" or suit == "heart" then
+          setColor(unit.color)
+        else
+          setColor({0,0})
+        end
+        drawSprite(sprites["byc_" .. suit])
+        drawSprite(sprites["byc_" .. num])
+      end
+    end
+    if unit.name == "bac" then
+      if eq(unit.color, {0,3}) then
+        setColor({0,0})
+        drawSprite(sprites["byc"])
+        setColor({0,3})
+        drawSprite(sprites["bac"])
+      else
+        setColor({0,3})
+        drawSprite(sprites["byc"])
+        setColor(unit.color)
+        drawSprite(sprites["bac"])
       end
     end
     
@@ -899,7 +936,7 @@ function scene.draw(dt)
       love.graphics.pop()
     end
 
-    if #unit.overlay > 0 then
+    if #unit.overlay > 0 and unit.fullname ~= "no1" then
       local function overlayStencil()
          pcallSetShader(mask_shader)
          drawSprite()
@@ -1224,13 +1261,25 @@ function scene.draw(dt)
   love.graphics.pop()
   
   if #win_sprite_override > 0 then
-    for _,image in ipairs(win_sprite_override) do
+    for _,tile in ipairs(win_sprite_override) do
       love.graphics.push()
       love.graphics.setColor(0.92, 0.92, 1)
       love.graphics.translate(love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
       love.graphics.scale(win_size, win_size)
-      local tf_sprite = sprites[image]
+      local tf_sprite = sprites[tile.sprite]
       love.graphics.draw(tf_sprite, -tf_sprite:getWidth() / 2 + 40, -tf_sprite:getHeight() / 2 - 45, 0, 4, 4)
+      if (tile.meta ~= nil) then
+        local metasprite = tile.meta == 2 and sprites["meta2"] or sprites["meta1"]
+				love.graphics.draw(metasprite, -metasprite:getWidth() / 2 + 40, -metasprite:getHeight() / 2 - 45, 0, 4, 4)
+				if tile.meta > 2 and win_size == 1 then
+          --This doesn't print anything to the screen, though I'm uncertain why not
+					love.graphics.printf(tostring(tile.meta), -metasprite:getWidth() / 2 + 40, -metasprite:getHeight() / 2 - 45, 32, "center")
+				end
+      end
+      if (tile.nt ~= nil) then
+        local nt_sprite = sprites["n't"];
+        love.graphics.draw(nt_sprite, -nt_sprite:getWidth() / 2 + 40, -nt_sprite:getHeight() / 2 - 45, 0, 4, 4)
+      end
       love.graphics.pop()
     end
   end
@@ -1633,20 +1682,20 @@ function doOneMove(x, y, key)
       if timeless then
         extendReplayString(0, 0, "e")
         if firsttimestop then
-            playSound("timestop long",0.5)
-        else playSound("timestop",0.5)
-            end
-       -- print("ZA WARUDO! Time has stopped")
+          playSound("timestop long",0.5)
+        else
+          playSound("timestop",0.5)
+        end
       else
         addUndo({"timeless_rules", rules_with})
         parseRules()
         doMovement(0,0,"e")
         if firsttimestop then
-            playSound("time resume long",0.5)
-            firsttimestop = false
-        else playSound("time resume",0.5)
-            end
-        --print("And time resumes")
+          playSound("time resume long",0.5)
+          firsttimestop = false
+        else
+          playSound("time resume",0.5)
+        end
       end
       addUndo({"za warudo", timeless})
       unsetNewUnits()
@@ -1734,7 +1783,7 @@ function scene.doPassiveParticles(timer,word,effect,delay,chance,count,color)
       do_particles = true
     end
   end
-
+  
   if do_particles and not timeless then
     local matches = matchesRule(nil,"be",word)
     for _,match in ipairs(matches) do
@@ -1746,7 +1795,13 @@ function scene.doPassiveParticles(timer,word,effect,delay,chance,count,color)
         end
       end
       if not unit.stelth and particlesRngCheck() then
-        addParticles(effect, unit.x, unit.y, color, real_count)
+        if word == ":)" and countProperty(unit,":)") > countProperty (unit,";d") then
+          addParticles(effect, unit.x, unit.y, color, real_count)
+        elseif word == ";d" and countProperty(unit,":)") < countProperty (unit,";d") then
+          addParticles(effect, unit.x, unit.y, color, real_count)
+        elseif word ~= ":)" and word ~= ";d" then
+          addParticles(effect, unit.x, unit.y, color, real_count)
+        end
       end
     end
   end

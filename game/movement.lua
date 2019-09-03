@@ -125,7 +125,6 @@ function doMovement(movex, movey, key)
                 local dx = other.x-undo[3]
                 local dy = other.y-undo[4]
                 local slipdir = dirs8_by_offset[sign(dx)][sign(dy)]
-                print(slipdir)
                 table.insert(other.moves, {reason = "icy", dir = slipdir, times = icyness})
                 if #other.moves > 0 and not already_added[other] and not hasRule(other,"got","slippers") then
                   table.insert(moving_units, other)
@@ -653,7 +652,6 @@ It is probably possible to do, but lily has decided that it's not important enou
   parseRules()
   updateGroup()
   calculateLight()
-  levelBlock()
   parseRules()
   updateGroup()
   calculateLight()
@@ -905,7 +903,7 @@ end
 
 function findSidekikers(unit,dx,dy)
   --fast track
-  if rules_with["sidekik"] == nil then return {} end
+  if rules_with["sidekik"] == nil and rules_with["diagkik"] == nil then return {} end
   local result = {}
   if hasProperty(unit, "shy") then
     return result
@@ -931,7 +929,6 @@ function findSidekikers(unit,dx,dy)
     end
   end
   
-  --Testing a new feature: sidekik & come pls objects follow you even on diagonals, to make them very hard to get away from in bab 8 way geometry, while just sidekik objects behave as they are right now so they're appropriate for 4 way geometry or being easy to walk away from
   local dir45 = (dir + 1 - 1) % 8 + 1
   for i = 1,4 do
     local curdir = (dir45 + 2*i - 1) % 8 + 1
@@ -941,7 +938,8 @@ function findSidekikers(unit,dx,dy)
     local cury = y+curdy
     local _dx, _dy, _dir, _x, _y = getNextTile(unit, curdx, curdy, curdir)
     for _,v in ipairs(getUnitsOnTile(_x, _y)) do
-      if hasProperty(v, "sidekik") and hasProperty(v, (i > 2 and "go away pls" or "come pls")) and not hasProperty(v, "ortho") and sameFloat(unit,v,true) then
+      local diagkikness = countProperty(v, "diagkik")
+      if ((i > 2) and (diagkikness >= 1) or (diagkikness >= 2)) and sameFloat(unit,v,true) then
         result[v] = dirAdd(dir, dirDiff(_dir, curdir))
       end
     end
@@ -1246,7 +1244,7 @@ function doPortal(unit, px, py, move_dir, dir, reverse)
     --This was already implemented in cg5's mod, but I overlooked it the first time around - PORTAL is FLOAT respecting, so now POOR TOLL is FLYE respecting. Spooky! (I already know this will have weird behaviour with PULL and SIDEKIK, so looking forward to that.)
     for _,v in ipairs(getUnitsOnTile(px, py, nil, false)) do
       --At Vitellary's request, make it so you can only enter the front of a portal.
-      if dirAdd(v.dir, 4) == move_dir and hasProperty(v, "poor toll") and sameFloat(unit, v) and not hasRule(unit,"haet",v) then
+      if dirAdd(v.dir, 4) == move_dir and hasProperty(v, "poor toll") and sameFloat(unit, v, true) and not hasRule(unit,"haet",v) then
         local portal_rules = matchesRule(v.fullname, "be", "poor toll")
         local portals_direct = {}
         local portals = {}
@@ -1528,7 +1526,7 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
     end
   end
   
-  local isntrithere = matchesRule(unit,"ben't","rit here")
+  local isntrithere = matchesRule(unit,"ben't","rithere")
   if (#isntrithere > 0) then
     for _,ruleparent in ipairs(isntrithere) do
       local here = ruleparent.rule.object.unit

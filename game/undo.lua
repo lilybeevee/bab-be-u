@@ -144,28 +144,10 @@ function undoOneAction(turn, i, v, ignore_no_undo)
     end
   elseif action == "timeless_unwin_remove" then
     table.insert(timeless_unwin, v[2])
-  elseif action == "timeless_splitter_add" then
-		unitid = v[2]
-    --iterate backwards because we probably got added to the end (but maybe not due to no undo shenanigans e.g.)
-    for i=#timeless_splitter,1,-1 do
-      if timeless_splitter[i] == unitid then
-        table.remove(timeless_splitter, i)
-        break
-      end
-    end
-  elseif action == "timeless_splitter_remove" then
-    table.insert(timeless_splitter, v[2])
-  elseif action == "timeless_splittee_add" then
-		unitid = v[2]
-    --iterate backwards because we probably got added to the end (but maybe not due to no undo shenanigans e.g.)
-    for i=#timeless_splittee,1,-1 do
-      if timeless_splittee[i] == unitid then
-        table.remove(timeless_splittee, i)
-        break
-      end
-    end
-  elseif action == "timeless_splittee_remove" then
-     table.insert(timeless_splittee, v[2])
+  elseif action == "timeless_split_add" then
+		timeless_split[v[2]] = nil
+  elseif action == "timeless_split_remove" then
+    timeless_split[v[2]] = v[3]
   elseif action == "timeless_reset_add" then
 		timeless_reset = false
   elseif action == "timeless_reset_remove" then

@@ -313,6 +313,8 @@ function love.load()
   registerSound("time resume long", 1)
   registerSound("bup", 0.5)
   registerSound("clicc", 1.0)
+  registerSound("unwin", 0.5)
+  
   print(colr.green("✓ sounds registered"))
 
   ui.init()
