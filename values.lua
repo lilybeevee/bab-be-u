@@ -192,7 +192,7 @@ selector_grid_contents = {
   },
   -- page 4: characters and special objects
   {
-    "bab","text_bab","bunmy","text_bunmy","moo","text_moo",0,0,0,0,0,0,0,0,"selctr","text_selctr","lvl","text_lvl",
+    "bab","text_bab","bunmy","text_bunmy","moo","text_moo","migri","text_migri",0,0,0,0,0,0,"selctr","text_selctr","lvl","text_lvl",
     "keek","text_keek","creb","text_creb","shrim","text_shrim",0,0,0,0,0,0,0,0,"this","text_mous","lin","text_lin",
     "meem","text_meem","statoo","text_statoo","flamgo","text_flamgo",0,0,0,0,0,0,0,0,"text_text","text_frens","text_groop","text_pathz",
     "skul","text_skul","beeee","text_beeee","gul","text_gul",0,0,0,0,0,0,0,0,0,0,"text_every1","text_no1",
@@ -224,7 +224,7 @@ selector_grid_contents = {
     "brik","text_brik","sparkl","text_sparkl","sanglas","text_sanglas","bullb","text_bullb","son","text_son","muun","text_muun","bac","text_bac",0,0,0,0,
     "san","text_san","piler","text_piler","sancastl","text_sancastl","shel","text_shel","starr","text_starr","cor","text_cor","byc","text_byc",0,0,0,0,
     "glas","text_glas","bom","text_bom","sine","text_sine","kar","text_kar","can","text_can","ger","text_ger","sirn","text_sirn",0,0,0,0,
-    "bordr","text_bordr","wut","text_wut","wat","text_wat","splittr","text_splittr","togll","text_togll","bon","text_bon","battry","text_battry","chekr","text_chekr",0,0,
+    "bordr","text_bordr","wut","text_wut","wat","text_wat","splittr","text_splittr","togll","text_togll","bon","text_bon","battry","text_battry","chekr","text_chekr","sloop","text_sloop",
   },
   -- page 6: properties, verbs and conditions
   {
@@ -6228,6 +6228,50 @@ tiles_list = {
     layer = 20,
     tags = {"sidekick"},
     desc = "DIAGKIK: If a unit moves 45 degrees away from a DIAGKIK, the DIAGKIK copies that movement. With two stacks, also copies 135 degree movement.",
+  },
+  -- 542
+  {
+    name = "migri",
+    sprite = "migri",
+    type = "object",
+    color = {3, 0},
+    layer = 5,
+    rotate = true,
+    tags = {"chars"},
+    desc = "",
+  },
+  -- 543
+  {
+    name = "text_migri",
+    sprite = "text_migri",
+    type = "text",
+    texttype = {object = true},
+    color = {3, 0},
+    layer = 20,
+    tags = {"chars"},
+    desc = "",
+  },
+  -- 544
+  {
+    name = "sloop",
+    sprite = "sloop",
+    type = "object",
+    color = {0, 3},
+    layer = 5,
+    rotate = true,
+    tags = {"triangle", "half"},
+    desc = "",
+  },
+  -- 545
+  {
+    name = "text_sloop",
+    sprite = "text_sloop",
+    type = "text",
+    texttype = {object = true},
+    color = {0, 3},
+    layer = 20,
+    tags = {"triangle", "half"},
+    desc = "",
   },
 }
 
