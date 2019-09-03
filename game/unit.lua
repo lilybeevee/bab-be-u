@@ -1014,13 +1014,10 @@ function updateUnits(undoing, big_update)
       end
     end
     
-    print("wins: "..tostring(wins)..", unwins: "..tostring(unwins))
     if wins > unwins then
       doWin("won")
-    else
-      if readSaveFile(level_name,"won") then
-        writeSaveFile(level_name,"won",false)
-      end
+    elseif unwins > wins and readSaveFile(level_name,"won") then
+      writeSaveFile(level_name,"won",false)
     end
     
     doDirRules()
