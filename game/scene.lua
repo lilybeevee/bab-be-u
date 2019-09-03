@@ -156,6 +156,7 @@ function scene.update(dt)
 
   --TODO: PERFORMANCE: If many things are producing particles, it's laggy as heck.
   scene.doPassiveParticles(dt, ":)", "bonus", 0.25, 1, 1, {2, 4})
+  scene.doPassiveParticles(dt, ";d", "bonus", 0.25, 1, 1, {1, 2})
   scene.doPassiveParticles(dt, ":o", "bonus", 0.5, 0.8, 1, {4, 1})
   scene.doPassiveParticles(dt, "qt", "love", 0.25, 0.5, 1, {4, 2})
   scene.doPassiveParticles(dt, "try again", "bonus", 0.25, 0.25, 1, {3, 3})
@@ -1781,7 +1782,7 @@ function scene.doPassiveParticles(timer,word,effect,delay,chance,count,color)
       do_particles = true
     end
   end
-
+  
   if do_particles and not timeless then
     local matches = matchesRule(nil,"be",word)
     for _,match in ipairs(matches) do
@@ -1793,7 +1794,13 @@ function scene.doPassiveParticles(timer,word,effect,delay,chance,count,color)
         end
       end
       if not unit.stelth and particlesRngCheck() then
-        addParticles(effect, unit.x, unit.y, color, real_count)
+        if word == ":)" and countProperty(unit,":)") > countProperty (unit,";d") then
+          addParticles(effect, unit.x, unit.y, color, real_count)
+        elseif word == ";d" and countProperty(unit,":)") < countProperty (unit,";d") then
+          addParticles(effect, unit.x, unit.y, color, real_count)
+        elseif word ~= ":)" and word ~= ";d" then
+          addParticles(effect, unit.x, unit.y, color, real_count)
+        end
       end
     end
   end

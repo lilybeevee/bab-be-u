@@ -1017,6 +1017,7 @@ function updateUnits(undoing, big_update)
     if wins > unwins then
       doWin("won")
     elseif unwins > wins and readSaveFile(level_name,"won") then
+      playSound("bonus")
       writeSaveFile(level_name,"won",false)
     end
     

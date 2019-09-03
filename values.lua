@@ -233,7 +233,7 @@ selector_grid_contents = {
     "text_go","text_goooo","text_icy","text_icyyyy",0,"text_:(","text_ned kee","text_for dor","text_wurd",0,"text_loop",0,0,0,"text_seen by","text_that","text_that be","text_wait...",
     "text_no go","text_go away pls","text_come pls","text_sidekik",0,"text_:o","text_hotte","text_fridgd","text_meta",0,0,0,0,0,"text_corekt","text_rong","text_timles","text_lit",
     "text_visit fren","text_slep","text_shy","text_behin u",0,"text_xwx","text_moar","text_split","text_nuek",0,0,0,0,0,"text_samefloat","text_clikt","text_mayb","text_an",
-    "text_flye","text_tall","text_haet skye","text_haet flor",0,"text_;d",0,0,0,0,0,0,0,0,0,"text_behind","text_look away","text_beside",
+    "text_flye","text_tall","text_haet skye","text_haet flor",0,"text_;d",0,0,0,0,0,0,0,0,"text_wun","text_behind","text_look away","text_beside",
     "text_diag","text_ortho","text_go my way","text_direction",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     "text_turn cornr","text_folo wal","text_zip","text_hopovr",0,0,0,0,0,0,0,0,0,0,0,0,0,"text_pinc",
     "text_munwalk","text_sidestep","text_diagstep","text_knightstep",0,0,0,0,0,0,0,0,0,0,0,0,0,"text_reed",
@@ -6159,6 +6159,17 @@ tiles_list = {
     color = {2, 2},
     layer = 20,
     tags = {"playing card back", "bicycle"},
+  },
+  -- 536
+  {
+    name = "text_wun",
+    sprite = "text_wun",
+    type = "text",
+    texttype = {cond_prefix = true},
+    color = {2,4},
+    layer = 20,
+    tags = {"won","patashu"},
+    desc = "WUN: A prefix condition that's true if the unit is a won level. When referring to the level itself, true if the level's been won.",
   },
 }
 

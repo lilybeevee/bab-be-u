@@ -1158,6 +1158,16 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
       if unit.name == "lin" and unit.special.pathlock and unit.special.pathlock ~= "none" then
         result = false
       end
+    elseif condtype == "wun" then
+      if unit == outerlvl then
+        if not readSaveFile(level_name,"won") then
+          result = false
+        end
+      else
+        if not readSaveFile(unit.special.name,"won") then
+          result = false
+        end
+      end
     else
       print("unknown condtype: " .. condtype)
       result = false
