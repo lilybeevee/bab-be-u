@@ -1761,7 +1761,7 @@ end
 function dropGotUnit(unit, rule)
   --TODO: CLEANUP: Blatantly copypasta'd from convertUnits.
   local obj_name = rule.object.name
-  if (obj_name == "hatt" or obj_name == "gunne" or obj_name == "katany" or unit == outerlvl) then
+  if unit == outerlvl then
     return
   end
   
