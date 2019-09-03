@@ -1722,9 +1722,6 @@ function destroyLevel(reason)
       end
     end
   end
-  if (#transform_results > 0) then
-    doWin("transform", transform_results)
-  end
   
   addUndo({"destroy_level", reason})
   playSound(reason)
@@ -1744,17 +1741,21 @@ function destroyLevel(reason)
       for _,unit in ipairs(units) do
         addParticles("destroy", unit.x, unit.y, unit.color)
       end
-      tile = "infloop"
-      if hasRule("loop","be",nil) then
-        local ruleparent = matchesRule("loop","be",nil)
-        print(dump(ruleparent[1][1]))
-        tile = ruleparent[1][1].rule.object.name
-        --vitellary: new rule stuff is ridiculous, i love it
+      local berule = matchesRule("loop","be","?")
+      for _,rule in ipairs(berule) do
+        table.insert(transform_results,rule.rule.object.name)
+        table.insert(win_sprite_override,tiles_list[tiles_by_name[rule.rule.object.name]])
       end
-      handleDels(units, true)
-      local new_unit = createUnit(tiles_by_name[tile], math.floor(mapwidth/2), math.floor(mapheight/2), 1)
-      addUndo({"create", new_unit.id, false})
+      handleDels(units,true)
+      if #berule == 0 then
+        local new_unit = createUnit(tiles_by_name["infloop"], math.floor(mapwidth/2), math.floor(mapheight/2), 1)
+        addUndo({"create", new_unit.id, false})
+      end
     end
+  end
+  
+  if (#transform_results > 0) then
+    doWin("transform", transform_results)
   end
 end
 
