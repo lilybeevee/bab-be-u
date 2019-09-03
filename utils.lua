@@ -854,7 +854,7 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
                   result = false
                   break
                 end
-              end
+              end   
             end
           end
           if not isdir then
@@ -887,7 +887,13 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
         local dx, dy, dir, px, py = getNextTile(unit, -dirs8[unit.dir][1], -dirs8[unit.dir][2], unit.dir)
         local frens = getUnitsOnTile(px, py, param, false, unit)
         for _,other in ipairs(sets) do
-          if not other[outerlvl] then
+          if other[outerlvl] then
+              local dx, dy, dir, px, py = getNextTile(unit, dirs8[unit.dir][1], dirs8[unit.dir][2], unit.dir)
+              if inBounds(px,py) then
+                result = false
+                break
+              end
+          else
             local found = false
             for _,fren in ipairs(frens) do
               if other[fren] then
