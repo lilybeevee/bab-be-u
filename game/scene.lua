@@ -1682,20 +1682,20 @@ function doOneMove(x, y, key)
       if timeless then
         extendReplayString(0, 0, "e")
         if firsttimestop then
-            playSound("timestop long",0.5)
-        else playSound("timestop",0.5)
-            end
-       -- print("ZA WARUDO! Time has stopped")
+          playSound("timestop long",0.5)
+        else
+          playSound("timestop",0.5)
+        end
       else
         addUndo({"timeless_rules", rules_with})
         parseRules()
         doMovement(0,0,"e")
         if firsttimestop then
-            playSound("time resume long",0.5)
-            firsttimestop = false
-        else playSound("time resume",0.5)
-            end
-        --print("And time resumes")
+          playSound("time resume long",0.5)
+          firsttimestop = false
+        else
+          playSound("time resume",0.5)
+        end
       end
       addUndo({"za warudo", timeless})
       unsetNewUnits()
