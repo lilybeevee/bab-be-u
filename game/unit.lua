@@ -1736,21 +1736,20 @@ function destroyLevel(reason)
       love = {}
     elseif hasRule("loop","be","try again") then
       doTryAgain()
-    else
-      level_destroyed = true
-      for _,unit in ipairs(units) do
-        addParticles("destroy", unit.x, unit.y, unit.color)
-      end
-      local berule = matchesRule("loop","be","?")
-      for _,rule in ipairs(berule) do
-        table.insert(transform_results,rule.rule.object.name)
-        table.insert(win_sprite_override,tiles_list[tiles_by_name[rule.rule.object.name]])
-      end
-      handleDels(units,true)
-      if #berule == 0 then
-        local new_unit = createUnit(tiles_by_name["infloop"], math.floor(mapwidth/2), math.floor(mapheight/2), 1)
-        addUndo({"create", new_unit.id, false})
-      end
+    end
+    level_destroyed = true
+    for _,unit in ipairs(units) do
+      addParticles("destroy", unit.x, unit.y, unit.color)
+    end
+    local berule = matchesRule("loop","be","?")
+    for _,rule in ipairs(berule) do
+      table.insert(transform_results,rule.rule.object.name)
+      table.insert(win_sprite_override,tiles_list[tiles_by_name[rule.rule.object.name]])
+    end
+    handleDels(units,true)
+    if #berule == 0 then
+      local new_unit = createUnit(tiles_by_name["infloop"], math.floor(mapwidth/2), math.floor(mapheight/2), 1)
+      addUndo({"create", new_unit.id, false})
     end
   end
   
