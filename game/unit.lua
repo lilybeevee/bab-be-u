@@ -456,6 +456,8 @@ function updateUnits(undoing, big_update)
       time_destroy = handleTimeDels(time_destroy)
     end
     
+    local wins,unwins = levelBlock()
+    
     --MOAR is 4-way growth, MOARx2 is 8-way growth, MOARx3 is 2x 4-way growth, MOARx4 is 2x 8-way growth, MOARx5 is 3x 4-way growth, etc.
     --TODO: If you write txt be moar, it's ambiguous which of a stacked text pair will be the one to grow into an adjacent tile first. But if you make it simultaneous, then you get double growth into corners which turns into exponential growth, which is even worse. It might need to be special cased in a clever way.
     local give_me_moar = true
@@ -937,18 +939,14 @@ function updateUnits(undoing, big_update)
     
     to_destroy = handleDels(to_destroy)
     
-    local unwin = getUnitsWithEffect(";d")
-    local isunwon = {}
-    for _,unit in ipairs(unwin) do
+    local isunwin = getUnitsWithEffect(";d")
+    for _,unit in ipairs(isunwin) do
       local stuff = getUnitsOnTile(unit.x,unit.y, nil, true)
       for _,on in ipairs(stuff) do
         is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
         if is_u and sameFloat(unit, on) then
           if timecheck(unit,"be","d") and (timecheck(on,"be","u") or timecheck(on,"be","u too") or timecheck(on,"be","u tres")) then
-            isunwon[unit] = countProperty(unit,";d")
-            if readSaveFile(level_name, "won") then
-              writeSaveFile(level_name, "won", false)
-            end
+            unwins = unwins + 1
           else
             addUndo({"timeless_unwin_add", on.id})
             table.insert(timeless_unwin,on.id)
@@ -962,9 +960,9 @@ function updateUnits(undoing, big_update)
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
       for _,on in ipairs(stuff) do
         is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
-        if is_u and sameFloat(unit, on) and not (isunwon[unit] and isunwon[unit] >= countProperty(unit,":)")) then
+        if is_u and sameFloat(unit, on) then
           if timecheck(unit,"be",":)") and (timecheck(on,"be","u") or timecheck(on,"be","u too") or timecheck(on,"be","u tres")) then
-            doWin("won")
+            wins = wins + 1
           else
             addUndo({"timeless_win_add", on.id})
             table.insert(timeless_win,on.id)
@@ -1003,12 +1001,26 @@ function updateUnits(undoing, big_update)
       end
     end
     
-    if (#timeless_unwin > 0) and not timeless and readSaveFile(level_name, "won") then
-      writeSaveFile(level_name, "won", false)
+    if not timeless then
+      wins = wins + #timeless_win
+      unwins = unwins + #timeless_unwin
+      for i,win in ipairs(timeless_win) do
+        addUndo("timeless_win_remove",win)
+        table.remove(timeless_win,i)
+      end
+      for i,unwin in ipairs(timeless_unwin) do
+        addUndo("timeless_unwin_remove",unwin)
+        table.remove(timeless_unwin,i)
+      end
     end
     
-    if (#timeless_win > 0) and (#timeless_unwin == 0) and not timeless then
+    print("wins: "..tostring(wins)..", unwins: "..tostring(unwins))
+    if wins > unwins then
       doWin("won")
+    else
+      if readSaveFile(level_name,"won") then
+        writeSaveFile(level_name,"won",false)
+      end
     end
     
     doDirRules()
@@ -1432,7 +1444,7 @@ function levelBlock()
     for _,unit in ipairs(units) do
       if sameFloat(unit, outerlvl) and inBounds(unit.x,unit.y) then
         destroyLevel("sink")
-        if not lvlsafe then return end
+        if not lvlsafe then return 0,0 end
       end
     end
   end
@@ -1441,7 +1453,7 @@ function levelBlock()
     for _,unit in ipairs(units) do
       if sameFloat(unit, outerlvl) and inBounds(unit.x,unit.y) then
         destroyLevel("snacc")
-        if not lvlsafe then return end
+        if not lvlsafe then return 0,0 end
       end
     end
   end
@@ -1470,7 +1482,7 @@ function levelBlock()
     for _,unit in ipairs(melters) do
       if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
         destroyLevel("hotte")
-        if not lvlsafe then return end
+        if not lvlsafe then return 0,0 end
       end
     end
   end
@@ -1494,7 +1506,7 @@ function levelBlock()
   if hasProperty(outerlvl, "ned kee") then
     if hasProperty(outerlvl, "for dor") then
       destroyLevel("unlock")
-      if not lvlsafe then return end
+      if not lvlsafe then return 0,0 end
     end
     local dors = getUnitsWithEffect("for dor")
     for _,unit in ipairs(dors) do
@@ -1503,7 +1515,7 @@ function levelBlock()
         if lvlsafe then
           table.insert(to_destroy, unit)
           addParticles("destroy", unit.x, unit.y, unit.color)
-        else return end
+        else return 0,0 end
       end
     end
     if #to_destroy > 0 then
@@ -1522,7 +1534,7 @@ function levelBlock()
         if lvlsafe then
           table.insert(to_destroy, unit)
           addParticles("destroy", unit.x, unit.y, unit.color)
-        else return end
+        else return 0,0 end
       end
     end
     if #to_destroy > 0 then
@@ -1547,7 +1559,7 @@ function levelBlock()
     local unit = ruleparent[2]
     if unit ~= outerlvl and sameFloat(outerlvl,unit) and inBounds(unit.x,unit.y) then
       destroyLevel("snacc")
-      if not lvlsafe then return end
+      if not lvlsafe then return 0,0 end
     end
   end
   
@@ -1595,11 +1607,12 @@ function levelBlock()
       if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
         writeSaveFile(level_name, "bonus", true)
         destroyLevel("bonus")
-        if not lvlsafe then return end
+        if not lvlsafe then return 0,0 end
       end
     end
   end
   
+  local unwins = 0
   if hasProperty(outerlvl, ";d") then
     local yous = getUnitsWithEffect("u")
     local youtoos = getUnitsWithEffect("u too")
@@ -1607,12 +1620,13 @@ function levelBlock()
     mergeTable(yous, youtoos)
     mergeTable(yous, youtres)
     for _,unit in ipairs(yous) do
-      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) and readSaveFile(level_name,"won") then
-        writeSaveFile(level_name,"won",false)
+      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
+        unwins = unwins + 1
       end
     end
   end
   
+  local wins = 0
   if hasProperty(outerlvl, ":)") then
     local yous = getUnitsWithEffect("u")
     local youtoos = getUnitsWithEffect("u too")
@@ -1621,7 +1635,7 @@ function levelBlock()
     mergeTable(yous, youtres)
     for _,unit in ipairs(yous) do
       if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
-        doWin("won")
+        wins = wins + 1
       end
     end
   end
@@ -1630,6 +1644,8 @@ function levelBlock()
 		--placeholder until NXT is coded
     doWin("nxt")
   end
+  
+  return wins,unwins
 end
 
 function changeDirIfFree(unit, dir)

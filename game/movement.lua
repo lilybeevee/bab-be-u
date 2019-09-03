@@ -652,7 +652,6 @@ It is probably possible to do, but lily has decided that it's not important enou
   parseRules()
   updateGroup()
   calculateLight()
-  levelBlock()
   parseRules()
   updateGroup()
   calculateLight()
