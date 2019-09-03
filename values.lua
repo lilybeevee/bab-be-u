@@ -1765,6 +1765,7 @@ tiles_list = {
   {
     name = "lila",
     sprite = "lila",
+    slep = true,
     color = {4, 2},
     layer = 5,
     rotate = true,
@@ -3807,6 +3808,7 @@ tiles_list = {
   {
     name = "creb",
     sprite = "creb",
+    slep = true,
     type = "object",
     color = {2,2},
     layer = 5,
@@ -3975,6 +3977,7 @@ tiles_list = {
   {
     name = "hors",
     sprite = "hors",
+    slep = true,
     type = "object",
     color = {6,1},
     layer = 5,
@@ -4141,6 +4144,7 @@ tiles_list = {
   {
     name = "square",
     sprite = "square",
+    slep = true,
     type = "object",
     color = {2, 4},
     layer = 6,
@@ -4152,6 +4156,7 @@ tiles_list = {
   {
     name = "triangle",
     sprite = "triangle",
+    slep = true,
     type = "object",
     color = {2, 4},
     layer = 6,
@@ -5978,7 +5983,6 @@ tiles_list = {
   {
     name = "lisp",
     sprite = "lisp",
-    slep = true,
     type = "object",
     color = {2, 2},
     layer = 5,
