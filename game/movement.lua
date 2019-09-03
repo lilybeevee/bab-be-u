@@ -1245,7 +1245,7 @@ function doPortal(unit, px, py, move_dir, dir, reverse)
     --This was already implemented in cg5's mod, but I overlooked it the first time around - PORTAL is FLOAT respecting, so now POOR TOLL is FLYE respecting. Spooky! (I already know this will have weird behaviour with PULL and SIDEKIK, so looking forward to that.)
     for _,v in ipairs(getUnitsOnTile(px, py, nil, false)) do
       --At Vitellary's request, make it so you can only enter the front of a portal.
-      if dirAdd(v.dir, 4) == move_dir and hasProperty(v, "poor toll") and sameFloat(unit, v) and not hasRule(unit,"haet",v) then
+      if dirAdd(v.dir, 4) == move_dir and hasProperty(v, "poor toll") and sameFloat(unit, v, true) and not hasRule(unit,"haet",v) then
         local portal_rules = matchesRule(v.fullname, "be", "poor toll")
         local portals_direct = {}
         local portals = {}
