@@ -1017,7 +1017,7 @@ function updateUnits(undoing, big_update)
     if wins > unwins then
       doWin("won")
     elseif unwins > wins and readSaveFile(level_name,"won") then
-      playSound("bonus")
+      playSound("unwin")
       writeSaveFile(level_name,"won",false)
     end
     
@@ -1117,7 +1117,7 @@ function miscUpdates()
       if (graphical_property_cache["enby"][unit] ~= nil) then
         table.insert(unit.overlay, "enby")
       end
-      if (graphical_property_cache["tranz"][unit] ~= nil) then
+      if (graphical_property_cache["tranz"][unit] ~= nil) and not hasProperty(unit,"notranform") then
         table.insert(unit.overlay, "trans")
       end
       if (graphical_property_cache["gay"][unit] ~= nil) then

@@ -210,7 +210,7 @@ selector_grid_contents = {
   },
   -- page 5: inanimate objects
   {
-    "wal","text_wal","bellt","text_bellt","hurcane","text_hurcane","buble","text_buble","katany","text_katany","petnygrame","text_petnygrame","firbolt","text_firbolt","hol","text_hol",0,0,
+    "wal","text_wal","bellt","text_bellt","hurcane","text_hurcane","buble","text_buble","katany","text_katany","petnygrame","text_petnygrame","firbolt","text_firbolt","hol","text_hol","golf","text_golf",
     "til","text_til","arro","text_arro","clowd","text_clowd","sno","text_sno","gunne","text_gunne","scarr","text_scarr","litbolt","text_litbolt","rif","text_rif",0,0,
     "watr","text_watr","colld","text_colld","rein","text_rein","icecub","text_icecub","slippers","text_slippers","pudll","text_pudll","icbolt","text_icbolt","win","text_win",0,0,
     "laav","text_laav","dor","text_dor","kee","text_kee","roc","text_roc","hatt","text_hatt","extre","text_extre","poisbolt","text_poisbolt","smol","text_smol",0,0,
@@ -443,8 +443,8 @@ tiles_list = {
     type = "object",
     color = {2, 4},
     layer = 3,
-    esc = "i want 1!!!",
     tags = {"flag"},
+    desc = "i want 1!!!",
   },
   -- 19
   {
@@ -6181,6 +6181,27 @@ tiles_list = {
     layer = 20,
     tags = {"no transform","notransform"},
     desc = "NO TRANFORM: A property that prevents the object from transforming.",
+  },
+  -- 538
+  {
+    name = "golf",
+    sprite = "golf",
+    type = "object",
+    color = {1, 2},
+    layer = 3,
+    tags = {"flag", "unwin"},
+    desc = "i want 0!!!",
+  },
+  -- 539
+  {
+    name = "text_golf",
+    sprite = "text_golf",
+    type = "text",
+    texttype = {object = true},
+    color = {1, 2},
+    layer = 20,
+    tags = {"flag", "unwin"},
+    desc = "you see, in golf, a LOWER score is better",
   },
 }
 
