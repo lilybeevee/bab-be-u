@@ -1138,11 +1138,12 @@ function scene.draw(dt)
       love.graphics.draw(sprite, 0, 0, 0, 1, 1, 0, 0)
     end
 
-    local function setColor(color)
+    local function setColor(color, opacity)
       if #color == 3 then
         color = {color[1]/255, color[2]/255, color[3]/255, 1}
       else
         color = {getPaletteColor(color[1], color[2])}
+        color[4] = color[4] * (opacity or 1)
       end
       love.graphics.setColor(color)
       return color
@@ -1153,7 +1154,8 @@ function scene.draw(dt)
         if units_by_layer[i] then
           for _,unit in ipairs(units_by_layer[i]) do
             local sprite = sprites[unit.sprite]
-            local color = setColor(unit.color_override or unit.color)
+            local color = unit.color_override or unit.color
+            setColor(color)
             if unit.name == "lin" then
               local name = "lin"
               if unit.special.pathlock and unit.special.pathlock ~= "none" then
@@ -1181,8 +1183,19 @@ function scene.draw(dt)
               newcolor[3] = newcolor[3]*255
               unit.color = newcolor
             end
-
-            love.graphics.draw(sprite, (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+            
+            if unit.name == "byc" or unit.name == "bac" then
+              if eq(color, {0,3}) then
+                setColor({0,0})
+              else
+                setColor({0,3})
+              end
+              love.graphics.draw(sprites["byc"], (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+              setColor(color)
+              love.graphics.draw(sprites[unit.name == "bac" and "bac" or "byc_editor"], (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+            else
+              love.graphics.draw(sprite, (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+            end
             if unit.name == "lvl" then
               if unit.special.visibility ~= "open" then
                 local r,g,b,a = love.graphics.getColor()
@@ -1239,7 +1252,8 @@ function scene.draw(dt)
             -- local x = tile.grid[1]
             -- local y = tile.grid[2]
 
-            local color = setColor(brush.color and main_palette_for_colour[brush.color] or tile.color)
+            local color = brush.color and main_palette_for_colour[brush.color] or tile.color
+            setColor(color)
 
             if rainbowmode then love.graphics.setColor(hslToRgb((love.timer.getTime()/3+x/tile_grid_width+y/tile_grid_height)%1, .5, .5, 1)) end
             
@@ -1266,8 +1280,18 @@ function scene.draw(dt)
             end
             
             if not found_matching_tag then love.graphics.setColor(0.2,0.2,0.2) end
-            
-            love.graphics.draw(sprite, (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+            if tile.name == "byc" or tile.name == "bac" then
+              if eq(color, {0,3}) then
+                setColor({0,0})
+              else
+                setColor({0,3})
+              end
+              love.graphics.draw(sprites["byc"], (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+              setColor(color)
+              love.graphics.draw(sprites[tile.name == "bac" and "bac" or "byc_editor"], (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+            else
+              love.graphics.draw(sprite, (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+            end
             if (tile.meta ~= nil) then
               setColor({4, 1})
               local metasprite = tile.meta == 2 and sprites["meta2"] or sprites["meta1"]
@@ -1301,23 +1325,34 @@ function scene.draw(dt)
     if hx ~= nil then
       if not (gooi.showingDialog or capturing) then
         if brush.id and not selector_open then
-          local sprite = sprites[tiles_list[brush.id].sprite]
+          local tile = tiles_list[brush.id]
+          local sprite = sprites[tile.sprite]
           if not sprite then sprite = sprites["wat"] end
 
           local rotation = 0
-          if tiles_list[brush.id].rotate then
+          if tile.rotate then
             rotation = (brush.dir - 1) * 45
           end
           
-          local color = brush.color and main_palette_for_colour[brush.color] or tiles_list[brush.id].color
+          local color = brush.color and main_palette_for_colour[brush.color] or tile.color
           if #color == 3 then
             love.graphics.setColor(color[1]/255, color[2]/255, color[3]/255, 0.25)
           else
             local r, g, b, a = getPaletteColor(color[1], color[2])
             love.graphics.setColor(r, g, b, a * 0.25)
           end
-
-          love.graphics.draw(sprite, (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, math.rad(rotation), 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+          if tile.name == "byc" or tile.name == "bac" then
+            if eq(color, {0,3}) then
+              setColor({0,0}, 0.15)
+            else
+              setColor({0,3}, 0.15)
+            end
+            love.graphics.draw(sprites["byc"], (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, math.rad(rotation), 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+            setColor(color, 0.25)
+            love.graphics.draw(sprites[tile.name == "bac" and "bac" or "byc_editor"], (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, math.rad(rotation), 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+          else
+            love.graphics.draw(sprite, (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, math.rad(rotation), 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+          end
         end
 
         love.graphics.setColor(1, 1, 0)

@@ -180,7 +180,7 @@ selector_grid_contents = {
 	"letter_go","letter_come","letter_pls","letter_away","letter_my","letter_no","letter_way","letter_ee","letter_fren","letter_ll","letter_bolt","letter_ol",0,0,0,0,0,0,
 	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   },
-  -- page 3: ui / iforeegructions
+  -- page 3: ui / instructions
   {
     0 ,"ui_w","ui_e","ui_r",0,0,0,"ui_i",0,0,0,0,0,0,0,"ui_7","ui_8","ui_9",
     "ui_a","ui_s","ui_d",0,0,0,"ui_j","ui_k","ui_l",0,0,0,0,0,0,"ui_4","ui_5","ui_6",
@@ -221,10 +221,10 @@ selector_grid_contents = {
     "fenss","text_fenss","platfor","text_platfor","tre","text_tre","stum","text_stum","dayzy","text_dayzy","lie","text_lie",0,0,0,0,0,0,
     "cobll","text_cobll","spik","text_spik","frut","text_frut","fungye","text_fungye","red","text_red","lie/8","text_lie/8",0,0,0,0,0,0,
     "wuud","text_wuud","spiky","text_spiky","parsol","text_parsol","clok","text_clok","ufu","text_ufu","rockit","text_rockit",0,0,0,0,0,0,
-    "brik","text_brik","sparkl","text_sparkl","sanglas","text_sanglas","bullb","text_bullb","son","text_son","muun","text_muun",0,0,0,0,0,0,
-    "san","text_san","piler","text_piler","sancastl","text_sancastl","shel","text_shel","starr","text_starr","cor","text_cor",0,0,0,0,0,0,
+    "brik","text_brik","sparkl","text_sparkl","sanglas","text_sanglas","bullb","text_bullb","son","text_son","muun","text_muun","bac","text_bac",0,0,0,0,
+    "san","text_san","piler","text_piler","sancastl","text_sancastl","shel","text_shel","starr","text_starr","cor","text_cor","byc","text_byc",0,0,0,0,
     "glas","text_glas","bom","text_bom","sine","text_sine","kar","text_kar","can","text_can","ger","text_ger","sirn","text_sirn",0,0,0,0,
-    "bordr","text_bordr","wut","text_wut","wat","text_wat","splittr","text_splittr","togll","text_togll","bon","text_bon","battry","text_battry",0,0,0,0,
+    "bordr","text_bordr","wut","text_wut","wat","text_wat","splittr","text_splittr","togll","text_togll","bon","text_bon","battry","text_battry","chekr","text_chekr",0,0,
   },
   -- page 6: properties, verbs and conditions
   {
@@ -1531,7 +1531,7 @@ tiles_list = {
     color = {1, 3},
     layer = 20,
     tags = {"shift"},
-    desc = "GOOOO: The iforeegant an object steps on a GOOOO unit, it is forced to move in the GOOOO unit's direction.",
+    desc = "GOOOO: The instant an object steps on a GOOOO unit, it is forced to move in the GOOOO unit's direction.",
   },
   --- 114
   {
@@ -1542,7 +1542,7 @@ tiles_list = {
     color = {1, 4},
     layer = 20,
     tags = {"slip", "slide", "patashu"},
-    desc = "ICYYYY: The iforeegant an object steps on an ICYYYY unit, it is forced to move again.",
+    desc = "ICYYYY: The instant an object steps on an ICYYYY unit, it is forced to move again.",
   },
   -- 115
   {
@@ -2128,7 +2128,7 @@ tiles_list = {
     color = {3, 2},
     layer = 20,
     tags = {"portal","cg5"},
-    desc = "POOR TOLL: If a unit would enter a POOR TOLL unit, it iforeegead leaves the next POOR TOLL unit of the same name in reading order (left to right, line by line, wrapping around) out the corresponding same side. Respects FLYE!",
+    desc = "POOR TOLL: If a unit would enter a POOR TOLL unit, it instead leaves the next POOR TOLL unit of the same name in reading order (left to right, line by line, wrapping around) out the corresponding same side. Respects FLYE!",
   },
   -- 170
   {
@@ -3073,7 +3073,7 @@ tiles_list = {
     texttype = {letter = true},
     color = {0,3},
     layer = 20,
-    desc = "This is used in JAIL and JILL. Discrimination agaiforeeg J!"
+    desc = "This is used in JAIL and JILL. Discrimination against J!"
   },
   -- 253
   {
@@ -4074,7 +4074,7 @@ tiles_list = {
     color = {1,4},
     layer = 20,
     tags = {"same float", "sameflye", "same flye", "infix condition"},
-    desc = "SAMEFLOAT( (Infix Condition): True if there is an iforeegance of the subject on the same amount of flye as the object.",
+    desc = "SAMEFLOAT( (Infix Condition): True if there is an instance of the subject on the same amount of flye as the object.",
   },
   -- 342
   {
@@ -6119,6 +6119,46 @@ tiles_list = {
     color = {5, 2},
     layer = 20,
     tags = {"plant", "cactus"},
+  },
+  -- 534
+  {
+    name = "byc",
+    sprite = "byc",
+    type = "object",
+    color = {2, 2},
+    rotate = true,
+    layer = 20,
+    tags = {"playing card", "bicycle", "ace"},
+  },
+  -- 535
+  {
+    name = "text_byc",
+    sprite = "text_byc",
+    type = "text",
+    texttype = {object = true},
+    color = {2, 2},
+    layer = 5,
+    tags = {"playing card", "bicycle", "ace"},
+  },
+  -- 534
+  {
+    name = "bac",
+    sprite = "bac",
+    type = "object",
+    color = {2, 2},
+    rotate = true,
+    layer = 5,
+    tags = {"playing card back", "bicycle"},
+  },
+  -- 535
+  {
+    name = "text_bac",
+    sprite = "text_bac",
+    type = "text",
+    texttype = {object = true},
+    color = {2, 2},
+    layer = 20,
+    tags = {"playing card back", "bicycle"},
   },
 }
 

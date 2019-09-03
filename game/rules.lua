@@ -477,7 +477,7 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
           if other.dir == full_rule.dir then
             local subset = true
             for _,u in ipairs(other.units) do
-              if not full_rule.units_set[u] then 
+              if not full_rule.units_set[u] and not u.texttype["and"] then 
                 subset = false
                 break
               end
@@ -487,7 +487,7 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
             else
               local subset = true
               for _,u in ipairs(full_rule.units) do
-                if not other.units_set[u] then
+                if not other.units_set[u] and not u.texttype["and"] then
                   subset = false
                   break
                 end
