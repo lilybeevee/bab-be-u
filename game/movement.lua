@@ -903,7 +903,7 @@ end
 
 function findSidekikers(unit,dx,dy)
   --fast track
-  if rules_with["sidekik"] == nil then return {} end
+  if rules_with["sidekik"] == nil and rules_with["diagkik"] == nil then return {} end
   local result = {}
   if hasProperty(unit, "shy") then
     return result
@@ -929,7 +929,6 @@ function findSidekikers(unit,dx,dy)
     end
   end
   
-  --Testing a new feature: sidekik & come pls objects follow you even on diagonals, to make them very hard to get away from in bab 8 way geometry, while just sidekik objects behave as they are right now so they're appropriate for 4 way geometry or being easy to walk away from
   local dir45 = (dir + 1 - 1) % 8 + 1
   for i = 1,4 do
     local curdir = (dir45 + 2*i - 1) % 8 + 1
@@ -939,7 +938,8 @@ function findSidekikers(unit,dx,dy)
     local cury = y+curdy
     local _dx, _dy, _dir, _x, _y = getNextTile(unit, curdx, curdy, curdir)
     for _,v in ipairs(getUnitsOnTile(_x, _y)) do
-      if hasProperty(v, "sidekik") and hasProperty(v, (i > 2 and "go away pls" or "come pls")) and not hasProperty(v, "ortho") and sameFloat(unit,v,true) then
+      local diagkikness = countProperty(v, "diagkik")
+      if ((i > 2) and (diagkikness >= 1) or (diagkikness >= 2)) and sameFloat(unit,v,true) then
         result[v] = dirAdd(dir, dirDiff(_dir, curdir))
       end
     end

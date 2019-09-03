@@ -231,7 +231,7 @@ selector_grid_contents = {
     "text_be","text_&","text_got","text_creat","text_snacc","text_spoop","text_copkat","text_moov","text_yeet","text_liek","text_haet","text_stalk","text_ignor","text_paint","text_vs","text_look at",0,0,
     "text_u","text_u too","text_u tres","text_walk",0,"text_:)","text_no swim","text_ouch","text_protecc",0,"text_nxt","text_stay ther","text_sublvl",0,"text_w/fren","text_arond","text_frenles","text_sans",
     "text_go","text_goooo","text_icy","text_icyyyy",0,"text_:(","text_ned kee","text_for dor","text_wurd",0,"text_loop",0,0,0,"text_seen by","text_that","text_that be","text_wait...",
-    "text_no go","text_go away pls","text_come pls","text_sidekik",0,"text_:o","text_hotte","text_fridgd","text_meta",0,0,0,0,0,"text_corekt","text_rong","text_timles","text_lit",
+    "text_no go","text_go away pls","text_come pls","text_sidekik","text_diagkik","text_:o","text_hotte","text_fridgd","text_meta",0,0,0,0,0,"text_corekt","text_rong","text_timles","text_lit",
     "text_visit fren","text_slep","text_shy","text_behin u",0,"text_xwx","text_moar","text_split","text_nuek",0,0,0,0,0,"text_samefloat","text_clikt","text_mayb","text_an",
     "text_flye","text_tall","text_haet skye","text_haet flor",0,"text_;d",0,0,"text_notranform",0,0,0,0,0,"text_wun","text_behind","text_look away","text_beside",
     "text_diag","text_ortho","text_go my way","text_direction",0,0,0,0,0,0,0,0,0,0,0,0,0,"text_sing",
@@ -1394,7 +1394,7 @@ tiles_list = {
     color ={6, 1},
     layer = 20,
     tags = {"sidekick"},
-    desc = "SIDEKIK: If a unit moves perpendicularly away from a SIDEKIK, the SIDEKIK copies that movement. If the SIDEKIK unit is also COME PLS, it copies movement on ANY surrounding tile.",
+    desc = "SIDEKIK: If a unit moves perpendicularly away from a SIDEKIK, the SIDEKIK copies that movement.",
   },
   --- 101
   {
@@ -2128,7 +2128,7 @@ tiles_list = {
     color = {3, 2},
     layer = 20,
     tags = {"portal","cg5"},
-    desc = "POOR TOLL: If a unit would enter a POOR TOLL unit, it instead leaves the next POOR TOLL unit of the same name in reading order (left to right, line by line, wrapping around) out the corresponding same side. Respects FLYE!",
+    desc = "POOR TOLL: If a unit would enter a POOR TOLL unit, it instead leaves the next POOR TOLL unit of the same name in reading order (left to right, line by line, wrapping around) out the corresponding same side.",
   },
   -- 170
   {
@@ -6180,7 +6180,7 @@ tiles_list = {
     color = {2,2},
     layer = 20,
     tags = {"no transform","notransform"},
-    desc = "NO TRANFORM: A property that prevents the object from transforming.",
+    desc = "NO TRANFORM: A property that prevents the object from transforming. LVL BE NO TRANFORM reverts any transformations it had.",
   },
   -- 538
   {
@@ -6213,6 +6213,17 @@ tiles_list = {
     layer = 20,
     tags = {"play", "music", "say"},
     desc = "SING (Verb): SING A-G with letters!",
+  },
+  --- 541
+  {
+    name = "text_diagkik",
+    sprite = "text_diagkik",
+    type = "text",
+    texttype = {property = true},
+    color ={6, 1},
+    layer = 20,
+    tags = {"sidekick"},
+    desc = "DIAGKIK: If a unit moves 45 degrees away from a DIAGKIK, the DIAGKIK copies that movement. With two stacks, also copies 135 degree movement.",
   },
 }
 
