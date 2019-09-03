@@ -1412,6 +1412,10 @@ function levelBlock()
   local to_destroy = {}
   local lvlsafe = hasRule(outerlvl,"got","lvl") or hasProperty(outerlvl,"protecc")
   
+  if hasProperty(outerlvl,"notranform") then
+    writeSaveFile(level_name,"transform",nil)
+  end
+  
   if hasProperty(outerlvl, "loop") then
     destroyLevel("infloop")
   end
@@ -1824,7 +1828,7 @@ function convertLevel()
 
   local converts = matchesRule(outerlvl,"be","?")
   for _,match in ipairs(converts) do
-    if not hasProperty(outerlvl, "notransform") then
+    if not (hasProperty(outerlvl, "lvl") or hasProperty(outerlvl, "notranform")) then
       local tile = tiles_by_name[match.rule.object.name]
       if match.rule.object.name == "text" then
         tile = tiles_by_name["text_lvl"]
@@ -1959,7 +1963,7 @@ function convertUnits(pass)
     local rules = match[1]
     local unit = match[2]
     local rule = rules.rule
-    if not hasProperty(unit, "notransform") then
+    if not hasProperty(unit, "notranform") then
       if (rule.subject.name == "mous" and rule.object.name ~= "mous") then
         for _,cursor in ipairs(cursors) do
           if inBounds(cursor.x, cursor.y) and testConds(cursor, rule.subject.conds) then
@@ -2011,7 +2015,7 @@ function convertUnits(pass)
     local unit = match[2]
     local rule = rules.rule
     
-    if not hasProperty(unit, "notransform") then
+    if not hasProperty(unit, "notranform") then
       if (rule.subject.name == "mous" and rule.object.name ~= "mous") then
         for _,cursor in ipairs(cursors) do
           if inBounds(cursor.x, cursor.y) and testConds(cursor, rule.subject.conds) then
@@ -2083,7 +2087,7 @@ function convertUnits(pass)
   local thes = matchesRule(nil,"be","the")
   for _,ruleparent in ipairs(thes) do
     local unit = ruleparent[2]
-    if not hasProperty(unit, "notransform") then
+    if not hasProperty(unit, "notranform") then
       local the = ruleparent[1].rule.object.unit
       
       local tx = the.x
