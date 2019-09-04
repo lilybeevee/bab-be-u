@@ -2502,6 +2502,32 @@ function updateGroup(n)
   end
 end
 
+function namesInGroup(group)
+  local result = {}
+  local tbl = referenced_objects
+  mergeTable(tbl, referenced_text)
+  table.insert(tbl, "lvl");
+  table.insert(tbl, "mous");
+  table.insert(tbl, "no1");
+  table.insert(tbl, "bordr");
+  for _,v in ipairs(tbl) do
+    local group_membership = matchesRule(v, "be", group);
+    for _,r in ipairs(group_membership) do
+      if (#(r.rule.subject.conds) == 0) then
+        table.insert(result, v)
+      else
+        for _,u in ipairs(units_by_name[v]) do
+          if testConds(u, r.rule.subject.conds) then
+            table.insert(result, v)
+            break
+          end
+        end
+      end
+    end
+  end
+  return result
+end
+
 function serializeRule(rule)
   local result = ""
   result = result..serializeUnit(rule.subject, true)

@@ -971,32 +971,60 @@ function updateUnits(undoing, big_update)
       end
     end
 
+    function doOneCreate(rule, creator, createe)
+      local object = createe
+      if (createe == "text") then
+        createe = "text_"..creator.fullname
+      end
+      
+      local tile = tiles_by_namePossiblyMeta(createe)
+      --let x ben't x txt prevent x be txt, and x ben't txt prevent x be y txt
+      local overriden = false;
+      if object == "text" then
+        overriden = hasRule(creator, "creatn't", "text_" .. creator.fullname)
+      elseif object:starts("text_") then
+        overriden = hasRule(creator, "creatn't", "text")
+      end
+      if tile ~= nil and not overriden then
+        local others = getUnitsOnTile(creator.x, creator.y, createe, true, nil)
+        if #others == 0 then
+          local new_unit = createUnit(tile, creator.x, creator.y, creator.dir, nil, nil, nil, rule.object.prefix)
+          addUndo({"create", new_unit.id, false})
+        end
+      elseif createe == "mous" then
+        local new_mouse = createMouse(creator.x, creator.y)
+        addUndo({"create_cursor", new_mouse.id})
+      end
+    end
+    
     local creators = matchesRule(nil, "creat", "?")
     for _,match in ipairs(creators) do
       local creator = match[2]
       local createe = match[1].rule.object.name
       if timecheck(creator,"creat",createe) then
-        if (createe == "text") then
-          createe = "text_"..creator.fullname
-        end
-        
-        local tile = tiles_by_namePossiblyMeta(createe)
-        --let x ben't x txt prevent x be txt, and x ben't txt prevent x be y txt
-        local overriden = false;
-        if match[1].rule.object.name == "text" then
-          overriden = hasRule(creator, "creatn't", "text_" .. match[1].rule.subject.name)
-        elseif match[1].rule.object.name:starts("text_") then
-          overriden = hasRule(creator, "creatn't", "text")
-        end
-        if tile ~= nil and not overriden then
-          local others = getUnitsOnTile(creator.x, creator.y, createe, true, creator)
-          if #others == 0 then
-            local new_unit = createUnit(tile, creator.x, creator.y, creator.dir, nil, nil, nil, match[1].rule.object.prefix)
-            addUndo({"create", new_unit.id, false})
+        if (group_names_set[createe] ~= nil) then
+          --[[local tbl = referenced_objects
+          mergeTable(tbl, referenced_text)
+          for _,v in ipairs(tbl) do
+            local group_membership = matchesRule(v, "be", createe);
+            for _,r in ipairs(group_membership) do
+              if (#(r.rule.subject.conds) == 0) then
+                doOneCreate(match[1].rule, creator, v)
+              else
+                for _,u in ipairs(units_by_name[v]) do
+                  if testConds(u, r.rule.subject.conds) then
+                    doOneCreate(match[1].rule, creator, v)
+                    break
+                  end
+                end
+              end
+            end
+          end]]
+          for _,v in ipairs(namesInGroup(createe)) do
+            doOneCreate(match[1].rule, creator, v)
           end
-        elseif createe == "mous" then
-          local new_mouse = createMouse(creator.x, creator.y)
-          addUndo({"create_cursor", new_mouse.id})
+        else
+          doOneCreate(match[1].rule, creator, createe)
         end
       end
     end
@@ -1760,40 +1788,67 @@ end
 
 function dropGotUnit(unit, rule)
   --TODO: CLEANUP: Blatantly copypasta'd from convertUnits.
-  local obj_name = rule.object.name
   if unit == outerlvl then
     return
   end
   
-  local istext = false
-  if rule.object.name == "text" then
-    istext = true
-    obj_name = "text_" .. rule.subject.name
-  end
-  if rule.object.name:starts("text_") then
-    istext = true
-  end
-  if rule.object.name:starts("this") then
-    obj_name = "this"
-  end
-  local obj_id = tiles_by_name[obj_name]
-  local obj_tile = tiles_list[obj_id]
-  --let x ben't x txt prevent x be txt, and x ben't txt prevent x be y txt
-  local overriden = false;
-  if rule.object.name == "text" then
-    overriden = hasRule(unit, "gotn't", "text_" .. rule.subject.name)
-  elseif rule.object.name:starts("text_") then
-    overriden = hasRule(unit, "gotn't", "text")
-  end
-  if not overriden and (rule.object.name == "mous" or (obj_tile ~= nil and (obj_tile.type == "object" or istext))) then
-    --if testConds(unit,rule[4][1]) then
-    if rule.object.name == "mous" then
-      local new_mouse = createMouse(unit.x, unit.y)
-      addUndo({"create_cursor", new_mouse.id})
-    else
-      local new_unit = createUnit(obj_id, unit.x, unit.y, unit.dir, false, nil, nil, rule.object.prefix)
-      addUndo({"create", new_unit.id, false})
+  function dropOneGotUnit(unit, rule, obj_name)
+    local object = obj_name
+    local istext = false
+    if rule.object.name == "text" then
+      istext = true
+      obj_name = "text_" .. unit.fullname
     end
+    if object:starts("text_") then
+      istext = true
+    end
+    if object:starts("this") then
+      obj_name = "this"
+    end
+    local obj_id = tiles_by_name[obj_name]
+    local obj_tile = tiles_list[obj_id]
+    --let x ben't x txt prevent x be txt, and x ben't txt prevent x be y txt
+    local overriden = false;
+    if object == "text" then
+      overriden = hasRule(unit, "gotn't", "text_" .. unit.fullname)
+    elseif object:starts("text_") then
+      overriden = hasRule(unit, "gotn't", "text")
+    end
+    if not overriden and (obj_name == "mous" or (obj_tile ~= nil and (obj_tile.type == "object" or istext))) then
+      if obj_name == "mous" then
+        local new_mouse = createMouse(unit.x, unit.y)
+        addUndo({"create_cursor", new_mouse.id})
+      else
+        local new_unit = createUnit(obj_id, unit.x, unit.y, unit.dir, false, nil, nil, rule.object.prefix)
+        addUndo({"create", new_unit.id, false})
+      end
+    end
+  end
+  
+  local obj_name = rule.object.name
+  if (group_names_set[obj_name] ~= nil) then
+    --[[local tbl = referenced_objects
+    mergeTable(tbl, referenced_text)
+    for _,v in ipairs(tbl) do
+      local group_membership = matchesRule(v, "be", obj_name);
+      for _,r in ipairs(group_membership) do
+        if (#(r.rule.subject.conds) == 0) then
+          dropOneGotUnit(unit, rule, v)
+        else
+          for _,u in ipairs(units_by_name[v]) do
+            if testConds(u, r.rule.subject.conds) then
+              dropOneGotUnit(unit, rule, v)
+              break
+            end
+          end
+        end
+      end
+    end]]
+    for _,v in ipairs(namesInGroup(obj_name)) do
+      dropOneGotUnit(unit, rule, v)
+    end
+  else
+    dropOneGotUnit(unit, rule, obj_name)
   end
 end
 
@@ -2233,7 +2288,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
   end
   
   --do this before the 'this' change to textname so that we only get 'this' in referenced_objects
-  if unit.texttype.object and unit.textname ~= "every1" and unit.textname ~= "mous" and unit.textname ~= "no1" and unit.textname ~= "lvl" and unit.textname ~= "text" and group_names_set[unit.textname] ~= true then
+  if unit.texttype.object and unit.textname ~= "every1" and unit.textname ~= "mous" and unit.textname ~= "bordr" and unit.textname ~= "no1" and unit.textname ~= "lvl" and unit.textname ~= "text" and group_names_set[unit.textname] ~= true then
     if not unit.textname:ends("n't") and not unit.textname:starts("text_") and not unit.textname:starts("letter_") and not table.has_value(referenced_objects, unit.textname) then
       table.insert(referenced_objects, unit.textname)
     end
