@@ -6238,7 +6238,7 @@ tiles_list = {
     layer = 5,
     rotate = true,
     tags = {"chars"},
-    desc = "",
+    desc = "i don't actually know what this is, someone tell me",
   },
   -- 543
   {
@@ -6249,7 +6249,6 @@ tiles_list = {
     color = {3, 0},
     layer = 20,
     tags = {"chars"},
-    desc = "",
   },
   -- 544
   {
@@ -6260,7 +6259,7 @@ tiles_list = {
     layer = 5,
     rotate = true,
     tags = {"triangle", "half"},
-    desc = "",
+    desc = "really cool that bab be u 2 introduced slopes, GOTY",
   },
   -- 545
   {
@@ -6271,7 +6270,6 @@ tiles_list = {
     color = {0, 3},
     layer = 20,
     tags = {"triangle", "half"},
-    desc = "",
   },
 }
 
