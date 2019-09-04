@@ -623,7 +623,7 @@ function scene.draw(dt)
       brightness = 0.33
     end
 
-    if (unit.name == "steev") and not hasRule("steev","be","u") then
+    if (unit.name == "steev") and not hasProperty(unit, "u") then
       brightness = 0.33
     end
     
