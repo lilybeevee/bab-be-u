@@ -1318,7 +1318,7 @@ function updateUnitColourOverride(unit)
   elseif unit.whit or (unit.reed and unit.grun and unit.bleu) or (unit.reed and unit.cyeann) or (unit.bleu and unit.yello) or (unit.grun and unit.purp) then -- white
     unit.color_override = {0, 3}
   elseif unit.blacc then -- black
-    unit.color_override = {0, 4}
+    unit.color_override = {0, 0}
   end
 end
 
