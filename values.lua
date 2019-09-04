@@ -105,14 +105,16 @@ bleu = {1, 3},
 purp = {3, 1},
 whit = {0, 3},
 pinc = {4, 1},
+graey = {0, 1},
+brwn = {6, 0},
 }
-color_names = {"reed", "orang", "yello", "grun", "cyeann", "bleu", "purp", "pinc", "whit", "blacc"}
+color_names = {"reed", "orang", "yello", "grun", "cyeann", "bleu", "purp", "pinc", "whit", "blacc", "graey", "brwn"}
 
 colour_for_palette = {}
 colour_for_palette[0] = {}
 colour_for_palette[0][0] = "blacc"
-colour_for_palette[0][1] = nil
-colour_for_palette[0][2] = nil
+colour_for_palette[0][1] = "graey"
+colour_for_palette[0][2] = "graey"
 colour_for_palette[0][3] = "whit"
 colour_for_palette[0][4] = "blacc"
 colour_for_palette[1] = {}
@@ -146,10 +148,10 @@ colour_for_palette[5][2] = "grun"
 colour_for_palette[5][3] = "grun"
 colour_for_palette[5][4] = nil
 colour_for_palette[6] = {}
-colour_for_palette[6][0] = nil
-colour_for_palette[6][1] = nil
-colour_for_palette[6][2] = "orang"
-colour_for_palette[6][3] = nil
+colour_for_palette[6][0] = "brwn"
+colour_for_palette[6][1] = "brwn"
+colour_for_palette[6][2] = "brwn"
+colour_for_palette[6][3] = "brwn"
 colour_for_palette[6][4] = "blacc"
 
 selector_grid_contents = {
@@ -235,14 +237,14 @@ selector_grid_contents = {
     "text_visit fren","text_slep","text_shy","text_behin u",0,"text_xwx","text_moar","text_split","text_nuek",0,0,0,0,0,"text_samefloat","text_clikt","text_mayb","text_an",
     "text_flye","text_tall","text_haet skye","text_haet flor",0,"text_;d",0,0,"text_notranform",0,0,0,0,0,"text_wun","text_behind","text_look away","text_beside",
     "text_diag","text_ortho","text_go my way","text_direction",0,0,0,0,0,0,0,0,0,0,0,0,0,"text_sing",
-    "text_turn cornr","text_folo wal","text_zip","text_hopovr","text_reflecc",0,0,0,0,0,0,0,0,0,0,0,0,"text_pinc",
+    "text_turn cornr","text_folo wal","text_zip","text_hopovr","text_reflecc",0,0,0,0,0,0,0,0,0,0,0,0,0,
     "text_munwalk","text_sidestep","text_diagstep","text_knightstep",0,0,0,0,0,0,0,0,0,0,0,0,0,"text_reed",
     "text_spin","text_rotatbl",0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_enby","text_orang",
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_tranz","text_yello",
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_gay","text_grun",
-    0,0,0,0,0,"text_try again","text_no undo","text_undo","text_za warudo","text_brite",0,0,0,0,0,"text_stelth","text_qt","text_cyeann",
-    0,0,0,0,0,"text_poor toll","text_go arnd","text_mirr arnd","text_glued","text_torc",0,0,0,0,0,"text_blacc","text_whit","text_bleu",
-    "text_...","text_''",0,0,0,"text_her","text_thr","text_rithere","text_the","text_opaque",0,0,0,0,0,"text_colrful","text_rave","text_purp",
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_brwn","text_tranz","text_yello",
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_blacc","text_gay","text_grun",
+    0,0,0,0,0,"text_try again","text_no undo","text_undo","text_za warudo","text_brite",0,0,0,0,0,"text_graey","text_qt","text_cyeann",
+    0,0,0,0,0,"text_poor toll","text_go arnd","text_mirr arnd","text_glued","text_torc",0,0,0,0,0,"text_whit","text_pinc","text_bleu",
+    "text_...","text_''",0,0,0,"text_her","text_thr","text_rithere","text_the","text_opaque",0,0,0,0,"text_stelth","text_colrful","text_rave","text_purp",
   },
 }
 tile_grid_width = 18
@@ -6302,6 +6304,34 @@ tiles_list = {
     color = {0, 3},
     layer = 20,
     tags = {"mirror", "diagonal", "line", "slope"},
+  },
+  -- 549
+  {
+    name = "text_graey",
+    sprite = "text_graey_cond",
+    sprite_transforms = {
+      property = "text_graey"
+    },
+    type = "text",
+    texttype = {cond_prefix = true, property = true, class_prefix = true},
+    color = {0, 1},
+    layer = 20,
+    tags = {"colors", "colours", "gray", "grey", "prefix condition"},
+    desc = "GRAEY: Causes the unit to become gray/grey.\nColor or colour?"
+  },
+  -- 550
+  {
+    name = "text_brwn",
+    sprite = "text_brwn_cond",
+    sprite_transforms = {
+      property = "text_brwn"
+    },
+    type = "text",
+    texttype = {cond_prefix = true, property = true, class_prefix = true},
+    color = {6, 0},
+    layer = 20,
+    tags = {"colors", "colours", "brown", "prefix condition"},
+    desc = "BRWN: Causes the unit to become brown."
   },
 }
 
