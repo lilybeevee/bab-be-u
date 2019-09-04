@@ -571,14 +571,14 @@ function addRule(full_rule)
       return
     else
       for _,v in ipairs(referenced_objects) do
-        addRuleSimple({v, rules.subject.conds}, rules.verb, rules.object, units, dir)
+        addRuleSimple({v, copyTable(rules.subject.conds)}, rules.verb, copyTable(rules.object), units, dir)
       end
     end
   elseif subject_not % 2 == 1 then
     if tiles_by_name[subject] or subject == "text" then
       local new_subjects = getEverythingExcept(subject)
       for _,v in ipairs(new_subjects) do
-        addRuleSimple({v, rules.subject.conds}, rules.verb, rules.object, units, dir)
+        addRuleSimple({v, copyTable(rules.subject.conds)}, rules.verb, rules.object, units, dir)
       end
       return
     end
@@ -590,7 +590,7 @@ function addRule(full_rule)
     elseif verb ~= "be" and verb ~= "ben't" then
       --we'll special case x be every1 in convertUnit now
       for _,v in ipairs(referenced_objects) do
-        addRuleSimple(rules.subject, rules.verb, {v, rules.object.conds}, units, dir)
+        addRuleSimple(copyTable(rules.subject), rules.verb, {v, copyTable(rules.object.conds)}, units, dir)
       end
     end
   elseif object_not % 2 == 1 then
@@ -603,14 +603,14 @@ function addRule(full_rule)
         new_objects = getEverythingExcept(object)
       end
       for _,v in ipairs(new_objects) do
-        -- print(fullDump(rules))
-        addRuleSimple(rules.subject, rules.verb, {v, rules.object.conds}, units, dir)
+        --print(fullDump(rules))
+        addRuleSimple(copyTable(rules.subject), rules.verb, {v, copyTable(rules.object.conds)}, units, dir)
       end
       --txt be txt needs to also apply for flog txt, bab txt, etc.
       if (object == "text" and verb == "be" and verb_not % 2 == 1) then
         for i,ref in ipairs(referenced_text) do
           for _,v in ipairs(new_objects) do
-            addRuleSimple({ref, rules.subject.conds}, rules.verb, {v, rules.object.conds}, units, dir)
+            addRuleSimple({ref, copyTable(rules.subject.conds)}, rules.verb, {v, copyTable(rules.object.conds)}, units, dir)
           end
         end
       end
@@ -696,6 +696,7 @@ function postRules()
             ) then
               -- print("matching rule", rule[1][1], rule[2], rule[3][1])
               if has_conds then
+                --print(fullDump(rule), fullDump(frule))
                 for _,cond in ipairs(inverse_conds[1]) do
                   if not frule.subject.conds then frule.subject.conds = {} end
                   table.insert(frule.subject.conds, cond)

@@ -1548,6 +1548,7 @@ function getCursorsOnTile(x, y, not_destroyed, exclude)
 end
 
 function copyTable(t, l_)
+  if t == nil then return t end
   local l = l_ or 0
   local new_table = {}
   for k,v in pairs(t) do
