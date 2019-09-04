@@ -223,7 +223,7 @@ selector_grid_contents = {
     "wuud","text_wuud","spiky","text_spiky","parsol","text_parsol","clok","text_clok","ufu","text_ufu","rockit","text_rockit",0,0,0,0,0,0,
     "brik","text_brik","sparkl","text_sparkl","sanglas","text_sanglas","bullb","text_bullb","son","text_son","muun","text_muun","bac","text_bac",0,0,0,0,
     "san","text_san","piler","text_piler","sancastl","text_sancastl","shel","text_shel","starr","text_starr","cor","text_cor","byc","text_byc",0,0,0,0,
-    "glas","text_glas","bom","text_bom","sine","text_sine","kar","text_kar","can","text_can","ger","text_ger","sirn","text_sirn",0,0,0,0,
+    "glas","text_glas","bom","text_bom","sine","text_sine","kar","text_kar","can","text_can","ger","text_ger","sirn","text_sirn",0,0,"reflecr","text_reflecr",
     "bordr","text_bordr","wut","text_wut","wat","text_wat","splittr","text_splittr","togll","text_togll","bon","text_bon","battry","text_battry","chekr","text_chekr","sloop","text_sloop",
   },
   -- page 6: properties, verbs and conditions
@@ -235,7 +235,7 @@ selector_grid_contents = {
     "text_visit fren","text_slep","text_shy","text_behin u",0,"text_xwx","text_moar","text_split","text_nuek",0,0,0,0,0,"text_samefloat","text_clikt","text_mayb","text_an",
     "text_flye","text_tall","text_haet skye","text_haet flor",0,"text_;d",0,0,"text_notranform",0,0,0,0,0,"text_wun","text_behind","text_look away","text_beside",
     "text_diag","text_ortho","text_go my way","text_direction",0,0,0,0,0,0,0,0,0,0,0,0,0,"text_sing",
-    "text_turn cornr","text_folo wal","text_zip","text_hopovr",0,0,0,0,0,0,0,0,0,0,0,0,0,"text_pinc",
+    "text_turn cornr","text_folo wal","text_zip","text_hopovr","text_reflecc",0,0,0,0,0,0,0,0,0,0,0,0,"text_pinc",
     "text_munwalk","text_sidestep","text_diagstep","text_knightstep",0,0,0,0,0,0,0,0,0,0,0,0,0,"text_reed",
     "text_spin","text_rotatbl",0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_enby","text_orang",
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_tranz","text_yello",
@@ -6226,7 +6226,7 @@ tiles_list = {
     texttype = {property = true},
     color ={6, 1},
     layer = 20,
-    tags = {"sidekick"},
+    tags = {"sidekick", "diagkick"},
     desc = "DIAGKIK: If a unit moves 45 degrees away from a DIAGKIK, the DIAGKIK copies that movement. With two stacks, also copies 135 degree movement.",
   },
   -- 542
@@ -6258,7 +6258,7 @@ tiles_list = {
     color = {0, 3},
     layer = 5,
     rotate = true,
-    tags = {"triangle", "half"},
+    tags = {"triangle", "half", "slope"},
     desc = "really cool that bab be u 2 introduced slopes, GOTY",
   },
   -- 545
@@ -6269,7 +6269,39 @@ tiles_list = {
     texttype = {object = true},
     color = {0, 3},
     layer = 20,
-    tags = {"triangle", "half"},
+    tags = {"triangle", "half", "slope"},
+  },
+  --- 546
+  {
+    name = "text_reflecc",
+    sprite = "text_reflecc",
+    type = "text",
+    texttype = {property = true},
+    color = {5, 2},
+    layer = 20,
+    tags = {"reflect", "slope", "bounce", "mirror"},
+    desc = "REFLECC: Use this only with a sprite oriented top-left to bottom-right naturally (like SLOOP). When a unit moves onto a REFLECC unit from in front or behind, it will bounce back at 180 degrees. At a 45/135 angle, 90 degrees. At a 90 angle, it will be unable to enter.",
+  },
+  -- 547
+  {
+    name = "reflecr",
+    sprite = "reflecr",
+    type = "object",
+    color = {0, 3},
+    layer = 5,
+    rotate = true,
+    tags = {"mirror", "diagonal", "line", "slope"},
+    desc = "imported directly from Deflektor",
+  },
+  -- 548
+  {
+    name = "text_reflecr",
+    sprite = "text_reflecr",
+    type = "text",
+    texttype = {object = true},
+    color = {0, 3},
+    layer = 20,
+    tags = {"mirror", "diagonal", "line", "slope"},
   },
 }
 

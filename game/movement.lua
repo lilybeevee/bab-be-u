@@ -23,7 +23,6 @@ function doUpdate(already_added, moving_units_next)
       if (sliderulesexist) then
         table.insert(sliders, unit)
       end
-      --applySlide(unit, x-unit.x, y-unit.y, already_added, moving_units_next)
       local changedDir = updateDir(unit, dir)
       if not changedDir then
         updateDir(unit, dirAdd(dir, geometry_spin), true)
@@ -82,7 +81,7 @@ function doMovement(movex, movey, key)
     movey = 0
   end
   walkdirchangingrulesexist = rules_with["munwalk"] or rules_with["sidestep"] or rules_with["diagstep"] or rules_with["hopovr"] or rules_with["knightstep"]
-  sliderulesexist = rules_with["icyyyy"] or rules_with["goooo"]
+  sliderulesexist = rules_with["icyyyy"] or rules_with["goooo"] or rules_with["reflecc"]
   local played_sound = {}
   local slippers = {}
   local flippers = {}
@@ -804,13 +803,89 @@ function applySlide(mover, already_added, moving_units_next)
    --we haven't actually moved yet, so check the tile we will be on
   local others = getUnitsOnTile(mover.x, mover.y, nil, false, mover)
   table.insert(others, outerlvl)
+  --REFLECC is now also handled here, and goes before anything else.
+  for _,v in ipairs(others) do
+    if (sameFloat(mover, v) and not v.already_moving) and timecheck(v) then
+      local reflecc = hasProperty(v, "reflecc")
+      if (reflecc) then
+        local dirToUse;
+        --SLOOP is oriented TL-BR when facing 1.
+        --Entering it 1 knocks you down to 3.
+        --Entering it 2 is forbidden.
+        --Entering it 3 knocks you down to 1.
+        --Entering it 4 knocks you back to 8.
+        --Entering it 5 knocks you back to 7.
+        --Entering it 6 is forbidden.
+        --Entering it 7 knocks you back to 5.
+        --Entering it 8 knocks you back to 4.
+        --SLOOP is oriented T-B when facing 2.
+        --Entering it 1 knocks you back to 5.
+        --Entering it 2 knocks you back to 4.
+        --Entering it 3 is forbidden.
+        --Entering it 4 knocks you back to 2.
+        --Entering it 5 knocks you back to 1.
+        --Entering it 6 knocks you back to 8.
+        --Entering it 7 is forbidden.
+        --Entering it 8 knocks you back to 6.
+        --TL;DR:
+        --v.dir is paired with v.dir+2.
+        --v.dir+1 is forbidden, as is v.dir+5.
+        --v.dir+3 is paired with v.dir v.dir+7.
+        --v.dir+4 is paired with v.dir+6.
+        local dirDifference = mover.dir - v.dir;
+        if (dirDifference < 0) then dirDifference = dirDifference + 8; end
+        if (dirDifference == 0) then
+          dirToUse = dirAdd(mover.dir, 2);
+        elseif (dirDifference == 1) then
+          dirToUse = nil;
+        elseif (dirDifference == 2) then
+           dirToUse = dirAdd(mover.dir, -2);
+        elseif (dirDifference == 3) then
+          dirToUse = dirAdd(mover.dir, 4);
+        elseif (dirDifference == 4) then
+          dirToUse = dirAdd(mover.dir, 2);
+        elseif (dirDifference == 5) then
+          dirToUse = nil;
+        elseif (dirDifference == 6) then
+          dirToUse = dirAdd(mover.dir, -2);
+        elseif (dirDifference == 7) then
+          dirToUse = dirAdd(mover.dir, 4);
+        end
+        print(dirToUse)
+        if (dirToUse ~= nil) then
+          if (not did_clear_existing) then
+            for i = #mover.moves,1,-1 do
+              if mover.moves[i].reason == "reflecc" or mover.moves[i].reason == "goooo" or mover.moves[i].reason == "icyyyy" then
+                table.remove(mover.moves, i)
+              end
+            end
+            did_clear_existing = true
+          end
+          --the new moves will be at the start of the unit's moves data, so that it takes precedence over what it would have done next otherwise
+          --movedebug("launching:"..mover.fullname..","..v.dir)
+          
+          table.insert(mover.moves, 1, {reason = "reflecc", dir = dirToUse, times = 1})
+          if not already_added[mover] then
+            --movedebug("did add launcher")
+            table.insert(moving_units_next, mover)
+            already_added[mover] = true
+          end
+          did_launch = true
+        end
+      end
+    end
+  end
+  if (did_launch) then
+    return
+  end
+  
   for _,v in ipairs(others) do
     if (sameFloat(mover, v) and not v.already_moving) and timecheck(v) then
       local launchness = countProperty(v, "goooo")
       if (launchness > 0) then
         if (not did_clear_existing) then
           for i = #mover.moves,1,-1 do
-            if mover.moves[i].reason == "goooo" or mover.moves[i].reason == "icyyyy" then
+            if mover.moves[i].reason == "reflecc" or mover.moves[i].reason == "goooo" or mover.moves[i].reason == "icyyyy" then
               table.remove(mover.moves, i)
             end
           end
@@ -838,7 +913,7 @@ function applySlide(mover, already_added, moving_units_next)
       if (slideness > 0) then
         if (not did_clear_existing) then
           for i = #mover.moves,1,-1 do
-            if mover.moves[i].reason == "goooo" or mover.moves[i].reason == "icyyyy" then
+            if mover.moves[i].reason == "reflecc" or mover.moves[i].reason == "goooo" or mover.moves[i].reason == "icyyyy" then
               table.remove(mover.moves, i)
             end
           end
@@ -1623,6 +1698,8 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
         stopped = stopped or sameFloat(unit, v)
       elseif hasProperty(v, "come pls") and not hasProperty(v, "go away pls") and not would_swap_with and not pulling then
         stopped = stopped or sameFloat(unit, v)
+      elseif hasProperty(v, "reflecc") and refleccPrevents(v.dir, dx, dy) then
+        stopped = stopped or sameFloat(unit, v)
       elseif hasProperty(v, "go my way") and goMyWayPrevents(v.dir, dx, dy) then
         stopped = stopped or sameFloat(unit, v)
       end
@@ -1666,6 +1743,15 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
   end]]--
 
   return true,movers,specials
+end
+
+function refleccPrevents(dir, dx, dy)
+  dx = sign(dx)
+  dy = sign(dy)
+  local otherDir = dirs8_by_offset[dx][dy];
+  local dirDifference = otherDir - dir;
+  if (dirDifference < 0) then dirDifference = dirDifference + 8; end
+  return dirDifference == 1 or dirDifference == 5
 end
 
 function goMyWayPrevents(dir, dx, dy)
