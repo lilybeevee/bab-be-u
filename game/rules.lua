@@ -571,14 +571,14 @@ function addRule(full_rule)
       return
     else
       for _,v in ipairs(referenced_objects) do
-        addRuleSimple({v, copyTable(rules.subject.conds)}, rules.verb, copyTable(rules.object), units, dir)
+        addRuleSimple({v, rules.subject.conds}, rules.verb, rules.object, units, dir)
       end
     end
   elseif subject_not % 2 == 1 then
     if tiles_by_name[subject] or subject == "text" then
       local new_subjects = getEverythingExcept(subject)
       for _,v in ipairs(new_subjects) do
-        addRuleSimple({v, copyTable(rules.subject.conds)}, rules.verb, rules.object, units, dir)
+        addRuleSimple({v, rules.subject.conds}, rules.verb, rules.object, units, dir)
       end
       return
     end
@@ -590,7 +590,7 @@ function addRule(full_rule)
     elseif verb ~= "be" and verb ~= "ben't" then
       --we'll special case x be every1 in convertUnit now
       for _,v in ipairs(referenced_objects) do
-        addRuleSimple(copyTable(rules.subject), rules.verb, {v, copyTable(rules.object.conds)}, units, dir)
+        addRuleSimple(rules.subject, rules.verb, {v, rules.object.conds}, units, dir)
       end
     end
   elseif object_not % 2 == 1 then
@@ -604,13 +604,13 @@ function addRule(full_rule)
       end
       for _,v in ipairs(new_objects) do
         --print(fullDump(rules))
-        addRuleSimple(copyTable(rules.subject), rules.verb, {v, copyTable(rules.object.conds)}, units, dir)
+        addRuleSimple(rules.subject, rules.verb, {v, rules.object.conds}, units, dir)
       end
       --txt be txt needs to also apply for flog txt, bab txt, etc.
       if (object == "text" and verb == "be" and verb_not % 2 == 1) then
         for i,ref in ipairs(referenced_text) do
           for _,v in ipairs(new_objects) do
-            addRuleSimple({ref, copyTable(rules.subject.conds)}, rules.verb, {v, copyTable(rules.object.conds)}, units, dir)
+            addRuleSimple({ref, rules.subject.conds}, rules.verb, {v, rules.object.conds}, units, dir)
           end
         end
       end
@@ -699,10 +699,14 @@ function postRules()
                 --print(fullDump(rule), fullDump(frule))
                 for _,cond in ipairs(inverse_conds[1]) do
                   if not frule.subject.conds then frule.subject.conds = {} end
+                  frule.subject = copyTable(frule.subject);
+                  frule.subject.conds = copyTable(frule.subject.conds);
                   table.insert(frule.subject.conds, cond)
                 end
                 for _,cond in ipairs(inverse_conds[2]) do
                   if not frule.object.conds then frule.object.conds = {} end
+                  frule.object = copyTable(frule.object);
+                  frule.object.conds = copyTable(frule.object.conds);
                   table.insert(frule.object.conds, cond)
                 end
               else
