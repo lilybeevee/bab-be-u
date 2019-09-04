@@ -1619,7 +1619,7 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
         stopped = true
       elseif hasProperty(v, "no go") then --Things that are STOP stop being PUSH or PULL, unlike in Baba. Also unlike Baba, a wall can be floated across if it is not tall!
         stopped = stopped or sameFloat(unit, v)
-      elseif hasProperty(v, "sidekik") and not hasProperty(v, "go away pls") and not would_swap_with then
+      elseif (hasProperty(v, "sidekik") or hasProperty(v, "diagkik")) and not hasProperty(v, "go away pls") and not would_swap_with then
         stopped = stopped or sameFloat(unit, v)
       elseif hasProperty(v, "come pls") and not hasProperty(v, "go away pls") and not would_swap_with and not pulling then
         stopped = stopped or sameFloat(unit, v)
