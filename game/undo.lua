@@ -186,7 +186,7 @@ function doBack(unitid, turn, _ignore_no_undo)
   --UNDO being able to supercede NO UNDO sounds more interesting than if it's a non-interaction imo, means you could make a puzzle where you have to rewind something that was otherwise impossible to rewind
   local ignore_no_undo = _ignore_no_undo
   if (ignore_no_undo == nil) then ignore_no_undo = true end
-  if (turn <= 1) then
+  if (turn <= 0) then
     return false
   end
   if undo_buffer[turn] ~= nil then
@@ -328,7 +328,7 @@ function doTryAgain()
     try_again_cache[unit] = true
   end
   local can_undo = true
-  local i = 2
+  local i = 1
   --instead of literally undoing everything, use BACK code to create new undo events. That way 1) TRY AGAIN can be undone. 2) Units don't forget their previous history each TRY AGAIN, should they be NO UNDO now but not in the future.
   while (can_undo) do
     can_undo = doBack(nil, i, false)
