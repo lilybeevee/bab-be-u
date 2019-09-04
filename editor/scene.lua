@@ -757,6 +757,7 @@ function scene.mouseReleased(x, y, button)
       if mouseOverBox(30, -30, 62, 14, t) then -- go to level
         loadLevels({level_dialogue.unit.special.name}, "edit", level_dialogue.unit)
       end
+      scene.updateMap()
     elseif level_dialogue.unit.name == "lin" and mouseOverBox(-75, -58, 150, 50, t) then
       -- hidden/locked/open
       if mouseOverBox(-59, -50, 16, 16, t) then
@@ -785,6 +786,7 @@ function scene.mouseReleased(x, y, button)
           level_dialogue.unit.special.number = (level_dialogue.unit.special.number or 1) + (shift and 10 or 1)
         end
       end
+      scene.updateMap()
     else
       scene.setLevelDialogue()
     end
@@ -905,7 +907,7 @@ function scene.update(dt)
       end
     elseif (not settings_open or not mouseOverBox(settings.x, settings.y, settings.w, settings.h)) and not level_dialogue.enabled then
       local hx,hy = getHoveredTile()
-      if hx ~= nil and (selector_open or inBounds(hx, hy, true)) then
+      if hx ~= nil and ((selector_open and inBounds(hx, hy)) or (not selector_open and inBounds(hx, hy, true))) then
         local tileid = hx + hy * mapwidth
 
         local hovered = {}
