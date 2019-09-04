@@ -1003,23 +1003,6 @@ function updateUnits(undoing, big_update)
       local createe = match[1].rule.object.name
       if timecheck(creator,"creat",createe) then
         if (group_names_set[createe] ~= nil) then
-          --[[local tbl = referenced_objects
-          mergeTable(tbl, referenced_text)
-          for _,v in ipairs(tbl) do
-            local group_membership = matchesRule(v, "be", createe);
-            for _,r in ipairs(group_membership) do
-              if (#(r.rule.subject.conds) == 0) then
-                doOneCreate(match[1].rule, creator, v)
-              else
-                for _,u in ipairs(units_by_name[v]) do
-                  if testConds(u, r.rule.subject.conds) then
-                    doOneCreate(match[1].rule, creator, v)
-                    break
-                  end
-                end
-              end
-            end
-          end]]
           for _,v in ipairs(namesInGroup(createe)) do
             doOneCreate(match[1].rule, creator, v)
           end
@@ -1831,23 +1814,6 @@ function dropGotUnit(unit, rule)
   
   local obj_name = rule.object.name
   if (group_names_set[obj_name] ~= nil) then
-    --[[local tbl = referenced_objects
-    mergeTable(tbl, referenced_text)
-    for _,v in ipairs(tbl) do
-      local group_membership = matchesRule(v, "be", obj_name);
-      for _,r in ipairs(group_membership) do
-        if (#(r.rule.subject.conds) == 0) then
-          dropOneGotUnit(unit, rule, v)
-        else
-          for _,u in ipairs(units_by_name[v]) do
-            if testConds(u, r.rule.subject.conds) then
-              dropOneGotUnit(unit, rule, v)
-              break
-            end
-          end
-        end
-      end
-    end]]
     for _,v in ipairs(namesInGroup(obj_name)) do
       dropOneGotUnit(unit, rule, v)
     end

@@ -2506,7 +2506,7 @@ end
 
 function namesInGroup(group)
   local result = {}
-  local tbl = referenced_objects
+  local tbl = copyTable(referenced_objects)
   mergeTable(tbl, referenced_text)
   table.insert(tbl, "lvl");
   table.insert(tbl, "mous");
