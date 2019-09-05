@@ -611,6 +611,12 @@ function countProperty(unit,prop)
   return #matchesRule(unit,"be",prop)
 end
 
+
+function hasSing(unit,note)
+    bit = love.audio.newSource("assets/audio/sfx/bit2.wav", "static")
+    return hasRule(unit,"sing",note)
+end
+
 --to prevent infinite loops where a set of rules/conditions is self referencing
 withrecursion = {}
 
@@ -1781,6 +1787,12 @@ function addParticles(type,x,y,color,count)
     ps:start()
     ps:emit(count or 1)
     table.insert(particles, ps)
+  elseif type == "sing" then
+    local ps = love.graphics.newParticleSystem(sprites["noet"])
+    local px = (x + 0.5) * TILE_SIZE
+    local py = (y + 0.5) * TILE_SIZE
+    local size = 0.2
+    -- insert particles here
   end
 end
 

@@ -1580,6 +1580,57 @@ function scene.checkInput()
         doOneMove(x, y, key)
         local end_time = love.timer.getTime()
         if not unit_tests then print("gameplay logic took: "..tostring(round((end_time-start_time)*1000)).."ms") end
+        -- SING
+        if tiles_by_name["text_sing"] then
+            if hasSing(unit,"c") or hasSing(unit,"b_sharp") then
+                bit:setPitch(1)
+                bit:play()
+            end
+            if hasSing(unit,"c_sharp") or hasSing(unit,"d_flat") then
+                bit:setPitch(2^(1/12))
+                bit:play()
+            end
+            if hasSing(unit,"d") then
+                bit:setPitch(2^(2/12))
+                bit:play()
+            end
+            if hasSing(unit,"d_sharp") or hasSing(unit,"e_flat") then
+                bit:setPitch(2^(3/12))
+                bit:play()
+            end
+            if hasSing(unit,"e") or hasSing(unit,"f_flat") then
+                bit:setPitch(2^(4/12))
+                bit:play()
+            end
+            if hasSing(unit,"f") or hasSing(unit,"e_sharp") then
+                bit:setPitch(2^(5/12))
+                bit:play()
+            end
+            if hasSing(unit,"f_sharp") or hasSing(unit,"g_flat") then
+                bit:setPitch(2^(6/12))
+                bit:play()
+            end
+            if hasSing(unit,"g") then
+                bit:setPitch(2^(7/12))
+                bit:play()
+            end
+            if hasSing(unit,"g_sharp") or hasSing(unit,"a_flat") then
+                bit:setPitch(2^(8/12))
+                bit:play()
+            end
+            if hasSing(unit,"a") then
+                bit:setPitch(2^(9/12))
+                bit:play()
+            end
+            if hasSing(unit,"a_sharp") or hasSing(unit,"b_flat") then
+                bit:setPitch(2^(10/12))
+                bit:play()  
+            end
+            if hasSing(unit,"b") or hasSing(unit,"c_flat") then
+                bit:setPitch(2^(11/12))
+                bit:play()  
+            end
+        end
         -- BUP
         if hasRule("bup","be","u") and units_by_name["bup"] then
             playSound("bup")
