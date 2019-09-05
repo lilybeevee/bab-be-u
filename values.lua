@@ -6409,7 +6409,6 @@ tiles_list = {
     type = "object",
     color = {6,1},
     layer = 2,
-    rotate = "true",
     tags = {"boat", "ship"},
   },
   -- 558
