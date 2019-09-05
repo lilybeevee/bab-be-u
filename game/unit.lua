@@ -1509,7 +1509,7 @@ function levelBlock()
   if hasProperty(outerlvl, "fridgd") then
     if hasProperty(outerlvl, "hotte") then
       destroyLevel("hotte")
-      if not lvlsafe then return end
+      if not lvlsafe then return 0,0 end
     end
     local melters = getUnitsWithEffect("hotte")
     for _,unit in ipairs(melters) do
