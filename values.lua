@@ -174,7 +174,7 @@ selector_grid_contents = {
     "bellt", "text_bellt", "text_go", "tre", "text_tre", "piler", "text_piler", "hatt", "text_hatt", "hedg", "text_hedg", 0, 0, "rif", "text_rif", "text_glued", "text_whit", "text_orang",
     "boll", "text_boll", "text_:o", "frut", "text_frut", "kirb", "text_kirb", "katany", "text_katany", "metl", "text_metl", 0, 0, 0, 0, "text_enby", "text_colrful", "text_yello",
     "clok", "text_clok", "text_try again", "text_no undo", "text_undo", "slippers", "text_slippers", "firbolt", "text_firbolt", "jail", "text_jail", 0, 0, 0, 0, "text_tranz", "text_rave", "text_grun",
-    "splittr", "text_splittr", "text_split", "steev", "text_steev", "boy", "text_boy", "icbolt", "text_icbolt", "platfor", "text_platfor", 0, 0, 0, 0, "text_gay", "text_stelth", "text_cyeann",
+    "splittr", "text_splittr", "text_split", "steev", "text_steev", "boy", "text_boy", "icbolt", "text_icbolt", "platfor", "text_platfor", "chain", "text_chain", 0, 0, "text_gay", "text_stelth", "text_cyeann",
     "chekr", "text_chekr", "text_diag", "text_ortho", "text_haet flor", "arro", "text_arro", "text_go my way", "text_spin", "text_no turn", "text_stubbn", "text_rotatbl", 0, 0, "text_pinc", "text_qt", "text_paint", "text_bleu",
     "clowd", "text_clowd", "text_flye", "text_tall", "text_haet skye", "ghost fren", "text_ghost fren", "robobot", "text_robobot", "sparkl", "text_sparkl", "spik", "text_spik", "spiky", "text_spiky", "bordr", "text_bordr", "text_purp",
     nil
@@ -224,13 +224,13 @@ selector_grid_contents = {
     "gras","text_gras","algay","text_algay","flog","text_flog","boux","text_boux","knif","text_knif","heg","text_heg","timbolt","text_timbolt","tor","text_tor",0,0,
     "hedg","text_hedg","banboo","text_banboo","boll","text_boll","l..uv","text_l..uv","wips","text_wips",0,0,0,0,0,0,0,0,
     "metl","text_metl","vien","text_vien","leef","text_leef","karot","text_karot","fir","text_fir","eeg","text_eeg","foreeg","text_foreeg",0,0,0,0,
-    "jail","text_jail","ladr","text_ladr","pallm","text_pallm","coco","text_coco","rouz","text_rouz","noet","text_noet",0,0,0,0,0,0,
+    "jail","text_jail","ladr","text_ladr","pallm","text_pallm","coco","text_coco","rouz","text_rouz","noet","text_noet","lili","text_lili",0,0,0,0,
     "fenss","text_fenss","platfor","text_platfor","tre","text_tre","stum","text_stum","dayzy","text_dayzy","lie","text_lie",0,0,0,0,0,0,
     "cobll","text_cobll","spik","text_spik","frut","text_frut","fungye","text_fungye","red","text_red","lie/8","text_lie/8",0,0,0,0,0,0,
-    "wuud","text_wuud","spiky","text_spiky","parsol","text_parsol","clok","text_clok","ufu","text_ufu","rockit","text_rockit",0,0,0,0,0,0,
+    "wuud","text_wuud","spiky","text_spiky","parsol","text_parsol","clok","text_clok","ufu","text_ufu","rockit","text_rockit","swim","text_swim",0,0,0,0,
     "brik","text_brik","sparkl","text_sparkl","sanglas","text_sanglas","bullb","text_bullb","son","text_son","muun","text_muun","bac","text_bac",0,0,0,0,
     "san","text_san","piler","text_piler","sancastl","text_sancastl","shel","text_shel","starr","text_starr","cor","text_cor","byc","text_byc",0,0,0,0,
-    "glas","text_glas","bom","text_bom","sine","text_sine","kar","text_kar","can","text_can","ger","text_ger","sirn","text_sirn",0,0,"reflecr","text_reflecr",
+    "glas","text_glas","bom","text_bom","sine","text_sine","kar","text_kar","can","text_can","ger","text_ger","sirn","text_sirn","chain","text_chain","reflecr","text_reflecr",
     "bordr","text_bordr","wut","text_wut","wat","text_wat","splittr","text_splittr","togll","text_togll","bon","text_bon","battry","text_battry","chekr","text_chekr","sloop","text_sloop",
   },
   -- page 6: properties, verbs and conditions
@@ -6361,6 +6361,66 @@ tiles_list = {
     color = {0,3},
     layer = 20,
     desc = "For use with SING.";
+  },
+  -- 553
+  {
+    name = "chain",
+    sprite = "chain",
+    type = "object",
+    color = {0, 2},
+    layer = 3,
+    rotate = "true",
+    desc = "EVERY1 W/FREN JAIL HAET LVL. now bab's in jail :(",
+  },
+  -- 554
+  {
+    name = "text_chain",
+    sprite = "text_chain",
+    type = "text",
+    texttype = {object = true},
+    color = {0, 2},
+    layer = 20,
+  },
+  -- 555
+  {
+    name = "lili",
+    sprite = "lili",
+    type = "object",
+    color = {5,1},
+    layer = 4,
+    rotate = "true",
+    tags = {"lilypad", "plants"},
+  },
+  -- 556
+  {
+    name = "text_lili",
+    sprite = "text_lili",
+    type = "text",
+    texttype = {object = true},
+    color = {5,1},
+    layer = 20,
+    tags = {"lilypad", "plants"},
+    desc = "not to be confused with LILA",
+  },
+  -- 557
+  {
+    name = "swim",
+    sprite = "swim",
+    type = "object",
+    color = {6,1},
+    layer = 2,
+    rotate = "true",
+    tags = {"boat", "ship"},
+  },
+  -- 558
+  {
+    name = "text_swim",
+    sprite = "text_swim",
+    type = "text",
+    texttype = {object = true},
+    color = {6,1},
+    layer = 20,
+    tags = {"boat", "ship"},
   },
 }
 
