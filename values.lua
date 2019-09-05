@@ -484,7 +484,7 @@ tiles_list = {
     color = {1, 0},
     layer = 1,
     tags = {"tile"},
-    desc, "it goes under your feet"
+    desc = "it goes under your feet"
   },
   -- 22
   {
