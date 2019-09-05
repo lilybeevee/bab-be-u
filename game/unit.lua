@@ -627,53 +627,64 @@ function updateUnits(undoing, big_update)
       timeless_splittee = {}
     end
     
+    --an attempt to prevent stacking split from crashing by limiting how many splits we try to do per tile. it's OK, it leads to weird traffic jams though because the rest of the units just stay still.
+    local splits_per_tile = {}
     local split = getUnitsWithEffect("split")
     for _,unit in ipairs(split) do
       if unit.name ~= "lie" then
-        local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
-        for _,on in ipairs(stuff) do
-          if unit ~= on and sameFloat(unit, on) then
-            if timecheck(unit,"be","split") and timecheck(on) then
-              local dir1 = dirAdd(unit.dir,0)
-              local dx1 = dirs8[dir1][1]
-              local dy1 = dirs8[dir1][2]
-              local dir2 = dirAdd(unit.dir,4)
-              local dx2 = dirs8[dir2][1]
-              local dy2 = dirs8[dir2][2]
-              if canMove(on, dx1, dy1, dir1, false, false) then
-                if on.class == "unit" then
-                  local new_unit = createUnit(tiles_by_name[on.fullname], on.x, on.y, dir1)
-                  addUndo({"create", new_unit.id, false})
-                  _, __, ___, x, y = getNextTile(on, dx1, dy1, dir1, false)
-                  table.insert(split_movers,{unit = new_unit, x = x, y = y, ox = on.x, oy = on.y, dir = dir1})
-                elseif unit.class == "cursor" then
-                  local others = getCursorsOnTile(on.x + dx1, on.y + dy1)
-                  if #others == 0 then
-                    local new_mouse = createMouse(on.x + dx1, on.y + dy1)
-                    addUndo({"create_cursor", new_mouse.id})
+        local coords = tostring(unit.x)..","..tostring(unit.y)
+        if (splits_per_tile[coords]) == nil then
+          splits_per_tile[coords] = 0
+        end
+        if splits_per_tile[coords] < 16 then
+          local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
+          for _,on in ipairs(stuff) do
+            if splits_per_tile[coords] >= 16 then break end
+            if unit ~= on and sameFloat(unit, on) and not on.new then
+              if timecheck(unit,"be","split") and timecheck(on) then
+                local dir1 = dirAdd(unit.dir,0)
+                local dx1 = dirs8[dir1][1]
+                local dy1 = dirs8[dir1][2]
+                local dir2 = dirAdd(unit.dir,4)
+                local dx2 = dirs8[dir2][1]
+                local dy2 = dirs8[dir2][2]
+                if canMove(on, dx1, dy1, dir1, false, false) then
+                  if on.class == "unit" then
+                    splits_per_tile[coords] = splits_per_tile[coords] + 1
+                    local new_unit = createUnit(tiles_by_name[on.fullname], on.x, on.y, dir1)
+                    addUndo({"create", new_unit.id, false})
+                    _, __, ___, x, y = getNextTile(on, dx1, dy1, dir1, false)
+                    table.insert(split_movers,{unit = new_unit, x = x, y = y, ox = on.x, oy = on.y, dir = dir1})
+                  elseif unit.class == "cursor" then
+                    local others = getCursorsOnTile(on.x + dx1, on.y + dy1)
+                    if #others == 0 then
+                      local new_mouse = createMouse(on.x + dx1, on.y + dy1)
+                      addUndo({"create_cursor", new_mouse.id})
+                    end
                   end
                 end
-              end
-              if canMove(on, dx2, dy2, dir2, false, false) then
-                if on.class == "unit" then
-                  local new_unit = createUnit(tiles_by_name[on.fullname], on.x, on.y, dir2)
-                  addUndo({"create", new_unit.id, false})
-                  _, __, ___, x, y = getNextTile(on, dx2, dy2, dir2, false)
-                  table.insert(split_movers,{unit = new_unit, x = x, y = y, ox = on.x, oy = on.y, dir = dir2})
-                elseif unit.class == "cursor" then
-                  local others = getCursorsOnTile(on.x + dx2, on.y + dy2)
-                  if #others == 0 then
-                    local new_mouse = createMouse(on.x + dx2, on.y + dy2)
-                    addUndo({"create_cursor", new_mouse.id})
+                if canMove(on, dx2, dy2, dir2, false, false) then
+                  if on.class == "unit" then
+                    splits_per_tile[coords] = splits_per_tile[coords] + 1
+                    local new_unit = createUnit(tiles_by_name[on.fullname], on.x, on.y, dir2)
+                    addUndo({"create", new_unit.id, false})
+                    _, __, ___, x, y = getNextTile(on, dx2, dy2, dir2, false)
+                    table.insert(split_movers,{unit = new_unit, x = x, y = y, ox = on.x, oy = on.y, dir = dir2})
+                  elseif unit.class == "cursor" then
+                    local others = getCursorsOnTile(on.x + dx2, on.y + dy2)
+                    if #others == 0 then
+                      local new_mouse = createMouse(on.x + dx2, on.y + dy2)
+                      addUndo({"create_cursor", new_mouse.id})
+                    end
                   end
                 end
-              end
-              table.insert(to_destroy, on)
-            else
-              if not timeless_split[on.id] then
-                addUndo({"timeless_split_add", on.id})
-                timeless_split[on.id] = unit.id
-                addParticles("destroy", unit.x, unit.y, unit.color)
+                table.insert(to_destroy, on)
+              else
+                if not timeless_split[on.id] then
+                  addUndo({"timeless_split_add", on.id})
+                  timeless_split[on.id] = unit.id
+                  addParticles("destroy", unit.x, unit.y, unit.color)
+                end
               end
             end
           end
