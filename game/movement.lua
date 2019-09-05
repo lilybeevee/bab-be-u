@@ -1113,8 +1113,93 @@ function doPullCore(unit,dx,dy,dir,data, already_added, moving_units, moving_uni
 end
 
 function fallBlock()
+  --1) gather all fallers
+  local fallers = {}
+  --and all timeless fallers
+  local timeless_fallers = {}
+  
+  function addFallersFromLoop(verb, property, gravity_dir)
+    for unit,count in pairs(getUnitsWithRuleAndCount(nil, verb, property)) do
+      if fallers[unit] == nil then
+        fallers[unit] = {0, 0};
+      end
+      fallers[unit][1] = fallers[unit][1] + count*gravity_dir[1];
+      fallers[unit][2] = fallers[unit][2] + count*gravity_dir[2];
+      if timecheck(unit, verb, property) then
+        timeless_fallers[unit] = true
+      end
+    end
+  end
+  
+  addFallersFromLoop("be", "haet skye", {0, 1});
+  addFallersFromLoop("be", "haet flor", {0, -1});
+  
+  
+  if (rules_with["haet"]) then
+    for k,v in pairs(dirs8_by_name) do
+      local gravity_dir = copyTable(dirs8[k]);
+      gravity_dir[1] = -gravity_dir[1];
+      gravity_dir[2] = -gravity_dir[2];
+      addFallersFromLoop("haet", v, gravity_dir);
+    end
+  end
+  if (rules_with["liek"]) then
+    for k,v in pairs(dirs8_by_name) do
+      addFallersFromLoop("liek", v, dirs8[k]);
+    end
+  end
+  --2) normalize to an 8-way faller direction, and remove if it's 0,0
+  for unit,dir in pairs(fallers) do
+    dir[1] = sign(dir[1]);
+    dir[2] = sign(dir[2]);
+    if (dir[1] == 0 and dir[2] == 0) then
+      fallers[unit] = nil
+    else
+      fallers[unit] = dir
+    end
+  end
+  
+  --3) move them simultaneously one step each loop. if nothing moved, loop over. portals can change
+  --falling dir, so be aware.
+  --Because we resolve simultaneously, it doesn't matter what order we iterate the table in.
+  
+  local something_moved = true
+  local loop_fall = 0
+  while something_moved do
+    something_moved = false
+    local movers = {}
+    loop_fall = loop_fall + 1
+    if (loop_fall > 1000) then
+      print("movement infinite loop! (1000 attempts at a faller)")
+      destroyLevel("infloop")
+      return
+    end
+    for unit,dir in pairs(fallers) do
+      local gravity_dir = dirs8_by_offset[dir[1]][dir[2]]
+      local dx, dy, dir, px, py = dir[1], dir[2], gravity_dir, -1, -1
+      local old_dir = gravity_dir
+      new_dx, new_dy, new_dir, px, py = getNextTile(unit, dx, dy, dir)
+      --TODO: add GLUED support here by checking to see if other units are returned too
+      if canMove(unit, dx, dy, dir, false, false, nil, "haet skye") then
+        addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
+        table.insert(movers, {unit = unit, old_dir = old_dir, dir = new_dir, px = px, py = py});
+        something_moved = true;
+      end
+    end
+    for _,payload in ipairs(movers) do
+      updateDir(payload.unit, dirAdd(payload.unit.dir, dirDiff(payload.old_dir, payload.dir)))
+      fallers[payload.unit] = dirs8[payload.dir];
+      moveUnit(payload.unit,payload.px, payload.py)
+      if timeless_fallers[payload.unit] == nil then
+        fallers[payload.unit] = nil
+      end
+    end
+  end
+  
+  --TODO: Need to add timeless fall back in.
+  
   --TODO: If we have multiple gravity directions, then we probably want a simultaneous single step algorithm to resolve everything neatly.
-  local gravity_dir = {0,1}
+  --[[local gravity_dir = {0,1}
   
   local fallers = getUnitsWithEffect("haet skye")
   table.sort(fallers, function(a, b) return a.y > b.y end )
@@ -1196,7 +1281,7 @@ function fallBlock()
         end
       end
     end
-  end
+  end]]
 end
 
 function doZip(unit)
@@ -1531,7 +1616,16 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
   --bounded: if we're bounded and there are no units in the destination that satisfy a bounded rule, AND there's no units at our feet that would be moving there to carry us, we can't go
   --we used to have a fast track, but now selector is ALWAYS bounded to stuff, so it's never going to be useful.
   local isbounded = matchesRule(unit, "liek", "?")
-  if (#isbounded > 0) then
+  --make sure that we actually liek an object
+  local bound_to_object = false;
+  for i,ruleparent in ipairs(isbounded) do
+    local liek = ruleparent.rule.object.name
+    if not dirs8_by_name_set[liek] then
+      bound_to_object = true;
+      break;
+    end
+  end
+  if (bound_to_object) then
     for i,ruleparent in ipairs(isbounded) do
       local liek = ruleparent.rule.object.name
       local success = false

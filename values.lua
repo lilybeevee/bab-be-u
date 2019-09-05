@@ -74,6 +74,11 @@ dirs8_by_name = {
   "upright",
 }
 
+dirs8_by_name_set = {};
+for _,dir in ipairs(dirs8_by_name) do
+  dirs8_by_name_set[dir] = true
+end
+
 dirs8_by_offset = {}
 dirs8_by_offset[-1],dirs8_by_offset[0],dirs8_by_offset[1] = {},{},{}
 dirs8_by_offset[1][0] = 1
