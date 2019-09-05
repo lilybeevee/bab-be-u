@@ -1653,10 +1653,22 @@ function escResult(do_actual)
         end
       end
     else
-      if (do_actual) then
-        loadLevels({level_parent_level}, "play")
+      if (readSaveFile(level_parent_level, "seen")) then
+        if (do_actual) then
+          loadLevels({level_parent_level}, "play")
+        else
+          return level_parent_level
+        end
       else
-        return level_parent_level
+        if (do_actual) then
+          load_mode = "play"
+          new_scene = loadscene
+          if (love.filesystem.getInfo(world_parent .. "/" .. world .. "/" .. "overworld.txt")) then
+            world = ""
+          end
+        else
+          return "the level selection menu"
+        end
       end
     end
   end

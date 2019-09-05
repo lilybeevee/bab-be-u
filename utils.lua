@@ -240,7 +240,7 @@ function loadMap()
                     elseif ptype == 3 then
                       unit.special.visibility = "open"
                     end
-                  elseif ptype == 1 and v[2] == tiles_by_name["lin"] and (not v[6].pathlock or v[6].pathlock == "none") then
+                  elseif (ptype == 1 or ptype == 3) and v[2] == tiles_by_name["lin"] and (not v[6].pathlock or v[6].pathlock == "none") then
                     local unit = createUnit(v[2], v[3], v[4], v[5], false, v[1], nil, v[7] and {{name=v[7]}})
                     created[v[1]] = true
                     unit.special = v[6]
