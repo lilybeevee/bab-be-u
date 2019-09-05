@@ -414,7 +414,6 @@ function findVerbPhrase(words, extra_words_, dir, enclosed, noconds, no_verb_con
       return
     end
   elseif verb.type.verb_sing then
-    print(fullDump(words[1]))
     if (words[1].type.letter and (
     words[1].name == "a" or
     words[1].name == "b" or
@@ -426,9 +425,9 @@ function findVerbPhrase(words, extra_words_, dir, enclosed, noconds, no_verb_con
     )) then
       table.insert(objects, words[1])
       table.remove(words, 1)
-      print(fullDump(words))
       if (words[1] ~= nil and (words[1].name == "sharp" or words[1].name == "flat")) then
-        table.insert(objects, words[1])
+        objects[#objects].name = objects[#objects].name.."_"..words[1].name;
+        table.insert(extra_words, words[1])
         table.remove(words, 1)
       end
       found = true
