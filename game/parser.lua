@@ -413,6 +413,26 @@ function findVerbPhrase(words, extra_words_, dir, enclosed, noconds, no_verb_con
     if not found then
       return
     end
+  elseif verb.type.verb_sing then
+    print(fullDump(words[1]))
+    if (words[1].type.letter and (
+    words[1].name == "a" or
+    words[1].name == "b" or
+    words[1].name == "c" or
+    words[1].name == "d" or
+    words[1].name == "e" or
+    words[1].name == "f" or
+    words[1].name == "g"
+    )) then
+      table.insert(objects, words[1])
+      table.remove(words, 1)
+      print(fullDump(words))
+      if (words[1] ~= nil and (words[1].name == "sharp" or words[1].name == "flat")) then
+        table.insert(objects, words[1])
+        table.remove(words, 1)
+      end
+      found = true
+    end
   elseif verb.type.verb_unit then
     local found = false
     --magic function switching: runs findClass if noconds is true otherwise findUnit with the same arguments
