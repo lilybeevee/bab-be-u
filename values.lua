@@ -1957,7 +1957,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
     tags = {"next"},
-    desc = "NXT: LVL IS NXT sends you to the next level. (Unimplemented.)"
+    desc = "NXT: LVL IS NXT sends you to the next level."
   },
   -- 154
   {

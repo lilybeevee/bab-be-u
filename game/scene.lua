@@ -1628,7 +1628,13 @@ function escResult(do_actual)
       return "the editor"
     end
   else
-    if (level_parent_level == nil or level_parent_level == "") then
+    if (win_reason == "nxt" and level_next_level ~= nil and level_next_level ~= "") then
+      if (do_actual) then
+        loadLevels({level_next_level}, "play")
+      else
+        return level_next_level
+      end
+    elseif (level_parent_level == nil or level_parent_level == "") then
       if (parent_filename ~= nil and parent_filename ~= "") then
         if (do_actual) then
           loadLevels(parent_filename:split("|"), "play")

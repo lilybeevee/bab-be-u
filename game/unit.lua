@@ -1658,7 +1658,7 @@ function levelBlock()
   end
   
   if hasProperty(outerlvl, "nxt") then
-		--placeholder until NXT is coded
+		table.insert(win_sprite_override,tiles_list[tiles_by_name["text_nxt"]]);
     doWin("nxt")
   end
   
@@ -2655,6 +2655,7 @@ function doWin(result_, payload_)
     local result = result_ or "won"
     local payload = payload_ or true
 		won_this_session = true
+    win_reason = result
     currently_winning = true
 		music_fading = true
     win_size = 0
