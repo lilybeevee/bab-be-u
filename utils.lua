@@ -280,10 +280,8 @@ end
 function loadStayTher()
   if stay_ther ~= nil then
     for _,unit in ipairs(stay_ther) do
-      if inBounds(unit.x, unit.y) then
-        local newunit = createUnit(unit.tile, unit.x, unit.y, unit.dir)
-        newunit.special = unit.special
-      end
+      local newunit = createUnit(unit.tile, unit.x, unit.y, unit.dir)
+      newunit.special = unit.special
     end
   end
 end
