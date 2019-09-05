@@ -2422,7 +2422,7 @@ tiles_list = {
     color = {1,3},
     layer = 20,
     tags = {"shift", "verb"},
-    desc = "MOOV (Verb): A verbified GO. x MOOV y means that only x can shift y around.",
+    desc = "MOOV (Verb): A verbified GO AWAY PLS/GO. x MOOV y means that x can push and shift y. y is not treated as solid if unable to be pushed.",
   },
   --- 197
   {

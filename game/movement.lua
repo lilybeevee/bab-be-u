@@ -1640,7 +1640,9 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
       end
       --New FLYE mechanic, as decreed by the bab dictator - if you aren't sameFloat as a push/pull/sidekik, you can enter it.
       -- print("checking if",v.name,"has goawaypls")
-      if hasProperty(v, "go away pls") and not would_swap_with then
+      local push = hasProperty(v, "go away pls") 
+      local moov = hasRule(unit, "moov", v);
+      if (push or moov) and not would_swap_with then
         -- print("success")
         if pushing then
           --glued units are pushed all at once or not at all
@@ -1651,7 +1653,7 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
             local newer_movers = {}
             for _,v2 in ipairs(pushers) do
               push_stack[unit] = true
-              local success,new_movers,new_specials = canMove(v2, dx, dy, dir, pushing, pulling, solid_name, "go away pls", push_stack)
+              local success,new_movers,new_specials = canMove(v2, dx, dy, dir, pushing, pulling, solid_name, push and "go away pls" or "moov", push_stack)
               push_stack[unit] = nil
               mergeTable(specials, new_specials)
               mergeTable(newer_movers, new_movers)
@@ -1663,13 +1665,13 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
                 table.insert(movers, {unit = add, dx = dx, dy = dy, dir = dir, move_dx = move_dx, move_dy = move_dy, move_dir = move_dir, geometry_spin = geometry_spin, portal = portal_unit})
               end
               --print(dump(movers))
-            else
+            elseif push then
               stopped = stopped or sameFloat(unit, v)
             end
           else
             --single units have to be able to move themselves to be pushed
             push_stack[unit] = true
-            local success,new_movers,new_specials = canMove(v, dx, dy, dir, pushing, pulling, solid_name, "go away pls", push_stack)
+            local success,new_movers,new_specials = canMove(v, dx, dy, dir, pushing, pulling, solid_name, push and "go away pls" or "moov", push_stack)
             push_stack[unit] = nil
             for _,special in ipairs(new_specials) do
               table.insert(specials, special)
@@ -1678,11 +1680,11 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
               for _,mover in ipairs(new_movers) do
                 table.insert(movers, mover)
               end
-            else
+            elseif push then
               stopped = stopped or sameFloat(unit, v)
             end
           end
-        else
+        elseif push then
           stopped = stopped or sameFloat(unit, v)
         end
       else
