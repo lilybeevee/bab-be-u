@@ -479,6 +479,7 @@ tiles_list = {
     color = {1, 0},
     layer = 1,
     tags = {"tile"},
+    desc, "it goes under your feet"
   },
   -- 22
   {
@@ -765,6 +766,7 @@ tiles_list = {
     color = {4, 2},
     layer = 6,
     tags = {"love"},
+    desc = "makes up the very fabric of reality of bab be u"
   },
   --46
   {
@@ -1966,6 +1968,7 @@ tiles_list = {
     color = {0, 3},
     layer = 5,
     tags = {"bepis", "pepsi"},
+    desc = "pepis: tastes like tar and mud",
   },
   -- 155
   {
@@ -2266,6 +2269,7 @@ tiles_list = {
     rotate = true,
     eye = {x=14, y=14, w=2, h=4},
     tags = {"chars"},
+    desc = "he's upsidedown b/c he lives on a Boy's surface"
   },
   -- 182
   {
