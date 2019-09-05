@@ -673,6 +673,7 @@ function updateUnits(undoing, big_update)
               if not timeless_split[on.id] then
                 addUndo({"timeless_split_add", on.id})
                 timeless_split[on.id] = unit.id
+                addParticles("destroy", unit.x, unit.y, unit.color)
               end
             end
           end
@@ -723,21 +724,21 @@ function updateUnits(undoing, big_update)
             if timecheck(on,"vs",unit) then
               table.insert(to_destroy,on)
               playSound("break")
-              addParticles("destroy", on.x, on.y, on.color)
             else
               table.insert(time_destroy,on.id)
               addUndo({"time_destroy",on.id})
             end
+            addParticles("destroy", on.x, on.y, on.color)
           end
           if onmoved then
             if timecheck(unit,"vs",on) then
               table.insert(to_destroy,unit)
               playSound("break")
-              addParticles("destroy", unit.x, unit.y, unit.color)
             else
               table.insert(time_destroy,unit.id)
               addUndo({"time_destroy",unit.id})
             end
+            addParticles("destroy", unit.x, unit.y, unit.color)
           end
         end
       end
@@ -754,7 +755,6 @@ function updateUnits(undoing, big_update)
             table.insert(to_destroy, unit)
             table.insert(to_destroy, on)
             playSound("sink")
-            addParticles("destroy", unit.x, unit.y, on.color)
             shakeScreen(0.3, 0.1)
           else
             table.insert(time_destroy,unit.id)
@@ -763,6 +763,7 @@ function updateUnits(undoing, big_update)
 						addUndo({"time_destroy",on.id})
             table.insert(time_sfx,"sink")
           end
+          addParticles("destroy", unit.x, unit.y, on.color)
         end
       end
     end
@@ -777,13 +778,13 @@ function updateUnits(undoing, big_update)
           if timecheck(unit,"be","ouch") and timecheck(on) then
             table.insert(to_destroy, unit)
             playSound("break")
-            addParticles("destroy", unit.x, unit.y, unit.color)
             shakeScreen(0.3, 0.1)
           else
             table.insert(time_destroy,unit.id)
 						addUndo({"time_destroy",unit.id})
             table.insert(time_sfx,"break")
           end
+          addParticles("destroy", unit.x, unit.y, unit.color)
         end
       end
     end
@@ -798,13 +799,13 @@ function updateUnits(undoing, big_update)
           if timecheck(unit,"be","hotte") and timecheck(on,"be","fridgd") then
             table.insert(to_destroy, on)
             playSound("hotte")
-            addParticles("destroy", unit.x, unit.y, unit.color)
             shakeScreen(0.3, 0.1)
           else
             table.insert(time_destroy,on.id)
 						addUndo({"time_destroy",on.id})
             table.insert(time_sfx,"hotte")
           end
+          addParticles("destroy", unit.x, unit.y, unit.color)
         end
       end
     end
@@ -820,13 +821,13 @@ function updateUnits(undoing, big_update)
           if timecheck(unit,"be",":(") and (timecheck(on,"be","u") or timecheck(on,"be","u too") or timecheck(on,"be","u tres")) then
             table.insert(to_destroy, on)
             playSound("break")
-            addParticles("destroy", unit.x, unit.y, unit.color)
             shakeScreen(0.3, 0.2)
           else
             table.insert(time_destroy,on.id)
 						addUndo({"time_destroy",on.id})
             table.insert(time_sfx,"break")
           end
+          addParticles("destroy", unit.x, unit.y, unit.color)
         end
       end
     end
@@ -843,8 +844,6 @@ function updateUnits(undoing, big_update)
             table.insert(to_destroy, on)
             playSound("break")
             playSound("unlock")
-            addParticles("destroy", unit.x, unit.y, unit.color)
-            addParticles("destroy", on.x, on.y, on.color)
             shakeScreen(0.3, 0.1)
           else
             table.insert(time_destroy,unit.id)
@@ -854,6 +853,8 @@ function updateUnits(undoing, big_update)
             table.insert(time_sfx,"break")
             table.insert(time_sfx,"unlock")
           end
+          addParticles("destroy", unit.x, unit.y, unit.color)
+          addParticles("destroy", on.x, on.y, on.color)
         end
       end
     end
@@ -869,13 +870,13 @@ function updateUnits(undoing, big_update)
           if timecheck(unit,"snacc",on) and timecheck(on) then
             table.insert(to_destroy, on)
             playSound("snacc")
-            addParticles("destroy", unit.x, unit.y, unit.color)
             shakeScreen(0.3, 0.15)
           else
             table.insert(time_destroy,on.id)
 						addUndo({"time_destroy",on.id})
             table.insert(time_sfx,"snacc")
           end
+          addParticles("destroy", unit.x, unit.y, unit.color)
         end
       end
     end
@@ -892,6 +893,7 @@ function updateUnits(undoing, big_update)
           else
             addUndo({"timeless_reset_add"})
             timeless_reset = true
+            addParticles("bonus", unit.x, unit.y, unit.color)
           end
         end
       end
@@ -910,6 +912,7 @@ function updateUnits(undoing, big_update)
           else
             addUndo({"timeless_crash_add"})
             timeless_crash = true
+            addParticles("bonus", unit.x, unit.y, unit.color)
           end
         end
       end
@@ -923,16 +926,16 @@ function updateUnits(undoing, big_update)
       for _,on in ipairs(stuff) do
         is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
         if is_u and sameFloat(unit, on) then
+          writeSaveFile(level_name, "bonus", true)
           if timecheck(unit,"be",":o") and (timecheck(on,"be","u") or timecheck(on,"be","u too") or timecheck(on,"be","u tres")) then
             table.insert(to_destroy, unit)
             playSound("bonus")
-            addParticles("bonus", unit.x, unit.y, unit.color)
-            writeSaveFile(level_name, "bonus", true)
           else
             table.insert(time_destroy,unit.id)
 						addUndo({"time_destroy",unit.id})
             table.insert(time_sfx,"bonus")
           end
+          addParticles("bonus", unit.x, unit.y, unit.color)
         end
       end
     end
@@ -950,6 +953,7 @@ function updateUnits(undoing, big_update)
           else
             addUndo({"timeless_unwin_add", on.id})
             table.insert(timeless_unwin,on.id)
+            addParticles("bonus", unit.x, unit.y, unit.color)
           end
         end
       end
@@ -966,6 +970,7 @@ function updateUnits(undoing, big_update)
           else
             addUndo({"timeless_win_add", on.id})
             table.insert(timeless_win,on.id)
+            addParticles("bonus", unit.x, unit.y, unit.color)
           end
         end
       end

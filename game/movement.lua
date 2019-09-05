@@ -1730,6 +1730,8 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
 					addUndo({"time_destroy",v.id})
           table.insert(time_sfx,"break")
           table.insert(time_sfx,"unlock")
+          addParticles("destroy", unit.x, unit.y, {237,226,133})
+          addParticles("destroy", v.x, v.y, {237,226,133})
         end
       end
       --New FLYE mechanic, as decreed by the bab dictator - if you aren't sameFloat as a push/pull/sidekik, you can enter it.
