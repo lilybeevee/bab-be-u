@@ -831,6 +831,8 @@ function shouldReparseRulesIfConditionalRuleExists(r1, r2, r3, even_non_wurd)
           if cond_name == "frenles" or cond_name == "frenlesn't" then
             should_parse_rules = true
             return true
+          elseif (cond_name == "corekt" or cond_name == "corektn't" or cond_name == "rong" or cond_name == "rongn't") then
+            --nothing
           else
             --What are the others? WAIT... only changes at turn boundary. MAYBE can only change on turn boundary or if the unit or text moves (by definition these already reparse rules). AN only changes on turn boundary. COREKT/RONG can only change when text reparses anyway by definition, so it should never trigger it. TIMELES only changes at turn boundary. CLIKT only changes at turn boundary. Colours only change at turn boundary. So every other prefix condition, for now, just needs one check per turn, but new ones will need to be considered.
             should_parse_rules_at_turn_boundary = true
