@@ -1708,10 +1708,6 @@ end
 function destroyLevel(reason)
 	if not hasRule(outerlvl,"got","lvl") and not hasProperty(outerlvl,"protecc") and (reason ~= "infloop") then
     level_destroyed = true
-    for _,unit in ipairs(units) do
-      addParticles("destroy", unit.x, unit.y, unit.color)
-    end
-    handleDels(units, true)
   end
   
   transform_results = {}
@@ -1745,24 +1741,30 @@ function destroyLevel(reason)
   end
   
   if reason == "infloop" then
-    if hasRule("loop","be",":)") then
-      doWin("won")
-    elseif hasRule("loop","be","xwx") then
-      love = {}
-    elseif hasRule("loop","be","try again") then
+    if hasProperty("loop","try again") then
       doTryAgain()
+    elseif hasProperty("loop","xwx") then
+      love = {}
+    elseif hasProperty("loop",":)") then
+      doWin("won")
+      level_destroyed = true
     end
-    level_destroyed = true
+    local berule = matchesRule("loop","be",nil)
+    for _,rule in ipairs(berule) do
+      local object = rule.rule.object.name
+      if tiles_by_name[object] then
+        table.insert(transform_results,object)
+        table.insert(win_sprite_override,tiles_list[tiles_by_name[object]])
+      end
+    end
+  end
+  
+  if level_destroyed then
     for _,unit in ipairs(units) do
       addParticles("destroy", unit.x, unit.y, unit.color)
     end
-    local berule = matchesRule("loop","be","?")
-    for _,rule in ipairs(berule) do
-      table.insert(transform_results,rule.rule.object.name)
-      table.insert(win_sprite_override,tiles_list[tiles_by_name[rule.rule.object.name]])
-    end
     handleDels(units,true)
-    if #berule == 0 then
+    if reason == "infloop" and #transform_results == 0 then
       local new_unit = createUnit(tiles_by_name["infloop"], math.floor(mapwidth/2), math.floor(mapheight/2), 1)
       addUndo({"create", new_unit.id, false})
     end
