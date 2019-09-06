@@ -685,23 +685,28 @@ function scene.draw(dt)
     end
     
     local sprite_name = unit.sprite
-
-    for type,name in pairs(unit.sprite_transforms) do
-      if table.has_value(unit.used_as, type) then
-        sprite_name = name
-        break
+    local sprite
+    
+    if type(sprite_name) ~= "table" then
+      for type,name in pairs(unit.sprite_transforms) do
+        if table.has_value(unit.used_as, type) then
+          sprite_name = name
+          break
+        end
       end
-    end
-    if sprite_name == "lvl" and readSaveFile(unit.special.level, "won") then
-      sprite_name = "lvl_won"
-    end
-    local frame = (unit.frame + anim_stage) % 3 + 1
-    if sprites[sprite_name .. "_" .. frame] then
-      sprite_name = sprite_name .. "_" .. frame
-    end
-    if not sprites[sprite_name] then sprite_name = "wat" end
+      if sprite_name == "lvl" and readSaveFile(unit.special.level, "won") then
+        sprite_name = "lvl_won"
+      end
+      local frame = (unit.frame + anim_stage) % 3 + 1
+      if sprites[sprite_name .. "_" .. frame] then
+        sprite_name = sprite_name .. "_" .. frame
+      end
+      if not sprites[sprite_name] then sprite_name = "wat" end
 
-    local sprite = sprites[sprite_name]
+      sprite = sprites[sprite_name]
+    else
+      sprite = sprite_name
+    end
 
     --no tweening empty for now - it's buggy!
     --TODO: it's still a little buggy if you push/pull empties.
@@ -714,7 +719,8 @@ function scene.draw(dt)
     end
 
 		local function setColor(color)
-			if #color == 3 then
+      color = type(color[1]) == "table" and color[1] or color
+      if #color == 3 then
 				color = {color[1]/255, color[2]/255, color[3]/255, 1}
 			else
 				color = {getPaletteColor(color[1], color[2])}
@@ -770,7 +776,19 @@ function scene.draw(dt)
     
     local function drawSprite(overlay)
       local sprite = overlay or sprite
-      love.graphics.draw(sprite, fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      if type(sprite) == "table" then
+        for i,image in ipairs(sprite) do
+          if type(unit.color[i]) == "table" then
+            setColor(unit.color[i])
+          else
+            setColor(unit.color)
+          end
+          local sprit = sprites[image]
+          love.graphics.draw(sprit, fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprit:getWidth() / 2, sprit:getHeight() / 2)
+        end
+      else
+        love.graphics.draw(sprite, fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      end
 			if (unit.meta ~= nil) then
 				setColor({4, 1})
         local metasprite = unit.meta == 2 and sprites["meta2"] or sprites["meta1"]
@@ -1169,22 +1187,29 @@ function scene.draw(dt)
 
     for i,draw in ipairs(draw_units) do
       local cx = (-width / 2) + ((i / #draw_units) * width) - 20
+      local unit = draw.unit
 
       love.graphics.push()
       love.graphics.translate(cx, -28)
 
       love.graphics.push()
       love.graphics.rotate(math.rad((draw.dir - 1) * 45))
-
-      if #draw.unit.color == 2 then
-        love.graphics.setColor(getPaletteColor(draw.unit.color[1], draw.unit.color[2]))
+      
+      if type(unit.sprite) ~= "table" then
+        if #unit.color == 2 then
+          love.graphics.setColor(getPaletteColor(unit.color[1], unit.color[2]))
+        else
+          love.graphics.setColor(unit.color[1], unit.color[2], unit.color[3], unit.color[4] or 1)
+        end
+        local sprite = sprites[unit.sprite]
+        love.graphics.draw(sprite, 0, 0, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
       else
-        love.graphics.setColor(draw.unit.color[1], draw.unit.color[2], draw.unit.color[3], draw.unit.color[4] or 1)
+        for j,image in ipairs(unit.sprite) do
+          love.graphics.setColor(getPaletteColor(unit.color[j][1], unit.color[j][2]))
+          local sprite = sprites[image]
+          love.graphics.draw(sprite, 0, 0, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+        end
       end
-
-      local sprite = sprites[draw.unit.sprite]
-      love.graphics.draw(sprite, 0, 0, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
-      local unit = draw.unit
       
       if (unit.meta ~= nil) then
 				love.graphics.setColor(getPaletteColor(4, 1))

@@ -222,7 +222,7 @@ selector_grid_contents = {
     "watr","text_watr","colld","text_colld","rein","text_rein","icecub","text_icecub","slippers","text_slippers","pudll","text_pudll","icbolt","text_icbolt","win","text_win",0,0,
     "laav","text_laav","dor","text_dor","kee","text_kee","roc","text_roc","hatt","text_hatt","extre","text_extre","poisbolt","text_poisbolt","smol","text_smol",0,0,
     "gras","text_gras","algay","text_algay","flog","text_flog","boux","text_boux","knif","text_knif","heg","text_heg","timbolt","text_timbolt","tor","text_tor",0,0,
-    "hedg","text_hedg","banboo","text_banboo","boll","text_boll","l..uv","text_l..uv","wips","text_wips",0,0,0,0,0,0,0,0,
+    "hedg","text_hedg","banboo","text_banboo","boll","text_boll","l..uv","text_l..uv","wips","text_wips","pepis","text_pepis",0,0,0,0,0,0,
     "metl","text_metl","vien","text_vien","leef","text_leef","karot","text_karot","fir","text_fir","eeg","text_eeg","foreeg","text_foreeg",0,0,0,0,
     "jail","text_jail","ladr","text_ladr","pallm","text_pallm","coco","text_coco","rouz","text_rouz","noet","text_noet","lili","text_lili",0,0,0,0,
     "fenss","text_fenss","platfor","text_platfor","tre","text_tre","stum","text_stum","dayzy","text_dayzy","lie","text_lie",0,0,0,0,0,0,
@@ -1969,8 +1969,8 @@ tiles_list = {
   -- 154
   {
     name = "pepis",
-    sprite = "pepis",
-    color = {0, 3},
+    sprite = {"pepis","pepis_red","pepis_blue"},
+    color = {{0,3},{2,2},{1,2}},
     layer = 5,
     tags = {"bepis", "pepsi"},
     desc = "pepis: tastes like tar and mud",
@@ -2680,7 +2680,7 @@ tiles_list = {
     sprite = "bordr",
     type = "object",
     color = {1, 0},
-    layer = 99,
+    layer = 1,
     tags = {"border"},
     desc = "BORDR: Fake oob to hide stuff under. NOGO, TALL and BORDR by default."
   },
