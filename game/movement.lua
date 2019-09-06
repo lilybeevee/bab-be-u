@@ -1382,14 +1382,45 @@ function doWrap(unit, px, py, move_dir, dir)
     end
   end
   if hasProperty(unit, "go arnd") or hasProperty(outerlvl, "go arnd") then --torus wrapping
+    --Orthogonal wrapping is trivial - eject backwards as far as we can.
+    --Diagonal wrapping is a bit harder - it depends on if we're walking into a wall or a corner (inward or outward). If we're walking into a wall, eject perpendicularly out of it as far as we can. If we're walking into a corner, eject backwards as far as we can.
     if not inBounds(px,py) then
-      for i=1,8 do
-        if move_dir == i then
-          local mx,my = dirs8[i][1],dirs8[i][2]
-          local found = false
+      local mx,my = dirs8[move_dir][1],dirs8[move_dir][2]
+      local found = false
+      if (mx == 0 or my == 0) then --orthgonal
+        while not found do
+          if inBounds(px-mx,py-my) then
+            px = px-mx
+            py = py-my
+          else
+            found = true
+          end
+        end
+      else --diagonal, but into what?
+        local vert_wall = not inBounds(px,py-my);
+        local hori_wall = not inBounds(px-mx,py);
+        if vert_wall == hori_wall then --inward or outward corner
           while not found do
             if inBounds(px-mx,py-my) then
               px = px-mx
+              py = py-my
+            else
+              found = true
+            end
+          end
+        elseif vert_wall then --vertical wall - eject horizontally
+          while not found do
+            if inBounds(px-mx,py) then
+              px = px-mx
+              py = py
+            else
+              found = true
+            end
+          end
+        else --horizontal wall - eject vertically
+          while not found do
+            if inBounds(px,py-my) then
+              px = px
               py = py-my
             else
               found = true
