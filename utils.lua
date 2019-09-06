@@ -179,43 +179,59 @@ function loadMap()
       end
       local floodfill = {}
       local objects = {}
+      local lvls = {}
+      local dofloodfill = scene ~= editor
       for _,unit in ipairs(map) do
         id, tile, x, y, dir, specials, color = unit.id, unit.tile, unit.x, unit.y, unit.dir, unit.special, unit.color
         if inBounds(x, y) then
-          if scene == editor or (
-            (tile ~= tiles_by_name["lvl"] or specials.visibility == "open") and
-            (tile ~= tiles_by_name["lin"] or specials.visibility ~= "hidden")
-          ) then
+          if not dofloodfill then
             local unit = createUnit(tile, x, y, dir, false, id, nil, color and {{name=color}})
             unit.special = specials
-            if scene ~= editor and readSaveFile(specials.level, "seen") then
-              unit.special.visibility = "open"
-            end
-            if tile == tiles_by_name["lvl"] and readSaveFile(specials.level, "won") then
-              table.insert(floodfill, {unit, 1})
-            end
-          else
-            if tile == tiles_by_name["lvl"] then
-              if readSaveFile(specials.level, "seen") then
-                local unit = createUnit(tile, x, y, dir, false, id, nil, color and {{name=color}})
+          elseif tile == tiles_by_name["lvl"] then
+            if readSaveFile(specials.level, "seen") then
+              local tfs = readSaveFile(level_name, "transform")
+              for _,t in ipairs(tfs or {tiles_listPossiblyMeta(tile).name}) do
+                local unit = createUnit(tiles_by_namePossiblyMeta(t), x, y, dir, false, id, nil, color and {{name=color}})
                 unit.special = specials
                 unit.special.visibility = "open"
                 if readSaveFile(specials.level, "won") then
                   table.insert(floodfill, {unit, 1})
                 end
-              else
-                table.insert(objects, {id, tile, x, y, dir, specials, color})
               end
-            elseif tile == tiles_by_name["lin"] then
+            elseif specials.visibility == "open" then
+              local unit = createUnit(tile, x, y, dir, false, id, nil, color and {{name=color}})
+              unit.special = specials
+            else
               table.insert(objects, {id, tile, x, y, dir, specials, color})
+            end
+          elseif tile == tiles_by_name["lin"] then
+            if specials.visibility == "hidden" then
+              table.insert(objects, {id, tile, x, y, dir, specials, color})
+            else
+              local unit = createUnit(tile, x, y, dir, false, id, nil, color and {{name=color}})
+              unit.special = specials
+            end
+          else
+            if specials.level then
+              local tfs = readSaveFile(level_name, "transform")
+              for _,t in ipairs(tfs or {tiles_listPossiblyMeta(tile).name}) do
+                local unit = createUnit(tiles_by_namePossiblyMeta(t), x, y, dir, false, id, nil, color and {{name=color}})
+                unit.special = specials
+                if readSaveFile(specials.level, "seen") then
+                  unit.special.visibility = "open"
+                end
+              end
+            else
+              createUnit(tile, x, y, dir, false, id, nil, color and {{name=color}})
             end
           end
         end
       end
-      local created = {}
-      if scene ~= editor then
+      if dofloodfill then
+        local created = {}
         while #floodfill > 0 do
           local u, ptype = unpack(table.remove(floodfill, 1))
+          print(fullDump(u), ptype)
           local orthos = {[-1] = {}, [0] = {}, [1] = {}}
           for a = 0,1 do -- 0 = ortho, 1 = diag
             for i = #objects,1,-1 do
