@@ -1356,7 +1356,10 @@ end
 
 function doWrap(unit, px, py, move_dir, dir)
   --fast track if we don't need to wrap anyway
-  if inBounds(px,py) then return px, py, move_dir, dir end
+  if inBounds(px,py) and not units_by_name["bordr"] then
+    return px, py, move_dir, dir
+  end
+  --TODO: make mirr arnd also work with bordr. hard to know how that should work though
   if hasProperty(unit, "mirr arnd") or hasProperty(outerlvl, "mirr arnd") then --projective plane wrapping
     local dx, dy = 0, 0
     if (px < 0) then
@@ -1379,15 +1382,21 @@ function doWrap(unit, px, py, move_dir, dir)
     end
   end
   if hasProperty(unit, "go arnd") or hasProperty(outerlvl, "go arnd") then --torus wrapping
-    if (px < 0) then
-      px = px + mapwidth
-    elseif (px >= mapwidth) then
-      px = px - mapwidth
-    end
-    if (py < 0) then
-      py = py + mapheight
-    elseif (py >= mapheight) then
-      py = py - mapheight
+    if not inBounds(px,py) then
+      for i=1,8 do
+        if move_dir == i then
+          local mx,my = dirs8[i][1],dirs8[i][2]
+          local found = false
+          while not found do
+            if inBounds(px-mx,py-my) then
+              px = px-mx
+              py = py-my
+            else
+              found = true
+            end
+          end
+        end
+      end
     end
   end
 
