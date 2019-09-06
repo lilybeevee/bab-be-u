@@ -912,18 +912,21 @@ function updateUnits(undoing, big_update)
     
     to_destroy = handleDels(to_destroy)
     
-    local iscrash = getUnitsWithEffect("xwx")
-    for _,unit in ipairs(iscrash) do
-      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
-      for _,on in ipairs(stuff) do
-        is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
-        if is_u and sameFloat(unit, on) then
-          if timecheck(unit,"be","xwx") and (timecheck(on,"be","u") or timecheck(on,"be","u too") or timecheck(on,"be","u tres")) then
-            love = {}
-          else
-            addUndo({"timeless_crash_add"})
-            timeless_crash = true
-            addParticles("bonus", unit.x, unit.y, unit.color)
+    local iscrash = matchesRule(nil,"be","xwx")
+    for _,ruleparent in ipairs(iscrash) do
+      local unit = ruleparent[2]
+      if not hasProperty(ruleparent[1].rule.object,"slep") then
+        local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
+        for _,on in ipairs(stuff) do
+          is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
+          if is_u and sameFloat(unit, on) then
+            if timecheck(unit,"be","xwx") and (timecheck(on,"be","u") or timecheck(on,"be","u too") or timecheck(on,"be","u tres")) then
+              doXWX()
+            else
+              addUndo({"timeless_crash_add"})
+              timeless_crash = true
+              addParticles("bonus", unit.x, unit.y, unit.color)
+            end
           end
         end
       end
@@ -1625,7 +1628,7 @@ function levelBlock()
     mergeTable(yous, youtres)
     for _,unit in ipairs(yous) do
       if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
-        love = {}
+        doXWX()
       end
     end
   end
@@ -1760,7 +1763,7 @@ function destroyLevel(reason)
     if hasProperty("loop","try again") then
       doTryAgain()
     elseif hasProperty("loop","xwx") then
-      love = {}
+      doXWX()
     elseif hasProperty("loop",":)") then
       doWin("won")
       level_destroyed = true
@@ -2661,11 +2664,11 @@ function makeNtTile(premeta_tile)
 end
 
 function undoWin()
-    if hasProperty(outerlvl, "no undo") then return end
-    currently_winning = false
-    music_fading = false
-    win_size = 0
-    win_sprite_override = {}
+  if hasProperty(outerlvl, "no undo") then return end
+  currently_winning = false
+  music_fading = false
+  win_size = 0
+  win_sprite_override = {}
 end
 
 function doWin(result_, payload_)
@@ -2694,4 +2697,9 @@ function doWin(result_, payload_)
       print("Replay successfully saved to ".."levels/" .. level_name .. ".replay")
     end
 	end
+end
+
+function doXWX()
+  --TODO: make xwx clear progress instead of crashing lua
+  love = {}
 end
