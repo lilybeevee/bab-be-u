@@ -1167,10 +1167,14 @@ function scene.draw(dt)
     local draw_units = {}
     local already_added = {}
     for _,unit in ipairs(units) do
-      local sprite = unit.sprite..(unit.meta or "")..(unit.nt and "nt" or "")
+      local sprite = ""
+      if type(unit.sprite) == "table" then
+        sprite = unit.sprite[1]..(unit.meta or "")..(unit.nt and "nt" or "")..(unit.color_override and dump(unit.color_override) or "")
+      else
+        sprite = unit.sprite..(unit.meta or "")..(unit.nt and "nt" or "")..(unit.color_override and dump(unit.color_override) or "")
+      end
       if not already_added[sprite] then already_added[sprite] = {} end
-      local dir = unit.dir
-      if not unit.rotate then dir = 1 end -- dont separate non-rotatable objects with different dirs
+      local dir = unit.rotatdir
       if not already_added[sprite][dir] then
         table.insert(draw_units, {unit = unit, dir = dir, count = 1})
         already_added[sprite][dir] = #draw_units
