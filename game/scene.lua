@@ -696,7 +696,7 @@ function scene.draw(dt)
         sprite_name = "lvl_won"
       end
       local frame = (unit.frame + anim_stage) % 3 + 1
-      if sprites[sprite_name .. "_" .. frame] then
+      if type(sprite_name) == "string" and sprites[sprite_name .. "_" .. frame] then
         sprite_name = sprite_name .. "_" .. frame
       end
       if not sprites[sprite_name] then sprite_name = "wat" end
@@ -772,10 +772,10 @@ function scene.draw(dt)
     love.graphics.rotate(math.rad(rotation))
     love.graphics.translate(-fulldrawx, -fulldrawy)
     
-    local function drawSprite(overlay, onlycolor)
-      local sprite = overlay or sprite
-      if type(sprite) == "table" then
-        for i,image in ipairs(sprite) do
+    local function drawSprite(overlay, onlycolor, stretch)
+      local draw = overlay or sprite
+      if type(draw) == "table" then
+        for i,image in ipairs(draw) do
           if type(unit.color[i]) == "table" then
             setColor(unit.color_override and unit.color_override[i] or unit.color[i])
           else
@@ -787,7 +787,15 @@ function scene.draw(dt)
           end
         end
       else
-        love.graphics.draw(sprite, fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+        if overlay and stretch then
+          if type(sprite) == "table" then
+            love.graphics.draw(draw, fulldrawx, fulldrawy, 0, TILE_SIZE / sprites[sprite[1]]:getWidth(), TILE_SIZE / sprites[sprite[1]]:getHeight(), draw:getWidth() / 2, draw:getHeight() / 2)
+          else
+            love.graphics.draw(draw, fulldrawx, fulldrawy, 0, sprite:getWidth() / TILE_SIZE, sprite:getHeight() / TILE_SIZE, draw:getWidth() / 2, draw:getHeight() / 2)
+          end
+        else
+          love.graphics.draw(draw, fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, draw:getWidth() / 2, draw:getHeight() / 2)
+        end
       end
 			if (unit.meta ~= nil) then
 				setColor({4, 1})
@@ -966,7 +974,7 @@ function scene.draw(dt)
         local old_test_mode, old_test_value = love.graphics.getStencilTest()
         love.graphics.setStencilTest("greater", 0)
         love.graphics.setBlendMode("multiply", "premultiplied")
-        drawSprite(sprites["overlay/" .. overlay])
+        drawSprite(sprites["overlay/" .. overlay], false, true)
         love.graphics.setBlendMode("alpha", "alphamultiply")
         love.graphics.setStencilTest(old_test_mode, old_test_value)
       end
