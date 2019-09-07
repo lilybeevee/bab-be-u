@@ -666,19 +666,17 @@ function scene.draw(dt)
       newcolor[1] = newcolor[1]*255
       newcolor[2] = newcolor[2]*255
       newcolor[3] = newcolor[3]*255
-	  unit.color = newcolor
+      unit.color_override = newcolor
     elseif unit.colrful or rainbowmode then
       -- print("unit " .. unit.name .. " is colourful or rainbowmode")
       local newcolor = hslToRgb((love.timer.getTime()/15+#undo_buffer/45+unit.x/18+unit.y/18)%1, .5, .5, 1)
       newcolor[1] = newcolor[1]*255
       newcolor[2] = newcolor[2]*255
       newcolor[3] = newcolor[3]*255
-      unit.color = newcolor 
+      unit.color_override = newcolor 
     else
-      if unit.color_override ~= nil then
-        unit.color = unit.color_override
-      elseif unit.name == "bordr" and timeless then
-        unit.color = {0,3}
+      if unit.name == "bordr" and timeless then
+        unit.color_override = {0,3}
       else
         unit.color = copyTable(tiles_list[unit.tile].color)
       end
@@ -741,7 +739,7 @@ function scene.draw(dt)
 			return color
 		end
 		
-		local color = setColor(unit.color)
+		local color = setColor(unit.color_override or unit.color)
     --check level_destroyed so that the object created by infloop is always white needs to be changed if we want objects to be able to survive level destruction
     if level_destroyed then
       setColor({0,3})
@@ -774,17 +772,19 @@ function scene.draw(dt)
     love.graphics.rotate(math.rad(rotation))
     love.graphics.translate(-fulldrawx, -fulldrawy)
     
-    local function drawSprite(overlay)
+    local function drawSprite(overlay, onlycolor)
       local sprite = overlay or sprite
       if type(sprite) == "table" then
         for i,image in ipairs(sprite) do
           if type(unit.color[i]) == "table" then
-            setColor(unit.color[i])
+            setColor(unit.color_override and unit.color_override[i] or unit.color[i])
           else
             setColor(unit.color)
           end
-          local sprit = sprites[image]
-          love.graphics.draw(sprit, fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprit:getWidth() / 2, sprit:getHeight() / 2)
+          if not onlycolor or not unit.colored or (onlycolor and unit.colored and unit.colored[i]) then
+            local sprit = sprites[image]
+            love.graphics.draw(sprit, fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprit:getWidth() / 2, sprit:getHeight() / 2)
+          end
         end
       else
         love.graphics.draw(sprite, fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
@@ -956,9 +956,9 @@ function scene.draw(dt)
 
     if #unit.overlay > 0 and unit.fullname ~= "no1" then
       local function overlayStencil()
-         pcallSetShader(mask_shader)
-         drawSprite()
-         love.graphics.setShader()
+        pcallSetShader(mask_shader)
+        drawSprite(nil,true)
+        love.graphics.setShader()
       end
       for _,overlay in ipairs(unit.overlay) do
         love.graphics.setColor(1, 1, 1)

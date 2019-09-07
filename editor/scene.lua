@@ -1189,7 +1189,7 @@ function scene.draw(dt)
               newcolor[1] = newcolor[1]*255
               newcolor[2] = newcolor[2]*255
               newcolor[3] = newcolor[3]*255
-              unit.color = newcolor
+              unit.color_override = newcolor
             end
             
             if unit.name == "byc" or unit.name == "bac" then

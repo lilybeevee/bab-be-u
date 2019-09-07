@@ -117,7 +117,6 @@ function parseRules(undoing)
       else
         unit.textname = "  "
         unit.texttype = {ditto = true}
-        unit.color = {0,3}
         unit.color_override = {0,3}
       end
     end

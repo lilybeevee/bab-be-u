@@ -1971,6 +1971,7 @@ tiles_list = {
     name = "pepis",
     sprite = {"pepis","pepis_red","pepis_blue"},
     color = {{0,3},{2,2},{1,2}},
+    colored = {false,true,true},
     layer = 5,
     tags = {"bepis", "pepsi"},
     desc = "pepis: tastes like tar and mud",

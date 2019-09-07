@@ -1165,7 +1165,19 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
       elseif (unit.rave or unit.colrful or unit.gay) then
         result = true
       else
-        result = colour_for_palette[colour[1]][colour[2]] == condtype
+        if type(colour[1]) == "table" then
+          local found = false
+          for i,coluor in ipairs(colour) do
+            if colour_for_palette[coluor[1]][coluor[2]] == condtype then
+              found = true
+            end
+          end
+          if not found then
+            result = false
+          end
+        else
+          result = colour_for_palette[colour[1]][colour[2]] == condtype
+        end
       end
     elseif condtype == "the" then
       local the = cond.unit
