@@ -1167,14 +1167,15 @@ function scene.draw(dt)
     local draw_units = {}
     local already_added = {}
     for _,unit in ipairs(units) do
-      if not already_added[unit.sprite] then already_added[unit.sprite] = {} end
+      local sprite = unit.sprite..(unit.meta or "")..(unit.nt and "nt" or "")
+      if not already_added[sprite] then already_added[sprite] = {} end
       local dir = unit.dir
       if not unit.rotate then dir = 1 end -- dont separate non-rotatable objects with different dirs
-      if not already_added[unit.sprite][dir] then
+      if not already_added[sprite][dir] then
         table.insert(draw_units, {unit = unit, dir = dir, count = 1})
-        already_added[unit.sprite][dir] = #draw_units
+        already_added[sprite][dir] = #draw_units
       else
-        draw_units[already_added[unit.sprite][dir]].count = draw_units[already_added[unit.sprite][dir]].count + 1
+        draw_units[already_added[sprite][dir]].count = draw_units[already_added[sprite][dir]].count + 1
       end
     end
 
@@ -1214,16 +1215,16 @@ function scene.draw(dt)
       if (unit.meta ~= nil) then
 				love.graphics.setColor(getPaletteColor(4, 1))
 				local metasprite = unit.meta == 2 and sprites["meta2"] or sprites["meta1"]
-				love.graphics.draw(metasprite, 0, 0, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+				love.graphics.draw(metasprite, 0, 0, 0, 1, 1, TILE_SIZE / 2, TILE_SIZE / 2)
 				if unit.meta > 2 then
 					love.graphics.printf(tostring(unit.meta), -1, 6, 32, "center")
 				end
 			end
       if (unit.nt ~= nil) then
-        setColor({2, 2})
+        love.graphics.setColor(getPaletteColor(2, 2))
         local ntsprite = sprites["n't"]
-        love.graphics.draw(ntsprite, 0, 0, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
-        setColor(unit.color)
+        love.graphics.draw(ntsprite, 0, 0, 0, 1, 1, TILE_SIZE / 2, TILE_SIZE / 2)
+        love.graphics.setColor(getPaletteColor(unit.color[1], unit.color[2]))
       end
       love.graphics.pop()
 
