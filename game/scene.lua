@@ -1200,6 +1200,7 @@ function scene.draw(dt)
     for i,draw in ipairs(draw_units) do
       local cx = (-width / 2) + ((i / #draw_units) * width) - 20
       local unit = draw.unit
+      local dcolor = unit.color_override or unit.color
 
       love.graphics.push()
       love.graphics.translate(cx, -28)
@@ -1208,16 +1209,16 @@ function scene.draw(dt)
       love.graphics.rotate(math.rad((draw.dir - 1) * 45))
       
       if type(unit.sprite) ~= "table" then
-        if #unit.color == 2 then
-          love.graphics.setColor(getPaletteColor(unit.color[1], unit.color[2]))
+        if #dcolor == 2 then
+          love.graphics.setColor(getPaletteColor(dcolor[1], dcolor[2]))
         else
-          love.graphics.setColor(unit.color[1], unit.color[2], unit.color[3], unit.color[4] or 1)
+          love.graphics.setColor(dcolor[1], dcolor[2], dcolor[3], dcolor[4] or 1)
         end
         local sprite = sprites[unit.sprite]
         love.graphics.draw(sprite, 0, 0, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
       else
         for j,image in ipairs(unit.sprite) do
-          love.graphics.setColor(getPaletteColor(unit.color[j][1], unit.color[j][2]))
+          love.graphics.setColor(getPaletteColor(dcolor[j][1], dcolor[j][2]))
           local sprite = sprites[image]
           love.graphics.draw(sprite, 0, 0, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
         end
