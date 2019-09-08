@@ -1168,11 +1168,17 @@ function scene.draw(dt)
   --draw the stack box (shows what units are on a tile)
   if stack_box.scale > 0 then
     love.graphics.push()
-    love.graphics.translate((stack_box.x + 0.5) * TILE_SIZE, stack_box.y * TILE_SIZE)
+    local screenx,screeny = gameTileToScreen(stack_box.x,stack_box.y)
+    local onscreen = screeny > 40
+    love.graphics.translate((stack_box.x + 0.5) * TILE_SIZE, (stack_box.y + (onscreen and 0 or 1)) * TILE_SIZE)
     love.graphics.scale(stack_box.scale)
 
     love.graphics.setColor(getPaletteColor(0, 4))
-    love.graphics.polygon("fill", -4, -8, 0, 0, 4, -8)
+    if onscreen then
+      love.graphics.polygon("fill", -4, -8, 0, 0, 4, -8)
+    else
+      love.graphics.polygon("fill", -4, 8, 0, 0, 4, 8)
+    end
 
     local units = stack_box.units
     local draw_units = {}
@@ -1195,11 +1201,19 @@ function scene.draw(dt)
     end
 
     local width = 44 * #draw_units - 4
-    love.graphics.rectangle("fill", -width / 2, -48, width, 40)
+    if onscreen then
+      love.graphics.rectangle("fill", -width / 2, -48, width, 40)
+    else
+      love.graphics.rectangle("fill", -width / 2, 8, width, 40)
+    end
 
     love.graphics.setColor(getPaletteColor(3, 3))
     love.graphics.setLineWidth(2)
-    love.graphics.line(-width / 2, -48, -width / 2, -8, -4, -8, 0, 0, 4, -8, width / 2, -8, width / 2, -48, -width / 2, -48)
+    if onscreen then
+      love.graphics.line(-width / 2, -48, -width / 2, -8, -4, -8, 0, 0, 4, -8, width / 2, -8, width / 2, -48, -width / 2, -48)
+    else
+      love.graphics.line(-width / 2, 48, -width / 2, 8, -4, 8, 0, 0, 4, 8, width / 2, 8, width / 2, 48, -width / 2, 48)
+    end
 
     for i,draw in ipairs(draw_units) do
       local cx = (-width / 2) + ((i / #draw_units) * width) - 20
@@ -1207,8 +1221,11 @@ function scene.draw(dt)
       local dcolor = unit.color_override or unit.color
 
       love.graphics.push()
-      love.graphics.translate(cx, -28)
-
+      if onscreen then
+        love.graphics.translate(cx, -28)
+      else
+        love.graphics.translate(cx, 28)
+      end
       love.graphics.push()
       love.graphics.rotate(math.rad((draw.dir - 1) * 45))
       
