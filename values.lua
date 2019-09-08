@@ -6429,6 +6429,7 @@ tiles_list = {
     type = "object",
     color = {{0,3},{2,2},{4,2}},
     layer = 8,
+    rotate = true,
     tags = {"boo","mario","ghost"},
     desc = "very shy, don't lookat",
   },

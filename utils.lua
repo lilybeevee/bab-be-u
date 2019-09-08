@@ -1807,10 +1807,14 @@ function addParticles(type,x,y,color,count)
     ps:setSpeed(math.random(30, 40))
     ps:setLinearDamping(5)
     ps:setParticleLifetime(math.random(0.50, 1.10))
-    if #color == 2 then
-      ps:setColors(getPaletteColor(color[1], color[2]))
+    if type(color[1]) == "table" then
+      ps:setColors(getPaletteColor(color[1][1], color[1][2]))
     else
-      ps:setColors(color[1]/255, color[2]/255, color[3]/255, (color[4] or 255)/255)
+      if #color == 2 then
+        ps:setColors(getPaletteColor(color[1], color[2]))
+      else
+        ps:setColors(color[1]/255, color[2]/255, color[3]/255, (color[4] or 255)/255)
+      end
     end
     ps:start()
     ps:emit(count or 1)
