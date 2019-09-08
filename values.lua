@@ -3893,9 +3893,10 @@ tiles_list = {
   -- 332
   {
     name = "paint",
-    sprite = "paint",
+    sprite = {"paint","paint_color"},
+    color = {{0,3},{0,3}},
+    colored = {false,true},
     type = "object",
-    color = {0,3},
     layer = 4,
     desc = "X be PAINT turns into a paint bucket with the color of X."
   },
@@ -4699,10 +4700,11 @@ tiles_list = {
   -- 403
   {
     name = "beeee",
-    sprite = "beeee",
+    sprite = {"beeee","no1"},
     slep = true,
     type = "object",
-    color = {2, 4},
+    color = {{2, 4},{0,0}},
+    colored = {true,true},
     layer = 6,
     rotate = true,
     eye = {x=25, y=14, w=2, h=2},
