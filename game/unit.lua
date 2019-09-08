@@ -1134,10 +1134,26 @@ function miscUpdates()
     if not deleted and not unit.removed_final then
       local tile = tiles_list[unit.tile]
       unit.layer = tile.layer + (20 * (graphical_property_cache["flye"][unit] or 0))
+      
+      if unit.fullname == "boooo" then
+        if hasProperty(unit,"shy") then
+          unit.sprite = {"boooo_shy","boooo_mouth_shy","boooo_blush"}
+        elseif graphical_property_cache["slep"][unit] ~= nil then
+          unit.sprite = {"boooo_slep","boooo_mouth_slep"}
+        else
+          unit.sprite = {"boooo","boooo_mouth"}
+        end
+      end
 
-      if unit.fullname ~= "os" then
-        if tiles_list[unit.tile].slep and graphical_property_cache["slep"][unit] ~= nil then
-          unit.sprite = tiles_list[unit.tile].sprite.."_slep"
+      if unit.fullname ~= "os" and unit.fullname ~= "boooo" then
+        if tile.slep and graphical_property_cache["slep"][unit] ~= nil then
+          if type(tile.sprite) == "table" then
+            for j,name in ipairs(tile.sprite) do
+              unit.sprite[j] = name.."_slep"
+            end
+          else
+            unit.sprite = tiles_list[unit.tile].sprite.."_slep"
+          end
         else
           unit.sprite = tiles_list[unit.tile].sprite
         end

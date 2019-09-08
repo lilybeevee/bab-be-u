@@ -207,7 +207,7 @@ selector_grid_contents = {
     "robobot","text_robobot","snek","text_snek","sneel","text_sneel",0,0,0,0,0,0,0,0,0,0,0,0,
     "wog","text_wog","bog","text_bog","enbybog","text_enbybog",0,0,0,0,0,0,0,0,0,0,0,0,
     "kirb","text_kirb","ripof","text_ripof","cavebab","text_cavebab",0,0,0,0,0,0,0,0,0,0,0,0,
-    "bup","text_bup","butflye","text_butflye",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    "bup","text_bup","butflye","text_butflye","boooo","text_boooo",0,0,0,0,0,0,0,0,0,0,0,0,
     "boy","text_boy","wurm","text_wurm",0,0,0,0,0,0,0,0,0,0,"lila","text_lila","tot","text_tot",
     "steev","text_steev","ratt","text_ratt",0,0,0,0,0,0,0,0,0,0,"pata","text_pata","jill","text_jill",
     "han","text_han","eyee","text_eyee","lisp","text_lisp","paw","text_paw",0,0,0,0,0,0,"larry","text_larry","zsoob","text_zsoob",
@@ -6421,6 +6421,26 @@ tiles_list = {
     color = {6,1},
     layer = 20,
     tags = {"boat", "ship"},
+  },
+  -- 559
+  {
+    name = "boooo",
+    sprite = {"boooo","boooo_mouth"},
+    type = "object",
+    color = {{0,3},{2,2},{4,2}},
+    layer = 8,
+    tags = {"boo","mario","ghost"},
+    desc = "very shy, don't lookat",
+  },
+  -- 560
+  {
+    name = "text_boooo",
+    sprite = "text_boooo",
+    type = "text",
+    texttype = {object = true},
+    color = {4,2},
+    layer = 20,
+    tags = {"boo","mario","ghost"},
   },
 }
 
