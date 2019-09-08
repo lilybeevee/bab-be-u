@@ -719,7 +719,11 @@ function scene.draw(dt)
 		local function setColor(color)
       color = type(color[1]) == "table" and color[1] or color
       if #color == 3 then
-				color = {color[1]/255, color[2]/255, color[3]/255, 1}
+        if color[1] then
+          color = {color[1]/255, color[2]/255, color[3]/255, 1}
+        else
+          color = {1,1,1,1}
+        end
 			else
 				color = {getPaletteColor(color[1], color[2])}
 			end
