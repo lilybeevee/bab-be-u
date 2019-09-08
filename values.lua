@@ -6428,6 +6428,7 @@ tiles_list = {
     sprite = {"boooo","boooo_mouth"},
     type = "object",
     color = {{0,3},{2,2},{4,2}},
+    colored = {true,false,false},
     layer = 8,
     rotate = true,
     tags = {"boo","mario","ghost"},

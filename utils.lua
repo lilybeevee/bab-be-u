@@ -1699,8 +1699,8 @@ function hslToRgb(h, s, l, a)
   return {r, g, b} --a removed cus unused
 end
 
-function addParticles(type,x,y,color,count)
-  if type == "destroy" then
+function addParticles(ptype,x,y,color,count)
+  if ptype == "destroy" then
     local ps = love.graphics.newParticleSystem(sprites["circle"])
     local px = (x + 0.5) * TILE_SIZE
     local py = (y + 0.5) * TILE_SIZE
@@ -1719,7 +1719,7 @@ function addParticles(type,x,y,color,count)
     ps:start()
     ps:emit(count or 20)
     table.insert(particles, ps)
-  elseif type == "rule" then
+  elseif ptype == "rule" then
     local ps = love.graphics.newParticleSystem(sprites["circle"])
     local px = (x + 0.5) * TILE_SIZE
     local py = (y + 0.5) * TILE_SIZE
@@ -1738,7 +1738,7 @@ function addParticles(type,x,y,color,count)
     ps:start()
     ps:emit(count or 10)
     table.insert(particles, ps)
-  elseif type == "bonus" then
+  elseif ptype == "bonus" then
     --print("sparkle !!")
     local ps = love.graphics.newParticleSystem(sprites["sparkle"])
     local px = (x + 0.5) * TILE_SIZE
@@ -1758,7 +1758,7 @@ function addParticles(type,x,y,color,count)
     ps:start()
     ps:emit(count or 10)
     table.insert(particles, ps)
-  elseif type == "love" then
+  elseif ptype == "love" then
     local ps = love.graphics.newParticleSystem(sprites["luv"])
     local px = (x + 0.5) * TILE_SIZE
     local py = (y + 0.5) * TILE_SIZE
@@ -1776,7 +1776,7 @@ function addParticles(type,x,y,color,count)
     ps:start()
     ps:emit(count or 10)
     table.insert(particles, ps)
-  elseif type == "slep" then
+  elseif ptype == "slep" then
     local ps = love.graphics.newParticleSystem(sprites["letter_z"])
     local px = (x + 1) * TILE_SIZE
     local py = y * TILE_SIZE
@@ -1795,7 +1795,7 @@ function addParticles(type,x,y,color,count)
     ps:start()
     ps:emit(count or 10)
     table.insert(particles, ps)
-  elseif type == "movement-puff" then
+  elseif ptype == "movement-puff" then
     local ps = love.graphics.newParticleSystem(sprites["circle"])
     local px = (x + 0.5) * TILE_SIZE
     local py = (y + 0.5) * TILE_SIZE
@@ -1819,7 +1819,7 @@ function addParticles(type,x,y,color,count)
     ps:start()
     ps:emit(count or 1)
     table.insert(particles, ps)
-  elseif type == "sing" then
+  elseif ptype == "sing" then
     local ps = love.graphics.newParticleSystem(sprites["noet"])
     local px = (x + 0.5) * TILE_SIZE
     local py = (y + 0.5) * TILE_SIZE
