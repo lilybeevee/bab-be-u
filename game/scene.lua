@@ -1295,6 +1295,9 @@ function scene.draw(dt)
 
   if currently_winning and win_size < 1 then
     win_size = win_size + dt*2
+    if (win_size > 1) then
+      win_size = 1
+    end
   end
   love.graphics.pop()
   
