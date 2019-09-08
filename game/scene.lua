@@ -1281,20 +1281,34 @@ function scene.draw(dt)
   end
   if pathlock_box.scale > 0 then
     love.graphics.push()
-    love.graphics.translate((pathlock_box.x + 0.5) * TILE_SIZE, pathlock_box.y * TILE_SIZE)
+    local screenx,screeny = gameTileToScreen(stack_box.x,stack_box.y)
+    local onscreen = screeny > 40
+    love.graphics.translate((pathlock_box.x + 0.5) * TILE_SIZE, (pathlock_box.y + (onscreen and 0 or 1)) * TILE_SIZE)
     love.graphics.scale(pathlock_box.scale)
 
     love.graphics.setColor(getPaletteColor(0, 4))
-    love.graphics.polygon("fill", -4, -8, 0, 0, 4, -8)
+    if onscreen then
+      love.graphics.polygon("fill", -4, -8, 0, 0, 4, -8)
+    else
+      love.graphics.polygon("fill", -4, 8, 0, 0, 4, 8)
+    end
 
     local unit = pathlock_box.unit
 
     local width = 70
-    love.graphics.rectangle("fill", -width / 2, -48, width, 40)
+    if onscreen then
+      love.graphics.rectangle("fill", -width / 2, -48, width, 40)
+    else
+      love.graphics.rectangle("fill", -width / 2, 8, width, 40)
+    end
 
     love.graphics.setColor(getPaletteColor(3, 3))
     love.graphics.setLineWidth(2)
-    love.graphics.line(-width / 2, -48, -width / 2, -8, -4, -8, 0, 0, 4, -8, width / 2, -8, width / 2, -48, -width / 2, -48)
+    if onscreen then
+      love.graphics.line(-width / 2, -48, -width / 2, -8, -4, -8, 0, 0, 4, -8, width / 2, -8, width / 2, -48, -width / 2, -48)
+    else
+      love.graphics.line(-width / 2, 48, -width / 2, 8, -4, 8, 0, 0, 4, 8, width / 2, 8, width / 2, 48, -width / 2, 48)
+    end
     
     local type = ({puffs = "puff", blossoms = "blossom", orbs = "orrb"})[unit.special.pathlock]
     love.graphics.setColor(type == "orrb" and {getPaletteColor(4,1)} or {1,1,1,1})
