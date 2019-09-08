@@ -1261,7 +1261,8 @@ function updateUnitColours()
     for _,on in ipairs(stuff) do
       if unit ~= on and hasRule(unit, "paint", on) and sameFloat(unit, on) then
         if timecheck(unit,"paint",on) and timecheck(on) then
-          local colour = colour_for_palette[unit.color[1]][unit.color[2]]
+          local old_colour = unit.color_override or unit.color
+          local colour = colour_for_palette[old_colour[1]][old_colour[2]]
           if (colour ~= nil and on[colour] ~= true) then
             if to_update[on] == nil then
               to_update[on] = {}
