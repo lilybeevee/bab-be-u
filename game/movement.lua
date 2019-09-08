@@ -23,7 +23,6 @@ function doUpdate(already_added, moving_units_next)
       if (sliderulesexist) then
         table.insert(sliders, unit)
       end
-      --applySlide(unit, x-unit.x, y-unit.y, already_added, moving_units_next)
       local changedDir = updateDir(unit, dir)
       if not changedDir then
         updateDir(unit, dirAdd(dir, geometry_spin), true)
@@ -82,7 +81,7 @@ function doMovement(movex, movey, key)
     movey = 0
   end
   walkdirchangingrulesexist = rules_with["munwalk"] or rules_with["sidestep"] or rules_with["diagstep"] or rules_with["hopovr"] or rules_with["knightstep"]
-  sliderulesexist = rules_with["icyyyy"] or rules_with["goooo"]
+  sliderulesexist = rules_with["icyyyy"] or rules_with["goooo"] or rules_with["reflecc"]
   local played_sound = {}
   local slippers = {}
   local flippers = {}
@@ -804,13 +803,89 @@ function applySlide(mover, already_added, moving_units_next)
    --we haven't actually moved yet, so check the tile we will be on
   local others = getUnitsOnTile(mover.x, mover.y, nil, false, mover)
   table.insert(others, outerlvl)
+  --REFLECC is now also handled here, and goes before anything else.
+  for _,v in ipairs(others) do
+    if (sameFloat(mover, v) and not v.already_moving) and timecheck(v) then
+      local reflecc = hasProperty(v, "reflecc")
+      if (reflecc) then
+        local dirToUse;
+        --SLOOP is oriented TL-BR when facing 1.
+        --Entering it 1 knocks you down to 3.
+        --Entering it 2 is forbidden.
+        --Entering it 3 knocks you down to 1.
+        --Entering it 4 knocks you back to 8.
+        --Entering it 5 knocks you back to 7.
+        --Entering it 6 is forbidden.
+        --Entering it 7 knocks you back to 5.
+        --Entering it 8 knocks you back to 4.
+        --SLOOP is oriented T-B when facing 2.
+        --Entering it 1 knocks you back to 5.
+        --Entering it 2 knocks you back to 4.
+        --Entering it 3 is forbidden.
+        --Entering it 4 knocks you back to 2.
+        --Entering it 5 knocks you back to 1.
+        --Entering it 6 knocks you back to 8.
+        --Entering it 7 is forbidden.
+        --Entering it 8 knocks you back to 6.
+        --TL;DR:
+        --v.dir is paired with v.dir+2.
+        --v.dir+1 is forbidden, as is v.dir+5.
+        --v.dir+3 is paired with v.dir v.dir+7.
+        --v.dir+4 is paired with v.dir+6.
+        local dirDifference = mover.dir - v.dir;
+        if (dirDifference < 0) then dirDifference = dirDifference + 8; end
+        if (dirDifference == 0) then
+          dirToUse = dirAdd(mover.dir, 2);
+        elseif (dirDifference == 1) then
+          dirToUse = nil;
+        elseif (dirDifference == 2) then
+           dirToUse = dirAdd(mover.dir, -2);
+        elseif (dirDifference == 3) then
+          dirToUse = dirAdd(mover.dir, 4);
+        elseif (dirDifference == 4) then
+          dirToUse = dirAdd(mover.dir, 2);
+        elseif (dirDifference == 5) then
+          dirToUse = nil;
+        elseif (dirDifference == 6) then
+          dirToUse = dirAdd(mover.dir, -2);
+        elseif (dirDifference == 7) then
+          dirToUse = dirAdd(mover.dir, 4);
+        end
+        print(dirToUse)
+        if (dirToUse ~= nil) then
+          if (not did_clear_existing) then
+            for i = #mover.moves,1,-1 do
+              if mover.moves[i].reason == "reflecc" or mover.moves[i].reason == "goooo" or mover.moves[i].reason == "icyyyy" then
+                table.remove(mover.moves, i)
+              end
+            end
+            did_clear_existing = true
+          end
+          --the new moves will be at the start of the unit's moves data, so that it takes precedence over what it would have done next otherwise
+          --movedebug("launching:"..mover.fullname..","..v.dir)
+          
+          table.insert(mover.moves, 1, {reason = "reflecc", dir = dirToUse, times = 1})
+          if not already_added[mover] then
+            --movedebug("did add launcher")
+            table.insert(moving_units_next, mover)
+            already_added[mover] = true
+          end
+          did_launch = true
+        end
+      end
+    end
+  end
+  if (did_launch) then
+    return
+  end
+  
   for _,v in ipairs(others) do
     if (sameFloat(mover, v) and not v.already_moving) and timecheck(v) then
       local launchness = countProperty(v, "goooo")
       if (launchness > 0) then
         if (not did_clear_existing) then
           for i = #mover.moves,1,-1 do
-            if mover.moves[i].reason == "goooo" or mover.moves[i].reason == "icyyyy" then
+            if mover.moves[i].reason == "reflecc" or mover.moves[i].reason == "goooo" or mover.moves[i].reason == "icyyyy" then
               table.remove(mover.moves, i)
             end
           end
@@ -838,7 +913,7 @@ function applySlide(mover, already_added, moving_units_next)
       if (slideness > 0) then
         if (not did_clear_existing) then
           for i = #mover.moves,1,-1 do
-            if mover.moves[i].reason == "goooo" or mover.moves[i].reason == "icyyyy" then
+            if mover.moves[i].reason == "reflecc" or mover.moves[i].reason == "goooo" or mover.moves[i].reason == "icyyyy" then
               table.remove(mover.moves, i)
             end
           end
@@ -1038,8 +1113,93 @@ function doPullCore(unit,dx,dy,dir,data, already_added, moving_units, moving_uni
 end
 
 function fallBlock()
+  --1) gather all fallers
+  local fallers = {}
+  --and all timeless fallers
+  local timeless_fallers = {}
+  
+  function addFallersFromLoop(verb, property, gravity_dir)
+    for unit,count in pairs(getUnitsWithRuleAndCount(nil, verb, property)) do
+      if fallers[unit] == nil then
+        fallers[unit] = {0, 0};
+      end
+      fallers[unit][1] = fallers[unit][1] + count*gravity_dir[1];
+      fallers[unit][2] = fallers[unit][2] + count*gravity_dir[2];
+      if timecheck(unit, verb, property) then
+        timeless_fallers[unit] = true
+      end
+    end
+  end
+  
+  addFallersFromLoop("be", "haet skye", {0, 1});
+  addFallersFromLoop("be", "haet flor", {0, -1});
+  
+  
+  if (rules_with["haet"]) then
+    for k,v in pairs(dirs8_by_name) do
+      local gravity_dir = copyTable(dirs8[k]);
+      gravity_dir[1] = -gravity_dir[1];
+      gravity_dir[2] = -gravity_dir[2];
+      addFallersFromLoop("haet", v, gravity_dir);
+    end
+  end
+  if (rules_with["liek"]) then
+    for k,v in pairs(dirs8_by_name) do
+      addFallersFromLoop("liek", v, dirs8[k]);
+    end
+  end
+  --2) normalize to an 8-way faller direction, and remove if it's 0,0
+  for unit,dir in pairs(fallers) do
+    dir[1] = sign(dir[1]);
+    dir[2] = sign(dir[2]);
+    if (dir[1] == 0 and dir[2] == 0) then
+      fallers[unit] = nil
+    else
+      fallers[unit] = dir
+    end
+  end
+  
+  --3) move them simultaneously one step each loop. if nothing moved, loop over. portals can change
+  --falling dir, so be aware.
+  --Because we resolve simultaneously, it doesn't matter what order we iterate the table in.
+  
+  local something_moved = true
+  local loop_fall = 0
+  while something_moved do
+    something_moved = false
+    local movers = {}
+    loop_fall = loop_fall + 1
+    if (loop_fall > 1000) then
+      print("movement infinite loop! (1000 attempts at a faller)")
+      destroyLevel("infloop")
+      return
+    end
+    for unit,dir in pairs(fallers) do
+      local gravity_dir = dirs8_by_offset[dir[1]][dir[2]]
+      local dx, dy, dir, px, py = dir[1], dir[2], gravity_dir, -1, -1
+      local old_dir = gravity_dir
+      new_dx, new_dy, new_dir, px, py = getNextTile(unit, dx, dy, dir)
+      --TODO: add GLUED support here by checking to see if other units are returned too
+      if canMove(unit, dx, dy, dir, false, false, nil, "haet skye") then
+        addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
+        table.insert(movers, {unit = unit, old_dir = old_dir, dir = new_dir, px = px, py = py});
+        something_moved = true;
+      end
+    end
+    for _,payload in ipairs(movers) do
+      updateDir(payload.unit, dirAdd(payload.unit.dir, dirDiff(payload.old_dir, payload.dir)))
+      fallers[payload.unit] = dirs8[payload.dir];
+      moveUnit(payload.unit,payload.px, payload.py)
+      if timeless_fallers[payload.unit] == nil then
+        fallers[payload.unit] = nil
+      end
+    end
+  end
+  
+  --TODO: Need to add timeless fall back in.
+  
   --TODO: If we have multiple gravity directions, then we probably want a simultaneous single step algorithm to resolve everything neatly.
-  local gravity_dir = {0,1}
+  --[[local gravity_dir = {0,1}
   
   local fallers = getUnitsWithEffect("haet skye")
   table.sort(fallers, function(a, b) return a.y > b.y end )
@@ -1121,7 +1281,7 @@ function fallBlock()
         end
       end
     end
-  end
+  end]]
 end
 
 function doZip(unit)
@@ -1196,7 +1356,10 @@ end
 
 function doWrap(unit, px, py, move_dir, dir)
   --fast track if we don't need to wrap anyway
-  if inBounds(px,py) then return px, py, move_dir, dir end
+  if inBounds(px,py) and not units_by_name["bordr"] then
+    return px, py, move_dir, dir
+  end
+  --TODO: make mirr arnd also work with bordr. hard to know how that should work though
   if hasProperty(unit, "mirr arnd") or hasProperty(outerlvl, "mirr arnd") then --projective plane wrapping
     local dx, dy = 0, 0
     if (px < 0) then
@@ -1219,15 +1382,52 @@ function doWrap(unit, px, py, move_dir, dir)
     end
   end
   if hasProperty(unit, "go arnd") or hasProperty(outerlvl, "go arnd") then --torus wrapping
-    if (px < 0) then
-      px = px + mapwidth
-    elseif (px >= mapwidth) then
-      px = px - mapwidth
-    end
-    if (py < 0) then
-      py = py + mapheight
-    elseif (py >= mapheight) then
-      py = py - mapheight
+    --Orthogonal wrapping is trivial - eject backwards as far as we can.
+    --Diagonal wrapping is a bit harder - it depends on if we're walking into a wall or a corner (inward or outward). If we're walking into a wall, eject perpendicularly out of it as far as we can. If we're walking into a corner, eject backwards as far as we can.
+    if not inBounds(px,py) then
+      local mx,my = dirs8[move_dir][1],dirs8[move_dir][2]
+      local found = false
+      if (mx == 0 or my == 0) then --orthgonal
+        while not found do
+          if inBounds(px-mx,py-my) then
+            px = px-mx
+            py = py-my
+          else
+            found = true
+          end
+        end
+      else --diagonal, but into what?
+        local vert_wall = not inBounds(px,py-my);
+        local hori_wall = not inBounds(px-mx,py);
+        if vert_wall == hori_wall then --inward or outward corner
+          while not found do
+            if inBounds(px-mx,py-my) then
+              px = px-mx
+              py = py-my
+            else
+              found = true
+            end
+          end
+        elseif vert_wall then --vertical wall - eject horizontally
+          while not found do
+            if inBounds(px-mx,py) then
+              px = px-mx
+              py = py
+            else
+              found = true
+            end
+          end
+        else --horizontal wall - eject vertically
+          while not found do
+            if inBounds(px,py-my) then
+              px = px
+              py = py-my
+            else
+              found = true
+            end
+          end
+        end
+      end
     end
   end
 
@@ -1456,7 +1656,16 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
   --bounded: if we're bounded and there are no units in the destination that satisfy a bounded rule, AND there's no units at our feet that would be moving there to carry us, we can't go
   --we used to have a fast track, but now selector is ALWAYS bounded to stuff, so it's never going to be useful.
   local isbounded = matchesRule(unit, "liek", "?")
-  if (#isbounded > 0) then
+  --make sure that we actually liek an object
+  local bound_to_object = false;
+  for i,ruleparent in ipairs(isbounded) do
+    local liek = ruleparent.rule.object.name
+    if not dirs8_by_name_set[liek] then
+      bound_to_object = true;
+      break;
+    end
+  end
+  if (bound_to_object) then
     for i,ruleparent in ipairs(isbounded) do
       local liek = ruleparent.rule.object.name
       local success = false
@@ -1561,11 +1770,15 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
 					addUndo({"time_destroy",v.id})
           table.insert(time_sfx,"break")
           table.insert(time_sfx,"unlock")
+          addParticles("destroy", unit.x, unit.y, {237,226,133})
+          addParticles("destroy", v.x, v.y, {237,226,133})
         end
       end
       --New FLYE mechanic, as decreed by the bab dictator - if you aren't sameFloat as a push/pull/sidekik, you can enter it.
       -- print("checking if",v.name,"has goawaypls")
-      if hasProperty(v, "go away pls") and not would_swap_with then
+      local push = hasProperty(v, "go away pls") 
+      local moov = hasRule(unit, "moov", v);
+      if (push or moov) and not would_swap_with then
         -- print("success")
         if pushing then
           --glued units are pushed all at once or not at all
@@ -1576,7 +1789,7 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
             local newer_movers = {}
             for _,v2 in ipairs(pushers) do
               push_stack[unit] = true
-              local success,new_movers,new_specials = canMove(v2, dx, dy, dir, pushing, pulling, solid_name, "go away pls", push_stack)
+              local success,new_movers,new_specials = canMove(v2, dx, dy, dir, pushing, pulling, solid_name, push and "go away pls" or "moov", push_stack)
               push_stack[unit] = nil
               mergeTable(specials, new_specials)
               mergeTable(newer_movers, new_movers)
@@ -1588,13 +1801,13 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
                 table.insert(movers, {unit = add, dx = dx, dy = dy, dir = dir, move_dx = move_dx, move_dy = move_dy, move_dir = move_dir, geometry_spin = geometry_spin, portal = portal_unit})
               end
               --print(dump(movers))
-            else
+            elseif push then
               stopped = stopped or sameFloat(unit, v)
             end
           else
             --single units have to be able to move themselves to be pushed
             push_stack[unit] = true
-            local success,new_movers,new_specials = canMove(v, dx, dy, dir, pushing, pulling, solid_name, "go away pls", push_stack)
+            local success,new_movers,new_specials = canMove(v, dx, dy, dir, pushing, pulling, solid_name, push and "go away pls" or "moov", push_stack)
             push_stack[unit] = nil
             for _,special in ipairs(new_specials) do
               table.insert(specials, special)
@@ -1603,11 +1816,11 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
               for _,mover in ipairs(new_movers) do
                 table.insert(movers, mover)
               end
-            else
+            elseif push then
               stopped = stopped or sameFloat(unit, v)
             end
           end
-        else
+        elseif push then
           stopped = stopped or sameFloat(unit, v)
         end
       else
@@ -1619,9 +1832,11 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
         stopped = true
       elseif hasProperty(v, "no go") then --Things that are STOP stop being PUSH or PULL, unlike in Baba. Also unlike Baba, a wall can be floated across if it is not tall!
         stopped = stopped or sameFloat(unit, v)
-      elseif hasProperty(v, "sidekik") and not hasProperty(v, "go away pls") and not would_swap_with then
+      elseif (hasProperty(v, "sidekik") or hasProperty(v, "diagkik")) and not hasProperty(v, "go away pls") and not would_swap_with then
         stopped = stopped or sameFloat(unit, v)
       elseif hasProperty(v, "come pls") and not hasProperty(v, "go away pls") and not would_swap_with and not pulling then
+        stopped = stopped or sameFloat(unit, v)
+      elseif hasProperty(v, "reflecc") and refleccPrevents(v.dir, dx, dy) then
         stopped = stopped or sameFloat(unit, v)
       elseif hasProperty(v, "go my way") and goMyWayPrevents(v.dir, dx, dy) then
         stopped = stopped or sameFloat(unit, v)
@@ -1666,6 +1881,15 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
   end]]--
 
   return true,movers,specials
+end
+
+function refleccPrevents(dir, dx, dy)
+  dx = sign(dx)
+  dy = sign(dy)
+  local otherDir = dirs8_by_offset[dx][dy];
+  local dirDifference = otherDir - dir;
+  if (dirDifference < 0) then dirDifference = dirDifference + 8; end
+  return dirDifference == 1 or dirDifference == 5
 end
 
 function goMyWayPrevents(dir, dx, dy)

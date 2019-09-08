@@ -623,7 +623,7 @@ function scene.draw(dt)
       brightness = 0.33
     end
 
-    if (unit.name == "steev") and not hasRule("steev","be","u") then
+    if (unit.name == "steev") and not hasProperty(unit, "u") then
       brightness = 0.33
     end
     
@@ -666,42 +666,45 @@ function scene.draw(dt)
       newcolor[1] = newcolor[1]*255
       newcolor[2] = newcolor[2]*255
       newcolor[3] = newcolor[3]*255
-	  unit.color = newcolor
+      unit.color_override = newcolor
     elseif unit.colrful or rainbowmode then
       -- print("unit " .. unit.name .. " is colourful or rainbowmode")
       local newcolor = hslToRgb((love.timer.getTime()/15+#undo_buffer/45+unit.x/18+unit.y/18)%1, .5, .5, 1)
       newcolor[1] = newcolor[1]*255
       newcolor[2] = newcolor[2]*255
       newcolor[3] = newcolor[3]*255
-      unit.color = newcolor 
+      unit.color_override = newcolor 
     else
-      if unit.color_override ~= nil then
-        unit.color = unit.color_override
-      elseif unit.name == "bordr" and timeless then
-        unit.color = {0,3}
+      if unit.name == "bordr" and timeless then
+        unit.color_override = {0,3}
       else
         unit.color = copyTable(tiles_list[unit.tile].color)
       end
     end
     
     local sprite_name = unit.sprite
-
-    for type,name in pairs(unit.sprite_transforms) do
-      if table.has_value(unit.used_as, type) then
-        sprite_name = name
-        break
+    local sprite
+    
+    if type(sprite_name) ~= "table" then
+      for type,name in pairs(unit.sprite_transforms) do
+        if table.has_value(unit.used_as, type) then
+          sprite_name = name
+          break
+        end
       end
-    end
-    if sprite_name == "lvl" and readSaveFile(unit.special.level, "won") then
-      sprite_name = "lvl_won"
-    end
-    local frame = (unit.frame + anim_stage) % 3 + 1
-    if sprites[sprite_name .. "_" .. frame] then
-      sprite_name = sprite_name .. "_" .. frame
-    end
-    if not sprites[sprite_name] then sprite_name = "wat" end
+      if sprite_name == "lvl" and readSaveFile(unit.special.level, "won") then
+        sprite_name = "lvl_won"
+      end
+      local frame = (unit.frame + anim_stage) % 3 + 1
+      if type(sprite_name) == "string" and sprites[sprite_name .. "_" .. frame] then
+        sprite_name = sprite_name .. "_" .. frame
+      end
+      if not sprites[sprite_name] then sprite_name = "wat" end
 
-    local sprite = sprites[sprite_name]
+      sprite = sprites[sprite_name]
+    else
+      sprite = sprite_name
+    end
 
     --no tweening empty for now - it's buggy!
     --TODO: it's still a little buggy if you push/pull empties.
@@ -714,7 +717,8 @@ function scene.draw(dt)
     end
 
 		local function setColor(color)
-			if #color == 3 then
+      color = type(color[1]) == "table" and color[1] or color
+      if #color == 3 then
 				color = {color[1]/255, color[2]/255, color[3]/255, 1}
 			else
 				color = {getPaletteColor(color[1], color[2])}
@@ -735,7 +739,7 @@ function scene.draw(dt)
 			return color
 		end
 		
-		local color = setColor(unit.color)
+		local color = setColor(unit.color_override or unit.color)
     --check level_destroyed so that the object created by infloop is always white needs to be changed if we want objects to be able to survive level destruction
     if level_destroyed then
       setColor({0,3})
@@ -768,9 +772,31 @@ function scene.draw(dt)
     love.graphics.rotate(math.rad(rotation))
     love.graphics.translate(-fulldrawx, -fulldrawy)
     
-    local function drawSprite(overlay)
-      local sprite = overlay or sprite
-      love.graphics.draw(sprite, fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+    local function drawSprite(overlay, onlycolor, stretch)
+      local draw = overlay or sprite
+      if type(draw) == "table" then
+        for i,image in ipairs(draw) do
+          if type(unit.color[i]) == "table" then
+            setColor(unit.color_override and unit.color_override[i] or unit.color[i])
+          else
+            setColor(unit.color)
+          end
+          if not onlycolor or not unit.colored or (onlycolor and unit.colored and unit.colored[i]) then
+            local sprit = sprites[image]
+            love.graphics.draw(sprit, fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprit:getWidth() / 2, sprit:getHeight() / 2)
+          end
+        end
+      else
+        if overlay and stretch then
+          if type(sprite) == "table" then
+            love.graphics.draw(draw, fulldrawx, fulldrawy, 0, TILE_SIZE / sprites[sprite[1]]:getWidth(), TILE_SIZE / sprites[sprite[1]]:getHeight(), draw:getWidth() / 2, draw:getHeight() / 2)
+          else
+            love.graphics.draw(draw, fulldrawx, fulldrawy, 0, sprite:getWidth() / TILE_SIZE, sprite:getHeight() / TILE_SIZE, draw:getWidth() / 2, draw:getHeight() / 2)
+          end
+        else
+          love.graphics.draw(draw, fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, draw:getWidth() / 2, draw:getHeight() / 2)
+        end
+      end
 			if (unit.meta ~= nil) then
 				setColor({4, 1})
         local metasprite = unit.meta == 2 and sprites["meta2"] or sprites["meta1"]
@@ -938,9 +964,9 @@ function scene.draw(dt)
 
     if #unit.overlay > 0 and unit.fullname ~= "no1" then
       local function overlayStencil()
-         pcallSetShader(mask_shader)
-         drawSprite()
-         love.graphics.setShader()
+        pcallSetShader(mask_shader)
+        drawSprite(nil,true)
+        love.graphics.setShader()
       end
       for _,overlay in ipairs(unit.overlay) do
         love.graphics.setColor(1, 1, 1)
@@ -948,7 +974,7 @@ function scene.draw(dt)
         local old_test_mode, old_test_value = love.graphics.getStencilTest()
         love.graphics.setStencilTest("greater", 0)
         love.graphics.setBlendMode("multiply", "premultiplied")
-        drawSprite(sprites["overlay/" .. overlay])
+        drawSprite(sprites["overlay/" .. overlay], false, true)
         love.graphics.setBlendMode("alpha", "alphamultiply")
         love.graphics.setStencilTest(old_test_mode, old_test_value)
       end
@@ -1149,14 +1175,19 @@ function scene.draw(dt)
     local draw_units = {}
     local already_added = {}
     for _,unit in ipairs(units) do
-      if not already_added[unit.sprite] then already_added[unit.sprite] = {} end
-      local dir = unit.dir
-      if not unit.rotate then dir = 1 end -- dont separate non-rotatable objects with different dirs
-      if not already_added[unit.sprite][dir] then
-        table.insert(draw_units, {unit = unit, dir = dir, count = 1})
-        already_added[unit.sprite][dir] = #draw_units
+      local sprite = ""
+      if type(unit.sprite) == "table" then
+        sprite = unit.sprite[1]..(unit.meta or "")..(unit.nt and "nt" or "")..(unit.color_override and dump(unit.color_override) or "")
       else
-        draw_units[already_added[unit.sprite][dir]].count = draw_units[already_added[unit.sprite][dir]].count + 1
+        sprite = unit.sprite..(unit.meta or "")..(unit.nt and "nt" or "")..(unit.color_override and dump(unit.color_override) or "")
+      end
+      if not already_added[sprite] then already_added[sprite] = {} end
+      local dir = unit.rotatdir
+      if not already_added[sprite][dir] then
+        table.insert(draw_units, {unit = unit, dir = dir, count = 1})
+        already_added[sprite][dir] = #draw_units
+      else
+        draw_units[already_added[sprite][dir]].count = draw_units[already_added[sprite][dir]].count + 1
       end
     end
 
@@ -1169,36 +1200,43 @@ function scene.draw(dt)
 
     for i,draw in ipairs(draw_units) do
       local cx = (-width / 2) + ((i / #draw_units) * width) - 20
+      local unit = draw.unit
 
       love.graphics.push()
       love.graphics.translate(cx, -28)
 
       love.graphics.push()
       love.graphics.rotate(math.rad((draw.dir - 1) * 45))
-
-      if #draw.unit.color == 2 then
-        love.graphics.setColor(getPaletteColor(draw.unit.color[1], draw.unit.color[2]))
+      
+      if type(unit.sprite) ~= "table" then
+        if #unit.color == 2 then
+          love.graphics.setColor(getPaletteColor(unit.color[1], unit.color[2]))
+        else
+          love.graphics.setColor(unit.color[1], unit.color[2], unit.color[3], unit.color[4] or 1)
+        end
+        local sprite = sprites[unit.sprite]
+        love.graphics.draw(sprite, 0, 0, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
       else
-        love.graphics.setColor(draw.unit.color[1], draw.unit.color[2], draw.unit.color[3], draw.unit.color[4] or 1)
+        for j,image in ipairs(unit.sprite) do
+          love.graphics.setColor(getPaletteColor(unit.color[j][1], unit.color[j][2]))
+          local sprite = sprites[image]
+          love.graphics.draw(sprite, 0, 0, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+        end
       end
-
-      local sprite = sprites[draw.unit.sprite]
-      love.graphics.draw(sprite, 0, 0, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
-      local unit = draw.unit
       
       if (unit.meta ~= nil) then
 				love.graphics.setColor(getPaletteColor(4, 1))
 				local metasprite = unit.meta == 2 and sprites["meta2"] or sprites["meta1"]
-				love.graphics.draw(metasprite, 0, 0, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+				love.graphics.draw(metasprite, 0, 0, 0, 1, 1, TILE_SIZE / 2, TILE_SIZE / 2)
 				if unit.meta > 2 then
 					love.graphics.printf(tostring(unit.meta), -1, 6, 32, "center")
 				end
 			end
       if (unit.nt ~= nil) then
-        setColor({2, 2})
+        love.graphics.setColor(getPaletteColor(2, 2))
         local ntsprite = sprites["n't"]
-        love.graphics.draw(ntsprite, 0, 0, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
-        setColor(unit.color)
+        love.graphics.draw(ntsprite, 0, 0, 0, 1, 1, TILE_SIZE / 2, TILE_SIZE / 2)
+        love.graphics.setColor(getPaletteColor(unit.color[1], unit.color[2]))
       end
       love.graphics.pop()
 
@@ -1580,6 +1618,57 @@ function scene.checkInput()
         doOneMove(x, y, key)
         local end_time = love.timer.getTime()
         if not unit_tests then print("gameplay logic took: "..tostring(round((end_time-start_time)*1000)).."ms") end
+        -- SING
+        if tiles_by_name["text_sing"] then
+            if hasSing(unit,"c") or hasSing(unit,"b_sharp") then
+                bit:setPitch(1)
+                bit:play()
+            end
+            if hasSing(unit,"c_sharp") or hasSing(unit,"d_flat") then
+                bit:setPitch(2^(1/12))
+                bit:play()
+            end
+            if hasSing(unit,"d") then
+                bit:setPitch(2^(2/12))
+                bit:play()
+            end
+            if hasSing(unit,"d_sharp") or hasSing(unit,"e_flat") then
+                bit:setPitch(2^(3/12))
+                bit:play()
+            end
+            if hasSing(unit,"e") or hasSing(unit,"f_flat") then
+                bit:setPitch(2^(4/12))
+                bit:play()
+            end
+            if hasSing(unit,"f") or hasSing(unit,"e_sharp") then
+                bit:setPitch(2^(5/12))
+                bit:play()
+            end
+            if hasSing(unit,"f_sharp") or hasSing(unit,"g_flat") then
+                bit:setPitch(2^(6/12))
+                bit:play()
+            end
+            if hasSing(unit,"g") then
+                bit:setPitch(2^(7/12))
+                bit:play()
+            end
+            if hasSing(unit,"g_sharp") or hasSing(unit,"a_flat") then
+                bit:setPitch(2^(8/12))
+                bit:play()
+            end
+            if hasSing(unit,"a") then
+                bit:setPitch(2^(9/12))
+                bit:play()
+            end
+            if hasSing(unit,"a_sharp") or hasSing(unit,"b_flat") then
+                bit:setPitch(2^(10/12))
+                bit:play()  
+            end
+            if hasSing(unit,"b") or hasSing(unit,"c_flat") then
+                bit:setPitch(2^(11/12))
+                bit:play()  
+            end
+        end
         -- BUP
         if hasRule("bup","be","u") and units_by_name["bup"] then
             playSound("bup")
@@ -1628,7 +1717,13 @@ function escResult(do_actual)
       return "the editor"
     end
   else
-    if (level_parent_level == nil or level_parent_level == "") then
+    if (win_reason == "nxt" and level_next_level ~= nil and level_next_level ~= "") then
+      if (do_actual) then
+        loadLevels({level_next_level}, "play")
+      else
+        return level_next_level
+      end
+    elseif (level_parent_level == nil or level_parent_level == "") then
       if (parent_filename ~= nil and parent_filename ~= "") then
         if (do_actual) then
           loadLevels(parent_filename:split("|"), "play")
@@ -1647,10 +1742,22 @@ function escResult(do_actual)
         end
       end
     else
-      if (do_actual) then
-        loadLevels({level_parent_level}, "play")
+      if (readSaveFile(level_parent_level, "seen")) then
+        if (do_actual) then
+          loadLevels({level_parent_level}, "play")
+        else
+          return level_parent_level
+        end
       else
-        return level_parent_level
+        if (do_actual) then
+          load_mode = "play"
+          new_scene = loadscene
+          if (love.filesystem.getInfo(world_parent .. "/" .. world .. "/" .. "overworld.txt")) then
+            world = ""
+          end
+        else
+          return "the level selection menu"
+        end
       end
     end
   end

@@ -117,7 +117,6 @@ function parseRules(undoing)
       else
         unit.textname = "  "
         unit.texttype = {ditto = true}
-        unit.color = {0,3}
         unit.color_override = {0,3}
       end
     end
@@ -603,7 +602,7 @@ function addRule(full_rule)
         new_objects = getEverythingExcept(object)
       end
       for _,v in ipairs(new_objects) do
-        -- print(fullDump(rules))
+        --print(fullDump(rules))
         addRuleSimple(rules.subject, rules.verb, {v, rules.object.conds}, units, dir)
       end
       --txt be txt needs to also apply for flog txt, bab txt, etc.
@@ -696,12 +695,17 @@ function postRules()
             ) then
               -- print("matching rule", rule[1][1], rule[2], rule[3][1])
               if has_conds then
+                --print(fullDump(rule), fullDump(frule))
                 for _,cond in ipairs(inverse_conds[1]) do
                   if not frule.subject.conds then frule.subject.conds = {} end
+                  frule.subject = copyTable(frule.subject);
+                  frule.subject.conds = copyTable(frule.subject.conds);
                   table.insert(frule.subject.conds, cond)
                 end
                 for _,cond in ipairs(inverse_conds[2]) do
                   if not frule.object.conds then frule.object.conds = {} end
+                  frule.object = copyTable(frule.object);
+                  frule.object.conds = copyTable(frule.object.conds);
                   table.insert(frule.object.conds, cond)
                 end
               else
@@ -826,6 +830,8 @@ function shouldReparseRulesIfConditionalRuleExists(r1, r2, r3, even_non_wurd)
           if cond_name == "frenles" or cond_name == "frenlesn't" then
             should_parse_rules = true
             return true
+          elseif (cond_name == "corekt" or cond_name == "corektn't" or cond_name == "rong" or cond_name == "rongn't") then
+            --nothing
           else
             --What are the others? WAIT... only changes at turn boundary. MAYBE can only change on turn boundary or if the unit or text moves (by definition these already reparse rules). AN only changes on turn boundary. COREKT/RONG can only change when text reparses anyway by definition, so it should never trigger it. TIMELES only changes at turn boundary. CLIKT only changes at turn boundary. Colours only change at turn boundary. So every other prefix condition, for now, just needs one check per turn, but new ones will need to be considered.
             should_parse_rules_at_turn_boundary = true

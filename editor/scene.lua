@@ -385,6 +385,12 @@ w = w-h, h = h}):center():setGroup("settings")
       scene.keyPressed("lshift")
       scene.keyReleased("lshift")
   end):bg({0, 0, 0, 0})
+  --n'ttext (lshift)
+  gooi.newButton({text = "", x = 9.25*twelfth, y = 1.5*twelfth, w = twelfth, h = twelfth, group = "mobile-controls-selector"}):setBGImage(sprites["text_nt"]):onPress(function()
+      scene.keyPressed("lctrl")
+      scene.keyPressed("n")
+      scene.keyReleased("lctrl")
+  end):bg({0, 0, 0, 0})
   --reload tab (rshift)
   gooi.newButton({text = "", x = 10.75*twelfth, y = 0.25*twelfth, w = twelfth, h = twelfth, group = "mobile-controls-selector"}):setBGImage(sprites["ui/reset"]):onPress(function()                                                               scene.keyPressed("rshift")                                 scene.keyReleased("rshift")                            end):bg({0, 0, 0, 0})
 
@@ -757,6 +763,7 @@ function scene.mouseReleased(x, y, button)
       if mouseOverBox(30, -30, 62, 14, t) then -- go to level
         loadLevels({level_dialogue.unit.special.name}, "edit", level_dialogue.unit)
       end
+      scene.updateMap()
     elseif level_dialogue.unit.name == "lin" and mouseOverBox(-75, -58, 150, 50, t) then
       -- hidden/locked/open
       if mouseOverBox(-59, -50, 16, 16, t) then
@@ -785,6 +792,7 @@ function scene.mouseReleased(x, y, button)
           level_dialogue.unit.special.number = (level_dialogue.unit.special.number or 1) + (shift and 10 or 1)
         end
       end
+      scene.updateMap()
     else
       scene.setLevelDialogue()
     end
@@ -905,7 +913,7 @@ function scene.update(dt)
       end
     elseif (not settings_open or not mouseOverBox(settings.x, settings.y, settings.w, settings.h)) and not level_dialogue.enabled then
       local hx,hy = getHoveredTile()
-      if hx ~= nil and (selector_open or inBounds(hx, hy, true)) then
+      if hx ~= nil and ((selector_open and inBounds(hx, hy)) or (not selector_open and inBounds(hx, hy, true))) then
         local tileid = hx + hy * mapwidth
 
         local hovered = {}
@@ -1139,6 +1147,7 @@ function scene.draw(dt)
     end
 
     local function setColor(color, opacity)
+      color = type(color[1]) == "table" and color[1] or color
       if #color == 3 then
         color = {color[1]/255, color[2]/255, color[3]/255, 1}
       else
@@ -1174,14 +1183,13 @@ function scene.draw(dt)
             if unit.rotate then
               rotation = (unit.dir - 1) * 45
             end
-            
 
             if rainbowmode then
               local newcolor = hslToRgb((love.timer.getTime()/3+unit.x/18+unit.y/18)%1, .5, .5, 1)
               newcolor[1] = newcolor[1]*255
               newcolor[2] = newcolor[2]*255
               newcolor[3] = newcolor[3]*255
-              unit.color = newcolor
+              unit.color_override = newcolor
             end
             
             if unit.name == "byc" or unit.name == "bac" then
@@ -1194,7 +1202,15 @@ function scene.draw(dt)
               setColor(color)
               love.graphics.draw(sprites[unit.name == "bac" and "bac" or "byc_editor"], (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
             else
-              love.graphics.draw(sprite, (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+              if type(unit.sprite) == "table" then
+                for j,image in ipairs(unit.sprite) do
+                  sprite = sprites[image]
+                  setColor(unit.color[j])
+                  love.graphics.draw(sprite, (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+                end
+              else
+                love.graphics.draw(sprite, (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+              end
             end
             if unit.name == "lvl" then
               if unit.special.visibility ~= "open" then
@@ -1260,15 +1276,15 @@ function scene.draw(dt)
             local found_matching_tag = false
             
             if tile.tags ~= nil then
-                for _,tag in ipairs(tile.tags) do
-                    if string.match(tag, searchstr) then
-                        found_matching_tag = true
-                    end
+              for _,tag in ipairs(tile.tags) do
+                if string.match(tag, searchstr) then
+                    found_matching_tag = true
                 end
+              end
             end
             
             if string.match(tile.name, searchstr) then
-                found_matching_tag = true
+              found_matching_tag = true
             end
             
             if tile.texttype ~= nil then
@@ -1290,7 +1306,15 @@ function scene.draw(dt)
               setColor(color)
               love.graphics.draw(sprites[tile.name == "bac" and "bac" or "byc_editor"], (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
             else
-              love.graphics.draw(sprite, (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+              if type(tile.sprite) == "table" then
+                for j,image in ipairs(tile.sprite) do
+                  sprite = sprites[image]
+                  setColor(tile.color[j])
+                  love.graphics.draw(sprite, (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+                end
+              else
+                love.graphics.draw(sprite, (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+              end
             end
             if (tile.meta ~= nil) then
               setColor({4, 1})
@@ -1326,7 +1350,8 @@ function scene.draw(dt)
       if not (gooi.showingDialog or capturing) then
         if brush.id and not selector_open then
           local tile = tiles_list[brush.id]
-          local sprite = sprites[tile.sprite]
+          local sprite_name = tile.sprite
+          local sprite = sprites[sprite_name]
           if not sprite then sprite = sprites["wat"] end
 
           local rotation = 0
@@ -1335,6 +1360,7 @@ function scene.draw(dt)
           end
           
           local color = brush.color and main_palette_for_colour[brush.color] or tile.color
+          color = type(color[1]) == "table" and color[1] or color
           if #color == 3 then
             love.graphics.setColor(color[1]/255, color[2]/255, color[3]/255, 0.25)
           else
@@ -1351,7 +1377,16 @@ function scene.draw(dt)
             setColor(color, 0.25)
             love.graphics.draw(sprites[tile.name == "bac" and "bac" or "byc_editor"], (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, math.rad(rotation), 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
           else
-            love.graphics.draw(sprite, (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, math.rad(rotation), 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+            if type(sprite_name) == "table" then
+              for i,image in ipairs(sprite_name) do
+                local r, g, b, a = getPaletteColor(tile.color[i][1], tile.color[i][2])
+                love.graphics.setColor(r, g, b, a * 0.25)
+                local sprit = sprites[image]
+                love.graphics.draw(sprit, (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, math.rad(rotation), 1, 1, sprit:getWidth() / 2, sprit:getHeight() / 2)
+              end
+            else
+              love.graphics.draw(sprite, (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, math.rad(rotation), 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+            end
           end
         end
 

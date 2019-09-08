@@ -179,43 +179,59 @@ function loadMap()
       end
       local floodfill = {}
       local objects = {}
+      local lvls = {}
+      local dofloodfill = scene ~= editor
       for _,unit in ipairs(map) do
         id, tile, x, y, dir, specials, color = unit.id, unit.tile, unit.x, unit.y, unit.dir, unit.special, unit.color
         if inBounds(x, y) then
-          if scene == editor or (
-            (tile ~= tiles_by_name["lvl"] or specials.visibility == "open") and
-            (tile ~= tiles_by_name["lin"] or specials.visibility ~= "hidden")
-          ) then
+          if not dofloodfill then
             local unit = createUnit(tile, x, y, dir, false, id, nil, color and {{name=color}})
             unit.special = specials
-            if scene ~= editor and readSaveFile(specials.level, "seen") then
-              unit.special.visibility = "open"
-            end
-            if tile == tiles_by_name["lvl"] and readSaveFile(specials.level, "won") then
-              table.insert(floodfill, {unit, 1})
-            end
-          else
-            if tile == tiles_by_name["lvl"] then
-              if readSaveFile(specials.level, "seen") then
-                local unit = createUnit(tile, x, y, dir, false, id, nil, color and {{name=color}})
+          elseif tile == tiles_by_name["lvl"] then
+            if readSaveFile(specials.level, "seen") then
+              local tfs = readSaveFile(level_name, "transform")
+              for _,t in ipairs(tfs or {tiles_listPossiblyMeta(tile).name}) do
+                local unit = createUnit(tiles_by_namePossiblyMeta(t), x, y, dir, false, id, nil, color and {{name=color}})
                 unit.special = specials
                 unit.special.visibility = "open"
                 if readSaveFile(specials.level, "won") then
                   table.insert(floodfill, {unit, 1})
                 end
-              else
-                table.insert(objects, {id, tile, x, y, dir, specials, color})
               end
-            elseif tile == tiles_by_name["lin"] then
+            elseif specials.visibility == "open" then
+              local unit = createUnit(tile, x, y, dir, false, id, nil, color and {{name=color}})
+              unit.special = specials
+            else
               table.insert(objects, {id, tile, x, y, dir, specials, color})
+            end
+          elseif tile == tiles_by_name["lin"] then
+            if specials.visibility == "hidden" then
+              table.insert(objects, {id, tile, x, y, dir, specials, color})
+            else
+              local unit = createUnit(tile, x, y, dir, false, id, nil, color and {{name=color}})
+              unit.special = specials
+            end
+          else
+            if specials.level then
+              local tfs = readSaveFile(level_name, "transform")
+              for _,t in ipairs(tfs or {tiles_listPossiblyMeta(tile).name}) do
+                local unit = createUnit(tiles_by_namePossiblyMeta(t), x, y, dir, false, id, nil, color and {{name=color}})
+                unit.special = specials
+                if readSaveFile(specials.level, "seen") then
+                  unit.special.visibility = "open"
+                end
+              end
+            else
+              createUnit(tile, x, y, dir, false, id, nil, color and {{name=color}})
             end
           end
         end
       end
-      local created = {}
-      if scene ~= editor then
+      if dofloodfill then
+        local created = {}
         while #floodfill > 0 do
           local u, ptype = unpack(table.remove(floodfill, 1))
+          print(fullDump(u), ptype)
           local orthos = {[-1] = {}, [0] = {}, [1] = {}}
           for a = 0,1 do -- 0 = ortho, 1 = diag
             for i = #objects,1,-1 do
@@ -240,7 +256,7 @@ function loadMap()
                     elseif ptype == 3 then
                       unit.special.visibility = "open"
                     end
-                  elseif ptype == 1 and v[2] == tiles_by_name["lin"] and (not v[6].pathlock or v[6].pathlock == "none") then
+                  elseif (ptype == 1 or ptype == 3) and v[2] == tiles_by_name["lin"] and (not v[6].pathlock or v[6].pathlock == "none") then
                     local unit = createUnit(v[2], v[3], v[4], v[5], false, v[1], nil, v[7] and {{name=v[7]}})
                     created[v[1]] = true
                     unit.special = v[6]
@@ -280,10 +296,8 @@ end
 function loadStayTher()
   if stay_ther ~= nil then
     for _,unit in ipairs(stay_ther) do
-      if inBounds(unit.x, unit.y) then
-        local newunit = createUnit(unit.tile, unit.x, unit.y, unit.dir)
-        newunit.special = unit.special
-      end
+      local newunit = createUnit(unit.tile, unit.x, unit.y, unit.dir)
+      newunit.special = unit.special
     end
   end
 end
@@ -611,6 +625,12 @@ end
 
 function countProperty(unit,prop)
   return #matchesRule(unit,"be",prop)
+end
+
+
+function hasSing(unit,note)
+    bit = love.audio.newSource("assets/audio/sfx/bit2.wav", "static")
+    return hasRule(unit,"sing",note)
 end
 
 --to prevent infinite loops where a set of rules/conditions is self referencing
@@ -1137,14 +1157,27 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
       --print(last_click_x, last_click_y)
     elseif condtype == "reed" or condtype == "bleu" or condtype == "blacc"
     or condtype == "grun" or condtype == "yello" or condtype == "orang"
-    or condtype == "purp" or condtype == "whit" or condtype == "cyeann" or condtype == "pinc" then
+    or condtype == "purp" or condtype == "whit" or condtype == "cyeann" or condtype == "pinc"
+    or condtype == "graey" or condtype == "brwn" then
       local colour = unit.color_override or unit.color
       if (unit.fullname == "no1") then
         result = false
       elseif (unit.rave or unit.colrful or unit.gay) then
         result = true
       else
-        result = colour_for_palette[colour[1]][colour[2]] == condtype
+        if type(colour[1]) == "table" then
+          local found = false
+          for i,coluor in ipairs(colour) do
+            if colour_for_palette[coluor[1]][coluor[2]] == condtype then
+              found = true
+            end
+          end
+          if not found then
+            result = false
+          end
+        else
+          result = colour_for_palette[colour[1]][colour[2]] == condtype
+        end
       end
     elseif condtype == "the" then
       local the = cond.unit
@@ -1548,6 +1581,7 @@ function getCursorsOnTile(x, y, not_destroyed, exclude)
 end
 
 function copyTable(t, l_)
+  if t == nil then return t end
   local l = l_ or 0
   local new_table = {}
   for k,v in pairs(t) do
@@ -1781,6 +1815,12 @@ function addParticles(type,x,y,color,count)
     ps:start()
     ps:emit(count or 1)
     table.insert(particles, ps)
+  elseif type == "sing" then
+    local ps = love.graphics.newParticleSystem(sprites["noet"])
+    local px = (x + 0.5) * TILE_SIZE
+    local py = (y + 0.5) * TILE_SIZE
+    local size = 0.2
+    -- insert particles here
   end
 end
 
@@ -2500,6 +2540,32 @@ function updateGroup(n)
       updateGroup(n+1)
     end
   end
+end
+
+function namesInGroup(group)
+  local result = {}
+  local tbl = copyTable(referenced_objects)
+  mergeTable(tbl, referenced_text)
+  table.insert(tbl, "lvl");
+  table.insert(tbl, "mous");
+  table.insert(tbl, "no1");
+  table.insert(tbl, "bordr");
+  for _,v in ipairs(tbl) do
+    local group_membership = matchesRule(v, "be", group);
+    for _,r in ipairs(group_membership) do
+      if (#(r.rule.subject.conds) == 0) then
+        table.insert(result, v)
+      else
+        for _,u in ipairs(units_by_name[v]) do
+          if testConds(u, r.rule.subject.conds) then
+            table.insert(result, v)
+            break
+          end
+        end
+      end
+    end
+  end
+  return result
 end
 
 function serializeRule(rule)
