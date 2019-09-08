@@ -2094,7 +2094,6 @@ function getAbsolutelyEverythingExcept(except)
   if (except ~= "text") then
     for i,ref in ipairs(referenced_text) do
       --TODO: BEN'T text being returned here causes a stack overflow. Prevent it until a better solution is found.
-      print(ref)
       if ref ~= except and (ref == "text_n't" or not ref:ends("n't")) then
         table.insert(result, ref)
       end
@@ -2115,7 +2114,6 @@ function getEverythingExcept(except)
 
   for i,ref in ipairs(ref_list) do
     --TODO: BEN'T text being returned here causes a stack overflow. Prevent it until a better solution is found.
-    print(ref)
     if ref ~= except and (ref == "text_n't" or not ref:ends("n't")) then
       table.insert(result, ref)
     end
