@@ -300,6 +300,9 @@ function parseRules(undoing)
   
     populateRulesEffectingNames("?", "be", "wurd")
     populateRulesEffectingNames("?", "be", "poor toll")
+    if (rules_with["go arnd"] or rules_with["mirr arnd"]) then
+      rules_effecting_names["bordr"] = true
+    end
   end
   
   shouldReparseRules()
