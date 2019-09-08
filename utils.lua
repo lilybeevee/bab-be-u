@@ -573,7 +573,7 @@ function validEmpty(unit)
 end
 
 function findUnitsByName(name)
-  if group_names_set_nt["n't"] then
+  if group_names_set_nt[name] then
     local everything_else_list = findUnitsByName(name:sub(1, -4))
     local everything_else_set = {}
     for _,unit in ipairs(everything_else_list) do
