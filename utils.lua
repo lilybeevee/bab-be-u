@@ -573,7 +573,7 @@ function validEmpty(unit)
 end
 
 function findUnitsByName(name)
-  if group_names_set_nt["n't"] then
+  if group_names_set_nt[name] then
     local everything_else_list = findUnitsByName(name:sub(1, -4))
     local everything_else_set = {}
     for _,unit in ipairs(everything_else_list) do
@@ -2094,7 +2094,7 @@ function getAbsolutelyEverythingExcept(except)
   if (except ~= "text") then
     for i,ref in ipairs(referenced_text) do
       --TODO: BEN'T text being returned here causes a stack overflow. Prevent it until a better solution is found.
-      if ref ~= except and not ref:ends("n't") then
+      if ref ~= except and (ref == "text_n't" or not ref:ends("n't")) then
         table.insert(result, ref)
       end
     end
@@ -2114,7 +2114,7 @@ function getEverythingExcept(except)
 
   for i,ref in ipairs(ref_list) do
     --TODO: BEN'T text being returned here causes a stack overflow. Prevent it until a better solution is found.
-    if ref ~= except and not ref:ends("n't") then
+    if ref ~= except and (ref == "text_n't" or not ref:ends("n't")) then
       table.insert(result, ref)
     end
   end
