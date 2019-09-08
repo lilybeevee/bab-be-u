@@ -944,17 +944,17 @@ function applySwap(mover, dx, dy)
   local swap_mover = hasProperty(mover, "behin u")
   local did_swap = false
   for _,v in ipairs(getUnitsOnTile(mover.x+dx, mover.y+dy)) do
-    --if not v.already_moving then --this made some things move order dependent, so taking it out
-      local swap_v = hasProperty(v, "behin u")
-      --Don't swap with non-swap empty.
-      if ((swap_mover and v.fullname ~= "no1") or swap_v) and sameFloat(unit,v,true) then
-        queueMove(v, -dx, -dy, swap_v and rotate8(mover.dir) or v.dir, true, 0)
-        did_swap = true
-      end
+  --if not v.already_moving then --this made some things move order dependent, so taking it out
+    local swap_v = hasProperty(v, "behin u")
+    --Don't swap with non-swap empty.
+    if ((swap_mover and v.fullname ~= "no1") or swap_v) and sameFloat(mover,v,true) then
+      queueMove(v, -dx, -dy, swap_v and rotate8(mover.dir) or v.dir, true, 0)
+      did_swap = true
     end
+  end
   --end
   if (swap_mover and did_swap) then
-     table.insert(update_queue, {unit = mover, reason = "dir", payload = {dir = rotate8(mover.dir)}})
+    table.insert(update_queue, {unit = mover, reason = "dir", payload = {dir = rotate8(mover.dir)}})
   end
 end
 
