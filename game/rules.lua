@@ -625,6 +625,27 @@ function addRule(full_rule)
         addRuleSimple(rules.subject, rules.verb, {v, rules.object.conds}, units, dir)
       end
     end
+  elseif object == "every2" then
+    if object_not % 2 == 1 then
+      return
+    elseif verb ~= "be" and verb ~= "ben't" then
+      for _,v in ipairs(referenced_objects) do
+        addRuleSimple(rules.subject, rules.verb, {v, rules.object.conds}, units, dir)
+      end
+      addRuleSimple(rules.subject, rules.verb, {"text", rules.object.conds}, units, dir)
+    end
+  elseif object == "every3" then
+    if object_not % 2 == 1 then
+      return
+    elseif verb ~= "be" and verb ~= "ben't" then
+      for _,v in ipairs(referenced_objects) do
+        addRuleSimple(rules.subject, rules.verb, {v, rules.object.conds}, units, dir)
+      end
+      addRuleSimple(rules.subject, rules.verb, {"text", rules.object.conds}, units, dir)
+      for _,v in ipairs(special_objects) do
+        addRuleSimple(rules.subject, rules.verb, {v, rules.object.conds}, units, dir)
+      end
+    end
   elseif object_not % 2 == 1 then
     if tiles_by_name[object] or object:starts("this") or object == "text" or object == "mous" then
       local new_objects = {}
