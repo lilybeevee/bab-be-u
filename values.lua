@@ -1801,11 +1801,7 @@ tiles_list = {
     color = {0, 3},
     layer = 20,
     tags = {"all", "everyone", "every1"},
-<<<<<<< HEAD
     desc = "EVERY1: Every object type in the level, aside from special objects like TXT, NO1, LVL, SELCTR, BORDR, and MOUS.",
-=======
-    desc = "EVERY1: Every object type in the level, aside from special objects like TXT, NO1, LVL, THIS, THE, BORDR and MOUS.",
->>>>>>> cbbba814e8db2ba982d6d67fb9eab852ab63f82a
   },
   -- 138
   {
