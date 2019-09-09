@@ -533,7 +533,7 @@ function addRule(full_rule)
   for _,unit in ipairs(units) do
     unit.active = true
     if not unit.old_active and not first_turn then
-      addParticles("rule", unit.x, unit.y, unit.color)
+      addParticles("rule", unit.x, unit.y, unit.color_override or unit.color)
       has_new_rule = true
     end
     unit.old_active = unit.active

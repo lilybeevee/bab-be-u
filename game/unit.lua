@@ -683,7 +683,7 @@ function updateUnits(undoing, big_update)
                 if not timeless_split[on.id] then
                   addUndo({"timeless_split_add", on.id})
                   timeless_split[on.id] = unit.id
-                  addParticles("destroy", unit.x, unit.y, unit.color)
+                  addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
                 end
               end
             end
@@ -749,7 +749,7 @@ function updateUnits(undoing, big_update)
               table.insert(time_destroy,unit.id)
               addUndo({"time_destroy",unit.id})
             end
-            addParticles("destroy", unit.x, unit.y, unit.color)
+            addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
           end
         end
       end
@@ -795,7 +795,7 @@ function updateUnits(undoing, big_update)
 						addUndo({"time_destroy",unit.id})
             table.insert(time_sfx,"break")
           end
-          addParticles("destroy", unit.x, unit.y, unit.color)
+          addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
         end
       end
     end
@@ -816,7 +816,7 @@ function updateUnits(undoing, big_update)
 						addUndo({"time_destroy",on.id})
             table.insert(time_sfx,"hotte")
           end
-          addParticles("destroy", unit.x, unit.y, unit.color)
+          addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
         end
       end
     end
@@ -838,7 +838,7 @@ function updateUnits(undoing, big_update)
 						addUndo({"time_destroy",on.id})
             table.insert(time_sfx,"break")
           end
-          addParticles("destroy", unit.x, unit.y, unit.color)
+          addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
         end
       end
     end
@@ -864,7 +864,7 @@ function updateUnits(undoing, big_update)
             table.insert(time_sfx,"break")
             table.insert(time_sfx,"unlock")
           end
-          addParticles("destroy", unit.x, unit.y, unit.color)
+          addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
           addParticles("destroy", on.x, on.y, on.color)
         end
       end
@@ -887,7 +887,7 @@ function updateUnits(undoing, big_update)
 						addUndo({"time_destroy",on.id})
             table.insert(time_sfx,"snacc")
           end
-          addParticles("destroy", unit.x, unit.y, unit.color)
+          addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
         end
       end
     end
@@ -904,7 +904,7 @@ function updateUnits(undoing, big_update)
           else
             addUndo({"timeless_reset_add"})
             timeless_reset = true
-            addParticles("bonus", unit.x, unit.y, unit.color)
+            addParticles("bonus", unit.x, unit.y, unit.color_override or unit.color)
           end
         end
       end
@@ -925,7 +925,7 @@ function updateUnits(undoing, big_update)
             else
               addUndo({"timeless_crash_add"})
               timeless_crash = true
-              addParticles("bonus", unit.x, unit.y, unit.color)
+              addParticles("bonus", unit.x, unit.y, unit.color_override or unit.color)
             end
           end
         end
@@ -949,7 +949,7 @@ function updateUnits(undoing, big_update)
 						addUndo({"time_destroy",unit.id})
             table.insert(time_sfx,"bonus")
           end
-          addParticles("bonus", unit.x, unit.y, unit.color)
+          addParticles("bonus", unit.x, unit.y, unit.color_override or unit.color)
         end
       end
     end
@@ -967,7 +967,7 @@ function updateUnits(undoing, big_update)
           else
             addUndo({"timeless_unwin_add", on.id})
             table.insert(timeless_unwin,on.id)
-            addParticles("bonus", unit.x, unit.y, unit.color)
+            addParticles("bonus", unit.x, unit.y, unit.color_override or unit.color)
           end
         end
       end
@@ -984,7 +984,7 @@ function updateUnits(undoing, big_update)
           else
             addUndo({"timeless_win_add", on.id})
             table.insert(timeless_win,on.id)
-            addParticles("bonus", unit.x, unit.y, unit.color)
+            addParticles("bonus", unit.x, unit.y, unit.color_override or unit.color)
           end
         end
       end
@@ -1551,7 +1551,7 @@ function levelBlock()
     for _,unit in ipairs(melters) do
       if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
         table.insert(to_destroy, unit)
-        addParticles("destroy", unit.x, unit.y, unit.color)
+        addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
       end
     end
     if #to_destroy > 0 then
@@ -1584,7 +1584,7 @@ function levelBlock()
     for _,unit in ipairs(yous) do
       if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
         table.insert(to_destroy, unit)
-        addParticles("destroy", unit.x, unit.y, unit.color)
+        addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
       end
     end
   end
@@ -1602,7 +1602,7 @@ function levelBlock()
         destroyLevel("unlock")
         if lvlsafe then
           table.insert(to_destroy, unit)
-          addParticles("destroy", unit.x, unit.y, unit.color)
+          addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
         else return 0,0 end
       end
     end
@@ -1621,7 +1621,7 @@ function levelBlock()
         destroyLevel("unlock")
         if lvlsafe then
           table.insert(to_destroy, unit)
-          addParticles("destroy", unit.x, unit.y, unit.color)
+          addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
         else return 0,0 end
       end
     end
@@ -1637,7 +1637,7 @@ function levelBlock()
   for _,ruleparent in ipairs(issnacc) do
     local unit = ruleparent[2]
     if unit ~= outerlvl and sameFloat(outerlvl,unit) and inBounds(unit.x,unit.y) then
-      addParticles("destroy", unit.x, unit.y, unit.color)
+      addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
       table.insert(to_destroy, unit)
     end
   end
@@ -1832,7 +1832,7 @@ function destroyLevel(reason)
   
   if level_destroyed then
     for _,unit in ipairs(units) do
-      addParticles("destroy", unit.x, unit.y, unit.color)
+      addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
     end
     handleDels(units,true)
     if reason == "infloop" and #transform_results == 0 then
@@ -1985,7 +1985,7 @@ function convertUnits(pass)
       end
     elseif not unit.new and unit.type ~= "outerlvl" and timecheck(unit,"be","meta") then
       table.insert(converted_units, unit)
-      addParticles("bonus", unit.x, unit.y, unit.color)
+      addParticles("bonus", unit.x, unit.y, unit.color_override or unit.color)
       local tile = nil
       local nametocreate = unit.fullname
       for i = 1,amt do
@@ -2004,11 +2004,11 @@ function convertUnits(pass)
   local demeta = getUnitsWithRuleAndCount(nil, "ben't","meta")
   for unit,amt in pairs(demeta) do
     if (unit.name == "mous" and inBounds(unit.x, unit.y)) then
-      addParticles("bonus", unit.x, unit.y, unit.color)
+      addParticles("bonus", unit.x, unit.y, unit.color_override or unit.color)
       table.insert(del_cursors, unit)
     elseif not unit.new and unit.type ~= "outerlvl" and timecheck(unit,"ben't","meta") then
       table.insert(converted_units, unit)
-      addParticles("bonus", unit.x, unit.y, unit.color)
+      addParticles("bonus", unit.x, unit.y, unit.color_override or unit.color)
       --remove "text_" as many times as we're de-metaing
       local nametocreate = unit.fullname
       for i = 1,amt do
@@ -2044,13 +2044,13 @@ function convertUnits(pass)
     if (rule.subject.name == "mous" and rule.object.name == "mous") then
       for _,cursor in ipairs(cursors) do
         if inBounds(cursor.x, cursor.y) and testConds(cursor, rule.subject.conds) then
-          addParticles("bonus", unit.x, unit.y, unit.color)
+          addParticles("bonus", unit.x, unit.y, unit.color_override or unit.color)
           table.insert(del_cursors, cursor)
         end
       end
     elseif not unit.new and nameIs(unit, rule.object.name) and timecheck(unit) then
       if not unit.removed and unit.type ~= "outerlvl" then
-        addParticles("bonus", unit.x, unit.y, unit.color)
+        addParticles("bonus", unit.x, unit.y, unit.color_override or unit.color)
         table.insert(converted_units, unit)
       end
     end

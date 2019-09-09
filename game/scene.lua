@@ -1873,7 +1873,7 @@ function doOneMove(x, y, key)
       for _,unit in ipairs(melters) do
         if sameFloat(unit,outerlvl) then
           table.insert(to_destroy, unit)
-          addParticles("destroy", unit.x, unit.y, unit.color)
+          addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
         end
       end
       if #to_destroy > 0 then
@@ -1888,7 +1888,7 @@ function doOneMove(x, y, key)
       mergeTable(yous, youtres)
       for _,unit in ipairs(yous) do
         table.insert(to_destroy, unit)
-        addParticles("destroy", unit.x, unit.y, unit.color)
+        addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
       end
     end
     to_destroy = handleDels(to_destroy)
