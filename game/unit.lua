@@ -1777,7 +1777,7 @@ function readingOrderSort(a, b)
 end
 
 function destroyLevel(reason)
-	if not hasRule(outerlvl,"got","lvl") and not hasProperty(outerlvl,"protecc") and (reason ~= "infloop") then
+	if not hasRule(outerlvl,"got","lvl") and not hasProperty(outerlvl,"protecc") then
     level_destroyed = true
   end
   
@@ -1814,6 +1814,7 @@ function destroyLevel(reason)
   if reason == "infloop" then
     if hasProperty("loop","try again") then
       doTryAgain()
+      level_destroyed = false
     elseif hasProperty("loop","xwx") then
       doXWX()
     elseif hasProperty("loop",":)") then
