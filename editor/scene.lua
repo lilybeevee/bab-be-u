@@ -1288,7 +1288,7 @@ function scene.draw(dt)
             if tile.tags ~= nil then
               for _,tag in ipairs(tile.tags) do
                 if string.match(tag, searchstr) then
-                    found_matching_tag = true
+                  found_matching_tag = true
                 end
               end
             end
@@ -1300,26 +1300,28 @@ function scene.draw(dt)
             if tile.texttype ~= nil then
               for type,_ in pairs(tile.texttype) do
                 if string.match(type, searchstr) then
-                    found_matching_tag = true
+                  found_matching_tag = true
                 end
               end
             end
             
             if not found_matching_tag then love.graphics.setColor(0.2,0.2,0.2) end
             if tile.name == "byc" or tile.name == "bac" then
-              if eq(color, {0,3}) then
-                setColor({0,0})
-              else
-                setColor({0,3})
+              if found_matching_tag then
+                if eq(color, {0,3}) then
+                  setColor({0,0})
+                else
+                  setColor({0,3})
+                end
               end
               love.graphics.draw(sprites["byc"], (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
-              setColor(color)
+              if found_matching_tag then setColor(color) end
               love.graphics.draw(sprites[tile.name == "bac" and "bac" or "byc_editor"], (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
             else
               if type(tile.sprite) == "table" then
                 for j,image in ipairs(tile.sprite) do
                   sprite = sprites[image]
-                  setColor(tile.color_override and tile.color_override[j] or tile.color[j])
+                  if found_matching_tag then setColor(tile.color_override and tile.color_override[j] or tile.color[j]) end
                   love.graphics.draw(sprite, (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
                 end
               else
@@ -1327,7 +1329,7 @@ function scene.draw(dt)
               end
             end
             if (tile.meta ~= nil) then
-              setColor({4, 1})
+              if found_matching_tag then setColor({4, 1}) end
               local metasprite = tile.meta == 2 and sprites["meta2"] or sprites["meta1"]
               love.graphics.draw(metasprite, (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
               if tile.meta > 2 then
@@ -1336,7 +1338,7 @@ function scene.draw(dt)
               setColor(tile.color)
             end
             if (tile.nt ~= nil) then
-              setColor({2, 2})
+              if found_matching_tag then setColor({2, 2}) end
               local ntsprite = sprites["n't"]
               love.graphics.draw(ntsprite, (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
               setColor(tile.color)
