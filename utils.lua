@@ -309,7 +309,7 @@ end
 function initializeEmpties()
   --TODO: other ways to make a text_no1 could be to have a text_text_no1 but that seems contrived that you'd have text_text_no1 but not text_no1?
   --text_her counts because it looks for no1, I think. similarly we could have text_text_her but again, contrived
-  if ((not letters_exist) and (not units_by_name["text_no1"]) and (not units_by_name["text_her"])) then return end
+  if ((not letters_exist) and (not units_by_name["text_no1"]) and (not units_by_name["text_every3"]) and (not units_by_name["text_her"])) then return end
   for x=0,mapwidth-1 do
     for y=0,mapheight-1 do
       local tileid = x + y * mapwidth

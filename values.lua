@@ -248,7 +248,7 @@ selector_grid_contents = {
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_brwn","text_tranz","text_yello",
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_blacc","text_gay","text_grun",
     0,0,0,0,0,"text_try again","text_no undo","text_undo","text_za warudo","text_brite",0,0,0,0,0,"text_graey","text_qt","text_cyeann",
-    0,0,0,0,0,"text_poor toll","text_go arnd","text_mirr arnd","text_glued","text_torc",0,0,0,0,0,"text_whit","text_pinc","text_bleu",
+    "text_every1","text_every2","text_every3",0,0,"text_poor toll","text_go arnd","text_mirr arnd","text_glued","text_torc",0,0,0,0,0,"text_whit","text_pinc","text_bleu",
     "text_...","text_''",0,0,0,"text_her","text_thr","text_rithere","text_the","text_opaque",0,0,0,0,"text_stelth","text_colrful","text_rave","text_purp",
   },
 }
@@ -1801,7 +1801,7 @@ tiles_list = {
     color = {0, 3},
     layer = 20,
     tags = {"all", "everyone", "every1"},
-    desc = "EVERY1: Every object type in the level, aside from special objects like TXT, NO1, LVL, SELCTR, THIS, and MOUS.",
+    desc = "EVERY1: Every object type in the level, aside from special objects like TXT, NO1, LVL, THIS, THE, BORDR and MOUS.",
   },
   -- 138
   {
@@ -3592,7 +3592,7 @@ tiles_list = {
     name = "text_the",
     sprite = "text_the",
     type = "text",
-    texttype = {cond_prefix = true, object = true},
+    texttype = {object = true},
     rotate = true,
     color = {0,3},
     layer = 20,
@@ -6446,6 +6446,28 @@ tiles_list = {
     layer = 20,
     tags = {"boo","mario","ghost"},
   },
+  -- 561
+  {
+    name = "text_every2",
+    sprite = "text_every2",
+    type = "text",
+    texttype = {object = true},
+    color = {3, 3},
+    layer = 20,
+    tags = {"all", "everyone", "every2"},
+    desc = "EVERY2: EVERY1 + TXT. (Doesn't include innerlvls atm because lazy + hard to code + unlikely to come up. Sorry.)",
+  },
+  -- 562
+  {
+    name = "text_every3",
+    sprite = "text_every3",
+    type = "text",
+    texttype = {object = true},
+    color = {4, 1},
+    layer = 20,
+    tags = {"all", "everyone", "every3"},
+    desc = "EVERY3: Absolutely everything conceivable. The pinnacle of everything technology.",
+  },
 }
 
 tiles_by_name = {}
@@ -6462,3 +6484,5 @@ for i,v in ipairs(tiles_list) do
     group_names_set_nt[v.name:sub(6, -1).."n't"] = true;
 	end
 end
+
+special_objects = {"mous", "lvl", "bordr", "no1", "this"}
