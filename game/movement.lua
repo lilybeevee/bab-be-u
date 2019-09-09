@@ -169,7 +169,6 @@ function doMovement(movex, movey, key)
           if (key == "wasd") or ((key == "udlr") and not hasProperty(nil,"u too")) or ((key == "numpad" or key == "ijkl") and not hasProperty(nil,"u tres")) then
             local dir = dirs8_by_offset[movex][movey]
             --If you want baba style 'when you moves, even if it fails to move, it changes direction', uncomment this.
-            print(fullDump(unit))
             table.insert(unit.moves, {reason = "u", dir = dir, times = 1})
             --[[addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
             updateDir(unit, dir)]]
