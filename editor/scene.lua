@@ -640,6 +640,17 @@ function scene.keyPressed(key)
         current_tile_grid = tile_grid[selector_page]
     end
   end]]
+  if not selector_open and not level_dialogue.enabled and key == "t" then
+    -- if key_down["lshift"] or key_down["rshift"] then
+    --   anagram_finder.enabled = true
+    --   anagram_finder.advanced = not anagram_finder.advanced
+    -- else
+      anagram_finder.enabled = not anagram_finder.enabled
+    -- end
+    if anagram_finder.enabled then
+      anagram_finder.run()
+    end
+  end
 end
 
 function scene.mousePressed(x, y, button)
@@ -1625,6 +1636,33 @@ function scene.draw(dt)
     gooi.draw("mobile-controls-selector")
     gooi.draw("mobile-controls-editor")
     
+    if anagram_finder.enabled then
+      love.graphics.setColor(0, 0, 0, 0.4)
+      love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
+  
+      local words = ""
+  
+      local wordsnum = 0
+      local lines = 0.5
+  
+      for i,word in pairs(anagram_finder.words) do
+        words = words..word
+        wordsnum = wordsnum + 1
+
+        if wordsnum % 6 >= 5 then
+          words = words..'\n'
+          lines = lines + 1
+        else
+          words = words..'   '
+        end
+      end
+  
+      words = 'possible words:\n'..words
+  
+      love.graphics.setColor(1,1,1)
+      love.graphics.printf(words, 0, love.graphics.getHeight()/2-love.graphics.getFont():getHeight()*lines/2+0.5, love.graphics.getWidth(), "center")
+    end
+    
     if is_mobile then
       local twelfth = love.graphics.getWidth()/12
       if mobile_picking then
@@ -1758,6 +1796,7 @@ function scene.updateMap()
   end
   map = serpent.dump(map)
   maps = {{map_ver, map}}
+  if anagram_finder.enabled then anagram_finder.run() end
 end
 
 function sanitize(filename)
