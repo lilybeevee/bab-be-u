@@ -207,7 +207,7 @@ selector_grid_contents = {
     "robobot","text_robobot","snek","text_snek","sneel","text_sneel",0,0,0,0,0,0,0,0,0,0,0,0,
     "wog","text_wog","bog","text_bog","enbybog","text_enbybog",0,0,0,0,0,0,0,0,0,0,0,0,
     "kirb","text_kirb","ripof","text_ripof","cavebab","text_cavebab",0,0,0,0,0,0,0,0,0,0,0,0,
-    "bup","text_bup","butflye","text_butflye",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    "bup","text_bup","butflye","text_butflye","boooo","text_boooo",0,0,0,0,0,0,0,0,0,0,0,0,
     "boy","text_boy","wurm","text_wurm",0,0,0,0,0,0,0,0,0,0,"lila","text_lila","tot","text_tot",
     "steev","text_steev","ratt","text_ratt",0,0,0,0,0,0,0,0,0,0,"pata","text_pata","jill","text_jill",
     "han","text_han","eyee","text_eyee","lisp","text_lisp","paw","text_paw",0,0,0,0,0,0,"larry","text_larry","zsoob","text_zsoob",
@@ -228,8 +228,8 @@ selector_grid_contents = {
     "fenss","text_fenss","platfor","text_platfor","tre","text_tre","stum","text_stum","dayzy","text_dayzy","lie","text_lie",0,0,0,0,0,0,
     "cobll","text_cobll","spik","text_spik","frut","text_frut","fungye","text_fungye","red","text_red","lie/8","text_lie/8",0,0,0,0,0,0,
     "wuud","text_wuud","spiky","text_spiky","parsol","text_parsol","clok","text_clok","ufu","text_ufu","rockit","text_rockit","swim","text_swim",0,0,0,0,
-    "brik","text_brik","sparkl","text_sparkl","sanglas","text_sanglas","bullb","text_bullb","son","text_son","muun","text_muun","bac","text_bac",0,0,0,0,
-    "san","text_san","piler","text_piler","sancastl","text_sancastl","shel","text_shel","starr","text_starr","cor","text_cor","byc","text_byc",0,0,0,0,
+    "brik","text_brik","sparkl","text_sparkl","sanglas","text_sanglas","bullb","text_bullb","son","text_son","muun","text_muun","bac","text_bac",0,0,"piep","text_piep",
+    "san","text_san","piler","text_piler","sancastl","text_sancastl","shel","text_shel","starr","text_starr","cor","text_cor","byc","text_byc","gorder","text_gorder","tuba","text_tuba",
     "glas","text_glas","bom","text_bom","sine","text_sine","kar","text_kar","can","text_can","ger","text_ger","sirn","text_sirn","chain","text_chain","reflecr","text_reflecr",
     "bordr","text_bordr","wut","text_wut","wat","text_wat","splittr","text_splittr","togll","text_togll","bon","text_bon","battry","text_battry","chekr","text_chekr","sloop","text_sloop",
   },
@@ -248,7 +248,7 @@ selector_grid_contents = {
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_brwn","text_tranz","text_yello",
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_blacc","text_gay","text_grun",
     0,0,0,0,0,"text_try again","text_no undo","text_undo","text_za warudo","text_brite",0,0,0,0,0,"text_graey","text_qt","text_cyeann",
-    0,0,0,0,0,"text_poor toll","text_go arnd","text_mirr arnd","text_glued","text_torc",0,0,0,0,0,"text_whit","text_pinc","text_bleu",
+    "text_every1","text_every2","text_every3",0,0,"text_poor toll","text_go arnd","text_mirr arnd","text_glued","text_torc",0,0,0,0,0,"text_whit","text_pinc","text_bleu",
     "text_...","text_''",0,0,0,"text_her","text_thr","text_rithere","text_the","text_opaque",0,0,0,0,"text_stelth","text_colrful","text_rave","text_purp",
   },
 }
@@ -1801,7 +1801,11 @@ tiles_list = {
     color = {0, 3},
     layer = 20,
     tags = {"all", "everyone", "every1"},
+<<<<<<< HEAD
     desc = "EVERY1: Every object type in the level, aside from special objects like TXT, NO1, LVL, SELCTR, BORDR, and MOUS.",
+=======
+    desc = "EVERY1: Every object type in the level, aside from special objects like TXT, NO1, LVL, THIS, THE, BORDR and MOUS.",
+>>>>>>> cbbba814e8db2ba982d6d67fb9eab852ab63f82a
   },
   -- 138
   {
@@ -3592,7 +3596,7 @@ tiles_list = {
     name = "text_the",
     sprite = "text_the",
     type = "text",
-    texttype = {cond_prefix = true, object = true},
+    texttype = {object = true},
     rotate = true,
     color = {0,3},
     layer = 20,
@@ -3893,9 +3897,10 @@ tiles_list = {
   -- 332
   {
     name = "paint",
-    sprite = "paint",
+    sprite = {"paint","paint_color"},
+    color = {{0,3},{0,3}},
+    colored = {false,true},
     type = "object",
-    color = {0,3},
     layer = 4,
     desc = "X be PAINT turns into a paint bucket with the color of X."
   },
@@ -4699,10 +4704,11 @@ tiles_list = {
   -- 403
   {
     name = "beeee",
-    sprite = "beeee",
+    sprite = {"beeee","no1"},
     slep = true,
     type = "object",
-    color = {2, 4},
+    color = {{2, 4},{0,0}},
+    colored = {true,true},
     layer = 6,
     rotate = true,
     eye = {x=25, y=14, w=2, h=2},
@@ -6428,6 +6434,115 @@ tiles_list = {
     layer = 20,
     tags = {"boat", "ship"},
   },
+  -- 559
+  {
+    name = "boooo",
+    sprite = {"boooo","boooo_mouth"},
+    type = "object",
+    color = {{0,3},{2,2},{4,2}},
+    colored = {true,false,false},
+    layer = 8,
+    rotate = true,
+    tags = {"boo","mario","ghost"},
+    desc = "very shy, don't lookat",
+  },
+  -- 560
+  {
+    name = "text_boooo",
+    sprite = "text_boooo",
+    type = "text",
+    texttype = {object = true},
+    color = {4,2},
+    layer = 20,
+    tags = {"boo","mario","ghost"},
+  },
+  --561
+  {
+    name = "gorder",
+    sprite = "gorder",
+    type = "object",
+    color = {0,2},
+    rotate = true,
+    layer = 3,
+    tags = {"girder","city"},
+    desc = "constructon zone!",
+  },
+  -- 562
+  {
+    name = "text_gorder",
+    sprite = "text_gorder",
+    type = "text",
+    texttype = {object = true},
+    color = {0,2},
+    layer = 20,
+    tags = {"girder","city"},
+  },
+  -- 563
+  {
+    name = "piep",
+    sprite = "piep",
+    type = "object",
+    color = {5,2},
+    rotate = true,
+    portal = true,
+    layer = 4,
+    tags = {"pipe","tube","mario"},
+    desc = "enter the piep to skip world",
+  },
+  -- 564
+  {
+    name = "text_piep",
+    sprite = "text_piep",
+    type = "text",
+    texttype = {object = true},
+    color = {5,2},
+    layer = 20,
+    tags = {"pipe","tube","mario"},
+  },
+  -- 565
+  {
+    name = "tuba",
+    sprite = "tuba",
+    type = "object",
+    color = {5,2},
+    rotate = true,
+    layer = 4,
+    tags = {"pipe","tube","mario"},
+    desc = "piep's bff",
+  },
+  -- 566
+  {
+    name = "text_tuba",
+    sprite = "text_tuba",
+    type = "text",
+    texttype = {object = true},
+    color = {5,2},
+    layer = 20,
+    tags = {"pipe","tube","mario"},
+    desc = "pieps are musical instruments",
+  },
+  -- 567
+  {
+    name = "text_every2",
+    sprite = "text_every2",
+    type = "text",
+    texttype = {object = true},
+    color = {3, 3},
+    layer = 20,
+    tags = {"all", "everyone", "every2"},
+    desc = "EVERY2: EVERY1 + TXT. (Doesn't include innerlvls atm because lazy + hard to code + unlikely to come up. Sorry.)",
+  },
+  -- 568
+  {
+    name = "text_every3",
+    sprite = "text_every3",
+    type = "text",
+    texttype = {object = true},
+    color = {4, 1},
+    layer = 20,
+    tags = {"all", "everyone", "every3"},
+    desc = "EVERY3: Absolutely everything conceivable. The pinnacle of everything technology.",
+  },
 }
 
 tiles_by_name = {}
@@ -6444,3 +6559,5 @@ for i,v in ipairs(tiles_list) do
     group_names_set_nt[v.name:sub(6, -1).."n't"] = true;
 	end
 end
+
+special_objects = {"mous", "lvl", "bordr", "no1", "this"}

@@ -20,6 +20,7 @@ function clearRules()
     addBaseRule("lvl","be","pathz",{name = "unlocked"})
 		addBaseRule("lin","be","pathz",{name = "unlocked"})
     addBaseRule("selctr","be","flye")
+    addBaseRule("selctr","be","shy")
   end
   if (units_by_name["bordr"] or units_by_name["text_bordr"]) then
     addBaseRule("bordr","be","no go")
@@ -150,6 +151,7 @@ function parseRules(undoing)
     if (loop_rules > 100) then
       print("parseRules infinite loop! (100 attempts)")
       destroyLevel("infloop")
+      return
     end
   
     local first_words = {}
@@ -532,7 +534,7 @@ function addRule(full_rule)
   for _,unit in ipairs(units) do
     unit.active = true
     if not unit.old_active and not first_turn then
-      addParticles("rule", unit.x, unit.y, unit.color)
+      addParticles("rule", unit.x, unit.y, unit.color_override or unit.color)
       has_new_rule = true
     end
     unit.old_active = unit.active
@@ -567,12 +569,41 @@ function addRule(full_rule)
     addRuleSimple(rules.subject, rules.verb, {rules.subject.name, rules.object.conds}, units, dir)
     return
   end
+  
+  --Transform THE BE U into THE (prefix condition) EVERY1 BE U. (Probably becomes EVERY2 later once that exists.)
+  if subject == "the" then
+    rules.subject.conds = copyTable(rules.subject.conds) or {};
+    table.insert(rules.subject.conds, rules.subject);
+    addRuleSimple({"every2", rules.subject.conds}, rules.verb, rules.object, units, dir)
+    return
+  end
 
   if subject == "every1" then
     if subject_not % 2 == 1 then
       return
     else
       for _,v in ipairs(referenced_objects) do
+        addRuleSimple({v, rules.subject.conds}, rules.verb, rules.object, units, dir)
+      end
+    end
+  elseif subject == "every2" then
+    if subject_not % 2 == 1 then
+      return
+    else
+      for _,v in ipairs(referenced_objects) do
+        addRuleSimple({v, rules.subject.conds}, rules.verb, rules.object, units, dir)
+      end
+      addRuleSimple({"text", rules.subject.conds}, rules.verb, rules.object, units, dir)
+    end
+  elseif subject == "every3" then
+    if subject_not % 2 == 1 then
+      return
+    else
+      for _,v in ipairs(referenced_objects) do
+        addRuleSimple({v, rules.subject.conds}, rules.verb, rules.object, units, dir)
+      end
+      addRuleSimple({"text", rules.subject.conds}, rules.verb, rules.object, units, dir)
+      for _,v in ipairs(special_objects) do
         addRuleSimple({v, rules.subject.conds}, rules.verb, rules.object, units, dir)
       end
     end
@@ -584,7 +615,7 @@ function addRule(full_rule)
       end
       return
     end
-  end 
+  end
 
   if object == "every1" then
     if object_not % 2 == 1 then
@@ -592,6 +623,27 @@ function addRule(full_rule)
     elseif verb ~= "be" and verb ~= "ben't" then
       --we'll special case x be every1 in convertUnit now
       for _,v in ipairs(referenced_objects) do
+        addRuleSimple(rules.subject, rules.verb, {v, rules.object.conds}, units, dir)
+      end
+    end
+  elseif object == "every2" then
+    if object_not % 2 == 1 then
+      return
+    elseif verb ~= "be" and verb ~= "ben't" then
+      for _,v in ipairs(referenced_objects) do
+        addRuleSimple(rules.subject, rules.verb, {v, rules.object.conds}, units, dir)
+      end
+      addRuleSimple(rules.subject, rules.verb, {"text", rules.object.conds}, units, dir)
+    end
+  elseif object == "every3" then
+    if object_not % 2 == 1 then
+      return
+    elseif verb ~= "be" and verb ~= "ben't" then
+      for _,v in ipairs(referenced_objects) do
+        addRuleSimple(rules.subject, rules.verb, {v, rules.object.conds}, units, dir)
+      end
+      addRuleSimple(rules.subject, rules.verb, {"text", rules.object.conds}, units, dir)
+      for _,v in ipairs(special_objects) do
         addRuleSimple(rules.subject, rules.verb, {v, rules.object.conds}, units, dir)
       end
     end
@@ -822,6 +874,20 @@ function shouldReparseRulesIfConditionalRuleExists(r1, r2, r3, even_non_wurd)
         --An infix condition that references another unit just dumps the second unit into rules_effecting_names (This is fine for all infix conditions, for now, but maybe not perpetually? for example sameFloat() might malfunction since the floatness of the other unit could change unexpectedly due to a SECOND conditional rule).
         if (#params > 0) then
           for _,param in ipairs(params) do
+            --might be recursive. TODO: extend indefinitely?
+            if (param.conds ~= nil) then
+              for _,cond2 in ipairs(param.conds) do
+                local params2 = cond2.others or {}
+                if (#params2 > 0) then
+                  for _,param2 in ipairs(params2) do
+                    rules_effecting_names[param2.name] = true
+                    if param2.name == "mous" then
+                      should_parse_rules_at_turn_boundary = true
+                    end
+                  end
+                end
+              end
+            end
             rules_effecting_names[param.name] = true
             if param.name == "mous" then
               should_parse_rules_at_turn_boundary = true
@@ -839,6 +905,8 @@ function shouldReparseRulesIfConditionalRuleExists(r1, r2, r3, even_non_wurd)
             --What are the others? WAIT... only changes at turn boundary. MAYBE can only change on turn boundary or if the unit or text moves (by definition these already reparse rules). AN only changes on turn boundary. COREKT/RONG can only change when text reparses anyway by definition, so it should never trigger it. TIMELES only changes at turn boundary. CLIKT only changes at turn boundary. Colours only change at turn boundary. So every other prefix condition, for now, just needs one check per turn, but new ones will need to be considered.
             should_parse_rules_at_turn_boundary = true
           end
+          
+          --TODO: How should a parse effecting THE rule work? Continual reparsing, like frenles?
           
           --As another edge to consider, what if the level geometry changes suddenly? Well, portals already trigger reparsing rules when they update, which is the only kind of external level geometry change. In addition, text/wurds changing flye/tall surprisingly would already trigger rule reparsing since we checked those rules. But, what about a non-wurd changing flye/tall, allowing it to go through a portal, changing the condition of a different parse effecting rule? This can also happen with level be go arnd/mirr arnd turning on or off. parseRules should fire in such cases. So specifically for these cases, even though they aren't wurd/text, we do want to fire parseRules when their conditions change.
           

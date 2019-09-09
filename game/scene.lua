@@ -719,7 +719,11 @@ function scene.draw(dt)
 		local function setColor(color)
       color = type(color[1]) == "table" and color[1] or color
       if #color == 3 then
-				color = {color[1]/255, color[2]/255, color[3]/255, 1}
+        if color[1] then
+          color = {color[1]/255, color[2]/255, color[3]/255, 1}
+        else
+          color = {1,1,1,1}
+        end
 			else
 				color = {getPaletteColor(color[1], color[2])}
 			end
@@ -1164,11 +1168,17 @@ function scene.draw(dt)
   --draw the stack box (shows what units are on a tile)
   if stack_box.scale > 0 then
     love.graphics.push()
-    love.graphics.translate((stack_box.x + 0.5) * TILE_SIZE, stack_box.y * TILE_SIZE)
+    local screenx,screeny = gameTileToScreen(stack_box.x,stack_box.y)
+    local onscreen = screeny > 40
+    love.graphics.translate((stack_box.x + 0.5) * TILE_SIZE, (stack_box.y + (onscreen and 0 or 1)) * TILE_SIZE)
     love.graphics.scale(stack_box.scale)
 
     love.graphics.setColor(getPaletteColor(0, 4))
-    love.graphics.polygon("fill", -4, -8, 0, 0, 4, -8)
+    if onscreen then
+      love.graphics.polygon("fill", -4, -8, 0, 0, 4, -8)
+    else
+      love.graphics.polygon("fill", -4, 8, 0, 0, 4, 8)
+    end
 
     local units = stack_box.units
     local draw_units = {}
@@ -1191,33 +1201,45 @@ function scene.draw(dt)
     end
 
     local width = 44 * #draw_units - 4
-    love.graphics.rectangle("fill", -width / 2, -48, width, 40)
+    if onscreen then
+      love.graphics.rectangle("fill", -width / 2, -48, width, 40)
+    else
+      love.graphics.rectangle("fill", -width / 2, 8, width, 40)
+    end
 
     love.graphics.setColor(getPaletteColor(3, 3))
     love.graphics.setLineWidth(2)
-    love.graphics.line(-width / 2, -48, -width / 2, -8, -4, -8, 0, 0, 4, -8, width / 2, -8, width / 2, -48, -width / 2, -48)
+    if onscreen then
+      love.graphics.line(-width / 2, -48, -width / 2, -8, -4, -8, 0, 0, 4, -8, width / 2, -8, width / 2, -48, -width / 2, -48)
+    else
+      love.graphics.line(-width / 2, 48, -width / 2, 8, -4, 8, 0, 0, 4, 8, width / 2, 8, width / 2, 48, -width / 2, 48)
+    end
 
     for i,draw in ipairs(draw_units) do
       local cx = (-width / 2) + ((i / #draw_units) * width) - 20
       local unit = draw.unit
+      local dcolor = unit.color_override or unit.color
 
       love.graphics.push()
-      love.graphics.translate(cx, -28)
-
+      if onscreen then
+        love.graphics.translate(cx, -28)
+      else
+        love.graphics.translate(cx, 28)
+      end
       love.graphics.push()
       love.graphics.rotate(math.rad((draw.dir - 1) * 45))
       
       if type(unit.sprite) ~= "table" then
-        if #unit.color == 2 then
-          love.graphics.setColor(getPaletteColor(unit.color[1], unit.color[2]))
+        if #dcolor == 2 then
+          love.graphics.setColor(getPaletteColor(dcolor[1], dcolor[2]))
         else
-          love.graphics.setColor(unit.color[1], unit.color[2], unit.color[3], unit.color[4] or 1)
+          love.graphics.setColor(dcolor[1], dcolor[2], dcolor[3], dcolor[4] or 1)
         end
         local sprite = sprites[unit.sprite]
         love.graphics.draw(sprite, 0, 0, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
       else
         for j,image in ipairs(unit.sprite) do
-          love.graphics.setColor(getPaletteColor(unit.color[j][1], unit.color[j][2]))
+          love.graphics.setColor(getPaletteColor(dcolor[j][1], dcolor[j][2]))
           local sprite = sprites[image]
           love.graphics.draw(sprite, 0, 0, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
         end
@@ -1259,20 +1281,34 @@ function scene.draw(dt)
   end
   if pathlock_box.scale > 0 then
     love.graphics.push()
-    love.graphics.translate((pathlock_box.x + 0.5) * TILE_SIZE, pathlock_box.y * TILE_SIZE)
+    local screenx,screeny = gameTileToScreen(stack_box.x,stack_box.y)
+    local onscreen = screeny > 40
+    love.graphics.translate((pathlock_box.x + 0.5) * TILE_SIZE, (pathlock_box.y + (onscreen and 0 or 1)) * TILE_SIZE)
     love.graphics.scale(pathlock_box.scale)
 
     love.graphics.setColor(getPaletteColor(0, 4))
-    love.graphics.polygon("fill", -4, -8, 0, 0, 4, -8)
+    if onscreen then
+      love.graphics.polygon("fill", -4, -8, 0, 0, 4, -8)
+    else
+      love.graphics.polygon("fill", -4, 8, 0, 0, 4, 8)
+    end
 
     local unit = pathlock_box.unit
 
     local width = 70
-    love.graphics.rectangle("fill", -width / 2, -48, width, 40)
+    if onscreen then
+      love.graphics.rectangle("fill", -width / 2, -48, width, 40)
+    else
+      love.graphics.rectangle("fill", -width / 2, 8, width, 40)
+    end
 
     love.graphics.setColor(getPaletteColor(3, 3))
     love.graphics.setLineWidth(2)
-    love.graphics.line(-width / 2, -48, -width / 2, -8, -4, -8, 0, 0, 4, -8, width / 2, -8, width / 2, -48, -width / 2, -48)
+    if onscreen then
+      love.graphics.line(-width / 2, -48, -width / 2, -8, -4, -8, 0, 0, 4, -8, width / 2, -8, width / 2, -48, -width / 2, -48)
+    else
+      love.graphics.line(-width / 2, 48, -width / 2, 8, -4, 8, 0, 0, 4, 8, width / 2, 8, width / 2, 48, -width / 2, 48)
+    end
     
     local type = ({puffs = "puff", blossoms = "blossom", orbs = "orrb"})[unit.special.pathlock]
     love.graphics.setColor(type == "orrb" and {getPaletteColor(4,1)} or {1,1,1,1})
@@ -1294,6 +1330,9 @@ function scene.draw(dt)
 
   if currently_winning and win_size < 1 then
     win_size = win_size + dt*2
+    if (win_size > 1) then
+      win_size = 1
+    end
   end
   love.graphics.pop()
   
@@ -1816,9 +1855,8 @@ function doOneMove(x, y, key)
     if hasRule("press","f2",":)") then
       doWin("won")
     end
-    local will_undo = false
     if hasRule("press","f2","try again") then
-      will_undo = true
+      doTryAgain()
     end
     if hasRule("press","f2","xwx") then
       love = {}
@@ -1828,37 +1866,28 @@ function doOneMove(x, y, key)
     end
 
     local to_destroy = {}
-
     if hasRule("press","f2","hotte") then
       local melters = getUnitsWithEffect("fridgd")
       for _,unit in ipairs(melters) do
-        if sameFloat(unit,outerlvl) then
-          table.insert(to_destroy, unit)
-          addParticles("destroy", unit.x, unit.y, unit.color)
-        end
+        table.insert(to_destroy, unit)
+        addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
       end
       if #to_destroy > 0 then
         playSound("hotte")
       end
     end
+    to_destroy = handleDels(to_destroy)
+    
     if hasRule("press","f2",":(") then
       local yous = getUnitsWithEffect("u")
-      local youtoos = getUnitsWithEffect("u too")
-      local youtres = getUnitsWithEffect("u tres")
-      mergeTable(yous, youtoos)
-      mergeTable(yous, youtres)
+      mergeTable(yous, getUnitsWithEffect("u too"))
+      mergeTable(yous, getUnitsWithEffect("u tres"))
       for _,unit in ipairs(yous) do
         table.insert(to_destroy, unit)
-        addParticles("destroy", unit.x, unit.y, unit.color)
+        addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
       end
     end
     to_destroy = handleDels(to_destroy)
-
-    if (will_undo) then
-      doTryAgain()
-    end
-
-    
 	elseif (key == "undo") then
 		local result = undo()
 		extendReplayString(0, 0, "undo")

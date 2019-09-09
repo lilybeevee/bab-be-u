@@ -112,6 +112,10 @@ function doMovement(movex, movey, key)
       unit.already_moving = false
       unit.moves = {}
     end
+    outerlvl.moves = {}
+    for _,cursor in ipairs(cursors) do
+      cursor.moves = {}
+    end
     
     if move_stage == -1 then
       local icy = getUnitsWithEffectAndCount("icy")
@@ -459,7 +463,7 @@ function doMovement(movex, movey, key)
 
     for _,unit in pairs(moving_units) do
       if not unit.stelth and not hasProperty(unit, "loop") and timecheck(unit) then
-        addParticles("movement-puff", unit.x, unit.y, unit.color)
+        addParticles("movement-puff", unit.x, unit.y, unit.color_override or unit.color)
       end
     end
     
@@ -703,7 +707,7 @@ function doAction(action)
     playSound("break", 0.5)
     local victims = action[2]
     for _,unit in ipairs(victims) do
-      addParticles("destroy", unit.x, unit.y, unit.color)
+      addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
       --no protecc check because it can't safely be prevented here (we might be moving OoB)
       unit.removed = true
       unit.destroyed = true
@@ -712,7 +716,7 @@ function doAction(action)
     playSound("snacc", 0.5)
     local victims = action[2]
     for _,unit in ipairs(victims) do
-      addParticles("destroy", unit.x, unit.y, unit.color)
+      addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
       if not hasProperty(unit, "protecc") then
         unit.removed = true
         unit.destroyed = true
@@ -944,17 +948,17 @@ function applySwap(mover, dx, dy)
   local swap_mover = hasProperty(mover, "behin u")
   local did_swap = false
   for _,v in ipairs(getUnitsOnTile(mover.x+dx, mover.y+dy)) do
-    --if not v.already_moving then --this made some things move order dependent, so taking it out
-      local swap_v = hasProperty(v, "behin u")
-      --Don't swap with non-swap empty.
-      if ((swap_mover and v.fullname ~= "no1") or swap_v) and sameFloat(unit,v,true) then
-        queueMove(v, -dx, -dy, swap_v and rotate8(mover.dir) or v.dir, true, 0)
-        did_swap = true
-      end
+  --if not v.already_moving then --this made some things move order dependent, so taking it out
+    local swap_v = hasProperty(v, "behin u")
+    --Don't swap with non-swap empty.
+    if ((swap_mover and v.fullname ~= "no1") or swap_v) and sameFloat(mover,v,true) then
+      queueMove(v, -dx, -dy, swap_v and rotate8(mover.dir) or v.dir, true, 0)
+      did_swap = true
     end
+  end
   --end
   if (swap_mover and did_swap) then
-     table.insert(update_queue, {unit = mover, reason = "dir", payload = {dir = rotate8(mover.dir)}})
+    table.insert(update_queue, {unit = mover, reason = "dir", payload = {dir = rotate8(mover.dir)}})
   end
 end
 
