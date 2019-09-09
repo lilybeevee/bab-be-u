@@ -2107,6 +2107,118 @@ function convertUnits(pass)
     end
   end
   
+  local all2 = matchesRule(nil,"be","every2")
+  for _,match in ipairs(all2) do
+    local rules = match[1]
+    local unit = match[2]
+    local rule = rules.rule
+    if not hasProperty(unit, "notranform") then
+      if (rule.subject.name == "mous" and rule.object.name ~= "mous") then
+        for _,cursor in ipairs(cursors) do
+          if inBounds(cursor.x, cursor.y) and testConds(cursor, rule.subject.conds) then
+            local tbl = copyTable(referenced_objects)
+            mergeTable(tbl, referenced_text)
+            for _,v in ipairs(tbl) do
+              local tile = tiles_by_name[v]
+              if v == "text" then
+                tile = tiles_by_name["text_" .. rule.subject.name]
+              end
+              if tile ~= nil then
+                table.insert(del_cursors, cursor)
+              end
+              local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
+              if (new_unit ~= nil) then
+                addUndo({"create", new_unit.id, true, created_from_id = unit.id})
+              end
+            end
+          end
+        end
+      elseif not unit.new and unit.class == "unit" and unit.type ~= "outerlvl" and not hasRule(unit, "be", unit.name) and timecheck(unit) then
+        local tbl = copyTable(referenced_objects)
+        mergeTable(tbl, referenced_text)
+        for _,v in ipairs(tbl) do
+          local tile = tiles_by_name[v]
+          if v == "text" then
+            tile = tiles_by_name["text_" .. rule.subject.name]
+          end
+          if tile ~= nil then
+            if not unit.removed then
+              table.insert(converted_units, unit)
+            end
+            local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
+            if (new_unit ~= nil) then
+              addUndo({"create", new_unit.id, true, created_from_id = unit.id})
+            end
+          elseif v == "mous" then
+            if not unit.removed then
+              table.insert(converted_units, unit)
+            end
+            unit.removed = true
+            local new_mouse = createMouse(unit.x, unit.y)
+            addUndo({"create_cursor", new_mouse.id, created_from_id = unit.id})
+          end
+        end
+      end
+    end
+  end
+  
+  local all3 = matchesRule(nil,"be","every3")
+  for _,match in ipairs(all3) do
+    local rules = match[1]
+    local unit = match[2]
+    local rule = rules.rule
+    if not hasProperty(unit, "notranform") then
+      if (rule.subject.name == "mous" and rule.object.name ~= "mous") then
+        for _,cursor in ipairs(cursors) do
+          if inBounds(cursor.x, cursor.y) and testConds(cursor, rule.subject.conds) then
+            local tbl = copyTable(referenced_objects)
+            mergeTable(tbl, referenced_text)
+            mergeTable(tbl, special_objects)
+            for _,v in ipairs(tbl) do
+              local tile = tiles_by_name[v]
+              if v == "text" then
+                tile = tiles_by_name["text_" .. rule.subject.name]
+              end
+              if tile ~= nil then
+                table.insert(del_cursors, cursor)
+              end
+              local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
+              if (new_unit ~= nil) then
+                addUndo({"create", new_unit.id, true, created_from_id = unit.id})
+              end
+            end
+          end
+        end
+      elseif not unit.new and unit.class == "unit" and unit.type ~= "outerlvl" and not hasRule(unit, "be", unit.name) and timecheck(unit) then
+        local tbl = copyTable(referenced_objects)
+        mergeTable(tbl, referenced_text)
+        mergeTable(tbl, special_objects)
+        for _,v in ipairs(tbl) do
+          local tile = tiles_by_name[v]
+          if v == "text" then
+            tile = tiles_by_name["text_" .. rule.subject.name]
+          end
+          if tile ~= nil then
+            if not unit.removed then
+              table.insert(converted_units, unit)
+            end
+            local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
+            if (new_unit ~= nil) then
+              addUndo({"create", new_unit.id, true, created_from_id = unit.id})
+            end
+          elseif v == "mous" then
+            if not unit.removed then
+              table.insert(converted_units, unit)
+            end
+            unit.removed = true
+            local new_mouse = createMouse(unit.x, unit.y)
+            addUndo({"create_cursor", new_mouse.id, created_from_id = unit.id})
+          end
+        end
+      end
+    end
+  end
+  
   local converts = matchesRule(nil,"be","?")
   for _,match in ipairs(converts) do
     local rules = match[1]
