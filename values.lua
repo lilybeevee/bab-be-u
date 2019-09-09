@@ -228,8 +228,8 @@ selector_grid_contents = {
     "fenss","text_fenss","platfor","text_platfor","tre","text_tre","stum","text_stum","dayzy","text_dayzy","lie","text_lie",0,0,0,0,0,0,
     "cobll","text_cobll","spik","text_spik","frut","text_frut","fungye","text_fungye","red","text_red","lie/8","text_lie/8",0,0,0,0,0,0,
     "wuud","text_wuud","spiky","text_spiky","parsol","text_parsol","clok","text_clok","ufu","text_ufu","rockit","text_rockit","swim","text_swim",0,0,0,0,
-    "brik","text_brik","sparkl","text_sparkl","sanglas","text_sanglas","bullb","text_bullb","son","text_son","muun","text_muun","bac","text_bac",0,0,0,0,
-    "san","text_san","piler","text_piler","sancastl","text_sancastl","shel","text_shel","starr","text_starr","cor","text_cor","byc","text_byc",0,0,0,0,
+    "brik","text_brik","sparkl","text_sparkl","sanglas","text_sanglas","bullb","text_bullb","son","text_son","muun","text_muun","bac","text_bac",0,0,"piep","text_piep",
+    "san","text_san","piler","text_piler","sancastl","text_sancastl","shel","text_shel","starr","text_starr","cor","text_cor","byc","text_byc","gorder","text_gorder","tuba","text_tuba",
     "glas","text_glas","bom","text_bom","sine","text_sine","kar","text_kar","can","text_can","ger","text_ger","sirn","text_sirn","chain","text_chain","reflecr","text_reflecr",
     "bordr","text_bordr","wut","text_wut","wat","text_wat","splittr","text_splittr","togll","text_togll","bon","text_bon","battry","text_battry","chekr","text_chekr","sloop","text_sloop",
   },
@@ -6446,7 +6446,72 @@ tiles_list = {
     layer = 20,
     tags = {"boo","mario","ghost"},
   },
-  -- 561
+  --561
+  {
+    name = "gorder",
+    sprite = "gorder",
+    type = "object",
+    color = {0,2},
+    rotate = true,
+    layer = 3,
+    tags = {"girder","city"},
+    desc = "constructon zone!",
+  },
+  -- 562
+  {
+    name = "text_gorder",
+    sprite = "text_gorder",
+    type = "text",
+    texttype = {object = true},
+    color = {0,2},
+    layer = 20,
+    tags = {"girder","city"},
+  },
+  -- 563
+  {
+    name = "piep",
+    sprite = "piep",
+    type = "object",
+    color = {5,2},
+    rotate = true,
+    portal = true,
+    layer = 4,
+    tags = {"pipe","tube","mario"},
+    desc = "enter the piep to skip world",
+  },
+  -- 564
+  {
+    name = "text_piep",
+    sprite = "text_piep",
+    type = "text",
+    texttype = {object = true},
+    color = {5,2},
+    layer = 20,
+    tags = {"pipe","tube","mario"},
+  },
+  -- 565
+  {
+    name = "tuba",
+    sprite = "tuba",
+    type = "object",
+    color = {5,2},
+    rotate = true,
+    layer = 4,
+    tags = {"pipe","tube","mario"},
+    desc = "piep's bff",
+  },
+  -- 566
+  {
+    name = "text_tuba",
+    sprite = "text_tuba",
+    type = "text",
+    texttype = {object = true},
+    color = {5,2},
+    layer = 20,
+    tags = {"pipe","tube","mario"},
+    desc = "pieps are musical instruments",
+  },
+  -- 567
   {
     name = "text_every2",
     sprite = "text_every2",
@@ -6457,7 +6522,7 @@ tiles_list = {
     tags = {"all", "everyone", "every2"},
     desc = "EVERY2: EVERY1 + TXT. (Doesn't include innerlvls atm because lazy + hard to code + unlikely to come up. Sorry.)",
   },
-  -- 562
+  -- 568
   {
     name = "text_every3",
     sprite = "text_every3",

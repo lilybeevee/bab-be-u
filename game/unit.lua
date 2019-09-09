@@ -2427,6 +2427,7 @@ function moveUnit(unit,x,y,portal)
   --when empty moves, swap it with the empty in its destination tile, to preserve the invariant 'there is exactly empty per tile'
   --also, keep empty out of units_by_tile - it will be added in getUnitsOnTile
   if (unit.type == "outerlvl") then
+  elseif (unit.name == "mous") then
   elseif (unit.fullname == "no1") and inBounds(x, y) then
     local tileid = unit.x + unit.y * mapwidth
     local oldx = unit.x
@@ -2510,6 +2511,7 @@ function updateDir(unit, dir, force)
     end
     if unit.dir == dir then return true end
   end
+  if unit.name == "mous" then return false end
   
   unit.dir = dir
   if (unit.rotate and not hasRule(unit,"ben't","rotatbl")) or (rules_with ~= nil and hasProperty(unit,"rotatbl")) then
