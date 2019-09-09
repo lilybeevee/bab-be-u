@@ -640,7 +640,7 @@ function scene.keyPressed(key)
         current_tile_grid = tile_grid[selector_page]
     end
   end]]
-  if not selector_open and not level_dialogue.enabled and key == "t" then
+  if not selector_open and not level_dialogue.enabled and key == "t" and (key_down["lctrl"] or key_down["rctrl"]) then
     -- if key_down["lshift"] or key_down["rshift"] then
     --   anagram_finder.enabled = true
     --   anagram_finder.advanced = not anagram_finder.advanced

@@ -1855,9 +1855,8 @@ function doOneMove(x, y, key)
     if hasRule("press","f2",":)") then
       doWin("won")
     end
-    local will_undo = false
     if hasRule("press","f2","try again") then
-      will_undo = true
+      doTryAgain()
     end
     if hasRule("press","f2","xwx") then
       love = {}
@@ -1867,37 +1866,28 @@ function doOneMove(x, y, key)
     end
 
     local to_destroy = {}
-
     if hasRule("press","f2","hotte") then
       local melters = getUnitsWithEffect("fridgd")
       for _,unit in ipairs(melters) do
-        if sameFloat(unit,outerlvl) then
-          table.insert(to_destroy, unit)
-          addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
-        end
+        table.insert(to_destroy, unit)
+        addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
       end
       if #to_destroy > 0 then
         playSound("hotte")
       end
     end
+    to_destroy = handleDels(to_destroy)
+    
     if hasRule("press","f2",":(") then
       local yous = getUnitsWithEffect("u")
-      local youtoos = getUnitsWithEffect("u too")
-      local youtres = getUnitsWithEffect("u tres")
-      mergeTable(yous, youtoos)
-      mergeTable(yous, youtres)
+      mergeTable(yous, getUnitsWithEffect("u too"))
+      mergeTable(yous, getUnitsWithEffect("u tres"))
       for _,unit in ipairs(yous) do
         table.insert(to_destroy, unit)
         addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
       end
     end
     to_destroy = handleDels(to_destroy)
-
-    if (will_undo) then
-      doTryAgain()
-    end
-
-    
 	elseif (key == "undo") then
 		local result = undo()
 		extendReplayString(0, 0, "undo")
