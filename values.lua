@@ -35,11 +35,13 @@ else
   settings = defaultsettings
 end
 
-debug = false
+debug_view= false
 superduperdebugmode = false
 debug_values = {
 
 }
+
+rainbowmode = false
 
 if love.filesystem.getInfo("build_number") ~= nil then
   build_number = love.filesystem.read("build_number")

@@ -129,7 +129,7 @@ function scene.draw(dt)
     love.graphics.pop()
   end
 
-  if build_number and not debug then
+  if build_number and not debug_view_view_view_view then
     love.graphics.setColor(1, 1, 1)
     setRainbowModeColor(love.timer.getTime()/6, .6)
     --if haha number then make it rainbow anyways

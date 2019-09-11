@@ -33,6 +33,9 @@ special_no = 1
 
 spookmode = false
 
+local debugEnabled = false
+local drawnDebugScreen = false
+
 bxb = nil
 
 function tableAverage(table)
@@ -380,8 +383,10 @@ function love.keypressed(key,scancode,isrepeat)
     remasterMode = not remasterMode
   elseif key == "h" and love.keyboard.isDown('f3') then
     infomode = not infomode
+  elseif key == "l" and love.keyboard.isDown('f3') then
+    debugEnabled = true
   elseif key == "f4" and not spookmode then
-    debug = not debug
+    debug_view = not debug_view
   elseif key == "f5" then
     love.event.quit("restart")
   elseif key == "f11" then
@@ -604,6 +609,13 @@ function love.update(dt)
   if settings["music_on"] then music_volume = 1 end
   updateMusic()
 
+  if debugEnabled and drawnDebugScreen then
+    debug.debug()
+
+    debugEnabled = false
+    drawnDebugScreen = false
+  end
+
   if discordRPC and discordRPC ~= true then
     if nextPresenceUpdate < love.timer.getTime() then
       discordRPC.updatePresence(presence)
@@ -629,7 +641,7 @@ function love.draw()
     scene.draw(dt)
   end
 
-  if debug and not spookmode then
+  if debug_view and not spookmode then
     local mousex, mousey = love.mouse.getPosition()
 
     local debugheader = "SUPER DEBUG MENU V2.1"
@@ -725,6 +737,14 @@ function love.draw()
   if spookmode and math.random(1000) == 500 then
     local bab = love.graphics.newImage("assets/sprites/ui/bxb bx x.jpg")
     love.graphics.draw(bab, 0, 0, 0, bab:getWidth()/love.graphics.getWidth(), bab:getHeight()/love.graphics.getHeight())
+  end
+
+  if debugEnabled then
+    love.graphics.setColor(0.2,0.2,0.2,0.7)
+    love.graphics.rectangle('fill', 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
+    love.graphics.setColor(1,1,1)
+    love.graphics.printf("IN DEBUG - check console, use cont to exit", 0, love.graphics.getHeight()/2-love.graphics.getFont():getLineHeight(), love.graphics.getWidth(), 'center')
+    drawnDebugScreen = true
   end
 end
 
