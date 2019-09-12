@@ -250,7 +250,7 @@ selector_grid_contents = {
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_brwn","text_tranz","text_yello",
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_blacc","text_gay","text_grun",
     0,0,0,0,0,"text_try again","text_no undo","text_undo","text_za warudo","text_brite",0,0,0,0,0,"text_graey","text_qt","text_cyeann",
-    "text_every1","text_every2","text_every3",0,0,"text_poor toll","text_go arnd","text_mirr arnd","text_glued","text_torc",0,0,0,0,0,"text_whit","text_pinc","text_bleu",
+    "text_every1","text_every2","text_every3","text_lethers",0,"text_poor toll","text_go arnd","text_mirr arnd","text_glued","text_torc",0,0,0,0,0,"text_whit","text_pinc","text_bleu",
     "text_...","text_''",0,0,0,"text_her","text_thr","text_rithere","text_the","text_opaque",0,0,0,0,"text_stelth","text_colrful","text_rave","text_purp",
   },
 }
@@ -6534,6 +6534,28 @@ tiles_list = {
     layer = 20,
     tags = {"all", "everyone", "every3"},
     desc = "EVERY3: Absolutely everything conceivable. The pinnacle of everything technology.",
+  },
+  -- 568
+  {
+    name = "text_every3",
+    sprite = "text_every3",
+    type = "text",
+    texttype = {object = true},
+    color = {4, 1},
+    layer = 20,
+    tags = {"all", "everyone", "every3"},
+    desc = "EVERY3: Absolutely everything conceivable. The pinnacle of everything technology.",
+  },
+  -- 568
+  {
+    name = "text_lethers",
+    sprite = "text_lethers",
+    type = "text",
+    texttype = {object = true},
+    color = {2, 4},
+    layer = 20,
+    tags = {"letters"},
+    desc = "LETHERS: Refers to all letters that exist in the level.",
   },
 }
 
