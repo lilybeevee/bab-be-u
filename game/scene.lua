@@ -735,7 +735,7 @@ function scene.draw(dt)
 				end
 			end
 
-			if #unit.overlay > 0 and eq(unit.color, tiles_list[unit.tile].color) then
+			if #unit.overlay > 0 and type(unit.sprite) == "string" and eq(unit.color, tiles_list[unit.tile].color) then
 				love.graphics.setColor(1, 1, 1)
 			else
 				love.graphics.setColor(color[1], color[2], color[3], color[4])
@@ -783,6 +783,9 @@ function scene.draw(dt)
             setColor(unit.color_override and unit.color_override[i] or unit.color[i])
           else
             setColor(unit.color)
+          end
+          if onlycolor or (#unit.overlay > 0 and (unit.colored and unit.colored[i]) or not unit.colored) then
+            love.graphics.setColor(1,1,1,1)
           end
           if not onlycolor or not unit.colored or (onlycolor and unit.colored and unit.colored[i]) then
             local sprit = sprites[image]
