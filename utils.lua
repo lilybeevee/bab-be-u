@@ -1700,6 +1700,7 @@ function hslToRgb(h, s, l, a)
 end
 
 function addParticles(ptype,x,y,color,count)
+  if type(color[1]) == "table" then color = color[1] end
   if ptype == "destroy" then
     local ps = love.graphics.newParticleSystem(sprites["circle"])
     local px = (x + 0.5) * TILE_SIZE

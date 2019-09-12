@@ -210,8 +210,8 @@ selector_grid_contents = {
     "wog","text_wog","bog","text_bog","enbybog","text_enbybog",0,0,0,0,0,0,0,0,0,0,0,0,
     "kirb","text_kirb","ripof","text_ripof","cavebab","text_cavebab",0,0,0,0,0,0,0,0,0,0,0,0,
     "bup","text_bup","butflye","text_butflye","boooo","text_boooo",0,0,0,0,0,0,0,0,0,0,0,0,
-    "boy","text_boy","wurm","text_wurm",0,0,0,0,0,0,0,0,0,0,"lila","text_lila","tot","text_tot",
-    "steev","text_steev","ratt","text_ratt",0,0,0,0,0,0,0,0,0,0,"pata","text_pata","jill","text_jill",
+    "boy","text_boy","wurm","text_wurm","madi","text_madi",0,0,0,0,0,0,0,0,"lila","text_lila","tot","text_tot",
+    "steev","text_steev","ratt","text_ratt","badi","text_badi",0,0,0,0,0,0,0,0,"pata","text_pata","jill","text_jill",
     "han","text_han","eyee","text_eyee","lisp","text_lisp","paw","text_paw",0,0,0,0,0,0,"larry","text_larry","zsoob","text_zsoob",
     "snoman","text_snoman","pingu","text_pingu",0,0,0,0,0,0,0,0,0,0,0,0,"o","text_o",
     "kapa","text_kapa","urei","text_urei","ryugon","text_ryugon",0,0,0,0,0,0,0,0,0,0,"square","text_square",
@@ -6546,7 +6546,51 @@ tiles_list = {
     tags = {"all", "everyone", "every3"},
     desc = "EVERY3: Absolutely everything conceivable. The pinnacle of everything technology.",
   },
-  -- 568
+  -- 569
+  {
+    name = "madi",
+    sprite = {"madi_hair","madi_skin","madi_shirt","madi_pants"},
+    type = "object",
+    color = {{2,2},{2,4},{1,3},{2,2}},
+    colored = {true,false,false,false},
+    rotate = true,
+    layer = 9,
+    tags = {"madeline","celeste","chars"},
+    desc = "she clim mountain in very good game",
+  },
+  -- 570
+  {
+    name = "text_madi",
+    sprite = "text_madi",
+    type = "text",
+    texttype = {object = true},
+    color = {2,2},
+    layer = 20,
+    tags = {"madeline","celeste","chars"},
+  },
+  -- 571
+  {
+    name = "badi",
+    sprite = {"madi_hair","madi_skin","madi_eyes","madi_shirt","madi_pants"},
+    type = "object",
+    color = {{3,1},{3,3},{2,2},{3,2},{3,0}},
+    colored = {true,false,false,false,false},
+    rotate = true,
+    layer = 9,
+    tags = {"badeline","celeste","chars"},
+    desc = "emag doog yrev ni niatnuom milc ehs",
+  },
+  -- 572
+  {
+    name = "text_badi",
+    sprite = "text_badi",
+    type = "text",
+    texttype = {object = true},
+    color = {3,3},
+    layer = 20,
+    tags = {"badeline","celeste","chars"},
+  },
+  -- 573
   {
     name = "text_lethers",
     sprite = "text_lethers",
