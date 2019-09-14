@@ -1801,7 +1801,7 @@ tiles_list = {
     color = {0, 3},
     layer = 20,
     tags = {"all", "everyone", "every1"},
-    desc = "EVERY1: Every object type in the level, aside from special objects like TXT, NO1, LVL, SELCTR, BORDR, and MOUS.",
+    desc = "EVERY1: Every object type in the level, aside from special objects like TXT, NO1, LVL, BORDR, and MOUS.",
   },
   -- 138
   {
@@ -6537,7 +6537,7 @@ tiles_list = {
     color = {4, 1},
     layer = 20,
     tags = {"all", "everyone", "every3"},
-    desc = "EVERY3: Absolutely everything conceivable. The pinnacle of everything technology.",
+    desc = "EVERY3: Absolutely everything conceivable. The pinnacle of everything technology. (Infloop is not an object.)",
   },
 }
 
