@@ -746,6 +746,7 @@ tiles_list = {
   {
     name = "os",
     sprite = "os",
+    slep = true,
     type = "object",
     color = {0, 3},
     layer = 5,
