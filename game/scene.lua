@@ -666,14 +666,36 @@ function scene.draw(dt)
       newcolor[1] = newcolor[1]*255
       newcolor[2] = newcolor[2]*255
       newcolor[3] = newcolor[3]*255
-      unit.color_override = newcolor
+      if type(unit.color[1]) == "table" then
+        unit.color_override = {}
+        for i,color in ipairs(unit.color) do
+          if not unit.colored or (unit.colored and unit.colored[i]) then
+            unit.color_override[i] = newcolor
+          else
+            unit.color_override[i] = color
+          end
+        end
+      else
+        unit.color_override = newcolor
+      end
     elseif unit.colrful or rainbowmode then
       -- print("unit " .. unit.name .. " is colourful or rainbowmode")
       local newcolor = hslToRgb((love.timer.getTime()/15+#undo_buffer/45+unit.x/18+unit.y/18)%1, .5, .5, 1)
       newcolor[1] = newcolor[1]*255
       newcolor[2] = newcolor[2]*255
       newcolor[3] = newcolor[3]*255
-      unit.color_override = newcolor 
+      if type(unit.color[1]) == "table" then
+        unit.color_override = {}
+        for i,color in ipairs(unit.color) do
+          if not unit.colored or (unit.colored and unit.colored[i]) then
+            unit.color_override[i] = newcolor
+          else
+            unit.color_override[i] = color
+          end
+        end
+      else
+        unit.color_override = newcolor
+      end
     else
       if unit.name == "bordr" and timeless then
         unit.color_override = {0,3}
@@ -703,7 +725,7 @@ function scene.draw(dt)
 
       sprite = sprites[sprite_name]
     else
-      sprite = sprite_name
+      sprite = sprites[sprite_name[1]]
     end
 
     --no tweening empty for now - it's buggy!
@@ -735,7 +757,7 @@ function scene.draw(dt)
 				end
 			end
 
-			if #unit.overlay > 0 and eq(unit.color, tiles_list[unit.tile].color) then
+			if #unit.overlay > 0 and type(unit.sprite) == "string" and eq(unit.color, tiles_list[unit.tile].color) then
 				love.graphics.setColor(1, 1, 1)
 			else
 				love.graphics.setColor(color[1], color[2], color[3], color[4])
@@ -776,13 +798,23 @@ function scene.draw(dt)
     love.graphics.translate(-fulldrawx, -fulldrawy)
     
     local function drawSprite(overlay, onlycolor, stretch)
-      local draw = overlay or sprite
-      if type(draw) == "table" then
-        for i,image in ipairs(draw) do
+      local draw = sprites[overlay or unit.sprite]
+      if type(unit.sprite) == "table" then
+        for i,image in ipairs(unit.sprite) do
           if type(unit.color[i]) == "table" then
-            setColor(unit.color_override and unit.color_override[i] or unit.color[i])
+            setColor(unit.color[i])
           else
             setColor(unit.color)
+          end
+          if unit.color_override then
+            if type(unit.color_override[i]) == "table" then
+              setColor(unit.color_override[i])
+            else
+              setColor(unit.color_override)
+            end
+          end
+          if onlycolor or (#unit.overlay > 0 and (unit.colored and unit.colored[i]) or not unit.colored) then
+            love.graphics.setColor(1,1,1,1)
           end
           if not onlycolor or not unit.colored or (onlycolor and unit.colored and unit.colored[i]) then
             local sprit = sprites[image]
@@ -791,11 +823,7 @@ function scene.draw(dt)
         end
       else
         if overlay and stretch then
-          if type(sprite) == "table" then
-            love.graphics.draw(draw, fulldrawx, fulldrawy, 0, TILE_SIZE / sprites[sprite[1]]:getWidth(), TILE_SIZE / sprites[sprite[1]]:getHeight(), draw:getWidth() / 2, draw:getHeight() / 2)
-          else
-            love.graphics.draw(draw, fulldrawx, fulldrawy, 0, sprite:getWidth() / TILE_SIZE, sprite:getHeight() / TILE_SIZE, draw:getWidth() / 2, draw:getHeight() / 2)
-          end
+          love.graphics.draw(draw, fulldrawx, fulldrawy, 0, sprite:getWidth() / TILE_SIZE, sprite:getHeight() / TILE_SIZE, draw:getWidth() / 2, draw:getHeight() / 2)
         else
           love.graphics.draw(draw, fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, draw:getWidth() / 2, draw:getHeight() / 2)
         end
@@ -884,7 +912,7 @@ function scene.draw(dt)
     
     if unit.name == "lin" and unit.special.pathlock and unit.special.pathlock ~= "none" then
       setColor(unit.color_override or {2, 2})
-      drawSprite(sprites["lin_gate"])
+      drawSprite("lin_gate")
     end
     
     --reset back to values being used before
@@ -908,33 +936,33 @@ function scene.draw(dt)
       local num, suit = unpack(card_for_id[unit.id])
       if eq(unit.color, {0,3}) then
         setColor({0,0})
-        drawSprite(sprites["byc"])
+        drawSprite("byc")
         setColor({0,3})
-        drawSprite(sprites["byc_" .. suit])
-        drawSprite(sprites["byc_" .. num])
+        drawSprite("byc_" .. suit)
+        drawSprite("byc_" .. num)
       else
         setColor({0,3})
-        drawSprite(sprites["byc"])
+        drawSprite("byc")
         if suit == "diamond" or suit == "heart" then
           setColor(unit.color)
         else
           setColor({0,0})
         end
-        drawSprite(sprites["byc_" .. suit])
-        drawSprite(sprites["byc_" .. num])
+        drawSprite("byc_" .. suit)
+        drawSprite("byc_" .. num)
       end
     end
     if unit.name == "bac" then
       if eq(unit.color, {0,3}) then
         setColor({0,0})
-        drawSprite(sprites["byc"])
+        drawSprite("byc")
         setColor({0,3})
-        drawSprite(sprites["bac"])
+        drawSprite("bac")
       else
         setColor({0,3})
-        drawSprite(sprites["byc"])
+        drawSprite("byc")
         setColor(unit.color)
-        drawSprite(sprites["bac"])
+        drawSprite("bac")
       end
     end
     
@@ -977,7 +1005,7 @@ function scene.draw(dt)
         local old_test_mode, old_test_value = love.graphics.getStencilTest()
         love.graphics.setStencilTest("greater", 0)
         love.graphics.setBlendMode("multiply", "premultiplied")
-        drawSprite(sprites["overlay/" .. overlay], false, true)
+        drawSprite("overlay/" .. overlay, false, true)
         love.graphics.setBlendMode("alpha", "alphamultiply")
         love.graphics.setStencilTest(old_test_mode, old_test_value)
       end
@@ -986,14 +1014,14 @@ function scene.draw(dt)
     if unit.is_portal then
       if loop or not unit.portal.objects then
         love.graphics.setColor(color[1] * 0.75, color[2] * 0.75, color[3] * 0.75, color[4])
-        drawSprite(sprites[sprite_name .. "_bg"])
+        drawSprite(sprite_name .. "_bg")
       else
         love.graphics.setColor(lvl_color[1], lvl_color[2], lvl_color[3], lvl_color[4])
-        drawSprite(sprites[sprite_name .. "_bg"])
+        drawSprite(sprite_name .. "_bg")
         love.graphics.setColor(1, 1, 1)
         local function holStencil()
           pcallSetShader(mask_shader)
-          drawSprite(sprites[sprite_name .. "_mask"])
+          drawSprite(sprite_name .. "_mask")
           love.graphics.setShader()
         end
         local function holStencil2()
@@ -1855,9 +1883,8 @@ function doOneMove(x, y, key)
     if hasRule("press","f2",":)") then
       doWin("won")
     end
-    local will_undo = false
     if hasRule("press","f2","try again") then
-      will_undo = true
+      doTryAgain()
     end
     if hasRule("press","f2","xwx") then
       love = {}
@@ -1867,37 +1894,28 @@ function doOneMove(x, y, key)
     end
 
     local to_destroy = {}
-
     if hasRule("press","f2","hotte") then
       local melters = getUnitsWithEffect("fridgd")
       for _,unit in ipairs(melters) do
-        if sameFloat(unit,outerlvl) then
-          table.insert(to_destroy, unit)
-          addParticles("destroy", unit.x, unit.y, unit.color)
-        end
+        table.insert(to_destroy, unit)
+        addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
       end
       if #to_destroy > 0 then
         playSound("hotte")
       end
     end
+    to_destroy = handleDels(to_destroy)
+    
     if hasRule("press","f2",":(") then
       local yous = getUnitsWithEffect("u")
-      local youtoos = getUnitsWithEffect("u too")
-      local youtres = getUnitsWithEffect("u tres")
-      mergeTable(yous, youtoos)
-      mergeTable(yous, youtres)
+      mergeTable(yous, getUnitsWithEffect("u too"))
+      mergeTable(yous, getUnitsWithEffect("u tres"))
       for _,unit in ipairs(yous) do
         table.insert(to_destroy, unit)
-        addParticles("destroy", unit.x, unit.y, unit.color)
+        addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
       end
     end
     to_destroy = handleDels(to_destroy)
-
-    if (will_undo) then
-      doTryAgain()
-    end
-
-    
 	elseif (key == "undo") then
 		local result = undo()
 		extendReplayString(0, 0, "undo")

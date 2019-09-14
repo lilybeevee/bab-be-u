@@ -35,11 +35,13 @@ else
   settings = defaultsettings
 end
 
-debug = false
+debug_view= false
 superduperdebugmode = false
 debug_values = {
 
 }
+
+rainbowmode = false
 
 if love.filesystem.getInfo("build_number") ~= nil then
   build_number = love.filesystem.read("build_number")
@@ -208,8 +210,8 @@ selector_grid_contents = {
     "wog","text_wog","bog","text_bog","enbybog","text_enbybog",0,0,0,0,0,0,0,0,0,0,0,0,
     "kirb","text_kirb","ripof","text_ripof","cavebab","text_cavebab",0,0,0,0,0,0,0,0,0,0,0,0,
     "bup","text_bup","butflye","text_butflye","boooo","text_boooo",0,0,0,0,0,0,0,0,0,0,0,0,
-    "boy","text_boy","wurm","text_wurm",0,0,0,0,0,0,0,0,0,0,"lila","text_lila","tot","text_tot",
-    "steev","text_steev","ratt","text_ratt",0,0,0,0,0,0,0,0,0,0,"pata","text_pata","jill","text_jill",
+    "boy","text_boy","wurm","text_wurm","madi","text_madi",0,0,0,0,0,0,0,0,"lila","text_lila","tot","text_tot",
+    "steev","text_steev","ratt","text_ratt","badi","text_badi",0,0,0,0,0,0,0,0,"pata","text_pata","jill","text_jill",
     "han","text_han","eyee","text_eyee","lisp","text_lisp","paw","text_paw",0,0,0,0,0,0,"larry","text_larry","zsoob","text_zsoob",
     "snoman","text_snoman","pingu","text_pingu",0,0,0,0,0,0,0,0,0,0,0,0,"o","text_o",
     "kapa","text_kapa","urei","text_urei","ryugon","text_ryugon",0,0,0,0,0,0,0,0,0,0,"square","text_square",
@@ -228,8 +230,8 @@ selector_grid_contents = {
     "fenss","text_fenss","platfor","text_platfor","tre","text_tre","stum","text_stum","dayzy","text_dayzy","lie","text_lie",0,0,0,0,0,0,
     "cobll","text_cobll","spik","text_spik","frut","text_frut","fungye","text_fungye","red","text_red","lie/8","text_lie/8",0,0,0,0,0,0,
     "wuud","text_wuud","spiky","text_spiky","parsol","text_parsol","clok","text_clok","ufu","text_ufu","rockit","text_rockit","swim","text_swim",0,0,0,0,
-    "brik","text_brik","sparkl","text_sparkl","sanglas","text_sanglas","bullb","text_bullb","son","text_son","muun","text_muun","bac","text_bac",0,0,0,0,
-    "san","text_san","piler","text_piler","sancastl","text_sancastl","shel","text_shel","starr","text_starr","cor","text_cor","byc","text_byc",0,0,0,0,
+    "brik","text_brik","sparkl","text_sparkl","sanglas","text_sanglas","bullb","text_bullb","son","text_son","muun","text_muun","bac","text_bac",0,0,"piep","text_piep",
+    "san","text_san","piler","text_piler","sancastl","text_sancastl","shel","text_shel","starr","text_starr","cor","text_cor","byc","text_byc","gorder","text_gorder","tuba","text_tuba",
     "glas","text_glas","bom","text_bom","sine","text_sine","kar","text_kar","can","text_can","ger","text_ger","sirn","text_sirn","chain","text_chain","reflecr","text_reflecr",
     "bordr","text_bordr","wut","text_wut","wat","text_wat","splittr","text_splittr","togll","text_togll","bon","text_bon","battry","text_battry","chekr","text_chekr","sloop","text_sloop",
   },
@@ -248,7 +250,7 @@ selector_grid_contents = {
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_brwn","text_tranz","text_yello",
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_blacc","text_gay","text_grun",
     0,0,0,0,0,"text_try again","text_no undo","text_undo","text_za warudo","text_brite",0,0,0,0,0,"text_graey","text_qt","text_cyeann",
-    0,0,0,0,0,"text_poor toll","text_go arnd","text_mirr arnd","text_glued","text_torc",0,0,0,0,0,"text_whit","text_pinc","text_bleu",
+    "text_every1","text_every2","text_every3","text_lethers",0,"text_poor toll","text_go arnd","text_mirr arnd","text_glued","text_torc",0,0,0,0,0,"text_whit","text_pinc","text_bleu",
     "text_...","text_''",0,0,0,"text_her","text_thr","text_rithere","text_the","text_opaque",0,0,0,0,"text_stelth","text_colrful","text_rave","text_purp",
   },
 }
@@ -1801,7 +1803,7 @@ tiles_list = {
     color = {0, 3},
     layer = 20,
     tags = {"all", "everyone", "every1"},
-    desc = "EVERY1: Every object type in the level, aside from special objects like TXT, NO1, LVL, SELCTR, THIS, and MOUS.",
+    desc = "EVERY1: Every object type in the level, aside from special objects like TXT, NO1, LVL, THIS, THE, BORDR and MOUS.",
   },
   -- 138
   {
@@ -3592,7 +3594,7 @@ tiles_list = {
     name = "text_the",
     sprite = "text_the",
     type = "text",
-    texttype = {cond_prefix = true, object = true},
+    texttype = {object = true},
     rotate = true,
     color = {0,3},
     layer = 20,
@@ -6446,6 +6448,159 @@ tiles_list = {
     layer = 20,
     tags = {"boo","mario","ghost"},
   },
+  --561
+  {
+    name = "gorder",
+    sprite = "gorder",
+    type = "object",
+    color = {0,2},
+    rotate = true,
+    layer = 3,
+    tags = {"girder","city"},
+    desc = "constructon zone!",
+  },
+  -- 562
+  {
+    name = "text_gorder",
+    sprite = "text_gorder",
+    type = "text",
+    texttype = {object = true},
+    color = {0,2},
+    layer = 20,
+    tags = {"girder","city"},
+  },
+  -- 563
+  {
+    name = "piep",
+    sprite = "piep",
+    type = "object",
+    color = {5,2},
+    rotate = true,
+    portal = true,
+    layer = 4,
+    tags = {"pipe","tube","mario"},
+    desc = "enter the piep to skip world",
+  },
+  -- 564
+  {
+    name = "text_piep",
+    sprite = "text_piep",
+    type = "text",
+    texttype = {object = true},
+    color = {5,2},
+    layer = 20,
+    tags = {"pipe","tube","mario"},
+  },
+  -- 565
+  {
+    name = "tuba",
+    sprite = "tuba",
+    type = "object",
+    color = {5,2},
+    rotate = true,
+    layer = 4,
+    tags = {"pipe","tube","mario"},
+    desc = "piep's bff",
+  },
+  -- 566
+  {
+    name = "text_tuba",
+    sprite = "text_tuba",
+    type = "text",
+    texttype = {object = true},
+    color = {5,2},
+    layer = 20,
+    tags = {"pipe","tube","mario"},
+    desc = "pieps are musical instruments",
+  },
+  -- 567
+  {
+    name = "text_every2",
+    sprite = "text_every2",
+    type = "text",
+    texttype = {object = true},
+    color = {3, 3},
+    layer = 20,
+    tags = {"all", "everyone", "every2"},
+    desc = "EVERY2: EVERY1 + TXT. (Doesn't include innerlvls atm because lazy + hard to code + unlikely to come up. Sorry.)",
+  },
+  -- 568
+  {
+    name = "text_every3",
+    sprite = "text_every3",
+    type = "text",
+    texttype = {object = true},
+    color = {4, 1},
+    layer = 20,
+    tags = {"all", "everyone", "every3"},
+    desc = "EVERY3: Absolutely everything conceivable. The pinnacle of everything technology.",
+  },
+  -- 568
+  {
+    name = "text_every3",
+    sprite = "text_every3",
+    type = "text",
+    texttype = {object = true},
+    color = {4, 1},
+    layer = 20,
+    tags = {"all", "everyone", "every3"},
+    desc = "EVERY3: Absolutely everything conceivable. The pinnacle of everything technology.",
+  },
+  -- 569
+  {
+    name = "madi",
+    sprite = {"madi_hair","madi_skin","madi_shirt","madi_pants"},
+    type = "object",
+    color = {{2,2},{2,4},{1,3},{2,2}},
+    colored = {true,false,false,false},
+    rotate = true,
+    layer = 9,
+    tags = {"madeline","celeste","chars"},
+    desc = "she clim mountain in very good game",
+  },
+  -- 570
+  {
+    name = "text_madi",
+    sprite = "text_madi",
+    type = "text",
+    texttype = {object = true},
+    color = {2,2},
+    layer = 20,
+    tags = {"madeline","celeste","chars"},
+  },
+  -- 571
+  {
+    name = "badi",
+    sprite = {"madi_hair","madi_skin","madi_eyes","madi_shirt","madi_pants"},
+    type = "object",
+    color = {{3,1},{3,3},{2,2},{3,2},{3,0}},
+    colored = {true,false,false,false,false},
+    rotate = true,
+    layer = 9,
+    tags = {"badeline","celeste","chars"},
+    desc = "emag doog yrev ni niatnuom milc ehs",
+  },
+  -- 572
+  {
+    name = "text_badi",
+    sprite = "text_badi",
+    type = "text",
+    texttype = {object = true},
+    color = {3,3},
+    layer = 20,
+    tags = {"badeline","celeste","chars"},
+  },
+  -- 573
+  {
+    name = "text_lethers",
+    sprite = "text_lethers",
+    type = "text",
+    texttype = {object = true},
+    color = {2, 4},
+    layer = 20,
+    tags = {"letters"},
+    desc = "LETHERS: Refers to all letters that exist in the level.",
+  },
 }
 
 tiles_by_name = {}
@@ -6462,3 +6617,5 @@ for i,v in ipairs(tiles_list) do
     group_names_set_nt[v.name:sub(6, -1).."n't"] = true;
 	end
 end
+
+special_objects = {"mous", "lvl", "bordr", "no1", "this"}

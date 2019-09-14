@@ -640,6 +640,17 @@ function scene.keyPressed(key)
         current_tile_grid = tile_grid[selector_page]
     end
   end]]
+  if not selector_open and not level_dialogue.enabled and key == "t" and (key_down["lctrl"] or key_down["rctrl"]) then
+    -- if key_down["lshift"] or key_down["rshift"] then
+    --   anagram_finder.enabled = true
+    --   anagram_finder.advanced = not anagram_finder.advanced
+    -- else
+      anagram_finder.enabled = not anagram_finder.enabled
+    -- end
+    if anagram_finder.enabled then
+      anagram_finder.run()
+    end
+  end
 end
 
 function scene.mousePressed(x, y, button)
@@ -936,7 +947,7 @@ function scene.update(dt)
             end
             if #hovered >= 1 then
               for _,unit in ipairs(hovered) do
-                if unit.tile == brush.id and (unit.color_override and (colour_for_palette[unit.color_override[1]][unit.color_override[2]] == brush.color) or (unit.color_override == nil and brush.color == nil)) then
+                if unit.tile == brush.id and (unit.color_override and (type(unit.color_override[1]) == "table" and colour_for_palette[unit.color_override[1][1]][unit.color_override[1][2]] or colour_for_palette[unit.color_override[1]][unit.color_override[2]] == brush.color) or (unit.color_override == nil and brush.color == nil)) then
                   if not (ctrl_active or selectorhold) then
                     existing = unit
                   end
@@ -1010,10 +1021,10 @@ function scene.update(dt)
                 end
                 brush.picked_index = new_index
                 brush.id = hovered[new_index].tile
-                brush.color = hovered[new_index].color_override and colour_for_palette[hovered[new_index].color_override[1]][hovered[new_index].color_override[2]] or nil
+                brush.color = hovered[new_index].color_override and (type(hovered[new_index].color_override[1]) == "table" and colour_for_palette[hovered[new_index].color_override[1][1]][hovered[new_index].color_override[1][2]] or colour_for_palette[hovered[new_index].color_override[1]][hovered[new_index].color_override[2]]) or nil
               else
                 brush.id = hovered[1].tile
-                brush.color = hovered[1].color_override and colour_for_palette[hovered[1].color_override[1]][hovered[1].color_override[2]] or nil
+                brush.color = hovered[1].color_override and (type(hovered[1].color_override[1]) == "table" and colour_for_palette[hovered[1].color_override[1][1]][hovered[1].color_override[1][2]] or colour_for_palette[hovered[1].color_override[1]][hovered[1].color_override[2]]) or nil
                 brush.picked_index = 1
               end
               brush.mode = "picking"
@@ -1042,8 +1053,7 @@ function scene.update(dt)
         local iconname = level_dialogue.iconnamebox:setText(level_dialogue.unit.special.iconname or "")
       end
     end
-      
-
+    
     max_layer = 1
     units_by_layer = {}
     for _,unit in ipairs(units) do
@@ -1205,7 +1215,7 @@ function scene.draw(dt)
               if type(unit.sprite) == "table" then
                 for j,image in ipairs(unit.sprite) do
                   sprite = sprites[image]
-                  setColor(unit.color[j])
+                  setColor(unit.color_override and unit.color_override[j] or unit.color[j])
                   love.graphics.draw(sprite, (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
                 end
               else
@@ -1278,7 +1288,7 @@ function scene.draw(dt)
             if tile.tags ~= nil then
               for _,tag in ipairs(tile.tags) do
                 if string.match(tag, searchstr) then
-                    found_matching_tag = true
+                  found_matching_tag = true
                 end
               end
             end
@@ -1290,26 +1300,28 @@ function scene.draw(dt)
             if tile.texttype ~= nil then
               for type,_ in pairs(tile.texttype) do
                 if string.match(type, searchstr) then
-                    found_matching_tag = true
+                  found_matching_tag = true
                 end
               end
             end
             
             if not found_matching_tag then love.graphics.setColor(0.2,0.2,0.2) end
             if tile.name == "byc" or tile.name == "bac" then
-              if eq(color, {0,3}) then
-                setColor({0,0})
-              else
-                setColor({0,3})
+              if found_matching_tag then
+                if eq(color, {0,3}) then
+                  setColor({0,0})
+                else
+                  setColor({0,3})
+                end
               end
               love.graphics.draw(sprites["byc"], (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
-              setColor(color)
+              if found_matching_tag then setColor(color) end
               love.graphics.draw(sprites[tile.name == "bac" and "bac" or "byc_editor"], (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
             else
               if type(tile.sprite) == "table" then
                 for j,image in ipairs(tile.sprite) do
                   sprite = sprites[image]
-                  setColor(tile.color[j])
+                  if found_matching_tag then setColor(tile.color_override and tile.color_override[j] or tile.color[j]) end
                   love.graphics.draw(sprite, (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
                 end
               else
@@ -1317,7 +1329,7 @@ function scene.draw(dt)
               end
             end
             if (tile.meta ~= nil) then
-              setColor({4, 1})
+              if found_matching_tag then setColor({4, 1}) end
               local metasprite = tile.meta == 2 and sprites["meta2"] or sprites["meta1"]
               love.graphics.draw(metasprite, (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
               if tile.meta > 2 then
@@ -1326,7 +1338,7 @@ function scene.draw(dt)
               setColor(tile.color)
             end
             if (tile.nt ~= nil) then
-              setColor({2, 2})
+              if found_matching_tag then setColor({2, 2}) end
               local ntsprite = sprites["n't"]
               love.graphics.draw(ntsprite, (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
               setColor(tile.color)
@@ -1379,7 +1391,7 @@ function scene.draw(dt)
           else
             if type(sprite_name) == "table" then
               for i,image in ipairs(sprite_name) do
-                local r, g, b, a = getPaletteColor(tile.color[i][1], tile.color[i][2])
+                local r, g, b, a = getPaletteColor(tile.color_override and tile.color_override[i][1] or tile.color[i][1], tile.color_override and tile.color_override[i][2] or tile.color[i][2])
                 love.graphics.setColor(r, g, b, a * 0.25)
                 local sprit = sprites[image]
                 love.graphics.draw(sprit, (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, math.rad(rotation), 1, 1, sprit:getWidth() / 2, sprit:getHeight() / 2)
@@ -1398,18 +1410,18 @@ function scene.draw(dt)
     end
 
     if selector_open then
-        love.graphics.setColor(getPaletteColor(0,3))
-        if infomode then love.graphics.print(last_hovered_tile[1] .. ', ' .. last_hovered_tile[2], 0, roomheight+36) end
-        if not is_mobile then
-            love.graphics.printf("CTRL + TAB or CTRL + NUMBER to change tabs", 0, roomheight, roomwidth, "right")
-            love.graphics.printf("CTLR + M to get meta text, CTRL + R to refresh", 0, roomheight+12, roomwidth, "right")
-            love.graphics.printf("CTRL + N to toggle n't text", 0, roomheight+24, roomwidth, "right")
-            if #searchstr > 0 then
-                love.graphics.print("Searching for: " .. searchstr, 0, roomheight)
-            else
-                love.graphics.print("Type to search", 0, roomheight)
-            end
+      love.graphics.setColor(getPaletteColor(0,3))
+      if infomode then love.graphics.print(last_hovered_tile[1] .. ', ' .. last_hovered_tile[2], 0, roomheight+36) end
+      if not is_mobile then
+        love.graphics.printf("CTRL + TAB or CTRL + NUMBER to change tabs", 0, roomheight, roomwidth, "right")
+        love.graphics.printf("CTLR + M to get meta text, CTRL + R to refresh", 0, roomheight+12, roomwidth, "right")
+        love.graphics.printf("CTRL + N to toggle n't text", 0, roomheight+24, roomwidth, "right")
+        if #searchstr > 0 then
+          love.graphics.print("Searching for: " .. searchstr, 0, roomheight)
+        else
+          love.graphics.print("Type to search", 0, roomheight)
         end
+      end
     end
 
     love.graphics.pop()
@@ -1439,13 +1451,13 @@ function scene.draw(dt)
           love.graphics.printf(tile.desc, love.mouse.getX()+16, love.mouse.getY()+14-tooltipyoffset, love.graphics.getWidth() - love.mouse.getX() - 20)
         end
         if infomode then
-            love.graphics.push()
-            love.graphics.applyTransform(scene.getTransform())
-            love.graphics.print("Name: " .. tile.name, 0, roomheight+12)
-            if tile.tags ~= nil then
-                love.graphics.print("Tags: " .. table.concat(tile.tags,", "), 0, roomheight+24)
-            end
-            love.graphics.pop()
+          love.graphics.push()
+          love.graphics.applyTransform(scene.getTransform())
+          love.graphics.print("Name: " .. tile.name, 0, roomheight+12)
+          if tile.tags ~= nil then
+            love.graphics.print("Tags: " .. table.concat(tile.tags,", "), 0, roomheight+24)
+          end
+          love.graphics.pop()
         end
       end
     end
@@ -1625,6 +1637,33 @@ function scene.draw(dt)
     gooi.draw("mobile-controls-selector")
     gooi.draw("mobile-controls-editor")
     
+    if anagram_finder.enabled then
+      love.graphics.setColor(0, 0, 0, 0.4)
+      love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
+  
+      local words = ""
+  
+      local wordsnum = 0
+      local lines = 0.5
+  
+      for i,word in pairs(anagram_finder.words) do
+        words = words..word
+        wordsnum = wordsnum + 1
+
+        if wordsnum % 6 >= 5 then
+          words = words..'\n'
+          lines = lines + 1
+        else
+          words = words..'   '
+        end
+      end
+  
+      words = 'possible words:\n'..words
+  
+      love.graphics.setColor(1,1,1)
+      love.graphics.printf(words, 0, love.graphics.getHeight()/2-love.graphics.getFont():getHeight()*lines/2+0.5, love.graphics.getWidth(), "center")
+    end
+    
     if is_mobile then
       local twelfth = love.graphics.getWidth()/12
       if mobile_picking then
@@ -1667,9 +1706,21 @@ function scene.draw(dt)
     if paint_open and brush.id then
       for _,button in ipairs(paint_colors) do
         local x = button[1]
-        local pal = button[2] or tiles_list[brush.id].color
-        love.graphics.setColor(getPaletteColor(pal[1], pal[2]))
-        love.graphics.draw(sprites[tiles_list[brush.id].sprite], x, 4)
+        local tile = tiles_list[brush.id]
+        local pal = button[2] or (type(tile.color[1]) == "table" and tile.color[1] or tile.color)
+        if type(tile.sprite) == "table" then
+          for i,image in ipairs(tile.sprite) do
+            if tile.colored[i] then
+              love.graphics.setColor(getPaletteColor(pal[1], pal[2]))
+            else
+              love.graphics.setColor(getPaletteColor(tile.color[i][1], tile.color[i][2]))
+            end
+            love.graphics.draw(sprites[image], x, 4)
+          end
+        else
+          love.graphics.setColor(getPaletteColor(pal[1], pal[2]))
+          love.graphics.draw(sprites[tile.sprite], x, 4)
+        end
       end
     end
 
@@ -1751,13 +1802,14 @@ function scene.updateMap()
       local tileid = x + y * mapwidth
       if unitsByTile(x, y) then
         for _,unit in ipairs(unitsByTile(x, y)) do
-          table.insert(map, {id = unit.id, tile = unit.tile, x = unit.x, y = unit.y, dir = unit.dir, special = unit.special, color = unit.color_override and colour_for_palette[unit.color_override[1]][unit.color_override[2]]})
+          table.insert(map, {id = unit.id, tile = unit.tile, x = unit.x, y = unit.y, dir = unit.dir, special = unit.special, color = unit.color_override and (type(unit.color_override[1]) == "table" and colour_for_palette[unit.color_override[1][1]][unit.color_override[1][2]] or colour_for_palette[unit.color_override[1]][unit.color_override[2]])})
         end
       end
     end
   end
   map = serpent.dump(map)
   maps = {{map_ver, map}}
+  if anagram_finder.enabled then anagram_finder.run() end
 end
 
 function sanitize(filename)

@@ -309,7 +309,7 @@ end
 function initializeEmpties()
   --TODO: other ways to make a text_no1 could be to have a text_text_no1 but that seems contrived that you'd have text_text_no1 but not text_no1?
   --text_her counts because it looks for no1, I think. similarly we could have text_text_her but again, contrived
-  if ((not letters_exist) and (not units_by_name["text_no1"]) and (not units_by_name["text_her"])) then return end
+  if ((not letters_exist) and (not units_by_name["text_no1"]) and (not units_by_name["text_every3"]) and (not units_by_name["text_her"])) then return end
   for x=0,mapwidth-1 do
     for y=0,mapheight-1 do
       local tileid = x + y * mapwidth
@@ -1700,6 +1700,7 @@ function hslToRgb(h, s, l, a)
 end
 
 function addParticles(ptype,x,y,color,count)
+  if type(color[1]) == "table" then color = color[1] end
   if ptype == "destroy" then
     local ps = love.graphics.newParticleSystem(sprites["circle"])
     local px = (x + 0.5) * TILE_SIZE
@@ -2621,4 +2622,83 @@ function unitsByTile(x, y)
   end
   --print(x, y, fullDump(units_by_tile[x][y]))
   return units_by_tile[x][y]
+end
+
+anagram_finder = {}
+anagram_finder.enabled = false
+-- anagram_finder.advanced = false
+function anagram_finder.run()
+  local letters = {}
+  local multi = {}
+  for _,unit in ipairs(units_by_name["text"]) do
+    if unit.texttype.letter then
+      if #unit.textname == 1 then
+        letters[unit.textname] = (letters[unit.textname] or 0) + 1
+      else
+        table.insert(multi, unit.textname)
+      end
+    end
+  end
+  anagram_finder.words = {}
+  for _,tile in ipairs(tiles_list) do
+    if tile.type == "text" and not tile.texttype.letter then
+      local word = tile.name:sub(6):gsub(" ","")
+      local letters = copyTable(letters)
+      local multi = copyTable(multi)
+      local not_match = false
+      for i = #multi,1,-1 do -- multi in middle
+        local new = word:gsub(multi[i],"|") -- | instead of nothing so that you can't have another multi span the gap, e.g. frgoen - go = fren
+        if new ~= word then
+          word = new
+          table.remove(multi, i)
+        end
+      end
+      for i = #multi,1,-1 do -- multi at end
+        local m = multi[i]
+        local found = false
+        for j = #m,1,-1 do
+          local s = m:sub(1,j)
+          if word:ends(s) then
+            word = word:sub(1, #word-j).."|"
+            found = true
+            break
+          end
+        end
+        if found then
+          table.remove(multi, i)
+          break
+        end
+      end
+      for i = #multi,1,-1 do -- multi at start
+        local m = multi[i]
+        local found = false
+        for j = 1,#m do
+          local s = m:sub(j)
+          if word:starts(s) then
+            word = "|"..word:sub(#s+1)
+            found = true
+            break
+          end
+        end
+        if found then
+          table.remove(multi, i)
+          break
+        end
+      end
+      for i = 1, #word do
+        local l = word:sub(i,i)
+        if l ~= "|" then -- represents a multiletter that has been accounted for already
+          if letters[l] and letters[l] > 0 then
+            letters[l] = letters[l] - 1
+          else
+            not_match = true
+            break
+          end
+        end
+      end
+      if not not_match then
+        table.insert(anagram_finder.words, tile.name:sub(6))
+      end
+    end
+  end
 end
