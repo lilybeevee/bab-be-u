@@ -219,7 +219,7 @@ selector_grid_contents = {
   {
     "wal","text_wal","bellt","text_bellt","hurcane","text_hurcane","buble","text_buble","katany","text_katany","petnygrame","text_petnygrame","firbolt","text_firbolt","hol","text_hol","golf","text_golf",
     "til","text_til","arro","text_arro","clowd","text_clowd","sno","text_sno","gunne","text_gunne","scarr","text_scarr","litbolt","text_litbolt","rif","text_rif","paint","text_paint",
-    "watr","text_watr","colld","text_colld","rein","text_rein","icecub","text_icecub","slippers","text_slippers","pudll","text_pudll","icbolt","text_icbolt","win","text_win",0,0,
+    "watr","text_watr","colld","text_colld","rein","text_rein","icecub","text_icecub","slippers","text_slippers","pudll","text_pudll","icbolt","text_icbolt","win","text_win","press","text_press",
     "laav","text_laav","dor","text_dor","kee","text_kee","roc","text_roc","hatt","text_hatt","extre","text_extre","poisbolt","text_poisbolt","smol","text_smol",0,0,
     "gras","text_gras","algay","text_algay","flog","text_flog","boux","text_boux","knif","text_knif","heg","text_heg","timbolt","text_timbolt","tor","text_tor",0,0,
     "hedg","text_hedg","banboo","text_banboo","boll","text_boll","l..uv","text_l..uv","wips","text_wips","pepis","text_pepis",0,0,0,0,0,0,
@@ -441,7 +441,7 @@ tiles_list = {
     color = {0, 3},
     layer = 20,
     tags = {"and"},
-    desc = "&: Joins multiple conditions, subjects or objects together in a rule. If BAB BE WALK {double &} GAY, bab will walk once. If BAB AROND {double KEEK} {double BE} GAY & WALK, bab will walk four times. If BAB {double BE} GAY & BE WALK, bab will walk once.",
+    desc = "&: Joins multiple conditions, subjects or objects together in a rule. Rules with stacked text and &s don't work like in baba, be sure to experiment!",
   },
   -- 18
   {
@@ -858,6 +858,7 @@ tiles_list = {
     texttype = {object = true},
     color = {0, 3},
     layer = 20,
+    desc = "PRESS: Make PRESS F2 <property> to do something upon pressing F. Only some properties, like :(, will work!"
   },
   --54
   {
@@ -867,7 +868,7 @@ tiles_list = {
     texttype = {verb = true, verb_be = true},
     color = {0, 3},
     layer = 20,
-    desc = "F2: This text may have an unintuitive use.",
+    desc = "F2: Used with PRESS.",
   },
   --55
   {
@@ -877,6 +878,8 @@ tiles_list = {
     texttype = {property = true},
     color = {0, 3},
     layer = 20,
+    desc="EDIT: Make PRESS F2 EDIT to unlock the level editor!",
+    tags = {"text_2edit"},
   },
   --56
   {
@@ -886,6 +889,7 @@ tiles_list = {
     texttype = {property = true},
     color = {0, 3},
     layer = 20,
+    tags = {"text_2play"},
   },
   --57
   {
