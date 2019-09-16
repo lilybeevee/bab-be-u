@@ -35,11 +35,13 @@ else
   settings = defaultsettings
 end
 
-debug = false
+debug_view= false
 superduperdebugmode = false
 debug_values = {
 
 }
+
+rainbowmode = false
 
 if love.filesystem.getInfo("build_number") ~= nil then
   build_number = love.filesystem.read("build_number")
@@ -202,14 +204,14 @@ selector_grid_contents = {
     "bab","text_bab","bunmy","text_bunmy","moo","text_moo","migri","text_migri",0,0,0,0,0,0,"selctr","text_selctr","lvl","text_lvl",
     "keek","text_keek","creb","text_creb","shrim","text_shrim",0,0,0,0,0,0,0,0,"this","text_mous","lin","text_lin",
     "meem","text_meem","statoo","text_statoo","flamgo","text_flamgo",0,0,0,0,0,0,0,0,"text_text","text_frens","text_groop","text_pathz",
-    "skul","text_skul","beeee","text_beeee","gul","text_gul",0,0,0,0,0,0,0,0,0,0,"text_every1","text_no1",
-    "ghost fren","text_ghost fren","fishe","text_fishe","starrfishe","text_starrfishe",0,0,0,0,0,0,0,0,0,0,0,0,
+    "skul","text_skul","beeee","text_beeee","gul","text_gul",0,0,0,0,0,0,0,0,"text_lethers","text_every1","text_every2","text_every3",
+    "ghost fren","text_ghost fren","fishe","text_fishe","starrfishe","text_starrfishe",0,0,0,0,0,0,0,0,0,0,0,"text_no1",
     "robobot","text_robobot","snek","text_snek","sneel","text_sneel",0,0,0,0,0,0,0,0,0,0,0,0,
     "wog","text_wog","bog","text_bog","enbybog","text_enbybog",0,0,0,0,0,0,0,0,0,0,0,0,
     "kirb","text_kirb","ripof","text_ripof","cavebab","text_cavebab",0,0,0,0,0,0,0,0,0,0,0,0,
     "bup","text_bup","butflye","text_butflye","boooo","text_boooo",0,0,0,0,0,0,0,0,0,0,0,0,
-    "boy","text_boy","wurm","text_wurm",0,0,0,0,0,0,0,0,0,0,"lila","text_lila","tot","text_tot",
-    "steev","text_steev","ratt","text_ratt",0,0,0,0,0,0,0,0,0,0,"pata","text_pata","jill","text_jill",
+    "boy","text_boy","wurm","text_wurm","madi","text_madi",0,0,0,0,0,0,0,0,"lila","text_lila","tot","text_tot",
+    "steev","text_steev","ratt","text_ratt","badi","text_badi",0,0,0,0,0,0,0,0,"pata","text_pata","jill","text_jill",
     "han","text_han","eyee","text_eyee","lisp","text_lisp","paw","text_paw",0,0,0,0,0,0,"larry","text_larry","zsoob","text_zsoob",
     "snoman","text_snoman","pingu","text_pingu",0,0,0,0,0,0,0,0,0,0,0,0,"o","text_o",
     "kapa","text_kapa","urei","text_urei","ryugon","text_ryugon",0,0,0,0,0,0,0,0,0,0,"square","text_square",
@@ -223,7 +225,7 @@ selector_grid_contents = {
     "laav","text_laav","dor","text_dor","kee","text_kee","roc","text_roc","hatt","text_hatt","extre","text_extre","poisbolt","text_poisbolt","smol","text_smol",0,0,
     "gras","text_gras","algay","text_algay","flog","text_flog","boux","text_boux","knif","text_knif","heg","text_heg","timbolt","text_timbolt","tor","text_tor",0,0,
     "hedg","text_hedg","banboo","text_banboo","boll","text_boll","l..uv","text_l..uv","wips","text_wips","pepis","text_pepis",0,0,0,0,0,0,
-    "metl","text_metl","vien","text_vien","leef","text_leef","karot","text_karot","fir","text_fir","eeg","text_eeg","foreeg","text_foreeg",0,0,0,0,
+    "metl","text_metl","vien","text_vien","leef","text_leef","karot","text_karot","fir","text_fir","eeg","text_eeg","foreeg","text_foreeg","forbeeee","text_forbeeee",0,0,
     "jail","text_jail","ladr","text_ladr","pallm","text_pallm","coco","text_coco","rouz","text_rouz","noet","text_noet","lili","text_lili",0,0,0,0,
     "fenss","text_fenss","platfor","text_platfor","tre","text_tre","stum","text_stum","dayzy","text_dayzy","lie","text_lie",0,0,0,0,0,0,
     "cobll","text_cobll","spik","text_spik","frut","text_frut","fungye","text_fungye","red","text_red","lie/8","text_lie/8",0,0,0,0,0,0,
@@ -235,9 +237,9 @@ selector_grid_contents = {
   },
   -- page 6: properties, verbs and conditions
   {
-    "text_be","text_&","text_got","text_creat","text_snacc","text_spoop","text_copkat","text_moov","text_yeet","text_liek","text_haet","text_stalk","text_ignor","text_paint","text_vs","text_sing","text_look at",0,
+    "text_be","text_&","text_got","text_creat","text_snacc","text_spoop","text_copkat","text_moov","text_yeet","text_liek","text_haet","text_stalk","text_ignor","text_paint","text_vs","text_sing","text_look at","text_seen by",
     "text_u","text_u too","text_u tres","text_walk",0,"text_:)","text_no swim","text_ouch","text_protecc",0,"text_nxt","text_stay ther","text_sublvl",0,"text_w/fren","text_arond","text_frenles","text_sans",
-    "text_go","text_goooo","text_icy","text_icyyyy",0,"text_:(","text_ned kee","text_for dor","text_wurd",0,"text_loop",0,0,0,"text_seen by","text_that","text_that be","text_wait...",
+    "text_go","text_goooo","text_icy","text_icyyyy",0,"text_:(","text_ned kee","text_for dor","text_wurd",0,"text_loop",0,0,0,"text_that got","text_that","text_that be","text_wait...",
     "text_no go","text_go away pls","text_come pls","text_sidekik","text_diagkik","text_:o","text_hotte","text_fridgd","text_meta",0,0,0,0,0,"text_corekt","text_rong","text_timles","text_lit",
     "text_visit fren","text_slep","text_shy","text_behin u",0,"text_xwx","text_moar","text_split","text_nuek",0,0,0,0,0,"text_samefloat","text_clikt","text_mayb","text_an",
     "text_flye","text_tall","text_haet skye","text_haet flor",0,"text_;d",0,0,"text_notranform",0,0,0,0,0,"text_wun","text_behind","text_look away","text_beside",
@@ -248,7 +250,7 @@ selector_grid_contents = {
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_brwn","text_tranz","text_yello",
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_blacc","text_gay","text_grun",
     0,0,0,0,0,"text_try again","text_no undo","text_undo","text_za warudo","text_brite",0,0,0,0,0,"text_graey","text_qt","text_cyeann",
-    "text_every1","text_every2","text_every3",0,0,"text_poor toll","text_go arnd","text_mirr arnd","text_glued","text_torc",0,0,0,0,0,"text_whit","text_pinc","text_bleu",
+    "text_every1","text_every2","text_every3","text_lethers",0,"text_poor toll","text_go arnd","text_mirr arnd","text_glued","text_torc",0,0,0,0,0,"text_whit","text_pinc","text_bleu",
     "text_...","text_''",0,0,0,"text_her","text_thr","text_rithere","text_the","text_opaque",0,0,0,0,"text_stelth","text_colrful","text_rave","text_purp",
   },
 }
@@ -375,7 +377,6 @@ tiles_list = {
     type = "object",
     color = {2, 2},
     layer = 3,
-    portal = true,
     tags = {"door"}
   },
   -- 12
@@ -744,6 +745,7 @@ tiles_list = {
   {
     name = "os",
     sprite = "os",
+    slep = true,
     type = "object",
     color = {0, 3},
     layer = 5,
@@ -6542,6 +6544,104 @@ tiles_list = {
     layer = 20,
     tags = {"all", "everyone", "every3"},
     desc = "EVERY3: Absolutely everything conceivable. The pinnacle of everything technology. (Infloop is not an object.)",
+  },
+  -- 568
+  {
+    name = "text_every3",
+    sprite = "text_every3",
+    type = "text",
+    texttype = {object = true},
+    color = {4, 1},
+    layer = 20,
+    tags = {"all", "everyone", "every3"},
+    desc = "EVERY3: Absolutely everything conceivable. The pinnacle of everything technology.",
+  },
+  -- 569
+  {
+    name = "madi",
+    sprite = {"madi_hair","madi_skin","madi_shirt","madi_pants"},
+    type = "object",
+    color = {{2,2},{2,4},{1,3},{2,2}},
+    colored = {true,false,false,false},
+    rotate = true,
+    layer = 9,
+    tags = {"madeline","celeste","chars"},
+    desc = "she clim mountain in very good game",
+  },
+  -- 570
+  {
+    name = "text_madi",
+    sprite = "text_madi",
+    type = "text",
+    texttype = {object = true},
+    color = {2,2},
+    layer = 20,
+    tags = {"madeline","celeste","chars"},
+  },
+  -- 571
+  {
+    name = "badi",
+    sprite = {"madi_hair","madi_skin","madi_eyes","madi_shirt","madi_pants"},
+    type = "object",
+    color = {{3,1},{3,3},{2,2},{3,2},{3,0}},
+    colored = {true,false,false,false,false},
+    rotate = true,
+    layer = 9,
+    tags = {"badeline","celeste","chars"},
+    desc = "emag doog yrev ni niatnuom milc ehs",
+  },
+  -- 572
+  {
+    name = "text_badi",
+    sprite = "text_badi",
+    type = "text",
+    texttype = {object = true},
+    color = {3,3},
+    layer = 20,
+    tags = {"badeline","celeste","chars"},
+  },
+  -- 573
+  {
+    name = "text_lethers",
+    sprite = "text_lethers",
+    type = "text",
+    texttype = {object = true},
+    color = {2, 4},
+    layer = 20,
+    tags = {"letters"},
+    desc = "LETHERS: Refers to all letters that exist in the level.",
+  },
+  -- 574
+  {
+    name = "text_that got",
+    sprite = "text_that got",
+    type = "text",
+    texttype = {cond_infix = true, cond_infix_verb = true, cond_infix_verb_plus = true},
+    color = {0, 3},
+    layer = 20,
+    tags = {"lily", "with", "w/", "infix condition"},
+    desc = "THAT GOT (Infix Condition): x THAT GOT y is true if x BE y.",
+  },
+  -- 575
+  {
+    name = "forbeeee",
+    sprite = "forbeeee",
+    type = "object",
+    color = {6, 2},
+    layer = 3,
+    rotate = true,
+    tags = {"beehive", "beecomb", "honeycomb"},
+    desc = "trans rights",
+  },
+  -- 576
+  {
+    name = "text_forbeeee",
+    sprite = "text_forbeeee",
+    type = "text",
+    texttype = {object = true},
+    color = {6, 2},
+    layer = 20,
+    tags = {"beehive", "beecomb", "honeycomb"},
   },
 }
 
