@@ -377,7 +377,6 @@ tiles_list = {
     type = "object",
     color = {2, 2},
     layer = 3,
-    portal = true,
     tags = {"door"}
   },
   -- 12
