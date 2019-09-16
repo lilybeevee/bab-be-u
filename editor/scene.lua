@@ -1667,26 +1667,34 @@ function scene.draw(dt)
     if is_mobile then
       local twelfth = love.graphics.getWidth()/12
       if mobile_picking then
-          love.graphics.setColor(1, 1, 1, 1)
-          love.graphics.draw(sprites["ui_plus"],10*twelfth,love.graphics.getHeight()-2*twelfth,0,twelfth/32,twelfth/32)
+        love.graphics.setColor(1, 1, 1, 1)
+        love.graphics.draw(sprites["ui_plus"],10*twelfth,love.graphics.getHeight()-2*twelfth,0,twelfth/32,twelfth/32)
       elseif brush.id then
-        local sprite = sprites[tiles_list[brush.id].sprite]
-        if not sprite then sprite = sprites["wat"] end
+        local sprite = tiles_list[brush.id].sprite
+        if not sprite then sprite = "wat" end
         
         local rotation = 0
         if tiles_list[brush.id].rotate then
-            rotation = (brush.dir - 1) * 45
+          rotation = (brush.dir - 1) * 45
         end
         
         local color = tiles_list[brush.id].color
-        if #color == 3 then
-          love.graphics.setColor(color[1]/255, color[2]/255, color[3]/255, 1)
-        else
-          local r, g, b, a = getPaletteColor(color[1], color[2])
-          love.graphics.setColor(r, g, b, a)
+        if type(color[1]) ~= "table" then
+          if #color > 2 then
+            love.graphics.setColor(color[1]/255, color[2]/255, color[3]/255, color[4] and color[4]/255 or 1)
+          else
+            love.graphics.setColor(getPaletteColor(color[1], color[2]))
+          end
         end
-
-        love.graphics.draw(sprite, 10.5*twelfth, love.graphics.getHeight()-1.5*twelfth,math.rad(rotation),twelfth/32,twelfth/32,twelfth/4,twelfth/4)
+        
+        if type(sprite) == "table" then
+          for i,image in ipairs(sprite) do
+            love.graphics.setColor(getPaletteColor(color[i][1], color[i][2]))
+            love.graphics.draw(sprites[image], 10.5*twelfth, love.graphics.getHeight()-1.5*twelfth,math.rad(rotation),twelfth/32,twelfth/32,twelfth/4,twelfth/4)
+          end
+        else
+          love.graphics.draw(sprites[sprite], 10.5*twelfth, love.graphics.getHeight()-1.5*twelfth,math.rad(rotation),twelfth/32,twelfth/32,twelfth/4,twelfth/4)
+        end
       end
       if mobile_stackmode == "none" then
         mobile_controls_stackmode_none:setBounds(9*twelfth, love.graphics.getHeight()-4.05*twelfth)
