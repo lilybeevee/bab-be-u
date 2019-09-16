@@ -220,8 +220,8 @@ selector_grid_contents = {
   -- page 5: inanimate objects
   {
     "wal","text_wal","bellt","text_bellt","hurcane","text_hurcane","buble","text_buble","katany","text_katany","petnygrame","text_petnygrame","firbolt","text_firbolt","hol","text_hol","golf","text_golf",
-    "til","text_til","arro","text_arro","clowd","text_clowd","sno","text_sno","gunne","text_gunne","scarr","text_scarr","litbolt","text_litbolt","rif","text_rif",0,0,
-    "watr","text_watr","colld","text_colld","rein","text_rein","icecub","text_icecub","slippers","text_slippers","pudll","text_pudll","icbolt","text_icbolt","win","text_win",0,0,
+    "til","text_til","arro","text_arro","clowd","text_clowd","sno","text_sno","gunne","text_gunne","scarr","text_scarr","litbolt","text_litbolt","rif","text_rif","paint","text_paint",
+    "watr","text_watr","colld","text_colld","rein","text_rein","icecub","text_icecub","slippers","text_slippers","pudll","text_pudll","icbolt","text_icbolt","win","text_win","press","text_press",
     "laav","text_laav","dor","text_dor","kee","text_kee","roc","text_roc","hatt","text_hatt","extre","text_extre","poisbolt","text_poisbolt","smol","text_smol",0,0,
     "gras","text_gras","algay","text_algay","flog","text_flog","boux","text_boux","knif","text_knif","heg","text_heg","timbolt","text_timbolt","tor","text_tor",0,0,
     "hedg","text_hedg","banboo","text_banboo","boll","text_boll","l..uv","text_l..uv","wips","text_wips","pepis","text_pepis",0,0,0,0,0,0,
@@ -442,7 +442,7 @@ tiles_list = {
     color = {0, 3},
     layer = 20,
     tags = {"and"},
-    desc = "&: Joins multiple conditions, subjects or objects together in a rule.",
+    desc = "&: Joins multiple conditions, subjects or objects together in a rule. Rules with stacked text and &s don't work like in baba, be sure to experiment!",
   },
   -- 18
   {
@@ -516,7 +516,7 @@ tiles_list = {
     color = {1, 3},
     layer = 20,
     tags = {"sink"},
-    desc = "NO SWIM: At end of turn, if a NO SWIM unit is touching another object, both are destroyed.",
+    desc = "NO SWIM: At end of turn, if a NO SWIM unit is touching another object, all objects on the tile are destroyed.",
   },
 
   -- 25
@@ -860,6 +860,7 @@ tiles_list = {
     texttype = {object = true},
     color = {0, 3},
     layer = 20,
+    desc = "PRESS: Make PRESS F2 <property> to do something upon pressing F. Only some properties, like :(, will work!"
   },
   --54
   {
@@ -869,7 +870,7 @@ tiles_list = {
     texttype = {verb = true, verb_be = true},
     color = {0, 3},
     layer = 20,
-    desc = "F2: This text may have an unintuitive use.",
+    desc = "F2: Used with PRESS.",
   },
   --55
   {
@@ -879,6 +880,8 @@ tiles_list = {
     texttype = {property = true},
     color = {0, 3},
     layer = 20,
+    desc="EDIT: Make PRESS F2 EDIT to unlock the level editor!",
+    tags = {"text_2edit"},
   },
   --56
   {
@@ -888,6 +891,7 @@ tiles_list = {
     texttype = {property = true},
     color = {0, 3},
     layer = 20,
+    tags = {"text_2play"},
   },
   --57
   {
@@ -1070,7 +1074,7 @@ tiles_list = {
     color = {0, 3},
     layer = 20,
     tags = {"follow", "facing", "lookat", "infix condition", "verb"},
-    desc = "LOOK AT: As an infix condition, true if this object is on the tile in front of the unit As a verb, makes the unit face this object at end of turn.",
+    desc = "LOOK AT: As an infix condition, true if this object is on the tile in front of the unit. As a verb, makes the unit face this object at end of turn.",
   },
   -- 74
   {
@@ -1337,7 +1341,7 @@ tiles_list = {
     color = {0, 3},
     layer = 20,
     tags = {"throw", "verb"},
-    desc = "YEET (Verb): This unit will force things it yeets in its tile to hurtle across the level in its facing direction.",
+    desc = "YEET (Verb): This unit will force things it yeets in its tile to hurtle across the level in its facing direction (until it hits an object that stops it).",
   },
   --- 95
   {
@@ -1416,7 +1420,7 @@ tiles_list = {
     color = {0, 3},
     layer = 20,
     tags = {"near", "around", "infix condition"},
-    desc = "AROND (Infix Condition): True if the indicated object is on any of the tiles surrounding the unit. (The unit's own tile is not checked.)",
+    desc = "AROND (Infix Condition): True if the indicated object is on any of the tiles surrounding the unit. (The unit's own tile is not checked.) ORTHO/DIAG AROND will only check the tiles orthogonally or diagonally. GO^ AROND will only check the tile in that direction.",
   },
   --- 102
   {
@@ -1606,7 +1610,7 @@ tiles_list = {
     color = {2, 2},
     layer = 20,
     tags = {"not", "nt"},
-    desc = "N'T: A suffix that negates the meaning of a verb, condition or object class.",
+    desc = "N'T: A suffix that negates the meaning of a verb, condition or object class. X txtn't will refer to all txt except that one.",
   },
   -- 120
   {
@@ -1803,7 +1807,7 @@ tiles_list = {
     color = {0, 3},
     layer = 20,
     tags = {"all", "everyone", "every1"},
-    desc = "EVERY1: Every object type in the level, aside from special objects like TXT, NO1, LVL, THIS, THE, BORDR and MOUS.",
+    desc = "EVERY1: Every object type in the level, aside from special objects like TXT, NO1, LVL, BORDR, and MOUS.",
   },
   -- 138
   {
@@ -1825,7 +1829,7 @@ tiles_list = {
     color = {5, 3},
     layer = 20,
     tags = {"like", "bounded", "likes", "verb"},
-    desc = "LIEK (Verb): If a unit LIEKs objects, it is picky, and cannot step onto a tile unless it has at least one object it LIEKs.",
+    desc = "LIEK (Verb): If a unit LIEKs objects, it is picky, and cannot step onto a tile unless it has at least one object it LIEKs. If X LIEK GO^, X will fall in that direction.",
   },
   -- 140
   {
@@ -1966,7 +1970,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
     tags = {"next"},
-    desc = "NXT: LVL IS NXT sends you to the next level."
+    desc = "NXT: If U is on NXT, go to the next level (specified in object settings)."
   },
   -- 154
   {
@@ -2030,7 +2034,7 @@ tiles_list = {
     color = {3, 3},
     layer = 20,
     tags = {"retry", "time", "reset", "lily"},
-    desc = "TRY AGAIN: When U is on TRY AGAIN, the level is undone back to the starting state, except for NO UNDO objects."
+    desc = "TRY AGAIN: When U is on TRY AGAIN, the level is undone back to the starting state, except for NO UNDO objects. TRY AGAIN can be undone!"
   },
   -- 160
   {
@@ -2075,7 +2079,7 @@ tiles_list = {
     layer = 20,
     rotate = true,
     tags = {"/", "maybe", "random", "rng", "patashu", "prefix condition"},
-    desc = "? (MAYBE) (Prefix Condition): Has a chance of being true, independent for each MAYBE, affected unit and turn. The number on top indicates the % chance of being true.",
+    desc = "? (MAYBE) (Prefix Condition): Has a chance of being true, independent for each MAYBE, affected unit and turn. The number on top indicates the % chance of being true. Compatible with N'T.",
   },
   -- 164
   {
@@ -2131,7 +2135,7 @@ tiles_list = {
     color = {3, 2},
     layer = 20,
     tags = {"wrap around", "go around", "cg5"},
-    desc = "GO ARND: GO ARND units wrap around the level, as though it were a torus.",
+    desc = "GO ARND: GO ARND units wrap around the level, as though it were a torus. BORDR objects are used as the level border, and the wraparound doesn't go through BORDRs. Diagonal GO ARNDs on corners of non-square levels might not work as expected, as it simply traces backward until hitting a BORDR.",
   },
   -- 169
   {
@@ -2142,7 +2146,7 @@ tiles_list = {
     color = {3, 2},
     layer = 20,
     tags = {"portal","cg5"},
-    desc = "POOR TOLL: If a unit would enter a POOR TOLL unit, it instead leaves the next POOR TOLL unit of the same name in reading order (left to right, line by line, wrapping around) out the corresponding same side.",
+    desc = "POOR TOLL: If a unit would enter a POOR TOLL unit, it instead leaves the next POOR TOLL unit of the same name in reading order (left to right, line by line, wrapping around) out the corresponding same side. Does not stack.",
   },
   -- 170
   {
@@ -2154,7 +2158,7 @@ tiles_list = {
     rotate = true,
     tags = {"splitter", "5 step"},
     eye = {x=22,y=12,w=3,h=5},
-    desc = "specifically made to be used with SPLIT because it looks horrible otherwise"
+    desc = "specifically made to be used with SPLIT because it looks horrible otherwise (but other tiles like CHAIN can also work)."
   },
   -- 171
   {
@@ -2434,7 +2438,7 @@ tiles_list = {
     color = {1,3},
     layer = 20,
     tags = {"shift", "verb"},
-    desc = "MOOV (Verb): A verbified GO AWAY PLS/GO. x MOOV y means that x can push and shift y. y is not treated as solid if unable to be pushed.",
+    desc = "MOOV (Verb): A verbified GO AWAY PLS/GO. x MOOV y means that x can push and shift y. y is not treated as solid if unable to be pushed. MOOV GO^ will make the unit move one unit in that direction per turn.",
   },
   --- 197
   {
@@ -2446,7 +2450,7 @@ tiles_list = {
     color = {2, 3},
     layer = 20,
     tags = {"patashu", "hate", "hates", "collide", "verb"},
-    desc = "HAET (Verb): A unit cannot stop onto a tile that has something it HAETs. (x HAET LVL makes x unable to move.)",
+    desc = "HAET (Verb): A unit cannot stop onto a tile that has something it HAETs (treating it like NOGO). (x HAET LVL makes x unable to move.) X HAET GO^ makes the object fall in the direction opposite that.",
   },
   -- 198
   {
@@ -2511,7 +2515,7 @@ tiles_list = {
     color = {0, 3},
     layer = 20,
     tags = {"word"},
-    desc = "WURD: A WURD unit forms rules as though it was its respective text.",
+    desc = "WURD: A WURD unit forms rules as though it was its respective text. TXT BEN'T WURD makes that text not parse.",
   },
   -- 204
   {
@@ -2920,7 +2924,7 @@ tiles_list = {
     color = {2,2},
     layer = 20,
     tags = {"wrong", "false", "cg5", "prefix condition"},
-    desc = "RONG: As a prefix, true if the unit is in a negated rule. As a property, causes associated units to return a negated form of the rule.",
+    desc = "RONG: As a prefix, true if the unit is in a negated rule (via rong, n't, or notranform). As a property, if a rule has a rong unit in it it'll be negated.",
   },
   -- 237
   {
@@ -2964,7 +2968,7 @@ tiles_list = {
     color = {2,4},
     layer = 20,
     tags = {"timeless", "the world", "dio", "lily"},
-    desc = "ZA WARUDO: Can stop time and move without anything else moving. Faster than rule parsing itself! After forming the rule, press E (hourglass on mobile) to toggle.",
+    desc = "ZA WARUDO: Can stop time and move without anything else moving. Faster than rule parsing itself! After forming the rule, press E (hourglass on mobile) to toggle. While stopped, a non-zawarudo object that would move at infinite speed will move one space per turn.",
   },
 	-- 241
   {
@@ -3339,7 +3343,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
     tags = {"ditto", "quotation marks"},
-    desc = "DITTO: Acts like the text above it.",
+    desc = "DITTO: Acts like the text above it. \" TXT will refer to the ditto itself, not the text above it.",
   },
   -- 279
   {
@@ -3587,7 +3591,7 @@ tiles_list = {
     color = {3,2},
     layer = 20,
     tags = {"there","cg5"},
-    desc = "THR ->: Sends objects as far away from it as possible in the indicated direction. N'T THR makes objects HAET a line from the text.",
+    desc = "THR ->: Sends objects as far away from it as possible (until hitting a wall) in the indicated direction. N'T THR makes objects HAET a line from the text.",
   },
   -- 305
   {
@@ -3599,7 +3603,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
     tags = {"that","cg5"},
-    desc = "THE: Refers to the object it's pointing at. Currently not functional.",
+    desc = "THE: Refers to the object it's pointing at.",
   },
   -- 306
   {
@@ -3890,7 +3894,7 @@ tiles_list = {
     color = {4,2},
     layer = 20,
     tags = {"colors", "colours", "verb"},
-    desc = "PAINT (Verb): changes the second object's color to match the first if the objects are on each other."
+    desc = "PAINT (Verb): changes the second object's color to match the first if the objects are on each other. Supports color mixing."
   },
   -- 332
   {
@@ -4687,7 +4691,7 @@ tiles_list = {
     color = {1,2},
     layer = 20,
     tags = {"unwin", "wink", "face", "unyay", "patashu"},
-    desc = ";D: When U touches ;D, the current level will no longer be considered won.",
+    desc = ";D: When U touches ;D, the current level will no longer be considered won, without exiting the level. Imagine a win score equal to the number of Us on :) minus the Us on ;D. If positive, you win. If negative, you lose your win. If equal, nothing happens.",
   },
   --402
   {
@@ -5498,6 +5502,7 @@ tiles_list = {
     texttype = {object = true},
     color = {3, 3},
     layer = 20,
+    desc = "isn't it weird how all of these bolts have i two letters before the bolt word",
   },
   -- 479
   {
@@ -6149,6 +6154,7 @@ tiles_list = {
     rotate = true,
     layer = 20,
     tags = {"playing card", "bicycle", "ace"},
+    desc = "haha get it, it's because bicycle is a specific brand of playing card",
   },
   -- 535
   {
@@ -6159,6 +6165,7 @@ tiles_list = {
     color = {2, 2},
     layer = 5,
     tags = {"playing card", "bicycle", "ace"},
+    desc = "BYC: has a random image every time it's loaded!",
   },
   -- 534
   {
@@ -6169,6 +6176,7 @@ tiles_list = {
     rotate = true,
     layer = 5,
     tags = {"playing card back", "bicycle"},
+    desc = "cards have 2 sides",
   },
   -- 535
   {
@@ -6286,6 +6294,7 @@ tiles_list = {
     color = {0, 3},
     layer = 20,
     tags = {"triangle", "half", "slope"},
+    desc = "ideal for reflecc + go my way",
   },
   --- 546
   {
@@ -6296,7 +6305,7 @@ tiles_list = {
     color = {5, 2},
     layer = 20,
     tags = {"reflect", "slope", "bounce", "mirror"},
-    desc = "REFLECC: Use this only with a sprite oriented top-left to bottom-right naturally (like SLOOP). When a unit moves onto a REFLECC unit from in front or behind, it will bounce back at 180 degrees. At a 45/135 angle, 90 degrees. At a 90 angle, it will be unable to enter.",
+    desc = "REFLECC: When a unit moves onto a REFLECC unit from in front or behind, it will bounce back at 180 degrees. At a 45/135 angle, 90 degrees. At a 90 angle, it will be unable to enter.",
   },
   -- 547
   {
@@ -6318,6 +6327,7 @@ tiles_list = {
     color = {0, 3},
     layer = 20,
     tags = {"mirror", "diagonal", "line", "slope"},
+    desc = "ideal for reflecc",
   },
   -- 549
   {
@@ -6375,7 +6385,7 @@ tiles_list = {
     color = {0, 2},
     layer = 3,
     rotate = "true",
-    desc = "EVERY1 W/FREN JAIL HAET LVL. now bab's in jail :(",
+    desc = "EVERY1 W/FREN CHAIN STALK JAIL. now bab's in jail :(",
   },
   -- 554
   {
@@ -6533,7 +6543,7 @@ tiles_list = {
     color = {4, 1},
     layer = 20,
     tags = {"all", "everyone", "every3"},
-    desc = "EVERY3: Absolutely everything conceivable. The pinnacle of everything technology.",
+    desc = "EVERY3: Absolutely everything conceivable. The pinnacle of everything technology. (Infloop is not an object.)",
   },
   -- 568
   {
