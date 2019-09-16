@@ -2973,20 +2973,22 @@ tiles_list = {
 	-- 241
   {
     name = "text_babn't",
-    sprite = "text_bab n't",
+    sprite = {"text_bab meta", "n't"},
+    color = {{4, 1}, {2, 2}},
+    colored = {true, false},
     type = "text",
     texttype = {object = true},
-    color = {0, 3},
     layer = 20,
 		desc = "BAB N'T: The same as having these two text tiles in a row."
   },
 	-- 242
   {
     name = "text_ben't",
-    sprite = "text_be n't",
+    sprite = {"text_be n't", "n't (be)"},
+    color = {{0, 3}, {2, 2}},
+    colored = {true, false},
     type = "text",
     texttype = {verb = true, verb_be = true},
-    color = {0, 3},
     layer = 20,
     tags = {"isn't", "is not", "verb"},
 		desc = "BE N'T (Verb): The same as having these two text tiles in a row."
@@ -2994,20 +2996,22 @@ tiles_list = {
 	-- 243
    {
     name = "text_rocn't",
-    sprite = "text_roc n't",
+    sprite = {"text_roc meta", "n't"},
+    color = {{6, 1}, {2, 2}},
+    colored = {true, false},
     type = "text",
     texttype = {object = true},
-    color = {0, 3},
     layer = 20,
 		desc = "ROC N'T: The same as having these two text tiles in a row."
   },
 	-- 243
    {
     name = "text_waln't",
-    sprite = "text_wal n't",
+    sprite = {"text_wal meta", "n't"},
+    color = {{0, 1}, {2, 2}},
+    colored = {true, false},
     type = "text",
     texttype = {object = true},
-    color = {0, 3},
     layer = 20,
 		desc = "WAL N'T: The same as having these two text tiles in a row."
   },
@@ -6620,7 +6624,7 @@ tiles_list = {
     color = {0, 3},
     layer = 20,
     tags = {"lily", "with", "w/", "infix condition"},
-    desc = "THAT GOT (Infix Condition): x THAT GOT y is true if x BE y.",
+    desc = "THAT GOT (Infix Condition): x THAT GOT y is true if x GOT y.",
   },
   -- 575
   {
