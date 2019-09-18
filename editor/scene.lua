@@ -21,6 +21,7 @@ local level_dialogue, last_lin_hidden
 local saved_popup
 
 local searchstr = ""
+local subsearchstr = ""
 
 local nt = false
 -- for retaining information cross-scene
@@ -441,6 +442,7 @@ function scene.keyPressed(key)
       if key == "space" then key = " " end
       searchstr = searchstr..key
     end
+    subsearchstr = searchstr:gsub(" ","")
   end
 
   if key == "escape" and not selector_open then
@@ -1284,22 +1286,24 @@ function scene.draw(dt)
             if rainbowmode then love.graphics.setColor(hslToRgb((love.timer.getTime()/3+x/tile_grid_width+y/tile_grid_height)%1, .5, .5, 1)) end
             
             local found_matching_tag = false
+            local tilename = tile.name:gsub(" ","")
             
             if tile.tags ~= nil then
               for _,tag in ipairs(tile.tags) do
-                if string.match(tag, searchstr) then
+                tag = tag:gsub(" ","")
+                if string.match(tag, subsearchstr) then
                   found_matching_tag = true
                 end
               end
             end
             
-            if string.match(tile.name, searchstr) then
+            if string.match(tilename, subsearchstr) then
               found_matching_tag = true
             end
             
             if tile.texttype ~= nil then
               for type,_ in pairs(tile.texttype) do
-                if string.match(type, searchstr) then
+                if string.match(type, subsearchstr) then
                   found_matching_tag = true
                 end
               end
