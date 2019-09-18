@@ -825,6 +825,7 @@ function scene.draw(dt)
         if overlay and stretch then
           love.graphics.draw(draw, fulldrawx, fulldrawy, 0, sprite:getWidth() / TILE_SIZE, sprite:getHeight() / TILE_SIZE, draw:getWidth() / 2, draw:getHeight() / 2)
         else
+          if not draw then draw = sprites["wat"] end
           love.graphics.draw(draw, fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, draw:getWidth() / 2, draw:getHeight() / 2)
         end
       end
