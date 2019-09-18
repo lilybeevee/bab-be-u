@@ -224,13 +224,13 @@ selector_grid_contents = {
     "watr","text_watr","colld","text_colld","rein","text_rein","icecub","text_icecub","slippers","text_slippers","pudll","text_pudll","icbolt","text_icbolt","win","text_win","press","text_press",
     "laav","text_laav","dor","text_dor","kee","text_kee","roc","text_roc","hatt","text_hatt","extre","text_extre","poisbolt","text_poisbolt","smol","text_smol",0,0,
     "gras","text_gras","algay","text_algay","flog","text_flog","boux","text_boux","knif","text_knif","heg","text_heg","timbolt","text_timbolt","tor","text_tor",0,0,
-    "hedg","text_hedg","banboo","text_banboo","boll","text_boll","l..uv","text_l..uv","wips","text_wips","pepis","text_pepis",0,0,0,0,0,0,
+    "hedg","text_hedg","banboo","text_banboo","boll","text_boll","l..uv","text_l..uv","wips","text_wips","pepis","text_pepis","do$h","text_do$h","dling","text_dling",0,0,
     "metl","text_metl","vien","text_vien","leef","text_leef","karot","text_karot","fir","text_fir","eeg","text_eeg","foreeg","text_foreeg","forbeeee","text_forbeeee",0,0,
     "jail","text_jail","ladr","text_ladr","pallm","text_pallm","coco","text_coco","rouz","text_rouz","noet","text_noet","lili","text_lili",0,0,0,0,
     "fenss","text_fenss","platfor","text_platfor","tre","text_tre","stum","text_stum","dayzy","text_dayzy","lie","text_lie",0,0,0,0,0,0,
     "cobll","text_cobll","spik","text_spik","frut","text_frut","fungye","text_fungye","red","text_red","lie/8","text_lie/8",0,0,0,0,0,0,
     "wuud","text_wuud","spiky","text_spiky","parsol","text_parsol","clok","text_clok","ufu","text_ufu","rockit","text_rockit","swim","text_swim",0,0,0,0,
-    "brik","text_brik","sparkl","text_sparkl","sanglas","text_sanglas","bullb","text_bullb","son","text_son","muun","text_muun","bac","text_bac",0,0,"piep","text_piep",
+    "brik","text_brik","sparkl","text_sparkl","sanglas","text_sanglas","bullb","text_bullb","son","text_son","muun","text_muun","bac","text_bac","warn","text_warn","piep","text_piep",
     "san","text_san","piler","text_piler","sancastl","text_sancastl","shel","text_shel","starr","text_starr","cor","text_cor","byc","text_byc","gorder","text_gorder","tuba","text_tuba",
     "glas","text_glas","bom","text_bom","sine","text_sine","kar","text_kar","can","text_can","ger","text_ger","sirn","text_sirn","chain","text_chain","reflecr","text_reflecr",
     "bordr","text_bordr","wut","text_wut","wat","text_wat","splittr","text_splittr","togll","text_togll","bon","text_bon","battry","text_battry","chekr","text_chekr","sloop","text_sloop",
@@ -6633,7 +6633,6 @@ tiles_list = {
     type = "object",
     color = {6, 2},
     layer = 3,
-    rotate = true,
     tags = {"beehive", "beecomb", "honeycomb"},
     desc = "trans rights",
   },
@@ -6646,6 +6645,70 @@ tiles_list = {
     color = {6, 2},
     layer = 20,
     tags = {"beehive", "beecomb", "honeycomb"},
+  },
+  -- 577
+  {
+    name = "do$h",
+    sprite = "do$h",
+    type = "object",
+    color = {5, 2},
+    layer = 4,
+    tags = {"dosh", "cash money"},
+    desc = "DO$H DO$H DO$H!"
+  },
+  -- 578
+  {
+    name = "text_do$h",
+    sprite = "text_do$h",
+    type = "text",
+    texttype = {object = true},
+    color = {5, 2},
+    layer = 20,
+    tags = {"dosh", "cash money"},
+    desc = "dollas",
+  },
+  -- 579
+  {
+    name = "dling",
+    sprite = "dling",
+    type = "object",
+    color = {2, 4},
+    layer = 4,
+    rotate = "true",
+    tags = {"coin"},
+    desc = "dling dling dling!"
+  },
+  -- 580
+  {
+    name = "text_dling",
+    sprite = "text_dling",
+    type = "text",
+    texttype = {object = true},
+    color = {2, 4},
+    layer = 20,
+    tags = {"coin"},
+    desc = "the sound a coin makes",
+  },
+  -- 581
+  {
+    name = "warn",
+    sprite = {"warn", "no1"},
+    type = "object",
+    color = {{2, 4}, {0,0}},
+    colored = {true, false},
+    layer = 2,
+    tags = {"warning", "stripes"},
+    desc = "cauntion",
+  },
+  -- 582
+  {
+    name = "text_warn",
+    sprite = "text_warn",
+    type = "text",
+    texttype = {object = true},
+    color = {2, 4},
+    layer = 20,
+    tags = {"warning", "stripes"},
   },
 }
 
