@@ -227,7 +227,7 @@ selector_grid_contents = {
     "hedg","text_hedg","banboo","text_banboo","boll","text_boll","l..uv","text_l..uv","wips","text_wips","pepis","text_pepis","do$h","text_do$h","dling","text_dling",0,0,
     "metl","text_metl","vien","text_vien","leef","text_leef","karot","text_karot","fir","text_fir","eeg","text_eeg","foreeg","text_foreeg","forbeeee","text_forbeeee",0,0,
     "jail","text_jail","ladr","text_ladr","pallm","text_pallm","coco","text_coco","rouz","text_rouz","noet","text_noet","lili","text_lili",0,0,0,0,
-    "fenss","text_fenss","platfor","text_platfor","tre","text_tre","stum","text_stum","dayzy","text_dayzy","lie","text_lie",0,0,0,0,0,0,
+    "fenss","text_fenss","platfor","text_platfor","tre","text_tre","stum","text_stum","dayzy","text_dayzy","lie","text_lie","reffil","text_reffil",0,0,0,0,
     "cobll","text_cobll","spik","text_spik","frut","text_frut","fungye","text_fungye","red","text_red","lie/8","text_lie/8",0,0,0,0,0,0,
     "wuud","text_wuud","spiky","text_spiky","parsol","text_parsol","clok","text_clok","ufu","text_ufu","rockit","text_rockit","swim","text_swim",0,0,0,0,
     "brik","text_brik","sparkl","text_sparkl","sanglas","text_sanglas","bullb","text_bullb","son","text_son","muun","text_muun","bac","text_bac","warn","text_warn","piep","text_piep",
@@ -6709,6 +6709,25 @@ tiles_list = {
     color = {2, 4},
     layer = 20,
     tags = {"warning", "stripes"},
+  },
+  -- 583
+  {
+    name = "reffil",
+    sprite = "reffil",
+    type = "object",
+    color = {5,3},
+    layer = 5,
+    tags = {"refill","celeste"},
+    desc = "gives u dash bacc",
+  },
+  -- 584
+  {
+    name = "text_reffil",
+    sprite = "text_reffil",
+    type = "text",
+    texttype = {object = true},
+    color = {5,3},
+    tags = {"refill","celeste"},
   },
 }
 
