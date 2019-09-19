@@ -1458,6 +1458,19 @@ function scene.draw(dt)
           love.graphics.push()
           love.graphics.applyTransform(scene.getTransform())
           love.graphics.print("Name: " .. tile.name, 0, roomheight+12)
+          love.graphics.print("Layer: " .. tostring(tile.layer), 150, roomheight)
+          if tile.type then
+            love.graphics.print("Type: " .. tile.type, 150, roomheight+12)
+          else
+            love.graphics.print("Type: object", 150, roomheight+12)
+          end
+          local color = dump(tile.color)
+          if type(tile.color[1]) == "table" then
+            color = color:sub(2,-2)
+          end
+          color = color:gsub("{","(")
+          color = color:gsub("}",")")
+          love.graphics.print("Color: " .. color, 150, roomheight+36)
           if tile.tags ~= nil then
             love.graphics.print("Tags: " .. table.concat(tile.tags,", "), 0, roomheight+24)
           end
