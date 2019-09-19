@@ -1297,7 +1297,11 @@ function scene.draw(dt)
               end
             end
             
-            if string.match(tilename, subsearchstr) or string.match(tile.type, subsearchstr) then
+            if string.match(tilename, subsearchstr) then
+              found_matching_tag = true
+            end
+            
+            if tile.type and string.match(tile.type, subsearchstr) then
               found_matching_tag = true
             end
             
