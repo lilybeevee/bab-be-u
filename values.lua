@@ -291,7 +291,7 @@ tiles_list = {
     texttype = {verb = true, verb_be = true},
     color = {0, 3},
     layer = 20,
-    tags = {"is", "verb"},
+    tags = {"is"},
     desc = "BE (Verb): Causes the subject to become an object or have a property.",
   },
   -- 4
@@ -377,7 +377,8 @@ tiles_list = {
     type = "object",
     color = {2, 2},
     layer = 3,
-    tags = {"door"}
+    tags = {"door"},
+    desc = "inherently FORDOR",
   },
   -- 12
   {
@@ -410,6 +411,7 @@ tiles_list = {
     layer = 4,
     rotate = true,
     tags = {"key"},
+    desc = "normally NEDKEE",
   },
   -- 15
   {
@@ -527,7 +529,7 @@ tiles_list = {
     texttype = {verb = true, verb_class = true},
     color = {0, 3},
     layer = 20,
-    tags = {"has", "verb"},
+    tags = {"has"},
     desc = "GOT (Verb): Causes the subject to drop the object when destroyed.",
   },
   --26
@@ -551,7 +553,7 @@ tiles_list = {
     texttype = {cond_prefix = true, property = true, class_prefix = true},
     color = {2, 2},
     layer = 20,
-    tags = {"colors", "colours", "red", "prefix condition"},
+    tags = {"colors", "colours", "red"},
     desc = "REED: Causes the unit to appear red. Persistent and can be used as a prefix condition.",
   },
   --28
@@ -565,7 +567,7 @@ tiles_list = {
     texttype = {cond_prefix = true, property = true, class_prefix = true},
     color = {1, 3},
     layer = 20,
-    tags = {"colors", "colours", "blue", "prefix condition"},
+    tags = {"colors", "colours", "blue"},
     desc = "BLEU: Causes the unit to appear blue. Persistent and can be used as a prefix condition.",
   },
   --29
@@ -740,6 +742,7 @@ tiles_list = {
     texttype = {object = true},
     color = {4, 1},
     layer = 20,
+    tags = {"apple", "android", "windows", "linux", "operating system"},
   },
   --43
   {
@@ -751,7 +754,7 @@ tiles_list = {
     layer = 5,
     rotate = "true",
     eye = {x=14, y=8, w=2, h=2},
-    tags = {"apple", "android", "windows", "linux"},
+    tags = {"apple", "android", "windows", "linux", "operating system"},
     desc = "OS: Its sprites changes with the user's Operating System!",
   },
   --44
@@ -795,7 +798,7 @@ tiles_list = {
     layer = 3,
     rotate = "true",
     tags = {"fruit", "apple", "plants"},
-    desc = "not to be confused with OS appl. babs favorite snacc",
+    desc = "babs favorite snacc. not to be confused with OS appl",
   },
   --48
   {
@@ -880,7 +883,7 @@ tiles_list = {
     texttype = {property = true},
     color = {0, 3},
     layer = 20,
-    desc="EDIT: Make PRESS F2 EDIT to unlock the level editor!",
+    desc = "EDIT: Make PRESS F2 EDIT to unlock the level editor!",
     tags = {"text_2edit"},
   },
   --56
@@ -934,7 +937,7 @@ tiles_list = {
     texttype = {object = true},
     color = {6, 2},
     layer = 20,
-    tags = {"toad", "chars"},
+    tags = {"toad", "simpleflips", "chars"},
   },
   -- 61
   {
@@ -946,7 +949,7 @@ tiles_list = {
     layer = 5,
     rotate = true,
     eye = {x=23, y=19, w=3, h=3},
-    tags = {"toad", "chars"},
+    tags = {"toad", "simpleflips", "chars"},
     desc = "BUP: HELLO\nBUP DOES NOT WANT, BUP DOES NOT DREAM\nPLEASE HELP HIM\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
   },
   -- 62
@@ -1062,7 +1065,7 @@ tiles_list = {
     texttype = {cond_infix = true},
     color = {0, 3},
     layer = 20,
-    tags = {"on", "wfren", "infix condition"},
+    tags = {"on", "wfren"},
     desc = "W/ FREN (Infix Condition): True if the unit shares a tile with this object.",
   },
   -- 73
@@ -1073,7 +1076,7 @@ tiles_list = {
     texttype = {cond_infix = true, cond_infix_dir = true, verb = true, verb_unit = true},
     color = {0, 3},
     layer = 20,
-    tags = {"follow", "facing", "lookat", "infix condition", "verb"},
+    tags = {"follow", "facing", "lookat"},
     desc = "LOOK AT: As an infix condition, true if this object is on the tile in front of the unit. As a verb, makes the unit face this object at end of turn.",
   },
   -- 74
@@ -1084,7 +1087,7 @@ tiles_list = {
     texttype = {cond_prefix = true},
     color = {2, 2},
     layer = 20,
-    tags = {"lonely", "friendless", "prefix condition"},
+    tags = {"lonely", "friendless"},
     desc = "FRENLES (Prefix Condition): True if the unit is alone on its tile.",
   },
   --75
@@ -1095,7 +1098,7 @@ tiles_list = {
     texttype = {verb = true, verb_class = true},
     color = {0, 3},
     layer = 20,
-    tags = {"make", "create", "verb"},
+    tags = {"make", "create"},
     desc = "CREAT (Verb): At end of turn, the unit makes this object.",
   },
   --76
@@ -1107,7 +1110,7 @@ tiles_list = {
     allowconds = true,
     color = {2, 2},
     layer = 20,
-    tags = {"eat", "consume", "verb"},
+    tags = {"eat", "consume"},
     desc = "SNACC (Verb): Units destroy any other unit that they SNACC on contact, like a conditional OUCH.",
   },
   --77
@@ -1131,7 +1134,7 @@ tiles_list = {
     texttype = {object = true},
     color = {4, 2},
     layer = 20,
-    tags = {"chars"},
+    tags = {"kirby", "chars"},
   },
   --79
   {
@@ -1176,6 +1179,7 @@ tiles_list = {
     rotate = true,
     eye = {x=18, y=8, w=2, h=2},
     tags = {"anni", "chars", "devs"},
+    desc = "the bab equivalent of anni",
   },
   -- 83
   {
@@ -1208,7 +1212,7 @@ tiles_list = {
     color = {2, 4},
     layer = 5,
     eye = {x=19, y=7, w=2, h=2},
-    tags = {"dev", "chars", "thefox", "puyopuyo tetris"},
+    tags = {"devs", "chars", "thefox", "puyopuyo tetris"},
     desc = "pi pi piiii!!!",
   },
   -- 86
@@ -1219,7 +1223,7 @@ tiles_list = {
     texttype = {object = true},
     color = {2, 4},
     layer = 20,
-    tags = {"dev", "chars", "thefox", "puyopuyo tetris"},
+    tags = {"devs", "chars", "thefox", "puyopuyo tetris"},
   },
   -- 87
   {
@@ -1229,7 +1233,7 @@ tiles_list = {
     color = {0, 3},
     layer = 7,
     rotate = true,
-    tags = {"chars", "hand", "body part"},
+    tags = {"hand", "body part"},
   },
   -- 88
   {
@@ -1239,7 +1243,7 @@ tiles_list = {
     texttype = {object = true},
     color = {0, 3},
     layer = 20,
-    tags = {"chars", "hand", "body part"},
+    tags = {"hand", "body part"},
   },
   -- 87
   {
@@ -1340,7 +1344,7 @@ tiles_list = {
     allowconds = true,
     color = {0, 3},
     layer = 20,
-    tags = {"throw", "verb"},
+    tags = {"throw"},
     desc = "YEET (Verb): This unit will force things it yeets in its tile to hurtle across the level in its facing direction (until it hits an object that stops it).",
   },
   --- 95
@@ -1419,7 +1423,7 @@ tiles_list = {
     texttype = {cond_infix = true},
     color = {0, 3},
     layer = 20,
-    tags = {"near", "around", "infix condition"},
+    tags = {"near", "around"},
     desc = "AROND (Infix Condition): True if the indicated object is on any of the tiles surrounding the unit. (The unit's own tile is not checked.) ORTHO/DIAG AROND will only check the tiles orthogonally or diagonally. GO^ AROND will only check the tile in that direction.",
   },
   --- 102
@@ -1460,7 +1464,7 @@ tiles_list = {
     texttype = {property = true},
     color ={1, 3},
     layer = 20,
-    tags = {"oneway", "gomyway", "go my wey"},
+    tags = {"oneway", "go my wey"},
     desc = "GO MY WAY: Prevents movement onto its tile from the tile in front of it and the two tiles 45 degrees to either side.",
   },
   --- 106
@@ -1681,7 +1685,7 @@ tiles_list = {
     texttype = {cond_prefix = true},
     color = {0, 3},
     layer = 20,
-    tags = {"idle", "prefix condition"},
+    tags = {"idle"},
     desc = "WAIT... (Prefix Condition): True if the player waited last input. (This does not include clicks.)",
   },
   -- 127
@@ -1695,7 +1699,7 @@ tiles_list = {
     texttype = {cond_infix = true, property = true},
     color = {1, 4},
     layer = 20,
-    tags = {"without", "w/o", "infix condition"},
+    tags = {"without", "w/o"},
     desc = "SANS (Infix Condition): True if none of the indicated object exist in the level.",
   },
   -- 128
@@ -1706,7 +1710,7 @@ tiles_list = {
     texttype = {verb = true, verb_unit = true},
     color = {2, 2},
     layer = 20,
-    tags = {"fear", "spook", "verb", "verb"},
+    tags = {"fear", "spook"},
     desc = "SPOOP (Verb): A SPOOPY unit forces all objects it SPOOPS on adjacent tiles to move away!",
   },
   -- 129
@@ -1717,8 +1721,8 @@ tiles_list = {
     texttype = {verb = true, verb_unit = true},
     color = {5, 2},
     layer = 20,
-    tags = {"follow", "find", "cg5", "verb"},
-    desc = "STALK (Verb): If X stalks Y, X becomes an intelligent AI determined to get to Y. If it's also STUBBN, it'll try to track through walls if it can't reach its target."
+    tags = {"follow", "find", "cg5"},
+    desc = "STALK (Verb): If X stalks Y, X becomes an intelligent AI determined to get to Y. If it's also STUBBN, it'll try to track through walls if it can't reach its target. (actually that's not implemented yet)"
   },
   -- 130
   {
@@ -1828,7 +1832,7 @@ tiles_list = {
     allowconds = true,
     color = {5, 3},
     layer = 20,
-    tags = {"like", "bounded", "likes", "verb"},
+    tags = {"bounded", "likes"},
     desc = "LIEK (Verb): If a unit LIEKs objects, it is picky, and cannot step onto a tile unless it has at least one object it LIEKs. If X LIEK GO^, X will fall in that direction.",
   },
   -- 140
@@ -1860,6 +1864,7 @@ tiles_list = {
     texttype = {property = true},
     color = {5, 3},
     layer = 20,
+    tags = {"follow wall"},
     desc = "FOLO WAL: At end of turn, faces the first direction that it could enter and that doesn't have another unit of its name: right, forward, left, backward. When combined with WALK, causes the unit to follow the right wall.",
   },
   -- 143
@@ -1870,7 +1875,7 @@ tiles_list = {
     texttype = {property = true},
     color = {5, 3},
     layer = 20,
-    tags = {"turncornr", "turn corner"},
+    tags = {"turn corner"},
     desc = "TURN CORNR: At end of turn, faces the first direction that it could enter and that doesn't have another unit of its name: forward, right, left, backward. When combined with WALK, causes the unit to bounce off walls at 90 degree angles.",
   },
   -- 144
@@ -1937,7 +1942,7 @@ tiles_list = {
     texttype = {object = true},
     color = {0, 3},
     layer = 20,
-    tags = {"none","empty", "no one", "noone"},
+    tags = {"none","empty", "no one"},
     desc = "NO1: Refers to tiles with nothing in them. Rotation status is kept on the tile. Cannot be colored."
   },
   -- 151
@@ -2000,7 +2005,7 @@ tiles_list = {
     texttype = {verb = true, verb_unit = true},
     color = {0, 3},
     layer = 20,
-    tags = {"copy", "copycat", "lily", "verb"},
+    tags = {"copycat", "lily"},
     desc = "COPKAT (Verb): COPKAT units copy the successful movements of the indicated object, no matter how far away."
   },
   --157
@@ -2058,6 +2063,7 @@ tiles_list = {
     rotate = true,
     eye = {x=17, y=9, w=2, h=2},
     tags = {"devs","chars","szoob"},
+    desc = "pinc keke",
   },
   -- 162
   {
@@ -2078,7 +2084,7 @@ tiles_list = {
     color = {0, 3},
     layer = 20,
     rotate = true,
-    tags = {"/", "maybe", "random", "rng", "patashu", "prefix condition"},
+    tags = {"/", "maybe", "random", "rng", "patashu"},
     desc = "? (MAYBE) (Prefix Condition): Has a chance of being true, independent for each MAYBE, affected unit and turn. The number on top indicates the % chance of being true. Compatible with N'T.",
   },
   -- 164
@@ -2100,7 +2106,7 @@ tiles_list = {
     texttype = {cond_infix = true},
     color = {0, 3},
     layer = 20,
-    tags = {"seenby", "looked at", "in front", "infix condition"},
+    tags = {"seenby", "looked at", "in front"},
     desc = "SEEN BY (Infix Condition): True if an indicated object is looking at this unit from an adjacent tile.",
   },
   -- 166
@@ -2437,7 +2443,7 @@ tiles_list = {
     texttype = {verb = true, verb_unit = true},
     color = {1,3},
     layer = 20,
-    tags = {"shift", "verb"},
+    tags = {"shift"},
     desc = "MOOV (Verb): A verbified GO AWAY PLS/GO. x MOOV y means that x can push and shift y. y is not treated as solid if unable to be pushed. MOOV GO^ will make the unit move one unit in that direction per turn.",
   },
   --- 197
@@ -2449,7 +2455,7 @@ tiles_list = {
     allowconds = true,
     color = {2, 3},
     layer = 20,
-    tags = {"patashu", "hate", "hates", "collide", "verb"},
+    tags = {"patashu", "hate", "hates", "collide"},
     desc = "HAET (Verb): A unit cannot stop onto a tile that has something it HAETs (treating it like NOGO). (x HAET LVL makes x unable to move.) X HAET GO^ makes the object fall in the direction opposite that.",
   },
   -- 198
@@ -2471,7 +2477,7 @@ tiles_list = {
     texttype = {cond_prefix = true},
     color = {2, 4},
     layer = 20,
-    tags = {"powered", "prefix condition"},
+    tags = {"powered"},
     desc = "LIT (Prefix Condition): A BRITE object emits light in all directions. LIT will be true for objects on the same FLYE level if nothing OPAQUE is in the way.",
   },
   -- 200
@@ -2503,7 +2509,7 @@ tiles_list = {
     texttype = {cond_prefix = true},
     color = {0, 3},
     layer = 20,
-    tags = {"rng", "random", "prefix condition"},
+    tags = {"rng", "random"},
     desc = "AN (Prefix Condition): True for a single arbitrary unit per turn and condition. To get multiple results in one tile, rotate the ANs in different directions.",
   },
   -- 203
@@ -2648,7 +2654,7 @@ tiles_list = {
     layer = 10,
     rotate = true,
     tags = {"spike"},
-    desc = "finally, I can make my i wanna be the bab fangame in bab be u",
+    desc = "finally, i can make my i wanna be the bab fangame in bab be u",
   },
   -- 213
   {
@@ -2689,7 +2695,7 @@ tiles_list = {
     color = {1, 0},
     layer = 1,
     tags = {"border"},
-    desc = "BORDR: Fake oob to hide stuff under. NOGO, TALL and BORDR by default."
+    desc = "BORDR: OOB you can place manually. NOGO, TALL and BORDR by default."
   },
   -- 217
   {
@@ -2709,7 +2715,7 @@ tiles_list = {
     texttype = {object = true},
     color = {0, 3},
     layer = 20,
-    tags = {"infloop", "infinity", "infinite loop", "infiniteloop"},
+    tags = {"infloop", "infinity", "infinite loop"},
     desc = "INFLOOP: A special word that describes the infinite loop state."
   },
   -- 219
@@ -2740,7 +2746,7 @@ tiles_list = {
     type = "object",
     color = {0, 2},
     layer = 21,
-    desc = "EVERY1 W/FREN JAIL HAET LVL. now bab's in jail :(",
+    desc = "BAB W/FREN JAIL HAET LVL. now bab's in jail :(",
   },
   -- 222
   {
@@ -2782,7 +2788,7 @@ tiles_list = {
     texttype = {cond_prefix = true, property = true, class_prefix = true},
     color = {5, 2},
     layer = 20,
-    tags = {"colors", "colours", "green", "prefix condition"},
+    tags = {"colors", "colours", "green"},
     desc = "GRUN: Causes the unit to appear green. Persistent and can be used as a prefix condition."
   },
   -- 226
@@ -2796,7 +2802,7 @@ tiles_list = {
     texttype = {cond_prefix = true, property = true, class_prefix = true},
     color = {2, 4},
     layer = 20,
-    tags = {"colors", "colours", "yellow", "prefix condition"},
+    tags = {"colors", "colours", "yellow"},
     desc = "YELLO: Causes the unit to appear yellow. Persistent and can be used as a prefix condition. Reed + Grun."
   },
   -- 227
@@ -2810,7 +2816,7 @@ tiles_list = {
     texttype = {cond_prefix = true, property = true, class_prefix = true},
     color = {3, 1},
     layer = 20,
-    tags = {"colors", "colours", "purple", "prefix condition"},
+    tags = {"colors", "colours", "purple"},
     desc = "PURP: Causes the unit to appear purple. Persistent and can be used as a prefix condition."
   },
   -- 228
@@ -2824,7 +2830,7 @@ tiles_list = {
     texttype = {cond_prefix = true, property = true, class_prefix = true},
     color = {2, 3},
     layer = 20,
-    tags = {"colors", "colours", "orange", "prefix condition"},
+    tags = {"colors", "colours", "orange"},
     desc = "ORANG: Causes the unit to appear orange. Persistent and can be used as a prefix condition."
   },
   -- 229
@@ -2838,7 +2844,7 @@ tiles_list = {
     texttype = {cond_prefix = true, property = true, class_prefix = true},
     color = {1, 4},
     layer = 20,
-    tags = {"colors", "colours", "cyan", "prefix condition"},
+    tags = {"colors", "colours", "cyan"},
     desc = "CYEANN: Causes the unit to appear cyan. Persistent and can be used as a prefix condition."
   },
   -- 230
@@ -2852,7 +2858,7 @@ tiles_list = {
     texttype = {cond_prefix = true, property = true, class_prefix = true},
     color = {0, 3},
     layer = 20,
-    tags = {"colors", "colours", "white", "prefix condition"},
+    tags = {"colors", "colours", "white"},
     desc = "WHIT: Causes the unit to appear white. Persistent and can be used as a prefix condition. Bleu + Yello, Reed + Cyeann, Grun + Purp."
   },
   -- 231
@@ -2866,7 +2872,7 @@ tiles_list = {
     texttype = {cond_prefix = true, property = true, class_prefix = true},
     color = {0, 0},
     layer = 20,
-    tags = {"colors", "colours", "black", "prefix condition"},
+    tags = {"colors", "colours", "black"},
     desc = "BLACC: Causes the unit to appear black. Persistent and can be used as a prefix condition."
   },
   -- 232
@@ -2909,7 +2915,7 @@ tiles_list = {
     texttype = {cond_prefix = true},
     color = {5,2},
     layer = 20,
-    tags = {"correct", "cg5", "prefix condition"},
+    tags = {"correct", "cg5"},
     desc = "COREKT (Prefix Condition): True if the unit is in an active rule.",
   },
   -- 236
@@ -2923,7 +2929,7 @@ tiles_list = {
     texttype = {cond_prefix = true, property = true},
     color = {2,2},
     layer = 20,
-    tags = {"wrong", "false", "cg5", "prefix condition"},
+    tags = {"wrong", "false", "cg5"},
     desc = "RONG: As a prefix, true if the unit is in a negated rule (via rong, n't, or notranform). As a property, if a rule has a rong unit in it it'll be negated.",
   },
   -- 237
@@ -2934,7 +2940,7 @@ tiles_list = {
     texttype = {ellipsis = true},
     color = {0, 3},
     layer = 20,
-    tags = {"ellipsis", "dot dot dot", "dotdotdot", "period"},
+    tags = {"ellipsis", "dotdotdot", "period"},
     desc = "... (ELLIPSIS): Extends rules. BAB ... BE ... ... U is the same as BAB BE U.",
   },
   -- 238
@@ -2945,7 +2951,7 @@ tiles_list = {
 	texttype = {property = true},
 	color = {4,1},
   layer = 20,
-  tags = {"you2", "p2", "u2", "you 2", "p 2", "u 2"},
+  tags = {"you2", "p2", "u2"},
 	desc = "player 2 has joined the game",
   },
   -- 239
@@ -2956,7 +2962,7 @@ tiles_list = {
 	texttype = {property = true},
 	color = {4,1},
   layer = 20,
-  tags = {"you3", "p3", "u3", "you 3", "p 3", "u 3"},
+  tags = {"you3", "p3", "u3"},
 	desc = "and player 3",
   },
   -- 240
@@ -3232,7 +3238,7 @@ tiles_list = {
     texttype = {letter = true},
     color = {0,3},
     layer = 20,
-    tags = {"dot", "fullstop"},
+    tags = {"dot", "fullstop", "period"},
     desc = "You can make \"...\" with this!"
   },
   -- 268
@@ -3244,7 +3250,7 @@ tiles_list = {
     rotate = true,
     color = {0,3},
     layer = 20,
-    tags = {":", "umlaut", "diaeresis"},
+    tags = {";", "umlaut", "diaeresis"},
     desc = ":: Can also be an umlaut, or '..', if rotated in that way.",
   },
   -- 269
@@ -3277,6 +3283,7 @@ tiles_list = {
     texttype = {letter = true},
     color = {0,3},
     layer = 20,
+    desc = "used in a whole lot of words",
   },
   -- 272
   {
@@ -3606,7 +3613,7 @@ tiles_list = {
     rotate = true,
     color = {0,3},
     layer = 20,
-    tags = {"that","cg5"},
+    tags = {"that","those","cg5"},
     desc = "THE: Refers to the object it's pointing at.",
   },
   -- 306
@@ -3628,7 +3635,7 @@ tiles_list = {
     texttype = {cond_infix = true, cond_infix_verb = true},
     color = {0, 3},
     layer = 20,
-    tags = {"lily", "with", "w/", "infix condition"},
+    tags = {"lily", "with", "w/"},
     desc = "THAT (Infix Condition): x THAT BE y is true if x BE y. x THAT GOT Y is true if x GOT y. And so on.",
   },
   -- 307
@@ -3640,7 +3647,7 @@ tiles_list = {
     texttype = {cond_infix = true, cond_infix_verb = true, cond_infix_verb_plus = true},
     color = {0, 3},
     layer = 20,
-    tags = {"lily", "with", "w/", "infix condition"},
+    tags = {"lily", "with", "w/"},
     desc = "THAT BE (Infix Condition): x THAT BE y is true if x BE y.",
   },
   -- 308
@@ -3651,7 +3658,7 @@ tiles_list = {
     texttype = {cond_prefix = true},
     color = {2,4},
     layer = 20,
-    tags = {"timeless", "prefix condition"},
+    tags = {"timeless"},
     desc = "TIMLES (Prefix Condition): True if ZA WARUDO is active.",
   },
   --vitellary: added down here because i did not want to have to change the numbers for everything beyond "h", plus i think i heard that it would mess things up if i added it up there
@@ -3672,7 +3679,7 @@ tiles_list = {
     texttype = {letter = true},
     color = {0,3},
     layer = 20,
-    desc = "Z: it's just a rotated Z"
+    desc = "Z: it's just a rotated N"
   },
   -- 311
   {
@@ -3705,7 +3712,7 @@ tiles_list = {
     color = {0, 3},
     layer = 20,
     tags = {"persist"},
-    desc = "STAY THER: Will be taken with you the next time you change levels.",
+    desc = "STAY THER: Objects with this property will be taken with you when you transition between levels.",
   },
   -- 313? why are the numbers weird
   {
@@ -3784,7 +3791,7 @@ tiles_list = {
     texttype = {cond_prefix = true},
     color = {3, 3},
     layer = 20,
-    tags = {"clicked", "mouse", "prefix condition"},
+    tags = {"clicked", "mouse"},
     desc = "CLIKT (Prefix Condition): CLIKT objects will be true when left-clicked. Clicks will pass a turn if this text exists.",
   },
   -- 321
@@ -3854,7 +3861,7 @@ tiles_list = {
     type = "object",
     color = {1,4},
     layer = 4,
-    tags = {"icecube", "ice cube"},
+    tags = {"icecube"},
   },
   -- 328
   {
@@ -3864,7 +3871,7 @@ tiles_list = {
     texttype = {object = true},
     color = {1,4},
     layer = 20,
-    tags = {"icecube", "ice cube"},
+    tags = {"icecube"},
   },
   -- 329
   {
@@ -3897,17 +3904,18 @@ tiles_list = {
     texttype = {verb = true, verb_unit = true, property = true, object = true},
     color = {4,2},
     layer = 20,
-    tags = {"colors", "colours", "verb"},
+    tags = {"colors", "colours"},
     desc = "PAINT (Verb): changes the second object's color to match the first if the objects are on each other. Supports color mixing."
   },
   -- 332
   {
     name = "paint",
     sprite = {"paint","paint_color"},
+    type = "object",
     color = {{0,3},{0,3}},
     colored = {false,true},
-    type = "object",
     layer = 4,
+    tags = {"colors", "colours"},
     desc = "X be PAINT turns into a paint bucket with the color of X."
   },
   -- 333
@@ -3971,7 +3979,7 @@ tiles_list = {
     texttype = {verb = true, verb_unit = true},
     color = {0,1},
     layer = 20,
-    tags = {"ignore", "verb"},
+    tags = {"ignore"},
     desc = "IGNOR (Verb): x IGNOR y causes x to not be able to interact with or move y in any way."
   },
   -- 339
@@ -3993,7 +4001,7 @@ tiles_list = {
     texttype = {verb = true, verb_unit = true},
     color = {2,1},
     layer = 20,
-    tags = {"versus", "verb"},
+    tags = {"versus"},
     desc = "VS (Verb): The two objects enter a 1 on 1 battle: whoever steps on the other wins.",
   },
   --- 334
@@ -4068,7 +4076,7 @@ tiles_list = {
     texttype = {cond_prefix = true, property = true, class_prefix = true},
     color = {4, 1},
     layer = 20,
-    tags = {"colors", "colours", "pink", "prefix condition"},
+    tags = {"colors", "colours", "pink"},
     desc = "PINC: Causes the unit to become pink!"
   },
   -- 339
@@ -4090,6 +4098,7 @@ tiles_list = {
     texttype = {letter = true, object = true},
     color = {0,3},
     layer = 20,
+    desc = "the most op letter",
   },
   -- 341
   {
@@ -4099,7 +4108,7 @@ tiles_list = {
     texttype = {cond_infix = true},
     color = {1,4},
     layer = 20,
-    tags = {"same float", "sameflye", "same flye", "infix condition"},
+    tags = {"sameflye"},
     desc = "SAMEFLOAT( (Infix Condition): True if there is an instance of the subject on the same amount of flye as the object.",
   },
   -- 342
@@ -4138,7 +4147,7 @@ tiles_list = {
     texttype = {cond_infix = true},
     color = {0, 3},
     layer = 20,
-    tags = {"back", "look", "infix condition"},
+    tags = {"back", "look"},
     desc = "BEHIND (Infix Condition): True if an indicated object is looking away from the unit on an adjacent tile.",
   },
   -- 346
@@ -4149,7 +4158,7 @@ tiles_list = {
     texttype = {cond_infix = true},
     color = {0, 3},
     layer = 20,
-    tags = {"look", "infix condition", "left", "right"},
+    tags = {"look", "left", "right"},
     desc = "BESIDE (Infix Condition): True if an indicated object is at the side of the unit on an adjacent tile.",
   },
   -- 347
@@ -4160,7 +4169,7 @@ tiles_list = {
     texttype = {cond_infix = true, cond_infix_dir = true, verb = true, verb_unit = true},
     color = {0, 3},
     layer = 20,
-    tags = {"unfollow", "facing away", "lookaway", "behind", "infix condition", "verb"},
+    tags = {"unfollow", "facing away", "lookaway", "behind"},
     desc = "LOOK AWAY: As an infix condition, true if this object is on the tile behind the unit As a verb, makes the unit face away from this object at end of turn.",
   },
   --348
@@ -4172,7 +4181,7 @@ tiles_list = {
     color = {2, 4},
     layer = 6,
     eye = {x=19, y=7, w=2, h=2},
-    tags = {"dev", "chars", "thefox", "puyopuyo tetris"},
+    tags = {"chars", "thefox", "puyopuyo tetris"},
     desc = "oh no am square????"
   },
   --349
@@ -4184,7 +4193,7 @@ tiles_list = {
     color = {2, 4},
     layer = 6,
     eye = {x=17, y=7, w=2, h=2},
-    tags = {"dev", "chars", "thefox", "puyopuyo tetris"},
+    tags = {"chars", "thefox", "puyopuyo tetris"},
     desc = "TRIASNGLE?????? this is ridicouuolus",
   },
   --350
@@ -4196,7 +4205,7 @@ tiles_list = {
     color = {2, 4},
     layer = 20,
     eye = {x=19, y=7, w=2, h=2},
-    tags = {"dev", "chars", "thefox", "puyopuyo tetris"},
+    tags = {"chars", "thefox", "puyopuyo tetris"},
   },
   --351
   {
@@ -4207,7 +4216,7 @@ tiles_list = {
     color = {2, 4},
     layer = 20,
     eye = {x=19, y=7, w=2, h=2},
-    tags = {"dev", "chars", "thefox", "puyopuyo tetris"},
+    tags = {"chars", "thefox", "puyopuyo tetris"},
   },
   --just adding these so they exist for letters
   -- 352
@@ -4718,7 +4727,7 @@ tiles_list = {
     layer = 6,
     rotate = true,
     eye = {x=25, y=14, w=2, h=2},
-    tags = {"honeybee", "chars", "insect", "trans"},
+    tags = {"honeybee", "chars", "insect"},
     desc = "the bab beeee be tranz",
   },
   -- 404
@@ -4729,7 +4738,7 @@ tiles_list = {
     texttype = {object = true},
     color = {2, 4},
     layer = 20,
-    tags = {"honeybee", "chars", "insect", "trans"},
+    tags = {"honeybee", "chars", "insect"},
     desc = "bab beeeeeeeee u",
   },
   -- 405
@@ -4759,7 +4768,8 @@ tiles_list = {
     type = "object",
     color = {2, 4},
     layer = 2,
-    tags = {"bricks", "wall"},
+    tags = {"sand", "beach", "desert"},
+    desc = "san undertales",
   },
   -- 408
   {
@@ -4770,7 +4780,6 @@ tiles_list = {
     color = {2, 4},
     layer = 20,
     tags = {"sand", "beach", "desert"},
-    desc = "san undertales",
   },
   -- 409
   {
@@ -4907,7 +4916,8 @@ tiles_list = {
     layer = 20,
     tags = {"leaf", "weed lmao", "plants"},
     desc = "its the 420th object lmao",
-    weed = "true"
+    weed = true,
+    nice = true,
   },
   -- 421
   {
@@ -5143,6 +5153,7 @@ tiles_list = {
     color = {6,1},
     layer = 3,
     tags = {"plants", "tree stump"},
+    desc = "im stumped",
   },
   -- 444
   {
@@ -5153,7 +5164,6 @@ tiles_list = {
     color = {6,1},
     layer = 20,
     tags = {"plants", "tree stump"},
-    desc = "im stumped",
     unlucky = true,
   },
   -- 445
@@ -5163,7 +5173,7 @@ tiles_list = {
     type = "object",
     color = {2, 4},
     layer = 4,
-    tags = {"light bulb", "lightbulb", "power"},
+    tags = {"lightbulb", "power"},
   },
   -- 446
   {
@@ -5173,7 +5183,7 @@ tiles_list = {
     texttype = {object = true},
     color = {2, 4},
     layer = 20,
-    tags = {"light bulb", "lightbulb", "power"},
+    tags = {"lightbulb", "power"},
   },
   --447
   {
@@ -5457,6 +5467,7 @@ tiles_list = {
     color = {5, 3},
     layer = 5,
     rotate = true,
+    tags = {"poison"},
     desc = "how kids learn the triangular number series",
   },
   -- 474
@@ -5467,6 +5478,7 @@ tiles_list = {
     texttype = {object = true},
     color = {5, 3},
     layer = 20,
+    tags = {"poison"},
   },
   -- 475
   {
@@ -5506,7 +5518,6 @@ tiles_list = {
     texttype = {object = true},
     color = {3, 3},
     layer = 20,
-    desc = "isn't it weird how all of these bolts have i two letters before the bolt word",
   },
   -- 479
   {
@@ -5599,6 +5610,7 @@ tiles_list = {
     color = {1, 3},
     layer = 20,
     tags = {"chars", "dev", "slime", "blob", "rip off"},
+    desc = "it needs to have the tag dev but i don't want it to be with the other devs",
   },
   -- 487
   {
@@ -5610,7 +5622,7 @@ tiles_list = {
     layer = 6,
     rotate = true,
     eye = {x=19, y=11, w=2, h=2},
-    tags = {"butterfly", "chars", "insect", "trans"},
+    tags = {"butterfly", "chars", "insect"},
     desc = "of the bleu morpho variety",
   },
   -- 488
@@ -5621,7 +5633,7 @@ tiles_list = {
     texttype = {object = true},
     color = {1, 4},
     layer = 20,
-    tags = {"butterfly", "chars", "insect", "trans"},
+    tags = {"butterfly", "chars", "insect"},
     desc = "but, flye??",
   },
   -- 489
@@ -5654,7 +5666,7 @@ tiles_list = {
     texttype = {letter = true},
     color = {0,3},
     layer = 20,
-    desc = "grab your picax shovell and bolt again!!",
+    desc = "Used for all of the bolt words; Firbolt, icbolt, litbolt, etc.",
   },
   -- 492
   {
@@ -5694,6 +5706,7 @@ tiles_list = {
     layer = 4,
     rotate = true,
     tags = {"siren", "alarm"},
+    desc = "will steal ur tim machine,"
   },
   -- 495
   {
@@ -5704,7 +5717,6 @@ tiles_list = {
     color = {2,2},
     layer = 20,
     tags = {"siren", "alarm"},
-    desc = "will steal ur tim machine,"
   },
   -- 496
   {
@@ -5741,7 +5753,7 @@ tiles_list = {
     rotate = true,
     eye = {x=27, y=7, w=2, h=2},
     tags = {"chars", "cow"},
-    desc = "do not harm!",
+    desc = "You found Moo, the Unfindable Cow! Now Time will collapse.",
   },
   -- 497
   {
@@ -5991,7 +6003,7 @@ tiles_list = {
     layer = 5,
     rotate = true,
     eye = {x=17, y=12, w=7, h=8},
-    tags = {"chars", "eye", "body part"},
+    tags = {"eye", "body part"},
     desc = "EYEE SEES ALL",
   },
   -- 519
@@ -6002,7 +6014,7 @@ tiles_list = {
     texttype = {object = true},
     color = {0, 1},
     layer = 20,
-    tags = {"chars", "eye", "body part"},
+    tags = {"eye", "body part"},
   },
   -- 520
   {
@@ -6012,7 +6024,7 @@ tiles_list = {
     color = {2, 2},
     layer = 5,
     rotate = true,
-    tags = {"chars", "mouth", "lips", "body part"},
+    tags = {"mouth", "lips", "body part"},
     desc = "it speaks",
   },
   -- 521
@@ -6023,7 +6035,7 @@ tiles_list = {
     texttype = {object = true},
     color = {2, 2},
     layer = 20,
-    tags = {"chars", "eye", "body part"},
+    tags = {"mouth", "lips", "body part"},
     desc = "it altho hath a lithp",
   },
   -- 522
@@ -6074,7 +6086,7 @@ tiles_list = {
     color = {0, 3},
     layer = 5,
     rotate = true,
-    tags = {"chars", "paw print"},
+    tags = {"paw print"},
   },
   -- 527
   {
@@ -6084,7 +6096,7 @@ tiles_list = {
     texttype = {object = true},
     color = {0, 3},
     layer = 20,
-    tags = {"chars", "paw print"},
+    tags = {"paw print"},
   },
   -- 528
   {
@@ -6157,7 +6169,7 @@ tiles_list = {
     color = {2, 2},
     rotate = true,
     layer = 20,
-    tags = {"playing card", "bicycle", "ace"},
+    tags = {"playing card", "bicycle", "ace", "card"},
     desc = "haha get it, it's because bicycle is a specific brand of playing card",
   },
   -- 535
@@ -6168,7 +6180,7 @@ tiles_list = {
     texttype = {object = true},
     color = {2, 2},
     layer = 5,
-    tags = {"playing card", "bicycle", "ace"},
+    tags = {"playing card", "bicycle", "ace", "card"},
     desc = "BYC: has a random image every time it's loaded!",
   },
   -- 534
@@ -6179,7 +6191,7 @@ tiles_list = {
     color = {2, 2},
     rotate = true,
     layer = 5,
-    tags = {"playing card back", "bicycle"},
+    tags = {"playing card back", "bicycle", "card"},
     desc = "cards have 2 sides",
   },
   -- 535
@@ -6190,7 +6202,7 @@ tiles_list = {
     texttype = {object = true},
     color = {2, 2},
     layer = 20,
-    tags = {"playing card back", "bicycle"},
+    tags = {"playing card back", "bicycle", "card"},
   },
   -- 536
   {
@@ -6211,7 +6223,7 @@ tiles_list = {
     texttype = {property = true},
     color = {2,2},
     layer = 20,
-    tags = {"no transform","notransform"},
+    tags = {"no transform"},
     desc = "NO TRANFORM: A property that prevents the object from transforming. LVL BE NO TRANFORM reverts any transformations it had.",
   },
   -- 538
@@ -6344,7 +6356,7 @@ tiles_list = {
     texttype = {cond_prefix = true, property = true, class_prefix = true},
     color = {0, 1},
     layer = 20,
-    tags = {"colors", "colours", "gray", "grey", "prefix condition"},
+    tags = {"colors", "colours", "gray", "grey"},
     desc = "GRAEY: Causes the unit to become gray/grey.\nColor or colour?"
   },
   -- 550
@@ -6358,7 +6370,7 @@ tiles_list = {
     texttype = {cond_prefix = true, property = true, class_prefix = true},
     color = {6, 0},
     layer = 20,
-    tags = {"colors", "colours", "brown", "prefix condition"},
+    tags = {"colors", "colours", "brown"},
     desc = "BRWN: Causes the unit to become brown."
   },
   -- 551
@@ -6653,7 +6665,7 @@ tiles_list = {
     type = "object",
     color = {5, 2},
     layer = 4,
-    tags = {"dosh", "cash money"},
+    tags = {"dosh", "cash money","money"},
     desc = "DO$H DO$H DO$H!"
   },
   -- 578
@@ -6664,7 +6676,7 @@ tiles_list = {
     texttype = {object = true},
     color = {5, 2},
     layer = 20,
-    tags = {"dosh", "cash money"},
+    tags = {"dosh", "cash money","money"},
     desc = "dollas",
   },
   -- 579
@@ -6675,7 +6687,7 @@ tiles_list = {
     color = {2, 4},
     layer = 4,
     rotate = "true",
-    tags = {"coin"},
+    tags = {"coin","mario"},
     desc = "dling dling dling!"
   },
   -- 580
@@ -6686,7 +6698,7 @@ tiles_list = {
     texttype = {object = true},
     color = {2, 4},
     layer = 20,
-    tags = {"coin"},
+    tags = {"coin","mario"},
     desc = "the sound a coin makes",
   },
   -- 581

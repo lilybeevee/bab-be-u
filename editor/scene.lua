@@ -1297,7 +1297,7 @@ function scene.draw(dt)
               end
             end
             
-            if string.match(tilename, subsearchstr) then
+            if string.match(tilename, subsearchstr) or string.match(tile.type, subsearchstr) then
               found_matching_tag = true
             end
             
@@ -1417,9 +1417,11 @@ function scene.draw(dt)
       love.graphics.setColor(getPaletteColor(0,3))
       if infomode then love.graphics.print(last_hovered_tile[1] .. ', ' .. last_hovered_tile[2], 0, roomheight+36) end
       if not is_mobile then
-        love.graphics.printf("CTRL + TAB or CTRL + NUMBER to change tabs", 0, roomheight, roomwidth, "right")
-        love.graphics.printf("CTLR + M to get meta text, CTRL + R to refresh", 0, roomheight+12, roomwidth, "right")
-        love.graphics.printf("CTRL + N to toggle n't text", 0, roomheight+24, roomwidth, "right")
+        if not infomode then
+          love.graphics.printf("CTRL + TAB or CTRL + NUMBER to change tabs", 0, roomheight, roomwidth, "right")
+          love.graphics.printf("CTLR + M to get meta text, CTRL + R to refresh", 0, roomheight+12, roomwidth, "right")
+          love.graphics.printf("CTRL + N to toggle n't text", 0, roomheight+24, roomwidth, "right")
+        end
         if #searchstr > 0 then
           love.graphics.print("Searching for: " .. searchstr, 0, roomheight)
         else
@@ -1471,9 +1473,33 @@ function scene.draw(dt)
           color = color:gsub("{","(")
           color = color:gsub("}",")")
           love.graphics.print("Color: " .. color, 150, roomheight+36)
-          if tile.tags ~= nil then
-            love.graphics.print("Tags: " .. table.concat(tile.tags,", "), 0, roomheight+24)
+          local tags = ""
+          if tile.type == "text" then
+            for key,_ in pairs(tile.texttype) do
+              if key == "cond_infix" then
+                tags = tags .. "infix condition, "
+              elseif key == "cond_infix_dir" then
+                tags = tags .. "direction infix condition, "
+              elseif key == "cond_prefix" then
+                tags = tags .. "prefix condition, "
+              elseif key == "verb_unit" then
+                tags = tags .. "unit verb, "
+              elseif key == "verb_class" then
+                tags = tags .. "class verb, "
+              elseif key == "verb_sing" then
+                tags = tags .. "special verb, "
+              elseif key == "verb_be" or key == "and" or key == "not" then
+              else
+                tags = tags .. key:gsub("_"," ") .. ", "
+              end
+            end
+          else
+            tags = "object, "
           end
+          if tile.tags ~= nil then
+            tags = table.concat(tile.tags,", ") .. ", " .. tags
+          end
+          love.graphics.print(tags:sub(1,-3), 0, roomheight+24)
           love.graphics.pop()
         end
       end
