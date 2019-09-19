@@ -1096,7 +1096,7 @@ function scene.transformParameters()
   local screenwidth = love.graphics.getWidth() * (is_mobile and 0.75 or 1)
   local screenheight = love.graphics.getHeight() - (is_mobile and sprites["ui/cog"]:getHeight() or 0)
 
-  local scales = {0.25, 0.375, 0.5, 0.75, 1, 1.5, 2, 3, 4}
+  local scales = {0.25, 0.375, 0.5, 0.75, 1, 2, 3, 4}
 
   local scale = scales[1]
   for _,s in ipairs(scales) do
