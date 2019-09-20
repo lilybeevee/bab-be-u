@@ -989,6 +989,46 @@ function updateUnits(undoing, big_update)
         end
       end
     end
+    
+    local issoko = matchesRule(nil,"soko","?")
+    local sokowins = {}
+    for _,ruleparent in ipairs(issoko) do
+      local unit = ruleparent[2]
+      if sokowins[unit] == nil then
+        sokowins[unit] = true
+      end
+      local others = findUnitsByName(ruleparent[1].rule.object.name)
+      local fail = false
+      if #others > 0 then
+        for _,other in ipairs(others) do
+          local ons = getUnitsOnTile(other.x,other.y,nil,nil,other)
+          local innersuccess = false
+          for _,on in ipairs(ons) do
+            if sameFloat(other,on) then
+              innersuccess = true
+            end
+          end
+          if not innersuccess then
+            fail = true
+          end
+        end
+      end
+      if fail then
+        sokowins[unit] = false
+      end
+    end
+    
+    for unit,v in pairs(sokowins) do
+      if v then
+        local stuff = getUnitsOnTile(unit.x,unit.y)
+        for _,on in ipairs(stuff) do
+          local is_u = hasProperty(on,"u") or hasProperty(on,"u too") or hasProperty(on,"u tres")
+          if is_u and sameFloat(unit,on) then
+            wins = wins + 1
+          end
+        end
+      end
+    end
 
     function doOneCreate(rule, creator, createe)
       local object = createe
