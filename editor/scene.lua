@@ -462,12 +462,25 @@ function scene.keyPressed(key)
     elseif key == "backspace" or  (key == "z" and (key_down["lctrl"] or key_down["rctrl"])) then
       searchstr = string.sub(searchstr, 1, #searchstr-1)
     elseif key == "return" then
-      if not (key_down["lshift"] or key_down["rshift"]) and tiles_by_name[subsearchstr] then
-        brush.id = tiles_by_name[subsearchstr]
-        selector_open = false
-      elseif (not tiles_by_name[subsearchstr] or key_down["lshift"] or key_down["rshift"]) and tiles_by_name["text_"..subsearchstr] then
-        brush.id = tiles_by_name["text_"..subsearchstr]
-        selector_open = false
+      if key_down["lshift"] or key_down["rshift"] then
+        if tiles_by_name["text_"..subsearchstr] then
+          brush.id = tiles_by_name["text_"..subsearchstr]
+          selector_open = false
+        end
+      elseif key_down["lctrl"] or key_down["rctrl"] then
+        if tiles_by_name["letter_"..subsearchstr] then
+          brush.id = tiles_by_name["letter_"..subsearchstr]
+          selector_open = false
+        else -- handle creation of custom letter words here when we code that
+        end
+      else
+        if tiles_by_name[subsearchstr] then
+          brush.id = tiles_by_name[subsearchstr]
+          selector_open = false
+        elseif tiles_by_name["text_"..subsearchstr] then
+          brush.id = tiles_by_name["text_"..subsearchstr]
+          selector_open = false
+        end
       end
     elseif (#key == 1 or key == "space") and not (key_down["lctrl"] or key_down["rctrl"] or key_down["f3"]) then
       if #searchstr > 15 then return end
