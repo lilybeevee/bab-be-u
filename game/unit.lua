@@ -2796,7 +2796,7 @@ function newTempID()
 end
 
 function newMouseID()
-  max_mouse_id = max_mouse_id + 1
+  max_mouse_id = max_mouse_id - 1
   return max_mouse_id
 end
 
