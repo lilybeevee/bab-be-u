@@ -2581,6 +2581,17 @@ function moveUnit(unit,x,y,portal)
   --also, keep empty out of units_by_tile - it will be added in getUnitsOnTile
   if (unit.type == "outerlvl") then
   elseif (unit.name == "mous") then
+    --find out how far apart two tiles are in screen co-ordinates
+    local x0,y0 = gameTileToScreen(0,0);
+    local x1,y1 = gameTileToScreen(1,1);
+    local dx = x1-x0;
+    local dy = y1-y0;
+    local oldx = unit.x;
+    local oldy = unit.y;
+    unit.x = x
+    unit.y = y
+    unit.screenx = unit.screenx + dx*(x-oldx);
+    unit.screeny = unit.screeny + dy*(y-oldy);
   elseif (unit.fullname == "no1") and inBounds(x, y) then
     local tileid = unit.x + unit.y * mapwidth
     local oldx = unit.x
@@ -2664,7 +2675,10 @@ function updateDir(unit, dir, force)
     end
     if unit.dir == dir then return true end
   end
-  if unit.name == "mous" then return false end
+  if unit.name == "mous" then
+    unit.dir = dir
+    return true
+  end
   
   unit.dir = dir
   if (unit.rotate and not hasRule(unit,"ben't","rotatbl")) or (rules_with ~= nil and hasProperty(unit,"rotatbl")) then
