@@ -229,7 +229,7 @@ selector_grid_contents = {
     "jail","text_jail","ladr","text_ladr","pallm","text_pallm","coco","text_coco","rouz","text_rouz","noet","text_noet","lili","text_lili",0,0,0,0,
     "fenss","text_fenss","platfor","text_platfor","tre","text_tre","stum","text_stum","dayzy","text_dayzy","lie","text_lie","reffil","text_reffil",0,0,0,0,
     "cobll","text_cobll","spik","text_spik","frut","text_frut","fungye","text_fungye","red","text_red","lie/8","text_lie/8",0,0,0,0,0,0,
-    "wuud","text_wuud","spiky","text_spiky","parsol","text_parsol","clok","text_clok","ufu","text_ufu","rockit","text_rockit","swim","text_swim",0,0,0,0,
+    "wuud","text_wuud","spiky","text_spiky","parsol","text_parsol","clok","text_clok","ufu","text_ufu","rockit","text_rockit","swim","text_swim","yanying","text_yanying",0,0,
     "brik","text_brik","sparkl","text_sparkl","sanglas","text_sanglas","bullb","text_bullb","son","text_son","muun","text_muun","bac","text_bac","warn","text_warn","piep","text_piep",
     "san","text_san","piler","text_piler","sancastl","text_sancastl","shel","text_shel","starr","text_starr","cor","text_cor","byc","text_byc","gorder","text_gorder","tuba","text_tuba",
     "glas","text_glas","bom","text_bom","sine","text_sine","kar","text_kar","can","text_can","ger","text_ger","sirn","text_sirn","chain","text_chain","reflecr","text_reflecr",
@@ -6760,7 +6760,27 @@ tiles_list = {
     color = {6,2},
     layer = 20,
     tags = {"sokoban"},
-    desc = "SOKO (Verb): If X SOKO Y, then X wins when all Y are not frenles."
+    desc = "SOKO (Verb): If X SOKO Y, then X wins when all Y are not frenles.",
+  },
+  -- 586
+  {
+    name = "yanying",
+    sprite = {"yan", "ying"},
+    type = "object",
+    color = {{0,3}, {2,2}},
+    colored = {false, true},
+    layer = 4,
+    tags = {"yin yang orb", "taoism"},
+  },
+  -- 587
+  {
+    name = "text_yanying",
+    sprite = "text_yanying",
+    type = "text",
+    texttype = {object = true},
+    color = {2, 2},
+    layer = 20,
+    tags = {"yin yang orb", "taoism"},
   },
 }
 
