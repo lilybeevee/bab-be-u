@@ -6749,6 +6749,7 @@ tiles_list = {
     type = "text",
     texttype = {object = true},
     color = {5,3},
+    layer = 20,
     tags = {"refill","celeste"},
   },
   -- 585
