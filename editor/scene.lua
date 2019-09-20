@@ -431,20 +431,6 @@ mobile_picking = false
 mobile_stackmode = "none"
 
 function scene.keyPressed(key)
-  if selector_open then
-    if key == "escape" or (key == "a" and key_down["lctrl"]) or (key == "backspace" and key_down["lctrl"]) then
-      if #searchstr == 0 then selector_open = false end
-      searchstr = ""
-    elseif key == "backspace" or  (key == "z" and key_down["lctrl"]) then
-      searchstr = string.sub(searchstr, 1, #searchstr-1)
-    elseif (#key == 1 or key == "space") and not (key_down["lctrl"] or key_down["rctrl"] or key_down["f3"]) then
-      if #searchstr > 15 then return end
-      if key == "space" then key = " " end
-      searchstr = searchstr..key
-    end
-    subsearchstr = searchstr:gsub(" ","")
-  end
-
   if key == "escape" and not selector_open then
     if not capturing then
       if not spookmode then
@@ -468,6 +454,30 @@ function scene.keyPressed(key)
       ignore_mouse = true
     end
   end
+
+  if selector_open then
+    if key == "escape" or (key == "a" and (key_down["lctrl"] or key_down["rctrl"])) or (key == "backspace" and (key_down["lctrl"] or key_down["rctrl"])) then
+      if #searchstr == 0 then selector_open = false end
+      searchstr = ""
+    elseif key == "backspace" or  (key == "z" and (key_down["lctrl"] or key_down["rctrl"])) then
+      searchstr = string.sub(searchstr, 1, #searchstr-1)
+    elseif key == "return" then
+      if not (key_down["lshift"] or key_down["rshift"]) and tiles_by_name[subsearchstr] then
+        brush.id = tiles_by_name[subsearchstr]
+        selector_open = false
+      elseif (not tiles_by_name[subsearchstr] or key_down["lshift"] or key_down["rshift"]) and tiles_by_name["text_"..subsearchstr] then
+        brush.id = tiles_by_name["text_"..subsearchstr]
+        selector_open = false
+      end
+    elseif (#key == 1 or key == "space") and not (key_down["lctrl"] or key_down["rctrl"] or key_down["f3"]) then
+      if #searchstr > 15 then return end
+      if key == "space" then key = " " end
+      searchstr = searchstr..key
+    end
+    subsearchstr = searchstr:gsub(" ","")
+  end
+  
+  updateSelectorTabs()
   
   if key == "w" and (key_down["lctrl"] or key_down["rctrl"]) and not selector_open then
     load_mode = "edit"
@@ -576,7 +586,7 @@ function scene.keyPressed(key)
   end
   
   --create and display meta tiles 1 higher
-  if selector_open and (key == "lshift" or key == "m" and (key_down["lctrl"] or key_down["rctrl"])) then
+  if selector_open and #searchstr == 0 and (key == "lshift" or key == "m" and (key_down["lctrl"] or key_down["rctrl"])) then
     --copy so we don't override original list
     current_tile_grid = copyTable(current_tile_grid)
     for i = 0,tile_grid_width*tile_grid_height do
@@ -622,7 +632,7 @@ function scene.keyPressed(key)
     end
   end
   
-  if selector_open and key == "rshift" or key == "r" and (key_down["lctrl"] or key_down["rctrl"]) then
+  if selector_open and #searchstr == 0 and key == "rshift" or key == "r" and (key_down["lctrl"] or key_down["rctrl"]) then
     current_tile_grid = tile_grid[selector_page]
   end
   

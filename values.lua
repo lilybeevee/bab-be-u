@@ -6771,6 +6771,7 @@ group_names_set = {}
 group_names_set_nt = {}
 for i,v in ipairs(tiles_list) do
   tiles_by_name[v.name] = i
+  tiles_by_name[v.name:gsub(" ","")] = i
   if v.texttype and v.texttype.group then
 		table.insert(group_names, v.name:sub(6, -1));
     table.insert(group_names_nt, v.name:sub(6, -1).."n't");
