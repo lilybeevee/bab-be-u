@@ -504,7 +504,7 @@ function scene.getTransform()
   local screenwidth = love.graphics.getWidth() * (is_mobile and 0.75 or 1)
   local screenheight = love.graphics.getHeight()
 
-  local scales = {0.25, 0.375, 0.5, 0.75, 1, 1.5, 2, 3, 4}
+  local scales = {0.25, 0.375, 0.5, 0.75, 1, 2, 3, 4}
 
   local scale = scales[1]
   for _,s in ipairs(scales) do
@@ -825,6 +825,7 @@ function scene.draw(dt)
         if overlay and stretch then
           love.graphics.draw(draw, fulldrawx, fulldrawy, 0, sprite:getWidth() / TILE_SIZE, sprite:getHeight() / TILE_SIZE, draw:getWidth() / 2, draw:getHeight() / 2)
         else
+          if not draw then draw = sprites["wat"] end
           love.graphics.draw(draw, fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, draw:getWidth() / 2, draw:getHeight() / 2)
         end
       end

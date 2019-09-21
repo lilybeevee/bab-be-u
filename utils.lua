@@ -680,16 +680,44 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
     local old_withrecursioncond = withrecursion[cond]
     
     withrecursion[cond] = true
-    
     if (old_withrecursioncond) then
       result = false
     elseif condtype:starts("that") then
       result = true
       local verb = condtype:sub(6)
       for _,param in ipairs(lists) do -- using "lists" to store the names, since THAT doesn't allow nesting, and we need the name for hasRule
-        if not hasRule(unit,verb,param.name) then
-          result = false
-          break
+        local word = param.unit
+        local wx = word.x
+        local wy = word.y
+        local wdir = word.dir
+        local wdx = dirs8[wdir][1]
+        local wdy = dirs8[wdir][2]
+        if param.name == "her" then
+          if unit.x ~= wx+wdx or unit.y ~= wy+wdy then
+            result = false
+          end
+        elseif param.name == "thr" then
+          local wtx,wty = wx+wdx,wy+wdy
+          local stopped = false
+          while not stopped do
+            if canMove(unit,wdx,wdy,wdir,false,false,nil,nil,nil,wtx,wty) then
+              wdx,wdy,wdir,wtx,wty = getNextTile(word, wdx, wdy, wdir, nil, wtx, wty)
+            else
+              stopped = true
+            end
+          end
+          if unit.x ~= wtx or unit.y ~= wty then
+            result = false
+          end
+        elseif param.name == "rithere" then
+          if unit.x ~= wx or unit.y ~= wy then
+            result = false
+          end
+        else
+          if not hasRule(unit,verb,param.name) then
+            result = false
+            break
+          end
         end
       end
     elseif condtype == "w/fren" then

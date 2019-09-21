@@ -989,6 +989,46 @@ function updateUnits(undoing, big_update)
         end
       end
     end
+    
+    local issoko = matchesRule(nil,"soko","?")
+    local sokowins = {}
+    for _,ruleparent in ipairs(issoko) do
+      local unit = ruleparent[2]
+      if sokowins[unit] == nil then
+        sokowins[unit] = true
+      end
+      local others = findUnitsByName(ruleparent[1].rule.object.name)
+      local fail = false
+      if #others > 0 then
+        for _,other in ipairs(others) do
+          local ons = getUnitsOnTile(other.x,other.y,nil,nil,other)
+          local innersuccess = false
+          for _,on in ipairs(ons) do
+            if sameFloat(other,on) then
+              innersuccess = true
+            end
+          end
+          if not innersuccess then
+            fail = true
+          end
+        end
+      end
+      if fail then
+        sokowins[unit] = false
+      end
+    end
+    
+    for unit,v in pairs(sokowins) do
+      if v then
+        local stuff = getUnitsOnTile(unit.x,unit.y)
+        for _,on in ipairs(stuff) do
+          local is_u = hasProperty(on,"u") or hasProperty(on,"u too") or hasProperty(on,"u tres")
+          if is_u and sameFloat(unit,on) then
+            wins = wins + 1
+          end
+        end
+      end
+    end
 
     function doOneCreate(rule, creator, createe)
       local object = createe
@@ -2541,6 +2581,17 @@ function moveUnit(unit,x,y,portal)
   --also, keep empty out of units_by_tile - it will be added in getUnitsOnTile
   if (unit.type == "outerlvl") then
   elseif (unit.name == "mous") then
+    --find out how far apart two tiles are in screen co-ordinates
+    local x0,y0 = gameTileToScreen(0,0);
+    local x1,y1 = gameTileToScreen(1,1);
+    local dx = x1-x0;
+    local dy = y1-y0;
+    local oldx = unit.x;
+    local oldy = unit.y;
+    unit.x = x
+    unit.y = y
+    unit.screenx = unit.screenx + dx*(x-oldx);
+    unit.screeny = unit.screeny + dy*(y-oldy);
   elseif (unit.fullname == "no1") and inBounds(x, y) then
     local tileid = unit.x + unit.y * mapwidth
     local oldx = unit.x
@@ -2624,7 +2675,10 @@ function updateDir(unit, dir, force)
     end
     if unit.dir == dir then return true end
   end
-  if unit.name == "mous" then return false end
+  if unit.name == "mous" then
+    unit.dir = dir
+    return true
+  end
   
   unit.dir = dir
   if (unit.rotate and not hasRule(unit,"ben't","rotatbl")) or (rules_with ~= nil and hasProperty(unit,"rotatbl")) then
@@ -2756,7 +2810,7 @@ function newTempID()
 end
 
 function newMouseID()
-  max_mouse_id = max_mouse_id + 1
+  max_mouse_id = max_mouse_id - 1
   return max_mouse_id
 end
 
