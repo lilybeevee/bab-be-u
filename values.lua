@@ -6219,7 +6219,7 @@ tiles_list = {
     color = {2,4},
     layer = 20,
     tags = {"won","patashu"},
-    desc = "WUN: A prefix condition that's true if the unit is a won level. When referring to the level itself, true if the level's been won.",
+    desc = "WUN: A prefix condition that's true if the unit is a won level. If the unit isn't a level, then true if the current level is won.",
   },
   -- 537
   {
