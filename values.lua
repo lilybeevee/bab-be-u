@@ -228,7 +228,7 @@ selector_grid_contents = {
     "metl","text_metl","vien","text_vien","leef","text_leef","karot","text_karot","fir","text_fir","eeg","text_eeg","foreeg","text_foreeg","forbeeee","text_forbeeee",0,0,
     "jail","text_jail","ladr","text_ladr","pallm","text_pallm","coco","text_coco","rouz","text_rouz","noet","text_noet","lili","text_lili",0,0,0,0,
     "fenss","text_fenss","platfor","text_platfor","tre","text_tre","stum","text_stum","dayzy","text_dayzy","lie","text_lie","reffil","text_reffil",0,0,0,0,
-    "cobll","text_cobll","spik","text_spik","frut","text_frut","fungye","text_fungye","red","text_red","lie/8","text_lie/8",0,0,0,0,0,0,
+    "cobll","text_cobll","spik","text_spik","frut","text_frut","fungye","text_fungye","red","text_red","lie/8","text_lie/8","vlc","text_vlc",0,0,0,0,
     "wuud","text_wuud","spiky","text_spiky","parsol","text_parsol","clok","text_clok","ufu","text_ufu","rockit","text_rockit","swim","text_swim","yanying","text_yanying",0,0,
     "brik","text_brik","sparkl","text_sparkl","sanglas","text_sanglas","bullb","text_bullb","son","text_son","muun","text_muun","bac","text_bac","warn","text_warn","piep","text_piep",
     "san","text_san","piler","text_piler","sancastl","text_sancastl","shel","text_shel","starr","text_starr","cor","text_cor","byc","text_byc","gorder","text_gorder","tuba","text_tuba",
@@ -6782,6 +6782,25 @@ tiles_list = {
     color = {2, 2},
     layer = 20,
     tags = {"yin yang orb", "taoism"},
+  },
+  -- 588
+  {
+    name = "vlc",
+    sprite = "vlc",
+    type = "object",
+    color = {2,2},
+    layer = 5,
+    tags = {"traffic cone"},
+  },
+  -- 589
+  {
+    name = "text_vlc",
+    sprite = "text_vlc",
+    type = "text",
+    texttype = {object = true},
+    color = {2,2},
+    layer = 20,
+    tags = {"traffic cone"},
   },
 }
 
