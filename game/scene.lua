@@ -1878,6 +1878,7 @@ function doOneMove(x, y, key, past)
   if not past then
     table.insert(all_moves, {x, y, key})
   end
+  current_move = current_move + 1
 
 	if (currently_winning) then
     --undo: undo win.
@@ -1980,6 +1981,9 @@ function doOneMove(x, y, key, past)
 			table.remove(undo_buffer, 1)
 		end
     unsetNewUnits()
+    if past_ends[current_move] then
+      undo_buffer = {}
+    end
     scene.doPastTurns()
 	end
   return true
@@ -2081,6 +2085,7 @@ function scene.doPastTurns()
           i = i + count + 1
           if i > #all_moves then
             last_tick:after(function()
+              past_ends[current_move] = true
               stopwatch.visible = false
               doing_past_turns = false
               past_playback = false
@@ -2096,6 +2101,7 @@ function scene.doPastTurns()
           do_past_effects = i <= 10 or #all_moves - i < 10
           doOneMove(past_move[1], past_move[2], past_move[3], true)
         end
+        past_ends[current_move] = true
         doing_past_turns = false
         past_playback = false
         past_rules = {}
