@@ -471,7 +471,7 @@ function scene.keyPressed(key)
         if tiles_by_name["letter_"..subsearchstr] then
           brush.id = tiles_by_name["letter_"..subsearchstr]
           selector_open = false
-        else
+        elseif #subsearchstr >= 1 and #subsearchstr <= 6 then
           brush.id = tiles_by_name["letter_custom"]
           brush.customletter = subsearchstr
           selector_open = false
