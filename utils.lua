@@ -60,6 +60,7 @@ function clear()
   shake_dur = 0
   shake_intensity = 0.5
   current_turn = 0
+  current_move = 0
   
   --za warudo needs a lot
   timeless = false
@@ -104,6 +105,7 @@ function clear()
     past_playback = false
     all_moves = {}
     past_rules = {}
+    past_ends = {}
   end
   
   card_for_id = {}

@@ -36,7 +36,7 @@ function clearRules()
     past_rules = {}
   else
     for id,past_rule in pairs(past_rules) do
-      if past_rule.turn > current_turn then
+      if past_rule.turn > current_move then
         addRule(past_rule.rule)
       end
     end
@@ -555,7 +555,7 @@ function addRule(full_rule)
   end
   has_new_rule = has_new_rule or new_rule
 
-  if rule_id ~= "" and new_rule and not past_rules[rule_id] then
+  if rule_id ~= "" and new_rule and not past_rules[rule_id] and not undoing then
     -- actually i dont know how rule stacking works ehehe
     local r1, subject_conds = getPastConds(rules.subject.conds or {})
     local r2, object_conds = getPastConds(rules.object.conds or {})
@@ -563,7 +563,7 @@ function addRule(full_rule)
       local new_rule = {rule = deepCopy(rules), units = {}, dir = 1}
       new_rule.rule.subject.conds = subject_conds
       new_rule.rule.object.conds = object_conds
-      past_rules[rule_id] = {turn = current_turn, rule = new_rule}
+      past_rules[rule_id] = {turn = current_move, rule = new_rule}
       change_past = true
     end
   end

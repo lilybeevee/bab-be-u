@@ -294,6 +294,7 @@ function undo(dont_update_rules)
     local update_rules = false
     
     last_move = undo_buffer[1].last_move or {0, 0}
+    current_turn = current_turn - 1
 
     for _,v in ipairs(undo_buffer[1]) do
       local new_update_rules = undoOneAction(1, _, v, false)
