@@ -99,6 +99,7 @@ function clear()
   end
 
   if not doing_past_turns then
+    change_past = false
     past_playback = false
     all_moves = {}
     past_rules = {}
@@ -1732,6 +1733,8 @@ function hslToRgb(h, s, l, a)
 end
 
 function addParticles(ptype,x,y,color,count)
+  if doing_past_turns and not do_past_effects then return end
+
   if type(color[1]) == "table" then color = color[1] end
   if ptype == "destroy" then
     local ps = love.graphics.newParticleSystem(sprites["circle"])
@@ -2195,6 +2198,7 @@ function setRainbowModeColor(value, brightness)
 end
 
 function shakeScreen(dur, intensity)
+  if doing_past_turns and not do_past_effects then return end
   shake_dur = dur+shake_dur/4
   shake_intensity = shake_intensity + intensity/2
 end
