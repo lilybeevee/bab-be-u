@@ -2071,6 +2071,9 @@ function scene.doPastTurns()
           local function pastMove(i, count)
             for j = 0, count do
               do_past_effects = j == count -- reduce effects
+              if i+j == #all_moves then
+                should_parse_rules = true
+              end
               doOneMove(all_moves[i+j][1], all_moves[i+j][2], all_moves[i+j][3], true)
             end
           end
@@ -2091,7 +2094,6 @@ function scene.doPastTurns()
               past_playback = false
               past_rules = {}
               undo_buffer = {}
-              should_parse_rules = true
             end, 0)
           end
         end
@@ -2099,6 +2101,9 @@ function scene.doPastTurns()
         scene.resetStuff()
         for i,past_move in ipairs(all_moves) do
           do_past_effects = i <= 10 or #all_moves - i < 10
+          if i == #all_moves then
+            should_parse_rules = true
+          end
           doOneMove(past_move[1], past_move[2], past_move[3], true)
         end
         past_ends[current_move] = true
@@ -2106,7 +2111,6 @@ function scene.doPastTurns()
         past_playback = false
         past_rules = {}
         undo_buffer = {} -- TODO: Undo the timeline?
-        should_parse_rules = true
         for k,v in pairs(tweens) do
           v[1]:set(v[1].duration)
         end
