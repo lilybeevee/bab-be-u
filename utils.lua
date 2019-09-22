@@ -206,48 +206,46 @@ function loadMap()
         id, tile, x, y, dir, specials, color = unit.id, unit.tile, unit.x, unit.y, unit.dir, unit.special, unit.color
         x = x + offset.x
         y = y + offset.y
-        if inBounds(x, y) then
-          if not dofloodfill then
+        if not dofloodfill then
+          local unit = createUnit(tile, x, y, dir, false, id, nil, color and {{name=color}})
+          unit.special = specials
+        elseif tile == tiles_by_name["lvl"] then
+          if readSaveFile(specials.level, "seen") then
+            local tfs = readSaveFile(level_name, "transform")
+            for _,t in ipairs(tfs or {tiles_listPossiblyMeta(tile).name}) do
+              local unit = createUnit(tiles_by_namePossiblyMeta(t), x, y, dir, false, id, nil, color and {{name=color}})
+              unit.special = specials
+              unit.special.visibility = "open"
+              if readSaveFile(specials.level, "won") then
+                table.insert(floodfill, {unit, 1})
+              end
+            end
+          elseif specials.visibility == "open" then
             local unit = createUnit(tile, x, y, dir, false, id, nil, color and {{name=color}})
             unit.special = specials
-          elseif tile == tiles_by_name["lvl"] then
-            if readSaveFile(specials.level, "seen") then
-              local tfs = readSaveFile(level_name, "transform")
-              for _,t in ipairs(tfs or {tiles_listPossiblyMeta(tile).name}) do
-                local unit = createUnit(tiles_by_namePossiblyMeta(t), x, y, dir, false, id, nil, color and {{name=color}})
-                unit.special = specials
+          else
+            table.insert(objects, {id, tile, x, y, dir, specials, color})
+          end
+        elseif tile == tiles_by_name["lin"] then
+          if specials.visibility == "hidden" then
+            table.insert(objects, {id, tile, x, y, dir, specials, color})
+          else
+            local unit = createUnit(tile, x, y, dir, false, id, nil, color and {{name=color}})
+            unit.special = specials
+          end
+        else
+          if specials.level then
+            local tfs = readSaveFile(level_name, "transform")
+            for _,t in ipairs(tfs or {tiles_listPossiblyMeta(tile).name}) do
+              local unit = createUnit(tiles_by_namePossiblyMeta(t), x, y, dir, false, id, nil, color and {{name=color}})
+              unit.special = specials
+              if readSaveFile(specials.level, "seen") then
                 unit.special.visibility = "open"
-                if readSaveFile(specials.level, "won") then
-                  table.insert(floodfill, {unit, 1})
-                end
               end
-            elseif specials.visibility == "open" then
-              local unit = createUnit(tile, x, y, dir, false, id, nil, color and {{name=color}})
-              unit.special = specials
-            else
-              table.insert(objects, {id, tile, x, y, dir, specials, color})
-            end
-          elseif tile == tiles_by_name["lin"] then
-            if specials.visibility == "hidden" then
-              table.insert(objects, {id, tile, x, y, dir, specials, color})
-            else
-              local unit = createUnit(tile, x, y, dir, false, id, nil, color and {{name=color}})
-              unit.special = specials
             end
           else
-            if specials.level then
-              local tfs = readSaveFile(level_name, "transform")
-              for _,t in ipairs(tfs or {tiles_listPossiblyMeta(tile).name}) do
-                local unit = createUnit(tiles_by_namePossiblyMeta(t), x, y, dir, false, id, nil, color and {{name=color}})
-                unit.special = specials
-                if readSaveFile(specials.level, "seen") then
-                  unit.special.visibility = "open"
-                end
-              end
-            else
-              local unit = createUnit(tile, x, y, dir, false, id, nil, color and {{name=color}})
-              unit.special = specials
-            end
+            local unit = createUnit(tile, x, y, dir, false, id, nil, color and {{name=color}})
+            unit.special = specials
           end
         end
       end
