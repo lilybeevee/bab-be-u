@@ -1227,15 +1227,8 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
         result = false
       end
     elseif condtype == "wun" then
-      if unit == outerlvl then
-        if not readSaveFile(level_name,"won") then
-          result = false
-        end
-      else
-        if not readSaveFile(unit.special.name,"won") then
-          result = false
-        end
-      end
+      local name = unit.special.name or level_name
+      result = readSaveFile(name,"won")
     else
       print("unknown condtype: " .. condtype)
       result = false
