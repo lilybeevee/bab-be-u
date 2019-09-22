@@ -255,9 +255,9 @@ function scene.loadLevel(data, new)
   level_background_sprite = data.background_sprite or ""
 
   if map_ver == 0 then
-    maps = {{0, loadstring("return " .. mapstr)()}}
+    maps = {{data = loadstring("return " .. mapstr)(), info = mapdata}}
   else
-    maps = {{map_ver, mapstr}}
+    maps = {{data = mapstr, info = mapdata}}
   end
 
   if load_mode == "edit" then

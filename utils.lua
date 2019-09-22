@@ -135,9 +135,20 @@ function loadMap()
       units_by_tile[x + y * mapwidth] = {}
     end
   end]]
+  local rects = {}
   for _,mapdata in ipairs(maps) do
-    local version = mapdata[1]
-    local map = mapdata[2]
+    local version = mapdata.info.version
+    local map = mapdata.data
+
+    local offset = {x = 0, y = 0}
+    if mapdata.info.width < mapwidth then
+      offset.x = math.floor((mapwidth / 2) - (mapdata.info.width / 2))
+    end
+    if mapdata.info.height < mapheight then
+      offset.y = math.floor((mapheight / 2) - (mapdata.info.height / 2))
+    end
+    table.insert(rects, {x = offset.x, y = offset.y, w = mapdata.info.width, h = mapdata.info.height})
+
     if version == 0 then
       if map == nil then
         map = {}
@@ -162,13 +173,13 @@ function loadMap()
           local tile, x, y, dir
           tile, x, y, dir, pos = love.data.unpack(PACK_UNIT_V1, map, pos)
           if inBounds(x, y) then
-            createUnit(tile, x, y, dir)
+            createUnit(tile, x + offset.x, y + offset.y, dir)
           end
         elseif version == 2 or version == 3 then
           local id, tile, x, y, dir, specials
           id, tile, x, y, dir, specials, pos = love.data.unpack(version == 2 and PACK_UNIT_V2 or PACK_UNIT_V3, map, pos)
-          if inBounds(x, y) then
-            local unit = createUnit(tile, x, y, dir, false, id)
+          if inBounds(x + offset.y, y + offset.y) then
+            local unit = createUnit(tile, x + offset.x, y + offset.y, dir, false, id)
             local spos = 1
             while spos <= #specials do
               local k, v
@@ -190,6 +201,8 @@ function loadMap()
       local dofloodfill = scene ~= editor
       for _,unit in ipairs(map) do
         id, tile, x, y, dir, specials, color = unit.id, unit.tile, unit.x, unit.y, unit.dir, unit.special, unit.color
+        x = x + offset.x
+        y = y + offset.y
         if inBounds(x, y) then
           if not dofloodfill then
             local unit = createUnit(tile, x, y, dir, false, id, nil, color and {{name=color}})
@@ -275,6 +288,20 @@ function loadMap()
             end
           end
         end
+      end
+    end
+  end
+  for x=0,mapwidth-1 do
+    for y=0,mapheight-1 do
+      local in_bounds = false
+      for _,rect in ipairs(rects) do
+        if x >= rect.x and x < rect.x + rect.w and y >= rect.y and y < rect.y + rect.h then
+          in_bounds = true
+          break
+        end
+      end
+      if not in_bounds then
+        createUnit(tiles_by_name["bordr"], x, y, 1)
       end
     end
   end
@@ -2299,9 +2326,9 @@ function loadLevels(levels, mode, level_objs)
     level_background_sprite = data.background_sprite or ""
 
     if map_ver == 0 then
-      table.insert(maps, {0, loadstring("return " .. mapstr)()})
+      table.insert(maps, {data = loadstring("return " .. mapstr)(), info = data})
     else
-      table.insert(maps, {map_ver, mapstr})
+      table.insert(maps, {data = mapstr, info = data})
     end
 
     if love.filesystem.getInfo(dir .. level .. ".png") then
