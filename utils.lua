@@ -97,6 +97,12 @@ function clear()
       end
     end
   end
+
+  if not doing_past_turns then
+    past_playback = false
+    all_moves = {}
+    past_rules = {}
+  end
   
   card_for_id = {}
 
@@ -1234,6 +1240,10 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
         if not readSaveFile(unit.special.name,"won") then
           result = false
         end
+      end
+    elseif condtype == "past" then
+      if not doing_past_turns then
+        result = false
       end
     else
       print("unknown condtype: " .. condtype)

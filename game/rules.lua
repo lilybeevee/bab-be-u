@@ -32,6 +32,12 @@ function clearRules()
     addBaseRule("this","be","wurd")
   end
 
+  if doing_past_turns then
+    for _,rule in ipairs(past_rules) do
+      addRule(rule)
+    end
+  end
+
   has_new_rule = false
 end
 
@@ -531,13 +537,24 @@ function addRule(full_rule)
   local verb_not = 0
   local object_not = 0
   
+  local new_rule = false
   for _,unit in ipairs(units) do
     unit.active = true
     if not unit.old_active and not first_turn then
       addParticles("rule", unit.x, unit.y, unit.color_override or unit.color)
-      has_new_rule = true
+      new_rule = true
     end
     unit.old_active = unit.active
+  end
+
+  if new_rule and not doing_past_turns then
+    has_new_rule = true
+    for _,cond in ipairs(rules.subject.conds) do
+      if cond.name == "past" then
+        past_rules = past_rules or {}
+        table.insert(past_rules, {rule = rules, units = {}, dir = dir})
+      end
+    end
   end
   
   for _,unit in ipairs(units) do
