@@ -2025,6 +2025,11 @@ function scene.doPastTurns()
     doing_past_turns = true
     past_playback = true
 
+    if not settings["stopwatch_effect"] then
+      do_past_effects = true
+      playSound("stopwatch")
+    end
+
     tick.delay(function() 
       do_past_effects = false
       local past_count = 0
@@ -2041,13 +2046,14 @@ function scene.doPastTurns()
       if past_count >= 50 then
         destroyLevel("infloop")
       elseif settings["stopwatch_effect"] then
-        local delay = math.min(1/#all_moves, 0.1)
+        local delay = 1/#all_moves
         stopwatch.visible = true
         stopwatch.big.rotation = 0
         stopwatch.small.rotation = 0
-        addTween(tween.new(#all_moves * delay, stopwatch.big, {rotation = 360}), "stopwatch")
+        addTween(tween.new(1, stopwatch.big, {rotation = 360}), "stopwatch")
 
         do_past_effects = true
+        playSound("stopwatch")
         scene.resetStuff()
         for i,past_move in ipairs(all_moves) do
           tick.delay(function() 
