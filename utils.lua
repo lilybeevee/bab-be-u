@@ -59,6 +59,7 @@ function clear()
   cursors = {}
   shake_dur = 0
   shake_intensity = 0.5
+  current_turn = 0
   
   --za warudo needs a lot
   timeless = false
@@ -1264,9 +1265,7 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
       local name = unit.special.name or level_name
       result = readSaveFile(name,"won")
     elseif condtype == "past" then
-      if not doing_past_turns then
-        result = false
-      end
+      result = false
     else
       print("unknown condtype: " .. condtype)
       result = false
@@ -2777,4 +2776,17 @@ function drawCustomLetter(text, x, y, rot, sx, sy, ox, oy)
     love.graphics.draw(sprites["letters_"..(text:sub(i,i) or "a")] or sprites["wut"], quad, dx, dy)
   end
   love.graphics.pop()
+end
+
+function getPastConds(conds)
+  local result = false
+  local new_conds = {}
+  for _,cond in ipairs(conds) do
+    if cond.name == "past" then
+      result = true
+    else
+      table.insert(new_conds, cond)
+    end
+  end
+  return result, new_conds
 end

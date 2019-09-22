@@ -2046,26 +2046,49 @@ function scene.doPastTurns()
       if past_count >= 50 then
         destroyLevel("infloop")
       elseif settings["stopwatch_effect"] then
+        local moves_per_tick = 1
         local delay = 1/#all_moves
+        while delay < 1/60 do
+          moves_per_tick = moves_per_tick * 2
+          delay = delay * 2
+        end
         stopwatch.visible = true
         stopwatch.big.rotation = 0
         stopwatch.small.rotation = 0
-        addTween(tween.new(1, stopwatch.big, {rotation = 360}), "stopwatch")
+        addTween(tween.new(delay * math.ceil(#all_moves / moves_per_tick), stopwatch.big, {rotation = 360}), "stopwatch")
 
         do_past_effects = true
         playSound("stopwatch")
         scene.resetStuff()
-        for i,past_move in ipairs(all_moves) do
-          tick.delay(function() 
-            doOneMove(past_move[1], past_move[2], past_move[3], true)
-            if i == #all_moves then
+        local last_tick = nil
+        local i = 1
+        while i <= #all_moves do
+          local count = math.min(#all_moves - i, moves_per_tick - 1)
+          local function pastMove(i, count)
+            for j = 0, count do
+              do_past_effects = j == count -- reduce effects
+              doOneMove(all_moves[i+j][1], all_moves[i+j][2], all_moves[i+j][3], true)
+            end
+          end
+          local a = i
+          if last_tick then
+            last_tick = last_tick:after(function() pastMove(a, count) end, delay)
+          else
+            last_tick = tick.delay(function() 
+              pastMove(a, count)
+            end, delay)
+          end
+          i = i + count + 1
+          if i > #all_moves then
+            last_tick:after(function()
+              stopwatch.visible = false
               doing_past_turns = false
               past_playback = false
               past_rules = {}
               undo_buffer = {}
-              stopwatch.visible = false
-            end
-          end, delay * i)
+              should_parse_rules = true
+            end, 0)
+          end
         end
       else
         scene.resetStuff()
@@ -2077,6 +2100,7 @@ function scene.doPastTurns()
         past_playback = false
         past_rules = {}
         undo_buffer = {} -- TODO: Undo the timeline?
+        should_parse_rules = true
         for k,v in pairs(tweens) do
           v[1]:set(v[1].duration)
         end

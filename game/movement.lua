@@ -73,6 +73,7 @@ function doMovement(movex, movey, key)
   if (should_parse_rules_at_turn_boundary) then
     should_parse_rules = true
   end
+  current_turn = current_turn + 1
 
 	extendReplayString(movex, movey, key)
   if (key == "clikt") then
