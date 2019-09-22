@@ -52,6 +52,7 @@ local displaywords = false
 local stack_box, stack_font
 local pathlock_box, pathlock_font
 local initialwindoposition
+local stopwatch
 
 local sessionseed
 
@@ -132,6 +133,8 @@ function scene.load()
     mobile_controls_p3:setBounds(11*twelfth, screenheight-4.15*twelfth)
   end):setBGImage(sprites["ui_3"]):bg({0, 0, 0, 0})
 
+  stopwatch = {visible = false, big = {rotation=0}, small = {rotation=0}}
+
   gooi.setGroupVisible("mobile-controls", is_mobile)
 end
 
@@ -169,7 +172,7 @@ function scene.update(dt)
 end
 
 function doReplay(dt)
-	if not replay_playback then return false end
+  if not replay_playback then return false end
 	if love.timer.getTime() > (replay_playback_time + replay_playback_interval) then
     if not replay_pause then
       replay_playback_time = replay_playback_time + replay_playback_interval
@@ -504,7 +507,7 @@ function scene.getTransform()
   local screenwidth = love.graphics.getWidth() * (is_mobile and 0.75 or 1)
   local screenheight = love.graphics.getHeight()
 
-  local scales = {0.25, 0.375, 0.5, 0.75, 1, 1.5, 2, 3, 4}
+  local scales = {0.25, 0.375, 0.5, 0.75, 1, 2, 3, 4}
 
   local scale = scales[1]
   for _,s in ipairs(scales) do
@@ -825,6 +828,7 @@ function scene.draw(dt)
         if overlay and stretch then
           love.graphics.draw(draw, fulldrawx, fulldrawy, 0, sprite:getWidth() / TILE_SIZE, sprite:getHeight() / TILE_SIZE, draw:getWidth() / 2, draw:getHeight() / 2)
         else
+          if not draw then draw = sprites["wat"] end
           love.graphics.draw(draw, fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, draw:getWidth() / 2, draw:getHeight() / 2)
         end
       end
@@ -918,7 +922,7 @@ function scene.draw(dt)
     --reset back to values being used before
     love.graphics.setLineWidth(2)
 
-    if not (unit.xwx or spookmode) and unit.name ~= "lin" and unit.name ~= "byc" and unit.name ~= "bac" then -- xwx takes control of the drawing sprite, so it shouldn't render the normal object
+    if not (unit.xwx or spookmode) and unit.name ~= "lin" and unit.name ~= "byc" and unit.name ~= "bac" and unit.fullname ~= "letter_custom" then -- xwx takes control of the drawing sprite, so it shouldn't render the normal object
       drawSprite()
     end
 
@@ -991,6 +995,10 @@ function scene.draw(dt)
         love.graphics.draw(sprite, fulldrawx, fulldrawy, 0, unit.draw.scalex*3/4, unit.draw.scaley*3/4, sprite:getWidth() / 2, sprite:getHeight() / 2)
       end
       love.graphics.pop()
+    end
+    
+    if unit.fullname == "letter_custom" then
+      drawCustomLetter(unit.special.customletter, fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, 16, 16)
     end
 
     if #unit.overlay > 0 and unit.fullname ~= "no1" then
@@ -1216,7 +1224,7 @@ function scene.draw(dt)
       if type(unit.sprite) == "table" then
         sprite = unit.sprite[1]..(unit.meta or "")..(unit.nt and "nt" or "")..(unit.color_override and dump(unit.color_override) or "")
       else
-        sprite = unit.sprite..(unit.meta or "")..(unit.nt and "nt" or "")..(unit.color_override and dump(unit.color_override) or "")
+        sprite = (unit.fullname ~= "letter_custom" and unit.sprite or "letter_"..unit.special.customletter)..(unit.meta or "")..(unit.nt and "nt" or "")..(unit.color_override and dump(unit.color_override) or "")
       end
       if not already_added[sprite] then already_added[sprite] = {} end
       local dir = unit.rotatdir
@@ -1263,8 +1271,12 @@ function scene.draw(dt)
         else
           love.graphics.setColor(dcolor[1], dcolor[2], dcolor[3], dcolor[4] or 1)
         end
-        local sprite = sprites[unit.sprite]
-        love.graphics.draw(sprite, 0, 0, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+        if unit.fullname == "letter_custom" then
+          drawCustomLetter(unit.special.customletter, 0, 0, 0, 1, 1, 16, 16)
+        else
+          local sprite = sprites[unit.sprite]
+          love.graphics.draw(sprite, 0, 0, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+        end
       else
         for j,image in ipairs(unit.sprite) do
           love.graphics.setColor(getPaletteColor(dcolor[j][1], dcolor[j][2]))
@@ -1348,6 +1360,36 @@ function scene.draw(dt)
     love.graphics.pop()
   end
   love.graphics.pop()
+
+  --176 98
+  if stopwatch.visible then
+    stopwatch.small.rotation = stopwatch.small.rotation + dt * 20
+
+    local sw_sprite = sprites["ui/stopwatch"]
+    local big_hand = sprites["ui/stopwatch_big_hand"]
+    local small_hand = sprites["ui/stopwatch_small_hand"]
+
+    love.graphics.setColor(0, 0, 0, 0.25)
+    love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
+
+    love.graphics.setColor(1, 1, 1)
+    love.graphics.push()
+    love.graphics.translate(love.graphics.getWidth() / 2 - sw_sprite:getWidth() / 2, love.graphics.getHeight() / 2 - sw_sprite:getHeight() / 2)
+    love.graphics.draw(sw_sprite)
+
+    love.graphics.push()
+    love.graphics.translate(176 + small_hand:getWidth() / 2, 98 + small_hand:getHeight() / 2)
+    love.graphics.rotate(stopwatch.small.rotation)
+    love.graphics.draw(small_hand, -small_hand:getWidth() / 2, -small_hand:getHeight() / 2)
+    love.graphics.pop()
+
+    love.graphics.push()
+    love.graphics.translate(big_hand:getWidth() / 2, big_hand:getHeight() / 2)
+    love.graphics.rotate(math.rad(stopwatch.big.rotation))
+    love.graphics.draw(big_hand, -big_hand:getWidth() / 2, -big_hand:getHeight() / 2)
+    love.graphics.pop()
+    love.graphics.pop()
+  end
 
   love.graphics.push()
   love.graphics.setColor(1, 1, 1)
@@ -1607,7 +1649,7 @@ function scene.draw(dt)
 end
 
 function scene.checkInput()
-  if replay_playback then return end
+  if replay_playback or past_playback then return end
   local start_time = love.timer.getTime()
   do_move_sound = false
   
@@ -1829,7 +1871,11 @@ function escResult(do_actual)
   end
 end
 
-function doOneMove(x, y, key)
+function doOneMove(x, y, key, past)
+  if not past then
+    table.insert(all_moves, {x, y, key})
+  end
+
 	if (currently_winning) then
     --undo: undo win.
     --idle on the winning screen: go to the editor, if we were editing; go to the parent level, if known (prefer explicit to implicit), else go back to the world we were looking at.
@@ -1930,7 +1976,8 @@ function doOneMove(x, y, key)
 		if #undo_buffer > 0 and #undo_buffer[1] == 0 then
 			table.remove(undo_buffer, 1)
 		end
-		unsetNewUnits()
+    unsetNewUnits()
+    scene.doPastTurns()
 	end
   return true
 end
@@ -1967,6 +2014,44 @@ function scene.doPassiveParticles(timer,word,effect,delay,chance,count,color)
         end
       end
     end
+  end
+end
+
+function scene.doPastTurns()
+  if not doing_past_turns and #past_rules > 0 then
+    doing_past_turns = true
+    past_playback = true
+
+    tick.delay(function()
+      if settings["stopwatch_effect"] then
+        local delay = math.min(1/#all_moves, 0.1)
+        stopwatch.visible = true
+        stopwatch.big.rotation = 0
+        stopwatch.small.rotation = 0
+        addTween(tween.new(#all_moves * delay, stopwatch.big, {rotation = 360}), "stopwatch")
+
+        scene.resetStuff()
+        for i,past_move in ipairs(all_moves) do
+          tick.delay(function() 
+            doOneMove(past_move[1], past_move[2], past_move[3], true)
+            if i == #all_moves then
+              doing_past_turns = false
+              past_playback = false
+              past_rules = {}
+              stopwatch.visible = false
+            end
+          end, delay * i)
+        end
+      else
+        scene.resetStuff()
+        for i,past_move in ipairs(all_moves) do
+          doOneMove(past_move[1], past_move[2], past_move[3], true)
+        end
+        doing_past_turns = false
+        past_playback = false
+        past_rules = {}
+      end
+    end, 0.25)
   end
 end
 

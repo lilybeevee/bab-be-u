@@ -21,6 +21,7 @@ local level_dialogue, last_lin_hidden
 local saved_popup
 
 local searchstr = ""
+local subsearchstr = ""
 
 local nt = false
 -- for retaining information cross-scene
@@ -430,19 +431,6 @@ mobile_picking = false
 mobile_stackmode = "none"
 
 function scene.keyPressed(key)
-  if selector_open then
-    if key == "escape" or (key == "a" and key_down["lctrl"]) or (key == "backspace" and key_down["lctrl"]) then
-      if #searchstr == 0 then selector_open = false end
-      searchstr = ""
-    elseif key == "backspace" or  (key == "z" and key_down["lctrl"]) then
-      searchstr = string.sub(searchstr, 1, #searchstr-1)
-    elseif (#key == 1 or key == "space") and not (key_down["lctrl"] or key_down["rctrl"] or key_down["f3"]) then
-      if #searchstr > 15 then return end
-      if key == "space" then key = " " end
-      searchstr = searchstr..key
-    end
-  end
-
   if key == "escape" and not selector_open then
     if not capturing then
       if not spookmode then
@@ -466,6 +454,46 @@ function scene.keyPressed(key)
       ignore_mouse = true
     end
   end
+
+  if selector_open then
+    if key == "escape" or (key == "a" and (key_down["lctrl"] or key_down["rctrl"])) or (key == "backspace" and (key_down["lctrl"] or key_down["rctrl"])) then
+      if #searchstr == 0 then selector_open = false end
+      searchstr = ""
+    elseif key == "backspace" or  (key == "z" and (key_down["lctrl"] or key_down["rctrl"])) then
+      searchstr = string.sub(searchstr, 1, #searchstr-1)
+    elseif key == "return" then
+      if key_down["lshift"] or key_down["rshift"] then
+        if tiles_by_name["text_"..subsearchstr] then
+          brush.id = tiles_by_name["text_"..subsearchstr]
+          selector_open = false
+        end
+      elseif key_down["lctrl"] or key_down["rctrl"] then
+        if tiles_by_name["letter_"..subsearchstr] then
+          brush.id = tiles_by_name["letter_"..subsearchstr]
+          selector_open = false
+        elseif #subsearchstr >= 1 and #subsearchstr <= 6 then
+          brush.id = tiles_by_name["letter_custom"]
+          brush.customletter = subsearchstr
+          selector_open = false
+        end
+      else
+        if tiles_by_name[subsearchstr] then
+          brush.id = tiles_by_name[subsearchstr]
+          selector_open = false
+        elseif tiles_by_name["text_"..subsearchstr] then
+          brush.id = tiles_by_name["text_"..subsearchstr]
+          selector_open = false
+        end
+      end
+    elseif (#key == 1 or key == "space") and not (key_down["lctrl"] or key_down["rctrl"] or key_down["f3"]) then
+      if #searchstr > 15 then return end
+      if key == "space" then key = " " end
+      searchstr = searchstr..key
+    end
+    subsearchstr = searchstr:gsub(" ","")
+  end
+  
+  updateSelectorTabs()
   
   if key == "w" and (key_down["lctrl"] or key_down["rctrl"]) and not selector_open then
     load_mode = "edit"
@@ -574,7 +602,7 @@ function scene.keyPressed(key)
   end
   
   --create and display meta tiles 1 higher
-  if selector_open and (key == "lshift" or key == "m" and (key_down["lctrl"] or key_down["rctrl"])) then
+  if selector_open and #searchstr == 0 and (key == "lshift" or key == "m" and (key_down["lctrl"] or key_down["rctrl"])) then
     --copy so we don't override original list
     current_tile_grid = copyTable(current_tile_grid)
     for i = 0,tile_grid_width*tile_grid_height do
@@ -620,7 +648,7 @@ function scene.keyPressed(key)
     end
   end
   
-  if selector_open and key == "rshift" or key == "r" and (key_down["lctrl"] or key_down["rctrl"]) then
+  if selector_open and #searchstr == 0 and key == "rshift" or key == "r" and (key_down["lctrl"] or key_down["rctrl"]) then
     current_tile_grid = tile_grid[selector_page]
   end
   
@@ -947,7 +975,8 @@ function scene.update(dt)
             end
             if #hovered >= 1 then
               for _,unit in ipairs(hovered) do
-                if unit.tile == brush.id and (unit.color_override and (type(unit.color_override[1]) == "table" and colour_for_palette[unit.color_override[1][1]][unit.color_override[1][2]] or colour_for_palette[unit.color_override[1]][unit.color_override[2]] == brush.color) or (unit.color_override == nil and brush.color == nil)) then
+                if unit.tile == brush.id and (unit.tile ~= tiles_by_name["letter_custom"] or unit.special.customletter == brush.customletter)
+                  and (unit.color_override and (type(unit.color_override[1]) == "table" and colour_for_palette[unit.color_override[1][1]][unit.color_override[1][2]] or colour_for_palette[unit.color_override[1]][unit.color_override[2]] == brush.color) or (unit.color_override == nil and brush.color == nil)) then
                   if not (ctrl_active or selectorhold) then
                     existing = unit
                   end
@@ -983,6 +1012,9 @@ function scene.update(dt)
                   end
                   if last_lin_hidden and brush.id == tiles_by_name["lin"] then
                     new_unit.special.visibility = "hidden"
+                  end
+                  if brush.id == tiles_by_name["letter_custom"] then
+                    new_unit.special.customletter = brush.customletter
                   end
                   scene.updateMap()
                   painted = true
@@ -1022,9 +1054,17 @@ function scene.update(dt)
                 brush.picked_index = new_index
                 brush.id = hovered[new_index].tile
                 brush.color = hovered[new_index].color_override and (type(hovered[new_index].color_override[1]) == "table" and colour_for_palette[hovered[new_index].color_override[1][1]][hovered[new_index].color_override[1][2]] or colour_for_palette[hovered[new_index].color_override[1]][hovered[new_index].color_override[2]]) or nil
+                brush.customletter = hovered[new_index].special.customletter
+                if hovered[new_index].name == "lin" then
+                  last_lin_hidden = (hovered[new_index].special.visibility == "hidden")
+                end
               else
-                brush.id = hovered[1].tile
+                brush.id = hovered[1].tile 
                 brush.color = hovered[1].color_override and (type(hovered[1].color_override[1]) == "table" and colour_for_palette[hovered[1].color_override[1][1]][hovered[1].color_override[1][2]] or colour_for_palette[hovered[1].color_override[1]][hovered[1].color_override[2]]) or nil
+                brush.customletter = hovered[1].special.customletter
+                if hovered[1].name == "lin" then
+                  last_lin_hidden = (hovered[1].special.visibility == "hidden")
+                end
                 brush.picked_index = 1
               end
               brush.mode = "picking"
@@ -1094,7 +1134,7 @@ function scene.transformParameters()
   local screenwidth = love.graphics.getWidth() * (is_mobile and 0.75 or 1)
   local screenheight = love.graphics.getHeight() - (is_mobile and sprites["ui/cog"]:getHeight() or 0)
 
-  local scales = {0.25, 0.375, 0.5, 0.75, 1, 1.5, 2, 3, 4}
+  local scales = {0.25, 0.375, 0.5, 0.75, 1, 2, 3, 4}
 
   local scale = scales[1]
   for _,s in ipairs(scales) do
@@ -1211,6 +1251,8 @@ function scene.draw(dt)
               love.graphics.draw(sprites["byc"], (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
               setColor(color)
               love.graphics.draw(sprites[unit.name == "bac" and "bac" or "byc_editor"], (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+            elseif unit.fullname == "letter_custom" then
+              drawCustomLetter(unit.special.customletter, (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
             else
               if type(unit.sprite) == "table" then
                 for j,image in ipairs(unit.sprite) do
@@ -1284,22 +1326,28 @@ function scene.draw(dt)
             if rainbowmode then love.graphics.setColor(hslToRgb((love.timer.getTime()/3+x/tile_grid_width+y/tile_grid_height)%1, .5, .5, 1)) end
             
             local found_matching_tag = false
+            local tilename = tile.name:gsub(" ","")
             
             if tile.tags ~= nil then
               for _,tag in ipairs(tile.tags) do
-                if string.match(tag, searchstr) then
+                tag = tag:gsub(" ","")
+                if string.match(tag, subsearchstr) then
                   found_matching_tag = true
                 end
               end
             end
             
-            if string.match(tile.name, searchstr) then
+            if string.match(tilename, subsearchstr) then
+              found_matching_tag = true
+            end
+            
+            if tile.type and string.match(tile.type, subsearchstr) then
               found_matching_tag = true
             end
             
             if tile.texttype ~= nil then
               for type,_ in pairs(tile.texttype) do
-                if string.match(type, searchstr) then
+                if string.match(type, subsearchstr) then
                   found_matching_tag = true
                 end
               end
@@ -1388,6 +1436,8 @@ function scene.draw(dt)
             love.graphics.draw(sprites["byc"], (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, math.rad(rotation), 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
             setColor(color, 0.25)
             love.graphics.draw(sprites[tile.name == "bac" and "bac" or "byc_editor"], (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, math.rad(rotation), 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+          elseif tile.name == "letter_custom" then
+            drawCustomLetter(brush.customletter, (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, math.rad(rotation), 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
           else
             if type(sprite_name) == "table" then
               for i,image in ipairs(sprite_name) do
@@ -1413,9 +1463,11 @@ function scene.draw(dt)
       love.graphics.setColor(getPaletteColor(0,3))
       if infomode then love.graphics.print(last_hovered_tile[1] .. ', ' .. last_hovered_tile[2], 0, roomheight+36) end
       if not is_mobile then
-        love.graphics.printf("CTRL + TAB or CTRL + NUMBER to change tabs", 0, roomheight, roomwidth, "right")
-        love.graphics.printf("CTLR + M to get meta text, CTRL + R to refresh", 0, roomheight+12, roomwidth, "right")
-        love.graphics.printf("CTRL + N to toggle n't text", 0, roomheight+24, roomwidth, "right")
+        if not infomode then
+          love.graphics.printf("CTRL + TAB or CTRL + NUMBER to change tabs", 0, roomheight, roomwidth, "right")
+          love.graphics.printf("CTLR + M to get meta text, CTRL + R to refresh", 0, roomheight+12, roomwidth, "right")
+          love.graphics.printf("CTRL + N to toggle n't text", 0, roomheight+24, roomwidth, "right")
+        end
         if #searchstr > 0 then
           love.graphics.print("Searching for: " .. searchstr, 0, roomheight)
         else
@@ -1454,9 +1506,46 @@ function scene.draw(dt)
           love.graphics.push()
           love.graphics.applyTransform(scene.getTransform())
           love.graphics.print("Name: " .. tile.name, 0, roomheight+12)
-          if tile.tags ~= nil then
-            love.graphics.print("Tags: " .. table.concat(tile.tags,", "), 0, roomheight+24)
+          love.graphics.print("Layer: " .. tostring(tile.layer), 150, roomheight)
+          if tile.type then
+            love.graphics.print("Type: " .. tile.type, 150, roomheight+12)
+          else
+            love.graphics.print("Type: object", 150, roomheight+12)
           end
+          local color = dump(tile.color)
+          if type(tile.color[1]) == "table" then
+            color = color:sub(2,-2)
+          end
+          color = color:gsub("{","(")
+          color = color:gsub("}",")")
+          love.graphics.print("Color: " .. color, 150, roomheight+36)
+          local tags = ""
+          if tile.type == "text" then
+            for key,_ in pairs(tile.texttype) do
+              if key == "cond_infix" then
+                tags = tags .. "infix condition, "
+              elseif key == "cond_infix_dir" then
+                tags = tags .. "direction infix condition, "
+              elseif key == "cond_prefix" then
+                tags = tags .. "prefix condition, "
+              elseif key == "verb_unit" then
+                tags = tags .. "unit verb, "
+              elseif key == "verb_class" then
+                tags = tags .. "class verb, "
+              elseif key == "verb_sing" then
+                tags = tags .. "special verb, "
+              elseif key == "verb_be" or key == "and" or key == "not" then
+              else
+                tags = tags .. key:gsub("_"," ") .. ", "
+              end
+            end
+          else
+            tags = "object, "
+          end
+          if tile.tags ~= nil then
+            tags = table.concat(tile.tags,", ") .. ", " .. tags
+          end
+          love.graphics.print(tags:sub(1,-3), 0, roomheight+24)
           love.graphics.pop()
         end
       end
@@ -1667,26 +1756,34 @@ function scene.draw(dt)
     if is_mobile then
       local twelfth = love.graphics.getWidth()/12
       if mobile_picking then
-          love.graphics.setColor(1, 1, 1, 1)
-          love.graphics.draw(sprites["ui_plus"],10*twelfth,love.graphics.getHeight()-2*twelfth,0,twelfth/32,twelfth/32)
+        love.graphics.setColor(1, 1, 1, 1)
+        love.graphics.draw(sprites["ui_plus"],10*twelfth,love.graphics.getHeight()-2*twelfth,0,twelfth/32,twelfth/32)
       elseif brush.id then
-        local sprite = sprites[tiles_list[brush.id].sprite]
-        if not sprite then sprite = sprites["wat"] end
+        local sprite = tiles_list[brush.id].sprite
+        if not sprite then sprite = "wat" end
         
         local rotation = 0
         if tiles_list[brush.id].rotate then
-            rotation = (brush.dir - 1) * 45
+          rotation = (brush.dir - 1) * 45
         end
         
         local color = tiles_list[brush.id].color
-        if #color == 3 then
-          love.graphics.setColor(color[1]/255, color[2]/255, color[3]/255, 1)
-        else
-          local r, g, b, a = getPaletteColor(color[1], color[2])
-          love.graphics.setColor(r, g, b, a)
+        if type(color[1]) ~= "table" then
+          if #color > 2 then
+            love.graphics.setColor(color[1]/255, color[2]/255, color[3]/255, color[4] and color[4]/255 or 1)
+          else
+            love.graphics.setColor(getPaletteColor(color[1], color[2]))
+          end
         end
-
-        love.graphics.draw(sprite, 10.5*twelfth, love.graphics.getHeight()-1.5*twelfth,math.rad(rotation),twelfth/32,twelfth/32,twelfth/4,twelfth/4)
+        
+        if type(sprite) == "table" then
+          for i,image in ipairs(sprite) do
+            love.graphics.setColor(getPaletteColor(color[i][1], color[i][2]))
+            love.graphics.draw(sprites[image], 10.5*twelfth, love.graphics.getHeight()-1.5*twelfth,math.rad(rotation),twelfth/32,twelfth/32,twelfth/4,twelfth/4)
+          end
+        else
+          love.graphics.draw(sprites[sprite], 10.5*twelfth, love.graphics.getHeight()-1.5*twelfth,math.rad(rotation),twelfth/32,twelfth/32,twelfth/4,twelfth/4)
+        end
       end
       if mobile_stackmode == "none" then
         mobile_controls_stackmode_none:setBounds(9*twelfth, love.graphics.getHeight()-4.05*twelfth)
@@ -1719,7 +1816,11 @@ function scene.draw(dt)
           end
         else
           love.graphics.setColor(getPaletteColor(pal[1], pal[2]))
-          love.graphics.draw(sprites[tile.sprite], x, 4)
+          if tile.name == "letter_custom" then
+            drawCustomLetter(brush.customletter, x, 4)
+          else
+            love.graphics.draw(sprites[tile.sprite], x, 4)
+          end
         end
       end
     end

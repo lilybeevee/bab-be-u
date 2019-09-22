@@ -97,6 +97,12 @@ function clear()
       end
     end
   end
+
+  if not doing_past_turns then
+    past_playback = false
+    all_moves = {}
+    past_rules = {}
+  end
   
   card_for_id = {}
 
@@ -222,7 +228,8 @@ function loadMap()
                 end
               end
             else
-              createUnit(tile, x, y, dir, false, id, nil, color and {{name=color}})
+              local unit = createUnit(tile, x, y, dir, false, id, nil, color and {{name=color}})
+              unit.special = specials
             end
           end
         end
@@ -680,16 +687,44 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
     local old_withrecursioncond = withrecursion[cond]
     
     withrecursion[cond] = true
-    
     if (old_withrecursioncond) then
       result = false
     elseif condtype:starts("that") then
       result = true
       local verb = condtype:sub(6)
       for _,param in ipairs(lists) do -- using "lists" to store the names, since THAT doesn't allow nesting, and we need the name for hasRule
-        if not hasRule(unit,verb,param.name) then
-          result = false
-          break
+        local word = param.unit
+        local wx = word.x
+        local wy = word.y
+        local wdir = word.dir
+        local wdx = dirs8[wdir][1]
+        local wdy = dirs8[wdir][2]
+        if param.name == "her" then
+          if unit.x ~= wx+wdx or unit.y ~= wy+wdy then
+            result = false
+          end
+        elseif param.name == "thr" then
+          local wtx,wty = wx+wdx,wy+wdy
+          local stopped = false
+          while not stopped do
+            if canMove(unit,wdx,wdy,wdir,false,false,nil,nil,nil,wtx,wty) then
+              wdx,wdy,wdir,wtx,wty = getNextTile(word, wdx, wdy, wdir, nil, wtx, wty)
+            else
+              stopped = true
+            end
+          end
+          if unit.x ~= wtx or unit.y ~= wty then
+            result = false
+          end
+        elseif param.name == "rithere" then
+          if unit.x ~= wx or unit.y ~= wy then
+            result = false
+          end
+        else
+          if not hasRule(unit,verb,param.name) then
+            result = false
+            break
+          end
         end
       end
     elseif condtype == "w/fren" then
@@ -1198,14 +1233,11 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
         result = false
       end
     elseif condtype == "wun" then
-      if unit == outerlvl then
-        if not readSaveFile(level_name,"won") then
-          result = false
-        end
-      else
-        if not readSaveFile(unit.special.name,"won") then
-          result = false
-        end
+      local name = unit.special.name or level_name
+      result = readSaveFile(name,"won")
+    elseif condtype == "past" then
+      if not doing_past_turns then
+        result = false
       end
     else
       print("unknown condtype: " .. condtype)
@@ -2701,4 +2733,17 @@ function anagram_finder.run()
       end
     end
   end
+end
+
+function drawCustomLetter(text, x, y, rot, sx, sy, ox, oy)
+  love.graphics.push()
+  love.graphics.translate(x or 0, y or 0)
+  love.graphics.rotate(rot or 0)
+  love.graphics.scale(sx or 1, sy or 1)
+  love.graphics.translate(-(ox or 0), -(oy or 0))
+  for i,q in ipairs(custom_letter_quads[#(text or "-")]) do
+    local quad, dx, dy = unpack(q)
+    love.graphics.draw(sprites["letters_"..(text:sub(i,i) or "a")] or sprites["wut"], quad, dx, dy)
+  end
+  love.graphics.pop()
 end

@@ -163,7 +163,7 @@ end
 
 function scene.update(dt)
   if options then
-    buttons = {"music: on", "fullscreen", "exit"}
+    buttons = {"music: on", "stopwatch effect: on", "fullscreen", "exit"}
   else
     buttons = {"play", "editor", "options", "exit"}
   end
@@ -200,6 +200,9 @@ function scene.update(dt)
     end
     if string.starts(buttons[i], "music") then
       buttons[i] = "music: " .. (settings["music_on"] and "on" or "off")
+    end
+    if string.starts(buttons[i], "stopwatch effect") then
+      buttons[i] = "stopwatch effect: " .. (settings["stopwatch_effect"] and "on" or "off")
     end
   end
 
@@ -252,6 +255,9 @@ function scene.mouseReleased(x, y, button)
           saveAll()
         elseif string.starts(buttons[i], "music") then
           settings["music_on"] = not settings["music_on"]
+          saveAll()
+        elseif string.starts(buttons[i], "stopwatch effect") then
+          settings["stopwatch_effect"] = not settings["stopwatch_effect"]
           saveAll()
         end
       end
