@@ -341,6 +341,7 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
         local unit = letter.unit
         local prevunit = prevletter.unit or {}
         local name = letter.name
+        if name == "custom" then name = letter.unit.special.customletter end
         if letter.name == "u" then
           local umlauts = getTextOnTile(unit.x,unit.y-1)
           for _,umlaut in ipairs(umlauts) do

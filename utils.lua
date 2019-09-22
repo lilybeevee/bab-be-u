@@ -222,7 +222,8 @@ function loadMap()
                 end
               end
             else
-              createUnit(tile, x, y, dir, false, id, nil, color and {{name=color}})
+              local unit = createUnit(tile, x, y, dir, false, id, nil, color and {{name=color}})
+              unit.special = specials
             end
           end
         end
@@ -2729,4 +2730,17 @@ function anagram_finder.run()
       end
     end
   end
+end
+
+function drawCustomLetter(text, x, y, rot, sx, sy, ox, oy)
+  love.graphics.push()
+  love.graphics.translate(x or 0, y or 0)
+  love.graphics.rotate(rot or 0)
+  love.graphics.scale(sx or 1, sy or 1)
+  love.graphics.translate(-(ox or 0), -(oy or 0))
+  for i,q in ipairs(custom_letter_quads[#(text or "-")]) do
+    local quad, dx, dy = unpack(q)
+    love.graphics.draw(sprites["letters_"..(text:sub(i,i) or "a")] or sprites["wut"], quad, dx, dy)
+  end
+  love.graphics.pop()
 end
