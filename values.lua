@@ -162,6 +162,40 @@ colour_for_palette[6][2] = "brwn"
 colour_for_palette[6][3] = "brwn"
 colour_for_palette[6][4] = "blacc"
 
+custom_letter_quads = {
+  {}, -- single letters will always use actual letter units, not custom letter units
+  {
+    {love.graphics.newQuad(0, 0, 16, 32, 64, 64), 0, 0},
+    {love.graphics.newQuad(16, 0, 16, 32, 64, 64), 16, 0},
+  },
+  {
+    {love.graphics.newQuad(32, 0, 16, 16, 64, 64), 0, 0},
+    {love.graphics.newQuad(48, 0, 16, 16, 64, 64), 16, 0},
+    {love.graphics.newQuad(0, 48, 32, 16, 64, 64), 0, 16},
+  },
+  {
+    {love.graphics.newQuad(32, 0, 16, 16, 64, 64), 0, 0},
+    {love.graphics.newQuad(48, 0, 16, 16, 64, 64), 16, 0},
+    {love.graphics.newQuad(32, 16, 16, 16, 64, 64), 0, 16},
+    {love.graphics.newQuad(48, 16, 16, 16, 64, 64), 16, 16},
+  },
+  {
+    {love.graphics.newQuad(0, 32, 16, 16, 64, 64), 0, 0},
+    {love.graphics.newQuad(16, 32, 16, 16, 64, 64), 16, 0},
+    {love.graphics.newQuad(32, 48, 11, 16, 64, 64), 0, 16},
+    {love.graphics.newQuad(43, 48, 10, 16, 64, 64), 11, 16},
+    {love.graphics.newQuad(53, 48, 11, 16, 64, 64), 21, 16},
+  },
+  {
+    {love.graphics.newQuad(32, 32, 11, 16, 64, 64), 0, 0},
+    {love.graphics.newQuad(43, 32, 10, 16, 64, 64), 11, 0},
+    {love.graphics.newQuad(53, 32, 11, 16, 64, 64), 21, 0},
+    {love.graphics.newQuad(32, 48, 11, 16, 64, 64), 0, 16},
+    {love.graphics.newQuad(43, 48, 10, 16, 64, 64), 11, 16},
+    {love.graphics.newQuad(53, 48, 11, 16, 64, 64), 21, 16},
+  },
+}
+
 selector_grid_contents = {
   -- page 1: default
   {
@@ -6220,7 +6254,7 @@ tiles_list = {
     color = {2,4},
     layer = 20,
     tags = {"won","patashu"},
-    desc = "WUN: A prefix condition that's true if the unit is a won level. When referring to the level itself, true if the level's been won.",
+    desc = "WUN: A prefix condition that's true if the unit is a won level. If the unit isn't a level, then true if the current level is won.",
   },
   -- 537
   {
@@ -6867,6 +6901,17 @@ tiles_list = {
     layer = 20,
     tags = {"city", "street", "road"},
   },
+  -- 585
+  {
+    name = "letter_custom",
+    sprite = "wut",
+    type = "text",
+    texttype = {letter = true},
+    color = {0,3},
+    layer = 20,
+    tags = {},
+    desc = "Custom Letters: Type up to 6 letters into the search box and hit ctrl+enter to get a tile with those letters in it. This text shouldn't show ingame anywhere."
+  },
   -- 596
   {
     name = "text_past",
@@ -6876,7 +6921,7 @@ tiles_list = {
     color = {3, 3},
     layer = 20,
     desc = "PAST (Prefix Condition): Applies the rule to turns that have already happened.",
-  }
+  },
 }
 
 tiles_by_name = {}

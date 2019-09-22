@@ -922,7 +922,7 @@ function scene.draw(dt)
     --reset back to values being used before
     love.graphics.setLineWidth(2)
 
-    if not (unit.xwx or spookmode) and unit.name ~= "lin" and unit.name ~= "byc" and unit.name ~= "bac" then -- xwx takes control of the drawing sprite, so it shouldn't render the normal object
+    if not (unit.xwx or spookmode) and unit.name ~= "lin" and unit.name ~= "byc" and unit.name ~= "bac" and unit.fullname ~= "letter_custom" then -- xwx takes control of the drawing sprite, so it shouldn't render the normal object
       drawSprite()
     end
 
@@ -995,6 +995,10 @@ function scene.draw(dt)
         love.graphics.draw(sprite, fulldrawx, fulldrawy, 0, unit.draw.scalex*3/4, unit.draw.scaley*3/4, sprite:getWidth() / 2, sprite:getHeight() / 2)
       end
       love.graphics.pop()
+    end
+    
+    if unit.fullname == "letter_custom" then
+      drawCustomLetter(unit.special.customletter, fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, 16, 16)
     end
 
     if #unit.overlay > 0 and unit.fullname ~= "no1" then
@@ -1220,7 +1224,7 @@ function scene.draw(dt)
       if type(unit.sprite) == "table" then
         sprite = unit.sprite[1]..(unit.meta or "")..(unit.nt and "nt" or "")..(unit.color_override and dump(unit.color_override) or "")
       else
-        sprite = unit.sprite..(unit.meta or "")..(unit.nt and "nt" or "")..(unit.color_override and dump(unit.color_override) or "")
+        sprite = (unit.fullname ~= "letter_custom" and unit.sprite or "letter_"..unit.special.customletter)..(unit.meta or "")..(unit.nt and "nt" or "")..(unit.color_override and dump(unit.color_override) or "")
       end
       if not already_added[sprite] then already_added[sprite] = {} end
       local dir = unit.rotatdir
@@ -1267,8 +1271,12 @@ function scene.draw(dt)
         else
           love.graphics.setColor(dcolor[1], dcolor[2], dcolor[3], dcolor[4] or 1)
         end
-        local sprite = sprites[unit.sprite]
-        love.graphics.draw(sprite, 0, 0, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+        if unit.fullname == "letter_custom" then
+          drawCustomLetter(unit.special.customletter, 0, 0, 0, 1, 1, 16, 16)
+        else
+          local sprite = sprites[unit.sprite]
+          love.graphics.draw(sprite, 0, 0, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+        end
       else
         for j,image in ipairs(unit.sprite) do
           love.graphics.setColor(getPaletteColor(dcolor[j][1], dcolor[j][2]))

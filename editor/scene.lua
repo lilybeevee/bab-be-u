@@ -471,7 +471,10 @@ function scene.keyPressed(key)
         if tiles_by_name["letter_"..subsearchstr] then
           brush.id = tiles_by_name["letter_"..subsearchstr]
           selector_open = false
-        else -- handle creation of custom letter words here when we code that
+        elseif #subsearchstr >= 1 and #subsearchstr <= 6 then
+          brush.id = tiles_by_name["letter_custom"]
+          brush.customletter = subsearchstr
+          selector_open = false
         end
       else
         if tiles_by_name[subsearchstr] then
@@ -972,7 +975,8 @@ function scene.update(dt)
             end
             if #hovered >= 1 then
               for _,unit in ipairs(hovered) do
-                if unit.tile == brush.id and (unit.color_override and (type(unit.color_override[1]) == "table" and colour_for_palette[unit.color_override[1][1]][unit.color_override[1][2]] or colour_for_palette[unit.color_override[1]][unit.color_override[2]] == brush.color) or (unit.color_override == nil and brush.color == nil)) then
+                if unit.tile == brush.id and (unit.tile ~= tiles_by_name["letter_custom"] or unit.special.customletter == brush.customletter)
+                  and (unit.color_override and (type(unit.color_override[1]) == "table" and colour_for_palette[unit.color_override[1][1]][unit.color_override[1][2]] or colour_for_palette[unit.color_override[1]][unit.color_override[2]] == brush.color) or (unit.color_override == nil and brush.color == nil)) then
                   if not (ctrl_active or selectorhold) then
                     existing = unit
                   end
@@ -1008,6 +1012,9 @@ function scene.update(dt)
                   end
                   if last_lin_hidden and brush.id == tiles_by_name["lin"] then
                     new_unit.special.visibility = "hidden"
+                  end
+                  if brush.id == tiles_by_name["letter_custom"] then
+                    new_unit.special.customletter = brush.customletter
                   end
                   scene.updateMap()
                   painted = true
@@ -1047,9 +1054,17 @@ function scene.update(dt)
                 brush.picked_index = new_index
                 brush.id = hovered[new_index].tile
                 brush.color = hovered[new_index].color_override and (type(hovered[new_index].color_override[1]) == "table" and colour_for_palette[hovered[new_index].color_override[1][1]][hovered[new_index].color_override[1][2]] or colour_for_palette[hovered[new_index].color_override[1]][hovered[new_index].color_override[2]]) or nil
+                brush.customletter = hovered[new_index].special.customletter
+                if hovered[new_index].name == "lin" then
+                  last_lin_hidden = (hovered[new_index].special.visibility == "hidden")
+                end
               else
-                brush.id = hovered[1].tile
+                brush.id = hovered[1].tile 
                 brush.color = hovered[1].color_override and (type(hovered[1].color_override[1]) == "table" and colour_for_palette[hovered[1].color_override[1][1]][hovered[1].color_override[1][2]] or colour_for_palette[hovered[1].color_override[1]][hovered[1].color_override[2]]) or nil
+                brush.customletter = hovered[1].special.customletter
+                if hovered[1].name == "lin" then
+                  last_lin_hidden = (hovered[1].special.visibility == "hidden")
+                end
                 brush.picked_index = 1
               end
               brush.mode = "picking"
@@ -1236,6 +1251,8 @@ function scene.draw(dt)
               love.graphics.draw(sprites["byc"], (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
               setColor(color)
               love.graphics.draw(sprites[unit.name == "bac" and "bac" or "byc_editor"], (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+            elseif unit.fullname == "letter_custom" then
+              drawCustomLetter(unit.special.customletter, (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
             else
               if type(unit.sprite) == "table" then
                 for j,image in ipairs(unit.sprite) do
@@ -1419,6 +1436,8 @@ function scene.draw(dt)
             love.graphics.draw(sprites["byc"], (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, math.rad(rotation), 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
             setColor(color, 0.25)
             love.graphics.draw(sprites[tile.name == "bac" and "bac" or "byc_editor"], (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, math.rad(rotation), 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+          elseif tile.name == "letter_custom" then
+            drawCustomLetter(brush.customletter, (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, math.rad(rotation), 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
           else
             if type(sprite_name) == "table" then
               for i,image in ipairs(sprite_name) do
@@ -1797,7 +1816,11 @@ function scene.draw(dt)
           end
         else
           love.graphics.setColor(getPaletteColor(pal[1], pal[2]))
-          love.graphics.draw(sprites[tile.sprite], x, 4)
+          if tile.name == "letter_custom" then
+            drawCustomLetter(brush.customletter, x, 4)
+          else
+            love.graphics.draw(sprites[tile.sprite], x, 4)
+          end
         end
       end
     end
