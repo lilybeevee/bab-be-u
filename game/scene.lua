@@ -2036,18 +2036,21 @@ function scene.doPastTurns()
 
     tick.delay(function() 
       do_past_effects = false
-      local past_count = 0
-      while change_past do
+      local start_time = love.timer.getTime()
+      local destroy_level = false
+      while change_past and not destroy_level do
         change_past = false
         scene.resetStuff()
         for i,past_move in ipairs(all_moves) do
           doOneMove(past_move[1], past_move[2], past_move[3], true)
           if change_past then break end
+          if love.timer.getTime() - start_time > 10 then
+            destroy_level = true
+            break
+          end
         end
-        past_count = past_count + 1
-        if past_count >= 50 then break end
       end
-      if past_count >= 50 then
+      if destroy_level then
         destroyLevel("infloop")
       elseif settings["stopwatch_effect"] then
         local moves_per_tick = 1
