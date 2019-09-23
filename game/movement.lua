@@ -1460,8 +1460,23 @@ function doPortal(unit, px, py, move_dir, dir, reverse)
             end
           end
         end
+        -- Count portal colors
+        local found_colored = {}
         for p,_ in pairs(portals_direct) do
-          table.insert(portals, p)
+          local color_id = getColor(p)[1]..","..getColor(p)[2]
+          found_colored[color_id] = (found_colored[color_id] or 0) + 1
+        end
+        -- Only add portals to list if:
+        -- A. They share the same color, or
+        -- B. Only one of both color exists
+        for p,_ in pairs(portals_direct) do
+          local p_color_id = getColor(p)[1]..","..getColor(p)[2]
+          local v_color_id = getColor(v)[1]..","..getColor(v)[2]
+          if p_color_id == v_color_id then
+            table.insert(portals, p)
+          elseif found_colored[p_color_id] == 1 and found_colored[v_color_id] == 1 then
+            table.insert(portals, p)
+          end
         end
         table.sort(portals, readingOrderSort)
         --find our place in the list

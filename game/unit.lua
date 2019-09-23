@@ -2925,3 +2925,7 @@ function doXWX()
   --TODO: make xwx clear progress instead of crashing lua
   love = {}
 end
+
+function getColor(unit)
+  return unit.color_override or unit.color
+end
