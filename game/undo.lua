@@ -162,16 +162,8 @@ function undoOneAction(turn, i, v, ignore_no_undo)
   elseif action == "timeless_crash_remove" then
     --meaningless by definition
     --timeless_crash = true
-  elseif action == "timeless_yeet_add" then
-    unit = v[2]
-    for i,yote in ipairs(timeless_yote) do
-      if yote.unit == unit and (ignore_no_undo or not isNoUndo(yote.unit)) then
-        table.remove(timeless_yote, i)
-        break
-      end
-    end
-  elseif action == "timeless_yeet_remove" then
-    table.insert(timeless_yote, {unit = v[2], dir = v[3]})
+  elseif action == "timeless_yeet_add" or action == "timeless_yeet_remove" then
+    timeless_yote[v[2]] = v[3]
   elseif action == "timeless_rules" then
     rules_with = v[2]
 	elseif action == "colour_change" then
