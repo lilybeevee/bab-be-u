@@ -2030,7 +2030,12 @@ function convertUnits(pass)
       local tile = nil
       local nametocreate = unit.fullname
       for i = 1,amt do
-        nametocreate = "text_"..nametocreate
+        local tile = tiles_by_name[nametocreate]
+        if tile ~= nil and tiles_list[tile].tometa then
+          nametocreate = tiles_list[tile].tometa
+        else
+          nametocreate = "text_"..nametocreate
+        end
       end
       tile = tiles_by_namePossiblyMeta(nametocreate)
       if tile ~= nil then
@@ -2053,11 +2058,16 @@ function convertUnits(pass)
       --remove "text_" as many times as we're de-metaing
       local nametocreate = unit.fullname
       for i = 1,amt do
-        if nametocreate:starts("text_") then
-          nametocreate = nametocreate:sub(6, -1)
+        local tile = tiles_by_name[nametocreate]
+        if tile ~= nil and tiles_list[tile].demeta then
+          nametocreate = tiles_list[tile].demeta
         else
-          nametocreate = "no1"
-          break
+          if nametocreate:starts("text_") then
+            nametocreate = nametocreate:sub(6, -1)
+          else
+            nametocreate = "no1"
+            break
+          end
         end
       end
       if (nametocreate == "mous") then
@@ -2291,6 +2301,10 @@ function convertUnits(pass)
           tile = tiles_by_name["text_" .. rule.subject.name]
         elseif rule.object.name:starts("this") and not rule.object.name:ends("n't") then
           tile = tiles_by_name["this"]
+        end
+        --prevent transformation into certain objects
+        if tile ~= nil and tiles_list[tile].convertible ~= nil and not tiles_list[tile].convertible then
+          tile = nil
         end
         --let x ben't x txt prevent x be txt, and x ben't txt prevent x be y txt
         local overriden = false;
