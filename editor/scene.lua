@@ -2044,12 +2044,12 @@ function scene.saveSettings()
   level_puffs_to_clear = input_puffs_to_clear:getValue()
   level_background_sprite = input_background_sprite:getText()
 
-  scene.updateMap()
-
   mapwidth = input_width:getValue()
   mapheight = input_height:getValue()
   level_extra = input_extra.checked
   
+  scene.updateMap()
+
   clear()
   loadMap()
   resetMusic(map_music, 0.1)
