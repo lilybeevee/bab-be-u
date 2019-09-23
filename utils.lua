@@ -662,6 +662,16 @@ function countProperty(unit,prop)
   return #matchesRule(unit,"be",prop)
 end
 
+function hasU(unit)
+  return hasProperty(unit,"u") or hasProperty(unit,"u too") or hasProperty(unit,"u tres")
+end
+
+function getUs()
+  local yous = getUnitsWithEffect("u")
+  mergeTable(yous,getUnitsWithEffect("u too"))
+  mergeTable(yous,getUnitsWithEffect("u tres"))
+  return yous
+end
 
 function hasSing(unit,note)
     bit = love.audio.newSource("assets/audio/sfx/bit2.wav", "static")
@@ -2369,7 +2379,7 @@ function timecheck(unit,verb,prop)
       return true
     elseif hasProperty(outerlvl,"za warudo") and not hasRule(unit,"ben't","za warudo") then
       return true
-    elseif verb ~= nil and prop ~= nil then
+    elseif verb and prop then
       local rulecheck = matchesRule(unit,verb,prop)
       for _,ruleparent in ipairs(rulecheck) do
         for i=1,#ruleparent.rule.subject.conds do
@@ -2382,6 +2392,26 @@ function timecheck(unit,verb,prop)
   else
     return true
   end
+  return false
+end
+
+function timecheckUs(unit)
+  if timecheck(unit) then
+    return true
+  else
+    local to_check = {"u","u too","u tres"}
+    for _,prop in ipairs(to_check) do
+      local rulecheck = matchesRule(unit,"be",prop)
+      for _,ruleparent in ipairs(rulecheck) do
+        for i=1,#ruleparent.rule.subject.conds do
+          if ruleparent.rule.subject.conds[i][1] == "timles" then
+            return true
+          end
+        end
+      end
+    end
+  end
+  return false
 end
 
 function fillTextDetails(sentence, old_sentence, orig_index, word_index)

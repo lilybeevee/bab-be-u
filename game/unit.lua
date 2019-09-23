@@ -838,9 +838,8 @@ function updateUnits(undoing, big_update)
     for _,unit in ipairs(isdefeat) do
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
       for _,on in ipairs(stuff) do
-        is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
-        if is_u and sameFloat(unit, on) then
-          if timecheck(unit,"be",":(") and (timecheck(on,"be","u") or timecheck(on,"be","u too") or timecheck(on,"be","u tres")) then
+        if hasU(on) and sameFloat(unit, on) then
+          if timecheck(unit,"be",":(") and (timecheckUs(on)) then
             table.insert(to_destroy, on)
             playSound("break")
             shakeScreen(0.3, 0.2)
@@ -907,9 +906,8 @@ function updateUnits(undoing, big_update)
     for _,unit in ipairs(isreset) do
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
       for _,on in ipairs(stuff) do
-        is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
-        if is_u and sameFloat(unit, on) then
-          if timecheck(unit,"be","try again") and (timecheck(on,"be","u") or timecheck(on,"be","u too") or timecheck(on,"be","u tres")) then
+        if hasU(on) and sameFloat(unit, on) then
+          if timecheck(unit,"be","try again") and (timecheckUs(on)) then
             will_undo = true
             break
           else
@@ -929,9 +927,8 @@ function updateUnits(undoing, big_update)
       if not hasProperty(ruleparent[1].rule.object,"slep") then
         local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
         for _,on in ipairs(stuff) do
-          is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
-          if is_u and sameFloat(unit, on) then
-            if timecheck(unit,"be","xwx") and (timecheck(on,"be","u") or timecheck(on,"be","u too") or timecheck(on,"be","u tres")) then
+          if hasU(on) and sameFloat(unit, on) then
+            if timecheck(unit,"be","xwx") and (timecheckUs(on)) then
               doXWX()
             else
               addUndo({"timeless_crash_add"})
@@ -949,10 +946,9 @@ function updateUnits(undoing, big_update)
     for _,unit in ipairs(isbonus) do
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
       for _,on in ipairs(stuff) do
-        is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
-        if is_u and sameFloat(unit, on) then
+        if hasU(on) and sameFloat(unit, on) then
           writeSaveFile(level_name, "bonus", true)
-          if timecheck(unit,"be",":o") and (timecheck(on,"be","u") or timecheck(on,"be","u too") or timecheck(on,"be","u tres")) then
+          if timecheck(unit,"be",":o") and (timecheckUs(on)) then
             table.insert(to_destroy, unit)
             playSound("bonus")
           else
@@ -971,9 +967,8 @@ function updateUnits(undoing, big_update)
     for _,unit in ipairs(isunwin) do
       local stuff = getUnitsOnTile(unit.x,unit.y, nil, true)
       for _,on in ipairs(stuff) do
-        is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
-        if is_u and sameFloat(unit, on) then
-          if timecheck(unit,"be","d") and (timecheck(on,"be","u") or timecheck(on,"be","u too") or timecheck(on,"be","u tres")) then
+        if hasU(on) and sameFloat(unit, on) then
+          if timecheck(unit,"be","d") and (timecheckUs(on)) then
             unwins = unwins + 1
           else
             addUndo({"timeless_unwin_add", on.id})
@@ -988,9 +983,8 @@ function updateUnits(undoing, big_update)
     for _,unit in ipairs(iswin) do
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
       for _,on in ipairs(stuff) do
-        is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
-        if is_u and sameFloat(unit, on) then
-          if timecheck(unit,"be",":)") and (timecheck(on,"be","u") or timecheck(on,"be","u too") or timecheck(on,"be","u tres")) then
+        if hasU(on) and sameFloat(unit, on) then
+          if timecheck(unit,"be",":)") and (timecheckUs(on)) then
             wins = wins + 1
           else
             addUndo({"timeless_win_add", on.id})
@@ -1028,13 +1022,11 @@ function updateUnits(undoing, big_update)
         sokowins[unit] = false
       end
     end
-    
     for unit,v in pairs(sokowins) do
       if v then
         local stuff = getUnitsOnTile(unit.x,unit.y)
         for _,on in ipairs(stuff) do
-          local is_u = hasProperty(on,"u") or hasProperty(on,"u too") or hasProperty(on,"u tres")
-          if is_u and sameFloat(unit,on) then
+          if hasU(on) and sameFloat(unit,on) then
             wins = wins + 1
           end
         end
@@ -1638,11 +1630,7 @@ function levelBlock()
   end
   
   if hasProperty(outerlvl, ":(") then
-    local yous = getUnitsWithEffect("u")
-    local youtoos = getUnitsWithEffect("u too")
-    local youtres = getUnitsWithEffect("u tres")
-    mergeTable(yous, youtoos)
-    mergeTable(yous, youtres)
+    local yous = getUs()
     for _,unit in ipairs(yous) do
       if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
         table.insert(to_destroy, unit)
@@ -1722,11 +1710,7 @@ function levelBlock()
   
   local will_undo = false
   if hasProperty(outerlvl, "try again") then
-    local yous = getUnitsWithEffect("u")
-    local youtoos = getUnitsWithEffect("u too")
-    local youtres = getUnitsWithEffect("u tres")
-    mergeTable(yous, youtoos)
-    mergeTable(yous, youtres)
+    local yous = getUs()
     for _,unit in ipairs(yous) do
       if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
         doTryAgain()
@@ -1735,11 +1719,7 @@ function levelBlock()
   end
   
   if hasProperty(outerlvl, "xwx") then
-    local yous = getUnitsWithEffect("u")
-    local youtoos = getUnitsWithEffect("u too")
-    local youtres = getUnitsWithEffect("u tres")
-    mergeTable(yous, youtoos)
-    mergeTable(yous, youtres)
+    local yous = getUs()
     for _,unit in ipairs(yous) do
       if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
         doXWX()
@@ -1748,11 +1728,7 @@ function levelBlock()
   end
   
   if hasProperty(outerlvl, ":o") then
-    local yous = getUnitsWithEffect("u")
-    local youtoos = getUnitsWithEffect("u too")
-    local youtres = getUnitsWithEffect("u tres")
-    mergeTable(yous, youtoos)
-    mergeTable(yous, youtres)
+    local yous = getUs()
     for _,unit in ipairs(yous) do
       if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
         writeSaveFile(level_name, "bonus", true)
@@ -1764,11 +1740,7 @@ function levelBlock()
   
   local unwins = 0
   if hasProperty(outerlvl, ";d") then
-    local yous = getUnitsWithEffect("u")
-    local youtoos = getUnitsWithEffect("u too")
-    local youtres = getUnitsWithEffect("u tres")
-    mergeTable(yous, youtoos)
-    mergeTable(yous, youtres)
+    local yous = getUs()
     for _,unit in ipairs(yous) do
       if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
         unwins = unwins + 1
@@ -1778,11 +1750,7 @@ function levelBlock()
   
   local wins = 0
   if hasProperty(outerlvl, ":)") then
-    local yous = getUnitsWithEffect("u")
-    local youtoos = getUnitsWithEffect("u too")
-    local youtres = getUnitsWithEffect("u tres")
-    mergeTable(yous, youtoos)
-    mergeTable(yous, youtres)
+    local yous = getUs()
     for _,unit in ipairs(yous) do
       if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
         wins = wins + 1
