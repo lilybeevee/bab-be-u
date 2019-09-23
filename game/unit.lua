@@ -70,13 +70,24 @@ function moveBlock()
   local not_backed_this_turn = {}
   
   local isback = getUnitsWithEffectAndCount("undo")
+  if hasProperty(outerlvl, "undo") then
+    for _,unit in ipairs(units) do
+      if isback[unit] then
+        isback[unit] = isback[unit] + 1
+      else
+        isback[unit] = 1
+      end
+    end
+  end
   for unit,amt in pairs(isback) do
+    --print("backing 1:", unit.fullname, amt, unit.backer_turn, backers_cache[unit])
     backed_this_turn[unit] = true
     if (unit.backer_turn == nil) then
       addUndo({"backer_turn", unit.id, nil})
       unit.backer_turn = #undo_buffer+(0.5*(amt-1))
       backers_cache[unit] = unit.backer_turn
     end
+    --print("backing 2:", unit.fullname, amt, unit.backer_turn, backers_cache[unit])
     doBack(unit.id, 2*(#undo_buffer-unit.backer_turn))
     for i = 2,amt do
       addUndo({"backer_turn", unit.id, unit.backer_turn})
@@ -1114,25 +1125,36 @@ function updateUnits(undoing, big_update)
   deleteUnits(del_units,false)
   
   --Fix the 'txt be undo' bug by checking an additional time if we need to unset backer_turn for a unit.
-  
-  local backed_this_turn = {}
-  local not_backed_this_turn = {}
-  
-  local isback = getUnitsWithEffectAndCount("undo")
-  for unit,amt in pairs(isback) do
-    backed_this_turn[unit] = true
-  end
-  
-  for unit,turn in pairs(backers_cache) do
-    if turn ~= nil and not backed_this_turn[unit] then
-      not_backed_this_turn[unit] = true
+  if (big_update and not undoing) then
+    local backed_this_turn = {}
+    local not_backed_this_turn = {}
+    
+    local isback = getUnitsWithEffectAndCount("undo")
+    if hasProperty(outerlvl, "undo") then
+      for _,unit in ipairs(units) do
+        if isback[unit] then
+          isback[unit] = isback[unit] + 1
+        else
+          isback[unit] = 1
+        end
+      end
     end
-  end
-  
-  for unit,_ in pairs(not_backed_this_turn) do
-    addUndo({"backer_turn", unit.id, unit.backer_turn})
-    unit.backer_turn = nil
-    backers_cache[unit] = nil
+    for unit,amt in pairs(isback) do
+      backed_this_turn[unit] = true
+    end
+    
+    for unit,turn in pairs(backers_cache) do
+      if turn ~= nil and not backed_this_turn[unit] then
+        not_backed_this_turn[unit] = true
+      end
+    end
+    
+    for unit,_ in pairs(not_backed_this_turn) do
+      --print("oh no longer a backer huh, neat", unit.fullname)
+      addUndo({"backer_turn", unit.id, unit.backer_turn})
+      unit.backer_turn = nil
+      backers_cache[unit] = nil
+    end
   end
   
   if (will_undo) or (timeless_reset and not timeless) then
@@ -2591,6 +2613,7 @@ function deleteUnit(unit,convert,undoing)
 end
 
 function moveUnit(unit,x,y,portal)
+  --print("moving:", unit.fullname, unit.x, unit.y, "to:", x, y)
   --when empty moves, swap it with the empty in its destination tile, to preserve the invariant 'there is exactly empty per tile'
   --also, keep empty out of units_by_tile - it will be added in getUnitsOnTile
   if (unit.type == "outerlvl") then
