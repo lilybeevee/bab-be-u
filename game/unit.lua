@@ -2922,6 +2922,12 @@ function doWin(result_, payload_)
 end
 
 function doXWX()
-  --TODO: make xwx clear progress instead of crashing lua
-  love = {}
+  writeSaveFile(level_name,"seen",nil)
+  writeSaveFile(level_name,"won",nil)
+  writeSaveFile(level_name,"bonus",nil)
+  writeSaveFile(level_name,"transform",nil)
+  
+  --load the parent here, i don't know how to do that
+  --unless they're playing from editor, in which case just send them back to editing probably. i also don't know how to do that
+  scene.resetStuff()
 end

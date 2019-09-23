@@ -253,7 +253,6 @@ function loadMap()
         local created = {}
         while #floodfill > 0 do
           local u, ptype = unpack(table.remove(floodfill, 1))
-          print(fullDump(u), ptype)
           local orthos = {[-1] = {}, [0] = {}, [1] = {}}
           for a = 0,1 do -- 0 = ortho, 1 = diag
             for i = #objects,1,-1 do
