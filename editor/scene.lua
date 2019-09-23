@@ -546,9 +546,8 @@ function scene.keyPressed(key)
         okText = "Yes",
         cancelText = "Cancel",
         ok = function()
-          maps = {{2, ""}}
           clear()
-          loadMap()
+          scene.updateMap()
           loaded_level = false
         end
       })
@@ -1908,8 +1907,23 @@ function scene.updateMap()
       end
     end
   end
+  local info = {
+    name = level_name,
+    author = level_author,
+    extra = level_extra,
+    palette = current_palette,
+    music = map_music,
+    width = mapwidth,
+    height = mapheight,
+    version = map_ver,
+    parent_level = level_parent_level,
+    next_level = level_next_level,
+    is_overworld = level_is_overworld,
+    puffs_to_clear = level_puffs_to_clear,
+    background_sprite = level_background_sprite,
+  }
   map = serpent.dump(map)
-  maps = {{map_ver, map}}
+  maps = {{data = map, info = info}}
   if anagram_finder.enabled then anagram_finder.run() end
 end
 
@@ -1928,42 +1942,27 @@ function scene.saveLevel()
   compactIds()
   scene.updateMap()
 
-  local map = maps[1][2]
+  local map = maps[1]
 
   level_compression = "zlib"
-  local mapdata = level_compression == "zlib" and love.data.compress("string", "zlib", map) or map
+  local mapdata = level_compression == "zlib" and love.data.compress("string", "zlib", map.data) or map.data
   local savestr = love.data.encode("string", "base64", mapdata)
-  
-  local data = {
-    name = level_name,
-    author = level_author,
-    compression = level_compression,
-    extra = level_extra,
-    palette = current_palette,
-    music = map_music,
-    width = mapwidth,
-    height = mapheight,
-    version = map_ver,
-    map = savestr,
-    parent_level = level_parent_level,
-    next_level = level_next_level,
-    is_overworld = level_is_overworld,
-    puffs_to_clear = level_puffs_to_clear,
-    background_sprite = level_background_sprite,
-  }
+
+  map.info.compression = level_compression
+  map.info.map = savestr
   
   local file_name = sanitize(level_name)
 
   if world == "" or world_parent == "officialworlds" then
     love.filesystem.createDirectory("levels")
-    love.filesystem.write("levels/" .. file_name .. ".bab", json.encode(data))
+    love.filesystem.write("levels/" .. file_name .. ".bab", json.encode(map.info))
     print("Saved to:","levels/" .. file_name .. ".bab")
     if icon_data then
       pcall(function() icon_data:encode("png", "levels/" .. file_name .. ".png") end)
     end
   else
     love.filesystem.createDirectory(world_parent .. "/" .. world)
-    love.filesystem.write(world_parent .. "/" .. world .. "/" ..file_name .. ".bab", json.encode(data))
+    love.filesystem.write(world_parent .. "/" .. world .. "/" ..file_name .. ".bab", json.encode(map.info))
     print("Saved to:",world_parent .. "/" .. world .. "/" ..file_name .. ".bab")
     if icon_data then
       pcall(function() icon_data:encode("png", world_parent .. "/" .. world .. "/" .. file_name .. ".png") end)
@@ -2045,12 +2044,12 @@ function scene.saveSettings()
   level_puffs_to_clear = input_puffs_to_clear:getValue()
   level_background_sprite = input_background_sprite:getText()
 
-  scene.updateMap()
-
   mapwidth = input_width:getValue()
   mapheight = input_height:getValue()
   level_extra = input_extra.checked
   
+  scene.updateMap()
+
   clear()
   loadMap()
   resetMusic(map_music, 0.1)
@@ -2101,9 +2100,9 @@ function love.filedropped(file)
   level_background_sprite = mapdata.background_sprite or ""
 
   if map_ver == 0 then
-    maps = {{0, loadstring("return " .. mapstr)()}}
+    maps = {{data = loadstring("return " .. mapstr)(), info = mapdata}}
   else
-    maps = {{map_ver, mapstr}}
+    maps = {{data = mapstr, info = mapdata}}
   end
 
   clear()

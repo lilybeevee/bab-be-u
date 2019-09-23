@@ -20,6 +20,8 @@ function registerSound(sound, volume)
 end
 
 function playSound(sound, volume)
+  if doing_past_turns and not do_past_effects then return end
+
   if spookmode then
     volume = 0.01
   end

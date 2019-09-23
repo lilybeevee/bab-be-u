@@ -59,6 +59,8 @@ function clear()
   cursors = {}
   shake_dur = 0
   shake_intensity = 0.5
+  current_turn = 0
+  current_move = 0
   
   --za warudo needs a lot
   timeless = false
@@ -99,9 +101,11 @@ function clear()
   end
 
   if not doing_past_turns then
+    change_past = false
     past_playback = false
     all_moves = {}
     past_rules = {}
+    past_ends = {}
   end
   
   card_for_id = {}
@@ -134,9 +138,20 @@ function loadMap()
       units_by_tile[x + y * mapwidth] = {}
     end
   end]]
+  local rects = {}
   for _,mapdata in ipairs(maps) do
-    local version = mapdata[1]
-    local map = mapdata[2]
+    local version = mapdata.info.version
+    local map = mapdata.data
+
+    local offset = {x = 0, y = 0}
+    if mapdata.info.width < mapwidth then
+      offset.x = math.floor((mapwidth / 2) - (mapdata.info.width / 2))
+    end
+    if mapdata.info.height < mapheight then
+      offset.y = math.floor((mapheight / 2) - (mapdata.info.height / 2))
+    end
+    table.insert(rects, {x = offset.x, y = offset.y, w = mapdata.info.width, h = mapdata.info.height})
+
     if version == 0 then
       if map == nil then
         map = {}
@@ -161,13 +176,13 @@ function loadMap()
           local tile, x, y, dir
           tile, x, y, dir, pos = love.data.unpack(PACK_UNIT_V1, map, pos)
           if inBounds(x, y) then
-            createUnit(tile, x, y, dir)
+            createUnit(tile, x + offset.x, y + offset.y, dir)
           end
         elseif version == 2 or version == 3 then
           local id, tile, x, y, dir, specials
           id, tile, x, y, dir, specials, pos = love.data.unpack(version == 2 and PACK_UNIT_V2 or PACK_UNIT_V3, map, pos)
-          if inBounds(x, y) then
-            local unit = createUnit(tile, x, y, dir, false, id)
+          if inBounds(x + offset.y, y + offset.y) then
+            local unit = createUnit(tile, x + offset.x, y + offset.y, dir, false, id)
             local spos = 1
             while spos <= #specials do
               local k, v
@@ -189,48 +204,48 @@ function loadMap()
       local dofloodfill = scene ~= editor
       for _,unit in ipairs(map) do
         id, tile, x, y, dir, specials, color = unit.id, unit.tile, unit.x, unit.y, unit.dir, unit.special, unit.color
-        if inBounds(x, y) then
-          if not dofloodfill then
+        x = x + offset.x
+        y = y + offset.y
+        if not dofloodfill then
+          local unit = createUnit(tile, x, y, dir, false, id, nil, color and {{name=color}})
+          unit.special = specials
+        elseif tile == tiles_by_name["lvl"] then
+          if readSaveFile(specials.level, "seen") then
+            local tfs = readSaveFile(level_name, "transform")
+            for _,t in ipairs(tfs or {tiles_listPossiblyMeta(tile).name}) do
+              local unit = createUnit(tiles_by_namePossiblyMeta(t), x, y, dir, false, id, nil, color and {{name=color}})
+              unit.special = specials
+              unit.special.visibility = "open"
+              if readSaveFile(specials.level, "won") then
+                table.insert(floodfill, {unit, 1})
+              end
+            end
+          elseif specials.visibility == "open" then
             local unit = createUnit(tile, x, y, dir, false, id, nil, color and {{name=color}})
             unit.special = specials
-          elseif tile == tiles_by_name["lvl"] then
-            if readSaveFile(specials.level, "seen") then
-              local tfs = readSaveFile(level_name, "transform")
-              for _,t in ipairs(tfs or {tiles_listPossiblyMeta(tile).name}) do
-                local unit = createUnit(tiles_by_namePossiblyMeta(t), x, y, dir, false, id, nil, color and {{name=color}})
-                unit.special = specials
+          else
+            table.insert(objects, {id, tile, x, y, dir, specials, color})
+          end
+        elseif tile == tiles_by_name["lin"] then
+          if specials.visibility == "hidden" then
+            table.insert(objects, {id, tile, x, y, dir, specials, color})
+          else
+            local unit = createUnit(tile, x, y, dir, false, id, nil, color and {{name=color}})
+            unit.special = specials
+          end
+        else
+          if specials.level then
+            local tfs = readSaveFile(level_name, "transform")
+            for _,t in ipairs(tfs or {tiles_listPossiblyMeta(tile).name}) do
+              local unit = createUnit(tiles_by_namePossiblyMeta(t), x, y, dir, false, id, nil, color and {{name=color}})
+              unit.special = specials
+              if readSaveFile(specials.level, "seen") then
                 unit.special.visibility = "open"
-                if readSaveFile(specials.level, "won") then
-                  table.insert(floodfill, {unit, 1})
-                end
               end
-            elseif specials.visibility == "open" then
-              local unit = createUnit(tile, x, y, dir, false, id, nil, color and {{name=color}})
-              unit.special = specials
-            else
-              table.insert(objects, {id, tile, x, y, dir, specials, color})
-            end
-          elseif tile == tiles_by_name["lin"] then
-            if specials.visibility == "hidden" then
-              table.insert(objects, {id, tile, x, y, dir, specials, color})
-            else
-              local unit = createUnit(tile, x, y, dir, false, id, nil, color and {{name=color}})
-              unit.special = specials
             end
           else
-            if specials.level then
-              local tfs = readSaveFile(level_name, "transform")
-              for _,t in ipairs(tfs or {tiles_listPossiblyMeta(tile).name}) do
-                local unit = createUnit(tiles_by_namePossiblyMeta(t), x, y, dir, false, id, nil, color and {{name=color}})
-                unit.special = specials
-                if readSaveFile(specials.level, "seen") then
-                  unit.special.visibility = "open"
-                end
-              end
-            else
-              local unit = createUnit(tile, x, y, dir, false, id, nil, color and {{name=color}})
-              unit.special = specials
-            end
+            local unit = createUnit(tile, x, y, dir, false, id, nil, color and {{name=color}})
+            unit.special = specials
           end
         end
       end
@@ -238,7 +253,6 @@ function loadMap()
         local created = {}
         while #floodfill > 0 do
           local u, ptype = unpack(table.remove(floodfill, 1))
-          print(fullDump(u), ptype)
           local orthos = {[-1] = {}, [0] = {}, [1] = {}}
           for a = 0,1 do -- 0 = ortho, 1 = diag
             for i = #objects,1,-1 do
@@ -274,6 +288,20 @@ function loadMap()
             end
           end
         end
+      end
+    end
+  end
+  for x=0,mapwidth-1 do
+    for y=0,mapheight-1 do
+      local in_bounds = false
+      for _,rect in ipairs(rects) do
+        if x >= rect.x and x < rect.x + rect.w and y >= rect.y and y < rect.y + rect.h then
+          in_bounds = true
+          break
+        end
+      end
+      if not in_bounds then
+        createUnit(tiles_by_name["bordr"], x, y, 1)
       end
     end
   end
@@ -634,6 +662,16 @@ function countProperty(unit,prop)
   return #matchesRule(unit,"be",prop)
 end
 
+function hasU(unit)
+  return hasProperty(unit,"u") or hasProperty(unit,"u too") or hasProperty(unit,"u tres")
+end
+
+function getUs()
+  local yous = getUnitsWithEffect("u")
+  mergeTable(yous,getUnitsWithEffect("u too"))
+  mergeTable(yous,getUnitsWithEffect("u tres"))
+  return yous
+end
 
 function hasSing(unit,note)
     bit = love.audio.newSource("assets/audio/sfx/bit2.wav", "static")
@@ -1236,9 +1274,7 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
       local name = unit.special.name or level_name
       result = readSaveFile(name,"won")
     elseif condtype == "past" then
-      if not doing_past_turns then
-        result = false
-      end
+      result = false
     else
       print("unknown condtype: " .. condtype)
       result = false
@@ -1732,6 +1768,8 @@ function hslToRgb(h, s, l, a)
 end
 
 function addParticles(ptype,x,y,color,count)
+  if doing_past_turns and not do_past_effects then return end
+
   if type(color[1]) == "table" then color = color[1] end
   if ptype == "destroy" then
     local ps = love.graphics.newParticleSystem(sprites["circle"])
@@ -2195,6 +2233,7 @@ function setRainbowModeColor(value, brightness)
 end
 
 function shakeScreen(dur, intensity)
+  if doing_past_turns and not do_past_effects then return end
   shake_dur = dur+shake_dur/4
   shake_intensity = shake_intensity + intensity/2
 end
@@ -2295,9 +2334,9 @@ function loadLevels(levels, mode, level_objs)
     level_background_sprite = data.background_sprite or ""
 
     if map_ver == 0 then
-      table.insert(maps, {0, loadstring("return " .. mapstr)()})
+      table.insert(maps, {data = loadstring("return " .. mapstr)(), info = data})
     else
-      table.insert(maps, {map_ver, mapstr})
+      table.insert(maps, {data = mapstr, info = data})
     end
 
     if love.filesystem.getInfo(dir .. level .. ".png") then
@@ -2340,7 +2379,7 @@ function timecheck(unit,verb,prop)
       return true
     elseif hasProperty(outerlvl,"za warudo") and not hasRule(unit,"ben't","za warudo") then
       return true
-    elseif verb ~= nil and prop ~= nil then
+    elseif verb and prop then
       local rulecheck = matchesRule(unit,verb,prop)
       for _,ruleparent in ipairs(rulecheck) do
         for i=1,#ruleparent.rule.subject.conds do
@@ -2353,6 +2392,26 @@ function timecheck(unit,verb,prop)
   else
     return true
   end
+  return false
+end
+
+function timecheckUs(unit)
+  if timecheck(unit) then
+    return true
+  else
+    local to_check = {"u","u too","u tres"}
+    for _,prop in ipairs(to_check) do
+      local rulecheck = matchesRule(unit,"be",prop)
+      for _,ruleparent in ipairs(rulecheck) do
+        for i=1,#ruleparent.rule.subject.conds do
+          if ruleparent.rule.subject.conds[i][1] == "timles" then
+            return true
+          end
+        end
+      end
+    end
+  end
+  return false
 end
 
 function fillTextDetails(sentence, old_sentence, orig_index, word_index)
@@ -2746,4 +2805,17 @@ function drawCustomLetter(text, x, y, rot, sx, sy, ox, oy)
     love.graphics.draw(sprites["letters_"..(text:sub(i,i) or "a")] or sprites["wut"], quad, dx, dy)
   end
   love.graphics.pop()
+end
+
+function getPastConds(conds)
+  local result = false
+  local new_conds = {}
+  for _,cond in ipairs(conds) do
+    if cond.name == "past" then
+      result = true
+    else
+      table.insert(new_conds, cond)
+    end
+  end
+  return result, new_conds
 end

@@ -3388,6 +3388,7 @@ tiles_list = {
     texttype = {ditto = true},
     color = {0,3},
     layer = 20,
+    demeta = "ditto",
     tags = {"ditto", "quotation marks"},
     desc = "DITTO: Acts like the text above it. \" TXT will refer to the ditto itself, not the text above it.",
   },
@@ -6912,7 +6913,7 @@ tiles_list = {
     tags = {},
     desc = "Custom Letters: Type up to 6 letters into the search box and hit ctrl+enter to get a tile with those letters in it. This text shouldn't show ingame anywhere."
   },
-  -- 596
+  -- 597
   {
     name = "text_past",
     sprite = "text_past",
@@ -6921,6 +6922,29 @@ tiles_list = {
     color = {3, 3},
     layer = 20,
     desc = "PAST (Prefix Condition): Applies the rule to turns that have already happened.",
+  },
+  --598
+  {
+    name = "sans",
+    sprite = {"sans_base","sans_jacket"},
+    color = {{0,3},{1,3}},
+    colored = {false,true},
+    layer = 5,
+    rotatable = true,
+    convertible = false,
+    eye = {x=19, y=5, w=2, h=2},
+    tags = {"sans", "undertale", "skeleton"},
+    desc = "sans",
+  },
+  --599
+  {
+    name = "ditto",
+    sprite = "ditto",
+    color = {3,3},
+    layer = 5,
+    tometa = "text_''",
+    eye = {x=18, y=11, w=2, h=2},
+    tags = {"ditto", "pokemon"},
   },
 }
 

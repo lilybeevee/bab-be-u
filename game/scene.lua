@@ -1374,9 +1374,12 @@ function scene.draw(dt)
 
     love.graphics.setColor(1, 1, 1)
     love.graphics.push()
-    love.graphics.translate(love.graphics.getWidth() / 2 - sw_sprite:getWidth() / 2, love.graphics.getHeight() / 2 - sw_sprite:getHeight() / 2)
+    love.graphics.translate(love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
+    love.graphics.scale(getUIScale(), getUIScale())
+    love.graphics.translate(-sw_sprite:getWidth() / 2, -sw_sprite:getHeight() / 2)
     love.graphics.draw(sw_sprite)
 
+    love.graphics.setColor(1, 1, 1)
     love.graphics.push()
     love.graphics.translate(176 + small_hand:getWidth() / 2, 98 + small_hand:getHeight() / 2)
     love.graphics.rotate(stopwatch.small.rotation)
@@ -1875,6 +1878,7 @@ function doOneMove(x, y, key, past)
   if not past then
     table.insert(all_moves, {x, y, key})
   end
+  current_move = current_move + 1
 
 	if (currently_winning) then
     --undo: undo win.
@@ -1977,6 +1981,9 @@ function doOneMove(x, y, key, past)
 			table.remove(undo_buffer, 1)
 		end
     unsetNewUnits()
+    if past_ends[current_move] then
+      undo_buffer = {}
+    end
     scene.doPastTurns()
 	end
   return true
@@ -2018,38 +2025,98 @@ function scene.doPassiveParticles(timer,word,effect,delay,chance,count,color)
 end
 
 function scene.doPastTurns()
-  if not doing_past_turns and #past_rules > 0 then
+  if not doing_past_turns and change_past then
     doing_past_turns = true
     past_playback = true
 
-    tick.delay(function()
-      if settings["stopwatch_effect"] then
-        local delay = math.min(1/#all_moves, 0.1)
+    if not settings["stopwatch_effect"] then
+      do_past_effects = true
+      playSound("stopwatch")
+    end
+
+    tick.delay(function() 
+      do_past_effects = false
+      local start_time = love.timer.getTime()
+      local destroy_level = false
+      while change_past and not destroy_level do
+        change_past = false
+        scene.resetStuff()
+        for i,past_move in ipairs(all_moves) do
+          doOneMove(past_move[1], past_move[2], past_move[3], true)
+          if change_past then break end
+          if love.timer.getTime() - start_time > 10 then
+            destroy_level = true
+            break
+          end
+        end
+      end
+      if destroy_level then
+        destroyLevel("infloop")
+      elseif settings["stopwatch_effect"] then
+        local moves_per_tick = 1
+        local delay = 1/#all_moves
+        while delay < 1/60 do
+          moves_per_tick = moves_per_tick * 2
+          delay = delay * 2
+        end
         stopwatch.visible = true
         stopwatch.big.rotation = 0
         stopwatch.small.rotation = 0
-        addTween(tween.new(#all_moves * delay, stopwatch.big, {rotation = 360}), "stopwatch")
+        addTween(tween.new(delay * math.ceil(#all_moves / moves_per_tick), stopwatch.big, {rotation = 360}), "stopwatch")
 
+        do_past_effects = true
+        playSound("stopwatch")
         scene.resetStuff()
-        for i,past_move in ipairs(all_moves) do
-          tick.delay(function() 
-            doOneMove(past_move[1], past_move[2], past_move[3], true)
-            if i == #all_moves then
+        local last_tick = nil
+        local i = 1
+        while i <= #all_moves do
+          local count = math.min(#all_moves - i, moves_per_tick - 1)
+          local function pastMove(i, count)
+            for j = 0, count do
+              do_past_effects = j == count -- reduce effects
+              if i+j == #all_moves then
+                should_parse_rules = true
+              end
+              doOneMove(all_moves[i+j][1], all_moves[i+j][2], all_moves[i+j][3], true)
+            end
+          end
+          local a = i
+          if last_tick then
+            last_tick = last_tick:after(function() pastMove(a, count) end, delay)
+          else
+            last_tick = tick.delay(function() 
+              pastMove(a, count)
+            end, delay)
+          end
+          i = i + count + 1
+          if i > #all_moves then
+            last_tick:after(function()
+              past_ends[current_move] = true
+              stopwatch.visible = false
               doing_past_turns = false
               past_playback = false
               past_rules = {}
-              stopwatch.visible = false
-            end
-          end, delay * i)
+              undo_buffer = {}
+            end, 0)
+          end
         end
       else
         scene.resetStuff()
         for i,past_move in ipairs(all_moves) do
+          do_past_effects = i <= 10 or #all_moves - i < 10
+          if i == #all_moves then
+            should_parse_rules = true
+          end
           doOneMove(past_move[1], past_move[2], past_move[3], true)
         end
+        past_ends[current_move] = true
         doing_past_turns = false
         past_playback = false
         past_rules = {}
+        undo_buffer = {} -- TODO: Undo the timeline?
+        for k,v in pairs(tweens) do
+          v[1]:set(v[1].duration)
+        end
       end
     end, 0.25)
   end

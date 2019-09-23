@@ -70,13 +70,24 @@ function moveBlock()
   local not_backed_this_turn = {}
   
   local isback = getUnitsWithEffectAndCount("undo")
+  if hasProperty(outerlvl, "undo") then
+    for _,unit in ipairs(units) do
+      if isback[unit] then
+        isback[unit] = isback[unit] + 1
+      else
+        isback[unit] = 1
+      end
+    end
+  end
   for unit,amt in pairs(isback) do
+    --print("backing 1:", unit.fullname, amt, unit.backer_turn, backers_cache[unit])
     backed_this_turn[unit] = true
     if (unit.backer_turn == nil) then
       addUndo({"backer_turn", unit.id, nil})
       unit.backer_turn = #undo_buffer+(0.5*(amt-1))
       backers_cache[unit] = unit.backer_turn
     end
+    --print("backing 2:", unit.fullname, amt, unit.backer_turn, backers_cache[unit])
     doBack(unit.id, 2*(#undo_buffer-unit.backer_turn))
     for i = 2,amt do
       addUndo({"backer_turn", unit.id, unit.backer_turn})
@@ -827,9 +838,8 @@ function updateUnits(undoing, big_update)
     for _,unit in ipairs(isdefeat) do
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
       for _,on in ipairs(stuff) do
-        is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
-        if is_u and sameFloat(unit, on) then
-          if timecheck(unit,"be",":(") and (timecheck(on,"be","u") or timecheck(on,"be","u too") or timecheck(on,"be","u tres")) then
+        if hasU(on) and sameFloat(unit, on) then
+          if timecheck(unit,"be",":(") and (timecheckUs(on)) then
             table.insert(to_destroy, on)
             playSound("break")
             shakeScreen(0.3, 0.2)
@@ -896,9 +906,8 @@ function updateUnits(undoing, big_update)
     for _,unit in ipairs(isreset) do
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
       for _,on in ipairs(stuff) do
-        is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
-        if is_u and sameFloat(unit, on) then
-          if timecheck(unit,"be","try again") and (timecheck(on,"be","u") or timecheck(on,"be","u too") or timecheck(on,"be","u tres")) then
+        if hasU(on) and sameFloat(unit, on) then
+          if timecheck(unit,"be","try again") and (timecheckUs(on)) then
             will_undo = true
             break
           else
@@ -918,9 +927,8 @@ function updateUnits(undoing, big_update)
       if not hasProperty(ruleparent[1].rule.object,"slep") then
         local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
         for _,on in ipairs(stuff) do
-          is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
-          if is_u and sameFloat(unit, on) then
-            if timecheck(unit,"be","xwx") and (timecheck(on,"be","u") or timecheck(on,"be","u too") or timecheck(on,"be","u tres")) then
+          if hasU(on) and sameFloat(unit, on) then
+            if timecheck(unit,"be","xwx") and (timecheckUs(on)) then
               doXWX()
             else
               addUndo({"timeless_crash_add"})
@@ -938,10 +946,9 @@ function updateUnits(undoing, big_update)
     for _,unit in ipairs(isbonus) do
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
       for _,on in ipairs(stuff) do
-        is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
-        if is_u and sameFloat(unit, on) then
+        if hasU(on) and sameFloat(unit, on) then
           writeSaveFile(level_name, "bonus", true)
-          if timecheck(unit,"be",":o") and (timecheck(on,"be","u") or timecheck(on,"be","u too") or timecheck(on,"be","u tres")) then
+          if timecheck(unit,"be",":o") and (timecheckUs(on)) then
             table.insert(to_destroy, unit)
             playSound("bonus")
           else
@@ -960,9 +967,8 @@ function updateUnits(undoing, big_update)
     for _,unit in ipairs(isunwin) do
       local stuff = getUnitsOnTile(unit.x,unit.y, nil, true)
       for _,on in ipairs(stuff) do
-        is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
-        if is_u and sameFloat(unit, on) then
-          if timecheck(unit,"be","d") and (timecheck(on,"be","u") or timecheck(on,"be","u too") or timecheck(on,"be","u tres")) then
+        if hasU(on) and sameFloat(unit, on) then
+          if timecheck(unit,"be","d") and (timecheckUs(on)) then
             unwins = unwins + 1
           else
             addUndo({"timeless_unwin_add", on.id})
@@ -977,9 +983,8 @@ function updateUnits(undoing, big_update)
     for _,unit in ipairs(iswin) do
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
       for _,on in ipairs(stuff) do
-        is_u = hasProperty(on, "u") or hasProperty(on, "u too") or hasProperty(on, "u tres")
-        if is_u and sameFloat(unit, on) then
-          if timecheck(unit,"be",":)") and (timecheck(on,"be","u") or timecheck(on,"be","u too") or timecheck(on,"be","u tres")) then
+        if hasU(on) and sameFloat(unit, on) then
+          if timecheck(unit,"be",":)") and (timecheckUs(on)) then
             wins = wins + 1
           else
             addUndo({"timeless_win_add", on.id})
@@ -1017,13 +1022,11 @@ function updateUnits(undoing, big_update)
         sokowins[unit] = false
       end
     end
-    
     for unit,v in pairs(sokowins) do
       if v then
         local stuff = getUnitsOnTile(unit.x,unit.y)
         for _,on in ipairs(stuff) do
-          local is_u = hasProperty(on,"u") or hasProperty(on,"u too") or hasProperty(on,"u tres")
-          if is_u and sameFloat(unit,on) then
+          if hasU(on) and sameFloat(unit,on) then
             wins = wins + 1
           end
         end
@@ -1114,25 +1117,36 @@ function updateUnits(undoing, big_update)
   deleteUnits(del_units,false)
   
   --Fix the 'txt be undo' bug by checking an additional time if we need to unset backer_turn for a unit.
-  
-  local backed_this_turn = {}
-  local not_backed_this_turn = {}
-  
-  local isback = getUnitsWithEffectAndCount("undo")
-  for unit,amt in pairs(isback) do
-    backed_this_turn[unit] = true
-  end
-  
-  for unit,turn in pairs(backers_cache) do
-    if turn ~= nil and not backed_this_turn[unit] then
-      not_backed_this_turn[unit] = true
+  if (big_update and not undoing) then
+    local backed_this_turn = {}
+    local not_backed_this_turn = {}
+    
+    local isback = getUnitsWithEffectAndCount("undo")
+    if hasProperty(outerlvl, "undo") then
+      for _,unit in ipairs(units) do
+        if isback[unit] then
+          isback[unit] = isback[unit] + 1
+        else
+          isback[unit] = 1
+        end
+      end
     end
-  end
-  
-  for unit,_ in pairs(not_backed_this_turn) do
-    addUndo({"backer_turn", unit.id, unit.backer_turn})
-    unit.backer_turn = nil
-    backers_cache[unit] = nil
+    for unit,amt in pairs(isback) do
+      backed_this_turn[unit] = true
+    end
+    
+    for unit,turn in pairs(backers_cache) do
+      if turn ~= nil and not backed_this_turn[unit] then
+        not_backed_this_turn[unit] = true
+      end
+    end
+    
+    for unit,_ in pairs(not_backed_this_turn) do
+      --print("oh no longer a backer huh, neat", unit.fullname)
+      addUndo({"backer_turn", unit.id, unit.backer_turn})
+      unit.backer_turn = nil
+      backers_cache[unit] = nil
+    end
   end
   
   if (will_undo) or (timeless_reset and not timeless) then
@@ -1616,11 +1630,7 @@ function levelBlock()
   end
   
   if hasProperty(outerlvl, ":(") then
-    local yous = getUnitsWithEffect("u")
-    local youtoos = getUnitsWithEffect("u too")
-    local youtres = getUnitsWithEffect("u tres")
-    mergeTable(yous, youtoos)
-    mergeTable(yous, youtres)
+    local yous = getUs()
     for _,unit in ipairs(yous) do
       if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
         table.insert(to_destroy, unit)
@@ -1700,11 +1710,7 @@ function levelBlock()
   
   local will_undo = false
   if hasProperty(outerlvl, "try again") then
-    local yous = getUnitsWithEffect("u")
-    local youtoos = getUnitsWithEffect("u too")
-    local youtres = getUnitsWithEffect("u tres")
-    mergeTable(yous, youtoos)
-    mergeTable(yous, youtres)
+    local yous = getUs()
     for _,unit in ipairs(yous) do
       if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
         doTryAgain()
@@ -1713,11 +1719,7 @@ function levelBlock()
   end
   
   if hasProperty(outerlvl, "xwx") then
-    local yous = getUnitsWithEffect("u")
-    local youtoos = getUnitsWithEffect("u too")
-    local youtres = getUnitsWithEffect("u tres")
-    mergeTable(yous, youtoos)
-    mergeTable(yous, youtres)
+    local yous = getUs()
     for _,unit in ipairs(yous) do
       if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
         doXWX()
@@ -1726,11 +1728,7 @@ function levelBlock()
   end
   
   if hasProperty(outerlvl, ":o") then
-    local yous = getUnitsWithEffect("u")
-    local youtoos = getUnitsWithEffect("u too")
-    local youtres = getUnitsWithEffect("u tres")
-    mergeTable(yous, youtoos)
-    mergeTable(yous, youtres)
+    local yous = getUs()
     for _,unit in ipairs(yous) do
       if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
         writeSaveFile(level_name, "bonus", true)
@@ -1742,11 +1740,7 @@ function levelBlock()
   
   local unwins = 0
   if hasProperty(outerlvl, ";d") then
-    local yous = getUnitsWithEffect("u")
-    local youtoos = getUnitsWithEffect("u too")
-    local youtres = getUnitsWithEffect("u tres")
-    mergeTable(yous, youtoos)
-    mergeTable(yous, youtres)
+    local yous = getUs()
     for _,unit in ipairs(yous) do
       if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
         unwins = unwins + 1
@@ -1756,11 +1750,7 @@ function levelBlock()
   
   local wins = 0
   if hasProperty(outerlvl, ":)") then
-    local yous = getUnitsWithEffect("u")
-    local youtoos = getUnitsWithEffect("u too")
-    local youtres = getUnitsWithEffect("u tres")
-    mergeTable(yous, youtoos)
-    mergeTable(yous, youtres)
+    local yous = getUs()
     for _,unit in ipairs(yous) do
       if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
         wins = wins + 1
@@ -2030,7 +2020,12 @@ function convertUnits(pass)
       local tile = nil
       local nametocreate = unit.fullname
       for i = 1,amt do
-        nametocreate = "text_"..nametocreate
+        local tile = tiles_by_name[nametocreate]
+        if tile ~= nil and tiles_list[tile].tometa then
+          nametocreate = tiles_list[tile].tometa
+        else
+          nametocreate = "text_"..nametocreate
+        end
       end
       tile = tiles_by_namePossiblyMeta(nametocreate)
       if tile ~= nil then
@@ -2053,11 +2048,16 @@ function convertUnits(pass)
       --remove "text_" as many times as we're de-metaing
       local nametocreate = unit.fullname
       for i = 1,amt do
-        if nametocreate:starts("text_") then
-          nametocreate = nametocreate:sub(6, -1)
+        local tile = tiles_by_name[nametocreate]
+        if tile ~= nil and tiles_list[tile].demeta then
+          nametocreate = tiles_list[tile].demeta
         else
-          nametocreate = "no1"
-          break
+          if nametocreate:starts("text_") then
+            nametocreate = nametocreate:sub(6, -1)
+          else
+            nametocreate = "no1"
+            break
+          end
         end
       end
       if (nametocreate == "mous") then
@@ -2291,6 +2291,10 @@ function convertUnits(pass)
           tile = tiles_by_name["text_" .. rule.subject.name]
         elseif rule.object.name:starts("this") and not rule.object.name:ends("n't") then
           tile = tiles_by_name["this"]
+        end
+        --prevent transformation into certain objects
+        if tile ~= nil and tiles_list[tile].convertible ~= nil and not tiles_list[tile].convertible then
+          tile = nil
         end
         --let x ben't x txt prevent x be txt, and x ben't txt prevent x be y txt
         local overriden = false;
@@ -2577,6 +2581,7 @@ function deleteUnit(unit,convert,undoing)
 end
 
 function moveUnit(unit,x,y,portal)
+  --print("moving:", unit.fullname, unit.x, unit.y, "to:", x, y)
   --when empty moves, swap it with the empty in its destination tile, to preserve the invariant 'there is exactly empty per tile'
   --also, keep empty out of units_by_tile - it will be added in getUnitsOnTile
   if (unit.type == "outerlvl") then
@@ -2664,9 +2669,6 @@ end
 
 function updateDir(unit, dir, force)
   if not force and rules_with ~= nil then
-    if not timecheck(unit) then
-      return false
-    end
     if hasProperty(unit, "no turn") then
       return false
     end
@@ -2922,6 +2924,16 @@ function doWin(result_, payload_)
 end
 
 function doXWX()
-  --TODO: make xwx clear progress instead of crashing lua
-  love = {}
+  writeSaveFile(level_name,"seen",nil)
+  writeSaveFile(level_name,"won",nil)
+  writeSaveFile(level_name,"bonus",nil)
+  writeSaveFile(level_name,"transform",nil)
+  
+  --load the parent here, i don't know how to do that
+  --unless they're playing from editor, in which case just send them back to editing probably. i also don't know how to do that
+  scene.resetStuff()
+end
+
+function getColor(unit)
+  return unit.color_override or unit.color
 end

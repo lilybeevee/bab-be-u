@@ -34,8 +34,11 @@ function addUndoMaybeOverwrite(data)
     local most_recent_undo = undo_buffer[1][1]
     if most_recent_undo[1] == data[1] and most_recent_undo[2] == data[2] then
       --this causes bugs, need to investigate I guess
+      --returning seems to work better on average?
+      --print("abort!")
+      return
       --print("replacing:", fullDump(most_recent_undo), "with:", fullDump(data))
-      table.remove(undo_buffer[1], 1)
+      --table.remove(undo_buffer[1], 1)
     end
     table.insert(undo_buffer[1], 1, data)
   end
@@ -49,7 +52,7 @@ function undoOneAction(turn, i, v, ignore_no_undo)
   
   if action == "update" then
     unit = units_by_id[v[2]]
-
+    --print("undoOneAction update", unit.name, v[3], v[4])
     if unit ~= nil and (ignore_no_undo or not isNoUndo(unit)) then
       moveUnit(unit,v[3],v[4])
       --force updates when we're rewinding time - it ABSOLUTELY had that direction in the past
@@ -100,6 +103,7 @@ function undoOneAction(turn, i, v, ignore_no_undo)
     createMouse_direct(v[2], v[3], v[4]) --x, y, id
   elseif action == "backer_turn" then
     unit = units_by_id[v[2]]
+    --print("undo backer_turn:", unit.fullname, backers_cache[unit], unit.backer_turn, v[3])
     if (unit ~= nil and (ignore_no_undo or not isNoUndo(unit))) then
       backers_cache[unit] = v[3]
       unit.backer_turn = v[3]
@@ -158,16 +162,8 @@ function undoOneAction(turn, i, v, ignore_no_undo)
   elseif action == "timeless_crash_remove" then
     --meaningless by definition
     --timeless_crash = true
-  elseif action == "timeless_yeet_add" then
-    unit = v[2]
-    for i,yote in ipairs(timeless_yote) do
-      if yote.unit == unit and (ignore_no_undo or not isNoUndo(yote.unit)) then
-        table.remove(timeless_yote, i)
-        break
-      end
-    end
-  elseif action == "timeless_yeet_remove" then
-    table.insert(timeless_yote, {unit = v[2], dir = v[3]})
+  elseif action == "timeless_yeet_add" or action == "timeless_yeet_remove" then
+    timeless_yote[v[2]] = v[3]
   elseif action == "timeless_rules" then
     rules_with = v[2]
 	elseif action == "colour_change" then
@@ -199,6 +195,7 @@ function doBack(unitid, turn, _ignore_no_undo)
       local unit = units_by_id[v[2]]
       if unit ~= nil and (unit.id == unitid or unitid == nil) then
         if (action == "update") then
+          --print("doBack update", unit.name, unit.x, unit.y, v[3], v[4])
           addUndoMaybeOverwrite({"update", unit.id, unit.x, unit.y, unit.dir})
           undoOneAction(turn, _, v, ignore_no_undo)
         elseif (action == "create") then
@@ -223,6 +220,7 @@ function doBack(unitid, turn, _ignore_no_undo)
         end
       end
     end
+    --print(fullDump(undo_buffer[1]))
     return true
   end
   return false
@@ -294,6 +292,7 @@ function undo(dont_update_rules)
     local update_rules = false
     
     last_move = undo_buffer[1].last_move or {0, 0}
+    current_turn = current_turn - 1
 
     for _,v in ipairs(undo_buffer[1]) do
       local new_update_rules = undoOneAction(1, _, v, false)

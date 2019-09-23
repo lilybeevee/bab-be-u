@@ -32,9 +32,13 @@ function clearRules()
     addBaseRule("this","be","wurd")
   end
 
-  if doing_past_turns then
-    for _,rule in ipairs(past_rules) do
-      addRule(rule)
+  if not doing_past_turns then
+    past_rules = {}
+  else
+    for id,past_rule in pairs(past_rules) do
+      if past_rule.turn > current_move then
+        addRule(past_rule.rule)
+      end
     end
   end
 
@@ -265,6 +269,12 @@ function parseRules(undoing)
 
       for _,sentence in ipairs(sentences) do
         parseSentence(sentence, {been_first, first_words, final_rules, first}, dir) -- split into a new function located below to organize this slightly more
+        if (#final_rules > 1000) then
+          print("parseRules infinite loop! (1000 rules)")
+          destroyLevel("infloop")
+          clearRules()
+          return
+        end
       end
     end
     
@@ -525,7 +535,6 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
 end
 
 function addRule(full_rule)
-  -- print(fullDump(full_rule))
   local rules = full_rule.rule
   local units = full_rule.units
   local dir = full_rule.dir
@@ -539,6 +548,7 @@ function addRule(full_rule)
   local object_not = 0
   
   local new_rule = false
+  local rule_id = ""
   for _,unit in ipairs(units) do
     unit.active = true
     if not unit.old_active and not first_turn then
@@ -546,15 +556,20 @@ function addRule(full_rule)
       new_rule = true
     end
     unit.old_active = unit.active
+    rule_id = rule_id .. unit.id .. ","
   end
+  has_new_rule = has_new_rule or new_rule
 
-  if new_rule and not doing_past_turns then
-    has_new_rule = true
-    for _,cond in ipairs(rules.subject.conds) do
-      if cond.name == "past" then
-        past_rules = past_rules or {}
-        table.insert(past_rules, {rule = rules, units = {}, dir = dir})
-      end
+  if rule_id ~= "" and new_rule and not past_rules[rule_id] and not undoing then
+    -- actually i dont know how rule stacking works ehehe
+    local r1, subject_conds = getPastConds(rules.subject.conds or {})
+    local r2, object_conds = getPastConds(rules.object.conds or {})
+    if r1 or r2 then
+      local new_rule = {rule = deepCopy(rules), units = {}, dir = 1}
+      new_rule.rule.subject.conds = subject_conds
+      new_rule.rule.object.conds = object_conds
+      past_rules[rule_id] = {turn = current_move, rule = new_rule}
+      change_past = true
     end
   end
   
