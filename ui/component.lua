@@ -193,9 +193,9 @@ function component.new(t)
       end
     end
     return self.mouse.x >= 0 and
-           self.mouse.y >= 0 and
-           self.mouse.x < self:getWidth() and 
-           self.mouse.y < self:getHeight()
+          self.mouse.y >= 0 and
+          self.mouse.x < self:getWidth() and 
+          self.mouse.y < self:getHeight()
   end
 
   function o:pressed(button)
@@ -226,6 +226,7 @@ function component.new(t)
   end
 
   function o:onHovered(func) self.on_hovered = func; return self end
+  function o:onExited(func) self.on_exited = func; return self end
   function o:onPressed(func) self.on_pressed = func; return self end
   function o:onReleased(func) self.on_released = func; return self end
 
@@ -337,7 +338,8 @@ function component.new(t)
     love.graphics.translate(self:getWidth() / 2, self:getHeight() / 2)
     love.graphics.scale(self:getScale())
     love.graphics.rotate(self:getRotation())
-    if not self:getCentered() then
+    love.graphics.translate(-self:getWidth() / 2, -self:getHeight() / 2)
+    if self:getCentered() then
       love.graphics.translate(-self:getWidth() / 2, -self:getHeight() / 2)
     end
   end
@@ -360,7 +362,10 @@ function component.new(t)
       if ui.mouse.right == "pressed" then self.mouse.right = "pressed" end
     else
       if ui.hovered == self then ui.hovered = nil end
-      self.last_hovered = false
+      if self.last_hovered then
+        self.last_hovered = false
+        if self.on_exited then self.on_exited(self) end
+      end
       if self.mouse.left == "released" then self.mouse.left = "up" end
       if self.mouse.right == "released" then self.mouse.right = "up" end
     end

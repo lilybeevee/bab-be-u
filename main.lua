@@ -407,18 +407,18 @@ function love.keypressed(key,scancode,isrepeat)
     end
   elseif key == "f" and love.keyboard.isDown('lctrl') then
     if scene == menu then
-      love.system.openURL("file://"..love.filesystem.getSaveDirectory())
+      love.system.openURL("file:///"..love.filesystem.getSaveDirectory())
     elseif world == "" then
       if love.filesystem.getInfo("levels") then
-        love.system.openURL("file://"..love.filesystem.getSaveDirectory().."/levels/")
+        love.system.openURL("file:///"..love.filesystem.getSaveDirectory().."/levels/")
       else
-        love.system.openURL("file://"..love.filesystem.getSaveDirectory())
+        love.system.openURL("file:///"..love.filesystem.getSaveDirectory())
       end
     else
       if world_parent ~= "officialworlds" then
-        love.system.openURL("file://"..love.filesystem.getSaveDirectory().."/"..world_parent.."/"..world.."/")
+        love.system.openURL("file:///"..love.filesystem.getSaveDirectory().."/"..world_parent.."/"..world.."/")
       else
-        love.system.openURL("file://"..love.filesystem.getSource().."/"..world_parent.."/"..world.."/")
+        love.system.openURL("file:///"..love.filesystem.getSource().."/"..world_parent.."/"..world.."/")
       end
     end
   end
