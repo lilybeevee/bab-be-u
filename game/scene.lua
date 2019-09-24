@@ -2040,7 +2040,7 @@ function scene.doPastTurns()
       local destroy_level = false
       while change_past and not destroy_level do
         change_past = false
-        scene.resetStuff()
+        doTryAgain()
         for i,past_move in ipairs(all_moves) do
           doOneMove(past_move[1], past_move[2], past_move[3], true)
           if change_past then break end
@@ -2066,7 +2066,7 @@ function scene.doPastTurns()
 
         do_past_effects = true
         playSound("stopwatch")
-        scene.resetStuff()
+        doTryAgain()
         local last_tick = nil
         local i = 1
         while i <= #all_moves do
@@ -2096,12 +2096,11 @@ function scene.doPastTurns()
               doing_past_turns = false
               past_playback = false
               past_rules = {}
-              undo_buffer = {}
             end, 0)
           end
         end
       else
-        scene.resetStuff()
+        doTryAgain()
         for i,past_move in ipairs(all_moves) do
           do_past_effects = i <= 10 or #all_moves - i < 10
           if i == #all_moves then
@@ -2113,7 +2112,6 @@ function scene.doPastTurns()
         doing_past_turns = false
         past_playback = false
         past_rules = {}
-        undo_buffer = {} -- TODO: Undo the timeline?
         for k,v in pairs(tweens) do
           v[1]:set(v[1].duration)
         end

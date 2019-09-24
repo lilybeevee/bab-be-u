@@ -65,8 +65,8 @@ function undoOneAction(turn, i, v, ignore_no_undo)
   elseif action == "create" then
     local convert = v[3]
     unit = units_by_id[v[2]]
-
-    if unit.type == "text" or rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname]  then
+    --print("undoOneAction create:",fullDump(v), unit)
+    if unit ~= nil and (unit.type == "text" or rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname])  then
       update_rules = true
     end
 
@@ -193,6 +193,12 @@ function doBack(unitid, turn, _ignore_no_undo)
     for _,v in ipairs(undo_buffer[turn]) do 
       local action = v[1]
       local unit = units_by_id[v[2]]
+      --print("doBack:", fullDump(v))
+      if (action == "remove") then --should be impossible with UNDO, for TRY AGAIN purposes
+        local id = v[7];
+        addUndo({"create", v[7], true, v.created_from_id})
+        undoOneAction(turn, _, v, ignore_no_undo)
+      end
       if unit ~= nil and (unit.id == unitid or unitid == nil) then
         if (action == "update") then
           --print("doBack update", unit.name, unit.x, unit.y, v[3], v[4])
