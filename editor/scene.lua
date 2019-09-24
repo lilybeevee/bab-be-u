@@ -1134,10 +1134,13 @@ function scene.transformParameters()
   local screenheight = love.graphics.getHeight() - (is_mobile and sprites["ui/cog"]:getHeight() or 0)
 
   local scales = {0.25, 0.375, 0.5, 0.75, 1, 2, 3, 4}
+  if selector_open then
+    table.insert(scales, 6, 1.5)
+  end
 
   local scale = scales[1]
   for _,s in ipairs(scales) do
-    if screenwidth >= roomwidth * s and screenheight >= roomheight * s then
+    if screenwidth >= roomwidth * s and screenheight >= roomheight * s + (selector_open and 120 or 0) then
         scale = s
     else break end
   end
