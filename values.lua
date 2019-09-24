@@ -237,7 +237,7 @@ selector_grid_contents = {
   -- page 4: characters and special objects
   {
     "bab","text_bab","bunmy","text_bunmy","moo","text_moo","migri","text_migri",0,0,0,0,0,0,"selctr","text_selctr","lvl","text_lvl",
-    "keek","text_keek","creb","text_creb","shrim","text_shrim",0,0,0,0,0,0,0,0,"this","text_mous","lin","text_lin",
+    "keek","text_keek","creb","text_creb","shrim","text_shrim","kva","text_kva",0,0,0,0,0,0,"this","text_mous","lin","text_lin",
     "meem","text_meem","statoo","text_statoo","flamgo","text_flamgo",0,0,0,0,0,0,0,0,"text_text","text_frens","text_groop","text_pathz",
     "skul","text_skul","beeee","text_beeee","gul","text_gul","pidgin","text_pidgin",0,0,0,0,0,0,"text_lethers","text_every1","text_every2","text_every3",
     "ghost fren","text_ghost fren","fishe","text_fishe","starrfishe","text_starrfishe",0,0,0,0,0,0,0,0,0,0,0,"text_no1",
@@ -262,7 +262,7 @@ selector_grid_contents = {
     "hedg","text_hedg","banboo","text_banboo","boll","text_boll","l..uv","text_l..uv","wips","text_wips","pepis","text_pepis","do$h","text_do$h","dling","text_dling",0,0,
     "metl","text_metl","vien","text_vien","leef","text_leef","karot","text_karot","fir","text_fir","eeg","text_eeg","foreeg","text_foreeg","forbeeee","text_forbeeee",0,0,
     "jail","text_jail","ladr","text_ladr","pallm","text_pallm","coco","text_coco","rouz","text_rouz","noet","text_noet","lili","text_lili",0,0,0,0,
-    "fenss","text_fenss","platfor","text_platfor","tre","text_tre","stum","text_stum","dayzy","text_dayzy","lie","text_lie","reffil","text_reffil",0,0,0,0,
+    "fenss","text_fenss","platfor","text_platfor","tre","text_tre","stum","text_stum","dayzy","text_dayzy","lie","text_lie","reffil","text_reffil","of in","text_of in",0,0,
     "cobll","text_cobll","spik","text_spik","frut","text_frut","fungye","text_fungye","red","text_red","lie/8","text_lie/8","vlc","text_vlc","foru","text_foru","rod","text_rod",
     "wuud","text_wuud","spiky","text_spiky","parsol","text_parsol","clok","text_clok","ufu","text_ufu","rockit","text_rockit","swim","text_swim","yanying","text_yanying",0,0,
     "brik","text_brik","sparkl","text_sparkl","sanglas","text_sanglas","bullb","text_bullb","son","text_son","muun","text_muun","bac","text_bac","warn","text_warn","piep","text_piep",
@@ -6945,6 +6945,49 @@ tiles_list = {
     tometa = "text_''",
     eye = {x=18, y=11, w=2, h=2},
     tags = {"ditto", "pokemon"},
+  },
+  -- 600
+  {
+    name = "kva",
+    sprite = "kva",
+    slep = true,
+    type = "object",
+    color = {5,3},
+    layer = 5,
+    rotate = true,
+    eye = {x=25, y=7, w=3, h=3},
+    tags = {"chars", "frog", "toad"},
+  },
+  -- 601
+  {
+    name = "text_kva",
+    sprite = "text_kva",
+    type = "text",
+    texttype = {object = true},
+    color = {5,3},
+    layer = 20,
+    tags = {"chars", "frog", "toad"},
+  },
+  -- 602
+  {
+    name = "of in",
+    sprite = "of in",
+    type = "object",
+    color = {2,3},
+    layer = 7,
+    tags = {"oven", "microwave", "future gadget", "of out"},
+    desc = "why do they call it oven when you of in the cold food of out hot eat the food",
+  },
+  -- 603
+  {
+    name = "text_of in",
+    sprite = "text_of in",
+    type = "text",
+    texttype = {object = true},
+    color = {2,3},
+    layer = 20,
+    tags = {"oven", "microwave", "future gadget", "of out"},
+    desc = "of out",
   },
 }
 
