@@ -1621,22 +1621,28 @@ function scene.draw(dt)
 
     local rules = ""
 
-    local rulesnum = 0
     local lines = 0.5
+    local curline = ""
 
     for i,rule in pairs(full_rules) do
       if not rule.hide_in_list then
-        rules = rules..serializeRule(rule.rule)
-        rulesnum = rulesnum + 1
-
-        if rulesnum % 4 >= 3 then
-          rules = rules..'\n'
-          lines = lines + 1
-        else
-          rules = rules..'   '
+        local serialized = serializeRule(rule.rule)
+        if serialized ~= "" then
+          
+          if curline == "" then
+            -- do nothing, this is just a ~= on the other two cases
+          elseif (#curline + #serialized) > 50 then
+            rules = rules..curline.."\n"
+            curline = ""
+            lines = lines + 1
+          else
+            curline = curline..'   '
+          end
+          curline = curline..serialized
         end
       end
     end
+    rules = rules..curline
 
 	rules = 'da rulz:\n'..rules
 
