@@ -322,9 +322,9 @@ function scene.buildUI()
 
       worlds = scene.searchDir("worlds", "world")
       if #worlds > 0 or load_mode == "edit" then
-        label_width, label_height = ui.fonts.category:getWidth(spookmode and "stop" or "Official Worlds"), ui.fonts.category:getHeight()
+        label_width, label_height = ui.fonts.category:getWidth(spookmode and "stop" or "Custom Worlds"), ui.fonts.category:getHeight()
         table.insert(components, ui.component.new()
-          :setText(spookmode and "stop" or "Official Worlds")
+          :setText(spookmode and "stop" or "Custom Worlds")
           :setFont(ui.fonts.category)
           :setPos(0, oy)
           :setSize(love.graphics.getWidth(), label_height))
@@ -345,9 +345,9 @@ function scene.buildUI()
 
     local levels = scene.searchDir("levels", "level")
     if #levels > 0 or load_mode == "edit" then
-      label_width, label_height = ui.fonts.category:getWidth(spookmode and "what is this" or "Official Worlds"), ui.fonts.category:getHeight()
+      label_width, label_height = ui.fonts.category:getWidth(spookmode and "what is this" or "Custom Levels"), ui.fonts.category:getHeight()
       table.insert(components, ui.component.new()
-        :setText(spookmode and "what is this" or "Official Worlds")
+        :setText(spookmode and "what is this" or "Custom Levels")
         :setFont(ui.fonts.category)
         :setPos(0, oy)
         :setSize(love.graphics.getWidth(), label_height))
