@@ -87,7 +87,7 @@ function doMovement(movex, movey, key)
   local flippers = {}
 
   if not unit_tests then
-    print("[---- begin turn ----]")
+    print("[---- begin turn "..tostring(#undo_buffer).." ----]")
     print("move: " .. movex .. ", " .. movey)
   end
 

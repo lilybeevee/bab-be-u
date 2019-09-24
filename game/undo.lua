@@ -1,9 +1,6 @@
 function newUndo()
   table.insert(undo_buffer, 1, {})
   undo_buffer[1].last_move = last_move
-  if doing_past_turns then
-    all_past_buffers = all_past_buffers + 1
-  end
 end
 
 function addUndo(data)
@@ -324,9 +321,6 @@ function undo(dont_update_rules)
     miscUpdates()
 
     table.remove(undo_buffer, 1)
-    if doing_past_turns then
-      all_past_buffers = all_past_buffers - 1
-    end
   else
       undoing = false
       return false
@@ -365,14 +359,29 @@ function isNoUndo(unit)
   end
 end
 
-function condensePastUndos(amount, past_move, past_move_total)
-  addUndo({"past", past_move, past_move_total})
-  local new_buffer = {}
-  for i = 1, amount do
-    for _,v in ipairs(undo_buffer[1]) do
-      table.insert(new_buffer, v)
+function createUndoBasedOnUnitsChanges(old_units, old_units_by_id, new_units, new_units_by_id)
+  --[[
+1) For every unit in old units, if it exists in new units (same id and fullname) and x/y/dir differ, add an update event.
+2) Else, add a create event with its old state.
+3) For every unit in new units, if it doesn't exist in old units (same id and fullname), add a destroy event.
+  TODO: Handle mous, colours, timefuck stuff (timeless, UNDO), no1?
+]]
+  
+  for _,unit in ipairs(old_units) do
+    if new_units_by_id[unit.id] ~= nil and new_units_by_id[unit.id].fullname == unit.fullname then
+      local new_unit = new_units_by_id[unit.id];
+      if (new_unit.x ~= unit.x) or (new_unit.y ~= unit.y) or (new_unit.dir ~= unit.dir) then
+        addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
+      end
+    else
+      addUndo({"remove", unit.tile, unit.x, unit.y, unit.dir, convert or false, unit.id, unit.special})
     end
-    table.remove(undo_buffer, 1)
   end
-  table.insert(undo_buffer, 1, new_buffer)
+  for _,unit in ipairs(new_units) do
+    if old_units_by_id[unit.id] ~= nil and old_units_by_id[unit.id].fullname == unit.fullname then
+      --already handled 'exists in both' case
+    else
+      addUndo({"create", unit.id, true, nil})
+    end
+  end
 end
