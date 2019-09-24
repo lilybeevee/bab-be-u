@@ -1825,7 +1825,7 @@ function scene.checkInput()
   end
 end
 
-function escResult(do_actual)
+function escResult(do_actual, xwx)
   if (was_using_editor) then
     if (do_actual) then
       load_mode = "edit"
@@ -1836,14 +1836,14 @@ function escResult(do_actual)
   else
     if (win_reason == "nxt" and level_next_level ~= nil and level_next_level ~= "") then
       if (do_actual) then
-        loadLevels({level_next_level}, "play")
+        loadLevels({level_next_level}, "play", nil, xwx)
       else
         return level_next_level
       end
     elseif (level_parent_level == nil or level_parent_level == "") then
       if (parent_filename ~= nil and parent_filename ~= "") then
         if (do_actual) then
-          loadLevels(parent_filename:split("|"), "play")
+          loadLevels(parent_filename:split("|"), "play", nil, xwx)
         else
           return parent_filename
         end
@@ -1861,7 +1861,7 @@ function escResult(do_actual)
     else
       if (readSaveFile(level_parent_level, "seen")) then
         if (do_actual) then
-          loadLevels({level_parent_level}, "play")
+          loadLevels({level_parent_level}, "play", nil, xwx)
         else
           return level_parent_level
         end

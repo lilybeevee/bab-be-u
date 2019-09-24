@@ -2250,14 +2250,14 @@ function endTest()
   print(perf_test.name .. ": " .. time .. "s")
 end
 
-function loadLevels(levels, mode, level_objs)
+function loadLevels(levels, mode, level_objs, xwx)
   if #levels == 0 then
     return
   end
   
   --setup stay ther
   stay_ther = nil
-  if (rules_with ~= nil) then
+  if (rules_with ~= nil) and not xwx then
     stay_ther = {}
     local isstayther = getUnitsWithEffect("stay ther")
     for _,unit in ipairs(isstayther) do

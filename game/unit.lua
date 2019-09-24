@@ -2935,7 +2935,7 @@ function doXWX()
   writeSaveFile(level_name,"won",nil)
   writeSaveFile(level_name,"bonus",nil)
   writeSaveFile(level_name,"transform",nil)
-  escResult(true)
+  escResult(true, true)
 end
 
 function getColor(unit)
