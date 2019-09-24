@@ -1862,10 +1862,16 @@ function destroyLevel(reason)
   end
   
   if level_destroyed then
+    local units_to_destroy = {}
     for _,unit in ipairs(units) do
+      if inBounds(unit.x, unit.y) then
+        table.insert(units_to_destroy, unit);
+      end
+    end
+    for _,unit in ipairs(units_to_destroy) do
       addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
     end
-    handleDels(units,true)
+    handleDels(units_to_destroy,true)
     if reason == "infloop" and #transform_results == 0 then
       local new_unit = createUnit(tiles_by_name["infloop"], math.floor(mapwidth/2), math.floor(mapheight/2), 1)
       addUndo({"create", new_unit.id, false})
