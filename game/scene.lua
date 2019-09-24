@@ -2046,7 +2046,7 @@ function scene.doPastTurns()
       local old_move = current_move
       local old_move_total = #all_moves
       
-      while change_past and not destroy_level do
+      --[[while change_past and not destroy_level do
         change_past = false
         local past_buffer = undo_buffer
         scene.resetStuff()
@@ -2061,12 +2061,12 @@ function scene.doPastTurns()
           end
         end
         undo_buffer = past_buffer
-      end
+      end]]
       if destroy_level then
         destroyLevel("infloop")
       elseif settings["stopwatch_effect"] then
         local moves_per_tick = 1
-        local delay = 1/#all_moves
+        local delay = math.max(1/#all_moves, 1/20)
         while delay < 1/60 do
           moves_per_tick = moves_per_tick * 2
           delay = delay * 2
@@ -2074,70 +2074,100 @@ function scene.doPastTurns()
         stopwatch.visible = true
         stopwatch.big.rotation = 0
         stopwatch.small.rotation = 0
-        addTween(tween.new(delay * math.ceil(#all_moves / moves_per_tick), stopwatch.big, {rotation = 360}), "stopwatch")
+        clock_tween = tween.new(delay * math.ceil(#all_moves / moves_per_tick), stopwatch.big, {rotation = 360})
+        addTween(clock_tween, "stopwatch")
 
         do_past_effects = true
         playSound("stopwatch")
         local past_buffer = undo_buffer
         scene.resetStuff()
         current_move = 0
-        undo_buffer = {}
-        local last_tick = nil
-        local i = 1
-        while i <= #all_moves do
-          local count = math.min(#all_moves - i, moves_per_tick - 1)
-          local function pastMove(i, count)
-            for j = 0, count do
-              do_past_effects = j == count -- reduce effects
-              if i+j == #all_moves then
-                should_parse_rules = true
-              end
-              doOneMove(all_moves[i+j][1], all_moves[i+j][2], all_moves[i+j][3], true)
+        local iterations = 1
+        local count = math.min(#all_moves - i, moves_per_tick - 1)
+        local function pastMove(i, count)
+          change_past = false
+          local finished = false
+          for j = 0, count do
+            if i+j == #all_moves then
+              finished = true
             end
+            doOneMove(all_moves[i+j][1], all_moves[i+j][2], all_moves[i+j][3], true)
           end
-          local a = i
-          if last_tick then
-            last_tick = last_tick:after(function() pastMove(a, count) end, delay)
-          else
-            last_tick = tick.delay(function() 
-              pastMove(a, count)
+          if change_past then
+            tick.delay(function()
+              addTween(tween.new(delay, stopwatch.big, {rotation = 0}), "stopwatch")
+              change_past = false
+              --past_buffer = undo_buffer
+              scene.resetStuff()
+              current_move = 0
+              iterations = iterations + 1
+            end, delay):after(function()
+              clock_tween:set(0)
+              addTween(clock_tween, "stopwatch")
+              playSound("stopwatch")
+              pastMove(1, math.min(#all_moves - 1, moves_per_tick - 1))
             end, delay)
-          end
-          i = i + count + 1
-          if i > #all_moves then
-            last_tick:after(function()
-              stopwatch.visible = false
-              should_parse_rules = true
-              doing_past_turns = false
-              past_playback = false
-              past_rules = {}
-              undo_buffer = past_buffer
-              createUndoBasedOnUnitsChanges(old_units, old_units_by_id, units, units_by_id)
-              old_units = nil; old_units_by_id = nil;
-            end, 0)
-          end
+          elseif finished then
+            stopwatch.visible = false
+            should_parse_rules = true
+            doing_past_turns = false
+            past_playback = false
+            past_rules = {}
+            undo_buffer = past_buffer
+            createUndoBasedOnUnitsChanges(old_units, old_units_by_id, units, units_by_id)
+            old_units = nil; old_units_by_id = nil;
+          elseif iterations > 20 then
+            destroyLevel("infloop")
+          else
+            tick.delay(function() pastMove(i+count+1, math.min(#all_moves - i+count, moves_per_tick - 1)) end, delay)
+          end 
         end
+        tick.delay(function() pastMove(1, math.min(#all_moves - 1, moves_per_tick - 1)) end, delay)
       else
-        local past_buffer = undo_buffer
+        --[[local past_buffer = undo_buffer
         scene.resetStuff()
         current_move = 0
-        undo_buffer = {}
-        for i,past_move in ipairs(all_moves) do
-          do_past_effects = i <= 10 or #all_moves - i < 10
-          if i == #all_moves then
-            should_parse_rules = true
+        undo_buffer = {}]]
+        while change_past and not destroy_level do
+          change_past = false
+          local past_buffer = undo_buffer
+          scene.resetStuff()
+          current_move = 0
+          undo_buffer = {}
+          for i,past_move in ipairs(all_moves) do
+            do_past_effects = i <= 10 or #all_moves - i < 10
+            if i == #all_moves then
+              should_parse_rules = true
+            end
+            doOneMove(past_move[1], past_move[2], past_move[3], true)
+            if change_past then break end
+            if love.timer.getTime() - start_time > 10 then
+              destroy_level = true
+              break
+            end
           end
-          doOneMove(past_move[1], past_move[2], past_move[3], true)
+          undo_buffer = past_buffer
         end
-        should_parse_rules = true
-        doing_past_turns = false
-        past_playback = false
-        past_rules = {}
-        undo_buffer = past_buffer
-        createUndoBasedOnUnitsChanges(old_units, old_units_by_id, units, units_by_id)
-        old_units = nil; old_units_by_id = nil;
-        for k,v in pairs(tweens) do
-          v[1]:set(v[1].duration)
+        if destroy_level then
+          destroyLevel("infloop")
+        else
+          --[[for i,past_move in ipairs(all_moves) do
+            do_past_effects = i <= 10 or #all_moves - i < 10
+            if i == #all_moves then
+              should_parse_rules = true
+            end
+            doOneMove(past_move[1], past_move[2], past_move[3], true)
+          end]]
+          should_parse_rules = true
+          doing_past_turns = false
+          past_playback = false
+          past_rules = {}
+          --undo_buffer = past_buffer
+          createUndoBasedOnUnitsChanges(old_units, old_units_by_id, units, units_by_id)
+          old_units = nil; old_units_by_id = nil;
+          for k,v in pairs(tweens) do
+            v[1]:set(v[1].duration)
+          end
         end
       end
     end, 0.25)
