@@ -587,6 +587,19 @@ function addRule(full_rule)
       rules_with = temp
     end
   end
+
+  --"x be sans" plays a megalovania jingle! but only if x is in the level.
+  local play_sans_sound = false
+  if new_rule then
+    if verb == "be" and object == "sans" and units_by_name[subject] then
+      play_sans_sound = true
+    end
+  end
+  
+  -- play the x be sans jingle!
+  if play_sans_sound then
+    playSound("babbolovania")
+  end
   
   while subject:ends("n't") do subject, subject_not = subject:sub(1, -4), subject_not + 1 end
   while verb:ends("n't")    do verb,       verb_not =    verb:sub(1, -4),    verb_not + 1 end
