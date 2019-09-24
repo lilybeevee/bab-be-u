@@ -2541,6 +2541,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
   --updateDir(unit, unit.dir)
   new_units_cache[unit] = true
   unit.new = true
+  --print("createUnit:", unit.fullname, unit.id, unit.x, unit.y)
   return unit
 end
 
