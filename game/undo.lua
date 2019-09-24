@@ -391,4 +391,7 @@ function createUndoBasedOnUnitsChanges(old_units, old_units_by_id, new_units, ne
       addUndo({"create", unit.id, true, nil})
     end
   end
+  if (level_destroyed) then
+    addUndo({"destroy_level"})
+  end
 end
