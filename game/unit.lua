@@ -2935,10 +2935,7 @@ function doXWX()
   writeSaveFile(level_name,"won",nil)
   writeSaveFile(level_name,"bonus",nil)
   writeSaveFile(level_name,"transform",nil)
-  
-  --load the parent here, i don't know how to do that
-  --unless they're playing from editor, in which case just send them back to editing probably. i also don't know how to do that
-  scene.resetStuff()
+  escResult(true)
 end
 
 function getColor(unit)
