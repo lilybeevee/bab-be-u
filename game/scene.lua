@@ -1892,10 +1892,10 @@ function doOneMove(x, y, key, past)
     if (key == "undo") then
       undoWin()
     else
-      if x == 0 and y == 0 and key ~= "e" then
+      if x == 0 and y == 0 and key ~= "e" and not past then
         escResult(true)
+        return
       end
-      return
     end
   end
   
