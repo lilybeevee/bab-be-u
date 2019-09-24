@@ -318,6 +318,7 @@ function love.load()
   registerSound("clicc", 1.0)
   registerSound("unwin", 0.5)
   registerSound("stopwatch", 1.0)
+  registerSound("babbolovania", 0.7)
   
   print(colr.green("✓ sounds registered"))
 

@@ -2667,41 +2667,47 @@ end
 function serializeRule(rule)
   local result = ""
   result = result..serializeUnit(rule.subject, true)
-  result = result.." "..rule.verb.name.." "
+  result = result..serializeWord(rule.verb)
   result = result..serializeUnit(rule.object, true) -- there's no reason for separate serializeClass/Property since the structure is the same
   return result
 end
 
 function serializeUnit(unit, outer)
   local prefix = ""
-  local infix = " "
-  local name = unit.name
-  while name:starts("text_") do
-    name = name:sub(6).." txt"
-  end
+  local infix = ""
+  local name = serializeWord(unit)
   if not unit.conds then
     return name
   end
   for i,cond in ipairs(unit.conds) do
     if not cond.others or #cond.others == 0 then
-      prefix = prefix..cond.name.." "
+      prefix = prefix..serializeWord(cond)
     else
-      infix = infix..cond.name.." "
+      infix = infix..serializeWord(cond)
       local infix_other = ""
       for j,other in ipairs(cond.others) do
         infix_other = infix_other..serializeUnit(other)
-        infix_other = infix_other.." & "
+        infix_other = infix_other.."& "
       end
-      infix_other = infix_other:sub(1,-4) -- remove last &
-      infix = infix..infix_other.." & "
+      infix_other = infix_other:sub(1,-3) -- remove last &
+      infix = infix..infix_other.."& "
     end
   end
-  infix = infix:sub(1,-4) -- remove last &
+  infix = infix:sub(1,-3) -- remove last &
   local full = prefix..name..infix
   if not outer and full:find("&", 1) then
     full = "("..full..")"
   end
   return full
+end
+
+function serializeWord(word)
+  if word.unit and hasProperty(word.unit, "stelth") then return "" end
+  local name = word.name
+  while name:starts("text_") do
+    name = name:sub(6).." txt"
+  end
+  return name.." "
 end
 
 function unitsByTile(x, y)
