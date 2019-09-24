@@ -364,7 +364,7 @@ function createUndoBasedOnUnitsChanges(old_units, old_units_by_id, new_units, ne
 1) For every unit in old units, if it exists in new units (same id and fullname) and x/y/dir differ, add an update event.
 2) Else, add a create event with its old state.
 3) For every unit in new units, if it doesn't exist in old units (same id and fullname), add a destroy event.
-  TODO: Handle mous, colours, timefuck stuff (timeless, UNDO), no1?
+  TODO: Handle mous, timefuck stuff (timeless, UNDO), no1?
 ]]
   
   for _,unit in ipairs(old_units) do
@@ -372,6 +372,13 @@ function createUndoBasedOnUnitsChanges(old_units, old_units_by_id, new_units, ne
       local new_unit = new_units_by_id[unit.id];
       if (new_unit.x ~= unit.x) or (new_unit.y ~= unit.y) or (new_unit.dir ~= unit.dir) then
         addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
+      end
+      if (new_unit.color ~= unit.color) then
+        for _,colour in ipairs(color_names) do
+          if new_unit[colour] ~= unit[colour] then
+            addUndo({"colour_change", unit.id, colour, unit[colour]})
+          end
+        end
       end
     else
       addUndo({"remove", unit.tile, unit.x, unit.y, unit.dir, convert or false, unit.id, unit.special})
