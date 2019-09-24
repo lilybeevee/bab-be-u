@@ -55,6 +55,9 @@ local initialwindoposition
 
 local sessionseed
 
+local buttons = {"resume", "editor", "exit"}
+local pause = false
+
 function scene.load()
   sessionseed = math.random(0,100000000)/100000000
 
@@ -133,6 +136,8 @@ function scene.load()
   end):setBGImage(sprites["ui_3"]):bg({0, 0, 0, 0})
 
   gooi.setGroupVisible("mobile-controls", is_mobile)
+
+  pause = false
 end
 
 function scene.update(dt)
@@ -149,6 +154,8 @@ function scene.update(dt)
 
   mouse_oldX = mouse_X
   mouse_oldY = mouse_Y
+
+  if pause then dt = 0 end
 
   if xwxShader then
     xwxShader:send("time", dt) -- send delta time to the shader
@@ -289,7 +296,7 @@ function scene.keyPressed(key, isrepeat)
 
   if key == "escape" then
     
-    local current_level = level_name
+    --[[local current_level = level_name
     if readSaveFile(level_name, "won") then
       current_level = current_level.." (won) "
     end
@@ -315,7 +322,9 @@ function scene.keyPressed(key, isrepeat)
           escResult(true)
         end
       })
-      return
+      return]]
+
+    pause = not pause
   end
 
   local do_turn_now = false
@@ -324,28 +333,28 @@ function scene.keyPressed(key, isrepeat)
   --1) If we see a second input before the 30ms is up, then we know the input and we can instantly get rid of the 30ms delay.
   --2) If we know what the next move is (either it was an orthogonal move and we can see the 30ms delay already elapsed, or we just got our 2nd input for the move) we can do checkInput() from THIS function instead of waiting for love2d to call update().
   --3) Instead of having this 30ms delay, we could assume it's an orthogonal move, process the next turn as though it was, and then if before the 30ms delay we discover that it was actually a diagonal input, we can undo the orthogonal input and process the next turn with the diagonal input. (But this will behave badly with CRASH/RESET/PERSIST (since those aren't invariant over undo/redo), so we'd have to make sure it works with those features. And you'll also be able to see and hear the ghosts of unintended orthogonal moves for the 0-30ms before they get corrected, like a GGPO netcode game, which might be unsettling.)
-  if key == "w" or key == "a" or key == "s" or key == "d" then
+  if (key == "w" or key == "a" or key == "s" or key == "d") and not pause then
     if not repeat_timers["wasd"] or repeat_timers["wasd"] > 30 then
       repeat_timers["wasd"] = 30
     elseif repeat_timers["wasd"] <= 30 then
       do_turn_now = true
       repeat_timers["wasd"] = 0
     end
-  elseif key == "up" or key == "down" or key == "left" or key == "right" then
+  elseif (key == "up" or key == "down" or key == "left" or key == "right") and not pause then
     if not repeat_timers["udlr"] or repeat_timers["udlr"] > 30 then
       repeat_timers["udlr"] = 30
     elseif repeat_timers["udlr"] <= 30 then
       do_turn_now = true
       repeat_timers["udlr"] = 0
     end
-  elseif key == "i" or key == "j" or key == "k" or key == "l" then
+  elseif (key == "i" or key == "j" or key == "k" or key == "l") and not pause then
     if not repeat_timers["ijkl"] or repeat_timers["ijkl"] > 30 then
       repeat_timers["ijkl"] = 30
     elseif repeat_timers["ijkl"] <= 30 then
       do_turn_now = true
       repeat_timers["ijkl"] = 0
     end
-  elseif key == "kp1" or
+  elseif (key == "kp1" or
   key == "kp2" or
   key == "kp3" or
   key == "kp4" or
@@ -353,12 +362,12 @@ function scene.keyPressed(key, isrepeat)
   key == "kp6" or
   key == "kp7" or
   key == "kp8" or
-  key == "kp9" then
+  key == "kp9") and not pause then
     if not repeat_timers["udlr"] then
       do_turn_now = true
       repeat_timers["numpad"] = 0
     end
-  elseif key == "z" or key == "q" or key == "backspace" or key == "kp0" or key == "o" then
+  elseif (key == "z" or key == "q" or key == "backspace" or key == "kp0" or key == "o") and not pause then
     if not repeat_timers["undo"] then
         do_turn_now = true
         repeat_timers["undo"] = 0
@@ -385,7 +394,7 @@ function scene.keyPressed(key, isrepeat)
         end
     end
     
-    if replay_playback then
+    if replay_playback and not pause then
         if key == "+" or key == "=" or key == "w" or key == "up" then
             replay_playback_interval = replay_playback_interval * 0.8
         elseif key == "-" or key == "_" or key == "s" or key == "down" then
@@ -407,11 +416,11 @@ function scene.keyPressed(key, isrepeat)
         end
     end
     
-  if key == "e" and not currently_winning and not replay_playback then
+  if key == "e" and not currently_winning and not replay_playback and not pause then
     doOneMove(0, 0, "e")
   end
   
-  if key == "f" and not currently_winning and not replay_playback then
+  if key == "f" and not currently_winning and not replay_playback and not pause then
     doOneMove(0, 0, "f")
   end
 
@@ -530,6 +539,8 @@ end
 --TODO: PERFORMANCE: Calling hasProperty once per frame means that we have to index rules, check conditions, etc. with O(m*n) performance penalty. But, the results of these calls do not change until a new turn or undo. So, we can cache the values of these calls in a global table and dump the table whenever the turn changes for a nice and easy performance boost.
 --(Though this might not be true for mice, which can change their position mid-frame?? Also for other meta stuff (like windo)? Until there's mouse conditional rules or meta stuff in a puzzle IDK how this should actually work or be displayed. Just keep that in mind tho.)
 function scene.draw(dt)
+  if pause then dt = 0 end
+
   local draw_empty = rules_with["no1"] ~= nil
   local start_time = love.timer.getTime()
   -- reset canvas if the screen size has changed
@@ -1389,16 +1400,6 @@ function scene.draw(dt)
     -- print(replay_playback_interval)
   end
   
-  if mouseOverBox(0,0,sprites["ui/cog"]:getHeight(),sprites["ui/cog"]:getWidth()) then
-    if love.mouse.isDown(1) then
-      love.graphics.draw(sprites["ui/cog_a"], 0, 0)
-    else
-      love.graphics.draw(sprites["ui/cog_h"], 0, 0)
-    end
-  else
-    love.graphics.draw(sprites["ui/cog"], 0, 0)
-  end
-
   love.graphics.setCanvas()
   pcallSetShader(level_shader)
   --[[
@@ -1413,7 +1414,7 @@ function scene.draw(dt)
     doin_the_world = false
   end
 
-  gooi.draw()
+  if not pause then gooi.draw() end
   if is_mobile then
     if rules_with["za warudo"] then
       mobile_controls_timeless:setVisible(true)
@@ -1542,7 +1543,8 @@ function scene.draw(dt)
     end
   end
 
-  if displaywords then
+  
+  if displaywords or pause then
     love.graphics.setColor(0, 0, 0, 0.4)
     love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
 
@@ -1550,6 +1552,15 @@ function scene.draw(dt)
 
     local rulesnum = 0
     local lines = 0.5
+
+    local width = love.graphics.getWidth()
+    local height = love.graphics.getHeight()
+
+    local buttonwidth, buttonheight = sprites["ui/button_1"]:getDimensions()
+
+    local buttoncolor = {84/255, 109/255, 255/255}
+
+    local y = (not pause) and 0 or (buttonheight+10)*#buttons
 
     for i,rule in pairs(full_rules) do
       if not rule.hide_in_list then
@@ -1565,10 +1576,44 @@ function scene.draw(dt)
       end
     end
 
-	rules = 'da rulz:\n'..rules
+	  rules = 'da rulz:\n'..rules
 
     love.graphics.setColor(1,1,1)
-    love.graphics.printf(rules, 0, love.graphics.getHeight()/2-love.graphics.getFont():getHeight()*lines, love.graphics.getWidth(), "center")
+
+    if pause then
+      for i=1, #buttons do
+        love.graphics.push()
+        local rot = 0
+    
+        local buttonx = width/2-buttonwidth/2
+        local buttony = height/2-buttonheight/2+(buttonheight+10)*(i-2)
+    
+        if rainbowmode then buttoncolor = hslToRgb((love.timer.getTime()/6+i/10)%1, .5, .5, .9) end
+    
+        if mouseOverBox(width/2-sprites["ui/button_1"]:getWidth()/2, height/2-buttonheight/2+(buttonheight+10)*(i-2), buttonwidth, buttonheight) then
+          love.graphics.setColor(buttoncolor[1]-0.1, buttoncolor[2]-0.1, buttoncolor[3]-0.1) --i know this is horrible
+          love.graphics.translate(buttonx+buttonwidth/2, buttony+buttonheight/2)
+          love.graphics.rotate(0.05 * math.sin(love.timer.getTime()*3))
+          love.graphics.translate(-buttonx-buttonwidth/2, -buttony-buttonheight/2)
+        else
+          love.graphics.setColor(buttoncolor[1], buttoncolor[2], buttoncolor[3])
+        end
+    
+        love.graphics.draw(sprites["ui/button_white_"..i%2+1], buttonx, buttony, rot, 1, 1)
+    
+        love.graphics.pop()
+
+        love.graphics.setColor(1,1,1)
+        love.graphics.printf(buttons[i], width/2-buttonwidth/2, height/2-buttonheight/2+(buttonheight+10)*(i-2)+5, buttonwidth, "center")
+      end
+    end
+
+    love.graphics.printf(rules, 0, love.graphics.getHeight()/2-love.graphics.getFont():getHeight()*lines+y, love.graphics.getWidth(), "center")
+
+    love.graphics.setColor(1,1,1)
+    love.graphics.draw(sprites["ui/mous"], love.mouse.getX(), love.mouse.getY())
+
+    gooi.draw()
   end
 
   if (just_moved and not unit_tests) then
@@ -1802,7 +1847,7 @@ function escResult(do_actual)
 end
 
 function doOneMove(x, y, key)
-	if (currently_winning) then
+	if (currently_winning or pause) then
     --undo: undo win.
     --idle on the winning screen: go to the editor, if we were editing; go to the parent level, if known (prefer explicit to implicit), else go back to the world we were looking at.
     if (key == "undo") then
@@ -1990,11 +2035,55 @@ function scene.mouseReleased(x, y, button)
     -- Stacks preview
     scene.setStackBox(screenToGameTile(x, y))
   end
-  
-  if pointInside(x,y,0,0,box,box) then
-    --love.keypressed("f2")
-    new_scene = editor
-    load_mode = "edit"
+
+  if pause then
+    width = love.graphics.getWidth()
+    height = love.graphics.getHeight()
+
+    local buttonwidth, buttonheight = sprites["ui/button_1"]:getDimensions()
+
+    local mousex, mousey = love.mouse.getPosition()
+
+    for i=1, #buttons do
+      if mouseOverBox(width/2-sprites["ui/button_1"]:getWidth()/2, height/2-buttonheight/2+(buttonheight+10)*(i-2), buttonwidth, buttonheight) then
+        if button == 1 then
+          if buttons[i] == "exit" then
+            local current_level = level_name
+            if readSaveFile(level_name, "won") then
+              current_level = current_level.." (won) "
+            end
+            if readSaveFile(level_name, "clear") then
+              current_level = current_level.." (cleared) "
+            end
+            if readSaveFile(level_name, "complete") then
+              current_level = current_level.." (complete) "
+            end
+            if readSaveFile(level_name, "bonus") then
+              current_level = current_level.." (bonused) "
+            end
+            local tfs = readSaveFile(level_name, "transform")
+            if tfs then
+              current_level = current_level.." (transformed into " .. fullDump(tfs) .. ") "
+            end
+            
+            gooi.confirm({
+                text = current_level .. "\r\n\r\n" .. (spookmode and "G̴͔̭͇͎͕͔ͪ̾ͬͦ̇͑͋͟͡o̵̸͓̠̦̱̭̘͍̱͑̃̀ͅ ̱̫͉̆͐̇ͥ̽͆͂͑̿͜b̸̵͈̼̜̅͗̄̆ͅa͚̠͚̣̺̗͖͈̓̿̈́͆͐̉ͯ̀̚c͉̜̙̤͍̞̳̬ͪ̇k̙͙̼̀̓̂̑̈́̌ͯ̕͢ͅ ̶̛̠̹̈̒ͫ͐t̙͉͍͚̠̗̰͗͊͛ͫ͒ͥ̏ͫ͢͜ȍ̙͙̪̬̎̊ͫͭͫ͗̔̚ ̴̪͖͔̖̙̬͍̥ͪ̾̾͂͂l̪͉͙̪̩͙̎̏͌̽ͤ̈́̀͜͠e̡͓͍͉̖̤ͬ̓̏ͥͫ̀ͅv̱͈͍̞̼̀͋̂̃͋́̚͠ͅḛ̷̷̱̿͂l̢̮͇̫̗͍̱͈̟͌̐̎̑̈́ ̵̠͖̣̟̲̖̇̈̓ͭͫ͠s͚̝̻ͤ̓̀̀e̅͑̐̄͏̤̫̕͠lͨ͋͌ͤͩ̋̓͏̘̼̠̪̖͓͔̹e̵͖̤̒͒ͥ̓ͬ̓͘c͖͈̏̄̐̅̎ͨ͢ṫ͔̥͓̊̌̓̇ọ̞̤͔̩̒͗ͨ́̓͟ŗ̖͉̹̻̮̬̦͌̿͂?̶̡͈̫̗̈́̒̎̃̎̓" or "Go back to "..escResult(false).."?"),
+                okText = "Yes",
+                cancelText = spookmode and "Yes" or "Cancel",
+                ok = function()
+                  escResult(true)
+                end
+              })
+            return
+          elseif buttons[i] == "resume" then
+            pause = false
+          elseif buttons[i] == "editor" then
+            new_scene = editor
+            load_mode = "edit"
+          end
+        end
+      end
+    end
   end
 end
 
