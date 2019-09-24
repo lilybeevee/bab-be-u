@@ -16,6 +16,8 @@ local buttons = {"play", "editor", "options", "exit"}
 
 local options = false
 
+local splash = love.timer.getTime() % 1
+
 function scene.load()
   metaClear()
   clear()
@@ -113,21 +115,33 @@ function scene.draw(dt)
     setRainbowModeColor(love.timer.getTime()/3, .5)
     love.graphics.draw(sprites["ui/bab_be_u"], width/2 - sprites["ui/bab_be_u"]:getWidth() / 2, height/20)
   end
-
-  if is_mobile then
-    love.graphics.push()
-
-    local textx = width/2 + sprites["ui/bab_be_u"]:getWidth() / 2
-    local texty = height/20+sprites["ui/bab_be_u"]:getHeight()
-
-    love.graphics.translate(textx+love.graphics.getFont():getWidth("4mobile!")/2, texty+love.graphics.getFont():getHeight()/2)
-    love.graphics.rotate(0.7*math.sin(love.timer.getTime()*2))
-    love.graphics.translate(-textx-love.graphics.getFont():getWidth("4mobile!")/2, -texty-love.graphics.getFont():getHeight()/2)
-
-    love.graphics.print("4mobile!", textx, texty)
-    
-    love.graphics.pop()
+  
+  -- Splash text here
+  
+  love.graphics.push()
+  
+  if string.find(build_number, "420") or string.find(build_number, "1337") or string.find(build_number, "666") or string.find(build_number, "69") then
+    love.graphics.setColor(hslToRgb(love.timer.getTime()%1, .5, .5, .9))
+    splashtext = "nice"
   end
+  if is_mobile then
+    splashtext = "4mobile!"
+  elseif splash <= 0.5 then
+    splashtext = "splash text!"
+  elseif splash > 0.5 then
+    splashtext = "splosh txt!"
+  end
+  
+  local textx = width/2 + sprites["ui/bab_be_u"]:getWidth() / 2
+  local texty = height/20+sprites["ui/bab_be_u"]:getHeight()
+
+  love.graphics.translate(textx+love.graphics.getFont():getWidth(splashtext)/2, texty+love.graphics.getFont():getHeight()/2)
+  love.graphics.rotate(0.7*math.sin(love.timer.getTime()*2))
+  love.graphics.translate(-textx-love.graphics.getFont():getWidth(splashtext)/2, -texty-love.graphics.getFont():getHeight()/2)
+
+  love.graphics.print(splashtext, textx, texty)
+  
+  love.graphics.pop()
 
   if build_number and not debug_view then
     love.graphics.setColor(1, 1, 1)
@@ -149,7 +163,7 @@ end
 
 function scene.update(dt)
   if options then
-    buttons = {"music: on", "fullscreen", "exit"}
+    buttons = {"music: on", "stopwatch effect: on", "fullscreen", "exit"}
   else
     buttons = {"play", "editor", "options", "exit"}
   end
@@ -186,6 +200,9 @@ function scene.update(dt)
     end
     if string.starts(buttons[i], "music") then
       buttons[i] = "music: " .. (settings["music_on"] and "on" or "off")
+    end
+    if string.starts(buttons[i], "stopwatch effect") then
+      buttons[i] = "stopwatch effect: " .. (settings["stopwatch_effect"] and "on" or "off")
     end
   end
 
@@ -238,6 +255,9 @@ function scene.mouseReleased(x, y, button)
           saveAll()
         elseif string.starts(buttons[i], "music") then
           settings["music_on"] = not settings["music_on"]
+          saveAll()
+        elseif string.starts(buttons[i], "stopwatch effect") then
+          settings["stopwatch_effect"] = not settings["stopwatch_effect"]
           saveAll()
         end
       end

@@ -32,6 +32,16 @@ function clearRules()
     addBaseRule("this","be","wurd")
   end
 
+  if not doing_past_turns then
+    past_rules = {}
+  else
+    for id,past_rule in pairs(past_rules) do
+      if past_rule.turn > current_move then
+        addRule(past_rule.rule)
+      end
+    end
+  end
+
   has_new_rule = false
 end
 
@@ -259,6 +269,12 @@ function parseRules(undoing)
 
       for _,sentence in ipairs(sentences) do
         parseSentence(sentence, {been_first, first_words, final_rules, first}, dir) -- split into a new function located below to organize this slightly more
+        if (#final_rules > 1000) then
+          print("parseRules infinite loop! (1000 rules)")
+          destroyLevel("infloop")
+          clearRules()
+          return
+        end
       end
     end
     
@@ -341,6 +357,7 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
         local unit = letter.unit
         local prevunit = prevletter.unit or {}
         local name = letter.name
+        if name == "custom" then name = letter.unit.special.customletter end
         if letter.name == "u" then
           local umlauts = getTextOnTile(unit.x,unit.y-1)
           for _,umlaut in ipairs(umlauts) do
@@ -518,7 +535,6 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
 end
 
 function addRule(full_rule)
-  -- print(fullDump(full_rule))
   local rules = full_rule.rule
   local units = full_rule.units
   local dir = full_rule.dir
@@ -531,13 +547,30 @@ function addRule(full_rule)
   local verb_not = 0
   local object_not = 0
   
+  local new_rule = false
+  local rule_id = ""
   for _,unit in ipairs(units) do
     unit.active = true
     if not unit.old_active and not first_turn then
       addParticles("rule", unit.x, unit.y, unit.color_override or unit.color)
-      has_new_rule = true
+      new_rule = true
     end
     unit.old_active = unit.active
+    rule_id = rule_id .. unit.id .. ","
+  end
+  has_new_rule = has_new_rule or new_rule
+
+  if rule_id ~= "" and new_rule and not past_rules[rule_id] and not undoing then
+    -- actually i dont know how rule stacking works ehehe
+    local r1, subject_conds = getPastConds(rules.subject.conds or {})
+    local r2, object_conds = getPastConds(rules.object.conds or {})
+    if r1 or r2 then
+      local new_rule = {rule = deepCopy(rules), units = {}, dir = 1}
+      new_rule.rule.subject.conds = subject_conds
+      new_rule.rule.object.conds = object_conds
+      past_rules[rule_id] = {turn = current_move, rule = new_rule}
+      change_past = true
+    end
   end
   
   for _,unit in ipairs(units) do
@@ -553,6 +586,19 @@ function addRule(full_rule)
       end
       rules_with = temp
     end
+  end
+
+  --"x be sans" plays a megalovania jingle! but only if x is in the level.
+  local play_sans_sound = false
+  if new_rule then
+    if verb == "be" and object == "sans" and units_by_name[subject] then
+      play_sans_sound = true
+    end
+  end
+  
+  -- play the x be sans jingle!
+  if play_sans_sound then
+    playSound("babbolovania")
   end
   
   while subject:ends("n't") do subject, subject_not = subject:sub(1, -4), subject_not + 1 end
@@ -605,6 +651,18 @@ function addRule(full_rule)
       addRuleSimple({"text", rules.subject.conds}, rules.verb, rules.object, units, dir)
       for _,v in ipairs(special_objects) do
         addRuleSimple({v, rules.subject.conds}, rules.verb, rules.object, units, dir)
+      end
+    end
+  elseif subject == "lethers" then
+    for _,v in ipairs(referenced_text) do
+      if subject_not % 2 == 1 then
+        if not v:starts("letter_") then
+          addRuleSimple({v, rules.subject.conds}, rules.verb, rules.object, units, dir)
+        end
+      else
+        if v:starts("letter_") then
+          addRuleSimple({v, rules.subject.conds}, rules.verb, rules.object, units, dir)
+        end
       end
     end
   elseif subject_not % 2 == 1 then

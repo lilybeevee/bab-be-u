@@ -87,7 +87,7 @@ function doMovement(movex, movey, key)
   local flippers = {}
 
   if not unit_tests then
-    print("[---- begin turn ----]")
+    print("[---- begin turn "..tostring(#undo_buffer).." ----]")
     print("move: " .. movex .. ", " .. movey)
   end
 
@@ -145,20 +145,20 @@ function doMovement(movex, movey, key)
           local others = (unit == outerlvl and units or getUnitsOnTile(unit.x, unit.y))
           for __,other in ipairs(others) do
             if other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) and undo_buffer[2] ~= nil then
-            for _,undo in ipairs(undo_buffer[2]) do
-              if undo[1] == "update" and undo[2] == other.id and ((undo[3] ~= other.x) or (undo[4] ~= other.y)) then
-                local dx = other.x-undo[3]
-                local dy = other.y-undo[4]
-                local slipdir = dirs8_by_offset[sign(dx)][sign(dy)]
-                table.insert(other.moves, {reason = "icy", dir = slipdir, times = icyness})
-                if #other.moves > 0 and not already_added[other] and not hasRule(other,"got","slippers") then
-                  table.insert(moving_units, other)
-                  already_added[other] = true
+              for _,undo in ipairs(undo_buffer[2]) do
+                if undo[1] == "update" and undo[2] == other.id and ((undo[3] ~= other.x) or (undo[4] ~= other.y)) then
+                  local dx = other.x-undo[3]
+                  local dy = other.y-undo[4]
+                  local slipdir = dirs8_by_offset[sign(dx)][sign(dy)]
+                  table.insert(other.moves, {reason = "icy", dir = slipdir, times = icyness})
+                  if #other.moves > 0 and not already_added[other] and not hasRule(other,"got","slippers") then
+                    table.insert(moving_units, other)
+                    already_added[other] = true
+                  end
+                  break
                 end
-                break
               end
             end
-          end
           end
         end
       end
@@ -365,7 +365,6 @@ function doMovement(movex, movey, key)
       end
     elseif move_stage == 2 then
       --local yeeting_level = matchesRule(outerlvl, "yeet", "?")
-      
       local isyeet = matchesRule(nil, "yeet", "?")
       for _,ruleparent in ipairs(isyeet) do
         local unit = ruleparent[2]
@@ -381,16 +380,15 @@ function doMovement(movex, movey, key)
                   already_added[other] = true
                 end
               elseif timecheck(unit,"yeet",other) then
-                table.insert(timeless_yote, {unit = other, dir = unit.dir})
-                addUndo({"timeless_yeet_add",other})
+                addUndo({"timeless_yeet_add",other,timeless_yote[other]})
+                timeless_yote[other] = unit.dir
               end
             end
           end
         end
       end
-      for i,unit in ipairs(timeless_yote) do
-        local unit = timeless_yote[i].unit
-        local dir = timeless_yote[i].dir
+      for unit,dir in pairs(timeless_yote) do
+        print(tostring(unit)..": "..tostring(dir))
         local dx = dirs8[dir][1]
         local dy = dirs8[dir][2]
         if timeless then
@@ -401,8 +399,8 @@ function doMovement(movex, movey, key)
               already_added[unit] = true
             end
           else
-            table.remove(timeless_yote,i)
             addUndo({"timeless_yeet_remove",unit,dir})
+            timeless_yote[unit] = nil
           end
         else
           table.insert(unit.moves, {reason = "yeet", dir = dir, times = 1002})
@@ -410,8 +408,8 @@ function doMovement(movex, movey, key)
             table.insert(moving_units, unit)
             already_added[unit] = true
           end
-          table.remove(timeless_yote,i)
           addUndo({"timeless_yeet_remove",unit,dir})
+          timeless_yote[unit] = nil
         end
       end
       local go = getUnitsWithEffectAndCount("go")
@@ -597,7 +595,7 @@ It is probably possible to do, but lily has decided that it's not important enou
               if data.reason == "walk" and flippers[unit.id] ~= true and not hasProperty(unit, "stubbn") and not hasProperty(unit,"loop") and timecheck(unit,"be","walk") then
                 dir = rotate8(data.dir); data.dir = dir
                 addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
-                table.insert(update_queue, {unit = unit, reason = "update", payload = {x = unit.x, y = unit.y, dir = data.dir}})
+                table.insert(update_queue, {unit = unit, reason = "dir", payload = {dir = data.dir}})
                 flippers[unit.id] = true
                 something_moved = true
                 successes = successes + 1
@@ -1460,8 +1458,23 @@ function doPortal(unit, px, py, move_dir, dir, reverse)
             end
           end
         end
+        -- Count portal colors
+        local found_colored = {}
         for p,_ in pairs(portals_direct) do
-          table.insert(portals, p)
+          local color_id = getColor(p)[1]..","..getColor(p)[2]
+          found_colored[color_id] = (found_colored[color_id] or 0) + 1
+        end
+        -- Only add portals to list if:
+        -- A. They share the same color, or
+        -- B. Only one of both color exists
+        for p,_ in pairs(portals_direct) do
+          local p_color_id = getColor(p)[1]..","..getColor(p)[2]
+          local v_color_id = getColor(v)[1]..","..getColor(v)[2]
+          if p_color_id == v_color_id then
+            table.insert(portals, p)
+          elseif found_colored[p_color_id] == 1 and found_colored[v_color_id] == 1 then
+            table.insert(portals, p)
+          end
         end
         table.sort(portals, readingOrderSort)
         --find our place in the list

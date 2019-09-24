@@ -52,6 +52,7 @@ local displaywords = false
 local stack_box, stack_font
 local pathlock_box, pathlock_font
 local initialwindoposition
+local stopwatch
 
 local sessionseed
 
@@ -135,6 +136,8 @@ function scene.load()
     mobile_controls_p3:setBounds(11*twelfth, screenheight-4.15*twelfth)
   end):setBGImage(sprites["ui_3"]):bg({0, 0, 0, 0})
 
+  stopwatch = {visible = false, big = {rotation=0}, small = {rotation=0}}
+
   gooi.setGroupVisible("mobile-controls", is_mobile)
 
   pause = false
@@ -176,7 +179,7 @@ function scene.update(dt)
 end
 
 function doReplay(dt)
-	if not replay_playback then return false end
+  if not replay_playback then return false end
 	if love.timer.getTime() > (replay_playback_time + replay_playback_interval) then
     if not replay_pause then
       replay_playback_time = replay_playback_time + replay_playback_interval
@@ -513,7 +516,7 @@ function scene.getTransform()
   local screenwidth = love.graphics.getWidth() * (is_mobile and 0.75 or 1)
   local screenheight = love.graphics.getHeight()
 
-  local scales = {0.25, 0.375, 0.5, 0.75, 1, 1.5, 2, 3, 4}
+  local scales = {0.25, 0.375, 0.5, 0.75, 1, 2, 3, 4}
 
   local scale = scales[1]
   for _,s in ipairs(scales) do
@@ -677,14 +680,36 @@ function scene.draw(dt)
       newcolor[1] = newcolor[1]*255
       newcolor[2] = newcolor[2]*255
       newcolor[3] = newcolor[3]*255
-      unit.color_override = newcolor
+      if type(unit.color[1]) == "table" then
+        unit.color_override = {}
+        for i,color in ipairs(unit.color) do
+          if not unit.colored or (unit.colored and unit.colored[i]) then
+            unit.color_override[i] = newcolor
+          else
+            unit.color_override[i] = color
+          end
+        end
+      else
+        unit.color_override = newcolor
+      end
     elseif unit.colrful or rainbowmode then
       -- print("unit " .. unit.name .. " is colourful or rainbowmode")
       local newcolor = hslToRgb((love.timer.getTime()/15+#undo_buffer/45+unit.x/18+unit.y/18)%1, .5, .5, 1)
       newcolor[1] = newcolor[1]*255
       newcolor[2] = newcolor[2]*255
       newcolor[3] = newcolor[3]*255
-      unit.color_override = newcolor 
+      if type(unit.color[1]) == "table" then
+        unit.color_override = {}
+        for i,color in ipairs(unit.color) do
+          if not unit.colored or (unit.colored and unit.colored[i]) then
+            unit.color_override[i] = newcolor
+          else
+            unit.color_override[i] = color
+          end
+        end
+      else
+        unit.color_override = newcolor
+      end
     else
       if unit.name == "bordr" and timeless then
         unit.color_override = {0,3}
@@ -714,7 +739,7 @@ function scene.draw(dt)
 
       sprite = sprites[sprite_name]
     else
-      sprite = sprite_name
+      sprite = sprites[sprite_name[1]]
     end
 
     --no tweening empty for now - it's buggy!
@@ -746,7 +771,7 @@ function scene.draw(dt)
 				end
 			end
 
-			if #unit.overlay > 0 and eq(unit.color, tiles_list[unit.tile].color) then
+			if #unit.overlay > 0 and type(unit.sprite) == "string" and eq(unit.color, tiles_list[unit.tile].color) then
 				love.graphics.setColor(1, 1, 1)
 			else
 				love.graphics.setColor(color[1], color[2], color[3], color[4])
@@ -787,13 +812,23 @@ function scene.draw(dt)
     love.graphics.translate(-fulldrawx, -fulldrawy)
     
     local function drawSprite(overlay, onlycolor, stretch)
-      local draw = overlay or sprite
-      if type(draw) == "table" then
-        for i,image in ipairs(draw) do
+      local draw = sprites[overlay or unit.sprite]
+      if type(unit.sprite) == "table" then
+        for i,image in ipairs(unit.sprite) do
           if type(unit.color[i]) == "table" then
-            setColor(unit.color_override and unit.color_override[i] or unit.color[i])
+            setColor(unit.color[i])
           else
             setColor(unit.color)
+          end
+          if unit.color_override then
+            if type(unit.color_override[i]) == "table" then
+              setColor(unit.color_override[i])
+            else
+              setColor(unit.color_override)
+            end
+          end
+          if onlycolor or (#unit.overlay > 0 and (unit.colored and unit.colored[i]) or not unit.colored) then
+            love.graphics.setColor(1,1,1,1)
           end
           if not onlycolor or not unit.colored or (onlycolor and unit.colored and unit.colored[i]) then
             local sprit = sprites[image]
@@ -802,12 +837,9 @@ function scene.draw(dt)
         end
       else
         if overlay and stretch then
-          if type(sprite) == "table" then
-            love.graphics.draw(draw, fulldrawx, fulldrawy, 0, TILE_SIZE / sprites[sprite[1]]:getWidth(), TILE_SIZE / sprites[sprite[1]]:getHeight(), draw:getWidth() / 2, draw:getHeight() / 2)
-          else
-            love.graphics.draw(draw, fulldrawx, fulldrawy, 0, sprite:getWidth() / TILE_SIZE, sprite:getHeight() / TILE_SIZE, draw:getWidth() / 2, draw:getHeight() / 2)
-          end
+          love.graphics.draw(draw, fulldrawx, fulldrawy, 0, sprite:getWidth() / TILE_SIZE, sprite:getHeight() / TILE_SIZE, draw:getWidth() / 2, draw:getHeight() / 2)
         else
+          if not draw then draw = sprites["wat"] end
           love.graphics.draw(draw, fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, draw:getWidth() / 2, draw:getHeight() / 2)
         end
       end
@@ -895,13 +927,13 @@ function scene.draw(dt)
     
     if unit.name == "lin" and unit.special.pathlock and unit.special.pathlock ~= "none" then
       setColor(unit.color_override or {2, 2})
-      drawSprite(sprites["lin_gate"])
+      drawSprite("lin_gate")
     end
     
     --reset back to values being used before
     love.graphics.setLineWidth(2)
 
-    if not (unit.xwx or spookmode) and unit.name ~= "lin" and unit.name ~= "byc" and unit.name ~= "bac" then -- xwx takes control of the drawing sprite, so it shouldn't render the normal object
+    if not (unit.xwx or spookmode) and unit.name ~= "lin" and unit.name ~= "byc" and unit.name ~= "bac" and unit.fullname ~= "letter_custom" then -- xwx takes control of the drawing sprite, so it shouldn't render the normal object
       drawSprite()
     end
 
@@ -919,33 +951,33 @@ function scene.draw(dt)
       local num, suit = unpack(card_for_id[unit.id])
       if eq(unit.color, {0,3}) then
         setColor({0,0})
-        drawSprite(sprites["byc"])
+        drawSprite("byc")
         setColor({0,3})
-        drawSprite(sprites["byc_" .. suit])
-        drawSprite(sprites["byc_" .. num])
+        drawSprite("byc_" .. suit)
+        drawSprite("byc_" .. num)
       else
         setColor({0,3})
-        drawSprite(sprites["byc"])
+        drawSprite("byc")
         if suit == "diamond" or suit == "heart" then
           setColor(unit.color)
         else
           setColor({0,0})
         end
-        drawSprite(sprites["byc_" .. suit])
-        drawSprite(sprites["byc_" .. num])
+        drawSprite("byc_" .. suit)
+        drawSprite("byc_" .. num)
       end
     end
     if unit.name == "bac" then
       if eq(unit.color, {0,3}) then
         setColor({0,0})
-        drawSprite(sprites["byc"])
+        drawSprite("byc")
         setColor({0,3})
-        drawSprite(sprites["bac"])
+        drawSprite("bac")
       else
         setColor({0,3})
-        drawSprite(sprites["byc"])
+        drawSprite("byc")
         setColor(unit.color)
-        drawSprite(sprites["bac"])
+        drawSprite("bac")
       end
     end
     
@@ -975,6 +1007,10 @@ function scene.draw(dt)
       end
       love.graphics.pop()
     end
+    
+    if unit.fullname == "letter_custom" then
+      drawCustomLetter(unit.special.customletter, fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, 16, 16)
+    end
 
     if #unit.overlay > 0 and unit.fullname ~= "no1" then
       local function overlayStencil()
@@ -988,7 +1024,7 @@ function scene.draw(dt)
         local old_test_mode, old_test_value = love.graphics.getStencilTest()
         love.graphics.setStencilTest("greater", 0)
         love.graphics.setBlendMode("multiply", "premultiplied")
-        drawSprite(sprites["overlay/" .. overlay], false, true)
+        drawSprite("overlay/" .. overlay, false, true)
         love.graphics.setBlendMode("alpha", "alphamultiply")
         love.graphics.setStencilTest(old_test_mode, old_test_value)
       end
@@ -997,14 +1033,14 @@ function scene.draw(dt)
     if unit.is_portal then
       if loop or not unit.portal.objects then
         love.graphics.setColor(color[1] * 0.75, color[2] * 0.75, color[3] * 0.75, color[4])
-        drawSprite(sprites[sprite_name .. "_bg"])
+        drawSprite(sprite_name .. "_bg")
       else
         love.graphics.setColor(lvl_color[1], lvl_color[2], lvl_color[3], lvl_color[4])
-        drawSprite(sprites[sprite_name .. "_bg"])
+        drawSprite(sprite_name .. "_bg")
         love.graphics.setColor(1, 1, 1)
         local function holStencil()
           pcallSetShader(mask_shader)
-          drawSprite(sprites[sprite_name .. "_mask"])
+          drawSprite(sprite_name .. "_mask")
           love.graphics.setShader()
         end
         local function holStencil2()
@@ -1199,7 +1235,7 @@ function scene.draw(dt)
       if type(unit.sprite) == "table" then
         sprite = unit.sprite[1]..(unit.meta or "")..(unit.nt and "nt" or "")..(unit.color_override and dump(unit.color_override) or "")
       else
-        sprite = unit.sprite..(unit.meta or "")..(unit.nt and "nt" or "")..(unit.color_override and dump(unit.color_override) or "")
+        sprite = (unit.fullname ~= "letter_custom" and unit.sprite or "letter_"..unit.special.customletter)..(unit.meta or "")..(unit.nt and "nt" or "")..(unit.color_override and dump(unit.color_override) or "")
       end
       if not already_added[sprite] then already_added[sprite] = {} end
       local dir = unit.rotatdir
@@ -1246,8 +1282,12 @@ function scene.draw(dt)
         else
           love.graphics.setColor(dcolor[1], dcolor[2], dcolor[3], dcolor[4] or 1)
         end
-        local sprite = sprites[unit.sprite]
-        love.graphics.draw(sprite, 0, 0, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+        if unit.fullname == "letter_custom" then
+          drawCustomLetter(unit.special.customletter, 0, 0, 0, 1, 1, 16, 16)
+        else
+          local sprite = sprites[unit.sprite]
+          love.graphics.draw(sprite, 0, 0, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+        end
       else
         for j,image in ipairs(unit.sprite) do
           love.graphics.setColor(getPaletteColor(dcolor[j][1], dcolor[j][2]))
@@ -1331,6 +1371,39 @@ function scene.draw(dt)
     love.graphics.pop()
   end
   love.graphics.pop()
+
+  --176 98
+  if stopwatch.visible then
+    stopwatch.small.rotation = stopwatch.small.rotation + dt * 20
+
+    local sw_sprite = sprites["ui/stopwatch"]
+    local big_hand = sprites["ui/stopwatch_big_hand"]
+    local small_hand = sprites["ui/stopwatch_small_hand"]
+
+    love.graphics.setColor(0, 0, 0, 0.25)
+    love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
+
+    love.graphics.setColor(1, 1, 1)
+    love.graphics.push()
+    love.graphics.translate(love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
+    love.graphics.scale(getUIScale(), getUIScale())
+    love.graphics.translate(-sw_sprite:getWidth() / 2, -sw_sprite:getHeight() / 2)
+    love.graphics.draw(sw_sprite)
+
+    love.graphics.setColor(1, 1, 1)
+    love.graphics.push()
+    love.graphics.translate(176 + small_hand:getWidth() / 2, 98 + small_hand:getHeight() / 2)
+    love.graphics.rotate(stopwatch.small.rotation)
+    love.graphics.draw(small_hand, -small_hand:getWidth() / 2, -small_hand:getHeight() / 2)
+    love.graphics.pop()
+
+    love.graphics.push()
+    love.graphics.translate(big_hand:getWidth() / 2, big_hand:getHeight() / 2)
+    love.graphics.rotate(math.rad(stopwatch.big.rotation))
+    love.graphics.draw(big_hand, -big_hand:getWidth() / 2, -big_hand:getHeight() / 2)
+    love.graphics.pop()
+    love.graphics.pop()
+  end
 
   love.graphics.push()
   love.graphics.setColor(1, 1, 1)
@@ -1550,8 +1623,8 @@ function scene.draw(dt)
 
     local rules = ""
 
-    local rulesnum = 0
     local lines = 0.5
+    local curline = ""
 
     local width = love.graphics.getWidth()
     local height = love.graphics.getHeight()
@@ -1564,17 +1637,23 @@ function scene.draw(dt)
 
     for i,rule in pairs(full_rules) do
       if not rule.hide_in_list then
-        rules = rules..serializeRule(rule.rule)
-        rulesnum = rulesnum + 1
-
-        if rulesnum % 4 >= 3 then
-          rules = rules..'\n'
-          lines = lines + 1
-        else
-          rules = rules..'   '
+        local serialized = serializeRule(rule.rule)
+        if serialized ~= "" then
+          
+          if curline == "" then
+            -- do nothing, this is just a ~= on the other two cases
+          elseif (#curline + #serialized) > 50 then
+            rules = rules..curline.."\n"
+            curline = ""
+            lines = lines + 1
+          else
+            curline = curline..'   '
+          end
+          curline = curline..serialized
         end
       end
     end
+    rules = rules..curline
 
 	  rules = 'da rulz:\n'..rules
 
@@ -1624,7 +1703,7 @@ function scene.draw(dt)
 end
 
 function scene.checkInput()
-  if replay_playback then return end
+  if replay_playback or past_playback then return end
   local start_time = love.timer.getTime()
   do_move_sound = false
   
@@ -1791,7 +1870,7 @@ function scene.checkInput()
   end
 end
 
-function escResult(do_actual)
+function escResult(do_actual, xwx)
   if (was_using_editor) then
     if (do_actual) then
       load_mode = "edit"
@@ -1802,14 +1881,14 @@ function escResult(do_actual)
   else
     if (win_reason == "nxt" and level_next_level ~= nil and level_next_level ~= "") then
       if (do_actual) then
-        loadLevels({level_next_level}, "play")
+        loadLevels({level_next_level}, "play", nil, xwx)
       else
         return level_next_level
       end
     elseif (level_parent_level == nil or level_parent_level == "") then
       if (parent_filename ~= nil and parent_filename ~= "") then
         if (do_actual) then
-          loadLevels(parent_filename:split("|"), "play")
+          loadLevels(parent_filename:split("|"), "play", nil, xwx)
         else
           return parent_filename
         end
@@ -1827,7 +1906,7 @@ function escResult(do_actual)
     else
       if (readSaveFile(level_parent_level, "seen")) then
         if (do_actual) then
-          loadLevels({level_parent_level}, "play")
+          loadLevels({level_parent_level}, "play", nil, xwx)
         else
           return level_parent_level
         end
@@ -1846,17 +1925,24 @@ function escResult(do_actual)
   end
 end
 
-function doOneMove(x, y, key)
-	if (currently_winning or pause) then
+function doOneMove(x, y, key, past)
+  if pause then return end
+  
+  if not past then
+    table.insert(all_moves, {x, y, key})
+  end
+  current_move = current_move + 1
+
+	if (currently_winning) then
     --undo: undo win.
     --idle on the winning screen: go to the editor, if we were editing; go to the parent level, if known (prefer explicit to implicit), else go back to the world we were looking at.
     if (key == "undo") then
       undoWin()
     else
-      if x == 0 and y == 0 and key ~= "e" then
+      if x == 0 and y == 0 and key ~= "e" and not past then
         escResult(true)
+        return
       end
-      return
     end
   end
   
@@ -1947,7 +2033,8 @@ function doOneMove(x, y, key)
 		if #undo_buffer > 0 and #undo_buffer[1] == 0 then
 			table.remove(undo_buffer, 1)
 		end
-		unsetNewUnits()
+    unsetNewUnits()
+    scene.doPastTurns()
 	end
   return true
 end
@@ -1984,6 +2071,153 @@ function scene.doPassiveParticles(timer,word,effect,delay,chance,count,color)
         end
       end
     end
+  end
+end
+
+function scene.doPastTurns()
+  if not doing_past_turns and change_past then
+    old_units = units
+    old_units_by_id = units_by_id
+    doing_past_turns = true
+    past_playback = true
+
+    if not settings["stopwatch_effect"] then
+      do_past_effects = true
+      playSound("stopwatch")
+    end
+
+    tick.delay(function() 
+      do_past_effects = false
+      local start_time = love.timer.getTime()
+      local destroy_level = false
+      local old_move = current_move
+      local old_move_total = #all_moves
+      
+      --[[while change_past and not destroy_level do
+        change_past = false
+        local past_buffer = undo_buffer
+        scene.resetStuff()
+        current_move = 0
+        undo_buffer = {}
+        for i,past_move in ipairs(all_moves) do
+          doOneMove(past_move[1], past_move[2], past_move[3], true)
+          if change_past then break end
+          if love.timer.getTime() - start_time > 10 then
+            destroy_level = true
+            break
+          end
+        end
+        undo_buffer = past_buffer
+      end]]
+      if destroy_level then
+        destroyLevel("infloop")
+      elseif settings["stopwatch_effect"] then
+        local moves_per_tick = 1
+        local delay = math.max(1/#all_moves, 1/20)
+        while delay < 1/60 do
+          moves_per_tick = moves_per_tick * 2
+          delay = delay * 2
+        end
+        stopwatch.visible = true
+        stopwatch.big.rotation = 0
+        stopwatch.small.rotation = 0
+        clock_tween = tween.new(delay * math.ceil(#all_moves / moves_per_tick), stopwatch.big, {rotation = 360})
+        addTween(clock_tween, "stopwatch")
+
+        do_past_effects = true
+        playSound("stopwatch")
+        local past_buffer = undo_buffer
+        scene.resetStuff()
+        current_move = 0
+        local iterations = 1
+        local count = math.min(#all_moves - i, moves_per_tick - 1)
+        local function pastMove(i, count)
+          change_past = false
+          local finished = false
+          for j = 0, count do
+            if i+j == #all_moves then
+              finished = true
+            end
+            doOneMove(all_moves[i+j][1], all_moves[i+j][2], all_moves[i+j][3], true)
+          end
+          if change_past then
+            tick.delay(function()
+              addTween(tween.new(delay, stopwatch.big, {rotation = 0}), "stopwatch")
+              change_past = false
+              --past_buffer = undo_buffer
+              scene.resetStuff()
+              current_move = 0
+              iterations = iterations + 1
+            end, delay):after(function()
+              clock_tween:set(0)
+              addTween(clock_tween, "stopwatch")
+              playSound("stopwatch")
+              pastMove(1, math.min(#all_moves - 1, moves_per_tick - 1))
+            end, delay)
+          elseif finished then
+            stopwatch.visible = false
+            should_parse_rules = true
+            doing_past_turns = false
+            past_playback = false
+            past_rules = {}
+            undo_buffer = past_buffer
+            createUndoBasedOnUnitsChanges(old_units, old_units_by_id, units, units_by_id)
+            old_units = nil; old_units_by_id = nil;
+          elseif iterations > 20 then
+            destroyLevel("infloop")
+          else
+            tick.delay(function() pastMove(i+count+1, math.min(#all_moves - i+count, moves_per_tick - 1)) end, delay)
+          end 
+        end
+        tick.delay(function() pastMove(1, math.min(#all_moves - 1, moves_per_tick - 1)) end, delay)
+      else
+        --[[local past_buffer = undo_buffer
+        scene.resetStuff()
+        current_move = 0
+        undo_buffer = {}]]
+        while change_past and not destroy_level do
+          change_past = false
+          local past_buffer = undo_buffer
+          scene.resetStuff()
+          current_move = 0
+          undo_buffer = {}
+          for i,past_move in ipairs(all_moves) do
+            do_past_effects = i <= 10 or #all_moves - i < 10
+            if i == #all_moves then
+              should_parse_rules = true
+            end
+            doOneMove(past_move[1], past_move[2], past_move[3], true)
+            if change_past then break end
+            if love.timer.getTime() - start_time > 10 then
+              destroy_level = true
+              break
+            end
+          end
+          undo_buffer = past_buffer
+        end
+        if destroy_level then
+          destroyLevel("infloop")
+        else
+          --[[for i,past_move in ipairs(all_moves) do
+            do_past_effects = i <= 10 or #all_moves - i < 10
+            if i == #all_moves then
+              should_parse_rules = true
+            end
+            doOneMove(past_move[1], past_move[2], past_move[3], true)
+          end]]
+          should_parse_rules = true
+          doing_past_turns = false
+          past_playback = false
+          past_rules = {}
+          --undo_buffer = past_buffer
+          createUndoBasedOnUnitsChanges(old_units, old_units_by_id, units, units_by_id)
+          old_units = nil; old_units_by_id = nil;
+          for k,v in pairs(tweens) do
+            v[1]:set(v[1].duration)
+          end
+        end
+      end
+    end, 0.25)
   end
 end
 
