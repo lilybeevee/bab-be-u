@@ -1981,9 +1981,6 @@ function doOneMove(x, y, key, past)
 			table.remove(undo_buffer, 1)
 		end
     unsetNewUnits()
-    if past_ends[current_move] then
-      undo_buffer = {}
-    end
     scene.doPastTurns()
 	end
   return true
@@ -2036,11 +2033,17 @@ function scene.doPastTurns()
 
     tick.delay(function() 
       do_past_effects = false
+      all_past_buffers = 1
       local start_time = love.timer.getTime()
       local destroy_level = false
+      local old_move = current_move
+      local old_move_total = #all_moves
       while change_past and not destroy_level do
         change_past = false
         doTryAgain()
+        current_move = 0
+        local past_buffer = undo_buffer
+        undo_buffer = {}
         for i,past_move in ipairs(all_moves) do
           doOneMove(past_move[1], past_move[2], past_move[3], true)
           if change_past then break end
@@ -2049,6 +2052,7 @@ function scene.doPastTurns()
             break
           end
         end
+        addTables(undo_buffer, past_buffer)
       end
       if destroy_level then
         destroyLevel("infloop")
@@ -2067,6 +2071,9 @@ function scene.doPastTurns()
         do_past_effects = true
         playSound("stopwatch")
         doTryAgain()
+        current_move = 0
+        local past_buffer = undo_buffer
+        undo_buffer = {}
         local last_tick = nil
         local i = 1
         while i <= #all_moves do
@@ -2091,16 +2098,21 @@ function scene.doPastTurns()
           i = i + count + 1
           if i > #all_moves then
             last_tick:after(function()
-              past_ends[current_move] = true
               stopwatch.visible = false
+              should_parse_rules = true
               doing_past_turns = false
               past_playback = false
               past_rules = {}
+              addTables(undo_buffer, past_buffer)
+              condensePastUndos(all_past_buffers, old_move, old_move_total)
             end, 0)
           end
         end
       else
         doTryAgain()
+        current_move = 0
+        local past_buffer = undo_buffer
+        undo_buffer = {}
         for i,past_move in ipairs(all_moves) do
           do_past_effects = i <= 10 or #all_moves - i < 10
           if i == #all_moves then
@@ -2108,10 +2120,12 @@ function scene.doPastTurns()
           end
           doOneMove(past_move[1], past_move[2], past_move[3], true)
         end
-        past_ends[current_move] = true
+        should_parse_rules = true
         doing_past_turns = false
         past_playback = false
         past_rules = {}
+        addTables(undo_buffer, past_buffer)
+        condensePastUndos(all_past_buffers, old_move, old_move_total)
         for k,v in pairs(tweens) do
           v[1]:set(v[1].duration)
         end

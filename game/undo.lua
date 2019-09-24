@@ -1,6 +1,9 @@
 function newUndo()
   table.insert(undo_buffer, 1, {})
   undo_buffer[1].last_move = last_move
+  if doing_past_turns then
+    all_past_buffers = all_past_buffers + 1
+  end
 end
 
 function addUndo(data)
@@ -174,6 +177,11 @@ function undoOneAction(turn, i, v, ignore_no_undo)
       unit[colour] = value
       updateUnitColourOverride(unit)
     end
+  elseif action == "past" then
+    current_move = v[2]
+    while #all_moves >= v[3] do
+      table.remove(all_moves)
+    end
   end
   return update_rules, unit
 end
@@ -316,6 +324,9 @@ function undo(dont_update_rules)
     miscUpdates()
 
     table.remove(undo_buffer, 1)
+    if doing_past_turns then
+      all_past_buffers = all_past_buffers - 1
+    end
   else
       undoing = false
       return false
@@ -324,7 +335,7 @@ function undo(dont_update_rules)
   return true
 end
 
-function doTryAgain()
+function doTryAgain(_ignore_no_undo)
   in_try_again = true
   try_again_cache = {}
   --cache units that are no undo so even if it's conditional they remain that way the entire time
@@ -336,7 +347,7 @@ function doTryAgain()
   local i = 1
   --instead of literally undoing everything, use BACK code to create new undo events. That way 1) TRY AGAIN can be undone. 2) Units don't forget their previous history each TRY AGAIN, should they be NO UNDO now but not in the future.
   while (can_undo) do
-    can_undo = doBack(nil, i, false)
+    can_undo = doBack(nil, i, _ignore_no_undo)
     i = i + 1
   end
   parseRules(true)
@@ -352,4 +363,16 @@ function isNoUndo(unit)
   else
     return hasProperty(unit, "no undo")
   end
+end
+
+function condensePastUndos(amount, past_move, past_move_total)
+  addUndo({"past", past_move, past_move_total})
+  local new_buffer = {}
+  for i = 1, amount do
+    for _,v in ipairs(undo_buffer[1]) do
+      table.insert(new_buffer, v)
+    end
+    table.remove(undo_buffer, 1)
+  end
+  table.insert(undo_buffer, 1, new_buffer)
 end
