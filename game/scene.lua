@@ -181,7 +181,7 @@ end
 function doReplay(dt)
   if not replay_playback then return false end
 	if love.timer.getTime() > (replay_playback_time + replay_playback_interval) then
-    if not replay_pause and not past_playback then
+    if not pause and not replay_pause and not past_playback then
       replay_playback_time = replay_playback_time + replay_playback_interval
       doReplayTurn(replay_playback_turn)
       replay_playback_turn = replay_playback_turn + 1
