@@ -111,6 +111,7 @@ function runUnitTests()
   load_mode = "play"
   for _,v in ipairs(levels) do
     --if (v.file == "it's about time") then
+      level_filename = v.file
       scene.loadLevel(v.data, "play")
       game.load()
       tryStartReplay()

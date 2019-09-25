@@ -464,10 +464,18 @@ function tryStartReplay()
     replay_playback_string = love.filesystem.read(dir .. level_name .. ".replay")
     replay_playback = true
     print("Started replay from: "..dir .. level_name .. ".replay")
+  elseif love.filesystem.getInfo(dir .. level_filename .. ".replay") then
+    replay_playback_string = love.filesystem.read(dir .. level_filename .. ".replay")
+    replay_playback = true
+    print("Started replay from: "..dir .. level_filename .. ".replay")
   elseif love.filesystem.getInfo("levels/" .. level_name .. ".replay") then
     replay_playback_string = love.filesystem.read("levels/" .. level_name .. ".replay")
     replay_playback = true
     print("Started replay from: ".."levels/" .. level_name .. ".replay")
+  elseif love.filesystem.getInfo("levels/" .. level_filename .. ".replay") then
+    replay_playback_string = love.filesystem.read("levels/" .. level_filename .. ".replay")
+    replay_playback = true
+    print("Started replay from: ".."levels/" .. level_filename .. ".replay")
   else
     print("Failed to find replay: "..dir .. level_name .. ".replay")
   end
