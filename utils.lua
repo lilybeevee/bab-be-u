@@ -1,15 +1,17 @@
 function clear()
   --groups_exist = false
   letters_exist = false
-	replay_playback = false
-  replay_playback_turns = nil
-	replay_playback_string = nil
-	replay_playback_turn = 1
-	replay_playback_time = love.timer.getTime()
-	replay_playback_interval = 0.3
-  old_replay_playback_interval = 0.3
-  replay_pause = false
-	replay_string = ""
+  if not doing_past_turns then
+    replay_playback = false
+    replay_playback_turns = nil
+    replay_playback_string = nil
+    replay_playback_turn = 1
+    replay_playback_time = love.timer.getTime()
+    replay_playback_interval = 0.3
+    old_replay_playback_interval = 0.3
+    replay_pause = false
+    replay_string = ""
+  end
   new_units_cache = {}
   undoing = false
   successful_brite_cache = nil

@@ -181,7 +181,7 @@ end
 function doReplay(dt)
   if not replay_playback then return false end
 	if love.timer.getTime() > (replay_playback_time + replay_playback_interval) then
-    if not replay_pause then
+    if not replay_pause and not past_playback then
       replay_playback_time = replay_playback_time + replay_playback_interval
       doReplayTurn(replay_playback_turn)
       replay_playback_turn = replay_playback_turn + 1
@@ -1956,7 +1956,9 @@ function doOneMove(x, y, key, past)
       newUndo()
       timeless = not timeless
       if timeless then
-        extendReplayString(0, 0, "e")
+        if not doing_past_turns then
+          extendReplayString(0, 0, "e")
+        end
         if firsttimestop then
           playSound("timestop long",0.5)
         else
@@ -1981,7 +1983,9 @@ function doOneMove(x, y, key, past)
     end
     mobile_controls_timeless:setBGImage(sprites[timeless and "ui/time resume" or "ui/timestop"])
   elseif (key == "f") then
-    extendReplayString(0, 0, "f")
+    if not doing_past_turns then
+      extendReplayString(0, 0, "f")
+    end
 
     if hasRule("press","f2",":)") then
       doWin("won")
@@ -2020,8 +2024,10 @@ function doOneMove(x, y, key, past)
     end
     to_destroy = handleDels(to_destroy)
 	elseif (key == "undo") then
-		local result = undo()
-		extendReplayString(0, 0, "undo")
+    local result = undo()
+    if not doing_past_turns then
+      extendReplayString(0, 0, "undo")
+    end
     unsetNewUnits()
 		return result
 	else
