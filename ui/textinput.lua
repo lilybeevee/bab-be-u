@@ -106,8 +106,8 @@ function text_input.new()
     selector_y = font:getHeight()
     selector_line = current_line
 
-    local sx, sy = love.graphics.inverseTransformPoint(self:getPos())
-    local sx2, sy2 = love.graphics.inverseTransformPoint(self:getX() + self:getWidth(), self:getY() + self:getHeight())
+    local sx, sy = love.graphics.transformPoint(0, 0)
+    local sx2, sy2 = love.graphics.transformPoint(self:getWidth(), self:getHeight())
     local sw, sh = sx2 - sx, sy2 - sy
 
     love.graphics.setScissor(sx, sy, sw, sh)

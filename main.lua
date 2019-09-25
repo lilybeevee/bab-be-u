@@ -318,6 +318,7 @@ function love.load()
   registerSound("clicc", 1.0)
   registerSound("unwin", 0.5)
   registerSound("stopwatch", 1.0)
+  registerSound("babbolovania", 0.7)
   
   print(colr.green("✓ sounds registered"))
 
@@ -406,18 +407,18 @@ function love.keypressed(key,scancode,isrepeat)
     end
   elseif key == "f" and love.keyboard.isDown('lctrl') then
     if scene == menu then
-      love.system.openURL("file://"..love.filesystem.getSaveDirectory())
+      love.system.openURL("file:///"..love.filesystem.getSaveDirectory())
     elseif world == "" then
       if love.filesystem.getInfo("levels") then
-        love.system.openURL("file://"..love.filesystem.getSaveDirectory().."/levels/")
+        love.system.openURL("file:///"..love.filesystem.getSaveDirectory().."/levels/")
       else
-        love.system.openURL("file://"..love.filesystem.getSaveDirectory())
+        love.system.openURL("file:///"..love.filesystem.getSaveDirectory())
       end
     else
       if world_parent ~= "officialworlds" then
-        love.system.openURL("file://"..love.filesystem.getSaveDirectory().."/"..world_parent.."/"..world.."/")
+        love.system.openURL("file:///"..love.filesystem.getSaveDirectory().."/"..world_parent.."/"..world.."/")
       else
-        love.system.openURL("file://"..love.filesystem.getSource().."/"..world_parent.."/"..world.."/")
+        love.system.openURL("file:///"..love.filesystem.getSource().."/"..world_parent.."/"..world.."/")
       end
     end
   end
@@ -545,6 +546,8 @@ love.timer.getTime = function()
   end
 end
 
+cutscene_tick = tick.group()
+
 function love.update(dt)
   if spookmode then
     dt = math.tan(love.timer.getRealTime()*20)/200
@@ -593,6 +596,9 @@ function love.update(dt)
     gooi.update(dt)
   end
   tick.update(dt)
+  if not pause then
+    cutscene_tick:update(dt)
+  end
 
   if scene and scene.update then
     scene.update(dt)

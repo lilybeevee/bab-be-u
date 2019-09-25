@@ -56,6 +56,10 @@ local stopwatch
 
 local sessionseed
 
+local buttons = {"resume", "editor", "exit", "restart"}
+pause = false
+selected_pause_button = 1
+
 function scene.load()
   sessionseed = math.random(0,100000000)/100000000
 
@@ -136,6 +140,8 @@ function scene.load()
   stopwatch = {visible = false, big = {rotation=0}, small = {rotation=0}}
 
   gooi.setGroupVisible("mobile-controls", is_mobile)
+
+  pause = false
 end
 
 function scene.update(dt)
@@ -152,6 +158,8 @@ function scene.update(dt)
 
   mouse_oldX = mouse_X
   mouse_oldY = mouse_Y
+
+  if pause then dt = 0 end
 
   if xwxShader then
     xwxShader:send("time", dt) -- send delta time to the shader
@@ -174,7 +182,7 @@ end
 function doReplay(dt)
   if not replay_playback then return false end
 	if love.timer.getTime() > (replay_playback_time + replay_playback_interval) then
-    if not replay_pause then
+    if not pause and not replay_pause and not past_playback then
       replay_playback_time = replay_playback_time + replay_playback_interval
       doReplayTurn(replay_playback_turn)
       replay_playback_turn = replay_playback_turn + 1
@@ -260,7 +268,10 @@ function string:split(sSeparator, nMax, bRegexp)
    return aRecord
 end
 
-function scene.resetStuff()
+function scene.resetStuff(forTime)
+  if not forTime then
+    pastClear()
+  end
   timeless = false
   clear()
   if not is_mobile then
@@ -292,7 +303,7 @@ function scene.keyPressed(key, isrepeat)
 
   if key == "escape" then
     
-    local current_level = level_name
+    --[[local current_level = level_name
     if readSaveFile(level_name, "won") then
       current_level = current_level.." (won) "
     end
@@ -318,115 +329,130 @@ function scene.keyPressed(key, isrepeat)
           escResult(true)
         end
       })
-      return
+      return]]
+
+    pause = not pause
+    selected_pause_button = 1
   end
+  
+  if pause then
+    if key == "w" or key == "up" or key == "i" or key == "kp8" then
+      selected_pause_button = selected_pause_button - 1
+      if selected_pause_button < 1 then
+        selected_pause_button = #buttons
+      end
+    elseif key == "s" or key == "down" or key == "k" or key == "kp2" then
+      selected_pause_button = selected_pause_button + 1
+      if selected_pause_button > #buttons then
+        selected_pause_button = 1
+      end
+    elseif key == "return" or key == "space" or key == "kpenter" then
+      handlePauseButtonPressed(selected_pause_button)
+    end
+  else
+    local do_turn_now = false
 
-  local do_turn_now = false
-
-  --TODO: PERFORMANCE: Some ways to cut down on input latency:
-  --1) If we see a second input before the 30ms is up, then we know the input and we can instantly get rid of the 30ms delay.
-  --2) If we know what the next move is (either it was an orthogonal move and we can see the 30ms delay already elapsed, or we just got our 2nd input for the move) we can do checkInput() from THIS function instead of waiting for love2d to call update().
-  --3) Instead of having this 30ms delay, we could assume it's an orthogonal move, process the next turn as though it was, and then if before the 30ms delay we discover that it was actually a diagonal input, we can undo the orthogonal input and process the next turn with the diagonal input. (But this will behave badly with CRASH/RESET/PERSIST (since those aren't invariant over undo/redo), so we'd have to make sure it works with those features. And you'll also be able to see and hear the ghosts of unintended orthogonal moves for the 0-30ms before they get corrected, like a GGPO netcode game, which might be unsettling.)
-  if key == "w" or key == "a" or key == "s" or key == "d" then
-    if not repeat_timers["wasd"] or repeat_timers["wasd"] > 30 then
-      repeat_timers["wasd"] = 30
-    elseif repeat_timers["wasd"] <= 30 then
-      do_turn_now = true
-      repeat_timers["wasd"] = 0
-    end
-  elseif key == "up" or key == "down" or key == "left" or key == "right" then
-    if not repeat_timers["udlr"] or repeat_timers["udlr"] > 30 then
-      repeat_timers["udlr"] = 30
-    elseif repeat_timers["udlr"] <= 30 then
-      do_turn_now = true
-      repeat_timers["udlr"] = 0
-    end
-  elseif key == "i" or key == "j" or key == "k" or key == "l" then
-    if not repeat_timers["ijkl"] or repeat_timers["ijkl"] > 30 then
-      repeat_timers["ijkl"] = 30
-    elseif repeat_timers["ijkl"] <= 30 then
-      do_turn_now = true
-      repeat_timers["ijkl"] = 0
-    end
-  elseif key == "kp1" or
-  key == "kp2" or
-  key == "kp3" or
-  key == "kp4" or
-  key == "kp5" or
-  key == "kp6" or
-  key == "kp7" or
-  key == "kp8" or
-  key == "kp9" then
-    if not repeat_timers["udlr"] then
-      do_turn_now = true
-      repeat_timers["numpad"] = 0
-    end
-  elseif key == "z" or key == "q" or key == "backspace" or key == "kp0" or key == "o" then
-    if not repeat_timers["undo"] then
+    if (key == "w" or key == "a" or key == "s" or key == "d") then
+      if not repeat_timers["wasd"] or repeat_timers["wasd"] > 30 then
+        repeat_timers["wasd"] = 30
+      elseif repeat_timers["wasd"] <= 30 then
         do_turn_now = true
-        repeat_timers["undo"] = 0
+        repeat_timers["wasd"] = 0
+      end
+    elseif (key == "up" or key == "down" or key == "left" or key == "right") then
+      if not repeat_timers["udlr"] or repeat_timers["udlr"] > 30 then
+        repeat_timers["udlr"] = 30
+      elseif repeat_timers["udlr"] <= 30 then
+        do_turn_now = true
+        repeat_timers["udlr"] = 0
+      end
+    elseif (key == "i" or key == "j" or key == "k" or key == "l") then
+      if not repeat_timers["ijkl"] or repeat_timers["ijkl"] > 30 then
+        repeat_timers["ijkl"] = 30
+      elseif repeat_timers["ijkl"] <= 30 then
+        do_turn_now = true
+        repeat_timers["ijkl"] = 0
+      end
+    elseif (key == "kp1" or
+    key == "kp2" or
+    key == "kp3" or
+    key == "kp4" or
+    key == "kp5" or
+    key == "kp6" or
+    key == "kp7" or
+    key == "kp8" or
+    key == "kp9") then
+      if not repeat_timers["udlr"] then
+        do_turn_now = true
+        repeat_timers["numpad"] = 0
+      end
+    elseif (key == "z" or key == "q" or key == "backspace" or key == "kp0" or key == "o") then
+      if not repeat_timers["undo"] then
+          do_turn_now = true
+          repeat_timers["undo"] = 0
+      end
     end
-  end
 
-  for _,v in ipairs(repeat_keys) do
-    if v == key then
-      do_turn_now = true
-      repeat_timers[v] = 0
+    for _,v in ipairs(repeat_keys) do
+      if v == key then
+        do_turn_now = true
+        repeat_timers[v] = 0
+      end
     end
-  end
 
-  if key == "r" then
-    scene.resetStuff()
-  end
-  
-	-- Replay keys
-    if key == "f12" then
-        if not replay_playback then
-            tryStartReplay()
-        else
-            replay_playback = false
-        end
+    if key == "r" then
+      scene.resetStuff()
     end
     
-    if replay_playback then
-        if key == "+" or key == "=" or key == "w" or key == "up" then
-            replay_playback_interval = replay_playback_interval * 0.8
-        elseif key == "-" or key == "_" or key == "s" or key == "down" then
-            replay_playback_interval = replay_playback_interval / 0.8
-        elseif key == "0" or key == ")" then
-            replay_playback_interval = 0.3
-        elseif key == "space" then
-            replay_pause = not replay_pause
-        elseif key == "z" or key == "q" or key == "backspace" or key == "kp0" or key == "o" or key == "a" or key == "left" then
-            replay_pause = true
-            if replay_playback_turn > 1 then
-                replay_playback_turn = replay_playback_turn - 1
-                doOneMove(0,0,"undo")
-            end
-            print(replay_playback_turn)
-        elseif key == "d" or key == "right" then
-            doReplayTurn(replay_playback_turn)
-            replay_playback_turn = replay_playback_turn + 1
-        end
+    -- Replay keys
+      if key == "f12" then
+          if not replay_playback then
+              tryStartReplay()
+          else
+              replay_playback = false
+          end
+      end
+      
+      if replay_playback and not pause then
+          if key == "+" or key == "=" or key == "w" or key == "up" then
+              replay_playback_interval = replay_playback_interval * 0.8
+          elseif key == "-" or key == "_" or key == "s" or key == "down" then
+              replay_playback_interval = replay_playback_interval / 0.8
+          elseif key == "0" or key == ")" then
+              replay_playback_interval = 0.3
+          elseif key == "space" then
+              replay_pause = not replay_pause
+          elseif key == "z" or key == "q" or key == "backspace" or key == "kp0" or key == "o" or key == "a" or key == "left" then
+              replay_pause = true
+              if replay_playback_turn > 1 then
+                  replay_playback_turn = replay_playback_turn - 1
+                  doOneMove(0,0,"undo")
+              end
+              print(replay_playback_turn)
+          elseif key == "d" or key == "right" then
+              doReplayTurn(replay_playback_turn)
+              replay_playback_turn = replay_playback_turn + 1
+          end
+      end
+      
+    if key == "e" and not currently_winning and not replay_playback then
+      doOneMove(0, 0, "e")
     end
     
-  if key == "e" and not currently_winning and not replay_playback then
-    doOneMove(0, 0, "e")
-  end
-  
-  if key == "f" and not currently_winning and not replay_playback then
-    doOneMove(0, 0, "f")
-  end
+    if key == "f" and not currently_winning and not replay_playback then
+      doOneMove(0, 0, "f")
+    end
 
-  if key == "tab" then
-    displaywords = true
-  end
+    if key == "tab" then
+      displaywords = true
+    end
 
-  most_recent_key = key
-  key_down[key] = true
+    most_recent_key = key
+    key_down[key] = true
 
-  if (do_turn_now) then
-    scene.checkInput()
+    if (do_turn_now) then
+      scene.checkInput()
+    end
   end
 end
 
@@ -438,10 +464,18 @@ function tryStartReplay()
     replay_playback_string = love.filesystem.read(dir .. level_name .. ".replay")
     replay_playback = true
     print("Started replay from: "..dir .. level_name .. ".replay")
+  elseif love.filesystem.getInfo(dir .. level_filename .. ".replay") then
+    replay_playback_string = love.filesystem.read(dir .. level_filename .. ".replay")
+    replay_playback = true
+    print("Started replay from: "..dir .. level_filename .. ".replay")
   elseif love.filesystem.getInfo("levels/" .. level_name .. ".replay") then
     replay_playback_string = love.filesystem.read("levels/" .. level_name .. ".replay")
     replay_playback = true
     print("Started replay from: ".."levels/" .. level_name .. ".replay")
+  elseif love.filesystem.getInfo("levels/" .. level_filename .. ".replay") then
+    replay_playback_string = love.filesystem.read("levels/" .. level_filename .. ".replay")
+    replay_playback = true
+    print("Started replay from: ".."levels/" .. level_filename .. ".replay")
   else
     print("Failed to find replay: "..dir .. level_name .. ".replay")
   end
@@ -533,6 +567,8 @@ end
 --TODO: PERFORMANCE: Calling hasProperty once per frame means that we have to index rules, check conditions, etc. with O(m*n) performance penalty. But, the results of these calls do not change until a new turn or undo. So, we can cache the values of these calls in a global table and dump the table whenever the turn changes for a nice and easy performance boost.
 --(Though this might not be true for mice, which can change their position mid-frame?? Also for other meta stuff (like windo)? Until there's mouse conditional rules or meta stuff in a puzzle IDK how this should actually work or be displayed. Just keep that in mind tho.)
 function scene.draw(dt)
+  if pause then dt = 0 end
+
   local draw_empty = rules_with["no1"] ~= nil
   local start_time = love.timer.getTime()
   -- reset canvas if the screen size has changed
@@ -1462,16 +1498,6 @@ function scene.draw(dt)
     -- print(replay_playback_interval)
   end
   
-  if mouseOverBox(0,0,sprites["ui/cog"]:getHeight(),sprites["ui/cog"]:getWidth()) then
-    if love.mouse.isDown(1) then
-      love.graphics.draw(sprites["ui/cog_a"], 0, 0)
-    else
-      love.graphics.draw(sprites["ui/cog_h"], 0, 0)
-    end
-  else
-    love.graphics.draw(sprites["ui/cog"], 0, 0)
-  end
-
   love.graphics.setCanvas()
   pcallSetShader(level_shader)
   --[[
@@ -1486,7 +1512,7 @@ function scene.draw(dt)
     doin_the_world = false
   end
 
-  gooi.draw()
+  if not pause then gooi.draw() end
   if is_mobile then
     if rules_with["za warudo"] then
       mobile_controls_timeless:setVisible(true)
@@ -1615,33 +1641,118 @@ function scene.draw(dt)
     end
   end
 
-  if displaywords then
+  
+  if displaywords or pause then
     love.graphics.setColor(0, 0, 0, 0.4)
     love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
 
     local rules = ""
 
-    local rulesnum = 0
     local lines = 0.5
+    local curline = ""
+
+    local width = love.graphics.getWidth()
+    local height = love.graphics.getHeight()
+
+    local buttonwidth, buttonheight = sprites["ui/button_1"]:getDimensions()
+
+    local buttoncolor = {84/255, 109/255, 255/255}
+
+    local y = (not pause) and 0 or (buttonheight+10)*#buttons
 
     for i,rule in pairs(full_rules) do
       if not rule.hide_in_list then
-        rules = rules..serializeRule(rule.rule)
-        rulesnum = rulesnum + 1
-
-        if rulesnum % 4 >= 3 then
-          rules = rules..'\n'
-          lines = lines + 1
-        else
-          rules = rules..'   '
+        local serialized = serializeRule(rule.rule)
+        if serialized ~= "" then
+          
+          if curline == "" then
+            -- do nothing, this is just a ~= on the other two cases
+          elseif (#curline + #serialized) > 50 then
+            rules = rules..curline.."\n"
+            curline = ""
+            lines = lines + 1
+          else
+            curline = curline..'   '
+          end
+          curline = curline..serialized
         end
       end
     end
+    rules = rules..curline
 
-	rules = 'da rulz:\n'..rules
+	  rules = 'da rulz:\n'..rules
 
     love.graphics.setColor(1,1,1)
-    love.graphics.printf(rules, 0, love.graphics.getHeight()/2-love.graphics.getFont():getHeight()*lines, love.graphics.getWidth(), "center")
+
+    if pause then
+    
+      local current_level = level_name
+      if readSaveFile(level_name, "won") then
+        current_level = current_level.." (won) "
+      end
+      if readSaveFile(level_name, "clear") then
+        current_level = current_level.." (cleared) "
+      end
+      if readSaveFile(level_name, "complete") then
+        current_level = current_level.." (complete) "
+      end
+      if readSaveFile(level_name, "bonus") then
+        current_level = current_level.." (bonused) "
+      end
+      local tfs = readSaveFile(level_name, "transform")
+      if tfs then
+        current_level = current_level.." (transformed into " .. fullDump(tfs) .. ") "
+      end
+      
+      love.graphics.printf(current_level, width/2-buttonwidth/2, buttonheight, buttonwidth, "center")
+  
+      for i=1, #buttons do
+        love.graphics.push()
+        local rot = 0
+    
+        local buttonx = width/2-buttonwidth/2
+        local buttony = buttonheight*4+(buttonheight+10)*(i-2)
+    
+        if rainbowmode then buttoncolor = hslToRgb((love.timer.getTime()/6+i/10)%1, .5, .5, .9) end
+    
+        if mouseOverBox(width/2-sprites["ui/button_1"]:getWidth()/2, buttony, buttonwidth, buttonheight) then
+          selected_pause_button = i
+          love.graphics.setColor(buttoncolor[1]-0.1, buttoncolor[2]-0.1, buttoncolor[3]-0.1) --i know this is horrible
+          love.graphics.translate(buttonx+buttonwidth/2, buttony+buttonheight/2)
+          love.graphics.rotate(0.05 * math.sin(love.timer.getTime()*3))
+          love.graphics.translate(-buttonx-buttonwidth/2, -buttony-buttonheight/2)
+        else
+          love.graphics.setColor(buttoncolor[1], buttoncolor[2], buttoncolor[3])
+        end
+    
+        love.graphics.draw(sprites["ui/button_white_"..i%2+1], buttonx, buttony, rot, 1, 1)
+        
+        if (selected_pause_button == i) then
+          love.graphics.setColor(1,1,1)
+          love.graphics.draw(sprites["bab"], buttonx-32, buttony, rot, 1, 1)
+        end
+    
+        love.graphics.pop()
+
+        love.graphics.setColor(1,1,1)
+        local text = buttons[i]
+        if text == "exit" then
+          text = text .. " to " .. escResult(false)
+        end
+        love.graphics.printf(text, width/2-buttonwidth/2, buttony+6, buttonwidth, "center")
+      end
+    end
+
+    local rules_height = love.graphics.getHeight()/2-love.graphics.getFont():getHeight()*lines+y 
+    if pause then
+      rules_height = buttonheight*4+(buttonheight+10)*(#buttons)
+    end
+    love.graphics.printf(rules, 0, rules_height, love.graphics.getWidth(), "center")
+
+    love.graphics.setColor(1,1,1)
+    love.graphics.draw(sprites["ui/mous"], love.mouse.getX(), love.mouse.getY())
+
+    gooi.draw()
   end
 
   if (just_moved and not unit_tests) then
@@ -1819,7 +1930,7 @@ function scene.checkInput()
   end
 end
 
-function escResult(do_actual)
+function escResult(do_actual, xwx)
   if (was_using_editor) then
     if (do_actual) then
       load_mode = "edit"
@@ -1830,14 +1941,14 @@ function escResult(do_actual)
   else
     if (win_reason == "nxt" and level_next_level ~= nil and level_next_level ~= "") then
       if (do_actual) then
-        loadLevels({level_next_level}, "play")
+        loadLevels({level_next_level}, "play", nil, xwx)
       else
         return level_next_level
       end
     elseif (level_parent_level == nil or level_parent_level == "") then
       if (parent_filename ~= nil and parent_filename ~= "") then
         if (do_actual) then
-          loadLevels(parent_filename:split("|"), "play")
+          loadLevels(parent_filename:split("|"), "play", nil, xwx)
         else
           return parent_filename
         end
@@ -1855,7 +1966,7 @@ function escResult(do_actual)
     else
       if (readSaveFile(level_parent_level, "seen")) then
         if (do_actual) then
-          loadLevels({level_parent_level}, "play")
+          loadLevels({level_parent_level}, "play", nil, xwx)
         else
           return level_parent_level
         end
@@ -1875,18 +1986,20 @@ function escResult(do_actual)
 end
 
 function doOneMove(x, y, key, past)
+  if pause then return end
+  
   if not past then
     table.insert(all_moves, {x, y, key})
   end
   current_move = current_move + 1
 
-	if (currently_winning) then
+	if (currently_winning and not past) then
     --undo: undo win.
     --idle on the winning screen: go to the editor, if we were editing; go to the parent level, if known (prefer explicit to implicit), else go back to the world we were looking at.
     if (key == "undo") then
       undoWin()
     else
-      if x == 0 and y == 0 and key ~= "e" then
+      if x == 0 and y == 0 and key ~= "e" and not past then
         escResult(true)
       end
       return
@@ -1903,7 +2016,9 @@ function doOneMove(x, y, key, past)
       newUndo()
       timeless = not timeless
       if timeless then
-        extendReplayString(0, 0, "e")
+        if not doing_past_turns then
+          extendReplayString(0, 0, "e")
+        end
         if firsttimestop then
           playSound("timestop long",0.5)
         else
@@ -1928,7 +2043,9 @@ function doOneMove(x, y, key, past)
     end
     mobile_controls_timeless:setBGImage(sprites[timeless and "ui/time resume" or "ui/timestop"])
   elseif (key == "f") then
-    extendReplayString(0, 0, "f")
+    if not doing_past_turns then
+      extendReplayString(0, 0, "f")
+    end
 
     if hasRule("press","f2",":)") then
       doWin("won")
@@ -1967,8 +2084,10 @@ function doOneMove(x, y, key, past)
     end
     to_destroy = handleDels(to_destroy)
 	elseif (key == "undo") then
-		local result = undo()
-		extendReplayString(0, 0, "undo")
+    local result = undo()
+    if not doing_past_turns then
+      extendReplayString(0, 0, "undo")
+    end
     unsetNewUnits()
 		return result
 	else
@@ -1981,9 +2100,6 @@ function doOneMove(x, y, key, past)
 			table.remove(undo_buffer, 1)
 		end
     unsetNewUnits()
-    if past_ends[current_move] then
-      undo_buffer = {}
-    end
     scene.doPastTurns()
 	end
   return true
@@ -2026,21 +2142,29 @@ end
 
 function scene.doPastTurns()
   if not doing_past_turns and change_past then
+    old_units = units
+    old_units_by_id = units_by_id
     doing_past_turns = true
     past_playback = true
 
-    if not settings["stopwatch_effect"] then
+    if (unit_tests or not settings["stopwatch_effect"]) then
       do_past_effects = true
       playSound("stopwatch")
     end
 
-    tick.delay(function() 
+    cutscene_tick:delay(function() 
       do_past_effects = false
       local start_time = love.timer.getTime()
       local destroy_level = false
-      while change_past and not destroy_level do
+      local old_move = current_move
+      local old_move_total = #all_moves
+      
+      --[[while change_past and not destroy_level do
         change_past = false
+        local past_buffer = undo_buffer
         scene.resetStuff()
+        current_move = 0
+        undo_buffer = {}
         for i,past_move in ipairs(all_moves) do
           doOneMove(past_move[1], past_move[2], past_move[3], true)
           if change_past then break end
@@ -2049,12 +2173,13 @@ function scene.doPastTurns()
             break
           end
         end
-      end
+        undo_buffer = past_buffer
+      end]]
       if destroy_level then
         destroyLevel("infloop")
-      elseif settings["stopwatch_effect"] then
+      elseif (settings["stopwatch_effect"] and not unit_tests) then
         local moves_per_tick = 1
-        local delay = 1/#all_moves
+        local delay = math.max(1/#all_moves, 1/20)
         while delay < 1/60 do
           moves_per_tick = moves_per_tick * 2
           delay = delay * 2
@@ -2062,60 +2187,100 @@ function scene.doPastTurns()
         stopwatch.visible = true
         stopwatch.big.rotation = 0
         stopwatch.small.rotation = 0
-        addTween(tween.new(delay * math.ceil(#all_moves / moves_per_tick), stopwatch.big, {rotation = 360}), "stopwatch")
+        clock_tween = tween.new(delay * math.ceil(#all_moves / moves_per_tick), stopwatch.big, {rotation = 360})
+        addTween(clock_tween, "stopwatch")
 
         do_past_effects = true
         playSound("stopwatch")
-        scene.resetStuff()
-        local last_tick = nil
-        local i = 1
-        while i <= #all_moves do
-          local count = math.min(#all_moves - i, moves_per_tick - 1)
-          local function pastMove(i, count)
-            for j = 0, count do
-              do_past_effects = j == count -- reduce effects
-              if i+j == #all_moves then
-                should_parse_rules = true
-              end
-              doOneMove(all_moves[i+j][1], all_moves[i+j][2], all_moves[i+j][3], true)
+        local past_buffer = undo_buffer
+        scene.resetStuff(true)
+        current_move = 0
+        local iterations = 1
+        local count = math.min(#all_moves - i, moves_per_tick - 1)
+        local function pastMove(i, count)
+          change_past = false
+          local finished = false
+          for j = 0, count do
+            if i+j == #all_moves then
+              finished = true
+            end
+            doOneMove(all_moves[i+j][1], all_moves[i+j][2], all_moves[i+j][3], true)
+          end
+          if change_past then
+            cutscene_tick:delay(function()
+              addTween(tween.new(delay, stopwatch.big, {rotation = 0}), "stopwatch")
+              change_past = false
+              --past_buffer = undo_buffer
+              scene.resetStuff(true)
+              current_move = 0
+              iterations = iterations + 1
+            end, delay):after(function()
+              clock_tween:set(0)
+              addTween(clock_tween, "stopwatch")
+              playSound("stopwatch")
+              pastMove(1, math.min(#all_moves - 1, moves_per_tick - 1))
+            end, delay)
+          elseif finished then
+            stopwatch.visible = false
+            should_parse_rules = true
+            doing_past_turns = false
+            past_playback = false
+            past_rules = {}
+            undo_buffer = past_buffer
+            createUndoBasedOnUnitsChanges(old_units, old_units_by_id, units, units_by_id)
+            old_units = nil; old_units_by_id = nil;
+          elseif iterations > 20 then
+            destroyLevel("infloop")
+          else
+            cutscene_tick:delay(function() pastMove(i+count+1, math.min(#all_moves - i+count, moves_per_tick - 1)) end, delay)
+          end 
+        end
+        cutscene_tick:delay(function() pastMove(1, math.min(#all_moves - 1, moves_per_tick - 1)) end, delay)
+      else
+        --[[local past_buffer = undo_buffer
+        scene.resetStuff(true)
+        current_move = 0
+        undo_buffer = {}]]
+        while change_past and not destroy_level do
+          change_past = false
+          local past_buffer = undo_buffer
+          scene.resetStuff(true)
+          current_move = 0
+          undo_buffer = {}
+          for i,past_move in ipairs(all_moves) do
+            do_past_effects = i <= 10 or #all_moves - i < 10
+            if i == #all_moves then
+              should_parse_rules = true
+            end
+            doOneMove(past_move[1], past_move[2], past_move[3], true)
+            if change_past then break end
+            if love.timer.getTime() - start_time > 10 then
+              destroy_level = true
+              break
             end
           end
-          local a = i
-          if last_tick then
-            last_tick = last_tick:after(function() pastMove(a, count) end, delay)
-          else
-            last_tick = tick.delay(function() 
-              pastMove(a, count)
-            end, delay)
-          end
-          i = i + count + 1
-          if i > #all_moves then
-            last_tick:after(function()
-              past_ends[current_move] = true
-              stopwatch.visible = false
-              doing_past_turns = false
-              past_playback = false
-              past_rules = {}
-              undo_buffer = {}
-            end, 0)
-          end
+          undo_buffer = past_buffer
         end
-      else
-        scene.resetStuff()
-        for i,past_move in ipairs(all_moves) do
-          do_past_effects = i <= 10 or #all_moves - i < 10
-          if i == #all_moves then
-            should_parse_rules = true
+        if destroy_level then
+          destroyLevel("infloop")
+        else
+          --[[for i,past_move in ipairs(all_moves) do
+            do_past_effects = i <= 10 or #all_moves - i < 10
+            if i == #all_moves then
+              should_parse_rules = true
+            end
+            doOneMove(past_move[1], past_move[2], past_move[3], true)
+          end]]
+          should_parse_rules = true
+          doing_past_turns = false
+          past_playback = false
+          past_rules = {}
+          --undo_buffer = past_buffer
+          createUndoBasedOnUnitsChanges(old_units, old_units_by_id, units, units_by_id)
+          old_units = nil; old_units_by_id = nil;
+          for k,v in pairs(tweens) do
+            v[1]:set(v[1].duration)
           end
-          doOneMove(past_move[1], past_move[2], past_move[3], true)
-        end
-        past_ends[current_move] = true
-        doing_past_turns = false
-        past_playback = false
-        past_rules = {}
-        undo_buffer = {} -- TODO: Undo the timeline?
-        for k,v in pairs(tweens) do
-          v[1]:set(v[1].duration)
         end
       end
     end, 0.25)
@@ -2170,11 +2335,37 @@ function scene.mouseReleased(x, y, button)
     -- Stacks preview
     scene.setStackBox(screenToGameTile(x, y))
   end
-  
-  if pointInside(x,y,0,0,box,box) then
-    --love.keypressed("f2")
+
+  if pause then
+    width = love.graphics.getWidth()
+    height = love.graphics.getHeight()
+
+    local buttonwidth, buttonheight = sprites["ui/button_1"]:getDimensions()
+
+    local mousex, mousey = love.mouse.getPosition()
+
+    for i=1, #buttons do
+      local buttony = buttonheight*4+(buttonheight+10)*(i-2)
+      if mouseOverBox(width/2-sprites["ui/button_1"]:getWidth()/2, buttony, buttonwidth, buttonheight) then
+        if button == 1 then
+          handlePauseButtonPressed(i)
+        end
+      end
+    end
+  end
+end
+
+function handlePauseButtonPressed(i)
+  if buttons[i] == "exit" then
+    escResult(true)
+  elseif buttons[i] == "resume" then
+    pause = false
+  elseif buttons[i] == "editor" then
     new_scene = editor
     load_mode = "edit"
+  elseif buttons[i] == "restart" then
+    pause = false
+    scene.resetStuff()
   end
 end
 

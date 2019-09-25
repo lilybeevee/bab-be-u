@@ -1,15 +1,17 @@
 function clear()
   --groups_exist = false
   letters_exist = false
-	replay_playback = false
-  replay_playback_turns = nil
-	replay_playback_string = nil
-	replay_playback_turn = 1
-	replay_playback_time = love.timer.getTime()
-	replay_playback_interval = 0.3
-  old_replay_playback_interval = 0.3
-  replay_pause = false
-	replay_string = ""
+  if not doing_past_turns then
+    replay_playback = false
+    replay_playback_turns = nil
+    replay_playback_string = nil
+    replay_playback_turn = 1
+    replay_playback_time = love.timer.getTime()
+    replay_playback_interval = 0.3
+    old_replay_playback_interval = 0.3
+    replay_pause = false
+    replay_string = ""
+  end
   new_units_cache = {}
   undoing = false
   successful_brite_cache = nil
@@ -57,6 +59,7 @@ function clear()
   mouse_oldX = mouse_X
   mouse_oldY = mouse_Y
   cursors = {}
+  cursors_by_id = {}
   shake_dur = 0
   shake_intensity = 0.5
   current_turn = 0
@@ -113,11 +116,23 @@ function clear()
   love.mouse.setCursor()
 end
 
+function pastClear()
+  if stopwatch ~= nil then
+    stopwatch.visible = false
+  end
+  should_parse_rules = true
+  doing_past_turns = false
+  past_playback = false
+  past_rules = {}
+  cutscene_tick = tick.group()
+end
+
 function metaClear()
   rules_with = nil
   parent_filename = nil
   stay_ther = nil
   surrounds = nil
+  pastClear()
 end
 
 function initializeGraphicalPropertyCache()
@@ -152,7 +167,7 @@ function loadMap()
     end
     table.insert(rects, {x = offset.x, y = offset.y, w = mapdata.info.width, h = mapdata.info.height})
 
-    if version == 0 then
+    if version == 0 or version == nil then
       if map == nil then
         map = {}
         for x=1,mapwidth do
@@ -1228,15 +1243,28 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
       --print(result)
       --print(x, y)
       --print(last_click_x, last_click_y)
-    elseif condtype == "reed" or condtype == "bleu" or condtype == "blacc"
-    or condtype == "grun" or condtype == "yello" or condtype == "orang"
-    or condtype == "purp" or condtype == "whit" or condtype == "cyeann" or condtype == "pinc"
-    or condtype == "graey" or condtype == "brwn" then
+    elseif main_palette_for_colour[condtype] then
       local colour = unit.color_override or unit.color
-      if (unit.fullname == "no1") then
+      if unit.fullname == "no1" then
         result = false
-      elseif (unit.rave or unit.colrful or unit.gay) then
-        result = true
+      elseif unit.rave or unit.colrful or unit.gay then
+        if condtype == "blacc" or condtype == "whit" or condtype == "graey" or condtype == "brwn" then
+          result = false
+        else
+          result = true
+        end
+      elseif unit.tranz then
+        if not (condtype == "cyeann" or condtype == "whit" or condtype == "pinc") then
+          result = false
+        else
+          result = true
+        end
+      elseif unit.enby then
+        if not (condtype == "yello" or condtype == "whit" or condtype == "purp" or condtype == "blacc" or condtype == "graey") then
+          result = false
+        else
+          result = true
+        end
       else
         if type(colour[1]) == "table" then
           local found = false
@@ -1274,7 +1302,11 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
       local name = unit.special.name or level_name
       result = readSaveFile(name,"won")
     elseif condtype == "past" then
-      result = false
+      if cond_not then
+        result = doing_past_turns
+      else
+        result = false
+      end
     else
       print("unknown condtype: " .. condtype)
       result = false
@@ -2250,14 +2282,14 @@ function endTest()
   print(perf_test.name .. ": " .. time .. "s")
 end
 
-function loadLevels(levels, mode, level_objs)
+function loadLevels(levels, mode, level_objs, xwx)
   if #levels == 0 then
     return
   end
   
   --setup stay ther
   stay_ther = nil
-  if (rules_with ~= nil) then
+  if (rules_with ~= nil) and not xwx then
     stay_ther = {}
     local isstayther = getUnitsWithEffect("stay ther")
     for _,unit in ipairs(isstayther) do
@@ -2667,41 +2699,47 @@ end
 function serializeRule(rule)
   local result = ""
   result = result..serializeUnit(rule.subject, true)
-  result = result.." "..rule.verb.name.." "
+  result = result..serializeWord(rule.verb)
   result = result..serializeUnit(rule.object, true) -- there's no reason for separate serializeClass/Property since the structure is the same
   return result
 end
 
 function serializeUnit(unit, outer)
   local prefix = ""
-  local infix = " "
-  local name = unit.name
-  while name:starts("text_") do
-    name = name:sub(6).." txt"
-  end
+  local infix = ""
+  local name = serializeWord(unit)
   if not unit.conds then
     return name
   end
   for i,cond in ipairs(unit.conds) do
     if not cond.others or #cond.others == 0 then
-      prefix = prefix..cond.name.." "
+      prefix = prefix..serializeWord(cond)
     else
-      infix = infix..cond.name.." "
+      infix = infix..serializeWord(cond)
       local infix_other = ""
       for j,other in ipairs(cond.others) do
         infix_other = infix_other..serializeUnit(other)
-        infix_other = infix_other.." & "
+        infix_other = infix_other.."& "
       end
-      infix_other = infix_other:sub(1,-4) -- remove last &
-      infix = infix..infix_other.." & "
+      infix_other = infix_other:sub(1,-3) -- remove last &
+      infix = infix..infix_other.."& "
     end
   end
-  infix = infix:sub(1,-4) -- remove last &
+  infix = infix:sub(1,-3) -- remove last &
   local full = prefix..name..infix
   if not outer and full:find("&", 1) then
     full = "("..full..")"
   end
   return full
+end
+
+function serializeWord(word)
+  if word.unit and hasProperty(word.unit, "stelth") then return "" end
+  local name = word.name
+  while name:starts("text_") do
+    name = name:sub(6).." txt"
+  end
+  return name.." "
 end
 
 function unitsByTile(x, y)

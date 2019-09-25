@@ -634,8 +634,7 @@ function updateUnits(undoing, big_update)
           end
         end
       end
-      timeless_splitter = {}
-      timeless_splittee = {}
+      timeless_split = {}
     end
     
     --an attempt to prevent stacking split from crashing by limiting how many splits we try to do per tile. it's OK, it leads to weird traffic jams though because the rest of the units just stay still.
@@ -1226,7 +1225,7 @@ function miscUpdates()
       
       -- for optimisation in drawing
       local objects_to_check = {
-      "stelth", "colrful", "xwx", "rave",
+      "stelth", "colrful", "xwx", "rave", "gay", "tranz", "enby"
       }
       for i = 1, #objects_to_check do
         local prop = objects_to_check[i]
@@ -1512,14 +1511,22 @@ end
 function handleTimeDels(time_destroy)
   local convert = false
   local del_units = {}
+  local already_added = {}
   for _,unitid in ipairs(time_destroy) do
-    unit = units_by_id[unitid]
+    if unitid > 0 then
+      unit = units_by_id[unitid]
+    else
+      unit = cursors_by_id[unitid]
+    end
     addUndo({"time_destroy_remove", unitid})
     if unit ~= nil and not hasProperty(unit, "protecc") then
-      addParticles("destroy",unit.x,unit.y,unit.color)
+      if not already_added[unitid] then
+        addParticles("destroy",unit.x,unit.y,unit.color)
+      end
       unit.destroyed = true
       unit.removed = true
       table.insert(del_units,unit)
+      already_added[unitid] = true
       for i,win in ipairs(timeless_win) do
         if unit.id == win then
           addUndo({"timeless_win_remove", win})
@@ -1532,10 +1539,10 @@ function handleTimeDels(time_destroy)
           table.remove(timeless_unwin,i)
         end
       end
-      for i,split in ipairs(timeless_splittee) do
-        if unit.id == win then
-          addUndo({"timeless_splittee_remove", split})
-          table.remove(timeless_splittee,i)
+      for split,_ in pairs(timeless_split) do
+        if unit.id == split then
+          addUndo({"timeless_split_remove", split})
+          timeless_split[split] = nil
         end
       end
     end
@@ -1862,10 +1869,16 @@ function destroyLevel(reason)
   end
   
   if level_destroyed then
+    local units_to_destroy = {}
     for _,unit in ipairs(units) do
+      if inBounds(unit.x, unit.y) then
+        table.insert(units_to_destroy, unit);
+      end
+    end
+    for _,unit in ipairs(units_to_destroy) do
       addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
     end
-    handleDels(units,true)
+    handleDels(units_to_destroy,true)
     if reason == "infloop" and #transform_results == 0 then
       local new_unit = createUnit(tiles_by_name["infloop"], math.floor(mapwidth/2), math.floor(mapheight/2), 1)
       addUndo({"create", new_unit.id, false})
@@ -2392,7 +2405,11 @@ function deleteUnits(del_units,convert)
       if (unit.backer_turn ~= nil) then
         addUndo({"backer_turn", unit.id, unit.backer_turn})
       end
-      addUndo({"remove", unit.tile, unit.x, unit.y, unit.dir, convert or false, unit.id, unit.special})
+      if unit.class == "cursor" then
+        addUndo({"remove_cursor",unit.screenx,unit.screeny,unit.id})
+      else
+        addUndo({"remove", unit.tile, unit.x, unit.y, unit.dir, convert or false, unit.id, unit.special})
+      end
     end
     deleteUnit(unit,convert)
   end
@@ -2541,6 +2558,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
   --updateDir(unit, unit.dir)
   new_units_cache[unit] = true
   unit.new = true
+  --print("createUnit:", unit.fullname, unit.id, unit.x, unit.y)
   return unit
 end
 
@@ -2928,10 +2946,7 @@ function doXWX()
   writeSaveFile(level_name,"won",nil)
   writeSaveFile(level_name,"bonus",nil)
   writeSaveFile(level_name,"transform",nil)
-  
-  --load the parent here, i don't know how to do that
-  --unless they're playing from editor, in which case just send them back to editing probably. i also don't know how to do that
-  scene.resetStuff()
+  escResult(true, true)
 end
 
 function getColor(unit)

@@ -8,6 +8,7 @@ ui.world_button = require 'ui/worldbutton'
 ui.fonts = {}
 ui.mouse = {left = "up", right = "up"}
 ui.hovered = nil
+ui.new_hovered = nil
 ui.editing = nil
 
 function ui.init()
@@ -56,9 +57,8 @@ function ui.update()
   if ui.editing and ui.editing.frame ~= frame then
     ui.setEditing()
   end
-  if ui.hovered and ui.hovered.frame ~= frame then
-    ui.hovered = nil
-  end
+  ui.hovered = ui.new_hovered
+  ui.new_hovered = nil
 
   if love.mouse.isDown(1) then
     if ui.mouse.left == "up" or ui.mouse.left == "released" then

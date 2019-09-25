@@ -74,7 +74,9 @@ function doMovement(movex, movey, key)
     should_parse_rules = true
   end
 
-	extendReplayString(movex, movey, key)
+  if not doing_past_turns then
+    extendReplayString(movex, movey, key)
+  end
   if (key == "clikt") then
     last_click_x, last_click_y = movex, movey
     movex = 0
@@ -87,7 +89,7 @@ function doMovement(movex, movey, key)
   local flippers = {}
 
   if not unit_tests then
-    print("[---- begin turn ----]")
+    print("[---- begin turn "..tostring(#undo_buffer).." ----]")
     print("move: " .. movex .. ", " .. movey)
   end
 
@@ -595,7 +597,7 @@ It is probably possible to do, but lily has decided that it's not important enou
               if data.reason == "walk" and flippers[unit.id] ~= true and not hasProperty(unit, "stubbn") and not hasProperty(unit,"loop") and timecheck(unit,"be","walk") then
                 dir = rotate8(data.dir); data.dir = dir
                 addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
-                table.insert(update_queue, {unit = unit, reason = "update", payload = {x = unit.x, y = unit.y, dir = data.dir}})
+                table.insert(update_queue, {unit = unit, reason = "dir", payload = {dir = data.dir}})
                 flippers[unit.id] = true
                 something_moved = true
                 successes = successes + 1

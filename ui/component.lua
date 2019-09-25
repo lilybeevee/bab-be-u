@@ -186,16 +186,16 @@ function component.new(t)
   end
   function o:setFocus(val) self.focus = val; return self end
 
-  function o:hovered()
-    if ui.hovered and ui.hovered ~= self then
+  function o:hovered(ignore_global)
+    if not ignore_global and ui.hovered and ui.hovered ~= self then
       if not self.parent or (self.parent and not self.parent:hovered()) then
         return false
       end
     end
     return self.mouse.x >= 0 and
-           self.mouse.y >= 0 and
-           self.mouse.x < self:getWidth() and 
-           self.mouse.y < self:getHeight()
+          self.mouse.y >= 0 and
+          self.mouse.x < self:getWidth() and 
+          self.mouse.y < self:getHeight()
   end
 
   function o:pressed(button)
@@ -226,32 +226,38 @@ function component.new(t)
   end
 
   function o:onHovered(func) self.on_hovered = func; return self end
+  function o:onExited(func) self.on_exited = func; return self end
   function o:onPressed(func) self.on_pressed = func; return self end
   function o:onReleased(func) self.on_released = func; return self end
+
+  function o:onPreDraw(func) self.on_pre_draw = func; return self end
+  function o:onDraw(func) self.on_draw = func; return self end
 
   function o:draw(parent)
     self.frame = frame
     self.parent = parent
 
     love.graphics.push()
-    if self.preDraw then
+    if (not self.on_pre_draw or not self.on_pre_draw(self)) and self.preDraw then
       self:preDraw()
     end
     self:transform()
     self:updateMouse()
     
-    self:useColor()
-    self:drawRect()
-    self:drawSprite()
+    if (not self.on_draw or not self.on_draw(self)) then
+      self:useColor()
+      self:drawRect()
+      self:drawSprite()
 
-    love.graphics.setColor(1, 1, 1)
-    if spookmode then
-      love.graphics.setColor(0.2,0.2,0.2)
+      love.graphics.setColor(1, 1, 1)
+      if spookmode then
+        love.graphics.setColor(0.2,0.2,0.2)
+      end
+      self:drawIcon()
+
+      self:useTextColor()
+      self:drawText()
     end
-    self:drawIcon()
-
-    self:useTextColor()
-    self:drawText()
 
     if self.postDraw then
       self:postDraw()
@@ -337,7 +343,8 @@ function component.new(t)
     love.graphics.translate(self:getWidth() / 2, self:getHeight() / 2)
     love.graphics.scale(self:getScale())
     love.graphics.rotate(self:getRotation())
-    if not self:getCentered() then
+    love.graphics.translate(-self:getWidth() / 2, -self:getHeight() / 2)
+    if self:getCentered() then
       love.graphics.translate(-self:getWidth() / 2, -self:getHeight() / 2)
     end
   end
@@ -350,8 +357,8 @@ function component.new(t)
     end
     if self.mouse.left ~= "up" then self.mouse.left = ui.mouse.left end
     if self.mouse.right ~= "up" then self.mouse.right = ui.mouse.right end
+    if self:getFocus() and self:hovered(true) then ui.new_hovered = self end
     if self:hovered() then
-      if self:getFocus() then ui.hovered = self end
       if not self.last_hovered then
         self.last_hovered = true
         if self.on_hovered then self.on_hovered(self) end
@@ -359,8 +366,10 @@ function component.new(t)
       if ui.mouse.left == "pressed" then self.mouse.left = "pressed" end
       if ui.mouse.right == "pressed" then self.mouse.right = "pressed" end
     else
-      if ui.hovered == self then ui.hovered = nil end
-      self.last_hovered = false
+      if self.last_hovered then
+        self.last_hovered = false
+        if self.on_exited then self.on_exited(self) end
+      end
       if self.mouse.left == "released" then self.mouse.left = "up" end
       if self.mouse.right == "released" then self.mouse.right = "up" end
     end

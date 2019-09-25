@@ -70,6 +70,7 @@ function createMouse_direct(x,y,id_)
     mouse.primary = false
   end
   table.insert(cursors, mouse)
+  cursors_by_id[mouse.id] = mouse
   return mouse
 end
 
