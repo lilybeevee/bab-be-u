@@ -57,7 +57,7 @@ local stopwatch
 local sessionseed
 
 local buttons = {"resume", "editor", "exit"}
-local pause = false
+pause = false
 
 function scene.load()
   sessionseed = math.random(0,100000000)/100000000
@@ -267,7 +267,17 @@ function string:split(sSeparator, nMax, bRegexp)
    return aRecord
 end
 
-function scene.resetStuff()
+function scene.resetStuff(forTime)
+  if not forTime then
+    if stopwatch ~= nil then
+      stopwatch.visible = false
+    end
+    should_parse_rules = true
+    doing_past_turns = false
+    past_playback = false
+    past_rules = {}
+    cutscene_tick = tick.group()
+  end
   timeless = false
   clear()
   if not is_mobile then
@@ -2092,7 +2102,7 @@ function scene.doPastTurns()
       playSound("stopwatch")
     end
 
-    tick.delay(function() 
+    cutscene_tick:delay(function() 
       do_past_effects = false
       local start_time = love.timer.getTime()
       local destroy_level = false
@@ -2133,7 +2143,7 @@ function scene.doPastTurns()
         do_past_effects = true
         playSound("stopwatch")
         local past_buffer = undo_buffer
-        scene.resetStuff()
+        scene.resetStuff(true)
         current_move = 0
         local iterations = 1
         local count = math.min(#all_moves - i, moves_per_tick - 1)
@@ -2147,11 +2157,11 @@ function scene.doPastTurns()
             doOneMove(all_moves[i+j][1], all_moves[i+j][2], all_moves[i+j][3], true)
           end
           if change_past then
-            tick.delay(function()
+            cutscene_tick:delay(function()
               addTween(tween.new(delay, stopwatch.big, {rotation = 0}), "stopwatch")
               change_past = false
               --past_buffer = undo_buffer
-              scene.resetStuff()
+              scene.resetStuff(true)
               current_move = 0
               iterations = iterations + 1
             end, delay):after(function()
@@ -2172,19 +2182,19 @@ function scene.doPastTurns()
           elseif iterations > 20 then
             destroyLevel("infloop")
           else
-            tick.delay(function() pastMove(i+count+1, math.min(#all_moves - i+count, moves_per_tick - 1)) end, delay)
+            cutscene_tick:delay(function() pastMove(i+count+1, math.min(#all_moves - i+count, moves_per_tick - 1)) end, delay)
           end 
         end
-        tick.delay(function() pastMove(1, math.min(#all_moves - 1, moves_per_tick - 1)) end, delay)
+        cutscene_tick:delay(function() pastMove(1, math.min(#all_moves - 1, moves_per_tick - 1)) end, delay)
       else
         --[[local past_buffer = undo_buffer
-        scene.resetStuff()
+        scene.resetStuff(true)
         current_move = 0
         undo_buffer = {}]]
         while change_past and not destroy_level do
           change_past = false
           local past_buffer = undo_buffer
-          scene.resetStuff()
+          scene.resetStuff(true)
           current_move = 0
           undo_buffer = {}
           for i,past_move in ipairs(all_moves) do

@@ -546,6 +546,8 @@ love.timer.getTime = function()
   end
 end
 
+cutscene_tick = tick.group()
+
 function love.update(dt)
   if spookmode then
     dt = math.tan(love.timer.getRealTime()*20)/200
@@ -594,6 +596,9 @@ function love.update(dt)
     gooi.update(dt)
   end
   tick.update(dt)
+  if not pause then
+    cutscene_tick:update(dt)
+  end
 
   if scene and scene.update then
     scene.update(dt)
