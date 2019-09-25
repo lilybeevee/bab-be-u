@@ -1276,7 +1276,11 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
       local name = unit.special.name or level_name
       result = readSaveFile(name,"won")
     elseif condtype == "past" then
-      result = false
+      if cond_not then
+        result = doing_past_turns
+      else
+        result = false
+      end
     else
       print("unknown condtype: " .. condtype)
       result = false
