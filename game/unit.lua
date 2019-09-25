@@ -1225,7 +1225,7 @@ function miscUpdates()
       
       -- for optimisation in drawing
       local objects_to_check = {
-      "stelth", "colrful", "xwx", "rave",
+      "stelth", "colrful", "xwx", "rave", "gay", "tranz", "enby"
       }
       for i = 1, #objects_to_check do
         local prop = objects_to_check[i]

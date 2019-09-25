@@ -1243,15 +1243,28 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
       --print(result)
       --print(x, y)
       --print(last_click_x, last_click_y)
-    elseif condtype == "reed" or condtype == "bleu" or condtype == "blacc"
-    or condtype == "grun" or condtype == "yello" or condtype == "orang"
-    or condtype == "purp" or condtype == "whit" or condtype == "cyeann" or condtype == "pinc"
-    or condtype == "graey" or condtype == "brwn" then
+    elseif main_palette_for_colour[condtype] then
       local colour = unit.color_override or unit.color
-      if (unit.fullname == "no1") then
+      if unit.fullname == "no1" then
         result = false
-      elseif (unit.rave or unit.colrful or unit.gay) then
-        result = true
+      elseif unit.rave or unit.colrful or unit.gay then
+        if condtype == "blacc" or condtype == "whit" or condtype == "graey" or condtype == "brwn" then
+          result = false
+        else
+          result = true
+        end
+      elseif unit.tranz then
+        if not (condtype == "cyeann" or condtype == "whit" or condtype == "pinc") then
+          result = false
+        else
+          result = true
+        end
+      elseif unit.enby then
+        if not (condtype == "yello" or condtype == "whit" or condtype == "purp" or condtype == "blacc" or condtype == "graey") then
+          result = false
+        else
+          result = true
+        end
       else
         if type(colour[1]) == "table" then
           local found = false
