@@ -2398,7 +2398,11 @@ function deleteUnits(del_units,convert)
       if (unit.backer_turn ~= nil) then
         addUndo({"backer_turn", unit.id, unit.backer_turn})
       end
-      addUndo({"remove", unit.tile, unit.x, unit.y, unit.dir, convert or false, unit.id, unit.special})
+      if unit.class == "cursor" then
+        addUndo({"remove_cursor",unit.screenx,unit.screeny,unit.id})
+      else
+        addUndo({"remove", unit.tile, unit.x, unit.y, unit.dir, convert or false, unit.id, unit.special})
+      end
     end
     deleteUnit(unit,convert)
   end
