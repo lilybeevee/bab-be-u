@@ -227,7 +227,7 @@ function scene.mouseReleased(x, y, button)
     if mouseOverBox(width/2-sprites["ui/button_1"]:getWidth()/2, height/2-buttonheight/2+(buttonheight+10)*i, buttonwidth, buttonheight) then
       if button == 1 then
         if buttons[i] == "exit" and not options then
-          love.window.close()
+          love.event.quit()
         elseif buttons[i] == "exit" and options then
           options = false
         elseif buttons[i] == "options" then

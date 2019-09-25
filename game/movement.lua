@@ -74,7 +74,9 @@ function doMovement(movex, movey, key)
     should_parse_rules = true
   end
 
-	extendReplayString(movex, movey, key)
+  if not doing_past_turns then
+    extendReplayString(movex, movey, key)
+  end
   if (key == "clikt") then
     last_click_x, last_click_y = movex, movey
     movex = 0

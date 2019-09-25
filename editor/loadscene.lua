@@ -289,19 +289,40 @@ function scene.buildUI()
       end
     end
   
+    local title_y = oy
     local title_width, title_height = ui.fonts.title:getWidth(world:upper()), ui.fonts.title:getHeight()
+    local world_folder
     local world_label = ui.text_input.new()
       :setText(world:upper())
       :setFont(ui.fonts.title)
-      :setPos(0, oy)
+      :setPos(0, title_y)
       :setSize(love.graphics.getWidth(), title_height)
       :onReturn(scene.renameWorld)
-      :onTextEdited(function(o) o:setText(o:getText():upper()) end)
+      :onTextEdited(function(o) 
+        o:setText(o:getText():upper())
+        local width, height = o:getFont():getWidth(o:getText()), ui.fonts.title:getHeight()
+        if world_folder then
+          world_folder:setPos(love.graphics.getWidth()/2 - width/2 - sprites["ui/open_folder"]:getWidth(), title_y + height/2)
+        end
+      end)
     if load_mode == "edit" and world_parent ~= "officialworlds" and world ~= "" then
       world_label:setTextHoverColor(0.75, 0.75, 0.75)
       world_label:onReleased(function(o) ui.setEditing(o) end)
     end
     table.insert(components, world_label)
+    if load_mode == "edit" then
+      world_folder = ui.component.new()
+        :setSprite(sprites["ui/open_folder"]):setHoverSprite(sprites["ui/open_folder_h"]):setActiveSprite(sprites["ui/open_folder_a"])
+        :setPos(love.graphics.getWidth()/2 - title_width/2 - sprites["ui/open_folder"]:getWidth(), title_y + title_height/2):setCentered(true)
+        :onReleased(function()
+          if world_parent ~= "officialworlds" then
+            love.system.openURL("file:///"..love.filesystem.getSaveDirectory().."/worlds/"..world.."/")
+          else
+            love.system.openURL("file:///"..love.filesystem.getSource().."/officialworlds/"..world.."/")
+          end
+        end)
+      table.insert(components, world_folder)
+    end
     oy = oy + title_height + 24
   end
 
@@ -315,6 +336,14 @@ function scene.buildUI()
           :setFont(ui.fonts.category)
           :setPos(0, oy)
           :setSize(love.graphics.getWidth(), label_height))
+        if load_mode == "edit" then
+          table.insert(components, ui.component.new()
+            :setSprite(sprites["ui/open_folder"]):setHoverSprite(sprites["ui/open_folder_h"]):setActiveSprite(sprites["ui/open_folder_a"])
+            :setPos(love.graphics.getWidth()/2 - label_width/2 - sprites["ui/open_folder"]:getWidth(), oy + label_height/2):setCentered(true)
+            :onReleased(function()
+              love.system.openURL("file:///"..love.filesystem.getSource().."/officialworlds/")
+            end))
+        end
         oy = oy + label_height + 8
 
         oy = scene.addButtons("world", worlds, oy)
@@ -322,12 +351,23 @@ function scene.buildUI()
 
       worlds = scene.searchDir("worlds", "world")
       if #worlds > 0 or load_mode == "edit" then
-        label_width, label_height = ui.fonts.category:getWidth(spookmode and "stop" or "Custom Worlds"), ui.fonts.category:getHeight()
+        local label_width, label_height = ui.fonts.category:getWidth(spookmode and "stop" or "Custom Worlds"), ui.fonts.category:getHeight()
         table.insert(components, ui.component.new()
           :setText(spookmode and "stop" or "Custom Worlds")
           :setFont(ui.fonts.category)
           :setPos(0, oy)
           :setSize(love.graphics.getWidth(), label_height))
+        if load_mode == "edit" then
+          table.insert(components, ui.component.new()
+            :setSprite(sprites["ui/open_folder"]):setHoverSprite(sprites["ui/open_folder_h"]):setActiveSprite(sprites["ui/open_folder_a"])
+            :setPos(love.graphics.getWidth()/2 - label_width/2 - sprites["ui/open_folder"]:getWidth(), oy + label_height/2):setCentered(true)
+            :onReleased(function()
+              if not love.filesystem.getInfo("worlds") then
+                love.filesystem.createDirectory("worlds")
+              end
+              love.system.openURL("file:///"..love.filesystem.getSaveDirectory().."/worlds/")
+            end))
+        end
         oy = oy + label_height + 8
 
         if load_mode == "edit" and world_parent ~= "officialworlds" then
@@ -345,12 +385,23 @@ function scene.buildUI()
 
     local levels = scene.searchDir("levels", "level")
     if #levels > 0 or load_mode == "edit" then
-      label_width, label_height = ui.fonts.category:getWidth(spookmode and "what is this" or "Custom Levels"), ui.fonts.category:getHeight()
+      local label_width, label_height = ui.fonts.category:getWidth(spookmode and "what is this" or "Custom Levels"), ui.fonts.category:getHeight()
       table.insert(components, ui.component.new()
         :setText(spookmode and "what is this" or "Custom Levels")
         :setFont(ui.fonts.category)
         :setPos(0, oy)
         :setSize(love.graphics.getWidth(), label_height))
+      if load_mode == "edit" then
+        table.insert(components, ui.component.new()
+          :setSprite(sprites["ui/open_folder"]):setHoverSprite(sprites["ui/open_folder_h"]):setActiveSprite(sprites["ui/open_folder_a"])
+          :setPos(love.graphics.getWidth()/2 - label_width/2 - sprites["ui/open_folder"]:getWidth(), oy + label_height/2):setCentered(true)
+          :onReleased(function()
+            if not love.filesystem.getInfo("levels") then
+              love.filesystem.createDirectory("levels")
+            end
+            love.system.openURL("file:///"..love.filesystem.getSaveDirectory().."/levels/")
+          end))
+      end
       oy = oy + label_height + 8
 
       if load_mode == "edit" and world_parent ~= "officialworlds" then
@@ -480,14 +531,24 @@ function scene.addButtons(type, list, oy)
   return oy
 end
 
+function scene.addFolderBtn(x, y, dir)
+  if love.filesystem.getInfo("levels") then
+    love.system.openURL("file:///"..love.filesystem.getSaveDirectory().."/levels/")
+  else
+    love.system.openURL("file:///"..love.filesystem.getSaveDirectory())
+  end
+end
+
 function scene.resize(w, h)
   scene.buildUI()
 end
 
 function scene.renameWorld(o, text)
-  renameDir(world_parent .. "/" .. world, world_parent .. "/" .. text:lower())
-  world = text:lower()
-  scene.buildUI()
+  if text:lower() ~= world then
+    renameDir(world_parent .. "/" .. world, world_parent .. "/" .. text:lower())
+    world = text:lower()
+    scene.buildUI()
+  end
 end
 
 function scene.createWorld(o)
