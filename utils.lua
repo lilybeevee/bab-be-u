@@ -59,6 +59,7 @@ function clear()
   mouse_oldX = mouse_X
   mouse_oldY = mouse_Y
   cursors = {}
+  cursors_by_id = {}
   shake_dur = 0
   shake_intensity = 0.5
   current_turn = 0

@@ -634,8 +634,7 @@ function updateUnits(undoing, big_update)
           end
         end
       end
-      timeless_splitter = {}
-      timeless_splittee = {}
+      timeless_split = {}
     end
     
     --an attempt to prevent stacking split from crashing by limiting how many splits we try to do per tile. it's OK, it leads to weird traffic jams though because the rest of the units just stay still.
@@ -1512,14 +1511,22 @@ end
 function handleTimeDels(time_destroy)
   local convert = false
   local del_units = {}
+  local already_added = {}
   for _,unitid in ipairs(time_destroy) do
-    unit = units_by_id[unitid]
+    if unitid > 0 then
+      unit = units_by_id[unitid]
+    else
+      unit = cursors_by_id[unitid]
+    end
     addUndo({"time_destroy_remove", unitid})
     if unit ~= nil and not hasProperty(unit, "protecc") then
-      addParticles("destroy",unit.x,unit.y,unit.color)
+      if not already_added[unitid] then
+        addParticles("destroy",unit.x,unit.y,unit.color)
+      end
       unit.destroyed = true
       unit.removed = true
       table.insert(del_units,unit)
+      already_added[unitid] = true
       for i,win in ipairs(timeless_win) do
         if unit.id == win then
           addUndo({"timeless_win_remove", win})
@@ -1532,10 +1539,10 @@ function handleTimeDels(time_destroy)
           table.remove(timeless_unwin,i)
         end
       end
-      for i,split in ipairs(timeless_splittee) do
-        if unit.id == win then
-          addUndo({"timeless_splittee_remove", split})
-          table.remove(timeless_splittee,i)
+      for split,_ in pairs(timeless_split) do
+        if unit.id == split then
+          addUndo({"timeless_split_remove", split})
+          timeless_split[split] = nil
         end
       end
     end
