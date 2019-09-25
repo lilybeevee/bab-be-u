@@ -56,8 +56,9 @@ local stopwatch
 
 local sessionseed
 
-local buttons = {"resume", "editor", "exit"}
+local buttons = {"resume", "editor", "exit", "restart"}
 pause = false
+selected_pause_button = 1
 
 function scene.load()
   sessionseed = math.random(0,100000000)/100000000
@@ -331,114 +332,127 @@ function scene.keyPressed(key, isrepeat)
       return]]
 
     pause = not pause
+    selected_pause_button = 1
   end
+  
+  if pause then
+    if key == "w" or key == "up" or key == "i" or key == "kp8" then
+      selected_pause_button = selected_pause_button - 1
+      if selected_pause_button < 1 then
+        selected_pause_button = #buttons
+      end
+    elseif key == "s" or key == "down" or key == "k" or key == "kp2" then
+      selected_pause_button = selected_pause_button + 1
+      if selected_pause_button > #buttons then
+        selected_pause_button = 1
+      end
+    elseif key == "return" or key == "space" or key == "kpenter" then
+      handlePauseButtonPressed(selected_pause_button)
+    end
+  else
+    local do_turn_now = false
 
-  local do_turn_now = false
-
-  --TODO: PERFORMANCE: Some ways to cut down on input latency:
-  --1) If we see a second input before the 30ms is up, then we know the input and we can instantly get rid of the 30ms delay.
-  --2) If we know what the next move is (either it was an orthogonal move and we can see the 30ms delay already elapsed, or we just got our 2nd input for the move) we can do checkInput() from THIS function instead of waiting for love2d to call update().
-  --3) Instead of having this 30ms delay, we could assume it's an orthogonal move, process the next turn as though it was, and then if before the 30ms delay we discover that it was actually a diagonal input, we can undo the orthogonal input and process the next turn with the diagonal input. (But this will behave badly with CRASH/RESET/PERSIST (since those aren't invariant over undo/redo), so we'd have to make sure it works with those features. And you'll also be able to see and hear the ghosts of unintended orthogonal moves for the 0-30ms before they get corrected, like a GGPO netcode game, which might be unsettling.)
-  if (key == "w" or key == "a" or key == "s" or key == "d") and not pause then
-    if not repeat_timers["wasd"] or repeat_timers["wasd"] > 30 then
-      repeat_timers["wasd"] = 30
-    elseif repeat_timers["wasd"] <= 30 then
-      do_turn_now = true
-      repeat_timers["wasd"] = 0
-    end
-  elseif (key == "up" or key == "down" or key == "left" or key == "right") and not pause then
-    if not repeat_timers["udlr"] or repeat_timers["udlr"] > 30 then
-      repeat_timers["udlr"] = 30
-    elseif repeat_timers["udlr"] <= 30 then
-      do_turn_now = true
-      repeat_timers["udlr"] = 0
-    end
-  elseif (key == "i" or key == "j" or key == "k" or key == "l") and not pause then
-    if not repeat_timers["ijkl"] or repeat_timers["ijkl"] > 30 then
-      repeat_timers["ijkl"] = 30
-    elseif repeat_timers["ijkl"] <= 30 then
-      do_turn_now = true
-      repeat_timers["ijkl"] = 0
-    end
-  elseif (key == "kp1" or
-  key == "kp2" or
-  key == "kp3" or
-  key == "kp4" or
-  key == "kp5" or
-  key == "kp6" or
-  key == "kp7" or
-  key == "kp8" or
-  key == "kp9") and not pause then
-    if not repeat_timers["udlr"] then
-      do_turn_now = true
-      repeat_timers["numpad"] = 0
-    end
-  elseif (key == "z" or key == "q" or key == "backspace" or key == "kp0" or key == "o") and not pause then
-    if not repeat_timers["undo"] then
+    if (key == "w" or key == "a" or key == "s" or key == "d") then
+      if not repeat_timers["wasd"] or repeat_timers["wasd"] > 30 then
+        repeat_timers["wasd"] = 30
+      elseif repeat_timers["wasd"] <= 30 then
         do_turn_now = true
-        repeat_timers["undo"] = 0
+        repeat_timers["wasd"] = 0
+      end
+    elseif (key == "up" or key == "down" or key == "left" or key == "right") then
+      if not repeat_timers["udlr"] or repeat_timers["udlr"] > 30 then
+        repeat_timers["udlr"] = 30
+      elseif repeat_timers["udlr"] <= 30 then
+        do_turn_now = true
+        repeat_timers["udlr"] = 0
+      end
+    elseif (key == "i" or key == "j" or key == "k" or key == "l") then
+      if not repeat_timers["ijkl"] or repeat_timers["ijkl"] > 30 then
+        repeat_timers["ijkl"] = 30
+      elseif repeat_timers["ijkl"] <= 30 then
+        do_turn_now = true
+        repeat_timers["ijkl"] = 0
+      end
+    elseif (key == "kp1" or
+    key == "kp2" or
+    key == "kp3" or
+    key == "kp4" or
+    key == "kp5" or
+    key == "kp6" or
+    key == "kp7" or
+    key == "kp8" or
+    key == "kp9") then
+      if not repeat_timers["udlr"] then
+        do_turn_now = true
+        repeat_timers["numpad"] = 0
+      end
+    elseif (key == "z" or key == "q" or key == "backspace" or key == "kp0" or key == "o") then
+      if not repeat_timers["undo"] then
+          do_turn_now = true
+          repeat_timers["undo"] = 0
+      end
     end
-  end
 
-  for _,v in ipairs(repeat_keys) do
-    if v == key then
-      do_turn_now = true
-      repeat_timers[v] = 0
+    for _,v in ipairs(repeat_keys) do
+      if v == key then
+        do_turn_now = true
+        repeat_timers[v] = 0
+      end
     end
-  end
 
-  if key == "r" then
-    scene.resetStuff()
-  end
-  
-	-- Replay keys
-    if key == "f12" then
-        if not replay_playback then
-            tryStartReplay()
-        else
-            replay_playback = false
-        end
+    if key == "r" then
+      scene.resetStuff()
     end
     
-    if replay_playback and not pause then
-        if key == "+" or key == "=" or key == "w" or key == "up" then
-            replay_playback_interval = replay_playback_interval * 0.8
-        elseif key == "-" or key == "_" or key == "s" or key == "down" then
-            replay_playback_interval = replay_playback_interval / 0.8
-        elseif key == "0" or key == ")" then
-            replay_playback_interval = 0.3
-        elseif key == "space" then
-            replay_pause = not replay_pause
-        elseif key == "z" or key == "q" or key == "backspace" or key == "kp0" or key == "o" or key == "a" or key == "left" then
-            replay_pause = true
-            if replay_playback_turn > 1 then
-                replay_playback_turn = replay_playback_turn - 1
-                doOneMove(0,0,"undo")
-            end
-            print(replay_playback_turn)
-        elseif key == "d" or key == "right" then
-            doReplayTurn(replay_playback_turn)
-            replay_playback_turn = replay_playback_turn + 1
-        end
+    -- Replay keys
+      if key == "f12" then
+          if not replay_playback then
+              tryStartReplay()
+          else
+              replay_playback = false
+          end
+      end
+      
+      if replay_playback and not pause then
+          if key == "+" or key == "=" or key == "w" or key == "up" then
+              replay_playback_interval = replay_playback_interval * 0.8
+          elseif key == "-" or key == "_" or key == "s" or key == "down" then
+              replay_playback_interval = replay_playback_interval / 0.8
+          elseif key == "0" or key == ")" then
+              replay_playback_interval = 0.3
+          elseif key == "space" then
+              replay_pause = not replay_pause
+          elseif key == "z" or key == "q" or key == "backspace" or key == "kp0" or key == "o" or key == "a" or key == "left" then
+              replay_pause = true
+              if replay_playback_turn > 1 then
+                  replay_playback_turn = replay_playback_turn - 1
+                  doOneMove(0,0,"undo")
+              end
+              print(replay_playback_turn)
+          elseif key == "d" or key == "right" then
+              doReplayTurn(replay_playback_turn)
+              replay_playback_turn = replay_playback_turn + 1
+          end
+      end
+      
+    if key == "e" and not currently_winning and not replay_playback then
+      doOneMove(0, 0, "e")
     end
     
-  if key == "e" and not currently_winning and not replay_playback and not pause then
-    doOneMove(0, 0, "e")
-  end
-  
-  if key == "f" and not currently_winning and not replay_playback and not pause then
-    doOneMove(0, 0, "f")
-  end
+    if key == "f" and not currently_winning and not replay_playback then
+      doOneMove(0, 0, "f")
+    end
 
-  if key == "tab" then
-    displaywords = true
-  end
+    if key == "tab" then
+      displaywords = true
+    end
 
-  most_recent_key = key
-  key_down[key] = true
+    most_recent_key = key
+    key_down[key] = true
 
-  if (do_turn_now) then
-    scene.checkInput()
+    if (do_turn_now) then
+      scene.checkInput()
+    end
   end
 end
 
@@ -1663,16 +1677,38 @@ function scene.draw(dt)
     love.graphics.setColor(1,1,1)
 
     if pause then
+    
+      local current_level = level_name
+      if readSaveFile(level_name, "won") then
+        current_level = current_level.." (won) "
+      end
+      if readSaveFile(level_name, "clear") then
+        current_level = current_level.." (cleared) "
+      end
+      if readSaveFile(level_name, "complete") then
+        current_level = current_level.." (complete) "
+      end
+      if readSaveFile(level_name, "bonus") then
+        current_level = current_level.." (bonused) "
+      end
+      local tfs = readSaveFile(level_name, "transform")
+      if tfs then
+        current_level = current_level.." (transformed into " .. fullDump(tfs) .. ") "
+      end
+      
+      love.graphics.printf(current_level, width/2-buttonwidth/2, buttonheight, buttonwidth, "center")
+  
       for i=1, #buttons do
         love.graphics.push()
         local rot = 0
     
         local buttonx = width/2-buttonwidth/2
-        local buttony = height/2-buttonheight/2+(buttonheight+10)*(i-2)
+        local buttony = buttonheight*4+(buttonheight+10)*(i-2)
     
         if rainbowmode then buttoncolor = hslToRgb((love.timer.getTime()/6+i/10)%1, .5, .5, .9) end
     
-        if mouseOverBox(width/2-sprites["ui/button_1"]:getWidth()/2, height/2-buttonheight/2+(buttonheight+10)*(i-2), buttonwidth, buttonheight) then
+        if mouseOverBox(width/2-sprites["ui/button_1"]:getWidth()/2, buttony, buttonwidth, buttonheight) then
+          selected_pause_button = i
           love.graphics.setColor(buttoncolor[1]-0.1, buttoncolor[2]-0.1, buttoncolor[3]-0.1) --i know this is horrible
           love.graphics.translate(buttonx+buttonwidth/2, buttony+buttonheight/2)
           love.graphics.rotate(0.05 * math.sin(love.timer.getTime()*3))
@@ -1682,11 +1718,20 @@ function scene.draw(dt)
         end
     
         love.graphics.draw(sprites["ui/button_white_"..i%2+1], buttonx, buttony, rot, 1, 1)
+        
+        if (selected_pause_button == i) then
+          love.graphics.setColor(1,1,1)
+          love.graphics.draw(sprites["bab"], buttonx-32, buttony, rot, 1, 1)
+        end
     
         love.graphics.pop()
 
         love.graphics.setColor(1,1,1)
-        love.graphics.printf(buttons[i], width/2-buttonwidth/2, height/2-buttonheight/2+(buttonheight+10)*(i-2)+5, buttonwidth, "center")
+        local text = buttons[i]
+        if text == "exit" then
+          text = text .. " to " .. escResult(false)
+        end
+        love.graphics.printf(text, width/2-buttonwidth/2, buttony+6, buttonwidth, "center")
       end
     end
 
@@ -2288,45 +2333,27 @@ function scene.mouseReleased(x, y, button)
     local mousex, mousey = love.mouse.getPosition()
 
     for i=1, #buttons do
-      if mouseOverBox(width/2-sprites["ui/button_1"]:getWidth()/2, height/2-buttonheight/2+(buttonheight+10)*(i-2), buttonwidth, buttonheight) then
+      local buttony = buttonheight*4+(buttonheight+10)*(i-2)
+      if mouseOverBox(width/2-sprites["ui/button_1"]:getWidth()/2, buttony, buttonwidth, buttonheight) then
         if button == 1 then
-          if buttons[i] == "exit" then
-            local current_level = level_name
-            if readSaveFile(level_name, "won") then
-              current_level = current_level.." (won) "
-            end
-            if readSaveFile(level_name, "clear") then
-              current_level = current_level.." (cleared) "
-            end
-            if readSaveFile(level_name, "complete") then
-              current_level = current_level.." (complete) "
-            end
-            if readSaveFile(level_name, "bonus") then
-              current_level = current_level.." (bonused) "
-            end
-            local tfs = readSaveFile(level_name, "transform")
-            if tfs then
-              current_level = current_level.." (transformed into " .. fullDump(tfs) .. ") "
-            end
-            
-            gooi.confirm({
-                text = current_level .. "\r\n\r\n" .. (spookmode and "G̴͔̭͇͎͕͔ͪ̾ͬͦ̇͑͋͟͡o̵̸͓̠̦̱̭̘͍̱͑̃̀ͅ ̱̫͉̆͐̇ͥ̽͆͂͑̿͜b̸̵͈̼̜̅͗̄̆ͅa͚̠͚̣̺̗͖͈̓̿̈́͆͐̉ͯ̀̚c͉̜̙̤͍̞̳̬ͪ̇k̙͙̼̀̓̂̑̈́̌ͯ̕͢ͅ ̶̛̠̹̈̒ͫ͐t̙͉͍͚̠̗̰͗͊͛ͫ͒ͥ̏ͫ͢͜ȍ̙͙̪̬̎̊ͫͭͫ͗̔̚ ̴̪͖͔̖̙̬͍̥ͪ̾̾͂͂l̪͉͙̪̩͙̎̏͌̽ͤ̈́̀͜͠e̡͓͍͉̖̤ͬ̓̏ͥͫ̀ͅv̱͈͍̞̼̀͋̂̃͋́̚͠ͅḛ̷̷̱̿͂l̢̮͇̫̗͍̱͈̟͌̐̎̑̈́ ̵̠͖̣̟̲̖̇̈̓ͭͫ͠s͚̝̻ͤ̓̀̀e̅͑̐̄͏̤̫̕͠lͨ͋͌ͤͩ̋̓͏̘̼̠̪̖͓͔̹e̵͖̤̒͒ͥ̓ͬ̓͘c͖͈̏̄̐̅̎ͨ͢ṫ͔̥͓̊̌̓̇ọ̞̤͔̩̒͗ͨ́̓͟ŗ̖͉̹̻̮̬̦͌̿͂?̶̡͈̫̗̈́̒̎̃̎̓" or "Go back to "..escResult(false).."?"),
-                okText = "Yes",
-                cancelText = spookmode and "Yes" or "Cancel",
-                ok = function()
-                  escResult(true)
-                end
-              })
-            return
-          elseif buttons[i] == "resume" then
-            pause = false
-          elseif buttons[i] == "editor" then
-            new_scene = editor
-            load_mode = "edit"
-          end
+          handlePauseButtonPressed(i)
         end
       end
     end
+  end
+end
+
+function handlePauseButtonPressed(i)
+  if buttons[i] == "exit" then
+    escResult(true)
+  elseif buttons[i] == "resume" then
+    pause = false
+  elseif buttons[i] == "editor" then
+    new_scene = editor
+    load_mode = "edit"
+  elseif buttons[i] == "restart" then
+    pause = false
+    scene.resetStuff()
   end
 end
 
