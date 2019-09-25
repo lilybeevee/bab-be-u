@@ -1985,7 +1985,7 @@ function doOneMove(x, y, key, past)
   end
   current_move = current_move + 1
 
-	if (currently_winning) then
+	if (currently_winning and not past) then
     --undo: undo win.
     --idle on the winning screen: go to the editor, if we were editing; go to the parent level, if known (prefer explicit to implicit), else go back to the world we were looking at.
     if (key == "undo") then
@@ -1993,8 +1993,8 @@ function doOneMove(x, y, key, past)
     else
       if x == 0 and y == 0 and key ~= "e" and not past then
         escResult(true)
-        return
       end
+      return
     end
   end
   
