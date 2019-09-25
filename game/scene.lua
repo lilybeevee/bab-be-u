@@ -1735,7 +1735,11 @@ function scene.draw(dt)
       end
     end
 
-    love.graphics.printf(rules, 0, love.graphics.getHeight()/2-love.graphics.getFont():getHeight()*lines+y, love.graphics.getWidth(), "center")
+    local rules_height = love.graphics.getHeight()/2-love.graphics.getFont():getHeight()*lines+y 
+    if pause then
+      rules_height = buttonheight*4+(buttonheight+10)*(#buttons)
+    end
+    love.graphics.printf(rules, 0, rules_height, love.graphics.getWidth(), "center")
 
     love.graphics.setColor(1,1,1)
     love.graphics.draw(sprites["ui/mous"], love.mouse.getX(), love.mouse.getY())
