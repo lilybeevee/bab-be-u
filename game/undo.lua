@@ -330,6 +330,8 @@ function undo(dont_update_rules)
 end
 
 function doTryAgain(_ignore_no_undo)
+  local ignore_no_undo = _ignore_no_undo
+  if (ignore_no_undo == nil) then ignore_no_undo = false end
   in_try_again = true
   try_again_cache = {}
   --cache units that are no undo so even if it's conditional they remain that way the entire time
@@ -341,7 +343,7 @@ function doTryAgain(_ignore_no_undo)
   local i = 1
   --instead of literally undoing everything, use BACK code to create new undo events. That way 1) TRY AGAIN can be undone. 2) Units don't forget their previous history each TRY AGAIN, should they be NO UNDO now but not in the future.
   while (can_undo) do
-    can_undo = doBack(nil, i, _ignore_no_undo)
+    can_undo = doBack(nil, i, ignore_no_undo)
     i = i + 1
   end
   parseRules(true)
