@@ -269,14 +269,7 @@ end
 
 function scene.resetStuff(forTime)
   if not forTime then
-    if stopwatch ~= nil then
-      stopwatch.visible = false
-    end
-    should_parse_rules = true
-    doing_past_turns = false
-    past_playback = false
-    past_rules = {}
-    cutscene_tick = tick.group()
+    pastClear()
   end
   timeless = false
   clear()
@@ -2097,7 +2090,7 @@ function scene.doPastTurns()
     doing_past_turns = true
     past_playback = true
 
-    if not settings["stopwatch_effect"] then
+    if (unit_tests or not settings["stopwatch_effect"]) then
       do_past_effects = true
       playSound("stopwatch")
     end
@@ -2127,7 +2120,7 @@ function scene.doPastTurns()
       end]]
       if destroy_level then
         destroyLevel("infloop")
-      elseif settings["stopwatch_effect"] then
+      elseif (settings["stopwatch_effect"] and not unit_tests) then
         local moves_per_tick = 1
         local delay = math.max(1/#all_moves, 1/20)
         while delay < 1/60 do

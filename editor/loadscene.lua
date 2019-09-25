@@ -119,6 +119,7 @@ function runUnitTests()
         local still_going = true
         while (still_going) do
           still_going = doReplay(0)
+          cutscene_tick:update(1) --for past and other cutscenes
         end
         if not won_this_session then
           table.insert(fail_levels, v.file)

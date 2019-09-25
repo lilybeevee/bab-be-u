@@ -115,11 +115,23 @@ function clear()
   love.mouse.setCursor()
 end
 
+function pastClear()
+  if stopwatch ~= nil then
+    stopwatch.visible = false
+  end
+  should_parse_rules = true
+  doing_past_turns = false
+  past_playback = false
+  past_rules = {}
+  cutscene_tick = tick.group()
+end
+
 function metaClear()
   rules_with = nil
   parent_filename = nil
   stay_ther = nil
   surrounds = nil
+  pastClear()
 end
 
 function initializeGraphicalPropertyCache()
@@ -154,7 +166,7 @@ function loadMap()
     end
     table.insert(rects, {x = offset.x, y = offset.y, w = mapdata.info.width, h = mapdata.info.height})
 
-    if version == 0 then
+    if version == 0 or version == nil then
       if map == nil then
         map = {}
         for x=1,mapwidth do
