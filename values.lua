@@ -281,7 +281,7 @@ selector_grid_contents = {
     "text_diag","text_ortho","text_go my way","text_direction",0,0,0,0,0,0,0,0,0,0,0,0,"text_past","text_wun",
     "text_turn cornr","text_folo wal","text_zip","text_hopovr","text_reflecc",0,0,0,0,0,0,0,0,0,0,0,0,0,
     "text_munwalk","text_sidestep","text_diagstep","text_knightstep",0,0,0,0,0,0,0,0,0,0,0,0,0,"text_reed",
-    "text_spin","text_rotatbl","text_noturn","text_stukc",0,0,0,0,0,0,0,0,0,0,0,0,"text_enby","text_orang",
+    "text_spin","text_rotatbl","text_noturn",0,0,0,0,0,0,0,0,0,0,0,0,0,"text_enby","text_orang",
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_brwn","text_tranz","text_yello",
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_blacc","text_gay","text_grun",
     0,0,0,0,0,"text_try again","text_no undo","text_undo","text_za warudo","text_brite",0,0,0,0,0,"text_graey","text_qt","text_cyeann",
@@ -5876,6 +5876,7 @@ tiles_list = {
     color = {4, 1},
     layer = 20,
     tags = {"chars", "flamingo", "bird"},
+    desc = "mr. flame go"
   },
   -- 504
   {
@@ -5945,6 +5946,7 @@ tiles_list = {
     color = {4, 2},
     layer = 20,
     tags = {"chars", "snail"},
+    desc = "its kinda slow to load in tho."
   },
   -- 510
   {
@@ -5968,6 +5970,7 @@ tiles_list = {
     color = {5, 2},
     layer = 20,
     tags = {"chars", "japan", "youkai", "kappa"},
+    desc = ":v",
   },
   -- 512
   {
@@ -6129,6 +6132,7 @@ tiles_list = {
     layer = 5,
     rotate = true,
     tags = {"paw print"},
+    desc = "dogg in bab when?",
   },
   -- 527
   {
@@ -6202,7 +6206,8 @@ tiles_list = {
     color = {5, 2},
     layer = 20,
     tags = {"plant", "cactus"},
-  },
+  desc = "this text is not as ouch" 
+},
   -- 534
   {
     name = "byc",
@@ -6517,6 +6522,7 @@ tiles_list = {
     color = {4,2},
     layer = 20,
     tags = {"boo","mario","ghost"},
+    desc = "AAA u scar mee!",
   },
   --561
   {
@@ -6703,7 +6709,7 @@ tiles_list = {
     color = {6, 2},
     layer = 20,
     tags = {"beehive", "beecomb", "honeycomb"},
-  },
+ 	desc = "do n't distrupte", },
   -- 577
   {
     name = "do$h",
@@ -6880,6 +6886,7 @@ tiles_list = {
     color = {0,1},
     layer = 20,
     tags = {"trash can", "rubbish bin", "garbage", "delete", "city"},
+    desc = "hah gottem"
   },
   -- 594
   {
@@ -6988,17 +6995,6 @@ tiles_list = {
     layer = 20,
     tags = {"oven", "microwave", "future gadget", "of out"},
     desc = "of out",
-  },
-  -- 604
-  {
-    name = "text_stukc",
-    sprite = "text_stukc",
-    type = "text",
-    texttype = {property = true},
-    color = {1,1},
-    layer = 20,
-    tags = {"stuck"},
-    desc = "STUKC: Anything with this property can't move. (I know this is a modded word but I don't know who made it, so I'll add that tag later.)"
   },
 }
 
