@@ -742,7 +742,7 @@ function updateUnits(undoing, big_update)
             end
           end
           if unitmoved then
-            if timecheck(on,"vs",unit) then
+            if timecheck(unit,"vs",on) then
               table.insert(to_destroy,on)
               playSound("break")
             else
@@ -1585,6 +1585,24 @@ function levelBlock()
         local tx,ty = math.random(0,mapwidth-1),math.random(0,mapheight-1)
         moveUnit(unit,tx,ty)
         ]]
+      end
+    end
+  end
+  
+  local isvs = matchesRule(nil,"vs",outerlvl)
+  mergeTable(isvs,matchesRule(outerlvl,"vs",nil))
+  for _,ruleparent in ipairs(isvs) do
+    local unit = ruleparent[2]
+    if unit ~= outerlvl and sameFloat(outerlvl,unit) and inBounds(unit.x,unit.y) then
+      local unitmoved = false
+      for _,undo in ipairs(undo_buffer[1]) do
+        if undo[1] == "update" and undo[2] == unit.id and ((undo[3] ~= unit.x) or (undo[4] ~= unit.y)) then
+          unitmoved = true
+        end
+      end
+      if unitmoved then
+        destroyLevel("vs")
+        if not lvlsafe then return 0,0 end
       end
     end
   end
