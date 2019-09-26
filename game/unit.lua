@@ -1606,6 +1606,17 @@ function levelBlock()
     end
   end
   
+  if hasProperty(outerlvl, "nuek") then
+    for _,unit in ipairs(units) do
+      if sameFloat(unit, outerlvl) and inBounds(unit.x,unit.y) then
+        table.insert(to_destroy, unit)
+        addParticles("destroy", unit.x, unit.y, {2,2})
+      end
+    end
+  end
+  
+  to_destroy = handleDels(to_destroy)
+  
   local isvs = matchesRule(nil,"vs",outerlvl)
   mergeTable(isvs,matchesRule(outerlvl,"vs",nil))
   for _,ruleparent in ipairs(isvs) do
