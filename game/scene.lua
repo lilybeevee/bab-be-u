@@ -52,7 +52,7 @@ local displaywords = false
 local stack_box, stack_font
 local pathlock_box, pathlock_font
 local initialwindoposition
-local stopwatch
+stopwatch = nil
 
 local sessionseed
 
