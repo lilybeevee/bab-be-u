@@ -1088,9 +1088,8 @@ function updateUnits(undoing, big_update)
     
     if wins > unwins then
       doWin("won")
-    elseif unwins > wins and readSaveFile(level_name,"won") then
-      playSound("unwin")
-      writeSaveFile(level_name,"won",false)
+    elseif unwins > wins then
+      doWin("won", false)
     end
     
     doDirRules()
@@ -2932,29 +2931,41 @@ function undoWin()
 end
 
 function doWin(result_, payload_)
-	if not currently_winning then
+  if not currently_winning then
     local result = result_ or "won"
-    local payload = payload_ or true
-		won_this_session = true
-    win_reason = result
-    currently_winning = true
-		music_fading = true
-    win_size = 0
-		playSound("win")
-    writeSaveFile(level_name, result, payload)
-    if (not replay_playback) then
-      love.filesystem.createDirectory("levels")
-      local to_save = replay_string
-      local rng_cache_populated = false
-      for _,__ in pairs(rng_cache) do
-        rng_cache_populated = true
-        break
+    local payload = payload_
+    if payload == nil then
+      payload = true
+    end
+    if doing_past_turns then
+      past_queued_wins[result] = payload
+    elseif result == "won" and payload == false then
+      if readSaveFile(level_name,"won") then
+        playSound("unwin")
+        writeSaveFile(level_name,"won",false)
       end
-      if (rng_cache_populated) then
-        to_save = to_save.."|"..love.data.encode("string", "base64", serpent.line(rng_cache))
+    else
+      won_this_session = true
+      win_reason = result
+      currently_winning = true
+      music_fading = true
+      win_size = 0
+      playSound("win")
+      if (not replay_playback) then
+        writeSaveFile(level_name, result, payload)
+        love.filesystem.createDirectory("levels")
+        local to_save = replay_string
+        local rng_cache_populated = false
+        for _,__ in pairs(rng_cache) do
+          rng_cache_populated = true
+          break
+        end
+        if (rng_cache_populated) then
+          to_save = to_save.."|"..love.data.encode("string", "base64", serpent.line(rng_cache))
+        end
+        love.filesystem.write("levels/" .. level_name .. ".replay", to_save)
+        print("Replay successfully saved to ".."levels/" .. level_name .. ".replay")
       end
-      love.filesystem.write("levels/" .. level_name .. ".replay", to_save)
-      print("Replay successfully saved to ".."levels/" .. level_name .. ".replay")
     end
 	end
 end

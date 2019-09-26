@@ -52,7 +52,7 @@ local displaywords = false
 local stack_box, stack_font
 local pathlock_box, pathlock_font
 local initialwindoposition
-local stopwatch
+stopwatch = nil
 
 local sessionseed
 
@@ -2146,6 +2146,7 @@ function scene.doPastTurns()
     old_units_by_id = units_by_id
     doing_past_turns = true
     past_playback = true
+    past_queued_wins = {}
 
     if (unit_tests or not settings["stopwatch_effect"]) then
       do_past_effects = true
@@ -2226,6 +2227,11 @@ function scene.doPastTurns()
             doing_past_turns = false
             past_playback = false
             past_rules = {}
+            
+            for result, payload in pairs(past_queued_wins) do
+              doWin(result, payload)
+            end
+            
             undo_buffer = past_buffer
             createUndoBasedOnUnitsChanges(old_units, old_units_by_id, units, units_by_id)
             old_units = nil; old_units_by_id = nil;
@@ -2275,6 +2281,11 @@ function scene.doPastTurns()
           doing_past_turns = false
           past_playback = false
           past_rules = {}
+          
+          for result, payload in pairs(past_queued_wins) do
+            doWin(result, payload)
+          end
+          
           --undo_buffer = past_buffer
           createUndoBasedOnUnitsChanges(old_units, old_units_by_id, units, units_by_id)
           old_units = nil; old_units_by_id = nil;
