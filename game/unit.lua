@@ -1196,8 +1196,26 @@ function miscUpdates()
           unit.sprite = {"boooo","boooo_mouth"}
         end
       end
+      
+      if unit.fullname == "casete" then
+        if unit.color_override then
+          local color = colour_for_palette[unit.color_override[1]][unit.color_override[2]]
+          if color == "bleu" or color == "cyeann" then
+            unit.sprite = "casete_bleu"
+          elseif color == "reed" or color == "pinc" then
+            unit.sprite = "casete_pinc"
+          elseif color == "orang" or color == "yello" then
+            unit.sprite = "casete_yello"
+          elseif color == "grun" then
+            unit.sprite = "casete_grun"
+          end
+        end
+        if not hasProperty(unit,"no go") then
+          unit.sprite = unit.sprite.."_sunk"
+        end
+      end
 
-      if unit.fullname ~= "os" and unit.fullname ~= "boooo" then
+      if unit.fullname ~= "os" and unit.fullname ~= "boooo" and unit.fullname ~= "casete" then
         if tile.slep and graphical_property_cache["slep"][unit] ~= nil then
           if type(tile.sprite) == "table" then
             for j,name in ipairs(tile.sprite) do
