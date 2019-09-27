@@ -8,6 +8,7 @@ local button_over = nil
 local name_font = nil
 local typing_name = false
 local ignore_mouse = true
+local saved_settings = false
 
 local settings_open, settings, properties
 local label_palette, label_music
@@ -92,6 +93,7 @@ function scene.load()
   end
   
   typing_name = false
+  saved_settings = false
   ignore_mouse = true
   capturing = false
   start_drag, end_drag = nil, nil
@@ -434,15 +436,20 @@ function scene.keyPressed(key)
   if key == "escape" and not selector_open then
     if not capturing then
       if not spookmode then
-        gooi.confirm({
-          text = spookmode and "Ģ͖̙̗̳̟̩̱̹̥̓͌͂ͤͫͫo̟̗͓̞̪̬͒̀ ̤̯̺̹͙̮̇bͯͣ̚͏̹̮a̸̡̯̜̦̝͓͑͋̾̊̾̏̔͢cͨ̿̏̔̆ͣ̎̊ͫ͟҉̗ǩ̬̰͕̭͊ͣͣ̈̇̀ ̩̖̮̹̣̰̫̫̏͐́͊̓̉̓̃͟ͅť̜̤̤̫ͯ͟ó̷͕̩̻̼͕̽͑̀̕ ̧̨͚̻̭̜̜͓̆̎͐͌͊̔l̷̰̖̳͈̰̞̄́̕e̷̫̾͑͌ͣ̎ͩ̍̑͞v̷̢̥̰̪͋͗̀̊ͤ͢é̛̼͖͖͓͕̖ͥ̔͑̐̔ͫ̿ļ̷̵̩̞̩̀͛͒̇͗̊̉̔̄ ̵͈ͪ̂̏ͧͨ͘͘ŝ̶̷̮̠͙͓̬̦̗ͭẽ͙̩͔͕͊̔ͯͮͤ̑͟ļ̗͈̈́̐ͨ̄̑ͪͪ͘ȩ͕̘̱͙̻̣̦̉̈ͨ̐ͪ̑̿̃̾ͅc͍̯͈̀ͥ̕͢t̨̩̹̲͍͕͇̊̇̈́̏ͮͬ̿͆͘ͅo̯̮͉̜͓͇̎̂̄ͧͭ̒ͫͫ͘͠͠r̰͍̝̯̿̆ͦ?ͪ͋͒ͩ̇̚҉̶̠̘̦" or "Go back to level selector?",
-          okText = "Yes",
-          cancelText = spookmode and "Yes" or "Cancel",
-          ok = function()
-            load_mode = "edit"
-            new_scene = loadscene
-          end
-        })
+        if saved_settings or maps[1].data ~= last_saved then
+          ui.overlay.confirm({
+            text = "Go back to level selector?\n(WARNING: You have unsaved changes)",
+            okText = "Yes",
+            cancelText = spookmode and "Yes" or "Cancel",
+            ok = function()
+              load_mode = "edit"
+              new_scene = loadscene
+            end
+          })
+        else
+          load_mode = "edit"
+          new_scene = loadscene
+        end
       else
         load_mode = "play"
         new_scene = loadscene
@@ -502,10 +509,6 @@ function scene.keyPressed(key)
 
   key_down[key] = true
 
-  if gooi.showingDialog then
-    return
-  end
-
   if not settings_open and not selector_open then
     if key == "up" or key == "left" or key == "down" or key == "right" then
       local dx, dy = 0, 0
@@ -541,7 +544,7 @@ function scene.keyPressed(key)
     elseif key == "o" and (key_down["lctrl"] or key_down["rctrl"]) then
       scene.openSettings()
     elseif key == "r" and (key_down["lctrl"] or key_down["rctrl"]) then
-      gooi.confirm({
+      ui.overlay.confirm({
         text = "Clear the level?",
         okText = "Yes",
         cancelText = "Cancel",
@@ -924,7 +927,7 @@ function scene.update(dt)
       return
     end
 
-    if gooi.showingDialog then
+    if ui.hovered then
       return
     end
 
@@ -1409,7 +1412,7 @@ function scene.draw(dt)
 
     local hx,hy = getHoveredTile()
     if hx ~= nil then
-      if not (gooi.showingDialog or capturing) then
+      if not (ui.hovered or gooi.showingDialog or capturing) then
         if brush.id and not selector_open then
           local tile = tiles_list[brush.id]
           local sprite_name = tile.sprite
@@ -1972,6 +1975,8 @@ function scene.saveLevel()
     end
   end
 
+  last_saved = map.data
+
   addTween(tween.new(0.25, saved_popup, {y = 0, alpha = 1}, 'outQuad'), "saved_popup")
   addTick("saved_popup", 1, function()
     addTween(tween.new(0.5, saved_popup, {y = 16, alpha = 0}), "saved_popup")
@@ -2060,7 +2065,7 @@ function scene.saveSettings()
   scene.updateMap()
 
   if author_change then
-    gooi.confirm({
+    ui.overlay.confirm({
       text = 'Set your default author name to:\n' .. level_author,
       okText = "Yes",
       cancelText = "No",
@@ -2076,6 +2081,8 @@ function scene.saveSettings()
   else
     scene.openSettings()
   end
+
+  saved_settings = true
 end
 
 function love.filedropped(file)
@@ -2167,6 +2174,7 @@ function scene.captureIcon()
   capturing = false
   screenshot = nil
   screenshot_image = nil
+  saved_settings = true
 end
 
 function scene.resize(w, h)

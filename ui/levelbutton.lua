@@ -10,6 +10,7 @@ function level_button.new(file, extra)
 
   o:setSprite(sprites["ui/level box"])
   o:setFont(ui.fonts.default)
+  o:setPivot(0.5, 0.5)
 
   o.data.extra = extra
   local default_color = {0.25, 0.5, 1, 1}

@@ -93,6 +93,20 @@ function scene.keyPressed(key)
     else
       new_scene = menu
     end
+  elseif key == "tab" then
+    if load_mode == "play" then
+      load_mode = "edit"
+      scene.buildUI()
+    elseif load_mode == "edit" then
+      load_mode = "play"
+      scene.buildUI()
+    end
+  elseif key == "f1" and load_mode == "edit" then
+    load_mode = "play"
+    scene.buildUI()
+  elseif key == "f2" and load_mode == "play" then
+    load_mode = "edit"
+    scene.buildUI()
   elseif key == "f12" then
     print("Entering Unit Test mode.")
     runUnitTests()
@@ -200,7 +214,7 @@ function scene.draw()
     o.rainbowoffset = i
     o:draw()
 
-    if love.keyboard.isDown("r") and o.data.type == "level" then
+    if not ui.editing and love.keyboard.isDown("r") and o.data.type == "level" then
       local level_name = o:getName()
 
       if hasreplaylist[level_name] == nil then
@@ -518,11 +532,12 @@ function scene.addButtons(type, list, oy)
           button:onReleased(scene.selectWorld)
         end
       elseif type == "level" then
-        button = ui.level_button.new(v.file, v.data.extra):setName(v.data.name):setIcon(v.icon):setPos(ox, oy)
+        button = ui.level_button.new(v.file, v.data.extra):setIcon(v.icon):setPos(ox, oy)
         if v.create then
           button:onReleased(scene.createLevel)
         else
           button:onReleased(scene.selectLevel)
+          button:setName(v.data.name)
         end
       end
       table.insert(components, button)
@@ -563,8 +578,8 @@ end
 
 function scene.createLevel(o)
   if is_mobile and love.timer.getTime() -mobile_scroll_time > mobile_scroll_delay then return end
-  loaded_level = false
   loadLevels({default_map}, load_mode)
+  loaded_level = false
 	level_compression = "zlib"
 end
 

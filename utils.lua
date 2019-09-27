@@ -2380,6 +2380,11 @@ function loadLevels(levels, mode, level_objs, xwx)
 
   if mode == "edit" then
     new_scene = editor
+    if #maps == 1 and levels[1] ~= default_map then
+      last_saved = maps[1].data
+    else
+      last_saved = nil
+    end
   else
     surrounds_name = level_name
     new_scene = game

@@ -5,6 +5,8 @@ ui.text_input = require 'ui/textinput'
 ui.level_button = require 'ui/levelbutton'
 ui.world_button = require 'ui/worldbutton'
 
+ui.overlay = require 'ui/overlay'
+
 ui.fonts = {}
 ui.mouse = {left = "up", right = "up"}
 ui.hovered = nil
@@ -21,8 +23,10 @@ function ui.init()
 end
 
 function ui.clear()
-  ui.hovered = nil
-  ui.setEditing()
+  -- TEST: this function should be unnecessary as things only take 1 frame to clear naturally
+
+  --[[ui.hovered = nil
+  ui.setEditing()]]
 end
 
 function ui.setEditing(o)
@@ -43,19 +47,31 @@ end
 function ui.keyPressed(key)
   if ui.editing then
     ui.editing:keyPressed(key)
+    return true
+  elseif ui.overlay.open then
+    if key == "escape" then
+      ui.overlay.close()
+    elseif key == "return" then
+      ui.overlay.close(true)
+    end
+    return true
   end
+  return false
 end
 
 function ui.textInput(text)
   if ui.editing then
     ui.editing:textInput(text)
+    return true
   end
+  return false
 end
 
 function ui.update()
   -- clear references to UI elements that did not exist last draw
   if ui.editing and ui.editing.frame ~= frame then
-    ui.setEditing()
+    ui.editing:setEditing(false)
+    ui.editing = false
   end
   ui.hovered = ui.new_hovered
   ui.new_hovered = nil

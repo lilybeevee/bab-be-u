@@ -323,6 +323,7 @@ function love.load()
   print(colr.green("✓ sounds registered"))
 
   ui.init()
+  ui.overlay.rebuild()
   print(colr.green("✓ ui initialized"))
 
   if discordRPC and discordRPC ~= true then
@@ -354,7 +355,6 @@ function love.load()
 end
 
 function love.keypressed(key,scancode,isrepeat)
-  ui.keyPressed(key)
   if scene ~= loadscene then
     gooi.keypressed(key, scancode)
   end
@@ -423,7 +423,7 @@ function love.keypressed(key,scancode,isrepeat)
     end
   end
 
-  if scene and scene.keyPressed then
+  if not ui.keyPressed(key) and scene and scene.keyPressed then
     scene.keyPressed(key, isrepeat)
   end
 end
@@ -439,13 +439,11 @@ function love.keyreleased(key, scancode)
 end
 
 function love.textinput(text)
-  ui.textInput(text)
-
   if scene ~= loadscene then
     gooi.textinput(text)
   end
 
-  if scene and scene.textInput then
+  if not ui.textInput(text) and scene and scene.textInput then
     scene.textInput(text)
   end
 end
@@ -648,6 +646,8 @@ function love.draw()
     scene.draw(dt)
   end
 
+  ui.overlay.draw()
+
   if debug_view and not spookmode then
     local mousex, mousey = love.mouse.getPosition()
 
@@ -765,6 +765,7 @@ function love.resize(w, h)
   if scene and scene.resize then
     scene.resize(w, h)
   end
+  ui.overlay.rebuild()
   if spookmode then
     love.window.setFullscreen(true)
   end
