@@ -662,8 +662,12 @@ function scene.draw(dt)
       brightness = 0.33
     end
 
-    if (unit.name == "steev") and not hasProperty(unit, "u") then
+    if (unit.name == "steev") and not hasU(unit) then
       brightness = 0.33
+    end
+    
+    if unit.name == "casete" and not hasProperty(unit, "no go") then
+      brightness = 0.5
     end
     
     if timeless and not hasProperty(unit,"za warudo") and not (unit.type == "text") then
