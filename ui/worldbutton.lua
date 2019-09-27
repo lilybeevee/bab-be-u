@@ -8,6 +8,7 @@ function world_button.new(file)
 
   o:setSprite(sprites["ui/world box"])
   o:setFont(ui.fonts.world_name)
+  o:setPivot(0.5, 0.5)
 
   function o:getColor()
     if spookmode then

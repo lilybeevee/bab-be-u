@@ -264,7 +264,7 @@ selector_grid_contents = {
     "jail","text_jail","ladr","text_ladr","pallm","text_pallm","coco","text_coco","rouz","text_rouz","noet","text_noet","lili","text_lili",0,0,0,0,
     "fenss","text_fenss","platfor","text_platfor","tre","text_tre","stum","text_stum","dayzy","text_dayzy","lie","text_lie","reffil","text_reffil","of in","text_of in",0,0,
     "cobll","text_cobll","spik","text_spik","frut","text_frut","fungye","text_fungye","red","text_red","lie/8","text_lie/8","vlc","text_vlc","foru","text_foru","rod","text_rod",
-    "wuud","text_wuud","spiky","text_spiky","parsol","text_parsol","clok","text_clok","ufu","text_ufu","rockit","text_rockit","swim","text_swim","yanying","text_yanying",0,0,
+    "wuud","text_wuud","spiky","text_spiky","parsol","text_parsol","clok","text_clok","ufu","text_ufu","rockit","text_rockit","swim","text_swim","yanying","text_yanying","casete","text_casete",
     "brik","text_brik","sparkl","text_sparkl","sanglas","text_sanglas","bullb","text_bullb","son","text_son","muun","text_muun","bac","text_bac","warn","text_warn","piep","text_piep",
     "san","text_san","piler","text_piler","sancastl","text_sancastl","shel","text_shel","starr","text_starr","cor","text_cor","byc","text_byc","gorder","text_gorder","tuba","text_tuba",
     "glas","text_glas","bom","text_bom","sine","text_sine","kar","text_kar","can","text_can","ger","text_ger","sirn","text_sirn","chain","text_chain","reflecr","text_reflecr",
@@ -281,7 +281,7 @@ selector_grid_contents = {
     "text_diag","text_ortho","text_go my way","text_direction",0,0,0,0,0,0,0,0,0,0,0,0,"text_past","text_wun",
     "text_turn cornr","text_folo wal","text_zip","text_hopovr","text_reflecc",0,0,0,0,0,0,0,0,0,0,0,0,0,
     "text_munwalk","text_sidestep","text_diagstep","text_knightstep",0,0,0,0,0,0,0,0,0,0,0,0,0,"text_reed",
-    "text_spin","text_rotatbl","text_noturn",0,0,0,0,0,0,0,0,0,0,0,0,0,"text_enby","text_orang",
+    "text_spin","text_rotatbl","text_noturn","text_stukc",0,0,0,0,0,0,0,0,0,0,0,0,"text_enby","text_orang",
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_brwn","text_tranz","text_yello",
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_blacc","text_gay","text_grun",
     0,0,0,0,0,"text_try again","text_no undo","text_undo","text_za warudo","text_brite",0,0,0,0,0,"text_graey","text_qt","text_cyeann",
@@ -5795,7 +5795,7 @@ tiles_list = {
     rotate = true,
     eye = {x=27, y=7, w=2, h=2},
     tags = {"chars", "cow"},
-    desc = "You found Moo, the Unfindable Cow! Now Time will collapse.",
+    desc = "you found bertie, the unfindable moo! noe lvl be infloop",
   },
   -- 497
   {
@@ -5876,6 +5876,7 @@ tiles_list = {
     color = {4, 1},
     layer = 20,
     tags = {"chars", "flamingo", "bird"},
+    desc = "mr. flame go"
   },
   -- 504
   {
@@ -5945,6 +5946,7 @@ tiles_list = {
     color = {4, 2},
     layer = 20,
     tags = {"chars", "snail"},
+    desc = "its kinda slow to load in tho."
   },
   -- 510
   {
@@ -5968,6 +5970,7 @@ tiles_list = {
     color = {5, 2},
     layer = 20,
     tags = {"chars", "japan", "youkai", "kappa"},
+    desc = ":V"
   },
   -- 512
   {
@@ -6129,6 +6132,7 @@ tiles_list = {
     layer = 5,
     rotate = true,
     tags = {"paw print"},
+    desc = "dogg in bab when?",
   },
   -- 527
   {
@@ -6202,6 +6206,7 @@ tiles_list = {
     color = {5, 2},
     layer = 20,
     tags = {"plant", "cactus"},
+    dec = "the text ben't as ouch"
   },
   -- 534
   {
@@ -6517,6 +6522,7 @@ tiles_list = {
     color = {4,2},
     layer = 20,
     tags = {"boo","mario","ghost"},
+    desc = "AAA u scar mee!",
   },
   --561
   {
@@ -6988,6 +6994,38 @@ tiles_list = {
     layer = 20,
     tags = {"oven", "microwave", "future gadget", "of out"},
     desc = "of out",
+  },
+  -- 604
+  {
+    name = "text_stukc",
+    sprite = "text_stukc",
+    type = "text",
+    texttype = {property = true},
+    color = {1,1},
+    layer = 20,
+    tags = {"stuck"},
+    desc = "STUKC: Anything with this property can't move. (I know this is a modded word but I don't know who made it, so I'll add that tag later.)"
+  },
+  -- 605
+  {
+    name = "casete",
+    sprite = "casete",
+    type = "object",
+    color = {0,2},
+    layer = 3,
+    tags = {"cassette","bside","b-side","celeste"},
+    desc = "chiptune bloc",
+  },
+  -- 606
+  {
+    name = "text_casete",
+    sprite = "text_casete",
+    type = "text",
+    texttype = {object = true},
+    color = {0,2},
+    layer = 20,
+    tags = {"cassette","bside","b-side","celeste"},
+    desc = "The sprite changes if you change its color. Try it out!",
   },
 }
 

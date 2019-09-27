@@ -321,7 +321,7 @@ function scene.keyPressed(key, isrepeat)
       current_level = current_level.." (transformed into " .. fullDump(tfs) .. ") "
     end
     
-    gooi.confirm({
+    ui.overlay.confirm({
         text = current_level .. "\r\n\r\n" .. (spookmode and "G̴͔̭͇͎͕͔ͪ̾ͬͦ̇͑͋͟͡o̵̸͓̠̦̱̭̘͍̱͑̃̀ͅ ̱̫͉̆͐̇ͥ̽͆͂͑̿͜b̸̵͈̼̜̅͗̄̆ͅa͚̠͚̣̺̗͖͈̓̿̈́͆͐̉ͯ̀̚c͉̜̙̤͍̞̳̬ͪ̇k̙͙̼̀̓̂̑̈́̌ͯ̕͢ͅ ̶̛̠̹̈̒ͫ͐t̙͉͍͚̠̗̰͗͊͛ͫ͒ͥ̏ͫ͢͜ȍ̙͙̪̬̎̊ͫͭͫ͗̔̚ ̴̪͖͔̖̙̬͍̥ͪ̾̾͂͂l̪͉͙̪̩͙̎̏͌̽ͤ̈́̀͜͠e̡͓͍͉̖̤ͬ̓̏ͥͫ̀ͅv̱͈͍̞̼̀͋̂̃͋́̚͠ͅḛ̷̷̱̿͂l̢̮͇̫̗͍̱͈̟͌̐̎̑̈́ ̵̠͖̣̟̲̖̇̈̓ͭͫ͠s͚̝̻ͤ̓̀̀e̅͑̐̄͏̤̫̕͠lͨ͋͌ͤͩ̋̓͏̘̼̠̪̖͓͔̹e̵͖̤̒͒ͥ̓ͬ̓͘c͖͈̏̄̐̅̎ͨ͢ṫ͔̥͓̊̌̓̇ọ̞̤͔̩̒͗ͨ́̓͟ŗ̖͉̹̻̮̬̦͌̿͂?̶̡͈̫̗̈́̒̎̃̎̓" or "Go back to "..escResult(false).."?"),
         okText = "Yes",
         cancelText = spookmode and "Yes" or "Cancel",
@@ -662,8 +662,12 @@ function scene.draw(dt)
       brightness = 0.33
     end
 
-    if (unit.name == "steev") and not hasProperty(unit, "u") then
+    if (unit.name == "steev") and not hasU(unit) then
       brightness = 0.33
+    end
+    
+    if unit.name == "casete" and not hasProperty(unit, "no go") then
+      brightness = 0.5
     end
     
     if timeless and not hasProperty(unit,"za warudo") and not (unit.type == "text") then

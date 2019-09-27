@@ -9,6 +9,15 @@ function component.new(t)
   o.mouse = {x = -1, y = -1, left = "up", right = "up"}
   o.frame = 0
 
+  -- Event Tables
+  o.on_hovered = {}
+  o.on_exited = {}
+  o.on_pressed = {}
+  o.on_released = {}
+
+  o.on_pre_draw = {}
+  o.on_draw = {}
+
   -- Basic Functions
 
   function o:getX() return self.x or 0 end
@@ -52,6 +61,7 @@ function component.new(t)
   function o:addChild(child)
     if not table.has_value(self.children, child) then
       table.insert(self.children, child)
+      child.parent = child.parent or self
     end
   end
 
@@ -59,8 +69,17 @@ function component.new(t)
     for i,v in ipairs(self.children) do
       if v == child then
         table.remove(self.children, i)
+        if child.parent == self then child.parent = nil end
         break
       end
+    end
+  end
+
+  function o:hasParent(parent)
+    if not self.parent then
+      return false
+    else
+      return self.parent == parent or self.parent:hasParent(parent)
     end
   end
 
@@ -76,6 +95,19 @@ function component.new(t)
   function o:setScale(x, y)
     self:setScaleX(x)
     self:setScaleY(y or x)
+    return self
+  end
+
+  function o:getPivotX() return self.px or 0 end
+  function o:getPivotY() return self.py or 0 end
+  
+  function o:setPivotX(val) self.px = val; return self end
+  function o:setPivotY(val) self.py = val; return self end
+
+  function o:getPivot() return self:getPivotX(), self:getPivotY() end
+  function o:setPivot(x, y)
+    self:setPivotX(x)
+    self:setPivotY(y or x)
     return self
   end
 
@@ -112,6 +144,19 @@ function component.new(t)
 
   function o:getWrap() return self.wrap or false end
   function o:setWrap(val) self.wrap = val; return self end
+
+  function o:getMarginX() return self.margin_x or 0 end
+  function o:getMarginY() return self.margin_y or 0 end
+
+  function o:setMarginX(val) self.margin_x = val; return self end
+  function o:setMarginY(val) self.margin_y = val; return self end
+
+  function o:getMargin() return self:getMarginX(), self:getMarginY() end
+  function o:setMargin(x, y)
+    self:setMarginX(x)
+    self:setMarginY(y or x)
+    return self
+  end
 
   -- Color Functions
 
@@ -225,26 +270,35 @@ function component.new(t)
            (self.mouse.right == "up" and self.mouse.left ~= "pressed" and self.mouse.left ~= "down")
   end
 
-  function o:onHovered(func) self.on_hovered = func; return self end
-  function o:onExited(func) self.on_exited = func; return self end
-  function o:onPressed(func) self.on_pressed = func; return self end
-  function o:onReleased(func) self.on_released = func; return self end
+  function o:onHovered(func) table.insert(self.on_hovered, func); return self end
+  function o:onExited(func) table.insert(self.on_exited, func); return self end
+  function o:onPressed(func) table.insert(self.on_pressed, func); return self end
+  function o:onReleased(func) table.insert(self.on_released, func); return self end
 
-  function o:onPreDraw(func) self.on_pre_draw = func; return self end
-  function o:onDraw(func) self.on_draw = func; return self end
+  function o:onPreDraw(func) table.insert(self.on_pre_draw, func); return self end
+  function o:onDraw(func) table.insert(self.on_draw, func); return self end
+
+  function o:call(event, ...)
+    local args = {...}
+    local cancel = false
+    for _,f in ipairs(event) do cancel = f(self, unpack(args)) or cancel end
+    return cancel
+  end
 
   function o:draw(parent)
     self.frame = frame
     self.parent = parent
 
     love.graphics.push()
-    if (not self.on_pre_draw or not self.on_pre_draw(self)) and self.preDraw then
+    local cancel_pre_draw = self:call(self.on_pre_draw)
+    if not cancel_pre_draw and self.preDraw then
       self:preDraw()
     end
     self:transform()
     self:updateMouse()
     
-    if (not self.on_draw or not self.on_draw(self)) then
+    local cancel_draw = self:call(self.on_draw)
+    if not cancel_draw then
       self:useColor()
       self:drawRect()
       self:drawSprite()
@@ -328,25 +382,25 @@ function component.new(t)
 
       local height
       if self:getWrap() then
-        local _,lines = font:getWrap(self:getText(), self:getWidth())
+        local _,lines = font:getWrap(self:getText(), self:getWidth() - self:getMarginX()*2)
         height = #lines * font:getHeight()
       else
         height = font:getHeight()
       end
 
-      love.graphics.printf(self:getText(), 0, self:getHeight() / 2 - height / 2, self:getWidth(), self:getAlign())
+      love.graphics.printf(self:getText(), self:getMarginX(), self:getMarginY() + (self:getHeight() - self:getMarginY()*2) / 2 - height / 2, self:getWidth() - self:getMarginX()*2, self:getAlign())
     end
   end
 
   function o:transform()
     love.graphics.translate(self:getPos())
-    love.graphics.translate(self:getWidth() / 2, self:getHeight() / 2)
-    love.graphics.scale(self:getScale())
-    love.graphics.rotate(self:getRotation())
-    love.graphics.translate(-self:getWidth() / 2, -self:getHeight() / 2)
     if self:getCentered() then
       love.graphics.translate(-self:getWidth() / 2, -self:getHeight() / 2)
     end
+    love.graphics.translate(self:getWidth() * self:getPivotX(), self:getHeight() * self:getPivotY())
+    love.graphics.scale(self:getScale())
+    love.graphics.rotate(self:getRotation())
+    love.graphics.translate(-self:getWidth() * self:getPivotX(), -self:getHeight() * self:getPivotY())
   end
 
   function o:updateMouse(transform)
@@ -361,26 +415,22 @@ function component.new(t)
     if self:hovered() then
       if not self.last_hovered then
         self.last_hovered = true
-        if self.on_hovered then self.on_hovered(self) end
+        self:call(self.on_hovered)
       end
       if ui.mouse.left == "pressed" then self.mouse.left = "pressed" end
       if ui.mouse.right == "pressed" then self.mouse.right = "pressed" end
     else
       if self.last_hovered then
         self.last_hovered = false
-        if self.on_exited then self.on_exited(self) end
+        self:call(self.on_exited)
       end
       if self.mouse.left == "released" then self.mouse.left = "up" end
       if self.mouse.right == "released" then self.mouse.right = "up" end
     end
-    if self.on_pressed then
-      if self.mouse.left == "pressed" then self.on_pressed(self, 1) end
-      if self.mouse.right == "pressed" then self.on_pressed(self, 2) end
-    end
-    if self.on_released then
-      if self.mouse.left == "released" then self.on_released(self, 1) end
-      if self.mouse.right == "released" then self.on_released(self, 2) end
-    end
+    if self.mouse.left == "pressed" then self:call(self.on_pressed, 1) end
+    if self.mouse.right == "pressed" then self:call(self.on_pressed, 2) end
+    if self.mouse.left == "released" then self:call(self.on_released, 1) end
+    if self.mouse.right == "released" then self:call(self.on_released, 2) end
   end
 
   return o

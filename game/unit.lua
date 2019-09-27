@@ -742,7 +742,7 @@ function updateUnits(undoing, big_update)
             end
           end
           if unitmoved then
-            if timecheck(on,"vs",unit) then
+            if timecheck(unit,"vs",on) then
               table.insert(to_destroy,on)
               playSound("break")
             else
@@ -1196,8 +1196,26 @@ function miscUpdates()
           unit.sprite = {"boooo","boooo_mouth"}
         end
       end
+      
+      if unit.fullname == "casete" then
+        if unit.color_override then
+          local color = colour_for_palette[unit.color_override[1]][unit.color_override[2]]
+          if color == "bleu" or color == "cyeann" then
+            unit.sprite = "casete_bleu"
+          elseif color == "reed" or color == "pinc" then
+            unit.sprite = "casete_pinc"
+          elseif color == "orang" or color == "yello" then
+            unit.sprite = "casete_yello"
+          elseif color == "grun" then
+            unit.sprite = "casete_grun"
+          end
+        end
+        if not hasProperty(unit,"no go") then
+          unit.sprite = unit.sprite.."_sunk"
+        end
+      end
 
-      if unit.fullname ~= "os" and unit.fullname ~= "boooo" then
+      if unit.fullname ~= "os" and unit.fullname ~= "boooo" and unit.fullname ~= "casete" then
         if tile.slep and graphical_property_cache["slep"][unit] ~= nil then
           if type(tile.sprite) == "table" then
             for j,name in ipairs(tile.sprite) do
@@ -1584,6 +1602,35 @@ function levelBlock()
         local tx,ty = math.random(0,mapwidth-1),math.random(0,mapheight-1)
         moveUnit(unit,tx,ty)
         ]]
+      end
+    end
+  end
+  
+  if hasProperty(outerlvl, "nuek") then
+    for _,unit in ipairs(units) do
+      if sameFloat(unit, outerlvl) and inBounds(unit.x,unit.y) then
+        table.insert(to_destroy, unit)
+        addParticles("destroy", unit.x, unit.y, {2,2})
+      end
+    end
+  end
+  
+  to_destroy = handleDels(to_destroy)
+  
+  local isvs = matchesRule(nil,"vs",outerlvl)
+  mergeTable(isvs,matchesRule(outerlvl,"vs",nil))
+  for _,ruleparent in ipairs(isvs) do
+    local unit = ruleparent[2]
+    if unit ~= outerlvl and sameFloat(outerlvl,unit) and inBounds(unit.x,unit.y) then
+      local unitmoved = false
+      for _,undo in ipairs(undo_buffer[1]) do
+        if undo[1] == "update" and undo[2] == unit.id and ((undo[3] ~= unit.x) or (undo[4] ~= unit.y)) then
+          unitmoved = true
+        end
+      end
+      if unitmoved then
+        destroyLevel("vs")
+        if not lvlsafe then return 0,0 end
       end
     end
   end

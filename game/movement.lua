@@ -1540,7 +1540,7 @@ end
 --4 stacks: up to 135 degrees
 --5 stacks: up to 180 degrees (e.g. all directions)
 function canMove(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_stack_,start_x,start_y)
-  if hasProperty(unit, "loop") then
+  if hasProperty(unit, "loop") or hasProperty(unit, "stukc") then
     return false,{},{}
   end
   local success, movers, specials = canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_stack_,start_x,start_y)

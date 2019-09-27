@@ -372,7 +372,7 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
   --print(fullDump(sentence))
 
   for orig_index,word in ipairs(sentence) do
-    if word.type["letter"] then --letter handling
+    if word.type and word.type["letter"] then --letter handling
       --print("found a letter"..orig_index)
       
       local new_word = ""

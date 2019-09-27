@@ -66,7 +66,7 @@ function text_input.new()
           self:on_text_edited("delete")
         end
       end
-    elseif key == "return" then
+    elseif key == "return" or key == "escape" then
       ui.setEditing()
     elseif key == "v" and love.keyboard.isDown("lctrl") then
       self:textInput(love.system.getClipboardText())
