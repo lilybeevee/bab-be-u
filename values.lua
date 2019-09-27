@@ -5795,7 +5795,7 @@ tiles_list = {
     rotate = true,
     eye = {x=27, y=7, w=2, h=2},
     tags = {"chars", "cow"},
-    desc = "You found Moo, the Unfindable Cow! Now Time will collapse.",
+    desc = "you found bertie, the unfindable moo! noe lvl be infloop",
   },
   -- 497
   {
@@ -5876,6 +5876,7 @@ tiles_list = {
     color = {4, 1},
     layer = 20,
     tags = {"chars", "flamingo", "bird"},
+    desc = "mr. flame go"
   },
   -- 504
   {
@@ -5945,6 +5946,7 @@ tiles_list = {
     color = {4, 2},
     layer = 20,
     tags = {"chars", "snail"},
+    desc = "its kinda slow to load in tho."
   },
   -- 510
   {
@@ -5968,6 +5970,7 @@ tiles_list = {
     color = {5, 2},
     layer = 20,
     tags = {"chars", "japan", "youkai", "kappa"},
+    desc = ":V"
   },
   -- 512
   {
@@ -6129,6 +6132,7 @@ tiles_list = {
     layer = 5,
     rotate = true,
     tags = {"paw print"},
+    desc = "dogg in bab when?",
   },
   -- 527
   {
@@ -6202,6 +6206,7 @@ tiles_list = {
     color = {5, 2},
     layer = 20,
     tags = {"plant", "cactus"},
+    dec = "the text ben't as ouch"
   },
   -- 534
   {
@@ -6517,6 +6522,7 @@ tiles_list = {
     color = {4,2},
     layer = 20,
     tags = {"boo","mario","ghost"},
+    desc = "AAA u scar mee!",
   },
   --561
   {
