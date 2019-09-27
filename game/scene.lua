@@ -2025,8 +2025,9 @@ function doOneMove(x, y, key, past)
           playSound("timestop",0.5)
         end
       else
-        addUndo({"timeless_rules", rules_with})
+        addUndo({"timeless_rules", rules_with, full_rules})
         parseRules()
+        should_parse_rules = true
         doMovement(0,0,"e")
         if firsttimestop then
           playSound("time resume long",0.5)
@@ -2038,8 +2039,9 @@ function doOneMove(x, y, key, past)
       addUndo({"za warudo", timeless})
       unsetNewUnits()
     else
-      addUndo({"timeless_rules", rules_with})
+      addUndo({"timeless_rules", rules_with, full_rules})
       timeless = false
+      should_parse_rules = true
     end
     mobile_controls_timeless:setBGImage(sprites[timeless and "ui/time resume" or "ui/timestop"])
   elseif (key == "f") then

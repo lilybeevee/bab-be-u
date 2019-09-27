@@ -1,7 +1,35 @@
 old_rules_with = {}
 
 function clearRules()
-  full_rules = {}
+  local temp = {}
+  if timeless and full_rules then
+    addUndo({"timeless_rules", rules_with, full_rules})
+    if rules_with["za warudo"] then
+      for _,text in ipairs(getAllText()) do
+        if hasProperty(text, "za warudo") then
+          text.zawarudo = true
+        else
+          text.zawarudo = false
+        end
+      end
+    end
+    for _,rule in ipairs(full_rules) do
+      if not rule.hide_in_list then
+        local any_timeless = false
+        for _,unit in ipairs(rule.units) do
+          if unit.zawarudo then
+            any_timeless = true
+            break
+          end
+        end
+        if not any_timeless then
+          table.insert(temp, rule)
+        end
+      end
+    end
+  end
+  full_rules = temp
+  
   old_rules_with = rules_with
   rules_with = {}
   not_rules = {}
@@ -205,9 +233,14 @@ function parseRules(undoing)
         if (loop_rules == 1) then
           unit.old_active = unit.active
         end
-        unit.active = false
-        unit.blocked = false
-        unit.used_as = {}
+        local temp = rules_with
+        rules_with = old_rules_with
+        if not timeless or unit.zawarudo then
+          unit.active = false
+          unit.blocked = false
+          unit.used_as = {}
+        end
+        rules_with = temp
       end
     end
 
@@ -492,7 +525,22 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
         local full_rule = {rule = rule, units = list, dir = dir, units_set = set}
         -- print(fullDump(full_rule))
         
-        local add = true
+        local add = false
+        
+        if not timeless then
+          add = true
+        else
+          local temp = rules_with
+          rules_with = old_rules_with
+          for _,unit in ipairs(list) do
+            if unit.zawarudo then
+              add = true
+              break
+            end
+          end
+          rules_with = temp
+        end
+        
         for i = #final_rules,1,-1 do
           local other = final_rules[i]
           if other.dir == full_rule.dir then

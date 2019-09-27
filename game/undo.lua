@@ -166,6 +166,12 @@ function undoOneAction(turn, i, v, ignore_no_undo)
     timeless_yote[v[2]] = v[3]
   elseif action == "timeless_rules" then
     rules_with = v[2]
+    full_rules = v[3]
+    for _,rule in ipairs(full_rules) do
+      for _,unit in ipairs(rule.units) do
+        unit.active = true
+      end
+    end
 	elseif action == "colour_change" then
     unit = units_by_id[v[2]]
     colour = v[3]
