@@ -1705,7 +1705,16 @@ function scene.draw(dt)
       end
       local tfs = readSaveFile(level_name, "transform")
       if tfs then
-        current_level = current_level.." (transformed into " .. fullDump(tfs) .. ") "
+        local tfstr = ""
+        for _,tf in ipairs(tfs) do
+          while tf:starts("text_") do
+            tf = tf:sub(6)
+            tf = tf.." txt"
+          end
+          tfstr = tfstr.." & "..tf
+        end
+        tfstr = tfstr:sub(4)
+        current_level = current_level.." (transformed into " .. tfstr .. ") "
       end
       
       love.graphics.printf(current_level, width/2-buttonwidth/2, buttonheight, buttonwidth, "center")
