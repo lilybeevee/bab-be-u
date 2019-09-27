@@ -42,7 +42,7 @@ function clearRules()
   addBaseRule("text","be","go away pls")
   addBaseRule("lvl","be","no go")
   --TODO: This will need to be automatic on levels with letters/combined words, since a selectr/bordr might be made in a surprising way, and it will need to have its implicit rules apply immediately.
-  if (units_by_name["selctr"] or units_by_name["text_selctr"]) then
+  if (units_by_name["selctr"] or units_by_name["text_selctr"] or units_by_name["lin"] or units_by_name["text_lin"] or units_by_name["text_pathz"]) then
     addBaseRule("selctr","be","u")
     addBaseRule("selctr","liek","pathz")
     addBaseRule("lvl","be","pathz",{name = "unlocked"})
