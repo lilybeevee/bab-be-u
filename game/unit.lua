@@ -2552,7 +2552,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
   end
   
   --do this before the 'this' change to textname so that we only get 'this' in referenced_objects
-  if unit.texttype.object and unit.textname ~= "every1" and unit.textname ~= "every2" and unit.textname ~= "every3" and unit.textname ~= "mous" and unit.textname ~= "bordr" and unit.textname ~= "no1" and unit.textname ~= "lvl" and unit.textname ~= "the" and unit.textname ~= "text" and group_names_set[unit.textname] ~= true then
+  if unit.texttype.object and unit.textname ~= "every1" and unit.textname ~= "every2" and unit.textname ~= "every3" and unit.textname ~= "mous" and unit.textname ~= "bordr" and unit.textname ~= "no1" and unit.textname ~= "lvl" and unit.textname ~= "the" and unit.textname ~= "text" and unit.textname ~= "this" and group_names_set[unit.textname] ~= true then
     if not unit.textname:ends("n't") and not unit.textname:starts("text_") and not unit.textname:starts("letter_") and not table.has_value(referenced_objects, unit.textname) then
       table.insert(referenced_objects, unit.textname)
     end
@@ -2582,6 +2582,13 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
       units_by_name[unit.fullname] = {}
     end
     table.insert(units_by_name[unit.fullname], unit)
+  end
+  
+  if unit.name:starts("this") then
+    if not units_by_name["text"] then
+      units_by_name["text"] = {}
+    end
+    table.insert(units_by_name["text"], unit)
   end
 
   if not units_by_layer[unit.layer] then
