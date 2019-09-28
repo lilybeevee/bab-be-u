@@ -94,6 +94,13 @@ function overlay.draw()
   overlay.open = #overlay.confirm_boxes > 0
   if overlay.open then
     overlay.darken:draw()
+    if not ui.selecting then
+      ui.selecting = true
+      local confirm = overlay.confirm_boxes[#overlay.confirm_boxes]
+      if confirm then
+        ui.select(confirm.ok)
+      end
+    end
   end
   local confirm = overlay.confirm_boxes[#overlay.confirm_boxes]
   if confirm then

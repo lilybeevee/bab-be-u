@@ -56,7 +56,9 @@ stopwatch = nil
 
 local sessionseed
 
-local buttons = {"resume", "editor", "exit", "restart"}
+local buttons = {}--{"resume", "editor", "exit", "restart"}
+local darken = nil
+local button_last_y = 0
 pause = false
 selected_pause_button = 1
 
@@ -142,6 +144,39 @@ function scene.load()
   gooi.setGroupVisible("mobile-controls", is_mobile)
 
   pause = false
+  scene.selecting = false
+
+  scene.buildUI()
+end
+
+function scene.buildUI()
+  -- darken is a UI element so that it can take focus from all UI underneath it
+  darken = ui.component.new():setColor(0, 0, 0, 0.5):setSize(love.graphics.getWidth(), love.graphics.getHeight()):setFill(true)
+
+  buttons = {}
+  scene.addButton("resume", function() pause = false end)
+  scene.addButton("restart", function() pause = false; scene.resetStuff() end)
+  scene.addButton("editor", function() new_scene = editor; load_mode = "edit" end)
+  scene.addButton("exit to " .. escResult(false), function() escResult(true) end)
+
+  local ox, oy = love.graphics.getWidth()/2, buttons[1]:getHeight()*3
+  for _,button in ipairs(buttons) do
+    local width, height = button:getSize()
+    button:setPos(ox - width/2, oy)
+    oy = oy + height + 10
+  end
+  button_last_y = oy
+end
+
+function scene.addButton(text, func)
+  local button = ui.menu_button.new(text, #buttons%2+1, func)
+  -- may be replaced by a global system later but this is cute for now
+  local bab = ui.component.new():setSprite(sprites["bab"]):setX(-sprites["bab"]:getWidth()-2):setEnabled(false)
+  button:addChild(bab)
+  button:onHovered(function() bab:setEnabled(true) end)
+  button:onExited(function() bab:setEnabled(false) end)
+  table.insert(buttons, button)
+  return button
 end
 
 function scene.update(dt)
@@ -336,7 +371,8 @@ function scene.keyPressed(key, isrepeat)
   end
   
   if pause then
-    if key == "w" or key == "up" or key == "i" or key == "kp8" then
+    scene.selecting = true
+    --[[if key == "w" or key == "up" or key == "i" or key == "kp8" then
       selected_pause_button = selected_pause_button - 1
       if selected_pause_button < 1 then
         selected_pause_button = #buttons
@@ -348,8 +384,9 @@ function scene.keyPressed(key, isrepeat)
       end
     elseif key == "return" or key == "space" or key == "kpenter" then
       handlePauseButtonPressed(selected_pause_button)
-    end
+    end]]
   else
+    scene.selecting = false
     local do_turn_now = false
 
     if (key == "w" or key == "a" or key == "s" or key == "d") then
@@ -1647,8 +1684,7 @@ function scene.draw(dt)
 
   
   if displaywords or pause then
-    love.graphics.setColor(0, 0, 0, 0.4)
-    love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
+    darken:draw()
 
     local rules = ""
 
@@ -1662,7 +1698,7 @@ function scene.draw(dt)
 
     local buttoncolor = {84/255, 109/255, 255/255}
 
-    local y = (not pause) and 0 or (buttonheight+10)*#buttons
+    local y = (not pause) and 0 or button_last_y
 
     for i,rule in pairs(full_rules) do
       if not rule.hide_in_list then
@@ -1719,40 +1755,8 @@ function scene.draw(dt)
       
       love.graphics.printf(current_level, width/2-buttonwidth/2, buttonheight, buttonwidth, "center")
   
-      for i=1, #buttons do
-        love.graphics.push()
-        local rot = 0
-    
-        local buttonx = width/2-buttonwidth/2
-        local buttony = buttonheight*4+(buttonheight+10)*(i-2)
-    
-        if rainbowmode then buttoncolor = hslToRgb((love.timer.getTime()/6+i/10)%1, .5, .5, .9) end
-    
-        if mouseOverBox(width/2-sprites["ui/button_1"]:getWidth()/2, buttony, buttonwidth, buttonheight) then
-          selected_pause_button = i
-          love.graphics.setColor(buttoncolor[1]-0.1, buttoncolor[2]-0.1, buttoncolor[3]-0.1) --i know this is horrible
-          love.graphics.translate(buttonx+buttonwidth/2, buttony+buttonheight/2)
-          love.graphics.rotate(0.05 * math.sin(love.timer.getTime()*3))
-          love.graphics.translate(-buttonx-buttonwidth/2, -buttony-buttonheight/2)
-        else
-          love.graphics.setColor(buttoncolor[1], buttoncolor[2], buttoncolor[3])
-        end
-    
-        love.graphics.draw(sprites["ui/button_white_"..i%2+1], buttonx, buttony, rot, 1, 1)
-        
-        if (selected_pause_button == i) then
-          love.graphics.setColor(1,1,1)
-          love.graphics.draw(sprites["bab"], buttonx-32, buttony, rot, 1, 1)
-        end
-    
-        love.graphics.pop()
-
-        love.graphics.setColor(1,1,1)
-        local text = buttons[i]
-        if text == "exit" then
-          text = text .. " to " .. escResult(false)
-        end
-        love.graphics.printf(text, width/2-buttonwidth/2, buttony+6, buttonwidth, "center")
+      for _,button in ipairs(buttons) do
+        button:draw()
       end
     end
 
@@ -2370,14 +2374,14 @@ function scene.mouseReleased(x, y, button)
 
     local mousex, mousey = love.mouse.getPosition()
 
-    for i=1, #buttons do
+    --[[for i=1, #buttons do
       local buttony = buttonheight*4+(buttonheight+10)*(i-2)
       if mouseOverBox(width/2-sprites["ui/button_1"]:getWidth()/2, buttony, buttonwidth, buttonheight) then
         if button == 1 then
           handlePauseButtonPressed(i)
         end
       end
-    end
+    end]]
   end
 end
 

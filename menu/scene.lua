@@ -33,6 +33,7 @@ function scene.load()
   nextPresenceUpdate = 0
   love.keyboard.setKeyRepeat(false)
   scene.buildUI()
+  scene.selecting = true
 end
 
 function scene.buildUI()
@@ -50,9 +51,11 @@ function scene.buildUI()
     scene.addButton("play", function() switchScene("play") end)
     scene.addButton("edit", function() switchScene("edit") end)
     scene.addButton("options", function() options = true; scene.buildUI() end)
-    scene.addButton("exit", function() love.event.quit() end):onHovered(function(o)
-      local mousex, mousey = love.mouse.getPosition()
-      love.mouse.setPosition(mousex, mousey-(o:getHeight())-10)
+    scene.addButton("exit", function() love.event.quit() end):onHovered(function(o, mouse)
+      if mouse then
+        local mousex, mousey = love.mouse.getPosition()
+        love.mouse.setPosition(mousex, mousey-(o:getHeight())-10)
+      end
     end)
   else
     scene.addOption("music_on", "music", {{"on", true}, {"off", false}})

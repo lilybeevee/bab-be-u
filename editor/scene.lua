@@ -149,6 +149,8 @@ function scene.load()
     new_scene = game
     load_mode = "play"
   end
+
+  scene.selecting = false
 end
 
 selector_tab_buttons_list = {}

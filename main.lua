@@ -435,7 +435,7 @@ function love.keyreleased(key, scancode)
     gooi.keyreleased(key, scancode)
   end
 
-  if scene and scene.keyReleased then
+  if not ui.keyReleased(key) and scene and scene.keyReleased then
     scene.keyReleased(key)
   end
 end
@@ -754,6 +754,8 @@ function love.draw()
     love.graphics.printf("IN DEBUG - check console, use cont to exit", 0, love.graphics.getHeight()/2-love.graphics.getFont():getLineHeight(), love.graphics.getWidth(), 'center')
     drawnDebugScreen = true
   end
+
+  ui.postDraw()
 end
 
 function love.visible()
@@ -770,6 +772,10 @@ function love.resize(w, h)
   if spookmode then
     love.window.setFullscreen(true)
   end
+end
+
+function love.mousemoved(x, y, dx, dy)
+  ui.lock_hovered = false
 end
 
 function love.quit()
