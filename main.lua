@@ -606,7 +606,6 @@ function love.update(dt)
 
   if new_scene then
     scene = new_scene
-    ui.clear()
     clearGooi()
     scene.load()
     new_scene = nil

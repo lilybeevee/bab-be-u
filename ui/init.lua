@@ -23,13 +23,6 @@ function ui.init()
   ui.fonts.world_name:setFilter("nearest","nearest")
 end
 
-function ui.clear()
-  -- TEST: this function should be unnecessary as things only take 1 frame to clear naturally
-
-  --[[ui.hovered = nil
-  ui.setEditing()]]
-end
-
 function ui.setEditing(o)
   if ui.editing == o then return end
   if ui.editing then
@@ -103,5 +96,27 @@ function ui.update()
     else
       ui.mouse.right = "up"
     end
+  end
+end
+
+function ui.buttonFX(o, args)
+  args = args or {}
+  args.defaults = args.defaults or {}
+  local scale = args.defaults.scale or 1
+  local rot = args.defaults.rotation or 0
+  if o:hovered() then
+    if args.scale ~= false then
+      if o:pressed() or o:down() then
+        o:setScale(scale - (args.shrink or 0.1))
+      else
+        o:setScale(scale + (args.grow or 0.1))
+      end
+    end
+    if args.rotate ~= false then
+      o:setRotation(rot + (args.intensity or 0.05) * math.sin(love.timer.getTime()*(args.speed or 5)))
+    end
+  else
+    if args.scale ~= false then o:setScale(scale) end
+    if args.rotate ~= false then o:setRotation(rot) end
   end
 end

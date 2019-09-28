@@ -40,8 +40,10 @@ function scene.buildUI()
 
   git_btn = ui.component.new()
     :setSprite(sprites["ui/github"])
-    :setColor(1, 1, 1):setHoverColor(0.7, 0.7, 0.7)
+    :setColor(1, 1, 1)
     :setPos(10, love.graphics.getHeight()-sprites["ui/github"]:getHeight()-10)
+    :setPivot(0.5, 0.5)
+    :onPreDraw(function(o) ui.buttonFX(o, {rotate = false}) end)
     :onReleased(function() love.system.openURL("https://github.com/lilybeevee/bab-be-u") end)
 
   if not options then

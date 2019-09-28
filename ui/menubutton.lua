@@ -16,23 +16,10 @@ function menu_button.new(text, id, func)
   end
   o:setFont(ui.fonts.default)
   o:setPivot(0.5, 0.5)
+  o:onPreDraw(ui.buttonFX)
   o:onHovered(function() playSound("mous hovvr") end)
   if func then
     o:onReleased(func)
-  end
-
-  function o:preDraw()
-    if self:hovered() then
-      if self:pressed() or self:down() then
-        self:setScale(0.9)
-      else
-        self:setScale(1.1)
-      end
-      self:setRotation(0.05 * math.sin(love.timer.getTime()*3))
-    else
-      self:setScale(1)
-      self:setRotation(0)
-    end
   end
 
   return o
