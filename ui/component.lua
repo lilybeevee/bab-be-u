@@ -327,7 +327,9 @@ function component.new(t)
   -- Internal Functions
 
   function o:useColor()
-    if self:pressed() or self:down() then
+    if rainbowmode then
+      love.graphics.setColor(hslToRgb((love.timer.getTime()/4+self:getX()/18+self:getY()/18)%1, .5, .5, .9))
+    elseif self:pressed() or self:down() then
       love.graphics.setColor(self:getActiveColor())
     elseif self:hovered() then
       love.graphics.setColor(self:getHoverColor())

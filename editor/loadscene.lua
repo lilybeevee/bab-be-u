@@ -326,7 +326,7 @@ function scene.buildUI()
       world_label:onReleased(function(o) ui.setEditing(o) end)
     end
     table.insert(components, world_label)
-    if load_mode == "edit" then
+    if load_mode == "edit" and not is_mobile then
       world_folder = ui.component.new()
         :setSprite(sprites["ui/open_folder"]):setHoverSprite(sprites["ui/open_folder_h"]):setActiveSprite(sprites["ui/open_folder_a"])
         :setPos(love.graphics.getWidth()/2 - title_width/2 - sprites["ui/open_folder"]:getWidth(), title_y + title_height/2):setCentered(true)
@@ -352,7 +352,7 @@ function scene.buildUI()
           :setFont(ui.fonts.category)
           :setPos(0, oy)
           :setSize(love.graphics.getWidth(), label_height))
-        if load_mode == "edit" then
+        if load_mode == "edit" and not is_mobile then
           table.insert(components, ui.component.new()
             :setSprite(sprites["ui/open_folder"]):setHoverSprite(sprites["ui/open_folder_h"]):setActiveSprite(sprites["ui/open_folder_a"])
             :setPos(love.graphics.getWidth()/2 - label_width/2 - sprites["ui/open_folder"]:getWidth(), oy + label_height/2):setCentered(true)
@@ -373,7 +373,7 @@ function scene.buildUI()
           :setFont(ui.fonts.category)
           :setPos(0, oy)
           :setSize(love.graphics.getWidth(), label_height))
-        if load_mode == "edit" then
+        if load_mode == "edit" and not is_mobile then
           table.insert(components, ui.component.new()
             :setSprite(sprites["ui/open_folder"]):setHoverSprite(sprites["ui/open_folder_h"]):setActiveSprite(sprites["ui/open_folder_a"])
             :setPos(love.graphics.getWidth()/2 - label_width/2 - sprites["ui/open_folder"]:getWidth(), oy + label_height/2):setCentered(true)
@@ -407,7 +407,7 @@ function scene.buildUI()
         :setFont(ui.fonts.category)
         :setPos(0, oy)
         :setSize(love.graphics.getWidth(), label_height))
-      if load_mode == "edit" then
+      if load_mode == "edit" and not is_mobile then
         table.insert(components, ui.component.new()
           :setSprite(sprites["ui/open_folder"]):setHoverSprite(sprites["ui/open_folder_h"]):setActiveSprite(sprites["ui/open_folder_a"])
           :setPos(love.graphics.getWidth()/2 - label_width/2 - sprites["ui/open_folder"]:getWidth(), oy + label_height/2):setCentered(true)

@@ -4,6 +4,7 @@ ui.component = require 'ui/component'
 ui.text_input = require 'ui/textinput'
 ui.level_button = require 'ui/levelbutton'
 ui.world_button = require 'ui/worldbutton'
+ui.menu_button = require 'ui/menubutton'
 
 ui.overlay = require 'ui/overlay'
 

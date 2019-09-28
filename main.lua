@@ -405,6 +405,8 @@ function love.keypressed(key,scancode,isrepeat)
 	    love.window.restore()
       fullscreen = false
     end
+    settings["fullscreen"] = fullscreen
+    saveAll()
   elseif key == "f" and love.keyboard.isDown('lctrl') then
     if scene == menu then
       love.system.openURL("file:///"..love.filesystem.getSaveDirectory())
