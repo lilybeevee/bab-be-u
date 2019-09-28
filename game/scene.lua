@@ -59,6 +59,7 @@ local sessionseed
 local buttons = {}--{"resume", "editor", "exit", "restart"}
 local darken = nil
 local button_last_y = 0
+local options = false
 pause = false
 selected_pause_button = 1
 
@@ -154,10 +155,33 @@ function scene.buildUI()
   darken = ui.component.new():setColor(0, 0, 0, 0.5):setSize(love.graphics.getWidth(), love.graphics.getHeight()):setFill(true)
 
   buttons = {}
-  scene.addButton("resume", function() pause = false end)
-  scene.addButton("restart", function() pause = false; scene.resetStuff() end)
-  scene.addButton("editor", function() new_scene = editor; load_mode = "edit" end)
-  scene.addButton("exit to " .. escResult(false), function() escResult(true) end)
+
+  if not options then
+    scene.addButton("resume", function() pause = false end)
+    scene.addButton("restart", function() pause = false; scene.resetStuff() end)
+    scene.addButton("editor", function() new_scene = editor; load_mode = "edit" end)
+    scene.addButton("options", function() options = true; scene.buildUI() end)
+    scene.addButton("exit to " .. escResult(false), function() escResult(true) end)
+  else
+    scene.addOption("music_on", "music", {{"on", true}, {"off", false}})
+    scene.addOption("stopwatch_effect", "stopwatch effect", {{"on", true}, {"off", false}})
+    scene.addOption("fullscreen", "resolution", {{"fullscreen", true}, {"windowed", false}}, function(val)
+      if val then
+        if not love.window.isMaximized() then
+          winwidth, winheight = love.graphics.getDimensions()
+        end
+        love.window.setMode(0, 0, {borderless=false})
+        love.window.maximize()
+        fullscreen = true
+      else
+        love.window.setMode(winwidth, winheight, {borderless=false, resizable=true, minwidth=705, minheight=510})
+        love.window.maximize()
+        love.window.restore()
+        fullscreen = false
+      end
+    end)
+    scene.addButton("exit", function() options = false; scene.buildUI() end)
+  end
 
   local ox, oy = love.graphics.getWidth()/2, buttons[1]:getHeight()*3
   for _,button in ipairs(buttons) do
@@ -177,6 +201,23 @@ function scene.addButton(text, func)
   button:onExited(function() bab:setEnabled(false) end)
   table.insert(buttons, button)
   return button
+end
+
+function scene.addOption(id, name, options, changed)
+  local option = 1
+  for i,v in ipairs(options) do
+    if settings[id] == v[2] then
+      option = i
+    end
+  end
+  scene.addButton(name .. ": " .. options[option][1], function()
+    settings[id] = options[(((option-1)+1)%#options)+1][2]
+    saveAll()
+    if changed then
+      changed(settings[id])
+    end
+    scene.buildUI()
+  end)
 end
 
 function scene.update(dt)

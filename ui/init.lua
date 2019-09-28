@@ -106,7 +106,7 @@ function ui.keyPressed(key)
 end
 
 function ui.keyReleased(key)
-  if not ui.editing then
+  if not ui.editing and ui.selected then
     if key == "return" or key == "space" or key == "kpenter" then
       if ui.selected.select_state == "pressed" or ui.selected.select_state == "down" then
         ui.selected.select_state = "released"
