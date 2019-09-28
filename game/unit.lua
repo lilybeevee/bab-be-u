@@ -1944,13 +1944,8 @@ function dropGotUnit(unit, rule)
   
   function dropOneGotUnit(unit, rule, obj_name)
     local object = obj_name
-    local istext = false
     if rule.object.name == "text" then
-      istext = true
       obj_name = "text_" .. unit.fullname
-    end
-    if object:starts("text_") then
-      istext = true
     end
     if object:starts("this") then
       obj_name = "this"
@@ -1958,13 +1953,13 @@ function dropGotUnit(unit, rule)
     local obj_id = tiles_by_name[obj_name]
     local obj_tile = tiles_list[obj_id]
     --let x ben't x txt prevent x be txt, and x ben't txt prevent x be y txt
-    local overriden = false;
+    local overriden = false
     if object == "text" then
       overriden = hasRule(unit, "gotn't", "text_" .. unit.fullname)
-    elseif object:starts("text_") then
+    elseif object:starts("text_") or object:starts("letter_") then
       overriden = hasRule(unit, "gotn't", "text")
     end
-    if not overriden and (obj_name == "mous" or (obj_tile ~= nil and (obj_tile.type == "object" or istext))) then
+    if not overriden and (obj_name == "mous" or obj_tile ~= nil) then
       if obj_name == "mous" then
         local new_mouse = createMouse(unit.x, unit.y)
         addUndo({"create_cursor", new_mouse.id})
