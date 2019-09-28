@@ -323,7 +323,7 @@ tiles_list = {
     name = "text_be",
     sprite = "text_be",
     type = "text",
-    texttype = {verb = true, verb_be = true},
+    texttype = {verb = true, verb_class = true, verb_property = true},
     color = {0, 3},
     layer = 20,
     tags = {"is"},
@@ -905,7 +905,7 @@ tiles_list = {
     name = "text_f2",
     sprite = "tutorial_f2",
     type = "text",
-    texttype = {verb = true, verb_be = true},
+    texttype = {verb = true, verb_property = true},
     color = {0, 3},
     layer = 20,
     desc = "F2: Used with PRESS.",
@@ -936,7 +936,7 @@ tiles_list = {
     name = "text_f1",
     sprite = "tutorial_f1",
     type = "text",
-    texttype = {verb = true, verb_be = true},
+    texttype = {verb = true, verb_property = true},
     color = {0, 3},
     layer = 20,
   },
@@ -1350,6 +1350,7 @@ tiles_list = {
     color = {3, 1},
     layer = 3,
     tags = {"clothing"},
+    desc = "a hatt n tim"
   },
   -- 92
   {
@@ -1469,6 +1470,7 @@ tiles_list = {
     color ={3, 2},
     layer = 1,
     tags = {"checker","diamond"},
+    desc = "ya wannna ploy checkrz?"
   },
   --- 103
   {
@@ -3029,7 +3031,7 @@ tiles_list = {
     color = {{0, 3}, {2, 2}},
     colored = {true, false},
     type = "text",
-    texttype = {verb = true, verb_be = true},
+    texttype = {verb = true, verb_class = true, verb_property = true},
     layer = 20,
     tags = {"isn't", "is not", "verb"},
 		desc = "BE N'T (Verb): The same as having these two text tiles in a row."
@@ -3061,7 +3063,7 @@ tiles_list = {
     name = "letter_a",
     sprite = "letter_a",
     type = "text",
-    texttype = {letter = true},
+    texttype = {letter = true, note = true},
     color = {0,3},
     layer = 20,
   },
@@ -3070,7 +3072,7 @@ tiles_list = {
     name = "letter_b",
     sprite = "letter_b",
     type = "text",
-    texttype = {letter = true},
+    texttype = {letter = true, note = true},
     color = {0,3},
     layer = 20,
   },
@@ -3079,7 +3081,7 @@ tiles_list = {
     name = "letter_c",
     sprite = "letter_c",
     type = "text",
-    texttype = {letter = true},
+    texttype = {letter = true, note = true},
     color = {0,3},
     layer = 20,
   },
@@ -3088,7 +3090,7 @@ tiles_list = {
     name = "letter_d",
     sprite = "letter_d",
     type = "text",
-    texttype = {letter = true},
+    texttype = {letter = true, note = true},
     color = {0,3},
     layer = 20,
   },
@@ -3097,7 +3099,7 @@ tiles_list = {
     name = "letter_e",
     sprite = "letter_e",
     type = "text",
-    texttype = {letter = true},
+    texttype = {letter = true, note = true},
     color = {0,3},
     layer = 20,
   },
@@ -3106,7 +3108,7 @@ tiles_list = {
     name = "letter_f",
     sprite = "letter_f",
     type = "text",
-    texttype = {letter = true},
+    texttype = {letter = true, note = true},
     color = {0,3},
     layer = 20,
     desc = "press F to pay respects",
@@ -3116,7 +3118,7 @@ tiles_list = {
     name = "letter_g",
     sprite = "letter_g",
     type = "text",
-    texttype = {letter = true},
+    texttype = {letter = true, note = true},
     color = {0,3},
     layer = 20,
   },
@@ -3210,6 +3212,7 @@ tiles_list = {
     texttype = {letter = true},
     color = {0,3},
     layer = 20,
+    desc = "ome body once told me..."
   },
   -- 261
   {
@@ -3219,6 +3222,7 @@ tiles_list = {
     texttype = {letter = true},
     color = {0,3},
     layer = 20,
+    "he world is gonna roll me."
   },
   -- 262
   {
@@ -6426,7 +6430,7 @@ tiles_list = {
     name = "text_sharp",
     sprite = "letter_sharp",
     type = "text",
-    texttype = {},
+    texttype = {note_modifier = true},
     color = {0,3},
     layer = 20,
     desc = "For use with SING.";
@@ -6436,7 +6440,7 @@ tiles_list = {
     name = "text_flat",
     sprite = "letter_flat",
     type = "text",
-    texttype = {},
+    texttype = {note_modifier = true},
     color = {0,3},
     layer = 20,
     desc = "For use with SING.";
