@@ -240,7 +240,7 @@ selector_grid_contents = {
     "keek","text_keek","creb","text_creb","shrim","text_shrim","migri","text_migri",0,0,0,0,0,0,"this","text_mous","lin","text_lin",
     "meem","text_meem","statoo","text_statoo","flamgo","text_flamgo","kva","text_kva",0,0,0,0,0,0,"text_text","text_frens","text_groop","text_pathz",
     "skul","text_skul","beeee","text_beeee","gul","text_gul","pidgin","text_pidgin",0,0,0,0,0,0,"text_lethers","text_every1","text_every2","text_every3",
-    "ghost fren","text_ghost fren","fishe","text_fishe","starrfishe","text_starrfishe",0,0,0,0,0,0,0,0,0,0,0,"text_no1",
+    "ghost fren","text_ghost fren","fishe","text_fishe","starrfishe","text_starrfishe","swan","text_swan",0,0,0,0,0,0,0,0,0,"text_no1",
     "robobot","text_robobot","snek","text_snek","sneel","text_sneel",0,0,0,0,0,0,0,0,0,0,0,0,
     "wog","text_wog","bog","text_bog","enbybog","text_enbybog",0,0,0,0,0,0,0,0,0,0,0,0,
     "kirb","text_kirb","ripof","text_ripof","cavebab","text_cavebab",0,0,0,0,0,0,0,0,0,0,0,0,
@@ -7083,6 +7083,28 @@ tiles_list = {
     layer = 20,
     tags = {"done"},
     desc = "GONE: If something is GONE, it floats away into nothingness."
+  },
+  -- 612
+  {
+    name = "swan",
+    sprite = "swan",
+    color = {0, 3},
+    layer = 6,
+    rotate = true,
+    eye = {x=20, y=5, w=2, h=2},
+    tags = {"chars", "bird", "untitled goose game"},
+    desc = "a goos is a female swan",
+  },
+  -- 613
+  {
+    name = "text_swan",
+    sprite = "text_swan",
+    type = "text",
+    texttype = {object = true},
+    color = {1, 3},
+    layer = 20,
+    tags = {"chars", "bird", "untitled goose game"},
+    desc = "a goos is a female swan",
   },
 }
 
