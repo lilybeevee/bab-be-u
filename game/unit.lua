@@ -1215,6 +1215,8 @@ function miscUpdates()
             unit.sprite = "casete_yello"
           elseif color == "grun" then
             unit.sprite = "casete_grun"
+          else
+            unit.sprite = "casete_wut"
           end
         end
         if not hasProperty(unit,"no go") then
