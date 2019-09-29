@@ -75,7 +75,7 @@ function scene.buildUI()
         fullscreen = false
       end
     end)
-    scene.addButton("exit", function() options = false; scene.buildUI() end)
+    scene.addButton("back", function() options = false; scene.buildUI() end)
   end
 
   local ox, oy = love.graphics.getWidth()/2, love.graphics.getHeight()/2
