@@ -879,9 +879,9 @@ function scene.draw(dt)
 			end
 
 			if #unit.overlay > 0 and type(unit.sprite) == "string" and eq(unit.color, tiles_list[unit.tile].color) then
-				love.graphics.setColor(1, 1, 1)
+				love.graphics.setColor(1, 1, 1, unit.draw.opacity)
 			else
-				love.graphics.setColor(color[1], color[2], color[3], color[4])
+				love.graphics.setColor(color[1], color[2], color[3], unit.draw.opacity)
 			end
 			return color
 		end

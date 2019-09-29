@@ -471,6 +471,13 @@ function updateUnits(undoing, big_update)
     
     --MOAR is 4-way growth, MOARx2 is 8-way growth, MOARx3 is 2x 4-way growth, MOARx4 is 2x 8-way growth, MOARx5 is 3x 4-way growth, etc.
     --TODO: If you write txt be moar, it's ambiguous which of a stacked text pair will be the one to grow into an adjacent tile first. But if you make it simultaneous, then you get double growth into corners which turns into exponential growth, which is even worse. It might need to be special cased in a clever way.
+    local isgone = getUnitsWithEffect("gone")
+    for _,unit in ipairs(isgone) do
+      unit.destroyed = true
+      unit.removed = true
+    end
+    deleteUnits(isgone, false, true)
+    
     local give_me_moar = true
     local moar_repeats = 0
     while (give_me_moar) do
@@ -1256,6 +1263,8 @@ function miscUpdates()
       max_layer = math.max(max_layer, unit.layer)
     end
   end
+  
+  mergeTable(still_converting, still_gone)
 
   for _,unit in ipairs(still_converting) do
     if not units_by_layer[unit.layer] then
@@ -2435,7 +2444,7 @@ function convertUnits(pass)
   deleteUnits(converted_units,true)
 end
 
-function deleteUnits(del_units,convert)
+function deleteUnits(del_units,convert,gone)
   for _,unit in ipairs(del_units) do
     if (not unit.removed_final) then
       for colour,_ in pairs(main_palette_for_colour) do
@@ -2452,7 +2461,7 @@ function deleteUnits(del_units,convert)
         addUndo({"remove", unit.tile, unit.x, unit.y, unit.dir, convert or false, unit.id, unit.special})
       end
     end
-    deleteUnit(unit,convert)
+    deleteUnit(unit,convert,false,gone)
   end
 end
 
@@ -2496,7 +2505,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
   unit.rotatdir = unit.rotate and unit.dir or 1
   
   if (not unit_tests) then
-    unit.draw = {x = unit.x, y = unit.y, scalex = 1, scaley = 1, rotation = (unit.rotatdir - 1) * 45}
+    unit.draw = {x = unit.x, y = unit.y, scalex = 1, scaley = 1, rotation = (unit.rotatdir - 1) * 45, opacity = 1}
     if convert then
       unit.draw.scaley = 0
       addTween(tween.new(0.1, unit.draw, {scaley = 1}), "unit:scale:" .. unit.tempid)
@@ -2610,10 +2619,10 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
   return unit
 end
 
-function deleteUnit(unit,convert,undoing)
+function deleteUnit(unit,convert,undoing,gone)
   unit.removed = true
   unit.removed_final = true
-  if not undoing and not convert and not level_destroyed and rules_with ~= nil then
+  if not undoing and not convert and not gone and not level_destroyed and rules_with ~= nil then
     gotters = matchesRule(unit, "got", "?")
     for _,ruleparent in ipairs(gotters) do
       local rule = ruleparent.rule
@@ -2637,12 +2646,24 @@ function deleteUnit(unit,convert,undoing)
     removeFromTable(units_by_name[unit.fullname], unit)
   end
   removeFromTable(unitsByTile(unit.x, unit.y), unit)
-  if not convert then
+  if not convert and not gone then
     removeFromTable(units_by_layer[unit.layer], unit)
-  elseif not unit_tests then
-    table.insert(still_converting, unit)
-    addTween(tween.new(0.1, unit.draw, {scaley = 0}), "unit:scale:" .. unit.tempid)
-    tick.delay(function() removeFromTable(still_converting, unit) end, 0.1)
+  end
+  if not unit_tests then
+    if convert then
+      table.insert(still_converting, unit)
+      addUndo{"tween",unit}
+      addTween(tween.new(0.1, unit.draw, {scaley = 0}), "unit:scale:" .. unit.tempid)
+      tick.delay(function() removeFromTable(still_converting, unit) end, 0.1)
+    elseif gone then
+      table.insert(still_converting, unit)
+      addUndo{"tween",unit}
+      local rise = love.math.random(5,9)
+      local rotate = (90 + love.math.random(0,180)) * (love.math.random() > .5 and 1 or -1)
+      local method = love.math.random() > .01 and "inSine" or "inElastic"
+      addTween(tween.new(1.5, unit.draw, {y = unit.y-rise, rotation = rotate, opacity = 0}, method), "unit:rotation:" .. unit.tempid)
+      tick.delay(function() removeFromTable(still_converting, unit) end, 1.5)
+    end
   end
 end
 

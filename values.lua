@@ -240,7 +240,7 @@ selector_grid_contents = {
     "keek","text_keek","creb","text_creb","shrim","text_shrim","migri","text_migri",0,0,0,0,0,0,"this","text_mous","lin","text_lin",
     "meem","text_meem","statoo","text_statoo","flamgo","text_flamgo","kva","text_kva",0,0,0,0,0,0,"text_text","text_frens","text_groop","text_pathz",
     "skul","text_skul","beeee","text_beeee","gul","text_gul","pidgin","text_pidgin",0,0,0,0,0,0,"text_lethers","text_every1","text_every2","text_every3",
-    "ghost fren","text_ghost fren","fishe","text_fishe","starrfishe","text_starrfishe",0,0,0,0,0,0,0,0,0,0,0,"text_no1",
+    "ghost fren","text_ghost fren","fishe","text_fishe","starrfishe","text_starrfishe","swan","text_swan",0,0,0,0,0,0,0,0,0,"text_no1",
     "robobot","text_robobot","snek","text_snek","sneel","text_sneel",0,0,0,0,0,0,0,0,0,0,0,0,
     "wog","text_wog","bog","text_bog","enbybog","text_enbybog",0,0,0,0,0,0,0,0,0,0,0,0,
     "kirb","text_kirb","ripof","text_ripof","cavebab","text_cavebab",0,0,0,0,0,0,0,0,0,0,0,0,
@@ -277,7 +277,7 @@ selector_grid_contents = {
     "text_go","text_goooo","text_icy","text_icyyyy",0,"text_:(","text_ned kee","text_for dor","text_wurd",0,"text_sublvl","text_loop",0,"text_frenles","text_timles","text_lit","text_corekt","text_rong",
     "text_no go","text_go away pls","text_come pls","text_sidekik","text_diagkik","text_:o","text_hotte","text_fridgd","text_meta",0,0,0,0,"text_clikt","text_past","text_wun","text_an","text_mayb",
     "text_visit fren","text_slep","text_shy","text_behin u",0,"text_xwx","text_moar","text_split","text_nuek",0,0,0,0,"text_wait...","text_samefloat",0,0,0,
-    "text_flye","text_tall","text_haet skye","text_haet flor",0,"text_;d",0,0,"text_notranform",0,0,0,0,"text_w/fren","text_arond","text_sans","text_seen by","text_behind",
+    "text_flye","text_tall","text_haet skye","text_haet flor",0,"text_;d","text_gone",0,"text_notranform",0,0,0,0,"text_w/fren","text_arond","text_sans","text_seen by","text_behind",
     "text_diag","text_ortho","text_go my way","text_direction",0,0,0,0,0,0,0,0,0,"text_that","text_that be","text_that got",0,"text_beside",
     "text_turn cornr","text_folo wal","text_zip","text_hopovr","text_reflecc",0,0,0,0,0,0,0,0,0,0,0,0,0,
     "text_munwalk","text_sidestep","text_diagstep","text_knightstep",0,0,0,0,0,0,0,0,0,0,0,0,0,"text_reed",
@@ -7072,6 +7072,39 @@ tiles_list = {
     layer = 20,
     tags = {"chars", "cat", "sis", "sister"},
     desc = "meow?"
+  },
+  -- 611
+  {
+    name = "text_gone",
+    sprite = "text_gone",
+    type = "text",
+    texttype = {property = true},
+    color = {0,3},
+    layer = 20,
+    tags = {"done"},
+    desc = "GONE: If something is GONE, it floats away into nothingness."
+  },
+  -- 612
+  {
+    name = "swan",
+    sprite = "swan",
+    color = {0, 3},
+    layer = 6,
+    rotate = true,
+    eye = {x=20, y=5, w=2, h=2},
+    tags = {"chars", "bird", "untitled goose game"},
+    desc = "a goos is a female swan",
+  },
+  -- 613
+  {
+    name = "text_swan",
+    sprite = "text_swan",
+    type = "text",
+    texttype = {object = true},
+    color = {1, 3},
+    layer = 20,
+    tags = {"chars", "bird", "untitled goose game"},
+    desc = "a goos is a female swan",
   },
 }
 
