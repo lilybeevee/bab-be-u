@@ -1123,7 +1123,8 @@ function fallBlock()
   local timeless_fallers = {}
   
   function addFallersFromLoop(verb, property, gravity_dir)
-    for unit,count in pairs(getUnitsWithRuleAndCount(nil, verb, property)) do
+    local falling = (verb == "be" and getUnitsWithEffectAndCount(property) or getUnitsWithRuleAndCount(nil, verb, property))
+    for unit,count in pairs(falling) do
       if fallers[unit] == nil then
         fallers[unit] = {0, 0};
       end
