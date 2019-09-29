@@ -6866,6 +6866,7 @@ tiles_list = {
     color = {0, 2},
     layer = 20,
     tags = {"chars", "bird", "city", "pigeon"},
+    desc = "also not a creole",
   },
   -- 592
   {
@@ -6886,6 +6887,7 @@ tiles_list = {
     color = {0,1},
     layer = 20,
     tags = {"trash can", "rubbish bin", "garbage", "delete", "city"},
+    desc = "ha ! goteeM",
   },
   -- 594
   {

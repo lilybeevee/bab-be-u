@@ -211,8 +211,10 @@ function love.load()
     local names = {}
     local spr = {}
     for n,s in pairs(sprites) do
-      table.insert(names, n)
-      table.insert(spr, s)
+      if s:getWidth() < 64 and s:getHeight() < 64 then
+        table.insert(names, n)
+        table.insert(spr, s)
+      end
     end
     for i = #spr, 2, -1 do -- https://gist.github.com/Uradamus/10323382
       local j = math.random(i)
