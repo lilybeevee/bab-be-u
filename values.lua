@@ -6936,10 +6936,10 @@ tiles_list = {
     color = {{0,3},{1,3}},
     colored = {false,true},
     layer = 5,
-    rotatable = true,
+    rotate = true,
     convertible = false,
     eye = {x=19, y=5, w=2, h=2},
-    tags = {"sans", "undertale", "skeleton"},
+    tags = {"chars", "sans", "undertale", "skeleton"},
     desc = "sans",
   },
   --599
@@ -6950,7 +6950,7 @@ tiles_list = {
     layer = 5,
     tometa = "text_''",
     eye = {x=18, y=11, w=2, h=2},
-    tags = {"ditto", "pokemon"},
+    tags = {"chars", "ditto", "pokemon"},
   },
   -- 600
   {
@@ -7038,6 +7038,19 @@ tiles_list = {
     tags = {"give"},
     desc = "GIV (Verb): If X giv Y, any other units in the same space and flye will get the Y property.",
   },
+  -- 608
+  {
+    name = "copkat",
+    sprite = {"copkat_base", "copkat_stuff", "copkat_badge"},
+    color = {{0,3}, {1,3}, {2,4}},
+    colored = {true, false, false},
+    layer = 5,
+    rotate = true,
+    convertible = false,
+    eye = {x=27, y=14, w=2, h=2},
+    tags = {"chars", "cop", "police", "cat"},
+    desc = "u hav da wight to wemain siwent!!",
+  }
 }
 
 tiles_by_name = {}
