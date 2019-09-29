@@ -1807,12 +1807,20 @@ function scene.draw(dt)
       end
     end
     
-    if paint_open and brush.id then
+    if paint_open then
       for _,button in ipairs(paint_colors) do
         local x = button[1]
-        local tile = tiles_list[brush.id]
-        local pal = button[2] or (type(tile.color[1]) == "table" and tile.color[1] or tile.color)
-        if type(tile.sprite) == "table" then
+        local tile, pal
+        if brush.id then
+          tile = tiles_list[brush.id]
+          pal = button[2] or (type(tile.color[1]) == "table" and tile.color[1] or tile.color)
+        else
+          pal = button[2] or {0, 3}
+        end
+        if not tile then
+          love.graphics.setColor(getPaletteColor(pal[1], pal[2]))
+          love.graphics.draw(sprites["ui/splat"], x, 4)
+        elseif type(tile.sprite) == "table" then
           for i,image in ipairs(tile.sprite) do
             if tile.colored[i] then
               love.graphics.setColor(getPaletteColor(pal[1], pal[2]))
