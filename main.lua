@@ -204,6 +204,24 @@ function love.load()
     end
   end
   addsprites()
+  
+  randomize_assets = false
+  math.randomseed(love.timer.getTime())
+  if randomize_assets then
+    local names = {}
+    local spr = {}
+    for n,s in pairs(sprites) do
+      table.insert(names, n)
+      table.insert(spr, s)
+    end
+    for i = #spr, 2, -1 do -- https://gist.github.com/Uradamus/10323382
+      local j = math.random(i)
+      spr[i], spr[j] = spr[j], spr[i]
+    end
+    for i,n in ipairs(names) do
+      sprites[n] = spr[i]
+    end
+  end
 
   print(colr.green("✓ added sprites\n"))
 
