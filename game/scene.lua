@@ -774,7 +774,7 @@ function scene.draw(dt)
       end
     end
     if unit.fullname == "text_katany" then
-      if hasRule("steev","got","katany") then
+      if hasRule("steev","got","katany") or hasRule("kat","got","katany") then
         unit.sprite = "text_katanya"
       else
         unit.sprite = "text_katany"
