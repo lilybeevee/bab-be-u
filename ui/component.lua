@@ -8,6 +8,8 @@ function component.new(t)
   o.children = {}
   o.mouse = {x = -1, y = -1, left = "up", right = "up"}
   o.frame = 0
+  o.select_state = nil
+  o.draw_params = {}
 
   -- Event Tables
   o.on_hovered = {}
@@ -55,6 +57,16 @@ function component.new(t)
     self:setHeight(h or w)
     return self
   end
+
+  function o:getDrawX() return self.draw_params.x or self:getX() end
+  function o:getDrawY() return self.draw_params.y or self:getY() end
+  function o:getDrawPos() return self:getDrawX(), self:getDrawY() end
+  function o:getDrawWidth() return self.draw_params.w or self:getWidth() end
+  function o:getDrawHeight() return self.draw_params.h or self:getHeight() end
+  function o:getDrawSize() return self:getDrawWidth(), self:getDrawHeight() end
+
+  function o:getEnabled() if self.enabled == nil then return true else return self.enabled end end
+  function o:setEnabled(val) self.enabled = val; return self end
 
   -- Container Functions
 
@@ -231,11 +243,22 @@ function component.new(t)
   end
   function o:setFocus(val) self.focus = val; return self end
 
+  function o:getSelectable()
+    if self.selectable == nil then
+      return #self.on_pressed > 0 or #self.on_released > 0
+    else return self.selectable end
+  end
+  function o:setSelectable(val) self.selectable = val; return self end
+
   function o:hovered(ignore_global)
-    if not ignore_global and ui.hovered and ui.hovered ~= self then
+    if not ignore_global and ui.hovered and ui.hovered ~= self and ui.selected ~= self then
       if not self.parent or (self.parent and not self.parent:hovered()) then
         return false
       end
+    end
+    if not ignore_global then
+      if self.select_state ~= nil then return true end
+      if ui.lock_hovered and ui.selected then return false end
     end
     return self.mouse.x >= 0 and
           self.mouse.y >= 0 and
@@ -244,6 +267,7 @@ function component.new(t)
   end
 
   function o:pressed(button)
+    if self.select_state == "pressed" then return true end
     if button == 2 then return self.mouse.right == "pressed" end
     if button == 1 then return self.mouse.left == "pressed" end
     return (self.mouse.left == "pressed" and self.mouse.right ~= "down") or
@@ -251,12 +275,14 @@ function component.new(t)
   end
 
   function o:down(button)
+    if self.select_state == "down" then return true end
     if button == 2 then return self.mouse.right == "down" end
     if button == 1 then return self.mouse.left == "down" end
     return self.mouse.left == "down" or self.mouse.right == "down"
   end
 
   function o:released(button)
+    if self.select_state == "released" then return true end
     if button == 2 then return self.mouse.right == "released" end
     if button == 1 then return self.mouse.left == "released" end
     return (self.mouse.left == "released" and self.mouse.right ~= "pressed" and self.mouse.right ~= "down") or
@@ -264,6 +290,7 @@ function component.new(t)
   end
 
   function o:up(button)
+    if self.select_state == "selected" then return true end
     if button == 2 then return self.mouse.right == "up" end
     if button == 1 then return self.mouse.left == "up" end
     return (self.mouse.left == "up" and self.mouse.right ~= "pressed" and self.mouse.right ~= "down") or
@@ -286,6 +313,8 @@ function component.new(t)
   end
 
   function o:draw(parent)
+    if not self:getEnabled() then return end
+
     self.frame = frame
     self.parent = parent
 
@@ -296,6 +325,7 @@ function component.new(t)
     end
     self:transform()
     self:updateMouse()
+    self:updateDrawParams()
     
     local cancel_draw = self:call(self.on_draw)
     if not cancel_draw then
@@ -322,12 +352,18 @@ function component.new(t)
     end
 
     love.graphics.pop()
+
+    if self:getSelectable() then
+      table.insert(ui.selectables, self)
+    end
   end
 
   -- Internal Functions
 
   function o:useColor()
-    if self:pressed() or self:down() then
+    if rainbowmode then
+      love.graphics.setColor(hslToRgb((love.timer.getTime()/4+self:getX()/18+self:getY()/18)%1, .5, .5, .9))
+    elseif self:pressed() or self:down() then
       love.graphics.setColor(self:getActiveColor())
     elseif self:hovered() then
       love.graphics.setColor(self:getHoverColor())
@@ -403,6 +439,21 @@ function component.new(t)
     love.graphics.translate(-self:getWidth() * self:getPivotX(), -self:getHeight() * self:getPivotY())
   end
 
+  function o:updateDrawParams()
+    local dx1, dy1, dx2, dy2
+    if not self:getCentered() then
+      dx1, dy1 = love.graphics.transformPoint(0, 0)
+      dx2, dy2 = love.graphics.transformPoint(self:getWidth(), self:getHeight())
+    else
+      dx1, dy1 = love.graphics.transformPoint(-self:getWidth()/2, -self:getHeight()/2)
+      dx2, dy2 = love.graphics.transformPoint(self:getWidth()/2, self:getHeight()/2)
+    end
+    self.draw_params.x = dx1
+    self.draw_params.y = dy1
+    self.draw_params.w = dx2 - dx1
+    self.draw_params.h = dy2 - dy1
+  end
+
   function o:updateMouse(transform)
     if transform then
       self.mouse.x, self.mouse.y = transform:transformPoint(love.mouse.getPosition())
@@ -411,18 +462,20 @@ function component.new(t)
     end
     if self.mouse.left ~= "up" then self.mouse.left = ui.mouse.left end
     if self.mouse.right ~= "up" then self.mouse.right = ui.mouse.right end
-    if self:getFocus() and self:hovered(true) then ui.new_hovered = self end
+    if not ui.lock_hovered then
+      if self:getFocus() and self:hovered(true) then ui.new_hovered = self end
+    end
     if self:hovered() then
       if not self.last_hovered then
         self.last_hovered = true
-        self:call(self.on_hovered)
+        self:call(self.on_hovered, not ui.lock_hovered)
       end
       if ui.mouse.left == "pressed" then self.mouse.left = "pressed" end
       if ui.mouse.right == "pressed" then self.mouse.right = "pressed" end
     else
       if self.last_hovered then
         self.last_hovered = false
-        self:call(self.on_exited)
+        self:call(self.on_exited, not ui.lock_hovered)
       end
       if self.mouse.left == "released" then self.mouse.left = "up" end
       if self.mouse.right == "released" then self.mouse.right = "up" end
@@ -431,6 +484,9 @@ function component.new(t)
     if self.mouse.right == "pressed" then self:call(self.on_pressed, 2) end
     if self.mouse.left == "released" then self:call(self.on_released, 1) end
     if self.mouse.right == "released" then self:call(self.on_released, 2) end
+
+    if self.select_state == "pressed" then self:call(self.on_pressed, 1) end
+    if self.select_state == "released" then self:call(self.on_released, 1) end
   end
 
   return o

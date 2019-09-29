@@ -8,8 +8,7 @@ local components
 
 local scrollx = 0
 local scrolly = 0
-local scrolloffset = 0
-local scrollvel = 0
+local scroll = {vel = 0, offset = 0}
 
 local full_height = 0
 
@@ -25,6 +24,7 @@ function scene.load()
   was_using_editor = false
   resetMusic(current_music, 0.8)
   selected_levels = {}
+  scene.selecting = true
   scene.buildUI()
   love.keyboard.setKeyRepeat(true)
 
@@ -46,33 +46,43 @@ end
 mobile_scroll_delay = 0.1 -- how long you have to press to not click on a level
 
 function scene.update(dt)
-  scrolloffset = scrolloffset + scrollvel * dt
+  scroll.offset = scroll.offset + scroll.vel * dt
 
   if is_mobile then
     if love.mouse.isDown(1) then
       x, y = love.mouse.getPosition()
-      scrolloffset = mobile_scroll_pos + (mobile_scroll_start - y)
+      scroll.offset = mobile_scroll_pos + (mobile_scroll_start - y)
     end
   end
 
-  scrollvel = scrollvel - scrollvel * math.min(dt * 10, 1)
-  if scrollvel < 0.1 and scrollvel > -0.1 then scrollvel = 0 end
-  debugDisplay("scrollvel", scrollvel)
-  debugDisplay("scrolloffset", scrolloffset)
+  scroll.vel = scroll.vel - scroll.vel * math.min(dt * 10, 1)
+  if scroll.vel < 0.1 and scroll.vel > -0.1 then scroll.vel = 0 end
+  debugDisplay("scrollvel", scroll.vel)
+  debugDisplay("scrolloffset", scroll.offset)
 
   scroll_height = math.max(0, full_height - love.graphics.getHeight())
   debugDisplay("scrollheight", scroll_height)
 
-  if mouseOverBox(love.graphics.getWidth()-5, 0, 5, love.graphics.getHeight()) and love.mouse.isDown(1) then
-    scrolloffset = love.mouse.getY()/(love.graphics.getHeight()-20)*scroll_height
+  if ui.new_selected then
+    local o = ui.new_selected
+    local new_y = o:getY() + o:getHeight()/2 - love.graphics.getHeight()/2
+    new_y = math.max(0, math.min(scroll_height, new_y))
+    if new_y ~= scroll.offset then
+      addTween(tween.new(0.2, scroll, {offset = new_y}), "load_scroll")
+    end
   end
 
-  if scrolloffset > scroll_height then
-    scrolloffset = scroll_height
-    scrollvel = 0
-  elseif scrolloffset < 0 then
-    scrolloffset = 0
-    scrollvel = 0
+  if mouseOverBox(love.graphics.getWidth()-5, 0, 5, love.graphics.getHeight()) and love.mouse.isDown(1) then
+    scroll.offset = love.mouse.getY()/(love.graphics.getHeight()-20)*scroll_height
+    tweens["load_scroll"] = nil
+  end
+
+  if scroll.offset > scroll_height then
+    scroll.offset = scroll_height
+    scroll.vel = 0
+  elseif scroll.offset < 0 then
+    scroll.offset = 0
+    scroll.vel = 0
   end
 
   scrollx = scrollx+75*dt
@@ -156,14 +166,15 @@ function runUnitTests()
 end
 
 function scene.wheelMoved(whx, why) -- The wheel moved, Why?
-  scrollvel = scrollvel + (-191 * why * 3)
+  scroll.vel = scroll.vel + (-191 * why * 3)
+  tweens["load_scroll"] = nil
   -- why = "well i dont fuckin know the person who moved it probably wanted it to move"
 end
 
 function scene.getTransform()
   local transform = love.math.newTransform()
 
-  transform:translate(0, -scrolloffset)
+  transform:translate(0, -scroll.offset)
 
   return transform
 end
@@ -243,7 +254,7 @@ function scene.draw()
     love.graphics.rectangle("fill", love.graphics.getWidth()-5, 0, 5, love.graphics.getHeight())
 
     love.graphics.setColor(0.6,0.6,0.6)
-    love.graphics.rectangle("fill", love.graphics.getWidth()-5, scrolloffset/scroll_height*(love.graphics.getHeight()-20), 5, 20)
+    love.graphics.rectangle("fill", love.graphics.getWidth()-5, scroll.offset/scroll_height*(love.graphics.getHeight()-20), 5, 20)
   end
 
   gooi.draw()
@@ -326,7 +337,7 @@ function scene.buildUI()
       world_label:onReleased(function(o) ui.setEditing(o) end)
     end
     table.insert(components, world_label)
-    if load_mode == "edit" then
+    if load_mode == "edit" and not is_mobile then
       world_folder = ui.component.new()
         :setSprite(sprites["ui/open_folder"]):setHoverSprite(sprites["ui/open_folder_h"]):setActiveSprite(sprites["ui/open_folder_a"])
         :setPos(love.graphics.getWidth()/2 - title_width/2 - sprites["ui/open_folder"]:getWidth(), title_y + title_height/2):setCentered(true)
@@ -336,7 +347,7 @@ function scene.buildUI()
           else
             love.system.openURL("file:///"..love.filesystem.getSource().."/officialworlds/"..world.."/")
           end
-        end)
+        end):setSelectable(false)
       table.insert(components, world_folder)
     end
     oy = oy + title_height + 24
@@ -352,13 +363,13 @@ function scene.buildUI()
           :setFont(ui.fonts.category)
           :setPos(0, oy)
           :setSize(love.graphics.getWidth(), label_height))
-        if load_mode == "edit" then
+        if load_mode == "edit" and not is_mobile then
           table.insert(components, ui.component.new()
             :setSprite(sprites["ui/open_folder"]):setHoverSprite(sprites["ui/open_folder_h"]):setActiveSprite(sprites["ui/open_folder_a"])
             :setPos(love.graphics.getWidth()/2 - label_width/2 - sprites["ui/open_folder"]:getWidth(), oy + label_height/2):setCentered(true)
             :onReleased(function()
               love.system.openURL("file:///"..love.filesystem.getSource().."/officialworlds/")
-            end))
+            end):setSelectable(false))
         end
         oy = oy + label_height + 8
 
@@ -373,7 +384,7 @@ function scene.buildUI()
           :setFont(ui.fonts.category)
           :setPos(0, oy)
           :setSize(love.graphics.getWidth(), label_height))
-        if load_mode == "edit" then
+        if load_mode == "edit" and not is_mobile then
           table.insert(components, ui.component.new()
             :setSprite(sprites["ui/open_folder"]):setHoverSprite(sprites["ui/open_folder_h"]):setActiveSprite(sprites["ui/open_folder_a"])
             :setPos(love.graphics.getWidth()/2 - label_width/2 - sprites["ui/open_folder"]:getWidth(), oy + label_height/2):setCentered(true)
@@ -382,7 +393,7 @@ function scene.buildUI()
                 love.filesystem.createDirectory("worlds")
               end
               love.system.openURL("file:///"..love.filesystem.getSaveDirectory().."/worlds/")
-            end))
+            end):setSelectable(false))
         end
         oy = oy + label_height + 8
 
@@ -407,7 +418,7 @@ function scene.buildUI()
         :setFont(ui.fonts.category)
         :setPos(0, oy)
         :setSize(love.graphics.getWidth(), label_height))
-      if load_mode == "edit" then
+      if load_mode == "edit" and not is_mobile then
         table.insert(components, ui.component.new()
           :setSprite(sprites["ui/open_folder"]):setHoverSprite(sprites["ui/open_folder_h"]):setActiveSprite(sprites["ui/open_folder_a"])
           :setPos(love.graphics.getWidth()/2 - label_width/2 - sprites["ui/open_folder"]:getWidth(), oy + label_height/2):setCentered(true)
@@ -416,7 +427,7 @@ function scene.buildUI()
               love.filesystem.createDirectory("levels")
             end
             love.system.openURL("file:///"..love.filesystem.getSaveDirectory().."/levels/")
-          end))
+          end):setSelectable(false))
       end
       oy = oy + label_height + 8
 
@@ -626,17 +637,17 @@ function scene.mousePressed(x, y, button)
     local scrollbutton = false
 
     if pointInside(x, y, love.graphics.getWidth()-10-sprites["ui/arrow up"]:getWidth(), 10, sprites["ui/arrow up"]:getWidth(), sprites["ui/arrow up"]:getHeight()) then
-      scrollvel = scrollvel - 400
+      scroll.vel = scroll.vel - 400
       scrollbutton = true
     end
     if pointInside(x, y, love.graphics.getWidth()-10-sprites["ui/arrow down"]:getWidth(), love.graphics.getHeight()-10-sprites["ui/arrow down"]:getHeight(), sprites["ui/arrow down"]:getWidth(), sprites["ui/arrow down"]:getHeight()) then
-      scrollvel = scrollvel + 400
+      scroll.vel = scroll.vel + 400
       scrollbutton = true
     end
 
     if not scrollbutton then
       mobile_scroll_start = y
-      mobile_scroll_pos = scrolloffset
+      mobile_scroll_pos = scroll.offset
       mobile_scroll_time = love.timer.getTime()
     end
   end
