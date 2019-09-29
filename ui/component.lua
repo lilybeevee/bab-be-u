@@ -8,6 +8,17 @@ function component.new(t)
   o.children = {}
   o.mouse = {x = -1, y = -1, left = "up", right = "up"}
   o.frame = 0
+  o.select_state = nil
+  o.draw_params = {}
+
+  -- Event Tables
+  o.on_hovered = {}
+  o.on_exited = {}
+  o.on_pressed = {}
+  o.on_released = {}
+
+  o.on_pre_draw = {}
+  o.on_draw = {}
 
   -- Basic Functions
 
@@ -47,11 +58,22 @@ function component.new(t)
     return self
   end
 
+  function o:getDrawX() return self.draw_params.x or self:getX() end
+  function o:getDrawY() return self.draw_params.y or self:getY() end
+  function o:getDrawPos() return self:getDrawX(), self:getDrawY() end
+  function o:getDrawWidth() return self.draw_params.w or self:getWidth() end
+  function o:getDrawHeight() return self.draw_params.h or self:getHeight() end
+  function o:getDrawSize() return self:getDrawWidth(), self:getDrawHeight() end
+
+  function o:getEnabled() if self.enabled == nil then return true else return self.enabled end end
+  function o:setEnabled(val) self.enabled = val; return self end
+
   -- Container Functions
 
   function o:addChild(child)
     if not table.has_value(self.children, child) then
       table.insert(self.children, child)
+      child.parent = child.parent or self
     end
   end
 
@@ -59,8 +81,17 @@ function component.new(t)
     for i,v in ipairs(self.children) do
       if v == child then
         table.remove(self.children, i)
+        if child.parent == self then child.parent = nil end
         break
       end
+    end
+  end
+
+  function o:hasParent(parent)
+    if not self.parent then
+      return false
+    else
+      return self.parent == parent or self.parent:hasParent(parent)
     end
   end
 
@@ -76,6 +107,19 @@ function component.new(t)
   function o:setScale(x, y)
     self:setScaleX(x)
     self:setScaleY(y or x)
+    return self
+  end
+
+  function o:getPivotX() return self.px or 0 end
+  function o:getPivotY() return self.py or 0 end
+  
+  function o:setPivotX(val) self.px = val; return self end
+  function o:setPivotY(val) self.py = val; return self end
+
+  function o:getPivot() return self:getPivotX(), self:getPivotY() end
+  function o:setPivot(x, y)
+    self:setPivotX(x)
+    self:setPivotY(y or x)
     return self
   end
 
@@ -112,6 +156,19 @@ function component.new(t)
 
   function o:getWrap() return self.wrap or false end
   function o:setWrap(val) self.wrap = val; return self end
+
+  function o:getMarginX() return self.margin_x or 0 end
+  function o:getMarginY() return self.margin_y or 0 end
+
+  function o:setMarginX(val) self.margin_x = val; return self end
+  function o:setMarginY(val) self.margin_y = val; return self end
+
+  function o:getMargin() return self:getMarginX(), self:getMarginY() end
+  function o:setMargin(x, y)
+    self:setMarginX(x)
+    self:setMarginY(y or x)
+    return self
+  end
 
   -- Color Functions
 
@@ -186,11 +243,22 @@ function component.new(t)
   end
   function o:setFocus(val) self.focus = val; return self end
 
+  function o:getSelectable()
+    if self.selectable == nil then
+      return #self.on_pressed > 0 or #self.on_released > 0
+    else return self.selectable end
+  end
+  function o:setSelectable(val) self.selectable = val; return self end
+
   function o:hovered(ignore_global)
-    if not ignore_global and ui.hovered and ui.hovered ~= self then
+    if not ignore_global and ui.hovered and ui.hovered ~= self and ui.selected ~= self then
       if not self.parent or (self.parent and not self.parent:hovered()) then
         return false
       end
+    end
+    if not ignore_global then
+      if self.select_state ~= nil then return true end
+      if ui.lock_hovered and ui.selected then return false end
     end
     return self.mouse.x >= 0 and
           self.mouse.y >= 0 and
@@ -199,6 +267,7 @@ function component.new(t)
   end
 
   function o:pressed(button)
+    if self.select_state == "pressed" then return true end
     if button == 2 then return self.mouse.right == "pressed" end
     if button == 1 then return self.mouse.left == "pressed" end
     return (self.mouse.left == "pressed" and self.mouse.right ~= "down") or
@@ -206,12 +275,14 @@ function component.new(t)
   end
 
   function o:down(button)
+    if self.select_state == "down" then return true end
     if button == 2 then return self.mouse.right == "down" end
     if button == 1 then return self.mouse.left == "down" end
     return self.mouse.left == "down" or self.mouse.right == "down"
   end
 
   function o:released(button)
+    if self.select_state == "released" then return true end
     if button == 2 then return self.mouse.right == "released" end
     if button == 1 then return self.mouse.left == "released" end
     return (self.mouse.left == "released" and self.mouse.right ~= "pressed" and self.mouse.right ~= "down") or
@@ -219,32 +290,45 @@ function component.new(t)
   end
 
   function o:up(button)
+    if self.select_state == "selected" then return true end
     if button == 2 then return self.mouse.right == "up" end
     if button == 1 then return self.mouse.left == "up" end
     return (self.mouse.left == "up" and self.mouse.right ~= "pressed" and self.mouse.right ~= "down") or
            (self.mouse.right == "up" and self.mouse.left ~= "pressed" and self.mouse.left ~= "down")
   end
 
-  function o:onHovered(func) self.on_hovered = func; return self end
-  function o:onExited(func) self.on_exited = func; return self end
-  function o:onPressed(func) self.on_pressed = func; return self end
-  function o:onReleased(func) self.on_released = func; return self end
+  function o:onHovered(func) table.insert(self.on_hovered, func); return self end
+  function o:onExited(func) table.insert(self.on_exited, func); return self end
+  function o:onPressed(func) table.insert(self.on_pressed, func); return self end
+  function o:onReleased(func) table.insert(self.on_released, func); return self end
 
-  function o:onPreDraw(func) self.on_pre_draw = func; return self end
-  function o:onDraw(func) self.on_draw = func; return self end
+  function o:onPreDraw(func) table.insert(self.on_pre_draw, func); return self end
+  function o:onDraw(func) table.insert(self.on_draw, func); return self end
+
+  function o:call(event, ...)
+    local args = {...}
+    local cancel = false
+    for _,f in ipairs(event) do cancel = f(self, unpack(args)) or cancel end
+    return cancel
+  end
 
   function o:draw(parent)
+    if not self:getEnabled() then return end
+
     self.frame = frame
     self.parent = parent
 
     love.graphics.push()
-    if (not self.on_pre_draw or not self.on_pre_draw(self)) and self.preDraw then
+    local cancel_pre_draw = self:call(self.on_pre_draw)
+    if not cancel_pre_draw and self.preDraw then
       self:preDraw()
     end
     self:transform()
     self:updateMouse()
+    self:updateDrawParams()
     
-    if (not self.on_draw or not self.on_draw(self)) then
+    local cancel_draw = self:call(self.on_draw)
+    if not cancel_draw then
       self:useColor()
       self:drawRect()
       self:drawSprite()
@@ -268,12 +352,18 @@ function component.new(t)
     end
 
     love.graphics.pop()
+
+    if self:getSelectable() then
+      table.insert(ui.selectables, self)
+    end
   end
 
   -- Internal Functions
 
   function o:useColor()
-    if self:pressed() or self:down() then
+    if rainbowmode then
+      love.graphics.setColor(hslToRgb((love.timer.getTime()/4+self:getX()/18+self:getY()/18)%1, .5, .5, .9))
+    elseif self:pressed() or self:down() then
       love.graphics.setColor(self:getActiveColor())
     elseif self:hovered() then
       love.graphics.setColor(self:getHoverColor())
@@ -328,25 +418,40 @@ function component.new(t)
 
       local height
       if self:getWrap() then
-        local _,lines = font:getWrap(self:getText(), self:getWidth())
+        local _,lines = font:getWrap(self:getText(), self:getWidth() - self:getMarginX()*2)
         height = #lines * font:getHeight()
       else
         height = font:getHeight()
       end
 
-      love.graphics.printf(self:getText(), 0, self:getHeight() / 2 - height / 2, self:getWidth(), self:getAlign())
+      love.graphics.printf(self:getText(), self:getMarginX(), self:getMarginY() + (self:getHeight() - self:getMarginY()*2) / 2 - height / 2, self:getWidth() - self:getMarginX()*2, self:getAlign())
     end
   end
 
   function o:transform()
     love.graphics.translate(self:getPos())
-    love.graphics.translate(self:getWidth() / 2, self:getHeight() / 2)
-    love.graphics.scale(self:getScale())
-    love.graphics.rotate(self:getRotation())
-    love.graphics.translate(-self:getWidth() / 2, -self:getHeight() / 2)
     if self:getCentered() then
       love.graphics.translate(-self:getWidth() / 2, -self:getHeight() / 2)
     end
+    love.graphics.translate(self:getWidth() * self:getPivotX(), self:getHeight() * self:getPivotY())
+    love.graphics.scale(self:getScale())
+    love.graphics.rotate(self:getRotation())
+    love.graphics.translate(-self:getWidth() * self:getPivotX(), -self:getHeight() * self:getPivotY())
+  end
+
+  function o:updateDrawParams()
+    local dx1, dy1, dx2, dy2
+    if not self:getCentered() then
+      dx1, dy1 = love.graphics.transformPoint(0, 0)
+      dx2, dy2 = love.graphics.transformPoint(self:getWidth(), self:getHeight())
+    else
+      dx1, dy1 = love.graphics.transformPoint(-self:getWidth()/2, -self:getHeight()/2)
+      dx2, dy2 = love.graphics.transformPoint(self:getWidth()/2, self:getHeight()/2)
+    end
+    self.draw_params.x = dx1
+    self.draw_params.y = dy1
+    self.draw_params.w = dx2 - dx1
+    self.draw_params.h = dy2 - dy1
   end
 
   function o:updateMouse(transform)
@@ -357,30 +462,31 @@ function component.new(t)
     end
     if self.mouse.left ~= "up" then self.mouse.left = ui.mouse.left end
     if self.mouse.right ~= "up" then self.mouse.right = ui.mouse.right end
-    if self:getFocus() and self:hovered(true) then ui.new_hovered = self end
+    if not ui.lock_hovered then
+      if self:getFocus() and self:hovered(true) then ui.new_hovered = self end
+    end
     if self:hovered() then
       if not self.last_hovered then
         self.last_hovered = true
-        if self.on_hovered then self.on_hovered(self) end
+        self:call(self.on_hovered, not ui.lock_hovered)
       end
       if ui.mouse.left == "pressed" then self.mouse.left = "pressed" end
       if ui.mouse.right == "pressed" then self.mouse.right = "pressed" end
     else
       if self.last_hovered then
         self.last_hovered = false
-        if self.on_exited then self.on_exited(self) end
+        self:call(self.on_exited, not ui.lock_hovered)
       end
       if self.mouse.left == "released" then self.mouse.left = "up" end
       if self.mouse.right == "released" then self.mouse.right = "up" end
     end
-    if self.on_pressed then
-      if self.mouse.left == "pressed" then self.on_pressed(self, 1) end
-      if self.mouse.right == "pressed" then self.on_pressed(self, 2) end
-    end
-    if self.on_released then
-      if self.mouse.left == "released" then self.on_released(self, 1) end
-      if self.mouse.right == "released" then self.on_released(self, 2) end
-    end
+    if self.mouse.left == "pressed" then self:call(self.on_pressed, 1) end
+    if self.mouse.right == "pressed" then self:call(self.on_pressed, 2) end
+    if self.mouse.left == "released" then self:call(self.on_released, 1) end
+    if self.mouse.right == "released" then self:call(self.on_released, 2) end
+
+    if self.select_state == "pressed" then self:call(self.on_pressed, 1) end
+    if self.select_state == "released" then self:call(self.on_released, 1) end
   end
 
   return o

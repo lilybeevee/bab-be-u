@@ -1123,7 +1123,8 @@ function fallBlock()
   local timeless_fallers = {}
   
   function addFallersFromLoop(verb, property, gravity_dir)
-    for unit,count in pairs(getUnitsWithRuleAndCount(nil, verb, property)) do
+    local falling = (verb == "be" and getUnitsWithEffectAndCount(property) or getUnitsWithRuleAndCount(nil, verb, property))
+    for unit,count in pairs(falling) do
       if fallers[unit] == nil then
         fallers[unit] = {0, 0};
       end
@@ -1540,7 +1541,7 @@ end
 --4 stacks: up to 135 degrees
 --5 stacks: up to 180 degrees (e.g. all directions)
 function canMove(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_stack_,start_x,start_y)
-  if hasProperty(unit, "loop") then
+  if hasProperty(unit, "loop") or hasProperty(unit, "stukc") then
     return false,{},{}
   end
   local success, movers, specials = canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_stack_,start_x,start_y)

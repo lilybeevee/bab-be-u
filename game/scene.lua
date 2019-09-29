@@ -52,11 +52,14 @@ local displaywords = false
 local stack_box, stack_font
 local pathlock_box, pathlock_font
 local initialwindoposition
-local stopwatch
+stopwatch = nil
 
 local sessionseed
 
-local buttons = {"resume", "editor", "exit", "restart"}
+local buttons = {}--{"resume", "editor", "exit", "restart"}
+local darken = nil
+local button_last_y = 0
+local options = false
 pause = false
 selected_pause_button = 1
 
@@ -142,6 +145,79 @@ function scene.load()
   gooi.setGroupVisible("mobile-controls", is_mobile)
 
   pause = false
+  scene.selecting = false
+
+  scene.buildUI()
+end
+
+function scene.buildUI()
+  -- darken is a UI element so that it can take focus from all UI underneath it
+  darken = ui.component.new():setColor(0, 0, 0, 0.5):setSize(love.graphics.getWidth(), love.graphics.getHeight()):setFill(true)
+
+  buttons = {}
+
+  if not options then
+    scene.addButton("resume", function() pause = false end)
+    scene.addButton("restart", function() pause = false; scene.resetStuff() end)
+    scene.addButton("editor", function() new_scene = editor; load_mode = "edit" end)
+    scene.addButton("options", function() options = true; scene.buildUI() end)
+    scene.addButton("exit to " .. escResult(false), function() escResult(true) end)
+  else
+    scene.addOption("music_on", "music", {{"on", true}, {"off", false}})
+    scene.addOption("stopwatch_effect", "stopwatch effect", {{"on", true}, {"off", false}})
+    scene.addOption("fullscreen", "resolution", {{"fullscreen", true}, {"windowed", false}}, function(val)
+      if val then
+        if not love.window.isMaximized() then
+          winwidth, winheight = love.graphics.getDimensions()
+        end
+        love.window.setMode(0, 0, {borderless=false})
+        love.window.maximize()
+        fullscreen = true
+      else
+        love.window.setMode(winwidth, winheight, {borderless=false, resizable=true, minwidth=705, minheight=510})
+        love.window.maximize()
+        love.window.restore()
+        fullscreen = false
+      end
+    end)
+    scene.addButton("back", function() options = false; scene.buildUI() end)
+  end
+
+  local ox, oy = love.graphics.getWidth()/2, buttons[1]:getHeight()*3
+  for _,button in ipairs(buttons) do
+    local width, height = button:getSize()
+    button:setPos(ox - width/2, oy)
+    oy = oy + height + 10
+  end
+  button_last_y = oy
+end
+
+function scene.addButton(text, func)
+  local button = ui.menu_button.new(text, #buttons%2+1, func)
+  -- may be replaced by a global system later but this is cute for now
+  local bab = ui.component.new():setSprite(sprites["bab"]):setX(-sprites["bab"]:getWidth()-2):setEnabled(false)
+  button:addChild(bab)
+  button:onHovered(function() bab:setEnabled(true) end)
+  button:onExited(function() bab:setEnabled(false) end)
+  table.insert(buttons, button)
+  return button
+end
+
+function scene.addOption(id, name, options, changed)
+  local option = 1
+  for i,v in ipairs(options) do
+    if settings[id] == v[2] then
+      option = i
+    end
+  end
+  scene.addButton(name .. ": " .. options[option][1], function()
+    settings[id] = options[(((option-1)+1)%#options)+1][2]
+    saveAll()
+    if changed then
+      changed(settings[id])
+    end
+    scene.buildUI()
+  end)
 end
 
 function scene.update(dt)
@@ -321,7 +397,7 @@ function scene.keyPressed(key, isrepeat)
       current_level = current_level.." (transformed into " .. fullDump(tfs) .. ") "
     end
     
-    gooi.confirm({
+    ui.overlay.confirm({
         text = current_level .. "\r\n\r\n" .. (spookmode and "G̴͔̭͇͎͕͔ͪ̾ͬͦ̇͑͋͟͡o̵̸͓̠̦̱̭̘͍̱͑̃̀ͅ ̱̫͉̆͐̇ͥ̽͆͂͑̿͜b̸̵͈̼̜̅͗̄̆ͅa͚̠͚̣̺̗͖͈̓̿̈́͆͐̉ͯ̀̚c͉̜̙̤͍̞̳̬ͪ̇k̙͙̼̀̓̂̑̈́̌ͯ̕͢ͅ ̶̛̠̹̈̒ͫ͐t̙͉͍͚̠̗̰͗͊͛ͫ͒ͥ̏ͫ͢͜ȍ̙͙̪̬̎̊ͫͭͫ͗̔̚ ̴̪͖͔̖̙̬͍̥ͪ̾̾͂͂l̪͉͙̪̩͙̎̏͌̽ͤ̈́̀͜͠e̡͓͍͉̖̤ͬ̓̏ͥͫ̀ͅv̱͈͍̞̼̀͋̂̃͋́̚͠ͅḛ̷̷̱̿͂l̢̮͇̫̗͍̱͈̟͌̐̎̑̈́ ̵̠͖̣̟̲̖̇̈̓ͭͫ͠s͚̝̻ͤ̓̀̀e̅͑̐̄͏̤̫̕͠lͨ͋͌ͤͩ̋̓͏̘̼̠̪̖͓͔̹e̵͖̤̒͒ͥ̓ͬ̓͘c͖͈̏̄̐̅̎ͨ͢ṫ͔̥͓̊̌̓̇ọ̞̤͔̩̒͗ͨ́̓͟ŗ̖͉̹̻̮̬̦͌̿͂?̶̡͈̫̗̈́̒̎̃̎̓" or "Go back to "..escResult(false).."?"),
         okText = "Yes",
         cancelText = spookmode and "Yes" or "Cancel",
@@ -336,7 +412,8 @@ function scene.keyPressed(key, isrepeat)
   end
   
   if pause then
-    if key == "w" or key == "up" or key == "i" or key == "kp8" then
+    scene.selecting = true
+    --[[if key == "w" or key == "up" or key == "i" or key == "kp8" then
       selected_pause_button = selected_pause_button - 1
       if selected_pause_button < 1 then
         selected_pause_button = #buttons
@@ -348,8 +425,9 @@ function scene.keyPressed(key, isrepeat)
       end
     elseif key == "return" or key == "space" or key == "kpenter" then
       handlePauseButtonPressed(selected_pause_button)
-    end
+    end]]
   else
+    scene.selecting = false
     local do_turn_now = false
 
     if (key == "w" or key == "a" or key == "s" or key == "d") then
@@ -445,6 +523,10 @@ function scene.keyPressed(key, isrepeat)
 
     if key == "tab" then
       displaywords = true
+    end
+    
+    if key == "y" and hasRule("swan","be","u") and units_by_name["swan"] then
+        playSound("honk")
     end
 
     most_recent_key = key
@@ -662,8 +744,12 @@ function scene.draw(dt)
       brightness = 0.33
     end
 
-    if (unit.name == "steev") and not hasProperty(unit, "u") then
+    if (unit.name == "steev") and not hasU(unit) then
       brightness = 0.33
+    end
+    
+    if unit.name == "casete" and not hasProperty(unit, "no go") then
+      brightness = 0.5
     end
     
     if timeless and not hasProperty(unit,"za warudo") and not (unit.type == "text") then
@@ -692,7 +778,7 @@ function scene.draw(dt)
       end
     end
     if unit.fullname == "text_katany" then
-      if hasRule("steev","got","katany") then
+      if hasRule("steev","got","katany") or hasRule("kat","got","katany") then
         unit.sprite = "text_katanya"
       else
         unit.sprite = "text_katany"
@@ -797,9 +883,9 @@ function scene.draw(dt)
 			end
 
 			if #unit.overlay > 0 and type(unit.sprite) == "string" and eq(unit.color, tiles_list[unit.tile].color) then
-				love.graphics.setColor(1, 1, 1)
+				love.graphics.setColor(1, 1, 1, unit.draw.opacity)
 			else
-				love.graphics.setColor(color[1], color[2], color[3], color[4])
+				love.graphics.setColor(color[1], color[2], color[3], unit.draw.opacity)
 			end
 			return color
 		end
@@ -1643,8 +1729,7 @@ function scene.draw(dt)
 
   
   if displaywords or pause then
-    love.graphics.setColor(0, 0, 0, 0.4)
-    love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
+    darken:draw()
 
     local rules = ""
 
@@ -1658,7 +1743,7 @@ function scene.draw(dt)
 
     local buttoncolor = {84/255, 109/255, 255/255}
 
-    local y = (not pause) and 0 or (buttonheight+10)*#buttons
+    local y = (not pause) and 0 or button_last_y
 
     for i,rule in pairs(full_rules) do
       if not rule.hide_in_list then
@@ -1701,45 +1786,22 @@ function scene.draw(dt)
       end
       local tfs = readSaveFile(level_name, "transform")
       if tfs then
-        current_level = current_level.." (transformed into " .. fullDump(tfs) .. ") "
+        local tfstr = ""
+        for _,tf in ipairs(tfs) do
+          while tf:starts("text_") do
+            tf = tf:sub(6)
+            tf = tf.." txt"
+          end
+          tfstr = tfstr.." & "..tf
+        end
+        tfstr = tfstr:sub(4)
+        current_level = current_level.." (transformed into " .. tfstr .. ") "
       end
       
       love.graphics.printf(current_level, width/2-buttonwidth/2, buttonheight, buttonwidth, "center")
   
-      for i=1, #buttons do
-        love.graphics.push()
-        local rot = 0
-    
-        local buttonx = width/2-buttonwidth/2
-        local buttony = buttonheight*4+(buttonheight+10)*(i-2)
-    
-        if rainbowmode then buttoncolor = hslToRgb((love.timer.getTime()/6+i/10)%1, .5, .5, .9) end
-    
-        if mouseOverBox(width/2-sprites["ui/button_1"]:getWidth()/2, buttony, buttonwidth, buttonheight) then
-          selected_pause_button = i
-          love.graphics.setColor(buttoncolor[1]-0.1, buttoncolor[2]-0.1, buttoncolor[3]-0.1) --i know this is horrible
-          love.graphics.translate(buttonx+buttonwidth/2, buttony+buttonheight/2)
-          love.graphics.rotate(0.05 * math.sin(love.timer.getTime()*3))
-          love.graphics.translate(-buttonx-buttonwidth/2, -buttony-buttonheight/2)
-        else
-          love.graphics.setColor(buttoncolor[1], buttoncolor[2], buttoncolor[3])
-        end
-    
-        love.graphics.draw(sprites["ui/button_white_"..i%2+1], buttonx, buttony, rot, 1, 1)
-        
-        if (selected_pause_button == i) then
-          love.graphics.setColor(1,1,1)
-          love.graphics.draw(sprites["bab"], buttonx-32, buttony, rot, 1, 1)
-        end
-    
-        love.graphics.pop()
-
-        love.graphics.setColor(1,1,1)
-        local text = buttons[i]
-        if text == "exit" then
-          text = text .. " to " .. escResult(false)
-        end
-        love.graphics.printf(text, width/2-buttonwidth/2, buttony+6, buttonwidth, "center")
+      for _,button in ipairs(buttons) do
+        button:draw()
       end
     end
 
@@ -2025,8 +2087,9 @@ function doOneMove(x, y, key, past)
           playSound("timestop",0.5)
         end
       else
-        addUndo({"timeless_rules", rules_with})
+        addUndo({"timeless_rules", rules_with, full_rules})
         parseRules()
+        should_parse_rules = true
         doMovement(0,0,"e")
         if firsttimestop then
           playSound("time resume long",0.5)
@@ -2038,8 +2101,9 @@ function doOneMove(x, y, key, past)
       addUndo({"za warudo", timeless})
       unsetNewUnits()
     else
-      addUndo({"timeless_rules", rules_with})
+      addUndo({"timeless_rules", rules_with, full_rules})
       timeless = false
+      should_parse_rules = true
     end
     mobile_controls_timeless:setBGImage(sprites[timeless and "ui/time resume" or "ui/timestop"])
   elseif (key == "f") then
@@ -2146,6 +2210,7 @@ function scene.doPastTurns()
     old_units_by_id = units_by_id
     doing_past_turns = true
     past_playback = true
+    past_queued_wins = {}
 
     if (unit_tests or not settings["stopwatch_effect"]) then
       do_past_effects = true
@@ -2226,6 +2291,11 @@ function scene.doPastTurns()
             doing_past_turns = false
             past_playback = false
             past_rules = {}
+            
+            for result, payload in pairs(past_queued_wins) do
+              doWin(result, payload)
+            end
+            
             undo_buffer = past_buffer
             createUndoBasedOnUnitsChanges(old_units, old_units_by_id, units, units_by_id)
             old_units = nil; old_units_by_id = nil;
@@ -2275,6 +2345,11 @@ function scene.doPastTurns()
           doing_past_turns = false
           past_playback = false
           past_rules = {}
+          
+          for result, payload in pairs(past_queued_wins) do
+            doWin(result, payload)
+          end
+          
           --undo_buffer = past_buffer
           createUndoBasedOnUnitsChanges(old_units, old_units_by_id, units, units_by_id)
           old_units = nil; old_units_by_id = nil;
@@ -2344,14 +2419,14 @@ function scene.mouseReleased(x, y, button)
 
     local mousex, mousey = love.mouse.getPosition()
 
-    for i=1, #buttons do
+    --[[for i=1, #buttons do
       local buttony = buttonheight*4+(buttonheight+10)*(i-2)
       if mouseOverBox(width/2-sprites["ui/button_1"]:getWidth()/2, buttony, buttonwidth, buttonheight) then
         if button == 1 then
           handlePauseButtonPressed(i)
         end
       end
-    end
+    end]]
   end
 end
 

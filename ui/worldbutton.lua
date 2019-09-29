@@ -8,6 +8,8 @@ function world_button.new(file)
 
   o:setSprite(sprites["ui/world box"])
   o:setFont(ui.fonts.world_name)
+  o:setPivot(0.5, 0.5)
+  o:onPreDraw(ui.buttonFX)
 
   function o:getColor()
     if spookmode then
@@ -22,20 +24,6 @@ function world_button.new(file)
 
   function o:getName() return self.name end
   function o:setName(val) self.name = val; return self end
-
-  function o:preDraw()
-    if self:hovered() then
-      if self:pressed() or self:down() then
-        self:setScale(0.9)
-      else
-        self:setScale(1.1)
-      end
-      self:setRotation(0.05 * math.sin(love.timer.getTime()*5))
-    else
-      self:setScale(1)
-      self:setRotation(0)
-    end
-  end
 
   function o:postDraw()
     love.graphics.setColor(1, 1, 1, 1)

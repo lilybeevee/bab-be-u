@@ -226,7 +226,7 @@ function loadMap()
           unit.special = specials
         elseif tile == tiles_by_name["lvl"] then
           if readSaveFile(specials.level, "seen") then
-            local tfs = readSaveFile(level_name, "transform")
+            local tfs = readSaveFile(specials.level, "transform")
             for _,t in ipairs(tfs or {tiles_listPossiblyMeta(tile).name}) do
               local unit = createUnit(tiles_by_namePossiblyMeta(t), x, y, dir, false, id, nil, color and {{name=color}})
               unit.special = specials
@@ -250,7 +250,7 @@ function loadMap()
           end
         else
           if specials.level then
-            local tfs = readSaveFile(level_name, "transform")
+            local tfs = readSaveFile(specials.level, "transform")
             for _,t in ipairs(tfs or {tiles_listPossiblyMeta(tile).name}) do
               local unit = createUnit(tiles_by_namePossiblyMeta(t), x, y, dir, false, id, nil, color and {{name=color}})
               unit.special = specials
@@ -578,6 +578,17 @@ function getUnitsWithEffect(effect)
       table.insert(result, unit)
     end
   end
+  
+  local rules = matchesRule(nil, "giv", effect)
+  for _,rule in ipairs(rules) do
+    local unit = rule[2]
+    if not unit.removed then
+      for _,other in ipairs(getUnitsOnTile(unit.x, unit.y, nil, false, unit)) do
+        table.insert(result, other)
+      end
+    end
+  end
+  
   return result
 end
 
@@ -594,6 +605,20 @@ function getUnitsWithEffectAndCount(effect)
       result[unit] = result[unit] + 1
     end
   end
+  
+  local rules = matchesRule(nil, "giv", effect)
+  for _,rule in ipairs(rules) do
+    local unit = rule[2]
+    if not unit.removed then
+      for _,other in ipairs(getUnitsOnTile(unit.x, unit.y, nil, false, unit)) do
+        if result[other] == nil then
+          result[other] = 0
+        end
+        result[other] = result[other] + 1
+      end
+    end
+  end
+  
   return result
 end
 
@@ -654,27 +679,49 @@ function findUnitsByName(name)
 end
 
 function hasProperty(unit,prop)
-  --[[local name
-  if unit.class == "unit" then
-    name = unit.name
-  elseif unit.class == "cursor" then
-    name = "mous"
-  end
-  if rules_with[name] then
-    for _,v in ipairs(rules_with[name]) do
-      local rule = v[1]
-      if rule[1] == name and rule[2] == "be" and rule[3] == prop then
-        print("par : " .. rule[1] .. " - " .. rule[2] .. " - " .. rule[3])
-        return testConds(unit,rule[4][1])
+  if not rules_with[prop] then return false end
+  if hasRule(unit, "be", prop) then return true end
+  if not rules_with["giv"] then return false end
+  -- if hasRule(unit, "ben't", prop) then return false end
+  if unit == outerlvl then return false end
+  if unit and unit.class == "mous" then return false end
+  if hasRule(outerlvl, "giv", prop) then return true end
+  if unit then
+    for _,other in ipairs(getUnitsOnTile(unit.x, unit.y, nil, false, unit, true)) do
+      if #matchesRule(other, "giv", prop) > 0 then
+        return true
+      end
+    end
+  else
+    for _,ruleparent in ipairs(matchesRule(nil, "giv", prop)) do
+      for _,other in ipairs(ruleparent.units) do
+        if #getUnitsOnTile(other.x, other.y, nil, false, other, true) > 0 then return true end
       end
     end
   end
-  return false]]
-  return hasRule(unit,"be",prop)
+  return false
 end
 
 function countProperty(unit,prop)
-  return #matchesRule(unit,"be",prop)
+  if not rules_with[prop] then return 0 end
+  local result = #matchesRule(unit,"be",prop)
+  if not rules_with["giv"] then return result end
+  -- if hasRule(unit, "ben't", prop) then return false end
+  if unit == outerlvl then return result end
+  if unit and unit.class == "mous" then return result end
+  result = result + #matchesRule(outerlvl, "giv", prop)
+  if unit then
+    for _,other in ipairs(getUnitsOnTile(unit.x, unit.y, nil, false, unit, true)) do
+      result = result + #matchesRule(other, "giv", prop)
+    end
+  else -- I don't think anything uses this? it doesn't seem very useful at least, but I guess it's functional?
+    for _,ruleparent in ipairs(matchesRule(nil, "giv", prop)) do
+      for _,other in ipairs(ruleparent.units) do
+        result = result + #getUnitsOnTile(other.x, other.y, nil, false, other, true)
+      end
+    end
+  end
+  return result
 end
 
 function hasU(unit)
@@ -2380,6 +2427,11 @@ function loadLevels(levels, mode, level_objs, xwx)
 
   if mode == "edit" then
     new_scene = editor
+    if #maps == 1 and levels[1] ~= default_map then
+      last_saved = maps[1].data
+    else
+      last_saved = nil
+    end
   else
     surrounds_name = level_name
     new_scene = game

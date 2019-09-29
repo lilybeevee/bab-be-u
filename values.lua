@@ -236,11 +236,11 @@ selector_grid_contents = {
   },
   -- page 4: characters and special objects
   {
-    "bab","text_bab","bunmy","text_bunmy","moo","text_moo","migri","text_migri",0,0,0,0,0,0,"selctr","text_selctr","lvl","text_lvl",
-    "keek","text_keek","creb","text_creb","shrim","text_shrim","kva","text_kva",0,0,0,0,0,0,"this","text_mous","lin","text_lin",
-    "meem","text_meem","statoo","text_statoo","flamgo","text_flamgo",0,0,0,0,0,0,0,0,"text_text","text_frens","text_groop","text_pathz",
+    "bab","text_bab","kat","text_kat","bunmy","text_bunmy","moo","text_moo",0,0,0,0,0,0,"selctr","text_selctr","lvl","text_lvl",
+    "keek","text_keek","creb","text_creb","shrim","text_shrim","migri","text_migri",0,0,0,0,0,0,"this","text_mous","lin","text_lin",
+    "meem","text_meem","statoo","text_statoo","flamgo","text_flamgo","kva","text_kva",0,0,0,0,0,0,"text_text","text_frens","text_groop","text_pathz",
     "skul","text_skul","beeee","text_beeee","gul","text_gul","pidgin","text_pidgin",0,0,0,0,0,0,"text_lethers","text_every1","text_every2","text_every3",
-    "ghost fren","text_ghost fren","fishe","text_fishe","starrfishe","text_starrfishe",0,0,0,0,0,0,0,0,0,0,0,"text_no1",
+    "ghost fren","text_ghost fren","fishe","text_fishe","starrfishe","text_starrfishe","swan","text_swan",0,0,0,0,0,0,0,0,0,"text_no1",
     "robobot","text_robobot","snek","text_snek","sneel","text_sneel",0,0,0,0,0,0,0,0,0,0,0,0,
     "wog","text_wog","bog","text_bog","enbybog","text_enbybog",0,0,0,0,0,0,0,0,0,0,0,0,
     "kirb","text_kirb","ripof","text_ripof","cavebab","text_cavebab",0,0,0,0,0,0,0,0,0,0,0,0,
@@ -264,7 +264,7 @@ selector_grid_contents = {
     "jail","text_jail","ladr","text_ladr","pallm","text_pallm","coco","text_coco","rouz","text_rouz","noet","text_noet","lili","text_lili",0,0,0,0,
     "fenss","text_fenss","platfor","text_platfor","tre","text_tre","stum","text_stum","dayzy","text_dayzy","lie","text_lie","reffil","text_reffil","of in","text_of in",0,0,
     "cobll","text_cobll","spik","text_spik","frut","text_frut","fungye","text_fungye","red","text_red","lie/8","text_lie/8","vlc","text_vlc","foru","text_foru","rod","text_rod",
-    "wuud","text_wuud","spiky","text_spiky","parsol","text_parsol","clok","text_clok","ufu","text_ufu","rockit","text_rockit","swim","text_swim","yanying","text_yanying",0,0,
+    "wuud","text_wuud","spiky","text_spiky","parsol","text_parsol","clok","text_clok","ufu","text_ufu","rockit","text_rockit","swim","text_swim","yanying","text_yanying","casete","text_casete",
     "brik","text_brik","sparkl","text_sparkl","sanglas","text_sanglas","bullb","text_bullb","son","text_son","muun","text_muun","bac","text_bac","warn","text_warn","piep","text_piep",
     "san","text_san","piler","text_piler","sancastl","text_sancastl","shel","text_shel","starr","text_starr","cor","text_cor","byc","text_byc","gorder","text_gorder","tuba","text_tuba",
     "glas","text_glas","bom","text_bom","sine","text_sine","kar","text_kar","can","text_can","ger","text_ger","sirn","text_sirn","chain","text_chain","reflecr","text_reflecr",
@@ -273,15 +273,15 @@ selector_grid_contents = {
   -- page 6: properties, verbs and conditions
   {
     "text_be","text_&","text_got","text_creat","text_snacc","text_spoop","text_copkat","text_moov","text_yeet","text_liek","text_haet","text_stalk","text_ignor","text_paint","text_vs","text_sing","text_soko","text_look at",
-    "text_u","text_u too","text_u tres","text_walk",0,"text_:)","text_no swim","text_ouch","text_protecc",0,"text_nxt","text_stay ther","text_sublvl",0,"text_w/fren","text_arond","text_frenles","text_sans",
-    "text_go","text_goooo","text_icy","text_icyyyy",0,"text_:(","text_ned kee","text_for dor","text_wurd",0,"text_loop",0,0,0,"text_that got","text_that","text_that be","text_wait...",
-    "text_no go","text_go away pls","text_come pls","text_sidekik","text_diagkik","text_:o","text_hotte","text_fridgd","text_meta",0,0,0,0,0,"text_corekt","text_rong","text_timles","text_lit",
-    "text_visit fren","text_slep","text_shy","text_behin u",0,"text_xwx","text_moar","text_split","text_nuek",0,0,0,0,0,"text_samefloat","text_clikt","text_mayb","text_an",
-    "text_flye","text_tall","text_haet skye","text_haet flor",0,"text_;d",0,0,"text_notranform",0,0,0,0,0,"text_look away","text_behind","text_seen by","text_beside",
-    "text_diag","text_ortho","text_go my way","text_direction",0,0,0,0,0,0,0,0,0,0,0,0,"text_past","text_wun",
+    "text_u","text_u too","text_u tres","text_walk",0,"text_:)","text_no swim","text_ouch","text_protecc",0,"text_nxt","text_stay ther",0,"text_giv",0,0,0,"text_look away",
+    "text_go","text_goooo","text_icy","text_icyyyy",0,"text_:(","text_ned kee","text_for dor","text_wurd",0,"text_sublvl","text_loop",0,"text_frenles","text_timles","text_lit","text_corekt","text_rong",
+    "text_no go","text_go away pls","text_come pls","text_sidekik","text_diagkik","text_:o","text_hotte","text_fridgd","text_meta",0,0,0,0,"text_clikt","text_past","text_wun","text_an","text_mayb",
+    "text_visit fren","text_slep","text_shy","text_behin u",0,"text_xwx","text_moar","text_split","text_nuek",0,0,0,0,"text_wait...","text_samefloat",0,0,0,
+    "text_flye","text_tall","text_haet skye","text_haet flor",0,"text_;d","text_gone",0,"text_notranform",0,0,0,0,"text_w/fren","text_arond","text_sans","text_seen by","text_behind",
+    "text_diag","text_ortho","text_go my way","text_direction",0,0,0,0,0,0,0,0,0,"text_that","text_that be","text_that got",0,"text_beside",
     "text_turn cornr","text_folo wal","text_zip","text_hopovr","text_reflecc",0,0,0,0,0,0,0,0,0,0,0,0,0,
     "text_munwalk","text_sidestep","text_diagstep","text_knightstep",0,0,0,0,0,0,0,0,0,0,0,0,0,"text_reed",
-    "text_spin","text_rotatbl","text_noturn",0,0,0,0,0,0,0,0,0,0,0,0,0,"text_enby","text_orang",
+    "text_spin","text_rotatbl","text_noturn","text_stukc",0,0,0,0,0,0,0,0,0,0,0,0,"text_enby","text_orang",
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_brwn","text_tranz","text_yello",
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_blacc","text_gay","text_grun",
     0,0,0,0,0,"text_try again","text_no undo","text_undo","text_za warudo","text_brite",0,0,0,0,0,"text_graey","text_qt","text_cyeann",
@@ -323,7 +323,7 @@ tiles_list = {
     name = "text_be",
     sprite = "text_be",
     type = "text",
-    texttype = {verb = true, verb_be = true},
+    texttype = {verb = true, verb_class = true, verb_property = true},
     color = {0, 3},
     layer = 20,
     tags = {"is"},
@@ -905,7 +905,7 @@ tiles_list = {
     name = "text_f2",
     sprite = "tutorial_f2",
     type = "text",
-    texttype = {verb = true, verb_be = true},
+    texttype = {verb = true, verb_property = true},
     color = {0, 3},
     layer = 20,
     desc = "F2: Used with PRESS.",
@@ -936,7 +936,7 @@ tiles_list = {
     name = "text_f1",
     sprite = "tutorial_f1",
     type = "text",
-    texttype = {verb = true, verb_be = true},
+    texttype = {verb = true, verb_property = true},
     color = {0, 3},
     layer = 20,
   },
@@ -1863,7 +1863,7 @@ tiles_list = {
     name = "text_liek",
     sprite = "text_liek",
     type = "text",
-    texttype = {verb = true, verb_unit = true},
+    texttype = {verb = true, verb_unit = true, verb_direction = true},
     allowconds = true,
     color = {5, 3},
     layer = 20,
@@ -2475,7 +2475,7 @@ tiles_list = {
     name = "text_moov",
     sprite = "text_moov",
     type = "text",
-    texttype = {verb = true, verb_unit = true},
+    texttype = {verb = true, verb_unit = true, verb_direction = true},
     color = {1,3},
     layer = 20,
     tags = {"shift"},
@@ -2486,7 +2486,7 @@ tiles_list = {
     name = "text_haet",
     sprite = "text_haet",
     type = "text",
-    texttype = {verb = true, verb_unit = true},
+    texttype = {verb = true, verb_unit = true, verb_direction = true},
     allowconds = true,
     color = {2, 3},
     layer = 20,
@@ -3029,7 +3029,7 @@ tiles_list = {
     color = {{0, 3}, {2, 2}},
     colored = {true, false},
     type = "text",
-    texttype = {verb = true, verb_be = true},
+    texttype = {verb = true, verb_class = true, verb_property = true},
     layer = 20,
     tags = {"isn't", "is not", "verb"},
 		desc = "BE N'T (Verb): The same as having these two text tiles in a row."
@@ -3061,7 +3061,7 @@ tiles_list = {
     name = "letter_a",
     sprite = "letter_a",
     type = "text",
-    texttype = {letter = true},
+    texttype = {letter = true, note = true},
     color = {0,3},
     layer = 20,
   },
@@ -3070,7 +3070,7 @@ tiles_list = {
     name = "letter_b",
     sprite = "letter_b",
     type = "text",
-    texttype = {letter = true},
+    texttype = {letter = true, note = true},
     color = {0,3},
     layer = 20,
   },
@@ -3079,7 +3079,7 @@ tiles_list = {
     name = "letter_c",
     sprite = "letter_c",
     type = "text",
-    texttype = {letter = true},
+    texttype = {letter = true, note = true},
     color = {0,3},
     layer = 20,
   },
@@ -3088,7 +3088,7 @@ tiles_list = {
     name = "letter_d",
     sprite = "letter_d",
     type = "text",
-    texttype = {letter = true},
+    texttype = {letter = true, note = true},
     color = {0,3},
     layer = 20,
   },
@@ -3097,7 +3097,7 @@ tiles_list = {
     name = "letter_e",
     sprite = "letter_e",
     type = "text",
-    texttype = {letter = true},
+    texttype = {letter = true, note = true},
     color = {0,3},
     layer = 20,
   },
@@ -3106,7 +3106,7 @@ tiles_list = {
     name = "letter_f",
     sprite = "letter_f",
     type = "text",
-    texttype = {letter = true},
+    texttype = {letter = true, note = true},
     color = {0,3},
     layer = 20,
     desc = "press F to pay respects",
@@ -3116,7 +3116,7 @@ tiles_list = {
     name = "letter_g",
     sprite = "letter_g",
     type = "text",
-    texttype = {letter = true},
+    texttype = {letter = true, note = true},
     color = {0,3},
     layer = 20,
   },
@@ -5795,7 +5795,7 @@ tiles_list = {
     rotate = true,
     eye = {x=27, y=7, w=2, h=2},
     tags = {"chars", "cow"},
-    desc = "You found Moo, the Unfindable Cow! Now Time will collapse.",
+    desc = "you found bertie, the unfindable moo! noe lvl be infloop",
   },
   -- 497
   {
@@ -5876,6 +5876,7 @@ tiles_list = {
     color = {4, 1},
     layer = 20,
     tags = {"chars", "flamingo", "bird"},
+    desc = "mr. flame go"
   },
   -- 504
   {
@@ -5945,6 +5946,7 @@ tiles_list = {
     color = {4, 2},
     layer = 20,
     tags = {"chars", "snail"},
+    desc = "its kinda slow to load in tho."
   },
   -- 510
   {
@@ -5968,6 +5970,7 @@ tiles_list = {
     color = {5, 2},
     layer = 20,
     tags = {"chars", "japan", "youkai", "kappa"},
+    desc = ":V"
   },
   -- 512
   {
@@ -6129,6 +6132,7 @@ tiles_list = {
     layer = 5,
     rotate = true,
     tags = {"paw print"},
+    desc = "dogg in bab when?",
   },
   -- 527
   {
@@ -6202,6 +6206,7 @@ tiles_list = {
     color = {5, 2},
     layer = 20,
     tags = {"plant", "cactus"},
+    dec = "the text ben't as ouch"
   },
   -- 534
   {
@@ -6421,7 +6426,7 @@ tiles_list = {
     name = "text_sharp",
     sprite = "letter_sharp",
     type = "text",
-    texttype = {},
+    texttype = {note_modifier = true},
     color = {0,3},
     layer = 20,
     desc = "For use with SING.";
@@ -6431,7 +6436,7 @@ tiles_list = {
     name = "text_flat",
     sprite = "letter_flat",
     type = "text",
-    texttype = {},
+    texttype = {note_modifier = true},
     color = {0,3},
     layer = 20,
     desc = "For use with SING.";
@@ -6517,6 +6522,7 @@ tiles_list = {
     color = {4,2},
     layer = 20,
     tags = {"boo","mario","ghost"},
+    desc = "AAA u scar mee!",
   },
   --561
   {
@@ -6860,6 +6866,7 @@ tiles_list = {
     color = {0, 2},
     layer = 20,
     tags = {"chars", "bird", "city", "pigeon"},
+    desc = "also not a creole",
   },
   -- 592
   {
@@ -6880,6 +6887,7 @@ tiles_list = {
     color = {0,1},
     layer = 20,
     tags = {"trash can", "rubbish bin", "garbage", "delete", "city"},
+    desc = "ha ! goteeM",
   },
   -- 594
   {
@@ -6930,10 +6938,10 @@ tiles_list = {
     color = {{0,3},{1,3}},
     colored = {false,true},
     layer = 5,
-    rotatable = true,
+    rotate = true,
     convertible = false,
     eye = {x=19, y=5, w=2, h=2},
-    tags = {"sans", "undertale", "skeleton"},
+    tags = {"chars", "sans", "undertale", "skeleton"},
     desc = "sans",
   },
   --599
@@ -6944,7 +6952,7 @@ tiles_list = {
     layer = 5,
     tometa = "text_''",
     eye = {x=18, y=11, w=2, h=2},
-    tags = {"ditto", "pokemon"},
+    tags = {"chars", "ditto", "pokemon"},
   },
   -- 600
   {
@@ -6988,6 +6996,117 @@ tiles_list = {
     layer = 20,
     tags = {"oven", "microwave", "future gadget", "of out"},
     desc = "of out",
+  },
+  -- 604
+  {
+    name = "text_stukc",
+    sprite = "text_stukc",
+    type = "text",
+    texttype = {property = true},
+    color = {1,1},
+    layer = 20,
+    tags = {"stuck"},
+    desc = "STUKC: Anything with this property can't move. (I know this is a modded word but I don't know who made it, so I'll add that tag later.)"
+  },
+  -- 605
+  {
+    name = "casete",
+    sprite = "casete",
+    type = "object",
+    color = {0,2},
+    layer = 3,
+    tags = {"cassette","bside","b-side","celeste"},
+    desc = "chiptune bloc",
+  },
+  -- 606
+  {
+    name = "text_casete",
+    sprite = "text_casete",
+    type = "text",
+    texttype = {object = true},
+    color = {0,2},
+    layer = 20,
+    tags = {"cassette","bside","b-side","celeste"},
+    desc = "The sprite changes if you change its color. Try it out!",
+  },
+  -- 607
+  {
+    name = "text_giv",
+    sprite = "text_giv",
+    type = "text",
+    texttype = {verb = true, verb_property = true},
+    color = {2,4},
+    layer = 20,
+    tags = {"give"},
+    desc = "GIV (Verb): If X giv Y, any other units in the same space and flye will get the Y property.",
+  },
+  -- 608
+  {
+    name = "copkat",
+    sprite = {"copkat_base", "copkat_stuff", "copkat_badge"},
+    color = {{0,3}, {1,3}, {2,4}},
+    colored = {true, false, false},
+    layer = 5,
+    rotate = true,
+    convertible = false,
+    eye = {x=27, y=14, w=2, h=2},
+    tags = {"chars", "cop", "police", "cat"},
+    desc = "u hav da wight to wemain siwent!!",
+  },
+  -- 609
+  {
+    name = "kat",
+    sprite = "kat",
+    color = {0, 3},
+    layer = 6,
+    rotate = true,
+    eye = {x=27, y=14, w=2, h=2},
+    tags = {"chars", "cat", "sis", "sister"},
+    desc = "bab's sister"
+  },
+  -- 610
+  {
+    name = "text_kat",
+    sprite = "text_kat",
+    type = "text",
+    texttype = {object = true},
+    color = {4, 1},
+    layer = 20,
+    tags = {"chars", "cat", "sis", "sister"},
+    desc = "meow?"
+  },
+  -- 611
+  {
+    name = "text_gone",
+    sprite = "text_gone",
+    type = "text",
+    texttype = {property = true},
+    color = {0,3},
+    layer = 20,
+    tags = {"done"},
+    desc = "GONE: If something is GONE, it floats away into nothingness."
+  },
+  -- 612
+  {
+    name = "swan",
+    sprite = "swan",
+    color = {0, 3},
+    layer = 6,
+    rotate = true,
+    eye = {x=20, y=5, w=2, h=2},
+    tags = {"chars", "bird", "untitled goose game"},
+    desc = "a goos is a female swan",
+  },
+  -- 613
+  {
+    name = "text_swan",
+    sprite = "text_swan",
+    type = "text",
+    texttype = {object = true},
+    color = {1, 3},
+    layer = 20,
+    tags = {"chars", "bird", "untitled goose game"},
+    desc = "a goos is a female swan",
   },
 }
 

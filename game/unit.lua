@@ -471,6 +471,13 @@ function updateUnits(undoing, big_update)
     
     --MOAR is 4-way growth, MOARx2 is 8-way growth, MOARx3 is 2x 4-way growth, MOARx4 is 2x 8-way growth, MOARx5 is 3x 4-way growth, etc.
     --TODO: If you write txt be moar, it's ambiguous which of a stacked text pair will be the one to grow into an adjacent tile first. But if you make it simultaneous, then you get double growth into corners which turns into exponential growth, which is even worse. It might need to be special cased in a clever way.
+    local isgone = getUnitsWithEffect("gone")
+    for _,unit in ipairs(isgone) do
+      unit.destroyed = true
+      unit.removed = true
+    end
+    deleteUnits(isgone, false, true)
+    
     local give_me_moar = true
     local moar_repeats = 0
     while (give_me_moar) do
@@ -742,7 +749,7 @@ function updateUnits(undoing, big_update)
             end
           end
           if unitmoved then
-            if timecheck(on,"vs",unit) then
+            if timecheck(unit,"vs",on) then
               table.insert(to_destroy,on)
               playSound("break")
             else
@@ -1088,9 +1095,8 @@ function updateUnits(undoing, big_update)
     
     if wins > unwins then
       doWin("won")
-    elseif unwins > wins and readSaveFile(level_name,"won") then
-      playSound("unwin")
-      writeSaveFile(level_name,"won",false)
+    elseif unwins > wins then
+      doWin("won", false)
     end
     
     doDirRules()
@@ -1197,8 +1203,28 @@ function miscUpdates()
           unit.sprite = {"boooo","boooo_mouth"}
         end
       end
+      
+      if unit.fullname == "casete" then
+        if unit.color_override then
+          local color = colour_for_palette[unit.color_override[1]][unit.color_override[2]]
+          if color == "bleu" or color == "cyeann" then
+            unit.sprite = "casete_bleu"
+          elseif color == "reed" or color == "pinc" then
+            unit.sprite = "casete_pinc"
+          elseif color == "orang" or color == "yello" then
+            unit.sprite = "casete_yello"
+          elseif color == "grun" then
+            unit.sprite = "casete_grun"
+          else
+            unit.sprite = "casete_wut"
+          end
+        end
+        if not hasProperty(unit,"no go") then
+          unit.sprite = unit.sprite.."_sunk"
+        end
+      end
 
-      if unit.fullname ~= "os" and unit.fullname ~= "boooo" then
+      if unit.fullname ~= "os" and unit.fullname ~= "boooo" and unit.fullname ~= "casete" then
         if tile.slep and graphical_property_cache["slep"][unit] ~= nil then
           if type(tile.sprite) == "table" then
             for j,name in ipairs(tile.sprite) do
@@ -1239,6 +1265,8 @@ function miscUpdates()
       max_layer = math.max(max_layer, unit.layer)
     end
   end
+  
+  mergeTable(still_converting, still_gone)
 
   for _,unit in ipairs(still_converting) do
     if not units_by_layer[unit.layer] then
@@ -1589,6 +1617,35 @@ function levelBlock()
     end
   end
   
+  if hasProperty(outerlvl, "nuek") then
+    for _,unit in ipairs(units) do
+      if sameFloat(unit, outerlvl) and inBounds(unit.x,unit.y) then
+        table.insert(to_destroy, unit)
+        addParticles("destroy", unit.x, unit.y, {2,2})
+      end
+    end
+  end
+  
+  to_destroy = handleDels(to_destroy)
+  
+  local isvs = matchesRule(nil,"vs",outerlvl)
+  mergeTable(isvs,matchesRule(outerlvl,"vs",nil))
+  for _,ruleparent in ipairs(isvs) do
+    local unit = ruleparent[2]
+    if unit ~= outerlvl and sameFloat(outerlvl,unit) and inBounds(unit.x,unit.y) then
+      local unitmoved = false
+      for _,undo in ipairs(undo_buffer[1]) do
+        if undo[1] == "update" and undo[2] == unit.id and ((undo[3] ~= unit.x) or (undo[4] ~= unit.y)) then
+          unitmoved = true
+        end
+      end
+      if unitmoved then
+        destroyLevel("vs")
+        if not lvlsafe then return 0,0 end
+      end
+    end
+  end
+  
   if hasProperty(outerlvl, "no swim") then
     for _,unit in ipairs(units) do
       if sameFloat(unit, outerlvl) and inBounds(unit.x,unit.y) then
@@ -1898,13 +1955,8 @@ function dropGotUnit(unit, rule)
   
   function dropOneGotUnit(unit, rule, obj_name)
     local object = obj_name
-    local istext = false
     if rule.object.name == "text" then
-      istext = true
       obj_name = "text_" .. unit.fullname
-    end
-    if object:starts("text_") then
-      istext = true
     end
     if object:starts("this") then
       obj_name = "this"
@@ -1912,13 +1964,13 @@ function dropGotUnit(unit, rule)
     local obj_id = tiles_by_name[obj_name]
     local obj_tile = tiles_list[obj_id]
     --let x ben't x txt prevent x be txt, and x ben't txt prevent x be y txt
-    local overriden = false;
+    local overriden = false
     if object == "text" then
       overriden = hasRule(unit, "gotn't", "text_" .. unit.fullname)
-    elseif object:starts("text_") then
+    elseif object:starts("text_") or object:starts("letter_") then
       overriden = hasRule(unit, "gotn't", "text")
     end
-    if not overriden and (obj_name == "mous" or (obj_tile ~= nil and (obj_tile.type == "object" or istext))) then
+    if not overriden and (obj_name == "mous" or obj_tile ~= nil) then
       if obj_name == "mous" then
         local new_mouse = createMouse(unit.x, unit.y)
         addUndo({"create_cursor", new_mouse.id})
@@ -2394,7 +2446,7 @@ function convertUnits(pass)
   deleteUnits(converted_units,true)
 end
 
-function deleteUnits(del_units,convert)
+function deleteUnits(del_units,convert,gone)
   for _,unit in ipairs(del_units) do
     if (not unit.removed_final) then
       for colour,_ in pairs(main_palette_for_colour) do
@@ -2411,7 +2463,7 @@ function deleteUnits(del_units,convert)
         addUndo({"remove", unit.tile, unit.x, unit.y, unit.dir, convert or false, unit.id, unit.special})
       end
     end
-    deleteUnit(unit,convert)
+    deleteUnit(unit,convert,false,gone)
   end
 end
 
@@ -2455,7 +2507,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
   unit.rotatdir = unit.rotate and unit.dir or 1
   
   if (not unit_tests) then
-    unit.draw = {x = unit.x, y = unit.y, scalex = 1, scaley = 1, rotation = (unit.rotatdir - 1) * 45}
+    unit.draw = {x = unit.x, y = unit.y, scalex = 1, scaley = 1, rotation = (unit.rotatdir - 1) * 45, opacity = 1}
     if convert then
       unit.draw.scaley = 0
       addTween(tween.new(0.1, unit.draw, {scaley = 1}), "unit:scale:" .. unit.tempid)
@@ -2506,7 +2558,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
   end
   
   --do this before the 'this' change to textname so that we only get 'this' in referenced_objects
-  if unit.texttype.object and unit.textname ~= "every1" and unit.textname ~= "every2" and unit.textname ~= "every3" and unit.textname ~= "mous" and unit.textname ~= "bordr" and unit.textname ~= "no1" and unit.textname ~= "lvl" and unit.textname ~= "the" and unit.textname ~= "text" and group_names_set[unit.textname] ~= true then
+  if unit.texttype.object and unit.textname ~= "every1" and unit.textname ~= "every2" and unit.textname ~= "every3" and unit.textname ~= "mous" and unit.textname ~= "bordr" and unit.textname ~= "no1" and unit.textname ~= "lvl" and unit.textname ~= "the" and unit.textname ~= "text" and unit.textname ~= "this" and group_names_set[unit.textname] ~= true then
     if not unit.textname:ends("n't") and not unit.textname:starts("text_") and not unit.textname:starts("letter_") and not table.has_value(referenced_objects, unit.textname) then
       table.insert(referenced_objects, unit.textname)
     end
@@ -2537,6 +2589,13 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
     end
     table.insert(units_by_name[unit.fullname], unit)
   end
+  
+  if unit.name:starts("this") then
+    if not units_by_name["text"] then
+      units_by_name["text"] = {}
+    end
+    table.insert(units_by_name["text"], unit)
+  end
 
   if not units_by_layer[unit.layer] then
     units_by_layer[unit.layer] = {}
@@ -2562,10 +2621,10 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
   return unit
 end
 
-function deleteUnit(unit,convert,undoing)
+function deleteUnit(unit,convert,undoing,gone)
   unit.removed = true
   unit.removed_final = true
-  if not undoing and not convert and not level_destroyed and rules_with ~= nil then
+  if not undoing and not convert and not gone and not level_destroyed and rules_with ~= nil then
     gotters = matchesRule(unit, "got", "?")
     for _,ruleparent in ipairs(gotters) do
       local rule = ruleparent.rule
@@ -2589,12 +2648,24 @@ function deleteUnit(unit,convert,undoing)
     removeFromTable(units_by_name[unit.fullname], unit)
   end
   removeFromTable(unitsByTile(unit.x, unit.y), unit)
-  if not convert then
+  if not convert and not gone then
     removeFromTable(units_by_layer[unit.layer], unit)
-  elseif not unit_tests then
-    table.insert(still_converting, unit)
-    addTween(tween.new(0.1, unit.draw, {scaley = 0}), "unit:scale:" .. unit.tempid)
-    tick.delay(function() removeFromTable(still_converting, unit) end, 0.1)
+  end
+  if not unit_tests then
+    if convert then
+      table.insert(still_converting, unit)
+      addUndo{"tween",unit}
+      addTween(tween.new(0.1, unit.draw, {scaley = 0}), "unit:scale:" .. unit.tempid)
+      tick.delay(function() removeFromTable(still_converting, unit) end, 0.1)
+    elseif gone then
+      table.insert(still_converting, unit)
+      addUndo{"tween",unit}
+      local rise = love.math.random(5,9)
+      local rotate = (90 + love.math.random(0,180)) * (love.math.random() > .5 and 1 or -1)
+      local method = love.math.random() > .01 and "inSine" or "inElastic"
+      addTween(tween.new(1.5, unit.draw, {y = unit.y-rise, rotation = rotate, opacity = 0}, method), "unit:rotation:" .. unit.tempid)
+      tick.delay(function() removeFromTable(still_converting, unit) end, 1.5)
+    end
   end
 end
 
@@ -2914,29 +2985,41 @@ function undoWin()
 end
 
 function doWin(result_, payload_)
-	if not currently_winning then
+  if not currently_winning then
     local result = result_ or "won"
-    local payload = payload_ or true
-		won_this_session = true
-    win_reason = result
-    currently_winning = true
-		music_fading = true
-    win_size = 0
-		playSound("win")
-    writeSaveFile(level_name, result, payload)
-    if (not replay_playback) then
-      love.filesystem.createDirectory("levels")
-      local to_save = replay_string
-      local rng_cache_populated = false
-      for _,__ in pairs(rng_cache) do
-        rng_cache_populated = true
-        break
+    local payload = payload_
+    if payload == nil then
+      payload = true
+    end
+    if doing_past_turns then
+      past_queued_wins[result] = payload
+    elseif result == "won" and payload == false then
+      if readSaveFile(level_name,"won") then
+        playSound("unwin")
+        writeSaveFile(level_name,"won",false)
       end
-      if (rng_cache_populated) then
-        to_save = to_save.."|"..love.data.encode("string", "base64", serpent.line(rng_cache))
+    else
+      won_this_session = true
+      win_reason = result
+      currently_winning = true
+      music_fading = true
+      win_size = 0
+      playSound("win")
+      if (not replay_playback) then
+        writeSaveFile(level_name, result, payload)
+        love.filesystem.createDirectory("levels")
+        local to_save = replay_string
+        local rng_cache_populated = false
+        for _,__ in pairs(rng_cache) do
+          rng_cache_populated = true
+          break
+        end
+        if (rng_cache_populated) then
+          to_save = to_save.."|"..love.data.encode("string", "base64", serpent.line(rng_cache))
+        end
+        love.filesystem.write("levels/" .. level_name .. ".replay", to_save)
+        print("Replay successfully saved to ".."levels/" .. level_name .. ".replay")
       end
-      love.filesystem.write("levels/" .. level_name .. ".replay", to_save)
-      print("Replay successfully saved to ".."levels/" .. level_name .. ".replay")
     end
 	end
 end

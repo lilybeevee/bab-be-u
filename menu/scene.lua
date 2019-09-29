@@ -1,9 +1,6 @@
 local scene = {}
 game = require '../game/scene'
 
-local width = love.graphics.getWidth()
-local height = love.graphics.getHeight()
-
 local scrollx = 0
 local scrolly = 0
 
@@ -12,7 +9,8 @@ local music_on = true
 local oldmousex = 0
 local oldmousey = 0
 
-local buttons = {"play", "editor", "options", "exit"}
+local buttons = {}--{"play", "editor", "options", "exit"}
+local git_btn = nil
 
 local options = false
 
@@ -34,13 +32,96 @@ function scene.load()
   }
   nextPresenceUpdate = 0
   love.keyboard.setKeyRepeat(false)
+  scene.buildUI()
+  scene.selecting = true
+end
+
+function scene.buildUI()
+  buttons = {}
+
+  git_btn = ui.component.new()
+    :setSprite(sprites["ui/github"])
+    :setColor(1, 1, 1)
+    :setPos(10, love.graphics.getHeight()-sprites["ui/github"]:getHeight()-10)
+    :setPivot(0.5, 0.5)
+    :onPreDraw(function(o) ui.buttonFX(o, {rotate = false}) end)
+    :onReleased(function() love.system.openURL("https://github.com/lilybeevee/bab-be-u") end)
+
+  if not options then
+    scene.addButton("play", function() switchScene("play") end)
+    scene.addButton("edit", function() switchScene("edit") end)
+    scene.addButton("options", function() options = true; scene.buildUI() end)
+    scene.addButton("exit", function() love.event.quit() end):onHovered(function(o, mouse)
+      if mouse then
+        local mousex, mousey = love.mouse.getPosition()
+        love.mouse.setPosition(mousex, mousey-(o:getHeight())-10)
+      end
+    end)
+  else
+    scene.addOption("music_on", "music", {{"on", true}, {"off", false}})
+    scene.addOption("stopwatch_effect", "stopwatch effect", {{"on", true}, {"off", false}})
+    scene.addOption("fullscreen", "resolution", {{"fullscreen", true}, {"windowed", false}}, function(val)
+      if val then
+        if not love.window.isMaximized() then
+          winwidth, winheight = love.graphics.getDimensions()
+        end
+        love.window.setMode(0, 0, {borderless=false})
+        love.window.maximize()
+        fullscreen = true
+      else
+        love.window.setMode(winwidth, winheight, {borderless=false, resizable=true, minwidth=705, minheight=510})
+        love.window.maximize()
+        love.window.restore()
+        fullscreen = false
+      end
+    end)
+    scene.addButton("back", function() options = false; scene.buildUI() end)
+  end
+
+  local ox, oy = love.graphics.getWidth()/2, love.graphics.getHeight()/2
+  for i,button in ipairs(buttons) do
+    local width, height = button:getSize()
+    button:setPos(ox - width/2, oy - height/2)
+    oy = oy + height + 10
+  end
+end
+
+function scene.addButton(text, func)
+  local button = ui.menu_button.new(text, #buttons%2+1, func)
+  table.insert(buttons, button)
+  return button
+end
+
+function scene.addOption(id, name, options, changed)
+  local option = 1
+  for i,v in ipairs(options) do
+    if settings[id] == v[2] then
+      option = i
+    end
+  end
+  scene.addButton(name .. ": " .. options[option][1], function()
+    settings[id] = options[(((option-1)+1)%#options)+1][2]
+    saveAll()
+    if changed then
+      changed(settings[id])
+    end
+    scene.buildUI()
+  end)
+end
+
+function scene.update(dt)
+  scrollx = scrollx+dt*50
+  scrolly = scrolly+dt*50
 end
 
 function scene.draw(dt)
   local bgsprite = sprites["ui/menu_background"]
 
-  local cells_x = math.ceil(love.graphics.getWidth() / bgsprite:getWidth())
-  local cells_y = math.ceil(love.graphics.getHeight() / bgsprite:getHeight())
+  local width = love.graphics.getWidth()
+  local height = love.graphics.getHeight()
+
+  local cells_x = math.ceil(width / bgsprite:getWidth())
+  local cells_y = math.ceil(height / bgsprite:getHeight())
 
   if not spookmode then
     love.graphics.setColor(1, 1, 1, 1)
@@ -57,49 +138,10 @@ function scene.draw(dt)
     end
   end
 
-  local buttonwidth, buttonheight = sprites["ui/button_1"]:getDimensions()
-
-  local buttoncolor = {84/255, 109/255, 255/255} --terrible but it works so /shrug
-
-  for i=1, #buttons do
-    love.graphics.push()
-    local rot = 0
-
-    local buttonx = width/2-buttonwidth/2
-    local buttony = height/2-buttonheight/2+(buttonheight+10)*i
-
-    if rainbowmode then buttoncolor = hslToRgb((love.timer.getTime()/6+i/10)%1, .5, .5, .9) end
-
-    if not spookmode then
-      love.graphics.setColor(buttoncolor[1], buttoncolor[2], buttoncolor[3])
-    else
-      love.graphics.setColor(0.5,0.5,0.5)
-    end
-    if mouseOverBox(width/2-sprites["ui/button_1"]:getWidth()/2, height/2-buttonheight/2+(buttonheight+10)*i, buttonwidth, buttonheight) then
-      love.graphics.setColor(buttoncolor[1]-0.1, buttoncolor[2]-0.1, buttoncolor[3]-0.1) --i know this is horrible
-      love.graphics.translate(buttonx+buttonwidth/2, buttony+buttonheight/2)
-      love.graphics.rotate(0.05 * math.sin(love.timer.getTime()*3))
-      love.graphics.translate(-buttonx-buttonwidth/2, -buttony-buttonheight/2)
-    end
-
-    love.graphics.draw(sprites["ui/button_white_"..i%2+1], buttonx, buttony, rot, 1, 1)
-
-    love.graphics.pop()
-
-    if not spookmode then
-      love.graphics.setColor(1,1,1)
-    else
-      love.graphics.setColor(0,0,0)
-    end
-    love.graphics.printf(spookmode and (math.random(1,100) == 1 and "stop it" or "help") or buttons[i], width/2-buttonwidth/2, height/2-buttonheight/2+(buttonheight+10)*i+5, buttonwidth, "center")
+  for _,button in ipairs(buttons) do
+    button:draw()
   end
-
-  love.graphics.setColor(1, 1, 1)
-  if mouseOverBox(10, height - sprites["ui/github"]:getHeight() - 10, sprites["ui/github"]:getWidth(), sprites["ui/github"]:getHeight()) then
-    love.graphics.setColor(.7, .7, .7)
-  end
-
-  love.graphics.draw(sprites["ui/github"], 10, height-sprites["ui/github"]:getHeight() - 10)
+  git_btn:draw()
 
   for _,pair in pairs({{1,0},{0,1},{1,1},{-1,0},{0,-1},{-1,-1},{1,-1},{-1,1}}) do
     local outlineSize = 2
@@ -161,114 +203,15 @@ function scene.draw(dt)
   end
 end
 
-function scene.update(dt)
-  if options then
-    buttons = {"music: on", "stopwatch effect: on", "fullscreen", "exit"}
-  else
-    buttons = {"play", "editor", "options", "exit"}
-  end
-  
-  width = love.graphics.getWidth()
-  height = love.graphics.getHeight()
-
-  local buttonwidth, buttonheight = sprites["ui/button_1"]:getDimensions()
-
-  local mousex, mousey = love.mouse.getPosition()
-
-  scrollx = scrollx+dt*50
-  scrolly = scrolly+dt*50
-  
-  for i=1, #buttons do
-    if mouseOverBox(width/2-sprites["ui/button_1"]:getWidth()/2, height/2-buttonheight/2+(buttonheight+10)*i, buttonwidth, buttonheight) then
-      if not pointInside(oldmousex, oldmousey, width/2-sprites["ui/button_1"]:getWidth()/2, height/2-buttonheight/2+(buttonheight+10)*i, buttonwidth, buttonheight) then
-        -- im sorry
-        playSound("mous hovvr")
-        playSound("mous hovvr")
-        playSound("mous hovvr")
-      end
-      if buttons[i] == "exit" and not options then
-        love.mouse.setPosition(mousex, mousey-(buttonheight+10))
-      end
-    end
-
-    if buttons[i] == "windowed" or buttons[i] == "fullscreen" then
-      if not fullscreen then
-        buttons[i] = "fullscreen"
-      else
-        buttons[i] = "windowed"
-      end
-    end
-    if string.starts(buttons[i], "music") then
-      buttons[i] = "music: " .. (settings["music_on"] and "on" or "off")
-    end
-    if string.starts(buttons[i], "stopwatch effect") then
-      buttons[i] = "stopwatch effect: " .. (settings["stopwatch_effect"] and "on" or "off")
-    end
-  end
-
-  oldmousex, oldmousey = love.mouse.getPosition()
-end
-
-function scene.mousePressed(x, y, button)
-  if pointInside(x, y, 10, height - sprites["ui/github"]:getHeight() - 10, sprites["ui/github"]:getWidth(), sprites["ui/github"]:getHeight()) and button == 1 then
-    love.system.openURL("https://github.com/lilybeevee/bab-be-u")
-  end
-end
-
-function scene.mouseReleased(x, y, button)
-  width = love.graphics.getWidth()
-  height = love.graphics.getHeight()
-
-  local buttonwidth, buttonheight = sprites["ui/button_1"]:getDimensions()
-
-  local mousex, mousey = love.mouse.getPosition()
-
-  for i=1, #buttons do
-    if mouseOverBox(width/2-sprites["ui/button_1"]:getWidth()/2, height/2-buttonheight/2+(buttonheight+10)*i, buttonwidth, buttonheight) then
-      if button == 1 then
-        if buttons[i] == "exit" and not options then
-          love.event.quit()
-        elseif buttons[i] == "exit" and options then
-          options = false
-        elseif buttons[i] == "options" then
-          options = true
-        elseif buttons[i] == "play" then
-          switchScene("play")
-        elseif buttons[i] == "editor" then
-          switchScene("edit")
-        elseif buttons[i] == "windowed" or buttons[i] == "fullscreen" then
-          if fullscreen == false then
-            if not love.window.isMaximized( ) then
-              winwidth, winheight = love.graphics.getDimensions( )
-            end
-            love.window.setMode(0, 0, {borderless=false})
-            love.window.maximize( )
-            fullscreen = true
-          elseif fullscreen == true then
-            love.window.setMode(winwidth, winheight, {borderless=false, resizable=true, minwidth=705, minheight=510})
-            love.window.maximize( )
-            love.window.restore( )
-            fullscreen = false
-          end
-
-          settings["fullscreen"] = fullscreen
-          saveAll()
-        elseif string.starts(buttons[i], "music") then
-          settings["music_on"] = not settings["music_on"]
-          saveAll()
-        elseif string.starts(buttons[i], "stopwatch effect") then
-          settings["stopwatch_effect"] = not settings["stopwatch_effect"]
-          saveAll()
-        end
-      end
-    end
-  end
-end
-
 function scene.keyPressed(key)
   if key == "escape" and options then
     options = false
+    scene.buildUI()
   end
+end
+
+function scene.resize(w, h)
+  scene.buildUI()
 end
 
 return scene

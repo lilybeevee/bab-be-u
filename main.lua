@@ -204,6 +204,26 @@ function love.load()
     end
   end
   addsprites()
+  
+  randomize_assets = false
+  math.randomseed(love.timer.getTime())
+  if randomize_assets then
+    local names = {}
+    local spr = {}
+    for n,s in pairs(sprites) do
+      if s:getWidth() < 64 and s:getHeight() < 64 then
+        table.insert(names, n)
+        table.insert(spr, s)
+      end
+    end
+    for i = #spr, 2, -1 do -- https://gist.github.com/Uradamus/10323382
+      local j = math.random(i)
+      spr[i], spr[j] = spr[j], spr[i]
+    end
+    for i,n in ipairs(names) do
+      sprites[n] = spr[i]
+    end
+  end
 
   print(colr.green("✓ added sprites\n"))
 
@@ -315,14 +335,16 @@ function love.load()
   registerSound("time resume", 1)
   registerSound("time resume long", 1)
   registerSound("bup", 0.5)
-  registerSound("clicc", 1.0)
+  registerSound("clicc", 1)
   registerSound("unwin", 0.5)
   registerSound("stopwatch", 1.0)
   registerSound("babbolovania", 0.7)
+  registerSound("honk", 1)
   
   print(colr.green("✓ sounds registered"))
 
   ui.init()
+  ui.overlay.rebuild()
   print(colr.green("✓ ui initialized"))
 
   if discordRPC and discordRPC ~= true then
@@ -354,7 +376,6 @@ function love.load()
 end
 
 function love.keypressed(key,scancode,isrepeat)
-  ui.keyPressed(key)
   if scene ~= loadscene then
     gooi.keypressed(key, scancode)
   end
@@ -405,6 +426,8 @@ function love.keypressed(key,scancode,isrepeat)
 	    love.window.restore()
       fullscreen = false
     end
+    settings["fullscreen"] = fullscreen
+    saveAll()
   elseif key == "f" and love.keyboard.isDown('lctrl') then
     if scene == menu then
       love.system.openURL("file:///"..love.filesystem.getSaveDirectory())
@@ -423,7 +446,7 @@ function love.keypressed(key,scancode,isrepeat)
     end
   end
 
-  if scene and scene.keyPressed then
+  if not ui.keyPressed(key) and scene and scene.keyPressed then
     scene.keyPressed(key, isrepeat)
   end
 end
@@ -433,19 +456,17 @@ function love.keyreleased(key, scancode)
     gooi.keyreleased(key, scancode)
   end
 
-  if scene and scene.keyReleased then
+  if not ui.keyReleased(key) and scene and scene.keyReleased then
     scene.keyReleased(key)
   end
 end
 
 function love.textinput(text)
-  ui.textInput(text)
-
   if scene ~= loadscene then
     gooi.textinput(text)
   end
 
-  if scene and scene.textInput then
+  if not ui.textInput(text) and scene and scene.textInput then
     scene.textInput(text)
   end
 end
@@ -606,7 +627,6 @@ function love.update(dt)
 
   if new_scene then
     scene = new_scene
-    ui.clear()
     clearGooi()
     scene.load()
     new_scene = nil
@@ -647,6 +667,8 @@ function love.draw()
   if scene and scene.draw then
     scene.draw(dt)
   end
+
+  ui.overlay.draw()
 
   if debug_view and not spookmode then
     local mousex, mousey = love.mouse.getPosition()
@@ -753,6 +775,8 @@ function love.draw()
     love.graphics.printf("IN DEBUG - check console, use cont to exit", 0, love.graphics.getHeight()/2-love.graphics.getFont():getLineHeight(), love.graphics.getWidth(), 'center')
     drawnDebugScreen = true
   end
+
+  ui.postDraw()
 end
 
 function love.visible()
@@ -765,9 +789,14 @@ function love.resize(w, h)
   if scene and scene.resize then
     scene.resize(w, h)
   end
+  ui.overlay.rebuild()
   if spookmode then
     love.window.setFullscreen(true)
   end
+end
+
+function love.mousemoved(x, y, dx, dy)
+  ui.lock_hovered = false
 end
 
 function love.quit()
