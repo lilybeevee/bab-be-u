@@ -236,9 +236,9 @@ selector_grid_contents = {
   },
   -- page 4: characters and special objects
   {
-    "bab","text_bab","bunmy","text_bunmy","moo","text_moo","migri","text_migri",0,0,0,0,0,0,"selctr","text_selctr","lvl","text_lvl",
-    "keek","text_keek","creb","text_creb","shrim","text_shrim","kva","text_kva",0,0,0,0,0,0,"this","text_mous","lin","text_lin",
-    "meem","text_meem","statoo","text_statoo","flamgo","text_flamgo",0,0,0,0,0,0,0,0,"text_text","text_frens","text_groop","text_pathz",
+    "bab","text_bab","kat","text_kat","bunmy","text_bunmy","moo","text_moo",0,0,0,0,0,0,"selctr","text_selctr","lvl","text_lvl",
+    "keek","text_keek","creb","text_creb","shrim","text_shrim","migri","text_migri",0,0,0,0,0,0,"this","text_mous","lin","text_lin",
+    "meem","text_meem","statoo","text_statoo","flamgo","text_flamgo","kva","text_kva",0,0,0,0,0,0,"text_text","text_frens","text_groop","text_pathz",
     "skul","text_skul","beeee","text_beeee","gul","text_gul","pidgin","text_pidgin",0,0,0,0,0,0,"text_lethers","text_every1","text_every2","text_every3",
     "ghost fren","text_ghost fren","fishe","text_fishe","starrfishe","text_starrfishe",0,0,0,0,0,0,0,0,0,0,0,"text_no1",
     "robobot","text_robobot","snek","text_snek","sneel","text_sneel",0,0,0,0,0,0,0,0,0,0,0,0,
@@ -7050,7 +7050,29 @@ tiles_list = {
     eye = {x=27, y=14, w=2, h=2},
     tags = {"chars", "cop", "police", "cat"},
     desc = "u hav da wight to wemain siwent!!",
-  }
+  },
+  -- 609
+  {
+    name = "kat",
+    sprite = "kat",
+    color = {0, 3},
+    layer = 6,
+    rotate = true,
+    eye = {x=27, y=14, w=2, h=2},
+    tags = {"chars", "cat", "sis", "sister"},
+    desc = "bab's sister"
+  },
+  -- 610
+  {
+    name = "text_kat",
+    sprite = "text_kat",
+    type = "text",
+    texttype = {object = true},
+    color = {4, 1},
+    layer = 20,
+    tags = {"chars", "cat", "sis", "sister"},
+    desc = "meow?"
+  },
 }
 
 tiles_by_name = {}
