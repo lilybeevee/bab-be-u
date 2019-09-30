@@ -1515,6 +1515,10 @@ function doPortal(unit, px, py, move_dir, dir, reverse)
 end
 
 function dirDiff(dir1, dir2)
+  if (dir1 == nil or dir2 == nil) then
+    print("dirDiff:",dir1,dir2)
+    return 0
+  end
   if dir1 <= dir2 then
     return dir2 - dir1
   else
@@ -1523,6 +1527,13 @@ function dirDiff(dir1, dir2)
 end
 
 function dirAdd(dir1, diff)
+  if (diff == nil) then
+    print("dirAdd:",dir1,diff)
+    return dir1 or 1
+  elseif (dir1 == nil) then
+    print("dirAdd:",dir1,diff)
+    return diff
+  end
   dir1 = dir1 + diff
   while dir1 < 1 do
     dir1 = dir1 + 8
