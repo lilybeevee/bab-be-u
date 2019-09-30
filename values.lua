@@ -7157,6 +7157,28 @@ tiles_list = {
     tags = {"spiderweb", "cobweb", "for spoder"},
     desc = "weebs dont interact",
   },
+  -- 616
+  {
+    name = "flof",
+    sprite = "flof",
+    slep = true,
+    color = {0, 3},
+    layer = 6,
+    rotate = true,
+    tags = {"fluff", "floof", "brother", "dog"},
+    desc = "bab's bro, ver soft, pls pet",
+  },
+  -- 617
+  {
+    name = "text_flof",
+    sprite = "text_flof",
+    type = "text",
+    texttype = {object = true},
+    color = {4, 1},
+    layer = 20,
+    tags = {"fluff", "floof", "brother", "dog"},
+    desc = "not a flog",
+  },
 }
 
 tiles_by_name = {}
