@@ -7059,6 +7059,7 @@ tiles_list = {
   {
     name = "kat",
     sprite = "kat",
+    slep = true,
     color = {0, 3},
     layer = 6,
     rotate = true,
