@@ -1848,7 +1848,9 @@ end
 
 function addParticles(ptype,x,y,color,count)
   if doing_past_turns and not do_past_effects then return end
-
+  
+  if not settings["particles_on"] then return end
+  
   if type(color[1]) == "table" then color = color[1] end
   if ptype == "destroy" then
     local ps = love.graphics.newParticleSystem(sprites["circle"])

@@ -318,6 +318,10 @@ function love.load()
     registerSound("mous special "..i, 0.3)
   end
 
+  for i=1, 6 do
+    registerSound("honk"..i, 1)
+  end
+
   -- ty. much appreciated
   registerSound("break", 0.5)
   registerSound("unlock", 0.6)
@@ -339,7 +343,6 @@ function love.load()
   registerSound("unwin", 0.5)
   registerSound("stopwatch", 1.0)
   registerSound("babbolovania", 0.7)
-  registerSound("honk", 1)
   
   print(colr.green("✓ sounds registered"))
 
@@ -399,7 +402,14 @@ function love.keypressed(key,scancode,isrepeat)
   elseif key == "q" and love.keyboard.isDown('f3') then
     superduperdebugmode = not superduperdebugmode
   elseif key == "m" and love.keyboard.isDown('f3') then
-    is_mobile = not is_mobile
+    if not is_mobile then
+        winwidth, winheight = love.graphics.getDimensions( )
+        love.window.setMode(800, 480, {borderless=false, resizable=true, minwidth=705, minheight=510})
+        is_mobile = true
+    elseif is_mobile then
+        love.window.setMode(winwidth, winheight, {borderless=false, resizable=true, minwidth=705, minheight=510})
+        is_mobile = false
+    end
   elseif key == "d" and love.keyboard.isDown('f3') then
     drumMode = not drumMode
   elseif key == "r" and love.keyboard.isDown('f3') then
@@ -413,18 +423,18 @@ function love.keypressed(key,scancode,isrepeat)
   elseif key == "f5" then
     love.event.quit("restart")
   elseif key == "f11" then
-    if fullscreen == false then
+    if not fullscreen then
 	    if not love.window.isMaximized( ) then
 	  	  winwidth, winheight = love.graphics.getDimensions( )
 	    end
 	    love.window.setMode(0, 0, {borderless=false})
 	    love.window.maximize( )
 	    fullscreen = true
-    elseif fullscreen == true then
-      love.window.setMode(winwidth, winheight, {borderless=false, resizable=true, minwidth=705, minheight=510})
-	    love.window.maximize()
-	    love.window.restore()
-      fullscreen = false
+    elseif fullscreen then
+       love.window.setMode(winwidth, winheight, {borderless=false, resizable=true, minwidth=705, minheight=510})
+	   love.window.maximize()
+	   love.window.restore()
+       fullscreen = false
     end
     settings["fullscreen"] = fullscreen
     saveAll()
@@ -635,6 +645,9 @@ function love.update(dt)
   if not settings["music_on"] then music_volume = 0 end
   if settings["music_on"] then music_volume = 1 end
   updateMusic()
+  
+  if not settings["sfx_on"] then sfx_volume = 0 end
+  if settings["sfx_on"] then sfx_volume = 1 end
 
   if debugEnabled and drawnDebugScreen then
     debug.debug()
