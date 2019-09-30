@@ -522,7 +522,7 @@ function scene.keyPressed(key, isrepeat)
     end
     
     if key == "y" and hasRule("swan","be","u") and units_by_name["swan"] then
-        playSound("honk")
+        playSound("honk"..love.math.random(1,6))
     end
 
     most_recent_key = key

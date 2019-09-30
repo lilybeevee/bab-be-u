@@ -318,6 +318,10 @@ function love.load()
     registerSound("mous special "..i, 0.3)
   end
 
+  for i=1, 6 do
+    registerSound("honk"..i, 1)
+  end
+
   -- ty. much appreciated
   registerSound("break", 0.5)
   registerSound("unlock", 0.6)
@@ -339,7 +343,6 @@ function love.load()
   registerSound("unwin", 0.5)
   registerSound("stopwatch", 1.0)
   registerSound("babbolovania", 0.7)
-  registerSound("honk", 1)
   
   print(colr.green("✓ sounds registered"))
 
