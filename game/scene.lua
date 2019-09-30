@@ -195,11 +195,6 @@ end
 
 function scene.addButton(text, func)
   local button = ui.menu_button.new(text, #buttons%2+1, func)
-  -- may be replaced by a global system later but this is cute for now
-  local bab = ui.component.new():setSprite(sprites["bab"]):setX(-sprites["bab"]:getWidth()-2):setEnabled(false)
-  button:addChild(bab)
-  button:onHovered(function() bab:setEnabled(true) end)
-  button:onExited(function() bab:setEnabled(false) end)
   table.insert(buttons, button)
   return button
 end
