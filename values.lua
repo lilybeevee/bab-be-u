@@ -6300,7 +6300,7 @@ tiles_list = {
     sprite = "text_sing",
     type = "text",
     texttype = {verb = true, verb_sing = true},
-    color = {0, 3},
+    color = {4, 1},
     layer = 20,
     tags = {"play", "music", "say"},
     desc = "SING (Verb): SING A-G with letters!",
