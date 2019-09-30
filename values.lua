@@ -22,6 +22,7 @@ PACK_SPECIAL_V2 = "ss" -- KEY, VALUE
 local defaultsettings = {
   music_on = true,
   sfx_on = true,
+  particles_on = true,
   stopwatch_effect = true,
   fullscreen = false,
   level_compression = "zlib",
