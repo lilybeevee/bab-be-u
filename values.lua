@@ -250,7 +250,7 @@ selector_grid_contents = {
     "han","text_han","iy","text_iy","lisp","text_lisp","paw","text_paw",0,0,0,0,0,0,"larry","text_larry","zsoob","text_zsoob",
     "snoman","text_snoman","pingu","text_pingu",0,0,0,0,0,0,0,0,0,0,0,0,"o","text_o",
     "kapa","text_kapa","urei","text_urei","ryugon","text_ryugon",0,0,0,0,0,0,0,0,0,0,"square","text_square",
-    "os","text_os","hors","text_hors",0,0,0,0,0,0,0,0,0,0,0,0,"triangle","text_triangle",
+    "os","text_os","hors","text_hors",err,text_err,0,0,0,0,0,0,0,0,0,0,"triangle","text_triangle",
   },
   -- page 5: inanimate objects
   {
@@ -7107,6 +7107,25 @@ tiles_list = {
     layer = 20,
     tags = {"chars", "bird", "untitled goose game"},
     desc = "a goos is a female swan",
+  },
+  {
+    name = "err",
+    sprite = "err",
+    color = {0, 3},
+    layer = 6,
+    rotate = true,
+    eye = {x=20, y=5, w=2, h=2},
+    tags = {"chars", "error"},
+    desc = "kinda spooky in bab tbh",
+  },
+  {
+    name = "text_err",
+    sprite = "text_err",
+    type = "text",
+    texttype = {object = true},
+    color = {0, 3},
+    layer = 20,
+    tags = {"chars", "error"},
   },
 }
 
