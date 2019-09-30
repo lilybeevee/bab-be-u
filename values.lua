@@ -23,7 +23,8 @@ local defaultsettings = {
   music_on = true,
   sfx_on = true,
   stopwatch_effect = true,
-  fullscreen = false
+  fullscreen = false,
+  level_compression = "zlib",
 }
 
 if love.filesystem.read("Settings.bab") ~= nil then

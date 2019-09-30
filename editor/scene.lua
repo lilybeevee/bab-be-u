@@ -53,7 +53,7 @@ function scene.load()
   paint_colors = {}
   
   if not level_compression then
-    level_compression = "zlib"
+    level_compression = settings["level_compression"]
   end
   if not level_name then
     level_name = "unnamed"
@@ -1960,7 +1960,7 @@ function scene.saveLevel()
 
   local map = maps[1]
 
-  level_compression = "zlib"
+  level_compression = settings["level_compression"]
   local mapdata = level_compression == "zlib" and love.data.compress("string", "zlib", map.data) or map.data
   local savestr = love.data.encode("string", "base64", mapdata)
 
