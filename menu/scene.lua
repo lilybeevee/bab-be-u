@@ -51,14 +51,10 @@ function scene.buildUI()
     scene.addButton("play", function() switchScene("play") end)
     scene.addButton("edit", function() switchScene("edit") end)
     scene.addButton("options", function() options = true; scene.buildUI() end)
-    scene.addButton("exit", function() love.event.quit() end):onHovered(function(o, mouse)
-      if mouse then
-        local mousex, mousey = love.mouse.getPosition()
-        love.mouse.setPosition(mousex, mousey-(o:getHeight())-10)
-      end
-    end)
+    scene.addButton("exit", function() love.event.quit() end)
   else
     scene.addOption("music_on", "music", {{"on", true}, {"off", false}})
+    scene.addOption("sfx_on", "sound", {{"on", true}, {"off", false}})
     scene.addOption("stopwatch_effect", "stopwatch effect", {{"on", true}, {"off", false}})
     scene.addOption("fullscreen", "resolution", {{"fullscreen", true}, {"windowed", false}}, function(val)
       if val then

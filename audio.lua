@@ -1,6 +1,7 @@
 local music_source = nil
 
 music_volume = 1
+sfx_volume = 1
 
 current_music = ""
 music_fading = false
@@ -34,7 +35,7 @@ function playSound(sound, volume)
     local source = love.audio.newSource(sounds[sound].data, "static")
 
     local adjusted_volume = 1/(2^sound_instances[sound])
-    source:setVolume((volume or 1) * adjusted_volume * sounds[sound].volume)
+    source:setVolume((volume or 1) * adjusted_volume * sounds[sound].volume * sfx_volume)
 
     source:play()
 
