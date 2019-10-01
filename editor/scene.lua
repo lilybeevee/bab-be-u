@@ -1507,6 +1507,9 @@ function scene.draw(dt)
     local hx,hy = getHoveredTile()
     if hx ~= nil then
       if not (ui.hovered or gooi.showingDialog or capturing) then
+        love.graphics.setColor(1, 1, 0)
+        love.graphics.rectangle("line", hx * TILE_SIZE, hy * TILE_SIZE, TILE_SIZE, TILE_SIZE)
+        
         if brush.id and not selector_open then
           local tile = tiles_list[brush.id]
           local sprite_name = tile.sprite
@@ -1549,10 +1552,22 @@ function scene.draw(dt)
               love.graphics.draw(sprite, (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, math.rad(rotation), 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
             end
           end
+          if tile.meta ~= nil then
+            setColor({4,1},0.25)
+            local metasprite = tile.meta == 2 and sprites["meta2"] or sprites["meta1"]
+            love.graphics.draw(metasprite, (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+            if tile.meta > 2 then
+              love.graphics.printf(tostring(tile.meta), (hx + 0.5)*TILE_SIZE-1, (hy + 0.5)*TILE_SIZE+6, 32, "center")
+            end
+            setColor(tile.color)
+          end
+          if (tile.nt ~= nil) then
+            setColor({2,2},0.25)
+            local ntsprite = sprites["n't"]
+            love.graphics.draw(ntsprite, (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+            setColor(tile.color)
+          end
         end
-
-        love.graphics.setColor(1, 1, 0)
-        love.graphics.rectangle("line", hx * TILE_SIZE, hy * TILE_SIZE, TILE_SIZE, TILE_SIZE)
       end
 
       last_hovered_tile = {hx, hy}
