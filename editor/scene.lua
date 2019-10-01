@@ -10,7 +10,7 @@ local typing_name = false
 local ignore_mouse = true
 local saved_settings = false
 
-local settings_open, settings, properties
+local settings_open, settings_ui, properties
 local label_palette, label_music
 local input_name, input_author, input_palette, input_music, input_width, input_height, input_extra, input_parent_level, input_next_level, input_is_overworld, input_puffs_to_clear, input_background_sprite
 
@@ -220,9 +220,9 @@ function scene.setupGooi()
   local dx = 208
   local i = 0
 
-  settings = {x = 0, y = y_top, w = dx*2, h = 450}
-  local y_top = (love.graphics.getHeight() - settings.h) / 2
-  settings.y = y_top
+  settings_ui = {x = 0, y = y_top, w = dx*2, h = 450}
+  local y_top = (love.graphics.getHeight() - settings_ui.h) / 2
+  settings_ui.y = y_top
 
   local w = 200
   local w_half = w/2 - 2 -- 98
@@ -236,9 +236,9 @@ function scene.setupGooi()
     w_half = w/2 - 2
     h = 50
     dx = w+8
-    settings.y = 0
-    settings.w = love.graphics.getWidth()
-    settings.h = love.graphics.getHeight()
+    settings_ui.y = 0
+    settings_ui.w = love.graphics.getWidth()
+    settings_ui.h = love.graphics.getHeight()
   end
 
   local y = y_top
@@ -462,6 +462,11 @@ function scene.keyPressed(key)
       screenshot, screenshot_image = nil, nil
       ignore_mouse = true
     end
+  end
+
+  if key == "g" and key_down["lctrl"] and not selector_open then
+    settings["draw_editor_lins"] = not settings["draw_editor_lins"]
+    saveAll()
   end
 
   if selector_open then
@@ -810,6 +815,9 @@ function scene.mouseReleased(x, y, button)
       end
       if mouseOverBox(30, -30, 62, 14, t) then -- go to level
         loadLevels({level_dialogue.unit.special.name}, "edit", level_dialogue.unit)
+        clear()
+        loadMap()
+        resetMusic(map_music, 0.1)
       end
       scene.updateMap()
     elseif level_dialogue.unit.name == "lin" and mouseOverBox(-75, -58, 150, 50, t) then
@@ -959,7 +967,7 @@ function scene.update(dt)
       else
         label_music:setIcon()
       end
-    elseif (not settings_open or not mouseOverBox(settings.x, settings.y, settings.w, settings.h)) and not level_dialogue.enabled then
+    elseif (not settings_open or not mouseOverBox(settings_ui.x, settings_ui.y, settings_ui.w, settings_ui.h)) and not level_dialogue.enabled then
       local hx,hy = getHoveredTile()
       if hx ~= nil and ((selector_open and inBounds(hx, hy)) or (not selector_open and inBounds(hx, hy, true))) then
         local tileid = hx + hy * mapwidth
@@ -1235,11 +1243,84 @@ function scene.draw(dt)
             setColor(color)
             if unit.name == "lin" then
               local name = "lin"
+              --performance todos: each line gets drawn twice (both ways), so there's probably a way to stop that. might not be necessary though, since there is no lag so far
+              --in fact, the double lines add to the pixelated look, so for now i'm going to make it intentional and actually add it in a couple places to be consistent
+              if settings["draw_editor_lins"] and (not unit.special.pathlock or unit.special.pathlock == "none") then
+                love.graphics.setLineStyle("rough")
+                local orthos = {}
+                local line = {}
+                for ndir=1,4 do
+                  local nx,ny = dirs[ndir][1],dirs[ndir][2]
+                  local px,py = unit.x + nx, unit.y + ny
+                  if inBounds(px,py) then
+                    local around = getUnitsOnTile(px,py)
+                    for _,other in ipairs(around) do
+                      if other.name == "lin" or other.name == "lvl" then
+                        orthos[ndir] = true
+                        table.insert(line,{unit.x*2-unit.draw.x+nx+other.draw.x-other.x, unit.y*2-unit.draw.y+ny+other.draw.y-other.y, other.special.visibility == "hidden"})
+                        break
+                      else
+                        orthos[ndir] = false
+                      end
+                    end
+                  else
+                    orthos[ndir] = true
+                    table.insert(line,{px,py})
+                  end
+                end
+                for ndir=2,8,2 do
+                  local nx,ny = dirs8[ndir][1],dirs8[ndir][2]
+                  local px,py = unit.x + nx, unit.y + ny
+                  local around = getUnitsOnTile(px,py)
+                  for _,other in ipairs(around) do
+                    if (other.name == "lin" or other.name == "lvl") and not orthos[ndir/2] and not orthos[dirAdd(ndir,2)/2] then
+                      table.insert(line,{unit.x*2-unit.draw.x+nx+other.draw.x-other.x, unit.y*2-unit.draw.y+ny+other.draw.y-other.y, other.special.visibility == "hidden"})
+                      break
+                    end
+                  end
+                end
+                if (#line > 0) then
+                  local fulldrawx, fulldrawy = (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE
+                  -- love.graphics.rectangle("fill", fulldrawx-1, fulldrawy-1, 1, 3)
+                  -- love.graphics.rectangle("fill", fulldrawx-2, fulldrawy, 3, 1)
+                  for _,point in ipairs(line) do
+                    --no need to change the rendering to account for movement, since all halflines are drawn to static objects (portals and oob)
+                    local dx = unit.x-point[1]
+                    local dy = unit.y-point[2]
+                    
+                    --draws it twice to make it look the same as the other lines. should be reduced to one if we figure out that performance todo above
+                    --   love.graphics.setLineWidth(3)
+                    -- if dx == 0 or dy == 0 then
+                    --   love.graphics.setLineWidth(3)
+                    -- else
+                    --   love.graphics.setLineWidth(3)
+                    -- end
+
+                    if unit.special.visibility ~= "hidden" then
+                      local odx = TILE_SIZE*dx/(point[3] and 4 or 2)
+                      local ody = TILE_SIZE*dy/(point[3] and 4 or 2)
+                      love.graphics.setLineWidth(4)
+                      love.graphics.line(fulldrawx+dx,fulldrawy+dy,fulldrawx-odx,fulldrawy-ody)
+                    else
+                      local odx = TILE_SIZE*dx/4
+                      local ody = TILE_SIZE*dy/4
+                      love.graphics.setLineWidth(2)
+                      love.graphics.line(fulldrawx+dx,fulldrawy+dy,fulldrawx-odx,fulldrawy-ody)
+                    end
+                  end
+                end
+                if #line > 0 then
+                  name = "no1"
+                end
+                love.graphics.setLineWidth(2)
+              end
               if unit.special.pathlock and unit.special.pathlock ~= "none" then
                 name = name.."_gate"
                 setColor({2, 2})
               end
-              if unit.special.visibility == "hidden" then name = name.."_hidden" end
+              if name ~= "no1" then
+                if unit.special.visibility == "hidden" then name = name.."_hidden" end
+              end
               sprite = sprites[name]
             end
             if unit.name == "lvl" and unit.special.visibility == "hidden" then
@@ -1867,7 +1948,7 @@ function scene.draw(dt)
 
     if settings_open then
       love.graphics.setColor(0.1, 0.1, 0.1, 1)
-      love.graphics.rectangle("fill", settings.x, settings.y, settings.w, settings.h)
+      love.graphics.rectangle("fill", settings_ui.x, settings_ui.y, settings_ui.w, settings_ui.h)
       love.graphics.setColor(1, 1, 1, 1)
       gooi.draw("settings")
     end

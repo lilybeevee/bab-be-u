@@ -26,6 +26,7 @@ local defaultsettings = {
   stopwatch_effect = true,
   fullscreen = false,
   level_compression = "zlib",
+  draw_editor_lins = true,
 }
 
 if love.filesystem.read("Settings.bab") ~= nil then
@@ -253,7 +254,7 @@ selector_grid_contents = {
     "han","text_han","iy","text_iy","lisp","text_lisp","paw","text_paw",0,0,0,0,0,0,"larry","text_larry","zsoob","text_zsoob",
     "snoman","text_snoman","pingu","text_pingu",0,0,0,0,0,0,0,0,0,0,0,0,"o","text_o",
     "kapa","text_kapa","urei","text_urei","ryugon","text_ryugon",0,0,0,0,0,0,0,0,0,0,"square","text_square",
-    "os","text_os","hors","text_hors","err","text_err","mimi","text_mimi",0,0,0,0,0,0,0,0,"triangle","text_triangle",
+    "os","text_os","hors","text_hors","mimi","text_mimi","err","text_err",0,0,0,0,0,0,0,0,"triangle","text_triangle",
   },
   -- page 5: inanimate objects
   {
