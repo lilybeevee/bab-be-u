@@ -26,6 +26,7 @@ local defaultsettings = {
   stopwatch_effect = true,
   fullscreen = false,
   level_compression = "zlib",
+  draw_editor_lins = true,
 }
 
 if love.filesystem.read("Settings.bab") ~= nil then
