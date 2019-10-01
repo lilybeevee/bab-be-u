@@ -1223,8 +1223,26 @@ function miscUpdates()
           unit.sprite = unit.sprite.."_sunk"
         end
       end
+      
+      if unit.fullname == "ches" then
+        if hasProperty(unit,"ned kee") then
+          unit.sprite = "chest_close"
+        else
+          unit.sprite = "chest_open"
+        end
+      end
+      
+      if unit.fullname == "mimi" then
+        if graphical_property_cache["slep"][unit] ~= nil then
+          unit.sprite = "mimic_sleep"
+        elseif hasProperty(unit,"ned kee") then
+          unit.sprite = "mimic_close"
+        else
+          unit.sprite = "mimic_open"
+        end
+      end
 
-      if unit.fullname ~= "os" and unit.fullname ~= "boooo" and unit.fullname ~= "casete" then
+      if unit.fullname ~= "os" and unit.fullname ~= "boooo" and unit.fullname ~= "casete" and unit.fullname ~= "ches" and unit.fullname ~= "mimi" then
         if tile.slep and graphical_property_cache["slep"][unit] ~= nil then
           if type(tile.sprite) == "table" then
             for j,name in ipairs(tile.sprite) do

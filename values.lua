@@ -253,7 +253,7 @@ selector_grid_contents = {
     "han","text_han","iy","text_iy","lisp","text_lisp","paw","text_paw",0,0,0,0,0,0,"larry","text_larry","zsoob","text_zsoob",
     "snoman","text_snoman","pingu","text_pingu",0,0,0,0,0,0,0,0,0,0,0,0,"o","text_o",
     "kapa","text_kapa","urei","text_urei","ryugon","text_ryugon",0,0,0,0,0,0,0,0,0,0,"square","text_square",
-    "os","text_os","hors","text_hors","err","text_err",0,0,0,0,0,0,0,0,0,0,"triangle","text_triangle",
+    "os","text_os","hors","text_hors","err","text_err","mimi","text_mimi",0,0,0,0,0,0,0,0,"triangle","text_triangle",
   },
   -- page 5: inanimate objects
   {
@@ -265,7 +265,7 @@ selector_grid_contents = {
     "hedg","text_hedg","banboo","text_banboo","boll","text_boll","l..uv","text_l..uv","wips","text_wips","pepis","text_pepis","do$h","text_do$h","dling","text_dling",0,0,
     "metl","text_metl","vien","text_vien","leef","text_leef","karot","text_karot","fir","text_fir","eeg","text_eeg","foreeg","text_foreeg","forbeeee","text_forbeeee",0,0,
     "jail","text_jail","ladr","text_ladr","pallm","text_pallm","coco","text_coco","rouz","text_rouz","noet","text_noet","lili","text_lili","weeb","text_weeb",0,0,
-    "fenss","text_fenss","platfor","text_platfor","tre","text_tre","stum","text_stum","dayzy","text_dayzy","lie","text_lie","reffil","text_reffil","of in","text_of in",0,0,
+    "fenss","text_fenss","platfor","text_platfor","tre","text_tre","stum","text_stum","dayzy","text_dayzy","lie","text_lie","reffil","text_reffil","of in","text_of in","ches","text_ches",
     "cobll","text_cobll","spik","text_spik","frut","text_frut","fungye","text_fungye","red","text_red","lie/8","text_lie/8","vlc","text_vlc","foru","text_foru","rod","text_rod",
     "wuud","text_wuud","spiky","text_spiky","parsol","text_parsol","clok","text_clok","ufu","text_ufu","rockit","text_rockit","swim","text_swim","yanying","text_yanying","casete","text_casete",
     "brik","text_brik","sparkl","text_sparkl","sanglas","text_sanglas","bullb","text_bullb","son","text_son","muun","text_muun","bac","text_bac","warn","text_warn","piep","text_piep",
@@ -7158,7 +7158,7 @@ tiles_list = {
     tags = {"spiderweb", "cobweb", "for spoder"},
     desc = "weebs dont interact",
   },
-  -- 616
+  -- 618
   {
     name = "flof",
     sprite = "flof",
@@ -7169,7 +7169,7 @@ tiles_list = {
     tags = {"fluff", "floof", "brother", "dog"},
     desc = "bab's bro, ver soft, pls pet",
   },
-  -- 617
+  -- 619
   {
     name = "text_flof",
     sprite = "text_flof",
@@ -7180,7 +7180,7 @@ tiles_list = {
     tags = {"fluff", "floof", "brother", "dog"},
     desc = "not a flog",
   },
-  -- 618
+  -- 620
   {
     name = "err",
     sprite = "err",
@@ -7191,7 +7191,7 @@ tiles_list = {
     tags = {"chars", "error"},
     desc = "kinda spooky in bab tbh",
   },
-  -- 619
+  -- 621
   {
     name = "text_err",
     sprite = "text_err",
@@ -7200,6 +7200,45 @@ tiles_list = {
     color = {0,3},
     layer = 20,
     tags = {"chars", "error"},
+  },
+  -- 622
+  {
+    name = "ches",
+    sprite = "chest_close",
+    color = {2, 2},
+    layer = 3,
+    tags = {"chest", "treasure chest", "mimic"},
+    desc = "closes when NED KEE",
+  },
+  -- 623
+  {
+    name = "text_ches",
+    sprite = "text_ches",
+    type = "text",
+    texttype = {object = true},
+    color = {2, 2},
+    layer = 20,
+    tags = {"chest", "treasure chest", "mimic"},
+  },
+  -- 624
+  {
+    name = "mimi",
+    sprite = "mimic_close",
+    color = {2, 2},
+    layer = 3,
+    eye = {x=14, y=17, w=2, h=4},
+    tags = {"chars", "chest", "treasure chest", "mimic"},
+    desc = "closes when NED KEE",
+  },
+  -- 625
+  {
+    name = "text_mimi",
+    sprite = "text_mimi",
+    type = "text",
+    texttype = {object = true},
+    color = {2, 2},
+    layer = 20,
+    tags = {"chars", "chest", "treasure chest", "mimic"},
   },
 }
 
