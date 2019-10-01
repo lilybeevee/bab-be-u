@@ -165,6 +165,7 @@ function scene.buildUI()
   else
     scene.addOption("music_on", "music", {{"on", true}, {"off", false}})
     scene.addOption("sfx_on", "sound", {{"on", true}, {"off", false}})
+    scene.addOption("particles_on", "particles", {{"on", true}, {"off", false}})
     scene.addOption("stopwatch_effect", "stopwatch effect", {{"on", true}, {"off", false}})
     scene.addOption("fullscreen", "resolution", {{"fullscreen", true}, {"windowed", false}}, function(val)
       if val then
@@ -195,11 +196,6 @@ end
 
 function scene.addButton(text, func)
   local button = ui.menu_button.new(text, #buttons%2+1, func)
-  -- may be replaced by a global system later but this is cute for now
-  local bab = ui.component.new():setSprite(sprites["bab"]):setX(-sprites["bab"]:getWidth()-2):setEnabled(false)
-  button:addChild(bab)
-  button:onHovered(function() bab:setEnabled(true) end)
-  button:onExited(function() bab:setEnabled(false) end)
   table.insert(buttons, button)
   return button
 end
@@ -527,7 +523,7 @@ function scene.keyPressed(key, isrepeat)
     end
     
     if key == "y" and hasRule("swan","be","u") and units_by_name["swan"] then
-        playSound("honk")
+        playSound("honk"..love.math.random(1,6))
     end
 
     most_recent_key = key
@@ -1203,7 +1199,7 @@ function scene.draw(dt)
       end
     end
     
-    if hasRule(unit,"be","sans") and unit.eye then
+    if hasProperty(unit,"sans") and unit.eye and not hasProperty(unit,"slep") then
       local topleft = {x = fulldrawx - 16, y = fulldrawy - 16}
       love.graphics.setColor(getPaletteColor(1,4))
       love.graphics.rectangle("fill", topleft.x + unit.eye.x, topleft.y + unit.eye.y, unit.eye.w, unit.eye.h)
