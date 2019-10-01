@@ -1452,6 +1452,14 @@ function scene.draw(dt)
               end
             end
             
+            if tile.meta ~= nil and string.match("meta",subsearchstr) then
+              found_matching_tag = true
+            end
+            
+            if tile.nt ~= nil and (string.match("nt",subsearchstr) or string.match("n't",subsearchstr)) then
+              found_matching_tag = true
+            end
+            
             if not found_matching_tag then love.graphics.setColor(0.2,0.2,0.2) end
             if tile.name == "byc" or tile.name == "bac" then
               if found_matching_tag then
@@ -1634,7 +1642,7 @@ function scene.draw(dt)
           color = color:gsub("}",")")
           love.graphics.print("Color: " .. color, 150, roomheight+36)
           local tags = ""
-          if tile.type == "text" then
+          if tile.type == "text" and tile.texttype then
             for key,_ in pairs(tile.texttype) do
               if key == "cond_infix" then
                 tags = tags .. "infix condition, "
@@ -1653,6 +1661,10 @@ function scene.draw(dt)
                 tags = tags .. key:gsub("_"," ") .. ", "
               end
             end
+          elseif tile.meta ~= nil then
+            tags = tags .. "meta, "
+          elseif tile.nt ~= nil then
+            tags = tags .. "nt, "
           else
             tags = "object, "
           end
