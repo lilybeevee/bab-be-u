@@ -216,6 +216,7 @@ function loadMap()
       local floodfill = {}
       local objects = {}
       local lvls = {}
+      local locked_lvls = {}
       local dofloodfill = scene ~= editor
       for _,unit in ipairs(map) do
         id, tile, x, y, dir, specials, color = unit.id, unit.tile, unit.x, unit.y, unit.dir, unit.special, unit.color
@@ -238,6 +239,9 @@ function loadMap()
           elseif specials.visibility == "open" then
             local unit = createUnit(tile, x, y, dir, false, id, nil, color and {{name=color}})
             unit.special = specials
+          elseif specials.visibility == "locked" then
+            table.insert(locked_lvls, {id, tile, x, y, dir, specials, color})
+            table.insert(objects, {id, tile, x, y, dir, specials, color})
           else
             table.insert(objects, {id, tile, x, y, dir, specials, color})
           end
@@ -286,7 +290,6 @@ function loadMap()
                       unit.special.visibility = "open"
                       table.insert(floodfill, {unit, 2})
                     elseif ptype == 2 then
-                      print(unit.special.visibility)
                       unit.special.visibility = "locked"
                       table.insert(floodfill, {unit, 2})
                     elseif ptype == 3 then
@@ -301,6 +304,13 @@ function loadMap()
                 end
               end
             end
+          end
+        end
+        for _,v in ipairs(locked_lvls) do
+          if not created[v[1]] then
+            local unit = createUnit(v[2], v[3], v[4], v[5], false, v[1], nil, v[7] and {{name=v[7]}})
+            created[v[1]] = true
+            unit.special = v[6]
           end
         end
       end
