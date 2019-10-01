@@ -1246,16 +1246,44 @@ function miscUpdates()
       if unit.fullname == "ditto" then
         if hasProperty(unit,"notranform") then
             unit.sprite = "ditto_notranform"
+        elseif hasProperty(unit,"xwx") then
+            unit.sprite = "ditto_xwx"
+        elseif hasProperty(unit,"wurd") then
+            unit.sprite = "ditto_wurd"
         elseif graphical_property_cache["slep"][unit] ~= nil then
             unit.sprite = "ditto_slep"
+        elseif hasProperty(unit,"stelth") then
+            unit.sprite = "ditto_stelth"
+        elseif hasProperty(unit,"qt") then
+            unit.sprite = "ditto_qt"
+        elseif hasProperty(unit,"poor toll") then
+            unit.sprite = "ditto_poor toll"
+        elseif hasProperty(unit,"rave") then
+            unit.sprite = "ditto_rave"
+        elseif hasProperty(unit,"colrful") then
+            unit.sprite = "ditto_colrful"
+        elseif hasProperty(unit,"right") or hasProperty(unit,"downright") or hasProperty(unit,"down") or hasProperty(unit,"downleft") or hasProperty(unit,"left") or hasProperty(unit,"upleft") or hasProperty(unit,"up") or hasProperty(unit,"upright") then
+            unit.sprite = "ditto_direction"
+        elseif hasProperty(unit,"no undo") then
+            unit.sprite = "ditto_no undo"
+        elseif hasProperty(unit,"nuek") then
+            unit.sprite = "ditto_nuek"
         elseif hasProperty(unit,"flye") then
             unit.sprite = "ditto_flye"
+        elseif hasProperty(unit,"tranz") then
+            unit.sprite = "ditto_tranz"
+        elseif hasProperty(unit,"come pls") then
+            unit.sprite = "ditto_come pls"
+        elseif hasProperty(unit,"moar") then
+            unit.sprite = "ditto_moar"
         elseif hasProperty(unit,"hotte") then
             unit.sprite = "ditto_hotte"
         elseif hasProperty(unit,"fridgd") then
             unit.sprite = "ditto_fridgd"
         elseif hasProperty(unit,"zip") then
             unit.sprite = "ditto_zip"
+        elseif hasProperty(unit,"for dor") then
+            unit.sprite = "ditto_fordor"
         else
             unit.sprite = "ditto"
         end
