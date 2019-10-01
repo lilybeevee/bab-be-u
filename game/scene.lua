@@ -1199,7 +1199,7 @@ function scene.draw(dt)
       end
     end
     
-    if hasRule(unit,"be","sans") and unit.eye and not hasProperty(unit,"slep") then
+    if hasProperty(unit,"sans") and unit.eye and not hasProperty(unit,"slep") then
       local topleft = {x = fulldrawx - 16, y = fulldrawy - 16}
       love.graphics.setColor(getPaletteColor(1,4))
       love.graphics.rectangle("fill", topleft.x + unit.eye.x, topleft.y + unit.eye.y, unit.eye.w, unit.eye.h)
