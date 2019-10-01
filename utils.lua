@@ -2489,6 +2489,9 @@ function unsetNewUnits()
   for unit,_ in pairs(new_units_cache) do
     unit.new = false
   end
+  for _,unit in ipairs(cursors) do
+    unit.new = false
+  end
   new_units_cache = {}
 end
 

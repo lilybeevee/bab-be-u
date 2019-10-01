@@ -58,6 +58,7 @@ function createMouse_direct(x,y,id_)
 
   mouse.overlay = {}
   mouse.removed = false
+  mouse.new = true
 
   if #cursors == 0 then
     mouse.primary = true
