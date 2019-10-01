@@ -1515,6 +1515,10 @@ function doPortal(unit, px, py, move_dir, dir, reverse)
 end
 
 function dirDiff(dir1, dir2)
+  if (dir1 == nil or dir2 == nil) then
+    print("dirDiff:",dir1,dir2)
+    return 0
+  end
   if dir1 <= dir2 then
     return dir2 - dir1
   else
@@ -1523,6 +1527,13 @@ function dirDiff(dir1, dir2)
 end
 
 function dirAdd(dir1, diff)
+  if (diff == nil) then
+    print("dirAdd:",dir1,diff)
+    return dir1 or 1
+  elseif (dir1 == nil) then
+    print("dirAdd:",dir1,diff)
+    return diff
+  end
   dir1 = dir1 + diff
   while dir1 < 1 do
     dir1 = dir1 + 8
@@ -1779,13 +1790,13 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
       end
       local would_swap_with = swap_mover or hasProperty(v, "behin u") and pushing
       --pushing a key into a door automatically works
-      if (fordor and hasProperty(v, "ned kee")) or (nedkee and hasProperty(v, "for dor")) then
-        if timecheck(unit,"be","ned kee") and timecheck(v,"be","for dor") and sameFloat(unit, v) then
+      if ((fordor and hasProperty(v, "ned kee")) or (nedkee and hasProperty(v, "for dor"))) and sameFloat(unit, v) then
+        if (timecheck(unit,"be","ned kee") and timecheck(v,"be","for dor")) or (timecheck(unit,"be","for dor") and timecheck(v,"be","ned kee")) then
           table.insert(specials, {"open", {unit, v}})
           return true,movers,specials
         else
-          table.insert(time_destroy,unit)
-          table.insert(time_destroy,v)
+          table.insert(time_destroy,unit.id)
+          table.insert(time_destroy,v.id)
 					addUndo({"time_destroy",unit.id})
 					addUndo({"time_destroy",v.id})
           table.insert(time_sfx,"break")

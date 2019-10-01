@@ -1234,7 +1234,7 @@ function miscUpdates()
             unit.sprite = tiles_list[unit.tile].sprite.."_slep"
           end
         else
-          unit.sprite = tiles_list[unit.tile].sprite
+          unit.sprite = deepCopy(tiles_list[unit.tile].sprite)
         end
       end
 
@@ -2490,7 +2490,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
   local data = tiles_listPossiblyMeta(tile)
 
   unit.tile = tile
-  unit.sprite = data.sprite
+  unit.sprite = deepCopy(data.sprite)
   unit.type = data.type
   unit.texttype = data.texttype or {object = true}
 	unit.meta = data.meta

@@ -591,7 +591,7 @@ function scene.createLevel(o)
   if is_mobile and love.timer.getTime() -mobile_scroll_time > mobile_scroll_delay then return end
   loadLevels({default_map}, load_mode)
   loaded_level = false
-	level_compression = "zlib"
+	level_compression = settings["level_compression"]
 end
 
 function scene.selectWorld(o, button)
