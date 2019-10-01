@@ -88,17 +88,48 @@ function getAllText()
     end
   end
   
-  for name,_ in pairs(rules_effecting_names) do
-    if units_by_name[name] then
-      for __,unit in ipairs(units_by_name[name]) do
-        if hasProperty(unit, "wurd") then
-          if not hasCopied then
-            result = copyTable(result)
-            hasCopied = true
+  local givers = {}
+  
+  if rules_with ~= nil and rules_with["giv"] ~= nil then
+    for unit,__ in pairs(getUnitsWithRuleAndCount(nil, "giv", "wurd")) do
+      table.insert(givers, unit)
+    end
+  end
+  
+  local function matchesGiver(unit, givers)
+    for _,giver in ipairs(givers) do
+      if giver ~= unit and giver.x == unit.x and giver.y == unit.y and sameFloat(unit, giver) then
+        return true
+      end
+    end
+    return false
+  end
+  
+  if (#givers > 0) then
+    for __,unit in ipairs(units) do
+      if hasProperty(unit, "wurd") or unit.name:starts("this") or matchesGiver(unit, givers) then
+        if not hasCopied then
+          result = copyTable(result)
+          hasCopied = true
+        end
+        table.insert(result, unit)
+      else
+        unit.active = false
+      end
+    end
+  else
+    for name,_ in pairs(rules_effecting_names) do
+      if units_by_name[name] then
+        for __,unit in ipairs(units_by_name[name]) do
+          if hasProperty(unit, "wurd") or unit.name:starts("this") then
+            if not hasCopied then
+              result = copyTable(result)
+              hasCopied = true
+            end
+            table.insert(result, unit)
+          else
+            unit.active = false
           end
-          table.insert(result, unit)
-        else
-          unit.active = false
         end
       end
     end
@@ -117,10 +148,35 @@ function getTextOnTile(x, y)
     end
   end
   
-  for name,_ in pairs(rules_effecting_names) do
-    for __,unit in ipairs(getUnitsOnTile(x, y, name)) do
+  local givers = {}
+  
+  if rules_with ~= nil and rules_with["giv"] ~= nil then
+    for __,unit in ipairs(getUnitsOnTile(x, y)) do
+      if hasRule(unit, "giv", "wurd") then
+        table.insert(givers, unit)
+      end
+    end
+  end
+  
+  if (#givers > 0) then
+    for __,unit in ipairs(getUnitsOnTile(x, y)) do
       if hasProperty(unit, "wurd") or unit.name:starts("this") then
         table.insert(result, unit)
+      else
+        for _,giver in ipairs(givers) do
+          if giver ~= unit and sameFloat(giver, unit) then
+            table.insert(result, unit)
+            break
+          end
+        end
+      end
+    end
+  else
+    for name,_ in pairs(rules_effecting_names) do
+      for __,unit in ipairs(getUnitsOnTile(x, y, name)) do
+        if hasProperty(unit, "wurd") or unit.name:starts("this") then
+          table.insert(result, unit)
+        end
       end
     end
   end
@@ -169,16 +225,16 @@ function parseRules(undoing)
   
   local reparse_rule_counts = 
   {
-    #matchesRule(nil, "be", "wurd"),
-    #matchesRule(nil, "be", "poor toll"),
+    #matchesRule(nil, nil, "wurd"),
+    #matchesRule(nil, nil, "poor toll"),
     --TODO: We care about text, specific text and wurd units - this can't be easily specified to matchesRule.
-    #matchesRule(nil, "be", "go arnd"),
-    #matchesRule(nil, "be", "mirr arnd"),
-    #matchesRule(nil, "be", "ortho"),
-    #matchesRule(nil, "be", "diag"),
+    #matchesRule(nil, nil, "go arnd"),
+    #matchesRule(nil, nil, "mirr arnd"),
+    #matchesRule(nil, nil, "ortho"),
+    #matchesRule(nil, nil, "diag"),
     #matchesRule(nil, "ben't", "wurd"),
-    #matchesRule(nil, "be", "za warudo"),
-    #matchesRule(nil, "be", "rong"),
+    #matchesRule(nil, nil, "za warudo"),
+    #matchesRule(nil, nil, "rong"),
     --If and only if poor tolls exist, flyeness changing can affect rules parsing, because the text and portal have to match flyeness to go through.
     rules_with["poor toll"] and #matchesRule(nil, "ignor", nil) or 0,
   }
@@ -322,18 +378,18 @@ function parseRules(undoing)
     --TODO: This works in non-contrived examples, but isn't necessarily robust - for example, if after reparsing, you add one word rule while subtracting another word rule, it'll think nothing has changed. The only way to be ABSOLUTELY robust is to compare that the exact set of parsing effecting rules hasn't changed.
     local reparse_rule_counts_new = 
     {
-    #matchesRule(nil, "be", "wurd"),
-    #matchesRule(nil, "be", "poor toll"),
+    #matchesRule(nil, nil, "wurd"),
+    #matchesRule(nil, nil, "poor toll"),
     --TODO: We care about text, specific text and wurd units - this can't be easily specified to matchesRule.
-    #matchesRule(nil, "be", "go arnd"),
-    #matchesRule(nil, "be", "mirr arnd"),
-    #matchesRule(nil, "be", "ortho"),
-    #matchesRule(nil, "be", "diag"),
+    #matchesRule(nil, nil, "go arnd"),
+    #matchesRule(nil, nil, "mirr arnd"),
+    #matchesRule(nil, nil, "ortho"),
+    #matchesRule(nil, nil, "diag"),
     #matchesRule(nil, "ben't", "wurd"),
-    #matchesRule(nil, "be", "za warudo"),
-    #matchesRule(nil, "be", "rong"),
-    #matchesRule(outerlvl, "be", "go arnd"),
-    #matchesRule(outerlvl, "be", "mirr arnd"),
+    #matchesRule(nil, nil, "za warudo"),
+    #matchesRule(nil, nil, "rong"),
+    #matchesRule(outerlvl, nil, "go arnd"),
+    #matchesRule(outerlvl, nil, "mirr arnd"),
     --If and only if poor tolls exist, flyeness changing can affect rules parsing, because the text and portal have to match flyeness to go through.
     rules_with["poor toll"] and #matchesRule(nil, "ignor", nil) or 0,
     }
@@ -962,6 +1018,11 @@ function populateRulesEffectingNames(r1, r2, r3)
     if (subject:sub(1, 4) ~= "text") then
       rules_effecting_names[subject] = true
     end
+  end
+  
+  --hack for giv - parseRules every turn in case giv rule state changes
+  if hasRule(r1, "giv", r3) then
+    should_parse_rules_at_turn_boundary = true
   end
 end
 

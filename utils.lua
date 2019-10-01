@@ -524,7 +524,7 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
               result = false
             else
               --check that there isn't a verbn't rule - edge cases where this might happen: text vs specific text, group vs unit. This is slow (15% longer unit tests, 0.1 second per unit test) but it fixes old and new bugs so I think we just have to suck it up.
-              if rules_with[rule2.."n't"] ~= nil and #matchesRule(rule_units[i], rule2.."n't", rule.object.name, true) > 0 then
+              if rules_with[rule.verb.name.."n't"] ~= nil and #matchesRule(rule_units[i], rule.verb.name.."n't", rule.object.name, true) > 0 then
                 result = false
               end
             end
@@ -543,7 +543,7 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
             local cond
             if testConds(unit, rule[ruleparts[find_arg]].conds) then
               --check that there isn't a verbn't rule - edge cases where this might happen: text vs specific text, group vs unit. This is slow (15% longer unit tests, 0.1 second per unit test) but it fixes old and new bugs so I think we just have to suck it up.
-              if rules_with[rule2.."n't"] ~= nil and #matchesRule(unit, rule2.."n't", rule.object.name, true) > 0 then
+              if rules_with[rule.verb.name.."n't"] ~= nil and #matchesRule(unit, rule.verb.name.."n't", rule.object.name, true) > 0 then
               else
                 table.insert(ret, {rules, unit})
                 if stopafterone then return ret end
