@@ -379,7 +379,7 @@ function moveBlock()
     end
   end
   
-  local isshy = getUnitsWithEffect("shy")
+  local isshy = getUnitsWithEffect("shy...")
   for _,unit in ipairs(isshy) do
     if not hasProperty("folo wal") and not hasProperty("turn cornr") then
       local dpos = dirs8[unit.dir]
@@ -1195,7 +1195,7 @@ function miscUpdates()
       unit.layer = tile.layer + (20 * (graphical_property_cache["flye"][unit] or 0))
       
       if unit.fullname == "boooo" then
-        if hasProperty(unit,"shy") then
+        if hasProperty(unit,"shy...") then
           unit.sprite = {"boooo_shy","boooo_mouth_shy","boooo_blush"}
         elseif graphical_property_cache["slep"][unit] ~= nil then
           unit.sprite = {"boooo_slep","boooo_mouth_slep"}
