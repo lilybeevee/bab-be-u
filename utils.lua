@@ -611,7 +611,7 @@ function getUnitsWithEffectAndCount(effect)
   --print ("h:"..tostring(#rules))
   for _,dat in ipairs(rules) do
     local unit = dat[2]
-    if not unit.removed and not hasRule(unit, "ben't", prop) then
+    if not unit.removed and not hasRule(unit, "ben't", effect) then
       if result[unit] == nil then
         result[unit] = 0
       end
@@ -624,7 +624,7 @@ function getUnitsWithEffectAndCount(effect)
     local unit = rule[2]
     if not unit.removed then
       for _,other in ipairs(getUnitsOnTile(unit.x, unit.y, nil, false, unit)) do
-        if sameFloat(unit, other) and not hasRule(other, "ben't", prop) then
+        if sameFloat(unit, other) and not hasRule(other, "ben't", effect) then
           if result[other] == nil then
             result[other] = 0
           end
