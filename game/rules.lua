@@ -48,7 +48,7 @@ function clearRules()
     addBaseRule("lvl","be","pathz",{name = "unlocked"})
 		addBaseRule("lin","be","pathz",{name = "unlocked"})
     addBaseRule("selctr","be","flye")
-    addBaseRule("selctr","be","shy")
+    addBaseRule("selctr","be","shy...")
   end
   if (units_by_name["bordr"] or units_by_name["text_bordr"]) then
     addBaseRule("bordr","be","no go")
