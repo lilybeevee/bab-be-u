@@ -815,6 +815,9 @@ function scene.mouseReleased(x, y, button)
       end
       if mouseOverBox(30, -30, 62, 14, t) then -- go to level
         loadLevels({level_dialogue.unit.special.name}, "edit", level_dialogue.unit)
+        clear()
+        loadMap()
+        resetMusic(map_music, 0.1)
       end
       scene.updateMap()
     elseif level_dialogue.unit.name == "lin" and mouseOverBox(-75, -58, 150, 50, t) then
