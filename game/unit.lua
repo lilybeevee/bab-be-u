@@ -379,7 +379,7 @@ function moveBlock()
     end
   end
   
-  local isshy = getUnitsWithEffect("shy")
+  local isshy = getUnitsWithEffect("shy...")
   for _,unit in ipairs(isshy) do
     if not hasProperty("folo wal") and not hasProperty("turn cornr") then
       local dpos = dirs8[unit.dir]
@@ -1195,7 +1195,7 @@ function miscUpdates()
       unit.layer = tile.layer + (20 * (graphical_property_cache["flye"][unit] or 0))
       
       if unit.fullname == "boooo" then
-        if hasProperty(unit,"shy") then
+        if hasProperty(unit,"shy...") then
           unit.sprite = {"boooo_shy","boooo_mouth_shy","boooo_blush"}
         elseif graphical_property_cache["slep"][unit] ~= nil then
           unit.sprite = {"boooo_slep","boooo_mouth_slep"}
@@ -1223,8 +1223,26 @@ function miscUpdates()
           unit.sprite = unit.sprite.."_sunk"
         end
       end
+      
+      if unit.fullname == "ches" then
+        if hasProperty(unit,"ned kee") then
+          unit.sprite = "chest_close"
+        else
+          unit.sprite = "chest_open"
+        end
+      end
+      
+      if unit.fullname == "mimi" then
+        if graphical_property_cache["slep"][unit] ~= nil then
+          unit.sprite = "mimic_sleep"
+        elseif hasProperty(unit,"ned kee") then
+          unit.sprite = "mimic_close"
+        else
+          unit.sprite = "mimic_open"
+        end
+      end
 
-      if unit.fullname ~= "os" and unit.fullname ~= "boooo" and unit.fullname ~= "casete" then
+      if unit.fullname ~= "os" and unit.fullname ~= "boooo" and unit.fullname ~= "casete" and unit.fullname ~= "ches" and unit.fullname ~= "mimi" then
         if tile.slep and graphical_property_cache["slep"][unit] ~= nil then
           if type(tile.sprite) == "table" then
             for j,name in ipairs(tile.sprite) do
