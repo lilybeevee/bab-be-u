@@ -6954,6 +6954,7 @@ tiles_list = {
     sprite = "ditto",
     color = {3,3},
     layer = 5,
+    rotate = true,
     tometa = "text_''",
     eye = {x=18, y=11, w=2, h=2},
     tags = {"chars", "ditto", "pokemon"},

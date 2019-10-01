@@ -1241,8 +1241,27 @@ function miscUpdates()
           unit.sprite = "mimic_open"
         end
       end
-
-      if unit.fullname ~= "os" and unit.fullname ~= "boooo" and unit.fullname ~= "casete" and unit.fullname ~= "ches" and unit.fullname ~= "mimi" then
+      
+      -- here goes the legendary ditto transformations
+      if unit.fullname == "ditto" then
+        if hasProperty(unit,"notranform") then
+            unit.sprite = "ditto_notranform"
+        elseif graphical_property_cache["slep"][unit] ~= nil then
+            unit.sprite = "ditto_slep"
+        elseif hasProperty(unit,"flye") then
+            unit.sprite = "ditto_flye"
+        elseif hasProperty(unit,"hotte") then
+            unit.sprite = "ditto_hotte"
+        elseif hasProperty(unit,"fridgd") then
+            unit.sprite = "ditto_fridgd"
+        elseif hasProperty(unit,"zip") then
+            unit.sprite = "ditto_zip"
+        else
+            unit.sprite = "ditto"
+        end
+      end
+      
+      if unit.fullname ~= "os" and unit.fullname ~= "boooo" and unit.fullname ~= "casete" and unit.fullname ~= "ches" and unit.fullname ~= "mimi" and unit.fullname ~= "ditto" then
         if tile.slep and graphical_property_cache["slep"][unit] ~= nil then
           if type(tile.sprite) == "table" then
             for j,name in ipairs(tile.sprite) do
