@@ -1254,20 +1254,42 @@ function miscUpdates()
             unit.sprite = "ditto_slep"
         elseif hasProperty(unit,"stelth") then
             unit.sprite = "ditto_stelth"
+        elseif hasProperty(unit,"sans") then
+            unit.sprite = "ditto_sans"
+        elseif hasProperty(unit,"ouch") then
+            unit.sprite = "ditto_ouch"
+        elseif hasProperty(unit,"no undo") then
+            unit.sprite = "ditto_no undo"
+        -- Eeveelutions
         elseif hasProperty(unit,"qt") then
-            unit.sprite = "ditto_qt"
+            if hasProperty(unit,"icy") then
+                unit.sprite = "ditto_qt_icy"
+            elseif hasProperty(unit,"hopovr") then
+                unit.sprite = "ditto_qt_hopovr"
+            else
+                unit.sprite = "ditto_qt"
+            end
         elseif hasProperty(unit,"poor toll") then
             unit.sprite = "ditto_poor toll"
+        -- Rotom formes
+        elseif hasProperty(unit,"zip") then
+            unit.sprite = "ditto_zip"
         elseif hasProperty(unit,"rave") then
             unit.sprite = "ditto_rave"
         elseif hasProperty(unit,"colrful") then
             unit.sprite = "ditto_colrful"
+        elseif hasProperty(unit,"torc") then
+            unit.sprite = "ditto_torc"
+        elseif hasProperty(unit,"hopovr") then
+            unit.sprite = "ditto_hopovr"
         elseif hasProperty(unit,"right") or hasProperty(unit,"downright") or hasProperty(unit,"down") or hasProperty(unit,"downleft") or hasProperty(unit,"left") or hasProperty(unit,"upleft") or hasProperty(unit,"up") or hasProperty(unit,"upright") then
             unit.sprite = "ditto_direction"
-        elseif hasProperty(unit,"no undo") then
-            unit.sprite = "ditto_no undo"
         elseif hasProperty(unit,"nuek") then
             unit.sprite = "ditto_nuek"
+        elseif hasProperty(unit,"no swim") then
+            unit.sprite = "ditto_no swim"
+        elseif hasProperty(unit,"haet skye") then
+            unit.sprite = "ditto_haet skye"
         elseif hasProperty(unit,"flye") then
             unit.sprite = "ditto_flye"
         elseif hasProperty(unit,"tranz") then
@@ -1280,10 +1302,10 @@ function miscUpdates()
             unit.sprite = "ditto_hotte"
         elseif hasProperty(unit,"fridgd") then
             unit.sprite = "ditto_fridgd"
-        elseif hasProperty(unit,"zip") then
-            unit.sprite = "ditto_zip"
         elseif hasProperty(unit,"for dor") then
             unit.sprite = "ditto_fordor"
+        elseif hasProperty(unit,"no go") then
+            unit.sprite = "ditto_no go"
         else
             unit.sprite = "ditto"
         end

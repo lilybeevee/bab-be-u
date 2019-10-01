@@ -6956,7 +6956,7 @@ tiles_list = {
     layer = 5,
     rotate = true,
     tometa = "text_''",
-    eye = {x=18, y=11, w=2, h=2},
+    eye = {x=10, y=16, w=4, h=4},
     tags = {"chars", "ditto", "pokemon"},
   },
   -- 600
