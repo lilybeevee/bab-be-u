@@ -2296,4 +2296,28 @@ function scene.translateLevel(dx, dy)
   scene.updateMap()
 end
 
+function scene.wheelMoved(whx, why)
+  if brush.id and tiles_list[brush.id] and tiles_list[brush.id].name then
+    local new = tiles_list[brush.id].name
+    if why < 0 then -- modified from 'x be meta' code
+      if tiles_list[brush.id].tometa then
+        new = tiles_list[brush.id].tometa
+      else
+        new = "text_"..new
+      end
+    elseif why > 0 then
+      if tiles_list[brush.id].demeta then
+        new = tiles_list[brush.id].demeta
+      else
+        if new:starts("text_") then
+          new = new:sub(6, -1)
+        else
+          new = new
+        end -- not gonna set it to nothing
+      end
+    end
+    brush.id = tiles_by_namePossiblyMeta(new) or brush.id
+  end
+end
+
 return scene
