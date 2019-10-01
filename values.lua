@@ -264,7 +264,7 @@ selector_grid_contents = {
     "laav","text_laav","dor","text_dor","kee","text_kee","roc","text_roc","hatt","text_hatt","extre","text_extre","poisbolt","text_poisbolt","smol","text_smol",0,0,
     "gras","text_gras","algay","text_algay","flog","text_flog","boux","text_boux","knif","text_knif","heg","text_heg","timbolt","text_timbolt","tor","text_tor",0,0,
     "hedg","text_hedg","banboo","text_banboo","boll","text_boll","l..uv","text_l..uv","wips","text_wips","pepis","text_pepis","do$h","text_do$h","dling","text_dling",0,0,
-    "metl","text_metl","vien","text_vien","leef","text_leef","karot","text_karot","fir","text_fir","eeg","text_eeg","foreeg","text_foreeg","forbeeee","text_forbeeee",0,0,
+    "metl","text_metl","vien","text_vien","leef","text_leef","karot","text_karot","fir","text_fir","eeg","text_eeg","foreeg","text_foreeg","forbeeee","text_forbeeee","pen","text_pen",
     "jail","text_jail","ladr","text_ladr","pallm","text_pallm","coco","text_coco","rouz","text_rouz","noet","text_noet","lili","text_lili","weeb","text_weeb","3den","text_3den",
     "fenss","text_fenss","platfor","text_platfor","tre","text_tre","stum","text_stum","dayzy","text_dayzy","lie","text_lie","reffil","text_reffil","of in","text_of in","ches","text_ches",
     "cobll","text_cobll","spik","text_spik","frut","text_frut","fungye","text_fungye","red","text_red","lie/8","text_lie/8","vlc","text_vlc","foru","text_foru","rod","text_rod",
@@ -7251,7 +7251,7 @@ tiles_list = {
     tags = {"trident"},
     desc = "dont throw it away",
   },
-  -- 626
+  -- 627
   {
     name = "text_3den",
     sprite = "text_3den",
@@ -7260,6 +7260,24 @@ tiles_list = {
     color = {1, 2},
     layer = 20,
     tags = {"trident"},
+  },
+  -- 628
+  {
+    name = "pen",
+    sprite = "pen",
+    color = {2, 4},
+    layer = 3,
+    rotate = true,
+    tags = {"pencil"},
+  },
+  -- 629
+  {
+    name = "text_pen",
+    sprite = "text_pen",
+    type = "text",
+    texttype = {object = true},
+    color = {2, 4},
+    layer = 20,
   },
 }
 
