@@ -1286,16 +1286,26 @@ function miscUpdates()
             unit.sprite = "ditto_direction"
         elseif hasProperty(unit,"nuek") then
             unit.sprite = "ditto_nuek"
+        elseif hasProperty(unit,"diagstep") then
+            unit.sprite = "ditto_diagstep"
+        elseif hasProperty(unit,"munwalk") then
+            unit.sprite = "ditto_munwalk"
+        elseif hasProperty(unit,"visit fren") then
+            unit.sprite = "ditto_visit fren"
         elseif hasProperty(unit,"no swim") then
             unit.sprite = "ditto_no swim"
         elseif hasProperty(unit,"haet skye") then
             unit.sprite = "ditto_haet skye"
+        elseif hasRule(unit,"got","gunne") then
+            unit.sprite = "ditto_gunne"
         elseif hasProperty(unit,"flye") then
             unit.sprite = "ditto_flye"
         elseif hasProperty(unit,"tranz") then
             unit.sprite = "ditto_tranz"
         elseif hasProperty(unit,"come pls") then
             unit.sprite = "ditto_come pls"
+        elseif hasProperty(unit,"go") then
+            unit.sprite = "ditto_go"
         elseif hasProperty(unit,"moar") then
             unit.sprite = "ditto_moar"
         elseif hasProperty(unit,"hotte") then
