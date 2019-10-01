@@ -7247,6 +7247,7 @@ tiles_list = {
     sprite = "3den",
     color = {1, 2},
     layer = 3,
+    rotate = true,
     tags = {"trident"},
     desc = "dont throw it away",
   },
