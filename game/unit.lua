@@ -1254,6 +1254,8 @@ function miscUpdates()
             unit.sprite = "ditto_slep"
         elseif hasProperty(unit,"rithere") then
             unit.sprite = "ditto_rithere"
+        elseif hasProperty(unit,"thr") then
+            unit.sprite = "ditto_thr"
         elseif hasProperty(unit,"stelth") then
             unit.sprite = "ditto_stelth"
         elseif hasProperty(unit,"sans") then
@@ -2798,7 +2800,11 @@ function deleteUnit(unit,convert,undoing,gone)
       tick.delay(function() removeFromTable(still_converting, unit) end, 0.1)
     elseif gone then
       if unit.fullname == "ditto" then
-        unit.sprite = "ditto_gone"
+        if hasProperty(unit,"notranform") then
+            unit.sprite = "ditto_notranform"
+        else
+            unit.sprite = "ditto_gone"
+        end
       end
       table.insert(still_converting, unit)
       addUndo{"tween",unit}
