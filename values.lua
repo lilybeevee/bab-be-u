@@ -26,6 +26,7 @@ local defaultsettings = {
   stopwatch_effect = true,
   fullscreen = false,
   level_compression = "zlib",
+  draw_editor_lins = true,
 }
 
 if love.filesystem.read("Settings.bab") ~= nil then
@@ -209,7 +210,7 @@ selector_grid_contents = {
     "roc", "text_roc", "text_go away pls", "laav", "text_laav", "text_hotte","text_visit fren", "text_w/fren", "text_arond", "text_frenles", "text_copkat", "text_za warudo", "text_timles", "text_behind", "text_beside", "text_look away", "text_notranform", "this",
     "wal", "text_wal", "text_no go", "l..uv", "text_l..uv", "gras", "text_gras", "text_creat", "text_look at", "text_spoop", "text_yeet", "text_turn cornr", "text_corekt", "text_go arnd", "text_mirr arnd", "text_past", 0, "text_sing",
     "watr", "text_watr", "text_no swim", "meem", "text_meem", "dayzy", "text_dayzy", "text_snacc", "text_seen by" , "text_stalk", "text_moov", "text_folo wal", "text_rong", "text_her", "text_thr", "text_rithere", "text_the", 0,
-    "skul", "text_skul", "text_:(", "til", "text_til", "hurcane", "text_hurcane", "gunne", "text_gunne", "wog", "text_wog", "text_zip", "text_shy", "text_munwalk", "text_sidestep", "text_diagstep", "text_hopovr", "text_knightstep",
+    "skul", "text_skul", "text_:(", "til", "text_til", "hurcane", "text_hurcane", "gunne", "text_gunne", "wog", "text_wog", "text_zip", "text_shy...", "text_munwalk", "text_sidestep", "text_diagstep", "text_hopovr", "text_knightstep",
     "boux", "text_boux", "text_come pls", "os", "text_os", "bup", "text_bup", "han", "text_han", "fenss", "text_fenss", 0, 0, "hol", "text_hol", "text_poor toll", "text_blacc", "text_reed",
     "bellt", "text_bellt", "text_go", "tre", "text_tre", "piler", "text_piler", "hatt", "text_hatt", "hedg", "text_hedg", 0, 0, "rif", "text_rif", "text_glued", "text_whit", "text_orang",
     "boll", "text_boll", "text_:o", "frut", "text_frut", "kirb", "text_kirb", "katany", "text_katany", "metl", "text_metl", 0, 0, 0, 0, "text_enby", "text_colrful", "text_yello",
@@ -253,7 +254,7 @@ selector_grid_contents = {
     "han","text_han","iy","text_iy","lisp","text_lisp","paw","text_paw",0,0,0,0,0,0,"larry","text_larry","zsoob","text_zsoob",
     "snoman","text_snoman","pingu","text_pingu",0,0,0,0,0,0,0,0,0,0,0,0,"o","text_o",
     "kapa","text_kapa","urei","text_urei","ryugon","text_ryugon",0,0,0,0,0,0,0,0,0,0,"square","text_square",
-    "os","text_os","hors","text_hors","err","text_err",0,0,0,0,0,0,0,0,0,0,"triangle","text_triangle",
+    "os","text_os","hors","text_hors","mimi","text_mimi","err","text_err",0,0,0,0,0,0,0,0,"triangle","text_triangle",
   },
   -- page 5: inanimate objects
   {
@@ -262,10 +263,10 @@ selector_grid_contents = {
     "watr","text_watr","colld","text_colld","rein","text_rein","icecub","text_icecub","slippers","text_slippers","pudll","text_pudll","icbolt","text_icbolt","win","text_win","press","text_press",
     "laav","text_laav","dor","text_dor","kee","text_kee","roc","text_roc","hatt","text_hatt","extre","text_extre","poisbolt","text_poisbolt","smol","text_smol",0,0,
     "gras","text_gras","algay","text_algay","flog","text_flog","boux","text_boux","knif","text_knif","heg","text_heg","timbolt","text_timbolt","tor","text_tor",0,0,
-    "hedg","text_hedg","banboo","text_banboo","boll","text_boll","l..uv","text_l..uv","wips","text_wips","pepis","text_pepis","do$h","text_do$h","dling","text_dling",0,0,
-    "metl","text_metl","vien","text_vien","leef","text_leef","karot","text_karot","fir","text_fir","eeg","text_eeg","foreeg","text_foreeg","forbeeee","text_forbeeee",0,0,
-    "jail","text_jail","ladr","text_ladr","pallm","text_pallm","coco","text_coco","rouz","text_rouz","noet","text_noet","lili","text_lili","weeb","text_weeb",0,0,
-    "fenss","text_fenss","platfor","text_platfor","tre","text_tre","stum","text_stum","dayzy","text_dayzy","lie","text_lie","reffil","text_reffil","of in","text_of in",0,0,
+    "hedg","text_hedg","banboo","text_banboo","boll","text_boll","l..uv","text_l..uv","wips","text_wips","pepis","text_pepis","do$h","text_do$h","dling","text_dling","pen","text_pen",
+    "metl","text_metl","vien","text_vien","leef","text_leef","karot","text_karot","fir","text_fir","eeg","text_eeg","foreeg","text_foreeg","forbeeee","text_forbeeee","cil","text_cil",
+    "jail","text_jail","ladr","text_ladr","pallm","text_pallm","coco","text_coco","rouz","text_rouz","noet","text_noet","lili","text_lili","weeb","text_weeb","3den","text_3den",
+    "fenss","text_fenss","platfor","text_platfor","tre","text_tre","stum","text_stum","dayzy","text_dayzy","lie","text_lie","reffil","text_reffil","of in","text_of in","ches","text_ches",
     "cobll","text_cobll","spik","text_spik","frut","text_frut","fungye","text_fungye","red","text_red","lie/8","text_lie/8","vlc","text_vlc","foru","text_foru","rod","text_rod",
     "wuud","text_wuud","spiky","text_spiky","parsol","text_parsol","clok","text_clok","ufu","text_ufu","rockit","text_rockit","swim","text_swim","yanying","text_yanying","casete","text_casete",
     "brik","text_brik","sparkl","text_sparkl","sanglas","text_sanglas","bullb","text_bullb","son","text_son","muun","text_muun","bac","text_bac","warn","text_warn","piep","text_piep",
@@ -279,7 +280,7 @@ selector_grid_contents = {
     "text_u","text_u too","text_u tres","text_walk",0,"text_:)","text_no swim","text_ouch","text_protecc",0,"text_nxt","text_stay ther",0,"text_giv",0,0,0,"text_look away",
     "text_go","text_goooo","text_icy","text_icyyyy",0,"text_:(","text_ned kee","text_for dor","text_wurd",0,"text_sublvl","text_loop",0,"text_frenles","text_timles","text_lit","text_corekt","text_rong",
     "text_no go","text_go away pls","text_come pls","text_sidekik","text_diagkik","text_:o","text_hotte","text_fridgd","text_meta",0,0,0,0,"text_clikt","text_past","text_wun","text_an","text_mayb",
-    "text_visit fren","text_slep","text_shy","text_behin u",0,"text_xwx","text_moar","text_split","text_nuek",0,0,0,0,"text_wait...","text_samefloat",0,0,0,
+    "text_visit fren","text_slep","text_shy...","text_behin u",0,"text_xwx","text_moar","text_split","text_nuek",0,0,0,0,"text_wait...","text_samefloat",0,0,0,
     "text_flye","text_tall","text_haet skye","text_haet flor",0,"text_;d","text_gone",0,"text_notranform",0,0,0,0,"text_w/fren","text_arond","text_sans","text_seen by","text_behind",
     "text_diag","text_ortho","text_go my way","text_direction",0,0,0,0,0,0,0,0,0,"text_that","text_that be","text_that got",0,"text_beside",
     "text_turn cornr","text_folo wal","text_zip","text_hopovr","text_reflecc",0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -1353,6 +1354,7 @@ tiles_list = {
     color = {3, 1},
     layer = 3,
     tags = {"clothing"},
+    desc = "a hatt n tim"
   },
   -- 92
   {
@@ -1472,6 +1474,7 @@ tiles_list = {
     color ={3, 2},
     layer = 1,
     tags = {"checker","diamond"},
+    desc = "ya wannna ploy checkrz?"
   },
   --- 103
   {
@@ -1885,7 +1888,7 @@ tiles_list = {
   },
   -- 141
   {
-    name = "text_shy",
+    name = "text_shy...",
     sprite = "text_shy",
     type = "text",
     texttype = {property = true},
@@ -3213,6 +3216,7 @@ tiles_list = {
     texttype = {letter = true},
     color = {0,3},
     layer = 20,
+    desc = "ome body once told me..."
   },
   -- 261
   {
@@ -3222,6 +3226,7 @@ tiles_list = {
     texttype = {letter = true},
     color = {0,3},
     layer = 20,
+    "he world is gonna roll me."
   },
   -- 262
   {
@@ -6634,6 +6639,7 @@ tiles_list = {
     colored = {true,false,false,false},
     rotate = true,
     eye = {x=21,y=9,w=1,h=2},
+    slep = true,
     layer = 9,
     tags = {"madeline","celeste","chars"},
     desc = "she clim mountain in very good game",
@@ -6657,6 +6663,7 @@ tiles_list = {
     colored = {true,false,false,false,false},
     rotate = true,
     eye = {x=21,y=9,w=1,h=2},
+    slep = true,
     layer = 9,
     tags = {"badeline","celeste","chars"},
     desc = "emag doog yrev ni niatnuom milc ehs",
@@ -6953,8 +6960,9 @@ tiles_list = {
     sprite = "ditto",
     color = {3,3},
     layer = 5,
+    rotate = true,
     tometa = "text_''",
-    eye = {x=18, y=11, w=2, h=2},
+    eye = {x=10, y=16, w=4, h=4},
     tags = {"chars", "ditto", "pokemon"},
   },
   -- 600
@@ -7064,7 +7072,7 @@ tiles_list = {
     color = {0, 3},
     layer = 6,
     rotate = true,
-    eye = {x=27, y=14, w=2, h=2},
+    eye = {x=26, y=11, w=3, h=3},
     tags = {"chars", "cat", "sis", "sister"},
     desc = "bab's sister"
   },
@@ -7158,7 +7166,7 @@ tiles_list = {
     tags = {"spiderweb", "cobweb", "for spoder"},
     desc = "weebs dont interact",
   },
-  -- 616
+  -- 618
   {
     name = "flof",
     sprite = "flof",
@@ -7166,10 +7174,11 @@ tiles_list = {
     color = {0, 3},
     layer = 6,
     rotate = true,
+    eye = {x=23, y=17, w=3, h=3},
     tags = {"fluff", "floof", "brother", "dog"},
     desc = "bab's bro, ver soft, pls pet",
   },
-  -- 617
+  -- 619
   {
     name = "text_flof",
     sprite = "text_flof",
@@ -7180,7 +7189,7 @@ tiles_list = {
     tags = {"fluff", "floof", "brother", "dog"},
     desc = "not a flog",
   },
-  -- 618
+  -- 620
   {
     name = "err",
     sprite = "err",
@@ -7191,7 +7200,7 @@ tiles_list = {
     tags = {"chars", "error"},
     desc = "kinda spooky in bab tbh",
   },
-  -- 619
+  -- 621
   {
     name = "text_err",
     sprite = "text_err",
@@ -7200,6 +7209,105 @@ tiles_list = {
     color = {0,3},
     layer = 20,
     tags = {"chars", "error"},
+  },
+  -- 622
+  {
+    name = "ches",
+    sprite = "chest_close",
+    color = {2, 2},
+    layer = 3,
+    tags = {"chest", "treasure chest", "mimic"},
+    desc = "closes when NED KEE",
+  },
+  -- 623
+  {
+    name = "text_ches",
+    sprite = "text_ches",
+    type = "text",
+    texttype = {object = true},
+    color = {2, 2},
+    layer = 20,
+    tags = {"chest", "treasure chest", "mimic"},
+  },
+  -- 624
+  {
+    name = "mimi",
+    sprite = "mimic_close",
+    color = {2, 2},
+    layer = 3,
+    eye = {x=14, y=17, w=2, h=4},
+    tags = {"chars", "chest", "treasure chest", "mimic"},
+    desc = "closes when NED KEE",
+  },
+  -- 625
+  {
+    name = "text_mimi",
+    sprite = "text_mimi",
+    type = "text",
+    texttype = {object = true},
+    color = {2, 2},
+    layer = 20,
+    tags = {"chars", "chest", "treasure chest", "mimic"},
+  },
+  -- 626
+  {
+    name = "3den",
+    sprite = "3den",
+    color = {1, 2},
+    layer = 3,
+    rotate = true,
+    tags = {"trident"},
+    desc = "dont throw it away",
+  },
+  -- 627
+  {
+    name = "text_3den",
+    sprite = "text_3den",
+    type = "text",
+    texttype = {object = true},
+    color = {1, 2},
+    layer = 20,
+    tags = {"trident"},
+  },
+  -- 628
+  {
+    name = "pen",
+    sprite = "pen",
+    color = {2, 4},
+    layer = 3,
+    rotate = true,
+    tags = {"pencil"},
+  },
+  -- 629
+  {
+    name = "text_pen",
+    sprite = "text_pen",
+    type = "text",
+    texttype = {object = true},
+    color = {2, 4},
+    layer = 20,
+    tags = {"pencil"},
+    desc = "the creating one",
+  },
+  -- 630
+  {
+    name = "cil",
+    sprite = "cil",
+    color = {2, 4},
+    layer = 3,
+    rotate = true,
+    tags = {"pencil", "eraser"},
+  },
+  -- 631
+  {
+    name = "text_cil",
+    sprite = "text_cil",
+    type = "text",
+    texttype = {object = true},
+    color = {2, 4},
+    layer = 20,
+    tags = {"pencil", "eraser"},
+    desc = "the deleting one",
   },
 }
 

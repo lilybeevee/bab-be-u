@@ -216,6 +216,7 @@ function loadMap()
       local floodfill = {}
       local objects = {}
       local lvls = {}
+      local locked_lvls = {}
       local dofloodfill = scene ~= editor
       for _,unit in ipairs(map) do
         id, tile, x, y, dir, specials, color = unit.id, unit.tile, unit.x, unit.y, unit.dir, unit.special, unit.color
@@ -238,6 +239,9 @@ function loadMap()
           elseif specials.visibility == "open" then
             local unit = createUnit(tile, x, y, dir, false, id, nil, color and {{name=color}})
             unit.special = specials
+          elseif specials.visibility == "locked" then
+            table.insert(locked_lvls, {id, tile, x, y, dir, specials, color})
+            table.insert(objects, {id, tile, x, y, dir, specials, color})
           else
             table.insert(objects, {id, tile, x, y, dir, specials, color})
           end
@@ -286,7 +290,6 @@ function loadMap()
                       unit.special.visibility = "open"
                       table.insert(floodfill, {unit, 2})
                     elseif ptype == 2 then
-                      print(unit.special.visibility)
                       unit.special.visibility = "locked"
                       table.insert(floodfill, {unit, 2})
                     elseif ptype == 3 then
@@ -301,6 +304,13 @@ function loadMap()
                 end
               end
             end
+          end
+        end
+        for _,v in ipairs(locked_lvls) do
+          if not created[v[1]] then
+            local unit = createUnit(v[2], v[3], v[4], v[5], false, v[1], nil, v[7] and {{name=v[7]}})
+            created[v[1]] = true
+            unit.special = v[6]
           end
         end
       end
@@ -524,7 +534,7 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
               result = false
             else
               --check that there isn't a verbn't rule - edge cases where this might happen: text vs specific text, group vs unit. This is slow (15% longer unit tests, 0.1 second per unit test) but it fixes old and new bugs so I think we just have to suck it up.
-              if rules_with[rule2.."n't"] ~= nil and #matchesRule(rule_units[i], rule2.."n't", rule.object.name, true) > 0 then
+              if rules_with[rule.verb.name.."n't"] ~= nil and #matchesRule(rule_units[i], rule.verb.name.."n't", rule.object.name, true) > 0 then
                 result = false
               end
             end
@@ -543,7 +553,7 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
             local cond
             if testConds(unit, rule[ruleparts[find_arg]].conds) then
               --check that there isn't a verbn't rule - edge cases where this might happen: text vs specific text, group vs unit. This is slow (15% longer unit tests, 0.1 second per unit test) but it fixes old and new bugs so I think we just have to suck it up.
-              if rules_with[rule2.."n't"] ~= nil and #matchesRule(unit, rule2.."n't", rule.object.name, true) > 0 then
+              if rules_with[rule.verb.name.."n't"] ~= nil and #matchesRule(unit, rule.verb.name.."n't", rule.object.name, true) > 0 then
               else
                 table.insert(ret, {rules, unit})
                 if stopafterone then return ret end
@@ -611,7 +621,7 @@ function getUnitsWithEffectAndCount(effect)
   --print ("h:"..tostring(#rules))
   for _,dat in ipairs(rules) do
     local unit = dat[2]
-    if not unit.removed and not hasRule(unit, "ben't", prop) then
+    if not unit.removed and not hasRule(unit, "ben't", effect) then
       if result[unit] == nil then
         result[unit] = 0
       end
@@ -624,7 +634,7 @@ function getUnitsWithEffectAndCount(effect)
     local unit = rule[2]
     if not unit.removed then
       for _,other in ipairs(getUnitsOnTile(unit.x, unit.y, nil, false, unit)) do
-        if sameFloat(unit, other) and not hasRule(other, "ben't", prop) then
+        if sameFloat(unit, other) and not hasRule(other, "ben't", effect) then
           if result[other] == nil then
             result[other] = 0
           end
@@ -2489,6 +2499,9 @@ function unsetNewUnits()
   for unit,_ in pairs(new_units_cache) do
     unit.new = false
   end
+  for _,unit in ipairs(cursors) do
+    unit.new = false
+  end
   new_units_cache = {}
 end
 
@@ -2698,14 +2711,17 @@ function addRuleSimple(subject, verb, object, units, dir)
     rule = {
       subject = {
         name = subject.name or subject[1],
-        conds = subject.conds or subject[2]
+        conds = subject.conds or subject[2],
+        unit = subject.unit
       },
       verb = {
-        name = verb.name or verb[1] or verb
+        name = verb.name or verb[1] or verb,
+        unit = verb.unit
       },
       object = {
         name = object.name or object[1],
-        conds = object.conds or object[2]
+        conds = object.conds or object[2],
+        unit = object.unit
       }
     },
     units = units,

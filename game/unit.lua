@@ -379,7 +379,7 @@ function moveBlock()
     end
   end
   
-  local isshy = getUnitsWithEffect("shy")
+  local isshy = getUnitsWithEffect("shy...")
   for _,unit in ipairs(isshy) do
     if not hasProperty("folo wal") and not hasProperty("turn cornr") then
       local dpos = dirs8[unit.dir]
@@ -1195,7 +1195,7 @@ function miscUpdates()
       unit.layer = tile.layer + (20 * (graphical_property_cache["flye"][unit] or 0))
       
       if unit.fullname == "boooo" then
-        if hasProperty(unit,"shy") then
+        if hasProperty(unit,"shy...") then
           unit.sprite = {"boooo_shy","boooo_mouth_shy","boooo_blush"}
         elseif graphical_property_cache["slep"][unit] ~= nil then
           unit.sprite = {"boooo_slep","boooo_mouth_slep"}
@@ -1223,8 +1223,105 @@ function miscUpdates()
           unit.sprite = unit.sprite.."_sunk"
         end
       end
-
-      if unit.fullname ~= "os" and unit.fullname ~= "boooo" and unit.fullname ~= "casete" then
+      
+      if unit.fullname == "ches" then
+        if hasProperty(unit,"ned kee") then
+          unit.sprite = "chest_close"
+        else
+          unit.sprite = "chest_open"
+        end
+      end
+      
+      if unit.fullname == "mimi" then
+        if graphical_property_cache["slep"][unit] ~= nil then
+          unit.sprite = "mimic_sleep"
+        elseif hasProperty(unit,"ned kee") then
+          unit.sprite = "mimic_close"
+        else
+          unit.sprite = "mimic_open"
+        end
+      end
+      
+      -- here goes the legendary ditto transformations
+      if unit.fullname == "ditto" then
+        if hasProperty(unit,"notranform") then
+            unit.sprite = "ditto_notranform"
+        elseif hasProperty(unit,"xwx") then
+            unit.sprite = "ditto_xwx"
+        elseif hasProperty(unit,"wurd") then
+            unit.sprite = "ditto_wurd"
+        elseif graphical_property_cache["slep"][unit] ~= nil then
+            unit.sprite = "ditto_slep"
+        elseif hasProperty(unit,"stelth") then
+            unit.sprite = "ditto_stelth"
+        elseif hasProperty(unit,"sans") then
+            unit.sprite = "ditto_sans"
+        elseif hasProperty(unit,"ouch") then
+            unit.sprite = "ditto_ouch"
+        elseif hasProperty(unit,"no undo") then
+            unit.sprite = "ditto_no undo"
+        -- Eeveelutions
+        elseif hasProperty(unit,"qt") then
+            if hasProperty(unit,"icy") then
+                unit.sprite = "ditto_qt_icy"
+            elseif hasProperty(unit,"hopovr") then
+                unit.sprite = "ditto_qt_hopovr"
+            else
+                unit.sprite = "ditto_qt"
+            end
+        elseif hasProperty(unit,"poor toll") then
+            unit.sprite = "ditto_poor toll"
+        -- Rotom formes
+        elseif hasProperty(unit,"zip") then
+            unit.sprite = "ditto_zip"
+        elseif hasProperty(unit,"rave") then
+            unit.sprite = "ditto_rave"
+        elseif hasProperty(unit,"colrful") then
+            unit.sprite = "ditto_colrful"
+        elseif hasProperty(unit,"torc") then
+            unit.sprite = "ditto_torc"
+        elseif hasProperty(unit,"hopovr") then
+            unit.sprite = "ditto_hopovr"
+        elseif hasProperty(unit,"right") or hasProperty(unit,"downright") or hasProperty(unit,"down") or hasProperty(unit,"downleft") or hasProperty(unit,"left") or hasProperty(unit,"upleft") or hasProperty(unit,"up") or hasProperty(unit,"upright") then
+            unit.sprite = "ditto_direction"
+        elseif hasProperty(unit,"nuek") then
+            unit.sprite = "ditto_nuek"
+        elseif hasProperty(unit,"diagstep") then
+            unit.sprite = "ditto_diagstep"
+        elseif hasProperty(unit,"munwalk") then
+            unit.sprite = "ditto_munwalk"
+        elseif hasProperty(unit,"visit fren") then
+            unit.sprite = "ditto_visit fren"
+        elseif hasProperty(unit,"no swim") then
+            unit.sprite = "ditto_no swim"
+        elseif hasProperty(unit,"haet skye") then
+            unit.sprite = "ditto_haet skye"
+        elseif hasRule(unit,"got","gunne") then
+            unit.sprite = "ditto_gunne"
+        elseif hasProperty(unit,"flye") then
+            unit.sprite = "ditto_flye"
+        elseif hasProperty(unit,"tranz") then
+            unit.sprite = "ditto_tranz"
+        elseif hasProperty(unit,"come pls") then
+            unit.sprite = "ditto_come pls"
+        elseif hasProperty(unit,"go") then
+            unit.sprite = "ditto_go"
+        elseif hasProperty(unit,"moar") then
+            unit.sprite = "ditto_moar"
+        elseif hasProperty(unit,"hotte") then
+            unit.sprite = "ditto_hotte"
+        elseif hasProperty(unit,"fridgd") then
+            unit.sprite = "ditto_fridgd"
+        elseif hasProperty(unit,"for dor") then
+            unit.sprite = "ditto_fordor"
+        elseif hasProperty(unit,"no go") then
+            unit.sprite = "ditto_no go"
+        else
+            unit.sprite = "ditto"
+        end
+      end
+      
+      if unit.fullname ~= "os" and unit.fullname ~= "boooo" and unit.fullname ~= "casete" and unit.fullname ~= "ches" and unit.fullname ~= "mimi" and unit.fullname ~= "ditto" then
         if tile.slep and graphical_property_cache["slep"][unit] ~= nil then
           if type(tile.sprite) == "table" then
             for j,name in ipairs(tile.sprite) do
