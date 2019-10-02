@@ -261,8 +261,8 @@ selector_grid_contents = {
     "wal","text_wal","bellt","text_bellt","hurcane","text_hurcane","buble","text_buble","katany","text_katany","petnygrame","text_petnygrame","firbolt","text_firbolt","hol","text_hol","golf","text_golf",
     "til","text_til","arro","text_arro","clowd","text_clowd","sno","text_sno","gunne","text_gunne","scarr","text_scarr","litbolt","text_litbolt","rif","text_rif","paint","text_paint",
     "watr","text_watr","colld","text_colld","rein","text_rein","icecub","text_icecub","slippers","text_slippers","pudll","text_pudll","icbolt","text_icbolt","win","text_win","press","text_press",
-    "laav","text_laav","dor","text_dor","kee","text_kee","roc","text_roc","hatt","text_hatt","extre","text_extre","poisbolt","text_poisbolt","smol","text_smol",0,0,
-    "gras","text_gras","algay","text_algay","flog","text_flog","boux","text_boux","knif","text_knif","heg","text_heg","timbolt","text_timbolt","tor","text_tor",0,0,
+    "laav","text_laav","dor","text_dor","kee","text_kee","roc","text_roc","hatt","text_hatt","extre","text_extre","poisbolt","text_poisbolt","smol","text_smol","pumkin","text_pumkin",
+    "gras","text_gras","algay","text_algay","flog","text_flog","boux","text_boux","knif","text_knif","heg","text_heg","timbolt","text_timbolt","tor","text_tor","grav","text_grav",
     "hedg","text_hedg","banboo","text_banboo","boll","text_boll","l..uv","text_l..uv","wips","text_wips","pepis","text_pepis","do$h","text_do$h","dling","text_dling","pen","text_pen",
     "metl","text_metl","vien","text_vien","leef","text_leef","karot","text_karot","fir","text_fir","eeg","text_eeg","foreeg","text_foreeg","forbeeee","text_forbeeee","cil","text_cil",
     "jail","text_jail","ladr","text_ladr","pallm","text_pallm","coco","text_coco","rouz","text_rouz","noet","text_noet","lili","text_lili","weeb","text_weeb","3den","text_3den",
@@ -7308,6 +7308,45 @@ tiles_list = {
     layer = 20,
     tags = {"pencil", "eraser"},
     desc = "the deleting one",
+  },
+  -- 632
+  {
+    name = "grav",
+    sprite = "grav",
+    color = {0, 1},
+    layer = 2,
+    tags = {"gravestone", "tombstone", "spooky"},
+  },
+  -- 633
+  {
+    name = "text_grav",
+    sprite = "text_grav",
+    type = "text",
+    texttype = {object = true},
+    color = {0, 1},
+    layer = 20,
+    tags = {"gravestone", "tombstone", "spooky"},
+    desc = "not to be confused with the removed GRAVY",
+  },
+  -- 634
+  {
+    name = "pumkin",
+    sprite = "pumkin",
+    color = {2, 3},
+    layer = 4,
+    eye = {x=21, y=15, w=5, h=3},
+    tags = {"pumpkin", "plant", "spooky"},
+    desc = "turns spooky with the correct properties",
+  },
+  -- 635
+  {
+    name = "text_pumkin",
+    sprite = "text_pumkin",
+    type = "text",
+    texttype = {object = true},
+    color = {2, 3},
+    layer = 20,
+    tags = {"pumpkin", "plant", "spooky"},
   },
 }
 

@@ -1242,10 +1242,24 @@ function miscUpdates()
         end
       end
       
+      if unit.fullname == "pumkin" then
+        if hasProperty(unit,"sans") or hasProperty(unit,":(") or hasProperty(unit,"brite") or hasProperty(unit,"torc") or hasRule(unit,"spoop","?") then
+            if graphical_property_cache["slep"][unit] ~= nil then
+                unit.sprite = "pumkin_slep"
+            else
+                unit.sprite = "pumkin_jack"
+            end
+        else
+            unit.sprite = "pumkin"
+        end
+      end
+      
       -- here goes the legendary ditto transformations
       if unit.fullname == "ditto" then
         if hasProperty(unit,"notranform") then
             unit.sprite = "ditto_notranform"
+        elseif hasRule(unit,"spoop","?") then
+            unit.sprite = "ditto_spoop"
         elseif hasProperty(unit,"xwx") then
             unit.sprite = "ditto_xwx"
         elseif hasProperty(unit,"wurd") then
@@ -1365,7 +1379,7 @@ function miscUpdates()
         end
       end
       
-      if unit.fullname ~= "os" and unit.fullname ~= "boooo" and unit.fullname ~= "casete" and unit.fullname ~= "ches" and unit.fullname ~= "mimi" and unit.fullname ~= "ditto" then
+      if unit.fullname ~= "os" and unit.fullname ~= "boooo" and unit.fullname ~= "casete" and unit.fullname ~= "ches" and unit.fullname ~= "mimi" and unit.fullname ~= "ditto" and unit.fullname ~= "pumkin" then
         if tile.slep and graphical_property_cache["slep"][unit] ~= nil then
           if type(tile.sprite) == "table" then
             for j,name in ipairs(tile.sprite) do
