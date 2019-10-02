@@ -1354,6 +1354,7 @@ tiles_list = {
     color = {3, 1},
     layer = 3,
     tags = {"clothing"},
+    desc = "a hatt n tim"
   },
   -- 92
   {
@@ -1473,6 +1474,7 @@ tiles_list = {
     color ={3, 2},
     layer = 1,
     tags = {"checker","diamond"},
+    desc = "ya wannna ploy checkrz?"
   },
   --- 103
   {
@@ -3214,6 +3216,7 @@ tiles_list = {
     texttype = {letter = true},
     color = {0,3},
     layer = 20,
+    desc = "ome body once told me..."
   },
   -- 261
   {
@@ -3223,6 +3226,7 @@ tiles_list = {
     texttype = {letter = true},
     color = {0,3},
     layer = 20,
+    "he world is gonna roll me."
   },
   -- 262
   {
