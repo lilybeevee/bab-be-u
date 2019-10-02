@@ -1252,6 +1252,8 @@ function miscUpdates()
             unit.sprite = "ditto_wurd"
         elseif graphical_property_cache["slep"][unit] ~= nil then
             unit.sprite = "ditto_slep"
+        elseif hasProperty(unit,"rithere") then
+            unit.sprite = "ditto_rithere"
         elseif hasProperty(unit,"stelth") then
             unit.sprite = "ditto_stelth"
         elseif hasProperty(unit,"sans") then
@@ -1280,22 +1282,32 @@ function miscUpdates()
             unit.sprite = "ditto_sing"
         elseif hasRule(unit,"paint","?") then
             unit.sprite = "ditto_paint"
-        elseif hasProperty(unit,"rave") then
-            unit.sprite = "ditto_rave"
+        elseif hasProperty(unit,"go") then
+            unit.sprite = "ditto_go"
         elseif hasProperty(unit,"folo wal") then
             unit.sprite = "ditto_folo wal"
+        elseif hasProperty(unit,"tall") then
+            unit.sprite = "ditto_tall"
+        elseif hasProperty(unit,"rave") then
+            unit.sprite = "ditto_rave"
         elseif hasProperty(unit,"colrful") then
             unit.sprite = "ditto_colrful"
         elseif hasProperty(unit,"torc") then
             unit.sprite = "ditto_torc"
         elseif hasProperty(unit,"split") then
             unit.sprite = "ditto_split"
+        elseif hasProperty(unit,"icyyyy") then
+            unit.sprite = "ditto_icyyyy"
+        elseif hasProperty(unit,"icy") then
+            unit.sprite = "ditto_icy"
         elseif hasProperty(unit,"hopovr") then
             unit.sprite = "ditto_hopovr"
         elseif hasProperty(unit,"right") or hasProperty(unit,"downright") or hasProperty(unit,"down") or hasProperty(unit,"downleft") or hasProperty(unit,"left") or hasProperty(unit,"upleft") or hasProperty(unit,"up") or hasProperty(unit,"upright") then
             unit.sprite = "ditto_direction"
         elseif hasProperty(unit,"nuek") then
             unit.sprite = "ditto_nuek"
+        elseif hasProperty(unit,";d") then
+            unit.sprite = "ditto_;d"
         elseif hasProperty(unit,"diagstep") then
             unit.sprite = "ditto_diagstep"
         elseif hasProperty(unit,"munwalk") then
@@ -1322,8 +1334,8 @@ function miscUpdates()
             unit.sprite = "ditto_come pls"
         elseif hasProperty(unit,"go away pls") then
             unit.sprite = "ditto_go away pls"
-        elseif hasProperty(unit,"go") then
-            unit.sprite = "ditto_go"
+        elseif hasProperty(unit,"goooo") then
+            unit.sprite = "ditto_goooo"
         elseif hasRule(unit,"snacc","?") then
             unit.sprite = "ditto_snacc"
         elseif hasProperty(unit,"moar") then
@@ -2785,6 +2797,9 @@ function deleteUnit(unit,convert,undoing,gone)
       addTween(tween.new(0.1, unit.draw, {scaley = 0}), "unit:scale:" .. unit.tempid)
       tick.delay(function() removeFromTable(still_converting, unit) end, 0.1)
     elseif gone then
+      if unit.fullname == "ditto" then
+        unit.sprite = "ditto_gone"
+      end
       table.insert(still_converting, unit)
       addUndo{"tween",unit}
       local rise = love.math.random(5,9)
