@@ -22,6 +22,7 @@ loadscene = require 'editor/loadscene'
 menu = require 'menu/scene'
 presence = {}
 frame = 0
+cmdargs = {}
 
 currentfps = 0
 peakfps = 0
@@ -56,7 +57,32 @@ local debugDrawText                           -- read the line below
 local headerfont = love.graphics.newFont(32)  -- used for debug
 local regularfont = love.graphics.newFont(16) -- read the line above
 
-function love.load()
+function love.load(arg)
+  local current_arg = nil
+  for i,v in ipairs(arg) do
+    if v:sub(1,2) == "--" then
+      current_arg = v:sub(3)
+      cmdargs[current_arg] = ""
+    elseif current_arg then
+      cmdargs[current_arg] = cmdargs[current_arg] .. (cmdargs[current_arg] ~= "" and " " or "") .. v
+    end
+  end
+  if cmdargs["help"] then
+    print([[
+bab arguments!
+
+--test <scene>    Starts the game with a test scene
+--randomize       Randomizes the game's assets
+--spook           ????
+]])
+    love.event.quit()
+    return
+  end
+  for i,v in pairs(cmdargs) do
+    print(colr.dim("arg set: " .. i .. "=" .. v))
+  end
+
+
   local babfound = false
 
   function searchbab(d)
@@ -87,7 +113,7 @@ function love.load()
 
   searchbab()
 
-  if not babfound then
+  if not babfound or cmdargs["spook"] then
     spookmode = true
   end
 
@@ -205,7 +231,7 @@ function love.load()
   end
   addsprites()
   
-  randomize_assets = false
+  randomize_assets = false or cmdargs["randomize"]
   math.randomseed(love.timer.getTime())
   if randomize_assets then
     local names = {}
@@ -372,7 +398,21 @@ function love.load()
     print(colr.bright("\nboot complete!"))
   end
 
-  scene = menu
+  if cmdargs["test"] then
+    metaClear()
+    clear()
+    presence = {
+      state = cmdargs["test"] .. " test",
+      details = "testing cool new fechures",
+      largeImageKey = "titlescreen",
+      largeimageText = "main menu",
+      startTimestamp = os.time(os.date("*t"))
+    }
+    nextPresenceUpdate = 0
+    scene = require("test/" .. cmdargs["test"])
+  else
+    scene = menu
+  end
   scene.load()
 
   print(colr.dim("load took ~"..(math.floor((love.timer.getTime()-startload)*1000)/1000).."ms"))
@@ -472,7 +512,7 @@ function love.keyreleased(key, scancode)
 end
 
 function love.textinput(text)
-  if scene ~= loadscene then
+  if scene == editor then
     gooi.textinput(text)
   end
 

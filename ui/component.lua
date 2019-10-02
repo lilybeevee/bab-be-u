@@ -38,12 +38,14 @@ function component.new(t)
   function o:getWidth()
     if not self.w then
       if self:getSprite() then return self:getSprite():getWidth()
+      elseif self:getText() ~= "" then return self:getFont():getWidth(self:getText())
       else return 0 end
     else return self.w end
   end
   function o:getHeight()
     if not self.h then
       if self:getSprite() then return self:getSprite():getHeight()
+      elseif self:getText() ~= "" then return self:getFont():getHeight()
       else return 0 end
     else return self.h end
   end

@@ -119,6 +119,7 @@ end
 
 function ui.textInput(text)
   if ui.editing then
+    print("inputtt " ..text)
     ui.editing:textInput(text)
     return true
   end
