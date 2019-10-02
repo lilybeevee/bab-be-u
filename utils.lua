@@ -216,6 +216,7 @@ function loadMap()
       local floodfill = {}
       local objects = {}
       local lvls = {}
+      local locked_lvls = {}
       local dofloodfill = scene ~= editor
       for _,unit in ipairs(map) do
         id, tile, x, y, dir, specials, color = unit.id, unit.tile, unit.x, unit.y, unit.dir, unit.special, unit.color
@@ -226,7 +227,7 @@ function loadMap()
           unit.special = specials
         elseif tile == tiles_by_name["lvl"] then
           if readSaveFile(specials.level, "seen") then
-            local tfs = readSaveFile(level_name, "transform")
+            local tfs = readSaveFile(specials.level, "transform")
             for _,t in ipairs(tfs or {tiles_listPossiblyMeta(tile).name}) do
               local unit = createUnit(tiles_by_namePossiblyMeta(t), x, y, dir, false, id, nil, color and {{name=color}})
               unit.special = specials
@@ -238,6 +239,9 @@ function loadMap()
           elseif specials.visibility == "open" then
             local unit = createUnit(tile, x, y, dir, false, id, nil, color and {{name=color}})
             unit.special = specials
+          elseif specials.visibility == "locked" then
+            table.insert(locked_lvls, {id, tile, x, y, dir, specials, color})
+            table.insert(objects, {id, tile, x, y, dir, specials, color})
           else
             table.insert(objects, {id, tile, x, y, dir, specials, color})
           end
@@ -250,7 +254,7 @@ function loadMap()
           end
         else
           if specials.level then
-            local tfs = readSaveFile(level_name, "transform")
+            local tfs = readSaveFile(specials.level, "transform")
             for _,t in ipairs(tfs or {tiles_listPossiblyMeta(tile).name}) do
               local unit = createUnit(tiles_by_namePossiblyMeta(t), x, y, dir, false, id, nil, color and {{name=color}})
               unit.special = specials
@@ -286,7 +290,6 @@ function loadMap()
                       unit.special.visibility = "open"
                       table.insert(floodfill, {unit, 2})
                     elseif ptype == 2 then
-                      print(unit.special.visibility)
                       unit.special.visibility = "locked"
                       table.insert(floodfill, {unit, 2})
                     elseif ptype == 3 then
@@ -301,6 +304,13 @@ function loadMap()
                 end
               end
             end
+          end
+        end
+        for _,v in ipairs(locked_lvls) do
+          if not created[v[1]] then
+            local unit = createUnit(v[2], v[3], v[4], v[5], false, v[1], nil, v[7] and {{name=v[7]}})
+            created[v[1]] = true
+            unit.special = v[6]
           end
         end
       end
@@ -524,7 +534,7 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
               result = false
             else
               --check that there isn't a verbn't rule - edge cases where this might happen: text vs specific text, group vs unit. This is slow (15% longer unit tests, 0.1 second per unit test) but it fixes old and new bugs so I think we just have to suck it up.
-              if rules_with[rule2.."n't"] ~= nil and #matchesRule(rule_units[i], rule2.."n't", rule.object.name, true) > 0 then
+              if rules_with[rule.verb.name.."n't"] ~= nil and #matchesRule(rule_units[i], rule.verb.name.."n't", rule.object.name, true) > 0 then
                 result = false
               end
             end
@@ -543,7 +553,7 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
             local cond
             if testConds(unit, rule[ruleparts[find_arg]].conds) then
               --check that there isn't a verbn't rule - edge cases where this might happen: text vs specific text, group vs unit. This is slow (15% longer unit tests, 0.1 second per unit test) but it fixes old and new bugs so I think we just have to suck it up.
-              if rules_with[rule2.."n't"] ~= nil and #matchesRule(unit, rule2.."n't", rule.object.name, true) > 0 then
+              if rules_with[rule.verb.name.."n't"] ~= nil and #matchesRule(unit, rule.verb.name.."n't", rule.object.name, true) > 0 then
               else
                 table.insert(ret, {rules, unit})
                 if stopafterone then return ret end
@@ -570,12 +580,14 @@ end
 
 function getUnitsWithEffect(effect)
   local result = {}
+  local gotten = {}
   local rules = matchesRule(nil, "be", effect)
   --print ("h:"..tostring(#rules))
   for _,dat in ipairs(rules) do
     local unit = dat[2]
-    if not unit.removed then
+    if not unit.removed and not hasRule(unit, "ben't", effect) then
       table.insert(result, unit)
+      gotten[unit] = true
     end
   end
   
@@ -584,7 +596,18 @@ function getUnitsWithEffect(effect)
     local unit = rule[2]
     if not unit.removed then
       for _,other in ipairs(getUnitsOnTile(unit.x, unit.y, nil, false, unit)) do
-        table.insert(result, other)
+        if not gotten[other] and sameFloat(unit, other) and not hasRule(other, "ben't", effect) then
+          table.insert(result, other)
+          gotten[other] = true
+        end
+      end
+    end
+  end
+  
+  if hasRule(outerlvl, "giv", effect) then
+    for _,unit in ipairs(units) do
+      if not gotten[unit] and inBounds(unit.x, unit.y) and not hasRule(unit, "ben't", effect) then
+        table.insert(result, unit)
       end
     end
   end
@@ -598,7 +621,7 @@ function getUnitsWithEffectAndCount(effect)
   --print ("h:"..tostring(#rules))
   for _,dat in ipairs(rules) do
     local unit = dat[2]
-    if not unit.removed then
+    if not unit.removed and not hasRule(unit, "ben't", effect) then
       if result[unit] == nil then
         result[unit] = 0
       end
@@ -611,10 +634,23 @@ function getUnitsWithEffectAndCount(effect)
     local unit = rule[2]
     if not unit.removed then
       for _,other in ipairs(getUnitsOnTile(unit.x, unit.y, nil, false, unit)) do
-        if result[other] == nil then
-          result[other] = 0
+        if sameFloat(unit, other) and not hasRule(other, "ben't", effect) then
+          if result[other] == nil then
+            result[other] = 0
+          end
+          result[other] = result[other] + 1
         end
-        result[other] = result[other] + 1
+      end
+    end
+  end
+  
+  if hasRule(outerlvl, "giv", effect) then
+    for _,unit in ipairs(units) do
+      if inBounds(unit.x, unit.y) and not hasRule(unit, "ben't", effect) then
+        if result[unit] == nil then
+          result[unit] = 0
+        end
+        result[unit] = result[unit] + 1
       end
     end
   end
@@ -682,42 +718,49 @@ function hasProperty(unit,prop)
   if not rules_with[prop] then return false end
   if hasRule(unit, "be", prop) then return true end
   if not rules_with["giv"] then return false end
-  -- if hasRule(unit, "ben't", prop) then return false end
+  if hasRule(unit, "ben't", prop) then return false end
   if unit == outerlvl then return false end
   if unit and unit.class == "mous" then return false end
-  if hasRule(outerlvl, "giv", prop) then return true end
   if unit then
+    if hasRule(outerlvl, "giv", prop) then return inBounds(unit.x, unit.y) end
     for _,other in ipairs(getUnitsOnTile(unit.x, unit.y, nil, false, unit, true)) do
-      if #matchesRule(other, "giv", prop) > 0 then
+      if #matchesRule(other, "giv", prop) > 0 and sameFloat(unit, other) then
         return true
       end
     end
   else
+    if hasRule(outerlvl, "giv", prop) then return true end
     for _,ruleparent in ipairs(matchesRule(nil, "giv", prop)) do
       for _,other in ipairs(ruleparent.units) do
-        if #getUnitsOnTile(other.x, other.y, nil, false, other, true) > 0 then return true end
+        if #getUnitsOnTile(other.x, other.y, nil, false, other, true) > 0 and sameFloat(unit, other) then
+          return true
+        end
       end
     end
   end
   return false
 end
 
-function countProperty(unit,prop)
+function countProperty(unit, prop, ignore_flye)
   if not rules_with[prop] then return 0 end
   local result = #matchesRule(unit,"be",prop)
+  if hasRule(unit, "ben't", prop) then return 0 end
   if not rules_with["giv"] then return result end
-  -- if hasRule(unit, "ben't", prop) then return false end
   if unit == outerlvl then return result end
   if unit and unit.class == "mous" then return result end
   result = result + #matchesRule(outerlvl, "giv", prop)
   if unit then
     for _,other in ipairs(getUnitsOnTile(unit.x, unit.y, nil, false, unit, true)) do
-      result = result + #matchesRule(other, "giv", prop)
+      if ignore_flye or sameFloat(unit, other) then
+        result = result + #matchesRule(other, "giv", prop)
+      end
     end
   else -- I don't think anything uses this? it doesn't seem very useful at least, but I guess it's functional?
     for _,ruleparent in ipairs(matchesRule(nil, "giv", prop)) do
       for _,other in ipairs(ruleparent.units) do
-        result = result + #getUnitsOnTile(other.x, other.y, nil, false, other, true)
+        if ignore_flye or sameFloat(unit, other) then
+          result = result + #getUnitsOnTile(other.x, other.y, nil, false, other, true)
+        end
       end
     end
   end
@@ -1848,7 +1891,9 @@ end
 
 function addParticles(ptype,x,y,color,count)
   if doing_past_turns and not do_past_effects then return end
-
+  
+  if not settings["particles_on"] then return end
+  
   if type(color[1]) == "table" then color = color[1] end
   if ptype == "destroy" then
     local ps = love.graphics.newParticleSystem(sprites["circle"])
@@ -2153,7 +2198,7 @@ function sameFloat(a, b, ignorefloat)
     if ignorefloat then
       return true
     else
-      return (countProperty(a, "flye") == countProperty(b, "flye")) or hasProperty(a, "tall") or hasProperty(b, "tall")
+      return (countProperty(a, "flye", true) == countProperty(b, "flye", true)) or hasProperty(a, "tall", true) or hasProperty(b, "tall", true)
     end
   end
 end
@@ -2454,6 +2499,9 @@ function unsetNewUnits()
   for unit,_ in pairs(new_units_cache) do
     unit.new = false
   end
+  for _,unit in ipairs(cursors) do
+    unit.new = false
+  end
   new_units_cache = {}
 end
 
@@ -2663,14 +2711,17 @@ function addRuleSimple(subject, verb, object, units, dir)
     rule = {
       subject = {
         name = subject.name or subject[1],
-        conds = subject.conds or subject[2]
+        conds = subject.conds or subject[2],
+        unit = subject.unit
       },
       verb = {
-        name = verb.name or verb[1] or verb
+        name = verb.name or verb[1] or verb,
+        unit = verb.unit
       },
       object = {
         name = object.name or object[1],
-        conds = object.conds or object[2]
+        conds = object.conds or object[2],
+        unit = object.unit
       }
     },
     units = units,

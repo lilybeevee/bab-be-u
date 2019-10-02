@@ -185,6 +185,8 @@ function undoOneAction(turn, i, v, ignore_no_undo)
     while #all_moves >= v[3] do
       table.remove(all_moves)
     end
+  elseif action == "tween" then
+    removeFromTable(still_converting, v[2])
   end
   return update_rules, unit
 end

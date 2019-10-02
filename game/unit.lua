@@ -379,7 +379,7 @@ function moveBlock()
     end
   end
   
-  local isshy = getUnitsWithEffect("shy")
+  local isshy = getUnitsWithEffect("shy...")
   for _,unit in ipairs(isshy) do
     if not hasProperty("folo wal") and not hasProperty("turn cornr") then
       local dpos = dirs8[unit.dir]
@@ -471,6 +471,13 @@ function updateUnits(undoing, big_update)
     
     --MOAR is 4-way growth, MOARx2 is 8-way growth, MOARx3 is 2x 4-way growth, MOARx4 is 2x 8-way growth, MOARx5 is 3x 4-way growth, etc.
     --TODO: If you write txt be moar, it's ambiguous which of a stacked text pair will be the one to grow into an adjacent tile first. But if you make it simultaneous, then you get double growth into corners which turns into exponential growth, which is even worse. It might need to be special cased in a clever way.
+    local isgone = getUnitsWithEffect("gone")
+    for _,unit in ipairs(isgone) do
+      unit.destroyed = true
+      unit.removed = true
+    end
+    deleteUnits(isgone, false, true)
+    
     local give_me_moar = true
     local moar_repeats = 0
     while (give_me_moar) do
@@ -1188,7 +1195,7 @@ function miscUpdates()
       unit.layer = tile.layer + (20 * (graphical_property_cache["flye"][unit] or 0))
       
       if unit.fullname == "boooo" then
-        if hasProperty(unit,"shy") then
+        if hasProperty(unit,"shy...") then
           unit.sprite = {"boooo_shy","boooo_mouth_shy","boooo_blush"}
         elseif graphical_property_cache["slep"][unit] ~= nil then
           unit.sprite = {"boooo_slep","boooo_mouth_slep"}
@@ -1208,14 +1215,157 @@ function miscUpdates()
             unit.sprite = "casete_yello"
           elseif color == "grun" then
             unit.sprite = "casete_grun"
+          else
+            unit.sprite = "casete_wut"
           end
         end
         if not hasProperty(unit,"no go") then
           unit.sprite = unit.sprite.."_sunk"
         end
       end
-
-      if unit.fullname ~= "os" and unit.fullname ~= "boooo" and unit.fullname ~= "casete" then
+      
+      if unit.fullname == "ches" then
+        if hasProperty(unit,"ned kee") then
+          unit.sprite = "chest_close"
+        else
+          unit.sprite = "chest_open"
+        end
+      end
+      
+      if unit.fullname == "mimi" then
+        if graphical_property_cache["slep"][unit] ~= nil then
+          unit.sprite = "mimic_sleep"
+        elseif hasProperty(unit,"ned kee") then
+          unit.sprite = "mimic_close"
+        else
+          unit.sprite = "mimic_open"
+        end
+      end
+      
+      -- here goes the legendary ditto transformations
+      if unit.fullname == "ditto" then
+        if hasProperty(unit,"notranform") then
+            unit.sprite = "ditto_notranform"
+        elseif hasProperty(unit,"xwx") then
+            unit.sprite = "ditto_xwx"
+        elseif hasProperty(unit,"wurd") then
+            unit.sprite = "ditto_wurd"
+        elseif graphical_property_cache["slep"][unit] ~= nil then
+            unit.sprite = "ditto_slep"
+        elseif hasProperty(unit,"rithere") then
+            unit.sprite = "ditto_rithere"
+        elseif hasProperty(unit,"thr") then
+            unit.sprite = "ditto_thr"
+        elseif hasProperty(unit,"stelth") then
+            unit.sprite = "ditto_stelth"
+        elseif hasProperty(unit,"sans") then
+            unit.sprite = "ditto_sans"
+        elseif hasProperty(unit,"ouch") then
+            unit.sprite = "ditto_ouch"
+        elseif hasProperty(unit,"protecc") then
+            unit.sprite = "ditto_protecc"
+        elseif hasProperty(unit,"no undo") then
+            unit.sprite = "ditto_no undo"
+        -- Eeveelutions
+        elseif hasProperty(unit,"qt") then
+            if hasProperty(unit,"icy") then
+                unit.sprite = "ditto_qt_icy"
+            elseif hasProperty(unit,"hopovr") then
+                unit.sprite = "ditto_qt_hopovr"
+            else
+                unit.sprite = "ditto_qt"
+            end
+        elseif hasProperty(unit,"poor toll") then
+            unit.sprite = "ditto_poor toll"
+        -- Rotom formes
+        elseif hasProperty(unit,"zip") then
+            unit.sprite = "ditto_zip"
+        elseif hasRule(unit,"sing","?") then
+            unit.sprite = "ditto_sing"
+        elseif hasRule(unit,"paint","?") then
+            unit.sprite = "ditto_paint"
+        elseif hasProperty(unit,"go") then
+            unit.sprite = "ditto_go"
+        elseif hasProperty(unit,"folo wal") then
+            unit.sprite = "ditto_folo wal"
+        elseif hasProperty(unit,"tall") then
+            unit.sprite = "ditto_tall"
+        elseif hasProperty(unit,"rave") then
+            unit.sprite = "ditto_rave"
+        elseif hasProperty(unit,"colrful") then
+            unit.sprite = "ditto_colrful"
+        elseif hasProperty(unit,"torc") then
+            unit.sprite = "ditto_torc"
+        elseif hasProperty(unit,"split") then
+            unit.sprite = "ditto_split"
+        elseif hasProperty(unit,"icyyyy") then
+            unit.sprite = "ditto_icyyyy"
+        elseif hasProperty(unit,"icy") then
+            unit.sprite = "ditto_icy"
+        elseif hasProperty(unit,"hopovr") then
+            unit.sprite = "ditto_hopovr"
+        elseif hasProperty(unit,"right") or hasProperty(unit,"downright") or hasProperty(unit,"down") or hasProperty(unit,"downleft") or hasProperty(unit,"left") or hasProperty(unit,"upleft") or hasProperty(unit,"up") or hasProperty(unit,"upright") then
+            unit.sprite = "ditto_direction"
+        elseif hasProperty(unit,"nuek") then
+            unit.sprite = "ditto_nuek"
+        elseif hasProperty(unit,";d") then
+            unit.sprite = "ditto_;d"
+        elseif hasProperty(unit,"diagstep") then
+            unit.sprite = "ditto_diagstep"
+        elseif hasProperty(unit,"munwalk") then
+            unit.sprite = "ditto_munwalk"
+        elseif hasProperty(unit,"visit fren") then
+            unit.sprite = "ditto_visit fren"
+        elseif hasProperty(unit,"walk") then
+            unit.sprite = "ditto_walk"
+        elseif hasProperty(unit,"no swim") then
+            unit.sprite = "ditto_no swim"
+        elseif hasProperty(unit,"haet flor") then
+            unit.sprite = "ditto_haet flor"
+        elseif hasProperty(unit,"haet skye") then
+            unit.sprite = "ditto_haet skye"
+        elseif hasRule(unit,"got","gunne") then
+            unit.sprite = "ditto_gunne"
+        elseif hasProperty(unit,"glued") then
+            unit.sprite = "ditto_glued"
+        elseif hasProperty(unit,"flye") then
+            unit.sprite = "ditto_flye"
+        elseif hasProperty(unit,"tranz") then
+            unit.sprite = "ditto_tranz"
+        elseif hasProperty(unit,"come pls") then
+            unit.sprite = "ditto_come pls"
+        elseif hasProperty(unit,"go away pls") then
+            unit.sprite = "ditto_go away pls"
+        elseif hasProperty(unit,"goooo") then
+            unit.sprite = "ditto_goooo"
+        elseif hasRule(unit,"snacc","?") then
+            unit.sprite = "ditto_snacc"
+        elseif hasProperty(unit,"moar") then
+            unit.sprite = "ditto_moar"
+        elseif hasProperty(unit,"hotte") then
+            unit.sprite = "ditto_hotte"
+        elseif hasProperty(unit,"fridgd") then
+            unit.sprite = "ditto_fridgd"
+        elseif hasProperty(unit,"for dor") then
+            unit.sprite = "ditto_fordor"
+        elseif hasProperty(unit,":)") then
+            unit.sprite = "ditto_yay"
+        elseif hasProperty(unit,":o") then
+            unit.sprite = "ditto_whoa"
+        elseif hasProperty(unit,"no go") then
+            unit.sprite = "ditto_no go"
+        elseif hasProperty(unit,"u tres") then
+            unit.sprite = "ditto_u tres"
+        elseif hasProperty(unit,"u too") then
+            unit.sprite = "ditto_u too"
+        elseif hasProperty(unit,"u") then
+            unit.sprite = "ditto_u"
+        else
+            unit.sprite = "ditto"
+        end
+      end
+      
+      if unit.fullname ~= "os" and unit.fullname ~= "boooo" and unit.fullname ~= "casete" and unit.fullname ~= "ches" and unit.fullname ~= "mimi" and unit.fullname ~= "ditto" then
         if tile.slep and graphical_property_cache["slep"][unit] ~= nil then
           if type(tile.sprite) == "table" then
             for j,name in ipairs(tile.sprite) do
@@ -1225,7 +1375,7 @@ function miscUpdates()
             unit.sprite = tiles_list[unit.tile].sprite.."_slep"
           end
         else
-          unit.sprite = tiles_list[unit.tile].sprite
+          unit.sprite = deepCopy(tiles_list[unit.tile].sprite)
         end
       end
 
@@ -1256,6 +1406,8 @@ function miscUpdates()
       max_layer = math.max(max_layer, unit.layer)
     end
   end
+  
+  mergeTable(still_converting, still_gone)
 
   for _,unit in ipairs(still_converting) do
     if not units_by_layer[unit.layer] then
@@ -1944,13 +2096,8 @@ function dropGotUnit(unit, rule)
   
   function dropOneGotUnit(unit, rule, obj_name)
     local object = obj_name
-    local istext = false
     if rule.object.name == "text" then
-      istext = true
       obj_name = "text_" .. unit.fullname
-    end
-    if object:starts("text_") then
-      istext = true
     end
     if object:starts("this") then
       obj_name = "this"
@@ -1958,13 +2105,13 @@ function dropGotUnit(unit, rule)
     local obj_id = tiles_by_name[obj_name]
     local obj_tile = tiles_list[obj_id]
     --let x ben't x txt prevent x be txt, and x ben't txt prevent x be y txt
-    local overriden = false;
+    local overriden = false
     if object == "text" then
       overriden = hasRule(unit, "gotn't", "text_" .. unit.fullname)
-    elseif object:starts("text_") then
+    elseif object:starts("text_") or object:starts("letter_") then
       overriden = hasRule(unit, "gotn't", "text")
     end
-    if not overriden and (obj_name == "mous" or (obj_tile ~= nil and (obj_tile.type == "object" or istext))) then
+    if not overriden and (obj_name == "mous" or obj_tile ~= nil) then
       if obj_name == "mous" then
         local new_mouse = createMouse(unit.x, unit.y)
         addUndo({"create_cursor", new_mouse.id})
@@ -2440,7 +2587,7 @@ function convertUnits(pass)
   deleteUnits(converted_units,true)
 end
 
-function deleteUnits(del_units,convert)
+function deleteUnits(del_units,convert,gone)
   for _,unit in ipairs(del_units) do
     if (not unit.removed_final) then
       for colour,_ in pairs(main_palette_for_colour) do
@@ -2457,7 +2604,7 @@ function deleteUnits(del_units,convert)
         addUndo({"remove", unit.tile, unit.x, unit.y, unit.dir, convert or false, unit.id, unit.special})
       end
     end
-    deleteUnit(unit,convert)
+    deleteUnit(unit,convert,false,gone)
   end
 end
 
@@ -2484,7 +2631,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
   local data = tiles_listPossiblyMeta(tile)
 
   unit.tile = tile
-  unit.sprite = data.sprite
+  unit.sprite = deepCopy(data.sprite)
   unit.type = data.type
   unit.texttype = data.texttype or {object = true}
 	unit.meta = data.meta
@@ -2501,7 +2648,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
   unit.rotatdir = unit.rotate and unit.dir or 1
   
   if (not unit_tests) then
-    unit.draw = {x = unit.x, y = unit.y, scalex = 1, scaley = 1, rotation = (unit.rotatdir - 1) * 45}
+    unit.draw = {x = unit.x, y = unit.y, scalex = 1, scaley = 1, rotation = (unit.rotatdir - 1) * 45, opacity = 1}
     if convert then
       unit.draw.scaley = 0
       addTween(tween.new(0.1, unit.draw, {scaley = 1}), "unit:scale:" .. unit.tempid)
@@ -2552,7 +2699,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
   end
   
   --do this before the 'this' change to textname so that we only get 'this' in referenced_objects
-  if unit.texttype.object and unit.textname ~= "every1" and unit.textname ~= "every2" and unit.textname ~= "every3" and unit.textname ~= "mous" and unit.textname ~= "bordr" and unit.textname ~= "no1" and unit.textname ~= "lvl" and unit.textname ~= "the" and unit.textname ~= "text" and group_names_set[unit.textname] ~= true then
+  if unit.texttype.object and unit.textname ~= "every1" and unit.textname ~= "every2" and unit.textname ~= "every3" and unit.textname ~= "mous" and unit.textname ~= "bordr" and unit.textname ~= "no1" and unit.textname ~= "lvl" and unit.textname ~= "the" and unit.textname ~= "text" and unit.textname ~= "this" and group_names_set[unit.textname] ~= true then
     if not unit.textname:ends("n't") and not unit.textname:starts("text_") and not unit.textname:starts("letter_") and not table.has_value(referenced_objects, unit.textname) then
       table.insert(referenced_objects, unit.textname)
     end
@@ -2583,6 +2730,13 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
     end
     table.insert(units_by_name[unit.fullname], unit)
   end
+  
+  if unit.name:starts("this") then
+    if not units_by_name["text"] then
+      units_by_name["text"] = {}
+    end
+    table.insert(units_by_name["text"], unit)
+  end
 
   if not units_by_layer[unit.layer] then
     units_by_layer[unit.layer] = {}
@@ -2608,10 +2762,10 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
   return unit
 end
 
-function deleteUnit(unit,convert,undoing)
+function deleteUnit(unit,convert,undoing,gone)
   unit.removed = true
   unit.removed_final = true
-  if not undoing and not convert and not level_destroyed and rules_with ~= nil then
+  if not undoing and not convert and not gone and not level_destroyed and rules_with ~= nil then
     gotters = matchesRule(unit, "got", "?")
     for _,ruleparent in ipairs(gotters) do
       local rule = ruleparent.rule
@@ -2635,12 +2789,31 @@ function deleteUnit(unit,convert,undoing)
     removeFromTable(units_by_name[unit.fullname], unit)
   end
   removeFromTable(unitsByTile(unit.x, unit.y), unit)
-  if not convert then
+  if not convert and not gone then
     removeFromTable(units_by_layer[unit.layer], unit)
-  elseif not unit_tests then
-    table.insert(still_converting, unit)
-    addTween(tween.new(0.1, unit.draw, {scaley = 0}), "unit:scale:" .. unit.tempid)
-    tick.delay(function() removeFromTable(still_converting, unit) end, 0.1)
+  end
+  if not unit_tests then
+    if convert then
+      table.insert(still_converting, unit)
+      addUndo{"tween",unit}
+      addTween(tween.new(0.1, unit.draw, {scaley = 0}), "unit:scale:" .. unit.tempid)
+      tick.delay(function() removeFromTable(still_converting, unit) end, 0.1)
+    elseif gone then
+      if unit.fullname == "ditto" then
+        if hasProperty(unit,"notranform") then
+            unit.sprite = "ditto_notranform"
+        else
+            unit.sprite = "ditto_gone"
+        end
+      end
+      table.insert(still_converting, unit)
+      addUndo{"tween",unit}
+      local rise = love.math.random(5,9)
+      local rotate = (90 + love.math.random(0,180)) * (love.math.random() > .5 and 1 or -1)
+      local method = love.math.random() > .01 and "inSine" or "inElastic"
+      addTween(tween.new(1.5, unit.draw, {y = unit.y-rise, rotation = rotate, opacity = 0}, method), "unit:rotation:" .. unit.tempid)
+      tick.delay(function() removeFromTable(still_converting, unit) end, 1.5)
+    end
   end
 end
 

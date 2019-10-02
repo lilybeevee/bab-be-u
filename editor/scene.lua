@@ -10,7 +10,7 @@ local typing_name = false
 local ignore_mouse = true
 local saved_settings = false
 
-local settings_open, settings, properties
+local settings_open, settings_ui, properties
 local label_palette, label_music
 local input_name, input_author, input_palette, input_music, input_width, input_height, input_extra, input_parent_level, input_next_level, input_is_overworld, input_puffs_to_clear, input_background_sprite
 
@@ -34,7 +34,7 @@ ICON_HEIGHT = 96
 function scene.load()
   metaClear()
   was_using_editor = true
-  brush = {id = nil, dir = 1, mode = "none", picked_tile = nil, picked_index = 0}
+  brush = {id = nil, dir = 1, mode = "none", picked_tile = nil, picked_index = 0, special = {}}
   properties = {enabled = false, scale = 0, x = 0, y = 0, w = 0, h = 0, components = {}} -- will do this later
   saved_popup = {sprite = sprites["ui/level_saved"], y = 16, alpha = 0}
   key_down = {}
@@ -53,7 +53,7 @@ function scene.load()
   paint_colors = {}
   
   if not level_compression then
-    level_compression = "zlib"
+    level_compression = settings["level_compression"]
   end
   if not level_name then
     level_name = "unnamed"
@@ -220,9 +220,9 @@ function scene.setupGooi()
   local dx = 208
   local i = 0
 
-  settings = {x = 0, y = y_top, w = dx*2, h = 450}
-  local y_top = (love.graphics.getHeight() - settings.h) / 2
-  settings.y = y_top
+  settings_ui = {x = 0, y = y_top, w = dx*2, h = 450}
+  local y_top = (love.graphics.getHeight() - settings_ui.h) / 2
+  settings_ui.y = y_top
 
   local w = 200
   local w_half = w/2 - 2 -- 98
@@ -236,9 +236,9 @@ function scene.setupGooi()
     w_half = w/2 - 2
     h = 50
     dx = w+8
-    settings.y = 0
-    settings.w = love.graphics.getWidth()
-    settings.h = love.graphics.getHeight()
+    settings_ui.y = 0
+    settings_ui.w = love.graphics.getWidth()
+    settings_ui.h = love.graphics.getHeight()
   end
 
   local y = y_top
@@ -464,6 +464,11 @@ function scene.keyPressed(key)
     end
   end
 
+  if key == "g" and key_down["lctrl"] and not selector_open then
+    settings["draw_editor_lins"] = not settings["draw_editor_lins"]
+    saveAll()
+  end
+
   if selector_open then
     if key == "escape" or (key == "a" and (key_down["lctrl"] or key_down["rctrl"])) or (key == "backspace" and (key_down["lctrl"] or key_down["rctrl"])) then
       if #searchstr == 0 then selector_open = false end
@@ -474,23 +479,28 @@ function scene.keyPressed(key)
       if key_down["lshift"] or key_down["rshift"] then
         if tiles_by_name["text_"..subsearchstr] then
           brush.id = tiles_by_name["text_"..subsearchstr]
+          brush.special = {}
           selector_open = false
         end
       elseif key_down["lctrl"] or key_down["rctrl"] then
         if tiles_by_name["letter_"..subsearchstr] then
           brush.id = tiles_by_name["letter_"..subsearchstr]
+          brush.special = {}
           selector_open = false
         elseif #subsearchstr >= 1 and #subsearchstr <= 6 then
           brush.id = tiles_by_name["letter_custom"]
-          brush.customletter = subsearchstr
+          brush.special = {customletter = subsearchstr}
+          --brush.customletter = subsearchstr
           selector_open = false
         end
       else
         if tiles_by_name[subsearchstr] then
           brush.id = tiles_by_name[subsearchstr]
+          brush.special = {}
           selector_open = false
         elseif tiles_by_name["text_"..subsearchstr] then
           brush.id = tiles_by_name["text_"..subsearchstr]
+          brush.special = {}
           selector_open = false
         end
       end
@@ -805,6 +815,9 @@ function scene.mouseReleased(x, y, button)
       end
       if mouseOverBox(30, -30, 62, 14, t) then -- go to level
         loadLevels({level_dialogue.unit.special.name}, "edit", level_dialogue.unit)
+        clear()
+        loadMap()
+        resetMusic(map_music, 0.1)
       end
       scene.updateMap()
     elseif level_dialogue.unit.name == "lin" and mouseOverBox(-75, -58, 150, 50, t) then
@@ -954,7 +967,7 @@ function scene.update(dt)
       else
         label_music:setIcon()
       end
-    elseif (not settings_open or not mouseOverBox(settings.x, settings.y, settings.w, settings.h)) and not level_dialogue.enabled then
+    elseif (not settings_open or not mouseOverBox(settings_ui.x, settings_ui.y, settings_ui.w, settings_ui.h)) and not level_dialogue.enabled then
       local hx,hy = getHoveredTile()
       if hx ~= nil and ((selector_open and inBounds(hx, hy)) or (not selector_open and inBounds(hx, hy, true))) then
         local tileid = hx + hy * mapwidth
@@ -979,7 +992,7 @@ function scene.update(dt)
             end
             if #hovered >= 1 then
               for _,unit in ipairs(hovered) do
-                if unit.tile == brush.id and (unit.tile ~= tiles_by_name["letter_custom"] or unit.special.customletter == brush.customletter)
+                if unit.tile == brush.id and (unit.tile ~= tiles_by_name["letter_custom"] or unit.special.customletter == brush.special.customletter)
                   and (unit.color_override and (type(unit.color_override[1]) == "table" and colour_for_palette[unit.color_override[1][1]][unit.color_override[1][2]] or colour_for_palette[unit.color_override[1]][unit.color_override[2]] == brush.color) or (unit.color_override == nil and brush.color == nil)) then
                   if not (ctrl_active or selectorhold) then
                     existing = unit
@@ -1014,12 +1027,13 @@ function scene.update(dt)
                     new_unit[brush.color] = true
                     updateUnitColourOverride(new_unit)
                   end
+                  new_unit.special = deepCopy(brush.special)
                   if last_lin_hidden and brush.id == tiles_by_name["lin"] then
                     new_unit.special.visibility = "hidden"
                   end
-                  if brush.id == tiles_by_name["letter_custom"] then
+                  --[[if brush.id == tiles_by_name["letter_custom"] then
                     new_unit.special.customletter = brush.customletter
-                  end
+                  end]]
                   scene.updateMap()
                   painted = true
                 end
@@ -1036,10 +1050,12 @@ function scene.update(dt)
             local selected = hx + hy * tile_grid_width
             if current_tile_grid[selected] then
               brush.id = current_tile_grid[selected]
+              brush.special = {}
               brush.picked_tile = nil
               brush.picked_index = 0
             else
               brush.id = nil
+              brush.special = {}
               brush.picked_tile = nil
               brush.picked_index = 0
             end
@@ -1058,22 +1074,25 @@ function scene.update(dt)
                 brush.picked_index = new_index
                 brush.id = hovered[new_index].tile
                 brush.color = hovered[new_index].color_override and (type(hovered[new_index].color_override[1]) == "table" and colour_for_palette[hovered[new_index].color_override[1][1]][hovered[new_index].color_override[1][2]] or colour_for_palette[hovered[new_index].color_override[1]][hovered[new_index].color_override[2]]) or nil
-                brush.customletter = hovered[new_index].special.customletter
+                --brush.customletter = hovered[new_index].special.customletter
                 if hovered[new_index].name == "lin" then
                   last_lin_hidden = (hovered[new_index].special.visibility == "hidden")
                 end
+                brush.special = hovered[new_index].special
               else
                 brush.id = hovered[1].tile 
                 brush.color = hovered[1].color_override and (type(hovered[1].color_override[1]) == "table" and colour_for_palette[hovered[1].color_override[1][1]][hovered[1].color_override[1][2]] or colour_for_palette[hovered[1].color_override[1]][hovered[1].color_override[2]]) or nil
-                brush.customletter = hovered[1].special.customletter
+                --brush.customletter = hovered[1].special.customletter
                 if hovered[1].name == "lin" then
                   last_lin_hidden = (hovered[1].special.visibility == "hidden")
                 end
+                brush.special = hovered[1].special
                 brush.picked_index = 1
               end
               brush.mode = "picking"
             else
               brush.id = nil
+              brush.special = {}
               brush.picked_tile = nil
               brush.picked_index = 0
               mobile_picking = false
@@ -1224,11 +1243,84 @@ function scene.draw(dt)
             setColor(color)
             if unit.name == "lin" then
               local name = "lin"
+              --performance todos: each line gets drawn twice (both ways), so there's probably a way to stop that. might not be necessary though, since there is no lag so far
+              --in fact, the double lines add to the pixelated look, so for now i'm going to make it intentional and actually add it in a couple places to be consistent
+              if settings["draw_editor_lins"] and (not unit.special.pathlock or unit.special.pathlock == "none") then
+                love.graphics.setLineStyle("rough")
+                local orthos = {}
+                local line = {}
+                for ndir=1,4 do
+                  local nx,ny = dirs[ndir][1],dirs[ndir][2]
+                  local px,py = unit.x + nx, unit.y + ny
+                  if inBounds(px,py) then
+                    local around = getUnitsOnTile(px,py)
+                    for _,other in ipairs(around) do
+                      if other.name == "lin" or other.name == "lvl" then
+                        orthos[ndir] = true
+                        table.insert(line,{unit.x*2-unit.draw.x+nx+other.draw.x-other.x, unit.y*2-unit.draw.y+ny+other.draw.y-other.y, other.special.visibility == "hidden"})
+                        break
+                      else
+                        orthos[ndir] = false
+                      end
+                    end
+                  else
+                    orthos[ndir] = true
+                    table.insert(line,{px,py})
+                  end
+                end
+                for ndir=2,8,2 do
+                  local nx,ny = dirs8[ndir][1],dirs8[ndir][2]
+                  local px,py = unit.x + nx, unit.y + ny
+                  local around = getUnitsOnTile(px,py)
+                  for _,other in ipairs(around) do
+                    if (other.name == "lin" or other.name == "lvl") and not orthos[ndir/2] and not orthos[dirAdd(ndir,2)/2] then
+                      table.insert(line,{unit.x*2-unit.draw.x+nx+other.draw.x-other.x, unit.y*2-unit.draw.y+ny+other.draw.y-other.y, other.special.visibility == "hidden"})
+                      break
+                    end
+                  end
+                end
+                if (#line > 0) then
+                  local fulldrawx, fulldrawy = (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE
+                  -- love.graphics.rectangle("fill", fulldrawx-1, fulldrawy-1, 1, 3)
+                  -- love.graphics.rectangle("fill", fulldrawx-2, fulldrawy, 3, 1)
+                  for _,point in ipairs(line) do
+                    --no need to change the rendering to account for movement, since all halflines are drawn to static objects (portals and oob)
+                    local dx = unit.x-point[1]
+                    local dy = unit.y-point[2]
+                    
+                    --draws it twice to make it look the same as the other lines. should be reduced to one if we figure out that performance todo above
+                    --   love.graphics.setLineWidth(3)
+                    -- if dx == 0 or dy == 0 then
+                    --   love.graphics.setLineWidth(3)
+                    -- else
+                    --   love.graphics.setLineWidth(3)
+                    -- end
+
+                    if unit.special.visibility ~= "hidden" then
+                      local odx = TILE_SIZE*dx/(point[3] and 4 or 2)
+                      local ody = TILE_SIZE*dy/(point[3] and 4 or 2)
+                      love.graphics.setLineWidth(4)
+                      love.graphics.line(fulldrawx+dx,fulldrawy+dy,fulldrawx-odx,fulldrawy-ody)
+                    else
+                      local odx = TILE_SIZE*dx/4
+                      local ody = TILE_SIZE*dy/4
+                      love.graphics.setLineWidth(2)
+                      love.graphics.line(fulldrawx+dx,fulldrawy+dy,fulldrawx-odx,fulldrawy-ody)
+                    end
+                  end
+                end
+                if #line > 0 then
+                  name = "no1"
+                end
+                love.graphics.setLineWidth(2)
+              end
               if unit.special.pathlock and unit.special.pathlock ~= "none" then
                 name = name.."_gate"
                 setColor({2, 2})
               end
-              if unit.special.visibility == "hidden" then name = name.."_hidden" end
+              if name ~= "no1" then
+                if unit.special.visibility == "hidden" then name = name.."_hidden" end
+              end
               sprite = sprites[name]
             end
             if unit.name == "lvl" and unit.special.visibility == "hidden" then
@@ -1360,6 +1452,14 @@ function scene.draw(dt)
               end
             end
             
+            if tile.meta ~= nil and string.match("meta",subsearchstr) then
+              found_matching_tag = true
+            end
+            
+            if tile.nt ~= nil and (string.match("nt",subsearchstr) or string.match("n't",subsearchstr)) then
+              found_matching_tag = true
+            end
+            
             if not found_matching_tag then love.graphics.setColor(0.2,0.2,0.2) end
             if tile.name == "byc" or tile.name == "bac" then
               if found_matching_tag then
@@ -1415,6 +1515,9 @@ function scene.draw(dt)
     local hx,hy = getHoveredTile()
     if hx ~= nil then
       if not (ui.hovered or gooi.showingDialog or capturing) then
+        love.graphics.setColor(1, 1, 0)
+        love.graphics.rectangle("line", hx * TILE_SIZE, hy * TILE_SIZE, TILE_SIZE, TILE_SIZE)
+        
         if brush.id and not selector_open then
           local tile = tiles_list[brush.id]
           local sprite_name = tile.sprite
@@ -1444,7 +1547,7 @@ function scene.draw(dt)
             setColor(color, 0.25)
             love.graphics.draw(sprites[tile.name == "bac" and "bac" or "byc_editor"], (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, math.rad(rotation), 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
           elseif tile.name == "letter_custom" then
-            drawCustomLetter(brush.customletter, (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, math.rad(rotation), 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+            drawCustomLetter(brush.special.customletter, (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, math.rad(rotation), 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
           else
             if type(sprite_name) == "table" then
               for i,image in ipairs(sprite_name) do
@@ -1457,10 +1560,22 @@ function scene.draw(dt)
               love.graphics.draw(sprite, (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, math.rad(rotation), 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
             end
           end
+          if tile.meta ~= nil then
+            setColor({4,1},0.25)
+            local metasprite = tile.meta == 2 and sprites["meta2"] or sprites["meta1"]
+            love.graphics.draw(metasprite, (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+            if tile.meta > 2 then
+              love.graphics.printf(tostring(tile.meta), (hx + 0.5)*TILE_SIZE-1, (hy + 0.5)*TILE_SIZE+6, 32, "center")
+            end
+            setColor(tile.color)
+          end
+          if (tile.nt ~= nil) then
+            setColor({2,2},0.25)
+            local ntsprite = sprites["n't"]
+            love.graphics.draw(ntsprite, (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+            setColor(tile.color)
+          end
         end
-
-        love.graphics.setColor(1, 1, 0)
-        love.graphics.rectangle("line", hx * TILE_SIZE, hy * TILE_SIZE, TILE_SIZE, TILE_SIZE)
       end
 
       last_hovered_tile = {hx, hy}
@@ -1527,7 +1642,7 @@ function scene.draw(dt)
           color = color:gsub("}",")")
           love.graphics.print("Color: " .. color, 150, roomheight+36)
           local tags = ""
-          if tile.type == "text" then
+          if tile.type == "text" and tile.texttype then
             for key,_ in pairs(tile.texttype) do
               if key == "cond_infix" then
                 tags = tags .. "infix condition, "
@@ -1546,6 +1661,10 @@ function scene.draw(dt)
                 tags = tags .. key:gsub("_"," ") .. ", "
               end
             end
+          elseif tile.meta ~= nil then
+            tags = tags .. "meta, "
+          elseif tile.nt ~= nil then
+            tags = tags .. "nt, "
           else
             tags = "object, "
           end
@@ -1807,12 +1926,20 @@ function scene.draw(dt)
       end
     end
     
-    if paint_open and brush.id then
+    if paint_open then
       for _,button in ipairs(paint_colors) do
         local x = button[1]
-        local tile = tiles_list[brush.id]
-        local pal = button[2] or (type(tile.color[1]) == "table" and tile.color[1] or tile.color)
-        if type(tile.sprite) == "table" then
+        local tile, pal
+        if brush.id then
+          tile = tiles_list[brush.id]
+          pal = button[2] or (type(tile.color[1]) == "table" and tile.color[1] or tile.color)
+        else
+          pal = button[2] or {0, 3}
+        end
+        if not tile then
+          love.graphics.setColor(getPaletteColor(pal[1], pal[2]))
+          love.graphics.draw(sprites["ui/splat"], x, 4)
+        elseif type(tile.sprite) == "table" then
           for i,image in ipairs(tile.sprite) do
             if tile.colored[i] then
               love.graphics.setColor(getPaletteColor(pal[1], pal[2]))
@@ -1824,7 +1951,7 @@ function scene.draw(dt)
         else
           love.graphics.setColor(getPaletteColor(pal[1], pal[2]))
           if tile.name == "letter_custom" then
-            drawCustomLetter(brush.customletter, x, 4)
+            drawCustomLetter(brush.special.customletter, x, 4)
           else
             love.graphics.draw(sprites[tile.sprite], x, 4)
           end
@@ -1848,7 +1975,7 @@ function scene.draw(dt)
 
     if settings_open then
       love.graphics.setColor(0.1, 0.1, 0.1, 1)
-      love.graphics.rectangle("fill", settings.x, settings.y, settings.w, settings.h)
+      love.graphics.rectangle("fill", settings_ui.x, settings_ui.y, settings_ui.w, settings_ui.h)
       love.graphics.setColor(1, 1, 1, 1)
       gooi.draw("settings")
     end
@@ -1952,7 +2079,7 @@ function scene.saveLevel()
 
   local map = maps[1]
 
-  level_compression = "zlib"
+  level_compression = settings["level_compression"]
   local mapdata = level_compression == "zlib" and love.data.compress("string", "zlib", map.data) or map.data
   local savestr = love.data.encode("string", "base64", mapdata)
 
@@ -2194,6 +2321,30 @@ function scene.translateLevel(dx, dy)
     moveUnit(unit, x, y)
   end
   scene.updateMap()
+end
+
+function scene.wheelMoved(whx, why)
+  if brush.id and tiles_list[brush.id] and tiles_list[brush.id].name then
+    local new = tiles_list[brush.id].name
+    if why < 0 then -- modified from 'x be meta' code
+      if tiles_list[brush.id].tometa then
+        new = tiles_list[brush.id].tometa
+      else
+        new = "text_"..new
+      end
+    elseif why > 0 then
+      if tiles_list[brush.id].demeta then
+        new = tiles_list[brush.id].demeta
+      else
+        if new:starts("text_") then
+          new = new:sub(6, -1)
+        else
+          new = new
+        end -- not gonna set it to nothing
+      end
+    end
+    brush.id = tiles_by_namePossiblyMeta(new) or brush.id
+  end
 end
 
 return scene

@@ -164,6 +164,8 @@ function scene.buildUI()
     scene.addButton("exit to " .. escResult(false), function() escResult(true) end)
   else
     scene.addOption("music_on", "music", {{"on", true}, {"off", false}})
+    scene.addOption("sfx_on", "sound", {{"on", true}, {"off", false}})
+    scene.addOption("particles_on", "particles", {{"on", true}, {"off", false}})
     scene.addOption("stopwatch_effect", "stopwatch effect", {{"on", true}, {"off", false}})
     scene.addOption("fullscreen", "resolution", {{"fullscreen", true}, {"windowed", false}}, function(val)
       if val then
@@ -180,7 +182,7 @@ function scene.buildUI()
         fullscreen = false
       end
     end)
-    scene.addButton("exit", function() options = false; scene.buildUI() end)
+    scene.addButton("back", function() options = false; scene.buildUI() end)
   end
 
   local ox, oy = love.graphics.getWidth()/2, buttons[1]:getHeight()*3
@@ -194,11 +196,6 @@ end
 
 function scene.addButton(text, func)
   local button = ui.menu_button.new(text, #buttons%2+1, func)
-  -- may be replaced by a global system later but this is cute for now
-  local bab = ui.component.new():setSprite(sprites["bab"]):setX(-sprites["bab"]:getWidth()-2):setEnabled(false)
-  button:addChild(bab)
-  button:onHovered(function() bab:setEnabled(true) end)
-  button:onExited(function() bab:setEnabled(false) end)
   table.insert(buttons, button)
   return button
 end
@@ -524,6 +521,10 @@ function scene.keyPressed(key, isrepeat)
     if key == "tab" then
       displaywords = true
     end
+    
+    if key == "y" and hasRule("swan","be","u") and units_by_name["swan"] then
+        playSound("honk"..love.math.random(1,6))
+    end
 
     most_recent_key = key
     key_down[key] = true
@@ -774,7 +775,7 @@ function scene.draw(dt)
       end
     end
     if unit.fullname == "text_katany" then
-      if hasRule("steev","got","katany") then
+      if hasRule("steev","got","katany") or hasRule("kat","got","katany") then
         unit.sprite = "text_katanya"
       else
         unit.sprite = "text_katany"
@@ -879,9 +880,9 @@ function scene.draw(dt)
 			end
 
 			if #unit.overlay > 0 and type(unit.sprite) == "string" and eq(unit.color, tiles_list[unit.tile].color) then
-				love.graphics.setColor(1, 1, 1)
+				love.graphics.setColor(1, 1, 1, unit.draw.opacity)
 			else
-				love.graphics.setColor(color[1], color[2], color[3], color[4])
+				love.graphics.setColor(color[1], color[2], color[3], unit.draw.opacity)
 			end
 			return color
 		end
@@ -1198,7 +1199,7 @@ function scene.draw(dt)
       end
     end
     
-    if hasRule(unit,"be","sans") and unit.eye then
+    if hasProperty(unit,"sans") and unit.eye and not hasProperty(unit,"slep") then
       local topleft = {x = fulldrawx - 16, y = fulldrawy - 16}
       love.graphics.setColor(getPaletteColor(1,4))
       love.graphics.rectangle("fill", topleft.x + unit.eye.x, topleft.y + unit.eye.y, unit.eye.w, unit.eye.h)
@@ -1212,8 +1213,13 @@ function scene.draw(dt)
       love.graphics.draw(sprites["hatsmol"], fulldrawx, fulldrawy - 0.5*TILE_SIZE, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
     end
     if hasRule(unit,"got","gunne") then
-      love.graphics.setColor(1, 1, 1)
-      love.graphics.draw(sprites["gunnesmol"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      if unit.fullname ~= "ditto" then
+        love.graphics.setColor(getPaletteColor(0,3))
+        love.graphics.draw(sprites["gunnesmol"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      else
+        love.graphics.setColor(getPaletteColor(0,3))
+        love.graphics.draw(sprites["gunne_ditto"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      end
     end
     if hasRule(unit,"got","katany") then
       love.graphics.setColor(getPaletteColor(0,1))

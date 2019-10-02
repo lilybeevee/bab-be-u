@@ -22,6 +22,7 @@ loadscene = require 'editor/loadscene'
 menu = require 'menu/scene'
 presence = {}
 frame = 0
+cmdargs = {}
 
 currentfps = 0
 peakfps = 0
@@ -56,7 +57,32 @@ local debugDrawText                           -- read the line below
 local headerfont = love.graphics.newFont(32)  -- used for debug
 local regularfont = love.graphics.newFont(16) -- read the line above
 
-function love.load()
+function love.load(arg)
+  local current_arg = nil
+  for i,v in ipairs(arg) do
+    if v:sub(1,2) == "--" then
+      current_arg = v:sub(3)
+      cmdargs[current_arg] = ""
+    elseif current_arg then
+      cmdargs[current_arg] = cmdargs[current_arg] .. (cmdargs[current_arg] ~= "" and " " or "") .. v
+    end
+  end
+  if cmdargs["help"] then
+    print([[
+bab arguments!
+
+--test <scene>    Starts the game with a test scene
+--randomize       Randomizes the game's assets
+--spook           ????
+]])
+    love.event.quit()
+    return
+  end
+  for i,v in pairs(cmdargs) do
+    print(colr.dim("arg set: " .. i .. "=" .. v))
+  end
+
+
   local babfound = false
 
   function searchbab(d)
@@ -87,7 +113,7 @@ function love.load()
 
   searchbab()
 
-  if not babfound then
+  if not babfound or cmdargs["spook"] then
     spookmode = true
   end
 
@@ -204,6 +230,26 @@ function love.load()
     end
   end
   addsprites()
+  
+  randomize_assets = false or cmdargs["randomize"]
+  math.randomseed(love.timer.getTime())
+  if randomize_assets then
+    local names = {}
+    local spr = {}
+    for n,s in pairs(sprites) do
+      if s:getWidth() < 64 and s:getHeight() < 64 then
+        table.insert(names, n)
+        table.insert(spr, s)
+      end
+    end
+    for i = #spr, 2, -1 do -- https://gist.github.com/Uradamus/10323382
+      local j = math.random(i)
+      spr[i], spr[j] = spr[j], spr[i]
+    end
+    for i,n in ipairs(names) do
+      sprites[n] = spr[i]
+    end
+  end
 
   print(colr.green("✓ added sprites\n"))
 
@@ -298,6 +344,10 @@ function love.load()
     registerSound("mous special "..i, 0.3)
   end
 
+  for i=1, 6 do
+    registerSound("honk"..i, 1)
+  end
+
   -- ty. much appreciated
   registerSound("break", 0.5)
   registerSound("unlock", 0.6)
@@ -315,7 +365,7 @@ function love.load()
   registerSound("time resume", 1)
   registerSound("time resume long", 1)
   registerSound("bup", 0.5)
-  registerSound("clicc", 1.0)
+  registerSound("clicc", 1)
   registerSound("unwin", 0.5)
   registerSound("stopwatch", 1.0)
   registerSound("babbolovania", 0.7)
@@ -348,7 +398,21 @@ function love.load()
     print(colr.bright("\nboot complete!"))
   end
 
-  scene = menu
+  if cmdargs["test"] then
+    metaClear()
+    clear()
+    presence = {
+      state = cmdargs["test"] .. " test",
+      details = "testing cool new fechures",
+      largeImageKey = "titlescreen",
+      largeimageText = "main menu",
+      startTimestamp = os.time(os.date("*t"))
+    }
+    nextPresenceUpdate = 0
+    scene = require("test/" .. cmdargs["test"])
+  else
+    scene = menu
+  end
   scene.load()
 
   print(colr.dim("load took ~"..(math.floor((love.timer.getTime()-startload)*1000)/1000).."ms"))
@@ -378,7 +442,14 @@ function love.keypressed(key,scancode,isrepeat)
   elseif key == "q" and love.keyboard.isDown('f3') then
     superduperdebugmode = not superduperdebugmode
   elseif key == "m" and love.keyboard.isDown('f3') then
-    is_mobile = not is_mobile
+    if not is_mobile then
+        winwidth, winheight = love.graphics.getDimensions( )
+        love.window.setMode(800, 480, {borderless=false, resizable=true, minwidth=705, minheight=510})
+        is_mobile = true
+    elseif is_mobile then
+        love.window.setMode(winwidth, winheight, {borderless=false, resizable=true, minwidth=705, minheight=510})
+        is_mobile = false
+    end
   elseif key == "d" and love.keyboard.isDown('f3') then
     drumMode = not drumMode
   elseif key == "r" and love.keyboard.isDown('f3') then
@@ -392,18 +463,18 @@ function love.keypressed(key,scancode,isrepeat)
   elseif key == "f5" then
     love.event.quit("restart")
   elseif key == "f11" then
-    if fullscreen == false then
+    if not fullscreen then
 	    if not love.window.isMaximized( ) then
 	  	  winwidth, winheight = love.graphics.getDimensions( )
 	    end
 	    love.window.setMode(0, 0, {borderless=false})
 	    love.window.maximize( )
 	    fullscreen = true
-    elseif fullscreen == true then
-      love.window.setMode(winwidth, winheight, {borderless=false, resizable=true, minwidth=705, minheight=510})
-	    love.window.maximize()
-	    love.window.restore()
-      fullscreen = false
+    elseif fullscreen then
+       love.window.setMode(winwidth, winheight, {borderless=false, resizable=true, minwidth=705, minheight=510})
+	   love.window.maximize()
+	   love.window.restore()
+       fullscreen = false
     end
     settings["fullscreen"] = fullscreen
     saveAll()
@@ -441,7 +512,7 @@ function love.keyreleased(key, scancode)
 end
 
 function love.textinput(text)
-  if scene ~= loadscene then
+  if scene == editor then
     gooi.textinput(text)
   end
 
@@ -614,6 +685,9 @@ function love.update(dt)
   if not settings["music_on"] then music_volume = 0 end
   if settings["music_on"] then music_volume = 1 end
   updateMusic()
+  
+  if not settings["sfx_on"] then sfx_volume = 0 end
+  if settings["sfx_on"] then sfx_volume = 1 end
 
   if debugEnabled and drawnDebugScreen then
     debug.debug()

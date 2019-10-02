@@ -22,6 +22,12 @@ function menu_button.new(text, id, func)
     o:onReleased(func)
   end
 
+  -- lazy copy/paste uwu
+  local bab = ui.component.new():setSprite(sprites["bab"]):setX(-sprites["bab"]:getWidth()-2):setEnabled(false)
+  o:addChild(bab)
+  o:onHovered(function() bab:setEnabled(true) end)
+  o:onExited(function() bab:setEnabled(false) end)
+
   return o
 end
 

@@ -984,7 +984,7 @@ function findSidekikers(unit,dx,dy)
   --fast track
   if rules_with["sidekik"] == nil and rules_with["diagkik"] == nil then return {} end
   local result = {}
-  if hasProperty(unit, "shy") then
+  if hasProperty(unit, "shy...") then
     return result
   end
   local x = unit.x
@@ -1072,7 +1072,7 @@ end
 function doPullCore(unit,dx,dy,dir,data, already_added, moving_units, moving_units_next, slippers, remove_from_moving_units)
   --TODO: CLEANUP: This is a big ol mess now and there's no way it needs to be THIS complicated.
   local result = 0
-  local something_moved = not hasProperty(unit, "shy")
+  local something_moved = not hasProperty(unit, "shy...")
   local prev_unit = unit
   while (something_moved) do
     something_moved = false
@@ -1096,7 +1096,7 @@ function doPullCore(unit,dx,dy,dir,data, already_added, moving_units, moving_uni
           --unit.already_moving = true
           
           for _,mover in ipairs(movers) do
-            if not changed_unit and (mover.unit.x ~= unit.x or mover.unit.y ~= unit.y) and not hasProperty(mover.unit, "shy") then
+            if not changed_unit and (mover.unit.x ~= unit.x or mover.unit.y ~= unit.y) and not hasProperty(mover.unit, "shy...") then
               something_moved = true
               --Here's where we pick our arbitrary next unit as the puller. (I guess if we're pulling a wrap and a non wrap thing simultaneously it will be ambiguous, so don't use this in a puzzle so I don't have to be recursive...?) (IDK how I'm going to code moonwalk/drunk/drunker/skip pull though LOL, I guess that WOULD have to be recursive??)
               prev_unit = unit
@@ -1123,7 +1123,8 @@ function fallBlock()
   local timeless_fallers = {}
   
   function addFallersFromLoop(verb, property, gravity_dir)
-    for unit,count in pairs(getUnitsWithRuleAndCount(nil, verb, property)) do
+    local falling = (verb == "be" and getUnitsWithEffectAndCount(property) or getUnitsWithRuleAndCount(nil, verb, property))
+    for unit,count in pairs(falling) do
       if fallers[unit] == nil then
         fallers[unit] = {0, 0};
       end
@@ -1514,6 +1515,10 @@ function doPortal(unit, px, py, move_dir, dir, reverse)
 end
 
 function dirDiff(dir1, dir2)
+  if (dir1 == nil or dir2 == nil) then
+    print("dirDiff:",dir1,dir2)
+    return 0
+  end
   if dir1 <= dir2 then
     return dir2 - dir1
   else
@@ -1522,6 +1527,13 @@ function dirDiff(dir1, dir2)
 end
 
 function dirAdd(dir1, diff)
+  if (diff == nil) then
+    print("dirAdd:",dir1,diff)
+    return dir1 or 1
+  elseif (dir1 == nil) then
+    print("dirAdd:",dir1,diff)
+    return diff
+  end
   dir1 = dir1 + diff
   while dir1 < 1 do
     dir1 = dir1 + 8
@@ -1590,12 +1602,12 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
   end
   
   local pushing = false
-  if (pushing_ ~= nil and not hasProperty(unit, "shy")) then
+  if (pushing_ ~= nil and not hasProperty(unit, "shy...")) then
 		pushing = pushing_
 	end
   --TODO: Patashu: this isn't used now but might be in the future??
   local pulling = false
-	if (pulling_ ~= nil and not hasProperty(unit, "shy")) then
+	if (pulling_ ~= nil and not hasProperty(unit, "shy...")) then
 		pulling = pulling_
 	end
   
@@ -1778,13 +1790,13 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
       end
       local would_swap_with = swap_mover or hasProperty(v, "behin u") and pushing
       --pushing a key into a door automatically works
-      if (fordor and hasProperty(v, "ned kee")) or (nedkee and hasProperty(v, "for dor")) then
-        if timecheck(unit,"be","ned kee") and timecheck(v,"be","for dor") and sameFloat(unit, v) then
+      if ((fordor and hasProperty(v, "ned kee")) or (nedkee and hasProperty(v, "for dor"))) and sameFloat(unit, v) then
+        if (timecheck(unit,"be","ned kee") and timecheck(v,"be","for dor")) or (timecheck(unit,"be","for dor") and timecheck(v,"be","ned kee")) then
           table.insert(specials, {"open", {unit, v}})
           return true,movers,specials
         else
-          table.insert(time_destroy,unit)
-          table.insert(time_destroy,v)
+          table.insert(time_destroy,unit.id)
+          table.insert(time_destroy,v.id)
 					addUndo({"time_destroy",unit.id})
 					addUndo({"time_destroy",v.id})
           table.insert(time_sfx,"break")
