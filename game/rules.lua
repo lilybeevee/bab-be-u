@@ -847,7 +847,7 @@ function addRule(full_rule)
 
     -- for specifically checking NOT rules
     table.insert(full_rules, {rule = {subject = rules.subject, verb = {name = verb .. "n't"}, object = rules.object}, units = units, dir = dir})
-  elseif (verb == "be") and (subject == object or (subject:starts("text_") and object == "text")) and subject ~= "lvl" and object ~= "lvl" then
+  elseif (verb == "be") and (subject == object or (subject:starts("text_") and object == "text")) and subject ~= "lvl" and object ~= "lvl" and subject ~= "sans" then
     --print("protecting: " .. subject .. ", " .. object)
     addRuleSimple(rules.subject, {"be"}, {"notranform", rules.object.conds}, units, dir)
   elseif object == "notranform" or (subject == "lvl" and object == "lvl") then -- no "n't" here, but still blocks other rules so we need to count it
