@@ -1258,6 +1258,8 @@ function miscUpdates()
             unit.sprite = "ditto_sans"
         elseif hasProperty(unit,"ouch") then
             unit.sprite = "ditto_ouch"
+        elseif hasProperty(unit,"protecc") then
+            unit.sprite = "ditto_protecc"
         elseif hasProperty(unit,"no undo") then
             unit.sprite = "ditto_no undo"
         -- Eeveelutions
@@ -1274,12 +1276,20 @@ function miscUpdates()
         -- Rotom formes
         elseif hasProperty(unit,"zip") then
             unit.sprite = "ditto_zip"
+        elseif hasRule(unit,"sing","?") then
+            unit.sprite = "ditto_sing"
+        elseif hasRule(unit,"paint","?") then
+            unit.sprite = "ditto_paint"
         elseif hasProperty(unit,"rave") then
             unit.sprite = "ditto_rave"
+        elseif hasProperty(unit,"folo wal") then
+            unit.sprite = "ditto_folo wal"
         elseif hasProperty(unit,"colrful") then
             unit.sprite = "ditto_colrful"
         elseif hasProperty(unit,"torc") then
             unit.sprite = "ditto_torc"
+        elseif hasProperty(unit,"split") then
+            unit.sprite = "ditto_split"
         elseif hasProperty(unit,"hopovr") then
             unit.sprite = "ditto_hopovr"
         elseif hasProperty(unit,"right") or hasProperty(unit,"downright") or hasProperty(unit,"down") or hasProperty(unit,"downleft") or hasProperty(unit,"left") or hasProperty(unit,"upleft") or hasProperty(unit,"up") or hasProperty(unit,"upright") then
@@ -1292,20 +1302,30 @@ function miscUpdates()
             unit.sprite = "ditto_munwalk"
         elseif hasProperty(unit,"visit fren") then
             unit.sprite = "ditto_visit fren"
+        elseif hasProperty(unit,"walk") then
+            unit.sprite = "ditto_walk"
         elseif hasProperty(unit,"no swim") then
             unit.sprite = "ditto_no swim"
+        elseif hasProperty(unit,"haet flor") then
+            unit.sprite = "ditto_haet flor"
         elseif hasProperty(unit,"haet skye") then
             unit.sprite = "ditto_haet skye"
         elseif hasRule(unit,"got","gunne") then
             unit.sprite = "ditto_gunne"
+        elseif hasProperty(unit,"glued") then
+            unit.sprite = "ditto_glued"
         elseif hasProperty(unit,"flye") then
             unit.sprite = "ditto_flye"
         elseif hasProperty(unit,"tranz") then
             unit.sprite = "ditto_tranz"
         elseif hasProperty(unit,"come pls") then
             unit.sprite = "ditto_come pls"
+        elseif hasProperty(unit,"go away pls") then
+            unit.sprite = "ditto_go away pls"
         elseif hasProperty(unit,"go") then
             unit.sprite = "ditto_go"
+        elseif hasRule(unit,"snacc","?") then
+            unit.sprite = "ditto_snacc"
         elseif hasProperty(unit,"moar") then
             unit.sprite = "ditto_moar"
         elseif hasProperty(unit,"hotte") then
@@ -1314,8 +1334,18 @@ function miscUpdates()
             unit.sprite = "ditto_fridgd"
         elseif hasProperty(unit,"for dor") then
             unit.sprite = "ditto_fordor"
+        elseif hasProperty(unit,":)") then
+            unit.sprite = "ditto_yay"
+        elseif hasProperty(unit,":o") then
+            unit.sprite = "ditto_whoa"
         elseif hasProperty(unit,"no go") then
             unit.sprite = "ditto_no go"
+        elseif hasProperty(unit,"u tres") then
+            unit.sprite = "ditto_u tres"
+        elseif hasProperty(unit,"u too") then
+            unit.sprite = "ditto_u too"
+        elseif hasProperty(unit,"u") then
+            unit.sprite = "ditto_u"
         else
             unit.sprite = "ditto"
         end
