@@ -2163,15 +2163,9 @@ function convertLevel()
     return true
   end
   
-  local demeta = matchesRule(outerlvl,"ben't","meta")
-  if #demeta > 0 then
-    destroyLevel("convert")
-    return true
-  end
-  
   transform_results = {}
   
-  local meta = matchesRule(outerlvl, "be","meta")
+  local meta = matchesRule(outerlvl,"be","txtify")
   if (#meta > 0) then
    local tile = nil
     local nametocreate = outerlvl.fullname
@@ -2230,7 +2224,7 @@ function convertUnits(pass)
   local converted_units = {}
   local del_cursors = {}
   
-  local meta = getUnitsWithRuleAndCount(nil, "be","meta")
+  local meta = getUnitsWithRuleAndCount(nil,"be","txtify")
   for unit,amt in pairs(meta) do
     if (unit.fullname == "mous") then
       local cursor = unit
@@ -2244,7 +2238,7 @@ function convertUnits(pass)
           addUndo({"create", new_unit.id, true, created_from_id = unit.id})
         end
       end
-    elseif not unit.new and unit.type ~= "outerlvl" and timecheck(unit,"be","meta") then
+    elseif not unit.new and unit.type ~= "outerlvl" and timecheck(unit,"be","txtify") then
       table.insert(converted_units, unit)
       addParticles("bonus", unit.x, unit.y, unit.color_override or unit.color)
       local tile = nil
@@ -2267,14 +2261,9 @@ function convertUnits(pass)
     end
   end
   
-  local demeta = getUnitsWithRuleAndCount(nil, "ben't","meta")
+  local demeta = getUnitsWithRuleAndCount(nil,"be","thingify")
   for unit,amt in pairs(demeta) do
-    if (unit.name == "mous" and inBounds(unit.x, unit.y)) then
-      addParticles("bonus", unit.x, unit.y, unit.color_override or unit.color)
-      table.insert(del_cursors, unit)
-    elseif not unit.new and unit.type ~= "outerlvl" and timecheck(unit,"ben't","meta") then
-      table.insert(converted_units, unit)
-      addParticles("bonus", unit.x, unit.y, unit.color_override or unit.color)
+    if not unit.new and unit.type ~= "outerlvl" and timecheck(unit,"be","thingify") then
       --remove "text_" as many times as we're de-metaing
       local nametocreate = unit.fullname
       for i = 1,amt do
@@ -2284,21 +2273,22 @@ function convertUnits(pass)
         else
           if nametocreate:starts("text_") then
             nametocreate = nametocreate:sub(6, -1)
-          else
-            nametocreate = "no1"
-            break
           end
         end
       end
-      if (nametocreate == "mous") then
-        local new_mouse = createMouse(unit.x, unit.y)
-        addUndo({"create_cursor", new_mouse.id, created_from_id = unit.id})
-      else
-        local tile = tiles_by_name[nametocreate]
-        if tile ~= nil then
-          local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
-          if (new_unit ~= nil) then
-            addUndo({"create", new_unit.id, true, created_from_id = unit.id})
+      if nametocreate ~= unit.fullname then
+        table.insert(converted_units, unit)
+        addParticles("bonus", unit.x, unit.y, unit.color_override or unit.color)
+        if (nametocreate == "mous") then
+          local new_mouse = createMouse(unit.x, unit.y)
+          addUndo({"create_cursor", new_mouse.id, created_from_id = unit.id})
+        else
+          local tile = tiles_by_name[nametocreate]
+          if tile ~= nil then
+            local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
+            if (new_unit ~= nil) then
+              addUndo({"create", new_unit.id, true, created_from_id = unit.id})
+            end
           end
         end
       end

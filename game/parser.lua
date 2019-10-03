@@ -152,7 +152,7 @@ function findUnit(words, extra_words_, dir, outer, no_verb_cond)
   
   local first_infix = true
   local andd
-  while words[1] and words[1].type and (words[1].type.cond_infix or (words[1].type.direction and words[2].name == "arond")) and (first_infix or enclosed) and (not no_verb_cond or not words[1].type.verb) do
+  while words[1] and words[1].type and (words[1].type.cond_infix or (words[1].type.direction and words[2] and words[2].name == "arond")) and (first_infix or enclosed) and (not no_verb_cond or not words[1].type.verb) do
     local infix = copyTable(words[1])
     local infix_orig = infix
     infix.mods = infix.mods or {}

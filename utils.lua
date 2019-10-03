@@ -2712,16 +2712,16 @@ function addRuleSimple(subject, verb, object, units, dir)
       subject = {
         name = subject.name or subject[1],
         conds = subject.conds or subject[2],
-        unit = subject.unit
+        unit = subject.unit or subject[3]
       },
       verb = {
         name = verb.name or verb[1] or verb,
-        unit = verb.unit
+        unit = verb.unit or verb[2]
       },
       object = {
         name = object.name or object[1],
         conds = object.conds or object[2],
-        unit = object.unit
+        unit = object.unit or object[3]
       }
     },
     units = units,
