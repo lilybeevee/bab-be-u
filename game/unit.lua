@@ -1262,6 +1262,8 @@ function miscUpdates()
             unit.sprite = "ditto_spoop"
         elseif hasProperty(unit,"xwx") then
             unit.sprite = "ditto_xwx"
+        elseif hasProperty(unit,"rong") then
+            unit.sprite = "ditto_rong"
         elseif hasProperty(unit,"wurd") then
             unit.sprite = "ditto_wurd"
         elseif graphical_property_cache["slep"][unit] ~= nil then
@@ -1324,8 +1326,12 @@ function miscUpdates()
             unit.sprite = "ditto_nuek"
         elseif hasProperty(unit,";d") then
             unit.sprite = "ditto_;d"
+        elseif hasProperty(unit,"knightstep") then
+            unit.sprite = "ditto_knightstep"
         elseif hasProperty(unit,"diagstep") then
             unit.sprite = "ditto_diagstep"
+        elseif hasProperty(unit,"sidestep") then
+            unit.sprite = "ditto_sidestep"
         elseif hasProperty(unit,"munwalk") then
             unit.sprite = "ditto_munwalk"
         elseif hasProperty(unit,"visit fren") then
@@ -1344,6 +1350,8 @@ function miscUpdates()
             unit.sprite = "ditto_glued"
         elseif hasProperty(unit,"flye") then
             unit.sprite = "ditto_flye"
+        elseif hasProperty(unit,"enby") then
+            unit.sprite = "ditto_enby"
         elseif hasProperty(unit,"tranz") then
             unit.sprite = "ditto_tranz"
         elseif hasProperty(unit,"come pls") then
@@ -1356,12 +1364,14 @@ function miscUpdates()
             unit.sprite = "ditto_snacc"
         elseif hasProperty(unit,"moar") then
             unit.sprite = "ditto_moar"
+        elseif hasProperty(unit,"ned kee") then
+            unit.sprite = "ditto_ned kee"
+        elseif hasProperty(unit,"for dor") then
+            unit.sprite = "ditto_fordor"
         elseif hasProperty(unit,"hotte") then
             unit.sprite = "ditto_hotte"
         elseif hasProperty(unit,"fridgd") then
             unit.sprite = "ditto_fridgd"
-        elseif hasProperty(unit,"for dor") then
-            unit.sprite = "ditto_fordor"
         elseif hasProperty(unit,":)") then
             unit.sprite = "ditto_yay"
         elseif hasProperty(unit,":o") then

@@ -166,6 +166,7 @@ function scene.buildUI()
     scene.addOption("music_on", "music", {{"on", true}, {"off", false}})
     scene.addOption("sfx_on", "sound", {{"on", true}, {"off", false}})
     scene.addOption("particles_on", "particles", {{"on", true}, {"off", false}})
+    scene.addOption("grid_lines", "grid lines", {{"on", true}, {"off", false}})
     scene.addOption("stopwatch_effect", "stopwatch effect", {{"on", true}, {"off", false}})
     scene.addOption("fullscreen", "resolution", {{"fullscreen", true}, {"windowed", false}}, function(val)
       if val then
@@ -730,6 +731,18 @@ function scene.draw(dt)
       love.graphics.setColor(1, 1, 1)
       local sprite = sprites[level_background_sprite]
       love.graphics.draw(sprite, 0, 0, 0, 1, 1, 0, 0)
+    end
+  end
+  
+  if settings["grid_lines"] then
+    love.graphics.setLineWidth(1)
+    local r,g,b,a = getPaletteColor(0,1)
+    love.graphics.setColor(r,g,b,0.3)
+    for i=1,mapwidth-1 do
+      love.graphics.line(i*TILE_SIZE,0,i*TILE_SIZE,roomheight)
+    end
+    for i=1,mapheight-1 do
+      love.graphics.line(0,i*TILE_SIZE,roomwidth,i*TILE_SIZE)
     end
   end
 
