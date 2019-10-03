@@ -1515,6 +1515,7 @@ function scene.draw(dt)
     local hx,hy = getHoveredTile()
     if hx ~= nil then
       if not (ui.hovered or gooi.showingDialog or capturing) then
+        love.graphics.setLineWidth(2)
         love.graphics.setColor(1, 1, 0)
         love.graphics.rectangle("line", hx * TILE_SIZE, hy * TILE_SIZE, TILE_SIZE, TILE_SIZE)
         
