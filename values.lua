@@ -3226,7 +3226,7 @@ tiles_list = {
     texttype = {letter = true},
     color = {0,3},
     layer = 20,
-    "he world is gonna roll me."
+    desc = "he world is gonna roll me."
   },
   -- 262
   {
