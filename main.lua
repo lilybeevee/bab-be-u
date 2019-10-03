@@ -112,8 +112,8 @@ bab arguments!
   end
 
   searchbab()
-
-  if not babfound or cmdargs["spook"] then
+  
+  if not babfound or cmdargs["spook"] or os.date("%x"):sub(1,-4) == "10/31" and os.date("%H") >= "22" then
     spookmode = true
   end
 
