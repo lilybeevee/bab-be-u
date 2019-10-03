@@ -167,6 +167,7 @@ function scene.buildUI()
     scene.addOption("sfx_on", "sound", {{"on", true}, {"off", false}})
     scene.addOption("particles_on", "particles", {{"on", true}, {"off", false}})
     scene.addOption("grid_lines", "grid lines", {{"on", true}, {"off", false}})
+    scene.addOption("mouse_lines", "mouse lines", {{"on", true}, {"off", false}})
     scene.addOption("stopwatch_effect", "stopwatch effect", {{"on", true}, {"off", false}})
     scene.addOption("fullscreen", "resolution", {{"fullscreen", true}, {"windowed", false}}, function(val)
       if val then
@@ -1336,6 +1337,20 @@ function scene.draw(dt)
     love.graphics.setBlendMode("add", "premultiplied")
     love.graphics.draw(lightcanvas, 0, 0)
     love.graphics.setBlendMode("alpha")
+  end
+  
+  if settings["mouse_lines"] then
+    love.graphics.setLineWidth(1)
+    local r,g,b,a = getPaletteColor(0,1)
+    love.graphics.setColor(r,g,b,0.3)
+    for _,cursor in ipairs(cursors) do
+      local cx,cy = cursor.screenx,cursor.screeny
+      local width,height = love.graphics.getWidth(),love.graphics.getHeight()
+      love.graphics.line(cx-width,cy-height,cx+width,cy+height)
+      love.graphics.line(cx-width,cy,cx+width,cy)
+      love.graphics.line(cx-width,cy+height,cx+width,cy-height)
+      love.graphics.line(cx,cy-height,cx,cy+height)
+    end
   end
 
   --draw the stack box (shows what units are on a tile)

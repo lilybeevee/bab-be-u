@@ -57,6 +57,7 @@ function scene.buildUI()
     scene.addOption("sfx_on", "sound", {{"on", true}, {"off", false}})
     scene.addOption("particles_on", "particles", {{"on", true}, {"off", false}})
     scene.addOption("grid_lines", "grid lines", {{"on", true}, {"off", false}})
+    scene.addOption("mouse_lines", "mouse lines", {{"on", true}, {"off", false}})
     scene.addOption("stopwatch_effect", "stopwatch effect", {{"on", true}, {"off", false}})
     scene.addOption("fullscreen", "resolution", {{"fullscreen", true}, {"windowed", false}}, function(val)
       if val then

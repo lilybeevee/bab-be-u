@@ -2960,3 +2960,9 @@ function getPastConds(conds)
   end
   return result, new_conds
 end
+
+function jprint(str)
+  if just_moved then
+    print(str)
+  end
+end
