@@ -16,6 +16,11 @@ require "game/parser"
 require "game/rules"
 require "game/undo"
 require "game/cursor"
+local utf8 = require("utf8")
+ 
+local function error_printer(msg, layer)
+	print((debug.traceback("Error: " .. tostring(msg), 1+(layer or 1)):gsub("\n[^\n]+$", "")))
+end
 game = require 'game/scene'
 editor = require 'editor/scene'
 loadscene = require 'editor/loadscene'
@@ -850,6 +855,181 @@ end
 
 function love.mousemoved(x, y, dx, dy)
   ui.lock_hovered = false
+end
+
+function love.errorhandler(msg)
+	msg = tostring(msg)
+ 
+	error_printer(msg, 2)
+ 
+	if not love.window or not love.graphics or not love.event then
+		return
+	end
+ 
+	if not love.graphics.isCreated() or not love.window.isOpen() then
+		local success, status = pcall(love.window.setMode, 800, 600)
+		if not success or not status then
+			return
+		end
+	end
+ 
+	-- Reset state.
+	if love.mouse then
+		love.mouse.setVisible(true)
+		love.mouse.setGrabbed(false)
+		love.mouse.setRelativeMode(false)
+		if love.mouse.isCursorSupported() then
+			love.mouse.setCursor()
+		end
+	end
+	if love.joystick then
+		-- Stop all joystick vibrations.
+		for i,v in ipairs(love.joystick.getJoysticks()) do
+			v:setVibration()
+		end
+	end
+	if love.audio then love.audio.stop() end
+ 
+	love.graphics.reset()
+	local font = love.graphics.setNewFont(14)
+ 
+	love.graphics.setColor(1, 1, 1, 1)
+ 
+	local trace = debug.traceback()
+ 
+	love.graphics.origin()
+ 
+	local sanitizedmsg = {}
+	for char in msg:gmatch(utf8.charpattern) do
+		table.insert(sanitizedmsg, char)
+	end
+	sanitizedmsg = table.concat(sanitizedmsg)
+ 
+	local err = {}
+ 
+	table.insert(err, "uh ohhh!!! error!!\n")
+	table.insert(err, sanitizedmsg)
+ 
+	if #sanitizedmsg ~= #msg then
+		table.insert(err, "Invalid UTF-8 string in error message.")
+	end
+ 
+	table.insert(err, "\n")
+ 
+	for l in trace:gmatch("(.-)\n") do
+		if not l:match("boot.lua") then
+			l = l:gsub("stack traceback:", "here's what happnd:\n")
+			table.insert(err, l)
+		end
+	end
+ 
+  local p = table.concat(err, "\n")
+  local popupactive = 0
+ 
+	p = p:gsub("\t", "")
+	p = p:gsub("%[string \"(.-)\"%]", "%1")
+ 
+  local function draw()
+    if drawnDebugScreen then
+      debugDrawText = false
+      drawnDebugScreen = false
+      debug.debug()
+    end
+
+		local pos = 70
+    love.graphics.clear(23/255, 49/255, 84/255)
+    love.graphics.setColor(1,1,1)
+    love.graphics.printf(p, pos, pos, love.graphics.getWidth() - pos)
+    if sprites["bab"] then
+      local bab = sprites["bab"]
+      local xoff = math.random(-2,2)
+      local yoff = math.random(-2,2)
+
+      love.graphics.push()
+      love.graphics.translate(love.graphics.getWidth()-10-bab:getWidth(), love.graphics.getHeight()-10-bab:getHeight())
+      love.graphics.rotate(love.timer.getTime())
+
+      -- oh boy
+      love.graphics.setColor(0,0,0)
+      love.graphics.draw(bab, -bab:getWidth()/2+xoff-1, -bab:getHeight()/2+yoff)
+      love.graphics.draw(bab, -bab:getWidth()/2+xoff-1, -bab:getHeight()/2+yoff-1)
+      love.graphics.draw(bab, -bab:getWidth()/2+xoff, -bab:getHeight()/2+yoff-1)
+      love.graphics.draw(bab, -bab:getWidth()/2+xoff+1, -bab:getHeight()/2+yoff)
+      love.graphics.draw(bab, -bab:getWidth()/2+xoff+1, -bab:getHeight()/2+yoff+1)
+      love.graphics.draw(bab, -bab:getWidth()/2+xoff, -bab:getHeight()/2+yoff+1)
+      love.graphics.draw(bab, -bab:getWidth()/2+xoff-1, -bab:getHeight()/2+yoff+1)
+      love.graphics.draw(bab, -bab:getWidth()/2+xoff+1, -bab:getHeight()/2+yoff-1)
+
+      love.graphics.setColor(1,1,1)
+      love.graphics.draw(bab, -bab:getWidth()/2+xoff, -bab:getHeight()/2+yoff)
+      
+      love.graphics.pop()
+
+      love.graphics.print('u don goofed', love.graphics.getWidth()-10-bab:getWidth()*2-love.graphics.newText(love.graphics.getFont(), 'u don goofed'):getWidth(), love.graphics.getHeight()-10-bab:getHeight()*1.25)
+    end
+    if popupactive > 0 then
+      popupactive = popupactive - 1
+      love.graphics.setColor(1,1,1,popupactive/160)
+      love.graphics.printf("okeys!!! the bab express will deliver dis to ur clipboard nowe!", 0, 0, love.graphics.getWidth(), 'right')
+    end
+    if debugDrawText then
+      drawnDebugScreen = true
+      love.graphics.setColor(1,1,1)
+      love.graphics.rectangle('line',0,0,love.graphics.getWidth(),love.graphics.getHeight())
+      love.graphics.setColor(0.5,0.5,0.5,0.5)
+      love.graphics.rectangle('fill',0,0,love.graphics.getWidth(),love.graphics.getHeight())
+      love.graphics.setColor(1,1,1)
+      love.graphics.printf('debug mode active, use cont to exit', 0, love.graphics.getHeight()/2, love.graphics.getWidth(), 'center')
+    end
+		love.graphics.present()
+	end
+ 
+	local fullErrorText = p
+	local function copyToClipboard()
+		if not love.system then return end
+		love.system.setClipboardText(fullErrorText)
+    popupactive = 190
+		draw()
+	end
+ 
+	if love.system then
+		p = p .. "\n\nif u wanna copey dis ctrl+c or ta!p!!! and f5 to open debug mode"
+	end
+ 
+	return function()
+		love.event.pump()
+ 
+		for e, a, b, c in love.event.poll() do
+			if e == "quit" then
+				return 1
+			elseif e == "keypressed" and a == "escape" then
+				return 1
+			elseif e == "keypressed" and a == "c" and love.keyboard.isDown("lctrl", "rctrl") then
+        copyToClipboard()
+      elseif e == "keypressed" and a == "f5" then
+        debugDrawText = true
+      elseif e == "touchpressed" then
+        local name = love.window.getTitle()
+        if #name == 0 or name == "Untitled" then name = "Game" end
+        local buttons = {"okeys...", "nono i wanna see speen bab"}
+        if love.system then
+          buttons[3] = "copey it"
+        end
+        local pressed = love.window.showMessageBox("bab crashd!!! quit "..name.."?", "", buttons)
+        if pressed == 1 then
+          return 1
+        elseif pressed == 3 then
+          copyToClipboard()
+        end
+			end
+		end
+    draw()
+ 
+		if love.timer then
+			love.timer.sleep(0.01)
+		end
+	end
+ 
 end
 
 function love.quit()
