@@ -201,6 +201,12 @@ function parseRules(undoing)
     table.sort(dittos, function(a, b) return a.y < b.y end ) 
     for _,unit in ipairs(dittos) do
       local mimic = getTextOnTile(unit.x,unit.y-1)
+      print(unit.dir)
+      print(hasProperty(unit,"rotatbl"))
+      if hasProperty(unit,"rotatbl") and unit.dir == 5 then
+        mimic = getTextOnTile(unit.x,unit.y+1)
+      end
+      
       if #mimic == 1 then
         unit.textname = mimic[1].textname
         unit.texttype = mimic[1].texttype
