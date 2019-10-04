@@ -47,19 +47,21 @@ function scene.buildUI()
     :onPreDraw(function(o) ui.buttonFX(o, {rotate = false}) end)
     :onReleased(function() love.system.openURL("https://github.com/lilybeevee/bab-be-u") end)
 
+  local ox, oy
   if not options then
     scene.addButton("play", function() switchScene("play") end)
     scene.addButton("edit", function() switchScene("edit") end)
     scene.addButton("options", function() options = true; scene.buildUI() end)
     scene.addButton("exit", function() love.event.quit() end)
+    ox, oy = love.graphics.getWidth()/2, love.graphics.getHeight()/2
   else
     scene.addOption("music_on", "music", {{"on", true}, {"off", false}})
     scene.addOption("sfx_on", "sound", {{"on", true}, {"off", false}})
     scene.addOption("particles_on", "particles", {{"on", true}, {"off", false}})
-    scene.addOption("grid_lines", "grid lines", {{"on", true}, {"off", false}})
-    scene.addOption("mouse_lines", "mouse lines", {{"on", true}, {"off", false}})
+    scene.addOption("grid_lines", "grid lines", {{"off", false}, {"on", true}})
+    scene.addOption("mouse_lines", "mouse lines", {{"off", false}, {"on", true}})   
     scene.addOption("stopwatch_effect", "stopwatch effect", {{"on", true}, {"off", false}})
-    scene.addOption("fullscreen", "resolution", {{"fullscreen", true}, {"windowed", false}}, function(val)
+    scene.addOption("fullscreen", "resolution", {{"windowed", false}, {"fullscreen", true}}, function(val)
       if val then
         if not love.window.isMaximized() then
           winwidth, winheight = love.graphics.getDimensions()
@@ -75,9 +77,9 @@ function scene.buildUI()
       end
     end)
     scene.addButton("back", function() options = false; scene.buildUI() end)
+    ox, oy = love.graphics.getWidth() * (3/4) , buttons[1]:getHeight()+10
   end
 
-  local ox, oy = love.graphics.getWidth()/2, love.graphics.getHeight()/2
   for i,button in ipairs(buttons) do
     local width, height = button:getSize()
     button:setPos(ox - width/2, oy - height/2)
@@ -142,47 +144,71 @@ function scene.draw(dt)
   end
   git_btn:draw()
 
-  for _,pair in pairs({{1,0},{0,1},{1,1},{-1,0},{0,-1},{-1,-1},{1,-1},{-1,1}}) do
-    local outlineSize = 2
-    pair[1] = pair[1] * outlineSize
-    pair[2] = pair[2] * outlineSize
+  if not options then
+    for _,pair in pairs({{1,0},{0,1},{1,1},{-1,0},{0,-1},{-1,-1},{1,-1},{-1,1}}) do
+      local outlineSize = 2
+      pair[1] = pair[1] * outlineSize
+      pair[2] = pair[2] * outlineSize
 
-    love.graphics.setColor(0,0,0)
-    love.graphics.draw(sprites["ui/bab_be_u"], width/2 - sprites["ui/bab_be_u"]:getWidth() / 2 + pair[1], height/20 + pair[2])
-  end
+      love.graphics.setColor(0,0,0)
+      love.graphics.draw(sprites["ui/bab_be_u"], width/2 - sprites["ui/bab_be_u"]:getWidth() / 2 + pair[1], height/20 + pair[2])
+    end
 
-  if not spookmode then
-    love.graphics.setColor(1, 1, 1)
-    setRainbowModeColor(love.timer.getTime()/3, .5)
-    love.graphics.draw(sprites["ui/bab_be_u"], width/2 - sprites["ui/bab_be_u"]:getWidth() / 2, height/20)
-  end
-  
-  -- Splash text here
-  
-  love.graphics.push()
-  
-  if string.find(build_number, "420") or string.find(build_number, "1337") or string.find(build_number, "666") or string.find(build_number, "69") then
-    love.graphics.setColor(hslToRgb(love.timer.getTime()%1, .5, .5, .9))
-    splashtext = "nice"
-  end
-  if is_mobile then
-    splashtext = "4mobile!"
-  elseif splash <= 0.5 then
-    splashtext = "splash text!"
-  elseif splash > 0.5 then
-    splashtext = "splosh txt!"
-  end
-  
-  local textx = width/2 + sprites["ui/bab_be_u"]:getWidth() / 2
-  local texty = height/20+sprites["ui/bab_be_u"]:getHeight()
+    if not spookmode then
+      love.graphics.setColor(1, 1, 1)
+      setRainbowModeColor(love.timer.getTime()/3, .5)
+      love.graphics.draw(sprites["ui/bab_be_u"], width/2 - sprites["ui/bab_be_u"]:getWidth() / 2, height/20)
+    end
+    
+    -- Splash text here
+    
+    love.graphics.push()
+    
+    if string.find(build_number, "420") or string.find(build_number, "1337") or string.find(build_number, "666") or string.find(build_number, "69") then
+      love.graphics.setColor(hslToRgb(love.timer.getTime()%1, .5, .5, .9))
+      splashtext = "nice"
+    end
+    if is_mobile then
+      splashtext = "4mobile!"
+    elseif splash <= 0.5 then
+      splashtext = "splash text!"
+    elseif splash > 0.5 then
+      splashtext = "splosh txt!"
+    end
+    
+    local textx = width/2 + sprites["ui/bab_be_u"]:getWidth() / 2
+    local texty = height/20+sprites["ui/bab_be_u"]:getHeight()
 
-  love.graphics.translate(textx+love.graphics.getFont():getWidth(splashtext)/2, texty+love.graphics.getFont():getHeight()/2)
-  love.graphics.rotate(0.7*math.sin(love.timer.getTime()*2))
-  love.graphics.translate(-textx-love.graphics.getFont():getWidth(splashtext)/2, -texty-love.graphics.getFont():getHeight()/2)
+    love.graphics.translate(textx+love.graphics.getFont():getWidth(splashtext)/2, texty+love.graphics.getFont():getHeight()/2)
+    love.graphics.rotate(0.7*math.sin(love.timer.getTime()*2))
+    love.graphics.translate(-textx-love.graphics.getFont():getWidth(splashtext)/2, -texty-love.graphics.getFont():getHeight()/2)
 
-  love.graphics.print(splashtext, textx, texty)
-  
-  love.graphics.pop()
+    love.graphics.print(splashtext, textx, texty)
+    
+    love.graphics.pop()
+  else
+    local img = sprites["ui/bab cog"]
+    local txt = sprites["ui/many toggls"]
+
+    local full_height = img:getHeight()*2 + 10 + txt:getHeight()
+
+    love.graphics.push()
+    love.graphics.translate(love.graphics.getWidth() * (1/4), love.graphics.getHeight()/2)
+    love.graphics.scale(2 * getUIScale())
+    love.graphics.translate(0, -full_height/2)
+    
+    love.graphics.push()
+    love.graphics.scale(2)
+    love.graphics.translate(0, img:getHeight()/2)
+    love.graphics.rotate(0.1*math.sin(love.timer.getTime()))
+    love.graphics.draw(img, -img:getWidth()/2, -img:getHeight()/2)
+    love.graphics.pop()
+
+    local ox, oy = math.floor(math.random()*4)/2-1, math.floor(math.random()*4)/2-1
+    love.graphics.draw(txt, -txt:getWidth()/2 + ox, full_height - txt:getHeight() + oy)
+
+    love.graphics.pop()
+  end
 
   if build_number and not debug_view then
     love.graphics.setColor(1, 1, 1)

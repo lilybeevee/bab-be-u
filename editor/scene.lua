@@ -568,6 +568,8 @@ function scene.keyPressed(key)
       })
     elseif key == "return" and settings_open then
       scene.saveSettings()
+    elseif key == "g" and (key_down["lctrl"] or key_down["rctrl"]) then
+        settings["grid_lines"] = not settings["grid_lines"]
     end
   end
   
@@ -1233,8 +1235,20 @@ function scene.draw(dt)
       love.graphics.setColor(color)
       return color
     end
-    
+  
     if not selector_open then
+      if settings["grid_lines"] then
+            love.graphics.setLineWidth(1)
+            local r,g,b,a = getPaletteColor(0,1)
+            love.graphics.setColor(r,g,b,0.3)
+            for i=1,mapwidth-1 do
+                love.graphics.line(i*TILE_SIZE,0,i*TILE_SIZE,roomheight)
+            end
+            for i=1,mapheight-1 do
+                love.graphics.line(0,i*TILE_SIZE,roomwidth,i*TILE_SIZE)
+            end
+        end
+    
       for i=1,max_layer do
         if units_by_layer[i] then
           for _,unit in ipairs(units_by_layer[i]) do

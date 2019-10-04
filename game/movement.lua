@@ -100,6 +100,10 @@ function doMovement(movex, movey, key)
     return
   end
 
+  if movex == 0 and movey == 0 and units_by_name["swan"] and hasRule("swan","be","u") then
+    playSound("honk"..love.math.random(1,6))
+  end
+
   portaling = {}
   
   updateGroup()
@@ -693,9 +697,15 @@ end
 function doAction(action)
   local action_name = action[1]
   if action_name == "open" then
+    local victims = action[2]
+    --don't do open/shut unless both victims are still alive
+    for _,unit in ipairs(victims) do
+      if unit.removed or unit.destroyed then
+        return
+      end
+    end
     playSound("break", 0.5)
     playSound("unlock", 0.6)
-    local victims = action[2]
     for _,unit in ipairs(victims) do
       addParticles("destroy", unit.x, unit.y, {237,226,133})
       if not hasProperty(unit, "protecc") then
