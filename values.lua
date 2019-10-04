@@ -4151,11 +4151,11 @@ tiles_list = {
     name = "text_samefloat",
     sprite = "text_samefloat",
     type = "text",
-    texttype = {cond_infix = true},
+    texttype = {cond_compare = true},
     color = {1,4},
     layer = 20,
     tags = {"sameflye"},
-    desc = "SAMEFLOAT( (Infix Condition): True if there is an instance of the subject on the same amount of flye as the object.",
+    desc = "SAMEFLOAT( (Compare Condition): True if the condition unit has the same amount of FLYE as the target.",
   },
   -- 342
   {
@@ -7370,6 +7370,28 @@ tiles_list = {
     color = {1, 4},
     layer = 20,
     nice = true,
+  },
+  -- 638
+  {
+    name = "text_samepaint",
+    sprite = "text_samepaint",
+    type = "text",
+    texttype = {cond_compare = true},
+    color = {4,2},
+    layer = 20,
+    tags = {"samecolor"},
+    desc = "SAMEPAINT (Compare Condition): True if the condition unit is the same color as the target.",
+  },
+  -- 639
+  {
+    name = "text_sameface",
+    sprite = "text_sameface",
+    type = "text",
+    texttype = {cond_compare = true},
+    color = {2,4},
+    layer = 20,
+    tags = {"samedirection","samefacing"},
+    desc = "SAMEFACE (Compare Condition): True if the condition unit is facing the same direction as the target.",
   },
 }
 

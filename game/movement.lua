@@ -283,7 +283,7 @@ function doMovement(movex, movey, key)
             if testConds(stalker, stalker_conds) then
               local found_target = nil
               for _,stalkee in ipairs(getUnitsOnTile(stalker.x, stalker.y, ruleparent.rule.object.name)) do -- is it standing on the target
-                if testConds(stalkee, stalkee_conds) and stalker.id ~= stalkee.id then
+                if testConds(stalkee, stalkee_conds, stalker) and stalker.id ~= stalkee.id then
                   found_target = 0
                   break
                 end
@@ -316,7 +316,7 @@ function doMovement(movex, movey, key)
                         if success then
                           local stalkees = getUnitsOnTile(x, y, ruleparent.rule.object.name)
                           for _,stalkee in ipairs(stalkees) do
-                            if testConds(stalkee, stalkee_conds) and stalker.id ~= stalkee.id  then
+                            if testConds(stalkee, stalkee_conds, stalker) and stalker.id ~= stalkee.id  then
                               found_target = visited[x+1][y+1]
                               return
                             end

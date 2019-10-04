@@ -51,7 +51,7 @@ function parse(words, dir, no_verb_cond)
   local units = {}
   local verbs = {}
   while words[1].type and (words[1].type.object or words[1].type.cond_prefix or words[1].type.parenthesis) or (words[2] and words[2].name == "text") do
-    local unit, words_ = findUnit(copyTable(words), extra_words, dir, true, no_verb_cond) -- outer unit doesn't need to worry about enclosure (nothing farther out to confuse it with)
+    local unit, words_ = findUnit(copyTable(words), extra_words, dir, true, no_verb_cond, true) -- outer unit doesn't need to worry about enclosure (nothing farther out to confuse it with)
     if not unit then break end
     words = words_
     if not unit then return false end
@@ -95,7 +95,7 @@ function parse(words, dir, no_verb_cond)
   return true, words, rules, extra_words
 end
 
-function findUnit(words, extra_words_, dir, outer, no_verb_cond)
+function findUnit(words, extra_words_, dir, outer, no_verb_cond, is_subject)
   local extra_words = {}
   -- find all the prefix conditions
   -- find the unit itself
@@ -118,7 +118,7 @@ function findUnit(words, extra_words_, dir, outer, no_verb_cond)
     if #words == 0 then return end
   end
   
-  while words[1].type and words[1].type.cond_prefix do
+  while words[1].type and (words[1].type.cond_prefix or (words[1].type.cond_compare and not is_subject)) do
     local prefix = copyTable(words[1])
     table.remove(words, 1)
     if #words == 0 then return end
@@ -138,7 +138,7 @@ function findUnit(words, extra_words_, dir, outer, no_verb_cond)
       end
     end
     table.insert(conds, prefix)
-    if enclosed and words[1].type["and"] and words[2] and words[2].type.cond_prefix then
+    if enclosed and words[1].type["and"] and words[2] and (words[1].type.cond_prefix or (words[1].type.cond_compare and not is_subject)) then
       table.insert(extra_words, words[1])
       table.remove(words, 1)
       if #words == 0 then return end

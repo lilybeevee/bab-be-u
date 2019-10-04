@@ -16,7 +16,7 @@ function moveBlock()
     for _,stalker in ipairs(stalkers) do
       table.sort(stalkees, function(a, b) return euclideanDistance(a, stalker) < euclideanDistance(b, stalker) end )
       for _,stalkee in ipairs(stalkees) do
-        if testConds(stalker, stalker_conds) and testConds(stalkee, stalkee_conds) then
+        if testConds(stalker, stalker_conds) and testConds(stalkee, stalkee_conds, stalker) then
           local dist = euclideanDistance(stalker, stalkee)
           local stalk_dir = dist > 0 and dirs8_by_offset[sign(stalkee.x - stalker.x)][sign(stalkee.y - stalker.y)] or stalkee.dir
           if dist > 0 and hasProperty(stalker, "ortho") then
@@ -41,7 +41,7 @@ function moveBlock()
     for _,stalker in ipairs(stalkers) do
       table.sort(stalkees, function(a, b) return euclideanDistance(a, stalker) < euclideanDistance(b, stalker) end )
       for _,stalkee in ipairs(stalkees) do
-        if testConds(stalker, stalker_conds) and testConds(stalkee, stalkee_conds) then
+        if testConds(stalker, stalker_conds) and testConds(stalkee, stalkee_conds, stalker) then
           local dist = euclideanDistance(stalker, stalkee)
           local stalk_dir = dist > 0 and dirs8_by_offset[-sign(stalkee.x - stalker.x)][-sign(stalkee.y - stalker.y)] or stalkee.dir
           if dist > 0 and hasProperty(stalker, "ortho") then
