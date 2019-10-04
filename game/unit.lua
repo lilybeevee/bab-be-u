@@ -882,11 +882,12 @@ function updateUnits(undoing, big_update)
           end
           addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
           addParticles("destroy", on.x, on.y, on.color)
+          --unlike other destruction effects, keys and doors pair off one-by-one
+          to_destroy = handleDels(to_destroy)
+          break
         end
       end
     end
-    
-    to_destroy = handleDels(to_destroy)
     
     local issnacc = matchesRule(nil, "snacc", "?")
     for _,ruleparent in ipairs(issnacc) do
