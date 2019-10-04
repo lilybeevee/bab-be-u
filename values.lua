@@ -284,13 +284,13 @@ selector_grid_contents = {
     "text_no go","text_go away pls","text_come pls","text_sidekik","text_diagkik","text_:o","text_hotte","text_fridgd","text_txtify",0,0,0,0,"text_clikt","text_past","text_wun","text_an","text_mayb",
     "text_visit fren","text_slep","text_shy...","text_behin u",0,"text_xwx","text_moar","text_split","text_thingify",0,0,0,0,"text_wait...","text_samefloat",0,0,0,
     "text_flye","text_tall","text_haet skye","text_haet flor",0,"text_;d","text_gone","text_nuek","text_notranform",0,0,0,0,"text_w/fren","text_arond","text_sans","text_seen by","text_behind",
-    "text_diag","text_ortho","text_go my way","text_direction",0,0,0,0,0,0,0,0,0,"text_that","text_that be","text_that got",0,"text_beside",
-    "text_turn cornr","text_folo wal","text_zip","text_hopovr","text_reflecc",0,0,0,0,0,0,0,0,0,0,0,0,0,
+    "text_diag","text_ortho","text_go my way","text_zip",0,0,0,0,0,0,0,0,0,"text_that","text_that be","text_that got",0,"text_beside",
+    "text_turn cornr","text_folo wal","text_hopovr","text_reflecc",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     "text_munwalk","text_sidestep","text_diagstep","text_knightstep",0,0,0,0,0,0,0,0,0,0,0,0,0,"text_reed",
     "text_spin","text_rotatbl","text_noturn","text_stukc",0,0,0,0,0,0,0,0,0,0,0,0,"text_enby","text_orang",
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_brwn","text_tranz","text_yello",
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_blacc","text_gay","text_grun",
-    0,0,0,0,0,"text_try again","text_no undo","text_undo","text_za warudo","text_brite",0,0,0,0,0,"text_graey","text_qt","text_cyeann",
+    "text_upleft","text_up","text_upright",0,0,0,0,0,0,0,0,0,0,0,0,"text_brwn","text_tranz","text_yello",
+    "text_left","text_direction","text_right",0,0,0,0,0,0,0,0,0,0,0,0,"text_blacc","text_gay","text_grun",
+    "text_downleft","text_down","text_downright",0,0,"text_try again","text_no undo","text_undo","text_za warudo","text_brite",0,0,0,0,0,"text_graey","text_qt","text_cyeann",
     "text_every1","text_every2","text_every3","text_lethers",0,"text_poor toll","text_go arnd","text_mirr arnd","text_glued","text_torc",0,0,0,0,0,"text_whit","text_pinc","text_bleu",
     "text_...","text_''",0,0,0,"text_her","text_thr","text_rithere","text_the","text_opaque",0,0,0,0,"text_stelth","text_colrful","text_rave","text_purp",
   },
@@ -1050,7 +1050,7 @@ tiles_list = {
   -- 67
   {
     name = "text_up",
-    sprite = "text_goup",
+    sprite = "text_up",
     type = "text",
     texttype = {property = true, direction = true},
     color = {1, 4},
@@ -1059,7 +1059,7 @@ tiles_list = {
   -- 68
   {
     name = "text_direction",
-    sprite = "text_goright",
+    sprite = "text_direction",
     type = "text",
     texttype = {property = true, direction = true},
     color = {1, 4},
@@ -1071,7 +1071,7 @@ tiles_list = {
   -- 69
   {
     name = "text_left",
-    sprite = "text_goleft",
+    sprite = "text_left",
     type = "text",
     texttype = {property = true, direction = true},
     color = {1, 4},
@@ -1081,7 +1081,7 @@ tiles_list = {
   -- 70
   {
     name = "text_down",
-    sprite = "text_godown",
+    sprite = "text_down",
     type = "text",
     texttype = {property = true, direction = true},
     color = {1, 4},
@@ -4277,7 +4277,7 @@ tiles_list = {
   -- 353
   {
     name = "text_upleft",
-    sprite = "text_goup",
+    sprite = "text_upleft",
     type = "text",
     texttype = {property = true, direction = true},
     color = {1, 4},
@@ -4286,7 +4286,7 @@ tiles_list = {
   -- 354
   {
     name = "text_upright",
-    sprite = "text_goup",
+    sprite = "text_upright",
     type = "text",
     texttype = {property = true, direction = true},
     color = {1, 4},
@@ -4295,7 +4295,7 @@ tiles_list = {
   -- 355
   {
     name = "text_downleft",
-    sprite = "text_goup",
+    sprite = "text_downleft",
     type = "text",
     texttype = {property = true, direction = true},
     color = {1, 4},
@@ -4304,7 +4304,7 @@ tiles_list = {
   -- 356
   {
     name = "text_downright",
-    sprite = "text_goup",
+    sprite = "text_downright",
     type = "text",
     texttype = {property = true, direction = true},
     color = {1, 4},
@@ -7360,6 +7360,16 @@ tiles_list = {
     layer = 20,
     tags = {"demeta", "notnat"},
     desc = "THINGIFY: BE THINGIFY causes that text to turn into the object it represents (or text it represents if metatext).",
+  },
+  -- 637
+  {
+    name = "text_right",
+    sprite = "text_right",
+    type = "text",
+    texttype = {property = true, direction = true},
+    color = {1, 4},
+    layer = 20,
+    nice = true,
   },
 }
 
