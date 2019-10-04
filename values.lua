@@ -282,7 +282,7 @@ selector_grid_contents = {
     "text_u","text_u too","text_u tres","text_walk",0,"text_:)","text_no swim","text_ouch","text_protecc",0,"text_nxt","text_stay ther",0,"text_giv",0,0,0,"text_look away",
     "text_go","text_goooo","text_icy","text_icyyyy",0,"text_:(","text_ned kee","text_for dor","text_wurd",0,"text_sublvl","text_loop",0,"text_frenles","text_timles","text_lit","text_corekt","text_rong",
     "text_no go","text_go away pls","text_come pls","text_sidekik","text_diagkik","text_:o","text_hotte","text_fridgd","text_txtify",0,0,0,0,"text_clikt","text_past","text_wun","text_an","text_mayb",
-    "text_visit fren","text_slep","text_shy...","text_behin u",0,"text_xwx","text_moar","text_split","text_thingify",0,0,0,0,"text_wait...","text_samefloat",0,0,0,
+    "text_visit fren","text_slep","text_shy...","text_behin u",0,"text_xwx","text_moar","text_split","text_thingify",0,0,0,0,"text_wait...","text_samefloat","text_samepaint","text_sameface",0,
     "text_flye","text_tall","text_haet skye","text_haet flor",0,"text_;d","text_gone","text_nuek","text_notranform",0,0,0,0,"text_w/fren","text_arond","text_sans","text_seen by","text_behind",
     "text_diag","text_ortho","text_go my way","text_zip",0,0,0,0,0,0,0,0,0,"text_that","text_that be","text_that got",0,"text_beside",
     "text_turn cornr","text_folo wal","text_hopovr","text_reflecc",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -4151,11 +4151,11 @@ tiles_list = {
     name = "text_samefloat",
     sprite = "text_samefloat",
     type = "text",
-    texttype = {cond_infix = true},
+    texttype = {cond_compare = true},
     color = {1,4},
     layer = 20,
     tags = {"sameflye"},
-    desc = "SAMEFLOAT( (Infix Condition): True if there is an instance of the subject on the same amount of flye as the object.",
+    desc = "SAMEFLOAT( (Compare Condition): True if the condition unit has the same amount of FLYE as the target.",
   },
   -- 342
   {
@@ -7370,6 +7370,28 @@ tiles_list = {
     color = {1, 4},
     layer = 20,
     nice = true,
+  },
+  -- 638
+  {
+    name = "text_samepaint",
+    sprite = "text_samepaint",
+    type = "text",
+    texttype = {cond_compare = true},
+    color = {4,2},
+    layer = 20,
+    tags = {"samecolor"},
+    desc = "SAMEPAINT (Compare Condition): True if the condition unit is the same color as the target.",
+  },
+  -- 639
+  {
+    name = "text_sameface",
+    sprite = "text_sameface",
+    type = "text",
+    texttype = {cond_compare = true},
+    color = {2,4},
+    layer = 20,
+    tags = {"samedirection","samefacing"},
+    desc = "SAMEFACE (Compare Condition): True if the condition unit is facing the same direction as the target.",
   },
 }
 
