@@ -410,6 +410,12 @@ function scene.keyPressed(key, isrepeat)
     selected_pause_button = 1
   end
   
+  
+    if key == "g" and (key_down["lctrl"] or key_down["rctrl"]) then
+        settings["grid_lines"] = not settings["grid_lines"]
+    end
+  
+  
   if pause then
     scene.selecting = true
     --[[if key == "w" or key == "up" or key == "i" or key == "kp8" then
