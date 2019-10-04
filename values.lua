@@ -417,7 +417,7 @@ tiles_list = {
     color = {2, 2},
     layer = 3,
     tags = {"door"},
-    desc = "inherently FORDOR",
+    desc = "for door",
   },
   -- 12
   {
@@ -450,7 +450,7 @@ tiles_list = {
     layer = 4,
     rotate = true,
     tags = {"key"},
-    desc = "normally NEDKEE",
+    desc = "needs key",
   },
   -- 15
   {

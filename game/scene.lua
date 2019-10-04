@@ -1226,15 +1226,6 @@ function scene.draw(dt)
       love.graphics.setColor(color[1], color[2], color[3], color[4])
       love.graphics.draw(sprites["hatsmol"], fulldrawx, fulldrawy - 0.5*TILE_SIZE, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
     end
-    if hasRule(unit,"got","gunne") then
-      if unit.fullname ~= "ditto" then
-        love.graphics.setColor(getPaletteColor(0,3))
-        love.graphics.draw(sprites["gunnesmol"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
-      else
-        love.graphics.setColor(getPaletteColor(0,3))
-        love.graphics.draw(sprites["gunne_ditto"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
-      end
-    end
     if hasRule(unit,"got","katany") then
       love.graphics.setColor(getPaletteColor(0,1))
       love.graphics.draw(sprites["katanysmol"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
@@ -1246,6 +1237,15 @@ function scene.draw(dt)
     if hasRule(unit,"got","slippers") then
       love.graphics.setColor(getPaletteColor(1,4))
       love.graphics.draw(sprites["slippers"], fulldrawx, fulldrawy+sprite:getHeight()/4, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+    end
+    if hasRule(unit,"got","gunne") then
+      if unit.fullname ~= "ditto" then
+        love.graphics.setColor(getPaletteColor(0,3))
+        love.graphics.draw(sprites["gunnesmol"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      else
+        love.graphics.setColor(getPaletteColor(0,3))
+        love.graphics.draw(sprites["gunne_ditto"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      end
     end
     
     if false then -- stupid lua comments
