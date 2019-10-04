@@ -1340,17 +1340,20 @@ function scene.draw(dt)
   end
   
   if settings["mouse_lines"] then
+    love.graphics.push()
+    love.graphics.origin()
     love.graphics.setLineWidth(1)
     local r,g,b,a = getPaletteColor(0,1)
     love.graphics.setColor(r,g,b,0.3)
     for _,cursor in ipairs(cursors) do
       local cx,cy = cursor.screenx,cursor.screeny
-      local width,height = love.graphics.getWidth(),love.graphics.getHeight()
-      love.graphics.line(cx-width,cy-height,cx+width,cy+height)
+      local width = love.graphics.getWidth()
+      love.graphics.line(cx-width,cy-width,cx+width,cy+width)
       love.graphics.line(cx-width,cy,cx+width,cy)
-      love.graphics.line(cx-width,cy+height,cx+width,cy-height)
-      love.graphics.line(cx,cy-height,cx,cy+height)
+      love.graphics.line(cx-width,cy+width,cx+width,cy-width)
+      love.graphics.line(cx,cy-width,cx,cy+width)
     end
+    love.graphics.pop()
   end
 
   --draw the stack box (shows what units are on a tile)
