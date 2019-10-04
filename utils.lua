@@ -779,8 +779,13 @@ function getUs()
 end
 
 function hasSing(unit,note)
-    bit = love.audio.newSource("assets/audio/sfx/bit2.wav", "static")
-    return hasRule(unit,"sing",note)
+  local rules = matchesRule(nil,"sing",note)
+  for _,rule in ipairs(rules) do
+    if rule[2].fullname ~= "swan" then
+      bit = love.audio.newSource("assets/audio/sfx/bit2.wav", "static")
+      return true
+    end
+  end
 end
 
 --to prevent infinite loops where a set of rules/conditions is self referencing
@@ -2959,4 +2964,10 @@ function getPastConds(conds)
     end
   end
   return result, new_conds
+end
+
+function jprint(str)
+  if just_moved then
+    print(str)
+  end
 end

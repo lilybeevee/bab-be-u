@@ -56,9 +56,10 @@ function scene.buildUI()
     scene.addOption("music_on", "music", {{"on", true}, {"off", false}})
     scene.addOption("sfx_on", "sound", {{"on", true}, {"off", false}})
     scene.addOption("particles_on", "particles", {{"on", true}, {"off", false}})
-    scene.addOption("grid_lines", "grid lines", {{"on", true}, {"off", false}})
+    scene.addOption("grid_lines", "grid lines", {{"off", false}, {"on", true}})
+    scene.addOption("mouse_lines", "mouse lines", {{"off", false}, {"on", true}})   
     scene.addOption("stopwatch_effect", "stopwatch effect", {{"on", true}, {"off", false}})
-    scene.addOption("fullscreen", "resolution", {{"fullscreen", true}, {"windowed", false}}, function(val)
+    scene.addOption("fullscreen", "resolution", {{"windowed", false}, {"fullscreen", true}}, function(val)
       if val then
         if not love.window.isMaximized() then
           winwidth, winheight = love.graphics.getDimensions()

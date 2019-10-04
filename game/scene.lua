@@ -166,9 +166,10 @@ function scene.buildUI()
     scene.addOption("music_on", "music", {{"on", true}, {"off", false}})
     scene.addOption("sfx_on", "sound", {{"on", true}, {"off", false}})
     scene.addOption("particles_on", "particles", {{"on", true}, {"off", false}})
-    scene.addOption("grid_lines", "grid lines", {{"on", true}, {"off", false}})
+    scene.addOption("grid_lines", "grid lines", {{"off", false}, {"on", true}})
+    scene.addOption("mouse_lines", "mouse lines", {{"off", false}, {"on", true}})   
     scene.addOption("stopwatch_effect", "stopwatch effect", {{"on", true}, {"off", false}})
-    scene.addOption("fullscreen", "resolution", {{"fullscreen", true}, {"windowed", false}}, function(val)
+    scene.addOption("fullscreen", "resolution", {{"windowed", false}, {"fullscreen", true}}, function(val)
       if val then
         if not love.window.isMaximized() then
           winwidth, winheight = love.graphics.getDimensions()
@@ -408,6 +409,12 @@ function scene.keyPressed(key, isrepeat)
     pause = not pause
     selected_pause_button = 1
   end
+  
+  
+    if key == "g" and (key_down["lctrl"] or key_down["rctrl"]) then
+        settings["grid_lines"] = not settings["grid_lines"]
+    end
+  
   
   if pause then
     scene.selecting = true
@@ -1337,6 +1344,23 @@ function scene.draw(dt)
     love.graphics.draw(lightcanvas, 0, 0)
     love.graphics.setBlendMode("alpha")
   end
+  
+  if settings["mouse_lines"] then
+    love.graphics.push()
+    love.graphics.origin()
+    love.graphics.setLineWidth(1)
+    local r,g,b,a = getPaletteColor(0,1)
+    love.graphics.setColor(r,g,b,0.3)
+    for _,cursor in ipairs(cursors) do
+      local cx,cy = cursor.screenx,cursor.screeny
+      local width = love.graphics.getWidth()
+      love.graphics.line(cx-width,cy-width,cx+width,cy+width)
+      love.graphics.line(cx-width,cy,cx+width,cy)
+      love.graphics.line(cx-width,cy+width,cx+width,cy-width)
+      love.graphics.line(cx,cy-width,cx,cy+width)
+    end
+    love.graphics.pop()
+  end
 
   --draw the stack box (shows what units are on a tile)
   if stack_box.scale > 0 then
@@ -1919,54 +1943,58 @@ function scene.checkInput()
         if not unit_tests then print("gameplay logic took: "..tostring(round((end_time-start_time)*1000)).."ms") end
         -- SING
         if tiles_by_name["text_sing"] then
-            if hasSing(unit,"c") or hasSing(unit,"b_sharp") then
-                bit:setPitch(1)
-                bit:play()
-            end
-            if hasSing(unit,"c_sharp") or hasSing(unit,"d_flat") then
-                bit:setPitch(2^(1/12))
-                bit:play()
-            end
-            if hasSing(unit,"d") then
-                bit:setPitch(2^(2/12))
-                bit:play()
-            end
-            if hasSing(unit,"d_sharp") or hasSing(unit,"e_flat") then
-                bit:setPitch(2^(3/12))
-                bit:play()
-            end
-            if hasSing(unit,"e") or hasSing(unit,"f_flat") then
-                bit:setPitch(2^(4/12))
-                bit:play()
-            end
-            if hasSing(unit,"f") or hasSing(unit,"e_sharp") then
-                bit:setPitch(2^(5/12))
-                bit:play()
-            end
-            if hasSing(unit,"f_sharp") or hasSing(unit,"g_flat") then
-                bit:setPitch(2^(6/12))
-                bit:play()
-            end
-            if hasSing(unit,"g") then
-                bit:setPitch(2^(7/12))
-                bit:play()
-            end
-            if hasSing(unit,"g_sharp") or hasSing(unit,"a_flat") then
-                bit:setPitch(2^(8/12))
-                bit:play()
-            end
-            if hasSing(unit,"a") then
-                bit:setPitch(2^(9/12))
-                bit:play()
-            end
-            if hasSing(unit,"a_sharp") or hasSing(unit,"b_flat") then
-                bit:setPitch(2^(10/12))
-                bit:play()  
-            end
-            if hasSing(unit,"b") or hasSing(unit,"c_flat") then
-                bit:setPitch(2^(11/12))
-                bit:play()  
-            end
+          if hasRule("swan","sing","?") then
+            local pitch = math.random() * ((2^(11/12)) - 1) + 1
+            playSound("honk"..love.math.random(1,6), 1, pitch)
+          end
+          if hasSing(unit,"c") or hasSing(unit,"b_sharp") then
+              bit:setPitch(1)
+              bit:play()
+          end
+          if hasSing(unit,"c_sharp") or hasSing(unit,"d_flat") then
+              bit:setPitch(2^(1/12))
+              bit:play()
+          end
+          if hasSing(unit,"d") then
+              bit:setPitch(2^(2/12))
+              bit:play()
+          end
+          if hasSing(unit,"d_sharp") or hasSing(unit,"e_flat") then
+              bit:setPitch(2^(3/12))
+              bit:play()
+          end
+          if hasSing(unit,"e") or hasSing(unit,"f_flat") then
+              bit:setPitch(2^(4/12))
+              bit:play()
+          end
+          if hasSing(unit,"f") or hasSing(unit,"e_sharp") then
+              bit:setPitch(2^(5/12))
+              bit:play()
+          end
+          if hasSing(unit,"f_sharp") or hasSing(unit,"g_flat") then
+              bit:setPitch(2^(6/12))
+              bit:play()
+          end
+          if hasSing(unit,"g") then
+              bit:setPitch(2^(7/12))
+              bit:play()
+          end
+          if hasSing(unit,"g_sharp") or hasSing(unit,"a_flat") then
+              bit:setPitch(2^(8/12))
+              bit:play()
+          end
+          if hasSing(unit,"a") then
+              bit:setPitch(2^(9/12))
+              bit:play()
+          end
+          if hasSing(unit,"a_sharp") or hasSing(unit,"b_flat") then
+              bit:setPitch(2^(10/12))
+              bit:play()  
+          end
+          if hasSing(unit,"b") or hasSing(unit,"c_flat") then
+              bit:setPitch(2^(11/12))
+              bit:play()  
+          end
         end
         -- BUP
         if hasRule("bup","be","u") and units_by_name["bup"] then

@@ -20,7 +20,7 @@ function registerSound(sound, volume)
   end]]
 end
 
-function playSound(sound, volume)
+function playSound(sound, volume, pitch)
   if doing_past_turns and not do_past_effects then return end
 
   if spookmode then
@@ -36,6 +36,7 @@ function playSound(sound, volume)
 
     local adjusted_volume = 1/(2^sound_instances[sound])
     source:setVolume((volume or 1) * adjusted_volume * sounds[sound].volume * sfx_volume)
+    source:setPitch(pitch or 1)
 
     source:play()
 
