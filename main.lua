@@ -740,6 +740,7 @@ function love.draw()
     'F4 to toggle debug menu\n'..
     'F3+G to toggle rainbowmode\n'..
     'F3+Q for SUPER DUPER DEBUG MODE (wip)\n'..
+     'F3+L for CONSOLE DEBUGGER\n'..
 	'F3+M to toggle mobile\n'..
     'F3+H to toggle additional tile info\n'..
     'F3+D for MOUS DRUM KIT MODE\n'..
