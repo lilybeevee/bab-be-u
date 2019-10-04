@@ -1958,6 +1958,25 @@ function addParticles(ptype,x,y,color,count)
     ps:start()
     ps:emit(count or 10)
     table.insert(particles, ps)
+  elseif ptype == "unwin" then
+    local ps = love.graphics.newParticleSystem(sprites["sparkle"])
+    local px = (x + 0.5) * TILE_SIZE
+    local py = (y + 0.5) * TILE_SIZE
+    ps:setPosition(px, py)
+    ps:setSpread(0.4)
+    ps:setEmissionArea("uniform", TILE_SIZE*3/4, TILE_SIZE*3/4, 0, true)
+    ps:setSizes(0.40, 0.40, 0.40, 0)
+    ps:setSpeed(-40)
+    ps:setLinearDamping(2)
+    ps:setParticleLifetime(0.6)
+    if #color == 2 then
+      ps:setColors(getPaletteColor(color[1], color[2]))
+    else
+      ps:setColors(color[1]/255, color[2]/255, color[3]/255, (color[4] or 255)/255)
+    end
+    ps:start()
+    ps:emit(count or 10)
+    table.insert(particles, ps)
   elseif ptype == "love" then
     local ps = love.graphics.newParticleSystem(sprites["luv"])
     local px = (x + 0.5) * TILE_SIZE
