@@ -7393,6 +7393,49 @@ tiles_list = {
     tags = {"samedirection","samefacing"},
     desc = "SAMEFACE (Compare Condition): True if the condition unit is facing the same direction as the target.",
   },
+  --640
+  {
+    name = "za warudo",
+    sprite = "zawarudo",
+    color = {2,4},
+    layer = 5,
+    rotate = true,
+    slep = true,
+    convertible = false,
+    eye = {x=19, y=10, w=2, h=2},
+    tags = {"chars", "the world", "jojo", "DIO"},
+    desc = "WRYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY",
+  },
+  --641
+  {
+    name = "thingify",
+    sprite = "thingify",
+    color = {5,2},
+    layer = 4,
+    convertible = false,
+    tags = {"thing"},
+    desc = "its a thing.",
+  },
+  --642
+  {
+    name = "&",
+    sprite = "and",
+    color = {0,3},
+    layer = 6,
+    convertible = false,
+    tags = {"and gate", "logic gate"},
+    desc = "only if all are true",
+  },
+  --643
+  {
+    name = "&n't",
+    sprite = "andn't",
+    color = {0,3},
+    layer = 6,
+    convertible = false,
+    tags = {"nand gate", "logic gate"},
+    desc = "only if not all are true",
+  },
 }
 
 tiles_by_name = {}
