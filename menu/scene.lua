@@ -76,6 +76,7 @@ function scene.buildUI()
         fullscreen = false
       end
     end)
+    scene.addOption("themes", "menu themes", {{"on", true}, {"off", false}})
     scene.addButton("back", function() options = false; scene.buildUI() end)
     ox, oy = love.graphics.getWidth() * (3/4) , buttons[1]:getHeight()+10
   end
@@ -117,7 +118,7 @@ end
 
 function scene.draw(dt)
   local bgsprite 
-  if os.date("%m") == "10" then
+  if os.date("%m") == "10" and settings["themes"] then
     bgsprite = sprites["ui/menu_background_halloween"]
   else
     bgsprite = sprites["ui/menu_background"]
@@ -151,7 +152,7 @@ function scene.draw(dt)
 
   if not options then
     local bab_logo
-    if os.date("%m") == "10" then
+    if os.date("%m") == "10" and settings["themes"] then
         bab_logo = sprites["ui/bab_be_u_halloween"]
     else
         bab_logo = sprites["ui/bab_be_u"]

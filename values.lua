@@ -29,6 +29,7 @@ local defaultsettings = {
   fullscreen = false,
   level_compression = "zlib",
   draw_editor_lins = true,
+  themes = true,
 }
 
 if love.filesystem.read("Settings.bab") ~= nil then
