@@ -184,14 +184,14 @@ function scene.draw(dt)
     if is_mobile then
       splashtext = "4mobile!"
     elseif os.date("%m") == "10" then
-        splashtext = "spooky month!"
-    elseif splash <= 0.5 then
-      if love.filesystem.read("author_name") == "lilybeevee" then
-        splashtext = "welcome back lily!"
-      else
-        splashtext = "bab be u!"
-      end
+        if love.filesystem.read("author_name") == "lilybeevee" and splash > 0.5 then
+            splashtext = "happy spooky month lily!"
+        else
+            splashtext = "spooky month!"
+        end
     elseif splash > 0.5 then
+        splashtext = "bab be u!"
+    else
       splashtext = "splosh txt!"
     end
     

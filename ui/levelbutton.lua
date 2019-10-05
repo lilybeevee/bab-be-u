@@ -14,9 +14,17 @@ function level_button.new(file, extra)
   o:onPreDraw(ui.buttonFX)
 
   o.data.extra = extra
-  local default_color = {0.25, 0.5, 1, 1}
-  if extra then
-    default_color = {0.125, 0.25, 0.5, 1}
+  local default_color
+  if os.date("%m") == "10" and settings["themes"] then
+    default_color = {0.5, 0.2, 0.7, 1}
+    if extra then
+        default_color = {0.8, 0.4, 0, 1}
+    end
+  else
+    default_color = {0.25, 0.5, 1, 1}
+    if extra then
+        default_color = {0.125, 0.25, 0.5, 1}
+    end
   end
 
   function o:getColor()

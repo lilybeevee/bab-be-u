@@ -18,7 +18,12 @@ function world_button.new(file)
     if rainbowmode then
       return hslToRgb(love.timer.getTime()/3%1, 0.4, 0.5, .9)
     end
-    if not self.color then return {0.25, 0.5, 1, 1}
+    if not self.color then
+        if os.date("%m") == "10" and settings["themes"] then
+            return {0.5, 0.2, 0.7, 1}
+        else
+            return {0.25, 0.5, 1, 1}
+        end
     else return unpack(self.color) end
   end
 
