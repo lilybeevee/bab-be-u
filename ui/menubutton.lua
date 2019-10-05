@@ -29,7 +29,13 @@ function menu_button.new(text, id, func)
   end
 
   -- lazy copy/paste uwu
-  local bab = ui.component.new():setSprite(sprites["bab"]):setX(-sprites["bab"]:getWidth()-2):setEnabled(false)
+  local babspr
+  if os.date("%m") == "10" and settings["themes"] then
+    babspr = sprites["ghost"]
+  else
+    babspr = sprites["bab"]
+  end
+  local bab = ui.component.new():setSprite(babspr):setX(-sprites["bab"]:getWidth()-2):setEnabled(false)
   o:addChild(bab)
   o:onHovered(function() bab:setEnabled(true) end)
   o:onExited(function() bab:setEnabled(false) end)

@@ -1,9 +1,6 @@
 local overlay = {}
 
 local default_color = {0.25, 0.5, 1, 0.9}
---[[if os.date("%m") == "10" and settings["themes"] then
-    default_color = {0.5, 0.2, 0.7, 1}
- end]]
 
 overlay.open = false
 
@@ -14,7 +11,7 @@ function overlay.confirm(args)
   if overlay.has_confirm_box[confirm_id] then return end
   local confirm = {}
   confirm.box = ui.component.new()
-    :setColor(defaultcolor)
+    :setColor(0.25, 0.5, 1, 0.9)
     :setFill(true)
     :setText(args.text or "Confirm")
     :setFont(ui.fonts.world_name)
