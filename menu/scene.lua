@@ -116,7 +116,12 @@ function scene.update(dt)
 end
 
 function scene.draw(dt)
-  local bgsprite = sprites["ui/menu_background"]
+  local bgsprite 
+  if os.date("%m") == "10" then
+    bgsprite = sprites["ui/menu_background_halloween"]
+  else
+    bgsprite = sprites["ui/menu_background"]
+  end
 
   local width = love.graphics.getWidth()
   local height = love.graphics.getHeight()
@@ -145,19 +150,26 @@ function scene.draw(dt)
   git_btn:draw()
 
   if not options then
+    local bab_logo
+    if os.date("%m") == "10" then
+        bab_logo = sprites["ui/bab_be_u_halloween"]
+    else
+        bab_logo = sprites["ui/bab_be_u"]
+    end    
+        
     for _,pair in pairs({{1,0},{0,1},{1,1},{-1,0},{0,-1},{-1,-1},{1,-1},{-1,1}}) do
       local outlineSize = 2
       pair[1] = pair[1] * outlineSize
       pair[2] = pair[2] * outlineSize
 
       love.graphics.setColor(0,0,0)
-      love.graphics.draw(sprites["ui/bab_be_u"], width/2 - sprites["ui/bab_be_u"]:getWidth() / 2 + pair[1], height/20 + pair[2])
+      love.graphics.draw(bab_logo, width/2 - bab_logo:getWidth() / 2 + pair[1], height/20 + pair[2])
     end
 
     if not spookmode then
       love.graphics.setColor(1, 1, 1)
       setRainbowModeColor(love.timer.getTime()/3, .5)
-      love.graphics.draw(sprites["ui/bab_be_u"], width/2 - sprites["ui/bab_be_u"]:getWidth() / 2, height/20)
+      love.graphics.draw(bab_logo, width/2 - bab_logo:getWidth() / 2, height/20)
     end
     
     -- Splash text here
@@ -170,11 +182,11 @@ function scene.draw(dt)
     end
     if is_mobile then
       splashtext = "4mobile!"
+    elseif os.date("%m") == "10" then
+        splashtext = "spooky month!"
     elseif splash <= 0.5 then
       if love.filesystem.read("author_name") == "lilybeevee" then
         splashtext = "welcome back lily!"
-      elseif os.date("%m") == "10" then
-        splashtext = "spooky month!"
       else
         splashtext = "bab be u!"
       end
@@ -182,8 +194,8 @@ function scene.draw(dt)
       splashtext = "splosh txt!"
     end
     
-    local textx = width/2 + sprites["ui/bab_be_u"]:getWidth() / 2
-    local texty = height/20+sprites["ui/bab_be_u"]:getHeight()
+    local textx = width/2 + bab_logo:getWidth() / 2
+    local texty = height/20+bab_logo:getHeight()
 
     love.graphics.translate(textx+love.graphics.getFont():getWidth(splashtext)/2, texty+love.graphics.getFont():getHeight()/2)
     love.graphics.rotate(0.7*math.sin(love.timer.getTime()*2))
