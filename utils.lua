@@ -954,8 +954,14 @@ function testConds(unit, conds, compare_with) --cond should be a {condtype,{obje
         end
       end
       for i=1,8 do
-        if (condtype == "arond") or (condtype == "ortho arond" and i%2==1) or (condtype == "diag arond" and i%2==0) or (condtype == dirs8_by_name[i].." arond") then
-          local nx,ny = dirs8[i][1],dirs8[i][2]
+        if (condtype == "arond") or (condtype == "ortho arond" and i%2==1) or (condtype == "diag arond" and i%2==0) or (condtype == dirs8_by_name[i].." arond") or (condtype == "spin"..i.." arond") then
+          local nx,ny
+          if (condtype == "spin"..i.." arond") then
+            local j = (i+unit.dir+3)%8+1
+            nx,ny = dirs8[j][1],dirs8[j][2]
+          else
+            nx,ny = dirs8[i][1],dirs8[i][2]
+          end
           for _,set in ipairs(sets) do
             for _,other in ipairs(others[nx][ny]) do
               if set[other] then
@@ -1047,6 +1053,12 @@ function testConds(unit, conds, compare_with) --cond should be a {condtype,{obje
           elseif cond.others[i].name == "diag" then
             isdir = true
             if (unit.dir % 2 == 1) then
+              result = false
+              break
+            end
+          elseif cond.others[i].name:starts("spin") then
+            isdir = true
+            if (cond.others[i].name ~= "spin8") then
               result = false
               break
             end

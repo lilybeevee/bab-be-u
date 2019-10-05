@@ -1126,7 +1126,7 @@ function doPullCore(unit,dx,dy,dir,data, already_added, moving_units, moving_uni
   return result
 end
 
-function fallBlock()
+function fallBlock() --TODO: add support for spin
   --1) gather all fallers
   local fallers = {}
   --and all timeless fallers
