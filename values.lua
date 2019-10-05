@@ -1055,6 +1055,7 @@ tiles_list = {
     texttype = {property = true, direction = true},
     color = {1, 4},
     layer = 20,
+    desc = "UP: A GO ->, but facing up.",
   },
   -- 68
   {
@@ -1066,7 +1067,7 @@ tiles_list = {
     layer = 20,
     rotate = true,
     tags = {"go arrow", "up", "down", "left", "right","go ->","go^"},
-    desc = "GO ->: The unit is forced to face the indicated direction.",
+    desc = "GO ->: The unit is forced to face the indicated direction. LOOKAT GO -> makes a unit look in that direction or is true if it is facing that direction. HAET GO -> makes a unit fall in the opposite direction.",
   },
   -- 69
   {
@@ -1077,6 +1078,7 @@ tiles_list = {
     color = {1, 4},
     layer = 20,
     nice = true,
+    desc = "LEFT: A GO ->, but facing left.",
   },
   -- 70
   {
@@ -1086,6 +1088,7 @@ tiles_list = {
     texttype = {property = true, direction = true},
     color = {1, 4},
     layer = 20,
+    desc = "DOWN: A GO ->, but facing down.",
   },
   -- 71
   {
@@ -2347,12 +2350,12 @@ tiles_list = {
     name = "text_spin",
     sprite = "text_spin",
     type = "text",
-    texttype = {property = true},
+    texttype = {property = true, direction=true},
     color = {4, 1},
     layer = 20,
     rotate = true,
     tags = {"rotate","lily"},
-    desc = "SPIN: SPIN units rotate clockwise, the number of times indicated on top of the property.",
+    desc = "SPIN: A GO^ facing the same direction as the unit is facing, rotated clockwise the number of times on top of the property.",
   },
   -- 184
   {
@@ -4273,6 +4276,7 @@ tiles_list = {
     texttype = {property = true, direction = true},
     color = {1, 4},
     layer = 20,
+    desc = "RIGHT: A GO ->, but facing right.",
   },
   -- 353
   {
@@ -4282,6 +4286,7 @@ tiles_list = {
     texttype = {property = true, direction = true},
     color = {1, 4},
     layer = 20,
+    desc = "UPLEFT: A GO ->, but facing upleft.",
   },
   -- 354
   {
@@ -4291,6 +4296,7 @@ tiles_list = {
     texttype = {property = true, direction = true},
     color = {1, 4},
     layer = 20,
+    desc = "UPRIGHT: A GO ->, but facing upright.",
   },
   -- 355
   {
@@ -4300,6 +4306,7 @@ tiles_list = {
     texttype = {property = true, direction = true},
     color = {1, 4},
     layer = 20,
+    desc = "DOWNLEFT: A GO ->, but facing downleft.",
   },
   -- 356
   {
@@ -4309,6 +4316,7 @@ tiles_list = {
     texttype = {property = true, direction = true},
     color = {1, 4},
     layer = 20,
+    desc = "DOWNRIGHT: A GO ->, but facing downright.",
   },
   -- 357
   {
@@ -7279,6 +7287,7 @@ tiles_list = {
     layer = 3,
     rotate = true,
     tags = {"pencil"},
+    desc = "the creating one",
   },
   -- 629
   {
@@ -7289,7 +7298,6 @@ tiles_list = {
     color = {2, 4},
     layer = 20,
     tags = {"pencil"},
-    desc = "the creating one",
   },
   -- 630
   {
@@ -7299,6 +7307,7 @@ tiles_list = {
     layer = 3,
     rotate = true,
     tags = {"pencil", "eraser"},
+    desc = "the deleting one",
   },
   -- 631
   {
@@ -7309,7 +7318,6 @@ tiles_list = {
     color = {2, 4},
     layer = 20,
     tags = {"pencil", "eraser"},
-    desc = "the deleting one",
   },
   -- 632
   {
@@ -7369,7 +7377,7 @@ tiles_list = {
     texttype = {property = true, direction = true},
     color = {1, 4},
     layer = 20,
-    nice = true,
+    desc = "RIGHT: A GO ->, but facing right.",
   },
   -- 638
   {

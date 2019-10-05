@@ -410,6 +410,7 @@ function moveBlock()
   end
   
   --technically spin_8 does nothing, so skip it
+  --TODO: redo to work as if it was a go^
   for i=1,7 do
     local isspin = getUnitsWithEffectAndCount("spin" .. tostring(i))
     for unit,amt in pairs(isspin) do
@@ -2928,6 +2929,11 @@ function updateDir(unit, dir, force)
     end
     if hasRule(unit, "ben't", dirs8_by_name[dir]) then
       return false
+    end
+    for i=1,8 do
+      if hasRule(unit, "ben't", "spin"..i) then
+        if (dir == (unit.dir+i-1)%8+1) then return false end
+      end
     end
     if unit.dir == dir then return true end
   end
