@@ -58,6 +58,7 @@ function clear()
   last_click_y = nil
   mouse_oldX = mouse_X
   mouse_oldY = mouse_Y
+  drag_units = {}
   cursors = {}
   cursors_by_id = {}
   shake_dur = 0

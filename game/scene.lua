@@ -2417,37 +2417,52 @@ function scene.mouseReleased(x, y, button)
   
   if button == 1 then
     -- CLIKT prefix
-    if units_by_name["text_clikt"] then
-        last_click_x, last_click_y = screenToGameTile(love.mouse.getX(), love.mouse.getY())
-        doOneMove(last_click_x,last_click_y,"clikt")
-        last_click_x, last_click_y = nil, nil
-        playSound("clicc")
+    if units_by_name["text_clikt"] or units_by_name["text_dragbl"] then
+      last_click_x, last_click_y = screenToGameTile(love.mouse.getX(), love.mouse.getY())
+      local stuff = getUnitsOnTile(last_click_x,last_click_y)
+      local nodrag = false
+      for _,unit in ipairs(stuff) do
+        if hasProperty(unit,"no drag") then
+          nodrag = true
+          break
+        end
+      end
+      if not nodrag then
+        for _,unit in ipairs(drag_units) do
+          addUndo{"update",unit.id,unit.x,unit.y,unit.dir}
+          moveUnit(unit,last_click_x,last_click_y)
+        end
+      end
+      drag_units = {}
+      doOneMove(last_click_x,last_click_y,"clikt")
+      last_click_x, last_click_y = nil, nil
+      playSound("clicc")
     end
     -- Replay buttons
     if replay_playback then
-        if pointInside(x, y, width - box*3, 0, box, box) then
-            replay_pause = not replay_pause
+      if pointInside(x, y, width - box*3, 0, box, box) then
+        replay_pause = not replay_pause
+      end
+      if not replay_pause then
+        if pointInside(x, y, width - box*4, 0, box, box) then
+          replay_playback_interval = replay_playback_interval / 0.8
+        elseif pointInside(x, y, width - box*2, 0, box, box) then
+          replay_playback_interval = replay_playback_interval * 0.8
         end
-        if not replay_pause then
-            if pointInside(x, y, width - box*4, 0, box, box) then
-                replay_playback_interval = replay_playback_interval / 0.8
-            elseif pointInside(x, y, width - box*2, 0, box, box) then
-                replay_playback_interval = replay_playback_interval * 0.8
-            end
-        elseif replay_pause then
-            if pointInside(x, y, width - box*4, 0, box, box) then
-                if replay_playback_turn > 1 then
-                    replay_playback_turn = replay_playback_turn - 1
-                    doOneMove(0,0,"undo")
-                end
-            elseif pointInside(x, y, width - box*2, 0, box, box) then
-                doReplayTurn(replay_playback_turn)
-                replay_playback_turn = replay_playback_turn + 1
-            end
+      elseif replay_pause then
+        if pointInside(x, y, width - box*4, 0, box, box) then
+          if replay_playback_turn > 1 then
+            replay_playback_turn = replay_playback_turn - 1
+            doOneMove(0,0,"undo")
+          end
+        elseif pointInside(x, y, width - box*2, 0, box, box) then
+          doReplayTurn(replay_playback_turn)
+          replay_playback_turn = replay_playback_turn + 1
         end
-        if pointInside(x, y, width - box, 0, box, box) then
-            replay_playback = false
-        end
+      end
+      if pointInside(x, y, width - box, 0, box, box) then
+        replay_playback = false
+      end
     end
   elseif button == 2 then
     -- Stacks preview
@@ -2488,6 +2503,18 @@ function handlePauseButtonPressed(i)
 end
 
 function scene.mousePressed(x, y, button)
+  if not rules_with["dragbl"] then return end
+  
+  if button == 1 then
+    local tx,ty = screenToGameTile(x,y)
+    local stuff = getUnitsOnTile(tx,ty)
+    for _,unit in ipairs(stuff) do
+      if hasProperty(unit,"dragbl") then
+        table.insert(drag_units, unit)
+      end
+    end
+  end
+  print(dump(drag_units))
 end
 
 function scene.setStackBox(x, y)
