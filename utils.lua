@@ -527,7 +527,7 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
       if result then
         for i=1,3,2 do
           if rule_units[i] ~= nil then
-            if not testConds(rule_units[i], rule[ruleparts[i]].conds) then
+            if not testConds(rule_units[i], rule[ruleparts[i]].conds, rule_units[1]) then
               if (debugging) then
                 print("false due to cond", i)
               end
@@ -564,7 +564,7 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
           local found1, found2
           for _,unit1 in ipairs(findUnitsByName(rule.subject)) do
             for _,unit2 in ipairs(findUnitsByName(rule.object)) do
-              if testConds(unit1, rule.subject.conds) and testConds(unit2, rule.object.conds) then
+              if testConds(unit1, rule.subject.conds) and testConds(unit2, rule.object.conds, unit1) then
                 table.insert(ret, {rules, unit1, unit2})
                 if stopafterone then return ret end
               end
@@ -779,14 +779,19 @@ function getUs()
 end
 
 function hasSing(unit,note)
-    bit = love.audio.newSource("assets/audio/sfx/bit2.wav", "static")
-    return hasRule(unit,"sing",note)
+  local rules = matchesRule(nil,"sing",note)
+  for _,rule in ipairs(rules) do
+    if rule[2].fullname ~= "swan" then
+      bit = love.audio.newSource("assets/audio/sfx/bit2.wav", "static")
+      return true
+    end
+  end
 end
 
 --to prevent infinite loops where a set of rules/conditions is self referencing
 withrecursion = {}
 
-function testConds(unit,conds) --cond should be a {condtype,{object types},{cond_units}}
+function testConds(unit, conds, compare_with) --cond should be a {condtype,{object types},{cond_units}}
   local endresult = true
   for _,cond in ipairs(conds or {}) do
     local condtype = cond.name
@@ -805,10 +810,10 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
           list = group_lists[other.name]
           set = group_sets[other.name]
         else
-          for _,unit in ipairs(findUnitsByName(other.name)) do -- findUnitsByName handles mous and no1 already
-            if testConds(unit, other.conds) then
-              table.insert(list, unit)
-              set[unit] = true
+          for _,otherunit in ipairs(findUnitsByName(other.name)) do -- findUnitsByName handles mous and no1 already
+            if testConds(otherunit, other.conds, unit) then
+              table.insert(list, otherunit)
+              set[otherunit] = true
             end
           end
         end
@@ -1243,16 +1248,6 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
           break
         end
       end
-    elseif condtype == "samefloat" then
-      result = false
-      for _,list in ipairs(lists) do
-        for _,other in ipairs(list) do
-          if sameFloat(unit,other) then
-            result = true
-            break
-          end
-        end
-      end
     elseif condtype == "frenles" then
       if unit == outerlvl then --no longer by definition, since you can technically have the rules be oob!
         local found = false
@@ -1397,6 +1392,18 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
       else
         result = false
       end
+    elseif condtype == "samefloat" then
+      result = sameFloat(unit, compare_with)
+    elseif condtype == "samepaint" then
+      result = false
+      for _,cname in pairs(color_names) do
+        if testConds(unit, {{name = cname}}) and testConds(compare_with, {{name = cname}}) then
+          result = true
+          break
+        end
+      end
+    elseif condtype == "sameface" then
+      result = unit.dir == compare_with.dir
     else
       print("unknown condtype: " .. condtype)
       result = false
@@ -1943,6 +1950,25 @@ function addParticles(ptype,x,y,color,count)
     ps:setEmissionArea("uniform", TILE_SIZE / 2, TILE_SIZE / 2, 0, true)
     ps:setSizes(0.40, 0.40, 0.40, 0)
     ps:setSpeed(30)
+    ps:setLinearDamping(2)
+    ps:setParticleLifetime(0.6)
+    if #color == 2 then
+      ps:setColors(getPaletteColor(color[1], color[2]))
+    else
+      ps:setColors(color[1]/255, color[2]/255, color[3]/255, (color[4] or 255)/255)
+    end
+    ps:start()
+    ps:emit(count or 10)
+    table.insert(particles, ps)
+  elseif ptype == "unwin" then
+    local ps = love.graphics.newParticleSystem(sprites["sparkle"])
+    local px = (x + 0.5) * TILE_SIZE
+    local py = (y + 0.5) * TILE_SIZE
+    ps:setPosition(px, py)
+    ps:setSpread(0.4)
+    ps:setEmissionArea("uniform", TILE_SIZE*3/4, TILE_SIZE*3/4, 0, true)
+    ps:setSizes(0.40, 0.40, 0.40, 0)
+    ps:setSpeed(-40)
     ps:setLinearDamping(2)
     ps:setParticleLifetime(0.6)
     if #color == 2 then
@@ -2712,16 +2738,16 @@ function addRuleSimple(subject, verb, object, units, dir)
       subject = {
         name = subject.name or subject[1],
         conds = subject.conds or subject[2],
-        unit = subject.unit
+        unit = subject.unit or subject[3]
       },
       verb = {
         name = verb.name or verb[1] or verb,
-        unit = verb.unit
+        unit = verb.unit or verb[2]
       },
       object = {
         name = object.name or object[1],
         conds = object.conds or object[2],
-        unit = object.unit
+        unit = object.unit or object[3]
       }
     },
     units = units,
@@ -2959,4 +2985,10 @@ function getPastConds(conds)
     end
   end
   return result, new_conds
+end
+
+function jprint(str)
+  if just_moved then
+    print(str)
+  end
 end

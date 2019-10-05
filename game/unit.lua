@@ -16,7 +16,7 @@ function moveBlock()
     for _,stalker in ipairs(stalkers) do
       table.sort(stalkees, function(a, b) return euclideanDistance(a, stalker) < euclideanDistance(b, stalker) end )
       for _,stalkee in ipairs(stalkees) do
-        if testConds(stalker, stalker_conds) and testConds(stalkee, stalkee_conds) then
+        if testConds(stalker, stalker_conds) and testConds(stalkee, stalkee_conds, stalker) then
           local dist = euclideanDistance(stalker, stalkee)
           local stalk_dir = dist > 0 and dirs8_by_offset[sign(stalkee.x - stalker.x)][sign(stalkee.y - stalker.y)] or stalkee.dir
           if dist > 0 and hasProperty(stalker, "ortho") then
@@ -41,7 +41,7 @@ function moveBlock()
     for _,stalker in ipairs(stalkers) do
       table.sort(stalkees, function(a, b) return euclideanDistance(a, stalker) < euclideanDistance(b, stalker) end )
       for _,stalkee in ipairs(stalkees) do
-        if testConds(stalker, stalker_conds) and testConds(stalkee, stalkee_conds) then
+        if testConds(stalker, stalker_conds) and testConds(stalkee, stalkee_conds, stalker) then
           local dist = euclideanDistance(stalker, stalkee)
           local stalk_dir = dist > 0 and dirs8_by_offset[-sign(stalkee.x - stalker.x)][-sign(stalkee.y - stalker.y)] or stalkee.dir
           if dist > 0 and hasProperty(stalker, "ortho") then
@@ -882,11 +882,12 @@ function updateUnits(undoing, big_update)
           end
           addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
           addParticles("destroy", on.x, on.y, on.color)
+          --unlike other destruction effects, keys and doors pair off one-by-one
+          to_destroy = handleDels(to_destroy)
+          break
         end
       end
     end
-    
-    to_destroy = handleDels(to_destroy)
     
     local issnacc = matchesRule(nil, "snacc", "?")
     for _,ruleparent in ipairs(issnacc) do
@@ -1242,22 +1243,44 @@ function miscUpdates()
         end
       end
       
+      if unit.fullname == "pumkin" then
+        if hasProperty(unit,"sans") or hasProperty(unit,":(") or hasProperty(unit,"brite") or hasProperty(unit,"torc") or hasRule(unit,"spoop","?") then
+            if graphical_property_cache["slep"][unit] ~= nil then
+                unit.sprite = "pumkin_slep"
+            else
+                unit.sprite = "pumkin_jack"
+            end
+        else
+            unit.sprite = "pumkin"
+        end
+      end
+      
       -- here goes the legendary ditto transformations
       if unit.fullname == "ditto" then
         if hasProperty(unit,"notranform") then
             unit.sprite = "ditto_notranform"
+        elseif hasRule(unit,"spoop","?") then
+            unit.sprite = "ditto_spoop"
         elseif hasProperty(unit,"xwx") then
             unit.sprite = "ditto_xwx"
+        elseif hasProperty(unit,"rong") then
+            unit.sprite = "ditto_rong"
         elseif hasProperty(unit,"wurd") then
             unit.sprite = "ditto_wurd"
         elseif graphical_property_cache["slep"][unit] ~= nil then
             unit.sprite = "ditto_slep"
+        elseif hasProperty(unit,"rithere") then
+            unit.sprite = "ditto_rithere"
+        elseif hasProperty(unit,"thr") then
+            unit.sprite = "ditto_thr"
         elseif hasProperty(unit,"stelth") then
             unit.sprite = "ditto_stelth"
         elseif hasProperty(unit,"sans") then
             unit.sprite = "ditto_sans"
         elseif hasProperty(unit,"ouch") then
             unit.sprite = "ditto_ouch"
+        elseif hasProperty(unit,"protecc") then
+            unit.sprite = "ditto_protecc"
         elseif hasProperty(unit,"no undo") then
             unit.sprite = "ditto_no undo"
         -- Eeveelutions
@@ -1274,54 +1297,102 @@ function miscUpdates()
         -- Rotom formes
         elseif hasProperty(unit,"zip") then
             unit.sprite = "ditto_zip"
+        elseif hasRule(unit,"sing","?") then
+            unit.sprite = "ditto_sing"
+        elseif hasRule(unit,"paint","?") then
+            unit.sprite = "ditto_paint"
+        elseif hasProperty(unit,"go") then
+            unit.sprite = "ditto_go"
+        elseif hasProperty(unit,"folo wal") then
+            unit.sprite = "ditto_folo wal"
+        elseif hasProperty(unit,"tall") then
+            unit.sprite = "ditto_tall"
         elseif hasProperty(unit,"rave") then
             unit.sprite = "ditto_rave"
         elseif hasProperty(unit,"colrful") then
             unit.sprite = "ditto_colrful"
         elseif hasProperty(unit,"torc") then
             unit.sprite = "ditto_torc"
+        elseif hasProperty(unit,"split") then
+            unit.sprite = "ditto_split"
+        elseif hasProperty(unit,"icyyyy") then
+            unit.sprite = "ditto_icyyyy"
+        elseif hasProperty(unit,"icy") then
+            unit.sprite = "ditto_icy"
         elseif hasProperty(unit,"hopovr") then
             unit.sprite = "ditto_hopovr"
         elseif hasProperty(unit,"right") or hasProperty(unit,"downright") or hasProperty(unit,"down") or hasProperty(unit,"downleft") or hasProperty(unit,"left") or hasProperty(unit,"upleft") or hasProperty(unit,"up") or hasProperty(unit,"upright") then
             unit.sprite = "ditto_direction"
         elseif hasProperty(unit,"nuek") then
             unit.sprite = "ditto_nuek"
+        elseif hasProperty(unit,";d") then
+            unit.sprite = "ditto_;d"
+        elseif hasProperty(unit,"knightstep") then
+            unit.sprite = "ditto_knightstep"
         elseif hasProperty(unit,"diagstep") then
             unit.sprite = "ditto_diagstep"
+        elseif hasProperty(unit,"sidestep") then
+            unit.sprite = "ditto_sidestep"
         elseif hasProperty(unit,"munwalk") then
             unit.sprite = "ditto_munwalk"
         elseif hasProperty(unit,"visit fren") then
             unit.sprite = "ditto_visit fren"
+        elseif hasProperty(unit,"walk") then
+            unit.sprite = "ditto_walk"
         elseif hasProperty(unit,"no swim") then
             unit.sprite = "ditto_no swim"
+        elseif hasProperty(unit,"haet flor") then
+            unit.sprite = "ditto_haet flor"
         elseif hasProperty(unit,"haet skye") then
             unit.sprite = "ditto_haet skye"
         elseif hasRule(unit,"got","gunne") then
             unit.sprite = "ditto_gunne"
+        elseif hasProperty(unit,"glued") then
+            unit.sprite = "ditto_glued"
         elseif hasProperty(unit,"flye") then
             unit.sprite = "ditto_flye"
+        elseif hasProperty(unit,"enby") then
+            unit.sprite = "ditto_enby"
         elseif hasProperty(unit,"tranz") then
             unit.sprite = "ditto_tranz"
         elseif hasProperty(unit,"come pls") then
             unit.sprite = "ditto_come pls"
-        elseif hasProperty(unit,"go") then
-            unit.sprite = "ditto_go"
+        elseif hasProperty(unit,"go away pls") then
+            unit.sprite = "ditto_go away pls"
+        elseif hasProperty(unit,"goooo") then
+            unit.sprite = "ditto_goooo"
+        elseif hasRule(unit,"snacc","?") then
+            unit.sprite = "ditto_snacc"
         elseif hasProperty(unit,"moar") then
             unit.sprite = "ditto_moar"
+        elseif hasProperty(unit,"ned kee") then
+            unit.sprite = "ditto_ned kee"
+        elseif hasProperty(unit,"for dor") then
+            unit.sprite = "ditto_fordor"
         elseif hasProperty(unit,"hotte") then
             unit.sprite = "ditto_hotte"
         elseif hasProperty(unit,"fridgd") then
             unit.sprite = "ditto_fridgd"
-        elseif hasProperty(unit,"for dor") then
-            unit.sprite = "ditto_fordor"
+        elseif hasProperty(unit,":)") then
+            unit.sprite = "ditto_yay"
+        elseif hasProperty(unit,":o") then
+            unit.sprite = "ditto_whoa"
         elseif hasProperty(unit,"no go") then
             unit.sprite = "ditto_no go"
+        elseif hasProperty(unit,"u tres") then
+            unit.sprite = "ditto_u tres"
+        elseif hasProperty(unit,"u too") then
+            unit.sprite = "ditto_u too"
+        elseif hasProperty(unit,"u") then
+            unit.sprite = "ditto_u"
+        elseif hasProperty(unit,"thingify") then
+            unit.sprite = "ditto_thingify"
         else
             unit.sprite = "ditto"
         end
       end
       
-      if unit.fullname ~= "os" and unit.fullname ~= "boooo" and unit.fullname ~= "casete" and unit.fullname ~= "ches" and unit.fullname ~= "mimi" and unit.fullname ~= "ditto" then
+      if unit.fullname ~= "os" and unit.fullname ~= "boooo" and unit.fullname ~= "casete" and unit.fullname ~= "ches" and unit.fullname ~= "mimi" and unit.fullname ~= "ditto" and unit.fullname ~= "pumkin" then
         if tile.slep and graphical_property_cache["slep"][unit] ~= nil then
           if type(tile.sprite) == "table" then
             for j,name in ipairs(tile.sprite) do
@@ -2095,15 +2166,9 @@ function convertLevel()
     return true
   end
   
-  local demeta = matchesRule(outerlvl,"ben't","meta")
-  if #demeta > 0 then
-    destroyLevel("convert")
-    return true
-  end
-  
   transform_results = {}
   
-  local meta = matchesRule(outerlvl, "be","meta")
+  local meta = matchesRule(outerlvl,"be","txtify")
   if (#meta > 0) then
    local tile = nil
     local nametocreate = outerlvl.fullname
@@ -2162,7 +2227,7 @@ function convertUnits(pass)
   local converted_units = {}
   local del_cursors = {}
   
-  local meta = getUnitsWithRuleAndCount(nil, "be","meta")
+  local meta = getUnitsWithRuleAndCount(nil,"be","txtify")
   for unit,amt in pairs(meta) do
     if (unit.fullname == "mous") then
       local cursor = unit
@@ -2176,7 +2241,7 @@ function convertUnits(pass)
           addUndo({"create", new_unit.id, true, created_from_id = unit.id})
         end
       end
-    elseif not unit.new and unit.type ~= "outerlvl" and timecheck(unit,"be","meta") then
+    elseif not unit.new and unit.type ~= "outerlvl" and timecheck(unit,"be","txtify") then
       table.insert(converted_units, unit)
       addParticles("bonus", unit.x, unit.y, unit.color_override or unit.color)
       local tile = nil
@@ -2199,14 +2264,9 @@ function convertUnits(pass)
     end
   end
   
-  local demeta = getUnitsWithRuleAndCount(nil, "ben't","meta")
+  local demeta = getUnitsWithRuleAndCount(nil,"be","thingify")
   for unit,amt in pairs(demeta) do
-    if (unit.name == "mous" and inBounds(unit.x, unit.y)) then
-      addParticles("bonus", unit.x, unit.y, unit.color_override or unit.color)
-      table.insert(del_cursors, unit)
-    elseif not unit.new and unit.type ~= "outerlvl" and timecheck(unit,"ben't","meta") then
-      table.insert(converted_units, unit)
-      addParticles("bonus", unit.x, unit.y, unit.color_override or unit.color)
+    if not unit.new and unit.type ~= "outerlvl" and timecheck(unit,"be","thingify") then
       --remove "text_" as many times as we're de-metaing
       local nametocreate = unit.fullname
       for i = 1,amt do
@@ -2216,21 +2276,22 @@ function convertUnits(pass)
         else
           if nametocreate:starts("text_") then
             nametocreate = nametocreate:sub(6, -1)
-          else
-            nametocreate = "no1"
-            break
           end
         end
       end
-      if (nametocreate == "mous") then
-        local new_mouse = createMouse(unit.x, unit.y)
-        addUndo({"create_cursor", new_mouse.id, created_from_id = unit.id})
-      else
-        local tile = tiles_by_name[nametocreate]
-        if tile ~= nil then
-          local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
-          if (new_unit ~= nil) then
-            addUndo({"create", new_unit.id, true, created_from_id = unit.id})
+      if nametocreate ~= unit.fullname then
+        table.insert(converted_units, unit)
+        addParticles("bonus", unit.x, unit.y, unit.color_override or unit.color)
+        if (nametocreate == "mous") then
+          local new_mouse = createMouse(unit.x, unit.y)
+          addUndo({"create_cursor", new_mouse.id, created_from_id = unit.id})
+        else
+          local tile = tiles_by_name[nametocreate]
+          if tile ~= nil then
+            local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
+            if (new_unit ~= nil) then
+              addUndo({"create", new_unit.id, true, created_from_id = unit.id})
+            end
           end
         end
       end
@@ -2755,6 +2816,13 @@ function deleteUnit(unit,convert,undoing,gone)
       addTween(tween.new(0.1, unit.draw, {scaley = 0}), "unit:scale:" .. unit.tempid)
       tick.delay(function() removeFromTable(still_converting, unit) end, 0.1)
     elseif gone then
+      if unit.fullname == "ditto" then
+        if hasProperty(unit,"notranform") then
+            unit.sprite = "ditto_notranform"
+        else
+            unit.sprite = "ditto_gone"
+        end
+      end
       table.insert(still_converting, unit)
       addUndo{"tween",unit}
       local rise = love.math.random(5,9)

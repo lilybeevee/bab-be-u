@@ -23,6 +23,8 @@ local defaultsettings = {
   music_on = true,
   sfx_on = true,
   particles_on = true,
+  grid_lines = false,
+  mouse_lines = false,
   stopwatch_effect = true,
   fullscreen = false,
   level_compression = "zlib",
@@ -203,7 +205,7 @@ custom_letter_quads = {
 selector_grid_contents = {
   -- page 1: default
   {
-    0, "text_be", "text_&", "text_got", "text_n't", "text_every1", "text_no1", "text_text", "text_wurd", "text_meta", "text_sublvl", "text_wait...", "text_mous", "text_clikt", "text_nxt", "text_stay ther", "lvl", "text_lvl",
+    0, "text_be", "text_&", "text_got", "text_n't", "text_every1", "text_no1", "text_text", "text_wurd", "text_txtify", "text_sublvl", "text_wait...", "text_mous", "text_clikt", "text_nxt", "text_stay ther", "lvl", "text_lvl",
     "bab", "text_bab", "text_u", "kee", "text_kee", "text_for dor", "text_goooo", "text_icy", "text_icyyyy", "text_behin u", "text_moar", "text_sans", "text_liek", "text_loop", "lin", "text_lin", "selctr", "text_selctr",
     "keek", "text_keek", "text_walk", "dor", "text_dor", "text_ned kee", "text_frens", "text_pathz", "text_groop", "text_u too", "text_u tres", "text_xwx", "text_haet", "text_mayb", "text_an", "text_that", "text_ignor", "text_...",
     "flog", "text_flog", "text_:)", "colld", "text_colld", "text_fridgd", "text_direction", "text_ouch", "text_slep", "text_protecc", "text_sidekik", "text_brite", "text_lit", "text_opaque", "text_torc", "text_vs", "text_nuek", "text_''",
@@ -261,8 +263,8 @@ selector_grid_contents = {
     "wal","text_wal","bellt","text_bellt","hurcane","text_hurcane","buble","text_buble","katany","text_katany","petnygrame","text_petnygrame","firbolt","text_firbolt","hol","text_hol","golf","text_golf",
     "til","text_til","arro","text_arro","clowd","text_clowd","sno","text_sno","gunne","text_gunne","scarr","text_scarr","litbolt","text_litbolt","rif","text_rif","paint","text_paint",
     "watr","text_watr","colld","text_colld","rein","text_rein","icecub","text_icecub","slippers","text_slippers","pudll","text_pudll","icbolt","text_icbolt","win","text_win","press","text_press",
-    "laav","text_laav","dor","text_dor","kee","text_kee","roc","text_roc","hatt","text_hatt","extre","text_extre","poisbolt","text_poisbolt","smol","text_smol",0,0,
-    "gras","text_gras","algay","text_algay","flog","text_flog","boux","text_boux","knif","text_knif","heg","text_heg","timbolt","text_timbolt","tor","text_tor",0,0,
+    "laav","text_laav","dor","text_dor","kee","text_kee","roc","text_roc","hatt","text_hatt","extre","text_extre","poisbolt","text_poisbolt","smol","text_smol","pumkin","text_pumkin",
+    "gras","text_gras","algay","text_algay","flog","text_flog","boux","text_boux","knif","text_knif","heg","text_heg","timbolt","text_timbolt","tor","text_tor","grav","text_grav",
     "hedg","text_hedg","banboo","text_banboo","boll","text_boll","l..uv","text_l..uv","wips","text_wips","pepis","text_pepis","do$h","text_do$h","dling","text_dling","pen","text_pen",
     "metl","text_metl","vien","text_vien","leef","text_leef","karot","text_karot","fir","text_fir","eeg","text_eeg","foreeg","text_foreeg","forbeeee","text_forbeeee","cil","text_cil",
     "jail","text_jail","ladr","text_ladr","pallm","text_pallm","coco","text_coco","rouz","text_rouz","noet","text_noet","lili","text_lili","weeb","text_weeb","3den","text_3den",
@@ -279,16 +281,16 @@ selector_grid_contents = {
     "text_be","text_&","text_got","text_creat","text_snacc","text_spoop","text_copkat","text_moov","text_yeet","text_liek","text_haet","text_stalk","text_ignor","text_paint","text_vs","text_sing","text_soko","text_look at",
     "text_u","text_u too","text_u tres","text_walk",0,"text_:)","text_no swim","text_ouch","text_protecc",0,"text_nxt","text_stay ther",0,"text_giv",0,0,0,"text_look away",
     "text_go","text_goooo","text_icy","text_icyyyy",0,"text_:(","text_ned kee","text_for dor","text_wurd",0,"text_sublvl","text_loop",0,"text_frenles","text_timles","text_lit","text_corekt","text_rong",
-    "text_no go","text_go away pls","text_come pls","text_sidekik","text_diagkik","text_:o","text_hotte","text_fridgd","text_meta",0,0,0,0,"text_clikt","text_past","text_wun","text_an","text_mayb",
-    "text_visit fren","text_slep","text_shy...","text_behin u",0,"text_xwx","text_moar","text_split","text_nuek",0,0,0,0,"text_wait...","text_samefloat",0,0,0,
-    "text_flye","text_tall","text_haet skye","text_haet flor",0,"text_;d","text_gone",0,"text_notranform",0,0,0,0,"text_w/fren","text_arond","text_sans","text_seen by","text_behind",
-    "text_diag","text_ortho","text_go my way","text_direction",0,0,0,0,0,0,0,0,0,"text_that","text_that be","text_that got",0,"text_beside",
-    "text_turn cornr","text_folo wal","text_zip","text_hopovr","text_reflecc",0,0,0,0,0,0,0,0,0,0,0,0,0,
+    "text_no go","text_go away pls","text_come pls","text_sidekik","text_diagkik","text_:o","text_hotte","text_fridgd","text_txtify",0,0,0,0,"text_clikt","text_past","text_wun","text_an","text_mayb",
+    "text_visit fren","text_slep","text_shy...","text_behin u",0,"text_xwx","text_moar","text_split","text_thingify",0,0,0,0,"text_wait...","text_samefloat","text_samepaint","text_sameface",0,
+    "text_flye","text_tall","text_haet skye","text_haet flor",0,"text_;d","text_gone","text_nuek","text_notranform",0,0,0,0,"text_w/fren","text_arond","text_sans","text_seen by","text_behind",
+    "text_diag","text_ortho","text_go my way","text_zip",0,0,0,0,0,0,0,0,0,"text_that","text_that be","text_that got",0,"text_beside",
+    "text_turn cornr","text_folo wal","text_hopovr","text_reflecc",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     "text_munwalk","text_sidestep","text_diagstep","text_knightstep",0,0,0,0,0,0,0,0,0,0,0,0,0,"text_reed",
     "text_spin","text_rotatbl","text_noturn","text_stukc",0,0,0,0,0,0,0,0,0,0,0,0,"text_enby","text_orang",
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_brwn","text_tranz","text_yello",
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"text_blacc","text_gay","text_grun",
-    0,0,0,0,0,"text_try again","text_no undo","text_undo","text_za warudo","text_brite",0,0,0,0,0,"text_graey","text_qt","text_cyeann",
+    "text_upleft","text_up","text_upright",0,0,0,0,0,0,0,0,0,0,0,0,"text_brwn","text_tranz","text_yello",
+    "text_left","text_direction","text_right",0,0,0,0,0,0,0,0,0,0,0,0,"text_blacc","text_gay","text_grun",
+    "text_downleft","text_down","text_downright",0,0,"text_try again","text_no undo","text_undo","text_za warudo","text_brite",0,0,0,0,0,"text_graey","text_qt","text_cyeann",
     "text_every1","text_every2","text_every3","text_lethers",0,"text_poor toll","text_go arnd","text_mirr arnd","text_glued","text_torc",0,0,0,0,0,"text_whit","text_pinc","text_bleu",
     "text_...","text_''",0,0,0,"text_her","text_thr","text_rithere","text_the","text_opaque",0,0,0,0,"text_stelth","text_colrful","text_rave","text_purp",
   },
@@ -417,7 +419,7 @@ tiles_list = {
     color = {2, 2},
     layer = 3,
     tags = {"door"},
-    desc = "inherently FORDOR",
+    desc = "for door",
   },
   -- 12
   {
@@ -450,7 +452,7 @@ tiles_list = {
     layer = 4,
     rotate = true,
     tags = {"key"},
-    desc = "normally NEDKEE",
+    desc = "needs key",
   },
   -- 15
   {
@@ -1048,7 +1050,7 @@ tiles_list = {
   -- 67
   {
     name = "text_up",
-    sprite = "text_goup",
+    sprite = "text_up",
     type = "text",
     texttype = {property = true, direction = true},
     color = {1, 4},
@@ -1057,7 +1059,7 @@ tiles_list = {
   -- 68
   {
     name = "text_direction",
-    sprite = "text_goright",
+    sprite = "text_direction",
     type = "text",
     texttype = {property = true, direction = true},
     color = {1, 4},
@@ -1069,7 +1071,7 @@ tiles_list = {
   -- 69
   {
     name = "text_left",
-    sprite = "text_goleft",
+    sprite = "text_left",
     type = "text",
     texttype = {property = true, direction = true},
     color = {1, 4},
@@ -1079,7 +1081,7 @@ tiles_list = {
   -- 70
   {
     name = "text_down",
-    sprite = "text_godown",
+    sprite = "text_down",
     type = "text",
     texttype = {property = true, direction = true},
     color = {1, 4},
@@ -3226,7 +3228,7 @@ tiles_list = {
     texttype = {letter = true},
     color = {0,3},
     layer = 20,
-    "he world is gonna roll me."
+    desc = "he world is gonna roll me."
   },
   -- 262
   {
@@ -3402,14 +3404,14 @@ tiles_list = {
   },
   -- 279
   {
-    name = "text_meta",
-    sprite = "text_meta",
+    name = "text_txtify",
+    sprite = "text_txtify",
     type = "text",
     texttype = {property = true},
     color = {4, 1},
     layer = 20,
-    tags = {"notnat"},
-    desc = "META: BE META causes that object to be turned into its corresponding metatext. BEN'T META does the opposite and goes down one meta layer (disappearing if that is impossible).",
+    tags = {"meta", "notnat"},
+    desc = "TXTIFY: BE TXTIFY causes that object to be turned into its corresponding metatext.",
   },
   -- 280
   {
@@ -4149,11 +4151,11 @@ tiles_list = {
     name = "text_samefloat",
     sprite = "text_samefloat",
     type = "text",
-    texttype = {cond_infix = true},
+    texttype = {cond_compare = true},
     color = {1,4},
     layer = 20,
     tags = {"sameflye"},
-    desc = "SAMEFLOAT( (Infix Condition): True if there is an instance of the subject on the same amount of flye as the object.",
+    desc = "SAMEFLOAT( (Compare Condition): True if the condition unit has the same amount of FLYE as the target.",
   },
   -- 342
   {
@@ -4275,7 +4277,7 @@ tiles_list = {
   -- 353
   {
     name = "text_upleft",
-    sprite = "text_goup",
+    sprite = "text_upleft",
     type = "text",
     texttype = {property = true, direction = true},
     color = {1, 4},
@@ -4284,7 +4286,7 @@ tiles_list = {
   -- 354
   {
     name = "text_upright",
-    sprite = "text_goup",
+    sprite = "text_upright",
     type = "text",
     texttype = {property = true, direction = true},
     color = {1, 4},
@@ -4293,7 +4295,7 @@ tiles_list = {
   -- 355
   {
     name = "text_downleft",
-    sprite = "text_goup",
+    sprite = "text_downleft",
     type = "text",
     texttype = {property = true, direction = true},
     color = {1, 4},
@@ -4302,7 +4304,7 @@ tiles_list = {
   -- 356
   {
     name = "text_downright",
-    sprite = "text_goup",
+    sprite = "text_downright",
     type = "text",
     texttype = {property = true, direction = true},
     color = {1, 4},
@@ -6962,7 +6964,7 @@ tiles_list = {
     layer = 5,
     rotate = true,
     tometa = "text_''",
-    eye = {x=10, y=16, w=4, h=4},
+    eye = {x=10, y=16, w=5, h=5},
     tags = {"chars", "ditto", "pokemon"},
   },
   -- 600
@@ -7308,6 +7310,133 @@ tiles_list = {
     layer = 20,
     tags = {"pencil", "eraser"},
     desc = "the deleting one",
+  },
+  -- 632
+  {
+    name = "grav",
+    sprite = "grav",
+    color = {0, 1},
+    layer = 2,
+    tags = {"gravestone", "tombstone", "spooky"},
+  },
+  -- 633
+  {
+    name = "text_grav",
+    sprite = "text_grav",
+    type = "text",
+    texttype = {object = true},
+    color = {0, 1},
+    layer = 20,
+    tags = {"gravestone", "tombstone", "spooky"},
+    desc = "not to be confused with the removed GRAVY",
+  },
+  -- 634
+  {
+    name = "pumkin",
+    sprite = "pumkin",
+    color = {2, 3},
+    layer = 4,
+    eye = {x=21, y=15, w=5, h=3},
+    tags = {"pumpkin", "plant", "spooky"},
+    desc = "turns spooky with the correct properties",
+  },
+  -- 635
+  {
+    name = "text_pumkin",
+    sprite = "text_pumkin",
+    type = "text",
+    texttype = {object = true},
+    color = {2, 3},
+    layer = 20,
+    tags = {"pumpkin", "plant", "spooky"},
+  },
+  -- 636
+  {
+    name = "text_thingify",
+    sprite = "text_thingify",
+    type = "text",
+    texttype = {property = true},
+    color = {3, 1},
+    layer = 20,
+    tags = {"demeta", "notnat"},
+    desc = "THINGIFY: BE THINGIFY causes that text to turn into the object it represents (or text it represents if metatext).",
+  },
+  -- 637
+  {
+    name = "text_right",
+    sprite = "text_right",
+    type = "text",
+    texttype = {property = true, direction = true},
+    color = {1, 4},
+    layer = 20,
+    nice = true,
+  },
+  -- 638
+  {
+    name = "text_samepaint",
+    sprite = "text_samepaint",
+    type = "text",
+    texttype = {cond_compare = true},
+    color = {4,2},
+    layer = 20,
+    tags = {"samecolor"},
+    desc = "SAMEPAINT (Compare Condition): True if the condition unit is the same color as the target.",
+  },
+  -- 639
+  {
+    name = "text_sameface",
+    sprite = "text_sameface",
+    type = "text",
+    texttype = {cond_compare = true},
+    color = {2,4},
+    layer = 20,
+    tags = {"samedirection","samefacing"},
+    desc = "SAMEFACE (Compare Condition): True if the condition unit is facing the same direction as the target.",
+  },
+  --640
+  {
+    name = "za warudo",
+    sprite = "zawarudo",
+    color = {2,4},
+    layer = 5,
+    rotate = true,
+    slep = true,
+    convertible = false,
+    eye = {x=19, y=10, w=2, h=2},
+    tags = {"chars", "the world", "jojo", "DIO"},
+    desc = "WRYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY",
+  },
+  --641
+  {
+    name = "thingify",
+    sprite = "thingify",
+    color = {5,2},
+    layer = 4,
+    convertible = false,
+    tags = {"thing"},
+    desc = "its a thing.",
+  },
+  --642
+  {
+    name = "&",
+    sprite = "and",
+    color = {0,3},
+    layer = 6,
+    rotate = true,
+    convertible = false,
+    tags = {"and gate", "logic gate"},
+    desc = "only if all are true",
+  },
+  --643
+  {
+    name = "&n't",
+    sprite = "andn't",
+    color = {0,3},
+    layer = 6,
+    rotate = true,
+    convertible = false,
+    tags = {"nand gate", "logic gate"},
+    desc = "only if not all are true",
   },
 }
 
