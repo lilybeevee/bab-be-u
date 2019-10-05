@@ -255,7 +255,7 @@ selector_grid_contents = {
     "boy","text_boy","wurm","text_wurm","madi","text_madi",0,0,0,0,0,0,0,0,"lila","text_lila","tot","text_tot",
     "steev","text_steev","ratt","text_ratt","badi","text_badi",0,0,0,0,0,0,0,0,"pata","text_pata","jill","text_jill",
     "han","text_han","iy","text_iy","lisp","text_lisp","paw","text_paw",0,0,0,0,0,0,"larry","text_larry","zsoob","text_zsoob",
-    "snoman","text_snoman","pingu","text_pingu",0,0,0,0,0,0,0,0,0,0,0,0,"o","text_o",
+    "snoman","text_snoman","pingu","text_pingu","der","text_der",0,0,0,0,0,0,0,0,0,0,"o","text_o",
     "kapa","text_kapa","urei","text_urei","ryugon","text_ryugon",0,0,0,0,0,0,0,0,0,0,"square","text_square",
     "os","text_os","hors","text_hors","mimi","text_mimi","err","text_err",0,0,0,0,0,0,0,0,"triangle","text_triangle",
   },
@@ -7478,6 +7478,109 @@ tiles_list = {
     color = {2,1},
     layer = 20,
     tags = {"valhalla"},
+  },
+  -- 647
+  {
+    name = "bel",
+    sprite = "bel",
+    color = {2, 4},
+    layer = 4,
+    rotate = true,
+    tags = {"bell", "christmas"},
+    desc = "tis the season"
+  },
+  -- 648
+  {
+    name = "text_bel",
+    sprite = "text_bel",
+    type = "text",
+    texttype = {object = true},
+    color = {2, 4},
+    layer = 20,
+    tags = {"bell", "christmas"},
+  },
+  -- 649
+  {
+    name = "wres",
+    sprite = "wres",
+    color = {5, 2},
+    layer = 3,
+    tags = {"wreathe", "plant", "christmas"},
+    desc = "tis the wreson"
+  },
+  -- 650
+  {
+    name = "text_wres",
+    sprite = "text_wres",
+    type = "text",
+    texttype = {object = true},
+    color = {5, 2},
+    layer = 20,
+    tags = {"wreathe", "plant", "christmas"},
+  },
+  -- 651
+  {
+    name = "bowie",
+    sprite = "bowie",
+    color = {2, 2},
+    layer = 8,
+    rotate = true,
+    tags = {"ribbon", "bow", "christmas"},
+    desc = "we could be heroes",
+  },
+  -- 652
+  {
+    name = "text_bowie",
+    sprite = "text_bowie",
+    type = "text",
+    texttype = {object = true},
+    color = {2, 2},
+    layer = 20,
+    tags = {"ribbon", "bow", "christmas"},
+    desc = "just for one day",
+  },
+  -- 653
+  {
+    name = "der",
+    sprite = "der",
+    slep = true,
+    type = "object",
+    color = {6,1},
+    layer = 5,
+    rotate = true,
+    eye = {x=24, y=11, w=2, h=2},
+    tags = {"chars", "reindeer", "moose", "christmas"},
+    desc = "stay away from kappa and ryugon!!",
+  },
+  -- 654
+  {
+    name = "text_der",
+    sprite = "text_der",
+    type = "text",
+    texttype = {object = true},
+    color = {6,1},
+    layer = 20,
+    tags = {"chars", "reindeer", "moose", "christmas"},
+  },
+  -- 655
+  {
+    name = "sant",
+    sprite = {"sant_base", "sant_flof"},
+    type = "object",
+    color = {{2,2}, {0,3}},
+    colored = {true, false},
+    layer = 8,
+    tags = {"santa hat", "christmas"},
+  },
+  -- 656
+  {
+    name = "text_sant",
+    sprite = "text_sant",
+    type = "text",
+    texttype = {object = true},
+    color = {2, 2},
+    layer = 20,
+    tags = {"santa hat", "christmas"},
   },
 }
 
