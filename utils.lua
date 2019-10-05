@@ -2062,12 +2062,16 @@ function addParticles(ptype,x,y,color,count)
   end
 end
 
-function screenToGameTile(x,y)
+function screenToGameTile(x, y, partial)
   if scene.getTransform then
     local transform = scene.getTransform()
     local mx,my = transform:inverseTransformPoint(x,y)
-    local tilex = math.floor(mx / TILE_SIZE)
-    local tiley = math.floor(my / TILE_SIZE)
+    local tilex = mx / TILE_SIZE
+    local tiley = my / TILE_SIZE
+    if not partial then
+      tilex = math.floor(tilex)
+      tiley = math.floor(tiley)
+    end
     return tilex, tiley
   end
   return nil,nil

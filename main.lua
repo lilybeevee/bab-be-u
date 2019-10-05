@@ -856,6 +856,9 @@ end
 
 function love.mousemoved(x, y, dx, dy)
   ui.lock_hovered = false
+  if scene and scene.mouseMoved then
+    scene.mouseMoved(x, y, dx, dy)
+  end
 end
 
 function love.errorhandler(msg)

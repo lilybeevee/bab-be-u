@@ -54,6 +54,8 @@ local pathlock_box, pathlock_font
 local initialwindoposition
 stopwatch = nil
 
+local drag_units
+
 local sessionseed
 
 local buttons = {}--{"resume", "editor", "exit", "restart"}
@@ -75,6 +77,7 @@ function scene.load()
   stack_font = love.graphics.newFont(12)
   stack_font:setFilter("nearest","nearest")
   pathlock_font = love.graphics.newFont(16)
+  drag_units = {}
 
   scene.resetStuff()
 
@@ -230,6 +233,8 @@ function scene.update(dt)
 
   scene.checkInput()
   updateCursors()
+  
+  doDragbl()
 
   mouse_oldX = mouse_X
   mouse_oldY = mouse_Y
@@ -2416,24 +2421,35 @@ function scene.mouseReleased(x, y, button)
   local box = sprites["ui/32x32"]:getWidth()
   
   if button == 1 then
-    -- CLIKT prefix
-    if units_by_name["text_clikt"] or units_by_name["text_dragbl"] then
-      last_click_x, last_click_y = screenToGameTile(love.mouse.getX(), love.mouse.getY())
-      local stuff = getUnitsOnTile(last_click_x,last_click_y)
-      local nodrag = false
-      for _,unit in ipairs(stuff) do
-        if hasProperty(unit,"no drag") then
-          nodrag = true
-          break
+    -- DRAGBL release
+    if units_by_name["text_dragbl"] then
+      local dragged = false
+      for _,unit in ipairs(drag_units) do
+        local dest_x, dest_y = math.floor(unit.draw.x + 0.5), math.floor(unit.draw.y + 0.5)
+        local stuff = getUnitsOnTile(dest_x,dest_y)
+        local nodrag = false
+        for _,other in ipairs(stuff) do
+          if hasProperty(other,"no drag") then
+            nodrag = true
+            break
+          end
         end
-      end
-      if not nodrag then
-        for _,unit in ipairs(drag_units) do
+        if not nodrag then
           addUndo{"update",unit.id,unit.x,unit.y,unit.dir}
-          moveUnit(unit,last_click_x,last_click_y)
+          moveUnit(unit,dest_x,dest_y)
+          dragged = true
         end
+        addTween(tween.new(0.1, unit.draw, {x = unit.x, y = unit.y}), "dragbl release")
+      end
+      if dragged then
+        doOneMove(last_click_x,last_click_y,"clikt")
+        last_click_x, last_click_y = nil, nil
       end
       drag_units = {}
+    end
+    -- CLIKT prefix
+    if units_by_name["text_clikt"] then
+      last_click_x, last_click_y = screenToGameTile(love.mouse.getX(), love.mouse.getY())
       doOneMove(last_click_x,last_click_y,"clikt")
       last_click_x, last_click_y = nil, nil
       playSound("clicc")
@@ -2565,6 +2581,45 @@ function scene.setPathlockBox(unit)
   if pathlock_box.enabled then
     pathlock_box.enabled = false
     addTween(tween.new(0.1, pathlock_box, {scale = 0}), "pathlock box")
+  end
+end
+
+function doDragbl()
+  if drag_units and #drag_units > 0 then
+    local mx, my = screenToGameTile(mouse_X, mouse_Y, true)
+    mx, my = mx - 0.5, my - 0.5
+    local tx, ty = screenToGameTile(mouse_X, mouse_Y, false)
+    for _,unit in ipairs(drag_units) do
+      local oldx, oldy = math.floor(unit.draw.x), math.floor(unit.draw.y)
+      local dirx, diry = sign(mx - unit.draw.x), sign(my - unit.draw.y)
+      
+      if  canMove(unit,dirx,0,0,nil,nil,nil,"drag",nil,math.floor(unit.draw.x),math.floor(unit.draw.y))
+      and canMove(unit,dirx,0,0,nil,nil,nil,"drag",nil,math.floor(unit.draw.x),math.ceil( unit.draw.y)) then
+        local diff = mx - unit.draw.x
+        if diff < -0.25 then diff = -0.25 end
+        if diff > 0.25 then diff = 0.25 end
+        unit.draw.x = unit.draw.x + diff
+      else
+        if mx * dirx < oldx * dirx then
+          unit.draw.x = mx
+        else
+          unit.draw.x = oldx
+        end
+      end
+      if  canMove(unit,0,diry,0,nil,nil,nil,"drag",nil,math.floor(unit.draw.x),math.floor(unit.draw.y))
+      and canMove(unit,0,diry,0,nil,nil,nil,"drag",nil,math.ceil( unit.draw.x),math.floor(unit.draw.y)) then
+        local diff = my - unit.draw.y
+        if diff < -0.25 then diff = -0.25 end
+        if diff > 0.25 then diff = 0.25 end
+        unit.draw.y = unit.draw.y + diff
+      else
+        if my * diry < oldy * diry then
+          unit.draw.y = my
+        else
+          unit.draw.y = oldy
+        end
+      end
+    end
   end
 end
 
