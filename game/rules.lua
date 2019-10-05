@@ -53,7 +53,7 @@ function clearRules()
   if (units_by_name["bordr"] or units_by_name["text_bordr"]) then
     addBaseRule("bordr","be","no go")
     addBaseRule("bordr","be","tall")
-		addBaseRule("bordr","be","opaque")
+		addBaseRule("bordr","be","tranparnt")
   end
   if units_by_name["this"] then
     addBaseRule("this","be","go away pls")

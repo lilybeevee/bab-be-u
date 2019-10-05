@@ -15,7 +15,7 @@ function level_button.new(file, extra)
 
   o.data.extra = extra
   local default_color
-  if os.date("%m") == "10" and settings["themes"] then
+  if getTheme() == "halloween" then
     default_color = {0.5, 0.2, 0.7, 1}
     if extra then
         default_color = {0.8, 0.4, 0, 1}

@@ -183,7 +183,7 @@ function scene.draw()
   love.graphics.clear(0, 0, 0, 1)
 
   local bgsprite 
-  if os.date("%m") == "10" and settings["themes"] then
+  if getTheme() == "halloween" then
     bgsprite = sprites["ui/menu_background_halloween"]
   else
     bgsprite = sprites["ui/menu_background"]

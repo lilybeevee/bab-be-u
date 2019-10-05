@@ -118,7 +118,7 @@ end
 
 function scene.draw(dt)
   local bgsprite 
-  if os.date("%m") == "10" and settings["themes"] then
+  if getTheme() == "halloween" then
     bgsprite = sprites["ui/menu_background_halloween"]
   else
     bgsprite = sprites["ui/menu_background"]
@@ -152,9 +152,9 @@ function scene.draw(dt)
 
   if not options then
     local bab_logo
-    if os.date("%m") == "12" and settings["themes"] then
+    if getTheme() == "christmas" then
         bab_logo = sprites["ui/bab_be_u_xmas"]
-    elseif os.date("%m") == "10" and settings["themes"] then
+    elseif getTheme() == "halloween" then
         bab_logo = sprites["ui/bab_be_u_halloween"]
     else
         bab_logo = sprites["ui/bab_be_u"]
@@ -185,9 +185,9 @@ function scene.draw(dt)
     end
     if is_mobile then
       splashtext = "4mobile!"
-    elseif os.date("%m") == "12" then
+    elseif getTheme() == "christmas" then
         splashtext = "merery chrismas!!"
-    elseif os.date("%m") == "10" then
+    elseif getTheme() == "halloween" then
         if love.filesystem.read("author_name") == "lilybeevee" and splash > 0.5 then
             splashtext = "happy spooky month lily!"
         else

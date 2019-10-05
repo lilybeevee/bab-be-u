@@ -5,7 +5,7 @@ function menu_button.new(text, id, func)
 
   o:setSprite(sprites["ui/button_white_" .. id or 1])
   if not spookmode then
-    if os.date("%m") == "10" and settings["themes"] then
+    if getTheme() == "halloween" then
         o:setText(text)
         o:setColor(0.5, 0.25, 0.75)
         o:setHoverColor(0.4, 0, 0.75)
@@ -30,7 +30,7 @@ function menu_button.new(text, id, func)
 
   -- lazy copy/paste uwu
   local babspr
-  if os.date("%m") == "10" and settings["themes"] then
+  if getTheme() == "halloween" then
     babspr = sprites["ghost"]
   else
     babspr = sprites["bab"]

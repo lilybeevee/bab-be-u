@@ -19,7 +19,7 @@ function world_button.new(file)
       return hslToRgb(love.timer.getTime()/3%1, 0.4, 0.5, .9)
     end
     if not self.color then
-        if os.date("%m") == "10" and settings["themes"] then
+        if getTheme() == "halloween" then
             return {0.5, 0.2, 0.7, 1}
         else
             return {0.25, 0.5, 1, 1}
