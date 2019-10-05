@@ -2514,7 +2514,6 @@ function scene.mousePressed(x, y, button)
       end
     end
   end
-  print(dump(drag_units))
 end
 
 function scene.setStackBox(x, y)
