@@ -557,6 +557,7 @@ function updateUnits(undoing, big_update)
         end
         if not lit then
           local new_unit = createUnit(tiles_by_name["xplod"], nuke.x, nuke.y, nuke.dir)
+          new_unit.parent = nuke
           addUndo({"create", new_unit.id, false})
           for _,other in ipairs(check) do
             if other ~= nuke then
@@ -568,26 +569,31 @@ function updateUnits(undoing, big_update)
         end
       end
       for _,fire in ipairs(fires) do
-        for i=1,7,2 do
-          local dx = dirs8[i][1]
-          local dy = dirs8[i][2]
-          local lit = false
-          local others = getUnitsOnTile(fire.x+dx,fire.y+dy)
-          if inBounds(fire.x+dx,fire.y+dy) then
-            for _,on in ipairs(others) do
-              if on.name == "xplod" or hasProperty(on, "nuek") then
-                lit = true
-              else
-                table.insert(to_destroy,on)
-                playSound("break")
-                addParticles("destroy", on.x, on.y, {2,2})
+        if inBounds(fire.x,fire.y) and not fire.parent.removed then
+          for i=1,7,2 do
+            local dx = dirs8[i][1]
+            local dy = dirs8[i][2]
+            local lit = false
+            local others = getUnitsOnTile(fire.x+dx,fire.y+dy)
+            if inBounds(fire.x+dx,fire.y+dy) then
+              for _,on in ipairs(others) do
+                if on.name == "xplod" or hasProperty(on, "nuek") then
+                  lit = true
+                elseif sameFloat(on,fire.parent) then
+                  table.insert(to_destroy,on)
+                  playSound("break")
+                  addParticles("destroy", on.x, on.y, {2,2})
+                end
+              end
+              if not lit then
+                local new_unit = createUnit(tiles_by_name["xplod"], fire.x+dx, fire.y+dy, 1)
+                new_unit.parent = fire.parent
+                addUndo({"create", new_unit.id, false})
               end
             end
-            if not lit then
-              local new_unit = createUnit(tiles_by_name["xplod"], fire.x+dx, fire.y+dy, 1)
-              addUndo({"create", new_unit.id, false})
-            end
           end
+        else
+          table.insert(to_destroy,fire)
         end
       end
     else
