@@ -7468,6 +7468,16 @@ tiles_list = {
     tags = {"mouse"},
     desc = "NO DRAG: Units that are DRAGBL can't be placed on NO DRAG objects.",
   },
+  --646
+  {
+    name = "text_cann't",
+    sprite = "text_can't",
+    type = "text",
+    texttype = {object = true},
+    color = {2,1},
+    layer = 20,
+    tags = {"valhalla"},
+  },
 }
 
 tiles_by_name = {}
