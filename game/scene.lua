@@ -2439,7 +2439,7 @@ function scene.mouseReleased(x, y, button)
           moveUnit(unit,dest_x,dest_y)
           dragged = true
         end
-        addTween(tween.new(0.1, unit.draw, {x = unit.x, y = unit.y}), "dragbl release")
+        addTween(tween.new(0.1, unit.draw, {x = unit.x, y = unit.y}), "dragbl release:"..tostring(unit))
       end
       if dragged then
         doOneMove(last_click_x,last_click_y,"clikt")
