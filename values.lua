@@ -262,7 +262,7 @@ selector_grid_contents = {
   -- page 5: inanimate objects
   {
     "wal","text_wal","bellt","text_bellt","hurcane","text_hurcane","buble","text_buble","katany","text_katany","petnygrame","text_petnygrame","firbolt","text_firbolt","hol","text_hol","golf","text_golf",
-    "til","text_til","arro","text_arro","clowd","text_clowd","sno","text_sno","gunne","text_gunne","scarr","text_scarr","litbolt","text_litbolt","rif","text_rif","paint","text_paint",
+    "til","text_til","arro","text_arro","clowd","text_clowd","snoflak","text_snoflak","gunne","text_gunne","scarr","text_scarr","litbolt","text_litbolt","rif","text_rif","paint","text_paint",
     "watr","text_watr","colld","text_colld","rein","text_rein","icecub","text_icecub","slippers","text_slippers","pudll","text_pudll","icbolt","text_icbolt","win","text_win","press","text_press",
     "laav","text_laav","dor","text_dor","kee","text_kee","roc","text_roc","hatt","text_hatt","extre","text_extre","poisbolt","text_poisbolt","smol","text_smol","pumkin","text_pumkin",
     "gras","text_gras","algay","text_algay","flog","text_flog","boux","text_boux","knif","text_knif","heg","text_heg","timbolt","text_timbolt","tor","text_tor","grav","text_grav",
@@ -4394,8 +4394,8 @@ tiles_list = {
   },
   -- 362
   {
-    name = "sno",
-    sprite = "sno",
+    name = "snoflak",
+    sprite = "snoflak",
     type = "object",
     color = {0,3},
     layer = 4,
@@ -4404,8 +4404,8 @@ tiles_list = {
   },
   -- 363
   {
-    name = "text_sno",
-    sprite = "text_sno",
+    name = "text_snoflak",
+    sprite = "text_snoflak",
     type = "text",
     texttype = {object = true},
     color = {0,3},
