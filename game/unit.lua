@@ -1307,7 +1307,9 @@ function miscUpdates()
       
       -- here goes the legendary ditto transformations
       if unit.fullname == "ditto" then
-        if hasProperty(unit,"notranform") then
+        if hasProperty(unit,"dragbl") then
+            unit.sprite = "ditto_dragbl"
+        elseif hasProperty(unit,"notranform") then
             unit.sprite = "ditto_notranform"
         elseif hasRule(unit,"spoop","?") then
             unit.sprite = "ditto_spoop"
@@ -1317,6 +1319,8 @@ function miscUpdates()
             unit.sprite = "ditto_rong"
         elseif hasProperty(unit,"wurd") then
             unit.sprite = "ditto_wurd"
+        elseif hasProperty(unit,"no drag") then
+            unit.sprite = "ditto_no drag"
         elseif graphical_property_cache["slep"][unit] ~= nil then
             unit.sprite = "ditto_slep"
         elseif hasProperty(unit,"rithere") then
