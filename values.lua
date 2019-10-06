@@ -275,7 +275,7 @@ selector_grid_contents = {
     "brik","text_brik","sparkl","text_sparkl","sanglas","text_sanglas","bullb","text_bullb","son","text_son","muun","text_muun","bac","text_bac","warn","text_warn","piep","text_piep",
     "san","text_san","piler","text_piler","sancastl","text_sancastl","shel","text_shel","starr","text_starr","cor","text_cor","byc","text_byc","gorder","text_gorder","tuba","text_tuba",
     "glas","text_glas","bom","text_bom","sine","text_sine","kar","text_kar","can","text_can","ger","text_ger","sirn","text_sirn","chain","text_chain","reflecr","text_reflecr",
-    "bordr","text_bordr","wut","text_wut","wat","text_wat","splittr","text_splittr","togll","text_togll","bon","text_bon","battry","text_battry","chekr","text_chekr","sloop","text_sloop",
+    "bordr","text_bordr","wut","text_wut","wat","text_wat","splittr","text_splittr","toggl","text_toggl","bon","text_bon","battry","text_battry","chekr","text_chekr","sloop","text_sloop",
   },
   --page 6: more inanimate objects
   {
@@ -4115,8 +4115,8 @@ tiles_list = {
   },
   --- 336
   {
-    name = "togll",
-    sprite = "togll",
+    name = "toggl",
+    sprite = "toggl",
     type = "object",
     color = {0,3},
     layer = 4,
@@ -4125,8 +4125,8 @@ tiles_list = {
   },
   -- 337
   {
-    name = "text_togll",
-    sprite = "text_togll",
+    name = "text_toggl",
+    sprite = "text_toggl",
     type = "text",
     texttype = {object = true},
     color = {0,3},
