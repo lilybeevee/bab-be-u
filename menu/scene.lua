@@ -120,6 +120,8 @@ function scene.draw(dt)
   local bgsprite 
   if getTheme() == "halloween" then
     bgsprite = sprites["ui/menu_background_halloween"]
+  elseif getTheme() == "christmas" then
+    bgsprite = sprites["ui/menu_background_christmas"]
   else
     bgsprite = sprites["ui/menu_background"]
   end
@@ -211,6 +213,11 @@ function scene.draw(dt)
     love.graphics.pop()
   else
     local img = sprites["ui/bab cog"]
+    if getTheme() == "halloween" then
+        img = sprites["ui/bab cog_halloween"]
+    else
+        img = sprites["ui/bab cog"]
+    end
     local txt = sprites["ui/many toggls"]
 
     local full_height = img:getHeight()*2 + 10 + txt:getHeight()
