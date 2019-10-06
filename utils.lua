@@ -224,13 +224,13 @@ function loadMap()
         x = x + offset.x
         y = y + offset.y
         if not dofloodfill then
-          local unit = createUnit(tile, x, y, dir, false, id, nil, color and {{name=color}})
+          local unit = createUnit(tile, x, y, dir, false, id, nil, color)
           unit.special = specials
         elseif tile == tiles_by_name["lvl"] then
           if readSaveFile(specials.level, "seen") then
             local tfs = readSaveFile(specials.level, "transform")
             for _,t in ipairs(tfs or {tiles_listPossiblyMeta(tile).name}) do
-              local unit = createUnit(tiles_by_namePossiblyMeta(t), x, y, dir, false, id, nil, color and {{name=color}})
+              local unit = createUnit(tiles_by_namePossiblyMeta(t), x, y, dir, false, id, nil, color)
               unit.special = specials
               unit.special.visibility = "open"
               if readSaveFile(specials.level, "won") then
@@ -238,7 +238,7 @@ function loadMap()
               end
             end
           elseif specials.visibility == "open" then
-            local unit = createUnit(tile, x, y, dir, false, id, nil, color and {{name=color}})
+            local unit = createUnit(tile, x, y, dir, false, id, nil, color)
             unit.special = specials
           elseif specials.visibility == "locked" then
             table.insert(locked_lvls, {id, tile, x, y, dir, specials, color})
@@ -250,21 +250,21 @@ function loadMap()
           if specials.visibility == "hidden" then
             table.insert(objects, {id, tile, x, y, dir, specials, color})
           else
-            local unit = createUnit(tile, x, y, dir, false, id, nil, color and {{name=color}})
+            local unit = createUnit(tile, x, y, dir, false, id, nil, color)
             unit.special = specials
           end
         else
           if specials.level then
             local tfs = readSaveFile(specials.level, "transform")
             for _,t in ipairs(tfs or {tiles_listPossiblyMeta(tile).name}) do
-              local unit = createUnit(tiles_by_namePossiblyMeta(t), x, y, dir, false, id, nil, color and {{name=color}})
+              local unit = createUnit(tiles_by_namePossiblyMeta(t), x, y, dir, false, id, nil, color)
               unit.special = specials
               if readSaveFile(specials.level, "seen") then
                 unit.special.visibility = "open"
               end
             end
           else
-            local unit = createUnit(tile, x, y, dir, false, id, nil, color and {{name=color}})
+            local unit = createUnit(tile, x, y, dir, false, id, nil, color)
             unit.special = specials
           end
         end
