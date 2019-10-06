@@ -624,6 +624,20 @@ function getUnitsWithEffect(effect)
         end
       end
     end
+    local therp = matchesRule(nil,"rp","the")
+    for _,ruleparent in ipairs(therp) do
+      local the = ruleparent[1].rule.object.unit
+      local tx = the.x+dirs8[the.dir][1]
+      local ty = the.y+dirs8[the.dir][2]
+      local mimic = ruleparent[2]
+      local stuff = getUnitsOnTile(tx,ty)
+      for _,unit in ipairs(stuff) do
+        if hasProperty(unit,effect) then
+          table.insert(result,mimic)
+          break
+        end
+      end
+    end
   end
   
   return result
