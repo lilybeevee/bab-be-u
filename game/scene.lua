@@ -1242,16 +1242,17 @@ function scene.draw(dt)
         love.graphics.draw(sprites["der_nose"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
       end
     end
-    if hasRule(unit,"got","hatt") then
-      love.graphics.setColor(color[1], color[2], color[3], color[4])
-      love.graphics.draw(sprites["hatsmol"], fulldrawx, fulldrawy - 0.5*TILE_SIZE, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
-    end
+    
     if hasRule(unit,"got","sant") then
       love.graphics.setColor(getPaletteColor(2,2))
       love.graphics.draw(sprites["sant_smol_base"], fulldrawx, fulldrawy - 0.5*TILE_SIZE, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
       love.graphics.setColor(getPaletteColor(0,3))
       love.graphics.draw(sprites["sant_smol_flof"], fulldrawx, fulldrawy - 0.5*TILE_SIZE, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+    elseif hasRule(unit,"got","hatt") then
+      love.graphics.setColor(color[1], color[2], color[3], color[4])
+      love.graphics.draw(sprites["hatsmol"], fulldrawx, fulldrawy - 0.5*TILE_SIZE, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
     end
+    
     if hasRule(unit,"got","bowie") then
       love.graphics.setColor(color[1], color[2], color[3], color[4])
       love.graphics.draw(sprites["bowie_smol"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)

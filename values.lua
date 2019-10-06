@@ -7590,6 +7590,7 @@ tiles_list = {
     colored = {true, false},
     layer = 8,
     tags = {"santa hat", "christmas"},
+    desc = "ho ho ho",
   },
   -- 656
   {

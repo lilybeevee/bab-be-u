@@ -1244,6 +1244,37 @@ function miscUpdates()
         end
       end
       
+      if unit.fullname == "bolble" then
+        if unit.color_override then
+          local color = colour_for_palette[unit.color_override[1]][unit.color_override[2]]
+          if color == "whit" then
+              unit.sprite = "bolble_snow"
+          elseif color == "bleu" then
+              unit.sprite = "bolble_waves"
+          elseif color == "cyeann" then
+              unit.sprite = "bolble_12"
+          elseif color == "purp" then
+              unit.sprite = "bolble_clock"
+          elseif color == "brwn" then
+              unit.sprite = "bolble_choco"
+          elseif color == "blacc" then
+              unit.sprite = "bolble_twirl"
+          elseif color == "graey" then
+              unit.sprite = "bolble_checker"
+          elseif color == "orang" then
+              unit.sprite = "bolble_dots"
+          elseif color == "pinc" then
+              unit.sprite = "bolble_hearts"
+          elseif color == "yello" then
+              unit.sprite = "bolble_stars"
+          elseif color == "grun" then
+              unit.sprite = "bolble_tree"
+          else
+              unit.sprite = "bolble"
+          end
+        end
+      end
+      
       if unit.fullname == "ches" then
         if hasProperty(unit,"ned kee") then
           unit.sprite = "chest_close"
@@ -1411,7 +1442,7 @@ function miscUpdates()
         end
       end
       
-      if unit.fullname ~= "os" and unit.fullname ~= "boooo" and unit.fullname ~= "casete" and unit.fullname ~= "ches" and unit.fullname ~= "mimi" and unit.fullname ~= "ditto" and unit.fullname ~= "pumkin" then
+      if unit.fullname ~= "os" and unit.fullname ~= "boooo" and unit.fullname ~= "casete" and unit.fullname ~= "ches" and unit.fullname ~= "mimi" and unit.fullname ~= "ditto" and unit.fullname ~= "pumkin" and unit.fullname ~= "bolble" then
         if tile.slep and graphical_property_cache["slep"][unit] ~= nil then
           if type(tile.sprite) == "table" then
             for j,name in ipairs(tile.sprite) do
