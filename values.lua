@@ -1524,7 +1524,7 @@ tiles_list = {
   --- 105
   {
     name = "text_go my way",
-    sprite = "text_go my wey",
+    sprite = "text_gomywey",
     type = "text",
     texttype = {property = true},
     color ={1, 3},
@@ -1684,7 +1684,7 @@ tiles_list = {
   -- 120
   {
     name = "text_haet skye",
-    sprite = "text_haet_skye",
+    sprite = "text_haetskye",
     type = "text",
     texttype = {property = true},
     color = {5, 3},
