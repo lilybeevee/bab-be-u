@@ -7709,7 +7709,7 @@ tiles_list = {
     layer = 20,
     tags = {"snow", "christmas"},
     desc = "sno easy bein grun",
-    satan = true,
+    edgy = true,
   },
   -- 667
   {
@@ -7821,7 +7821,7 @@ tiles_list = {
     tags = {"witch hat", "halloween"},
     desc = "which one? THAT one!",
   },
-  -- 659
+  -- 677
   {
     name = "text_rp",
     sprite = "text_rp",
