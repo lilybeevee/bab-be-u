@@ -1232,8 +1232,16 @@ function scene.draw(dt)
         love.graphics.rectangle("fill", topleft.x + unit.eye.x + i, topleft.y + unit.eye.y - i, unit.eye.w - i, 1)
       end
     end
-
-    if hasRule(unit,"got","hatt") then
+    
+    if unit.fullname == "der" and (hasProperty(unit,"brite") or hasProperty(unit,"torc")) then
+      if graphical_property_cache["slep"][unit] ~= nil then
+        love.graphics.setColor(getPaletteColor(2,2))
+        love.graphics.draw(sprites["der_slep_nose"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      else
+        love.graphics.setColor(getPaletteColor(2,2))
+        love.graphics.draw(sprites["der_nose"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      end
+    elseif hasRule(unit,"got","hatt") then
       love.graphics.setColor(color[1], color[2], color[3], color[4])
       love.graphics.draw(sprites["hatsmol"], fulldrawx, fulldrawy - 0.5*TILE_SIZE, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
     end

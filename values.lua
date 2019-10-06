@@ -7568,7 +7568,7 @@ tiles_list = {
     rotate = true,
     eye = {x=24, y=11, w=2, h=2},
     tags = {"chars", "reindeer", "moose", "christmas"},
-    desc = "stay away from kappa and ryugon!!",
+    desc = "rudolf w/ ur nos be BRITE, wont u guid my slay?",
   },
   -- 654
   {
@@ -7579,6 +7579,7 @@ tiles_list = {
     color = {6,1},
     layer = 20,
     tags = {"chars", "reindeer", "moose", "christmas"},
+    desc = "stay away from kappa and ryugon!!",
   },
   -- 655
   {
