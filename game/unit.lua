@@ -1066,13 +1066,13 @@ function updateUnits(undoing, big_update)
         if #others == 0 then
           local color = rule.object.prefix
           if color == "samepaint" then
-            if unit.color_override then
-              color = colour_for_palette[unit.color_override[1]][unit.color_override[2]]
+            if creator.color_override then
+              color = colour_for_palette[creator.color_override[1]][creator.color_override[2]]
             else
               if type(color[1]) == "table" then
-                color = colour_for_palette[unit.color[1][1]][unit.color[1][2]]
+                color = colour_for_palette[creator.color[1][1]][creator.color[1][2]]
               else
-                color = colour_for_palette[unit.color[1]][unit.color[2]]
+                color = colour_for_palette[creator.color[1]][creator.color[2]]
               end
             end
           end
