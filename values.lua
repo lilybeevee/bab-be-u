@@ -292,7 +292,7 @@ selector_grid_contents = {
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    "bel","text_bel","wres","text_wres","bowie","text_bowie","sant","text_sant",0,0,0,0,0,0,0,0,0,0,0,0,
+    "sno","text_sno","bel","text_bel","wres","text_wres","bowie","text_bowie","sant","text_sant","canedy","text_canedy","bolble","text_bolble","now","text_now",0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   },
   -- page 7: properties, verbs and conditions
@@ -4379,7 +4379,7 @@ tiles_list = {
     color = {0, 3},
     layer = 5,
     eye = {x=17, y=8, w=3, h=3},
-    tags = {"chars", "snowman"},
+    tags = {"chars", "snowman", "christmas"},
     desc = "do u wanna creat a snoman??",
   },
   -- 361
@@ -4390,7 +4390,7 @@ tiles_list = {
     texttype = {object = true},
     color = {0,3},
     layer = 20,
-    tags = {"chars", "snowman"},
+    tags = {"chars", "snowman", "christmas"},
   },
   -- 362
   {
@@ -4399,7 +4399,7 @@ tiles_list = {
     type = "object",
     color = {0,3},
     layer = 4,
-    tags = {"snowflake", "ice", "hail"},
+    tags = {"snowflake", "ice", "hail", "christmas"},
     desc = "no 2 r the same...\nor is it?",
   },
   -- 363
@@ -4410,7 +4410,7 @@ tiles_list = {
     texttype = {object = true},
     color = {0,3},
     layer = 20,
-    tags = {"snowflake", "ice", "hail"},
+    tags = {"snowflake", "ice", "hail", "christmas"},
   },
   -- 364
   {
@@ -7620,6 +7620,93 @@ tiles_list = {
     color = {0,2},
     layer = 20,
     tags = {"oneway","mario","gate"},
+  },
+  -- 659
+  {
+    name = "canedy",
+    sprite = {"canedy_stripes", "canedy_base"},
+    type = "object",
+    color = {{2,2}, {0,3}},
+    colored = {true, false},
+    rotate = true,
+    layer = 4,
+    tags = {"candy cane", "christmas"},
+    desc = "no pun in canedied",
+  },
+  -- 660
+  {
+    name = "text_canedy",
+    sprite = "text_canedy",
+    type = "text",
+    texttype = {object = true},
+    color = {2, 2},
+    layer = 20,
+    tags = {"candy cane", "christmas"},
+  },
+  -- 661
+  {
+    name = "now",
+    sprite = {"now_box", "now_bow"},
+    type = "object",
+    color = {{2,2}, {2,4}},
+    colored = {true, false},
+    layer = 4,
+    tags = {"present", "gift", "box", "christmas"},
+    desc = "a gift for every bab supporteres!"
+  },
+  -- 662
+  {
+    name = "text_now",
+    sprite = "text_now",
+    type = "text",
+    texttype = {object = true},
+    color = {2, 2},
+    layer = 20,
+    tags = {"present", "gift", "box", "christmas"},
+    desc = "its now, or latr, no srsly",
+  },
+  -- 663
+  {
+    name = "bolble",
+    sprite = "bolble",
+    type = "object",
+    color = {2,2},
+    rotate = true,
+    layer = 4,
+    tags = {"bauble", "ball", "christmas"},
+    desc = "wil chang patern w/ colr",
+  },
+  -- 664
+  {
+    name = "text_bolble",
+    sprite = "text_bolble",
+    type = "text",
+    texttype = {object = true},
+    color = {2, 2},
+    layer = 20,
+    tags = {"bauble", "ball", "christmas"},
+  },
+  -- 665
+  {
+    name = "sno",
+    sprite = "sno",
+    type = "object",
+    color = {0, 3},
+    layer = 2,
+    tags = {"snow", "christmas"},
+    desc = "snodin",
+  },
+  -- 666
+  {
+    name = "text_sno",
+    sprite = "text_sno",
+    type = "text",
+    texttype = {object = true},
+    color = {0, 3},
+    layer = 20,
+    tags = {"snow", "christmas"},
+    desc = "sno easy bein grun",
+    satan = true,
   },
 }
 
