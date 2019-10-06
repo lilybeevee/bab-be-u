@@ -1882,6 +1882,10 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
       elseif hasProperty(v, "go my way") and goMyWayPrevents(v.dir, dx, dy) then
         stopped = stopped or sameFloat(unit, v)
       end
+      if stopped and v.name == "gato" then
+        v.draw.rotation = v.draw.rotation - 10
+        addTween(tween.new(0.5, v.draw, {rotation = (v.rotatdir-1)*45}, "outElastic"), "v:rotation:" .. v.tempid)
+      end
       
       --ouch/snacc logic:
       --1) if mover can destroy wall via ouch/snacc, then allow movement AND destroy the wall immediately
