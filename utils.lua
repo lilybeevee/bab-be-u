@@ -613,6 +613,19 @@ function getUnitsWithEffect(effect)
     end
   end
   
+  if rules_with["rp"] then
+    for _,unit in ipairs(result) do
+      local isrp = matchesRule(nil,"rp",unit)
+      for _,ruleparent in ipairs(isrp) do
+        local mimic = ruleparent[2]
+        if not gotten[mimic] and not hasRule(mimic,"ben't",effect) then
+          gotten[mimic] = true
+          table.insert(result,mimic)
+        end
+      end
+    end
+  end
+  
   return result
 end
 
@@ -656,6 +669,17 @@ function getUnitsWithEffectAndCount(effect)
     end
   end
   
+  if rules_with["rp"] then
+    for unit,count in pairs(result) do
+      local isrp = matchesRule(nil,"rp",unit)
+      for _,ruleparent in ipairs(isrp) do
+        local mimic = ruleparent[2]
+        if not mimic.removed and not hasRule(mimic,"ben't",effect) then
+          result[mimic] = count
+        end
+      end
+    end
+  end
   return result
 end
 
@@ -672,12 +696,34 @@ function getUnitsWithRuleAndCount(rule1, rule2, rule3)
       result[unit] = result[unit] + 1
     end
   end
+  if rules_with["rp"] then
+    for _,unit in ipairs(result) do
+      local isrp = matchesRule(nil,"rp",unit)
+      for _,ruleparent in ipairs(isrp) do
+        local mimic = ruleparent[2]
+        if not mimic.removed and not hasRule(mimic,rule2.."n't",rule3) then
+          if result[mimic] == nil then
+            result[mimic] = 0
+          end
+          result[mimic] = result[mimic] + 1
+        end
+      end
+    end
+  end
   return result
 end
 
 
 function hasRule(rule1,rule2,rule3)
-  return #matchesRule(rule1,rule2,rule3, true) > 0
+  if #matchesRule(rule1,rule2,rule3, true) > 0 then return true end
+  if not rules_with["rp"] then return false end
+  if #matchesRule(rule1,rule2.."n't",rule3, true) > 0 then return false end
+  local isrp = matchesRule(rule1,"rp",nil)
+  for _,ruleparent in ipairs(isrp) do
+    local mimic = ruleparent[2]
+    if #matchesRule(mimic,rule2,rule3, true) > 0 then return true end
+  end
+  return false
 end
 
 function validEmpty(unit)
