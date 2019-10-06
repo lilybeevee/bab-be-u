@@ -29,6 +29,7 @@ local defaultsettings = {
   fullscreen = false,
   level_compression = "zlib",
   draw_editor_lins = true,
+  themes = true,
 }
 
 if love.filesystem.read("Settings.bab") ~= nil then
@@ -208,7 +209,7 @@ selector_grid_contents = {
     0, "text_be", "text_&", "text_got", "text_n't", "text_every1", "text_no1", "text_text", "text_wurd", "text_txtify", "text_sublvl", "text_wait...", "text_mous", "text_clikt", "text_nxt", "text_stay ther", "lvl", "text_lvl",
     "bab", "text_bab", "text_u", "kee", "text_kee", "text_for dor", "text_goooo", "text_icy", "text_icyyyy", "text_behin u", "text_moar", "text_sans", "text_liek", "text_loop", "lin", "text_lin", "selctr", "text_selctr",
     "keek", "text_keek", "text_walk", "dor", "text_dor", "text_ned kee", "text_frens", "text_pathz", "text_groop", "text_u too", "text_u tres", "text_xwx", "text_haet", "text_mayb", "text_an", "text_that", "text_ignor", "text_...",
-    "flog", "text_flog", "text_:)", "colld", "text_colld", "text_fridgd", "text_direction", "text_ouch", "text_slep", "text_protecc", "text_sidekik", "text_brite", "text_lit", "text_opaque", "text_torc", "text_vs", "text_nuek", "text_''",
+    "flog", "text_flog", "text_:)", "colld", "text_colld", "text_fridgd", "text_direction", "text_ouch", "text_slep", "text_protecc", "text_sidekik", "text_brite", "text_lit", "text_tranparnt", "text_torc", "text_vs", "text_nuek", "text_''",
     "roc", "text_roc", "text_go away pls", "laav", "text_laav", "text_hotte","text_visit fren", "text_w/fren", "text_arond", "text_frenles", "text_copkat", "text_za warudo", "text_timles", "text_behind", "text_beside", "text_look away", "text_notranform", "this",
     "wal", "text_wal", "text_no go", "l..uv", "text_l..uv", "gras", "text_gras", "text_creat", "text_look at", "text_spoop", "text_yeet", "text_turn cornr", "text_corekt", "text_go arnd", "text_mirr arnd", "text_past", 0, "text_sing",
     "watr", "text_watr", "text_no swim", "meem", "text_meem", "dayzy", "text_dayzy", "text_snacc", "text_seen by" , "text_stalk", "text_moov", "text_folo wal", "text_rong", "text_her", "text_thr", "text_rithere", "text_the", 0,
@@ -254,7 +255,7 @@ selector_grid_contents = {
     "boy","text_boy","wurm","text_wurm","madi","text_madi",0,0,0,0,0,0,0,0,"lila","text_lila","tot","text_tot",
     "steev","text_steev","ratt","text_ratt","badi","text_badi",0,0,0,0,0,0,0,0,"pata","text_pata","jill","text_jill",
     "han","text_han","iy","text_iy","lisp","text_lisp","paw","text_paw",0,0,0,0,0,0,"larry","text_larry","zsoob","text_zsoob",
-    "snoman","text_snoman","pingu","text_pingu",0,0,0,0,0,0,0,0,0,0,0,0,"o","text_o",
+    "snoman","text_snoman","pingu","text_pingu","der","text_der",0,0,0,0,0,0,0,0,0,0,"o","text_o",
     "kapa","text_kapa","urei","text_urei","ryugon","text_ryugon",0,0,0,0,0,0,0,0,0,0,"square","text_square",
     "os","text_os","hors","text_hors","mimi","text_mimi","err","text_err",0,0,0,0,0,0,0,0,"triangle","text_triangle",
   },
@@ -276,12 +277,30 @@ selector_grid_contents = {
     "glas","text_glas","bom","text_bom","sine","text_sine","kar","text_kar","can","text_can","ger","text_ger","sirn","text_sirn","chain","text_chain","reflecr","text_reflecr",
     "bordr","text_bordr","wut","text_wut","wat","text_wat","splittr","text_splittr","togll","text_togll","bon","text_bon","battry","text_battry","chekr","text_chekr","sloop","text_sloop",
   },
-  -- page 6: properties, verbs and conditions
+  --page 6: more inanimate objects
+  {
+    "gato","text_gato",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+  },
+  -- page 7: properties, verbs and conditions
   {
     "text_be","text_&","text_got","text_creat","text_snacc","text_spoop","text_copkat","text_moov","text_yeet","text_liek","text_haet","text_stalk","text_ignor","text_paint","text_vs","text_sing","text_soko","text_look at",
     "text_u","text_u too","text_u tres","text_walk",0,"text_:)","text_no swim","text_ouch","text_protecc",0,"text_nxt","text_stay ther",0,"text_giv",0,0,0,"text_look away",
     "text_go","text_goooo","text_icy","text_icyyyy",0,"text_:(","text_ned kee","text_for dor","text_wurd",0,"text_sublvl","text_loop",0,"text_frenles","text_timles","text_lit","text_corekt","text_rong",
-    "text_no go","text_go away pls","text_come pls","text_sidekik","text_diagkik","text_:o","text_hotte","text_fridgd","text_txtify",0,0,0,0,"text_clikt","text_past","text_wun","text_an","text_mayb",
+    "text_no go","text_go away pls","text_come pls","text_sidekik","text_diagkik","text_:o","text_hotte","text_fridgd","text_txtify",0,"text_dragbl","text_no drag",0,"text_clikt","text_past","text_wun","text_an","text_mayb",
     "text_visit fren","text_slep","text_shy...","text_behin u",0,"text_xwx","text_moar","text_split","text_thingify",0,0,0,0,"text_wait...","text_samefloat","text_samepaint","text_sameface",0,
     "text_flye","text_tall","text_haet skye","text_haet flor",0,"text_;d","text_gone","text_nuek","text_notranform",0,0,0,0,"text_w/fren","text_arond","text_sans","text_seen by","text_behind",
     "text_diag","text_ortho","text_go my way","text_zip",0,0,0,0,0,0,0,0,0,"text_that","text_that be","text_that got",0,"text_beside",
@@ -292,7 +311,7 @@ selector_grid_contents = {
     "text_left","text_direction","text_right",0,0,0,0,0,0,0,0,0,0,0,0,"text_blacc","text_gay","text_grun",
     "text_downleft","text_down","text_downright",0,0,"text_try again","text_no undo","text_undo","text_za warudo","text_brite",0,0,0,0,0,"text_graey","text_qt","text_cyeann",
     "text_every1","text_every2","text_every3","text_lethers",0,"text_poor toll","text_go arnd","text_mirr arnd","text_glued","text_torc",0,0,0,0,0,"text_whit","text_pinc","text_bleu",
-    "text_...","text_''",0,0,0,"text_her","text_thr","text_rithere","text_the","text_opaque",0,0,0,0,"text_stelth","text_colrful","text_rave","text_purp",
+    "text_...","text_''",0,0,0,"text_her","text_thr","text_rithere","text_the","text_tranparnt",0,0,0,0,"text_stelth","text_colrful","text_rave","text_purp",
   },
 }
 tile_grid_width = 18
@@ -1505,7 +1524,7 @@ tiles_list = {
   --- 105
   {
     name = "text_go my way",
-    sprite = "text_go my wey",
+    sprite = "text_gomywey",
     type = "text",
     texttype = {property = true},
     color ={1, 3},
@@ -1665,7 +1684,7 @@ tiles_list = {
   -- 120
   {
     name = "text_haet skye",
-    sprite = "text_haet_skye",
+    sprite = "text_haetskye",
     type = "text",
     texttype = {property = true},
     color = {5, 3},
@@ -2513,7 +2532,7 @@ tiles_list = {
     color = {2, 4},
     layer = 20,
     tags = {"bright", "power"},
-    desc = "BRITE: A BRITE object emits light in all directions. LIT will be true for objects on the same FLYE level if nothing OPAQUE is in the way.",
+    desc = "BRITE: A BRITE object emits light in all directions. LIT will be true for objects on the same FLYE level if nothing TRANPARN'T is in the way.",
   },
   -- 199
   {
@@ -2524,17 +2543,17 @@ tiles_list = {
     color = {2, 4},
     layer = 20,
     tags = {"powered"},
-    desc = "LIT (Prefix Condition): A BRITE object emits light in all directions. LIT will be true for objects on the same FLYE level if nothing OPAQUE is in the way.",
+    desc = "LIT (Prefix Condition): A BRITE object emits light in all directions. LIT will be true for objects on the same FLYE level if nothing TRANPARN'T is in the way.",
   },
   -- 200
   {
-    name = "text_opaque",
-    sprite = "text_opaque",
+    name = "text_tranparnt",
+    sprite = "text_tranparnt",
     type = "text",
     texttype = {property = true},
     color = {0, 1},
     layer = 20,
-    desc = "OPAQUE: A BRITE object emits light in all directions. LIT will be true for objects on the same FLYE level if nothing OPAQUE is in the way.",
+    desc = "TRANPARN'T: A BRITE object emits light in all directions. LIT will be true for objects on the same FLYE level if nothing TRANPARN'T is in the way.",
   },
   -- 201
   {
@@ -7445,6 +7464,162 @@ tiles_list = {
     convertible = false,
     tags = {"nand gate", "logic gate"},
     desc = "only if not all are true",
+  },
+  --644
+  {
+    name = "text_dragbl",
+    sprite = "text_dragbl",
+    type = "text",
+    texttype = {property = true},
+    color = {3,3},
+    layer = 20,
+    tags = {"draggable","mouse"},
+    desc = "DRAGBL: Units that are DRAGBL can be picked up and moved around.",
+  },
+  --645
+  {
+    name = "text_no drag",
+    sprite = "text_nodrag",
+    type = "text",
+    texttype = {property = true},
+    color = {3,0},
+    layer = 20,
+    tags = {"mouse"},
+    desc = "NO DRAG: Units that are DRAGBL can't be placed on NO DRAG objects.",
+  },
+  --646
+  {
+    name = "text_cann't",
+    sprite = "text_can't",
+    type = "text",
+    texttype = {object = true},
+    color = {2,1},
+    layer = 20,
+    tags = {"valhalla"},
+  },
+  -- 647
+  {
+    name = "bel",
+    sprite = "bel",
+    color = {2, 4},
+    layer = 4,
+    rotate = true,
+    tags = {"bell", "christmas"},
+    desc = "tis the season"
+  },
+  -- 648
+  {
+    name = "text_bel",
+    sprite = "text_bel",
+    type = "text",
+    texttype = {object = true},
+    color = {2, 4},
+    layer = 20,
+    tags = {"bell", "christmas"},
+  },
+  -- 649
+  {
+    name = "wres",
+    sprite = "wres",
+    color = {5, 2},
+    layer = 3,
+    tags = {"wreathe", "plant", "christmas"},
+    desc = "tis the wreson"
+  },
+  -- 650
+  {
+    name = "text_wres",
+    sprite = "text_wres",
+    type = "text",
+    texttype = {object = true},
+    color = {5, 2},
+    layer = 20,
+    tags = {"wreathe", "plant", "christmas"},
+  },
+  -- 651
+  {
+    name = "bowie",
+    sprite = "bowie",
+    color = {2, 2},
+    layer = 8,
+    rotate = true,
+    tags = {"ribbon", "bow", "christmas"},
+    desc = "we could be heroes",
+  },
+  -- 652
+  {
+    name = "text_bowie",
+    sprite = "text_bowie",
+    type = "text",
+    texttype = {object = true},
+    color = {2, 2},
+    layer = 20,
+    tags = {"ribbon", "bow", "christmas"},
+    desc = "just for one day",
+  },
+  -- 653
+  {
+    name = "der",
+    sprite = "der",
+    slep = true,
+    type = "object",
+    color = {6,1},
+    layer = 5,
+    rotate = true,
+    eye = {x=24, y=11, w=2, h=2},
+    tags = {"chars", "reindeer", "moose", "christmas"},
+    desc = "stay away from kappa and ryugon!!",
+  },
+  -- 654
+  {
+    name = "text_der",
+    sprite = "text_der",
+    type = "text",
+    texttype = {object = true},
+    color = {6,1},
+    layer = 20,
+    tags = {"chars", "reindeer", "moose", "christmas"},
+  },
+  -- 655
+  {
+    name = "sant",
+    sprite = {"sant_base", "sant_flof"},
+    type = "object",
+    color = {{2,2}, {0,3}},
+    colored = {true, false},
+    layer = 8,
+    tags = {"santa hat", "christmas"},
+  },
+  -- 656
+  {
+    name = "text_sant",
+    sprite = "text_sant",
+    type = "text",
+    texttype = {object = true},
+    color = {2, 2},
+    layer = 20,
+    tags = {"santa hat", "christmas"},
+  },
+  -- 657
+  {
+    name = "gato",
+    sprite = "gato",
+    type = "object",
+    color = {0,2},
+    rotate = true,
+    layer = 3,
+    tags = {"oneway","mario","gate"},
+    desc = "shakes if you can't walk into it",
+  },
+  -- 658
+  {
+    name = "text_gato",
+    sprite = "text_gato",
+    type = "text",
+    texttype = {object = true},
+    color = {0,2},
+    layer = 20,
+    tags = {"oneway","mario","gate"},
   },
 }
 

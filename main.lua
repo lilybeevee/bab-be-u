@@ -76,9 +76,10 @@ function love.load(arg)
     print([[
 bab arguments!
 
---test <scene>    Starts the game with a test scene
---randomize       Randomizes the game's assets
---spook           ????
+--test <scene>      Starts the game with a test scene
+--theme [<theme>]   Starts the game with the specified theme (or none)
+--randomize         Randomizes the game's assets
+--spook             ????
 ]])
     love.event.quit()
     return
@@ -856,6 +857,9 @@ end
 
 function love.mousemoved(x, y, dx, dy)
   ui.lock_hovered = false
+  if scene and scene.mouseMoved then
+    scene.mouseMoved(x, y, dx, dy)
+  end
 end
 
 function love.errorhandler(msg)

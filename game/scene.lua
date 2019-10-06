@@ -54,6 +54,8 @@ local pathlock_box, pathlock_font
 local initialwindoposition
 stopwatch = nil
 
+local drag_units
+
 local sessionseed
 
 local buttons = {}--{"resume", "editor", "exit", "restart"}
@@ -75,6 +77,7 @@ function scene.load()
   stack_font = love.graphics.newFont(12)
   stack_font:setFilter("nearest","nearest")
   pathlock_font = love.graphics.newFont(16)
+  drag_units = {}
 
   scene.resetStuff()
 
@@ -230,6 +233,8 @@ function scene.update(dt)
 
   scene.checkInput()
   updateCursors()
+  
+  doDragbl()
 
   mouse_oldX = mouse_X
   mouse_oldY = mouse_Y
@@ -916,8 +921,8 @@ function scene.draw(dt)
     local fulldrawx = (drawx + 0.5)*TILE_SIZE
     local fulldrawy = (drawy + 0.5)*TILE_SIZE
 
-    if graphical_property_cache["flye"][unit] ~= nil or unit.name == "o" or unit.name == "square" or unit.name == "triangle" then
-      local flyenes = graphical_property_cache["flye"][unit] or 0
+    if graphical_property_cache["flye"][unit] ~= nil or (unit.parent and graphical_property_cache["flye"][unit.parent] ~= nil) or unit.name == "o" or unit.name == "square" or unit.name == "triangle" then
+      local flyenes = graphical_property_cache["flye"][unit] or (unit.parent and graphical_property_cache["flye"][unit.parent]) or 0
       if unit.name == "o" or unit.name == "square" or unit.name == "triangle" then
         flyenes = flyenes + 1
       end
@@ -2416,38 +2421,64 @@ function scene.mouseReleased(x, y, button)
   local box = sprites["ui/32x32"]:getWidth()
   
   if button == 1 then
-    -- CLIKT prefix
-    if units_by_name["text_clikt"] then
-        last_click_x, last_click_y = screenToGameTile(love.mouse.getX(), love.mouse.getY())
+    -- DRAGBL release
+    if units_by_name["text_dragbl"] then
+      local dragged = false
+      for _,unit in ipairs(drag_units) do
+        local dest_x, dest_y = math.floor(unit.draw.x + 0.5), math.floor(unit.draw.y + 0.5)
+        local stuff = getUnitsOnTile(dest_x,dest_y)
+        local nodrag = false
+        for _,other in ipairs(stuff) do
+          if hasProperty(other,"no drag") then
+            nodrag = true
+            break
+          end
+        end
+        if not nodrag then
+          addUndo{"update",unit.id,unit.x,unit.y,unit.dir}
+          moveUnit(unit,dest_x,dest_y)
+          dragged = true
+        end
+        addTween(tween.new(0.1, unit.draw, {x = unit.x, y = unit.y}), "dragbl release:"..tostring(unit))
+      end
+      if dragged then
         doOneMove(last_click_x,last_click_y,"clikt")
         last_click_x, last_click_y = nil, nil
-        playSound("clicc")
+      end
+      drag_units = {}
+    end
+    -- CLIKT prefix
+    if units_by_name["text_clikt"] then
+      last_click_x, last_click_y = screenToGameTile(love.mouse.getX(), love.mouse.getY())
+      doOneMove(last_click_x,last_click_y,"clikt")
+      last_click_x, last_click_y = nil, nil
+      playSound("clicc")
     end
     -- Replay buttons
     if replay_playback then
-        if pointInside(x, y, width - box*3, 0, box, box) then
-            replay_pause = not replay_pause
+      if pointInside(x, y, width - box*3, 0, box, box) then
+        replay_pause = not replay_pause
+      end
+      if not replay_pause then
+        if pointInside(x, y, width - box*4, 0, box, box) then
+          replay_playback_interval = replay_playback_interval / 0.8
+        elseif pointInside(x, y, width - box*2, 0, box, box) then
+          replay_playback_interval = replay_playback_interval * 0.8
         end
-        if not replay_pause then
-            if pointInside(x, y, width - box*4, 0, box, box) then
-                replay_playback_interval = replay_playback_interval / 0.8
-            elseif pointInside(x, y, width - box*2, 0, box, box) then
-                replay_playback_interval = replay_playback_interval * 0.8
-            end
-        elseif replay_pause then
-            if pointInside(x, y, width - box*4, 0, box, box) then
-                if replay_playback_turn > 1 then
-                    replay_playback_turn = replay_playback_turn - 1
-                    doOneMove(0,0,"undo")
-                end
-            elseif pointInside(x, y, width - box*2, 0, box, box) then
-                doReplayTurn(replay_playback_turn)
-                replay_playback_turn = replay_playback_turn + 1
-            end
+      elseif replay_pause then
+        if pointInside(x, y, width - box*4, 0, box, box) then
+          if replay_playback_turn > 1 then
+            replay_playback_turn = replay_playback_turn - 1
+            doOneMove(0,0,"undo")
+          end
+        elseif pointInside(x, y, width - box*2, 0, box, box) then
+          doReplayTurn(replay_playback_turn)
+          replay_playback_turn = replay_playback_turn + 1
         end
-        if pointInside(x, y, width - box, 0, box, box) then
-            replay_playback = false
-        end
+      end
+      if pointInside(x, y, width - box, 0, box, box) then
+        replay_playback = false
+      end
     end
   elseif button == 2 then
     -- Stacks preview
@@ -2488,6 +2519,17 @@ function handlePauseButtonPressed(i)
 end
 
 function scene.mousePressed(x, y, button)
+  if not rules_with["dragbl"] then return end
+  
+  if button == 1 then
+    local tx,ty = screenToGameTile(x,y)
+    local stuff = getUnitsOnTile(tx,ty)
+    for _,unit in ipairs(stuff) do
+      if hasProperty(unit,"dragbl") then
+        table.insert(drag_units, unit)
+      end
+    end
+  end
 end
 
 function scene.setStackBox(x, y)
@@ -2539,6 +2581,45 @@ function scene.setPathlockBox(unit)
   if pathlock_box.enabled then
     pathlock_box.enabled = false
     addTween(tween.new(0.1, pathlock_box, {scale = 0}), "pathlock box")
+  end
+end
+
+function doDragbl()
+  if drag_units and #drag_units > 0 then
+    local mx, my = screenToGameTile(mouse_X, mouse_Y, true)
+    mx, my = mx - 0.5, my - 0.5
+    local tx, ty = screenToGameTile(mouse_X, mouse_Y, false)
+    for _,unit in ipairs(drag_units) do
+      local oldx, oldy = math.floor(unit.draw.x), math.floor(unit.draw.y)
+      local dirx, diry = sign(mx - unit.draw.x), sign(my - unit.draw.y)
+      
+      if  canMove(unit,dirx,0,0,nil,nil,nil,"drag",nil,math.floor(unit.draw.x),math.floor(unit.draw.y))
+      and canMove(unit,dirx,0,0,nil,nil,nil,"drag",nil,math.floor(unit.draw.x),math.ceil( unit.draw.y)) then
+        local diff = mx - unit.draw.x
+        if diff < -0.25 then diff = -0.25 end
+        if diff > 0.25 then diff = 0.25 end
+        unit.draw.x = unit.draw.x + diff
+      else
+        if mx * dirx < oldx * dirx then
+          unit.draw.x = mx
+        else
+          unit.draw.x = oldx
+        end
+      end
+      if  canMove(unit,0,diry,0,nil,nil,nil,"drag",nil,math.floor(unit.draw.x),math.floor(unit.draw.y))
+      and canMove(unit,0,diry,0,nil,nil,nil,"drag",nil,math.ceil( unit.draw.x),math.floor(unit.draw.y)) then
+        local diff = my - unit.draw.y
+        if diff < -0.25 then diff = -0.25 end
+        if diff > 0.25 then diff = 0.25 end
+        unit.draw.y = unit.draw.y + diff
+      else
+        if my * diry < oldy * diry then
+          unit.draw.y = my
+        else
+          unit.draw.y = oldy
+        end
+      end
+    end
   end
 end
 

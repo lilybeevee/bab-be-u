@@ -58,6 +58,7 @@ function clear()
   last_click_y = nil
   mouse_oldX = mouse_X
   mouse_oldY = mouse_Y
+  drag_units = {}
   cursors = {}
   cursors_by_id = {}
   shake_dur = 0
@@ -1437,7 +1438,7 @@ function hasLineOfSight(brite, lit)
   if (not sameFloat(brite, lit)) then
     return false
   end
-  if (rules_with["opaque"] == nil) then
+  if (rules_with["tranparnt"] == nil) then
     return true
   end
   --https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
@@ -1454,7 +1455,7 @@ function hasLineOfSight(brite, lit)
       if found_opaque then return false end
       if x ~= x0 or y ~= y0 then
         for _,v in ipairs(getUnitsOnTile(x, y)) do
-          if hasProperty(v, "opaque") then
+          if hasProperty(v, "tranparnt") then
             found_opaque = true
             break
           end
@@ -1475,7 +1476,7 @@ function hasLineOfSight(brite, lit)
       if found_opaque then return false end
       if x ~= x0 or y ~= y0 then
         for _,v in ipairs(getUnitsOnTile(x, y)) do
-          if hasProperty(v, "opaque") then
+          if hasProperty(v, "tranparnt") then
             found_opaque = true
             break
           end
@@ -1494,7 +1495,7 @@ function hasLineOfSight(brite, lit)
       if x ~= x0 or y ~= y0 then
         if found_opaque then return false end
         for _,v in ipairs(getUnitsOnTile(x, y)) do
-          if hasProperty(v, "opaque") then
+          if hasProperty(v, "tranparnt") then
             found_opaque = true
             break
           end
@@ -1527,7 +1528,7 @@ function calculateLight()
     love.graphics.setCanvas()
     return
   end
-  local opaques = getUnitsWithEffect("opaque")
+  local opaques = getUnitsWithEffect("tranparnt")
   if (#opaques == 0 and #brites ~= 0) then
     love.graphics.setCanvas(lightcanvas)
     love.graphics.clear(1, 1, 1, 1)
@@ -2061,12 +2062,16 @@ function addParticles(ptype,x,y,color,count)
   end
 end
 
-function screenToGameTile(x,y)
+function screenToGameTile(x, y, partial)
   if scene.getTransform then
     local transform = scene.getTransform()
     local mx,my = transform:inverseTransformPoint(x,y)
-    local tilex = math.floor(mx / TILE_SIZE)
-    local tiley = math.floor(my / TILE_SIZE)
+    local tilex = mx / TILE_SIZE
+    local tiley = my / TILE_SIZE
+    if not partial then
+      tilex = math.floor(tilex)
+      tiley = math.floor(tiley)
+    end
     return tilex, tiley
   end
   return nil,nil
@@ -3003,4 +3008,22 @@ function jprint(str)
   if just_moved then
     print(str)
   end
+end
+
+function getTheme()
+  if not settings["themes"] then return nil end
+  if cmdargs["theme"] then
+    if cmdargs["theme"] == "" then
+      return nil
+    else
+      return cmdargs["theme"]
+    end
+  else
+    if os.date("%m") == "10" then
+      return "halloween"
+    elseif os.date("%m") == "12" then
+      return "christmas"
+    end
+  end
+  return nil
 end

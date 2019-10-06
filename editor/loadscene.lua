@@ -182,7 +182,12 @@ end
 function scene.draw()
   love.graphics.clear(0, 0, 0, 1)
 
-  local bgsprite = sprites["ui/menu_background"]
+  local bgsprite 
+  if getTheme() == "halloween" then
+    bgsprite = sprites["ui/menu_background_halloween"]
+  else
+    bgsprite = sprites["ui/menu_background"]
+  end
 
   local cells_x = math.ceil(love.graphics.getWidth() / bgsprite:getWidth())
   local cells_y = math.ceil(love.graphics.getHeight() / bgsprite:getHeight())
