@@ -255,7 +255,7 @@ selector_grid_contents = {
     "boy","text_boy","wurm","text_wurm","madi","text_madi",0,0,0,0,0,0,0,0,"lila","text_lila","tot","text_tot",
     "steev","text_steev","ratt","text_ratt","badi","text_badi",0,0,0,0,0,0,0,0,"pata","text_pata","jill","text_jill",
     "han","text_han","iy","text_iy","lisp","text_lisp","paw","text_paw",0,0,0,0,0,0,"larry","text_larry","zsoob","text_zsoob",
-    "snoman","text_snoman","pingu","text_pingu","der","text_der",0,0,0,0,0,0,0,0,0,0,"o","text_o",
+    "snoman","text_snoman","pingu","text_pingu","der","text_der","ginn","text_ginn",0,0,0,0,0,0,0,0,"o","text_o",
     "kapa","text_kapa","urei","text_urei","ryugon","text_ryugon",0,0,0,0,0,0,0,0,0,0,"square","text_square",
     "os","text_os","hors","text_hors","mimi","text_mimi","err","text_err",0,0,0,0,0,0,0,0,"triangle","text_triangle",
   },
@@ -291,8 +291,8 @@ selector_grid_contents = {
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    "sno","text_sno","bel","text_bel","wres","text_wres","bowie","text_bowie","sant","text_sant","canedy","text_canedy","bolble","text_bolble","now","text_now","cooky","text_cooky",0,0,
+    "sno","text_sno","bel","text_bel","wres","text_wres","bowie","text_bowie","sant","text_sant","canedy","text_canedy","bolble","text_bolble","now","text_now","cooky","text_cooky",
+    0,0,"pot","text_pot","sweep","text_sweep",0,0,"which","text_which",0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   },
   -- page 7: properties, verbs and conditions
@@ -7731,6 +7731,95 @@ tiles_list = {
     layer = 20,
     tags = {"cookie", "biscuit", "chocolate chip", "christmas", "food"},
     desc = "very cooky"
+  },
+  -- 669
+  {
+    name = "ginn",
+    sprite = "ginn",
+    slep = true,
+    type = "object",
+    color = {6,2},
+    layer = 5,
+    rotate = true,
+    eye = {x=18, y=6, w=2, h=2},
+    tags = {"chars", "gingerbread man", "christmas", "cookie", "food"},
+    desc = "shes a girl!",
+    pronoun = "she/her",
+  },
+  -- 670
+  {
+    name = "text_ginn",
+    sprite = "text_ginn",
+    type = "text",
+    texttype = {object = true},
+    color = {6,2},
+    layer = 20,
+    tags = {"chars", "gingerbread man", "christmas", "cookie", "food"},
+  },
+  -- 671
+  {
+    name = "pot",
+    sprite = {"pot_drink", "pot_bottle"},
+    type = "object",
+    color = {{3,1}, {0,3}},
+    colored = {true, false},
+    layer = 4,
+    rotate = true,
+    tags = {"potion", "bottle", "halloween"},
+    desc = "+1 ATK"
+  },
+  -- 672
+  {
+    name = "text_pot",
+    sprite = "text_pot",
+    type = "text",
+    texttype = {object = true},
+    color = {0,3},
+    layer = 20,
+    tags = {"potion", "bottle", "halloween"},
+  },
+  -- 673
+  {
+    name = "sweep",
+    sprite = "sweep",
+    type = "object",
+    color = {6, 1},
+    layer = 4,
+    rotate = true,
+    tags = {"broomstick", "halloween", "witch"},
+    desc = "for the master sparkl users",
+  },
+  -- 674
+  {
+    name = "text_sweep",
+    sprite = "text_sweep",
+    type = "text",
+    texttype = {object = true},
+    color = {6, 1},
+    layer = 20,
+    tags = {"broomstick", "halloween", "witch"},
+  },
+  -- 675
+  {
+    name = "which",
+    sprite = {"which_that", "which_base"},
+    type = "object",
+    color = {{3,1}, {0,0}},
+    colored = {true, false},
+    layer = 8,
+    tags = {"witch hat", "halloween"},
+    desc = "mors tak the precious thing",
+  },
+  -- 676
+  {
+    name = "text_which",
+    sprite = "text_which",
+    type = "text",
+    texttype = {object = true},
+    color = {3,1},
+    layer = 20,
+    tags = {"witch hat", "halloween"},
+    desc = "which one? THAT one!",
   },
 }
 
