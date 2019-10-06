@@ -7403,11 +7403,11 @@ tiles_list = {
     name = "text_samepaint",
     sprite = "text_samepaint",
     type = "text",
-    texttype = {cond_compare = true},
+    texttype = {cond_compare = true, class_prefix = true},
     color = {4,2},
     layer = 20,
     tags = {"samecolor"},
-    desc = "SAMEPAINT (Compare Condition): True if the condition unit is the same color as the target.",
+    desc = "SAMEPAINT (Compare Condition): True if the condition unit is the same color as the target. Also, BAB BE SAMEPAINT KEEK will turn bab into a keek of the same color that bab was.",
   },
   -- 639
   {

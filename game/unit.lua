@@ -1064,7 +1064,19 @@ function updateUnits(undoing, big_update)
       if tile ~= nil and not overriden then
         local others = getUnitsOnTile(creator.x, creator.y, createe, true, nil)
         if #others == 0 then
-          local new_unit = createUnit(tile, creator.x, creator.y, creator.dir, nil, nil, nil, rule.object.prefix)
+          local color = rule.object.prefix
+          if color == "samepaint" then
+            if unit.color_override then
+              color = colour_for_palette[unit.color_override[1]][unit.color_override[2]]
+            else
+              if type(color[1]) == "table" then
+                color = colour_for_palette[unit.color[1][1]][unit.color[1][2]]
+              else
+                color = colour_for_palette[unit.color[1]][unit.color[2]]
+              end
+            end
+          end
+          local new_unit = createUnit(tile, creator.x, creator.y, creator.dir, nil, nil, nil, color)
           addUndo({"create", new_unit.id, false})
         end
       elseif createe == "mous" then
@@ -2150,7 +2162,19 @@ function dropGotUnit(unit, rule)
         local new_mouse = createMouse(unit.x, unit.y)
         addUndo({"create_cursor", new_mouse.id})
       else
-        local new_unit = createUnit(obj_id, unit.x, unit.y, unit.dir, false, nil, nil, rule.object.prefix)
+        local color = rule.object.prefix
+        if color == "samepaint" then
+          if unit.color_override then
+            color = colour_for_palette[unit.color_override[1]][unit.color_override[2]]
+          else
+            if type(color[1]) == "table" then
+              color = colour_for_palette[unit.color[1][1]][unit.color[1][2]]
+            else
+              color = colour_for_palette[unit.color[1]][unit.color[2]]
+            end
+          end
+        end
+        local new_unit = createUnit(obj_id, unit.x, unit.y, unit.dir, false, nil, nil, color)
         addUndo({"create", new_unit.id, false})
       end
     end
@@ -2508,7 +2532,19 @@ function convertUnits(pass)
             end
             if tile ~= nil then
               table.insert(del_cursors, cursor)
-              local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true, nil, nil, rule.object.prefix)
+              local color = rule.object.prefix
+              if color == "samepaint" then
+                if unit.color_override then
+                  color = colour_for_palette[unit.color_override[1]][unit.color_override[2]]
+                else
+                  if type(color[1]) == "table" then
+                    color = colour_for_palette[unit.color[1][1]][unit.color[1][2]]
+                  else
+                    color = colour_for_palette[unit.color[1]][unit.color[2]]
+                  end
+                end
+              end
+              local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true, nil, nil, color)
               if (new_unit ~= nil) then
                 addUndo({"create", new_unit.id, true, created_from_id = unit.id})
               end
@@ -2537,7 +2573,19 @@ function convertUnits(pass)
           if not unit.removed then
             table.insert(converted_units, unit)
           end
-          local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true, nil, nil, rule.object.prefix)
+          local color = rule.object.prefix
+          if color == "samepaint" then
+            if unit.color_override then
+              color = colour_for_palette[unit.color_override[1]][unit.color_override[2]]
+            else
+              if type(color[1]) == "table" then
+                color = colour_for_palette[unit.color[1][1]][unit.color[1][2]]
+              else
+                color = colour_for_palette[unit.color[1]][unit.color[2]]
+              end
+            end
+          end
+          local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true, nil, nil, color)
           if (new_unit ~= nil) then
             if rule.object.name == "lvl" and not new_unit.color_override then
               new_unit.color_override = unit.color_override or unit.color
@@ -2700,9 +2748,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
   end
   
   if prefix then
-    for _,pfix in ipairs(prefix) do
-      unit[pfix.name] = true
-    end
+    unit[prefix] = true
     updateUnitColourOverride(unit)
   end
   

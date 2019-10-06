@@ -275,25 +275,9 @@ function findUnit(words, extra_words_, dir, outer, no_verb_cond, is_subject)
 end
 
 function findClass(words)
-  local prefix = {}
-  while words[1].type and words[1].type.class_prefix do -- in cases where conditions can also be used, things should be caught there first
-    local pfix = copyTable(words[1])
-    table.remove(words, 1)
-    pfix.mods = pfix.mods or {}
-    local nt = false
-    while words[1] and words[1].type["not"] do
-      nt = not nt
-      table.insert(pfix.mods, words[1])
-      table.remove(words, 1)
-    end
-    if nt then
-      if pfix.name:ends("n't") then
-        pfix.name = pfix.name:sub(1, -4)
-      else
-        pfix.name = pfix.name.."n't"
-      end
-    end
-    table.insert(prefix, pfix)
+  local prefix
+  if words[1].type and words[1].type.class_prefix then -- in cases where conditions can also be used, things should be caught there first
+    prefix = table.remove(words, 1)
     if #words == 0 then return end
   end
   
@@ -327,7 +311,8 @@ function findClass(words)
   end
   
   if prefix then
-    unit.prefix = prefix
+    table.insert(unit.mods, prefix)
+    unit.prefix = prefix.name
   end
   found = {unit, words}
   return unit, words
