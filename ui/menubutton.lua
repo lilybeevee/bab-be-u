@@ -32,6 +32,8 @@ function menu_button.new(text, id, func)
   local babspr
   if getTheme() == "halloween" then
     babspr = sprites["ghost"]
+  elseif getTheme() == "christmas" then
+    babspr = sprites["snoman"]
   else
     babspr = sprites["bab"]
   end

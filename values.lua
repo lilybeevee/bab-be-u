@@ -255,14 +255,14 @@ selector_grid_contents = {
     "boy","text_boy","wurm","text_wurm","madi","text_madi",0,0,0,0,0,0,0,0,"lila","text_lila","tot","text_tot",
     "steev","text_steev","ratt","text_ratt","badi","text_badi",0,0,0,0,0,0,0,0,"pata","text_pata","jill","text_jill",
     "han","text_han","iy","text_iy","lisp","text_lisp","paw","text_paw",0,0,0,0,0,0,"larry","text_larry","zsoob","text_zsoob",
-    "snoman","text_snoman","pingu","text_pingu","der","text_der",0,0,0,0,0,0,0,0,0,0,"o","text_o",
+    "snoman","text_snoman","pingu","text_pingu","der","text_der","ginn","text_ginn",0,0,0,0,0,0,0,0,"o","text_o",
     "kapa","text_kapa","urei","text_urei","ryugon","text_ryugon",0,0,0,0,0,0,0,0,0,0,"square","text_square",
     "os","text_os","hors","text_hors","mimi","text_mimi","err","text_err",0,0,0,0,0,0,0,0,"triangle","text_triangle",
   },
   -- page 5: inanimate objects
   {
     "wal","text_wal","bellt","text_bellt","hurcane","text_hurcane","buble","text_buble","katany","text_katany","petnygrame","text_petnygrame","firbolt","text_firbolt","hol","text_hol","golf","text_golf",
-    "til","text_til","arro","text_arro","clowd","text_clowd","sno","text_sno","gunne","text_gunne","scarr","text_scarr","litbolt","text_litbolt","rif","text_rif","paint","text_paint",
+    "til","text_til","arro","text_arro","clowd","text_clowd","snoflak","text_snoflak","gunne","text_gunne","scarr","text_scarr","litbolt","text_litbolt","rif","text_rif","paint","text_paint",
     "watr","text_watr","colld","text_colld","rein","text_rein","icecub","text_icecub","slippers","text_slippers","pudll","text_pudll","icbolt","text_icbolt","win","text_win","press","text_press",
     "laav","text_laav","dor","text_dor","kee","text_kee","roc","text_roc","hatt","text_hatt","extre","text_extre","poisbolt","text_poisbolt","smol","text_smol","pumkin","text_pumkin",
     "gras","text_gras","algay","text_algay","flog","text_flog","boux","text_boux","knif","text_knif","heg","text_heg","timbolt","text_timbolt","tor","text_tor","grav","text_grav",
@@ -291,8 +291,8 @@ selector_grid_contents = {
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    "bel","text_bel","wres","text_wres","bowie","text_bowie","sant","text_sant",0,0,0,0,0,0,0,0,0,0,0,0,
+    "sno","text_sno","bel","text_bel","wres","text_wres","bowie","text_bowie","sant","text_sant","canedy","text_canedy","bolble","text_bolble","now","text_now","cooky","text_cooky",
+    0,0,"pot","text_pot","sweep","text_sweep",0,0,"which","text_which",0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   },
   -- page 7: properties, verbs and conditions
@@ -857,7 +857,7 @@ tiles_list = {
     color = {2, 2},
     layer = 3,
     rotate = "true",
-    tags = {"fruit", "apple", "plants"},
+    tags = {"fruit", "apple", "plants", "food"},
     desc = "babs favorite snacc. not to be confused with OS appl",
   },
   --48
@@ -868,7 +868,7 @@ tiles_list = {
     texttype = {object = true},
     color = {2, 2},
     layer = 20,
-    tags = {"fruit", "apple", "plants"},
+    tags = {"fruit", "apple", "plants", "food"},
   },
   --49
   {
@@ -3789,7 +3789,7 @@ tiles_list = {
     type = "object",
     color = {4,1},
     layer = 5,
-    tags = {"portal", "cake"},
+    tags = {"portal", "cake", "food"},
     desc = "caek be lie",
   },
   -- 314 happy pi day, have some caek
@@ -3800,7 +3800,7 @@ tiles_list = {
     texttype = {object = true},
     color = {4,1},
     layer = 20,
-    tags = {"portal", "cake"},
+    tags = {"portal", "cake", "food"},
     desc = "LIE: If LIE BE SPLIT, LIE becomes LIE/8 on all open adjacent tiles.",
   },
   -- 315
@@ -3811,7 +3811,7 @@ tiles_list = {
     color = {4,2},
     rotate = true,
     layer = 4,
-    tags = {"portal", "cake","slice"},
+    tags = {"portal", "cake", "food", "slice"},
     desc = "idc if it's a lie, it tastes good",
   },
   -- 316
@@ -3822,7 +3822,7 @@ tiles_list = {
     texttype = {object = true},
     color = {4,2},
     layer = 20,
-    tags = {"portal", "cake","slice"},
+    tags = {"portal", "cake", "food", "slice"},
     desc = "LIE/8: If LIE/8 BE MOAR, LIE/8 becomes LIE.",
   },
   -- 317
@@ -4379,7 +4379,7 @@ tiles_list = {
     color = {0, 3},
     layer = 5,
     eye = {x=17, y=8, w=3, h=3},
-    tags = {"chars", "snowman"},
+    tags = {"chars", "snowman", "christmas"},
     desc = "do u wanna creat a snoman??",
   },
   -- 361
@@ -4390,27 +4390,27 @@ tiles_list = {
     texttype = {object = true},
     color = {0,3},
     layer = 20,
-    tags = {"chars", "snowman"},
+    tags = {"chars", "snowman", "christmas"},
   },
   -- 362
   {
-    name = "sno",
-    sprite = "sno",
+    name = "snoflak",
+    sprite = "snoflak",
     type = "object",
     color = {0,3},
     layer = 4,
-    tags = {"snowflake", "ice", "hail"},
+    tags = {"snowflake", "ice", "hail", "christmas"},
     desc = "no 2 r the same...\nor is it?",
   },
   -- 363
   {
-    name = "text_sno",
-    sprite = "text_sno",
+    name = "text_snoflak",
+    sprite = "text_snoflak",
     type = "text",
     texttype = {object = true},
     color = {0,3},
     layer = 20,
-    tags = {"snowflake", "ice", "hail"},
+    tags = {"snowflake", "ice", "hail", "christmas"},
   },
   -- 364
   {
@@ -5521,10 +5521,10 @@ tiles_list = {
     name = "karot",
     sprite = "karot",
     type = "object",
-    color = {2,2},
+    color = {2,3},
     layer = 4,
     rotate = true,
-    tags = {"carrot", "plants", "fruit"},
+    tags = {"carrot", "plants", "fruit", "food", "vegetable"},
     desc = "bunmy lüv this",
   },
   -- 472
@@ -5533,9 +5533,9 @@ tiles_list = {
     sprite = "text_karot",
     type = "text",
     texttype = {object = true},
-    color = {2,2},
+    color = {2,3},
     layer = 20,
-    tags = {"carrot", "plants", "fruit"},
+    tags = {"carrot", "plants", "fruit", "food", "vegetable"},
     desc = "is it a frut? is it a vege? i dont karot all!!!",
   },
   -- 473
@@ -6128,7 +6128,7 @@ tiles_list = {
     color = {6, 2},
     layer = 5,
     rotate = true,
-    tags = {"egg"},
+    tags = {"egg", "food"},
   },
   -- 523
   {
@@ -6138,7 +6138,7 @@ tiles_list = {
     texttype = {object = true},
     color = {6, 2},
     layer = 20,
-    tags = {"egg"},
+    tags = {"egg", "food"},
   },
   -- 524
   {
@@ -7403,11 +7403,11 @@ tiles_list = {
     name = "text_samepaint",
     sprite = "text_samepaint",
     type = "text",
-    texttype = {cond_compare = true},
+    texttype = {cond_compare = true, class_prefix = true},
     color = {4,2},
     layer = 20,
     tags = {"samecolor"},
-    desc = "SAMEPAINT (Compare Condition): True if the condition unit is the same color as the target.",
+    desc = "SAMEPAINT (Compare Condition): True if the condition unit is the same color as the target. Also, BAB BE SAMEPAINT KEEK will turn bab into a keek of the same color that bab was.",
   },
   -- 639
   {
@@ -7568,7 +7568,7 @@ tiles_list = {
     rotate = true,
     eye = {x=24, y=11, w=2, h=2},
     tags = {"chars", "reindeer", "moose", "christmas"},
-    desc = "stay away from kappa and ryugon!!",
+    desc = "rudolf w/ ur nos be BRITE, wont u guid my slay?",
   },
   -- 654
   {
@@ -7579,6 +7579,7 @@ tiles_list = {
     color = {6,1},
     layer = 20,
     tags = {"chars", "reindeer", "moose", "christmas"},
+    desc = "stay away from kappa and ryugon!!",
   },
   -- 655
   {
@@ -7589,6 +7590,7 @@ tiles_list = {
     colored = {true, false},
     layer = 8,
     tags = {"santa hat", "christmas"},
+    desc = "ho ho ho",
   },
   -- 656
   {
@@ -7620,6 +7622,204 @@ tiles_list = {
     color = {0,2},
     layer = 20,
     tags = {"oneway","mario","gate"},
+    desc = "el gato negro, michi michi",
+  },
+  -- 659
+  {
+    name = "canedy",
+    sprite = {"canedy_stripes", "canedy_base"},
+    type = "object",
+    color = {{2,2}, {0,3}},
+    colored = {true, false},
+    rotate = true,
+    layer = 4,
+    tags = {"candy cane", "christmas"},
+    desc = "no pun in canedied",
+  },
+  -- 660
+  {
+    name = "text_canedy",
+    sprite = "text_canedy",
+    type = "text",
+    texttype = {object = true},
+    color = {2, 2},
+    layer = 20,
+    tags = {"candy cane", "christmas"},
+  },
+  -- 661
+  {
+    name = "now",
+    sprite = {"now_box", "now_bow"},
+    type = "object",
+    color = {{2,2}, {2,4}},
+    colored = {true, false},
+    layer = 4,
+    tags = {"present", "gift", "box", "christmas"},
+    desc = "a gift for every bab supporteres!"
+  },
+  -- 662
+  {
+    name = "text_now",
+    sprite = "text_now",
+    type = "text",
+    texttype = {object = true},
+    color = {2, 2},
+    layer = 20,
+    tags = {"present", "gift", "box", "christmas"},
+    desc = "its now, or latr, no srsly",
+  },
+  -- 663
+  {
+    name = "bolble",
+    sprite = "bolble",
+    type = "object",
+    color = {2,2},
+    rotate = true,
+    layer = 4,
+    tags = {"bauble", "ball", "christmas"},
+    desc = "wil chang patern w/ colr",
+  },
+  -- 664
+  {
+    name = "text_bolble",
+    sprite = "text_bolble",
+    type = "text",
+    texttype = {object = true},
+    color = {2, 2},
+    layer = 20,
+    tags = {"bauble", "ball", "christmas"},
+  },
+  -- 665
+  {
+    name = "sno",
+    sprite = "sno",
+    type = "object",
+    color = {0, 3},
+    layer = 2,
+    tags = {"snow", "christmas"},
+    desc = "snodin",
+  },
+  -- 666
+  {
+    name = "text_sno",
+    sprite = "text_sno",
+    type = "text",
+    texttype = {object = true},
+    color = {0, 3},
+    layer = 20,
+    tags = {"snow", "christmas"},
+    desc = "sno easy bein grun",
+    satan = true,
+  },
+  -- 667
+  {
+    name = "cooky",
+    sprite = "cooky",
+    type = "object",
+    color = {6, 2},
+    layer = 4,
+    tags = {"cookie", "biscuit", "chocolate chip", "christmas", "food"},
+    desc = "clik clik clik",
+  },
+  -- 668
+  {
+    name = "text_cooky",
+    sprite = "text_cooky",
+    type = "text",
+    texttype = {object = true},
+    color = {6, 2},
+    layer = 20,
+    tags = {"cookie", "biscuit", "chocolate chip", "christmas", "food"},
+    desc = "very cooky"
+  },
+  -- 669
+  {
+    name = "ginn",
+    sprite = "ginn",
+    slep = true,
+    type = "object",
+    color = {6,2},
+    layer = 5,
+    rotate = true,
+    eye = {x=18, y=6, w=2, h=2},
+    tags = {"chars", "gingerbread man", "christmas", "cookie", "food"},
+    desc = "shes a girl!",
+    pronoun = "she/her",
+  },
+  -- 670
+  {
+    name = "text_ginn",
+    sprite = "text_ginn",
+    type = "text",
+    texttype = {object = true},
+    color = {6,2},
+    layer = 20,
+    tags = {"chars", "gingerbread man", "christmas", "cookie", "food"},
+  },
+  -- 671
+  {
+    name = "pot",
+    sprite = {"pot_drink", "pot_bottle"},
+    type = "object",
+    color = {{3,1}, {0,3}},
+    colored = {true, false},
+    layer = 4,
+    rotate = true,
+    tags = {"potion", "bottle", "halloween"},
+    desc = "+1 ATK"
+  },
+  -- 672
+  {
+    name = "text_pot",
+    sprite = "text_pot",
+    type = "text",
+    texttype = {object = true},
+    color = {0,3},
+    layer = 20,
+    tags = {"potion", "bottle", "halloween"},
+  },
+  -- 673
+  {
+    name = "sweep",
+    sprite = "sweep",
+    type = "object",
+    color = {6, 1},
+    layer = 4,
+    rotate = true,
+    tags = {"broomstick", "halloween", "witch"},
+    desc = "for the master sparkl users",
+  },
+  -- 674
+  {
+    name = "text_sweep",
+    sprite = "text_sweep",
+    type = "text",
+    texttype = {object = true},
+    color = {6, 1},
+    layer = 20,
+    tags = {"broomstick", "halloween", "witch"},
+  },
+  -- 675
+  {
+    name = "which",
+    sprite = {"which_that", "which_base"},
+    type = "object",
+    color = {{3,1}, {0,0}},
+    colored = {true, false},
+    layer = 8,
+    tags = {"witch hat", "halloween"},
+    desc = "mors tak the precious thing",
+  },
+  -- 676
+  {
+    name = "text_which",
+    sprite = "text_which",
+    type = "text",
+    texttype = {object = true},
+    color = {3,1},
+    layer = 20,
+    tags = {"witch hat", "halloween"},
+    desc = "which one? THAT one!",
   },
   -- 659
   {

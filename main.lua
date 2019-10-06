@@ -737,7 +737,7 @@ function love.draw()
     'current fps: '..love.timer.getFPS()..'\n'..
     'peak fps: '..peakfps..'\n'..
     'average fps: '..averagefps..'\n'..
-    '\npress R to restart\n'..
+    '\nF5 to restart LÖVE\n'..
     'F4 to toggle debug menu\n'..
     'F3+G to toggle rainbowmode\n'..
     'F3+Q for SUPER DUPER DEBUG MODE (wip)\n'..

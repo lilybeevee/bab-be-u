@@ -185,6 +185,8 @@ function scene.draw()
   local bgsprite 
   if getTheme() == "halloween" then
     bgsprite = sprites["ui/menu_background_halloween"]
+  elseif getTheme() == "christmas" then
+    bgsprite = sprites["ui/menu_background_christmas"]
   else
     bgsprite = sprites["ui/menu_background"]
   end

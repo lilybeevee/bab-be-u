@@ -1064,7 +1064,19 @@ function updateUnits(undoing, big_update)
       if tile ~= nil and not overriden then
         local others = getUnitsOnTile(creator.x, creator.y, createe, true, nil)
         if #others == 0 then
-          local new_unit = createUnit(tile, creator.x, creator.y, creator.dir, nil, nil, nil, rule.object.prefix)
+          local color = rule.object.prefix
+          if color == "samepaint" then
+            if creator.color_override then
+              color = colour_for_palette[creator.color_override[1]][creator.color_override[2]]
+            else
+              if type(color[1]) == "table" then
+                color = colour_for_palette[creator.color[1][1]][creator.color[1][2]]
+              else
+                color = colour_for_palette[creator.color[1]][creator.color[2]]
+              end
+            end
+          end
+          local new_unit = createUnit(tile, creator.x, creator.y, creator.dir, nil, nil, nil, color)
           addUndo({"create", new_unit.id, false})
         end
       elseif createe == "mous" then
@@ -1232,6 +1244,37 @@ function miscUpdates()
         end
       end
       
+      if unit.fullname == "bolble" then
+        if unit.color_override then
+          local color = colour_for_palette[unit.color_override[1]][unit.color_override[2]]
+          if color == "whit" then
+              unit.sprite = "bolble_snow"
+          elseif color == "bleu" then
+              unit.sprite = "bolble_waves"
+          elseif color == "cyeann" then
+              unit.sprite = "bolble_12"
+          elseif color == "purp" then
+              unit.sprite = "bolble_clock"
+          elseif color == "brwn" then
+              unit.sprite = "bolble_choco"
+          elseif color == "blacc" then
+              unit.sprite = "bolble_twirl"
+          elseif color == "graey" then
+              unit.sprite = "bolble_checker"
+          elseif color == "orang" then
+              unit.sprite = "bolble_dots"
+          elseif color == "pinc" then
+              unit.sprite = "bolble_hearts"
+          elseif color == "yello" then
+              unit.sprite = "bolble_stars"
+          elseif color == "grun" then
+              unit.sprite = "bolble_tree"
+          else
+              unit.sprite = "bolble"
+          end
+        end
+      end
+      
       if unit.fullname == "ches" then
         if hasProperty(unit,"ned kee") then
           unit.sprite = "chest_close"
@@ -1264,7 +1307,9 @@ function miscUpdates()
       
       -- here goes the legendary ditto transformations
       if unit.fullname == "ditto" then
-        if hasProperty(unit,"notranform") then
+        if hasProperty(unit,"dragbl") then
+            unit.sprite = "ditto_dragbl"
+        elseif hasProperty(unit,"notranform") then
             unit.sprite = "ditto_notranform"
         elseif hasRule(unit,"spoop","?") then
             unit.sprite = "ditto_spoop"
@@ -1274,6 +1319,8 @@ function miscUpdates()
             unit.sprite = "ditto_rong"
         elseif hasProperty(unit,"wurd") then
             unit.sprite = "ditto_wurd"
+        elseif hasProperty(unit,"no drag") then
+            unit.sprite = "ditto_no drag"
         elseif graphical_property_cache["slep"][unit] ~= nil then
             unit.sprite = "ditto_slep"
         elseif hasProperty(unit,"rithere") then
@@ -1399,7 +1446,7 @@ function miscUpdates()
         end
       end
       
-      if unit.fullname ~= "os" and unit.fullname ~= "boooo" and unit.fullname ~= "casete" and unit.fullname ~= "ches" and unit.fullname ~= "mimi" and unit.fullname ~= "ditto" and unit.fullname ~= "pumkin" then
+      if unit.fullname ~= "os" and unit.fullname ~= "boooo" and unit.fullname ~= "casete" and unit.fullname ~= "ches" and unit.fullname ~= "mimi" and unit.fullname ~= "ditto" and unit.fullname ~= "pumkin" and unit.fullname ~= "bolble" then
         if tile.slep and graphical_property_cache["slep"][unit] ~= nil then
           if type(tile.sprite) == "table" then
             for j,name in ipairs(tile.sprite) do
@@ -2150,7 +2197,19 @@ function dropGotUnit(unit, rule)
         local new_mouse = createMouse(unit.x, unit.y)
         addUndo({"create_cursor", new_mouse.id})
       else
-        local new_unit = createUnit(obj_id, unit.x, unit.y, unit.dir, false, nil, nil, rule.object.prefix)
+        local color = rule.object.prefix
+        if color == "samepaint" then
+          if unit.color_override then
+            color = colour_for_palette[unit.color_override[1]][unit.color_override[2]]
+          else
+            if type(color[1]) == "table" then
+              color = colour_for_palette[unit.color[1][1]][unit.color[1][2]]
+            else
+              color = colour_for_palette[unit.color[1]][unit.color[2]]
+            end
+          end
+        end
+        local new_unit = createUnit(obj_id, unit.x, unit.y, unit.dir, false, nil, nil, color)
         addUndo({"create", new_unit.id, false})
       end
     end
@@ -2508,7 +2567,19 @@ function convertUnits(pass)
             end
             if tile ~= nil then
               table.insert(del_cursors, cursor)
-              local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true, nil, nil, rule.object.prefix)
+              local color = rule.object.prefix
+              if color == "samepaint" then
+                if unit.color_override then
+                  color = colour_for_palette[unit.color_override[1]][unit.color_override[2]]
+                else
+                  if type(color[1]) == "table" then
+                    color = colour_for_palette[unit.color[1][1]][unit.color[1][2]]
+                  else
+                    color = colour_for_palette[unit.color[1]][unit.color[2]]
+                  end
+                end
+              end
+              local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true, nil, nil, color)
               if (new_unit ~= nil) then
                 addUndo({"create", new_unit.id, true, created_from_id = unit.id})
               end
@@ -2537,7 +2608,19 @@ function convertUnits(pass)
           if not unit.removed then
             table.insert(converted_units, unit)
           end
-          local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true, nil, nil, rule.object.prefix)
+          local color = rule.object.prefix
+          if color == "samepaint" then
+            if unit.color_override then
+              color = colour_for_palette[unit.color_override[1]][unit.color_override[2]]
+            else
+              if type(color[1]) == "table" then
+                color = colour_for_palette[unit.color[1][1]][unit.color[1][2]]
+              else
+                color = colour_for_palette[unit.color[1]][unit.color[2]]
+              end
+            end
+          end
+          local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true, nil, nil, color)
           if (new_unit ~= nil) then
             if rule.object.name == "lvl" and not new_unit.color_override then
               new_unit.color_override = unit.color_override or unit.color
@@ -2700,9 +2783,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
   end
   
   if prefix then
-    for _,pfix in ipairs(prefix) do
-      unit[pfix.name] = true
-    end
+    unit[prefix] = true
     updateUnitColourOverride(unit)
   end
   

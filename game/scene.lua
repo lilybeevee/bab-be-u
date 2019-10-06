@@ -1224,6 +1224,16 @@ function scene.draw(dt)
       end
     end
     
+    if unit.fullname == "kat" and unit.color_override and colour_for_palette[unit.color_override[1]][unit.color_override[2]] == "blacc" then
+      if graphical_property_cache["slep"][unit] ~= nil then
+        love.graphics.setColor(getPaletteColor(2,1))
+        love.graphics.draw(sprites["kat_eyes_slep"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      else
+        love.graphics.setColor(getPaletteColor(2,1))
+        love.graphics.draw(sprites["kat_eyes"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      end
+    end
+    
     if hasProperty(unit,"sans") and unit.eye and not hasProperty(unit,"slep") then
       local topleft = {x = fulldrawx - 16, y = fulldrawy - 16}
       love.graphics.setColor(getPaletteColor(1,4))
@@ -1232,10 +1242,30 @@ function scene.draw(dt)
         love.graphics.rectangle("fill", topleft.x + unit.eye.x + i, topleft.y + unit.eye.y - i, unit.eye.w - i, 1)
       end
     end
-
-    if hasRule(unit,"got","hatt") then
+    
+    if unit.fullname == "der" and (hasProperty(unit,"brite") or hasProperty(unit,"torc")) then
+      if graphical_property_cache["slep"][unit] ~= nil then
+        love.graphics.setColor(getPaletteColor(2,2))
+        love.graphics.draw(sprites["der_slep_nose"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      else
+        love.graphics.setColor(getPaletteColor(2,2))
+        love.graphics.draw(sprites["der_nose"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      end
+    end
+    
+    if hasRule(unit,"got","sant") then
+      love.graphics.setColor(getPaletteColor(2,2))
+      love.graphics.draw(sprites["sant_smol_base"], fulldrawx, fulldrawy - 0.5*TILE_SIZE, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      love.graphics.setColor(getPaletteColor(0,3))
+      love.graphics.draw(sprites["sant_smol_flof"], fulldrawx, fulldrawy - 0.5*TILE_SIZE, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+    elseif hasRule(unit,"got","hatt") then
       love.graphics.setColor(color[1], color[2], color[3], color[4])
       love.graphics.draw(sprites["hatsmol"], fulldrawx, fulldrawy - 0.5*TILE_SIZE, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+    end
+    
+    if hasRule(unit,"got","bowie") then
+      love.graphics.setColor(color[1], color[2], color[3], color[4])
+      love.graphics.draw(sprites["bowie_smol"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
     end
     if hasRule(unit,"got","katany") then
       love.graphics.setColor(getPaletteColor(0,1))
