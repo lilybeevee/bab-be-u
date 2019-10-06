@@ -292,7 +292,7 @@ selector_grid_contents = {
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    "sno","text_sno","bel","text_bel","wres","text_wres","bowie","text_bowie","sant","text_sant","canedy","text_canedy","bolble","text_bolble","now","text_now",0,0,0,0,
+    "sno","text_sno","bel","text_bel","wres","text_wres","bowie","text_bowie","sant","text_sant","canedy","text_canedy","bolble","text_bolble","now","text_now","cooky","text_cooky",0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   },
   -- page 7: properties, verbs and conditions
@@ -857,7 +857,7 @@ tiles_list = {
     color = {2, 2},
     layer = 3,
     rotate = "true",
-    tags = {"fruit", "apple", "plants"},
+    tags = {"fruit", "apple", "plants", "food"},
     desc = "babs favorite snacc. not to be confused with OS appl",
   },
   --48
@@ -868,7 +868,7 @@ tiles_list = {
     texttype = {object = true},
     color = {2, 2},
     layer = 20,
-    tags = {"fruit", "apple", "plants"},
+    tags = {"fruit", "apple", "plants", "food"},
   },
   --49
   {
@@ -3789,7 +3789,7 @@ tiles_list = {
     type = "object",
     color = {4,1},
     layer = 5,
-    tags = {"portal", "cake"},
+    tags = {"portal", "cake", "food"},
     desc = "caek be lie",
   },
   -- 314 happy pi day, have some caek
@@ -3800,7 +3800,7 @@ tiles_list = {
     texttype = {object = true},
     color = {4,1},
     layer = 20,
-    tags = {"portal", "cake"},
+    tags = {"portal", "cake", "food"},
     desc = "LIE: If LIE BE SPLIT, LIE becomes LIE/8 on all open adjacent tiles.",
   },
   -- 315
@@ -3811,7 +3811,7 @@ tiles_list = {
     color = {4,2},
     rotate = true,
     layer = 4,
-    tags = {"portal", "cake","slice"},
+    tags = {"portal", "cake", "food", "slice"},
     desc = "idc if it's a lie, it tastes good",
   },
   -- 316
@@ -3822,7 +3822,7 @@ tiles_list = {
     texttype = {object = true},
     color = {4,2},
     layer = 20,
-    tags = {"portal", "cake","slice"},
+    tags = {"portal", "cake", "food", "slice"},
     desc = "LIE/8: If LIE/8 BE MOAR, LIE/8 becomes LIE.",
   },
   -- 317
@@ -5521,10 +5521,10 @@ tiles_list = {
     name = "karot",
     sprite = "karot",
     type = "object",
-    color = {2,2},
+    color = {2,3},
     layer = 4,
     rotate = true,
-    tags = {"carrot", "plants", "fruit"},
+    tags = {"carrot", "plants", "fruit", "food", "vegetable"},
     desc = "bunmy lüv this",
   },
   -- 472
@@ -5533,9 +5533,9 @@ tiles_list = {
     sprite = "text_karot",
     type = "text",
     texttype = {object = true},
-    color = {2,2},
+    color = {2,3},
     layer = 20,
-    tags = {"carrot", "plants", "fruit"},
+    tags = {"carrot", "plants", "fruit", "food", "vegetable"},
     desc = "is it a frut? is it a vege? i dont karot all!!!",
   },
   -- 473
@@ -6128,7 +6128,7 @@ tiles_list = {
     color = {6, 2},
     layer = 5,
     rotate = true,
-    tags = {"egg"},
+    tags = {"egg", "food"},
   },
   -- 523
   {
@@ -6138,7 +6138,7 @@ tiles_list = {
     texttype = {object = true},
     color = {6, 2},
     layer = 20,
-    tags = {"egg"},
+    tags = {"egg", "food"},
   },
   -- 524
   {
@@ -7709,6 +7709,27 @@ tiles_list = {
     tags = {"snow", "christmas"},
     desc = "sno easy bein grun",
     satan = true,
+  },
+  -- 667
+  {
+    name = "cooky",
+    sprite = "cooky",
+    type = "object",
+    color = {6, 2},
+    layer = 4,
+    tags = {"cookie", "biscuit", "chocolate chip", "christmas", "food"},
+    desc = "clik clik clik",
+  },
+  -- 668
+  {
+    name = "text_cooky",
+    sprite = "text_cooky",
+    type = "text",
+    texttype = {object = true},
+    color = {6, 2},
+    layer = 20,
+    tags = {"cookie", "biscuit", "chocolate chip", "christmas", "food"},
+    desc = "very cooky"
   },
 }
 
