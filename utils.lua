@@ -632,7 +632,7 @@ function getUnitsWithEffect(effect)
       local mimic = ruleparent[2]
       local stuff = getUnitsOnTile(tx,ty)
       for _,unit in ipairs(stuff) do
-        if hasProperty(unit,effect) then
+        if hasProperty(unit,effect) and not hasRule(mimic,"ben't",effect) then
           table.insert(result,mimic)
           break
         end
@@ -693,6 +693,19 @@ function getUnitsWithEffectAndCount(effect)
         end
       end
     end
+    local therp = matchesRule(nil,"rp","the")
+    for _,ruleparent in ipairs(therp) do
+      local the = ruleparent[1].rule.object.unit
+      local tx = the.x+dirs8[the.dir][1]
+      local ty = the.y+dirs8[the.dir][2]
+      local mimic = ruleparent[2]
+      local stuff = getUnitsOnTile(tx,ty)
+      for _,unit in ipairs(stuff) do
+        if hasProperty(unit,effect) and not hasRule(mimic,"ben't",effect) then
+          result[mimic] = countProperty(unit,effect)
+        end
+      end
+    end
   end
   return result
 end
@@ -711,15 +724,25 @@ function getUnitsWithRuleAndCount(rule1, rule2, rule3)
     end
   end
   if rules_with["rp"] then
-    for _,unit in ipairs(result) do
+    for unit,count in pairs(result) do
       local isrp = matchesRule(nil,"rp",unit)
       for _,ruleparent in ipairs(isrp) do
         local mimic = ruleparent[2]
         if not mimic.removed and not hasRule(mimic,rule2.."n't",rule3) then
-          if result[mimic] == nil then
-            result[mimic] = 0
-          end
-          result[mimic] = result[mimic] + 1
+          result[mimic] = count
+        end
+      end
+    end
+    local therp = matchesRule(nil,"rp","the")
+    for _,ruleparent in ipairs(therp) do
+      local the = ruleparent[1].rule.object.unit
+      local tx = the.x+dirs8[the.dir][1]
+      local ty = the.y+dirs8[the.dir][2]
+      local mimic = ruleparent[2]
+      local stuff = getUnitsOnTile(tx,ty)
+      for _,unit in ipairs(stuff) do
+        if hasRule(unit,rule2,rule3) and not hasRule(mimic,rule2.."n't",rule3) then
+          result[mimic] = countProperty(unit,effect)
         end
       end
     end
