@@ -1224,6 +1224,16 @@ function scene.draw(dt)
       end
     end
     
+    if unit.fullname == "kat" and unit.color_override and colour_for_palette[unit.color_override[1]][unit.color_override[2]] == "blacc" then
+      if graphical_property_cache["slep"][unit] ~= nil then
+        love.graphics.setColor(getPaletteColor(2,1))
+        love.graphics.draw(sprites["kat_eyes_slep"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      else
+        love.graphics.setColor(getPaletteColor(2,1))
+        love.graphics.draw(sprites["kat_eyes"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      end
+    end
+    
     if hasProperty(unit,"sans") and unit.eye and not hasProperty(unit,"slep") then
       local topleft = {x = fulldrawx - 16, y = fulldrawy - 16}
       love.graphics.setColor(getPaletteColor(1,4))

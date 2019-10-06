@@ -7622,6 +7622,7 @@ tiles_list = {
     color = {0,2},
     layer = 20,
     tags = {"oneway","mario","gate"},
+    desc = "el gato negro, michi michi",
   },
   -- 659
   {
