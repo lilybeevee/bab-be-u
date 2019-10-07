@@ -252,8 +252,8 @@ selector_grid_contents = {
     "wog","text_wog","bog","text_bog","enbybog","text_enbybog","spoder","text_spoder",0,0,0,0,0,0,0,0,0,0,
     "kirb","text_kirb","ripof","text_ripof","cavebab","text_cavebab",0,0,0,0,0,0,0,0,0,0,0,0,
     "bup","text_bup","butflye","text_butflye","boooo","text_boooo",0,0,0,0,0,0,0,0,0,0,0,0,
-    "boy","text_boy","wurm","text_wurm","madi","text_madi",0,0,0,0,0,0,0,0,"lila","text_lila","tot","text_tot",
-    "steev","text_steev","ratt","text_ratt","badi","text_badi",0,0,0,0,0,0,0,0,"pata","text_pata","jill","text_jill",
+    "boy","text_boy","wurm","text_wurm","madi","text_madi","angle","text_angle",0,0,0,0,0,0,"lila","text_lila","tot","text_tot",
+    "steev","text_steev","ratt","text_ratt","badi","text_badi","debil","text_debil",0,0,0,0,0,0,"pata","text_pata","jill","text_jill",
     "han","text_han","iy","text_iy","lisp","text_lisp","paw","text_paw",0,0,0,0,0,0,"larry","text_larry","zsoob","text_zsoob",
     "snoman","text_snoman","pingu","text_pingu","der","text_der","ginn","text_ginn",0,0,0,0,0,0,0,0,"o","text_o",
     "kapa","text_kapa","urei","text_urei","ryugon","text_ryugon",0,0,0,0,0,0,0,0,0,0,"square","text_square",
@@ -7881,7 +7881,7 @@ tiles_list = {
     layer = 6,
     rotate = true,
     features = {
-        sans = {x=24, y=9, w=3, h=3},
+        sans = {x=24, y=9, w=2, h=2},
         sant = {x=1},
         hatt = {x=5},
         which = {x=5},
@@ -7902,6 +7902,60 @@ tiles_list = {
     layer = 20,
     tags = {"chars", "toby fox", "annoying dog"},
     desc = "The highly respectable Toby Fox himself,\nCreator of UNDERTALE and deltarune."
+  },
+  -- 690
+  {
+    name = "angle",
+    sprite = "angle",
+    slep = true,
+    color = {0, 3},
+    layer = 6,
+    rotate = true,
+    features = {
+        sans = {x=19, y=9, w=2, h=2},
+    },
+    tags = {"chars", "angel"},
+    desc = "i can be your angle...",
+    nice = true,
+  },
+  -- 691
+  {
+    name = "text_angle",
+    sprite = "text_angle",
+    type = "text",
+    texttype = {object = true},
+    color = {0, 3},
+    layer = 20,
+    tags = {"chars", "angel"},
+    desc = "she's 90 gradians... acute angle",
+    nice = true,
+  },
+  -- 692
+  {
+    name = "debil",
+    sprite = "debil",
+    slep = true,
+    color = {2, 2},
+    layer = 6,
+    rotate = true,
+    features = {
+        sans = {x=14, y=18, w=2, h=2},
+    },
+    tags = {"chars", "devil", "demon"},
+    desc = "or yuor debil...",
+    nice = true,
+  },
+  -- 693
+  {
+    name = "text_debil",
+    sprite = "text_debil",
+    type = "text",
+    texttype = {object = true},
+    color = {2, 2},
+    layer = 20,
+    tags = {"chars", "devil", "demon"},
+    desc = "[sic] em",
+    nice = true,
   },
 }
 
