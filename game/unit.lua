@@ -2750,7 +2750,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
   unit.rotate = data.rotate or false
   unit.got_objects = {}
   unit.sprite_transforms = data.sprite_transforms or {}
-  unit.eye = data.eye -- eye rectangle used for sans
+  unit.features = data.features or {}
   unit.is_portal = data.portal or false
   unit.rotatdir = unit.rotate and unit.dir or 1
   
