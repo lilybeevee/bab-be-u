@@ -385,18 +385,18 @@ w = w-h, h = h}):center():setGroup("settings")
   
   local twelfth = love.graphics.getWidth()/12
 
-  --metatext (lshift)
+  --metatext
   gooi.newButton({text = "", x = 9.25*twelfth, y = 0.25*twelfth, w = twelfth, h = twelfth, group = "mobile-controls-selector"}):setBGImage(sprites["text_meta"]):onPress(function()
-      scene.keyPressed("lshift")
-      scene.keyReleased("lshift")
+      scene.keyPressed("lalt")
+      scene.keyReleased("lalt")
   end):bg({0, 0, 0, 0})
-  --n'ttext (lshift)
+  --n'ttext
   gooi.newButton({text = "", x = 9.25*twelfth, y = 1.5*twelfth, w = twelfth, h = twelfth, group = "mobile-controls-selector"}):setBGImage(sprites["text_nt"]):onPress(function()
       scene.keyPressed("lctrl")
       scene.keyPressed("n")
       scene.keyReleased("lctrl")
   end):bg({0, 0, 0, 0})
-  --reload tab (rshift)
+  --reload tab
   gooi.newButton({text = "", x = 10.75*twelfth, y = 0.25*twelfth, w = twelfth, h = twelfth, group = "mobile-controls-selector"}):setBGImage(sprites["ui/reset"]):onPress(function()                                                               scene.keyPressed("rshift")                                 scene.keyReleased("rshift")                            end):bg({0, 0, 0, 0})
 
   gooi.setGroupVisible("mobile-controls-selector", false)
@@ -471,12 +471,12 @@ function scene.keyPressed(key)
 
   if selector_open then
     if key == "escape" or (key == "a" and (key_down["lctrl"] or key_down["rctrl"])) or (key == "backspace" and (key_down["lctrl"] or key_down["rctrl"])) then
-      if #searchstr == 0 then selector_open = false end
+      if #searchstr == 0 and key == "escape" then selector_open = false end
       searchstr = ""
     elseif key == "backspace" or  (key == "z" and (key_down["lctrl"] or key_down["rctrl"])) then
       searchstr = string.sub(searchstr, 1, #searchstr-1)
     elseif key == "return" then
-      if key_down["lshift"] or key_down["rshift"] then
+      if key_down["lalt"] or key_down["ralt"] then
         if tiles_by_name["text_"..subsearchstr] then
           brush.id = tiles_by_name["text_"..subsearchstr]
           brush.special = {}
@@ -574,13 +574,13 @@ function scene.keyPressed(key)
   end
   
   if not selector_open and not settings_open and not level_dialogue.enabled then
-    if key == "w" and not (key_down["lctrl"] or key_down["rctrl"]) then
+    if key == "w" and (key_down["lshift"] or key_down["rshift"]) then
       scene.translateLevel(0, -1)
-    elseif key == "a" and not (key_down["lctrl"] or key_down["rctrl"]) then
+    elseif key == "a" and (key_down["lshift"] or key_down["rshift"]) then
       scene.translateLevel(-1, 0)
-    elseif key == "s" and not (key_down["lctrl"] or key_down["rctrl"]) then
+    elseif key == "s" and (key_down["lshift"] or key_down["rshift"]) then
       scene.translateLevel(0, 1)
-    elseif key == "d" and not (key_down["lctrl"] or key_down["rctrl"]) then
+    elseif key == "d" and (key_down["lshift"] or key_down["rshift"]) then
       scene.translateLevel(1, 0)
     end
   end
@@ -618,7 +618,7 @@ function scene.keyPressed(key)
   end
   
   --create and display meta tiles 1 higher
-  if selector_open and #searchstr == 0 and (key == "lshift" or key == "m" and (key_down["lctrl"] or key_down["rctrl"])) then
+  if selector_open and #searchstr == 0 and (key == "lalt" or key == "m" and (key_down["lctrl"] or key_down["rctrl"])) then
     --copy so we don't override original list
     current_tile_grid = copyTable(current_tile_grid)
     for i = 0,tile_grid_width*tile_grid_height do
@@ -641,7 +641,7 @@ function scene.keyPressed(key)
     current_tile_grid = copyTable(current_tile_grid)
     --revert if we're already nt'd
     local already_nted = false
-    for i = 0,tile_grid_width*tile_grid_height do
+    for i = 0,tile_grid_width*tile_grid_height do   
       if (current_tile_grid[i] ~= nil and (current_tile_grid[i] % meta_offset) > nt_offset) then
         already_nted = true
         break
@@ -664,7 +664,7 @@ function scene.keyPressed(key)
     end
   end
   
-  if selector_open and #searchstr == 0 and key == "rshift" or key == "r" and (key_down["lctrl"] or key_down["rctrl"]) then
+  if selector_open and #searchstr == 0 and key == "ralt" or key == "r" and (key_down["lctrl"] or key_down["rctrl"]) or key == "escape" then
     current_tile_grid = tile_grid[selector_page]
   end
   
@@ -1601,8 +1601,8 @@ function scene.draw(dt)
       if infomode then love.graphics.print(last_hovered_tile[1] .. ', ' .. last_hovered_tile[2], 0, roomheight+36) end
       if not is_mobile then
         if not infomode then
-          love.graphics.printf("CTRL + TAB or CTRL + NUMBER to change tabs", 0, roomheight, roomwidth, "right")
-          love.graphics.printf("CTLR + M to get meta text, CTRL + R to refresh", 0, roomheight+12, roomwidth, "right")
+          love.graphics.printf("CTRL + TAB to change tabs", 0, roomheight, roomwidth, "right")
+          love.graphics.printf("LALT to get meta text, RALT to refresh", 0, roomheight+12, roomwidth, "right")
           love.graphics.printf("CTRL + N to toggle n't text", 0, roomheight+24, roomwidth, "right")
         end
         if #searchstr > 0 then
