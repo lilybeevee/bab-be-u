@@ -74,7 +74,7 @@ function doMovement(movex, movey, key)
     should_parse_rules = true
   end
   
-  if key == "beet" then
+  if key == "rythm" then
     doing_rhythm_turn = true
     local old_rhythm_queued_movement = rhythm_queued_movement
     rhythm_queued_movement = {0, 0, "wait"}

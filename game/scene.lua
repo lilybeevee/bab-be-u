@@ -259,7 +259,7 @@ function scene.update(dt)
   scene.doPassiveParticles(dt, "brite", "bonus", 0.25, 0.25, 1, {2, 4})
 	
   doReplay(dt)
-  if rules_with and rules_with["beet"] then
+  if rules_with and rules_with["rythm"] then
     doRhythm()
   end
 end
@@ -269,7 +269,7 @@ function doRhythm()
 	if love.timer.getTime() > (rhythm_time + rhythm_interval) then
     if not pause and not past_playback then
       rhythm_time = rhythm_time + rhythm_interval
-      doMovement(0, 0, "beet")
+      doMovement(0, 0, "rythm")
     end
 	end
 end

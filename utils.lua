@@ -2671,10 +2671,10 @@ function timecheck(unit,verb,prop)
     zw_pass = true
   end
   local rhythm_pass = false
-  if rules_with["beet"] then
-    if hasProperty(unit,"beet") then
+  if rules_with["rythm"] then
+    if hasProperty(unit,"rythm") then
       rhythm_pass = true
-    elseif hasProperty(outerlvl,"beet") and not hasRule(unit,"ben't","beet") then
+    elseif hasProperty(outerlvl,"rythm") and not hasRule(unit,"ben't","rythm") then
       rhythm_pass = true
     end
     rhythm_pass = rhythm_pass == doing_rhythm_turn -- xnor
