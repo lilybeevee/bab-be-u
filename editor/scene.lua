@@ -476,7 +476,7 @@ function scene.keyPressed(key)
     elseif key == "backspace" or  (key == "z" and (key_down["lctrl"] or key_down["rctrl"])) then
       searchstr = string.sub(searchstr, 1, #searchstr-1)
     elseif key == "return" then
-      if key_down["lalt"] or key_down["ralt"] then
+      if key_down["lalt"] or key_down["ralt"] or key_down["lshift"] or key_down["rshift"] then
         if tiles_by_name["text_"..subsearchstr] then
           brush.id = tiles_by_name["text_"..subsearchstr]
           brush.special = {}
@@ -506,8 +506,31 @@ function scene.keyPressed(key)
       end
     elseif (#key == 1 or key == "space") and not (key_down["lctrl"] or key_down["rctrl"] or key_down["f3"]) then
       if #searchstr > 15 then return end
-      if key == "space" then key = " " end
-      searchstr = searchstr..key
+      local letter = key
+      if key == "space" then 
+        letter = " "
+      elseif key == "6" and (key_down["lshift"] or key_down["rshift"]) then
+        letter = "^"
+      elseif key == "." and (key_down["lshift"] or key_down["rshift"]) then
+        letter = ">"
+      elseif key == "4" and (key_down["lshift"] or key_down["rshift"]) then
+        letter = "$"
+      elseif key == "7" and (key_down["lshift"] or key_down["rshift"]) then
+        letter = "&"
+      elseif key == ";" and (key_down["lshift"] or key_down["rshift"]) then
+        letter = ":"
+      elseif key == "9" and (key_down["lshift"] or key_down["rshift"]) then
+        letter = "("
+      elseif key == "0" and (key_down["lshift"] or key_down["rshift"]) then
+        letter = ")"
+      elseif key == "-" and (key_down["lshift"] or key_down["rshift"]) then
+        letter = "_"
+      elseif key == "'" and (key_down["lshift"] or key_down["rshift"]) then
+        letter = "\""
+      elseif key == "/" and (key_down["lshift"] or key_down["rshift"]) then
+        letter = "?"
+      end
+      searchstr = searchstr..letter
     end
     subsearchstr = searchstr:gsub(" ","")
   end
