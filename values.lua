@@ -7146,7 +7146,17 @@ tiles_list = {
     color = {0, 3},
     layer = 6,
     rotate = true,
-    features = { sans = {x=20, y=5, w=2, h=2} },
+    features = {
+      sans = {x=20, y=5, w=2, h=2},
+      which = {x = 2, y = -3},
+      sant = {x = 2, y = 2},
+      katany = {x = 10, y = -14},
+      knif = {x = 13, y = -12},
+      bowie = {x = 3, y = -6},
+      hatt = {x = 4, y = -3},
+      gunne = {x = 11, y = -10},
+      slippers = {x = 3}
+    },
     tags = {"chars", "bird", "untitled goose game"},
     desc = "a goos is a female swan",
   },

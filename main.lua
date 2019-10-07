@@ -382,7 +382,7 @@ bab arguments!
   ui.overlay.rebuild()
   print(colr.green("✓ ui initialized"))
 
-  if discordRPC and discordRPC ~= true then
+  if discordRPC and discordRPC ~= true and not cmdargs["no-rpc"] then
     discordRPC.initialize("579475239646396436", true) -- app belongs to thefox, contact him if you wish to make any changes
     print(colr.green("✓ discord rpc initialized"))
   end
