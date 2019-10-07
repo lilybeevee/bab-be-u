@@ -1293,6 +1293,7 @@ tiles_list = {
   {
     name = "han",
     sprite = "han",
+    slep = true,
     type = "object",
     color = {0, 3},
     layer = 7,
@@ -6987,6 +6988,7 @@ tiles_list = {
   {
     name = "sans",
     sprite = {"sans_base","sans_jacket"},
+    slep = true,
     color = {{0,3},{1,3}},
     colored = {false,true},
     layer = 5,
@@ -7102,6 +7104,7 @@ tiles_list = {
   {
     name = "copkat",
     sprite = {"copkat_base", "copkat_stuff", "copkat_badge"},
+    slep = true,
     color = {{0,3}, {1,3}, {2,4}},
     colored = {true, false, false},
     layer = 5,
