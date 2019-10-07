@@ -243,7 +243,7 @@ selector_grid_contents = {
   },
   -- page 4: characters and special objects
   {
-    "bab","text_bab","kat","text_kat","flof","text_flof","bunmy","text_bunmy",0,0,0,0,0,0,"selctr","text_selctr","lvl","text_lvl",
+    "bab","text_bab","kat","text_kat","flof","text_flof","bunmy","text_bunmy","toby","text_toby",0,0,0,0,"selctr","text_selctr","lvl","text_lvl",
     "keek","text_keek","creb","text_creb","shrim","text_shrim","moo","text_moo",0,0,0,0,0,0,"this","text_mous","lin","text_lin",
     "meem","text_meem","statoo","text_statoo","flamgo","text_flamgo","migri","text_migri",0,0,0,0,0,0,"text_text","text_frens","text_groop","text_pathz",
     "skul","text_skul","beeee","text_beeee","gul","text_gul","kva","text_kva",0,0,0,0,0,0,"text_lethers","text_every1","text_every2","text_every3",
@@ -7006,6 +7006,8 @@ tiles_list = {
     tometa = "text_''",
     features = {
       sans = {x=10, y=16, w=5, h=5},
+      which = {x=1, y=6, sprite = {"no1", "which_ditto"}},
+      sant = {y=4},
       gunne = {sprite = "gunne_ditto"},
     },
     tags = {"chars", "ditto", "pokemon"},
@@ -7182,7 +7184,7 @@ tiles_list = {
     color = {1, 3},
     layer = 20,
     tags = {"chars", "bird", "untitled goose game"},
-    desc = "a goos is a female swan",
+    desc = "unnamed swan thing: swan can GOT any object!!!",
   },
   -- 614
   {
@@ -7869,6 +7871,37 @@ tiles_list = {
     layer = 20,
     tags = {"mimic","roleplay"},
     desc = "RP: X RP Y gives X all of the properties of Y."
+  },
+  -- 678
+  {
+    name = "toby",
+    sprite = "toby",
+    slep = true,
+    color = {0, 3},
+    layer = 6,
+    rotate = true,
+    features = {
+        sans = {x=24, y=9, w=3, h=3},
+        sant = {x=1},
+        hatt = {x=5},
+        which = {x=5},
+        gunne = {x=5},
+        knif = {x=5},
+        katany = {x=5},
+    },
+    tags = {"chars", "toby fox", "annoying dog"},
+    desc = "absorps ur artefac",
+  },
+  -- 679
+  {
+    name = "text_toby",
+    sprite = "text_toby",
+    type = "text",
+    texttype = {object = true},
+    color = {0, 3},
+    layer = 20,
+    tags = {"chars", "toby fox", "annoying dog"},
+    desc = "The highly respectable Toby Fox himself,\nCreator of UNDERTALE and deltarune."
   },
 }
 

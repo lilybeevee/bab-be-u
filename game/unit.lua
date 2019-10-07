@@ -1311,6 +1311,8 @@ function miscUpdates()
             unit.sprite = "ditto_dragbl"
         elseif hasProperty(unit,"notranform") then
             unit.sprite = "ditto_notranform"
+        elseif hasRule(unit,"got","which") then
+            unit.sprite = "ditto_which"
         elseif hasRule(unit,"spoop","?") then
             unit.sprite = "ditto_spoop"
         elseif hasProperty(unit,"xwx") then
@@ -1355,6 +1357,8 @@ function miscUpdates()
             unit.sprite = "ditto_sing"
         elseif hasRule(unit,"paint","?") then
             unit.sprite = "ditto_paint"
+        elseif hasRule(unit,"got","sant") then
+            unit.sprite = "ditto_sant"
         elseif hasProperty(unit,"go") then
             unit.sprite = "ditto_go"
         elseif hasProperty(unit,"folo wal") then
