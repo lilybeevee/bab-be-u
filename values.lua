@@ -298,7 +298,7 @@ selector_grid_contents = {
   -- page 7: properties, verbs and conditions
   {
     "text_be","text_&","text_got","text_creat","text_snacc","text_spoop","text_copkat","text_moov","text_yeet","text_liek","text_haet","text_stalk","text_ignor","text_paint","text_vs","text_sing","text_soko","text_look at",
-    "text_u","text_u too","text_u tres","text_walk",0,"text_:)","text_no swim","text_ouch","text_protecc",0,"text_nxt","text_stay ther",0,"text_giv",0,"text_rp",0,"text_look away",
+    "text_u","text_u too","text_u tres","text_y'all","text_walk","text_:)","text_no swim","text_ouch","text_protecc",0,"text_nxt","text_stay ther",0,"text_giv",0,"text_rp",0,"text_look away",
     "text_go","text_goooo","text_icy","text_icyyyy",0,"text_:(","text_ned kee","text_for dor","text_wurd",0,"text_sublvl","text_loop",0,"text_frenles","text_timles","text_lit","text_corekt","text_rong",
     "text_no go","text_go away pls","text_come pls","text_sidekik","text_diagkik","text_:o","text_hotte","text_fridgd","text_txtify",0,"text_dragbl","text_no drag",0,"text_clikt","text_past","text_wun","text_an","text_mayb",
     "text_visit fren","text_slep","text_shy...","text_behin u",0,"text_xwx","text_moar","text_split","text_thingify",0,0,0,0,"text_wait...","text_samefloat","text_samepaint","text_sameface",0,
@@ -362,7 +362,7 @@ tiles_list = {
     texttype = {property = true},
     color = {4, 1},
     layer = 20,
-    tags = {"you","p1"},
+    tags = {"you","p1", "player"},
     desc = "U: Controlled by you, the player!",
   },
   -- 5
@@ -3020,8 +3020,8 @@ tiles_list = {
 	texttype = {property = true},
 	color = {4,1},
   layer = 20,
-  tags = {"you2", "p2", "u2"},
-	desc = "player 2 has joined the game",
+  tags = {"you2", "p2", "u2", "player"},
+	desc = "player 2 has joined the game (dpad)",
   },
   -- 239
   {
@@ -3031,8 +3031,8 @@ tiles_list = {
 	texttype = {property = true},
 	color = {4,1},
   layer = 20,
-  tags = {"you3", "p3", "u3"},
-	desc = "and player 3",
+  tags = {"you3", "p3", "u3", "player"},
+	desc = "and player 3 (ijkl or numpad)",
   },
   -- 240
   {
@@ -7960,6 +7960,17 @@ tiles_list = {
     tags = {"chars", "devil", "demon"},
     desc = "[sic] em",
     nice = true,
+  },
+  -- 694
+  {
+	name = "text_y'all",
+	sprite = "text_y'all",
+	type = "text",
+	texttype = {property = true},
+	color = {4,2},
+    layer = 20,
+    tags = {"you all", "players"},
+	desc = "all players control y'all",
   },
 }
 

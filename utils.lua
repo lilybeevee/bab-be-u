@@ -852,13 +852,14 @@ function countProperty(unit, prop, ignore_flye)
 end
 
 function hasU(unit)
-  return hasProperty(unit,"u") or hasProperty(unit,"u too") or hasProperty(unit,"u tres")
+  return hasProperty(unit,"u") or hasProperty(unit,"u too") or hasProperty(unit,"u tres") or hasProperty(unit,"y'all")
 end
 
 function getUs()
   local yous = getUnitsWithEffect("u")
   mergeTable(yous,getUnitsWithEffect("u too"))
   mergeTable(yous,getUnitsWithEffect("u tres"))
+  mergeTable(yous,getUnitsWithEffect("y'all"))
   return yous
 end
 
@@ -2657,7 +2658,7 @@ function timecheckUs(unit)
   if timecheck(unit) then
     return true
   else
-    local to_check = {"u","u too","u tres"}
+    local to_check = {"u","u too","u tres","y'all"}
     for _,prop in ipairs(to_check) do
       local rulecheck = matchesRule(unit,"be",prop)
       for _,ruleparent in ipairs(rulecheck) do

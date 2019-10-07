@@ -1437,6 +1437,8 @@ function miscUpdates()
             unit.sprite = "ditto_whoa"
         elseif hasProperty(unit,"no go") then
             unit.sprite = "ditto_no go"
+        elseif hasProperty(unit,"y'all") then
+            unit.sprite = "ditto_y'all"
         elseif hasProperty(unit,"u tres") then
             unit.sprite = "ditto_u tres"
         elseif hasProperty(unit,"u too") then

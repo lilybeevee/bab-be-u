@@ -2288,6 +2288,7 @@ function doOneMove(x, y, key, past)
       local yous = getUnitsWithEffect("u")
       mergeTable(yous, getUnitsWithEffect("u too"))
       mergeTable(yous, getUnitsWithEffect("u tres"))
+      mergeTable(yous, getUnitsWithEffect("y'all"))
       for _,unit in ipairs(yous) do
         table.insert(to_destroy, unit)
         addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
