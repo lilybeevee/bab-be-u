@@ -3950,7 +3950,16 @@ tiles_list = {
     color = {1,3},
     layer = 5,
     rotate = true,
-    features = { sans = {x=17, y=8, w=2, h=3} },
+    features = { 
+      sans = {x=17, y=8, w=2, h=3},
+      
+      which = {x=-2, y=-1},
+      hatt = {x=-1, y=-1},
+      sant = {x=-5},
+      
+      knif = {x=3,y=-3},
+      bowie = {x=-1,y=-5},
+    },
     tags = {"devs", "chars", "valhalla", "cynthia"},
     desc = "it time 2 mix drincc & chaeng life"
   },
