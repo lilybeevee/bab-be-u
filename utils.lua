@@ -12,6 +12,9 @@ function clear()
     replay_pause = false
     replay_string = ""
   end
+  rhythm_time = love.timer.getTime()
+  rhythm_interval = 1
+  rhythm_queued_movement = {0, 0, "wait"}
   new_units_cache = {}
   undoing = false
   successful_brite_cache = nil
@@ -2648,25 +2651,37 @@ function unsetNewUnits()
 end
 
 function timecheck(unit,verb,prop)
+  local zw_pass = false
   if timeless then
     if hasProperty(unit,"za warudo") then
-      return true
+      zw_pass = true
     elseif hasProperty(outerlvl,"za warudo") and not hasRule(unit,"ben't","za warudo") then
-      return true
+      zw_pass = true
     elseif verb and prop then
       local rulecheck = matchesRule(unit,verb,prop)
       for _,ruleparent in ipairs(rulecheck) do
         for i=1,#ruleparent.rule.subject.conds do
           if ruleparent.rule.subject.conds[i][1] == "timles" then
-            return true
+            zw_pass = true
           end
         end
       end
     end
   else
-    return true
+    zw_pass = true
   end
-  return false
+  local rhythm_pass = false
+  if rules_with["beet"] then
+    if hasProperty(unit,"beet") then
+      rhythm_pass = true
+    elseif hasProperty(outerlvl,"beet") and not hasRule(unit,"ben't","beet") then
+      rhythm_pass = true
+    end
+    rhythm_pass = rhythm_pass == doing_rhythm_turn -- xnor
+  else
+    rhythm_pass = true
+  end
+  return zw_pass and rhythm_pass
 end
 
 function timecheckUs(unit)

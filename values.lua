@@ -7974,6 +7974,17 @@ tiles_list = {
     tags = {"you all", "players"},
 	desc = "all players control y'all",
   },
+  -- 695
+  {
+    name = "text_rythm",
+    sprite = "text_rythm",
+    type = "text",
+    texttype = {property = true},
+    color = {4,1},
+    layer = 20,
+    tags = {"auto","necrodancer","lily", "rhythm", "rythm", "dancr"},
+	  desc = "RYTHM (property): Turns pass for these units based on time, separate from normal turns passing.",
+  },
 }
 
 tiles_by_name = {}

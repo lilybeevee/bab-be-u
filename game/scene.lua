@@ -65,6 +65,8 @@ local options = false
 pause = false
 selected_pause_button = 1
 
+doing_rhythm_turn = false
+
 function scene.load()
   sessionseed = math.random(0,100000000)/100000000
 
@@ -256,7 +258,20 @@ function scene.update(dt)
   scene.doPassiveParticles(dt, "undo", "bonus", 0.25, 0.25, 1, {6, 1})
   scene.doPassiveParticles(dt, "brite", "bonus", 0.25, 0.25, 1, {2, 4})
 	
-	doReplay(dt)
+  doReplay(dt)
+  if rules_with and rules_with["beet"] then
+    doRhythm()
+  end
+end
+
+function doRhythm()
+  if replay_playback then return false end
+	if love.timer.getTime() > (rhythm_time + rhythm_interval) then
+    if not pause and not past_playback then
+      rhythm_time = rhythm_time + rhythm_interval
+      doMovement(0, 0, "beet")
+    end
+	end
 end
 
 function doReplay(dt)
