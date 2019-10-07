@@ -1,7 +1,14 @@
 function moveBlock()
   --baba order: FOLLOW, BACK, TELE, SHIFT
-  --bab order: zip, look at, undo, visit fren, go, goooo, shy, spin, folo wal, turn cornr
-
+  --bab order: big, zip, look at, undo, visit fren, go, goooo, shy, spin, folo wal, turn cornr
+  
+  local isbig = getUnitsWithEffect("big")
+  for _,unit in ipairs(isbig) do
+    table.insert(unitsByTile(unit.x+1,unit.y),unit)
+    table.insert(unitsByTile(unit.x,unit.y+1),unit)
+    table.insert(unitsByTile(unit.x+1,unit.y+1),unit)
+  end
+  
   local iszip = getUnitsWithEffect("zip")
   for _,unit in ipairs(iszip) do
     doZip(unit)
@@ -136,7 +143,7 @@ function moveBlock()
   end
   --now do the actual teleports. we can use the index to know our own place in the list so we can skip ourselves
   for unit,amt in pairs(istele) do
-    local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
+    local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
     for _,on in ipairs(stuff) do
       --we're going to deliberately let two same name teles tele if they're on each other, since with the deterministic behaviour it's predictable and interesting
       if unit ~= on and sameFloat(unit, on) and timecheck(unit,"be","visitfren") --[[and unit.fullname ~= on.fullname]] then
@@ -357,7 +364,7 @@ function moveBlock()
   
   local isshift = getUnitsWithEffect("go")
   for _,unit in ipairs(isshift) do
-    local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
+    local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
     for _,on in ipairs(stuff) do
       if unit ~= on and sameFloat(unit, on) and timecheck(unit,"be","go") then
         addUndo({"update", on.id, on.x, on.y, on.dir})
@@ -369,7 +376,7 @@ function moveBlock()
   
   local isshift = getUnitsWithEffect("goooo")
   for _,unit in ipairs(isshift) do
-    local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
+    local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
     for _,on in ipairs(stuff) do
       if unit ~= on and sameFloat(unit, on) and timecheck(unit,"be","goooo") then
         addUndo({"update", on.id, on.x, on.y, on.dir})
@@ -384,8 +391,8 @@ function moveBlock()
     if not hasProperty("folo wal") and not hasProperty("turn cornr") then
       local dpos = dirs8[unit.dir]
       local dx, dy = dpos[1], dpos[2]
-      local stuff = getUnitsOnTile(unit.x+dx, unit.y+dy, nil, true)
-      local stuff2 = getUnitsOnTile(unit.x-dx, unit.y-dy, nil, true)
+      local stuff = getUnitsOnTile(unit.x+dx, unit.y+dy, nil, true, nil, nil, hasProperty(unit,"big"))
+      local stuff2 = getUnitsOnTile(unit.x-dx, unit.y-dy, nil, true, nil, nil, hasProperty(unit,"big"))
       local pushfront = false
       local pushbehin = false
       for _,on in ipairs(stuff) do
@@ -494,6 +501,10 @@ function updateUnits(undoing, big_update)
                 local ndir = dirs[i]
                 local dx = ndir[1]
                 local dy = ndir[2]
+                if hasProperty(unit,"big") then
+                  dx = dx*2
+                  dy = dy*2
+                end
                 if canMove(unit, dx, dy, i*2-1, false, false, unit.name) then
                   if unit.class == "unit" then
                     local new_unit = createUnit(tiles_by_name[unit.fullname], unit.x, unit.y, unit.dir)
@@ -515,6 +526,10 @@ function updateUnits(undoing, big_update)
                 local ndir = dirs8[i]
                 local dx = ndir[1]
                 local dy = ndir[2]
+                if hasProperty(unit,"big") then
+                  dx = dx*2
+                  dy = dy*2
+                end
                 if canMove(unit, dx, dy, i, false, false, unit.name) then
                   if unit.class == "unit" then
                     local new_unit = createUnit(tiles_by_name[unit.fullname], unit.x, unit.y, unit.dir)
@@ -552,7 +567,7 @@ function updateUnits(undoing, big_update)
     local fires = copyTable(findUnitsByName("xplod"))
     if #nukes > 0 then
       for _,nuke in ipairs(nukes) do
-        local check = getUnitsOnTile(nuke.x,nuke.y)
+        local check = getUnitsOnTile(nuke.x,nuke.y,nil,nil,nil,nil,hasProperty(nuek,"big"))
         local lit = false
         for _,other in ipairs(check) do
           if other.name == "xplod" then
@@ -563,6 +578,13 @@ function updateUnits(undoing, big_update)
           local new_unit = createUnit(tiles_by_name["xplod"], nuke.x, nuke.y, nuke.dir)
           new_unit.parent = nuke
           addUndo({"create", new_unit.id, false})
+          if hasProperty(nuke,"big") then
+            for i=1,3 do
+              local _new_unit = createUnit(tiles_by_name["xplod"], nuke.x+i%2, nuke.y+math.floor(i/2), nuke.dir)
+              _new_unit.parent = nuke
+              addUndo({"create", _new_unit.id, false})
+            end
+          end
           for _,other in ipairs(check) do
             if other ~= nuke then
               table.insert(to_destroy,other)
@@ -665,7 +687,7 @@ function updateUnits(undoing, big_update)
           splits_per_tile[coords] = 0
         end
         if splits_per_tile[coords] < 16 then
-          local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
+          local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
           for _,on in ipairs(stuff) do
             if splits_per_tile[coords] >= 16 then break end
             if unit ~= on and sameFloat(unit, on) and not on.new then
@@ -746,7 +768,7 @@ function updateUnits(undoing, big_update)
     local isvs = matchesRule(nil,"vs","?")
     for _,ruleparent in ipairs(isvs) do
       local unit = ruleparent[2]
-      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, true)
+      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, true, hasProperty(unit,"big"))
       for _,on in ipairs(stuff) do
         if unit ~= on and hasRule(unit, "vs", on) and sameFloat(unit, on) then
           local unitmoved = false
@@ -787,7 +809,7 @@ function updateUnits(undoing, big_update)
     
     local issink = getUnitsWithEffect("no swim")
     for _,unit in ipairs(issink) do
-      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
+      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
       for _,on in ipairs(stuff) do
         if unit ~= on and sameFloat(unit, on) then
           if timecheck(unit,"be","no swim") and timecheck(on) then
@@ -811,7 +833,7 @@ function updateUnits(undoing, big_update)
     
     local isweak = getUnitsWithEffect("ouch")
     for _,unit in ipairs(isweak) do
-      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
+      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
       for _,on in ipairs(stuff) do
         if unit ~= on and sameFloat(unit, on) then
           if timecheck(unit,"be","ouch") and timecheck(on) then
@@ -832,7 +854,7 @@ function updateUnits(undoing, big_update)
     
     local ishot = getUnitsWithEffect("hotte")
     for _,unit in ipairs(ishot) do
-      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
+      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
       for _,on in ipairs(stuff) do
         if hasProperty(on, "fridgd") and sameFloat(unit, on) then
           if timecheck(unit,"be","hotte") and timecheck(on,"be","fridgd") then
@@ -853,7 +875,7 @@ function updateUnits(undoing, big_update)
     
     local isdefeat = getUnitsWithEffect(":(")
     for _,unit in ipairs(isdefeat) do
-      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
+      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
       for _,on in ipairs(stuff) do
         if hasU(on) and sameFloat(unit, on) then
           if timecheck(unit,"be",":(") and (timecheckUs(on)) then
@@ -874,7 +896,7 @@ function updateUnits(undoing, big_update)
     
     local isshut = getUnitsWithEffect("ned kee")
     for _,unit in ipairs(isshut) do
-      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
+      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
       for _,on in ipairs(stuff) do
         if hasProperty(on, "for dor") and sameFloat(unit, on) then
           if timecheck(unit,"be","ned kee") and timecheck(on,"be","for dor") then
@@ -903,7 +925,7 @@ function updateUnits(undoing, big_update)
     local issnacc = matchesRule(nil, "snacc", "?")
     for _,ruleparent in ipairs(issnacc) do
       local unit = ruleparent[2]
-      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, true)
+      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, true, hasProperty(unit,"big"))
       for _,on in ipairs(stuff) do
         if unit ~= on and hasRule(unit, "snacc", on) and sameFloat(unit, on) then
           if timecheck(unit,"snacc",on) and timecheck(on) then
@@ -922,7 +944,7 @@ function updateUnits(undoing, big_update)
     
     local isreset = getUnitsWithEffect("try again")
     for _,unit in ipairs(isreset) do
-      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
+      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
       for _,on in ipairs(stuff) do
         if hasU(on) and sameFloat(unit, on) then
           if timecheck(unit,"be","try again") and (timecheckUs(on)) then
@@ -943,7 +965,7 @@ function updateUnits(undoing, big_update)
     for _,ruleparent in ipairs(iscrash) do
       local unit = ruleparent[2]
       if not hasProperty(ruleparent[1].rule.object,"slep") then
-        local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
+        local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
         for _,on in ipairs(stuff) do
           if hasU(on) and sameFloat(unit, on) then
             if timecheck(unit,"be","xwx") and (timecheckUs(on)) then
@@ -962,7 +984,7 @@ function updateUnits(undoing, big_update)
     
     local isbonus = getUnitsWithEffect(":o")
     for _,unit in ipairs(isbonus) do
-      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
+      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
       for _,on in ipairs(stuff) do
         if hasU(on) and sameFloat(unit, on) then
           writeSaveFile(level_name, "bonus", true)
@@ -983,7 +1005,7 @@ function updateUnits(undoing, big_update)
     
     local isunwin = getUnitsWithEffect(";d")
     for _,unit in ipairs(isunwin) do
-      local stuff = getUnitsOnTile(unit.x,unit.y, nil, true)
+      local stuff = getUnitsOnTile(unit.x,unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
       for _,on in ipairs(stuff) do
         if hasU(on) and sameFloat(unit, on) then
           if timecheck(unit,"be","d") and (timecheckUs(on)) then
@@ -999,7 +1021,7 @@ function updateUnits(undoing, big_update)
     
     local iswin = getUnitsWithEffect(":)")
     for _,unit in ipairs(iswin) do
-      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
+      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
       for _,on in ipairs(stuff) do
         if hasU(on) and sameFloat(unit, on) then
           if timecheck(unit,"be",":)") and (timecheckUs(on)) then
@@ -1024,7 +1046,7 @@ function updateUnits(undoing, big_update)
       local fail = false
       if #others > 0 then
         for _,other in ipairs(others) do
-          local ons = getUnitsOnTile(other.x,other.y,nil,nil,other)
+          local ons = getUnitsOnTile(other.x,other.y,nil,nil,other,nil,hasProperty(unit,"big"))
           local innersuccess = false
           for _,on in ipairs(ons) do
             if sameFloat(other,on) then
@@ -1042,7 +1064,7 @@ function updateUnits(undoing, big_update)
     end
     for unit,v in pairs(sokowins) do
       if v then
-        local stuff = getUnitsOnTile(unit.x,unit.y)
+        local stuff = getUnitsOnTile(unit.x,unit.y,nil,nil,nil,nil,hasProperty(unit,"big"))
         for _,on in ipairs(stuff) do
           if hasU(on) and sameFloat(unit,on) then
             wins = wins + 1
@@ -1066,7 +1088,7 @@ function updateUnits(undoing, big_update)
         overriden = hasRule(creator, "creatn't", "text")
       end
       if tile ~= nil and not overriden then
-        local others = getUnitsOnTile(creator.x, creator.y, createe, true, nil)
+        local others = getUnitsOnTile(creator.x, creator.y, createe, true, nil, nil, nil, hasProperty(unit,"big"))
         if #others == 0 then
           local color = rule.object.prefix
           if color == "samepaint" then
@@ -1570,7 +1592,7 @@ function updateUnitColours()
   local painting = matchesRule(nil, "paint", "?")
   for _,ruleparent in ipairs(painting) do
     local unit = ruleparent[2]
-    local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, true)
+    local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, true, hasProperty(unit,"big"))
     for _,on in ipairs(stuff) do
       if unit ~= on and hasRule(unit, "paint", on) and sameFloat(unit, on) then
         if timecheck(unit,"paint",on) and timecheck(on) then
@@ -1694,7 +1716,7 @@ function updatePortals()
     if unit.is_portal and hasProperty(unit, "poor toll") then
       local px, py, move_dir, dir = doPortal(unit, unit.x, unit.y, rotate8(unit.dir), rotate8(unit.dir), true)
       unit.portal.x, unit.portal.y = px, py
-      local portal_objects = getUnitsOnTile(px, py, nil, true)
+      local portal_objects = getUnitsOnTile(px, py, nil, true, nil, nil, hasProperty(unit,"big"))
       unit.portal.objects = portal_objects
       unit.portal.dir = rotate8(unit.dir) - dir
       local new_last_objs = copyTable(unit.portal.objects)
@@ -2904,6 +2926,11 @@ function deleteUnit(unit,convert,undoing,gone)
     removeFromTable(units_by_name[unit.fullname], unit)
   end
   removeFromTable(unitsByTile(unit.x, unit.y), unit)
+  if rules_with and hasProperty(unit,"big") then
+    removeFromTable(unitsByTile(unit.x+1,unit.y),unit)
+    removeFromTable(unitsByTile(unit.x,unit.y+1),unit)
+    removeFromTable(unitsByTile(unit.x+1,unit.y+1),unit)
+  end
   if not convert and not gone then
     removeFromTable(units_by_layer[unit.layer], unit)
   end
@@ -2979,6 +3006,11 @@ function moveUnit(unit,x,y,portal)
     empties_by_tile[dest_tileid] = unit
   else
     removeFromTable(unitsByTile(unit.x, unit.y), unit)
+    if rules_with and hasProperty(unit,"big") then
+      removeFromTable(unitsByTile(unit.x+1,unit.y),unit)
+      removeFromTable(unitsByTile(unit.x,unit.y+1),unit)
+      removeFromTable(unitsByTile(unit.x+1,unit.y+1),unit)
+    end
 
     -- putting portal check above same-position check to give portal effect through one-tile gap
     if portal and portal.is_portal and x - portal.x == dirs8[portal.dir][1] and y - portal.y == dirs8[portal.dir][2] then

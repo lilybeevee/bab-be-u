@@ -928,6 +928,10 @@ function scene.draw(dt)
 
     local fulldrawx = (drawx + 0.5)*TILE_SIZE
     local fulldrawy = (drawy + 0.5)*TILE_SIZE
+    if hasProperty(unit,"big") then
+      fulldrawx = fulldrawx + TILE_SIZE/2
+      fulldrawy = fulldrawy + TILE_SIZE/2
+    end
 
     if graphical_property_cache["flye"][unit] ~= nil or (unit.parent and graphical_property_cache["flye"][unit.parent] ~= nil) or unit.name == "o" or unit.name == "square" or unit.name == "triangle" then
       local flyenes = graphical_property_cache["flye"][unit] or (unit.parent and graphical_property_cache["flye"][unit.parent]) or 0
@@ -947,6 +951,9 @@ function scene.draw(dt)
 
     love.graphics.push()
     love.graphics.translate(fulldrawx, fulldrawy)
+    if hasProperty(unit,"big") then
+      love.graphics.scale(2)
+    end
 
     love.graphics.push()
     love.graphics.rotate(math.rad(rotation))
