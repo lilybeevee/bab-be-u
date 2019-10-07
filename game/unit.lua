@@ -4,9 +4,11 @@ function moveBlock()
   
   local isbig = getUnitsWithEffect("big")
   for _,unit in ipairs(isbig) do
-    table.insert(unitsByTile(unit.x+1,unit.y),unit)
-    table.insert(unitsByTile(unit.x,unit.y+1),unit)
-    table.insert(unitsByTile(unit.x+1,unit.y+1),unit)
+    for i=1,3 do
+      if not table.has_value(unitsByTile(unit.x+i%2,unit.y+math.floor(i/2)),unit) then
+        table.insert(unitsByTile(unit.x+i%2,unit.y+math.floor(i/2)),unit)
+      end
+    end
   end
   
   local iszip = getUnitsWithEffect("zip")
