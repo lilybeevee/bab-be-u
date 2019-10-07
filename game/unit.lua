@@ -481,6 +481,7 @@ function updateUnits(undoing, big_update)
     
     local give_me_moar = true
     local moar_repeats = 0
+    local moar_movers = {}
     while (give_me_moar) do
       give_me_moar = false
       local ismoar = getUnitsWithEffectAndCount("moar")
@@ -498,8 +499,7 @@ function updateUnits(undoing, big_update)
                     local new_unit = createUnit(tiles_by_name[unit.fullname], unit.x, unit.y, unit.dir)
                     addUndo({"create", new_unit.id, false})
                     _, __, ___, x, y = getNextTile(unit, dx, dy, i*2-1, false)
-                    moveUnit(new_unit,x,y)
-                    addUndo({"update", new_unit.id, unit.x, unit.y, unit.dir})
+                    table.insert(moar_movers,{unit = new_unit, x = x, y = y, ox = unit.x, oy = unit.y, dir = i*2-1})
                   elseif unit.class == "cursor" then
                     local others = getCursorsOnTile(unit.x + dx, unit.y + dy)
                     if #others == 0 then
@@ -520,8 +520,7 @@ function updateUnits(undoing, big_update)
                     local new_unit = createUnit(tiles_by_name[unit.fullname], unit.x, unit.y, unit.dir)
                     addUndo({"create", new_unit.id, false})
                     _, __, ___, x, y = getNextTile(unit, dx, dy, i, false)
-                    moveUnit(new_unit,x,y)
-                    addUndo({"update", new_unit.id, unit.x, unit.y, unit.dir})
+                    table.insert(moar_movers,{unit = new_unit, x = x, y = y, ox = unit.x, oy = unit.y, dir = i*2-1})
                   elseif unit.class == "cursor" then
                     local others = getCursorsOnTile(unit.x + dx, unit.y + dy)
                     if #others == 0 then
@@ -537,6 +536,11 @@ function updateUnits(undoing, big_update)
         end
       end
       moar_repeats = moar_repeats + 1
+    end
+    
+    for _,move in ipairs(moar_movers) do
+      moveUnit(move.unit,move.x,move.y)
+      addUndo({"update", move.unit.id, move.ox, move.oy, move.dir})
     end
     
     local to_destroy = {}
