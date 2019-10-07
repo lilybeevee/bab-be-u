@@ -2835,20 +2835,17 @@ function addRuleSimple(subject, verb, object, units, dir)
   -- print(subject, verb, object)
   addRule({
     rule = {
-      subject = {
-        name = subject.name or subject[1],
-        conds = subject.conds or subject[2],
-        unit = subject.unit or subject[3]
-      },
-      verb = {
-        name = verb.name or verb[1] or verb,
-        unit = verb.unit or verb[2]
-      },
-      object = {
-        name = object.name or object[1],
-        conds = object.conds or object[2],
-        unit = object.unit or object[3]
-      }
+      subject = getTableWithDefaults(copyTable(subject), {
+        name = subject[1],
+        conds = subject[2]
+      }),
+      verb = getTableWithDefaults(copyTable(verb), {
+        name = verb[1]
+      }),
+      object = getTableWithDefaults(copyTable(object), {
+        name = object[1],
+        conds = object[2]
+      })
     },
     units = units,
     dir = dir
@@ -3111,7 +3108,7 @@ function getTheme()
   return nil
 end
 
-function getTableOrDefault(o, default)
+function getTableWithDefaults(o, default)
   o = o or {}
   for k,v in pairs(default) do
     if not o[k] then o[k] = v end
