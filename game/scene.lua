@@ -1002,6 +1002,11 @@ function scene.draw(dt)
         love.graphics.draw(ntsprite, fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
         setColor(unit.color)
       end
+      if displayids then
+        setColor({1,4})
+        love.graphics.printf(tostring(unit.id), fulldrawx-3, fulldrawy-18, 32, "center")
+        setColor(unit.color)
+      end
     end
     
     --performance todos: each line gets drawn twice (both ways), so there's probably a way to stop that. might not be necessary though, since there is no lag so far

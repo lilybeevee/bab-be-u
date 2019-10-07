@@ -51,6 +51,8 @@ debug_values = {
 
 rainbowmode = false
 
+displayids = false
+
 if love.filesystem.getInfo("build_number") ~= nil then
   build_number = love.filesystem.read("build_number")
 else

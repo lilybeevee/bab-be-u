@@ -449,12 +449,12 @@ function love.keypressed(key,scancode,isrepeat)
     superduperdebugmode = not superduperdebugmode
   elseif key == "m" and love.keyboard.isDown('f3') then
     if not is_mobile then
-        winwidth, winheight = love.graphics.getDimensions( )
-        love.window.setMode(800, 480, {borderless=false, resizable=true, minwidth=705, minheight=510})
-        is_mobile = true
+      winwidth, winheight = love.graphics.getDimensions( )
+      love.window.setMode(800, 480, {borderless=false, resizable=true, minwidth=705, minheight=510})
+      is_mobile = true
     elseif is_mobile then
-        love.window.setMode(winwidth, winheight, {borderless=false, resizable=true, minwidth=705, minheight=510})
-        is_mobile = false
+      love.window.setMode(winwidth, winheight, {borderless=false, resizable=true, minwidth=705, minheight=510})
+      is_mobile = false
     end
   elseif key == "d" and love.keyboard.isDown('f3') then
     drumMode = not drumMode
@@ -464,6 +464,8 @@ function love.keypressed(key,scancode,isrepeat)
     infomode = not infomode
   elseif key == "l" and love.keyboard.isDown('f3') then
     debugEnabled = true
+  elseif key == "i" and love.keyboard.isDown('f3') then
+    displayids = not displayids
   elseif key == "f4" and not spookmode then
     debug_view = not debug_view
   elseif key == "f5" then

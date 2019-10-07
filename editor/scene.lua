@@ -1440,6 +1440,11 @@ function scene.draw(dt)
               love.graphics.draw(ntsprite, (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
               setColor(unit.color)
             end
+            if displayids then
+              setColor({1,4})
+              love.graphics.printf(tostring(unit.id), (unit.x + 0.5)*TILE_SIZE-3, (unit.y + 0.5)*TILE_SIZE-18, 32, "center")
+              setColor(unit.color)
+            end
           end
         end
       end
