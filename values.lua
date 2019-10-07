@@ -7262,10 +7262,11 @@ tiles_list = {
   {
     name = "err",
     sprite = "err",
+    slep = true,
     color = {0, 3},
     layer = 6,
     rotate = true,
-    features = { sans = {x=20, y=5, w=2, h=2} },
+    features = { sans = {x=23, y=9, w=4, h=4} },
     tags = {"chars", "error"},
     desc = "kinda spooky in bab tbh",
   },
