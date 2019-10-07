@@ -3110,3 +3110,11 @@ function getTheme()
   end
   return nil
 end
+
+function getTableOrDefault(o, default)
+  o = o or {}
+  for k,v in pairs(default) do
+    if not o[k] then o[k] = v end
+  end
+  return o
+end

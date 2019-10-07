@@ -1234,12 +1234,12 @@ function scene.draw(dt)
       end
     end
     
-    if hasProperty(unit,"sans") and unit.eye and not hasProperty(unit,"slep") then
+    if hasProperty(unit,"sans") and unit.features.sans and not hasProperty(unit,"slep") then
       local topleft = {x = fulldrawx - 16, y = fulldrawy - 16}
       love.graphics.setColor(getPaletteColor(1,4))
-      love.graphics.rectangle("fill", topleft.x + unit.eye.x, topleft.y + unit.eye.y, unit.eye.w, unit.eye.h)
-      for i = 1, unit.eye.w-1 do
-        love.graphics.rectangle("fill", topleft.x + unit.eye.x + i, topleft.y + unit.eye.y - i, unit.eye.w - i, 1)
+      love.graphics.rectangle("fill", topleft.x + unit.features.sans.x, topleft.y + unit.features.sans.y, unit.features.sans.w, unit.features.sans.h)
+      for i = 1, unit.features.sans.w-1 do
+        love.graphics.rectangle("fill", topleft.x + unit.features.sans.x + i, topleft.y + unit.features.sans.y - i, unit.features.sans.w - i, 1)
       end
     end
     
@@ -1254,44 +1254,47 @@ function scene.draw(dt)
     end
     
     if hasRule(unit,"got","which") then
+      local o = getTableOrDefault(unit.features.which, {x=0, y=0, sprite={"which_smol_base", "which_smol_that"}})
       love.graphics.setColor(getPaletteColor(0,0))
-      love.graphics.draw(sprites["which_smol_base"], fulldrawx, fulldrawy - 0.5*TILE_SIZE, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      love.graphics.draw(sprites[o.sprite[1]], fulldrawx + o.x, fulldrawy - 0.5*TILE_SIZE + o.y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
       love.graphics.setColor(color[1], color[2], color[3], color[4])
-      love.graphics.draw(sprites["which_smol_that"], fulldrawx, fulldrawy - 0.5*TILE_SIZE, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      love.graphics.draw(sprites[o.sprite[2]], fulldrawx + o.x, fulldrawy - 0.5*TILE_SIZE + o.y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
     elseif hasRule(unit,"got","sant") then
+      local o = getTableOrDefault(unit.features.sant, {x=0, y=0, sprite={"sant_smol_base", "sant_smol_flof"}})
       love.graphics.setColor(getPaletteColor(1,2))
-      love.graphics.draw(sprites["sant_smol_base"], fulldrawx, fulldrawy - 0.5*TILE_SIZE, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      love.graphics.draw(sprites[o.sprite[1]], fulldrawx + o.x, fulldrawy - 0.5*TILE_SIZE + o.y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
       love.graphics.setColor(getPaletteColor(0,3))
-      love.graphics.draw(sprites["sant_smol_flof"], fulldrawx, fulldrawy - 0.5*TILE_SIZE, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      love.graphics.draw(sprites[o.sprite[2]], fulldrawx + o.x, fulldrawy - 0.5*TILE_SIZE + o.y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
     elseif hasRule(unit,"got","hatt") then
+      local o = getTableOrDefault(unit.features.hatt, {x=0, y=0, sprite="hatsmol"})
       love.graphics.setColor(color[1], color[2], color[3], color[4])
-      love.graphics.draw(sprites["hatsmol"], fulldrawx, fulldrawy - 0.5*TILE_SIZE, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      love.graphics.draw(sprites[o.sprite], fulldrawx + o.x, fulldrawy - 0.5*TILE_SIZE + o.y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
     end
     
     if hasRule(unit,"got","bowie") then
+      local o = getTableOrDefault(unit.features.bowie, {x=0, y=0, sprite="bowie_smol"})
       love.graphics.setColor(color[1], color[2], color[3], color[4])
-      love.graphics.draw(sprites["bowie_smol"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      love.graphics.draw(sprites[o.sprite], fulldrawx + o.x, fulldrawy + o.y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
     end
     if hasRule(unit,"got","katany") then
+      local o = getTableOrDefault(unit.features.katany, {x=0, y=0, sprite="katanysmol"})
       love.graphics.setColor(getPaletteColor(0,1))
-      love.graphics.draw(sprites["katanysmol"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      love.graphics.draw(sprites[o.sprite], fulldrawx + o.x, fulldrawy + o.y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
     end
     if hasRule(unit,"got","knif") then
+      local o = getTableOrDefault(unit.features.knif, {x=0, y=0, sprite="knifsmol"})
       love.graphics.setColor(getPaletteColor(0,3))
-      love.graphics.draw(sprites["knifsmol"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      love.graphics.draw(sprites[o.sprite], fulldrawx + o.x, fulldrawy + o.y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
     end
     if hasRule(unit,"got","slippers") then
+      local o = getTableOrDefault(unit.features.slippers, {x=0, y=0, sprite="slippers"})
       love.graphics.setColor(getPaletteColor(1,4))
-      love.graphics.draw(sprites["slippers"], fulldrawx, fulldrawy+sprite:getHeight()/4, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      love.graphics.draw(sprites[o.sprite], fulldrawx + o.x, fulldrawy+sprite:getHeight()/4 + o.y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
     end
     if hasRule(unit,"got","gunne") then
-      if unit.fullname ~= "ditto" then
-        love.graphics.setColor(getPaletteColor(0,3))
-        love.graphics.draw(sprites["gunnesmol"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
-      else
-        love.graphics.setColor(getPaletteColor(0,3))
-        love.graphics.draw(sprites["gunne_ditto"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
-      end
+      local o = getTableOrDefault(unit.features.gunne, {x=0, y=0, sprite="gunnesmol"})
+      love.graphics.setColor(getPaletteColor(0,3))
+      love.graphics.draw(sprites[o.sprite], fulldrawx + o.x, fulldrawy + o.y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
     end
     
     if false then -- stupid lua comments
