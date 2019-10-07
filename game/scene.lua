@@ -1265,7 +1265,11 @@ function scene.draw(dt)
       local o = getTableOrDefault(unit.features.which, {x=0, y=0, sprite={"which_smol_base", "which_smol_that"}})
       love.graphics.setColor(getPaletteColor(0,0))
       love.graphics.draw(sprites[o.sprite[1]], fulldrawx + o.x, fulldrawy - 0.5*TILE_SIZE + o.y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
-      love.graphics.setColor(color[1], color[2], color[3], color[4])
+      if unit.color_override and colour_for_palette[unit.color_override[1]][unit.color_override[2]] == "blacc" then
+        love.graphics.setColor(getPaletteColor(3,1))
+      else
+        love.graphics.setColor(color[1], color[2], color[3], color[4])
+      end
       love.graphics.draw(sprites[o.sprite[2]], fulldrawx + o.x, fulldrawy - 0.5*TILE_SIZE + o.y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
     elseif hasRule(unit,"got","sant") then
       local o = getTableOrDefault(unit.features.sant, {x=0, y=0, sprite={"sant_smol_base", "sant_smol_flof"}})
