@@ -73,6 +73,16 @@ function doMovement(movex, movey, key)
   if (should_parse_rules_at_turn_boundary) then
     should_parse_rules = true
   end
+  
+  if key == "rythm" then
+    doing_rhythm_turn = true
+    local old_rhythm_queued_movement = rhythm_queued_movement
+    rhythm_queued_movement = {0, 0, "wait"}
+    movex, movey, key = unpack(old_rhythm_queued_movement or rhythm_queued_movement)
+  else
+    rhythm_queued_movement = {movex, movey, key}
+    doing_rhythm_turn = false
+  end
 
   if not doing_past_turns then
     extendReplayString(movex, movey, key)
@@ -300,7 +310,7 @@ function doMovement(movex, movey, key)
             if testConds(stalker, stalker_conds) then
               local found_target = nil
               for _,stalkee in ipairs(getUnitsOnTile(stalker.x, stalker.y, ruleparent.rule.object.name)) do -- is it standing on the target
-                if testConds(stalkee, stalkee_conds, stalker) and stalker.id ~= stalkee.id then
+                if testConds(stalkee, stalkee_conds, stalker) and stalker.id ~= stalkee.id and timecheck(stalker, stalkee) then
                   found_target = 0
                   break
                 end
@@ -333,7 +343,7 @@ function doMovement(movex, movey, key)
                         if success then
                           local stalkees = getUnitsOnTile(x, y, ruleparent.rule.object.name)
                           for _,stalkee in ipairs(stalkees) do
-                            if testConds(stalkee, stalkee_conds, stalker) and stalker.id ~= stalkee.id  then
+                            if testConds(stalkee, stalkee_conds, stalker) and stalker.id ~= stalkee.id and timecheck(stalker, stalkee) then
                               found_target = visited[x+1][y+1]
                               return
                             end
