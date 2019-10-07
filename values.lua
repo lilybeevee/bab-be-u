@@ -7106,8 +7106,12 @@ tiles_list = {
     rotate = true,
     features = { 
       sans = {x=26, y=11, w=3, h=3},
-      hatt = {x = 7},
       which = {x = 7},
+      sant = {y = 1},
+      knif = {x = 6, y = 2},
+      bowie = {x = 5, y = -3},
+      hatt = {x = 7},
+      gunne = {x = 2, y = 4},
     },
     tags = {"chars", "cat", "sis", "sister"},
     desc = "bab's sister"

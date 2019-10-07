@@ -1066,6 +1066,14 @@ function scene.draw(dt)
     --reset back to values being used before
     love.graphics.setLineWidth(2)
 
+    if hasRule(unit,"got","bowie") then
+      local ur, ug, ub, ua = love.graphics.getColor()
+      local o = getTableOrDefault(unit.features.bowie, {x=0, y=0, sprite="bowie_smol"})
+      love.graphics.setColor(getPaletteColor(2,2))
+      love.graphics.draw(sprites[o.sprite], fulldrawx + o.x, fulldrawy + o.y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      love.graphics.setColor(ur, ug, ub, ua)
+    end
+
     if not (unit.xwx or spookmode) and unit.name ~= "lin" and unit.name ~= "byc" and unit.name ~= "bac" and unit.fullname ~= "letter_custom" then -- xwx takes control of the drawing sprite, so it shouldn't render the normal object
       drawSprite()
     end
@@ -1261,7 +1269,7 @@ function scene.draw(dt)
       love.graphics.draw(sprites[o.sprite[2]], fulldrawx + o.x, fulldrawy - 0.5*TILE_SIZE + o.y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
     elseif hasRule(unit,"got","sant") then
       local o = getTableOrDefault(unit.features.sant, {x=0, y=0, sprite={"sant_smol_base", "sant_smol_flof"}})
-      love.graphics.setColor(getPaletteColor(1,2))
+      love.graphics.setColor(getPaletteColor(2,4))
       love.graphics.draw(sprites[o.sprite[1]], fulldrawx + o.x, fulldrawy - 0.5*TILE_SIZE + o.y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
       love.graphics.setColor(getPaletteColor(0,3))
       love.graphics.draw(sprites[o.sprite[2]], fulldrawx + o.x, fulldrawy - 0.5*TILE_SIZE + o.y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
@@ -1271,11 +1279,6 @@ function scene.draw(dt)
       love.graphics.draw(sprites[o.sprite], fulldrawx + o.x, fulldrawy - 0.5*TILE_SIZE + o.y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
     end
     
-    if hasRule(unit,"got","bowie") then
-      local o = getTableOrDefault(unit.features.bowie, {x=0, y=0, sprite="bowie_smol"})
-      love.graphics.setColor(color[1], color[2], color[3], color[4])
-      love.graphics.draw(sprites[o.sprite], fulldrawx + o.x, fulldrawy + o.y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
-    end
     if hasRule(unit,"got","katany") then
       local o = getTableOrDefault(unit.features.katany, {x=0, y=0, sprite="katanysmol"})
       love.graphics.setColor(getPaletteColor(0,1))
