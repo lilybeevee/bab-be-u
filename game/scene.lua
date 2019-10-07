@@ -1253,8 +1253,13 @@ function scene.draw(dt)
       end
     end
     
-    if hasRule(unit,"got","sant") then
-      love.graphics.setColor(getPaletteColor(2,2))
+    if hasRule(unit,"got","which") then
+      love.graphics.setColor(getPaletteColor(0,0))
+      love.graphics.draw(sprites["which_smol_base"], fulldrawx, fulldrawy - 0.5*TILE_SIZE, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      love.graphics.setColor(color[1], color[2], color[3], color[4])
+      love.graphics.draw(sprites["which_smol_that"], fulldrawx, fulldrawy - 0.5*TILE_SIZE, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+    elseif hasRule(unit,"got","sant") then
+      love.graphics.setColor(getPaletteColor(1,2))
       love.graphics.draw(sprites["sant_smol_base"], fulldrawx, fulldrawy - 0.5*TILE_SIZE, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
       love.graphics.setColor(getPaletteColor(0,3))
       love.graphics.draw(sprites["sant_smol_flof"], fulldrawx, fulldrawy - 0.5*TILE_SIZE, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
