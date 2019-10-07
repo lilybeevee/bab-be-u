@@ -1212,41 +1212,43 @@ function scene.draw(dt)
         love.graphics.stencil(holStencil2, "replace", 1, true)
         
         for _,peek in ipairs(unit.portal.objects) do
-          if not portaling[peek] then
-            love.graphics.setStencilTest("greater", 1)
-          else
-            love.graphics.setStencilTest("greater", 0)
-          end
-          
-          love.graphics.push()
-          love.graphics.translate(fulldrawx, fulldrawy)
-          love.graphics.rotate(-math.rad(rotation))
-          if portaling[peek] ~= unit then
-            love.graphics.rotate(math.rad(unit.portal.dir * 45))
-          end
-          love.graphics.translate(-fulldrawx, -fulldrawy)
-          
-          local x, y, rot = unit.draw.x, unit.draw.y, 0
-          if peek.name ~= "no1" then
-            if portaling[peek] ~= unit then
-              x, y = (peek.draw.x - peek.x) + (peek.x - unit.portal.x) + x, (peek.draw.y - peek.y) + (peek.y - unit.portal.y) + y
-              if peek.rotate then rot = peek.draw.rotation
-              else rot = -unit.portal.dir * 45 end
+          if not peek.stelth then
+            if not portaling[peek] then
+              love.graphics.setStencilTest("greater", 1)
             else
-              x, y = peek.draw.x, peek.draw.y
-              rot = peek.draw.rotation
+              love.graphics.setStencilTest("greater", 0)
             end
-          else
-            if peek.rotate then rot = (peek.dir - 1 + unit.portal.dir) * 45
-            else rot = -unit.portal.dir * 45 end
+            
+            love.graphics.push()
+            love.graphics.translate(fulldrawx, fulldrawy)
+            love.graphics.rotate(-math.rad(rotation))
+            if portaling[peek] ~= unit then
+              love.graphics.rotate(math.rad(unit.portal.dir * 45))
+            end
+            love.graphics.translate(-fulldrawx, -fulldrawy)
+            
+            local x, y, rot = unit.draw.x, unit.draw.y, 0
+            if peek.name ~= "no1" then
+              if portaling[peek] ~= unit then
+                x, y = (peek.draw.x - peek.x) + (peek.x - unit.portal.x) + x, (peek.draw.y - peek.y) + (peek.y - unit.portal.y) + y
+                if peek.rotate then rot = peek.draw.rotation
+                else rot = -unit.portal.dir * 45 end
+              else
+                x, y = peek.draw.x, peek.draw.y
+                rot = peek.draw.rotation
+              end
+            else
+              if peek.rotate then rot = (peek.dir - 1 + unit.portal.dir) * 45
+              else rot = -unit.portal.dir * 45 end
+            end
+            if portaling[peek] == unit and peek.draw.x == peek.x and peek.draw.y == peek.y then
+              portaling[peek] = nil
+            else
+              drawUnit(peek, x, y, rot, true)
+            end
+            
+            love.graphics.pop()
           end
-          if portaling[peek] == unit and peek.draw.x == peek.x and peek.draw.y == peek.y then
-            portaling[peek] = nil
-          else
-            drawUnit(peek, x, y, rot, true)
-          end
-          
-          love.graphics.pop()
         end
         
         love.graphics.setStencilTest()
