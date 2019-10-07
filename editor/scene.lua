@@ -505,7 +505,7 @@ function scene.keyPressed(key)
         end
       end
     elseif (#key == 1 or key == "space") and not (key_down["lctrl"] or key_down["rctrl"] or key_down["f3"]) then
-      if #searchstr > 15 then return end
+      if #searchstr > 50 then return end
       local letter = key
       if key == "space" then 
         letter = " "
