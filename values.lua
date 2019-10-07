@@ -1124,6 +1124,7 @@ tiles_list = {
   {
     name = "text_w/fren",
     sprite = "text_wfren",
+    metasprite = "text_wfren meta",
     type = "text",
     texttype = {cond_infix = true},
     color = {0, 3},
@@ -1746,6 +1747,7 @@ tiles_list = {
   {
     name = "text_wait...",
     sprite = "text_wait",
+    metasprite = "text_wait meta",
     type = "text",
     texttype = {cond_prefix = true},
     color = {0, 3},
@@ -1757,6 +1759,7 @@ tiles_list = {
   {
     name = "text_sans",
     sprite = "text_sans",
+    metasprite = "text_sans meta",
     sprite_transforms = {
       property = "text_sans_property"
     },
@@ -3855,6 +3858,7 @@ tiles_list = {
   {
     name = "text_clikt",
     sprite = "text_clikt",
+    metasprite = "text_clikt meta",
     type = "text",
     texttype = {cond_prefix = true},
     color = {3, 3},
