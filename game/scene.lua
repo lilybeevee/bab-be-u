@@ -800,12 +800,20 @@ function scene.draw(dt)
       end
     end
     if unit.fullname == "text_katany" then
-      if hasRule("steev","got","katany") or hasRule("kat","got","katany") then
+      if (hasRule("steev","got","katany") or hasRule("kat","got","katany")) and unit.active then
         unit.sprite = "text_katanya"
       else
         unit.sprite = "text_katany"
       end
     end
+    if unit.fullname == "text_now" then
+      if doing_past_turns then
+        unit.sprite = "text_latr"
+      else
+        unit.sprite = "text_now"
+      end
+    end
+
     
     if unit.rave then
       -- print("unit " .. unit.name .. " is rave")
