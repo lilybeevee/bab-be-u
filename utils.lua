@@ -1399,13 +1399,28 @@ function testConds(unit, conds, compare_with) --cond should be a {condtype,{obje
       --     end
       --   end
       -- end
-      if (lightcanvas == nil) then calculateLight() end
-      local pixelData = lightcanvas:newImageData(1, 1, unit.x*32+15, unit.y*32+15, 2, 2)
-      local r1 = pixelData:getPixel(0, 0)
-      local r2 = pixelData:getPixel(0, 1)
-      local r3 = pixelData:getPixel(1, 0)
-      local r4 = pixelData:getPixel(1, 1)
-      result = (r1+r2+r3+r4 >= 2)
+      if unit == outerlvl then
+        local lights = getUnitsWithEffect("brite")
+        mergeTable(lights,getUnitsWithEffect("torc"))
+        local lit = false
+        for _,light in ipairs(lights) do
+          if inBounds(light.x,light.y) and sameFloat(light,outerlvl) then
+            lit = true
+            break
+          end
+        end
+        result = lit
+      else
+        if inBounds(unit.x,unit.y) then
+          if (lightcanvas == nil) then calculateLight() end
+          local pixelData = lightcanvas:newImageData(1, 1, unit.x*32+15, unit.y*32+15, 2, 2)
+          local r1 = pixelData:getPixel(0, 0)
+          local r2 = pixelData:getPixel(0, 1)
+          local r3 = pixelData:getPixel(1, 0)
+          local r4 = pixelData:getPixel(1, 1)
+          result = (r1+r2+r3+r4 >= 2)
+        else result = false end
+      end
     elseif condtype == "corekt" then
       if not unit.blocked then
         result = unit.active
