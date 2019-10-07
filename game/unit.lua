@@ -2935,16 +2935,31 @@ function moveUnit(unit,x,y,portal)
   if (unit.type == "outerlvl") then
   elseif (unit.name == "mous") then
     --find out how far apart two tiles are in screen co-ordinates
-    local x0,y0 = gameTileToScreen(0,0);
-    local x1,y1 = gameTileToScreen(1,1);
-    local dx = x1-x0;
-    local dy = y1-y0;
-    local oldx = unit.x;
-    local oldy = unit.y;
+    local x0,y0 = gameTileToScreen(0,0)
+    local x1,y1 = gameTileToScreen(1,1)
+    local dx = x1-x0
+    local dy = y1-y0
+    local oldx = unit.x
+    local oldy = unit.y
+    local mx = dx*(x-oldx)
+    local my = dy*(y-oldy)
     unit.x = x
     unit.y = y
-    unit.screenx = unit.screenx + dx*(x-oldx);
-    unit.screeny = unit.screeny + dy*(y-oldy);
+    if unit.primary then
+      love.mouse.setPosition(unit.screenx + mx,unit.screeny + my)
+      --updating the real mouse position moves every mous, so to counter this we move every non-real mous in the opposite direction
+      for _,cursor in ipairs(cursors) do
+        if not cursor.primary then
+          cursor.x = cursor.x - (x-oldx)
+          cursor.y = cursor.y - (y-oldy)
+          cursor.screenx = cursor.screenx - mx
+          cursor.screeny = cursor.screeny - my
+        end
+      end
+    else
+      unit.screenx = unit.screenx + mx
+      unit.screeny = unit.screeny + my
+    end
   elseif (unit.fullname == "no1") and inBounds(x, y) then
     local tileid = unit.x + unit.y * mapwidth
     local oldx = unit.x
