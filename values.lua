@@ -1124,6 +1124,7 @@ tiles_list = {
   {
     name = "text_w/fren",
     sprite = "text_wfren",
+    metasprite = "text_wfren meta",
     type = "text",
     texttype = {cond_infix = true},
     color = {0, 3},
@@ -1746,6 +1747,7 @@ tiles_list = {
   {
     name = "text_wait...",
     sprite = "text_wait",
+    metasprite = "text_wait meta",
     type = "text",
     texttype = {cond_prefix = true},
     color = {0, 3},
@@ -1757,6 +1759,7 @@ tiles_list = {
   {
     name = "text_sans",
     sprite = "text_sans",
+    metasprite = "text_sans meta",
     sprite_transforms = {
       property = "text_sans_property"
     },
@@ -3421,7 +3424,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
     demeta = "ditto",
-    tags = {"ditto", "quotation marks"},
+    tags = {"ditto", "quotation marks", "\""},
     desc = "DITTO: Acts like the text above it. \" TXT will refer to the ditto itself, not the text above it.",
   },
   -- 279
@@ -3657,7 +3660,7 @@ tiles_list = {
     rotate = true,
     color = {1,3},
     layer = 20,
-    tags = {"here","cg5"},
+    tags = {"here","cg5", "her^", "her ->"},
     desc = "HER ->: Sends objects to where the text indicates. N'T HER makes objects HAET that tile.",
   },
   -- 304
@@ -3669,7 +3672,7 @@ tiles_list = {
     rotate = true,
     color = {3,2},
     layer = 20,
-    tags = {"there","cg5"},
+    tags = {"there","cg5", "thr^", "thr ->"},
     desc = "THR ->: Sends objects as far away from it as possible (until hitting a wall) in the indicated direction. N'T THR makes objects HAET a line from the text.",
   },
   -- 305
@@ -3681,7 +3684,7 @@ tiles_list = {
     rotate = true,
     color = {0,3},
     layer = 20,
-    tags = {"that","those","cg5"},
+    tags = {"that","those","cg5", "the^", "the ->"},
     desc = "THE: Refers to the object it's pointing at.",
   },
   -- 306
@@ -3855,6 +3858,7 @@ tiles_list = {
   {
     name = "text_clikt",
     sprite = "text_clikt",
+    metasprite = "text_clikt meta",
     type = "text",
     texttype = {cond_prefix = true},
     color = {3, 3},
