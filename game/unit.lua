@@ -3056,8 +3056,8 @@ function moveUnit(unit,x,y,portal)
       if unit.type == "text" or rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname] then
         should_parse_rules = true
       end
-      if (not unit_tests) then
-        if (unit.draw.x == x and unit.draw.y == y) then
+      if not unit_tests then
+        if not hasProperty(unit,"big") and unit.draw.x == x and unit.draw.y == y then
           --'bump' effect to show movement failed
           unit.draw.x = (unit.x+x*2)/3
           unit.draw.y = (unit.y+y*2)/3
