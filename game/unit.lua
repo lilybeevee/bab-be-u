@@ -1491,8 +1491,13 @@ function miscUpdates()
         end
       end
       
+      if unit.fullname == "die" and (first_turn or not (hasProperty(unit,"stukc") or hasProperty(unit,"no turn"))) then
+        local roll = math.random(6)
+        unit.sprite[2] = "die_"..roll
+      end
+      
       if unit.fullname ~= "os" and unit.fullname ~= "boooo" and unit.fullname ~= "casete" and unit.fullname ~= "ches" and unit.fullname ~= "mimi" and unit.fullname ~= "ditto" and unit.fullname ~= "pumkin" and unit.fullname ~= "bolble"
-        and unit.fullname ~= "bup" then
+        and unit.fullname ~= "bup" and unit.fullname ~= "die" then
         if tile.slep and graphical_property_cache["slep"][unit] ~= nil then
           if type(tile.sprite) == "table" then
             for j,name in ipairs(tile.sprite) do
