@@ -984,7 +984,7 @@ function applySwap(mover, dx, dy)
   --[[addUndo({"update", unit.id, unit.x, unit.y, unit.dir})]]--
   local swap_mover = hasProperty(mover, "behin u")
   local did_swap = false
-  for _,v in ipairs(getUnitsOnTile(mover.x+dx, mover.y+dy, nil, nil, nil, nil, hasProperty(unit,"big"))) do
+  for _,v in ipairs(getUnitsOnTile(mover.x+dx, mover.y+dy, nil, nil, nil, nil, hasProperty(mover,"big"))) do
   --if not v.already_moving then --this made some things move order dependent, so taking it out
     local swap_v = hasProperty(v, "behin u")
     --Don't swap with non-swap empty.
