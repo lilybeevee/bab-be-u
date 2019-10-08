@@ -1005,10 +1005,10 @@ tiles_list = {
   -- 61
   {
     name = "bup",
-    sprite = "bup",
-    slep = true,
+    sprite = {"bup","no1","no1","no1"},
+    color = {{6, 2},{2,4},{0,2},{0,3}},
+    colored = {true,false,false,false},
     type = "object",
-    color = {6, 2},
     layer = 5,
     rotate = true,
     features = { sans = {x=23, y=19, w=3, h=3} },

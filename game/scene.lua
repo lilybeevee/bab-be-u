@@ -561,7 +561,7 @@ function scene.keyPressed(key, isrepeat)
       displaywords = true
     end
     
-    if key == "y" and hasRule("swan","be","u") and units_by_name["swan"] then
+    if key == "y" and hasU("swan") and units_by_name["swan"] then
         playSound("honk"..love.math.random(1,6))
     end
 
@@ -2146,7 +2146,7 @@ function scene.checkInput()
           end
         end
         -- BUP
-        if hasRule("bup","be","u") and units_by_name["bup"] then
+        if hasU("bup") and units_by_name["bup"] then
             playSound("bup")
         end
       end
