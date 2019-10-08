@@ -3057,7 +3057,7 @@ function moveUnit(unit,x,y,portal)
         should_parse_rules = true
       end
       if not unit_tests then
-        if not hasProperty(unit,"big") and unit.draw.x == x and unit.draw.y == y then
+        if rules_with and not hasProperty(unit,"big") and unit.draw.x == x and unit.draw.y == y then
           --'bump' effect to show movement failed
           unit.draw.x = (unit.x+x*2)/3
           unit.draw.y = (unit.y+y*2)/3
@@ -3080,6 +3080,13 @@ function moveUnit(unit,x,y,portal)
     unit.y = y
     
     table.insert(unitsByTile(unit.x, unit.y), unit)
+    if rules_with and hasProperty(unit,"big") then
+      for i=1,3 do
+        if not table.has_value(unitsByTile(unit.x+i%2,unit.y+math.floor(i/2)),unit) then
+          table.insert(unitsByTile(unit.x+i%2,unit.y+math.floor(i/2)),unit)
+        end
+      end
+    end
   end
 
   do_move_sound = true
