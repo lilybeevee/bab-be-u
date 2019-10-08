@@ -475,6 +475,14 @@ function scene.keyPressed(key)
       searchstr = ""
     elseif key == "backspace" or  (key == "z" and (key_down["lctrl"] or key_down["rctrl"])) then
       searchstr = string.sub(searchstr, 1, #searchstr-1)
+    elseif key == "x" and (key_down["lctrl"] or key_down["rctrl"]) then
+       love.system.setClipboardText(searchstr)
+       searchstr = ""
+    elseif key == "c" and (key_down["lctrl"] or key_down["rctrl"]) then
+       love.system.setClipboardText(searchstr)
+    elseif key == "v" and (key_down["lctrl"] or key_down["rctrl"]) then
+      if #searchstr + #love.system.getClipboardText() > 50 then return end
+      searchstr = searchstr..love.system.getClipboardText()
     elseif key == "return" then
       if key_down["lalt"] or key_down["ralt"] or key_down["lshift"] or key_down["rshift"] then
         if tiles_by_name["text_"..subsearchstr] then
