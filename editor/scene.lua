@@ -509,26 +509,51 @@ function scene.keyPressed(key)
       local letter = key
       if key == "space" then 
         letter = " "
-      elseif key == "6" and (key_down["lshift"] or key_down["rshift"]) then
-        letter = "^"
-      elseif key == "." and (key_down["lshift"] or key_down["rshift"]) then
-        letter = ">"
-      elseif key == "4" and (key_down["lshift"] or key_down["rshift"]) then
-        letter = "$"
-      elseif key == "7" and (key_down["lshift"] or key_down["rshift"]) then
-        letter = "&"
-      elseif key == ";" and (key_down["lshift"] or key_down["rshift"]) then
-        letter = ":"
-      elseif key == "9" and (key_down["lshift"] or key_down["rshift"]) then
-        letter = "("
-      elseif key == "0" and (key_down["lshift"] or key_down["rshift"]) then
-        letter = ")"
-      elseif key == "-" and (key_down["lshift"] or key_down["rshift"]) then
-        letter = "_"
-      elseif key == "'" and (key_down["lshift"] or key_down["rshift"]) then
-        letter = "\""
-      elseif key == "/" and (key_down["lshift"] or key_down["rshift"]) then
-        letter = "?"
+      end
+      if key_down["lshift"] or key_down["rshift"] then
+        if key == "`" then
+            letter = "~"
+        elseif key == "1" then
+            letter = "!"
+        elseif key == "2" then
+            letter = "@"
+        elseif key == "3" then
+            letter = "#"
+        elseif key == "4" then
+            letter = "$"
+        elseif key == "5" then
+            letter = "%"
+        elseif key == "6" then
+            letter = "^"
+        elseif key == "7" then
+            letter = "&"
+        elseif key == "8" then
+            letter = "*"
+        elseif key == "9" then
+            letter = "("
+        elseif key == "0" then
+            letter = ")"
+        elseif key == "-" then
+            letter = "_"
+        elseif key == "=" then
+            letter = "+"
+        elseif key == "[" then
+            letter = "{"
+        elseif key == "]" then
+            letter = "}"
+        elseif key == "\\" then
+            letter = "|"
+        elseif key == ";" then
+            letter = ":"
+        elseif key == "'" then
+            letter = "\""
+        elseif key == "," then
+            letter = "<"
+        elseif key == "." then
+            letter = ">"
+        elseif key == "/" then
+            letter = "?"
+        end
       end
       searchstr = searchstr..letter
     end
@@ -545,7 +570,7 @@ function scene.keyPressed(key)
   key_down[key] = true
 
   if not settings_open and not selector_open then
-    if key == "up" or key == "left" or key == "down" or key == "right" or key == "w" or key == "a" or key == "s" or key == "d" then
+    if not (key_down["lshift"] or key_down["rshift"]) and (key == "up" or key == "left" or key == "down" or key == "right" or key == "w" or key == "a" or key == "s" or key == "d") then
       local dx, dy = 0, 0
       if key_down["up"] or key_down["w"] then dy = dy - 1 end
       if key_down["down"] or key_down["s"] then dy = dy + 1 end
@@ -597,14 +622,16 @@ function scene.keyPressed(key)
   end
   
   if not selector_open and not settings_open and not level_dialogue.enabled then
-    if key == "w" and (key_down["lshift"] or key_down["rshift"]) then
-      scene.translateLevel(0, -1)
-    elseif key == "a" and (key_down["lshift"] or key_down["rshift"]) then
-      scene.translateLevel(-1, 0)
-    elseif key == "s" and (key_down["lshift"] or key_down["rshift"]) then
-      scene.translateLevel(0, 1)
-    elseif key == "d" and (key_down["lshift"] or key_down["rshift"]) then
-      scene.translateLevel(1, 0)
+    if key_down["lshift"] or key_down["rshift"] then
+        if key == "w" then
+            scene.translateLevel(0, -1)
+        elseif key == "a" then
+            scene.translateLevel(-1, 0)
+        elseif key == "s" then
+            scene.translateLevel(0, 1)
+        elseif key == "d" then
+            scene.translateLevel(1, 0)
+        end
     end
   end
 
