@@ -1480,7 +1480,19 @@ function miscUpdates()
         end
       end
       
-      if unit.fullname ~= "os" and unit.fullname ~= "boooo" and unit.fullname ~= "casete" and unit.fullname ~= "ches" and unit.fullname ~= "mimi" and unit.fullname ~= "ditto" and unit.fullname ~= "pumkin" and unit.fullname ~= "bolble" then
+      if unit.fullname == "bup" then
+        if hasProperty(unit,"torc") then
+            unit.sprite = {"bup","bup_band","bup_capn","bup_light"}
+        else
+            unit.sprite = {"bup","no1","no1","no1"}
+        end
+        if graphical_property_cache["slep"][unit] ~= nil then
+            unit.sprite[1] = "bup_slep"
+        end
+      end
+      
+      if unit.fullname ~= "os" and unit.fullname ~= "boooo" and unit.fullname ~= "casete" and unit.fullname ~= "ches" and unit.fullname ~= "mimi" and unit.fullname ~= "ditto" and unit.fullname ~= "pumkin" and unit.fullname ~= "bolble"
+        and unit.fullname ~= "bup" then
         if tile.slep and graphical_property_cache["slep"][unit] ~= nil then
           if type(tile.sprite) == "table" then
             for j,name in ipairs(tile.sprite) do

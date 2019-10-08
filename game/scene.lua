@@ -170,7 +170,7 @@ function scene.buildUI()
   else
     scene.addOption("music_on", "music", {{"on", true}, {"off", false}})
     scene.addOption("sfx_on", "sound", {{"on", true}, {"off", false}})
-    scene.addOption("particles_on", "particles", {{"on", true}, {"off", false}})
+    scene.addOption("particles_on", "particle effects", {{"on", true}, {"off", false}})
     scene.addOption("grid_lines", "grid lines", {{"off", false}, {"on", true}})
     scene.addOption("mouse_lines", "mouse lines", {{"off", false}, {"on", true}})   
     scene.addOption("stopwatch_effect", "stopwatch effect", {{"on", true}, {"off", false}})
@@ -561,7 +561,7 @@ function scene.keyPressed(key, isrepeat)
       displaywords = true
     end
     
-    if key == "y" and hasRule("swan","be","u") and units_by_name["swan"] then
+    if key == "y" and hasU("swan") and units_by_name["swan"] then
         playSound("honk"..love.math.random(1,6))
     end
 
@@ -2146,7 +2146,7 @@ function scene.checkInput()
           end
         end
         -- BUP
-        if hasRule("bup","be","u") and units_by_name["bup"] then
+        if hasU("bup") and units_by_name["bup"] then
             playSound("bup")
         end
       end

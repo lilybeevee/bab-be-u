@@ -293,9 +293,9 @@ selector_grid_contents = {
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,"wan","text_wan","mug","text_mug",0,0,0,0,0,0,0,0,0,0,0,0,
     "sno","text_sno","bel","text_bel","wres","text_wres","bowie","text_bowie","sant","text_sant","canedy","text_canedy","bolble","text_bolble","now","text_now","cooky","text_cooky",
-    0,0,"pot","text_pot","sweep","text_sweep",0,0,"which","text_which",0,0,0,0,0,0,0,0,
+    0,0,"pot","text_pot","sweep","text_sweep","corndy","text_corndy","which","text_which",0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   },
   -- page 7: properties, verbs and conditions
@@ -1005,10 +1005,10 @@ tiles_list = {
   -- 61
   {
     name = "bup",
-    sprite = "bup",
-    slep = true,
+    sprite = {"bup","no1","no1","no1"},
+    color = {{6, 2},{2,4},{0,2},{0,3}},
+    colored = {true,false,false,false},
     type = "object",
-    color = {6, 2},
     layer = 5,
     rotate = true,
     features = { sans = {x=23, y=19, w=3, h=3} },
@@ -2353,6 +2353,7 @@ tiles_list = {
   {
     name = "boy",
     sprite = "boy",
+    slep = true,
     type = "object",
     color = {0, 2},
     layer = 5,
@@ -7680,7 +7681,7 @@ tiles_list = {
     colored = {true, false},
     rotate = true,
     layer = 4,
-    tags = {"candy cane", "christmas"},
+    tags = {"candy cane", "christmas", "food", "sweets"},
     desc = "no pun in canedied",
   },
   -- 660
@@ -7691,7 +7692,7 @@ tiles_list = {
     texttype = {object = true},
     color = {2, 2},
     layer = 20,
-    tags = {"candy cane", "christmas"},
+    tags = {"candy cane", "christmas", "food", "sweets"},
   },
   -- 661
   {
@@ -7765,7 +7766,7 @@ tiles_list = {
     type = "object",
     color = {6, 2},
     layer = 4,
-    tags = {"cookie", "biscuit", "chocolate chip", "christmas", "food"},
+    tags = {"cookie", "biscuit", "chocolate chip", "christmas", "food", "sweets"},
     desc = "clik clik clik",
   },
   -- 668
@@ -7776,7 +7777,7 @@ tiles_list = {
     texttype = {object = true},
     color = {6, 2},
     layer = 20,
-    tags = {"cookie", "biscuit", "chocolate chip", "christmas", "food"},
+    tags = {"cookie", "biscuit", "chocolate chip", "christmas", "food", "sweets"},
     desc = "very cooky"
   },
   -- 669
@@ -7995,6 +7996,76 @@ tiles_list = {
     layer = 20,
     tags = {"auto","necrodancer","lily", "rhythm", "rythm", "dancr"},
 	  desc = "RYTHM (property): Turns pass for these units based on time, separate from normal turns passing.",
+  },
+  -- 696
+  {
+    name = "wan",
+    sprite = {"wan_center", "wan_end"},
+    type = "object",
+    color = {{0,0}, {0,3}},
+    colored = {true, false},
+    rotate = true,
+    layer = 4,
+    tags = {"magician wand", "staff"},
+    desc = "wan and han gos han in han",
+    nicest = true,
+  },
+  -- 697
+  {
+    name = "text_wan",
+    sprite = "text_wan",
+    type = "text",
+    texttype = {object = true},
+    color = {0, 1},
+    layer = 20,
+    tags = {"magician wand", "staff",},
+  },
+  -- 698
+  {
+    name = "mug",
+    sprite = "mug",
+    slep = true,
+    color = {0, 3},
+    layer = 8,
+    rotate = true,
+    features = {
+        sans = {x=20, y=15, w=2, h=2},
+    },
+    tags = {"cup", "mug", "magician"},
+    desc = "mugman",
+  },
+  -- 699
+  {
+    name = "text_mug",
+    sprite = "text_mug",
+    type = "text",
+    texttype = {object = true},
+    color = {0, 3},
+    layer = 20,
+    tags = {"cup", "mug", "magician"},
+    nice = true,
+  },
+  -- 700
+  {
+    name = "corndy",
+    sprite = {"corndy_top", "corndy_center", "corndy_bottom"},
+    type = "object",
+    color = {{0,3}, {2,2}, {2,4}},
+    colored = {false, true, false},
+    rotate = true,
+    layer = 4,
+    tags = {"candy corn", "food", "sweets", "halloween"},
+    desc = "corndy and han gos han in han",
+  },
+  -- 701
+  {
+    name = "text_corndy",
+    sprite = "text_corndy",
+    type = "text",
+    texttype = {object = true},
+    color = {0, 1},
+    layer = 20,
+    tags = {"magician wand", "staff",},
   },
 }
 

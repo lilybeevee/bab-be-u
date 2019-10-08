@@ -256,6 +256,9 @@ bab arguments!
       sprites[n] = spr[i]
     end
   end
+  
+  sprites["letters_/"] = sprites["letters_slash"]
+  sprites["letters_:"] = sprites["letters_colon"]
 
   print(colr.green("✓ added sprites\n"))
 

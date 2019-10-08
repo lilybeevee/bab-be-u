@@ -110,7 +110,7 @@ function doMovement(movex, movey, key)
     return
   end
 
-  if movex == 0 and movey == 0 and units_by_name["swan"] and hasRule("swan","be","u") then
+  if movex == 0 and movey == 0 and units_by_name["swan"] and hasU("swan") then
     playSound("honk"..love.math.random(1,6))
   end
 
