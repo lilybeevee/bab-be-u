@@ -496,6 +496,16 @@ function scene.keyPressed(key, isrepeat)
           repeat_timers["undo"] = 0
       end
     end
+    
+   if rules_with and rules_with["rythm"] then
+        if key == "+" or key == "=" then
+            rhythm_interval = rhythm_interval * 0.8
+        elseif key == "-" or key == "_" then
+            rhythm_interval = rhythm_interval / 0.8
+        end
+    end
+    
+    print(rhythm_interval)
 
     for _,v in ipairs(repeat_keys) do
       if v == key then
