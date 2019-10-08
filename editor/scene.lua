@@ -470,10 +470,12 @@ function scene.keyPressed(key)
   end
 
   if selector_open then
-    if key == "escape" or (key == "a" and (key_down["lctrl"] or key_down["rctrl"])) or (key == "backspace" and (key_down["lctrl"] or key_down["rctrl"])) then
+    if key == "escape" or key == "a" and (key_down["lctrl"] or key_down["rctrl"]) then
       if #searchstr == 0 and key == "escape" then selector_open = false end
       searchstr = ""
-    elseif key == "backspace" or  (key == "z" and (key_down["lctrl"] or key_down["rctrl"])) then
+    elseif key == "backspace" and (key_down["lctrl"] or key_down["rctrl"]) then
+      searchstr = string.sub(searchstr, 1, #searchstr-5)
+    elseif key == "backspace" or (key == "z" and (key_down["lctrl"] or key_down["rctrl"])) then
       searchstr = string.sub(searchstr, 1, #searchstr-1)
     elseif key == "x" and (key_down["lctrl"] or key_down["rctrl"]) then
        love.system.setClipboardText(searchstr)
