@@ -545,12 +545,12 @@ function scene.keyPressed(key)
   key_down[key] = true
 
   if not settings_open and not selector_open then
-    if key == "up" or key == "left" or key == "down" or key == "right" then
+    if key == "up" or key == "left" or key == "down" or key == "right" or key == "w" or key == "a" or key == "s" or key == "d" then
       local dx, dy = 0, 0
-      if key_down["up"] then dy = dy - 1 end
-      if key_down["down"] then dy = dy + 1 end
-      if key_down["left"] then dx = dx - 1 end
-      if key_down["right"] then dx = dx + 1 end
+      if key_down["up"] or key_down["w"] then dy = dy - 1 end
+      if key_down["down"] or key_down["s"] then dy = dy + 1 end
+      if key_down["left"] or key_down["a"] then dx = dx - 1 end
+      if key_down["right"] or key_down["d"] then dx = dx + 1 end
       local dir
       if dx ~= 0 or dy ~= 0 then
         dir = dirs8_by_offset[dx][dy]

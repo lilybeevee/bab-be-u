@@ -2353,6 +2353,7 @@ tiles_list = {
   {
     name = "boy",
     sprite = "boy",
+    slep = true,
     type = "object",
     color = {0, 2},
     layer = 5,
