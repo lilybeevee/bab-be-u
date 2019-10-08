@@ -804,6 +804,7 @@ end
 function hasProperty(unit,prop)
   if not rules_with[prop] then return false end
   if hasRule(unit, "be", prop) then return true end
+  if type(unit) ~= "table" then return false end
   if not rules_with["giv"] then return false end
   if hasRule(unit, "ben't", prop) then return false end
   if unit == outerlvl then return false end
