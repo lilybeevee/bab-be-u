@@ -8071,7 +8071,7 @@ tiles_list = {
   {
     name = "die",
     sprite = {"die_cube","die_nil"},
-    color = {{0, 3},{2,1}},
+    color = {{0, 3},{2,2}},
     colored = {true, false},
     type = "object",
     rotate = true,
