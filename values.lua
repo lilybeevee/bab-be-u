@@ -27,6 +27,7 @@ local defaultsettings = {
   mouse_lines = false,
   stopwatch_effect = true,
   fullscreen = false,
+  focus_pause = false,
   level_compression = "zlib",
   draw_editor_lins = true,
   themes = true,

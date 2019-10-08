@@ -189,6 +189,7 @@ function scene.buildUI()
         fullscreen = false
       end
     end)
+    scene.addOption("focus_pause", "pause on defocus", {{"off", false}, {"on", true}})   
     scene.addButton("back", function() options = false; scene.buildUI() end)
   end
 
@@ -388,7 +389,7 @@ function scene.resetStuff(forTime)
   window_dir = 0
 	
 end
-
+    
 function scene.keyPressed(key, isrepeat)
   if isrepeat then
     return
@@ -2000,6 +2001,11 @@ function scene.checkInput()
   if replay_playback or past_playback then return end
   local start_time = love.timer.getTime()
   do_move_sound = false
+  
+  
+  if settings["focus_pause"] and not (love.window.hasFocus() or love.window.hasMouseFocus()) then
+    pause = true
+  end
   
   if not (key_down["w"] or key_down["a"] or key_down["s"] or key_down["d"]) then
       repeat_timers["wasd"] = nil

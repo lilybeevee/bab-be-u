@@ -85,6 +85,7 @@ function scene.buildUI()
         fullscreen = false
       end
     end)
+    scene.addOption("focus_pause", "pause on defocus", {{"off", false}, {"on", true}}) 
     scene.addOption("themes", "menu themes", {{"on", true}, {"off", false}})
     scene.addButton("back", function() options = false; scene.buildUI() end)
     ox, oy = love.graphics.getWidth() * (3/4) , buttons[1]:getHeight()+10
