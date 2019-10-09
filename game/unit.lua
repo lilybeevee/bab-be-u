@@ -1216,7 +1216,7 @@ end
 
 function miscUpdates()
   updateGraphicalPropertyCache()
-
+  
   if units_by_name["os"] then
     for i,unit in ipairs(units_by_name["os"]) do
       local os = love.system.getOS()
@@ -1496,8 +1496,20 @@ function miscUpdates()
         unit.sprite[2] = "die_"..roll
       end
       
-      if unit.fullname ~= "os" and unit.fullname ~= "boooo" and unit.fullname ~= "casete" and unit.fullname ~= "ches" and unit.fullname ~= "mimi" and unit.fullname ~= "ditto" and unit.fullname ~= "pumkin" and unit.fullname ~= "bolble"
-        and unit.fullname ~= "bup" and unit.fullname ~= "die" then
+      local specials = {
+        os = true,
+        boooo = true,
+        casete = true,
+        bolble = true,
+        ches = true,
+        mimi = true,
+        pumkin = true,
+        ditto = true,
+        bup = true,
+        die = true,
+      }
+      
+      if not specials[unit.fullname] then
         if tile.slep and graphical_property_cache["slep"][unit] ~= nil then
           if type(tile.sprite) == "table" then
             for j,name in ipairs(tile.sprite) do
