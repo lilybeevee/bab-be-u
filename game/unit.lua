@@ -1276,29 +1276,29 @@ function miscUpdates()
         if unit.color_override then
           local color = colour_for_palette[unit.color_override[1]][unit.color_override[2]]
           if color == "whit" then
-              unit.sprite = "bolble_snow"
+            unit.sprite = "bolble_snow"
           elseif color == "bleu" then
-              unit.sprite = "bolble_waves"
+            unit.sprite = "bolble_waves"
           elseif color == "cyeann" then
-              unit.sprite = "bolble_12"
+            unit.sprite = "bolble_12"
           elseif color == "purp" then
-              unit.sprite = "bolble_clock"
+            unit.sprite = "bolble_clock"
           elseif color == "brwn" then
-              unit.sprite = "bolble_choco"
+            unit.sprite = "bolble_choco"
           elseif color == "blacc" then
-              unit.sprite = "bolble_twirl"
+            unit.sprite = "bolble_twirl"
           elseif color == "graey" then
-              unit.sprite = "bolble_checker"
+            unit.sprite = "bolble_checker"
           elseif color == "orang" then
-              unit.sprite = "bolble_dots"
+            unit.sprite = "bolble_dots"
           elseif color == "pinc" then
-              unit.sprite = "bolble_hearts"
+            unit.sprite = "bolble_hearts"
           elseif color == "yello" then
-              unit.sprite = "bolble_stars"
+            unit.sprite = "bolble_stars"
           elseif color == "grun" then
-              unit.sprite = "bolble_tree"
+            unit.sprite = "bolble_tree"
           else
-              unit.sprite = "bolble"
+            unit.sprite = "bolble"
           end
         end
       end
@@ -1323,171 +1323,171 @@ function miscUpdates()
       
       if unit.fullname == "pumkin" then
         if hasProperty(unit,"sans") or hasProperty(unit,":(") or hasProperty(unit,"brite") or hasProperty(unit,"torc") or hasRule(unit,"spoop","?") then
-            if graphical_property_cache["slep"][unit] ~= nil then
-                unit.sprite = "pumkin_slep"
-            else
-                unit.sprite = "pumkin_jack"
-            end
+          if graphical_property_cache["slep"][unit] ~= nil then
+            unit.sprite = "pumkin_slep"
+          else
+            unit.sprite = "pumkin_jack"
+          end
         else
-            unit.sprite = "pumkin"
+          unit.sprite = "pumkin"
         end
       end
       
       -- here goes the legendary ditto transformations
       if unit.fullname == "ditto" then
         if hasProperty(unit,"dragbl") then
-            unit.sprite = "ditto_dragbl"
+          unit.sprite = "ditto_dragbl"
         elseif hasProperty(unit,"notranform") then
-            unit.sprite = "ditto_notranform"
+          unit.sprite = "ditto_notranform"
         elseif hasRule(unit,"got","which") then
-            unit.sprite = "ditto_which"
+          unit.sprite = "ditto_which"
         elseif hasRule(unit,"spoop","?") then
-            unit.sprite = "ditto_spoop"
+          unit.sprite = "ditto_spoop"
         elseif hasProperty(unit,"xwx") then
-            unit.sprite = "ditto_xwx"
+          unit.sprite = "ditto_xwx"
         elseif hasProperty(unit,"rong") then
-            unit.sprite = "ditto_rong"
+          unit.sprite = "ditto_rong"
         elseif hasProperty(unit,"wurd") then
-            unit.sprite = "ditto_wurd"
+          unit.sprite = "ditto_wurd"
         elseif hasProperty(unit,"no drag") then
-            unit.sprite = "ditto_no drag"
+          unit.sprite = "ditto_no drag"
         elseif graphical_property_cache["slep"][unit] ~= nil then
-            unit.sprite = "ditto_slep"
+          unit.sprite = "ditto_slep"
         elseif hasProperty(unit,"rithere") then
-            unit.sprite = "ditto_rithere"
+          unit.sprite = "ditto_rithere"
         elseif hasProperty(unit,"thr") then
-            unit.sprite = "ditto_thr"
+          unit.sprite = "ditto_thr"
         elseif hasProperty(unit,"stelth") then
-            unit.sprite = "ditto_stelth"
+          unit.sprite = "ditto_stelth"
         elseif hasProperty(unit,"sans") then
-            unit.sprite = "ditto_sans"
+          unit.sprite = "ditto_sans"
         elseif hasProperty(unit,"ouch") then
-            unit.sprite = "ditto_ouch"
+          unit.sprite = "ditto_ouch"
         elseif hasProperty(unit,"protecc") then
-            unit.sprite = "ditto_protecc"
+          unit.sprite = "ditto_protecc"
         elseif hasProperty(unit,"no undo") then
-            unit.sprite = "ditto_no undo"
+          unit.sprite = "ditto_no undo"
         -- Eeveelutions
         elseif hasProperty(unit,"qt") then
-            if hasProperty(unit,"icy") then
-                unit.sprite = "ditto_qt_icy"
-            elseif hasProperty(unit,"hopovr") then
-                unit.sprite = "ditto_qt_hopovr"
-            else
-                unit.sprite = "ditto_qt"
-            end
+          if hasProperty(unit,"icy") then
+            unit.sprite = "ditto_qt_icy"
+          elseif hasProperty(unit,"hopovr") then
+            unit.sprite = "ditto_qt_hopovr"
+          else
+            unit.sprite = "ditto_qt"
+          end
         elseif hasProperty(unit,"poor toll") then
-            unit.sprite = "ditto_poor toll"
+          unit.sprite = "ditto_poor toll"
         -- Rotom formes
         elseif hasProperty(unit,"zip") then
-            unit.sprite = "ditto_zip"
+          unit.sprite = "ditto_zip"
         elseif hasRule(unit,"sing","?") then
-            unit.sprite = "ditto_sing"
+          unit.sprite = "ditto_sing"
         elseif hasRule(unit,"paint","?") then
-            unit.sprite = "ditto_paint"
+          unit.sprite = "ditto_paint"
         elseif hasRule(unit,"got","sant") then
-            unit.sprite = "ditto_sant"
+          unit.sprite = "ditto_sant"
         elseif hasProperty(unit,"go") then
-            unit.sprite = "ditto_go"
+          unit.sprite = "ditto_go"
         elseif hasProperty(unit,"folo wal") then
-            unit.sprite = "ditto_folo wal"
+          unit.sprite = "ditto_folo wal"
         elseif hasProperty(unit,"tall") then
-            unit.sprite = "ditto_tall"
+          unit.sprite = "ditto_tall"
         elseif hasProperty(unit,"rave") then
-            unit.sprite = "ditto_rave"
+          unit.sprite = "ditto_rave"
         elseif hasProperty(unit,"colrful") then
-            unit.sprite = "ditto_colrful"
+          unit.sprite = "ditto_colrful"
         elseif hasProperty(unit,"torc") then
-            unit.sprite = "ditto_torc"
+          unit.sprite = "ditto_torc"
         elseif hasProperty(unit,"split") then
-            unit.sprite = "ditto_split"
+          unit.sprite = "ditto_split"
         elseif hasProperty(unit,"icyyyy") then
-            unit.sprite = "ditto_icyyyy"
+          unit.sprite = "ditto_icyyyy"
         elseif hasProperty(unit,"icy") then
-            unit.sprite = "ditto_icy"
+          unit.sprite = "ditto_icy"
         elseif hasProperty(unit,"hopovr") then
-            unit.sprite = "ditto_hopovr"
+          unit.sprite = "ditto_hopovr"
         elseif hasProperty(unit,"right") or hasProperty(unit,"downright") or hasProperty(unit,"down") or hasProperty(unit,"downleft") or hasProperty(unit,"left") or hasProperty(unit,"upleft") or hasProperty(unit,"up") or hasProperty(unit,"upright") then
-            unit.sprite = "ditto_direction"
+          unit.sprite = "ditto_direction"
         elseif hasProperty(unit,"nuek") then
-            unit.sprite = "ditto_nuek"
+          unit.sprite = "ditto_nuek"
         elseif hasProperty(unit,";d") then
-            unit.sprite = "ditto_;d"
+          unit.sprite = "ditto_;d"
         elseif hasProperty(unit,"knightstep") then
-            unit.sprite = "ditto_knightstep"
+          unit.sprite = "ditto_knightstep"
         elseif hasProperty(unit,"diagstep") then
-            unit.sprite = "ditto_diagstep"
+          unit.sprite = "ditto_diagstep"
         elseif hasProperty(unit,"sidestep") then
-            unit.sprite = "ditto_sidestep"
+          unit.sprite = "ditto_sidestep"
         elseif hasProperty(unit,"munwalk") then
-            unit.sprite = "ditto_munwalk"
+          unit.sprite = "ditto_munwalk"
         elseif hasProperty(unit,"visit fren") then
-            unit.sprite = "ditto_visit fren"
+          unit.sprite = "ditto_visit fren"
         elseif hasProperty(unit,"walk") then
-            unit.sprite = "ditto_walk"
+          unit.sprite = "ditto_walk"
         elseif hasProperty(unit,"no swim") then
-            unit.sprite = "ditto_no swim"
+          unit.sprite = "ditto_no swim"
         elseif hasProperty(unit,"haet flor") then
-            unit.sprite = "ditto_haet flor"
+          unit.sprite = "ditto_haet flor"
         elseif hasProperty(unit,"haet skye") then
-            unit.sprite = "ditto_haet skye"
+          unit.sprite = "ditto_haet skye"
         elseif hasRule(unit,"got","gunne") then
-            unit.sprite = "ditto_gunne"
+          unit.sprite = "ditto_gunne"
         elseif hasProperty(unit,"glued") then
-            unit.sprite = "ditto_glued"
+          unit.sprite = "ditto_glued"
         elseif hasProperty(unit,"flye") then
-            unit.sprite = "ditto_flye"
+          unit.sprite = "ditto_flye"
         elseif hasProperty(unit,"enby") then
-            unit.sprite = "ditto_enby"
+          unit.sprite = "ditto_enby"
         elseif hasProperty(unit,"tranz") then
-            unit.sprite = "ditto_tranz"
+          unit.sprite = "ditto_tranz"
         elseif hasProperty(unit,"come pls") then
-            unit.sprite = "ditto_come pls"
+          unit.sprite = "ditto_come pls"
         elseif hasProperty(unit,"go away pls") then
-            unit.sprite = "ditto_go away pls"
+          unit.sprite = "ditto_go away pls"
         elseif hasProperty(unit,"goooo") then
-            unit.sprite = "ditto_goooo"
+          unit.sprite = "ditto_goooo"
         elseif hasRule(unit,"snacc","?") then
-            unit.sprite = "ditto_snacc"
+          unit.sprite = "ditto_snacc"
         elseif hasProperty(unit,"moar") then
-            unit.sprite = "ditto_moar"
+          unit.sprite = "ditto_moar"
         elseif hasProperty(unit,"ned kee") then
-            unit.sprite = "ditto_ned kee"
+          unit.sprite = "ditto_ned kee"
         elseif hasProperty(unit,"for dor") then
-            unit.sprite = "ditto_fordor"
+          unit.sprite = "ditto_fordor"
         elseif hasProperty(unit,"hotte") then
-            unit.sprite = "ditto_hotte"
+          unit.sprite = "ditto_hotte"
         elseif hasProperty(unit,"fridgd") then
-            unit.sprite = "ditto_fridgd"
+          unit.sprite = "ditto_fridgd"
         elseif hasProperty(unit,":)") then
-            unit.sprite = "ditto_yay"
+          unit.sprite = "ditto_yay"
         elseif hasProperty(unit,":o") then
-            unit.sprite = "ditto_whoa"
+          unit.sprite = "ditto_whoa"
         elseif hasProperty(unit,"no go") then
-            unit.sprite = "ditto_no go"
+          unit.sprite = "ditto_no go"
         elseif hasProperty(unit,"y'all") then
-            unit.sprite = "ditto_y'all"
+          unit.sprite = "ditto_y'all"
         elseif hasProperty(unit,"u tres") then
-            unit.sprite = "ditto_u tres"
+          unit.sprite = "ditto_u tres"
         elseif hasProperty(unit,"u too") then
-            unit.sprite = "ditto_u too"
+          unit.sprite = "ditto_u too"
         elseif hasProperty(unit,"u") then
-            unit.sprite = "ditto_u"
+          unit.sprite = "ditto_u"
         elseif hasProperty(unit,"thingify") then
-            unit.sprite = "ditto_thingify"
+          unit.sprite = "ditto_thingify"
         else
-            unit.sprite = "ditto"
+          unit.sprite = "ditto"
         end
       end
       
       if unit.fullname == "bup" then
         if hasProperty(unit,"torc") then
-            unit.sprite = {"bup","bup_band","bup_capn","bup_light"}
+          unit.sprite = {"bup","bup_band","bup_capn","bup_light"}
         else
-            unit.sprite = {"bup","no1","no1","no1"}
+          unit.sprite = {"bup","no1","no1","no1"}
         end
         if graphical_property_cache["slep"][unit] ~= nil then
-            unit.sprite[1] = "bup_slep"
+          unit.sprite[1] = "bup_slep"
         end
       end
       
