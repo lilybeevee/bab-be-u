@@ -1,7 +1,16 @@
 function moveBlock()
   --baba order: FOLLOW, BACK, TELE, SHIFT
-  --bab order: zip, look at, undo, visit fren, go, goooo, shy, spin, folo wal, turn cornr
-
+  --bab order: big, zip, look at, undo, visit fren, go, goooo, shy, spin, folo wal, turn cornr
+  
+  local isbig = getUnitsWithEffect("big")
+  for _,unit in ipairs(isbig) do
+    for i=1,3 do
+      if not table.has_value(unitsByTile(unit.x+i%2,unit.y+math.floor(i/2)),unit) then
+        table.insert(unitsByTile(unit.x+i%2,unit.y+math.floor(i/2)),unit)
+      end
+    end
+  end
+  
   local iszip = getUnitsWithEffect("zip")
   for _,unit in ipairs(iszip) do
     doZip(unit)
@@ -136,7 +145,7 @@ function moveBlock()
   end
   --now do the actual teleports. we can use the index to know our own place in the list so we can skip ourselves
   for unit,amt in pairs(istele) do
-    local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
+    local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
     for _,on in ipairs(stuff) do
       --we're going to deliberately let two same name teles tele if they're on each other, since with the deterministic behaviour it's predictable and interesting
       if unit ~= on and sameFloat(unit, on) and timecheck(unit,"be","visitfren") --[[and unit.fullname ~= on.fullname]] then
@@ -357,7 +366,7 @@ function moveBlock()
   
   local isshift = getUnitsWithEffect("go")
   for _,unit in ipairs(isshift) do
-    local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
+    local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
     for _,on in ipairs(stuff) do
       if unit ~= on and sameFloat(unit, on) and timecheck(unit,"be","go") then
         addUndo({"update", on.id, on.x, on.y, on.dir})
@@ -369,7 +378,7 @@ function moveBlock()
   
   local isshift = getUnitsWithEffect("goooo")
   for _,unit in ipairs(isshift) do
-    local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
+    local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
     for _,on in ipairs(stuff) do
       if unit ~= on and sameFloat(unit, on) and timecheck(unit,"be","goooo") then
         addUndo({"update", on.id, on.x, on.y, on.dir})
@@ -384,8 +393,8 @@ function moveBlock()
     if not hasProperty("folo wal") and not hasProperty("turn cornr") then
       local dpos = dirs8[unit.dir]
       local dx, dy = dpos[1], dpos[2]
-      local stuff = getUnitsOnTile(unit.x+dx, unit.y+dy, nil, true)
-      local stuff2 = getUnitsOnTile(unit.x-dx, unit.y-dy, nil, true)
+      local stuff = getUnitsOnTile(unit.x+dx, unit.y+dy, nil, true, nil, nil, hasProperty(unit,"big"))
+      local stuff2 = getUnitsOnTile(unit.x-dx, unit.y-dy, nil, true, nil, nil, hasProperty(unit,"big"))
       local pushfront = false
       local pushbehin = false
       for _,on in ipairs(stuff) do
@@ -481,6 +490,7 @@ function updateUnits(undoing, big_update)
     
     local give_me_moar = true
     local moar_repeats = 0
+    local moar_movers = {}
     while (give_me_moar) do
       give_me_moar = false
       local ismoar = getUnitsWithEffectAndCount("moar")
@@ -493,13 +503,16 @@ function updateUnits(undoing, big_update)
                 local ndir = dirs[i]
                 local dx = ndir[1]
                 local dy = ndir[2]
+                if hasProperty(unit,"big") then
+                  dx = dx*2
+                  dy = dy*2
+                end
                 if canMove(unit, dx, dy, i*2-1, false, false, unit.name) then
                   if unit.class == "unit" then
                     local new_unit = createUnit(tiles_by_name[unit.fullname], unit.x, unit.y, unit.dir)
                     addUndo({"create", new_unit.id, false})
                     _, __, ___, x, y = getNextTile(unit, dx, dy, i*2-1, false)
-                    moveUnit(new_unit,x,y)
-                    addUndo({"update", new_unit.id, unit.x, unit.y, unit.dir})
+                    table.insert(moar_movers,{unit = new_unit, x = x, y = y, ox = unit.x, oy = unit.y, dir = i*2-1})
                   elseif unit.class == "cursor" then
                     local others = getCursorsOnTile(unit.x + dx, unit.y + dy)
                     if #others == 0 then
@@ -515,13 +528,16 @@ function updateUnits(undoing, big_update)
                 local ndir = dirs8[i]
                 local dx = ndir[1]
                 local dy = ndir[2]
+                if hasProperty(unit,"big") then
+                  dx = dx*2
+                  dy = dy*2
+                end
                 if canMove(unit, dx, dy, i, false, false, unit.name) then
                   if unit.class == "unit" then
                     local new_unit = createUnit(tiles_by_name[unit.fullname], unit.x, unit.y, unit.dir)
                     addUndo({"create", new_unit.id, false})
                     _, __, ___, x, y = getNextTile(unit, dx, dy, i, false)
-                    moveUnit(new_unit,x,y)
-                    addUndo({"update", new_unit.id, unit.x, unit.y, unit.dir})
+                    table.insert(moar_movers,{unit = new_unit, x = x, y = y, ox = unit.x, oy = unit.y, dir = i*2-1})
                   elseif unit.class == "cursor" then
                     local others = getCursorsOnTile(unit.x + dx, unit.y + dy)
                     if #others == 0 then
@@ -539,6 +555,11 @@ function updateUnits(undoing, big_update)
       moar_repeats = moar_repeats + 1
     end
     
+    for _,move in ipairs(moar_movers) do
+      moveUnit(move.unit,move.x,move.y)
+      addUndo({"update", move.unit.id, move.ox, move.oy, move.dir})
+    end
+    
     local to_destroy = {}
     if time_destroy == nil then
       time_destroy = {}
@@ -548,7 +569,7 @@ function updateUnits(undoing, big_update)
     local fires = copyTable(findUnitsByName("xplod"))
     if #nukes > 0 then
       for _,nuke in ipairs(nukes) do
-        local check = getUnitsOnTile(nuke.x,nuke.y)
+        local check = getUnitsOnTile(nuke.x,nuke.y,nil,nil,nil,nil,hasProperty(nuek,"big"))
         local lit = false
         for _,other in ipairs(check) do
           if other.name == "xplod" then
@@ -559,6 +580,13 @@ function updateUnits(undoing, big_update)
           local new_unit = createUnit(tiles_by_name["xplod"], nuke.x, nuke.y, nuke.dir)
           new_unit.parent = nuke
           addUndo({"create", new_unit.id, false})
+          if hasProperty(nuke,"big") then
+            for i=1,3 do
+              local _new_unit = createUnit(tiles_by_name["xplod"], nuke.x+i%2, nuke.y+math.floor(i/2), nuke.dir)
+              _new_unit.parent = nuke
+              addUndo({"create", _new_unit.id, false})
+            end
+          end
           for _,other in ipairs(check) do
             if other ~= nuke then
               table.insert(to_destroy,other)
@@ -661,7 +689,7 @@ function updateUnits(undoing, big_update)
           splits_per_tile[coords] = 0
         end
         if splits_per_tile[coords] < 16 then
-          local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
+          local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
           for _,on in ipairs(stuff) do
             if splits_per_tile[coords] >= 16 then break end
             if unit ~= on and sameFloat(unit, on) and not on.new then
@@ -742,7 +770,7 @@ function updateUnits(undoing, big_update)
     local isvs = matchesRule(nil,"vs","?")
     for _,ruleparent in ipairs(isvs) do
       local unit = ruleparent[2]
-      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, true)
+      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, true, hasProperty(unit,"big"))
       for _,on in ipairs(stuff) do
         if unit ~= on and hasRule(unit, "vs", on) and sameFloat(unit, on) then
           local unitmoved = false
@@ -783,7 +811,7 @@ function updateUnits(undoing, big_update)
     
     local issink = getUnitsWithEffect("no swim")
     for _,unit in ipairs(issink) do
-      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
+      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
       for _,on in ipairs(stuff) do
         if unit ~= on and sameFloat(unit, on) then
           if timecheck(unit,"be","no swim") and timecheck(on) then
@@ -807,7 +835,7 @@ function updateUnits(undoing, big_update)
     
     local isweak = getUnitsWithEffect("ouch")
     for _,unit in ipairs(isweak) do
-      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
+      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
       for _,on in ipairs(stuff) do
         if unit ~= on and sameFloat(unit, on) then
           if timecheck(unit,"be","ouch") and timecheck(on) then
@@ -828,7 +856,7 @@ function updateUnits(undoing, big_update)
     
     local ishot = getUnitsWithEffect("hotte")
     for _,unit in ipairs(ishot) do
-      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
+      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
       for _,on in ipairs(stuff) do
         if hasProperty(on, "fridgd") and sameFloat(unit, on) then
           if timecheck(unit,"be","hotte") and timecheck(on,"be","fridgd") then
@@ -849,7 +877,7 @@ function updateUnits(undoing, big_update)
     
     local isdefeat = getUnitsWithEffect(":(")
     for _,unit in ipairs(isdefeat) do
-      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
+      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
       for _,on in ipairs(stuff) do
         if hasU(on) and sameFloat(unit, on) then
           if timecheck(unit,"be",":(") and (timecheckUs(on)) then
@@ -870,7 +898,7 @@ function updateUnits(undoing, big_update)
     
     local isshut = getUnitsWithEffect("ned kee")
     for _,unit in ipairs(isshut) do
-      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
+      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
       for _,on in ipairs(stuff) do
         if hasProperty(on, "for dor") and sameFloat(unit, on) then
           if timecheck(unit,"be","ned kee") and timecheck(on,"be","for dor") then
@@ -899,7 +927,7 @@ function updateUnits(undoing, big_update)
     local issnacc = matchesRule(nil, "snacc", "?")
     for _,ruleparent in ipairs(issnacc) do
       local unit = ruleparent[2]
-      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, true)
+      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, true, hasProperty(unit,"big"))
       for _,on in ipairs(stuff) do
         if unit ~= on and hasRule(unit, "snacc", on) and sameFloat(unit, on) then
           if timecheck(unit,"snacc",on) and timecheck(on) then
@@ -918,7 +946,7 @@ function updateUnits(undoing, big_update)
     
     local isreset = getUnitsWithEffect("try again")
     for _,unit in ipairs(isreset) do
-      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
+      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
       for _,on in ipairs(stuff) do
         if hasU(on) and sameFloat(unit, on) then
           if timecheck(unit,"be","try again") and (timecheckUs(on)) then
@@ -939,7 +967,7 @@ function updateUnits(undoing, big_update)
     for _,ruleparent in ipairs(iscrash) do
       local unit = ruleparent[2]
       if not hasProperty(ruleparent[1].rule.object,"slep") then
-        local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
+        local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
         for _,on in ipairs(stuff) do
           if hasU(on) and sameFloat(unit, on) then
             if timecheck(unit,"be","xwx") and (timecheckUs(on)) then
@@ -958,7 +986,7 @@ function updateUnits(undoing, big_update)
     
     local isbonus = getUnitsWithEffect(":o")
     for _,unit in ipairs(isbonus) do
-      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
+      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
       for _,on in ipairs(stuff) do
         if hasU(on) and sameFloat(unit, on) then
           writeSaveFile(level_name, "bonus", true)
@@ -979,7 +1007,7 @@ function updateUnits(undoing, big_update)
     
     local isunwin = getUnitsWithEffect(";d")
     for _,unit in ipairs(isunwin) do
-      local stuff = getUnitsOnTile(unit.x,unit.y, nil, true)
+      local stuff = getUnitsOnTile(unit.x,unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
       for _,on in ipairs(stuff) do
         if hasU(on) and sameFloat(unit, on) then
           if timecheck(unit,"be","d") and (timecheckUs(on)) then
@@ -995,7 +1023,7 @@ function updateUnits(undoing, big_update)
     
     local iswin = getUnitsWithEffect(":)")
     for _,unit in ipairs(iswin) do
-      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true)
+      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
       for _,on in ipairs(stuff) do
         if hasU(on) and sameFloat(unit, on) then
           if timecheck(unit,"be",":)") and (timecheckUs(on)) then
@@ -1020,7 +1048,7 @@ function updateUnits(undoing, big_update)
       local fail = false
       if #others > 0 then
         for _,other in ipairs(others) do
-          local ons = getUnitsOnTile(other.x,other.y,nil,nil,other)
+          local ons = getUnitsOnTile(other.x,other.y,nil,nil,other,nil,hasProperty(unit,"big"))
           local innersuccess = false
           for _,on in ipairs(ons) do
             if sameFloat(other,on) then
@@ -1038,7 +1066,7 @@ function updateUnits(undoing, big_update)
     end
     for unit,v in pairs(sokowins) do
       if v then
-        local stuff = getUnitsOnTile(unit.x,unit.y)
+        local stuff = getUnitsOnTile(unit.x,unit.y,nil,nil,nil,nil,hasProperty(unit,"big"))
         for _,on in ipairs(stuff) do
           if hasU(on) and sameFloat(unit,on) then
             wins = wins + 1
@@ -1062,9 +1090,21 @@ function updateUnits(undoing, big_update)
         overriden = hasRule(creator, "creatn't", "text")
       end
       if tile ~= nil and not overriden then
-        local others = getUnitsOnTile(creator.x, creator.y, createe, true, nil)
+        local others = getUnitsOnTile(creator.x, creator.y, createe, true, nil, nil, nil, hasProperty(unit,"big"))
         if #others == 0 then
-          local new_unit = createUnit(tile, creator.x, creator.y, creator.dir, nil, nil, nil, rule.object.prefix)
+          local color = rule.object.prefix
+          if color == "samepaint" then
+            if creator.color_override then
+              color = colour_for_palette[creator.color_override[1]][creator.color_override[2]]
+            else
+              if type(color[1]) == "table" then
+                color = colour_for_palette[creator.color[1][1]][creator.color[1][2]]
+              else
+                color = colour_for_palette[creator.color[1]][creator.color[2]]
+              end
+            end
+          end
+          local new_unit = createUnit(tile, creator.x, creator.y, creator.dir, nil, nil, nil, color)
           addUndo({"create", new_unit.id, false})
         end
       elseif createe == "mous" then
@@ -1176,7 +1216,7 @@ end
 
 function miscUpdates()
   updateGraphicalPropertyCache()
-
+  
   if units_by_name["os"] then
     for i,unit in ipairs(units_by_name["os"]) do
       local os = love.system.getOS()
@@ -1232,6 +1272,37 @@ function miscUpdates()
         end
       end
       
+      if unit.fullname == "bolble" then
+        if unit.color_override then
+          local color = colour_for_palette[unit.color_override[1]][unit.color_override[2]]
+          if color == "whit" then
+            unit.sprite = "bolble_snow"
+          elseif color == "bleu" then
+            unit.sprite = "bolble_waves"
+          elseif color == "cyeann" then
+            unit.sprite = "bolble_12"
+          elseif color == "purp" then
+            unit.sprite = "bolble_clock"
+          elseif color == "brwn" then
+            unit.sprite = "bolble_choco"
+          elseif color == "blacc" then
+            unit.sprite = "bolble_twirl"
+          elseif color == "graey" then
+            unit.sprite = "bolble_checker"
+          elseif color == "orang" then
+            unit.sprite = "bolble_dots"
+          elseif color == "pinc" then
+            unit.sprite = "bolble_hearts"
+          elseif color == "yello" then
+            unit.sprite = "bolble_stars"
+          elseif color == "grun" then
+            unit.sprite = "bolble_tree"
+          else
+            unit.sprite = "bolble"
+          end
+        end
+      end
+      
       if unit.fullname == "ches" then
         if hasProperty(unit,"ned kee") then
           unit.sprite = "chest_close"
@@ -1252,154 +1323,193 @@ function miscUpdates()
       
       if unit.fullname == "pumkin" then
         if hasProperty(unit,"sans") or hasProperty(unit,":(") or hasProperty(unit,"brite") or hasProperty(unit,"torc") or hasRule(unit,"spoop","?") then
-            if graphical_property_cache["slep"][unit] ~= nil then
-                unit.sprite = "pumkin_slep"
-            else
-                unit.sprite = "pumkin_jack"
-            end
+          if graphical_property_cache["slep"][unit] ~= nil then
+            unit.sprite = "pumkin_slep"
+          else
+            unit.sprite = "pumkin_jack"
+          end
         else
-            unit.sprite = "pumkin"
+          unit.sprite = "pumkin"
         end
       end
       
       -- here goes the legendary ditto transformations
       if unit.fullname == "ditto" then
-        if hasProperty(unit,"notranform") then
-            unit.sprite = "ditto_notranform"
+        if hasProperty(unit,"dragbl") then
+          unit.sprite = "ditto_dragbl"
+        elseif hasProperty(unit,"notranform") then
+          unit.sprite = "ditto_notranform"
+        elseif hasRule(unit,"got","which") then
+          unit.sprite = "ditto_which"
         elseif hasRule(unit,"spoop","?") then
-            unit.sprite = "ditto_spoop"
+          unit.sprite = "ditto_spoop"
         elseif hasProperty(unit,"xwx") then
-            unit.sprite = "ditto_xwx"
+          unit.sprite = "ditto_xwx"
         elseif hasProperty(unit,"rong") then
-            unit.sprite = "ditto_rong"
+          unit.sprite = "ditto_rong"
         elseif hasProperty(unit,"wurd") then
-            unit.sprite = "ditto_wurd"
+          unit.sprite = "ditto_wurd"
+        elseif hasProperty(unit,"no drag") then
+          unit.sprite = "ditto_no drag"
         elseif graphical_property_cache["slep"][unit] ~= nil then
-            unit.sprite = "ditto_slep"
+          unit.sprite = "ditto_slep"
         elseif hasProperty(unit,"rithere") then
-            unit.sprite = "ditto_rithere"
+          unit.sprite = "ditto_rithere"
         elseif hasProperty(unit,"thr") then
-            unit.sprite = "ditto_thr"
+          unit.sprite = "ditto_thr"
         elseif hasProperty(unit,"stelth") then
-            unit.sprite = "ditto_stelth"
+          unit.sprite = "ditto_stelth"
         elseif hasProperty(unit,"sans") then
-            unit.sprite = "ditto_sans"
+          unit.sprite = "ditto_sans"
         elseif hasProperty(unit,"ouch") then
-            unit.sprite = "ditto_ouch"
+          unit.sprite = "ditto_ouch"
         elseif hasProperty(unit,"protecc") then
-            unit.sprite = "ditto_protecc"
+          unit.sprite = "ditto_protecc"
         elseif hasProperty(unit,"no undo") then
-            unit.sprite = "ditto_no undo"
+          unit.sprite = "ditto_no undo"
         -- Eeveelutions
         elseif hasProperty(unit,"qt") then
-            if hasProperty(unit,"icy") then
-                unit.sprite = "ditto_qt_icy"
-            elseif hasProperty(unit,"hopovr") then
-                unit.sprite = "ditto_qt_hopovr"
-            else
-                unit.sprite = "ditto_qt"
-            end
+          if hasProperty(unit,"icy") then
+            unit.sprite = "ditto_qt_icy"
+          elseif hasProperty(unit,"hopovr") then
+            unit.sprite = "ditto_qt_hopovr"
+          else
+            unit.sprite = "ditto_qt"
+          end
         elseif hasProperty(unit,"poor toll") then
-            unit.sprite = "ditto_poor toll"
+          unit.sprite = "ditto_poor toll"
         -- Rotom formes
         elseif hasProperty(unit,"zip") then
-            unit.sprite = "ditto_zip"
+          unit.sprite = "ditto_zip"
         elseif hasRule(unit,"sing","?") then
-            unit.sprite = "ditto_sing"
+          unit.sprite = "ditto_sing"
         elseif hasRule(unit,"paint","?") then
-            unit.sprite = "ditto_paint"
+          unit.sprite = "ditto_paint"
+        elseif hasRule(unit,"got","sant") then
+          unit.sprite = "ditto_sant"
         elseif hasProperty(unit,"go") then
-            unit.sprite = "ditto_go"
+          unit.sprite = "ditto_go"
         elseif hasProperty(unit,"folo wal") then
-            unit.sprite = "ditto_folo wal"
+          unit.sprite = "ditto_folo wal"
         elseif hasProperty(unit,"tall") then
-            unit.sprite = "ditto_tall"
+          unit.sprite = "ditto_tall"
         elseif hasProperty(unit,"rave") then
-            unit.sprite = "ditto_rave"
+          unit.sprite = "ditto_rave"
         elseif hasProperty(unit,"colrful") then
-            unit.sprite = "ditto_colrful"
+          unit.sprite = "ditto_colrful"
         elseif hasProperty(unit,"torc") then
-            unit.sprite = "ditto_torc"
+          unit.sprite = "ditto_torc"
         elseif hasProperty(unit,"split") then
-            unit.sprite = "ditto_split"
+          unit.sprite = "ditto_split"
         elseif hasProperty(unit,"icyyyy") then
-            unit.sprite = "ditto_icyyyy"
+          unit.sprite = "ditto_icyyyy"
         elseif hasProperty(unit,"icy") then
-            unit.sprite = "ditto_icy"
+          unit.sprite = "ditto_icy"
         elseif hasProperty(unit,"hopovr") then
-            unit.sprite = "ditto_hopovr"
+          unit.sprite = "ditto_hopovr"
         elseif hasProperty(unit,"right") or hasProperty(unit,"downright") or hasProperty(unit,"down") or hasProperty(unit,"downleft") or hasProperty(unit,"left") or hasProperty(unit,"upleft") or hasProperty(unit,"up") or hasProperty(unit,"upright") then
-            unit.sprite = "ditto_direction"
+          unit.sprite = "ditto_direction"
         elseif hasProperty(unit,"nuek") then
-            unit.sprite = "ditto_nuek"
+          unit.sprite = "ditto_nuek"
         elseif hasProperty(unit,";d") then
-            unit.sprite = "ditto_;d"
+          unit.sprite = "ditto_;d"
         elseif hasProperty(unit,"knightstep") then
-            unit.sprite = "ditto_knightstep"
+          unit.sprite = "ditto_knightstep"
         elseif hasProperty(unit,"diagstep") then
-            unit.sprite = "ditto_diagstep"
+          unit.sprite = "ditto_diagstep"
         elseif hasProperty(unit,"sidestep") then
-            unit.sprite = "ditto_sidestep"
+          unit.sprite = "ditto_sidestep"
         elseif hasProperty(unit,"munwalk") then
-            unit.sprite = "ditto_munwalk"
+          unit.sprite = "ditto_munwalk"
         elseif hasProperty(unit,"visit fren") then
-            unit.sprite = "ditto_visit fren"
+          unit.sprite = "ditto_visit fren"
         elseif hasProperty(unit,"walk") then
-            unit.sprite = "ditto_walk"
+          unit.sprite = "ditto_walk"
         elseif hasProperty(unit,"no swim") then
-            unit.sprite = "ditto_no swim"
+          unit.sprite = "ditto_no swim"
         elseif hasProperty(unit,"haet flor") then
-            unit.sprite = "ditto_haet flor"
+          unit.sprite = "ditto_haet flor"
         elseif hasProperty(unit,"haet skye") then
-            unit.sprite = "ditto_haet skye"
+          unit.sprite = "ditto_haet skye"
         elseif hasRule(unit,"got","gunne") then
-            unit.sprite = "ditto_gunne"
+          unit.sprite = "ditto_gunne"
         elseif hasProperty(unit,"glued") then
-            unit.sprite = "ditto_glued"
+          unit.sprite = "ditto_glued"
         elseif hasProperty(unit,"flye") then
-            unit.sprite = "ditto_flye"
+          unit.sprite = "ditto_flye"
         elseif hasProperty(unit,"enby") then
-            unit.sprite = "ditto_enby"
+          unit.sprite = "ditto_enby"
         elseif hasProperty(unit,"tranz") then
-            unit.sprite = "ditto_tranz"
+          unit.sprite = "ditto_tranz"
         elseif hasProperty(unit,"come pls") then
-            unit.sprite = "ditto_come pls"
+          unit.sprite = "ditto_come pls"
         elseif hasProperty(unit,"go away pls") then
-            unit.sprite = "ditto_go away pls"
+          unit.sprite = "ditto_go away pls"
         elseif hasProperty(unit,"goooo") then
-            unit.sprite = "ditto_goooo"
+          unit.sprite = "ditto_goooo"
         elseif hasRule(unit,"snacc","?") then
-            unit.sprite = "ditto_snacc"
+          unit.sprite = "ditto_snacc"
         elseif hasProperty(unit,"moar") then
-            unit.sprite = "ditto_moar"
+          unit.sprite = "ditto_moar"
         elseif hasProperty(unit,"ned kee") then
-            unit.sprite = "ditto_ned kee"
+          unit.sprite = "ditto_ned kee"
         elseif hasProperty(unit,"for dor") then
-            unit.sprite = "ditto_fordor"
+          unit.sprite = "ditto_fordor"
         elseif hasProperty(unit,"hotte") then
-            unit.sprite = "ditto_hotte"
+          unit.sprite = "ditto_hotte"
         elseif hasProperty(unit,"fridgd") then
-            unit.sprite = "ditto_fridgd"
+          unit.sprite = "ditto_fridgd"
         elseif hasProperty(unit,":)") then
-            unit.sprite = "ditto_yay"
+          unit.sprite = "ditto_yay"
         elseif hasProperty(unit,":o") then
-            unit.sprite = "ditto_whoa"
+          unit.sprite = "ditto_whoa"
         elseif hasProperty(unit,"no go") then
-            unit.sprite = "ditto_no go"
+          unit.sprite = "ditto_no go"
+        elseif hasProperty(unit,"y'all") then
+          unit.sprite = "ditto_y'all"
         elseif hasProperty(unit,"u tres") then
-            unit.sprite = "ditto_u tres"
+          unit.sprite = "ditto_u tres"
         elseif hasProperty(unit,"u too") then
-            unit.sprite = "ditto_u too"
+          unit.sprite = "ditto_u too"
         elseif hasProperty(unit,"u") then
-            unit.sprite = "ditto_u"
+          unit.sprite = "ditto_u"
         elseif hasProperty(unit,"thingify") then
-            unit.sprite = "ditto_thingify"
+          unit.sprite = "ditto_thingify"
         else
-            unit.sprite = "ditto"
+          unit.sprite = "ditto"
         end
       end
       
-      if unit.fullname ~= "os" and unit.fullname ~= "boooo" and unit.fullname ~= "casete" and unit.fullname ~= "ches" and unit.fullname ~= "mimi" and unit.fullname ~= "ditto" and unit.fullname ~= "pumkin" then
+      if unit.fullname == "bup" then
+        if hasProperty(unit,"torc") then
+          unit.sprite = {"bup","bup_band","bup_capn","bup_light"}
+        else
+          unit.sprite = {"bup","no1","no1","no1"}
+        end
+        if graphical_property_cache["slep"][unit] ~= nil then
+          unit.sprite[1] = "bup_slep"
+        end
+      end
+      
+      if unit.fullname == "die" and (first_turn or not (hasProperty(unit,"stukc") or hasProperty(unit,"no turn"))) then
+        local roll = math.random(6)
+        unit.sprite[2] = "die_"..roll
+      end
+      
+      local specials = {
+        os = true,
+        boooo = true,
+        casete = true,
+        bolble = true,
+        ches = true,
+        mimi = true,
+        pumkin = true,
+        ditto = true,
+        bup = true,
+        die = true,
+      }
+      
+      if not specials[unit.fullname] then
         if tile.slep and graphical_property_cache["slep"][unit] ~= nil then
           if type(tile.sprite) == "table" then
             for j,name in ipairs(tile.sprite) do
@@ -1513,7 +1623,7 @@ function updateUnitColours()
   local painting = matchesRule(nil, "paint", "?")
   for _,ruleparent in ipairs(painting) do
     local unit = ruleparent[2]
-    local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, true)
+    local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, true, hasProperty(unit,"big"))
     for _,on in ipairs(stuff) do
       if unit ~= on and hasRule(unit, "paint", on) and sameFloat(unit, on) then
         if timecheck(unit,"paint",on) and timecheck(on) then
@@ -1637,7 +1747,7 @@ function updatePortals()
     if unit.is_portal and hasProperty(unit, "poor toll") then
       local px, py, move_dir, dir = doPortal(unit, unit.x, unit.y, rotate8(unit.dir), rotate8(unit.dir), true)
       unit.portal.x, unit.portal.y = px, py
-      local portal_objects = getUnitsOnTile(px, py, nil, true)
+      local portal_objects = getUnitsOnTile(px, py, nil, true, nil, nil, hasProperty(unit,"big"))
       unit.portal.objects = portal_objects
       unit.portal.dir = rotate8(unit.dir) - dir
       local new_last_objs = copyTable(unit.portal.objects)
@@ -2150,7 +2260,19 @@ function dropGotUnit(unit, rule)
         local new_mouse = createMouse(unit.x, unit.y)
         addUndo({"create_cursor", new_mouse.id})
       else
-        local new_unit = createUnit(obj_id, unit.x, unit.y, unit.dir, false, nil, nil, rule.object.prefix)
+        local color = rule.object.prefix
+        if color == "samepaint" then
+          if unit.color_override then
+            color = colour_for_palette[unit.color_override[1]][unit.color_override[2]]
+          else
+            if type(color[1]) == "table" then
+              color = colour_for_palette[unit.color[1][1]][unit.color[1][2]]
+            else
+              color = colour_for_palette[unit.color[1]][unit.color[2]]
+            end
+          end
+        end
+        local new_unit = createUnit(obj_id, unit.x, unit.y, unit.dir, false, nil, nil, color)
         addUndo({"create", new_unit.id, false})
       end
     end
@@ -2508,7 +2630,19 @@ function convertUnits(pass)
             end
             if tile ~= nil then
               table.insert(del_cursors, cursor)
-              local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true, nil, nil, rule.object.prefix)
+              local color = rule.object.prefix
+              if color == "samepaint" then
+                if unit.color_override then
+                  color = colour_for_palette[unit.color_override[1]][unit.color_override[2]]
+                else
+                  if type(color[1]) == "table" then
+                    color = colour_for_palette[unit.color[1][1]][unit.color[1][2]]
+                  else
+                    color = colour_for_palette[unit.color[1]][unit.color[2]]
+                  end
+                end
+              end
+              local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true, nil, nil, color)
               if (new_unit ~= nil) then
                 addUndo({"create", new_unit.id, true, created_from_id = unit.id})
               end
@@ -2537,7 +2671,19 @@ function convertUnits(pass)
           if not unit.removed then
             table.insert(converted_units, unit)
           end
-          local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true, nil, nil, rule.object.prefix)
+          local color = rule.object.prefix
+          if color == "samepaint" then
+            if unit.color_override then
+              color = colour_for_palette[unit.color_override[1]][unit.color_override[2]]
+            else
+              if type(color[1]) == "table" then
+                color = colour_for_palette[unit.color[1][1]][unit.color[1][2]]
+              else
+                color = colour_for_palette[unit.color[1]][unit.color[2]]
+              end
+            end
+          end
+          local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true, nil, nil, color)
           if (new_unit ~= nil) then
             if rule.object.name == "lvl" and not new_unit.color_override then
               new_unit.color_override = unit.color_override or unit.color
@@ -2667,7 +2813,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
   unit.rotate = data.rotate or false
   unit.got_objects = {}
   unit.sprite_transforms = data.sprite_transforms or {}
-  unit.eye = data.eye -- eye rectangle used for sans
+  unit.features = data.features or {}
   unit.is_portal = data.portal or false
   unit.rotatdir = unit.rotate and unit.dir or 1
   
@@ -2700,9 +2846,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
   end
   
   if prefix then
-    for _,pfix in ipairs(prefix) do
-      unit[pfix.name] = true
-    end
+    unit[prefix] = true
     updateUnitColourOverride(unit)
   end
   
@@ -2813,6 +2957,11 @@ function deleteUnit(unit,convert,undoing,gone)
     removeFromTable(units_by_name[unit.fullname], unit)
   end
   removeFromTable(unitsByTile(unit.x, unit.y), unit)
+  if rules_with and hasProperty(unit,"big") then
+    removeFromTable(unitsByTile(unit.x+1,unit.y),unit)
+    removeFromTable(unitsByTile(unit.x,unit.y+1),unit)
+    removeFromTable(unitsByTile(unit.x+1,unit.y+1),unit)
+  end
   if not convert and not gone then
     removeFromTable(units_by_layer[unit.layer], unit)
   end
@@ -2848,16 +2997,31 @@ function moveUnit(unit,x,y,portal)
   if (unit.type == "outerlvl") then
   elseif (unit.name == "mous") then
     --find out how far apart two tiles are in screen co-ordinates
-    local x0,y0 = gameTileToScreen(0,0);
-    local x1,y1 = gameTileToScreen(1,1);
-    local dx = x1-x0;
-    local dy = y1-y0;
-    local oldx = unit.x;
-    local oldy = unit.y;
+    local x0,y0 = gameTileToScreen(0,0)
+    local x1,y1 = gameTileToScreen(1,1)
+    local dx = x1-x0
+    local dy = y1-y0
+    local oldx = unit.x
+    local oldy = unit.y
+    local mx = dx*(x-oldx)
+    local my = dy*(y-oldy)
     unit.x = x
     unit.y = y
-    unit.screenx = unit.screenx + dx*(x-oldx);
-    unit.screeny = unit.screeny + dy*(y-oldy);
+    if unit.primary then
+      love.mouse.setPosition(unit.screenx + mx,unit.screeny + my)
+      --updating the real mouse position moves every mous, so to counter this we move every non-real mous in the opposite direction
+      for _,cursor in ipairs(cursors) do
+        if not cursor.primary then
+          cursor.x = cursor.x - (x-oldx)
+          cursor.y = cursor.y - (y-oldy)
+          cursor.screenx = cursor.screenx - mx
+          cursor.screeny = cursor.screeny - my
+        end
+      end
+    else
+      unit.screenx = unit.screenx + mx
+      unit.screeny = unit.screeny + my
+    end
   elseif (unit.fullname == "no1") and inBounds(x, y) then
     local tileid = unit.x + unit.y * mapwidth
     local oldx = unit.x
@@ -2873,6 +3037,11 @@ function moveUnit(unit,x,y,portal)
     empties_by_tile[dest_tileid] = unit
   else
     removeFromTable(unitsByTile(unit.x, unit.y), unit)
+    if rules_with and hasProperty(unit,"big") then
+      removeFromTable(unitsByTile(unit.x+1,unit.y),unit)
+      removeFromTable(unitsByTile(unit.x,unit.y+1),unit)
+      removeFromTable(unitsByTile(unit.x+1,unit.y+1),unit)
+    end
 
     -- putting portal check above same-position check to give portal effect through one-tile gap
     if portal and portal.is_portal and x - portal.x == dirs8[portal.dir][1] and y - portal.y == dirs8[portal.dir][2] then
@@ -2899,8 +3068,8 @@ function moveUnit(unit,x,y,portal)
       if unit.type == "text" or rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname] then
         should_parse_rules = true
       end
-      if (not unit_tests) then
-        if (unit.draw.x == x and unit.draw.y == y) then
+      if not unit_tests then
+        if rules_with and not hasProperty(unit,"big") and unit.draw.x == x and unit.draw.y == y then
           --'bump' effect to show movement failed
           unit.draw.x = (unit.x+x*2)/3
           unit.draw.y = (unit.y+y*2)/3
@@ -2923,6 +3092,13 @@ function moveUnit(unit,x,y,portal)
     unit.y = y
     
     table.insert(unitsByTile(unit.x, unit.y), unit)
+    if rules_with and hasProperty(unit,"big") then
+      for i=1,3 do
+        if not table.has_value(unitsByTile(unit.x+i%2,unit.y+math.floor(i/2)),unit) then
+          table.insert(unitsByTile(unit.x+i%2,unit.y+math.floor(i/2)),unit)
+        end
+      end
+    end
   end
 
   do_move_sound = true

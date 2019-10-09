@@ -256,6 +256,9 @@ bab arguments!
       sprites[n] = spr[i]
     end
   end
+  
+  sprites["letters_/"] = sprites["letters_slash"]
+  sprites["letters_:"] = sprites["letters_colon"]
 
   print(colr.green("✓ added sprites\n"))
 
@@ -382,7 +385,7 @@ bab arguments!
   ui.overlay.rebuild()
   print(colr.green("✓ ui initialized"))
 
-  if discordRPC and discordRPC ~= true then
+  if discordRPC and discordRPC ~= true and not cmdargs["no-rpc"] then
     discordRPC.initialize("579475239646396436", true) -- app belongs to thefox, contact him if you wish to make any changes
     print(colr.green("✓ discord rpc initialized"))
   end
@@ -449,12 +452,12 @@ function love.keypressed(key,scancode,isrepeat)
     superduperdebugmode = not superduperdebugmode
   elseif key == "m" and love.keyboard.isDown('f3') then
     if not is_mobile then
-        winwidth, winheight = love.graphics.getDimensions( )
-        love.window.setMode(800, 480, {borderless=false, resizable=true, minwidth=705, minheight=510})
-        is_mobile = true
+      winwidth, winheight = love.graphics.getDimensions( )
+      love.window.setMode(800, 480, {borderless=false, resizable=true, minwidth=705, minheight=510})
+      is_mobile = true
     elseif is_mobile then
-        love.window.setMode(winwidth, winheight, {borderless=false, resizable=true, minwidth=705, minheight=510})
-        is_mobile = false
+      love.window.setMode(winwidth, winheight, {borderless=false, resizable=true, minwidth=705, minheight=510})
+      is_mobile = false
     end
   elseif key == "d" and love.keyboard.isDown('f3') then
     drumMode = not drumMode
@@ -464,6 +467,8 @@ function love.keypressed(key,scancode,isrepeat)
     infomode = not infomode
   elseif key == "l" and love.keyboard.isDown('f3') then
     debugEnabled = true
+  elseif key == "i" and love.keyboard.isDown('f3') then
+    displayids = not displayids
   elseif key == "f4" and not spookmode then
     debug_view = not debug_view
   elseif key == "f5" then
@@ -737,7 +742,7 @@ function love.draw()
     'current fps: '..love.timer.getFPS()..'\n'..
     'peak fps: '..peakfps..'\n'..
     'average fps: '..averagefps..'\n'..
-    '\npress R to restart\n'..
+    '\nF5 to restart LÖVE\n'..
     'F4 to toggle debug menu\n'..
     'F3+G to toggle rainbowmode\n'..
     'F3+Q for SUPER DUPER DEBUG MODE (wip)\n'..
