@@ -2345,7 +2345,7 @@ function doOneMove(x, y, key, past)
     unsetNewUnits()
 		return result
   else
-    if key ~= "clikt" then
+    if key ~= "drag" then
       newUndo()
     end
 		last_move = {x, y}
@@ -2589,7 +2589,7 @@ function scene.mouseReleased(x, y, button)
         addTween(tween.new(0.1, unit.draw, {x = unit.x, y = unit.y}), "dragbl release:"..tostring(unit))
       end
       if dragged then
-        doOneMove(last_click_x,last_click_y,"clikt")
+        doOneMove(last_click_x,last_click_y,"drag")
         last_click_x, last_click_y = nil, nil
       end
       drag_units = {}
