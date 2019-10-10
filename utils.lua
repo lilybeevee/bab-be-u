@@ -3186,6 +3186,8 @@ function buildOptions()
     end
   end)
   scene.addOption("focus_pause", "pause on defocus", {{"off", false}, {"on", true}}) 
-  scene.addOption("themes", "menu themes", {{"on", true}, {"off", false}})
+  if scene == menu then
+    scene.addOption("themes", "menu themes", {{"on", true}, {"off", false}})
+  end
   scene.addButton("back", function() options = false; scene.buildUI() end)
 end
