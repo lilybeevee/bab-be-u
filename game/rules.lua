@@ -715,6 +715,28 @@ function addRule(full_rule)
   if verb_not > 0 then
     verb = rules.verb.name:sub(1, -4)
   end
+
+  --add used_as values for sprite transformations
+  if rules.subject.unit and not rules.subject.unit.used_as["object"] then
+    table.insert(rules.subject.unit.used_as, "object")
+  end
+
+  if rules.verb.unit and not rules.verb.unit.used_as["verb"] then
+    table.insert(rules.verb.unit.used_as, "verb")
+  end
+
+  if rules.object.unit then
+    local property = false
+    local tile_id = tiles_by_name["text_" .. verb]
+    if tile_id and tiles_list[tile_id].texttype and tiles_list[tile_id].texttype.verb_property then
+      property = true
+    end
+    if property and not rules.object.unit.used_as["property"] then
+      table.insert(rules.object.unit.used_as, "property")
+    elseif not property and not rules.object.unit.used_as["object"] then
+      table.insert(rules.object.unit.used_as, "object")
+    end
+  end
   
   --Special THIS check - if we write this be this or this ben't this, it should work like the tautology/paradox it does for other objects, even though they are TECHNICALLY different thises.
   if subject:starts("this") and object:starts("this") and subject_not == 0 and object_not == 0 and subject ~= object then

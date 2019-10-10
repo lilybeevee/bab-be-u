@@ -133,6 +133,7 @@ end
 
 function metaClear()
   rules_with = nil
+  rules_with_unit = nil
   parent_filename = nil
   stay_ther = nil
   surrounds = nil

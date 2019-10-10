@@ -1241,6 +1241,7 @@ function miscUpdates()
     if not deleted and not unit.removed_final then
       local tile = tiles_list[unit.tile]
       unit.layer = tile.layer + (20 * (graphical_property_cache["flye"][unit] or 0))
+      unit.sprite = deepCopy(tiles_list[unit.tile].sprite)
       
       if unit.fullname == "boooo" then
         if hasProperty(unit,"shy...") then
@@ -1512,32 +1513,23 @@ function miscUpdates()
           end
         end
       end
+
+      for type,name in pairs(unit.sprite_transforms) do
+        if table.has_value(unit.used_as, type) then
+          unit.sprite = name
+          break
+        end
+      end
       
-      local specials = {
-        os = true,
-        boooo = true,
-        casete = true,
-        bolble = true,
-        ches = true,
-        mimi = true,
-        pumkin = true,
-        ditto = true,
-        bup = true,
-        die = true,
-        text_katany = true,
-      }
-      
-      if not specials[unit.fullname] then
-        if tile.slep and graphical_property_cache["slep"][unit] ~= nil then
-          if type(tile.sprite) == "table" then
-            for j,name in ipairs(tile.sprite) do
+      if graphical_property_cache["slep"][unit] ~= nil then
+        if type(unit.sprite) == "table" then
+          for j,name in ipairs(unit.sprite) do
+            if sprites[name.."_slep"] then
               unit.sprite[j] = name.."_slep"
             end
-          else
-            unit.sprite = tiles_list[unit.tile].sprite.."_slep"
           end
-        else
-          unit.sprite = deepCopy(tiles_list[unit.tile].sprite)
+        elseif sprites[unit.sprite.."_slep"] then
+          unit.sprite = unit.sprite.."_slep"
         end
       end
 

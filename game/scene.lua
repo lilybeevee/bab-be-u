@@ -882,12 +882,6 @@ function scene.draw(dt)
     local sprite
     
     if type(sprite_name) ~= "table" then
-      for type,name in pairs(unit.sprite_transforms) do
-        if table.has_value(unit.used_as, type) then
-          sprite_name = name
-          break
-        end
-      end
       if sprite_name == "lvl" and readSaveFile(unit.special.level, "won") then
         sprite_name = "lvl_won"
       end
