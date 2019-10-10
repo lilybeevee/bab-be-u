@@ -2344,8 +2344,10 @@ function doOneMove(x, y, key, past)
     end
     unsetNewUnits()
 		return result
-	else
-		newUndo()
+  else
+    if key ~= "clikt" then
+      newUndo()
+    end
 		last_move = {x, y}
 		just_moved = true
 		doMovement(x, y, key)
@@ -2577,6 +2579,9 @@ function scene.mouseReleased(x, y, button)
           end
         end
         if not nodrag then
+          if not dragged then
+            newUndo()
+          end
           addUndo{"update",unit.id,unit.x,unit.y,unit.dir}
           moveUnit(unit,dest_x,dest_y)
           dragged = true
