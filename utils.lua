@@ -3161,3 +3161,31 @@ function getTableWithDefaults(o, default)
   end
   return o
 end
+
+function buildOptions()
+  scene.addOption("game_scale", "game scale", {{"auto", "auto"}, {"0.5x", 0.5}, {"1x", 1}, {"1.5x", 1.5}, {"2x", 2}, {"4x", 4}})
+  scene.addOption("music_on", "music", {{"on", true}, {"off", false}})
+  scene.addOption("sfx_on", "sound", {{"on", true}, {"off", false}})
+  scene.addOption("particles_on", "particle effects", {{"on", true}, {"off", false}})
+  scene.addOption("grid_lines", "grid lines", {{"off", false}, {"on", true}})
+  scene.addOption("mouse_lines", "mouse lines", {{"off", false}, {"on", true}})   
+  scene.addOption("stopwatch_effect", "stopwatch effect", {{"on", true}, {"off", false}})
+  scene.addOption("fullscreen", "resolution", {{"windowed", false}, {"fullscreen", true}}, function(val)
+    if val then
+      if not love.window.isMaximized() then
+        winwidth, winheight = love.graphics.getDimensions()
+      end
+      love.window.setMode(0, 0, {borderless=false})
+      love.window.maximize()
+      fullscreen = true
+    else
+      love.window.setMode(winwidth, winheight, {borderless=false, resizable=true, minwidth=705, minheight=510})
+      love.window.maximize()
+      love.window.restore()
+      fullscreen = false
+    end
+  end)
+  scene.addOption("focus_pause", "pause on defocus", {{"off", false}, {"on", true}}) 
+  scene.addOption("themes", "menu themes", {{"on", true}, {"off", false}})
+  scene.addButton("back", function() options = false; scene.buildUI() end)
+end

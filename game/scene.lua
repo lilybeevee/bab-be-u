@@ -61,7 +61,6 @@ local sessionseed
 local buttons = {}--{"resume", "editor", "exit", "restart"}
 local darken = nil
 local button_last_y = 0
-local options = false
 pause = false
 selected_pause_button = 1
 
@@ -168,29 +167,7 @@ function scene.buildUI()
     scene.addButton("options", function() options = true; scene.buildUI() end)
     scene.addButton("exit to " .. escResult(false), function() escResult(true) end)
   else
-    scene.addOption("music_on", "music", {{"on", true}, {"off", false}})
-    scene.addOption("sfx_on", "sound", {{"on", true}, {"off", false}})
-    scene.addOption("particles_on", "particle effects", {{"on", true}, {"off", false}})
-    scene.addOption("grid_lines", "grid lines", {{"off", false}, {"on", true}})
-    scene.addOption("mouse_lines", "mouse lines", {{"off", false}, {"on", true}})   
-    scene.addOption("stopwatch_effect", "stopwatch effect", {{"on", true}, {"off", false}})
-    scene.addOption("fullscreen", "resolution", {{"windowed", false}, {"fullscreen", true}}, function(val)
-      if val then
-        if not love.window.isMaximized() then
-          winwidth, winheight = love.graphics.getDimensions()
-        end
-        love.window.setMode(0, 0, {borderless=false})
-        love.window.maximize()
-        fullscreen = true
-      else
-        love.window.setMode(winwidth, winheight, {borderless=false, resizable=true, minwidth=705, minheight=510})
-        love.window.maximize()
-        love.window.restore()
-        fullscreen = false
-      end
-    end)
-    scene.addOption("focus_pause", "pause on defocus", {{"off", false}, {"on", true}})   
-    scene.addButton("back", function() options = false; scene.buildUI() end)
+    buildOptions()
   end
 
   local ox, oy = love.graphics.getWidth()/2, buttons[1]:getHeight()*3
@@ -666,6 +643,9 @@ function scene.getTransform()
     if screenwidth >= roomwidth * s and screenheight >= roomheight * s then
       scale = s
     else break end
+  end
+  if settings["game_scale"] ~= "auto" and settings["game_scale"] < scale then
+    scale = settings["game_scale"]
   end
 
   local scaledwidth = screenwidth * (1/scale)

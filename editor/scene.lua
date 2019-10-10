@@ -1228,6 +1228,9 @@ function scene.transformParameters()
         scale = s
     else break end
   end
+  if settings["game_scale"] ~= "auto" and settings["game_scale"] < scale then
+    scale = settings["game_scale"]
+  end
 
   local scaledwidth = screenwidth * (1/scale)
   local scaledheight = screenheight * (1/scale)

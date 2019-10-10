@@ -23,6 +23,7 @@ local defaultsettings = {
   music_on = true,
   sfx_on = true,
   particles_on = true,
+  game_scale = "auto",
   grid_lines = false,
   mouse_lines = false,
   stopwatch_effect = true,
