@@ -464,7 +464,7 @@ function love.keypressed(key,scancode,isrepeat)
   elseif key == "r" and love.keyboard.isDown('f3') then
     remasterMode = not remasterMode
   elseif key == "h" and love.keyboard.isDown('f3') then
-    infomode = not infomode
+    settings["infomode"] = not settings["infomode"]
   elseif key == "l" and love.keyboard.isDown('f3') then
     debugEnabled = true
   elseif key == "i" and love.keyboard.isDown('f3') then

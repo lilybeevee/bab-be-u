@@ -31,6 +31,7 @@ local defaultsettings = {
   focus_pause = false,
   level_compression = "zlib",
   draw_editor_lins = true,
+  infomode = false,
   themes = true,
 }
 
