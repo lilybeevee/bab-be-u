@@ -364,7 +364,11 @@ function scene.resetStuff(forTime)
   next_levels, next_level_objs = getNextLevels()
   first_turn = false
   window_dir = 0
-	
+  
+  if playing_world then
+    saveWorld()
+    selectLastLevels()
+  end
 end
     
 function scene.keyPressed(key, isrepeat)
@@ -863,7 +867,7 @@ function scene.draw(dt)
     local sprite
     
     if type(sprite_name) ~= "table" then
-      if sprite_name == "lvl" and readSaveFile(unit.special.level, "won") then
+      if sprite_name == "lvl" and readSaveFile{"levels", unit.special.level, "won"} then
         sprite_name = "lvl_won"
       end
       local frame = (unit.frame + anim_stage) % 3 + 1
@@ -1151,7 +1155,7 @@ function scene.draw(dt)
     
     if unit.name == "lvl" and unit.special.visibility == "open" then
       love.graphics.push()
-      if readSaveFile(unit.special.level, "won") then
+      if readSaveFile{"levels", unit.special.level, "won"} then
         local r,g,b,a = love.graphics.getColor()
         love.graphics.setColor(r,g,b, a*0.4)
       end
@@ -1923,19 +1927,19 @@ function scene.draw(dt)
     if pause then
     
       local current_level = level_name
-      if readSaveFile(level_name, "won") then
+      if readSaveFile{"levels", level_name, "won"} then
         current_level = current_level.." (won) "
       end
-      if readSaveFile(level_name, "clear") then
+      if readSaveFile{"levels", level_name, "clear"} then
         current_level = current_level.." (cleared) "
       end
-      if readSaveFile(level_name, "complete") then
+      if readSaveFile{"levels", level_name, "complete"} then
         current_level = current_level.." (complete) "
       end
-      if readSaveFile(level_name, "bonus") then
+      if readSaveFile{"levels", level_name, "bonus"} then
         current_level = current_level.." (bonused) "
       end
-      local tfs = readSaveFile(level_name, "transform")
+      local tfs = readSaveFile{"levels", level_name, "transform"}
       if tfs then
         local tfstr = ""
         for _,tf in ipairs(tfs) do
@@ -2153,56 +2157,61 @@ function scene.checkInput()
 end
 
 function escResult(do_actual, xwx)
-  if (was_using_editor) then
-    if (do_actual) then
+  if was_using_editor then
+    if do_actual then
       load_mode = "edit"
       new_scene = editor
     else
       return "the editor"
     end
   else
-    if (win_reason == "nxt" and level_next_level ~= nil and level_next_level ~= "") then
-      if (do_actual) then
+    -- i dont know what this is :owoXD:
+    if win_reason == "nxt" and level_next_level ~= nil and level_next_level ~= "" then
+      if do_actual then
         loadLevels({level_next_level}, "play", nil, xwx)
+        return
       else
         return level_next_level
       end
-    elseif (level_parent_level == nil or level_parent_level == "") then
-      if (parent_filename ~= nil and parent_filename ~= "") then
-        if (do_actual) then
-          loadLevels(parent_filename:split("|"), "play", nil, xwx)
-        else
-          return parent_filename
+    elseif #level_tree > 0 then
+      local parent = level_tree[1]
+      local seen = true
+      if type(parent) == "table" then
+        for _,name in ipairs(parent) do
+          if not readSaveFile{"levels", name, "seen"} then
+            seen = false
+            break
+          end
         end
       else
-        if (do_actual) then
-          load_mode = "play"
-          new_scene = loadscene
-          if (love.filesystem.getInfo(world_parent .. "/" .. world .. "/" .. "overworld.txt")) then
-            world = ""
+        seen = readSaveFile{"levels", parent, "seen"}
+      end
+      if seen then
+        if do_actual then
+          if type(parent) == "table" then
+            loadLevels(parent, "play", nil, xwx)
+          else
+            loadLevels({parent}, "play", nil, xwx)
           end
+          table.remove(level_tree, 1)
+          return
         else
-          return "the level selection menu"
+          if type(parent) == "table" then
+            return table.concat(parent, " & ")
+          else
+            return parent
+          end
         end
+      end
+    end
+    if do_actual then
+      load_mode = "play"
+      new_scene = loadscene
+      if (love.filesystem.getInfo(world_parent .. "/" .. world .. "/" .. "overworld.txt")) then
+        world = ""
       end
     else
-      if (readSaveFile(level_parent_level, "seen")) then
-        if (do_actual) then
-          loadLevels({level_parent_level}, "play", nil, xwx)
-        else
-          return level_parent_level
-        end
-      else
-        if (do_actual) then
-          load_mode = "play"
-          new_scene = loadscene
-          if (love.filesystem.getInfo(world_parent .. "/" .. world .. "/" .. "overworld.txt")) then
-            world = ""
-          end
-        else
-          return "the level selection menu"
-        end
-      end
+      return "the level selection menu"
     end
   end
 end

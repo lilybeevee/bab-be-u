@@ -317,10 +317,9 @@ function scene.buildUI()
   local oy = 4
   if world ~= "" then
     if load_mode == "play" and love.filesystem.getInfo(world_parent .. "/" .. world .. "/" .. "overworld.txt") then
-      local overworld_file_name = love.filesystem.read(world_parent .. "/" .. world .. "/" .. "overworld.txt")
-      if love.filesystem.getInfo(world_parent .. "/" .. world .. "/" .. overworld_file_name .. ".bab") then
-        loadLevels({overworld_file_name}, "play")
-      end
+      local overworld = love.filesystem.read(world_parent .. "/" .. world .. "/" .. "overworld.txt")
+      loadWorld(overworld)
+      playing_world = true
     end
   
     local title_y = oy

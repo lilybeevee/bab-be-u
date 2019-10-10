@@ -19,6 +19,10 @@ PACK_UNIT_V3 = "llhhbs" -- ID, TILE, X, Y, DIR, SPECIALS
 
 PACK_SPECIAL_V2 = "ss" -- KEY, VALUE
 
+profile = {
+  name = "bab"
+}
+
 local defaultsettings = {
   music_on = true,
   sfx_on = true,

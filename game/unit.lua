@@ -989,7 +989,7 @@ function updateUnits(undoing, big_update)
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
       for _,on in ipairs(stuff) do
         if hasU(on) and sameFloat(unit, on) then
-          writeSaveFile(level_name, "bonus", true)
+          writeSaveFile(true, {"levels", level_name, "bonus"})
           if timecheck(unit,"be",":o") and (timecheckUs(on)) then
             table.insert(to_destroy, unit)
             playSound("bonus")
@@ -1883,7 +1883,7 @@ function levelBlock()
   local lvlsafe = hasRule(outerlvl,"got","lvl") or hasProperty(outerlvl,"protecc")
   
   if hasProperty(outerlvl,"notranform") then
-    writeSaveFile(level_name,"transform",nil)
+    writeSaveFile(nil, {"levels", level_name, "transform"})
   end
   
   if hasProperty(outerlvl, "loop") then
@@ -2090,7 +2090,7 @@ function levelBlock()
     local yous = getUs()
     for _,unit in ipairs(yous) do
       if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
-        writeSaveFile(level_name, "bonus", true)
+        writeSaveFile(true, {"levels", level_name, "bonus"})
         destroyLevel("bonus")
         if not lvlsafe then return 0,0 end
       end
@@ -3000,7 +3000,7 @@ function deleteUnit(unit,convert,undoing,gone)
   end
 end
 
-function moveUnit(unit,x,y,portal)
+function moveUnit(unit,x,y,portal,instant)
   --print("moving:", unit.fullname, unit.x, unit.y, "to:", x, y)
   --when empty moves, swap it with the empty in its destination tile, to preserve the invariant 'there is exactly empty per tile'
   --also, keep empty out of units_by_tile - it will be added in getUnitsOnTile
@@ -3054,7 +3054,7 @@ function moveUnit(unit,x,y,portal)
     end
 
     -- putting portal check above same-position check to give portal effect through one-tile gap
-    if portal and portal.is_portal and x - portal.x == dirs8[portal.dir][1] and y - portal.y == dirs8[portal.dir][2] then
+    if portal and portal.is_portal and x - portal.x == dirs8[portal.dir][1] and y - portal.y == dirs8[portal.dir][2] and not instant then
       if unit.type == "text" or rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname] then
         should_parse_rules = true
       end
@@ -3074,7 +3074,7 @@ function moveUnit(unit,x,y,portal)
         unit.draw.rotation = (unit.rotatdir - 1) * 45
         tweens["unit:dir:" .. unit.tempid] = nil
       end
-    elseif x ~= unit.x or y ~= unit.y then
+    elseif (x ~= unit.x or y ~= unit.y) and not instant then
       if unit.type == "text" or rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname] then
         should_parse_rules = true
       end
@@ -3096,6 +3096,9 @@ function moveUnit(unit,x,y,portal)
           end)
         end
       end
+    elseif instant then
+      unit.draw.x = x
+      unit.draw.y = y
     end
 
     unit.x = x
@@ -3111,7 +3114,9 @@ function moveUnit(unit,x,y,portal)
     end
   end
 
-  do_move_sound = true
+  if not instant then
+    do_move_sound = true
+  end
 end
 
 function updateDir(unit, dir, force)
@@ -3357,9 +3362,9 @@ function doWin(result_, payload_)
     if doing_past_turns then
       past_queued_wins[result] = payload
     elseif result == "won" and payload == false then
-      if readSaveFile(level_name,"won") then
+      if readSaveFile{"levels",level_name,"won"} then
         playSound("unwin")
-        writeSaveFile(level_name,"won",false)
+        writeSaveFile(false, {"levels",level_name,"won"})
       end
     else
       won_this_session = true
@@ -3369,7 +3374,7 @@ function doWin(result_, payload_)
       win_size = 0
       playSound("win")
       if (not replay_playback) then
-        writeSaveFile(level_name, result, payload)
+        writeSaveFile(payload, {"levels", level_name, result})
         love.filesystem.createDirectory("levels")
         local to_save = replay_string
         local rng_cache_populated = false
@@ -3388,10 +3393,10 @@ function doWin(result_, payload_)
 end
 
 function doXWX()
-  writeSaveFile(level_name,"seen",nil)
-  writeSaveFile(level_name,"won",nil)
-  writeSaveFile(level_name,"bonus",nil)
-  writeSaveFile(level_name,"transform",nil)
+  writeSaveFile(nil,{"levels",level_name,"seen"})
+  writeSaveFile(nil,{"levels",level_name,"won"})
+  writeSaveFile(nil,{"levels",level_name,"bonus"})
+  writeSaveFile(nil,{"levels",level_name,"transform"})
   escResult(true, true)
 end
 

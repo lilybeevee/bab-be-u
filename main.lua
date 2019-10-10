@@ -390,6 +390,16 @@ bab arguments!
     print(colr.green("✓ discord rpc initialized"))
   end
 
+  if not love.filesystem.getInfo("profiles") then
+    love.filesystem.createDirectory("profiles")
+    print(colr.green("✓ created profiles directory"))
+  end
+
+  if not love.filesystem.getInfo("profiles/" .. profile.name) then
+    love.filesystem.createDirectory("profiles/" .. profile.name)
+    print(colr.green("✓ created '"..profile.name.."' profile directory"))
+  end
+
   if is_mobile then
     love.window.setMode(640, 360)
   end

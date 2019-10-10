@@ -134,6 +134,8 @@ end
 function metaClear()
   rules_with = nil
   rules_with_unit = nil
+  level_tree = {}
+  playing_world = false
   parent_filename = nil
   stay_ther = nil
   surrounds = nil
@@ -231,13 +233,13 @@ function loadMap()
           local unit = createUnit(tile, x, y, dir, false, id, nil, color)
           unit.special = specials
         elseif tile == tiles_by_name["lvl"] then
-          if readSaveFile(specials.level, "seen") then
-            local tfs = readSaveFile(specials.level, "transform")
+          if readSaveFile{"levels", specials.level, "seen"} then
+            local tfs = readSaveFile{"levels", specials.level, "transform"}
             for _,t in ipairs(tfs or {tiles_listPossiblyMeta(tile).name}) do
               local unit = createUnit(tiles_by_namePossiblyMeta(t), x, y, dir, false, id, nil, color)
               unit.special = specials
               unit.special.visibility = "open"
-              if readSaveFile(specials.level, "won") then
+              if readSaveFile{"levels", specials.level, "won"} then
                 table.insert(floodfill, {unit, 1})
               end
             end
@@ -259,11 +261,11 @@ function loadMap()
           end
         else
           if specials.level then
-            local tfs = readSaveFile(specials.level, "transform")
+            local tfs = readSaveFile{"levels", specials.level, "transform"}
             for _,t in ipairs(tfs or {tiles_listPossiblyMeta(tile).name}) do
               local unit = createUnit(tiles_by_namePossiblyMeta(t), x, y, dir, false, id, nil, color)
               unit.special = specials
-              if readSaveFile(specials.level, "seen") then
+              if readSaveFile{"levels", specials.level, "seen"} then
                 unit.special.visibility = "open"
               end
             end
@@ -340,7 +342,7 @@ function loadMap()
     initializeEmpties()
     loadStayTher()
     if (not unit_tests) then
-      writeSaveFile(level_name, "seen", true)
+      writeSaveFile(true, {"levels", level_name, "seen"})
     end
   end
   
@@ -1502,7 +1504,7 @@ function testConds(unit, conds, compare_with) --cond should be a {condtype,{obje
       end
     elseif condtype == "wun" then
       local name = unit.special.name or level_name
-      result = readSaveFile(name,"won")
+      result = readSaveFile{"levels",name,"won"}
     elseif condtype == "past" then
       if cond_not then
         result = doing_past_turns
@@ -2639,9 +2641,9 @@ function loadLevels(levels, mode, level_objs, xwx)
     level_background_sprite = data.background_sprite or ""
 
     if map_ver == 0 then
-      table.insert(maps, {data = loadstring("return " .. mapstr)(), info = data})
+      table.insert(maps, {data = loadstring("return " .. mapstr)(), info = data, file = level})
     else
-      table.insert(maps, {data = mapstr, info = data})
+      table.insert(maps, {data = mapstr, info = data, file = level})
     end
 
     if love.filesystem.getInfo(dir .. level .. ".png") then
@@ -2842,39 +2844,81 @@ function extendReplayString(movex, movey, key)
   end
 end
 
-function writeSaveFile(category, key, value)
-  --e.g. "new level", "won", true
+function writeSaveFile(value, arg)
+  --e.g. writeSaveFile(true, {"levels", "new level", "won"})
   if (unit_tests) then return false end
   save = {}
   local filename = world
   if (world == "" or world == nil) then
     filename = "levels"
   end
-  if love.filesystem.read(filename..".savebab") ~= nil then
-    save = json.decode(love.filesystem.read(filename..".savebab"))
+  filename = "profiles/"..profile.name.."/"..filename..".savebab"
+  if love.filesystem.read(filename) ~= nil then
+    save = json.decode(love.filesystem.read(filename))
   end
-  if save[category] == nil then
-    save[category] = {}
+    if #arg > 0 then
+    local current = save
+    for i,category in ipairs(arg) do
+      if i == #arg then break end
+      if current[category] == nil then
+        current[category] = {}
+      end
+      current = current[category]
+    end
+    current[arg[#arg]] = value
+    love.filesystem.write(filename, json.encode(save))
   end
-  save[category][key] = value
-  love.filesystem.write(filename..".savebab", json.encode(save))
   return true
 end
 
-function readSaveFile(category, key)
+function readSaveFile(arg)
+  --e.g. readSaveFile({"levels", "new level", "won"})
   if (unit_tests) then return nil end
   save = {}
   local filename = world
   if (world == "" or world == nil) then
     filename = "levels"
   end
-  if love.filesystem.read(filename..".savebab") ~= nil then
-    save = json.decode(love.filesystem.read(filename..".savebab"))
+  filename = "profiles/"..profile.name.."/"..filename..".savebab"
+  if love.filesystem.read(filename) ~= nil then
+    save = json.decode(love.filesystem.read(filename))
   end
-  if save[category] ~= nil then
-    return save[category][key]
+  local current = save
+  for i,key in ipairs(arg) do
+    if current[key] == nil then return nil end
+    current = current[key]
   end
-  return nil
+  return current
+end
+
+function loadWorld(default)
+  local new_levels = {}
+  level_tree = readSaveFile{"level_tree"} or split(default, ",")
+  new_levels = level_tree[1]
+  table.remove(level_tree, 1)
+  if type(new_levels) ~= "table" then
+    new_levels = {new_levels}
+  end
+  in_world = true
+  loadLevels(new_levels, "play")
+end
+
+function saveWorld()
+  local new_tree = deepCopy(level_tree)
+  table.insert(new_tree, 1, getMapEntry())
+  writeSaveFile(new_tree, {"level_tree"})
+end
+
+function getMapEntry()
+  if #maps == 1 then
+    return maps[1].file or maps[1].info.name
+  else
+    local t = {}
+    for _,map in ipairs(maps) do
+      table.insert(t, map.file or map.info.name)
+    end
+    return t
+  end
 end
 
 function addBaseRule(subject, verb, object, subjcond)
@@ -3197,4 +3241,35 @@ function buildOptions()
     scene.addOption("themes", "menu themes", {{"on", true}, {"off", false}})
   end
   scene.addButton("back", function() options = false; scene.buildUI() end)
+end
+
+function split(inputstr, sep)
+  if sep == nil then
+    sep = "%s"
+  end
+  local t={} ; i=1
+  for str in string.gmatch(inputstr, "([^"..sep.."]+)") do
+    t[i] = str
+    i = i + 1
+  end
+  return t
+end
+
+function selectLastLevels()
+  if not units_by_name["selctr"] then return end
+  local selctrs = units_by_name["selctr"]
+
+  local last_selected = readSaveFile{"levels", level_name, "selected"} or {}
+  if type(last_selected) ~= "table" then
+    last_selected = {last_selected}
+  end
+  
+  for i,level in ipairs(last_selected) do
+    local selctr = selctrs[((i-1)%#selctrs)+1]
+    for _,unit in ipairs(units) do
+      if unit.special.level == level then
+        moveUnit(selctr, unit.x, unit.y, nil, true)
+      end
+    end
+  end
 end

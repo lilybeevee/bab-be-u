@@ -106,6 +106,26 @@ function doMovement(movex, movey, key)
   next_levels, next_level_objs = getNextLevels()
 
   if movex == 0 and movey == 0 and #next_levels > 0 then
+    local going_up = false
+    if #level_tree > 0 then
+      if type(level_tree[1]) == "table" then
+        going_up = eq(level_tree[1], next_levels)
+      elseif #next_levels == 1 then
+        going_up = level_tree[1] == next_levels[1]
+      end
+    end
+    if not going_up then
+      table.insert(level_tree, 1, getMapEntry())
+    else
+      table.remove(level_tree, 1)
+    end
+    if playing_world then
+      if #next_levels == 1 then
+        writeSaveFile(next_levels[1], {"levels", level_name, "selected"})
+      else
+        writeSaveFile(next_levels, {"levels", level_name, "selected"})
+      end
+    end
     loadLevels(next_levels, nil, next_level_objs)
     return
   end
