@@ -1437,7 +1437,7 @@ tiles_list = {
     layer = 20,
     features = { sans = {x=19, y=5, w=4, h=5} },
     tags = {"crash", "oops", "fucky wucky", "face"},
-    desc = "XWX: At end of turn, if U is on XWX, the game crashes.",
+    desc = "XWX: At end of turn, if U is on XWX, you get booted out of the level and erases all progress in the level (win, bonus, transformation).",
   },
   --98
   {
