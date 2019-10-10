@@ -2633,6 +2633,10 @@ function handlePauseButtonPressed(i)
   end
 end
 
+function scene.resize(w, h)
+  scene.buildUI()
+end
+
 function scene.mousePressed(x, y, button)
   if not rules_with["dragbl"] then return end
   
