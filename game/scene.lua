@@ -411,6 +411,7 @@ function scene.keyPressed(key, isrepeat)
   
     if key == "g" and (key_down["lctrl"] or key_down["rctrl"]) then
         settings["grid_lines"] = not settings["grid_lines"]
+        saveAll()
     end
   
   

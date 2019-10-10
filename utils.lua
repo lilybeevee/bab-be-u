@@ -2303,6 +2303,27 @@ function mergeTable(t, other)
   end
 end
 
+function fullScreen()
+  if not fullscreen then
+    if not love.window.isMaximized( ) then
+      winwidth, winheight = love.graphics.getDimensions( )
+    end
+    love.window.setMode(0, 0, {borderless=false})
+    love.window.maximize( )
+    fullscreen = true
+  elseif fullscreen then
+    love.window.setMode(winwidth, winheight, {borderless=false, resizable=true, minwidth=705, minheight=510})
+    love.window.maximize()
+    love.window.restore()
+    fullscreen = false
+  end
+  settings["fullscreen"] = fullscreen
+  saveAll()
+  if scene ~= editor then
+    scene.buildUI()
+  end
+end
+
 function saveAll()
   love.filesystem.write("Settings.bab", json.encode(settings))
 end
@@ -3170,21 +3191,7 @@ function buildOptions()
   scene.addOption("grid_lines", "grid lines", {{"off", false}, {"on", true}})
   scene.addOption("mouse_lines", "mouse lines", {{"off", false}, {"on", true}})   
   scene.addOption("stopwatch_effect", "stopwatch effect", {{"on", true}, {"off", false}})
-  scene.addOption("fullscreen", "resolution", {{"windowed", false}, {"fullscreen", true}}, function(val)
-    if val then
-      if not love.window.isMaximized() then
-        winwidth, winheight = love.graphics.getDimensions()
-      end
-      love.window.setMode(0, 0, {borderless=false})
-      love.window.maximize()
-      fullscreen = true
-    else
-      love.window.setMode(winwidth, winheight, {borderless=false, resizable=true, minwidth=705, minheight=510})
-      love.window.maximize()
-      love.window.restore()
-      fullscreen = false
-    end
-  end)
+  scene.addOption("fullscreen", "screen mode", {{"windowed", false}, {"fullscreen", true}}, function() fullScreen() end)
   scene.addOption("focus_pause", "pause on defocus", {{"off", false}, {"on", true}}) 
   if scene == menu then
     scene.addOption("themes", "menu themes", {{"on", true}, {"off", false}})
