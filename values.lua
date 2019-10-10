@@ -325,7 +325,6 @@ tiles_list = {
   {
     name = "bab",
     sprite = "bab",
-    slep = true,
     type = "object",
     color = {0, 3},
     layer = 6,
@@ -533,7 +532,6 @@ tiles_list = {
   {
     name = "text_:)",
     sprite = "text_good",
-    slep = true,
     type = "text",
     texttype = {property = true},
     color = {2, 4},
@@ -699,7 +697,6 @@ tiles_list = {
   {
     name = "skul",
     sprite = "skul",
-    slep = true,
     type = "object",
     color = {2, 1},
     layer = 5,
@@ -742,7 +739,6 @@ tiles_list = {
   {
     name = "keek",
     sprite = "keek",
-    slep = true,
     type = "object",
     color = {2, 2},
     layer = 5,
@@ -765,7 +761,6 @@ tiles_list = {
   {
     name = "meem",
     sprite = "meem",
-    slep = true,
     type = "object",
     color = {3, 1},
     layer = 5,
@@ -811,7 +806,6 @@ tiles_list = {
   {
     name = "os",
     sprite = "os",
-    slep = true,
     type = "object",
     color = {0, 3},
     layer = 5,
@@ -897,7 +891,6 @@ tiles_list = {
   {
     name = "wog",
     sprite = "wog",
-    slep = true,
     type = "object",
     color = {2, 4},
     layer = 5,
@@ -972,7 +965,6 @@ tiles_list = {
   {
     name = "text_:(",
     sprite = "text_bad",
-    slep = true,
     type = "text",
     texttype = {property = true},
     color = {2, 1},
@@ -1060,7 +1052,6 @@ tiles_list = {
   {
     name = "text_:o",
     sprite = "text_whoa",
-    slep = true,
     type = "text",
     texttype = {property = true},
     color = {4, 1},
@@ -1184,7 +1175,6 @@ tiles_list = {
   {
     name = "kirb",
     sprite = "kirb",
-    slep = true,
     type = "object",
     color = {4, 2},
     layer = 5,
@@ -1239,7 +1229,6 @@ tiles_list = {
   {
     name = "tot",
     sprite = "tot",
-    slep = true,
     type = "object",
     color = {4, 2},
     layer = 5,
@@ -1273,7 +1262,6 @@ tiles_list = {
   {
     name = "o",
     sprite = "o",
-    slep = true,
     type = "object",
     texttype = {object = true, letter = true},
     color = {2, 4},
@@ -1296,7 +1284,6 @@ tiles_list = {
   {
     name = "han",
     sprite = "han",
-    slep = true,
     type = "object",
     color = {0, 3},
     layer = 7,
@@ -1442,7 +1429,6 @@ tiles_list = {
   {
     name = "text_xwx",
     sprite = "text_xwx",
-    slep = true,
     type = "text",
     texttype = {property = true},
     color = {3, 2},
@@ -1811,7 +1797,6 @@ tiles_list = {
   {
     name = "pata",
     sprite = "pata",
-    slep = true,
     type = "object",
     color = {3, 3},
     layer = 5,
@@ -1833,7 +1818,6 @@ tiles_list = {
   {
     name = "larry",
     sprite = "larry",
-    slep = true,
     type = "object",
     color = {2, 4},
     layer = 5,
@@ -1856,7 +1840,6 @@ tiles_list = {
   {
     name = "lila",
     sprite = "lila",
-    slep = true,
     color = {4, 2},
     layer = 5,
     rotate = true,
@@ -2128,7 +2111,6 @@ tiles_list = {
   {
     name = "zsoob",
     sprite = "zsoob",
-    slep = true,
     type = "object",
     color = {4,1},
     layer = 5,
@@ -2185,7 +2167,6 @@ tiles_list = {
   {
     name = "steev",
     sprite = "steev",
-    slep = true,
     type = "object",
     color = {2,3},
     layer = 5,
@@ -2356,7 +2337,6 @@ tiles_list = {
   {
     name = "boy",
     sprite = "boy",
-    slep = true,
     type = "object",
     color = {0, 2},
     layer = 5,
@@ -2417,7 +2397,6 @@ tiles_list = {
   {
     name = "ghost fren",
     sprite = "ghost",
-    slep = true,
     type = "object",
     color = {4, 2},
     layer = 5,
@@ -2441,7 +2420,6 @@ tiles_list = {
   {
     name = "robobot",
     sprite = "robobot",
-    slep = true,
     type = "object",
     color = {6, 1},
     layer = 5,
@@ -3917,7 +3895,6 @@ tiles_list = {
   {
     name = "creb",
     sprite = "creb",
-    slep = true,
     type = "object",
     color = {2,2},
     layer = 5,
@@ -3957,7 +3934,6 @@ tiles_list = {
   {
     name = "jill",
     sprite = "jill",
-    slep = true,
     type = "object",
     color = {1,3},
     layer = 5,
@@ -4097,7 +4073,6 @@ tiles_list = {
   {
     name = "hors",
     sprite = "hors",
-    slep = true,
     type = "object",
     color = {6,1},
     layer = 5,
@@ -4265,7 +4240,6 @@ tiles_list = {
   {
     name = "square",
     sprite = "square",
-    slep = true,
     type = "object",
     color = {2, 4},
     layer = 6,
@@ -4277,7 +4251,6 @@ tiles_list = {
   {
     name = "triangle",
     sprite = "triangle",
-    slep = true,
     type = "object",
     color = {2, 4},
     layer = 6,
@@ -4395,7 +4368,6 @@ tiles_list = {
   {
     name = "snoman",
     sprite = "snoman",
-    slep = true,
     type = "object",
     color = {0, 3},
     layer = 5,
@@ -4792,7 +4764,6 @@ tiles_list = {
   {
     name = "text_;d",
     sprite = "text_ungood",
-    slep = true,
     type = "text",
     texttype = {property = true},
     color = {1,2},
@@ -4815,7 +4786,6 @@ tiles_list = {
   {
     name = "beeee",
     sprite = {"beeee","no1"},
-    slep = true,
     type = "object",
     color = {{2, 4},{0,0}},
     colored = {true,true},
@@ -4954,7 +4924,6 @@ tiles_list = {
   {
     name = "son",
     sprite = "son",
-    slep = true,
     type = "object",
     color = {2,4},
     layer = 4,
@@ -5161,7 +5130,6 @@ tiles_list = {
   {
     name = "fishe",
     sprite = "fishe",
-    slep = true,
     type = "object",
     color = {0, 3},
     layer = 5,
@@ -5353,7 +5321,6 @@ tiles_list = {
   {
     name = "statoo",
     sprite = "statoo",
-    slep = true,
     type = "object",
     color = {0, 1},
     layer = 5,
@@ -5517,7 +5484,6 @@ tiles_list = {
   {
     name = "bunmy",
     sprite = "bunmy",
-    slep = true,
     type = "object",
     color = {0, 3},
     layer = 6,
@@ -5623,7 +5589,6 @@ tiles_list = {
   {
     name = "bog",
     sprite = "bog",
-    slep = true,
     type = "object",
     color = {6, 1},
     layer = 6,
@@ -5646,7 +5611,6 @@ tiles_list = {
   {
     name = "pingu",
     sprite = "pingu",
-    slep = true,
     type = "object",
     color = {1, 3},
     layer = 6,
@@ -5669,7 +5633,6 @@ tiles_list = {
   {
     name = "snek",
     sprite = "snek",
-    slep = true,
     type = "object",
     color = {5, 3},
     layer = 6,
@@ -5692,7 +5655,6 @@ tiles_list = {
   {
     name = "ripof",
     sprite = "ripof",
-    slep = true,
     type = "object",
     color = {1, 3},
     layer = 6,
@@ -5716,7 +5678,6 @@ tiles_list = {
   {
     name = "butflye",
     sprite = "butflye",
-    slep = true,
     type = "object",
     color = {1, 4},
     layer = 6,
@@ -5740,7 +5701,6 @@ tiles_list = {
   {
     name = "wurm",
     sprite = "wurm",
-    slep = true,
     type = "object",
     color = {3, 3},
     layer = 6,
@@ -5822,7 +5782,6 @@ tiles_list = {
   {
     name = "ratt",
     sprite = "ratt",
-    slep = true,
     type = "object",
     color = {0, 1},
     layer = 6,
@@ -5846,7 +5805,6 @@ tiles_list = {
   {
     name = "moo",
     sprite = "moo",
-    slep = true,
     type = "object",
     color = {0, 3},
     layer = 6,
@@ -5870,7 +5828,6 @@ tiles_list = {
   {
     name = "enbybog",
     sprite = "enbybog",
-    slep = true,
     type = "object",
     color = {2, 2},
     layer = 6,
@@ -5893,7 +5850,6 @@ tiles_list = {
   {
     name = "shrim",
     sprite = "shrim",
-    slep = true,
     type = "object",
     color = {2, 2},
     layer = 6,
@@ -5917,7 +5873,6 @@ tiles_list = {
   {
     name = "flamgo",
     sprite = "flamgo",
-    slep = true,
     type = "object",
     color = {4, 1},
     layer = 6,
@@ -5940,7 +5895,6 @@ tiles_list = {
   {
     name = "gul",
     sprite = "gul",
-    slep = true,
     type = "object",
     color = {0, 3},
     layer = 7,
@@ -5962,7 +5916,6 @@ tiles_list = {
   {
     name = "starrfishe",
     sprite = "starrfishe",
-    slep = true,
     type = "object",
     color = {4, 2},
     layer = 6,
@@ -5986,7 +5939,6 @@ tiles_list = {
   {
     name = "sneel",
     sprite = "sneel",
-    slep = true,
     type = "object",
     color = {4, 2},
     layer = 6,
@@ -6010,7 +5962,6 @@ tiles_list = {
   {
     name = "kapa",
     sprite = "kapa",
-    slep = true,
     type = "object",
     color = {5, 2},
     layer = 6,
@@ -6034,7 +5985,6 @@ tiles_list = {
   {
     name = "urei",
     sprite = "urei",
-    slep = true,
     type = "object",
     color = {0, 3},
     layer = 7,
@@ -6077,7 +6027,6 @@ tiles_list = {
   {
     name = "ryugon",
     sprite = "ryugon",
-    slep = true,
     type = "object",
     color = {5, 2},
     layer = 7,
@@ -6100,7 +6049,6 @@ tiles_list = {
   {
     name = "iy",
     sprite = "iy",
-    slep = true,
     type = "object",
     color = {0, 3},
     layer = 5,
@@ -6206,7 +6154,6 @@ tiles_list = {
   {
     name = "cavebab",
     sprite = "cavebab",
-    slep = true,
     type = "object",
     color = {3,3},
     layer = 7,
@@ -6689,7 +6636,6 @@ tiles_list = {
     colored = {true,false,false,false},
     rotate = true,
     features = { sans = {x=21,y=9,w=1,h=2} },
-    slep = true,
     layer = 9,
     tags = {"madeline","celeste","chars"},
     desc = "she clim mountain in very good game",
@@ -6713,7 +6659,6 @@ tiles_list = {
     colored = {true,false,false,false,false},
     rotate = true,
     features = { sans = {x=21,y=9,w=1,h=2} },
-    slep = true,
     layer = 9,
     tags = {"badeline","celeste","chars"},
     desc = "emag doog yrev ni niatnuom milc ehs",
@@ -6908,7 +6853,6 @@ tiles_list = {
   {
     name = "pidgin",
     sprite = "pidgin",
-    slep = true,
     type = "object",
     color = {0, 2},
     layer = 6,
@@ -6995,7 +6939,6 @@ tiles_list = {
   {
     name = "sans",
     sprite = {"sans_base","sans_jacket"},
-    slep = true,
     color = {{0,3},{1,3}},
     colored = {false,true},
     layer = 5,
@@ -7025,7 +6968,6 @@ tiles_list = {
   {
     name = "kva",
     sprite = "kva",
-    slep = true,
     type = "object",
     color = {5,3},
     layer = 5,
@@ -7111,7 +7053,6 @@ tiles_list = {
   {
     name = "copkat",
     sprite = {"copkat_base", "copkat_stuff", "copkat_badge"},
-    slep = true,
     color = {{0,3}, {1,3}, {2,4}},
     colored = {true, false, false},
     layer = 5,
@@ -7125,7 +7066,6 @@ tiles_list = {
   {
     name = "kat",
     sprite = "kat",
-    slep = true,
     color = {0, 3},
     layer = 6,
     rotate = true,
@@ -7168,7 +7108,6 @@ tiles_list = {
   {
     name = "swan",
     sprite = "swan",
-    slep = true,
     color = {0, 3},
     layer = 6,
     rotate = true,
@@ -7201,7 +7140,6 @@ tiles_list = {
   {
     name = "spoder",
     sprite = "spoder",
-    slep = true,
     color = {3, 1},
     layer = 6,
     rotate = true,
@@ -7224,7 +7162,6 @@ tiles_list = {
   {
     name = "weeb",
     sprite = "weeb",
-    slep = true,
     color = {0, 3},
     layer = 3,
     rotate = true,
@@ -7246,7 +7183,6 @@ tiles_list = {
   {
     name = "flof",
     sprite = "flof",
-    slep = true,
     color = {0, 3},
     layer = 6,
     rotate = true,
@@ -7273,7 +7209,6 @@ tiles_list = {
   {
     name = "err",
     sprite = "err",
-    slep = true,
     color = {0, 3},
     layer = 6,
     rotate = true,
@@ -7479,7 +7414,6 @@ tiles_list = {
     color = {2,4},
     layer = 5,
     rotate = true,
-    slep = true,
     convertible = false,
     features = { sans = {x=19, y=10, w=2, h=2} },
     tags = {"chars", "the world", "jojo", "DIO"},
@@ -7613,7 +7547,6 @@ tiles_list = {
   {
     name = "der",
     sprite = "der",
-    slep = true,
     type = "object",
     color = {6,1},
     layer = 5,
@@ -7788,7 +7721,6 @@ tiles_list = {
   {
     name = "ginn",
     sprite = "ginn",
-    slep = true,
     type = "object",
     color = {6,2},
     layer = 5,
@@ -7888,7 +7820,6 @@ tiles_list = {
   {
     name = "toby",
     sprite = "toby",
-    slep = true,
     color = {0, 3},
     layer = 6,
     rotate = true,
@@ -7919,7 +7850,6 @@ tiles_list = {
   {
     name = "angle",
     sprite = "angle",
-    slep = true,
     color = {0, 3},
     layer = 6,
     rotate = true,
@@ -7946,7 +7876,6 @@ tiles_list = {
   {
     name = "debil",
     sprite = "debil",
-    slep = true,
     color = {2, 2},
     layer = 6,
     rotate = true,
@@ -8028,7 +7957,6 @@ tiles_list = {
   {
     name = "mug",
     sprite = "mug",
-    slep = true,
     color = {0, 3},
     layer = 8,
     rotate = true,
