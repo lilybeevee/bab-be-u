@@ -1495,6 +1495,23 @@ function miscUpdates()
         local roll = math.random(6)
         unit.sprite[2] = "die_"..roll
       end
+
+      if unit.fullname == "text_katany" then
+        unit.sprite = "text_katany"
+        if rules_with_unit[unit] then
+          for _,rules in ipairs(rules_with_unit[unit]) do
+            if rules.rule.object.unit == unit then
+              local tile_id = tiles_by_name[rules.rule.subject.name]
+              if tile_id then
+                local tile = tiles_list[tile_id]
+                if tile.features and tile.features.katany and tile.features.katany.nya then
+                  unit.sprite = "text_katanya"
+                end
+              end
+            end
+          end
+        end
+      end
       
       local specials = {
         os = true,
@@ -1507,6 +1524,7 @@ function miscUpdates()
         ditto = true,
         bup = true,
         die = true,
+        text_katany = true,
       }
       
       if not specials[unit.fullname] then

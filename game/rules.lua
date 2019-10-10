@@ -32,6 +32,7 @@ function clearRules()
   
   old_rules_with = rules_with
   rules_with = {}
+  rules_with_unit = {}
   not_rules = {}
   protect_rules = {}
 
@@ -976,6 +977,13 @@ function postRules()
     end
     if (object ~= subject and object ~= verb) then
       table.insert(rules_with[object], rules)
+    end
+
+    for _,unit in ipairs(rules.units) do
+      if not rules_with_unit[unit] then
+        rules_with_unit[unit] = {}
+      end
+      table.insert(rules_with_unit[unit], rules)
     end
 
     mergeTable(all_units, rules.units)

@@ -2190,7 +2190,10 @@ tiles_list = {
     color = {2,3},
     layer = 5,
     rotate = true,
-    features = { sans = {x=20, y=13, w=2, h=2} },
+    features = { 
+      sans = {x=20, y=13, w=2, h=2},
+      katany = {nya = true},
+    },
     tags = {"chars", "5 step steve", "cat"},
     desc = "can only moov 5 steps b4 dyin nya",
   },
@@ -7134,6 +7137,7 @@ tiles_list = {
       bowie = {x = 5, y = -3},
       hatt = {x = 7},
       gunne = {x = 2, y = 4},
+      katany = {nya = true},
     },
     tags = {"chars", "cat", "sis", "sister"},
     desc = "bab's sister"
