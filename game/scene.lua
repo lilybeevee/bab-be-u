@@ -2176,7 +2176,7 @@ function escResult(do_actual, xwx)
     elseif #level_tree > 0 then
       local parent = level_tree[1]
       local seen = true
-      if type(parent) == "table" then
+      --[[if type(parent) == "table" then
         for _,name in ipairs(parent) do
           if not readSaveFile{"levels", name, "seen"} then
             seen = false
@@ -2185,7 +2185,7 @@ function escResult(do_actual, xwx)
         end
       else
         seen = readSaveFile{"levels", parent, "seen"}
-      end
+      end]]
       if seen then
         if do_actual then
           if type(parent) == "table" then
