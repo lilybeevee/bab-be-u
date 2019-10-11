@@ -1523,6 +1523,8 @@ function testConds(unit, conds, compare_with) --cond should be a {condtype,{obje
       end
     elseif condtype == "sameface" then
       result = unit.dir == compare_with.dir
+    elseif condtype == "oob" then
+      result = not inBounds(unit.x,unit.y)
     else
       print("unknown condtype: " .. condtype)
       result = false
