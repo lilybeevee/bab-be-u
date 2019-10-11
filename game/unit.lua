@@ -148,7 +148,7 @@ function moveBlock()
     local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
     for _,on in ipairs(stuff) do
       --we're going to deliberately let two same name teles tele if they're on each other, since with the deterministic behaviour it's predictable and interesting
-      if unit ~= on and sameFloat(unit, on) and timecheck(unit,"be","visitfren") --[[and unit.fullname ~= on.fullname]] then
+      if unit ~= on and sameFloat(unit, on) and ignoreCheck(unit, on, "visitfren") and timecheck(unit,"be","visitfren") --[[and unit.fullname ~= on.fullname]] then
         local destinations = teles_by_name[unit.fullname]
         local source_index = teles_by_name_index[unit.fullname][unit]
         
@@ -368,7 +368,7 @@ function moveBlock()
   for _,unit in ipairs(isshift) do
     local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
     for _,on in ipairs(stuff) do
-      if unit ~= on and sameFloat(unit, on) and timecheck(unit,"be","go") then
+      if unit ~= on and sameFloat(unit, on) and ignoreCheck(unit, on, "go") and timecheck(unit,"be","go") then
         addUndo({"update", on.id, on.x, on.y, on.dir})
         on.olddir = on.dir
         updateDir(on, unit.dir)
@@ -380,7 +380,7 @@ function moveBlock()
   for _,unit in ipairs(isshift) do
     local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
     for _,on in ipairs(stuff) do
-      if unit ~= on and sameFloat(unit, on) and timecheck(unit,"be","goooo") then
+      if unit ~= on and sameFloat(unit, on) and ignoreCheck(unit, on, "goooo") and timecheck(unit,"be","goooo") then
         addUndo({"update", on.id, on.x, on.y, on.dir})
         on.olddir = on.dir
         updateDir(on, unit.dir)
@@ -398,14 +398,14 @@ function moveBlock()
       local pushfront = false
       local pushbehin = false
       for _,on in ipairs(stuff) do
-        if hasProperty(on, "go away pls") then
+        if hasProperty(on, "go away pls") and ignoreCheck(unit, on, "go away pls") then
           pushfront = true
           break
         end
       end
       if pushfront then
         for _,on in ipairs(stuff2) do
-          if hasProperty(on, "go away pls") then
+          if hasProperty(on, "go away pls") and ignoreCheck(unit, on, "go away pls") then
             pushbehin = true
             break
           end
@@ -490,7 +490,6 @@ function updateUnits(undoing, big_update)
     
     local give_me_moar = true
     local moar_repeats = 0
-    local moar_movers = {}
     while (give_me_moar) do
       give_me_moar = false
       local ismoar = getUnitsWithEffectAndCount("moar")
@@ -512,7 +511,8 @@ function updateUnits(undoing, big_update)
                     local new_unit = createUnit(tiles_by_name[unit.fullname], unit.x, unit.y, unit.dir)
                     addUndo({"create", new_unit.id, false})
                     _, __, ___, x, y = getNextTile(unit, dx, dy, i*2-1, false)
-                    table.insert(moar_movers,{unit = new_unit, x = x, y = y, ox = unit.x, oy = unit.y, dir = i*2-1})
+                    moveUnit(new_unit,x,y)
+                    addUndo({"update", new_unit.id, unit.x, unit.y, unit.dir})
                   elseif unit.class == "cursor" then
                     local others = getCursorsOnTile(unit.x + dx, unit.y + dy)
                     if #others == 0 then
@@ -537,7 +537,8 @@ function updateUnits(undoing, big_update)
                     local new_unit = createUnit(tiles_by_name[unit.fullname], unit.x, unit.y, unit.dir)
                     addUndo({"create", new_unit.id, false})
                     _, __, ___, x, y = getNextTile(unit, dx, dy, i, false)
-                    table.insert(moar_movers,{unit = new_unit, x = x, y = y, ox = unit.x, oy = unit.y, dir = i*2-1})
+                    moveUnit(new_unit,x,y)
+                    addUndo({"update", new_unit.id, unit.x, unit.y, unit.dir})
                   elseif unit.class == "cursor" then
                     local others = getCursorsOnTile(unit.x + dx, unit.y + dy)
                     if #others == 0 then
@@ -553,11 +554,6 @@ function updateUnits(undoing, big_update)
         end
       end
       moar_repeats = moar_repeats + 1
-    end
-    
-    for _,move in ipairs(moar_movers) do
-      moveUnit(move.unit,move.x,move.y)
-      addUndo({"update", move.unit.id, move.ox, move.oy, move.dir})
     end
     
     local to_destroy = {}
@@ -588,7 +584,7 @@ function updateUnits(undoing, big_update)
             end
           end
           for _,other in ipairs(check) do
-            if other ~= nuke then
+            if other ~= nuke and ignoreCheck(other, nuke, "nuek") then
               table.insert(to_destroy,other)
               playSound("break")
               addParticles("destroy", other.x, other.y, {2,2})
@@ -605,12 +601,14 @@ function updateUnits(undoing, big_update)
             local others = getUnitsOnTile(fire.x+dx,fire.y+dy)
             if inBounds(fire.x+dx,fire.y+dy) then
               for _,on in ipairs(others) do
-                if on.name == "xplod" or hasProperty(on, "nuek") then
-                  lit = true
-                elseif sameFloat(on,fire.parent) then
-                  table.insert(to_destroy,on)
-                  playSound("break")
-                  addParticles("destroy", on.x, on.y, {2,2})
+                if ignoreCheck(on, fire.parent, "nuek") then
+                  if on.name == "xplod" or hasProperty(on, "nuek") then
+                    lit = true
+                  elseif sameFloat(on,fire.parent) then
+                    table.insert(to_destroy,on)
+                    playSound("break")
+                    addParticles("destroy", on.x, on.y, {2,2})
+                  end
                 end
               end
               if not lit then
@@ -692,7 +690,7 @@ function updateUnits(undoing, big_update)
           local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
           for _,on in ipairs(stuff) do
             if splits_per_tile[coords] >= 16 then break end
-            if unit ~= on and sameFloat(unit, on) and not on.new then
+            if unit ~= on and sameFloat(unit, on) and not on.new and ignoreCheck(on, unit, "split") then
               if timecheck(unit,"be","split") and timecheck(on) then
                 local dir1 = dirAdd(unit.dir,0)
                 local dx1 = dirs8[dir1][1]
@@ -783,7 +781,7 @@ function updateUnits(undoing, big_update)
               onmoved = true
             end
           end
-          if unitmoved then
+          if unitmoved and ignoreCheck(on, unit) then
             if timecheck(unit,"vs",on) then
               table.insert(to_destroy,on)
               playSound("break")
@@ -793,7 +791,7 @@ function updateUnits(undoing, big_update)
             end
             addParticles("destroy", on.x, on.y, on.color)
           end
-          if onmoved then
+          if onmoved and ignoreCheck(unit, on) then
             if timecheck(unit,"vs",on) then
               table.insert(to_destroy,unit)
               playSound("break")
@@ -814,19 +812,35 @@ function updateUnits(undoing, big_update)
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
       for _,on in ipairs(stuff) do
         if unit ~= on and sameFloat(unit, on) then
-          if timecheck(unit,"be","no swim") and timecheck(on) then
-            table.insert(to_destroy, unit)
-            table.insert(to_destroy, on)
-            playSound("sink")
-            shakeScreen(0.3, 0.1)
-          else
-            table.insert(time_destroy,unit.id)
-            table.insert(time_destroy,on.id)
-						addUndo({"time_destroy",unit.id})
-						addUndo({"time_destroy",on.id})
-            table.insert(time_sfx,"sink")
+          local ignore_unit = ignoreCheck(unit, on)
+          local ignore_on = ignoreCheck(on, unit, "no swim")
+          if ignore_unit or ignore_on then
+            if timecheck(unit,"be","no swim") and timecheck(on) then
+              if ignore_unit then
+                table.insert(to_destroy, unit)
+              end
+              if ignore_on then
+                table.insert(to_destroy, on)
+              end
+              playSound("sink")
+              shakeScreen(0.3, 0.1)
+            else
+              if ignore_unit then
+                table.insert(time_destroy,unit.id)
+                addUndo({"time_destroy",unit.id})
+              end
+              if ignore_on then
+                table.insert(time_destroy,on.id)
+                addUndo({"time_destroy",on.id})
+              end
+              table.insert(time_sfx,"sink")
+            end
+            if ignore_unit then
+              addParticles("destroy", unit.x, unit.y, ignore_on and on.color or unit.color)
+            else
+              addParticles("destroy", on.x, on.y, on.color)
+            end
           end
-          addParticles("destroy", unit.x, unit.y, on.color)
         end
       end
     end
@@ -837,7 +851,7 @@ function updateUnits(undoing, big_update)
     for _,unit in ipairs(isweak) do
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
       for _,on in ipairs(stuff) do
-        if unit ~= on and sameFloat(unit, on) then
+        if unit ~= on and sameFloat(unit, on) and ignoreCheck(unit, on) then
           if timecheck(unit,"be","ouch") and timecheck(on) then
             table.insert(to_destroy, unit)
             playSound("break")
@@ -858,7 +872,7 @@ function updateUnits(undoing, big_update)
     for _,unit in ipairs(ishot) do
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
       for _,on in ipairs(stuff) do
-        if hasProperty(on, "fridgd") and sameFloat(unit, on) then
+        if hasProperty(on, "fridgd") and sameFloat(unit, on) and ignoreCheck(on, unit, "hotte") then
           if timecheck(unit,"be","hotte") and timecheck(on,"be","fridgd") then
             table.insert(to_destroy, on)
             playSound("hotte")
@@ -879,7 +893,7 @@ function updateUnits(undoing, big_update)
     for _,unit in ipairs(isdefeat) do
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
       for _,on in ipairs(stuff) do
-        if hasU(on) and sameFloat(unit, on) then
+        if hasU(on) and sameFloat(unit, on) and ignoreCheck(on, unit, ":(") then
           if timecheck(unit,"be",":(") and (timecheckUs(on)) then
             table.insert(to_destroy, on)
             playSound("break")
@@ -901,25 +915,41 @@ function updateUnits(undoing, big_update)
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
       for _,on in ipairs(stuff) do
         if hasProperty(on, "for dor") and sameFloat(unit, on) then
-          if timecheck(unit,"be","ned kee") and timecheck(on,"be","for dor") then
-            table.insert(to_destroy, unit)
-            table.insert(to_destroy, on)
-            playSound("break")
-            playSound("unlock")
-            shakeScreen(0.3, 0.1)
-          else
-            table.insert(time_destroy,unit.id)
-            table.insert(time_destroy,on.id)
-            addUndo({"time_destroy",unit.id})
-            addUndo({"time_destroy",on.id})
-            table.insert(time_sfx,"break")
-            table.insert(time_sfx,"unlock")
+          local ignore_unit = ignoreCheck(unit, on, "for dor")
+          local ignore_on = ignoreCheck(on, unit, "ned kee")
+          if ignore_unit or ignore_on then
+            if timecheck(unit,"be","ned kee") and timecheck(on,"be","for dor") then
+              if ignore_unit then
+                table.insert(to_destroy, unit)
+              end
+              if ignore_on then
+                table.insert(to_destroy, on)
+              end
+              playSound("break")
+              playSound("unlock")
+              shakeScreen(0.3, 0.1)
+            else
+              if ignore_unit then
+                table.insert(time_destroy,unit.id)
+                addUndo({"time_destroy",unit.id})
+              end
+              if ignore_on then
+                table.insert(time_destroy,on.id)
+                addUndo({"time_destroy",on.id})
+              end
+              table.insert(time_sfx,"break")
+              table.insert(time_sfx,"unlock")
+            end
+            if ignore_unit then
+              addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
+            end
+            if ignore_on then
+              addParticles("destroy", on.x, on.y, on.color)
+            end
+            --unlike other destruction effects, keys and doors pair off one-by-one
+            to_destroy = handleDels(to_destroy)
+            break
           end
-          addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
-          addParticles("destroy", on.x, on.y, on.color)
-          --unlike other destruction effects, keys and doors pair off one-by-one
-          to_destroy = handleDels(to_destroy)
-          break
         end
       end
     end
@@ -929,7 +959,7 @@ function updateUnits(undoing, big_update)
       local unit = ruleparent[2]
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, true, hasProperty(unit,"big"))
       for _,on in ipairs(stuff) do
-        if unit ~= on and hasRule(unit, "snacc", on) and sameFloat(unit, on) then
+        if unit ~= on and hasRule(unit, "snacc", on) and sameFloat(unit, on) and ignoreCheck(on, unit) then
           if timecheck(unit,"snacc",on) and timecheck(on) then
             table.insert(to_destroy, on)
             playSound("snacc")
@@ -948,7 +978,7 @@ function updateUnits(undoing, big_update)
     for _,unit in ipairs(isreset) do
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
       for _,on in ipairs(stuff) do
-        if hasU(on) and sameFloat(unit, on) then
+        if hasU(on) and sameFloat(unit, on) and ignoreCheck(on, unit, "try again") then
           if timecheck(unit,"be","try again") and (timecheckUs(on)) then
             will_undo = true
             break
@@ -969,7 +999,7 @@ function updateUnits(undoing, big_update)
       if not hasProperty(ruleparent[1].rule.object,"slep") then
         local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
         for _,on in ipairs(stuff) do
-          if hasU(on) and sameFloat(unit, on) then
+          if hasU(on) and sameFloat(unit, on) and ignoreCheck(on, unit, "xwx") then
             if timecheck(unit,"be","xwx") and (timecheckUs(on)) then
               doXWX()
             else
@@ -988,8 +1018,8 @@ function updateUnits(undoing, big_update)
     for _,unit in ipairs(isbonus) do
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
       for _,on in ipairs(stuff) do
-        if hasU(on) and sameFloat(unit, on) then
-          writeSaveFile(level_name, "bonus", true)
+        if hasU(on) and sameFloat(unit, on) and ignoreCheck(on, unit, ":o") then
+          writeSaveFile(true, {"levels", level_name, "bonus"})
           if timecheck(unit,"be",":o") and (timecheckUs(on)) then
             table.insert(to_destroy, unit)
             playSound("bonus")
@@ -1009,7 +1039,7 @@ function updateUnits(undoing, big_update)
     for _,unit in ipairs(isunwin) do
       local stuff = getUnitsOnTile(unit.x,unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
       for _,on in ipairs(stuff) do
-        if hasU(on) and sameFloat(unit, on) then
+        if hasU(on) and sameFloat(unit, on) and ignoreCheck(on, unit, ";d") then
           if timecheck(unit,"be","d") and (timecheckUs(on)) then
             unwins = unwins + 1
           else
@@ -1025,7 +1055,7 @@ function updateUnits(undoing, big_update)
     for _,unit in ipairs(iswin) do
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
       for _,on in ipairs(stuff) do
-        if hasU(on) and sameFloat(unit, on) then
+        if hasU(on) and sameFloat(unit, on) and ignoreCheck(on, unit, ":)") then
           if timecheck(unit,"be",":)") and (timecheckUs(on)) then
             wins = wins + 1
           else
@@ -1051,7 +1081,7 @@ function updateUnits(undoing, big_update)
           local ons = getUnitsOnTile(other.x,other.y,nil,nil,other,nil,hasProperty(unit,"big"))
           local innersuccess = false
           for _,on in ipairs(ons) do
-            if sameFloat(other,on) then
+            if sameFloat(other,on) and ignoreCheck(other,on) then
               innersuccess = true
             end
           end
@@ -1068,7 +1098,7 @@ function updateUnits(undoing, big_update)
       if v then
         local stuff = getUnitsOnTile(unit.x,unit.y,nil,nil,nil,nil,hasProperty(unit,"big"))
         for _,on in ipairs(stuff) do
-          if hasU(on) and sameFloat(unit,on) then
+          if hasU(on) and sameFloat(unit,on) and ignoreCheck(on,unit) then
             wins = wins + 1
           end
         end
@@ -1241,6 +1271,7 @@ function miscUpdates()
     if not deleted and not unit.removed_final then
       local tile = tiles_list[unit.tile]
       unit.layer = tile.layer + (20 * (graphical_property_cache["flye"][unit] or 0))
+      unit.sprite = deepCopy(tiles_list[unit.tile].sprite)
       
       if unit.fullname == "boooo" then
         if hasProperty(unit,"shy...") then
@@ -1495,31 +1526,40 @@ function miscUpdates()
         local roll = math.random(6)
         unit.sprite[2] = "die_"..roll
       end
+
+      if unit.fullname == "text_katany" then
+        unit.sprite = "text_katany"
+        if rules_with_unit[unit] then
+          for _,rules in ipairs(rules_with_unit[unit]) do
+            if rules.rule.object.unit == unit then
+              local tile_id = tiles_by_name[rules.rule.subject.name]
+              if tile_id then
+                local tile = tiles_list[tile_id]
+                if tile.features and tile.features.katany and tile.features.katany.nya then
+                  unit.sprite = "text_katanya"
+                end
+              end
+            end
+          end
+        end
+      end
+
+      for type,name in pairs(unit.sprite_transforms) do
+        if table.has_value(unit.used_as, type) then
+          unit.sprite = name
+          break
+        end
+      end
       
-      local specials = {
-        os = true,
-        boooo = true,
-        casete = true,
-        bolble = true,
-        ches = true,
-        mimi = true,
-        pumkin = true,
-        ditto = true,
-        bup = true,
-        die = true,
-      }
-      
-      if not specials[unit.fullname] then
-        if tile.slep and graphical_property_cache["slep"][unit] ~= nil then
-          if type(tile.sprite) == "table" then
-            for j,name in ipairs(tile.sprite) do
+      if graphical_property_cache["slep"][unit] ~= nil then
+        if type(unit.sprite) == "table" then
+          for j,name in ipairs(unit.sprite) do
+            if sprites[name.."_slep"] then
               unit.sprite[j] = name.."_slep"
             end
-          else
-            unit.sprite = tiles_list[unit.tile].sprite.."_slep"
           end
-        else
-          unit.sprite = deepCopy(tiles_list[unit.tile].sprite)
+        elseif sprites[unit.sprite.."_slep"] then
+          unit.sprite = unit.sprite.."_slep"
         end
       end
 
@@ -1625,7 +1665,7 @@ function updateUnitColours()
     local unit = ruleparent[2]
     local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, true, hasProperty(unit,"big"))
     for _,on in ipairs(stuff) do
-      if unit ~= on and hasRule(unit, "paint", on) and sameFloat(unit, on) then
+      if unit ~= on and hasRule(unit, "paint", on) and sameFloat(unit, on) and ignoreCheck(on, unit, "paint") then
         if timecheck(unit,"paint",on) and timecheck(on) then
           local old_colour = unit.color_override or unit.color
           local colour = colour_for_palette[old_colour[1]][old_colour[2]]
@@ -1873,7 +1913,7 @@ function levelBlock()
   local lvlsafe = hasRule(outerlvl,"got","lvl") or hasProperty(outerlvl,"protecc")
   
   if hasProperty(outerlvl,"notranform") then
-    writeSaveFile(level_name,"transform",nil)
+    writeSaveFile(nil, {"levels", level_name, "transform"})
   end
   
   if hasProperty(outerlvl, "loop") then
@@ -1882,7 +1922,7 @@ function levelBlock()
   
   if hasProperty(outerlvl, "visit fren") then
     for _,unit in ipairs(units) do
-      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
+      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) and ignoreCheck(unit,outerlvl,"visit fren") then
         addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
         if inBounds(unit.x+1,unit.y) then
           moveUnit(unit,unit.x+1,unit.y)
@@ -1904,7 +1944,7 @@ function levelBlock()
   
   if hasProperty(outerlvl, "nuek") then
     for _,unit in ipairs(units) do
-      if sameFloat(unit, outerlvl) and inBounds(unit.x,unit.y) then
+      if sameFloat(unit, outerlvl) and inBounds(unit.x,unit.y) and ignoreCheck(unit,outerlvl,"nuek") then
         table.insert(to_destroy, unit)
         addParticles("destroy", unit.x, unit.y, {2,2})
       end
@@ -1924,7 +1964,7 @@ function levelBlock()
           unitmoved = true
         end
       end
-      if unitmoved then
+      if unitmoved and ignoreCheck(outerlvl, unit) then
         destroyLevel("vs")
         if not lvlsafe then return 0,0 end
       end
@@ -1934,15 +1974,26 @@ function levelBlock()
   if hasProperty(outerlvl, "no swim") then
     for _,unit in ipairs(units) do
       if sameFloat(unit, outerlvl) and inBounds(unit.x,unit.y) then
-        destroyLevel("sink")
-        if not lvlsafe then return 0,0 end
+        if ignoreCheck(outerlvl, unit) then
+          destroyLevel("sink")
+          if not lvlsafe then return 0,0 end
+        elseif ignoreCheck(unit, outerlvl, "no swim") then
+          table.insert(to_destroy, unit)
+          addParticles("destroy", unit.x, unit.y, unit.color)
+        end
       end
     end
+    if #to_destroy > 0 then
+      playSound("sink")
+      shakeScreen(0.3, 0.1)
+    end
   end
+
+  to_destroy = handleDels(to_destroy)
   
   if hasProperty(outerlvl, "ouch") then
     for _,unit in ipairs(units) do
-      if sameFloat(unit, outerlvl) and inBounds(unit.x,unit.y) then
+      if sameFloat(unit, outerlvl) and inBounds(unit.x,unit.y) and ignoreCheck(outerlvl, unit) then
         destroyLevel("snacc")
         if not lvlsafe then return 0,0 end
       end
@@ -1952,7 +2003,7 @@ function levelBlock()
   if hasProperty(outerlvl, "hotte") then
     local melters = getUnitsWithEffect("fridgd")
     for _,unit in ipairs(melters) do
-      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
+      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) and ignoreCheck(unit,outerlvl,"hotte") then
         table.insert(to_destroy, unit)
         addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
       end
@@ -1971,7 +2022,7 @@ function levelBlock()
     end
     local melters = getUnitsWithEffect("hotte")
     for _,unit in ipairs(melters) do
-      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
+      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) and ignoreCheck(outerlvl,unit,"hotte") then
         destroyLevel("hotte")
         if not lvlsafe then return 0,0 end
       end
@@ -1981,7 +2032,7 @@ function levelBlock()
   if hasProperty(outerlvl, ":(") then
     local yous = getUs()
     for _,unit in ipairs(yous) do
-      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
+      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) and ignoreCheck(unit,outerlvl,":(") then
         table.insert(to_destroy, unit)
         addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
       end
@@ -1998,10 +2049,14 @@ function levelBlock()
     local dors = getUnitsWithEffect("for dor")
     for _,unit in ipairs(dors) do
       if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
-        destroyLevel("unlock")
+        if ignoreCheck(outerlvl,unit,"for dor") then
+          destroyLevel("unlock")
+        end
         if lvlsafe then
-          table.insert(to_destroy, unit)
-          addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
+          if ignoreCheck(unit,outerlvl,"ned kee") then
+            table.insert(to_destroy, unit)
+            addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
+          end
         else return 0,0 end
       end
     end
@@ -2017,10 +2072,14 @@ function levelBlock()
     local kees = getUnitsWithEffect("ned kee")
     for _,unit in ipairs(kees) do
       if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
-        destroyLevel("unlock")
+        if ignoreCheck(outerlvl,unit,"ned kee") then
+          destroyLevel("unlock")
+        end
         if lvlsafe then
-          table.insert(to_destroy, unit)
-          addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
+          if ignoreCheck(unit,outerlvl,"for dor") then
+            table.insert(to_destroy, unit)
+            addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
+          end
         else return 0,0 end
       end
     end
@@ -2035,7 +2094,7 @@ function levelBlock()
   local issnacc = matchesRule(outerlvl,"snacc",nil)
   for _,ruleparent in ipairs(issnacc) do
     local unit = ruleparent[2]
-    if unit ~= outerlvl and sameFloat(outerlvl,unit) and inBounds(unit.x,unit.y) then
+    if unit ~= outerlvl and sameFloat(outerlvl,unit) and inBounds(unit.x,unit.y) and ignoreCheck(unit,outerlvl) then
       addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
       table.insert(to_destroy, unit)
     end
@@ -2044,7 +2103,7 @@ function levelBlock()
   local issnacc = matchesRule(nil,"snacc",outerlvl)
   for _,ruleparent in ipairs(issnacc) do
     local unit = ruleparent[2]
-    if unit ~= outerlvl and sameFloat(outerlvl,unit) and inBounds(unit.x,unit.y) then
+    if unit ~= outerlvl and sameFloat(outerlvl,unit) and inBounds(unit.x,unit.y) and ignoreCheck(outerlvl,unit) then
       destroyLevel("snacc")
       if not lvlsafe then return 0,0 end
     end
@@ -2061,7 +2120,7 @@ function levelBlock()
   if hasProperty(outerlvl, "try again") then
     local yous = getUs()
     for _,unit in ipairs(yous) do
-      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
+      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) and ignoreCheck(unit,outerlvl,"try again") then
         doTryAgain()
       end
     end
@@ -2070,7 +2129,7 @@ function levelBlock()
   if hasProperty(outerlvl, "xwx") then
     local yous = getUs()
     for _,unit in ipairs(yous) do
-      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
+      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) and ignoreCheck(unit,outerlvl,"xwx") then
         doXWX()
       end
     end
@@ -2079,8 +2138,8 @@ function levelBlock()
   if hasProperty(outerlvl, ":o") then
     local yous = getUs()
     for _,unit in ipairs(yous) do
-      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
-        writeSaveFile(level_name, "bonus", true)
+      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) and ignoreCheck(outerlvl,unit) then
+        writeSaveFile(true, {"levels", level_name, "bonus"})
         destroyLevel("bonus")
         if not lvlsafe then return 0,0 end
       end
@@ -2091,7 +2150,7 @@ function levelBlock()
   if hasProperty(outerlvl, ";d") then
     local yous = getUs()
     for _,unit in ipairs(yous) do
-      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
+      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) and ignoreCheck(unit,outerlvl,";d") then
         unwins = unwins + 1
       end
     end
@@ -2101,7 +2160,7 @@ function levelBlock()
   if hasProperty(outerlvl, ":)") then
     local yous = getUs()
     for _,unit in ipairs(yous) do
-      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
+      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) and ignoreCheck(unit,outerlvl,":)") then
         wins = wins + 1
       end
     end
@@ -2990,7 +3049,7 @@ function deleteUnit(unit,convert,undoing,gone)
   end
 end
 
-function moveUnit(unit,x,y,portal)
+function moveUnit(unit,x,y,portal,instant)
   --print("moving:", unit.fullname, unit.x, unit.y, "to:", x, y)
   --when empty moves, swap it with the empty in its destination tile, to preserve the invariant 'there is exactly empty per tile'
   --also, keep empty out of units_by_tile - it will be added in getUnitsOnTile
@@ -3044,7 +3103,7 @@ function moveUnit(unit,x,y,portal)
     end
 
     -- putting portal check above same-position check to give portal effect through one-tile gap
-    if portal and portal.is_portal and x - portal.x == dirs8[portal.dir][1] and y - portal.y == dirs8[portal.dir][2] then
+    if portal and portal.is_portal and x - portal.x == dirs8[portal.dir][1] and y - portal.y == dirs8[portal.dir][2] and not instant then
       if unit.type == "text" or rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname] then
         should_parse_rules = true
       end
@@ -3064,7 +3123,7 @@ function moveUnit(unit,x,y,portal)
         unit.draw.rotation = (unit.rotatdir - 1) * 45
         tweens["unit:dir:" .. unit.tempid] = nil
       end
-    elseif x ~= unit.x or y ~= unit.y then
+    elseif (x ~= unit.x or y ~= unit.y) and not instant then
       if unit.type == "text" or rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname] then
         should_parse_rules = true
       end
@@ -3086,6 +3145,9 @@ function moveUnit(unit,x,y,portal)
           end)
         end
       end
+    elseif instant then
+      unit.draw.x = x
+      unit.draw.y = y
     end
 
     unit.x = x
@@ -3101,7 +3163,9 @@ function moveUnit(unit,x,y,portal)
     end
   end
 
-  do_move_sound = true
+  if not instant then
+    do_move_sound = true
+  end
 end
 
 function updateDir(unit, dir, force)
@@ -3347,9 +3411,9 @@ function doWin(result_, payload_)
     if doing_past_turns then
       past_queued_wins[result] = payload
     elseif result == "won" and payload == false then
-      if readSaveFile(level_name,"won") then
+      if readSaveFile{"levels",level_name,"won"} then
         playSound("unwin")
-        writeSaveFile(level_name,"won",false)
+        writeSaveFile(false, {"levels",level_name,"won"})
       end
     else
       won_this_session = true
@@ -3359,7 +3423,7 @@ function doWin(result_, payload_)
       win_size = 0
       playSound("win")
       if (not replay_playback) then
-        writeSaveFile(level_name, result, payload)
+        writeSaveFile(payload, {"levels", level_name, result})
         love.filesystem.createDirectory("levels")
         local to_save = replay_string
         local rng_cache_populated = false
@@ -3378,10 +3442,10 @@ function doWin(result_, payload_)
 end
 
 function doXWX()
-  writeSaveFile(level_name,"seen",nil)
-  writeSaveFile(level_name,"won",nil)
-  writeSaveFile(level_name,"bonus",nil)
-  writeSaveFile(level_name,"transform",nil)
+  writeSaveFile(nil,{"levels",level_name,"seen"})
+  writeSaveFile(nil,{"levels",level_name,"won"})
+  writeSaveFile(nil,{"levels",level_name,"bonus"})
+  writeSaveFile(nil,{"levels",level_name,"transform"})
   escResult(true, true)
 end
 

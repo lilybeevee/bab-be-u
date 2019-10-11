@@ -61,7 +61,6 @@ local sessionseed
 local buttons = {}--{"resume", "editor", "exit", "restart"}
 local darken = nil
 local button_last_y = 0
-local options = false
 pause = false
 selected_pause_button = 1
 
@@ -168,29 +167,7 @@ function scene.buildUI()
     scene.addButton("options", function() options = true; scene.buildUI() end)
     scene.addButton("exit to " .. escResult(false), function() escResult(true) end)
   else
-    scene.addOption("music_on", "music", {{"on", true}, {"off", false}})
-    scene.addOption("sfx_on", "sound", {{"on", true}, {"off", false}})
-    scene.addOption("particles_on", "particle effects", {{"on", true}, {"off", false}})
-    scene.addOption("grid_lines", "grid lines", {{"off", false}, {"on", true}})
-    scene.addOption("mouse_lines", "mouse lines", {{"off", false}, {"on", true}})   
-    scene.addOption("stopwatch_effect", "stopwatch effect", {{"on", true}, {"off", false}})
-    scene.addOption("fullscreen", "resolution", {{"windowed", false}, {"fullscreen", true}}, function(val)
-      if val then
-        if not love.window.isMaximized() then
-          winwidth, winheight = love.graphics.getDimensions()
-        end
-        love.window.setMode(0, 0, {borderless=false})
-        love.window.maximize()
-        fullscreen = true
-      else
-        love.window.setMode(winwidth, winheight, {borderless=false, resizable=true, minwidth=705, minheight=510})
-        love.window.maximize()
-        love.window.restore()
-        fullscreen = false
-      end
-    end)
-    scene.addOption("focus_pause", "pause on defocus", {{"off", false}, {"on", true}})   
-    scene.addButton("back", function() options = false; scene.buildUI() end)
+    buildOptions()
   end
 
   local ox, oy = love.graphics.getWidth()/2, buttons[1]:getHeight()*3
@@ -387,7 +364,11 @@ function scene.resetStuff(forTime)
   next_levels, next_level_objs = getNextLevels()
   first_turn = false
   window_dir = 0
-	
+  
+  if playing_world then
+    saveWorld()
+    selectLastLevels()
+  end
 end
     
 function scene.keyPressed(key, isrepeat)
@@ -434,6 +415,7 @@ function scene.keyPressed(key, isrepeat)
   
     if key == "g" and (key_down["lctrl"] or key_down["rctrl"]) then
         settings["grid_lines"] = not settings["grid_lines"]
+        saveAll()
     end
   
   
@@ -667,6 +649,9 @@ function scene.getTransform()
       scale = s
     else break end
   end
+  if settings["game_scale"] ~= "auto" and settings["game_scale"] < scale then
+    scale = settings["game_scale"]
+  end
 
   local scaledwidth = screenwidth * (1/scale)
   local scaledheight = screenheight * (1/scale)
@@ -825,13 +810,6 @@ function scene.draw(dt)
         unit.sprite = "text_enby"
       end
     end
-    if unit.fullname == "text_katany" then
-      if (hasRule("steev","got","katany") or hasRule("kat","got","katany")) and unit.active then
-        unit.sprite = "text_katanya"
-      else
-        unit.sprite = "text_katany"
-      end
-    end
     if unit.fullname == "text_now" then
       if doing_past_turns then
         unit.sprite = "text_latr"
@@ -889,13 +867,7 @@ function scene.draw(dt)
     local sprite
     
     if type(sprite_name) ~= "table" then
-      for type,name in pairs(unit.sprite_transforms) do
-        if table.has_value(unit.used_as, type) then
-          sprite_name = name
-          break
-        end
-      end
-      if sprite_name == "lvl" and readSaveFile(unit.special.level, "won") then
+      if sprite_name == "lvl" and readSaveFile{"levels", unit.special.level, "won"} then
         sprite_name = "lvl_won"
       end
       local frame = (unit.frame + anim_stage) % 3 + 1
@@ -1183,7 +1155,7 @@ function scene.draw(dt)
     
     if unit.name == "lvl" and unit.special.visibility == "open" then
       love.graphics.push()
-      if readSaveFile(unit.special.level, "won") then
+      if readSaveFile{"levels", unit.special.level, "won"} then
         local r,g,b,a = love.graphics.getColor()
         love.graphics.setColor(r,g,b, a*0.4)
       end
@@ -1955,19 +1927,19 @@ function scene.draw(dt)
     if pause then
     
       local current_level = level_name
-      if readSaveFile(level_name, "won") then
+      if readSaveFile{"levels", level_name, "won"} then
         current_level = current_level.." (won) "
       end
-      if readSaveFile(level_name, "clear") then
+      if readSaveFile{"levels", level_name, "clear"} then
         current_level = current_level.." (cleared) "
       end
-      if readSaveFile(level_name, "complete") then
+      if readSaveFile{"levels", level_name, "complete"} then
         current_level = current_level.." (complete) "
       end
-      if readSaveFile(level_name, "bonus") then
+      if readSaveFile{"levels", level_name, "bonus"} then
         current_level = current_level.." (bonused) "
       end
-      local tfs = readSaveFile(level_name, "transform")
+      local tfs = readSaveFile{"levels", level_name, "transform"}
       if tfs then
         local tfstr = ""
         for _,tf in ipairs(tfs) do
@@ -2185,56 +2157,61 @@ function scene.checkInput()
 end
 
 function escResult(do_actual, xwx)
-  if (was_using_editor) then
-    if (do_actual) then
+  if was_using_editor then
+    if do_actual then
       load_mode = "edit"
       new_scene = editor
     else
       return "the editor"
     end
   else
-    if (win_reason == "nxt" and level_next_level ~= nil and level_next_level ~= "") then
-      if (do_actual) then
+    -- i dont know what this is :owoXD:
+    if win_reason == "nxt" and level_next_level ~= nil and level_next_level ~= "" then
+      if do_actual then
         loadLevels({level_next_level}, "play", nil, xwx)
+        return
       else
         return level_next_level
       end
-    elseif (level_parent_level == nil or level_parent_level == "") then
-      if (parent_filename ~= nil and parent_filename ~= "") then
-        if (do_actual) then
-          loadLevels(parent_filename:split("|"), "play", nil, xwx)
-        else
-          return parent_filename
+    elseif #level_tree > 0 then
+      local parent = level_tree[1]
+      local seen = true
+      --[[if type(parent) == "table" then
+        for _,name in ipairs(parent) do
+          if not readSaveFile{"levels", name, "seen"} then
+            seen = false
+            break
+          end
         end
       else
-        if (do_actual) then
-          load_mode = "play"
-          new_scene = loadscene
-          if (love.filesystem.getInfo(world_parent .. "/" .. world .. "/" .. "overworld.txt")) then
-            world = ""
+        seen = readSaveFile{"levels", parent, "seen"}
+      end]]
+      if seen then
+        if do_actual then
+          if type(parent) == "table" then
+            loadLevels(parent, "play", nil, xwx)
+          else
+            loadLevels({parent}, "play", nil, xwx)
           end
+          table.remove(level_tree, 1)
+          return
         else
-          return "the level selection menu"
+          if type(parent) == "table" then
+            return table.concat(parent, " & ")
+          else
+            return parent
+          end
         end
+      end
+    end
+    if do_actual then
+      load_mode = "play"
+      new_scene = loadscene
+      if (love.filesystem.getInfo(world_parent .. "/" .. world .. "/" .. "overworld.txt")) then
+        world = ""
       end
     else
-      if (readSaveFile(level_parent_level, "seen")) then
-        if (do_actual) then
-          loadLevels({level_parent_level}, "play", nil, xwx)
-        else
-          return level_parent_level
-        end
-      else
-        if (do_actual) then
-          load_mode = "play"
-          new_scene = loadscene
-          if (love.filesystem.getInfo(world_parent .. "/" .. world .. "/" .. "overworld.txt")) then
-            world = ""
-          end
-        else
-          return "the level selection menu"
-        end
-      end
+      return "the level selection menu"
     end
   end
 end
@@ -2344,8 +2321,10 @@ function doOneMove(x, y, key, past)
     end
     unsetNewUnits()
 		return result
-	else
-		newUndo()
+  else
+    if key ~= "drag" then
+      newUndo()
+    end
 		last_move = {x, y}
 		just_moved = true
 		doMovement(x, y, key)
@@ -2577,6 +2556,9 @@ function scene.mouseReleased(x, y, button)
           end
         end
         if not nodrag then
+          if not dragged then
+            newUndo()
+          end
           addUndo{"update",unit.id,unit.x,unit.y,unit.dir}
           moveUnit(unit,dest_x,dest_y)
           dragged = true
@@ -2584,7 +2566,7 @@ function scene.mouseReleased(x, y, button)
         addTween(tween.new(0.1, unit.draw, {x = unit.x, y = unit.y}), "dragbl release:"..tostring(unit))
       end
       if dragged then
-        doOneMove(last_click_x,last_click_y,"clikt")
+        doOneMove(last_click_x,last_click_y,"drag")
         last_click_x, last_click_y = nil, nil
       end
       drag_units = {}
@@ -2658,6 +2640,10 @@ function handlePauseButtonPressed(i)
     pause = false
     scene.resetStuff()
   end
+end
+
+function scene.resize(w, h)
+  scene.buildUI()
 end
 
 function scene.mousePressed(x, y, button)

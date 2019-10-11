@@ -626,6 +626,7 @@ function scene.keyPressed(key)
       scene.saveSettings()
     elseif key == "g" and (key_down["lctrl"] or key_down["rctrl"]) then
         settings["grid_lines"] = not settings["grid_lines"]
+        saveAll()
     end
   end
   
@@ -1228,6 +1229,9 @@ function scene.transformParameters()
         scale = s
     else break end
   end
+  if settings["game_scale"] ~= "auto" and settings["game_scale"] < scale then
+    scale = settings["game_scale"]
+  end
 
   local scaledwidth = screenwidth * (1/scale)
   local scaledheight = screenheight * (1/scale)
@@ -1661,9 +1665,9 @@ function scene.draw(dt)
 
     if selector_open then
       love.graphics.setColor(getPaletteColor(0,3))
-      if infomode then love.graphics.print(last_hovered_tile[1] .. ', ' .. last_hovered_tile[2], 0, roomheight+36) end
+      if settings["infomode"] then love.graphics.print(last_hovered_tile[1] .. ', ' .. last_hovered_tile[2], 0, roomheight+36) end
       if not is_mobile then
-        if not infomode then
+        if not settings["infomode"] then
           love.graphics.printf("CTRL + TAB to change tabs", 0, roomheight, roomwidth, "right")
           love.graphics.printf("LALT to get meta text, RALT to refresh", 0, roomheight+12, roomwidth, "right")
           love.graphics.printf("CTRL + N to toggle n't text", 0, roomheight+24, roomwidth, "right")
@@ -1702,7 +1706,7 @@ function scene.draw(dt)
           love.graphics.setColor(getPaletteColor(0,3))
           love.graphics.printf(tile.desc, love.mouse.getX()+16, love.mouse.getY()+14-tooltipyoffset, love.graphics.getWidth() - love.mouse.getX() - 20)
         end
-        if infomode then
+        if settings["infomode"] then
           love.graphics.push()
           love.graphics.applyTransform(scene.getTransform())
           love.graphics.print("Name: " .. tile.name, 0, roomheight+12)
