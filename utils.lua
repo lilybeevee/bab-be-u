@@ -603,7 +603,7 @@ function getUnitsWithEffect(effect)
     local unit = rule[2]
     if not unit.removed then
       for _,other in ipairs(getUnitsOnTile(unit.x, unit.y, nil, false, unit, nil, hasProperty(unit,"big"))) do
-        if not gotten[other] and sameFloat(unit, other) and not hasRule(other, "ben't", effect) then
+        if not gotten[other] and sameFloat(unit, other) and not hasRule(other, "ben't", effect) and ignoreCheck(other, unit) then
           table.insert(result, other)
           gotten[other] = true
         end
@@ -613,7 +613,7 @@ function getUnitsWithEffect(effect)
   
   if hasRule(outerlvl, "giv", effect) then
     for _,unit in ipairs(units) do
-      if not gotten[unit] and inBounds(unit.x, unit.y) and not hasRule(unit, "ben't", effect) then
+      if not gotten[unit] and inBounds(unit.x, unit.y) and not hasRule(unit, "ben't", effect) and ignoreCheck(unit, outerlvl) then
         table.insert(result, unit)
       end
     end
@@ -668,7 +668,7 @@ function getUnitsWithEffectAndCount(effect)
     local unit = rule[2]
     if not unit.removed then
       for _,other in ipairs(getUnitsOnTile(unit.x, unit.y, nil, false, unit, nil, hasProperty(unit,"big"))) do
-        if sameFloat(unit, other) and not hasRule(other, "ben't", effect) then
+        if sameFloat(unit, other) and not hasRule(other, "ben't", effect) and ignoreCheck(other, unit) then
           if result[other] == nil then
             result[other] = 0
           end
@@ -680,7 +680,7 @@ function getUnitsWithEffectAndCount(effect)
   
   if hasRule(outerlvl, "giv", effect) then
     for _,unit in ipairs(units) do
-      if inBounds(unit.x, unit.y) and not hasRule(unit, "ben't", effect) then
+      if inBounds(unit.x, unit.y) and not hasRule(unit, "ben't", effect) and ignoreCheck(unit, outerlvl) then
         if result[unit] == nil then
           result[unit] = 0
         end
@@ -815,7 +815,7 @@ function hasProperty(unit,prop)
   if unit then
     if hasRule(outerlvl, "giv", prop) then return inBounds(unit.x, unit.y) end
     for _,other in ipairs(getUnitsOnTile(unit.x, unit.y, nil, false, unit, true, hasRule(unit,"be","big"))) do
-      if #matchesRule(other, "giv", prop) > 0 and sameFloat(unit, other) then
+      if #matchesRule(other, "giv", prop) > 0 and sameFloat(unit, other) and ignoreCheck(unit, other) then
         return true
       end
     end
@@ -842,14 +842,14 @@ function countProperty(unit, prop, ignore_flye)
   result = result + #matchesRule(outerlvl, "giv", prop)
   if unit then
     for _,other in ipairs(getUnitsOnTile(unit.x, unit.y, nil, false, unit, true, hasProperty(unit,"big"))) do
-      if ignore_flye or sameFloat(unit, other) then
+      if ignoreCheck(unit, other) and (ignore_flye or sameFloat(unit, other)) then
         result = result + #matchesRule(other, "giv", prop)
       end
     end
   else -- I don't think anything uses this? it doesn't seem very useful at least, but I guess it's functional?
     for _,ruleparent in ipairs(matchesRule(nil, "giv", prop)) do
       for _,other in ipairs(ruleparent.units) do
-        if ignore_flye or sameFloat(unit, other) then
+        if ignoreCheck(unit, other) and (ignore_flye or sameFloat(unit, other)) then
           result = result + #getUnitsOnTile(other.x, other.y, nil, false, other, true, hasProperty(other,"big"))
         end
       end
@@ -1406,7 +1406,9 @@ function testConds(unit, conds, compare_with) --cond should be a {condtype,{obje
       --     end
       --   end
       -- end
-      if unit == outerlvl then
+      if not ignoreCheck(unit,nil,"brite") or not ignoreCheck(unit,nil,"torc") then
+        result = false
+      elseif unit == outerlvl then
         local lights = getUnitsWithEffect("brite")
         mergeTable(lights,getUnitsWithEffect("torc"))
         local lit = false
@@ -1543,7 +1545,7 @@ function testConds(unit, conds, compare_with) --cond should be a {condtype,{obje
 end
 
 function hasLineOfSight(brite, lit)
-  if (not sameFloat(brite, lit)) then
+  if not sameFloat(brite, lit) or not ignoreCheck(lit, brite, "brite") or not ignoreCheck(lit, nil, "torc") then
     return false
   end
   if (rules_with["tranparnt"] == nil) then
@@ -1563,7 +1565,7 @@ function hasLineOfSight(brite, lit)
       if found_opaque then return false end
       if x ~= x0 or y ~= y0 then
         for _,v in ipairs(getUnitsOnTile(x, y)) do
-          if hasProperty(v, "tranparnt") then
+          if hasProperty(v, "tranparnt") and ignoreCheck(brite, v, "tranparnt") then
             found_opaque = true
             break
           end
@@ -1584,7 +1586,7 @@ function hasLineOfSight(brite, lit)
       if found_opaque then return false end
       if x ~= x0 or y ~= y0 then
         for _,v in ipairs(getUnitsOnTile(x, y)) do
-          if hasProperty(v, "tranparnt") then
+          if hasProperty(v, "tranparnt") and not ignoreCheck(brite, v, "tranparnt") then
             found_opaque = true
             break
           end
@@ -1603,7 +1605,7 @@ function hasLineOfSight(brite, lit)
       if x ~= x0 or y ~= y0 then
         if found_opaque then return false end
         for _,v in ipairs(getUnitsOnTile(x, y)) do
-          if hasProperty(v, "tranparnt") then
+          if hasProperty(v, "tranparnt") and not ignoreCheck(brite, v, "tranparnt") then
             found_opaque = true
             break
           end
@@ -1622,6 +1624,7 @@ lightcanvas_height = 0
 
 torc_angles = {20,30,45,60,75,90,120,150,180,225,270,315,360}
 function calculateLight()
+  lights_ignored_opaque = {}
   if lightcanvas_width ~= mapwidth or lightcanvas_height ~= mapheight then
     lightcanvas = love.graphics.newCanvas(mapwidth*32, mapheight*32)
     temp_lightcanvas = love.graphics.newCanvas(mapwidth*32, mapheight*32)
@@ -1735,7 +1738,12 @@ function drawShadows(source, opaques)
     local closeY = (opaque.y*32) + (opaque.y<source.y and 32 or 0)
     local farY = (opaque.y*32) + (opaque.y>=source.y and 32 or 0)
     local edgeY = (opaque.y>=source.y and mapheight*32 or 0)
-    if opaque.x == source.x and opaque.y == source.y then
+    if lights_ignored_opaque[source.id .. ":" ..opaque.id] == nil then
+      lights_ignored_opaque[source.id .. ":" ..opaque.id] = not ignoreCheck(source, opaque, "tranparnt")
+    end
+    if lights_ignored_opaque[source.id .. ":" ..opaque.id] then
+      -- the flood of light is unstoppable
+    elseif opaque.x == source.x and opaque.y == source.y then
       love.graphics.clear(0, 0, 0, 1)
       love.graphics.setColor(1, 1, 1, 1)
       love.graphics.rectangle("fill", closeX, closeY, 32, 32)
@@ -2377,15 +2385,24 @@ function sign(x)
 end
 
 function sameFloat(a, b, ignorefloat)
-  if hasRule(a,"ignor",b) or hasRule(b,"ignor",a) or hasRule(a,"ignor",outerlvl) or hasRule(b,"ignor",outerlvl) or hasRule(outerlvl,"ignor",a) or hasRule(outerlvl,"ignor",b) then
-    return false
+  if ignorefloat then
+    return true
   else
-    if ignorefloat then
-      return true
-    else
-      return (countProperty(a, "flye", true) == countProperty(b, "flye", true)) or hasProperty(a, "tall", true) or hasProperty(b, "tall", true)
-    end
+    return (countProperty(a, "flye", true) == countProperty(b, "flye", true)) or hasProperty(a, "tall", true) or hasProperty(b, "tall", true)
   end
+end
+
+function ignoreCheck(unit, target, property)
+  if not rules_with["ignor"] then
+    return true
+  elseif unit == target then
+    return true
+  elseif target and (hasRule(unit,"ignor",target) or hasRule(unit,"ignor",outerlvl) or hasRule(outerlvl,"ignor",target)) and (not property or (not hasRule(unit,"ignorn't",property) and not hasRule(outerlvl,"ignorn't",property))) then
+    return false
+  elseif property and (hasRule(unit,"ignor",property) or hasRule(outerlvl,"ignor",property)) and (not target or (not hasRule(unit,"ignorn't",target) and not hasRule(outerlvl,"ignorn't",target))) then
+    return false
+  end
+  return true
 end
 
 function getPaletteColor(x, y, name_)

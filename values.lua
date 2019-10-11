@@ -4047,7 +4047,7 @@ tiles_list = {
     name = "text_ignor",
     sprite = "text_ignor",
     type = "text",
-    texttype = {verb = true, verb_unit = true},
+    texttype = {verb = true, verb_unit = true, verb_property = true},
     color = {0,1},
     layer = 20,
     tags = {"ignore"},
