@@ -497,9 +497,9 @@ function love.keypressed(key,scancode,isrepeat)
       end
     else
       if world_parent ~= "officialworlds" then
-        love.system.openURL("file:///"..love.filesystem.getSaveDirectory().."/"..world_parent.."/"..world.."/")
+        love.system.openURL("file:///"..love.filesystem.getSaveDirectory().."/"..getWorldDir(true).."/")
       else
-        love.system.openURL("file:///"..love.filesystem.getSource().."/"..world_parent.."/"..world.."/")
+        love.system.openURL("file:///"..love.filesystem.getSource().."/"..getWorldDir(true).."/")
       end
     end
   end

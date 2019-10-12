@@ -558,12 +558,12 @@ end
 
 function tryStartReplay()
   scene.resetStuff()
-  local dir = "levels/"
-  if world ~= "" then dir = world_parent .. "/" .. world .. "/" end
-  if love.filesystem.getInfo(dir .. level_name .. ".replay") then
-    replay_playback_string = love.filesystem.read(dir .. level_name .. ".replay")
+  local dir = getWorldDir() .. "/"
+  local full_dir = getWorldDir(true) .. "/"
+  if love.filesystem.getInfo(full_dir .. level_name .. ".replay") then
+    replay_playback_string = love.filesystem.read(full_dir .. level_name .. ".replay")
     replay_playback = true
-    print("Started replay from: "..dir .. level_name .. ".replay")
+    print("Started replay from: "..full_dir .. level_name .. ".replay")
   elseif love.filesystem.getInfo(dir .. level_filename .. ".replay") then
     replay_playback_string = love.filesystem.read(dir .. level_filename .. ".replay")
     replay_playback = true
@@ -577,7 +577,7 @@ function tryStartReplay()
     replay_playback = true
     print("Started replay from: ".."levels/" .. level_filename .. ".replay")
   else
-    print("Failed to find replay: "..dir .. level_name .. ".replay")
+    print("Failed to find replay: "..full_dir .. level_name .. ".replay")
   end
 end
 
@@ -938,6 +938,12 @@ function scene.draw(dt)
       end
       fulldrawy = fulldrawy - math.sin(love.timer.getTime())*5*flyenes
     end
+    
+    if unit.fullname == "text_temmi" and unit.active then
+      local range = 0.5
+      fulldrawx = fulldrawx + math.random(-range, range)
+      fulldrawy = fulldrawy + math.random(-range, range)
+    end
 
     if shake_dur > 0 then
       local range = 0.5
@@ -975,6 +981,11 @@ function scene.draw(dt)
           end
           if onlycolor or (#unit.overlay > 0 and (unit.colored and unit.colored[i]) or not unit.colored) then
             love.graphics.setColor(1,1,1,1)
+          end
+          if unit.name == "temmi" and rules_with["temmi"] then
+            local range = 0.5
+            fulldrawx = fulldrawx + math.random(-range, range)
+            fulldrawy = fulldrawy + math.random(-range, range)
           end
           if not onlycolor or not unit.colored or (onlycolor and unit.colored and unit.colored[i]) then
             local sprit = sprites[image]
@@ -1927,19 +1938,19 @@ function scene.draw(dt)
     if pause then
     
       local current_level = level_name
-      if readSaveFile{"levels", level_name, "won"} then
+      if readSaveFile{"levels", level_filename, "won"} then
         current_level = current_level.." (won) "
       end
-      if readSaveFile{"levels", level_name, "clear"} then
+      if readSaveFile{"levels", level_filename, "clear"} then
         current_level = current_level.." (cleared) "
       end
-      if readSaveFile{"levels", level_name, "complete"} then
+      if readSaveFile{"levels", level_filename, "complete"} then
         current_level = current_level.." (complete) "
       end
-      if readSaveFile{"levels", level_name, "bonus"} then
+      if readSaveFile{"levels", level_filename, "bonus"} then
         current_level = current_level.." (bonused) "
       end
-      local tfs = readSaveFile{"levels", level_name, "transform"}
+      local tfs = readSaveFile{"levels", level_filename, "transform"}
       if tfs then
         local tfstr = ""
         for _,tf in ipairs(tfs) do
@@ -2207,7 +2218,7 @@ function escResult(do_actual, xwx)
     if do_actual then
       load_mode = "play"
       new_scene = loadscene
-      if (love.filesystem.getInfo(world_parent .. "/" .. world .. "/" .. "overworld.txt")) then
+      if (love.filesystem.getInfo(getWorldDir(true) .. "/" .. "overworld.txt")) then
         world = ""
       end
     else

@@ -252,7 +252,7 @@ selector_grid_contents = {
   },
   -- page 4: characters and special objects
   {
-    "bab","text_bab","kat","text_kat","flof","text_flof","bunmy","text_bunmy","toby","text_toby",0,0,0,0,"selctr","text_selctr","lvl","text_lvl",
+    "bab","text_bab","kat","text_kat","flof","text_flof","bunmy","text_bunmy","toby","text_toby","temmi","text_temmi",0,0,"selctr","text_selctr","lvl","text_lvl",
     "keek","text_keek","creb","text_creb","shrim","text_shrim","moo","text_moo",0,0,0,0,0,0,"this","text_mous","lin","text_lin",
     "meem","text_meem","statoo","text_statoo","flamgo","text_flamgo","migri","text_migri",0,0,0,0,0,0,"text_text","text_frens","text_groop","text_pathz",
     "skul","text_skul","beeee","text_beeee","gul","text_gul","kva","text_kva",0,0,0,0,0,0,"text_lethers","text_every1","text_every2","text_every3",
@@ -7838,7 +7838,7 @@ tiles_list = {
         knif = {x=5},
         katany = {x=5},
     },
-    tags = {"chars", "toby fox", "annoying dog"},
+    tags = {"chars", "toby fox", "annoying dog", "undertale"},
     desc = "absorps ur artefac",
   },
   -- 679
@@ -7849,7 +7849,7 @@ tiles_list = {
     texttype = {object = true},
     color = {0, 3},
     layer = 20,
-    tags = {"chars", "toby fox", "annoying dog"},
+    tags = {"chars", "toby fox", "annoying dog", "undertale"},
     desc = "The highly respectable Toby Fox himself,\nCreator of UNDERTALE and deltarune."
   },
   -- 690
@@ -8038,6 +8038,37 @@ tiles_list = {
     layer = 20,
     tags = {"out of bounds"},
     desc = "OOB (Prefix Condition): True if the unit is on a border.",
+  },
+  -- 678
+  {
+    name = "temmi",
+    sprite = {"temmi","temmi but just her face"},
+    color = {{0, 3},{0,3}},
+    colored = {true, false},
+    layer = 5,
+    rotate = true,
+    features = {
+        sans = {x=23, y=12, w=2, h=2},
+        sant = {x=1},
+        hatt = {x=5},
+        which = {x=5},
+        gunne = {x=5},
+        knif = {x=5},
+        katany = {x=5},
+    },
+    tags = {"chars", "temmie chang", "undertale"},
+    desc = "hOI!!! i'm tEMMi!!",
+  },
+  -- 679
+  {
+    name = "text_temmi",
+    sprite = "text_temmi",
+    type = "text",
+    texttype = {object = true},
+    color = {0, 3},
+    layer = 20,
+    tags = {"chars", "temmie chang", "undertale"},
+    desc = "Temmie Chang: Main artist of UNDERTALE and deltarune."
   },
 }
 

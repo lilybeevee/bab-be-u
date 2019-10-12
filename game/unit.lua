@@ -1019,7 +1019,7 @@ function updateUnits(undoing, big_update)
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
       for _,on in ipairs(stuff) do
         if hasU(on) and sameFloat(unit, on) and ignoreCheck(on, unit, ":o") then
-          writeSaveFile(true, {"levels", level_name, "bonus"})
+          writeSaveFile(true, {"levels", level_filename, "bonus"})
           if timecheck(unit,"be",":o") and (timecheckUs(on)) then
             table.insert(to_destroy, unit)
             playSound("bonus")
@@ -1913,7 +1913,7 @@ function levelBlock()
   local lvlsafe = hasRule(outerlvl,"got","lvl") or hasProperty(outerlvl,"protecc")
   
   if hasProperty(outerlvl,"notranform") then
-    writeSaveFile(nil, {"levels", level_name, "transform"})
+    writeSaveFile(nil, {"levels", level_filename, "transform"})
   end
   
   if hasProperty(outerlvl, "loop") then
@@ -2139,7 +2139,7 @@ function levelBlock()
     local yous = getUs()
     for _,unit in ipairs(yous) do
       if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) and ignoreCheck(outerlvl,unit) then
-        writeSaveFile(true, {"levels", level_name, "bonus"})
+        writeSaveFile(true, {"levels", level_filename, "bonus"})
         destroyLevel("bonus")
         if not lvlsafe then return 0,0 end
       end
@@ -3411,9 +3411,9 @@ function doWin(result_, payload_)
     if doing_past_turns then
       past_queued_wins[result] = payload
     elseif result == "won" and payload == false then
-      if readSaveFile{"levels",level_name,"won"} then
+      if readSaveFile{"levels",level_filename,"won"} then
         playSound("unwin")
-        writeSaveFile(false, {"levels",level_name,"won"})
+        writeSaveFile(false, {"levels",level_filename,"won"})
       end
     else
       won_this_session = true
@@ -3423,7 +3423,7 @@ function doWin(result_, payload_)
       win_size = 0
       playSound("win")
       if (not replay_playback) then
-        writeSaveFile(payload, {"levels", level_name, result})
+        writeSaveFile(payload, {"levels", level_filename, result})
         love.filesystem.createDirectory("levels")
         local to_save = replay_string
         local rng_cache_populated = false
@@ -3442,10 +3442,10 @@ function doWin(result_, payload_)
 end
 
 function doXWX()
-  writeSaveFile(nil,{"levels",level_name,"seen"})
-  writeSaveFile(nil,{"levels",level_name,"won"})
-  writeSaveFile(nil,{"levels",level_name,"bonus"})
-  writeSaveFile(nil,{"levels",level_name,"transform"})
+  writeSaveFile(nil,{"levels",level_filename,"seen"})
+  writeSaveFile(nil,{"levels",level_filename,"won"})
+  writeSaveFile(nil,{"levels",level_filename,"bonus"})
+  writeSaveFile(nil,{"levels",level_filename,"transform"})
   escResult(true, true)
 end
 

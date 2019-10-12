@@ -121,9 +121,9 @@ function doMovement(movex, movey, key)
     end
     if playing_world then
       if #next_levels == 1 then
-        writeSaveFile(next_levels[1], {"levels", level_name, "selected"})
+        writeSaveFile(next_levels[1], {"levels", level_filename, "selected"})
       else
-        writeSaveFile(next_levels, {"levels", level_name, "selected"})
+        writeSaveFile(next_levels, {"levels", level_filename, "selected"})
       end
     end
     loadLevels(next_levels, nil, next_level_objs)
@@ -2037,10 +2037,11 @@ function getNextLevels()
   
   next_level_name = ""
   for _,name in ipairs(next_levels) do
+    local split_name = split(name, "/")
     if _ > 1 then
-      next_level_name = next_level_name .. " & " .. name
+      next_level_name = next_level_name .. " & " .. split_name[#split_name]
     else
-      next_level_name = name
+      next_level_name = split_name[#split_name]
     end
   end
   
