@@ -4794,7 +4794,7 @@ tiles_list = {
     sprite = {"beeee","no1"},
     type = "object",
     color = {{2, 4},{0,0}},
-    colored = {true,true},
+    colored = {true,false},
     layer = 6,
     rotate = true,
     features = { sans = {x=25, y=14, w=2, h=2} },

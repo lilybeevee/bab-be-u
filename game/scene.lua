@@ -970,7 +970,7 @@ function scene.draw(dt)
     local function drawSprite(overlay, onlycolor, stretch)
       local draw = sprites[overlay or unit.sprite]
       local ox, oy = getOffset()
-      if type(unit.sprite) == "table" then
+      if not overlay and type(unit.sprite) == "table" then
         for i,image in ipairs(unit.sprite) do
           if type(unit.color[i]) == "table" then
             setColor(unit.color[i])
