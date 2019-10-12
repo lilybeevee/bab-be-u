@@ -938,6 +938,12 @@ function scene.draw(dt)
       end
       fulldrawy = fulldrawy - math.sin(love.timer.getTime())*5*flyenes
     end
+    
+    if unit.fullname == "text_temmi" and unit.active then
+      local range = 0.5
+      fulldrawx = fulldrawx + math.random(-range, range)
+      fulldrawy = fulldrawy + math.random(-range, range)
+    end
 
     if shake_dur > 0 then
       local range = 0.5
@@ -975,6 +981,11 @@ function scene.draw(dt)
           end
           if onlycolor or (#unit.overlay > 0 and (unit.colored and unit.colored[i]) or not unit.colored) then
             love.graphics.setColor(1,1,1,1)
+          end
+          if unit.name == "temmi" and rules_with["temmi"] then
+            local range = 0.5
+            fulldrawx = fulldrawx + math.random(-range, range)
+            fulldrawy = fulldrawy + math.random(-range, range)
           end
           if not onlycolor or not unit.colored or (onlycolor and unit.colored and unit.colored[i]) then
             local sprit = sprites[image]
