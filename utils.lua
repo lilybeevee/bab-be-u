@@ -160,6 +160,7 @@ function loadMap()
       units_by_tile[x + y * mapwidth] = {}
     end
   end]]
+  local has_missing_levels = false
   local rects = {}
   for _,mapdata in ipairs(maps) do
     local version = mapdata.info.version
@@ -229,6 +230,20 @@ function loadMap()
         id, tile, x, y, dir, specials, color = unit.id, unit.tile, unit.x, unit.y, unit.dir, unit.special, unit.color
         x = x + offset.x
         y = y + offset.y
+        if scene == editor and specials.level then
+          if not love.filesystem.getInfo(getWorldDir() .. "/" .. specials.level .. ".bab") then
+            has_missing_levels = true
+            print("missing level: " .. specials.level)
+            local search = searchForLevels(getWorldDir(), specials.name, true)
+            if #search > 0 then
+              print("    - located: " .. search[1].file)
+              specials.level = search[1].file
+              specials.name = search[1].data.name
+            else
+              print("    - could not locate!")
+            end
+          end
+        end
         if not dofloodfill then
           local unit = createUnit(tile, x, y, dir, false, id, nil, color)
           unit.special = specials
@@ -344,6 +359,9 @@ function loadMap()
     if (not unit_tests) then
       writeSaveFile(true, {"levels", level_filename, "seen"})
     end
+  end
+  if has_missing_levels then
+    print(colr.red("\nLEVELS MISSING - PLEASE CHECK & SAVE!"))
   end
   
   --I don't know why, but this is slower by a measurable amount (70-84 seconds for example).
@@ -2626,7 +2644,7 @@ function loadLevels(levels, mode, level_objs, xwx)
 
     local data
     if split_name[#split_name] ~= "{DEFAULT}" then
-      print(dir .. level .. ".bab")
+      --print(dir .. level .. ".bab")
       data = json.decode(love.filesystem.read(dir .. level .. ".bab"))
     else
       data = json.decode(default_map)
@@ -3310,4 +3328,34 @@ function getWorldDir(include_sub_worlds)
     end
     return dir
   end
+end
+
+function searchForLevels(dir, search, exact)
+  local results = {}
+  local files = love.filesystem.getDirectoryItems(dir)
+
+  for _,file in ipairs(files) do
+    local info = love.filesystem.getInfo(dir .. "/" .. file)
+    if info then
+      if info.type == "directory" then
+        for _,level in ipairs(searchForLevels(dir .. "/" .. file, search, exact)) do
+          table.insert(results, {file = file .. "/" .. level.file, data = level.data})
+        end
+      elseif file:ends(".bab") then
+        local name = file:sub(1, -5)
+        local data = json.decode(love.filesystem.read(dir .. "/" .. file))
+        local found = false
+        if (exact and file == search) or (not exact and string.find(file, search)) then
+          found = true
+        elseif (exact and data.name == search) or (not exact and string.find(data.name, search)) then
+          found = true
+        end
+        if found then
+          table.insert(results, {file = name, data = data})
+        end
+      end
+    end
+  end
+
+  return results
 end
