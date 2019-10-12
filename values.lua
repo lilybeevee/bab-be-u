@@ -1695,6 +1695,7 @@ tiles_list = {
     sprite = "clowd",
     type = "object",
     color = {0, 3},
+    rotate = true,
     layer = 8,
     tags = {"cloud"},
   },
