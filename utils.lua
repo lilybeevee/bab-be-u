@@ -2544,13 +2544,15 @@ function getEverythingExcept(except)
 end
 
 function renameDir(from, to, cur_)
+  if from == to then
+    return
+  end
   local cur = cur_ or ""
   love.filesystem.createDirectory(to .. cur)
   for _,file in ipairs(love.filesystem.getDirectoryItems(from .. cur)) do
     if love.filesystem.getInfo(from .. cur .. "/" .. file, "directory") then
       renameDir(from, to, cur .. "/" .. file)
     else
-      print(from .. cur .. "/" .. file)
       love.filesystem.write(to .. cur .. "/" .. file, love.filesystem.read(from .. cur .. "/" .. file))
       love.filesystem.remove(from .. cur .. "/" .. file)
     end
@@ -2560,7 +2562,7 @@ end
 
 function deleteDir(dir)
   for _,file in ipairs(love.filesystem.getDirectoryItems(dir)) do
-    if love.filesystem.getInfo(file, "directory") then
+    if love.filesystem.getInfo(dir .. "/" .. file, "directory") then
       deleteDir(dir .. "/" .. file)
     else
       love.filesystem.remove(dir .. "/" .. file)
@@ -2644,7 +2646,7 @@ function loadLevels(levels, mode, level_objs, xwx)
 
     local data
     if split_name[#split_name] ~= "{DEFAULT}" then
-      --print(dir .. level .. ".bab")
+      print(dir .. level .. ".bab")
       data = json.decode(love.filesystem.read(dir .. level .. ".bab"))
     else
       data = json.decode(default_map)
@@ -3345,7 +3347,7 @@ function searchForLevels(dir, search, exact)
         local name = file:sub(1, -5)
         local data = json.decode(love.filesystem.read(dir .. "/" .. file))
         local found = false
-        if (exact and file == search) or (not exact and string.find(file, search)) then
+        if (exact and name == search) or (not exact and string.find(name, search)) then
           found = true
         elseif (exact and data.name == search) or (not exact and string.find(data.name, search)) then
           found = true

@@ -486,20 +486,22 @@ function love.keypressed(key,scancode,isrepeat)
     love.event.quit("restart")
   elseif key == "f11" then
     fullScreen()
-  elseif key == "f" and love.keyboard.isDown('lctrl') then
+  elseif key == "o" and love.keyboard.isDown('lctrl') then
     if scene == menu then
       love.system.openURL("file:///"..love.filesystem.getSaveDirectory())
-    elseif world == "" then
-      if love.filesystem.getInfo("levels") then
-        love.system.openURL("file:///"..love.filesystem.getSaveDirectory().."/levels/")
+    elseif scene == loadscene then
+      if world == "" then
+        if love.filesystem.getInfo("levels") then
+          love.system.openURL("file:///"..love.filesystem.getSaveDirectory().."/levels/")
+        else
+          love.system.openURL("file:///"..love.filesystem.getSaveDirectory())
+        end
       else
-        love.system.openURL("file:///"..love.filesystem.getSaveDirectory())
-      end
-    else
-      if world_parent ~= "officialworlds" then
-        love.system.openURL("file:///"..love.filesystem.getSaveDirectory().."/"..getWorldDir(true).."/")
-      else
-        love.system.openURL("file:///"..love.filesystem.getSource().."/"..getWorldDir(true).."/")
+        if world_parent ~= "officialworlds" then
+          love.system.openURL("file:///"..love.filesystem.getSaveDirectory().."/"..getWorldDir(true).."/")
+        else
+          love.system.openURL("file:///"..love.filesystem.getSource().."/"..getWorldDir(true).."/")
+        end
       end
     end
   end

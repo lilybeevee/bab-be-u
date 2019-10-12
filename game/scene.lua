@@ -945,12 +945,16 @@ function scene.draw(dt)
       fulldrawy = fulldrawy + math.random(-range, range)
     end
 
-    if shake_dur > 0 then
-      local range = 0.5
-      fulldrawx = fulldrawx + math.random(-range, range)
-      fulldrawy = fulldrawy + math.random(-range, range)
-      --fulldrawx = fulldrawx + (math.random(0.00, TILE_SIZE)*shake_intensity*2)-shake_intensity*TILE_SIZE
-      --fulldrawy = fulldrawy + (math.random(0.00, TILE_SIZE)*shake_intensity*2)-shake_intensity*TILE_SIZE
+    local function getOffset()
+      if (unit.fullname == "temmi" and rules_with["temmi"]) or (unit.fullname == "text_temmi" and unit.active) then
+        if math.random() < 0.5 then
+          return math.random(-1, 1), math.random(-1, 1)
+        end
+      elseif shake_dur > 0 then
+        local range = 0.5
+        return math.random(-range, range), math.random(-range, range)
+      end
+      return 0,0
     end
 
     love.graphics.push()
@@ -965,7 +969,8 @@ function scene.draw(dt)
     
     local function drawSprite(overlay, onlycolor, stretch)
       local draw = sprites[overlay or unit.sprite]
-      if type(unit.sprite) == "table" then
+      local ox, oy = getOffset()
+      if not overlay and type(unit.sprite) == "table" then
         for i,image in ipairs(unit.sprite) do
           if type(unit.color[i]) == "table" then
             setColor(unit.color[i])
@@ -982,22 +987,17 @@ function scene.draw(dt)
           if onlycolor or (#unit.overlay > 0 and (unit.colored and unit.colored[i]) or not unit.colored) then
             love.graphics.setColor(1,1,1,1)
           end
-          if unit.name == "temmi" and rules_with["temmi"] then
-            local range = 0.5
-            fulldrawx = fulldrawx + math.random(-range, range)
-            fulldrawy = fulldrawy + math.random(-range, range)
-          end
           if not onlycolor or not unit.colored or (onlycolor and unit.colored and unit.colored[i]) then
             local sprit = sprites[image]
-            love.graphics.draw(sprit, fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprit:getWidth() / 2, sprit:getHeight() / 2)
+            love.graphics.draw(sprit, fulldrawx + ox, fulldrawy + oy, 0, unit.draw.scalex, unit.draw.scaley, sprit:getWidth() / 2, sprit:getHeight() / 2)
           end
         end
       else
         if overlay and stretch then
-          love.graphics.draw(draw, fulldrawx, fulldrawy, 0, sprite:getWidth() / TILE_SIZE, sprite:getHeight() / TILE_SIZE, draw:getWidth() / 2, draw:getHeight() / 2)
+          love.graphics.draw(draw, fulldrawx + ox, fulldrawy + oy, 0, sprite:getWidth() / TILE_SIZE, sprite:getHeight() / TILE_SIZE, draw:getWidth() / 2, draw:getHeight() / 2)
         else
           if not draw then draw = sprites["wat"] end
-          love.graphics.draw(draw, fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, draw:getWidth() / 2, draw:getHeight() / 2)
+          love.graphics.draw(draw, fulldrawx + ox, fulldrawy + oy, 0, unit.draw.scalex, unit.draw.scaley, draw:getWidth() / 2, draw:getHeight() / 2)
         end
       end
 			if (unit.meta ~= nil) then
@@ -1109,10 +1109,12 @@ function scene.draw(dt)
         end
       end
 
+      local shake_x, shake_y = getOffset()
+
       local ur, ug, ub, ua = love.graphics.getColor()
       local o = getTableWithDefaults(unit.features.bowie, {x=0, y=0, sprite="bowie_smol"})
       love.graphics.setColor(getPaletteColor(c1 or 2, c2 or 2))
-      love.graphics.draw(sprites[o.sprite], fulldrawx + o.x, fulldrawy + o.y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      love.graphics.draw(sprites[o.sprite], fulldrawx + o.x + shake_x, fulldrawy + o.y + shake_y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
       love.graphics.setColor(ur, ug, ub, ua)
     end
 
@@ -1320,10 +1322,12 @@ function scene.draw(dt)
         end
       end
 
+      local shake_x, shake_y = getOffset()
+
       if name == "which" then
         local o = getTableWithDefaults(unit.features.which, {x=0, y=0, sprite={"which_smol_base", "which_smol_that"}})
         love.graphics.setColor(getPaletteColor(0,0))
-        love.graphics.draw(sprites[o.sprite[1]], fulldrawx + o.x, fulldrawy - 0.5*TILE_SIZE + o.y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+        love.graphics.draw(sprites[o.sprite[1]], fulldrawx + o.x + shake_x, fulldrawy - 0.5*TILE_SIZE + o.y + shake_y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
         if c1 and c2 then
           love.graphics.setColor(getPaletteColor(c1,c2))
         elseif unit.color_override and colour_for_palette[unit.color_override[1]][unit.color_override[2]] == "blacc" then
@@ -1331,13 +1335,13 @@ function scene.draw(dt)
         else
           love.graphics.setColor(color[1], color[2], color[3], color[4])
         end
-        love.graphics.draw(sprites[o.sprite[2]], fulldrawx + o.x, fulldrawy - 0.5*TILE_SIZE + o.y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+        love.graphics.draw(sprites[o.sprite[2]], fulldrawx + o.x + shake_x, fulldrawy - 0.5*TILE_SIZE + o.y + shake_y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
       elseif name == "sant" then
         local o = getTableWithDefaults(unit.features.sant, {x=0, y=0, sprite={"sant_smol_base", "sant_smol_flof"}})
         love.graphics.setColor(getPaletteColor(c1 or 2, c2 or 2))
-        love.graphics.draw(sprites[o.sprite[1]], fulldrawx + o.x, fulldrawy - 0.5*TILE_SIZE + o.y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+        love.graphics.draw(sprites[o.sprite[1]], fulldrawx + o.x + shake_x, fulldrawy - 0.5*TILE_SIZE + o.y + shake_y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
         love.graphics.setColor(getPaletteColor(0,3))
-        love.graphics.draw(sprites[o.sprite[2]], fulldrawx + o.x, fulldrawy - 0.5*TILE_SIZE + o.y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+        love.graphics.draw(sprites[o.sprite[2]], fulldrawx + o.x + shake_x, fulldrawy - 0.5*TILE_SIZE + o.y + shake_y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
       elseif name == "hatt" then
         local o = getTableWithDefaults(unit.features.hatt, {x=0, y=0, sprite="hatsmol"})
         if c1 and c2 then
@@ -1345,29 +1349,30 @@ function scene.draw(dt)
         else
           love.graphics.setColor(color[1], color[2], color[3], color[4])
         end
-        love.graphics.draw(sprites[o.sprite], fulldrawx + o.x, fulldrawy - 0.5*TILE_SIZE + o.y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+        love.graphics.draw(sprites[o.sprite], fulldrawx + o.x + shake_x, fulldrawy - 0.5*TILE_SIZE + o.y + shake_y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
       elseif name == "katany" then
         local o = getTableWithDefaults(unit.features.katany, {x=0, y=0, sprite="katanysmol"})
         love.graphics.setColor(getPaletteColor(c1 or 0, c2 or 1))
-        love.graphics.draw(sprites[o.sprite], fulldrawx + o.x, fulldrawy + o.y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+        love.graphics.draw(sprites[o.sprite], fulldrawx + o.x + shake_x, fulldrawy + o.y + shake_y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
       elseif name == "knif" then
         local o = getTableWithDefaults(unit.features.knif, {x=0, y=0, sprite="knifsmol"})
         love.graphics.setColor(getPaletteColor(c1 or 0, c2 or 3))
-        love.graphics.draw(sprites[o.sprite], fulldrawx + o.x, fulldrawy + o.y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+        love.graphics.draw(sprites[o.sprite], fulldrawx + o.x + shake_x, fulldrawy + o.y + shake_y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
       elseif name == "slippers" then
         local o = getTableWithDefaults(unit.features.slippers, {x=0, y=0, sprite="slippers"})
         love.graphics.setColor(getPaletteColor(c1 or 1, c2 or 4))
-        love.graphics.draw(sprites[o.sprite], fulldrawx + o.x, fulldrawy+sprite:getHeight()/4 + o.y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+        love.graphics.draw(sprites[o.sprite], fulldrawx + o.x + shake_x, fulldrawy+sprite:getHeight()/4 + o.y + shake_y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
       elseif name == "gunne" then
         local o = getTableWithDefaults(unit.features.gunne, {x=0, y=0, sprite="gunnesmol"})
         love.graphics.setColor(getPaletteColor(c1 or 0, c2 or 3))
-        love.graphics.draw(sprites[o.sprite], fulldrawx + o.x, fulldrawy + o.y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+        love.graphics.draw(sprites[o.sprite], fulldrawx + o.x + shake_x, fulldrawy + o.y + shake_y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
       elseif name ~= "bowie" and unit.fullname == "swan" then
         local tile = tiles_list[tiles_by_name[name]]
         if tile then
           -- temporarily replacing the current unit ... this is so janky im sorry
           local old_unit = unit
           unit = deepCopy(tile)
+          unit.fullname = unit.name
           unit.overlay = {}
           unit.draw = {x = old_unit.draw.x, y = old_unit.draw.y, scalex = 0.5, scaley = 0.5, rotation = 0, opacity = 1}
           if c1 and c2 then
