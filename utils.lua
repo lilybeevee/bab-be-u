@@ -342,7 +342,7 @@ function loadMap()
     initializeEmpties()
     loadStayTher()
     if (not unit_tests) then
-      writeSaveFile(true, {"levels", level_name, "seen"})
+      writeSaveFile(true, {"levels", level_filename, "seen"})
     end
   end
   
@@ -1505,7 +1505,7 @@ function testConds(unit, conds, compare_with) --cond should be a {condtype,{obje
         result = false
       end
     elseif condtype == "wun" then
-      local name = unit.special.name or level_name
+      local name = unit.special.level or level_filename
       result = readSaveFile{"levels",name,"won"}
     elseif condtype == "past" then
       if cond_not then
@@ -2529,9 +2529,10 @@ function renameDir(from, to, cur_)
   local cur = cur_ or ""
   love.filesystem.createDirectory(to .. cur)
   for _,file in ipairs(love.filesystem.getDirectoryItems(from .. cur)) do
-    if love.filesystem.getInfo(file, "directory") then
+    if love.filesystem.getInfo(from .. cur .. "/" .. file, "directory") then
       renameDir(from, to, cur .. "/" .. file)
     else
+      print(from .. cur .. "/" .. file)
       love.filesystem.write(to .. cur .. "/" .. file, love.filesystem.read(from .. cur .. "/" .. file))
       love.filesystem.remove(from .. cur .. "/" .. file)
     end
@@ -2609,7 +2610,7 @@ function loadLevels(levels, mode, level_objs, xwx)
   end
 
   local dir = "levels/"
-  if world ~= "" then dir = world_parent .. "/" .. world .. "/" end
+  if world ~= "" then dir = getWorldDir() .. "/" end
 
   maps = {}
 
@@ -2621,11 +2622,14 @@ function loadLevels(levels, mode, level_objs, xwx)
   level_filename = nil
 
   for _,level in ipairs(levels) do
+    local split_name = split(level, "/")
+
     local data
-    if not level:starts("{") then
+    if split_name[#split_name] ~= "{DEFAULT}" then
+      print(dir .. level .. ".bab")
       data = json.decode(love.filesystem.read(dir .. level .. ".bab"))
     else
-      data = json.decode(level)
+      data = json.decode(default_map)
     end
     level_compression = data.compression or "zlib"
     local loaddata = love.data.decode("string", "base64", data.map)
@@ -2670,6 +2674,9 @@ function loadLevels(levels, mode, level_objs, xwx)
     else
       icon_data = nil
     end
+
+    table.remove(split_name)
+    sub_worlds = split_name
   end
 
   if mode == "edit" then
@@ -3278,7 +3285,7 @@ function selectLastLevels()
   if not units_by_name["selctr"] then return end
   local selctrs = units_by_name["selctr"]
 
-  local last_selected = readSaveFile{"levels", level_name, "selected"} or {}
+  local last_selected = readSaveFile{"levels", level_filename, "selected"} or {}
   if type(last_selected) ~= "table" then
     last_selected = {last_selected}
   end
@@ -3290,5 +3297,17 @@ function selectLastLevels()
         moveUnit(selctr, unit.x, unit.y, nil, true)
       end
     end
+  end
+end
+
+function getWorldDir(include_sub_worlds)
+  if world == "" then
+    return "levels"
+  else
+    local dir = world_parent .. "/" .. world
+    if include_sub_worlds and #sub_worlds > 0 then
+      dir = dir .. "/" .. table.concat(sub_worlds, "/")
+    end
+    return dir
   end
 end
