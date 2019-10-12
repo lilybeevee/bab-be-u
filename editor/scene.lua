@@ -100,7 +100,7 @@ function scene.load()
   screenshot, screenshot_image = nil, nil
 
   local dir = "levels/"
-  if world ~= "" then dir = world_parent .. "/" .. world .. "/" end
+  if world ~= "" then dir = getWorldDir(true) .. "/" end
 
   width = love.graphics.getWidth()
   height = love.graphics.getHeight()
@@ -870,7 +870,7 @@ function scene.mouseReleased(x, y, button)
         new_scene = loadscene
         load_mode = "select"
         selected_level = {id = level_dialogue.unit.id}
-        old_world = {parent = world_parent, world = world}
+        old_world = {parent = world_parent, world = world, sub_worlds = deepCopy(sub_worlds)}
 
         editor_save.brush = brush
       end
@@ -1834,7 +1834,7 @@ function scene.draw(dt)
           love.graphics.printf("...", 31, -106, 60, "center")
         end
         local dir = "levels/"
-        if world ~= "" then dir = world_parent .. "/" .. world .. "/" end
+        if world ~= "" then dir = getWorldDir() .. "/" end
         if unit.special.level and love.filesystem.getInfo(dir .. unit.special.level .. ".png") then
           icon_data = love.graphics.newImage(dir .. unit.special.level .. ".png")
         else
@@ -2142,6 +2142,8 @@ function scene.updateMap()
   map = serpent.dump(map)
   maps = {{data = map, info = info}}
   if anagram_finder.enabled then anagram_finder.run() end
+  level_filename = level_name
+  if #sub_worlds > 0 then level_filename = table.concat(sub_worlds, "/") .. "/" .. level_filename end
 end
 
 function sanitize(filename)
@@ -2178,11 +2180,11 @@ function scene.saveLevel()
       pcall(function() icon_data:encode("png", "levels/" .. file_name .. ".png") end)
     end
   else
-    love.filesystem.createDirectory(world_parent .. "/" .. world)
-    love.filesystem.write(world_parent .. "/" .. world .. "/" ..file_name .. ".bab", json.encode(map.info))
-    print("Saved to:",world_parent .. "/" .. world .. "/" ..file_name .. ".bab")
+    love.filesystem.createDirectory(getWorldDir(true))
+    love.filesystem.write(getWorldDir(true) .. "/" ..file_name .. ".bab", json.encode(map.info))
+    print("Saved to:",getWorldDir(true) .. "/" ..file_name .. ".bab")
     if icon_data then
-      pcall(function() icon_data:encode("png", world_parent .. "/" .. world .. "/" .. file_name .. ".png") end)
+      pcall(function() icon_data:encode("png", getWorldDir(true) .. "/" .. file_name .. ".png") end)
     end
   end
 
@@ -2326,6 +2328,9 @@ function love.filedropped(file)
     maps = {{data = mapstr, info = mapdata}}
   end
 
+  level_filename = level_name
+  if #sub_worlds > 0 then level_filename = table.concat(sub_worlds, "/") .. "/" .. level_filename end
+
   clear()
   loadMap()
 
@@ -2335,7 +2340,7 @@ function love.filedropped(file)
   end
 
   local dir = "levels/"
-  if world ~= "" then dir = world_parent .. "/" .. world .. "/" end
+  if world ~= "" then dir = getWorldDir(true) .. "/" end
   if love.filesystem.getInfo(dir .. level_name .. ".png") then
     icon_data = love.image.newImageData(dir .. level_name .. ".png")
   else
