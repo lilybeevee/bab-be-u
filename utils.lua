@@ -2562,7 +2562,7 @@ end
 
 function deleteDir(dir)
   for _,file in ipairs(love.filesystem.getDirectoryItems(dir)) do
-    if love.filesystem.getInfo(file, "directory") then
+    if love.filesystem.getInfo(dir .. "/" .. file, "directory") then
       deleteDir(dir .. "/" .. file)
     else
       love.filesystem.remove(dir .. "/" .. file)
