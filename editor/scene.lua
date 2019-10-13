@@ -2172,7 +2172,7 @@ function scene.saveLevel()
   
   local file_name = sanitize(level_name)
 
-  if world == "" or world_parent == "officialworlds" then
+  if world == "" or (RELEASE_BUILD and world_parent == "officialworlds") then
     love.filesystem.createDirectory("levels")
     love.filesystem.write("levels/" .. file_name .. ".bab", json.encode(map.info))
     print("Saved to:","levels/" .. file_name .. ".bab")
@@ -2180,8 +2180,13 @@ function scene.saveLevel()
       pcall(function() icon_data:encode("png", "levels/" .. file_name .. ".png") end)
     end
   else
-    love.filesystem.createDirectory(getWorldDir(true))
-    love.filesystem.write(getWorldDir(true) .. "/" ..file_name .. ".bab", json.encode(map.info))
+    if world_parent == "officialworlds" then
+      local file = love.filesystem.getSource() .. "/" .. getWorldDir(true) .. "/" .. file_name .. ".bab"
+      io.open(file, "w"):write(json.encode(map.info))
+    else
+      love.filesystem.createDirectory(getWorldDir(true))
+      love.filesystem.write(getWorldDir(true) .. "/" ..file_name .. ".bab", json.encode(map.info))
+    end
     print("Saved to:",getWorldDir(true) .. "/" ..file_name .. ".bab")
     if icon_data then
       pcall(function() icon_data:encode("png", getWorldDir(true) .. "/" .. file_name .. ".png") end)
