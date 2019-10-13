@@ -952,9 +952,28 @@ function scene.draw(dt)
     end
 
     local function getOffset()
-      if (unit.fullname == "temmi" and rules_with["temmi"]) or (unit.fullname == "text_temmi" and unit.active) then
-        if math.random() < 0.5 then
-          return math.random(-1, 1), math.random(-1, 1)
+      if rules_with["temmi"] then
+        local do_vibrate = false
+        if unit.fullname == "temmi" then
+          do_vibrate = true
+        elseif unit.type == "text" and unit.active then
+          local rules_list = rules_with_unit[unit]
+          if rules_list then
+            for _,rules in ipairs(rules_list) do
+              for _,rule_unit in ipairs(rules.units) do
+                if rule_unit.fullname == "text_temmi" then
+                  do_vibrate = true
+                  break
+                end
+              end
+              if do_vibrate then break end
+            end
+          end
+        end
+        if do_vibrate then
+          if math.random() < 0.5 then
+            return math.random(-1, 1), math.random(-1, 1)
+          end
         end
       elseif shake_dur > 0 then
         local range = 0.5
