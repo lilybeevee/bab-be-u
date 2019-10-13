@@ -1835,8 +1835,8 @@ function scene.draw(dt)
         end
         local dir = "levels/"
         if world ~= "" then dir = getWorldDir() .. "/" end
-        if unit.special.level and love.filesystem.getInfo(dir .. unit.special.level .. ".png") then
-          icon_data = love.graphics.newImage(dir .. unit.special.level .. ".png")
+        if unit.special.level then
+          icon_data = getIcon(dir .. unit.special.level)
         else
           icon_data = nil
         end
@@ -2183,14 +2183,22 @@ function scene.saveLevel()
     if world_parent == "officialworlds" then
       local file = love.filesystem.getSource() .. "/" .. getWorldDir(true) .. "/" .. file_name
       local f = io.open(file..".bab", "w"); f:write(json.encode(map.info)); f:close()
+      if icon_data then
+        local success, png_data = pcall(function() return icon_data:encode("png") end)
+        if success then
+          local f = io.open(file..".png", "wb")
+          f:write(png_data:getString())
+          f:close()
+        end
+      end
     else
       love.filesystem.createDirectory(getWorldDir(true))
       love.filesystem.write(getWorldDir(true) .. "/" ..file_name .. ".bab", json.encode(map.info))
+      if icon_data then
+        pcall(function() icon_data:encode("png", getWorldDir(true) .. "/" .. file_name .. ".png") end)
+      end
     end
     print("Saved to:",getWorldDir(true) .. "/" ..file_name .. ".bab")
-    if icon_data then
-      pcall(function() icon_data:encode("png", getWorldDir(true) .. "/" .. file_name .. ".png") end)
-    end
   end
 
   last_saved = map.data
@@ -2346,11 +2354,7 @@ function love.filedropped(file)
 
   local dir = "levels/"
   if world ~= "" then dir = getWorldDir(true) .. "/" end
-  if love.filesystem.getInfo(dir .. level_name .. ".png") then
-    icon_data = love.image.newImageData(dir .. level_name .. ".png")
-  else
-    icon_data = nil
-  end
+  icon_data = getIcon(dir .. level_name)
 
   resetMusic(map_music, 0.1)
 end
