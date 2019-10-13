@@ -823,7 +823,7 @@ function findUnitsByName(name)
 end
 
 function hasProperty(unit,prop)
-  if not rules_with[prop] then return false end
+  if not rules_with[prop] and prop ~= "?" then return false end
   if hasRule(unit, "be", prop) then return true end
   if type(unit) ~= "table" then return false end
   if not rules_with["giv"] then return false end
@@ -851,7 +851,7 @@ function hasProperty(unit,prop)
 end
 
 function countProperty(unit, prop, ignore_flye)
-  if not rules_with[prop] then return 0 end
+  if not rules_with[prop] and prop ~= "?" then return 0 end
   local result = #matchesRule(unit,"be",prop)
   if hasRule(unit, "ben't", prop) then return 0 end
   if not rules_with["giv"] then return result end

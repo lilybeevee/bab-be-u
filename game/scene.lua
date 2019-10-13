@@ -947,8 +947,9 @@ function scene.draw(dt)
 
     local function getOffset()
       if (unit.fullname == "temmi" and rules_with["temmi"]) or (unit.fullname == "text_temmi" and unit.active) then
-        if math.random() < 0.5 then
-          return math.random(-1, 1), math.random(-1, 1)
+        local props = countProperty(unit,"?")
+        if math.random() > 1/(props+1) then
+          return math.random(-props, props), math.random(-props, props)
         end
       elseif shake_dur > 0 then
         local range = 0.5
