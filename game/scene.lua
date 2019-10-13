@@ -497,7 +497,13 @@ function scene.keyPressed(key, isrepeat)
     end
 
     if key == "r" then
-      scene.resetStuff()
+      if not currently_winning or not key_down["lctrl"] then
+        scene.resetStuff()
+      elseif not RELEASE_BUILD and world_parent == "officialworlds" then
+        local file = love.filesystem.getSource() .. "/" .. getWorldDir() .. "/" .. level_filename .. ".replay"
+        io.open(file, "w"):write(official_replay_string)
+        print("Replay successfully saved to " .. getWorldDir() .. "/" .. level_filename .. ".replay")
+      end
     end
     
     -- Replay keys
@@ -560,24 +566,24 @@ function tryStartReplay()
   scene.resetStuff()
   local dir = getWorldDir() .. "/"
   local full_dir = getWorldDir(true) .. "/"
-  if love.filesystem.getInfo(full_dir .. level_name .. ".replay") then
-    replay_playback_string = love.filesystem.read(full_dir .. level_name .. ".replay")
-    replay_playback = true
-    print("Started replay from: "..full_dir .. level_name .. ".replay")
-  elseif love.filesystem.getInfo(dir .. level_filename .. ".replay") then
+  if love.filesystem.getInfo(dir .. level_filename .. ".replay") then
     replay_playback_string = love.filesystem.read(dir .. level_filename .. ".replay")
     replay_playback = true
     print("Started replay from: "..dir .. level_filename .. ".replay")
-  elseif love.filesystem.getInfo("levels/" .. level_name .. ".replay") then
-    replay_playback_string = love.filesystem.read("levels/" .. level_name .. ".replay")
+  elseif love.filesystem.getInfo(full_dir .. level_name .. ".replay") then
+    replay_playback_string = love.filesystem.read(full_dir .. level_name .. ".replay")
     replay_playback = true
-    print("Started replay from: ".."levels/" .. level_name .. ".replay")
+    print("Started replay from: "..full_dir .. level_name .. ".replay")
   elseif love.filesystem.getInfo("levels/" .. level_filename .. ".replay") then
     replay_playback_string = love.filesystem.read("levels/" .. level_filename .. ".replay")
     replay_playback = true
     print("Started replay from: ".."levels/" .. level_filename .. ".replay")
+  elseif love.filesystem.getInfo("levels/" .. level_name .. ".replay") then
+    replay_playback_string = love.filesystem.read("levels/" .. level_name .. ".replay")
+    replay_playback = true
+    print("Started replay from: ".."levels/" .. level_name .. ".replay")
   else
-    print("Failed to find replay: "..full_dir .. level_name .. ".replay")
+    print("Failed to find replay: ".. dir .. level_filename .. ".replay")
   end
 end
 

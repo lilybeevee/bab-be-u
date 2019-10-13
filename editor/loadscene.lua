@@ -250,12 +250,12 @@ function scene.draw()
     o:draw()
 
     if not ui.editing and love.keyboard.isDown("r") and o.data.type == "level" then
-      local level_name = o:getName()
+      local level_name = o.data.file
 
       if hasreplaylist[level_name] == nil then
-        local dir = "levels/"
-        if world ~= "" then dir = getWorldDir(true) .. "/" end
+        local dir = getWorldDir(true) .. "/"
         if not (love.filesystem.getInfo(dir .. level_name .. ".replay") or love.filesystem.getInfo("levels/" .. level_name .. ".replay")) then
+          print("not found: " .. dir .. level_name .. ".replay")
           hasreplaylist[level_name] = true
         else
           hasreplaylist[level_name] = false

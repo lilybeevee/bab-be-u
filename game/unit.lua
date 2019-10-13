@@ -3434,8 +3434,14 @@ function doWin(result_, payload_)
         if (rng_cache_populated) then
           to_save = to_save.."|"..love.data.encode("string", "base64", serpent.line(rng_cache))
         end
-        love.filesystem.write("levels/" .. level_name .. ".replay", to_save)
-        print("Replay successfully saved to ".."levels/" .. level_name .. ".replay")
+        if not RELEASE_BUILD and world_parent == "officialworlds" then
+          official_replay_string = to_save
+        else
+          local dir = "levels/"
+          if world_parent ~= "officialworlds" then dir = getWorldDir() .. "/" end
+          love.filesystem.write(dir .. level_filename .. ".replay", to_save)
+          print("Replay successfully saved to " .. dir .. level_filename .. ".replay")
+        end
       end
     end
 	end
