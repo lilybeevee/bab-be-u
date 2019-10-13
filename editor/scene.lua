@@ -2181,8 +2181,8 @@ function scene.saveLevel()
     end
   else
     if world_parent == "officialworlds" then
-      local file = love.filesystem.getSource() .. "/" .. getWorldDir(true) .. "/" .. file_name .. ".bab"
-      io.open(file, "w"):write(json.encode(map.info))
+      local file = love.filesystem.getSource() .. "/" .. getWorldDir(true) .. "/" .. file_name
+      local f = io.open(file..".bab", "w"); f:write(json.encode(map.info)); f:close()
     else
       love.filesystem.createDirectory(getWorldDir(true))
       love.filesystem.write(getWorldDir(true) .. "/" ..file_name .. ".bab", json.encode(map.info))

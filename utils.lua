@@ -2646,7 +2646,6 @@ function loadLevels(levels, mode, level_objs, xwx)
 
     local data
     if split_name[#split_name] ~= "{DEFAULT}" then
-      print(dir .. level .. ".bab")
       data = json.decode(love.filesystem.read(dir .. level .. ".bab"))
     else
       data = json.decode(default_map)

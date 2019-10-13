@@ -501,7 +501,7 @@ function scene.keyPressed(key, isrepeat)
         scene.resetStuff()
       elseif not RELEASE_BUILD and world_parent == "officialworlds" then
         local file = love.filesystem.getSource() .. "/" .. getWorldDir() .. "/" .. level_filename .. ".replay"
-        io.open(file, "w"):write(official_replay_string)
+        local f = io.open(file, "w"); f:write(official_replay_string); f:close()
         print("Replay successfully saved to " .. getWorldDir() .. "/" .. level_filename .. ".replay")
       end
     end

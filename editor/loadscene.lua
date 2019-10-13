@@ -727,7 +727,6 @@ end
 function scene.renameWorld(o, text)
   local world_dir_tree = split(getWorldDir(true), "/")
   table.remove(world_dir_tree)
-  print(getWorldDir(true), table.concat(world_dir_tree, "/") .. "/" .. text:lower())
   renameDir(getWorldDir(true), table.concat(world_dir_tree, "/") .. "/" .. text:lower())
   if #sub_worlds == 0 then
     world = text:lower()
