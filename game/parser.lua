@@ -118,6 +118,7 @@ function findUnit(words, extra_words_, dir, outer, no_verb_cond, is_subject)
     if #words == 0 then return end
   end
   
+  local andd
   while words[1].type and (words[1].type.cond_prefix or (words[1].type.cond_compare and not is_subject)) do
     local prefix = copyTable(words[1])
     table.remove(words, 1)
@@ -138,9 +139,12 @@ function findUnit(words, extra_words_, dir, outer, no_verb_cond, is_subject)
       end
     end
     table.insert(conds, prefix)
-    if enclosed and words[1].type["and"] and words[2] and (words[1].type.cond_prefix or (words[1].type.cond_compare and not is_subject)) then
-      table.insert(extra_words, words[1])
-      table.remove(words, 1)
+    if andd then
+      table.insert(extra_words, andd)
+      andd = nil
+    end
+    if enclosed and words[1].type["and"] and words[2] then
+      andd = table.remove(words, 1)
       if #words == 0 then return end
     end -- we're not breaking here to allow "frenles lit bab" - add "else break" here if we want there to always be an and: "frenles & lit bab"
   end
@@ -151,7 +155,6 @@ function findUnit(words, extra_words_, dir, outer, no_verb_cond, is_subject)
   words = words_
   
   local first_infix = true
-  local andd
   while words[1] and words[1].type and (words[1].type.cond_infix or (words[1].type.direction and words[2] and words[2].name == "arond")) and (first_infix or enclosed) and (not no_verb_cond or not words[1].type.verb) do
     local infix = copyTable(words[1])
     local infix_orig = infix

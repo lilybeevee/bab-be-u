@@ -2688,11 +2688,7 @@ function loadLevels(levels, mode, level_objs, xwx)
       table.insert(maps, {data = mapstr, info = data, file = level})
     end
 
-    if love.filesystem.getInfo(dir .. level .. ".png") then
-      icon_data = love.image.newImageData(dir .. level .. ".png")
-    else
-      icon_data = nil
-    end
+    icon_data = getIcon(dir .. level)
 
     table.remove(split_name)
     sub_worlds = split_name
@@ -3359,4 +3355,11 @@ function searchForLevels(dir, search, exact)
   end
 
   return results
+end
+
+-- i was originally making this to use .icon as an alternate icon format for official world saving but i figured out how to save pngs directly so this is a tiny function that serves almost no purpose now and also this comment is really long if you don't have wrapping then your scrollbar is huge now you're welcome
+function getIcon(path)
+  if love.filesystem.getInfo(path .. ".png") then
+    return love.graphics.newImage(path .. ".png")
+  end
 end
