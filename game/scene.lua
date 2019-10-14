@@ -497,7 +497,13 @@ function scene.keyPressed(key, isrepeat)
     end
 
     if key == "r" then
-      scene.resetStuff()
+      if not currently_winning or not key_down["lctrl"] then
+        scene.resetStuff()
+      elseif not RELEASE_BUILD and world_parent == "officialworlds" then
+        local file = love.filesystem.getSource() .. "/" .. getWorldDir() .. "/" .. level_filename .. ".replay"
+        local f = io.open(file, "w"); f:write(official_replay_string); f:close()
+        print("Replay successfully saved to " .. getWorldDir() .. "/" .. level_filename .. ".replay")
+      end
     end
     
     -- Replay keys
@@ -560,24 +566,24 @@ function tryStartReplay()
   scene.resetStuff()
   local dir = getWorldDir() .. "/"
   local full_dir = getWorldDir(true) .. "/"
-  if love.filesystem.getInfo(full_dir .. level_name .. ".replay") then
-    replay_playback_string = love.filesystem.read(full_dir .. level_name .. ".replay")
-    replay_playback = true
-    print("Started replay from: "..full_dir .. level_name .. ".replay")
-  elseif love.filesystem.getInfo(dir .. level_filename .. ".replay") then
+  if love.filesystem.getInfo(dir .. level_filename .. ".replay") then
     replay_playback_string = love.filesystem.read(dir .. level_filename .. ".replay")
     replay_playback = true
     print("Started replay from: "..dir .. level_filename .. ".replay")
-  elseif love.filesystem.getInfo("levels/" .. level_name .. ".replay") then
-    replay_playback_string = love.filesystem.read("levels/" .. level_name .. ".replay")
+  elseif love.filesystem.getInfo(full_dir .. level_name .. ".replay") then
+    replay_playback_string = love.filesystem.read(full_dir .. level_name .. ".replay")
     replay_playback = true
-    print("Started replay from: ".."levels/" .. level_name .. ".replay")
+    print("Started replay from: "..full_dir .. level_name .. ".replay")
   elseif love.filesystem.getInfo("levels/" .. level_filename .. ".replay") then
     replay_playback_string = love.filesystem.read("levels/" .. level_filename .. ".replay")
     replay_playback = true
     print("Started replay from: ".."levels/" .. level_filename .. ".replay")
+  elseif love.filesystem.getInfo("levels/" .. level_name .. ".replay") then
+    replay_playback_string = love.filesystem.read("levels/" .. level_name .. ".replay")
+    replay_playback = true
+    print("Started replay from: ".."levels/" .. level_name .. ".replay")
   else
-    print("Failed to find replay: "..full_dir .. level_name .. ".replay")
+    print("Failed to find replay: ".. dir .. level_filename .. ".replay")
   end
 end
 
@@ -946,10 +952,35 @@ function scene.draw(dt)
     end
 
     local function getOffset()
-      if (unit.fullname == "temmi" and rules_with["temmi"]) or (unit.fullname == "text_temmi" and unit.active) then
-        local props = countProperty(unit,"?")
-        if math.random() > 1/(props+1) then
-          return math.random(-props, props), math.random(-props, props)
+      if rules_with["temmi"] then
+        local do_vibrate = false
+        if unit.fullname == "temmi" then
+          do_vibrate = true
+        elseif unit.type == "text" and unit.active then
+          local rules_list = rules_with_unit[unit]
+          if rules_list then
+            for _,rules in ipairs(rules_list) do
+              for _,rule_unit in ipairs(rules.units) do
+                if rule_unit.fullname == "text_temmi" then
+                  do_vibrate = true
+                  break
+                end
+              end
+              if do_vibrate then break end
+            end
+          end
+        end
+        if do_vibrate then
+          if unit.fullname == "temmi" then
+            local props = countProperty(unit,"?")
+            if math.random() > 1/(props+1) then
+              return math.random(-props, props), math.random(-props, props)
+            end
+          else
+            if math.random() > 0.5 then
+              return math.random(-1, 1), math.random(-1, 1)
+            end
+          end
         end
       elseif shake_dur > 0 then
         local range = 0.5

@@ -250,12 +250,12 @@ function scene.draw()
     o:draw()
 
     if not ui.editing and love.keyboard.isDown("r") and o.data.type == "level" then
-      local level_name = o:getName()
+      local level_name = o.data.file
 
       if hasreplaylist[level_name] == nil then
-        local dir = "levels/"
-        if world ~= "" then dir = getWorldDir(true) .. "/" end
+        local dir = getWorldDir(true) .. "/"
         if not (love.filesystem.getInfo(dir .. level_name .. ".replay") or love.filesystem.getInfo("levels/" .. level_name .. ".replay")) then
+          print("not found: " .. dir .. level_name .. ".replay")
           hasreplaylist[level_name] = true
         else
           hasreplaylist[level_name] = false
@@ -319,11 +319,7 @@ function scene.loadLevel(data, new)
 
   local dir = "levels/"
   if world ~= "" then dir = getWorldDir(true) .. "/" end
-  if love.filesystem.getInfo(dir .. level_name .. ".png") then
-    icon_data = love.image.newImageData(dir .. level_name .. ".png")
-  else
-    icon_data = nil
-  end
+  icon_data = getIcon(dir .. level_name)
 end
 
 function scene.buildUI()
@@ -450,17 +446,13 @@ function scene.buildUI()
             table.insert(world.sub_worlds, sub)
           end
         end
-        local icon, f
+        local f
         if parent == "" then
           f = "levels/" .. level.file
         else
           f = parent .. "/" .. level.file
         end
-        if love.filesystem.getInfo(f .. ".png") then
-          icon = love.graphics.newImage(f .. ".png")
-        else
-          icon = sprites["ui/default icon"]
-        end
+        local icon = getIcon(f) or sprites["ui/default icon"]
         table.insert(btns, {
           file = file,
           data = level.data,
@@ -652,11 +644,9 @@ function scene.searchDir(dir, type)
       t.file = file:sub(1, -5)
       t.data = json.decode(love.filesystem.read(dir .. "/" .. file))
       if spookmode then
-      t.icon = love.graphics.newImage("assets/sprites/ui/bxb bx x.jpg")
-      elseif love.filesystem.getInfo(dir .. "/" .. t.file .. ".png") then
-        t.icon = love.graphics.newImage(dir .. "/" .. t.file .. ".png")
+        t.icon = love.graphics.newImage("assets/sprites/ui/bxb bx x.jpg")
       else
-        t.icon = sprites["ui/default icon"]
+        t.icon = getIcon(dir .. "/" .. t.file) or sprites["ui/default icon"]
       end
     end
     table.insert(ret, t)
@@ -727,7 +717,6 @@ end
 function scene.renameWorld(o, text)
   local world_dir_tree = split(getWorldDir(true), "/")
   table.remove(world_dir_tree)
-  print(getWorldDir(true), table.concat(world_dir_tree, "/") .. "/" .. text:lower())
   renameDir(getWorldDir(true), table.concat(world_dir_tree, "/") .. "/" .. text:lower())
   if #sub_worlds == 0 then
     world = text:lower()

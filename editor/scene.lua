@@ -982,24 +982,6 @@ end
 function scene.update(dt)
   if not spookmode then
     if capturing then
-      if start_drag then
-        local rect = {
-          x = start_drag.x, 
-          y = start_drag.y,
-          w = love.mouse.getX() - start_drag.x,
-          h = love.mouse.getY() - start_drag.y
-        }
-        local highest = math.max(math.abs(rect.w), math.abs(rect.h))
-        if math.abs(rect.w) < highest then
-          if rect.w < 0 then rect.w = -highest end
-          if rect.w > 0 then rect.w = highest end
-        end
-        if math.abs(rect.h) < highest then
-          if rect.h < 0 then rect.h = -highest end
-          if rect.h > 0 then rect.h = highest end
-        end
-        end_drag = {x = rect.x + rect.w, y = rect.y + rect.h}
-      end
       return
     end
 
@@ -1835,8 +1817,8 @@ function scene.draw(dt)
         end
         local dir = "levels/"
         if world ~= "" then dir = getWorldDir() .. "/" end
-        if unit.special.level and love.filesystem.getInfo(dir .. unit.special.level .. ".png") then
-          icon_data = love.graphics.newImage(dir .. unit.special.level .. ".png")
+        if unit.special.level then
+          icon_data = getIcon(dir .. unit.special.level)
         else
           icon_data = nil
         end
@@ -2067,18 +2049,20 @@ function scene.draw(dt)
       love.graphics.setColor(0.5, 0.5, 0.5, 1)
       love.graphics.draw(screenshot_image)
 
-      if start_drag and end_drag then
-        local rect = {
-          x = math.min(start_drag.x, end_drag.x), 
-          y = math.min(start_drag.y, end_drag.y),
-          w = math.abs(end_drag.x - start_drag.x),
-          h = math.abs(end_drag.y - start_drag.y)
-        }
+      if start_drag then
+        local rect, real_rect = scene.getCaptureRect()
         love.graphics.setColor(1, 1, 1, 1)
-        love.graphics.rectangle("line", rect.x, rect.y, rect.w, rect.h)
         love.graphics.setScissor(rect.x, rect.y, rect.w, rect.h)
         love.graphics.draw(screenshot_image)
         love.graphics.setScissor()
+        love.graphics.setLineWidth(2)
+        love.graphics.rectangle("line", rect.x, rect.y, rect.w, rect.h)
+        love.graphics.setLineWidth(1)
+        if real_rect then
+          love.graphics.setColor(1, 1, 1, 0.5)
+          love.graphics.rectangle("line", real_rect.x, real_rect.y, real_rect.w, real_rect.h)
+        end
+        love.graphics.setColor(1, 1, 1, 1)
       end
     end
 
@@ -2181,16 +2165,24 @@ function scene.saveLevel()
     end
   else
     if world_parent == "officialworlds" then
-      local file = love.filesystem.getSource() .. "/" .. getWorldDir(true) .. "/" .. file_name .. ".bab"
-      io.open(file, "w"):write(json.encode(map.info))
+      local file = love.filesystem.getSource() .. "/" .. getWorldDir(true) .. "/" .. file_name
+      local f = io.open(file..".bab", "w"); f:write(json.encode(map.info)); f:close()
+      if icon_data then
+        local success, png_data = pcall(function() return icon_data:encode("png") end)
+        if success then
+          local f = io.open(file..".png", "wb")
+          f:write(png_data:getString())
+          f:close()
+        end
+      end
     else
       love.filesystem.createDirectory(getWorldDir(true))
       love.filesystem.write(getWorldDir(true) .. "/" ..file_name .. ".bab", json.encode(map.info))
+      if icon_data then
+        pcall(function() icon_data:encode("png", getWorldDir(true) .. "/" .. file_name .. ".png") end)
+      end
     end
     print("Saved to:",getWorldDir(true) .. "/" ..file_name .. ".bab")
-    if icon_data then
-      pcall(function() icon_data:encode("png", getWorldDir(true) .. "/" .. file_name .. ".png") end)
-    end
   end
 
   last_saved = map.data
@@ -2346,29 +2338,20 @@ function love.filedropped(file)
 
   local dir = "levels/"
   if world ~= "" then dir = getWorldDir(true) .. "/" end
-  if love.filesystem.getInfo(dir .. level_name .. ".png") then
-    icon_data = love.image.newImageData(dir .. level_name .. ".png")
-  else
-    icon_data = nil
-  end
+  icon_data = getIcon(dir .. level_name)
 
   resetMusic(map_music, 0.1)
 end
 
 function scene.captureIcon()
-  if start_drag == nil or end_drag == nil then
+  if start_drag == nil then
     capturing = false
     screenshot = nil
     screenshot_image = nil
     return
   end
 
-  local rect = {
-    x = math.min(start_drag.x, end_drag.x),
-    y = math.min(start_drag.y, end_drag.y),
-    w = math.abs(end_drag.x - start_drag.x),
-    h = math.abs(end_drag.y - start_drag.y)
-  }
+  local rect = scene.getCaptureRect()
 
   if rect.w == 0 or rect.h == 0 then
     capturing = false
@@ -2436,6 +2419,50 @@ function scene.wheelMoved(whx, why)
       end
     end
     brush.id = tiles_by_namePossiblyMeta(new) or brush.id
+  end
+end
+
+function scene.getCaptureRect()
+  local rect = {
+    x = start_drag.x, 
+    y = start_drag.y,
+    w = love.mouse.getX() - start_drag.x,
+    h = love.mouse.getY() - start_drag.y
+  }
+
+  if not love.keyboard.isDown("lshift") then
+    local size = math.max(math.abs(rect.w), math.abs(rect.h))
+
+    if rect.w < 0 then
+      rect.x = rect.x - size
+    end
+    if rect.h < 0 then
+      rect.y = rect.y - size
+    end
+    rect.w = size
+    rect.h = size
+
+    return rect
+  else
+    if rect.w < 0 then
+      rect.x = rect.x + rect.w
+      rect.w = math.abs(rect.w)
+    end
+    if rect.h < 0 then
+      rect.y = rect.y + rect.h
+      rect.h = math.abs(rect.h)
+    end
+
+    local cx = rect.x + rect.w / 2
+    local cy = rect.y + rect.h / 2
+
+    local size = math.max(rect.w, rect.h)
+    return {
+      x = cx - size / 2,
+      y = cy - size / 2,
+      w = size,
+      h = size
+    }, rect
   end
 end
 
