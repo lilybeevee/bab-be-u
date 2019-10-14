@@ -165,6 +165,7 @@ function loadMap()
   end]]
   local has_missing_levels = false
   local rects = {}
+  local extra_units = {}
   for _,mapdata in ipairs(maps) do
     local version = mapdata.info.version
     local map = mapdata.data
@@ -261,13 +262,17 @@ function loadMap()
           unit.special = specials
         elseif tile == tiles_by_name["lvl"] then
           if readSaveFile{"levels", specials.level, "seen"} then
+            specials.visibility = "open"
             local tfs = readSaveFile{"levels", specials.level, "transform"}
-            for _,t in ipairs(tfs or {tiles_listPossiblyMeta(tile).name}) do
-              local unit = createUnit(tiles_by_namePossiblyMeta(t), x, y, dir, false, id, nil, color)
-              unit.special = specials
-              unit.special.visibility = "open"
-              if readSaveFile{"levels", specials.level, "won"} or readSaveFile{"levels", specials.level, "clear"} then
-                table.insert(floodfill, {unit, 1})
+            for i,t in ipairs(tfs or {tiles_listPossiblyMeta(tile).name}) do
+              if i == 1 then
+                local unit = createUnit(tiles_by_namePossiblyMeta(t), x, y, dir, false, id, nil, color)
+                unit.special = deepCopy(specials)
+                if readSaveFile{"levels", specials.level, "won"} or readSaveFile{"levels", specials.level, "clear"} then
+                  table.insert(floodfill, {unit, 1})
+                end
+              else
+                table.insert(extra_units, {tiles_by_namePossiblyMeta(t), x, y, dir, color, deepCopy(specials)})
               end
             end
           elseif specials.visibility == "open" then
@@ -288,12 +293,16 @@ function loadMap()
           end
         else
           if specials.level then
+            if readSaveFile{"levels", specials.level, "seen"} then
+              specials.visibility = "open"
+            end
             local tfs = readSaveFile{"levels", specials.level, "transform"}
-            for _,t in ipairs(tfs or {tiles_listPossiblyMeta(tile).name}) do
-              local unit = createUnit(tiles_by_namePossiblyMeta(t), x, y, dir, false, id, nil, color)
-              unit.special = specials
-              if readSaveFile{"levels", specials.level, "seen"} then
-                unit.special.visibility = "open"
+            for i,t in ipairs(tfs or {tiles_listPossiblyMeta(tile).name}) do
+              if i == 1 then
+                local unit = createUnit(tiles_by_namePossiblyMeta(t), x, y, dir, false, id, nil, color)
+                unit.special = specials
+              else
+                table.insert(extra_units, {tiles_by_namePossiblyMeta(t), x, y, dir, color, deepCopy(specials)})
               end
             end
           else
@@ -372,6 +381,10 @@ function loadMap()
         createUnit(tiles_by_name["bordr"], x, y, 1)
       end
     end
+  end
+  for _,t in ipairs(extra_units) do
+    local unit = createUnit(t[1], t[2], t[3], t[4], false, nil, nil, t[5])
+    unit.specials = t[6]
   end
   if (load_mode == "play") then
     initializeOuterLvl()
