@@ -137,6 +137,25 @@ function doMovement(movex, movey, key)
   portaling = {}
   
   updateGroup()
+  
+  --currently very bad method of making sure big stuff gets updated: go through all units and make sure they're set up properly
+  if units_by_name["text_big"] then
+    for _,unit in ipairs(units) do
+      if hasProperty(unit,"big") then
+        for i=1,3 do
+          if not table.has_value(unitsByTile(unit.x+i%2,unit.y+math.floor(i/2)),unit) then
+            table.insert(unitsByTile(unit.x+i%2,unit.y+math.floor(i/2)),unit)
+          end
+        end
+      else
+        for i=1,3 do
+          if table.has_value(unitsByTile(unit.x+i%2,unit.y+math.floor(i/2)),unit) then
+            removeFromTable(unitsByTile(unit.x+i%2,unit.y+math.floor(i/2)),unit)
+          end
+        end
+      end
+    end
+  end
 
   local move_stage = -1
   while move_stage < 3 do
@@ -619,7 +638,9 @@ It is probably possible to do, but lily has decided that it's not important enou
               end
               --Patashu: only the mover itself pulls, otherwise it's a mess. stuff like STICKY/STUCK will require ruggedizing this logic.
               --Patashu: TODO: Doing the pull right away means that in a situation like this: https://cdn.discordapp.com/attachments/579519329515732993/582179745006092318/unknown.png the pull could happen before the bounce depending on move order. To fix this... I'm not sure how Baba does this? But it's somewhere in that mess of code.
-              doPull(unit, dx, dy, dir, data, already_added, moving_units, moving_units_next,  slippers, remove_from_moving_units)
+              if not table.has_value(unitsByTile(unit.x-dx,unit.y-dy),unit) then
+                doPull(unit, dx, dy, dir, data, already_added, moving_units, moving_units_next,  slippers, remove_from_moving_units)
+              end
               
               --add to moving_units_next if we have another pending move
               data.times = data.times - 1
@@ -1044,6 +1065,7 @@ end
 function findSidekikers(unit,dx,dy)
   --fast track
   if rules_with["sidekik"] == nil and rules_with["diagkik"] == nil then return {} end
+  if table.has_value(unitsByTile(unit.x+dx,unit.y+dy),unit) then return {} end
   local result = {}
   if hasProperty(unit, "shy...") then
     return result
@@ -1890,55 +1912,57 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
       end
       --New FLYE mechanic, as decreed by the bab dictator - if you aren't sameFloat as a push/pull/sidekik, you can enter it.
       -- print("checking if",v.name,"has goawaypls")
-      local push = hasProperty(v, "go away pls") and ignoreCheck(unit,v,"go away pls")
-      local moov = hasRule(unit, "moov", v) and ignoreCheck(unit,v);
-      if (push or moov) and not would_swap_with then
-        -- print("success")
-        if pushing and ignoreCheck(v,unit) then
-          --glued units are pushed all at once or not at all
-          if hasProperty(v, "glued") then
-            local units, pushers, pullers = FindEntireGluedUnit(v, dx, dy)
-            
-            local all_success = true
-            local newer_movers = {}
-            for _,v2 in ipairs(pushers) do
+      if not table.has_value(unitsByTile(v.x,v.y),unit) then
+        local push = hasProperty(v, "go away pls") and ignoreCheck(unit,v,"go away pls")
+        local moov = hasRule(unit, "moov", v) and ignoreCheck(unit,v);
+        if (push or moov) and not would_swap_with then
+          -- print("success")
+          if pushing and ignoreCheck(v,unit) then
+            --glued units are pushed all at once or not at all
+            if hasProperty(v, "glued") then
+              local units, pushers, pullers = FindEntireGluedUnit(v, dx, dy)
+              
+              local all_success = true
+              local newer_movers = {}
+              for _,v2 in ipairs(pushers) do
+                push_stack[unit] = true
+                local success,new_movers,new_specials = canMove(v2, dx, dy, dir, pushing, pulling, solid_name, push and "go away pls" or "moov", push_stack)
+                push_stack[unit] = nil
+                mergeTable(specials, new_specials)
+                mergeTable(newer_movers, new_movers)
+                if not success then all_success = false end
+              end
+              if all_success then
+                mergeTable(movers, newer_movers)
+                for _,add in ipairs(units) do
+                  table.insert(movers, {unit = add, dx = dx, dy = dy, dir = dir, move_dx = move_dx, move_dy = move_dy, move_dir = move_dir, geometry_spin = geometry_spin, portal = portal_unit})
+                end
+                --print(dump(movers))
+              elseif push then
+                stopped = stopped or sameFloat(unit, v)
+              end
+            else
+              --single units have to be able to move themselves to be pushed
               push_stack[unit] = true
-              local success,new_movers,new_specials = canMove(v2, dx, dy, dir, pushing, pulling, solid_name, push and "go away pls" or "moov", push_stack)
+              local success,new_movers,new_specials = canMove(v, dx, dy, dir, pushing, pulling, solid_name, push and "go away pls" or "moov", push_stack)
               push_stack[unit] = nil
-              mergeTable(specials, new_specials)
-              mergeTable(newer_movers, new_movers)
-              if not success then all_success = false end
-            end
-            if all_success then
-              mergeTable(movers, newer_movers)
-              for _,add in ipairs(units) do
-                table.insert(movers, {unit = add, dx = dx, dy = dy, dir = dir, move_dx = move_dx, move_dy = move_dy, move_dir = move_dir, geometry_spin = geometry_spin, portal = portal_unit})
+              for _,special in ipairs(new_specials) do
+                table.insert(specials, special)
               end
-              --print(dump(movers))
-            elseif push then
-              stopped = stopped or sameFloat(unit, v)
-            end
-          else
-            --single units have to be able to move themselves to be pushed
-            push_stack[unit] = true
-            local success,new_movers,new_specials = canMove(v, dx, dy, dir, pushing, pulling, solid_name, push and "go away pls" or "moov", push_stack)
-            push_stack[unit] = nil
-            for _,special in ipairs(new_specials) do
-              table.insert(specials, special)
-            end
-            if success then
-              for _,mover in ipairs(new_movers) do
-                table.insert(movers, mover)
+              if success then
+                for _,mover in ipairs(new_movers) do
+                  table.insert(movers, mover)
+                end
+              elseif push then
+                stopped = stopped or sameFloat(unit, v)
               end
-            elseif push then
-              stopped = stopped or sameFloat(unit, v)
             end
+          elseif push then
+            stopped = stopped or sameFloat(unit, v)
           end
-        elseif push then
-          stopped = stopped or sameFloat(unit, v)
+        else
+          -- print("fail (or would_swap_with)")
         end
-      else
-        -- print("fail (or would_swap_with)")
       end
       
       --if/elseif chain for everything that sets stopped to true if it's true - no need to check the remainders after all! (but if anything ignores flye, put it first, like haet!)

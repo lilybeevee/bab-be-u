@@ -2,25 +2,6 @@ function moveBlock()
   --baba order: FOLLOW, BACK, TELE, SHIFT
   --bab order: big, zip, look at, undo, visit fren, go, goooo, shy, spin, folo wal, turn cornr
   
-  --currently very bad method of making sure big stuff gets updated: go through all units and make sure they're set up properly
-  if rules_with["big"] then
-    for _,unit in ipairs(units) do
-      if hasProperty(unit,"big") then
-        for i=1,3 do
-          if not table.has_value(unitsByTile(unit.x+i%2,unit.y+math.floor(i/2)),unit) then
-            table.insert(unitsByTile(unit.x+i%2,unit.y+math.floor(i/2)),unit)
-          end
-        end
-      else
-        for i=1,3 do
-          if table.has_value(unitsByTile(unit.x+i%2,unit.y+math.floor(i/2)),unit) then
-            removeFromTable(unitsByTile(unit.x+i%2,unit.y+math.floor(i/2)),unit)
-          end
-        end
-      end
-    end
-  end
-  
   local iszip = getUnitsWithEffect("zip")
   for _,unit in ipairs(iszip) do
     doZip(unit)
