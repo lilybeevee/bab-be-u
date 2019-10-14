@@ -487,7 +487,7 @@ function scene.keyPressed(key, isrepeat)
         end
     end
     
-    print(rhythm_interval)
+    --print(rhythm_interval)
 
     for _,v in ipairs(repeat_keys) do
       if v == key then

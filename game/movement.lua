@@ -914,7 +914,6 @@ function applySlide(mover, already_added, moving_units_next)
         elseif (dirDifference == 7) then
           dirToUse = dirAdd(mover.dir, 4);
         end
-        print(dirToUse)
         if (dirToUse ~= nil) then
           if (not did_clear_existing) then
             for i = #mover.moves,1,-1 do
