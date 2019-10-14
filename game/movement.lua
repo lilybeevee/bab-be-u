@@ -137,25 +137,6 @@ function doMovement(movex, movey, key)
   portaling = {}
   
   updateGroup()
-  
-  --currently very bad method of making sure big stuff gets updated: go through all units and make sure they're set up properly
-  if units_by_name["text_big"] then
-    for _,unit in ipairs(units) do
-      if hasProperty(unit,"big") then
-        for i=1,3 do
-          if not table.has_value(unitsByTile(unit.x+i%2,unit.y+math.floor(i/2)),unit) then
-            table.insert(unitsByTile(unit.x+i%2,unit.y+math.floor(i/2)),unit)
-          end
-        end
-      else
-        for i=1,3 do
-          if table.has_value(unitsByTile(unit.x+i%2,unit.y+math.floor(i/2)),unit) then
-            removeFromTable(unitsByTile(unit.x+i%2,unit.y+math.floor(i/2)),unit)
-          end
-        end
-      end
-    end
-  end
 
   local move_stage = -1
   while move_stage < 3 do
