@@ -1,4 +1,7 @@
 function clear()
+  puffs_this_world = 0
+  levels_this_world = 0
+
   --groups_exist = false
   letters_exist = false
   if not doing_past_turns then
@@ -230,6 +233,15 @@ function loadMap()
         id, tile, x, y, dir, specials, color = unit.id, unit.tile, unit.x, unit.y, unit.dir, unit.special, unit.color
         x = x + offset.x
         y = y + offset.y
+        
+        --track how many puffs and levels exist in this world (have to do this separately so we count hidden levels etc)
+        if specials.level then
+          levels_this_world = levels_this_world + 1
+          if readSaveFile{"levels", specials.level, "won"} then
+            puffs_this_world = puffs_this_world + 1
+          end
+        end
+        
         if scene == editor and specials.level then
           if not love.filesystem.getInfo(getWorldDir() .. "/" .. specials.level .. ".bab") then
             has_missing_levels = true
@@ -254,7 +266,7 @@ function loadMap()
               local unit = createUnit(tiles_by_namePossiblyMeta(t), x, y, dir, false, id, nil, color)
               unit.special = specials
               unit.special.visibility = "open"
-              if readSaveFile{"levels", specials.level, "won"} then
+              if readSaveFile{"levels", specials.level, "won"} or readSaveFile{"levels", specials.level, "clear"} then
                 table.insert(floodfill, {unit, 1})
               end
             end
@@ -290,6 +302,15 @@ function loadMap()
           end
         end
       end
+      
+      --now check if we should grant clear/complete
+      if (level_puffs_to_clear > 0 and puffs_this_world >= level_puffs_to_clear) then
+        writeSaveFile(true, {"levels", level_filename, "clear"})
+      end
+      if (levels_this_world > 0 and puffs_this_world >= levels_this_world) then
+        writeSaveFile(true, {"levels", level_filename, "complete"})
+      end
+      
       if dofloodfill then
         local created = {}
         while #floodfill > 0 do
