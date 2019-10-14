@@ -971,8 +971,15 @@ function scene.draw(dt)
           end
         end
         if do_vibrate then
-          if math.random() < 0.5 then
-            return math.random(-1, 1), math.random(-1, 1)
+          if unit.fullname == "temmi" then
+            local props = countProperty(unit,"?")
+            if math.random() > 1/(props+1) then
+              return math.random(-props, props), math.random(-props, props)
+            end
+          else
+            if math.random() > 0.5 then
+              return math.random(-1, 1), math.random(-1, 1)
+            end
           end
         end
       elseif shake_dur > 0 then
