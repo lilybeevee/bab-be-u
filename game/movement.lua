@@ -2026,9 +2026,9 @@ function getNextLevels()
   local next_levels, next_level_objs = {}, {}
   local us = getUnitsWithEffect("u")
   for _,unit in ipairs(us) do
-    local lvls = getUnitsOnTile(unit.x, unit.y, "lvl", false, unit)
+    local lvls = getUnitsOnTile(unit.x, unit.y, nil, false, unit)
     for _,lvl in ipairs(lvls) do
-      if lvl.special.level then
+      if lvl.special.level and lvl.special.visibility == "open" then
         table.insert(next_level_objs, lvl)
         table.insert(next_levels, lvl.special.level)
       end

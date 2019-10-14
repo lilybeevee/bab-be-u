@@ -1,4 +1,7 @@
 function clear()
+  puffs_this_world = 0
+  levels_this_world = 0
+
   --groups_exist = false
   letters_exist = false
   if not doing_past_turns then
@@ -160,7 +163,9 @@ function loadMap()
       units_by_tile[x + y * mapwidth] = {}
     end
   end]]
+  local has_missing_levels = false
   local rects = {}
+  local extra_units = {}
   for _,mapdata in ipairs(maps) do
     local version = mapdata.info.version
     local map = mapdata.data
@@ -229,18 +234,45 @@ function loadMap()
         id, tile, x, y, dir, specials, color = unit.id, unit.tile, unit.x, unit.y, unit.dir, unit.special, unit.color
         x = x + offset.x
         y = y + offset.y
+        
+        --track how many puffs and levels exist in this world (have to do this separately so we count hidden levels etc)
+        if specials.level then
+          levels_this_world = levels_this_world + 1
+          if readSaveFile{"levels", specials.level, "won"} then
+            puffs_this_world = puffs_this_world + 1
+          end
+        end
+        
+        if scene == editor and specials.level then
+          if not love.filesystem.getInfo(getWorldDir() .. "/" .. specials.level .. ".bab") then
+            has_missing_levels = true
+            print("missing level: " .. specials.level)
+            local search = searchForLevels(getWorldDir(), specials.name, true)
+            if #search > 0 then
+              print("    - located: " .. search[1].file)
+              specials.level = search[1].file
+              specials.name = search[1].data.name
+            else
+              print("    - could not locate!")
+            end
+          end
+        end
         if not dofloodfill then
           local unit = createUnit(tile, x, y, dir, false, id, nil, color)
           unit.special = specials
         elseif tile == tiles_by_name["lvl"] then
           if readSaveFile{"levels", specials.level, "seen"} then
+            specials.visibility = "open"
             local tfs = readSaveFile{"levels", specials.level, "transform"}
-            for _,t in ipairs(tfs or {tiles_listPossiblyMeta(tile).name}) do
-              local unit = createUnit(tiles_by_namePossiblyMeta(t), x, y, dir, false, id, nil, color)
-              unit.special = specials
-              unit.special.visibility = "open"
-              if readSaveFile{"levels", specials.level, "won"} then
-                table.insert(floodfill, {unit, 1})
+            for i,t in ipairs(tfs or {tiles_listPossiblyMeta(tile).name}) do
+              if i == 1 then
+                local unit = createUnit(tiles_by_namePossiblyMeta(t), x, y, dir, false, id, nil, color)
+                unit.special = deepCopy(specials)
+                if readSaveFile{"levels", specials.level, "won"} or readSaveFile{"levels", specials.level, "clear"} then
+                  table.insert(floodfill, {unit, 1})
+                end
+              else
+                table.insert(extra_units, {tiles_by_namePossiblyMeta(t), x, y, dir, color, deepCopy(specials)})
               end
             end
           elseif specials.visibility == "open" then
@@ -261,12 +293,16 @@ function loadMap()
           end
         else
           if specials.level then
+            if readSaveFile{"levels", specials.level, "seen"} then
+              specials.visibility = "open"
+            end
             local tfs = readSaveFile{"levels", specials.level, "transform"}
-            for _,t in ipairs(tfs or {tiles_listPossiblyMeta(tile).name}) do
-              local unit = createUnit(tiles_by_namePossiblyMeta(t), x, y, dir, false, id, nil, color)
-              unit.special = specials
-              if readSaveFile{"levels", specials.level, "seen"} then
-                unit.special.visibility = "open"
+            for i,t in ipairs(tfs or {tiles_listPossiblyMeta(tile).name}) do
+              if i == 1 then
+                local unit = createUnit(tiles_by_namePossiblyMeta(t), x, y, dir, false, id, nil, color)
+                unit.special = specials
+              else
+                table.insert(extra_units, {tiles_by_namePossiblyMeta(t), x, y, dir, color, deepCopy(specials)})
               end
             end
           else
@@ -275,6 +311,15 @@ function loadMap()
           end
         end
       end
+      
+      --now check if we should grant clear/complete
+      if (level_puffs_to_clear > 0 and puffs_this_world >= level_puffs_to_clear) then
+        writeSaveFile(true, {"levels", level_filename, "clear"})
+      end
+      if (levels_this_world > 0 and puffs_this_world >= levels_this_world) then
+        writeSaveFile(true, {"levels", level_filename, "complete"})
+      end
+      
       if dofloodfill then
         local created = {}
         while #floodfill > 0 do
@@ -337,6 +382,10 @@ function loadMap()
       end
     end
   end
+  for _,t in ipairs(extra_units) do
+    local unit = createUnit(t[1], t[2], t[3], t[4], false, nil, nil, t[5])
+    unit.specials = t[6]
+  end
   if (load_mode == "play") then
     initializeOuterLvl()
     initializeEmpties()
@@ -344,6 +393,9 @@ function loadMap()
     if (not unit_tests) then
       writeSaveFile(true, {"levels", level_filename, "seen"})
     end
+  end
+  if has_missing_levels then
+    print(colr.red("\nLEVELS MISSING - PLEASE CHECK & SAVE!"))
   end
   
   --I don't know why, but this is slower by a measurable amount (70-84 seconds for example).
@@ -805,7 +857,7 @@ function findUnitsByName(name)
 end
 
 function hasProperty(unit,prop)
-  if not rules_with[prop] then return false end
+  if not rules_with[prop] and prop ~= "?" then return false end
   if hasRule(unit, "be", prop) then return true end
   if type(unit) ~= "table" then return false end
   if not rules_with["giv"] then return false end
@@ -833,7 +885,7 @@ function hasProperty(unit,prop)
 end
 
 function countProperty(unit, prop, ignore_flye)
-  if not rules_with[prop] then return 0 end
+  if not rules_with[prop] and prop ~= "?" then return 0 end
   local result = #matchesRule(unit,"be",prop)
   if hasRule(unit, "ben't", prop) then return 0 end
   if not rules_with["giv"] then return result end
@@ -2526,13 +2578,15 @@ function getEverythingExcept(except)
 end
 
 function renameDir(from, to, cur_)
+  if from == to then
+    return
+  end
   local cur = cur_ or ""
   love.filesystem.createDirectory(to .. cur)
   for _,file in ipairs(love.filesystem.getDirectoryItems(from .. cur)) do
     if love.filesystem.getInfo(from .. cur .. "/" .. file, "directory") then
       renameDir(from, to, cur .. "/" .. file)
     else
-      print(from .. cur .. "/" .. file)
       love.filesystem.write(to .. cur .. "/" .. file, love.filesystem.read(from .. cur .. "/" .. file))
       love.filesystem.remove(from .. cur .. "/" .. file)
     end
@@ -2542,7 +2596,7 @@ end
 
 function deleteDir(dir)
   for _,file in ipairs(love.filesystem.getDirectoryItems(dir)) do
-    if love.filesystem.getInfo(file, "directory") then
+    if love.filesystem.getInfo(dir .. "/" .. file, "directory") then
       deleteDir(dir .. "/" .. file)
     else
       love.filesystem.remove(dir .. "/" .. file)
@@ -2626,7 +2680,6 @@ function loadLevels(levels, mode, level_objs, xwx)
 
     local data
     if split_name[#split_name] ~= "{DEFAULT}" then
-      print(dir .. level .. ".bab")
       data = json.decode(love.filesystem.read(dir .. level .. ".bab"))
     else
       data = json.decode(default_map)
@@ -2669,11 +2722,7 @@ function loadLevels(levels, mode, level_objs, xwx)
       table.insert(maps, {data = mapstr, info = data, file = level})
     end
 
-    if love.filesystem.getInfo(dir .. level .. ".png") then
-      icon_data = love.image.newImageData(dir .. level .. ".png")
-    else
-      icon_data = nil
-    end
+    icon_data = getIcon(dir .. level)
 
     table.remove(split_name)
     sub_worlds = split_name
@@ -3309,5 +3358,42 @@ function getWorldDir(include_sub_worlds)
       dir = dir .. "/" .. table.concat(sub_worlds, "/")
     end
     return dir
+  end
+end
+
+function searchForLevels(dir, search, exact)
+  local results = {}
+  local files = love.filesystem.getDirectoryItems(dir)
+
+  for _,file in ipairs(files) do
+    local info = love.filesystem.getInfo(dir .. "/" .. file)
+    if info then
+      if info.type == "directory" then
+        for _,level in ipairs(searchForLevels(dir .. "/" .. file, search, exact)) do
+          table.insert(results, {file = file .. "/" .. level.file, data = level.data})
+        end
+      elseif file:ends(".bab") then
+        local name = file:sub(1, -5)
+        local data = json.decode(love.filesystem.read(dir .. "/" .. file))
+        local found = false
+        if (exact and name == search) or (not exact and string.find(name, search)) then
+          found = true
+        elseif (exact and data.name == search) or (not exact and string.find(data.name, search)) then
+          found = true
+        end
+        if found then
+          table.insert(results, {file = name, data = data})
+        end
+      end
+    end
+  end
+
+  return results
+end
+
+-- i was originally making this to use .icon as an alternate icon format for official world saving but i figured out how to save pngs directly so this is a tiny function that serves almost no purpose now and also this comment is really long if you don't have wrapping then your scrollbar is huge now you're welcome
+function getIcon(path)
+  if love.filesystem.getInfo(path .. ".png") then
+    return love.graphics.newImage(path .. ".png")
   end
 end

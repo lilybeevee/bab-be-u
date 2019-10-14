@@ -6,6 +6,8 @@ sub_worlds = {}
 
 local title_font, label_font, icon_font, name_font
 local components
+local searching = false
+local search_string = ""
 
 local scrollx = 0
 local scrolly = 0
@@ -94,7 +96,10 @@ end
 
 function scene.keyPressed(key)
   if key == "escape" then
-    if #sub_worlds > 0 then
+    if searching then
+      searching = false
+      scene.buildUI()
+    elseif #sub_worlds > 0 then
       table.remove(sub_worlds)
       scene.buildUI()
     elseif load_mode == "select" then
@@ -108,6 +113,10 @@ function scene.keyPressed(key)
     else
       new_scene = menu
     end
+  elseif key == "f" and love.keyboard.isDown("lctrl") and load_mode ~= "select" then
+    searching = true
+    search_string = ""
+    scene.buildUI()
   elseif key == "tab" then
     if load_mode == "play" then
       load_mode = "edit"
@@ -241,12 +250,12 @@ function scene.draw()
     o:draw()
 
     if not ui.editing and love.keyboard.isDown("r") and o.data.type == "level" then
-      local level_name = o:getName()
+      local level_name = o.data.file
 
       if hasreplaylist[level_name] == nil then
-        local dir = "levels/"
-        if world ~= "" then dir = getWorldDir(true) .. "/" end
+        local dir = getWorldDir(true) .. "/"
         if not (love.filesystem.getInfo(dir .. level_name .. ".replay") or love.filesystem.getInfo("levels/" .. level_name .. ".replay")) then
+          print("not found: " .. dir .. level_name .. ".replay")
           hasreplaylist[level_name] = true
         else
           hasreplaylist[level_name] = false
@@ -310,11 +319,7 @@ function scene.loadLevel(data, new)
 
   local dir = "levels/"
   if world ~= "" then dir = getWorldDir(true) .. "/" end
-  if love.filesystem.getInfo(dir .. level_name .. ".png") then
-    icon_data = love.image.newImageData(dir .. level_name .. ".png")
-  else
-    icon_data = nil
-  end
+  icon_data = getIcon(dir .. level_name)
 end
 
 function scene.buildUI()
@@ -323,7 +328,36 @@ function scene.buildUI()
   components = {}
 
   local oy = 4
-  if world ~= "" then
+  if searching then
+    local text = search_string:upper()
+    if text == "" then
+      text = "ENTER SEARCH"
+    end
+
+    local title_width, title_height = ui.fonts.title:getWidth(text), ui.fonts.title:getHeight()
+    local search_label = ui.text_input.new()
+      :setText(text)
+      :setFont(ui.fonts.title)
+      :setPos(0, oy)
+      :setSize(love.graphics.getWidth(), title_height)
+      :onReturn(function(o)
+        search_string = o:getText():lower()
+        scene.buildUI()
+      end)
+      :onTextEdited(function(o) 
+        o:setText(o:getText():upper())
+      end)
+    search_label:setTextHoverColor(0.75, 0.75, 0.75)
+    search_label:onReleased(function(o) 
+      if o:getText():lower() == "enter search" then
+        o:setText("")
+      end
+      ui.setEditing(o)
+    end)
+
+    table.insert(components, search_label)
+    oy = oy + title_height + 24
+  elseif world ~= "" then
     if load_mode == "play" and love.filesystem.getInfo(getWorldDir(true) .. "/" .. "overworld.txt") then
       local overworld = love.filesystem.read(getWorldDir(true) .. "/" .. "overworld.txt")
       loadWorld(overworld)
@@ -392,7 +426,54 @@ function scene.buildUI()
     oy = oy + 24
   end
 
-  if world == "" then
+  if searching then
+    local outside_levels = searchForLevels("levels", search_string)
+    local world_levels = searchForLevels("worlds", search_string)
+    local official_levels = searchForLevels("officialworlds", search_string)
+
+    local function makeLevelButtons(levels, parent)
+      local btns = {}
+      for _,level in ipairs(levels) do
+        local file = level.file
+        local world = {world = "", world_parent = parent, sub_worlds = {}}
+        local path = split(level.file, "/")
+        if #path > 1 then
+          file = path[#path]
+          world.world = path[1]
+          table.remove(path, 1)
+          table.remove(path)
+          for _,sub in ipairs(path) do
+            table.insert(world.sub_worlds, sub)
+          end
+        end
+        local f
+        if parent == "" then
+          f = "levels/" .. level.file
+        else
+          f = parent .. "/" .. level.file
+        end
+        local icon = getIcon(f) or sprites["ui/default icon"]
+        table.insert(btns, {
+          file = file,
+          data = level.data,
+          world = world,
+          icon = icon
+        })
+      end
+      return btns
+    end
+
+    local levels = {}
+    mergeTable(levels, makeLevelButtons(outside_levels, ""))
+    mergeTable(levels, makeLevelButtons(official_levels, "officialworlds"))
+    mergeTable(levels, makeLevelButtons(world_levels, "worlds"))
+
+    table.sort(levels, function(a, b)
+      return a.file < b.file
+    end)
+
+    oy = scene.addButtons("level", levels, oy)
+  elseif world == "" then
     if load_mode ~= "select" then
       local worlds = scene.searchDir("officialworlds", "world")
       if #worlds > 0 then
@@ -563,11 +644,9 @@ function scene.searchDir(dir, type)
       t.file = file:sub(1, -5)
       t.data = json.decode(love.filesystem.read(dir .. "/" .. file))
       if spookmode then
-      t.icon = love.graphics.newImage("assets/sprites/ui/bxb bx x.jpg")
-      elseif love.filesystem.getInfo(dir .. "/" .. t.file .. ".png") then
-        t.icon = love.graphics.newImage(dir .. "/" .. t.file .. ".png")
+        t.icon = love.graphics.newImage("assets/sprites/ui/bxb bx x.jpg")
       else
-        t.icon = sprites["ui/default icon"]
+        t.icon = getIcon(dir .. "/" .. t.file) or sprites["ui/default icon"]
       end
     end
     table.insert(ret, t)
@@ -605,6 +684,9 @@ function scene.addButtons(type, list, oy)
         end
       elseif type == "level" then
         button = ui.level_button.new(v.file, v.data.extra):setIcon(v.icon):setPos(ox, oy)
+        if v.world then
+          button.data.world = v.world
+        end
         if v.create then
           button:onReleased(scene.createLevel)
         else
@@ -633,18 +715,15 @@ function scene.resize(w, h)
 end
 
 function scene.renameWorld(o, text)
-  if text:lower() ~= world then
-    local world_dir_tree = split(getWorldDir(true), "/")
-    table.remove(world_dir_tree)
-    print(getWorldDir(true), table.concat(world_dir_tree, "/") .. "/" .. text:lower())
-    renameDir(getWorldDir(true), table.concat(world_dir_tree, "/") .. "/" .. text:lower())
-    if #sub_worlds == 0 then
-      world = text:lower()
-    else
-      sub_worlds[#sub_worlds] = text:lower()
-    end
-    scene.buildUI()
+  local world_dir_tree = split(getWorldDir(true), "/")
+  table.remove(world_dir_tree)
+  renameDir(getWorldDir(true), table.concat(world_dir_tree, "/") .. "/" .. text:lower())
+  if #sub_worlds == 0 then
+    world = text:lower()
+  else
+    sub_worlds[#sub_worlds] = text:lower()
   end
+  scene.buildUI()
 end
 
 function scene.createWorld(o)
@@ -743,31 +822,42 @@ function scene.selectLevel(o, button)
       o:setColor()
       o:setSprite(sprites["ui/level box"])
     else
-      local file = o.data.file
-      if #sub_worlds > 0 then file = table.concat(sub_worlds, "/") .. "/" .. file end
-      if love.keyboard.isDown("lshift") then
-        if o.data.selected then
-          o:setColor()
-          o.data.selected = false
-          removeFromTable(selected_levels, file)
-        else
-          o:setColor(0.5, 0.25, 1)
-          o.data.selected = true
-          table.insert(selected_levels, file)
-        end
-      else
-        if load_mode == "select" then
-          new_scene = editor
-          selected_level.level = file
-          selected_level.name = o:getName()
-          sub_worlds = old_world.sub_worlds
-        else
-          if not o.data.selected then
+      if not searching then
+        local file = o.data.file
+        if #sub_worlds > 0 then file = table.concat(sub_worlds, "/") .. "/" .. file end
+        if love.keyboard.isDown("lshift") then
+          if o.data.selected then
+            o:setColor()
+            o.data.selected = false
+            removeFromTable(selected_levels, file)
+          else
+            o:setColor(0.5, 0.25, 1)
             o.data.selected = true
             table.insert(selected_levels, file)
           end
-          loadLevels(selected_levels, load_mode)
+        else
+          if load_mode == "select" then
+            new_scene = editor
+            selected_level.level = file
+            selected_level.name = o:getName()
+            sub_worlds = old_world.sub_worlds
+          else
+            if not o.data.selected then
+              o.data.selected = true
+              table.insert(selected_levels, file)
+            end
+            loadLevels(selected_levels, load_mode)
+          end
         end
+      else
+        world = o.data.world.world
+        world_parent = o.data.world.world_parent
+        sub_worlds = o.data.world.sub_worlds
+
+        local file = o.data.file
+        if #sub_worlds > 0 then file = table.concat(sub_worlds, "/") .. "/" .. file end
+
+        loadLevels({file}, load_mode)
       end
     end
   elseif button == 2 then
@@ -779,7 +869,7 @@ function scene.selectLevel(o, button)
         end
       end
       selected_levels = {}
-    elseif world_parent ~= "officialworlds" then
+    elseif world_parent ~= "officialworlds" and (not o.data.world or o.data.world.world_parent ~= "officialworlds") then
       if not o.data.deleting then
         o.data.deleting = 1
         o:setColor(1, 1, 1)
@@ -793,9 +883,17 @@ function scene.selectLevel(o, button)
         playSound("unlock")
       elseif o.data.deleting == 2 then
         local dir = "levels/"
-        if world ~= "" then dir = getWorldDir(true) .. "/" end
+        if o.data.world then
+          if o.data.world.world ~= "" then
+            dir = o.data.world.world_parent .. "/" .. o.data.world.world .. "/"
+            if #o.data.world.sub_worlds > 0 then
+              dir = dir .. table.concat(o.data.world.sub_worlds, "/") .. "/"
+            end
+          end
+        elseif world ~= "" then dir = getWorldDir(true) .. "/" end
         love.filesystem.remove(dir .. o.data.file .. ".bab")
         love.filesystem.remove(dir .. o.data.file .. ".png")
+        love.filesystem.remove(dir .. o.data.file .. ".replay")
         playSound("break")
         shakeScreen(0.4, 0.3)
         scene.buildUI()
