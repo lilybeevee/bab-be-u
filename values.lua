@@ -301,7 +301,7 @@ selector_grid_contents = {
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,"wan","text_wan","mug","text_mug","die","text_die",0,0,0,0,0,0,0,0,0,0,
+    0,0,"wan","text_wan","mug","text_mug","die","text_die","bluon","text_bluon",0,0,0,0,0,0,0,0,
     "sno","text_sno","bel","text_bel","wres","text_wres","bowie","text_bowie","sant","text_sant","canedy","text_canedy","bolble","text_bolble","now","text_now","cooky","text_cooky",
     0,0,"pot","text_pot","sweep","text_sweep",0,0,"which","text_which","corndy","text_corndy",0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -8072,6 +8072,26 @@ tiles_list = {
     layer = 20,
     tags = {"chars", "temmie chang", "undertale"},
     desc = "Temmie Chang: Main artist of UNDERTALE and deltarune."
+  },
+    {
+    name = "bluon",
+    sprite = "bluon",
+    type = "object",
+    color = {2, 2},
+    layer = 4,
+    rotate = false,
+    tags = {"ballon", "bloon", "rubr", "btd", "tower", "defense"},
+    desc = "monkee pop bluon"
+  },
+     {
+    name = "text_bluon
+    sprite = "bluon
+    type = "text",
+    texttype = {object = true},
+    color = {2, 2},
+    layer = 20,
+    tags = {"bloon", "bloon", "btd", "rubr", "tower", "defense"},
+    desc = "the on is blu i guess."
   },
 }
 
