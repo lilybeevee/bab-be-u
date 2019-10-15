@@ -258,7 +258,7 @@ selector_grid_contents = {
     "keek","text_keek","creb","text_creb","shrim","text_shrim","moo","text_moo",0,0,0,0,0,0,"this","text_mous","lin","text_lin",
     "meem","text_meem","statoo","text_statoo","flamgo","text_flamgo","migri","text_migri",0,0,0,0,0,0,"text_text","text_frens","text_groop","text_pathz",
     "skul","text_skul","beeee","text_beeee","gul","text_gul","kva","text_kva",0,0,0,0,0,0,"text_lethers","text_every1","text_every2","text_every3",
-    "ghost fren","text_ghost fren","fishe","text_fishe","starrfishe","text_starrfishe","pidgin","text_pidgin",0,0,0,0,0,0,0,0,0,"text_no1",
+    "ghost fren","text_ghost fren","fishe","text_fishe","starrfishe","text_starrfishe","pidgin","text_pidgin",0,0,0,0,0,0,0,0,"text_gang","text_no1",
     "robobot","text_robobot","snek","text_snek","sneel","text_sneel","swan","text_swan",0,0,0,0,0,0,0,0,0,0,
     "wog","text_wog","bog","text_bog","enbybog","text_enbybog","spoder","text_spoder",0,0,0,0,0,0,0,0,0,0,
     "kirb","text_kirb","ripof","text_ripof","cavebab","text_cavebab",0,0,0,0,0,0,0,0,0,0,0,0,
@@ -8072,6 +8072,17 @@ tiles_list = {
     layer = 20,
     tags = {"chars", "temmie chang", "undertale"},
     desc = "Temmie Chang: Main artist of UNDERTALE and deltarune."
+  },
+	-- 680
+  {
+    name = "text_gang",
+    sprite = "text_gang",
+    type = "text",
+    texttype = {object = true, group = true},
+    color = {0, 1},
+    layer = 20,
+    tags = {"group"},
+    desc = "GANG: A variant of FRENS but members wear an exclusive hat.",
   },
 }
 
