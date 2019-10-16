@@ -247,7 +247,7 @@ selector_grid_contents = {
     0 ,"ui_w","ui_e","ui_r",0,0,0,"ui_i",0,0,0,0,0,0,0,"ui_7","ui_8","ui_9",
     "ui_a","ui_s","ui_d",0,0,0,"ui_j","ui_k","ui_l",0,0,0,0,0,0,"ui_4","ui_5","ui_6",
     "ui_z",0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ui_1","ui_2","ui_3",
-    0,0,0,0,"ui_space",0,0,0,0,0,0,0,0,0,0,"ui_arrow",0,0,
+    0,0,0,0,"ui_space",0,0,0,0,0,0,0,0,0,0,"ui_arrow","ui_0",0,
     "text_press","text_f1","text_play","text_f2","text_edit","ui_left click","ui_right click",0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,"ui_walk",0,0,"ui_reset",0,0,"ui_undo",0,0,"ui_wait",0,0,"ui_activat",0,0,"ui_clik",0,0,0,0,
@@ -8083,6 +8083,15 @@ tiles_list = {
     layer = 20,
     tags = {"group"},
     desc = "GANG: A variant of FRENS but members wear an exclusive hat.",
+  },
+  -- 681
+  {
+    name = "ui_0",
+    sprite = "ui_0",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+    desc = "The other undo key.",
   },
 }
 
