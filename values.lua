@@ -314,7 +314,7 @@ selector_grid_contents = {
     "text_no go","text_go away pls","text_come pls","text_sidekik","text_diagkik","text_:o","text_hotte","text_fridgd","text_txtify",0,"text_dragbl","text_no drag",0,"text_clikt","text_past","text_wun","text_an","text_mayb",
     "text_visit fren","text_slep","text_shy...","text_behin u",0,"text_xwx","text_moar","text_split","text_thingify",0,"text_rythm",0,0,"text_wait...","text_samefloat","text_samepaint","text_sameface",0,
     "text_flye","text_tall","text_haet skye","text_haet flor",0,"text_;d","text_gone","text_nuek","text_notranform",0,0,0,0,"text_w/fren","text_arond","text_sans","text_seen by","text_behind",
-    "text_diag","text_ortho","text_go my way","text_zip",0,0,0,0,0,0,0,0,0,"text_that","text_that be","text_that got",0,"text_beside",
+    "text_diag","text_ortho","text_go my way","text_zip",0,"text_B)","text_cool",0,0,0,0,0,0,"text_that","text_that be","text_that got",0,"text_beside",
     "text_turn cornr","text_folo wal","text_hopovr","text_reflecc",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     "text_munwalk","text_sidestep","text_diagstep","text_knightstep",0,0,0,0,0,0,0,0,0,0,0,0,0,"text_reed",
     "text_spin","text_rotatbl","text_noturn","text_stukc",0,0,0,0,0,0,0,0,0,0,0,0,"text_enby","text_orang",
@@ -2028,7 +2028,7 @@ tiles_list = {
     color = {4,1},
     layer = 20,
     tags = {"level"},
-    desc = "LVL: Refers to the level you're in, as well as any enterable levels in this level. (Middle-click it to edit.)"
+    desc = "LVL: Refers to the level you're in, as well as any enterable levels in this level. \nMiddle or SHIFT right-click it to edit.)"
   },
   -- 153
   {
@@ -3949,6 +3949,7 @@ tiles_list = {
     rotate = true,
     features = { 
       sans = {x=17, y=8, w=2, h=3},
+      cool = {x=-2, y=-3},
       
       which = {x=-2, y=-1},
       hatt = {x=-1, y=-1},
@@ -5624,7 +5625,7 @@ tiles_list = {
     color = {1, 3},
     layer = 6,
     rotate = true,
-    features = { sans = {x=14, y=5, w=2, h=2} },
+    features = { sans = {x=12, y=11, w=2, h=2} },
     tags = {"chars", "penguin", "bird"},
     desc = "noot noot",
   },
@@ -7080,6 +7081,7 @@ tiles_list = {
     rotate = true,
     features = { 
       sans = {x=26, y=11, w=3, h=3},
+      cool = {x=5, y=-1},
       which = {x = 7},
       sant = {y = 1},
       knif = {x = 6, y = 2},
@@ -8052,6 +8054,7 @@ tiles_list = {
     rotate = true,
     features = {
         sans = {x=23, y=12, w=2, h=2},
+        cool = {x=2, y=2},
         sant = {x=1},
         hatt = {x=5},
         which = {x=5},
@@ -8092,6 +8095,29 @@ tiles_list = {
     color = {0,3},
     layer = 20,
     desc = "The other undo key.",
+  },
+  -- 682
+  {
+    name = "text_B)",
+    sprite = "text_B)",
+    type = "text",
+    texttype = {property = true},
+    color = {1, 4},
+    layer = 20,
+    features = { sans = {x=20, y=8, w=5, h=4} },
+    tags = {"cool", "smiley"},
+    desc = "B): At end of turn, if U is on B) and survives, U R COOL!",
+  },
+  -- 683
+  {
+    name = "text_cool",
+    sprite = "text_cool",
+    type = "text",
+    texttype = {property = true},
+    color = {1, 4},
+    layer = 20,
+    tags = {"cool"},
+    desc = "COOL: COOL units wear a pair of sunglasses, and don't shake.",
   },
 }
 

@@ -665,7 +665,7 @@ function scene.getTransform()
   transform:scale(scale, scale)
   transform:translate(scaledwidth / 2 - roomwidth / 2, scaledheight / 2 - roomheight / 2)
 
-  if shake_dur > 0 then
+  if shake_dur > 0 and not hasProperty(outerlvl, "cool") then
     local range = 1
     transform:translate(math.random(-range, range), math.random(-range, range))
   end
@@ -952,6 +952,7 @@ function scene.draw(dt)
     end
 
     local function getOffset()
+      if hasProperty(unit,"cool") then return 0,0 end
       if rules_with["temmi"] then
         local do_vibrate = false
         if unit.fullname == "temmi" then
@@ -1320,6 +1321,12 @@ function scene.draw(dt)
       end
     end
     
+    if hasProperty(unit,"cool") then
+      local o = getTableWithDefaults(unit.features.cool, {x=0, y=0, sprite="shades"})
+      local shake_x, shake_y = getOffset()
+      love.graphics.setColor(getPaletteColor(0,3))
+      love.graphics.draw(sprites[o.sprite], fulldrawx + o.x + shake_x,  fulldrawy + o.y + shake_y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+    end
     if hasProperty(unit,"sans") and unit.features.sans and not hasProperty(unit,"slep") then
       local topleft = {x = fulldrawx - 16, y = fulldrawy - 16}
       love.graphics.setColor(getPaletteColor(1,4))
