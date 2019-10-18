@@ -242,6 +242,7 @@ function parseRules(undoing)
     #matchesRule(nil, "ben't", "wurd"),
     #matchesRule(nil, nil, "za warudo"),
     #matchesRule(nil, nil, "rong"),
+    #matchesRule(nil, nil, "slep"),
     --If and only if poor tolls exist, flyeness changing can affect rules parsing, because the text and portal have to match flyeness to go through.
     rules_with["poor toll"] and #matchesRule(nil, "ignor", nil) or 0,
   }
@@ -395,6 +396,7 @@ function parseRules(undoing)
     #matchesRule(nil, "ben't", "wurd"),
     #matchesRule(nil, nil, "za warudo"),
     #matchesRule(nil, nil, "rong"),
+    #matchesRule(nil, nil, "slep"),
     #matchesRule(outerlvl, nil, "go arnd"),
     #matchesRule(outerlvl, nil, "mirr arnd"),
     --If and only if poor tolls exist, flyeness changing can affect rules parsing, because the text and portal have to match flyeness to go through.
@@ -1036,6 +1038,7 @@ function shouldReparseRules()
   if shouldReparseRulesIfConditionalRuleExists("?", "ben't", "wurd") then return true end
   if shouldReparseRulesIfConditionalRuleExists("?", "be", "za warudo") then return true end
   if shouldReparseRulesIfConditionalRuleExists("?", "be", "rong") then return true end
+  if shouldReparseRulesIfConditionalRuleExists("?", "be", "slep") then return true end
   if rules_with["poor toll"] then
     if shouldReparseRulesIfConditionalRuleExists("?", "ignor", "?", true) then return true end
   end
