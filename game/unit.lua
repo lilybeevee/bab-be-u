@@ -2474,14 +2474,19 @@ function convertUnits(pass)
       --remove "text_" as many times as we're de-metaing
       local nametocreate = unit.fullname
       for i = 1,amt do
+        local newname = nametocreate
         local tile = tiles_by_name[nametocreate]
-        if tile ~= nil and tiles_list[tile].demeta then
-          nametocreate = tiles_list[tile].demeta
+        if tiles_list[tile].demeta then
+          newname = tiles_list[tile].demeta
         else
           if nametocreate:starts("text_") then
-            nametocreate = nametocreate:sub(6, -1)
+            newname = nametocreate:sub(6, -1)
           end
         end
+        if not tiles_by_name[newname] then
+          break
+        end
+        nametocreate = newname
       end
       if nametocreate ~= unit.fullname then
         table.insert(converted_units, unit)

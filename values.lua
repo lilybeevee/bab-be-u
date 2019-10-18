@@ -1274,6 +1274,7 @@ tiles_list = {
     texttype = {property = true},
     color = {4, 2},
     layer = 20,
+    demeta = "the real qt",
     tags = {"cute","lily"},
     desc = "QT: Makes the unit emit love hearts.",
   },
@@ -8131,6 +8132,14 @@ tiles_list = {
     tags = {"cool"},
     desc = "COOL: COOL units wear a pair of sunglasses, and don't shake.",
   },
+  -- 684
+  {
+    name = "the real qt",
+    sprite = "the real qt",
+    color = {4, 2},
+    layer = 3,
+    tometa = "text_qt",
+  }
 }
 
 tiles_by_name = {}
