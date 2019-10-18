@@ -2119,57 +2119,87 @@ function scene.checkInput()
         if not unit_tests then print("gameplay logic took: "..tostring(round((end_time-start_time)*1000)).."ms") end
         -- SING
         if tiles_by_name["text_sing"] then
-          if hasRule("swan","sing","?") then
-            local pitch = math.random() * ((2^(11/12)) - 1) + 1
-            playSound("honk"..love.math.random(1,6), 1, pitch)
-          end
-          if hasSing(unit,"c") or hasSing(unit,"b_sharp") then
-              bit:setPitch(1)
-              bit:play()
-          end
-          if hasSing(unit,"c_sharp") or hasSing(unit,"d_flat") then
-              bit:setPitch(2^(1/12))
-              bit:play()
-          end
-          if hasSing(unit,"d") then
-              bit:setPitch(2^(2/12))
-              bit:play()
-          end
-          if hasSing(unit,"d_sharp") or hasSing(unit,"e_flat") then
-              bit:setPitch(2^(3/12))
-              bit:play()
-          end
-          if hasSing(unit,"e") or hasSing(unit,"f_flat") then
-              bit:setPitch(2^(4/12))
-              bit:play()
-          end
-          if hasSing(unit,"f") or hasSing(unit,"e_sharp") then
-              bit:setPitch(2^(5/12))
-              bit:play()
-          end
-          if hasSing(unit,"f_sharp") or hasSing(unit,"g_flat") then
-              bit:setPitch(2^(6/12))
-              bit:play()
-          end
-          if hasSing(unit,"g") then
-              bit:setPitch(2^(7/12))
-              bit:play()
-          end
-          if hasSing(unit,"g_sharp") or hasSing(unit,"a_flat") then
-              bit:setPitch(2^(8/12))
-              bit:play()
-          end
-          if hasSing(unit,"a") then
-              bit:setPitch(2^(9/12))
-              bit:play()
-          end
-          if hasSing(unit,"a_sharp") or hasSing(unit,"b_flat") then
-              bit:setPitch(2^(10/12))
-              bit:play()  
-          end
-          if hasSing(unit,"b") or hasSing(unit,"c_flat") then
-              bit:setPitch(2^(11/12))
-              bit:play()  
+          
+          local sing_rules = matchesRule(nil, "sing", "?")
+          for _,ruleparent in ipairs(sing_rules) do
+            local unit = ruleparent[2]
+            
+            if (unit.name == "swan") then
+              local pitch = math.random() * ((2^(11/12)) - 1) + 1
+              playSound("honk"..love.math.random(1,6), 1, pitch)
+            end
+            
+            local specific_sing = tiles_list[unit.tile].sing or "bit";
+            
+            local sing_note = ruleparent[1].rule.object.name;
+            print(fullDump(ruleparent[1].rule.object.unit, 2, true))
+            local sing_color = ruleparent[1].rule.object.unit.color_override or ruleparent[1].rule.object.unit.color;
+            local sing_octave = 0;
+            if (sing_color[1] <= 6 and sing_color[2] <= 4) then
+              local sing_color_word = colour_for_palette[sing_color[1]][sing_color[2]];
+              print(sing_color_word)
+              if sing_color_word == "whit" then
+                sing_octave = 0
+              elseif sing_color_word == "blacc" then
+                sing_octave = -5
+              elseif sing_color_word == "brwn" then
+                sing_octave = -4
+              elseif sing_color_word == "reed" then
+                sing_octave = -3
+              elseif sing_color_word == "orang" then
+                sing_octave = -2
+              elseif sing_color_word == "yello" then
+                sing_octave = -1
+              elseif sing_color_word == "grun" then
+                sing_octave = 0
+              elseif sing_color_word == "cyeann" then
+                sing_octave = 1
+              elseif sing_color_word == "bleu" then
+                sing_octave = 2
+              elseif sing_color_word == "purp" then
+                sing_octave = 3
+              elseif sing_color_word == "pinc" then
+                sing_octave = 4
+              elseif sing_color_word == "graey" then
+                sing_octave = 5
+              end
+            end
+            local sing_pitch = 1
+            if sing_note == "c" or sing_note == "b_sharp" then
+              sing_pitch = 1
+            elseif sing_note == "c_sharp" or sing_note == "d_flat" then
+              sing_pitch = 2^(1/12)
+            elseif sing_note == "d" then
+              sing_pitch = 2^(2/12)
+            elseif sing_note == "d_sharp" or sing_note == "e_flat" then
+              sing_pitch = 2^(3/12)
+            elseif sing_note == "e" or sing_note == "f_flat" then
+              sing_pitch = 2^(4/12)
+            elseif sing_note == "f" or sing_note == "e_sharp" then
+              sing_pitch = 2^(5/12)
+            elseif sing_note == "f_sharp" or sing_note == "g_flat" then
+              sing_pitch = 2^(6/12)
+            elseif sing_note == "g" then
+              sing_pitch = 2^(7/12)
+            elseif sing_note == "g_sharp" or sing_note == "a_flat" then
+              sing_pitch = 2^(8/12)
+            elseif sing_note == "a" then
+              sing_pitch = 2^(9/12)
+            elseif sing_note == "a_sharp" or sing_note == "b_flat" then
+              sing_pitch = 2^(10/12)
+            elseif sing_note == "b" or sing_note == "c_flat" then
+              sing_pitch = 2^(11/12)
+            end
+            
+            sing_pitch = sing_pitch * 2^sing_octave
+            
+            sound = love.sound.newSoundData("assets/audio/sfx/" .. specific_sing .. ".wav");
+            local source = love.audio.newSource(sound, "static")
+            source:setVolume(1)
+            source:setPitch(sing_pitch or 1)
+            source:play()
+            
+            addParticles("sing", unit.x, unit.y, unit.color_override or unit.color)
           end
         end
         -- BUP

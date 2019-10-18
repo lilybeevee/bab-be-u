@@ -922,16 +922,6 @@ function getUs()
   return yous
 end
 
-function hasSing(unit,note)
-  local rules = matchesRule(nil,"sing",note)
-  for _,rule in ipairs(rules) do
-    if rule[2].fullname ~= "swan" then
-      bit = love.audio.newSource("assets/audio/sfx/bit2.wav", "static")
-      return true
-    end
-  end
-end
-
 --to prevent infinite loops where a set of rules/conditions is self referencing
 withrecursion = {}
 
@@ -2193,6 +2183,25 @@ function addParticles(ptype,x,y,color,count)
     table.insert(particles, ps)
   elseif ptype == "slep" then
     local ps = love.graphics.newParticleSystem(sprites["letter_z"])
+    local px = (x + 1) * TILE_SIZE
+    local py = y * TILE_SIZE
+    ps:setPosition(px, py)
+    ps:setSpread(0)
+    ps:setEmissionArea("borderrectangle", 0, 0, 0, true)    
+    ps:setSizes(0.5, 0.5, 0.5, 0)
+    ps:setSpeed(10)
+    ps:setLinearAcceleration(0,-50)
+    ps:setParticleLifetime(2)
+    if #color == 2 then
+      ps:setColors(getPaletteColor(color[1], color[2]))
+    else
+      ps:setColors(color[1]/255, color[2]/255, color[3]/255, (color[4] or 255)/255)
+    end
+    ps:start()
+    ps:emit(count or 10)
+    table.insert(particles, ps)
+  elseif ptype == "sing" then
+    local ps = love.graphics.newParticleSystem(sprites["noet"])
     local px = (x + 1) * TILE_SIZE
     local py = y * TILE_SIZE
     ps:setPosition(px, py)

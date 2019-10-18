@@ -2,7 +2,7 @@ function moveBlock()
   --baba order: FOLLOW, BACK, TELE, SHIFT
   --bab order: big, zip, look at, undo, visit fren, go, goooo, shy, spin, folo wal, turn cornr
   
-  for _,unit in ipairs(units_by_name["text_xwx"]) do
+  for _,unit in ipairs(units_by_name["text_xwx"] or {}) do
     local newname = hasProperty(unit, "slep") and "uwu" or "xwx"
     should_parse_rules = unit.textname ~= newname
     unit.textname = newname
