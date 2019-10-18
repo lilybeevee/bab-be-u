@@ -335,20 +335,22 @@ function loadMap()
                 orthos[dx][dy] = true
                 if not created[v[1]] then
                   if v[2] == tiles_by_name["lvl"] then
-                    local unit = createUnit(v[2], v[3], v[4], v[5], false, v[1], nil, v[7] and {{name=v[7]}})
-                    created[v[1]] = true
-                    unit.special = v[6]
-                    if ptype == 1 then
-                      unit.special.visibility = "open"
-                      table.insert(floodfill, {unit, 2})
-                    elseif ptype == 2 then
-                      unit.special.visibility = "locked"
-                      table.insert(floodfill, {unit, 2})
-                    elseif ptype == 3 then
-                      unit.special.visibility = "open"
+                    if ptype ~= 2 then
+                      local unit = createUnit(v[2], v[3], v[4], v[5], false, v[1], nil, v[7])
+                      created[v[1]] = true
+                      unit.special = v[6]
+                      if ptype == 1 then
+                        unit.special.visibility = "open"
+                        table.insert(floodfill, {unit, 2})
+                      elseif ptype == 3 then
+                        unit.special.visibility = "open"
+                      end
+                    elseif ptype == 2 and not table.has_value(locked_lvls, v) then
+                      table.insert(locked_lvls, v)
+                      table.insert(floodfill, {{x = v[3], y = v[4]}, 2})
                     end
                   elseif (ptype == 1 or ptype == 3) and v[2] == tiles_by_name["lin"] and (not v[6].pathlock or v[6].pathlock == "none") then
-                    local unit = createUnit(v[2], v[3], v[4], v[5], false, v[1], nil, v[7] and {{name=v[7]}})
+                    local unit = createUnit(v[2], v[3], v[4], v[5], false, v[1], nil, v[7])
                     created[v[1]] = true
                     unit.special = v[6]
                     table.insert(floodfill, {unit, 3})
@@ -360,7 +362,7 @@ function loadMap()
         end
         for _,v in ipairs(locked_lvls) do
           if not created[v[1]] then
-            local unit = createUnit(v[2], v[3], v[4], v[5], false, v[1], nil, v[7] and {{name=v[7]}})
+            local unit = createUnit(v[2], v[3], v[4], v[5], false, v[1], nil, v[7])
             created[v[1]] = true
             unit.special = v[6]
           end
