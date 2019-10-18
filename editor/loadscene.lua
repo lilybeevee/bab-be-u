@@ -142,7 +142,7 @@ function runUnitTests()
   unit_tests = true
   local dir = "levels/"
   if world ~= "" then dir = getWorldDir(true) .. "/" end
-  local levels = scene.searchDir(dir, "level")
+  local levels = searchForLevels(dir)
   local fail_levels = {}
   local succ_levels = {}
   local noreplay_levels = {}

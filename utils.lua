@@ -3387,9 +3387,9 @@ function searchForLevels(dir, search, exact)
         local name = file:sub(1, -5)
         local data = json.decode(love.filesystem.read(dir .. "/" .. file))
         local found = false
-        if (exact and name == search) or (not exact and string.find(name, search)) then
+        if (not search) or (exact and name == search) or (not exact and string.find(name, search)) then
           found = true
-        elseif (exact and data.name == search) or (not exact and string.find(data.name, search)) then
+        elseif (not search) or (exact and data.name == search) or (not exact and string.find(data.name, search)) then
           found = true
         end
         if found then
