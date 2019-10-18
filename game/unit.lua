@@ -2481,6 +2481,16 @@ function convertUnits(pass)
         else
           if nametocreate:starts("text_") then
             newname = nametocreate:sub(6, -1)
+          elseif nametocreate:starts("letter_") then
+            newname = nametocreate:sub(8, -1)
+            if newname == "custom" then
+              local letter = unit.special.customletter
+              if letter == "aa" or letter == "aaa" or letter == "aaaa" then
+                newname = "battry"
+              elseif letter == "aaaaa" or letter == "aaaaaa" then
+                newname = "aaaaaa"
+              end
+            end
           end
         end
         if not tiles_by_name[newname] then

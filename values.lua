@@ -8160,6 +8160,13 @@ tiles_list = {
     layer = 20,
     tags = {"trinket","vvvvvv"},
   },
+  -- 687
+  {
+    name = "aaaaaa",
+    sprite = "aaaaaa",
+    color = {0, 3},
+    layer = 3
+  },
 }
 
 tiles_by_name = {}
