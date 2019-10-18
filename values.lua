@@ -290,7 +290,7 @@ selector_grid_contents = {
   },
   --page 6: more inanimate objects
   {
-    "gato","text_gato",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    "gato","text_gato",0,0,"tronk","text_tronk",0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -1844,7 +1844,7 @@ tiles_list = {
     layer = 5,
     rotate = true,
     features = { sans = {x=18, y=4, w=2, h=2} },
-    tags = {"devs", "chars", "vitellary"},
+    tags = {"devs", "chars", "vitellary", "vvvvvv"},
     desc = "larry be haetflor",
   },
   -- 134
@@ -1855,7 +1855,7 @@ tiles_list = {
     texttype = {object = true},
     color = {2, 4},
     layer = 20,
-    tags = {"devs", "chars", "vitellary"},
+    tags = {"devs", "chars", "vitellary", "vvvvvv"},
   },
   -- 135
   {
@@ -8139,7 +8139,27 @@ tiles_list = {
     color = {4, 2},
     layer = 3,
     tometa = "text_qt",
-  }
+  },
+  -- 685
+  {
+    name = "tronk",
+    sprite = "tronk",
+    type = "object",
+    color = {1,4},
+    layer = 5,
+    tags = {"trinket","vvvvvv"},
+    desc = "upside down boll",
+  },
+  -- 686
+  {
+    name = "text_tronk",
+    sprite = "text_tronk",
+    type = "text",
+    texttype = {object = true},
+    color = {1,4},
+    layer = 20,
+    tags = {"trinket","vvvvvv"},
+  },
 }
 
 tiles_by_name = {}

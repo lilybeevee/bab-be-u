@@ -925,6 +925,12 @@ function scene.draw(dt)
 		end
 		
 		local color = setColor(unit.color_override or unit.color)
+    if unit.fullname == "tronk" then
+      if math.floor(love.timer.getTime()*10)%2 == 1 then
+        local r,g,b = getPaletteColor((unit.color_override or unit.color)[1],(unit.color_override or unit.color)[2])
+        setColor{r*350,g*350,b*350}
+      end
+    end
     --check level_destroyed so that the object created by infloop is always white needs to be changed if we want objects to be able to survive level destruction
     if level_destroyed then
       setColor({0,3})
