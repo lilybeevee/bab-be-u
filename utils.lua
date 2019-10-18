@@ -2467,7 +2467,7 @@ function ignoreCheck(unit, target, property)
 end
 
 function getPaletteColor(x, y, name_)
-  local palette = palettes[name_ or current_palette]
+  local palette = palettes[name_ or current_palette] or palettes["default"]
   local pixelid = x + y * palette.sprite:getWidth()
   if palette[pixelid] then
     return palette[pixelid][1], palette[pixelid][2], palette[pixelid][3], palette[pixelid][4]
