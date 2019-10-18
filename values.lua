@@ -8174,6 +8174,27 @@ tiles_list = {
     color = {0, 3},
     layer = 100
   },
+
+  {
+    name = "bluon",
+    sprite = "bluon",
+    type = "object",
+    color = {2, 2},
+    layer = 3,
+    tags = {"bloon","ballon"},
+    desc = "the source of all evil... or something",
+  },
+ 
+  {
+    name = "text_dor",
+    sprite = "text_dor",
+    type = "text",
+    texttype = {object = true},
+    color = {2, 2},
+    layer = 20,
+    tags = {"bloon","ballon"}
+    desc = "blu on?"
+  },
 }
 
 tiles_by_name = {}
