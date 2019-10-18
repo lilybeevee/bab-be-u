@@ -8167,6 +8167,13 @@ tiles_list = {
     color = {0, 3},
     layer = 3
   },
+  -- 688
+  {
+    name = "the real bab dictator",
+    sprite = "the real bab dictator",
+    color = {0, 3},
+    layer = 100
+  },
 }
 
 tiles_by_name = {}
