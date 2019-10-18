@@ -1203,17 +1203,17 @@ function fallBlock() --TODO: add support for spin
   addFallersFromLoop("be", "haet flor", {0, -1});
   
   
-  if (rules_with["haet"]) then
+  --[[if (rules_with["haet"]) then
     for k,v in pairs(dirs8_by_name) do
       local gravity_dir = copyTable(dirs8[k]);
       gravity_dir[1] = -gravity_dir[1];
       gravity_dir[2] = -gravity_dir[2];
       addFallersFromLoop("haet", v, gravity_dir);
     end
-  end
-  if (rules_with["liek"]) then
+  end]]
+  if (rules_with["yeet"]) then
     for k,v in pairs(dirs8_by_name) do
-      addFallersFromLoop("liek", v, dirs8[k]);
+      addFallersFromLoop("yeet", v, dirs8[k]);
     end
   end
   --2) normalize to an 8-way faller direction, and remove if it's 0,0
