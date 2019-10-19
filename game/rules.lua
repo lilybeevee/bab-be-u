@@ -690,7 +690,7 @@ function addRule(full_rule)
       if hasProperty(unit, "rong") then
         for __,unit2 in ipairs(units) do
           unit2.blocked = true
-          unit2.blocked_dir = full_rule.dirs[unit2] or dir
+          unit2.blocked_dir = full_rule.dirs and full_rule.dirs[unit2] or dir
         end
         rules_with = temp
         return
@@ -963,7 +963,7 @@ function postRules()
           for _,blocked in ipairs(blocked_rules) do
             for _,unit in ipairs(blocked.units) do
               unit.blocked = true
-              unit.blocked_dir = blocked.dirs[unit] or blocked.dir
+              unit.blocked_dir = blocked.dirs and blocked.dirs[unit] or blocked.dir
             end
             -- print("blocked:", fullDump(blocked))
             removeFromTable(t, blocked)
