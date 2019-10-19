@@ -2936,8 +2936,12 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
   end
   
   if prefix then
-    unit[prefix] = true
-    updateUnitColourOverride(unit)
+    if type(prefix) == "table" then
+      unit.color_override = prefix
+    else
+      unit[prefix] = true
+      updateUnitColourOverride(unit)
+    end
   end
   
   --abort if we're trying to create outerlvl outside of the start
