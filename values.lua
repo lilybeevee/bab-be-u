@@ -8177,7 +8177,7 @@ tiles_list = {
   -- 716
   {
     name = "fube",
-    sprite = {"bordr","fube_arrow"},
+    sprite = {"fube_arrow","fube_cube"},
     color = {{2, 2},{0, 3}},
     colored = {true,false},
     type = "object",

@@ -1527,6 +1527,14 @@ function miscUpdates()
         end
       end
       
+      if unit.fullname == "fube" then
+        if hasProperty(unit,"haet skye") or hasProperty(unit,"haet flor") or hasRule(unit,"yeet","?") or hasRule(unit,"moov","?") then
+          unit.sprite = {"fube_cube","fube_arrow"}
+        else
+          unit.sprite = {"fube_arrow","fube_cube"}
+        end
+      end
+      
       if unit.fullname == "bup" then
         if hasProperty(unit,"torc") then
           unit.sprite = {"bup","bup_band","bup_capn","bup_light"}
