@@ -290,7 +290,7 @@ selector_grid_contents = {
   },
   --page 6: more inanimate objects
   {
-    "gato","text_gato",0,0,"tronk","text_tronk",0,0,0,0,0,0,0,0,0,0,0,0,
+    "gato","text_gato","fube","text_fube","tronk","text_tronk",0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -8057,7 +8057,7 @@ tiles_list = {
     tags = {"out of bounds"},
     desc = "OOB (Prefix Condition): True if the unit is on a border.",
   },
-  -- 678
+  -- 705
   {
     name = "temmi",
     sprite = {"temmi","temmi but just her face"},
@@ -8078,7 +8078,7 @@ tiles_list = {
     tags = {"chars", "temmie chang", "undertale"},
     desc = "hOI!!! i'm tEMMi!!",
   },
-  -- 679
+  -- 706
   {
     name = "text_temmi",
     sprite = "text_temmi",
@@ -8089,7 +8089,7 @@ tiles_list = {
     tags = {"chars", "temmie chang", "undertale"},
     desc = "Temmie Chang: Main artist of UNDERTALE and deltarune."
   },
-	-- 680
+	-- 707
   {
     name = "text_gang",
     sprite = "text_gang",
@@ -8100,7 +8100,7 @@ tiles_list = {
     tags = {"group"},
     desc = "GANG: A variant of FRENS but members wear an exclusive hat.",
   },
-  -- 681
+  -- 708
   {
     name = "ui_0",
     sprite = "ui_0",
@@ -8109,7 +8109,7 @@ tiles_list = {
     layer = 20,
     desc = "The other undo key.",
   },
-  -- 682
+  -- 709
   {
     name = "text_B)",
     sprite = "text_B)",
@@ -8121,7 +8121,7 @@ tiles_list = {
     tags = {"cool", "smiley"},
     desc = "B): At end of turn, if U is on B) and survives, U R COOL!",
   },
-  -- 683
+  -- 710
   {
     name = "text_cool",
     sprite = "text_cool",
@@ -8132,7 +8132,7 @@ tiles_list = {
     tags = {"cool"},
     desc = "COOL: COOL units wear a pair of sunglasses, and don't shake.",
   },
-  -- 684
+  -- 711
   {
     name = "the real qt",
     sprite = "the real qt",
@@ -8140,7 +8140,7 @@ tiles_list = {
     layer = 3,
     tometa = "text_qt",
   },
-  -- 685
+  -- 712
   {
     name = "tronk",
     sprite = "tronk",
@@ -8150,7 +8150,7 @@ tiles_list = {
     tags = {"trinket","vvvvvv"},
     desc = "upside down boll",
   },
-  -- 686
+  -- 713
   {
     name = "text_tronk",
     sprite = "text_tronk",
@@ -8160,19 +8160,41 @@ tiles_list = {
     layer = 20,
     tags = {"trinket","vvvvvv"},
   },
-  -- 687
+  -- 714
   {
     name = "aaaaaa",
     sprite = "aaaaaa",
     color = {0, 3},
     layer = 3
   },
-  -- 688
+  -- 715
   {
     name = "the real bab dictator",
     sprite = "the real bab dictator",
     color = {0, 3},
     layer = 100
+  },
+  -- 716
+  {
+    name = "fube",
+    sprite = {"fube_arrow","fube_cube"},
+    color = {{2, 2},{0, 3}},
+    colored = {true,false},
+    type = "object",
+    rotate = true,
+    layer = 5,
+    tags = {"manifold garden", "arrow", "gravity"},
+    desc = "the cube thingy from many folds garden",
+  },
+  -- 717
+  {
+    name = "text_fube",
+    sprite = "text_fube",
+    type = "text",
+    texttype = {object = true},
+    color = {0, 3},
+    layer = 20,
+    tags = {"manifold garden", "arrow", "gravity"},
   },
 }
 
