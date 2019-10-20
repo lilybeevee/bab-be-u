@@ -142,7 +142,7 @@ function runUnitTests()
   unit_tests = true
   local dir = "levels/"
   if world ~= "" then dir = getWorldDir(true) .. "/" end
-  local levels = scene.searchDir(dir, "level")
+  local levels = searchForLevels(dir)
   local fail_levels = {}
   local succ_levels = {}
   local noreplay_levels = {}
@@ -358,12 +358,6 @@ function scene.buildUI()
     table.insert(components, search_label)
     oy = oy + title_height + 24
   elseif world ~= "" then
-    if load_mode == "play" and love.filesystem.getInfo(getWorldDir(true) .. "/" .. "overworld.txt") then
-      local overworld = love.filesystem.read(getWorldDir(true) .. "/" .. "overworld.txt")
-      loadWorld(overworld)
-      playing_world = true
-    end
-
     local title_text = world:upper()
     local small_text
 
@@ -762,7 +756,13 @@ function scene.selectWorld(o, button)
       else
         table.insert(sub_worlds, o:getName())
       end
-      scene.buildUI()
+      if load_mode == "play" and love.filesystem.getInfo(getWorldDir(true) .. "/" .. "overworld.txt") then
+        local overworld = love.filesystem.read(getWorldDir(true) .. "/" .. "overworld.txt")
+        loadWorld(overworld)
+        playing_world = true
+      else
+        scene.buildUI()
+      end
     end
   elseif button == 2 then
     if o.data.file ~= "officialworlds" then

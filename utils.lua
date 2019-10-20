@@ -335,20 +335,22 @@ function loadMap()
                 orthos[dx][dy] = true
                 if not created[v[1]] then
                   if v[2] == tiles_by_name["lvl"] then
-                    local unit = createUnit(v[2], v[3], v[4], v[5], false, v[1], nil, v[7] and {{name=v[7]}})
-                    created[v[1]] = true
-                    unit.special = v[6]
-                    if ptype == 1 then
-                      unit.special.visibility = "open"
-                      table.insert(floodfill, {unit, 2})
-                    elseif ptype == 2 then
-                      unit.special.visibility = "locked"
-                      table.insert(floodfill, {unit, 2})
-                    elseif ptype == 3 then
-                      unit.special.visibility = "open"
+                    if ptype ~= 2 then
+                      local unit = createUnit(v[2], v[3], v[4], v[5], false, v[1], nil, v[7])
+                      created[v[1]] = true
+                      unit.special = v[6]
+                      if ptype == 1 then
+                        unit.special.visibility = "open"
+                        table.insert(floodfill, {unit, 2})
+                      elseif ptype == 3 then
+                        unit.special.visibility = "open"
+                      end
+                    elseif ptype == 2 and not table.has_value(locked_lvls, v) then
+                      table.insert(locked_lvls, v)
+                      table.insert(floodfill, {{x = v[3], y = v[4]}, 2})
                     end
                   elseif (ptype == 1 or ptype == 3) and v[2] == tiles_by_name["lin"] and (not v[6].pathlock or v[6].pathlock == "none") then
-                    local unit = createUnit(v[2], v[3], v[4], v[5], false, v[1], nil, v[7] and {{name=v[7]}})
+                    local unit = createUnit(v[2], v[3], v[4], v[5], false, v[1], nil, v[7])
                     created[v[1]] = true
                     unit.special = v[6]
                     table.insert(floodfill, {unit, 3})
@@ -360,7 +362,7 @@ function loadMap()
         end
         for _,v in ipairs(locked_lvls) do
           if not created[v[1]] then
-            local unit = createUnit(v[2], v[3], v[4], v[5], false, v[1], nil, v[7] and {{name=v[7]}})
+            local unit = createUnit(v[2], v[3], v[4], v[5], false, v[1], nil, v[7])
             created[v[1]] = true
             unit.special = v[6]
           end
@@ -920,16 +922,6 @@ function getUs()
   mergeTable(yous,getUnitsWithEffect("u tres"))
   mergeTable(yous,getUnitsWithEffect("y'all"))
   return yous
-end
-
-function hasSing(unit,note)
-  local rules = matchesRule(nil,"sing",note)
-  for _,rule in ipairs(rules) do
-    if rule[2].fullname ~= "swan" then
-      bit = love.audio.newSource("assets/audio/sfx/bit2.wav", "static")
-      return true
-    end
-  end
 end
 
 --to prevent infinite loops where a set of rules/conditions is self referencing
@@ -2210,6 +2202,25 @@ function addParticles(ptype,x,y,color,count)
     ps:start()
     ps:emit(count or 10)
     table.insert(particles, ps)
+  elseif ptype == "sing" then
+    local ps = love.graphics.newParticleSystem(sprites["noet"])
+    local px = (x + 1) * TILE_SIZE
+    local py = y * TILE_SIZE
+    ps:setPosition(px, py)
+    ps:setSpread(0)
+    ps:setEmissionArea("borderrectangle", 0, 0, 0, true)    
+    ps:setSizes(0.5, 0.5, 0.5, 0)
+    ps:setSpeed(10)
+    ps:setLinearAcceleration(0,-50)
+    ps:setParticleLifetime(2)
+    if #color == 2 then
+      ps:setColors(getPaletteColor(color[1], color[2]))
+    else
+      ps:setColors(color[1]/255, color[2]/255, color[3]/255, (color[4] or 255)/255)
+    end
+    ps:start()
+    ps:emit(count or 10)
+    table.insert(particles, ps)
   elseif ptype == "movement-puff" then
     local ps = love.graphics.newParticleSystem(sprites["circle"])
     local px = (x + 0.5) * TILE_SIZE
@@ -2458,7 +2469,7 @@ function ignoreCheck(unit, target, property)
 end
 
 function getPaletteColor(x, y, name_)
-  local palette = palettes[name_ or current_palette]
+  local palette = palettes[name_ or current_palette] or palettes["default"]
   local pixelid = x + y * palette.sprite:getWidth()
   if palette[pixelid] then
     return palette[pixelid][1], palette[pixelid][2], palette[pixelid][3], palette[pixelid][4]
@@ -3376,9 +3387,9 @@ function searchForLevels(dir, search, exact)
         local name = file:sub(1, -5)
         local data = json.decode(love.filesystem.read(dir .. "/" .. file))
         local found = false
-        if (exact and name == search) or (not exact and string.find(name, search)) then
+        if (not search) or (exact and name == search) or (not exact and string.find(name, search)) then
           found = true
-        elseif (exact and data.name == search) or (not exact and string.find(data.name, search)) then
+        elseif (not search) or (exact and data.name == search) or (not exact and string.find(data.name, search)) then
           found = true
         end
         if found then

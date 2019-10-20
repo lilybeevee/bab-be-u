@@ -137,25 +137,6 @@ function doMovement(movex, movey, key)
   portaling = {}
   
   updateGroup()
-  
-  --currently very bad method of making sure big stuff gets updated: go through all units and make sure they're set up properly
-  if units_by_name["text_big"] then
-    for _,unit in ipairs(units) do
-      if hasProperty(unit,"big") then
-        for i=1,3 do
-          if not table.has_value(unitsByTile(unit.x+i%2,unit.y+math.floor(i/2)),unit) then
-            table.insert(unitsByTile(unit.x+i%2,unit.y+math.floor(i/2)),unit)
-          end
-        end
-      else
-        for i=1,3 do
-          if table.has_value(unitsByTile(unit.x+i%2,unit.y+math.floor(i/2)),unit) then
-            removeFromTable(unitsByTile(unit.x+i%2,unit.y+math.floor(i/2)),unit)
-          end
-        end
-      end
-    end
-  end
 
   local move_stage = -1
   while move_stage < 3 do
@@ -933,7 +914,6 @@ function applySlide(mover, already_added, moving_units_next)
         elseif (dirDifference == 7) then
           dirToUse = dirAdd(mover.dir, 4);
         end
-        print(dirToUse)
         if (dirToUse ~= nil) then
           if (not did_clear_existing) then
             for i = #mover.moves,1,-1 do
@@ -1223,17 +1203,17 @@ function fallBlock() --TODO: add support for spin
   addFallersFromLoop("be", "haet flor", {0, -1});
   
   
-  if (rules_with["haet"]) then
+  --[[if (rules_with["haet"]) then
     for k,v in pairs(dirs8_by_name) do
       local gravity_dir = copyTable(dirs8[k]);
       gravity_dir[1] = -gravity_dir[1];
       gravity_dir[2] = -gravity_dir[2];
       addFallersFromLoop("haet", v, gravity_dir);
     end
-  end
-  if (rules_with["liek"]) then
+  end]]
+  if (rules_with["yeet"]) then
     for k,v in pairs(dirs8_by_name) do
-      addFallersFromLoop("liek", v, dirs8[k]);
+      addFallersFromLoop("yeet", v, dirs8[k]);
     end
   end
   --2) normalize to an 8-way faller direction, and remove if it's 0,0

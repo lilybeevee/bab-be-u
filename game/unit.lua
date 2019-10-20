@@ -2,6 +2,31 @@ function moveBlock()
   --baba order: FOLLOW, BACK, TELE, SHIFT
   --bab order: big, zip, look at, undo, visit fren, go, goooo, shy, spin, folo wal, turn cornr
   
+  for _,unit in ipairs(units_by_name["text_xwx"] or {}) do
+    local newname = hasProperty(unit, "slep") and "uwu" or "xwx"
+    should_parse_rules = unit.textname ~= newname
+    unit.textname = newname
+  end
+  
+  --currently very bad method of making sure big stuff gets updated: go through all units and make sure they're set up properly
+  if units_by_name["text_big"] then
+    for _,unit in ipairs(units) do
+      if hasProperty(unit,"big") then
+        for i=1,3 do
+          if not table.has_value(unitsByTile(unit.x+i%2,unit.y+math.floor(i/2)),unit) then
+            table.insert(unitsByTile(unit.x+i%2,unit.y+math.floor(i/2)),unit)
+          end
+        end
+      else
+        for i=1,3 do
+          if table.has_value(unitsByTile(unit.x+i%2,unit.y+math.floor(i/2)),unit) then
+            removeFromTable(unitsByTile(unit.x+i%2,unit.y+math.floor(i/2)),unit)
+          end
+        end
+      end
+    end
+  end
+  
   local iszip = getUnitsWithEffect("zip")
   for _,unit in ipairs(iszip) do
     doZip(unit)
@@ -1502,6 +1527,14 @@ function miscUpdates()
         end
       end
       
+      if unit.fullname == "fube" then
+        if hasProperty(unit,"haet skye") or hasProperty(unit,"haet flor") or hasRule(unit,"yeet","?") or hasRule(unit,"moov","?") then
+          unit.sprite = {"fube_cube","fube_arrow"}
+        else
+          unit.sprite = {"fube_arrow","fube_cube"}
+        end
+      end
+      
       if unit.fullname == "bup" then
         if hasProperty(unit,"torc") then
           unit.sprite = {"bup","bup_band","bup_capn","bup_light"}
@@ -2449,14 +2482,29 @@ function convertUnits(pass)
       --remove "text_" as many times as we're de-metaing
       local nametocreate = unit.fullname
       for i = 1,amt do
+        local newname = nametocreate
         local tile = tiles_by_name[nametocreate]
-        if tile ~= nil and tiles_list[tile].demeta then
-          nametocreate = tiles_list[tile].demeta
+        if tiles_list[tile].demeta then
+          newname = tiles_list[tile].demeta
         else
           if nametocreate:starts("text_") then
-            nametocreate = nametocreate:sub(6, -1)
+            newname = nametocreate:sub(6, -1)
+          elseif nametocreate:starts("letter_") then
+            newname = nametocreate:sub(8, -1)
+            if newname == "custom" then
+              local letter = unit.special.customletter
+              if letter == "aa" or letter == "aaa" or letter == "aaaa" then
+                newname = "battry"
+              elseif letter == "aaaaa" or letter == "aaaaaa" then
+                newname = "aaaaaa"
+              end
+            end
           end
         end
+        if not tiles_by_name[newname] then
+          break
+        end
+        nametocreate = newname
       end
       if nametocreate ~= unit.fullname then
         table.insert(converted_units, unit)
@@ -2896,8 +2944,12 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
   end
   
   if prefix then
-    unit[prefix] = true
-    updateUnitColourOverride(unit)
+    if type(prefix) == "table" then
+      unit.color_override = prefix
+    else
+      unit[prefix] = true
+      updateUnitColourOverride(unit)
+    end
   end
   
   --abort if we're trying to create outerlvl outside of the start
