@@ -1011,18 +1011,7 @@ function scene.draw(dt)
       local ox, oy = getOffset()
       if not overlay and type(unit.sprite) == "table" then
         for i,image in ipairs(unit.sprite) do
-          if type(unit.color[i]) == "table" then
-            setColor(unit.color[i])
-          else
-            setColor(unit.color)
-          end
-          if unit.color_override then
-            if type(unit.color_override[i]) == "table" then
-              setColor(unit.color_override[i])
-            else
-              setColor(unit.color_override)
-            end
-          end
+          setColor(getUnitColors(unit, i))
           if onlycolor or (#unit.overlay > 0 and (unit.colored and unit.colored[i]) or not unit.colored) then
             love.graphics.setColor(1,1,1,1)
           end
@@ -1620,7 +1609,7 @@ function scene.draw(dt)
         end
       else
         for j,image in ipairs(unit.sprite) do
-          love.graphics.setColor(getPaletteColor(dcolor[j][1], dcolor[j][2]))
+          love.graphics.setColor(getPaletteColor(unpack(getUnitColors(unit, j))))
           local sprite = sprites[image]
           love.graphics.draw(sprite, 0, 0, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
         end
