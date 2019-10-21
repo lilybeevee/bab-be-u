@@ -2203,9 +2203,9 @@ function scene.checkInput()
               source:setVolume(1)
               source:setPitch(sing_pitch or 1)
               source:play()
-            end
             
-            addParticles("sing", unit.x, unit.y, unit.color_override or unit.color)
+              addParticles("sing", unit.x, unit.y, sing_color)
+            end
           end
         end
         -- BUP
