@@ -290,7 +290,7 @@ selector_grid_contents = {
   },
   --page 6: more inanimate objects
   {
-    "gato","text_gato",0,0,"tronk","text_tronk",0,0,0,0,0,0,0,0,0,0,0,0,
+    "gato","text_gato",0,0,"tronk","text_tronk","bluon","text_bluon",0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -8174,7 +8174,7 @@ tiles_list = {
     color = {0, 3},
     layer = 100
   },
-
+-- 689
   {
     name = "bluon",
     sprite = "bluon",
@@ -8184,16 +8184,16 @@ tiles_list = {
     tags = {"bloon","ballon"},
     desc = "the source of all evil... or something",
   },
- 
+ -- 705
   {
-    name = "text_dor",
-    sprite = "text_dor",
+    name = "text_bluon",
+    sprite = "text_bluon",
     type = "text",
     texttype = {object = true},
     color = {2, 2},
     layer = 20,
-    tags = {"bloon","ballon"}
-    desc = "blu on?"
+    tags = {"bloon","ballon"},
+    desc = "blu on?",
   },
 }
 
