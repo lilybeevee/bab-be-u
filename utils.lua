@@ -1516,7 +1516,7 @@ function testConds(unit, conds, compare_with) --cond should be a {condtype,{obje
           result = true
         end
       else
-        result = matchesColor(unit, condtype)
+        result = matchesColor(getUnitColors(unit), condtype)
       end
     elseif condtype == "the" then
       local the = cond.unit
@@ -1548,7 +1548,7 @@ function testConds(unit, conds, compare_with) --cond should be a {condtype,{obje
     elseif condtype == "samefloat" then
       result = sameFloat(unit, compare_with)
     elseif condtype == "samepaint" then
-      result = matchesColor(unit, compare_with)
+      result = matchesColor(getUnitColors(unit), getUnitColors(compare_with))
     elseif condtype == "sameface" then
       result = unit.dir == compare_with.dir
     elseif condtype == "oob" then
@@ -3415,29 +3415,57 @@ end
 
 -- logic for how this function works:
 -- nil checks (both nil -> true, one nil -> false)
--- coerce a to a single color at a time
--- coerce b to a single color at a time
+-- loop for colors in a if there are multiple
+-- loop for colors in b if there are multiple
 -- actually compare the color
-function matchesColor(a, b)
+function matchesColor(a, b, exact)
   if not a ~= not b then return false end
   if not a and not b then return true end
-  if type(a) == "string" then
-    matchesColor(main_palette_for_colour[a], b)
-  elseif type(a[1]) ~= "number" then
+  if type(a) == "table" and type(a[1]) ~= "number" then
     for _,c in ipairs(a) do
-      if matchesColor(c, b) then return true end
+      if matchesColor(c, b, exact) then return true end
     end
     return false
-  elseif type(a[1]) == "number" then
-    if type(b) == "string" then
-      matchesColor(a, main_palette_for_colour[b])
-    elseif type(b[1]) ~= "number"then
-      for _,c in ipairs(b) do
-        if matchesColor(a, c) then return true end
-      end
-      return false
-    elseif type(b[1]) == "number" then
-      return a[1] == b[1] and a[2] == b[2] and a[3] == b[3] -- for palette colors, a[3] and b[3] will be nil, which is still equal
+  end
+  if type(b) == "table" and type(b[1]) ~= "number" then
+    for _,c in ipairs(b) do
+      if matchesColor(a, c, exact) then return true end
     end
+    return false
+  end
+  if exact then
+    if type(a) == "string" then
+      a = main_palette_for_colour[a]
+    end
+    if type(b) == "string" then
+      b = main_palette_for_colour[b]
+    end
+    if #a == 2 and #b == 2 then
+      return a[1] == b[1] and a[2] == b[2]
+    end
+    -- just in case
+    if #a == 3 then
+      a = getPaletteColor(unpack(a))
+    end
+    if #b == 3 then
+      b = getPaletteColor(unpack(a))
+    end
+    return a[1] == b[1] and a[2] == b[2] and a[3] == b[3]
+  else
+    if type(a) == "table" then
+      if #a == 2 then
+        a = colour_for_palette[a[1]][a[2]]
+      else
+        return false -- I don't want to deal with this right now
+      end
+    end
+    if type(b) == "table" then
+      if #b == 2 then
+        b = colour_for_palette[b[1]][b[2]]
+      else
+        return false -- I don't want to deal with this right now
+      end
+    end
+    return a == b
   end
 end

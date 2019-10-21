@@ -1050,7 +1050,7 @@ function scene.update(dt)
             if #hovered >= 1 then
               for _,unit in ipairs(hovered) do
                 if unit.tile == brush.id and (unit.tile ~= tiles_by_name["letter_custom"] or unit.special.customletter == brush.special.customletter)
-                  and matchesColor(unit.color_override, brush.color) then
+                  and matchesColor(unit.color_override, brush.color, true) then
                   if not (ctrl_active or selectorhold) then
                     existing = unit
                   end
