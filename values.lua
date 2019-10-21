@@ -683,7 +683,6 @@ tiles_list = {
     texttype = {object = true},
     color = {6, 1},
     layer = 20,
-    sing = "s_sdrum",
     tags = {"box"},
   },
   --33
@@ -693,6 +692,7 @@ tiles_list = {
     type = "object",
     color = {6, 2},
     layer = 3,
+    sing = "s_sdrum",
     desc = "ce n'est pas une boîte, c'est quelque chose DE MIEUX",
     tags = {"box"},
   },
@@ -1286,6 +1286,7 @@ tiles_list = {
     texttype = {object = true, letter = true},
     color = {2, 4},
     layer = 5,
+    sing = "pipipi",
     features = { sans = {x=19, y=7, w=2, h=2} },
     tags = {"devs", "chars", "thefox", "puyopuyo tetris"},
     desc = "pi pi piiii!!!",
@@ -2192,6 +2193,7 @@ tiles_list = {
     color = {2,3},
     layer = 5,
     rotate = true,
+    sing = "dog",
     features = { 
       sans = {x=20, y=13, w=2, h=2},
       katany = {nya = true},
@@ -3960,6 +3962,7 @@ tiles_list = {
     color = {1,3},
     layer = 5,
     rotate = true,
+    sing = "s_jill",
     features = { 
       sans = {x=17, y=8, w=2, h=3},
       cool = {x=-2, y=-3},
@@ -5616,6 +5619,7 @@ tiles_list = {
     color = {6, 1},
     layer = 6,
     rotate = true,
+    sing = "s_scat",
     features = { sans = {x=24, y=16, w=2, h=2} },
     tags = {"chars", "bug", "insect", "cockroach"},
     desc = "icky",
@@ -6966,6 +6970,7 @@ tiles_list = {
     colored = {false,true},
     layer = 5,
     rotate = true,
+    sing = "overdriven guitar",
     convertible = false,
     features = { sans = {x=19, y=5, w=2, h=2} },
     tags = {"chars", "sans", "undertale", "skeleton"},
@@ -7847,6 +7852,7 @@ tiles_list = {
     color = {0, 3},
     layer = 6,
     rotate = true,
+    sing = "dog",
     features = {
         sans = {x=24, y=9, w=2, h=2},
         sant = {x=1},
@@ -8065,6 +8071,7 @@ tiles_list = {
     colored = {true, false},
     layer = 5,
     rotate = true,
+    sing = "temmie",
     features = {
         sans = {x=23, y=12, w=2, h=2},
         cool = {x=2, y=2},

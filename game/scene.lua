@@ -2130,9 +2130,13 @@ function scene.checkInput()
           for _,ruleparent in ipairs(sing_rules) do
             local unit = ruleparent[2]
             
-            if (unit.name == "swan") then
-              local pitch = math.random() * ((2^(11/12)) - 1) + 1
-              playSound("honk"..love.math.random(1,6), 1, pitch)
+            if unit.name == "no1" then break end
+            if unit.name == "swan" then
+              local sound = love.sound.newSoundData("assets/audio/sfx/honk" .. math.random(1,6) .. ".wav");
+              local source = love.audio.newSource(sound, "static")
+              source:setVolume(1)
+              source:setPitch(math.random() * ((2^(11/12)) - 1) + 1)
+              source:play()
             else
               local specific_sing = tiles_list[unit.tile].sing or "bit";
               
