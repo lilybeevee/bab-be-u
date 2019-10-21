@@ -1744,65 +1744,30 @@ end
 
 function updateUnitColourOverride(unit)
   unit.color_override = nil
-  if type(unit.color) == "table" and unit.colored then
-    unit.color_override = {}
-    for i,_ in ipairs(unit.color) do
-      if unit.colored[i] then
-        if unit.pinc or (unit.reed and unit.whit) then -- pink
-          unit.color_override[i] = {4, 1}
-        elseif unit.purp or (unit.reed and unit.bleu) then -- purple
-          unit.color_override[i] = {3, 1}
-        elseif unit.yello or (unit.reed and unit.grun) then -- yellow
-          unit.color_override[i] = {2, 4}
-        elseif unit.orang or (unit.reed and unit.yello) then -- orange
-          unit.color_override[i] = {2, 3}
-        elseif unit.cyeann or (unit.bleu and unit.grun) then -- cyan
-          unit.color_override[i] = {1, 4}
-        elseif unit.brwn or (unit.orang and unit.blacc) then -- brown
-          unit.color_override[i] = {6, 0}
-        elseif unit.reed then -- red
-          unit.color_override[i] = {2, 2}
-        elseif unit.bleu then -- blue
-          unit.color_override[i] = {1, 3}
-        elseif unit.grun then -- green
-          unit.color_override[i] = {5, 2}
-        elseif unit.graey or (unit.blacc and unit.whit) then -- grey
-          unit.color_override[i] = {0, 1}
-        elseif unit.whit or (unit.reed and unit.grun and unit.bleu) or (unit.reed and unit.cyeann) or (unit.bleu and unit.yello) or (unit.grun and unit.purp) then -- white
-          unit.color_override[i] = {0, 3}
-        elseif unit.blacc then -- black
-          unit.color_override[i] = {0, 0}
-        end
-      else
-        unit.color_override[i] = unit.color[i]
-      end
-    end
-  else
-    if unit.pinc or (unit.reed and unit.whit) then -- pink
-      unit.color_override = {4, 1}
-    elseif unit.purp or (unit.reed and unit.bleu) then -- purple
-      unit.color_override = {3, 1}
-    elseif unit.yello or (unit.reed and unit.grun) then -- yellow
-      unit.color_override = {2, 4}
-    elseif unit.orang or (unit.reed and unit.yello) then -- orange
-        unit.color_override = {2, 3}
-    elseif unit.cyeann or (unit.bleu and unit.grun) then -- cyan
-      unit.color_override = {1, 4}
-    elseif unit.brwn or (unit.orang and unit.blacc) then -- brown
-      unit.color_override = {6, 0}
-    elseif unit.reed then -- red
-      unit.color_override = {2, 2}
-    elseif unit.bleu then -- blue
-      unit.color_override = {1, 3}
-    elseif unit.grun then -- green
-      unit.color_override = {5, 2}
-    elseif unit.graey or (unit.blacc and unit.whit) then -- grey
-      unit.color_override = {0, 1}
-    elseif unit.whit or (unit.reed and unit.grun and unit.bleu) or (unit.reed and unit.cyeann) or (unit.bleu and unit.yello) or (unit.grun and unit.purp) then -- white
-      unit.color_override = {0, 3}
-    elseif unit.blacc then -- black
-      unit.color_override = {0, 0}
-    end
+  if unit.pinc or (unit.reed and unit.whit) then -- pink
+    unit.color_override = {4, 1}
+  elseif unit.purp or (unit.reed and unit.bleu) then -- purple
+    unit.color_override = {3, 1}
+  elseif unit.yello or (unit.reed and unit.grun) then -- yellow
+    unit.color_override = {2, 4}
+  elseif unit.orang or (unit.reed and unit.yello) then -- orange
+      unit.color_override = {2, 3}
+  elseif unit.cyeann or (unit.bleu and unit.grun) then -- cyan
+    unit.color_override = {1, 4}
+  elseif unit.brwn or (unit.orang and unit.blacc) then -- brown
+    unit.color_override = {6, 0}
+  elseif unit.reed then -- red
+    unit.color_override = {2, 2}
+  elseif unit.bleu then -- blue
+    unit.color_override = {1, 3}
+  elseif unit.grun then -- green
+    unit.color_override = {5, 2}
+  elseif unit.graey or (unit.blacc and unit.whit) then -- grey
+    unit.color_override = {0, 1}
+  elseif unit.whit or (unit.reed and unit.grun and unit.bleu) or (unit.reed and unit.cyeann) or (unit.bleu and unit.yello) or (unit.grun and unit.purp) then -- white
+    unit.color_override = {0, 3}
+  elseif unit.blacc then -- black
+    unit.color_override = {0, 0}
   end
 end
 

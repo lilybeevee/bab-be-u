@@ -1516,19 +1516,7 @@ function testConds(unit, conds, compare_with) --cond should be a {condtype,{obje
           result = true
         end
       else
-        if type(colour[1]) == "table" then
-          local found = false
-          for i,coluor in ipairs(colour) do
-            if colour_for_palette[coluor[1]][coluor[2]] == condtype then
-              found = true
-            end
-          end
-          if not found then
-            result = false
-          end
-        else
-          result = colour_for_palette[colour[1]][colour[2]] == condtype
-        end
+        result = matchesColor(unit, condtype)
       end
     elseif condtype == "the" then
       local the = cond.unit
@@ -1560,13 +1548,7 @@ function testConds(unit, conds, compare_with) --cond should be a {condtype,{obje
     elseif condtype == "samefloat" then
       result = sameFloat(unit, compare_with)
     elseif condtype == "samepaint" then
-      result = false
-      for _,cname in pairs(color_names) do
-        if testConds(unit, {{name = cname}}) and testConds(compare_with, {{name = cname}}) then
-          result = true
-          break
-        end
-      end
+      result = matchesColor(unit, compare_with)
     elseif condtype == "sameface" then
       result = unit.dir == compare_with.dir
     elseif condtype == "oob" then
@@ -3406,5 +3388,56 @@ end
 function getIcon(path)
   if love.filesystem.getInfo(path .. ".png") then
     return love.graphics.newImage(path .. ".png")
+  end
+end
+
+function getUnitColors(unit, index, override_)
+  local override = override_ or unit.color_override
+  local colors = type(unit.color[1]) == "table" and unit.color or {unit.color}
+  if index then
+    if override and (not unit.colored or unit.colored[index]) then
+      return override
+    else
+      return colors[index]
+    end
+  elseif override then
+    colors = copyTable(colors)
+    for i,_ in ipairs(colors) do
+      if not unit.colored or unit.colored[i] then
+        colors[i] = override
+      end
+    end
+    return colors
+  else
+    return colors
+  end
+end
+
+-- logic for how this function works:
+-- nil checks (both nil -> true, one nil -> false)
+-- coerce a to a single color at a time
+-- coerce b to a single color at a time
+-- actually compare the color
+function matchesColor(a, b)
+  if not a ~= not b then return false end
+  if not a and not b then return true end
+  if type(a) == "string" then
+    matchesColor(main_palette_for_colour[a], b)
+  elseif type(a[1]) ~= "number" then
+    for _,c in ipairs(a) do
+      if matchesColor(c, b) then return true end
+    end
+    return false
+  elseif type(a[1]) == "number" then
+    if type(b) == "string" then
+      matchesColor(a, main_palette_for_colour[b])
+    elseif type(b[1]) ~= "number"then
+      for _,c in ipairs(b) do
+        if matchesColor(a, c) then return true end
+      end
+      return false
+    elseif type(b[1]) == "number" then
+      return a[1] == b[1] and a[2] == b[2] and a[3] == b[3] -- for palette colors, a[3] and b[3] will be nil, which is still equal
+    end
   end
 end
