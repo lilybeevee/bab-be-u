@@ -1313,6 +1313,8 @@ function miscUpdates()
           else
             unit.sprite = "casete_wut"
           end
+        else
+          unit.sprite = "casete_wut"
         end
         if not hasProperty(unit,"no go") then
           unit.sprite = unit.sprite.."_sunk"
@@ -1584,7 +1586,18 @@ function miscUpdates()
           end
         elseif sprites[unit.sprite.."_slep"] then
           unit.sprite = unit.sprite.."_slep"
+          if unit.fullname == "detox" then
+            unit.color = {1,2}
+          end
         end
+      else
+        if unit.fullname == "detox" then
+          unit.color = {2,4}
+        end
+      end
+      
+      if unit.fullname == "detox" then
+        updateGraphicalPropertyCache() --makes sure its slep colors update
       end
 
       unit.overlay = {}

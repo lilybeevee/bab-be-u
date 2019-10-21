@@ -261,7 +261,7 @@ selector_grid_contents = {
     "ghost fren","text_ghost fren","fishe","text_fishe","starrfishe","text_starrfishe","pidgin","text_pidgin",0,0,0,0,0,0,0,0,"text_gang","text_no1",
     "robobot","text_robobot","snek","text_snek","sneel","text_sneel","swan","text_swan",0,0,0,0,0,0,0,0,0,0,
     "wog","text_wog","bog","text_bog","enbybog","text_enbybog","spoder","text_spoder",0,0,0,0,0,0,0,0,0,0,
-    "kirb","text_kirb","ripof","text_ripof","cavebab","text_cavebab",0,0,0,0,0,0,0,0,0,0,0,0,
+    "kirb","text_kirb","ripof","text_ripof","cavebab","text_cavebab","detox","text_detox",0,0,0,0,0,0,0,0,0,0,
     "bup","text_bup","butflye","text_butflye","boooo","text_boooo",0,0,0,0,0,0,0,0,0,0,0,0,
     "boy","text_boy","wurm","text_wurm","madi","text_madi","angle","text_angle",0,0,0,0,0,0,"lila","text_lila","tot","text_tot",
     "steev","text_steev","ratt","text_ratt","badi","text_badi","debil","text_debil",0,0,0,0,0,0,"pata","text_pata","jill","text_jill",
@@ -8218,6 +8218,30 @@ tiles_list = {
     color = {0, 3},
     layer = 20,
     tags = {"manifold garden", "arrow", "gravity"},
+  },
+  -- 718, do we even need to bother with these numbers since they're inaccurate
+  {
+    name = "detox",
+    sprite = "detox",
+    type = "object",
+    color = {2,4},
+    rotate = true,
+    layer = 7,
+    sing = "s_vitellary",
+    features = {sans = {x=21,y=8,w=2,h=3}},
+    tags = {"vvvvvv","allison"},
+    desc = "u've been lookin @ too much Good Art",
+  },
+  -- 719
+  {
+    name = "text_detox",
+    sprite = "text_detox",
+    type = "text",
+    texttype = {object = true},
+    color = {3,1},
+    layer = 20,
+    tags = {"vvvvvv","allison"},
+    desc = "detox be a custom vvvvvv level by allison, very good",
   },
 }
 
