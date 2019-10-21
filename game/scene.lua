@@ -1011,18 +1011,7 @@ function scene.draw(dt)
       local ox, oy = getOffset()
       if not overlay and type(unit.sprite) == "table" then
         for i,image in ipairs(unit.sprite) do
-          if type(unit.color[i]) == "table" then
-            setColor(unit.color[i])
-          else
-            setColor(unit.color)
-          end
-          if unit.color_override then
-            if type(unit.color_override[i]) == "table" then
-              setColor(unit.color_override[i])
-            else
-              setColor(unit.color_override)
-            end
-          end
+          setColor(getUnitColors(unit, i))
           if onlycolor or (#unit.overlay > 0 and (unit.colored and unit.colored[i]) or not unit.colored) then
             love.graphics.setColor(1,1,1,1)
           end
@@ -1035,6 +1024,9 @@ function scene.draw(dt)
         if overlay and stretch then
           love.graphics.draw(draw, fulldrawx + ox, fulldrawy + oy, 0, sprite:getWidth() / TILE_SIZE, sprite:getHeight() / TILE_SIZE, draw:getWidth() / 2, draw:getHeight() / 2)
         else
+          if unit.fullname == "detox" and graphical_property_cache["slep"][unit] ~= nil then
+            setColor{1,2}
+          end
           if not draw then draw = sprites["wat"] end
           love.graphics.draw(draw, fulldrawx + ox, fulldrawy + oy, 0, unit.draw.scalex, unit.draw.scaley, draw:getWidth() / 2, draw:getHeight() / 2)
         end
@@ -1617,7 +1609,7 @@ function scene.draw(dt)
         end
       else
         for j,image in ipairs(unit.sprite) do
-          love.graphics.setColor(getPaletteColor(dcolor[j][1], dcolor[j][2]))
+          love.graphics.setColor(getPaletteColor(unpack(getUnitColors(unit, j))))
           local sprite = sprites[image]
           love.graphics.draw(sprite, 0, 0, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
         end
@@ -2130,9 +2122,13 @@ function scene.checkInput()
           for _,ruleparent in ipairs(sing_rules) do
             local unit = ruleparent[2]
             
-            if (unit.name == "swan") then
-              local pitch = math.random() * ((2^(11/12)) - 1) + 1
-              playSound("honk"..love.math.random(1,6), 1, pitch)
+            if unit.name == "no1" then break end
+            if unit.name == "swan" then
+              local sound = love.sound.newSoundData("assets/audio/sfx/honk" .. math.random(1,6) .. ".wav");
+              local source = love.audio.newSource(sound, "static")
+              source:setVolume(1)
+              source:setPitch(math.random() * ((2^(11/12)) - 1) + 1)
+              source:play()
             else
               local specific_sing = tiles_list[unit.tile].sing or "bit";
               
