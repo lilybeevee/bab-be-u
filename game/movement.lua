@@ -66,6 +66,31 @@ function doDirRules()
       updateDir(unit, k)
     end
   end
+  
+  doSpinRules(units_to_change)
+end
+
+function doSpinRules(units_to_change)
+  --technically spin0/spin8 does nothing, so skip it
+  --TODO: redo to work as if it was a go^
+  for i=1,7 do
+    local isspin = getUnitsWithEffectAndCount("spin" .. tostring(i))
+    for unit,amt in pairs(isspin) do
+      if (units_to_change == nil or units_to_change[unit] ~= nil) then
+        addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
+        unit.olddir = unit.dir
+        --if we aren't allowed to rotate to the indicated direction, skip it
+        for j=1,8 do
+          local result = updateDir(unit, dirAdd(unit.dir, amt*i))
+          if not result then
+            amt = amt + 1
+          else
+            break
+          end
+        end
+      end
+    end
+  end
 end
 
 function doMovement(movex, movey, key)
