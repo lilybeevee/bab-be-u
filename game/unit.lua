@@ -434,24 +434,7 @@ function moveBlock()
     end
   end
   
-  --technically spin_8 does nothing, so skip it
-  --TODO: redo to work as if it was a go^
-  for i=1,7 do
-    local isspin = getUnitsWithEffectAndCount("spin" .. tostring(i))
-    for unit,amt in pairs(isspin) do
-      addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
-      unit.olddir = unit.dir
-      --if we aren't allowed to rotate to the indicated direction, skip it
-      for j=1,8 do
-        local result = updateDir(unit, dirAdd(unit.dir, amt*i))
-        if not result then
-          amt = amt + 1
-        else
-          break
-        end
-      end
-    end
-  end
+  doSpinRules()
   
   local folo_wall = getUnitsWithEffectAndCount("folo wal")
   for unit,amt in pairs(folo_wall) do
@@ -2260,8 +2243,11 @@ function destroyLevel(reason)
     elseif hasProperty("loop",":)") then
       doWin("won")
       level_destroyed = true
+    elseif hasProperty("loop",";d") then
+      doWin("won", false)
+      level_destroyed = true
     end
-    local berule = matchesRule("loop","be",nil)
+    local berule = matchesRule("loop","be","?")
     for _,rule in ipairs(berule) do
       local object = rule.rule.object.name
       if tiles_by_name[object] then

@@ -438,6 +438,8 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
   --print(fullDump(sentence))
 
   for orig_index,word in ipairs(sentence) do
+    --HACK: don't try to do letters parsing if we're singing
+    if word.name == "sing" then break end
     if word.type and word.type["letter"] then --letter handling
       --print("found a letter"..orig_index)
       
@@ -864,7 +866,7 @@ function addRule(full_rule)
   end
 
   if verb_not > 0 then
-    if (verb == "be") and (subject == object or (subject:starts("text_") and object == "text")) then
+    if (verb == "be") and (object == "notranform" or subject == object or (subject:starts("text_") and object == "text")) then
       verb_not = verb_not + 1
     end
     if not not_rules[verb_not] then
@@ -920,7 +922,7 @@ function postRules()
         local specialmatch = 0
         if rule.verb.name == "be" and rule.object.name == "notranform" then -- "bab be bab" should cross out "bab be keek"
           specialmatch = 1
-        elseif rule.verb.name == "ben't" and rule.object.name == rule.subject.name then -- "bab be n't bab" should cross out "bab be bab" (bab be notranform)
+        elseif rule.verb.name == "ben't" and rule.object.name == rule.subject.name or rule.object.name == "notranform" then -- "bab be n't bab" and 'bab be n't notranform' should cross out "bab be bab" (bab be notranform)
           specialmatch = 2
         end
 
@@ -939,7 +941,6 @@ function postRules()
               (specialmatch == 1 and (tiles_by_name[frule.object.name] or frule.object.name == "mous" or frule.object.name == "text" or frule.object.name == "every1")) or -- possibly more special cases needed
               (specialmatch == 2 and frule.object.name == "notranform")
             ) then
-              -- print("matching rule", rule[1][1], rule[2], rule[3][1])
               if has_conds then
                 --print(fullDump(rule), fullDump(frule))
                 for _,cond in ipairs(inverse_conds[1]) do

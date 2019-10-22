@@ -2133,12 +2133,10 @@ function scene.checkInput()
               local specific_sing = tiles_list[unit.tile].sing or "bit";
               
               local sing_note = ruleparent[1].rule.object.name;
-              print(fullDump(ruleparent[1].rule.object.unit, 2, true))
               local sing_color = ruleparent[1].rule.object.unit.color_override or ruleparent[1].rule.object.unit.color;
               local sing_octave = 0;
               if (sing_color[1] <= 6 and sing_color[2] <= 4) then
                 local sing_color_word = colour_for_palette[sing_color[1]][sing_color[2]];
-                print(sing_color_word)
                 if sing_color_word == "whit" then
                   sing_octave = 0
                 elseif sing_color_word == "blacc" then
