@@ -827,7 +827,12 @@ function scene.draw(dt)
     
     if unit.rave then
       -- print("unit " .. unit.name .. " is rave")
-      local newcolor = hslToRgb((love.timer.getTime()/0.75+#undo_buffer/45+unit.x/18+unit.y/18)%1, .5, .5, 1)
+      local ravespeed = 0.75
+      if settings["epileptic"] then
+        ravespeed = 7.5
+      end
+      
+      local newcolor = hslToRgb((love.timer.getTime()/ravespeed+#undo_buffer/45+unit.x/18+unit.y/18)%1, .5, .5, 1)
       newcolor[1] = newcolor[1]*255
       newcolor[2] = newcolor[2]*255
       newcolor[3] = newcolor[3]*255
@@ -1458,7 +1463,11 @@ function scene.draw(dt)
       end
 
       love.graphics.setColor(getPaletteColor(2, 2))
-      love.graphics.draw(sprites["scribble_" .. anim_stage+1], fulldrawx, fulldrawy, 0, unit.draw.scalex * scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      if settings["scribble_anim"] then
+        love.graphics.draw(sprites["scribble_" .. anim_stage+1], fulldrawx, fulldrawy, 0, unit.draw.scalex * scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      else
+        love.graphics.draw(sprites["scribble_1"], fulldrawx, fulldrawy, 0, unit.draw.scalex * scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      end
 
       love.graphics.pop()
     end
