@@ -3089,7 +3089,7 @@ function namesInGroup(group)
       if (#(r.rule.subject.conds) == 0) then
         table.insert(result, v)
       else
-        for _,u in ipairs(units_by_name[v]) do
+        for _,u in ipairs(units_by_name[v] or {v}) do
           if testConds(u, r.rule.subject.conds) then
             table.insert(result, v)
             break
