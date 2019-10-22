@@ -8202,7 +8202,10 @@ tiles_list = {
     name = "the real bab dictator",
     sprite = "the real bab dictator",
     color = {0, 3},
-    layer = 100
+    layer = 100,
+    sing = "miku",
+    tags = {"hatsune miku"},
+    desc = "yes",
   },
   -- 716
   {
