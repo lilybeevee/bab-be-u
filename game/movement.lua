@@ -502,7 +502,7 @@ function doMovement(movex, movey, key)
         for _,other in ipairs(others) do
           local is_moover = #matchesRule(unit, "moov", other)
           if is_moover > 0 and timecheck(unit,"moov",other) and other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) and ignoreCheck(unit,other) and ignoreCheck(other,unit) then
-            table.insert(other.moves, {reason = "moov", dir = unit.dir, times = is_moover})
+            table.insert(other.moves, {reason = "moov", dir = unit.dir, times = 1})
             if #other.moves > 0 and not already_added[other] then
               table.insert(moving_units, other)
               already_added[other] = true
