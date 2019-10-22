@@ -29,6 +29,8 @@ local defaultsettings = {
   music_on = true,
   sfx_on = true,
   particles_on = true,
+  scribble_anim = true,
+  epileptic = false,
   game_scale = "auto",
   grid_lines = false,
   mouse_lines = false,
@@ -239,15 +241,15 @@ selector_grid_contents = {
     "letter_a","letter_b","letter_c","letter_d","letter_e","letter_f","letter_g","letter_h","letter_i","letter_j","letter_k","letter_l","letter_m","letter_n","letter_o","letter_p","letter_q","letter_r",
     "letter_s","letter_t","letter_u","letter_v","letter_w","letter_x","letter_y","letter_z","letter_.","letter_colon","letter_parenthesis","letter_'","letter_/","letter_1","letter_2","letter_3","letter_4","letter_5",
     0,0,0,0,0,0,0,0,0,"letter_;",0,0,0,"letter_6","letter_7","letter_8","letter_9","letter_o",
-	"letter_go","letter_come","letter_pls","letter_away","letter_my","letter_no","letter_way","letter_ee","letter_fren","letter_ll","letter_bolt","letter_ol","text_sharp","text_flat",0,0,0,0,
-	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+	"letter_go","letter_come","letter_pls","letter_away","letter_my","letter_no","letter_way","letter_ee","letter_fren","letter_ll","letter_bolt","letter_ol",0,0,0,0,0,"text_lethers",
+	"text_c_sharp","text_d_sharp","text_f_sharp","text_g_sharp","text_a_sharp","text_sharp","text_flat",0,0,0,0,0,0,0,0,0,0,0,
   },
   -- page 3: ui / instructions
   {
     0 ,"ui_w","ui_e","ui_r",0,0,0,"ui_i",0,0,0,0,0,0,0,"ui_7","ui_8","ui_9",
     "ui_a","ui_s","ui_d",0,0,0,"ui_j","ui_k","ui_l",0,0,0,0,0,0,"ui_4","ui_5","ui_6",
     "ui_z",0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ui_1","ui_2","ui_3",
-    0,0,0,0,"ui_space",0,0,0,0,0,0,0,0,0,0,"ui_arrow",0,0,
+    0,0,0,0,"ui_space",0,0,0,0,0,0,0,0,0,0,"ui_arrow","ui_0",0,
     "text_press","text_f1","text_play","text_f2","text_edit","ui_left click","ui_right click",0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,"ui_walk",0,0,"ui_reset",0,0,"ui_undo",0,0,"ui_wait",0,0,"ui_activat",0,0,"ui_clik",0,0,0,0,
@@ -261,7 +263,7 @@ selector_grid_contents = {
     "ghost fren","text_ghost fren","fishe","text_fishe","starrfishe","text_starrfishe","pidgin","text_pidgin",0,0,0,0,0,0,0,0,"text_gang","text_no1",
     "robobot","text_robobot","snek","text_snek","sneel","text_sneel","swan","text_swan",0,0,0,0,0,0,0,0,0,0,
     "wog","text_wog","bog","text_bog","enbybog","text_enbybog","spoder","text_spoder",0,0,0,0,0,0,0,0,0,0,
-    "kirb","text_kirb","ripof","text_ripof","cavebab","text_cavebab",0,0,0,0,0,0,0,0,0,0,0,0,
+    "kirb","text_kirb","ripof","text_ripof","cavebab","text_cavebab","detox","text_detox",0,0,0,0,0,0,0,0,0,0,
     "bup","text_bup","butflye","text_butflye","boooo","text_boooo",0,0,0,0,0,0,0,0,0,0,0,0,
     "boy","text_boy","wurm","text_wurm","madi","text_madi","angle","text_angle",0,0,0,0,0,0,"lila","text_lila","tot","text_tot",
     "steev","text_steev","ratt","text_ratt","badi","text_badi","debil","text_debil",0,0,0,0,0,0,"pata","text_pata","jill","text_jill",
@@ -290,7 +292,7 @@ selector_grid_contents = {
   },
   --page 6: more inanimate objects
   {
-    "gato","text_gato",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    "gato","text_gato","fube","text_fube","tronk","text_tronk",0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -314,7 +316,7 @@ selector_grid_contents = {
     "text_no go","text_go away pls","text_come pls","text_sidekik","text_diagkik","text_:o","text_hotte","text_fridgd","text_txtify",0,"text_dragbl","text_no drag",0,"text_clikt","text_past","text_wun","text_an","text_mayb",
     "text_visit fren","text_slep","text_shy...","text_behin u",0,"text_xwx","text_moar","text_split","text_thingify",0,"text_rythm",0,0,"text_wait...","text_samefloat","text_samepaint","text_sameface",0,
     "text_flye","text_tall","text_haet skye","text_haet flor",0,"text_;d","text_gone","text_nuek","text_notranform",0,0,0,0,"text_w/fren","text_arond","text_sans","text_seen by","text_behind",
-    "text_diag","text_ortho","text_go my way","text_zip",0,0,0,0,0,0,0,0,0,"text_that","text_that be","text_that got",0,"text_beside",
+    "text_diag","text_ortho","text_go my way","text_zip",0,"text_B)","text_cool",0,0,0,0,0,0,"text_that","text_that be","text_that got",0,"text_beside",
     "text_turn cornr","text_folo wal","text_hopovr","text_reflecc",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     "text_munwalk","text_sidestep","text_diagstep","text_knightstep",0,0,0,0,0,0,0,0,0,0,0,0,0,"text_reed",
     "text_spin","text_rotatbl","text_noturn","text_stukc",0,0,0,0,0,0,0,0,0,0,0,0,"text_enby","text_orang",
@@ -337,6 +339,7 @@ tiles_list = {
     color = {0, 3},
     layer = 6,
     rotate = true,
+    sing = "s_doo",
     features = { sans = {x=22, y=10, w=2, h=2} },
     tags = {"chars", "baba"},
     desc = "its bab bruh"
@@ -415,6 +418,7 @@ tiles_list = {
     type = "object",
     color = {6, 2},
     layer = 3,
+    sing = "s_bdrum",
     tags = {"rock"},
     desc = "roc: not a bord"
   },
@@ -480,6 +484,7 @@ tiles_list = {
     color = {2, 4},
     layer = 4,
     rotate = true,
+    sing = "s_hiclose",
     tags = {"key"},
     desc = "needs key",
   },
@@ -523,6 +528,7 @@ tiles_list = {
     type = "object",
     color = {2, 4},
     layer = 3,
+    sing = "s_marim",
     tags = {"flag"},
     desc = "i want 1!!!",
   },
@@ -688,6 +694,7 @@ tiles_list = {
     type = "object",
     color = {6, 2},
     layer = 3,
+    sing = "s_sdrum",
     desc = "ce n'est pas une boîte, c'est quelque chose DE MIEUX",
     tags = {"box"},
   },
@@ -709,6 +716,7 @@ tiles_list = {
     color = {2, 1},
     layer = 5,
     rotate = true,
+    sing = "s_saw",
     features = { sans = {x=21, y=8, w=4, h=4} },
     tags = {"skull"},
     desc = "evillllll",
@@ -751,6 +759,7 @@ tiles_list = {
     color = {2, 2},
     layer = 5,
     rotate = true,
+    sing = "s_saw",
     features = { sans = {x=19, y=7, w=2, h=2} },
     tags = {"keke", "chars"},
     desc = "babs bff"
@@ -773,6 +782,7 @@ tiles_list = {
     color = {3, 1},
     layer = 5,
     rotate = true,
+    sing = "s_organ",
     features = { sans = {x=18, y=3, w=2, h=2} },
     tags = {"chars"},
     desc = "meem is the true philosopher of our time. babs 3ff",
@@ -818,6 +828,7 @@ tiles_list = {
     color = {0, 3},
     layer = 5,
     rotate = "true",
+    sing = "bit2",
     features = { sans = {x=14, y=8, w=2, h=2} },
     tags = {"apple", "android", "windows", "linux", "operating system"},
     desc = "OS: Its sprites changes with the user's Operating System!",
@@ -903,6 +914,7 @@ tiles_list = {
     color = {2, 4},
     layer = 5,
     rotate = "true",
+    sing = "s_strum",
     features = { sans = {x=16, y=9, w=3, h=3} },
     desc = "smol frens who own pointy tridents, play with explosives, and bake good cake. nobody knows how to describe more than one of them",
     tags = {"wug", "chars", "bird"},
@@ -1011,6 +1023,7 @@ tiles_list = {
     type = "object",
     layer = 5,
     rotate = true,
+    sing = "s_steel",
     features = { sans = {x=23, y=19, w=3, h=3} },
     tags = {"toad", "simpleflips", "chars"},
     desc = "BUP: HELLO\nBUP DOES NOT WANT, BUP DOES NOT DREAM\nPLEASE HELP HIM\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
@@ -1187,6 +1200,7 @@ tiles_list = {
     color = {4, 2},
     layer = 5,
     rotate = true,
+    sing = "s_spian",
     features = { sans = {x=21, y=9, w=2, h=2} },
     tags = {"kirby", "chars"},
     desc = "1, 2 oatmeal kirb be be a pincc guy"
@@ -1263,6 +1277,7 @@ tiles_list = {
     texttype = {property = true},
     color = {4, 2},
     layer = 20,
+    demeta = "the real qt",
     tags = {"cute","lily"},
     desc = "QT: Makes the unit emit love hearts.",
   },
@@ -1274,6 +1289,7 @@ tiles_list = {
     texttype = {object = true, letter = true},
     color = {2, 4},
     layer = 5,
+    sing = "pipipi",
     features = { sans = {x=19, y=7, w=2, h=2} },
     tags = {"devs", "chars", "thefox", "puyopuyo tetris"},
     desc = "pi pi piiii!!!",
@@ -1404,7 +1420,7 @@ tiles_list = {
     name = "text_yeet",
     sprite = "text_yeet",
     type = "text",
-    texttype = {verb = true, verb_unit = true},
+    texttype = {verb = true, verb_unit = true, verb_direction = true},
     allowconds = true,
     color = {0, 3},
     layer = 20,
@@ -1831,8 +1847,9 @@ tiles_list = {
     color = {2, 4},
     layer = 5,
     rotate = true,
+    sing = "s_vitellary",
     features = { sans = {x=18, y=4, w=2, h=2} },
-    tags = {"devs", "chars", "vitellary"},
+    tags = {"devs", "chars", "vitellary", "vvvvvv"},
     desc = "larry be haetflor",
   },
   -- 134
@@ -1843,7 +1860,7 @@ tiles_list = {
     texttype = {object = true},
     color = {2, 4},
     layer = 20,
-    tags = {"devs", "chars", "vitellary"},
+    tags = {"devs", "chars", "vitellary", "vvvvvv"},
   },
   -- 135
   {
@@ -1892,7 +1909,7 @@ tiles_list = {
     name = "text_liek",
     sprite = "text_liek",
     type = "text",
-    texttype = {verb = true, verb_unit = true, verb_direction = true},
+    texttype = {verb = true, verb_unit = true},
     allowconds = true,
     color = {5, 3},
     layer = 20,
@@ -2028,7 +2045,7 @@ tiles_list = {
     color = {4,1},
     layer = 20,
     tags = {"level"},
-    desc = "LVL: Refers to the level you're in, as well as any enterable levels in this level. (Middle-click it to edit.)"
+    desc = "LVL: Refers to the level you're in, as well as any enterable levels in this level. \nMiddle or SHIFT right-click it to edit.)"
   },
   -- 153
   {
@@ -2080,6 +2097,7 @@ tiles_list = {
     color = {3, 3},
     layer = 3,
     rotate = true,
+    sing = "tick",
     features = { sans = {x=14, y=14, w=3, h=3} },
     tags = {"clock", "time"},
     desc = "keek look at'd the clok. 'oh no! im late for school!' keek shouted and raced out of bed."
@@ -2180,6 +2198,7 @@ tiles_list = {
     color = {2,3},
     layer = 5,
     rotate = true,
+    sing = "dog",
     features = { 
       sans = {x=20, y=13, w=2, h=2},
       katany = {nya = true},
@@ -2411,6 +2430,7 @@ tiles_list = {
     layer = 5,
     rotate = true,
     features = { sans = {x=26, y=10, w=2, h=4} },
+    sing = "s_sine",
     desc = "its not spooky, its a fren.",
     tags = {"chars"},
   },
@@ -2433,6 +2453,7 @@ tiles_list = {
     color = {6, 1},
     layer = 5,
     rotate = true,
+    sing = "bit2",
     features = { sans = {x=17, y=7, w=2, h=4} },
     desc = "the super scan mouth lazers that copy abilities are missing because they forgot to design a mouth",
     tags = {"robot", "chars"},
@@ -2514,7 +2535,7 @@ tiles_list = {
     name = "text_haet",
     sprite = "text_haet",
     type = "text",
-    texttype = {verb = true, verb_unit = true, verb_direction = true},
+    texttype = {verb = true, verb_unit = true},
     allowconds = true,
     color = {2, 3},
     layer = 20,
@@ -3888,6 +3909,7 @@ tiles_list = {
     type = "object",
     color = {1,3},
     layer = 3,
+    sing = "kkb2",
     tags = {"bubble"},
   },
   -- 324
@@ -3907,6 +3929,7 @@ tiles_list = {
     type = "object",
     color = {2,2},
     layer = 5,
+    sing = "crab rave",
     features = { sans = {x=20, y=4, w=4, h=5} },
     tags = {"crab"},
   },
@@ -3947,8 +3970,10 @@ tiles_list = {
     color = {1,3},
     layer = 5,
     rotate = true,
+    sing = "s_jill",
     features = { 
       sans = {x=17, y=8, w=2, h=3},
+      cool = {x=-2, y=-3},
       
       which = {x=-2, y=-1},
       hatt = {x=-1, y=-1},
@@ -4252,6 +4277,7 @@ tiles_list = {
     type = "object",
     color = {2, 4},
     layer = 6,
+    sing = "pipipi",
     features = { sans = {x=19, y=7, w=2, h=2} },
     tags = {"chars", "thefox", "puyopuyo tetris"},
     desc = "oh no am square????"
@@ -4263,6 +4289,7 @@ tiles_list = {
     type = "object",
     color = {2, 4},
     layer = 6,
+    sing = "pipipi",
     features = { sans = {x=17, y=7, w=2, h=2} },
     tags = {"chars", "thefox", "puyopuyo tetris"},
     desc = "TRIASNGLE?????? this is ridicouuolus",
@@ -4633,6 +4660,7 @@ tiles_list = {
     type = "object",
     color = {0, 1},
     layer = 2,
+    sing = "s_bdrum",
     tags = {"cobblestone"},
     desc = "so we back in the mine"
   },
@@ -4653,6 +4681,7 @@ tiles_list = {
     type = "object",
     color = {6, 2},
     layer = 2,
+    sing = "s_spian",
     tags = {"wood", "planks"},
     desc = "wuud u cuud u"
   },
@@ -4842,6 +4871,7 @@ tiles_list = {
     type = "object",
     color = {2, 4},
     layer = 2,
+    sing = "s_sdrum",
     tags = {"sand", "beach", "desert"},
     desc = "san undertales",
   },
@@ -5081,6 +5111,7 @@ tiles_list = {
     type = "object",
     color = {5, 2},
     layer = 2,
+    sing = "s_steel",
     tags = {"palm tree", "coconut tree", "beach", "plants"},
   },
   --430
@@ -5101,6 +5132,7 @@ tiles_list = {
     color = {6, 1},
     layer = 3,
     rotate = "true",
+    sing = "s_steel",
     features = { sans = {x=20,y=12,w=2,h=3} },
     tags = {"fruit", "coconut", "plants"},
     desc = "its a bigg bigg nutt",
@@ -5122,6 +5154,7 @@ tiles_list = {
     type = "object",
     color = {0,3},
     layer = 21,
+    sing = "s_organ",
     tags = {"glass"},
     desc = "a tranzlucent block?!",
   },
@@ -5355,6 +5388,7 @@ tiles_list = {
     color = {0, 3},
     layer = 4,
     rotate = true,
+    sing = "overdriven guitar",
     tags = {"bone"},
     desc = "bonles pizza",
   },
@@ -5602,6 +5636,7 @@ tiles_list = {
     color = {6, 1},
     layer = 6,
     rotate = true,
+    sing = "s_scat",
     features = { sans = {x=24, y=16, w=2, h=2} },
     tags = {"chars", "bug", "insect", "cockroach"},
     desc = "icky",
@@ -5624,7 +5659,7 @@ tiles_list = {
     color = {1, 3},
     layer = 6,
     rotate = true,
-    features = { sans = {x=14, y=5, w=2, h=2} },
+    features = { sans = {x=12, y=11, w=2, h=2} },
     tags = {"chars", "penguin", "bird"},
     desc = "noot noot",
   },
@@ -5863,6 +5898,7 @@ tiles_list = {
     color = {2, 2},
     layer = 6,
     rotate = true,
+    sing = "kkb",
     features = { sans = {x=20, y=9, w=2, h=2} },
     tags = {"chars", "shrimp", "prawn"},
     desc = "shouldnt it be PINC",
@@ -5885,6 +5921,7 @@ tiles_list = {
     type = "object",
     color = {4, 1},
     layer = 6,
+    sing = "kkb",
     features = { sans = {x=23, y=3, w=2, h=2} },
     tags = {"chars", "flamingo", "bird"},
     desc = "if ur COLRFUL thats cool too!!",
@@ -6084,6 +6121,7 @@ tiles_list = {
     color = {2, 2},
     layer = 5,
     rotate = true,
+    sing = "kkb2",
     tags = {"mouth", "lips", "body part"},
     desc = "it speaks",
   },
@@ -6952,6 +6990,7 @@ tiles_list = {
     colored = {false,true},
     layer = 5,
     rotate = true,
+    sing = "overdriven guitar",
     convertible = false,
     features = { sans = {x=19, y=5, w=2, h=2} },
     tags = {"chars", "sans", "undertale", "skeleton"},
@@ -6964,6 +7003,7 @@ tiles_list = {
     color = {3,3},
     layer = 5,
     rotate = true,
+    sing = "ditto",
     tometa = "text_''",
     features = {
       sans = {x=10, y=16, w=5, h=5},
@@ -7066,6 +7106,7 @@ tiles_list = {
     colored = {true, false, false},
     layer = 5,
     rotate = true,
+    sing = "cat",
     convertible = false,
     features = { sans = {x=27, y=14, w=2, h=2} },
     tags = {"chars", "cop", "police", "cat"},
@@ -7078,8 +7119,10 @@ tiles_list = {
     color = {0, 3},
     layer = 6,
     rotate = true,
+    sing = "cat",
     features = { 
       sans = {x=26, y=11, w=3, h=3},
+      cool = {x=5, y=-1},
       which = {x = 7},
       sant = {y = 1},
       knif = {x = 6, y = 2},
@@ -7423,6 +7466,7 @@ tiles_list = {
     color = {2,4},
     layer = 5,
     rotate = true,
+    sing = "muda",
     convertible = false,
     features = { sans = {x=19, y=10, w=2, h=2} },
     tags = {"chars", "the world", "jojo", "DIO"},
@@ -7832,6 +7876,7 @@ tiles_list = {
     color = {0, 3},
     layer = 6,
     rotate = true,
+    sing = "dog",
     features = {
         sans = {x=24, y=9, w=2, h=2},
         sant = {x=1},
@@ -7862,6 +7907,7 @@ tiles_list = {
     color = {0, 3},
     layer = 6,
     rotate = true,
+    sing = "choir",
     features = {
         sans = {x=19, y=9, w=2, h=2},
     },
@@ -8042,7 +8088,7 @@ tiles_list = {
     tags = {"out of bounds"},
     desc = "OOB (Prefix Condition): True if the unit is on a border.",
   },
-  -- 678
+  -- 705
   {
     name = "temmi",
     sprite = {"temmi","temmi but just her face"},
@@ -8050,8 +8096,10 @@ tiles_list = {
     colored = {true, false},
     layer = 5,
     rotate = true,
+    sing = "temmie",
     features = {
         sans = {x=23, y=12, w=2, h=2},
+        cool = {x=2, y=2},
         sant = {x=1},
         hatt = {x=5},
         which = {x=5},
@@ -8062,7 +8110,7 @@ tiles_list = {
     tags = {"chars", "temmie chang", "undertale"},
     desc = "hOI!!! i'm tEMMi!!",
   },
-  -- 679
+  -- 706
   {
     name = "text_temmi",
     sprite = "text_temmi",
@@ -8073,7 +8121,7 @@ tiles_list = {
     tags = {"chars", "temmie chang", "undertale"},
     desc = "Temmie Chang: Main artist of UNDERTALE and deltarune."
   },
-	-- 680
+	-- 707
   {
     name = "text_gang",
     sprite = "text_gang",
@@ -8083,6 +8131,179 @@ tiles_list = {
     layer = 20,
     tags = {"group"},
     desc = "GANG: A variant of FRENS but members wear an exclusive hat.",
+  },
+  -- 708
+  {
+    name = "ui_0",
+    sprite = "ui_0",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+    desc = "The other undo key.",
+  },
+  -- 709
+  {
+    name = "text_B)",
+    sprite = "text_B)",
+    type = "text",
+    texttype = {property = true},
+    color = {1, 4},
+    layer = 20,
+    features = { sans = {x=20, y=8, w=5, h=4} },
+    tags = {"cool", "smiley"},
+    desc = "B): At end of turn, if U is on B) and survives, U R COOL!",
+  },
+  -- 710
+  {
+    name = "text_cool",
+    sprite = "text_cool",
+    type = "text",
+    texttype = {property = true},
+    color = {1, 4},
+    layer = 20,
+    tags = {"cool"},
+    desc = "COOL: COOL units wear a pair of sunglasses, and don't shake.",
+  },
+  -- 711
+  {
+    name = "the real qt",
+    sprite = "the real qt",
+    color = {4, 2},
+    layer = 3,
+    tometa = "text_qt",
+  },
+  -- 712
+  {
+    name = "tronk",
+    sprite = "tronk",
+    type = "object",
+    color = {1,4},
+    layer = 5,
+    tags = {"trinket","vvvvvv"},
+    desc = "upside down boll",
+  },
+  -- 713
+  {
+    name = "text_tronk",
+    sprite = "text_tronk",
+    type = "text",
+    texttype = {object = true},
+    color = {1,4},
+    layer = 20,
+    tags = {"trinket","vvvvvv"},
+  },
+  -- 714
+  {
+    name = "aaaaaa",
+    sprite = "aaaaaa",
+    color = {0, 3},
+    layer = 3
+  },
+  -- 715
+  {
+    name = "the real bab dictator",
+    sprite = "the real bab dictator",
+    color = {0, 3},
+    layer = 100,
+    sing = "miku",
+    tags = {"hatsune miku"},
+    desc = "yes",
+  },
+  -- 716
+  {
+    name = "fube",
+    sprite = {"fube_arrow","fube_cube"},
+    color = {{2, 2},{0, 3}},
+    colored = {true,false},
+    type = "object",
+    rotate = true,
+    layer = 5,
+    tags = {"manifold garden", "arrow", "gravity"},
+    desc = "the cube thingy from many folds garden",
+  },
+  -- 717
+  {
+    name = "text_fube",
+    sprite = "text_fube",
+    type = "text",
+    texttype = {object = true},
+    color = {0, 3},
+    layer = 20,
+    tags = {"manifold garden", "arrow", "gravity"},
+  },
+  -- 718, do we even need to bother with these numbers since they're inaccurate
+  {
+    name = "detox",
+    sprite = "detox",
+    type = "object",
+    color = {2,4},
+    rotate = true,
+    layer = 7,
+    sing = "s_vitellary",
+    features = {sans = {x=21,y=8,w=2,h=3}},
+    tags = {"vvvvvv","allison"},
+    desc = "u've been lookin @ too much Good Art",
+  },
+  -- 719
+  {
+    name = "text_detox",
+    sprite = "text_detox",
+    type = "text",
+    texttype = {object = true},
+    color = {3,1},
+    layer = 20,
+    tags = {"vvvvvv","allison"},
+    desc = "detox be a custom vvvvvv level by allison, very good",
+  },
+  -- 720
+  {
+    name = "text_c_sharp",
+    sprite = "text_c_sharp",
+    type = "text",
+    texttype = {note = true},
+    color = {0,3},
+    layer = 20,
+    desc = "For use with SING.";
+  },
+  -- 721
+  {
+    name = "text_d_sharp",
+    sprite = "text_d_sharp",
+    type = "text",
+    texttype = {note = true},
+    color = {0,3},
+    layer = 20,
+    desc = "For use with SING.";
+  },
+  -- 722
+  {
+    name = "text_f_sharp",
+    sprite = "text_f_sharp",
+    type = "text",
+    texttype = {note = true},
+    color = {0,3},
+    layer = 20,
+    desc = "For use with SING.";
+  },
+  -- 723
+  {
+    name = "text_g_sharp",
+    sprite = "text_g_sharp",
+    type = "text",
+    texttype = {note = true},
+    color = {0,3},
+    layer = 20,
+    desc = "For use with SING.";
+  },
+  -- 724
+  {
+    name = "text_a_sharp",
+    sprite = "text_a_sharp",
+    type = "text",
+    texttype = {note = true},
+    color = {0,3},
+    layer = 20,
+    desc = "For use with SING.";
   },
 }
 

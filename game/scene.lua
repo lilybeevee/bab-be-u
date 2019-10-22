@@ -665,7 +665,7 @@ function scene.getTransform()
   transform:scale(scale, scale)
   transform:translate(scaledwidth / 2 - roomwidth / 2, scaledheight / 2 - roomheight / 2)
 
-  if shake_dur > 0 then
+  if shake_dur > 0 and not hasProperty(outerlvl, "cool") then
     local range = 1
     transform:translate(math.random(-range, range), math.random(-range, range))
   end
@@ -827,7 +827,12 @@ function scene.draw(dt)
     
     if unit.rave then
       -- print("unit " .. unit.name .. " is rave")
-      local newcolor = hslToRgb((love.timer.getTime()/0.75+#undo_buffer/45+unit.x/18+unit.y/18)%1, .5, .5, 1)
+      local ravespeed = 0.75
+      if settings["epileptic"] then
+        ravespeed = 7.5
+      end
+      
+      local newcolor = hslToRgb((love.timer.getTime()/ravespeed+#undo_buffer/45+unit.x/18+unit.y/18)%1, .5, .5, 1)
       newcolor[1] = newcolor[1]*255
       newcolor[2] = newcolor[2]*255
       newcolor[3] = newcolor[3]*255
@@ -925,6 +930,12 @@ function scene.draw(dt)
 		end
 		
 		local color = setColor(unit.color_override or unit.color)
+    if unit.fullname == "tronk" then
+      if math.floor(love.timer.getTime()*10)%2 == 1 then
+        local r,g,b = getPaletteColor((unit.color_override or unit.color)[1],(unit.color_override or unit.color)[2])
+        setColor{r*350,g*350,b*350}
+      end
+    end
     --check level_destroyed so that the object created by infloop is always white needs to be changed if we want objects to be able to survive level destruction
     if level_destroyed then
       setColor({0,3})
@@ -952,6 +963,7 @@ function scene.draw(dt)
     end
 
     local function getOffset()
+      if hasProperty(unit,"cool") then return 0,0 end
       if rules_with["temmi"] then
         local do_vibrate = false
         if unit.fullname == "temmi" then
@@ -1004,18 +1016,7 @@ function scene.draw(dt)
       local ox, oy = getOffset()
       if not overlay and type(unit.sprite) == "table" then
         for i,image in ipairs(unit.sprite) do
-          if type(unit.color[i]) == "table" then
-            setColor(unit.color[i])
-          else
-            setColor(unit.color)
-          end
-          if unit.color_override then
-            if type(unit.color_override[i]) == "table" then
-              setColor(unit.color_override[i])
-            else
-              setColor(unit.color_override)
-            end
-          end
+          setColor(getUnitColors(unit, i))
           if onlycolor or (#unit.overlay > 0 and (unit.colored and unit.colored[i]) or not unit.colored) then
             love.graphics.setColor(1,1,1,1)
           end
@@ -1028,6 +1029,9 @@ function scene.draw(dt)
         if overlay and stretch then
           love.graphics.draw(draw, fulldrawx + ox, fulldrawy + oy, 0, sprite:getWidth() / TILE_SIZE, sprite:getHeight() / TILE_SIZE, draw:getWidth() / 2, draw:getHeight() / 2)
         else
+          if unit.fullname == "detox" and graphical_property_cache["slep"][unit] ~= nil then
+            setColor{1,2}
+          end
           if not draw then draw = sprites["wat"] end
           love.graphics.draw(draw, fulldrawx + ox, fulldrawy + oy, 0, unit.draw.scalex, unit.draw.scaley, draw:getWidth() / 2, draw:getHeight() / 2)
         end
@@ -1320,6 +1324,12 @@ function scene.draw(dt)
       end
     end
     
+    if hasProperty(unit,"cool") then
+      local o = getTableWithDefaults(unit.features.cool, {x=0, y=0, sprite="shades"})
+      local shake_x, shake_y = getOffset()
+      love.graphics.setColor(getPaletteColor(0,3))
+      love.graphics.draw(sprites[o.sprite], fulldrawx + o.x + shake_x,  fulldrawy + o.y + shake_y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+    end
     if hasProperty(unit,"sans") and unit.features.sans and not hasProperty(unit,"slep") then
       local topleft = {x = fulldrawx - 16, y = fulldrawy - 16}
       love.graphics.setColor(getPaletteColor(1,4))
@@ -1453,7 +1463,11 @@ function scene.draw(dt)
       end
 
       love.graphics.setColor(getPaletteColor(2, 2))
-      love.graphics.draw(sprites["scribble_" .. anim_stage+1], fulldrawx, fulldrawy, 0, unit.draw.scalex * scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      if settings["scribble_anim"] then
+        love.graphics.draw(sprites["scribble_" .. anim_stage+1], fulldrawx, fulldrawy, 0, unit.draw.scalex * scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      else
+        love.graphics.draw(sprites["scribble_1"], fulldrawx, fulldrawy, 0, unit.draw.scalex * scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      end
 
       love.graphics.pop()
     end
@@ -1604,7 +1618,7 @@ function scene.draw(dt)
         end
       else
         for j,image in ipairs(unit.sprite) do
-          love.graphics.setColor(getPaletteColor(dcolor[j][1], dcolor[j][2]))
+          love.graphics.setColor(getPaletteColor(unpack(getUnitColors(unit, j))))
           local sprite = sprites[image]
           love.graphics.draw(sprite, 0, 0, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
         end
@@ -2112,57 +2126,89 @@ function scene.checkInput()
         if not unit_tests then print("gameplay logic took: "..tostring(round((end_time-start_time)*1000)).."ms") end
         -- SING
         if tiles_by_name["text_sing"] then
-          if hasRule("swan","sing","?") then
-            local pitch = math.random() * ((2^(11/12)) - 1) + 1
-            playSound("honk"..love.math.random(1,6), 1, pitch)
-          end
-          if hasSing(unit,"c") or hasSing(unit,"b_sharp") then
-              bit:setPitch(1)
-              bit:play()
-          end
-          if hasSing(unit,"c_sharp") or hasSing(unit,"d_flat") then
-              bit:setPitch(2^(1/12))
-              bit:play()
-          end
-          if hasSing(unit,"d") then
-              bit:setPitch(2^(2/12))
-              bit:play()
-          end
-          if hasSing(unit,"d_sharp") or hasSing(unit,"e_flat") then
-              bit:setPitch(2^(3/12))
-              bit:play()
-          end
-          if hasSing(unit,"e") or hasSing(unit,"f_flat") then
-              bit:setPitch(2^(4/12))
-              bit:play()
-          end
-          if hasSing(unit,"f") or hasSing(unit,"e_sharp") then
-              bit:setPitch(2^(5/12))
-              bit:play()
-          end
-          if hasSing(unit,"f_sharp") or hasSing(unit,"g_flat") then
-              bit:setPitch(2^(6/12))
-              bit:play()
-          end
-          if hasSing(unit,"g") then
-              bit:setPitch(2^(7/12))
-              bit:play()
-          end
-          if hasSing(unit,"g_sharp") or hasSing(unit,"a_flat") then
-              bit:setPitch(2^(8/12))
-              bit:play()
-          end
-          if hasSing(unit,"a") then
-              bit:setPitch(2^(9/12))
-              bit:play()
-          end
-          if hasSing(unit,"a_sharp") or hasSing(unit,"b_flat") then
-              bit:setPitch(2^(10/12))
-              bit:play()  
-          end
-          if hasSing(unit,"b") or hasSing(unit,"c_flat") then
-              bit:setPitch(2^(11/12))
-              bit:play()  
+          
+          local sing_rules = matchesRule(nil, "sing", "?")
+          for _,ruleparent in ipairs(sing_rules) do
+            local unit = ruleparent[2]
+            
+            if unit.name == "no1" then break end
+            if unit.name == "swan" then
+              local sound = love.sound.newSoundData("assets/audio/sfx/honk" .. math.random(1,6) .. ".wav");
+              local source = love.audio.newSource(sound, "static")
+              source:setVolume(1)
+              source:setPitch(math.random() * ((2^(11/12)) - 1) + 1)
+              source:play()
+            else
+              local specific_sing = tiles_list[unit.tile].sing or "bit";
+              
+              local sing_note = ruleparent[1].rule.object.name;
+              local sing_color = ruleparent[1].rule.object.unit.color_override or ruleparent[1].rule.object.unit.color;
+              local sing_octave = 0;
+              if (sing_color[1] <= 6 and sing_color[2] <= 4) then
+                local sing_color_word = colour_for_palette[sing_color[1]][sing_color[2]];
+                if sing_color_word == "whit" then
+                  sing_octave = 0
+                elseif sing_color_word == "blacc" then
+                  sing_octave = -5
+                elseif sing_color_word == "brwn" then
+                  sing_octave = -4
+                elseif sing_color_word == "reed" then
+                  sing_octave = -3
+                elseif sing_color_word == "orang" then
+                  sing_octave = -2
+                elseif sing_color_word == "yello" then
+                  sing_octave = -1
+                elseif sing_color_word == "grun" then
+                  sing_octave = 0
+                elseif sing_color_word == "cyeann" then
+                  sing_octave = 1
+                elseif sing_color_word == "bleu" then
+                  sing_octave = 2
+                elseif sing_color_word == "purp" then
+                  sing_octave = 3
+                elseif sing_color_word == "pinc" then
+                  sing_octave = 4
+                elseif sing_color_word == "graey" then
+                  sing_octave = 5
+                end
+              end
+              local sing_pitch = 1
+              if sing_note == "c" or sing_note == "b_sharp" then
+                sing_pitch = 1
+              elseif sing_note == "c_sharp" or sing_note == "d_flat" then
+                sing_pitch = 2^(1/12)
+              elseif sing_note == "d" then
+                sing_pitch = 2^(2/12)
+              elseif sing_note == "d_sharp" or sing_note == "e_flat" then
+                sing_pitch = 2^(3/12)
+              elseif sing_note == "e" or sing_note == "f_flat" then
+                sing_pitch = 2^(4/12)
+              elseif sing_note == "f" or sing_note == "e_sharp" then
+                sing_pitch = 2^(5/12)
+              elseif sing_note == "f_sharp" or sing_note == "g_flat" then
+                sing_pitch = 2^(6/12)
+              elseif sing_note == "g" then
+                sing_pitch = 2^(7/12)
+              elseif sing_note == "g_sharp" or sing_note == "a_flat" then
+                sing_pitch = 2^(8/12)
+              elseif sing_note == "a" then
+                sing_pitch = 2^(9/12)
+              elseif sing_note == "a_sharp" or sing_note == "b_flat" then
+                sing_pitch = 2^(10/12)
+              elseif sing_note == "b" or sing_note == "c_flat" then
+                sing_pitch = 2^(11/12)
+              end
+              
+              sing_pitch = sing_pitch * 2^sing_octave
+              
+              sound = love.sound.newSoundData("assets/audio/sfx/" .. specific_sing .. ".wav");
+              local source = love.audio.newSource(sound, "static")
+              source:setVolume(1)
+              source:setPitch(sing_pitch or 1)
+              source:play()
+            
+              addParticles("sing", unit.x, unit.y, sing_color)
+            end
           end
         end
         -- BUP
@@ -2300,6 +2346,9 @@ function doOneMove(x, y, key, past)
         end
         if firsttimestop then
           playSound("timestop long",0.5)
+          if units_by_name["za warudo"] then
+            playSound("za warudo",0.5)
+          end
         else
           playSound("timestop",0.5)
         end
@@ -2311,6 +2360,9 @@ function doOneMove(x, y, key, past)
         if firsttimestop then
           playSound("time resume long",0.5)
           firsttimestop = false
+          if units_by_name["za warudo"] then
+            playSound("time resume dio",0.5)
+          end
         else
           playSound("time resume",0.5)
         end

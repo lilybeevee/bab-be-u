@@ -23,7 +23,7 @@ end
 function playSound(sound, volume, pitch)
   if doing_past_turns and not do_past_effects then return end
 
-  if spookmode then
+  if spookmode or scene == game and hasRule("?","sing","?") then
     volume = 0.01
   end
 

@@ -194,9 +194,15 @@ function scene.setupGooi()
     if paint_open then
       paint_open = false
       paint_button:setBGImage(sprites["ui/paint"], sprites["ui/paint_h"])
+      fullpaint_palette:setVisible(false)
+    elseif key_down["lshift"] or key_down["rshift"] then
+      paint_open = "full"
+      paint_button:setBGImage(sprites["ui/paint_a"], sprites["ui/paint_h"])
+      fullpaint_palette:setVisible(true)
     else
       paint_open = true
       paint_button:setBGImage(sprites["ui/paint_a"], sprites["ui/paint_h"])
+      fullpaint_palette:setVisible(false)
     end
   end):setBGImage(sprites["ui/paint"], sprites["ui/paint_h"]):bg({0, 0, 0, 0})
   x = x + 40
@@ -207,10 +213,18 @@ function scene.setupGooi()
     end
   end):bg({0,0,0,0}) -- no BGImage since it needs to be recolored
   x = x + 36
+  local fullpaint_palette_x = x
+  fullpaint_palette = gooi.newButton({text = "", x = x, y = 4, h = 5*8, w = 7*8}):onPress(function()
+    local x, y = love.mouse.getPosition()
+    local palette_x = math.floor((x - fullpaint_palette_x) / 8)
+    local palette_y = math.floor((y - 4) / 8)
+    brush.color = {palette_x, palette_y}
+  end):setBGImage(palettes[current_palette].sprite):bg({0,0,0,0})
+  fullpaint_palette:setVisible(false)
   for _,color in pairs(color_names) do
     gooi.newButton({text = "", x = x, y = 4, h = 32, w = 32}):onPress(function()
-      if paint_open then
-        brush.color = color
+      if paint_open == true then
+        brush.color = main_palette_for_colour[color]
       end
     end):bg({0,0,0,0}) -- no BGImage since it needs to be recolored
     table.insert(paint_colors, {x, main_palette_for_colour[color]})
@@ -1036,7 +1050,7 @@ function scene.update(dt)
             if #hovered >= 1 then
               for _,unit in ipairs(hovered) do
                 if unit.tile == brush.id and (unit.tile ~= tiles_by_name["letter_custom"] or unit.special.customletter == brush.special.customletter)
-                  and (unit.color_override and (type(unit.color_override[1]) == "table" and colour_for_palette[unit.color_override[1][1]][unit.color_override[1][2]] or colour_for_palette[unit.color_override[1]][unit.color_override[2]] == brush.color) or (unit.color_override == nil and brush.color == nil)) then
+                  and matchesColor(unit.color_override, brush.color, true) then
                   if not (ctrl_active or selectorhold) then
                     existing = unit
                   end
@@ -1066,9 +1080,11 @@ function scene.update(dt)
                   new_unit = existing
                 elseif (not ctrl_active or ctrl_first_press) and (not is_mobile or mobile_firstpress) then
                   new_unit = createUnit(brush.id, hx, hy, brush.dir)
-                  if brush.color then
+                  if type(brush.color) == "string" then
                     new_unit[brush.color] = true
                     updateUnitColourOverride(new_unit)
+                  elseif type(brush.color) == "table" then
+                    new_unit.color_override = brush.color
                   end
                   new_unit.special = deepCopy(brush.special)
                   if last_lin_hidden and brush.id == tiles_by_name["lin"] then
@@ -1116,7 +1132,7 @@ function scene.update(dt)
                 end
                 brush.picked_index = new_index
                 brush.id = hovered[new_index].tile
-                brush.color = hovered[new_index].color_override and (type(hovered[new_index].color_override[1]) == "table" and colour_for_palette[hovered[new_index].color_override[1][1]][hovered[new_index].color_override[1][2]] or colour_for_palette[hovered[new_index].color_override[1]][hovered[new_index].color_override[2]]) or nil
+                brush.color = hovered[new_index].color_override
                 --brush.customletter = hovered[new_index].special.customletter
                 if hovered[new_index].name == "lin" then
                   last_lin_hidden = (hovered[new_index].special.visibility == "hidden")
@@ -1124,7 +1140,7 @@ function scene.update(dt)
                 brush.special = hovered[new_index].special
               else
                 brush.id = hovered[1].tile 
-                brush.color = hovered[1].color_override and (type(hovered[1].color_override[1]) == "table" and colour_for_palette[hovered[1].color_override[1][1]][hovered[1].color_override[1][2]] or colour_for_palette[hovered[1].color_override[1]][hovered[1].color_override[2]]) or nil
+                brush.color = hovered[1].color_override
                 --brush.customletter = hovered[1].special.customletter
                 if hovered[1].name == "lin" then
                   last_lin_hidden = (hovered[1].special.visibility == "hidden")
@@ -1414,7 +1430,7 @@ function scene.draw(dt)
               if type(unit.sprite) == "table" then
                 for j,image in ipairs(unit.sprite) do
                   sprite = sprites[image]
-                  setColor(unit.color_override and unit.color_override[j] or unit.color[j])
+                  setColor(getUnitColors(unit, j))
                   love.graphics.draw(sprite, (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
                 end
               else
@@ -1482,7 +1498,7 @@ function scene.draw(dt)
             -- local x = tile.grid[1]
             -- local y = tile.grid[2]
 
-            local color = brush.color and main_palette_for_colour[brush.color] or tile.color
+            local color = brush.color or tile.color
             setColor(color)
 
             if rainbowmode then love.graphics.setColor(hslToRgb((love.timer.getTime()/3+x/tile_grid_width+y/tile_grid_height)%1, .5, .5, 1)) end
@@ -1539,7 +1555,7 @@ function scene.draw(dt)
               if type(tile.sprite) == "table" then
                 for j,image in ipairs(tile.sprite) do
                   sprite = sprites[image]
-                  if found_matching_tag then setColor(tile.color_override and tile.color_override[j] or tile.color[j]) end
+                  if found_matching_tag then setColor(getUnitColors(tile, j, brush.color)) end
                   love.graphics.draw(sprite, (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
                 end
               else
@@ -1593,7 +1609,7 @@ function scene.draw(dt)
             rotation = (brush.dir - 1) * 45
           end
           
-          local color = brush.color and main_palette_for_colour[brush.color] or tile.color
+          local color = brush.color or tile.color
           color = type(color[1]) == "table" and color[1] or color
           if #color == 3 then
             love.graphics.setColor(color[1]/255, color[2]/255, color[3]/255, 0.25)
@@ -1705,6 +1721,11 @@ function scene.draw(dt)
           color = color:gsub("{","(")
           color = color:gsub("}",")")
           love.graphics.print("Color: " .. color, 150, roomheight+36)
+          if tile.sing ~= nil then
+            love.graphics.print("Instrument: " .. tile.sing, 250, roomheight)
+          else
+            love.graphics.print("Instrument: bit (default)", 250, roomheight)
+          end
           local tags = ""
           if tile.type == "text" and tile.texttype then
             for key,_ in pairs(tile.texttype) do
@@ -2020,6 +2041,7 @@ function scene.draw(dt)
             love.graphics.draw(sprites[tile.sprite], x, 4)
           end
         end
+        if paint_open == "full" then break end
       end
     end
 
@@ -2103,7 +2125,7 @@ function scene.updateMap()
       local tileid = x + y * mapwidth
       if unitsByTile(x, y) then
         for _,unit in ipairs(unitsByTile(x, y)) do
-          table.insert(map, {id = unit.id, tile = unit.tile, x = unit.x, y = unit.y, dir = unit.dir, special = unit.special, color = unit.color_override and (type(unit.color_override[1]) == "table" and colour_for_palette[unit.color_override[1][1]][unit.color_override[1][2]] or colour_for_palette[unit.color_override[1]][unit.color_override[2]])})
+          table.insert(map, {id = unit.id, tile = unit.tile, x = unit.x, y = unit.y, dir = unit.dir, special = unit.special, color = unit.color_override})
         end
       end
     end

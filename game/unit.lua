@@ -2,6 +2,12 @@ function moveBlock()
   --baba order: FOLLOW, BACK, TELE, SHIFT
   --bab order: big, zip, look at, undo, visit fren, go, goooo, shy, spin, folo wal, turn cornr
   
+  for _,unit in ipairs(units_by_name["text_xwx"] or {}) do
+    local newname = hasProperty(unit, "slep") and "uwu" or "xwx"
+    should_parse_rules = unit.textname ~= newname
+    unit.textname = newname
+  end
+  
   --currently very bad method of making sure big stuff gets updated: go through all units and make sure they're set up properly
   if units_by_name["text_big"] then
     for _,unit in ipairs(units) do
@@ -428,24 +434,7 @@ function moveBlock()
     end
   end
   
-  --technically spin_8 does nothing, so skip it
-  --TODO: redo to work as if it was a go^
-  for i=1,7 do
-    local isspin = getUnitsWithEffectAndCount("spin" .. tostring(i))
-    for unit,amt in pairs(isspin) do
-      addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
-      unit.olddir = unit.dir
-      --if we aren't allowed to rotate to the indicated direction, skip it
-      for j=1,8 do
-        local result = updateDir(unit, dirAdd(unit.dir, amt*i))
-        if not result then
-          amt = amt + 1
-        else
-          break
-        end
-      end
-    end
-  end
+  doSpinRules()
   
   local folo_wall = getUnitsWithEffectAndCount("folo wal")
   for unit,amt in pairs(folo_wall) do
@@ -1307,6 +1296,8 @@ function miscUpdates()
           else
             unit.sprite = "casete_wut"
           end
+        else
+          unit.sprite = "casete_wut"
         end
         if not hasProperty(unit,"no go") then
           unit.sprite = unit.sprite.."_sunk"
@@ -1521,6 +1512,14 @@ function miscUpdates()
         end
       end
       
+      if unit.fullname == "fube" then
+        if hasProperty(unit,"haet skye") or hasProperty(unit,"haet flor") or hasRule(unit,"yeet","?") or hasRule(unit,"moov","?") then
+          unit.sprite = {"fube_cube","fube_arrow"}
+        else
+          unit.sprite = {"fube_arrow","fube_cube"}
+        end
+      end
+      
       if unit.fullname == "bup" then
         if hasProperty(unit,"torc") then
           unit.sprite = {"bup","bup_band","bup_capn","bup_light"}
@@ -1570,6 +1569,13 @@ function miscUpdates()
           end
         elseif sprites[unit.sprite.."_slep"] then
           unit.sprite = unit.sprite.."_slep"
+          if unit.fullname == "detox" then
+            unit.color = {1,2}
+          end
+        end
+      else
+        if unit.fullname == "detox" then
+          unit.color = {2,4}
         end
       end
 
@@ -1730,65 +1736,30 @@ end
 
 function updateUnitColourOverride(unit)
   unit.color_override = nil
-  if type(unit.color) == "table" and unit.colored then
-    unit.color_override = {}
-    for i,_ in ipairs(unit.color) do
-      if unit.colored[i] then
-        if unit.pinc or (unit.reed and unit.whit) then -- pink
-          unit.color_override[i] = {4, 1}
-        elseif unit.purp or (unit.reed and unit.bleu) then -- purple
-          unit.color_override[i] = {3, 1}
-        elseif unit.yello or (unit.reed and unit.grun) then -- yellow
-          unit.color_override[i] = {2, 4}
-        elseif unit.orang or (unit.reed and unit.yello) then -- orange
-          unit.color_override[i] = {2, 3}
-        elseif unit.cyeann or (unit.bleu and unit.grun) then -- cyan
-          unit.color_override[i] = {1, 4}
-        elseif unit.brwn or (unit.orang and unit.blacc) then -- brown
-          unit.color_override[i] = {6, 0}
-        elseif unit.reed then -- red
-          unit.color_override[i] = {2, 2}
-        elseif unit.bleu then -- blue
-          unit.color_override[i] = {1, 3}
-        elseif unit.grun then -- green
-          unit.color_override[i] = {5, 2}
-        elseif unit.graey or (unit.blacc and unit.whit) then -- grey
-          unit.color_override[i] = {0, 1}
-        elseif unit.whit or (unit.reed and unit.grun and unit.bleu) or (unit.reed and unit.cyeann) or (unit.bleu and unit.yello) or (unit.grun and unit.purp) then -- white
-          unit.color_override[i] = {0, 3}
-        elseif unit.blacc then -- black
-          unit.color_override[i] = {0, 0}
-        end
-      else
-        unit.color_override[i] = unit.color[i]
-      end
-    end
-  else
-    if unit.pinc or (unit.reed and unit.whit) then -- pink
-      unit.color_override = {4, 1}
-    elseif unit.purp or (unit.reed and unit.bleu) then -- purple
-      unit.color_override = {3, 1}
-    elseif unit.yello or (unit.reed and unit.grun) then -- yellow
-      unit.color_override = {2, 4}
-    elseif unit.orang or (unit.reed and unit.yello) then -- orange
-        unit.color_override = {2, 3}
-    elseif unit.cyeann or (unit.bleu and unit.grun) then -- cyan
-      unit.color_override = {1, 4}
-    elseif unit.brwn or (unit.orang and unit.blacc) then -- brown
-      unit.color_override = {6, 0}
-    elseif unit.reed then -- red
-      unit.color_override = {2, 2}
-    elseif unit.bleu then -- blue
-      unit.color_override = {1, 3}
-    elseif unit.grun then -- green
-      unit.color_override = {5, 2}
-    elseif unit.graey or (unit.blacc and unit.whit) then -- grey
-      unit.color_override = {0, 1}
-    elseif unit.whit or (unit.reed and unit.grun and unit.bleu) or (unit.reed and unit.cyeann) or (unit.bleu and unit.yello) or (unit.grun and unit.purp) then -- white
-      unit.color_override = {0, 3}
-    elseif unit.blacc then -- black
-      unit.color_override = {0, 0}
-    end
+  if unit.pinc or (unit.reed and unit.whit) then -- pink
+    unit.color_override = {4, 1}
+  elseif unit.purp or (unit.reed and unit.bleu) then -- purple
+    unit.color_override = {3, 1}
+  elseif unit.yello or (unit.reed and unit.grun) then -- yellow
+    unit.color_override = {2, 4}
+  elseif unit.orang or (unit.reed and unit.yello) then -- orange
+      unit.color_override = {2, 3}
+  elseif unit.cyeann or (unit.bleu and unit.grun) then -- cyan
+    unit.color_override = {1, 4}
+  elseif unit.brwn or (unit.orang and unit.blacc) then -- brown
+    unit.color_override = {6, 0}
+  elseif unit.reed then -- red
+    unit.color_override = {2, 2}
+  elseif unit.bleu then -- blue
+    unit.color_override = {1, 3}
+  elseif unit.grun then -- green
+    unit.color_override = {5, 2}
+  elseif unit.graey or (unit.blacc and unit.whit) then -- grey
+    unit.color_override = {0, 1}
+  elseif unit.whit or (unit.reed and unit.grun and unit.bleu) or (unit.reed and unit.cyeann) or (unit.bleu and unit.yello) or (unit.grun and unit.purp) then -- white
+    unit.color_override = {0, 3}
+  elseif unit.blacc then -- black
+    unit.color_override = {0, 0}
   end
 end
 
@@ -2225,7 +2196,7 @@ function readingOrderSort(a, b)
 end
 
 function destroyLevel(reason)
-	if not hasRule(outerlvl,"got","lvl") and not hasProperty(outerlvl,"protecc") then
+	if reason == "infloop" or (not hasRule(outerlvl,"got","lvl") and not hasProperty(outerlvl,"protecc")) then
     level_destroyed = true
   end
   
@@ -2268,8 +2239,11 @@ function destroyLevel(reason)
     elseif hasProperty("loop",":)") then
       doWin("won")
       level_destroyed = true
+    elseif hasProperty("loop",";d") then
+      doWin("won", false)
+      level_destroyed = true
     end
-    local berule = matchesRule("loop","be",nil)
+    local berule = matchesRule("loop","be","?")
     for _,rule in ipairs(berule) do
       local object = rule.rule.object.name
       if tiles_by_name[object] then
@@ -2468,14 +2442,29 @@ function convertUnits(pass)
       --remove "text_" as many times as we're de-metaing
       local nametocreate = unit.fullname
       for i = 1,amt do
+        local newname = nametocreate
         local tile = tiles_by_name[nametocreate]
-        if tile ~= nil and tiles_list[tile].demeta then
-          nametocreate = tiles_list[tile].demeta
+        if tiles_list[tile].demeta then
+          newname = tiles_list[tile].demeta
         else
           if nametocreate:starts("text_") then
-            nametocreate = nametocreate:sub(6, -1)
+            newname = nametocreate:sub(6, -1)
+          elseif nametocreate:starts("letter_") then
+            newname = nametocreate:sub(8, -1)
+            if newname == "custom" then
+              local letter = unit.special.customletter
+              if letter == "aa" or letter == "aaa" or letter == "aaaa" then
+                newname = "battry"
+              elseif letter == "aaaaa" or letter == "aaaaaa" then
+                newname = "aaaaaa"
+              end
+            end
           end
         end
+        if not tiles_by_name[newname] then
+          break
+        end
+        nametocreate = newname
       end
       if nametocreate ~= unit.fullname then
         table.insert(converted_units, unit)
@@ -2915,8 +2904,12 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
   end
   
   if prefix then
-    unit[prefix] = true
-    updateUnitColourOverride(unit)
+    if type(prefix) == "table" then
+      unit.color_override = prefix
+    else
+      unit[prefix] = true
+      updateUnitColourOverride(unit)
+    end
   end
   
   --abort if we're trying to create outerlvl outside of the start

@@ -66,6 +66,31 @@ function doDirRules()
       updateDir(unit, k)
     end
   end
+  
+  doSpinRules(units_to_change)
+end
+
+function doSpinRules(units_to_change)
+  --technically spin0/spin8 does nothing, so skip it
+  --TODO: redo to work as if it was a go^
+  for i=1,7 do
+    local isspin = getUnitsWithEffectAndCount("spin" .. tostring(i))
+    for unit,amt in pairs(isspin) do
+      if (units_to_change == nil or units_to_change[unit] ~= nil) then
+        addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
+        unit.olddir = unit.dir
+        --if we aren't allowed to rotate to the indicated direction, skip it
+        for j=1,8 do
+          local result = updateDir(unit, dirAdd(unit.dir, amt*i))
+          if not result then
+            amt = amt + 1
+          else
+            break
+          end
+        end
+      end
+    end
+  end
 end
 
 function doMovement(movex, movey, key)
@@ -309,14 +334,27 @@ function doMovement(movex, movey, key)
           end
         end
       end
-      for mdir,mdirname in ipairs(dirs8_by_name) do
-        local isshift = matchesRule(nil, "moov", mdirname)
-        for _,ruleparent in ipairs(isshift) do
-          local unit = ruleparent[2]
-          table.insert(unit.moves, {reason = "moov dir", dir = mdir, times = 1})
-          if #unit.moves > 0 and not already_added[unit] then
-            table.insert(moving_units, unit)
-            already_added[unit] = true
+      if (rules_with["moov"]) then
+        for mdir,mdirname in ipairs(dirs8_by_name) do
+          local isshift = matchesRule(nil, "moov", mdirname)
+          for _,ruleparent in ipairs(isshift) do
+            local unit = ruleparent[2]
+            table.insert(unit.moves, {reason = "moov dir", dir = mdir, times = 1})
+            if #unit.moves > 0 and not already_added[unit] then
+              table.insert(moving_units, unit)
+              already_added[unit] = true
+            end
+          end
+        end
+        for i = 0,8 do
+          local isshift = matchesRule(nil, "moov", "spin"..tostring(i))
+          for _,ruleparent in ipairs(isshift) do
+            local unit = ruleparent[2]
+            table.insert(unit.moves, {reason = "moov dir", dir = dirAdd(unit.dir, i), times = 1})
+            if #unit.moves > 0 and not already_added[unit] then
+              table.insert(moving_units, unit)
+              already_added[unit] = true
+            end
           end
         end
       end
@@ -502,7 +540,7 @@ function doMovement(movex, movey, key)
         for _,other in ipairs(others) do
           local is_moover = #matchesRule(unit, "moov", other)
           if is_moover > 0 and timecheck(unit,"moov",other) and other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) and ignoreCheck(unit,other) and ignoreCheck(other,unit) then
-            table.insert(other.moves, {reason = "moov", dir = unit.dir, times = is_moover})
+            table.insert(other.moves, {reason = "moov", dir = unit.dir, times = 1})
             if #other.moves > 0 and not already_added[other] then
               table.insert(moving_units, other)
               already_added[other] = true
@@ -1185,14 +1223,18 @@ function fallBlock() --TODO: add support for spin
   --and all timeless fallers
   local timeless_fallers = {}
   
-  function addFallersFromLoop(verb, property, gravity_dir)
+  function addFallersFromLoop(verb, property, gravity_dir, relative)
     local falling = (verb == "be" and getUnitsWithEffectAndCount(property) or getUnitsWithRuleAndCount(nil, verb, property))
     for unit,count in pairs(falling) do
       if fallers[unit] == nil then
         fallers[unit] = {0, 0};
       end
-      fallers[unit][1] = fallers[unit][1] + count*gravity_dir[1];
-      fallers[unit][2] = fallers[unit][2] + count*gravity_dir[2];
+      local actual_dir = gravity_dir;
+      if (relative) then
+        actual_dir = dirs8[dirAdd(unit.dir, gravity_dir)];
+      end
+      fallers[unit][1] = fallers[unit][1] + count*actual_dir[1];
+      fallers[unit][2] = fallers[unit][2] + count*actual_dir[2];
       if timecheck(unit, verb, property) then
         timeless_fallers[unit] = true
       end
@@ -1203,17 +1245,20 @@ function fallBlock() --TODO: add support for spin
   addFallersFromLoop("be", "haet flor", {0, -1});
   
   
-  if (rules_with["haet"]) then
+  --[[if (rules_with["haet"]) then
     for k,v in pairs(dirs8_by_name) do
       local gravity_dir = copyTable(dirs8[k]);
       gravity_dir[1] = -gravity_dir[1];
       gravity_dir[2] = -gravity_dir[2];
       addFallersFromLoop("haet", v, gravity_dir);
     end
-  end
-  if (rules_with["liek"]) then
+  end]]
+  if (rules_with["yeet"]) then
     for k,v in pairs(dirs8_by_name) do
-      addFallersFromLoop("liek", v, dirs8[k]);
+      addFallersFromLoop("yeet", v, dirs8[k], false);
+    end
+    for i = 0,8 do
+      addFallersFromLoop("yeet", "spin"..tostring(i), i, true);
     end
   end
   --2) normalize to an 8-way faller direction, and remove if it's 0,0
@@ -1755,17 +1800,10 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
   
   --bounded: if we're bounded and there are no units in the destination that satisfy a bounded rule, AND there's no units at our feet that would be moving there to carry us, we can't go
   --we used to have a fast track, but now selector is ALWAYS bounded to stuff, so it's never going to be useful.
-  local isbounded = matchesRule(unit, "liek", "?")
-  --make sure that we actually liek an object
-  local bound_to_object = false;
-  for i,ruleparent in ipairs(isbounded) do
-    local liek = ruleparent.rule.object.name
-    if not dirs8_by_name_set[liek] then
-      bound_to_object = true;
-      break;
-    end
-  end
+  --liek only triggers if there is at least one unit we currently liek in existence
+  local bound_to_object = #matchesRule(unit, "liek", nil) > 0
   if (bound_to_object) then
+    local isbounded = matchesRule(unit, "liek", "?")
     for i,ruleparent in ipairs(isbounded) do
       local liek = ruleparent.rule.object.name
       local success = false

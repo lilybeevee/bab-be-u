@@ -335,20 +335,22 @@ function loadMap()
                 orthos[dx][dy] = true
                 if not created[v[1]] then
                   if v[2] == tiles_by_name["lvl"] then
-                    local unit = createUnit(v[2], v[3], v[4], v[5], false, v[1], nil, v[7] and {{name=v[7]}})
-                    created[v[1]] = true
-                    unit.special = v[6]
-                    if ptype == 1 then
-                      unit.special.visibility = "open"
-                      table.insert(floodfill, {unit, 2})
-                    elseif ptype == 2 then
-                      unit.special.visibility = "locked"
-                      table.insert(floodfill, {unit, 2})
-                    elseif ptype == 3 then
-                      unit.special.visibility = "open"
+                    if ptype ~= 2 then
+                      local unit = createUnit(v[2], v[3], v[4], v[5], false, v[1], nil, v[7])
+                      created[v[1]] = true
+                      unit.special = v[6]
+                      if ptype == 1 then
+                        unit.special.visibility = "open"
+                        table.insert(floodfill, {unit, 2})
+                      elseif ptype == 3 then
+                        unit.special.visibility = "open"
+                      end
+                    elseif ptype == 2 and not table.has_value(locked_lvls, v) then
+                      table.insert(locked_lvls, v)
+                      table.insert(floodfill, {{x = v[3], y = v[4]}, 2})
                     end
                   elseif (ptype == 1 or ptype == 3) and v[2] == tiles_by_name["lin"] and (not v[6].pathlock or v[6].pathlock == "none") then
-                    local unit = createUnit(v[2], v[3], v[4], v[5], false, v[1], nil, v[7] and {{name=v[7]}})
+                    local unit = createUnit(v[2], v[3], v[4], v[5], false, v[1], nil, v[7])
                     created[v[1]] = true
                     unit.special = v[6]
                     table.insert(floodfill, {unit, 3})
@@ -360,7 +362,7 @@ function loadMap()
         end
         for _,v in ipairs(locked_lvls) do
           if not created[v[1]] then
-            local unit = createUnit(v[2], v[3], v[4], v[5], false, v[1], nil, v[7] and {{name=v[7]}})
+            local unit = createUnit(v[2], v[3], v[4], v[5], false, v[1], nil, v[7])
             created[v[1]] = true
             unit.special = v[6]
           end
@@ -920,16 +922,6 @@ function getUs()
   mergeTable(yous,getUnitsWithEffect("u tres"))
   mergeTable(yous,getUnitsWithEffect("y'all"))
   return yous
-end
-
-function hasSing(unit,note)
-  local rules = matchesRule(nil,"sing",note)
-  for _,rule in ipairs(rules) do
-    if rule[2].fullname ~= "swan" then
-      bit = love.audio.newSource("assets/audio/sfx/bit2.wav", "static")
-      return true
-    end
-  end
 end
 
 --to prevent infinite loops where a set of rules/conditions is self referencing
@@ -1524,19 +1516,7 @@ function testConds(unit, conds, compare_with) --cond should be a {condtype,{obje
           result = true
         end
       else
-        if type(colour[1]) == "table" then
-          local found = false
-          for i,coluor in ipairs(colour) do
-            if colour_for_palette[coluor[1]][coluor[2]] == condtype then
-              found = true
-            end
-          end
-          if not found then
-            result = false
-          end
-        else
-          result = colour_for_palette[colour[1]][colour[2]] == condtype
-        end
+        result = matchesColor(getUnitColors(unit), condtype)
       end
     elseif condtype == "the" then
       local the = cond.unit
@@ -1568,13 +1548,7 @@ function testConds(unit, conds, compare_with) --cond should be a {condtype,{obje
     elseif condtype == "samefloat" then
       result = sameFloat(unit, compare_with)
     elseif condtype == "samepaint" then
-      result = false
-      for _,cname in pairs(color_names) do
-        if testConds(unit, {{name = cname}}) and testConds(compare_with, {{name = cname}}) then
-          result = true
-          break
-        end
-      end
+      result = matchesColor(getUnitColors(unit), getUnitColors(compare_with))
     elseif condtype == "sameface" then
       result = unit.dir == compare_with.dir
     elseif condtype == "oob" then
@@ -2210,6 +2184,25 @@ function addParticles(ptype,x,y,color,count)
     ps:start()
     ps:emit(count or 10)
     table.insert(particles, ps)
+  elseif ptype == "sing" then
+    local ps = love.graphics.newParticleSystem(sprites["noet"])
+    local px = (x + 1) * TILE_SIZE
+    local py = y * TILE_SIZE
+    ps:setPosition(px, py)
+    ps:setSpread(0)
+    ps:setEmissionArea("borderrectangle", 0, 0, 0, true)    
+    ps:setSizes(0.5, 0.5, 0.5, 0)
+    ps:setSpeed(10)
+    ps:setLinearAcceleration(0,-50)
+    ps:setParticleLifetime(2)
+    if #color == 2 then
+      ps:setColors(getPaletteColor(color[1], color[2]))
+    else
+      ps:setColors(color[1]/255, color[2]/255, color[3]/255, (color[4] or 255)/255)
+    end
+    ps:start()
+    ps:emit(count or 10)
+    table.insert(particles, ps)
   elseif ptype == "movement-puff" then
     local ps = love.graphics.newParticleSystem(sprites["circle"])
     local px = (x + 0.5) * TILE_SIZE
@@ -2458,7 +2451,7 @@ function ignoreCheck(unit, target, property)
 end
 
 function getPaletteColor(x, y, name_)
-  local palette = palettes[name_ or current_palette]
+  local palette = palettes[name_ or current_palette] or palettes["default"]
   local pixelid = x + y * palette.sprite:getWidth()
   if palette[pixelid] then
     return palette[pixelid][1], palette[pixelid][2], palette[pixelid][3], palette[pixelid][4]
@@ -3096,7 +3089,7 @@ function namesInGroup(group)
       if (#(r.rule.subject.conds) == 0) then
         table.insert(result, v)
       else
-        for _,u in ipairs(units_by_name[v]) do
+        for _,u in ipairs(units_by_name[v] or {v}) do
           if testConds(u, r.rule.subject.conds) then
             table.insert(result, v)
             break
@@ -3307,11 +3300,13 @@ function buildOptions()
   scene.addOption("music_on", "music", {{"on", true}, {"off", false}})
   scene.addOption("sfx_on", "sound", {{"on", true}, {"off", false}})
   scene.addOption("particles_on", "particle effects", {{"on", true}, {"off", false}})
-  scene.addOption("grid_lines", "grid lines", {{"off", false}, {"on", true}})
-  scene.addOption("mouse_lines", "mouse lines", {{"off", false}, {"on", true}})   
+  scene.addOption("scribble_anim", "animated scribbles", {{"on", true}, {"off", false}})
+  scene.addOption("epileptic", "reduce flashes", {{"on", true}, {"off", false}})
+  scene.addOption("grid_lines", "grid lines", {{"on", true}, {"off", false}})
+  scene.addOption("mouse_lines", "mouse lines", {{"on", true}, {"off", false}})
   scene.addOption("stopwatch_effect", "stopwatch effect", {{"on", true}, {"off", false}})
   scene.addOption("fullscreen", "screen mode", {{"windowed", false}, {"fullscreen", true}}, function() fullScreen() end)
-  scene.addOption("focus_pause", "pause on defocus", {{"off", false}, {"on", true}}) 
+  scene.addOption("focus_pause", "pause on defocus", {{"on", true}, {"off", false}})
   if scene == menu then
     scene.addOption("themes", "menu themes", {{"on", true}, {"off", false}})
   end
@@ -3376,9 +3371,9 @@ function searchForLevels(dir, search, exact)
         local name = file:sub(1, -5)
         local data = json.decode(love.filesystem.read(dir .. "/" .. file))
         local found = false
-        if (exact and name == search) or (not exact and string.find(name, search)) then
+        if (not search) or (exact and name == search) or (not exact and string.find(name, search)) then
           found = true
-        elseif (exact and data.name == search) or (not exact and string.find(data.name, search)) then
+        elseif (not search) or (exact and data.name == search) or (not exact and string.find(data.name, search)) then
           found = true
         end
         if found then
@@ -3395,5 +3390,84 @@ end
 function getIcon(path)
   if love.filesystem.getInfo(path .. ".png") then
     return love.graphics.newImage(path .. ".png")
+  end
+end
+
+function getUnitColors(unit, index, override_)
+  local override = override_ or unit.color_override
+  local colors = type(unit.color[1]) == "table" and unit.color or {unit.color}
+  if index then
+    if override and (not unit.colored or unit.colored[index]) then
+      return override
+    else
+      return colors[index]
+    end
+  elseif override then
+    colors = copyTable(colors)
+    for i,_ in ipairs(colors) do
+      if not unit.colored or unit.colored[i] then
+        colors[i] = override
+      end
+    end
+    return colors
+  else
+    return colors
+  end
+end
+
+-- logic for how this function works:
+-- nil checks (both nil -> true, one nil -> false)
+-- loop for colors in a if there are multiple
+-- loop for colors in b if there are multiple
+-- actually compare the color
+function matchesColor(a, b, exact)
+  if not a ~= not b then return false end
+  if not a and not b then return true end
+  if type(a) == "table" and type(a[1]) ~= "number" then
+    for _,c in ipairs(a) do
+      if matchesColor(c, b, exact) then return true end
+    end
+    return false
+  end
+  if type(b) == "table" and type(b[1]) ~= "number" then
+    for _,c in ipairs(b) do
+      if matchesColor(a, c, exact) then return true end
+    end
+    return false
+  end
+  if exact then
+    if type(a) == "string" then
+      a = main_palette_for_colour[a]
+    end
+    if type(b) == "string" then
+      b = main_palette_for_colour[b]
+    end
+    if #a == 2 and #b == 2 then
+      return a[1] == b[1] and a[2] == b[2]
+    end
+    -- just in case
+    if #a == 3 then
+      a = getPaletteColor(unpack(a))
+    end
+    if #b == 3 then
+      b = getPaletteColor(unpack(a))
+    end
+    return a[1] == b[1] and a[2] == b[2] and a[3] == b[3]
+  else
+    if type(a) == "table" then
+      if #a == 2 then
+        a = colour_for_palette[a[1]][a[2]]
+      else
+        return false -- I don't want to deal with this right now
+      end
+    end
+    if type(b) == "table" then
+      if #b == 2 then
+        b = colour_for_palette[b[1]][b[2]]
+      else
+        return false -- I don't want to deal with this right now
+      end
+    end
+    return a == b
   end
 end
