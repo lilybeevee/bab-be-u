@@ -1721,6 +1721,11 @@ function scene.draw(dt)
           color = color:gsub("{","(")
           color = color:gsub("}",")")
           love.graphics.print("Color: " .. color, 150, roomheight+36)
+          if tile.sing ~= nil then
+            love.graphics.print("Instrument: " .. tile.sing, 250, roomheight)
+          else
+            love.graphics.print("Instrument: bit (default)", 250, roomheight)
+          end
           local tags = ""
           if tile.type == "text" and tile.texttype then
             for key,_ in pairs(tile.texttype) do

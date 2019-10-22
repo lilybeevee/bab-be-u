@@ -2337,6 +2337,9 @@ function doOneMove(x, y, key, past)
         end
         if firsttimestop then
           playSound("timestop long",0.5)
+          if units_by_name["za warudo"] then
+            playSound("za warudo",0.5)
+          end
         else
           playSound("timestop",0.5)
         end
@@ -2348,6 +2351,9 @@ function doOneMove(x, y, key, past)
         if firsttimestop then
           playSound("time resume long",0.5)
           firsttimestop = false
+          if units_by_name["za warudo"] then
+            playSound("time resume dio",0.5)
+          end
         else
           playSound("time resume",0.5)
         end

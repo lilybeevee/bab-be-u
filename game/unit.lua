@@ -1578,10 +1578,6 @@ function miscUpdates()
           unit.color = {2,4}
         end
       end
-      
-      if unit.fullname == "detox" then
-        updateGraphicalPropertyCache() --makes sure its slep colors update
-      end
 
       unit.overlay = {}
       if (graphical_property_cache["enby"][unit] ~= nil) then
