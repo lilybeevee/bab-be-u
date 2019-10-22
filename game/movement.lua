@@ -1755,17 +1755,10 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
   
   --bounded: if we're bounded and there are no units in the destination that satisfy a bounded rule, AND there's no units at our feet that would be moving there to carry us, we can't go
   --we used to have a fast track, but now selector is ALWAYS bounded to stuff, so it's never going to be useful.
-  local isbounded = matchesRule(unit, "liek", "?")
-  --make sure that we actually liek an object
-  local bound_to_object = false;
-  for i,ruleparent in ipairs(isbounded) do
-    local liek = ruleparent.rule.object.name
-    if not dirs8_by_name_set[liek] then
-      bound_to_object = true;
-      break;
-    end
-  end
+  --liek only triggers if there is at least one unit we currently liek in existence
+  local bound_to_object = #matchesRule(unit, "liek", nil) > 0
   if (bound_to_object) then
+    local isbounded = matchesRule(unit, "liek", "?")
     for i,ruleparent in ipairs(isbounded) do
       local liek = ruleparent.rule.object.name
       local success = false
