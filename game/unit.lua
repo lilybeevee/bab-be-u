@@ -2243,8 +2243,11 @@ function destroyLevel(reason)
     elseif hasProperty("loop",":)") then
       doWin("won")
       level_destroyed = true
+    elseif hasProperty("loop",";d") then
+      doWin("won", false)
+      level_destroyed = true
     end
-    local berule = matchesRule("loop","be",nil)
+    local berule = matchesRule("loop","be","?")
     for _,rule in ipairs(berule) do
       local object = rule.rule.object.name
       if tiles_by_name[object] then
