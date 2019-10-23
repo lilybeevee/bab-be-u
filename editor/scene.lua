@@ -1415,16 +1415,7 @@ function scene.draw(dt)
               unit.color_override = newcolor
             end
             
-            if unit.name == "byc" or unit.name == "bac" then
-              if eq(color, {0,3}) then
-                setColor({0,0})
-              else
-                setColor({0,3})
-              end
-              love.graphics.draw(sprites["byc"], (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
-              setColor(color)
-              love.graphics.draw(sprites[unit.name == "bac" and "bac" or "byc_editor"], (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
-            elseif unit.fullname == "letter_custom" then
+            if unit.fullname == "letter_custom" then
               drawCustomLetter(unit.special.customletter, (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
             else
               if type(unit.sprite) == "table" then
@@ -1540,28 +1531,17 @@ function scene.draw(dt)
             end
             
             if not found_matching_tag then love.graphics.setColor(0.2,0.2,0.2) end
-            if tile.name == "byc" or tile.name == "bac" then
-              if found_matching_tag then
-                if eq(color, {0,3}) then
-                  setColor({0,0})
-                else
-                  setColor({0,3})
-                end
-              end
-              love.graphics.draw(sprites["byc"], (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
-              if found_matching_tag then setColor(color) end
-              love.graphics.draw(sprites[tile.name == "bac" and "bac" or "byc_editor"], (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
-            else
-              if type(tile.sprite) == "table" then
-                for j,image in ipairs(tile.sprite) do
-                  sprite = sprites[image]
-                  if found_matching_tag then setColor(getUnitColors(tile, j, brush.color)) end
-                  love.graphics.draw(sprite, (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
-                end
-              else
+            
+            if type(tile.sprite) == "table" then
+              for j,image in ipairs(tile.sprite) do
+                sprite = sprites[image]
+                if found_matching_tag then setColor(getUnitColors(tile, j, brush.color)) end
                 love.graphics.draw(sprite, (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
               end
+            else
+              love.graphics.draw(sprite, (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
             end
+            
             if (tile.meta ~= nil) then
               if found_matching_tag then setColor({4, 1}) end
               local metasprite = tile.meta == 2 and sprites["meta2"] or sprites["meta1"]
@@ -1617,29 +1597,18 @@ function scene.draw(dt)
             local r, g, b, a = getPaletteColor(color[1], color[2])
             love.graphics.setColor(r, g, b, a * 0.25)
           end
-          if tile.name == "byc" or tile.name == "bac" then
-            if eq(color, {0,3}) then
-              setColor({0,0}, 0.15)
-            else
-              setColor({0,3}, 0.15)
+          
+          if type(sprite_name) == "table" then
+            for i,image in ipairs(sprite_name) do
+              local r, g, b, a = getPaletteColor(tile.color_override and tile.color_override[i][1] or tile.color[i][1], tile.color_override and tile.color_override[i][2] or tile.color[i][2])
+              love.graphics.setColor(r, g, b, a * 0.25)
+              local sprit = sprites[image]
+              love.graphics.draw(sprit, (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, math.rad(rotation), 1, 1, sprit:getWidth() / 2, sprit:getHeight() / 2)
             end
-            love.graphics.draw(sprites["byc"], (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, math.rad(rotation), 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
-            setColor(color, 0.25)
-            love.graphics.draw(sprites[tile.name == "bac" and "bac" or "byc_editor"], (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, math.rad(rotation), 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
-          elseif tile.name == "letter_custom" then
-            drawCustomLetter(brush.special.customletter, (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, math.rad(rotation), 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
           else
-            if type(sprite_name) == "table" then
-              for i,image in ipairs(sprite_name) do
-                local r, g, b, a = getPaletteColor(tile.color_override and tile.color_override[i][1] or tile.color[i][1], tile.color_override and tile.color_override[i][2] or tile.color[i][2])
-                love.graphics.setColor(r, g, b, a * 0.25)
-                local sprit = sprites[image]
-                love.graphics.draw(sprit, (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, math.rad(rotation), 1, 1, sprit:getWidth() / 2, sprit:getHeight() / 2)
-              end
-            else
-              love.graphics.draw(sprite, (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, math.rad(rotation), 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
-            end
+            love.graphics.draw(sprite, (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, math.rad(rotation), 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
           end
+          
           if tile.meta ~= nil then
             setColor({4,1},0.25)
             local metasprite = tile.meta == 2 and sprites["meta2"] or sprites["meta1"]

@@ -6263,9 +6263,10 @@ tiles_list = {
   -- 534
   {
     name = "byc",
-    sprite = "byc",
+    sprite = {"byc", "byc_editor"},
     type = "object",
-    color = {2, 2},
+    color = {{0, 3}, {2, 2}, {2, 2}},
+    colored = {{0, 0}, true, true},
     rotate = true,
     layer = 5,
     tags = {"playing card", "bicycle", "ace", "card"},
@@ -6285,9 +6286,10 @@ tiles_list = {
   -- 534
   {
     name = "bac",
-    sprite = "bac",
+    sprite = {"byc", "bac"},
     type = "object",
-    color = {2, 2},
+    color = {{0, 3}, {2, 2}},
+    colored = {{0, 0}, true},
     rotate = true,
     layer = 5,
     tags = {"playing card back", "bicycle", "card"},

@@ -1571,7 +1571,21 @@ function miscUpdates()
           end
         end
       end
-
+      
+      if unit.name == "byc" and scene ~= editor then -- playing cards
+        if not card_for_id[unit.id] then
+          card_for_id[unit.id] = {math.random(13), ({"spade","heart","clubs","diamond"})[math.random(4)]}
+        end
+        local num, suit = unpack(card_for_id[unit.id])
+        print("a")
+        unit.sprite[2] = "byc_"..num
+        unit.sprite[3] = "byc_"..suit
+        if suit == "spade" or suit == "clubs" then
+          unit.color = {{0, 3}, {0, 0}, {0, 0}}
+          unit.colored = {{0, 0}, false, false}
+        end
+      end
+      
       for type,name in pairs(unit.sprite_transforms) do
         if table.has_value(unit.used_as, type) then
           unit.sprite = name
@@ -2999,10 +3013,6 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
   end
 
   table.insert(units, unit)
-  
-  if unit.name == "byc" and not card_for_id[unit.id] then -- playing cards
-    card_for_id[unit.id] = {math.random(13), ({"spade","heart","clubs","diamond"})[math.random(4)]}
-  end
 
   --updateDir(unit, unit.dir)
   new_units_cache[unit] = true

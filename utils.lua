@@ -3397,16 +3397,23 @@ function getUnitColors(unit, index, override_)
   local override = override_ or unit.color_override
   local colors = type(unit.color[1]) == "table" and unit.color or {unit.color}
   if index then
-    if override and (not unit.colored or unit.colored[index]) then
-      return override
+    if override then
+      if not unit.colored or unit.colored[index] == true then
+        return override
+      elseif type(unit.colored[index]) == "table" and eq(override, colors[index]) then
+        return unit.colored[index]
+      end
+      return colors[index]
     else
       return colors[index]
     end
   elseif override then
     colors = copyTable(colors)
     for i,_ in ipairs(colors) do
-      if not unit.colored or unit.colored[i] then
-        colors[i] = override
+      if not unit.colored or unit.colored[index] == true then
+        return override
+      elseif type(unit.colored[index]) == "table" and eq(override, colors[index]) then
+        return unit.colored[index]
       end
     end
     return colors
