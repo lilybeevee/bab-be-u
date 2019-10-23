@@ -1826,6 +1826,7 @@ tiles_list = {
     color = {3, 3},
     layer = 5,
     rotate = true,
+    sing = "pata1",
     features = { sans = {x=17, y=4, w=1, h=2} },
     tags = {"devs", "chars", "patashu"},
   },

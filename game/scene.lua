@@ -2100,6 +2100,9 @@ function scene.checkInput()
               source:play()
             else
               local specific_sing = tiles_list[unit.tile].sing or "bit";
+              if (unit.name == "pata") then
+                specific_sing = "pata" .. tostring(unit.dir)
+              end
               
               local sing_note = ruleparent[1].rule.object.name;
               local sing_color = ruleparent[1].rule.object.unit.color_override or ruleparent[1].rule.object.unit.color;
@@ -2160,6 +2163,8 @@ function scene.checkInput()
               end
               
               sing_pitch = sing_pitch * 2^sing_octave
+              --slightly randomize for chorusing purposes between 99% and 101%
+              sing_pitch = sing_pitch * 0.99+(math.random()/50)
               
               sound = love.sound.newSoundData("assets/audio/sfx/" .. specific_sing .. ".wav");
               local source = love.audio.newSource(sound, "static")
