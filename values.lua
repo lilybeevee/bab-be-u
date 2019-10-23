@@ -342,7 +342,8 @@ tiles_list = {
     sing = "s_doo",
     features = { sans = {x=22, y=10, w=2, h=2} },
     tags = {"chars", "baba"},
-    desc = "its bab bruh"
+    desc = "its bab bruh",
+    pronouns = {"she","her"},
   },
   -- 2
   {
@@ -386,7 +387,8 @@ tiles_list = {
     color = {1, 1},
     layer = 2,
     tags = {"wall"},
-    desc = "ston briks"
+    desc = "ston briks",
+    pronouns = {"it"},
   },
   -- 6
   {
@@ -762,7 +764,8 @@ tiles_list = {
     sing = "s_saw",
     features = { sans = {x=19, y=7, w=2, h=2} },
     tags = {"keke", "chars"},
-    desc = "babs bff"
+    desc = "babs bff",
+    pronouns = {"they","them"}, --i hope i'm remembering properly
   },
   --38
   {
@@ -786,6 +789,7 @@ tiles_list = {
     features = { sans = {x=18, y=3, w=2, h=2} },
     tags = {"chars"},
     desc = "meem is the true philosopher of our time. babs 3ff",
+    pronouns = {"he","him"},
   },
   --40
   {
