@@ -479,7 +479,6 @@ function doMovement(movex, movey, key)
         end
       end
       for unit,dir in pairs(timeless_yote) do
-        print(tostring(unit)..": "..tostring(dir))
         local dx = dirs8[dir][1]
         local dy = dirs8[dir][2]
         if timeless then
