@@ -373,6 +373,8 @@ bab arguments!
   registerSound("timestop long", 1)
   registerSound("time resume", 1)
   registerSound("time resume long", 1)
+  registerSound("za warudo", 1)
+  registerSound("time resume dio", 1)
   registerSound("bup", 0.5)
   registerSound("clicc", 1)
   registerSound("unwin", 0.5)

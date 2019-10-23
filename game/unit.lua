@@ -434,24 +434,7 @@ function moveBlock()
     end
   end
   
-  --technically spin_8 does nothing, so skip it
-  --TODO: redo to work as if it was a go^
-  for i=1,7 do
-    local isspin = getUnitsWithEffectAndCount("spin" .. tostring(i))
-    for unit,amt in pairs(isspin) do
-      addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
-      unit.olddir = unit.dir
-      --if we aren't allowed to rotate to the indicated direction, skip it
-      for j=1,8 do
-        local result = updateDir(unit, dirAdd(unit.dir, amt*i))
-        if not result then
-          amt = amt + 1
-        else
-          break
-        end
-      end
-    end
-  end
+  doSpinRules()
   
   local folo_wall = getUnitsWithEffectAndCount("folo wal")
   for unit,amt in pairs(folo_wall) do
@@ -1313,6 +1296,8 @@ function miscUpdates()
           else
             unit.sprite = "casete_wut"
           end
+        else
+          unit.sprite = "casete_wut"
         end
         if not hasProperty(unit,"no go") then
           unit.sprite = unit.sprite.."_sunk"
@@ -1584,6 +1569,13 @@ function miscUpdates()
           end
         elseif sprites[unit.sprite.."_slep"] then
           unit.sprite = unit.sprite.."_slep"
+          if unit.fullname == "detox" then
+            unit.color = {1,2}
+          end
+        end
+      else
+        if unit.fullname == "detox" then
+          unit.color = {2,4}
         end
       end
 
@@ -1744,65 +1736,30 @@ end
 
 function updateUnitColourOverride(unit)
   unit.color_override = nil
-  if type(unit.color) == "table" and unit.colored then
-    unit.color_override = {}
-    for i,_ in ipairs(unit.color) do
-      if unit.colored[i] then
-        if unit.pinc or (unit.reed and unit.whit) then -- pink
-          unit.color_override[i] = {4, 1}
-        elseif unit.purp or (unit.reed and unit.bleu) then -- purple
-          unit.color_override[i] = {3, 1}
-        elseif unit.yello or (unit.reed and unit.grun) then -- yellow
-          unit.color_override[i] = {2, 4}
-        elseif unit.orang or (unit.reed and unit.yello) then -- orange
-          unit.color_override[i] = {2, 3}
-        elseif unit.cyeann or (unit.bleu and unit.grun) then -- cyan
-          unit.color_override[i] = {1, 4}
-        elseif unit.brwn or (unit.orang and unit.blacc) then -- brown
-          unit.color_override[i] = {6, 0}
-        elseif unit.reed then -- red
-          unit.color_override[i] = {2, 2}
-        elseif unit.bleu then -- blue
-          unit.color_override[i] = {1, 3}
-        elseif unit.grun then -- green
-          unit.color_override[i] = {5, 2}
-        elseif unit.graey or (unit.blacc and unit.whit) then -- grey
-          unit.color_override[i] = {0, 1}
-        elseif unit.whit or (unit.reed and unit.grun and unit.bleu) or (unit.reed and unit.cyeann) or (unit.bleu and unit.yello) or (unit.grun and unit.purp) then -- white
-          unit.color_override[i] = {0, 3}
-        elseif unit.blacc then -- black
-          unit.color_override[i] = {0, 0}
-        end
-      else
-        unit.color_override[i] = unit.color[i]
-      end
-    end
-  else
-    if unit.pinc or (unit.reed and unit.whit) then -- pink
-      unit.color_override = {4, 1}
-    elseif unit.purp or (unit.reed and unit.bleu) then -- purple
-      unit.color_override = {3, 1}
-    elseif unit.yello or (unit.reed and unit.grun) then -- yellow
-      unit.color_override = {2, 4}
-    elseif unit.orang or (unit.reed and unit.yello) then -- orange
-        unit.color_override = {2, 3}
-    elseif unit.cyeann or (unit.bleu and unit.grun) then -- cyan
-      unit.color_override = {1, 4}
-    elseif unit.brwn or (unit.orang and unit.blacc) then -- brown
-      unit.color_override = {6, 0}
-    elseif unit.reed then -- red
-      unit.color_override = {2, 2}
-    elseif unit.bleu then -- blue
-      unit.color_override = {1, 3}
-    elseif unit.grun then -- green
-      unit.color_override = {5, 2}
-    elseif unit.graey or (unit.blacc and unit.whit) then -- grey
-      unit.color_override = {0, 1}
-    elseif unit.whit or (unit.reed and unit.grun and unit.bleu) or (unit.reed and unit.cyeann) or (unit.bleu and unit.yello) or (unit.grun and unit.purp) then -- white
-      unit.color_override = {0, 3}
-    elseif unit.blacc then -- black
-      unit.color_override = {0, 0}
-    end
+  if unit.pinc or (unit.reed and unit.whit) then -- pink
+    unit.color_override = {4, 1}
+  elseif unit.purp or (unit.reed and unit.bleu) then -- purple
+    unit.color_override = {3, 1}
+  elseif unit.yello or (unit.reed and unit.grun) then -- yellow
+    unit.color_override = {2, 4}
+  elseif unit.orang or (unit.reed and unit.yello) then -- orange
+      unit.color_override = {2, 3}
+  elseif unit.cyeann or (unit.bleu and unit.grun) then -- cyan
+    unit.color_override = {1, 4}
+  elseif unit.brwn or (unit.orang and unit.blacc) then -- brown
+    unit.color_override = {6, 0}
+  elseif unit.reed then -- red
+    unit.color_override = {2, 2}
+  elseif unit.bleu then -- blue
+    unit.color_override = {1, 3}
+  elseif unit.grun then -- green
+    unit.color_override = {5, 2}
+  elseif unit.graey or (unit.blacc and unit.whit) then -- grey
+    unit.color_override = {0, 1}
+  elseif unit.whit or (unit.reed and unit.grun and unit.bleu) or (unit.reed and unit.cyeann) or (unit.bleu and unit.yello) or (unit.grun and unit.purp) then -- white
+    unit.color_override = {0, 3}
+  elseif unit.blacc then -- black
+    unit.color_override = {0, 0}
   end
 end
 
@@ -2239,7 +2196,7 @@ function readingOrderSort(a, b)
 end
 
 function destroyLevel(reason)
-	if not hasRule(outerlvl,"got","lvl") and not hasProperty(outerlvl,"protecc") then
+	if reason == "infloop" or (not hasRule(outerlvl,"got","lvl") and not hasProperty(outerlvl,"protecc")) then
     level_destroyed = true
   end
   
@@ -2282,8 +2239,11 @@ function destroyLevel(reason)
     elseif hasProperty("loop",":)") then
       doWin("won")
       level_destroyed = true
+    elseif hasProperty("loop",";d") then
+      doWin("won", false)
+      level_destroyed = true
     end
-    local berule = matchesRule("loop","be",nil)
+    local berule = matchesRule("loop","be","?")
     for _,rule in ipairs(berule) do
       local object = rule.rule.object.name
       if tiles_by_name[object] then
