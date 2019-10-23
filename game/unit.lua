@@ -390,11 +390,11 @@ function moveBlock()
     local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
     for _,on in ipairs(stuff) do
       if unit ~= on and sameFloat(unit, on) and ignoreCheck(unit, on, "go") and timecheck(unit,"be","go") then
-        if (units_to_change[unit] == nil) then
-          units_to_change[unit] = {0, 0}
+        if (units_to_change[on] == nil) then
+          units_to_change[on] = {0, 0}
         end
-        units_to_change[unit][1] = units_to_change[unit][1] + dirs8[on.dir][1]
-        units_to_change[unit][2] = units_to_change[unit][2] + dirs8[on.dir][2]
+        units_to_change[on][1] = units_to_change[on][1] + dirs8[unit.dir][1]
+        units_to_change[on][2] = units_to_change[on][2] + dirs8[unit.dir][2]
       end
     end
   end
@@ -404,11 +404,11 @@ function moveBlock()
     local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
     for _,on in ipairs(stuff) do
       if unit ~= on and sameFloat(unit, on) and ignoreCheck(unit, on, "goooo") and timecheck(unit,"be","goooo") then
-         if (units_to_change[unit] == nil) then
-          units_to_change[unit] = {0, 0}
+         if (units_to_change[on] == nil) then
+          units_to_change[on] = {0, 0}
         end
-        units_to_change[unit][1] = units_to_change[unit][1] + dirs8[on.dir][1]
-        units_to_change[unit][2] = units_to_change[unit][2] + dirs8[on.dir][2]
+        units_to_change[on][1] = units_to_change[on][1] + dirs8[unit.dir][1]
+        units_to_change[on][2] = units_to_change[on][2] + dirs8[unit.dir][2]
       end
     end
   end
