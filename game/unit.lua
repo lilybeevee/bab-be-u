@@ -380,14 +380,21 @@ function moveBlock()
     end
   end
   
+  --Use a similar simultaneous/additive algorithm to copkat/go^.
+  
+  units_to_change = {}
+  
+  
   local isshift = getUnitsWithEffect("go")
   for _,unit in ipairs(isshift) do
     local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
     for _,on in ipairs(stuff) do
       if unit ~= on and sameFloat(unit, on) and ignoreCheck(unit, on, "go") and timecheck(unit,"be","go") then
-        addUndo({"update", on.id, on.x, on.y, on.dir})
-        on.olddir = on.dir
-        updateDir(on, unit.dir)
+        if (units_to_change[unit] == nil) then
+          units_to_change[unit] = {0, 0}
+        end
+        units_to_change[unit][1] = units_to_change[unit][1] + dirs8[on.dir][1]
+        units_to_change[unit][2] = units_to_change[unit][2] + dirs8[on.dir][2]
       end
     end
   end
@@ -397,10 +404,22 @@ function moveBlock()
     local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
     for _,on in ipairs(stuff) do
       if unit ~= on and sameFloat(unit, on) and ignoreCheck(unit, on, "goooo") and timecheck(unit,"be","goooo") then
-        addUndo({"update", on.id, on.x, on.y, on.dir})
-        on.olddir = on.dir
-        updateDir(on, unit.dir)
+         if (units_to_change[unit] == nil) then
+          units_to_change[unit] = {0, 0}
+        end
+        units_to_change[unit][1] = units_to_change[unit][1] + dirs8[on.dir][1]
+        units_to_change[unit][2] = units_to_change[unit][2] + dirs8[on.dir][2]
       end
+    end
+  end
+  
+  for unit,dir in pairs(units_to_change) do
+    if dir[1] ~= 0 or dir[2] ~= 0 then
+      k = dirs8_by_offset[sign(dir[1])][sign(dir[2])]
+      if unit.dir ~= k then
+        addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
+      end
+      updateDir(unit, k)
     end
   end
   
