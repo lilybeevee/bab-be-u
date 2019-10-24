@@ -2912,6 +2912,9 @@ function extendReplayString(movex, movey, key)
   end
 end
 
+local last_save_file_name = nil
+local last_save_file = nil
+
 function writeSaveFile(value, arg)
   --e.g. writeSaveFile(true, {"levels", "new level", "won"})
   if (unit_tests) then return false end
@@ -2921,10 +2924,20 @@ function writeSaveFile(value, arg)
     filename = "levels"
   end
   filename = "profiles/"..profile.name.."/"..filename..".savebab"
-  if love.filesystem.read(filename) ~= nil then
-    save = json.decode(love.filesystem.read(filename))
+  
+  --cache save file until filename changes
+  if (last_save_file_name ~= filename) then
+    --print("changing in write:", filename, last_save_file_name)
+    last_save_file_name = filename
+      if love.filesystem.read(filename) ~= nil then
+      save = json.decode(love.filesystem.read(filename))
+    end
+    last_save_file = save
+  else
+    save = last_save_file
   end
-    if #arg > 0 then
+  
+  if #arg > 0 then
     local current = save
     for i,category in ipairs(arg) do
       if i == #arg then break end
@@ -2948,9 +2961,19 @@ function readSaveFile(arg)
     filename = "levels"
   end
   filename = "profiles/"..profile.name.."/"..filename..".savebab"
-  if love.filesystem.read(filename) ~= nil then
-    save = json.decode(love.filesystem.read(filename))
+  
+  --cache save file until filename changes
+  if (last_save_file_name ~= filename) then
+    --print("changing in read:", filename, last_save_file_name)
+    last_save_file_name = filename
+      if love.filesystem.read(filename) ~= nil then
+      save = json.decode(love.filesystem.read(filename))
+    end
+    last_save_file = save
+  else
+    save = last_save_file
   end
+  
   local current = save
   for i,key in ipairs(arg) do
     if current[key] == nil then return nil end
