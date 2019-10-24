@@ -180,6 +180,12 @@ function undoOneAction(turn, i, v, ignore_no_undo)
       unit[colour] = value
       updateUnitColourOverride(unit)
     end
+  elseif action == "color_override_change" then
+    unit = units_by_id[v[2]]
+    value = v[3]
+    if (unit ~= nil and (ignore_no_undo or not isNoUndo(unit))) then
+      unit.color_override = value
+    end
   elseif action == "past" then
     current_move = v[2]
     while #all_moves >= v[3] do
@@ -236,6 +242,10 @@ function doBack(unitid, turn, _ignore_no_undo)
           addUndo({"colour_change", unit.id, colour, unit[colour]})
           unit[colour] = value
           updateUnitColourOverride(unit)
+        elseif action == "color_override_change" then
+          value = v[3]
+          addUndo({"color_override_change", unit.id, unit.color_override})
+          unit.color_override = value
         end
       end
     end
