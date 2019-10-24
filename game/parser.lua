@@ -405,7 +405,7 @@ function findLetterSentences(str, index_, sentences_, curr_sentence_, start_) --
       if index == 1 then
         start = true
       end
-      table.insert(curr_sentence, substr)
+      table.insert(curr_sentence, text_in_tiles[substr])
       if index+i == string.len(str) then --last letter, this sentence is valid to connect to other words
         --print("last letter:",index,i,str,substr)
         if start then

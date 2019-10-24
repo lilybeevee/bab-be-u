@@ -866,12 +866,6 @@ function scene.draw(dt)
       else
         unit.color_override = newcolor
       end
-    else
-      if unit.name == "bordr" and timeless then
-        unit.color_override = {0,3}
-      else
-        unit.color = copyTable(tiles_list[unit.tile].color)
-      end
     end
     
     local sprite_name = unit.sprite
@@ -1154,7 +1148,7 @@ function scene.draw(dt)
       love.graphics.setColor(ur, ug, ub, ua)
     end
 
-    if not (unit.xwx or spookmode) and unit.name ~= "lin" and unit.name ~= "byc" and unit.name ~= "bac" and unit.fullname ~= "letter_custom" then -- xwx takes control of the drawing sprite, so it shouldn't render the normal object
+    if not (unit.xwx or spookmode) and unit.name ~= "lin" and unit.fullname ~= "letter_custom" then -- xwx takes control of the drawing sprite, so it shouldn't render the normal object
       drawSprite()
     end
 
@@ -1165,40 +1159,6 @@ function scene.draw(dt)
         love.graphics.setShader()
       else
         drawSprite()
-      end
-    end
-    
-    if unit.name == "byc" then
-      local num, suit = unpack(card_for_id[unit.id])
-      if eq(unit.color, {0,3}) then
-        setColor({0,0})
-        drawSprite("byc")
-        setColor({0,3})
-        drawSprite("byc_" .. suit)
-        drawSprite("byc_" .. num)
-      else
-        setColor({0,3})
-        drawSprite("byc")
-        if suit == "diamond" or suit == "heart" then
-          setColor(unit.color)
-        else
-          setColor({0,0})
-        end
-        drawSprite("byc_" .. suit)
-        drawSprite("byc_" .. num)
-      end
-    end
-    if unit.name == "bac" then
-      if eq(unit.color, {0,3}) then
-        setColor({0,0})
-        drawSprite("byc")
-        setColor({0,3})
-        drawSprite("bac")
-      else
-        setColor({0,3})
-        drawSprite("byc")
-        setColor(unit.color)
-        drawSprite("bac")
       end
     end
     
@@ -2140,6 +2100,9 @@ function scene.checkInput()
               source:play()
             else
               local specific_sing = tiles_list[unit.tile].sing or "bit";
+              if (unit.name == "pata") then
+                specific_sing = "pata" .. tostring(unit.dir)
+              end
               
               local sing_note = ruleparent[1].rule.object.name;
               local sing_color = ruleparent[1].rule.object.unit.color_override or ruleparent[1].rule.object.unit.color;
@@ -2200,6 +2163,8 @@ function scene.checkInput()
               end
               
               sing_pitch = sing_pitch * 2^sing_octave
+              --slightly randomize for chorusing purposes between 99% and 101%
+              sing_pitch = sing_pitch * 0.99+(math.random()/50)
               
               sound = love.sound.newSoundData("assets/audio/sfx/" .. specific_sing .. ".wav");
               local source = love.audio.newSource(sound, "static")
