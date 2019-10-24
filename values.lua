@@ -8011,7 +8011,7 @@ tiles_list = {
     color = {4,1},
     layer = 20,
     tags = {"auto","necrodancer","lily", "rhythm", "rythm", "dancr"},
-	  desc = "RYTHM (property): Turns pass for these units based on time, separate from normal turns passing (it uses the same systems as zawarudo)",
+	  desc = "RYTHM (property): Turns pass for these units based on time, separate from normal turns passing.",
   },
   -- 696
   {
