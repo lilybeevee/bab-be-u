@@ -292,7 +292,7 @@ selector_grid_contents = {
     "glas","text_glas","bom","text_bom","sine","text_sine","kar","text_kar","can","text_can","ger","text_ger","sirn","text_sirn","chain","text_chain","reflecr","text_reflecr",
     "bordr","text_bordr","wut","text_wut","wat","text_wat","splittr","text_splittr","toggl","text_toggl","bon","text_bon","battry","text_battry","chekr","text_chekr","sloop","text_sloop",
   },
-  --page 6: more inanimate objects
+  -- page 6: more inanimate objects
   {
     "gato","text_gato","fube","text_fube","tronk","text_tronk",0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -634,7 +634,7 @@ tiles_list = {
     tags = {"has"},
     desc = "GOT (Verb): Causes the subject to drop the object when destroyed.",
   },
-  --26
+  -- 26
   {
     name = "text_colrful",
     sprite = "text_colrful",
@@ -644,7 +644,7 @@ tiles_list = {
     layer = 20,
     desc = "COLRFUL: Causes the unit to appear a variety of colours.",
   },
-  --27
+  -- 27
   {
     name = "text_reed",
     sprite = "text_reed_cond",
@@ -658,7 +658,7 @@ tiles_list = {
     tags = {"colors", "colours", "red"},
     desc = "REED: Causes the unit to appear red. Persistent and can be used as a prefix condition.",
   },
-  --28
+  -- 28
   {
     name = "text_bleu",
     sprite = "text_bleu_cond",
@@ -672,7 +672,7 @@ tiles_list = {
     tags = {"colors", "colours", "blue"},
     desc = "BLEU: Causes the unit to appear blue. Persistent and can be used as a prefix condition.",
   },
-  --29
+  -- 29
   {
     name = "text_tranz",
     sprite = "text_tranz-colored",
@@ -683,7 +683,7 @@ tiles_list = {
     tags = {"trans"},
     desc = "TRANZ: Causes the unit to appear pink, white and baby blue. GAY objects are pinc, whit, and cyeann, and not any other colors.",
   },
-  --30
+  -- 30
   {
     name = "text_gay",
     sprite = "text_gay-colored",
@@ -693,7 +693,7 @@ tiles_list = {
     layer = 20,
     desc = "GAY: Causes the unit to appear rainbow coloured. GAY objects are reed, orang, yello, grun, bleu, and purp, and not any other colors.",
   },
-  --31
+  -- 31
   {
     name = "text_mous",
     sprite = "text_mous",
@@ -704,7 +704,7 @@ tiles_list = {
     tags = {"mouse","cursor"},
     desc = "MOUS: Refers to the mouse cursor. You can create, destroy and apply properties to mouse cursors!",
   },
-  --32
+  -- 32
   {
     name = "text_boux",
     sprite = "text_boux",
@@ -714,7 +714,7 @@ tiles_list = {
     layer = 20,
     tags = {"box"},
   },
-  --33
+  -- 33
   {
     name = "boux",
     sprite = "boux",
@@ -725,7 +725,7 @@ tiles_list = {
     desc = "ce n'est pas une boîte, c'est quelque chose DE MIEUX",
     tags = {"box"},
   },
-  --34
+  -- 34
   {
     name = "text_skul",
     sprite = "text_skul",
@@ -735,7 +735,7 @@ tiles_list = {
     layer = 20,
     tags = {"skull"},
   },
-  --35
+  -- 35
   {
     name = "skul",
     sprite = "skul",
@@ -748,7 +748,7 @@ tiles_list = {
     tags = {"skull"},
     desc = "evillllll",
   },
-  --36
+  -- 36
   {
     name = "text_laav",
     sprite = "text_laav",
@@ -759,7 +759,7 @@ tiles_list = {
     desc = "very hot. not hotte tho unless u make it",
     tags = {"lava"},
   },
-  --37
+  -- 37
   {
     name = "laav",
     sprite = "watr",
@@ -768,7 +768,7 @@ tiles_list = {
     layer = 2,
     tags = {"lava"},
   },
-  --38
+  -- 38
   {
     name = "text_keek",
     sprite = "text_keek",
@@ -778,7 +778,7 @@ tiles_list = {
     layer = 20,
     tags = {"keke", "chars"},
   },
-  --39
+  -- 39
   {
     name = "keek",
     sprite = "keek",
@@ -792,7 +792,7 @@ tiles_list = {
     desc = "babs bff",
     pronouns = {"they","them"}, --i hope i'm remembering properly
   },
-  --38
+  -- 40
   {
     name = "text_meem",
     sprite = "text_meem",
@@ -802,7 +802,7 @@ tiles_list = {
     layer = 20,
     tags = {"chars"},
   },
-  --39
+  -- 41
   {
     name = "meem",
     sprite = "meem",
@@ -816,7 +816,7 @@ tiles_list = {
     desc = "meem is the true philosopher of our time. babs 3ff",
     pronouns = {"he","him"},
   },
-  --40
+  -- 42
   {
     name = "text_til",
     sprite = "text_til",
@@ -827,7 +827,7 @@ tiles_list = {
     layer = 20,
     tags = {"tile"},
   },
-  --41
+  -- 43
   {
     name = "text_text",
     sprite = "text_txt",
@@ -839,7 +839,7 @@ tiles_list = {
     tags = {"txt"},
     desc = "TXT: An object class referring to all text objects, or just a specific one if you write e.g. BAB TXT BE GAY.",
   },
-  --42
+  -- 44
   {
     name = "text_os",
     sprite = "text_os",
@@ -849,7 +849,7 @@ tiles_list = {
     layer = 20,
     tags = {"apple", "android", "windows", "linux", "operating system"},
   },
-  --43
+  -- 45
   {
     name = "os",
     sprite = "os",
@@ -862,7 +862,7 @@ tiles_list = {
     tags = {"apple", "android", "windows", "linux", "operating system"},
     desc = "OS: Its sprites changes with the user's Operating System!",
   },
-  --44
+  -- 46
   {
     name = "text_slep",
     sprite = "text_slep",
@@ -873,7 +873,7 @@ tiles_list = {
     tags = {"sleep"},
     desc = "SLEP: SLEP units can't move due to being U, WALK, COPKAT or SPOOPed.",
   },
-  --45
+  -- 47
   {
     name = "l..uv",
     sprite = "luv",
@@ -883,7 +883,7 @@ tiles_list = {
     tags = {"love"},
     desc = "makes up the very fabric of reality of bab be u"
   },
-  --46
+  -- 48
   {
     name = "text_l..uv",
     sprite = "text_luv",
@@ -894,7 +894,7 @@ tiles_list = {
     tags = {"love"},
     desc = "LÜV: To use with letters, you need an umlaut!",
   },
-  --47
+  -- 49
   {
     name = "frut",
     sprite = "frut",
@@ -905,7 +905,7 @@ tiles_list = {
     tags = {"fruit", "apple", "plants", "food"},
     desc = "babs favorite snacc. not to be confused with OS appl",
   },
-  --48
+  -- 50
   {
     name = "text_frut",
     sprite = "text_frut",
@@ -915,7 +915,7 @@ tiles_list = {
     layer = 20,
     tags = {"fruit", "apple", "plants", "food"},
   },
-  --49
+  -- 51
   {
     name = "tre",
     sprite = "tre",
@@ -925,7 +925,7 @@ tiles_list = {
     rotate = "true",
     tags = {"tree", "plants"},
   },
-  --50
+  -- 52
   {
     name = "text_tre",
     sprite = "text_tre",
@@ -935,7 +935,7 @@ tiles_list = {
     layer = 20,
     tags = {"tree", "plants"},
   },
-  --51
+  -- 53
   {
     name = "wog",
     sprite = "wog",
@@ -948,7 +948,7 @@ tiles_list = {
     desc = "smol frens who own pointy tridents, play with explosives, and bake good cake. nobody knows how to describe more than one of them",
     tags = {"wug", "chars", "bird"},
   },
-  --52
+  -- 54
   {
     name = "text_wog",
     sprite = "text_wog",
@@ -960,7 +960,7 @@ tiles_list = {
     tags = {"wug", "chars", "bird"},
   },
   --tutorial sprites
-  --53
+  -- 55
   {
     name = "text_press",
     sprite = "tutorial_press",
@@ -970,7 +970,7 @@ tiles_list = {
     layer = 20,
     desc = "PRESS: Make PRESS F2 <property> to do something upon pressing F. Only some properties, like :(, will work!"
   },
-  --54
+  -- 56
   {
     name = "text_f2",
     sprite = "tutorial_f2",
@@ -980,7 +980,7 @@ tiles_list = {
     layer = 20,
     desc = "F2: Used with PRESS.",
   },
-  --55
+  -- 57
   {
     name = "text_edit",
     sprite = "tutorial_edit",
@@ -991,7 +991,7 @@ tiles_list = {
     desc = "EDIT: Make PRESS F2 EDIT to unlock the level editor!",
     tags = {"text_2edit"},
   },
-  --56
+  -- 58
   {
     name = "text_play",
     sprite = "tutorial_play",
@@ -1001,7 +1001,7 @@ tiles_list = {
     layer = 20,
     tags = {"text_2play"},
   },
-  --57
+  -- 59
   {
     name = "text_f1",
     sprite = "tutorial_f1",
@@ -1010,7 +1010,7 @@ tiles_list = {
     color = {0, 3},
     layer = 20,
   },
-  -- 58
+  -- 60
   {
     name = "text_:(",
     sprite = "text_bad",
@@ -1022,7 +1022,7 @@ tiles_list = {
     tags = {"defeat", "sad", "face", "aw"},
     desc = ":(: At end of turn, destroys any U objects on it.",
   },
-  -- 59
+  -- 61
   {
     name = "text_walk",
     sprite = "text_walk",
@@ -1033,7 +1033,7 @@ tiles_list = {
     tags = {"move"},
     desc = "WALK: Moves in a straight line each turn, bouncing off walls.",
   },
-  -- 60
+  -- 62
   {
     name = "text_bup",
     sprite = "text_bup",
@@ -1043,7 +1043,7 @@ tiles_list = {
     layer = 20,
     tags = {"toad", "simpleflips", "chars"},
   },
-  -- 61
+  -- 63
   {
     name = "bup",
     sprite = {"bup","no1","no1","no1"},
@@ -1057,7 +1057,7 @@ tiles_list = {
     tags = {"toad", "simpleflips", "chars"},
     desc = "BUP: HELLO\nBUP DOES NOT WANT, BUP DOES NOT DREAM\nPLEASE HELP HIM\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
   },
-  -- 62
+  -- 64
   {
     name = "text_boll",
     sprite = "text_boll",
@@ -1067,7 +1067,7 @@ tiles_list = {
     layer = 20,
     tags = {"orb", "ball"},
   },
-  -- 63
+  -- 65
   {
     name = "boll",
     sprite = "orrb",
@@ -1077,7 +1077,7 @@ tiles_list = {
     tags = {"orb", "ball"},
     desc = "hnmm... roun. colecc",
   },
-  -- 64
+  -- 66
   {
     name = "text_bellt",
     sprite = "text_bellt",
@@ -1087,7 +1087,7 @@ tiles_list = {
     layer = 20,
     tags = {"belt"},
   },
-  -- 65
+  -- 67
   {
     name = "bellt",
     sprite = "bellt",
@@ -1098,7 +1098,7 @@ tiles_list = {
     desc = "bells and bellts are both metal so theyre basically the same thing right? dont tell anyone",
     tags = {"belt"},
   },
-  -- 66
+  -- 68
   {
     name = "text_:o",
     sprite = "text_whoa",
@@ -1110,7 +1110,7 @@ tiles_list = {
     tags = {"bonus", "woah", "whoa", "face"},
     desc = ":o: If U is on :o, the :o is collected. Bonus!",
   },
-  -- 67
+  -- 69
   {
     name = "text_up",
     sprite = "text_up",
@@ -1118,9 +1118,10 @@ tiles_list = {
     texttype = {property = true, direction = true},
     color = {1, 4},
     layer = 20,
+    nice = true,
     desc = "UP: A GO ->, but facing up.",
   },
-  -- 68
+  -- 70
   {
     name = "text_direction",
     sprite = "text_direction",
@@ -1132,7 +1133,7 @@ tiles_list = {
     tags = {"go arrow", "up", "down", "left", "right","go ->","go^"},
     desc = "GO ->: The unit is forced to face the indicated direction. LOOKAT GO -> makes a unit look in that direction or is true if it is facing that direction. HAET GO -> makes a unit fall in the opposite direction.",
   },
-  -- 69
+  -- 71
   {
     name = "text_left",
     sprite = "text_left",
@@ -1140,10 +1141,10 @@ tiles_list = {
     texttype = {property = true, direction = true},
     color = {1, 4},
     layer = 20,
-    nice = true,
+    nice = false,
     desc = "LEFT: A GO ->, but facing left.",
   },
-  -- 70
+  -- 72
   {
     name = "text_down",
     sprite = "text_down",
@@ -1153,7 +1154,7 @@ tiles_list = {
     layer = 20,
     desc = "DOWN: A GO ->, but facing down.",
   },
-  -- 71
+  -- 73
   {
     name = "text_behin u",
     sprite = "text_behinu",
@@ -1164,7 +1165,7 @@ tiles_list = {
     tags = {"swap", "edgy"},
     desc = "BEHIN U: BEHIN U units swap with everything on tiles they move into, and swap with units that move onto their tile, then face their swapee. Nothing personnel, kid.",
   },
-  -- 72
+  -- 74
   {
     name = "text_w/fren",
     sprite = "text_wfren",
@@ -1176,7 +1177,7 @@ tiles_list = {
     tags = {"on", "wfren"},
     desc = "W/ FREN (Infix Condition): True if the unit shares a tile with this object.",
   },
-  -- 73
+  -- 75
   {
     name = "text_look at",
     sprite = "text_look at",
@@ -1187,7 +1188,7 @@ tiles_list = {
     tags = {"follow", "facing", "lookat"},
     desc = "LOOK AT: As an infix condition, true if this object is on the tile in front of the unit. As a verb, makes the unit face this object at end of turn.",
   },
-  -- 74
+  -- 76
   {
     name = "text_frenles",
     sprite = "text_frenles",
@@ -1198,7 +1199,7 @@ tiles_list = {
     tags = {"lonely", "friendless"},
     desc = "FRENLES (Prefix Condition): True if the unit is alone on its tile.",
   },
-  --75
+  -- 77
   {
     name = "text_creat",
     sprite = "text_creat",
@@ -1209,7 +1210,7 @@ tiles_list = {
     tags = {"make", "create"},
     desc = "CREAT (Verb): At end of turn, the unit makes this object.",
   },
-  --76
+  -- 78
   {
     name = "text_snacc",
     sprite = "text_snacc",
@@ -1221,7 +1222,7 @@ tiles_list = {
     tags = {"eat", "consume"},
     desc = "SNACC (Verb): Units destroy any other unit that they SNACC on contact, like a conditional OUCH.",
   },
-  --77
+  -- 79
   {
     name = "kirb",
     sprite = "kirb",
@@ -1234,7 +1235,7 @@ tiles_list = {
     tags = {"kirby", "chars"},
     desc = "1, 2 oatmeal kirb be be a pincc guy"
   },
-  --78
+  -- 80
   {
     name = "text_kirb",
     sprite = "text_kirb",
@@ -1244,7 +1245,7 @@ tiles_list = {
     layer = 20,
     tags = {"kirby", "chars"},
   },
-  --79
+  -- 81
   {
     name = "gunne",
     sprite = "gunne",
@@ -1254,7 +1255,7 @@ tiles_list = {
     rotate = true,
     tags = {"weapon"},
   },
-  --80
+  -- 82
   {
     name = "text_gunne",
     sprite = "text_gunne",
@@ -1265,7 +1266,7 @@ tiles_list = {
     tags = {"weapon"},
     desc = "GUNNE: Any object with GOT GUNNE will wield a GUNNE."
   },
-  --81
+  -- 83
   {
     name = "text_ouch",
     sprite = "text_ouch",
@@ -1276,7 +1277,7 @@ tiles_list = {
     tags = {"weak"},
     desc = "OUCH: This unit is destroyed if it shares a tile with another object, or if it tries to move/be moved into and can't.",
   },
-  -- 82
+  -- 84
   {
     name = "tot",
     sprite = "tot",
@@ -1289,7 +1290,7 @@ tiles_list = {
     desc = "the bab equivalent of anni",
     pronouns = {"she","her"},
   },
-  -- 83
+  -- 85
   {
     name = "text_tot",
     sprite = "text_tot",
@@ -1299,7 +1300,7 @@ tiles_list = {
     layer = 20,
     tags = {"anni", "chars", "devs"},
   },
-  -- 84
+  -- 86
   {
     name = "text_qt",
     sprite = "text_qt",
@@ -1311,7 +1312,7 @@ tiles_list = {
     tags = {"cute","lily"},
     desc = "QT: Makes the unit emit love hearts.",
   },
-  -- 85
+  -- 87
   {
     name = "o",
     sprite = "o",
@@ -1324,7 +1325,7 @@ tiles_list = {
     tags = {"devs", "chars", "thefox", "oatmealine", "puyopuyo tetris"},
     desc = "pi pi piiii!!!",
   },
-  -- 86
+  -- 88
   {
     name = "text_o",
     sprite = "letter_o",
@@ -1334,7 +1335,7 @@ tiles_list = {
     layer = 20,
     tags = {"devs", "chars", "thefox", "oatmealine", "puyopuyo tetris"},
   },
-  -- 87
+  -- 89
   {
     name = "han",
     sprite = "han",
@@ -1344,7 +1345,7 @@ tiles_list = {
     rotate = true,
     tags = {"hand", "body part"},
   },
-  -- 88
+  -- 90
   {
     name = "text_han",
     sprite = "text_han",
@@ -1354,7 +1355,7 @@ tiles_list = {
     layer = 20,
     tags = {"hand", "body part"},
   },
-  -- 87
+  -- 91
   {
     name = "gras",
     sprite = "gras",
@@ -1364,7 +1365,7 @@ tiles_list = {
     desc = "don step on it. or do step on it. ur choice",
     tags = {"grass", "plants"},
   },
-  -- 88
+  -- 92
   {
     name = "text_gras",
     sprite = "text_gras",
@@ -1374,7 +1375,7 @@ tiles_list = {
     layer = 20,
     tags = {"grass", "plants"},
   },
-  -- 89
+  -- 93
   {
     name = "dayzy",
     sprite = "dayzy",
@@ -1384,7 +1385,7 @@ tiles_list = {
     features = { sans = {x=10, y=7, w=3, h=3} },
     tags = {"violet", "daisy", "flower", "plants"},
   },
-  -- 90
+  -- 94
   {
     name = "text_dayzy",
     sprite = "text_dayzy",
@@ -1395,7 +1396,7 @@ tiles_list = {
     tags = {"violet", "daisy", "flower", "plants"},
     desc = "dayzy me rollin, they haetin",
   },
-  -- 91
+  -- 95
   {
     name = "hurcane",
     sprite = "hurcane",
@@ -1406,7 +1407,7 @@ tiles_list = {
     desc = "woosh swoosh vwoosh aaaa",
     features = { sans = {x=15, y=15, w=3, h=3} },
   },
-  -- 92
+  -- 96
   {
     name = "text_hurcane",
     sprite = "text_hurcane",
@@ -1416,7 +1417,7 @@ tiles_list = {
     layer = 20,
     tags = {"hurricane","tornado"},
   },
-  -- 91
+  -- 97
   {
     name = "hatt",
     sprite = "hat",
@@ -1426,7 +1427,7 @@ tiles_list = {
     tags = {"clothing"},
     desc = "a hatt n tim"
   },
-  -- 92
+  -- 98
   {
     name = "text_hatt",
     sprite = "text_hatt",
@@ -1437,7 +1438,7 @@ tiles_list = {
     tags = {"clothing"},
 	desc = "HATT: Any object with GOT HATT will wear a HATT. (Aesthetic)"
   },
-  -- 93
+  -- 99
   {
     name = "press",
     sprite = "press",
@@ -1445,7 +1446,7 @@ tiles_list = {
     color = {0, 3},
     layer = 100,
   },
-  --- 94
+  -- 100
   {
     name = "text_yeet",
     sprite = "text_yeet",
@@ -1457,7 +1458,7 @@ tiles_list = {
     tags = {"throw"},
     desc = "YEET (Verb): This unit will force things it yeets in its tile to hurtle across the level in its facing direction (until it hits an object that stops it).",
   },
-  --- 95
+  -- 101
   {
     name = "text_go",
     sprite = "text_go",
@@ -1468,7 +1469,7 @@ tiles_list = {
     tags = {"shift"},
     desc = "GO: This unit will force all other objects in its tile to move in its facing direction.",
   },
-  --- 96
+  -- 102
   {
     name = "text_icy",
     sprite = "text_icy",
@@ -1479,7 +1480,7 @@ tiles_list = {
     tags = {"slip", "patashu"},
     desc = "ICY: Objects on something ICY are forced to move in their facing direction until they either leave the ice or can't move any further.",
   },
-  --- 97
+  -- 103
   {
     name = "text_xwx",
     sprite = "text_xwx",
@@ -1491,7 +1492,7 @@ tiles_list = {
     tags = {"crash", "oops", "fucky wucky", "face"},
     desc = "XWX: At end of turn, if U is on XWX, you get booted out of the level and erases all progress in the level (win, bonus, transformation).",
   },
-  --98
+  -- 104
   {
     name = "text_sublvl",
     sprite = "text_sublvl",
@@ -1502,7 +1503,7 @@ tiles_list = {
     tags = {"lvl", "level", "sublevel"},
     desc = "SUBLVL: An object that is sublvl will become enterable. Currently unimplemented.",
   },
-  -- 99
+  -- 105
   {
     name = "text_come pls",
     sprite = "text_comepls",
@@ -1513,7 +1514,7 @@ tiles_list = {
     tags = {"pull"},
     desc = "COME PLS: Pulled by movement on adjacent tiles facing away from this unit.",
   },
-  -- 100
+  -- 106
   {
     name = "text_sidekik",
     sprite = "text_sidekik",
@@ -1524,7 +1525,7 @@ tiles_list = {
     tags = {"sidekick"},
     desc = "SIDEKIK: If a unit moves perpendicularly away from a SIDEKIK, the SIDEKIK copies that movement.",
   },
-  -- 101
+  -- 107
   {
     name = "text_arond",
     sprite = "text_arond",
@@ -1535,7 +1536,7 @@ tiles_list = {
     tags = {"near", "around"},
     desc = "AROND (Infix Condition): True if the indicated object is on any of the tiles surrounding the unit. (The unit's own tile is not checked.) ORTHO/DIAG AROND will only check the tiles orthogonally or diagonally. GO^ AROND will only check the tile in that direction.",
   },
-  -- 102
+  -- 108
   {
     name = "chekr",
     sprite = "chekr",
@@ -1545,7 +1546,7 @@ tiles_list = {
     tags = {"checker","diamond"},
     desc = "ya wannna ploy checkrz?"
   },
-  -- 103
+  -- 109
   {
     name = "text_chekr",
     sprite = "text_chekr",
@@ -1555,7 +1556,7 @@ tiles_list = {
     layer = 20,
     tags = {"checker","diamond"},
   },
-  -- 104
+  -- 110
   {
     name = "text_diag",
     sprite = "text_diag",
@@ -1566,7 +1567,7 @@ tiles_list = {
     tags = {"direction","diagonal"},
     desc = "DIAG: Prevents the unit from moving orthogonally, unless it is also ORTHO.",
   },
-  -- 105
+  -- 111
   {
     name = "text_go my way",
     sprite = "text_gomywey",
@@ -1577,7 +1578,7 @@ tiles_list = {
     tags = {"oneway", "go my wey"},
     desc = "GO MY WAY: Prevents movement onto its tile from the tile in front of it and the two tiles 45 degrees to either side.",
   },
-  -- 106
+  -- 112
   {
     name = "text_ortho",
     sprite = "text_ortho",
@@ -1588,7 +1589,7 @@ tiles_list = {
     tags = {"direction","orthogonal"},
     desc = "ORTHO: Prevents the unit from moving diagonally, unless it is also DIAG.",
   },
-  -- 107
+  -- 113
   {
     name = "arro",
     sprite = "arro",
@@ -1599,7 +1600,7 @@ tiles_list = {
     tags = {"arrow"},
     desc = "ARRO: Also acts as a letter.",
   },
-  -- 108
+  -- 114
   {
     name = "text_arro",
     sprite = "text_arro",
@@ -1609,7 +1610,7 @@ tiles_list = {
     layer = 20,
     tags = {"arrow"},
   },
-  -- 109
+  -- 115
   {
     name = "text_hotte",
     sprite = "text_hotte",
@@ -1620,7 +1621,7 @@ tiles_list = {
     tags = {"hot"},
     desc = "HOTTE: At end of turn, HOTTE units destroys all units that are FRIDGD on their tile.",
   },
-  -- 110
+  -- 116
   {
     name = "text_fridgd",
     sprite = "text_fridgd",
@@ -1631,7 +1632,7 @@ tiles_list = {
     tags = {"melt"},
     desc = "FRIDGD: At end of turn, HOTTE units destroys all units that are FRIDGD on their tile.",
   },
-  -- 111
+  -- 117
   {
     name = "text_colld",
     sprite = "text_colld",
@@ -1641,7 +1642,7 @@ tiles_list = {
     layer = 20,
     tags = {"ice"},
   },
-  -- 112
+  -- 118
   {
     name = "colld",
     sprite = "colld",
@@ -1651,7 +1652,7 @@ tiles_list = {
     desc = "nothin says colld like diagonal lines",
     tags = {"ice"},
   },
-  -- 113
+  -- 119
   {
     name = "text_goooo",
     sprite = "text_goooo",
@@ -1662,7 +1663,7 @@ tiles_list = {
     tags = {"shift"},
     desc = "GOOOO: The instant an object steps on a GOOOO unit, it is forced to move in the GOOOO unit's direction.",
   },
-  -- 114
+  -- 120
   {
     name = "text_icyyyy",
     sprite = "text_icyyyy",
@@ -1673,7 +1674,7 @@ tiles_list = {
     tags = {"slip", "slide", "patashu"},
     desc = "ICYYYY: The instant an object steps on an ICYYYY unit, it is forced to move again.",
   },
-  -- 115
+  -- 121
   {
     name = "text_protecc",
     sprite = "text_protecc",
@@ -1684,7 +1685,7 @@ tiles_list = {
     tags = {"safe", "protect"},
     desc = "PROTECC: Cannot be destroyed (but can be converted).",
   },
-  -- 116
+  -- 122
   {
     name = "text_flye",
     sprite = "text_flye",
@@ -1695,7 +1696,7 @@ tiles_list = {
     tags = {"float"},
     desc = "FLYE: A FLYE unit doesn't interact with other objects on its tile, and can ignore the collision of other objects, unless that other object has the same amount of FLYE as the unit. FLYE stacks with itself!",
   },
-  -- 117
+  -- 123
   {
     name = "text_piler",
     sprite = "text_piler",
@@ -1705,7 +1706,7 @@ tiles_list = {
     layer = 20,
     tags = {"pillar"},
   },
-  -- 118
+  -- 124
   {
     name = "piler",
     sprite = "piler",
@@ -1715,18 +1716,18 @@ tiles_list = {
     desc = "secretly made from several pairs of pliers sacrificed to keepin babs out (or in)",
     tags = {"pillar"},
   },
-  -- 119
+  -- 125
   {
     name = "text_n't",
     sprite = "text_nt",
     type = "text",
-    texttype = {["not"] = true}, -- not is a reserved word,
+    texttype = {["not"] = true}, -- not is a reserved word
     color = {2, 2},
     layer = 20,
     tags = {"not", "nt"},
     desc = "N'T: A suffix that negates the meaning of a verb, condition or object class. X txtn't will refer to all txt except that one.",
   },
-  -- 120
+  -- 126
   {
     name = "text_haet skye",
     sprite = "text_haetskye",
@@ -1737,7 +1738,7 @@ tiles_list = {
     tags = {"fall", "gravity"},
     desc = "HAET SKYE: After movement, this unit falls DOWN as far as it can.",
   },
-  -- 121
+  -- 127
   {
     name = "clowd",
     sprite = "clowd",
@@ -1747,7 +1748,7 @@ tiles_list = {
     layer = 6,
     tags = {"cloud"},
   },
-  -- 122
+  -- 128
   {
     name = "text_clowd",
     sprite = "text_clowd",
@@ -1757,7 +1758,7 @@ tiles_list = {
     layer = 20,
     tags = {"cloud"},
   },
-  -- 123
+  -- 129
   {
     name = "text_moar",
     sprite = "text_moar",
@@ -1768,7 +1769,7 @@ tiles_list = {
     tags = {"more"},
     desc = "MOAR: At end of turn, this unit replicates to all free tiles that are orthogonally adjacent. MOAR stacks with itself!",
   },
-  -- 124
+  -- 130
   {
     name = "text_visit fren",
     sprite = "text_visitfren",
@@ -1779,7 +1780,7 @@ tiles_list = {
     tags = {"warp", "teleport", "portal"},
     desc = "VISIT FREN: At end of turn, all other objects are sent to the next VISIT FREN unit with the same name in reading order (left to right, line by line, wrapping around). Higher levels of VISIT FREN will cause the target to be 1 backward, 2 forward, 2 backward, etc.",
   },
-  -- 125
+  -- 131
   {
     name = "infloop",
     sprite = "text_infloop",
@@ -1788,7 +1789,7 @@ tiles_list = {
     layer = 21,
     tags = {"infinity", "infinite", "loop"},
   },
-  -- 126
+  -- 132
   {
     name = "text_wait...",
     sprite = "text_wait",
@@ -1800,7 +1801,7 @@ tiles_list = {
     tags = {"idle"},
     desc = "WAIT... (Prefix Condition): True if the player waited last input. (This does not include clicks.)",
   },
-  -- 127
+  -- 133
   {
     name = "text_sans",
     sprite = "text_sans",
@@ -1815,7 +1816,7 @@ tiles_list = {
     tags = {"without", "w/o"},
     desc = "SANS (Infix Condition): True if none of the indicated object exist in the level.",
   },
-  -- 128
+  -- 134
   {
     name = "text_spoop",
     sprite = "text_spoop",
@@ -1826,7 +1827,7 @@ tiles_list = {
     tags = {"fear", "spook"},
     desc = "SPOOP (Verb): A SPOOPY unit forces all objects it SPOOPS on adjacent tiles to move away!",
   },
-  -- 129
+  -- 135
   {
     name = "text_stalk",
     sprite = "text_stalk",
@@ -1837,7 +1838,7 @@ tiles_list = {
     tags = {"follow", "find", "cg5"},
     desc = "STALK (Verb): If X stalks Y, X becomes an intelligent AI determined to get to Y. If it's also STUBBN, it'll try to track through walls if it can't reach its target. (actually that's not implemented yet)"
   },
-  -- 130
+  -- 136
   {
     name = "text_stelth",
     sprite = "text_stelth",
@@ -1848,7 +1849,7 @@ tiles_list = {
     tags = {"stealth", "hide"},
     desc = "STELTH: A STELTHy unit doesn't draw. STELTHy text won't appear in the rules list (once someone gets around to writing that...)",
   },
-  -- 131
+  -- 137
   {
     name = "pata",
     sprite = "pata",
@@ -1860,7 +1861,7 @@ tiles_list = {
     features = { sans = {x=17, y=4, w=1, h=2} },
     tags = {"devs", "chars", "patashu"},
   },
-  -- 132
+  -- 138
   {
     name = "text_pata",
     sprite = "text_pata",
@@ -1870,7 +1871,7 @@ tiles_list = {
     layer = 20,
     tags = {"devs", "chars", "patashu"},
   },
-  -- 133
+  -- 139
   {
     name = "larry",
     sprite = "larry",
@@ -1883,7 +1884,7 @@ tiles_list = {
     tags = {"devs", "chars", "vitellary", "vvvvvv"},
     desc = "larry be haetflor",
   },
-  -- 134
+  -- 140
   {
     name = "text_larry",
     sprite = "text_larry",
@@ -1893,7 +1894,7 @@ tiles_list = {
     layer = 20,
     tags = {"devs", "chars", "vitellary", "vvvvvv"},
   },
-  -- 135
+  -- 141
   {
     name = "lila",
     sprite = "lila",
@@ -1905,7 +1906,7 @@ tiles_list = {
     desc = "lila, represents the creator of bab be u herself! all hail lila",
     pronouns = {"she","her"},
   },
-  -- 136
+  -- 142
   {
     name = "text_lila",
     sprite = "text_lila",
@@ -1915,7 +1916,7 @@ tiles_list = {
     layer = 20,
     tags = {"devs", "chars", "lily", "lili"},
   },
-  -- 137
+  -- 143
   {
     name = "text_every1",
     sprite = "text_every1",
@@ -1926,7 +1927,7 @@ tiles_list = {
     tags = {"all", "everyone", "every1"},
     desc = "EVERY1: Every object type in the level, aside from special objects like TXT, NO1, LVL, BORDR, and MOUS.",
   },
-  -- 138
+  -- 144
   {
     name = "text_tall",
     sprite = "text_tall",
@@ -1936,7 +1937,7 @@ tiles_list = {
     layer = 20,
     desc = "TALL: Considered to be every FLYE amount at once.",
   },
-  --- 139
+  -- 145
   {
     name = "text_liek",
     sprite = "text_liek",
@@ -1948,7 +1949,7 @@ tiles_list = {
     tags = {"bounded", "likes"},
     desc = "LIEK (Verb): If a unit LIEKs objects, it is picky, and cannot step onto a tile unless it has at least one object it LIEKs. If X LIEK GO^, X will fall in that direction.",
   },
-  -- 140
+  -- 146
   {
     name = "text_zip",
     sprite = "text_zip",
@@ -1958,7 +1959,7 @@ tiles_list = {
     layer = 20,
     desc = "ZIP: At end of turn, if it is on a tile it couldn't enter or shares a tile with another object of its name, it finds the nearest free tile (preferring backwards directions) and ejects to it.",
   },
-  -- 141
+  -- 147
   {
     name = "text_shy...",
     sprite = "text_shy",
@@ -1969,7 +1970,7 @@ tiles_list = {
     tags = {"patashu"},
     desc = "SHY...: Can't initiate or continue a push, pull or sidekik movement."
   },
-  -- 142
+  -- 148
   {
     name = "text_folo wal",
     sprite = "text_folo_wal",
@@ -1980,7 +1981,7 @@ tiles_list = {
     tags = {"follow wall"},
     desc = "FOLO WAL: At end of turn, faces the first direction that it could enter and that doesn't have another unit of its name: right, forward, left, backward. When combined with WALK, causes the unit to follow the right wall.",
   },
-  -- 143
+  -- 149
   {
     name = "text_turn cornr",
     sprite = "text_turn_cornr",
@@ -1991,7 +1992,7 @@ tiles_list = {
     tags = {"turn corner"},
     desc = "TURN CORNR: At end of turn, faces the first direction that it could enter and that doesn't have another unit of its name: forward, right, left, backward. When combined with WALK, causes the unit to bounce off walls at 90 degree angles.",
   },
-  -- 144
+  -- 150
   {
     name = "petnygrame",
     sprite = "petnygrame",
@@ -1999,7 +2000,7 @@ tiles_list = {
     layer = 4,
     tags = {"pentagram", "edgy"},
   },
-  -- 145
+  -- 151
   {
     name = "text_petnygrame",
     sprite = "text_petnygrame",
@@ -2009,7 +2010,7 @@ tiles_list = {
     layer = 20,
     tags = {"pentagram", "edgy"},
   },
-  -- 146
+  -- 152
   {
     name = "katany",
     sprite = "katany",
@@ -2018,7 +2019,7 @@ tiles_list = {
     rotate = true,
     tags = {"weapon", "japan", "asia", "edgy"},
   },
-  -- 147
+  -- 153
   {
     name = "text_katany",
     sprite = "text_katany",
@@ -2030,7 +2031,7 @@ tiles_list = {
     tags = {"weapon", "japan", "asia", "edgy"},
     desc = "KATANY: Any object with GOT KATANY will have a KATANY."
   },
-  -- 148
+  -- 154
   {
     name = "scarr",
     sprite = "scarr",
@@ -2038,7 +2039,7 @@ tiles_list = {
     layer = 4,
     tags = {"scar", "edgy"},
   },
-  -- 149
+  -- 155
   {
     name = "text_scarr",
     sprite = "text_scarr",
@@ -2048,7 +2049,7 @@ tiles_list = {
     layer = 20,
     tags = {"scar", "edgy"},
   },
-  -- 150
+  -- 156
   {
     name = "text_no1",
     sprite = "text_no1",
@@ -2059,7 +2060,7 @@ tiles_list = {
     tags = {"none","empty", "no one"},
     desc = "NO1: Refers to tiles with nothing in them. Rotation status is kept on the tile. Cannot be colored."
   },
-  -- 151
+  -- 157
   {
     name = "no1",
     sprite = "no1",
@@ -2068,7 +2069,7 @@ tiles_list = {
     layer = 20,
     rotate = true,
   },
-  -- 152
+  -- 158
   {
     name = "text_lvl",
     sprite = "text_lvl",
@@ -2080,7 +2081,7 @@ tiles_list = {
     tags = {"level"},
     desc = "LVL: Refers to the level you're in, as well as any enterable levels in this level. \nMiddle or SHIFT right-click it to edit.)\nCreating levels will be a samepaint lvl.\nlvl be pathz by default.\nlvl got X will trigger even if the level infloops."
   },
-  -- 153
+  -- 159
   {
     name = "text_nxt",
     sprite = "text_nxt",
@@ -2091,7 +2092,7 @@ tiles_list = {
     tags = {"next"},
     desc = "NXT: If U is on NXT, go to the next level (specified in object settings)."
   },
-  -- 154
+  -- 160
   {
     name = "pepis",
     sprite = {"pepis","pepis_red","pepis_blue"},
@@ -2101,7 +2102,7 @@ tiles_list = {
     tags = {"bepis", "pepsi"},
     desc = "pepis: tastes like tar and mud",
   },
-  -- 155
+  -- 161
   {
     name = "text_pepis",
     sprite = "text_pepis",
@@ -2111,7 +2112,7 @@ tiles_list = {
     layer = 20,
     tags = {"bepis", "pepsi"},
   },
-  -- 156
+  -- 162
   {
     name = "text_copkat",
     sprite = "text_copkat",
@@ -2122,7 +2123,7 @@ tiles_list = {
     tags = {"copycat", "lily"},
     desc = "COPKAT (Verb): COPKAT units copy the successful movements of the indicated object, no matter how far away."
   },
-  --157
+  -- 163
   {
     name = "clok",
     sprite = "clok",
@@ -2135,7 +2136,7 @@ tiles_list = {
     tags = {"clock", "time"},
     desc = "keek look at'd the clok. 'oh no! im late for school!' keek shouted and raced out of bed."
   },
-  -- 158
+  -- 164
   {
     name = "text_clok",
     sprite = "text_clok",
@@ -2145,7 +2146,7 @@ tiles_list = {
     layer = 20,
     tags = {"clock", "time"},
   },
-  -- 159
+  -- 165
   {
     name = "text_try again",
     sprite = "text_try again",
@@ -2156,7 +2157,7 @@ tiles_list = {
     tags = {"retry", "time", "reset", "lily"},
     desc = "TRY AGAIN: When U is on TRY AGAIN, the level is undone back to the starting state, except for NO UNDO objects. TRY AGAIN can be undone!"
   },
-  -- 160
+  -- 166
   {
     name = "text_no undo",
     sprite = "text_no undo",
@@ -2167,7 +2168,7 @@ tiles_list = {
     tags = {"persist", "time", "lily"},
     desc = "NO UNDO: NO UNDO units aren't affected by undoing manually. LVL BE NO UNDO prevents undo inputs entirely.",
   },
-  -- 161
+  -- 167
   {
     name = "zsoob",
     sprite = "zsoob",
@@ -2179,7 +2180,7 @@ tiles_list = {
     tags = {"devs","chars","szoob"},
     desc = "pinc keke",
   },
-  -- 162
+  -- 168
   {
     name = "text_zsoob",
     sprite = "text_zsoob",
@@ -2189,7 +2190,7 @@ tiles_list = {
     layer = 20,
     tags = {"devs","chars","szoob"},
   },
-  -- 163
+  -- 169
   {
     name = "text_mayb",
     sprite = "text_mayb",
@@ -2201,7 +2202,7 @@ tiles_list = {
     tags = {"/", "maybe", "random", "rng", "patashu"},
     desc = "? (MAYBE) (Prefix Condition): Has a chance of being true, independent for each MAYBE, affected unit and turn. The number on top indicates the % chance of being true. Compatible with N'T.",
   },
-  -- 164
+  -- 170
   {
     name = "text_stubbn",
     sprite = "text_stubbn",
@@ -2212,7 +2213,7 @@ tiles_list = {
     tags = {"stubborn","patashu"},
     desc = "STUBBN: STUBBN units ignore the special properties of WALK movers (bouncing off of walls, and declining to move if it would die due to being OUCH) and also makes attempted diagonal movement slide along walls. Stacks with itself - the more STUBBN, the more additional angles it will try, up to 180 degrees at 5 stacks! (2 stacks allows for 45 degree movement orthogonally.)",
   },
-  -- 165
+  -- 171
   {
     name = "text_seen by",
     sprite = "text_seen by",
@@ -2223,7 +2224,7 @@ tiles_list = {
     tags = {"seenby", "looked at", "in front"},
     desc = "SEEN BY (Infix Condition): True if an indicated object is looking at this unit from an adjacent tile.",
   },
-  -- 166
+  -- 172
   {
     name = "steev",
     sprite = "steev",
@@ -2239,7 +2240,7 @@ tiles_list = {
     tags = {"chars", "5 step steve", "cat"},
     desc = "can only moov 5 steps b4 dyin nya",
   },
-  -- 167
+  -- 173
   {
     name = "text_steev",
     sprite = "text_steev",
@@ -2249,7 +2250,7 @@ tiles_list = {
     layer = 20,
     tags = {"chars", "5 step steve", "cat"},
   },
-  -- 168
+  -- 174
   {
     name = "text_go arnd",
     sprite = "text_go arnd",
@@ -2260,7 +2261,7 @@ tiles_list = {
     tags = {"wrap around", "go around", "cg5"},
     desc = "GO ARND: GO ARND units wrap around the level, as though it were a torus. BORDR objects are used as the level border, and the wraparound doesn't go through BORDRs. Diagonal GO ARNDs on corners of non-square levels might not work as expected, as it simply traces backward until hitting a BORDR.",
   },
-  -- 169
+  -- 175
   {
     name = "text_poor toll",
     sprite = "text_poor_toll",
@@ -2271,7 +2272,7 @@ tiles_list = {
     tags = {"portal","cg5"},
     desc = "POOR TOLL: If a unit would enter a POOR TOLL unit, it instead leaves the next POOR TOLL unit of the same name in reading order (left to right, line by line, wrapping around) out the corresponding same side. Does not stack.",
   },
-  -- 170
+  -- 176
   {
     name = "splittr",
     sprite = "splittr",
@@ -2283,7 +2284,7 @@ tiles_list = {
     features = { sans = {x=22,y=12,w=3,h=5} },
     desc = "specifically made to be used with SPLIT because it looks horrible otherwise (but other tiles like CHAIN can also work)."
   },
-  -- 171
+  -- 177
   {
     name = "text_splittr",
     sprite = "text_splittr",
@@ -2293,7 +2294,7 @@ tiles_list = {
     layer = 20,
     tags = {"splitter", "5 step"},
   },
-  -- 172
+  -- 178
   {
     name = "text_split",
     sprite = "text_split",
@@ -2304,7 +2305,7 @@ tiles_list = {
     tags = {"splitter", "5 step"},
     desc = "SPLIT: Objects on a SPLITer are split into two copies on adjacent tiles.",
   },
-  -- 173
+  -- 179
   {
     name = "text_cilindr",
     sprite = "text_cilindr",
@@ -2316,7 +2317,7 @@ tiles_list = {
     tags = {"cyllinder","space", "wrap"},
     desc = "CILINDR: CILINDR units wrap around the level, as though it were a cylinder with the indicated orientation.",
   },
-  -- 174
+  -- 180
   {
     name = "text_mobyus",
     sprite = "text_mobyus",
@@ -2328,7 +2329,7 @@ tiles_list = {
     tags = {"mobius","space", "wrap"},
     desc = "MOBYUS: MOBYUS units wrap around the level, as though it were a mobius strip with the indicated orientation.",
   },
-  -- 175
+  -- 181
   {
     name = "text_munwalk",
     sprite = "text_munwalk",
@@ -2339,7 +2340,7 @@ tiles_list = {
     tags = {"moonwalk","patashu"},
     desc = "MUNWALK: MUNWALK units move 180 degrees opposite of their facing direction. Stacks will cancel each other out.",
   },
-  -- 176
+  -- 182
   {
     name = "text_mirr arnd",
     sprite = "text_mirr arnd",
@@ -2350,7 +2351,7 @@ tiles_list = {
     tags = {"mirror around","cg5", "space", "wrap"},
     desc = "MIRR ARND: MIRR ARND units wrap around the level, as though it were a projective plane.",
   },
-  -- 177
+  -- 183
   {
     name = "text_sidestep",
     sprite = "text_sidestep",
@@ -2361,7 +2362,7 @@ tiles_list = {
     tags = {"patashu", "drunk"},
     desc = "SIDESTEP: SIDESTEP units move 90 degrees clockwise off of their facing direction. Stacks!",
   },
-  -- 178
+  -- 184
   {
     name = "text_diagstep",
     sprite = "text_diagstep",
@@ -2372,7 +2373,7 @@ tiles_list = {
     tags = {"patashu", "drunker"},
     desc = "DIAGSTEP: DIAGSTEP units move 45 degrees clockwise off of their facing direction. Stacks!",
   },
-  -- 179
+  -- 185
   {
     name = "text_hopovr",
     sprite = "text_hopovr",
@@ -2383,7 +2384,7 @@ tiles_list = {
     tags = {"patashu", "skip"},
     desc = "HOPOVR: HOPOVR units move two tiles ahead, skipping the intermediate tile. Stacks!",
   },
-  -- 180
+  -- 186
   {
     name = "text_undo",
     sprite = "text_undo",
@@ -2394,7 +2395,7 @@ tiles_list = {
     tags = {"time", "back"},
     desc = "UNDO: UNDO units, at end of turn, rewind a turn earlier, cumulatively. Stacks!",
   },
-  -- 181
+  -- 187
   {
     name = "boy",
     sprite = "boy",
@@ -2406,7 +2407,7 @@ tiles_list = {
     tags = {"chars"},
     desc = "he's upsidedown b/c he lives on a Boy's surface"
   },
-  -- 182
+  -- 188
   {
     name = "text_boy",
     sprite = "text_boy",
@@ -2416,7 +2417,7 @@ tiles_list = {
     layer = 20,
     tags = {"chars"},
   },
-  -- 183
+  -- 189
   {
     name = "text_spin",
     sprite = "text_spin",
@@ -2428,7 +2429,7 @@ tiles_list = {
     tags = {"rotate","lily"},
     desc = "SPIN: A GO^ facing the same direction as the unit is facing, rotated clockwise the number of times on top of the property.",
   },
-  -- 184
+  -- 190
   {
     name = "lvl",
     sprite = "lvl",
@@ -2436,7 +2437,7 @@ tiles_list = {
     color = {0,3},
     layer = 2,
   },
-  -- 185
+  -- 191
   {
     name = "text_slippers",
     sprite = "text_slippers",
@@ -2446,7 +2447,7 @@ tiles_list = {
     layer = 20,
     desc = "SLIPPERS: An object that GOT SLIPPERS will ignore ICY and ICYYYYY objects (and wear SLIPPERS)."
   },
-  -- 186
+  -- 192
   {
     name = "slippers",
     sprite = "slippers",
@@ -2454,7 +2455,7 @@ tiles_list = {
     color = {1, 3},
     layer = 8,
   },
-  -- 187
+  -- 193
   {
     name = "ghost fren",
     sprite = "ghost",
@@ -2467,7 +2468,7 @@ tiles_list = {
     desc = "its not spooky, its a fren.",
     tags = {"chars"},
   },
-  -- 188
+  -- 194
   {
     name = "text_ghost fren",
     sprite = "text_ghost fren",
@@ -2478,7 +2479,7 @@ tiles_list = {
     desc = "this text is very spooky tho",
     tags = {"chars"},
   },
-  -- 189
+  -- 195
   {
     name = "robobot",
     sprite = "robobot",
@@ -2491,7 +2492,7 @@ tiles_list = {
     desc = "the super scan mouth lazers that copy abilities are missing because they forgot to design a mouth",
     tags = {"robot", "chars"},
   },
-  -- 190
+  -- 196
   {
     name = "text_robobot",
     sprite = "text_robobot",
@@ -2501,7 +2502,7 @@ tiles_list = {
     layer = 20,
     tags = {"robot", "chars"},
   },
-  -- 191
+  -- 197
   {
     name = "lvl",
     sprite = "lvl",
@@ -2512,7 +2513,7 @@ tiles_list = {
     tags = {"level", "path"},
     desc = "its a lavel, working like baba."
   },
-  -- 192
+  -- 198
   {
     name = "selctr",
     sprite = "selctr",
@@ -2522,7 +2523,7 @@ tiles_list = {
     tags = {"cursor", "selector"},
     desc = "used to select levis"
   },
-  -- 193
+  -- 199
   {
     name = "text_selctr",
     sprite = "text_selctr",
@@ -2532,7 +2533,7 @@ tiles_list = {
     layer = 20,
     tags = {"cursor", "selector"},
   },
-  -- 194
+  -- 200
   {
     name = "lin",
     sprite = "lin",
@@ -2542,7 +2543,7 @@ tiles_list = {
     tags = {"line", "path"},
     desc = "used to connect lovils"
   },
-  -- 195
+  -- 201
   {
     name = "text_lin",
     sprite = "text_lin",
@@ -2552,7 +2553,7 @@ tiles_list = {
     layer = 20,
     tags = {"line", "path"},
   },
-  -- 196
+  -- 202
   {
     name = "text_moov",
     sprite = "text_moov",
@@ -2563,7 +2564,7 @@ tiles_list = {
     tags = {"shift"},
     desc = "MOOV (Verb): A verbified GO AWAY PLS/GO. x MOOV y means that x can push and shift y. y is not treated as solid if unable to be pushed. MOOV GO^ will make the unit move one unit in that direction per turn.",
   },
-  --- 197
+  --- 203
   {
     name = "text_haet",
     sprite = "text_haet",
@@ -2575,7 +2576,7 @@ tiles_list = {
     tags = {"patashu", "hate", "hates", "collide"},
     desc = "HAET (Verb): A unit cannot stop onto a tile that has something it HAETs (treating it like NOGO). (x HAET LVL makes x unable to move.) X HAET GO^ makes the object fall in the direction opposite that.",
   },
-  -- 198
+  -- 204
   {
     name = "text_brite",
     sprite = "text_brite",
@@ -2586,7 +2587,7 @@ tiles_list = {
     tags = {"bright", "power"},
     desc = "BRITE: A BRITE object emits light in all directions. LIT will be true for objects on the same FLYE level if nothing TRANPARN'T is in the way.",
   },
-  -- 199
+  -- 205
   {
     name = "text_lit",
     sprite = "text_lit",
@@ -2597,7 +2598,7 @@ tiles_list = {
     tags = {"powered"},
     desc = "LIT (Prefix Condition): A BRITE object emits light in all directions. LIT will be true for objects on the same FLYE level if nothing TRANPARN'T is in the way.",
   },
-  -- 200
+  -- 206
   {
     name = "text_tranparnt",
     sprite = "text_tranparnt",
@@ -2608,7 +2609,7 @@ tiles_list = {
     alias = {"tranparn't"},
     desc = "TRANPARN'T: A BRITE object emits light in all directions. LIT will be true for objects on the same FLYE level if nothing TRANPARN'T is in the way.",
   },
-  -- 201
+  -- 207
   {
     name = "text_no turn",
     sprite = "text_no turn",
@@ -2619,7 +2620,7 @@ tiles_list = {
     tags = {"strafe"},
     desc = "NO TURN: A NO TURN unit's direction can't change (unless re-oriented by non-euclidean level geometry, i.e. POOR TOLL).",
   },
-  -- 202
+  -- 208
   {
     name = "text_an",
     sprite = "text_an",
@@ -2630,7 +2631,7 @@ tiles_list = {
     tags = {"rng", "random"},
     desc = "AN (Prefix Condition): True for a single arbitrary unit per turn and condition. To get multiple results in one tile, rotate the ANs in different directions.",
   },
-  -- 203
+  -- 209
   {
     name = "text_wurd",
     sprite = "text_wurd",
@@ -2641,7 +2642,7 @@ tiles_list = {
     tags = {"word"},
     desc = "WURD: A WURD unit forms rules as though it was its respective text. TXT BEN'T WURD makes that text not parse.",
   },
-  -- 204
+  -- 210
   {
     name = "firbolt",
     sprite = "firbolt",
@@ -2652,7 +2653,7 @@ tiles_list = {
     tags = {"firebolt"},
     desc = "i cast FIRBOLT at the NO1!",
   },
-  -- 205
+  -- 211
   {
     name = "text_firbolt",
     sprite = "text_firbolt",
@@ -2662,7 +2663,7 @@ tiles_list = {
     layer = 20,
     tags = {"firebolt"},
   },
-  -- 206
+  -- 212
   {
     name = "icbolt",
     sprite = "icbolt",
@@ -2673,7 +2674,7 @@ tiles_list = {
     desc = "its time for u to CHILL out. stay FROSTY.",
     tags = {"icebolt"},
   },
-  -- 207
+  -- 213
   {
     name = "text_icbolt",
     sprite = "text_icbolt",
@@ -2683,7 +2684,7 @@ tiles_list = {
     layer = 20,
     tags = {"icebolt"},
   },
-  -- 206
+  -- 214
   {
     name = "hedg",
     sprite = "hedg",
@@ -2693,7 +2694,7 @@ tiles_list = {
     tags = {"hedge", "plants"},
     desc = "im hedg the hedg heg",
   },
-  -- 207
+  -- 215
   {
     name = "text_hedg",
     sprite = "text_hedg",
@@ -2703,7 +2704,7 @@ tiles_list = {
     layer = 20,
     tags = {"hedge", "plants"},
   },
-  -- 208
+  -- 216
   {
     name = "fenss",
     sprite = "fenss",
@@ -2713,7 +2714,7 @@ tiles_list = {
     tags = {"fence"},
     desc = "keeps babs out!!",
   },
-  -- 209
+  -- 217
   {
     name = "text_fenss",
     sprite = "text_fenss",
@@ -2723,7 +2724,7 @@ tiles_list = {
     layer = 20,
     tags = {"fence"},
   },
-  -- 210
+  -- 218
   {
     name = "metl",
     sprite = "metl",
@@ -2733,7 +2734,7 @@ tiles_list = {
     tags = {"metal"},
     desc = "impervious metl...",
   },
-  -- 211
+  -- 219
   {
     name = "text_metl",
     sprite = "text_metl",
@@ -2743,7 +2744,7 @@ tiles_list = {
     layer = 20,
     tags = {"metal"},
   },
-  -- 210
+  -- 220
   {
     name = "sparkl",
     sprite = "sparkl",
@@ -2753,7 +2754,7 @@ tiles_list = {
     tags = {"sparkle", "dust"},
     desc = "as brite as a star... but also as hotte as one!!",
   },
-  -- 211
+  -- 221
   {
     name = "text_sparkl",
     sprite = "text_sparkl",
@@ -2763,7 +2764,7 @@ tiles_list = {
     layer = 20,
     tags = {"sparkle", "dust"},
   },
-  -- 212
+  -- 222
   {
     name = "spik",
     sprite = "spik",
@@ -2774,7 +2775,7 @@ tiles_list = {
     tags = {"spike"},
     desc = "finally, i can make my i wanna be the bab fangame in bab be u",
   },
-  -- 213
+  -- 223
   {
     name = "text_spik",
     sprite = "text_spik",
@@ -2784,7 +2785,7 @@ tiles_list = {
     layer = 20,
     tags = {"spike"},
   },
-  -- 214
+  -- 224
   {
     name = "spiky",
     sprite = "spiky",
@@ -2795,7 +2796,7 @@ tiles_list = {
     tags = {"spike"},
     desc = "ouch!! many spik at once.",
   },
-  -- 215
+  -- 225
   {
     name = "text_spiky",
     sprite = "text_spiky",
@@ -2805,7 +2806,7 @@ tiles_list = {
     layer = 20,
     tags = {"spike"},
   },
-  -- 216
+  -- 226
   {
     name = "bordr",
     sprite = "bordr",
@@ -2815,7 +2816,7 @@ tiles_list = {
     tags = {"border"},
     desc = "BORDR: OOB you can place manually. NOGO, TALL and BORDR by default."
   },
-  -- 217
+  -- 227
   {
     name = "text_bordr",
     sprite = "text_bordr",
@@ -2825,7 +2826,7 @@ tiles_list = {
     layer = 20,
     tags = {"border"},
   },
-  -- 218
+  -- 228
   {
     name = "text_loop",
     sprite = "text_infloop",
@@ -2837,7 +2838,7 @@ tiles_list = {
     tags = {"infloop", "infinity", "infinite loop"},
     desc = "INFLOOP: A special word that describes the infinite loop state."
   },
-  -- 219
+  -- 229
   {
     name = "platfor",
     sprite = "platfor",
@@ -2848,7 +2849,7 @@ tiles_list = {
     rotate = true,
     tags = {"platform"},
   },
-  -- 220
+  -- 230
   {
     name = "text_platfor",
     sprite = "text_platfor",
@@ -2858,7 +2859,7 @@ tiles_list = {
     layer = 20,
     tags = {"platform"},
   },
-  -- 221
+  -- 231
   {
     name = "jail",
     sprite = "jail",
@@ -2867,7 +2868,7 @@ tiles_list = {
     layer = 22,
     desc = "BAB W/FREN JAIL HAET LVL. now bab's in jail :(",
   },
-  -- 222
+  -- 232
   {
     name = "text_jail",
     sprite = "text_jail",
@@ -2876,7 +2877,7 @@ tiles_list = {
     color = {0, 2},
     layer = 20,
   },
-  -- 223
+  -- 233
   {
     name = "text_haet flor",
     sprite = "text_haetflor",
@@ -2887,7 +2888,7 @@ tiles_list = {
     tags = {"vall", "gravity"},
     desc = "HAET FLOR: After movement, this unit falls UP as far as it can.",
   },
-  -- 224
+  -- 234
   {
     name = "this",
     sprite = "this",
@@ -2896,7 +2897,7 @@ tiles_list = {
     layer = 20,
     desc = "THIS: Text that refers to itself. Each THIS is independant. THIS TXT refers to all THISs."
   },
-  -- 225
+  -- 235
   {
     name = "text_grun",
     sprite = "text_grun_cond",
@@ -2910,7 +2911,7 @@ tiles_list = {
     tags = {"colors", "colours", "green"},
     desc = "GRUN: Causes the unit to appear green. Persistent and can be used as a prefix condition."
   },
-  -- 226
+  -- 236
   {
     name = "text_yello",
     sprite = "text_yello_cond",
@@ -2924,7 +2925,7 @@ tiles_list = {
     tags = {"colors", "colours", "yellow"},
     desc = "YELLO: Causes the unit to appear yellow. Persistent and can be used as a prefix condition. Reed + Grun."
   },
-  -- 227
+  -- 237
   {
     name = "text_purp",
     sprite = "text_purp_cond",
@@ -2938,7 +2939,7 @@ tiles_list = {
     tags = {"colors", "colours", "purple"},
     desc = "PURP: Causes the unit to appear purple. Persistent and can be used as a prefix condition."
   },
-  -- 228
+  -- 238
   {
     name = "text_orang",
     sprite = "text_orang_cond",
@@ -2952,7 +2953,7 @@ tiles_list = {
     tags = {"colors", "colours", "orange"},
     desc = "ORANG: Causes the unit to appear orange. Persistent and can be used as a prefix condition."
   },
-  -- 229
+  -- 239
   {
     name = "text_cyeann",
     sprite = "text_cyeann_cond",
@@ -2966,7 +2967,7 @@ tiles_list = {
     tags = {"colors", "colours", "cyan"},
     desc = "CYEANN: Causes the unit to appear cyan. Persistent and can be used as a prefix condition."
   },
-  -- 230
+  -- 240
   {
     name = "text_whit",
     sprite = "text_whit_cond",
@@ -2980,7 +2981,7 @@ tiles_list = {
     tags = {"colors", "colours", "white"},
     desc = "WHIT: Causes the unit to appear white. Persistent and can be used as a prefix condition. Bleu + Yello, Reed + Cyeann, Grun + Purp."
   },
-  -- 231
+  -- 241
   {
     name = "text_blacc",
     sprite = "text_blacc_cond",
@@ -2994,7 +2995,7 @@ tiles_list = {
     tags = {"colors", "colours", "black"},
     desc = "BLACC: Causes the unit to appear black. Persistent and can be used as a prefix condition."
   },
-  -- 232
+  -- 242
   {
     name = "text_rave",
     sprite = "text_rave",
@@ -3004,7 +3005,7 @@ tiles_list = {
     layer = 20,
     desc = "RAVE: Causes the unit to flash through the rainbow extremely quickly."
   },
-  -- 233
+  -- 243
   {
     name = "hol",
     sprite = "hol",
@@ -3016,7 +3017,7 @@ tiles_list = {
     tags = {"portal"},
     desc = "the real poor toll"
   },
-  -- 234
+  -- 244
   {
     name = "text_hol",
     sprite = "text_hol",
@@ -3026,7 +3027,7 @@ tiles_list = {
     layer = 20,
     tags = {"portal"},
   },
-  -- 235
+  -- 245
   {
     name = "text_corekt",
     sprite = "text_corekt",
@@ -3037,7 +3038,7 @@ tiles_list = {
     tags = {"correct", "cg5"},
     desc = "COREKT (Prefix Condition): True if the unit is in an active rule.",
   },
-  -- 236
+  -- 246
   {
     name = "text_rong",
     sprite = "text_rong",
@@ -3051,7 +3052,7 @@ tiles_list = {
     tags = {"wrong", "false", "cg5"},
     desc = "RONG: As a prefix, true if the unit is in a negated rule (via rong, n't, or notranform). As a property, if a rule has a rong unit in it it'll be negated.",
   },
-  -- 237
+  -- 247
   {
     name = "text_...",
     sprite = "text_...",
@@ -3062,7 +3063,7 @@ tiles_list = {
     tags = {"ellipsis", "dotdotdot", "period"},
     desc = "... (ELLIPSIS): Extends rules. BAB ... BE ... ... U is the same as BAB BE U.",
   },
-  -- 238
+  -- 248
   {
 	name = "text_u too",
 	sprite = "text_utoo",
@@ -3074,7 +3075,7 @@ tiles_list = {
   tags = {"you2", "p2", "player"},
 	desc = "player 2 has joined the game (dpad).",
   },
-  -- 239
+  -- 249
   {
 	name = "text_u tres",
 	sprite = "text_utres",
@@ -3086,7 +3087,7 @@ tiles_list = {
   tags = {"you3", "p3", "player"},
 	desc = "and player 3 (ijkl or numpad).  If there are objects of two control schemes but not a third, the third control scheme can be used to move both of the first two at once.",
   },
-  -- 240
+  -- 250
   {
     name = "text_za warudo",
     sprite = "text_zawarudo",
@@ -3097,7 +3098,7 @@ tiles_list = {
     tags = {"timeless", "the world", "dio", "lily"},
     desc = "ZA WARUDO: Can stop time and move without anything else moving. Faster than rule parsing itself! After forming the rule, press E (hourglass on mobile) to toggle. While stopped, a non-zawarudo object that would move at infinite speed will move one space per turn.",
   },
-	-- 241
+	-- 251
   {
     name = "text_babn't",
     sprite = {"text_bab meta", "n't"},
@@ -3108,7 +3109,7 @@ tiles_list = {
     layer = 20,
 		desc = "BAB N'T: The same as having these two text tiles in a row."
   },
-	-- 242
+	-- 252
   {
     name = "text_ben't",
     sprite = {"text_be n't", "n't (be)"},
@@ -3120,7 +3121,7 @@ tiles_list = {
     tags = {"isn't", "is not", "verb"},
 		desc = "BE N'T (Verb): The same as having these two text tiles in a row."
   },
-	-- 243
+	-- 253
    {
     name = "text_rocn't",
     sprite = {"text_roc meta", "n't"},
@@ -3131,7 +3132,7 @@ tiles_list = {
     layer = 20,
 		desc = "ROC N'T: The same as having these two text tiles in a row."
   },
-	-- 243
+	-- 254
    {
     name = "text_waln't",
     sprite = {"text_wal meta", "n't"},
@@ -3142,7 +3143,7 @@ tiles_list = {
     layer = 20,
 		desc = "WAL N'T: The same as having these two text tiles in a row."
   },
-  -- 244
+  -- 255
   {
     name = "letter_a",
     sprite = "letter_a",
@@ -3151,7 +3152,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
-  -- 245
+  -- 256
   {
     name = "letter_b",
     sprite = "letter_b",
@@ -3160,7 +3161,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
-  -- 246
+  -- 257
   {
     name = "letter_c",
     sprite = "letter_c",
@@ -3169,7 +3170,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
-  -- 247
+  -- 258
   {
     name = "letter_d",
     sprite = "letter_d",
@@ -3178,7 +3179,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
-  -- 248
+  -- 259
   {
     name = "letter_e",
     sprite = "letter_e",
@@ -3187,7 +3188,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
-  -- 249
+  -- 260
   {
     name = "letter_f",
     sprite = "letter_f",
@@ -3197,7 +3198,7 @@ tiles_list = {
     layer = 20,
     desc = "press F to pay respects",
   },
-  -- 250
+  -- 261
   {
     name = "letter_g",
     sprite = "letter_g",
@@ -3206,7 +3207,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
-  -- 251
+  -- 262
   {
     name = "letter_h",
     sprite = "letter_h",
@@ -3215,7 +3216,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
-  -- 252
+  -- 263
   {
     name = "letter_j",
     sprite = "letter_j",
@@ -3225,7 +3226,7 @@ tiles_list = {
     layer = 20,
     desc = "This is used in JAIL and JILL. Discrimination against J!"
   },
-  -- 253
+  -- 264
   {
     name = "letter_k",
     sprite = "letter_k",
@@ -3234,7 +3235,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
-  -- 254
+  -- 265
   {
     name = "letter_l",
     sprite = "letter_l",
@@ -3243,7 +3244,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
-  -- 255
+  -- 266
   {
     name = "letter_m",
     sprite = "letter_m",
@@ -3252,7 +3253,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
-  -- 256
+  -- 267
   {
     name = "letter_n",
     sprite = "letter_n",
@@ -3261,7 +3262,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
-  -- 257
+  -- 268
   {
     name = "letter_p",
     sprite = "letter_p",
@@ -3270,7 +3271,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
-  -- 258
+  -- 269
   {
     name = "letter_q",
     sprite = "letter_q",
@@ -3279,7 +3280,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
-  -- 259
+  -- 270
   {
     name = "letter_r",
     sprite = "letter_r",
@@ -3288,7 +3289,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
-  -- 260
+  -- 271
   {
     name = "letter_s",
     sprite = "letter_s",
@@ -3298,7 +3299,7 @@ tiles_list = {
     layer = 20,
     desc = "ome body once told me..."
   },
-  -- 261
+  -- 272
   {
     name = "letter_t",
     sprite = "letter_t",
@@ -3308,7 +3309,7 @@ tiles_list = {
     layer = 20,
     desc = "he world is gonna roll me."
   },
-  -- 262
+  -- 273
   {
     name = "letter_u",
     sprite = "letter_u",
@@ -3317,7 +3318,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
-  -- 263
+  -- 274
   {
     name = "letter_v",
     sprite = "letter_v",
@@ -3326,7 +3327,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
-  -- 264
+  -- 275
   {
     name = "letter_w",
     sprite = "letter_w",
@@ -3335,7 +3336,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
-  -- 265
+  -- 276
   {
     name = "letter_x",
     sprite = "letter_x",
@@ -3344,7 +3345,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
-  -- 266
+  -- 277
   {
     name = "letter_y",
     sprite = "letter_y",
@@ -3353,7 +3354,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
-  -- 267
+  -- 278
   {
     name = "letter_.",
     sprite = "letter_period",
@@ -3364,7 +3365,7 @@ tiles_list = {
     tags = {"dot", "fullstop", "period"},
     desc = "You can make \"...\" with this!"
   },
-  -- 268
+  -- 279
   {
     name = "letter_colon",
     sprite = "letter_colon",
@@ -3376,7 +3377,7 @@ tiles_list = {
     tags = {";", "umlaut", "diaeresis"},
     desc = ":: Can also be an umlaut, or '..', if rotated in that way.",
   },
-  -- 269
+  -- 280
   {
     name = "letter_parenthesis",
     sprite = "letter_paranthesis",
@@ -3388,7 +3389,7 @@ tiles_list = {
     tags = {"9", "0", "brackets"},
     desc = "Used for :( and :). Rotation matters!"
   },
-  -- 270
+  -- 281
   {
     name = "letter_'",
     sprite = "letter_apostrophe",
@@ -3398,7 +3399,7 @@ tiles_list = {
     layer = 20,
     desc = "Used for n't and \"."
   },
-  -- 271
+  -- 282
   {
     name = "letter_go",
     sprite = "letter_go",
@@ -3408,7 +3409,7 @@ tiles_list = {
     layer = 20,
     desc = "used in a whole lot of words",
   },
-  -- 272
+  -- 283
   {
     name = "letter_come",
     sprite = "letter_come",
@@ -3418,7 +3419,7 @@ tiles_list = {
     layer = 20,
     desc = "Used exclusively for COME PLS.",
   },
-  -- 273
+  -- 284
   {
     name = "letter_pls",
     sprite = "letter_pls",
@@ -3428,7 +3429,7 @@ tiles_list = {
     layer = 20,
     desc = "Used for GO AWAY PLS and COME PLS.",
   },
-  -- 274
+  -- 285
   {
     name = "letter_away",
     sprite = "letter_away",
@@ -3438,7 +3439,7 @@ tiles_list = {
     layer = 20,
     desc = "Used for GO AWAY PLS and LOOK AWAY.",
   },
-  -- 275
+  -- 286
   {
     name = "letter_my",
     sprite = "letter_my",
@@ -3448,7 +3449,7 @@ tiles_list = {
     layer = 20,
     desc = "Used exclusively for GO MY WAY.",
   },
-  -- 276
+  -- 287
   {
     name = "letter_no",
     sprite = "letter_no",
@@ -3458,7 +3459,7 @@ tiles_list = {
     layer = 20,
     desc = "Used for NO GO and NO1.",
   },
-  -- 277
+  -- 288
   {
     name = "letter_way",
     sprite = "letter_way",
@@ -3468,7 +3469,7 @@ tiles_list = {
     layer = 20,
     tags = {"wey"},
   },
-  -- 278
+  -- 289
   {
     name = "text_''",
     sprite = "text_ditto",
@@ -3480,7 +3481,7 @@ tiles_list = {
     tags = {"ditto", "quotation marks", "\""},
     desc = "DITTO: Acts like the text above it. \" TXT will refer to the ditto itself, not the text above it.",
   },
-  -- 279
+  -- 290
   {
     name = "text_txtify",
     sprite = "text_txtify",
@@ -3491,7 +3492,7 @@ tiles_list = {
     tags = {"meta", "notnat"},
     desc = "TXTIFY: BE TXTIFY causes that object to be turned into its corresponding metatext.",
   },
-  -- 280
+  -- 291
   {
     name = "ui_1",
     sprite = "ui_1",
@@ -3500,7 +3501,7 @@ tiles_list = {
     layer = 20,
     desc = "U TRES controls. Down left.",
   },
-  -- 281
+  -- 292
   {
     name = "ui_2",
     sprite = "ui_2",
@@ -3509,7 +3510,7 @@ tiles_list = {
     layer = 20,
     desc = "U TRES controls. Down.",
   },
-  -- 282
+  -- 293
   {
     name = "ui_3",
     sprite = "ui_3",
@@ -3518,7 +3519,7 @@ tiles_list = {
     layer = 20,
     desc = "U TRES controls. Down right.",
   },
-  -- 283
+  -- 294
   {
     name = "ui_4",
     sprite = "ui_4",
@@ -3527,7 +3528,7 @@ tiles_list = {
     layer = 20,
     desc = "U TRES controls. Left.",
   },
-  -- 284
+  -- 295
   {
     name = "ui_6",
     sprite = "ui_6",
@@ -3536,7 +3537,7 @@ tiles_list = {
     layer = 20,
     desc = "U TRES controls. Right.",
   },
-  -- 285
+  -- 296
   {
     name = "ui_7",
     sprite = "ui_7",
@@ -3545,7 +3546,7 @@ tiles_list = {
     layer = 20,
     desc = "U TRES controls. Up left.",
   },
-  -- 286
+  -- 297
   {
     name = "ui_8",
     sprite = "ui_8",
@@ -3554,7 +3555,7 @@ tiles_list = {
     layer = 20,
     desc = "U TRES controls. Up.",
   },
-  -- 287
+  -- 298
   {
     name = "ui_9",
     sprite = "ui_9",
@@ -3563,7 +3564,7 @@ tiles_list = {
     layer = 20,
     desc = "U TRES controls. Up right.",
   },
-  -- 288
+  -- 299
   {
     name = "ui_w",
     sprite = "ui_w",
@@ -3572,7 +3573,7 @@ tiles_list = {
     layer = 20,
     desc = "U controls. Up.",
   },
-  -- 289
+  -- 300
   {
     name = "ui_a",
     sprite = "ui_a",
@@ -3581,7 +3582,7 @@ tiles_list = {
     layer = 20,
     desc = "U controls. Left.",
   },
-  -- 290
+  -- 301
   {
     name = "ui_s",
     sprite = "ui_s",
@@ -3590,7 +3591,7 @@ tiles_list = {
     layer = 20,
     desc = "U controls. Down.",
   },
-  -- 291
+  -- 302
   {
     name = "ui_d",
     sprite = "ui_d",
@@ -3599,7 +3600,7 @@ tiles_list = {
     layer = 20,
     desc = "U controls. Right.",
   },
-  -- 292
+  -- 303
   {
     name = "ui_arrow",
     sprite = "ui_right",
@@ -3610,7 +3611,7 @@ tiles_list = {
     tags = {"dpad", "d-pad", "directional pad", "arrow keys"},
     desc = "U TOO controls. Rotatable!",
   },
-  -- 293
+  -- 304
   {
     name = "ui_i",
     sprite = "ui_i",
@@ -3619,7 +3620,7 @@ tiles_list = {
     layer = 20,
     desc = "U TRES controls. Up.",
   },
-  -- 294
+  -- 305
   {
     name = "ui_j",
     sprite = "ui_j",
@@ -3628,7 +3629,7 @@ tiles_list = {
     layer = 20,
     desc = "U TRES controls. Left.",
   },
-  -- 295
+  -- 306
   {
     name = "ui_k",
     sprite = "ui_k",
@@ -3637,7 +3638,7 @@ tiles_list = {
     layer = 20,
     desc = "U TRES controls. Down.",
   },
-  -- 296
+  -- 307
   {
     name = "ui_l",
     sprite = "ui_l",
@@ -3646,7 +3647,7 @@ tiles_list = {
     layer = 20,
     desc = "U TRES controls. Right.",
   },
-  -- 297
+  -- 308
   {
     name = "ui_e",
     sprite = "ui_e",
@@ -3655,7 +3656,7 @@ tiles_list = {
     layer = 20,
     desc = "The ZA WARUDO button.",
   },
-  -- 298
+  -- 309
   {
     name = "ui_walk",
     sprite = "ui_walk",
@@ -3663,7 +3664,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
-  -- 299
+  -- 310
   {
     name = "ui_activat",
     sprite = "ui_activat",
@@ -3671,7 +3672,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
-	-- 300
+	-- 311
   {
     name = "text_frens",
     sprite = "text_frens",
@@ -3682,7 +3683,7 @@ tiles_list = {
     tags = {"group", "friends"},
     desc = "FRENS: A group you can be a member of. 'x BE FRENS' adds you to the FRENS group. 'FRENS BE x' applies the property to all FRENS.",
   },
-	-- 301
+	-- 312
   {
     name = "text_pathz",
     sprite = "text_pathz",
@@ -3693,7 +3694,7 @@ tiles_list = {
     tags = {"group","paths"},
     desc = "PATHZ: A variant of FRENS. SELCTR inherently lieks PATHZ.",
   },
-	-- 302
+	-- 313
   {
     name = "text_groop",
     sprite = "text_groop",
@@ -3704,7 +3705,7 @@ tiles_list = {
     tags = {"group"},
     desc = "GROOP: A variant of FRENS.",
   },
-  -- 303
+  -- 314
   {
     name = "text_her",
     sprite = "text_her",
@@ -3716,7 +3717,7 @@ tiles_list = {
     tags = {"here","cg5", "her^", "her ->"},
     desc = "HER ->: Sends objects to where the text indicates. N'T HER makes objects HAET that tile.",
   },
-  -- 304
+  -- 315
   {
     name = "text_thr",
     sprite = "text_thr",
@@ -3728,7 +3729,7 @@ tiles_list = {
     tags = {"there","cg5", "thr^", "thr ->"},
     desc = "THR ->: Sends objects as far away from it as possible (until hitting a wall) in the indicated direction. N'T THR makes objects HAET a line from the text.",
   },
-  -- 305
+  -- 316
   {
     name = "text_the",
     sprite = "text_the",
@@ -3740,7 +3741,7 @@ tiles_list = {
     tags = {"that","those","cg5", "the^", "the ->"},
     desc = "THE: Refers to the object it's pointing at.",
   },
-  -- 306
+  -- 317
   {
     name = "text_knightstep",
     sprite = "text_knightstep",
@@ -3751,7 +3752,7 @@ tiles_list = {
     tags = {"chess"},
     desc = "KNIGHTSTEP: KNIGHTSTEP units move like the Knight chess piece, rotated 22.5 degrees clockwise. Stacks add additional 1, 1 hops.",
   },
-  -- 307
+  -- 318
   {
     name = "text_that",
     sprite = "text_that",
@@ -3762,7 +3763,7 @@ tiles_list = {
     tags = {"lily", "with", "w/"},
     desc = "THAT (Infix Condition): x THAT BE y is true if x BE y. x THAT GOT Y is true if x GOT y. And so on.",
   },
-  -- 307
+  -- 319
   {
     name = "text_that be",
     sprite = "text_that be",
@@ -3774,7 +3775,7 @@ tiles_list = {
     tags = {"lily", "with", "w/"},
     desc = "THAT BE (Infix Condition): x THAT BE y is true if x BE y.",
   },
-  -- 308
+  -- 320
   {
     name = "text_timles",
     sprite = "text_timles",
@@ -3785,7 +3786,7 @@ tiles_list = {
     tags = {"timeless"},
     desc = "TIMLES (Prefix Condition): True if ZA WARUDO is active.",
   },
-  -- 309
+  -- 321
   {
     name = "letter_i",
     sprite = "letter_i",
@@ -3794,7 +3795,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
-  -- 310
+  -- 322
   {
     name = "letter_z",
     sprite = "letter_z",
@@ -3804,7 +3805,7 @@ tiles_list = {
     layer = 20,
     desc = "Z: it's just a rotated N"
   },
-  -- 311
+  -- 323
   {
     name = "rif",
     sprite = "riff",
@@ -3816,7 +3817,7 @@ tiles_list = {
     tags = {"portal", "rift"},
     desc = "the fake poor toll"
   },
-  -- 312
+  -- 324
   {
     name = "text_rif",
     sprite = "text_rif",
@@ -3826,7 +3827,7 @@ tiles_list = {
     layer = 20,
     tags = {"portal", "rift"},
   },
-  -- 306
+  -- 325
   {
     name = "text_stay ther",
     sprite = "text_stay ther",
@@ -3837,7 +3838,7 @@ tiles_list = {
     tags = {"persist"},
     desc = "STAY THER: Objects with this property will be taken with you when you transition between levels.",
   },
-  -- 313? why are the numbers weird
+  -- 326
   {
     name = "lie",
     sprite = "caek",
@@ -3847,7 +3848,7 @@ tiles_list = {
     tags = {"portal", "cake", "food"},
     desc = "caek be lie",
   },
-  -- 314 happy pi day, have some caek
+  -- 327
   {
     name = "text_lie",
     sprite = "text_caek",
@@ -3858,7 +3859,7 @@ tiles_list = {
     tags = {"portal", "cake", "food"},
     desc = "LIE: If LIE BE SPLIT, LIE becomes LIE/8 on all open adjacent tiles.",
   },
-  -- 315
+  -- 328
   {
     name = "lie/8",
     sprite = "slis",
@@ -3869,7 +3870,7 @@ tiles_list = {
     tags = {"portal", "cake", "food", "slice"},
     desc = "idc if it's a lie, it tastes good",
   },
-  -- 316
+  -- 329
   {
     name = "text_lie/8",
     sprite = "text_slis",
@@ -3880,7 +3881,7 @@ tiles_list = {
     tags = {"portal", "cake", "food", "slice"},
     desc = "LIE/8: If LIE/8 BE MOAR, LIE/8 becomes LIE.",
   },
-  -- 317
+  -- 330
   {
     name = "ui_left click",
     sprite = "ui_left_click",
@@ -3889,7 +3890,7 @@ tiles_list = {
     layer = 20,
     desc = "Trigger CLIKT.",
   },
-  -- 318
+  -- 331
   {
     name = "ui_right click",
     sprite = "ui_right_click",
@@ -3898,7 +3899,7 @@ tiles_list = {
     layer = 20,
     desc = "See what's on the tile you clicked!",
   },
-  -- 319
+  -- 332
   {
     name = "ui_clik",
     sprite = "ui_clik",
@@ -3906,7 +3907,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
-  -- 320
+  -- 333
   {
     name = "text_clikt",
     sprite = "text_clikt",
@@ -3918,7 +3919,7 @@ tiles_list = {
     tags = {"clicked", "mouse"},
     desc = "CLIKT (Prefix Condition): CLIKT objects will be true when left-clicked. Clicks will pass a turn if this text exists.",
   },
-  -- 321
+  -- 334
   {
     name = "sine",
     sprite = "sine",
@@ -3926,9 +3927,9 @@ tiles_list = {
     color = {6,2},
     layer = 4,
     tags = {"sign"},
-    desc = "the sine says \"shoutouts to simpleflips\"",
+    desc = 'the sine says "shoutouts to simpleflips"',
   },
-  -- 322
+  -- 335
   {
     name = "text_sine",
     sprite = "text_sine",
@@ -3938,7 +3939,7 @@ tiles_list = {
     layer = 20,
     tags = {"sign"},
   },
-  -- 323
+  -- 336
   {
     name = "buble",
     sprite = "buble",
@@ -3948,7 +3949,7 @@ tiles_list = {
     sing = "kkb2",
     tags = {"bubble"},
   },
-  -- 324
+  -- 337
   {
     name = "text_buble",
     sprite = "text_buble",
@@ -3958,7 +3959,7 @@ tiles_list = {
     layer = 20,
     tags = {"bubble"},
   },
-  -- 325
+  -- 338
   {
     name = "creb",
     sprite = "creb",
@@ -3969,7 +3970,7 @@ tiles_list = {
     features = { sans = {x=20, y=4, w=4, h=5} },
     tags = {"crab"},
   },
-  -- 326
+  -- 339
   {
     name = "text_creb",
     sprite = "text_creb",
@@ -3979,7 +3980,7 @@ tiles_list = {
     layer = 20,
     tags = {"crab"},
   },
-  -- 327
+  -- 340
   {
     name = "icecub",
     sprite = "icecub",
@@ -3988,7 +3989,7 @@ tiles_list = {
     layer = 6,
     tags = {"icecube"},
   },
-  -- 328
+  -- 341
   {
     name = "text_icecub",
     sprite = "text_icecub",
@@ -3998,7 +3999,7 @@ tiles_list = {
     layer = 20,
     tags = {"icecube"},
   },
-  -- 329
+  -- 342
   {
     name = "jill",
     sprite = "jill",
@@ -4021,7 +4022,7 @@ tiles_list = {
     tags = {"devs", "chars", "valhalla", "cynthia"},
     desc = "it time 2 mix drincc & chaeng life"
   },
-  -- 330
+  -- 343
   {
     name = "text_jill",
     sprite = "text_jill",
@@ -4031,7 +4032,7 @@ tiles_list = {
     layer = 20,
     tags = {"devs", "chars", "va11 hall-a", "cynthia"},
   },
-  -- 331
+  -- 344
   {
     name = "text_paint",
     sprite = "text_paint",
@@ -4042,7 +4043,7 @@ tiles_list = {
     tags = {"colors", "colours"},
     desc = "PAINT (Verb): changes the second object's color to match the first if the objects are on each other. Supports color mixing."
   },
-  -- 332
+  -- 345
   {
     name = "paint",
     sprite = {"paint","paint_color"},
@@ -4053,7 +4054,7 @@ tiles_list = {
     tags = {"colors", "colours"},
     desc = "Creating a PAINT will always be a samecolor paint."
   },
-  -- 333
+  -- 346
   {
     name = "text_glued",
     sprite = "text_glued",
@@ -4064,7 +4065,7 @@ tiles_list = {
     tags = {"sticky","lily"},
     desc = "GLUED: Stuck to adjacent units sharing its colour, and can't move unless the entire block can simultaneously move.",
   },
-  --- 334
+  --- 347
   {
     name = "ger",
     sprite = "ger",
@@ -4074,7 +4075,7 @@ tiles_list = {
     rotate = true,
     tags = {"gear", "time", "cog"},
   },
-  -- 335
+  -- 348
   {
     name = "text_ger",
     sprite = "text_ger",
@@ -4084,7 +4085,7 @@ tiles_list = {
     layer = 20,
     tags = {"gear", "time", "cog"},
   },
-  -- 336
+  -- 349
   {
     name = "text_rithere",
     sprite = "text_rithere",
@@ -4095,7 +4096,7 @@ tiles_list = {
     tags = {"right here"},
     desc = "RIT HERE: Sends objects to where the text is.",
   },
-  -- 337
+  -- 350
   {
     name = "text_torc",
     sprite = "text_torc",
@@ -4106,7 +4107,7 @@ tiles_list = {
     tags = {"torchlight", "flashlight"},
     desc = "TORC: A TORC object emits light in the direction they're facing. The angle of the light determined by the number of TORC stacks. (WIP)",
   },
-  -- 338
+  -- 351
   {
     name = "text_ignor",
     sprite = "text_ignor",
@@ -4117,7 +4118,7 @@ tiles_list = {
     tags = {"ignore"},
     desc = "IGNOR (Verb): x IGNOR y causes x to not be able to interact with or move y in any way."
   },
-  -- 339
+  -- 352
   {
     name = "text_rotatbl",
     sprite = "text_rotatbl",
@@ -4128,7 +4129,7 @@ tiles_list = {
     tags = {"rotatable"},
     desc = "ROTATBL: Makes any object able to be rotated."
   },
-  -- 340
+  -- 353
   {
     name = "text_vs",
     sprite = "text_vs",
@@ -4139,7 +4140,7 @@ tiles_list = {
     tags = {"versus"},
     desc = "VS (Verb): The two objects enter a 1 on 1 battle: whoever steps on the other wins.",
   },
-  --- 334
+  -- 354
   {
     name = "hors",
     sprite = "hors",
@@ -4149,7 +4150,7 @@ tiles_list = {
     features = { sans = {x=17,y=6,w=3,h=3} },
     tags = {"chess", "knight", "horse"},
   },
-  -- 335
+  -- 355
   {
     name = "text_hors",
     sprite = "text_hors",
@@ -4159,7 +4160,7 @@ tiles_list = {
     layer = 20,
     tags = {"chess", "knight", "horse"},
   },
-  --- 334
+  -- 356
   {
     name = "can",
     sprite = "can",
@@ -4169,7 +4170,7 @@ tiles_list = {
     rotate = true,
     tags = {"valhalla"},
   },
-  -- 335
+  -- 357
   {
     name = "text_can",
     sprite = "text_can",
@@ -4179,7 +4180,7 @@ tiles_list = {
     layer = 20,
     tags = {"valhalla"},
   },
-  --- 336
+  -- 358
   {
     name = "toggl",
     sprite = "toggl",
@@ -4189,7 +4190,7 @@ tiles_list = {
     rotate = true,
     tags = {"toggle","lightswitch"},
   },
-  -- 337
+  -- 359
   {
     name = "text_toggl",
     sprite = "text_toggl",
@@ -4199,7 +4200,7 @@ tiles_list = {
     layer = 20,
     tags = {"toggle","lightswitch"},
   },
-  -- 338
+  -- 360
   {
     name = "text_pinc",
     sprite = "text_pinc_cond",
@@ -4213,7 +4214,7 @@ tiles_list = {
     tags = {"colors", "colours", "pink"},
     desc = "PINC: Causes the unit to become pink!"
   },
-  -- 339
+  -- 361
   {
     name = "text_nuek",
     sprite = "text_nuek",
@@ -4224,7 +4225,7 @@ tiles_list = {
     tags = {"nuke", "bomb"},
     desc = "NUEK: A NUEK will begin destroying everything around it, its radius growing once per turn. Currently very laggy, for some reason."
   },
-  -- 340
+  -- 362
   {
     name = "letter_o",
     sprite = "letter_o",
@@ -4234,7 +4235,7 @@ tiles_list = {
     layer = 20,
     desc = "the most op letter",
   },
-  -- 341
+  -- 363
   {
     name = "text_samefloat",
     sprite = "text_samefloat",
@@ -4245,7 +4246,7 @@ tiles_list = {
     tags = {"sameflye"},
     desc = "SAMEFLOAT( (Compare Condition): True if the condition unit has the same amount of FLYE as the target.",
   },
-  -- 342
+  -- 364
   {
     name = "bom",
     sprite = "bom",
@@ -4255,7 +4256,7 @@ tiles_list = {
     tags = {"bomb", "boom"},
     desc = "it go boom",
   },
-  -- 343
+  -- 365
   {
     name = "text_bom",
     sprite = "text_bom",
@@ -4265,7 +4266,7 @@ tiles_list = {
     layer = 20,
     tags = {"bomb", "boom"},
   },
-  -- 344
+  -- 366
   {
     name = "xplod",
     sprite = "sparkl",
@@ -4273,7 +4274,7 @@ tiles_list = {
     color = {2,2},
     layer = 22,
   },
-  -- 345
+  -- 367
   {
     name = "text_behind",
     sprite = "text_behind",
@@ -4284,7 +4285,7 @@ tiles_list = {
     tags = {"back", "look"},
     desc = "BEHIND (Infix Condition): True if an indicated object is looking away from the unit on an adjacent tile.",
   },
-  -- 346
+  -- 368
   {
     name = "text_beside",
     sprite = "text_beside",
@@ -4295,7 +4296,7 @@ tiles_list = {
     tags = {"look", "left", "right"},
     desc = "BESIDE (Infix Condition): True if an indicated object is at the side of the unit on an adjacent tile.",
   },
-  -- 347
+  -- 369
   {
     name = "text_look away",
     sprite = "text_look away",
@@ -4306,7 +4307,7 @@ tiles_list = {
     tags = {"unfollow", "facing away", "lookaway", "behind"},
     desc = "LOOK AWAY: As an infix condition, true if this object is on the tile behind the unit As a verb, makes the unit face away from this object at end of turn.",
   },
-  --348
+  -- 370
   {
     name = "square",
     sprite = "square",
@@ -4318,7 +4319,7 @@ tiles_list = {
     tags = {"chars", "thefox", "puyopuyo tetris"},
     desc = "oh no am square????"
   },
-  --349
+  -- 371
   {
     name = "triangle",
     sprite = "triangle",
@@ -4330,7 +4331,7 @@ tiles_list = {
     tags = {"chars", "thefox", "puyopuyo tetris"},
     desc = "TRIASNGLE?????? this is ridicouuolus",
   },
-  --350
+  -- 372
   {
     name = "text_square",
     sprite = "text_square",
@@ -4341,7 +4342,7 @@ tiles_list = {
     features = { sans = {x=19, y=7, w=2, h=2} },
     tags = {"chars", "thefox", "puyopuyo tetris"},
   },
-  --351
+  -- 373
   {
     name = "text_triangle",
     sprite = "text_triangle",
@@ -4352,7 +4353,7 @@ tiles_list = {
     features = { sans = {x=19, y=7, w=2, h=2} },
     tags = {"chars", "thefox", "puyopuyo tetris"},
   },
-  -- 352
+  -- 374
   {
     name = "text_right",
     sprite = "text_goup",
@@ -4363,7 +4364,7 @@ tiles_list = {
     tags = {"direction"},
     desc = "RIGHT: A GO ->, but facing right.",
   },
-  -- 353
+  -- 375
   {
     name = "text_upleft",
     sprite = "text_upleft",
@@ -4375,7 +4376,7 @@ tiles_list = {
     tags = {"direction"},
     desc = "UPLEFT: A GO ->, but facing upleft.",
   },
-  -- 354
+  -- 376
   {
     name = "text_upright",
     sprite = "text_upright",
@@ -4387,7 +4388,7 @@ tiles_list = {
     tags = {"direction"},
     desc = "UPRIGHT: A GO ->, but facing upright.",
   },
-  -- 355
+  -- 377
   {
     name = "text_downleft",
     sprite = "text_downleft",
@@ -4399,7 +4400,7 @@ tiles_list = {
     tags = {"direction"},
     desc = "DOWNLEFT: A GO ->, but facing downleft.",
   },
-  -- 356
+  -- 378
   {
     name = "text_downright",
     sprite = "text_downright",
@@ -4411,7 +4412,7 @@ tiles_list = {
     tags = {"direction"},
     desc = "DOWNRIGHT: A GO ->, but facing downright.",
   },
-  -- 357
+  -- 379
   {
     name = "letter_1",
     sprite = "letter_1",
@@ -4422,7 +4423,7 @@ tiles_list = {
     tags = {"number", "digit", "one"},
     desc = "Used in EVERY1 and NO1.",
   },
-  -- 358
+  -- 380
   {
     name = "letter_/",
     sprite = "letter_slash",
@@ -4433,7 +4434,7 @@ tiles_list = {
     tags = {"slash"},
     desc = "Used in W/FREN and LIE/8.",
   },
-  -- 359
+  -- 381
   {
     name = "letter_8",
     sprite = "letter_8",
@@ -4444,7 +4445,7 @@ tiles_list = {
     tags = {"number", "digit", "eight"},
     desc = "Used in LIE/8.",
   },
-  -- 360
+  -- 382
   {
     name = "snoman",
     sprite = "snoman",
@@ -4455,7 +4456,7 @@ tiles_list = {
     tags = {"chars", "snowman", "christmas"},
     desc = "do u wanna creat a snoman??",
   },
-  -- 361
+  -- 383
   {
     name = "text_snoman",
     sprite = "text_snoman",
@@ -4465,7 +4466,7 @@ tiles_list = {
     layer = 20,
     tags = {"chars", "snowman", "christmas"},
   },
-  -- 362
+  -- 384
   {
     name = "snoflak",
     sprite = "snoflak",
@@ -4475,7 +4476,7 @@ tiles_list = {
     tags = {"snowflake", "ice", "hail", "christmas"},
     desc = "no 2 r the same...\nor is it?",
   },
-  -- 363
+  -- 385
   {
     name = "text_snoflak",
     sprite = "text_snoflak",
@@ -4485,7 +4486,7 @@ tiles_list = {
     layer = 20,
     tags = {"snowflake", "ice", "hail", "christmas"},
   },
-  -- 364
+  -- 386
   {
     name = "fir",
     sprite = "fir",
@@ -4495,7 +4496,7 @@ tiles_list = {
     tags = {"hot", "fire", "flame"},
     desc = "CAUTION HOTTE!!!",
   },
-  -- 365
+  -- 387
   {
     name = "text_fir",
     sprite = "text_fir",
@@ -4505,7 +4506,7 @@ tiles_list = {
     layer = 20,
     tags = {"hot", "fire", "flame"},
   },
-  -- 366
+  -- 388
   {
     name = "sanglas",
     sprite = "sanglas",
@@ -4516,7 +4517,7 @@ tiles_list = {
     tags = {"time", "hourglass"},
     desc = "tim got broken",
   },
-  -- 367
+  -- 389
   {
     name = "text_sanglas",
     sprite = "text_sanglas",
@@ -4526,7 +4527,7 @@ tiles_list = {
     layer = 20,
     tags = {"time", "hourglass"},
   },
-  -- 368
+  -- 390
   {
     name = "ui_5",
     sprite = "ui_5",
@@ -4535,7 +4536,7 @@ tiles_list = {
     layer = 20,
     desc = "The other wait key.",
   },
-  -- 369
+  -- 391
   {
     name = "ui_space",
     sprite = "ui_space",
@@ -4544,7 +4545,7 @@ tiles_list = {
     layer = 20,
     desc = "The wait key.",
   },
-  -- 370
+  -- 392
   {
     name = "ui_z",
     sprite = "ui_z",
@@ -4553,7 +4554,7 @@ tiles_list = {
     layer = 20,
     desc = "The undo key.",
   },
-  -- 371
+  -- 393
   {
     name = "ui_r",
     sprite = "ui_r",
@@ -4562,7 +4563,7 @@ tiles_list = {
     layer = 20,
     desc = "The restart key.",
   },
-  -- 372
+  -- 394
   {
     name = "letter_ee",
     sprite = "letter_ee",
@@ -4571,7 +4572,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
-  -- 373
+  -- 395
   {
     name = "letter_fren",
     sprite = "letter_fren",
@@ -4581,7 +4582,7 @@ tiles_list = {
     layer = 20,
     desc = "its a fren",
   },
-  -- 374
+  -- 396
   {
     name = "letter_ll",
     sprite = "letter_ll",
@@ -4591,7 +4592,7 @@ tiles_list = {
     layer = 20,
     desc = "welcome <3 he11",
   },
-  -- 375
+  -- 397
   {
     name = "letter_2",
     sprite = "letter_2",
@@ -4600,7 +4601,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
-  -- 376
+  -- 398
   {
     name = "letter_3",
     sprite = "letter_3",
@@ -4609,7 +4610,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
-  -- 377
+  -- 399
   {
     name = "letter_4",
     sprite = "letter_4",
@@ -4618,7 +4619,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
-  -- 378
+  -- 400
   {
     name = "letter_5",
     sprite = "letter_5",
@@ -4627,7 +4628,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
-  -- 379
+  -- 401
   {
     name = "letter_6",
     sprite = "letter_6",
@@ -4636,7 +4637,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
-  -- 380
+  -- 402
   {
     name = "letter_7",
     sprite = "letter_7",
@@ -4645,7 +4646,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
-  -- 381
+  -- 403
   {
     name = "letter_9",
     sprite = "letter_9",
@@ -4654,7 +4655,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
-  -- 382
+  -- 404
   {
     name = "ladr",
     sprite = "ladr",
@@ -4665,7 +4666,7 @@ tiles_list = {
     tags = {"ladder", "stairs", "climb"},
     desc = "jumpman be u",
   },
-  -- 383
+  -- 405
   {
     name = "text_ladr",
     sprite = "text_ladr",
@@ -4675,7 +4676,7 @@ tiles_list = {
     layer = 20,
     tags = {"ladder", "stairs", "climb"},
   },
-  -- 384
+  -- 406
   {
     name = "text_gravy",
     sprite = "text_gravy",
@@ -4686,7 +4687,7 @@ tiles_list = {
     tags = {"gravity", "fall", "lily"},
     desc = "GRAVY: Changes the direction of HAET SKYE and HAET FLOR. (Unimplemented)"
   },
-  --- 385
+  -- 407
   {
     name = "text_w/neighbor",
     sprite = "text_wneighbor",
@@ -4697,7 +4698,7 @@ tiles_list = {
     tags = {"near", "around", "infix condition", "touching", "adjacent"},
     desc = "W/ NEIGHBOR (Infix Condition): True if the indicated object is on any of orthogonal tiles surrounding the unit. (The unit's own tile is not checked.)",
   },
-  -- 386
+  -- 408
   {
     name = "cobll",
     sprite = "cobll",
@@ -4708,7 +4709,7 @@ tiles_list = {
     tags = {"cobblestone"},
     desc = "so we back in the mine"
   },
-  -- 387
+  -- 409
   {
     name = "text_cobll",
     sprite = "text_cobll",
@@ -4718,7 +4719,7 @@ tiles_list = {
     layer = 20,
     tags = {"cobblestone"},
   },
-  -- 388
+  -- 410
   {
     name = "wuud",
     sprite = "wuud",
@@ -4729,7 +4730,7 @@ tiles_list = {
     tags = {"wood", "planks"},
     desc = "wuud u cuud u"
   },
-  -- 389
+  -- 411
   {
     name = "text_wuud",
     sprite = "text_wuud",
@@ -4739,7 +4740,7 @@ tiles_list = {
     layer = 20,
     tags = {"wood", "planks"},
   },
-  -- 390
+  -- 412
   {
     name = "ui_reset",
     sprite = "ui_reset",
@@ -4747,7 +4748,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
-  -- 391
+  -- 413
   {
     name = "ui_undo",
     sprite = "ui_undo",
@@ -4755,7 +4756,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
-  -- 392
+  -- 414
   {
     name = "ui_wait",
     sprite = "ui_wait",
@@ -4763,7 +4764,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
-  -- 393
+  -- 415
   {
     name = "wut",
     sprite = "wut",
@@ -4773,7 +4774,7 @@ tiles_list = {
     tags = {"what"},
     desc = "im confuse",
   },
-  -- 394
+  -- 416
   {
     name = "text_wut",
     sprite = "text_wut",
@@ -4783,7 +4784,7 @@ tiles_list = {
     layer = 20,
     tags = {"what"},
   },
-  -- 395
+  -- 417
   {
     name = "wat",
     type = "object",
@@ -4792,7 +4793,7 @@ tiles_list = {
     tags = {"what", "error"},
     desc = "whoops error"
   },
-  -- 396
+  -- 418
   {
     name = "text_wat",
     sprite = "text_wat",
@@ -4802,7 +4803,7 @@ tiles_list = {
     layer = 20,
     tags = {"what", "error"},
   },
-  -- 397
+  -- 419
   {
     name = "brik",
     sprite = "brik",
@@ -4812,7 +4813,7 @@ tiles_list = {
     tags = {"bricks", "wall"},
     desc = "just another brik in the wal",
   },
-  -- 398
+  -- 420
   {
     name = "text_brik",
     sprite = "text_brik",
@@ -4821,9 +4822,10 @@ tiles_list = {
     color = {2, 1},
     layer = 20,
     tags = {"bricks", "wall"},
+    nice = true,
     desc = "reverse kirb",
   },
-  -- 399
+  -- 421
   {
     name = "litbolt",
     sprite = "litbolt",
@@ -4833,7 +4835,7 @@ tiles_list = {
     rotate = true,
     desc = "made with lightning. REAL LIGHTNING.",
   },
-  -- 400
+  -- 422
   {
     name = "text_litbolt",
     sprite = "text_litbolt",
@@ -4842,7 +4844,7 @@ tiles_list = {
     color = {2, 4},
     layer = 20,
   },
-  -- 401
+  -- 423
   {
     name = "text_;d",
     sprite = "text_ungood",
@@ -4854,7 +4856,7 @@ tiles_list = {
     tags = {"unwin", "wink", "face", "unyay", "patashu"},
     desc = ";D: When U touches ;D, the current level will no longer be considered won, without exiting the level. Imagine a win score equal to the number of Us on :) minus the Us on ;D. If positive, you win. If negative, you lose your win. If equal, nothing happens.",
   },
-  --402
+  -- 424
   {
     name = "text_enby",
     sprite = "text_enby-colored",
@@ -4864,7 +4866,7 @@ tiles_list = {
     layer = 20,
     desc = "ENBY: Causes the unit to appear yellow, white, purple and black.",
   },
-  -- 403
+  -- 425
   {
     name = "beeee",
     sprite = {"beeee","no1"},
@@ -4877,7 +4879,7 @@ tiles_list = {
     tags = {"honeybee", "chars", "insect"},
     desc = "the bab beeee be tranz",
   },
-  -- 404
+  -- 426
   {
     name = "text_beeee",
     sprite = "text_beeee",
@@ -4888,7 +4890,7 @@ tiles_list = {
     tags = {"honeybee", "chars", "insect"},
     desc = "bab beeeeeeeee u",
   },
-  -- 405
+  -- 427
   {
     name = "rouz",
     sprite = "rouz",
@@ -4898,7 +4900,7 @@ tiles_list = {
     features = { sans = {x=8, y=6, w=3, h=3} },
     tags = {"rose", "flower", "plants"},
   },
-  -- 406
+  -- 428
   {
     name = "text_rouz",
     sprite = "text_rouz",
@@ -4908,7 +4910,7 @@ tiles_list = {
     layer = 20,
     tags = {"rose", "flower", "plants"},
   },
-  -- 407
+  -- 429
   {
     name = "san",
     sprite = "san",
@@ -4919,7 +4921,7 @@ tiles_list = {
     tags = {"sand", "beach", "desert"},
     desc = "san undertales",
   },
-  -- 408
+  -- 430
   {
     name = "text_san",
     sprite = "text_san",
@@ -4929,7 +4931,7 @@ tiles_list = {
     layer = 20,
     tags = {"sand", "beach", "desert"},
   },
-  -- 409
+  -- 431
   {
     name = "letter_;",
     sprite = "letter_semicolon",
@@ -4940,7 +4942,7 @@ tiles_list = {
     tags = {"semicolon", "wink"},
     desc = "Used in ;D",
   },
-  -- 410
+  -- 432
   {
     name = "fungye",
     sprite = "fungye",
@@ -4949,7 +4951,7 @@ tiles_list = {
     layer = 4,
     tags = {"fungus", "fungi", "mushroom"},
   },
-  -- 411
+  -- 433
   {
     name = "text_fungye",
     sprite = "text_fungye",
@@ -4960,7 +4962,7 @@ tiles_list = {
     tags = {"fungus", "fungi", "mushroom"},
     desc = "not a very fun guy",
   },
-  -- 411
+  -- 434
   {
     name = "kar",
     sprite = "kar",
@@ -4972,7 +4974,7 @@ tiles_list = {
     tags = {"car", "vehicle"},
     desc = "awaken my masters",
   },
-  -- 412
+  -- 435
   {
     name = "text_kar",
     sprite = "text_kar",
@@ -4982,7 +4984,7 @@ tiles_list = {
     layer = 20,
     tags = {"car", "vehicle"},
   },
-  -- 413
+  -- 436
   {
     name = "tor",
     sprite = "tor",
@@ -4993,7 +4995,7 @@ tiles_list = {
     tags = {"portal", "japan", "torii", "asia"},
     desc = "the east poor toll",
   },
-  -- 414
+  -- 437
   {
     name = "text_tor",
     sprite = "text_tor",
@@ -5003,7 +5005,7 @@ tiles_list = {
     layer = 20,
     tags = {"portal", "japan", "torii", "asia"},
   },
-  -- 415
+  -- 438
   {
     name = "son",
     sprite = "son",
@@ -5013,7 +5015,7 @@ tiles_list = {
     tags = {"hot", "sunny", "day"},
     desc = "the son be a :( lazor",
   },
-  -- 416
+  -- 439
   {
     name = "text_son",
     sprite = "text_son",
@@ -5023,7 +5025,7 @@ tiles_list = {
     layer = 20,
     tags = {"hot", "sunny", "day"},
   },
-  -- 417
+  -- 440
   {
     name = "muun",
     sprite = "muun",
@@ -5033,7 +5035,7 @@ tiles_list = {
     tags = {"moon", "night", "mun", "crescent"},
     desc = "unaffiliated with munwalk",
   },
-  -- 418
+  -- 441
   {
     name = "text_muun",
     sprite = "text_muun",
@@ -5043,7 +5045,7 @@ tiles_list = {
     layer = 20,
     tags = {"moon", "night", "mun", "crescent"},
   },
-  -- 419
+  -- 442
   {
     name = "leef",
     sprite = "leef",
@@ -5054,7 +5056,7 @@ tiles_list = {
     tags = {"leaf", "weed lmao", "plants"},
     desc = "leef meem alone",
   },
-  -- 420
+  -- 443
   {
     name = "text_leef",
     sprite = "text_leef",
@@ -5064,10 +5066,9 @@ tiles_list = {
     layer = 20,
     tags = {"leaf", "weed lmao", "plants"},
     desc = "its the 420th object lmao",
-    weed = true,
-    nice = true,
+    nice = false,
   },
-  -- 421
+  -- 444
   {
     name = "starr",
     sprite = "starr",
@@ -5077,7 +5078,7 @@ tiles_list = {
     tags = {"star", "night"},
     desc = "starr starr nite",
   },
-  -- 422
+  -- 445
   {
     name = "text_starr",
     sprite = "text_starr",
@@ -5087,7 +5088,7 @@ tiles_list = {
     layer = 20,
     tags = {"star", "night"},
   },
-  -- 423
+  -- 446
   {
     name = "shel",
     sprite = "shel",
@@ -5097,7 +5098,7 @@ tiles_list = {
     tags = {"shell", "scallop", "beach"},
     desc = "gas gas gas",
   },
-  -- 424
+  -- 447
   {
     name = "text_shel",
     sprite = "text_shel",
@@ -5107,7 +5108,7 @@ tiles_list = {
     layer = 20,
     tags = {"shell", "scallop", "beach"},
   },
-  -- 425
+  -- 448
   {
     name = "sancastl",
     sprite = "sancastl",
@@ -5117,7 +5118,7 @@ tiles_list = {
     tags = {"sandcastle", "beach"},
     desc = "lets creat a sancastl",
   },
-  -- 426
+  -- 449
   {
     name = "text_sancastl",
     sprite = "text_sancastl",
@@ -5127,7 +5128,7 @@ tiles_list = {
     layer = 20,
     tags = {"sandcastle", "beach"},
   },
-  --- 427
+  -- 450
   {
     name = "parsol",
     sprite = "parsol",
@@ -5138,7 +5139,7 @@ tiles_list = {
     tags = {"parasol", "umbrella", "beach"},
     desc = "protecc from son thatbe :(",
   },
-  --- 428
+  -- 451
   {
     name = "text_parsol",
     sprite = "text_parsol",
@@ -5148,7 +5149,7 @@ tiles_list = {
     layer = 20,
     tags = {"parasol", "umbrella", "beach"},
   },
-  --429
+  -- 452
   {
     name = "pallm",
     sprite = "pallm",
@@ -5158,7 +5159,7 @@ tiles_list = {
     sing = "s_steel",
     tags = {"palm tree", "coconut tree", "beach", "plants"},
   },
-  --430
+  -- 453
   {
     name = "text_pallm",
     sprite = "text_pallm",
@@ -5168,7 +5169,7 @@ tiles_list = {
     layer = 20,
     tags = {"palm tree", "coconut tree", "beach", "plants"},
   },
-  --431
+  -- 454
   {
     name = "coco",
     sprite = "coco",
@@ -5181,7 +5182,7 @@ tiles_list = {
     tags = {"fruit", "coconut", "plants"},
     desc = "its a bigg bigg nutt",
   },
-  --432
+  -- 455
   {
     name = "text_coco",
     sprite = "text_coco",
@@ -5191,7 +5192,7 @@ tiles_list = {
     layer = 20,
     tags = {"fruit", "coconut", "plants"},
   },
-  --433
+  -- 456
   {
     name = "glas",
     sprite = "glas",
@@ -5202,7 +5203,7 @@ tiles_list = {
     tags = {"glass"},
     desc = "a tranzlucent block?!",
   },
-  --434
+  -- 457
   {
     name = "text_glas",
     sprite = "text_glas",
@@ -5212,7 +5213,7 @@ tiles_list = {
     layer = 20,
     tags = {"glass"},
   },
-  --435
+  -- 458
   {
     name = "fishe",
     sprite = "fishe",
@@ -5224,7 +5225,7 @@ tiles_list = {
     tags = {"angelfish", "chars"},
     desc = "fishe be walk?? kinda quirky doe",
   },
-  --436
+  -- 459
   {
     name = "text_fishe",
     sprite = "text_fishe",
@@ -5234,7 +5235,7 @@ tiles_list = {
     layer = 20,
     tags = {"angelfish", "chars"},
   },
-  -- 437
+  -- 460
   {
     name = "vien",
     sprite = "vien",
@@ -5245,7 +5246,7 @@ tiles_list = {
     tags = {"vines", "plants", "climb"},
     desc = "vinny viensauce",
   },
-  -- 438
+  -- 461
   {
     name = "text_vien",
     sprite = "text_vien",
@@ -5256,7 +5257,7 @@ tiles_list = {
     tags = {"vines", "plants", "climb"},
     desc = "so she uploads a VIEN",
   },
-  -- 439
+  -- 462
   {
     name = "pudll",
     sprite = "pudll",
@@ -5266,7 +5267,7 @@ tiles_list = {
     tags = {"water", "puddle"},
     desc = "its just a single watr",
   },
-  -- 440
+  -- 463
   {
     name = "text_pudll",
     sprite = "text_pudll",
@@ -5276,7 +5277,7 @@ tiles_list = {
     layer = 20,
     tags = {"water", "puddle"},
   },
-  -- 441
+  -- 464
   {
     name = "red",
     sprite = "red",
@@ -5285,7 +5286,7 @@ tiles_list = {
     layer = 4,
     tags = {"reeds", "plants", "cattail", "swamp"},
   },
-  -- 442
+  -- 465
   {
     name = "text_red",
     sprite = "text_red",
@@ -5296,7 +5297,7 @@ tiles_list = {
     tags = {"reeds", "plants", "cattail", "swamp"},
     desc = "wait what",
   },
-  -- 443
+  -- 466
   {
     name = "stum",
     sprite = "stum",
@@ -5306,7 +5307,7 @@ tiles_list = {
     tags = {"plants", "tree stump"},
     desc = "im stumped",
   },
-  -- 444
+  -- 467
   {
     name = "text_stum",
     sprite = "text_stum",
@@ -5317,7 +5318,7 @@ tiles_list = {
     tags = {"plants", "tree stump"},
     unlucky = true,
   },
-  -- 445
+  -- 468
   {
     name = "bullb",
     sprite = "bullb",
@@ -5326,7 +5327,7 @@ tiles_list = {
     layer = 6,
     tags = {"lightbulb", "power"},
   },
-  -- 446
+  -- 469
   {
     name = "text_bullb",
     sprite = "text_bullb",
@@ -5336,7 +5337,7 @@ tiles_list = {
     layer = 20,
     tags = {"lightbulb", "power"},
   },
-  --447
+  -- 470
   {
     name = "battry",
     sprite = "battry",
@@ -5348,7 +5349,7 @@ tiles_list = {
     tags = {"battery", "power"},
     desc = "not responsible for hidden states",
   },
-  --448
+  -- 471
   {
     name = "text_battry",
     sprite = "text_battry",
@@ -5358,7 +5359,7 @@ tiles_list = {
     layer = 20,
     tags = {"battery", "power"},
   },
-  --449
+  -- 472
   {
     name = "smol",
     sprite = "smol",
@@ -5370,7 +5371,7 @@ tiles_list = {
     tags = {"portal"},
     desc = "the tini poor toll",
   },
-  --450
+  -- 473
   {
     name = "text_smol",
     sprite = "text_smol",
@@ -5380,7 +5381,7 @@ tiles_list = {
     layer = 20,
     tags = {"portal"},
   },
-  --451
+  -- 474
   {
     name = "win",
     sprite = "win",
@@ -5392,7 +5393,7 @@ tiles_list = {
     tags = {"portal", "window", "doorway"},
     desc = "the skware poor toll",
   },
-  --452
+  -- 475
   {
     name = "text_win",
     sprite = "text_win",
@@ -5403,7 +5404,7 @@ tiles_list = {
     tags = {"portal", "window", "doorway"},
     desc = "not to be confused with :)",
   },
-  --453
+  -- 476
   {
     name = "statoo",
     sprite = "statoo",
@@ -5414,7 +5415,7 @@ tiles_list = {
     tags = {"statue", "chars", "janitor"},
     desc = "their occupation is a janitor",
   },
-  --454
+  -- 477
   {
     name = "text_statoo",
     sprite = "text_statoo",
@@ -5424,7 +5425,7 @@ tiles_list = {
     layer = 20,
     tags = {"statue", "chars", "janitor"},
   },
-  --- 455
+  -- 478
   {
     name = "bon",
     sprite = "bon",
@@ -5436,7 +5437,7 @@ tiles_list = {
     tags = {"bone"},
     desc = "bonles pizza",
   },
-  --- 456
+  -- 479
   {
     name = "text_bon",
     sprite = "text_bon",
@@ -5446,7 +5447,7 @@ tiles_list = {
     layer = 20,
     tags = {"bone"},
   },
-  --- 457
+  -- 480
   {
     name = "rockit",
     sprite = "rockit",
@@ -5458,7 +5459,7 @@ tiles_list = {
     tags = {"rocket", "spaceship"},
     desc = "goes to spce",
   },
-  --- 458
+  -- 481
   {
     name = "text_rockit",
     sprite = "text_rockit",
@@ -5468,7 +5469,7 @@ tiles_list = {
     layer = 20,
     tags = {"rocket", "spaceship"},
   },
-  --- 459
+  -- 482
   {
     name = "ufu",
     sprite = "ufu",
@@ -5479,7 +5480,7 @@ tiles_list = {
     tags = {"ufo", "spaceship"},
     desc = "comes from spce",
   },
-  --- 460
+  -- 483
   {
     name = "text_ufu",
     sprite = "text_ufu",
@@ -5489,7 +5490,7 @@ tiles_list = {
     layer = 20,
     tags = {"ufo", "spaceship"},
   },
-  -- 461
+  -- 484
   {
     name = "rein",
     sprite = "rein",
@@ -5499,7 +5500,7 @@ tiles_list = {
     tags = {"rain"},
     desc = "it pours",
   },
-  -- 462
+  -- 485
   {
     name = "text_rein",
     sprite = "text_rein",
@@ -5509,7 +5510,7 @@ tiles_list = {
     layer = 20,
     tags = {"rain"},
   },
-  -- 463
+  -- 486
   {
     name = "algay",
     sprite = "algay",
@@ -5518,7 +5519,7 @@ tiles_list = {
     layer = 3,
     tags = {"algae", "plants"},
   },
-  -- 464
+  -- 487
   {
     name = "text_algay",
     sprite = "text_algay",
@@ -5529,7 +5530,7 @@ tiles_list = {
     tags = {"algae", "plants"},
     desc = "very gay",
   },
-  -- 465
+  -- 488
   {
     name = "noet",
     sprite = "noet",
@@ -5538,7 +5539,7 @@ tiles_list = {
     layer = 9,
     tags = {"music note", "quarter note"},
   },
-  -- 466
+  -- 489
   {
     name = "text_noet",
     sprite = "text_noet",
@@ -5548,7 +5549,7 @@ tiles_list = {
     layer = 20,
     tags = {"music note", "quarter note"},
   },
-  -- 467
+  -- 490
   {
     name = "banboo",
     sprite = "banboo",
@@ -5557,7 +5558,7 @@ tiles_list = {
     layer = 4,
     tags = {"bamboo", "plants"},
   },
-  -- 468
+  -- 491
   {
     name = "text_banboo",
     sprite = "text_banboo",
@@ -5567,7 +5568,7 @@ tiles_list = {
     layer = 20,
     tags = {"bamboo", "plants"},
   },
-  -- 469
+  -- 492
   {
     name = "bunmy",
     sprite = "bunmy",
@@ -5580,7 +5581,7 @@ tiles_list = {
     desc = "looks kinda like bab???",
     nice = true,
   },
-  -- 470
+  -- 493
   {
     name = "text_bunmy",
     sprite = "text_bunmy",
@@ -5590,7 +5591,7 @@ tiles_list = {
     layer = 20,
     tags = {"chars", "bunny rabbit"},
   },
-  -- 471
+  -- 494
   {
     name = "karot",
     sprite = "karot",
@@ -5601,7 +5602,7 @@ tiles_list = {
     tags = {"carrot", "plants", "fruit", "food", "vegetable"},
     desc = "bunmy lüv this",
   },
-  -- 472
+  -- 495
   {
     name = "text_karot",
     sprite = "text_karot",
@@ -5612,7 +5613,7 @@ tiles_list = {
     tags = {"carrot", "plants", "fruit", "food", "vegetable"},
     desc = "is it a frut? is it a vege? i dont karot all!!!",
   },
-  -- 473
+  -- 496
   {
     name = "poisbolt",
     sprite = "poisbolt",
@@ -5623,7 +5624,7 @@ tiles_list = {
     tags = {"poison"},
     desc = "how kids learn the triangular number series",
   },
-  -- 474
+  -- 497
   {
     name = "text_poisbolt",
     sprite = "text_poisbolt",
@@ -5633,7 +5634,7 @@ tiles_list = {
     layer = 20,
     tags = {"poison"},
   },
-  -- 475
+  -- 498
   {
     name = "knif",
     sprite = "knif",
@@ -5642,7 +5643,7 @@ tiles_list = {
     rotate = true,
     tags = {"weapon", "japan", "asia", "edgy"},
   },
-  -- 476
+  -- 499
   {
     name = "text_knif",
     sprite = "text_knif",
@@ -5653,7 +5654,7 @@ tiles_list = {
     tags = {"weapon", "kitchen knife"},
 	desc = "KNIF: Any object with GOT KNIF will wield a KNIF."
   },
-  -- 477
+  -- 500
   {
     name = "timbolt",
     sprite = "timbolt",
@@ -5663,7 +5664,7 @@ tiles_list = {
     rotate = true,
     desc = "tim heals all wounds... unless its a bolt",
   },
-  -- 478
+  -- 501
   {
     name = "text_timbolt",
     sprite = "text_timbolt",
@@ -5672,7 +5673,7 @@ tiles_list = {
     color = {3, 3},
     layer = 20,
   },
-  -- 479
+  -- 502
   {
     name = "bog",
     sprite = "bog",
@@ -5685,7 +5686,7 @@ tiles_list = {
     tags = {"chars", "bug", "insect", "cockroach"},
     desc = "icky",
   },
-  -- 480
+  -- 503
   {
     name = "text_bog",
     sprite = "text_bog",
@@ -5695,7 +5696,7 @@ tiles_list = {
     layer = 20,
     tags = {"chars", "bug", "insect", "cockroach"},
   },
-  -- 481
+  -- 504
   {
     name = "pingu",
     sprite = "pingu",
@@ -5707,7 +5708,7 @@ tiles_list = {
     tags = {"chars", "penguin", "bird"},
     desc = "noot noot",
   },
-  -- 482
+  -- 505
   {
     name = "text_pingu",
     sprite = "text_pingu",
@@ -5717,7 +5718,7 @@ tiles_list = {
     layer = 20,
     tags = {"chars", "penguin", "bird"},
   },
-  -- 483
+  -- 506
   {
     name = "snek",
     sprite = "snek",
@@ -5729,7 +5730,7 @@ tiles_list = {
     tags = {"chars", "snake"},
     desc = "sssssssssssssss",
   },
-  -- 484
+  -- 507
   {
     name = "text_snek",
     sprite = "text_snek",
@@ -5739,7 +5740,7 @@ tiles_list = {
     layer = 20,
     tags = {"chars", "snake"},
   },
-  -- 485
+  -- 508
   {
     name = "ripof",
     sprite = "ripof",
@@ -5751,7 +5752,7 @@ tiles_list = {
     tags = {"chars", "dev", "slime", "blob", "rip off"},
     desc = "from the hit game DEV IS YOU",
   },
-  -- 486
+  -- 509
   {
     name = "text_ripof",
     sprite = "text_ripof",
@@ -5762,7 +5763,7 @@ tiles_list = {
     tags = {"chars", "dev", "slime", "blob", "rip off"},
     desc = "it needs to have the tag dev but i don't want it to be with the other devs",
   },
-  -- 487
+  -- 510
   {
     name = "butflye",
     sprite = "butflye",
@@ -5774,7 +5775,7 @@ tiles_list = {
     tags = {"butterfly", "chars", "insect"},
     desc = "of the bleu morpho variety",
   },
-  -- 488
+  -- 511
   {
     name = "text_butflye",
     sprite = "text_butflye",
@@ -5785,7 +5786,7 @@ tiles_list = {
     tags = {"butterfly", "chars", "insect"},
     desc = "but, flye??",
   },
-  -- 489
+  -- 512
   {
     name = "wurm",
     sprite = "wurm",
@@ -5796,7 +5797,7 @@ tiles_list = {
     features = { sans = {x=20, y=4, w=2, h=2} },
     tags = {"worm", "caterpillar", "bug", "chars", "insect"},
   },
-  -- 490
+  -- 513
   {
     name = "text_wurm",
     sprite = "text_wurm",
@@ -5806,7 +5807,7 @@ tiles_list = {
     layer = 20,
     tags = {"worm", "caterpillar", "bug", "chars", "insect"},
   },
-  -- 491
+  -- 514
   {
     name = "letter_bolt",
     sprite = "letter_bolt",
@@ -5816,7 +5817,7 @@ tiles_list = {
     layer = 20,
     desc = "Used for all of the bolt words; firbolt, icbolt, litbolt, etc.",
   },
-  -- 492
+  -- 515
   {
     name = "letter_ol",
     sprite = "letter_ol",
@@ -5825,7 +5826,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
-  -- 493
+  -- 516
   {
     name = "cor",
     sprite = "cor",
@@ -5834,7 +5835,7 @@ tiles_list = {
     layer = 4,
     tags = {"coral", "beach"},
   },
-  -- 494
+  -- 517
   {
     name = "text_cor",
     sprite = "text_cor",
@@ -5845,7 +5846,7 @@ tiles_list = {
     tags = {"coral", "beach"},
     desc = "ROC backwards",
   },
-  -- 494
+  -- 518
   {
     name = "sirn",
     sprite = "sirn",
@@ -5856,7 +5857,7 @@ tiles_list = {
     tags = {"siren", "alarm"},
     desc = "will steal ur tim machine,"
   },
-  -- 495
+  -- 519
   {
     name = "text_sirn",
     sprite = "text_sirn",
@@ -5866,7 +5867,7 @@ tiles_list = {
     layer = 20,
     tags = {"siren", "alarm"},
   },
-  -- 496
+  -- 520
   {
     name = "ratt",
     sprite = "ratt",
@@ -5878,7 +5879,7 @@ tiles_list = {
     tags = {"chars", "rat", "mouse"},
     desc = "the real MOUS, they STALK at night and SNACC at night, they're the RATTs",
   },
-  -- 497
+  -- 521
   {
     name = "text_ratt",
     sprite = "text_ratt",
@@ -5889,7 +5890,7 @@ tiles_list = {
     tags = {"chars", "rat", "mouse"},
     desc = "the stand of BOG-SNACCEN",
   },
-  -- 496
+  -- 522
   {
     name = "moo",
     sprite = "moo",
@@ -5901,7 +5902,7 @@ tiles_list = {
     tags = {"chars", "cow"},
     desc = "you found bertie, the unfindable moo! noe lvl be infloop",
   },
-  -- 497
+  -- 523
   {
     name = "text_moo",
     sprite = "text_moo",
@@ -5912,7 +5913,7 @@ tiles_list = {
     tags = {"chars", "cow"},
     desc = "moooooo",
   },
-  -- 498
+  -- 524
   {
     name = "enbybog",
     sprite = "enbybog",
@@ -5925,7 +5926,7 @@ tiles_list = {
     desc = "goes by they/them",
     pronouns = {"they","them"},
   },
-  -- 499
+  -- 525
   {
     name = "text_enbybog",
     sprite = "text_enbybog",
@@ -5935,7 +5936,7 @@ tiles_list = {
     layer = 20,
     tags = {"chars", "ladybug", "insect", "cockroach"},
   },
-  -- 500
+  -- 526
   {
     name = "shrim",
     sprite = "shrim",
@@ -5948,7 +5949,7 @@ tiles_list = {
     tags = {"chars", "shrimp", "prawn"},
     desc = "shouldnt it be PINC",
   },
-  -- 501
+  -- 527
   {
     name = "text_shrim",
     sprite = "text_shrim",
@@ -5959,7 +5960,7 @@ tiles_list = {
     tags = {"chars", "shrimp", "prawn"},
     desc = "shrims are pretty rich",
   },
-  -- 502
+  -- 528
   {
     name = "flamgo",
     sprite = "flamgo",
@@ -5971,7 +5972,7 @@ tiles_list = {
     tags = {"chars", "flamingo", "bird"},
     desc = "if ur COLRFUL thats cool too!!",
   },
-  -- 503
+  -- 529
   {
     name = "text_flamgo",
     sprite = "text_flamgo",
@@ -5982,7 +5983,7 @@ tiles_list = {
     tags = {"chars", "flamingo", "bird"},
     desc = "mr. flame go"
   },
-  -- 504
+  -- 530
   {
     name = "gul",
     sprite = "gul",
@@ -5993,7 +5994,7 @@ tiles_list = {
     tags = {"chars", "seagull", "bird", "beach", "7"},
     desc = "7",
   },
-  -- 505
+  -- 531
   {
     name = "text_gul",
     sprite = "text_gul",
@@ -6003,7 +6004,7 @@ tiles_list = {
     layer = 20,
     tags = {"chars", "seagull", "bird", "beach"},
   },
-  -- 506
+  -- 532
   {
     name = "starrfishe",
     sprite = "starrfishe",
@@ -6015,7 +6016,7 @@ tiles_list = {
     tags = {"chars", "starfish", "beach"},
     desc = "she's alive, and has 4 eyes",
   },
-  -- 507
+  -- 533
   {
     name = "text_starrfishe",
     sprite = "text_starrfishe",
@@ -6026,7 +6027,7 @@ tiles_list = {
     tags = {"chars", "starfish", "beach"},
     desc = "what a long name",
   },
-  -- 508
+  -- 534
   {
     name = "sneel",
     sprite = "sneel",
@@ -6038,7 +6039,7 @@ tiles_list = {
     tags = {"chars", "snail"},
     desc = "winner of the undertale snail race gets into BAB",
   },
-  -- 509
+  -- 535
   {
     name = "text_sneel",
     sprite = "text_sneel",
@@ -6049,7 +6050,7 @@ tiles_list = {
     tags = {"chars", "snail"},
     desc = "its kinda slow to load in tho."
   },
-  -- 510
+  -- 536
   {
     name = "kapa",
     sprite = "kapa",
@@ -6061,7 +6062,7 @@ tiles_list = {
     tags = {"chars", "japan", "youkai", "kappa"},
     desc = "now we need a CUMBER object",
   },
-  -- 511
+  -- 537
   {
     name = "text_kapa",
     sprite = "text_kapa",
@@ -6072,7 +6073,7 @@ tiles_list = {
     tags = {"chars", "japan", "youkai", "kappa"},
     desc = ":V"
   },
-  -- 512
+  -- 538
   {
     name = "urei",
     sprite = "urei",
@@ -6083,7 +6084,7 @@ tiles_list = {
     tags = {"chars", "japan", "youkai", "yuurei", "ghost"},
     desc = "GHOST FREN of the eastern variety",
   },
-  -- 513
+  -- 539
   {
     name = "text_urei",
     sprite = "text_urei",
@@ -6093,7 +6094,7 @@ tiles_list = {
     layer = 20,
     tags = {"chars", "japan", "youkai", "yuurei", "ghost"},
   },
-  -- 514
+  -- 540
   {
     name = "wips",
     sprite = "wips",
@@ -6103,7 +6104,7 @@ tiles_list = {
     tags = {"will o wisp", "japan", "ghost", "spirit"},
     desc = "WILL o WIPS?",
   },
-  -- 515
+  -- 541
   {
     name = "text_wips",
     sprite = "text_wips",
@@ -6114,7 +6115,7 @@ tiles_list = {
     tags = {"will o wisp", "japan", "ghost", "spirit"},
     desc = "work in progress",
   },
-  -- 516
+  -- 542
   {
     name = "ryugon",
     sprite = "ryugon",
@@ -6126,7 +6127,7 @@ tiles_list = {
     tags = {"chars", "japan", "youkai", "dragon"},
     desc = "ryugon no ken wo kurae",
   },
-  -- 517
+  -- 543
   {
     name = "text_ryugon",
     sprite = "text_ryugon",
@@ -6136,7 +6137,7 @@ tiles_list = {
     layer = 20,
     tags = {"chars", "japan", "youkai", "dragon"},
   },
-  -- 518
+  -- 544
   {
     name = "iy",
     sprite = "iy",
@@ -6148,7 +6149,7 @@ tiles_list = {
     tags = {"eye", "body part"},
     desc = "IY SEES ALL",
   },
-  -- 519
+  -- 545
   {
     name = "text_iy",
     sprite = "text_iy",
@@ -6158,7 +6159,7 @@ tiles_list = {
     layer = 20,
     tags = {"eye", "body part"},
   },
-  -- 520
+  -- 546
   {
     name = "lisp",
     sprite = "lisp",
@@ -6170,7 +6171,7 @@ tiles_list = {
     tags = {"mouth", "lips", "body part"},
     desc = "it speaks",
   },
-  -- 521
+  -- 547
   {
     name = "text_lisp",
     sprite = "text_lisp",
@@ -6181,7 +6182,7 @@ tiles_list = {
     tags = {"mouth", "lips", "body part"},
     desc = "it altho hath a lithp",
   },
-  -- 522
+  -- 548
   {
     name = "eeg",
     sprite = "eeg",
@@ -6191,7 +6192,7 @@ tiles_list = {
     rotate = true,
     tags = {"egg", "food"},
   },
-  -- 523
+  -- 549
   {
     name = "text_eeg",
     sprite = "text_eeg",
@@ -6201,7 +6202,7 @@ tiles_list = {
     layer = 20,
     tags = {"egg", "food"},
   },
-  -- 524
+  -- 550
   {
     name = "foreeg",
     sprite = "foreeg",
@@ -6211,7 +6212,7 @@ tiles_list = {
     rotate = true,
     tags = {"nest"},
   },
-  -- 525
+  -- 551
   {
     name = "text_foreeg",
     sprite = "text_foreeg",
@@ -6221,7 +6222,7 @@ tiles_list = {
     layer = 20,
     tags = {"nest"},
   },
-  -- 526
+  -- 552
   {
     name = "paw",
     sprite = "paw",
@@ -6232,7 +6233,7 @@ tiles_list = {
     tags = {"paw print"},
     desc = "dogg in bab when?",
   },
-  -- 527
+  -- 553
   {
     name = "text_paw",
     sprite = "text_paw",
@@ -6242,7 +6243,7 @@ tiles_list = {
     layer = 20,
     tags = {"paw print"},
   },
-  -- 528
+  -- 554
   {
     name = "cavebab",
     sprite = "cavebab",
@@ -6253,7 +6254,7 @@ tiles_list = {
     tags = {"chars", "bat"},
     desc = "slep upside down",
   },
-  -- 529
+  -- 555
   {
     name = "text_cavebab",
     sprite = "text_cavebab",
@@ -6263,7 +6264,7 @@ tiles_list = {
     layer = 20,
     tags = {"chars", "bat"},
   },
-  -- 530
+  -- 556
   {
     name = "extre",
     sprite = "extre",
@@ -6274,7 +6275,7 @@ tiles_list = {
     tags = {"tree", "plants", "husk"},
     desc = "a ded tre",
   },
-  -- 531
+  -- 557
   {
     name = "text_extre",
     sprite = "text_extre",
@@ -6284,7 +6285,7 @@ tiles_list = {
     layer = 20,
     tags = {"tree", "plants", "husk"},
   },
-  -- 532
+  -- 558
   {
     name = "heg",
     sprite = "heg",
@@ -6294,7 +6295,7 @@ tiles_list = {
     tags = {"plant", "cactus"},
     desc = "ouch",
   },
-  -- 533
+  -- 559
   {
     name = "text_heg",
     sprite = "text_heg",
@@ -6305,7 +6306,7 @@ tiles_list = {
     tags = {"plant", "cactus"},
     dec = "the text ben't as ouch"
   },
-  -- 534
+  -- 560
   {
     name = "byc",
     sprite = {"byc", "byc_editor"},
@@ -6317,7 +6318,7 @@ tiles_list = {
     tags = {"playing card", "bicycle", "ace", "card"},
     desc = "haha get it, it's because bicycle is a specific brand of playing card",
   },
-  -- 535
+  -- 561
   {
     name = "text_byc",
     sprite = "text_byc",
@@ -6328,7 +6329,7 @@ tiles_list = {
     tags = {"playing card", "bicycle", "ace", "card"},
     desc = "BYC: has a random image every time it's loaded!",
   },
-  -- 534
+  -- 562
   {
     name = "bac",
     sprite = {"byc", "bac"},
@@ -6340,7 +6341,7 @@ tiles_list = {
     tags = {"playing card back", "bicycle", "card"},
     desc = "cards have 2 sides",
   },
-  -- 535
+  -- 563
   {
     name = "text_bac",
     sprite = "text_bac",
@@ -6350,7 +6351,7 @@ tiles_list = {
     layer = 20,
     tags = {"playing card back", "bicycle", "card"},
   },
-  -- 536
+  -- 564
   {
     name = "text_wun",
     sprite = "text_wun",
@@ -6361,7 +6362,7 @@ tiles_list = {
     tags = {"won","patashu"},
     desc = "WUN: A prefix condition that's true if the unit is a won level. If the unit isn't a level, then true if the current level is won.",
   },
-  -- 537
+  -- 565
   {
     name = "text_notranform",
     sprite = "text_notranform",
@@ -6372,7 +6373,7 @@ tiles_list = {
     tags = {"no transform"},
     desc = "NO TRANFORM: A property that prevents the object from transforming. LVL BE NO TRANFORM reverts any transformations it had.",
   },
-  -- 538
+  -- 566
   {
     name = "golf",
     sprite = "golf",
@@ -6382,7 +6383,7 @@ tiles_list = {
     tags = {"flag", "unwin"},
     desc = "i want 0!!!",
   },
-  -- 539
+  -- 567
   {
     name = "text_golf",
     sprite = "text_golf",
@@ -6393,7 +6394,7 @@ tiles_list = {
     tags = {"flag", "unwin"},
     desc = "you see, in golf, a LOWER score is better",
   },
-  -- 540
+  -- 568
   {
     name = "text_sing",
     sprite = "text_sing",
@@ -6404,7 +6405,7 @@ tiles_list = {
     tags = {"play", "music", "say"},
     desc = "SING (Verb): SING A-G with letters!",
   },
-  --- 541
+  --- 569
   {
     name = "text_diagkik",
     sprite = "text_diagkik",
@@ -6415,7 +6416,7 @@ tiles_list = {
     tags = {"sidekick", "diagkick"},
     desc = "DIAGKIK: If a unit moves 45 degrees away from a DIAGKIK, the DIAGKIK copies that movement. With two stacks, also copies 135 degree movement.",
   },
-  -- 542
+  -- 570
   {
     name = "migri",
     sprite = "migri",
@@ -6427,7 +6428,7 @@ tiles_list = {
     tags = {"chars"},
     desc = "i don't actually know what this is, someone tell me",
   },
-  -- 543
+  -- 571
   {
     name = "text_migri",
     sprite = "text_migri",
@@ -6437,7 +6438,7 @@ tiles_list = {
     layer = 20,
     tags = {"chars"},
   },
-  -- 544
+  -- 572
   {
     name = "sloop",
     sprite = "sloop",
@@ -6448,7 +6449,7 @@ tiles_list = {
     tags = {"triangle", "half", "slope"},
     desc = "really cool that bab be u 2 introduced slopes, GOTY",
   },
-  -- 545
+  -- 573
   {
     name = "text_sloop",
     sprite = "text_sloop",
@@ -6459,7 +6460,7 @@ tiles_list = {
     tags = {"triangle", "half", "slope"},
     desc = "ideal for reflecc + go my way",
   },
-  --- 546
+  -- 574
   {
     name = "text_reflecc",
     sprite = "text_reflecc",
@@ -6470,7 +6471,7 @@ tiles_list = {
     tags = {"reflect", "slope", "bounce", "mirror"},
     desc = "REFLECC: When a unit moves onto a REFLECC unit from in front or behind, it will bounce back at 180 degrees. At a 45/135 angle, 90 degrees. At a 90 angle, it will be unable to enter.",
   },
-  -- 547
+  -- 575
   {
     name = "reflecr",
     sprite = "reflecr",
@@ -6481,7 +6482,7 @@ tiles_list = {
     tags = {"mirror", "diagonal", "line", "slope"},
     desc = "imported directly from Deflektor",
   },
-  -- 548
+  -- 576
   {
     name = "text_reflecr",
     sprite = "text_reflecr",
@@ -6492,7 +6493,7 @@ tiles_list = {
     tags = {"mirror", "diagonal", "line", "slope"},
     desc = "ideal for reflecc",
   },
-  -- 549
+  -- 577
   {
     name = "text_graey",
     sprite = "text_graey_cond",
@@ -6506,7 +6507,7 @@ tiles_list = {
     tags = {"colors", "colours", "gray", "grey"},
     desc = "GRAEY: Causes the unit to become gray/grey.\nColor or colour?"
   },
-  -- 550
+  -- 578
   {
     name = "text_brwn",
     sprite = "text_brwn_cond",
@@ -6520,7 +6521,7 @@ tiles_list = {
     tags = {"colors", "colours", "brown"},
     desc = "BRWN: Causes the unit to become brown."
   },
-  -- 551
+  -- 579
   {
     name = "text_sharp",
     sprite = "letter_sharp",
@@ -6530,7 +6531,7 @@ tiles_list = {
     layer = 20,
     desc = "For use with SING.";
   },
-  -- 552
+  -- 580
   {
     name = "text_flat",
     sprite = "letter_flat",
@@ -6540,7 +6541,7 @@ tiles_list = {
     layer = 20,
     desc = "For use with SING.";
   },
-  -- 553
+  -- 581
   {
     name = "chain",
     sprite = "chain",
@@ -6550,7 +6551,7 @@ tiles_list = {
     rotate = "true",
     desc = "EVERY1 W/FREN CHAIN STALK JAIL. now bab's in jail :(",
   },
-  -- 554
+  -- 582
   {
     name = "text_chain",
     sprite = "text_chain",
@@ -6559,7 +6560,7 @@ tiles_list = {
     color = {0, 2},
     layer = 20,
   },
-  -- 555
+  -- 583
   {
     name = "lili",
     sprite = "lili",
@@ -6569,7 +6570,7 @@ tiles_list = {
     rotate = "true",
     tags = {"lilypad", "plants"},
   },
-  -- 556
+  -- 584
   {
     name = "text_lili",
     sprite = "text_lili",
@@ -6580,7 +6581,7 @@ tiles_list = {
     tags = {"lilypad", "plants"},
     desc = "not to be confused with LILA",
   },
-  -- 557
+  -- 585
   {
     name = "swim",
     sprite = "swim",
@@ -6589,7 +6590,7 @@ tiles_list = {
     layer = 8,
     tags = {"boat", "ship"},
   },
-  -- 558
+  -- 586
   {
     name = "text_swim",
     sprite = "text_swim",
@@ -6599,7 +6600,7 @@ tiles_list = {
     layer = 20,
     tags = {"boat", "ship"},
   },
-  -- 559
+  -- 587
   {
     name = "boooo",
     sprite = {"boooo","boooo_mouth"},
@@ -6612,7 +6613,7 @@ tiles_list = {
     tags = {"boo","mario","ghost"},
     desc = "very shy, don't lookat",
   },
-  -- 560
+  -- 588
   {
     name = "text_boooo",
     sprite = "text_boooo",
@@ -6623,7 +6624,7 @@ tiles_list = {
     tags = {"boo","mario","ghost"},
     desc = "AAA u scar mee!",
   },
-  --561
+  -- 589
   {
     name = "gorder",
     sprite = "gorder",
@@ -6634,7 +6635,7 @@ tiles_list = {
     tags = {"girder","city"},
     desc = "constructon zone!",
   },
-  -- 562
+  -- 590
   {
     name = "text_gorder",
     sprite = "text_gorder",
@@ -6644,7 +6645,7 @@ tiles_list = {
     layer = 20,
     tags = {"girder","city"},
   },
-  -- 563
+  -- 591
   {
     name = "piep",
     sprite = "piep",
@@ -6656,7 +6657,7 @@ tiles_list = {
     tags = {"pipe","tube","mario"},
     desc = "enter the piep to skip world",
   },
-  -- 564
+  -- 592
   {
     name = "text_piep",
     sprite = "text_piep",
@@ -6666,7 +6667,7 @@ tiles_list = {
     layer = 20,
     tags = {"pipe","tube","mario"},
   },
-  -- 565
+  -- 593
   {
     name = "tuba",
     sprite = "tuba",
@@ -6677,7 +6678,7 @@ tiles_list = {
     tags = {"pipe","tube","mario"},
     desc = "piep's bff",
   },
-  -- 566
+  -- 594
   {
     name = "text_tuba",
     sprite = "text_tuba",
@@ -6688,7 +6689,7 @@ tiles_list = {
     tags = {"pipe","tube","mario"},
     desc = "pieps are musical instruments",
   },
-  -- 567
+  -- 595
   {
     name = "text_every2",
     sprite = "text_every2",
@@ -6699,7 +6700,7 @@ tiles_list = {
     tags = {"all", "everyone", "every2"},
     desc = "EVERY2: EVERY1 + TXT. (Doesn't include innerlvls atm because lazy + hard to code + unlikely to come up. Sorry.)",
   },
-  -- 568
+  -- 596
   {
     name = "text_every3",
     sprite = "text_every3",
@@ -6710,8 +6711,7 @@ tiles_list = {
     tags = {"all", "everyone", "every3"},
     desc = "EVERY3: Absolutely everything conceivable. The pinnacle of everything technology. (Infloop is not an object.)",
   },
-  -- 568
-  -- hey uh, why do we have this twice
+  -- 597
   {
     name = "text_every3",
     sprite = "text_every3",
@@ -6722,7 +6722,7 @@ tiles_list = {
     tags = {"all", "everyone", "every3"},
     desc = "EVERY3: Absolutely everything conceivable. The pinnacle of everything technology.",
   },
-  -- 569
+  -- 598
   {
     name = "madi",
     sprite = {"madi_hair","madi_skin","madi_shirt","madi_pants"},
@@ -6735,7 +6735,7 @@ tiles_list = {
     tags = {"madeline","celeste","chars"},
     desc = "she clim mountain in very good game",
   },
-  -- 570
+  -- 599
   {
     name = "text_madi",
     sprite = "text_madi",
@@ -6745,7 +6745,7 @@ tiles_list = {
     layer = 20,
     tags = {"madeline","celeste","chars"},
   },
-  -- 571
+  -- 600
   {
     name = "badi",
     sprite = {"madi_hair","madi_skin","madi_eyes","madi_shirt","madi_pants"},
@@ -6758,7 +6758,7 @@ tiles_list = {
     tags = {"badeline","celeste","chars"},
     desc = "emag doog yrev ni niatnuom milc ehs",
   },
-  -- 572
+  -- 601
   {
     name = "text_badi",
     sprite = "text_badi",
@@ -6768,7 +6768,7 @@ tiles_list = {
     layer = 20,
     tags = {"badeline","celeste","chars"},
   },
-  -- 573
+  -- 602
   {
     name = "text_lethers",
     sprite = "text_lethers",
@@ -6779,7 +6779,7 @@ tiles_list = {
     tags = {"letters"},
     desc = "LETHERS: Refers to all letters that exist in the level.",
   },
-  -- 574
+  -- 603
   {
     name = "text_that got",
     sprite = "text_that got",
@@ -6790,7 +6790,7 @@ tiles_list = {
     tags = {"lily", "with", "w/", "infix condition"},
     desc = "THAT GOT (Infix Condition): x THAT GOT y is true if x GOT y.",
   },
-  -- 575
+  -- 604
   {
     name = "forbeeee",
     sprite = "forbeeee",
@@ -6800,7 +6800,7 @@ tiles_list = {
     tags = {"beehive", "beecomb", "honeycomb"},
     desc = "trans rights",
   },
-  -- 576
+  -- 605
   {
     name = "text_forbeeee",
     sprite = "text_forbeeee",
@@ -6810,7 +6810,7 @@ tiles_list = {
     layer = 20,
     tags = {"beehive", "beecomb", "honeycomb"},
   },
-  -- 577
+  -- 606
   {
     name = "do$h",
     sprite = "do$h",
@@ -6820,7 +6820,7 @@ tiles_list = {
     tags = {"dosh", "cash money","money"},
     desc = "DO$H DO$H DO$H!"
   },
-  -- 578
+  -- 607
   {
     name = "text_do$h",
     sprite = "text_do$h",
@@ -6831,7 +6831,7 @@ tiles_list = {
     tags = {"dosh", "cash money","money"},
     desc = "dollas",
   },
-  -- 579
+  -- 608
   {
     name = "dling",
     sprite = "dling",
@@ -6842,7 +6842,7 @@ tiles_list = {
     tags = {"coin","mario"},
     desc = "dling dling dling!"
   },
-  -- 580
+  -- 609
   {
     name = "text_dling",
     sprite = "text_dling",
@@ -6853,7 +6853,7 @@ tiles_list = {
     tags = {"coin","mario"},
     desc = "the sound a coin makes",
   },
-  -- 581
+  -- 610
   {
     name = "warn",
     sprite = {"warn", "no1"},
@@ -6864,7 +6864,7 @@ tiles_list = {
     tags = {"warning", "stripes"},
     desc = "cauntion",
   },
-  -- 582
+  -- 611
   {
     name = "text_warn",
     sprite = "text_warn",
@@ -6874,7 +6874,7 @@ tiles_list = {
     layer = 20,
     tags = {"warning", "stripes"},
   },
-  -- 583
+  -- 612
   {
     name = "reffil",
     sprite = "reffil",
@@ -6884,7 +6884,7 @@ tiles_list = {
     tags = {"refill","celeste"},
     desc = "gives u dash bacc",
   },
-  -- 584
+  -- 613
   {
     name = "text_reffil",
     sprite = "text_reffil",
@@ -6894,7 +6894,7 @@ tiles_list = {
     layer = 20,
     tags = {"refill","celeste"},
   },
-  -- 585
+  -- 614
   {
     name = "text_soko",
     sprite = "text_soko",
@@ -6905,7 +6905,7 @@ tiles_list = {
     tags = {"sokoban"},
     desc = "SOKO (Verb): If X SOKO Y, then X wins when all Y are not frenles.",
   },
-  -- 586
+  -- 615
   {
     name = "yanying",
     sprite = {"yan", "ying"},
@@ -6915,7 +6915,7 @@ tiles_list = {
     layer = 6,
     tags = {"yin yang orb", "taoism"},
   },
-  -- 587
+  -- 616
   {
     name = "text_yanying",
     sprite = "text_yanying",
@@ -6925,7 +6925,7 @@ tiles_list = {
     layer = 20,
     tags = {"yin yang orb", "taoism"},
   },
-  -- 588
+  -- 617
   {
     name = "vlc",
     sprite = "vlc",
@@ -6934,7 +6934,7 @@ tiles_list = {
     layer = 6,
     tags = {"traffic cone"},
   },
-  -- 589
+  -- 618
   {
     name = "text_vlc",
     sprite = "text_vlc",
@@ -6944,7 +6944,7 @@ tiles_list = {
     layer = 20,
     tags = {"traffic cone"},
   },
-  -- 590
+  -- 619
   {
     name = "pidgin",
     sprite = "pidgin",
@@ -6956,7 +6956,7 @@ tiles_list = {
     tags = {"chars", "bird", "city", "pigeon"},
     desc = "not a creole",
   },
-  -- 591
+  -- 620
   {
     name = "text_pidgin",
     sprite = "text_pidgin",
@@ -6967,7 +6967,7 @@ tiles_list = {
     tags = {"chars", "bird", "city", "pigeon"},
     desc = "also not a creole",
   },
-  -- 592
+  -- 621
   {
     name = "foru",
     sprite = "foru",
@@ -6977,7 +6977,7 @@ tiles_list = {
     tags = {"trash can", "rubbish bin", "garbage", "delete", "city"},
     desc = "tresh",
   },
-  -- 593
+  -- 622
   {
     name = "text_foru",
     sprite = "text_foru",
@@ -6988,7 +6988,7 @@ tiles_list = {
     tags = {"trash can", "rubbish bin", "garbage", "delete", "city"},
     desc = "ha ! goteeM",
   },
-  -- 594
+  -- 623
   {
     name = "rod",
     sprite = "rod",
@@ -6999,7 +6999,7 @@ tiles_list = {
     tags = {"city", "street", "road"},
     desc = "forkar",
   },
-  -- 595
+  -- 624
   {
     name = "text_rod",
     sprite = "text_rod",
@@ -7009,7 +7009,7 @@ tiles_list = {
     layer = 20,
     tags = {"city", "street", "road"},
   },
-  -- 585
+  -- 625
   {
     name = "letter_custom",
     sprite = "wut",
@@ -7020,7 +7020,7 @@ tiles_list = {
     tags = {},
     desc = "Custom Letters: Type up to 6 letters into the search box and hit ctrl+enter to get a tile with those letters in it. This text shouldn't show ingame anywhere."
   },
-  -- 597
+  -- 626
   {
     name = "text_past",
     sprite = "text_past",
@@ -7030,7 +7030,7 @@ tiles_list = {
     layer = 20,
     desc = "PAST (Prefix Condition): Applies the rule to turns that have already happened.",
   },
-  --598
+  -- 627
   {
     name = "sans",
     sprite = {"sans_base","sans_jacket"},
@@ -7044,7 +7044,7 @@ tiles_list = {
     tags = {"chars", "sans", "undertale", "skeleton"},
     desc = "sans",
   },
-  --599
+  -- 628
   {
     name = "ditto",
     sprite = "ditto",
@@ -7061,7 +7061,7 @@ tiles_list = {
     },
     tags = {"chars", "ditto", "pokemon"},
   },
-  -- 600
+  -- 629
   {
     name = "kva",
     sprite = "kva",
@@ -7072,7 +7072,7 @@ tiles_list = {
     features = { sans = {x=25, y=7, w=3, h=3} },
     tags = {"chars", "frog", "toad"},
   },
-  -- 601
+  -- 630
   {
     name = "text_kva",
     sprite = "text_kva",
@@ -7082,7 +7082,7 @@ tiles_list = {
     layer = 20,
     tags = {"chars", "frog", "toad"},
   },
-  -- 602
+  -- 631
   {
     name = "of in",
     sprite = "of in",
@@ -7092,7 +7092,7 @@ tiles_list = {
     tags = {"oven", "microwave", "future gadget", "of out"},
     desc = "why do they call it oven when you of in the cold food of out hot eat the food",
   },
-  -- 603
+  -- 632
   {
     name = "text_of in",
     sprite = "text_of in",
@@ -7103,7 +7103,7 @@ tiles_list = {
     tags = {"oven", "microwave", "future gadget", "of out"},
     desc = "of out",
   },
-  -- 604
+  -- 633
   {
     name = "text_stukc",
     sprite = "text_stukc",
@@ -7114,7 +7114,7 @@ tiles_list = {
     tags = {"stuck"},
     desc = "STUKC: Anything with this property can't move. (I know this is a modded word but I don't know who made it, so I'll add that tag later.)"
   },
-  -- 605
+  -- 634
   {
     name = "casete",
     sprite = "casete",
@@ -7124,7 +7124,7 @@ tiles_list = {
     tags = {"cassette","bside","b-side","celeste"},
     desc = "chiptune bloc",
   },
-  -- 606
+  -- 635
   {
     name = "text_casete",
     sprite = "text_casete",
@@ -7135,7 +7135,7 @@ tiles_list = {
     tags = {"cassette","bside","b-side","celeste"},
     desc = "The sprite changes if you change its color. Try it out!",
   },
-  -- 607
+  -- 636
   {
     name = "text_giv",
     sprite = "text_giv",
@@ -7146,7 +7146,7 @@ tiles_list = {
     tags = {"give"},
     desc = "GIV (Verb): If X giv Y, any other units in the same space and flye will get the Y property.",
   },
-  -- 608
+  -- 637
   {
     name = "copkat",
     sprite = {"copkat_base", "copkat_stuff", "copkat_badge"},
@@ -7160,7 +7160,7 @@ tiles_list = {
     tags = {"chars", "cop", "police", "cat"},
     desc = "u hav da wight to wemain siwent!!",
   },
- -- 609
+  -- 638
   {
     name = "kat",
     sprite = "kat",
@@ -7183,7 +7183,7 @@ tiles_list = {
     desc = "bab's sister",
     pronouns = {"she","her"}
   },
-  -- 610
+  -- 639
   {
     name = "text_kat",
     sprite = "text_kat",
@@ -7194,7 +7194,7 @@ tiles_list = {
     tags = {"chars", "cat", "sis", "sister"},
     desc = "meow?"
   },
-  -- 611
+  -- 640
   {
     name = "text_gone",
     sprite = "text_gone",
@@ -7205,7 +7205,7 @@ tiles_list = {
     tags = {"done"},
     desc = "GONE: If something is GONE, it floats away into nothingness."
   },
-  -- 612
+  -- 641
   {
     name = "swan",
     sprite = "swan",
@@ -7226,7 +7226,7 @@ tiles_list = {
     tags = {"chars", "bird", "untitled goose game"},
     desc = "a goos is a female swan",
   },
-  -- 613
+  -- 642
   {
     name = "text_swan",
     sprite = "text_swan",
@@ -7237,7 +7237,7 @@ tiles_list = {
     tags = {"chars", "bird", "untitled goose game"},
     desc = "unnamed swan thing: swan can GOT any object!!!",
   },
-  -- 614
+  -- 643
   {
     name = "spoder",
     sprite = "spoder",
@@ -7248,7 +7248,7 @@ tiles_list = {
     tags = {"chars", "spider", "bug", "spoods"},
     desc = "i think purp is a goode look on u!",
   },
-  -- 615
+  -- 644
   {
     name = "text_spoder",
     sprite = "text_spoder",
@@ -7259,7 +7259,7 @@ tiles_list = {
     tags = {"chars", "spider", "bug", "spoods"},
     desc = "sppood",
   },
-  -- 616
+  -- 645
   {
     name = "weeb",
     sprite = "weeb",
@@ -7269,7 +7269,7 @@ tiles_list = {
     tags = {"spiderweb", "cobweb", "for spoder"},
     desc = "very glued",
   },
-  -- 617
+  -- 646
   {
     name = "text_weeb",
     sprite = "text_weeb",
@@ -7280,7 +7280,7 @@ tiles_list = {
     tags = {"spiderweb", "cobweb", "for spoder"},
     desc = "weebs dont interact",
   },
-  -- 618
+  -- 647
   {
     name = "flof",
     sprite = "flof",
@@ -7296,7 +7296,7 @@ tiles_list = {
     desc = "bab's bro, ver soft, pls pet",
     pronouns = {"he","him"},
   },
-  -- 619
+  -- 648
   {
     name = "text_flof",
     sprite = "text_flof",
@@ -7307,7 +7307,7 @@ tiles_list = {
     tags = {"fluff", "floof", "brother", "dog"},
     desc = "not a flog",
   },
-  -- 620
+  -- 649
   {
     name = "err",
     sprite = "err",
@@ -7318,7 +7318,7 @@ tiles_list = {
     tags = {"chars", "error"},
     desc = "kinda spooky in bab tbh",
   },
-  -- 621
+  -- 650
   {
     name = "text_err",
     sprite = "text_err",
@@ -7328,7 +7328,7 @@ tiles_list = {
     layer = 20,
     tags = {"chars", "error"},
   },
-  -- 622
+  -- 651
   {
     name = "ches",
     sprite = "chest_close",
@@ -7337,7 +7337,7 @@ tiles_list = {
     tags = {"chest", "treasure chest", "mimic"},
     desc = "closes when NED KEE",
   },
-  -- 623
+  -- 652
   {
     name = "text_ches",
     sprite = "text_ches",
@@ -7347,7 +7347,7 @@ tiles_list = {
     layer = 20,
     tags = {"chest", "treasure chest", "mimic"},
   },
-  -- 624
+  -- 653
   {
     name = "mimi",
     sprite = "mimic_close",
@@ -7357,7 +7357,7 @@ tiles_list = {
     tags = {"chars", "chest", "treasure chest", "mimic"},
     desc = "closes when NED KEE",
   },
-  -- 625
+  -- 654
   {
     name = "text_mimi",
     sprite = "text_mimi",
@@ -7367,7 +7367,7 @@ tiles_list = {
     layer = 20,
     tags = {"chars", "chest", "treasure chest", "mimic"},
   },
-  -- 626
+  -- 655
   {
     name = "3den",
     sprite = "3den",
@@ -7377,7 +7377,7 @@ tiles_list = {
     tags = {"trident"},
     desc = "dont throw it away",
   },
-  -- 627
+  -- 656
   {
     name = "text_3den",
     sprite = "text_3den",
@@ -7387,7 +7387,7 @@ tiles_list = {
     layer = 20,
     tags = {"trident"},
   },
-  -- 628
+  -- 657
   {
     name = "pen",
     sprite = "pen",
@@ -7397,7 +7397,7 @@ tiles_list = {
     tags = {"pencil"},
     desc = "the creating one",
   },
-  -- 629
+  -- 658
   {
     name = "text_pen",
     sprite = "text_pen",
@@ -7407,7 +7407,7 @@ tiles_list = {
     layer = 20,
     tags = {"pencil"},
   },
-  -- 630
+  -- 659
   {
     name = "cil",
     sprite = "cil",
@@ -7417,7 +7417,7 @@ tiles_list = {
     tags = {"pencil", "eraser"},
     desc = "the deleting one",
   },
-  -- 631
+  -- 660
   {
     name = "text_cil",
     sprite = "text_cil",
@@ -7427,7 +7427,7 @@ tiles_list = {
     layer = 20,
     tags = {"pencil", "eraser"},
   },
-  -- 632
+  -- 661
   {
     name = "grav",
     sprite = "grav",
@@ -7435,7 +7435,7 @@ tiles_list = {
     layer = 4,
     tags = {"gravestone", "tombstone", "spooky"},
   },
-  -- 633
+  -- 662
   {
     name = "text_grav",
     sprite = "text_grav",
@@ -7446,7 +7446,7 @@ tiles_list = {
     tags = {"gravestone", "tombstone", "spooky"},
     desc = "not to be confused with the removed GRAVY",
   },
-  -- 634
+  -- 663
   {
     name = "pumkin",
     sprite = "pumkin",
@@ -7456,7 +7456,7 @@ tiles_list = {
     tags = {"pumpkin", "plant", "spooky"},
     desc = "turns spooky with the correct properties",
   },
-  -- 635
+  -- 664
   {
     name = "text_pumkin",
     sprite = "text_pumkin",
@@ -7466,7 +7466,7 @@ tiles_list = {
     layer = 20,
     tags = {"pumpkin", "plant", "spooky"},
   },
-  -- 636
+  -- 665
   {
     name = "text_thingify",
     sprite = "text_thingify",
@@ -7477,7 +7477,7 @@ tiles_list = {
     tags = {"demeta", "notnat"},
     desc = "THINGIFY: BE THINGIFY causes that text to turn into the object it represents (or text it represents if metatext).",
   },
-  -- 637
+  -- 666
   {
     name = "text_right",
     sprite = "text_right",
@@ -7485,9 +7485,10 @@ tiles_list = {
     texttype = {property = true, direction = true},
     color = {1, 4},
     layer = 20,
+    edgy = true,
     desc = "RIGHT: A GO ->, but facing right.",
   },
-  -- 638
+  -- 667
   {
     name = "text_samepaint",
     sprite = "text_samepaint",
@@ -7498,7 +7499,7 @@ tiles_list = {
     tags = {"samecolor"},
     desc = "SAMEPAINT (Compare Condition): True if the condition unit is the same color as the target. Also, BAB BE SAMEPAINT KEEK will turn bab into a keek of the same color that bab was.",
   },
-  -- 639
+  -- 668
   {
     name = "text_sameface",
     sprite = "text_sameface",
@@ -7509,7 +7510,7 @@ tiles_list = {
     tags = {"samedirection","samefacing"},
     desc = "SAMEFACE (Compare Condition): True if the condition unit is facing the same direction as the target.",
   },
-  --640
+  -- 669
   {
     name = "za warudo",
     sprite = "zawarudo",
@@ -7522,7 +7523,7 @@ tiles_list = {
     tags = {"chars", "the world", "jojo", "DIO"},
     desc = "WRYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY",
   },
-  --641
+  -- 670
   {
     name = "thingify",
     sprite = "thingify",
@@ -7532,7 +7533,7 @@ tiles_list = {
     tags = {"thing"},
     desc = "its a thing.",
   },
-  --642
+  -- 671
   {
     name = "&",
     sprite = "and",
@@ -7543,7 +7544,7 @@ tiles_list = {
     tags = {"and gate", "logic gate"},
     desc = "only if all are true",
   },
-  --643
+  -- 672
   {
     name = "&n't",
     sprite = "andn't",
@@ -7554,7 +7555,7 @@ tiles_list = {
     tags = {"nand gate", "logic gate"},
     desc = "only if not all are true",
   },
-  --644
+  -- 673
   {
     name = "text_dragbl",
     sprite = "text_dragbl",
@@ -7565,7 +7566,7 @@ tiles_list = {
     tags = {"draggable","mouse"},
     desc = "DRAGBL: Units that are DRAGBL can be picked up and moved around.",
   },
-  --645
+  -- 674
   {
     name = "text_no drag",
     sprite = "text_nodrag",
@@ -7576,7 +7577,7 @@ tiles_list = {
     tags = {"mouse"},
     desc = "NO DRAG: Units that are DRAGBL can't be placed on NO DRAG objects.",
   },
-  --646
+  -- 675
   {
     name = "text_cann't",
     sprite = "text_can't",
@@ -7586,7 +7587,7 @@ tiles_list = {
     layer = 20,
     tags = {"valhalla"},
   },
-  -- 647
+  -- 676
   {
     name = "bel",
     sprite = "bel",
@@ -7596,7 +7597,7 @@ tiles_list = {
     tags = {"bell", "christmas"},
     desc = "tis the season"
   },
-  -- 648
+  -- 677
   {
     name = "text_bel",
     sprite = "text_bel",
@@ -7606,7 +7607,7 @@ tiles_list = {
     layer = 20,
     tags = {"bell", "christmas"},
   },
-  -- 649
+  -- 678
   {
     name = "wres",
     sprite = "wres",
@@ -7615,7 +7616,7 @@ tiles_list = {
     tags = {"wreathe", "plant", "christmas"},
     desc = "tis the wreson"
   },
-  -- 650
+  -- 679
   {
     name = "text_wres",
     sprite = "text_wres",
@@ -7625,7 +7626,7 @@ tiles_list = {
     layer = 20,
     tags = {"wreathe", "plant", "christmas"},
   },
-  -- 651
+  -- 680
   {
     name = "bowie",
     sprite = "bowie",
@@ -7635,7 +7636,7 @@ tiles_list = {
     tags = {"ribbon", "bow", "christmas"},
     desc = "we could be heroes",
   },
-  -- 652
+  -- 681
   {
     name = "text_bowie",
     sprite = "text_bowie",
@@ -7646,7 +7647,7 @@ tiles_list = {
     tags = {"ribbon", "bow", "christmas"},
     desc = "just for one day",
   },
-  -- 653
+  -- 682
   {
     name = "der",
     sprite = "der",
@@ -7658,7 +7659,7 @@ tiles_list = {
     tags = {"chars", "reindeer", "moose", "christmas"},
     desc = "rudolf w/ ur nos be BRITE, wont u guid my slay?",
   },
-  -- 654
+  -- 683
   {
     name = "text_der",
     sprite = "text_der",
@@ -7669,7 +7670,7 @@ tiles_list = {
     tags = {"chars", "reindeer", "moose", "christmas"},
     desc = "stay away from kappa and ryugon!!",
   },
-  -- 655
+  -- 684
   {
     name = "sant",
     sprite = {"sant_base", "sant_flof"},
@@ -7680,7 +7681,7 @@ tiles_list = {
     tags = {"santa hat", "christmas"},
     desc = "ho ho ho",
   },
-  -- 656
+  -- 685
   {
     name = "text_sant",
     sprite = "text_sant",
@@ -7690,7 +7691,7 @@ tiles_list = {
     layer = 20,
     tags = {"santa hat", "christmas"},
   },
-  -- 657
+  -- 686
   {
     name = "gato",
     sprite = "gato",
@@ -7701,7 +7702,7 @@ tiles_list = {
     tags = {"oneway","mario","gate"},
     desc = "shakes if you can't walk into it",
   },
-  -- 658
+  -- 687
   {
     name = "text_gato",
     sprite = "text_gato",
@@ -7712,7 +7713,7 @@ tiles_list = {
     tags = {"oneway","mario","gate"},
     desc = "el gato negro, michi michi",
   },
-  -- 659
+  -- 688
   {
     name = "canedy",
     sprite = {"canedy_stripes", "canedy_base"},
@@ -7724,7 +7725,7 @@ tiles_list = {
     tags = {"candy cane", "christmas", "food", "sweets"},
     desc = "no pun in canedied",
   },
-  -- 660
+  -- 689
   {
     name = "text_canedy",
     sprite = "text_canedy",
@@ -7734,7 +7735,7 @@ tiles_list = {
     layer = 20,
     tags = {"candy cane", "christmas", "food", "sweets"},
   },
-  -- 661
+  -- 690
   {
     name = "now",
     sprite = {"now_box", "now_bow"},
@@ -7743,9 +7744,10 @@ tiles_list = {
     colored = {true, false},
     layer = 8,
     tags = {"present", "gift", "box", "christmas"},
-    desc = "a gift for every bab supporteres!"
+    nice = true,
+    desc = "a gift for every bab supporteres!",
   },
-  -- 662
+  -- 691
   {
     name = "text_now",
     sprite = "text_now",
@@ -7756,7 +7758,7 @@ tiles_list = {
     tags = {"present", "gift", "box", "christmas"},
     desc = "its now, or latr, no srsly",
   },
-  -- 663
+  -- 692
   {
     name = "bolble",
     sprite = "bolble",
@@ -7767,7 +7769,7 @@ tiles_list = {
     tags = {"bauble", "ball", "christmas"},
     desc = "wil chang patern w/ colr",
   },
-  -- 664
+  -- 693
   {
     name = "text_bolble",
     sprite = "text_bolble",
@@ -7777,7 +7779,7 @@ tiles_list = {
     layer = 20,
     tags = {"bauble", "ball", "christmas"},
   },
-  -- 665
+  -- 694
   {
     name = "sno",
     sprite = "sno",
@@ -7787,7 +7789,7 @@ tiles_list = {
     tags = {"snow", "christmas"},
     desc = "snodin",
   },
-  -- 666
+  -- 695
   {
     name = "text_sno",
     sprite = "text_sno",
@@ -7797,9 +7799,9 @@ tiles_list = {
     layer = 20,
     tags = {"snow", "christmas"},
     desc = "sno easy bein grun",
-    edgy = true,
+    edgy = false,
   },
-  -- 667
+  -- 696
   {
     name = "cooky",
     sprite = "cooky",
@@ -7809,7 +7811,7 @@ tiles_list = {
     tags = {"cookie", "biscuit", "chocolate chip", "christmas", "food", "sweets"},
     desc = "clik clik clik",
   },
-  -- 668
+  -- 697
   {
     name = "text_cooky",
     sprite = "text_cooky",
@@ -7820,7 +7822,7 @@ tiles_list = {
     tags = {"cookie", "biscuit", "chocolate chip", "christmas", "food", "sweets"},
     desc = "very cooky"
   },
-  -- 669
+  -- 698
   {
     name = "ginn",
     sprite = "ginn",
@@ -7831,9 +7833,9 @@ tiles_list = {
     features = { sans = {x=18, y=6, w=2, h=2} },
     tags = {"chars", "gingerbread man", "christmas", "cookie", "food"},
     desc = "shes a girl!",
-    pronoun = "she/her",
+    pronouns = {"she","her"},
   },
-  -- 670
+  -- 699
   {
     name = "text_ginn",
     sprite = "text_ginn",
@@ -7843,7 +7845,7 @@ tiles_list = {
     layer = 20,
     tags = {"chars", "gingerbread man", "christmas", "cookie", "food"},
   },
-  -- 671
+  -- 700
   {
     name = "pot",
     sprite = {"pot_drink", "pot_bottle"},
@@ -7855,7 +7857,7 @@ tiles_list = {
     tags = {"potion", "bottle", "halloween"},
     desc = "+1 ATK"
   },
-  -- 672
+  -- 701
   {
     name = "text_pot",
     sprite = "text_pot",
@@ -7865,7 +7867,7 @@ tiles_list = {
     layer = 20,
     tags = {"potion", "bottle", "halloween"},
   },
-  -- 673
+  -- 702
   {
     name = "sweep",
     sprite = "sweep",
@@ -7876,7 +7878,7 @@ tiles_list = {
     tags = {"broomstick", "halloween", "witch"},
     desc = "for the master sparkl users",
   },
-  -- 674
+  -- 703
   {
     name = "text_sweep",
     sprite = "text_sweep",
@@ -7886,7 +7888,7 @@ tiles_list = {
     layer = 20,
     tags = {"broomstick", "halloween", "witch"},
   },
-  -- 675
+  -- 704
   {
     name = "which",
     sprite = {"which_that", "which_base"},
@@ -7897,7 +7899,7 @@ tiles_list = {
     tags = {"witch hat", "halloween"},
     desc = "mors tak the precious thing",
   },
-  -- 676
+  -- 705
   {
     name = "text_which",
     sprite = "text_which",
@@ -7908,7 +7910,7 @@ tiles_list = {
     tags = {"witch hat", "halloween"},
     desc = "which one? THAT one!",
   },
-  -- 677
+  -- 706
   {
     name = "text_rp",
     sprite = "text_rp",
@@ -7919,7 +7921,7 @@ tiles_list = {
     tags = {"mimic","roleplay"},
     desc = "RP: X RP Y gives X all of the properties of Y."
   },
-  -- 678
+  -- 707
   {
     name = "toby",
     sprite = "toby",
@@ -7939,7 +7941,7 @@ tiles_list = {
     tags = {"chars", "toby fox", "annoying dog", "undertale"},
     desc = "absorps ur artefac",
   },
-  -- 679
+  -- 708
   {
     name = "text_toby",
     sprite = "text_toby",
@@ -7950,7 +7952,7 @@ tiles_list = {
     tags = {"chars", "toby fox", "annoying dog", "undertale"},
     desc = "The highly respectable Toby Fox himself,\nCreator of UNDERTALE and deltarune."
   },
-  -- 690
+  -- 709
   {
     name = "angle",
     sprite = "angle",
@@ -7965,7 +7967,7 @@ tiles_list = {
     desc = "i can be your angle...",
     nice = true,
   },
-  -- 691
+  -- 710
   {
     name = "text_angle",
     sprite = "text_angle",
@@ -7975,9 +7977,9 @@ tiles_list = {
     layer = 20,
     tags = {"chars", "angel"},
     desc = "she's 90 gradians... acute angle",
-    nice = true,
+    nice = false,
   },
-  -- 692
+  -- 711
   {
     name = "debil",
     sprite = "debil",
@@ -7991,7 +7993,7 @@ tiles_list = {
     desc = "or yuor debil...",
     nice = true,
   },
-  -- 693
+  -- 712
   {
     name = "text_debil",
     sprite = "text_debil",
@@ -8003,7 +8005,7 @@ tiles_list = {
     desc = "[sic] em",
     nice = true,
   },
-  -- 694
+  -- 713
   {
     name = "text_y'all",
     sprite = "text_y'all",
@@ -8014,7 +8016,7 @@ tiles_list = {
     tags = {"you all", "players"},
     desc = "all players control y'all",
   },
-  -- 695
+  -- 714
   {
     name = "text_big",
     sprite = "text_big",
@@ -8024,7 +8026,7 @@ tiles_list = {
     layer = 20,
     desc = "BIG: Big things take up a 2x2 space. Expands to the lower left.",
   },
-  -- 695
+  -- 715
   {
     name = "text_rythm",
     sprite = "text_rythm",
@@ -8035,7 +8037,7 @@ tiles_list = {
     tags = {"auto","necrodancer","lily", "rhythm", "rythm", "dancr"},
 	  desc = "RYTHM (property): Turns pass for these units based on time, separate from normal turns passing.",
   },
-  -- 696
+  -- 716
   {
     name = "wan",
     sprite = {"wan_center", "wan_end"},
@@ -8046,9 +8048,9 @@ tiles_list = {
     layer = 8,
     tags = {"magician wand", "staff"},
     desc = "wan and han gos han in han",
-    nicest = true,
+    nicest = false,
   },
-  -- 697
+  -- 717
   {
     name = "text_wan",
     sprite = "text_wan",
@@ -8058,7 +8060,7 @@ tiles_list = {
     layer = 20,
     tags = {"magician wand", "staff",},
   },
-  -- 698
+  -- 718
   {
     name = "mug",
     sprite = "mug",
@@ -8071,7 +8073,7 @@ tiles_list = {
     tags = {"cup", "mug", "magician"},
     desc = "mugman",
   },
-  -- 699
+  -- 719
   {
     name = "text_mug",
     sprite = "text_mug",
@@ -8082,7 +8084,7 @@ tiles_list = {
     tags = {"cup", "mug", "magician"},
     nice = true,
   },
-  -- 700
+  -- 720
   {
     name = "corndy",
     sprite = {"corndy_top", "corndy_center", "corndy_bottom"},
@@ -8094,7 +8096,7 @@ tiles_list = {
     tags = {"candy corn", "food", "sweets", "halloween"},
     desc = "corndy and han gos han in han",
   },
-  -- 701
+  -- 721
   {
     name = "text_corndy",
     sprite = "text_corndy",
@@ -8104,7 +8106,7 @@ tiles_list = {
     layer = 20,
     tags = {"candy corn", "food", "sweets", "halloween"},
   },
-  -- 702
+  -- 722
   {
     name = "die",
     sprite = {"die_cube","die_nil"},
@@ -8116,7 +8118,7 @@ tiles_list = {
     tags = {"dice", "cube", "random"},
     desc = "rerolls every turn unless its NO TURN",
   },
-  -- 703
+  -- 723
   {
     name = "text_die",
     sprite = "text_die",
@@ -8127,7 +8129,7 @@ tiles_list = {
     tags = {"dice", "cube", "random"},
     desc = "ur turn to DIE",
   },
-  -- 704
+  -- 724
   {
     name = "text_oob",
     sprite = "text_oob",
@@ -8138,7 +8140,7 @@ tiles_list = {
     tags = {"out of bounds"},
     desc = "OOB (Prefix Condition): True if the unit is on a border.",
   },
-  -- 705
+  -- 725
   {
     name = "temmi",
     sprite = {"temmi","temmi but just her face"},
@@ -8160,7 +8162,7 @@ tiles_list = {
     tags = {"chars", "temmie chang", "undertale"},
     desc = "hOI!!! i'm tEMMi!!",
   },
-  -- 706
+  -- 726
   {
     name = "text_temmi",
     sprite = "text_temmi",
@@ -8172,7 +8174,7 @@ tiles_list = {
     tags = {"chars", "temmie chang", "undertale"},
     desc = "Temmie Chang: Main artist of UNDERTALE and deltarune."
   },
-	-- 707
+	-- 727
   {
     name = "text_gang",
     sprite = "text_gang",
@@ -8183,7 +8185,7 @@ tiles_list = {
     tags = {"group"},
     desc = "GANG: A variant of FRENS but members wear an exclusive hat.",
   },
-  -- 708
+  -- 728
   {
     name = "ui_0",
     sprite = "ui_0",
@@ -8192,7 +8194,7 @@ tiles_list = {
     layer = 20,
     desc = "The other undo key.",
   },
-  -- 709
+  -- 729
   {
     name = "text_B)",
     sprite = "text_B)",
@@ -8204,7 +8206,7 @@ tiles_list = {
     tags = {"cool", "smiley"},
     desc = "B): At end of turn, if U is on B) and survives, U R COOL!",
   },
-  -- 710
+  -- 730
   {
     name = "text_cool",
     sprite = "text_cool",
@@ -8215,7 +8217,7 @@ tiles_list = {
     tags = {"cool"},
     desc = "COOL: COOL units wear a pair of sunglasses, and don't shake.",
   },
-  -- 711
+  -- 731
   {
     name = "the real qt",
     sprite = "the real qt",
@@ -8223,7 +8225,7 @@ tiles_list = {
     layer = 22,
     tometa = "text_qt",
   },
-  -- 712
+  -- 732
   {
     name = "tronk",
     sprite = "tronk",
@@ -8233,7 +8235,7 @@ tiles_list = {
     tags = {"trinket","vvvvvv"},
     desc = "upside down boll",
   },
-  -- 713
+  -- 733
   {
     name = "text_tronk",
     sprite = "text_tronk",
@@ -8243,14 +8245,14 @@ tiles_list = {
     layer = 20,
     tags = {"trinket","vvvvvv"},
   },
-  -- 714
+  -- 734
   {
     name = "aaaaaa",
     sprite = "aaaaaa",
     color = {0, 3},
     layer = 100
   },
-  -- 715
+  -- 735
   {
     name = "the real bab dictator",
     sprite = "the real bab dictator",
@@ -8261,7 +8263,7 @@ tiles_list = {
     desc = "yes",
     pronouns = {"she","her","miku"},
   },
-  -- 716
+  -- 736
   {
     name = "fube",
     sprite = {"fube_arrow","fube_cube"},
@@ -8273,7 +8275,7 @@ tiles_list = {
     tags = {"manifold garden", "arrow", "gravity"},
     desc = "the cube thingy from many folds garden",
   },
-  -- 717
+  -- 737
   {
     name = "text_fube",
     sprite = "text_fube",
@@ -8283,7 +8285,7 @@ tiles_list = {
     layer = 20,
     tags = {"manifold garden", "arrow", "gravity"},
   },
-  -- 718, do we even need to bother with these numbers since they're inaccurate
+  -- 738
   {
     name = "detox",
     sprite = "detox",
@@ -8296,7 +8298,7 @@ tiles_list = {
     tags = {"vvvvvv","allison"},
     desc = "u've been lookin @ too much Good Art",
   },
-  -- 719
+  -- 739
   {
     name = "text_detox",
     sprite = "text_detox",
@@ -8307,7 +8309,7 @@ tiles_list = {
     tags = {"vvvvvv","allison"},
     desc = "detox be a custom vvvvvv level by allison, very good",
   },
-  -- 720
+  -- 740
   {
     name = "text_c_sharp",
     sprite = "text_c_sharp",
@@ -8317,7 +8319,7 @@ tiles_list = {
     layer = 20,
     desc = "For use with SING.";
   },
-  -- 721
+  -- 741
   {
     name = "text_d_sharp",
     sprite = "text_d_sharp",
@@ -8327,7 +8329,7 @@ tiles_list = {
     layer = 20,
     desc = "For use with SING.";
   },
-  -- 722
+  -- 742
   {
     name = "text_f_sharp",
     sprite = "text_f_sharp",
@@ -8337,7 +8339,7 @@ tiles_list = {
     layer = 20,
     desc = "For use with SING.";
   },
-  -- 723
+  -- 743
   {
     name = "text_g_sharp",
     sprite = "text_g_sharp",
@@ -8347,7 +8349,7 @@ tiles_list = {
     layer = 20,
     desc = "For use with SING.";
   },
-  -- 724
+  -- 744
   {
     name = "text_a_sharp",
     sprite = "text_a_sharp",
@@ -8357,7 +8359,7 @@ tiles_list = {
     layer = 20,
     desc = "For use with SING.";
   },
-  -- 725
+  -- 745
   {
     name = "sham",
     type = "object",
@@ -8382,7 +8384,7 @@ tiles_list = {
     },
     tags = {"chars", "uksrt", "shame", "virus"},
   },
-  -- 726
+  -- 746
   {
     name = "text_sham",
     sprite = "text_sham",
