@@ -380,14 +380,21 @@ function moveBlock()
     end
   end
   
+  --Use a similar simultaneous/additive algorithm to copkat/go^.
+  
+  units_to_change = {}
+  
+  
   local isshift = getUnitsWithEffect("go")
   for _,unit in ipairs(isshift) do
     local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
     for _,on in ipairs(stuff) do
       if unit ~= on and sameFloat(unit, on) and ignoreCheck(unit, on, "go") and timecheck(unit,"be","go") then
-        addUndo({"update", on.id, on.x, on.y, on.dir})
-        on.olddir = on.dir
-        updateDir(on, unit.dir)
+        if (units_to_change[on] == nil) then
+          units_to_change[on] = {0, 0}
+        end
+        units_to_change[on][1] = units_to_change[on][1] + dirs8[unit.dir][1]
+        units_to_change[on][2] = units_to_change[on][2] + dirs8[unit.dir][2]
       end
     end
   end
@@ -397,10 +404,22 @@ function moveBlock()
     local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
     for _,on in ipairs(stuff) do
       if unit ~= on and sameFloat(unit, on) and ignoreCheck(unit, on, "goooo") and timecheck(unit,"be","goooo") then
-        addUndo({"update", on.id, on.x, on.y, on.dir})
-        on.olddir = on.dir
-        updateDir(on, unit.dir)
+         if (units_to_change[on] == nil) then
+          units_to_change[on] = {0, 0}
+        end
+        units_to_change[on][1] = units_to_change[on][1] + dirs8[unit.dir][1]
+        units_to_change[on][2] = units_to_change[on][2] + dirs8[unit.dir][2]
       end
+    end
+  end
+  
+  for unit,dir in pairs(units_to_change) do
+    if dir[1] ~= 0 or dir[2] ~= 0 then
+      k = dirs8_by_offset[sign(dir[1])][sign(dir[2])]
+      if unit.dir ~= k then
+        addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
+      end
+      updateDir(unit, k)
     end
   end
   
@@ -1552,7 +1571,21 @@ function miscUpdates()
           end
         end
       end
-
+      
+      if unit.name == "byc" and scene ~= editor then -- playing cards
+        if not card_for_id[unit.id] then
+          card_for_id[unit.id] = {math.random(13), ({"spade","heart","clubs","diamond"})[math.random(4)]}
+        end
+        local num, suit = unpack(card_for_id[unit.id])
+        print("a")
+        unit.sprite[2] = "byc_"..num
+        unit.sprite[3] = "byc_"..suit
+        if suit == "spade" or suit == "clubs" then
+          unit.color = {{0, 3}, {0, 0}, {0, 0}}
+          unit.colored = {{0, 0}, false, false}
+        end
+      end
+      
       for type,name in pairs(unit.sprite_transforms) do
         if table.has_value(unit.used_as, type) then
           unit.sprite = name
@@ -2356,7 +2389,7 @@ function convertLevel()
 
   local converts = matchesRule(outerlvl,"be","?")
   for _,match in ipairs(converts) do
-    if not (hasProperty(outerlvl, "lvl") or hasProperty(outerlvl, "notranform")) then
+    if not (hasProperty(outerlvl, "lvl") or hasProperty(outerlvl, "notranform")) and match.rule.object.type and match.rule.object.type.object then
       local tile = tiles_by_name[match.rule.object.name]
       if match.rule.object.name == "text" then
         tile = tiles_by_name["text_lvl"]
@@ -2980,10 +3013,6 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
   end
 
   table.insert(units, unit)
-  
-  if unit.name == "byc" and not card_for_id[unit.id] then -- playing cards
-    card_for_id[unit.id] = {math.random(13), ({"spade","heart","clubs","diamond"})[math.random(4)]}
-  end
 
   --updateDir(unit, unit.dir)
   new_units_cache[unit] = true

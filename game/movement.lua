@@ -479,7 +479,6 @@ function doMovement(movex, movey, key)
         end
       end
       for unit,dir in pairs(timeless_yote) do
-        print(tostring(unit)..": "..tostring(dir))
         local dx = dirs8[dir][1]
         local dy = dirs8[dir][2]
         if timeless then
@@ -1888,10 +1887,11 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
   local swap_mover = hasProperty(unit, "behin u")
   
   --normal checks
+  local stopped = false
+  --we have to iterate every object even after we're stopped, in case later we find something we open/snacc/ouch on
   for _,v in ipairs(getUnitsOnTile(x, y, nil, false, nil, true)) do
     --Patashu: treat moving things as intangible in general. also, ignore ourselves for zip purposes
     if (v ~= unit and not v.already_moving and sameFloat(unit,v,true)) then
-      local stopped = false
       if (v.name == solid_name) and ignoreCheck(unit,v) then
         return false,movers,specials
       end
@@ -1911,7 +1911,7 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
               table.insert(opened, v)
             end
             table.insert(specials, {"open", opened})
-            return true,movers,specials
+            return true,{movers[1]},specials
           else
             if dont_ignore_unit then
               table.insert(time_destroy,unit.id)
@@ -2028,9 +2028,7 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
         end
         
         if exploding then return true,movers,specials end
-      end
-      if stopped then
-        return false,movers,specials
+        --if exploding then return true,{movers[1]},specials end
       end
     end
   end
@@ -2042,7 +2040,7 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
     end
   end]]--
 
-  return true,movers,specials
+  return not stopped,movers,specials
 end
 
 function refleccPrevents(dir, dx, dy)
