@@ -518,6 +518,7 @@ tiles_list = {
     texttype = {["and"] = true}, -- and is a reserved word
     color = {0, 3},
     layer = 20,
+    alias = {"ampersand"},
     tags = {"and"},
     desc = "&: Joins multiple conditions, subjects or objects together in a rule. Rules with stacked text and &s don't work like in baba, be sure to experiment!",
   },
@@ -654,7 +655,7 @@ tiles_list = {
     color = {255, 255, 255},
     layer = 20,
     tags = {"trans"},
-    desc = "TRANZ: Causes the unit to appear pink, white and baby blue.",
+    desc = "TRANZ: Causes the unit to appear pink, white and baby blue. GAY objects are pinc, whit, and cyeann, and not any other colors.",
   },
   --30
   {
@@ -664,7 +665,7 @@ tiles_list = {
     texttype = {property = true},
     color = {255, 255, 255},
     layer = 20,
-    desc = "GAY: Causes the unit to appear rainbow coloured.",
+    desc = "GAY: Causes the unit to appear rainbow coloured. GAY objects are reed, orang, yello, grun, bleu, and purp, and not any other colors.",
   },
   --31
   {
@@ -2045,7 +2046,7 @@ tiles_list = {
     color = {4,1},
     layer = 20,
     tags = {"level"},
-    desc = "LVL: Refers to the level you're in, as well as any enterable levels in this level. \nMiddle or SHIFT right-click it to edit.)"
+    desc = "LVL: Refers to the level you're in, as well as any enterable levels in this level. \nMiddle or SHIFT right-click it to edit.)\nCreating levels will be a samepaint lvl.\nlvl be pathz by default.\nlvl got X will trigger even if the level infloops."
   },
   -- 153
   {
@@ -2477,7 +2478,7 @@ tiles_list = {
     layer = 18,
     rotate = true,
     tags = {"level", "path"},
-    desc = "its a lavel"
+    desc = "its a lavel, working like baba."
   },
   -- 192
   {
@@ -3035,8 +3036,8 @@ tiles_list = {
 	texttype = {property = true},
 	color = {4,1},
   layer = 20,
-  tags = {"you2", "p2", "u2", "player"},
-	desc = "player 2 has joined the game (dpad)",
+  tags = {"you2", "p2", "player"},
+	desc = "player 2 has joined the game (dpad).",
   },
   -- 239
   {
@@ -3046,8 +3047,8 @@ tiles_list = {
 	texttype = {property = true},
 	color = {4,1},
   layer = 20,
-  tags = {"you3", "p3", "u3", "player"},
-	desc = "and player 3 (ijkl or numpad)",
+  tags = {"you3", "p3", "player"},
+	desc = "and player 3 (ijkl or numpad).  If there are objects of two control schemes but not a third, the third control scheme can be used to move both of the first two at once.",
   },
   -- 240
   {
@@ -4015,7 +4016,7 @@ tiles_list = {
     colored = {false,true},
     layer = 4,
     tags = {"colors", "colours"},
-    desc = "X be PAINT turns into a paint bucket with the color of X."
+    desc = "Creating a PAINT will always be a samecolor paint."
   },
   -- 333
   {
@@ -4325,6 +4326,7 @@ tiles_list = {
     texttype = {property = true, direction = true},
     color = {1, 4},
     layer = 20,
+    tags = {"direction"},
     desc = "RIGHT: A GO ->, but facing right.",
   },
   -- 353
@@ -4333,8 +4335,10 @@ tiles_list = {
     sprite = "text_upleft",
     type = "text",
     texttype = {property = true, direction = true},
+    alias = {"leftup"},
     color = {1, 4},
     layer = 20,
+    tags = {"direction"},
     desc = "UPLEFT: A GO ->, but facing upleft.",
   },
   -- 354
@@ -4343,8 +4347,10 @@ tiles_list = {
     sprite = "text_upright",
     type = "text",
     texttype = {property = true, direction = true},
+    alias = {"rightup"},
     color = {1, 4},
     layer = 20,
+    tags = {"direction"},
     desc = "UPRIGHT: A GO ->, but facing upright.",
   },
   -- 355
@@ -4353,8 +4359,10 @@ tiles_list = {
     sprite = "text_downleft",
     type = "text",
     texttype = {property = true, direction = true},
+    alias = {"leftdown"},
     color = {1, 4},
     layer = 20,
+    tags = {"direction"},
     desc = "DOWNLEFT: A GO ->, but facing downleft.",
   },
   -- 356
@@ -4363,8 +4371,10 @@ tiles_list = {
     sprite = "text_downright",
     type = "text",
     texttype = {property = true, direction = true},
+    alias = {"rightdown"},
     color = {1, 4},
     layer = 20,
+    tags = {"direction"},
     desc = "DOWNRIGHT: A GO ->, but facing downright.",
   },
   -- 357
@@ -7972,7 +7982,7 @@ tiles_list = {
     texttype = {property = true},
     color = {1,3},
     layer = 20,
-    desc = "BIG: Big things take up a 2x2 space.",
+    desc = "BIG: Big things take up a 2x2 space. Expands to the lower left.",
   },
   -- 695
   {
@@ -7983,7 +7993,7 @@ tiles_list = {
     color = {4,1},
     layer = 20,
     tags = {"auto","necrodancer","lily", "rhythm", "rythm", "dancr"},
-	  desc = "RYTHM (property): Turns pass for these units based on time, separate from normal turns passing.",
+	  desc = "RYTHM (property): Turns pass for these units based on time, separate from normal turns passing (it uses the same systems as zawarudo)",
   },
   -- 696
   {

@@ -2840,15 +2840,20 @@ function addTables(source, to_add)
   return source
 end
 
-text_in_tiles = {} --list of text in an array, and textname only
+text_in_tiles = {} --list of text in an array, for ideal searching
 for _,tile in ipairs(tiles_list) do
   if tile.type == "text" and not tile.texttype.letter then
     local textname = string.sub(tile.name:gsub("%s+", ""),6) --removes spaces too
-    text_in_tiles[textname] = tile
+    text_in_tiles[textname] = textname
+    if (tile.alias ~= nil) then
+      for a,ali in ipairs(tile.alias) do
+        text_in_tiles[ali] = textname
+      end
+    end
   end
 end
 
-text_list = {} --list of text with named keys (by textname)
+text_list = {} --list of text, but without aliases
 for _,tile in ipairs(tiles_list) do
   if tile.type == "text" and not tile.texttype.letter then
     local textname = string.sub(tile.name:gsub("%s+", ""),6)
