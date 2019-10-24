@@ -1263,6 +1263,7 @@ tiles_list = {
     features = { sans = {x=18, y=8, w=2, h=2} },
     tags = {"anni", "chars", "devs"},
     desc = "the bab equivalent of anni",
+    pronouns = {"she","her"},
   },
   -- 83
   {
@@ -1878,6 +1879,7 @@ tiles_list = {
     features = { sans = {x=19, y=8, w=2, h=2} },
     tags = {"devs", "chars", "lily", "lili"},
     desc = "lila, represents the creator of bab be u herself! all hail lila",
+    pronouns = {"she","her"},
   },
   -- 136
   {
@@ -7154,7 +7156,8 @@ tiles_list = {
       katany = {nya = true},
     },
     tags = {"chars", "cat", "sis", "sister"},
-    desc = "bab's sister"
+    desc = "bab's sister",
+    pronouns = {"she","her"}
   },
   -- 610
   {
@@ -7267,6 +7270,7 @@ tiles_list = {
     },
     tags = {"fluff", "floof", "brother", "dog"},
     desc = "bab's bro, ver soft, pls pet",
+    pronouns = {"he","him"},
   },
   -- 619
   {
@@ -8231,6 +8235,7 @@ tiles_list = {
     sing = "miku",
     tags = {"hatsune miku"},
     desc = "yes",
+    pronouns = {"she","her","miku"},
   },
   -- 716
   {
