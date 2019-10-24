@@ -1502,6 +1502,7 @@ function scene.draw(dt)
                 tag = tag:gsub(" ","")
                 if string.match(tag, subsearchstr) then
                   found_matching_tag = true
+                  break
                 end
               end
             end
@@ -1518,6 +1519,16 @@ function scene.draw(dt)
               for type,_ in pairs(tile.texttype) do
                 if string.match(type, subsearchstr) then
                   found_matching_tag = true
+                  break
+                end
+              end
+            end
+            
+            if tile.pronouns ~= nil then
+              for _,pronoun in ipairs(tile.pronouns) do
+                if string.match(pronoun, subsearchstr) then
+                  found_matching_tag = true
+                  break
                 end
               end
             end

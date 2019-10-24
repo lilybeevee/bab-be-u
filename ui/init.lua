@@ -251,7 +251,7 @@ function ui.buttonFX(o, args)
         o:setScale(scale + (args.grow or 0.1))
       end
     end
-    if args.rotate ~= false then
+    if settings["shake_on"] and args.rotate ~= false then
       o:setRotation(rot + (args.intensity or 0.05) * math.sin(love.timer.getTime()*(args.speed or 5)))
     end
   else
