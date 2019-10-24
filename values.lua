@@ -2000,6 +2000,7 @@ tiles_list = {
     texttype = {object = true},
     color = {0, 1},
     layer = 20,
+    alias = {"katanya"},
     tags = {"weapon", "japan", "asia", "edgy"},
 	desc = "KATANY: Any object with GOT KATANY will have a KATANY."
   },
@@ -2578,6 +2579,7 @@ tiles_list = {
     texttype = {property = true},
     color = {0, 1},
     layer = 20,
+    alias = {"tranparn't"},
     desc = "TRANPARN'T: A BRITE object emits light in all directions. LIT will be true for objects on the same FLYE level if nothing TRANPARN'T is in the way.",
   },
   -- 201
@@ -2805,6 +2807,7 @@ tiles_list = {
     texttype = {object = true},
     color = {0, 3},
     layer = 20,
+    alias = {"infloop"},
     tags = {"infloop", "infinity", "infinite loop"},
     desc = "INFLOOP: A special word that describes the infinite loop state."
   },
@@ -3041,6 +3044,7 @@ tiles_list = {
 	texttype = {property = true},
 	color = {4,1},
   layer = 20,
+  alias = {"u2"},
   tags = {"you2", "p2", "player"},
 	desc = "player 2 has joined the game (dpad).",
   },
@@ -3052,6 +3056,7 @@ tiles_list = {
 	texttype = {property = true},
 	color = {4,1},
   layer = 20,
+  alias = {"u3"},
   tags = {"you3", "p3", "player"},
 	desc = "and player 3 (ijkl or numpad).  If there are objects of two control schemes but not a third, the third control scheme can be used to move both of the first two at once.",
   },
@@ -8135,6 +8140,7 @@ tiles_list = {
     texttype = {object = true},
     color = {0, 3},
     layer = 20,
+    alias = {"temmi!", "temmi!!", "temmi!!!", "bob."},
     tags = {"chars", "temmie chang", "undertale"},
     desc = "Temmie Chang: Main artist of UNDERTALE and deltarune."
   },

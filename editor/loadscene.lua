@@ -611,7 +611,7 @@ function scene.searchDir(dir, type)
 
   local filtered = filter(dirs, function(file)
     if type == "world" then
-      return love.filesystem.getInfo(dir .. "/" .. file).type == "directory"
+      return love.filesystem.getInfo(dir .. "/" .. file) and love.filesystem.getInfo(dir .. "/" .. file).type == "directory"
     elseif type == "level" then
       return file:ends(".bab")
     end
