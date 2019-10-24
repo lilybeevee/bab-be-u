@@ -29,6 +29,7 @@ local defaultsettings = {
   music_on = true,
   sfx_on = true,
   particles_on = true,
+  shake_on = true,
   scribble_anim = true,
   epileptic = false,
   game_scale = "auto",
@@ -40,6 +41,7 @@ local defaultsettings = {
   level_compression = "zlib",
   draw_editor_lins = true,
   infomode = false,
+  scroll_on = true,
   themes = true,
 }
 

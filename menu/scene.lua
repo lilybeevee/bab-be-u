@@ -37,7 +37,7 @@ end
 function scene.buildUI()
   buttons = {}
   if getTheme() == "halloween" then
-    if love.timer.getTime()%10 > 8.7 and love.timer.getTime()%10 < 8.8 or love.timer.getTime()%10 > 8.9 and love.timer.getTime()%10 < 9 then
+    if not settings["epileptic"] and (love.timer.getTime()%10 > 8.7 and love.timer.getTime()%10 < 8.8 or love.timer.getTime()%10 > 8.9 and love.timer.getTime()%10 < 9) then
         giticon = sprites["ui/github_halloween_blood"]
     else
         giticon = sprites["ui/github_halloween"]
@@ -97,14 +97,18 @@ function scene.addOption(id, name, options, changed)
 end
 
 function scene.update(dt)
-  scrollx = scrollx+dt*50
-  scrolly = scrolly+dt*50
+  if settings["scroll_on"] then
+    scrollx = scrollx+dt*50
+    scrolly = scrolly+dt*50
+  else
+    scrollx, scrolly = 0,0
+  end
 end
 
 function scene.draw(dt)
   local bgsprite 
   if getTheme() == "halloween" then
-    if love.timer.getTime()%10 > 8.6 and love.timer.getTime()%10 < 8.7 or love.timer.getTime()%10 > 8.8 and love.timer.getTime()%10 < 8.9 or love.timer.getTime()%10 > 9  then
+    if not settings["epileptic"] and (love.timer.getTime()%10 > 8.6 and love.timer.getTime()%10 < 8.7 or love.timer.getTime()%10 > 8.8 and love.timer.getTime()%10 < 8.9 or love.timer.getTime()%10 > 9)  then
         bgsprite = sprites["ui/menu_background_halloween_flash"]
     else
         bgsprite = sprites["ui/menu_background_halloween"]
@@ -144,7 +148,7 @@ function scene.draw(dt)
   if not options then
     local bab_logo
     if getTheme() == "halloween" then
-        if love.timer.getTime()%10 > 8.7 and love.timer.getTime()%10 < 8.8 or love.timer.getTime()%10 > 8.9 and love.timer.getTime()%10 < 9 then
+        if not settings["epileptic"] and (love.timer.getTime()%10 > 8.7 and love.timer.getTime()%10 < 8.8 or love.timer.getTime()%10 > 8.9 and love.timer.getTime()%10 < 9) then
             bab_logo = sprites["ui/bab_be_u_halloween_blood"]
         else
             bab_logo = sprites["ui/bab_be_u_halloween"]
@@ -183,7 +187,7 @@ function scene.draw(dt)
     elseif getTheme() == "christmas" then
         splashtext = "merery chrismas!!"
     elseif getTheme() == "halloween" then
-        if love.timer.getTime()%10 > 8.7 and love.timer.getTime()%10 < 8.8 or love.timer.getTime()%10 > 8.9 and love.timer.getTime()%10 < 9 then
+        if not settings["epileptic"] and (love.timer.getTime()%10 > 8.7 and love.timer.getTime()%10 < 8.8 or love.timer.getTime()%10 > 8.9 and love.timer.getTime()%10 < 9) then
             splashtext = "BAB IS DEAD"
         elseif love.filesystem.read("author_name") == "lilybeevee" and splash > 0.5 then
             splashtext = "happy spooky month lily!"
@@ -200,7 +204,11 @@ function scene.draw(dt)
     local texty = height/20+bab_logo:getHeight()
 
     love.graphics.translate(textx+love.graphics.getFont():getWidth(splashtext)/2, texty+love.graphics.getFont():getHeight()/2)
-    love.graphics.rotate(0.7*math.sin(love.timer.getTime()*2))
+    if settings["shake_on"] then
+      love.graphics.rotate(0.7*math.sin(love.timer.getTime()*2))
+    else
+      love.graphics.rotate(math.pi/4)
+    end
     love.graphics.translate(-textx-love.graphics.getFont():getWidth(splashtext)/2, -texty-love.graphics.getFont():getHeight()/2)
 
     love.graphics.print(splashtext, textx, texty)
@@ -229,11 +237,14 @@ function scene.draw(dt)
     love.graphics.push()
     love.graphics.scale(2)
     love.graphics.translate(0, img:getHeight()/2)
-    love.graphics.rotate(0.1*math.sin(love.timer.getTime()))
+    if settings["shake_on"] then
+      love.graphics.rotate(0.1*math.sin(love.timer.getTime()))
+    end
     love.graphics.draw(img, -img:getWidth()/2, -img:getHeight()/2)
     love.graphics.pop()
-
+    
     local ox, oy = math.floor(math.random()*4)/2-1, math.floor(math.random()*4)/2-1
+    if not settings["shake_on"] then ox, oy = 0,0 end
     if getTheme() == "halloween" then
         love.graphics.setColor(0.5, 0.25, 0.75)
     end

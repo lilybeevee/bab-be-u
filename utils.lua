@@ -2607,7 +2607,7 @@ function setRainbowModeColor(value, brightness)
 end
 
 function shakeScreen(dur, intensity)
-  if doing_past_turns and not do_past_effects then return end
+  if doing_past_turns and not do_past_effects or not settings["shake_on"] then return end
   shake_dur = dur+shake_dur/4
   shake_intensity = shake_intensity + intensity/2
 end
@@ -3324,21 +3324,28 @@ function getTableWithDefaults(o, default)
 end
 
 function buildOptions()
-  scene.addOption("game_scale", "game scale", {{"auto", "auto"}, {"0.5x", 0.5}, {"1x", 1}, {"1.5x", 1.5}, {"2x", 2}, {"4x", 4}})
-  scene.addOption("music_on", "music", {{"on", true}, {"off", false}})
-  scene.addOption("sfx_on", "sound", {{"on", true}, {"off", false}})
-  scene.addOption("particles_on", "particle effects", {{"on", true}, {"off", false}})
-  scene.addOption("scribble_anim", "animated scribbles", {{"on", true}, {"off", false}})
-  scene.addOption("epileptic", "reduce flashes", {{"on", true}, {"off", false}})
-  scene.addOption("grid_lines", "grid lines", {{"on", true}, {"off", false}})
-  scene.addOption("mouse_lines", "mouse lines", {{"on", true}, {"off", false}})
-  scene.addOption("stopwatch_effect", "stopwatch effect", {{"on", true}, {"off", false}})
-  scene.addOption("fullscreen", "screen mode", {{"windowed", false}, {"fullscreen", true}}, function() fullScreen() end)
-  scene.addOption("focus_pause", "pause on defocus", {{"on", true}, {"off", false}})
-  if scene == menu then
-    scene.addOption("themes", "menu themes", {{"on", true}, {"off", false}})
+  if not display then
+    scene.addOption("music_on", "music", {{"on", true}, {"off", false}})
+    scene.addOption("sfx_on", "sound", {{"on", true}, {"off", false}})
+    scene.addButton("video options", function() display = true; scene.buildUI() end)
+    scene.addButton("back", function() options = false; scene.buildUI() end)
+  else
+    scene.addOption("game_scale", "game scale", {{"auto", "auto"}, {"0.5x", 0.5}, {"1x", 1}, {"1.5x", 1.5}, {"2x", 2}, {"4x", 4}})
+    scene.addOption("particles_on", "particle effects", {{"on", true}, {"off", false}})
+    scene.addOption("shake_on", "shakes", {{"on", true}, {"off", false}})
+    scene.addOption("scribble_anim", "animated scribbles", {{"on", true}, {"off", false}})
+    scene.addOption("epileptic", "reduce flashes", {{"on", true}, {"off", false}})
+    scene.addOption("grid_lines", "grid lines", {{"on", true}, {"off", false}})
+    scene.addOption("mouse_lines", "mouse lines", {{"on", true}, {"off", false}})
+    scene.addOption("stopwatch_effect", "stopwatch effect", {{"on", true}, {"off", false}})
+    scene.addOption("fullscreen", "screen mode", {{"windowed", false}, {"fullscreen", true}}, function() fullScreen() end)
+    scene.addOption("focus_pause", "pause on defocus", {{"on", true}, {"off", false}})
+    if scene == menu then
+      scene.addOption("scroll_on", "background scrolling", {{"on", true}, {"off", false}})
+      scene.addOption("themes", "menu themes", {{"on", true}, {"off", false}})
+    end
+    scene.addButton("back", function() display = false; scene.buildUI() end)
   end
-  scene.addButton("back", function() options = false; scene.buildUI() end)
 end
 
 function split(inputstr, sep)

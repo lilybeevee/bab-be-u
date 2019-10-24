@@ -957,7 +957,7 @@ function scene.draw(dt)
     end
 
     local function getOffset()
-      if hasProperty(unit,"cool") then return 0,0 end
+      if hasProperty(unit,"cool") or not settings["shake_on"] then return 0,0 end
       if rules_with["temmi"] then
         local do_vibrate = false
         if unit.fullname == "temmi" then

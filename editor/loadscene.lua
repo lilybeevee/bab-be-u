@@ -88,8 +88,12 @@ function scene.update(dt)
     scroll.vel = 0
   end
 
-  scrollx = scrollx+75*dt
-  scrolly = scrolly+75*dt
+  if settings["scroll_on"] then
+    scrollx = scrollx+75*dt
+    scrolly = scrolly+75*dt
+  else
+    scrollx, scrolly = 0,0
+  end
 
   oldmousex, oldmousey = love.mouse.getPosition()
 end
