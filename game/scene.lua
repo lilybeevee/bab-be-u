@@ -534,6 +534,8 @@ function scene.keyPressed(key, isrepeat)
           elseif key == "d" or key == "right" then
               doReplayTurn(replay_playback_turn)
               replay_playback_turn = replay_playback_turn + 1
+          elseif key == "e" then
+              replay_playback_interval = 0
           end
       end
       
