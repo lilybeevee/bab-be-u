@@ -3445,12 +3445,13 @@ function getUnitColors(unit, index, override_)
   elseif override then
     colors = copyTable(colors)
     for i,_ in ipairs(colors) do
-      if not unit.colored or unit.colored[index] == true then
+      if not unit.colored or unit.colored[i] == true then
         return override
-      elseif type(unit.colored[index]) == "table" and eq(override, colors[index]) then
-        return unit.colored[index]
+      elseif type(unit.colored[i]) == "table" and eq(override, colors[i]) then
+        return unit.colored[i]
       end
     end
+    print(dump(colors))
     return colors
   else
     return colors
@@ -3510,6 +3511,7 @@ function matchesColor(a, b, exact)
         return false -- I don't want to deal with this right now
       end
     end
+    print(a, b)
     return a == b
   end
 end
