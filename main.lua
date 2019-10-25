@@ -16,12 +16,18 @@ require "game/parser"
 require "game/rules"
 require "game/undo"
 require "game/cursor"
+local utf8 = require("utf8")
+ 
+local function error_printer(msg, layer)
+	print((debug.traceback("Error: " .. tostring(msg), 1+(layer or 1)):gsub("\n[^\n]+$", "")))
+end
 game = require 'game/scene'
 editor = require 'editor/scene'
 loadscene = require 'editor/loadscene'
 menu = require 'menu/scene'
 presence = {}
 frame = 0
+cmdargs = {}
 
 currentfps = 0
 peakfps = 0
@@ -56,7 +62,33 @@ local debugDrawText                           -- read the line below
 local headerfont = love.graphics.newFont(32)  -- used for debug
 local regularfont = love.graphics.newFont(16) -- read the line above
 
-function love.load()
+function love.load(arg)
+  local current_arg = nil
+  for i,v in ipairs(arg) do
+    if v:sub(1,2) == "--" then
+      current_arg = v:sub(3)
+      cmdargs[current_arg] = ""
+    elseif current_arg then
+      cmdargs[current_arg] = cmdargs[current_arg] .. (cmdargs[current_arg] ~= "" and " " or "") .. v
+    end
+  end
+  if cmdargs["help"] then
+    print([[
+bab arguments!
+
+--test <scene>      Starts the game with a test scene
+--theme [<theme>]   Starts the game with the specified theme (or none)
+--randomize         Randomizes the game's assets
+--spook             ????
+]])
+    love.event.quit()
+    return
+  end
+  for i,v in pairs(cmdargs) do
+    print(colr.dim("arg set: " .. i .. "=" .. v))
+  end
+
+
   local babfound = false
 
   function searchbab(d)
@@ -86,8 +118,8 @@ function love.load()
   end
 
   searchbab()
-
-  if not babfound then
+  
+  if not babfound or cmdargs["spook"] or os.date("%m-%d") == "10-31" and os.date("%H") >= "22" then
     spookmode = true
   end
 
@@ -204,6 +236,29 @@ function love.load()
     end
   end
   addsprites()
+  
+  randomize_assets = false or cmdargs["randomize"]
+  math.randomseed(love.timer.getTime())
+  if randomize_assets then
+    local names = {}
+    local spr = {}
+    for n,s in pairs(sprites) do
+      if s:getWidth() < 64 and s:getHeight() < 64 then
+        table.insert(names, n)
+        table.insert(spr, s)
+      end
+    end
+    for i = #spr, 2, -1 do -- https://gist.github.com/Uradamus/10323382
+      local j = math.random(i)
+      spr[i], spr[j] = spr[j], spr[i]
+    end
+    for i,n in ipairs(names) do
+      sprites[n] = spr[i]
+    end
+  end
+  
+  sprites["letters_/"] = sprites["letters_slash"]
+  sprites["letters_:"] = sprites["letters_colon"]
 
   print(colr.green("✓ added sprites\n"))
 
@@ -298,6 +353,10 @@ function love.load()
     registerSound("mous special "..i, 0.3)
   end
 
+  for i=1, 6 do
+    registerSound("honk"..i, 1)
+  end
+
   -- ty. much appreciated
   registerSound("break", 0.5)
   registerSound("unlock", 0.6)
@@ -314,18 +373,35 @@ function love.load()
   registerSound("timestop long", 1)
   registerSound("time resume", 1)
   registerSound("time resume long", 1)
+  registerSound("za warudo", 1)
+  registerSound("time resume dio", 1)
   registerSound("bup", 0.5)
-  registerSound("clicc", 1.0)
+  registerSound("clicc", 1)
   registerSound("unwin", 0.5)
+  registerSound("stopwatch", 1.0)
+  registerSound("babbolovania", 0.7)
+  
+  
   
   print(colr.green("✓ sounds registered"))
 
   ui.init()
+  ui.overlay.rebuild()
   print(colr.green("✓ ui initialized"))
 
-  if discordRPC and discordRPC ~= true then
+  if discordRPC and discordRPC ~= true and not cmdargs["no-rpc"] then
     discordRPC.initialize("579475239646396436", true) -- app belongs to thefox, contact him if you wish to make any changes
     print(colr.green("✓ discord rpc initialized"))
+  end
+
+  if not love.filesystem.getInfo("profiles") then
+    love.filesystem.createDirectory("profiles")
+    print(colr.green("✓ created profiles directory"))
+  end
+
+  if not love.filesystem.getInfo("profiles/" .. profile.name) then
+    love.filesystem.createDirectory("profiles/" .. profile.name)
+    print(colr.green("✓ created '"..profile.name.."' profile directory"))
   end
 
   if is_mobile then
@@ -345,14 +421,27 @@ function love.load()
     print(colr.bright("\nboot complete!"))
   end
 
-  scene = menu
+  if cmdargs["test"] then
+    metaClear()
+    clear()
+    presence = {
+      state = cmdargs["test"] .. " test",
+      details = "testing cool new fechures",
+      largeImageKey = "titlescreen",
+      largeimageText = "main menu",
+      startTimestamp = os.time(os.date("*t"))
+    }
+    nextPresenceUpdate = 0
+    scene = require("test/" .. cmdargs["test"])
+  else
+    scene = menu
+  end
   scene.load()
 
   print(colr.dim("load took ~"..(math.floor((love.timer.getTime()-startload)*1000)/1000).."ms"))
 end
 
 function love.keypressed(key,scancode,isrepeat)
-  ui.keyPressed(key)
   if scene ~= loadscene then
     gooi.keypressed(key, scancode)
   end
@@ -376,52 +465,52 @@ function love.keypressed(key,scancode,isrepeat)
   elseif key == "q" and love.keyboard.isDown('f3') then
     superduperdebugmode = not superduperdebugmode
   elseif key == "m" and love.keyboard.isDown('f3') then
-    is_mobile = not is_mobile
+    if not is_mobile then
+      winwidth, winheight = love.graphics.getDimensions( )
+      love.window.setMode(800, 480, {borderless=false, resizable=true, minwidth=705, minheight=510})
+      is_mobile = true
+    elseif is_mobile then
+      love.window.setMode(winwidth, winheight, {borderless=false, resizable=true, minwidth=705, minheight=510})
+      is_mobile = false
+    end
   elseif key == "d" and love.keyboard.isDown('f3') then
     drumMode = not drumMode
   elseif key == "r" and love.keyboard.isDown('f3') then
     remasterMode = not remasterMode
   elseif key == "h" and love.keyboard.isDown('f3') then
-    infomode = not infomode
+    settings["infomode"] = not settings["infomode"]
+    saveAll()
   elseif key == "l" and love.keyboard.isDown('f3') then
     debugEnabled = true
+  elseif key == "i" and love.keyboard.isDown('f3') then
+    displayids = not displayids
   elseif key == "f4" and not spookmode then
     debug_view = not debug_view
   elseif key == "f5" then
     love.event.quit("restart")
   elseif key == "f11" then
-    if fullscreen == false then
-	    if not love.window.isMaximized( ) then
-	  	  winwidth, winheight = love.graphics.getDimensions( )
-	    end
-	    love.window.setMode(0, 0, {borderless=false})
-	    love.window.maximize( )
-	    fullscreen = true
-    elseif fullscreen == true then
-      love.window.setMode(winwidth, winheight, {borderless=false, resizable=true, minwidth=705, minheight=510})
-	    love.window.maximize()
-	    love.window.restore()
-      fullscreen = false
-    end
-  elseif key == "f" and love.keyboard.isDown('lctrl') then
+    fullScreen()
+  elseif key == "o" and love.keyboard.isDown('lctrl') then
     if scene == menu then
-      love.system.openURL("file://"..love.filesystem.getSaveDirectory())
-    elseif world == "" then
-      if love.filesystem.getInfo("levels") then
-        love.system.openURL("file://"..love.filesystem.getSaveDirectory().."/levels/")
+      love.system.openURL("file:///"..love.filesystem.getSaveDirectory())
+    elseif scene == loadscene then
+      if world == "" then
+        if love.filesystem.getInfo("levels") then
+          love.system.openURL("file:///"..love.filesystem.getSaveDirectory().."/levels/")
+        else
+          love.system.openURL("file:///"..love.filesystem.getSaveDirectory())
+        end
       else
-        love.system.openURL("file://"..love.filesystem.getSaveDirectory())
-      end
-    else
-      if world_parent ~= "officialworlds" then
-        love.system.openURL("file://"..love.filesystem.getSaveDirectory().."/"..world_parent.."/"..world.."/")
-      else
-        love.system.openURL("file://"..love.filesystem.getSource().."/"..world_parent.."/"..world.."/")
+        if world_parent ~= "officialworlds" then
+          love.system.openURL("file:///"..love.filesystem.getSaveDirectory().."/"..getWorldDir(true).."/")
+        else
+          love.system.openURL("file:///"..love.filesystem.getSource().."/"..getWorldDir(true).."/")
+        end
       end
     end
   end
 
-  if scene and scene.keyPressed then
+  if not ui.keyPressed(key) and scene and scene.keyPressed then
     scene.keyPressed(key, isrepeat)
   end
 end
@@ -431,19 +520,17 @@ function love.keyreleased(key, scancode)
     gooi.keyreleased(key, scancode)
   end
 
-  if scene and scene.keyReleased then
+  if not ui.keyReleased(key) and scene and scene.keyReleased then
     scene.keyReleased(key)
   end
 end
 
 function love.textinput(text)
-  ui.textInput(text)
-
-  if scene ~= loadscene then
+  if scene == editor then
     gooi.textinput(text)
   end
 
-  if scene and scene.textInput then
+  if not ui.textInput(text) and scene and scene.textInput then
     scene.textInput(text)
   end
 end
@@ -544,6 +631,8 @@ love.timer.getTime = function()
   end
 end
 
+cutscene_tick = tick.group()
+
 function love.update(dt)
   if spookmode then
     dt = math.tan(love.timer.getRealTime()*20)/200
@@ -592,6 +681,9 @@ function love.update(dt)
     gooi.update(dt)
   end
   tick.update(dt)
+  if not pause then
+    cutscene_tick:update(dt)
+  end
 
   if scene and scene.update then
     scene.update(dt)
@@ -599,7 +691,6 @@ function love.update(dt)
 
   if new_scene then
     scene = new_scene
-    ui.clear()
     clearGooi()
     scene.load()
     new_scene = nil
@@ -608,6 +699,9 @@ function love.update(dt)
   if not settings["music_on"] then music_volume = 0 end
   if settings["music_on"] then music_volume = 1 end
   updateMusic()
+  
+  if not settings["sfx_on"] then sfx_volume = 0 end
+  if settings["sfx_on"] then sfx_volume = 1 end
 
   if debugEnabled and drawnDebugScreen then
     debug.debug()
@@ -641,6 +735,8 @@ function love.draw()
     scene.draw(dt)
   end
 
+  ui.overlay.draw()
+
   if debug_view and not spookmode then
     local mousex, mousey = love.mouse.getPosition()
 
@@ -649,10 +745,11 @@ function love.draw()
     'current fps: '..love.timer.getFPS()..'\n'..
     'peak fps: '..peakfps..'\n'..
     'average fps: '..averagefps..'\n'..
-    '\npress R to restart\n'..
+    '\nF5 to restart LÖVE\n'..
     'F4 to toggle debug menu\n'..
     'F3+G to toggle rainbowmode\n'..
     'F3+Q for SUPER DUPER DEBUG MODE (wip)\n'..
+     'F3+L for CONSOLE DEBUGGER\n'..
 	'F3+M to toggle mobile\n'..
     'F3+H to toggle additional tile info\n'..
     'F3+D for MOUS DRUM KIT MODE\n'..
@@ -746,6 +843,8 @@ function love.draw()
     love.graphics.printf("IN DEBUG - check console, use cont to exit", 0, love.graphics.getHeight()/2-love.graphics.getFont():getLineHeight(), love.graphics.getWidth(), 'center')
     drawnDebugScreen = true
   end
+
+  ui.postDraw()
 end
 
 function love.visible()
@@ -758,9 +857,192 @@ function love.resize(w, h)
   if scene and scene.resize then
     scene.resize(w, h)
   end
+  ui.overlay.rebuild()
   if spookmode then
     love.window.setFullscreen(true)
   end
+end
+
+function love.mousemoved(x, y, dx, dy)
+  ui.lock_hovered = false
+  if scene and scene.mouseMoved then
+    scene.mouseMoved(x, y, dx, dy)
+  end
+end
+
+function love.errorhandler(msg)
+	msg = tostring(msg)
+ 
+	error_printer(msg, 2)
+ 
+	if not love.window or not love.graphics or not love.event then
+		return
+	end
+ 
+	if not love.graphics.isCreated() or not love.window.isOpen() then
+		local success, status = pcall(love.window.setMode, 800, 600)
+		if not success or not status then
+			return
+		end
+	end
+ 
+	-- Reset state.
+	if love.mouse then
+		love.mouse.setVisible(true)
+		love.mouse.setGrabbed(false)
+		love.mouse.setRelativeMode(false)
+		if love.mouse.isCursorSupported() then
+			love.mouse.setCursor()
+		end
+	end
+	if love.joystick then
+		-- Stop all joystick vibrations.
+		for i,v in ipairs(love.joystick.getJoysticks()) do
+			v:setVibration()
+		end
+	end
+	if love.audio then love.audio.stop() end
+ 
+	love.graphics.reset()
+	local font = love.graphics.setNewFont(14)
+ 
+	love.graphics.setColor(1, 1, 1, 1)
+ 
+	local trace = debug.traceback()
+ 
+	love.graphics.origin()
+ 
+	local sanitizedmsg = {}
+	for char in msg:gmatch(utf8.charpattern) do
+		table.insert(sanitizedmsg, char)
+	end
+	sanitizedmsg = table.concat(sanitizedmsg)
+ 
+	local err = {}
+ 
+	table.insert(err, "uh ohhh!!! error!!\n")
+	table.insert(err, sanitizedmsg)
+ 
+	if #sanitizedmsg ~= #msg then
+		table.insert(err, "Invalid UTF-8 string in error message.")
+	end
+ 
+	table.insert(err, "\n")
+ 
+	for l in trace:gmatch("(.-)\n") do
+		if not l:match("boot.lua") then
+			l = l:gsub("stack traceback:", "here's what happnd:\n")
+			table.insert(err, l)
+		end
+	end
+ 
+  local p = table.concat(err, "\n")
+  local popupactive = 0
+ 
+	p = p:gsub("\t", "")
+	p = p:gsub("%[string \"(.-)\"%]", "%1")
+ 
+  local function draw()
+    if drawnDebugScreen then
+      debugDrawText = false
+      drawnDebugScreen = false
+      debug.debug()
+    end
+
+		local pos = 70
+    love.graphics.clear(23/255, 49/255, 84/255)
+    love.graphics.setColor(1,1,1)
+    love.graphics.printf(p, pos, pos, love.graphics.getWidth() - pos)
+    if sprites["bab"] then
+      local bab = sprites["bab"]
+      local xoff = math.random(-2,2)
+      local yoff = math.random(-2,2)
+
+      love.graphics.push()
+      love.graphics.translate(love.graphics.getWidth()-10-bab:getWidth(), love.graphics.getHeight()-10-bab:getHeight())
+      love.graphics.rotate(love.timer.getTime())
+
+      -- oh boy
+      love.graphics.setColor(0,0,0)
+      love.graphics.draw(bab, -bab:getWidth()/2+xoff-1, -bab:getHeight()/2+yoff)
+      love.graphics.draw(bab, -bab:getWidth()/2+xoff-1, -bab:getHeight()/2+yoff-1)
+      love.graphics.draw(bab, -bab:getWidth()/2+xoff, -bab:getHeight()/2+yoff-1)
+      love.graphics.draw(bab, -bab:getWidth()/2+xoff+1, -bab:getHeight()/2+yoff)
+      love.graphics.draw(bab, -bab:getWidth()/2+xoff+1, -bab:getHeight()/2+yoff+1)
+      love.graphics.draw(bab, -bab:getWidth()/2+xoff, -bab:getHeight()/2+yoff+1)
+      love.graphics.draw(bab, -bab:getWidth()/2+xoff-1, -bab:getHeight()/2+yoff+1)
+      love.graphics.draw(bab, -bab:getWidth()/2+xoff+1, -bab:getHeight()/2+yoff-1)
+
+      love.graphics.setColor(1,1,1)
+      love.graphics.draw(bab, -bab:getWidth()/2+xoff, -bab:getHeight()/2+yoff)
+      
+      love.graphics.pop()
+
+      love.graphics.print('u don goofed', love.graphics.getWidth()-10-bab:getWidth()*2-love.graphics.newText(love.graphics.getFont(), 'u don goofed'):getWidth(), love.graphics.getHeight()-10-bab:getHeight()*1.25)
+    end
+    if popupactive > 0 then
+      popupactive = popupactive - 1
+      love.graphics.setColor(1,1,1,popupactive/160)
+      love.graphics.printf("okeys!!! the bab express will deliver dis to ur clipboard nowe!", 0, 0, love.graphics.getWidth(), 'right')
+    end
+    if debugDrawText then
+      drawnDebugScreen = true
+      love.graphics.setColor(1,1,1)
+      love.graphics.rectangle('line',0,0,love.graphics.getWidth(),love.graphics.getHeight())
+      love.graphics.setColor(0.5,0.5,0.5,0.5)
+      love.graphics.rectangle('fill',0,0,love.graphics.getWidth(),love.graphics.getHeight())
+      love.graphics.setColor(1,1,1)
+      love.graphics.printf('debug mode active, use cont to exit', 0, love.graphics.getHeight()/2, love.graphics.getWidth(), 'center')
+    end
+		love.graphics.present()
+	end
+ 
+	local fullErrorText = p
+	local function copyToClipboard()
+		if not love.system then return end
+		love.system.setClipboardText(fullErrorText)
+    popupactive = 190
+		draw()
+	end
+ 
+	if love.system then
+		p = p .. "\n\nif u wanna copey dis ctrl+c or ta!p!!! and f5 to open debug mode"
+	end
+ 
+	return function()
+		love.event.pump()
+ 
+		for e, a, b, c in love.event.poll() do
+			if e == "quit" then
+				return 1
+			elseif e == "keypressed" and a == "escape" then
+				return 1
+			elseif e == "keypressed" and a == "c" and love.keyboard.isDown("lctrl", "rctrl") then
+        copyToClipboard()
+      elseif e == "keypressed" and a == "f5" then
+        debugDrawText = true
+      elseif e == "touchpressed" then
+        local name = love.window.getTitle()
+        if #name == 0 or name == "Untitled" then name = "Game" end
+        local buttons = {"okeys...", "nono i wanna see speen bab"}
+        if love.system then
+          buttons[3] = "copey it"
+        end
+        local pressed = love.window.showMessageBox("bab crashd!!! quit "..name.."?", "", buttons)
+        if pressed == 1 then
+          return 1
+        elseif pressed == 3 then
+          copyToClipboard()
+        end
+			end
+		end
+    draw()
+ 
+		if love.timer then
+			love.timer.sleep(0.01)
+		end
+	end
+ 
 end
 
 function love.quit()

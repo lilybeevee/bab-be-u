@@ -6,6 +6,8 @@ function text_input.new()
   o:setFont(ui.fonts.default)
 
   o.scroll_x = 0
+  o.selection = nil
+  o.selecting = -1;
 
   function o:getEditing() return self.editing or false end
   function o:setEditing(val)
@@ -16,6 +18,9 @@ function text_input.new()
 
   function o:getEditPos() return self.edit_pos or self:getText():len() end
   function o:setEditPos(val) self.edit_pos = val; return self end
+
+  function o:getSelection() return self.selection end
+  function o:setSelection(a, b) self.selection = a and {a = a, b = b or self:getText():len()} or nil; return self end
 
   function o:onReturn(func) self.on_return = func; return self end
   function o:onTextEdited(func) self.on_text_edited = func; return self end
@@ -66,7 +71,7 @@ function text_input.new()
           self:on_text_edited("delete")
         end
       end
-    elseif key == "return" then
+    elseif key == "return" or key == "escape" then
       ui.setEditing()
     elseif key == "v" and love.keyboard.isDown("lctrl") then
       self:textInput(love.system.getClipboardText())
@@ -106,8 +111,8 @@ function text_input.new()
     selector_y = font:getHeight()
     selector_line = current_line
 
-    local sx, sy = love.graphics.inverseTransformPoint(self:getPos())
-    local sx2, sy2 = love.graphics.inverseTransformPoint(self:getX() + self:getWidth(), self:getY() + self:getHeight())
+    local sx, sy = love.graphics.transformPoint(0, 0)
+    local sx2, sy2 = love.graphics.transformPoint(self:getWidth(), self:getHeight())
     local sw, sh = sx2 - sx, sy2 - sy
 
     love.graphics.setScissor(sx, sy, sw, sh)
@@ -149,6 +154,10 @@ function text_input.new()
 
   function o:plsMakeSureThatTheEditPosIsWithinTheTextLimitsBeforeDoingAnythingWithItOrElseStuffWillProbablyBreak()
     self.edit_pos = math.max(0, math.min(self:getText():len(), self:getEditPos()))
+    if self.selection then
+      self.selection.a = math.max(0, math.min(self:getText():len(), self.selection.a))
+      self.selection.b = math.max(0, math.min(self:getText():len(), self.selection.b))
+    end
   end
 
   return o

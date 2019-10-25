@@ -58,6 +58,7 @@ function createMouse_direct(x,y,id_)
 
   mouse.overlay = {}
   mouse.removed = false
+  mouse.new = true
 
   if #cursors == 0 then
     mouse.primary = true
@@ -70,6 +71,7 @@ function createMouse_direct(x,y,id_)
     mouse.primary = false
   end
   table.insert(cursors, mouse)
+  cursors_by_id[mouse.id] = mouse
   return mouse
 end
 

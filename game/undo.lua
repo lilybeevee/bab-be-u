@@ -34,8 +34,11 @@ function addUndoMaybeOverwrite(data)
     local most_recent_undo = undo_buffer[1][1]
     if most_recent_undo[1] == data[1] and most_recent_undo[2] == data[2] then
       --this causes bugs, need to investigate I guess
+      --returning seems to work better on average?
+      --print("abort!")
+      return
       --print("replacing:", fullDump(most_recent_undo), "with:", fullDump(data))
-      table.remove(undo_buffer[1], 1)
+      --table.remove(undo_buffer[1], 1)
     end
     table.insert(undo_buffer[1], 1, data)
   end
@@ -49,7 +52,7 @@ function undoOneAction(turn, i, v, ignore_no_undo)
   
   if action == "update" then
     unit = units_by_id[v[2]]
-
+    --print("undoOneAction update", unit.name, v[3], v[4])
     if unit ~= nil and (ignore_no_undo or not isNoUndo(unit)) then
       moveUnit(unit,v[3],v[4])
       --force updates when we're rewinding time - it ABSOLUTELY had that direction in the past
@@ -62,8 +65,8 @@ function undoOneAction(turn, i, v, ignore_no_undo)
   elseif action == "create" then
     local convert = v[3]
     unit = units_by_id[v[2]]
-
-    if unit.type == "text" or rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname]  then
+    --print("undoOneAction create:",fullDump(v), unit)
+    if unit ~= nil and (unit.type == "text" or rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname])  then
       update_rules = true
     end
 
@@ -100,6 +103,7 @@ function undoOneAction(turn, i, v, ignore_no_undo)
     createMouse_direct(v[2], v[3], v[4]) --x, y, id
   elseif action == "backer_turn" then
     unit = units_by_id[v[2]]
+    --print("undo backer_turn:", unit.fullname, backers_cache[unit], unit.backer_turn, v[3])
     if (unit ~= nil and (ignore_no_undo or not isNoUndo(unit))) then
       backers_cache[unit] = v[3]
       unit.backer_turn = v[3]
@@ -158,18 +162,16 @@ function undoOneAction(turn, i, v, ignore_no_undo)
   elseif action == "timeless_crash_remove" then
     --meaningless by definition
     --timeless_crash = true
-  elseif action == "timeless_yeet_add" then
-    unit = v[2]
-    for i,yote in ipairs(timeless_yote) do
-      if yote.unit == unit and (ignore_no_undo or not isNoUndo(yote.unit)) then
-        table.remove(timeless_yote, i)
-        break
-      end
-    end
-  elseif action == "timeless_yeet_remove" then
-    table.insert(timeless_yote, {unit = v[2], dir = v[3]})
+  elseif action == "timeless_yeet_add" or action == "timeless_yeet_remove" then
+    timeless_yote[v[2]] = v[3]
   elseif action == "timeless_rules" then
     rules_with = v[2]
+    full_rules = v[3]
+    for _,rule in ipairs(full_rules) do
+      for _,unit in ipairs(rule.units) do
+        unit.active = true
+      end
+    end
 	elseif action == "colour_change" then
     unit = units_by_id[v[2]]
     colour = v[3]
@@ -178,6 +180,19 @@ function undoOneAction(turn, i, v, ignore_no_undo)
       unit[colour] = value
       updateUnitColourOverride(unit)
     end
+  elseif action == "color_override_change" then
+    unit = units_by_id[v[2]]
+    value = v[3]
+    if (unit ~= nil and (ignore_no_undo or not isNoUndo(unit))) then
+      unit.color_override = value
+    end
+  elseif action == "past" then
+    current_move = v[2]
+    while #all_moves >= v[3] do
+      table.remove(all_moves)
+    end
+  elseif action == "tween" then
+    removeFromTable(still_converting, v[2])
   end
   return update_rules, unit
 end
@@ -197,8 +212,15 @@ function doBack(unitid, turn, _ignore_no_undo)
     for _,v in ipairs(undo_buffer[turn]) do 
       local action = v[1]
       local unit = units_by_id[v[2]]
+      --print("doBack:", fullDump(v))
+      if (action == "remove") then --should be impossible with UNDO, for TRY AGAIN purposes
+        local id = v[7];
+        addUndo({"create", v[7], true, v.created_from_id})
+        undoOneAction(turn, _, v, ignore_no_undo)
+      end
       if unit ~= nil and (unit.id == unitid or unitid == nil) then
         if (action == "update") then
+          --print("doBack update", unit.name, unit.x, unit.y, v[3], v[4])
           addUndoMaybeOverwrite({"update", unit.id, unit.x, unit.y, unit.dir})
           undoOneAction(turn, _, v, ignore_no_undo)
         elseif (action == "create") then
@@ -220,9 +242,14 @@ function doBack(unitid, turn, _ignore_no_undo)
           addUndo({"colour_change", unit.id, colour, unit[colour]})
           unit[colour] = value
           updateUnitColourOverride(unit)
+        elseif action == "color_override_change" then
+          value = v[3]
+          addUndo({"color_override_change", unit.id, unit.color_override})
+          unit.color_override = value
         end
       end
     end
+    --print(fullDump(undo_buffer[1]))
     return true
   end
   return false
@@ -294,6 +321,7 @@ function undo(dont_update_rules)
     local update_rules = false
     
     last_move = undo_buffer[1].last_move or {0, 0}
+    current_turn = current_turn - 1
 
     for _,v in ipairs(undo_buffer[1]) do
       local new_update_rules = undoOneAction(1, _, v, false)
@@ -319,7 +347,9 @@ function undo(dont_update_rules)
   return true
 end
 
-function doTryAgain()
+function doTryAgain(_ignore_no_undo)
+  local ignore_no_undo = _ignore_no_undo
+  if (ignore_no_undo == nil) then ignore_no_undo = false end
   in_try_again = true
   try_again_cache = {}
   --cache units that are no undo so even if it's conditional they remain that way the entire time
@@ -331,7 +361,7 @@ function doTryAgain()
   local i = 1
   --instead of literally undoing everything, use BACK code to create new undo events. That way 1) TRY AGAIN can be undone. 2) Units don't forget their previous history each TRY AGAIN, should they be NO UNDO now but not in the future.
   while (can_undo) do
-    can_undo = doBack(nil, i, false)
+    can_undo = doBack(nil, i, ignore_no_undo)
     i = i + 1
   end
   parseRules(true)
@@ -346,5 +376,42 @@ function isNoUndo(unit)
     return try_again_cache[unit] == true
   else
     return hasProperty(unit, "no undo")
+  end
+end
+
+function createUndoBasedOnUnitsChanges(old_units, old_units_by_id, new_units, new_units_by_id)
+  --[[
+1) For every unit in old units, if it exists in new units (same id and fullname) and x/y/dir differ, add an update event.
+2) Else, add a create event with its old state.
+3) For every unit in new units, if it doesn't exist in old units (same id and fullname), add a destroy event.
+  TODO: Handle mous, timefuck stuff (timeless, UNDO), no1?
+]]
+  
+  for _,unit in ipairs(old_units) do
+    if new_units_by_id[unit.id] ~= nil and new_units_by_id[unit.id].fullname == unit.fullname then
+      local new_unit = new_units_by_id[unit.id];
+      if (new_unit.x ~= unit.x) or (new_unit.y ~= unit.y) or (new_unit.dir ~= unit.dir) then
+        addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
+      end
+      if (new_unit.color ~= unit.color) then
+        for _,colour in ipairs(color_names) do
+          if new_unit[colour] ~= unit[colour] then
+            addUndo({"colour_change", unit.id, colour, unit[colour]})
+          end
+        end
+      end
+    else
+      addUndo({"remove", unit.tile, unit.x, unit.y, unit.dir, convert or false, unit.id, unit.special})
+    end
+  end
+  for _,unit in ipairs(new_units) do
+    if old_units_by_id[unit.id] ~= nil and old_units_by_id[unit.id].fullname == unit.fullname then
+      --already handled 'exists in both' case
+    else
+      addUndo({"create", unit.id, true, nil})
+    end
+  end
+  if (level_destroyed) then
+    addUndo({"destroy_level"})
   end
 end

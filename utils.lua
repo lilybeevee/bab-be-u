@@ -1,15 +1,23 @@
 function clear()
+  puffs_this_world = 0
+  levels_this_world = 0
+
   --groups_exist = false
   letters_exist = false
-	replay_playback = false
-  replay_playback_turns = nil
-	replay_playback_string = nil
-	replay_playback_turn = 1
-	replay_playback_time = love.timer.getTime()
-	replay_playback_interval = 0.3
-  old_replay_playback_interval = 0.3
-  replay_pause = false
-	replay_string = ""
+  if not doing_past_turns then
+    replay_playback = false
+    replay_playback_turns = nil
+    replay_playback_string = nil
+    replay_playback_turn = 1
+    replay_playback_time = love.timer.getTime()
+    replay_playback_interval = 0.3
+    old_replay_playback_interval = 0.3
+    replay_pause = false
+    replay_string = ""
+  end
+  rhythm_time = love.timer.getTime()
+  rhythm_interval = 1
+  rhythm_queued_movement = {0, 0, "wait"}
   new_units_cache = {}
   undoing = false
   successful_brite_cache = nil
@@ -56,9 +64,13 @@ function clear()
   last_click_y = nil
   mouse_oldX = mouse_X
   mouse_oldY = mouse_Y
+  drag_units = {}
   cursors = {}
+  cursors_by_id = {}
   shake_dur = 0
   shake_intensity = 0.5
+  current_turn = 0
+  current_move = 0
   
   --za warudo needs a lot
   timeless = false
@@ -97,17 +109,40 @@ function clear()
       end
     end
   end
+
+  if not doing_past_turns then
+    change_past = false
+    past_playback = false
+    all_moves = {}
+    past_rules = {}
+    past_ends = {}
+  end
   
   card_for_id = {}
 
   love.mouse.setCursor()
 end
 
+function pastClear()
+  if stopwatch ~= nil then
+    stopwatch.visible = false
+  end
+  should_parse_rules = true
+  doing_past_turns = false
+  past_playback = false
+  past_rules = {}
+  cutscene_tick = tick.group()
+end
+
 function metaClear()
   rules_with = nil
+  rules_with_unit = nil
+  level_tree = {}
+  playing_world = false
   parent_filename = nil
   stay_ther = nil
   surrounds = nil
+  pastClear()
 end
 
 function initializeGraphicalPropertyCache()
@@ -128,10 +163,23 @@ function loadMap()
       units_by_tile[x + y * mapwidth] = {}
     end
   end]]
+  local has_missing_levels = false
+  local rects = {}
+  local extra_units = {}
   for _,mapdata in ipairs(maps) do
-    local version = mapdata[1]
-    local map = mapdata[2]
-    if version == 0 then
+    local version = mapdata.info.version
+    local map = mapdata.data
+
+    local offset = {x = 0, y = 0}
+    if mapdata.info.width < mapwidth then
+      offset.x = math.floor((mapwidth / 2) - (mapdata.info.width / 2))
+    end
+    if mapdata.info.height < mapheight then
+      offset.y = math.floor((mapheight / 2) - (mapdata.info.height / 2))
+    end
+    table.insert(rects, {x = offset.x, y = offset.y, w = mapdata.info.width, h = mapdata.info.height})
+
+    if version == 0 or version == nil then
       if map == nil then
         map = {}
         for x=1,mapwidth do
@@ -155,13 +203,13 @@ function loadMap()
           local tile, x, y, dir
           tile, x, y, dir, pos = love.data.unpack(PACK_UNIT_V1, map, pos)
           if inBounds(x, y) then
-            createUnit(tile, x, y, dir)
+            createUnit(tile, x + offset.x, y + offset.y, dir)
           end
         elseif version == 2 or version == 3 then
           local id, tile, x, y, dir, specials
           id, tile, x, y, dir, specials, pos = love.data.unpack(version == 2 and PACK_UNIT_V2 or PACK_UNIT_V3, map, pos)
-          if inBounds(x, y) then
-            local unit = createUnit(tile, x, y, dir, false, id)
+          if inBounds(x + offset.y, y + offset.y) then
+            local unit = createUnit(tile, x + offset.x, y + offset.y, dir, false, id)
             local spos = 1
             while spos <= #specials do
               local k, v
@@ -180,58 +228,102 @@ function loadMap()
       local floodfill = {}
       local objects = {}
       local lvls = {}
+      local locked_lvls = {}
       local dofloodfill = scene ~= editor
       for _,unit in ipairs(map) do
         id, tile, x, y, dir, specials, color = unit.id, unit.tile, unit.x, unit.y, unit.dir, unit.special, unit.color
-        if inBounds(x, y) then
-          if not dofloodfill then
-            local unit = createUnit(tile, x, y, dir, false, id, nil, color and {{name=color}})
-            unit.special = specials
-          elseif tile == tiles_by_name["lvl"] then
-            if readSaveFile(specials.level, "seen") then
-              local tfs = readSaveFile(level_name, "transform")
-              for _,t in ipairs(tfs or {tiles_listPossiblyMeta(tile).name}) do
-                local unit = createUnit(tiles_by_namePossiblyMeta(t), x, y, dir, false, id, nil, color and {{name=color}})
-                unit.special = specials
-                unit.special.visibility = "open"
-                if readSaveFile(specials.level, "won") then
-                  table.insert(floodfill, {unit, 1})
-                end
-              end
-            elseif specials.visibility == "open" then
-              local unit = createUnit(tile, x, y, dir, false, id, nil, color and {{name=color}})
-              unit.special = specials
+        x = x + offset.x
+        y = y + offset.y
+        
+        --track how many puffs and levels exist in this world (have to do this separately so we count hidden levels etc)
+        if specials.level then
+          levels_this_world = levels_this_world + 1
+          if readSaveFile{"levels", specials.level, "won"} then
+            puffs_this_world = puffs_this_world + 1
+          end
+        end
+        
+        if scene == editor and specials.level then
+          if not love.filesystem.getInfo(getWorldDir() .. "/" .. specials.level .. ".bab") then
+            has_missing_levels = true
+            print("missing level: " .. specials.level)
+            local search = searchForLevels(getWorldDir(), specials.name, true)
+            if #search > 0 then
+              print("    - located: " .. search[1].file)
+              specials.level = search[1].file
+              specials.name = search[1].data.name
             else
-              table.insert(objects, {id, tile, x, y, dir, specials, color})
-            end
-          elseif tile == tiles_by_name["lin"] then
-            if specials.visibility == "hidden" then
-              table.insert(objects, {id, tile, x, y, dir, specials, color})
-            else
-              local unit = createUnit(tile, x, y, dir, false, id, nil, color and {{name=color}})
-              unit.special = specials
-            end
-          else
-            if specials.level then
-              local tfs = readSaveFile(level_name, "transform")
-              for _,t in ipairs(tfs or {tiles_listPossiblyMeta(tile).name}) do
-                local unit = createUnit(tiles_by_namePossiblyMeta(t), x, y, dir, false, id, nil, color and {{name=color}})
-                unit.special = specials
-                if readSaveFile(specials.level, "seen") then
-                  unit.special.visibility = "open"
-                end
-              end
-            else
-              createUnit(tile, x, y, dir, false, id, nil, color and {{name=color}})
+              print("    - could not locate!")
             end
           end
         end
+        if not dofloodfill then
+          local unit = createUnit(tile, x, y, dir, false, id, nil, color)
+          unit.special = specials
+        elseif tile == tiles_by_name["lvl"] then
+          if readSaveFile{"levels", specials.level, "seen"} then
+            specials.visibility = "open"
+            local tfs = readSaveFile{"levels", specials.level, "transform"}
+            for i,t in ipairs(tfs or {tiles_listPossiblyMeta(tile).name}) do
+              if i == 1 then
+                local unit = createUnit(tiles_by_namePossiblyMeta(t), x, y, dir, false, id, nil, color)
+                unit.special = deepCopy(specials)
+                if readSaveFile{"levels", specials.level, "won"} or readSaveFile{"levels", specials.level, "clear"} then
+                  table.insert(floodfill, {unit, 1})
+                end
+              else
+                table.insert(extra_units, {tiles_by_namePossiblyMeta(t), x, y, dir, color, deepCopy(specials)})
+              end
+            end
+          elseif specials.visibility == "open" then
+            local unit = createUnit(tile, x, y, dir, false, id, nil, color)
+            unit.special = specials
+          elseif specials.visibility == "locked" then
+            table.insert(locked_lvls, {id, tile, x, y, dir, specials, color})
+            table.insert(objects, {id, tile, x, y, dir, specials, color})
+          else
+            table.insert(objects, {id, tile, x, y, dir, specials, color})
+          end
+        elseif tile == tiles_by_name["lin"] then
+          if specials.visibility == "hidden" then
+            table.insert(objects, {id, tile, x, y, dir, specials, color})
+          else
+            local unit = createUnit(tile, x, y, dir, false, id, nil, color)
+            unit.special = specials
+          end
+        else
+          if specials.level then
+            if readSaveFile{"levels", specials.level, "seen"} then
+              specials.visibility = "open"
+            end
+            local tfs = readSaveFile{"levels", specials.level, "transform"}
+            for i,t in ipairs(tfs or {tiles_listPossiblyMeta(tile).name}) do
+              if i == 1 then
+                local unit = createUnit(tiles_by_namePossiblyMeta(t), x, y, dir, false, id, nil, color)
+                unit.special = specials
+              else
+                table.insert(extra_units, {tiles_by_namePossiblyMeta(t), x, y, dir, color, deepCopy(specials)})
+              end
+            end
+          else
+            local unit = createUnit(tile, x, y, dir, false, id, nil, color)
+            unit.special = specials
+          end
+        end
       end
+      
+      --now check if we should grant clear/complete
+      if (level_puffs_to_clear > 0 and puffs_this_world >= level_puffs_to_clear) then
+        writeSaveFile(true, {"levels", level_filename, "clear"})
+      end
+      if (levels_this_world > 0 and puffs_this_world >= levels_this_world) then
+        writeSaveFile(true, {"levels", level_filename, "complete"})
+      end
+      
       if dofloodfill then
         local created = {}
         while #floodfill > 0 do
           local u, ptype = unpack(table.remove(floodfill, 1))
-          print(fullDump(u), ptype)
           local orthos = {[-1] = {}, [0] = {}, [1] = {}}
           for a = 0,1 do -- 0 = ortho, 1 = diag
             for i = #objects,1,-1 do
@@ -243,21 +335,22 @@ function loadMap()
                 orthos[dx][dy] = true
                 if not created[v[1]] then
                   if v[2] == tiles_by_name["lvl"] then
-                    local unit = createUnit(v[2], v[3], v[4], v[5], false, v[1], nil, v[7] and {{name=v[7]}})
-                    created[v[1]] = true
-                    unit.special = v[6]
-                    if ptype == 1 then
-                      unit.special.visibility = "open"
-                      table.insert(floodfill, {unit, 2})
-                    elseif ptype == 2 then
-                      print(unit.special.visibility)
-                      unit.special.visibility = "locked"
-                      table.insert(floodfill, {unit, 2})
-                    elseif ptype == 3 then
-                      unit.special.visibility = "open"
+                    if ptype ~= 2 then
+                      local unit = createUnit(v[2], v[3], v[4], v[5], false, v[1], nil, v[7])
+                      created[v[1]] = true
+                      unit.special = v[6]
+                      if ptype == 1 then
+                        unit.special.visibility = "open"
+                        table.insert(floodfill, {unit, 2})
+                      elseif ptype == 3 then
+                        unit.special.visibility = "open"
+                      end
+                    elseif ptype == 2 and not table.has_value(locked_lvls, v) then
+                      table.insert(locked_lvls, v)
+                      table.insert(floodfill, {{x = v[3], y = v[4]}, 2})
                     end
                   elseif (ptype == 1 or ptype == 3) and v[2] == tiles_by_name["lin"] and (not v[6].pathlock or v[6].pathlock == "none") then
-                    local unit = createUnit(v[2], v[3], v[4], v[5], false, v[1], nil, v[7] and {{name=v[7]}})
+                    local unit = createUnit(v[2], v[3], v[4], v[5], false, v[1], nil, v[7])
                     created[v[1]] = true
                     unit.special = v[6]
                     table.insert(floodfill, {unit, 3})
@@ -267,16 +360,44 @@ function loadMap()
             end
           end
         end
+        for _,v in ipairs(locked_lvls) do
+          if not created[v[1]] then
+            local unit = createUnit(v[2], v[3], v[4], v[5], false, v[1], nil, v[7])
+            created[v[1]] = true
+            unit.special = v[6]
+          end
+        end
       end
     end
+  end
+  for x=0,mapwidth-1 do
+    for y=0,mapheight-1 do
+      local in_bounds = false
+      for _,rect in ipairs(rects) do
+        if x >= rect.x and x < rect.x + rect.w and y >= rect.y and y < rect.y + rect.h then
+          in_bounds = true
+          break
+        end
+      end
+      if not in_bounds then
+        createUnit(tiles_by_name["bordr"], x, y, 1)
+      end
+    end
+  end
+  for _,t in ipairs(extra_units) do
+    local unit = createUnit(t[1], t[2], t[3], t[4], false, nil, nil, t[5])
+    unit.specials = t[6]
   end
   if (load_mode == "play") then
     initializeOuterLvl()
     initializeEmpties()
     loadStayTher()
     if (not unit_tests) then
-      writeSaveFile(level_name, "seen", true)
+      writeSaveFile(true, {"levels", level_filename, "seen"})
     end
+  end
+  if has_missing_levels then
+    print(colr.red("\nLEVELS MISSING - PLEASE CHECK & SAVE!"))
   end
   
   --I don't know why, but this is slower by a measurable amount (70-84 seconds for example).
@@ -467,14 +588,14 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
       if result then
         for i=1,3,2 do
           if rule_units[i] ~= nil then
-            if not testConds(rule_units[i], rule[ruleparts[i]].conds) then
+            if not testConds(rule_units[i], rule[ruleparts[i]].conds, rule_units[1]) then
               if (debugging) then
                 print("false due to cond", i)
               end
               result = false
             else
               --check that there isn't a verbn't rule - edge cases where this might happen: text vs specific text, group vs unit. This is slow (15% longer unit tests, 0.1 second per unit test) but it fixes old and new bugs so I think we just have to suck it up.
-              if rules_with[rule2.."n't"] ~= nil and #matchesRule(rule_units[i], rule2.."n't", rule.object.name, true) > 0 then
+              if rules_with[rule.verb.name.."n't"] ~= nil and #matchesRule(rule_units[i], rule.verb.name.."n't", rule.object.name, true) > 0 then
                 result = false
               end
             end
@@ -493,7 +614,7 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
             local cond
             if testConds(unit, rule[ruleparts[find_arg]].conds) then
               --check that there isn't a verbn't rule - edge cases where this might happen: text vs specific text, group vs unit. This is slow (15% longer unit tests, 0.1 second per unit test) but it fixes old and new bugs so I think we just have to suck it up.
-              if rules_with[rule2.."n't"] ~= nil and #matchesRule(unit, rule2.."n't", rule.object.name, true) > 0 then
+              if rules_with[rule.verb.name.."n't"] ~= nil and #matchesRule(unit, rule.verb.name.."n't", rule.object.name, true) > 0 then
               else
                 table.insert(ret, {rules, unit})
                 if stopafterone then return ret end
@@ -504,7 +625,7 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
           local found1, found2
           for _,unit1 in ipairs(findUnitsByName(rule.subject)) do
             for _,unit2 in ipairs(findUnitsByName(rule.object)) do
-              if testConds(unit1, rule.subject.conds) and testConds(unit2, rule.object.conds) then
+              if testConds(unit1, rule.subject.conds) and testConds(unit2, rule.object.conds, unit1) then
                 table.insert(ret, {rules, unit1, unit2})
                 if stopafterone then return ret end
               end
@@ -520,14 +641,65 @@ end
 
 function getUnitsWithEffect(effect)
   local result = {}
+  local gotten = {}
   local rules = matchesRule(nil, "be", effect)
   --print ("h:"..tostring(#rules))
   for _,dat in ipairs(rules) do
     local unit = dat[2]
-    if not unit.removed then
+    if not unit.removed and not hasRule(unit, "ben't", effect) then
       table.insert(result, unit)
+      gotten[unit] = true
     end
   end
+  
+  local rules = matchesRule(nil, "giv", effect)
+  for _,rule in ipairs(rules) do
+    local unit = rule[2]
+    if not unit.removed then
+      for _,other in ipairs(getUnitsOnTile(unit.x, unit.y, nil, false, unit, nil, hasProperty(unit,"big"))) do
+        if not gotten[other] and sameFloat(unit, other) and not hasRule(other, "ben't", effect) and ignoreCheck(other, unit) then
+          table.insert(result, other)
+          gotten[other] = true
+        end
+      end
+    end
+  end
+  
+  if hasRule(outerlvl, "giv", effect) then
+    for _,unit in ipairs(units) do
+      if not gotten[unit] and inBounds(unit.x, unit.y) and not hasRule(unit, "ben't", effect) and ignoreCheck(unit, outerlvl) then
+        table.insert(result, unit)
+      end
+    end
+  end
+  
+  if rules_with["rp"] then
+    for _,unit in ipairs(result) do
+      local isrp = matchesRule(nil,"rp",unit)
+      for _,ruleparent in ipairs(isrp) do
+        local mimic = ruleparent[2]
+        if not gotten[mimic] and not hasRule(mimic,"ben't",effect) then
+          gotten[mimic] = true
+          table.insert(result,mimic)
+        end
+      end
+    end
+    local therp = matchesRule(nil,"rp","the")
+    for _,ruleparent in ipairs(therp) do
+      local the = ruleparent[1].rule.object.unit
+      local tx = the.x+dirs8[the.dir][1]
+      local ty = the.y+dirs8[the.dir][2]
+      local mimic = ruleparent[2]
+      local stuff = getUnitsOnTile(tx,ty)
+      for _,unit in ipairs(stuff) do
+        if hasProperty(unit,effect) and not hasRule(mimic,"ben't",effect) then
+          table.insert(result,mimic)
+          break
+        end
+      end
+    end
+  end
+  
   return result
 end
 
@@ -537,11 +709,62 @@ function getUnitsWithEffectAndCount(effect)
   --print ("h:"..tostring(#rules))
   for _,dat in ipairs(rules) do
     local unit = dat[2]
-    if not unit.removed then
+    if not unit.removed and not hasRule(unit, "ben't", effect) then
       if result[unit] == nil then
         result[unit] = 0
       end
       result[unit] = result[unit] + 1
+    end
+  end
+  
+  local rules = matchesRule(nil, "giv", effect)
+  for _,rule in ipairs(rules) do
+    local unit = rule[2]
+    if not unit.removed then
+      for _,other in ipairs(getUnitsOnTile(unit.x, unit.y, nil, false, unit, nil, hasProperty(unit,"big"))) do
+        if sameFloat(unit, other) and not hasRule(other, "ben't", effect) and ignoreCheck(other, unit) then
+          if result[other] == nil then
+            result[other] = 0
+          end
+          result[other] = result[other] + 1
+        end
+      end
+    end
+  end
+  
+  if hasRule(outerlvl, "giv", effect) then
+    for _,unit in ipairs(units) do
+      if inBounds(unit.x, unit.y) and not hasRule(unit, "ben't", effect) and ignoreCheck(unit, outerlvl) then
+        if result[unit] == nil then
+          result[unit] = 0
+        end
+        result[unit] = result[unit] + 1
+      end
+    end
+  end
+  
+  if rules_with["rp"] then
+    for unit,count in pairs(result) do
+      local isrp = matchesRule(nil,"rp",unit)
+      for _,ruleparent in ipairs(isrp) do
+        local mimic = ruleparent[2]
+        if not mimic.removed and not hasRule(mimic,"ben't",effect) then
+          result[mimic] = count
+        end
+      end
+    end
+    local therp = matchesRule(nil,"rp","the")
+    for _,ruleparent in ipairs(therp) do
+      local the = ruleparent[1].rule.object.unit
+      local tx = the.x+dirs8[the.dir][1]
+      local ty = the.y+dirs8[the.dir][2]
+      local mimic = ruleparent[2]
+      local stuff = getUnitsOnTile(tx,ty)
+      for _,unit in ipairs(stuff) do
+        if hasProperty(unit,effect) and not hasRule(mimic,"ben't",effect) then
+          result[mimic] = countProperty(unit,effect)
+        end
+      end
     end
   end
   return result
@@ -560,12 +783,44 @@ function getUnitsWithRuleAndCount(rule1, rule2, rule3)
       result[unit] = result[unit] + 1
     end
   end
+  if rules_with["rp"] then
+    for unit,count in pairs(result) do
+      local isrp = matchesRule(nil,"rp",unit)
+      for _,ruleparent in ipairs(isrp) do
+        local mimic = ruleparent[2]
+        if not mimic.removed and not hasRule(mimic,rule2.."n't",rule3) then
+          result[mimic] = count
+        end
+      end
+    end
+    local therp = matchesRule(nil,"rp","the")
+    for _,ruleparent in ipairs(therp) do
+      local the = ruleparent[1].rule.object.unit
+      local tx = the.x+dirs8[the.dir][1]
+      local ty = the.y+dirs8[the.dir][2]
+      local mimic = ruleparent[2]
+      local stuff = getUnitsOnTile(tx,ty)
+      for _,unit in ipairs(stuff) do
+        if hasRule(unit,rule2,rule3) and not hasRule(mimic,rule2.."n't",rule3) then
+          result[mimic] = countProperty(unit,effect)
+        end
+      end
+    end
+  end
   return result
 end
 
 
 function hasRule(rule1,rule2,rule3)
-  return #matchesRule(rule1,rule2,rule3, true) > 0
+  if #matchesRule(rule1,rule2,rule3, true) > 0 then return true end
+  if not rules_with["rp"] then return false end
+  if #matchesRule(rule1,rule2.."n't",rule3, true) > 0 then return false end
+  local isrp = matchesRule(rule1,"rp",nil)
+  for _,ruleparent in ipairs(isrp) do
+    local mimic = ruleparent[2]
+    if #matchesRule(mimic,rule2,rule3, true) > 0 then return true end
+  end
+  return false
 end
 
 function validEmpty(unit)
@@ -604,39 +859,75 @@ function findUnitsByName(name)
 end
 
 function hasProperty(unit,prop)
-  --[[local name
-  if unit.class == "unit" then
-    name = unit.name
-  elseif unit.class == "cursor" then
-    name = "mous"
-  end
-  if rules_with[name] then
-    for _,v in ipairs(rules_with[name]) do
-      local rule = v[1]
-      if rule[1] == name and rule[2] == "be" and rule[3] == prop then
-        print("par : " .. rule[1] .. " - " .. rule[2] .. " - " .. rule[3])
-        return testConds(unit,rule[4][1])
+  if not rules_with[prop] and prop ~= "?" then return false end
+  if hasRule(unit, "be", prop) then return true end
+  if type(unit) ~= "table" then return false end
+  if not rules_with["giv"] then return false end
+  if hasRule(unit, "ben't", prop) then return false end
+  if unit == outerlvl then return false end
+  if unit and unit.class == "mous" then return false end
+  if unit then
+    if hasRule(outerlvl, "giv", prop) then return inBounds(unit.x, unit.y) end
+    for _,other in ipairs(getUnitsOnTile(unit.x, unit.y, nil, false, unit, true, hasRule(unit,"be","big"))) do
+      if #matchesRule(other, "giv", prop) > 0 and sameFloat(unit, other) and ignoreCheck(unit, other) then
+        return true
+      end
+    end
+  else
+    if hasRule(outerlvl, "giv", prop) then return true end
+    for _,ruleparent in ipairs(matchesRule(nil, "giv", prop)) do
+      for _,other in ipairs(ruleparent.units) do
+        if #getUnitsOnTile(other.x, other.y, nil, false, other, true, hasRule(unit,"be","big")) > 0 and sameFloat(unit, other) then
+          return true
+        end
       end
     end
   end
-  return false]]
-  return hasRule(unit,"be",prop)
+  return false
 end
 
-function countProperty(unit,prop)
-  return #matchesRule(unit,"be",prop)
+function countProperty(unit, prop, ignore_flye)
+  if not rules_with[prop] and prop ~= "?" then return 0 end
+  local result = #matchesRule(unit,"be",prop)
+  if hasRule(unit, "ben't", prop) then return 0 end
+  if not rules_with["giv"] then return result end
+  if unit == outerlvl then return result end
+  if unit and unit.class == "mous" then return result end
+  result = result + #matchesRule(outerlvl, "giv", prop)
+  if unit then
+    for _,other in ipairs(getUnitsOnTile(unit.x, unit.y, nil, false, unit, true, hasProperty(unit,"big"))) do
+      if ignoreCheck(unit, other) and (ignore_flye or sameFloat(unit, other)) then
+        result = result + #matchesRule(other, "giv", prop)
+      end
+    end
+  else -- I don't think anything uses this? it doesn't seem very useful at least, but I guess it's functional?
+    for _,ruleparent in ipairs(matchesRule(nil, "giv", prop)) do
+      for _,other in ipairs(ruleparent.units) do
+        if ignoreCheck(unit, other) and (ignore_flye or sameFloat(unit, other)) then
+          result = result + #getUnitsOnTile(other.x, other.y, nil, false, other, true, hasProperty(other,"big"))
+        end
+      end
+    end
+  end
+  return result
 end
 
+function hasU(unit)
+  return hasProperty(unit,"u") or hasProperty(unit,"u too") or hasProperty(unit,"u tres") or hasProperty(unit,"y'all")
+end
 
-function hasSing(unit,note)
-    bit = love.audio.newSource("assets/audio/sfx/bit2.wav", "static")
-    return hasRule(unit,"sing",note)
+function getUs()
+  local yous = getUnitsWithEffect("u")
+  mergeTable(yous,getUnitsWithEffect("u too"))
+  mergeTable(yous,getUnitsWithEffect("u tres"))
+  mergeTable(yous,getUnitsWithEffect("y'all"))
+  return yous
 end
 
 --to prevent infinite loops where a set of rules/conditions is self referencing
 withrecursion = {}
 
-function testConds(unit,conds) --cond should be a {condtype,{object types},{cond_units}}
+function testConds(unit, conds, compare_with) --cond should be a {condtype,{object types},{cond_units}}
   local endresult = true
   for _,cond in ipairs(conds or {}) do
     local condtype = cond.name
@@ -655,10 +946,10 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
           list = group_lists[other.name]
           set = group_sets[other.name]
         else
-          for _,unit in ipairs(findUnitsByName(other.name)) do -- findUnitsByName handles mous and no1 already
-            if testConds(unit, other.conds) then
-              table.insert(list, unit)
-              set[unit] = true
+          for _,otherunit in ipairs(findUnitsByName(other.name)) do -- findUnitsByName handles mous and no1 already
+            if testConds(otherunit, other.conds, unit) then
+              table.insert(list, otherunit)
+              set[otherunit] = true
             end
           end
         end
@@ -750,7 +1041,7 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
           end
         end
       else
-        local frens = getUnitsOnTile(x, y, nil, false, unit, true)
+        local frens = getUnitsOnTile(x, y, nil, false, unit, true, hasProperty(unit,"big"))
         for _,other in ipairs(sets) do
           if other[outerlvl] then
             if not inBounds(unit.x,unit.y) then
@@ -794,12 +1085,18 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
           end
         else
           local dx, dy, dir, px, py = getNextTile(unit, nx, ny, ndir)
-          others[nx][ny] = getUnitsOnTile(px, py, nil, false, unit, true)
+          others[nx][ny] = getUnitsOnTile(px, py, nil, false, unit, true, hasProperty(unit,"big"))
         end
       end
       for i=1,8 do
-        if (condtype == "arond") or (condtype == "ortho arond" and i%2==1) or (condtype == "diag arond" and i%2==0) or (condtype == dirs8_by_name[i].." arond") then
-          local nx,ny = dirs8[i][1],dirs8[i][2]
+        if (condtype == "arond") or (condtype == "ortho arond" and i%2==1) or (condtype == "diag arond" and i%2==0) or (condtype == dirs8_by_name[i].." arond") or (condtype == "spin"..i.." arond") then
+          local nx,ny
+          if (condtype == "spin"..i.." arond") then
+            local j = (i+unit.dir+3)%8+1
+            nx,ny = dirs8[j][1],dirs8[j][2]
+          else
+            nx,ny = dirs8[i][1],dirs8[i][2]
+          end
           for _,set in ipairs(sets) do
             for _,other in ipairs(others[nx][ny]) do
               if set[other] then
@@ -826,7 +1123,7 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
           end
         else
           local dx, dy, dir, px, py = getNextTile(unit, nx, ny, ndir)
-          mergeTable(others, getUnitsOnTile(px, py, nil, false, unit, true))
+          mergeTable(others, getUnitsOnTile(px, py, nil, false, unit, true, hasProperty(unit,"big")))
         end
       end
       if unit == outerlvl then --basically turns into sans n't BUT the unit has to be looking inbounds as well!
@@ -879,7 +1176,7 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
       --TODO: look at dir, ortho, diag, surrounds
       if unit ~= outerlvl then
         local dx, dy, dir, px, py = getNextTile(unit, dirs8[unit.dir][1], dirs8[unit.dir][2], unit.dir)
-        local frens = getUnitsOnTile(px, py, param, false, unit)
+        local frens = getUnitsOnTile(px, py, param, false, unit, nil, hasProperty(unit,"big"))
         for i,other in ipairs(sets) do
           local isdir = false
           if cond.others[i].name == "ortho" then
@@ -891,6 +1188,12 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
           elseif cond.others[i].name == "diag" then
             isdir = true
             if (unit.dir % 2 == 1) then
+              result = false
+              break
+            end
+          elseif cond.others[i].name:starts("spin") then
+            isdir = true
+            if (cond.others[i].name ~= "spin8") then
               result = false
               break
             end
@@ -933,7 +1236,7 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
       --TODO: look at dir, ortho, diag, surrounds
       if unit ~= outerlvl then
         local dx, dy, dir, px, py = getNextTile(unit, -dirs8[unit.dir][1], -dirs8[unit.dir][2], unit.dir)
-        local frens = getUnitsOnTile(px, py, param, false, unit)
+        local frens = getUnitsOnTile(px, py, param, false, unit, nil, hasProperty(unit,"big"))
         for _,other in ipairs(sets) do
           if other[outerlvl] then
               local dx, dy, dir, px, py = getNextTile(unit, dirs8[unit.dir][1], dirs8[unit.dir][2], unit.dir)
@@ -971,7 +1274,7 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
           end
         else
           local dx, dy, dir, px, py = getNextTile(unit, nx, ny, ndir)
-          mergeTable(others, getUnitsOnTile(px, py, nil, false, unit, true))
+          mergeTable(others, getUnitsOnTile(px, py, nil, false, unit, true, hasProperty(unit,"big")))
         end
       end
       if unit == outerlvl then --basically turns into sans n't BUT the unit's rear has to be looking inbounds as well!
@@ -1036,7 +1339,7 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
           end
         else
           local dx, dy, dir, px, py = getNextTile(unit, nx, ny, ndir)
-          mergeTable(others, getUnitsOnTile(px, py, nil, false, unit, true))
+          mergeTable(others, getUnitsOnTile(px, py, nil, false, unit, true, hasProperty(unit,"big")))
         end
       end
       if unit == outerlvl then --basically turns into sans n't BUT the unit's side has to be looking inbounds as well!
@@ -1093,16 +1396,6 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
           break
         end
       end
-    elseif condtype == "samefloat" then
-      result = false
-      for _,list in ipairs(lists) do
-        for _,other in ipairs(list) do
-          if sameFloat(unit,other) then
-            result = true
-            break
-          end
-        end
-      end
     elseif condtype == "frenles" then
       if unit == outerlvl then --no longer by definition, since you can technically have the rules be oob!
         local found = false
@@ -1114,7 +1407,7 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
         end
         if found then result = false end
       else
-        local others = getUnitsOnTile(unit.x, unit.y, nil, false, unit)
+        local others = getUnitsOnTile(unit.x, unit.y, nil, false, unit, nil, hasProperty(unit,"big"))
         if #others > 0 then
           result = false
         end
@@ -1157,13 +1450,30 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
       --     end
       --   end
       -- end
-      if (lightcanvas == nil) then calculateLight() end
-      local pixelData = lightcanvas:newImageData(1, 1, unit.x*32+15, unit.y*32+15, 2, 2)
-      local r1 = pixelData:getPixel(0, 0)
-      local r2 = pixelData:getPixel(0, 1)
-      local r3 = pixelData:getPixel(1, 0)
-      local r4 = pixelData:getPixel(1, 1)
-      result = (r1+r2+r3+r4 >= 2)
+      if not ignoreCheck(unit,nil,"brite") or not ignoreCheck(unit,nil,"torc") then
+        result = false
+      elseif unit == outerlvl then
+        local lights = getUnitsWithEffect("brite")
+        mergeTable(lights,getUnitsWithEffect("torc"))
+        local lit = false
+        for _,light in ipairs(lights) do
+          if inBounds(light.x,light.y) and sameFloat(light,outerlvl) then
+            lit = true
+            break
+          end
+        end
+        result = lit
+      else
+        if inBounds(unit.x,unit.y) then
+          if (lightcanvas == nil) then calculateLight() end
+          local pixelData = lightcanvas:newImageData(1, 1, unit.x*32+15, unit.y*32+15, 2, 2)
+          local r1 = pixelData:getPixel(0, 0)
+          local r2 = pixelData:getPixel(0, 1)
+          local r3 = pixelData:getPixel(1, 0)
+          local r4 = pixelData:getPixel(1, 1)
+          result = (r1+r2+r3+r4 >= 2)
+        else result = false end
+      end
     elseif condtype == "corekt" then
       if not unit.blocked then
         result = unit.active
@@ -1183,29 +1493,30 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
       --print(result)
       --print(x, y)
       --print(last_click_x, last_click_y)
-    elseif condtype == "reed" or condtype == "bleu" or condtype == "blacc"
-    or condtype == "grun" or condtype == "yello" or condtype == "orang"
-    or condtype == "purp" or condtype == "whit" or condtype == "cyeann" or condtype == "pinc"
-    or condtype == "graey" or condtype == "brwn" then
+    elseif main_palette_for_colour[condtype] then
       local colour = unit.color_override or unit.color
-      if (unit.fullname == "no1") then
+      if unit.fullname == "no1" then
         result = false
-      elseif (unit.rave or unit.colrful or unit.gay) then
-        result = true
-      else
-        if type(colour[1]) == "table" then
-          local found = false
-          for i,coluor in ipairs(colour) do
-            if colour_for_palette[coluor[1]][coluor[2]] == condtype then
-              found = true
-            end
-          end
-          if not found then
-            result = false
-          end
+      elseif unit.rave or unit.colrful or unit.gay then
+        if condtype == "blacc" or condtype == "whit" or condtype == "graey" or condtype == "brwn" then
+          result = false
         else
-          result = colour_for_palette[colour[1]][colour[2]] == condtype
+          result = true
         end
+      elseif unit.tranz then
+        if not (condtype == "cyeann" or condtype == "whit" or condtype == "pinc") then
+          result = false
+        else
+          result = true
+        end
+      elseif unit.enby then
+        if not (condtype == "yello" or condtype == "whit" or condtype == "purp" or condtype == "blacc" or condtype == "graey") then
+          result = false
+        else
+          result = true
+        end
+      else
+        result = matchesColor(getUnitColors(unit), condtype)
       end
     elseif condtype == "the" then
       local the = cond.unit
@@ -1226,15 +1537,22 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
         result = false
       end
     elseif condtype == "wun" then
-      if unit == outerlvl then
-        if not readSaveFile(level_name,"won") then
-          result = false
-        end
+      local name = unit.special.level or level_filename
+      result = readSaveFile{"levels",name,"won"}
+    elseif condtype == "past" then
+      if cond_not then
+        result = doing_past_turns
       else
-        if not readSaveFile(unit.special.name,"won") then
-          result = false
-        end
+        result = false
       end
+    elseif condtype == "samefloat" then
+      result = sameFloat(unit, compare_with)
+    elseif condtype == "samepaint" then
+      result = matchesColor(getUnitColors(unit), getUnitColors(compare_with))
+    elseif condtype == "sameface" then
+      result = unit.dir == compare_with.dir
+    elseif condtype == "oob" then
+      result = not inBounds(unit.x,unit.y)
     else
       print("unknown condtype: " .. condtype)
       result = false
@@ -1253,10 +1571,10 @@ function testConds(unit,conds) --cond should be a {condtype,{object types},{cond
 end
 
 function hasLineOfSight(brite, lit)
-  if (not sameFloat(brite, lit)) then
+  if not sameFloat(brite, lit) or not ignoreCheck(lit, brite, "brite") or not ignoreCheck(lit, nil, "torc") then
     return false
   end
-  if (rules_with["opaque"] == nil) then
+  if (rules_with["tranparnt"] == nil) then
     return true
   end
   --https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
@@ -1273,7 +1591,7 @@ function hasLineOfSight(brite, lit)
       if found_opaque then return false end
       if x ~= x0 or y ~= y0 then
         for _,v in ipairs(getUnitsOnTile(x, y)) do
-          if hasProperty(v, "opaque") then
+          if hasProperty(v, "tranparnt") and ignoreCheck(brite, v, "tranparnt") then
             found_opaque = true
             break
           end
@@ -1294,7 +1612,7 @@ function hasLineOfSight(brite, lit)
       if found_opaque then return false end
       if x ~= x0 or y ~= y0 then
         for _,v in ipairs(getUnitsOnTile(x, y)) do
-          if hasProperty(v, "opaque") then
+          if hasProperty(v, "tranparnt") and not ignoreCheck(brite, v, "tranparnt") then
             found_opaque = true
             break
           end
@@ -1313,7 +1631,7 @@ function hasLineOfSight(brite, lit)
       if x ~= x0 or y ~= y0 then
         if found_opaque then return false end
         for _,v in ipairs(getUnitsOnTile(x, y)) do
-          if hasProperty(v, "opaque") then
+          if hasProperty(v, "tranparnt") and not ignoreCheck(brite, v, "tranparnt") then
             found_opaque = true
             break
           end
@@ -1332,6 +1650,7 @@ lightcanvas_height = 0
 
 torc_angles = {20,30,45,60,75,90,120,150,180,225,270,315,360}
 function calculateLight()
+  lights_ignored_opaque = {}
   if lightcanvas_width ~= mapwidth or lightcanvas_height ~= mapheight then
     lightcanvas = love.graphics.newCanvas(mapwidth*32, mapheight*32)
     temp_lightcanvas = love.graphics.newCanvas(mapwidth*32, mapheight*32)
@@ -1346,7 +1665,7 @@ function calculateLight()
     love.graphics.setCanvas()
     return
   end
-  local opaques = getUnitsWithEffect("opaque")
+  local opaques = getUnitsWithEffect("tranparnt")
   if (#opaques == 0 and #brites ~= 0) then
     love.graphics.setCanvas(lightcanvas)
     love.graphics.clear(1, 1, 1, 1)
@@ -1445,7 +1764,12 @@ function drawShadows(source, opaques)
     local closeY = (opaque.y*32) + (opaque.y<source.y and 32 or 0)
     local farY = (opaque.y*32) + (opaque.y>=source.y and 32 or 0)
     local edgeY = (opaque.y>=source.y and mapheight*32 or 0)
-    if opaque.x == source.x and opaque.y == source.y then
+    if lights_ignored_opaque[source.id .. ":" ..opaque.id] == nil then
+      lights_ignored_opaque[source.id .. ":" ..opaque.id] = not ignoreCheck(source, opaque, "tranparnt")
+    end
+    if lights_ignored_opaque[source.id .. ":" ..opaque.id] then
+      -- the flood of light is unstoppable
+    elseif opaque.x == source.x and opaque.y == source.y then
       love.graphics.clear(0, 0, 0, 1)
       love.graphics.setColor(1, 1, 1, 1)
       love.graphics.rectangle("fill", closeX, closeY, 32, 32)
@@ -1565,13 +1889,26 @@ function tileHasUnitName(name,x,y)
   end
 end
 
-function getUnitsOnTile(x,y,name,not_destroyed,exclude,checkmous)
+function getUnitsOnTile(x,y,name,not_destroyed,exclude,checkmous,big)
   local result = {}
   for _,unit in ipairs(unitsByTile(x, y)) do
     if unit ~= exclude then
       if not not_destroyed or (not_destroyed and not unit.removed) then
         if not name or (name and nameIs(unit, name)) then
           table.insert(result, unit)
+        end
+      end
+    end
+  end
+  if big then
+    for i=1,3 do
+      for _,unit in ipairs(unitsByTile(x+i%2,y+math.floor(i/2))) do
+        if unit ~= exclude then
+          if not not_destroyed or (not_destroyed and not unit.removed) then
+            if not name or (name and nameIs(unit, name)) then
+              table.insert(result, unit)
+            end
+          end
         end
       end
     end
@@ -1728,6 +2065,10 @@ function hslToRgb(h, s, l, a)
 end
 
 function addParticles(ptype,x,y,color,count)
+  if doing_past_turns and not do_past_effects then return end
+  
+  if not settings["particles_on"] then return end
+  
   if type(color[1]) == "table" then color = color[1] end
   if ptype == "destroy" then
     local ps = love.graphics.newParticleSystem(sprites["circle"])
@@ -1787,6 +2128,25 @@ function addParticles(ptype,x,y,color,count)
     ps:start()
     ps:emit(count or 10)
     table.insert(particles, ps)
+  elseif ptype == "unwin" then
+    local ps = love.graphics.newParticleSystem(sprites["sparkle"])
+    local px = (x + 0.5) * TILE_SIZE
+    local py = (y + 0.5) * TILE_SIZE
+    ps:setPosition(px, py)
+    ps:setSpread(0.4)
+    ps:setEmissionArea("uniform", TILE_SIZE*3/4, TILE_SIZE*3/4, 0, true)
+    ps:setSizes(0.40, 0.40, 0.40, 0)
+    ps:setSpeed(-40)
+    ps:setLinearDamping(2)
+    ps:setParticleLifetime(0.6)
+    if #color == 2 then
+      ps:setColors(getPaletteColor(color[1], color[2]))
+    else
+      ps:setColors(color[1]/255, color[2]/255, color[3]/255, (color[4] or 255)/255)
+    end
+    ps:start()
+    ps:emit(count or 10)
+    table.insert(particles, ps)
   elseif ptype == "love" then
     local ps = love.graphics.newParticleSystem(sprites["luv"])
     local px = (x + 0.5) * TILE_SIZE
@@ -1807,6 +2167,25 @@ function addParticles(ptype,x,y,color,count)
     table.insert(particles, ps)
   elseif ptype == "slep" then
     local ps = love.graphics.newParticleSystem(sprites["letter_z"])
+    local px = (x + 1) * TILE_SIZE
+    local py = y * TILE_SIZE
+    ps:setPosition(px, py)
+    ps:setSpread(0)
+    ps:setEmissionArea("borderrectangle", 0, 0, 0, true)    
+    ps:setSizes(0.5, 0.5, 0.5, 0)
+    ps:setSpeed(10)
+    ps:setLinearAcceleration(0,-50)
+    ps:setParticleLifetime(2)
+    if #color == 2 then
+      ps:setColors(getPaletteColor(color[1], color[2]))
+    else
+      ps:setColors(color[1]/255, color[2]/255, color[3]/255, (color[4] or 255)/255)
+    end
+    ps:start()
+    ps:emit(count or 10)
+    table.insert(particles, ps)
+  elseif ptype == "sing" then
+    local ps = love.graphics.newParticleSystem(sprites["noet"])
     local px = (x + 1) * TILE_SIZE
     local py = y * TILE_SIZE
     ps:setPosition(px, py)
@@ -1857,12 +2236,16 @@ function addParticles(ptype,x,y,color,count)
   end
 end
 
-function screenToGameTile(x,y)
+function screenToGameTile(x, y, partial)
   if scene.getTransform then
     local transform = scene.getTransform()
     local mx,my = transform:inverseTransformPoint(x,y)
-    local tilex = math.floor(mx / TILE_SIZE)
-    local tiley = math.floor(my / TILE_SIZE)
+    local tilex = mx / TILE_SIZE
+    local tiley = my / TILE_SIZE
+    if not partial then
+      tilex = math.floor(tilex)
+      tiley = math.floor(tiley)
+    end
     return tilex, tiley
   end
   return nil,nil
@@ -1977,6 +2360,27 @@ function mergeTable(t, other)
   end
 end
 
+function fullScreen()
+  if not fullscreen then
+    if not love.window.isMaximized( ) then
+      winwidth, winheight = love.graphics.getDimensions( )
+    end
+    love.window.setMode(0, 0, {borderless=false})
+    love.window.maximize( )
+    fullscreen = true
+  elseif fullscreen then
+    love.window.setMode(winwidth, winheight, {borderless=false, resizable=true, minwidth=705, minheight=510})
+    love.window.maximize()
+    love.window.restore()
+    fullscreen = false
+  end
+  settings["fullscreen"] = fullscreen
+  saveAll()
+  if scene ~= editor then
+    scene.buildUI()
+  end
+end
+
 function saveAll()
   love.filesystem.write("Settings.bab", json.encode(settings))
 end
@@ -2026,19 +2430,28 @@ function sign(x)
 end
 
 function sameFloat(a, b, ignorefloat)
-  if hasRule(a,"ignor",b) or hasRule(b,"ignor",a) or hasRule(a,"ignor",outerlvl) or hasRule(b,"ignor",outerlvl) or hasRule(outerlvl,"ignor",a) or hasRule(outerlvl,"ignor",b) then
-    return false
+  if ignorefloat then
+    return true
   else
-    if ignorefloat then
-      return true
-    else
-      return (countProperty(a, "flye") == countProperty(b, "flye")) or hasProperty(a, "tall") or hasProperty(b, "tall")
-    end
+    return (countProperty(a, "flye", true) == countProperty(b, "flye", true)) or hasProperty(a, "tall", true) or hasProperty(b, "tall", true)
   end
 end
 
+function ignoreCheck(unit, target, property)
+  if not rules_with["ignor"] then
+    return true
+  elseif unit == target then
+    return true
+  elseif target and (hasRule(unit,"ignor",target) or hasRule(unit,"ignor",outerlvl) or hasRule(outerlvl,"ignor",target)) and (not property or (not hasRule(unit,"ignorn't",property) and not hasRule(outerlvl,"ignorn't",property))) then
+    return false
+  elseif property and (hasRule(unit,"ignor",property) or hasRule(outerlvl,"ignor",property)) and (not target or (not hasRule(unit,"ignorn't",target) and not hasRule(outerlvl,"ignorn't",target))) then
+    return false
+  end
+  return true
+end
+
 function getPaletteColor(x, y, name_)
-  local palette = palettes[name_ or current_palette]
+  local palette = palettes[name_ or current_palette] or palettes["default"]
   local pixelid = x + y * palette.sprite:getWidth()
   if palette[pixelid] then
     return palette[pixelid][1], palette[pixelid][2], palette[pixelid][3], palette[pixelid][4]
@@ -2158,10 +2571,13 @@ function getEverythingExcept(except)
 end
 
 function renameDir(from, to, cur_)
+  if from == to then
+    return
+  end
   local cur = cur_ or ""
   love.filesystem.createDirectory(to .. cur)
   for _,file in ipairs(love.filesystem.getDirectoryItems(from .. cur)) do
-    if love.filesystem.getInfo(file, "directory") then
+    if love.filesystem.getInfo(from .. cur .. "/" .. file, "directory") then
       renameDir(from, to, cur .. "/" .. file)
     else
       love.filesystem.write(to .. cur .. "/" .. file, love.filesystem.read(from .. cur .. "/" .. file))
@@ -2173,7 +2589,7 @@ end
 
 function deleteDir(dir)
   for _,file in ipairs(love.filesystem.getDirectoryItems(dir)) do
-    if love.filesystem.getInfo(file, "directory") then
+    if love.filesystem.getInfo(dir .. "/" .. file, "directory") then
       deleteDir(dir .. "/" .. file)
     else
       love.filesystem.remove(dir .. "/" .. file)
@@ -2191,6 +2607,7 @@ function setRainbowModeColor(value, brightness)
 end
 
 function shakeScreen(dur, intensity)
+  if doing_past_turns and not do_past_effects or not settings["shake_on"] then return end
   shake_dur = dur+shake_dur/4
   shake_intensity = shake_intensity + intensity/2
 end
@@ -2207,14 +2624,14 @@ function endTest()
   print(perf_test.name .. ": " .. time .. "s")
 end
 
-function loadLevels(levels, mode, level_objs)
+function loadLevels(levels, mode, level_objs, xwx)
   if #levels == 0 then
     return
   end
   
   --setup stay ther
   stay_ther = nil
-  if (rules_with ~= nil) then
+  if (rules_with ~= nil) and not xwx then
     stay_ther = {}
     local isstayther = getUnitsWithEffect("stay ther")
     for _,unit in ipairs(isstayther) do
@@ -2240,7 +2657,7 @@ function loadLevels(levels, mode, level_objs)
   end
 
   local dir = "levels/"
-  if world ~= "" then dir = world_parent .. "/" .. world .. "/" end
+  if world ~= "" then dir = getWorldDir() .. "/" end
 
   maps = {}
 
@@ -2252,11 +2669,13 @@ function loadLevels(levels, mode, level_objs)
   level_filename = nil
 
   for _,level in ipairs(levels) do
+    local split_name = split(level, "/")
+
     local data
-    if not level:starts("{") then
+    if split_name[#split_name] ~= "{DEFAULT}" then
       data = json.decode(love.filesystem.read(dir .. level .. ".bab"))
     else
-      data = json.decode(level)
+      data = json.decode(default_map)
     end
     level_compression = data.compression or "zlib"
     local loaddata = love.data.decode("string", "base64", data.map)
@@ -2291,20 +2710,24 @@ function loadLevels(levels, mode, level_objs)
     level_background_sprite = data.background_sprite or ""
 
     if map_ver == 0 then
-      table.insert(maps, {0, loadstring("return " .. mapstr)()})
+      table.insert(maps, {data = loadstring("return " .. mapstr)(), info = data, file = level})
     else
-      table.insert(maps, {map_ver, mapstr})
+      table.insert(maps, {data = mapstr, info = data, file = level})
     end
 
-    if love.filesystem.getInfo(dir .. level .. ".png") then
-      icon_data = love.image.newImageData(dir .. level .. ".png")
-    else
-      icon_data = nil
-    end
+    icon_data = getIcon(dir .. level)
+
+    table.remove(split_name)
+    sub_worlds = split_name
   end
 
   if mode == "edit" then
     new_scene = editor
+    if #maps == 1 and levels[1] ~= default_map then
+      last_saved = maps[1].data
+    else
+      last_saved = nil
+    end
   else
     surrounds_name = level_name
     new_scene = game
@@ -2327,17 +2750,53 @@ function unsetNewUnits()
   for unit,_ in pairs(new_units_cache) do
     unit.new = false
   end
+  for _,unit in ipairs(cursors) do
+    unit.new = false
+  end
   new_units_cache = {}
 end
 
 function timecheck(unit,verb,prop)
+  local zw_pass = false
   if timeless then
     if hasProperty(unit,"za warudo") then
-      return true
+      zw_pass = true
     elseif hasProperty(outerlvl,"za warudo") and not hasRule(unit,"ben't","za warudo") then
-      return true
-    elseif verb ~= nil and prop ~= nil then
+      zw_pass = true
+    elseif verb and prop then
       local rulecheck = matchesRule(unit,verb,prop)
+      for _,ruleparent in ipairs(rulecheck) do
+        for i=1,#ruleparent.rule.subject.conds do
+          if ruleparent.rule.subject.conds[i][1] == "timles" then
+            zw_pass = true
+          end
+        end
+      end
+    end
+  else
+    zw_pass = true
+  end
+  local rhythm_pass = false
+  if rules_with["rythm"] then
+    if hasProperty(unit,"rythm") then
+      rhythm_pass = true
+    elseif hasProperty(outerlvl,"rythm") and not hasRule(unit,"ben't","rythm") then
+      rhythm_pass = true
+    end
+    rhythm_pass = rhythm_pass == doing_rhythm_turn -- xnor
+  else
+    rhythm_pass = true
+  end
+  return zw_pass and rhythm_pass
+end
+
+function timecheckUs(unit)
+  if timecheck(unit) then
+    return true
+  else
+    local to_check = {"u","u too","u tres","y'all"}
+    for _,prop in ipairs(to_check) do
+      local rulecheck = matchesRule(unit,"be",prop)
       for _,ruleparent in ipairs(rulecheck) do
         for i=1,#ruleparent.rule.subject.conds do
           if ruleparent.rule.subject.conds[i][1] == "timles" then
@@ -2346,9 +2805,8 @@ function timecheck(unit,verb,prop)
         end
       end
     end
-  else
-    return true
   end
+  return false
 end
 
 function fillTextDetails(sentence, old_sentence, orig_index, word_index)
@@ -2382,15 +2840,20 @@ function addTables(source, to_add)
   return source
 end
 
-text_in_tiles = {} --list of text in an array, and textname only
+text_in_tiles = {} --list of text in an array, for ideal searching
 for _,tile in ipairs(tiles_list) do
   if tile.type == "text" and not tile.texttype.letter then
     local textname = string.sub(tile.name:gsub("%s+", ""),6) --removes spaces too
-    text_in_tiles[textname] = tile
+    text_in_tiles[textname] = textname
+    if (tile.alias ~= nil) then
+      for a,ali in ipairs(tile.alias) do
+        text_in_tiles[ali] = textname
+      end
+    end
   end
 end
 
-text_list = {} --list of text with named keys (by textname)
+text_list = {} --list of text, but without aliases
 for _,tile in ipairs(tiles_list) do
   if tile.type == "text" and not tile.texttype.letter then
     local textname = string.sub(tile.name:gsub("%s+", ""),6)
@@ -2454,39 +2917,104 @@ function extendReplayString(movex, movey, key)
   end
 end
 
-function writeSaveFile(category, key, value)
-  --e.g. "new level", "won", true
+local last_save_file_name = nil
+local last_save_file = nil
+
+function writeSaveFile(value, arg)
+  --e.g. writeSaveFile(true, {"levels", "new level", "won"})
   if (unit_tests) then return false end
   save = {}
   local filename = world
   if (world == "" or world == nil) then
     filename = "levels"
   end
-  if love.filesystem.read(filename..".savebab") ~= nil then
-    save = json.decode(love.filesystem.read(filename..".savebab"))
+  filename = "profiles/"..profile.name.."/"..filename..".savebab"
+  
+  --cache save file until filename changes
+  if (last_save_file_name ~= filename) then
+    --print("changing in write:", filename, last_save_file_name)
+    last_save_file_name = filename
+      if love.filesystem.read(filename) ~= nil then
+      save = json.decode(love.filesystem.read(filename))
+    end
+    last_save_file = save
+  else
+    save = last_save_file
   end
-  if save[category] == nil then
-    save[category] = {}
+  
+  if #arg > 0 then
+    local current = save
+    for i,category in ipairs(arg) do
+      if i == #arg then break end
+      if current[category] == nil then
+        current[category] = {}
+      end
+      current = current[category]
+    end
+    current[arg[#arg]] = value
+    love.filesystem.write(filename, json.encode(save))
   end
-  save[category][key] = value
-  love.filesystem.write(filename..".savebab", json.encode(save))
   return true
 end
 
-function readSaveFile(category, key)
+function readSaveFile(arg)
+  --e.g. readSaveFile({"levels", "new level", "won"})
   if (unit_tests) then return nil end
   save = {}
   local filename = world
   if (world == "" or world == nil) then
     filename = "levels"
   end
-  if love.filesystem.read(filename..".savebab") ~= nil then
-    save = json.decode(love.filesystem.read(filename..".savebab"))
+  filename = "profiles/"..profile.name.."/"..filename..".savebab"
+  
+  --cache save file until filename changes
+  if (last_save_file_name ~= filename) then
+    --print("changing in read:", filename, last_save_file_name)
+    last_save_file_name = filename
+      if love.filesystem.read(filename) ~= nil then
+      save = json.decode(love.filesystem.read(filename))
+    end
+    last_save_file = save
+  else
+    save = last_save_file
   end
-  if save[category] ~= nil then
-    return save[category][key]
+  
+  local current = save
+  for i,key in ipairs(arg) do
+    if current[key] == nil then return nil end
+    current = current[key]
   end
-  return nil
+  return current
+end
+
+function loadWorld(default)
+  local new_levels = {}
+  level_tree = readSaveFile{"level_tree"} or split(default, ",")
+  new_levels = level_tree[1]
+  table.remove(level_tree, 1)
+  if type(new_levels) ~= "table" then
+    new_levels = {new_levels}
+  end
+  in_world = true
+  loadLevels(new_levels, "play")
+end
+
+function saveWorld()
+  local new_tree = deepCopy(level_tree)
+  table.insert(new_tree, 1, getMapEntry())
+  writeSaveFile(new_tree, {"level_tree"})
+end
+
+function getMapEntry()
+  if #maps == 1 then
+    return maps[1].file or maps[1].info.name
+  else
+    local t = {}
+    for _,map in ipairs(maps) do
+      table.insert(t, map.file or map.info.name)
+    end
+    return t
+  end
 end
 
 function addBaseRule(subject, verb, object, subjcond)
@@ -2514,17 +3042,17 @@ function addRuleSimple(subject, verb, object, units, dir)
   -- print(subject, verb, object)
   addRule({
     rule = {
-      subject = {
-        name = subject.name or subject[1],
-        conds = subject.conds or subject[2]
-      },
-      verb = {
-        name = verb.name or verb[1] or verb
-      },
-      object = {
-        name = object.name or object[1],
-        conds = object.conds or object[2]
-      }
+      subject = getTableWithDefaults(copyTable(subject), {
+        name = subject[1],
+        conds = subject[2]
+      }),
+      verb = getTableWithDefaults(copyTable(verb), {
+        name = verb[1]
+      }),
+      object = getTableWithDefaults(copyTable(object), {
+        name = object[1],
+        conds = object[2]
+      })
     },
     units = units,
     dir = dir
@@ -2589,7 +3117,7 @@ function namesInGroup(group)
       if (#(r.rule.subject.conds) == 0) then
         table.insert(result, v)
       else
-        for _,u in ipairs(units_by_name[v]) do
+        for _,u in ipairs(units_by_name[v] or {v}) do
           if testConds(u, r.rule.subject.conds) then
             table.insert(result, v)
             break
@@ -2604,41 +3132,47 @@ end
 function serializeRule(rule)
   local result = ""
   result = result..serializeUnit(rule.subject, true)
-  result = result.." "..rule.verb.name.." "
+  result = result..serializeWord(rule.verb)
   result = result..serializeUnit(rule.object, true) -- there's no reason for separate serializeClass/Property since the structure is the same
   return result
 end
 
 function serializeUnit(unit, outer)
   local prefix = ""
-  local infix = " "
-  local name = unit.name
-  while name:starts("text_") do
-    name = name:sub(6).." txt"
-  end
+  local infix = ""
+  local name = serializeWord(unit)
   if not unit.conds then
     return name
   end
   for i,cond in ipairs(unit.conds) do
     if not cond.others or #cond.others == 0 then
-      prefix = prefix..cond.name.." "
+      prefix = prefix..serializeWord(cond)
     else
-      infix = infix..cond.name.." "
+      infix = infix..serializeWord(cond)
       local infix_other = ""
       for j,other in ipairs(cond.others) do
         infix_other = infix_other..serializeUnit(other)
-        infix_other = infix_other.." & "
+        infix_other = infix_other.."& "
       end
-      infix_other = infix_other:sub(1,-4) -- remove last &
-      infix = infix..infix_other.." & "
+      infix_other = infix_other:sub(1,-3) -- remove last &
+      infix = infix..infix_other.."& "
     end
   end
-  infix = infix:sub(1,-4) -- remove last &
+  infix = infix:sub(1,-3) -- remove last &
   local full = prefix..name..infix
   if not outer and full:find("&", 1) then
     full = "("..full..")"
   end
   return full
+end
+
+function serializeWord(word)
+  if word.unit and hasProperty(word.unit, "stelth") then return "" end
+  local name = word.name
+  while name:starts("text_") do
+    name = name:sub(6).." txt"
+  end
+  return name.." "
 end
 
 function unitsByTile(x, y)
@@ -2728,5 +3262,256 @@ function anagram_finder.run()
         table.insert(anagram_finder.words, tile.name:sub(6))
       end
     end
+  end
+end
+
+function drawCustomLetter(text, x, y, rot, sx, sy, ox, oy)
+  love.graphics.push()
+  love.graphics.translate(x or 0, y or 0)
+  love.graphics.rotate(rot or 0)
+  love.graphics.scale(sx or 1, sy or 1)
+  love.graphics.translate(-(ox or 0), -(oy or 0))
+  for i,q in ipairs(custom_letter_quads[#(text or "-")]) do
+    local quad, dx, dy = unpack(q)
+    love.graphics.draw(sprites["letters_"..(text:sub(i,i) or "a")] or sprites["wut"], quad, dx, dy)
+  end
+  love.graphics.pop()
+end
+
+function getPastConds(conds)
+  local result = false
+  local new_conds = {}
+  for _,cond in ipairs(conds) do
+    if cond.name == "past" then
+      result = true
+    else
+      table.insert(new_conds, cond)
+    end
+  end
+  return result, new_conds
+end
+
+function jprint(str)
+  if just_moved then
+    print(str)
+  end
+end
+
+function getTheme()
+  if not settings["themes"] then return nil end
+  if cmdargs["theme"] then
+    if cmdargs["theme"] == "" then
+      return nil
+    else
+      return cmdargs["theme"]
+    end
+  else
+    if os.date("%m") == "10" then
+      return "halloween"
+    elseif os.date("%m") == "12" then
+      return "christmas"
+    end
+  end
+  return nil
+end
+
+function getTableWithDefaults(o, default)
+  o = o or {}
+  for k,v in pairs(default) do
+    if not o[k] then o[k] = v end
+  end
+  return o
+end
+
+function buildOptions()
+  if not display then
+    scene.addOption("music_on", "music", {{"on", true}, {"off", false}})
+    scene.addOption("sfx_on", "sound", {{"on", true}, {"off", false}})
+    scene.addButton("video options", function() display = true; scene.buildUI() end)
+    scene.addButton("back", function() options = false; scene.buildUI() end)
+  else
+    scene.addOption("game_scale", "game scale", {{"auto", "auto"}, {"0.5x", 0.5}, {"1x", 1}, {"1.5x", 1.5}, {"2x", 2}, {"4x", 4}})
+    scene.addOption("particles_on", "particle effects", {{"on", true}, {"off", false}})
+    scene.addOption("shake_on", "shakes", {{"on", true}, {"off", false}})
+    scene.addOption("scribble_anim", "animated scribbles", {{"on", true}, {"off", false}})
+    scene.addOption("epileptic", "reduce flashes", {{"on", true}, {"off", false}})
+    scene.addOption("grid_lines", "grid lines", {{"on", true}, {"off", false}})
+    scene.addOption("mouse_lines", "mouse lines", {{"on", true}, {"off", false}})
+    scene.addOption("stopwatch_effect", "stopwatch effect", {{"on", true}, {"off", false}})
+    scene.addOption("fullscreen", "screen mode", {{"windowed", false}, {"fullscreen", true}}, function() fullScreen() end)
+    scene.addOption("focus_pause", "pause on defocus", {{"on", true}, {"off", false}})
+    if scene == menu then
+      scene.addOption("scroll_on", "background scrolling", {{"on", true}, {"off", false}})
+      scene.addOption("themes", "menu themes", {{"on", true}, {"off", false}})
+    end
+    scene.addButton("back", function() display = false; scene.buildUI() end)
+  end
+end
+
+function split(inputstr, sep)
+  if sep == nil then
+    sep = "%s"
+  end
+  local t={} ; i=1
+  for str in string.gmatch(inputstr, "([^"..sep.."]+)") do
+    t[i] = str
+    i = i + 1
+  end
+  return t
+end
+
+function selectLastLevels()
+  if not units_by_name["selctr"] then return end
+  local selctrs = units_by_name["selctr"]
+
+  local last_selected = readSaveFile{"levels", level_filename, "selected"} or {}
+  if type(last_selected) ~= "table" then
+    last_selected = {last_selected}
+  end
+  
+  for i,level in ipairs(last_selected) do
+    local selctr = selctrs[((i-1)%#selctrs)+1]
+    for _,unit in ipairs(units) do
+      if unit.special.level == level then
+        moveUnit(selctr, unit.x, unit.y, nil, true)
+      end
+    end
+  end
+end
+
+function getWorldDir(include_sub_worlds)
+  if world == "" then
+    return "levels"
+  else
+    local dir = world_parent .. "/" .. world
+    if include_sub_worlds and #sub_worlds > 0 then
+      dir = dir .. "/" .. table.concat(sub_worlds, "/")
+    end
+    return dir
+  end
+end
+
+function searchForLevels(dir, search, exact)
+  local results = {}
+  local files = love.filesystem.getDirectoryItems(dir)
+
+  for _,file in ipairs(files) do
+    local info = love.filesystem.getInfo(dir .. "/" .. file)
+    if info then
+      if info.type == "directory" then
+        for _,level in ipairs(searchForLevels(dir .. "/" .. file, search, exact)) do
+          table.insert(results, {file = file .. "/" .. level.file, data = level.data})
+        end
+      elseif file:ends(".bab") then
+        local name = file:sub(1, -5)
+        local data = json.decode(love.filesystem.read(dir .. "/" .. file))
+        local found = false
+        if (not search) or (exact and name == search) or (not exact and string.find(name, search)) then
+          found = true
+        elseif (not search) or (exact and data.name == search) or (not exact and string.find(data.name, search)) then
+          found = true
+        end
+        if found then
+          table.insert(results, {file = name, data = data})
+        end
+      end
+    end
+  end
+
+  return results
+end
+
+-- i was originally making this to use .icon as an alternate icon format for official world saving but i figured out how to save pngs directly so this is a tiny function that serves almost no purpose now and also this comment is really long if you don't have wrapping then your scrollbar is huge now you're welcome
+function getIcon(path)
+  if love.filesystem.getInfo(path .. ".png") then
+    return love.graphics.newImage(path .. ".png")
+  end
+end
+
+function getUnitColors(unit, index, override_)
+  local override = override_ or unit.color_override
+  local colors = type(unit.color[1]) == "table" and unit.color or {unit.color}
+  if index then
+    if override then
+      if not unit.colored or unit.colored[index] == true then
+        return override
+      elseif type(unit.colored[index]) == "table" and eq(override, colors[index]) then
+        return unit.colored[index]
+      end
+      return colors[index]
+    else
+      return colors[index]
+    end
+  elseif override then
+    colors = copyTable(colors)
+    for i,_ in ipairs(colors) do
+      if not unit.colored or unit.colored[i] == true then
+        return override
+      elseif type(unit.colored[i]) == "table" and eq(override, colors[i]) then
+        return unit.colored[i]
+      end
+    end
+    print(dump(colors))
+    return colors
+  else
+    return colors
+  end
+end
+
+-- logic for how this function works:
+-- nil checks (both nil -> true, one nil -> false)
+-- loop for colors in a if there are multiple
+-- loop for colors in b if there are multiple
+-- actually compare the color
+function matchesColor(a, b, exact)
+  if not a ~= not b then return false end
+  if not a and not b then return true end
+  if type(a) == "table" and type(a[1]) ~= "number" then
+    for _,c in ipairs(a) do
+      if matchesColor(c, b, exact) then return true end
+    end
+    return false
+  end
+  if type(b) == "table" and type(b[1]) ~= "number" then
+    for _,c in ipairs(b) do
+      if matchesColor(a, c, exact) then return true end
+    end
+    return false
+  end
+  if exact then
+    if type(a) == "string" then
+      a = main_palette_for_colour[a]
+    end
+    if type(b) == "string" then
+      b = main_palette_for_colour[b]
+    end
+    if #a == 2 and #b == 2 then
+      return a[1] == b[1] and a[2] == b[2]
+    end
+    -- just in case
+    if #a == 3 then
+      a = getPaletteColor(unpack(a))
+    end
+    if #b == 3 then
+      b = getPaletteColor(unpack(a))
+    end
+    return a[1] == b[1] and a[2] == b[2] and a[3] == b[3]
+  else
+    if type(a) == "table" then
+      if #a == 2 then
+        a = colour_for_palette[a[1]][a[2]]
+      else
+        return false -- I don't want to deal with this right now
+      end
+    end
+    if type(b) == "table" then
+      if #b == 2 then
+        b = colour_for_palette[b[1]][b[2]]
+      else
+        return false -- I don't want to deal with this right now
+      end
+    end
+    print(a, b)
+    return a == b
   end
 end

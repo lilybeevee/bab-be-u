@@ -1,6 +1,7 @@
 local music_source = nil
 
 music_volume = 1
+sfx_volume = 1
 
 current_music = ""
 music_fading = false
@@ -19,8 +20,10 @@ function registerSound(sound, volume)
   end]]
 end
 
-function playSound(sound, volume)
-  if spookmode then
+function playSound(sound, volume, pitch)
+  if doing_past_turns and not do_past_effects then return end
+
+  if spookmode or scene == game and hasRule("?","sing","?") then
     volume = 0.01
   end
 
@@ -32,7 +35,8 @@ function playSound(sound, volume)
     local source = love.audio.newSource(sounds[sound].data, "static")
 
     local adjusted_volume = 1/(2^sound_instances[sound])
-    source:setVolume((volume or 1) * adjusted_volume * sounds[sound].volume)
+    source:setVolume((volume or 1) * adjusted_volume * sounds[sound].volume * sfx_volume)
+    source:setPitch(pitch or 1)
 
     source:play()
 

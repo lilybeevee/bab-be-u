@@ -1,9 +1,6 @@
 local scene = {}
 game = require '../game/scene'
 
-local width = love.graphics.getWidth()
-local height = love.graphics.getHeight()
-
 local scrollx = 0
 local scrolly = 0
 
@@ -12,9 +9,8 @@ local music_on = true
 local oldmousex = 0
 local oldmousey = 0
 
-local buttons = {"play", "editor", "options", "exit"}
-
-local options = false
+local buttons = {}--{"play", "editor", "options", "exit"}
+local git_btn = nil
 
 local splash = love.timer.getTime() % 1
 
@@ -34,13 +30,100 @@ function scene.load()
   }
   nextPresenceUpdate = 0
   love.keyboard.setKeyRepeat(false)
+  scene.buildUI()
+  scene.selecting = true
+end
+
+function scene.buildUI()
+  buttons = {}
+  if getTheme() == "halloween" then
+    if not settings["epileptic"] and (love.timer.getTime()%10 > 8.7 and love.timer.getTime()%10 < 8.8 or love.timer.getTime()%10 > 8.9 and love.timer.getTime()%10 < 9) then
+        giticon = sprites["ui/github_halloween_blood"]
+    else
+        giticon = sprites["ui/github_halloween"]
+    end
+  else
+    giticon = sprites["ui/github"]
+  end
+
+  git_btn = ui.component.new()
+    :setSprite(giticon)
+    :setColor(1, 1, 1)
+    :setPos(10, love.graphics.getHeight()-sprites["ui/github"]:getHeight()-10)
+    :setPivot(0.5, 0.5)
+    :onPreDraw(function(o) ui.buttonFX(o, {rotate = false}) end)
+    :onReleased(function() love.system.openURL("https://github.com/lilybeevee/bab-be-u") end)
+
+  local ox, oy
+  if not options then
+    scene.addButton("play", function() switchScene("play") end)
+    scene.addButton("edit", function() switchScene("edit") end)
+    scene.addButton("options", function() options = true; scene.buildUI() end)
+    scene.addButton("exit", function() love.event.quit() end)
+    ox, oy = love.graphics.getWidth()/2, love.graphics.getHeight()/2
+  else
+    buildOptions()
+    ox, oy = love.graphics.getWidth() * (3/4) , buttons[1]:getHeight()+10
+  end
+
+  for i,button in ipairs(buttons) do
+    local width, height = button:getSize()
+    button:setPos(ox - width/2, oy - height/2)
+    oy = oy + height + 10
+  end
+end
+
+function scene.addButton(text, func)
+  local button = ui.menu_button.new(text, #buttons%2+1, func)
+  table.insert(buttons, button)
+  return button
+end
+
+function scene.addOption(id, name, options, changed)
+  local option = 1
+  for i,v in ipairs(options) do
+    if settings[id] == v[2] then
+      option = i
+    end
+  end
+  scene.addButton(name .. ": " .. options[option][1], function()
+    settings[id] = options[(((option-1)+1)%#options)+1][2]
+    saveAll()
+    if changed then
+      changed(settings[id])
+    end
+    scene.buildUI()
+  end)
+end
+
+function scene.update(dt)
+  if settings["scroll_on"] then
+    scrollx = scrollx+dt*50
+    scrolly = scrolly+dt*50
+  else
+    scrollx, scrolly = 0,0
+  end
 end
 
 function scene.draw(dt)
-  local bgsprite = sprites["ui/menu_background"]
+  local bgsprite 
+  if getTheme() == "halloween" then
+    if not settings["epileptic"] and (love.timer.getTime()%10 > 8.6 and love.timer.getTime()%10 < 8.7 or love.timer.getTime()%10 > 8.8 and love.timer.getTime()%10 < 8.9 or love.timer.getTime()%10 > 9)  then
+        bgsprite = sprites["ui/menu_background_halloween_flash"]
+    else
+        bgsprite = sprites["ui/menu_background_halloween"]
+    end
+  elseif getTheme() == "christmas" then
+    bgsprite = sprites["ui/menu_background_christmas"]
+  else
+    bgsprite = sprites["ui/menu_background"]
+  end
 
-  local cells_x = math.ceil(love.graphics.getWidth() / bgsprite:getWidth())
-  local cells_y = math.ceil(love.graphics.getHeight() / bgsprite:getHeight())
+  local width = love.graphics.getWidth()
+  local height = love.graphics.getHeight()
+
+  local cells_x = math.ceil(width / bgsprite:getWidth())
+  local cells_y = math.ceil(height / bgsprite:getHeight())
 
   if not spookmode then
     love.graphics.setColor(1, 1, 1, 1)
@@ -57,91 +140,118 @@ function scene.draw(dt)
     end
   end
 
-  local buttonwidth, buttonheight = sprites["ui/button_1"]:getDimensions()
+  for _,button in ipairs(buttons) do
+    button:draw()
+  end
+  git_btn:draw()
 
-  local buttoncolor = {84/255, 109/255, 255/255} --terrible but it works so /shrug
+  if not options then
+    local bab_logo
+    if getTheme() == "halloween" then
+        if not settings["epileptic"] and (love.timer.getTime()%10 > 8.7 and love.timer.getTime()%10 < 8.8 or love.timer.getTime()%10 > 8.9 and love.timer.getTime()%10 < 9) then
+            bab_logo = sprites["ui/bab_be_u_halloween_blood"]
+        else
+            bab_logo = sprites["ui/bab_be_u_halloween"]
+        end
+    elseif getTheme() == "christmas" then
+        bab_logo = sprites["ui/bab_be_u_xmas"]
+    else
+        bab_logo = sprites["ui/bab_be_u"]
+    end    
+        
+    for _,pair in pairs({{1,0},{0,1},{1,1},{-1,0},{0,-1},{-1,-1},{1,-1},{-1,1}}) do
+      local outlineSize = 2
+      pair[1] = pair[1] * outlineSize
+      pair[2] = pair[2] * outlineSize
 
-  for i=1, #buttons do
-    love.graphics.push()
-    local rot = 0
-
-    local buttonx = width/2-buttonwidth/2
-    local buttony = height/2-buttonheight/2+(buttonheight+10)*i
-
-    if rainbowmode then buttoncolor = hslToRgb((love.timer.getTime()/6+i/10)%1, .5, .5, .9) end
+      love.graphics.setColor(0,0,0)
+      love.graphics.draw(bab_logo, width/2 - bab_logo:getWidth() / 2 + pair[1], height/20 + pair[2])
+    end
 
     if not spookmode then
-      love.graphics.setColor(buttoncolor[1], buttoncolor[2], buttoncolor[3])
-    else
-      love.graphics.setColor(0.5,0.5,0.5)
+      love.graphics.setColor(1, 1, 1)
+      setRainbowModeColor(love.timer.getTime()/3, .5)
+      love.graphics.draw(bab_logo, width/2 - bab_logo:getWidth() / 2, height/20)
     end
-    if mouseOverBox(width/2-sprites["ui/button_1"]:getWidth()/2, height/2-buttonheight/2+(buttonheight+10)*i, buttonwidth, buttonheight) then
-      love.graphics.setColor(buttoncolor[1]-0.1, buttoncolor[2]-0.1, buttoncolor[3]-0.1) --i know this is horrible
-      love.graphics.translate(buttonx+buttonwidth/2, buttony+buttonheight/2)
-      love.graphics.rotate(0.05 * math.sin(love.timer.getTime()*3))
-      love.graphics.translate(-buttonx-buttonwidth/2, -buttony-buttonheight/2)
+    
+    -- Splash text here
+    
+    love.graphics.push()
+    
+    if string.find(build_number, "420") or string.find(build_number, "1337") or string.find(build_number, "666") or string.find(build_number, "69") then
+      love.graphics.setColor(hslToRgb(love.timer.getTime()%1, .5, .5, .9))
+      splashtext = "nice"
+    end
+    if is_mobile then
+      splashtext = "4mobile!"
+    elseif getTheme() == "christmas" then
+        splashtext = "merery chrismas!!"
+    elseif getTheme() == "halloween" then
+        if not settings["epileptic"] and (love.timer.getTime()%10 > 8.7 and love.timer.getTime()%10 < 8.8 or love.timer.getTime()%10 > 8.9 and love.timer.getTime()%10 < 9) then
+            splashtext = "BAB IS DEAD"
+        elseif love.filesystem.read("author_name") == "lilybeevee" and splash > 0.5 then
+            splashtext = "happy spooky month lily!"
+        else
+            splashtext = "spooky month!"
+        end
+    elseif splash > 0.5 then
+        splashtext = "bab be u!"
+    else
+      splashtext = "splosh txt!"
+    end
+    
+    local textx = width/2 + bab_logo:getWidth() / 2
+    local texty = height/20+bab_logo:getHeight()
+
+    love.graphics.translate(textx+love.graphics.getFont():getWidth(splashtext)/2, texty+love.graphics.getFont():getHeight()/2)
+    if settings["shake_on"] then
+      love.graphics.rotate(0.7*math.sin(love.timer.getTime()*2))
+    else
+      love.graphics.rotate(math.pi/4)
+    end
+    love.graphics.translate(-textx-love.graphics.getFont():getWidth(splashtext)/2, -texty-love.graphics.getFont():getHeight()/2)
+
+    love.graphics.print(splashtext, textx, texty)
+    
+    love.graphics.pop()
+  else
+    local img = sprites["ui/bab cog"]
+    if getTheme() == "halloween" then
+        img = sprites["ui/bab cog_halloween"]
+    else
+        img = sprites["ui/bab cog"]
+    end
+    local txt = sprites["ui/many toggls"]
+    
+    if getTheme() == "halloween" then
+        love.graphics.draw(sprites["ui/cobweb"])
     end
 
-    love.graphics.draw(sprites["ui/button_white_"..i%2+1], buttonx, buttony, rot, 1, 1)
+    local full_height = img:getHeight()*2 + 10 + txt:getHeight()
+
+    love.graphics.push()
+    love.graphics.translate(love.graphics.getWidth() * (1/4), love.graphics.getHeight()/2)
+    love.graphics.scale(2 * getUIScale())
+    love.graphics.translate(0, -full_height/2)
+    
+    love.graphics.push()
+    love.graphics.scale(2)
+    love.graphics.translate(0, img:getHeight()/2)
+    if settings["shake_on"] then
+      love.graphics.rotate(0.1*math.sin(love.timer.getTime()))
+    end
+    love.graphics.draw(img, -img:getWidth()/2, -img:getHeight()/2)
+    love.graphics.pop()
+    
+    local ox, oy = math.floor(math.random()*4)/2-1, math.floor(math.random()*4)/2-1
+    if not settings["shake_on"] then ox, oy = 0,0 end
+    if getTheme() == "halloween" then
+        love.graphics.setColor(0.5, 0.25, 0.75)
+    end
+    love.graphics.draw(txt, -txt:getWidth()/2 + ox, full_height - txt:getHeight() + oy)
 
     love.graphics.pop()
-
-    if not spookmode then
-      love.graphics.setColor(1,1,1)
-    else
-      love.graphics.setColor(0,0,0)
-    end
-    love.graphics.printf(spookmode and (math.random(1,100) == 1 and "stop it" or "help") or buttons[i], width/2-buttonwidth/2, height/2-buttonheight/2+(buttonheight+10)*i+5, buttonwidth, "center")
   end
-
-  love.graphics.setColor(1, 1, 1)
-  if mouseOverBox(10, height - sprites["ui/github"]:getHeight() - 10, sprites["ui/github"]:getWidth(), sprites["ui/github"]:getHeight()) then
-    love.graphics.setColor(.7, .7, .7)
-  end
-
-  love.graphics.draw(sprites["ui/github"], 10, height-sprites["ui/github"]:getHeight() - 10)
-
-  for _,pair in pairs({{1,0},{0,1},{1,1},{-1,0},{0,-1},{-1,-1},{1,-1},{-1,1}}) do
-    local outlineSize = 2
-    pair[1] = pair[1] * outlineSize
-    pair[2] = pair[2] * outlineSize
-
-    love.graphics.setColor(0,0,0)
-    love.graphics.draw(sprites["ui/bab_be_u"], width/2 - sprites["ui/bab_be_u"]:getWidth() / 2 + pair[1], height/20 + pair[2])
-  end
-
-  if not spookmode then
-    love.graphics.setColor(1, 1, 1)
-    setRainbowModeColor(love.timer.getTime()/3, .5)
-    love.graphics.draw(sprites["ui/bab_be_u"], width/2 - sprites["ui/bab_be_u"]:getWidth() / 2, height/20)
-  end
-  
-  -- Splash text here
-  
-  love.graphics.push()
-  
-  if string.find(build_number, "420") or string.find(build_number, "1337") or string.find(build_number, "666") or string.find(build_number, "69") then
-    love.graphics.setColor(hslToRgb(love.timer.getTime()%1, .5, .5, .9))
-    splashtext = "nice"
-  end
-  if is_mobile then
-    splashtext = "4mobile!"
-  elseif splash <= 0.5 then
-    splashtext = "splash text!"
-  elseif splash > 0.5 then
-    splashtext = "splosh txt!"
-  end
-  
-  local textx = width/2 + sprites["ui/bab_be_u"]:getWidth() / 2
-  local texty = height/20+sprites["ui/bab_be_u"]:getHeight()
-
-  love.graphics.translate(textx+love.graphics.getFont():getWidth(splashtext)/2, texty+love.graphics.getFont():getHeight()/2)
-  love.graphics.rotate(0.7*math.sin(love.timer.getTime()*2))
-  love.graphics.translate(-textx-love.graphics.getFont():getWidth(splashtext)/2, -texty-love.graphics.getFont():getHeight()/2)
-
-  love.graphics.print(splashtext, textx, texty)
-  
-  love.graphics.pop()
 
   if build_number and not debug_view then
     love.graphics.setColor(1, 1, 1)
@@ -161,108 +271,15 @@ function scene.draw(dt)
   end
 end
 
-function scene.update(dt)
-  if options then
-    buttons = {"music: on", "fullscreen", "exit"}
-  else
-    buttons = {"play", "editor", "options", "exit"}
-  end
-  
-  width = love.graphics.getWidth()
-  height = love.graphics.getHeight()
-
-  local buttonwidth, buttonheight = sprites["ui/button_1"]:getDimensions()
-
-  local mousex, mousey = love.mouse.getPosition()
-
-  scrollx = scrollx+dt*50
-  scrolly = scrolly+dt*50
-  
-  for i=1, #buttons do
-    if mouseOverBox(width/2-sprites["ui/button_1"]:getWidth()/2, height/2-buttonheight/2+(buttonheight+10)*i, buttonwidth, buttonheight) then
-      if not pointInside(oldmousex, oldmousey, width/2-sprites["ui/button_1"]:getWidth()/2, height/2-buttonheight/2+(buttonheight+10)*i, buttonwidth, buttonheight) then
-        -- im sorry
-        playSound("mous hovvr")
-        playSound("mous hovvr")
-        playSound("mous hovvr")
-      end
-      if buttons[i] == "exit" and not options then
-        love.mouse.setPosition(mousex, mousey-(buttonheight+10))
-      end
-    end
-
-    if buttons[i] == "windowed" or buttons[i] == "fullscreen" then
-      if not fullscreen then
-        buttons[i] = "fullscreen"
-      else
-        buttons[i] = "windowed"
-      end
-    end
-    if string.starts(buttons[i], "music") then
-      buttons[i] = "music: " .. (settings["music_on"] and "on" or "off")
-    end
-  end
-
-  oldmousex, oldmousey = love.mouse.getPosition()
-end
-
-function scene.mousePressed(x, y, button)
-  if pointInside(x, y, 10, height - sprites["ui/github"]:getHeight() - 10, sprites["ui/github"]:getWidth(), sprites["ui/github"]:getHeight()) and button == 1 then
-    love.system.openURL("https://github.com/lilybeevee/bab-be-u")
-  end
-end
-
-function scene.mouseReleased(x, y, button)
-  width = love.graphics.getWidth()
-  height = love.graphics.getHeight()
-
-  local buttonwidth, buttonheight = sprites["ui/button_1"]:getDimensions()
-
-  local mousex, mousey = love.mouse.getPosition()
-
-  for i=1, #buttons do
-    if mouseOverBox(width/2-sprites["ui/button_1"]:getWidth()/2, height/2-buttonheight/2+(buttonheight+10)*i, buttonwidth, buttonheight) then
-      if button == 1 then
-        if buttons[i] == "exit" and not options then
-          love.window.close()
-        elseif buttons[i] == "exit" and options then
-          options = false
-        elseif buttons[i] == "options" then
-          options = true
-        elseif buttons[i] == "play" then
-          switchScene("play")
-        elseif buttons[i] == "editor" then
-          switchScene("edit")
-        elseif buttons[i] == "windowed" or buttons[i] == "fullscreen" then
-          if fullscreen == false then
-            if not love.window.isMaximized( ) then
-              winwidth, winheight = love.graphics.getDimensions( )
-            end
-            love.window.setMode(0, 0, {borderless=false})
-            love.window.maximize( )
-            fullscreen = true
-          elseif fullscreen == true then
-            love.window.setMode(winwidth, winheight, {borderless=false, resizable=true, minwidth=705, minheight=510})
-            love.window.maximize( )
-            love.window.restore( )
-            fullscreen = false
-          end
-
-          settings["fullscreen"] = fullscreen
-          saveAll()
-        elseif string.starts(buttons[i], "music") then
-          settings["music_on"] = not settings["music_on"]
-          saveAll()
-        end
-      end
-    end
-  end
-end
-
 function scene.keyPressed(key)
   if key == "escape" and options then
     options = false
+    scene.buildUI()
   end
+end
+
+function scene.resize(w, h)
+  scene.buildUI()
 end
 
 return scene

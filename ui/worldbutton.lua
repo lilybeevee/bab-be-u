@@ -8,6 +8,8 @@ function world_button.new(file)
 
   o:setSprite(sprites["ui/world box"])
   o:setFont(ui.fonts.world_name)
+  o:setPivot(0.5, 0.5)
+  o:onPreDraw(ui.buttonFX)
 
   function o:getColor()
     if spookmode then
@@ -16,26 +18,17 @@ function world_button.new(file)
     if rainbowmode then
       return hslToRgb(love.timer.getTime()/3%1, 0.4, 0.5, .9)
     end
-    if not self.color then return {0.25, 0.5, 1, 1}
+    if not self.color then
+        if getTheme() == "halloween" then
+            return {0.5, 0.2, 0.7, 1}
+        else
+            return {0.25, 0.5, 1, 1}
+        end
     else return unpack(self.color) end
   end
 
   function o:getName() return self.name end
   function o:setName(val) self.name = val; return self end
-
-  function o:preDraw()
-    if self:hovered() then
-      if self:pressed() or self:down() then
-        self:setScale(0.9)
-      else
-        self:setScale(1.1)
-      end
-      self:setRotation(0.05 * math.sin(love.timer.getTime()*5))
-    else
-      self:setScale(1)
-      self:setRotation(0)
-    end
-  end
 
   function o:postDraw()
     love.graphics.setColor(1, 1, 1, 1)

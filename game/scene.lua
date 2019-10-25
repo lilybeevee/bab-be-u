@@ -52,8 +52,19 @@ local displaywords = false
 local stack_box, stack_font
 local pathlock_box, pathlock_font
 local initialwindoposition
+stopwatch = nil
+
+local drag_units
 
 local sessionseed
+
+local buttons = {}--{"resume", "editor", "exit", "restart"}
+local darken = nil
+local button_last_y = 0
+pause = false
+selected_pause_button = 1
+
+doing_rhythm_turn = false
 
 function scene.load()
   sessionseed = math.random(0,100000000)/100000000
@@ -67,6 +78,7 @@ function scene.load()
   stack_font = love.graphics.newFont(12)
   stack_font:setFilter("nearest","nearest")
   pathlock_font = love.graphics.newFont(16)
+  drag_units = {}
 
   scene.resetStuff()
 
@@ -132,7 +144,62 @@ function scene.load()
     mobile_controls_p3:setBounds(11*twelfth, screenheight-4.15*twelfth)
   end):setBGImage(sprites["ui_3"]):bg({0, 0, 0, 0})
 
+  stopwatch = {visible = false, big = {rotation=0}, small = {rotation=0}}
+
   gooi.setGroupVisible("mobile-controls", is_mobile)
+
+  pause = false
+  scene.selecting = false
+
+  scene.buildUI()
+end
+
+function scene.buildUI()
+  -- darken is a UI element so that it can take focus from all UI underneath it
+  darken = ui.component.new():setColor(0, 0, 0, 0.5):setSize(love.graphics.getWidth(), love.graphics.getHeight()):setFill(true)
+
+  buttons = {}
+
+  if not options then
+    scene.addButton("resume", function() pause = false end)
+    scene.addButton("restart", function() pause = false; scene.resetStuff() end)
+    scene.addButton("editor", function() new_scene = editor; load_mode = "edit" end)
+    scene.addButton("options", function() options = true; scene.buildUI() end)
+    scene.addButton("exit to " .. escResult(false), function() escResult(true) end)
+  else
+    buildOptions()
+  end
+
+  local ox, oy = love.graphics.getWidth()/2, buttons[1]:getHeight()*3
+  for _,button in ipairs(buttons) do
+    local width, height = button:getSize()
+    button:setPos(ox - width/2, oy)
+    oy = oy + height + 10
+  end
+  button_last_y = oy
+end
+
+function scene.addButton(text, func)
+  local button = ui.menu_button.new(text, #buttons%2+1, func)
+  table.insert(buttons, button)
+  return button
+end
+
+function scene.addOption(id, name, options, changed)
+  local option = 1
+  for i,v in ipairs(options) do
+    if settings[id] == v[2] then
+      option = i
+    end
+  end
+  scene.addButton(name .. ": " .. options[option][1], function()
+    settings[id] = options[(((option-1)+1)%#options)+1][2]
+    saveAll()
+    if changed then
+      changed(settings[id])
+    end
+    scene.buildUI()
+  end)
 end
 
 function scene.update(dt)
@@ -146,9 +213,13 @@ function scene.update(dt)
 
   scene.checkInput()
   updateCursors()
+  
+  doDragbl()
 
   mouse_oldX = mouse_X
   mouse_oldY = mouse_Y
+
+  if pause then dt = 0 end
 
   if xwxShader then
     xwxShader:send("time", dt) -- send delta time to the shader
@@ -156,7 +227,7 @@ function scene.update(dt)
 
   --TODO: PERFORMANCE: If many things are producing particles, it's laggy as heck.
   scene.doPassiveParticles(dt, ":)", "bonus", 0.25, 1, 1, {2, 4})
-  scene.doPassiveParticles(dt, ";d", "bonus", 0.25, 1, 1, {1, 2})
+  scene.doPassiveParticles(dt, ";d", "unwin", 0.25, 1, 1, {1, 2})
   scene.doPassiveParticles(dt, ":o", "bonus", 0.5, 0.8, 1, {4, 1})
   scene.doPassiveParticles(dt, "qt", "love", 0.25, 0.5, 1, {4, 2})
   scene.doPassiveParticles(dt, "slep", "slep", 1, 0.33, 1, {0, 3})
@@ -165,13 +236,26 @@ function scene.update(dt)
   scene.doPassiveParticles(dt, "undo", "bonus", 0.25, 0.25, 1, {6, 1})
   scene.doPassiveParticles(dt, "brite", "bonus", 0.25, 0.25, 1, {2, 4})
 	
-	doReplay(dt)
+  doReplay(dt)
+  if rules_with and rules_with["rythm"] then
+    doRhythm()
+  end
+end
+
+function doRhythm()
+  if replay_playback then return false end
+	if love.timer.getTime() > (rhythm_time + rhythm_interval) then
+    if not pause and not past_playback then
+      rhythm_time = rhythm_time + rhythm_interval
+      doMovement(0, 0, "rythm")
+    end
+	end
 end
 
 function doReplay(dt)
-	if not replay_playback then return false end
+  if not replay_playback then return false end
 	if love.timer.getTime() > (replay_playback_time + replay_playback_interval) then
-    if not replay_pause then
+    if not pause and not replay_pause and not past_playback then
       replay_playback_time = replay_playback_time + replay_playback_interval
       doReplayTurn(replay_playback_turn)
       replay_playback_turn = replay_playback_turn + 1
@@ -257,7 +341,10 @@ function string:split(sSeparator, nMax, bRegexp)
    return aRecord
 end
 
-function scene.resetStuff()
+function scene.resetStuff(forTime)
+  if not forTime then
+    pastClear()
+  end
   timeless = false
   clear()
   if not is_mobile then
@@ -277,9 +364,13 @@ function scene.resetStuff()
   next_levels, next_level_objs = getNextLevels()
   first_turn = false
   window_dir = 0
-	
+  
+  if playing_world then
+    saveWorld()
+    selectLastLevels()
+  end
 end
-
+    
 function scene.keyPressed(key, isrepeat)
   if isrepeat then
     return
@@ -289,7 +380,7 @@ function scene.keyPressed(key, isrepeat)
 
   if key == "escape" then
     
-    local current_level = level_name
+    --[[local current_level = level_name
     if readSaveFile(level_name, "won") then
       current_level = current_level.." (won) "
     end
@@ -307,7 +398,7 @@ function scene.keyPressed(key, isrepeat)
       current_level = current_level.." (transformed into " .. fullDump(tfs) .. ") "
     end
     
-    gooi.confirm({
+    ui.overlay.confirm({
         text = current_level .. "\r\n\r\n" .. (spookmode and "G̴͔̭͇͎͕͔ͪ̾ͬͦ̇͑͋͟͡o̵̸͓̠̦̱̭̘͍̱͑̃̀ͅ ̱̫͉̆͐̇ͥ̽͆͂͑̿͜b̸̵͈̼̜̅͗̄̆ͅa͚̠͚̣̺̗͖͈̓̿̈́͆͐̉ͯ̀̚c͉̜̙̤͍̞̳̬ͪ̇k̙͙̼̀̓̂̑̈́̌ͯ̕͢ͅ ̶̛̠̹̈̒ͫ͐t̙͉͍͚̠̗̰͗͊͛ͫ͒ͥ̏ͫ͢͜ȍ̙͙̪̬̎̊ͫͭͫ͗̔̚ ̴̪͖͔̖̙̬͍̥ͪ̾̾͂͂l̪͉͙̪̩͙̎̏͌̽ͤ̈́̀͜͠e̡͓͍͉̖̤ͬ̓̏ͥͫ̀ͅv̱͈͍̞̼̀͋̂̃͋́̚͠ͅḛ̷̷̱̿͂l̢̮͇̫̗͍̱͈̟͌̐̎̑̈́ ̵̠͖̣̟̲̖̇̈̓ͭͫ͠s͚̝̻ͤ̓̀̀e̅͑̐̄͏̤̫̕͠lͨ͋͌ͤͩ̋̓͏̘̼̠̪̖͓͔̹e̵͖̤̒͒ͥ̓ͬ̓͘c͖͈̏̄̐̅̎ͨ͢ṫ͔̥͓̊̌̓̇ọ̞̤͔̩̒͗ͨ́̓͟ŗ̖͉̹̻̮̬̦͌̿͂?̶̡͈̫̗̈́̒̎̃̎̓" or "Go back to "..escResult(false).."?"),
         okText = "Yes",
         cancelText = spookmode and "Yes" or "Cancel",
@@ -315,132 +406,186 @@ function scene.keyPressed(key, isrepeat)
           escResult(true)
         end
       })
-      return
+      return]]
+
+    pause = not pause
+    selected_pause_button = 1
   end
+  
+  
+    if key == "g" and (key_down["lctrl"] or key_down["rctrl"]) then
+        settings["grid_lines"] = not settings["grid_lines"]
+        saveAll()
+    end
+  
+  
+  if pause then
+    scene.selecting = true
+    --[[if key == "w" or key == "up" or key == "i" or key == "kp8" then
+      selected_pause_button = selected_pause_button - 1
+      if selected_pause_button < 1 then
+        selected_pause_button = #buttons
+      end
+    elseif key == "s" or key == "down" or key == "k" or key == "kp2" then
+      selected_pause_button = selected_pause_button + 1
+      if selected_pause_button > #buttons then
+        selected_pause_button = 1
+      end
+    elseif key == "return" or key == "space" or key == "kpenter" then
+      handlePauseButtonPressed(selected_pause_button)
+    end]]
+  else
+    scene.selecting = false
+    local do_turn_now = false
 
-  local do_turn_now = false
-
-  --TODO: PERFORMANCE: Some ways to cut down on input latency:
-  --1) If we see a second input before the 30ms is up, then we know the input and we can instantly get rid of the 30ms delay.
-  --2) If we know what the next move is (either it was an orthogonal move and we can see the 30ms delay already elapsed, or we just got our 2nd input for the move) we can do checkInput() from THIS function instead of waiting for love2d to call update().
-  --3) Instead of having this 30ms delay, we could assume it's an orthogonal move, process the next turn as though it was, and then if before the 30ms delay we discover that it was actually a diagonal input, we can undo the orthogonal input and process the next turn with the diagonal input. (But this will behave badly with CRASH/RESET/PERSIST (since those aren't invariant over undo/redo), so we'd have to make sure it works with those features. And you'll also be able to see and hear the ghosts of unintended orthogonal moves for the 0-30ms before they get corrected, like a GGPO netcode game, which might be unsettling.)
-  if key == "w" or key == "a" or key == "s" or key == "d" then
-    if not repeat_timers["wasd"] or repeat_timers["wasd"] > 30 then
-      repeat_timers["wasd"] = 30
-    elseif repeat_timers["wasd"] <= 30 then
-      do_turn_now = true
-      repeat_timers["wasd"] = 0
-    end
-  elseif key == "up" or key == "down" or key == "left" or key == "right" then
-    if not repeat_timers["udlr"] or repeat_timers["udlr"] > 30 then
-      repeat_timers["udlr"] = 30
-    elseif repeat_timers["udlr"] <= 30 then
-      do_turn_now = true
-      repeat_timers["udlr"] = 0
-    end
-  elseif key == "i" or key == "j" or key == "k" or key == "l" then
-    if not repeat_timers["ijkl"] or repeat_timers["ijkl"] > 30 then
-      repeat_timers["ijkl"] = 30
-    elseif repeat_timers["ijkl"] <= 30 then
-      do_turn_now = true
-      repeat_timers["ijkl"] = 0
-    end
-  elseif key == "kp1" or
-  key == "kp2" or
-  key == "kp3" or
-  key == "kp4" or
-  key == "kp5" or
-  key == "kp6" or
-  key == "kp7" or
-  key == "kp8" or
-  key == "kp9" then
-    if not repeat_timers["udlr"] then
-      do_turn_now = true
-      repeat_timers["numpad"] = 0
-    end
-  elseif key == "z" or key == "q" or key == "backspace" or key == "kp0" or key == "o" then
-    if not repeat_timers["undo"] then
+    if (key == "w" or key == "a" or key == "s" or key == "d") then
+      if not repeat_timers["wasd"] or repeat_timers["wasd"] > 30 then
+        repeat_timers["wasd"] = 30
+      elseif repeat_timers["wasd"] <= 30 then
         do_turn_now = true
-        repeat_timers["undo"] = 0
+        repeat_timers["wasd"] = 0
+      end
+    elseif (key == "up" or key == "down" or key == "left" or key == "right") then
+      if not repeat_timers["udlr"] or repeat_timers["udlr"] > 30 then
+        repeat_timers["udlr"] = 30
+      elseif repeat_timers["udlr"] <= 30 then
+        do_turn_now = true
+        repeat_timers["udlr"] = 0
+      end
+    elseif (key == "i" or key == "j" or key == "k" or key == "l") then
+      if not repeat_timers["ijkl"] or repeat_timers["ijkl"] > 30 then
+        repeat_timers["ijkl"] = 30
+      elseif repeat_timers["ijkl"] <= 30 then
+        do_turn_now = true
+        repeat_timers["ijkl"] = 0
+      end
+    elseif (key == "kp1" or
+    key == "kp2" or
+    key == "kp3" or
+    key == "kp4" or
+    key == "kp5" or
+    key == "kp6" or
+    key == "kp7" or
+    key == "kp8" or
+    key == "kp9") then
+      if not repeat_timers["udlr"] then
+        do_turn_now = true
+        repeat_timers["numpad"] = 0
+      end
+    elseif (key == "z" or key == "q" or key == "backspace" or key == "kp0" or key == "o") then
+      if not repeat_timers["undo"] then
+          do_turn_now = true
+          repeat_timers["undo"] = 0
+      end
     end
-  end
-
-  for _,v in ipairs(repeat_keys) do
-    if v == key then
-      do_turn_now = true
-      repeat_timers[v] = 0
-    end
-  end
-
-  if key == "r" then
-    scene.resetStuff()
-  end
-  
-	-- Replay keys
-    if key == "f12" then
-        if not replay_playback then
-            tryStartReplay()
-        else
-            replay_playback = false
+    
+   if rules_with and rules_with["rythm"] then
+        if key == "+" or key == "=" then
+            rhythm_interval = rhythm_interval * 0.8
+        elseif key == "-" or key == "_" then
+            rhythm_interval = rhythm_interval / 0.8
         end
     end
     
-    if replay_playback then
-        if key == "+" or key == "=" or key == "w" or key == "up" then
-            replay_playback_interval = replay_playback_interval * 0.8
-        elseif key == "-" or key == "_" or key == "s" or key == "down" then
-            replay_playback_interval = replay_playback_interval / 0.8
-        elseif key == "0" or key == ")" then
-            replay_playback_interval = 0.3
-        elseif key == "space" then
-            replay_pause = not replay_pause
-        elseif key == "z" or key == "q" or key == "backspace" or key == "kp0" or key == "o" or key == "a" or key == "left" then
-            replay_pause = true
-            if replay_playback_turn > 1 then
-                replay_playback_turn = replay_playback_turn - 1
-                doOneMove(0,0,"undo")
-            end
-            print(replay_playback_turn)
-        elseif key == "d" or key == "right" then
-            doReplayTurn(replay_playback_turn)
-            replay_playback_turn = replay_playback_turn + 1
-        end
+    --print(rhythm_interval)
+
+    for _,v in ipairs(repeat_keys) do
+      if v == key then
+        do_turn_now = true
+        repeat_timers[v] = 0
+      end
+    end
+
+    if key == "r" then
+      if not currently_winning or not key_down["lctrl"] then
+        scene.resetStuff()
+      elseif not RELEASE_BUILD and world_parent == "officialworlds" then
+        local file = love.filesystem.getSource() .. "/" .. getWorldDir() .. "/" .. level_filename .. ".replay"
+        local f = io.open(file, "w"); f:write(official_replay_string); f:close()
+        print("Replay successfully saved to " .. getWorldDir() .. "/" .. level_filename .. ".replay")
+      end
     end
     
-  if key == "e" and not currently_winning and not replay_playback then
-    doOneMove(0, 0, "e")
-  end
-  
-  if key == "f" and not currently_winning and not replay_playback then
-    doOneMove(0, 0, "f")
-  end
+    -- Replay keys
+      if key == "f12" then
+          if not replay_playback then
+              tryStartReplay()
+          else
+              replay_playback = false
+          end
+      end
+      
+      if replay_playback and not pause then
+          if key == "+" or key == "=" or key == "w" or key == "up" then
+              replay_playback_interval = replay_playback_interval * 0.8
+          elseif key == "-" or key == "_" or key == "s" or key == "down" then
+              replay_playback_interval = replay_playback_interval / 0.8
+          elseif key == "0" or key == ")" then
+              replay_playback_interval = 0.3
+          elseif key == "space" then
+              replay_pause = not replay_pause
+          elseif key == "z" or key == "q" or key == "backspace" or key == "kp0" or key == "o" or key == "a" or key == "left" then
+              replay_pause = true
+              if replay_playback_turn > 1 then
+                  replay_playback_turn = replay_playback_turn - 1
+                  doOneMove(0,0,"undo")
+              end
+              print(replay_playback_turn)
+          elseif key == "d" or key == "right" then
+              doReplayTurn(replay_playback_turn)
+              replay_playback_turn = replay_playback_turn + 1
+          elseif key == "e" then
+              replay_playback_interval = 0
+          end
+      end
+      
+    if key == "e" and not currently_winning and not replay_playback then
+      doOneMove(0, 0, "e")
+    end
+    
+    if key == "f" and not currently_winning and not replay_playback then
+      doOneMove(0, 0, "f")
+    end
 
-  if key == "tab" then
-    displaywords = true
-  end
+    if key == "tab" then
+      displaywords = true
+    end
+    
+    if key == "y" and hasU("swan") and units_by_name["swan"] then
+        playSound("honk"..love.math.random(1,6))
+    end
 
-  most_recent_key = key
-  key_down[key] = true
+    most_recent_key = key
+    key_down[key] = true
 
-  if (do_turn_now) then
-    scene.checkInput()
+    if (do_turn_now) then
+      scene.checkInput()
+    end
   end
 end
 
 function tryStartReplay()
   scene.resetStuff()
-  local dir = "levels/"
-  if world ~= "" then dir = world_parent .. "/" .. world .. "/" end
-  if love.filesystem.getInfo(dir .. level_name .. ".replay") then
-    replay_playback_string = love.filesystem.read(dir .. level_name .. ".replay")
+  local dir = getWorldDir() .. "/"
+  local full_dir = getWorldDir(true) .. "/"
+  if love.filesystem.getInfo(dir .. level_filename .. ".replay") then
+    replay_playback_string = love.filesystem.read(dir .. level_filename .. ".replay")
     replay_playback = true
-    print("Started replay from: "..dir .. level_name .. ".replay")
+    print("Started replay from: "..dir .. level_filename .. ".replay")
+  elseif love.filesystem.getInfo(full_dir .. level_name .. ".replay") then
+    replay_playback_string = love.filesystem.read(full_dir .. level_name .. ".replay")
+    replay_playback = true
+    print("Started replay from: "..full_dir .. level_name .. ".replay")
+  elseif love.filesystem.getInfo("levels/" .. level_filename .. ".replay") then
+    replay_playback_string = love.filesystem.read("levels/" .. level_filename .. ".replay")
+    replay_playback = true
+    print("Started replay from: ".."levels/" .. level_filename .. ".replay")
   elseif love.filesystem.getInfo("levels/" .. level_name .. ".replay") then
     replay_playback_string = love.filesystem.read("levels/" .. level_name .. ".replay")
     replay_playback = true
     print("Started replay from: ".."levels/" .. level_name .. ".replay")
   else
-    print("Failed to find replay: "..dir .. level_name .. ".replay")
+    print("Failed to find replay: ".. dir .. level_filename .. ".replay")
   end
 end
 
@@ -504,13 +649,16 @@ function scene.getTransform()
   local screenwidth = love.graphics.getWidth() * (is_mobile and 0.75 or 1)
   local screenheight = love.graphics.getHeight()
 
-  local scales = {0.25, 0.375, 0.5, 0.75, 1, 1.5, 2, 3, 4}
+  local scales = {0.25, 0.375, 0.5, 0.75, 1, 2, 3, 4}
 
   local scale = scales[1]
   for _,s in ipairs(scales) do
     if screenwidth >= roomwidth * s and screenheight >= roomheight * s then
       scale = s
     else break end
+  end
+  if settings["game_scale"] ~= "auto" and settings["game_scale"] < scale then
+    scale = settings["game_scale"]
   end
 
   local scaledwidth = screenwidth * (1/scale)
@@ -519,7 +667,7 @@ function scene.getTransform()
   transform:scale(scale, scale)
   transform:translate(scaledwidth / 2 - roomwidth / 2, scaledheight / 2 - roomheight / 2)
 
-  if shake_dur > 0 then
+  if shake_dur > 0 and not hasProperty(outerlvl, "cool") then
     local range = 1
     transform:translate(math.random(-range, range), math.random(-range, range))
   end
@@ -530,6 +678,8 @@ end
 --TODO: PERFORMANCE: Calling hasProperty once per frame means that we have to index rules, check conditions, etc. with O(m*n) performance penalty. But, the results of these calls do not change until a new turn or undo. So, we can cache the values of these calls in a global table and dump the table whenever the turn changes for a nice and easy performance boost.
 --(Though this might not be true for mice, which can change their position mid-frame?? Also for other meta stuff (like windo)? Until there's mouse conditional rules or meta stuff in a puzzle IDK how this should actually work or be displayed. Just keep that in mind tho.)
 function scene.draw(dt)
+  if pause then dt = 0 end
+
   local draw_empty = rules_with["no1"] ~= nil
   local start_time = love.timer.getTime()
   -- reset canvas if the screen size has changed
@@ -614,6 +764,18 @@ function scene.draw(dt)
       love.graphics.draw(sprite, 0, 0, 0, 1, 1, 0, 0)
     end
   end
+  
+  if settings["grid_lines"] then
+    love.graphics.setLineWidth(1)
+    local r,g,b,a = getPaletteColor(0,1)
+    love.graphics.setColor(r,g,b,0.3)
+    for i=1,mapwidth-1 do
+      love.graphics.line(i*TILE_SIZE,0,i*TILE_SIZE,roomheight)
+    end
+    for i=1,mapheight-1 do
+      love.graphics.line(0,i*TILE_SIZE,roomwidth,i*TILE_SIZE)
+    end
+  end
 
   local function drawUnit(unit, drawx, drawy, rotation, loop)
     if unit.name == "no1" and not (draw_empty and validEmpty(unit)) then return end
@@ -623,8 +785,12 @@ function scene.draw(dt)
       brightness = 0.33
     end
 
-    if (unit.name == "steev") and not hasProperty(unit, "u") then
+    if (unit.name == "steev") and not hasU(unit) then
       brightness = 0.33
+    end
+    
+    if unit.name == "casete" and not hasProperty(unit, "no go") then
+      brightness = 0.5
     end
     
     if timeless and not hasProperty(unit,"za warudo") and not (unit.type == "text") then
@@ -652,17 +818,23 @@ function scene.draw(dt)
         unit.sprite = "text_enby"
       end
     end
-    if unit.fullname == "text_katany" then
-      if hasRule("steev","got","katany") then
-        unit.sprite = "text_katanya"
+    if unit.fullname == "text_now" then
+      if doing_past_turns then
+        unit.sprite = "text_latr"
       else
-        unit.sprite = "text_katany"
+        unit.sprite = "text_now"
       end
     end
+
     
     if unit.rave then
       -- print("unit " .. unit.name .. " is rave")
-      local newcolor = hslToRgb((love.timer.getTime()/0.75+#undo_buffer/45+unit.x/18+unit.y/18)%1, .5, .5, 1)
+      local ravespeed = 0.75
+      if settings["epileptic"] then
+        ravespeed = 7.5
+      end
+      
+      local newcolor = hslToRgb((love.timer.getTime()/ravespeed+#undo_buffer/45+unit.x/18+unit.y/18)%1, .5, .5, 1)
       newcolor[1] = newcolor[1]*255
       newcolor[2] = newcolor[2]*255
       newcolor[3] = newcolor[3]*255
@@ -696,25 +868,13 @@ function scene.draw(dt)
       else
         unit.color_override = newcolor
       end
-    else
-      if unit.name == "bordr" and timeless then
-        unit.color_override = {0,3}
-      else
-        unit.color = copyTable(tiles_list[unit.tile].color)
-      end
     end
     
     local sprite_name = unit.sprite
     local sprite
     
     if type(sprite_name) ~= "table" then
-      for type,name in pairs(unit.sprite_transforms) do
-        if table.has_value(unit.used_as, type) then
-          sprite_name = name
-          break
-        end
-      end
-      if sprite_name == "lvl" and readSaveFile(unit.special.level, "won") then
+      if sprite_name == "lvl" and readSaveFile{"levels", unit.special.level, "won"} then
         sprite_name = "lvl_won"
       end
       local frame = (unit.frame + anim_stage) % 3 + 1
@@ -758,14 +918,20 @@ function scene.draw(dt)
 			end
 
 			if #unit.overlay > 0 and type(unit.sprite) == "string" and eq(unit.color, tiles_list[unit.tile].color) then
-				love.graphics.setColor(1, 1, 1)
+				love.graphics.setColor(1, 1, 1, unit.draw.opacity)
 			else
-				love.graphics.setColor(color[1], color[2], color[3], color[4])
+				love.graphics.setColor(color[1], color[2], color[3], unit.draw.opacity)
 			end
 			return color
 		end
 		
 		local color = setColor(unit.color_override or unit.color)
+    if unit.fullname == "tronk" then
+      if math.floor(love.timer.getTime()*10)%2 == 1 then
+        local r,g,b = getPaletteColor((unit.color_override or unit.color)[1],(unit.color_override or unit.color)[2])
+        setColor{r*350,g*350,b*350}
+      end
+    end
     --check level_destroyed so that the object created by infloop is always white needs to be changed if we want objects to be able to survive level destruction
     if level_destroyed then
       setColor({0,3})
@@ -773,25 +939,69 @@ function scene.draw(dt)
 
     local fulldrawx = (drawx + 0.5)*TILE_SIZE
     local fulldrawy = (drawy + 0.5)*TILE_SIZE
+    if hasProperty(unit,"big") then
+      fulldrawx = fulldrawx + TILE_SIZE/2
+      fulldrawy = fulldrawy + TILE_SIZE/2
+    end
 
-    if graphical_property_cache["flye"][unit] ~= nil or unit.name == "o" or unit.name == "square" or unit.name == "triangle" then
-      local flyenes = graphical_property_cache["flye"][unit] or 0
+    if graphical_property_cache["flye"][unit] ~= nil or (unit.parent and graphical_property_cache["flye"][unit.parent] ~= nil) or unit.name == "o" or unit.name == "square" or unit.name == "triangle" then
+      local flyenes = graphical_property_cache["flye"][unit] or (unit.parent and graphical_property_cache["flye"][unit.parent]) or 0
       if unit.name == "o" or unit.name == "square" or unit.name == "triangle" then
         flyenes = flyenes + 1
       end
       fulldrawy = fulldrawy - math.sin(love.timer.getTime())*5*flyenes
     end
-
-    if shake_dur > 0 then
+    
+    if unit.fullname == "text_temmi" and unit.active then
       local range = 0.5
       fulldrawx = fulldrawx + math.random(-range, range)
       fulldrawy = fulldrawy + math.random(-range, range)
-      --fulldrawx = fulldrawx + (math.random(0.00, TILE_SIZE)*shake_intensity*2)-shake_intensity*TILE_SIZE
-      --fulldrawy = fulldrawy + (math.random(0.00, TILE_SIZE)*shake_intensity*2)-shake_intensity*TILE_SIZE
+    end
+
+    local function getOffset()
+      if hasProperty(unit,"cool") or not settings["shake_on"] then return 0,0 end
+      if rules_with["temmi"] then
+        local do_vibrate = false
+        if unit.fullname == "temmi" then
+          do_vibrate = true
+        elseif unit.type == "text" and unit.active then
+          local rules_list = rules_with_unit[unit]
+          if rules_list then
+            for _,rules in ipairs(rules_list) do
+              for _,rule_unit in ipairs(rules.units) do
+                if rule_unit.fullname == "text_temmi" then
+                  do_vibrate = true
+                  break
+                end
+              end
+              if do_vibrate then break end
+            end
+          end
+        end
+        if do_vibrate then
+          if unit.fullname == "temmi" then
+            local props = countProperty(unit,"?")
+            if math.random() > 1/(props+1) then
+              return math.random(-props, props), math.random(-props, props)
+            end
+          else
+            if math.random() > 0.5 then
+              return math.random(-1, 1), math.random(-1, 1)
+            end
+          end
+        end
+      elseif shake_dur > 0 then
+        local range = 0.5
+        return math.random(-range, range), math.random(-range, range)
+      end
+      return 0,0
     end
 
     love.graphics.push()
     love.graphics.translate(fulldrawx, fulldrawy)
+    if hasProperty(unit,"big") then
+      love.graphics.scale(2)
+    end
 
     love.graphics.push()
     love.graphics.rotate(math.rad(rotation))
@@ -799,34 +1009,27 @@ function scene.draw(dt)
     
     local function drawSprite(overlay, onlycolor, stretch)
       local draw = sprites[overlay or unit.sprite]
-      if type(unit.sprite) == "table" then
+      local ox, oy = getOffset()
+      if not overlay and type(unit.sprite) == "table" then
         for i,image in ipairs(unit.sprite) do
-          if type(unit.color[i]) == "table" then
-            setColor(unit.color[i])
-          else
-            setColor(unit.color)
-          end
-          if unit.color_override then
-            if type(unit.color_override[i]) == "table" then
-              setColor(unit.color_override[i])
-            else
-              setColor(unit.color_override)
-            end
-          end
+          setColor(getUnitColors(unit, i))
           if onlycolor or (#unit.overlay > 0 and (unit.colored and unit.colored[i]) or not unit.colored) then
             love.graphics.setColor(1,1,1,1)
           end
           if not onlycolor or not unit.colored or (onlycolor and unit.colored and unit.colored[i]) then
             local sprit = sprites[image]
-            love.graphics.draw(sprit, fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprit:getWidth() / 2, sprit:getHeight() / 2)
+            love.graphics.draw(sprit, fulldrawx + ox, fulldrawy + oy, 0, unit.draw.scalex, unit.draw.scaley, sprit:getWidth() / 2, sprit:getHeight() / 2)
           end
         end
       else
         if overlay and stretch then
-          love.graphics.draw(draw, fulldrawx, fulldrawy, 0, sprite:getWidth() / TILE_SIZE, sprite:getHeight() / TILE_SIZE, draw:getWidth() / 2, draw:getHeight() / 2)
+          love.graphics.draw(draw, fulldrawx + ox, fulldrawy + oy, 0, sprite:getWidth() / TILE_SIZE, sprite:getHeight() / TILE_SIZE, draw:getWidth() / 2, draw:getHeight() / 2)
         else
+          if unit.fullname == "detox" and graphical_property_cache["slep"][unit] ~= nil then
+            setColor{1,2}
+          end
           if not draw then draw = sprites["wat"] end
-          love.graphics.draw(draw, fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, draw:getWidth() / 2, draw:getHeight() / 2)
+          love.graphics.draw(draw, fulldrawx + ox, fulldrawy + oy, 0, unit.draw.scalex, unit.draw.scaley, draw:getWidth() / 2, draw:getHeight() / 2)
         end
       end
 			if (unit.meta ~= nil) then
@@ -845,6 +1048,11 @@ function scene.draw(dt)
         setColor({2, 2})
         local ntsprite = sprites["n't"]
         love.graphics.draw(ntsprite, fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+        setColor(unit.color)
+      end
+      if displayids then
+        setColor({1,4})
+        love.graphics.printf(tostring(unit.id), fulldrawx-3, fulldrawy-18, 32, "center")
         setColor(unit.color)
       end
     end
@@ -919,7 +1127,30 @@ function scene.draw(dt)
     --reset back to values being used before
     love.graphics.setLineWidth(2)
 
-    if not (unit.xwx or spookmode) and unit.name ~= "lin" and unit.name ~= "byc" and unit.name ~= "bac" then -- xwx takes control of the drawing sprite, so it shouldn't render the normal object
+    if hasRule(unit,"got","bowie") then
+      local rule = matchesRule(unit,"got","bowie")[1].rule
+
+      -- GOT object coloring!
+      local c1, c2
+      if rule.object.prefix then
+        local dummy = {}
+        dummy[rule.object.prefix] = true
+        updateUnitColourOverride(dummy)
+        if dummy.color_override then
+          c1, c2 = dummy.color_override[1], dummy.color_override[2]
+        end
+      end
+
+      local shake_x, shake_y = getOffset()
+
+      local ur, ug, ub, ua = love.graphics.getColor()
+      local o = getTableWithDefaults(unit.features.bowie, {x=0, y=0, sprite="bowie_smol"})
+      love.graphics.setColor(getPaletteColor(c1 or 2, c2 or 2))
+      love.graphics.draw(sprites[o.sprite], fulldrawx + o.x + shake_x, fulldrawy + o.y + shake_y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      love.graphics.setColor(ur, ug, ub, ua)
+    end
+
+    if not (unit.xwx or spookmode) and unit.name ~= "lin" and unit.fullname ~= "letter_custom" then -- xwx takes control of the drawing sprite, so it shouldn't render the normal object
       drawSprite()
     end
 
@@ -933,43 +1164,9 @@ function scene.draw(dt)
       end
     end
     
-    if unit.name == "byc" then
-      local num, suit = unpack(card_for_id[unit.id])
-      if eq(unit.color, {0,3}) then
-        setColor({0,0})
-        drawSprite("byc")
-        setColor({0,3})
-        drawSprite("byc_" .. suit)
-        drawSprite("byc_" .. num)
-      else
-        setColor({0,3})
-        drawSprite("byc")
-        if suit == "diamond" or suit == "heart" then
-          setColor(unit.color)
-        else
-          setColor({0,0})
-        end
-        drawSprite("byc_" .. suit)
-        drawSprite("byc_" .. num)
-      end
-    end
-    if unit.name == "bac" then
-      if eq(unit.color, {0,3}) then
-        setColor({0,0})
-        drawSprite("byc")
-        setColor({0,3})
-        drawSprite("bac")
-      else
-        setColor({0,3})
-        drawSprite("byc")
-        setColor(unit.color)
-        drawSprite("bac")
-      end
-    end
-    
     if unit.name == "lvl" and unit.special.visibility == "open" then
       love.graphics.push()
-      if readSaveFile(unit.special.level, "won") then
+      if readSaveFile{"levels", unit.special.level, "won"} then
         local r,g,b,a = love.graphics.getColor()
         love.graphics.setColor(r,g,b, a*0.4)
       end
@@ -992,6 +1189,10 @@ function scene.draw(dt)
         love.graphics.draw(sprite, fulldrawx, fulldrawy, 0, unit.draw.scalex*3/4, unit.draw.scaley*3/4, sprite:getWidth() / 2, sprite:getHeight() / 2)
       end
       love.graphics.pop()
+    end
+    
+    if unit.fullname == "letter_custom" then
+      drawCustomLetter(unit.special.customletter, fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, 16, 16)
     end
 
     if #unit.overlay > 0 and unit.fullname ~= "no1" then
@@ -1032,93 +1233,179 @@ function scene.draw(dt)
         love.graphics.stencil(holStencil2, "replace", 1, true)
         
         for _,peek in ipairs(unit.portal.objects) do
-          if not portaling[peek] then
-            love.graphics.setStencilTest("greater", 1)
-          else
-            love.graphics.setStencilTest("greater", 0)
-          end
-          
-          love.graphics.push()
-          love.graphics.translate(fulldrawx, fulldrawy)
-          love.graphics.rotate(-math.rad(rotation))
-          if portaling[peek] ~= unit then
-            love.graphics.rotate(math.rad(unit.portal.dir * 45))
-          end
-          love.graphics.translate(-fulldrawx, -fulldrawy)
-          
-          local x, y, rot = unit.draw.x, unit.draw.y, 0
-          if peek.name ~= "no1" then
-            if portaling[peek] ~= unit then
-              x, y = (peek.draw.x - peek.x) + (peek.x - unit.portal.x) + x, (peek.draw.y - peek.y) + (peek.y - unit.portal.y) + y
-              if peek.rotate then rot = peek.draw.rotation
-              else rot = -unit.portal.dir * 45 end
+          if not peek.stelth then
+            if not portaling[peek] then
+              love.graphics.setStencilTest("greater", 1)
             else
-              x, y = peek.draw.x, peek.draw.y
-              rot = peek.draw.rotation
+              love.graphics.setStencilTest("greater", 0)
             end
-          else
-            if peek.rotate then rot = (peek.dir - 1 + unit.portal.dir) * 45
-            else rot = -unit.portal.dir * 45 end
+            
+            love.graphics.push()
+            love.graphics.translate(fulldrawx, fulldrawy)
+            love.graphics.rotate(-math.rad(rotation))
+            if portaling[peek] ~= unit then
+              love.graphics.rotate(math.rad(unit.portal.dir * 45))
+            end
+            love.graphics.translate(-fulldrawx, -fulldrawy)
+            
+            local x, y, rot = unit.draw.x, unit.draw.y, 0
+            if peek.name ~= "no1" then
+              if portaling[peek] ~= unit then
+                x, y = (peek.draw.x - peek.x) + (peek.x - unit.portal.x) + x, (peek.draw.y - peek.y) + (peek.y - unit.portal.y) + y
+                if peek.rotate then rot = peek.draw.rotation
+                else rot = -unit.portal.dir * 45 end
+              else
+                x, y = peek.draw.x, peek.draw.y
+                rot = peek.draw.rotation
+              end
+            else
+              if peek.rotate then rot = (peek.dir - 1 + unit.portal.dir) * 45
+              else rot = -unit.portal.dir * 45 end
+            end
+            if portaling[peek] == unit and peek.draw.x == peek.x and peek.draw.y == peek.y then
+              portaling[peek] = nil
+            else
+              drawUnit(peek, x, y, rot, true)
+            end
+            
+            love.graphics.pop()
           end
-          if portaling[peek] == unit and peek.draw.x == peek.x and peek.draw.y == peek.y then
-            portaling[peek] = nil
-          else
-            drawUnit(peek, x, y, rot, true)
-          end
-          
-          love.graphics.pop()
         end
         
         love.graphics.setStencilTest()
       end
     end
     
-    if hasRule(unit,"be","sans") and unit.eye then
+    if unit.fullname == "kat" and unit.color_override and colour_for_palette[unit.color_override[1]][unit.color_override[2]] == "blacc" then
+      if graphical_property_cache["slep"][unit] ~= nil then
+        love.graphics.setColor(getPaletteColor(2,1))
+        love.graphics.draw(sprites["kat_eyes_slep"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      else
+        love.graphics.setColor(getPaletteColor(2,1))
+        love.graphics.draw(sprites["kat_eyes"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      end
+    end
+    
+    if hasProperty(unit,"cool") then
+      local o = getTableWithDefaults(unit.features.cool, {x=0, y=0, sprite="shades"})
+      local shake_x, shake_y = getOffset()
+      love.graphics.setColor(getPaletteColor(0,3))
+      love.graphics.draw(sprites[o.sprite], fulldrawx + o.x + shake_x,  fulldrawy + o.y + shake_y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+    end
+    if hasProperty(unit,"sans") and unit.features.sans and not hasProperty(unit,"slep") then
       local topleft = {x = fulldrawx - 16, y = fulldrawy - 16}
       love.graphics.setColor(getPaletteColor(1,4))
-      love.graphics.rectangle("fill", topleft.x + unit.eye.x, topleft.y + unit.eye.y, unit.eye.w, unit.eye.h)
-      for i = 1, unit.eye.w-1 do
-        love.graphics.rectangle("fill", topleft.x + unit.eye.x + i, topleft.y + unit.eye.y - i, unit.eye.w - i, 1)
+      love.graphics.rectangle("fill", topleft.x + unit.features.sans.x, topleft.y + unit.features.sans.y, unit.features.sans.w, unit.features.sans.h)
+      for i = 1, unit.features.sans.w-1 do
+        love.graphics.rectangle("fill", topleft.x + unit.features.sans.x + i, topleft.y + unit.features.sans.y - i, unit.features.sans.w - i, 1)
+      end
+    end
+    
+    if unit.fullname == "der" and (hasProperty(unit,"brite") or hasProperty(unit,"torc")) then
+      if graphical_property_cache["slep"][unit] ~= nil then
+        love.graphics.setColor(getPaletteColor(2,2))
+        love.graphics.draw(sprites["der_slep_nose"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      else
+        love.graphics.setColor(getPaletteColor(2,2))
+        love.graphics.draw(sprites["der_nose"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
       end
     end
 
-    if hasRule(unit,"got","hatt") then
-      love.graphics.setColor(color[1], color[2], color[3], color[4])
-      love.graphics.draw(sprites["hatsmol"], fulldrawx, fulldrawy - 0.5*TILE_SIZE, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
-    end
-    if hasRule(unit,"got","gunne") then
-      love.graphics.setColor(1, 1, 1)
-      love.graphics.draw(sprites["gunnesmol"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
-    end
-    if hasRule(unit,"got","katany") then
-      love.graphics.setColor(getPaletteColor(0,1))
-      love.graphics.draw(sprites["katanysmol"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
-    end
-    if hasRule(unit,"got","knif") then
-      love.graphics.setColor(getPaletteColor(0,3))
-      love.graphics.draw(sprites["knifsmol"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
-    end
-    if hasRule(unit,"got","slippers") then
-      love.graphics.setColor(getPaletteColor(1,4))
-      love.graphics.draw(sprites["slippers"], fulldrawx, fulldrawy+sprite:getHeight()/4, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
-    end
-    
-    if false then -- stupid lua comments
-      if hasRule(unit,"got","?") then
-        local matchrules = matchesRule(unit,"got","?")
+    local matchrules = matchesRule(unit,"got","?")
+    for _,matchrule in ipairs(matchrules) do
+      local name = matchrule.rule.object.name
 
-        for _,matchrule in ipairs(matchrules) do
-          local tile = tiles_list[tiles_by_name[matchrule[1][3]]]
+      -- GOT object coloring!
+      local c1, c2
+      if matchrule.rule.object.prefix then
+        local dummy = {}
+        dummy[matchrule.rule.object.prefix] = true
+        updateUnitColourOverride(dummy)
+        if dummy.color_override then
+          c1, c2 = dummy.color_override[1], dummy.color_override[2]
+        end
+      end
 
-          if #tile.color == 3 then
-            gotcolor = {tile.color[1]/255 * brightness, tile.color[2]/255 * brightness, tile.color[3]/255 * brightness, 1}
-          else
-            local r,g,b,a = getPaletteColor(tile.color[1], tile.color[2])
-            gotcolor = {r * brightness, g * brightness, b * brightness, a}
+      local shake_x, shake_y = getOffset()
+
+      if name == "which" then
+        local o = getTableWithDefaults(unit.features.which, {x=0, y=0, sprite={"which_smol_base", "which_smol_that"}})
+        love.graphics.setColor(getPaletteColor(0,0))
+        love.graphics.draw(sprites[o.sprite[1]], fulldrawx + o.x + shake_x, fulldrawy - 0.5*TILE_SIZE + o.y + shake_y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+        if c1 and c2 then
+          love.graphics.setColor(getPaletteColor(c1,c2))
+        elseif unit.color_override and colour_for_palette[unit.color_override[1]][unit.color_override[2]] == "blacc" then
+          love.graphics.setColor(getPaletteColor(3,1))
+        else
+          love.graphics.setColor(color[1], color[2], color[3], color[4])
+        end
+        love.graphics.draw(sprites[o.sprite[2]], fulldrawx + o.x + shake_x, fulldrawy - 0.5*TILE_SIZE + o.y + shake_y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      elseif name == "sant" then
+        local o = getTableWithDefaults(unit.features.sant, {x=0, y=0, sprite={"sant_smol_base", "sant_smol_flof"}})
+        love.graphics.setColor(getPaletteColor(c1 or 2, c2 or 2))
+        love.graphics.draw(sprites[o.sprite[1]], fulldrawx + o.x + shake_x, fulldrawy - 0.5*TILE_SIZE + o.y + shake_y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+        love.graphics.setColor(getPaletteColor(0,3))
+        love.graphics.draw(sprites[o.sprite[2]], fulldrawx + o.x + shake_x, fulldrawy - 0.5*TILE_SIZE + o.y + shake_y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      elseif name == "hatt" then
+        local o = getTableWithDefaults(unit.features.hatt, {x=0, y=0, sprite="hatsmol"})
+        if c1 and c2 then
+          love.graphics.setColor(getPaletteColor(c1, c2))
+        else
+          love.graphics.setColor(color[1], color[2], color[3], color[4])
+        end
+        love.graphics.draw(sprites[o.sprite], fulldrawx + o.x + shake_x, fulldrawy - 0.5*TILE_SIZE + o.y + shake_y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      elseif name == "katany" then
+        local o = getTableWithDefaults(unit.features.katany, {x=0, y=0, sprite="katanysmol"})
+        love.graphics.setColor(getPaletteColor(c1 or 0, c2 or 1))
+        love.graphics.draw(sprites[o.sprite], fulldrawx + o.x + shake_x, fulldrawy + o.y + shake_y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      elseif name == "knif" then
+        local o = getTableWithDefaults(unit.features.knif, {x=0, y=0, sprite="knifsmol"})
+        love.graphics.setColor(getPaletteColor(c1 or 0, c2 or 3))
+        love.graphics.draw(sprites[o.sprite], fulldrawx + o.x + shake_x, fulldrawy + o.y + shake_y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      elseif name == "slippers" then
+        local o = getTableWithDefaults(unit.features.slippers, {x=0, y=0, sprite="slippers"})
+        love.graphics.setColor(getPaletteColor(c1 or 1, c2 or 4))
+        love.graphics.draw(sprites[o.sprite], fulldrawx + o.x + shake_x, fulldrawy+sprite:getHeight()/4 + o.y + shake_y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      elseif name == "gunne" then
+        local o = getTableWithDefaults(unit.features.gunne, {x=0, y=0, sprite="gunnesmol"})
+        love.graphics.setColor(getPaletteColor(c1 or 0, c2 or 3))
+        love.graphics.draw(sprites[o.sprite], fulldrawx + o.x + shake_x, fulldrawy + o.y + shake_y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      elseif name ~= "bowie" and unit.fullname == "swan" then
+        local tile = tiles_list[tiles_by_name[name]]
+        if tile then
+          -- temporarily replacing the current unit ... this is so janky im sorry
+          local old_unit = unit
+          unit = deepCopy(tile)
+          unit.fullname = unit.name
+          unit.overlay = {}
+          unit.draw = {x = old_unit.draw.x, y = old_unit.draw.y, scalex = 0.5, scaley = 0.5, rotation = 0, opacity = 1}
+          if c1 and c2 then
+            if unit.colored then
+              unit.color_override = {}
+              for i,_ in ipairs(unit.colored) do
+                if unit.colored[i] then
+                  unit.color_override[i] = {c1, c2}
+                else
+                  unit.color_override[i] = unit.color[i]
+                end
+              end
+            else
+              unit.color_override = {c1, c2}
+            end
           end
 
-          love.graphics.setColor(gotcolor[1], gotcolor[2], gotcolor[3], gotcolor[4])
-          love.graphics.draw(sprites[tile.sprite], fulldrawx/4*3, fulldrawy/4*3, 0, 1/4, 1/4, sprite:getWidth() / 2, sprite:getHeight() / 2)
+          love.graphics.push()
+          love.graphics.translate(14, -4)
+          if c1 and c2 then
+            setColor{c1, c2}
+          else
+            setColor(tile.color)
+          end
+          drawSprite()
+          love.graphics.pop()
+
+          -- order is restored
+          unit = old_unit
         end
       end
     end
@@ -1138,7 +1425,11 @@ function scene.draw(dt)
       end
 
       love.graphics.setColor(getPaletteColor(2, 2))
-      love.graphics.draw(sprites["scribble_" .. anim_stage+1], fulldrawx, fulldrawy, 0, unit.draw.scalex * scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      if settings["scribble_anim"] then
+        love.graphics.draw(sprites["scribble_" .. anim_stage+1], fulldrawx, fulldrawy, 0, unit.draw.scalex * scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      else
+        love.graphics.draw(sprites["scribble_1"], fulldrawx, fulldrawy, 0, unit.draw.scalex * scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      end
 
       love.graphics.pop()
     end
@@ -1193,6 +1484,23 @@ function scene.draw(dt)
     love.graphics.draw(lightcanvas, 0, 0)
     love.graphics.setBlendMode("alpha")
   end
+  
+  if settings["mouse_lines"] then
+    love.graphics.push()
+    love.graphics.origin()
+    love.graphics.setLineWidth(1)
+    local r,g,b,a = getPaletteColor(0,1)
+    love.graphics.setColor(r,g,b,0.3)
+    for _,cursor in ipairs(cursors) do
+      local cx,cy = cursor.screenx,cursor.screeny
+      local width = love.graphics.getWidth()
+      love.graphics.line(cx-width,cy-width,cx+width,cy+width)
+      love.graphics.line(cx-width,cy,cx+width,cy)
+      love.graphics.line(cx-width,cy+width,cx+width,cy-width)
+      love.graphics.line(cx,cy-width,cx,cy+width)
+    end
+    love.graphics.pop()
+  end
 
   --draw the stack box (shows what units are on a tile)
   if stack_box.scale > 0 then
@@ -1217,7 +1525,7 @@ function scene.draw(dt)
       if type(unit.sprite) == "table" then
         sprite = unit.sprite[1]..(unit.meta or "")..(unit.nt and "nt" or "")..(unit.color_override and dump(unit.color_override) or "")
       else
-        sprite = unit.sprite..(unit.meta or "")..(unit.nt and "nt" or "")..(unit.color_override and dump(unit.color_override) or "")
+        sprite = (unit.fullname ~= "letter_custom" and unit.sprite or "letter_"..unit.special.customletter)..(unit.meta or "")..(unit.nt and "nt" or "")..(unit.color_override and dump(unit.color_override) or "")
       end
       if not already_added[sprite] then already_added[sprite] = {} end
       local dir = unit.rotatdir
@@ -1264,11 +1572,15 @@ function scene.draw(dt)
         else
           love.graphics.setColor(dcolor[1], dcolor[2], dcolor[3], dcolor[4] or 1)
         end
-        local sprite = sprites[unit.sprite]
-        love.graphics.draw(sprite, 0, 0, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+        if unit.fullname == "letter_custom" then
+          drawCustomLetter(unit.special.customletter, 0, 0, 0, 1, 1, 16, 16)
+        else
+          local sprite = sprites[unit.sprite]
+          love.graphics.draw(sprite, 0, 0, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+        end
       else
         for j,image in ipairs(unit.sprite) do
-          love.graphics.setColor(getPaletteColor(dcolor[j][1], dcolor[j][2]))
+          love.graphics.setColor(getPaletteColor(unpack(getUnitColors(unit, j))))
           local sprite = sprites[image]
           love.graphics.draw(sprite, 0, 0, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
         end
@@ -1350,6 +1662,39 @@ function scene.draw(dt)
   end
   love.graphics.pop()
 
+  --176 98
+  if stopwatch.visible then
+    stopwatch.small.rotation = stopwatch.small.rotation + dt * 20
+
+    local sw_sprite = sprites["ui/stopwatch"]
+    local big_hand = sprites["ui/stopwatch_big_hand"]
+    local small_hand = sprites["ui/stopwatch_small_hand"]
+
+    love.graphics.setColor(0, 0, 0, 0.25)
+    love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
+
+    love.graphics.setColor(1, 1, 1)
+    love.graphics.push()
+    love.graphics.translate(love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
+    love.graphics.scale(getUIScale(), getUIScale())
+    love.graphics.translate(-sw_sprite:getWidth() / 2, -sw_sprite:getHeight() / 2)
+    love.graphics.draw(sw_sprite)
+
+    love.graphics.setColor(1, 1, 1)
+    love.graphics.push()
+    love.graphics.translate(176 + small_hand:getWidth() / 2, 98 + small_hand:getHeight() / 2)
+    love.graphics.rotate(stopwatch.small.rotation)
+    love.graphics.draw(small_hand, -small_hand:getWidth() / 2, -small_hand:getHeight() / 2)
+    love.graphics.pop()
+
+    love.graphics.push()
+    love.graphics.translate(big_hand:getWidth() / 2, big_hand:getHeight() / 2)
+    love.graphics.rotate(math.rad(stopwatch.big.rotation))
+    love.graphics.draw(big_hand, -big_hand:getWidth() / 2, -big_hand:getHeight() / 2)
+    love.graphics.pop()
+    love.graphics.pop()
+  end
+
   love.graphics.push()
   love.graphics.setColor(1, 1, 1)
   love.graphics.translate(love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
@@ -1418,16 +1763,6 @@ function scene.draw(dt)
     -- print(replay_playback_interval)
   end
   
-  if mouseOverBox(0,0,sprites["ui/cog"]:getHeight(),sprites["ui/cog"]:getWidth()) then
-    if love.mouse.isDown(1) then
-      love.graphics.draw(sprites["ui/cog_a"], 0, 0)
-    else
-      love.graphics.draw(sprites["ui/cog_h"], 0, 0)
-    end
-  else
-    love.graphics.draw(sprites["ui/cog"], 0, 0)
-  end
-
   love.graphics.setCanvas()
   pcallSetShader(level_shader)
   --[[
@@ -1442,7 +1777,7 @@ function scene.draw(dt)
     doin_the_world = false
   end
 
-  gooi.draw()
+  if not pause then gooi.draw() end
   if is_mobile then
     if rules_with["za warudo"] then
       mobile_controls_timeless:setVisible(true)
@@ -1571,33 +1906,94 @@ function scene.draw(dt)
     end
   end
 
-  if displaywords then
-    love.graphics.setColor(0, 0, 0, 0.4)
-    love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
+  
+  if displaywords or pause then
+    darken:draw()
 
     local rules = ""
 
-    local rulesnum = 0
     local lines = 0.5
+    local curline = ""
+
+    local width = love.graphics.getWidth()
+    local height = love.graphics.getHeight()
+
+    local buttonwidth, buttonheight = sprites["ui/button_1"]:getDimensions()
+
+    local buttoncolor = {84/255, 109/255, 255/255}
+
+    local y = (not pause) and 0 or button_last_y
 
     for i,rule in pairs(full_rules) do
       if not rule.hide_in_list then
-        rules = rules..serializeRule(rule.rule)
-        rulesnum = rulesnum + 1
-
-        if rulesnum % 4 >= 3 then
-          rules = rules..'\n'
-          lines = lines + 1
-        else
-          rules = rules..'   '
+        local serialized = serializeRule(rule.rule)
+        if serialized ~= "" then
+          
+          if curline == "" then
+            -- do nothing, this is just a ~= on the other two cases
+          elseif (#curline + #serialized) > 50 then
+            rules = rules..curline.."\n"
+            curline = ""
+            lines = lines + 1
+          else
+            curline = curline..'   '
+          end
+          curline = curline..serialized
         end
       end
     end
+    rules = rules..curline
 
-	rules = 'da rulz:\n'..rules
+	  rules = 'da rulz:\n'..rules
 
     love.graphics.setColor(1,1,1)
-    love.graphics.printf(rules, 0, love.graphics.getHeight()/2-love.graphics.getFont():getHeight()*lines, love.graphics.getWidth(), "center")
+
+    if pause then
+    
+      local current_level = level_name
+      if readSaveFile{"levels", level_filename, "won"} then
+        current_level = current_level.." (won) "
+      end
+      if readSaveFile{"levels", level_filename, "clear"} then
+        current_level = current_level.." (cleared) "
+      end
+      if readSaveFile{"levels", level_filename, "complete"} then
+        current_level = current_level.." (complete) "
+      end
+      if readSaveFile{"levels", level_filename, "bonus"} then
+        current_level = current_level.." (bonused) "
+      end
+      local tfs = readSaveFile{"levels", level_filename, "transform"}
+      if tfs then
+        local tfstr = ""
+        for _,tf in ipairs(tfs) do
+          while tf:starts("text_") do
+            tf = tf:sub(6)
+            tf = tf.." txt"
+          end
+          tfstr = tfstr.." & "..tf
+        end
+        tfstr = tfstr:sub(4)
+        current_level = current_level.." (transformed into " .. tfstr .. ") "
+      end
+      
+      love.graphics.printf(current_level, width/2-buttonwidth/2, buttonheight, buttonwidth, "center")
+  
+      for _,button in ipairs(buttons) do
+        button:draw()
+      end
+    end
+
+    local rules_height = love.graphics.getHeight()/2-love.graphics.getFont():getHeight()*lines+y 
+    if pause then
+      rules_height = buttonheight*4+(buttonheight+10)*(#buttons)
+    end
+    love.graphics.printf(rules, 0, rules_height, love.graphics.getWidth(), "center")
+
+    love.graphics.setColor(1,1,1)
+    love.graphics.draw(sprites["ui/mous"], love.mouse.getX(), love.mouse.getY())
+
+    gooi.draw()
   end
 
   if (just_moved and not unit_tests) then
@@ -1608,9 +2004,14 @@ function scene.draw(dt)
 end
 
 function scene.checkInput()
-  if replay_playback then return end
+  if replay_playback or past_playback then return end
   local start_time = love.timer.getTime()
   do_move_sound = false
+  
+  
+  if settings["focus_pause"] and not (love.window.hasFocus() or love.window.hasMouseFocus()) then
+    pause = true
+  end
   
   if not (key_down["w"] or key_down["a"] or key_down["s"] or key_down["d"]) then
       repeat_timers["wasd"] = nil
@@ -1687,57 +2088,98 @@ function scene.checkInput()
         if not unit_tests then print("gameplay logic took: "..tostring(round((end_time-start_time)*1000)).."ms") end
         -- SING
         if tiles_by_name["text_sing"] then
-            if hasSing(unit,"c") or hasSing(unit,"b_sharp") then
-                bit:setPitch(1)
-                bit:play()
+          
+          local sing_rules = matchesRule(nil, "sing", "?")
+          for _,ruleparent in ipairs(sing_rules) do
+            local unit = ruleparent[2]
+            
+            if unit.name == "no1" then break end
+            if unit.name == "swan" then
+              local sound = love.sound.newSoundData("assets/audio/sfx/honk" .. math.random(1,6) .. ".wav");
+              local source = love.audio.newSource(sound, "static")
+              source:setVolume(1)
+              source:setPitch(math.random() * ((2^(11/12)) - 1) + 1)
+              source:play()
+            else
+              local specific_sing = tiles_list[unit.tile].sing or "bit";
+              if (unit.name == "pata") then
+                specific_sing = "pata" .. tostring(unit.dir)
+              end
+              
+              local sing_note = ruleparent[1].rule.object.name;
+              local sing_color = ruleparent[1].rule.object.unit.color_override or ruleparent[1].rule.object.unit.color;
+              local sing_octave = 0;
+              if (sing_color[1] <= 6 and sing_color[2] <= 4) then
+                local sing_color_word = colour_for_palette[sing_color[1]][sing_color[2]];
+                if sing_color_word == "whit" then
+                  sing_octave = 0
+                elseif sing_color_word == "blacc" then
+                  sing_octave = -5
+                elseif sing_color_word == "brwn" then
+                  sing_octave = -4
+                elseif sing_color_word == "reed" then
+                  sing_octave = -3
+                elseif sing_color_word == "orang" then
+                  sing_octave = -2
+                elseif sing_color_word == "yello" then
+                  sing_octave = -1
+                elseif sing_color_word == "grun" then
+                  sing_octave = 0
+                elseif sing_color_word == "cyeann" then
+                  sing_octave = 1
+                elseif sing_color_word == "bleu" then
+                  sing_octave = 2
+                elseif sing_color_word == "purp" then
+                  sing_octave = 3
+                elseif sing_color_word == "pinc" then
+                  sing_octave = 4
+                elseif sing_color_word == "graey" then
+                  sing_octave = 5
+                end
+              end
+              local sing_pitch = 1
+              if sing_note == "c" or sing_note == "b_sharp" then
+                sing_pitch = 1
+              elseif sing_note == "c_sharp" or sing_note == "d_flat" then
+                sing_pitch = 2^(1/12)
+              elseif sing_note == "d" then
+                sing_pitch = 2^(2/12)
+              elseif sing_note == "d_sharp" or sing_note == "e_flat" then
+                sing_pitch = 2^(3/12)
+              elseif sing_note == "e" or sing_note == "f_flat" then
+                sing_pitch = 2^(4/12)
+              elseif sing_note == "f" or sing_note == "e_sharp" then
+                sing_pitch = 2^(5/12)
+              elseif sing_note == "f_sharp" or sing_note == "g_flat" then
+                sing_pitch = 2^(6/12)
+              elseif sing_note == "g" then
+                sing_pitch = 2^(7/12)
+              elseif sing_note == "g_sharp" or sing_note == "a_flat" then
+                sing_pitch = 2^(8/12)
+              elseif sing_note == "a" then
+                sing_pitch = 2^(9/12)
+              elseif sing_note == "a_sharp" or sing_note == "b_flat" then
+                sing_pitch = 2^(10/12)
+              elseif sing_note == "b" or sing_note == "c_flat" then
+                sing_pitch = 2^(11/12)
+              end
+              
+              sing_pitch = sing_pitch * 2^sing_octave
+              --slightly randomize for chorusing purposes between 99% and 101%
+              sing_pitch = sing_pitch * 0.99+(math.random()/50)
+              
+              sound = love.sound.newSoundData("assets/audio/sfx/" .. specific_sing .. ".wav");
+              local source = love.audio.newSource(sound, "static")
+              source:setVolume(1)
+              source:setPitch(sing_pitch or 1)
+              source:play()
+            
+              addParticles("sing", unit.x, unit.y, sing_color)
             end
-            if hasSing(unit,"c_sharp") or hasSing(unit,"d_flat") then
-                bit:setPitch(2^(1/12))
-                bit:play()
-            end
-            if hasSing(unit,"d") then
-                bit:setPitch(2^(2/12))
-                bit:play()
-            end
-            if hasSing(unit,"d_sharp") or hasSing(unit,"e_flat") then
-                bit:setPitch(2^(3/12))
-                bit:play()
-            end
-            if hasSing(unit,"e") or hasSing(unit,"f_flat") then
-                bit:setPitch(2^(4/12))
-                bit:play()
-            end
-            if hasSing(unit,"f") or hasSing(unit,"e_sharp") then
-                bit:setPitch(2^(5/12))
-                bit:play()
-            end
-            if hasSing(unit,"f_sharp") or hasSing(unit,"g_flat") then
-                bit:setPitch(2^(6/12))
-                bit:play()
-            end
-            if hasSing(unit,"g") then
-                bit:setPitch(2^(7/12))
-                bit:play()
-            end
-            if hasSing(unit,"g_sharp") or hasSing(unit,"a_flat") then
-                bit:setPitch(2^(8/12))
-                bit:play()
-            end
-            if hasSing(unit,"a") then
-                bit:setPitch(2^(9/12))
-                bit:play()
-            end
-            if hasSing(unit,"a_sharp") or hasSing(unit,"b_flat") then
-                bit:setPitch(2^(10/12))
-                bit:play()  
-            end
-            if hasSing(unit,"b") or hasSing(unit,"c_flat") then
-                bit:setPitch(2^(11/12))
-                bit:play()  
-            end
+          end
         end
         -- BUP
-        if hasRule("bup","be","u") and units_by_name["bup"] then
+        if hasU("bup") and units_by_name["bup"] then
             playSound("bup")
         end
       end
@@ -1775,69 +2217,81 @@ function scene.checkInput()
   end
 end
 
-function escResult(do_actual)
-  if (was_using_editor) then
-    if (do_actual) then
+function escResult(do_actual, xwx)
+  if was_using_editor then
+    if do_actual then
       load_mode = "edit"
       new_scene = editor
     else
       return "the editor"
     end
   else
-    if (win_reason == "nxt" and level_next_level ~= nil and level_next_level ~= "") then
-      if (do_actual) then
-        loadLevels({level_next_level}, "play")
+    -- i dont know what this is :owoXD:
+    if win_reason == "nxt" and level_next_level ~= nil and level_next_level ~= "" then
+      if do_actual then
+        loadLevels({level_next_level}, "play", nil, xwx)
+        return
       else
         return level_next_level
       end
-    elseif (level_parent_level == nil or level_parent_level == "") then
-      if (parent_filename ~= nil and parent_filename ~= "") then
-        if (do_actual) then
-          loadLevels(parent_filename:split("|"), "play")
-        else
-          return parent_filename
+    elseif #level_tree > 0 then
+      local parent = level_tree[1]
+      local seen = true
+      --[[if type(parent) == "table" then
+        for _,name in ipairs(parent) do
+          if not readSaveFile{"levels", name, "seen"} then
+            seen = false
+            break
+          end
         end
       else
-        if (do_actual) then
-          load_mode = "play"
-          new_scene = loadscene
-          if (love.filesystem.getInfo(world_parent .. "/" .. world .. "/" .. "overworld.txt")) then
-            world = ""
+        seen = readSaveFile{"levels", parent, "seen"}
+      end]]
+      if seen then
+        if do_actual then
+          if type(parent) == "table" then
+            loadLevels(parent, "play", nil, xwx)
+          else
+            loadLevels({parent}, "play", nil, xwx)
           end
+          table.remove(level_tree, 1)
+          return
         else
-          return "the level selection menu"
+          if type(parent) == "table" then
+            return table.concat(parent, " & ")
+          else
+            return parent
+          end
         end
+      end
+    end
+    if do_actual then
+      load_mode = "play"
+      new_scene = loadscene
+      if (love.filesystem.getInfo(getWorldDir(true) .. "/" .. "overworld.txt")) then
+        world = ""
       end
     else
-      if (readSaveFile(level_parent_level, "seen")) then
-        if (do_actual) then
-          loadLevels({level_parent_level}, "play")
-        else
-          return level_parent_level
-        end
-      else
-        if (do_actual) then
-          load_mode = "play"
-          new_scene = loadscene
-          if (love.filesystem.getInfo(world_parent .. "/" .. world .. "/" .. "overworld.txt")) then
-            world = ""
-          end
-        else
-          return "the level selection menu"
-        end
-      end
+      return "the level selection menu"
     end
   end
 end
 
-function doOneMove(x, y, key)
-	if (currently_winning) then
+function doOneMove(x, y, key, past)
+  if pause then return end
+  
+  if not past then
+    table.insert(all_moves, {x, y, key})
+  end
+  current_move = current_move + 1
+
+	if (currently_winning and not past) then
     --undo: undo win.
     --idle on the winning screen: go to the editor, if we were editing; go to the parent level, if known (prefer explicit to implicit), else go back to the world we were looking at.
     if (key == "undo") then
       undoWin()
     else
-      if x == 0 and y == 0 and key ~= "e" then
+      if x == 0 and y == 0 and key ~= "e" and not past then
         escResult(true)
       end
       return
@@ -1854,19 +2308,28 @@ function doOneMove(x, y, key)
       newUndo()
       timeless = not timeless
       if timeless then
-        extendReplayString(0, 0, "e")
+        if not doing_past_turns then
+          extendReplayString(0, 0, "e")
+        end
         if firsttimestop then
           playSound("timestop long",0.5)
+          if units_by_name["za warudo"] then
+            playSound("za warudo",0.5)
+          end
         else
           playSound("timestop",0.5)
         end
       else
-        addUndo({"timeless_rules", rules_with})
+        addUndo({"timeless_rules", rules_with, full_rules})
         parseRules()
+        should_parse_rules = true
         doMovement(0,0,"e")
         if firsttimestop then
           playSound("time resume long",0.5)
           firsttimestop = false
+          if units_by_name["za warudo"] then
+            playSound("time resume dio",0.5)
+          end
         else
           playSound("time resume",0.5)
         end
@@ -1874,12 +2337,15 @@ function doOneMove(x, y, key)
       addUndo({"za warudo", timeless})
       unsetNewUnits()
     else
-      addUndo({"timeless_rules", rules_with})
+      addUndo({"timeless_rules", rules_with, full_rules})
       timeless = false
+      should_parse_rules = true
     end
     mobile_controls_timeless:setBGImage(sprites[timeless and "ui/time resume" or "ui/timestop"])
   elseif (key == "f") then
-    extendReplayString(0, 0, "f")
+    if not doing_past_turns then
+      extendReplayString(0, 0, "f")
+    end
 
     if hasRule("press","f2",":)") then
       doWin("won")
@@ -1908,9 +2374,7 @@ function doOneMove(x, y, key)
     to_destroy = handleDels(to_destroy)
     
     if hasRule("press","f2",":(") then
-      local yous = getUnitsWithEffect("u")
-      mergeTable(yous, getUnitsWithEffect("u too"))
-      mergeTable(yous, getUnitsWithEffect("u tres"))
+      local yous = getUs()
       for _,unit in ipairs(yous) do
         table.insert(to_destroy, unit)
         addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
@@ -1918,12 +2382,16 @@ function doOneMove(x, y, key)
     end
     to_destroy = handleDels(to_destroy)
 	elseif (key == "undo") then
-		local result = undo()
-		extendReplayString(0, 0, "undo")
+    local result = undo()
+    if not doing_past_turns then
+      extendReplayString(0, 0, "undo")
+    end
     unsetNewUnits()
 		return result
-	else
-		newUndo()
+  else
+    if key ~= "drag" then
+      newUndo()
+    end
 		last_move = {x, y}
 		just_moved = true
 		doMovement(x, y, key)
@@ -1931,7 +2399,8 @@ function doOneMove(x, y, key)
 		if #undo_buffer > 0 and #undo_buffer[1] == 0 then
 			table.remove(undo_buffer, 1)
 		end
-		unsetNewUnits()
+    unsetNewUnits()
+    scene.doPastTurns()
 	end
   return true
 end
@@ -1971,6 +2440,164 @@ function scene.doPassiveParticles(timer,word,effect,delay,chance,count,color)
   end
 end
 
+function scene.doPastTurns()
+  if not doing_past_turns and change_past then
+    old_units = units
+    old_units_by_id = units_by_id
+    doing_past_turns = true
+    past_playback = true
+    past_queued_wins = {}
+
+    if (unit_tests or not settings["stopwatch_effect"]) then
+      do_past_effects = true
+      playSound("stopwatch")
+    end
+
+    cutscene_tick:delay(function() 
+      do_past_effects = false
+      local start_time = love.timer.getTime()
+      local destroy_level = false
+      local old_move = current_move
+      local old_move_total = #all_moves
+      
+      --[[while change_past and not destroy_level do
+        change_past = false
+        local past_buffer = undo_buffer
+        scene.resetStuff()
+        current_move = 0
+        undo_buffer = {}
+        for i,past_move in ipairs(all_moves) do
+          doOneMove(past_move[1], past_move[2], past_move[3], true)
+          if change_past then break end
+          if love.timer.getTime() - start_time > 10 then
+            destroy_level = true
+            break
+          end
+        end
+        undo_buffer = past_buffer
+      end]]
+      if destroy_level then
+        destroyLevel("infloop")
+      elseif (settings["stopwatch_effect"] and not unit_tests) then
+        local moves_per_tick = 1
+        local delay = math.max(1/#all_moves, 1/20)
+        while delay < 1/60 do
+          moves_per_tick = moves_per_tick * 2
+          delay = delay * 2
+        end
+        stopwatch.visible = true
+        stopwatch.big.rotation = 0
+        stopwatch.small.rotation = 0
+        clock_tween = tween.new(delay * math.ceil(#all_moves / moves_per_tick), stopwatch.big, {rotation = 360})
+        addTween(clock_tween, "stopwatch")
+
+        do_past_effects = true
+        playSound("stopwatch")
+        local past_buffer = undo_buffer
+        scene.resetStuff(true)
+        current_move = 0
+        local iterations = 1
+        local count = math.min(#all_moves - i, moves_per_tick - 1)
+        local function pastMove(i, count)
+          change_past = false
+          local finished = false
+          for j = 0, count do
+            if i+j == #all_moves then
+              finished = true
+            end
+            doOneMove(all_moves[i+j][1], all_moves[i+j][2], all_moves[i+j][3], true)
+          end
+          if change_past then
+            cutscene_tick:delay(function()
+              addTween(tween.new(delay, stopwatch.big, {rotation = 0}), "stopwatch")
+              change_past = false
+              --past_buffer = undo_buffer
+              scene.resetStuff(true)
+              current_move = 0
+              iterations = iterations + 1
+            end, delay):after(function()
+              clock_tween:set(0)
+              addTween(clock_tween, "stopwatch")
+              playSound("stopwatch")
+              pastMove(1, math.min(#all_moves - 1, moves_per_tick - 1))
+            end, delay)
+          elseif finished then
+            stopwatch.visible = false
+            should_parse_rules = true
+            doing_past_turns = false
+            past_playback = false
+            past_rules = {}
+            
+            for result, payload in pairs(past_queued_wins) do
+              doWin(result, payload)
+            end
+            
+            undo_buffer = past_buffer
+            createUndoBasedOnUnitsChanges(old_units, old_units_by_id, units, units_by_id)
+            old_units = nil; old_units_by_id = nil;
+          elseif iterations > 20 then
+            destroyLevel("infloop")
+          else
+            cutscene_tick:delay(function() pastMove(i+count+1, math.min(#all_moves - i+count, moves_per_tick - 1)) end, delay)
+          end 
+        end
+        cutscene_tick:delay(function() pastMove(1, math.min(#all_moves - 1, moves_per_tick - 1)) end, delay)
+      else
+        --[[local past_buffer = undo_buffer
+        scene.resetStuff(true)
+        current_move = 0
+        undo_buffer = {}]]
+        while change_past and not destroy_level do
+          change_past = false
+          local past_buffer = undo_buffer
+          scene.resetStuff(true)
+          current_move = 0
+          undo_buffer = {}
+          for i,past_move in ipairs(all_moves) do
+            do_past_effects = i <= 10 or #all_moves - i < 10
+            if i == #all_moves then
+              should_parse_rules = true
+            end
+            doOneMove(past_move[1], past_move[2], past_move[3], true)
+            if change_past then break end
+            if love.timer.getTime() - start_time > 10 then
+              destroy_level = true
+              break
+            end
+          end
+          undo_buffer = past_buffer
+        end
+        if destroy_level then
+          destroyLevel("infloop")
+        else
+          --[[for i,past_move in ipairs(all_moves) do
+            do_past_effects = i <= 10 or #all_moves - i < 10
+            if i == #all_moves then
+              should_parse_rules = true
+            end
+            doOneMove(past_move[1], past_move[2], past_move[3], true)
+          end]]
+          should_parse_rules = true
+          doing_past_turns = false
+          past_playback = false
+          past_rules = {}
+          
+          for result, payload in pairs(past_queued_wins) do
+            doWin(result, payload)
+          end
+          
+          --undo_buffer = past_buffer
+          createUndoBasedOnUnitsChanges(old_units, old_units_by_id, units, units_by_id)
+          old_units = nil; old_units_by_id = nil;
+          for k,v in pairs(tweens) do
+            v[1]:set(v[1].duration)
+          end
+        end
+      end
+    end, 0.25)
+  end
+end
+
 --have a probability to produce particles if there are more than 50 emitters, so that performance degradation is capped.
 function particlesRngCheck()
   if #particles < 50 then return true end
@@ -1982,52 +2609,122 @@ function scene.mouseReleased(x, y, button)
   local box = sprites["ui/32x32"]:getWidth()
   
   if button == 1 then
+    -- DRAGBL release
+    if units_by_name["text_dragbl"] then
+      local dragged = false
+      for _,unit in ipairs(drag_units) do
+        local dest_x, dest_y = math.floor(unit.draw.x + 0.5), math.floor(unit.draw.y + 0.5)
+        local stuff = getUnitsOnTile(dest_x,dest_y)
+        local nodrag = false
+        for _,other in ipairs(stuff) do
+          if hasProperty(other,"no drag") then
+            nodrag = true
+            break
+          end
+        end
+        if not nodrag then
+          if not dragged then
+            newUndo()
+          end
+          addUndo{"update",unit.id,unit.x,unit.y,unit.dir}
+          moveUnit(unit,dest_x,dest_y)
+          dragged = true
+        end
+        addTween(tween.new(0.1, unit.draw, {x = unit.x, y = unit.y}), "dragbl release:"..tostring(unit))
+      end
+      if dragged then
+        doOneMove(last_click_x,last_click_y,"drag")
+        last_click_x, last_click_y = nil, nil
+      end
+      drag_units = {}
+    end
     -- CLIKT prefix
     if units_by_name["text_clikt"] then
-        last_click_x, last_click_y = screenToGameTile(love.mouse.getX(), love.mouse.getY())
-        doOneMove(last_click_x,last_click_y,"clikt")
-        last_click_x, last_click_y = nil, nil
-        playSound("clicc")
+      last_click_x, last_click_y = screenToGameTile(love.mouse.getX(), love.mouse.getY())
+      doOneMove(last_click_x,last_click_y,"clikt")
+      last_click_x, last_click_y = nil, nil
+      playSound("clicc")
     end
     -- Replay buttons
     if replay_playback then
-        if pointInside(x, y, width - box*3, 0, box, box) then
-            replay_pause = not replay_pause
+      if pointInside(x, y, width - box*3, 0, box, box) then
+        replay_pause = not replay_pause
+      end
+      if not replay_pause then
+        if pointInside(x, y, width - box*4, 0, box, box) then
+          replay_playback_interval = replay_playback_interval / 0.8
+        elseif pointInside(x, y, width - box*2, 0, box, box) then
+          replay_playback_interval = replay_playback_interval * 0.8
         end
-        if not replay_pause then
-            if pointInside(x, y, width - box*4, 0, box, box) then
-                replay_playback_interval = replay_playback_interval / 0.8
-            elseif pointInside(x, y, width - box*2, 0, box, box) then
-                replay_playback_interval = replay_playback_interval * 0.8
-            end
-        elseif replay_pause then
-            if pointInside(x, y, width - box*4, 0, box, box) then
-                if replay_playback_turn > 1 then
-                    replay_playback_turn = replay_playback_turn - 1
-                    doOneMove(0,0,"undo")
-                end
-            elseif pointInside(x, y, width - box*2, 0, box, box) then
-                doReplayTurn(replay_playback_turn)
-                replay_playback_turn = replay_playback_turn + 1
-            end
+      elseif replay_pause then
+        if pointInside(x, y, width - box*4, 0, box, box) then
+          if replay_playback_turn > 1 then
+            replay_playback_turn = replay_playback_turn - 1
+            doOneMove(0,0,"undo")
+          end
+        elseif pointInside(x, y, width - box*2, 0, box, box) then
+          doReplayTurn(replay_playback_turn)
+          replay_playback_turn = replay_playback_turn + 1
         end
-        if pointInside(x, y, width - box, 0, box, box) then
-            replay_playback = false
-        end
+      end
+      if pointInside(x, y, width - box, 0, box, box) then
+        replay_playback = false
+      end
     end
   elseif button == 2 then
     -- Stacks preview
     scene.setStackBox(screenToGameTile(x, y))
   end
-  
-  if pointInside(x,y,0,0,box,box) then
-    --love.keypressed("f2")
-    new_scene = editor
-    load_mode = "edit"
+
+  if pause then
+    width = love.graphics.getWidth()
+    height = love.graphics.getHeight()
+
+    local buttonwidth, buttonheight = sprites["ui/button_1"]:getDimensions()
+
+    local mousex, mousey = love.mouse.getPosition()
+
+    --[[for i=1, #buttons do
+      local buttony = buttonheight*4+(buttonheight+10)*(i-2)
+      if mouseOverBox(width/2-sprites["ui/button_1"]:getWidth()/2, buttony, buttonwidth, buttonheight) then
+        if button == 1 then
+          handlePauseButtonPressed(i)
+        end
+      end
+    end]]
   end
 end
 
+function handlePauseButtonPressed(i)
+  if buttons[i] == "exit" then
+    escResult(true)
+  elseif buttons[i] == "resume" then
+    pause = false
+  elseif buttons[i] == "editor" then
+    new_scene = editor
+    load_mode = "edit"
+  elseif buttons[i] == "restart" then
+    pause = false
+    scene.resetStuff()
+  end
+end
+
+function scene.resize(w, h)
+  scene.buildUI()
+end
+
 function scene.mousePressed(x, y, button)
+  if not rules_with["dragbl"] then return end
+  
+  if button == 1 then
+    local tx,ty = screenToGameTile(x,y)
+    local stuff = getUnitsOnTile(tx,ty)
+    for _,unit in ipairs(stuff) do
+      if hasProperty(unit,"dragbl") then
+        table.insert(drag_units, unit)
+      end
+    end
+  end
 end
 
 function scene.setStackBox(x, y)
@@ -2079,6 +2776,45 @@ function scene.setPathlockBox(unit)
   if pathlock_box.enabled then
     pathlock_box.enabled = false
     addTween(tween.new(0.1, pathlock_box, {scale = 0}), "pathlock box")
+  end
+end
+
+function doDragbl()
+  if drag_units and #drag_units > 0 then
+    local mx, my = screenToGameTile(mouse_X, mouse_Y, true)
+    mx, my = mx - 0.5, my - 0.5
+    local tx, ty = screenToGameTile(mouse_X, mouse_Y, false)
+    for _,unit in ipairs(drag_units) do
+      local oldx, oldy = math.floor(unit.draw.x), math.floor(unit.draw.y)
+      local dirx, diry = sign(mx - unit.draw.x), sign(my - unit.draw.y)
+      
+      if  canMove(unit,dirx,0,0,nil,nil,nil,"drag",nil,math.floor(unit.draw.x),math.floor(unit.draw.y))
+      and canMove(unit,dirx,0,0,nil,nil,nil,"drag",nil,math.floor(unit.draw.x),math.ceil( unit.draw.y)) then
+        local diff = mx - unit.draw.x
+        if diff < -0.25 then diff = -0.25 end
+        if diff > 0.25 then diff = 0.25 end
+        unit.draw.x = unit.draw.x + diff
+      else
+        if mx * dirx < oldx * dirx then
+          unit.draw.x = mx
+        else
+          unit.draw.x = oldx
+        end
+      end
+      if  canMove(unit,0,diry,0,nil,nil,nil,"drag",nil,math.floor(unit.draw.x),math.floor(unit.draw.y))
+      and canMove(unit,0,diry,0,nil,nil,nil,"drag",nil,math.ceil( unit.draw.x),math.floor(unit.draw.y)) then
+        local diff = my - unit.draw.y
+        if diff < -0.25 then diff = -0.25 end
+        if diff > 0.25 then diff = 0.25 end
+        unit.draw.y = unit.draw.y + diff
+      else
+        if my * diry < oldy * diry then
+          unit.draw.y = my
+        else
+          unit.draw.y = oldy
+        end
+      end
+    end
   end
 end
 

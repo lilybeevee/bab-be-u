@@ -10,11 +10,21 @@ function level_button.new(file, extra)
 
   o:setSprite(sprites["ui/level box"])
   o:setFont(ui.fonts.default)
+  o:setPivot(0.5, 0.5)
+  o:onPreDraw(ui.buttonFX)
 
   o.data.extra = extra
-  local default_color = {0.25, 0.5, 1, 1}
-  if extra then
-    default_color = {0.125, 0.25, 0.5, 1}
+  local default_color
+  if getTheme() == "halloween" then
+    default_color = {0.5, 0.2, 0.7, 1}
+    if extra then
+        default_color = {0.8, 0.4, 0, 1}
+    end
+  else
+    default_color = {0.25, 0.5, 1, 1}
+    if extra then
+        default_color = {0.125, 0.25, 0.5, 1}
+    end
   end
 
   function o:getColor()
@@ -30,20 +40,6 @@ function level_button.new(file, extra)
 
   function o:getName() return self.name end
   function o:setName(val) self.name = val; return self end
-
-  function o:preDraw()
-    if self:hovered() then
-      if self:pressed() or self:down() then
-        self:setScale(0.9)
-      else
-        self:setScale(1.1)
-      end
-      self:setRotation(0.05 * math.sin(love.timer.getTime()*5))
-    else
-      self:setScale(1)
-      self:setRotation(0)
-    end
-  end
 
   function o:drawIcon()
     local y_mult = 1/2

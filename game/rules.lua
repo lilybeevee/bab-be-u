@@ -1,9 +1,38 @@
 old_rules_with = {}
 
 function clearRules()
-  full_rules = {}
+  local temp = {}
+  if timeless and full_rules then
+    addUndo({"timeless_rules", rules_with, full_rules})
+    if rules_with["za warudo"] then
+      for _,text in ipairs(getAllText()) do
+        if hasProperty(text, "za warudo") then
+          text.zawarudo = true
+        else
+          text.zawarudo = false
+        end
+      end
+    end
+    for _,rule in ipairs(full_rules) do
+      if not rule.hide_in_list then
+        local any_timeless = false
+        for _,unit in ipairs(rule.units) do
+          if unit.zawarudo then
+            any_timeless = true
+            break
+          end
+        end
+        if not any_timeless then
+          table.insert(temp, rule)
+        end
+      end
+    end
+  end
+  full_rules = temp
+  
   old_rules_with = rules_with
   rules_with = {}
+  rules_with_unit = {}
   not_rules = {}
   protect_rules = {}
 
@@ -14,22 +43,32 @@ function clearRules()
   addBaseRule("text","be","go away pls")
   addBaseRule("lvl","be","no go")
   --TODO: This will need to be automatic on levels with letters/combined words, since a selectr/bordr might be made in a surprising way, and it will need to have its implicit rules apply immediately.
-  if (units_by_name["selctr"] or units_by_name["text_selctr"]) then
+  if (units_by_name["selctr"] or units_by_name["text_selctr"] or units_by_name["lin"] or units_by_name["text_lin"] or units_by_name["text_pathz"]) then
     addBaseRule("selctr","be","u")
     addBaseRule("selctr","liek","pathz")
     addBaseRule("lvl","be","pathz",{name = "unlocked"})
 		addBaseRule("lin","be","pathz",{name = "unlocked"})
     addBaseRule("selctr","be","flye")
-    addBaseRule("selctr","be","shy")
+    addBaseRule("selctr","be","shy...")
   end
   if (units_by_name["bordr"] or units_by_name["text_bordr"]) then
     addBaseRule("bordr","be","no go")
     addBaseRule("bordr","be","tall")
-		addBaseRule("bordr","be","opaque")
+		addBaseRule("bordr","be","tranparnt")
   end
   if units_by_name["this"] then
     addBaseRule("this","be","go away pls")
     addBaseRule("this","be","wurd")
+  end
+
+  if not doing_past_turns then
+    past_rules = {}
+  else
+    for id,past_rule in pairs(past_rules) do
+      if past_rule.turn > current_move then
+        addRule(past_rule.rule)
+      end
+    end
   end
 
   has_new_rule = false
@@ -50,17 +89,48 @@ function getAllText()
     end
   end
   
-  for name,_ in pairs(rules_effecting_names) do
-    if units_by_name[name] then
-      for __,unit in ipairs(units_by_name[name]) do
-        if hasProperty(unit, "wurd") then
-          if not hasCopied then
-            result = copyTable(result)
-            hasCopied = true
+  local givers = {}
+  
+  if rules_with ~= nil and rules_with["giv"] ~= nil then
+    for unit,__ in pairs(getUnitsWithRuleAndCount(nil, "giv", "wurd")) do
+      table.insert(givers, unit)
+    end
+  end
+  
+  local function matchesGiver(unit, givers)
+    for _,giver in ipairs(givers) do
+      if giver ~= unit and giver.x == unit.x and giver.y == unit.y and sameFloat(unit, giver) then
+        return true
+      end
+    end
+    return false
+  end
+  
+  if (#givers > 0) then
+    for __,unit in ipairs(units) do
+      if hasProperty(unit, "wurd") or unit.name:starts("this") or matchesGiver(unit, givers) then
+        if not hasCopied then
+          result = copyTable(result)
+          hasCopied = true
+        end
+        table.insert(result, unit)
+      else
+        unit.active = false
+      end
+    end
+  else
+    for name,_ in pairs(rules_effecting_names) do
+      if units_by_name[name] then
+        for __,unit in ipairs(units_by_name[name]) do
+          if hasProperty(unit, "wurd") or unit.name:starts("this") then
+            if not hasCopied then
+              result = copyTable(result)
+              hasCopied = true
+            end
+            table.insert(result, unit)
+          else
+            unit.active = false
           end
-          table.insert(result, unit)
-        else
-          unit.active = false
         end
       end
     end
@@ -79,10 +149,35 @@ function getTextOnTile(x, y)
     end
   end
   
-  for name,_ in pairs(rules_effecting_names) do
-    for __,unit in ipairs(getUnitsOnTile(x, y, name)) do
-      if hasProperty(unit, "wurd") then
+  local givers = {}
+  
+  if rules_with ~= nil and rules_with["giv"] ~= nil then
+    for __,unit in ipairs(getUnitsOnTile(x, y)) do
+      if hasRule(unit, "giv", "wurd") then
+        table.insert(givers, unit)
+      end
+    end
+  end
+  
+  if (#givers > 0) then
+    for __,unit in ipairs(getUnitsOnTile(x, y)) do
+      if hasProperty(unit, "wurd") or unit.name:starts("this") then
         table.insert(result, unit)
+      else
+        for _,giver in ipairs(givers) do
+          if giver ~= unit and sameFloat(giver, unit) then
+            table.insert(result, unit)
+            break
+          end
+        end
+      end
+    end
+  else
+    for name,_ in pairs(rules_effecting_names) do
+      for __,unit in ipairs(getUnitsOnTile(x, y, name)) do
+        if hasProperty(unit, "wurd") or unit.name:starts("this") then
+          table.insert(result, unit)
+        end
       end
     end
   end
@@ -107,6 +202,12 @@ function parseRules(undoing)
     table.sort(dittos, function(a, b) return a.y < b.y end ) 
     for _,unit in ipairs(dittos) do
       local mimic = getTextOnTile(unit.x,unit.y-1)
+      --print(unit.dir)
+      --print(hasProperty(unit,"rotatbl"))
+      if hasProperty(unit,"rotatbl") and unit.dir == 5 then
+        mimic = getTextOnTile(unit.x,unit.y+1)
+      end
+      
       if #mimic == 1 then
         unit.textname = mimic[1].textname
         unit.texttype = mimic[1].texttype
@@ -131,16 +232,17 @@ function parseRules(undoing)
   
   local reparse_rule_counts = 
   {
-    #matchesRule(nil, "be", "wurd"),
-    #matchesRule(nil, "be", "poor toll"),
+    #matchesRule(nil, nil, "wurd"),
+    #matchesRule(nil, nil, "poor toll"),
     --TODO: We care about text, specific text and wurd units - this can't be easily specified to matchesRule.
-    #matchesRule(nil, "be", "go arnd"),
-    #matchesRule(nil, "be", "mirr arnd"),
-    #matchesRule(nil, "be", "ortho"),
-    #matchesRule(nil, "be", "diag"),
+    #matchesRule(nil, nil, "go arnd"),
+    #matchesRule(nil, nil, "mirr arnd"),
+    #matchesRule(nil, nil, "ortho"),
+    #matchesRule(nil, nil, "diag"),
     #matchesRule(nil, "ben't", "wurd"),
-    #matchesRule(nil, "be", "za warudo"),
-    #matchesRule(nil, "be", "rong"),
+    #matchesRule(nil, nil, "za warudo"),
+    #matchesRule(nil, nil, "rong"),
+    #matchesRule(nil, nil, "slep"),
     --If and only if poor tolls exist, flyeness changing can affect rules parsing, because the text and portal have to match flyeness to go through.
     rules_with["poor toll"] and #matchesRule(nil, "ignor", nil) or 0,
   }
@@ -195,9 +297,14 @@ function parseRules(undoing)
         if (loop_rules == 1) then
           unit.old_active = unit.active
         end
-        unit.active = false
-        unit.blocked = false
-        unit.used_as = {}
+        local temp = rules_with
+        rules_with = old_rules_with
+        if not timeless or unit.zawarudo then
+          unit.active = false
+          unit.blocked = false
+          unit.used_as = {}
+        end
+        rules_with = temp
       end
     end
 
@@ -231,6 +338,7 @@ function parseRules(undoing)
               new_word.name = unit.textname
               new_word.type = unit.texttype
               new_word.unit = unit
+              new_word.dir = dir
 
               last_unit = unit
 
@@ -259,6 +367,12 @@ function parseRules(undoing)
 
       for _,sentence in ipairs(sentences) do
         parseSentence(sentence, {been_first, first_words, final_rules, first}, dir) -- split into a new function located below to organize this slightly more
+        if (#final_rules > 1000) then
+          print("parseRules infinite loop! (1000 rules)")
+          destroyLevel("infloop")
+          clearRules()
+          return
+        end
       end
     end
     
@@ -273,18 +387,19 @@ function parseRules(undoing)
     --TODO: This works in non-contrived examples, but isn't necessarily robust - for example, if after reparsing, you add one word rule while subtracting another word rule, it'll think nothing has changed. The only way to be ABSOLUTELY robust is to compare that the exact set of parsing effecting rules hasn't changed.
     local reparse_rule_counts_new = 
     {
-    #matchesRule(nil, "be", "wurd"),
-    #matchesRule(nil, "be", "poor toll"),
+    #matchesRule(nil, nil, "wurd"),
+    #matchesRule(nil, nil, "poor toll"),
     --TODO: We care about text, specific text and wurd units - this can't be easily specified to matchesRule.
-    #matchesRule(nil, "be", "go arnd"),
-    #matchesRule(nil, "be", "mirr arnd"),
-    #matchesRule(nil, "be", "ortho"),
-    #matchesRule(nil, "be", "diag"),
+    #matchesRule(nil, nil, "go arnd"),
+    #matchesRule(nil, nil, "mirr arnd"),
+    #matchesRule(nil, nil, "ortho"),
+    #matchesRule(nil, nil, "diag"),
     #matchesRule(nil, "ben't", "wurd"),
-    #matchesRule(nil, "be", "za warudo"),
-    #matchesRule(nil, "be", "rong"),
-    #matchesRule(outerlvl, "be", "go arnd"),
-    #matchesRule(outerlvl, "be", "mirr arnd"),
+    #matchesRule(nil, nil, "za warudo"),
+    #matchesRule(nil, nil, "rong"),
+    #matchesRule(nil, nil, "slep"),
+    #matchesRule(outerlvl, nil, "go arnd"),
+    #matchesRule(outerlvl, nil, "mirr arnd"),
     --If and only if poor tolls exist, flyeness changing can affect rules parsing, because the text and portal have to match flyeness to go through.
     rules_with["poor toll"] and #matchesRule(nil, "ignor", nil) or 0,
     }
@@ -323,7 +438,9 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
   --print(fullDump(sentence))
 
   for orig_index,word in ipairs(sentence) do
-    if word.type["letter"] then --letter handling
+    --HACK: don't try to do letters parsing if we're singing
+    if word.name == "sing" then break end
+    if word.type and word.type["letter"] then --letter handling
       --print("found a letter"..orig_index)
       
       local new_word = ""
@@ -341,6 +458,7 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
         local unit = letter.unit
         local prevunit = prevletter.unit or {}
         local name = letter.name
+        if name == "custom" then name = letter.unit.special.customletter end
         if letter.name == "u" then
           local umlauts = getTextOnTile(unit.x,unit.y-1)
           for _,umlaut in ipairs(umlauts) do
@@ -427,28 +545,24 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
     end
   end
   
-  local function addUnits(list, set, root)
+  local function addUnits(list, set, root, dirs)
     if root.unit and not set[root.unit] then
       table.insert(list, root.unit)
       set[root.unit] = true
+      dirs[root.unit] = root.dir
       if root.conds then
         for _,cond in ipairs(root.conds) do
-          addUnits(list, set, cond)
+          addUnits(list, set, cond, dirs)
         end
       end
       if root.others then
         for _,other in ipairs(root.others) do
-          addUnits(list, set, other)
+          addUnits(list, set, other, dirs)
         end
       end
       if root.mods then
         for _,mod in ipairs(root.mods) do
-          addUnits(list, set, mod)
-        end
-      end
-      if root.prefix then
-        for _,pfix in ipairs(root.prefix) do
-          addUnits(list, set, pfix)
+          addUnits(list, set, mod, dirs)
         end
       end
     end
@@ -466,22 +580,38 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
       for i,rule in ipairs(rules) do
         local list = {}
         local set = {}
+        local dirs = {}
         for _,word in ipairs(extra_words) do
-          addUnits(list, set, word)
+          addUnits(list, set, word, dirs)
         end
-        addUnits(list, set, rule.subject)
-        addUnits(list, set, rule.verb)
-        addUnits(list, set, rule.object)
-        local full_rule = {rule = rule, units = list, dir = dir, units_set = set}
+        addUnits(list, set, rule.subject, dirs)
+        addUnits(list, set, rule.verb, dirs)
+        addUnits(list, set, rule.object, dirs)
+        local full_rule = {rule = rule, units = list, dir = dir, units_set = set, dirs = dirs}
         -- print(fullDump(full_rule))
         
-        local add = true
+        local add = false
+        
+        if not timeless then
+          add = true
+        else
+          local temp = rules_with
+          rules_with = old_rules_with
+          for _,unit in ipairs(list) do
+            if unit.zawarudo then
+              add = true
+              break
+            end
+          end
+          rules_with = temp
+        end
+        
         for i = #final_rules,1,-1 do
           local other = final_rules[i]
           if other.dir == full_rule.dir then
             local subset = true
             for _,u in ipairs(other.units) do
-              if not full_rule.units_set[u] and not u.texttype["and"] then 
+              if (not full_rule.units_set[u] or (full_rule.dirs[u] ~= other.dirs[u])) and not u.texttype["and"] then 
                 subset = false
                 break
               end
@@ -491,7 +621,7 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
             else
               local subset = true
               for _,u in ipairs(full_rule.units) do
-                if not other.units_set[u] and not u.texttype["and"] then
+                if (not other.units_set[u] or (full_rule.dirs[u] ~= other.dirs[u])) and not u.texttype["and"] then
                   subset = false
                   break
                 end
@@ -518,7 +648,6 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
 end
 
 function addRule(full_rule)
-  -- print(fullDump(full_rule))
   local rules = full_rule.rule
   local units = full_rule.units
   local dir = full_rule.dir
@@ -531,13 +660,30 @@ function addRule(full_rule)
   local verb_not = 0
   local object_not = 0
   
+  local new_rule = false
+  local rule_id = ""
   for _,unit in ipairs(units) do
     unit.active = true
     if not unit.old_active and not first_turn then
       addParticles("rule", unit.x, unit.y, unit.color_override or unit.color)
-      has_new_rule = true
+      new_rule = true
     end
     unit.old_active = unit.active
+    rule_id = rule_id .. unit.id .. ","
+  end
+  has_new_rule = has_new_rule or new_rule
+
+  if rule_id ~= "" and new_rule and not past_rules[rule_id] and not undoing then
+    -- actually i dont know how rule stacking works ehehe
+    local r1, subject_conds = getPastConds(rules.subject.conds or {})
+    local r2, object_conds = getPastConds(rules.object.conds or {})
+    if r1 or r2 then
+      local new_rule = {rule = deepCopy(rules), units = {}, dir = 1}
+      new_rule.rule.subject.conds = subject_conds
+      new_rule.rule.object.conds = object_conds
+      past_rules[rule_id] = {turn = current_move, rule = new_rule}
+      change_past = true
+    end
   end
   
   for _,unit in ipairs(units) do
@@ -546,13 +692,26 @@ function addRule(full_rule)
       if hasProperty(unit, "rong") then
         for __,unit2 in ipairs(units) do
           unit2.blocked = true
-          unit2.blocked_dir = dir
+          unit2.blocked_dir = full_rule.dirs and full_rule.dirs[unit2] or dir
         end
         rules_with = temp
         return
       end
       rules_with = temp
     end
+  end
+
+  --"x be sans" plays a megalovania jingle! but only if x is in the level.
+  local play_sans_sound = false
+  if new_rule then
+    if verb == "be" and object == "sans" and units_by_name[subject] then
+      play_sans_sound = true
+    end
+  end
+  
+  -- play the x be sans jingle!
+  if play_sans_sound then
+    playSound("babbolovania")
   end
   
   while subject:ends("n't") do subject, subject_not = subject:sub(1, -4), subject_not + 1 end
@@ -562,6 +721,28 @@ function addRule(full_rule)
 
   if verb_not > 0 then
     verb = rules.verb.name:sub(1, -4)
+  end
+
+  --add used_as values for sprite transformations
+  if rules.subject.unit and not rules.subject.unit.used_as["object"] then
+    table.insert(rules.subject.unit.used_as, "object")
+  end
+
+  if rules.verb.unit and not rules.verb.unit.used_as["verb"] then
+    table.insert(rules.verb.unit.used_as, "verb")
+  end
+
+  if rules.object.unit then
+    local property = false
+    local tile_id = tiles_by_name["text_" .. verb]
+    if tile_id and tiles_list[tile_id].texttype and tiles_list[tile_id].texttype.verb_property then
+      property = true
+    end
+    if property and not rules.object.unit.used_as["property"] then
+      table.insert(rules.object.unit.used_as, "property")
+    elseif not property and not rules.object.unit.used_as["object"] then
+      table.insert(rules.object.unit.used_as, "object")
+    end
   end
   
   --Special THIS check - if we write this be this or this ben't this, it should work like the tautology/paradox it does for other objects, even though they are TECHNICALLY different thises.
@@ -685,7 +866,7 @@ function addRule(full_rule)
   end
 
   if verb_not > 0 then
-    if (verb == "be") and (subject == object or (subject:starts("text_") and object == "text")) then
+    if (verb == "be") and (object == "notranform" or subject == object or (subject:starts("text_") and object == "text")) then
       verb_not = verb_not + 1
     end
     if not not_rules[verb_not] then
@@ -697,7 +878,7 @@ function addRule(full_rule)
 
     -- for specifically checking NOT rules
     table.insert(full_rules, {rule = {subject = rules.subject, verb = {name = verb .. "n't"}, object = rules.object}, units = units, dir = dir})
-  elseif (verb == "be") and (subject == object or (subject:starts("text_") and object == "text")) and subject ~= "lvl" and object ~= "lvl" then
+  elseif (verb == "be") and (subject == object or (subject:starts("text_") and object == "text")) and subject ~= "lvl" and object ~= "lvl" and subject ~= "sans" then
     --print("protecting: " .. subject .. ", " .. object)
     addRuleSimple(rules.subject, {"be"}, {"notranform", rules.object.conds}, units, dir)
   elseif object == "notranform" or (subject == "lvl" and object == "lvl") then -- no "n't" here, but still blocks other rules so we need to count it
@@ -741,7 +922,7 @@ function postRules()
         local specialmatch = 0
         if rule.verb.name == "be" and rule.object.name == "notranform" then -- "bab be bab" should cross out "bab be keek"
           specialmatch = 1
-        elseif rule.verb.name == "ben't" and rule.object.name == rule.subject.name then -- "bab be n't bab" should cross out "bab be bab" (bab be notranform)
+        elseif rule.verb.name == "ben't" and rule.object.name == rule.subject.name or rule.object.name == "notranform" then -- "bab be n't bab" and 'bab be n't notranform' should cross out "bab be bab" (bab be notranform)
           specialmatch = 2
         end
 
@@ -760,7 +941,6 @@ function postRules()
               (specialmatch == 1 and (tiles_by_name[frule.object.name] or frule.object.name == "mous" or frule.object.name == "text" or frule.object.name == "every1")) or -- possibly more special cases needed
               (specialmatch == 2 and frule.object.name == "notranform")
             ) then
-              -- print("matching rule", rule[1][1], rule[2], rule[3][1])
               if has_conds then
                 --print(fullDump(rule), fullDump(frule))
                 for _,cond in ipairs(inverse_conds[1]) do
@@ -784,7 +964,7 @@ function postRules()
           for _,blocked in ipairs(blocked_rules) do
             for _,unit in ipairs(blocked.units) do
               unit.blocked = true
-              unit.blocked_dir = blocked.dir
+              unit.blocked_dir = blocked.dirs and blocked.dirs[unit] or blocked.dir
             end
             -- print("blocked:", fullDump(blocked))
             removeFromTable(t, blocked)
@@ -827,6 +1007,13 @@ function postRules()
       table.insert(rules_with[object], rules)
     end
 
+    for _,unit in ipairs(rules.units) do
+      if not rules_with_unit[unit] then
+        rules_with_unit[unit] = {}
+      end
+      table.insert(rules_with_unit[unit], rules)
+    end
+
     mergeTable(all_units, rules.units)
   end
 
@@ -855,6 +1042,7 @@ function shouldReparseRules()
   if shouldReparseRulesIfConditionalRuleExists("?", "ben't", "wurd") then return true end
   if shouldReparseRulesIfConditionalRuleExists("?", "be", "za warudo") then return true end
   if shouldReparseRulesIfConditionalRuleExists("?", "be", "rong") then return true end
+  if shouldReparseRulesIfConditionalRuleExists("?", "be", "slep") then return true end
   if rules_with["poor toll"] then
     if shouldReparseRulesIfConditionalRuleExists("?", "ignor", "?", true) then return true end
   end
@@ -868,6 +1056,11 @@ function populateRulesEffectingNames(r1, r2, r3)
     if (subject:sub(1, 4) ~= "text") then
       rules_effecting_names[subject] = true
     end
+  end
+  
+  --hack for giv - parseRules every turn in case giv rule state changes
+  if hasRule(r1, "giv", r3) then
+    should_parse_rules_at_turn_boundary = true
   end
 end
 
