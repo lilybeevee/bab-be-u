@@ -1880,7 +1880,19 @@ tiles_list = {
     layer = 11,
     rotate = true,
     sing = "s_vitellary",
-    features = { sans = {x=18, y=4, w=2, h=2} },
+    features = {
+      sans = {x=18, y=4, w=2, h=2},
+      
+      which = {x=-3, y=-5},
+      hatt = {x=-2, y=-6},
+      sant = {x=-6,y=-3},
+      bowie = {x=-2,y=-6},
+      cool = {x=-4, y=-7},
+      
+      katany = {x=4,y=-4},
+      knif = {x=9,y=-2},
+      gunne = {x=5,y=-1}
+    },
     tags = {"devs", "chars", "vitellary", "vvvvvv"},
     desc = "larry be haetflor",
   },
