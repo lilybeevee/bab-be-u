@@ -936,9 +936,10 @@ function postRules()
               fverb = fverb .. "n't"
             end
             -- print("frule:", fullDump(frule))
+            print(frule.object.name)
             if (frule.subject.name == rule.subject.name or (rule.subject.name == "text" and frule.subject.name:starts("text_"))) and fverb == rule.verb.name and (
               (specialmatch == 0 and frule.object.name == rule.object.name and frule.object.name ~= "her" and frule.object.name ~= "thr" and frule.object.name ~= "rit here") or
-              (specialmatch == 1 and (tiles_by_name[frule.object.name] or frule.object.name == "mous" or frule.object.name == "text" or frule.object.name == "every1")) or -- possibly more special cases needed
+              (specialmatch == 1 and frule.object.type.object and not group_names_set[frule.object.name]) or -- possibly more special cases needed
               (specialmatch == 2 and frule.object.name == "notranform")
             ) then
               if has_conds then
