@@ -3451,7 +3451,6 @@ function getUnitColors(unit, index, override_)
         return unit.colored[i]
       end
     end
-    print(dump(colors))
     return colors
   else
     return colors
@@ -3511,7 +3510,6 @@ function matchesColor(a, b, exact)
         return false -- I don't want to deal with this right now
       end
     end
-    print(a, b)
     return a == b
   end
 end
