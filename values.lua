@@ -522,7 +522,7 @@ tiles_list = {
     layer = 20,
     alias = {"ampersand"},
     tags = {"and"},
-    desc = "&: Joins multiple conditions, subjects or objects together in a rule. Rules with stacked text and &s don't work like in baba, be sure to experiment!",
+    desc = "&: Joins multiple conditions, subjects or objects together in a rule. Can also be spelled as ampersand with letters. Rules with stacked text and &s don't work like in baba, be sure to experiment!",
   },
   -- 18
   {
@@ -657,7 +657,7 @@ tiles_list = {
     color = {255, 255, 255},
     layer = 20,
     tags = {"trans"},
-    desc = "TRANZ: Causes the unit to appear pink, white and baby blue. GAY objects are pinc, whit, and cyeann, and not any other colors.",
+    desc = "TRANZ: Causes the unit to appear pink, white and baby blue. TRANZ objects are pinc, whit, and cyeann, and not any other colors.",
   },
   --30
   {
@@ -3355,7 +3355,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
     tags = {"9", "0", "brackets"},
-    desc = "Used for :( and :). Rotation matters!"
+    desc = "Used for :(, :), and :O. Rotation matters!"
   },
   -- 270
   {
@@ -3365,7 +3365,7 @@ tiles_list = {
     texttype = {letter = true},
     color = {0,3},
     layer = 20,
-    desc = "Used for n't and \"."
+    desc = "Used for n't, y'all, and ''."
   },
   -- 271
   {
@@ -4833,7 +4833,7 @@ tiles_list = {
     texttype = {property = true},
     color = {255, 255, 255},
     layer = 20,
-    desc = "ENBY: Causes the unit to appear yellow, white, purple and black.",
+    desc = "ENBY: Causes the unit to appear yellow, white, purple and black. ENBY objects are yello, whit, purp, and blacc, and not any other colors.",
   },
   -- 403
   {
@@ -6340,7 +6340,7 @@ tiles_list = {
     color = {2,2},
     layer = 20,
     tags = {"no transform"},
-    desc = "NO TRANFORM: A property that prevents the object from transforming. LVL BE NO TRANFORM reverts any transformations it had.",
+    desc = "NO TRANFORM: A property that prevents the object from transforming. LVL BE NO TRANFORM reverts any transformations it had. X BEN'T NOTRANFORM negates X BE X. Also negates TRANZ.",
   },
   -- 538
   {
@@ -6997,7 +6997,7 @@ tiles_list = {
     texttype = {cond_prefix = true},
     color = {3, 3},
     layer = 20,
-    desc = "PAST (Prefix Condition): Applies the rule to turns that have already happened.",
+    desc = "PAST (Prefix Condition): Applies the rule to turns that have already happened. (It's about as great as it sounds.)",
   },
   --598
   {
@@ -8168,7 +8168,7 @@ tiles_list = {
     layer = 20,
     features = { sans = {x=20, y=8, w=5, h=4} },
     tags = {"cool", "smiley"},
-    desc = "B): At end of turn, if U is on B) and survives, U R COOL!",
+    desc = "B): At end of turn, if U is on B) and survives, U R COOL! (This currently does nothing.)",
   },
   -- 710
   {
@@ -8248,7 +8248,7 @@ tiles_list = {
     layer = 20,
     tags = {"manifold garden", "arrow", "gravity"},
   },
-  -- 718, do we even need to bother with these numbers since they're inaccurate
+  -- 718, do we even need to bother with these numbers since they're inaccurate (the answer is no)
   {
     name = "detox",
     sprite = "detox",
