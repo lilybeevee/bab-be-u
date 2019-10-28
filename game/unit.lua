@@ -2851,6 +2851,9 @@ end
 function deleteUnits(del_units,convert,gone)
   for _,unit in ipairs(del_units) do
     if (not unit.removed_final) then
+      if (unit.color_override ~= nil) then
+        addUndo({"color_override_change", unit.id, unit.color_override})
+      end
       for colour,_ in pairs(main_palette_for_colour) do
         if unit[colour] == true then
           addUndo({"colour_change", unit.id, colour, true})

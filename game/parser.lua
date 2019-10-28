@@ -341,12 +341,12 @@ function findVerbPhrase(words, extra_words_, dir, enclosed, noconds, no_verb_con
       table.insert(objects, found[1])
       words = found[2]
       valid = true
-    elseif verb.type.verb_property and words[1].type.property then
-      table.insert(objects, table.remove(words, 1))
-      valid = true
     elseif verb.type.verb_unit and not noconds and findUnit(copyTable(words), extra_words, dir, enclosed, no_verb_cond) then
       table.insert(objects, found[1])
       words = found[2]
+      valid = true
+    elseif verb.type.verb_property and words[1].type.property then
+      table.insert(objects, table.remove(words, 1))
       valid = true
     elseif verb.type.verb_direction and words[1].type.direction then
       table.insert(objects, table.remove(words, 1))

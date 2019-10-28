@@ -88,8 +88,12 @@ function scene.update(dt)
     scroll.vel = 0
   end
 
-  scrollx = scrollx+75*dt
-  scrolly = scrolly+75*dt
+  if settings["scroll_on"] then
+    scrollx = scrollx+75*dt
+    scrolly = scrolly+75*dt
+  else
+    scrollx, scrolly = 0,0
+  end
 
   oldmousex, oldmousey = love.mouse.getPosition()
 end
@@ -611,7 +615,7 @@ function scene.searchDir(dir, type)
 
   local filtered = filter(dirs, function(file)
     if type == "world" then
-      return love.filesystem.getInfo(dir .. "/" .. file).type == "directory"
+      return love.filesystem.getInfo(dir .. "/" .. file) and love.filesystem.getInfo(dir .. "/" .. file).type == "directory"
     elseif type == "level" then
       return file:ends(".bab")
     end

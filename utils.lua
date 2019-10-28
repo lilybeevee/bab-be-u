@@ -2607,7 +2607,7 @@ function setRainbowModeColor(value, brightness)
 end
 
 function shakeScreen(dur, intensity)
-  if doing_past_turns and not do_past_effects then return end
+  if doing_past_turns and not do_past_effects or not settings["shake_on"] then return end
   shake_dur = dur+shake_dur/4
   shake_intensity = shake_intensity + intensity/2
 end
@@ -2917,6 +2917,9 @@ function extendReplayString(movex, movey, key)
   end
 end
 
+local last_save_file_name = nil
+local last_save_file = nil
+
 function writeSaveFile(value, arg)
   --e.g. writeSaveFile(true, {"levels", "new level", "won"})
   if (unit_tests) then return false end
@@ -2926,10 +2929,20 @@ function writeSaveFile(value, arg)
     filename = "levels"
   end
   filename = "profiles/"..profile.name.."/"..filename..".savebab"
-  if love.filesystem.read(filename) ~= nil then
-    save = json.decode(love.filesystem.read(filename))
+  
+  --cache save file until filename changes
+  if (last_save_file_name ~= filename) then
+    --print("changing in write:", filename, last_save_file_name)
+    last_save_file_name = filename
+      if love.filesystem.read(filename) ~= nil then
+      save = json.decode(love.filesystem.read(filename))
+    end
+    last_save_file = save
+  else
+    save = last_save_file
   end
-    if #arg > 0 then
+  
+  if #arg > 0 then
     local current = save
     for i,category in ipairs(arg) do
       if i == #arg then break end
@@ -2953,9 +2966,19 @@ function readSaveFile(arg)
     filename = "levels"
   end
   filename = "profiles/"..profile.name.."/"..filename..".savebab"
-  if love.filesystem.read(filename) ~= nil then
-    save = json.decode(love.filesystem.read(filename))
+  
+  --cache save file until filename changes
+  if (last_save_file_name ~= filename) then
+    --print("changing in read:", filename, last_save_file_name)
+    last_save_file_name = filename
+      if love.filesystem.read(filename) ~= nil then
+      save = json.decode(love.filesystem.read(filename))
+    end
+    last_save_file = save
+  else
+    save = last_save_file
   end
+  
   local current = save
   for i,key in ipairs(arg) do
     if current[key] == nil then return nil end
@@ -2999,13 +3022,16 @@ function addBaseRule(subject, verb, object, subjcond)
     rule = {
       subject = {
         name = subject,
-        conds = {subjcond}
+        conds = {subjcond},
+        type = tiles_list[tiles_by_name["text_"..subject]].texttype,
       },
       verb = {
-        name = verb
+        name = verb,
+        type = tiles_list[tiles_by_name["text_"..verb]].texttype,
       },
       object = {
-        name = object
+        name = object,
+        type = tiles_list[tiles_by_name["text_"..object]].texttype,
       }
     },
     units = {},
@@ -3021,14 +3047,17 @@ function addRuleSimple(subject, verb, object, units, dir)
     rule = {
       subject = getTableWithDefaults(copyTable(subject), {
         name = subject[1],
-        conds = subject[2]
+        conds = subject[2],
+        type = tiles_list[tiles_by_name["text_"..(subject[1] or subject.name or "")]].texttype,
       }),
       verb = getTableWithDefaults(copyTable(verb), {
-        name = verb[1]
+        name = verb[1],
+        type = tiles_list[tiles_by_name["text_"..(verb[1] or verb.name or "")]].texttype,
       }),
       object = getTableWithDefaults(copyTable(object), {
         name = object[1],
-        conds = object[2]
+        conds = object[2],
+        type = tiles_list[tiles_by_name["text_"..(object[1] or object.name or "")]].texttype,
       })
     },
     units = units,
@@ -3301,21 +3330,28 @@ function getTableWithDefaults(o, default)
 end
 
 function buildOptions()
-  scene.addOption("game_scale", "game scale", {{"auto", "auto"}, {"0.5x", 0.5}, {"1x", 1}, {"1.5x", 1.5}, {"2x", 2}, {"4x", 4}})
-  scene.addOption("music_on", "music", {{"on", true}, {"off", false}})
-  scene.addOption("sfx_on", "sound", {{"on", true}, {"off", false}})
-  scene.addOption("particles_on", "particle effects", {{"on", true}, {"off", false}})
-  scene.addOption("scribble_anim", "animated scribbles", {{"on", true}, {"off", false}})
-  scene.addOption("epileptic", "reduce flashes", {{"on", true}, {"off", false}})
-  scene.addOption("grid_lines", "grid lines", {{"on", true}, {"off", false}})
-  scene.addOption("mouse_lines", "mouse lines", {{"on", true}, {"off", false}})
-  scene.addOption("stopwatch_effect", "stopwatch effect", {{"on", true}, {"off", false}})
-  scene.addOption("fullscreen", "screen mode", {{"windowed", false}, {"fullscreen", true}}, function() fullScreen() end)
-  scene.addOption("focus_pause", "pause on defocus", {{"on", true}, {"off", false}})
-  if scene == menu then
-    scene.addOption("themes", "menu themes", {{"on", true}, {"off", false}})
+  if not display then
+    scene.addOption("music_on", "music", {{"on", true}, {"off", false}})
+    scene.addOption("sfx_on", "sound", {{"on", true}, {"off", false}})
+    scene.addButton("video options", function() display = true; scene.buildUI() end)
+    scene.addButton("back", function() options = false; scene.buildUI() end)
+  else
+    scene.addOption("game_scale", "game scale", {{"auto", "auto"}, {"0.5x", 0.5}, {"1x", 1}, {"1.5x", 1.5}, {"2x", 2}, {"4x", 4}})
+    scene.addOption("particles_on", "particle effects", {{"on", true}, {"off", false}})
+    scene.addOption("shake_on", "shakes", {{"on", true}, {"off", false}})
+    scene.addOption("scribble_anim", "animated scribbles", {{"on", true}, {"off", false}})
+    scene.addOption("epileptic", "reduce flashes", {{"on", true}, {"off", false}})
+    scene.addOption("grid_lines", "grid lines", {{"on", true}, {"off", false}})
+    scene.addOption("mouse_lines", "mouse lines", {{"on", true}, {"off", false}})
+    scene.addOption("stopwatch_effect", "stopwatch effect", {{"on", true}, {"off", false}})
+    scene.addOption("fullscreen", "screen mode", {{"windowed", false}, {"fullscreen", true}}, function() fullScreen() end)
+    scene.addOption("focus_pause", "pause on defocus", {{"on", true}, {"off", false}})
+    if scene == menu then
+      scene.addOption("scroll_on", "menu background scroll", {{"on", true}, {"off", false}})
+      scene.addOption("themes", "menu themes", {{"on", true}, {"off", false}})
+    end
+    scene.addButton("back", function() display = false; scene.buildUI() end)
   end
-  scene.addButton("back", function() options = false; scene.buildUI() end)
 end
 
 function split(inputstr, sep)
@@ -3415,10 +3451,10 @@ function getUnitColors(unit, index, override_)
   elseif override then
     colors = copyTable(colors)
     for i,_ in ipairs(colors) do
-      if not unit.colored or unit.colored[index] == true then
+      if not unit.colored or unit.colored[i] == true then
         return override
-      elseif type(unit.colored[index]) == "table" and eq(override, colors[index]) then
-        return unit.colored[index]
+      elseif type(unit.colored[i]) == "table" and eq(override, colors[i]) then
+        return unit.colored[i]
       end
     end
     return colors
