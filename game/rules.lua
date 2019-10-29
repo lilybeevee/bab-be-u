@@ -230,22 +230,22 @@ function parseRules(undoing)
   loop_rules = 0
   changed_reparsing_rule = true
   
-  local reparse_rule_counts = 
-  {
-    #matchesRule(nil, nil, "wurd"),
-    #matchesRule(nil, nil, "poor toll"),
-    --TODO: We care about text, specific text and wurd units - this can't be easily specified to matchesRule.
-    #matchesRule(nil, nil, "go arnd"),
-    #matchesRule(nil, nil, "mirr arnd"),
-    #matchesRule(nil, nil, "ortho"),
-    #matchesRule(nil, nil, "diag"),
-    #matchesRule(nil, "ben't", "wurd"),
-    #matchesRule(nil, nil, "za warudo"),
-    #matchesRule(nil, nil, "rong"),
-    #matchesRule(nil, nil, "slep"),
-    --If and only if poor tolls exist, flyeness changing can affect rules parsing, because the text and portal have to match flyeness to go through.
-    rules_with["poor toll"] and #matchesRule(nil, "ignor", nil) or 0,
-  }
+  --TODO: This works in non-contrived examples, but isn't necessarily robust - for example, if after reparsing, you add one word rule while subtracting another word rule, it'll think nothing has changed. The only way to be ABSOLUTELY robust is to compare that the exact set of parsing effecting rules hasn't changed.
+  local function reparseRuleCounts()
+    local props_table = {"wurd", "poor toll", "go arnd", "mirr arnd", "ortho", "diag", "za warudo", "rong", "slep"}
+    local verbs_table = {"be", "giv"}
+    local result = {}
+    for _,prop in ipairs(props_table) do
+      for __,verb in ipairs(verbs_table) do
+        table.insert(result, #matchesRule(nil, verb, prop));
+      end
+    end
+    --Text/wurds ignoring a poor toll could cause parsing to change.
+    table.insert(result, rules_with["poor toll"] and #matchesRule(nil, "ignor", nil) or 0);
+    return result;
+  end
+  
+  local reparse_rule_counts = reparseRuleCounts();
   
   while (changed_reparsing_rule) do
     changed_reparsing_rule = false
@@ -384,25 +384,7 @@ function parseRules(undoing)
     
     postRules()
     
-    --TODO: This works in non-contrived examples, but isn't necessarily robust - for example, if after reparsing, you add one word rule while subtracting another word rule, it'll think nothing has changed. The only way to be ABSOLUTELY robust is to compare that the exact set of parsing effecting rules hasn't changed.
-    local reparse_rule_counts_new = 
-    {
-    #matchesRule(nil, nil, "wurd"),
-    #matchesRule(nil, nil, "poor toll"),
-    --TODO: We care about text, specific text and wurd units - this can't be easily specified to matchesRule.
-    #matchesRule(nil, nil, "go arnd"),
-    #matchesRule(nil, nil, "mirr arnd"),
-    #matchesRule(nil, nil, "ortho"),
-    #matchesRule(nil, nil, "diag"),
-    #matchesRule(nil, "ben't", "wurd"),
-    #matchesRule(nil, nil, "za warudo"),
-    #matchesRule(nil, nil, "rong"),
-    #matchesRule(nil, nil, "slep"),
-    #matchesRule(outerlvl, nil, "go arnd"),
-    #matchesRule(outerlvl, nil, "mirr arnd"),
-    --If and only if poor tolls exist, flyeness changing can affect rules parsing, because the text and portal have to match flyeness to go through.
-    rules_with["poor toll"] and #matchesRule(nil, "ignor", nil) or 0,
-    }
+    local reparse_rule_counts_new = reparseRuleCounts();
     
     for i = 1,#reparse_rule_counts do
       if reparse_rule_counts[i] ~= reparse_rule_counts_new[i] then
