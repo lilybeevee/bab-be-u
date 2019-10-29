@@ -2101,8 +2101,9 @@ tiles_list = {
     texttype = {property = true},
     color = {0,3},
     layer = 20,
+    alias = {"nxt"},
     tags = {"next", "face"},
-    desc = "NXT: If U is on NXT, go to the next level (specified in object settings)."
+    desc = ":>: If U is on :>, go to the next level (specified in object settings)."
   },
   -- 160
   {
@@ -2166,6 +2167,7 @@ tiles_list = {
     texttype = {property = true},
     color = {3, 3},
     layer = 20,
+    alias = {"try again"},
     tags = {"retry", "time", "face", "reset", "lily"},
     desc = ":/: When U is on :/, the level is undone back to the starting state, except for NO UNDO objects. :/ can be undone!"
   },

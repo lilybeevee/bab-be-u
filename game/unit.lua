@@ -992,12 +992,12 @@ function updateUnits(undoing, big_update)
       end
     end
     
-    local isreset = getUnitsWithEffect("try again")
+    local isreset = getUnitsWithEffect(":/")
     for _,unit in ipairs(isreset) do
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
       for _,on in ipairs(stuff) do
-        if hasU(on) and sameFloat(unit, on) and ignoreCheck(on, unit, "try again") then
-          if timecheck(unit,"be","try again") and (timecheckUs(on)) then
+        if hasU(on) and sameFloat(unit, on) and ignoreCheck(on, unit, ":/") then
+          if timecheck(unit,"be",":/") and (timecheckUs(on)) then
             will_undo = true
             break
           else
@@ -2131,10 +2131,10 @@ function levelBlock()
   to_destroy = handleDels(to_destroy)
   
   local will_undo = false
-  if hasProperty(outerlvl, "try again") then
+  if hasProperty(outerlvl, ":/") then
     local yous = getUs()
     for _,unit in ipairs(yous) do
-      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) and ignoreCheck(unit,outerlvl,"try again") then
+      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) and ignoreCheck(unit,outerlvl,":/") then
         doTryAgain()
       end
     end
@@ -2180,8 +2180,8 @@ function levelBlock()
     end
   end
   
-  if hasProperty(outerlvl, "nxt") then
-		table.insert(win_sprite_override,tiles_list[tiles_by_name["text_nxt"]]);
+  if hasProperty(outerlvl, ":>") then
+		table.insert(win_sprite_override,tiles_list[tiles_by_name["text_:>"]]);
     doWin("nxt")
   end
   
@@ -2264,7 +2264,7 @@ function destroyLevel(reason)
   end
   
   if reason == "infloop" then
-    if hasProperty("loop","try again") then
+    if hasProperty("loop",":/") then
       doTryAgain()
       level_destroyed = false
     elseif hasProperty("loop","xwx") then
