@@ -3018,20 +3018,22 @@ function getMapEntry()
 end
 
 function addBaseRule(subject, verb, object, subjcond)
+  local subjectname = subject:starts("this") and "this" or "text_"..subject
+  local objectname = object:starts("this") and "this" or "text_"..object
   addRule({
     rule = {
       subject = {
         name = subject,
         conds = {subjcond},
-        type = tiles_list[tiles_by_name["text_"..subject] or tiles_by_name[subject]].texttype,
+        type = tiles_list[tiles_by_name[subjectname] or 2].texttype or {},
       },
       verb = {
         name = verb,
-        type = tiles_list[tiles_by_name["text_"..verb] or tiles_by_name[verb]].texttype,
+        type = tiles_list[tiles_by_name["text_"..verb] or 2].texttype or {},
       },
       object = {
         name = object,
-        type = tiles_list[tiles_by_name["text_"..object] or tiles_by_name[object]].texttype,
+        type = tiles_list[tiles_by_name[objectname] or 2].texttype or {},
       }
     },
     units = {},
@@ -3043,21 +3045,25 @@ end
 function addRuleSimple(subject, verb, object, units, dir)
   -- print(subject.name, verb.name, object.name)
   -- print(subject, verb, object)
+  local subjectname = subject[1] or subject.name or ""
+  subjectname = subjectname:starts("this") and "this" or "text_"..subjectname
+  local objectname = object[1] or object.name or ""
+  objectname = objectname:starts("this") and "this" or "text_"..objectname
   addRule({
     rule = {
       subject = getTableWithDefaults(copyTable(subject), {
         name = subject[1],
         conds = subject[2],
-        type = tiles_list[tiles_by_name["text_"..(subject[1] or subject.name or "")]].texttype,
+        type = tiles_list[tiles_by_name[subjectname] or 2].texttype or {},
       }),
       verb = getTableWithDefaults(copyTable(verb), {
         name = verb[1],
-        type = tiles_list[tiles_by_name["text_"..(verb[1] or verb.name or "")]].texttype,
+        type = tiles_list[tiles_by_name["text_"..(verb[1] or verb.name or "")] or 2].texttype or {},
       }),
       object = getTableWithDefaults(copyTable(object), {
         name = object[1],
         conds = object[2],
-        type = tiles_list[tiles_by_name["text_"..(object[1] or object.name or "")]].texttype,
+        type = tiles_list[tiles_by_name[objectname] or 2].texttype or {},
       })
     },
     units = units,
