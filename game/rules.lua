@@ -240,6 +240,8 @@ function parseRules(undoing)
         table.insert(result, #matchesRule(nil, verb, prop));
       end
     end
+    --Text that ben't wurd is a special case.
+    table.insert(result, #matchesRule(nil, "ben't", "wurd"));
     --Text/wurds ignoring a poor toll could cause parsing to change.
     table.insert(result, rules_with["poor toll"] and #matchesRule(nil, "ignor", nil) or 0);
     return result;
