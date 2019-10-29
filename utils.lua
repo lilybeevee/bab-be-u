@@ -3022,13 +3022,16 @@ function addBaseRule(subject, verb, object, subjcond)
     rule = {
       subject = {
         name = subject,
-        conds = {subjcond}
+        conds = {subjcond},
+        type = tiles_list[tiles_by_name["text_"..subject]].texttype,
       },
       verb = {
-        name = verb
+        name = verb,
+        type = tiles_list[tiles_by_name["text_"..verb]].texttype,
       },
       object = {
-        name = object
+        name = object,
+        type = tiles_list[tiles_by_name["text_"..object]].texttype,
       }
     },
     units = {},
@@ -3044,14 +3047,17 @@ function addRuleSimple(subject, verb, object, units, dir)
     rule = {
       subject = getTableWithDefaults(copyTable(subject), {
         name = subject[1],
-        conds = subject[2]
+        conds = subject[2],
+        type = tiles_list[tiles_by_name["text_"..(subject[1] or subject.name or "")]].texttype,
       }),
       verb = getTableWithDefaults(copyTable(verb), {
-        name = verb[1]
+        name = verb[1],
+        type = tiles_list[tiles_by_name["text_"..(verb[1] or verb.name or "")]].texttype,
       }),
       object = getTableWithDefaults(copyTable(object), {
         name = object[1],
-        conds = object[2]
+        conds = object[2],
+        type = tiles_list[tiles_by_name["text_"..(object[1] or object.name or "")]].texttype,
       })
     },
     units = units,
@@ -3341,7 +3347,7 @@ function buildOptions()
     scene.addOption("fullscreen", "screen mode", {{"windowed", false}, {"fullscreen", true}}, function() fullScreen() end)
     scene.addOption("focus_pause", "pause on defocus", {{"on", true}, {"off", false}})
     if scene == menu then
-      scene.addOption("scroll_on", "background scrolling", {{"on", true}, {"off", false}})
+      scene.addOption("scroll_on", "menu background scroll", {{"on", true}, {"off", false}})
       scene.addOption("themes", "menu themes", {{"on", true}, {"off", false}})
     end
     scene.addButton("back", function() display = false; scene.buildUI() end)
@@ -3451,7 +3457,6 @@ function getUnitColors(unit, index, override_)
         return unit.colored[i]
       end
     end
-    print(dump(colors))
     return colors
   else
     return colors
@@ -3511,7 +3516,6 @@ function matchesColor(a, b, exact)
         return false -- I don't want to deal with this right now
       end
     end
-    print(a, b)
     return a == b
   end
 end

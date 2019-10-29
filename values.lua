@@ -265,7 +265,7 @@ selector_grid_contents = {
     "ghost fren","text_ghost fren","fishe","text_fishe","starrfishe","text_starrfishe","pidgin","text_pidgin",0,0,0,0,0,0,0,0,"text_gang","text_no1",
     "robobot","text_robobot","snek","text_snek","sneel","text_sneel","swan","text_swan",0,0,0,0,0,0,0,0,0,0,
     "wog","text_wog","bog","text_bog","enbybog","text_enbybog","spoder","text_spoder",0,0,0,0,0,0,0,0,0,0,
-    "kirb","text_kirb","ripof","text_ripof","cavebab","text_cavebab","detox","text_detox",0,0,0,0,0,0,0,0,0,0,
+    "kirb","text_kirb","ripof","text_ripof","cavebab","text_cavebab","detox","text_detox","nyowo","text_nyowo",0,0,0,0,0,0,0,0,
     "bup","text_bup","butflye","text_butflye","boooo","text_boooo",0,0,0,0,0,0,0,0,0,0,0,0,
     "boy","text_boy","wurm","text_wurm","madi","text_madi","angle","text_angle",0,0,0,0,0,0,"lila","text_lila","tot","text_tot",
     "steev","text_steev","ratt","text_ratt","badi","text_badi","debil","text_debil",0,0,0,0,0,0,"pata","text_pata","jill","text_jill",
@@ -546,7 +546,7 @@ tiles_list = {
     layer = 20,
     alias = {"ampersand"},
     tags = {"and"},
-    desc = "&: Joins multiple conditions, subjects or objects together in a rule. Rules with stacked text and &s don't work like in baba, be sure to experiment!",
+    desc = "&: Joins multiple conditions, subjects or objects together in a rule. Can also be spelled as ampersand with letters. Rules with stacked text and &s don't work like in baba, be sure to experiment!",
   },
   -- 18
   {
@@ -681,7 +681,7 @@ tiles_list = {
     color = {255, 255, 255},
     layer = 20,
     tags = {"trans"},
-    desc = "TRANZ: Causes the unit to appear pink, white and baby blue. GAY objects are pinc, whit, and cyeann, and not any other colors.",
+    desc = "TRANZ: Causes the unit to appear pink, white and baby blue. TRANZ objects are pinc, whit, and cyeann, and not any other colors.",
   },
   -- 30
   {
@@ -3399,7 +3399,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
     tags = {"9", "0", "brackets"},
-    desc = "Used for :( and :). Rotation matters!"
+    desc = "Used for :(, :), and :O. Rotation matters!"
   },
   -- 281
   {
@@ -3409,7 +3409,7 @@ tiles_list = {
     texttype = {letter = true},
     color = {0,3},
     layer = 20,
-    desc = "Used for n't and \"."
+    desc = "Used for n't, y'all, and ''."
   },
   -- 282
   {
@@ -4876,7 +4876,7 @@ tiles_list = {
     texttype = {property = true},
     color = {255, 255, 255},
     layer = 20,
-    desc = "ENBY: Causes the unit to appear yellow, white, purple and black.",
+    desc = "ENBY: Causes the unit to appear yellow, white, purple and black. ENBY objects are yello, whit, purp, and blacc, and not any other colors.",
   },
   -- 425
   {
@@ -6383,7 +6383,7 @@ tiles_list = {
     color = {2,2},
     layer = 20,
     tags = {"no transform"},
-    desc = "NO TRANFORM: A property that prevents the object from transforming. LVL BE NO TRANFORM reverts any transformations it had.",
+    desc = "NO TRANFORM: A property that prevents the object from transforming. LVL BE NO TRANFORM reverts any transformations it had. X BEN'T NOTRANFORM negates X BE X. Also negates TRANZ.",
   },
   -- 566
   {
@@ -7040,7 +7040,7 @@ tiles_list = {
     texttype = {cond_prefix = true},
     color = {3, 3},
     layer = 20,
-    desc = "PAST (Prefix Condition): Applies the rule to turns that have already happened.",
+    desc = "PAST (Prefix Condition): Applies the rule to turns that have already happened. (It's about as great as it sounds.)",
   },
   -- 627
   {
@@ -8216,7 +8216,7 @@ tiles_list = {
     layer = 20,
     features = { sans = {x=20, y=8, w=5, h=4} },
     tags = {"cool", "smiley"},
-    desc = "B): At end of turn, if U is on B) and survives, U R COOL!",
+    desc = "B): At end of turn, if U is on B) and survives, U R COOL! (This currently does nothing.)",
   },
   -- 730
   {
@@ -8406,6 +8406,30 @@ tiles_list = {
     layer = 20,
     tags = {"chars", "uksrt", "shame", "virus"},
     desc = "virus waifu",
+  },
+  -- 747
+  {
+    name = "nyowo",
+    sprite = {"nyowo","nyowo_face"},
+    type = "object",
+    color = {{2,4},{0,3}},
+    colored = {true,false},
+    features = {
+      sans = {x=23,y=13,w=3,h=6},
+    },
+    layer = 10,
+    tags = {"nya","jill"},
+    desc = "crying",
+  },
+  -- 748
+  {
+    name = "text_nyowo",
+    sprite = "text_nyowo",
+    type = "text",
+    texttype = {object = true},
+    color = {2,4},
+    layer = 20,
+    tags = {"nya","jill"},
   },
 }
 
