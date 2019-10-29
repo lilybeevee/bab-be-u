@@ -252,7 +252,7 @@ selector_grid_contents = {
     "ui_a","ui_s","ui_d",0,0,0,"ui_j","ui_k","ui_l",0,0,0,0,0,0,"ui_4","ui_5","ui_6",
     "ui_z",0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ui_1","ui_2","ui_3",
     0,0,0,0,"ui_space",0,0,0,0,0,0,0,0,0,0,"ui_arrow","ui_0",0,
-    "text_press","text_f1","text_play","text_f2","text_edit","ui_left click","ui_right click",0,0,0,0,0,0,0,0,0,0,0,
+    "text_press","text_f1","text_play","text_f2","text_edit","ui_left click","ui_right click",0,0,0,0,0,0,0,0,0,0,"ui_box",
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,"ui_walk",0,0,"ui_reset",0,0,"ui_undo",0,0,"ui_wait",0,0,"ui_activat",0,0,"ui_clik",0,0,0,0,
   },
@@ -326,7 +326,7 @@ selector_grid_contents = {
     "text_left","text_direction","text_right",0,0,0,0,0,0,0,0,0,0,0,0,"text_blacc","text_gay","text_grun",
     "text_downleft","text_down","text_downright",0,0,"text_:/","text_no undo","text_undo","text_za warudo","text_brite",0,0,0,0,0,"text_graey","text_qt","text_cyeann",
     "text_every1","text_every2","text_every3","text_lethers",0,"text_poor toll","text_go arnd","text_mirr arnd","text_glued","text_torc",0,0,0,0,0,"text_whit","text_pinc","text_bleu",
-    "text_...","text_''",0,0,0,"text_her","text_thr","text_rithere","text_the","text_tranparnt",0,0,0,0,"text_stelth","text_colrful","text_rave","text_purp",
+    "text_...","text_''","prop","text_prop",0,"text_her","text_thr","text_rithere","text_the","text_tranparnt",0,0,0,0,"text_stelth","text_colrful","text_rave","text_purp",
   },
 }
 tile_grid_width = 18
@@ -8432,6 +8432,38 @@ tiles_list = {
     color = {2,4},
     layer = 20,
     tags = {"nya","jill"},
+  },
+  -- 749
+  {
+    name = "prop",
+    sprite = "prop",
+    type = "text",
+    texttype = {property = true},
+    color = {0,3},
+    layer = 19,
+    tags = {"property","square","box"},
+    desc = "it's an empty property object",
+  },
+  -- 750
+  {
+    name = "text_prop",
+    sprite = "text_prop",
+    type = "text",
+    texttype = {object = true},
+    color = {0,3},
+    layer = 20,
+    tags = {"property","square","box"},
+    desc = "it refers to the empty property object",
+  },
+  -- 751
+  {
+    name = "ui_box",
+    sprite = "ui_box",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+    tags = {"square"},
+    desc = "Empty.",
   },
 }
 
