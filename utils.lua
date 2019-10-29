@@ -3023,15 +3023,15 @@ function addBaseRule(subject, verb, object, subjcond)
       subject = {
         name = subject,
         conds = {subjcond},
-        type = tiles_list[tiles_by_name["text_"..subject]].texttype,
+        type = tiles_list[tiles_by_name["text_"..subject] or tiles_by_name[subject]].texttype,
       },
       verb = {
         name = verb,
-        type = tiles_list[tiles_by_name["text_"..verb]].texttype,
+        type = tiles_list[tiles_by_name["text_"..verb] or tiles_by_name[verb]].texttype,
       },
       object = {
         name = object,
-        type = tiles_list[tiles_by_name["text_"..object]].texttype,
+        type = tiles_list[tiles_by_name["text_"..object] or tiles_by_name[object]].texttype,
       }
     },
     units = {},
