@@ -231,7 +231,7 @@ function scene.update(dt)
   scene.doPassiveParticles(dt, ":o", "bonus", 0.5, 0.8, 1, {4, 1})
   scene.doPassiveParticles(dt, "qt", "love", 0.25, 0.5, 1, {4, 2})
   scene.doPassiveParticles(dt, "slep", "slep", 1, 0.33, 1, {0, 3})
-  scene.doPassiveParticles(dt, "try again", "bonus", 0.25, 0.25, 1, {3, 3})
+  scene.doPassiveParticles(dt, ":/", "bonus", 0.25, 0.25, 1, {3, 3})
   scene.doPassiveParticles(dt, "no undo", "bonus", 0.25, 0.25, 1, {5, 3})
   scene.doPassiveParticles(dt, "undo", "bonus", 0.25, 0.25, 1, {6, 1})
   scene.doPassiveParticles(dt, "brite", "bonus", 0.25, 0.25, 1, {2, 4})
@@ -2350,13 +2350,13 @@ function doOneMove(x, y, key, past)
     if hasRule("press","f2",":)") then
       doWin("won")
     end
-    if hasRule("press","f2","try again") then
+    if hasRule("press","f2",":/") then
       doTryAgain()
     end
     if hasRule("press","f2","xwx") then
       love = {}
     end
-    if hasRule("press","f2","nxt") then
+    if hasRule("press","f2",":>") then
       doWin("nxt")
     end
 
