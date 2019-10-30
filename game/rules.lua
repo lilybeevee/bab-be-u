@@ -244,6 +244,8 @@ function parseRules(undoing)
     table.insert(result, #matchesRule(nil, "ben't", "wurd"));
     --Text/wurds ignoring a poor toll could cause parsing to change.
     table.insert(result, rules_with["poor toll"] and #matchesRule(nil, "ignor", nil) or 0);
+    --RP can cause a parse effecting rule to be RP'd. (TODO: For mysterious reasons, this doesn't work with wurd.)
+     table.insert(result, #matchesRule(nil, "rp", "?"));
     return result;
   end
   

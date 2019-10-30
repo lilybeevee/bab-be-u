@@ -252,7 +252,7 @@ selector_grid_contents = {
     "ui_a","ui_s","ui_d",0,0,0,"ui_j","ui_k","ui_l",0,0,0,0,0,0,"ui_4","ui_5","ui_6",
     "ui_z",0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ui_1","ui_2","ui_3",
     0,0,0,0,"ui_space",0,0,0,0,0,0,0,0,0,0,"ui_arrow","ui_0",0,
-    "text_press","text_f1","text_play","text_f2","text_edit","ui_left click","ui_right click",0,0,0,0,0,0,0,0,0,0,0,
+    "text_press","text_f1","text_play","text_f2","text_edit","ui_left click","ui_right click",0,0,0,0,0,0,0,0,0,0,"ui_box",
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,"ui_walk",0,0,"ui_reset",0,0,"ui_undo",0,0,"ui_wait",0,0,"ui_activat",0,0,"ui_clik",0,0,0,0,
   },
@@ -270,8 +270,8 @@ selector_grid_contents = {
     "boy","text_boy","wurm","text_wurm","madi","text_madi","angle","text_angle",0,0,0,0,0,0,"lila","text_lila","tot","text_tot",
     "steev","text_steev","ratt","text_ratt","badi","text_badi","debil","text_debil",0,0,0,0,0,0,"pata","text_pata","jill","text_jill",
     "han","text_han","iy","text_iy","lisp","text_lisp","paw","text_paw",0,0,0,0,0,0,"larry","text_larry","zsoob","text_zsoob",
-    "snoman","text_snoman","pingu","text_pingu","der","text_der","ginn","text_ginn",0,0,0,0,0,0,0,0,"o","text_o",
-    "kapa","text_kapa","urei","text_urei","ryugon","text_ryugon","sham","text_sham",0,0,0,0,0,0,0,0,0,0,
+    "snoman","text_snoman","pingu","text_pingu","der","text_der","ginn","text_ginn",0,0,0,0,0,0,"slab","text_slab","o","text_o",
+    "kapa","text_kapa","urei","text_urei","ryugon","text_ryugon","sham","text_sham",0,0,0,0,0,0,"notnat","text_notnat","butcher","text_butcher",
     "os","text_os","hors","text_hors","mimi","text_mimi","err","text_err",0,0,0,0,0,0,0,0,0,0,
   },
   -- page 5: inanimate objects
@@ -326,7 +326,7 @@ selector_grid_contents = {
     "text_left","text_direction","text_right",0,0,0,0,0,0,0,0,0,0,0,0,"text_blacc","text_gay","text_grun",
     "text_downleft","text_down","text_downright",0,0,"text_:/","text_no undo","text_undo","text_za warudo","text_brite",0,0,0,0,0,"text_graey","text_qt","text_cyeann",
     "text_every1","text_every2","text_every3","text_lethers",0,"text_poor toll","text_go arnd","text_mirr arnd","text_glued","text_torc",0,0,0,0,0,"text_whit","text_pinc","text_bleu",
-    "text_...","text_''",0,0,0,"text_her","text_thr","text_rithere","text_the","text_tranparnt",0,0,0,0,"text_stelth","text_colrful","text_rave","text_purp",
+    "text_...","text_''","prop","text_prop",0,"text_her","text_thr","text_rithere","text_the","text_tranparnt",0,0,0,0,"text_stelth","text_colrful","text_rave","text_purp",
   },
 }
 tile_grid_width = 18
@@ -2103,6 +2103,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
     alias = {"nxt"},
+    features = { sans = {x=19, y=5, w=3, h=4} },
     tags = {"next", "face"},
     desc = ":>: If U is on :>, go to the next level (specified in object settings)."
   },
@@ -2169,6 +2170,7 @@ tiles_list = {
     color = {3, 3},
     layer = 20,
     alias = {"try again"},
+    features = { sans = {x=21, y=6, w=3, h=4} },
     tags = {"retry", "time", "face", "reset", "lily"},
     desc = ":/: When U is on :/, the level is undone back to the starting state, except for NO UNDO objects. :/ can be undone!"
   },
@@ -8434,7 +8436,115 @@ tiles_list = {
     layer = 20,
     tags = {"nya","jill"},
   },
+  -- 749
+  {
+    name = "prop",
+    sprite = "prop",
+    type = "text",
+    texttype = {property = true},
+    color = {0,3},
+    layer = 19,
+    tags = {"property","square","box"},
+    desc = "it's an empty property object",
+  },
+  -- 750
+  {
+    name = "text_prop",
+    sprite = "text_prop",
+    type = "text",
+    texttype = {object = true},
+    color = {0,3},
+    layer = 20,
+    tags = {"property","square","box"},
+    desc = "it refers to the empty property object",
+  },
+  -- 751
+  {
+    name = "ui_box",
+    sprite = "ui_box",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+    tags = {"square"},
+    desc = "Empty.",
+  },
+  -- 752
+  {
+    name = "slab",
+    sprite = "slab",
+    type = "object",
+    color = {{1,4},{0,3}},
+    colored = {true,false},
+    features = {
+      sans = {x=17,y=13,w=1,h=2},
+    },
+    layer = 20,
+    tags = {"devs", "chars"},
+    desc = "omg its a beautiful buttered fly",
+  },
+  -- 753
+  {
+    name = "text_slab",
+    sprite = "text_slab",
+    type = "text",
+    texttype = {object = true},
+    color = {1,4},
+    layer = 20,
+    tags = {"devs", "chars"},
+  },
+  -- 754
+  {
+    name = "butcher",
+    sprite = "butcher",
+    type = "object",
+    color = {{1,2},{0,3}},
+    colored = {true,false},
+    features = {
+      sans = {x=23,y=13,w=3,h=3},
+    },
+    rotate = true,
+    layer = 20,
+    tags = {"devs", "chars"},
+    desc = "slice slice make a fruit salad",
+  },
+  -- 755
+  {
+    name = "text_butcher",
+    sprite = "text_butcher",
+    type = "text",
+    texttype = {object = true},
+    color = {1,2},
+    layer = 20,
+    tags = {"devs", "chars"},
+  },
+  -- 756
+  {
+    name = "notnat",
+    sprite = {"notnat","notnat_secondary","notnat_tertiary"},
+    type = "object",
+    color = {{1,3},{0,0},{2,4}},
+    colored = {false,true,true},
+    features = {
+      sans = {x=25,y=12,w=2,h=2},
+    },
+    rotate = true,
+    layer = 20,
+    tags = {"devs", "chars"},
+    desc = "this is just another pokemon??? what a ripoff",
+  },
+  -- 757
+  {
+    name = "text_notnat",
+    sprite = "text_notnat",
+    type = "text",
+    texttype = {object = true},
+    color = {1,3},
+    layer = 20,
+    tags = {"devs", "chars"},
+  },
 }
+
+
 
 tiles_by_name = {}
 group_names = {}
