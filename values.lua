@@ -270,8 +270,8 @@ selector_grid_contents = {
     "boy","text_boy","wurm","text_wurm","madi","text_madi","angle","text_angle",0,0,0,0,0,0,"lila","text_lila","tot","text_tot",
     "steev","text_steev","ratt","text_ratt","badi","text_badi","debil","text_debil",0,0,0,0,0,0,"pata","text_pata","jill","text_jill",
     "han","text_han","iy","text_iy","lisp","text_lisp","paw","text_paw",0,0,0,0,0,0,"larry","text_larry","zsoob","text_zsoob",
-    "snoman","text_snoman","pingu","text_pingu","der","text_der","ginn","text_ginn",0,0,0,0,0,0,0,0,"o","text_o",
-    "kapa","text_kapa","urei","text_urei","ryugon","text_ryugon","sham","text_sham",0,0,0,0,0,0,0,0,0,0,
+    "snoman","text_snoman","pingu","text_pingu","der","text_der","ginn","text_ginn",0,0,0,0,0,0,"slab","text_slab","o","text_o",
+    "kapa","text_kapa","urei","text_urei","ryugon","text_ryugon","sham","text_sham",0,0,0,0,0,0,"notnat","text_notnat","butcher","text_butcher",
     "os","text_os","hors","text_hors","mimi","text_mimi","err","text_err",0,0,0,0,0,0,0,0,0,0,
   },
   -- page 5: inanimate objects
@@ -2102,6 +2102,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
     alias = {"nxt"},
+    features = { sans = {x=19, y=5, w=3, h=4} },
     tags = {"next", "face"},
     desc = ":>: If U is on :>, go to the next level (specified in object settings)."
   },
@@ -2168,6 +2169,7 @@ tiles_list = {
     color = {3, 3},
     layer = 20,
     alias = {"try again"},
+    features = { sans = {x=21, y=6, w=3, h=4} },
     tags = {"retry", "time", "face", "reset", "lily"},
     desc = ":/: When U is on :/, the level is undone back to the starting state, except for NO UNDO objects. :/ can be undone!"
   },
@@ -8465,7 +8467,83 @@ tiles_list = {
     tags = {"square"},
     desc = "Empty.",
   },
+  -- 752
+  {
+    name = "slab",
+    sprite = "slab",
+    type = "object",
+    color = {{1,4},{0,3}},
+    colored = {true,false},
+    features = {
+      sans = {x=17,y=13,w=1,h=2},
+    },
+    layer = 20,
+    tags = {"devs", "chars"},
+    desc = "omg its a beautiful buttered fly",
+  },
+  -- 753
+  {
+    name = "text_slab",
+    sprite = "text_slab",
+    type = "text",
+    texttype = {object = true},
+    color = {1,4},
+    layer = 20,
+    tags = {"devs", "chars"},
+  },
+  -- 754
+  {
+    name = "butcher",
+    sprite = "butcher",
+    type = "object",
+    color = {{1,2},{0,3}},
+    colored = {true,false},
+    features = {
+      sans = {x=23,y=13,w=3,h=3},
+    },
+    rotate = true,
+    layer = 20,
+    tags = {"devs", "chars"},
+    desc = "slice slice make a fruit salad",
+  },
+  -- 755
+  {
+    name = "text_butcher",
+    sprite = "text_butcher",
+    type = "text",
+    texttype = {object = true},
+    color = {1,2},
+    layer = 20,
+    tags = {"devs", "chars"},
+  },
+  -- 756
+  {
+    name = "notnat",
+    sprite = {"notnat","notnat_secondary","notnat_tertiary"},
+    type = "object",
+    color = {{1,3},{0,0},{2,4}},
+    colored = {false,true,true},
+    features = {
+      sans = {x=25,y=12,w=2,h=2},
+    },
+    rotate = true,
+    layer = 20,
+    tags = {"devs", "chars"},
+    desc = "this is just another pokemon??? what a ripoff",
+  },
+  -- 757
+  {
+    name = "text_notnat",
+    sprite = "text_notnat",
+    type = "text",
+    texttype = {object = true},
+    color = {1,3},
+    layer = 20,
+    tags = {"devs", "chars"},
+  },
 }
+
+
 
 tiles_by_name = {}
 group_names = {}
