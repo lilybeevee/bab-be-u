@@ -464,6 +464,14 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
           if prevletter.name == ":" and prevunit.dir == dir then
             name = ":("
           end
+        elseif letter.name == "/" then
+          if prevletter.name == ":" and prevunit.dir == dir then
+            name = ":/"
+          end
+        elseif letter.name == ">" then
+          if prevletter.name == ":" and prevunit.dir == dir then
+            name = ":>"
+          end
         end
         
         if name ~= ":" then

@@ -3332,6 +3332,14 @@ function updateNameBasedOnDir(unit)
     else
       unit.textname = "no"
     end
+  elseif unit.fullname == "letter_>" then
+    if unit.rotatdir == 5 then
+      unit.textname = "<"
+    elseif unit.rotatdir == 3 then
+      unit.textname = "v"
+    else
+      unit.textname = ">"
+    end
   end
 end
 
