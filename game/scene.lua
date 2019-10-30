@@ -667,7 +667,7 @@ function scene.getTransform()
   transform:scale(scale, scale)
   transform:translate(scaledwidth / 2 - roomwidth / 2, scaledheight / 2 - roomheight / 2)
 
-  if shake_dur > 0 and not hasProperty(outerlvl, "cool") then
+  if shake_dur > 0 and not outerlvl.cool then
     local range = 1
     transform:translate(math.random(-range, range), math.random(-range, range))
   end
@@ -959,7 +959,7 @@ function scene.draw(dt)
     end
 
     local function getOffset()
-      if hasProperty(unit,"cool") or not settings["shake_on"] then return 0,0 end
+      if unit.cool or not settings["shake_on"] then return 0,0 end
       if rules_with["temmi"] then
         local do_vibrate = false
         if unit.fullname == "temmi" then
@@ -1286,7 +1286,9 @@ function scene.draw(dt)
       end
     end
     
-    if hasProperty(unit,"cool") then
+    if hasProperty(unit,"cool") then unit.cool = true end
+    if hasRule(unit,"ben't","cool") then unit.cool = false end
+    if unit.cool then
       local o = getTableWithDefaults(unit.features.cool, {x=0, y=0, sprite="shades"})
       local shake_x, shake_y = getOffset()
       love.graphics.setColor(getPaletteColor(0,3))

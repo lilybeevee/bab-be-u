@@ -907,6 +907,18 @@ function updateUnits(undoing, big_update)
     
     to_destroy = handleDels(to_destroy)
     
+    local iscool = getUnitsWithEffect("B)")
+    for _,unit in ipairs(iscool) do
+      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
+      for _,on in ipairs(stuff) do
+        if hasU(on) and sameFloat(unit, on) and ignoreCheck(on, unit, "B)") then
+          if timecheck(unit,"be","B)") and (timecheckUs(on)) then
+            on.cool = true
+          end
+        end
+      end
+    end
+    
     local isdefeat = getUnitsWithEffect(":(")
     for _,unit in ipairs(isdefeat) do
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
@@ -2181,6 +2193,15 @@ function levelBlock()
   if hasProperty(outerlvl, ":>") then
 		table.insert(win_sprite_override,tiles_list[tiles_by_name["text_:>"]]);
     doWin("nxt")
+  end
+  
+  if hasProperty(outerlvl, "B)") then
+    local yous = getUs()
+    for _,unit in ipairs(yous) do
+      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) and ignoreCheck(unit,outerlvl,"B)") then
+        unit.cool = true
+      end
+    end
   end
   
   return wins,unwins
