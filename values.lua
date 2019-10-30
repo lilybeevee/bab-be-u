@@ -8519,12 +8519,11 @@ tiles_list = {
   -- 756
   {
     name = "notnat",
-    sprite = {"notnat","notnat_secondary","notnat_tertiary"},
+    sprite = "notnat",
     type = "object",
-    color = {{1,3},{0,0},{2,4}},
-    colored = {false,true,true},
+    color = {1,4},
     features = {
-      sans = {x=25,y=12,w=2,h=2},
+      sans = {x=26,y=10,w=2,h=2},
     },
     rotate = true,
     layer = 20,
@@ -8537,7 +8536,7 @@ tiles_list = {
     sprite = "text_notnat",
     type = "text",
     texttype = {object = true},
-    color = {1,3},
+    color = {1,4},
     layer = 20,
     tags = {"devs", "chars"},
   },
