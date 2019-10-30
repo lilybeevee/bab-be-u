@@ -345,6 +345,7 @@ layer list:
 9: bg characters (skul)
 10: characters that take a lot of area (boooo, lila)
 11: rest of characters
+19: fake text (prop)
 20: text
 21: text that is slightly bigger than other text (thicc, rithere)
 22: fg objects (jail)
