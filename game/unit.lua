@@ -1265,31 +1265,29 @@ end
 function miscUpdates()
   updateGraphicalPropertyCache()
   
-  if units_by_name["os"] then
-    for i,unit in ipairs(units_by_name["os"]) do
-      local os = love.system.getOS()
-      if os == "Windows" then
-        unit.sprite = "os_windous"
-      elseif os == "OS X" or os == "iOS" then
-        unit.sprite = "os_mak"
-      elseif os == "Linux" then
-        unit.sprite = "os_linx"
-      elseif os == "Android" then
-        unit.sprite = "os_androd"
-      else
-        unit.sprite = "wat"
-      end
-      if unit.sprite ~= "wat" and graphical_property_cache["slep"][unit] ~= nil then
-        unit.sprite = unit.sprite .. "_slep"
-      end
-    end
-  end
-  
   for i,unit in ipairs(units) do
     if not deleted and not unit.removed_final then
       local tile = tiles_list[unit.tile]
       unit.layer = tile.layer + (20 * (graphical_property_cache["flye"][unit] or 0))
       unit.sprite = deepCopy(tiles_list[unit.tile].sprite)
+      
+      if unit.fullname == "os" then
+        local os = love.system.getOS()
+        if os == "Windows" then
+          unit.sprite = "os_windous"
+        elseif os == "OS X" or os == "iOS" then
+          unit.sprite = "os_mak"
+        elseif os == "Linux" then
+          unit.sprite = "os_linx"
+        elseif os == "Android" then
+          unit.sprite = "os_androd"
+        else
+          unit.sprite = "wat"
+        end
+        if unit.sprite ~= "wat" and graphical_property_cache["slep"][unit] ~= nil then
+          unit.sprite = unit.sprite .. "_slep"
+        end
+      end
       
       if unit.fullname == "boooo" then
         if hasProperty(unit,"shy...") then
