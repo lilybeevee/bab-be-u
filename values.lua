@@ -266,7 +266,7 @@ selector_grid_contents = {
     "robobot","text_robobot","snek","text_snek","sneel","text_sneel","swan","text_swan",0,0,0,0,0,0,0,0,0,0,
     "wog","text_wog","bog","text_bog","enbybog","text_enbybog","spoder","text_spoder",0,0,0,0,0,0,0,0,0,0,
     "kirb","text_kirb","ripof","text_ripof","cavebab","text_cavebab","detox","text_detox","nyowo","text_nyowo",0,0,0,0,0,0,0,0,
-    "bup","text_bup","butflye","text_butflye","boooo","text_boooo",0,0,0,0,0,0,0,0,0,0,0,0,
+    "bup","text_bup","butflye","text_butflye","boooo","text_boooo","prime","text_prime","grimkid","text_grimkid",0,0,0,0,0,0,0,0,
     "boy","text_boy","wurm","text_wurm","madi","text_madi","angle","text_angle",0,0,0,0,0,0,"lila","text_lila","tot","text_tot",
     "steev","text_steev","ratt","text_ratt","badi","text_badi","debil","text_debil",0,0,0,0,0,0,"pata","text_pata","jill","text_jill",
     "han","text_han","iy","text_iy","lisp","text_lisp","paw","text_paw",0,0,0,0,0,0,"larry","text_larry","zsoob","text_zsoob",
@@ -295,9 +295,9 @@ selector_grid_contents = {
   -- page 6: more inanimate objects
   {
     "gato","text_gato","fube","text_fube","tronk","text_tronk",0,0,0,0,0,0,0,0,0,0,0,0,
+    "colect","text_colect",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    "whee","text_whee","joycon","text_joycon",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -8542,6 +8542,8 @@ tiles_list = {
     tags = {"devs", "chars"},
   },
   -- lots of UI time im not counting
+  -- lazy jill >:(
+  -- 758
   {
     name = "ui_q",
     sprite = "ui_q",
@@ -8549,6 +8551,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
+  -- 759
   {
     name = "ui_t",
     sprite = "ui_t",
@@ -8556,6 +8559,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
+  -- 760
   {
     name = "ui_y",
     sprite = "ui_y",
@@ -8563,6 +8567,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
+  -- 761
   {
     name = "ui_u",
     sprite = "ui_u",
@@ -8570,6 +8575,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
+  -- 762
   {
     name = "ui_o",
     sprite = "ui_o",
@@ -8577,6 +8583,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
+  -- 763
   {
     name = "ui_p",
     sprite = "ui_p",
@@ -8584,6 +8591,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
+  -- 764
   {
     name = "ui_f",
     sprite = "ui_f",
@@ -8591,6 +8599,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
+  -- 765
   {
     name = "ui_g",
     sprite = "ui_g",
@@ -8598,6 +8607,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
+  -- 766
   {
     name = "ui_h",
     sprite = "ui_h",
@@ -8605,6 +8615,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
+  -- 767
   {
     name = "ui_;",
     sprite = "ui_;",
@@ -8612,6 +8623,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
+  -- 768
   {
     name = "ui_'",
     sprite = "ui_'",
@@ -8619,6 +8631,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
+  -- 769
   {
     name = "ui_return",
     sprite = "ui_return",
@@ -8626,6 +8639,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
+  -- 770
   {
     name = "ui_x",
     sprite = "ui_x",
@@ -8633,6 +8647,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
+  -- 771
   {
     name = "ui_c",
     sprite = "ui_c",
@@ -8640,6 +8655,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
+  -- 772
   {
     name = "ui_v",
     sprite = "ui_v",
@@ -8647,6 +8663,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
+  -- 773
   {
     name = "ui_b",
     sprite = "ui_b",
@@ -8654,6 +8671,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
+  -- 774
   {
     name = "ui_n",
     sprite = "ui_n",
@@ -8661,6 +8679,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
+  -- 775
   {
     name = "ui_m",
     sprite = "ui_m",
@@ -8668,6 +8687,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
+  -- 776
   {
     name = "ui_,",
     sprite = "ui_,",
@@ -8675,13 +8695,16 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
+  -- 777
   {
     name = "ui_.",
     sprite = "ui_.",
     type = "object",
     color = {0,3},
     layer = 20,
+    lucky = true,
   },
+  -- 778
   {
     name = "ui_/",
     sprite = "ui_slash",
@@ -8689,6 +8712,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
+  -- 779
   {
     name = "ui_-",
     sprite = "ui_-",
@@ -8696,6 +8720,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
+  -- 780
   {
     name = "ui_=",
     sprite = "ui_=",
@@ -8703,6 +8728,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
+  -- 781
   {
     name = "ui_`",
     sprite = "ui_`",
@@ -8710,7 +8736,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
-  -- ???
+  -- 782
   {
     name = "letter_>",
     sprite = "letter_angle",
@@ -8719,9 +8745,107 @@ tiles_list = {
     color = {0,3},
     layer = 20,
   },
+  -- 783
+  {
+    name = "grimkid",
+    sprite = {"grimkid_body","grimkid"},
+    colored = {true,false},
+    color = {{2,1},{0,3}},
+    features = {
+      sans = {x=21,y=13,w=2,h=2},
+    },
+    type = "object",
+    layer = 11,
+    desc = "complet rituel pls",
+  },
+  -- 784
+  {
+    name = "text_grimkid",
+    sprite = "text_grimkid",
+    color = {2,2},
+    type = "text",
+    texttype = {object = true},
+    layer = 20,
+  },
+  -- 785
+  {
+    name = "colect",
+    sprite = "colect",
+    color = {0,2},
+    type = "object",
+    layer = 22,
+    desc = "to hold bugs",
+  },
+  -- 786
+  {
+    name = "text_colect",
+    sprite = "text_colect",
+    color = {0,3},
+    type = "text",
+    texttype = {object = true},
+    layer = 20,
+  },
+  -- 787
+  {
+    name = "prime",
+    sprite = "prime",
+    color = {2,3},
+    features = {
+      sans = {x=11,y=17,w=2,h=2},
+    },
+    type = "object",
+    layer = 10,
+    desc = "prime numbers SUCK",
+  },
+  -- 788
+  {
+    name = "text_prime",
+    sprite = "text_prime",
+    color = {2,3},
+    type = "text",
+    texttype = {object = true},
+    layer = 20,
+  },
+  -- 789
+  {
+    name = "whee",
+    sprite = "whee",
+    rotate = true,
+    color = {0,3},
+    type = "object",
+    layer = 8,
+    desc = "the nostalgia console",
+  },
+  -- 790
+  {
+    name = "text_whee",
+    sprite = "text_whee",
+    color = {0,3},
+    type = "text",
+    texttype = {object = true},
+    layer = 20,
+  },
+  -- 791
+  {
+    name = "joycon",
+    sprite = "joycon",
+    rotate = true,
+    color = {2,2},
+    type = "object",
+    layer = 7,
+    desc = "where's its partner? you gotta find it!",
+  },
+  -- 792
+  {
+    name = "text_joycon",
+    sprite = {"text_joycon_l","text_joycon_r"},
+    color = {{1,3},{2,2}},
+    colored = {true,false},
+    type = "text",
+    texttype = {object = true},
+    layer = 20,
+  },
 }
-
-
 
 tiles_by_name = {}
 group_names = {}
