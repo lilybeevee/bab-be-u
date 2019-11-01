@@ -268,7 +268,7 @@ selector_grid_contents = {
     "kirb","text_kirb","ripof","text_ripof","cavebab","text_cavebab","detox","text_detox","nyowo","text_nyowo",0,0,0,0,0,0,0,0,
     "bup","text_bup","butflye","text_butflye","boooo","text_boooo","prime","text_prime","grimkid","text_grimkid",0,0,0,0,0,0,0,0,
     "boy","text_boy","wurm","text_wurm","madi","text_madi","angle","text_angle",0,0,0,0,0,0,"lila","text_lila","tot","text_tot",
-    "steev","text_steev","ratt","text_ratt","badi","text_badi","debil","text_debil",0,0,0,0,0,0,"pata","text_pata","jill","text_jill",
+    "steev","text_steev","ratt","text_ratt","badi","text_badi","debil","text_debil","assh","text_assh",0,0,0,0,"pata","text_pata","jill","text_jill",
     "han","text_han","iy","text_iy","lisp","text_lisp","paw","text_paw",0,0,0,0,0,0,"larry","text_larry","zsoob","text_zsoob",
     "snoman","text_snoman","pingu","text_pingu","der","text_der","ginn","text_ginn",0,0,0,0,0,0,"slab","text_slab","o","text_o",
     "kapa","text_kapa","urei","text_urei","ryugon","text_ryugon","sham","text_sham",0,0,0,0,0,0,"notnat","text_notnat","butcher","text_butcher",
@@ -294,7 +294,7 @@ selector_grid_contents = {
   },
   -- page 6: more inanimate objects
   {
-    "gato","text_gato","fube","text_fube","tronk","text_tronk",0,0,0,0,0,0,0,0,0,0,0,0,
+    "gato","text_gato","fube","text_fube","tronk","text_tronk","cart","text_cart",0,0,0,0,0,0,0,0,0,0,
     "colect","text_colect",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     "whee","text_whee","joycon","text_joycon",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -8921,6 +8921,48 @@ tiles_list = {
     layer = 20,
     tags = {"caps lock"},
     desc = "There is no ESC",
+  },
+  -- 802
+  {
+    name = "cart",
+    sprite = "cart",
+    type = "object",
+    color = {0,2},
+    layer = 20,
+    tags = {"cart"},
+    desc = "like casette but from an objectively better game",
+  },
+  -- 803
+  {
+    name = "text_cart",
+    sprite = "text_cart",
+    type = "text",
+    texttype = {object = true},
+    color = {0,2},
+    layer = 20,
+    tags = {"cart"},
+  },
+  -- 804
+  {
+    name = "assh",
+    sprite = "assh",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+    rotate = true,
+    tags = {"ash"},
+    desc = "he can grab on ledges",
+  },
+  -- 805
+  {
+    name = "text_assh",
+    sprite = "text_assh",
+    type = "text",
+    texttype = {object = true},
+    color = {0,1},
+    layer = 20,
+    tags = {"ash"},
+    desc = "no bad words here mister vitellary",
   },
 }
 
