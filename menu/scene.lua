@@ -221,9 +221,11 @@ function scene.draw(dt)
   else
     local img = sprites["ui/bab cog"]
     if getTheme() == "halloween" then
-        img = sprites["ui/bab cog_halloween"]
+      img = sprites["ui/bab cog_halloween"]
+    elseif getTheme() == "christmas" then
+      img = sprites["ui/bab cog_christmas"]
     else
-        img = sprites["ui/bab cog"]
+      img = sprites["ui/bab cog"]
     end
     local txt = sprites["ui/many toggls"]
     
