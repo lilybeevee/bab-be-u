@@ -119,7 +119,7 @@ bab arguments!
 
   searchbab()
   
-  if not babfound or cmdargs["spook"] or os.date("%m-%d") == "10-31" and os.date("%H") >= "22" then
+  if not babfound or cmdargs["spook"] or os.date("%m-%d") == "10-31" and os.date("%H") >= "22" or os.date("%H:%M") == "3:00" then
     spookmode = true
   end
 
@@ -231,7 +231,7 @@ bab arguments!
         if d then
           newdir = d .. "/" .. newdir
         end
-        addsprites(file)
+        addsprites(newdir)
       end
     end
   end
