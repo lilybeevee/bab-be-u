@@ -231,7 +231,7 @@ function scene.update(dt)
   scene.doPassiveParticles(dt, ":o", "bonus", 0.5, 0.8, 1, {4, 1})
   scene.doPassiveParticles(dt, "qt", "love", 0.25, 0.5, 1, {4, 2})
   scene.doPassiveParticles(dt, "slep", "slep", 1, 0.33, 1, {0, 3})
-  scene.doPassiveParticles(dt, "try again", "bonus", 0.25, 0.25, 1, {3, 3})
+  scene.doPassiveParticles(dt, ":/", "bonus", 0.25, 0.25, 1, {3, 3})
   scene.doPassiveParticles(dt, "no undo", "bonus", 0.25, 0.25, 1, {5, 3})
   scene.doPassiveParticles(dt, "undo", "bonus", 0.25, 0.25, 1, {6, 1})
   scene.doPassiveParticles(dt, "brite", "bonus", 0.25, 0.25, 1, {2, 4})
@@ -667,7 +667,7 @@ function scene.getTransform()
   transform:scale(scale, scale)
   transform:translate(scaledwidth / 2 - roomwidth / 2, scaledheight / 2 - roomheight / 2)
 
-  if shake_dur > 0 and not hasProperty(outerlvl, "cool") then
+  if shake_dur > 0 and not outerlvl.cool then
     local range = 1
     transform:translate(math.random(-range, range), math.random(-range, range))
   end
@@ -781,7 +781,7 @@ function scene.draw(dt)
     if unit.name == "no1" and not (draw_empty and validEmpty(unit)) then return end
     
     local brightness = 1
-    if ((unit.type == "text" and not hasRule(unit,"ben't","wurd")) or hasRule(unit,"be","wurd")) and not unit.active and not level_destroyed then
+    if ((unit.type == "text" and not hasRule(unit,"ben't","wurd")) or hasRule(unit,"be","wurd")) and not unit.active and not level_destroyed and not (unit.fullname == "prop") then
       brightness = 0.33
     end
 
@@ -959,7 +959,7 @@ function scene.draw(dt)
     end
 
     local function getOffset()
-      if hasProperty(unit,"cool") or not settings["shake_on"] then return 0,0 end
+      if unit.cool or not settings["shake_on"] then return 0,0 end
       if rules_with["temmi"] then
         local do_vibrate = false
         if unit.fullname == "temmi" then
@@ -1286,7 +1286,9 @@ function scene.draw(dt)
       end
     end
     
-    if hasProperty(unit,"cool") then
+    if hasProperty(unit,"cool") then unit.cool = true end
+    if hasRule(unit,"ben't","cool") then unit.cool = false end
+    if unit.cool then
       local o = getTableWithDefaults(unit.features.cool, {x=0, y=0, sprite="shades"})
       local shake_x, shake_y = getOffset()
       love.graphics.setColor(getPaletteColor(0,3))
@@ -2350,13 +2352,13 @@ function doOneMove(x, y, key, past)
     if hasRule("press","f2",":)") then
       doWin("won")
     end
-    if hasRule("press","f2","try again") then
+    if hasRule("press","f2",":/") then
       doTryAgain()
     end
     if hasRule("press","f2","xwx") then
       love = {}
     end
-    if hasRule("press","f2","nxt") then
+    if hasRule("press","f2",":>") then
       doWin("nxt")
     end
 

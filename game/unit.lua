@@ -907,6 +907,18 @@ function updateUnits(undoing, big_update)
     
     to_destroy = handleDels(to_destroy)
     
+    local iscool = getUnitsWithEffect("B)")
+    for _,unit in ipairs(iscool) do
+      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
+      for _,on in ipairs(stuff) do
+        if hasU(on) and sameFloat(unit, on) and ignoreCheck(on, unit, "B)") then
+          if timecheck(unit,"be","B)") and (timecheckUs(on)) then
+            on.cool = true
+          end
+        end
+      end
+    end
+    
     local isdefeat = getUnitsWithEffect(":(")
     for _,unit in ipairs(isdefeat) do
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
@@ -992,12 +1004,12 @@ function updateUnits(undoing, big_update)
       end
     end
     
-    local isreset = getUnitsWithEffect("try again")
+    local isreset = getUnitsWithEffect(":/")
     for _,unit in ipairs(isreset) do
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
       for _,on in ipairs(stuff) do
-        if hasU(on) and sameFloat(unit, on) and ignoreCheck(on, unit, "try again") then
-          if timecheck(unit,"be","try again") and (timecheckUs(on)) then
+        if hasU(on) and sameFloat(unit, on) and ignoreCheck(on, unit, ":/") then
+          if timecheck(unit,"be",":/") and (timecheckUs(on)) then
             will_undo = true
             break
           else
@@ -1265,31 +1277,48 @@ end
 function miscUpdates()
   updateGraphicalPropertyCache()
   
-  if units_by_name["os"] then
-    for i,unit in ipairs(units_by_name["os"]) do
-      local os = love.system.getOS()
-      if os == "Windows" then
-        unit.sprite = "os_windous"
-      elseif os == "OS X" or os == "iOS" then
-        unit.sprite = "os_mak"
-      elseif os == "Linux" then
-        unit.sprite = "os_linx"
-      elseif os == "Android" then
-        unit.sprite = "os_androd"
-      else
-        unit.sprite = "wat"
-      end
-      if unit.sprite ~= "wat" and graphical_property_cache["slep"][unit] ~= nil then
-        unit.sprite = unit.sprite .. "_slep"
-      end
-    end
-  end
-  
   for i,unit in ipairs(units) do
     if not deleted and not unit.removed_final then
       local tile = tiles_list[unit.tile]
       unit.layer = tile.layer + (20 * (graphical_property_cache["flye"][unit] or 0))
       unit.sprite = deepCopy(tiles_list[unit.tile].sprite)
+      
+      if unit.fullname == "os" then
+        local os = love.system.getOS()
+        if os == "Windows" then
+          unit.sprite = "os_windous"
+        elseif os == "OS X" or os == "iOS" then
+          unit.sprite = "os_mak"
+        elseif os == "Linux" then
+          unit.sprite = "os_linx"
+        elseif os == "Android" then
+          unit.sprite = "os_androd"
+        else
+          unit.sprite = "wat"
+        end
+        if unit.sprite ~= "wat" and graphical_property_cache["slep"][unit] ~= nil then
+          unit.sprite = unit.sprite .. "_slep"
+        end
+      end
+      
+      if unit.fullname == "ui_gui" then
+        local os = love.system.getOS()
+        if os == "Windows" then
+          unit.sprite = "ui_win"
+        elseif os == "OS X" or os == "iOS" then
+          unit.sprite = "ui_cmd"
+        else
+          unit.sprite = "ui_win"
+        end
+      end
+      
+      if unit.fullname == "ui_cap" then
+        if capslock then
+          unit.sprite = "ui_cap_on"
+        else
+          unit.sprite = "ui_cap_off"
+        end
+      end
       
       if unit.fullname == "boooo" then
         if hasProperty(unit,"shy...") then
@@ -2131,10 +2160,10 @@ function levelBlock()
   to_destroy = handleDels(to_destroy)
   
   local will_undo = false
-  if hasProperty(outerlvl, "try again") then
+  if hasProperty(outerlvl, ":/") then
     local yous = getUs()
     for _,unit in ipairs(yous) do
-      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) and ignoreCheck(unit,outerlvl,"try again") then
+      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) and ignoreCheck(unit,outerlvl,":/") then
         doTryAgain()
       end
     end
@@ -2180,9 +2209,18 @@ function levelBlock()
     end
   end
   
-  if hasProperty(outerlvl, "nxt") then
-		table.insert(win_sprite_override,tiles_list[tiles_by_name["text_nxt"]]);
+  if hasProperty(outerlvl, ":>") then
+		table.insert(win_sprite_override,tiles_list[tiles_by_name["text_:>"]]);
     doWin("nxt")
+  end
+  
+  if hasProperty(outerlvl, "B)") then
+    local yous = getUs()
+    for _,unit in ipairs(yous) do
+      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) and ignoreCheck(unit,outerlvl,"B)") then
+        unit.cool = true
+      end
+    end
   end
   
   return wins,unwins
@@ -2264,7 +2302,7 @@ function destroyLevel(reason)
   end
   
   if reason == "infloop" then
-    if hasProperty("loop","try again") then
+    if hasProperty("loop",":/") then
       doTryAgain()
       level_destroyed = false
     elseif hasProperty("loop","xwx") then
@@ -3333,6 +3371,14 @@ function updateNameBasedOnDir(unit)
       unit.textname = "on"
     else
       unit.textname = "no"
+    end
+  elseif unit.fullname == "letter_>" then
+    if unit.rotatdir == 5 then
+      unit.textname = "<"
+    elseif unit.rotatdir == 3 then
+      unit.textname = "v"
+    else
+      unit.textname = ">"
     end
   end
 end

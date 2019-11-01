@@ -221,7 +221,7 @@ custom_letter_quads = {
 selector_grid_contents = {
   -- page 1: default
   {
-    0, "text_be", "text_&", "text_got", "text_n't", "text_every1", "text_no1", "text_text", "text_wurd", "text_txtify", "text_sublvl", "text_wait...", "text_mous", "text_clikt", "text_nxt", "text_stay ther", "lvl", "text_lvl",
+    0, "text_be", "text_&", "text_got", "text_n't", "text_every1", "text_no1", "text_text", "text_wurd", "text_txtify", "text_sublvl", "text_wait...", "text_mous", "text_clikt", "text_:>", "text_stay ther", "lvl", "text_lvl",
     "bab", "text_bab", "text_u", "kee", "text_kee", "text_for dor", "text_goooo", "text_icy", "text_icyyyy", "text_behin u", "text_moar", "text_sans", "text_liek", "text_loop", "lin", "text_lin", "selctr", "text_selctr",
     "keek", "text_keek", "text_walk", "dor", "text_dor", "text_ned kee", "text_frens", "text_pathz", "text_groop", "text_u too", "text_u tres", "text_xwx", "text_haet", "text_mayb", "text_an", "text_that", "text_ignor", "text_...",
     "flog", "text_flog", "text_:)", "colld", "text_colld", "text_fridgd", "text_direction", "text_ouch", "text_slep", "text_protecc", "text_sidekik", "text_brite", "text_lit", "text_tranparnt", "text_torc", "text_vs", "text_nuek", "text_''",
@@ -232,7 +232,7 @@ selector_grid_contents = {
     "boux", "text_boux", "text_come pls", "os", "text_os", "bup", "text_bup", "han", "text_han", "fenss", "text_fenss", 0, 0, "hol", "text_hol", "text_poor toll", "text_blacc", "text_reed",
     "bellt", "text_bellt", "text_go", "tre", "text_tre", "piler", "text_piler", "hatt", "text_hatt", "hedg", "text_hedg", 0, 0, "rif", "text_rif", "text_glued", "text_whit", "text_orang",
     "boll", "text_boll", "text_:o", "frut", "text_frut", "kirb", "text_kirb", "katany", "text_katany", "metl", "text_metl", 0, 0, 0, 0, "text_enby", "text_colrful", "text_yello",
-    "clok", "text_clok", "text_try again", "text_no undo", "text_undo", "slippers", "text_slippers", "firbolt", "text_firbolt", "jail", "text_jail", 0, 0, 0, 0, "text_tranz", "text_rave", "text_grun",
+    "clok", "text_clok", "text_:/", "text_no undo", "text_undo", "slippers", "text_slippers", "firbolt", "text_firbolt", "jail", "text_jail", 0, 0, 0, 0, "text_tranz", "text_rave", "text_grun",
     "splittr", "text_splittr", "text_split", "steev", "text_steev", "boy", "text_boy", "icbolt", "text_icbolt", "platfor", "text_platfor", "chain", "text_chain", 0, 0, "text_gay", "text_stelth", "text_cyeann",
     "chekr", "text_chekr", "text_diag", "text_ortho", "text_haet flor", "arro", "text_arro", "text_go my way", "text_spin", "text_no turn", "text_stubbn", "text_rotatbl", 0, 0, "text_pinc", "text_qt", "text_paint", "text_bleu",
     "clowd", "text_clowd", "text_flye", "text_tall", "text_haet skye", "ghost fren", "text_ghost fren", "robobot", "text_robobot", "sparkl", "text_sparkl", "spik", "text_spik", "spiky", "text_spiky", "bordr", "text_bordr", "text_purp",
@@ -242,18 +242,18 @@ selector_grid_contents = {
   {
     "letter_a","letter_b","letter_c","letter_d","letter_e","letter_f","letter_g","letter_h","letter_i","letter_j","letter_k","letter_l","letter_m","letter_n","letter_o","letter_p","letter_q","letter_r",
     "letter_s","letter_t","letter_u","letter_v","letter_w","letter_x","letter_y","letter_z","letter_.","letter_colon","letter_parenthesis","letter_'","letter_/","letter_1","letter_2","letter_3","letter_4","letter_5",
-    0,0,0,0,0,0,0,0,0,"letter_;",0,0,0,"letter_6","letter_7","letter_8","letter_9","letter_o",
+    0,0,0,0,0,0,0,0,0,"letter_;","letter_>",0,0,"letter_6","letter_7","letter_8","letter_9","letter_o",
 	"letter_go","letter_come","letter_pls","letter_away","letter_my","letter_no","letter_way","letter_ee","letter_fren","letter_ll","letter_bolt","letter_ol",0,0,0,0,0,"text_lethers",
 	"text_c_sharp","text_d_sharp","text_f_sharp","text_g_sharp","text_a_sharp","text_sharp","text_flat",0,0,0,0,0,0,0,0,0,0,0,
   },
   -- page 3: ui / instructions
   {
-    0 ,"ui_w","ui_e","ui_r",0,0,0,"ui_i",0,0,0,0,0,0,0,"ui_7","ui_8","ui_9",
-    "ui_a","ui_s","ui_d",0,0,0,"ui_j","ui_k","ui_l",0,0,0,0,0,0,"ui_4","ui_5","ui_6",
-    "ui_z",0,0,0,0,0,0,0,0,0,0,0,0,0,0,"ui_1","ui_2","ui_3",
-    0,0,0,0,"ui_space",0,0,0,0,0,0,0,0,0,0,"ui_arrow","ui_0",0,
-    "text_press","text_f1","text_play","text_f2","text_edit","ui_left click","ui_right click",0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    "ui_esc",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    "ui_tab","ui_q","ui_w","ui_e","ui_r","ui_t","ui_y","ui_u","ui_i","ui_o","ui_p","ui_[","ui_-","ui_=","ui_`","ui_7","ui_8","ui_9",
+    "ui_cap","ui_a","ui_s","ui_d","ui_f","ui_g","ui_h","ui_j","ui_k","ui_l","ui_;","ui_'","ui_return",0,0,"ui_4","ui_5","ui_6",
+    "ui_shift",0,"ui_z","ui_x","ui_c","ui_v","ui_b","ui_n","ui_m","ui_,","ui_.","ui_/",0,0,0,"ui_1","ui_2","ui_3",
+    "ui_ctrl","ui_gui","ui_alt",0,"ui_space",0,0,0,0,0,0,0,0,0,0,"ui_arrow","ui_0","ui_del",
+    "text_press","text_f1","text_play","text_f2","text_edit","ui_left click","ui_right click",0,0,0,0,0,0,0,0,0,0,"ui_box",
     0,"ui_walk",0,0,"ui_reset",0,0,"ui_undo",0,0,"ui_wait",0,0,"ui_activat",0,0,"ui_clik",0,0,0,0,
   },
   -- page 4: characters and special objects
@@ -266,12 +266,12 @@ selector_grid_contents = {
     "robobot","text_robobot","snek","text_snek","sneel","text_sneel","swan","text_swan",0,0,0,0,0,0,0,0,0,0,
     "wog","text_wog","bog","text_bog","enbybog","text_enbybog","spoder","text_spoder",0,0,0,0,0,0,0,0,0,0,
     "kirb","text_kirb","ripof","text_ripof","cavebab","text_cavebab","detox","text_detox","nyowo","text_nyowo",0,0,0,0,0,0,0,0,
-    "bup","text_bup","butflye","text_butflye","boooo","text_boooo",0,0,0,0,0,0,0,0,0,0,0,0,
+    "bup","text_bup","butflye","text_butflye","boooo","text_boooo","prime","text_prime","grimkid","text_grimkid",0,0,0,0,0,0,0,0,
     "boy","text_boy","wurm","text_wurm","madi","text_madi","angle","text_angle",0,0,0,0,0,0,"lila","text_lila","tot","text_tot",
     "steev","text_steev","ratt","text_ratt","badi","text_badi","debil","text_debil",0,0,0,0,0,0,"pata","text_pata","jill","text_jill",
     "han","text_han","iy","text_iy","lisp","text_lisp","paw","text_paw",0,0,0,0,0,0,"larry","text_larry","zsoob","text_zsoob",
-    "snoman","text_snoman","pingu","text_pingu","der","text_der","ginn","text_ginn",0,0,0,0,0,0,0,0,"o","text_o",
-    "kapa","text_kapa","urei","text_urei","ryugon","text_ryugon","sham","text_sham",0,0,0,0,0,0,0,0,0,0,
+    "snoman","text_snoman","pingu","text_pingu","der","text_der","ginn","text_ginn",0,0,0,0,0,0,"slab","text_slab","o","text_o",
+    "kapa","text_kapa","urei","text_urei","ryugon","text_ryugon","sham","text_sham",0,0,0,0,0,0,"notnat","text_notnat","butcher","text_butcher",
     "os","text_os","hors","text_hors","mimi","text_mimi","err","text_err",0,0,0,0,0,0,0,0,0,0,
   },
   -- page 5: inanimate objects
@@ -295,9 +295,9 @@ selector_grid_contents = {
   -- page 6: more inanimate objects
   {
     "gato","text_gato","fube","text_fube","tronk","text_tronk",0,0,0,0,0,0,0,0,0,0,0,0,
+    "colect","text_colect",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    "whee","text_whee","joycon","text_joycon",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -313,7 +313,7 @@ selector_grid_contents = {
   -- page 7: properties, verbs and conditions
   {
     "text_be","text_&","text_got","text_creat","text_snacc","text_spoop","text_copkat","text_moov","text_yeet","text_liek","text_haet","text_stalk","text_ignor","text_paint","text_vs","text_sing","text_soko","text_look at",
-    "text_u","text_u too","text_u tres","text_y'all","text_walk","text_:)","text_no swim","text_ouch","text_protecc",0,"text_nxt","text_stay ther",0,"text_giv",0,"text_rp",0,"text_look away",
+    "text_u","text_u too","text_u tres","text_y'all","text_walk","text_:)","text_no swim","text_ouch","text_protecc",0,"text_:>","text_stay ther",0,"text_giv",0,"text_rp",0,"text_look away",
     "text_go","text_goooo","text_icy","text_icyyyy",0,"text_:(","text_ned kee","text_for dor","text_wurd",0,"text_sublvl","text_loop","text_oob","text_frenles","text_timles","text_lit","text_corekt","text_rong",
     "text_no go","text_go away pls","text_come pls","text_sidekik","text_diagkik","text_:o","text_hotte","text_fridgd","text_txtify",0,"text_dragbl","text_no drag",0,"text_clikt","text_past","text_wun","text_an","text_mayb",
     "text_visit fren","text_slep","text_shy...","text_behin u",0,"text_xwx","text_moar","text_split","text_thingify",0,"text_rythm",0,0,"text_wait...","text_samefloat","text_samepaint","text_sameface",0,
@@ -324,9 +324,9 @@ selector_grid_contents = {
     "text_spin","text_rotatbl","text_noturn","text_stukc",0,0,0,0,0,0,0,0,0,0,0,0,"text_enby","text_orang",
     "text_upleft","text_up","text_upright","text_big",0,0,0,0,0,0,0,0,0,0,0,"text_brwn","text_tranz","text_yello",
     "text_left","text_direction","text_right",0,0,0,0,0,0,0,0,0,0,0,0,"text_blacc","text_gay","text_grun",
-    "text_downleft","text_down","text_downright",0,0,"text_try again","text_no undo","text_undo","text_za warudo","text_brite",0,0,0,0,0,"text_graey","text_qt","text_cyeann",
+    "text_downleft","text_down","text_downright",0,0,"text_:/","text_no undo","text_undo","text_za warudo","text_brite",0,0,0,0,0,"text_graey","text_qt","text_cyeann",
     "text_every1","text_every2","text_every3","text_lethers",0,"text_poor toll","text_go arnd","text_mirr arnd","text_glued","text_torc",0,0,0,0,0,"text_whit","text_pinc","text_bleu",
-    "text_...","text_''",0,0,0,"text_her","text_thr","text_rithere","text_the","text_tranparnt",0,0,0,0,"text_stelth","text_colrful","text_rave","text_purp",
+    "text_...","text_''","prop","text_prop",0,"text_her","text_thr","text_rithere","text_the","text_tranparnt",0,0,0,0,"text_stelth","text_colrful","text_rave","text_purp",
   },
 }
 tile_grid_width = 18
@@ -345,6 +345,7 @@ layer list:
 9: bg characters (skul)
 10: characters that take a lot of area (boooo, lila)
 11: rest of characters
+19: fake text (prop)
 20: text
 21: text that is slightly bigger than other text (thicc, rithere)
 22: fg objects (jail)
@@ -2095,14 +2096,16 @@ tiles_list = {
   },
   -- 159
   {
-    name = "text_nxt",
+    name = "text_:>",
     sprite = "text_nxt",
     type = "text",
     texttype = {property = true},
     color = {0,3},
     layer = 20,
-    tags = {"next"},
-    desc = "NXT: If U is on NXT, go to the next level (specified in object settings)."
+    alias = {"nxt"},
+    features = { sans = {x=19, y=5, w=3, h=4} },
+    tags = {"next", "nxt", "face"},
+    desc = ":>: If U is on :>, go to the next level (specified in object settings)."
   },
   -- 160
   {
@@ -2160,14 +2163,16 @@ tiles_list = {
   },
   -- 165
   {
-    name = "text_try again",
+    name = "text_:/",
     sprite = "text_try again",
     type = "text",
     texttype = {property = true},
     color = {3, 3},
     layer = 20,
-    tags = {"retry", "time", "reset", "lily"},
-    desc = "TRY AGAIN: When U is on TRY AGAIN, the level is undone back to the starting state, except for NO UNDO objects. TRY AGAIN can be undone!"
+    alias = {"try again"},
+    features = { sans = {x=21, y=6, w=3, h=4} },
+    tags = {"retry", "time", "face", "reset", "lily"},
+    desc = ":/: When U is on :/, the level is undone back to the starting state, except for NO UNDO objects. :/ can be undone!"
   },
   -- 166
   {
@@ -8430,6 +8435,492 @@ tiles_list = {
     color = {2,4},
     layer = 20,
     tags = {"nya","jill"},
+  },
+  -- 749
+  {
+    name = "prop",
+    sprite = "prop",
+    type = "text",
+    texttype = {property = true},
+    color = {0,3},
+    layer = 19,
+    tags = {"property","square","box"},
+    desc = "it's an empty property object",
+  },
+  -- 750
+  {
+    name = "text_prop",
+    sprite = "text_prop",
+    type = "text",
+    texttype = {object = true},
+    color = {0,3},
+    layer = 20,
+    tags = {"property","square","box"},
+    desc = "it refers to the empty property object",
+  },
+  -- 751
+  {
+    name = "ui_box",
+    sprite = "ui_box",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+    tags = {"square"},
+    desc = "Empty.",
+  },
+  -- 752
+  {
+    name = "slab",
+    sprite = "slab",
+    type = "object",
+    color = {{1,4},{0,3}},
+    colored = {true,false},
+    features = {
+      sans = {x=17,y=13,w=1,h=2},
+    },
+    layer = 20,
+    tags = {"devs", "chars"},
+    desc = "omg its a beautiful buttered fly",
+  },
+  -- 753
+  {
+    name = "text_slab",
+    sprite = "text_slab",
+    type = "text",
+    texttype = {object = true},
+    color = {1,4},
+    layer = 20,
+    tags = {"devs", "chars"},
+  },
+  -- 754
+  {
+    name = "butcher",
+    sprite = "butcher",
+    type = "object",
+    color = {{1,2},{0,3}},
+    colored = {true,false},
+    features = {
+      sans = {x=23,y=13,w=3,h=3},
+    },
+    rotate = true,
+    layer = 20,
+    tags = {"devs", "chars"},
+    desc = "slice slice make a fruit salad",
+  },
+  -- 755
+  {
+    name = "text_butcher",
+    sprite = "text_butcher",
+    type = "text",
+    texttype = {object = true},
+    color = {1,2},
+    layer = 20,
+    tags = {"devs", "chars"},
+  },
+  -- 756
+  {
+    name = "notnat",
+    sprite = "notnat",
+    type = "object",
+    color = {1,4},
+    features = {
+      sans = {x=26,y=10,w=2,h=2},
+    },
+    rotate = true,
+    layer = 20,
+    tags = {"devs", "chars"},
+    desc = "this is just another pokemon??? what a ripoff",
+  },
+  -- 757
+  {
+    name = "text_notnat",
+    sprite = "text_notnat",
+    type = "text",
+    texttype = {object = true},
+    color = {1,4},
+    layer = 20,
+    tags = {"devs", "chars"},
+  },
+  -- lots of UI time im not counting
+  -- lazy jill >:(
+  -- 758
+  {
+    name = "ui_q",
+    sprite = "ui_q",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 759
+  {
+    name = "ui_t",
+    sprite = "ui_t",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 760
+  {
+    name = "ui_y",
+    sprite = "ui_y",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 761
+  {
+    name = "ui_u",
+    sprite = "ui_u",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 762
+  {
+    name = "ui_o",
+    sprite = "ui_o",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 763
+  {
+    name = "ui_p",
+    sprite = "ui_p",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 764
+  {
+    name = "ui_f",
+    sprite = "ui_f",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 765
+  {
+    name = "ui_g",
+    sprite = "ui_g",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 766
+  {
+    name = "ui_h",
+    sprite = "ui_h",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 767
+  {
+    name = "ui_;",
+    sprite = "ui_;",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 768
+  {
+    name = "ui_'",
+    sprite = "ui_'",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 769
+  {
+    name = "ui_return",
+    sprite = "ui_return",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 770
+  {
+    name = "ui_x",
+    sprite = "ui_x",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 771
+  {
+    name = "ui_c",
+    sprite = "ui_c",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 772
+  {
+    name = "ui_v",
+    sprite = "ui_v",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 773
+  {
+    name = "ui_b",
+    sprite = "ui_b",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 774
+  {
+    name = "ui_n",
+    sprite = "ui_n",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 775
+  {
+    name = "ui_m",
+    sprite = "ui_m",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 776
+  {
+    name = "ui_,",
+    sprite = "ui_,",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 777
+  {
+    name = "ui_.",
+    sprite = "ui_.",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+    lucky = true,
+  },
+  -- 778
+  {
+    name = "ui_/",
+    sprite = "ui_slash",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 779
+  {
+    name = "ui_-",
+    sprite = "ui_-",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 780
+  {
+    name = "ui_=",
+    sprite = "ui_=",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 781
+  {
+    name = "ui_`",
+    sprite = "ui_`",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 782
+  {
+    name = "letter_>",
+    sprite = "letter_angle",
+    type = "text",
+    texttype = {letter = true},
+    color = {0,3},
+    layer = 20,
+  },
+  -- 783
+  {
+    name = "grimkid",
+    sprite = {"grimkid_body","grimkid"},
+    colored = {true,false},
+    color = {{2,1},{0,3}},
+    features = {
+      sans = {x=21,y=13,w=2,h=2},
+    },
+    type = "object",
+    layer = 11,
+    desc = "complet rituel pls",
+  },
+  -- 784
+  {
+    name = "text_grimkid",
+    sprite = "text_grimkid",
+    color = {2,2},
+    type = "text",
+    texttype = {object = true},
+    layer = 20,
+  },
+  -- 785
+  {
+    name = "colect",
+    sprite = "colect",
+    color = {0,2},
+    type = "object",
+    layer = 22,
+    desc = "to hold bugs",
+  },
+  -- 786
+  {
+    name = "text_colect",
+    sprite = "text_colect",
+    color = {0,3},
+    type = "text",
+    texttype = {object = true},
+    layer = 20,
+  },
+  -- 787
+  {
+    name = "prime",
+    sprite = "prime",
+    color = {2,3},
+    features = {
+      sans = {x=11,y=17,w=2,h=2},
+    },
+    type = "object",
+    layer = 10,
+    desc = "prime numbers SUCK",
+  },
+  -- 788
+  {
+    name = "text_prime",
+    sprite = "text_prime",
+    color = {2,3},
+    type = "text",
+    texttype = {object = true},
+    layer = 20,
+  },
+  -- 789
+  {
+    name = "whee",
+    sprite = "whee",
+    rotate = true,
+    color = {0,3},
+    type = "object",
+    layer = 8,
+    desc = "the nostalgia console",
+  },
+  -- 790
+  {
+    name = "text_whee",
+    sprite = "text_whee",
+    color = {0,3},
+    type = "text",
+    texttype = {object = true},
+    layer = 20,
+  },
+  -- 791
+  {
+    name = "joycon",
+    sprite = "joycon",
+    rotate = true,
+    color = {2,2},
+    type = "object",
+    layer = 7,
+    desc = "where's its partner? you gotta find it!",
+  },
+  -- 792
+  {
+    name = "text_joycon",
+    sprite = {"text_joycon_l","text_joycon_r"},
+    color = {{1,3},{2,2}},
+    colored = {true,false},
+    type = "text",
+    texttype = {object = true},
+    layer = 20,
+  },
+  -- 793
+  {
+    name = "ui_ctrl",
+    sprite = "ui_ctrl",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 794
+  {
+    name = "ui_alt",
+    sprite = "ui_alt",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 795
+  {
+    name = "ui_shift",
+    sprite = "ui_shift",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 796
+  {
+    name = "ui_del",
+    sprite = "ui_del",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 797
+  {
+    name = "ui_[",
+    sprite = "ui_[",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 798
+  {
+    name = "ui_gui",
+    sprite = "ui_gui",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+    tags = {"windows","command","cmd"},
+    desc = "Changes sprites depending on user's Operating System.",
+  },
+  -- 799
+  {
+    name = "ui_tab",
+    sprite = "ui_tab",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 800
+  {
+    name = "ui_cap",
+    sprite = "ui_cap_on",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+    tags = {"caps lock"},
+  },
+  -- 801
+  {
+    name = "ui_esc",
+    sprite = "ui_esc",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+    tags = {"caps lock"},
+    desc = "There is no ESC",
   },
 }
 

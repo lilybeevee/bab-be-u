@@ -110,17 +110,11 @@ function scene.update(dt)
 end
 
 function scene.draw(dt)
-  local bgsprite 
-  if getTheme() == "halloween" then
-    if not settings["epileptic"] and (love.timer.getTime()%10 > 8.6 and love.timer.getTime()%10 < 8.7 or love.timer.getTime()%10 > 8.8 and love.timer.getTime()%10 < 8.9 or love.timer.getTime()%10 > 9)  then
-        bgsprite = sprites["ui/menu_background_halloween_flash"]
-    else
-        bgsprite = sprites["ui/menu_background_halloween"]
-    end
-  elseif getTheme() == "christmas" then
-    bgsprite = sprites["ui/menu_background_christmas"]
-  else
-    bgsprite = sprites["ui/menu_background"]
+  local bgsprite = sprites["ui/bgs/"..getTheme()]
+  if not bgsprite then bgsprite = sprites["ui/bgs/default"] end
+  
+  if not settings["epileptic"] and getTheme() == "halloween" and (love.timer.getTime()%10 > 8.6 and love.timer.getTime()%10 < 8.7 or love.timer.getTime()%10 > 8.8 and love.timer.getTime()%10 < 8.9 or love.timer.getTime()%10 > 9)  then
+    bgsprite = sprites["ui/bgs/halloween_flash"]
   end
 
   local width = love.graphics.getWidth()
@@ -152,15 +146,15 @@ function scene.draw(dt)
   if not options then
     local bab_logo
     if getTheme() == "halloween" then
-        if not settings["epileptic"] and (love.timer.getTime()%10 > 8.7 and love.timer.getTime()%10 < 8.8 or love.timer.getTime()%10 > 8.9 and love.timer.getTime()%10 < 9) then
-            bab_logo = sprites["ui/bab_be_u_halloween_blood"]
-        else
-            bab_logo = sprites["ui/bab_be_u_halloween"]
-        end
+      if not settings["epileptic"] and (love.timer.getTime()%10 > 8.7 and love.timer.getTime()%10 < 8.8 or love.timer.getTime()%10 > 8.9 and love.timer.getTime()%10 < 9) then
+        bab_logo = sprites["ui/bab_be_u_halloween_blood"]
+      else
+        bab_logo = sprites["ui/bab_be_u_halloween"]
+      end
     elseif getTheme() == "christmas" then
-        bab_logo = sprites["ui/bab_be_u_xmas"]
+      bab_logo = sprites["ui/bab_be_u_christmas"]
     else
-        bab_logo = sprites["ui/bab_be_u"]
+      bab_logo = sprites["ui/bab_be_u"]
     end    
         
     for _,pair in pairs({{1,0},{0,1},{1,1},{-1,0},{0,-1},{-1,-1},{1,-1},{-1,1}}) do
@@ -189,17 +183,24 @@ function scene.draw(dt)
     if is_mobile then
       splashtext = "4mobile!"
     elseif getTheme() == "christmas" then
-        splashtext = "merery chrismas!!"
+      love.graphics.setColor(0,1,0)
+      if splash > 0.66 then
+        splashtext = "merery crimsmas!!"
+      elseif splash < 0.33 then
+        splashtext = "happi hollydays!"
+      else
+        splashtext = "happi hunnukkah!!"
+      end
     elseif getTheme() == "halloween" then
-        if not settings["epileptic"] and (love.timer.getTime()%10 > 8.7 and love.timer.getTime()%10 < 8.8 or love.timer.getTime()%10 > 8.9 and love.timer.getTime()%10 < 9) then
-            splashtext = "BAB IS DEAD"
-        elseif love.filesystem.read("author_name") == "lilybeevee" and splash > 0.5 then
-            splashtext = "happy spooky month lily!"
-        else
-            splashtext = "spooky month!"
-        end
+      if not settings["epileptic"] and (love.timer.getTime()%10 > 8.7 and love.timer.getTime()%10 < 8.8 or love.timer.getTime()%10 > 8.9 and love.timer.getTime()%10 < 9) then
+        splashtext = "BAB IS DEAD"
+      elseif love.filesystem.read("author_name") == "lilybeevee" and splash > 0.5 then
+        splashtext = "happy spooky month lily!"
+      else
+        splashtext = "spooky month!"
+      end
     elseif splash > 0.5 then
-        splashtext = "bab be u!"
+      splashtext = "bab be u!"
     else
       splashtext = "splosh txt!"
     end
@@ -221,9 +222,11 @@ function scene.draw(dt)
   else
     local img = sprites["ui/bab cog"]
     if getTheme() == "halloween" then
-        img = sprites["ui/bab cog_halloween"]
+      img = sprites["ui/bab cog_halloween"]
+    elseif getTheme() == "christmas" then
+      img = sprites["ui/bab cog_christmas"]
     else
-        img = sprites["ui/bab cog"]
+      img = sprites["ui/bab cog"]
     end
     local txt = sprites["ui/many toggls"]
     
@@ -250,7 +253,9 @@ function scene.draw(dt)
     local ox, oy = math.floor(math.random()*4)/2-1, math.floor(math.random()*4)/2-1
     if not settings["shake_on"] then ox, oy = 0,0 end
     if getTheme() == "halloween" then
-        love.graphics.setColor(0.5, 0.25, 0.75)
+      love.graphics.setColor(0.5, 0.25, 0.75)
+    elseif getTheme() == "christmas" then
+      love.graphics.setColor(0.9,0.1,0)
     end
     love.graphics.draw(txt, -txt:getWidth()/2 + ox, full_height - txt:getHeight() + oy)
 

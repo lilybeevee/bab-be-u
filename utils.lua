@@ -3018,20 +3018,22 @@ function getMapEntry()
 end
 
 function addBaseRule(subject, verb, object, subjcond)
+  local subjectname = subject:starts("this") and "this" or "text_"..subject
+  local objectname = object:starts("this") and "this" or "text_"..object
   addRule({
     rule = {
       subject = {
         name = subject,
         conds = {subjcond},
-        type = tiles_list[tiles_by_name["text_"..subject]].texttype,
+        type = tiles_list[tiles_by_name[subjectname] or 2].texttype or {},
       },
       verb = {
         name = verb,
-        type = tiles_list[tiles_by_name["text_"..verb]].texttype,
+        type = tiles_list[tiles_by_name["text_"..verb] or 2].texttype or {},
       },
       object = {
         name = object,
-        type = tiles_list[tiles_by_name["text_"..object]].texttype,
+        type = tiles_list[tiles_by_name[objectname] or 2].texttype or {},
       }
     },
     units = {},
@@ -3043,21 +3045,25 @@ end
 function addRuleSimple(subject, verb, object, units, dir)
   -- print(subject.name, verb.name, object.name)
   -- print(subject, verb, object)
+  local subjectname = subject[1] or subject.name or ""
+  subjectname = subjectname:starts("this") and "this" or "text_"..subjectname
+  local objectname = object[1] or object.name or ""
+  objectname = objectname:starts("this") and "this" or "text_"..objectname
   addRule({
     rule = {
       subject = getTableWithDefaults(copyTable(subject), {
         name = subject[1],
         conds = subject[2],
-        type = tiles_list[tiles_by_name["text_"..(subject[1] or subject.name or "")]].texttype,
+        type = tiles_list[tiles_by_name[subjectname] or 2].texttype or {},
       }),
       verb = getTableWithDefaults(copyTable(verb), {
         name = verb[1],
-        type = tiles_list[tiles_by_name["text_"..(verb[1] or verb.name or "")]].texttype,
+        type = tiles_list[tiles_by_name["text_"..(verb[1] or verb.name or "")] or 2].texttype or {},
       }),
       object = getTableWithDefaults(copyTable(object), {
         name = object[1],
         conds = object[2],
-        type = tiles_list[tiles_by_name["text_"..(object[1] or object.name or "")]].texttype,
+        type = tiles_list[tiles_by_name[objectname] or 2].texttype or {},
       })
     },
     units = units,
@@ -3304,21 +3310,20 @@ function jprint(str)
 end
 
 function getTheme()
-  if not settings["themes"] then return nil end
+  if not settings["themes"] then return "default" end
   if cmdargs["theme"] then
-    if cmdargs["theme"] == "" then
-      return nil
-    else
+    if cmdargs["theme"] ~= "" then
       return cmdargs["theme"]
     end
   else
-    if os.date("%m") == "10" then
+    if os.date("%m") == "10" and os.date("%d") == "31" then
       return "halloween"
-    elseif os.date("%m") == "12" then
+    elseif os.date("%m") == "12" and os.date("%d") == "25" then
       return "christmas"
     end
   end
-  return nil
+  local palettes = {"abstract","autumn","cauliflower","cyberpunk","default","edge","factory","garden","mountain","ocean","ruins","snowy","space","swamp","variant","volcano"}
+  return palettes[math.random(1,#palettes)]
 end
 
 function getTableWithDefaults(o, default)
