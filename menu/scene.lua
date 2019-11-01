@@ -110,17 +110,11 @@ function scene.update(dt)
 end
 
 function scene.draw(dt)
-  local bgsprite 
-  if getTheme() == "halloween" then
-    if not settings["epileptic"] and (love.timer.getTime()%10 > 8.6 and love.timer.getTime()%10 < 8.7 or love.timer.getTime()%10 > 8.8 and love.timer.getTime()%10 < 8.9 or love.timer.getTime()%10 > 9)  then
-        bgsprite = sprites["ui/menu_background_halloween_flash"]
-    else
-        bgsprite = sprites["ui/menu_background_halloween"]
-    end
-  elseif getTheme() == "christmas" then
-    bgsprite = sprites["ui/menu_background_christmas"]
-  else
-    bgsprite = sprites["ui/menu_background"]
+  local bgsprite = sprites["ui/menu_background_"..getTheme()]
+  if not bgsprite then bgsprite = sprites["ui/menu_background_default"] end
+  
+  if not settings["epileptic"] and getTheme() == "halloween" and (love.timer.getTime()%10 > 8.6 and love.timer.getTime()%10 < 8.7 or love.timer.getTime()%10 > 8.8 and love.timer.getTime()%10 < 8.9 or love.timer.getTime()%10 > 9)  then
+    bgsprite = sprites["ui/menu_background_halloween_flash"]
   end
 
   local width = love.graphics.getWidth()

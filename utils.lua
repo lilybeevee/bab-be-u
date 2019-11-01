@@ -3310,21 +3310,20 @@ function jprint(str)
 end
 
 function getTheme()
-  if not settings["themes"] then return nil end
+  if not settings["themes"] then return "default" end
   if cmdargs["theme"] then
-    if cmdargs["theme"] == "" then
-      return nil
-    else
+    if cmdargs["theme"] ~= "" then
       return cmdargs["theme"]
     end
   else
-    if os.date("%m") == "10" then
+    if os.date("%m") == "10" and os.date("%d") == "31" then
       return "halloween"
-    elseif os.date("%m") == "12" then
+    elseif os.date("%m") == "12" and os.date("%d") == "25" then
       return "christmas"
     end
   end
-  return nil
+  local palettes = {"abstract","autumn","cauliflower","cyberpunk","default","edge","factory","garden","mountain","ocean","ruins","snowy","space","swamp","variant","volcano"}
+  return palettes[math.random(1,#palettes)]
 end
 
 function getTableWithDefaults(o, default)
