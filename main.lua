@@ -231,7 +231,7 @@ bab arguments!
         if d then
           newdir = d .. "/" .. newdir
         end
-        addsprites(file)
+        addsprites(newdir)
       end
     end
   end

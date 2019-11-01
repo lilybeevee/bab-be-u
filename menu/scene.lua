@@ -110,11 +110,11 @@ function scene.update(dt)
 end
 
 function scene.draw(dt)
-  local bgsprite = sprites["ui/menu_background_"..getTheme()]
-  if not bgsprite then bgsprite = sprites["ui/menu_background_default"] end
+  local bgsprite = sprites["ui/bgs/"..getTheme()]
+  if not bgsprite then bgsprite = sprites["ui/bgs/default"] end
   
   if not settings["epileptic"] and getTheme() == "halloween" and (love.timer.getTime()%10 > 8.6 and love.timer.getTime()%10 < 8.7 or love.timer.getTime()%10 > 8.8 and love.timer.getTime()%10 < 8.9 or love.timer.getTime()%10 > 9)  then
-    bgsprite = sprites["ui/menu_background_halloween_flash"]
+    bgsprite = sprites["ui/bgs/halloween_flash"]
   end
 
   local width = love.graphics.getWidth()
@@ -146,15 +146,15 @@ function scene.draw(dt)
   if not options then
     local bab_logo
     if getTheme() == "halloween" then
-        if not settings["epileptic"] and (love.timer.getTime()%10 > 8.7 and love.timer.getTime()%10 < 8.8 or love.timer.getTime()%10 > 8.9 and love.timer.getTime()%10 < 9) then
-            bab_logo = sprites["ui/bab_be_u_halloween_blood"]
-        else
-            bab_logo = sprites["ui/bab_be_u_halloween"]
-        end
+      if not settings["epileptic"] and (love.timer.getTime()%10 > 8.7 and love.timer.getTime()%10 < 8.8 or love.timer.getTime()%10 > 8.9 and love.timer.getTime()%10 < 9) then
+        bab_logo = sprites["ui/bab_be_u_halloween_blood"]
+      else
+        bab_logo = sprites["ui/bab_be_u_halloween"]
+      end
     elseif getTheme() == "christmas" then
-        bab_logo = sprites["ui/bab_be_u_christmas"]
+      bab_logo = sprites["ui/bab_be_u_christmas"]
     else
-        bab_logo = sprites["ui/bab_be_u"]
+      bab_logo = sprites["ui/bab_be_u"]
     end    
         
     for _,pair in pairs({{1,0},{0,1},{1,1},{-1,0},{0,-1},{-1,-1},{1,-1},{-1,1}}) do
