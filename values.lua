@@ -248,12 +248,12 @@ selector_grid_contents = {
   },
   -- page 3: ui / instructions
   {
-    "ui_q","ui_w","ui_e","ui_r","ui_t","ui_y","ui_u","ui_i","ui_o","ui_p",0,0,"ui_-","ui_=","ui_`","ui_7","ui_8","ui_9",
-    "ui_a","ui_s","ui_d","ui_f","ui_g","ui_h","ui_j","ui_k","ui_l","ui_;","ui_'","ui_return",0,0,0,"ui_4","ui_5","ui_6",
-    "ui_z","ui_x","ui_c","ui_v","ui_b","ui_n","ui_m","ui_,","ui_.","ui_/",0,0,0,0,0,"ui_1","ui_2","ui_3",
-    0,0,0,0,"ui_space",0,0,0,0,0,0,0,0,0,0,"ui_arrow","ui_0","ui_.",
+    "ui_esc",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    "ui_tab","ui_q","ui_w","ui_e","ui_r","ui_t","ui_y","ui_u","ui_i","ui_o","ui_p","ui_[","ui_-","ui_=","ui_`","ui_7","ui_8","ui_9",
+    "ui_cap","ui_a","ui_s","ui_d","ui_f","ui_g","ui_h","ui_j","ui_k","ui_l","ui_;","ui_'","ui_return",0,0,"ui_4","ui_5","ui_6",
+    "ui_shift",0,"ui_z","ui_x","ui_c","ui_v","ui_b","ui_n","ui_m","ui_,","ui_.","ui_/",0,0,0,"ui_1","ui_2","ui_3",
+    "ui_ctrl","ui_gui","ui_alt",0,"ui_space",0,0,0,0,0,0,0,0,0,0,"ui_arrow","ui_0","ui_del",
     "text_press","text_f1","text_play","text_f2","text_edit","ui_left click","ui_right click",0,0,0,0,0,0,0,0,0,0,"ui_box",
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,"ui_walk",0,0,"ui_reset",0,0,"ui_undo",0,0,"ui_wait",0,0,"ui_activat",0,0,"ui_clik",0,0,0,0,
   },
   -- page 4: characters and special objects
@@ -2104,7 +2104,7 @@ tiles_list = {
     layer = 20,
     alias = {"nxt"},
     features = { sans = {x=19, y=5, w=3, h=4} },
-    tags = {"next", "face"},
+    tags = {"next", "nxt", "face"},
     desc = ":>: If U is on :>, go to the next level (specified in object settings)."
   },
   -- 160
@@ -8844,6 +8844,83 @@ tiles_list = {
     type = "text",
     texttype = {object = true},
     layer = 20,
+  },
+  -- 793
+  {
+    name = "ui_ctrl",
+    sprite = "ui_ctrl",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 794
+  {
+    name = "ui_alt",
+    sprite = "ui_alt",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 795
+  {
+    name = "ui_shift",
+    sprite = "ui_shift",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 796
+  {
+    name = "ui_del",
+    sprite = "ui_del",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 797
+  {
+    name = "ui_[",
+    sprite = "ui_[",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 798
+  {
+    name = "ui_gui",
+    sprite = "ui_gui",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+    tags = {"windows","command","cmd"},
+    desc = "Changes sprites depending on user's Operating System.",
+  },
+  -- 799
+  {
+    name = "ui_tab",
+    sprite = "ui_tab",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+  },
+  -- 800
+  {
+    name = "ui_cap",
+    sprite = "ui_cap_on",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+    tags = {"caps lock"},
+  },
+  -- 801
+  {
+    name = "ui_esc",
+    sprite = "ui_esc",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+    tags = {"caps lock"},
+    desc = "There is no ESC",
   },
 }
 
