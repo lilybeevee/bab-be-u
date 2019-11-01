@@ -6,13 +6,17 @@ function menu_button.new(text, id, func)
   o:setSprite(sprites["ui/button_white_" .. id or 1])
   if not spookmode then
     if getTheme() == "halloween" then
-        o:setText(text)
-        o:setColor(0.5, 0.25, 0.75)
-        o:setHoverColor(0.4, 0, 0.75)
+      o:setText(text)
+      o:setColor(0.5, 0.25, 0.75)
+      o:setHoverColor(0.4, 0, 0.75)
+    elseif getTheme() == "christmas" then
+      o:setText(text)
+      o:setColor(0, 0.7, 0)
+      o:setHoverColor(0.7, 0, 0)
     else
-        o:setText(text)
-        o:setColor(0.25, 0.5, 1)
-        o:setHoverColor(0.15, 0.4, 0.9)
+      o:setText(text)
+      o:setColor(0.25, 0.5, 1)
+      o:setHoverColor(0.15, 0.4, 0.9)
     end
   else
     o:setText(math.random(1,100) == 1 and "stop it" or "help")
