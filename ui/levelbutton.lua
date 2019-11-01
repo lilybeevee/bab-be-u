@@ -18,12 +18,17 @@ function level_button.new(file, extra)
   if getTheme() == "halloween" then
     default_color = {0.5, 0.2, 0.7, 1}
     if extra then
-        default_color = {0.8, 0.4, 0, 1}
+      default_color = {0.8, 0.4, 0, 1}
+    end
+  elseif getTheme() == "christmas" then
+    default_color = {0, 0.7, 0, 1}
+    if extra then
+      default_color = {0.7, 0, 0, 1}
     end
   else
     default_color = {0.25, 0.5, 1, 1}
     if extra then
-        default_color = {0.125, 0.25, 0.5, 1}
+      default_color = {0.125, 0.25, 0.5, 1}
     end
   end
 

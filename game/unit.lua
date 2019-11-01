@@ -1301,6 +1301,25 @@ function miscUpdates()
         end
       end
       
+      if unit.fullname == "ui_gui" then
+        local os = love.system.getOS()
+        if os == "Windows" then
+          unit.sprite = "ui_win"
+        elseif os == "OS X" or os == "iOS" then
+          unit.sprite = "ui_cmd"
+        else
+          unit.sprite = "ui_win"
+        end
+      end
+      
+      if unit.fullname == "ui_cap" then
+        if capslock then
+          unit.sprite = "ui_cap_on"
+        else
+          unit.sprite = "ui_cap_off"
+        end
+      end
+      
       if unit.fullname == "boooo" then
         if hasProperty(unit,"shy...") then
           unit.sprite = {"boooo_shy","boooo_mouth_shy","boooo_blush"}
