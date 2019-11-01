@@ -3322,8 +3322,25 @@ function getTheme()
       return "christmas"
     end
   end
-  local palettes = {"abstract","autumn","cauliflower","cyberpunk","default","edge","factory","garden","mountain","ocean","ruins","snowy","space","swamp","variant","volcano"}
-  return palettes[math.random(1,#palettes)]
+  local palettes = {
+    "abstract",
+    "autumn",
+    "cauliflower",
+    "cyberpunk",
+    "default",
+    "edge",
+    "factory",
+    "garden",
+    "mountain",
+    "ocean",
+    "ruins",
+    "snowy",
+    "space",
+    "swamp",
+    "variant",
+    "volcano",
+  }
+  return palettes[menu_palette]
 end
 
 function getTableWithDefaults(o, default)
