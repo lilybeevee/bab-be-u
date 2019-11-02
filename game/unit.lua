@@ -1663,7 +1663,7 @@ function miscUpdates()
       if (graphical_property_cache["enby"][unit] ~= nil) then
         table.insert(unit.overlay, "enby")
       end
-      if (graphical_property_cache["tranz"][unit] ~= nil) and not hasProperty(unit,"notranform") then
+      if (graphical_property_cache["tranz"][unit] ~= nil) then
         table.insert(unit.overlay, "trans")
       end
       if (graphical_property_cache["gay"][unit] ~= nil) then
