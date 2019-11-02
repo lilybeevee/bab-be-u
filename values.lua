@@ -260,9 +260,9 @@ selector_grid_contents = {
   {
     "bab","text_bab","kat","text_kat","flof","text_flof","bunmy","text_bunmy","toby","text_toby","temmi","text_temmi",0,0,"selctr","text_selctr","lvl","text_lvl",
     "keek","text_keek","creb","text_creb","shrim","text_shrim","moo","text_moo",0,0,0,0,0,0,"this","text_mous","lin","text_lin",
-    "meem","text_meem","statoo","text_statoo","flamgo","text_flamgo","migri","text_migri",0,0,0,0,0,0,"text_text","text_frens","text_groop","text_pathz",
-    "skul","text_skul","beeee","text_beeee","gul","text_gul","kva","text_kva",0,0,0,0,0,0,"text_lethers","text_every1","text_every2","text_every3",
-    "ghost fren","text_ghost fren","fishe","text_fishe","starrfishe","text_starrfishe","pidgin","text_pidgin",0,0,0,0,0,0,0,0,"text_gang","text_no1",
+    "meem","text_meem","statoo","text_statoo","flamgo","text_flamgo","migri","text_migri",0,0,0,0,0,0,"text_gang","text_frens","text_groop","text_pathz",
+    "skul","text_skul","beeee","text_beeee","gul","text_gul","kva","text_kva",0,0,0,0,0,0,"text_no1","text_every1","text_every2","text_every3",
+    "ghost fren","text_ghost fren","fishe","text_fishe","starrfishe","text_starrfishe","pidgin","text_pidgin",0,0,0,0,0,0,"text_text",0,0,"text_xplod",
     "robobot","text_robobot","snek","text_snek","sneel","text_sneel","swan","text_swan",0,0,0,0,0,0,0,0,0,0,
     "wog","text_wog","bog","text_bog","enbybog","text_enbybog","spoder","text_spoder",0,0,0,0,0,0,0,0,0,0,
     "kirb","text_kirb","ripof","text_ripof","cavebab","text_cavebab","detox","text_detox","nyowo","text_nyowo",0,0,0,0,0,0,0,0,
@@ -294,11 +294,8 @@ selector_grid_contents = {
   },
   -- page 6: more inanimate objects
   {
-<<<<<<< HEAD
     "gato","text_gato","fube","text_fube","tronk","text_tronk","drop","text_drop","woosh","text_woosh",0,0,0,0,0,0,0,0,
-=======
     "gato","text_gato","fube","text_fube","tronk","text_tronk","cart","text_cart",0,0,0,0,0,0,0,0,0,0,
->>>>>>> e89631353eae53875792cb5b8c67fb664efa9d86
     "colect","text_colect",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     "whee","text_whee","joycon","text_joycon",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -987,24 +984,23 @@ tiles_list = {
   },
   -- 57
   {
-    name = "text_edit",
-    sprite = "tutorial_edit",
+    name = "text_2edit",
+    sprite = "tutorial_2edit",
     type = "text",
     texttype = {property = true},
     color = {0, 3},
     layer = 20,
     desc = "EDIT: Make PRESS F2 EDIT to unlock the level editor!",
-    tags = {"text_2edit"},
   },
   -- 58
   {
-    name = "text_play",
-    sprite = "tutorial_play",
+    name = "text_2pley",
+    sprite = "tutorial_pley",
     type = "text",
     texttype = {property = true},
     color = {0, 3},
     layer = 20,
-    tags = {"text_2play"},
+    tags = {"text_2pley"},
   },
   -- 59
   {
@@ -9061,6 +9057,16 @@ tiles_list = {
     color = {0, 2},
     layer = 20,
     tags = {"maglight", "torchlight", "flashlight"},
+  },
+  -- not 812 i bet
+  {
+    name = "text_xplod",
+    sprite = "text_bom",
+    type = "text",
+    texttype = {object = true},
+    color = {2,2},
+    layer = 20,
+    desc = "The object created by nuek",
   },
 }
 
