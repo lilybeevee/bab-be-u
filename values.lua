@@ -296,7 +296,7 @@ selector_grid_contents = {
   {
     "gato","text_gato","fube","text_fube","tronk","text_tronk","drop","text_drop","woosh","text_woosh",0,0,0,0,0,0,0,0,
     "gato","text_gato","fube","text_fube","tronk","text_tronk","cart","text_cart",0,0,0,0,0,0,0,0,0,0,
-    "colect","text_colect",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    "colect","text_colect","zig","text_zig",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     "whee","text_whee","joycon","text_joycon",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -9067,6 +9067,28 @@ tiles_list = {
     color = {2,2},
     layer = 20,
     desc = "The object created by nuek",
+  },
+  -- 816
+  {
+    name = "zig",
+    sprite = "zig",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+    rotate = true,
+    tags = {"zigzag"},
+  },
+  -- 817 except totally not
+  -- one day someone should count how many there actually are
+  {
+    name = "text_zig",
+    sprite = "text_zig",
+    type = "text",
+    texttype = {object = true},
+    color = {0,3},
+    layer = 20,
+    tags = {"zigzag"},
+    desc = "zag",
   },
 }
 
