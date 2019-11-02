@@ -1589,6 +1589,14 @@ function miscUpdates()
         end
       end
       
+      if unit.fullname == "maglit" then
+        if hasProperty(unit,"torc") then
+          unit.sprite = {"maglit", "maglit_lit"}
+        else
+          unit.sprite = {"maglit", "no1"}
+        end
+      end
+      
       if unit.fullname == "die" and (first_turn or not (hasProperty(unit,"stukc") or hasProperty(unit,"no turn"))) then
         local roll = math.random(6)
         unit.sprite[2] = "die_"..roll

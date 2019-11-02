@@ -294,7 +294,7 @@ selector_grid_contents = {
   },
   -- page 6: more inanimate objects
   {
-    "gato","text_gato","fube","text_fube","tronk","text_tronk",0,0,0,0,0,0,0,0,0,0,0,0,
+    "gato","text_gato","fube","text_fube","tronk","text_tronk","drop","text_drop","woosh","text_woosh",0,0,0,0,0,0,0,0,
     "colect","text_colect",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     "whee","text_whee","joycon","text_joycon",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -307,7 +307,7 @@ selector_grid_contents = {
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,"wan","text_wan","mug","text_mug","die","text_die",0,0,0,0,0,0,0,0,0,0,
     "sno","text_sno","bel","text_bel","wres","text_wres","bowie","text_bowie","sant","text_sant","canedy","text_canedy","bolble","text_bolble","now","text_now","cooky","text_cooky",
-    0,0,"pot","text_pot","sweep","text_sweep",0,0,"which","text_which","corndy","text_corndy",0,0,0,0,0,0,
+    0,0,"pot","text_pot","sweep","text_sweep","candl","text_candl","which","text_which","corndy","text_corndy","maglit","text_maglit",0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   },
   -- page 7: properties, verbs and conditions
@@ -8942,6 +8942,89 @@ tiles_list = {
     layer = 20,
     tags = {"thinking", "wonder"},
     desc = "THONK: THONK units question their own FRAGIL existence.",
+  },
+  -- 804
+  {
+    name = "drop",
+    sprite = "drop",
+    color = {1, 3},
+    type = "object",
+    layer = 6,
+    tags = {"tear", "droplet", "water", "blood"},
+    desc = "when they crai",
+  },
+  -- 805
+  {
+    name = "text_drop",
+    sprite = "text_drop",
+    type = "text",
+    texttype = {object = true},
+    color = {1, 3},
+    layer = 20,
+    tags = {"tear", "droplet", "water", "blood"},
+  },
+  -- 806
+  {
+    name = "woosh",
+    sprite = "woosh",
+    color = {0, 3},
+    type = "object",
+    rotate = true,
+    layer = 6,
+    tags = {"wind", "blow", "whoosh"},
+    desc = "dont make a shitty reddit joke no one likes them",
+  },
+  -- 807
+  {
+    name = "text_woosh",
+    sprite = "text_woosh",
+    type = "text",
+    texttype = {object = true},
+    color = {5, 3},
+    layer = 20,
+    tags = {"wind", "blow", "whoosh"},
+  },
+  -- 808
+  {
+    name = "candl",
+    sprite = "candl",
+    color = {2, 2},
+    type = "object",
+    layer = 6,
+    tags = {"candle", "fire", "light"},
+    desc = "BURNNNNNNNNN",
+  },
+  -- 809
+  {
+    name = "text_candl",
+    sprite = "text_candl",
+    type = "text",
+    texttype = {object = true},
+    color = {2, 2},
+    layer = 20,
+    tags = {"candle", "fire", "light"},
+  },
+  -- 810
+  {
+    name = "maglit",
+    sprite = {"maglit","no1"},
+    color = {{0, 2},{0,3}},
+    colored = {true, false},
+    type = "object",
+    rotate = true,
+    layer = 6,
+    tags = {"maglight", "torchlight", "flashlight"},
+    desc = "turns on when its TORC",
+  },
+  -- 811
+  {
+    name = "text_maglit",
+    sprite = "text_maglit",
+    type = "text",
+    texttype = {object = true},
+    color = {0, 2},
+    layer = 20,
+    tags = {"maglight", "torchlight", "flashlight"},
   },
 }
 
