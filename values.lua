@@ -260,15 +260,15 @@ selector_grid_contents = {
   {
     "bab","text_bab","kat","text_kat","flof","text_flof","bunmy","text_bunmy","toby","text_toby","temmi","text_temmi",0,0,"selctr","text_selctr","lvl","text_lvl",
     "keek","text_keek","creb","text_creb","shrim","text_shrim","moo","text_moo",0,0,0,0,0,0,"this","text_mous","lin","text_lin",
-    "meem","text_meem","statoo","text_statoo","flamgo","text_flamgo","migri","text_migri",0,0,0,0,0,0,"text_gang","text_frens","text_groop","text_pathz",
-    "skul","text_skul","beeee","text_beeee","gul","text_gul","kva","text_kva",0,0,0,0,0,0,"text_no1","text_every1","text_every2","text_every3",
-    "ghost fren","text_ghost fren","fishe","text_fishe","starrfishe","text_starrfishe","pidgin","text_pidgin",0,0,0,0,0,0,"text_text",0,0,0, --add text_xplod too if it exists
+    "meem","text_meem","statoo","text_statoo","flamgo","text_flamgo","migri","text_migri",0,0,0,0,0,0,"text_text","text_frens","text_groop","text_pathz",
+    "skul","text_skul","beeee","text_beeee","gul","text_gul","kva","text_kva",0,0,0,0,0,0,"text_lethers","text_every1","text_every2","text_every3",
+    "ghost fren","text_ghost fren","fishe","text_fishe","starrfishe","text_starrfishe","pidgin","text_pidgin",0,0,0,0,0,0,0,0,"text_gang","text_no1",
     "robobot","text_robobot","snek","text_snek","sneel","text_sneel","swan","text_swan",0,0,0,0,0,0,0,0,0,0,
     "wog","text_wog","bog","text_bog","enbybog","text_enbybog","spoder","text_spoder",0,0,0,0,0,0,0,0,0,0,
     "kirb","text_kirb","ripof","text_ripof","cavebab","text_cavebab","detox","text_detox","nyowo","text_nyowo",0,0,0,0,0,0,0,0,
     "bup","text_bup","butflye","text_butflye","boooo","text_boooo","prime","text_prime","grimkid","text_grimkid",0,0,0,0,0,0,0,0,
     "boy","text_boy","wurm","text_wurm","madi","text_madi","angle","text_angle",0,0,0,0,0,0,"lila","text_lila","tot","text_tot",
-    "steev","text_steev","ratt","text_ratt","badi","text_badi","debil","text_debil",0,0,0,0,0,0,"pata","text_pata","jill","text_jill",
+    "steev","text_steev","ratt","text_ratt","badi","text_badi","debil","text_debil","assh","text_assh",0,0,0,0,"pata","text_pata","jill","text_jill",
     "han","text_han","iy","text_iy","lisp","text_lisp","paw","text_paw",0,0,0,0,0,0,"larry","text_larry","zsoob","text_zsoob",
     "snoman","text_snoman","pingu","text_pingu","der","text_der","ginn","text_ginn",0,0,0,0,0,0,"slab","text_slab","o","text_o",
     "kapa","text_kapa","urei","text_urei","ryugon","text_ryugon","sham","text_sham",0,0,0,0,0,0,"notnat","text_notnat","butcher","text_butcher",
@@ -294,7 +294,11 @@ selector_grid_contents = {
   },
   -- page 6: more inanimate objects
   {
+<<<<<<< HEAD
     "gato","text_gato","fube","text_fube","tronk","text_tronk","drop","text_drop","woosh","text_woosh",0,0,0,0,0,0,0,0,
+=======
+    "gato","text_gato","fube","text_fube","tronk","text_tronk","cart","text_cart",0,0,0,0,0,0,0,0,0,0,
+>>>>>>> e89631353eae53875792cb5b8c67fb664efa9d86
     "colect","text_colect",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     "whee","text_whee","joycon","text_joycon",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -983,23 +987,24 @@ tiles_list = {
   },
   -- 57
   {
-    name = "text_2edit",
+    name = "text_edit",
     sprite = "tutorial_edit",
     type = "text",
     texttype = {property = true},
     color = {0, 3},
     layer = 20,
-    desc = "EDIT: Make PRESS F2 2EDIT to unlock the level editor!",
+    desc = "EDIT: Make PRESS F2 EDIT to unlock the level editor!",
+    tags = {"text_2edit"},
   },
   -- 58
   {
-    name = "text_2pley",
+    name = "text_play",
     sprite = "tutorial_play",
     type = "text",
     texttype = {property = true},
     color = {0, 3},
     layer = 20,
-    tags = {"2play"},
+    tags = {"text_2play"},
   },
   -- 59
   {
@@ -8597,7 +8602,6 @@ tiles_list = {
     type = "object",
     color = {0,3},
     layer = 20,
-    desc = "The button to activate F2.",
   },
   -- 765
   {
@@ -8924,13 +8928,45 @@ tiles_list = {
   },
   -- 802
   {
-    name = "text_xplod",
-    sprite = "text_bom",
+    name = "cart",
+    sprite = "cart",
+    type = "object",
+    color = {0,2},
+    layer = 20,
+    tags = {"cart"},
+    desc = "like casette but from an objectively better game",
+  },
+  -- 803
+  {
+    name = "text_cart",
+    sprite = "text_cart",
     type = "text",
     texttype = {object = true},
-    color = {2,2},
+    color = {0,2},
     layer = 20,
-    desc = "The object created by nuek",
+    tags = {"cart"},
+  },
+  -- 804
+  {
+    name = "assh",
+    sprite = "assh",
+    type = "object",
+    color = {0,3},
+    layer = 20,
+    rotate = true,
+    tags = {"ash"},
+    desc = "he can grab on ledges",
+  },
+  -- 805
+  {
+    name = "text_assh",
+    sprite = "text_assh",
+    type = "text",
+    texttype = {object = true},
+    color = {0,1},
+    layer = 20,
+    tags = {"ash"},
+    desc = "no bad words here mister vitellary",
   },
   -- 803
   {
