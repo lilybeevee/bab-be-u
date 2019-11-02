@@ -984,7 +984,7 @@ tiles_list = {
   -- 57
   {
     name = "text_2edit",
-    sprite = "tutorial_2edit",
+    sprite = "tutorial_edit",
     type = "text",
     texttype = {property = true},
     color = {0, 3},
@@ -994,7 +994,7 @@ tiles_list = {
   -- 58
   {
     name = "text_2pley",
-    sprite = "tutorial_pley",
+    sprite = "tutorial_play",
     type = "text",
     texttype = {property = true},
     color = {0, 3},
