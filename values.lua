@@ -294,8 +294,7 @@ selector_grid_contents = {
   },
   -- page 6: more inanimate objects
   {
-    "gato","text_gato","fube","text_fube","tronk","text_tronk","drop","text_drop","woosh","text_woosh",0,0,0,0,0,0,0,0,
-    "gato","text_gato","fube","text_fube","tronk","text_tronk","cart","text_cart",0,0,0,0,0,0,0,0,0,0,
+    "gato","text_gato","fube","text_fube","tronk","text_tronk","cart","text_cart","drop","text_drop","woosh","text_woosh",0,0,0,0,0,0,
     "colect","text_colect","zig","text_zig",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     "whee","text_whee","joycon","text_joycon",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -9061,7 +9060,7 @@ tiles_list = {
   -- not 812 i bet
   {
     name = "text_xplod",
-    sprite = "text_bom",
+    sprite = "text_xplod",
     type = "text",
     texttype = {object = true},
     color = {2,2},
