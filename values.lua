@@ -8598,6 +8598,7 @@ tiles_list = {
     type = "object",
     color = {0,3},
     layer = 20,
+    desc = "The button to activate F2.",
   },
   -- 765
   {
@@ -8921,6 +8922,16 @@ tiles_list = {
     layer = 20,
     tags = {"caps lock"},
     desc = "There is no ESC",
+  },
+  -- 802
+  {
+    name = "text_xplod",
+    sprite = "text_bom",
+    type = "text",
+    texttype = {object = true},
+    color = {2,2},
+    layer = 20,
+    desc = "The object created by nuek",
   },
 }
 
