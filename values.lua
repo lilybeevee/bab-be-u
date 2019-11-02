@@ -253,7 +253,7 @@ selector_grid_contents = {
     "ui_cap","ui_a","ui_s","ui_d","ui_f","ui_g","ui_h","ui_j","ui_k","ui_l","ui_;","ui_'","ui_return",0,0,"ui_4","ui_5","ui_6",
     "ui_shift",0,"ui_z","ui_x","ui_c","ui_v","ui_b","ui_n","ui_m","ui_,","ui_.","ui_/",0,0,0,"ui_1","ui_2","ui_3",
     "ui_ctrl","ui_gui","ui_alt",0,"ui_space",0,0,0,0,0,0,0,0,0,0,"ui_arrow","ui_0","ui_del",
-    "text_press","text_f1","text_play","text_f2","text_edit","ui_left click","ui_right click",0,0,0,0,0,0,0,0,0,0,"ui_box",
+    "text_press","text_f1","text_2pley","text_f2","text_2edit","ui_left click","ui_right click",0,0,0,0,0,0,0,0,0,0,"ui_box",
     0,"ui_walk",0,0,"ui_reset",0,0,"ui_undo",0,0,"ui_wait",0,0,"ui_activat",0,0,"ui_clik",0,0,0,0,
   },
   -- page 4: characters and special objects
@@ -983,24 +983,23 @@ tiles_list = {
   },
   -- 57
   {
-    name = "text_edit",
+    name = "text_2edit",
     sprite = "tutorial_edit",
     type = "text",
     texttype = {property = true},
     color = {0, 3},
     layer = 20,
-    desc = "EDIT: Make PRESS F2 EDIT to unlock the level editor!",
-    tags = {"text_2edit"},
+    desc = "EDIT: Make PRESS F2 2EDIT to unlock the level editor!",
   },
   -- 58
   {
-    name = "text_play",
+    name = "text_2pley",
     sprite = "tutorial_play",
     type = "text",
     texttype = {property = true},
     color = {0, 3},
     layer = 20,
-    tags = {"text_2play"},
+    tags = {"2play"},
   },
   -- 59
   {
