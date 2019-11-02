@@ -1065,6 +1065,16 @@ function updateUnits(undoing, big_update)
     
     to_destroy = handleDels(to_destroy)
     
+    local is2edit = getUnitsWithEffect("2edit")
+    for _,unit in ipairs(is2edit) do
+      local stuff = getUnitsOnTile(unit.x,unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
+      for _,on in ipairs(stuff) do
+        if hasU(on) and sameFloat(unit, on) and ignoreCheck(on, unit, "2edit") then
+          scene = editor
+        end
+      end
+    end
+    
     local isunwin = getUnitsWithEffect(";d")
     for _,unit in ipairs(isunwin) do
       local stuff = getUnitsOnTile(unit.x,unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
