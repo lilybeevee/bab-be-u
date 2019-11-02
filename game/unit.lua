@@ -1822,10 +1822,10 @@ function updateUnitColourOverride(unit)
     unit.color_override = {6, 0}
   elseif unit.reed then -- red
     unit.color_override = {2, 2}
+  elseif unit.grun or (unit.bleu and unit.yello) then -- green
+    unit.color_override = {5, 2}
   elseif unit.bleu then -- blue
     unit.color_override = {1, 3}
-  elseif unit.grun then -- green
-    unit.color_override = {5, 2}
   elseif unit.graey or (unit.blacc and unit.whit) then -- grey
     unit.color_override = {0, 1}
   elseif unit.whit or (unit.reed and unit.grun and unit.bleu) or (unit.reed and unit.cyeann) or (unit.bleu and unit.yello) or (unit.grun and unit.purp) then -- white

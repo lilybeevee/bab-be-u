@@ -325,7 +325,7 @@ selector_grid_contents = {
     "text_upleft","text_up","text_upright","text_big",0,0,0,0,0,0,0,0,0,0,0,"text_brwn","text_tranz","text_yello",
     "text_left","text_direction","text_right",0,0,0,0,0,0,0,0,0,0,0,0,"text_blacc","text_gay","text_grun",
     "text_downleft","text_down","text_downright",0,0,"text_:/","text_no undo","text_undo","text_za warudo","text_brite",0,0,0,0,0,"text_graey","text_qt","text_cyeann",
-    "text_every1","text_every2","text_every3","text_lethers",0,"text_poor toll","text_go arnd","text_mirr arnd","text_glued","text_torc",0,0,0,0,0,"text_whit","text_pinc","text_bleu",
+    "text_every1","text_every2","text_every3","text_lethers",0,"text_poor toll","text_go arnd","text_mirr arnd","text_glued","text_torc",0,0,0,0,"text_thonk","text_whit","text_pinc","text_bleu",
     "text_...","text_''","prop","text_prop",0,"text_her","text_thr","text_rithere","text_the","text_tranparnt",0,0,0,0,"text_stelth","text_colrful","text_rave","text_purp",
   },
 }
@@ -8931,6 +8931,17 @@ tiles_list = {
     color = {2,2},
     layer = 20,
     desc = "The object created by nuek",
+  },
+  -- 803
+  {
+    name = "text_thonk",
+    sprite = "text_thonk",
+    type = "text",
+    texttype = {property = true},
+    color = {2, 4},
+    layer = 20,
+    tags = {"thinking", "wonder"},
+    desc = "THONK: THONK units question their own FRAGIL existence.",
   },
 }
 
