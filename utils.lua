@@ -1553,6 +1553,8 @@ function testConds(unit, conds, compare_with) --cond should be a {condtype,{obje
       result = unit.dir == compare_with.dir
     elseif condtype == "oob" then
       result = not inBounds(unit.x,unit.y)
+    elseif condtype == "alt" then
+      result = #undo_buffer % 2 == 1
     else
       print("unknown condtype: " .. condtype)
       result = false
