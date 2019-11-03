@@ -295,7 +295,7 @@ selector_grid_contents = {
   -- page 6: more inanimate objects
   {
     "gato","text_gato","fube","text_fube","tronk","text_tronk","cart","text_cart","drop","text_drop","woosh","text_woosh",0,0,0,0,0,0,
-    "colect","text_colect","zig","text_zig",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    "colect","text_colect","zig","text_zig","pixl","text_pixl",0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     "whee","text_whee","joycon","text_joycon",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -9141,6 +9141,26 @@ tiles_list = {
     color = {0,1},
     layer = 20,
     tags = {"crack"},
+  },
+  -- 
+  {
+    name = "pixl",
+    sprite = "pixl",
+    type = "object",
+    color = {0,3},
+    layer = 5,
+    tags = {"pixel", "square", "block"},
+    desc = "a lil square half the size of a til",
+  },
+  -- 
+  {
+    name = "text_pixl",
+    sprite = "text_pixl",
+    type = "text",
+    texttype = {object = true},
+    color = {0,3},
+    layer = 20,
+    tags = {"pixel", "square", "block"},
   },
 }
 
