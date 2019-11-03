@@ -1065,6 +1065,16 @@ function updateUnits(undoing, big_update)
     
     to_destroy = handleDels(to_destroy)
     
+    local is2edit = getUnitsWithEffect("2edit")
+    for _,unit in ipairs(is2edit) do
+      local stuff = getUnitsOnTile(unit.x,unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
+      for _,on in ipairs(stuff) do
+        if hasU(on) and sameFloat(unit, on) and ignoreCheck(on, unit, "2edit") then
+          scene = editor
+        end
+      end
+    end
+    
     local isunwin = getUnitsWithEffect(";d")
     for _,unit in ipairs(isunwin) do
       local stuff = getUnitsOnTile(unit.x,unit.y, nil, true, nil, nil, hasProperty(unit,"big"))
@@ -1579,6 +1589,14 @@ function miscUpdates()
         end
       end
       
+      if unit.fullname == "maglit" then
+        if hasProperty(unit,"torc") then
+          unit.sprite = {"maglit", "maglit_lit"}
+        else
+          unit.sprite = {"maglit", "no1"}
+        end
+      end
+      
       if unit.fullname == "die" and (first_turn or not (hasProperty(unit,"stukc") or hasProperty(unit,"no turn"))) then
         local roll = math.random(6)
         unit.sprite[2] = "die_"..roll
@@ -1645,7 +1663,7 @@ function miscUpdates()
       if (graphical_property_cache["enby"][unit] ~= nil) then
         table.insert(unit.overlay, "enby")
       end
-      if (graphical_property_cache["tranz"][unit] ~= nil) and not hasProperty(unit,"notranform") then
+      if (graphical_property_cache["tranz"][unit] ~= nil) then
         table.insert(unit.overlay, "trans")
       end
       if (graphical_property_cache["gay"][unit] ~= nil) then
@@ -1812,10 +1830,10 @@ function updateUnitColourOverride(unit)
     unit.color_override = {6, 0}
   elseif unit.reed then -- red
     unit.color_override = {2, 2}
+  elseif unit.grun or (unit.bleu and unit.yello) then -- green
+    unit.color_override = {5, 2}
   elseif unit.bleu then -- blue
     unit.color_override = {1, 3}
-  elseif unit.grun then -- green
-    unit.color_override = {5, 2}
   elseif unit.graey or (unit.blacc and unit.whit) then -- grey
     unit.color_override = {0, 1}
   elseif unit.whit or (unit.reed and unit.grun and unit.bleu) or (unit.reed and unit.cyeann) or (unit.bleu and unit.yello) or (unit.grun and unit.purp) then -- white

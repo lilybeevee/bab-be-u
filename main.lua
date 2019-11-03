@@ -460,7 +460,9 @@ function love.keypressed(key,scancode,isrepeat)
       scene = editor
       load_mode = "edit"
       clearGooi()
-      scene.load()
+      if not love.keyboard.isDown('lshift') then
+        scene.load()
+      end
 	end
   elseif key == "g" and love.keyboard.isDown('f3') then
     rainbowmode = not rainbowmode
