@@ -8963,7 +8963,7 @@ tiles_list = {
     tags = {"ash"},
     desc = "no bad words here mister vitellary",
   },
-  -- 803
+  -- 806
   {
     name = "text_thonk",
     sprite = "text_thonk",
@@ -8974,7 +8974,7 @@ tiles_list = {
     tags = {"thinking", "wonder"},
     desc = "THONK: THONK units question their own FRAGIL existence.",
   },
-  -- 804
+  -- 807
   {
     name = "drop",
     sprite = "drop",
@@ -8984,7 +8984,7 @@ tiles_list = {
     tags = {"tear", "droplet", "water", "blood"},
     desc = "when they crai",
   },
-  -- 805
+  -- 808
   {
     name = "text_drop",
     sprite = "text_drop",
@@ -8994,7 +8994,7 @@ tiles_list = {
     layer = 20,
     tags = {"tear", "droplet", "water", "blood"},
   },
-  -- 806
+  -- 809
   {
     name = "woosh",
     sprite = "woosh",
@@ -9005,7 +9005,7 @@ tiles_list = {
     tags = {"wind", "blow", "whoosh"},
     desc = "dont make a shitty reddit joke no one likes them",
   },
-  -- 807
+  -- 810
   {
     name = "text_woosh",
     sprite = "text_woosh",
@@ -9015,7 +9015,7 @@ tiles_list = {
     layer = 20,
     tags = {"wind", "blow", "whoosh"},
   },
-  -- 808
+  -- 811
   {
     name = "candl",
     sprite = "candl",
@@ -9025,7 +9025,7 @@ tiles_list = {
     tags = {"candle", "fire", "light"},
     desc = "BURNNNNNNNNN",
   },
-  -- 809
+  -- 812
   {
     name = "text_candl",
     sprite = "text_candl",
@@ -9035,7 +9035,7 @@ tiles_list = {
     layer = 20,
     tags = {"candle", "fire", "light"},
   },
-  -- 810
+  -- 813
   {
     name = "maglit",
     sprite = {"maglit","no1"},
@@ -9047,7 +9047,7 @@ tiles_list = {
     tags = {"maglight", "torchlight", "flashlight"},
     desc = "turns on when its TORC",
   },
-  -- 811
+  -- 814
   {
     name = "text_maglit",
     sprite = "text_maglit",
@@ -9057,7 +9057,7 @@ tiles_list = {
     layer = 20,
     tags = {"maglight", "torchlight", "flashlight"},
   },
-  -- not 812 i bet
+  -- 815
   {
     name = "text_xplod",
     sprite = "text_xplod",
@@ -9077,8 +9077,10 @@ tiles_list = {
     rotate = true,
     tags = {"zigzag"},
   },
-  -- 817 except totally not
+  -- 817
   -- one day someone should count how many there actually are
+  -- vitellary: ...i just did that though, you guys are just bad >:(
+  -- did u not see my big commit where i fixed all of the numbers
   {
     name = "text_zig",
     sprite = "text_zig",
@@ -9089,7 +9091,7 @@ tiles_list = {
     tags = {"zigzag"},
     desc = "zag",
   },
-  -- 
+  -- 818
   {
     name = "boogie",
     sprite = "boogie",
@@ -9101,7 +9103,7 @@ tiles_list = {
     tags = {"slime", "crypt of the necrodancer"},
     desc = "cant hurt u unless u walk into it somehow",
   },
-  -- 
+  -- 819
   {
     name = "text_boogie",
     sprite = "text_boogie",
@@ -9111,7 +9113,7 @@ tiles_list = {
     layer = 20,
     tags = {"slime", "crypt of the necrodancer"},
   },
-  -- 
+  -- 820
   {
     name = "text_alt",
     sprite = "text_alt",
@@ -9122,7 +9124,7 @@ tiles_list = {
     tags = {"correct", "cg5"},
     desc = "ALT (Prefix Condition): True every other turn.",
   },
-  -- 
+  -- 821
   {
     name = "cracc",
     sprite = "cracc",
@@ -9132,7 +9134,7 @@ tiles_list = {
     tags = {"crack"},
     desc = "just a cracc in the wals",
   },
-  -- 
+  -- 822
   {
     name = "text_cracc",
     sprite = "text_cracc",
@@ -9142,7 +9144,7 @@ tiles_list = {
     layer = 20,
     tags = {"crack"},
   },
-  -- 
+  -- 823
   {
     name = "pixl",
     sprite = "pixl",
@@ -9152,7 +9154,7 @@ tiles_list = {
     tags = {"pixel", "square", "block"},
     desc = "a lil square half the size of a til",
   },
-  -- 
+  -- 824
   {
     name = "text_pixl",
     sprite = "text_pixl",
