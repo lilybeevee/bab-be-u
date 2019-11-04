@@ -14,9 +14,10 @@ function menu_button.new(text, id, func)
       o:setColor(0, 0.7, 0)
       o:setHoverColor(0.7, 0, 0)
     else
+      local r,g,b = getPaletteColor(4,4,getTheme())
       o:setText(text)
-      o:setColor(0.25, 0.5, 1)
-      o:setHoverColor(0.15, 0.4, 0.9)
+      o:setColor(r,g,b)
+      o:setHoverColor(r-.2,g-.2,b-.2)
     end
   else
     o:setText(math.random(1,100) == 1 and "stop it" or "help")
