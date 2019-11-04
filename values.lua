@@ -267,7 +267,7 @@ selector_grid_contents = {
     "wog","text_wog","bog","text_bog","enbybog","text_enbybog","spoder","text_spoder",0,0,0,0,0,0,0,0,0,0,
     "kirb","text_kirb","ripof","text_ripof","cavebab","text_cavebab","detox","text_detox","nyowo","text_nyowo",0,0,0,0,0,0,0,0,
     "bup","text_bup","butflye","text_butflye","boooo","text_boooo","prime","text_prime","grimkid","text_grimkid",0,0,0,0,0,0,0,0,
-    "boy","text_boy","wurm","text_wurm","madi","text_madi","angle","text_angle",0,0,0,0,0,0,"lila","text_lila","tot","text_tot",
+    "boy","text_boy","wurm","text_wurm","madi","text_madi","angle","text_angle","boogie","text_boogie",0,0,0,0,"lila","text_lila","tot","text_tot",
     "steev","text_steev","ratt","text_ratt","badi","text_badi","debil","text_debil","assh","text_assh",0,0,0,0,"pata","text_pata","jill","text_jill",
     "han","text_han","iy","text_iy","lisp","text_lisp","paw","text_paw",0,0,0,0,0,0,"larry","text_larry","zsoob","text_zsoob",
     "snoman","text_snoman","pingu","text_pingu","der","text_der","ginn","text_ginn",0,0,0,0,0,0,"slab","text_slab","o","text_o",
@@ -295,7 +295,7 @@ selector_grid_contents = {
   -- page 6: more inanimate objects
   {
     "gato","text_gato","fube","text_fube","tronk","text_tronk","cart","text_cart","drop","text_drop","woosh","text_woosh",0,0,0,0,0,0,
-    "colect","text_colect","zig","text_zig",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    "colect","text_colect","zig","text_zig","pixl","text_pixl",0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     "whee","text_whee","joycon","text_joycon",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -307,7 +307,7 @@ selector_grid_contents = {
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,"wan","text_wan","mug","text_mug","die","text_die",0,0,0,0,0,0,0,0,0,0,
     "sno","text_sno","bel","text_bel","wres","text_wres","bowie","text_bowie","sant","text_sant","canedy","text_canedy","bolble","text_bolble","now","text_now","cooky","text_cooky",
-    0,0,"pot","text_pot","sweep","text_sweep","candl","text_candl","which","text_which","corndy","text_corndy","maglit","text_maglit",0,0,0,0,
+    0,0,"pot","text_pot","sweep","text_sweep","candl","text_candl","which","text_which","corndy","text_corndy","maglit","text_maglit","cracc","text_cracc",0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   },
   -- page 7: properties, verbs and conditions
@@ -315,7 +315,7 @@ selector_grid_contents = {
     "text_be","text_&","text_got","text_creat","text_snacc","text_spoop","text_copkat","text_moov","text_yeet","text_liek","text_haet","text_stalk","text_ignor","text_paint","text_vs","text_sing","text_soko","text_look at",
     "text_u","text_u too","text_u tres","text_y'all","text_walk","text_:)","text_no swim","text_ouch","text_protecc",0,"text_:>","text_stay ther",0,"text_giv",0,"text_rp",0,"text_look away",
     "text_go","text_goooo","text_icy","text_icyyyy",0,"text_:(","text_ned kee","text_for dor","text_wurd",0,"text_sublvl","text_loop","text_oob","text_frenles","text_timles","text_lit","text_corekt","text_rong",
-    "text_no go","text_go away pls","text_come pls","text_sidekik","text_diagkik","text_:o","text_hotte","text_fridgd","text_txtify",0,"text_dragbl","text_no drag",0,"text_clikt","text_past","text_wun","text_an","text_mayb",
+    "text_no go","text_go away pls","text_come pls","text_sidekik","text_diagkik","text_:o","text_hotte","text_fridgd","text_txtify",0,"text_dragbl","text_no drag","text_alt","text_clikt","text_past","text_wun","text_an","text_mayb",
     "text_visit fren","text_slep","text_shy...","text_behin u",0,"text_xwx","text_moar","text_split","text_thingify",0,"text_rythm",0,0,"text_wait...","text_samefloat","text_samepaint","text_sameface",0,
     "text_flye","text_tall","text_haet skye","text_haet flor",0,"text_;d","text_gone","text_nuek","text_notranform",0,0,0,0,"text_w/fren","text_arond","text_sans","text_seen by","text_behind",
     "text_diag","text_ortho","text_go my way","text_zip",0,"text_B)","text_cool",0,0,0,0,0,0,"text_that","text_that be","text_that got",0,"text_beside",
@@ -8947,7 +8947,7 @@ tiles_list = {
     sprite = "assh",
     type = "object",
     color = {0,3},
-    layer = 20,
+    layer = 11,
     rotate = true,
     tags = {"ash"},
     desc = "he can grab on ledges",
@@ -9073,7 +9073,7 @@ tiles_list = {
     sprite = "zig",
     type = "object",
     color = {0,3},
-    layer = 20,
+    layer = 5,
     rotate = true,
     tags = {"zigzag"},
   },
@@ -9088,6 +9088,79 @@ tiles_list = {
     layer = 20,
     tags = {"zigzag"},
     desc = "zag",
+  },
+  -- 
+  {
+    name = "boogie",
+    sprite = "boogie",
+    type = "object",
+    color = {1,3},
+    layer = 11,
+    features = { sans = {x=22, y=16, w=3, h=3} },
+    rotate = true,
+    tags = {"slime", "crypt of the necrodancer"},
+    desc = "cant hurt u unless u walk into it somehow",
+  },
+  -- 
+  {
+    name = "text_boogie",
+    sprite = "text_boogie",
+    type = "text",
+    texttype = {object = true},
+    color = {1,3},
+    layer = 20,
+    tags = {"slime", "crypt of the necrodancer"},
+  },
+  -- 
+  {
+    name = "text_alt",
+    sprite = "text_alt",
+    type = "text",
+    texttype = {cond_prefix = true},
+    color = {1,3},
+    layer = 20,
+    tags = {"correct", "cg5"},
+    desc = "ALT (Prefix Condition): True every other turn.",
+  },
+  -- 
+  {
+    name = "cracc",
+    sprite = "cracc",
+    type = "object",
+    color = {0,0},
+    layer = 5,
+    tags = {"crack"},
+    desc = "just a cracc in the wals",
+  },
+  -- 
+  {
+    name = "text_cracc",
+    sprite = "text_cracc",
+    type = "text",
+    texttype = {object = true},
+    color = {0,1},
+    layer = 20,
+    tags = {"crack"},
+  },
+  -- 
+  {
+    name = "pixl",
+    sprite = "pixl",
+    type = "object",
+    color = {0,3},
+    layer = 5,
+    tags = {"pixel", "square", "block"},
+    desc = "a lil square half the size of a til",
+  },
+  -- 
+  {
+    name = "text_pixl",
+    sprite = "text_pixl",
+    type = "text",
+    texttype = {object = true},
+    color = {0,3},
+    layer = 20,
+    tags = {"pixel", "square", "block"},
   },
 }
 
