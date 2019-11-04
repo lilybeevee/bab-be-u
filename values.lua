@@ -322,7 +322,7 @@ selector_grid_contents = {
     "text_turn cornr","text_folo wal","text_hopovr","text_reflecc",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     "text_munwalk","text_sidestep","text_diagstep","text_knightstep",0,0,0,0,0,0,0,0,0,0,0,0,0,"text_reed",
     "text_spin","text_rotatbl","text_noturn","text_stukc",0,0,0,0,0,0,0,0,0,0,0,0,"text_enby","text_orang",
-    "text_upleft","text_up","text_upright","text_big",0,0,0,0,0,0,0,0,0,0,0,"text_brwn","text_tranz","text_yello",
+    "text_upleft","text_up","text_upright","text_thicc",0,0,0,0,0,0,0,0,0,0,0,"text_brwn","text_tranz","text_yello",
     "text_left","text_direction","text_right",0,0,0,0,0,0,0,0,0,0,0,0,"text_blacc","text_gay","text_grun",
     "text_downleft","text_down","text_downright",0,0,"text_:/","text_no undo","text_undo","text_za warudo","text_brite",0,0,0,0,0,"text_graey","text_qt","text_cyeann",
     "text_every1","text_every2","text_every3","text_lethers",0,"text_poor toll","text_go arnd","text_mirr arnd","text_glued","text_torc",0,0,0,0,"text_thonk","text_whit","text_pinc","text_bleu",
@@ -8034,13 +8034,13 @@ tiles_list = {
   },
   -- 714
   {
-    name = "text_big",
-    sprite = "text_big",
+    name = "text_thicc",
+    sprite = "text_thicc",
     type = "text",
     texttype = {property = true},
     color = {1,3},
     layer = 20,
-    desc = "BIG: Big things take up a 2x2 space. Expands to the lower left.",
+    desc = "THICC: Thicc things take up a 2x2 space. Expands to the lower left.",
   },
   -- 715
   {
