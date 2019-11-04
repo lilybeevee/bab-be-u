@@ -324,9 +324,9 @@ selector_grid_contents = {
     "text_spin","text_rotatbl","text_noturn","text_stukc",0,0,0,0,0,0,0,0,0,0,0,0,"text_enby","text_orang",
     "text_upleft","text_up","text_upright","text_thicc",0,0,0,0,0,0,0,0,0,0,0,"text_brwn","text_tranz","text_yello",
     "text_left","text_direction","text_right",0,0,0,0,0,0,0,0,0,0,0,0,"text_blacc","text_gay","text_grun",
-    "text_downleft","text_down","text_downright",0,0,"text_:/","text_no undo","text_undo","text_za warudo","text_brite",0,0,0,0,0,"text_graey","text_qt","text_cyeann",
-    "text_every1","text_every2","text_every3","text_lethers",0,"text_poor toll","text_go arnd","text_mirr arnd","text_glued","text_torc",0,0,0,0,"text_thonk","text_whit","text_pinc","text_bleu",
-    "text_...","text_''","prop","text_prop",0,"text_her","text_thr","text_rithere","text_the","text_tranparnt",0,0,0,0,"text_stelth","text_colrful","text_rave","text_purp",
+    "text_downleft","text_down","text_downright",0,0,"text_:/","text_no undo","text_undo","text_za warudo","text_brite","text_torc","text_tranparnt",0,0,0,"text_graey","text_qt","text_cyeann",
+    "text_every1","text_every2","text_every3","text_lethers",0,"text_poor toll","text_go arnd","text_mirr arnd","text_glued",0,0,0,0,0,"text_thonk","text_whit","text_pinc","text_bleu",
+    "text_...","text_''","prop","text_prop",0,"text_her","text_thr","text_rithere","text_the","text_deez",0,0,0,0,"text_stelth","text_colrful","text_rave","text_purp",
   },
 }
 tile_grid_width = 18
@@ -9163,6 +9163,18 @@ tiles_list = {
     color = {0,3},
     layer = 20,
     tags = {"pixel", "square", "block"},
+  },
+  -- 825
+  {
+    name = "text_deez",
+    sprite = "text_deez",
+    type = "text",
+    texttype = {object = true},
+    rotate = true,
+    color = {0,3},
+    layer = 20,
+    tags = {"that","those","cg5", "the^", "the ->", "these"},
+    desc = "DEEZ: Refers to the objects in the direction it's pointing at.",
   },
 }
 

@@ -746,7 +746,7 @@ function addRule(full_rule)
   end
   
   --Transform THE BE U into THE (prefix condition) EVERY1 BE U. (Probably becomes EVERY2 later once that exists.)
-  if subject == "the" then
+  if subject == "the" or subject == "deez" then
     rules.subject.conds = copyTable(rules.subject.conds) or {};
     table.insert(rules.subject.conds, rules.subject);
     addRuleSimple({"every2", rules.subject.conds}, rules.verb, rules.object, units, dir)

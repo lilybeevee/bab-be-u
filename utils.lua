@@ -1529,6 +1529,26 @@ function testConds(unit, conds, compare_with) --cond should be a {condtype,{obje
       
       dx,dy,dir,tx,ty = getNextTile(the,dx,dy,dir)
       result = ((unit.x == tx) and (unit.y == ty))
+    elseif condtype == "deez" then
+      local deez = cond.unit
+      
+      local tx = deez.x
+      local ty = deez.y
+      local dir = deez.dir
+      local dx = dirs8[dir][1]
+      local dy = dirs8[dir][2]
+      
+      if dir == 1 then
+        result = (unit.x > tx) and (unit.y == ty)
+      elseif dir == 3 then
+        result = (unit.x == tx) and (unit.y > ty)
+      elseif dir == 5 then
+        result = (unit.x < tx) and (unit.y == ty)
+      elseif dir == 7 then
+        result = (unit.x == tx) and (unit.y < ty)
+      else
+        result = false
+      end
     elseif condtype == "unlocked" then
       if unit.name == "lvl" and unit.special.visibility ~= "open" then
         result = false
