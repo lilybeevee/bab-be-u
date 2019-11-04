@@ -26,9 +26,9 @@ function level_button.new(file, extra)
       default_color = {0.7, 0, 0, 1}
     end
   else
-    default_color = {0.25, 0.5, 1, 1}
+    default_color = {getPaletteColor(4,4,getTheme())}
     if extra then
-      default_color = {0.125, 0.25, 0.5, 1}
+      default_color = {getPaletteColor(5,4,getTheme())}
     end
   end
 

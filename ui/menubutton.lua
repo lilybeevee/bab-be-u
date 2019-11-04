@@ -14,7 +14,7 @@ function menu_button.new(text, id, func)
       o:setColor(0, 0.7, 0)
       o:setHoverColor(0.7, 0, 0)
     else
-      local r,g,b = getPaletteColor(4,4,getTheme())
+      local r,g,b = getPaletteColor(3,4,getTheme())
       o:setText(text)
       o:setColor(r,g,b)
       o:setHoverColor(r-.2,g-.2,b-.2)
