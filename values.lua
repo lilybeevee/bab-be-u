@@ -258,9 +258,9 @@ selector_grid_contents = {
   },
   -- page 4: characters and special objects
   {
-    "bab","text_bab","kat","text_kat","flof","text_flof","bunmy","text_bunmy","toby","text_toby","temmi","text_temmi",0,0,"selctr","text_selctr","lvl","text_lvl",
-    "keek","text_keek","creb","text_creb","shrim","text_shrim","moo","text_moo",0,0,0,0,0,0,"this","text_mous","lin","text_lin",
-    "meem","text_meem","statoo","text_statoo","flamgo","text_flamgo","migri","text_migri",0,0,0,0,0,0,"text_gang","text_frens","text_groop","text_pathz",
+    "bab","text_bab","kat","text_kat","flof","text_flof","babby","text_babby","bunmy","text_bunmy",0,0,0,0,"selctr","text_selctr","lvl","text_lvl",
+    "keek","text_keek","creb","text_creb","shrim","text_shrim","moo","text_moo","toby","text_toby",0,0,0,0,"this","text_mous","lin","text_lin",
+    "meem","text_meem","statoo","text_statoo","flamgo","text_flamgo","migri","text_migri","temmi","text_temmi",0,0,0,0,"text_gang","text_frens","text_groop","text_pathz",
     "skul","text_skul","beeee","text_beeee","gul","text_gul","kva","text_kva",0,0,0,0,0,0,"text_no1","text_every1","text_every2","text_every3",
     "ghost fren","text_ghost fren","fishe","text_fishe","starrfishe","text_starrfishe","pidgin","text_pidgin",0,0,0,0,0,0,"text_text",0,0,"text_xplod",
     "robobot","text_robobot","snek","text_snek","sneel","text_sneel","swan","text_swan",0,0,0,0,0,0,0,0,0,0,
@@ -9176,6 +9176,28 @@ tiles_list = {
     tags = {"that","those","cg5", "the^", "the ->", "these"},
     desc = "DEEZ: Refers to the objects in the direction it's pointing at.",
   },
+  -- 826
+  {
+    name = "babby",
+    sprite = "babby",
+    sing = "babby",
+    rotate = true,
+    color = {0,3},
+    layer = 11,
+    tags = {"baby", "bapy", "babey", "babbey", "smol"},
+    desc = "bab be babbe ba"
+  },
+  -- 827
+  {
+    name = "text_babby",
+    sprite = "text_babby",
+    type = "text",
+    texttype = {object = true},
+    color = {4,1},
+    layer = 20,
+    tags = {"baby", "bapy", "babey", "babbey", "smol"},
+    desc = "not to be confused with bab be"
+  }
 }
 
 tiles_by_name = {}

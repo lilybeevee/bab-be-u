@@ -860,6 +860,7 @@ end
 
 function hasProperty(unit,prop)
   if not rules_with[prop] and prop ~= "?" then return false end
+  if unit and unit.fullname == "babby" and prop == "thicc" and not hasRule(unit, "be", "notranform") then return false end
   if hasRule(unit, "be", prop) then return true end
   if type(unit) ~= "table" then return false end
   if not rules_with["giv"] then return false end

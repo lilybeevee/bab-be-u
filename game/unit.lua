@@ -512,7 +512,7 @@ function updateUnits(undoing, big_update)
       give_me_moar = false
       local ismoar = getUnitsWithEffectAndCount("moar")
       for unit,amt in pairs(ismoar) do
-        if unit.name ~= "lie/8" and timecheck(unit,"be","moar") then
+        if (unit.name ~= "lie/8" or hasProperty(unit,"notranform")) and timecheck(unit,"be","moar") then
           amt = amt - 2*moar_repeats
           if amt > 0 then
             if (amt % 2) == 1 then
@@ -2852,7 +2852,7 @@ function convertUnits(pass)
   
   local moars = getUnitsWithEffect("moar")
   for _,slice in  ipairs(moars) do
-    if slice.name == "lie/8" then
+    if slice.name == "lie/8" and not hasProperty(unit, "notranform") then
       if not slice.removed then
         table.insert(converted_units, slice)
       end
@@ -2891,6 +2891,18 @@ function convertUnits(pass)
       if tfd and not unit.removed then
         table.insert(converted_units, unit)
       end
+    end
+  end
+
+  local babbys = getUnitsWithEffect("thicc")
+  for _,babby in ipairs(babbys) do
+    if babby.fullname == "babby" and not hasProperty(unit, "notranform") then
+      if not babby.removed then
+        table.insert(converted_units, babby)
+      end
+      local tile = tiles_by_name["bab"]
+      local new_unit = createUnit(tile, babby.x, babby.y, babby.dir, true)
+      addUndo({"create", new_unit.id, true, created_from_id = babby.id})
     end
   end
   
@@ -3203,7 +3215,7 @@ function moveUnit(unit,x,y,portal,instant)
         -- set draw positions to portal offset to interprolate through portals
         unit.draw.x, unit.draw.y = portal.draw.x, portal.draw.y
         addTween(tween.new(0.1, unit.draw, {x = x, y = y}), "unit:pos:" .. unit.tempid)
-        if portal.name == "smol" then
+        if portal.name == "smol" and unit.fullname ~= "babby" then
           addTween(tween.new(0.05, unit.draw, {scaley = 0.5}), "unit:pos:" .. unit.tempid, function()
           unit.draw.x = x
           unit.draw.y = y
