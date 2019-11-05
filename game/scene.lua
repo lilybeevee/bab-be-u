@@ -1196,13 +1196,19 @@ function scene.draw(dt)
       drawCustomLetter(unit.special.customletter, fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, 16, 16)
     end
 
-    if #unit.overlay > 0 and unit.fullname ~= "no1" then
+    if #unit.overlay > 0 then
       local function overlayStencil()
         pcallSetShader(mask_shader)
         drawSprite(nil,true)
+        if unit.fullname == "babby" then
+          love.graphics.translate(fulldrawx, fulldrawy)
+          love.graphics.scale(0.75, 0.5)
+          love.graphics.translate(-fulldrawx, -fulldrawy)
+        end
         love.graphics.setShader()
       end
       for _,overlay in ipairs(unit.overlay) do
+        love.graphics.push()
         love.graphics.setColor(1, 1, 1)
         love.graphics.stencil(overlayStencil, "replace")
         local old_test_mode, old_test_value = love.graphics.getStencilTest()
@@ -1211,6 +1217,7 @@ function scene.draw(dt)
         drawSprite("overlay/" .. overlay, false, true)
         love.graphics.setBlendMode("alpha", "alphamultiply")
         love.graphics.setStencilTest(old_test_mode, old_test_value)
+        love.graphics.pop()
       end
     end
 
