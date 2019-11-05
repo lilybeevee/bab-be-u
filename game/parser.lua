@@ -149,7 +149,7 @@ function findUnit(words, extra_words_, dir, outer, no_verb_cond, is_subject)
       table.insert(extra_words, andd)
       andd = nil
     end
-    if enclosed and words[1].type["and"] and words[2] then
+    if enclosed and words[1].type["and"] and words[2] and not prefix_object then
       andd = table.remove(words, 1)
       if #words == 0 then return end
     end -- we're not breaking here to allow "frenles lit bab" - add "else break" here if we want there to always be an and: "frenles & lit bab"
