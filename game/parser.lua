@@ -118,6 +118,7 @@ function findUnit(words, extra_words_, dir, outer, no_verb_cond, is_subject)
     if #words == 0 then return end
   end
   
+  local prefix_object
   local andd
   while words[1].type and (words[1].type.cond_prefix or (words[1].type.cond_compare and not is_subject)) do
     local prefix = copyTable(words[1])
@@ -138,6 +139,11 @@ function findUnit(words, extra_words_, dir, outer, no_verb_cond, is_subject)
         prefix.name = prefix.name.."n't"
       end
     end
+    if prefix.type.object then
+      prefix_object = prefix
+    else
+      prefix_object = nil
+    end
     table.insert(conds, prefix)
     if andd then
       table.insert(extra_words, andd)
@@ -151,8 +157,14 @@ function findUnit(words, extra_words_, dir, outer, no_verb_cond, is_subject)
   
   local words_
   unit, words_ = findClass(copyTable(words))
-  if not unit then return end
-  words = words_
+  if not unit then
+    if prefix_object then
+      removeFromTable(conds, prefix_object)
+      unit = prefix_object
+    else return end
+  else
+    words = words_
+  end
   
   local first_infix = true
   while words[1] and words[1].type and (words[1].type.cond_infix or (words[1].type.direction and words[2] and words[2].name == "arond")) and (first_infix or enclosed) and (not no_verb_cond or not words[1].type.verb) do
