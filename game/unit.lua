@@ -2983,7 +2983,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
     unit.draw = {x = unit.x, y = unit.y, scalex = 1, scaley = 1, rotation = (unit.rotatdir - 1) * 45, opacity = 1}
     if convert then
       unit.draw.scaley = 0
-      addTween(tween.new(0.1, unit.draw, {scaley = 1}), "unit:scale:" .. unit.tempid)
+      addTween(tween.new(0.1, unit.draw, {scaley = 1}), "unit:scaley:" .. unit.tempid)
     end
   end
 
@@ -3131,7 +3131,7 @@ function deleteUnit(unit,convert,undoing,gone)
     if convert then
       table.insert(still_converting, unit)
       addUndo{"tween",unit}
-      addTween(tween.new(0.1, unit.draw, {scaley = 0}), "unit:scale:" .. unit.tempid)
+      addTween(tween.new(0.1, unit.draw, {scaley = 0}), "unit:scaley:" .. unit.tempid)
       tick.delay(function() removeFromTable(still_converting, unit) end, 0.1)
     elseif gone then
       if unit.fullname == "ditto" then
@@ -3216,15 +3216,13 @@ function moveUnit(unit,x,y,portal,instant)
         unit.draw.x, unit.draw.y = portal.draw.x, portal.draw.y
         addTween(tween.new(0.1, unit.draw, {x = x, y = y}), "unit:pos:" .. unit.tempid)
         if portal.name == "smol" and unit.fullname ~= "babby" then
-          addTween(tween.new(0.05, unit.draw, {scaley = 0.5}), "unit:pos:" .. unit.tempid, function()
-          unit.draw.x = x
-          unit.draw.y = y
-          addTween(tween.new(0.05, unit.draw, {scaley = 1}), "unit:pos:" .. unit.tempid)
+          addTween(tween.new(0.05, unit.draw, {scaley = 0.5}, "outQuint"), "unit:scaley:" .. unit.tempid, function()
+            addTween(tween.new(0.05, unit.draw, {scaley = 1}, "inQuint"), "unit:scaley:" .. unit.tempid)
           end)
         end
         -- instantly change object's rotation, weirdness ensues otherwise
         unit.draw.rotation = (unit.rotatdir - 1) * 45
-        tweens["unit:dir:" .. unit.tempid] = nil
+        tweens["unit:rotation:" .. unit.tempid] = nil
       end
     elseif (x ~= unit.x or y ~= unit.y) and not instant then
       if unit.type == "text" or rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname] then
@@ -3241,10 +3239,12 @@ function moveUnit(unit,x,y,portal,instant)
           addTween(tween.new(0.1, unit.draw, {x = x, y = y}), "unit:pos:" .. unit.tempid)
         else
           --fade in, fade out effect
-          addTween(tween.new(0.05, unit.draw, {scalex = 0}), "unit:pos:" .. unit.tempid, function()
-          unit.draw.x = x
-          unit.draw.y = y
-          addTween(tween.new(0.05, unit.draw, {scalex = 1}), "unit:pos:" .. unit.tempid)
+          addTween(tween.new(0.05, unit.draw, {scalex = 0}), "unit:scalex:" .. unit.tempid, function()
+            unit.draw.x = x
+            unit.draw.y = y
+            unit.draw.rotation = (unit.rotatdir - 1) * 45
+            tweens["unit:rotation:" .. unit.tempid] = nil
+            addTween(tween.new(0.05, unit.draw, {scalex = 1}), "unit:scalex:" .. unit.tempid)
           end)
         end
       end
@@ -3308,9 +3308,9 @@ function updateDir(unit, dir, force)
     local target_rot = (unit.rotatdir - 1) * 45
     if (unit.rotate or (rules_with ~= nil and hasProperty(unit,"rotatbl"))) and math.abs(unit.draw.rotation - target_rot) == 180 then
       -- flip "mirror" effect
-      addTween(tween.new(0.05, unit.draw, {scalex = 0}), "unit:dir:" .. unit.tempid, function()
+      addTween(tween.new(0.05, unit.draw, {scalex = 0}), "unit:scalex:" .. unit.tempid, function()
         unit.draw.rotation = target_rot
-        addTween(tween.new(0.05, unit.draw, {scalex = 1}), "unit:dir:" .. unit.tempid)
+        addTween(tween.new(0.05, unit.draw, {scalex = 1}), "unit:scalex:" .. unit.tempid)
       end)
     else
       -- smooth angle rotation
@@ -3319,7 +3319,8 @@ function updateDir(unit, dir, force)
       elseif target_rot - unit.draw.rotation > 180 then
         target_rot = target_rot - 360
       end
-      addTween(tween.new(0.1, unit.draw, {scalex = 1, rotation = target_rot}), "unit:dir:" .. unit.tempid)
+      addTween(tween.new(0.1, unit.draw, {scalex = 1}), "unit:scalex:" .. unit.tempid)
+      addTween(tween.new(0.1, unit.draw, {rotation = target_rot}), "unit:rotation:" .. unit.tempid)
     end
   end
   return true
