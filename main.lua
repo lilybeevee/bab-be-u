@@ -87,8 +87,8 @@ bab arguments!
   for i,v in pairs(cmdargs) do
     print(colr.dim("arg set: " .. i .. "=" .. v))
   end
-
-
+  
+  
   local babfound = false
 
   function searchbab(d)
@@ -256,6 +256,8 @@ bab arguments!
       sprites[n] = spr[i]
     end
   end
+  
+  menu_palette = math.random(1,18) --18 is the number of possible palettes
   
   sprites["letters_/"] = sprites["letters_slash"]
   sprites["letters_:"] = sprites["letters_colon"]

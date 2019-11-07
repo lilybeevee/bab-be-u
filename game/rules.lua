@@ -746,7 +746,7 @@ function addRule(full_rule)
   end
   
   --Transform THE BE U into THE (prefix condition) EVERY1 BE U. (Probably becomes EVERY2 later once that exists.)
-  if subject == "the" then
+  if subject == "the" or subject == "deez" then
     rules.subject.conds = copyTable(rules.subject.conds) or {};
     table.insert(rules.subject.conds, rules.subject);
     addRuleSimple({"every2", rules.subject.conds}, rules.verb, rules.object, units, dir)
@@ -932,7 +932,7 @@ function postRules()
             -- print("frule:", fullDump(frule))
             if (frule.subject.name == rule.subject.name or (rule.subject.name == "text" and frule.subject.name:starts("text_"))) and fverb == rule.verb.name and (
               (specialmatch == 0 and frule.object.name == rule.object.name and frule.object.name ~= "her" and frule.object.name ~= "thr" and frule.object.name ~= "rit here") or
-              (specialmatch == 1 and frule.object.type.object and not group_names_set[frule.object.name]) or -- possibly more special cases needed
+              (specialmatch == 1 and (frule.object.type.object or frule.object.name == "tranz") and not group_names_set[frule.object.name]) or -- possibly more special cases needed
               (specialmatch == 2 and frule.object.name == "notranform")
             ) then
               if has_conds then

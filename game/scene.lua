@@ -231,6 +231,7 @@ function scene.update(dt)
   scene.doPassiveParticles(dt, ":o", "bonus", 0.5, 0.8, 1, {4, 1})
   scene.doPassiveParticles(dt, "qt", "love", 0.25, 0.5, 1, {4, 2})
   scene.doPassiveParticles(dt, "slep", "slep", 1, 0.33, 1, {0, 3})
+  scene.doPassiveParticles(dt, "thonk", "thonk", 0.25, 0.5, 1, {0, 3})
   scene.doPassiveParticles(dt, ":/", "bonus", 0.25, 0.25, 1, {3, 3})
   scene.doPassiveParticles(dt, "no undo", "bonus", 0.25, 0.25, 1, {5, 3})
   scene.doPassiveParticles(dt, "undo", "bonus", 0.25, 0.25, 1, {6, 1})
@@ -939,7 +940,7 @@ function scene.draw(dt)
 
     local fulldrawx = (drawx + 0.5)*TILE_SIZE
     local fulldrawy = (drawy + 0.5)*TILE_SIZE
-    if hasProperty(unit,"big") then
+    if hasProperty(unit,"thicc") then
       fulldrawx = fulldrawx + TILE_SIZE/2
       fulldrawy = fulldrawy + TILE_SIZE/2
     end
@@ -999,7 +1000,7 @@ function scene.draw(dt)
 
     love.graphics.push()
     love.graphics.translate(fulldrawx, fulldrawy)
-    if hasProperty(unit,"big") then
+    if hasProperty(unit,"thicc") then
       love.graphics.scale(2)
     end
 
@@ -1195,13 +1196,19 @@ function scene.draw(dt)
       drawCustomLetter(unit.special.customletter, fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, 16, 16)
     end
 
-    if #unit.overlay > 0 and unit.fullname ~= "no1" then
+    if #unit.overlay > 0 then
       local function overlayStencil()
         pcallSetShader(mask_shader)
         drawSprite(nil,true)
+        if unit.fullname == "babby" then
+          love.graphics.translate(fulldrawx, fulldrawy)
+          love.graphics.scale(0.75, 0.5)
+          love.graphics.translate(-fulldrawx, -fulldrawy)
+        end
         love.graphics.setShader()
       end
       for _,overlay in ipairs(unit.overlay) do
+        love.graphics.push()
         love.graphics.setColor(1, 1, 1)
         love.graphics.stencil(overlayStencil, "replace")
         local old_test_mode, old_test_value = love.graphics.getStencilTest()
@@ -1210,6 +1217,7 @@ function scene.draw(dt)
         drawSprite("overlay/" .. overlay, false, true)
         love.graphics.setBlendMode("alpha", "alphamultiply")
         love.graphics.setStencilTest(old_test_mode, old_test_value)
+        love.graphics.pop()
       end
     end
 

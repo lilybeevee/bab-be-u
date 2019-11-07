@@ -181,7 +181,7 @@ function doMovement(movex, movey, key)
     if move_stage == -1 then
       local icy = getUnitsWithEffectAndCount("icy")
       for unit,icyness in pairs(icy) do
-        local others = (unit == outerlvl and units or getUnitsOnTile(unit.x, unit.y, nil, nil, nil, nil, hasProperty(unit,"big")))
+        local others = (unit == outerlvl and units or getUnitsOnTile(unit.x, unit.y, nil, nil, nil, nil, hasProperty(unit,"thicc")))
         for __,other in ipairs(others) do
           if other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) and timecheck(unit,"be","icy") and ignoreCheck(other,unit,"icy") and undo_buffer[2] ~= nil then
             for _,undo in ipairs(undo_buffer[2]) do
@@ -203,7 +203,7 @@ function doMovement(movex, movey, key)
       local icyyyy = getUnitsWithEffectAndCount("icyyyy")
       for unit,icyness in pairs(icyyyy) do
         if timeless and not timecheck(unit,"be","icyyyy") then
-          local others = (unit == outerlvl and units or getUnitsOnTile(unit.x, unit.y, nil, nil, nil, nil, hasProperty(unit,"big")))
+          local others = (unit == outerlvl and units or getUnitsOnTile(unit.x, unit.y, nil, nil, nil, nil, hasProperty(unit,"thicc")))
           for __,other in ipairs(others) do
             if other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) and ignoreCheck(other,unit,"icyyyy") and undo_buffer[2] ~= nil then
               for _,undo in ipairs(undo_buffer[2]) do
@@ -303,7 +303,7 @@ function doMovement(movex, movey, key)
         for nx=-1,1 do
           for ny=-1,1 do
             if (nx ~= 0) or (ny ~= 0) then
-              mergeTable(others,getUnitsOnTile(unit.x+nx,unit.y+ny,nil,nil,nil,nil,hasProperty(unit,"big")))
+              mergeTable(others,getUnitsOnTile(unit.x+nx,unit.y+ny,nil,nil,nil,nil,hasProperty(unit,"thicc")))
             end
           end
         end
@@ -459,7 +459,7 @@ function doMovement(movex, movey, key)
       local isyeet = matchesRule(nil, "yeet", "?")
       for _,ruleparent in ipairs(isyeet) do
         local unit = ruleparent[2]
-        local others = (unit == outerlvl and units or getUnitsOnTile(unit.x, unit.y, nil, nil, nil, nil, hasProperty(unit,"big")))
+        local others = (unit == outerlvl and units or getUnitsOnTile(unit.x, unit.y, nil, nil, nil, nil, hasProperty(unit,"thicc")))
         for __,other in ipairs(others) do
           if other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) and ignoreCheck(other, unit) then
             local is_yeeted = hasRule(unit, "yeet", other)
@@ -504,7 +504,7 @@ function doMovement(movex, movey, key)
       end
       local go = getUnitsWithEffectAndCount("go")
       for unit,goness in pairs(go) do
-        local others = (unit == outerlvl and units or getUnitsOnTile(unit.x, unit.y, nil, nil, nil, nil, hasProperty(unit,"big")))
+        local others = (unit == outerlvl and units or getUnitsOnTile(unit.x, unit.y, nil, nil, nil, nil, hasProperty(unit,"thicc")))
         for __,other in ipairs(others) do 
           if other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) and timecheck(unit,"be","go") and ignoreCheck(other,unit,"go") then
             table.insert(other.moves, {reason = "go", dir = unit.dir, times = goness})
@@ -517,7 +517,7 @@ function doMovement(movex, movey, key)
       end
       local go = getUnitsWithEffectAndCount("goooo")
       for unit,goness in pairs(go) do
-        local others = (unit == outerlvl and units or getUnitsOnTile(unit.x, unit.y, nil, nil, nil, nil, hasProperty(unit,"big")))
+        local others = (unit == outerlvl and units or getUnitsOnTile(unit.x, unit.y, nil, nil, nil, nil, hasProperty(unit,"thicc")))
         for __,other in ipairs(others) do 
           if other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) and ignoreCheck(other,unit,"goooo") then
             table.insert(other.moves, {reason = "goooo", dir = unit.dir, times = goness})
@@ -535,7 +535,7 @@ function doMovement(movex, movey, key)
         moovunits[unit] = true
       end
       for unit,_ in pairs(moovunits) do
-        local others = getUnitsOnTile(unit.x,unit.y,nil,nil,nil,nil,hasProperty(unit,"big"))
+        local others = getUnitsOnTile(unit.x,unit.y,nil,nil,nil,nil,hasProperty(unit,"thicc"))
         for _,other in ipairs(others) do
           local is_moover = #matchesRule(unit, "moov", other)
           if is_moover > 0 and timecheck(unit,"moov",other) and other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) and ignoreCheck(unit,other) and ignoreCheck(other,unit) then
@@ -901,7 +901,7 @@ function applySlide(mover, already_added, moving_units_next)
   --LAUNCH will take precedence over SLIDE, so that puzzles where you move around launchers on an ice rink will behave intuitively.
   local did_launch = false
    --we haven't actually moved yet, so check the tile we will be on
-  local others = getUnitsOnTile(mover.x, mover.y, nil, false, mover, nil, nil, nil, hasProperty(mover,"big"))
+  local others = getUnitsOnTile(mover.x, mover.y, nil, false, mover, nil, nil, nil, hasProperty(mover,"thicc"))
   table.insert(others, outerlvl)
   --REFLECC is now also handled here, and goes before anything else.
   for _,v in ipairs(others) do
@@ -1042,7 +1042,7 @@ function applySwap(mover, dx, dy)
   --[[addUndo({"update", unit.id, unit.x, unit.y, unit.dir})]]--
   local swap_mover = hasProperty(mover, "behin u")
   local did_swap = false
-  for _,v in ipairs(getUnitsOnTile(mover.x+dx, mover.y+dy, nil, nil, nil, nil, hasProperty(mover,"big"))) do
+  for _,v in ipairs(getUnitsOnTile(mover.x+dx, mover.y+dy, nil, nil, nil, nil, hasProperty(mover,"thicc"))) do
   --if not v.already_moving then --this made some things move order dependent, so taking it out
     local swap_v = hasProperty(v, "behin u")
     --Don't swap with non-swap empty.
@@ -1069,7 +1069,7 @@ function applyPortalHoover(mover, dx, dy)
   
   local xx, yy = mover.x+dx, mover.y+dy
   
-  for _,v in ipairs(getUnitsOnTile(mover.x+dx, mover.y+dy, nil, false, nil, nil, hasProperty(unit,"big"))) do
+  for _,v in ipairs(getUnitsOnTile(mover.x+dx, mover.y+dy, nil, false, nil, nil, hasProperty(unit,"thicc"))) do
     if sameFloat(mover, v) and ignoreCheck(v,mover,"poor toll") then
       local dx, dy, dir, px, py = getNextTile(v, -dx, -dy, v.dir)
       if (px ~= xx and py ~= yy) then
@@ -1101,7 +1101,7 @@ function findSidekikers(unit,dx,dy)
     local curx = x+curdx
     local cury = y+curdy
     local _dx, _dy, _dir, _x, _y = getNextTile(unit, curdx, curdy, curdir)
-    for _,v in ipairs(getUnitsOnTile(_x, _y, nil, nil, nil, nil, hasProperty(unit,"big"))) do
+    for _,v in ipairs(getUnitsOnTile(_x, _y, nil, nil, nil, nil, hasProperty(unit,"thicc"))) do
       if hasProperty(v, "sidekik") and sameFloat(unit,v,true) and ignoreCheck(v,unit) then
         result[v] = dirAdd(dir, dirDiff(_dir, curdir))
       end
@@ -1116,7 +1116,7 @@ function findSidekikers(unit,dx,dy)
     local curx = x+curdx
     local cury = y+curdy
     local _dx, _dy, _dir, _x, _y = getNextTile(unit, curdx, curdy, curdir)
-    for _,v in ipairs(getUnitsOnTile(_x, _y, nil, nil, nil, nil, hasProperty(unit,"big"))) do
+    for _,v in ipairs(getUnitsOnTile(_x, _y, nil, nil, nil, nil, hasProperty(unit,"thicc"))) do
       local diagkikness = countProperty(v, "diagkik")
       if ((i > 2) and (diagkikness >= 1) or (diagkikness >= 2)) and sameFloat(unit,v,true) and ignoreCheck(v,unit) then
         result[v] = dirAdd(dir, dirDiff(_dir, curdir))
@@ -1186,7 +1186,7 @@ function doPullCore(unit,dx,dy,dir,data, already_added, moving_units, moving_uni
     local old_dir = dir
     dx, dy, dir, x, y = getNextTile(unit, dx, dy, dir, true)
     local dir_diff = dirDiff(old_dir, dir)
-    for _,v in ipairs(getUnitsOnTile(x, y, nil, nil, nil, nil, hasProperty(unit,"big"))) do
+    for _,v in ipairs(getUnitsOnTile(x, y, nil, nil, nil, nil, hasProperty(unit,"thicc"))) do
       if hasProperty(v, "come pls") and sameFloat(unit,v,true) and ignoreCheck(v,unit) then
         local success,movers,specials = canMove(v, dx, dy, dir, true) --TODO: I can't remember why pushing is set but pulling isn't LOL, but if nothing's broken then shrug??
         for _,special in ipairs(specials) do
@@ -1663,7 +1663,7 @@ function canMove(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_stack_,
     return false,{},{}
   end
   local success, movers, specials = canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_stack_,start_x,start_y)
-  if hasProperty(unit,"big") then
+  if hasProperty(unit,"thicc") then
     for i=1,3 do
       local newsuccess, newmovers, newspecials = canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_stack_,(start_x or unit.x)+i%2,(start_y or unit.y)+math.floor(i/2))
       mergeTable(movers,newmovers)
