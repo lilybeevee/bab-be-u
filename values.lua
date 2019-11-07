@@ -305,7 +305,7 @@ selector_grid_contents = {
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,"wan","text_wan","mug","text_mug","die","text_die",0,0,0,0,0,0,0,0,0,0,
+    "bluon","text_bluon","wan","text_wan","mug","text_mug","die","text_die",0,0,0,0,0,0,0,0,0,0,
     "sno","text_sno","bel","text_bel","wres","text_wres","bowie","text_bowie","sant","text_sant","canedy","text_canedy","bolble","text_bolble","now","text_now","cooky","text_cooky",
     0,0,"pot","text_pot","sweep","text_sweep","candl","text_candl","which","text_which","corndy","text_corndy","maglit","text_maglit","cracc","text_cracc",0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -9197,7 +9197,28 @@ tiles_list = {
     layer = 20,
     tags = {"baby", "bapy", "babey", "babbey", "smol"},
     desc = "not to be confused with bab be"
-  }
+   },
+   -- 828
+   {
+    name = "bluon",
+    sprite = "bluon",
+    type = "object",
+    color = {2, 2},
+    layer = 3,
+    tags = {"bloon","ballon"},
+    desc = "the source of all evil... or something",
+  },
+ -- 829
+  {
+    name = "text_bluon",
+    sprite = "text_bluon",
+    type = "text",
+    texttype = {object = true},
+    color = {2, 2},
+    layer = 20,
+    tags = {"bloon","ballon"}
+    desc = "blu on?"
+  },
 }
 
 tiles_by_name = {}
