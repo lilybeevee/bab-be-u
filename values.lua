@@ -9216,7 +9216,7 @@ tiles_list = {
     texttype = {object = true},
     color = {2, 2},
     layer = 20,
-    tags = {"bloon","ballon"}
+    tags = {"bloon","ballon"},
     desc = "blu on?"
   },
 }
