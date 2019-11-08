@@ -9206,7 +9206,7 @@ tiles_list = {
     color = {2, 2},
     layer = 3,
     tags = {"bloon","ballon"},
-    desc = "the source of all evil... or something",
+    desc = "the source of all evil... or something"
   },
  -- 829
   {
