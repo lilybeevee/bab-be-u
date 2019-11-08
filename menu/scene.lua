@@ -14,6 +14,9 @@ local git_btn = nil
 
 local splash = love.timer.getTime() % 1
 
+local babtitletween = love.timer.getTime()
+local babtitlespeen = math.random(1,1000) == 1
+
 function scene.load()
   metaClear()
   clear()
@@ -36,6 +39,8 @@ function scene.load()
   love.keyboard.setKeyRepeat(false)
   scene.buildUI()
   scene.selecting = true
+  babtitletween = love.timer.getTime()
+  babtitlespeen = math.random(1,1000) == 1
 end
 
 function scene.buildUI()
@@ -107,6 +112,8 @@ function scene.update(dt)
   else
     scrollx, scrolly = 0,0
   end
+
+  git_btn:setPos(10, love.graphics.getHeight()-sprites["ui/github"]:getHeight()-10 + ease.outExpo(math.min(love.timer.getTime()-babtitletween-0.5, 1.2), sprites["ui/github"]:getHeight()+10, -sprites["ui/github"]:getHeight()-10, 1.2))
 end
 
 function scene.draw(dt)
@@ -156,22 +163,28 @@ function scene.draw(dt)
     else
       bab_logo = sprites["ui/bab_be_u"]
     end    
-        
+    
+    love.graphics.push()
+    love.graphics.translate(width/2, height/20 + bab_logo:getHeight()/2)
+    love.graphics.rotate(ease.outBack(math.min(love.timer.getTime()-babtitletween, babtitlespeen and 99999999 or 1.2), -math.pi*2, math.pi*2, 1.2, 2.6))
+    love.graphics.scale(ease.outBack(math.min(love.timer.getTime()-babtitletween, 1), 0, 1, 1, 1.9))
+
     for _,pair in pairs({{1,0},{0,1},{1,1},{-1,0},{0,-1},{-1,-1},{1,-1},{-1,1}}) do
       local outlineSize = 2
       pair[1] = pair[1] * outlineSize
       pair[2] = pair[2] * outlineSize
 
       love.graphics.setColor(0,0,0)
-      love.graphics.draw(bab_logo, width/2 - bab_logo:getWidth() / 2 + pair[1], height/20 + pair[2])
+      love.graphics.draw(bab_logo, pair[1]-bab_logo:getWidth()/2, pair[2]-bab_logo:getHeight()/2)
     end
 
     if not spookmode then
       love.graphics.setColor(1, 1, 1)
       setRainbowModeColor(love.timer.getTime()/3, .5)
-      love.graphics.draw(bab_logo, width/2 - bab_logo:getWidth() / 2, height/20)
+      love.graphics.draw(bab_logo, -bab_logo:getWidth()/2, -bab_logo:getHeight()/2)
     end
-    
+    love.graphics.translate(-width/2, -height/20 + bab_logo:getHeight()/2)
+    love.graphics.pop()
     -- Splash text here
     
     love.graphics.push()
@@ -216,6 +229,7 @@ function scene.draw(dt)
     end
     love.graphics.translate(-textx-love.graphics.getFont():getWidth(splashtext)/2, -texty-love.graphics.getFont():getHeight()/2)
 
+    love.graphics.setColor(1,1,1,love.timer.getTime()-babtitletween)
     love.graphics.print(splashtext, textx, texty)
     
     love.graphics.pop()
@@ -269,7 +283,10 @@ function scene.draw(dt)
     if string.find(build_number, "420") or string.find(build_number, "1337") or string.find(build_number, "666") or string.find(build_number, "69") then
       love.graphics.setColor(hslToRgb(love.timer.getTime()%1, .5, .5, .9))
     end
-    love.graphics.print(spookmode and "error" or 'v'..build_number)
+    local height = love.graphics.getFont():getHeight()
+    local y = ease.outExpo(math.min(love.timer.getTime()-babtitletween-0.5, 1.2), -height, height, 1.2)
+    love.graphics.print(spookmode and "error" or 'v'..build_number, 0, y)
+    debugDisplay('y', y)
   end
 
   if is_mobile then
