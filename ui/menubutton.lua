@@ -3,7 +3,7 @@ local menu_button = {}
 function menu_button.new(text, id, func)
   local o = ui.component.new()
 
-  o:setSprite(sprites["ui/button_white_" .. id or 1])
+  o:setSprite(sprites[("ui/button_white_" .. id) or 1])
   if not spookmode then
     if getTheme() == "halloween" then
       o:setText(text)
