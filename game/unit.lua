@@ -497,8 +497,7 @@ function updateUnits(undoing, big_update)
     
     local wins,unwins = levelBlock()
     
-    --MOAR is 4-way growth, MOARx2 is 8-way growth, MOARx3 is 2x 4-way growth, MOARx4 is 2x 8-way growth, MOARx5 is 3x 4-way growth, etc.
-    --TODO: If you write txt be moar, it's ambiguous which of a stacked text pair will be the one to grow into an adjacent tile first. But if you make it simultaneous, then you get double growth into corners which turns into exponential growth, which is even worse. It might need to be special cased in a clever way.
+    
     local isgone = getUnitsWithEffect("gone")
     for _,unit in ipairs(isgone) do
       unit.destroyed = true
@@ -506,7 +505,47 @@ function updateUnits(undoing, big_update)
     end
     deleteUnits(isgone, false, true)
     
-    local give_me_moar = true
+    --moar remake: based on the scent map distance in brogue (thanks notnat/pata for inspiration)
+    --TODO: If you write txt be moar, it's ambiguous which of a stacked text pair will be the one to grow into an adjacent tile first. But if you make it simultaneous, then you get double growth into corners which turns into exponential growth, which is even worse. It might need to be special cased in a clever way.
+      --I think making each one grow is more consistent so it should happen
+    local moars = getUnitsWithEffectAndCount("moar")
+    for unit,amt in pairs(moars) do
+      if (unit.name ~= "lie/8" or hasProperty(unit,"notranform")) and timecheck(unit,"be","moar") then
+        local range = math.ceil(amt/2)
+        for y_=-range,range do
+          local y = y_
+          local absy = math.abs(y)
+          for x_=-range,range do
+            local x = x_
+            local absx = math.abs(x)
+            if (absx+absy+math.max(absx,absy)-1 <= amt) and (x ~= 0 or y ~= 0) then --this line handles the area thing. 0,0 checking is because it's weird without it
+              if hasProperty(unit,"thicc") then
+                x = x*2
+                y = y*2
+              end
+              if canMove(unit, x, y, unit.dir, false, false, unit.name) then
+                if unit.class == "unit" then --idk what any of this means but i'm assuming it's good?
+                  local new_unit = createUnit(tiles_by_name[unit.fullname], unit.x, unit.y, unit.dir)
+                  addUndo({"create", new_unit.id, false})
+                  _, __, ___, mx, my = getNextTile(unit, x, y, i*2-1, false)
+                  moveUnit(new_unit,mx,my)
+                  addUndo({"update", new_unit.id, unit.x, unit.y, unit.dir})
+                elseif unit.class == "cursor" then
+                  local others = getCursorsOnTile(unit.x + x, unit.y + y)
+                  if #others == 0 then
+                    local new_mouse = createMouse(unit.x + x, unit.y + y)
+                    addUndo({"create_cursor", new_mouse.id})
+                  end
+                end
+              end
+            end
+          end
+        end
+      end
+    end
+
+
+    --[[local give_me_moar = true
     local moar_repeats = 0
     while (give_me_moar) do
       give_me_moar = false
@@ -572,7 +611,7 @@ function updateUnits(undoing, big_update)
         end
       end
       moar_repeats = moar_repeats + 1
-    end
+    end]]
     
     local to_destroy = {}
     if time_destroy == nil then

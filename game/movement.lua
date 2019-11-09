@@ -1699,7 +1699,7 @@ function canMove(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_stack_,
 end
 
 function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_stack_,start_x,start_y)
-  --if we haet outerlvl, we can't move, period.
+  --if we haet outerlvl, we can't move, period. 
   if rules_with["haet"] ~= nil and hasRule(unit, "haet", outerlvl) and not ignoreCheck(unit,outerlvl) then
     return false,{},{}
   end
