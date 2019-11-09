@@ -1,77 +1,147 @@
-local Reset = "\x1b[0m"
-local Bright = "\x1b[1m"
-local Dim = "\x1b[2m"
-local Underscore = "\x1b[4m"
-local Blink = "\x1b[5m"
-local Reverse = "\x1b[7m"
-local Hidden = "\x1b[8m"
+-- get if the terminal even SUPPORTS colors
 
-local FgBlack = "\x1b[30m"
-local FgRed = "\x1b[31m"
-local FgGreen = "\x1b[32m"
-local FgYellow = "\x1b[33m"
-local FgBlue = "\x1b[34m"
-local FgMagenta = "\x1b[35m"
-local FgCyan = "\x1b[36m"
-local FgWhite = "\x1b[37m"
+-- 1 - force colors on, 2 - force colors off, nil - autodetect
+local force_color
 
-local BgBlack = "\x1b[40m"
-local BgRed = "\x1b[41m"
-local BgGreen = "\x1b[42m"
-local BgYellow = "\x1b[43m"
-local BgBlue = "\x1b[44m"
-local BgMagenta = "\x1b[45m"
-local BgCyan = "\x1b[46m"
-local BgWhite = "\x1b[47m"
+if os.getenv('FORCE_COLOR') then
+    local envval = os.getenv('FORCE_COLOR')
+    if envval == 'true' or envval == '1' then
+        force_color = 1
+    elseif envval == 'false' or envval == '0' then
+        force_color = 0
+    end
+end
 
-function        red(str) return FgRed      ..str..Reset end
-function     yellow(str) return FgYellow   ..str..Reset end
-function      green(str) return FgGreen    ..str..Reset end
-function       blue(str) return FgBlue     ..str..Reset end
-function       cyan(str) return FgCyan     ..str..Reset end
-function    magenta(str) return FgMagenta  ..str..Reset end
-function      white(str) return FgWhite    ..str..Reset end
-function      black(str) return FgBlack    ..str..Reset end
+local user_os = package.config:sub(1,1) == '\\' and 'Windows' or 'Unix'
 
-function      bgred(str) return BgRed      ..str..Reset end
-function   bgyellow(str) return BgYellow   ..str..Reset end
-function    bggreen(str) return BgGreen    ..str..Reset end
-function     bgcyan(str) return BgCyan     ..str..Reset end
-function     bgblue(str) return BgBlue     ..str..Reset end
-function  bgmagenta(str) return BgMagenta  ..str..Reset end
-function    bgwhite(str) return BgWhite    ..str..Reset end
-function    bgblack(str) return BgBlack    ..str..Reset end
+-- 0 - supports none
+-- 1 - basic
+-- 2 - 256 colors
+-- 3 - 16m ("true color")
+function getcolorsupport()
+    if force_color == 0 then
+        return 0
+    end
+    
+    -- i couldn't get it to work in lua. so i just always return 1
 
-function     bright(str) return Bright     ..str..Reset end
-function        dim(str) return Dim        ..str..Reset end
-function underscore(str) return Underscore ..str..Reset end
-function      blink(str) return Blink      ..str..Reset end
-function    reverse(str) return Reverse    ..str..Reset end
-function     hidden(str) return Hidden     ..str..Reset end
+    return force_color or 1
+end
+
+local supportscolor = getcolorsupport()
+
+function colorstr(str, style)
+    if supportscolor < 1 then
+        return str..''
+    end
+
+    local open = '\x1b[' .. style[1] .. 'm';
+    local close = '\x1b[' .. style[2] .. 'm';
+
+    return open..str..close
+end
+
+local codes = {
+    reset = {0, 0},
+  
+    bold = {1, 22},
+    dim = {2, 22},
+    italic = {3, 23},
+    underline = {4, 24},
+    inverse = {7, 27},
+    hidden = {8, 28},
+    strikethrough = {9, 29},
+  
+    black = {30, 39},
+    red = {31, 39},
+    green = {32, 39},
+    yellow = {33, 39},
+    blue = {34, 39},
+    magenta = {35, 39},
+    cyan = {36, 39},
+    white = {37, 39},
+    gray = {90, 39},
+    grey = {90, 39},
+  
+    brightRed = {91, 39},
+    brightGreen = {92, 39},
+    brightYellow = {93, 39},
+    brightBlue = {94, 39},
+    brightMagenta = {95, 39},
+    brightCyan = {96, 39},
+    brightWhite = {97, 39},
+
+    bgBlack = {40, 49},
+    bgRed = {41, 49},
+    bgGreen = {42, 49},
+    bgYellow = {43, 49},
+    bgBlue = {44, 49},
+    bgMagenta = {45, 49},
+    bgCyan = {46, 49},
+    bgWhite = {47, 49},
+    bgGray = {100, 49},
+    bgGrey = {100, 49},
+
+    bgBrightRed = {101, 49},
+    bgBrightGreen = {102, 49},
+    bgBrightYellow = {103, 49},
+    bgBrightBlue = {104, 49},
+    bgBrightMagenta = {105, 49},
+    bgBrightCyan = {106, 49},
+    bgBrightWhite = {107, 49},
+};
+
+function        red(str) return colorstr(str, codes.red) end
+function     yellow(str) return colorstr(str, codes.yellow) end
+function      green(str) return colorstr(str, codes.green) end
+function       blue(str) return colorstr(str, codes.blue) end
+function       cyan(str) return colorstr(str, codes.cyan) end
+function    magenta(str) return colorstr(str, codes.magenta) end
+function      white(str) return colorstr(str, codes.white) end
+function      black(str) return colorstr(str, codes.black) end
+
+function      bgred(str) return colorstr(str, codes.bgRed) end
+function   bgyellow(str) return colorstr(str, codes.bgYellow) end
+function    bggreen(str) return colorstr(str, codes.bgGreen) end
+function     bgcyan(str) return colorstr(str, codes.bgCyan) end
+function     bgblue(str) return colorstr(str, codes.bgBlue) end
+function  bgmagenta(str) return colorstr(str, codes.bgMagenta) end
+function    bgwhite(str) return colorstr(str, codes.bgWhite) end
+function    bgblack(str) return colorstr(str, codes.bgBlack) end
+
+function        bright(str) return colorstr(str, codes.bold) end
+function        italic(str) return colorstr(str, codes.italic) end
+function           dim(str) return colorstr(str, codes.dim) end
+function    underscore(str) return colorstr(str, codes.underline) end
+function       reverse(str) return colorstr(str, codes.inverse) end
+function        hidden(str) return colorstr(str, codes.hidden) end
+function strikethrough(str) return colorstr(str, codes.strikethrough) end
 
 return {
-    red        =        red,
-    yellow     =     yellow,
-    green      =      green,
-    cyan       =       cyan,
-    blue       =       blue,
-    magenta    =    magenta,
-    white      =      white,
-    black      =      black,
+    red           =           red,
+    yellow        =        yellow,
+    green         =         green,
+    cyan          =          cyan,
+    blue          =          blue,
+    magenta       =       magenta,
+    white         =         white,
+    black         =         black,
 
-    bgred      =      bgred,
-    bgyellow   =   bgyellow,
-    bggreen    =    bggreen,
-    bgcyan     =     bgcyan,
-    bgblue     =     bgblue,
-    bgmagenta  =  bgmagenta,
-    bgwhite    =    bgwhite,
-    bgblack    =    bgblack,
+    bgred         =         bgred,
+    bgyellow      =      bgyellow,
+    bggreen       =       bggreen,
+    bgcyan        =        bgcyan,
+    bgblue        =        bgblue,
+    bgmagenta     =     bgmagenta,
+    bgwhite       =       bgwhite,
+    bgblack       =       bgblack,
 
-    bright     =     bright,
-    dim        =        dim,
-    underscore = underscore,
-    blink      =      blink,
-    reverse    =    reverse,
-    hidden     =     hidden,
+    bright        =        bright,
+    italic        =        italic,
+    bold          =        bright,
+    dim           =           dim,
+    underscore    =    underscore,
+    reverse       =       reverse,
+    hidden        =        hidden,
+    strikethrough = strikethrough,
 }
