@@ -9230,6 +9230,29 @@ tiles_list = {
     tags = {"won't","can't"},
     desc = "WON'T: X WON'T PROPERTY makes X not be affected by that property."
   },
+  -- 830
+  {
+    name = "voom",
+    sprite = {"voom_handle", "voom_blade"},
+    sing = "s_voom",
+    rotate = true,
+    color = {{0,2}, {1, 3}},
+    colored = {false, true},
+    layer = 11,
+    tags = {"lightsaber", "starwars", "jedi", "laser", "sword"},
+    desc = "britesaber"
+  },
+  -- 831
+  {
+    name = "text_voom",
+    sprite = "text_voom",
+    type = "text",
+    texttype = {object = true},
+    color = {2,4},
+    layer = 20,
+    tags = {"lightsaber", "starwars", "jedi", "laser", "sword"},
+    desc = "a long time ago in a galaxy far, far away..."
+  },
 }
 
 tiles_by_name = {}
