@@ -738,7 +738,7 @@ function updateUnits(undoing, big_update)
     local splits_per_tile = {}
     local split = getUnitsWithEffect("split")
     for _,unit in ipairs(split) do
-      if unit.name ~= "lie" then
+      if (unit.name ~= "lie" or hasProperty(unit,"notranform")) then
         local coords = tostring(unit.x)..","..tostring(unit.y)
         if (splits_per_tile[coords]) == nil then
           splits_per_tile[coords] = 0

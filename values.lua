@@ -547,7 +547,7 @@ tiles_list = {
     layer = 20,
     alias = {"ampersand"},
     tags = {"and"},
-    desc = "&: Joins multiple conditions, subjects or objects together in a rule. Can also be spelled as ampersand with letters. Rules with stacked text and &s don't work like in baba, be sure to experiment!",
+    desc = "&: Joins multiple conditions, subjects or objects together in a rule. Can also be spelled as ampersand with letters. Rules with stacked text and &s don't work like in baba, be sure to experiment!\nTry thingifying an &n't text, since no one would ever think to try that considering &n'ts are useless.",
   },
   -- 18
   {
@@ -1131,7 +1131,7 @@ tiles_list = {
     layer = 20,
     rotate = true,
     tags = {"go arrow", "up", "down", "left", "right","go ->","go^"},
-    desc = "GO ->: The unit is forced to face the indicated direction. LOOKAT GO -> makes a unit look in that direction or is true if it is facing that direction. HAET GO -> makes a unit fall in the opposite direction.",
+    desc = "GO ->: The unit is forced to face the indicated direction. LOOKAT GO -> makes a unit look in that direction or is true if it is facing that direction. BEN'T GO -> prevents an object from facing that direction.",
   },
   -- 71
   {
@@ -1175,7 +1175,7 @@ tiles_list = {
     color = {0, 3},
     layer = 20,
     tags = {"on", "wfren"},
-    desc = "W/ FREN (Infix Condition): True if the unit shares a tile with this object.",
+    desc = "W/ FREN (Infix Condition): True if the unit shares a tile with this object.\nDespite what it might look like, w/fren't doesn't work with letters.",
   },
   -- 75
   {
@@ -1456,7 +1456,7 @@ tiles_list = {
     color = {0, 3},
     layer = 20,
     tags = {"throw"},
-    desc = "YEET (Verb): This unit will force things it yeets in its tile to hurtle across the level in its facing direction (until it hits an object that stops it).",
+    desc = "YEET (Verb): This unit will force things it yeets in its tile to hurtle across the level in its facing direction (until it hits an object that stops it). YEET GO^ makes the object fall in that direction.",
   },
   -- 101
   {
@@ -1959,7 +1959,7 @@ tiles_list = {
     color = {5, 3},
     layer = 20,
     tags = {"bounded", "likes"},
-    desc = "LIEK (Verb): If a unit LIEKs objects, it is picky, and cannot step onto a tile unless it has at least one object it LIEKs. If X LIEK GO^, X will fall in that direction.",
+    desc = "LIEK (Verb): If a unit LIEKs objects, it is picky, and cannot step onto a tile unless it has at least one object it LIEKs.",
   },
   -- 146
   {
@@ -1980,7 +1980,7 @@ tiles_list = {
     color = {6, 2},
     layer = 20,
     tags = {"patashu"},
-    desc = "SHY...: Can't initiate or continue a push, pull or sidekik movement."
+    desc = "SHY...: Can't initiate or continue a goawaypls, comepls, sidekik, or diagkik movement, and can look away from those objects, sometimes."
   },
   -- 148
   {
@@ -2590,7 +2590,7 @@ tiles_list = {
     color = {2, 3},
     layer = 20,
     tags = {"patashu", "hate", "hates", "collide"},
-    desc = "HAET (Verb): A unit cannot stop onto a tile that has something it HAETs (treating it like NOGO). (x HAET LVL makes x unable to move.) X HAET GO^ makes the object fall in the direction opposite that.",
+    desc = "HAET (Verb): A unit cannot stop onto a tile that has something it HAETs (treating it like NOGO). (x HAET LVL makes x unable to move.)",
   },
   -- 204
   {
@@ -3089,7 +3089,7 @@ tiles_list = {
   layer = 20,
   alias = {"u2"},
   tags = {"you2", "p2", "player"},
-	desc = "player 2 has joined the game (dpad).",
+	desc = "player 2 has joined the game (dpad). Can also be spelled 'u2'.",
   },
   -- 249
   {
@@ -3101,7 +3101,7 @@ tiles_list = {
   layer = 20,
   alias = {"u3"},
   tags = {"you3", "p3", "player"},
-	desc = "and player 3 (ijkl or numpad).  If there are objects of two control schemes but not a third, the third control scheme can be used to move both of the first two at once.",
+	desc = "and player 3 (ijkl or numpad).\nIf there are objects of two control schemes but not a third, the third control scheme can be used to move both of the first two at once.\nCan also be spelled 'u3'.",
   },
   -- 250
   {
@@ -3167,6 +3167,7 @@ tiles_list = {
     texttype = {letter = true, note = true},
     color = {0,3},
     layer = 20,
+    desc = "try thingifying a custom AAAAAA letter!"
   },
   -- 256
   {
@@ -3403,7 +3404,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
     tags = {"9", "0", "brackets"},
-    desc = "Used for :(, :), and :O. Rotation matters!"
+    desc = "Can also be used in rules, sometimes. bab arond flog w/fren ( roc arond keek ) be :) will parse, for example."
   },
   -- 281
   {
@@ -4390,7 +4391,7 @@ tiles_list = {
     color = {1, 4},
     layer = 20,
     tags = {"direction"},
-    desc = "UPLEFT: A GO ->, but facing upleft.",
+    desc = "UPLEFT: A GO ->, but facing upleft. Can also be spelled leftup.",
   },
   -- 376
   {
@@ -4402,7 +4403,7 @@ tiles_list = {
     color = {1, 4},
     layer = 20,
     tags = {"direction"},
-    desc = "UPRIGHT: A GO ->, but facing upright.",
+    desc = "UPRIGHT: A GO ->, but facing upright. Can also be spelled rightup.",
   },
   -- 377
   {
@@ -4414,7 +4415,7 @@ tiles_list = {
     color = {1, 4},
     layer = 20,
     tags = {"direction"},
-    desc = "DOWNLEFT: A GO ->, but facing downleft.",
+    desc = "DOWNLEFT: A GO ->, but facing downleft. Can also be spelled leftdown.",
   },
   -- 378
   {
@@ -4426,7 +4427,7 @@ tiles_list = {
     color = {1, 4},
     layer = 20,
     tags = {"direction"},
-    desc = "DOWNRIGHT: A GO ->, but facing downright.",
+    desc = "DOWNRIGHT: A GO ->, but facing downright. Can also be spelled rightdown.",
   },
   -- 379
   {
@@ -4616,6 +4617,7 @@ tiles_list = {
     texttype = {letter = true},
     color = {0,3},
     layer = 20,
+    desc = "used for every2, what a surprise (can also spell u2)",
   },
   -- 398
   {
@@ -4625,6 +4627,7 @@ tiles_list = {
     texttype = {letter = true},
     color = {0,3},
     layer = 20,
+    desc = "and an every3 here (can also spell u3)",
   },
   -- 399
   {
@@ -7491,7 +7494,7 @@ tiles_list = {
     color = {3, 1},
     layer = 20,
     tags = {"demeta", "notnat"},
-    desc = "THINGIFY: BE THINGIFY causes that text to turn into the object it represents (or text it represents if metatext).",
+    desc = "THINGIFY: BE THINGIFY causes that text to turn into the object it represents (or text it represents if metatext). Some texts become objects that can only be formed through thingify!",
   },
   -- 666
   {
@@ -8300,6 +8303,7 @@ tiles_list = {
     color = {0, 3},
     layer = 20,
     tags = {"manifold garden", "arrow", "gravity"},
+    desc = "don't be fooled by the sprite it's just fube",
   },
   -- 738
   {
@@ -8597,6 +8601,7 @@ tiles_list = {
     type = "object",
     color = {0,3},
     layer = 20,
+    desc = "Triggers PRESS F2.",
   },
   -- 765
   {
@@ -8637,6 +8642,7 @@ tiles_list = {
     type = "object",
     color = {0,3},
     layer = 20,
+    desc = "in the editor, obtain object matching your search term if it exists (by code name, not letter aliases)",
   },
   -- 770
   {
@@ -8843,6 +8849,7 @@ tiles_list = {
     type = "text",
     texttype = {object = true},
     layer = 20,
+    desc = "multicolor text?!?!?",
   },
   -- 793
   {
@@ -8851,6 +8858,7 @@ tiles_list = {
     type = "object",
     color = {0,3},
     layer = 20,
+    desc = "hold when placing an object to stack objects, including multiple of the same one\nctrl+enter with 1-6 chars in selector search bar to get a custom letter",
   },
   -- 794
   {
@@ -8867,6 +8875,7 @@ tiles_list = {
     type = "object",
     color = {0,3},
     layer = 20,
+    desc = "hold when placing an object to stack objects (unless its the same object)\nshift + wasd in editor to shift the whole level around",
   },
   -- 796
   {
@@ -8901,6 +8910,7 @@ tiles_list = {
     type = "object",
     color = {0,3},
     layer = 20,
+    desc = "Used to open the tile selector in the menu. Though I think you already know that.",
   },
   -- 800
   {
@@ -8919,7 +8929,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
     tags = {"caps lock"},
-    desc = "There is no ESC",
+    desc = "There is no ESC\nOpen the menu. Useful for returning to map.",
   },
   -- 802
   {

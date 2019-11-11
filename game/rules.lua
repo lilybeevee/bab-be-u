@@ -745,7 +745,8 @@ function addRule(full_rule)
     return
   end
   
-  --Transform THE BE U into THE (prefix condition) EVERY1 BE U. (Probably becomes EVERY2 later once that exists.)
+  --Transform THE BE U into THE (prefix condition) EVERY2 BE U.
+  --todo: add support for bordr
   if subject == "the" or subject == "deez" then
     rules.subject.conds = copyTable(rules.subject.conds) or {};
     table.insert(rules.subject.conds, rules.subject);
