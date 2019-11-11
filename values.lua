@@ -253,7 +253,7 @@ selector_grid_contents = {
     "ui_cap","ui_a","ui_s","ui_d","ui_f","ui_g","ui_h","ui_j","ui_k","ui_l","ui_;","ui_'","ui_return",0,0,"ui_4","ui_5","ui_6",
     "ui_shift",0,"ui_z","ui_x","ui_c","ui_v","ui_b","ui_n","ui_m","ui_,","ui_.","ui_/",0,0,0,"ui_1","ui_2","ui_3",
     "ui_ctrl","ui_gui","ui_alt",0,"ui_space",0,0,0,0,0,0,0,0,0,0,"ui_arrow","ui_0","ui_del",
-    "text_press","text_f1","text_2pley","text_f2","text_2edit","ui_left click","ui_right click",0,0,0,0,0,0,0,0,0,0,"ui_box",
+    "text_press","text_f1","text_2pley","text_f2","text_2edit","ui_left click","ui_right click",0,0,0,0,0,0,0,0,0,"text_yuiy","ui_box",
     0,"ui_walk",0,0,"ui_reset",0,0,"ui_undo",0,0,"ui_wait",0,0,"ui_activat",0,0,"ui_clik",0,0,0,0,
   },
   -- page 4: characters and special objects
@@ -262,7 +262,7 @@ selector_grid_contents = {
     "keek","text_keek","creb","text_creb","shrim","text_shrim","moo","text_moo","toby","text_toby",0,0,0,0,"this","text_mous","lin","text_lin",
     "meem","text_meem","statoo","text_statoo","flamgo","text_flamgo","migri","text_migri","temmi","text_temmi",0,0,0,0,"text_gang","text_frens","text_groop","text_pathz",
     "skul","text_skul","beeee","text_beeee","gul","text_gul","kva","text_kva",0,0,0,0,0,0,"text_no1","text_every1","text_every2","text_every3",
-    "ghost fren","text_ghost fren","fishe","text_fishe","starrfishe","text_starrfishe","pidgin","text_pidgin",0,0,0,0,0,0,"text_text",0,0,"text_xplod",
+    "ghost fren","text_ghost fren","fishe","text_fishe","starrfishe","text_starrfishe","pidgin","text_pidgin",0,0,0,0,0,0,"text_text","text_yuiy",0,"text_xplod",
     "robobot","text_robobot","snek","text_snek","sneel","text_sneel","swan","text_swan",0,0,0,0,0,0,0,0,0,0,
     "wog","text_wog","bog","text_bog","enbybog","text_enbybog","spoder","text_spoder",0,0,0,0,0,0,0,0,0,0,
     "kirb","text_kirb","ripof","text_ripof","cavebab","text_cavebab","detox","text_detox","nyowo","text_nyowo",0,0,0,0,0,0,0,0,
@@ -9197,7 +9197,18 @@ tiles_list = {
     layer = 20,
     tags = {"baby", "bapy", "babey", "babbey", "smol"},
     desc = "not to be confused with bab be"
-  }
+  },
+  -- 828
+  {
+    name = "text_yuiy",
+    sprite = "text_yuiy",
+    type = "text",
+    texttype = {object = true},
+    color = {0, 3},
+    layer = 20,
+    tags = {"ui"},
+    desc = "YUIY: Refers to all UIs that exist in the level.",
+  },
 }
 
 tiles_by_name = {}
