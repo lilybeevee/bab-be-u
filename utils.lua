@@ -2479,13 +2479,13 @@ function sameFloat(a, b, ignorefloat)
 end
 
 function ignoreCheck(unit, target, property)
-  if not rules_with["ignor"] then
+  if not rules_with["wont"] then
     return true
   elseif unit == target then
     return true
-  elseif target and (hasRule(unit,"ignor",target) or hasRule(unit,"ignor",outerlvl) or hasRule(outerlvl,"ignor",target)) and (not property or (not hasRule(unit,"ignorn't",property) and not hasRule(outerlvl,"ignorn't",property))) then
+  elseif target and (hasRule(unit,"ignor",target) or hasRule(unit,"ignor",outerlvl) or hasRule(outerlvl,"ignor",target)) and (not property or (not hasRule(unit,"wontn't",property) and not hasRule(outerlvl,"wontn't",property))) then
     return false
-  elseif property and (hasRule(unit,"ignor",property) or hasRule(outerlvl,"ignor",property)) and (not target or (not hasRule(unit,"ignorn't",target) and not hasRule(outerlvl,"ignorn't",target))) then
+  elseif property and (hasRule(unit,"wont",property) or hasRule(outerlvl,"wont",property)) and (not target or (not hasRule(unit,"ignorn't",target) and not hasRule(outerlvl,"ignorn't",target))) then
     return false
   end
   return true

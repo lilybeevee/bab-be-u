@@ -313,7 +313,7 @@ selector_grid_contents = {
   -- page 7: properties, verbs and conditions
   {
     "text_be","text_&","text_got","text_creat","text_snacc","text_spoop","text_copkat","text_moov","text_yeet","text_liek","text_haet","text_stalk","text_ignor","text_paint","text_vs","text_sing","text_soko","text_look at",
-    "text_u","text_u too","text_u tres","text_y'all","text_walk","text_:)","text_no swim","text_ouch","text_protecc",0,"text_:>","text_stay ther",0,"text_giv",0,"text_rp",0,"text_look away",
+    "text_u","text_u too","text_u tres","text_y'all","text_walk","text_:)","text_no swim","text_ouch","text_protecc",0,"text_:>","text_stay ther","text_wont","text_giv",0,"text_rp",0,"text_look away",
     "text_go","text_goooo","text_icy","text_icyyyy",0,"text_:(","text_ned kee","text_for dor","text_wurd",0,"text_sublvl","text_loop","text_oob","text_frenles","text_timles","text_lit","text_corekt","text_rong",
     "text_no go","text_go away pls","text_come pls","text_sidekik","text_diagkik","text_:o","text_hotte","text_fridgd","text_txtify",0,"text_dragbl","text_no drag","text_alt","text_clikt","text_past","text_wun","text_an","text_mayb",
     "text_visit fren","text_slep","text_shy...","text_behin u",0,"text_xwx","text_moar","text_split","text_thingify",0,"text_rythm",0,0,"text_wait...","text_samefloat","text_samepaint","text_sameface",0,
@@ -4129,7 +4129,7 @@ tiles_list = {
     name = "text_ignor",
     sprite = "text_ignor",
     type = "text",
-    texttype = {verb = true, verb_unit = true, verb_property = true},
+    texttype = {verb = true, verb_unit = true},
     color = {0,1},
     layer = 20,
     tags = {"ignore"},
@@ -9218,6 +9218,17 @@ tiles_list = {
     layer = 20,
     tags = {"ui"},
     desc = "YUIY: Refers to all UIs that exist in the level.",
+  },
+  -- 829
+  {
+    name = "text_wont",
+    sprite = "text_wont",
+    type = "text",
+    texttype = {verb = true, verb_property = true},
+    color = {2,2},
+    layer = 20,
+    tags = {"won't","can't"},
+    desc = "WON'T: X WON'T PROPERTY makes X not be affected by that property."
   },
 }
 
