@@ -1553,7 +1553,7 @@ function scene.draw(dt)
                 love.graphics.draw(sprite, (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
               end
             else
-              if tile.nt then
+              if tile.name == "text_wontn't" then
                 sprite = sprites["text_wo"]
               end
               love.graphics.draw(sprite, (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
@@ -1623,7 +1623,7 @@ function scene.draw(dt)
               love.graphics.draw(sprit, (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, math.rad(rotation), 1, 1, sprit:getWidth() / 2, sprit:getHeight() / 2)
             end
           else
-            if tile.nt then
+            if tile.name == "text_wontn't" then
               sprite = sprites["text_wo"]
             end
             love.graphics.draw(sprite, (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, math.rad(rotation), 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
