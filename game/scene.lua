@@ -1320,6 +1320,12 @@ function scene.draw(dt)
         love.graphics.draw(sprites["der_nose"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
       end
     end
+    
+    if hasRule(unit,"be","gang") then
+      local o = getTableWithDefaults(unit.features.gang, {x=0, y=0, sprite="gang_hat"})
+      love.graphics.setColor(getPaletteColor(0,1))
+      love.graphics.draw(sprites[o.sprite], fulldrawx + o.x, fulldrawy - 0.5*TILE_SIZE + o.y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+    end
 
     local matchrules = matchesRule(unit,"got","?")
     for _,matchrule in ipairs(matchrules) do
