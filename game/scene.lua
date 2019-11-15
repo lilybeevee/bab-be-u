@@ -1029,11 +1029,14 @@ function scene.draw(dt)
           if unit.fullname == "detox" and graphical_property_cache["slep"][unit] ~= nil then
             setColor{1,2}
           end
+          if unit.fullname == "text_wontn't" then
+            draw = sprites["text_wo"]
+          end
           if not draw then draw = sprites["wat"] end
           love.graphics.draw(draw, fulldrawx + ox, fulldrawy + oy, 0, unit.draw.scalex, unit.draw.scaley, draw:getWidth() / 2, draw:getHeight() / 2)
         end
       end
-			if (unit.meta ~= nil) then
+			if unit.meta ~= nil then
 				setColor({4, 1})
         local metasprite = unit.meta == 2 and sprites["meta2"] or sprites["meta1"]
         if spookmode and sessionseed < drawx/3%0.5*2 then
@@ -1045,7 +1048,7 @@ function scene.draw(dt)
 				end
 				setColor(unit.color)
 			end
-      if (unit.nt ~= nil) then
+      if unit.nt ~= nil and unit.fullname ~= "text_wontn't" then
         setColor({2, 2})
         local ntsprite = sprites["n't"]
         love.graphics.draw(ntsprite, fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
@@ -1319,6 +1322,12 @@ function scene.draw(dt)
         love.graphics.setColor(getPaletteColor(2,2))
         love.graphics.draw(sprites["der_nose"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
       end
+    end
+    
+    if hasRule(unit,"be","gang") then
+      local o = getTableWithDefaults(unit.features.gang, {x=0, y=0, sprite="gang_hat"})
+      love.graphics.setColor(getPaletteColor(0,1))
+      love.graphics.draw(sprites[o.sprite], fulldrawx + o.x, fulldrawy - 0.5*TILE_SIZE + o.y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
     end
 
     local matchrules = matchesRule(unit,"got","?")

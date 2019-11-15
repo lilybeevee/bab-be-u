@@ -795,6 +795,16 @@ function addRule(full_rule)
         end
       end
     end
+  elseif subject == "yuiy" then
+    if subject_not % 2 == 1 then
+      return
+    else
+      for _,v in ipairs(referenced_objects) do
+        if v:starts("ui_") then
+          addRuleSimple({v, rules.subject.conds}, rules.verb, rules.object, units, dir)
+        end
+      end
+    end
   elseif subject_not % 2 == 1 then
     if tiles_by_name[subject] or subject == "text" then
       local new_subjects = getEverythingExcept(subject)

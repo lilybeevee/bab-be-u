@@ -253,7 +253,7 @@ selector_grid_contents = {
     "ui_cap","ui_a","ui_s","ui_d","ui_f","ui_g","ui_h","ui_j","ui_k","ui_l","ui_;","ui_'","ui_return",0,0,"ui_4","ui_5","ui_6",
     "ui_shift",0,"ui_z","ui_x","ui_c","ui_v","ui_b","ui_n","ui_m","ui_,","ui_.","ui_/",0,0,0,"ui_1","ui_2","ui_3",
     "ui_ctrl","ui_gui","ui_alt",0,"ui_space",0,0,0,0,0,0,0,0,0,0,"ui_arrow","ui_0","ui_del",
-    "text_press","text_f1","text_2pley","text_f2","text_2edit","ui_left click","ui_right click",0,0,0,0,0,0,0,0,0,0,"ui_box",
+    "text_press","text_f1","text_2pley","text_f2","text_2edit","ui_left click","ui_right click",0,0,0,0,0,0,0,0,0,"text_yuiy","ui_box",
     0,"ui_walk",0,0,"ui_reset",0,0,"ui_undo",0,0,"ui_wait",0,0,"ui_activat",0,0,"ui_clik",0,0,0,0,
   },
   -- page 4: characters and special objects
@@ -262,16 +262,16 @@ selector_grid_contents = {
     "keek","text_keek","creb","text_creb","shrim","text_shrim","moo","text_moo","toby","text_toby",0,0,0,0,"this","text_mous","lin","text_lin",
     "meem","text_meem","statoo","text_statoo","flamgo","text_flamgo","migri","text_migri","temmi","text_temmi",0,0,0,0,"text_gang","text_frens","text_groop","text_pathz",
     "skul","text_skul","beeee","text_beeee","gul","text_gul","kva","text_kva",0,0,0,0,0,0,"text_no1","text_every1","text_every2","text_every3",
-    "ghost fren","text_ghost fren","fishe","text_fishe","starrfishe","text_starrfishe","pidgin","text_pidgin",0,0,0,0,0,0,"text_text",0,0,"text_xplod",
+    "ghost fren","text_ghost fren","fishe","text_fishe","starrfishe","text_starrfishe","pidgin","text_pidgin",0,0,0,0,0,0,"text_text","text_yuiy",0,"text_xplod",
     "robobot","text_robobot","snek","text_snek","sneel","text_sneel","swan","text_swan",0,0,0,0,0,0,0,0,0,0,
     "wog","text_wog","bog","text_bog","enbybog","text_enbybog","spoder","text_spoder",0,0,0,0,0,0,0,0,0,0,
     "kirb","text_kirb","ripof","text_ripof","cavebab","text_cavebab","detox","text_detox","nyowo","text_nyowo",0,0,0,0,0,0,0,0,
     "bup","text_bup","butflye","text_butflye","boooo","text_boooo","prime","text_prime","grimkid","text_grimkid",0,0,0,0,0,0,0,0,
-    "boy","text_boy","wurm","text_wurm","madi","text_madi","angle","text_angle","boogie","text_boogie",0,0,0,0,"lila","text_lila","tot","text_tot",
+    "boy","text_boy","wurm","text_wurm","madi","text_madi","angle","text_angle","boogie","text_boogie",0,0,0,0,"lila","text_lila","larry","text_larry",
     "steev","text_steev","ratt","text_ratt","badi","text_badi","debil","text_debil","assh","text_assh",0,0,0,0,"pata","text_pata","jill","text_jill",
-    "han","text_han","iy","text_iy","lisp","text_lisp","paw","text_paw",0,0,0,0,0,0,"larry","text_larry","zsoob","text_zsoob",
-    "snoman","text_snoman","pingu","text_pingu","der","text_der","ginn","text_ginn",0,0,0,0,0,0,"slab","text_slab","o","text_o",
-    "kapa","text_kapa","urei","text_urei","ryugon","text_ryugon","sham","text_sham",0,0,0,0,0,0,"notnat","text_notnat","butcher","text_butcher",
+    "han","text_han","iy","text_iy","lisp","text_lisp","paw","text_paw",0,0,0,0,0,0,"slab","text_slab","zsoob","text_zsoob",
+    "snoman","text_snoman","pingu","text_pingu","der","text_der","ginn","text_ginn",0,0,0,0,0,0,"notnat","text_notnat","o","text_o",
+    "kapa","text_kapa","urei","text_urei","ryugon","text_ryugon","sham","text_sham",0,0,0,0,0,0,0,0,"butcher","text_butcher",
     "os","text_os","hors","text_hors","mimi","text_mimi","err","text_err",0,0,0,0,0,0,0,0,0,0,
   },
   -- page 5: inanimate objects
@@ -313,7 +313,7 @@ selector_grid_contents = {
   -- page 7: properties, verbs and conditions
   {
     "text_be","text_&","text_got","text_creat","text_snacc","text_spoop","text_copkat","text_moov","text_yeet","text_liek","text_haet","text_stalk","text_ignor","text_paint","text_vs","text_sing","text_soko","text_look at",
-    "text_u","text_u too","text_u tres","text_y'all","text_walk","text_:)","text_no swim","text_ouch","text_protecc",0,"text_:>","text_stay ther",0,"text_giv",0,"text_rp",0,"text_look away",
+    "text_u","text_u too","text_u tres","text_y'all","text_walk","text_:)","text_no swim","text_ouch","text_protecc",0,"text_:>","text_stay ther","text_wont","text_giv",0,"text_rp",0,"text_look away",
     "text_go","text_goooo","text_icy","text_icyyyy",0,"text_:(","text_ned kee","text_for dor","text_wurd",0,"text_sublvl","text_loop","text_oob","text_frenles","text_timles","text_lit","text_corekt","text_rong",
     "text_no go","text_go away pls","text_come pls","text_sidekik","text_diagkik","text_:o","text_hotte","text_fridgd","text_txtify",0,"text_dragbl","text_no drag","text_alt","text_clikt","text_past","text_wun","text_an","text_mayb",
     "text_visit fren","text_slep","text_shy...","text_behin u",0,"text_xwx","text_moar","text_split","text_thingify",0,"text_rythm",0,0,"text_wait...","text_samefloat","text_samepaint","text_sameface",0,
@@ -3706,7 +3706,7 @@ tiles_list = {
     sprite = "text_pathz",
     type = "text",
     texttype = {object = true, group = true},
-    color = {3, 3},
+    color = {5, 3},
     layer = 20,
     tags = {"group","paths"},
     desc = "PATHZ: A variant of FRENS. SELCTR inherently lieks PATHZ.",
@@ -4129,7 +4129,7 @@ tiles_list = {
     name = "text_ignor",
     sprite = "text_ignor",
     type = "text",
-    texttype = {verb = true, verb_unit = true, verb_property = true},
+    texttype = {verb = true, verb_unit = true},
     color = {0,1},
     layer = 20,
     tags = {"ignore"},
@@ -9207,7 +9207,52 @@ tiles_list = {
     layer = 20,
     tags = {"baby", "bapy", "babey", "babbey", "smol"},
     desc = "not to be confused with bab be"
-  }
+  },
+  -- 828
+  {
+    name = "text_yuiy",
+    sprite = "text_yuiy",
+    type = "text",
+    texttype = {object = true},
+    color = {0, 2},
+    layer = 20,
+    tags = {"ui"},
+    desc = "YUIY: Refers to all UIs that exist in the level.",
+  },
+  -- 829
+  {
+    name = "text_wont",
+    sprite = "text_wont",
+    type = "text",
+    texttype = {verb = true, verb_property = true},
+    color = {2,2},
+    layer = 20,
+    tags = {"won't","can't"},
+    desc = "WON'T: X WON'T PROPERTY makes X not be affected by that property."
+  },
+  -- 830
+  {
+    name = "voom",
+    sprite = {"voom_handle", "voom_blade"},
+    sing = "s_voom",
+    rotate = true,
+    color = {{0,2}, {1, 3}},
+    colored = {false, true},
+    layer = 11,
+    tags = {"lightsaber", "starwars", "jedi", "laser", "sword"},
+    desc = "britesaber"
+  },
+  -- 831
+  {
+    name = "text_voom",
+    sprite = "text_voom",
+    type = "text",
+    texttype = {object = true},
+    color = {2,4},
+    layer = 20,
+    tags = {"lightsaber", "starwars", "jedi", "laser", "sword"},
+    desc = "a long time ago in a galaxy far, far away..."
+  },
 }
 
 tiles_by_name = {}

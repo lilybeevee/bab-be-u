@@ -1425,6 +1425,9 @@ function scene.draw(dt)
                   love.graphics.draw(sprite, (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
                 end
               else
+                if unit.fullname == "text_wontn't" then
+                  sprite = sprites["text_wo"]
+                end
                 love.graphics.draw(sprite, (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
               end
             end
@@ -1453,7 +1456,7 @@ function scene.draw(dt)
                 love.graphics.draw(sprite, fulldrawx, fulldrawy, 0, unit.draw.scalex*3/4, unit.draw.scaley*3/4, sprite:getWidth() / 2, sprite:getHeight() / 2)
               end
             end
-            if (unit.meta ~= nil) then
+            if unit.meta ~= nil then
               setColor({4, 1})
               local metasprite = unit.meta == 2 and sprites["meta2"] or sprites["meta1"]
               love.graphics.draw(metasprite, (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
@@ -1462,7 +1465,7 @@ function scene.draw(dt)
               end
               setColor(unit.color)
             end
-            if (unit.nt ~= nil) then
+            if unit.nt ~= nil and unit.fullname ~= "text_wontn't" then
               setColor({2, 2})
               local ntsprite = sprites["n't"]
               love.graphics.draw(ntsprite, (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
@@ -1550,10 +1553,13 @@ function scene.draw(dt)
                 love.graphics.draw(sprite, (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
               end
             else
+              if tile.name == "text_wontn't" then
+                sprite = sprites["text_wo"]
+              end
               love.graphics.draw(sprite, (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
             end
             
-            if (tile.meta ~= nil) then
+            if tile.meta ~= nil then
               if found_matching_tag then setColor({4, 1}) end
               local metasprite = tile.meta == 2 and sprites["meta2"] or sprites["meta1"]
               love.graphics.draw(metasprite, (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
@@ -1562,7 +1568,7 @@ function scene.draw(dt)
               end
               setColor(tile.color)
             end
-            if (tile.nt ~= nil) then
+            if tile.nt ~= nil and tile.name ~= "text_wontn't" then
               if found_matching_tag then setColor({2, 2}) end
               local ntsprite = sprites["n't"]
               love.graphics.draw(ntsprite, (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
@@ -1617,6 +1623,9 @@ function scene.draw(dt)
               love.graphics.draw(sprit, (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, math.rad(rotation), 1, 1, sprit:getWidth() / 2, sprit:getHeight() / 2)
             end
           else
+            if tile.name == "text_wontn't" then
+              sprite = sprites["text_wo"]
+            end
             love.graphics.draw(sprite, (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, math.rad(rotation), 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
           end
           
@@ -1629,7 +1638,7 @@ function scene.draw(dt)
             end
             setColor(tile.color)
           end
-          if (tile.nt ~= nil) then
+          if tile.nt ~= nil and tile.name ~= "text_wontn't" then
             setColor({2,2},0.25)
             local ntsprite = sprites["n't"]
             love.graphics.draw(ntsprite, (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
