@@ -1565,7 +1565,7 @@ tiles_list = {
     color = {3, 2},
     layer = 20,
     tags = {"direction","diagonal"},
-    desc = "DIAG: Prevents the unit from moving orthogonally, unless it is also ORTHO.",
+    desc = "DIAG: Prevents the unit from moving orthogonally, unless it is also ORTHO. Also affects rule parsing.",
   },
   -- 111
   {
@@ -1587,7 +1587,7 @@ tiles_list = {
     color ={3, 2},
     layer = 20,
     tags = {"direction","orthogonal"},
-    desc = "ORTHO: Prevents the unit from moving diagonally, unless it is also DIAG.",
+    desc = "ORTHO: Prevents the unit from moving diagonally, unless it is also DIAG. Also affects rule parsing.",
   },
   -- 113
   {
@@ -1598,7 +1598,7 @@ tiles_list = {
     layer = 3,
     rotate = true,
     tags = {"arrow"},
-    desc = "ARRO: Also acts as a letter.",
+    desc = "ARRO: Is supposed to act like a letter, but that's not implemented yet.",
   },
   -- 114
   {
@@ -1619,7 +1619,7 @@ tiles_list = {
     color = {2, 3},
     layer = 20,
     tags = {"hot"},
-    desc = "HOTTE: At end of turn, HOTTE units destroys all units that are FRIDGD on their tile.",
+    desc = "HOTTE: every2.5 thatbe hotte snacc every2.5 thatbe fridgd (without it being a baserule, of course)",
   },
   -- 116
   {
@@ -1694,7 +1694,7 @@ tiles_list = {
     color = {1, 4},
     layer = 20,
     tags = {"float"},
-    desc = "FLYE: A FLYE unit doesn't interact with other objects on its tile, and can ignore the collision of other objects, unless that other object has the same amount of FLYE as the unit. FLYE stacks with itself!",
+    desc = "FLYE: A FLYE unit doesn't interact with other objects on its tile, and can ignore the collision of other objects, unless that other object has the same amount of FLYE as the unit. FLYE stacks with itself! Also pushing can occur regardless of flye.",
   },
   -- 123
   {
@@ -1767,7 +1767,7 @@ tiles_list = {
     color = {4, 1},
     layer = 20,
     tags = {"more"},
-    desc = "MOAR: At end of turn, this unit replicates to all free tiles that are orthogonally adjacent. MOAR stacks with itself!",
+    desc = "MOAR: At end of turn, this unit replicates to all free tiles that are orthogonally adjacent. MOAR stacks with itself; note that at 3+ you can go through walls!",
   },
   -- 130
   {
@@ -1814,7 +1814,7 @@ tiles_list = {
     color = {1, 4},
     layer = 20,
     tags = {"without", "w/o"},
-    desc = "SANS (Infix Condition): True if none of the indicated object exist in the level.",
+    desc = "SANS (Infix Condition): True if none of the indicated object exist in the level. Does not include itself (so BAB SANS BAB is true if there is only one bab in the level).",
   },
   -- 134
   {
@@ -1847,7 +1847,7 @@ tiles_list = {
     color = {1, 3},
     layer = 20,
     tags = {"stealth", "hide"},
-    desc = "STELTH: A STELTHy unit doesn't draw. STELTHy text won't appear in the rules list (once someone gets around to writing that...)",
+    desc = "STELTH: A STELTHy unit doesn't draw. STELTHy text won't appear in the rules list... kinda",
   },
   -- 137
   {
@@ -1959,7 +1959,7 @@ tiles_list = {
     color = {5, 3},
     layer = 20,
     tags = {"bounded", "likes"},
-    desc = "LIEK (Verb): If a unit LIEKs objects, it is picky, and cannot step onto a tile unless it has at least one object it LIEKs.",
+    desc = "LIEK (Verb): If a unit LIEKs objects, it is picky, and cannot step onto a tile unless it has at least one object it LIEKs. If an object LIEKs zero objects, it is not bounded.",
   },
   -- 146
   {
@@ -2527,7 +2527,7 @@ tiles_list = {
     layer = 24,
     rotate = true,
     tags = {"level", "path"},
-    desc = "its a lavel, working like baba."
+    desc = "its a lavel, working like baba. LVL BE PATHZ & NOGO by default."
   },
   -- 198
   {
@@ -2568,6 +2568,7 @@ tiles_list = {
     color = {0, 3},
     layer = 20,
     tags = {"line", "path"},
+    desc = "LIN BE PATHZ by default. Also lin is used in floodfilling and can have a puff/blossom door attached to it."
   },
   -- 202
   {
@@ -7938,7 +7939,7 @@ tiles_list = {
     color = {3,3},
     layer = 20,
     tags = {"mimic","roleplay"},
-    desc = "RP: X RP Y gives X all of the properties of Y."
+    desc = "RP: X RP Y gives X all of the properties of Y. Only an object that actually exists can be RP'd."
   },
   -- 707
   {
@@ -8494,6 +8495,7 @@ tiles_list = {
     color = {1,4},
     layer = 20,
     tags = {"devs", "chars"},
+    desc = "i need to make this multicolor why am i so lazy",
   },
   -- 754
   {
@@ -9254,6 +9256,8 @@ tiles_list = {
     desc = "a long time ago in a galaxy far, far away..."
   },
 }
+
+--other_alias = {["wontn't"]: "wo"}
 
 tiles_by_name = {}
 group_names = {}
