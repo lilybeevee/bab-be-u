@@ -2422,6 +2422,12 @@ function fullScreen()
   end
 end
 
+function defaultSetting()
+  for i in pairs(defaultsettings) do
+    settings[i] = defaultsettings[i]
+  end
+end
+
 function saveAll()
   love.filesystem.write("Settings.bab", json.encode(settings))
 end
@@ -3396,9 +3402,13 @@ end
 
 function buildOptions()
   if not display then
+    scene.addOption("master_vol", "master volume", {{"25%", 0.25}, {"50%", 0.5}, {"75%", 0.75}, {"100%", 1}})
     scene.addOption("music_on", "music", {{"on", true}, {"off", false}})
+    scene.addOption("music_vol", "music volume", {{"25%", 0.25}, {"50%", 0.5}, {"75%", 0.75}, {"100%", 1}})
     scene.addOption("sfx_on", "sound", {{"on", true}, {"off", false}})
+    scene.addOption("sfx_vol", "sound volume", {{"25%", 0.25}, {"50%", 0.5}, {"75%", 0.75}, {"100%", 1}})
     scene.addButton("video options", function() display = true; scene.buildUI() end)
+    scene.addButton("default settings", function () defaultSetting() scene.buildUI() end)
     scene.addButton("back", function() options = false; scene.buildUI() end)
   else
     scene.addOption("game_scale", "game scale", {{"auto", "auto"}, {"0.5x", 0.5}, {"1x", 1}, {"1.5x", 1.5}, {"2x", 2}, {"4x", 4}})
