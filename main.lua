@@ -702,11 +702,11 @@ function love.update(dt)
   end
 
   if not settings["music_on"] then music_volume = 0 end
-  if settings["music_on"] then music_volume = 1 end
+  if settings["music_on"] then music_volume = settings["music_vol"] / 2 * settings["master_vol"] end
   updateMusic()
   
   if not settings["sfx_on"] then sfx_volume = 0 end
-  if settings["sfx_on"] then sfx_volume = 1 end
+  if settings["sfx_on"] then sfx_volume = settings["sfx_vol"] / 2 * settings["master_vol"]end
 
   if debugEnabled and drawnDebugScreen then
     debug.debug()

@@ -25,9 +25,12 @@ profile = {
   name = "bab"
 }
 
-local defaultsettings = {
+defaultsettings = {
+  master_vol = 1,
   music_on = true,
+  music_vol = 1,
   sfx_on = true,
+  sfx_vol = 1,
   particles_on = true,
   shake_on = true,
   scribble_anim = true,
