@@ -18,7 +18,7 @@ require "game/rules"
 require "game/undo"
 require "game/cursor"
 local utf8 = require("utf8")
- 
+
 local function error_printer(msg, layer)
 	print((debug.traceback("Error: " .. tostring(msg), 1+(layer or 1)):gsub("\n[^\n]+$", "")))
 end
@@ -88,8 +88,8 @@ bab arguments!
   for i,v in pairs(cmdargs) do
     print(colr.dim("arg set: " .. i .. "=" .. v))
   end
-  
-  
+
+
   local babfound = false
 
   function searchbab(d)
@@ -119,7 +119,7 @@ bab arguments!
   end
 
   searchbab()
-  
+
   if not babfound or cmdargs["spook"] or os.date("%m-%d") == "10-31" and os.date("%H") >= "22" or os.date("%H:%M") == "3:00" then
     spookmode = true
   end
@@ -237,7 +237,7 @@ bab arguments!
     end
   end
   addsprites()
-  
+
   randomize_assets = false or cmdargs["randomize"]
   math.randomseed(love.timer.getTime())
   if randomize_assets then
@@ -257,9 +257,9 @@ bab arguments!
       sprites[n] = spr[i]
     end
   end
-  
+
   menu_palette = math.random(1,18) --18 is the number of possible palettes
-  
+
   sprites["letters_/"] = sprites["letters_slash"]
   sprites["letters_:"] = sprites["letters_colon"]
 
@@ -383,9 +383,9 @@ bab arguments!
   registerSound("unwin", 0.5)
   registerSound("stopwatch", 1.0)
   registerSound("babbolovania", 0.7)
-  
-  
-  
+
+
+
   print(colr.green("✓ sounds registered"))
 
   ui.init()
@@ -563,6 +563,7 @@ function love.mousepressed(x, y, button)
     love.mouse.setPosition(x, y)
   end
 
+-- this is still a feature? nice!
   if not ui.hovered and scene ~= editor then
     if drumMode then
       if button == 1 then playSound("mous kicc") end
@@ -668,7 +669,7 @@ function love.update(dt)
   if shake_intensity > 0.4 then
     shake_intensity = 0.4
   end
-  
+
   if spookmode then
     shake_intensity = 0.02
     shake_dur = 1000
@@ -704,7 +705,7 @@ function love.update(dt)
   if not settings["music_on"] then music_volume = 0 end
   if settings["music_on"] then music_volume = settings["music_vol"] / 2 * settings["master_vol"] end
   updateMusic()
-  
+
   if not settings["sfx_on"] then sfx_volume = 0 end
   if settings["sfx_on"] then sfx_volume = settings["sfx_vol"] / 2 * settings["master_vol"]end
 
@@ -877,20 +878,20 @@ end
 
 function love.errorhandler(msg)
 	msg = tostring(msg)
- 
+
 	error_printer(msg, 2)
- 
+
 	if not love.window or not love.graphics or not love.event then
 		return
 	end
- 
+
 	if not love.graphics.isCreated() or not love.window.isOpen() then
 		local success, status = pcall(love.window.setMode, 800, 600)
 		if not success or not status then
 			return
 		end
 	end
- 
+
 	-- Reset state.
 	if love.mouse then
 		love.mouse.setVisible(true)
@@ -907,46 +908,46 @@ function love.errorhandler(msg)
 		end
 	end
 	if love.audio then love.audio.stop() end
- 
+
 	love.graphics.reset()
 	local font = love.graphics.setNewFont(14)
- 
+
 	love.graphics.setColor(1, 1, 1, 1)
- 
+
 	local trace = debug.traceback()
- 
+
 	love.graphics.origin()
- 
+
 	local sanitizedmsg = {}
 	for char in msg:gmatch(utf8.charpattern) do
 		table.insert(sanitizedmsg, char)
 	end
 	sanitizedmsg = table.concat(sanitizedmsg)
- 
+
 	local err = {}
- 
+
 	table.insert(err, "uh ohhh!!! error!!\n")
 	table.insert(err, sanitizedmsg)
- 
+
 	if #sanitizedmsg ~= #msg then
 		table.insert(err, "Invalid UTF-8 string in error message.")
 	end
- 
+
 	table.insert(err, "\n")
- 
+
 	for l in trace:gmatch("(.-)\n") do
 		if not l:match("boot.lua") then
 			l = l:gsub("stack traceback:", "here's what happnd:\n")
 			table.insert(err, l)
 		end
 	end
- 
+
   local p = table.concat(err, "\n")
   local popupactive = 0
- 
+
 	p = p:gsub("\t", "")
 	p = p:gsub("%[string \"(.-)\"%]", "%1")
- 
+
   local function draw()
     if drawnDebugScreen then
       debugDrawText = false
@@ -980,7 +981,7 @@ function love.errorhandler(msg)
 
       love.graphics.setColor(1,1,1)
       love.graphics.draw(bab, -bab:getWidth()/2+xoff, -bab:getHeight()/2+yoff)
-      
+
       love.graphics.pop()
 
       love.graphics.print('u don goofed', love.graphics.getWidth()-10-bab:getWidth()*2-love.graphics.newText(love.graphics.getFont(), 'u don goofed'):getWidth(), love.graphics.getHeight()-10-bab:getHeight()*1.25)
@@ -1001,7 +1002,7 @@ function love.errorhandler(msg)
     end
 		love.graphics.present()
 	end
- 
+
 	local fullErrorText = p
 	local function copyToClipboard()
 		if not love.system then return end
@@ -1009,14 +1010,14 @@ function love.errorhandler(msg)
     popupactive = 190
 		draw()
 	end
- 
+
 	if love.system then
 		p = p .. "\n\nif u wanna copey dis ctrl+c or ta!p!!! and f5 to open debug mode"
 	end
- 
+
 	return function()
 		love.event.pump()
- 
+
 		for e, a, b, c in love.event.poll() do
 			if e == "quit" then
 				return 1
@@ -1042,12 +1043,12 @@ function love.errorhandler(msg)
 			end
 		end
     draw()
- 
+
 		if love.timer then
 			love.timer.sleep(0.01)
 		end
 	end
- 
+
 end
 
 function love.quit()
