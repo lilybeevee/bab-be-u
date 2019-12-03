@@ -409,33 +409,75 @@ function findLetterSentences(str, index_, sentences_, curr_sentence_, start_) --
   end
 
   for i=0,string.len(str)-index do
-    local substr = str.sub(str,index,index+i)
+    local substr = string.sub(str,index,index+i)
     --print("trying:",i,index,substr)
     --print(substr, text_in_tiles[substr])
-    if text_in_tiles[substr] then
+    
+    --asterisks
+    local asterisks = {}
+    local all_asterisk = true
+    for j=1,string.len(substr) do --find em
+      --print("searching for asterisk at location "..j.."("..string.sub(substr,j,j)..")")
+      if string.sub(substr,j,j) == "*" then
+        table.insert(asterisks,j)
+      else
+        all_asterisk = false --if every char is an asterisk, then dont parse
+      end
+    end
+    local temp_text_list = {}
+    if #asterisks > 0 and not all_asterisk then --replace all the keys with em
+      for ali,res in pairs(text_in_tiles) do
+        if string.len(substr) == string.len(ali) and string.sub(ali,1,1) ~= ":" then --no reason to bother unless the searchterm is wrong length; faces shouldnt be counted
+          local this_text = ali
+          for _,j in ipairs(asterisks) do 
+            --print("asterisk replacement at "..j)
+            this_text = string.sub(this_text,1,j-1).."*"..string.sub(this_text,j+1)
+          end
+          if temp_text_list[this_text] then
+            --print(this_text.."+="..res)
+            table.insert(temp_text_list[this_text],res)
+          else
+            temp_text_list[this_text] = {res}
+          end
+        end
+      end
+    end
+
+    if text_in_tiles[substr] or temp_text_list[substr] then
       --print("found word: "..substr, sentences.start, fullDump(sentences.start), sentences.both, fullDump(sentences.both))
       if index == 1 then
         start = true
       end
-      table.insert(curr_sentence, text_in_tiles[substr])
-      if index+i == string.len(str) then --last letter, this sentence is valid to connect to other words
-        --print("last letter:",index,i,str,substr)
-        if start then
-          table.insert(sentences.both, copyTable(curr_sentence)) --connected to both the start and end, so the parser has to treat this like a string of words
-        else
-          table.insert(sentences.endd, copyTable(curr_sentence))
+      local sto_sentence = copyTable(curr_sentence)
+      for j=1,1 do --set above 1 if you wanna try full asterisks support
+        --print("j="..j.."("..temp_text_list[substr][j]..")")
+        if text_in_tiles[substr] then table.insert(curr_sentence, text_in_tiles[substr])
+        else --something different needs to be done here but idk what
+          table.insert(curr_sentence, temp_text_list[substr][j])
         end
-        return sentences --just in case there's a 1 letter U that gets used or something idk
-      else
-        --print("not last letter:",index,i,str,substr)
-        if start then
-          table.insert(sentences.start,copyTable(curr_sentence))
+        if index+i == string.len(str) then --last letter, this sentence is valid to connect to other words
+          --print("last letter:",index,i,str,substr)
+          if start then
+            table.insert(sentences.both, copyTable(curr_sentence)) --connected to both the start and end, so the parser has to treat this like a string of words
+          else
+            table.insert(sentences.endd, copyTable(curr_sentence))
+          end
+          return sentences --just in case there's a 1 letter U that gets used or something idk
         else
-          table.insert(sentences.middle,copyTable(curr_sentence))
+          --print("not last letter:",index,i,str,substr)
+          if start then
+            table.insert(sentences.start,copyTable(curr_sentence))
+          else
+            table.insert(sentences.middle,copyTable(curr_sentence))
+          end
+          findLetterSentences(str, index+i+1, sentences, curr_sentence, start) --we got one word, now keep going
         end
-        findLetterSentences(str, index+i+1, sentences, curr_sentence, start) --we got one word, now keep going
-        curr_sentence = {} --now we're done with that particular sentence attempt, so we're back to no words in the sentence
+        curr_sentence = copyTable(sto_sentence)
+        --print("end for ("..j..")")
+        if text_in_tiles[substr] then break end
+        if j>=#temp_text_list[substr] then break end
       end
+      curr_sentence = {} --now we're done with that particular sentence attempt, so we're back to no words in the sentence
     end
     --then try again with index one higher (fixes b b a b be u)
     --[[if (index < string.len(str)) then

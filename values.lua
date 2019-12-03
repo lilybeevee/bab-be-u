@@ -246,7 +246,7 @@ selector_grid_contents = {
     "letter_a","letter_b","letter_c","letter_d","letter_e","letter_f","letter_g","letter_h","letter_i","letter_j","letter_k","letter_l","letter_m","letter_n","letter_o","letter_p","letter_q","letter_r",
     "letter_s","letter_t","letter_u","letter_v","letter_w","letter_x","letter_y","letter_z","letter_.","letter_colon","letter_parenthesis","letter_'","letter_/","letter_1","letter_2","letter_3","letter_4","letter_5",
     0,0,0,0,0,0,0,0,0,"letter_;","letter_>",0,0,"letter_6","letter_7","letter_8","letter_9","letter_o",
-	"letter_go","letter_come","letter_pls","letter_away","letter_my","letter_no","letter_way","letter_ee","letter_fren","letter_ll","letter_bolt","letter_ol",0,0,0,0,0,"text_lethers",
+	"letter_go","letter_come","letter_pls","letter_away","letter_my","letter_no","letter_way","letter_ee","letter_fren","letter_ll","letter_bolt","letter_ol",0,0,0,0,"letter_*","text_lethers",
 	"text_c_sharp","text_d_sharp","text_f_sharp","text_g_sharp","text_a_sharp","text_sharp","text_flat",0,0,0,0,0,0,0,0,0,0,0,
   },
   -- page 3: ui / instructions
@@ -895,6 +895,7 @@ tiles_list = {
     texttype = {object = true},
     color = {4, 2},
     layer = 20,
+    alias = {"l*v"},
     tags = {"love"},
     desc = "LÜV: To use with letters, you need an umlaut!",
   },
@@ -1493,7 +1494,8 @@ tiles_list = {
     layer = 20,
     features = { sans = {x=19, y=5, w=4, h=5} },
     tags = {"crash", "oops", "fucky wucky", "face"},
-    desc = "XWX: At end of turn, if U is on XWX, you get booted out of the level and erases all progress in the level (win, bonus, transformation).",
+    alias = {"uwu"},
+    desc = "XWX: At end of turn, if U is on XWX, you get booted out of the level and erases all progress in the level (win, bonus, transformation).\nAlias: uwu",
   },
   -- 104
   {
@@ -2104,7 +2106,7 @@ tiles_list = {
     texttype = {property = true},
     color = {0,3},
     layer = 20,
-    alias = {"nxt"},
+    --alias = {"nxt"},
     features = { sans = {x=19, y=5, w=3, h=4} },
     tags = {"next", "nxt", "face"},
     desc = ":>: If U is on :>, go to the next level (specified in object settings)."
@@ -2171,7 +2173,7 @@ tiles_list = {
     texttype = {property = true},
     color = {3, 3},
     layer = 20,
-    alias = {"try again"},
+    --alias = {"try again"},
     features = { sans = {x=21, y=6, w=3, h=4} },
     tags = {"retry", "time", "face", "reset", "lily"},
     desc = ":/: When U is on :/, the level is undone back to the starting state, except for NO UNDO objects. :/ can be undone!"
@@ -2739,7 +2741,6 @@ tiles_list = {
     name = "text_fenss",
     sprite = "text_fenss",
     type = "text",
-    texttype = {object = true},
     color = {6, 2},
     layer = 20,
     tags = {"fence"},
@@ -7779,6 +7780,7 @@ tiles_list = {
     color = {2, 2},
     layer = 20,
     tags = {"present", "gift", "box", "christmas"},
+    alias = {"futr"},
     desc = "its now, or latr, no srsly",
   },
   -- 692
@@ -9245,7 +9247,7 @@ tiles_list = {
     colored = {false, true},
     layer = 11,
     tags = {"lightsaber", "starwars", "jedi", "laser", "sword"},
-    desc = "britesaber"
+    desc = "britesaber",
   },
   -- 831
   {
@@ -9256,7 +9258,17 @@ tiles_list = {
     color = {2,4},
     layer = 20,
     tags = {"lightsaber", "starwars", "jedi", "laser", "sword"},
-    desc = "a long time ago in a galaxy far, far away..."
+    desc = "a long time ago in a galaxy far, far away...",
+  },
+  --832
+  {
+    name = "letter_*",
+    sprite = "letter_x",
+    type = "text",
+    texttype = {letter = true},
+    color = {1,3},
+    layer = 20,
+    desc = "wildcard. temp sprite bc slab cant draw",
   },
 }
 
