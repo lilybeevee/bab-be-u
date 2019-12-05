@@ -274,7 +274,7 @@ selector_grid_contents = {
     "steev","text_steev","ratt","text_ratt","badi","text_badi","debil","text_debil","assh","text_assh",0,0,0,0,"pata","text_pata","jill","text_jill",
     "han","text_han","iy","text_iy","lisp","text_lisp","paw","text_paw",0,0,0,0,0,0,"slab","text_slab","zsoob","text_zsoob",
     "snoman","text_snoman","pingu","text_pingu","der","text_der","ginn","text_ginn",0,0,0,0,0,0,"notnat","text_notnat","o","text_o",
-    "kapa","text_kapa","urei","text_urei","ryugon","text_ryugon","sham","text_sham",0,0,0,0,0,0,0,0,"butcher","text_butcher",
+    "kapa","text_kapa","urei","text_urei","ryugon","text_ryugon","viruse","text_viruse",0,0,0,0,0,0,0,0,"butcher","text_butcher",
     "os","text_os","hors","text_hors","mimi","text_mimi","err","text_err",0,0,0,0,0,0,0,0,0,0,
   },
   -- page 5: inanimate objects
@@ -8387,16 +8387,16 @@ tiles_list = {
   },
   -- 745
   {
-    name = "sham",
+    name = "viruse",
     type = "object",
     rotate = true,
     layer = 11,
-    sprite = {"sham_hair", "sham_face", "sham_hair"},
-    color = {{5, 2}, {0, 2}, {5, 2}},
-    colored = {true, false, true},
+    sprite = "virus",
+    color = {2, 4},
+    colored = true,
     desc = "gon infect u",
     sing = "sham_gatsample",
-    features = {
+    --[[features = {
         sans = {x=19,y=16,w=1,h=3},
         cool = {x=-4, y=3},
         sant = {x=-1},
@@ -8407,19 +8407,19 @@ tiles_list = {
         katany = {x=5},
         bowie = {x=0,y=19},
         slippers = {x=0, y=5},
-    },
-    tags = {"chars", "uksrt", "shame", "virus"},
+    },]]
+    tags = {"dr mario", "mario", "virus"},
   },
   -- 746
   {
-    name = "text_sham",
-    sprite = "text_sham",
+    name = "text_viruse",
+    sprite = "text_viruse",
     type = "text",
     texttype = {object = true},
-    color = {5,2},
+    color = {2,4},
     layer = 20,
-    tags = {"chars", "uksrt", "shame", "virus"},
-    desc = "virus waifu",
+    tags = {"dr mario", "mario", "virus"},
+    desc = "virus",
   },
   -- 747
   {
