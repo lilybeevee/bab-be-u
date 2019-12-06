@@ -209,7 +209,11 @@ function doBack(unitid, turn, _ignore_no_undo)
     if (#undo_buffer[1] == 0) then
       addUndo({"dummy"})
     end
-    for _,v in ipairs(undo_buffer[turn]) do 
+    local buf = undo_buffer[turn]
+    if turn == 1 then
+      buf = copyTable(buf) -- avoid an infinite loop during tryAgain
+    end
+    for _,v in ipairs(buf) do 
       local action = v[1]
       local unit = units_by_id[v[2]]
       --print("doBack:", fullDump(v))
