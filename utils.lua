@@ -2485,7 +2485,7 @@ function sameFloat(a, b, ignorefloat)
 end
 
 function ignoreCheck(unit, target, property)
-  if not rules_with["wont"] then
+  if not rules_with["wont"] and not rules_with["ignor"] then
     return true
   elseif unit == target then
     return true
