@@ -144,7 +144,7 @@ function doMovement(movex, movey, key)
     else
       table.remove(level_tree, 1)
     end
-    if playing_world then
+    if load_mode == "play" then
       if #next_levels == 1 then
         writeSaveFile(next_levels[1], {"levels", level_filename, "selected"})
       else

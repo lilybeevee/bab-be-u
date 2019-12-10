@@ -368,8 +368,8 @@ function scene.resetStuff(forTime)
   
   if playing_world then
     saveWorld()
-    selectLastLevels()
   end
+  selectLastLevels()
 end
     
 function scene.keyPressed(key, isrepeat)
