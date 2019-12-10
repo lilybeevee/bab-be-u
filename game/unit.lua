@@ -2933,6 +2933,50 @@ function convertUnits(pass)
     end
   end
 
+  local deez = matchesRule(nil,"be","deez")
+  for _,ruleparent in ipairs(deez) do
+    local unit = ruleparent[2]
+    if not hasProperty(unit, "notranform") then
+      local deez_unit = ruleparent[1].rule.object.unit
+      
+      local tx = deez_unit.x
+      local ty = deez_unit.y
+      local dir = deez_unit.dir
+      local dx = dirs8[dir][1]
+      local dy = dirs8[dir][2]
+
+      local already_checked = {}
+      local transform_deez = {}
+
+      while inBounds(tx, ty) and not already_checked[tx..","..ty..":"..dir] do
+        already_checked[tx..","..ty..":"..dir] = true
+
+        dx,dy,dir,tx,ty = getNextTile(the,dx,dy,dir,nil,tx,ty)
+        
+        local tfs = getUnitsOnTile(tx,ty)
+        for _,other in ipairs(tfs) do
+          if not transform_deez[other] and not hasRule(unit,"be",unit.name) and not hasRule(unit,"ben't",other.fullname) then
+            transform_deez[other] = true
+          end
+        end
+      end
+
+      local tfd = false
+      for tf,_ in pairs(transform_deez) do
+        local tile = tiles_by_name[tf.fullname]
+        local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
+        if new_unit ~= nil then
+          tfd = true
+          addUndo({"create", new_unit.id, true, created_from_id = unit.id})
+        end
+      end
+
+      if tfd and not unit.removed then
+        table.insert(converted_units, unit)
+      end
+    end
+  end
+
   local babbys = getUnitsWithEffect("thicc")
   for _,babby in ipairs(babbys) do
     if babby.fullname == "babby" and not hasProperty(unit, "notranform") then
