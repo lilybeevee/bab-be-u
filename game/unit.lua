@@ -2484,7 +2484,7 @@ function convertLevel()
 
   local converts = matchesRule(outerlvl,"be","?")
   for _,match in ipairs(converts) do
-    if not (hasProperty(outerlvl, "lvl") or hasProperty(outerlvl, "notranform")) and match.rule.object.type and match.rule.object.type.object then
+    if not (hasProperty(outerlvl, "lvl") or hasProperty(outerlvl, "notranform")) and match.rule.object.type and (match.rule.object.type.object or match.rule.object.name:starts("text_")) then
       local tile = tiles_by_name[match.rule.object.name]
       if match.rule.object.name == "text" then
         tile = tiles_by_name["text_lvl"]
