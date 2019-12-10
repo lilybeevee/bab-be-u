@@ -2277,9 +2277,13 @@ function escResult(do_actual, xwx)
           return
         else
           if type(parent) == "table" then
+            local result = ""
+            for i,name in ipairs(parent) do
+              result = result .. (i > 1 and " & " or "") .. split(name, "/")[1]
+            end
             return table.concat(parent, " & ")
           else
-            return parent
+            return split(parent, "/")[1]
           end
         end
       end

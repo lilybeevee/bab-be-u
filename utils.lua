@@ -3033,6 +3033,13 @@ end
 function loadWorld(default)
   local new_levels = {}
   level_tree = readSaveFile{"level_tree"} or split(default, ",")
+  for _,level in ipairs(level_tree) do
+    if not love.filesystem.getInfo(getWorldDir() .. "/" .. level .. ".bab") then
+      level_tree = split(default, ",")
+      writeSaveFile(level_tree, {"level_tree"})
+      break
+    end
+  end
   new_levels = level_tree[1]
   table.remove(level_tree, 1)
   if type(new_levels) ~= "table" then
