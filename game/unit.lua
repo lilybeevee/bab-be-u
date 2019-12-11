@@ -2948,15 +2948,19 @@ function convertUnits(pass)
       local already_checked = {}
       local transform_deez = {}
 
-      while inBounds(tx, ty) and not already_checked[tx..","..ty..":"..dir] do
+      while not already_checked[tx..","..ty..":"..dir] do
         already_checked[tx..","..ty..":"..dir] = true
 
         dx,dy,dir,tx,ty = getNextTile(the,dx,dy,dir,nil,tx,ty)
         
-        local tfs = getUnitsOnTile(tx,ty)
-        for _,other in ipairs(tfs) do
-          if not transform_deez[other] and not hasRule(unit,"be",unit.name) and not hasRule(unit,"ben't",other.fullname) then
-            transform_deez[other] = true
+        if not inBounds(tx, ty) then
+          break
+        else
+          local tfs = getUnitsOnTile(tx,ty)
+          for _,other in ipairs(tfs) do
+            if not transform_deez[other] and not hasRule(unit,"be",unit.name) and not hasRule(unit,"ben't",other.fullname) then
+              transform_deez[other] = true
+            end
           end
         end
       end

@@ -1538,16 +1538,24 @@ function testConds(unit, conds, compare_with) --cond should be a {condtype,{obje
       local dir = deez.dir
       local dx = dirs8[dir][1]
       local dy = dirs8[dir][2]
-      
-      if dir == 1 then
-        result = (unit.x > tx) and (unit.y == ty)
-      elseif dir == 3 then
-        result = (unit.x == tx) and (unit.y > ty)
-      elseif dir == 5 then
-        result = (unit.x < tx) and (unit.y == ty)
-      elseif dir == 7 then
-        result = (unit.x == tx) and (unit.y < ty)
-      else
+
+      local already_checked = {}
+      local found = false
+
+      while not already_checked[tx..","..ty..":"..dir] do
+        already_checked[tx..","..ty..":"..dir] = true
+        
+        dx,dy,dir,tx,ty = getNextTile(deez,dx,dy,dir,nil,tx,ty)
+
+        if not inBounds(tx, ty) then
+          break
+        elseif unit.x == tx and unit.y == ty then
+          found = true
+          break
+        end
+      end
+
+      if not found then
         result = false
       end
     elseif condtype == "unlocked" then
