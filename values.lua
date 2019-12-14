@@ -34,6 +34,7 @@ defaultsettings = {
   particles_on = true,
   shake_on = true,
   scribble_anim = true,
+  light_on = true,
   epileptic = false,
   game_scale = "auto",
   grid_lines = false,

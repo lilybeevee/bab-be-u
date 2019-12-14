@@ -1497,7 +1497,7 @@ function scene.draw(dt)
   end
 
   --lightning !
-  if (lightcanvas ~= nil) then
+  if (lightcanvas ~= nil) and settings["light_on"] then
     love.graphics.setColor(0.05, 0.05, 0.05, 1)
     love.graphics.setBlendMode("add", "premultiplied")
     love.graphics.draw(lightcanvas, 0, 0)

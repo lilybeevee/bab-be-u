@@ -3374,9 +3374,9 @@ function getTheme()
       return cmdargs["theme"]
     end
   else
-    if os.date("%m") == "10" and os.date("%d") == "31" then
+    if os.date("%m") == "10" and os.date("%d") > "25" then
       return "halloween"
-    elseif os.date("%m") == "12" and os.date("%d") == "25" then
+    elseif os.date("%m") == "12" and os.date("%d") > "20" then
       return "christmas"
     end
   end
@@ -3418,6 +3418,7 @@ function buildOptions()
     scene.addOption("music_vol", "music volume", {{"25%", 0.25}, {"50%", 0.5}, {"75%", 0.75}, {"100%", 1}})
     scene.addOption("sfx_on", "sound", {{"on", true}, {"off", false}})
     scene.addOption("sfx_vol", "sound volume", {{"25%", 0.25}, {"50%", 0.5}, {"75%", 0.75}, {"100%", 1}})
+    scene.addOption("focus_pause", "pause on defocus", {{"on", true}, {"off", false}})
     scene.addButton("video options", function() display = true; scene.buildUI() end)
     scene.addButton("default settings", function () defaultSetting() scene.buildUI() end)
     scene.addButton("back", function() options = false; scene.buildUI() end)
@@ -3426,16 +3427,16 @@ function buildOptions()
     scene.addOption("particles_on", "particle effects", {{"on", true}, {"off", false}})
     scene.addOption("shake_on", "shakes", {{"on", true}, {"off", false}})
     scene.addOption("scribble_anim", "animated scribbles", {{"on", true}, {"off", false}})
+	scene.addOption("light_on", "lighting", {{"on", true}, {"off", false}})
     scene.addOption("epileptic", "reduce flashes", {{"on", true}, {"off", false}})
     scene.addOption("grid_lines", "grid lines", {{"on", true}, {"off", false}})
     scene.addOption("mouse_lines", "mouse lines", {{"on", true}, {"off", false}})
     scene.addOption("stopwatch_effect", "stopwatch effect", {{"on", true}, {"off", false}})
     scene.addOption("fullscreen", "screen mode", {{"windowed", false}, {"fullscreen", true}}, function() fullScreen() end)
-    scene.addOption("focus_pause", "pause on defocus", {{"on", true}, {"off", false}})
     if scene == menu then
       scene.addOption("scroll_on", "menu background scroll", {{"on", true}, {"off", false}})
-      scene.addOption("themes", "menu themes", {{"on", true}, {"off", false}})
     end
+    scene.addOption("themes", "menu themes", {{"on", true}, {"off", false}})
     scene.addButton("back", function() display = false; scene.buildUI() end)
   end
 end
