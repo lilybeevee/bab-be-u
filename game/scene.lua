@@ -368,8 +368,8 @@ function scene.resetStuff(forTime)
   
   if playing_world then
     saveWorld()
-    selectLastLevels()
   end
+  selectLastLevels()
 end
     
 function scene.keyPressed(key, isrepeat)
@@ -1497,7 +1497,7 @@ function scene.draw(dt)
   end
 
   --lightning !
-  if (lightcanvas ~= nil) then
+  if (lightcanvas ~= nil) and settings["light_on"] then
     love.graphics.setColor(0.05, 0.05, 0.05, 1)
     love.graphics.setBlendMode("add", "premultiplied")
     love.graphics.draw(lightcanvas, 0, 0)
@@ -2277,9 +2277,13 @@ function escResult(do_actual, xwx)
           return
         else
           if type(parent) == "table" then
-            return table.concat(parent, " & ")
+            local result = ""
+            for i,name in ipairs(parent) do
+              result = result .. (i > 1 and " & " or "") .. split(name, "/")[1]
+            end
+            return result
           else
-            return parent
+            return split(parent, "/")[1]
           end
         end
       end

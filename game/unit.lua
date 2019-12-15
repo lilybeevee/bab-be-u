@@ -2484,7 +2484,7 @@ function convertLevel()
 
   local converts = matchesRule(outerlvl,"be","?")
   for _,match in ipairs(converts) do
-    if not (hasProperty(outerlvl, "lvl") or hasProperty(outerlvl, "notranform")) and match.rule.object.type and match.rule.object.type.object then
+    if not (hasProperty(outerlvl, "lvl") or hasProperty(outerlvl, "notranform")) and match.rule.object.type and (match.rule.object.type.object or match.rule.object.name:starts("text_")) then
       local tile = tiles_by_name[match.rule.object.name]
       if match.rule.object.name == "text" then
         tile = tiles_by_name["text_lvl"]
@@ -2927,6 +2927,54 @@ function convertUnits(pass)
         end
       end
       
+      if tfd and not unit.removed then
+        table.insert(converted_units, unit)
+      end
+    end
+  end
+
+  local deez = matchesRule(nil,"be","deez")
+  for _,ruleparent in ipairs(deez) do
+    local unit = ruleparent[2]
+    if not hasProperty(unit, "notranform") then
+      local deez_unit = ruleparent[1].rule.object.unit
+      
+      local tx = deez_unit.x
+      local ty = deez_unit.y
+      local dir = deez_unit.dir
+      local dx = dirs8[dir][1]
+      local dy = dirs8[dir][2]
+
+      local already_checked = {}
+      local transform_deez = {}
+
+      while not already_checked[tx..","..ty..":"..dir] do
+        already_checked[tx..","..ty..":"..dir] = true
+
+        dx,dy,dir,tx,ty = getNextTile(the,dx,dy,dir,nil,tx,ty)
+        
+        if not inBounds(tx, ty) then
+          break
+        else
+          local tfs = getUnitsOnTile(tx,ty)
+          for _,other in ipairs(tfs) do
+            if not transform_deez[other] and not hasRule(unit,"be",unit.name) and not hasRule(unit,"ben't",other.fullname) then
+              transform_deez[other] = true
+            end
+          end
+        end
+      end
+
+      local tfd = false
+      for tf,_ in pairs(transform_deez) do
+        local tile = tiles_by_name[tf.fullname]
+        local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
+        if new_unit ~= nil then
+          tfd = true
+          addUndo({"create", new_unit.id, true, created_from_id = unit.id})
+        end
+      end
+
       if tfd and not unit.removed then
         table.insert(converted_units, unit)
       end

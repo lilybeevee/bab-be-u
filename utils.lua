@@ -1538,16 +1538,24 @@ function testConds(unit, conds, compare_with) --cond should be a {condtype,{obje
       local dir = deez.dir
       local dx = dirs8[dir][1]
       local dy = dirs8[dir][2]
-      
-      if dir == 1 then
-        result = (unit.x > tx) and (unit.y == ty)
-      elseif dir == 3 then
-        result = (unit.x == tx) and (unit.y > ty)
-      elseif dir == 5 then
-        result = (unit.x < tx) and (unit.y == ty)
-      elseif dir == 7 then
-        result = (unit.x == tx) and (unit.y < ty)
-      else
+
+      local already_checked = {}
+      local found = false
+
+      while not already_checked[tx..","..ty..":"..dir] do
+        already_checked[tx..","..ty..":"..dir] = true
+        
+        dx,dy,dir,tx,ty = getNextTile(deez,dx,dy,dir,nil,tx,ty)
+
+        if not inBounds(tx, ty) then
+          break
+        elseif unit.x == tx and unit.y == ty then
+          found = true
+          break
+        end
+      end
+
+      if not found then
         result = false
       end
     elseif condtype == "unlocked" then
@@ -2485,7 +2493,7 @@ function sameFloat(a, b, ignorefloat)
 end
 
 function ignoreCheck(unit, target, property)
-  if not rules_with["wont"] then
+  if not rules_with["wont"] and not rules_with["ignor"] then
     return true
   elseif unit == target then
     return true
@@ -3033,6 +3041,13 @@ end
 function loadWorld(default)
   local new_levels = {}
   level_tree = readSaveFile{"level_tree"} or split(default, ",")
+  for _,level in ipairs(level_tree) do
+    if not love.filesystem.getInfo(getWorldDir() .. "/" .. level .. ".bab") then
+      level_tree = split(default, ",")
+      writeSaveFile(level_tree, {"level_tree"})
+      break
+    end
+  end
   new_levels = level_tree[1]
   table.remove(level_tree, 1)
   if type(new_levels) ~= "table" then
@@ -3359,9 +3374,9 @@ function getTheme()
       return cmdargs["theme"]
     end
   else
-    if os.date("%m") == "10" and os.date("%d") == "31" then
+    if os.date("%m") == "10" and os.date("%d") > "25" then
       return "halloween"
-    elseif os.date("%m") == "12" and os.date("%d") == "25" then
+    elseif os.date("%m") == "12" and os.date("%d") > "20" then
       return "christmas"
     end
   end
@@ -3403,6 +3418,7 @@ function buildOptions()
     scene.addOption("music_vol", "music volume", {{"25%", 0.25}, {"50%", 0.5}, {"75%", 0.75}, {"100%", 1}})
     scene.addOption("sfx_on", "sound", {{"on", true}, {"off", false}})
     scene.addOption("sfx_vol", "sound volume", {{"25%", 0.25}, {"50%", 0.5}, {"75%", 0.75}, {"100%", 1}})
+    scene.addOption("focus_pause", "pause on defocus", {{"on", true}, {"off", false}})
     scene.addButton("video options", function() display = true; scene.buildUI() end)
     scene.addButton("default settings", function () defaultSetting() scene.buildUI() end)
     scene.addButton("back", function() options = false; scene.buildUI() end)
@@ -3411,16 +3427,16 @@ function buildOptions()
     scene.addOption("particles_on", "particle effects", {{"on", true}, {"off", false}})
     scene.addOption("shake_on", "shakes", {{"on", true}, {"off", false}})
     scene.addOption("scribble_anim", "animated scribbles", {{"on", true}, {"off", false}})
+	scene.addOption("light_on", "lighting", {{"on", true}, {"off", false}})
     scene.addOption("epileptic", "reduce flashes", {{"on", true}, {"off", false}})
     scene.addOption("grid_lines", "grid lines", {{"on", true}, {"off", false}})
     scene.addOption("mouse_lines", "mouse lines", {{"on", true}, {"off", false}})
     scene.addOption("stopwatch_effect", "stopwatch effect", {{"on", true}, {"off", false}})
     scene.addOption("fullscreen", "screen mode", {{"windowed", false}, {"fullscreen", true}}, function() fullScreen() end)
-    scene.addOption("focus_pause", "pause on defocus", {{"on", true}, {"off", false}})
     if scene == menu then
       scene.addOption("scroll_on", "menu background scroll", {{"on", true}, {"off", false}})
-      scene.addOption("themes", "menu themes", {{"on", true}, {"off", false}})
     end
+    scene.addOption("themes", "menu themes", {{"on", true}, {"off", false}})
     scene.addButton("back", function() display = false; scene.buildUI() end)
   end
 end

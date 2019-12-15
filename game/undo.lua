@@ -86,7 +86,7 @@ function undoOneAction(turn, i, v, ignore_no_undo)
         unit.special = v[8]
       end
       --If the unit was actually a destroyed 'no undo', oops. Don't actually bring it back. It's dead, Jim.
-      if (unit ~= nil and not convert and (not ignore_no_undo and isNoUndo(unit))) then
+      if (unit ~= nil and not convert and (not ignore_no_undo and isNoUndo(unit, true))) then
         deleteUnit(unit, convert, true)
       end
 
@@ -209,7 +209,11 @@ function doBack(unitid, turn, _ignore_no_undo)
     if (#undo_buffer[1] == 0) then
       addUndo({"dummy"})
     end
-    for _,v in ipairs(undo_buffer[turn]) do 
+    local buf = undo_buffer[turn]
+    if turn == 1 then
+      buf = copyTable(buf) -- avoid an infinite loop during tryAgain
+    end
+    for _,v in ipairs(buf) do 
       local action = v[1]
       local unit = units_by_id[v[2]]
       --print("doBack:", fullDump(v))
@@ -371,8 +375,9 @@ function doTryAgain(_ignore_no_undo)
   consolidateUndo(1)
 end
 
-function isNoUndo(unit)
-  if in_try_again then
+function isNoUndo(unit, just_created)
+  if in_try_again and not just_created then 
+-- if we just created a unit by undoing a removal, it won't be in the cache, so we should chack against the current rules to see whether that removal really should have been undone.
     return try_again_cache[unit] == true
   else
     return hasProperty(unit, "no undo")
