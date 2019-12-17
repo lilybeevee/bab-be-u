@@ -798,17 +798,20 @@ function addRule(full_rule)
   elseif subject == "numa" then
     for _,v in ipairs(referenced_text) do
       if subject_not % 2 == 1 then
-        if not v:starts("letter_") then
+        if v:starts("letter_") then
           for i = 1, 9, 1 do
-            if not (v:ends(tostring(i)) or v:ends("o")) then
+            if v:ends(tostring(i)) then
               addRuleSimple({v, rules.subject.conds}, rules.verb, rules.object, units, dir)
             end
           end
         end
       else
         if v:starts("letter_") then
+          if v:ends("_o") then
+            addRuleSimple({v, rules.subject.conds}, rules.verb, rules.object, units, dir)
+          end
           for i = 1, 9, 1 do
-            if v:ends(tostring(i)) or v:ends("o") then
+            if v:ends(tostring(i)) then
               addRuleSimple({v, rules.subject.conds}, rules.verb, rules.object, units, dir)
             end
           end

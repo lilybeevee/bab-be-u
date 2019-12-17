@@ -9280,7 +9280,7 @@ tiles_list = {
     color = {3, 1},
     layer = 20,
     tags = {"number","digit"},
-    desc = "NUMA: Refers to all numbers that exist in the level.",
+    desc = "NUMA: Refers to all numbers that exist in the level.\n\nNUMA n't refers to all non-number letters.",
   },
   -- 835
   {
