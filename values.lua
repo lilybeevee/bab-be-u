@@ -9292,7 +9292,7 @@ tiles_list = {
     color = {4, 1},
     layer = 20,
     tags = {"tone","pitch","music notes"},
-    desc = "TOEN: Refers to all letters that exist in the level.",
+    desc = "TOEN: Refers to all music note letters that exist in the level.",
   },
 }
 

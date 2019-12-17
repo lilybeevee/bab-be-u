@@ -818,9 +818,23 @@ function addRule(full_rule)
         end
       end
     end
+  elseif subject == "toen" then
+    for _,v in ipairs(referenced_text) do
+      if subject_not % 2 == 1 then
+        if not (v:ends("_sharp") or v:ends("_flat") or v == "letter_a" or v == "letter_b" or v == "letter_c" or v == "letter_d" or v == "letter_e" or v == "letter_f" or v == "letter_g") then
+          addRuleSimple({v, rules.subject.conds}, rules.verb, rules.object, units, dir)
+        end
+      else
+        if v:ends("_sharp") or v:ends("_flat") or v == "letter_a" or v == "letter_b" or v == "letter_c" or v == "letter_d" or v == "letter_e" or v == "letter_f" or v == "letter_g" then
+          addRuleSimple({v, rules.subject.conds}, rules.verb, rules.object, units, dir)
+        end
+      end
+    end
   elseif subject == "yuiy" then
     if subject_not % 2 == 1 then
-      return
+      if not v:starts("ui_") then
+        addRuleSimple({v, rules.subject.conds}, rules.verb, rules.object, units, dir)
+      end
     else
       for _,v in ipairs(referenced_objects) do
         if v:starts("ui_") then
