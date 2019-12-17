@@ -247,7 +247,7 @@ selector_grid_contents = {
     "letter_a","letter_b","letter_c","letter_d","letter_e","letter_f","letter_g","letter_h","letter_i","letter_j","letter_k","letter_l","letter_m","letter_n","letter_o","letter_p","letter_q","letter_r",
     "letter_s","letter_t","letter_u","letter_v","letter_w","letter_x","letter_y","letter_z","letter_.","letter_colon","letter_parenthesis","letter_'","letter_/","letter_1","letter_2","letter_3","letter_4","letter_5",
     0,0,0,0,0,0,0,0,0,"letter_;","letter_>",0,0,"letter_6","letter_7","letter_8","letter_9","letter_o",
-	"letter_go","letter_come","letter_pls","letter_away","letter_my","letter_no","letter_way","letter_ee","letter_fren","letter_ll","letter_bolt","letter_ol",0,0,0,0,"letter_*","text_lethers",
+	"letter_go","letter_come","letter_pls","letter_away","letter_my","letter_no","letter_way","letter_ee","letter_fren","letter_ll","letter_bolt","letter_ol",0,0,0,"letter_*","text_numa","text_lethers",
 	"text_c_sharp","text_d_sharp","text_f_sharp","text_g_sharp","text_a_sharp","text_sharp","text_flat",0,0,0,0,0,0,0,0,0,0,0,
   },
   -- page 3: ui / instructions
@@ -266,8 +266,8 @@ selector_grid_contents = {
     "keek","text_keek","creb","text_creb","shrim","text_shrim","moo","text_moo","toby","text_toby",0,0,0,0,"this","text_mous","lin","text_lin",
     "meem","text_meem","statoo","text_statoo","flamgo","text_flamgo","migri","text_migri","temmi","text_temmi",0,0,0,0,"text_gang","text_frens","text_groop","text_pathz",
     "skul","text_skul","beeee","text_beeee","gul","text_gul","kva","text_kva",0,0,0,0,0,0,"text_no1","text_every1","text_every2","text_every3",
-    "ghost fren","text_ghost fren","fishe","text_fishe","starrfishe","text_starrfishe","pidgin","text_pidgin",0,0,0,0,0,0,"text_text","text_yuiy",0,"text_xplod",
-    "robobot","text_robobot","snek","text_snek","sneel","text_sneel","swan","text_swan",0,0,0,0,0,0,0,0,0,0,
+    "ghost fren","text_ghost fren","fishe","text_fishe","starrfishe","text_starrfishe","pidgin","text_pidgin",0,0,0,0,0,0,"text_text","text_lethers","text_numa","text_toen",
+    "robobot","text_robobot","snek","text_snek","sneel","text_sneel","swan","text_swan",0,0,0,0,0,0,0,0,"text_yuiy","text_xplod",
     "wog","text_wog","bog","text_bog","enbybog","text_enbybog","spoder","text_spoder",0,0,0,0,0,0,0,0,0,0,
     "kirb","text_kirb","ripof","text_ripof","cavebab","text_cavebab","detox","text_detox","nyowo","text_nyowo",0,0,0,0,0,0,0,0,
     "bup","text_bup","butflye","text_butflye","boooo","text_boooo","prime","text_prime","grimkid","text_grimkid",0,0,0,0,0,0,0,0,
@@ -9264,12 +9264,34 @@ tiles_list = {
   --832
   {
     name = "letter_*",
-    sprite = "letter_x",
+    sprite = "letter_asterisk",
     type = "text",
     texttype = {letter = true},
-    color = {1,3},
+    color = {0,3},
     layer = 20,
-    desc = "wildcard. temp sprite bc slab cant draw",
+    desc = "wildcard.",
+  },
+  -- 834
+  {
+    name = "text_numa",
+    sprite = "text_numa",
+    type = "text",
+    texttype = {object = true},
+    color = {3, 1},
+    layer = 20,
+    tags = {"number","digit"},
+    desc = "NUMA: Refers to all numbers that exist in the level.",
+  },
+  -- 835
+  {
+    name = "text_toen",
+    sprite = "text_toen",
+    type = "text",
+    texttype = {object = true},
+    color = {4, 1},
+    layer = 20,
+    tags = {"tone","pitch","music notes"},
+    desc = "TOEN: Refers to all letters that exist in the level.",
   },
 }
 
