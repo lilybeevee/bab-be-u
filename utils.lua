@@ -3435,6 +3435,7 @@ function buildOptions()
     scene.addOption("fullscreen", "screen mode", {{"windowed", false}, {"fullscreen", true}}, function() fullScreen() end)
     if scene == menu then
       scene.addOption("scroll_on", "menu background scroll", {{"on", true}, {"off", false}})
+      scene.addOption("menu_anim", "menu animations", {{"on", true}, {"off", false}})
     end
     scene.addOption("themes", "menu themes", {{"on", true}, {"off", false}})
     scene.addButton("back", function() display = false; scene.buildUI() end)

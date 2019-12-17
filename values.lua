@@ -46,6 +46,7 @@ defaultsettings = {
   draw_editor_lins = true,
   infomode = false,
   scroll_on = true,
+  menu_anim = true,
   themes = true,
 }
 

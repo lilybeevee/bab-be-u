@@ -39,8 +39,10 @@ function scene.load()
   love.keyboard.setKeyRepeat(false)
   scene.buildUI()
   scene.selecting = true
-  babtitletween = love.timer.getTime()
-  babtitlespeen = math.random(1,1000) == 1
+  if settings["menu_anim"] then
+    babtitletween = love.timer.getTime()
+    babtitlespeen = math.random(1,1000) == 1
+  end
 end
 
 function scene.buildUI()
@@ -54,7 +56,7 @@ function scene.buildUI()
   else
     giticon = sprites["ui/github"]
   end
-
+  
   git_btn = ui.component.new()
     :setSprite(giticon)
     :setColor(1, 1, 1)
