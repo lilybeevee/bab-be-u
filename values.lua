@@ -275,7 +275,7 @@ selector_grid_contents = {
     "boy","text_boy","wurm","text_wurm","madi","text_madi","angle","text_angle","boogie","text_boogie",0,0,0,0,"lila","text_lila","larry","text_larry",
     "steev","text_steev","ratt","text_ratt","badi","text_badi","debil","text_debil","assh","text_assh",0,0,0,0,"pata","text_pata","jill","text_jill",
     "han","text_han","iy","text_iy","lisp","text_lisp","paw","text_paw",0,0,0,0,0,0,"slab","text_slab","zsoob","text_zsoob",
-    "snoman","text_snoman","pingu","text_pingu","der","text_der","ginn","text_ginn",0,0,0,0,0,0,"notnat","text_notnat","o","text_o",
+    "snoman","text_snoman","pingu","text_pingu","der","text_der","ginn","text_ginn","snom","text_snom",0,0,0,0,"notnat","text_notnat","o","text_o",
     "kapa","text_kapa","urei","text_urei","ryugon","text_ryugon","viruse","text_viruse",0,0,0,0,0,0,0,0,"butcher","text_butcher",
     "os","text_os","hors","text_hors","mimi","text_mimi","err","text_err",0,0,0,0,0,0,0,0,0,0,
   },
@@ -9293,6 +9293,31 @@ tiles_list = {
     layer = 20,
     tags = {"tone","pitch","music notes"},
     desc = "TOEN: Refers to all music note letters that exist in the level.",
+  },
+  -- 836
+  {
+    name = "snom",
+    sprite = "snom",
+    type = "object",
+    color = {0, 3},
+    layer = 11,
+    rotate = true,
+    features = { sans = {x=20, y=25, w=2, h=2} },
+    tags = {"chars", "snom", "pokemon"},
+    desc = "its snom bruh",
+    pronouns = {"any", "all"},
+    desc = "It snaccs SNO that piles up on the ground. The more SNO it snaccs, the THICCer and MOAR impressive the spikes on its back grow.",
+  },
+  -- 837
+  {
+    name = "text_snom",
+    sprite = "text_snom",
+    type = "text",
+    texttype = {object = true},
+    color = {0, 3},
+    layer = 20,
+    tags = {"chars", "snom", "pokemon"},
+    desc = "yea its the same spelling what else would it be, SNOWM??",
   },
 }
 
