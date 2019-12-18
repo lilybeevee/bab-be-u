@@ -3376,7 +3376,7 @@ function getTheme()
   else
     if os.date("%m") == "10" and os.date("%d") > "25" then
       return "halloween"
-    elseif os.date("%m") == "12" and os.date("%d") > "20" then
+    elseif os.date("%m") == "12" and os.date("%d") > "24" or os.date("%m") == "01" and os.date("%d") < "6" then
       return "christmas"
     end
   end
