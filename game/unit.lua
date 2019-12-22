@@ -2564,7 +2564,7 @@ function convertUnits(pass)
     end
   end
   
-  local demeta = getUnitsWithRuleAndCount(nil,"be","thingify")
+  local demeta = getUnitsWithEffectAndCount("thingify")
   for unit,amt in pairs(demeta) do
     if not unit.new and unit.type ~= "outerlvl" and timecheck(unit,"be","thingify") then
       --remove "text_" as many times as we're de-metaing
