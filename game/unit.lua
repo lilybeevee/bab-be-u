@@ -1147,34 +1147,27 @@ function updateUnits(undoing, big_update)
     end
     
     local issoko = matchesRule(nil,"soko","?")
-    local sokowins = {}
     for _,ruleparent in ipairs(issoko) do
       local unit = ruleparent[2]
-      if sokowins[unit] == nil then
-        sokowins[unit] = true
-      end
       local others = findUnitsByName(ruleparent[1].rule.object.name)
       local fail = false
       if #others > 0 then
         for _,other in ipairs(others) do
-          local ons = getUnitsOnTile(other.x,other.y,nil,nil,other,nil,hasProperty(unit,"thicc"))
-          local innersuccess = false
+          local ons = getUnitsOnTile(other.x,other.y,nil,nil,other,nil,hasProperty(other,"thicc"))
+          local success = false
           for _,on in ipairs(ons) do
             if sameFloat(other,on) and ignoreCheck(other,on) then
-              innersuccess = true
+              success = true
+              break
             end
           end
-          if not innersuccess then
+          if not success then
             fail = true
+            break
           end
         end
-      end
-      if fail then
-        sokowins[unit] = false
-      end
-    end
-    for unit,v in pairs(sokowins) do
-      if v then
+      else fail = true end
+      if not fail then
         local stuff = getUnitsOnTile(unit.x,unit.y,nil,nil,nil,nil,hasProperty(unit,"thicc"))
         for _,on in ipairs(stuff) do
           if hasU(on) and sameFloat(unit,on) and ignoreCheck(on,unit) then
@@ -2266,6 +2259,36 @@ function levelBlock()
     end
   end
   
+  local soko = matchesRule(outerlvl,"soko","?")
+  for _,ruleparent in ipairs(soko) do
+    local units = findUnitsByName(ruleparent.rule.object.name)
+    local fail = false
+    if #units > 0 then
+      for _,unit in ipairs(units) do
+        local ons = getUnitsOnTile(unit.x,unit.y,nil,nil,unit,nil,hasProperty(unit,"thicc"))
+        local success = false
+        for _,on in ipairs(ons) do
+          if sameFloat(unit,on) and ignoreCheck(unit,on) then
+            success = true
+            break
+          end
+        end
+        if not success then
+          fail = true
+          break
+        end
+      end
+    else fail = true end
+    if not fail then
+      local yous = getUs()
+      for _,unit in ipairs(yous) do
+        if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) and ignoreCheck(unit,outerlvl) then
+          wins = wins + 1
+        end
+      end
+    end
+  end
+  
   if hasProperty(outerlvl, ":>") then
 		table.insert(win_sprite_override,tiles_list[tiles_by_name["text_:>"]]);
     doWin("nxt")
@@ -2564,7 +2587,7 @@ function convertUnits(pass)
     end
   end
   
-  local demeta = getUnitsWithRuleAndCount(nil,"be","thingify")
+  local demeta = getUnitsWithEffectAndCount("thingify")
   for unit,amt in pairs(demeta) do
     if not unit.new and unit.type ~= "outerlvl" and timecheck(unit,"be","thingify") then
       --remove "text_" as many times as we're de-metaing

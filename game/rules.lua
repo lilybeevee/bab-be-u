@@ -795,11 +795,48 @@ function addRule(full_rule)
         end
       end
     end
+  elseif subject == "numa" then
+    for _,v in ipairs(referenced_text) do
+      if subject_not % 2 == 1 then
+        if v:starts("letter_") then
+          for i = 1, 9, 1 do
+            if v:ends(tostring(i)) then
+              addRuleSimple({v, rules.subject.conds}, rules.verb, rules.object, units, dir)
+            end
+          end
+        end
+      else
+        if v:starts("letter_") then
+          if v:ends("_o") then
+            addRuleSimple({v, rules.subject.conds}, rules.verb, rules.object, units, dir)
+          end
+          for i = 1, 9, 1 do
+            if v:ends(tostring(i)) then
+              addRuleSimple({v, rules.subject.conds}, rules.verb, rules.object, units, dir)
+            end
+          end
+        end
+      end
+    end
+  elseif subject == "toen" then
+    for _,v in ipairs(referenced_text) do
+      if subject_not % 2 == 1 then
+        if not (v:ends("_sharp") or v:ends("_flat") or v == "letter_a" or v == "letter_b" or v == "letter_c" or v == "letter_d" or v == "letter_e" or v == "letter_f" or v == "letter_g") then
+          addRuleSimple({v, rules.subject.conds}, rules.verb, rules.object, units, dir)
+        end
+      else
+        if v:ends("_sharp") or v:ends("_flat") or v == "letter_a" or v == "letter_b" or v == "letter_c" or v == "letter_d" or v == "letter_e" or v == "letter_f" or v == "letter_g" then
+          addRuleSimple({v, rules.subject.conds}, rules.verb, rules.object, units, dir)
+        end
+      end
+    end
   elseif subject == "yuiy" then
-    if subject_not % 2 == 1 then
-      return
-    else
-      for _,v in ipairs(referenced_objects) do
+    for _,v in ipairs(referenced_objects) do
+      if subject_not % 2 == 1 then
+        if not v:starts("ui_") then
+          addRuleSimple({v, rules.subject.conds}, rules.verb, rules.object, units, dir)
+        end
+      else
         if v:starts("ui_") then
           addRuleSimple({v, rules.subject.conds}, rules.verb, rules.object, units, dir)
         end
