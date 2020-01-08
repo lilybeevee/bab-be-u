@@ -868,7 +868,7 @@ function updateUnits(undoing, big_update)
     for _,unit in ipairs(issink) do
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"thicc"))
       for _,on in ipairs(stuff) do
-        if unit ~= on and sameFloat(unit, on) then
+        if unit ~= on and on.fullname ~= "no1" and sameFloat(unit, on) then
           local ignore_unit = ignoreCheck(unit, on)
           local ignore_on = ignoreCheck(on, unit, "no swim")
           if ignore_unit or ignore_on then
