@@ -3419,6 +3419,7 @@ function buildOptions()
     scene.addOption("sfx_on", "sound", {{"on", true}, {"off", false}})
     scene.addOption("sfx_vol", "sound volume", {{"25%", 0.25}, {"50%", 0.5}, {"75%", 0.75}, {"100%", 1}})
     scene.addOption("focus_pause", "pause on defocus", {{"on", true}, {"off", false}})
+    scene.addOption("autoupdate", "autoupdate (experimental)", {{"on", true}, {"off", false}})
     scene.addButton("video options", function() display = true; scene.buildUI() end)
     scene.addButton("default settings", function () defaultSetting() scene.buildUI() end)
     scene.addButton("back", function() options = false; scene.buildUI() end)
@@ -3606,4 +3607,12 @@ function matchesColor(a, b, exact)
     end
     return a == b
   end
+end
+
+function execute(command)
+  local handle = io.popen(command)
+  local result = handle:read("*a")
+  handle:close()
+
+  return result
 end
