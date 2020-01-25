@@ -354,13 +354,13 @@ function parseRules(undoing)
             stopped = true
           end
 
-          dx, dy, dir, x, y = getNextTile(last_unit, dx, dy, dir)
-
           if not been_here[x + y * mapwidth] then --can only go to each tile twice each first word; so that if we have a wrap/portal infinite loop we don't softlock
             been_here[x + y * mapwidth] = 1
           else
             been_here[x + y * mapwidth] = 2
           end
+
+          dx, dy, dir, x, y = getNextTile(last_unit, dx, dy, dir)
         end
       end --while not stopped
 

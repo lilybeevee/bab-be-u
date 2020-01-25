@@ -48,6 +48,7 @@ defaultsettings = {
   scroll_on = true,
   menu_anim = true,
   themes = true,
+  autoupdate = true,
 }
 
 if love.filesystem.read("Settings.bab") ~= nil then

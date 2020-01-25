@@ -43,6 +43,8 @@ spookmode = false
 local debugEnabled = false
 local drawnDebugScreen = false
 
+local babupdated = false
+
 bxb = nil
 
 function tableAverage(table)
@@ -170,6 +172,20 @@ bab arguments!
                                    ]])..(spookmode and "  help" or "BAB BE U")..
 "\n                                      v. "..build_number..[[
                                      ]]..colr.red('❤')..' v. '..love.getVersion()..'\n\n')
+
+  if settings["autoupdate"] then
+    print('checking updates')
+    pcall(function()
+      execute('git fetch')
+      if not string.find(execute('git status'), 'is up to date with') then
+        os.execute('git pull')
+        babupdated = true
+        print('updated')
+      else
+        print('no updates found')
+      end
+    end)
+  end
 
   local libstatus, liberr = pcall(function() discordRPC = require "lib/discordRPC" end)
   if libstatus then

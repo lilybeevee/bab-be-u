@@ -868,7 +868,7 @@ function updateUnits(undoing, big_update)
     for _,unit in ipairs(issink) do
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"thicc"))
       for _,on in ipairs(stuff) do
-        if unit ~= on and sameFloat(unit, on) then
+        if unit ~= on and on.fullname ~= "no1" and sameFloat(unit, on) then
           local ignore_unit = ignoreCheck(unit, on)
           local ignore_on = ignoreCheck(on, unit, "no swim")
           if ignore_unit or ignore_on then
@@ -3392,6 +3392,10 @@ function updateDir(unit, dir, force)
     for i=1,8 do
       if hasRule(unit, "ben't", "spin"..i) then
         if (dir == (unit.dir+i-1)%8+1) then return false end
+      end
+      if hasProperty(unit, dirs8_by_name[i]) then
+        unit.dir = i
+        return false
       end
     end
     if unit.dir == dir then return true end
