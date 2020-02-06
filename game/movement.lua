@@ -653,11 +653,12 @@ It is probably possible to do, but lily has decided that it's not important enou
               
               for k = #movers, 1, -1 do
                 moveIt(movers[k].unit, movers[k].dx, movers[k].dy, data.reason == "moov dir" and movers[k].unit.dir or movers[k].dir, movers[k].move_dir, movers[k].geometry_spin, data, false, already_added, moving_units, moving_units_next, slippers, remove_from_moving_units, movers[k].portal)
-              end
-              --Patashu: only the mover itself pulls, otherwise it's a mess. stuff like STICKY/STUCK will require ruggedizing this logic.
-              --Patashu: TODO: Doing the pull right away means that in a situation like this: https://cdn.discordapp.com/attachments/579519329515732993/582179745006092318/unknown.png the pull could happen before the bounce depending on move order. To fix this... I'm not sure how Baba does this? But it's somewhere in that mess of code.
-              if not table.has_value(unitsByTile(unit.x-dx,unit.y-dy),unit) then
-                doPull(unit, dx, dy, dir, data, already_added, moving_units, moving_units_next,  slippers, remove_from_moving_units)
+                --Patashu: only the mover itself pulls, otherwise it's a mess. stuff like STICKY/STUCK will require ruggedizing this logic.
+                --Patashu: TODO: Doing the pull right away means that in a situation like this: https://cdn.discordapp.com/attachments/579519329515732993/582179745006092318/unknown.png the pull could happen before the bounce depending on move order. To fix this... I'm not sure how Baba does this? But it's somewhere in that mess of code.
+                if not table.has_value(unitsByTile(movers[k].unit.x-movers[k].dx,movers[k].unit.y-movers[k].dy),movers[k].unit) then
+                  -- this doesn't really work with thicc ? idk what fix it
+                  doPull(movers[k].unit, movers[k].dx, movers[k].dy, movers[k].move_dir, data, already_added, moving_units, moving_units_next,  slippers, remove_from_moving_units)
+                end
               end
               
               --add to moving_units_next if we have another pending move
