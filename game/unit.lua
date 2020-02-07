@@ -3349,7 +3349,7 @@ function moveUnit(unit,x,y,portal,instant)
           addTween(tween.new(0.1, unit.draw, {x = x, y = y}), "unit:pos:" .. unit.tempid)
         else
           --fade in, fade out effect
-          addTween(tween.new(0.05, unit.draw, {scalex = 0}), "unit:scalex:" .. unit.tempid, function()
+          addTween(tween.new(0.05, unit.draw, {scalex = 0}), "unit:scalex:pos:" .. unit.tempid, function()
             unit.draw.x = x
             unit.draw.y = y
             unit.draw.rotation = (unit.rotatdir - 1) * 45
@@ -3422,7 +3422,7 @@ function updateDir(unit, dir, force)
     local target_rot = (unit.rotatdir - 1) * 45
     if (unit.rotate or (rules_with ~= nil and hasProperty(unit,"rotatbl"))) and math.abs(unit.draw.rotation - target_rot) == 180 then
       -- flip "mirror" effect
-      addTween(tween.new(0.05, unit.draw, {scalex = 0}), "unit:scalex:" .. unit.tempid, function()
+      addTween(tween.new(0.05, unit.draw, {scalex = 0}), "unit:scalex:rot:" .. unit.tempid, function()
         unit.draw.rotation = target_rot
         addTween(tween.new(0.05, unit.draw, {scalex = 1}), "unit:scalex:" .. unit.tempid)
       end)
