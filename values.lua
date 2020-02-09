@@ -8224,7 +8224,7 @@ tiles_list = {
   },
   -- 729
   {
-    name = "text_B)",
+    name = "text_b)",
     sprite = "text_B)",
     type = "text",
     texttype = {property = true},
