@@ -148,7 +148,7 @@ end
 function initializeGraphicalPropertyCache()
   local properties_to_init = -- list of properties that require the graphical cache
   {
-	  "flye", "slep", "tranz", "gay", "stelth", "colrful", "xwx", "rave", "enby", -- miscelleaneous graphical effects
+	  "flye", "slep", "tranz", "gay", "stelth", "colrful", "xwx", "rave", "enby", "merica" -- miscelleaneous graphical effects
 	}
   for i = 1, #properties_to_init do
     local prop = properties_to_init[i]
@@ -1512,6 +1512,12 @@ function testConds(unit, conds, compare_with) --cond should be a {condtype,{obje
         end
       elseif unit.enby then
         if not (condtype == "yello" or condtype == "whit" or condtype == "purp" or condtype == "blacc" or condtype == "graey") then
+          result = false
+        else
+          result = true
+        end
+	  elseif unit.merica then
+        if not (condtype == "reed" or condtype == "whit" or condtype == "bleu") then
           result = false
         else
           result = true

@@ -819,6 +819,13 @@ function scene.draw(dt)
         unit.sprite = "text_enby"
       end
     end
+	if unit.fullname == "text_merica" then
+      if unit.active then
+        unit.sprite = "text_merica-colored"
+      else
+        unit.sprite = "text_merica"
+      end
+    end
     if unit.fullname == "text_now" then
       if doing_past_turns then
         unit.sprite = "text_latr"

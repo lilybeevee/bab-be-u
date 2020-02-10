@@ -23,7 +23,10 @@ function updateCursors()
       cursor.y = y
 
       cursor.overlay = {}
-      if hasProperty(cursor,"enby") then
+      if hasProperty(cursor,"merica") then
+        table.insert(cursor.overlay, "merica")
+      end
+	  if hasProperty(cursor,"enby") then
         table.insert(cursor.overlay, "enby")
       end
       if hasProperty(cursor,"tranz") then
