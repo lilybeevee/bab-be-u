@@ -2377,7 +2377,7 @@ function doOneMove(x, y, key, past)
       doTryAgain()
     end
     if hasRule("press","f2","xwx") then
-      love = {}
+      doXWX()
     end
     if hasRule("press","f2",":>") then
       doWin("nxt")

@@ -1312,7 +1312,7 @@ function updateUnits(undoing, big_update)
   
   if timeless_crash and not timeless then
     addUndo({"timeless_crash_remove"})
-    love = {}
+    doXWX()
   end
 end
 
