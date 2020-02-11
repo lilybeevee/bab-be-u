@@ -3393,7 +3393,7 @@ function updateDir(unit, dir, force)
       if hasRule(unit, "ben't", "spin"..i) then
         if (dir == (unit.dir+i-1)%8+1) then return false end
       end
-      if hasProperty(unit, dirs8_by_name[i]) then
+      if hasProperty(unit, dirs8_by_name[i]) and dir ~= i then
         unit.dir = i
         return false
       end
