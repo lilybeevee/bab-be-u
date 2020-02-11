@@ -2715,7 +2715,7 @@ tiles_list = {
     sprite = "hedg",
     type = "object",
     color = {5, 1},
-    layer = 2,
+    layer = 3,
     tags = {"hedge", "plants"},
     desc = "im hedg the hedg heg",
   },
