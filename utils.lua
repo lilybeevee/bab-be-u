@@ -148,7 +148,7 @@ end
 function initializeGraphicalPropertyCache()
   local properties_to_init = -- list of properties that require the graphical cache
   {
-	  "flye", "slep", "tranz", "gay", "stelth", "colrful", "xwx", "rave", "enby", -- miscelleaneous graphical effects
+	  "flye", "slep", "tranz", "gay", "stelth", "colrful", "delet", "rave", "enby", -- miscelleaneous graphical effects
 	}
   for i = 1, #properties_to_init do
     local prop = properties_to_init[i]
@@ -2168,6 +2168,25 @@ function addParticles(ptype,x,y,color,count)
     ps:setEmissionArea("uniform", TILE_SIZE*3/4, TILE_SIZE*3/4, 0, true)
     ps:setSizes(0.40, 0.40, 0.40, 0)
     ps:setSpeed(-40)
+    ps:setLinearDamping(2)
+    ps:setParticleLifetime(0.6)
+    if #color == 2 then
+      ps:setColors(getPaletteColor(color[1], color[2]))
+    else
+      ps:setColors(color[1]/255, color[2]/255, color[3]/255, (color[4] or 255)/255)
+    end
+    ps:start()
+    ps:emit(count or 10)
+    table.insert(particles, ps)
+  elseif ptype == "nxt" then
+    local ps = love.graphics.newParticleSystem(sprites["sparkle"])
+    local px = (x + 0.25) * TILE_SIZE
+    local py = (y + 0.5) * TILE_SIZE
+    ps:setPosition(px, py)
+    ps:setSpread(0.5)
+    ps:setEmissionArea("uniform", TILE_SIZE / 2, TILE_SIZE / 2, 0, false)
+    ps:setSizes(0.40, 0.40, 0.40, 0)
+    ps:setSpeed(30)
     ps:setLinearDamping(2)
     ps:setParticleLifetime(0.6)
     if #color == 2 then
