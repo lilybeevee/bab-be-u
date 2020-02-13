@@ -3332,7 +3332,7 @@ function moveUnit(unit,x,y,portal,instant)
         tweens["unit:rotation:" .. unit.tempid] = nil
       end
     elseif (x ~= unit.x or y ~= unit.y) and not instant then
-      if unit.type == "text" or rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname] or (rules_with["no1"] and rules_with["wurd"] and hasRule("no1", "be", "wurd")) then
+      if unit.type == "text" or rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname] or (rules_with and rules_with["no1"] and rules_with["wurd"] and hasRule("no1", "be", "wurd")) then
         should_parse_rules = true
       end
       if not unit_tests then
