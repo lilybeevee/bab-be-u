@@ -3393,9 +3393,12 @@ function getTheme()
       return cmdargs["theme"]
     end
   else
-    if os.date("%m") == "10" and os.date("%d") > "25" then
+    local month = tonumber(os.date("%m"))
+    local day = tonumber(os.date("%d"))
+    
+    if month == 10 and day == 31 then
       return "halloween"
-    elseif os.date("%m") == "12" and os.date("%d") > "24" or os.date("%m") == "01" and os.date("%d") < "6" then
+    elseif (month == 12 and day > 24) or (month == 01 and day < 6) then
       return "christmas"
     end
   end
