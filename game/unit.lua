@@ -3289,6 +3289,9 @@ function moveUnit(unit,x,y,portal,instant)
       unit.screeny = unit.screeny + my
     end
   elseif (unit.fullname == "no1") and inBounds(x, y) then
+    if rules_with["no1"] and rules_with["wurd"] and hasRule("no1", "be", "wurd") then
+      should_parse_rules = true
+    end
     local tileid = unit.x + unit.y * mapwidth
     local oldx = unit.x
     local oldy = unit.y
@@ -3311,7 +3314,7 @@ function moveUnit(unit,x,y,portal,instant)
 
     -- putting portal check above same-position check to give portal effect through one-tile gap
     if portal and portal.is_portal and x - portal.x == dirs8[portal.dir][1] and y - portal.y == dirs8[portal.dir][2] and not instant then
-      if unit.type == "text" or rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname] then
+      if unit.type == "text" or rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname] or (rules_with["no1"] and rules_with["wurd"] and hasRule("no1", "be", "wurd")) then
         should_parse_rules = true
       end
       if (not unit_tests) then
@@ -3329,7 +3332,7 @@ function moveUnit(unit,x,y,portal,instant)
         tweens["unit:rotation:" .. unit.tempid] = nil
       end
     elseif (x ~= unit.x or y ~= unit.y) and not instant then
-      if unit.type == "text" or rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname] then
+      if unit.type == "text" or rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname] or (rules_with["no1"] and rules_with["wurd"] and hasRule("no1", "be", "wurd")) then
         should_parse_rules = true
       end
       if not unit_tests then
