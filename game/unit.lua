@@ -3347,10 +3347,11 @@ function moveUnit(unit,x,y,portal,instant)
         else
           --fade in, fade out effect
           addTween(tween.new(0.05, unit.draw, {scalex = 0}), "unit:scalex:pos:" .. unit.tempid, function()
+            tweens["unit:rotation:" .. unit.tempid] = nil
+            tweens["unit:pos:" .. unit.tempid] = nil
             unit.draw.x = x
             unit.draw.y = y
             unit.draw.rotation = (unit.rotatdir - 1) * 45
-            tweens["unit:rotation:" .. unit.tempid] = nil
             addTween(tween.new(0.05, unit.draw, {scalex = 1}), "unit:scalex:" .. unit.tempid)
           end)
         end
