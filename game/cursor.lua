@@ -23,9 +23,12 @@ function updateCursors()
       cursor.y = y
 
       cursor.overlay = {}
-      if hasProperty(cursor,"merica") then
-        table.insert(cursor.overlay, "merica")
-      end
+	  for _,prop_name in ipairs(unicode_flag_list) do
+		if hasProperty(cursor, prop_name) then
+		  local overlay = overlayFromFlagProp(prop_name)
+	      table.insert(cursor.overlay, overlay)
+		end
+	  end
 	  if hasProperty(cursor,"enby") then
         table.insert(cursor.overlay, "enby")
       end

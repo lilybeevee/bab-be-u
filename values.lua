@@ -239,7 +239,7 @@ selector_grid_contents = {
     "bellt", "text_bellt", "text_go", "tre", "text_tre", "piler", "text_piler", "hatt", "text_hatt", "hedg", "text_hedg", 0, 0, "rif", "text_rif", "text_glued", "text_whit", "text_orang",
     "boll", "text_boll", "text_:o", "frut", "text_frut", "kirb", "text_kirb", "katany", "text_katany", "metl", "text_metl", 0, 0, 0, 0, "text_enby", "text_colrful", "text_yello",
     "clok", "text_clok", "text_:/", "text_no undo", "text_undo", "slippers", "text_slippers", "firbolt", "text_firbolt", "jail", "text_jail", 0, 0, 0, 0, "text_tranz", "text_rave", "text_grun",
-    "splittr", "text_splittr", "text_split", "steev", "text_steev", "boy", "text_boy", "icbolt", "text_icbolt", "platfor", "text_platfor", "chain", "text_chain", 0, "text_merica", "text_gay", "text_stelth", "text_cyeann",
+    "splittr", "text_splittr", "text_split", "steev", "text_steev", "boy", "text_boy", "icbolt", "text_icbolt", "platfor", "text_platfor", "chain", "text_chain", 0, 0, "text_gay", "text_stelth", "text_cyeann",
     "chekr", "text_chekr", "text_diag", "text_ortho", "text_haet flor", "arro", "text_arro", "text_go my way", "text_spin", "text_no turn", "text_stubbn", "text_rotatbl", 0, 0, "text_pinc", "text_qt", "text_paint", "text_bleu",
     "clowd", "text_clowd", "text_flye", "text_tall", "text_haet skye", "ghost fren", "text_ghost fren", "robobot", "text_robobot", "sparkl", "text_sparkl", "spik", "text_spik", "spiky", "text_spiky", "bordr", "text_bordr", "text_purp",
     nil
@@ -327,7 +327,7 @@ selector_grid_contents = {
     "text_diag","text_ortho","text_go my way","text_zip",0,"text_B)","text_cool",0,0,0,0,0,0,"text_that","text_that be","text_that got",0,"text_beside",
     "text_turn cornr","text_folo wal","text_hopovr","text_reflecc",0,0,0,0,0,0,0,0,0,0,0,0,0,"text_n't",
     "text_munwalk","text_sidestep","text_diagstep","text_knightstep",0,0,0,0,0,0,0,0,0,0,0,0,0,"text_reed",
-    "text_spin","text_rotatbl","text_noturn","text_stukc",0,0,0,0,0,0,0,0,0,0,0,"text_merica","text_enby","text_orang",
+    "text_spin","text_rotatbl","text_noturn","text_stukc",0,0,0,0,0,0,0,0,0,0,0,0,"text_enby","text_orang",
     "text_upleft","text_up","text_upright","text_thicc",0,0,0,0,0,0,0,0,0,0,0,"text_brwn","text_tranz","text_yello",
     "text_left","text_direction","text_right",0,0,0,0,0,0,0,0,0,0,0,0,"text_blacc","text_gay","text_grun",
     "text_downleft","text_down","text_downright",0,0,"text_:/","text_no undo","text_undo","text_za warudo","text_brite","text_torc","text_tranparnt",0,0,0,"text_graey","text_qt","text_cyeann",
@@ -9319,21 +9319,30 @@ tiles_list = {
     layer = 20,
     tags = {"chars", "snom", "pokemon"},
     desc = "yea its the same spelling what else would it be, SNOWM??",
-  },
-  -- 838
-  {
-    name = "text_merica",
-    sprite = "text_merica-colored",
-    type = "text",
-    texttype = {property = true},
-    color = {255, 255, 255},
-    layer = 20,
-	tags = {"america"},
-    desc = "MERICA: Causes the unit to become unreasonably patriotic. MERICA objects are reed, whit, bleu, and not any other colors.",
   }
 }
 
 --other_alias = {["wontn't"]: "wo"}
+
+--add every unicode flag (256 total)
+--sprite is just the overlay, referenced like "flogus" for us flag, "floggb-eng" for english flag, etc.
+unicode_flag_list = {}
+items = love.filesystem.getDirectoryItems("assets/sprites/overlay/flog")
+for _,item in ipairs(items) do
+  if (string.sub(item, -4) == ".png") then
+    local flag_code = string.sub(item, 1, -5) --flag_code is usually 2 letters, i.e. "us", can be 6 chars, i.e. "gb-eng"
+	  table.insert(tiles_list, {
+		name = "text_flog" .. flag_code,
+		sprite = "overlay/flog/" .. flag_code,
+		type = "text",
+		texttype = {property = true},
+		color = {255, 255, 255},
+		layer = 20,
+      })
+	  local prop_name = "flog" .. flag_code
+	  table.insert(unicode_flag_list, prop_name)
+  end
+end
 
 tiles_by_name = {}
 group_names = {}

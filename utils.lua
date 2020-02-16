@@ -148,8 +148,11 @@ end
 function initializeGraphicalPropertyCache()
   local properties_to_init = -- list of properties that require the graphical cache
   {
-	  "flye", "slep", "tranz", "gay", "stelth", "colrful", "xwx", "rave", "enby", "merica" -- miscelleaneous graphical effects
-	}
+    "flye", "slep", "tranz", "gay", "stelth", "colrful", "xwx", "rave", "enby" -- miscelleaneous graphical effects
+  }
+  for _,prop_name in ipairs(unicode_flag_list) do
+    table.insert(properties_to_init, prop_name)
+  end
   for i = 1, #properties_to_init do
     local prop = properties_to_init[i]
     if (graphical_property_cache[prop] == nil) then graphical_property_cache[prop] = {} end
@@ -1512,12 +1515,6 @@ function testConds(unit, conds, compare_with) --cond should be a {condtype,{obje
         end
       elseif unit.enby then
         if not (condtype == "yello" or condtype == "whit" or condtype == "purp" or condtype == "blacc" or condtype == "graey") then
-          result = false
-        else
-          result = true
-        end
-	  elseif unit.merica then
-        if not (condtype == "reed" or condtype == "whit" or condtype == "bleu") then
           result = false
         else
           result = true
@@ -3613,6 +3610,11 @@ function matchesColor(a, b, exact)
     end
     return a == b
   end
+end
+
+function overlayFromFlagProp(prop_name)
+  local overlay = "flog/" .. string.sub(prop_name, 5)
+  return overlay
 end
 
 function execute(command)
