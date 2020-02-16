@@ -1007,8 +1007,10 @@ function testConds(unit, conds, compare_with) --cond should be a {condtype,{obje
           end
         else
           if not hasRule(unit,verb,param.name) then
-            result = false
-            break
+            if not (param.name == unit.fullname and hasProperty(unit,"notranform")) then
+              result = false
+              break
+            end
           end
         end
       end
