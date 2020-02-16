@@ -148,7 +148,7 @@ end
 function initializeGraphicalPropertyCache()
   local properties_to_init = -- list of properties that require the graphical cache
   {
-    "flye", "slep", "tranz", "gay", "stelth", "colrful", "xwx", "rave", "enby" -- miscelleaneous graphical effects
+    "flye", "slep", "tranz", "gay", "stelth", "colrful", "delet", "rave", "enby" -- miscelleaneous graphical effects
   }
   for _,prop_name in ipairs(unicode_flag_list) do
     table.insert(properties_to_init, prop_name)
@@ -1010,8 +1010,10 @@ function testConds(unit, conds, compare_with) --cond should be a {condtype,{obje
           end
         else
           if not hasRule(unit,verb,param.name) then
-            result = false
-            break
+            if not (param.name == unit.fullname and hasProperty(unit,"notranform")) then
+              result = false
+              break
+            end
           end
         end
       end
@@ -2171,6 +2173,25 @@ function addParticles(ptype,x,y,color,count)
     ps:setEmissionArea("uniform", TILE_SIZE*3/4, TILE_SIZE*3/4, 0, true)
     ps:setSizes(0.40, 0.40, 0.40, 0)
     ps:setSpeed(-40)
+    ps:setLinearDamping(2)
+    ps:setParticleLifetime(0.6)
+    if #color == 2 then
+      ps:setColors(getPaletteColor(color[1], color[2]))
+    else
+      ps:setColors(color[1]/255, color[2]/255, color[3]/255, (color[4] or 255)/255)
+    end
+    ps:start()
+    ps:emit(count or 10)
+    table.insert(particles, ps)
+  elseif ptype == "nxt" then
+    local ps = love.graphics.newParticleSystem(sprites["sparkle"])
+    local px = (x + 0.25) * TILE_SIZE
+    local py = (y + 0.5) * TILE_SIZE
+    ps:setPosition(px, py)
+    ps:setSpread(0.5)
+    ps:setEmissionArea("uniform", TILE_SIZE / 2, TILE_SIZE / 2, 0, false)
+    ps:setSizes(0.40, 0.40, 0.40, 0)
+    ps:setSpeed(30)
     ps:setLinearDamping(2)
     ps:setParticleLifetime(0.6)
     if #color == 2 then
@@ -3377,9 +3398,12 @@ function getTheme()
       return cmdargs["theme"]
     end
   else
-    if os.date("%m") == "10" and os.date("%d") > "25" then
+    local month = tonumber(os.date("%m"))
+    local day = tonumber(os.date("%d"))
+    
+    if month == 10 and day == 31 then
       return "halloween"
-    elseif os.date("%m") == "12" and os.date("%d") > "24" or os.date("%m") == "01" and os.date("%d") < "6" then
+    elseif (month == 12 and day > 24) or (month == 01 and day < 6) then
       return "christmas"
     end
   end
