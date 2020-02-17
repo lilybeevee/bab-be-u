@@ -9318,10 +9318,30 @@ tiles_list = {
     layer = 20,
     tags = {"chars", "snom", "pokemon"},
     desc = "yea its the same spelling what else would it be, SNOWM??",
-  },
+  }
 }
 
 --other_alias = {["wontn't"]: "wo"}
+
+--add every unicode flag (256 total)
+--sprite is just the overlay, referenced like "flogus" for us flag, "floggb-eng" for english flag, etc.
+unicode_flag_list = {}
+items = love.filesystem.getDirectoryItems("assets/sprites/overlay/flog")
+for _,item in ipairs(items) do
+  if (string.sub(item, -4) == ".png") then
+    local flag_code = string.sub(item, 1, -5) --flag_code is usually 2 letters, i.e. "us", can be 6 chars, i.e. "gb-eng"
+	  table.insert(tiles_list, {
+		name = "text_flog" .. flag_code,
+		sprite = "overlay/flog/" .. flag_code,
+		type = "text",
+		texttype = {property = true},
+		color = {255, 255, 255},
+		layer = 20,
+      })
+	  local prop_name = "flog" .. flag_code
+	  table.insert(unicode_flag_list, prop_name)
+  end
+end
 
 tiles_by_name = {}
 group_names = {}

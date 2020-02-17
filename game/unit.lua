@@ -1686,7 +1686,13 @@ function miscUpdates()
       end
 
       unit.overlay = {}
-      if (graphical_property_cache["enby"][unit] ~= nil) then
+	  for _,prop_name in ipairs(unicode_flag_list) do
+		if (graphical_property_cache[prop_name][unit] ~= nil) then
+          local overlay = overlayFromFlagProp(prop_name)
+		  table.insert(unit.overlay, overlay)
+        end
+	  end
+	  if (graphical_property_cache["enby"][unit] ~= nil) then
         table.insert(unit.overlay, "enby")
       end
       if (graphical_property_cache["tranz"][unit] ~= nil) then
@@ -1700,6 +1706,9 @@ function miscUpdates()
       local objects_to_check = {
       "stelth", "colrful", "delet", "rave", "gay", "tranz", "enby"
       }
+	  for _,prop_name in ipairs(unicode_flag_list) do
+        table.insert(objects_to_check, prop_name)
+      end
       for i = 1, #objects_to_check do
         local prop = objects_to_check[i]
         unit[prop] = graphical_property_cache[prop][unit] ~= nil
