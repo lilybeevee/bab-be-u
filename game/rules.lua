@@ -466,11 +466,11 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
           end
         elseif letter.name == "/" then
           if prevletter.name == ":" and prevunit.dir == dir then
-            name = ":/"
+            name = "tryagain"
           end
         elseif letter.name == ">" then
           if prevletter.name == ":" and prevunit.dir == dir then
-            name = ":>"
+            name = "nxt"
           end
         end
         

@@ -227,15 +227,13 @@ function scene.update(dt)
 
   --TODO: PERFORMANCE: If many things are producing particles, it's laggy as heck.
   scene.doPassiveParticles(dt, ":)", "bonus", 0.25, 1, 1, {2, 4})
-  scene.doPassiveParticles(dt, ";d", "unwin", 0.25, 1, 1, {1, 2})
+  scene.doPassiveParticles(dt, "un:)", "unwin", 0.25, 1, 1, {1, 2})
+  scene.doPassiveParticles(dt, "nxt", "nxt", 0.25, 1, 1, {0, 3})
   scene.doPassiveParticles(dt, ":o", "bonus", 0.5, 0.8, 1, {4, 1})
   scene.doPassiveParticles(dt, "qt", "love", 0.25, 0.5, 1, {4, 2})
   scene.doPassiveParticles(dt, "slep", "slep", 1, 0.33, 1, {0, 3})
   scene.doPassiveParticles(dt, "thonk", "thonk", 0.25, 0.5, 1, {0, 3})
-  scene.doPassiveParticles(dt, ":/", "bonus", 0.25, 0.25, 1, {3, 3})
-  scene.doPassiveParticles(dt, "no undo", "bonus", 0.25, 0.25, 1, {5, 3})
-  scene.doPassiveParticles(dt, "undo", "bonus", 0.25, 0.25, 1, {6, 1})
-  scene.doPassiveParticles(dt, "brite", "bonus", 0.25, 0.25, 1, {2, 4})
+  scene.doPassiveParticles(dt, "tryagain", "bonus", 0.25, 0.25, 1, {3, 3})
 	
   doReplay(dt)
   if rules_with and rules_with["rythm"] then
@@ -1154,11 +1152,11 @@ function scene.draw(dt)
       love.graphics.setColor(ur, ug, ub, ua)
     end
 
-    if not (unit.xwx or spookmode) and unit.name ~= "lin" and unit.fullname ~= "letter_custom" then -- xwx takes control of the drawing sprite, so it shouldn't render the normal object
+    if not (unit.delet or spookmode) and unit.name ~= "lin" and unit.fullname ~= "letter_custom" then -- delet takes control of the drawing sprite, so it shouldn't render the normal object
       drawSprite()
     end
 
-    if unit.xwx or spookmode then -- if we're xwx, apply the special shader to our object
+    if unit.delet or spookmode then -- if we're delet, apply the special shader to our object
       if math.floor(love.timer.getTime() * 9) % 9 == 0 then
         pcallSetShader(xwxShader)
         drawSprite()
@@ -2373,13 +2371,13 @@ function doOneMove(x, y, key, past)
     if hasRule("press","f2",":)") then
       doWin("won")
     end
-    if hasRule("press","f2",":/") then
+    if hasRule("press","f2","tryagain") then
       doTryAgain()
     end
-    if hasRule("press","f2","xwx") then
-      love = {}
+    if hasRule("press","f2","delet") then
+      doXWX()
     end
-    if hasRule("press","f2",":>") then
+    if hasRule("press","f2","nxt") then
       doWin("nxt")
     end
 
@@ -2451,11 +2449,11 @@ function scene.doPassiveParticles(timer,word,effect,delay,chance,count,color)
         end
       end
       if not unit.stelth and particlesRngCheck() then
-        if word == ":)" and countProperty(unit,":)") > countProperty (unit,";d") then
+        if word == ":)" and countProperty(unit,":)") > countProperty (unit,"un:)") then
           addParticles(effect, unit.x, unit.y, color, real_count)
-        elseif word == ";d" and countProperty(unit,":)") < countProperty (unit,";d") then
+        elseif word == "un:)" and countProperty(unit,":)") < countProperty (unit,"un:)") then
           addParticles(effect, unit.x, unit.y, color, real_count)
-        elseif word ~= ":)" and word ~= ";d" then
+        elseif word ~= ":)" and word ~= "un:)" then
           addParticles(effect, unit.x, unit.y, color, real_count)
         end
       end

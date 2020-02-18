@@ -2016,16 +2016,28 @@ function canMoveCore(unit,dx,dy,dir,pushing_,pulling_,solid_name,reason,push_sta
         local ouch = hasProperty(v, "ouch")
         local snacc = rules_with["snacc"] ~= nil and hasRule(unit, "snacc", v)
         if (ouch or snacc) and not hasProperty(v, "protecc") and sameFloat(unit, v) and ignoreCheck(v,unit) then
-          table.insert(specials, {ouch and "weak" or "snacc", {v}})
-          exploding = true
+          if (timecheck(v,"be","ouch") or timecheck(unit,"snacc",v)) and timecheck(unit) then
+            table.insert(specials, {ouch and "weak" or "snacc", {v}})
+            exploding = true
+          else
+            table.insert(time_destroy,v.id)
+						addUndo({"time_destroy",v.id})
+            table.insert(time_sfx,"break")
+          end
         end
       
         --Case 2 or 3 - we will be destroyed by walking onto a wall.
         local ouch = hasProperty(unit, "ouch")
         local snacc = rules_with["snacc"] ~= nil and hasRule(v, "snacc", unit)
         if (ouch or snacc) and not hasProperty(unit, "protecc") and (reason ~= "walk" or not hasProperty(unit, "stubbn")) and ignoreCheck(unit,v) then
-          table.insert(specials, {ouch and "weak" or "snacc", {unit}})
-          exploding = true
+          if (timecheck(unit,"be","ouch") or timecheck(v,"snacc",unit)) and timecheck(v) then
+            table.insert(specials, {ouch and "weak" or "snacc", {unit}})
+            exploding = true
+          else
+            table.insert(time_destroy,unit.id)
+						addUndo({"time_destroy",unit.id})
+            table.insert(time_sfx,"break")
+          end
         end
         
         if exploding then return true,movers,specials end

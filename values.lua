@@ -227,9 +227,9 @@ custom_letter_quads = {
 selector_grid_contents = {
   -- page 1: default
   {
-    0, "text_be", "text_&", "text_got", "text_n't", "text_every1", "text_no1", "text_text", "text_wurd", "text_txtify", "text_sublvl", "text_wait...", "text_mous", "text_clikt", "text_:>", "text_stay ther", "lvl", "text_lvl",
+    0, "text_be", "text_&", "text_got", "text_n't", "text_every1", "text_no1", "text_text", "text_wurd", "text_txtify", "text_sublvl", "text_wait...", "text_mous", "text_clikt", "text_nxt", "text_stay ther", "lvl", "text_lvl",
     "bab", "text_bab", "text_u", "kee", "text_kee", "text_for dor", "text_goooo", "text_icy", "text_icyyyy", "text_behin u", "text_moar", "text_sans", "text_liek", "text_loop", "lin", "text_lin", "selctr", "text_selctr",
-    "keek", "text_keek", "text_walk", "dor", "text_dor", "text_ned kee", "text_frens", "text_pathz", "text_groop", "text_u too", "text_u tres", "text_xwx", "text_haet", "text_mayb", "text_an", "text_that", "text_ignor", "text_...",
+    "keek", "text_keek", "text_walk", "dor", "text_dor", "text_ned kee", "text_frens", "text_pathz", "text_groop", "text_u too", "text_u tres", "text_delet", "text_haet", "text_mayb", "text_an", "text_that", "text_ignor", "text_...",
     "flog", "text_flog", "text_:)", "colld", "text_colld", "text_fridgd", "text_direction", "text_ouch", "text_slep", "text_protecc", "text_sidekik", "text_brite", "text_lit", "text_tranparnt", "text_torc", "text_vs", "text_nuek", "text_''",
     "roc", "text_roc", "text_go away pls", "laav", "text_laav", "text_hotte","text_visit fren", "text_w/fren", "text_arond", "text_frenles", "text_copkat", "text_za warudo", "text_timles", "text_behind", "text_beside", "text_look away", "text_notranform", "this",
     "wal", "text_wal", "text_no go", "l..uv", "text_l..uv", "gras", "text_gras", "text_creat", "text_look at", "text_spoop", "text_yeet", "text_turn cornr", "text_corekt", "text_go arnd", "text_mirr arnd", "text_past", 0, "text_sing",
@@ -238,7 +238,7 @@ selector_grid_contents = {
     "boux", "text_boux", "text_come pls", "os", "text_os", "bup", "text_bup", "han", "text_han", "fenss", "text_fenss", 0, 0, "hol", "text_hol", "text_poor toll", "text_blacc", "text_reed",
     "bellt", "text_bellt", "text_go", "tre", "text_tre", "piler", "text_piler", "hatt", "text_hatt", "hedg", "text_hedg", 0, 0, "rif", "text_rif", "text_glued", "text_whit", "text_orang",
     "boll", "text_boll", "text_:o", "frut", "text_frut", "kirb", "text_kirb", "katany", "text_katany", "metl", "text_metl", 0, 0, 0, 0, "text_enby", "text_colrful", "text_yello",
-    "clok", "text_clok", "text_:/", "text_no undo", "text_undo", "slippers", "text_slippers", "firbolt", "text_firbolt", "jail", "text_jail", 0, 0, 0, 0, "text_tranz", "text_rave", "text_grun",
+    "clok", "text_clok", "text_tryagain", "text_no undo", "text_undo", "slippers", "text_slippers", "firbolt", "text_firbolt", "jail", "text_jail", 0, 0, 0, 0, "text_tranz", "text_rave", "text_grun",
     "splittr", "text_splittr", "text_split", "steev", "text_steev", "boy", "text_boy", "icbolt", "text_icbolt", "platfor", "text_platfor", "chain", "text_chain", 0, 0, "text_gay", "text_stelth", "text_cyeann",
     "chekr", "text_chekr", "text_diag", "text_ortho", "text_haet flor", "arro", "text_arro", "text_go my way", "text_spin", "text_no turn", "text_stubbn", "text_rotatbl", 0, 0, "text_pinc", "text_qt", "text_paint", "text_bleu",
     "clowd", "text_clowd", "text_flye", "text_tall", "text_haet skye", "ghost fren", "text_ghost fren", "robobot", "text_robobot", "sparkl", "text_sparkl", "spik", "text_spik", "spiky", "text_spiky", "bordr", "text_bordr", "text_purp",
@@ -276,7 +276,7 @@ selector_grid_contents = {
     "boy","text_boy","wurm","text_wurm","madi","text_madi","angle","text_angle","boogie","text_boogie",0,0,0,0,"lila","text_lila","larry","text_larry",
     "steev","text_steev","ratt","text_ratt","badi","text_badi","debil","text_debil","assh","text_assh",0,0,0,0,"pata","text_pata","jill","text_jill",
     "han","text_han","iy","text_iy","lisp","text_lisp","paw","text_paw",0,0,0,0,0,0,"slab","text_slab","zsoob","text_zsoob",
-    "snoman","text_snoman","pingu","text_pingu","der","text_der","ginn","text_ginn","snom","text_snom",0,0,0,0,"notnat","text_notnat","o","text_o",
+    "snoman","text_snoman","pingu","text_pingu","der","text_der","ginn","text_ginn","snom","text_snom",0,0,0,0,"notnat","text_notnat","oat","text_oat",
     "kapa","text_kapa","urei","text_urei","ryugon","text_ryugon","viruse","text_viruse",0,0,0,0,0,0,0,0,"butcher","text_butcher",
     "os","text_os","hors","text_hors","mimi","text_mimi","err","text_err",0,0,0,0,0,0,0,0,0,0,
   },
@@ -319,18 +319,18 @@ selector_grid_contents = {
   -- page 7: properties, verbs and conditions
   {
     "text_be","text_&","text_got","text_creat","text_snacc","text_spoop","text_copkat","text_moov","text_yeet","text_liek","text_haet","text_stalk","text_ignor","text_paint","text_vs","text_sing","text_soko","text_look at",
-    "text_u","text_u too","text_u tres","text_y'all","text_walk","text_:)","text_no swim","text_ouch","text_protecc",0,"text_:>","text_stay ther","text_wont","text_giv",0,"text_rp",0,"text_look away",
+    "text_u","text_u too","text_u tres","text_y'all","text_walk","text_:)","text_no swim","text_ouch","text_protecc",0,"text_nxt","text_stay ther","text_wont","text_giv",0,"text_rp",0,"text_look away",
     "text_go","text_goooo","text_icy","text_icyyyy",0,"text_:(","text_ned kee","text_for dor","text_wurd",0,"text_sublvl","text_loop","text_oob","text_frenles","text_timles","text_lit","text_corekt","text_rong",
     "text_no go","text_go away pls","text_come pls","text_sidekik","text_diagkik","text_:o","text_hotte","text_fridgd","text_txtify",0,"text_dragbl","text_no drag","text_alt","text_clikt","text_past","text_wun","text_an","text_mayb",
-    "text_visit fren","text_slep","text_shy...","text_behin u",0,"text_xwx","text_moar","text_split","text_thingify",0,"text_rythm",0,0,"text_wait...","text_samefloat","text_samepaint","text_sameface",0,
-    "text_flye","text_tall","text_haet skye","text_haet flor",0,"text_;d","text_gone","text_nuek","text_notranform",0,0,0,0,"text_w/fren","text_arond","text_sans","text_seen by","text_behind",
+    "text_visit fren","text_slep","text_shy...","text_behin u",0,"text_delet","text_moar","text_split","text_thingify",0,"text_rythm",0,0,"text_wait...","text_samefloat","text_samepaint","text_sameface",0,
+    "text_flye","text_tall","text_haet skye","text_haet flor",0,"text_un:)","text_gone","text_nuek","text_notranform",0,0,0,0,"text_w/fren","text_arond","text_sans","text_seen by","text_behind",
     "text_diag","text_ortho","text_go my way","text_zip",0,"text_B)","text_cool",0,0,0,0,0,0,"text_that","text_that be","text_that got",0,"text_beside",
     "text_turn cornr","text_folo wal","text_hopovr","text_reflecc",0,0,0,0,0,0,0,0,0,0,0,0,0,"text_n't",
     "text_munwalk","text_sidestep","text_diagstep","text_knightstep",0,0,0,0,0,0,0,0,0,0,0,0,0,"text_reed",
     "text_spin","text_rotatbl","text_noturn","text_stukc",0,0,0,0,0,0,0,0,0,0,0,0,"text_enby","text_orang",
     "text_upleft","text_up","text_upright","text_thicc",0,0,0,0,0,0,0,0,0,0,0,"text_brwn","text_tranz","text_yello",
     "text_left","text_direction","text_right",0,0,0,0,0,0,0,0,0,0,0,0,"text_blacc","text_gay","text_grun",
-    "text_downleft","text_down","text_downright",0,0,"text_:/","text_no undo","text_undo","text_za warudo","text_brite","text_torc","text_tranparnt",0,0,0,"text_graey","text_qt","text_cyeann",
+    "text_downleft","text_down","text_downright",0,0,"text_tryagain","text_no undo","text_undo","text_za warudo","text_brite","text_torc","text_tranparnt",0,0,0,"text_graey","text_qt","text_cyeann",
     "text_every1","text_every2","text_every3","text_lethers",0,"text_poor toll","text_go arnd","text_mirr arnd","text_glued",0,0,0,0,0,"text_thonk","text_whit","text_pinc","text_bleu",
     "text_...","text_''","prop","text_prop",0,"text_her","text_thr","text_rithere","text_the","text_deez",0,0,0,0,"text_stelth","text_colrful","text_rave","text_purp",
   },
@@ -1321,7 +1321,7 @@ tiles_list = {
   },
   -- 87
   {
-    name = "o",
+    name = "oat",
     sprite = "o",
     type = "object",
     texttype = {object = true, letter = true},
@@ -1334,8 +1334,8 @@ tiles_list = {
   },
   -- 88
   {
-    name = "text_o",
-    sprite = "letter_o",
+    name = "text_oat",
+    sprite = "text_oat",
     type = "text",
     texttype = {object = true},
     color = {2, 4},
@@ -1489,15 +1489,14 @@ tiles_list = {
   },
   -- 103
   {
-    name = "text_xwx",
-    sprite = "text_xwx",
+    name = "text_delet",
+    sprite = "text_delet",
     type = "text",
     texttype = {property = true},
-    color = {3, 2},
+    color = {2, 2},
     layer = 20,
     features = { sans = {x=19, y=5, w=4, h=5} },
-    tags = {"crash", "oops", "fucky wucky", "face"},
-    alias = {"uwu"},
+    tags = {"crash", "oops", "fucky wucky", "xwx", "delete"},
     desc = "XWX: At end of turn, if U is on XWX, you get booted out of the level and erases all progress in the level (win, bonus, transformation).\nAlias: uwu",
   },
   -- 104
@@ -2103,7 +2102,7 @@ tiles_list = {
   },
   -- 159
   {
-    name = "text_:>",
+    name = "text_nxt",
     sprite = "text_nxt",
     type = "text",
     texttype = {property = true},
@@ -2111,8 +2110,8 @@ tiles_list = {
     layer = 20,
     --alias = {"nxt"},
     features = { sans = {x=19, y=5, w=3, h=4} },
-    tags = {"next", "nxt", "face"},
-    desc = ":>: If U is on :>, go to the next level (specified in object settings)."
+    tags = {"next", "nxt", ":>", ";."},
+    desc = "nxt: If U is on nxt, go to the next level (specified in object settings)."
   },
   -- 160
   {
@@ -2170,7 +2169,7 @@ tiles_list = {
   },
   -- 165
   {
-    name = "text_:/",
+    name = "text_tryagain",
     sprite = "text_try again",
     type = "text",
     texttype = {property = true},
@@ -2178,8 +2177,8 @@ tiles_list = {
     layer = 20,
     --alias = {"try again"},
     features = { sans = {x=21, y=6, w=3, h=4} },
-    tags = {"retry", "time", "face", "reset", "lily"},
-    desc = ":/: When U is on :/, the level is undone back to the starting state, except for NO UNDO objects. :/ can be undone!"
+    tags = {"retry", "time", "reset", "lily", ":/", ";/"},
+    desc = "TRY AGAIN: When U is on TRY AGAIN, the level is undone back to the starting state, except for NO UNDO objects. TRY AGAIN can be undone!"
   },
   -- 166
   {
@@ -2715,7 +2714,7 @@ tiles_list = {
     sprite = "hedg",
     type = "object",
     color = {5, 1},
-    layer = 2,
+    layer = 3,
     tags = {"hedge", "plants"},
     desc = "im hedg the hedg heg",
   },
@@ -4873,15 +4872,15 @@ tiles_list = {
   },
   -- 423
   {
-    name = "text_;d",
+    name = "text_un:)",
     sprite = "text_ungood",
     type = "text",
     texttype = {property = true},
     color = {1,2},
     layer = 20,
     features = { sans = {x=23, y=8, w=3, h=4} },
-    tags = {"unwin", "wink", "face", "unyay", "patashu"},
-    desc = ";D: When U touches ;D, the current level will no longer be considered won, without exiting the level. Imagine a win score equal to the number of Us on :) minus the Us on ;D. If positive, you win. If negative, you lose your win. If equal, nothing happens.",
+    tags = {"unwin", "ungood", "face", "unyay", "patashu", ";d"},
+    desc = "UN:): When U touches UN:), the current level will no longer be considered won, without exiting the level. Imagine a win score equal to the number of Us on :) minus the Us on UN:). If positive, you win. If negative, you lose your win. If equal, nothing happens.",
   },
   -- 424
   {
@@ -4967,7 +4966,7 @@ tiles_list = {
     color = {0,3},
     layer = 20,
     tags = {"semicolon", "wink"},
-    desc = "Used in ;D",
+    desc = "Formerly used in ;D, until we changed that to be UN:). Now it's useless, very sad.",
   },
   -- 432
   {
@@ -8224,7 +8223,7 @@ tiles_list = {
   },
   -- 729
   {
-    name = "text_B)",
+    name = "text_b)",
     sprite = "text_B)",
     type = "text",
     texttype = {property = true},
@@ -9319,10 +9318,30 @@ tiles_list = {
     layer = 20,
     tags = {"chars", "snom", "pokemon"},
     desc = "yea its the same spelling what else would it be, SNOWM??",
-  },
+  }
 }
 
 --other_alias = {["wontn't"]: "wo"}
+
+--add every unicode flag (256 total)
+--sprite is just the overlay, referenced like "flogus" for us flag, "floggb-eng" for english flag, etc.
+unicode_flag_list = {}
+items = love.filesystem.getDirectoryItems("assets/sprites/overlay/flog")
+for _,item in ipairs(items) do
+  if (string.sub(item, -4) == ".png") then
+    local flag_code = string.sub(item, 1, -5) --flag_code is usually 2 letters, i.e. "us", can be 6 chars, i.e. "gb-eng"
+	  table.insert(tiles_list, {
+		name = "text_flog" .. flag_code,
+		sprite = "overlay/flog/" .. flag_code,
+		type = "text",
+		texttype = {property = true},
+		color = {255, 255, 255},
+		layer = 20,
+      })
+	  local prop_name = "flog" .. flag_code
+	  table.insert(unicode_flag_list, prop_name)
+  end
+end
 
 tiles_by_name = {}
 group_names = {}

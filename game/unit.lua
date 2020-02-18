@@ -2,12 +2,6 @@ function moveBlock()
   --baba order: FOLLOW, BACK, TELE, SHIFT
   --bab order: thicc, zip, look at, undo, visit fren, go, goooo, shy, spin, folo wal, turn cornr
   
-  for _,unit in ipairs(units_by_name["text_xwx"] or {}) do
-    local newname = hasProperty(unit, "slep") and "uwu" or "xwx"
-    should_parse_rules = unit.textname ~= newname
-    unit.textname = newname
-  end
-  
   --currently very bad method of making sure thicc stuff gets updated: go through all units and make sure they're set up properly
   if units_by_name["text_thicc"] then
     for _,unit in ipairs(units) do
@@ -1043,12 +1037,12 @@ function updateUnits(undoing, big_update)
       end
     end
     
-    local isreset = getUnitsWithEffect(":/")
+    local isreset = getUnitsWithEffect("tryagain")
     for _,unit in ipairs(isreset) do
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"thicc"))
       for _,on in ipairs(stuff) do
-        if hasU(on) and sameFloat(unit, on) and ignoreCheck(on, unit, ":/") then
-          if timecheck(unit,"be",":/") and (timecheckUs(on)) then
+        if hasU(on) and sameFloat(unit, on) and ignoreCheck(on, unit, "tryagain") then
+          if timecheck(unit,"be","tryagain") and (timecheckUs(on)) then
             will_undo = true
             break
           else
@@ -1062,14 +1056,14 @@ function updateUnits(undoing, big_update)
     
     to_destroy = handleDels(to_destroy)
     
-    local iscrash = matchesRule(nil,"be","xwx")
+    local iscrash = matchesRule(nil,"be","delet")
     for _,ruleparent in ipairs(iscrash) do
       local unit = ruleparent[2]
       if not hasProperty(ruleparent[1].rule.object,"slep") then
         local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"thicc"))
         for _,on in ipairs(stuff) do
-          if hasU(on) and sameFloat(unit, on) and ignoreCheck(on, unit, "xwx") then
-            if timecheck(unit,"be","xwx") and (timecheckUs(on)) then
+          if hasU(on) and sameFloat(unit, on) and ignoreCheck(on, unit, "delet") then
+            if timecheck(unit,"be","delet") and (timecheckUs(on)) then
               doXWX()
             else
               addUndo({"timeless_crash_add"})
@@ -1114,11 +1108,11 @@ function updateUnits(undoing, big_update)
       end
     end
     
-    local isunwin = getUnitsWithEffect(";d")
+    local isunwin = getUnitsWithEffect("un:)")
     for _,unit in ipairs(isunwin) do
       local stuff = getUnitsOnTile(unit.x,unit.y, nil, true, nil, nil, hasProperty(unit,"thicc"))
       for _,on in ipairs(stuff) do
-        if hasU(on) and sameFloat(unit, on) and ignoreCheck(on, unit, ";d") then
+        if hasU(on) and sameFloat(unit, on) and ignoreCheck(on, unit, "un:)") then
           if timecheck(unit,"be","d") and (timecheckUs(on)) then
             unwins = unwins + 1
           else
@@ -1312,7 +1306,7 @@ function updateUnits(undoing, big_update)
   
   if timeless_crash and not timeless then
     addUndo({"timeless_crash_remove"})
-    love = {}
+    doXWX()
   end
 end
 
@@ -1465,7 +1459,7 @@ function miscUpdates()
           unit.sprite = "ditto_which"
         elseif hasRule(unit,"spoop","?") then
           unit.sprite = "ditto_spoop"
-        elseif hasProperty(unit,"xwx") then
+        elseif hasProperty(unit,"delet") then
           unit.sprite = "ditto_xwx"
         elseif hasProperty(unit,"rong") then
           unit.sprite = "ditto_rong"
@@ -1533,7 +1527,7 @@ function miscUpdates()
           unit.sprite = "ditto_direction"
         elseif hasProperty(unit,"nuek") then
           unit.sprite = "ditto_nuek"
-        elseif hasProperty(unit,";d") then
+        elseif hasProperty(unit,"un:)") then
           unit.sprite = "ditto_;d"
         elseif hasProperty(unit,"knightstep") then
           unit.sprite = "ditto_knightstep"
@@ -1692,7 +1686,13 @@ function miscUpdates()
       end
 
       unit.overlay = {}
-      if (graphical_property_cache["enby"][unit] ~= nil) then
+	  for _,prop_name in ipairs(unicode_flag_list) do
+		if (graphical_property_cache[prop_name][unit] ~= nil) then
+          local overlay = overlayFromFlagProp(prop_name)
+		  table.insert(unit.overlay, overlay)
+        end
+	  end
+	  if (graphical_property_cache["enby"][unit] ~= nil) then
         table.insert(unit.overlay, "enby")
       end
       if (graphical_property_cache["tranz"][unit] ~= nil) then
@@ -1704,8 +1704,11 @@ function miscUpdates()
       
       -- for optimisation in drawing
       local objects_to_check = {
-      "stelth", "colrful", "xwx", "rave", "gay", "tranz", "enby"
+      "stelth", "colrful", "delet", "rave", "gay", "tranz", "enby"
       }
+	  for _,prop_name in ipairs(unicode_flag_list) do
+        table.insert(objects_to_check, prop_name)
+      end
       for i = 1, #objects_to_check do
         local prop = objects_to_check[i]
         unit[prop] = graphical_property_cache[prop][unit] ~= nil
@@ -2210,19 +2213,19 @@ function levelBlock()
   to_destroy = handleDels(to_destroy)
   
   local will_undo = false
-  if hasProperty(outerlvl, ":/") then
+  if hasProperty(outerlvl, "tryagain") then
     local yous = getUs()
     for _,unit in ipairs(yous) do
-      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) and ignoreCheck(unit,outerlvl,":/") then
+      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) and ignoreCheck(unit,outerlvl,"tryagain") then
         doTryAgain()
       end
     end
   end
   
-  if hasProperty(outerlvl, "xwx") then
+  if hasProperty(outerlvl, "delet") then
     local yous = getUs()
     for _,unit in ipairs(yous) do
-      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) and ignoreCheck(unit,outerlvl,"xwx") then
+      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) and ignoreCheck(unit,outerlvl,"delet") then
         doXWX()
       end
     end
@@ -2240,10 +2243,10 @@ function levelBlock()
   end
   
   local unwins = 0
-  if hasProperty(outerlvl, ";d") then
+  if hasProperty(outerlvl, "un:)") then
     local yous = getUs()
     for _,unit in ipairs(yous) do
-      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) and ignoreCheck(unit,outerlvl,";d") then
+      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) and ignoreCheck(unit,outerlvl,"un:)") then
         unwins = unwins + 1
       end
     end
@@ -2289,8 +2292,8 @@ function levelBlock()
     end
   end
   
-  if hasProperty(outerlvl, ":>") then
-		table.insert(win_sprite_override,tiles_list[tiles_by_name["text_:>"]]);
+  if hasProperty(outerlvl, "nxt") then
+		table.insert(win_sprite_override,tiles_list[tiles_by_name["text_nxt"]]);
     doWin("nxt")
   end
   
@@ -2382,15 +2385,15 @@ function destroyLevel(reason)
   end
   
   if reason == "infloop" then
-    if hasProperty("loop",":/") then
+    if hasProperty("loop","tryagain") then
       doTryAgain()
       level_destroyed = false
-    elseif hasProperty("loop","xwx") then
+    elseif hasProperty("loop","delet") then
       doXWX()
     elseif hasProperty("loop",":)") then
       doWin("won")
       level_destroyed = true
-    elseif hasProperty("loop",";d") then
+    elseif hasProperty("loop","un:)") then
       doWin("won", false)
       level_destroyed = true
     end
@@ -3295,6 +3298,9 @@ function moveUnit(unit,x,y,portal,instant)
       unit.screeny = unit.screeny + my
     end
   elseif (unit.fullname == "no1") and inBounds(x, y) then
+    if rules_with["no1"] and rules_with["wurd"] and hasRule("no1", "be", "wurd") then
+      should_parse_rules = true
+    end
     local tileid = unit.x + unit.y * mapwidth
     local oldx = unit.x
     local oldy = unit.y
@@ -3317,7 +3323,7 @@ function moveUnit(unit,x,y,portal,instant)
 
     -- putting portal check above same-position check to give portal effect through one-tile gap
     if portal and portal.is_portal and x - portal.x == dirs8[portal.dir][1] and y - portal.y == dirs8[portal.dir][2] and not instant then
-      if unit.type == "text" or rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname] then
+      if unit.type == "text" or rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname] or (rules_with["no1"] and rules_with["wurd"] and hasRule("no1", "be", "wurd")) then
         should_parse_rules = true
       end
       if (not unit_tests) then
@@ -3335,7 +3341,7 @@ function moveUnit(unit,x,y,portal,instant)
         tweens["unit:rotation:" .. unit.tempid] = nil
       end
     elseif (x ~= unit.x or y ~= unit.y) and not instant then
-      if unit.type == "text" or rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname] then
+      if unit.type == "text" or rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname] or (rules_with and rules_with["no1"] and rules_with["wurd"] and hasRule("no1", "be", "wurd")) then
         should_parse_rules = true
       end
       if not unit_tests then
@@ -3350,10 +3356,11 @@ function moveUnit(unit,x,y,portal,instant)
         else
           --fade in, fade out effect
           addTween(tween.new(0.05, unit.draw, {scalex = 0}), "unit:scalex:pos:" .. unit.tempid, function()
+            tweens["unit:rotation:" .. unit.tempid] = nil
+            tweens["unit:pos:" .. unit.tempid] = nil
             unit.draw.x = x
             unit.draw.y = y
             unit.draw.rotation = (unit.rotatdir - 1) * 45
-            tweens["unit:rotation:" .. unit.tempid] = nil
             addTween(tween.new(0.05, unit.draw, {scalex = 1}), "unit:scalex:" .. unit.tempid)
           end)
         end
@@ -3393,7 +3400,7 @@ function updateDir(unit, dir, force)
       if hasRule(unit, "ben't", "spin"..i) then
         if (dir == (unit.dir+i-1)%8+1) then return false end
       end
-      if hasProperty(unit, dirs8_by_name[i]) then
+      if hasProperty(unit, dirs8_by_name[i]) and dir ~= i then
         unit.dir = i
         return false
       end
