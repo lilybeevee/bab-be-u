@@ -274,7 +274,7 @@ selector_grid_contents = {
     "kirb","text_kirb","ripof","text_ripof","cavebab","text_cavebab","detox","text_detox","nyowo","text_nyowo",0,0,0,0,0,0,0,0,
     "bup","text_bup","butflye","text_butflye","boooo","text_boooo","prime","text_prime","grimkid","text_grimkid",0,0,0,0,0,0,0,0,
     "boy","text_boy","wurm","text_wurm","madi","text_madi","angle","text_angle","boogie","text_boogie",0,0,0,0,"lila","text_lila","larry","text_larry",
-    "steev","text_steev","ratt","text_ratt","badi","text_badi","debil","text_debil","assh","text_assh",0,0,0,0,"pata","text_pata","jill","text_jill",
+    "steev","text_steev","ratt","text_ratt","badi","text_badi","dvl","text_dvl","assh","text_assh",0,0,0,0,"pata","text_pata","jill","text_jill",
     "han","text_han","iy","text_iy","lisp","text_lisp","paw","text_paw",0,0,0,0,0,0,"slab","text_slab","zsoob","text_zsoob",
     "snoman","text_snoman","pingu","text_pingu","der","text_der","ginn","text_ginn","snom","text_snom",0,0,0,0,"notnat","text_notnat","oat","text_oat",
     "kapa","text_kapa","urei","text_urei","ryugon","text_ryugon","viruse","text_viruse",0,0,0,0,0,0,0,0,"butcher","text_butcher",
@@ -8008,7 +8008,7 @@ tiles_list = {
   },
   -- 711
   {
-    name = "debil",
+    name = "dvl",
     sprite = "debil",
     color = {2, 2},
     layer = 11,
@@ -8016,21 +8016,20 @@ tiles_list = {
     features = {
       sans = {x=14, y=18, w=2, h=2},
     },
-    tags = {"chars", "devil", "demon"},
+    tags = {"chars", "devil", "demon", "debil"},
     desc = "or yuor debil...",
     nice = true,
   },
   -- 712
   {
-    name = "text_debil",
-    sprite = "text_debil",
+    name = "text_dvl",
+    sprite = "text_dvl",
     type = "text",
     texttype = {object = true},
     color = {2, 2},
     layer = 20,
-    tags = {"chars", "devil", "demon"},
-    desc = "[sic] em",
-    nice = true,
+    tags = {"chars", "devil", "demon", "debil"},
+    desc = "used to be called \"debil\" until we found out that's a bad word in a different language",
   },
   -- 713
   {
