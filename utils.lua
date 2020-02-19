@@ -956,7 +956,7 @@ function testConds(unit, conds, compare_with, first_unit) --cond should be a {co
 
         if other.name == "lvl" then -- probably have to account for group/every1 here too, maybe more
           addUnit(outerlvl)
-        elseif other.name == "itself" then
+        elseif other.name == "themself" then
           addUnit(first_unit)
         elseif other.name == "every1" or other.name == "every2" or other.name == "every3" then
           for _,name in ipairs(referenced_objects) do

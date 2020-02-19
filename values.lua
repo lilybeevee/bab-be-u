@@ -269,7 +269,7 @@ selector_grid_contents = {
     "meem","text_meem","statoo","text_statoo","flamgo","text_flamgo","migri","text_migri","temmi","text_temmi",0,0,0,0,"text_gang","text_frens","text_groop","text_pathz",
     "skul","text_skul","beeee","text_beeee","gul","text_gul","kva","text_kva",0,0,0,0,0,0,"text_no1","text_every1","text_every2","text_every3",
     "ghost fren","text_ghost fren","fishe","text_fishe","starrfishe","text_starrfishe","pidgin","text_pidgin",0,0,0,0,0,0,"text_text","text_lethers","text_numa","text_toen",
-    "robobot","text_robobot","snek","text_snek","sneel","text_sneel","swan","text_swan",0,0,0,0,0,0,0,"text_itself","text_yuiy","text_xplod",
+    "robobot","text_robobot","snek","text_snek","sneel","text_sneel","swan","text_swan",0,0,0,0,0,0,0,"text_themself","text_yuiy","text_xplod",
     "wog","text_wog","bog","text_bog","enbybog","text_enbybog","spoder","text_spoder",0,0,0,0,0,0,0,0,0,0,
     "kirb","text_kirb","ripof","text_ripof","cavebab","text_cavebab","detox","text_detox","nyowo","text_nyowo",0,0,0,0,0,0,0,0,
     "bup","text_bup","butflye","text_butflye","boooo","text_boooo","prime","text_prime","grimkid","text_grimkid",0,0,0,0,0,0,0,0,
@@ -9320,12 +9320,13 @@ tiles_list = {
   },
   -- 838
   {
-    name = "text_itself",
-    sprite = "text_itself",
+    name = "text_themself",
+    sprite = "text_themself",
     type = "text",
     texttype = {object = true},
     color = {2, 3},
     layer = 20,
+    tags = {"itself"},
     desc = "ITSELF: Refers to the subject of the rule in conditions.",
   }
 }
