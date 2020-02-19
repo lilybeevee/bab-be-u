@@ -931,7 +931,8 @@ end
 --to prevent infinite loops where a set of rules/conditions is self referencing
 withrecursion = {}
 
-function testConds(unit, conds, compare_with) --cond should be a {condtype,{object types},{cond_units}}
+function testConds(unit, conds, compare_with, first_unit) --cond should be a {condtype,{object types},{cond_units}}
+  local first_unit = first_unit or unit
   local endresult = true
   for _,cond in ipairs(conds or {}) do
     local condtype = cond.name
@@ -943,18 +944,45 @@ function testConds(unit, conds, compare_with) --cond should be a {condtype,{obje
       for _,other in ipairs(cond.others) do
         local list = {}
         local set = {}
-        if other.name == "lvl" then -- probably have to account for group/every1 here too, maybe more
-          table.insert(list, outerlvl)
-          set[outerlvl] = true
-        elseif group_lists[other.name] then
-          list = group_lists[other.name]
-          set = group_sets[other.name]
-        else
-          for _,otherunit in ipairs(findUnitsByName(other.name)) do -- findUnitsByName handles mous and no1 already
-            if testConds(otherunit, other.conds, unit) then
+
+        local function addUnit(otherunit)
+          if not set[otherunit] then
+            if testConds(otherunit, other.conds, unit, first_unit) then
               table.insert(list, otherunit)
               set[otherunit] = true
             end
+          end
+        end
+
+        if other.name == "lvl" then -- probably have to account for group/every1 here too, maybe more
+          addUnit(outerlvl)
+        elseif other.name == "itself" then
+          addUnit(first_unit)
+        elseif other.name == "every1" or other.name == "every2" or other.name == "every3" then
+          for _,name in ipairs(referenced_objects) do
+            for _,nya in ipairs(findUnitsByName(name)) do
+              addUnit(nya)
+            end
+          end
+          if other.name == "every2" or other.name == "every3" then
+            for _,nya in ipairs(findUnitsByName("text")) do
+              addUnit(nya)
+            end
+          end
+          if other.name == "every3" then
+            for _,name in ipairs(special_objects) do
+              for _,nya in ipairs(findUnitsByName(name)) do
+                addUnit(nya)
+              end
+            end
+          end
+        elseif group_lists[other.name] then
+          for _,nya in ipairs(group_lists[other.name]) do
+            addUnit(nya)
+          end
+        else
+          for _,otherunit in ipairs(findUnitsByName(other.name)) do -- findUnitsByName handles mous and no1 already
+            addUnit(otherunit)
           end
         end
         table.insert(lists, list)
@@ -1077,7 +1105,6 @@ function testConds(unit, conds, compare_with) --cond should be a {condtype,{obje
           others[i][j] = {}
         end
       end
-      local found = false
       for ndir=1,8 do
         local nx, ny = dirs8[ndir][1], dirs8[ndir][2]
         if unit == outerlvl then
@@ -1091,9 +1118,10 @@ function testConds(unit, conds, compare_with) --cond should be a {condtype,{obje
           end
         else
           local dx, dy, dir, px, py = getNextTile(unit, nx, ny, ndir)
-          others[nx][ny] = getUnitsOnTile(px, py, nil, false, unit, true, hasProperty(unit,"thicc"))
+          others[nx][ny] = getUnitsOnTile(px, py, nil, false, nil, true, hasProperty(unit,"thicc"))
         end
       end
+      local found_set = {}
       for i=1,8 do
         if (condtype == "arond") or (condtype == "ortho arond" and i%2==1) or (condtype == "diag arond" and i%2==0) or (condtype == dirs8_by_name[i].." arond") or (condtype == "spin"..i.." arond") then
           local nx,ny
@@ -1104,17 +1132,22 @@ function testConds(unit, conds, compare_with) --cond should be a {condtype,{obje
             nx,ny = dirs8[i][1],dirs8[i][2]
           end
           for _,set in ipairs(sets) do
-            for _,other in ipairs(others[nx][ny]) do
-              if set[other] then
-                found = true
-                break
+            if not found_set[set] then
+              for _,other in ipairs(others[nx][ny]) do
+                if set[other] then
+                  found_set[set] = true
+                  break
+                end
               end
             end
           end
         end
       end
-      if not found then
-        result = false
+      for _,set in ipairs(sets) do
+        if not found_set[set] then
+          result = false
+          break
+        end
       end
     elseif condtype == "seen by" then
       local others = {}
@@ -1129,7 +1162,7 @@ function testConds(unit, conds, compare_with) --cond should be a {condtype,{obje
           end
         else
           local dx, dy, dir, px, py = getNextTile(unit, nx, ny, ndir)
-          mergeTable(others, getUnitsOnTile(px, py, nil, false, unit, true, hasProperty(unit,"thicc")))
+          mergeTable(others, getUnitsOnTile(px, py, nil, false, nil, true, hasProperty(unit,"thicc")))
         end
       end
       if unit == outerlvl then --basically turns into sans n't BUT the unit has to be looking inbounds as well!
@@ -1182,7 +1215,7 @@ function testConds(unit, conds, compare_with) --cond should be a {condtype,{obje
       --TODO: look at dir, ortho, diag, surrounds
       if unit ~= outerlvl then
         local dx, dy, dir, px, py = getNextTile(unit, dirs8[unit.dir][1], dirs8[unit.dir][2], unit.dir)
-        local frens = getUnitsOnTile(px, py, param, false, unit, nil, hasProperty(unit,"thicc"))
+        local frens = getUnitsOnTile(px, py, param, false, nil, nil, hasProperty(unit,"thicc"))
         for i,other in ipairs(sets) do
           local isdir = false
           if cond.others[i].name == "ortho" then
@@ -1242,7 +1275,7 @@ function testConds(unit, conds, compare_with) --cond should be a {condtype,{obje
       --TODO: look at dir, ortho, diag, surrounds
       if unit ~= outerlvl then
         local dx, dy, dir, px, py = getNextTile(unit, -dirs8[unit.dir][1], -dirs8[unit.dir][2], unit.dir)
-        local frens = getUnitsOnTile(px, py, param, false, unit, nil, hasProperty(unit,"thicc"))
+        local frens = getUnitsOnTile(px, py, param, false, nil, nil, hasProperty(unit,"thicc"))
         for _,other in ipairs(sets) do
           if other[outerlvl] then
               local dx, dy, dir, px, py = getNextTile(unit, dirs8[unit.dir][1], dirs8[unit.dir][2], unit.dir)
@@ -1280,7 +1313,7 @@ function testConds(unit, conds, compare_with) --cond should be a {condtype,{obje
           end
         else
           local dx, dy, dir, px, py = getNextTile(unit, nx, ny, ndir)
-          mergeTable(others, getUnitsOnTile(px, py, nil, false, unit, true, hasProperty(unit,"thicc")))
+          mergeTable(others, getUnitsOnTile(px, py, nil, false, nil, true, hasProperty(unit,"thicc")))
         end
       end
       if unit == outerlvl then --basically turns into sans n't BUT the unit's rear has to be looking inbounds as well!
@@ -1345,7 +1378,7 @@ function testConds(unit, conds, compare_with) --cond should be a {condtype,{obje
           end
         else
           local dx, dy, dir, px, py = getNextTile(unit, nx, ny, ndir)
-          mergeTable(others, getUnitsOnTile(px, py, nil, false, unit, true, hasProperty(unit,"thicc")))
+          mergeTable(others, getUnitsOnTile(px, py, nil, false, nil, true, hasProperty(unit,"thicc")))
         end
       end
       if unit == outerlvl then --basically turns into sans n't BUT the unit's side has to be looking inbounds as well!
@@ -1413,7 +1446,7 @@ function testConds(unit, conds, compare_with) --cond should be a {condtype,{obje
         end
         if found then result = false end
       else
-        local others = getUnitsOnTile(unit.x, unit.y, nil, false, unit, nil, hasProperty(unit,"thicc"))
+        local others = getUnitsOnTile(unit.x, unit.y, nil, false, nil, nil, hasProperty(unit,"thicc"))
         if #others > 0 then
           result = false
         end
