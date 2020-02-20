@@ -1626,7 +1626,7 @@ tiles_list = {
     color = {2, 3},
     layer = 20,
     tags = {"hot"},
-    desc = "HOTTE: every2.5 thatbe hotte snacc every2.5 thatbe fridgd (without it being a baserule, of course)",
+    desc = "HOTTE: At end of turn, HOTTE units destroys all units that are FRIDGD on their tile.",
   },
   -- 116
   {
