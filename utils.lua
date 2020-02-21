@@ -1446,7 +1446,7 @@ function testConds(unit, conds, compare_with, first_unit) --cond should be a {co
         end
         if found then result = false end
       else
-        local others = getUnitsOnTile(unit.x, unit.y, nil, false, nil, nil, hasProperty(unit,"thicc"))
+        local others = getUnitsOnTile(unit.x, unit.y, nil, false, unit, nil, hasProperty(unit,"thicc"))
         if #others > 0 then
           result = false
         end
