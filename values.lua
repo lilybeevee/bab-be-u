@@ -1113,7 +1113,7 @@ tiles_list = {
     texttype = {property = true},
     color = {4, 1},
     layer = 20,
-    features = { sans = {x=20, y=7, w=3, h=4} },
+    features = { sans = {x=19, y=10, w=3, h=5} },
     tags = {"bonus", "woah", "whoa", "face"},
     desc = ":o: If U is on :o, the :o is collected. Bonus!",
   },
