@@ -9317,23 +9317,13 @@ tiles_list = {
     layer = 20,
     tags = {"chars", "snom", "pokemon"},
     desc = "yea its the same spelling what else would it be, SNOWM??",
-  },
-  -- 838
-  {
-    name = "text_themself",
-    sprite = "text_themself",
-    type = "text",
-    texttype = {object = true},
-    color = {2, 3},
-    layer = 20,
-    tags = {"itself"},
-    desc = "ITSELF: Refers to the subject of the rule in conditions.",
   }
+  --add below now, starting at 1094
 }
 
 --other_alias = {["wontn't"]: "wo"}
 
---add every unicode flag (256 total)
+--add every unicode flag (256 total, ids 838 to 1093)
 --sprite is just the overlay, referenced like "flogus" for us flag, "floggb-eng" for english flag, etc.
 unicode_flag_list = {}
 items = love.filesystem.getDirectoryItems("assets/sprites/overlay/flog")
@@ -9352,6 +9342,18 @@ for _,item in ipairs(items) do
 	  table.insert(unicode_flag_list, prop_name)
   end
 end
+
+--1094
+table.insert(tiles_list, {
+  name = "text_themself",
+  sprite = "text_themself",
+  type = "text",
+  texttype = {object = true},
+  color = {2, 3},
+  layer = 20,
+  tags = {"themself"},
+  desc = "THEMSELF: Refers to the subject of the rule in conditions.",
+})
 
 tiles_by_name = {}
 group_names = {}
