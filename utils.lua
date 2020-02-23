@@ -232,6 +232,7 @@ function loadMap()
       local objects = {}
       local lvls = {}
       local locked_lvls = {}
+      local created = {}
       local dofloodfill = scene ~= editor
       for _,unit in ipairs(map) do
         id, tile, x, y, dir, specials, color = unit.id, unit.tile, unit.x, unit.y, unit.dir, unit.special, unit.color
@@ -278,22 +279,22 @@ function loadMap()
                 table.insert(extra_units, {tiles_by_namePossiblyMeta(t), x, y, dir, color, deepCopy(specials)})
               end
             end
+            created[id] = true
           elseif specials.visibility == "open" then
             local unit = createUnit(tile, x, y, dir, false, id, nil, color)
             unit.special = specials
+            created[id] = true
           elseif specials.visibility == "locked" then
             table.insert(locked_lvls, {id, tile, x, y, dir, specials, color})
-            table.insert(objects, {id, tile, x, y, dir, specials, color})
-          else
-            table.insert(objects, {id, tile, x, y, dir, specials, color})
           end
+          table.insert(objects, {id, tile, x, y, dir, specials, color})
         elseif tile == tiles_by_name["lin"] then
-          if specials.visibility == "hidden" then
-            table.insert(objects, {id, tile, x, y, dir, specials, color})
-          else
+          if specials.visibility ~= "hidden" then
             local unit = createUnit(tile, x, y, dir, false, id, nil, color)
             unit.special = specials
+            created[id] = true
           end
+          table.insert(objects, {id, tile, x, y, dir, specials, color})
         else
           if specials.level then
             if readSaveFile{"levels", specials.level, "seen"} then
@@ -324,7 +325,6 @@ function loadMap()
       end
       
       if dofloodfill then
-        local created = {}
         while #floodfill > 0 do
           local u, ptype = unpack(table.remove(floodfill, 1))
           local orthos = {[-1] = {}, [0] = {}, [1] = {}}
