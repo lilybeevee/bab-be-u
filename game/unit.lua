@@ -1147,17 +1147,31 @@ function updateUnits(undoing, big_update)
       local fail = false
       if #others > 0 then
         for _,other in ipairs(others) do
-          local ons = getUnitsOnTile(other.x,other.y,nil,nil,other,nil,hasProperty(other,"thicc"))
-          local success = false
-          for _,on in ipairs(ons) do
-            if sameFloat(other,on) and ignoreCheck(other,on) then
-              success = true
+          if other == outerlvl then
+            local success = false
+            for _,on in ipairs(units) do
+              if sameFloat(on,outerlvl) and inBounds(on) then
+                success = true
+                break
+              end
+            end
+            if not success then
+              fail = true
               break
             end
-          end
-          if not success then
-            fail = true
-            break
+          else
+            local ons = getUnitsOnTile(other.x,other.y,nil,nil,other,nil,hasProperty(other,"thicc"))
+            local success = false
+            for _,on in ipairs(ons) do
+              if sameFloat(other,on) and ignoreCheck(other,on) then
+                success = true
+                break
+              end
+            end
+            if not success then
+              fail = true
+              break
+            end
           end
         end
       else fail = true end
