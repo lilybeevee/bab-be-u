@@ -2554,9 +2554,9 @@ function ignoreCheck(unit, target, property)
     return true
   elseif unit == target then
     return true
-  elseif target and (hasRule(unit,"ignor",target) or hasRule(unit,"ignor",outerlvl) or hasRule(outerlvl,"ignor",target)) and (not property or (not hasRule(unit,"wontn't",property) and not hasRule(outerlvl,"wontn't",property))) then
+  elseif target and (hasRule(unit,"ignor",target) or hasRule(unit,"ignor",outerlvl)) and (not property or (not hasRule(unit,"wontn't",property))) then
     return false
-  elseif property and (hasRule(unit,"wont",property) or hasRule(outerlvl,"wont",property)) and (not target or (not hasRule(unit,"ignorn't",target) and not hasRule(outerlvl,"ignorn't",target))) then
+  elseif property and (hasRule(unit,"wont",property)) and (not target or (not hasRule(unit,"ignorn't",target))) then
     return false
   end
   return true
