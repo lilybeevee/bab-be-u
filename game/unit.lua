@@ -1150,7 +1150,7 @@ function updateUnits(undoing, big_update)
           if other == outerlvl then
             local success = false
             for _,on in ipairs(units) do
-              if sameFloat(on,outerlvl) and inBounds(on) then
+              if sameFloat(on,outerlvl) and inBounds(on.x, on.y) then
                 success = true
                 break
               end
