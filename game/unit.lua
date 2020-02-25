@@ -1805,6 +1805,15 @@ function updateUnitColours()
       if unit ~= on and hasRule(unit, "paint", on) and sameFloat(unit, on) and ignoreCheck(on, unit, "paint") then
         if timecheck(unit,"paint",on) and timecheck(on) then
           local old_colour = unit.color_override or unit.color
+          if type(old_colour[1]) == "table" then
+            local found_color
+            for i,v in ipairs(unit.colored) do
+              if v then
+                found_color = old_colour[i]
+              end
+            end
+            old_colour = found_color or old_colour[1]
+          end
           local colour = colour_for_palette[old_colour[1]][old_colour[2]]
           if (colour ~= nil and on[colour] ~= true) then
             if to_update[on] == nil then
