@@ -3083,7 +3083,11 @@ function deleteUnits(del_units,convert,gone)
         addUndo({"remove", unit.tile, unit.x, unit.y, unit.dir, convert or false, unit.id, unit.special})
       end
     end
-    deleteUnit(unit,convert,false,gone)
+    if unit.class ~= "cursor" then
+      deleteUnit(unit,convert,false,gone)
+    else
+      deleteMouse(unit.id)
+    end
   end
 end
 
