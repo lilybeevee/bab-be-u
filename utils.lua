@@ -1610,6 +1610,14 @@ function testConds(unit, conds, compare_with, first_unit) --cond should be a {co
       if not found then
         result = false
       end
+    elseif condtype == "letter_custom" then
+      local letter = cond.unit
+
+      if unit.special.customletter ~= letter.special.customletter then
+        result = false
+      else
+        print(unit.special.customletter)
+      end
     elseif condtype == "unlocked" then
       if unit.name == "lvl" and unit.special.visibility ~= "open" then
         result = false

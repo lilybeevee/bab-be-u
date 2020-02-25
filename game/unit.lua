@@ -2599,6 +2599,7 @@ function convertUnits(pass)
       if tile ~= nil then
         local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
         if (new_unit ~= nil) then
+          new_unit.special.customletter = unit.special.customletter
           addUndo({"create", new_unit.id, true, created_from_id = unit.id})
         end
       end
@@ -2645,7 +2646,8 @@ function convertUnits(pass)
           local tile = tiles_by_name[nametocreate]
           if tile ~= nil then
             local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
-            if (new_unit ~= nil) then
+           if (new_unit ~= nil) then
+              new_unit.special.customletter = unit.special.customletter
               addUndo({"create", new_unit.id, true, created_from_id = unit.id})
             end
           end
@@ -2855,6 +2857,10 @@ function convertUnits(pass)
             elseif rule.object.name:starts("this") and not rule.object.name:ends("n't") then
               tile = tiles_by_name["this"]
             end
+            local new_special = {}
+            if rule.object.name:find("letter_custom") then
+              new_special.customletter = rule.object.unit.special.customletter
+            end
             if tile ~= nil then
               table.insert(del_cursors, cursor)
               local color = rule.object.prefix
@@ -2870,6 +2876,9 @@ function convertUnits(pass)
                 end
               end
               local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true, nil, nil, color)
+              for k,v in pairs(new_special) do
+                new_unit.special[k] = v
+              end
               if (new_unit ~= nil) then
                 addUndo({"create", new_unit.id, true, created_from_id = unit.id})
               end
@@ -2894,6 +2903,11 @@ function convertUnits(pass)
         elseif rule.object.name:starts("text_") then
           overriden = hasRule(unit, "ben't", "text")
         end
+        --transform into custom letter
+        local new_special = {}
+        if rule.object.name:find("letter_custom") then
+          new_special.customletter = rule.object.unit.special.customletter
+        end
         if tile ~= nil and not overriden then
           if not unit.removed then
             table.insert(converted_units, unit)
@@ -2915,7 +2929,10 @@ function convertUnits(pass)
             if rule.object.name == "lvl" and not new_unit.color_override then
               new_unit.color_override = unit.color_override or unit.color
             end
-            new_unit.special = unit.special
+            new_unit.special = copyTable(unit.special)
+            for k,v in pairs(new_special) do
+              new_unit.special[k] = v
+            end
             addUndo({"create", new_unit.id, true, created_from_id = unit.id})
           end
         elseif rule.object.name == "mous" then
@@ -2962,6 +2979,7 @@ function convertUnits(pass)
           local tile = tiles_by_name[other.fullname]
           local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
           if new_unit ~= nil then
+            new_unit.special.customletter = other.special.customletter
             tfd = true
             addUndo({"create", new_unit.id, true, created_from_id = unit.id})
           end
@@ -3011,6 +3029,7 @@ function convertUnits(pass)
         local tile = tiles_by_name[tf.fullname]
         local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
         if new_unit ~= nil then
+          new_unit.special.customletter = tf.special.customletter
           tfd = true
           addUndo({"create", new_unit.id, true, created_from_id = unit.id})
         end

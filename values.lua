@@ -7038,7 +7038,7 @@ tiles_list = {
   -- 625
   {
     name = "letter_custom",
-    sprite = "wut",
+    sprite = "letter_custom",
     type = "text",
     texttype = {letter = true},
     color = {0,3},

@@ -754,6 +754,18 @@ function addRule(full_rule)
     return
   end
 
+  if subject:find("letter_custom") and subject.unit then
+    rules.subject.conds = copyTable(rules.subject.conds) or {};
+    table.insert(rules.subject.conds, rules.subject);
+  end
+  if object:find("letter_custom") and object.unit then
+    local tile_id = tiles_by_name["text_"..verb]
+    if tile_id and tiles_list[tile_id].texttype and tiles_list[tile_id].texttype.verb_unit then
+      rules.object.conds = copyTable(rules.object.conds) or {};
+      table.insert(rules.object.conds, rules.object);
+    end
+  end
+
   if subject == "every1" then
     if subject_not % 2 == 1 then
       return
