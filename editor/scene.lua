@@ -580,6 +580,11 @@ function scene.keyPressed(key)
       searchstr = searchstr..letter
     end
     subsearchstr = searchstr:gsub(" ","")
+
+    local magic = {"%", "(", ")", ".", "+", "-", "*", "?", "[", "^", "$"}
+    for _,char in ipairs(magic) do
+      subsearchstr = subsearchstr:gsub("%"..char, "%%%"..char)
+    end
   end
   
   updateSelectorTabs()
