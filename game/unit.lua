@@ -185,9 +185,9 @@ function moveBlock()
     moveUnit(a, b.x, b.y)
   end
   
-  local ishere = getUnitsWithEffect("her")
+  local ishere, hererules = getUnitsWithEffect("her", true)
   local hashered = {}
-  for _,unit in ipairs(ishere) do
+  for ri,unit in ipairs(ishere) do
     --checks to see if the unit has already been moved by "her"
     local already = false
     for _,moved in ipairs(hashered) do
@@ -198,18 +198,15 @@ function moveBlock()
     
     --if it has, then don't run code this iteration
     if not already then
-      local getheres = matchesRule(unit,"be","her")
       local heres = {}
       local found = false
       
       --gets each destination the unit needs to go to
-      for _,ruleparent in ipairs(getheres) do
-        local fullrule = ruleparent.units
-        for i,hererule in ipairs(fullrule) do
-          if hererule.fullname == "text_her" then
-            table.insert(heres,hererule)
-            break
-          end
+      local fullrule = hererules[ri].units
+      for i,hererule in ipairs(fullrule) do
+        if hererule.fullname == "text_her" then
+          table.insert(heres,hererule)
+          break
         end
       end
       --sorts it like "visitfren"
@@ -250,9 +247,9 @@ function moveBlock()
     end
   end
   
-  local isthere = getUnitsWithEffect("thr")
+  local isthere, thererules = getUnitsWithEffect("thr", true)
   local hasthered = {}
-  for _,unit in ipairs(isthere) do
+  for ri,unit in ipairs(isthere) do
     --the early stuff is the same as "her"; finds "thr"s and sort them
     local already = false
     for _,moved in ipairs(hasthered) do
@@ -262,19 +259,17 @@ function moveBlock()
     end
     
     if not already then
-      local gettheres = matchesRule(unit,"be","thr")
       local theres = {}
       local found = false
       
-      for i,ruleparent in ipairs(gettheres) do
-        local fullrule = ruleparent.units
-        for i,thererule in ipairs(fullrule) do
-          if thererule.fullname == "text_thr" then
-            table.insert(theres,thererule)
-            break
-          end
+      local fullrule = thererules[ri].units
+      for i,thererule in ipairs(fullrule) do
+        if thererule.fullname == "text_thr" then
+          table.insert(theres,thererule)
+          break
         end
       end
+
       for name,tbl in pairs(theres) do
         table.sort(tbl, readingOrderSort)
       end
@@ -324,9 +319,9 @@ function moveBlock()
     end
   end
   
-  local isrighthere = getUnitsWithEffect("rithere")
+  local isrighthere, righthererules = getUnitsWithEffect("rithere", true)
   local hasrighthered = {}
-  for _,unit in ipairs(isrighthere) do
+  for ri,unit in ipairs(isrighthere) do
     local already = false
     for _,moved in ipairs(hasrighthered) do
       if unit == moved then
@@ -335,17 +330,14 @@ function moveBlock()
     end
     
     if not already then
-      local getrightheres = matchesRule(unit,"be","rithere")
       local rightheres = {}
       local found = false
       
-      for _,ruleparent in ipairs(getrightheres) do
-        local fullrule = ruleparent.units
-        for i,righthererule in ipairs(fullrule) do
-          if righthererule.fullname == "text_rithere" then
-            table.insert(rightheres,righthererule)
-            break
-          end
+      local fullrule = righthererules[ri].units
+      for i,righthererule in ipairs(fullrule) do
+        if righthererule.fullname == "text_rithere" then
+          table.insert(rightheres,righthererule)
+          break
         end
       end
       

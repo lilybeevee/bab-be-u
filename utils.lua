@@ -642,8 +642,9 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
   return ret
 end
 
-function getUnitsWithEffect(effect)
+function getUnitsWithEffect(effect, return_rule)
   local result = {}
+  local result_rules = {}
   local gotten = {}
   local rules = matchesRule(nil, "be", effect)
   --print ("h:"..tostring(#rules))
@@ -651,6 +652,7 @@ function getUnitsWithEffect(effect)
     local unit = dat[2]
     if not unit.removed and not hasRule(unit, "ben't", effect) then
       table.insert(result, unit)
+      table.insert(result_rules, dat[1])
       gotten[unit] = true
     end
   end
@@ -662,28 +664,32 @@ function getUnitsWithEffect(effect)
       for _,other in ipairs(getUnitsOnTile(unit.x, unit.y, nil, false, unit, nil, hasProperty(unit,"thicc"))) do
         if not gotten[other] and sameFloat(unit, other) and not hasRule(other, "ben't", effect) and ignoreCheck(other, unit) then
           table.insert(result, other)
+          table.insert(result_rules, rule[1])
           gotten[other] = true
         end
       end
     end
   end
   
-  if hasRule(outerlvl, "giv", effect) then
+  local has_lvl_giv, lvl_giv_rule = hasRule(outerlvl, "giv", effect, true)
+  if has_lvl_giv then
     for _,unit in ipairs(units) do
       if not gotten[unit] and inBounds(unit.x, unit.y) and not hasRule(unit, "ben't", effect) and ignoreCheck(unit, outerlvl) then
         table.insert(result, unit)
+        table.insert(result_rules, lvl_giv_rule)
       end
     end
   end
   
   if rules_with["rp"] then
-    for _,unit in ipairs(result) do
+    for i,unit in ipairs(result) do
       local isrp = matchesRule(nil,"rp",unit)
       for _,ruleparent in ipairs(isrp) do
         local mimic = ruleparent[2]
         if not gotten[mimic] and not hasRule(mimic,"ben't",effect) then
           gotten[mimic] = true
           table.insert(result,mimic)
+          table.insert(result_rules, result_rules[i])
         end
       end
     end
@@ -695,15 +701,17 @@ function getUnitsWithEffect(effect)
       local mimic = ruleparent[2]
       local stuff = getUnitsOnTile(tx,ty)
       for _,unit in ipairs(stuff) do
-        if hasProperty(unit,effect) and not hasRule(mimic,"ben't",effect) then
+        local has_prop, prop_rule = hasProperty(unit,effect,true)
+        if has_prop and not hasRule(mimic,"ben't",effect) then
           table.insert(result,mimic)
+          table.insert(result_rules,prop_rule)
           break
         end
       end
     end
   end
   
-  return result
+  return result, (return_rule and result_rules or nil)
 end
 
 function getUnitsWithEffectAndCount(effect)
@@ -814,14 +822,16 @@ function getUnitsWithRuleAndCount(rule1, rule2, rule3)
 end
 
 
-function hasRule(rule1,rule2,rule3)
-  if #matchesRule(rule1,rule2,rule3, true) > 0 then return true end
+function hasRule(rule1,rule2,rule3, return_rule)
+  local matches = matchesRule(rule1,rule2,rule3, true)
+  if #matches > 0 then return true, (return_rule and matches[1] or nil) end
   if not rules_with["rp"] then return false end
   if #matchesRule(rule1,rule2.."n't",rule3, true) > 0 then return false end
   local isrp = matchesRule(rule1,"rp",nil)
   for _,ruleparent in ipairs(isrp) do
     local mimic = ruleparent[2]
-    if #matchesRule(mimic,rule2,rule3, true) > 0 then return true end
+    local matches = matchesRule(mimic,rule2,rule3, true)
+    if #matches > 0 then return true, (return_rule and matches[1] or nil) end
   end
   return false
 end
@@ -861,28 +871,32 @@ function findUnitsByName(name)
   end
 end
 
-function hasProperty(unit,prop)
+function hasProperty(unit,prop,return_rule)
   if not rules_with[prop] and prop ~= "?" then return false end
   if unit and unit.fullname == "babby" and prop == "thicc" and not hasRule(unit, "be", "notranform") then return false end
-  if hasRule(unit, "be", prop) then return true end
+  local has_be_rule, be_rule = hasRule(unit, "be", prop)
+  if has_be_rule then return true, (return_rule and be_rule or nil) end
   if type(unit) ~= "table" then return false end
   if not rules_with["giv"] then return false end
   if hasRule(unit, "ben't", prop) then return false end
   if unit == outerlvl then return false end
   if unit and unit.class == "mous" then return false end
   if unit then
-    if hasRule(outerlvl, "giv", prop) then return inBounds(unit.x, unit.y) end
+    local has_lvl_giv, lvl_giv_rule = hasRule(outerlvl, "giv", prop)
+    if has_lvl_giv then return true, lvl_giv_rule end
     for _,other in ipairs(getUnitsOnTile(unit.x, unit.y, nil, false, unit, true, hasRule(unit,"be","thicc"))) do
-      if #matchesRule(other, "giv", prop) > 0 and sameFloat(unit, other) and ignoreCheck(unit, other) then
-        return true
+      local givs = matchesRule(other, "giv", prop)
+      if #givs > 0 and sameFloat(unit, other) and ignoreCheck(unit, other) then
+        return true, (return_rule and givs[1] or nil)
       end
     end
   else
-    if hasRule(outerlvl, "giv", prop) then return true end
+    local has_lvl_giv, lvl_giv_rule = hasRule(outerlvl, "giv", prop)
+    if has_lvl_giv then return true, lvl_giv_rule end
     for _,ruleparent in ipairs(matchesRule(nil, "giv", prop)) do
       for _,other in ipairs(ruleparent.units) do
         if #getUnitsOnTile(other.x, other.y, nil, false, other, true, hasRule(unit,"be","thicc")) > 0 and sameFloat(unit, other) then
-          return true
+          return true, (return_rule and ruleparent or nil)
         end
       end
     end
