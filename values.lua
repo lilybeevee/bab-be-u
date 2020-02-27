@@ -269,12 +269,12 @@ selector_grid_contents = {
     "meem","text_meem","statoo","text_statoo","flamgo","text_flamgo","migri","text_migri","temmi","text_temmi",0,0,0,0,"text_gang","text_frens","text_groop","text_pathz",
     "skul","text_skul","beeee","text_beeee","gul","text_gul","kva","text_kva",0,0,0,0,0,0,"text_no1","text_every1","text_every2","text_every3",
     "ghost fren","text_ghost fren","fishe","text_fishe","starrfishe","text_starrfishe","pidgin","text_pidgin",0,0,0,0,0,0,"text_text","text_lethers","text_numa","text_toen",
-    "robobot","text_robobot","snek","text_snek","sneel","text_sneel","swan","text_swan",0,0,0,0,0,0,0,0,"text_yuiy","text_xplod",
+    "robobot","text_robobot","snek","text_snek","sneel","text_sneel","swan","text_swan",0,0,0,0,0,0,0,"text_themself","text_yuiy","text_xplod",
     "wog","text_wog","bog","text_bog","enbybog","text_enbybog","spoder","text_spoder",0,0,0,0,0,0,0,0,0,0,
     "kirb","text_kirb","ripof","text_ripof","cavebab","text_cavebab","detox","text_detox","nyowo","text_nyowo",0,0,0,0,0,0,0,0,
     "bup","text_bup","butflye","text_butflye","boooo","text_boooo","prime","text_prime","grimkid","text_grimkid",0,0,0,0,0,0,0,0,
     "boy","text_boy","wurm","text_wurm","madi","text_madi","angle","text_angle","boogie","text_boogie",0,0,0,0,"lila","text_lila","larry","text_larry",
-    "steev","text_steev","ratt","text_ratt","badi","text_badi","debil","text_debil","assh","text_assh",0,0,0,0,"pata","text_pata","jill","text_jill",
+    "steev","text_steev","ratt","text_ratt","badi","text_badi","dvl","text_dvl","assh","text_assh",0,0,0,0,"pata","text_pata","jill","text_jill",
     "han","text_han","iy","text_iy","lisp","text_lisp","paw","text_paw",0,0,0,0,0,0,"slab","text_slab","zsoob","text_zsoob",
     "snoman","text_snoman","pingu","text_pingu","der","text_der","ginn","text_ginn","snom","text_snom",0,0,0,0,"notnat","text_notnat","oat","text_oat",
     "kapa","text_kapa","urei","text_urei","ryugon","text_ryugon","viruse","text_viruse",0,0,0,0,0,0,0,0,"butcher","text_butcher",
@@ -1113,7 +1113,7 @@ tiles_list = {
     texttype = {property = true},
     color = {4, 1},
     layer = 20,
-    features = { sans = {x=20, y=7, w=3, h=4} },
+    features = { sans = {x=19, y=10, w=3, h=5} },
     tags = {"bonus", "woah", "whoa", "face"},
     desc = ":o: If U is on :o, the :o is collected. Bonus!",
   },
@@ -1626,7 +1626,7 @@ tiles_list = {
     color = {2, 3},
     layer = 20,
     tags = {"hot"},
-    desc = "HOTTE: every2.5 thatbe hotte snacc every2.5 thatbe fridgd (without it being a baserule, of course)",
+    desc = "HOTTE: At end of turn, HOTTE units destroys all units that are FRIDGD on their tile.",
   },
   -- 116
   {
@@ -7038,7 +7038,7 @@ tiles_list = {
   -- 625
   {
     name = "letter_custom",
-    sprite = "wut",
+    sprite = "letter_custom",
     type = "text",
     texttype = {letter = true},
     color = {0,3},
@@ -8008,7 +8008,7 @@ tiles_list = {
   },
   -- 711
   {
-    name = "debil",
+    name = "dvl",
     sprite = "debil",
     color = {2, 2},
     layer = 11,
@@ -8016,21 +8016,20 @@ tiles_list = {
     features = {
       sans = {x=14, y=18, w=2, h=2},
     },
-    tags = {"chars", "devil", "demon"},
+    tags = {"chars", "devil", "demon", "debil"},
     desc = "or yuor debil...",
     nice = true,
   },
   -- 712
   {
-    name = "text_debil",
-    sprite = "text_debil",
+    name = "text_dvl",
+    sprite = "text_dvl",
     type = "text",
     texttype = {object = true},
     color = {2, 2},
     layer = 20,
-    tags = {"chars", "devil", "demon"},
-    desc = "[sic] em",
-    nice = true,
+    tags = {"chars", "devil", "demon", "debil"},
+    desc = "used to be called \"debil\" until we found out that's a bad word in a different language",
   },
   -- 713
   {
@@ -9318,6 +9317,17 @@ tiles_list = {
     layer = 20,
     tags = {"chars", "snom", "pokemon"},
     desc = "yea its the same spelling what else would it be, SNOWM??",
+  },
+  -- 838
+  {
+    name = "text_themself",
+    sprite = "text_themself",
+    type = "text",
+    texttype = {object = true},
+    color = {2, 3},
+    layer = 20,
+    tags = {"itself"},
+    desc = "ITSELF: Refers to the subject of the rule in conditions.",
   }
 }
 

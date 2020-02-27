@@ -1024,14 +1024,22 @@ function scene.draw(dt)
         if overlay and stretch then
           love.graphics.draw(draw, fulldrawx + ox, fulldrawy + oy, 0, sprite:getWidth() / TILE_SIZE, sprite:getHeight() / TILE_SIZE, draw:getWidth() / 2, draw:getHeight() / 2)
         else
-          if unit.fullname == "detox" and graphical_property_cache["slep"][unit] ~= nil then
-            setColor{1,2}
+          if unit.sprite == "letter_custom" then
+            if unit.special.customletter then
+              drawCustomLetter(unit.special.customletter, fulldrawx + ox, fulldrawy + oy, 0, unit.draw.scalex, unit.draw.scaley, 16, 16)
+            else
+              love.graphics.draw(sprites["wut"], fulldrawx + ox, fulldrawy + oy, 0, unit.draw.scalex, unit.draw.scaley, draw:getWidth() / 2, draw:getHeight() / 2)
+            end
+          else
+            if unit.fullname == "detox" and graphical_property_cache["slep"][unit] ~= nil then
+              setColor{1,2}
+            end
+            if unit.fullname == "text_wontn't" then
+              draw = sprites["text_wo"]
+            end
+            if not draw then draw = sprites["wat"] end
+            love.graphics.draw(draw, fulldrawx + ox, fulldrawy + oy, 0, unit.draw.scalex, unit.draw.scaley, draw:getWidth() / 2, draw:getHeight() / 2)
           end
-          if unit.fullname == "text_wontn't" then
-            draw = sprites["text_wo"]
-          end
-          if not draw then draw = sprites["wat"] end
-          love.graphics.draw(draw, fulldrawx + ox, fulldrawy + oy, 0, unit.draw.scalex, unit.draw.scaley, draw:getWidth() / 2, draw:getHeight() / 2)
         end
       end
 			if unit.meta ~= nil then
@@ -1152,7 +1160,7 @@ function scene.draw(dt)
       love.graphics.setColor(ur, ug, ub, ua)
     end
 
-    if not (unit.delet or spookmode) and unit.name ~= "lin" and unit.fullname ~= "letter_custom" then -- delet takes control of the drawing sprite, so it shouldn't render the normal object
+    if not (unit.delet or spookmode) and unit.name ~= "lin" then -- delet takes control of the drawing sprite, so it shouldn't render the normal object
       drawSprite()
     end
 
@@ -1589,8 +1597,13 @@ function scene.draw(dt)
         else
           love.graphics.setColor(dcolor[1], dcolor[2], dcolor[3], dcolor[4] or 1)
         end
-        if unit.fullname == "letter_custom" then
-          drawCustomLetter(unit.special.customletter, 0, 0, 0, 1, 1, 16, 16)
+        if unit.sprite == "letter_custom" then
+          print(unit.sprite)
+          if unit.special.customletter then
+            drawCustomLetter(unit.special.customletter, 0, 0, 0, 1, 1, 16, 16)
+          else
+            love.graphics.draw(sprites["wut"], 0, 0, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+          end
         else
           local sprite = sprites[unit.sprite]
           love.graphics.draw(sprite, 0, 0, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)

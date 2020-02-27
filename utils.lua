@@ -232,6 +232,7 @@ function loadMap()
       local objects = {}
       local lvls = {}
       local locked_lvls = {}
+      local created = {}
       local dofloodfill = scene ~= editor
       for _,unit in ipairs(map) do
         id, tile, x, y, dir, specials, color = unit.id, unit.tile, unit.x, unit.y, unit.dir, unit.special, unit.color
@@ -278,22 +279,22 @@ function loadMap()
                 table.insert(extra_units, {tiles_by_namePossiblyMeta(t), x, y, dir, color, deepCopy(specials)})
               end
             end
+            created[id] = true
           elseif specials.visibility == "open" then
             local unit = createUnit(tile, x, y, dir, false, id, nil, color)
             unit.special = specials
+            created[id] = true
           elseif specials.visibility == "locked" then
             table.insert(locked_lvls, {id, tile, x, y, dir, specials, color})
-            table.insert(objects, {id, tile, x, y, dir, specials, color})
-          else
-            table.insert(objects, {id, tile, x, y, dir, specials, color})
           end
+          table.insert(objects, {id, tile, x, y, dir, specials, color})
         elseif tile == tiles_by_name["lin"] then
-          if specials.visibility == "hidden" then
-            table.insert(objects, {id, tile, x, y, dir, specials, color})
-          else
+          if specials.visibility ~= "hidden" then
             local unit = createUnit(tile, x, y, dir, false, id, nil, color)
             unit.special = specials
+            created[id] = true
           end
+          table.insert(objects, {id, tile, x, y, dir, specials, color})
         else
           if specials.level then
             if readSaveFile{"levels", specials.level, "seen"} then
@@ -324,7 +325,6 @@ function loadMap()
       end
       
       if dofloodfill then
-        local created = {}
         while #floodfill > 0 do
           local u, ptype = unpack(table.remove(floodfill, 1))
           local orthos = {[-1] = {}, [0] = {}, [1] = {}}
@@ -642,8 +642,9 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
   return ret
 end
 
-function getUnitsWithEffect(effect)
+function getUnitsWithEffect(effect, return_rule)
   local result = {}
+  local result_rules = {}
   local gotten = {}
   local rules = matchesRule(nil, "be", effect)
   --print ("h:"..tostring(#rules))
@@ -651,6 +652,7 @@ function getUnitsWithEffect(effect)
     local unit = dat[2]
     if not unit.removed and not hasRule(unit, "ben't", effect) then
       table.insert(result, unit)
+      table.insert(result_rules, dat[1])
       gotten[unit] = true
     end
   end
@@ -662,28 +664,32 @@ function getUnitsWithEffect(effect)
       for _,other in ipairs(getUnitsOnTile(unit.x, unit.y, nil, false, unit, nil, hasProperty(unit,"thicc"))) do
         if not gotten[other] and sameFloat(unit, other) and not hasRule(other, "ben't", effect) and ignoreCheck(other, unit) then
           table.insert(result, other)
+          table.insert(result_rules, rule[1])
           gotten[other] = true
         end
       end
     end
   end
   
-  if hasRule(outerlvl, "giv", effect) then
+  local has_lvl_giv, lvl_giv_rule = hasRule(outerlvl, "giv", effect, true)
+  if has_lvl_giv then
     for _,unit in ipairs(units) do
       if not gotten[unit] and inBounds(unit.x, unit.y) and not hasRule(unit, "ben't", effect) and ignoreCheck(unit, outerlvl) then
         table.insert(result, unit)
+        table.insert(result_rules, lvl_giv_rule)
       end
     end
   end
   
   if rules_with["rp"] then
-    for _,unit in ipairs(result) do
+    for i,unit in ipairs(result) do
       local isrp = matchesRule(nil,"rp",unit)
       for _,ruleparent in ipairs(isrp) do
         local mimic = ruleparent[2]
         if not gotten[mimic] and not hasRule(mimic,"ben't",effect) then
           gotten[mimic] = true
           table.insert(result,mimic)
+          table.insert(result_rules, result_rules[i])
         end
       end
     end
@@ -695,15 +701,17 @@ function getUnitsWithEffect(effect)
       local mimic = ruleparent[2]
       local stuff = getUnitsOnTile(tx,ty)
       for _,unit in ipairs(stuff) do
-        if hasProperty(unit,effect) and not hasRule(mimic,"ben't",effect) then
+        local has_prop, prop_rule = hasProperty(unit,effect,true)
+        if has_prop and not hasRule(mimic,"ben't",effect) then
           table.insert(result,mimic)
+          table.insert(result_rules,prop_rule)
           break
         end
       end
     end
   end
   
-  return result
+  return result, (return_rule and result_rules or nil)
 end
 
 function getUnitsWithEffectAndCount(effect)
@@ -814,14 +822,16 @@ function getUnitsWithRuleAndCount(rule1, rule2, rule3)
 end
 
 
-function hasRule(rule1,rule2,rule3)
-  if #matchesRule(rule1,rule2,rule3, true) > 0 then return true end
+function hasRule(rule1,rule2,rule3, return_rule)
+  local matches = matchesRule(rule1,rule2,rule3, true)
+  if #matches > 0 then return true, (return_rule and matches[1] or nil) end
   if not rules_with["rp"] then return false end
   if #matchesRule(rule1,rule2.."n't",rule3, true) > 0 then return false end
   local isrp = matchesRule(rule1,"rp",nil)
   for _,ruleparent in ipairs(isrp) do
     local mimic = ruleparent[2]
-    if #matchesRule(mimic,rule2,rule3, true) > 0 then return true end
+    local matches = matchesRule(mimic,rule2,rule3, true)
+    if #matches > 0 then return true, (return_rule and matches[1] or nil) end
   end
   return false
 end
@@ -861,28 +871,32 @@ function findUnitsByName(name)
   end
 end
 
-function hasProperty(unit,prop)
+function hasProperty(unit,prop,return_rule)
   if not rules_with[prop] and prop ~= "?" then return false end
   if unit and unit.fullname == "babby" and prop == "thicc" and not hasRule(unit, "be", "notranform") then return false end
-  if hasRule(unit, "be", prop) then return true end
+  local has_be_rule, be_rule = hasRule(unit, "be", prop)
+  if has_be_rule then return true, (return_rule and be_rule or nil) end
   if type(unit) ~= "table" then return false end
   if not rules_with["giv"] then return false end
   if hasRule(unit, "ben't", prop) then return false end
   if unit == outerlvl then return false end
   if unit and unit.class == "mous" then return false end
   if unit then
-    if hasRule(outerlvl, "giv", prop) then return inBounds(unit.x, unit.y) end
+    local has_lvl_giv, lvl_giv_rule = hasRule(outerlvl, "giv", prop)
+    if has_lvl_giv then return true, lvl_giv_rule end
     for _,other in ipairs(getUnitsOnTile(unit.x, unit.y, nil, false, unit, true, hasRule(unit,"be","thicc"))) do
-      if #matchesRule(other, "giv", prop) > 0 and sameFloat(unit, other) and ignoreCheck(unit, other) then
-        return true
+      local givs = matchesRule(other, "giv", prop)
+      if #givs > 0 and sameFloat(unit, other) and ignoreCheck(unit, other) then
+        return true, (return_rule and givs[1] or nil)
       end
     end
   else
-    if hasRule(outerlvl, "giv", prop) then return true end
+    local has_lvl_giv, lvl_giv_rule = hasRule(outerlvl, "giv", prop)
+    if has_lvl_giv then return true, lvl_giv_rule end
     for _,ruleparent in ipairs(matchesRule(nil, "giv", prop)) do
       for _,other in ipairs(ruleparent.units) do
         if #getUnitsOnTile(other.x, other.y, nil, false, other, true, hasRule(unit,"be","thicc")) > 0 and sameFloat(unit, other) then
-          return true
+          return true, (return_rule and ruleparent or nil)
         end
       end
     end
@@ -931,7 +945,8 @@ end
 --to prevent infinite loops where a set of rules/conditions is self referencing
 withrecursion = {}
 
-function testConds(unit, conds, compare_with) --cond should be a {condtype,{object types},{cond_units}}
+function testConds(unit, conds, compare_with, first_unit) --cond should be a {condtype,{object types},{cond_units}}
+  local first_unit = first_unit or unit
   local endresult = true
   for _,cond in ipairs(conds or {}) do
     local condtype = cond.name
@@ -943,18 +958,45 @@ function testConds(unit, conds, compare_with) --cond should be a {condtype,{obje
       for _,other in ipairs(cond.others) do
         local list = {}
         local set = {}
-        if other.name == "lvl" then -- probably have to account for group/every1 here too, maybe more
-          table.insert(list, outerlvl)
-          set[outerlvl] = true
-        elseif group_lists[other.name] then
-          list = group_lists[other.name]
-          set = group_sets[other.name]
-        else
-          for _,otherunit in ipairs(findUnitsByName(other.name)) do -- findUnitsByName handles mous and no1 already
-            if testConds(otherunit, other.conds, unit) then
+
+        local function addUnit(otherunit)
+          if not set[otherunit] then
+            if testConds(otherunit, other.conds, unit, first_unit) then
               table.insert(list, otherunit)
               set[otherunit] = true
             end
+          end
+        end
+
+        if other.name == "lvl" then -- probably have to account for group/every1 here too, maybe more
+          addUnit(outerlvl)
+        elseif other.name == "themself" then
+          addUnit(first_unit)
+        elseif other.name == "every1" or other.name == "every2" or other.name == "every3" then
+          for _,name in ipairs(referenced_objects) do
+            for _,nya in ipairs(findUnitsByName(name)) do
+              addUnit(nya)
+            end
+          end
+          if other.name == "every2" or other.name == "every3" then
+            for _,nya in ipairs(findUnitsByName("text")) do
+              addUnit(nya)
+            end
+          end
+          if other.name == "every3" then
+            for _,name in ipairs(special_objects) do
+              for _,nya in ipairs(findUnitsByName(name)) do
+                addUnit(nya)
+              end
+            end
+          end
+        elseif group_lists[other.name] then
+          for _,nya in ipairs(group_lists[other.name]) do
+            addUnit(nya)
+          end
+        else
+          for _,otherunit in ipairs(findUnitsByName(other.name)) do -- findUnitsByName handles mous and no1 already
+            addUnit(otherunit)
           end
         end
         table.insert(lists, list)
@@ -1077,7 +1119,6 @@ function testConds(unit, conds, compare_with) --cond should be a {condtype,{obje
           others[i][j] = {}
         end
       end
-      local found = false
       for ndir=1,8 do
         local nx, ny = dirs8[ndir][1], dirs8[ndir][2]
         if unit == outerlvl then
@@ -1091,9 +1132,10 @@ function testConds(unit, conds, compare_with) --cond should be a {condtype,{obje
           end
         else
           local dx, dy, dir, px, py = getNextTile(unit, nx, ny, ndir)
-          others[nx][ny] = getUnitsOnTile(px, py, nil, false, unit, true, hasProperty(unit,"thicc"))
+          others[nx][ny] = getUnitsOnTile(px, py, nil, false, nil, true, hasProperty(unit,"thicc"))
         end
       end
+      local found_set = {}
       for i=1,8 do
         if (condtype == "arond") or (condtype == "ortho arond" and i%2==1) or (condtype == "diag arond" and i%2==0) or (condtype == dirs8_by_name[i].." arond") or (condtype == "spin"..i.." arond") then
           local nx,ny
@@ -1104,17 +1146,22 @@ function testConds(unit, conds, compare_with) --cond should be a {condtype,{obje
             nx,ny = dirs8[i][1],dirs8[i][2]
           end
           for _,set in ipairs(sets) do
-            for _,other in ipairs(others[nx][ny]) do
-              if set[other] then
-                found = true
-                break
+            if not found_set[set] then
+              for _,other in ipairs(others[nx][ny]) do
+                if set[other] then
+                  found_set[set] = true
+                  break
+                end
               end
             end
           end
         end
       end
-      if not found then
-        result = false
+      for _,set in ipairs(sets) do
+        if not found_set[set] then
+          result = false
+          break
+        end
       end
     elseif condtype == "seen by" then
       local others = {}
@@ -1129,7 +1176,7 @@ function testConds(unit, conds, compare_with) --cond should be a {condtype,{obje
           end
         else
           local dx, dy, dir, px, py = getNextTile(unit, nx, ny, ndir)
-          mergeTable(others, getUnitsOnTile(px, py, nil, false, unit, true, hasProperty(unit,"thicc")))
+          mergeTable(others, getUnitsOnTile(px, py, nil, false, nil, true, hasProperty(unit,"thicc")))
         end
       end
       if unit == outerlvl then --basically turns into sans n't BUT the unit has to be looking inbounds as well!
@@ -1182,7 +1229,7 @@ function testConds(unit, conds, compare_with) --cond should be a {condtype,{obje
       --TODO: look at dir, ortho, diag, surrounds
       if unit ~= outerlvl then
         local dx, dy, dir, px, py = getNextTile(unit, dirs8[unit.dir][1], dirs8[unit.dir][2], unit.dir)
-        local frens = getUnitsOnTile(px, py, param, false, unit, nil, hasProperty(unit,"thicc"))
+        local frens = getUnitsOnTile(px, py, param, false, nil, nil, hasProperty(unit,"thicc"))
         for i,other in ipairs(sets) do
           local isdir = false
           if cond.others[i].name == "ortho" then
@@ -1242,7 +1289,7 @@ function testConds(unit, conds, compare_with) --cond should be a {condtype,{obje
       --TODO: look at dir, ortho, diag, surrounds
       if unit ~= outerlvl then
         local dx, dy, dir, px, py = getNextTile(unit, -dirs8[unit.dir][1], -dirs8[unit.dir][2], unit.dir)
-        local frens = getUnitsOnTile(px, py, param, false, unit, nil, hasProperty(unit,"thicc"))
+        local frens = getUnitsOnTile(px, py, param, false, nil, nil, hasProperty(unit,"thicc"))
         for _,other in ipairs(sets) do
           if other[outerlvl] then
               local dx, dy, dir, px, py = getNextTile(unit, dirs8[unit.dir][1], dirs8[unit.dir][2], unit.dir)
@@ -1280,7 +1327,7 @@ function testConds(unit, conds, compare_with) --cond should be a {condtype,{obje
           end
         else
           local dx, dy, dir, px, py = getNextTile(unit, nx, ny, ndir)
-          mergeTable(others, getUnitsOnTile(px, py, nil, false, unit, true, hasProperty(unit,"thicc")))
+          mergeTable(others, getUnitsOnTile(px, py, nil, false, nil, true, hasProperty(unit,"thicc")))
         end
       end
       if unit == outerlvl then --basically turns into sans n't BUT the unit's rear has to be looking inbounds as well!
@@ -1345,7 +1392,7 @@ function testConds(unit, conds, compare_with) --cond should be a {condtype,{obje
           end
         else
           local dx, dy, dir, px, py = getNextTile(unit, nx, ny, ndir)
-          mergeTable(others, getUnitsOnTile(px, py, nil, false, unit, true, hasProperty(unit,"thicc")))
+          mergeTable(others, getUnitsOnTile(px, py, nil, false, nil, true, hasProperty(unit,"thicc")))
         end
       end
       if unit == outerlvl then --basically turns into sans n't BUT the unit's side has to be looking inbounds as well!
@@ -1562,6 +1609,14 @@ function testConds(unit, conds, compare_with) --cond should be a {condtype,{obje
 
       if not found then
         result = false
+      end
+    elseif condtype == "letter_custom" then
+      local letter = cond.unit
+
+      if unit.special.customletter ~= letter.special.customletter then
+        result = false
+      else
+        print(unit.special.customletter)
       end
     elseif condtype == "unlocked" then
       if unit.name == "lvl" and unit.special.visibility ~= "open" then
@@ -2521,9 +2576,9 @@ function ignoreCheck(unit, target, property)
     return true
   elseif unit == target then
     return true
-  elseif target and (hasRule(unit,"ignor",target) or hasRule(unit,"ignor",outerlvl) or hasRule(outerlvl,"ignor",target)) and (not property or (not hasRule(unit,"wontn't",property) and not hasRule(outerlvl,"wontn't",property))) then
+  elseif target and (hasRule(unit,"ignor",target) or hasRule(unit,"ignor",outerlvl)) and (not property or (not hasRule(unit,"wontn't",property))) then
     return false
-  elseif property and (hasRule(unit,"wont",property) or hasRule(outerlvl,"wont",property)) and (not target or (not hasRule(unit,"ignorn't",target) and not hasRule(outerlvl,"ignorn't",target))) then
+  elseif property and (hasRule(unit,"wont",property)) and (not target or (not hasRule(unit,"ignorn't",target))) then
     return false
   end
   return true

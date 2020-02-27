@@ -185,9 +185,9 @@ function moveBlock()
     moveUnit(a, b.x, b.y)
   end
   
-  local ishere = getUnitsWithEffect("her")
+  local ishere, hererules = getUnitsWithEffect("her", true)
   local hashered = {}
-  for _,unit in ipairs(ishere) do
+  for ri,unit in ipairs(ishere) do
     --checks to see if the unit has already been moved by "her"
     local already = false
     for _,moved in ipairs(hashered) do
@@ -198,18 +198,15 @@ function moveBlock()
     
     --if it has, then don't run code this iteration
     if not already then
-      local getheres = matchesRule(unit,"be","her")
       local heres = {}
       local found = false
       
       --gets each destination the unit needs to go to
-      for _,ruleparent in ipairs(getheres) do
-        local fullrule = ruleparent.units
-        for i,hererule in ipairs(fullrule) do
-          if hererule.fullname == "text_her" then
-            table.insert(heres,hererule)
-            break
-          end
+      local fullrule = hererules[ri].units
+      for i,hererule in ipairs(fullrule) do
+        if hererule.fullname == "text_her" then
+          table.insert(heres,hererule)
+          break
         end
       end
       --sorts it like "visitfren"
@@ -250,9 +247,9 @@ function moveBlock()
     end
   end
   
-  local isthere = getUnitsWithEffect("thr")
+  local isthere, thererules = getUnitsWithEffect("thr", true)
   local hasthered = {}
-  for _,unit in ipairs(isthere) do
+  for ri,unit in ipairs(isthere) do
     --the early stuff is the same as "her"; finds "thr"s and sort them
     local already = false
     for _,moved in ipairs(hasthered) do
@@ -262,19 +259,17 @@ function moveBlock()
     end
     
     if not already then
-      local gettheres = matchesRule(unit,"be","thr")
       local theres = {}
       local found = false
       
-      for i,ruleparent in ipairs(gettheres) do
-        local fullrule = ruleparent.units
-        for i,thererule in ipairs(fullrule) do
-          if thererule.fullname == "text_thr" then
-            table.insert(theres,thererule)
-            break
-          end
+      local fullrule = thererules[ri].units
+      for i,thererule in ipairs(fullrule) do
+        if thererule.fullname == "text_thr" then
+          table.insert(theres,thererule)
+          break
         end
       end
+
       for name,tbl in pairs(theres) do
         table.sort(tbl, readingOrderSort)
       end
@@ -324,9 +319,9 @@ function moveBlock()
     end
   end
   
-  local isrighthere = getUnitsWithEffect("rithere")
+  local isrighthere, righthererules = getUnitsWithEffect("rithere", true)
   local hasrighthered = {}
-  for _,unit in ipairs(isrighthere) do
+  for ri,unit in ipairs(isrighthere) do
     local already = false
     for _,moved in ipairs(hasrighthered) do
       if unit == moved then
@@ -335,17 +330,14 @@ function moveBlock()
     end
     
     if not already then
-      local getrightheres = matchesRule(unit,"be","rithere")
       local rightheres = {}
       local found = false
       
-      for _,ruleparent in ipairs(getrightheres) do
-        local fullrule = ruleparent.units
-        for i,righthererule in ipairs(fullrule) do
-          if righthererule.fullname == "text_rithere" then
-            table.insert(rightheres,righthererule)
-            break
-          end
+      local fullrule = righthererules[ri].units
+      for i,righthererule in ipairs(fullrule) do
+        if righthererule.fullname == "text_rithere" then
+          table.insert(rightheres,righthererule)
+          break
         end
       end
       
@@ -1147,17 +1139,31 @@ function updateUnits(undoing, big_update)
       local fail = false
       if #others > 0 then
         for _,other in ipairs(others) do
-          local ons = getUnitsOnTile(other.x,other.y,nil,nil,other,nil,hasProperty(other,"thicc"))
-          local success = false
-          for _,on in ipairs(ons) do
-            if sameFloat(other,on) and ignoreCheck(other,on) then
-              success = true
+          if other == outerlvl then
+            local success = false
+            for _,on in ipairs(units) do
+              if sameFloat(on,outerlvl) and inBounds(on.x, on.y) then
+                success = true
+                break
+              end
+            end
+            if not success then
+              fail = true
               break
             end
-          end
-          if not success then
-            fail = true
-            break
+          else
+            local ons = getUnitsOnTile(other.x,other.y,nil,nil,other,nil,hasProperty(other,"thicc"))
+            local success = false
+            for _,on in ipairs(ons) do
+              if sameFloat(other,on) and ignoreCheck(other,on) then
+                success = true
+                break
+              end
+            end
+            if not success then
+              fail = true
+              break
+            end
           end
         end
       else fail = true end
@@ -1799,6 +1805,15 @@ function updateUnitColours()
       if unit ~= on and hasRule(unit, "paint", on) and sameFloat(unit, on) and ignoreCheck(on, unit, "paint") then
         if timecheck(unit,"paint",on) and timecheck(on) then
           local old_colour = unit.color_override or unit.color
+          if type(old_colour[1]) == "table" then
+            local found_color
+            for i,v in ipairs(unit.colored) do
+              if v then
+                found_color = old_colour[i]
+              end
+            end
+            old_colour = found_color or old_colour[1]
+          end
           local colour = colour_for_palette[old_colour[1]][old_colour[2]]
           if (colour ~= nil and on[colour] ~= true) then
             if to_update[on] == nil then
@@ -2584,6 +2599,7 @@ function convertUnits(pass)
       if tile ~= nil then
         local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
         if (new_unit ~= nil) then
+          new_unit.special.customletter = unit.special.customletter
           addUndo({"create", new_unit.id, true, created_from_id = unit.id})
         end
       end
@@ -2630,7 +2646,8 @@ function convertUnits(pass)
           local tile = tiles_by_name[nametocreate]
           if tile ~= nil then
             local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
-            if (new_unit ~= nil) then
+           if (new_unit ~= nil) then
+              new_unit.special.customletter = unit.special.customletter
               addUndo({"create", new_unit.id, true, created_from_id = unit.id})
             end
           end
@@ -2840,6 +2857,10 @@ function convertUnits(pass)
             elseif rule.object.name:starts("this") and not rule.object.name:ends("n't") then
               tile = tiles_by_name["this"]
             end
+            local new_special = {}
+            if rule.object.name:find("letter_custom") then
+              new_special.customletter = rule.object.unit.special.customletter
+            end
             if tile ~= nil then
               table.insert(del_cursors, cursor)
               local color = rule.object.prefix
@@ -2855,6 +2876,9 @@ function convertUnits(pass)
                 end
               end
               local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true, nil, nil, color)
+              for k,v in pairs(new_special) do
+                new_unit.special[k] = v
+              end
               if (new_unit ~= nil) then
                 addUndo({"create", new_unit.id, true, created_from_id = unit.id})
               end
@@ -2879,6 +2903,11 @@ function convertUnits(pass)
         elseif rule.object.name:starts("text_") then
           overriden = hasRule(unit, "ben't", "text")
         end
+        --transform into custom letter
+        local new_special = {}
+        if rule.object.name:find("letter_custom") then
+          new_special.customletter = rule.object.unit.special.customletter
+        end
         if tile ~= nil and not overriden then
           if not unit.removed then
             table.insert(converted_units, unit)
@@ -2900,7 +2929,10 @@ function convertUnits(pass)
             if rule.object.name == "lvl" and not new_unit.color_override then
               new_unit.color_override = unit.color_override or unit.color
             end
-            new_unit.special = unit.special
+            new_unit.special = copyTable(unit.special)
+            for k,v in pairs(new_special) do
+              new_unit.special[k] = v
+            end
             addUndo({"create", new_unit.id, true, created_from_id = unit.id})
           end
         elseif rule.object.name == "mous" then
@@ -2947,6 +2979,7 @@ function convertUnits(pass)
           local tile = tiles_by_name[other.fullname]
           local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
           if new_unit ~= nil then
+            new_unit.special.customletter = other.special.customletter
             tfd = true
             addUndo({"create", new_unit.id, true, created_from_id = unit.id})
           end
@@ -2996,6 +3029,7 @@ function convertUnits(pass)
         local tile = tiles_by_name[tf.fullname]
         local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
         if new_unit ~= nil then
+          new_unit.special.customletter = tf.special.customletter
           tfd = true
           addUndo({"create", new_unit.id, true, created_from_id = unit.id})
         end
@@ -3049,7 +3083,11 @@ function deleteUnits(del_units,convert,gone)
         addUndo({"remove", unit.tile, unit.x, unit.y, unit.dir, convert or false, unit.id, unit.special})
       end
     end
-    deleteUnit(unit,convert,false,gone)
+    if unit.class ~= "cursor" then
+      deleteUnit(unit,convert,false,gone)
+    else
+      deleteMouse(unit.id)
+    end
   end
 end
 

@@ -580,6 +580,11 @@ function scene.keyPressed(key)
       searchstr = searchstr..letter
     end
     subsearchstr = searchstr:gsub(" ","")
+
+    local magic = {"%", "(", ")", ".", "+", "-", "*", "?", "[", "^", "$"}
+    for _,char in ipairs(magic) do
+      subsearchstr = subsearchstr:gsub("%"..char, "%%%"..char)
+    end
   end
   
   updateSelectorTabs()
@@ -1415,8 +1420,12 @@ function scene.draw(dt)
               unit.color_override = newcolor
             end
             
-            if unit.fullname == "letter_custom" then
-              drawCustomLetter(unit.special.customletter, (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+            if unit.sprite == "letter_custom" then
+              if unit.special.customletter then
+                drawCustomLetter(unit.special.customletter, (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+              else
+                love.graphics.draw(sprites["wut"], (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+              end
             else
               if type(unit.sprite) == "table" then
                 for j,image in ipairs(unit.sprite) do
@@ -1623,10 +1632,19 @@ function scene.draw(dt)
               love.graphics.draw(sprit, (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, math.rad(rotation), 1, 1, sprit:getWidth() / 2, sprit:getHeight() / 2)
             end
           else
-            if tile.name == "text_wontn't" then
-              sprite = sprites["text_wo"]
+            if sprite_name == "letter_custom" then
+              if brush.special.customletter then
+                drawCustomLetter(brush.special.customletter, (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, math.rad(rotation), 1, 1, 16, 16)
+              else
+                sprite = sprites["wut"]
+                love.graphics.draw(sprite, (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, math.rad(rotation), 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
+              end
+            else
+              if tile.name == "text_wontn't" then
+                sprite = sprites["text_wo"]
+              end
+              love.graphics.draw(sprite, (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, math.rad(rotation), 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
             end
-            love.graphics.draw(sprite, (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, math.rad(rotation), 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
           end
           
           if tile.meta ~= nil then
@@ -1982,7 +2000,15 @@ function scene.draw(dt)
             love.graphics.draw(sprites[image], 10.5*twelfth, love.graphics.getHeight()-1.5*twelfth,math.rad(rotation),twelfth/32,twelfth/32,twelfth/4,twelfth/4)
           end
         else
-          love.graphics.draw(sprites[sprite], 10.5*twelfth, love.graphics.getHeight()-1.5*twelfth,math.rad(rotation),twelfth/32,twelfth/32,twelfth/4,twelfth/4)
+          if sprite == "letter_custom" then
+            if brush.special.customletter then
+              drawCustomLetter(brush.special.customletter, 10.5*twelfth, love.graphics.getHeight()-1.5*twelfth,math.rad(rotation),twelfth/32,twelfth/32,twelfth/4,twelfth/4)
+            else
+              love.graphics.draw(sprites["wut"], 10.5*twelfth, love.graphics.getHeight()-1.5*twelfth,math.rad(rotation),twelfth/32,twelfth/32,twelfth/4,twelfth/4)
+            end
+          else
+            love.graphics.draw(sprites[sprite], 10.5*twelfth, love.graphics.getHeight()-1.5*twelfth,math.rad(rotation),twelfth/32,twelfth/32,twelfth/4,twelfth/4)
+          end
         end
       end
       if mobile_stackmode == "none" then
@@ -2024,8 +2050,12 @@ function scene.draw(dt)
           end
         else
           love.graphics.setColor(getPaletteColor(pal[1], pal[2]))
-          if tile.name == "letter_custom" then
-            drawCustomLetter(brush.special.customletter, x, 4)
+          if tile.sprite == "letter_custom" then
+            if brush.special.customletter then
+              drawCustomLetter(brush.special.customletter, x, 4)
+            else
+              love.graphics.draw(sprites["wut"], x, 4)
+            end
           else
             love.graphics.draw(sprites[tile.sprite], x, 4)
           end
