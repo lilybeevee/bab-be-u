@@ -9332,10 +9332,10 @@ tiles_list = {
   --839? though the numbers are off anyway lol
   {
     name = "text_meow",
-    sprite = "text_wut",
+    sprite = "text_meow",
     type = "text",
     texttype = {cond_infix = true},
-    color = {0,1},
+    color = {2, 4},
     layer = 20,
     tags = {"infix","stare at"},
     desc = "Sprite is temp. Like AROND, but instead of only checking one tile it goes until it hits a TRANPARN'T object, following spatial warping/etc.\nCurrently has a range cap of 100 because it's laggy.",
