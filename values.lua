@@ -1516,7 +1516,7 @@ tiles_list = {
     sprite = "text_comepls",
     type = "text",
     texttype = {property = true},
-    color = {6, 1},
+    color = {6, 2},
     layer = 20,
     tags = {"pull"},
     desc = "COME PLS: Pulled by movement on adjacent tiles facing away from this unit.",
