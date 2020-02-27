@@ -1137,7 +1137,8 @@ function testConds(unit, conds, compare_with, first_unit) --cond should be a {co
       end
       local found_set = {}
       for i=1,8 do
-        if (condtype == "arond") or (condtype == "ortho arond" and i%2==1) or (condtype == "diag arond" and i%2==0) or (condtype == dirs8_by_name[i].." arond") or (condtype == "spin"..i.." arond") then
+        if (condtype == "arond") or (condtype == "ortho arond" and i%2==1) or (condtype == "diag arond" and i%2==0)
+        or (condtype == dirs8_by_name[i].." arond") or (condtype == "spin"..i.." arond") then
           local nx,ny
           if (condtype == "spin"..i.." arond") then
             local j = (i+unit.dir+3)%8+1
@@ -1163,6 +1164,51 @@ function testConds(unit, conds, compare_with, first_unit) --cond should be a {co
           break
         end
       end
+      -- meow is COMPLETELY UNTESTED and probably doesn't work. I'll try another pass in the future probably.
+      -- also needs levelsurrounds support
+      -- The main reason I'm not confident is that I have zero clue how this stuff is supposed to work.
+    elseif condtype:ends("meow") then
+      --This is all 8 directions in a straight beam, unless it hits a tranparn't or bordr.
+      local found_set = {}
+      for i=1,8 do
+        if (condtype == "meow") or (condtype == "ortho meow" and i%2==1) or (condtype == "diag meow" and i%2==0)
+        or (condtype == dirs8_by_name[i].." meow") or (condtype == "spin"..i.." meow") then
+          local f,ff,fff,nx,ny
+          if (condtype == "spin"..i.." meow") then
+            local j = (i+unit.dir+3)%8+1
+            nx,ny = dirs8[j][1],dirs8[j][2]
+          else
+            nx,ny = dirs8[i][1],dirs8[i][2]
+          end
+          for d=1,1000 do
+            f,ff,fff, nx, ny = getNextTile(unit, nx, ny, i)
+            local units = getUnitsOnTile(nx,ny)
+            for _,unitd in ipairs(units) do
+              if hasProperty(unitd,"tranparn't") or unitd.name == bordr then
+                goto continue end --tranparen't stops it, and it's false for the tile with the tranparn't
+            end
+            for _,set in ipairs(sets) do
+              if not found_set[set] then
+                for _,other in ipairs(units) do
+                  if set[other] then
+                    found_set[set] = true
+                    break
+                  end
+                end
+              end
+            end --set for
+
+          end
+        end --main if
+        ::continue::
+      end
+      for _,set in ipairs(sets) do
+        if not found_set[set] then
+          result = false
+          break
+        end
+      end
+
     elseif condtype == "seen by" then
       local others = {}
       for ndir=1,8 do

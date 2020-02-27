@@ -320,18 +320,18 @@ selector_grid_contents = {
   {
     "text_be","text_&","text_got","text_creat","text_snacc","text_spoop","text_copkat","text_moov","text_yeet","text_liek","text_haet","text_stalk","text_ignor","text_paint","text_vs","text_sing","text_soko","text_look at",
     "text_u","text_u too","text_u tres","text_y'all","text_walk","text_:)","text_no swim","text_ouch","text_protecc",0,"text_nxt","text_stay ther","text_wont","text_giv",0,"text_rp",0,"text_look away",
-    "text_go","text_goooo","text_icy","text_icyyyy",0,"text_:(","text_ned kee","text_for dor","text_wurd",0,"text_sublvl","text_loop","text_oob","text_frenles","text_timles","text_lit","text_corekt","text_rong",
+    "text_go","text_goooo","text_icy","text_icyyyy","text_stubbn","text_:(","text_ned kee","text_for dor","text_wurd",0,"text_sublvl","text_loop","text_oob","text_frenles","text_timles","text_lit","text_corekt","text_rong",
     "text_no go","text_go away pls","text_come pls","text_sidekik","text_diagkik","text_:o","text_hotte","text_fridgd","text_txtify",0,"text_dragbl","text_no drag","text_alt","text_clikt","text_past","text_wun","text_an","text_mayb",
     "text_visit fren","text_slep","text_shy...","text_behin u",0,"text_delet","text_moar","text_split","text_thingify",0,"text_rythm",0,0,"text_wait...","text_samefloat","text_samepaint","text_sameface",0,
     "text_flye","text_tall","text_haet skye","text_haet flor",0,"text_un:)","text_gone","text_nuek","text_notranform",0,0,0,0,"text_w/fren","text_arond","text_sans","text_seen by","text_behind",
     "text_diag","text_ortho","text_go my way","text_zip",0,"text_B)","text_cool",0,0,0,0,0,0,"text_that","text_that be","text_that got",0,"text_beside",
     "text_turn cornr","text_folo wal","text_hopovr","text_reflecc",0,0,0,0,0,0,0,0,0,0,0,0,0,"text_n't",
-    "text_munwalk","text_sidestep","text_diagstep","text_knightstep",0,0,0,0,0,0,0,0,0,0,0,0,0,"text_reed",
+    "text_munwalk","text_sidestep","text_diagstep","text_knightstep",0,0,"text_meow",0,0,0,0,0,0,0,0,0,0,"text_reed",
     "text_spin","text_rotatbl","text_noturn","text_stukc",0,0,0,0,0,0,0,0,0,0,0,0,"text_enby","text_orang",
     "text_upleft","text_up","text_upright","text_thicc",0,0,0,0,0,0,0,0,0,0,0,"text_brwn","text_tranz","text_yello",
     "text_left","text_direction","text_right",0,0,0,0,0,0,0,0,0,0,0,0,"text_blacc","text_gay","text_grun",
     "text_downleft","text_down","text_downright",0,0,"text_tryagain","text_no undo","text_undo","text_za warudo","text_brite","text_torc","text_tranparnt",0,0,0,"text_graey","text_qt","text_cyeann",
-    "text_every1","text_every2","text_every3","text_lethers",0,"text_poor toll","text_go arnd","text_mirr arnd","text_glued",0,0,0,0,0,"text_thonk","text_whit","text_pinc","text_bleu",
+    0,0,0,0,0,"text_poor toll","text_go arnd","text_mirr arnd","text_glued",0,0,0,0,0,"text_thonk","text_whit","text_pinc","text_bleu",
     "text_...","text_''","prop","text_prop",0,"text_her","text_thr","text_rithere","text_the","text_deez",0,0,0,0,"text_stelth","text_colrful","text_rave","text_purp",
   },
 }
@@ -1497,7 +1497,7 @@ tiles_list = {
     layer = 20,
     features = { sans = {x=19, y=5, w=4, h=5} },
     tags = {"crash", "oops", "fucky wucky", "xwx", "delete"},
-    desc = "XWX: At end of turn, if U is on XWX, you get booted out of the level and erases all progress in the level (win, bonus, transformation).\nAlias: uwu",
+    desc = "DELET: At end of turn, if U is on DELET, you get booted out of the level and erases all progress in the level (win, bonus, transformation).",
   },
   -- 104
   {
@@ -9328,7 +9328,18 @@ tiles_list = {
     layer = 20,
     tags = {"itself"},
     desc = "ITSELF: Refers to the subject of the rule in conditions.",
-  }
+  },
+  --839? though the numbers are off anyway lol
+  {
+    name = "text_meow",
+    sprite = "text_wut",
+    type = "text",
+    texttype = {cond_infix = true},
+    color = {0,1},
+    layer = 20,
+    tags = {"infix","stare at"},
+    desc = "Doesn't work yet. See line 1171 of utils.lua for more info. Sprite is temp.",
+  },
 }
 
 --other_alias = {["wontn't"]: "wo"}

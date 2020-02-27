@@ -452,19 +452,13 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
               name = "..u"
             end
           end
-        elseif letter.name == "o" then
-          if prevletter.name == ":" and prevunit.dir == dir then
-            name = ":o"
-          end
-        elseif letter.name == ")" then
-          if prevletter.name == ":" and prevunit.dir == dir then
-            name = ":)"
-          end
-        elseif letter.name == "(" then
-          if prevletter.name == ":" and prevunit.dir == dir then
-            name = ":("
-          end
-        elseif letter.name == "/" then
+        elseif letter.fullname == "letter_colon" and letter.dir == 3 then
+          name = ".."
+        elseif prevletter.fullname == "letter_colon" and prevunit.dir == dir
+        and (letter.name == "o" or letter.name == ")" or letter.name == "(") then
+          name = ":"..letter.name
+        end
+        --[[elseif letter.name == "/" then
           if prevletter.name == ":" and prevunit.dir == dir then
             name = "tryagain"
           end
@@ -472,7 +466,7 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
           if prevletter.name == ":" and prevunit.dir == dir then
             name = "nxt"
           end
-        end
+        end]]
         
         if name ~= ":" then
           new_word = new_word..name
