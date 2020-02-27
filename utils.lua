@@ -1164,27 +1164,29 @@ function testConds(unit, conds, compare_with, first_unit) --cond should be a {co
           break
         end
       end
-      -- meow is COMPLETELY UNTESTED and probably doesn't work. I'll try another pass in the future probably.
       -- also needs levelsurrounds support
-      -- The main reason I'm not confident is that I have zero clue how this stuff is supposed to work.
     elseif condtype:ends("meow") then
       --This is all 8 directions in a straight beam, unless it hits a tranparn't or bordr.
       local found_set = {}
       for i=1,8 do
         if (condtype == "meow") or (condtype == "ortho meow" and i%2==1) or (condtype == "diag meow" and i%2==0)
         or (condtype == dirs8_by_name[i].." meow") or (condtype == "spin"..i.." meow") then
-          local f,ff,fff,nx,ny
+          local dx,dy
+          local dir = i
           if (condtype == "spin"..i.." meow") then
-            local j = (i+unit.dir+3)%8+1
-            nx,ny = dirs8[j][1],dirs8[j][2]
+            local j = (i+unit.dir+7)%8+1
+            dx,dy = dirs8[j][1],dirs8[j][2]
           else
-            nx,ny = dirs8[i][1],dirs8[i][2]
+            dx,dy = dirs8[i][1],dirs8[i][2]
           end
-          for d=1,1000 do
-            f,ff,fff, nx, ny = getNextTile(unit, nx, ny, i)
-            local units = getUnitsOnTile(nx,ny)
+          local tx,ty = unit.x,unit.y
+
+          for d=1,100 do
+            dx,dy,dir, tx, ty = getNextTile(unit, dx, dy, dir, false, tx, ty)
+            
+            local units = getUnitsOnTile(tx,ty)
             for _,unitd in ipairs(units) do
-              if hasProperty(unitd,"tranparn't") or unitd.name == bordr then
+              if hasProperty(unitd,"tranparnt") or unitd.name == bordr then
                 goto continue end --tranparen't stops it, and it's false for the tile with the tranparn't
             end
             for _,set in ipairs(sets) do
