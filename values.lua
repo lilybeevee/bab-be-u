@@ -763,7 +763,6 @@ tiles_list = {
     texttype = {object = true},
     color = {2, 3},
     layer = 20,
-    desc = "very hot. not hotte tho unless u make it",
     tags = {"lava"},
   },
   -- 37
@@ -774,6 +773,7 @@ tiles_list = {
     color = {2, 3},
     layer = 2,
     tags = {"lava"},
+    desc = "very hot. not hotte tho unless u make it",
   },
   -- 38
   {
@@ -932,6 +932,7 @@ tiles_list = {
     layer = 4,
     rotate = "true",
     tags = {"tree", "plants"},
+    desc = "tre is the creator of all plant life in bab"
   },
   -- 52
   {
@@ -1261,6 +1262,7 @@ tiles_list = {
     layer = 8,
     rotate = true,
     tags = {"weapon"},
+    desc = "all i wanna do is *bang* *bang* *bang* *bang*"
   },
   -- 82
   {
@@ -1351,6 +1353,7 @@ tiles_list = {
     layer = 9,
     rotate = true,
     tags = {"hand", "body part"},
+    desc = "grab, then yeet"
   },
   -- 90
   {
@@ -1391,6 +1394,7 @@ tiles_list = {
     layer = 4,
     features = { sans = {x=10, y=7, w=3, h=3} },
     tags = {"violet", "daisy", "flower", "plants"},
+    desc = "dayzy me rollin, they haetin",
   },
   -- 94
   {
@@ -1401,7 +1405,6 @@ tiles_list = {
     color = {3, 3},
     layer = 20,
     tags = {"violet", "daisy", "flower", "plants"},
-    desc = "dayzy me rollin, they haetin",
   },
   -- 95
   {
@@ -1443,7 +1446,7 @@ tiles_list = {
     color = {3, 1},
     layer = 20,
     tags = {"clothing"},
-	desc = "HATT: Any object with GOT HATT will wear a HATT. (Aesthetic)"
+    desc = "HATT: Any object with GOT HATT will wear a HATT. (Aesthetic)"
   },
   -- 99
   {
@@ -1451,7 +1454,8 @@ tiles_list = {
     sprite = "press",
     type = "object",
     color = {0, 3},
-    layer = 100,
+    layer = 20,
+    desc = "it presses buttons"
   },
   -- 100
   {
@@ -1754,6 +1758,7 @@ tiles_list = {
     rotate = true,
     layer = 6,
     tags = {"cloud"},
+    desc = "clowd and rein are good frens. not bffs though, clowd's bff is tifa"
   },
   -- 128
   {
@@ -1867,6 +1872,7 @@ tiles_list = {
     sing = "pata1",
     features = { sans = {x=17, y=4, w=1, h=2} },
     tags = {"devs", "chars", "patashu"},
+    desc = "pat a shoe"
   },
   -- 138
   {
@@ -2018,6 +2024,7 @@ tiles_list = {
     color = {2, 1},
     layer = 4,
     tags = {"pentagram", "edgy"},
+    desc = "perform the ritual to summon the real bab dictator"
   },
   -- 151
   {
@@ -2037,6 +2044,7 @@ tiles_list = {
     layer = 8,
     rotate = true,
     tags = {"weapon", "japan", "asia", "edgy"},
+    desc = "very very weeb. make steev got katany and you will know"
   },
   -- 153
   {
@@ -2057,6 +2065,7 @@ tiles_list = {
     color = {2, 1},
     layer = 4,
     tags = {"scar", "edgy"},
+    desc = "it's not blood it's just cranberry juice. no violence in my bab"
   },
   -- 155
   {
@@ -2477,6 +2486,7 @@ tiles_list = {
     type = "object",
     color = {1, 3},
     layer = 8,
+    desc = "the goomba that lived in this shoe is now homeless. how do you feel"
   },
   -- 193
   {
@@ -2889,7 +2899,7 @@ tiles_list = {
     type = "object",
     color = {0, 2},
     layer = 22,
-    desc = "BAB W/FREN JAIL HAET LVL. now bab's in jail :(",
+    desc = "BAB W/FREN JAIL BE STUKC. now bab's in jail :(",
   },
   -- 232
   {
@@ -3972,6 +3982,7 @@ tiles_list = {
     layer = 5,
     sing = "kkb2",
     tags = {"bubble"},
+    desc = "bibble bobubble bub bab. blup"
   },
   -- 337
   {
@@ -3993,6 +4004,7 @@ tiles_list = {
     sing = "crab rave",
     features = { sans = {x=20, y=4, w=4, h=5} },
     tags = {"crab"},
+    desc = "loves to party and dance! woo! yeah!"
   },
   -- 339
   {
@@ -4012,6 +4024,7 @@ tiles_list = {
     color = {1,4},
     layer = 6,
     tags = {"icecube"},
+    desc = "icecub ben't melltt. classic baba reference"
   },
   -- 341
   {
@@ -4098,6 +4111,7 @@ tiles_list = {
     layer = 7,
     rotate = true,
     tags = {"gear", "time", "cog"},
+    desc = "it spins! spin spin spin weeee"
   },
   -- 348
   {
@@ -4173,6 +4187,7 @@ tiles_list = {
     layer = 11,
     features = { sans = {x=17,y=6,w=3,h=3} },
     tags = {"chess", "knight", "horse"},
+    desc = "it's a knoble knight"
   },
   -- 355
   {
@@ -4193,6 +4208,7 @@ tiles_list = {
     layer = 8,
     rotate = true,
     tags = {"valhalla"},
+    desc = "crack fordor a colld one"
   },
   -- 357
   {
@@ -4213,6 +4229,7 @@ tiles_list = {
     layer = 4,
     rotate = true,
     tags = {"toggle","lightswitch"},
+    desc = "flip flop"
   },
   -- 359
   {
@@ -4925,6 +4942,7 @@ tiles_list = {
     layer = 4,
     features = { sans = {x=8, y=6, w=3, h=3} },
     tags = {"rose", "flower", "plants"},
+    desc = "every rouz got poke, ow"
   },
   -- 428
   {
@@ -4976,6 +4994,7 @@ tiles_list = {
     color = {6, 2},
     layer = 4,
     tags = {"fungus", "fungi", "mushroom"},
+    desc = "super fungye"
   },
   -- 433
   {
@@ -5184,6 +5203,7 @@ tiles_list = {
     layer = 4,
     sing = "s_steel",
     tags = {"palm tree", "coconut tree", "beach", "plants"},
+    desc = "visit the tropical bab beach, it's a fun time for the bab family!!"
   },
   -- 453
   {
@@ -5311,6 +5331,7 @@ tiles_list = {
     color = {6,2},
     layer = 4,
     tags = {"reeds", "plants", "cattail", "swamp"},
+    desc = "it's not orange, that's just a trick"
   },
   -- 465
   {
@@ -5352,6 +5373,7 @@ tiles_list = {
     color = {2, 4},
     layer = 6,
     tags = {"lightbulb", "power"},
+    desc = "lit bullb meow"
   },
   -- 469
   {
@@ -5362,6 +5384,7 @@ tiles_list = {
     color = {2, 4},
     layer = 20,
     tags = {"lightbulb", "power"},
+    desc = "go play lightbulbmeow's baba pack it's super good",
   },
   -- 470
   {
@@ -5564,6 +5587,7 @@ tiles_list = {
     color = {4,1},
     layer = 9,
     tags = {"music note", "quarter note"},
+    desc = "muzique to my ears"
   },
   -- 489
   {
@@ -5583,6 +5607,7 @@ tiles_list = {
     color = {5,1},
     layer = 4,
     tags = {"bamboo", "plants"},
+    desc = "thin tre, tall tre, crunchy tre"
   },
   -- 491
   {
@@ -5667,7 +5692,8 @@ tiles_list = {
     color = {0, 3},
     layer = 8,
     rotate = true,
-    tags = {"weapon", "japan", "asia", "edgy"},
+    tags = {"weapon", "edgy"},
+    desc = "doesn't like hurting people"
   },
   -- 499
   {
@@ -5678,7 +5704,7 @@ tiles_list = {
     color = {0, 3},
     layer = 20,
     tags = {"weapon", "kitchen knife"},
-	desc = "KNIF: Any object with GOT KNIF will wield a KNIF."
+    desc = "KNIF: Any object with GOT KNIF will wield a KNIF."
   },
   -- 500
   {
@@ -5822,6 +5848,7 @@ tiles_list = {
     rotate = true,
     features = { sans = {x=20, y=4, w=2, h=2} },
     tags = {"worm", "caterpillar", "bug", "chars", "insect"},
+    desc = "slithers\nbut a wormy slither not a snaky slither"
   },
   -- 513
   {
@@ -5860,6 +5887,7 @@ tiles_list = {
     color = {4,0},
     layer = 4,
     tags = {"coral", "beach"},
+    desc = "they look very pretty irl"
   },
   -- 517
   {
@@ -6217,6 +6245,7 @@ tiles_list = {
     layer = 8,
     rotate = true,
     tags = {"egg", "food"},
+    desc = "no one knows what's inside. it's impenetrable"
   },
   -- 549
   {
@@ -6237,6 +6266,7 @@ tiles_list = {
     layer = 4,
     rotate = true,
     tags = {"nest"},
+    desc = "no one knows what's inside. the eeg proteccs it"
   },
   -- 551
   {
@@ -6268,6 +6298,7 @@ tiles_list = {
     color = {0, 3},
     layer = 20,
     tags = {"paw print"},
+    desc = "ok well idk when it happened but we have toby now"
   },
   -- 554
   {
@@ -6299,7 +6330,7 @@ tiles_list = {
     layer = 4,
     rotate = "true",
     tags = {"tree", "plants", "husk"},
-    desc = "a ded tre",
+    desc = "a ded tre. rip",
   },
   -- 557
   {
@@ -6575,7 +6606,7 @@ tiles_list = {
     color = {0, 2},
     layer = 22,
     rotate = "true",
-    desc = "EVERY1 W/FREN CHAIN STALK JAIL. now bab's in jail :(",
+    desc = "EVERY1 W/FREN CHAIN STALK JAIL. now bab's going to jail :(",
   },
   -- 582
   {
@@ -6595,6 +6626,7 @@ tiles_list = {
     layer = 4,
     rotate = "true",
     tags = {"lilypad", "plants"},
+    desc = "water type evolution of platfor"
   },
   -- 584
   {
@@ -6615,6 +6647,7 @@ tiles_list = {
     color = {6,1},
     layer = 8,
     tags = {"boat", "ship"},
+    desc = "no no swim n't n't"
   },
   -- 586
   {
@@ -6940,6 +6973,7 @@ tiles_list = {
     colored = {false, true},
     layer = 6,
     tags = {"yin yang orb", "taoism"},
+    desc = "good vs bad, they balanced"
   },
   -- 616
   {
@@ -6959,6 +6993,7 @@ tiles_list = {
     color = {2,3},
     layer = 6,
     tags = {"traffic cone"},
+    desc = "VLC media player is a free and open-source portable cross-platform media player software and streaming media server developed by the VideoLAN project. VLC is available for desktop operating systems and mobile platforms, such as Android, iOS, iPadOS, Tizen, Windows 10 Mobile and Windows Phone."
   },
   -- 618
   {
@@ -7097,6 +7132,7 @@ tiles_list = {
     rotate = true,
     features = { sans = {x=25, y=7, w=3, h=3} },
     tags = {"chars", "frog", "toad"},
+    desc = "hippity hoppity kva loves u"
   },
   -- 630
   {
@@ -7460,6 +7496,7 @@ tiles_list = {
     color = {0, 1},
     layer = 4,
     tags = {"gravestone", "tombstone", "spooky"},
+    desc = "what do you call a serious person with a shovel?\na grave digger\nhahahahaha"
   },
   -- 662
   {
@@ -8017,7 +8054,7 @@ tiles_list = {
       sans = {x=14, y=18, w=2, h=2},
     },
     tags = {"chars", "devil", "demon", "debil"},
-    desc = "or yuor debil...",
+    desc = "or yuor dvl...",
     nice = true,
   },
   -- 712
@@ -9093,6 +9130,7 @@ tiles_list = {
     layer = 5,
     rotate = true,
     tags = {"zigzag"},
+    desc = "v^v^v^, that's my textual representation of zigzag"
   },
   -- 817
   -- one day someone should count how many there actually are
