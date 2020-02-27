@@ -8394,7 +8394,6 @@ tiles_list = {
     layer = 11,
     sprite = "virus",
     color = {2, 4},
-    colored = true,
     desc = "gon infect u",
     sing = "sham_gatsample",
     --[[features = {
@@ -9338,7 +9337,7 @@ tiles_list = {
     color = {2, 4},
     layer = 20,
     tags = {"infix","stare at"},
-    desc = "Sprite is temp. Like AROND, but instead of only checking one tile it goes until it hits a TRANPARN'T object, following spatial warping/etc.\nCurrently has a range cap of 100 because it's laggy.",
+    desc = "Like AROND, but instead of only checking one tile it goes until it hits a TRANPARN'T object, following spatial warping/etc.\nCurrently has a range cap of 100 because it's laggy.",
   },
 }
 
