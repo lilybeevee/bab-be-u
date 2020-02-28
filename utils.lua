@@ -1141,7 +1141,7 @@ function testConds(unit, conds, compare_with, first_unit) --cond should be a {co
         or (condtype == dirs8_by_name[i].." arond") or (condtype == "spin"..i.." arond") then
           local nx,ny
           if (condtype == "spin"..i.." arond") then
-            local j = (i+unit.dir+3)%8+1
+            local j = (i+unit.dir+7)%8+1
             nx,ny = dirs8[j][1],dirs8[j][2]
           else
             nx,ny = dirs8[i][1],dirs8[i][2]
