@@ -2947,6 +2947,18 @@ function convertUnits(pass)
     end
   end
   
+  if hasProperty(outerlvl, "qt") then
+    for x=0,mapwidth-1 do
+      for y=0,mapheight-1 do
+        if #unitsByTile(x,y) == 0 then
+          local tile = tiles_by_name["l..uv"]
+          local new_unit = createUnit(tile, x, y, 1, true)
+          addUndo{"create", new_unit.id, true}
+        end
+      end
+    end
+  end
+  
   local moars = getUnitsWithEffect("moar")
   for _,slice in  ipairs(moars) do
     if slice.name == "lie/8" and not hasProperty(unit, "notranform") then
