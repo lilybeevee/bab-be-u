@@ -2131,7 +2131,10 @@ function scene.checkInput()
               source:setPitch(math.random() * ((2^(11/12)) - 1) + 1)
               source:play()
             else
-              local specific_sing = tiles_list[unit.tile].sing or "bit";
+              local specific_sing = "bit"
+              if unit.tile then
+                specific_sing = tiles_list[unit.tile].sing or specific_sing
+              end
               if (unit.name == "pata") then
                 specific_sing = "pata" .. tostring(unit.dir)
               end
