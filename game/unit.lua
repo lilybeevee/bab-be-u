@@ -251,14 +251,14 @@ function moveBlock()
   local hasthered = {}
   for ri,unit in ipairs(isthere) do
     --the early stuff is the same as "her"; finds "thr"s and sort them
-    local already = false
+    local dontmove = false
     for _,moved in ipairs(hasthered) do
       if unit == moved then
-        already = true
+        dontmove = true
       end
     end
     
-    if not already then
+    if not dontmove then
       local theres = {}
       local found = false
       
@@ -281,17 +281,38 @@ function moveBlock()
         local dy = dirs8[there.dir][2]
         local dir = there.dir
         
-        --get first position of there destination, which is the tile in front of the text, since that interpretation makes the most sense to me
-        local tx = there.x+dx
-        local ty = there.y+dy
+        --get first position of there destination, which is the tile the text is on, so we can check whether the first space is valid
+        local tx = there.x
+        local ty = there.y
         
-        --while it hasn't found a wall, check the next tile until is finds one, updating tx and ty each time
+        --code has gotten more complicated now, more comments added
         local stopped = false
+        local valid = false
+        local loopstage = 0
         while not stopped do
-          if canMove(unit,dx,dy,dir,{start_x = tx, start_y = ty}) then
+          local canmove = canMove(unit,dx,dy,dir,{start_x = tx, start_y = ty}) --simplify since we check this more often now
+          
+          --while valid is false, it check this. this makes it so it's false until you get out of the stops, or always true if there wasn't a stop at first
+          if not valid then
+            valid = canmove
+          else --if it's found a valid space to be in, start checking to see when it gets stopped by a wall
+            stopped = not canmove
+          end
+          
+          if not stopped then --as long as it hasn't found a valid place to stop at, check the next tile
             dx,dy,dir,tx,ty = getNextTile(there, dx, dy, dir, nil, tx, ty)
-          else
-            stopped = true
+          end
+          
+          --infinite check
+          loopstage = loopstage + 1
+          if loopstage > 1000 then
+            if valid then --if the unit has found a valid space to be, that means it's stuck in a loop of valid places, so it should infloop
+              print("movement infinite loop! (1000 attempts at thr)")
+              destroyLevel("infloop")
+            else --if the unit hasn't found a valid space, that means it's stuck in walls, meaning it never has the opportunity to be moved
+              dontmove = true
+            end
+            break
           end
         end
         
@@ -311,7 +332,7 @@ function moveBlock()
         end
       end
       
-      if not found then
+      if not found and not dontmove then
         addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
         moveUnit(unit,ftx,fty)
         table.insert(hasthered,unit)

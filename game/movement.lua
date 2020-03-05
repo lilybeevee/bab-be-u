@@ -1859,14 +1859,31 @@ function canMoveCore(unit,dx,dy,dir,o) --pushing, pulling, solid_name, reason, p
       local tdy = dirs8[there.dir][2]
       
       local tstopped = false
+      local tvalid = false
+      local loopstage = 0
       while not tstopped do
-        if canMove(there,tdx,tdy,tdir,{start_x = tx, start_y = ty}) then
+        local canmove = canMove(there,tdx,tdy,tdir,{start_x = tx, start_y = ty})
+        
+        if not tvalid then
+          tvalid = canmove
+        else
+          tstopped = not canmove
+        end
+        
+        if not tstopped then
           tdx,tdy,tdir,tx,ty = getNextTile(there, tdx, tdy, tdir, nil, tx, ty)
           if (x == tx) and (y == ty) then
             return false,movers,specials
           end
-        else
-          tstopped = true
+        end
+        
+        loopstage = loopstage + 1
+        if loopstage > 1000 then
+          if tvalid then
+            print("movement infinite loop! (1000 attempts at ben't thr)")
+            destroyLevel("infloop")
+          end
+          break
         end
       end
     end
