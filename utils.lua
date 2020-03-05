@@ -1037,7 +1037,7 @@ function testConds(unit, conds, compare_with, first_unit) --cond should be a {co
           local wtx,wty = wx+wdx,wy+wdy
           local stopped = false
           while not stopped do
-            if canMove(unit,wdx,wdy,wdir,false,false,nil,nil,nil,wtx,wty) then
+            if canMove(unit,wdx,wdy,wdir,{start_x = wtx, start_y = wty}) then
               wdx,wdy,wdir,wtx,wty = getNextTile(word, wdx, wdy, wdir, nil, wtx, wty)
             else
               stopped = true

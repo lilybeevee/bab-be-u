@@ -288,7 +288,7 @@ function moveBlock()
         --while it hasn't found a wall, check the next tile until is finds one, updating tx and ty each time
         local stopped = false
         while not stopped do
-          if canMove(unit,dx,dy,dir,false,false,nil,nil,nil,tx,ty) then
+          if canMove(unit,dx,dy,dir,{start_x = tx, start_y = ty}) then
             dx,dy,dir,tx,ty = getNextTile(there, dx, dy, dir, nil, tx, ty)
           else
             stopped = true
@@ -509,7 +509,7 @@ function updateUnits(undoing, big_update)
                 x = x*2
                 y = y*2
               end
-              if canMove(unit, x, y, unit.dir, false, false, unit.name) then
+              if canMove(unit, x, y, unit.dir, {solid_name = unit.name}) then
                 if unit.class == "unit" then --idk what any of this means but i'm assuming it's good?
                   local new_unit = createUnit(tiles_by_name[unit.fullname], unit.x, unit.y, unit.dir)
                   addUndo({"create", new_unit.id, false})
@@ -687,7 +687,7 @@ function updateUnits(undoing, big_update)
           local dir2 = dirAdd(unit.dir,4)
           local dx2 = dirs8[dir2][1]
           local dy2 = dirs8[dir2][2]
-          if canMove(on, dx1, dy1, dir1, false, false) then
+          if canMove(on, dx1, dy1, dir1) then
             if on.class == "unit" then
               local new_unit = createUnit(tiles_by_name[on.fullname], on.x, on.y, dir1)
               addUndo({"create", new_unit.id, false})
@@ -701,7 +701,7 @@ function updateUnits(undoing, big_update)
               end
             end
           end
-          if canMove(on, dx2, dy2, dir2, false, false) then
+          if canMove(on, dx2, dy2, dir2) then
             if on.class == "unit" then
               local new_unit = createUnit(tiles_by_name[on.fullname], on.x, on.y, dir2)
               addUndo({"create", new_unit.id, false})
@@ -741,7 +741,7 @@ function updateUnits(undoing, big_update)
                 local dir2 = dirAdd(unit.dir,4)
                 local dx2 = dirs8[dir2][1]
                 local dy2 = dirs8[dir2][2]
-                if canMove(on, dx1, dy1, dir1, false, false) then
+                if canMove(on, dx1, dy1, dir1) then
                   if on.class == "unit" then
                     splits_per_tile[coords] = splits_per_tile[coords] + 1
                     local new_unit = createUnit(tiles_by_name[on.fullname], on.x, on.y, dir1)
@@ -756,7 +756,7 @@ function updateUnits(undoing, big_update)
                     end
                   end
                 end
-                if canMove(on, dx2, dy2, dir2, false, false) then
+                if canMove(on, dx2, dy2, dir2) then
                   if on.class == "unit" then
                     splits_per_tile[coords] = splits_per_tile[coords] + 1
                     local new_unit = createUnit(tiles_by_name[on.fullname], on.x, on.y, dir2)
@@ -788,7 +788,7 @@ function updateUnits(undoing, big_update)
             local ndir = dirs8[i]
             local dx = ndir[1]
             local dy = ndir[2]
-            if canMove(unit, dx, dy, i, false, false) then
+            if canMove(unit, dx, dy, i) then
               local new_unit = createUnit(tiles_by_name["lie/8"], unit.x, unit.y, i)
               addUndo({"create", new_unit.id, false})
               _, __, ___, x, y = getNextTile(unit, dx, dy, i, false)
@@ -2325,7 +2325,7 @@ function levelBlock()
 end
 
 function changeDirIfFree(unit, dir)
-  if canMove(unit, dirs8[dir][1], dirs8[dir][2], dir, false, false, unit.name, "dir check") then
+  if canMove(unit, dirs8[dir][1], dirs8[dir][2], dir, {solid_name = unit.name, reason = "dir check"}) then
     addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
     unit.olddir = unit.dir
     updateDir(unit, dir)

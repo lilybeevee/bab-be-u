@@ -2822,8 +2822,8 @@ function doDragbl()
       local oldx, oldy = math.floor(unit.draw.x), math.floor(unit.draw.y)
       local dirx, diry = sign(mx - unit.draw.x), sign(my - unit.draw.y)
       
-      if  canMove(unit,dirx,0,0,nil,nil,nil,"drag",nil,math.floor(unit.draw.x),math.floor(unit.draw.y))
-      and canMove(unit,dirx,0,0,nil,nil,nil,"drag",nil,math.floor(unit.draw.x),math.ceil( unit.draw.y)) then
+      if  canMove(unit,dirx,0,0,{reason = "drag", start_x = math.floor(unit.draw.x), start_y = math.floor(unit.draw.y)})
+      and canMove(unit,dirx,0,0,{reason = "drag", start_x = math.floor(unit.draw.x), start_y = math.ceil( unit.draw.y)}) then
         local diff = mx - unit.draw.x
         if diff < -0.25 then diff = -0.25 end
         if diff > 0.25 then diff = 0.25 end
@@ -2835,8 +2835,8 @@ function doDragbl()
           unit.draw.x = oldx
         end
       end
-      if  canMove(unit,0,diry,0,nil,nil,nil,"drag",nil,math.floor(unit.draw.x),math.floor(unit.draw.y))
-      and canMove(unit,0,diry,0,nil,nil,nil,"drag",nil,math.ceil( unit.draw.x),math.floor(unit.draw.y)) then
+      if  canMove(unit,0,diry,0,{reason = "drag", start_x = math.floor(unit.draw.x), start_y = math.floor(unit.draw.y)})
+      and canMove(unit,0,diry,0,{reason = "drag", start_x = math.ceil( unit.draw.x), start_y = math.floor(unit.draw.y)}) then
         local diff = my - unit.draw.y
         if diff < -0.25 then diff = -0.25 end
         if diff > 0.25 then diff = 0.25 end
