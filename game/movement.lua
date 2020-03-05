@@ -590,7 +590,7 @@ It is probably possible to do, but lily has decided that it's not important enou
       local something_moved = true
       --Tick loop tries to move everything at least once, and gives up if after an iteration, nothing can move. (It also tries to do flips to see if that helps.) (Incrementing loop_tick once is a 'sub-tick'. Calling doUpdate and incrementing loop_stage is a 'tick'. Incrementing move_stage is a 'stage'.)
       while (something_moved) do
-         if (loop_tick > 1000) then
+        if (loop_tick > 1000) then
           print("movement infinite loop! (1000 attempts at a single tick)")
           destroyLevel("infloop")
           break
@@ -1659,9 +1659,14 @@ end
 --3 stacks: up to 90 degrees
 --4 stacks: up to 135 degrees
 --5 stacks: up to 180 degrees (e.g. all directions)
-function canMove(unit,dx,dy,dir,o) --pushing, pulling, solid_name, reason, push_stack_, start_x, start_y
+function canMove(unit,dx,dy,dir,o) --pushing, pulling, solid_name, reason, push_stack, start_x, start_y, ignorestukc
   o = o or {}
-  if hasProperty(unit, "loop") or hasProperty(unit, "stukc") then
+  o.pushing = o.pushing or false
+  o.pulling = o.pulling or false --this isn't used now but might be in the future??
+  o.push_stack = o.push_stack or {}
+  o.ignorestukc = o.ignorestukc or false
+  
+  if not o.ignorestukc and hasProperty(unit, "stukc") then
     return false,{},{}
   end
   local success, movers, specials = canMoveCore(unit,dx,dy,dir,o)
@@ -1703,7 +1708,7 @@ function canMove(unit,dx,dy,dir,o) --pushing, pulling, solid_name, reason, push_
   return success, movers, specials
 end
 
-function canMoveCore(unit,dx,dy,dir,o) --pushing, pulling, solid_name, reason, push_stack, start_x, start_y
+function canMoveCore(unit,dx,dy,dir,o) --pushing, pulling, solid_name, reason, push_stack, start_x, start_y, ignorestukc
   --if we haet outerlvl, we can't move, period. 
   if rules_with["haet"] ~= nil and hasRule(unit, "haet", outerlvl) and not ignoreCheck(unit,outerlvl) then
     return false,{},{}
@@ -1715,16 +1720,12 @@ function canMoveCore(unit,dx,dy,dir,o) --pushing, pulling, solid_name, reason, p
 
   --prevent infinite push loops by returning false if a push intersects an already considered unit
   --EDIT: let's try returning true instead and allowing them to happen. plays nicely with portal loops. For stubborn, maybe we just allow max one direction change or something... (So we pass a flag along to know if we've made our one change or not.)
-  o.push_stack = o.push_stack or {}
-  
   if (o.push_stack[unit] == true) then
     return true,{},{}
   end
   
-  o.pushing = not hasProperty(unit, "shy") and o.pushing or false
-  
-  --TODO: Patashu: this isn't used now but might be in the future??
-  o.pulling = not hasProperty(unit, "shy") and o.pulling or false
+  o.pushing = not hasProperty(unit, "shy") and o.pushing
+  o.pulling = not hasProperty(unit, "shy") and o.pulling
   
   --apply munwalk, sidestep and diagstep here (only if making a push move, to not mess up other checks)
   if (o.pushing and walkdirchangingrulesexist) then
@@ -1862,7 +1863,7 @@ function canMoveCore(unit,dx,dy,dir,o) --pushing, pulling, solid_name, reason, p
       local tvalid = false
       local loopstage = 0
       while not tstopped do
-        local canmove = canMove(there,tdx,tdy,tdir,{start_x = tx, start_y = ty})
+        local canmove = canMove(there,tdx,tdy,tdir,{start_x = tx, start_y = ty, ignorestukc = true})
         
         if not tvalid then
           tvalid = canmove

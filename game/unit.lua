@@ -290,7 +290,7 @@ function moveBlock()
         local valid = false
         local loopstage = 0
         while not stopped do
-          local canmove = canMove(unit,dx,dy,dir,{start_x = tx, start_y = ty}) --simplify since we check this more often now
+          local canmove = canMove(unit,dx,dy,dir,{start_x = tx, start_y = ty, ignorestukc = true}) --simplify since we check this more often now
           
           --while valid is false, it check this. this makes it so it's false until you get out of the stops, or always true if there wasn't a stop at first
           if not valid then
