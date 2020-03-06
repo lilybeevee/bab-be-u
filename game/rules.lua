@@ -454,7 +454,7 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
           end
         elseif letter.fullname == "letter_colon" and letter.dir == 3 then
           name = ".."
-        elseif prevletter.fullname == "letter_colon" and prevunit.dir == dir
+        elseif prevunit.fullname == "letter_colon" and prevunit.dir == dir
         and (letter.name == "o" or letter.name == ")" or letter.name == "(") then
           name = ":"..letter.name
         end
