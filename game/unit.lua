@@ -3460,23 +3460,23 @@ function moveUnit(unit,x,y,portal,instant)
 end
 
 function updateDir(unit, dir, force)
+  local result = true
   if not force and rules_with ~= nil then
     if hasProperty(unit, "no turn") then
-      return false
+      result = false
     end
     if hasRule(unit, "ben't", dirs8_by_name[dir]) then
-      return false
+      result = false
     end
     for i=1,8 do
       if hasRule(unit, "ben't", "spin"..i) then
-        if (dir == (unit.dir+i-1)%8+1) then return false end
+        if (dir == (unit.dir+i-1)%8+1) then result = false end
       end
       if hasProperty(unit, dirs8_by_name[i]) and dir ~= i then
-        unit.dir = i
-        return false
+        dir = i
+        result = false
       end
     end
-    if unit.dir == dir then return true end
   end
   if unit.name == "mous" then
     unit.dir = dir
