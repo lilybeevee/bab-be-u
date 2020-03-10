@@ -3463,7 +3463,7 @@ function updateDir(unit, dir, force)
   local result = true
   if not force and rules_with ~= nil then
     if hasProperty(unit, "no turn") then
-      result = false
+      return false
     end
     if hasRule(unit, "ben't", dirs8_by_name[dir]) then
       result = false
