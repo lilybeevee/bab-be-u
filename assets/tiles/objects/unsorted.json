@@ -175,7 +175,7 @@
     "sprite": ["frut"],
     "layer": 6,
     "color": [[2, 2]],
-    "rotate": "true",
+    "rotate": true,
     "desc": "babs favorite snacc. not to be confused with OS appl",
     "tags": ["fruit", "apple", "plants", "food"]
   },
@@ -191,7 +191,7 @@
     "sprite": ["tre"],
     "layer": 4,
     "color": [[5, 2]],
-    "rotate": "true",
+    "rotate": true,
     "desc": "tre is the creator of all plant life in bab",
     "tags": ["tree", "plants"]
   },
@@ -906,7 +906,7 @@
     },
     "voice": "pipipi",
     "desc": "oh no am square????",
-    "tags": ["chars", "thefox", "puyopuyo tetris"]
+    "tags": ["chars", "oatmealine", "puyopuyo tetris"]
   },
   {
     "name": "triangle",
@@ -918,7 +918,7 @@
     },
     "voice": "pipipi",
     "desc": "TRIASNGLE?????? this is ridicouuolus",
-    "tags": ["chars", "thefox", "puyopuyo tetris"]
+    "tags": ["chars", "oatmealine", "puyopuyo tetris"]
   },
   {
     "name": "txt_square",
@@ -928,7 +928,7 @@
     "features": {
       "sans": {"x": 19, "y": 7, "w": 2, "h": 2}
     },
-    "tags": ["chars", "thefox", "puyopuyo tetris"]
+    "tags": ["chars", "oatmealine", "puyopuyo tetris"]
   },
   {
     "name": "txt_triangle",
@@ -938,7 +938,7 @@
     "features": {
       "sans": {"x": 19, "y": 7, "w": 2, "h": 2}
     },
-    "tags": ["chars", "thefox", "puyopuyo tetris"]
+    "tags": ["chars", "oatmealine", "puyopuyo tetris"]
   },
   {
     "name": "snoflak",
@@ -1306,7 +1306,7 @@
     "sprite": ["coco"],
     "layer": 7,
     "color": [[6, 1]],
-    "rotate": "true",
+    "rotate": true,
     "features": {
       "sans": {"x": 20, "y": 12, "w": 2, "h": 3}
     },
@@ -1421,7 +1421,7 @@
     "sprite": ["battry"],
     "layer": 4,
     "color": [[4, 1]],
-    "rotate": "true",
+    "rotate": true,
     "features": {
       "sans": {"x": 23, "y": 14, "w": 2, "h": 4}
     },
@@ -1731,7 +1731,7 @@
     "sprite": ["extre"],
     "layer": 4,
     "color": [[6, 1]],
-    "rotate": "true",
+    "rotate": true,
     "desc": "a ded tre. rip",
     "tags": ["tree", "plants", "husk"]
   },
@@ -1847,7 +1847,7 @@
     "sprite": ["chain"],
     "layer": 22,
     "color": [[0, 2]],
-    "rotate": "true",
+    "rotate": true,
     "desc": "EVERY1 W/FREN CHAIN STALK JAIL. now bab's going to jail :("
   },
   {
@@ -1861,7 +1861,7 @@
     "sprite": ["lili"],
     "layer": 4,
     "color": [[5, 1]],
-    "rotate": "true",
+    "rotate": true,
     "desc": "water type evolution of platfor",
     "tags": ["lilypad", "plants"]
   },
@@ -1973,7 +1973,7 @@
     "sprite": ["dling"],
     "layer": 6,
     "color": [[2, 4]],
-    "rotate": "true",
+    "rotate": true,
     "desc": "dling dling dling!",
     "tags": ["coin", "mario"]
   },

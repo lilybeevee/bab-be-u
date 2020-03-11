@@ -10,14 +10,14 @@
     },
     "voice": "pipipi",
     "desc": "pi pi piiii!!!",
-    "tags": ["devs", "chars", "thefox", "oatmealine", "puyopuyo tetris"]
+    "tags": ["devs", "chars", "oatmealine", "puyopuyo tetris"]
   },
   {
     "name": "txt_oat",
     "sprite": ["text/oat"],
     "types": ["object"],
     "color": [[2, 4]],
-    "tags": ["devs", "chars", "thefox", "oatmealine", "puyopuyo tetris"]
+    "tags": ["devs", "chars", "oatmealine", "puyopuyo tetris"]
   },
   {
     "name": "pata",
