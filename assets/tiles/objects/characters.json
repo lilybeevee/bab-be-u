@@ -1,0 +1,1363 @@
+[
+  {
+    "name": "bab",
+    "sprite": ["bab"],
+    "layer": 11,
+    "color": [[0, 3]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 22, "y": 10, "w": 2, "h": 2}
+    },
+    "voice": "s_doo",
+    "desc": "its bab bruh",
+    "tags": ["chars", "baba"],
+    "pronouns": ["she", "her"]
+  },
+  {
+    "name": "txt_bab",
+    "sprite": ["text/bab"],
+    "metasprite": ["text/bab meta"],
+    "types": ["object"],
+    "color": [[4, 1]],
+    "desc": "\"BAB\". thats what it says",
+    "tags": ["chars", "baba"]
+  },
+  {
+    "name": "txt_skul",
+    "sprite": ["text/skul"],
+    "types": ["object"],
+    "color": [[2, 1]],
+    "tags": ["skull"]
+  },
+  {
+    "name": "skul",
+    "sprite": ["skul"],
+    "layer": 9,
+    "color": [[2, 1]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 21, "y": 8, "w": 4, "h": 4}
+    },
+    "voice": "s_saw",
+    "desc": "evillllll",
+    "tags": ["skull"]
+  },
+  {
+    "name": "txt_keek",
+    "sprite": ["text/keek"],
+    "types": ["object"],
+    "color": [[2, 2]],
+    "tags": ["keke", "chars"]
+  },
+  {
+    "name": "keek",
+    "sprite": ["keek"],
+    "layer": 11,
+    "color": [[2, 2]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 19, "y": 7, "w": 2, "h": 2}
+    },
+    "voice": "s_saw",
+    "desc": "babs bff",
+    "tags": ["keke", "chars"],
+    "pronouns": ["they", "them"]
+  },
+  {
+    "name": "txt_meem",
+    "sprite": ["text/meem"],
+    "types": ["object"],
+    "color": [[3, 1]],
+    "tags": ["chars"]
+  },
+  {
+    "name": "meem",
+    "sprite": ["meem"],
+    "layer": 11,
+    "color": [[3, 1]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 18, "y": 3, "w": 2, "h": 2}
+    },
+    "voice": "s_organ",
+    "desc": "meem is the true philosopher of our time. babs 3ff",
+    "tags": ["chars"],
+    "pronouns": ["he", "him"]
+  },
+  {
+    "name": "txt_os",
+    "sprite": ["text/os"],
+    "types": ["object"],
+    "color": [[4, 1]],
+    "tags": ["apple", "android", "windows", "linux", "operating system"]
+  },
+  {
+    "name": "os",
+    "sprite": ["os"],
+    "layer": 10,
+    "color": [[0, 3]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 14, "y": 8, "w": 2, "h": 2}
+    },
+    "voice": "bit2",
+    "desc": "OS: Its sprites changes with the user's Operating System!",
+    "tags": ["apple", "android", "windows", "linux", "operating system"]
+  },
+  {
+    "name": "wog",
+    "sprite": ["wog"],
+    "layer": 10,
+    "color": [[2, 4]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 16, "y": 9, "w": 3, "h": 3}
+    },
+    "voice": "s_strum",
+    "desc": "smol frens who own pointy tridents, play with explosives, and bake good cake. nobody knows how to describe more than one of them",
+    "tags": ["wug", "chars", "bird"]
+  },
+  {
+    "name": "txt_wog",
+    "sprite": ["text/wog"],
+    "types": ["object"],
+    "color": [[2, 4]],
+    "desc": "wogs dream is to be a mad scientist and go evil with power using nothing but sheer linguistics. linguists' evil career options may be limited but that wont stop wog from trying their best",
+    "tags": ["wug", "chars", "bird"]
+  },
+  {
+    "name": "txt_bup",
+    "sprite": ["text/bup"],
+    "types": ["object"],
+    "color": [[6, 2]],
+    "tags": ["toad", "simpleflips", "chars"]
+  },
+  {
+    "name": "bup",
+    "sprite": ["bup", "no1", "no1", "no1"],
+    "layer": 11,
+    "color": [[6, 2], [2, 4], [0, 2], [0, 3]],
+    "painted": [true, false, false, false],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 23, "y": 19, "w": 3, "h": 3}
+    },
+    "voice": "s_steel",
+    "desc": "BUP: HELLO\nBUP DOES NOT WANT, BUP DOES NOT DREAM\nPLEASE HELP HIM\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "tags": ["toad", "simpleflips", "chars"]
+  },
+  {
+    "name": "kirb",
+    "sprite": ["kirb"],
+    "layer": 10,
+    "color": [[4, 2]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 21, "y": 9, "w": 2, "h": 2}
+    },
+    "voice": "s_spian",
+    "desc": "1, 2 oatmeal kirb be be a pincc guy",
+    "tags": ["kirby", "chars"]
+  },
+  {
+    "name": "txt_kirb",
+    "sprite": ["text/kirb"],
+    "types": ["object"],
+    "color": [[4, 2]],
+    "tags": ["kirby", "chars"]
+  },
+  {
+    "name": "han",
+    "sprite": ["han"],
+    "layer": 9,
+    "color": [[0, 3]],
+    "rotate": true,
+    "desc": "grab, then yeet",
+    "tags": ["hand", "body part"]
+  },
+  {
+    "name": "txt_han",
+    "sprite": ["text/han"],
+    "types": ["object"],
+    "color": [[0, 3]],
+    "tags": ["hand", "body part"]
+  },
+  {
+    "name": "steev",
+    "sprite": ["steev"],
+    "layer": 11,
+    "color": [[2, 3]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 20, "y": 13, "w": 2, "h": 2},
+      "katany": {}
+    },
+    "voice": "dog",
+    "desc": "can only moov 5 steps b4 dyin nya",
+    "tags": ["chars", "5 step steve", "cat"]
+  },
+  {
+    "name": "txt_steev",
+    "sprite": ["text/steev"],
+    "types": ["object"],
+    "color": [[2, 3]],
+    "tags": ["chars", "5 step steve", "cat"]
+  },
+  {
+    "name": "boy",
+    "sprite": ["boy"],
+    "layer": 11,
+    "color": [[0, 2]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 14, "y": 15, "w": 2, "h": 5}
+    },
+    "desc": "he's upsidedown b/c he lives on a Boy's surface",
+    "tags": ["chars"]
+  },
+  {
+    "name": "txt_boy",
+    "sprite": ["text/boy"],
+    "types": ["object"],
+    "color": [[0, 2]],
+    "tags": ["chars"]
+  },
+  {
+    "name": "ghostfren",
+    "sprite": ["ghost"],
+    "layer": 11,
+    "color": [[4, 2]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 26, "y": 10, "w": 2, "h": 4}
+    },
+    "voice": "s_sine",
+    "desc": "its not spooky, its a fren.",
+    "tags": ["chars"]
+  },
+  {
+    "name": "txt_ghostfren",
+    "sprite": ["text/ghost fren"],
+    "types": ["object"],
+    "color": [[4, 2]],
+    "desc": "this text is very spooky tho",
+    "tags": ["chars"]
+  },
+  {
+    "name": "robobot",
+    "sprite": ["robobot"],
+    "layer": 11,
+    "color": [[6, 1]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 17, "y": 7, "w": 2, "h": 4}
+    },
+    "voice": "bit2",
+    "desc": "the super scan mouth lazers that copy abilities are missing because they forgot to design a mouth",
+    "tags": ["robot", "chars"]
+  },
+  {
+    "name": "txt_robobot",
+    "sprite": ["text/robobot"],
+    "types": ["object"],
+    "color": [[6, 1]],
+    "tags": ["robot", "chars"]
+  },
+  {
+    "name": "creb",
+    "sprite": ["creb"],
+    "layer": 11,
+    "color": [[2, 2]],
+    "features": {
+      "sans": {"x": 20, "y": 4, "w": 4, "h": 5}
+    },
+    "voice": "crab rave",
+    "desc": "loves to party and dance! woo! yeah!",
+    "tags": ["crab"]
+  },
+  {
+    "name": "txt_creb",
+    "sprite": ["text/creb"],
+    "types": ["object"],
+    "color": [[2, 2]],
+    "tags": ["crab"]
+  },
+  {
+    "name": "hors",
+    "sprite": ["hors"],
+    "layer": 11,
+    "color": [[6, 1]],
+    "features": {
+      "sans": {"x": 17, "y": 6, "w": 3, "h": 3}
+    },
+    "desc": "it's a knoble knight",
+    "tags": ["chess", "knight", "horse"]
+  },
+  {
+    "name": "txt_hors",
+    "sprite": ["text/hors"],
+    "types": ["object"],
+    "color": [[6, 1]],
+    "tags": ["chess", "knight", "horse"]
+  },
+  {
+    "name": "snoman",
+    "sprite": ["snoman"],
+    "layer": 10,
+    "color": [[0, 3]],
+    "features": {
+      "sans": {"x": 17, "y": 8, "w": 3, "h": 3}
+    },
+    "desc": "do u wanna creat a snoman??",
+    "tags": ["chars", "snowman", "christmas"]
+  },
+  {
+    "name": "txt_snoman",
+    "sprite": ["text/snoman"],
+    "types": ["object"],
+    "color": [[0, 3]],
+    "tags": ["chars", "snowman", "christmas"]
+  },
+  {
+    "name": "beeee",
+    "sprite": ["beeee", "no1"],
+    "layer": 10,
+    "color": [[2, 4], [0, 0]],
+    "painted": [true, false],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 25, "y": 14, "w": 2, "h": 2}
+    },
+    "desc": "the bab beeee be tranz",
+    "tags": ["honeybee", "chars", "insect"]
+  },
+  {
+    "name": "txt_beeee",
+    "sprite": ["text/beeee"],
+    "types": ["object"],
+    "color": [[2, 4]],
+    "desc": "bab beeeeeeeee u",
+    "tags": ["honeybee", "chars", "insect"]
+  },
+  {
+    "name": "fishe",
+    "sprite": ["fishe"],
+    "layer": 10,
+    "color": [[0, 3]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 24, "y": 11, "w": 2, "h": 2}
+    },
+    "desc": "fishe be walk?? kinda quirky doe",
+    "tags": ["angelfish", "chars"]
+  },
+  {
+    "name": "txt_fishe",
+    "sprite": ["text/fishe"],
+    "types": ["object"],
+    "color": [[0, 2]],
+    "tags": ["angelfish", "chars"]
+  },
+  {
+    "name": "statoo",
+    "sprite": ["statoo"],
+    "layer": 11,
+    "color": [[0, 1]],
+    "features": {
+      "sans": {"x": 16, "y": 6, "w": 2, "h": 2}
+    },
+    "desc": "their occupation is a janitor",
+    "tags": ["statue", "chars", "janitor"]
+  },
+  {
+    "name": "txt_statoo",
+    "sprite": ["text/statoo"],
+    "types": ["object"],
+    "color": [[0, 1]],
+    "tags": ["statue", "chars", "janitor"]
+  },
+  {
+    "name": "bunmy",
+    "sprite": ["bunmy"],
+    "layer": 11,
+    "color": [[0, 3]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 23, "y": 12, "w": 2, "h": 2}
+    },
+    "desc": "looks kinda like bab???",
+    "tags": ["chars", "bunny rabbit"]
+  },
+  {
+    "name": "txt_bunmy",
+    "sprite": ["text/bunmy"],
+    "types": ["object"],
+    "color": [[0, 3]],
+    "tags": ["chars", "bunny rabbit"]
+  },
+  {
+    "name": "bog",
+    "sprite": ["bog"],
+    "layer": 10,
+    "color": [[6, 1]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 24, "y": 16, "w": 2, "h": 2}
+    },
+    "voice": "s_scat",
+    "desc": "icky",
+    "tags": ["chars", "bug", "insect", "cockroach"]
+  },
+  {
+    "name": "txt_bog",
+    "sprite": ["text/bog"],
+    "types": ["object"],
+    "color": [[6, 1]],
+    "tags": ["chars", "bug", "insect", "cockroach"]
+  },
+  {
+    "name": "pingu",
+    "sprite": ["pingu"],
+    "layer": 11,
+    "color": [[1, 3]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 12, "y": 11, "w": 2, "h": 2}
+    },
+    "desc": "noot noot",
+    "tags": ["chars", "penguin", "bird"]
+  },
+  {
+    "name": "txt_pingu",
+    "sprite": ["text/pingu"],
+    "types": ["object"],
+    "color": [[1, 3]],
+    "tags": ["chars", "penguin", "bird"]
+  },
+  {
+    "name": "snek",
+    "sprite": ["snek"],
+    "layer": 11,
+    "color": [[5, 3]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 20, "y": 7, "w": 2, "h": 2}
+    },
+    "desc": "sssssssssssssss",
+    "tags": ["chars", "snake"]
+  },
+  {
+    "name": "txt_snek",
+    "sprite": ["text/snek"],
+    "types": ["object"],
+    "color": [[5, 3]],
+    "tags": ["chars", "snake"]
+  },
+  {
+    "name": "ripof",
+    "sprite": ["ripof"],
+    "layer": 10,
+    "color": [[1, 3]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 25, "y": 17, "w": 3, "h": 3}
+    },
+    "desc": "from the hit game DEV IS YOU",
+    "tags": ["chars", "dev", "slime", "blob", "rip off"]
+  },
+  {
+    "name": "txt_ripof",
+    "sprite": ["text/ripof"],
+    "types": ["object"],
+    "color": [[1, 3]],
+    "desc": "it needs to have the tag dev but i don't want it to be with the other devs",
+    "tags": ["chars", "dev", "slime", "blob", "rip off"]
+  },
+  {
+    "name": "butflye",
+    "sprite": ["butflye"],
+    "layer": 10,
+    "color": [[1, 4]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 19, "y": 11, "w": 2, "h": 2}
+    },
+    "desc": "of the bleu morpho variety",
+    "tags": ["butterfly", "chars", "insect"]
+  },
+  {
+    "name": "txt_butflye",
+    "sprite": ["text/butflye"],
+    "types": ["object"],
+    "color": [[1, 4]],
+    "desc": "but, flye??",
+    "tags": ["butterfly", "chars", "insect"]
+  },
+  {
+    "name": "wurm",
+    "sprite": ["wurm"],
+    "layer": 11,
+    "color": [[3, 3]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 20, "y": 4, "w": 2, "h": 2}
+    },
+    "desc": "slithers\nbut a wormy slither not a snaky slither",
+    "tags": ["worm", "caterpillar", "bug", "chars", "insect"]
+  },
+  {
+    "name": "txt_wurm",
+    "sprite": ["text/wurm"],
+    "types": ["object"],
+    "color": [[3, 3]],
+    "tags": ["worm", "caterpillar", "bug", "chars", "insect"]
+  },
+  {
+    "name": "ratt",
+    "sprite": ["ratt"],
+    "layer": 10,
+    "color": [[0, 1]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 27, "y": 14, "w": 2, "h": 2}
+    },
+    "desc": "the real MOUS, they STALK at night and SNACC at night, they're the RATTs",
+    "tags": ["chars", "rat", "mouse"]
+  },
+  {
+    "name": "txt_ratt",
+    "sprite": ["text/ratt"],
+    "types": ["object"],
+    "color": [[0, 1]],
+    "desc": "the stand of BOG-SNACCEN",
+    "tags": ["chars", "rat", "mouse"]
+  },
+  {
+    "name": "moo",
+    "sprite": ["moo"],
+    "layer": 11,
+    "color": [[0, 3]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 27, "y": 7, "w": 2, "h": 2}
+    },
+    "desc": "you found bertie, the unfindable moo! noe lvl be infloop",
+    "tags": ["chars", "cow"]
+  },
+  {
+    "name": "txt_moo",
+    "sprite": ["text/moo"],
+    "types": ["object"],
+    "color": [[0, 3]],
+    "desc": "moooooo",
+    "tags": ["chars", "cow"]
+  },
+  {
+    "name": "enbybog",
+    "sprite": ["enbybog"],
+    "layer": 11,
+    "color": [[2, 2]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 23, "y": 17, "w": 2, "h": 2}
+    },
+    "desc": "goes by they/them",
+    "tags": ["chars", "ladybug", "insect", "cockroach"],
+    "pronouns": ["they", "them"]
+  },
+  {
+    "name": "txt_enbybog",
+    "sprite": ["text/enbybog"],
+    "types": ["object"],
+    "color": [[2, 2]],
+    "tags": ["chars", "ladybug", "insect", "cockroach"]
+  },
+  {
+    "name": "shrim",
+    "sprite": ["shrim"],
+    "layer": 11,
+    "color": [[2, 2]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 20, "y": 9, "w": 2, "h": 2}
+    },
+    "voice": "kkb",
+    "desc": "shouldnt it be PINC",
+    "tags": ["chars", "shrimp", "prawn"]
+  },
+  {
+    "name": "txt_shrim",
+    "sprite": ["text/shrim"],
+    "types": ["object"],
+    "color": [[2, 2]],
+    "desc": "shrims are pretty rich",
+    "tags": ["chars", "shrimp", "prawn"]
+  },
+  {
+    "name": "flamgo",
+    "sprite": ["flamgo"],
+    "layer": 11,
+    "color": [[4, 1]],
+    "features": {
+      "sans": {"x": 23, "y": 3, "w": 2, "h": 2}
+    },
+    "voice": "kkb",
+    "desc": "if ur COLRFUL thats cool too!!",
+    "tags": ["chars", "flamingo", "bird"]
+  },
+  {
+    "name": "txt_flamgo",
+    "sprite": ["text/flamgo"],
+    "types": ["object"],
+    "color": [[4, 1]],
+    "desc": "mr. flame go",
+    "tags": ["chars", "flamingo", "bird"]
+  },
+  {
+    "name": "gul",
+    "sprite": ["gul"],
+    "layer": 11,
+    "color": [[0, 3]],
+    "features": {
+      "sans": {"x": 21, "y": 11, "w": 2, "h": 2}
+    },
+    "desc": "7",
+    "tags": ["chars", "seagull", "bird", "beach", "7"]
+  },
+  {
+    "name": "txt_gul",
+    "sprite": ["text/gul"],
+    "types": ["object"],
+    "color": [[0, 3]],
+    "tags": ["chars", "seagull", "bird", "beach"]
+  },
+  {
+    "name": "starrfishe",
+    "sprite": ["starrfishe"],
+    "layer": 10,
+    "color": [[4, 2]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 16, "y": 12, "w": 2, "h": 2}
+    },
+    "desc": "she's alive, and has 4 eyes",
+    "tags": ["chars", "starfish", "beach"]
+  },
+  {
+    "name": "txt_starrfishe",
+    "sprite": ["text/starrfishe"],
+    "types": ["object"],
+    "color": [[4, 2]],
+    "desc": "what a long name",
+    "tags": ["chars", "starfish", "beach"]
+  },
+  {
+    "name": "sneel",
+    "sprite": ["sneel"],
+    "layer": 10,
+    "color": [[4, 2]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 21, "y": 28, "w": 2, "h": 2}
+    },
+    "desc": "winner of the undertale snail race gets into BAB",
+    "tags": ["chars", "snail"]
+  },
+  {
+    "name": "txt_sneel",
+    "sprite": ["text/sneel"],
+    "types": ["object"],
+    "color": [[4, 2]],
+    "desc": "its kinda slow to load in tho.",
+    "tags": ["chars", "snail"]
+  },
+  {
+    "name": "kapa",
+    "sprite": ["kapa"],
+    "layer": 11,
+    "color": [[5, 2]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 24, "y": 14, "w": 2, "h": 2}
+    },
+    "desc": "now we need a CUMBER object",
+    "tags": ["chars", "japan", "youkai", "kappa"]
+  },
+  {
+    "name": "txt_kapa",
+    "sprite": ["text/kapa"],
+    "types": ["object"],
+    "color": [[5, 2]],
+    "desc": ":V",
+    "tags": ["chars", "japan", "youkai", "kappa"]
+  },
+  {
+    "name": "urei",
+    "sprite": ["urei"],
+    "layer": 11,
+    "color": [[0, 3]],
+    "features": {
+      "sans": {"x": 20, "y": 19, "w": 2, "h": 2}
+    },
+    "desc": "GHOST FREN of the eastern variety",
+    "tags": ["chars", "japan", "youkai", "yuurei", "ghost"]
+  },
+  {
+    "name": "txt_urei",
+    "sprite": ["text/urei"],
+    "types": ["object"],
+    "color": [[0, 3]],
+    "tags": ["chars", "japan", "youkai", "yuurei", "ghost"]
+  },
+  {
+    "name": "ryugon",
+    "sprite": ["ryugon"],
+    "layer": 11,
+    "color": [[5, 2]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 21, "y": 7, "w": 3, "h": 2}
+    },
+    "desc": "ryugon no ken wo kurae",
+    "tags": ["chars", "japan", "youkai", "dragon"]
+  },
+  {
+    "name": "txt_ryugon",
+    "sprite": ["text/ryugon"],
+    "types": ["object"],
+    "color": [[5, 2]],
+    "tags": ["chars", "japan", "youkai", "dragon"]
+  },
+  {
+    "name": "iy",
+    "sprite": ["iy"],
+    "layer": 10,
+    "color": [[0, 3]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 17, "y": 12, "w": 7, "h": 8}
+    },
+    "desc": "IY SEES ALL",
+    "tags": ["eye", "body part"]
+  },
+  {
+    "name": "txt_iy",
+    "sprite": ["text/iy"],
+    "types": ["object"],
+    "color": [[0, 1]],
+    "tags": ["eye", "body part"]
+  },
+  {
+    "name": "lisp",
+    "sprite": ["lisp"],
+    "layer": 10,
+    "color": [[2, 2]],
+    "rotate": true,
+    "voice": "kkb2",
+    "desc": "it speaks",
+    "tags": ["mouth", "lips", "body part"]
+  },
+  {
+    "name": "txt_lisp",
+    "sprite": ["text/lisp"],
+    "types": ["object"],
+    "color": [[2, 2]],
+    "desc": "it altho hath a lithp",
+    "tags": ["mouth", "lips", "body part"]
+  },
+  {
+    "name": "paw",
+    "sprite": ["paw"],
+    "layer": 10,
+    "color": [[0, 3]],
+    "rotate": true,
+    "desc": "dogg in bab when?",
+    "tags": ["paw print"]
+  },
+  {
+    "name": "txt_paw",
+    "sprite": ["text/paw"],
+    "types": ["object"],
+    "color": [[0, 3]],
+    "desc": "ok well idk when it happened but we have toby now",
+    "tags": ["paw print"]
+  },
+  {
+    "name": "cavebab",
+    "sprite": ["cavebab"],
+    "layer": 11,
+    "color": [[3, 3]],
+    "features": {
+      "sans": {"x": 18, "y": 10, "w": 2, "h": 2}
+    },
+    "desc": "slep upside down",
+    "tags": ["chars", "bat"]
+  },
+  {
+    "name": "txt_cavebab",
+    "sprite": ["text/cavebab"],
+    "types": ["object"],
+    "color": [[3, 3]],
+    "tags": ["chars", "bat"]
+  },
+  {
+    "name": "migri",
+    "sprite": ["migri"],
+    "layer": 11,
+    "color": [[3, 0]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 12, "y": 14, "w": 2, "h": 3}
+    },
+    "desc": "i don't actually know what this is, someone tell me",
+    "tags": ["chars"]
+  },
+  {
+    "name": "txt_migri",
+    "sprite": ["text/migri"],
+    "types": ["object"],
+    "color": [[3, 0]],
+    "tags": ["chars"]
+  },
+  {
+    "name": "boooo",
+    "sprite": ["boooo", "boooo_mouth"],
+    "layer": 10,
+    "color": [[0, 3], [2, 2], [4, 2]],
+    "painted": [true, false, false],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 23, "y": 9, "w": 4, "h": 5}
+    },
+    "desc": "very shy, don't lookat",
+    "tags": ["boo", "mario", "ghost"]
+  },
+  {
+    "name": "txt_boooo",
+    "sprite": ["text/boooo"],
+    "types": ["object"],
+    "color": [[4, 2]],
+    "desc": "AAA u scar mee!",
+    "tags": ["boo", "mario", "ghost"]
+  },
+  {
+    "name": "madi",
+    "sprite": ["madi_hair", "madi_skin", "madi_shirt", "madi_pants"],
+    "layer": 11,
+    "color": [[2, 2], [2, 4], [1, 3], [2, 2]],
+    "painted": [true, false, false, false],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 21, "y": 9, "w": 1, "h": 2}
+    },
+    "desc": "she clim mountain in very good game",
+    "tags": ["madeline", "celeste", "chars"]
+  },
+  {
+    "name": "txt_madi",
+    "sprite": ["text/madi"],
+    "types": ["object"],
+    "color": [[2, 2]],
+    "tags": ["madeline", "celeste", "chars"]
+  },
+  {
+    "name": "badi",
+    "sprite": ["madi_hair", "madi_skin", "madi_eyes", "madi_shirt", "madi_pants"],
+    "layer": 11,
+    "color": [[3, 1], [3, 3], [2, 2], [3, 2], [3, 0]],
+    "painted": [true, false, false, false, false],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 21, "y": 9, "w": 1, "h": 2}
+    },
+    "desc": "emag doog yrev ni niatnuom milc ehs",
+    "tags": ["badeline", "celeste", "chars"]
+  },
+  {
+    "name": "txt_badi",
+    "sprite": ["text/badi"],
+    "types": ["object"],
+    "color": [[3, 3]],
+    "tags": ["badeline", "celeste", "chars"]
+  },
+  {
+    "name": "pidgin",
+    "sprite": ["pidgin"],
+    "layer": 11,
+    "color": [[0, 2]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 21, "y": 6, "w": 2, "h": 2}
+    },
+    "desc": "not a creole",
+    "tags": ["chars", "bird", "city", "pigeon"]
+  },
+  {
+    "name": "txt_pidgin",
+    "sprite": ["text/pidgin"],
+    "types": ["object"],
+    "color": [[0, 2]],
+    "desc": "also not a creole",
+    "tags": ["chars", "bird", "city", "pigeon"]
+  },
+  {
+    "name": "kva",
+    "sprite": ["kva"],
+    "layer": 11,
+    "color": [[5, 3]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 25, "y": 7, "w": 3, "h": 3}
+    },
+    "desc": "hippity hoppity kva loves u",
+    "tags": ["chars", "frog", "toad"]
+  },
+  {
+    "name": "txt_kva",
+    "sprite": ["text/kva"],
+    "types": ["object"],
+    "color": [[5, 3]],
+    "tags": ["chars", "frog", "toad"]
+  },
+  {
+    "name": "kat",
+    "sprite": ["kat"],
+    "layer": 11,
+    "color": [[0, 3]],
+    "rotate": true,
+    "features": {
+      "hatt": {"x": 7},
+      "which": {"x": 7},
+      "sant": {"y": 1},
+      "bowie": {"x": 5, "y": -3},
+      "sans": {"x": 26, "y": 11, "w": 3, "h": 3},
+      "cool": {"x": 5, "y": -1},
+      "katany": {},
+      "knif": {"x": 6, "y": 2},
+      "gunne": {"x": 2, "y": 4}
+    },
+    "voice": "cat",
+    "desc": "bab's sister",
+    "tags": ["chars", "cat", "sis", "sister"],
+    "pronouns": ["she", "her"]
+  },
+  {
+    "name": "txt_kat",
+    "sprite": ["text/kat"],
+    "types": ["object"],
+    "color": [[4, 1]],
+    "desc": "meow?",
+    "tags": ["chars", "cat", "sis", "sister"]
+  },
+  {
+    "name": "swan",
+    "sprite": ["swan"],
+    "layer": 11,
+    "color": [[0, 3]],
+    "rotate": true,
+    "features": {
+      "hatt": {"x": 4, "y": -3},
+      "which": {"x": 2, "y": -3},
+      "sant": {"x": 2, "y": 2},
+      "bowie": {"x": 3, "y": -6},
+      "sans": {"x": 20, "y": 5, "w": 2, "h": 2},
+      "katany": {"x": 10, "y": -14},
+      "knif": {"x": 13, "y": -12},
+      "gunne": {"x": 11, "y": -10},
+      "slippers": {"x": 3}
+    },
+    "desc": "a goos is a female swan",
+    "tags": ["chars", "bird", "untitled goose game"]
+  },
+  {
+    "name": "txt_swan",
+    "sprite": ["text/swan"],
+    "types": ["object"],
+    "color": [[1, 3]],
+    "desc": "unnamed swan thing: swan can GOT any object!!!",
+    "tags": ["chars", "bird", "untitled goose game"]
+  },
+  {
+    "name": "spoder",
+    "sprite": ["spoder"],
+    "layer": 11,
+    "color": [[3, 1]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 12, "y": 12, "w": 3, "h": 3}
+    },
+    "desc": "i think purp is a goode look on u!",
+    "tags": ["chars", "spider", "bug", "spoods"]
+  },
+  {
+    "name": "txt_spoder",
+    "sprite": ["text/spoder"],
+    "types": ["object"],
+    "color": [[3, 1]],
+    "desc": "sppood",
+    "tags": ["chars", "spider", "bug", "spoods"]
+  },
+  {
+    "name": "flof",
+    "sprite": ["flof"],
+    "layer": 11,
+    "color": [[0, 3]],
+    "rotate": true,
+    "features": {
+      "hatt": {"y": 4},
+      "which": {"y": 4},
+      "sans": {"x": 23, "y": 17, "w": 3, "h": 3}
+    },
+    "desc": "bab's bro, ver soft, pls pet",
+    "tags": ["fluff", "floof", "brother", "dog"],
+    "pronouns": ["he", "him"]
+  },
+  {
+    "name": "txt_flof",
+    "sprite": ["text/flof"],
+    "types": ["object"],
+    "color": [[4, 1]],
+    "desc": "not a flog",
+    "tags": ["fluff", "floof", "brother", "dog"]
+  },
+  {
+    "name": "err",
+    "sprite": ["err"],
+    "layer": 11,
+    "color": [[0, 3]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 23, "y": 9, "w": 4, "h": 4}
+    },
+    "desc": "kinda spooky in bab tbh",
+    "tags": ["chars", "error"]
+  },
+  {
+    "name": "txt_err",
+    "sprite": ["text/err"],
+    "types": ["object"],
+    "color": [[0, 3]],
+    "tags": ["chars", "error"]
+  },
+  {
+    "name": "mimi",
+    "sprite": ["mimic_close"],
+    "layer": 9,
+    "color": [[2, 2]],
+    "features": {
+      "sans": {"x": 14, "y": 17, "w": 2, "h": 4}
+    },
+    "desc": "closes when NED KEE",
+    "tags": ["chars", "chest", "treasure chest", "mimic"]
+  },
+  {
+    "name": "txt_mimi",
+    "sprite": ["text/mimi"],
+    "types": ["object"],
+    "color": [[2, 2]],
+    "tags": ["chars", "chest", "treasure chest", "mimic"]
+  },
+  {
+    "name": "der",
+    "sprite": ["der"],
+    "layer": 11,
+    "color": [[6, 1]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 24, "y": 11, "w": 2, "h": 2}
+    },
+    "desc": "rudolf w/ ur nos be BRITE, wont u guid my slay?",
+    "tags": ["chars", "reindeer", "moose", "christmas"]
+  },
+  {
+    "name": "txt_der",
+    "sprite": ["text/der"],
+    "types": ["object"],
+    "color": [[6, 1]],
+    "desc": "stay away from kappa and ryugon!!",
+    "tags": ["chars", "reindeer", "moose", "christmas"]
+  },
+  {
+    "name": "ginn",
+    "sprite": ["ginn"],
+    "layer": 11,
+    "color": [[6, 2]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 18, "y": 6, "w": 2, "h": 2}
+    },
+    "desc": "shes a girl!",
+    "tags": ["chars", "gingerbread man", "christmas", "cookie", "food"],
+    "pronouns": ["she", "her"]
+  },
+  {
+    "name": "txt_ginn",
+    "sprite": ["text/ginn"],
+    "types": ["object"],
+    "color": [[6, 2]],
+    "tags": ["chars", "gingerbread man", "christmas", "cookie", "food"]
+  },
+  {
+    "name": "toby",
+    "sprite": ["toby"],
+    "layer": 11,
+    "color": [[0, 3]],
+    "rotate": true,
+    "features": {
+      "hatt": {"x": 5},
+      "which": {"x": 5},
+      "sant": {"x": 1},
+      "sans": {"x": 24, "y": 9, "w": 2, "h": 2},
+      "katany": {"x": 5},
+      "knif": {"x": 5},
+      "gunne": {"x": 5}
+    },
+    "voice": "dog",
+    "desc": "absorps ur artefac",
+    "tags": ["chars", "toby fox", "annoying dog", "undertale"]
+  },
+  {
+    "name": "txt_toby",
+    "sprite": ["text/toby"],
+    "types": ["object"],
+    "color": [[0, 3]],
+    "desc": "The highly respectable Toby Fox himself,\nCreator of UNDERTALE and deltarune.",
+    "tags": ["chars", "toby fox", "annoying dog", "undertale"]
+  },
+  {
+    "name": "angle",
+    "sprite": ["angle"],
+    "layer": 11,
+    "color": [[0, 3]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 19, "y": 9, "w": 2, "h": 2}
+    },
+    "voice": "choir",
+    "desc": "i can be your angle...",
+    "tags": ["chars", "angel"]
+  },
+  {
+    "name": "txt_angle",
+    "sprite": ["text/angle"],
+    "types": ["object"],
+    "color": [[0, 3]],
+    "desc": "she's 90 gradians... acute angle",
+    "tags": ["chars", "angel"]
+  },
+  {
+    "name": "dvl",
+    "sprite": ["debil"],
+    "layer": 11,
+    "color": [[2, 2]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 14, "y": 18, "w": 2, "h": 2}
+    },
+    "desc": "or yuor dvl...",
+    "tags": ["chars", "devil", "demon", "debil"]
+  },
+  {
+    "name": "txt_dvl",
+    "sprite": ["text/dvl"],
+    "types": ["object"],
+    "color": [[2, 2]],
+    "desc": "used to be called \"debil\" until we found out that's a bad word in a different language",
+    "tags": ["chars", "devil", "demon", "debil"]
+  },
+  {
+    "name": "temmi",
+    "sprite": ["temmi", "temmi but just her face"],
+    "layer": 11,
+    "color": [[0, 3], [0, 3]],
+    "painted": [true, false],
+    "rotate": true,
+    "features": {
+      "hatt": {"x": 5},
+      "which": {"x": 5},
+      "sant": {"x": 1},
+      "sans": {"x": 23, "y": 12, "w": 2, "h": 2},
+      "cool": {"x": 2, "y": 2},
+      "katany": {"x": 5},
+      "knif": {"x": 5},
+      "gunne": {"x": 5}
+    },
+    "voice": "temmie",
+    "desc": "hOI!!! i'm tEMMi!!",
+    "tags": ["chars", "temmie chang", "undertale"]
+  },
+  {
+    "name": "txt_temmi",
+    "sprite": ["text/temmi"],
+    "types": ["object"],
+    "color": [[0, 3]],
+    "desc": "Temmie Chang: Main artist of UNDERTALE and deltarune.",
+    "tags": ["chars", "temmie chang", "undertale"]
+  },
+  {
+    "name": "detox",
+    "sprite": ["detox"],
+    "layer": 11,
+    "color": [[2, 4]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 21, "y": 8, "w": 2, "h": 3}
+    },
+    "voice": "s_vitellary",
+    "desc": "u've been lookin @ too much Good Art",
+    "tags": ["vvvvvv", "allison"]
+  },
+  {
+    "name": "txt_detox",
+    "sprite": ["text/detox"],
+    "types": ["object"],
+    "color": [[3, 1]],
+    "desc": "detox be a custom vvvvvv level by allison, very good",
+    "tags": ["vvvvvv", "allison"]
+  },
+  {
+    "name": "viruse",
+    "sprite": ["virus"],
+    "layer": 11,
+    "color": [[2, 4]],
+    "rotate": true,
+    "voice": "sham_gatsample",
+    "desc": "gon infect u",
+    "tags": ["dr mario", "mario", "virus"]
+  },
+  {
+    "name": "txt_viruse",
+    "sprite": ["text/viruse"],
+    "types": ["object"],
+    "color": [[2, 4]],
+    "desc": "virus",
+    "tags": ["dr mario", "mario", "virus"]
+  },
+  {
+    "name": "nyowo",
+    "sprite": ["nyowo", "nyowo_face"],
+    "layer": 10,
+    "color": [[2, 4], [0, 3]],
+    "painted": [true, false],
+    "features": {
+      "sans": {"x": 23, "y": 13, "w": 3, "h": 6}
+    },
+    "desc": "crying",
+    "tags": ["nya", "jill"]
+  },
+  {
+    "name": "txt_nyowo",
+    "sprite": ["text/nyowo"],
+    "types": ["object"],
+    "color": [[2, 4]],
+    "tags": ["nya", "jill"]
+  },
+  {
+    "name": "grimkid",
+    "sprite": ["grimkid_body", "grimkid"],
+    "layer": 11,
+    "color": [[2, 1], [0, 3]],
+    "painted": [true, false],
+    "features": {
+      "sans": {"x": 21, "y": 13, "w": 2, "h": 2}
+    },
+    "desc": "complet rituel pls"
+  },
+  {
+    "name": "txt_grimkid",
+    "sprite": ["text/grimkid"],
+    "types": ["object"],
+    "color": [[2, 2]]
+  },
+  {
+    "name": "prime",
+    "sprite": ["prime"],
+    "layer": 10,
+    "color": [[2, 3]],
+    "features": {
+      "sans": {"x": 11, "y": 17, "w": 2, "h": 2}
+    },
+    "desc": "prime numbers SUCK"
+  },
+  {
+    "name": "txt_prime",
+    "sprite": ["text/prime"],
+    "types": ["object"],
+    "color": [[2, 3]]
+  },
+  {
+    "name": "assh",
+    "sprite": ["assh"],
+    "layer": 11,
+    "color": [[0, 3]],
+    "rotate": true,
+    "desc": "he can grab on ledges",
+    "tags": ["ash"]
+  },
+  {
+    "name": "txt_assh",
+    "sprite": ["text/assh"],
+    "types": ["object"],
+    "color": [[0, 1]],
+    "desc": "no bad words here mister vitellary",
+    "tags": ["ash"]
+  },
+  {
+    "name": "boogie",
+    "sprite": ["boogie"],
+    "layer": 11,
+    "color": [[1, 3]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 22, "y": 16, "w": 3, "h": 3}
+    },
+    "desc": "cant hurt u unless u walk into it somehow",
+    "tags": ["slime", "crypt of the necrodancer"]
+  },
+  {
+    "name": "txt_boogie",
+    "sprite": ["text/boogie"],
+    "types": ["object"],
+    "color": [[1, 3]],
+    "tags": ["slime", "crypt of the necrodancer"]
+  },
+  {
+    "name": "babby",
+    "sprite": ["babby"],
+    "layer": 11,
+    "color": [[0, 3]],
+    "rotate": true,
+    "voice": "babby",
+    "desc": "bab be babbe ba",
+    "tags": ["baby", "bapy", "babey", "babbey", "smol"]
+  },
+  {
+    "name": "txt_babby",
+    "sprite": ["text/babby"],
+    "types": ["object"],
+    "color": [[4, 1]],
+    "desc": "not to be confused with bab be",
+    "tags": ["baby", "bapy", "babey", "babbey", "smol"]
+  },
+  {
+    "name": "snom",
+    "sprite": ["snom"],
+    "layer": 11,
+    "color": [[0, 3]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 20, "y": 25, "w": 2, "h": 2}
+    },
+    "desc": "It snaccs SNO that piles up on the ground. The more SNO it snaccs, the THICCer and MOAR impressive the spikes on its back grow.",
+    "tags": ["chars", "snom", "pokemon"],
+    "pronouns": ["any", "all"]
+  },
+  {
+    "name": "txt_snom",
+    "sprite": ["text/snom"],
+    "types": ["object"],
+    "color": [[0, 3]],
+    "desc": "yea its the same spelling what else would it be, SNOWM??",
+    "tags": ["chars", "snom", "pokemon"]
+  }
+]

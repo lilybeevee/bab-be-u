@@ -1,0 +1,431 @@
+[
+  {
+    "name": "ui_1",
+    "sprite": ["ui_1"],
+    "layer": 20,
+    "color": [[0, 3]],
+    "desc": "U TRES controls. Down left."
+  },
+  {
+    "name": "ui_2",
+    "sprite": ["ui_2"],
+    "layer": 20,
+    "color": [[0, 3]],
+    "desc": "U TRES controls. Down."
+  },
+  {
+    "name": "ui_3",
+    "sprite": ["ui_3"],
+    "layer": 20,
+    "color": [[0, 3]],
+    "desc": "U TRES controls. Down right."
+  },
+  {
+    "name": "ui_4",
+    "sprite": ["ui_4"],
+    "layer": 20,
+    "color": [[0, 3]],
+    "desc": "U TRES controls. Left."
+  },
+  {
+    "name": "ui_6",
+    "sprite": ["ui_6"],
+    "layer": 20,
+    "color": [[0, 3]],
+    "desc": "U TRES controls. Right."
+  },
+  {
+    "name": "ui_7",
+    "sprite": ["ui_7"],
+    "layer": 20,
+    "color": [[0, 3]],
+    "desc": "U TRES controls. Up left."
+  },
+  {
+    "name": "ui_8",
+    "sprite": ["ui_8"],
+    "layer": 20,
+    "color": [[0, 3]],
+    "desc": "U TRES controls. Up."
+  },
+  {
+    "name": "ui_9",
+    "sprite": ["ui_9"],
+    "layer": 20,
+    "color": [[0, 3]],
+    "desc": "U TRES controls. Up right."
+  },
+  {
+    "name": "ui_w",
+    "sprite": ["ui_w"],
+    "layer": 20,
+    "color": [[0, 3]],
+    "desc": "U controls. Up."
+  },
+  {
+    "name": "ui_a",
+    "sprite": ["ui_a"],
+    "layer": 20,
+    "color": [[0, 3]],
+    "desc": "U controls. Left."
+  },
+  {
+    "name": "ui_s",
+    "sprite": ["ui_s"],
+    "layer": 20,
+    "color": [[0, 3]],
+    "desc": "U controls. Down."
+  },
+  {
+    "name": "ui_d",
+    "sprite": ["ui_d"],
+    "layer": 20,
+    "color": [[0, 3]],
+    "desc": "U controls. Right."
+  },
+  {
+    "name": "ui_arrow",
+    "sprite": ["ui_right"],
+    "layer": 20,
+    "color": [[0, 3]],
+    "rotate": true,
+    "desc": "U TOO controls. Rotatable!",
+    "tags": ["dpad", "d-pad", "directional pad", "arrow keys"]
+  },
+  {
+    "name": "ui_i",
+    "sprite": ["ui_i"],
+    "layer": 20,
+    "color": [[0, 3]],
+    "desc": "U TRES controls. Up."
+  },
+  {
+    "name": "ui_j",
+    "sprite": ["ui_j"],
+    "layer": 20,
+    "color": [[0, 3]],
+    "desc": "U TRES controls. Left."
+  },
+  {
+    "name": "ui_k",
+    "sprite": ["ui_k"],
+    "layer": 20,
+    "color": [[0, 3]],
+    "desc": "U TRES controls. Down."
+  },
+  {
+    "name": "ui_l",
+    "sprite": ["ui_l"],
+    "layer": 20,
+    "color": [[0, 3]],
+    "desc": "U TRES controls. Right."
+  },
+  {
+    "name": "ui_e",
+    "sprite": ["ui_e"],
+    "layer": 20,
+    "color": [[0, 3]],
+    "desc": "The ZA WARUDO button."
+  },
+  {
+    "name": "ui_walk",
+    "sprite": ["ui_walk"],
+    "layer": 20,
+    "color": [[0, 3]]
+  },
+  {
+    "name": "ui_activat",
+    "sprite": ["ui_activat"],
+    "layer": 20,
+    "color": [[0, 3]]
+  },
+  {
+    "name": "ui_leftclick",
+    "sprite": ["ui_left_click"],
+    "layer": 20,
+    "color": [[0, 3]],
+    "desc": "Trigger CLIKT."
+  },
+  {
+    "name": "ui_rightclick",
+    "sprite": ["ui_right_click"],
+    "layer": 20,
+    "color": [[0, 3]],
+    "desc": "See what's on the tile you clicked!"
+  },
+  {
+    "name": "ui_clik",
+    "sprite": ["ui_clik"],
+    "layer": 20,
+    "color": [[0, 3]]
+  },
+  {
+    "name": "ui_5",
+    "sprite": ["ui_5"],
+    "layer": 20,
+    "color": [[0, 3]],
+    "desc": "The other wait key."
+  },
+  {
+    "name": "ui_space",
+    "sprite": ["ui_space"],
+    "layer": 20,
+    "color": [[0, 3]],
+    "desc": "The wait key."
+  },
+  {
+    "name": "ui_z",
+    "sprite": ["ui_z"],
+    "layer": 20,
+    "color": [[0, 3]],
+    "desc": "The undo key."
+  },
+  {
+    "name": "ui_r",
+    "sprite": ["ui_r"],
+    "layer": 20,
+    "color": [[0, 3]],
+    "desc": "The restart key."
+  },
+  {
+    "name": "ui_reset",
+    "sprite": ["ui_reset"],
+    "layer": 20,
+    "color": [[0, 3]]
+  },
+  {
+    "name": "ui_undo",
+    "sprite": ["ui_undo"],
+    "layer": 20,
+    "color": [[0, 3]]
+  },
+  {
+    "name": "ui_wait",
+    "sprite": ["ui_wait"],
+    "layer": 20,
+    "color": [[0, 3]]
+  },
+  {
+    "name": "ui_0",
+    "sprite": ["ui_0"],
+    "layer": 20,
+    "color": [[0, 3]],
+    "desc": "The other undo key."
+  },
+  {
+    "name": "ui_box",
+    "sprite": ["ui_box"],
+    "layer": 20,
+    "color": [[0, 3]],
+    "desc": "Empty.",
+    "tags": ["square"]
+  },
+  {
+    "name": "ui_q",
+    "sprite": ["ui_q"],
+    "layer": 20,
+    "color": [[0, 3]]
+  },
+  {
+    "name": "ui_t",
+    "sprite": ["ui_t"],
+    "layer": 20,
+    "color": [[0, 3]]
+  },
+  {
+    "name": "ui_y",
+    "sprite": ["ui_y"],
+    "layer": 20,
+    "color": [[0, 3]]
+  },
+  {
+    "name": "ui_u",
+    "sprite": ["ui_u"],
+    "layer": 20,
+    "color": [[0, 3]]
+  },
+  {
+    "name": "ui_o",
+    "sprite": ["ui_o"],
+    "layer": 20,
+    "color": [[0, 3]]
+  },
+  {
+    "name": "ui_p",
+    "sprite": ["ui_p"],
+    "layer": 20,
+    "color": [[0, 3]]
+  },
+  {
+    "name": "ui_f",
+    "sprite": ["ui_f"],
+    "layer": 20,
+    "color": [[0, 3]],
+    "desc": "Triggers PRESS F2."
+  },
+  {
+    "name": "ui_g",
+    "sprite": ["ui_g"],
+    "layer": 20,
+    "color": [[0, 3]]
+  },
+  {
+    "name": "ui_h",
+    "sprite": ["ui_h"],
+    "layer": 20,
+    "color": [[0, 3]]
+  },
+  {
+    "name": "ui_;",
+    "sprite": ["ui_;"],
+    "layer": 20,
+    "color": [[0, 3]]
+  },
+  {
+    "name": "ui_'",
+    "sprite": ["ui_'"],
+    "layer": 20,
+    "color": [[0, 3]]
+  },
+  {
+    "name": "ui_return",
+    "sprite": ["ui_return"],
+    "layer": 20,
+    "color": [[0, 3]],
+    "desc": "in the editor, obtain object matching your search term if it exists (by code name, not letter aliases)"
+  },
+  {
+    "name": "ui_x",
+    "sprite": ["ui_x"],
+    "layer": 20,
+    "color": [[0, 3]]
+  },
+  {
+    "name": "ui_c",
+    "sprite": ["ui_c"],
+    "layer": 20,
+    "color": [[0, 3]]
+  },
+  {
+    "name": "ui_v",
+    "sprite": ["ui_v"],
+    "layer": 20,
+    "color": [[0, 3]]
+  },
+  {
+    "name": "ui_b",
+    "sprite": ["ui_b"],
+    "layer": 20,
+    "color": [[0, 3]]
+  },
+  {
+    "name": "ui_n",
+    "sprite": ["ui_n"],
+    "layer": 20,
+    "color": [[0, 3]]
+  },
+  {
+    "name": "ui_m",
+    "sprite": ["ui_m"],
+    "layer": 20,
+    "color": [[0, 3]]
+  },
+  {
+    "name": "ui_,",
+    "sprite": ["ui_,"],
+    "layer": 20,
+    "color": [[0, 3]]
+  },
+  {
+    "name": "ui_.",
+    "sprite": ["ui_."],
+    "layer": 20,
+    "color": [[0, 3]]
+  },
+  {
+    "name": "ui_/",
+    "sprite": ["ui_slash"],
+    "layer": 20,
+    "color": [[0, 3]]
+  },
+  {
+    "name": "ui_-",
+    "sprite": ["ui_-"],
+    "layer": 20,
+    "color": [[0, 3]]
+  },
+  {
+    "name": "ui_=",
+    "sprite": ["ui_="],
+    "layer": 20,
+    "color": [[0, 3]]
+  },
+  {
+    "name": "ui_`",
+    "sprite": ["ui_`"],
+    "layer": 20,
+    "color": [[0, 3]]
+  },
+  {
+    "name": "ui_ctrl",
+    "sprite": ["ui_ctrl"],
+    "layer": 20,
+    "color": [[0, 3]],
+    "desc": "hold when placing an object to stack objects, including multiple of the same one\nctrl+enter with 1-6 chars in selector search bar to get a custom letter"
+  },
+  {
+    "name": "ui_alt",
+    "sprite": ["ui_alt"],
+    "layer": 20,
+    "color": [[0, 3]]
+  },
+  {
+    "name": "ui_shift",
+    "sprite": ["ui_shift"],
+    "layer": 20,
+    "color": [[0, 3]],
+    "desc": "hold when placing an object to stack objects (unless its the same object)\nshift + wasd in editor to shift the whole level around"
+  },
+  {
+    "name": "ui_del",
+    "sprite": ["ui_del"],
+    "layer": 20,
+    "color": [[0, 3]]
+  },
+  {
+    "name": "ui_[",
+    "sprite": ["ui_["],
+    "layer": 20,
+    "color": [[0, 3]]
+  },
+  {
+    "name": "ui_gui",
+    "sprite": ["ui_gui"],
+    "layer": 20,
+    "color": [[0, 3]],
+    "desc": "Changes sprites depending on user's Operating System.",
+    "tags": ["windows", "command", "cmd"]
+  },
+  {
+    "name": "ui_tab",
+    "sprite": ["ui_tab"],
+    "layer": 20,
+    "color": [[0, 3]],
+    "desc": "Used to open the tile selector in the menu. Though I think you already know that."
+  },
+  {
+    "name": "ui_cap",
+    "sprite": ["ui_cap_on"],
+    "layer": 20,
+    "color": [[0, 3]],
+    "tags": ["caps lock"]
+  },
+  {
+    "name": "ui_esc",
+    "sprite": ["ui_esc"],
+    "layer": 20,
+    "color": [[0, 3]],
+    "desc": "There is no ESC\nOpen the menu. Useful for returning to map.",
+    "tags": ["caps lock"]
+  }
+]

@@ -8,8 +8,9 @@ tween = require "lib/tween"
 ease = require 'lib.easing'
 colr = require "lib/colr-print"
 require "ui"
-require "values"
 require "utils"
+require "values"
+do_utils_thing()
 require "audio"
 require "game/unit"
 require "game/movement"

@@ -1,0 +1,36 @@
+[
+  {
+    "name": "txt_press",
+    "sprite": ["tutorial_press"],
+    "types": ["object"],
+    "color": [[0, 3]],
+    "desc": "PRESS: Make PRESS F2 <property> to do something upon pressing F. Only some properties, like :(, will work!"
+  },
+  {
+    "name": "txt_f2",
+    "sprite": ["tutorial_f2"],
+    "types": ["verb_property", "verb"],
+    "color": [[0, 3]],
+    "desc": "F2: Used with PRESS."
+  },
+  {
+    "name": "txt_2edit",
+    "sprite": ["tutorial_edit"],
+    "types": ["property"],
+    "color": [[0, 3]],
+    "desc": "EDIT: Make PRESS F2 EDIT to unlock the level editor!"
+  },
+  {
+    "name": "txt_2pley",
+    "sprite": ["tutorial_play"],
+    "types": ["property"],
+    "color": [[0, 3]],
+    "tags": ["text_2pley"]
+  },
+  {
+    "name": "txt_f1",
+    "sprite": ["tutorial_f1"],
+    "types": ["verb_property", "verb"],
+    "color": [[0, 3]]
+  }
+]
