@@ -3586,8 +3586,8 @@ function split(inputstr, sep)
 end
 
 function selectLastLevels()
-  if not units_by_name["selctr"] then return end
-  local selctrs = units_by_name["selctr"]
+  local cursors = getUnitsWithEffect("curse")
+  if #cursors == 0 then return end
 
   local last_selected = readSaveFile{"levels", level_filename, "selected"} or {}
   if type(last_selected) ~= "table" then
@@ -3595,7 +3595,7 @@ function selectLastLevels()
   end
   
   for i,level in ipairs(last_selected) do
-    local selctr = selctrs[((i-1)%#selctrs)+1]
+    local selctr = cursors[((i-1)%#cursors)+1]
     for _,unit in ipairs(units) do
       if unit.special.level == level then
         moveUnit(selctr, unit.x, unit.y, nil, true)

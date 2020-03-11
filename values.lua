@@ -229,7 +229,7 @@ selector_grid_contents = {
   {
     0, "text_be", "text_&", "text_got", "text_n't", "text_every1", "text_no1", "text_text", "text_wurd", "text_txtify", "text_sublvl", "text_wait...", "text_mous", "text_clikt", "text_nxt", "text_stay ther", "lvl", "text_lvl",
     "bab", "text_bab", "text_u", "kee", "text_kee", "text_for dor", "text_goooo", "text_icy", "text_icyyyy", "text_behin u", "text_moar", "text_sans", "text_liek", "text_loop", "lin", "text_lin", "selctr", "text_selctr",
-    "keek", "text_keek", "text_walk", "dor", "text_dor", "text_ned kee", "text_frens", "text_pathz", "text_groop", "text_u too", "text_u tres", "text_delet", "text_haet", "text_mayb", "text_an", "text_that", "text_ignor", "text_...",
+    "keek", "text_keek", "text_walk", "dor", "text_dor", "text_ned kee", "text_frens", "text_groop", "text_u too", "text_u tres", "text_delet", "text_an", "text_haet", "text_mayb", "text_that", "text_ignor", "text_curse", "text_...",
     "flog", "text_flog", "text_:)", "colld", "text_colld", "text_fridgd", "text_direction", "text_ouch", "text_slep", "text_protecc", "text_sidekik", "text_brite", "text_lit", "text_tranparnt", "text_torc", "text_vs", "text_nuek", "text_''",
     "roc", "text_roc", "text_go away pls", "laav", "text_laav", "text_hotte","text_visit fren", "text_w/fren", "text_arond", "text_frenles", "text_copkat", "text_za warudo", "text_timles", "text_behind", "text_beside", "text_look away", "text_notranform", "this",
     "wal", "text_wal", "text_no go", "l..uv", "text_l..uv", "gras", "text_gras", "text_creat", "text_look at", "text_spoop", "text_yeet", "text_turn cornr", "text_corekt", "text_go arnd", "text_mirr arnd", "text_past", 0, "text_sing",
@@ -266,7 +266,7 @@ selector_grid_contents = {
   {
     "bab","text_bab","kat","text_kat","flof","text_flof","babby","text_babby","bunmy","text_bunmy",0,0,0,0,"selctr","text_selctr","lvl","text_lvl",
     "keek","text_keek","creb","text_creb","shrim","text_shrim","moo","text_moo","toby","text_toby",0,0,0,0,"this","text_mous","lin","text_lin",
-    "meem","text_meem","statoo","text_statoo","flamgo","text_flamgo","migri","text_migri","temmi","text_temmi",0,0,0,0,"text_gang","text_frens","text_groop","text_pathz",
+    "meem","text_meem","statoo","text_statoo","flamgo","text_flamgo","migri","text_migri","temmi","text_temmi",0,0,0,0,0,"text_frens","text_groop","text_gang",
     "skul","text_skul","beeee","text_beeee","gul","text_gul","kva","text_kva",0,0,0,0,0,0,"text_no1","text_every1","text_every2","text_every3",
     "ghost fren","text_ghost fren","fishe","text_fishe","starrfishe","text_starrfishe","pidgin","text_pidgin",0,0,0,0,0,0,"text_text","text_lethers","text_numa","text_toen",
     "robobot","text_robobot","snek","text_snek","sneel","text_sneel","swan","text_swan",0,0,0,0,0,0,0,"text_themself","text_yuiy","text_xplod",
@@ -322,7 +322,7 @@ selector_grid_contents = {
     "text_u","text_u too","text_u tres","text_y'all","text_walk","text_:)","text_no swim","text_ouch","text_protecc",0,"text_nxt","text_stay ther","text_wont","text_giv",0,"text_rp",0,"text_look away",
     "text_go","text_goooo","text_icy","text_icyyyy","text_stubbn","text_:(","text_ned kee","text_for dor","text_wurd",0,"text_sublvl","text_loop","text_oob","text_frenles","text_timles","text_lit","text_corekt","text_rong",
     "text_no go","text_go away pls","text_come pls","text_sidekik","text_diagkik","text_delet","text_hotte","text_fridgd","text_thingify",0,"text_dragbl","text_no drag","text_alt","text_clikt","text_past","text_wun","text_an","text_mayb",
-    "text_visit fren","text_slep","text_shy...","text_behin u",0,"text_:o","text_moar","text_split","text_txtify",0,"text_rythm",0,0,"text_wait...","text_samefloat","text_samepaint","text_sameface",0,
+    "text_visit fren","text_slep","text_shy...","text_behin u",0,"text_:o","text_moar","text_split","text_txtify",0,"text_rythm","text_curse",0,"text_wait...","text_samefloat","text_samepaint","text_sameface",0,
     "text_flye","text_tall","text_haet skye","text_haet flor",0,"text_un:)","text_gone","text_nuek","text_notranform",0,0,0,0,"text_w/fren","text_arond","text_sans","text_seen by","text_behind",
     "text_diag","text_ortho","text_go my way","text_zip",0,"text_B)","text_cool",0,0,0,0,0,0,"text_that","text_that be","text_that got","text_meow","text_beside",
     "text_turn cornr","text_folo wal","text_hopovr","text_reflecc",0,0,0,0,0,0,0,0,0,0,0,0,0,"text_n't",
@@ -342,7 +342,7 @@ tile_grid_height = 15
 layer list:
 1: bordr, and nothing else
 2: full tile things (wal, watr, laav)
-3: other "low" objects (gras, chekr)
+3: other "low" objects (gras, chekr, selctr)
 4: bg objects (extre, pudll)
 5: bg particles (sparkl, rein)
 6: collectables (flog, boll)
@@ -357,7 +357,6 @@ layer list:
 22: fg objects (jail)
 23: lins
 24: lvls
-25: selctr
 100: the real bab dictator
 ]]
 
@@ -2544,7 +2543,7 @@ tiles_list = {
     layer = 24,
     rotate = true,
     tags = {"level", "path"},
-    desc = "its a lavel, working like baba. LVL BE PATHZ & NOGO by default."
+    desc = "its a lavel, working like baba. LVL BE NOGO by default."
   },
   -- 198
   {
@@ -2552,7 +2551,7 @@ tiles_list = {
     sprite = "selctr",
     type = "object",
     color = {3, 3},
-    layer = 25,
+    layer = 3,
     tags = {"cursor", "selector"},
     desc = "used to select levis"
   },
@@ -3719,14 +3718,14 @@ tiles_list = {
   },
 	-- 312
   {
-    name = "text_pathz",
-    sprite = "text_pathz",
+    name = "text_curse",
+    sprite = "text_curse",
     type = "text",
-    texttype = {object = true, group = true},
-    color = {5, 3},
+    texttype = {property = true},
+    color = {3, 3},
     layer = 20,
-    tags = {"group","paths"},
-    desc = "PATHZ: A variant of FRENS. SELCTR inherently lieks PATHZ.",
+    tags = {"select"},
+    desc = "CURSE: Makes object move like U on lins/lvls and able to enter lvls (also goes through walls)",
   },
 	-- 313
   {

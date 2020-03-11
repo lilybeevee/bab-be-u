@@ -1343,7 +1343,7 @@ function miscUpdates()
   for i,unit in ipairs(units) do
     if not deleted and not unit.removed_final then
       local tile = tiles_list[unit.tile]
-      unit.layer = tile.layer + (20 * (graphical_property_cache["flye"][unit] or 0))
+      unit.layer = unit.layer + (24 * (hasProperty(unit,"curse") and 1 or 0)) + (20 * (graphical_property_cache["flye"][unit] or 0))
       unit.sprite = deepCopy(tiles_list[unit.tile].sprite)
       
       if unit.fullname == "os" then
@@ -2947,8 +2947,14 @@ function convertUnits(pass)
           end
           local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true, nil, nil, color)
           if (new_unit ~= nil) then
-            if rule.object.name == "lvl" and not new_unit.color_override then
-              new_unit.color_override = unit.color_override or unit.color
+            if rule.object.name == "lvl" then
+              if unit.special.level then
+                writeSaveFile(true, {"levels", unit.special.level, "seen"})
+                unit.special.visibility = "open"
+              end
+              if not new_unit.color_override then
+                new_unit.color_override = unit.color_override or unit.color
+              end
             end
             new_unit.special = copyTable(unit.special)
             for k,v in pairs(new_special) do

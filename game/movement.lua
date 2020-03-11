@@ -164,7 +164,7 @@ function doMovement(movex, movey, key)
   updateGroup()
 
   local move_stage = -1
-  while move_stage < 3 do
+  while move_stage <= 3 do
     local moving_units = {}
     local moving_units_next = {}
     local already_added = {}
@@ -543,6 +543,21 @@ function doMovement(movex, movey, key)
             if #other.moves > 0 and not already_added[other] then
               table.insert(moving_units, other)
               already_added[other] = true
+            end
+          end
+        end
+      end
+    elseif move_stage == 3 and (movex ~= 0 or movey ~= 0) then
+      local u = getUnitsWithEffectAndCount("curse")
+      for unit,uness in pairs(u) do
+        if not hasProperty(unit, "slep") and slippers[unit.id] == nil and timecheck(unit,"be","curse") then
+          if key == "wasd" or key == "udlr" or key == "numpad" or key == "ijkl" then
+            local dir = dirs8_by_offset[movex][movey]
+            table.insert(unit.moves, {reason = "curse", dir = dir, times = 1})
+            print("its one")
+            if #unit.moves > 0 and not already_added[unit] then
+              table.insert(moving_units, unit)
+              already_added[unit] = true
             end
           end
         end
@@ -1724,8 +1739,8 @@ function canMoveCore(unit,dx,dy,dir,o) --pushing, pulling, solid_name, reason, p
     return true,{},{}
   end
   
-  o.pushing = not hasProperty(unit, "shy") and o.pushing
-  o.pulling = not hasProperty(unit, "shy") and o.pulling
+  o.pushing = not hasProperty(unit, "shy...") and o.pushing
+  o.pulling = not hasProperty(unit, "shy...") and o.pulling
   
   --apply munwalk, sidestep and diagstep here (only if making a push move, to not mess up other checks)
   if (o.pushing and walkdirchangingrulesexist) then
@@ -1783,7 +1798,7 @@ function canMoveCore(unit,dx,dy,dir,o) --pushing, pulling, solid_name, reason, p
   end
   
   --STUB: We probably want to do something more explicit like synthesize bordr units around the border so they can be explicitly moved/created/destroyed/have conditional rules apply to them.
-  if not (inBounds(x,y) or hasRule("bordr","ben't","no go") or not ignoreCheck(unit,"bordr")) then
+  if not inBounds(x,y) and (not (hasRule("bordr","ben't","no go") or not ignoreCheck(unit,"bordr") or o.reason == "curse") or hasRule(unit,"liek",outerlvl)) then
     if o.pushing and hasProperty(unit, "ouch") and not hasProperty(unit, "protecc") and (o.reason ~= "walk" or hasProperty(unit, "stubbn")) then
       table.insert(specials, {"weak", {unit}})
       return true,movers,specials
@@ -1797,6 +1812,9 @@ function canMoveCore(unit,dx,dy,dir,o) --pushing, pulling, solid_name, reason, p
   if hasProperty(unit, "ortho") and (not hasProperty(unit, "diag")) and (dx ~= 0 and dy ~= 0) then
     return false,movers,specials
   end
+
+  --allow curse to move onto any liek'd objects
+  local curse_success = false
   
   --bounded: if we're bounded and there are no units in the destination that satisfy a bounded rule, AND there's no units at our feet that would be moving there to carry us, we can't go
   --we used to have a fast track, but now selector is ALWAYS bounded to stuff, so it's never going to be useful.
@@ -1807,12 +1825,16 @@ function canMoveCore(unit,dx,dy,dir,o) --pushing, pulling, solid_name, reason, p
     for i,ruleparent in ipairs(isbounded) do
       local liek = ruleparent.rule.object.name
       local success = false
-      if hasRule(unit,"liek",liek) and hasRule(unit,"haet",liek) then
+      if hasRule(unit,"liek",outerlvl) then
+        success = true
+        curse_success = true
+      elseif hasRule(unit,"liek",liek) and hasRule(unit,"haet",liek) then
         success = true
       end
       for _,v in ipairs(getUnitsOnTile(x, y, nil, false, nil, true)) do
         if hasRule(unit, "liek", v) and ignoreCheck(unit,v) then
           success = true
+          curse_success = true
           break
         end
       end
@@ -1824,6 +1846,7 @@ function canMoveCore(unit,dx,dy,dir,o) --pushing, pulling, solid_name, reason, p
             local y2 = update.payload.y
             if x2 == x and y2 == y and hasRule(unit, "liek", unit2) and ignoreCheck(unit,unit2) then
               success = true
+              curse_success = true
               break
             end
           end
@@ -1897,6 +1920,30 @@ function canMoveCore(unit,dx,dy,dir,o) --pushing, pulling, solid_name, reason, p
       if (x == here.x) and (y == here.y) then
         return false,movers,specials
       end
+    end
+  end
+
+  if o.reason == "curse" then
+    for _,v in ipairs(getUnitsOnTile(x, y, nil, false, nil, true)) do
+      if (v ~= unit and not v.already_moving and sameFloat(unit,v,true)) then
+        if v.special and v.special.level then
+          if v.special.visibility == "open" then
+            curse_success = true
+          elseif v.fullname == "lvl" and v.special.visibility == "locked" then
+            return false,movers,specials
+          end
+        elseif v.name == "lin" then
+          if v.special and v.special.pathlock and v.special.pathlock ~= "none" then
+            return false,movers,specials
+          else
+            curse_success = true
+          end
+        end
+      end
+    end
+
+    if not curse_success then
+      return false,movers,specials
     end
   end
   
@@ -1978,7 +2025,7 @@ function canMoveCore(unit,dx,dy,dir,o) --pushing, pulling, solid_name, reason, p
                 end
                 --print(dump(movers))
               elseif push then
-                stopped = stopped or sameFloat(unit, v)
+                stopped = stopped or (sameFloat(unit, v) and o.reason ~= "curse")
               end
             else
               --single units have to be able to move themselves to be pushed
@@ -1996,11 +2043,11 @@ function canMoveCore(unit,dx,dy,dir,o) --pushing, pulling, solid_name, reason, p
                   table.insert(movers, mover)
                 end
               elseif push then
-                stopped = stopped or sameFloat(unit, v)
+                stopped = stopped or (sameFloat(unit, v) and o.reason ~= "curse")
               end
             end
           elseif push then
-            stopped = stopped or sameFloat(unit, v)
+            stopped = stopped or (sameFloat(unit, v) and o.reason ~= "curse")
           end
         else
           -- print("fail (or would_swap_with)")
@@ -2010,13 +2057,13 @@ function canMoveCore(unit,dx,dy,dir,o) --pushing, pulling, solid_name, reason, p
       --if/elseif chain for everything that sets stopped to true if it's true - no need to check the remainders after all! (but if anything ignores flye, put it first, like haet!)
       if rules_with["haet"] ~= nil and hasRule(unit, "haet", v) and not hasRule(unit,"liek",v) and ignoreCheck(unit,v) then
         stopped = true
-      elseif hasProperty(v, "no go") then --Things that are STOP stop being PUSH or PULL, unlike in Baba. Also unlike Baba, a wall can be floated across if it is not tall!
+      elseif hasProperty(v, "no go") and o.reason ~= "curse" then --Things that are STOP stop being PUSH or PULL, unlike in Baba. Also unlike Baba, a wall can be floated across if it is not tall!
         stopped = stopped or (sameFloat(unit, v) and ignoreCheck(unit,v,"no go"))
-      elseif hasProperty(v, "sidekik") and not hasProperty(v, "go away pls") and not would_swap_with then
+      elseif hasProperty(v, "sidekik") and not hasProperty(v, "go away pls") and not would_swap_with and o.reason ~= "curse" then
         stopped = stopped or (sameFloat(unit, v) and ignoreCheck(unit,v,"sidekik"))
-      elseif hasProperty(v, "diagkik") and not hasProperty(v, "go away pls") and not would_swap_with then
+      elseif hasProperty(v, "diagkik") and not hasProperty(v, "go away pls") and not would_swap_with and o.reason ~= "curse" then
         stopped = stopped or (sameFloat(unit, v) and ignoreCheck(unit,v,"diagkik"))
-      elseif hasProperty(v, "come pls") and not hasProperty(v, "go away pls") and not would_swap_with and not pulling then
+      elseif hasProperty(v, "come pls") and not hasProperty(v, "go away pls") and not would_swap_with and not pulling and o.reason ~= "curse" then
         stopped = stopped or (sameFloat(unit, v) and ignoreCheck(unit,v,"come pls"))
       elseif hasProperty(v, "reflecc") and refleccPrevents(v.dir, dx, dy) then
         stopped = stopped or (sameFloat(unit, v) and ignoreCheck(unit,v,"reflecc"))
@@ -2100,8 +2147,8 @@ end
 
 function getNextLevels()
   local next_levels, next_level_objs = {}, {}
-  local us = getUnitsWithEffect("u")
-  for _,unit in ipairs(us) do
+  local curses = getUnitsWithEffect("curse")
+  for _,unit in ipairs(curses) do
     local lvls = getUnitsOnTile(unit.x, unit.y, nil, false, unit)
     for _,lvl in ipairs(lvls) do
       if lvl.special.level and lvl.special.visibility == "open" then
