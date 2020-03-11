@@ -1330,7 +1330,7 @@ tiles_list = {
     layer = 11,
     sing = "pipipi",
     features = { sans = {x=19, y=7, w=2, h=2} },
-    tags = {"devs", "chars", "thefox", "oatmealine", "puyopuyo tetris"},
+    tags = {"devs", "chars", "oatmealine", "puyopuyo tetris"},
     desc = "pi pi piiii!!!",
   },
   -- 88
@@ -1341,7 +1341,7 @@ tiles_list = {
     texttype = {object = true},
     color = {2, 4},
     layer = 20,
-    tags = {"devs", "chars", "thefox", "oatmealine", "puyopuyo tetris"},
+    tags = {"devs", "chars", "oatmealine", "puyopuyo tetris"},
   },
   -- 89
   {
@@ -4356,7 +4356,7 @@ tiles_list = {
     layer = 11,
     sing = "pipipi",
     features = { sans = {x=19, y=7, w=2, h=2} },
-    tags = {"chars", "thefox", "puyopuyo tetris"},
+    tags = {"chars", "oatmealine", "puyopuyo tetris"},
     desc = "oh no am square????"
   },
   -- 371
@@ -4368,7 +4368,7 @@ tiles_list = {
     layer = 11,
     sing = "pipipi",
     features = { sans = {x=17, y=7, w=2, h=2} },
-    tags = {"chars", "thefox", "puyopuyo tetris"},
+    tags = {"chars", "oatmealine", "puyopuyo tetris"},
     desc = "TRIASNGLE?????? this is ridicouuolus",
   },
   -- 372
@@ -4380,7 +4380,7 @@ tiles_list = {
     color = {2, 4},
     layer = 20,
     features = { sans = {x=19, y=7, w=2, h=2} },
-    tags = {"chars", "thefox", "puyopuyo tetris"},
+    tags = {"chars", "oatmealine", "puyopuyo tetris"},
   },
   -- 373
   {
@@ -4391,7 +4391,7 @@ tiles_list = {
     color = {2, 4},
     layer = 20,
     features = { sans = {x=19, y=7, w=2, h=2} },
-    tags = {"chars", "thefox", "puyopuyo tetris"},
+    tags = {"chars", "oatmealine", "puyopuyo tetris"},
   },
   -- 374
   {
