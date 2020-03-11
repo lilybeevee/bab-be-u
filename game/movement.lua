@@ -1852,7 +1852,7 @@ function canMoveCore(unit,dx,dy,dir,o) --pushing, pulling, solid_name, reason, p
           end
         end
       end
-      if not success then
+      if not success and o.reason ~= "curse" then
         return false,{},{}
       end
     end
