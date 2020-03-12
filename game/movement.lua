@@ -384,12 +384,14 @@ function doMovement(movex, movey, key)
                 visited[stalker.x+1][stalker.y+1] = 1
                 local queue = {{x = stalker.x, y = stalker.y}}
                 (function () -- 'return' allows breaking from the outer loop, skipping inner loops
+                             -- smh notnat lua has gotos for a reason
                   local first_loop = true
                   while (queue[1]) do
                     local pos = table.remove(queue, 1)
                     for i=1,8 do
-                      if hasProperty(stalker, "ortho") and not hasProperty(stalker, "diag") and i % 2 == 0 then i = i + 1 end
-                      if hasProperty(stalker, "diag") and not hasProperty(stalker, "ortho") and i % 2 == 1 then i = i + 1 end
+                      local isDiag = i%2 == 0
+                      if hasProperty(stalker, "ortho") and not hasProperty(stalker, "diag") and isDiag then i = i + 1 end
+                      if hasProperty(stalker, "diag") and not hasProperty(stalker, "ortho") and not isDiag then i = i + 1 end
                       if i > 8 then break end
                       local dx = ({1,1,0,-1,-1,-1,0,1})[i]
                       local dy = ({0,1,1,1,0,-1,-1,-1})[i]
@@ -412,8 +414,8 @@ function doMovement(movex, movey, key)
                     end
                     first_loop = false
                   end
-                end)()
-              end
+                end)() --function
+              end -- if not found
               -- print(dump(visited))
               if found_target then
                 if found_target ~= 0 then
@@ -450,7 +452,7 @@ function doMovement(movex, movey, key)
               --     end
               --   end
               end
-            end
+            end --if testConds
           end
         end
       end

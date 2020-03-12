@@ -455,7 +455,7 @@ function findLetterSentences(str, index_, sentences_, curr_sentence_, start_) --
         start = true
       end
       local sto_sentence = copyTable(curr_sentence)
-      for j=1,1 do --set above 1 if you wanna try full asterisks support
+      for j=1,99 do --set above 1 if you wanna try full asterisks support
         --print("j="..j.."("..temp_text_list[substr][j]..")")
         if text_in_tiles[substr] then table.insert(curr_sentence, text_in_tiles[substr])
         else --something different needs to be done here but idk what
