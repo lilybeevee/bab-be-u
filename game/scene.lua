@@ -798,30 +798,30 @@ function scene.draw(dt)
 
     if unit.fullname == "text_gay" then
       if unit.active then
-        unit.sprite = "text_gay-colored"
+        unit.sprite = "text/gay-colored"
       else
-        unit.sprite = "text_gay"
+        unit.sprite = "text/gay"
       end
     end
     if unit.fullname == "text_tranz" then
       if unit.active then
-        unit.sprite = "text_tranz-colored"
+        unit.sprite = "text/tranz-colored"
       else
-        unit.sprite = "text_tranz"
+        unit.sprite = "text/tranz"
       end
     end
     if unit.fullname == "text_enby" then
       if unit.active then
-        unit.sprite = "text_enby-colored"
+        unit.sprite = "text/enby-colored"
       else
-        unit.sprite = "text_enby"
+        unit.sprite = "text/enby"
       end
     end
     if unit.fullname == "text_now" then
       if doing_past_turns then
-        unit.sprite = "text_latr"
+        unit.sprite = "text/latr"
       else
-        unit.sprite = "text_now"
+        unit.sprite = "text/now"
       end
     end
 

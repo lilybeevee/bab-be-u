@@ -1656,7 +1656,7 @@ function miscUpdates()
       end
 
       if unit.fullname == "text_katany" then
-        unit.sprite = "text_katany"
+        unit.sprite = "text/katany"
         if rules_with_unit[unit] then
           for _,rules in ipairs(rules_with_unit[unit]) do
             if rules.rule.object.unit == unit then
@@ -1664,7 +1664,7 @@ function miscUpdates()
               if tile_id then
                 local tile = tiles_list[tile_id]
                 if tile.features and tile.features.katany and tile.features.katany.nya then
-                  unit.sprite = "text_katanya"
+                  unit.sprite = "text/katanya"
                 end
               end
             end
