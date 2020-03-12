@@ -1,0 +1,42 @@
+order of the things (because consistency is important):
+name
+sprite
+sprite transforms
+meta sprites
+meta sprite transforms (is that a thing)
+(text) types
+layer
+color
+painted (formerly known as "colored")
+txtify
+thingify
+wobblify
+babify
+rotate
+wobble
+features
+voice
+desc
+tags
+pronouns
+
+layer notes:
+1: bordr, and nothing else
+2: full tile things (wal, watr, laav)
+3: other "low" objects (gras, chekr)
+4: bg objects (extre, pudll)
+5: bg particles (sparkl, rein)
+6: collectables (flog, boll)
+7: objects that take a lot of area (boux, luv)
+8: rest of objects
+9: bg characters (skul)
+10: characters that take a lot of area (boooo, lila)
+11: rest of characters
+19: fake text (prop)
+20: text
+21: text that is slightly bigger than other text (thicc, rithere)
+22: fg objects (jail)
+23: lins
+24: lvls
+25: selctr
+100: the real bab dictator

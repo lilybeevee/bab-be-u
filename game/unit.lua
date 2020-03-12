@@ -251,14 +251,14 @@ function moveBlock()
   local hasthered = {}
   for ri,unit in ipairs(isthere) do
     --the early stuff is the same as "her"; finds "thr"s and sort them
-    local already = false
+    local dontmove = false
     for _,moved in ipairs(hasthered) do
       if unit == moved then
-        already = true
+        dontmove = true
       end
     end
     
-    if not already then
+    if not dontmove then
       local theres = {}
       local found = false
       
@@ -281,17 +281,38 @@ function moveBlock()
         local dy = dirs8[there.dir][2]
         local dir = there.dir
         
-        --get first position of there destination, which is the tile in front of the text, since that interpretation makes the most sense to me
-        local tx = there.x+dx
-        local ty = there.y+dy
+        --get first position of there destination, which is the tile the text is on, so we can check whether the first space is valid
+        local tx = there.x
+        local ty = there.y
         
-        --while it hasn't found a wall, check the next tile until is finds one, updating tx and ty each time
+        --code has gotten more complicated now, more comments added
         local stopped = false
+        local valid = false
+        local loopstage = 0
         while not stopped do
-          if canMove(unit,dx,dy,dir,false,false,nil,nil,nil,tx,ty) then
+          local canmove = canMove(unit,dx,dy,dir,{start_x = tx, start_y = ty, ignorestukc = true}) --simplify since we check this more often now
+          
+          --while valid is false, it check this. this makes it so it's false until you get out of the stops, or always true if there wasn't a stop at first
+          if not valid then
+            valid = canmove
+          else --if it's found a valid space to be in, start checking to see when it gets stopped by a wall
+            stopped = not canmove
+          end
+          
+          if not stopped then --as long as it hasn't found a valid place to stop at, check the next tile
             dx,dy,dir,tx,ty = getNextTile(there, dx, dy, dir, nil, tx, ty)
-          else
-            stopped = true
+          end
+          
+          --infinite check
+          loopstage = loopstage + 1
+          if loopstage > 1000 then
+            if valid then --if the unit has found a valid space to be, that means it's stuck in a loop of valid places, so it should infloop
+              print("movement infinite loop! (1000 attempts at thr)")
+              destroyLevel("infloop")
+            else --if the unit hasn't found a valid space, that means it's stuck in walls, meaning it never has the opportunity to be moved
+              dontmove = true
+            end
+            break
           end
         end
         
@@ -311,7 +332,7 @@ function moveBlock()
         end
       end
       
-      if not found then
+      if not found and not dontmove then
         addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
         moveUnit(unit,ftx,fty)
         table.insert(hasthered,unit)
@@ -509,7 +530,7 @@ function updateUnits(undoing, big_update)
                 x = x*2
                 y = y*2
               end
-              if canMove(unit, x, y, unit.dir, false, false, unit.name) then
+              if canMove(unit, x, y, unit.dir, {solid_name = unit.name}) then
                 if unit.class == "unit" then --idk what any of this means but i'm assuming it's good?
                   local new_unit = createUnit(tiles_by_name[unit.fullname], unit.x, unit.y, unit.dir)
                   addUndo({"create", new_unit.id, false})
@@ -687,7 +708,7 @@ function updateUnits(undoing, big_update)
           local dir2 = dirAdd(unit.dir,4)
           local dx2 = dirs8[dir2][1]
           local dy2 = dirs8[dir2][2]
-          if canMove(on, dx1, dy1, dir1, false, false) then
+          if canMove(on, dx1, dy1, dir1) then
             if on.class == "unit" then
               local new_unit = createUnit(tiles_by_name[on.fullname], on.x, on.y, dir1)
               addUndo({"create", new_unit.id, false})
@@ -701,7 +722,7 @@ function updateUnits(undoing, big_update)
               end
             end
           end
-          if canMove(on, dx2, dy2, dir2, false, false) then
+          if canMove(on, dx2, dy2, dir2) then
             if on.class == "unit" then
               local new_unit = createUnit(tiles_by_name[on.fullname], on.x, on.y, dir2)
               addUndo({"create", new_unit.id, false})
@@ -741,7 +762,7 @@ function updateUnits(undoing, big_update)
                 local dir2 = dirAdd(unit.dir,4)
                 local dx2 = dirs8[dir2][1]
                 local dy2 = dirs8[dir2][2]
-                if canMove(on, dx1, dy1, dir1, false, false) then
+                if canMove(on, dx1, dy1, dir1) then
                   if on.class == "unit" then
                     splits_per_tile[coords] = splits_per_tile[coords] + 1
                     local new_unit = createUnit(tiles_by_name[on.fullname], on.x, on.y, dir1)
@@ -756,7 +777,7 @@ function updateUnits(undoing, big_update)
                     end
                   end
                 end
-                if canMove(on, dx2, dy2, dir2, false, false) then
+                if canMove(on, dx2, dy2, dir2) then
                   if on.class == "unit" then
                     splits_per_tile[coords] = splits_per_tile[coords] + 1
                     local new_unit = createUnit(tiles_by_name[on.fullname], on.x, on.y, dir2)
@@ -788,7 +809,7 @@ function updateUnits(undoing, big_update)
             local ndir = dirs8[i]
             local dx = ndir[1]
             local dy = ndir[2]
-            if canMove(unit, dx, dy, i, false, false) then
+            if canMove(unit, dx, dy, i) then
               local new_unit = createUnit(tiles_by_name["lie/8"], unit.x, unit.y, i)
               addUndo({"create", new_unit.id, false})
               _, __, ___, x, y = getNextTile(unit, dx, dy, i, false)
@@ -1322,7 +1343,7 @@ function miscUpdates()
   for i,unit in ipairs(units) do
     if not deleted and not unit.removed_final then
       local tile = tiles_list[unit.tile]
-      unit.layer = tile.layer + (20 * (graphical_property_cache["flye"][unit] or 0))
+      unit.layer = unit.layer + (24 * (hasProperty(unit,"curse") and 1 or 0)) + (20 * (graphical_property_cache["flye"][unit] or 0))
       unit.sprite = deepCopy(tiles_list[unit.tile].sprite)
       
       if unit.fullname == "os" then
@@ -2325,7 +2346,7 @@ function levelBlock()
 end
 
 function changeDirIfFree(unit, dir)
-  if canMove(unit, dirs8[dir][1], dirs8[dir][2], dir, false, false, unit.name, "dir check") then
+  if canMove(unit, dirs8[dir][1], dirs8[dir][2], dir, {solid_name = unit.name, reason = "dir check"}) then
     addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
     unit.olddir = unit.dir
     updateDir(unit, dir)
@@ -2926,8 +2947,14 @@ function convertUnits(pass)
           end
           local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true, nil, nil, color)
           if (new_unit ~= nil) then
-            if rule.object.name == "lvl" and not new_unit.color_override then
-              new_unit.color_override = unit.color_override or unit.color
+            if rule.object.name == "lvl" then
+              if unit.special.level then
+                writeSaveFile(true, {"levels", unit.special.level, "seen"})
+                unit.special.visibility = "open"
+              end
+              if not new_unit.color_override then
+                new_unit.color_override = unit.color_override or unit.color
+              end
             end
             new_unit.special = copyTable(unit.special)
             for k,v in pairs(new_special) do
@@ -2942,6 +2969,18 @@ function convertUnits(pass)
           unit.removed = true
           local new_mouse = createMouse(unit.x, unit.y)
           addUndo({"create_cursor", new_mouse.id, created_from_id = unit.id})
+        end
+      end
+    end
+  end
+  
+  if hasProperty(outerlvl, "qt") then
+    for x=0,mapwidth-1 do
+      for y=0,mapheight-1 do
+        if #unitsByTile(x,y) == 0 then
+          local tile = tiles_by_name["l..uv"]
+          local new_unit = createUnit(tile, x, y, 1, true)
+          addUndo{"create", new_unit.id, true}
         end
       end
     end
@@ -3427,23 +3466,23 @@ function moveUnit(unit,x,y,portal,instant)
 end
 
 function updateDir(unit, dir, force)
+  local result = true
   if not force and rules_with ~= nil then
     if hasProperty(unit, "no turn") then
       return false
     end
     if hasRule(unit, "ben't", dirs8_by_name[dir]) then
-      return false
+      result = false
     end
     for i=1,8 do
       if hasRule(unit, "ben't", "spin"..i) then
-        if (dir == (unit.dir+i-1)%8+1) then return false end
+        if (dir == (unit.dir+i-1)%8+1) then result = false end
       end
       if hasProperty(unit, dirs8_by_name[i]) and dir ~= i then
-        unit.dir = i
-        return false
+        dir = i
+        result = false
       end
     end
-    if unit.dir == dir then return true end
   end
   if unit.name == "mous" then
     unit.dir = dir

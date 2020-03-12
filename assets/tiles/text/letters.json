@@ -1,0 +1,377 @@
+[
+  {
+    "name": "letter_a",
+    "sprite": ["letter_a"],
+    "types": ["letter", "note"],
+    "color": [[0, 3]],
+    "desc": "try thingifying a custom AAAAAA letter!"
+  },
+  {
+    "name": "letter_b",
+    "sprite": ["letter_b"],
+    "types": ["letter", "note"],
+    "color": [[0, 3]]
+  },
+  {
+    "name": "letter_c",
+    "sprite": ["letter_c"],
+    "types": ["letter", "note"],
+    "color": [[0, 3]]
+  },
+  {
+    "name": "letter_d",
+    "sprite": ["letter_d"],
+    "types": ["letter", "note"],
+    "color": [[0, 3]]
+  },
+  {
+    "name": "letter_e",
+    "sprite": ["letter_e"],
+    "types": ["letter", "note"],
+    "color": [[0, 3]]
+  },
+  {
+    "name": "letter_f",
+    "sprite": ["letter_f"],
+    "types": ["letter", "note"],
+    "color": [[0, 3]],
+    "desc": "press F to pay respects"
+  },
+  {
+    "name": "letter_g",
+    "sprite": ["letter_g"],
+    "types": ["letter", "note"],
+    "color": [[0, 3]]
+  },
+  {
+    "name": "letter_h",
+    "sprite": ["letter_h"],
+    "types": ["letter"],
+    "color": [[0, 3]]
+  },
+  {
+    "name": "letter_j",
+    "sprite": ["letter_j"],
+    "types": ["letter"],
+    "color": [[0, 3]],
+    "desc": "This is used in JAIL and JILL. Discrimination against J!"
+  },
+  {
+    "name": "letter_k",
+    "sprite": ["letter_k"],
+    "types": ["letter"],
+    "color": [[0, 3]]
+  },
+  {
+    "name": "letter_l",
+    "sprite": ["letter_l"],
+    "types": ["letter"],
+    "color": [[0, 3]]
+  },
+  {
+    "name": "letter_m",
+    "sprite": ["letter_m"],
+    "types": ["letter"],
+    "color": [[0, 3]]
+  },
+  {
+    "name": "letter_n",
+    "sprite": ["letter_n"],
+    "types": ["letter"],
+    "color": [[0, 3]]
+  },
+  {
+    "name": "letter_p",
+    "sprite": ["letter_p"],
+    "types": ["letter"],
+    "color": [[0, 3]]
+  },
+  {
+    "name": "letter_q",
+    "sprite": ["letter_q"],
+    "types": ["letter"],
+    "color": [[0, 3]]
+  },
+  {
+    "name": "letter_r",
+    "sprite": ["letter_r"],
+    "types": ["letter"],
+    "color": [[0, 3]]
+  },
+  {
+    "name": "letter_s",
+    "sprite": ["letter_s"],
+    "types": ["letter"],
+    "color": [[0, 3]],
+    "desc": "ome body once told me..."
+  },
+  {
+    "name": "letter_t",
+    "sprite": ["letter_t"],
+    "types": ["letter"],
+    "color": [[0, 3]],
+    "desc": "he world is gonna roll me."
+  },
+  {
+    "name": "letter_u",
+    "sprite": ["letter_u"],
+    "types": ["letter"],
+    "color": [[0, 3]]
+  },
+  {
+    "name": "letter_v",
+    "sprite": ["letter_v"],
+    "types": ["letter"],
+    "color": [[0, 3]]
+  },
+  {
+    "name": "letter_w",
+    "sprite": ["letter_w"],
+    "types": ["letter"],
+    "color": [[0, 3]]
+  },
+  {
+    "name": "letter_x",
+    "sprite": ["letter_x"],
+    "types": ["letter"],
+    "color": [[0, 3]]
+  },
+  {
+    "name": "letter_y",
+    "sprite": ["letter_y"],
+    "types": ["letter"],
+    "color": [[0, 3]]
+  },
+  {
+    "name": "letter_.",
+    "sprite": ["letter_period"],
+    "types": ["letter"],
+    "color": [[0, 3]],
+    "desc": "You can make \"...\" with this!",
+    "tags": ["dot", "fullstop", "period"]
+  },
+  {
+    "name": "letter_colon",
+    "sprite": ["letter_colon"],
+    "types": ["letter"],
+    "color": [[0, 3]],
+    "rotate": true,
+    "desc": ":: Can also be an umlaut, or '..', if rotated in that way.",
+    "tags": [";", "umlaut", "diaeresis"]
+  },
+  {
+    "name": "letter_parenthesis",
+    "sprite": ["letter_paranthesis"],
+    "types": ["letter", "parenthesis"],
+    "color": [[0, 3]],
+    "rotate": true,
+    "desc": "Can also be used in rules, sometimes. bab arond flog w/fren ( roc arond keek ) be :) will parse, for example.",
+    "tags": ["9", "0", "brackets"]
+  },
+  {
+    "name": "letter_'",
+    "sprite": ["letter_apostrophe"],
+    "types": ["letter"],
+    "color": [[0, 3]],
+    "desc": "Used for n't, y'all, and ''."
+  },
+  {
+    "name": "letter_go",
+    "sprite": ["letter_go"],
+    "types": ["letter"],
+    "color": [[0, 3]],
+    "desc": "used in a whole lot of words"
+  },
+  {
+    "name": "letter_come",
+    "sprite": ["letter_come"],
+    "types": ["letter"],
+    "color": [[0, 3]],
+    "desc": "Used exclusively for COME PLS."
+  },
+  {
+    "name": "letter_pls",
+    "sprite": ["letter_pls"],
+    "types": ["letter"],
+    "color": [[0, 3]],
+    "desc": "Used for GO AWAY PLS and COME PLS."
+  },
+  {
+    "name": "letter_away",
+    "sprite": ["letter_away"],
+    "types": ["letter"],
+    "color": [[0, 3]],
+    "desc": "Used for GO AWAY PLS and LOOK AWAY."
+  },
+  {
+    "name": "letter_my",
+    "sprite": ["letter_my"],
+    "types": ["letter"],
+    "color": [[0, 3]],
+    "desc": "Used exclusively for GO MY WAY."
+  },
+  {
+    "name": "letter_no",
+    "sprite": ["letter_no"],
+    "types": ["letter"],
+    "color": [[0, 3]],
+    "desc": "Used for NO GO and NO1."
+  },
+  {
+    "name": "letter_way",
+    "sprite": ["letter_way"],
+    "types": ["letter"],
+    "color": [[0, 3]],
+    "tags": ["wey"]
+  },
+  {
+    "name": "letter_i",
+    "sprite": ["letter_i"],
+    "types": ["letter"],
+    "color": [[0, 3]]
+  },
+  {
+    "name": "letter_z",
+    "sprite": ["letter_z"],
+    "types": ["letter"],
+    "color": [[0, 3]],
+    "desc": "Z: it's just a rotated N"
+  },
+  {
+    "name": "letter_o",
+    "sprite": ["letter_o"],
+    "types": ["letter", "object"],
+    "color": [[0, 3]],
+    "desc": "the most op letter"
+  },
+  {
+    "name": "letter_1",
+    "sprite": ["letter_1"],
+    "types": ["letter"],
+    "color": [[0, 3]],
+    "desc": "Used in EVERY1 and NO1.",
+    "tags": ["number", "digit", "one"]
+  },
+  {
+    "name": "letter_/",
+    "sprite": ["letter_slash"],
+    "types": ["letter"],
+    "color": [[0, 3]],
+    "desc": "Used in W/FREN and LIE/8.",
+    "tags": ["slash"]
+  },
+  {
+    "name": "letter_8",
+    "sprite": ["letter_8"],
+    "types": ["letter"],
+    "color": [[0, 3]],
+    "desc": "Used in LIE/8.",
+    "tags": ["number", "digit", "eight"]
+  },
+  {
+    "name": "letter_ee",
+    "sprite": ["letter_ee"],
+    "types": ["letter"],
+    "color": [[0, 3]]
+  },
+  {
+    "name": "letter_fren",
+    "sprite": ["letter_fren"],
+    "types": ["letter"],
+    "color": [[0, 3]],
+    "desc": "its a fren"
+  },
+  {
+    "name": "letter_ll",
+    "sprite": ["letter_ll"],
+    "types": ["letter"],
+    "color": [[0, 3]],
+    "desc": "welcome <3 he11"
+  },
+  {
+    "name": "letter_2",
+    "sprite": ["letter_2"],
+    "types": ["letter"],
+    "color": [[0, 3]],
+    "desc": "used for every2, what a surprise (can also spell u2)"
+  },
+  {
+    "name": "letter_3",
+    "sprite": ["letter_3"],
+    "types": ["letter"],
+    "color": [[0, 3]],
+    "desc": "and an every3 here (can also spell u3)"
+  },
+  {
+    "name": "letter_4",
+    "sprite": ["letter_4"],
+    "types": ["letter"],
+    "color": [[0, 3]]
+  },
+  {
+    "name": "letter_5",
+    "sprite": ["letter_5"],
+    "types": ["letter"],
+    "color": [[0, 3]]
+  },
+  {
+    "name": "letter_6",
+    "sprite": ["letter_6"],
+    "types": ["letter"],
+    "color": [[0, 3]]
+  },
+  {
+    "name": "letter_7",
+    "sprite": ["letter_7"],
+    "types": ["letter"],
+    "color": [[0, 3]]
+  },
+  {
+    "name": "letter_9",
+    "sprite": ["letter_9"],
+    "types": ["letter"],
+    "color": [[0, 3]]
+  },
+  {
+    "name": "letter_;",
+    "sprite": ["letter_semicolon"],
+    "types": ["letter"],
+    "color": [[0, 3]],
+    "desc": "Formerly used in ;D, until we changed that to be UN:). Now it's useless, very sad.",
+    "tags": ["semicolon", "wink"]
+  },
+  {
+    "name": "letter_bolt",
+    "sprite": ["letter_bolt"],
+    "types": ["letter"],
+    "color": [[0, 3]],
+    "desc": "Used for all of the bolt words; firbolt, icbolt, litbolt, etc."
+  },
+  {
+    "name": "letter_ol",
+    "sprite": ["letter_ol"],
+    "types": ["letter"],
+    "color": [[0, 3]]
+  },
+  {
+    "name": "letter_custom",
+    "sprite": ["letter_custom"],
+    "types": ["letter"],
+    "color": [[0, 3]],
+    "desc": "Custom Letters: Type up to 6 letters into the search box and hit ctrl+enter to get a tile with those letters in it. This text shouldn't show ingame anywhere.",
+    "tags": []
+  },
+  {
+    "name": "letter_>",
+    "sprite": ["letter_angle"],
+    "types": ["letter"],
+    "color": [[0, 3]]
+  },
+  {
+    "name": "letter_*",
+    "sprite": ["letter_asterisk"],
+    "types": ["letter"],
+    "color": [[0, 3]],
+    "desc": "wildcard."
+  }
+]

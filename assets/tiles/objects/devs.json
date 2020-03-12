@@ -1,0 +1,194 @@
+[
+  {
+    "name": "oat",
+    "sprite": ["o"],
+    "types": ["object", "letter"],
+    "layer": 11,
+    "color": [[2, 4]],
+    "features": {
+      "sans": {"x": 19, "y": 7, "w": 2, "h": 2}
+    },
+    "voice": "pipipi",
+    "desc": "pi pi piiii!!!",
+    "tags": ["devs", "chars", "oatmealine", "puyopuyo tetris"]
+  },
+  {
+    "name": "txt_oat",
+    "sprite": ["text/oat"],
+    "types": ["object"],
+    "color": [[2, 4]],
+    "tags": ["devs", "chars", "oatmealine", "puyopuyo tetris"]
+  },
+  {
+    "name": "pata",
+    "sprite": ["pata"],
+    "layer": 11,
+    "color": [[3, 3]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 17, "y": 4, "w": 1, "h": 2}
+    },
+    "voice": "pata1",
+    "desc": "pat a shoe",
+    "tags": ["devs", "chars", "patashu"]
+  },
+  {
+    "name": "txt_pata",
+    "sprite": ["text/pata"],
+    "types": ["object"],
+    "color": [[3, 3]],
+    "tags": ["devs", "chars", "patashu"]
+  },
+  {
+    "name": "larry",
+    "sprite": ["larry"],
+    "layer": 11,
+    "color": [[2, 4]],
+    "rotate": true,
+    "features": {
+      "hatt": {"x": -2, "y": -6},
+      "which": {"x": -3, "y": -5},
+      "sant": {"x": -6, "y": -3},
+      "bowie": {"x": -2, "y": -6},
+      "sans": {"x": 18, "y": 4, "w": 2, "h": 2},
+      "cool": {"x": -4, "y": -7},
+      "katany": {"x": 4, "y": -4},
+      "knif": {"x": 9, "y": -2},
+      "gunne": {"x": 5, "y": -1}
+    },
+    "voice": "s_vitellary",
+    "desc": "larry be haetflor",
+    "tags": ["devs", "chars", "vitellary", "vvvvvv"]
+  },
+  {
+    "name": "txt_larry",
+    "sprite": ["text/larry"],
+    "types": ["object"],
+    "color": [[2, 4]],
+    "tags": ["devs", "chars", "vitellary", "vvvvvv"]
+  },
+  {
+    "name": "lila",
+    "sprite": ["lila"],
+    "layer": 11,
+    "color": [[4, 2]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 19, "y": 8, "w": 2, "h": 2}
+    },
+    "desc": "lila, represents the creator of bab be u herself! all hail lila",
+    "tags": ["devs", "chars", "lily", "lili"],
+    "pronouns": ["she", "her"]
+  },
+  {
+    "name": "txt_lila",
+    "sprite": ["text/lila"],
+    "types": ["object"],
+    "color": [[4, 2]],
+    "tags": ["devs", "chars", "lily", "lili"]
+  },
+  {
+    "name": "zsoob",
+    "sprite": ["zsoob"],
+    "layer": 11,
+    "color": [[4, 1]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 17, "y": 9, "w": 2, "h": 2}
+    },
+    "desc": "pinc keke",
+    "tags": ["devs", "chars", "szoob"]
+  },
+  {
+    "name": "txt_zsoob",
+    "sprite": ["text/zsoob"],
+    "types": ["object"],
+    "color": [[4, 1]],
+    "tags": ["devs", "chars", "szoob"]
+  },
+  {
+    "name": "jill",
+    "sprite": ["jill"],
+    "layer": 11,
+    "color": [[1, 3]],
+    "rotate": true,
+    "features": {
+      "hatt": {"x": -1, "y": -1},
+      "which": {"x": -2, "y": -1},
+      "sant": {"x": -5},
+      "bowie": {"x": -1, "y": -5},
+      "sans": {"x": 17, "y": 8, "w": 2, "h": 3},
+      "cool": {"x": -2, "y": -3},
+      "knif": {"x": 3, "y": -3}
+    },
+    "voice": "s_jill",
+    "desc": "it time 2 mix drincc & chaeng life",
+    "tags": ["devs", "chars", "valhalla", "cynthia"]
+  },
+  {
+    "name": "txt_jill",
+    "sprite": ["text/jill"],
+    "types": ["object"],
+    "color": [[1, 3]],
+    "tags": ["devs", "chars", "va11 hall-a", "cynthia"]
+  },
+  {
+    "name": "slab",
+    "sprite": ["slab"],
+    "layer": 20,
+    "color": [[1, 4], [0, 3]],
+    "painted": [true, false],
+    "features": {
+      "sans": {"x": 17, "y": 13, "w": 1, "h": 2}
+    },
+    "desc": "omg its a beautiful buttered fly",
+    "tags": ["devs", "chars"]
+  },
+  {
+    "name": "txt_slab",
+    "sprite": ["text/slab"],
+    "types": ["object"],
+    "color": [[1, 4]],
+    "desc": "i need to make this multicolor why am i so lazy",
+    "tags": ["devs", "chars"]
+  },
+  {
+    "name": "butcher",
+    "sprite": ["butcher"],
+    "layer": 20,
+    "color": [[1, 2], [0, 3]],
+    "painted": [true, false],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 23, "y": 13, "w": 3, "h": 3}
+    },
+    "desc": "slice slice make a fruit salad",
+    "tags": ["devs", "chars"]
+  },
+  {
+    "name": "txt_butcher",
+    "sprite": ["text/butcher"],
+    "types": ["object"],
+    "color": [[1, 2]],
+    "tags": ["devs", "chars"]
+  },
+  {
+    "name": "notnat",
+    "sprite": ["notnat"],
+    "layer": 20,
+    "color": [[1, 4]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 26, "y": 10, "w": 2, "h": 2}
+    },
+    "desc": "this is just another pokemon??? what a ripoff",
+    "tags": ["devs", "chars"]
+  },
+  {
+    "name": "txt_notnat",
+    "sprite": ["text/notnat"],
+    "types": ["object"],
+    "color": [[1, 4]],
+    "tags": ["devs", "chars"]
+  }
+]

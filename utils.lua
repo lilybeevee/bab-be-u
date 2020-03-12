@@ -1037,7 +1037,7 @@ function testConds(unit, conds, compare_with, first_unit) --cond should be a {co
           local wtx,wty = wx+wdx,wy+wdy
           local stopped = false
           while not stopped do
-            if canMove(unit,wdx,wdy,wdir,false,false,nil,nil,nil,wtx,wty) then
+            if canMove(unit,wdx,wdy,wdir,{start_x = wtx, start_y = wty}) then
               wdx,wdy,wdir,wtx,wty = getNextTile(word, wdx, wdy, wdir, nil, wtx, wty)
             else
               stopped = true
@@ -3022,21 +3022,23 @@ function addTables(source, to_add)
   return source
 end
 
-text_in_tiles = {} --list of text in an array, for ideal searching
-text_list = {} --list of text, but without aliases
-for _,tile in ipairs(tiles_list) do
-  if tile.type == "text" and tile.texttype and not tile.texttype.letter then
-    local textname = string.sub(tile.name:gsub("%s+", ""),6) --removes spaces too
+function do_utils_thing()
+  text_in_tiles = {} --list of text in an array, for ideal searching
+  text_list = {} --list of text, but without aliases
+  for _,tile in ipairs(tiles_list) do
+    if tile.type == "text" and tile.texttype and not tile.texttype.letter then
+      local textname = string.sub(tile.name:gsub("%s+", ""),6) --removes spaces too
 
-    text_in_tiles[textname] = textname
-    if (tile.alias ~= nil) then
-      for a,ali in ipairs(tile.alias) do
-        text_in_tiles[ali] = textname
+      text_in_tiles[textname] = textname
+      if (tile.alias ~= nil) then
+        for a,ali in ipairs(tile.alias) do
+          text_in_tiles[ali] = textname
+        end
       end
-    end
 
-    text_list[textname] = tile
-    text_list[textname].textname = string.sub(tile.name,6)
+      text_list[textname] = tile
+      text_list[textname].textname = string.sub(tile.name,6)
+    end
   end
 end
 
@@ -3586,8 +3588,8 @@ function split(inputstr, sep)
 end
 
 function selectLastLevels()
-  if not units_by_name["selctr"] then return end
-  local selctrs = units_by_name["selctr"]
+  local cursors = getUnitsWithEffect("curse")
+  if #cursors == 0 then return end
 
   local last_selected = readSaveFile{"levels", level_filename, "selected"} or {}
   if type(last_selected) ~= "table" then
@@ -3595,7 +3597,7 @@ function selectLastLevels()
   end
   
   for i,level in ipairs(last_selected) do
-    local selctr = selctrs[((i-1)%#selctrs)+1]
+    local selctr = cursors[((i-1)%#cursors)+1]
     for _,unit in ipairs(units) do
       if unit.special.level == level then
         moveUnit(selctr, unit.x, unit.y, nil, true)

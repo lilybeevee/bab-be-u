@@ -1,0 +1,65 @@
+[
+  {
+    "name": "txt_mous",
+    "sprite": ["text/mous"],
+    "types": ["object"],
+    "color": [[3, 3]],
+    "desc": "MOUS: Refers to the mouse cursor. You can create, destroy and apply properties to mouse cursors!",
+    "tags": ["mouse", "cursor"]
+  },
+  {
+    "name": "txt_no1",
+    "sprite": ["text/no1"],
+    "types": ["object"],
+    "color": [[0, 3]],
+    "desc": "NO1: Refers to tiles with nothing in them. Rotation status is kept on the tile. Cannot be colored.",
+    "tags": ["none", "empty", "no one"]
+  },
+  {
+    "name": "no1",
+    "sprite": ["no1"],
+    "layer": 20,
+    "color": [[0, 4]],
+    "rotate": true
+  },
+  {
+    "name": "txt_lvl",
+    "sprite": ["text/lvl"],
+    "metasprite": ["text/lvl meta"],
+    "types": ["object"],
+    "color": [[4, 1]],
+    "desc": "LVL: Refers to the level you're in, as well as any enterable levels in this level. \nMiddle or SHIFT right-click it to edit.)\nCreating levels will be a samepaint lvl.\nlvl be pathz by default.\nlvl got X will trigger even if the level infloops.",
+    "tags": ["level"]
+  },
+  {
+    "name": "lvl",
+    "sprite": ["lvl"],
+    "layer": 24,
+    "color": [[0, 3]],
+    "rotate": true,
+    "desc": "its a lavel, working like baba. LVL BE NOGO by default.",
+    "tags": ["level", "path"]
+  },
+  {
+    "name": "bordr",
+    "sprite": ["bordr"],
+    "layer": 1,
+    "color": [[1, 0]],
+    "desc": "BORDR: OOB you can place manually. NOGO, TALL and BORDR by default.",
+    "tags": ["border"]
+  },
+  {
+    "name": "txt_bordr",
+    "sprite": ["text/bordr"],
+    "types": ["object"],
+    "color": [[2, 0]],
+    "tags": ["border"]
+  },
+  {
+    "name": "this",
+    "sprite": ["this"],
+    "layer": 20,
+    "color": [[0, 3]],
+    "desc": "THIS: Text that refers to itself. Each THIS is independant. THIS TXT refers to all THISs."
+  }
+]
