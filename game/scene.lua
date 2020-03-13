@@ -1035,7 +1035,7 @@ function scene.draw(dt)
               setColor{1,2}
             end
             if unit.fullname == "txt_wontn't" then
-              draw = sprites["txt_wo"]
+              draw = sprites["text/wo"]
             end
             if not draw then draw = sprites["wat"] end
             love.graphics.draw(draw, fulldrawx + ox, fulldrawy + oy, 0, unit.draw.scalex, unit.draw.scaley, draw:getWidth() / 2, draw:getHeight() / 2)

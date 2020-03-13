@@ -1438,7 +1438,7 @@ function scene.draw(dt)
                 end
               else
                 if unit.fullname == "txt_wontn't" then
-                  sprite = sprites["txt_wo"]
+                  sprite = sprites["text/wo"]
                 end
                 love.graphics.draw(sprite, (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
               end
@@ -1566,7 +1566,7 @@ function scene.draw(dt)
               end
             else
               if tile.name == "txt_wontn't" then
-                sprite = sprites["txt_wo"]
+                sprite = sprites["text/wo"]
               end
               love.graphics.draw(sprite, (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
             end
@@ -1644,7 +1644,7 @@ function scene.draw(dt)
               end
             else
               if tile.name == "txt_wontn't" then
-                sprite = sprites["txt_wo"]
+                sprite = sprites["text/wo"]
               end
               love.graphics.draw(sprite, (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, math.rad(rotation), 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
             end
