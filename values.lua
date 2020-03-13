@@ -9406,9 +9406,6 @@ group_names_nt = {}
 group_names_set = {}
 group_names_set_nt = {}
 for i,v in ipairs(tiles_list) do
-  if v.name:find(" ") then
-    print(v.name)
-  end
   tiles_by_name[v.name] = i
   tiles_by_name[v.name:gsub(" ","")] = i
   if v.texttype and v.texttype.group then

@@ -1430,9 +1430,6 @@ function scene.draw(dt)
               if type(unit.sprite) == "table" then
                 for j,image in ipairs(unit.sprite) do
                   sprite = sprites[image]
-                  if not sprite then
-                    print(image)
-                  end
                   setColor(getUnitColors(unit, j))
                   love.graphics.draw(sprite, (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
                 end
