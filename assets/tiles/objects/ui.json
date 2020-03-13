@@ -141,6 +141,7 @@
   },
   {
     "name": "ui_leftclick",
+    "display": "left click",
     "sprite": ["ui_left_click"],
     "layer": 20,
     "color": [[0, 3]],
@@ -148,6 +149,7 @@
   },
   {
     "name": "ui_rightclick",
+    "display": "right click",
     "sprite": ["ui_right_click"],
     "layer": 20,
     "color": [[0, 3]],

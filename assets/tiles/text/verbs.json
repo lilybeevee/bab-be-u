@@ -8,6 +8,16 @@
     "tags": ["is"]
   },
   {
+    "name": "txt_ben't",
+    "display": "be n't",
+    "sprite": ["text/be n't", "n't (be)"],
+    "types": ["verb_class", "verb_property", "verb"],
+    "color": [[0, 3], [2, 2]],
+    "painted": [true, false],
+    "desc": "BE N'T (Verb): The same as having these two text tiles in a row.",
+    "tags": ["isn't", "is not", "verb"]
+  },
+  {
     "name": "txt_got",
     "sprite": ["text/got"],
     "types": ["verb_class", "verb"],
@@ -88,15 +98,6 @@
     "tags": ["patashu", "hate", "hates", "collide"]
   },
   {
-    "name": "txt_ben't",
-    "sprite": ["text/be n't", "n't (be)"],
-    "types": ["verb_class", "verb_property", "verb"],
-    "color": [[0, 3], [2, 2]],
-    "painted": [true, false],
-    "desc": "BE N'T (Verb): The same as having these two text tiles in a row.",
-    "tags": ["isn't", "is not", "verb"]
-  },
-  {
     "name": "txt_ignor",
     "sprite": ["text/ignor"],
     "types": ["verb_unit", "verb"],
@@ -146,6 +147,7 @@
   },
   {
     "name": "txt_wont",
+    "display": "won't",
     "sprite": ["text/wont"],
     "types": ["verb_property", "verb"],
     "color": [[2, 2]],

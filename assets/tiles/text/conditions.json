@@ -32,6 +32,7 @@
   },
   {
     "name": "txt_lookat",
+    "display": "look at",
     "sprite": ["text/lookat"],
     "types": ["cond_infix", "verb_unit", "cond_infix_dir", "verb"],
     "color": [[0, 3]],
@@ -86,6 +87,7 @@
   },
   {
     "name": "txt_seenby",
+    "display": "seen by",
     "sprite": ["text/seenby"],
     "types": ["cond_infix"],
     "color": [[0, 3]],
@@ -223,6 +225,7 @@
   },
   {
     "name": "txt_thatbe",
+    "display": "that be",
     "sprite": ["text/that be"],
     "types": ["cond_infix", "cond_infix_verb", "cond_infix_verb_plus"],
     "color": [[0, 3]],
@@ -275,19 +278,12 @@
   },
   {
     "name": "txt_lookaway",
+    "display": "look away",
     "sprite": ["text/lookaway"],
     "types": ["cond_infix", "verb_unit", "cond_infix_dir", "verb"],
     "color": [[0, 3]],
     "desc": "LOOK AWAY: As an infix condition, true if this object is on the tile behind the unit As a verb, makes the unit face away from this object at end of turn.",
     "tags": ["unfollow", "facing away", "lookaway", "behind"]
-  },
-  {
-    "name": "txt_w/neighbor",
-    "sprite": ["text/wneighbor"],
-    "types": ["cond_infix"],
-    "color": [[0, 3]],
-    "desc": "W/ NEIGHBOR (Infix Condition): True if the indicated object is on any of orthogonal tiles surrounding the unit. (The unit's own tile is not checked.)",
-    "tags": ["near", "around", "infix condition", "touching", "adjacent"]
   },
   {
     "name": "txt_wun",
@@ -321,6 +317,7 @@
   },
   {
     "name": "txt_thatgot",
+    "display": "that got",
     "sprite": ["text/that got"],
     "types": ["cond_infix", "cond_infix_verb", "cond_infix_verb_plus"],
     "color": [[0, 3]],

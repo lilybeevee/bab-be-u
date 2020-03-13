@@ -1,5 +1,14 @@
 [
   {
+    "name": "txt_&",
+    "sprite": ["text/and"],
+    "types": ["and"],
+    "color": [[0, 3]],
+    "desc": "&: Joins multiple conditions, subjects or objects together in a rule. Can also be spelled as ampersand with letters. Rules with stacked text and &s don't work like in baba, be sure to experiment!\nTry thingifying an &n't text, since no one would ever think to try that considering &n'ts are useless.",
+    "alias": ["ampersand"],
+    "tags": ["and"]
+  },
+  {
     "name": "txt_text",
     "sprite": ["text/txt"],
     "metasprite": ["text/txt meta"],
@@ -26,10 +35,12 @@
   },
   {
     "name": "txt_loop",
+    "display": "infloop",
     "sprite": ["text/infloop"],
     "types": ["object"],
     "color": [[0, 3]],
     "desc": "INFLOOP: A special word that describes the infinite loop state.",
+    "alias": ["infloop"],
     "tags": ["infloop", "infinity", "infinite loop"]
   },
   {
@@ -39,30 +50,6 @@
     "color": [[0, 3]],
     "desc": "... (ELLIPSIS): Extends rules. BAB ... BE ... ... U is the same as BAB BE U.",
     "tags": ["ellipsis", "dotdotdot", "period"]
-  },
-  {
-    "name": "txt_babn't",
-    "sprite": ["text/bab meta", "n't"],
-    "types": ["object"],
-    "color": [[4, 1], [2, 2]],
-    "painted": [true, false],
-    "desc": "BAB N'T: The same as having these two text tiles in a row."
-  },
-  {
-    "name": "txt_rocn't",
-    "sprite": ["text/roc meta", "n't"],
-    "types": ["object"],
-    "color": [[6, 1], [2, 2]],
-    "painted": [true, false],
-    "desc": "ROC N'T: The same as having these two text tiles in a row."
-  },
-  {
-    "name": "txt_waln't",
-    "sprite": ["text/wal meta", "n't"],
-    "types": ["object"],
-    "color": [[0, 1], [2, 2]],
-    "painted": [true, false],
-    "desc": "WAL N'T: The same as having these two text tiles in a row."
   },
   {
     "name": "txt_''",

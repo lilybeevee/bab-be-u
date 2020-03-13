@@ -1,5 +1,6 @@
 order of the things (because consistency is important):
 name
+display
 sprite
 sprite transforms
 meta sprites
@@ -14,9 +15,10 @@ wobblify
 babify
 rotate
 wobble
-features
+features (hatt, which, sant, bowie, gang, sans, cool, katany, knif, gunne, slippers)
 voice
 desc
+alias
 tags
 pronouns
 

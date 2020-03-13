@@ -23,6 +23,15 @@
     "tags": ["chars", "baba"]
   },
   {
+    "name": "txt_babn't",
+    "display": "bab n't",
+    "sprite": ["text/bab meta", "n't"],
+    "types": ["object"],
+    "color": [[4, 1], [2, 2]],
+    "painted": [true, false],
+    "desc": "BAB N'T: The same as having these two text tiles in a row."
+  },
+  {
     "name": "txt_skul",
     "sprite": ["text/skul"],
     "types": ["object"],
@@ -224,6 +233,7 @@
   },
   {
     "name": "ghostfren",
+    "display": "ghost fren",
     "sprite": ["ghost"],
     "layer": 11,
     "color": [[4, 2]],
@@ -237,6 +247,7 @@
   },
   {
     "name": "txt_ghostfren",
+    "display": "ghost fren",
     "sprite": ["text/ghostfren"],
     "types": ["object"],
     "color": [[4, 2]],
@@ -1192,6 +1203,7 @@
     "types": ["object"],
     "color": [[0, 3]],
     "desc": "Temmie Chang: Main artist of UNDERTALE and deltarune.",
+    "alias": ["temmi!", "temmi!!", "temmi!!!", "bob."],
     "tags": ["chars", "temmie chang", "undertale"]
   },
   {
