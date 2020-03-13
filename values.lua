@@ -227,21 +227,21 @@ custom_letter_quads = {
 selector_grid_contents = {
   -- page 1: default
   {
-    0, "text_be", "text_&", "text_got", "text_n't", "text_every1", "text_no1", "text_text", "text_wurd", "text_txtify", "text_sublvl", "text_wait...", "text_mous", "text_clikt", "text_nxt", "text_stay ther", "lvl", "text_lvl",
-    "bab", "text_bab", "text_u", "kee", "text_kee", "text_for dor", "text_goooo", "text_icy", "text_icyyyy", "text_behin u", "text_moar", "text_sans", "text_liek", "text_loop", "lin", "text_lin", "selctr", "text_selctr",
-    "keek", "text_keek", "text_walk", "dor", "text_dor", "text_ned kee", "text_frens", "text_groop", "text_u too", "text_u tres", "text_delet", "text_an", "text_haet", "text_mayb", "text_that", "text_ignor", "text_curse", "text_...",
-    "flog", "text_flog", "text_:)", "colld", "text_colld", "text_fridgd", "text_direction", "text_ouch", "text_slep", "text_protecc", "text_sidekik", "text_brite", "text_lit", "text_tranparnt", "text_torc", "text_vs", "text_nuek", "text_''",
-    "roc", "text_roc", "text_go away pls", "laav", "text_laav", "text_hotte","text_visit fren", "text_w/fren", "text_arond", "text_frenles", "text_copkat", "text_za warudo", "text_timles", "text_behind", "text_beside", "text_look away", "text_notranform", "this",
-    "wal", "text_wal", "text_no go", "l..uv", "text_l..uv", "gras", "text_gras", "text_creat", "text_look at", "text_spoop", "text_yeet", "text_turn cornr", "text_corekt", "text_go arnd", "text_mirr arnd", "text_past", 0, "text_sing",
-    "watr", "text_watr", "text_no swim", "meem", "text_meem", "dayzy", "text_dayzy", "text_snacc", "text_seen by" , "text_stalk", "text_moov", "text_folo wal", "text_rong", "text_her", "text_thr", "text_rithere", "text_the", 0,
-    "skul", "text_skul", "text_:(", "til", "text_til", "hurcane", "text_hurcane", "gunne", "text_gunne", "wog", "text_wog", "text_zip", "text_shy...", "text_munwalk", "text_sidestep", "text_diagstep", "text_hopovr", "text_knightstep",
-    "boux", "text_boux", "text_come pls", "os", "text_os", "bup", "text_bup", "han", "text_han", "fenss", "text_fenss", 0, 0, "hol", "text_hol", "text_poor toll", "text_blacc", "text_reed",
-    "bellt", "text_bellt", "text_go", "tre", "text_tre", "piler", "text_piler", "hatt", "text_hatt", "hedg", "text_hedg", 0, 0, "rif", "text_rif", "text_glued", "text_whit", "text_orang",
-    "boll", "text_boll", "text_:o", "frut", "text_frut", "kirb", "text_kirb", "katany", "text_katany", "metl", "text_metl", 0, 0, 0, 0, "text_enby", "text_colrful", "text_yello",
-    "clok", "text_clok", "text_tryagain", "text_no undo", "text_undo", "slippers", "text_slippers", "firbolt", "text_firbolt", "jail", "text_jail", 0, 0, 0, 0, "text_tranz", "text_rave", "text_grun",
-    "splittr", "text_splittr", "text_split", "steev", "text_steev", "boy", "text_boy", "icbolt", "text_icbolt", "platfor", "text_platfor", "chain", "text_chain", 0, 0, "text_gay", "text_stelth", "text_cyeann",
-    "chekr", "text_chekr", "text_diag", "text_ortho", "text_haet flor", "arro", "text_arro", "text_go my way", "text_spin", "text_no turn", "text_stubbn", "text_rotatbl", 0, 0, "text_pinc", "text_qt", "text_paint", "text_bleu",
-    "clowd", "text_clowd", "text_flye", "text_tall", "text_haet skye", "ghost fren", "text_ghost fren", "robobot", "text_robobot", "sparkl", "text_sparkl", "spik", "text_spik", "spiky", "text_spiky", "bordr", "text_bordr", "text_purp",
+    0, "txt_be", "txt_&", "txt_got", "txt_n't", "txt_every1", "txt_no1", "txt_text", "txt_wurd", "txt_txtify", "txt_sublvl", "txt_wait...", "txt_mous", "txt_clikt", "txt_nxt", "txt_stayther", "lvl", "txt_lvl",
+    "bab", "txt_bab", "txt_u", "kee", "txt_kee", "txt_fordor", "txt_goooo", "txt_icy", "txt_icyyyy", "txt_behinu", "txt_moar", "txt_sans", "txt_liek", "txt_loop", "lin", "txt_lin", "selctr", "txt_selctr",
+    "keek", "txt_keek", "txt_walk", "dor", "txt_dor", "txt_nedkee", "txt_frens", "txt_groop", "txt_utoo", "txt_utres", "txt_delet", "txt_an", "txt_haet", "txt_mayb", "txt_that", "txt_ignor", "txt_curse", "txt_...",
+    "flog", "txt_flog", "txt_:)", "colld", "txt_colld", "txt_fridgd", "txt_direction", "txt_ouch", "txt_slep", "txt_protecc", "txt_sidekik", "txt_brite", "txt_lit", "txt_tranparnt", "txt_torc", "txt_vs", "txt_nuek", "txt_''",
+    "roc", "txt_roc", "txt_goawaypls", "laav", "txt_laav", "txt_hotte","txt_visitfren", "txt_w/fren", "txt_arond", "txt_frenles", "txt_copkat", "txt_zawarudo", "txt_timles", "txt_behind", "txt_beside", "txt_lookaway", "txt_notranform", "this",
+    "wal", "txt_wal", "txt_nogo", "l..uv", "txt_l..uv", "gras", "txt_gras", "txt_creat", "txt_lookat", "txt_spoop", "txt_yeet", "txt_turncornr", "txt_corekt", "txt_goarnd", "txt_mirrarnd", "txt_past", 0, "txt_sing",
+    "watr", "txt_watr", "txt_noswim", "meem", "txt_meem", "dayzy", "txt_dayzy", "txt_snacc", "txt_seenby" , "txt_stalk", "txt_moov", "txt_folowal", "txt_rong", "txt_her", "txt_thr", "txt_rithere", "txt_the", 0,
+    "skul", "txt_skul", "txt_:(", "til", "txt_til", "hurcane", "txt_hurcane", "gunne", "txt_gunne", "wog", "txt_wog", "txt_zip", "txt_shy...", "txt_munwalk", "txt_sidestep", "txt_diagstep", "txt_hopovr", "txt_knightstep",
+    "boux", "txt_boux", "txt_comepls", "os", "txt_os", "bup", "txt_bup", "han", "txt_han", "fenss", "txt_fenss", 0, 0, "hol", "txt_hol", "txt_poortoll", "txt_blacc", "txt_reed",
+    "bellt", "txt_bellt", "txt_go", "tre", "txt_tre", "piler", "txt_piler", "hatt", "txt_hatt", "hedg", "txt_hedg", 0, 0, "rif", "txt_rif", "txt_glued", "txt_whit", "txt_orang",
+    "boll", "txt_boll", "txt_:o", "frut", "txt_frut", "kirb", "txt_kirb", "katany", "txt_katany", "metl", "txt_metl", 0, 0, 0, 0, "txt_enby", "txt_colrful", "txt_yello",
+    "clok", "txt_clok", "txt_tryagain", "txt_noundo", "txt_undo", "slippers", "txt_slippers", "firbolt", "txt_firbolt", "jail", "txt_jail", 0, 0, 0, 0, "txt_tranz", "txt_rave", "txt_grun",
+    "splittr", "txt_splittr", "txt_split", "steev", "txt_steev", "boy", "txt_boy", "icbolt", "txt_icbolt", "platfor", "txt_platfor", "chain", "txt_chain", 0, 0, "txt_gay", "txt_stelth", "txt_cyeann",
+    "chekr", "txt_chekr", "txt_diag", "txt_ortho", "txt_haetflor", "arro", "txt_arro", "txt_gomyway", "txt_spin", "txt_noturn", "txt_stubbn", "txt_rotatbl", 0, 0, "txt_pinc", "txt_qt", "txt_paint", "txt_bleu",
+    "clowd", "txt_clowd", "txt_flye", "txt_tall", "txt_haetskye", "ghostfren", "txt_ghostfren", "robobot", "txt_robobot", "sparkl", "txt_sparkl", "spik", "txt_spik", "spiky", "txt_spiky", "bordr", "txt_bordr", "txt_purp",
     nil
   },
   -- page 2: letters
@@ -249,8 +249,8 @@ selector_grid_contents = {
     "letter_a","letter_b","letter_c","letter_d","letter_e","letter_f","letter_g","letter_h","letter_i","letter_j","letter_k","letter_l","letter_m","letter_n","letter_o","letter_p","letter_q","letter_r",
     "letter_s","letter_t","letter_u","letter_v","letter_w","letter_x","letter_y","letter_z","letter_.","letter_colon","letter_parenthesis","letter_'","letter_/","letter_1","letter_2","letter_3","letter_4","letter_5",
     0,0,0,0,0,0,0,0,0,"letter_;","letter_>",0,0,"letter_6","letter_7","letter_8","letter_9","letter_o",
-	"letter_go","letter_come","letter_pls","letter_away","letter_my","letter_no","letter_way","letter_ee","letter_fren","letter_ll","letter_bolt","letter_ol",0,0,0,"letter_*","text_numa","text_lethers",
-	"text_c_sharp","text_d_sharp","text_f_sharp","text_g_sharp","text_a_sharp","text_sharp","text_flat",0,0,0,0,0,0,0,0,0,0,0,
+	"letter_go","letter_come","letter_pls","letter_away","letter_my","letter_no","letter_way","letter_ee","letter_fren","letter_ll","letter_bolt","letter_ol",0,0,0,"letter_*","txt_numa","txt_lethers",
+	"txt_c_sharp","txt_d_sharp","txt_f_sharp","txt_g_sharp","txt_a_sharp","txt_sharp","txt_flat",0,0,0,0,0,0,0,0,0,0,0,
   },
   -- page 3: ui / instructions
   {
@@ -259,80 +259,80 @@ selector_grid_contents = {
     "ui_cap","ui_a","ui_s","ui_d","ui_f","ui_g","ui_h","ui_j","ui_k","ui_l","ui_;","ui_'","ui_return",0,0,"ui_4","ui_5","ui_6",
     "ui_shift",0,"ui_z","ui_x","ui_c","ui_v","ui_b","ui_n","ui_m","ui_,","ui_.","ui_/",0,0,0,"ui_1","ui_2","ui_3",
     "ui_ctrl","ui_gui","ui_alt",0,"ui_space",0,0,0,0,0,0,0,0,0,0,"ui_arrow","ui_0","ui_del",
-    "text_press","text_f1","text_2pley","text_f2","text_2edit","ui_left click","ui_right click",0,0,0,0,0,0,0,0,0,"text_yuiy","ui_box",
+    "txt_press","txt_f1","txt_2pley","txt_f2","txt_2edit","ui_leftclick","ui_rightclick",0,0,0,0,0,0,0,0,0,"txt_yuiy","ui_box",
     0,"ui_walk",0,0,"ui_reset",0,0,"ui_undo",0,0,"ui_wait",0,0,"ui_activat",0,0,"ui_clik",0,0,0,0,
   },
   -- page 4: characters and special objects
   {
-    "bab","text_bab","kat","text_kat","flof","text_flof","babby","text_babby","bunmy","text_bunmy",0,0,0,0,"selctr","text_selctr","lvl","text_lvl",
-    "keek","text_keek","creb","text_creb","shrim","text_shrim","moo","text_moo","toby","text_toby",0,0,0,0,"this","text_mous","lin","text_lin",
-    "meem","text_meem","statoo","text_statoo","flamgo","text_flamgo","migri","text_migri","temmi","text_temmi",0,0,0,0,0,"text_frens","text_groop","text_gang",
-    "skul","text_skul","beeee","text_beeee","gul","text_gul","kva","text_kva",0,0,0,0,0,0,"text_no1","text_every1","text_every2","text_every3",
-    "ghost fren","text_ghost fren","fishe","text_fishe","starrfishe","text_starrfishe","pidgin","text_pidgin",0,0,0,0,0,0,"text_text","text_lethers","text_numa","text_toen",
-    "robobot","text_robobot","snek","text_snek","sneel","text_sneel","swan","text_swan",0,0,0,0,0,0,0,"text_themself","text_yuiy","text_xplod",
-    "wog","text_wog","bog","text_bog","enbybog","text_enbybog","spoder","text_spoder",0,0,0,0,0,0,0,0,0,0,
-    "kirb","text_kirb","ripof","text_ripof","cavebab","text_cavebab","detox","text_detox","nyowo","text_nyowo",0,0,0,0,0,0,0,0,
-    "bup","text_bup","butflye","text_butflye","boooo","text_boooo","prime","text_prime","grimkid","text_grimkid",0,0,0,0,0,0,0,0,
-    "boy","text_boy","wurm","text_wurm","madi","text_madi","angle","text_angle","boogie","text_boogie",0,0,0,0,"lila","text_lila","larry","text_larry",
-    "steev","text_steev","ratt","text_ratt","badi","text_badi","dvl","text_dvl","assh","text_assh",0,0,0,0,"pata","text_pata","jill","text_jill",
-    "han","text_han","iy","text_iy","lisp","text_lisp","paw","text_paw",0,0,0,0,0,0,"slab","text_slab","zsoob","text_zsoob",
-    "snoman","text_snoman","pingu","text_pingu","der","text_der","ginn","text_ginn","snom","text_snom",0,0,0,0,"notnat","text_notnat","oat","text_oat",
-    "kapa","text_kapa","urei","text_urei","ryugon","text_ryugon","viruse","text_viruse",0,0,0,0,0,0,0,0,"butcher","text_butcher",
-    "os","text_os","hors","text_hors","mimi","text_mimi","err","text_err",0,0,0,0,0,0,0,0,0,0,
+    "bab","txt_bab","kat","txt_kat","flof","txt_flof","babby","txt_babby","bunmy","txt_bunmy",0,0,0,0,"selctr","txt_selctr","lvl","txt_lvl",
+    "keek","txt_keek","creb","txt_creb","shrim","txt_shrim","moo","txt_moo","toby","txt_toby",0,0,0,0,"this","txt_mous","lin","txt_lin",
+    "meem","txt_meem","statoo","txt_statoo","flamgo","txt_flamgo","migri","txt_migri","temmi","txt_temmi",0,0,0,0,0,"txt_frens","txt_groop","txt_gang",
+    "skul","txt_skul","beeee","txt_beeee","gul","txt_gul","kva","txt_kva",0,0,0,0,0,0,"txt_no1","txt_every1","txt_every2","txt_every3",
+    "ghostfren","txt_ghostfren","fishe","txt_fishe","starrfishe","txt_starrfishe","pidgin","txt_pidgin",0,0,0,0,0,0,"txt_text","txt_lethers","txt_numa","txt_toen",
+    "robobot","txt_robobot","snek","txt_snek","sneel","txt_sneel","swan","txt_swan",0,0,0,0,0,0,0,"txt_themself","txt_yuiy","txt_xplod",
+    "wog","txt_wog","bog","txt_bog","enbybog","txt_enbybog","spoder","txt_spoder",0,0,0,0,0,0,0,0,0,0,
+    "kirb","txt_kirb","ripof","txt_ripof","cavebab","txt_cavebab","detox","txt_detox","nyowo","txt_nyowo",0,0,0,0,0,0,0,0,
+    "bup","txt_bup","butflye","txt_butflye","boooo","txt_boooo","prime","txt_prime","grimkid","txt_grimkid",0,0,0,0,0,0,0,0,
+    "boy","txt_boy","wurm","txt_wurm","madi","txt_madi","angle","txt_angle","boogie","txt_boogie",0,0,0,0,"lila","txt_lila","larry","txt_larry",
+    "steev","txt_steev","ratt","txt_ratt","badi","txt_badi","dvl","txt_dvl","assh","txt_assh",0,0,0,0,"pata","txt_pata","jill","txt_jill",
+    "han","txt_han","iy","txt_iy","lisp","txt_lisp","paw","txt_paw",0,0,0,0,0,0,"slab","txt_slab","zsoob","txt_zsoob",
+    "snoman","txt_snoman","pingu","txt_pingu","der","txt_der","ginn","txt_ginn","snom","txt_snom",0,0,0,0,"notnat","txt_notnat","oat","txt_oat",
+    "kapa","txt_kapa","urei","txt_urei","ryugon","txt_ryugon","viruse","txt_viruse",0,0,0,0,0,0,0,0,"butcher","txt_butcher",
+    "os","txt_os","hors","txt_hors","mimi","txt_mimi","err","txt_err",0,0,0,0,0,0,0,0,0,0,
   },
   -- page 5: inanimate objects
   {
-    "wal","text_wal","bellt","text_bellt","hurcane","text_hurcane","buble","text_buble","katany","text_katany","petnygrame","text_petnygrame","firbolt","text_firbolt","hol","text_hol","golf","text_golf",
-    "til","text_til","arro","text_arro","clowd","text_clowd","snoflak","text_snoflak","gunne","text_gunne","scarr","text_scarr","litbolt","text_litbolt","rif","text_rif","paint","text_paint",
-    "watr","text_watr","colld","text_colld","rein","text_rein","icecub","text_icecub","slippers","text_slippers","pudll","text_pudll","icbolt","text_icbolt","win","text_win","press","text_press",
-    "laav","text_laav","dor","text_dor","kee","text_kee","roc","text_roc","hatt","text_hatt","extre","text_extre","poisbolt","text_poisbolt","smol","text_smol","pumkin","text_pumkin",
-    "gras","text_gras","algay","text_algay","flog","text_flog","boux","text_boux","knif","text_knif","heg","text_heg","timbolt","text_timbolt","tor","text_tor","grav","text_grav",
-    "hedg","text_hedg","banboo","text_banboo","boll","text_boll","l..uv","text_l..uv","wips","text_wips","pepis","text_pepis","do$h","text_do$h","dling","text_dling","pen","text_pen",
-    "metl","text_metl","vien","text_vien","leef","text_leef","karot","text_karot","fir","text_fir","eeg","text_eeg","foreeg","text_foreeg","forbeeee","text_forbeeee","cil","text_cil",
-    "jail","text_jail","ladr","text_ladr","pallm","text_pallm","coco","text_coco","rouz","text_rouz","noet","text_noet","lili","text_lili","weeb","text_weeb","3den","text_3den",
-    "fenss","text_fenss","platfor","text_platfor","tre","text_tre","stum","text_stum","dayzy","text_dayzy","lie","text_lie","reffil","text_reffil","of in","text_of in","ches","text_ches",
-    "cobll","text_cobll","spik","text_spik","frut","text_frut","fungye","text_fungye","red","text_red","lie/8","text_lie/8","vlc","text_vlc","foru","text_foru","rod","text_rod",
-    "wuud","text_wuud","spiky","text_spiky","parsol","text_parsol","clok","text_clok","ufu","text_ufu","rockit","text_rockit","swim","text_swim","yanying","text_yanying","casete","text_casete",
-    "brik","text_brik","sparkl","text_sparkl","sanglas","text_sanglas","bullb","text_bullb","son","text_son","muun","text_muun","bac","text_bac","warn","text_warn","piep","text_piep",
-    "san","text_san","piler","text_piler","sancastl","text_sancastl","shel","text_shel","starr","text_starr","cor","text_cor","byc","text_byc","gorder","text_gorder","tuba","text_tuba",
-    "glas","text_glas","bom","text_bom","sine","text_sine","kar","text_kar","can","text_can","ger","text_ger","sirn","text_sirn","chain","text_chain","reflecr","text_reflecr",
-    "bordr","text_bordr","wut","text_wut","wat","text_wat","splittr","text_splittr","toggl","text_toggl","bon","text_bon","battry","text_battry","chekr","text_chekr","sloop","text_sloop",
+    "wal","txt_wal","bellt","txt_bellt","hurcane","txt_hurcane","buble","txt_buble","katany","txt_katany","petnygrame","txt_petnygrame","firbolt","txt_firbolt","hol","txt_hol","golf","txt_golf",
+    "til","txt_til","arro","txt_arro","clowd","txt_clowd","snoflak","txt_snoflak","gunne","txt_gunne","scarr","txt_scarr","litbolt","txt_litbolt","rif","txt_rif","paint","txt_paint",
+    "watr","txt_watr","colld","txt_colld","rein","txt_rein","icecub","txt_icecub","slippers","txt_slippers","pudll","txt_pudll","icbolt","txt_icbolt","win","txt_win","press","txt_press",
+    "laav","txt_laav","dor","txt_dor","kee","txt_kee","roc","txt_roc","hatt","txt_hatt","extre","txt_extre","poisbolt","txt_poisbolt","smol","txt_smol","pumkin","txt_pumkin",
+    "gras","txt_gras","algay","txt_algay","flog","txt_flog","boux","txt_boux","knif","txt_knif","heg","txt_heg","timbolt","txt_timbolt","tor","txt_tor","grav","txt_grav",
+    "hedg","txt_hedg","banboo","txt_banboo","boll","txt_boll","l..uv","txt_l..uv","wips","txt_wips","pepis","txt_pepis","do$h","txt_do$h","dling","txt_dling","pen","txt_pen",
+    "metl","txt_metl","vien","txt_vien","leef","txt_leef","karot","txt_karot","fir","txt_fir","eeg","txt_eeg","foreeg","txt_foreeg","forbeeee","txt_forbeeee","cil","txt_cil",
+    "jail","txt_jail","ladr","txt_ladr","pallm","txt_pallm","coco","txt_coco","rouz","txt_rouz","noet","txt_noet","lili","txt_lili","weeb","txt_weeb","3den","txt_3den",
+    "fenss","txt_fenss","platfor","txt_platfor","tre","txt_tre","stum","txt_stum","dayzy","txt_dayzy","lie","txt_lie","reffil","txt_reffil","ofin","txt_ofin","ches","txt_ches",
+    "cobll","txt_cobll","spik","txt_spik","frut","txt_frut","fungye","txt_fungye","red","txt_red","lie/8","txt_lie/8","vlc","txt_vlc","foru","txt_foru","rod","txt_rod",
+    "wuud","txt_wuud","spiky","txt_spiky","parsol","txt_parsol","clok","txt_clok","ufu","txt_ufu","rockit","txt_rockit","swim","txt_swim","yanying","txt_yanying","casete","txt_casete",
+    "brik","txt_brik","sparkl","txt_sparkl","sanglas","txt_sanglas","bullb","txt_bullb","son","txt_son","muun","txt_muun","bac","txt_bac","warn","txt_warn","piep","txt_piep",
+    "san","txt_san","piler","txt_piler","sancastl","txt_sancastl","shel","txt_shel","starr","txt_starr","cor","txt_cor","byc","txt_byc","gorder","txt_gorder","tuba","txt_tuba",
+    "glas","txt_glas","bom","txt_bom","sine","txt_sine","kar","txt_kar","can","txt_can","ger","txt_ger","sirn","txt_sirn","chain","txt_chain","reflecr","txt_reflecr",
+    "bordr","txt_bordr","wut","txt_wut","wat","txt_wat","splittr","txt_splittr","toggl","txt_toggl","bon","txt_bon","battry","txt_battry","chekr","txt_chekr","sloop","txt_sloop",
   },
   -- page 6: more inanimate objects
   {
-    "gato","text_gato","fube","text_fube","tronk","text_tronk","cart","text_cart","drop","text_drop","woosh","text_woosh",0,0,0,0,0,0,
-    "colect","text_colect","zig","text_zig","pixl","text_pixl",0,0,0,0,0,0,0,0,0,0,0,0,
+    "gato","txt_gato","fube","txt_fube","tronk","txt_tronk","cart","txt_cart","drop","txt_drop","woosh","txt_woosh",0,0,0,0,0,0,
+    "colect","txt_colect","zig","txt_zig","pixl","txt_pixl",0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    "whee","text_whee","joycon","text_joycon",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    "whee","txt_whee","joycon","txt_joycon",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,"wan","text_wan","mug","text_mug","die","text_die",0,0,0,0,0,0,0,0,0,0,
-    "sno","text_sno","bel","text_bel","wres","text_wres","bowie","text_bowie","sant","text_sant","canedy","text_canedy","bolble","text_bolble","now","text_now","cooky","text_cooky",
-    0,0,"pot","text_pot","sweep","text_sweep","candl","text_candl","which","text_which","corndy","text_corndy","maglit","text_maglit","cracc","text_cracc",0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,"wan","txt_wan","mug","txt_mug","die","txt_die",0,0,0,0,0,0,0,0,0,0,
+    "sno","txt_sno","bel","txt_bel","wres","txt_wres","bowie","txt_bowie","sant","txt_sant","canedy","txt_canedy","bolble","txt_bolble","now","txt_now","cooky","txt_cooky",
+    0,0,"pot","txt_pot","sweep","txt_sweep","candl","txt_candl","which","txt_which","corndy","txt_corndy","maglit","txt_maglit","cracc","txt_cracc",0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   },
   -- page 7: properties, verbs and conditions
   {
-    "text_be","text_&","text_got","text_creat","text_snacc","text_spoop","text_copkat","text_moov","text_yeet","text_liek","text_haet","text_stalk","text_ignor","text_paint","text_vs","text_sing","text_soko","text_look at",
-    "text_u","text_u too","text_u tres","text_y'all","text_walk","text_:)","text_no swim","text_ouch","text_protecc",0,"text_nxt","text_stay ther","text_wont","text_giv",0,"text_rp",0,"text_look away",
-    "text_go","text_goooo","text_icy","text_icyyyy","text_stubbn","text_:(","text_ned kee","text_for dor","text_wurd",0,"text_sublvl","text_loop","text_oob","text_frenles","text_timles","text_lit","text_corekt","text_rong",
-    "text_no go","text_go away pls","text_come pls","text_sidekik","text_diagkik","text_delet","text_hotte","text_fridgd","text_thingify",0,"text_dragbl","text_no drag","text_alt","text_clikt","text_past","text_wun","text_an","text_mayb",
-    "text_visit fren","text_slep","text_shy...","text_behin u",0,"text_:o","text_moar","text_split","text_txtify",0,"text_rythm","text_curse",0,"text_wait...","text_samefloat","text_samepaint","text_sameface",0,
-    "text_flye","text_tall","text_haet skye","text_haet flor",0,"text_un:)","text_gone","text_nuek","text_notranform",0,0,0,0,"text_w/fren","text_arond","text_sans","text_seen by","text_behind",
-    "text_diag","text_ortho","text_go my way","text_zip",0,"text_B)","text_cool",0,0,0,0,0,0,"text_that","text_that be","text_that got","text_meow","text_beside",
-    "text_turn cornr","text_folo wal","text_hopovr","text_reflecc",0,0,0,0,0,0,0,0,0,0,0,0,0,"text_n't",
-    "text_munwalk","text_sidestep","text_diagstep","text_knightstep",0,0,02,0,0,0,0,0,0,0,0,0,0,"text_reed",
-    "text_spin","text_rotatbl","text_noturn","text_stukc",0,0,0,0,0,0,0,0,0,0,0,0,"text_enby","text_orang",
-    "text_upleft","text_up","text_upright","text_thicc",0,0,0,0,0,0,0,0,0,0,0,"text_brwn","text_tranz","text_yello",
-    "text_left","text_direction","text_right",0,0,0,0,0,0,0,0,0,0,0,0,"text_blacc","text_gay","text_grun",
-    "text_downleft","text_down","text_downright",0,0,"text_tryagain","text_no undo","text_undo","text_za warudo","text_brite","text_torc","text_tranparnt",0,0,0,"text_graey","text_qt","text_cyeann",
-    0,0,0,0,0,"text_poor toll","text_go arnd","text_mirr arnd","text_glued",0,0,0,0,0,"text_thonk","text_whit","text_pinc","text_bleu",
-    "text_...","text_''","prop","text_prop",0,"text_her","text_thr","text_rithere","text_the","text_deez",0,0,0,0,"text_stelth","text_colrful","text_rave","text_purp",
+    "txt_be","txt_&","txt_got","txt_creat","txt_snacc","txt_spoop","txt_copkat","txt_moov","txt_yeet","txt_liek","txt_haet","txt_stalk","txt_ignor","txt_paint","txt_vs","txt_sing","txt_soko","txt_lookat",
+    "txt_u","txt_utoo","txt_utres","txt_y'all","txt_walk","txt_:)","txt_noswim","txt_ouch","txt_protecc",0,"txt_nxt","txt_stayther","txt_wont","txt_giv",0,"txt_rp",0,"txt_lookaway",
+    "txt_go","txt_goooo","txt_icy","txt_icyyyy","txt_stubbn","txt_:(","txt_nedkee","txt_fordor","txt_wurd",0,"txt_sublvl","txt_loop","txt_oob","txt_frenles","txt_timles","txt_lit","txt_corekt","txt_rong",
+    "txt_nogo","txt_goawaypls","txt_comepls","txt_sidekik","txt_diagkik","txt_delet","txt_hotte","txt_fridgd","txt_thingify",0,"txt_dragbl","txt_nodrag","txt_alt","txt_clikt","txt_past","txt_wun","txt_an","txt_mayb",
+    "txt_visitfren","txt_slep","txt_shy...","txt_behinu",0,"txt_:o","txt_moar","txt_split","txt_txtify",0,"txt_rythm","txt_curse",0,"txt_wait...","txt_samefloat","txt_samepaint","txt_sameface",0,
+    "txt_flye","txt_tall","txt_haetskye","txt_haetflor",0,"txt_un:)","txt_gone","txt_nuek","txt_notranform",0,0,0,0,"txt_w/fren","txt_arond","txt_sans","txt_seenby","txt_behind",
+    "txt_diag","txt_ortho","txt_gomyway","txt_zip",0,"txt_B)","txt_cool",0,0,0,0,0,0,"txt_that","txt_thatbe","txt_thatgot","txt_meow","txt_beside",
+    "txt_turncornr","txt_folowal","txt_hopovr","txt_reflecc",0,0,0,0,0,0,0,0,0,0,0,0,0,"txt_n't",
+    "txt_munwalk","txt_sidestep","txt_diagstep","txt_knightstep",0,0,02,0,0,0,0,0,0,0,0,0,0,"txt_reed",
+    "txt_spin","txt_rotatbl","txt_noturn","txt_stukc",0,0,0,0,0,0,0,0,0,0,0,0,"txt_enby","txt_orang",
+    "txt_upleft","txt_up","txt_upright","txt_thicc",0,0,0,0,0,0,0,0,0,0,0,"txt_brwn","txt_tranz","txt_yello",
+    "txt_left","txt_direction","txt_right",0,0,0,0,0,0,0,0,0,0,0,0,"txt_blacc","txt_gay","txt_grun",
+    "txt_downleft","txt_down","txt_downright",0,0,"txt_tryagain","txt_noundo","txt_undo","txt_zawarudo","txt_brite","txt_torc","txt_tranparnt",0,0,0,"txt_graey","txt_qt","txt_cyeann",
+    0,0,0,0,0,"txt_poortoll","txt_goarnd","txt_mirrarnd","txt_glued",0,0,0,0,0,"txt_thonk","txt_whit","txt_pinc","txt_bleu",
+    "txt_...","txt_''","prop","txt_prop",0,"txt_her","txt_thr","txt_rithere","txt_the","txt_deez",0,0,0,0,"txt_stelth","txt_colrful","txt_rave","txt_purp",
   },
 }
 tile_grid_width = 18
@@ -377,7 +377,7 @@ tiles_list = {
   },
   -- 2
   {
-    name = "text_bab",
+    name = "txt_bab",
     sprite = "text/bab",
     metasprite = "text/bab meta",
     type = "text",
@@ -389,7 +389,7 @@ tiles_list = {
   },
   -- 3
   {
-    name = "text_be",
+    name = "txt_be",
     sprite = "text/be",
     type = "text",
     texttype = {verb = true, verb_class = true, verb_property = true},
@@ -400,7 +400,7 @@ tiles_list = {
   },
   -- 4
   {
-    name = "text_u",
+    name = "txt_u",
     sprite = "text/u",
     type = "text",
     texttype = {property = true},
@@ -422,7 +422,7 @@ tiles_list = {
   },
   -- 6
   {
-    name = "text_wal",
+    name = "txt_wal",
     sprite = "text/wal",
     metasprite = "text/wal meta",
     type = "text",
@@ -434,7 +434,7 @@ tiles_list = {
   },
   -- 7
   {
-    name = "text_no go",
+    name = "txt_nogo",
     sprite = "text/nogo",
     type = "text",
     texttype = {property = true},
@@ -456,7 +456,7 @@ tiles_list = {
   },
   -- 9
   {
-    name = "text_roc",
+    name = "txt_roc",
     sprite = "text/roc",
     metasprite = "text/roc meta",
     type = "text",
@@ -467,7 +467,7 @@ tiles_list = {
   },
   -- 10
   {
-    name = "text_go away pls",
+    name = "txt_goawaypls",
     sprite = "text/goaway",
     type = "text",
     texttype = {property = true},
@@ -488,7 +488,7 @@ tiles_list = {
   },
   -- 12
   {
-    name = "text_dor",
+    name = "txt_dor",
     sprite = "text/dor",
     metasprite = "text/dor meta",
     type = "text",
@@ -499,7 +499,7 @@ tiles_list = {
   },
   -- 13
   {
-    name = "text_ned kee",
+    name = "txt_nedkee",
     sprite = "text/nedkee",
     type = "text",
     texttype = {property = true},
@@ -522,7 +522,7 @@ tiles_list = {
   },
   -- 15
   {
-    name = "text_kee",
+    name = "txt_kee",
     sprite = "text/kee",
     metasprite = "text/kee meta",
     type = "text",
@@ -533,7 +533,7 @@ tiles_list = {
   },
   -- 16
   {
-    name = "text_for dor",
+    name = "txt_fordor",
     sprite = "text/fordor",
     type = "text",
     texttype = {property = true},
@@ -544,7 +544,7 @@ tiles_list = {
   },
   -- 17
   {
-    name = "text_&",
+    name = "txt_&",
     sprite = "text/and",
     type = "text",
     texttype = {["and"] = true}, -- and is a reserved word
@@ -567,7 +567,7 @@ tiles_list = {
   },
   -- 19
   {
-    name = "text_flog",
+    name = "txt_flog",
     sprite = "text/flog",
     type = "text",
     texttype = {object = true},
@@ -577,7 +577,7 @@ tiles_list = {
   },
   -- 20
   {
-    name = "text_:)",
+    name = "txt_:)",
     sprite = "text/good",
     type = "text",
     texttype = {property = true},
@@ -609,7 +609,7 @@ tiles_list = {
   },
   -- 23
   {
-    name = "text_watr",
+    name = "txt_watr",
     sprite = "text/watr",
     type = "text",
     texttype = {object = true},
@@ -619,8 +619,8 @@ tiles_list = {
   },
   -- 24
   {
-    name = "text_no swim",
-    sprite = "text/no swim",
+    name = "txt_noswim",
+    sprite = "text/noswim",
     type = "text",
     texttype = {property = true},
     color = {1, 3},
@@ -631,7 +631,7 @@ tiles_list = {
 
   -- 25
   {
-    name = "text_got",
+    name = "txt_got",
     sprite = "text/got",
     type = "text",
     texttype = {verb = true, verb_class = true},
@@ -642,7 +642,7 @@ tiles_list = {
   },
   -- 26
   {
-    name = "text_colrful",
+    name = "txt_colrful",
     sprite = "text/colrful",
     type = "text",
     texttype = {property = true},
@@ -652,10 +652,10 @@ tiles_list = {
   },
   -- 27
   {
-    name = "text_reed",
+    name = "txt_reed",
     sprite = "text/reed_cond",
     sprite_transforms = {
-      property = "text_reed"
+      property = "txt_reed"
     },
     type = "text",
     texttype = {cond_prefix = true, property = true, class_prefix = true},
@@ -666,10 +666,10 @@ tiles_list = {
   },
   -- 28
   {
-    name = "text_bleu",
+    name = "txt_bleu",
     sprite = "text/bleu_cond",
     sprite_transforms = {
-      property = "text_bleu"
+      property = "txt_bleu"
     },
     type = "text",
     texttype = {cond_prefix = true, property = true, class_prefix = true},
@@ -680,7 +680,7 @@ tiles_list = {
   },
   -- 29
   {
-    name = "text_tranz",
+    name = "txt_tranz",
     sprite = "text/tranz-colored",
     type = "text",
     texttype = {property = true},
@@ -691,7 +691,7 @@ tiles_list = {
   },
   -- 30
   {
-    name = "text_gay",
+    name = "txt_gay",
     sprite = "text/gay-colored",
     type = "text",
     texttype = {property = true},
@@ -701,7 +701,7 @@ tiles_list = {
   },
   -- 31
   {
-    name = "text_mous",
+    name = "txt_mous",
     sprite = "text/mous",
     type = "text",
     texttype = {object = true},
@@ -712,7 +712,7 @@ tiles_list = {
   },
   -- 32
   {
-    name = "text_boux",
+    name = "txt_boux",
     sprite = "text/boux",
     type = "text",
     texttype = {object = true},
@@ -733,7 +733,7 @@ tiles_list = {
   },
   -- 34
   {
-    name = "text_skul",
+    name = "txt_skul",
     sprite = "text/skul",
     type = "text",
     texttype = {object = true},
@@ -756,7 +756,7 @@ tiles_list = {
   },
   -- 36
   {
-    name = "text_laav",
+    name = "txt_laav",
     sprite = "text/laav",
     type = "text",
     texttype = {object = true},
@@ -776,7 +776,7 @@ tiles_list = {
   },
   -- 38
   {
-    name = "text_keek",
+    name = "txt_keek",
     sprite = "text/keek",
     type = "text",
     texttype = {object = true},
@@ -800,7 +800,7 @@ tiles_list = {
   },
   -- 40
   {
-    name = "text_meem",
+    name = "txt_meem",
     sprite = "text/meem",
     type = "text",
     texttype = {object = true},
@@ -824,7 +824,7 @@ tiles_list = {
   },
   -- 42
   {
-    name = "text_til",
+    name = "txt_til",
     sprite = "text/til",
     metasprite = "text/til meta",
     type = "text",
@@ -835,7 +835,7 @@ tiles_list = {
   },
   -- 43
   {
-    name = "text_text",
+    name = "txt_text",
     sprite = "text/txt",
     metasprite = "text/txt meta",
     type = "text",
@@ -847,7 +847,7 @@ tiles_list = {
   },
   -- 44
   {
-    name = "text_os",
+    name = "txt_os",
     sprite = "text/os",
     type = "text",
     texttype = {object = true},
@@ -870,7 +870,7 @@ tiles_list = {
   },
   -- 46
   {
-    name = "text_slep",
+    name = "txt_slep",
     sprite = "text/slep",
     type = "text",
     texttype = {property = true},
@@ -891,7 +891,7 @@ tiles_list = {
   },
   -- 48
   {
-    name = "text_l..uv",
+    name = "txt_l..uv",
     sprite = "text/luv",
     type = "text",
     texttype = {object = true},
@@ -914,7 +914,7 @@ tiles_list = {
   },
   -- 50
   {
-    name = "text_frut",
+    name = "txt_frut",
     sprite = "text/frut",
     type = "text",
     texttype = {object = true},
@@ -935,7 +935,7 @@ tiles_list = {
   },
   -- 52
   {
-    name = "text_tre",
+    name = "txt_tre",
     sprite = "text/tre",
     type = "text",
     texttype = {object = true},
@@ -958,7 +958,7 @@ tiles_list = {
   },
   -- 54
   {
-    name = "text_wog",
+    name = "txt_wog",
     sprite = "text/wog",
     type = "text",
     texttype = {object = true},
@@ -970,7 +970,7 @@ tiles_list = {
   --tutorial sprites
   -- 55
   {
-    name = "text_press",
+    name = "txt_press",
     sprite = "tutorial_press",
     type = "text",
     texttype = {object = true},
@@ -980,7 +980,7 @@ tiles_list = {
   },
   -- 56
   {
-    name = "text_f2",
+    name = "txt_f2",
     sprite = "tutorial_f2",
     type = "text",
     texttype = {verb = true, verb_property = true},
@@ -990,7 +990,7 @@ tiles_list = {
   },
   -- 57
   {
-    name = "text_2edit",
+    name = "txt_2edit",
     sprite = "tutorial_edit",
     type = "text",
     texttype = {property = true},
@@ -1000,17 +1000,17 @@ tiles_list = {
   },
   -- 58
   {
-    name = "text_2pley",
+    name = "txt_2pley",
     sprite = "tutorial_play",
     type = "text",
     texttype = {property = true},
     color = {0, 3},
     layer = 20,
-    tags = {"text_2pley"},
+    tags = {"txt_2pley"},
   },
   -- 59
   {
-    name = "text_f1",
+    name = "txt_f1",
     sprite = "tutorial_f1",
     type = "text",
     texttype = {verb = true, verb_property = true},
@@ -1019,7 +1019,7 @@ tiles_list = {
   },
   -- 60
   {
-    name = "text_:(",
+    name = "txt_:(",
     sprite = "text/bad",
     type = "text",
     texttype = {property = true},
@@ -1031,7 +1031,7 @@ tiles_list = {
   },
   -- 61
   {
-    name = "text_walk",
+    name = "txt_walk",
     sprite = "text/walk",
     type = "text",
     texttype = {property = true},
@@ -1042,7 +1042,7 @@ tiles_list = {
   },
   -- 62
   {
-    name = "text_bup",
+    name = "txt_bup",
     sprite = "text/bup",
     type = "text",
     texttype = {object = true},
@@ -1066,7 +1066,7 @@ tiles_list = {
   },
   -- 64
   {
-    name = "text_boll",
+    name = "txt_boll",
     sprite = "text/boll",
     type = "text",
     texttype = {object = true},
@@ -1086,7 +1086,7 @@ tiles_list = {
   },
   -- 66
   {
-    name = "text_bellt",
+    name = "txt_bellt",
     sprite = "text/bellt",
     type = "text",
     texttype = {object = true},
@@ -1107,7 +1107,7 @@ tiles_list = {
   },
   -- 68
   {
-    name = "text_:o",
+    name = "txt_:o",
     sprite = "text/whoa",
     type = "text",
     texttype = {property = true},
@@ -1119,7 +1119,7 @@ tiles_list = {
   },
   -- 69
   {
-    name = "text_up",
+    name = "txt_up",
     sprite = "text/up",
     type = "text",
     texttype = {property = true, direction = true},
@@ -1130,7 +1130,7 @@ tiles_list = {
   },
   -- 70
   {
-    name = "text_direction",
+    name = "txt_direction",
     sprite = "text/direction",
     type = "text",
     texttype = {property = true, direction = true},
@@ -1142,7 +1142,7 @@ tiles_list = {
   },
   -- 71
   {
-    name = "text_left",
+    name = "txt_left",
     sprite = "text/left",
     type = "text",
     texttype = {property = true, direction = true},
@@ -1153,7 +1153,7 @@ tiles_list = {
   },
   -- 72
   {
-    name = "text_down",
+    name = "txt_down",
     sprite = "text/down",
     type = "text",
     texttype = {property = true, direction = true},
@@ -1163,7 +1163,7 @@ tiles_list = {
   },
   -- 73
   {
-    name = "text_behin u",
+    name = "txt_behinu",
     sprite = "text/behinu",
     type = "text",
     texttype = {property = true},
@@ -1174,7 +1174,7 @@ tiles_list = {
   },
   -- 74
   {
-    name = "text_w/fren",
+    name = "txt_w/fren",
     sprite = "text/wfren",
     metasprite = "text/wfren meta",
     type = "text",
@@ -1186,8 +1186,8 @@ tiles_list = {
   },
   -- 75
   {
-    name = "text_look at",
-    sprite = "text/look at",
+    name = "txt_lookat",
+    sprite = "text/lookat",
     type = "text",
     texttype = {cond_infix = true, cond_infix_dir = true, verb = true, verb_unit = true},
     color = {0, 3},
@@ -1197,7 +1197,7 @@ tiles_list = {
   },
   -- 76
   {
-    name = "text_frenles",
+    name = "txt_frenles",
     sprite = "text/frenles",
     type = "text",
     texttype = {cond_prefix = true},
@@ -1208,7 +1208,7 @@ tiles_list = {
   },
   -- 77
   {
-    name = "text_creat",
+    name = "txt_creat",
     sprite = "text/creat",
     type = "text",
     texttype = {verb = true, verb_class = true},
@@ -1219,7 +1219,7 @@ tiles_list = {
   },
   -- 78
   {
-    name = "text_snacc",
+    name = "txt_snacc",
     sprite = "text/snacc",
     type = "text",
     texttype = {verb = true, verb_unit = true},
@@ -1244,7 +1244,7 @@ tiles_list = {
   },
   -- 80
   {
-    name = "text_kirb",
+    name = "txt_kirb",
     sprite = "text/kirb",
     type = "text",
     texttype = {object = true},
@@ -1265,7 +1265,7 @@ tiles_list = {
   },
   -- 82
   {
-    name = "text_gunne",
+    name = "txt_gunne",
     sprite = "text/gunne",
     type = "text",
     texttype = {object = true},
@@ -1276,7 +1276,7 @@ tiles_list = {
   },
   -- 83
   {
-    name = "text_ouch",
+    name = "txt_ouch",
     sprite = "text/ouch",
     type = "text",
     texttype = {property = true},
@@ -1300,7 +1300,7 @@ tiles_list = {
   },
   -- 85
   {
-    name = "text_tot",
+    name = "txt_tot",
     sprite = "text/tot",
     type = "text",
     texttype = {object = true},
@@ -1310,13 +1310,13 @@ tiles_list = {
   },
   -- 86
   {
-    name = "text_qt",
+    name = "txt_qt",
     sprite = "text/qt",
     type = "text",
     texttype = {property = true},
     color = {4, 2},
     layer = 20,
-    demeta = "the real qt",
+    demeta = "therealqt",
     tags = {"cute","lily"},
     desc = "QT: Makes the unit emit love hearts.",
   },
@@ -1335,7 +1335,7 @@ tiles_list = {
   },
   -- 88
   {
-    name = "text_oat",
+    name = "txt_oat",
     sprite = "text/oat",
     type = "text",
     texttype = {object = true},
@@ -1356,7 +1356,7 @@ tiles_list = {
   },
   -- 90
   {
-    name = "text_han",
+    name = "txt_han",
     sprite = "text/han",
     type = "text",
     texttype = {object = true},
@@ -1376,7 +1376,7 @@ tiles_list = {
   },
   -- 92
   {
-    name = "text_gras",
+    name = "txt_gras",
     sprite = "text/gras",
     type = "text",
     texttype = {object = true},
@@ -1397,7 +1397,7 @@ tiles_list = {
   },
   -- 94
   {
-    name = "text_dayzy",
+    name = "txt_dayzy",
     sprite = "text/dayzy",
     type = "text",
     texttype = {object = true},
@@ -1418,7 +1418,7 @@ tiles_list = {
   },
   -- 96
   {
-    name = "text_hurcane",
+    name = "txt_hurcane",
     sprite = "text/hurcane",
     type = "text",
     texttype = {object = true},
@@ -1438,7 +1438,7 @@ tiles_list = {
   },
   -- 98
   {
-    name = "text_hatt",
+    name = "txt_hatt",
     sprite = "text/hatt",
     type = "text",
     texttype = {object = true},
@@ -1458,7 +1458,7 @@ tiles_list = {
   },
   -- 100
   {
-    name = "text_yeet",
+    name = "txt_yeet",
     sprite = "text/yeet",
     type = "text",
     texttype = {verb = true, verb_unit = true, verb_direction = true},
@@ -1470,7 +1470,7 @@ tiles_list = {
   },
   -- 101
   {
-    name = "text_go",
+    name = "txt_go",
     sprite = "text/go",
     type = "text",
     texttype = {property = true},
@@ -1481,7 +1481,7 @@ tiles_list = {
   },
   -- 102
   {
-    name = "text_icy",
+    name = "txt_icy",
     sprite = "text/icy",
     type = "text",
     texttype = {property = true},
@@ -1492,7 +1492,7 @@ tiles_list = {
   },
   -- 103
   {
-    name = "text_delet",
+    name = "txt_delet",
     sprite = "text/delet",
     type = "text",
     texttype = {property = true},
@@ -1504,7 +1504,7 @@ tiles_list = {
   },
   -- 104
   {
-    name = "text_sublvl",
+    name = "txt_sublvl",
     sprite = "text/sublvl",
     type = "text",
     texttype = {property = true},
@@ -1515,7 +1515,7 @@ tiles_list = {
   },
   -- 105
   {
-    name = "text_come pls",
+    name = "txt_comepls",
     sprite = "text/comepls",
     type = "text",
     texttype = {property = true},
@@ -1526,7 +1526,7 @@ tiles_list = {
   },
   -- 106
   {
-    name = "text_sidekik",
+    name = "txt_sidekik",
     sprite = "text/sidekik",
     type = "text",
     texttype = {property = true},
@@ -1537,7 +1537,7 @@ tiles_list = {
   },
   -- 107
   {
-    name = "text_arond",
+    name = "txt_arond",
     sprite = "text/arond",
     type = "text",
     texttype = {cond_infix = true},
@@ -1558,7 +1558,7 @@ tiles_list = {
   },
   -- 109
   {
-    name = "text_chekr",
+    name = "txt_chekr",
     sprite = "text/chekr",
     type = "text",
     texttype = {object = true},
@@ -1568,7 +1568,7 @@ tiles_list = {
   },
   -- 110
   {
-    name = "text_diag",
+    name = "txt_diag",
     sprite = "text/diag",
     type = "text",
     texttype = {property = true, direction = true},
@@ -1579,7 +1579,7 @@ tiles_list = {
   },
   -- 111
   {
-    name = "text_go my way",
+    name = "txt_gomyway",
     sprite = "text/gomywey",
     type = "text",
     texttype = {property = true},
@@ -1590,7 +1590,7 @@ tiles_list = {
   },
   -- 112
   {
-    name = "text_ortho",
+    name = "txt_ortho",
     sprite = "text/ortho",
     type = "text",
     texttype = {property = true, direction = true},
@@ -1612,7 +1612,7 @@ tiles_list = {
   },
   -- 114
   {
-    name = "text_arro",
+    name = "txt_arro",
     sprite = "text/arro",
     type = "text",
     texttype = {object = true},
@@ -1622,7 +1622,7 @@ tiles_list = {
   },
   -- 115
   {
-    name = "text_hotte",
+    name = "txt_hotte",
     sprite = "text/hotte",
     type = "text",
     texttype = {property = true},
@@ -1633,7 +1633,7 @@ tiles_list = {
   },
   -- 116
   {
-    name = "text_fridgd",
+    name = "txt_fridgd",
     sprite = "text/fridgd",
     type = "text",
     texttype = {property = true},
@@ -1644,7 +1644,7 @@ tiles_list = {
   },
   -- 117
   {
-    name = "text_colld",
+    name = "txt_colld",
     sprite = "text/colld",
     type = "text",
     texttype = {object = true},
@@ -1664,7 +1664,7 @@ tiles_list = {
   },
   -- 119
   {
-    name = "text_goooo",
+    name = "txt_goooo",
     sprite = "text/goooo",
     type = "text",
     texttype = {property = true},
@@ -1675,7 +1675,7 @@ tiles_list = {
   },
   -- 120
   {
-    name = "text_icyyyy",
+    name = "txt_icyyyy",
     sprite = "text/icyyyy",
     type = "text",
     texttype = {property = true},
@@ -1686,7 +1686,7 @@ tiles_list = {
   },
   -- 121
   {
-    name = "text_protecc",
+    name = "txt_protecc",
     sprite = "text/protecc",
     type = "text",
     texttype = {property = true},
@@ -1697,7 +1697,7 @@ tiles_list = {
   },
   -- 122
   {
-    name = "text_flye",
+    name = "txt_flye",
     sprite = "text/flye",
     type = "text",
     texttype = {property = true},
@@ -1708,7 +1708,7 @@ tiles_list = {
   },
   -- 123
   {
-    name = "text_piler",
+    name = "txt_piler",
     sprite = "text/piler",
     type = "text",
     texttype = {object = true},
@@ -1728,7 +1728,7 @@ tiles_list = {
   },
   -- 125
   {
-    name = "text_n't",
+    name = "txt_n't",
     sprite = "text/nt",
     type = "text",
     texttype = {["not"] = true}, -- not is a reserved word
@@ -1739,7 +1739,7 @@ tiles_list = {
   },
   -- 126
   {
-    name = "text_haet skye",
+    name = "txt_haetskye",
     sprite = "text/haetskye",
     type = "text",
     texttype = {property = true},
@@ -1761,7 +1761,7 @@ tiles_list = {
   },
   -- 128
   {
-    name = "text_clowd",
+    name = "txt_clowd",
     sprite = "text/clowd",
     type = "text",
     texttype = {object = true},
@@ -1771,7 +1771,7 @@ tiles_list = {
   },
   -- 129
   {
-    name = "text_moar",
+    name = "txt_moar",
     sprite = "text/moar",
     type = "text",
     texttype = {property = true},
@@ -1782,7 +1782,7 @@ tiles_list = {
   },
   -- 130
   {
-    name = "text_visit fren",
+    name = "txt_visitfren",
     sprite = "text/visitfren",
     type = "text",
     texttype = {property = true},
@@ -1802,7 +1802,7 @@ tiles_list = {
   },
   -- 132
   {
-    name = "text_wait...",
+    name = "txt_wait...",
     sprite = "text/wait",
     metasprite = "text/wait meta",
     type = "text",
@@ -1814,11 +1814,11 @@ tiles_list = {
   },
   -- 133
   {
-    name = "text_sans",
+    name = "txt_sans",
     sprite = "text/sans",
     metasprite = "text/sans meta",
     sprite_transforms = {
-      property = "text_sans_property"
+      property = "txt_sans_property"
     },
     type = "text",
     texttype = {cond_infix = true, property = true},
@@ -1829,7 +1829,7 @@ tiles_list = {
   },
   -- 134
   {
-    name = "text_spoop",
+    name = "txt_spoop",
     sprite = "text/spoop",
     type = "text",
     texttype = {verb = true, verb_unit = true},
@@ -1840,7 +1840,7 @@ tiles_list = {
   },
   -- 135
   {
-    name = "text_stalk",
+    name = "txt_stalk",
     sprite = "text/stalk",
     type = "text",
     texttype = {verb = true, verb_unit = true},
@@ -1851,7 +1851,7 @@ tiles_list = {
   },
   -- 136
   {
-    name = "text_stelth",
+    name = "txt_stelth",
     sprite = "text/stelth",
     type = "text",
     texttype = {property = true},
@@ -1875,7 +1875,7 @@ tiles_list = {
   },
   -- 138
   {
-    name = "text_pata",
+    name = "txt_pata",
     sprite = "text/pata",
     type = "text",
     texttype = {object = true},
@@ -1910,7 +1910,7 @@ tiles_list = {
   },
   -- 140
   {
-    name = "text_larry",
+    name = "txt_larry",
     sprite = "text/larry",
     type = "text",
     texttype = {object = true},
@@ -1932,7 +1932,7 @@ tiles_list = {
   },
   -- 142
   {
-    name = "text_lila",
+    name = "txt_lila",
     sprite = "text/lila",
     type = "text",
     texttype = {object = true},
@@ -1942,7 +1942,7 @@ tiles_list = {
   },
   -- 143
   {
-    name = "text_every1",
+    name = "txt_every1",
     sprite = "text/every1",
     type = "text",
     texttype = {object = true},
@@ -1953,7 +1953,7 @@ tiles_list = {
   },
   -- 144
   {
-    name = "text_tall",
+    name = "txt_tall",
     sprite = "text/tall",
     type = "text",
     texttype = {property = true},
@@ -1963,7 +1963,7 @@ tiles_list = {
   },
   -- 145
   {
-    name = "text_liek",
+    name = "txt_liek",
     sprite = "text/liek",
     type = "text",
     texttype = {verb = true, verb_unit = true},
@@ -1975,7 +1975,7 @@ tiles_list = {
   },
   -- 146
   {
-    name = "text_zip",
+    name = "txt_zip",
     sprite = "text/zip",
     type = "text",
     texttype = {property = true},
@@ -1985,7 +1985,7 @@ tiles_list = {
   },
   -- 147
   {
-    name = "text_shy...",
+    name = "txt_shy...",
     sprite = "text/shy",
     type = "text",
     texttype = {property = true},
@@ -1996,7 +1996,7 @@ tiles_list = {
   },
   -- 148
   {
-    name = "text_folo wal",
+    name = "txt_folowal",
     sprite = "text/folo_wal",
     type = "text",
     texttype = {property = true},
@@ -2007,7 +2007,7 @@ tiles_list = {
   },
   -- 149
   {
-    name = "text_turn cornr",
+    name = "txt_turncornr",
     sprite = "text/turn_cornr",
     type = "text",
     texttype = {property = true},
@@ -2027,7 +2027,7 @@ tiles_list = {
   },
   -- 151
   {
-    name = "text_petnygrame",
+    name = "txt_petnygrame",
     sprite = "text/petnygrame",
     type = "text",
     texttype = {object = true},
@@ -2047,7 +2047,7 @@ tiles_list = {
   },
   -- 153
   {
-    name = "text_katany",
+    name = "txt_katany",
     sprite = "text/katany",
     type = "text",
     texttype = {object = true},
@@ -2068,7 +2068,7 @@ tiles_list = {
   },
   -- 155
   {
-    name = "text_scarr",
+    name = "txt_scarr",
     sprite = "text/scarr",
     type = "text",
     texttype = {object = true},
@@ -2078,7 +2078,7 @@ tiles_list = {
   },
   -- 156
   {
-    name = "text_no1",
+    name = "txt_no1",
     sprite = "text/no1",
     type = "text",
     texttype = {object = true},
@@ -2098,7 +2098,7 @@ tiles_list = {
   },
   -- 158
   {
-    name = "text_lvl",
+    name = "txt_lvl",
     sprite = "text/lvl",
     metasprite = "text/lvl meta",
     type = "text",
@@ -2110,7 +2110,7 @@ tiles_list = {
   },
   -- 159
   {
-    name = "text_nxt",
+    name = "txt_nxt",
     sprite = "text/nxt",
     type = "text",
     texttype = {property = true},
@@ -2133,7 +2133,7 @@ tiles_list = {
   },
   -- 161
   {
-    name = "text_pepis",
+    name = "txt_pepis",
     sprite = "text/pepis",
     type = "text",
     texttype = {object = true},
@@ -2143,7 +2143,7 @@ tiles_list = {
   },
   -- 162
   {
-    name = "text_copkat",
+    name = "txt_copkat",
     sprite = "text/copkat",
     type = "text",
     texttype = {verb = true, verb_unit = true},
@@ -2167,7 +2167,7 @@ tiles_list = {
   },
   -- 164
   {
-    name = "text_clok",
+    name = "txt_clok",
     sprite = "text/clok",
     type = "text",
     texttype = {object = true},
@@ -2177,7 +2177,7 @@ tiles_list = {
   },
   -- 165
   {
-    name = "text_tryagain",
+    name = "txt_tryagain",
     sprite = "text/try again",
     type = "text",
     texttype = {property = true},
@@ -2190,8 +2190,8 @@ tiles_list = {
   },
   -- 166
   {
-    name = "text_no undo",
-    sprite = "text/no undo",
+    name = "txt_noundo",
+    sprite = "text/noundo",
     type = "text",
     texttype = {property = true},
     color = {5, 3},
@@ -2213,7 +2213,7 @@ tiles_list = {
   },
   -- 168
   {
-    name = "text_zsoob",
+    name = "txt_zsoob",
     sprite = "text/zsoob",
     type = "text",
     texttype = {object = true},
@@ -2223,7 +2223,7 @@ tiles_list = {
   },
   -- 169
   {
-    name = "text_mayb",
+    name = "txt_mayb",
     sprite = "text/mayb",
     type = "text",
     texttype = {cond_prefix = true},
@@ -2235,7 +2235,7 @@ tiles_list = {
   },
   -- 170
   {
-    name = "text_stubbn",
+    name = "txt_stubbn",
     sprite = "text/stubbn",
     type = "text",
     texttype = {property = true},
@@ -2246,8 +2246,8 @@ tiles_list = {
   },
   -- 171
   {
-    name = "text_seen by",
-    sprite = "text/seen by",
+    name = "txt_seenby",
+    sprite = "text/seenby",
     type = "text",
     texttype = {cond_infix = true},
     color = {0, 3},
@@ -2273,7 +2273,7 @@ tiles_list = {
   },
   -- 173
   {
-    name = "text_steev",
+    name = "txt_steev",
     sprite = "text/steev",
     type = "text",
     texttype = {object = true},
@@ -2283,8 +2283,8 @@ tiles_list = {
   },
   -- 174
   {
-    name = "text_go arnd",
-    sprite = "text/go arnd",
+    name = "txt_goarnd",
+    sprite = "text/goarnd",
     type = "text",
     texttype = {property = true},
     color = {3, 2},
@@ -2294,8 +2294,8 @@ tiles_list = {
   },
   -- 175
   {
-    name = "text_poor toll",
-    sprite = "text/poor_toll",
+    name = "txt_poortoll",
+    sprite = "text/poortoll",
     type = "text",
     texttype = {property = true},
     color = {3, 2},
@@ -2317,7 +2317,7 @@ tiles_list = {
   },
   -- 177
   {
-    name = "text_splittr",
+    name = "txt_splittr",
     sprite = "text/splittr",
     type = "text",
     texttype = {object = true},
@@ -2327,7 +2327,7 @@ tiles_list = {
   },
   -- 178
   {
-    name = "text_split",
+    name = "txt_split",
     sprite = "text/split",
     type = "text",
     texttype = {property = true},
@@ -2338,7 +2338,7 @@ tiles_list = {
   },
   -- 179
   {
-    name = "text_cilindr",
+    name = "txt_cilindr",
     sprite = "text/cilindr",
     type = "text",
     texttype = {property = true},
@@ -2350,7 +2350,7 @@ tiles_list = {
   },
   -- 180
   {
-    name = "text_mobyus",
+    name = "txt_mobyus",
     sprite = "text/mobyus",
     type = "text",
     texttype = {property = true},
@@ -2362,7 +2362,7 @@ tiles_list = {
   },
   -- 181
   {
-    name = "text_munwalk",
+    name = "txt_munwalk",
     sprite = "text/munwalk",
     type = "text",
     texttype = {property = true},
@@ -2373,8 +2373,8 @@ tiles_list = {
   },
   -- 182
   {
-    name = "text_mirr arnd",
-    sprite = "text/mirr arnd",
+    name = "txt_mirrarnd",
+    sprite = "text/mirrarnd",
     type = "text",
     texttype = {property = true},
     color = {3, 2},
@@ -2384,7 +2384,7 @@ tiles_list = {
   },
   -- 183
   {
-    name = "text_sidestep",
+    name = "txt_sidestep",
     sprite = "text/sidestep",
     type = "text",
     texttype = {property = true},
@@ -2395,7 +2395,7 @@ tiles_list = {
   },
   -- 184
   {
-    name = "text_diagstep",
+    name = "txt_diagstep",
     sprite = "text/diagstep",
     type = "text",
     texttype = {property = true},
@@ -2406,7 +2406,7 @@ tiles_list = {
   },
   -- 185
   {
-    name = "text_hopovr",
+    name = "txt_hopovr",
     sprite = "text/hopovr",
     type = "text",
     texttype = {property = true},
@@ -2417,7 +2417,7 @@ tiles_list = {
   },
   -- 186
   {
-    name = "text_undo",
+    name = "txt_undo",
     sprite = "text/undo",
     type = "text",
     texttype = {property = true},
@@ -2440,7 +2440,7 @@ tiles_list = {
   },
   -- 188
   {
-    name = "text_boy",
+    name = "txt_boy",
     sprite = "text/boy",
     type = "text",
     texttype = {object = true},
@@ -2450,7 +2450,7 @@ tiles_list = {
   },
   -- 189
   {
-    name = "text_spin",
+    name = "txt_spin",
     sprite = "text/spin",
     type = "text",
     texttype = {property = true, direction=true},
@@ -2470,7 +2470,7 @@ tiles_list = {
   },
   -- 191
   {
-    name = "text_slippers",
+    name = "txt_slippers",
     sprite = "text/slippers",
     type = "text",
     texttype = {object = true},
@@ -2489,7 +2489,7 @@ tiles_list = {
   },
   -- 193
   {
-    name = "ghost fren",
+    name = "ghostfren",
     sprite = "ghost",
     type = "object",
     color = {4, 2},
@@ -2502,8 +2502,8 @@ tiles_list = {
   },
   -- 194
   {
-    name = "text_ghost fren",
-    sprite = "text/ghost fren",
+    name = "txt_ghostfren",
+    sprite = "text/ghostfren",
     type = "text",
     texttype = {object = true},
     color = {4, 2},
@@ -2526,7 +2526,7 @@ tiles_list = {
   },
   -- 196
   {
-    name = "text_robobot",
+    name = "txt_robobot",
     sprite = "text/robobot",
     type = "text",
     texttype = {object = true},
@@ -2557,7 +2557,7 @@ tiles_list = {
   },
   -- 199
   {
-    name = "text_selctr",
+    name = "txt_selctr",
     sprite = "text/selctr",
     type = "text",
     texttype = {object = true},
@@ -2577,7 +2577,7 @@ tiles_list = {
   },
   -- 201
   {
-    name = "text_lin",
+    name = "txt_lin",
     sprite = "text/lin",
     type = "text",
     texttype = {object = true},
@@ -2588,7 +2588,7 @@ tiles_list = {
   },
   -- 202
   {
-    name = "text_moov",
+    name = "txt_moov",
     sprite = "text/moov",
     type = "text",
     texttype = {verb = true, verb_unit = true, verb_direction = true},
@@ -2599,7 +2599,7 @@ tiles_list = {
   },
   --- 203
   {
-    name = "text_haet",
+    name = "txt_haet",
     sprite = "text/haet",
     type = "text",
     texttype = {verb = true, verb_unit = true},
@@ -2611,7 +2611,7 @@ tiles_list = {
   },
   -- 204
   {
-    name = "text_brite",
+    name = "txt_brite",
     sprite = "text/brite",
     type = "text",
     texttype = {property = true},
@@ -2622,7 +2622,7 @@ tiles_list = {
   },
   -- 205
   {
-    name = "text_lit",
+    name = "txt_lit",
     sprite = "text/lit",
     type = "text",
     texttype = {cond_prefix = true},
@@ -2633,7 +2633,7 @@ tiles_list = {
   },
   -- 206
   {
-    name = "text_tranparnt",
+    name = "txt_tranparnt",
     sprite = "text/tranparnt",
     type = "text",
     texttype = {property = true},
@@ -2644,8 +2644,8 @@ tiles_list = {
   },
   -- 207
   {
-    name = "text_no turn",
-    sprite = "text/no turn",
+    name = "txt_noturn",
+    sprite = "text/noturn",
     type = "text",
     texttype = {property = true},
     color = {2, 3},
@@ -2655,7 +2655,7 @@ tiles_list = {
   },
   -- 208
   {
-    name = "text_an",
+    name = "txt_an",
     sprite = "text/an",
     type = "text",
     texttype = {cond_prefix = true},
@@ -2666,7 +2666,7 @@ tiles_list = {
   },
   -- 209
   {
-    name = "text_wurd",
+    name = "txt_wurd",
     sprite = "text/wurd",
     type = "text",
     texttype = {property = true},
@@ -2688,7 +2688,7 @@ tiles_list = {
   },
   -- 211
   {
-    name = "text_firbolt",
+    name = "txt_firbolt",
     sprite = "text/firbolt",
     type = "text",
     texttype = {object = true},
@@ -2709,7 +2709,7 @@ tiles_list = {
   },
   -- 213
   {
-    name = "text_icbolt",
+    name = "txt_icbolt",
     sprite = "text/icbolt",
     type = "text",
     texttype = {object = true},
@@ -2729,7 +2729,7 @@ tiles_list = {
   },
   -- 215
   {
-    name = "text_hedg",
+    name = "txt_hedg",
     sprite = "text/hedg",
     type = "text",
     texttype = {object = true},
@@ -2749,7 +2749,7 @@ tiles_list = {
   },
   -- 217
   {
-    name = "text_fenss",
+    name = "txt_fenss",
     sprite = "text/fenss",
     type = "text",
     color = {6, 2},
@@ -2768,7 +2768,7 @@ tiles_list = {
   },
   -- 219
   {
-    name = "text_metl",
+    name = "txt_metl",
     sprite = "text/metl",
     type = "text",
     texttype = {object = true},
@@ -2788,7 +2788,7 @@ tiles_list = {
   },
   -- 221
   {
-    name = "text_sparkl",
+    name = "txt_sparkl",
     sprite = "text/sparkl",
     type = "text",
     texttype = {object = true},
@@ -2809,7 +2809,7 @@ tiles_list = {
   },
   -- 223
   {
-    name = "text_spik",
+    name = "txt_spik",
     sprite = "text/spik",
     type = "text",
     texttype = {object = true},
@@ -2830,7 +2830,7 @@ tiles_list = {
   },
   -- 225
   {
-    name = "text_spiky",
+    name = "txt_spiky",
     sprite = "text/spiky",
     type = "text",
     texttype = {object = true},
@@ -2850,7 +2850,7 @@ tiles_list = {
   },
   -- 227
   {
-    name = "text_bordr",
+    name = "txt_bordr",
     sprite = "text/bordr",
     type = "text",
     texttype = {object = true},
@@ -2860,7 +2860,7 @@ tiles_list = {
   },
   -- 228
   {
-    name = "text_loop",
+    name = "txt_loop",
     sprite = "text/infloop",
     type = "text",
     texttype = {object = true},
@@ -2883,7 +2883,7 @@ tiles_list = {
   },
   -- 230
   {
-    name = "text_platfor",
+    name = "txt_platfor",
     sprite = "text/platfor",
     type = "text",
     texttype = {object = true},
@@ -2902,7 +2902,7 @@ tiles_list = {
   },
   -- 232
   {
-    name = "text_jail",
+    name = "txt_jail",
     sprite = "text/jail",
     type = "text",
     texttype = {object = true},
@@ -2911,7 +2911,7 @@ tiles_list = {
   },
   -- 233
   {
-    name = "text_haet flor",
+    name = "txt_haetflor",
     sprite = "text/haetflor",
     type = "text",
     texttype = {property = true},
@@ -2931,10 +2931,10 @@ tiles_list = {
   },
   -- 235
   {
-    name = "text_grun",
+    name = "txt_grun",
     sprite = "text/grun_cond",
     sprite_transforms = {
-      property = "text_grun"
+      property = "txt_grun"
     },
     type = "text",
     texttype = {cond_prefix = true, property = true, class_prefix = true},
@@ -2945,10 +2945,10 @@ tiles_list = {
   },
   -- 236
   {
-    name = "text_yello",
+    name = "txt_yello",
     sprite = "text/yello_cond",
     sprite_transforms = {
-      property = "text_yello"
+      property = "txt_yello"
     },
     type = "text",
     texttype = {cond_prefix = true, property = true, class_prefix = true},
@@ -2959,10 +2959,10 @@ tiles_list = {
   },
   -- 237
   {
-    name = "text_purp",
+    name = "txt_purp",
     sprite = "text/purp_cond",
     sprite_transforms = {
-      property = "text_purp"
+      property = "txt_purp"
     },
     type = "text",
     texttype = {cond_prefix = true, property = true, class_prefix = true},
@@ -2973,10 +2973,10 @@ tiles_list = {
   },
   -- 238
   {
-    name = "text_orang",
+    name = "txt_orang",
     sprite = "text/orang_cond",
     sprite_transforms = {
-      property = "text_orang"
+      property = "txt_orang"
     },
     type = "text",
     texttype = {cond_prefix = true, property = true, class_prefix = true},
@@ -2987,10 +2987,10 @@ tiles_list = {
   },
   -- 239
   {
-    name = "text_cyeann",
+    name = "txt_cyeann",
     sprite = "text/cyeann_cond",
     sprite_transforms = {
-      property = "text_cyeann"
+      property = "txt_cyeann"
     },
     type = "text",
     texttype = {cond_prefix = true, property = true, class_prefix = true},
@@ -3001,10 +3001,10 @@ tiles_list = {
   },
   -- 240
   {
-    name = "text_whit",
+    name = "txt_whit",
     sprite = "text/whit_cond",
     sprite_transforms = {
-      property = "text_whit"
+      property = "txt_whit"
     },
     type = "text",
     texttype = {cond_prefix = true, property = true, class_prefix = true},
@@ -3015,10 +3015,10 @@ tiles_list = {
   },
   -- 241
   {
-    name = "text_blacc",
+    name = "txt_blacc",
     sprite = "text/blacc_cond",
     sprite_transforms = {
-      property = "text_blacc"
+      property = "txt_blacc"
     },
     type = "text",
     texttype = {cond_prefix = true, property = true, class_prefix = true},
@@ -3029,7 +3029,7 @@ tiles_list = {
   },
   -- 242
   {
-    name = "text_rave",
+    name = "txt_rave",
     sprite = "text/rave",
     type = "text",
     texttype = {property = true},
@@ -3051,7 +3051,7 @@ tiles_list = {
   },
   -- 244
   {
-    name = "text_hol",
+    name = "txt_hol",
     sprite = "text/hol",
     type = "text",
     texttype = {object = true},
@@ -3061,7 +3061,7 @@ tiles_list = {
   },
   -- 245
   {
-    name = "text_corekt",
+    name = "txt_corekt",
     sprite = "text/corekt",
     type = "text",
     texttype = {cond_prefix = true},
@@ -3072,10 +3072,10 @@ tiles_list = {
   },
   -- 246
   {
-    name = "text_rong",
+    name = "txt_rong",
     sprite = "text/rong",
     sprite_transforms = {
-      property = "text_rong_prop"
+      property = "txt_rong_prop"
     },
     type = "text",
     texttype = {cond_prefix = true, property = true},
@@ -3086,7 +3086,7 @@ tiles_list = {
   },
   -- 247
   {
-    name = "text_...",
+    name = "txt_...",
     sprite = "text/...",
     type = "text",
     texttype = {ellipsis = true},
@@ -3097,7 +3097,7 @@ tiles_list = {
   },
   -- 248
   {
-	name = "text_u too",
+	name = "txt_utoo",
 	sprite = "text/utoo",
 	type = "text",
 	texttype = {property = true},
@@ -3109,7 +3109,7 @@ tiles_list = {
   },
   -- 249
   {
-	name = "text_u tres",
+	name = "txt_utres",
 	sprite = "text/utres",
 	type = "text",
 	texttype = {property = true},
@@ -3121,7 +3121,7 @@ tiles_list = {
   },
   -- 250
   {
-    name = "text_za warudo",
+    name = "txt_zawarudo",
     sprite = "text/zawarudo",
     type = "text",
     texttype = {property = true},
@@ -3132,8 +3132,8 @@ tiles_list = {
   },
 	-- 251
   {
-    name = "text_babn't",
-    sprite = {"text_bab meta", "n't"},
+    name = "txt_babn't",
+    sprite = {"text/bab meta", "n't"},
     color = {{4, 1}, {2, 2}},
     colored = {true, false},
     type = "text",
@@ -3143,8 +3143,8 @@ tiles_list = {
   },
 	-- 252
   {
-    name = "text_ben't",
-    sprite = {"text_be n't", "n't (be)"},
+    name = "txt_ben't",
+    sprite = {"text/be n't", "n't (be)"},
     color = {{0, 3}, {2, 2}},
     colored = {true, false},
     type = "text",
@@ -3155,8 +3155,8 @@ tiles_list = {
   },
 	-- 253
    {
-    name = "text_rocn't",
-    sprite = {"text_roc meta", "n't"},
+    name = "txt_rocn't",
+    sprite = {"text/roc meta", "n't"},
     color = {{6, 1}, {2, 2}},
     colored = {true, false},
     type = "text",
@@ -3166,8 +3166,8 @@ tiles_list = {
   },
 	-- 254
    {
-    name = "text_waln't",
-    sprite = {"text_wal meta", "n't"},
+    name = "txt_waln't",
+    sprite = {"text/wal meta", "n't"},
     color = {{0, 1}, {2, 2}},
     colored = {true, false},
     type = "text",
@@ -3504,7 +3504,7 @@ tiles_list = {
   },
   -- 289
   {
-    name = "text_''",
+    name = "txt_''",
     sprite = "text/ditto",
     type = "text",
     texttype = {ditto = true},
@@ -3516,7 +3516,7 @@ tiles_list = {
   },
   -- 290
   {
-    name = "text_txtify",
+    name = "txt_txtify",
     sprite = "text/txtify",
     type = "text",
     texttype = {property = true},
@@ -3707,7 +3707,7 @@ tiles_list = {
   },
 	-- 311
   {
-    name = "text_frens",
+    name = "txt_frens",
     sprite = "text/frens",
     type = "text",
     texttype = {object = true, group = true},
@@ -3718,7 +3718,7 @@ tiles_list = {
   },
 	-- 312
   {
-    name = "text_curse",
+    name = "txt_curse",
     sprite = "text/curse",
     type = "text",
     texttype = {property = true},
@@ -3729,7 +3729,7 @@ tiles_list = {
   },
 	-- 313
   {
-    name = "text_groop",
+    name = "txt_groop",
     sprite = "text/groop",
     type = "text",
     texttype = {object = true, group = true},
@@ -3740,7 +3740,7 @@ tiles_list = {
   },
   -- 314
   {
-    name = "text_her",
+    name = "txt_her",
     sprite = "text/her",
     type = "text",
     texttype = {property = true},
@@ -3752,7 +3752,7 @@ tiles_list = {
   },
   -- 315
   {
-    name = "text_thr",
+    name = "txt_thr",
     sprite = "text/thr",
     type = "text",
     texttype = {property = true},
@@ -3764,7 +3764,7 @@ tiles_list = {
   },
   -- 316
   {
-    name = "text_the",
+    name = "txt_the",
     sprite = "text/the",
     type = "text",
     texttype = {object = true, cond_prefix = true},
@@ -3776,7 +3776,7 @@ tiles_list = {
   },
   -- 317
   {
-    name = "text_knightstep",
+    name = "txt_knightstep",
     sprite = "text/knightstep",
     type = "text",
     texttype = {property = true},
@@ -3787,7 +3787,7 @@ tiles_list = {
   },
   -- 318
   {
-    name = "text_that",
+    name = "txt_that",
     sprite = "text/that",
     type = "text",
     texttype = {cond_infix = true, cond_infix_verb = true},
@@ -3798,7 +3798,7 @@ tiles_list = {
   },
   -- 319
   {
-    name = "text_that be",
+    name = "txt_thatbe",
     sprite = "text/that be",
     type = "text",
     --this is because while it's technically cond_infix, listing it as one makes it double count any n'ts after it because it saves the n'ts accumulated from the two different paths it can try it as? I think?? anyway this fixes it because it's special cased in parser.lua
@@ -3810,7 +3810,7 @@ tiles_list = {
   },
   -- 320
   {
-    name = "text_timles",
+    name = "txt_timles",
     sprite = "text/timles",
     type = "text",
     texttype = {cond_prefix = true},
@@ -3852,7 +3852,7 @@ tiles_list = {
   },
   -- 324
   {
-    name = "text_rif",
+    name = "txt_rif",
     sprite = "text/rif",
     type = "text",
     texttype = {object = true},
@@ -3862,7 +3862,7 @@ tiles_list = {
   },
   -- 325
   {
-    name = "text_stay ther",
+    name = "txt_stayther",
     sprite = "text/stay ther",
     type = "text",
     texttype = {property = true},
@@ -3883,7 +3883,7 @@ tiles_list = {
   },
   -- 327
   {
-    name = "text_lie",
+    name = "txt_lie",
     sprite = "text/caek",
     type = "text",
     texttype = {object = true},
@@ -3905,7 +3905,7 @@ tiles_list = {
   },
   -- 329
   {
-    name = "text_lie/8",
+    name = "txt_lie/8",
     sprite = "text/slis",
     type = "text",
     texttype = {object = true},
@@ -3916,7 +3916,7 @@ tiles_list = {
   },
   -- 330
   {
-    name = "ui_left click",
+    name = "ui_leftclick",
     sprite = "ui_left_click",
     type = "object",
     color = {0,3},
@@ -3925,7 +3925,7 @@ tiles_list = {
   },
   -- 331
   {
-    name = "ui_right click",
+    name = "ui_rightclick",
     sprite = "ui_right_click",
     type = "object",
     color = {0,3},
@@ -3942,7 +3942,7 @@ tiles_list = {
   },
   -- 333
   {
-    name = "text_clikt",
+    name = "txt_clikt",
     sprite = "text/clikt",
     metasprite = "text/clikt meta",
     type = "text",
@@ -3964,7 +3964,7 @@ tiles_list = {
   },
   -- 335
   {
-    name = "text_sine",
+    name = "txt_sine",
     sprite = "text/sine",
     type = "text",
     texttype = {object = true},
@@ -3985,7 +3985,7 @@ tiles_list = {
   },
   -- 337
   {
-    name = "text_buble",
+    name = "txt_buble",
     sprite = "text/buble",
     type = "text",
     texttype = {object = true},
@@ -4007,7 +4007,7 @@ tiles_list = {
   },
   -- 339
   {
-    name = "text_creb",
+    name = "txt_creb",
     sprite = "text/creb",
     type = "text",
     texttype = {object = true},
@@ -4027,7 +4027,7 @@ tiles_list = {
   },
   -- 341
   {
-    name = "text_icecub",
+    name = "txt_icecub",
     sprite = "text/icecub",
     type = "text",
     texttype = {object = true},
@@ -4060,7 +4060,7 @@ tiles_list = {
   },
   -- 343
   {
-    name = "text_jill",
+    name = "txt_jill",
     sprite = "text/jill",
     type = "text",
     texttype = {object = true},
@@ -4070,7 +4070,7 @@ tiles_list = {
   },
   -- 344
   {
-    name = "text_paint",
+    name = "txt_paint",
     sprite = "text/paint",
     type = "text",
     texttype = {verb = true, verb_unit = true, property = true, object = true},
@@ -4092,7 +4092,7 @@ tiles_list = {
   },
   -- 346
   {
-    name = "text_glued",
+    name = "txt_glued",
     sprite = "text/glued",
     type = "text",
     texttype = {property = true},
@@ -4114,7 +4114,7 @@ tiles_list = {
   },
   -- 348
   {
-    name = "text_ger",
+    name = "txt_ger",
     sprite = "text/ger",
     type = "text",
     texttype = {object = true},
@@ -4124,7 +4124,7 @@ tiles_list = {
   },
   -- 349
   {
-    name = "text_rithere",
+    name = "txt_rithere",
     sprite = "text/rithere",
     type = "text",
     texttype = {property = true},
@@ -4135,7 +4135,7 @@ tiles_list = {
   },
   -- 350
   {
-    name = "text_torc",
+    name = "txt_torc",
     sprite = "text/torc",
     type = "text",
     texttype = {property = true},
@@ -4146,7 +4146,7 @@ tiles_list = {
   },
   -- 351
   {
-    name = "text_ignor",
+    name = "txt_ignor",
     sprite = "text/ignor",
     type = "text",
     texttype = {verb = true, verb_unit = true},
@@ -4157,7 +4157,7 @@ tiles_list = {
   },
   -- 352
   {
-    name = "text_rotatbl",
+    name = "txt_rotatbl",
     sprite = "text/rotatbl",
     type = "text",
     texttype = {property = true},
@@ -4168,7 +4168,7 @@ tiles_list = {
   },
   -- 353
   {
-    name = "text_vs",
+    name = "txt_vs",
     sprite = "text/vs",
     type = "text",
     texttype = {verb = true, verb_unit = true},
@@ -4190,7 +4190,7 @@ tiles_list = {
   },
   -- 355
   {
-    name = "text_hors",
+    name = "txt_hors",
     sprite = "text/hors",
     type = "text",
     texttype = {object = true},
@@ -4211,7 +4211,7 @@ tiles_list = {
   },
   -- 357
   {
-    name = "text_can",
+    name = "txt_can",
     sprite = "text/can",
     type = "text",
     texttype = {object = true},
@@ -4232,7 +4232,7 @@ tiles_list = {
   },
   -- 359
   {
-    name = "text_toggl",
+    name = "txt_toggl",
     sprite = "text/toggl",
     type = "text",
     texttype = {object = true},
@@ -4242,10 +4242,10 @@ tiles_list = {
   },
   -- 360
   {
-    name = "text_pinc",
+    name = "txt_pinc",
     sprite = "text/pinc_cond",
     sprite_transforms = {
-      property = "text_pinc"
+      property = "txt_pinc"
     },
     type = "text",
     texttype = {cond_prefix = true, property = true, class_prefix = true},
@@ -4256,7 +4256,7 @@ tiles_list = {
   },
   -- 361
   {
-    name = "text_nuek",
+    name = "txt_nuek",
     sprite = "text/nuek",
     type = "text",
     texttype = {property = true},
@@ -4277,7 +4277,7 @@ tiles_list = {
   },
   -- 363
   {
-    name = "text_samefloat",
+    name = "txt_samefloat",
     sprite = "text/samefloat",
     type = "text",
     texttype = {cond_compare = true},
@@ -4298,7 +4298,7 @@ tiles_list = {
   },
   -- 365
   {
-    name = "text_bom",
+    name = "txt_bom",
     sprite = "text/bom",
     type = "text",
     texttype = {object = true},
@@ -4316,7 +4316,7 @@ tiles_list = {
   },
   -- 367
   {
-    name = "text_behind",
+    name = "txt_behind",
     sprite = "text/behind",
     type = "text",
     texttype = {cond_infix = true},
@@ -4327,7 +4327,7 @@ tiles_list = {
   },
   -- 368
   {
-    name = "text_beside",
+    name = "txt_beside",
     sprite = "text/beside",
     type = "text",
     texttype = {cond_infix = true},
@@ -4338,8 +4338,8 @@ tiles_list = {
   },
   -- 369
   {
-    name = "text_look away",
-    sprite = "text/look away",
+    name = "txt_lookaway",
+    sprite = "text/lookaway",
     type = "text",
     texttype = {cond_infix = true, cond_infix_dir = true, verb = true, verb_unit = true},
     color = {0, 3},
@@ -4373,7 +4373,7 @@ tiles_list = {
   },
   -- 372
   {
-    name = "text_square",
+    name = "txt_square",
     sprite = "text/square",
     type = "text",
     texttype = {object = true},
@@ -4384,7 +4384,7 @@ tiles_list = {
   },
   -- 373
   {
-    name = "text_triangle",
+    name = "txt_triangle",
     sprite = "text/triangle",
     type = "text",
     texttype = {object = true},
@@ -4395,7 +4395,7 @@ tiles_list = {
   },
   -- 374
   {
-    name = "text_right",
+    name = "txt_right",
     sprite = "text/goup",
     type = "text",
     texttype = {property = true, direction = true},
@@ -4406,7 +4406,7 @@ tiles_list = {
   },
   -- 375
   {
-    name = "text_upleft",
+    name = "txt_upleft",
     sprite = "text/upleft",
     type = "text",
     texttype = {property = true, direction = true},
@@ -4418,7 +4418,7 @@ tiles_list = {
   },
   -- 376
   {
-    name = "text_upright",
+    name = "txt_upright",
     sprite = "text/upright",
     type = "text",
     texttype = {property = true, direction = true},
@@ -4430,7 +4430,7 @@ tiles_list = {
   },
   -- 377
   {
-    name = "text_downleft",
+    name = "txt_downleft",
     sprite = "text/downleft",
     type = "text",
     texttype = {property = true, direction = true},
@@ -4442,7 +4442,7 @@ tiles_list = {
   },
   -- 378
   {
-    name = "text_downright",
+    name = "txt_downright",
     sprite = "text/downright",
     type = "text",
     texttype = {property = true, direction = true},
@@ -4498,7 +4498,7 @@ tiles_list = {
   },
   -- 383
   {
-    name = "text_snoman",
+    name = "txt_snoman",
     sprite = "text/snoman",
     type = "text",
     texttype = {object = true},
@@ -4518,7 +4518,7 @@ tiles_list = {
   },
   -- 385
   {
-    name = "text_snoflak",
+    name = "txt_snoflak",
     sprite = "text/snoflak",
     type = "text",
     texttype = {object = true},
@@ -4538,7 +4538,7 @@ tiles_list = {
   },
   -- 387
   {
-    name = "text_fir",
+    name = "txt_fir",
     sprite = "text/fir",
     type = "text",
     texttype = {object = true},
@@ -4559,7 +4559,7 @@ tiles_list = {
   },
   -- 389
   {
-    name = "text_sanglas",
+    name = "txt_sanglas",
     sprite = "text/sanglas",
     type = "text",
     texttype = {object = true},
@@ -4710,7 +4710,7 @@ tiles_list = {
   },
   -- 405
   {
-    name = "text_ladr",
+    name = "txt_ladr",
     sprite = "text/ladr",
     type = "text",
     texttype = {object = true},
@@ -4720,7 +4720,7 @@ tiles_list = {
   },
   -- 406
   {
-    name = "text_gravy",
+    name = "txt_gravy",
     sprite = "text/gravy",
     type = "text",
     texttype = {object = true},
@@ -4731,7 +4731,7 @@ tiles_list = {
   },
   -- 407
   {
-    name = "text_w/neighbor",
+    name = "txt_w/neighbor",
     sprite = "text/wneighbor",
     type = "text",
     texttype = {cond_infix = true},
@@ -4753,7 +4753,7 @@ tiles_list = {
   },
   -- 409
   {
-    name = "text_cobll",
+    name = "txt_cobll",
     sprite = "text/cobll",
     type = "text",
     texttype = {object = true},
@@ -4774,7 +4774,7 @@ tiles_list = {
   },
   -- 411
   {
-    name = "text_wuud",
+    name = "txt_wuud",
     sprite = "text/wuud",
     type = "text",
     texttype = {object = true},
@@ -4818,7 +4818,7 @@ tiles_list = {
   },
   -- 416
   {
-    name = "text_wut",
+    name = "txt_wut",
     sprite = "text/wut",
     type = "text",
     texttype = {object = true},
@@ -4837,7 +4837,7 @@ tiles_list = {
   },
   -- 418
   {
-    name = "text_wat",
+    name = "txt_wat",
     sprite = "text/wat",
     type = "text",
     texttype = {object = true},
@@ -4857,7 +4857,7 @@ tiles_list = {
   },
   -- 420
   {
-    name = "text_brik",
+    name = "txt_brik",
     sprite = "text/brik",
     type = "text",
     texttype = {object = true},
@@ -4879,7 +4879,7 @@ tiles_list = {
   },
   -- 422
   {
-    name = "text_litbolt",
+    name = "txt_litbolt",
     sprite = "text/litbolt",
     type = "text",
     texttype = {object = true},
@@ -4888,7 +4888,7 @@ tiles_list = {
   },
   -- 423
   {
-    name = "text_un:)",
+    name = "txt_un:)",
     sprite = "text/ungood",
     type = "text",
     texttype = {property = true},
@@ -4900,7 +4900,7 @@ tiles_list = {
   },
   -- 424
   {
-    name = "text_enby",
+    name = "txt_enby",
     sprite = "text/enby-colored",
     type = "text",
     texttype = {property = true},
@@ -4923,7 +4923,7 @@ tiles_list = {
   },
   -- 426
   {
-    name = "text_beeee",
+    name = "txt_beeee",
     sprite = "text/beeee",
     type = "text",
     texttype = {object = true},
@@ -4945,7 +4945,7 @@ tiles_list = {
   },
   -- 428
   {
-    name = "text_rouz",
+    name = "txt_rouz",
     sprite = "text/rouz",
     type = "text",
     texttype = {object = true},
@@ -4966,7 +4966,7 @@ tiles_list = {
   },
   -- 430
   {
-    name = "text_san",
+    name = "txt_san",
     sprite = "text/san",
     type = "text",
     texttype = {object = true},
@@ -4997,7 +4997,7 @@ tiles_list = {
   },
   -- 433
   {
-    name = "text_fungye",
+    name = "txt_fungye",
     sprite = "text/fungye",
     type = "text",
     texttype = {object = true},
@@ -5020,7 +5020,7 @@ tiles_list = {
   },
   -- 435
   {
-    name = "text_kar",
+    name = "txt_kar",
     sprite = "text/kar",
     type = "text",
     texttype = {object = true},
@@ -5041,7 +5041,7 @@ tiles_list = {
   },
   -- 437
   {
-    name = "text_tor",
+    name = "txt_tor",
     sprite = "text/tor",
     type = "text",
     texttype = {object = true},
@@ -5061,7 +5061,7 @@ tiles_list = {
   },
   -- 439
   {
-    name = "text_son",
+    name = "txt_son",
     sprite = "text/son",
     type = "text",
     texttype = {object = true},
@@ -5081,7 +5081,7 @@ tiles_list = {
   },
   -- 441
   {
-    name = "text_muun",
+    name = "txt_muun",
     sprite = "text/muun",
     type = "text",
     texttype = {object = true},
@@ -5102,7 +5102,7 @@ tiles_list = {
   },
   -- 443
   {
-    name = "text_leef",
+    name = "txt_leef",
     sprite = "text/leef",
     type = "text",
     texttype = {object = true},
@@ -5124,7 +5124,7 @@ tiles_list = {
   },
   -- 445
   {
-    name = "text_starr",
+    name = "txt_starr",
     sprite = "text/starr",
     type = "text",
     texttype = {object = true},
@@ -5144,7 +5144,7 @@ tiles_list = {
   },
   -- 447
   {
-    name = "text_shel",
+    name = "txt_shel",
     sprite = "text/shel",
     type = "text",
     texttype = {object = true},
@@ -5164,7 +5164,7 @@ tiles_list = {
   },
   -- 449
   {
-    name = "text_sancastl",
+    name = "txt_sancastl",
     sprite = "text/sancastl",
     type = "text",
     texttype = {object = true},
@@ -5185,7 +5185,7 @@ tiles_list = {
   },
   -- 451
   {
-    name = "text_parsol",
+    name = "txt_parsol",
     sprite = "text/parsol",
     type = "text",
     texttype = {object = true},
@@ -5206,7 +5206,7 @@ tiles_list = {
   },
   -- 453
   {
-    name = "text_pallm",
+    name = "txt_pallm",
     sprite = "text/pallm",
     type = "text",
     texttype = {object = true},
@@ -5229,7 +5229,7 @@ tiles_list = {
   },
   -- 455
   {
-    name = "text_coco",
+    name = "txt_coco",
     sprite = "text/coco",
     type = "text",
     texttype = {object = true},
@@ -5250,7 +5250,7 @@ tiles_list = {
   },
   -- 457
   {
-    name = "text_glas",
+    name = "txt_glas",
     sprite = "text/glas",
     type = "text",
     texttype = {object = true},
@@ -5272,7 +5272,7 @@ tiles_list = {
   },
   -- 459
   {
-    name = "text_fishe",
+    name = "txt_fishe",
     sprite = "text/fishe",
     type = "text",
     texttype = {object = true},
@@ -5293,7 +5293,7 @@ tiles_list = {
   },
   -- 461
   {
-    name = "text_vien",
+    name = "txt_vien",
     sprite = "text/vien",
     type = "text",
     texttype = {object = true},
@@ -5314,7 +5314,7 @@ tiles_list = {
   },
   -- 463
   {
-    name = "text_pudll",
+    name = "txt_pudll",
     sprite = "text/pudll",
     type = "text",
     texttype = {object = true},
@@ -5334,7 +5334,7 @@ tiles_list = {
   },
   -- 465
   {
-    name = "text_red",
+    name = "txt_red",
     sprite = "text/red",
     type = "text",
     texttype = {object = true},
@@ -5355,7 +5355,7 @@ tiles_list = {
   },
   -- 467
   {
-    name = "text_stum",
+    name = "txt_stum",
     sprite = "text/stum",
     type = "text",
     texttype = {object = true},
@@ -5376,7 +5376,7 @@ tiles_list = {
   },
   -- 469
   {
-    name = "text_bullb",
+    name = "txt_bullb",
     sprite = "text/bullb",
     type = "text",
     texttype = {object = true},
@@ -5399,7 +5399,7 @@ tiles_list = {
   },
   -- 471
   {
-    name = "text_battry",
+    name = "txt_battry",
     sprite = "text/battry",
     type = "text",
     texttype = {object = true},
@@ -5421,7 +5421,7 @@ tiles_list = {
   },
   -- 473
   {
-    name = "text_smol",
+    name = "txt_smol",
     sprite = "text/smol",
     type = "text",
     texttype = {object = true},
@@ -5443,7 +5443,7 @@ tiles_list = {
   },
   -- 475
   {
-    name = "text_win",
+    name = "txt_win",
     sprite = "text/win",
     type = "text",
     texttype = {object = true},
@@ -5465,7 +5465,7 @@ tiles_list = {
   },
   -- 477
   {
-    name = "text_statoo",
+    name = "txt_statoo",
     sprite = "text/statoo",
     type = "text",
     texttype = {object = true},
@@ -5487,7 +5487,7 @@ tiles_list = {
   },
   -- 479
   {
-    name = "text_bon",
+    name = "txt_bon",
     sprite = "text/bon",
     type = "text",
     texttype = {object = true},
@@ -5509,7 +5509,7 @@ tiles_list = {
   },
   -- 481
   {
-    name = "text_rockit",
+    name = "txt_rockit",
     sprite = "text/rockit",
     type = "text",
     texttype = {object = true},
@@ -5530,7 +5530,7 @@ tiles_list = {
   },
   -- 483
   {
-    name = "text_ufu",
+    name = "txt_ufu",
     sprite = "text/ufu",
     type = "text",
     texttype = {object = true},
@@ -5550,7 +5550,7 @@ tiles_list = {
   },
   -- 485
   {
-    name = "text_rein",
+    name = "txt_rein",
     sprite = "text/rein",
     type = "text",
     texttype = {object = true},
@@ -5569,7 +5569,7 @@ tiles_list = {
   },
   -- 487
   {
-    name = "text_algay",
+    name = "txt_algay",
     sprite = "text/algay",
     type = "text",
     texttype = {object = true},
@@ -5590,7 +5590,7 @@ tiles_list = {
   },
   -- 489
   {
-    name = "text_noet",
+    name = "txt_noet",
     sprite = "text/noet",
     type = "text",
     texttype = {object = true},
@@ -5610,7 +5610,7 @@ tiles_list = {
   },
   -- 491
   {
-    name = "text_banboo",
+    name = "txt_banboo",
     sprite = "text/banboo",
     type = "text",
     texttype = {object = true},
@@ -5633,7 +5633,7 @@ tiles_list = {
   },
   -- 493
   {
-    name = "text_bunmy",
+    name = "txt_bunmy",
     sprite = "text/bunmy",
     type = "text",
     texttype = {object = true},
@@ -5654,7 +5654,7 @@ tiles_list = {
   },
   -- 495
   {
-    name = "text_karot",
+    name = "txt_karot",
     sprite = "text/karot",
     type = "text",
     texttype = {object = true},
@@ -5676,7 +5676,7 @@ tiles_list = {
   },
   -- 497
   {
-    name = "text_poisbolt",
+    name = "txt_poisbolt",
     sprite = "text/poisbolt",
     type = "text",
     texttype = {object = true},
@@ -5696,7 +5696,7 @@ tiles_list = {
   },
   -- 499
   {
-    name = "text_knif",
+    name = "txt_knif",
     sprite = "text/knif",
     type = "text",
     texttype = {object = true},
@@ -5717,7 +5717,7 @@ tiles_list = {
   },
   -- 501
   {
-    name = "text_timbolt",
+    name = "txt_timbolt",
     sprite = "text/timbolt",
     type = "text",
     texttype = {object = true},
@@ -5739,7 +5739,7 @@ tiles_list = {
   },
   -- 503
   {
-    name = "text_bog",
+    name = "txt_bog",
     sprite = "text/bog",
     type = "text",
     texttype = {object = true},
@@ -5761,7 +5761,7 @@ tiles_list = {
   },
   -- 505
   {
-    name = "text_pingu",
+    name = "txt_pingu",
     sprite = "text/pingu",
     type = "text",
     texttype = {object = true},
@@ -5783,7 +5783,7 @@ tiles_list = {
   },
   -- 507
   {
-    name = "text_snek",
+    name = "txt_snek",
     sprite = "text/snek",
     type = "text",
     texttype = {object = true},
@@ -5805,7 +5805,7 @@ tiles_list = {
   },
   -- 509
   {
-    name = "text_ripof",
+    name = "txt_ripof",
     sprite = "text/ripof",
     type = "text",
     texttype = {object = true},
@@ -5828,7 +5828,7 @@ tiles_list = {
   },
   -- 511
   {
-    name = "text_butflye",
+    name = "txt_butflye",
     sprite = "text/butflye",
     type = "text",
     texttype = {object = true},
@@ -5851,7 +5851,7 @@ tiles_list = {
   },
   -- 513
   {
-    name = "text_wurm",
+    name = "txt_wurm",
     sprite = "text/wurm",
     type = "text",
     texttype = {object = true},
@@ -5890,7 +5890,7 @@ tiles_list = {
   },
   -- 517
   {
-    name = "text_cor",
+    name = "txt_cor",
     sprite = "text/cor",
     type = "text",
     texttype = {object = true},
@@ -5912,7 +5912,7 @@ tiles_list = {
   },
   -- 519
   {
-    name = "text_sirn",
+    name = "txt_sirn",
     sprite = "text/sirn",
     type = "text",
     texttype = {object = true},
@@ -5934,7 +5934,7 @@ tiles_list = {
   },
   -- 521
   {
-    name = "text_ratt",
+    name = "txt_ratt",
     sprite = "text/ratt",
     type = "text",
     texttype = {object = true},
@@ -5957,7 +5957,7 @@ tiles_list = {
   },
   -- 523
   {
-    name = "text_moo",
+    name = "txt_moo",
     sprite = "text/moo",
     type = "text",
     texttype = {object = true},
@@ -5981,7 +5981,7 @@ tiles_list = {
   },
   -- 525
   {
-    name = "text_enbybog",
+    name = "txt_enbybog",
     sprite = "text/enbybog",
     type = "text",
     texttype = {object = true},
@@ -6004,7 +6004,7 @@ tiles_list = {
   },
   -- 527
   {
-    name = "text_shrim",
+    name = "txt_shrim",
     sprite = "text/shrim",
     type = "text",
     texttype = {object = true},
@@ -6027,7 +6027,7 @@ tiles_list = {
   },
   -- 529
   {
-    name = "text_flamgo",
+    name = "txt_flamgo",
     sprite = "text/flamgo",
     type = "text",
     texttype = {object = true},
@@ -6049,7 +6049,7 @@ tiles_list = {
   },
   -- 531
   {
-    name = "text_gul",
+    name = "txt_gul",
     sprite = "text/gul",
     type = "text",
     texttype = {object = true},
@@ -6071,7 +6071,7 @@ tiles_list = {
   },
   -- 533
   {
-    name = "text_starrfishe",
+    name = "txt_starrfishe",
     sprite = "text/starrfishe",
     type = "text",
     texttype = {object = true},
@@ -6094,7 +6094,7 @@ tiles_list = {
   },
   -- 535
   {
-    name = "text_sneel",
+    name = "txt_sneel",
     sprite = "text/sneel",
     type = "text",
     texttype = {object = true},
@@ -6117,7 +6117,7 @@ tiles_list = {
   },
   -- 537
   {
-    name = "text_kapa",
+    name = "txt_kapa",
     sprite = "text/kapa",
     type = "text",
     texttype = {object = true},
@@ -6139,7 +6139,7 @@ tiles_list = {
   },
   -- 539
   {
-    name = "text_urei",
+    name = "txt_urei",
     sprite = "text/urei",
     type = "text",
     texttype = {object = true},
@@ -6159,7 +6159,7 @@ tiles_list = {
   },
   -- 541
   {
-    name = "text_wips",
+    name = "txt_wips",
     sprite = "text/wips",
     type = "text",
     texttype = {object = true},
@@ -6182,7 +6182,7 @@ tiles_list = {
   },
   -- 543
   {
-    name = "text_ryugon",
+    name = "txt_ryugon",
     sprite = "text/ryugon",
     type = "text",
     texttype = {object = true},
@@ -6204,7 +6204,7 @@ tiles_list = {
   },
   -- 545
   {
-    name = "text_iy",
+    name = "txt_iy",
     sprite = "text/iy",
     type = "text",
     texttype = {object = true},
@@ -6226,7 +6226,7 @@ tiles_list = {
   },
   -- 547
   {
-    name = "text_lisp",
+    name = "txt_lisp",
     sprite = "text/lisp",
     type = "text",
     texttype = {object = true},
@@ -6248,7 +6248,7 @@ tiles_list = {
   },
   -- 549
   {
-    name = "text_eeg",
+    name = "txt_eeg",
     sprite = "text/eeg",
     type = "text",
     texttype = {object = true},
@@ -6269,7 +6269,7 @@ tiles_list = {
   },
   -- 551
   {
-    name = "text_foreeg",
+    name = "txt_foreeg",
     sprite = "text/foreeg",
     type = "text",
     texttype = {object = true},
@@ -6290,7 +6290,7 @@ tiles_list = {
   },
   -- 553
   {
-    name = "text_paw",
+    name = "txt_paw",
     sprite = "text/paw",
     type = "text",
     texttype = {object = true},
@@ -6312,7 +6312,7 @@ tiles_list = {
   },
   -- 555
   {
-    name = "text_cavebab",
+    name = "txt_cavebab",
     sprite = "text/cavebab",
     type = "text",
     texttype = {object = true},
@@ -6333,7 +6333,7 @@ tiles_list = {
   },
   -- 557
   {
-    name = "text_extre",
+    name = "txt_extre",
     sprite = "text/extre",
     type = "text",
     texttype = {object = true},
@@ -6353,7 +6353,7 @@ tiles_list = {
   },
   -- 559
   {
-    name = "text_heg",
+    name = "txt_heg",
     sprite = "text/heg",
     type = "text",
     texttype = {object = true},
@@ -6376,7 +6376,7 @@ tiles_list = {
   },
   -- 561
   {
-    name = "text_byc",
+    name = "txt_byc",
     sprite = "text/byc",
     type = "text",
     texttype = {object = true},
@@ -6399,7 +6399,7 @@ tiles_list = {
   },
   -- 563
   {
-    name = "text_bac",
+    name = "txt_bac",
     sprite = "text/bac",
     type = "text",
     texttype = {object = true},
@@ -6409,7 +6409,7 @@ tiles_list = {
   },
   -- 564
   {
-    name = "text_wun",
+    name = "txt_wun",
     sprite = "text/wun",
     type = "text",
     texttype = {cond_prefix = true},
@@ -6420,7 +6420,7 @@ tiles_list = {
   },
   -- 565
   {
-    name = "text_notranform",
+    name = "txt_notranform",
     sprite = "text/notranform",
     type = "text",
     texttype = {property = true},
@@ -6441,7 +6441,7 @@ tiles_list = {
   },
   -- 567
   {
-    name = "text_golf",
+    name = "txt_golf",
     sprite = "text/golf",
     type = "text",
     texttype = {object = true},
@@ -6452,7 +6452,7 @@ tiles_list = {
   },
   -- 568
   {
-    name = "text_sing",
+    name = "txt_sing",
     sprite = "text/sing",
     type = "text",
     texttype = {verb = true, verb_sing = true},
@@ -6463,7 +6463,7 @@ tiles_list = {
   },
   --- 569
   {
-    name = "text_diagkik",
+    name = "txt_diagkik",
     sprite = "text/diagkik",
     type = "text",
     texttype = {property = true},
@@ -6486,7 +6486,7 @@ tiles_list = {
   },
   -- 571
   {
-    name = "text_migri",
+    name = "txt_migri",
     sprite = "text/migri",
     type = "text",
     texttype = {object = true},
@@ -6507,7 +6507,7 @@ tiles_list = {
   },
   -- 573
   {
-    name = "text_sloop",
+    name = "txt_sloop",
     sprite = "text/sloop",
     type = "text",
     texttype = {object = true},
@@ -6518,7 +6518,7 @@ tiles_list = {
   },
   -- 574
   {
-    name = "text_reflecc",
+    name = "txt_reflecc",
     sprite = "text/reflecc",
     type = "text",
     texttype = {property = true},
@@ -6540,7 +6540,7 @@ tiles_list = {
   },
   -- 576
   {
-    name = "text_reflecr",
+    name = "txt_reflecr",
     sprite = "text/reflecr",
     type = "text",
     texttype = {object = true},
@@ -6551,10 +6551,10 @@ tiles_list = {
   },
   -- 577
   {
-    name = "text_graey",
+    name = "txt_graey",
     sprite = "text/graey_cond",
     sprite_transforms = {
-      property = "text_graey"
+      property = "txt_graey"
     },
     type = "text",
     texttype = {cond_prefix = true, property = true, class_prefix = true},
@@ -6565,10 +6565,10 @@ tiles_list = {
   },
   -- 578
   {
-    name = "text_brwn",
+    name = "txt_brwn",
     sprite = "text/brwn_cond",
     sprite_transforms = {
-      property = "text_brwn"
+      property = "txt_brwn"
     },
     type = "text",
     texttype = {cond_prefix = true, property = true, class_prefix = true},
@@ -6579,7 +6579,7 @@ tiles_list = {
   },
   -- 579
   {
-    name = "text_sharp",
+    name = "txt_sharp",
     sprite = "letter_sharp",
     type = "text",
     texttype = {note_modifier = true},
@@ -6589,7 +6589,7 @@ tiles_list = {
   },
   -- 580
   {
-    name = "text_flat",
+    name = "txt_flat",
     sprite = "letter_flat",
     type = "text",
     texttype = {note_modifier = true},
@@ -6609,7 +6609,7 @@ tiles_list = {
   },
   -- 582
   {
-    name = "text_chain",
+    name = "txt_chain",
     sprite = "text/chain",
     type = "text",
     texttype = {object = true},
@@ -6629,7 +6629,7 @@ tiles_list = {
   },
   -- 584
   {
-    name = "text_lili",
+    name = "txt_lili",
     sprite = "text/lili",
     type = "text",
     texttype = {object = true},
@@ -6650,7 +6650,7 @@ tiles_list = {
   },
   -- 586
   {
-    name = "text_swim",
+    name = "txt_swim",
     sprite = "text/swim",
     type = "text",
     texttype = {object = true},
@@ -6673,7 +6673,7 @@ tiles_list = {
   },
   -- 588
   {
-    name = "text_boooo",
+    name = "txt_boooo",
     sprite = "text/boooo",
     type = "text",
     texttype = {object = true},
@@ -6695,7 +6695,7 @@ tiles_list = {
   },
   -- 590
   {
-    name = "text_gorder",
+    name = "txt_gorder",
     sprite = "text/gorder",
     type = "text",
     texttype = {object = true},
@@ -6717,7 +6717,7 @@ tiles_list = {
   },
   -- 592
   {
-    name = "text_piep",
+    name = "txt_piep",
     sprite = "text/piep",
     type = "text",
     texttype = {object = true},
@@ -6738,7 +6738,7 @@ tiles_list = {
   },
   -- 594
   {
-    name = "text_tuba",
+    name = "txt_tuba",
     sprite = "text/tuba",
     type = "text",
     texttype = {object = true},
@@ -6749,7 +6749,7 @@ tiles_list = {
   },
   -- 595
   {
-    name = "text_every2",
+    name = "txt_every2",
     sprite = "text/every2",
     type = "text",
     texttype = {object = true},
@@ -6760,7 +6760,7 @@ tiles_list = {
   },
   -- 596
   {
-    name = "text_every3",
+    name = "txt_every3",
     sprite = "text/every3",
     type = "text",
     texttype = {object = true},
@@ -6771,7 +6771,7 @@ tiles_list = {
   },
   -- 597
   {
-    name = "text_every3",
+    name = "txt_every3",
     sprite = "text/every3",
     type = "text",
     texttype = {object = true},
@@ -6795,7 +6795,7 @@ tiles_list = {
   },
   -- 599
   {
-    name = "text_madi",
+    name = "txt_madi",
     sprite = "text/madi",
     type = "text",
     texttype = {object = true},
@@ -6818,7 +6818,7 @@ tiles_list = {
   },
   -- 601
   {
-    name = "text_badi",
+    name = "txt_badi",
     sprite = "text/badi",
     type = "text",
     texttype = {object = true},
@@ -6828,7 +6828,7 @@ tiles_list = {
   },
   -- 602
   {
-    name = "text_lethers",
+    name = "txt_lethers",
     sprite = "text/lethers",
     type = "text",
     texttype = {object = true},
@@ -6839,7 +6839,7 @@ tiles_list = {
   },
   -- 603
   {
-    name = "text_that got",
+    name = "txt_thatgot",
     sprite = "text/that got",
     type = "text",
     texttype = {cond_infix = true, cond_infix_verb = true, cond_infix_verb_plus = true},
@@ -6860,7 +6860,7 @@ tiles_list = {
   },
   -- 605
   {
-    name = "text_forbeeee",
+    name = "txt_forbeeee",
     sprite = "text/forbeeee",
     type = "text",
     texttype = {object = true},
@@ -6880,7 +6880,7 @@ tiles_list = {
   },
   -- 607
   {
-    name = "text_do$h",
+    name = "txt_do$h",
     sprite = "text/do$h",
     type = "text",
     texttype = {object = true},
@@ -6902,7 +6902,7 @@ tiles_list = {
   },
   -- 609
   {
-    name = "text_dling",
+    name = "txt_dling",
     sprite = "text/dling",
     type = "text",
     texttype = {object = true},
@@ -6924,7 +6924,7 @@ tiles_list = {
   },
   -- 611
   {
-    name = "text_warn",
+    name = "txt_warn",
     sprite = "text/warn",
     type = "text",
     texttype = {object = true},
@@ -6944,7 +6944,7 @@ tiles_list = {
   },
   -- 613
   {
-    name = "text_reffil",
+    name = "txt_reffil",
     sprite = "text/reffil",
     type = "text",
     texttype = {object = true},
@@ -6954,7 +6954,7 @@ tiles_list = {
   },
   -- 614
   {
-    name = "text_soko",
+    name = "txt_soko",
     sprite = "text/soko",
     type = "text",
     texttype = {verb = true, verb_unit = true},
@@ -6976,7 +6976,7 @@ tiles_list = {
   },
   -- 616
   {
-    name = "text_yanying",
+    name = "txt_yanying",
     sprite = "text/yanying",
     type = "text",
     texttype = {object = true},
@@ -6996,7 +6996,7 @@ tiles_list = {
   },
   -- 618
   {
-    name = "text_vlc",
+    name = "txt_vlc",
     sprite = "text/vlc",
     type = "text",
     texttype = {object = true},
@@ -7018,7 +7018,7 @@ tiles_list = {
   },
   -- 620
   {
-    name = "text_pidgin",
+    name = "txt_pidgin",
     sprite = "text/pidgin",
     type = "text",
     texttype = {object = true},
@@ -7039,7 +7039,7 @@ tiles_list = {
   },
   -- 622
   {
-    name = "text_foru",
+    name = "txt_foru",
     sprite = "text/foru",
     type = "text",
     texttype = {object = true},
@@ -7061,7 +7061,7 @@ tiles_list = {
   },
   -- 624
   {
-    name = "text_rod",
+    name = "txt_rod",
     sprite = "text/rod",
     type = "text",
     texttype = {object = true},
@@ -7082,7 +7082,7 @@ tiles_list = {
   },
   -- 626
   {
-    name = "text_past",
+    name = "txt_past",
     sprite = "text/past",
     type = "text",
     texttype = {cond_prefix = true},
@@ -7112,7 +7112,7 @@ tiles_list = {
     layer = 11,
     rotate = true,
     sing = "ditto",
-    tometa = "text_''",
+    tometa = "txt_''",
     features = {
       sans = {x=10, y=16, w=5, h=5},
       which = {x=1, y=6, sprite = {"no1", "which_ditto"}},
@@ -7135,7 +7135,7 @@ tiles_list = {
   },
   -- 630
   {
-    name = "text_kva",
+    name = "txt_kva",
     sprite = "text/kva",
     type = "text",
     texttype = {object = true},
@@ -7145,8 +7145,8 @@ tiles_list = {
   },
   -- 631
   {
-    name = "of in",
-    sprite = "of in",
+    name = "ofin",
+    sprite = "ofin",
     type = "object",
     color = {2,3},
     layer = 7,
@@ -7155,8 +7155,8 @@ tiles_list = {
   },
   -- 632
   {
-    name = "text_of in",
-    sprite = "text/of in",
+    name = "txt_ofin",
+    sprite = "text/ofin",
     type = "text",
     texttype = {object = true},
     color = {2,3},
@@ -7166,7 +7166,7 @@ tiles_list = {
   },
   -- 633
   {
-    name = "text_stukc",
+    name = "txt_stukc",
     sprite = "text/stukc",
     type = "text",
     texttype = {property = true},
@@ -7187,7 +7187,7 @@ tiles_list = {
   },
   -- 635
   {
-    name = "text_casete",
+    name = "txt_casete",
     sprite = "text/casete",
     type = "text",
     texttype = {object = true},
@@ -7198,7 +7198,7 @@ tiles_list = {
   },
   -- 636
   {
-    name = "text_giv",
+    name = "txt_giv",
     sprite = "text/giv",
     type = "text",
     texttype = {verb = true, verb_property = true},
@@ -7246,7 +7246,7 @@ tiles_list = {
   },
   -- 639
   {
-    name = "text_kat",
+    name = "txt_kat",
     sprite = "text/kat",
     type = "text",
     texttype = {object = true},
@@ -7257,7 +7257,7 @@ tiles_list = {
   },
   -- 640
   {
-    name = "text_gone",
+    name = "txt_gone",
     sprite = "text/gone",
     type = "text",
     texttype = {property = true},
@@ -7289,7 +7289,7 @@ tiles_list = {
   },
   -- 642
   {
-    name = "text_swan",
+    name = "txt_swan",
     sprite = "text/swan",
     type = "text",
     texttype = {object = true},
@@ -7311,7 +7311,7 @@ tiles_list = {
   },
   -- 644
   {
-    name = "text_spoder",
+    name = "txt_spoder",
     sprite = "text/spoder",
     type = "text",
     texttype = {object = true},
@@ -7332,7 +7332,7 @@ tiles_list = {
   },
   -- 646
   {
-    name = "text_weeb",
+    name = "txt_weeb",
     sprite = "text/weeb",
     type = "text",
     texttype = {object = true},
@@ -7359,7 +7359,7 @@ tiles_list = {
   },
   -- 648
   {
-    name = "text_flof",
+    name = "txt_flof",
     sprite = "text/flof",
     type = "text",
     texttype = {object = true},
@@ -7381,7 +7381,7 @@ tiles_list = {
   },
   -- 650
   {
-    name = "text_err",
+    name = "txt_err",
     sprite = "text/err",
     type = "text",
     texttype = {object = true},
@@ -7400,7 +7400,7 @@ tiles_list = {
   },
   -- 652
   {
-    name = "text_ches",
+    name = "txt_ches",
     sprite = "text/ches",
     type = "text",
     texttype = {object = true},
@@ -7420,7 +7420,7 @@ tiles_list = {
   },
   -- 654
   {
-    name = "text_mimi",
+    name = "txt_mimi",
     sprite = "text/mimi",
     type = "text",
     texttype = {object = true},
@@ -7440,7 +7440,7 @@ tiles_list = {
   },
   -- 656
   {
-    name = "text_3den",
+    name = "txt_3den",
     sprite = "text/3den",
     type = "text",
     texttype = {object = true},
@@ -7460,7 +7460,7 @@ tiles_list = {
   },
   -- 658
   {
-    name = "text_pen",
+    name = "txt_pen",
     sprite = "text/pen",
     type = "text",
     texttype = {object = true},
@@ -7480,7 +7480,7 @@ tiles_list = {
   },
   -- 660
   {
-    name = "text_cil",
+    name = "txt_cil",
     sprite = "text/cil",
     type = "text",
     texttype = {object = true},
@@ -7499,7 +7499,7 @@ tiles_list = {
   },
   -- 662
   {
-    name = "text_grav",
+    name = "txt_grav",
     sprite = "text/grav",
     type = "text",
     texttype = {object = true},
@@ -7520,7 +7520,7 @@ tiles_list = {
   },
   -- 664
   {
-    name = "text_pumkin",
+    name = "txt_pumkin",
     sprite = "text/pumkin",
     type = "text",
     texttype = {object = true},
@@ -7530,7 +7530,7 @@ tiles_list = {
   },
   -- 665
   {
-    name = "text_thingify",
+    name = "txt_thingify",
     sprite = "text/thingify",
     type = "text",
     texttype = {property = true},
@@ -7541,7 +7541,7 @@ tiles_list = {
   },
   -- 666
   {
-    name = "text_right",
+    name = "txt_right",
     sprite = "text/right",
     type = "text",
     texttype = {property = true, direction = true},
@@ -7552,7 +7552,7 @@ tiles_list = {
   },
   -- 667
   {
-    name = "text_samepaint",
+    name = "txt_samepaint",
     sprite = "text/samepaint",
     type = "text",
     texttype = {cond_compare = true, class_prefix = true},
@@ -7563,7 +7563,7 @@ tiles_list = {
   },
   -- 668
   {
-    name = "text_sameface",
+    name = "txt_sameface",
     sprite = "text/sameface",
     type = "text",
     texttype = {cond_compare = true},
@@ -7574,7 +7574,7 @@ tiles_list = {
   },
   -- 669
   {
-    name = "za warudo",
+    name = "zawarudo",
     sprite = "zawarudo",
     color = {2,4},
     layer = 11,
@@ -7619,7 +7619,7 @@ tiles_list = {
   },
   -- 673
   {
-    name = "text_dragbl",
+    name = "txt_dragbl",
     sprite = "text/dragbl",
     type = "text",
     texttype = {property = true},
@@ -7630,7 +7630,7 @@ tiles_list = {
   },
   -- 674
   {
-    name = "text_no drag",
+    name = "txt_nodrag",
     sprite = "text/nodrag",
     type = "text",
     texttype = {property = true},
@@ -7641,7 +7641,7 @@ tiles_list = {
   },
   -- 675
   {
-    name = "text_cann't",
+    name = "txt_cann't",
     sprite = "text/can't",
     type = "text",
     texttype = {object = true},
@@ -7661,7 +7661,7 @@ tiles_list = {
   },
   -- 677
   {
-    name = "text_bel",
+    name = "txt_bel",
     sprite = "text/bel",
     type = "text",
     texttype = {object = true},
@@ -7680,7 +7680,7 @@ tiles_list = {
   },
   -- 679
   {
-    name = "text_wres",
+    name = "txt_wres",
     sprite = "text/wres",
     type = "text",
     texttype = {object = true},
@@ -7700,7 +7700,7 @@ tiles_list = {
   },
   -- 681
   {
-    name = "text_bowie",
+    name = "txt_bowie",
     sprite = "text/bowie",
     type = "text",
     texttype = {object = true},
@@ -7723,7 +7723,7 @@ tiles_list = {
   },
   -- 683
   {
-    name = "text_der",
+    name = "txt_der",
     sprite = "text/der",
     type = "text",
     texttype = {object = true},
@@ -7745,7 +7745,7 @@ tiles_list = {
   },
   -- 685
   {
-    name = "text_sant",
+    name = "txt_sant",
     sprite = "text/sant",
     type = "text",
     texttype = {object = true},
@@ -7766,7 +7766,7 @@ tiles_list = {
   },
   -- 687
   {
-    name = "text_gato",
+    name = "txt_gato",
     sprite = "text/gato",
     type = "text",
     texttype = {object = true},
@@ -7789,7 +7789,7 @@ tiles_list = {
   },
   -- 689
   {
-    name = "text_canedy",
+    name = "txt_canedy",
     sprite = "text/canedy",
     type = "text",
     texttype = {object = true},
@@ -7811,7 +7811,7 @@ tiles_list = {
   },
   -- 691
   {
-    name = "text_now",
+    name = "txt_now",
     sprite = "text/now",
     type = "text",
     texttype = {object = true},
@@ -7834,7 +7834,7 @@ tiles_list = {
   },
   -- 693
   {
-    name = "text_bolble",
+    name = "txt_bolble",
     sprite = "text/bolble",
     type = "text",
     texttype = {object = true},
@@ -7854,7 +7854,7 @@ tiles_list = {
   },
   -- 695
   {
-    name = "text_sno",
+    name = "txt_sno",
     sprite = "text/sno",
     type = "text",
     texttype = {object = true},
@@ -7876,7 +7876,7 @@ tiles_list = {
   },
   -- 697
   {
-    name = "text_cooky",
+    name = "txt_cooky",
     sprite = "text/cooky",
     type = "text",
     texttype = {object = true},
@@ -7900,7 +7900,7 @@ tiles_list = {
   },
   -- 699
   {
-    name = "text_ginn",
+    name = "txt_ginn",
     sprite = "text/ginn",
     type = "text",
     texttype = {object = true},
@@ -7922,7 +7922,7 @@ tiles_list = {
   },
   -- 701
   {
-    name = "text_pot",
+    name = "txt_pot",
     sprite = "text/pot",
     type = "text",
     texttype = {object = true},
@@ -7943,7 +7943,7 @@ tiles_list = {
   },
   -- 703
   {
-    name = "text_sweep",
+    name = "txt_sweep",
     sprite = "text/sweep",
     type = "text",
     texttype = {object = true},
@@ -7964,7 +7964,7 @@ tiles_list = {
   },
   -- 705
   {
-    name = "text_which",
+    name = "txt_which",
     sprite = "text/which",
     type = "text",
     texttype = {object = true},
@@ -7975,7 +7975,7 @@ tiles_list = {
   },
   -- 706
   {
-    name = "text_rp",
+    name = "txt_rp",
     sprite = "text/rp",
     type = "text",
     texttype = {verb = true, verb_unit = true},
@@ -8006,7 +8006,7 @@ tiles_list = {
   },
   -- 708
   {
-    name = "text_toby",
+    name = "txt_toby",
     sprite = "text/toby",
     type = "text",
     texttype = {object = true},
@@ -8032,7 +8032,7 @@ tiles_list = {
   },
   -- 710
   {
-    name = "text_angle",
+    name = "txt_angle",
     sprite = "text/angle",
     type = "text",
     texttype = {object = true},
@@ -8058,7 +8058,7 @@ tiles_list = {
   },
   -- 712
   {
-    name = "text_dvl",
+    name = "txt_dvl",
     sprite = "text/dvl",
     type = "text",
     texttype = {object = true},
@@ -8069,7 +8069,7 @@ tiles_list = {
   },
   -- 713
   {
-    name = "text_y'all",
+    name = "txt_y'all",
     sprite = "text/y'all",
     type = "text",
     texttype = {property = true},
@@ -8080,7 +8080,7 @@ tiles_list = {
   },
   -- 714
   {
-    name = "text_thicc",
+    name = "txt_thicc",
     sprite = "text/thicc",
     type = "text",
     texttype = {property = true},
@@ -8090,7 +8090,7 @@ tiles_list = {
   },
   -- 715
   {
-    name = "text_rythm",
+    name = "txt_rythm",
     sprite = "text/rythm",
     type = "text",
     texttype = {property = true},
@@ -8114,7 +8114,7 @@ tiles_list = {
   },
   -- 717
   {
-    name = "text_wan",
+    name = "txt_wan",
     sprite = "text/wan",
     type = "text",
     texttype = {object = true},
@@ -8137,7 +8137,7 @@ tiles_list = {
   },
   -- 719
   {
-    name = "text_mug",
+    name = "txt_mug",
     sprite = "text/mug",
     type = "text",
     texttype = {object = true},
@@ -8160,7 +8160,7 @@ tiles_list = {
   },
   -- 721
   {
-    name = "text_corndy",
+    name = "txt_corndy",
     sprite = "text/corndy",
     type = "text",
     texttype = {object = true},
@@ -8182,7 +8182,7 @@ tiles_list = {
   },
   -- 723
   {
-    name = "text_die",
+    name = "txt_die",
     sprite = "text/die",
     type = "text",
     texttype = {object = true},
@@ -8193,7 +8193,7 @@ tiles_list = {
   },
   -- 724
   {
-    name = "text_oob",
+    name = "txt_oob",
     sprite = "text/oob",
     type = "text",
     texttype = {cond_prefix = true},
@@ -8226,7 +8226,7 @@ tiles_list = {
   },
   -- 726
   {
-    name = "text_temmi",
+    name = "txt_temmi",
     sprite = "text/temmi",
     type = "text",
     texttype = {object = true},
@@ -8238,7 +8238,7 @@ tiles_list = {
   },
 	-- 727
   {
-    name = "text_gang",
+    name = "txt_gang",
     sprite = "text/gang",
     type = "text",
     texttype = {object = true, group = true},
@@ -8258,7 +8258,7 @@ tiles_list = {
   },
   -- 729
   {
-    name = "text_b)",
+    name = "txt_b)",
     sprite = "text/B)",
     type = "text",
     texttype = {property = true},
@@ -8270,7 +8270,7 @@ tiles_list = {
   },
   -- 730
   {
-    name = "text_cool",
+    name = "txt_cool",
     sprite = "text/cool",
     type = "text",
     texttype = {property = true},
@@ -8281,11 +8281,11 @@ tiles_list = {
   },
   -- 731
   {
-    name = "the real qt",
-    sprite = "the real qt",
+    name = "therealqt",
+    sprite = "therealqt",
     color = {4, 2},
     layer = 22,
-    tometa = "text_qt",
+    tometa = "txt_qt",
   },
   -- 732
   {
@@ -8299,7 +8299,7 @@ tiles_list = {
   },
   -- 733
   {
-    name = "text_tronk",
+    name = "txt_tronk",
     sprite = "text/tronk",
     type = "text",
     texttype = {object = true},
@@ -8316,8 +8316,8 @@ tiles_list = {
   },
   -- 735
   {
-    name = "the real bab dictator",
-    sprite = "the real bab dictator",
+    name = "therealbabdictator",
+    sprite = "therealbabdictator",
     color = {0, 3},
     layer = 100,
     sing = "miku",
@@ -8339,7 +8339,7 @@ tiles_list = {
   },
   -- 737
   {
-    name = "text_fube",
+    name = "txt_fube",
     sprite = "text/fube",
     type = "text",
     texttype = {object = true},
@@ -8363,7 +8363,7 @@ tiles_list = {
   },
   -- 739
   {
-    name = "text_detox",
+    name = "txt_detox",
     sprite = "text/detox",
     type = "text",
     texttype = {object = true},
@@ -8374,7 +8374,7 @@ tiles_list = {
   },
   -- 740
   {
-    name = "text_c_sharp",
+    name = "txt_c_sharp",
     sprite = "text/c_sharp",
     type = "text",
     texttype = {note = true},
@@ -8384,7 +8384,7 @@ tiles_list = {
   },
   -- 741
   {
-    name = "text_d_sharp",
+    name = "txt_d_sharp",
     sprite = "text/d_sharp",
     type = "text",
     texttype = {note = true},
@@ -8394,7 +8394,7 @@ tiles_list = {
   },
   -- 742
   {
-    name = "text_f_sharp",
+    name = "txt_f_sharp",
     sprite = "text/f_sharp",
     type = "text",
     texttype = {note = true},
@@ -8404,7 +8404,7 @@ tiles_list = {
   },
   -- 743
   {
-    name = "text_g_sharp",
+    name = "txt_g_sharp",
     sprite = "text/g_sharp",
     type = "text",
     texttype = {note = true},
@@ -8414,7 +8414,7 @@ tiles_list = {
   },
   -- 744
   {
-    name = "text_a_sharp",
+    name = "txt_a_sharp",
     sprite = "text/a_sharp",
     type = "text",
     texttype = {note = true},
@@ -8448,7 +8448,7 @@ tiles_list = {
   },
   -- 746
   {
-    name = "text_viruse",
+    name = "txt_viruse",
     sprite = "text/viruse",
     type = "text",
     texttype = {object = true},
@@ -8473,7 +8473,7 @@ tiles_list = {
   },
   -- 748
   {
-    name = "text_nyowo",
+    name = "txt_nyowo",
     sprite = "text/nyowo",
     type = "text",
     texttype = {object = true},
@@ -8494,7 +8494,7 @@ tiles_list = {
   },
   -- 750
   {
-    name = "text_prop",
+    name = "txt_prop",
     sprite = "text/prop",
     type = "text",
     texttype = {object = true},
@@ -8529,7 +8529,7 @@ tiles_list = {
   },
   -- 753
   {
-    name = "text_slab",
+    name = "txt_slab",
     sprite = "text/slab",
     type = "text",
     texttype = {object = true},
@@ -8555,7 +8555,7 @@ tiles_list = {
   },
   -- 755
   {
-    name = "text_butcher",
+    name = "txt_butcher",
     sprite = "text/butcher",
     type = "text",
     texttype = {object = true},
@@ -8579,7 +8579,7 @@ tiles_list = {
   },
   -- 757
   {
-    name = "text_notnat",
+    name = "txt_notnat",
     sprite = "text/notnat",
     type = "text",
     texttype = {object = true},
@@ -8808,7 +8808,7 @@ tiles_list = {
   },
   -- 784
   {
-    name = "text_grimkid",
+    name = "txt_grimkid",
     sprite = "text/grimkid",
     color = {2,2},
     type = "text",
@@ -8826,7 +8826,7 @@ tiles_list = {
   },
   -- 786
   {
-    name = "text_colect",
+    name = "txt_colect",
     sprite = "text/colect",
     color = {0,3},
     type = "text",
@@ -8847,7 +8847,7 @@ tiles_list = {
   },
   -- 788
   {
-    name = "text_prime",
+    name = "txt_prime",
     sprite = "text/prime",
     color = {2,3},
     type = "text",
@@ -8866,7 +8866,7 @@ tiles_list = {
   },
   -- 790
   {
-    name = "text_whee",
+    name = "txt_whee",
     sprite = "text/whee",
     color = {0,3},
     type = "text",
@@ -8885,7 +8885,7 @@ tiles_list = {
   },
   -- 792
   {
-    name = "text_joycon",
+    name = "txt_joycon",
     sprite = {"text/joycon_l","text/joycon_r"},
     color = {{1,3},{2,2}},
     colored = {true,false},
@@ -8986,7 +8986,7 @@ tiles_list = {
   },
   -- 803
   {
-    name = "text_cart",
+    name = "txt_cart",
     sprite = "text/cart",
     type = "text",
     texttype = {object = true},
@@ -9007,7 +9007,7 @@ tiles_list = {
   },
   -- 805
   {
-    name = "text_assh",
+    name = "txt_assh",
     sprite = "text/assh",
     type = "text",
     texttype = {object = true},
@@ -9018,7 +9018,7 @@ tiles_list = {
   },
   -- 806
   {
-    name = "text_thonk",
+    name = "txt_thonk",
     sprite = "text/thonk",
     type = "text",
     texttype = {property = true},
@@ -9039,7 +9039,7 @@ tiles_list = {
   },
   -- 808
   {
-    name = "text_drop",
+    name = "txt_drop",
     sprite = "text/drop",
     type = "text",
     texttype = {object = true},
@@ -9060,7 +9060,7 @@ tiles_list = {
   },
   -- 810
   {
-    name = "text_woosh",
+    name = "txt_woosh",
     sprite = "text/woosh",
     type = "text",
     texttype = {object = true},
@@ -9080,7 +9080,7 @@ tiles_list = {
   },
   -- 812
   {
-    name = "text_candl",
+    name = "txt_candl",
     sprite = "text/candl",
     type = "text",
     texttype = {object = true},
@@ -9102,7 +9102,7 @@ tiles_list = {
   },
   -- 814
   {
-    name = "text_maglit",
+    name = "txt_maglit",
     sprite = "text/maglit",
     type = "text",
     texttype = {object = true},
@@ -9112,7 +9112,7 @@ tiles_list = {
   },
   -- 815
   {
-    name = "text_xplod",
+    name = "txt_xplod",
     sprite = "text/xplod",
     type = "text",
     texttype = {object = true},
@@ -9136,7 +9136,7 @@ tiles_list = {
   -- vitellary: ...i just did that though, you guys are just bad >:(
   -- did u not see my big commit where i fixed all of the numbers
   {
-    name = "text_zig",
+    name = "txt_zig",
     sprite = "text/zig",
     type = "text",
     texttype = {object = true},
@@ -9159,7 +9159,7 @@ tiles_list = {
   },
   -- 819
   {
-    name = "text_boogie",
+    name = "txt_boogie",
     sprite = "text/boogie",
     type = "text",
     texttype = {object = true},
@@ -9169,7 +9169,7 @@ tiles_list = {
   },
   -- 820
   {
-    name = "text_alt",
+    name = "txt_alt",
     sprite = "text/alt",
     type = "text",
     texttype = {cond_prefix = true},
@@ -9190,7 +9190,7 @@ tiles_list = {
   },
   -- 822
   {
-    name = "text_cracc",
+    name = "txt_cracc",
     sprite = "text/cracc",
     type = "text",
     texttype = {object = true},
@@ -9210,7 +9210,7 @@ tiles_list = {
   },
   -- 824
   {
-    name = "text_pixl",
+    name = "txt_pixl",
     sprite = "text/pixl",
     type = "text",
     texttype = {object = true},
@@ -9220,7 +9220,7 @@ tiles_list = {
   },
   -- 825
   {
-    name = "text_deez",
+    name = "txt_deez",
     sprite = "text/deez",
     type = "text",
     texttype = {object = true, cond_prefix = true},
@@ -9243,7 +9243,7 @@ tiles_list = {
   },
   -- 827
   {
-    name = "text_babby",
+    name = "txt_babby",
     sprite = "text/babby",
     type = "text",
     texttype = {object = true},
@@ -9254,7 +9254,7 @@ tiles_list = {
   },
   -- 828
   {
-    name = "text_yuiy",
+    name = "txt_yuiy",
     sprite = "text/yuiy",
     type = "text",
     texttype = {object = true},
@@ -9265,7 +9265,7 @@ tiles_list = {
   },
   -- 829
   {
-    name = "text_wont",
+    name = "txt_wont",
     sprite = "text/wont",
     type = "text",
     texttype = {verb = true, verb_property = true},
@@ -9288,7 +9288,7 @@ tiles_list = {
   },
   -- 831
   {
-    name = "text_voom",
+    name = "txt_voom",
     sprite = "text/voom",
     type = "text",
     texttype = {object = true},
@@ -9309,7 +9309,7 @@ tiles_list = {
   },
   -- 834
   {
-    name = "text_numa",
+    name = "txt_numa",
     sprite = "text/numa",
     type = "text",
     texttype = {object = true},
@@ -9320,7 +9320,7 @@ tiles_list = {
   },
   -- 835
   {
-    name = "text_toen",
+    name = "txt_toen",
     sprite = "text/toen",
     type = "text",
     texttype = {object = true},
@@ -9345,7 +9345,7 @@ tiles_list = {
   },
   -- 837
   {
-    name = "text_snom",
+    name = "txt_snom",
     sprite = "text/snom",
     type = "text",
     texttype = {object = true},
@@ -9356,7 +9356,7 @@ tiles_list = {
   },
   -- 838
   {
-    name = "text_themself",
+    name = "txt_themself",
     sprite = "text/themself",
     type = "text",
     texttype = {object = true},
@@ -9367,7 +9367,7 @@ tiles_list = {
   },
   --839? though the numbers are off anyway lol
   {
-    name = "text_meow",
+    name = "txt_meow",
     sprite = "text/meow",
     type = "text",
     texttype = {cond_infix = true},
@@ -9388,7 +9388,7 @@ for _,item in ipairs(items) do
   if (string.sub(item, -4) == ".png") then
     local flag_code = string.sub(item, 1, -5) --flag_code is usually 2 letters, i.e. "us", can be 6 chars, i.e. "gb-eng"
 	  table.insert(tiles_list, {
-		name = "text_flog" .. flag_code,
+		name = "txt_flog" .. flag_code,
 		sprite = "overlay/flog/" .. flag_code,
 		type = "text",
 		texttype = {property = true},
@@ -9406,13 +9406,16 @@ group_names_nt = {}
 group_names_set = {}
 group_names_set_nt = {}
 for i,v in ipairs(tiles_list) do
+  if v.name:find(" ") then
+    print(v.name)
+  end
   tiles_by_name[v.name] = i
   tiles_by_name[v.name:gsub(" ","")] = i
   if v.texttype and v.texttype.group then
-		table.insert(group_names, v.name:sub(6, -1));
-    table.insert(group_names_nt, v.name:sub(6, -1).."n't");
-    group_names_set[v.name:sub(6, -1)] = true;
-    group_names_set_nt[v.name:sub(6, -1).."n't"] = true;
+		table.insert(group_names, v.name:sub(5, -1));
+    table.insert(group_names_nt, v.name:sub(5, -1).."n't");
+    group_names_set[v.name:sub(5, -1)] = true;
+    group_names_set_nt[v.name:sub(5, -1).."n't"] = true;
 	end
 end
 
@@ -9436,7 +9439,7 @@ new_lists["Tutorial"] = {}
 
 for _,tile in ipairs(tiles_list) do
   local name = tile.name:gsub(" ", "")
-  local textname = name:starts("text_") and name:sub(6) or ""
+  local textname = name:starts("txt_") and name:sub(5) or ""
   
   local category = "Objects"
   if tile.sprite and type(tile.sprite) == "string" and tile.sprite:starts("tutorial_") then
@@ -9499,7 +9502,7 @@ for _,tile in ipairs(tiles_list) do
   end
 
   local new_tile = {
-    name = name:gsub("text_", "txt_"),
+    name = name:gsub("txt_", "txt_"),
     sprite = tile.sprite and (type(tile.sprite) == "table" and tile.sprite or {tile.sprite}) or nil,
     sprite_transforms = tile.sprite_transforms and copyTable(tile.sprite_transforms) or nil,
     metasprite = tile.metasprite and (type(tile.metasprite) == "table" and tile.metasprite or {tile.metasprite}) or nil,

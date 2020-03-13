@@ -42,7 +42,7 @@
   },
   {
     "name": "txt_babn't",
-    "sprite": ["text_bab meta", "n't"],
+    "sprite": ["text/bab meta", "n't"],
     "types": ["object"],
     "color": [[4, 1], [2, 2]],
     "painted": [true, false],
@@ -50,7 +50,7 @@
   },
   {
     "name": "txt_rocn't",
-    "sprite": ["text_roc meta", "n't"],
+    "sprite": ["text/roc meta", "n't"],
     "types": ["object"],
     "color": [[6, 1], [2, 2]],
     "painted": [true, false],
@@ -58,7 +58,7 @@
   },
   {
     "name": "txt_waln't",
-    "sprite": ["text_wal meta", "n't"],
+    "sprite": ["text/wal meta", "n't"],
     "types": ["object"],
     "color": [[0, 1], [2, 2]],
     "painted": [true, false],

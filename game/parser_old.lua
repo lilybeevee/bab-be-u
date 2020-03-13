@@ -136,12 +136,12 @@ local cond_infixes = {
             commons({"object"}, "target")
           },
           {
-            {name = "look at"},
+            {name = "lookat"},
             not_suffix,
             directions_and_objects
           },
           {
-            {name = "look away"},
+            {name = "lookaway"},
             not_suffix,
             directions_and_objects
           },
@@ -164,7 +164,7 @@ local cond_infixes = {
             commons({"property"}, "target"),
           },
           {
-            {name = "that be"},
+            {name = "thatbe"},
             not_suffix,
             commons({"object", "property"}, "target")
           },

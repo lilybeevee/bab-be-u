@@ -237,7 +237,7 @@
   },
   {
     "name": "txt_ghostfren",
-    "sprite": ["text/ghost fren"],
+    "sprite": ["text/ghostfren"],
     "types": ["object"],
     "color": [[4, 2]],
     "desc": "this text is very spooky tho",

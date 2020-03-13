@@ -407,7 +407,7 @@ function loadMap()
   --[[groups_exist = letters_exist
   if not groups_exist then
     for _,group_name in ipairs(group_names) do
-      if units_by_name["text_"..group_name] then
+      if units_by_name["txt_"..group_name] then
         groups_exist = true
         break
       end
@@ -433,7 +433,7 @@ end
 function initializeEmpties()
   --TODO: other ways to make a text_no1 could be to have a text_text_no1 but that seems contrived that you'd have text_text_no1 but not text_no1?
   --text_her counts because it looks for no1, I think. similarly we could have text_text_her but again, contrived
-  if ((not letters_exist) and (not units_by_name["text_no1"]) and (not units_by_name["text_every3"]) and (not units_by_name["text_her"])) then return end
+  if ((not letters_exist) and (not units_by_name["txt_no1"]) and (not units_by_name["txt_every3"]) and (not units_by_name["txt_her"])) then return end
   for x=0,mapwidth-1 do
     for y=0,mapheight-1 do
       local tileid = x + y * mapwidth
@@ -931,13 +931,13 @@ function countProperty(unit, prop, ignore_flye)
 end
 
 function hasU(unit)
-  return hasProperty(unit,"u") or hasProperty(unit,"u too") or hasProperty(unit,"u tres") or hasProperty(unit,"y'all")
+  return hasProperty(unit,"u") or hasProperty(unit,"utoo") or hasProperty(unit,"utres") or hasProperty(unit,"y'all")
 end
 
 function getUs()
   local yous = getUnitsWithEffect("u")
-  mergeTable(yous,getUnitsWithEffect("u too"))
-  mergeTable(yous,getUnitsWithEffect("u tres"))
+  mergeTable(yous,getUnitsWithEffect("utoo"))
+  mergeTable(yous,getUnitsWithEffect("utres"))
   mergeTable(yous,getUnitsWithEffect("y'all"))
   return yous
 end
@@ -1021,7 +1021,7 @@ function testConds(unit, conds, compare_with, first_unit) --cond should be a {co
       result = false
     elseif condtype:starts("that") then
       result = true
-      local verb = condtype:sub(6)
+      local verb = condtype:sub(5)
       for _,param in ipairs(lists) do -- using "lists" to store the names, since THAT doesn't allow nesting, and we need the name for hasRule
         local word = param.unit
         local wx = word.x
@@ -1211,7 +1211,7 @@ function testConds(unit, conds, compare_with, first_unit) --cond should be a {co
         end
       end
 
-    elseif condtype == "seen by" then
+    elseif condtype == "seenby" then
       local others = {}
       for ndir=1,8 do
         local nx, ny = dirs8[ndir][1], dirs8[ndir][2]
@@ -1273,7 +1273,7 @@ function testConds(unit, conds, compare_with, first_unit) --cond should be a {co
           end
         end
       end
-    elseif condtype == "look at" then
+    elseif condtype == "lookat" then
       --TODO: look at dir, ortho, diag, surrounds
       if unit ~= outerlvl then
         local dx, dy, dir, px, py = getNextTile(unit, dirs8[unit.dir][1], dirs8[unit.dir][2], unit.dir)
@@ -1333,7 +1333,7 @@ function testConds(unit, conds, compare_with, first_unit) --cond should be a {co
       else --something something surrounds
         result = false
       end
-    elseif condtype == "look away" then
+    elseif condtype == "lookaway" then
       --TODO: look at dir, ortho, diag, surrounds
       if unit ~= outerlvl then
         local dx, dy, dir, px, py = getNextTile(unit, -dirs8[unit.dir][1], -dirs8[unit.dir][2], unit.dir)
@@ -2722,7 +2722,7 @@ function getAbsolutelyEverythingExcept(except)
   if (except ~= "text") then
     for i,ref in ipairs(referenced_text) do
       --TODO: BEN'T text being returned here causes a stack overflow. Prevent it until a better solution is found.
-      if ref ~= except and (ref == "text_n't" or not ref:ends("n't")) then
+      if ref ~= except and (ref == "txt_n't" or not ref:ends("n't")) then
         table.insert(result, ref)
       end
     end
@@ -2736,13 +2736,13 @@ function getEverythingExcept(except)
   local result = {}
 
   local ref_list = referenced_objects
-  if except:starts("text_") then
+  if except:starts("txt_") then
     ref_list = referenced_text
   end
 
   for i,ref in ipairs(ref_list) do
     --TODO: BEN'T text being returned here causes a stack overflow. Prevent it until a better solution is found.
-    if ref ~= except and (ref == "text_n't" or not ref:ends("n't")) then
+    if ref ~= except and (ref == "txt_n't" or not ref:ends("n't")) then
       table.insert(result, ref)
     end
   end
@@ -2815,7 +2815,7 @@ function loadLevels(levels, mode, level_objs, xwx)
   stay_ther = nil
   if (rules_with ~= nil) and not xwx then
     stay_ther = {}
-    local isstayther = getUnitsWithEffect("stay ther")
+    local isstayther = getUnitsWithEffect("stayther")
     for _,unit in ipairs(isstayther) do
       table.insert(stay_ther, unit)
     end
@@ -2941,9 +2941,9 @@ end
 function timecheck(unit,verb,prop)
   local zw_pass = false
   if timeless then
-    if hasProperty(unit,"za warudo") then
+    if hasProperty(unit,"zawarudo") then
       zw_pass = true
-    elseif hasProperty(outerlvl,"za warudo") and not hasRule(unit,"ben't","za warudo") then
+    elseif hasProperty(outerlvl,"zawarudo") and not hasRule(unit,"ben't","zawarudo") then
       zw_pass = true
     elseif verb and prop then
       local rulecheck = matchesRule(unit,verb,prop)
@@ -2976,7 +2976,7 @@ function timecheckUs(unit)
   if timecheck(unit) then
     return true
   else
-    local to_check = {"u","u too","u tres","y'all"}
+    local to_check = {"u","utoo","utres","y'all"}
     for _,prop in ipairs(to_check) do
       local rulecheck = matchesRule(unit,"be",prop)
       for _,ruleparent in ipairs(rulecheck) do
@@ -3001,8 +3001,8 @@ function fillTextDetails(sentence, old_sentence, orig_index, word_index)
     --print("sentence: "..fullDump(sentence))
     --print(text_list[word], old_sentence)
     local newname = text_list[word].name
-    if newname:starts("text_") then
-      newname = newname:sub(6)
+    if newname:starts("txt_") then
+      newname = newname:sub(5)
     end
     table.insert(ret,{type = text_list[word].texttype or {object = true}, name = newname, unit=old_sentence[orig_index].unit})
     w = w+1
@@ -3027,7 +3027,7 @@ function do_utils_thing()
   text_list = {} --list of text, but without aliases
   for _,tile in ipairs(tiles_list) do
     if tile.type == "text" and tile.texttype and not tile.texttype.letter then
-      local textname = string.sub(tile.name:gsub("%s+", ""),6) --removes spaces too
+      local textname = string.sub(tile.name:gsub("%s+", ""),5) --removes spaces too
 
       text_in_tiles[textname] = textname
       if (tile.alias ~= nil) then
@@ -3037,7 +3037,7 @@ function do_utils_thing()
       end
 
       text_list[textname] = tile
-      text_list[textname].textname = string.sub(tile.name,6)
+      text_list[textname].textname = string.sub(tile.name,5)
     end
   end
 end
@@ -3086,7 +3086,7 @@ end
 function extendReplayString(movex, movey, key)
   if (not unit_tests) then
     replay_string = replay_string..tostring(movex)..","..tostring(movey)..","..tostring(key)
-    if (units_by_name["text_mous"] ~= nil or rules_with["mous"] ~= nil) then
+    if (units_by_name["txt_mous"] ~= nil or rules_with["mous"] ~= nil) then
       local cursor_table = {}
       for _,cursor in ipairs(cursors) do
         table.insert(cursor_table, {cursor.x, cursor.y})
@@ -3205,8 +3205,8 @@ function getMapEntry()
 end
 
 function addBaseRule(subject, verb, object, subjcond)
-  local subjectname = subject:starts("this") and "this" or "text_"..subject
-  local objectname = object:starts("this") and "this" or "text_"..object
+  local subjectname = subject:starts("this") and "this" or "txt_"..subject
+  local objectname = object:starts("this") and "this" or "txt_"..object
   addRule({
     rule = {
       subject = {
@@ -3216,7 +3216,7 @@ function addBaseRule(subject, verb, object, subjcond)
       },
       verb = {
         name = verb,
-        type = tiles_list[tiles_by_name["text_"..verb] or 2].texttype or {},
+        type = tiles_list[tiles_by_name["txt_"..verb] or 2].texttype or {},
       },
       object = {
         name = object,
@@ -3233,9 +3233,9 @@ function addRuleSimple(subject, verb, object, units, dir)
   -- print(subject.name, verb.name, object.name)
   -- print(subject, verb, object)
   local subjectname = subject[1] or subject.name or ""
-  subjectname = subjectname:starts("this") and "this" or "text_"..subjectname
+  subjectname = subjectname:starts("this") and "this" or "txt_"..subjectname
   local objectname = object[1] or object.name or ""
-  objectname = objectname:starts("this") and "this" or "text_"..objectname
+  objectname = objectname:starts("this") and "this" or "txt_"..objectname
   addRule({
     rule = {
       subject = getTableWithDefaults(copyTable(subject), {
@@ -3245,7 +3245,7 @@ function addRuleSimple(subject, verb, object, units, dir)
       }),
       verb = getTableWithDefaults(copyTable(verb), {
         name = verb[1],
-        type = tiles_list[tiles_by_name["text_"..(verb[1] or verb.name or "")] or 2].texttype or {},
+        type = tiles_list[tiles_by_name["txt_"..(verb[1] or verb.name or "")] or 2].texttype or {},
       }),
       object = getTableWithDefaults(copyTable(object), {
         name = object[1],
@@ -3368,8 +3368,8 @@ end
 function serializeWord(word)
   if word.unit and hasProperty(word.unit, "stelth") then return "" end
   local name = word.name
-  while name:starts("text_") do
-    name = name:sub(6).." txt"
+  while name:starts("txt_") do
+    name = name:sub(5).." txt"
   end
   return name.." "
 end
@@ -3403,7 +3403,7 @@ function anagram_finder.run()
   anagram_finder.words = {}
   for _,tile in ipairs(tiles_list) do
     if tile.type == "text" and not tile.texttype.letter then
-      local word = tile.name:sub(6):gsub(" ","")
+      local word = tile.name:sub(5):gsub(" ","")
       local letters = copyTable(letters)
       local multi = copyTable(multi)
       local not_match = false
@@ -3458,7 +3458,7 @@ function anagram_finder.run()
         end
       end
       if not not_match then
-        table.insert(anagram_finder.words, tile.name:sub(6))
+        table.insert(anagram_finder.words, tile.name:sub(5))
       end
     end
   end

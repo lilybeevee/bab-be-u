@@ -3,7 +3,7 @@
     "name": "txt_reed",
     "sprite": ["text/reed_cond"],
     "sprite_transforms": {
-      "property": "text_reed"
+      "property": "txt_reed"
     },
     "types": ["class_prefix", "cond_prefix", "property"],
     "color": [[2, 2]],
@@ -14,7 +14,7 @@
     "name": "txt_bleu",
     "sprite": ["text/bleu_cond"],
     "sprite_transforms": {
-      "property": "text_bleu"
+      "property": "txt_bleu"
     },
     "types": ["class_prefix", "cond_prefix", "property"],
     "color": [[1, 3]],
@@ -32,7 +32,7 @@
   },
   {
     "name": "txt_lookat",
-    "sprite": ["text/look at"],
+    "sprite": ["text/lookat"],
     "types": ["cond_infix", "verb_unit", "cond_infix_dir", "verb"],
     "color": [[0, 3]],
     "desc": "LOOK AT: As an infix condition, true if this object is on the tile in front of the unit. As a verb, makes the unit face this object at end of turn.",
@@ -67,7 +67,7 @@
     "name": "txt_sans",
     "sprite": ["text/sans"],
     "sprite_transforms": {
-      "property": "text_sans_property"
+      "property": "txt_sans_property"
     },
     "metasprite": ["text/sans meta"],
     "types": ["cond_infix", "property"],
@@ -86,7 +86,7 @@
   },
   {
     "name": "txt_seenby",
-    "sprite": ["text/seen by"],
+    "sprite": ["text/seenby"],
     "types": ["cond_infix"],
     "color": [[0, 3]],
     "desc": "SEEN BY (Infix Condition): True if an indicated object is looking at this unit from an adjacent tile.",
@@ -112,7 +112,7 @@
     "name": "txt_grun",
     "sprite": ["text/grun_cond"],
     "sprite_transforms": {
-      "property": "text_grun"
+      "property": "txt_grun"
     },
     "types": ["class_prefix", "cond_prefix", "property"],
     "color": [[5, 2]],
@@ -123,7 +123,7 @@
     "name": "txt_yello",
     "sprite": ["text/yello_cond"],
     "sprite_transforms": {
-      "property": "text_yello"
+      "property": "txt_yello"
     },
     "types": ["class_prefix", "cond_prefix", "property"],
     "color": [[2, 4]],
@@ -134,7 +134,7 @@
     "name": "txt_purp",
     "sprite": ["text/purp_cond"],
     "sprite_transforms": {
-      "property": "text_purp"
+      "property": "txt_purp"
     },
     "types": ["class_prefix", "cond_prefix", "property"],
     "color": [[3, 1]],
@@ -145,7 +145,7 @@
     "name": "txt_orang",
     "sprite": ["text/orang_cond"],
     "sprite_transforms": {
-      "property": "text_orang"
+      "property": "txt_orang"
     },
     "types": ["class_prefix", "cond_prefix", "property"],
     "color": [[2, 3]],
@@ -156,7 +156,7 @@
     "name": "txt_cyeann",
     "sprite": ["text/cyeann_cond"],
     "sprite_transforms": {
-      "property": "text_cyeann"
+      "property": "txt_cyeann"
     },
     "types": ["class_prefix", "cond_prefix", "property"],
     "color": [[1, 4]],
@@ -167,7 +167,7 @@
     "name": "txt_whit",
     "sprite": ["text/whit_cond"],
     "sprite_transforms": {
-      "property": "text_whit"
+      "property": "txt_whit"
     },
     "types": ["class_prefix", "cond_prefix", "property"],
     "color": [[0, 3]],
@@ -178,7 +178,7 @@
     "name": "txt_blacc",
     "sprite": ["text/blacc_cond"],
     "sprite_transforms": {
-      "property": "text_blacc"
+      "property": "txt_blacc"
     },
     "types": ["class_prefix", "cond_prefix", "property"],
     "color": [[0, 0]],
@@ -197,7 +197,7 @@
     "name": "txt_rong",
     "sprite": ["text/rong"],
     "sprite_transforms": {
-      "property": "text_rong_prop"
+      "property": "txt_rong_prop"
     },
     "types": ["property", "cond_prefix"],
     "color": [[2, 2]],
@@ -250,7 +250,7 @@
     "name": "txt_pinc",
     "sprite": ["text/pinc_cond"],
     "sprite_transforms": {
-      "property": "text_pinc"
+      "property": "txt_pinc"
     },
     "types": ["class_prefix", "cond_prefix", "property"],
     "color": [[4, 1]],
@@ -275,7 +275,7 @@
   },
   {
     "name": "txt_lookaway",
-    "sprite": ["text/look away"],
+    "sprite": ["text/lookaway"],
     "types": ["cond_infix", "verb_unit", "cond_infix_dir", "verb"],
     "color": [[0, 3]],
     "desc": "LOOK AWAY: As an infix condition, true if this object is on the tile behind the unit As a verb, makes the unit face away from this object at end of turn.",
@@ -301,7 +301,7 @@
     "name": "txt_graey",
     "sprite": ["text/graey_cond"],
     "sprite_transforms": {
-      "property": "text_graey"
+      "property": "txt_graey"
     },
     "types": ["class_prefix", "cond_prefix", "property"],
     "color": [[0, 1]],
@@ -312,7 +312,7 @@
     "name": "txt_brwn",
     "sprite": ["text/brwn_cond"],
     "sprite_transforms": {
-      "property": "text_brwn"
+      "property": "txt_brwn"
     },
     "types": ["class_prefix", "cond_prefix", "property"],
     "color": [[6, 0]],

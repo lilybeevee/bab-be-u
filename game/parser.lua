@@ -189,8 +189,8 @@ function findUnit(words, extra_words_, dir, outer, no_verb_cond, is_subject)
     if infix.type.cond_infix_verb then
       local words_ = copyTable(words)
       if infix.type.cond_infix_verb_plus then
-        local verb = infix.name:sub(6)
-        table.insert(words_, 1, {name = verb, type = tiles_list[tiles_by_name["text_"..verb]].texttype})
+        local verb = infix.name:sub(5)
+        table.insert(words_, 1, {name = verb, type = tiles_list[tiles_by_name["txt_"..verb]].texttype})
       end
       local verb
       verb_phrase, words_ = findVerbPhrase(words_, extra_words, dir, enclosed, true)
@@ -307,7 +307,7 @@ function findClass(words)
   if words[2] and (words[2].name == "text" or words[2].name == "textn't") then
     table.insert(unit.mods, words[2])
     if (unit.name ~= unit.unit.textname) then --many letters in a row
-      unit.name = "text_"..unit.name..words[2].name:sub(5)
+      unit.name = "txt_"..unit.name..words[2].name:sub(5)
     else --every other case
       unit.name = (unit.unit or {fullname = "no unit"}).fullname..words[2].name:sub(5)
     end
@@ -520,7 +520,7 @@ local function testParser()
       {name = "keek", type = "object"}
     },
     { -- Test 5 - TRUE
-      {name = "bab", type = "object", unit = {fullname = "text_bab"}},
+      {name = "bab", type = "object", unit = {fullname = "txt_bab"}},
       {name = "text", type = "object"},
       {name = "&", type = "and"},
       {name = "keek", type = "object"},
@@ -534,7 +534,7 @@ local function testParser()
       {name = "u", type = "property"}
     },
     { -- Test 7 - TRUE
-      {name = "bab", type = "object", unit = {fullname = "text_bab"}},
+      {name = "bab", type = "object", unit = {fullname = "txt_bab"}},
       {name = "text", type = "object"},
       {name = "be", type = "verb_all"},
       {name = "u", type = "property"}
@@ -545,7 +545,7 @@ local function testParser()
       {name = "u", type = "property"}
     },
     { -- Test 9 - TRUE
-      {name = "be", type = "property", unit = {fullname = "text_be"}},
+      {name = "be", type = "property", unit = {fullname = "txt_be"}},
       {name = "text", type = "object"},
       {name = "be", type = "verb_all"},
       {name = "u", type = "property"}

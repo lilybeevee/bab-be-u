@@ -89,7 +89,7 @@
   },
   {
     "name": "txt_ben't",
-    "sprite": ["text_be n't", "n't (be)"],
+    "sprite": ["text/be n't", "n't (be)"],
     "types": ["verb_class", "verb_property", "verb"],
     "color": [[0, 3], [2, 2]],
     "painted": [true, false],

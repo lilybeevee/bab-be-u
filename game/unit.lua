@@ -3,7 +3,7 @@ function moveBlock()
   --bab order: thicc, zip, look at, undo, visit fren, go, goooo, shy, spin, folo wal, turn cornr
   
   --currently very bad method of making sure thicc stuff gets updated: go through all units and make sure they're set up properly
-  if units_by_name["text_thicc"] then
+  if units_by_name["txt_thicc"] then
     for _,unit in ipairs(units) do
       if hasProperty(unit,"thicc") then
         for i=1,3 do
@@ -26,7 +26,7 @@ function moveBlock()
     doZip(unit)
   end
   
-  local isstalk = matchesRule("?", "look at", "?")
+  local isstalk = matchesRule("?", "lookat", "?")
   for _,ruleparent in ipairs(isstalk) do
     local stalkers = findUnitsByName(ruleparent.rule.subject.name)
     local stalkees = copyTable(findUnitsByName(ruleparent.rule.object.name))
@@ -51,7 +51,7 @@ function moveBlock()
     end
   end
   
-  local isstalknt = matchesRule("?", "look away", "?")
+  local isstalknt = matchesRule("?", "lookaway", "?")
   for _,ruleparent in ipairs(isstalknt) do
     local stalkers = findUnitsByName(ruleparent.rule.subject.name)
     local stalkees = copyTable(findUnitsByName(ruleparent.rule.object.name))
@@ -130,7 +130,7 @@ function moveBlock()
   to_destroy = handleDels(to_destroy)
   
   --Currently using deterministic tele version. Number of teles a teleporter has influences whether it goes forwards or backwards and by how many steps.
-  local istele = getUnitsWithEffectAndCount("visit fren")
+  local istele = getUnitsWithEffectAndCount("visitfren")
   teles_by_name = {}
   teles_by_name_index = {}
   tele_targets = {}
@@ -204,7 +204,7 @@ function moveBlock()
       --gets each destination the unit needs to go to
       local fullrule = hererules[ri].units
       for i,hererule in ipairs(fullrule) do
-        if hererule.fullname == "text_her" then
+        if hererule.fullname == "txt_her" then
           table.insert(heres,hererule)
           break
         end
@@ -264,7 +264,7 @@ function moveBlock()
       
       local fullrule = thererules[ri].units
       for i,thererule in ipairs(fullrule) do
-        if thererule.fullname == "text_thr" then
+        if thererule.fullname == "txt_thr" then
           table.insert(theres,thererule)
           break
         end
@@ -356,7 +356,7 @@ function moveBlock()
       
       local fullrule = righthererules[ri].units
       for i,righthererule in ipairs(fullrule) do
-        if righthererule.fullname == "text_rithere" then
+        if righthererule.fullname == "txt_rithere" then
           table.insert(rightheres,righthererule)
           break
         end
@@ -432,7 +432,7 @@ function moveBlock()
   
   local isshy = getUnitsWithEffect("shy...")
   for _,unit in ipairs(isshy) do
-    if not hasProperty("folo wal") and not hasProperty("turn cornr") then
+    if not hasProperty("folowal") and not hasProperty("turncornr") then
       local dpos = dirs8[unit.dir]
       local dx, dy = dpos[1], dpos[2]
       local stuff = getUnitsOnTile(unit.x+dx, unit.y+dy, nil, true, nil, nil, hasProperty(unit,"thicc"))
@@ -440,14 +440,14 @@ function moveBlock()
       local pushfront = false
       local pushbehin = false
       for _,on in ipairs(stuff) do
-        if hasProperty(on, "go away pls") and ignoreCheck(unit, on, "go away pls") then
+        if hasProperty(on, "goawaypls") and ignoreCheck(unit, on, "goawaypls") then
           pushfront = true
           break
         end
       end
       if pushfront then
         for _,on in ipairs(stuff2) do
-          if hasProperty(on, "go away pls") and ignoreCheck(unit, on, "go away pls") then
+          if hasProperty(on, "goawaypls") and ignoreCheck(unit, on, "goawaypls") then
             pushbehin = true
             break
           end
@@ -462,7 +462,7 @@ function moveBlock()
   
   doSpinRules()
   
-  local folo_wall = getUnitsWithEffectAndCount("folo wal")
+  local folo_wall = getUnitsWithEffectAndCount("folowal")
   for unit,amt in pairs(folo_wall) do
     local fwd = unit.dir
     local right = (((unit.dir + 2)-1)%8)+1
@@ -471,7 +471,7 @@ function moveBlock()
     local result = changeDirIfFree(unit, right) or changeDirIfFree(unit, fwd) or changeDirIfFree(unit, left) or changeDirIfFree(unit, bwd)
   end
   
-  local turn_cornr = getUnitsWithEffectAndCount("turn cornr")
+  local turn_cornr = getUnitsWithEffectAndCount("turncornr")
   for unit,amt in pairs(turn_cornr) do
     local fwd = unit.dir
     local right = (((unit.dir + 2)-1)%8)+1
@@ -494,7 +494,7 @@ function updateUnits(undoing, big_update)
   --(FOLLOW, BACK, TELE, SHIFT are handled in moveblock. FALL is handled in fallblock.)
 
   if (big_update and not undoing) then
-    if not hasProperty(nil,"za warudo") then
+    if not hasProperty(nil,"zawarudo") then
       timeless = false
     end
     
@@ -871,15 +871,15 @@ function updateUnits(undoing, big_update)
     
     to_destroy = handleDels(to_destroy)
     
-    local issink = getUnitsWithEffect("no swim")
+    local issink = getUnitsWithEffect("noswim")
     for _,unit in ipairs(issink) do
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"thicc"))
       for _,on in ipairs(stuff) do
         if unit ~= on and on.fullname ~= "no1" and sameFloat(unit, on) then
           local ignore_unit = ignoreCheck(unit, on)
-          local ignore_on = ignoreCheck(on, unit, "no swim")
+          local ignore_on = ignoreCheck(on, unit, "noswim")
           if ignore_unit or ignore_on then
-            if timecheck(unit,"be","no swim") and timecheck(on) then
+            if timecheck(unit,"be","noswim") and timecheck(on) then
               if ignore_unit then
                 table.insert(to_destroy, unit)
               end
@@ -986,15 +986,15 @@ function updateUnits(undoing, big_update)
     
     to_destroy = handleDels(to_destroy)
     
-    local isshut = getUnitsWithEffect("ned kee")
+    local isshut = getUnitsWithEffect("nedkee")
     for _,unit in ipairs(isshut) do
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"thicc"))
       for _,on in ipairs(stuff) do
-        if hasProperty(on, "for dor") and sameFloat(unit, on) then
-          local ignore_unit = ignoreCheck(unit, on, "for dor")
-          local ignore_on = ignoreCheck(on, unit, "ned kee")
+        if hasProperty(on, "fordor") and sameFloat(unit, on) then
+          local ignore_unit = ignoreCheck(unit, on, "fordor")
+          local ignore_on = ignoreCheck(on, unit, "nedkee")
           if ignore_unit or ignore_on then
-            if timecheck(unit,"be","ned kee") and timecheck(on,"be","for dor") then
+            if timecheck(unit,"be","nedkee") and timecheck(on,"be","fordor") then
               if ignore_unit then
                 table.insert(to_destroy, unit)
               end
@@ -1201,15 +1201,15 @@ function updateUnits(undoing, big_update)
     function doOneCreate(rule, creator, createe)
       local object = createe
       if (createe == "text") then
-        createe = "text_"..creator.fullname
+        createe = "txt_"..creator.fullname
       end
       
       local tile = tiles_by_namePossiblyMeta(createe)
       --let x ben't x txt prevent x be txt, and x ben't txt prevent x be y txt
       local overriden = false;
       if object == "text" then
-        overriden = hasRule(creator, "creatn't", "text_" .. creator.fullname)
-      elseif object:starts("text_") then
+        overriden = hasRule(creator, "creatn't", "txt_" .. creator.fullname)
+      elseif object:starts("txt_") then
         overriden = hasRule(creator, "creatn't", "text")
       end
       if tile ~= nil and not overriden then
@@ -1410,7 +1410,7 @@ function miscUpdates()
         else
           unit.sprite = "casete_wut"
         end
-        if not hasProperty(unit,"no go") then
+        if not hasProperty(unit,"nogo") then
           unit.sprite = unit.sprite.."_sunk"
         end
       end
@@ -1447,7 +1447,7 @@ function miscUpdates()
       end
       
       if unit.fullname == "ches" then
-        if hasProperty(unit,"ned kee") then
+        if hasProperty(unit,"nedkee") then
           unit.sprite = "chest_close"
         else
           unit.sprite = "chest_open"
@@ -1457,7 +1457,7 @@ function miscUpdates()
       if unit.fullname == "mimi" then
         if graphical_property_cache["slep"][unit] ~= nil then
           unit.sprite = "mimic_sleep"
-        elseif hasProperty(unit,"ned kee") then
+        elseif hasProperty(unit,"nedkee") then
           unit.sprite = "mimic_close"
         else
           unit.sprite = "mimic_open"
@@ -1492,7 +1492,7 @@ function miscUpdates()
           unit.sprite = "ditto_rong"
         elseif hasProperty(unit,"wurd") then
           unit.sprite = "ditto_wurd"
-        elseif hasProperty(unit,"no drag") then
+        elseif hasProperty(unit,"nodrag") then
           unit.sprite = "ditto_no drag"
         elseif graphical_property_cache["slep"][unit] ~= nil then
           unit.sprite = "ditto_slep"
@@ -1508,7 +1508,7 @@ function miscUpdates()
           unit.sprite = "ditto_ouch"
         elseif hasProperty(unit,"protecc") then
           unit.sprite = "ditto_protecc"
-        elseif hasProperty(unit,"no undo") then
+        elseif hasProperty(unit,"noundo") then
           unit.sprite = "ditto_no undo"
         -- Eeveelutions
         elseif hasProperty(unit,"qt") then
@@ -1519,7 +1519,7 @@ function miscUpdates()
           else
             unit.sprite = "ditto_qt"
           end
-        elseif hasProperty(unit,"poor toll") then
+        elseif hasProperty(unit,"poortoll") then
           unit.sprite = "ditto_poor toll"
         -- Rotom formes
         elseif hasProperty(unit,"zip") then
@@ -1532,7 +1532,7 @@ function miscUpdates()
           unit.sprite = "ditto_sant"
         elseif hasProperty(unit,"go") then
           unit.sprite = "ditto_go"
-        elseif hasProperty(unit,"folo wal") then
+        elseif hasProperty(unit,"folowal") then
           unit.sprite = "ditto_folo wal"
         elseif hasProperty(unit,"tall") then
           unit.sprite = "ditto_tall"
@@ -1564,15 +1564,15 @@ function miscUpdates()
           unit.sprite = "ditto_sidestep"
         elseif hasProperty(unit,"munwalk") then
           unit.sprite = "ditto_munwalk"
-        elseif hasProperty(unit,"visit fren") then
+        elseif hasProperty(unit,"visitfren") then
           unit.sprite = "ditto_visit fren"
         elseif hasProperty(unit,"walk") then
           unit.sprite = "ditto_walk"
-        elseif hasProperty(unit,"no swim") then
+        elseif hasProperty(unit,"noswim") then
           unit.sprite = "ditto_no swim"
-        elseif hasProperty(unit,"haet flor") then
+        elseif hasProperty(unit,"haetflor") then
           unit.sprite = "ditto_haet flor"
-        elseif hasProperty(unit,"haet skye") then
+        elseif hasProperty(unit,"haetskye") then
           unit.sprite = "ditto_haet skye"
         elseif hasRule(unit,"got","gunne") then
           unit.sprite = "ditto_gunne"
@@ -1584,9 +1584,9 @@ function miscUpdates()
           unit.sprite = "ditto_enby"
         elseif hasProperty(unit,"tranz") then
           unit.sprite = "ditto_tranz"
-        elseif hasProperty(unit,"come pls") then
+        elseif hasProperty(unit,"comepls") then
           unit.sprite = "ditto_come pls"
-        elseif hasProperty(unit,"go away pls") then
+        elseif hasProperty(unit,"goawaypls") then
           unit.sprite = "ditto_go away pls"
         elseif hasProperty(unit,"goooo") then
           unit.sprite = "ditto_goooo"
@@ -1594,9 +1594,9 @@ function miscUpdates()
           unit.sprite = "ditto_snacc"
         elseif hasProperty(unit,"moar") then
           unit.sprite = "ditto_moar"
-        elseif hasProperty(unit,"ned kee") then
+        elseif hasProperty(unit,"nedkee") then
           unit.sprite = "ditto_ned kee"
-        elseif hasProperty(unit,"for dor") then
+        elseif hasProperty(unit,"fordor") then
           unit.sprite = "ditto_fordor"
         elseif hasProperty(unit,"hotte") then
           unit.sprite = "ditto_hotte"
@@ -1606,13 +1606,13 @@ function miscUpdates()
           unit.sprite = "ditto_yay"
         elseif hasProperty(unit,":o") then
           unit.sprite = "ditto_whoa"
-        elseif hasProperty(unit,"no go") then
+        elseif hasProperty(unit,"nogo") then
           unit.sprite = "ditto_no go"
         elseif hasProperty(unit,"y'all") then
           unit.sprite = "ditto_y'all"
-        elseif hasProperty(unit,"u tres") then
+        elseif hasProperty(unit,"utres") then
           unit.sprite = "ditto_u tres"
-        elseif hasProperty(unit,"u too") then
+        elseif hasProperty(unit,"utoo") then
           unit.sprite = "ditto_u too"
         elseif hasProperty(unit,"u") then
           unit.sprite = "ditto_u"
@@ -1624,7 +1624,7 @@ function miscUpdates()
       end
       
       if unit.fullname == "fube" then
-        if hasProperty(unit,"haet skye") or hasProperty(unit,"haet flor") or hasRule(unit,"yeet","?") or hasRule(unit,"moov","?") then
+        if hasProperty(unit,"haetskye") or hasProperty(unit,"haetflor") or hasRule(unit,"yeet","?") or hasRule(unit,"moov","?") then
           unit.sprite = {"fube_cube","fube_arrow"}
         else
           unit.sprite = {"fube_arrow","fube_cube"}
@@ -1650,12 +1650,12 @@ function miscUpdates()
         end
       end
       
-      if unit.fullname == "die" and (first_turn or not (hasProperty(unit,"stukc") or hasProperty(unit,"no turn"))) then
+      if unit.fullname == "die" and (first_turn or not (hasProperty(unit,"stukc") or hasProperty(unit,"noturn"))) then
         local roll = math.random(6)
         unit.sprite[2] = "die_"..roll
       end
 
-      if unit.fullname == "text_katany" then
+      if unit.fullname == "txt_katany" then
         unit.sprite = "text/katany"
         if rules_with_unit[unit] then
           for _,rules in ipairs(rules_with_unit[unit]) do
@@ -1916,7 +1916,7 @@ end
 
 function updatePortals()
   for i,unit in ipairs(units) do
-    if unit.is_portal and hasProperty(unit, "poor toll") then
+    if unit.is_portal and hasProperty(unit, "poortoll") then
       local px, py, move_dir, dir = doPortal(unit, unit.x, unit.y, rotate8(unit.dir), rotate8(unit.dir), true)
       unit.portal.x, unit.portal.y = px, py
       local portal_objects = getUnitsOnTile(px, py, nil, true, nil, nil, hasProperty(unit,"thicc"))
@@ -2052,9 +2052,9 @@ function levelBlock()
     destroyLevel("infloop")
   end
   
-  if hasProperty(outerlvl, "visit fren") then
+  if hasProperty(outerlvl, "visitfren") then
     for _,unit in ipairs(units) do
-      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) and ignoreCheck(unit,outerlvl,"visit fren") then
+      if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) and ignoreCheck(unit,outerlvl,"visitfren") then
         addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
         if inBounds(unit.x+1,unit.y) then
           moveUnit(unit,unit.x+1,unit.y)
@@ -2103,13 +2103,13 @@ function levelBlock()
     end
   end
   
-  if hasProperty(outerlvl, "no swim") then
+  if hasProperty(outerlvl, "noswim") then
     for _,unit in ipairs(units) do
       if sameFloat(unit, outerlvl) and inBounds(unit.x,unit.y) then
         if ignoreCheck(outerlvl, unit) then
           destroyLevel("sink")
           if not lvlsafe then return 0,0 end
-        elseif ignoreCheck(unit, outerlvl, "no swim") then
+        elseif ignoreCheck(unit, outerlvl, "noswim") then
           table.insert(to_destroy, unit)
           addParticles("destroy", unit.x, unit.y, unit.color)
         end
@@ -2173,19 +2173,19 @@ function levelBlock()
   
   to_destroy = handleDels(to_destroy)
   
-  if hasProperty(outerlvl, "ned kee") then
-    if hasProperty(outerlvl, "for dor") then
+  if hasProperty(outerlvl, "nedkee") then
+    if hasProperty(outerlvl, "fordor") then
       destroyLevel("unlock")
       if not lvlsafe then return 0,0 end
     end
-    local dors = getUnitsWithEffect("for dor")
+    local dors = getUnitsWithEffect("fordor")
     for _,unit in ipairs(dors) do
       if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
-        if ignoreCheck(outerlvl,unit,"for dor") then
+        if ignoreCheck(outerlvl,unit,"fordor") then
           destroyLevel("unlock")
         end
         if lvlsafe then
-          if ignoreCheck(unit,outerlvl,"ned kee") then
+          if ignoreCheck(unit,outerlvl,"nedkee") then
             table.insert(to_destroy, unit)
             addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
           end
@@ -2200,15 +2200,15 @@ function levelBlock()
   
   to_destroy = handleDels(to_destroy)
   
-  if hasProperty(outerlvl, "for dor") then
-    local kees = getUnitsWithEffect("ned kee")
+  if hasProperty(outerlvl, "fordor") then
+    local kees = getUnitsWithEffect("nedkee")
     for _,unit in ipairs(kees) do
       if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) then
-        if ignoreCheck(outerlvl,unit,"ned kee") then
+        if ignoreCheck(outerlvl,unit,"nedkee") then
           destroyLevel("unlock")
         end
         if lvlsafe then
-          if ignoreCheck(unit,outerlvl,"for dor") then
+          if ignoreCheck(unit,outerlvl,"fordor") then
             table.insert(to_destroy, unit)
             addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
           end
@@ -2329,7 +2329,7 @@ function levelBlock()
   end
   
   if hasProperty(outerlvl, "nxt") then
-		table.insert(win_sprite_override,tiles_list[tiles_by_name["text_nxt"]]);
+		table.insert(win_sprite_override,tiles_list[tiles_by_name["txt_nxt"]]);
     doWin("nxt")
   end
   
@@ -2397,14 +2397,14 @@ function destroyLevel(reason)
       local obj_name = match.rule.object.name
       if obj_name == "text" then
         istext = true
-        obj_name = "text_" .. match.rule.subject.name
+        obj_name = "txt_" .. match.rule.subject.name
       end
       local tile = tiles_by_name[obj_name]
       --let x ben't x txt prevent x be txt, and x ben't txt prevent x be y txt
       local overriden = false;
       if match.rule.object.name == "text" then
-        overriden = hasRule(outerlvl, "gotn't", "text_" .. match.rule.subject.name)
-      elseif match.rule.object.name:starts("text_") then
+        overriden = hasRule(outerlvl, "gotn't", "txt_" .. match.rule.subject.name)
+      elseif match.rule.object.name:starts("txt_") then
         overriden = hasRule(outerlvl, "gotn't", "text")
       end
       if tile ~= nil and not overriden then
@@ -2474,7 +2474,7 @@ function dropGotUnit(unit, rule)
   function dropOneGotUnit(unit, rule, obj_name)
     local object = obj_name
     if rule.object.name == "text" then
-      obj_name = "text_" .. unit.fullname
+      obj_name = "txt_" .. unit.fullname
     end
     if object:starts("this") then
       obj_name = "this"
@@ -2484,8 +2484,8 @@ function dropGotUnit(unit, rule)
     --let x ben't x txt prevent x be txt, and x ben't txt prevent x be y txt
     local overriden = false
     if object == "text" then
-      overriden = hasRule(unit, "gotn't", "text_" .. unit.fullname)
-    elseif object:starts("text_") or object:starts("letter_") then
+      overriden = hasRule(unit, "gotn't", "txt_" .. unit.fullname)
+    elseif object:starts("txt_") or object:starts("letter_") then
       overriden = hasRule(unit, "gotn't", "text")
     end
     if not overriden and (obj_name == "mous" or obj_tile ~= nil) then
@@ -2535,7 +2535,7 @@ function convertLevel()
    local tile = nil
     local nametocreate = outerlvl.fullname
     for i = 1,#meta do
-      nametocreate = "text_"..nametocreate
+      nametocreate = "txt_"..nametocreate
     end
     tile = tiles_by_namePossiblyMeta(nametocreate)
     if tile ~= nil then
@@ -2546,10 +2546,10 @@ function convertLevel()
 
   local converts = matchesRule(outerlvl,"be","?")
   for _,match in ipairs(converts) do
-    if not (hasProperty(outerlvl, "lvl") or hasProperty(outerlvl, "notranform")) and match.rule.object.type and (match.rule.object.type.object or match.rule.object.name:starts("text_")) then
+    if not (hasProperty(outerlvl, "lvl") or hasProperty(outerlvl, "notranform")) and match.rule.object.type and (match.rule.object.type.object or match.rule.object.name:starts("txt_")) then
       local tile = tiles_by_name[match.rule.object.name]
       if match.rule.object.name == "text" then
-        tile = tiles_by_name["text_lvl"]
+        tile = tiles_by_name["txt_lvl"]
       end
       if tile == nil and match.rule.object.name == "every1" and not hasRule(outerlvl, "be", "lvl") then
         for _,v in ipairs(referenced_objects) do
@@ -2565,8 +2565,8 @@ function convertLevel()
       --let x ben't x txt prevent x be txt, and x ben't txt prevent x be y txt
       local overriden = false;
       if match.rule.object.name == "text" then
-        overriden = hasRule(outerlvl, "ben't", "text_" .. match.rule.subject.name)
-      elseif match.rule.object.name:starts("text_") then
+        overriden = hasRule(outerlvl, "ben't", "txt_" .. match.rule.subject.name)
+      elseif match.rule.object.name:starts("txt_") then
         overriden = hasRule(outerlvl, "ben't", "text")
       end
       if tile ~= nil and not overriden then
@@ -2594,7 +2594,7 @@ function convertUnits(pass)
     if (unit.fullname == "mous") then
       local cursor = unit
       if inBounds(cursor.x, cursor.y) then
-        local tile = tiles_by_name["text_mous"]
+        local tile = tiles_by_name["txt_mous"]
         if tile ~= nil then
           table.insert(del_cursors, cursor)
         end
@@ -2613,7 +2613,7 @@ function convertUnits(pass)
         if tile ~= nil and tiles_list[tile].tometa then
           nametocreate = tiles_list[tile].tometa
         else
-          nametocreate = "text_"..nametocreate
+          nametocreate = "txt_"..nametocreate
         end
       end
       tile = tiles_by_namePossiblyMeta(nametocreate)
@@ -2630,7 +2630,7 @@ function convertUnits(pass)
   local demeta = getUnitsWithEffectAndCount("thingify")
   for unit,amt in pairs(demeta) do
     if not unit.new and unit.type ~= "outerlvl" and timecheck(unit,"be","thingify") then
-      --remove "text_" as many times as we're de-metaing
+      --remove "txt_" as many times as we're de-metaing
       local nametocreate = unit.fullname
       for i = 1,amt do
         local newname = nametocreate
@@ -2638,8 +2638,8 @@ function convertUnits(pass)
         if tiles_list[tile].demeta then
           newname = tiles_list[tile].demeta
         else
-          if nametocreate:starts("text_") then
-            newname = nametocreate:sub(6, -1)
+          if nametocreate:starts("txt_") then
+            newname = nametocreate:sub(5, -1)
           elseif nametocreate:starts("letter_") then
             newname = nametocreate:sub(8, -1)
             if newname == "custom" then
@@ -2711,7 +2711,7 @@ function convertUnits(pass)
             for _,v in ipairs(referenced_objects) do
               local tile = tiles_by_name[v]
               if v == "text" then
-                tile = tiles_by_name["text_" .. rule.subject.name]
+                tile = tiles_by_name["txt_" .. rule.subject.name]
               end
               if tile ~= nil then
                 table.insert(del_cursors, cursor)
@@ -2727,7 +2727,7 @@ function convertUnits(pass)
         for _,v in ipairs(referenced_objects) do
           local tile = tiles_by_name[v]
           if v == "text" then
-            tile = tiles_by_name["text_" .. rule.subject.name]
+            tile = tiles_by_name["txt_" .. rule.subject.name]
           end
           if tile ~= nil then
             if not unit.removed then
@@ -2764,7 +2764,7 @@ function convertUnits(pass)
             for _,v in ipairs(tbl) do
               local tile = tiles_by_name[v]
               if v == "text" then
-                tile = tiles_by_name["text_" .. rule.subject.name]
+                tile = tiles_by_name["txt_" .. rule.subject.name]
               end
               if tile ~= nil then
                 table.insert(del_cursors, cursor)
@@ -2782,7 +2782,7 @@ function convertUnits(pass)
         for _,v in ipairs(tbl) do
           local tile = tiles_by_name[v]
           if v == "text" then
-            tile = tiles_by_name["text_" .. rule.subject.name]
+            tile = tiles_by_name["txt_" .. rule.subject.name]
           end
           if tile ~= nil then
             if not unit.removed then
@@ -2820,7 +2820,7 @@ function convertUnits(pass)
             for _,v in ipairs(tbl) do
               local tile = tiles_by_name[v]
               if v == "text" then
-                tile = tiles_by_name["text_" .. rule.subject.name]
+                tile = tiles_by_name["txt_" .. rule.subject.name]
               end
               if tile ~= nil then
                 table.insert(del_cursors, cursor)
@@ -2839,7 +2839,7 @@ function convertUnits(pass)
         for _,v in ipairs(tbl) do
           local tile = tiles_by_name[v]
           if v == "text" then
-            tile = tiles_by_name["text_" .. rule.subject.name]
+            tile = tiles_by_name["txt_" .. rule.subject.name]
           end
           if tile ~= nil then
             if not unit.removed then
@@ -2874,7 +2874,7 @@ function convertUnits(pass)
           if inBounds(cursor.x, cursor.y) and testConds(cursor, rule.subject.conds) then
             local tile = tiles_by_name[rule.object.name]
             if rule.object.name == "text" then
-              tile = tiles_by_name["text_" .. rule.subject.name]
+              tile = tiles_by_name["txt_" .. rule.subject.name]
             elseif rule.object.name:starts("this") and not rule.object.name:ends("n't") then
               tile = tiles_by_name["this"]
             end
@@ -2909,7 +2909,7 @@ function convertUnits(pass)
       elseif not unit.new and unit.class == "unit" and not nameIs(unit, rule.object.name) and unit.type ~= "outerlvl" and timecheck(unit) then
         local tile = tiles_by_name[rule.object.name]
         if rule.object.name == "text" then
-          tile = tiles_by_name["text_" .. rule.subject.name]
+          tile = tiles_by_name["txt_" .. rule.subject.name]
         elseif rule.object.name:starts("this") and not rule.object.name:ends("n't") then
           tile = tiles_by_name["this"]
         end
@@ -2920,8 +2920,8 @@ function convertUnits(pass)
         --let x ben't x txt prevent x be txt, and x ben't txt prevent x be y txt
         local overriden = false;
         if rule.object.name == "text" then
-          overriden = hasRule(unit, "ben't", "text_" .. rule.subject.name)
-        elseif rule.object.name:starts("text_") then
+          overriden = hasRule(unit, "ben't", "txt_" .. rule.subject.name)
+        elseif rule.object.name:starts("txt_") then
           overriden = hasRule(unit, "ben't", "text")
         end
         --transform into custom letter
@@ -3186,7 +3186,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
       letters_exist = true
       unit.textname = string.sub(unit.fullname, 8)
     else
-      unit.textname = string.sub(unit.fullname, 6)
+      unit.textname = string.sub(unit.fullname, 5)
     end
   else
     unit.name = unit.fullname
@@ -3224,7 +3224,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
   
   --do this before the 'this' change to textname so that we only get 'this' in referenced_objects
   if unit.texttype.object and unit.textname ~= "every1" and unit.textname ~= "every2" and unit.textname ~= "every3" and unit.textname ~= "mous" and unit.textname ~= "bordr" and unit.textname ~= "no1" and unit.textname ~= "lvl" and unit.textname ~= "the" and unit.textname ~= "deez" and unit.textname ~= "text" and unit.textname ~= "this" and group_names_set[unit.textname] ~= true then
-    if not unit.textname:ends("n't") and not unit.textname:starts("text_") and not unit.textname:starts("letter_") and not table.has_value(referenced_objects, unit.textname) then
+    if not unit.textname:ends("n't") and not unit.textname:starts("txt_") and not unit.textname:starts("letter_") and not table.has_value(referenced_objects, unit.textname) then
       table.insert(referenced_objects, unit.textname)
     end
   end
@@ -3468,7 +3468,7 @@ end
 function updateDir(unit, dir, force)
   local result = true
   if not force and rules_with ~= nil then
-    if hasProperty(unit, "no turn") then
+    if hasProperty(unit, "noturn") then
       return false
     end
     if hasRule(unit, "ben't", dirs8_by_name[dir]) then
@@ -3525,12 +3525,12 @@ function updateDir(unit, dir, force)
 end
 
 function updateNameBasedOnDir(unit)
-  if unit.fullname == "text_mayb" then
+  if unit.fullname == "txt_mayb" then
     should_parse_rules = true
-  elseif unit.fullname == "text_direction" then
+  elseif unit.fullname == "txt_direction" then
     unit.textname = dirs8_by_name[unit.dir]
     should_parse_rules = true
-  elseif unit.fullname == "text_spin" then
+  elseif unit.fullname == "txt_spin" then
     unit.textname = "spin" .. tostring(unit.dir)
     should_parse_rules = true
   elseif unit.fullname == "letter_colon" then
@@ -3667,8 +3667,8 @@ function tiles_by_namePossiblyMeta(name)
     return tile_id
   end
   --recursively make all less meta tiles
-  if name:starts("text_") then
-    local premeta_tile_id = tiles_by_namePossiblyMeta(name:sub(6, -1))
+  if name:starts("txt_") then
+    local premeta_tile_id = tiles_by_namePossiblyMeta(name:sub(5, -1))
     local premeta_tile = tiles_list[premeta_tile_id]
     tile_id = premeta_tile_id+meta_offset
     --now we can make our new meta tile!
@@ -3681,7 +3681,7 @@ end
 
 function makeMetaTile(premeta_tile)
   return {
-    name = "text_" .. premeta_tile.name,
+    name = "txt_" .. premeta_tile.name,
     sprite = premeta_tile.metasprite or premeta_tile.sprite,
     type = "text",
     color = premeta_tile.color,
@@ -3704,7 +3704,7 @@ function makeNtTile(premeta_tile)
 end
 
 function undoWin()
-  if hasProperty(outerlvl, "no undo") then return end
+  if hasProperty(outerlvl, "noundo") then return end
   currently_winning = false
   music_fading = false
   win_size = 0

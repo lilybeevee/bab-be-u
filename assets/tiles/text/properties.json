@@ -52,7 +52,7 @@
   },
   {
     "name": "txt_noswim",
-    "sprite": ["text/no swim"],
+    "sprite": ["text/noswim"],
     "types": ["property"],
     "color": [[1, 3]],
     "desc": "NO SWIM: At end of turn, if a NO SWIM unit is touching another object, all objects on the tile are destroyed.",
@@ -169,7 +169,7 @@
     "sprite": ["text/qt"],
     "types": ["property"],
     "color": [[4, 2]],
-    "thingify": "the real qt",
+    "thingify": "therealqt",
     "desc": "QT: Makes the unit emit love hearts.",
     "tags": ["cute", "lily"]
   },
@@ -390,7 +390,7 @@
   },
   {
     "name": "txt_noundo",
-    "sprite": ["text/no undo"],
+    "sprite": ["text/noundo"],
     "types": ["property"],
     "color": [[5, 3]],
     "desc": "NO UNDO: NO UNDO units aren't affected by undoing manually. LVL BE NO UNDO prevents undo inputs entirely.",
@@ -406,7 +406,7 @@
   },
   {
     "name": "txt_goarnd",
-    "sprite": ["text/go arnd"],
+    "sprite": ["text/goarnd"],
     "types": ["property"],
     "color": [[3, 2]],
     "desc": "GO ARND: GO ARND units wrap around the level, as though it were a torus. BORDR objects are used as the level border, and the wraparound doesn't go through BORDRs. Diagonal GO ARNDs on corners of non-square levels might not work as expected, as it simply traces backward until hitting a BORDR.",
@@ -414,7 +414,7 @@
   },
   {
     "name": "txt_poortoll",
-    "sprite": ["text/poor_toll"],
+    "sprite": ["text/poortoll"],
     "types": ["property"],
     "color": [[3, 2]],
     "desc": "POOR TOLL: If a unit would enter a POOR TOLL unit, it instead leaves the next POOR TOLL unit of the same name in reading order (left to right, line by line, wrapping around) out the corresponding same side. Does not stack.",
@@ -456,7 +456,7 @@
   },
   {
     "name": "txt_mirrarnd",
-    "sprite": ["text/mirr arnd"],
+    "sprite": ["text/mirrarnd"],
     "types": ["property"],
     "color": [[3, 2]],
     "desc": "MIRR ARND: MIRR ARND units wrap around the level, as though it were a projective plane.",
@@ -520,7 +520,7 @@
   },
   {
     "name": "txt_noturn",
-    "sprite": ["text/no turn"],
+    "sprite": ["text/noturn"],
     "types": ["property"],
     "color": [[2, 3]],
     "desc": "NO TURN: A NO TURN unit's direction can't change (unless re-oriented by non-euclidean level geometry, i.e. POOR TOLL).",
