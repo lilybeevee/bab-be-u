@@ -128,7 +128,7 @@ mapheight = 15
 map_music = "bab be go"
 map_ver = 1
 
-default_map = '{"map":"eJwlzEEOgCAMRNEpGNSwEriLqPe/l39Cunjpb9Kk8GQlE7ArNmVvt04VxQTiA4djdfyA+AKx61pfmmnAbah7+wFtgAJz","width":21,"music":"bab be go","version":1,"height":15,"author":"","name":"new level","palette":"default"}'
+default_map = '{"width":21,"version":5,"extra":false,"author":"","compression":"zlib","background_sprite":"","height":15,"next_level":"","puffs_to_clear":0,"parent_level":"","is_overworld":false,"palette":"default","music":"bab be go","name":"new level","map":"eJyNkUEKgzAQRa8i7gpZdGKrtpKziJqxBIJKjKCId2+SFu2mJotk9d7nM5/3keybSkYlW1ctJLJYz7qsqzomMwMiuPkW88YBG1FJtm6EC8VgI784Wppamp7T32CHJgbNzoMnCycWvvlbDArH0QoPK9yNkJ4LLd3p1N+FIhd6FzIj5IF9wN0xDygEB/4IaDRIXA4Drv5OrexfzsicEbwt5I73rLunf+iAgZ8Xx7uTwp+Nt0KhnlQXlQV2/A10B+gd"}'
 
 main_palette_for_colour = {
 blacc = {0, 4},
@@ -324,7 +324,7 @@ selector_grid_contents = {
     "txt_nogo","txt_goawaypls","txt_comepls","txt_sidekik","txt_diagkik","txt_delet","txt_hotte","txt_fridgd","txt_thingify",0,"txt_dragbl","txt_nodrag","txt_alt","txt_clikt","txt_past","txt_wun","txt_an","txt_mayb",
     "txt_visitfren","txt_slep","txt_shy...","txt_behinu",0,"txt_:o","txt_moar","txt_split","txt_txtify",0,"txt_rythm","txt_curse",0,"txt_wait...","txt_samefloat","txt_samepaint","txt_sameface",0,
     "txt_flye","txt_tall","txt_haetskye","txt_haetflor",0,"txt_un:)","txt_gone","txt_nuek","txt_notranform",0,0,0,0,"txt_w/fren","txt_arond","txt_sans","txt_seenby","txt_behind",
-    "txt_diag","txt_ortho","txt_gomyway","txt_zip",0,"txt_B)","txt_cool",0,0,0,0,0,0,"txt_that","txt_thatbe","txt_thatgot","txt_meow","txt_beside",
+    "txt_diag","txt_ortho","txt_gomyway","txt_zip",0,"txt_b)","txt_cool",0,0,0,0,0,0,"txt_that","txt_thatbe","txt_thatgot","txt_meow","txt_beside",
     "txt_turncornr","txt_folowal","txt_hopovr","txt_reflecc",0,0,0,0,0,0,0,0,0,0,0,0,0,"txt_n't",
     "txt_munwalk","txt_sidestep","txt_diagstep","txt_knightstep",0,0,0,0,0,0,0,0,0,0,0,0,0,"txt_reed",
     "txt_spin","txt_rotatbl","txt_noturn","txt_stukc",0,0,0,0,0,0,0,0,0,0,0,0,"txt_enby","txt_orang",
@@ -360,7 +360,7 @@ layer list:
 100: the real bab dictator
 ]]
 
-tiles_list = {
+--[[tiles_list = {
   -- 1
   {
     name = "bab",
@@ -8443,7 +8443,7 @@ tiles_list = {
         katany = {x=5},
         bowie = {x=0,y=19},
         slippers = {x=0, y=5},
-    },]]
+    },]]--[[
     tags = {"dr mario", "mario", "virus"},
   },
   -- 746
@@ -9414,9 +9414,10 @@ for i,v in ipairs(tiles_list) do
     group_names_set[v.name:sub(5, -1)] = true;
     group_names_set_nt[v.name:sub(5, -1).."n't"] = true;
 	end
-end
+end]]
 
 special_objects = {"mous", "lvl", "bordr", "no1", "this"}
+
 
 --[[local new_lists = {}
 
@@ -9506,7 +9507,7 @@ for _,tile in ipairs(tiles_list) do
     types = types,
     layer = layer,
     color = tile.color and (type(tile.color[1]) == "table" and tile.color or {tile.color}) or {{0, 3}},
-    painted = tile.colored,
+    painted = tile.painted,
     txtify = tile.tometa,
     thingify = tile.demeta,
     rotate = tile.rotate,

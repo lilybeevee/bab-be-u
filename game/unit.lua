@@ -532,7 +532,7 @@ function updateUnits(undoing, big_update)
               end
               if canMove(unit, x, y, unit.dir, {solid_name = unit.name}) then
                 if unit.class == "unit" then --idk what any of this means but i'm assuming it's good?
-                  local new_unit = createUnit(tiles_by_name[unit.fullname], unit.x, unit.y, unit.dir)
+                  local new_unit = createUnit(unit.fullname, unit.x, unit.y, unit.dir)
                   addUndo({"create", new_unit.id, false})
                   _, __, ___, mx, my = getNextTile(unit, x, y, i*2-1, false)
                   moveUnit(new_unit,mx,my)
@@ -637,12 +637,12 @@ function updateUnits(undoing, big_update)
           end
         end
         if not lit then
-          local new_unit = createUnit(tiles_by_name["xplod"], nuke.x, nuke.y, nuke.dir)
+          local new_unit = createUnit("xplod", nuke.x, nuke.y, nuke.dir)
           new_unit.parent = nuke
           addUndo({"create", new_unit.id, false})
           if hasProperty(nuke,"thicc") then
             for i=1,3 do
-              local _new_unit = createUnit(tiles_by_name["xplod"], nuke.x+i%2, nuke.y+math.floor(i/2), nuke.dir)
+              local _new_unit = createUnit("xplod", nuke.x+i%2, nuke.y+math.floor(i/2), nuke.dir)
               _new_unit.parent = nuke
               addUndo({"create", _new_unit.id, false})
             end
@@ -676,7 +676,7 @@ function updateUnits(undoing, big_update)
                 end
               end
               if not lit then
-                local new_unit = createUnit(tiles_by_name["xplod"], fire.x+dx, fire.y+dy, 1)
+                local new_unit = createUnit("xplod", fire.x+dx, fire.y+dy, 1)
                 new_unit.parent = fire.parent
                 addUndo({"create", new_unit.id, false})
               end
@@ -710,7 +710,7 @@ function updateUnits(undoing, big_update)
           local dy2 = dirs8[dir2][2]
           if canMove(on, dx1, dy1, dir1) then
             if on.class == "unit" then
-              local new_unit = createUnit(tiles_by_name[on.fullname], on.x, on.y, dir1)
+              local new_unit = createUnit(on.tile, on.x, on.y, dir1)
               addUndo({"create", new_unit.id, false})
               _, __, ___, x, y = getNextTile(on, dx1, dy1, dir1, false)
               table.insert(split_movers,{unit = new_unit, x = x, y = y, ox = on.x, oy = on.y, dir = dir1})
@@ -724,7 +724,7 @@ function updateUnits(undoing, big_update)
           end
           if canMove(on, dx2, dy2, dir2) then
             if on.class == "unit" then
-              local new_unit = createUnit(tiles_by_name[on.fullname], on.x, on.y, dir2)
+              local new_unit = createUnit(on.tile, on.x, on.y, dir2)
               addUndo({"create", new_unit.id, false})
               _, __, ___, x, y = getNextTile(on, dx2, dy2, dir2, false)
               table.insert(split_movers,{unit = new_unit, x = x, y = y, ox = on.x, oy = on.y, dir = dir2})
@@ -765,7 +765,7 @@ function updateUnits(undoing, big_update)
                 if canMove(on, dx1, dy1, dir1) then
                   if on.class == "unit" then
                     splits_per_tile[coords] = splits_per_tile[coords] + 1
-                    local new_unit = createUnit(tiles_by_name[on.fullname], on.x, on.y, dir1)
+                    local new_unit = createUnit(on.tile, on.x, on.y, dir1)
                     addUndo({"create", new_unit.id, false})
                     _, __, ___, x, y = getNextTile(on, dx1, dy1, dir1, false)
                     table.insert(split_movers,{unit = new_unit, x = x, y = y, ox = on.x, oy = on.y, dir = dir1})
@@ -780,7 +780,7 @@ function updateUnits(undoing, big_update)
                 if canMove(on, dx2, dy2, dir2) then
                   if on.class == "unit" then
                     splits_per_tile[coords] = splits_per_tile[coords] + 1
-                    local new_unit = createUnit(tiles_by_name[on.fullname], on.x, on.y, dir2)
+                    local new_unit = createUnit(on.tile, on.x, on.y, dir2)
                     addUndo({"create", new_unit.id, false})
                     _, __, ___, x, y = getNextTile(on, dx2, dy2, dir2, false)
                     table.insert(split_movers,{unit = new_unit, x = x, y = y, ox = on.x, oy = on.y, dir = dir2})
@@ -797,7 +797,7 @@ function updateUnits(undoing, big_update)
                 if not timeless_split[on.id] then
                   addUndo({"timeless_split_add", on.id})
                   timeless_split[on.id] = unit.id
-                  addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
+                  addParticles("destroy", unit.x, unit.y, unit.color_override or unit.first_color)
                 end
               end
             end
@@ -810,7 +810,7 @@ function updateUnits(undoing, big_update)
             local dx = ndir[1]
             local dy = ndir[2]
             if canMove(unit, dx, dy, i) then
-              local new_unit = createUnit(tiles_by_name["lie/8"], unit.x, unit.y, i)
+              local new_unit = createUnit("lie/8", unit.x, unit.y, i)
               addUndo({"create", new_unit.id, false})
               _, __, ___, x, y = getNextTile(unit, dx, dy, i, false)
               moveUnit(new_unit,x,y)
@@ -863,7 +863,7 @@ function updateUnits(undoing, big_update)
               table.insert(time_destroy,unit.id)
               addUndo({"time_destroy",unit.id})
             end
-            addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
+            addParticles("destroy", unit.x, unit.y, unit.color_override or unit.first_color)
           end
         end
       end
@@ -900,9 +900,9 @@ function updateUnits(undoing, big_update)
               table.insert(time_sfx,"sink")
             end
             if ignore_unit then
-              addParticles("destroy", unit.x, unit.y, ignore_on and on.color or unit.color)
+              addParticles("destroy", unit.x, unit.y, ignore_on and on.first_color or unit.first_color)
             else
-              addParticles("destroy", on.x, on.y, on.color)
+              addParticles("destroy", on.x, on.y, on.first_color)
             end
           end
         end
@@ -925,7 +925,7 @@ function updateUnits(undoing, big_update)
 						addUndo({"time_destroy",unit.id})
             table.insert(time_sfx,"break")
           end
-          addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
+          addParticles("destroy", unit.x, unit.y, unit.color_override or unit.first_color)
         end
       end
     end
@@ -946,7 +946,7 @@ function updateUnits(undoing, big_update)
 						addUndo({"time_destroy",on.id})
             table.insert(time_sfx,"hotte")
           end
-          addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
+          addParticles("destroy", unit.x, unit.y, unit.color_override or unit.first_color)
         end
       end
     end
@@ -979,7 +979,7 @@ function updateUnits(undoing, big_update)
 						addUndo({"time_destroy",on.id})
             table.insert(time_sfx,"break")
           end
-          addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
+          addParticles("destroy", unit.x, unit.y, unit.color_override or unit.first_color)
         end
       end
     end
@@ -1017,7 +1017,7 @@ function updateUnits(undoing, big_update)
               table.insert(time_sfx,"unlock")
             end
             if ignore_unit then
-              addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
+              addParticles("destroy", unit.x, unit.y, unit.color_override or unit.first_color)
             end
             if ignore_on then
               addParticles("destroy", on.x, on.y, on.color)
@@ -1045,7 +1045,7 @@ function updateUnits(undoing, big_update)
 						addUndo({"time_destroy",on.id})
             table.insert(time_sfx,"snacc")
           end
-          addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
+          addParticles("destroy", unit.x, unit.y, unit.color_override or unit.first_color)
         end
       end
     end
@@ -1061,7 +1061,7 @@ function updateUnits(undoing, big_update)
           else
             addUndo({"timeless_reset_add"})
             timeless_reset = true
-            addParticles("bonus", unit.x, unit.y, unit.color_override or unit.color)
+            addParticles("bonus", unit.x, unit.y, unit.color_override or unit.first_color)
           end
         end
       end
@@ -1081,7 +1081,7 @@ function updateUnits(undoing, big_update)
             else
               addUndo({"timeless_crash_add"})
               timeless_crash = true
-              addParticles("bonus", unit.x, unit.y, unit.color_override or unit.color)
+              addParticles("bonus", unit.x, unit.y, unit.color_override or unit.first_color)
             end
           end
         end
@@ -1104,7 +1104,7 @@ function updateUnits(undoing, big_update)
 						addUndo({"time_destroy",unit.id})
             table.insert(time_sfx,"bonus")
           end
-          addParticles("bonus", unit.x, unit.y, unit.color_override or unit.color)
+          addParticles("bonus", unit.x, unit.y, unit.color_override or unit.first_color)
         end
       end
     end
@@ -1131,7 +1131,7 @@ function updateUnits(undoing, big_update)
           else
             addUndo({"timeless_unwin_add", on.id})
             table.insert(timeless_unwin,on.id)
-            addParticles("bonus", unit.x, unit.y, unit.color_override or unit.color)
+            addParticles("bonus", unit.x, unit.y, unit.color_override or unit.first_color)
           end
         end
       end
@@ -1147,7 +1147,7 @@ function updateUnits(undoing, big_update)
           else
             addUndo({"timeless_win_add", on.id})
             table.insert(timeless_win,on.id)
-            addParticles("bonus", unit.x, unit.y, unit.color_override or unit.color)
+            addParticles("bonus", unit.x, unit.y, unit.color_override or unit.first_color)
           end
         end
       end
@@ -1204,7 +1204,7 @@ function updateUnits(undoing, big_update)
         createe = "txt_"..creator.fullname
       end
       
-      local tile = tiles_by_namePossiblyMeta(createe)
+      local tile = getTile(createe)
       --let x ben't x txt prevent x be txt, and x ben't txt prevent x be y txt
       local overriden = false;
       if object == "text" then
@@ -1220,14 +1220,10 @@ function updateUnits(undoing, big_update)
             if creator.color_override then
               color = colour_for_palette[creator.color_override[1]][creator.color_override[2]]
             else
-              if type(color[1]) == "table" then
-                color = colour_for_palette[creator.color[1][1]][creator.color[1][2]]
-              else
-                color = colour_for_palette[creator.color[1]][creator.color[2]]
-              end
+              color = colour_for_palette[creator.first_color[1]][creator.first_color[2]]
             end
           end
-          local new_unit = createUnit(tile, creator.x, creator.y, creator.dir, nil, nil, nil, color)
+          local new_unit = createUnit(tile.name, creator.x, creator.y, creator.dir, nil, nil, nil, color)
           addUndo({"create", new_unit.id, false})
         end
       elseif createe == "mous" then
@@ -1342,22 +1338,22 @@ function miscUpdates()
   
   for i,unit in ipairs(units) do
     if not deleted and not unit.removed_final then
-      local tile = tiles_list[unit.tile]
+      local tile = getTile(unit.tile)
       unit.layer = unit.layer + (24 * (hasProperty(unit,"curse") and 1 or 0)) + (20 * (graphical_property_cache["flye"][unit] or 0))
-      unit.sprite = deepCopy(tiles_list[unit.tile].sprite)
+      unit.sprite = deepCopy(tile.sprite)
       
       if unit.fullname == "os" then
         local os = love.system.getOS()
         if os == "Windows" then
-          unit.sprite = "os_windous"
+          unit.sprite = {"os_windous"}
         elseif os == "OS X" or os == "iOS" then
-          unit.sprite = "os_mak"
+          unit.sprite = {"os_mak"}
         elseif os == "Linux" then
-          unit.sprite = "os_linx"
+          unit.sprite = {"os_linx"}
         elseif os == "Android" then
-          unit.sprite = "os_androd"
+          unit.sprite = {"os_androd"}
         else
-          unit.sprite = "wat"
+          unit.sprite = {"wat"}
         end
         if unit.sprite ~= "wat" and graphical_property_cache["slep"][unit] ~= nil then
           unit.sprite = unit.sprite .. "_slep"
@@ -1367,19 +1363,19 @@ function miscUpdates()
       if unit.fullname == "ui_gui" then
         local os = love.system.getOS()
         if os == "Windows" then
-          unit.sprite = "ui_win"
+          unit.sprite = {"ui_win"}
         elseif os == "OS X" or os == "iOS" then
-          unit.sprite = "ui_cmd"
+          unit.sprite = {"ui_cmd"}
         else
-          unit.sprite = "ui_win"
+          unit.sprite = {"ui_win"}
         end
       end
       
       if unit.fullname == "ui_cap" then
         if capslock then
-          unit.sprite = "ui_cap_on"
+          unit.sprite = {"ui_cap_on"}
         else
-          unit.sprite = "ui_cap_off"
+          unit.sprite = {"ui_cap_off"}
         end
       end
       
@@ -1397,21 +1393,21 @@ function miscUpdates()
         if unit.color_override then
           local color = colour_for_palette[unit.color_override[1]][unit.color_override[2]]
           if color == "bleu" or color == "cyeann" then
-            unit.sprite = "casete_bleu"
+            unit.sprite = {"casete_bleu"}
           elseif color == "reed" or color == "pinc" then
-            unit.sprite = "casete_pinc"
+            unit.sprite = {"casete_pinc"}
           elseif color == "orang" or color == "yello" then
-            unit.sprite = "casete_yello"
+            unit.sprite = {"casete_yello"}
           elseif color == "grun" then
-            unit.sprite = "casete_grun"
+            unit.sprite = {"casete_grun"}
           else
-            unit.sprite = "casete_wut"
+            unit.sprite = {"casete_wut"}
           end
         else
-          unit.sprite = "casete_wut"
+          unit.sprite = {"casete_wut"}
         end
         if not hasProperty(unit,"nogo") then
-          unit.sprite = unit.sprite.."_sunk"
+          unit.sprite = {unit.sprite[1].."_sunk"}
         end
       end
       
@@ -1419,207 +1415,207 @@ function miscUpdates()
         if unit.color_override then
           local color = colour_for_palette[unit.color_override[1]][unit.color_override[2]]
           if color == "whit" then
-            unit.sprite = "bolble_snow"
+            unit.sprite = {"bolble_snow"}
           elseif color == "bleu" then
-            unit.sprite = "bolble_waves"
+            unit.sprite = {"bolble_waves"}
           elseif color == "cyeann" then
-            unit.sprite = "bolble_12"
+            unit.sprite = {"bolble_12"}
           elseif color == "purp" then
-            unit.sprite = "bolble_clock"
+            unit.sprite = {"bolble_clock"}
           elseif color == "brwn" then
-            unit.sprite = "bolble_choco"
+            unit.sprite = {"bolble_choco"}
           elseif color == "blacc" then
-            unit.sprite = "bolble_twirl"
+            unit.sprite = {"bolble_twirl"}
           elseif color == "graey" then
-            unit.sprite = "bolble_checker"
+            unit.sprite = {"bolble_checker"}
           elseif color == "orang" then
-            unit.sprite = "bolble_dots"
+            unit.sprite = {"bolble_dots"}
           elseif color == "pinc" then
-            unit.sprite = "bolble_hearts"
+            unit.sprite = {"bolble_hearts"}
           elseif color == "yello" then
-            unit.sprite = "bolble_stars"
+            unit.sprite = {"bolble_stars"}
           elseif color == "grun" then
-            unit.sprite = "bolble_tree"
+            unit.sprite = {"bolble_tree"}
           else
-            unit.sprite = "bolble"
+            unit.sprite = {"bolble"}
           end
         end
       end
       
       if unit.fullname == "ches" then
         if hasProperty(unit,"nedkee") then
-          unit.sprite = "chest_close"
+          unit.sprite = {"chest_close"}
         else
-          unit.sprite = "chest_open"
+          unit.sprite = {"chest_open"}
         end
       end
       
       if unit.fullname == "mimi" then
         if graphical_property_cache["slep"][unit] ~= nil then
-          unit.sprite = "mimic_sleep"
+          unit.sprite = {"mimic_sleep"}
         elseif hasProperty(unit,"nedkee") then
-          unit.sprite = "mimic_close"
+          unit.sprite = {"mimic_close"}
         else
-          unit.sprite = "mimic_open"
+          unit.sprite = {"mimic_open"}
         end
       end
       
       if unit.fullname == "pumkin" then
         if hasProperty(unit,"sans") or hasProperty(unit,":(") or hasProperty(unit,"brite") or hasProperty(unit,"torc") or hasRule(unit,"spoop","?") then
           if graphical_property_cache["slep"][unit] ~= nil then
-            unit.sprite = "pumkin_slep"
+            unit.sprite = {"pumkin_slep"}
           else
-            unit.sprite = "pumkin_jack"
+            unit.sprite = {"pumkin_jack"}
           end
         else
-          unit.sprite = "pumkin"
+          unit.sprite = {"pumkin"}
         end
       end
       
       -- here goes the legendary ditto transformations
       if unit.fullname == "ditto" then
         if hasProperty(unit,"dragbl") then
-          unit.sprite = "ditto_dragbl"
+          unit.sprite = {"ditto_dragbl"}
         elseif hasProperty(unit,"notranform") then
-          unit.sprite = "ditto_notranform"
+          unit.sprite = {"ditto_notranform"}
         elseif hasRule(unit,"got","which") then
-          unit.sprite = "ditto_which"
+          unit.sprite = {"ditto_which"}
         elseif hasRule(unit,"spoop","?") then
-          unit.sprite = "ditto_spoop"
+          unit.sprite = {"ditto_spoop"}
         elseif hasProperty(unit,"delet") then
-          unit.sprite = "ditto_xwx"
+          unit.sprite = {"ditto_xwx"}
         elseif hasProperty(unit,"rong") then
-          unit.sprite = "ditto_rong"
+          unit.sprite = {"ditto_rong"}
         elseif hasProperty(unit,"wurd") then
-          unit.sprite = "ditto_wurd"
+          unit.sprite = {"ditto_wurd"}
         elseif hasProperty(unit,"nodrag") then
-          unit.sprite = "ditto_no drag"
+          unit.sprite = {"ditto_no drag"}
         elseif graphical_property_cache["slep"][unit] ~= nil then
-          unit.sprite = "ditto_slep"
+          unit.sprite = {"ditto_slep"}
         elseif hasProperty(unit,"rithere") then
-          unit.sprite = "ditto_rithere"
+          unit.sprite = {"ditto_rithere"}
         elseif hasProperty(unit,"thr") then
-          unit.sprite = "ditto_thr"
+          unit.sprite = {"ditto_thr"}
         elseif hasProperty(unit,"stelth") then
-          unit.sprite = "ditto_stelth"
+          unit.sprite = {"ditto_stelth"}
         elseif hasProperty(unit,"sans") then
-          unit.sprite = "ditto_sans"
+          unit.sprite = {"ditto_sans"}
         elseif hasProperty(unit,"ouch") then
-          unit.sprite = "ditto_ouch"
+          unit.sprite = {"ditto_ouch"}
         elseif hasProperty(unit,"protecc") then
-          unit.sprite = "ditto_protecc"
+          unit.sprite = {"ditto_protecc"}
         elseif hasProperty(unit,"noundo") then
-          unit.sprite = "ditto_no undo"
+          unit.sprite = {"ditto_no undo"}
         -- Eeveelutions
         elseif hasProperty(unit,"qt") then
           if hasProperty(unit,"icy") then
-            unit.sprite = "ditto_qt_icy"
+            unit.sprite = {"ditto_qt_icy"}
           elseif hasProperty(unit,"hopovr") then
-            unit.sprite = "ditto_qt_hopovr"
+            unit.sprite = {"ditto_qt_hopovr"}
           else
-            unit.sprite = "ditto_qt"
+            unit.sprite = {"ditto_qt"}
           end
         elseif hasProperty(unit,"poortoll") then
-          unit.sprite = "ditto_poor toll"
+          unit.sprite = {"ditto_poor toll"}
         -- Rotom formes
         elseif hasProperty(unit,"zip") then
-          unit.sprite = "ditto_zip"
+          unit.sprite = {"ditto_zip"}
         elseif hasRule(unit,"sing","?") then
-          unit.sprite = "ditto_sing"
+          unit.sprite = {"ditto_sing"}
         elseif hasRule(unit,"paint","?") then
-          unit.sprite = "ditto_paint"
+          unit.sprite = {"ditto_paint"}
         elseif hasRule(unit,"got","sant") then
-          unit.sprite = "ditto_sant"
+          unit.sprite = {"ditto_sant"}
         elseif hasProperty(unit,"go") then
-          unit.sprite = "ditto_go"
+          unit.sprite = {"ditto_go"}
         elseif hasProperty(unit,"folowal") then
-          unit.sprite = "ditto_folo wal"
+          unit.sprite = {"ditto_folo wal"}
         elseif hasProperty(unit,"tall") then
-          unit.sprite = "ditto_tall"
+          unit.sprite = {"ditto_tall"}
         elseif hasProperty(unit,"rave") then
-          unit.sprite = "ditto_rave"
+          unit.sprite = {"ditto_rave"}
         elseif hasProperty(unit,"colrful") then
-          unit.sprite = "ditto_colrful"
+          unit.sprite = {"ditto_colrful"}
         elseif hasProperty(unit,"torc") then
-          unit.sprite = "ditto_torc"
+          unit.sprite = {"ditto_torc"}
         elseif hasProperty(unit,"split") then
-          unit.sprite = "ditto_split"
+          unit.sprite = {"ditto_split"}
         elseif hasProperty(unit,"icyyyy") then
-          unit.sprite = "ditto_icyyyy"
+          unit.sprite = {"ditto_icyyyy"}
         elseif hasProperty(unit,"icy") then
-          unit.sprite = "ditto_icy"
+          unit.sprite = {"ditto_icy"}
         elseif hasProperty(unit,"hopovr") then
-          unit.sprite = "ditto_hopovr"
+          unit.sprite = {"ditto_hopovr"}
         elseif hasProperty(unit,"right") or hasProperty(unit,"downright") or hasProperty(unit,"down") or hasProperty(unit,"downleft") or hasProperty(unit,"left") or hasProperty(unit,"upleft") or hasProperty(unit,"up") or hasProperty(unit,"upright") then
-          unit.sprite = "ditto_direction"
+          unit.sprite = {"ditto_direction"}
         elseif hasProperty(unit,"nuek") then
-          unit.sprite = "ditto_nuek"
+          unit.sprite = {"ditto_nuek"}
         elseif hasProperty(unit,"un:)") then
-          unit.sprite = "ditto_;d"
+          unit.sprite = {"ditto_;d"}
         elseif hasProperty(unit,"knightstep") then
-          unit.sprite = "ditto_knightstep"
+          unit.sprite = {"ditto_knightstep"}
         elseif hasProperty(unit,"diagstep") then
-          unit.sprite = "ditto_diagstep"
+          unit.sprite = {"ditto_diagstep"}
         elseif hasProperty(unit,"sidestep") then
-          unit.sprite = "ditto_sidestep"
+          unit.sprite = {"ditto_sidestep"}
         elseif hasProperty(unit,"munwalk") then
-          unit.sprite = "ditto_munwalk"
+          unit.sprite = {"ditto_munwalk"}
         elseif hasProperty(unit,"visitfren") then
-          unit.sprite = "ditto_visit fren"
+          unit.sprite = {"ditto_visit fren"}
         elseif hasProperty(unit,"walk") then
-          unit.sprite = "ditto_walk"
+          unit.sprite = {"ditto_walk"}
         elseif hasProperty(unit,"noswim") then
-          unit.sprite = "ditto_no swim"
+          unit.sprite = {"ditto_no swim"}
         elseif hasProperty(unit,"haetflor") then
-          unit.sprite = "ditto_haet flor"
+          unit.sprite = {"ditto_haet flor"}
         elseif hasProperty(unit,"haetskye") then
-          unit.sprite = "ditto_haet skye"
+          unit.sprite = {"ditto_haet skye"}
         elseif hasRule(unit,"got","gunne") then
-          unit.sprite = "ditto_gunne"
+          unit.sprite = {"ditto_gunne"}
         elseif hasProperty(unit,"glued") then
-          unit.sprite = "ditto_glued"
+          unit.sprite = {"ditto_glued"}
         elseif hasProperty(unit,"flye") then
-          unit.sprite = "ditto_flye"
+          unit.sprite = {"ditto_flye"}
         elseif hasProperty(unit,"enby") then
-          unit.sprite = "ditto_enby"
+          unit.sprite = {"ditto_enby"}
         elseif hasProperty(unit,"tranz") then
-          unit.sprite = "ditto_tranz"
+          unit.sprite = {"ditto_tranz"}
         elseif hasProperty(unit,"comepls") then
-          unit.sprite = "ditto_come pls"
+          unit.sprite = {"ditto_come pls"}
         elseif hasProperty(unit,"goawaypls") then
-          unit.sprite = "ditto_go away pls"
+          unit.sprite = {"ditto_go away pls"}
         elseif hasProperty(unit,"goooo") then
-          unit.sprite = "ditto_goooo"
+          unit.sprite = {"ditto_goooo"}
         elseif hasRule(unit,"snacc","?") then
-          unit.sprite = "ditto_snacc"
+          unit.sprite = {"ditto_snacc"}
         elseif hasProperty(unit,"moar") then
-          unit.sprite = "ditto_moar"
+          unit.sprite = {"ditto_moar"}
         elseif hasProperty(unit,"nedkee") then
-          unit.sprite = "ditto_ned kee"
+          unit.sprite = {"ditto_ned kee"}
         elseif hasProperty(unit,"fordor") then
-          unit.sprite = "ditto_fordor"
+          unit.sprite = {"ditto_fordor"}
         elseif hasProperty(unit,"hotte") then
-          unit.sprite = "ditto_hotte"
+          unit.sprite = {"ditto_hotte"}
         elseif hasProperty(unit,"fridgd") then
-          unit.sprite = "ditto_fridgd"
+          unit.sprite = {"ditto_fridgd"}
         elseif hasProperty(unit,":)") then
-          unit.sprite = "ditto_yay"
+          unit.sprite = {"ditto_yay"}
         elseif hasProperty(unit,":o") then
-          unit.sprite = "ditto_whoa"
+          unit.sprite = {"ditto_whoa"}
         elseif hasProperty(unit,"nogo") then
-          unit.sprite = "ditto_no go"
+          unit.sprite = {"ditto_no go"}
         elseif hasProperty(unit,"y'all") then
-          unit.sprite = "ditto_y'all"
+          unit.sprite = {"ditto_y'all"}
         elseif hasProperty(unit,"utres") then
-          unit.sprite = "ditto_u tres"
+          unit.sprite = {"ditto_u tres"}
         elseif hasProperty(unit,"utoo") then
-          unit.sprite = "ditto_u too"
+          unit.sprite = {"ditto_u too"}
         elseif hasProperty(unit,"u") then
-          unit.sprite = "ditto_u"
+          unit.sprite = {"ditto_u"}
         elseif hasProperty(unit,"thingify") then
-          unit.sprite = "ditto_thingify"
+          unit.sprite = {"ditto_thingify"}
         else
-          unit.sprite = "ditto"
+          unit.sprite = {"ditto"}
         end
       end
       
@@ -1656,16 +1652,13 @@ function miscUpdates()
       end
 
       if unit.fullname == "txt_katany" then
-        unit.sprite = "text/katany"
+        unit.sprite = {"text/katany"}
         if rules_with_unit[unit] then
           for _,rules in ipairs(rules_with_unit[unit]) do
             if rules.rule.object.unit == unit then
-              local tile_id = tiles_by_name[rules.rule.subject.name]
-              if tile_id then
-                local tile = tiles_list[tile_id]
-                if tile.features and tile.features.katany and tile.features.katany.nya then
-                  unit.sprite = "text/katanya"
-                end
+              local tile = getTile(rules.rule.subject.name)
+              if tile and tile.features.katany and tile.features.katany.nya then
+                unit.sprite = {"text/katanya"}
               end
             end
           end
@@ -1682,7 +1675,7 @@ function miscUpdates()
         unit.sprite[3] = "byc_"..suit
         if suit == "spade" or suit == "clubs" then
           unit.color = {{0, 3}, {0, 0}, {0, 0}}
-          unit.colored = {{0, 0}, false, false}
+          unit.painted = {{0, 0}, false, false}
         end
       end
       
@@ -1694,16 +1687,9 @@ function miscUpdates()
       end
       
       if graphical_property_cache["slep"][unit] ~= nil then
-        if type(unit.sprite) == "table" then
-          for j,name in ipairs(unit.sprite) do
-            if sprites[name.."_slep"] then
-              unit.sprite[j] = name.."_slep"
-            end
-          end
-        elseif sprites[unit.sprite.."_slep"] then
-          unit.sprite = unit.sprite.."_slep"
-          if unit.fullname == "detox" then
-            unit.color = {1,2}
+        for j,name in ipairs(unit.sprite) do
+          if sprites[name.."_slep"] then
+            unit.sprite[j] = name.."_slep"
           end
         end
       else
@@ -1713,12 +1699,6 @@ function miscUpdates()
       end
 
       unit.overlay = {}
-	  for _,prop_name in ipairs(unicode_flag_list) do
-		if (graphical_property_cache[prop_name][unit] ~= nil) then
-          local overlay = overlayFromFlagProp(prop_name)
-		  table.insert(unit.overlay, overlay)
-        end
-	  end
 	  if (graphical_property_cache["enby"][unit] ~= nil) then
         table.insert(unit.overlay, "enby")
       end
@@ -1733,9 +1713,7 @@ function miscUpdates()
       local objects_to_check = {
       "stelth", "colrful", "delet", "rave", "gay", "tranz", "enby"
       }
-	  for _,prop_name in ipairs(unicode_flag_list) do
-        table.insert(objects_to_check, prop_name)
-      end
+
       for i = 1, #objects_to_check do
         local prop = objects_to_check[i]
         unit[prop] = graphical_property_cache[prop][unit] ~= nil
@@ -1799,7 +1777,7 @@ function updateUnitColours()
         to_update[unit] = {}
       end
       --If a unit ben't its native colour, make it blacc.
-      if palette[1] == tiles_list[unit.tile].color[1] and palette[2] == tiles_list[unit.tile].color[2]  and unitNotRecoloured(unit) then
+      if palette[1] == getTile(unit.tile).color[1] and palette[2] == getTile(unit.tile).color[2]  and unitNotRecoloured(unit) then
         addUndo({"colour_change", unit.id, "blacc", false})
         unit["blacc"] = true
         to_update[unit] = {}
@@ -1825,16 +1803,7 @@ function updateUnitColours()
     for _,on in ipairs(stuff) do
       if unit ~= on and hasRule(unit, "paint", on) and sameFloat(unit, on) and ignoreCheck(on, unit, "paint") then
         if timecheck(unit,"paint",on) and timecheck(on) then
-          local old_colour = unit.color_override or unit.color
-          if type(old_colour[1]) == "table" then
-            local found_color
-            for i,v in ipairs(unit.colored) do
-              if v then
-                found_color = old_colour[i]
-              end
-            end
-            old_colour = found_color or old_colour[1]
-          end
+          local old_colour = unit.color_override or unit.first_color
           local colour = colour_for_palette[old_colour[1]][old_colour[2]]
           if (colour ~= nil and on[colour] ~= true) then
             if to_update[on] == nil then
@@ -2137,7 +2106,7 @@ function levelBlock()
     for _,unit in ipairs(melters) do
       if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) and ignoreCheck(unit,outerlvl,"hotte") then
         table.insert(to_destroy, unit)
-        addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
+        addParticles("destroy", unit.x, unit.y, unit.color_override or unit.first_color)
       end
     end
     if #to_destroy > 0 then
@@ -2166,7 +2135,7 @@ function levelBlock()
     for _,unit in ipairs(yous) do
       if sameFloat(unit,outerlvl) and inBounds(unit.x,unit.y) and ignoreCheck(unit,outerlvl,":(") then
         table.insert(to_destroy, unit)
-        addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
+        addParticles("destroy", unit.x, unit.y, unit.color_override or unit.first_color)
       end
     end
   end
@@ -2187,7 +2156,7 @@ function levelBlock()
         if lvlsafe then
           if ignoreCheck(unit,outerlvl,"nedkee") then
             table.insert(to_destroy, unit)
-            addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
+            addParticles("destroy", unit.x, unit.y, unit.color_override or unit.first_color)
           end
         else return 0,0 end
       end
@@ -2210,7 +2179,7 @@ function levelBlock()
         if lvlsafe then
           if ignoreCheck(unit,outerlvl,"fordor") then
             table.insert(to_destroy, unit)
-            addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
+            addParticles("destroy", unit.x, unit.y, unit.color_override or unit.first_color)
           end
         else return 0,0 end
       end
@@ -2227,7 +2196,7 @@ function levelBlock()
   for _,ruleparent in ipairs(issnacc) do
     local unit = ruleparent[2]
     if unit ~= outerlvl and sameFloat(outerlvl,unit) and inBounds(unit.x,unit.y) and ignoreCheck(unit,outerlvl) then
-      addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
+      addParticles("destroy", unit.x, unit.y, unit.color_override or unit.first_color)
       table.insert(to_destroy, unit)
     end
   end
@@ -2329,7 +2298,7 @@ function levelBlock()
   end
   
   if hasProperty(outerlvl, "nxt") then
-		table.insert(win_sprite_override,tiles_list[tiles_by_name["txt_nxt"]]);
+		table.insert(win_sprite_override, getTile("txt_nxt"));
     doWin("nxt")
   end
   
@@ -2399,7 +2368,7 @@ function destroyLevel(reason)
         istext = true
         obj_name = "txt_" .. match.rule.subject.name
       end
-      local tile = tiles_by_name[obj_name]
+      local tile = getTile(obj_name)
       --let x ben't x txt prevent x be txt, and x ben't txt prevent x be y txt
       local overriden = false;
       if match.rule.object.name == "text" then
@@ -2408,8 +2377,8 @@ function destroyLevel(reason)
         overriden = hasRule(outerlvl, "gotn't", "text")
       end
       if tile ~= nil and not overriden then
-        table.insert(transform_results, tiles_list[tile].name)
-        table.insert(win_sprite_override,tiles_list[tile])
+        table.insert(transform_results, tile.name)
+        table.insert(win_sprite_override, tile)
       end
     end
   end
@@ -2435,10 +2404,10 @@ function destroyLevel(reason)
     end
     local berule = matchesRule("loop","be","?")
     for _,rule in ipairs(berule) do
-      local object = rule.rule.object.name
-      if tiles_by_name[object] then
-        table.insert(transform_results,object)
-        table.insert(win_sprite_override,tiles_list[tiles_by_name[object]])
+      local object = getTile(rule.rule.object.name)
+      if object then
+        table.insert(transform_results, object.name)
+        table.insert(win_sprite_override, object)
       end
     end
   end
@@ -2451,11 +2420,11 @@ function destroyLevel(reason)
       end
     end
     for _,unit in ipairs(units_to_destroy) do
-      addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
+      addParticles("destroy", unit.x, unit.y, unit.color_override or unit.first_color)
     end
     handleDels(units_to_destroy,true)
     if reason == "infloop" and #transform_results == 0 then
-      local new_unit = createUnit(tiles_by_name["infloop"], math.floor(mapwidth/2), math.floor(mapheight/2), 1)
+      local new_unit = createUnit("infloop", math.floor(mapwidth/2), math.floor(mapheight/2), 1)
       addUndo({"create", new_unit.id, false})
     end
   end
@@ -2479,8 +2448,7 @@ function dropGotUnit(unit, rule)
     if object:starts("this") then
       obj_name = "this"
     end
-    local obj_id = tiles_by_name[obj_name]
-    local obj_tile = tiles_list[obj_id]
+    local obj_tile = getTile(obj_name)
     --let x ben't x txt prevent x be txt, and x ben't txt prevent x be y txt
     local overriden = false
     if object == "text" then
@@ -2498,14 +2466,10 @@ function dropGotUnit(unit, rule)
           if unit.color_override then
             color = colour_for_palette[unit.color_override[1]][unit.color_override[2]]
           else
-            if type(color[1]) == "table" then
-              color = colour_for_palette[unit.color[1][1]][unit.color[1][2]]
-            else
-              color = colour_for_palette[unit.color[1]][unit.color[2]]
-            end
+            color = colour_for_palette[unit.first_color[1]][unit.first_color[2]]
           end
         end
-        local new_unit = createUnit(obj_id, unit.x, unit.y, unit.dir, false, nil, nil, color)
+        local new_unit = createUnit(obj_name, unit.x, unit.y, unit.dir, false, nil, nil, color)
         addUndo({"create", new_unit.id, false})
       end
     end
@@ -2537,30 +2501,30 @@ function convertLevel()
     for i = 1,#meta do
       nametocreate = "txt_"..nametocreate
     end
-    tile = tiles_by_namePossiblyMeta(nametocreate)
+    tile = getTile(nametocreate)
     if tile ~= nil then
-       table.insert(transform_results, tiles_list[tile].name)
-      table.insert(win_sprite_override,tiles_list[tile])
+      table.insert(transform_results, tile.name)
+      table.insert(win_sprite_override, tile)
     end
   end
 
   local converts = matchesRule(outerlvl,"be","?")
   for _,match in ipairs(converts) do
     if not (hasProperty(outerlvl, "lvl") or hasProperty(outerlvl, "notranform")) and match.rule.object.type and (match.rule.object.type.object or match.rule.object.name:starts("txt_")) then
-      local tile = tiles_by_name[match.rule.object.name]
       if match.rule.object.name == "text" then
-        tile = tiles_by_name["txt_lvl"]
+        tile = getTile("txt_lvl")
+      elseif match.rule.object.name:starts("this") then
+        tile = getTile("this")
+      else
+        tile = getTile(match.rule.object.name)
       end
       if tile == nil and match.rule.object.name == "every1" and not hasRule(outerlvl, "be", "lvl") then
         for _,v in ipairs(referenced_objects) do
           if not hasRule(outerlvl, "ben't", v) then
-            table.insert(transform_results, tiles_list[tiles_by_name[v]].name)
-            table.insert(win_sprite_override,tiles_list[tiles_by_name[v]])
+            table.insert(transform_results, v)
+            table.insert(win_sprite_override, getTile(v))
           end
         end
-      end
-      if match.rule.object.name:starts("this") then
-        tile = tiles_by_name["this"]
       end
       --let x ben't x txt prevent x be txt, and x ben't txt prevent x be y txt
       local overriden = false;
@@ -2570,8 +2534,8 @@ function convertLevel()
         overriden = hasRule(outerlvl, "ben't", "text")
       end
       if tile ~= nil and not overriden then
-        table.insert(transform_results, tiles_list[tile].name)
-        table.insert(win_sprite_override,tiles_list[tile])
+        table.insert(transform_results, tile.name)
+        table.insert(win_sprite_override, tile)
       end
     end
   end
@@ -2594,31 +2558,31 @@ function convertUnits(pass)
     if (unit.fullname == "mous") then
       local cursor = unit
       if inBounds(cursor.x, cursor.y) then
-        local tile = tiles_by_name["txt_mous"]
+        local tile = getTile("txt_mous")
         if tile ~= nil then
           table.insert(del_cursors, cursor)
         end
-        local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
+        local new_unit = createUnit(tile.name, unit.x, unit.y, unit.dir, true)
         if (new_unit ~= nil) then
           addUndo({"create", new_unit.id, true, created_from_id = unit.id})
         end
       end
     elseif not unit.new and unit.type ~= "outerlvl" and timecheck(unit,"be","txtify") then
       table.insert(converted_units, unit)
-      addParticles("bonus", unit.x, unit.y, unit.color_override or unit.color)
+      addParticles("bonus", unit.x, unit.y, unit.color_override or unit.first_color)
       local tile = nil
       local nametocreate = unit.fullname
       for i = 1,amt do
-        local tile = tiles_by_name[nametocreate]
-        if tile ~= nil and tiles_list[tile].tometa then
-          nametocreate = tiles_list[tile].tometa
+        local tile = getTile(nametocreate)
+        if tile ~= nil and tile.txtify then
+          nametocreate = tile.txtify
         else
           nametocreate = "txt_"..nametocreate
         end
       end
-      tile = tiles_by_namePossiblyMeta(nametocreate)
+      tile = getTile(nametocreate)
       if tile ~= nil then
-        local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
+        local new_unit = createUnit(tile.name, unit.x, unit.y, unit.dir, true)
         if (new_unit ~= nil) then
           new_unit.special.customletter = unit.special.customletter
           addUndo({"create", new_unit.id, true, created_from_id = unit.id})
@@ -2634,9 +2598,9 @@ function convertUnits(pass)
       local nametocreate = unit.fullname
       for i = 1,amt do
         local newname = nametocreate
-        local tile = tiles_by_name[nametocreate]
-        if tiles_list[tile].demeta then
-          newname = tiles_list[tile].demeta
+        local tile = getTile(nametocreate)
+        if tile.thingify then
+          newname = tile.thingify
         else
           if nametocreate:starts("txt_") then
             newname = nametocreate:sub(5, -1)
@@ -2652,21 +2616,21 @@ function convertUnits(pass)
             end
           end
         end
-        if not tiles_by_name[newname] then
+        if not getTile(newname) then
           break
         end
         nametocreate = newname
       end
       if nametocreate ~= unit.fullname then
         table.insert(converted_units, unit)
-        addParticles("bonus", unit.x, unit.y, unit.color_override or unit.color)
+        addParticles("bonus", unit.x, unit.y, unit.color_override or unit.first_color)
         if (nametocreate == "mous") then
           local new_mouse = createMouse(unit.x, unit.y)
           addUndo({"create_cursor", new_mouse.id, created_from_id = unit.id})
         else
-          local tile = tiles_by_name[nametocreate]
+          local tile = getTile(nametocreate)
           if tile ~= nil then
-            local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
+            local new_unit = createUnit(tile.name, unit.x, unit.y, unit.dir, true)
            if (new_unit ~= nil) then
               new_unit.special.customletter = unit.special.customletter
               addUndo({"create", new_unit.id, true, created_from_id = unit.id})
@@ -2687,13 +2651,13 @@ function convertUnits(pass)
     if (rule.subject.name == "mous" and rule.object.name == "mous") then
       for _,cursor in ipairs(cursors) do
         if inBounds(cursor.x, cursor.y) and testConds(cursor, rule.subject.conds) then
-          addParticles("bonus", unit.x, unit.y, unit.color_override or unit.color)
+          addParticles("bonus", unit.x, unit.y, unit.color_override or unit.first_color)
           table.insert(del_cursors, cursor)
         end
       end
     elseif not unit.new and nameIs(unit, rule.object.name) and timecheck(unit) then
       if not unit.removed and unit.type ~= "outerlvl" then
-        addParticles("bonus", unit.x, unit.y, unit.color_override or unit.color)
+        addParticles("bonus", unit.x, unit.y, unit.color_override or unit.first_color)
         table.insert(converted_units, unit)
       end
     end
@@ -2709,14 +2673,16 @@ function convertUnits(pass)
         for _,cursor in ipairs(cursors) do
           if inBounds(cursor.x, cursor.y) and testConds(cursor, rule.subject.conds) then
             for _,v in ipairs(referenced_objects) do
-              local tile = tiles_by_name[v]
+              local tile
               if v == "text" then
-                tile = tiles_by_name["txt_" .. rule.subject.name]
+                tile = getTile("txt_" .. rule.subject.name)
+              else
+                tile = getTile(v)
               end
               if tile ~= nil then
                 table.insert(del_cursors, cursor)
               end
-              local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
+              local new_unit = createUnit(tile.name, unit.x, unit.y, unit.dir, true)
               if (new_unit ~= nil) then
                 addUndo({"create", new_unit.id, true, created_from_id = unit.id})
               end
@@ -2725,15 +2691,17 @@ function convertUnits(pass)
         end
       elseif not unit.new and unit.class == "unit" and unit.type ~= "outerlvl" and not hasRule(unit, "be", unit.name) and timecheck(unit) then
         for _,v in ipairs(referenced_objects) do
-          local tile = tiles_by_name[v]
+          local tile
           if v == "text" then
-            tile = tiles_by_name["txt_" .. rule.subject.name]
+            tile = getTile("txt_" .. rule.subject.name)
+          else
+            tile = getTile(v)
           end
           if tile ~= nil then
             if not unit.removed then
               table.insert(converted_units, unit)
             end
-            local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
+            local new_unit = createUnit(tile.name, unit.x, unit.y, unit.dir, true)
             if (new_unit ~= nil) then
               addUndo({"create", new_unit.id, true, created_from_id = unit.id})
             end
@@ -2762,14 +2730,16 @@ function convertUnits(pass)
             local tbl = copyTable(referenced_objects)
             mergeTable(tbl, referenced_text)
             for _,v in ipairs(tbl) do
-              local tile = tiles_by_name[v]
+              local tile
               if v == "text" then
-                tile = tiles_by_name["txt_" .. rule.subject.name]
+                tile = getTile("txt_" .. rule.subject.name)
+              else
+                tile = getTile(v)
               end
               if tile ~= nil then
                 table.insert(del_cursors, cursor)
               end
-              local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
+              local new_unit = createUnit(tile.name, unit.x, unit.y, unit.dir, true)
               if (new_unit ~= nil) then
                 addUndo({"create", new_unit.id, true, created_from_id = unit.id})
               end
@@ -2780,15 +2750,17 @@ function convertUnits(pass)
         local tbl = copyTable(referenced_objects)
         mergeTable(tbl, referenced_text)
         for _,v in ipairs(tbl) do
-          local tile = tiles_by_name[v]
+          local tile
           if v == "text" then
-            tile = tiles_by_name["txt_" .. rule.subject.name]
+            tile = getTile("txt_" .. rule.subject.name)
+          else
+            tile = getTile(v)
           end
           if tile ~= nil then
             if not unit.removed then
               table.insert(converted_units, unit)
             end
-            local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
+            local new_unit = createUnit(tile.name, unit.x, unit.y, unit.dir, true)
             if (new_unit ~= nil) then
               addUndo({"create", new_unit.id, true, created_from_id = unit.id})
             end
@@ -2818,14 +2790,16 @@ function convertUnits(pass)
             mergeTable(tbl, referenced_text)
             mergeTable(tbl, special_objects)
             for _,v in ipairs(tbl) do
-              local tile = tiles_by_name[v]
+              local tile
               if v == "text" then
-                tile = tiles_by_name["txt_" .. rule.subject.name]
+                tile = getTile("txt_" .. rule.subject.name)
+              else
+                tile = getTile(v)
               end
               if tile ~= nil then
                 table.insert(del_cursors, cursor)
               end
-              local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
+              local new_unit = createUnit(tile.name, unit.x, unit.y, unit.dir, true)
               if (new_unit ~= nil) then
                 addUndo({"create", new_unit.id, true, created_from_id = unit.id})
               end
@@ -2837,15 +2811,17 @@ function convertUnits(pass)
         mergeTable(tbl, referenced_text)
         mergeTable(tbl, special_objects)
         for _,v in ipairs(tbl) do
-          local tile = tiles_by_name[v]
+          local tile
           if v == "text" then
-            tile = tiles_by_name["txt_" .. rule.subject.name]
+            tile = getTile("txt_" .. rule.subject.name)
+          else
+            tile = getTile(v)
           end
           if tile ~= nil then
             if not unit.removed then
               table.insert(converted_units, unit)
             end
-            local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
+            local new_unit = createUnit(tile.name, unit.x, unit.y, unit.dir, true)
             if (new_unit ~= nil) then
               addUndo({"create", new_unit.id, true, created_from_id = unit.id})
             end
@@ -2872,11 +2848,13 @@ function convertUnits(pass)
       if (rule.subject.name == "mous" and rule.object.name ~= "mous") then
         for _,cursor in ipairs(cursors) do
           if inBounds(cursor.x, cursor.y) and testConds(cursor, rule.subject.conds) then
-            local tile = tiles_by_name[rule.object.name]
+            local tile
             if rule.object.name == "text" then
-              tile = tiles_by_name["txt_" .. rule.subject.name]
+              tile = getTile("txt_" .. rule.subject.name)
             elseif rule.object.name:starts("this") and not rule.object.name:ends("n't") then
-              tile = tiles_by_name["this"]
+              tile = getTile("this")
+            else
+              tile = getTile(rule.object.name)
             end
             local new_special = {}
             if rule.object.name:find("letter_custom") then
@@ -2889,14 +2867,10 @@ function convertUnits(pass)
                 if unit.color_override then
                   color = colour_for_palette[unit.color_override[1]][unit.color_override[2]]
                 else
-                  if type(color[1]) == "table" then
-                    color = colour_for_palette[unit.color[1][1]][unit.color[1][2]]
-                  else
-                    color = colour_for_palette[unit.color[1]][unit.color[2]]
-                  end
+                  color = colour_for_palette[unit.first_color[1]][unit.first_color[2]]
                 end
               end
-              local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true, nil, nil, color)
+              local new_unit = createUnit(tile.name, unit.x, unit.y, unit.dir, true, nil, nil, color)
               for k,v in pairs(new_special) do
                 new_unit.special[k] = v
               end
@@ -2907,14 +2881,16 @@ function convertUnits(pass)
           end
         end
       elseif not unit.new and unit.class == "unit" and not nameIs(unit, rule.object.name) and unit.type ~= "outerlvl" and timecheck(unit) then
-        local tile = tiles_by_name[rule.object.name]
+        local tile
         if rule.object.name == "text" then
-          tile = tiles_by_name["txt_" .. rule.subject.name]
+          tile = getTile("txt_" .. rule.subject.name)
         elseif rule.object.name:starts("this") and not rule.object.name:ends("n't") then
-          tile = tiles_by_name["this"]
+          tile = getTile("this")
+        else
+          tile = getTile(rule.object.name)
         end
         --prevent transformation into certain objects
-        if tile ~= nil and tiles_list[tile].convertible ~= nil and not tiles_list[tile].convertible then
+        if tile ~= nil and not tile.convertible then
           tile = nil
         end
         --let x ben't x txt prevent x be txt, and x ben't txt prevent x be y txt
@@ -2938,14 +2914,10 @@ function convertUnits(pass)
             if unit.color_override then
               color = colour_for_palette[unit.color_override[1]][unit.color_override[2]]
             else
-              if type(color[1]) == "table" then
-                color = colour_for_palette[unit.color[1][1]][unit.color[1][2]]
-              else
-                color = colour_for_palette[unit.color[1]][unit.color[2]]
-              end
+              color = colour_for_palette[unit.first_color[1]][unit.first_color[2]]
             end
           end
-          local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true, nil, nil, color)
+          local new_unit = createUnit(tile.name, unit.x, unit.y, unit.dir, true, nil, nil, color)
           if (new_unit ~= nil) then
             if rule.object.name == "lvl" then
               if unit.special.level then
@@ -2953,7 +2925,7 @@ function convertUnits(pass)
                 unit.special.visibility = "open"
               end
               if not new_unit.color_override then
-                new_unit.color_override = unit.color_override or unit.color
+                new_unit.color_override = unit.color_override or unit.first_color
               end
             end
             new_unit.special = copyTable(unit.special)
@@ -2978,8 +2950,7 @@ function convertUnits(pass)
     for x=0,mapwidth-1 do
       for y=0,mapheight-1 do
         if #unitsByTile(x,y) == 0 then
-          local tile = tiles_by_name["l..uv"]
-          local new_unit = createUnit(tile, x, y, 1, true)
+          local new_unit = createUnit("l..uv", x, y, 1, true)
           addUndo{"create", new_unit.id, true}
         end
       end
@@ -2992,8 +2963,7 @@ function convertUnits(pass)
       if not slice.removed then
         table.insert(converted_units, slice)
       end
-      local tile = tiles_by_name["lie"]
-      local new_unit = createUnit(tile, slice.x, slice.y, slice.dir, true)
+      local new_unit = createUnit("lie", slice.x, slice.y, slice.dir, true)
       addUndo({"create", new_unit.id, true, created_from_id = slice.id})
     end
   end
@@ -3015,8 +2985,7 @@ function convertUnits(pass)
       local tfs = getUnitsOnTile(tx,ty)
       for _,other in ipairs(tfs) do
         if not hasRule(unit,"be",unit.name) and not hasRule(unit,"ben't",other.fullname) then
-          local tile = tiles_by_name[other.fullname]
-          local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
+          local new_unit = createUnit(other.tile, unit.x, unit.y, unit.dir, true)
           if new_unit ~= nil then
             new_unit.special.customletter = other.special.customletter
             tfd = true
@@ -3065,8 +3034,7 @@ function convertUnits(pass)
 
       local tfd = false
       for tf,_ in pairs(transform_deez) do
-        local tile = tiles_by_name[tf.fullname]
-        local new_unit = createUnit(tile, unit.x, unit.y, unit.dir, true)
+        local new_unit = createUnit(tf.tile, unit.x, unit.y, unit.dir, true)
         if new_unit ~= nil then
           new_unit.special.customletter = tf.special.customletter
           tfd = true
@@ -3086,8 +3054,7 @@ function convertUnits(pass)
       if not babby.removed then
         table.insert(converted_units, babby)
       end
-      local tile = tiles_by_name["bab"]
-      local new_unit = createUnit(tile, babby.x, babby.y, babby.dir, true)
+      local new_unit = createUnit("bab", babby.x, babby.y, babby.dir, true)
       addUndo({"create", new_unit.id, true, created_from_id = babby.id})
     end
   end
@@ -3150,23 +3117,22 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
   unit.special = {} -- for lvl objects
   unit.portal = {dir = 1, last = {}, extra = {}} -- for hol objects
 
-  local data = tiles_listPossiblyMeta(tile)
+  local data = getTile(tile)
 
   unit.tile = tile
   unit.sprite = deepCopy(data.sprite)
-  unit.type = data.type
-  unit.texttype = data.texttype or {object = true}
+  unit.type = data.is_text and "text" or "object"
+  unit.texttype = data.typeset
 	unit.meta = data.meta
   unit.nt = data.nt
-  unit.allowconds = data.allowconds or false
-  unit.color = data.color
-  unit.colored = data.colored
+  unit.color = deepCopy(data.color)
+  unit.painted = deepCopy(data.painted)
   unit.layer = data.layer
-  unit.rotate = data.rotate or false
+  unit.rotate = data.rotate
   unit.got_objects = {}
-  unit.sprite_transforms = data.sprite_transforms or {}
-  unit.features = data.features or {}
-  unit.is_portal = data.portal or false
+  unit.sprite_transforms = data.sprite_transforms
+  unit.features = data.features
+  unit.is_portal = data.portal
   unit.rotatdir = unit.rotate and unit.dir or 1
   
   if (not unit_tests) then
@@ -3204,6 +3170,16 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
       unit[prefix] = true
       updateUnitColourOverride(unit)
     end
+  end
+
+  for i,v in ipairs(unit.color) do
+    if unit.painted[i] then
+      unit.first_color = v
+      break
+    end
+  end
+  if not unit.first_color then
+    unit.first_color = unit.color[1]
   end
   
   --abort if we're trying to create outerlvl outside of the start
@@ -3326,9 +3302,9 @@ function deleteUnit(unit,convert,undoing,gone)
     elseif gone then
       if unit.fullname == "ditto" then
         if hasProperty(unit,"notranform") then
-            unit.sprite = "ditto_notranform"
+            unit.sprite = {"ditto_notranform"}
         else
-            unit.sprite = "ditto_gone"
+            unit.sprite = {"ditto_gone"}
         end
       end
       table.insert(still_converting, unit)
@@ -3632,53 +3608,6 @@ function newMouseID()
   return max_mouse_id
 end
 
-meta_offset = 100000
-nt_offset = meta_offset/2 --50000
-custom_offset = nt_offset/2 --25000
---Explanation: All non-custom tiles should be in range 1-24999. All custom tiles (unique to a specific world) should be in range 25000-49999, so that when a non-custom tile is added they don't become invalid. Then, all tiles 50000-99999 are n't versions of the tiles 50000 less. Then, all tiles beyond that are meta versions of the tiles 100000 less.
-function tiles_listPossiblyMeta(tile_id)
-  local tile = tiles_list[tile_id]
-  if (tile ~= nil) then
-    return tile
-  end
-  --check if this is an n't tile
-  if (tile_id % meta_offset > nt_offset) then
-    local premeta_tile = tiles_listPossiblyMeta(tile_id-nt_offset)
-    --now we can make our new n't tile!
-    tile = makeNtTile(premeta_tile)
-    tiles_by_name[tile.name] = tile_id
-    tiles_list[tile_id] = tile
-  end
-  
-  --recursively make all less meta tiles
-  if (tile_id > meta_offset) then
-    local premeta_tile = tiles_listPossiblyMeta(tile_id-meta_offset)
-    --now we can make our new meta tile!
-    tile = makeMetaTile(premeta_tile)
-    tiles_by_name[tile.name] = tile_id
-    tiles_list[tile_id] = tile
-  end
-  return tile
-end
-
-function tiles_by_namePossiblyMeta(name)
-  local tile_id = tiles_by_name[name]
-  if (tile_id ~= nil) then
-    return tile_id
-  end
-  --recursively make all less meta tiles
-  if name:starts("txt_") then
-    local premeta_tile_id = tiles_by_namePossiblyMeta(name:sub(5, -1))
-    local premeta_tile = tiles_list[premeta_tile_id]
-    tile_id = premeta_tile_id+meta_offset
-    --now we can make our new meta tile!
-    local tile = makeMetaTile(premeta_tile)
-    tiles_by_name[name] = tile_id
-    tiles_list[tile_id] = tile
-  end
-  return tile_id
-end
-
 function makeMetaTile(premeta_tile)
   return {
     name = "txt_" .. premeta_tile.name,
@@ -3766,5 +3695,5 @@ function doXWX()
 end
 
 function getColor(unit)
-  return unit.color_override or unit.color
+  return unit.color_override or unit.first_color
 end

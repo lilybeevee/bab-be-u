@@ -102,8 +102,8 @@ function clear()
   for i,page in ipairs(selector_grid_contents) do
     tile_grid[i] = {}
     for j,tile_name in ipairs(page) do
-      if j and tiles_by_name[tile_name] then
-        tile_grid[i][j-1] = tiles_by_name[tile_name]
+      if j then
+        tile_grid[i][j-1] = tile_name
       else
         tile_grid[i][j-1] = nil
       end
@@ -150,9 +150,6 @@ function initializeGraphicalPropertyCache()
   {
     "flye", "slep", "tranz", "gay", "stelth", "colrful", "delet", "rave", "enby" -- miscelleaneous graphical effects
   }
-  for _,prop_name in ipairs(unicode_flag_list) do
-    table.insert(properties_to_init, prop_name)
-  end
   for i = 1, #properties_to_init do
     local prop = properties_to_init[i]
     if (graphical_property_cache[prop] == nil) then graphical_property_cache[prop] = {} end
@@ -264,19 +261,19 @@ function loadMap()
         if not dofloodfill then
           local unit = createUnit(tile, x, y, dir, false, id, nil, color)
           unit.special = specials
-        elseif tile == tiles_by_name["lvl"] then
+        elseif tile == "lvl" then
           if readSaveFile{"levels", specials.level, "seen"} then
             specials.visibility = "open"
             local tfs = readSaveFile{"levels", specials.level, "transform"}
-            for i,t in ipairs(tfs or {tiles_listPossiblyMeta(tile).name}) do
+            for i,t in ipairs(tfs or {tile}) do
               if i == 1 then
-                local unit = createUnit(tiles_by_namePossiblyMeta(t), x, y, dir, false, id, nil, color)
+                local unit = createUnit(t, x, y, dir, false, id, nil, color)
                 unit.special = deepCopy(specials)
                 if readSaveFile{"levels", specials.level, "won"} or readSaveFile{"levels", specials.level, "clear"} then
                   table.insert(floodfill, {unit, 1})
                 end
               else
-                table.insert(extra_units, {tiles_by_namePossiblyMeta(t), x, y, dir, color, deepCopy(specials)})
+                table.insert(extra_units, {t, x, y, dir, color, deepCopy(specials)})
               end
             end
             created[id] = true
@@ -288,7 +285,7 @@ function loadMap()
             table.insert(locked_lvls, {id, tile, x, y, dir, specials, color})
           end
           table.insert(objects, {id, tile, x, y, dir, specials, color})
-        elseif tile == tiles_by_name["lin"] then
+        elseif tile == "lin" then
           if specials.visibility ~= "hidden" then
             local unit = createUnit(tile, x, y, dir, false, id, nil, color)
             unit.special = specials
@@ -301,12 +298,12 @@ function loadMap()
               specials.visibility = "open"
             end
             local tfs = readSaveFile{"levels", specials.level, "transform"}
-            for i,t in ipairs(tfs or {tiles_listPossiblyMeta(tile).name}) do
+            for i,t in ipairs(tfs or {tile}) do
               if i == 1 then
-                local unit = createUnit(tiles_by_namePossiblyMeta(t), x, y, dir, false, id, nil, color)
+                local unit = createUnit(t, x, y, dir, false, id, nil, color)
                 unit.special = specials
               else
-                table.insert(extra_units, {tiles_by_namePossiblyMeta(t), x, y, dir, color, deepCopy(specials)})
+                table.insert(extra_units, {t, x, y, dir, color, deepCopy(specials)})
               end
             end
           else
@@ -337,7 +334,7 @@ function loadMap()
               and (a == 0 or (not orthos[dx][0] and not orthos[0][dy])) then
                 orthos[dx][dy] = true
                 if not created[v[1]] then
-                  if v[2] == tiles_by_name["lvl"] then
+                  if v[2] == "lvl" then
                     if ptype ~= 2 then
                       local unit = createUnit(v[2], v[3], v[4], v[5], false, v[1], nil, v[7])
                       created[v[1]] = true
@@ -352,7 +349,7 @@ function loadMap()
                       table.insert(locked_lvls, v)
                       table.insert(floodfill, {{x = v[3], y = v[4]}, 2})
                     end
-                  elseif (ptype == 1 or ptype == 3) and v[2] == tiles_by_name["lin"] and (not v[6].pathlock or v[6].pathlock == "none") then
+                  elseif (ptype == 1 or ptype == 3) and v[2] == "lin" and (not v[6].pathlock or v[6].pathlock == "none") then
                     local unit = createUnit(v[2], v[3], v[4], v[5], false, v[1], nil, v[7])
                     created[v[1]] = true
                     unit.special = v[6]
@@ -383,7 +380,7 @@ function loadMap()
         end
       end
       if not in_bounds then
-        createUnit(tiles_by_name["bordr"], x, y, 1)
+        createUnit("bordr", x, y, 1)
       end
     end
   end
@@ -427,7 +424,7 @@ function loadStayTher()
 end
 
 function initializeOuterLvl()
-  outerlvl = createUnit(tiles_by_name["lvl"], -999, -999, 1, nil, nil, true)
+  outerlvl = createUnit("lvl", -999, -999, 1, nil, nil, true)
 end
 
 function initializeEmpties()
@@ -437,7 +434,7 @@ function initializeEmpties()
   for x=0,mapwidth-1 do
     for y=0,mapheight-1 do
       local tileid = x + y * mapwidth
-      empties_by_tile[tileid] = createUnit(tiles_by_name["no1"], x, y, (((tileid - 1) % 8) + 1), nil, nil, true)
+      empties_by_tile[tileid] = createUnit("no1", x, y, (((tileid - 1) % 8) + 1), nil, nil, true)
     end
   end
 end
@@ -1595,7 +1592,6 @@ function testConds(unit, conds, compare_with, first_unit) --cond should be a {co
       --print(x, y)
       --print(last_click_x, last_click_y)
     elseif main_palette_for_colour[condtype] then
-      local colour = unit.color_override or unit.color
       if unit.fullname == "no1" then
         result = false
       elseif unit.rave or unit.colrful or unit.gay then
@@ -2208,7 +2204,6 @@ function addParticles(ptype,x,y,color,count)
   
   if not settings["particles_on"] then return end
   
-  if type(color[1]) == "table" then color = color[1] end
   if ptype == "destroy" then
     local ps = love.graphics.newParticleSystem(sprites["circle"])
     local px = (x + 0.5) * TILE_SIZE
@@ -2391,14 +2386,10 @@ function addParticles(ptype,x,y,color,count)
     ps:setSpeed(math.random(30, 40))
     ps:setLinearDamping(5)
     ps:setParticleLifetime(math.random(0.50, 1.10))
-    if type(color[1]) == "table" then
-      ps:setColors(getPaletteColor(color[1][1], color[1][2]))
+    if #color == 2 then
+      ps:setColors(getPaletteColor(color[1], color[2]))
     else
-      if #color == 2 then
-        ps:setColors(getPaletteColor(color[1], color[2]))
-      else
-        ps:setColors(color[1]/255, color[2]/255, color[3]/255, (color[4] or 255)/255)
-      end
+      ps:setColors(color[1]/255, color[2]/255, color[3]/255, (color[4] or 255)/255)
     end
     ps:start()
     ps:emit(count or 1)
@@ -2514,6 +2505,14 @@ function table.has_value(tab, val)
   end
 
   return false
+end
+
+function string.isText(str)
+  return str:starts("txt_")
+end
+
+function string.isNt(str)
+  return str:ends("n't") and str ~= "txt_n't"
 end
 
 function mergeTable(t, other)
@@ -3022,26 +3021,6 @@ function addTables(source, to_add)
   return source
 end
 
-function do_utils_thing()
-  text_in_tiles = {} --list of text in an array, for ideal searching
-  text_list = {} --list of text, but without aliases
-  for _,tile in ipairs(tiles_list) do
-    if tile.type == "text" and tile.texttype and not tile.texttype.letter then
-      local textname = string.sub(tile.name:gsub("%s+", ""),5) --removes spaces too
-
-      text_in_tiles[textname] = textname
-      if (tile.alias ~= nil) then
-        for a,ali in ipairs(tile.alias) do
-          text_in_tiles[ali] = textname
-        end
-      end
-
-      text_list[textname] = tile
-      text_list[textname].textname = string.sub(tile.name,5)
-    end
-  end
-end
-
 --[[function dumpOfProperty(table, searchterm)
   -- a dump that's easier to search through.
   local ret = ""
@@ -3212,15 +3191,15 @@ function addBaseRule(subject, verb, object, subjcond)
       subject = {
         name = subject,
         conds = {subjcond},
-        type = tiles_list[tiles_by_name[subjectname] or 2].texttype or {},
+        type = (getTile(subjectname) or getTile("txt_bab")).typeset,
       },
       verb = {
         name = verb,
-        type = tiles_list[tiles_by_name["txt_"..verb] or 2].texttype or {},
+        type = (getTile(verb) or getTile("txt_be")).typeset,
       },
       object = {
         name = object,
-        type = tiles_list[tiles_by_name[objectname] or 2].texttype or {},
+        type = (getTile(objectname) or getTile("txt_bab")).typeset,
       }
     },
     units = {},
@@ -3241,16 +3220,16 @@ function addRuleSimple(subject, verb, object, units, dir)
       subject = getTableWithDefaults(copyTable(subject), {
         name = subject[1],
         conds = subject[2],
-        type = tiles_list[tiles_by_name[subjectname] or 2].texttype or {},
+        type = (getTile(subjectname) or getTile("txt_bab")).typeset,
       }),
       verb = getTableWithDefaults(copyTable(verb), {
         name = verb[1],
-        type = tiles_list[tiles_by_name["txt_"..(verb[1] or verb.name or "")] or 2].texttype or {},
+        type = (getTile("txt_"..(verb[1] or verb.name or "")) or getTile("txt_be")).typeset,
       }),
       object = getTableWithDefaults(copyTable(object), {
         name = object[1],
         conds = object[2],
-        type = tiles_list[tiles_by_name[objectname] or 2].texttype or {},
+        type = (getTile(objectname) or getTile("txt_bab")).typeset,
       })
     },
     units = units,
@@ -3401,9 +3380,9 @@ function anagram_finder.run()
     end
   end
   anagram_finder.words = {}
-  for _,tile in ipairs(tiles_list) do
-    if tile.type == "text" and not tile.texttype.letter then
-      local word = tile.name:sub(5):gsub(" ","")
+  for _,tile in ipairs(newtlist) do
+    if tile.is_text and not tile.typeset.letter then
+      local word = tile.txtname
       local letters = copyTable(letters)
       local multi = copyTable(multi)
       local not_match = false
@@ -3458,7 +3437,7 @@ function anagram_finder.run()
         end
       end
       if not not_match then
-        table.insert(anagram_finder.words, tile.name:sub(5))
+        table.insert(anagram_finder.words, tile.txtname)
       end
     end
   end
@@ -3655,32 +3634,27 @@ function getIcon(path)
   end
 end
 
-function getUnitColors(unit, index, override_)
+function getUnitColors(unit, override_)
   local override = override_ or unit.color_override
-  local colors = type(unit.color[1]) == "table" and unit.color or {unit.color}
-  if index then
-    if override then
-      if not unit.colored or unit.colored[index] == true then
-        return override
-      elseif type(unit.colored[index]) == "table" and eq(override, colors[index]) then
-        return unit.colored[index]
-      end
-      return colors[index]
-    else
-      return colors[index]
-    end
-  elseif override then
-    colors = copyTable(colors)
+  local colors = deepCopy(unit.color)
+  if override then
     for i,_ in ipairs(colors) do
-      if not unit.colored or unit.colored[i] == true then
-        return override
-      elseif type(unit.colored[i]) == "table" and eq(override, colors[i]) then
-        return unit.colored[i]
+      if unit.painted[i] then
+        colors[i] = override
       end
     end
-    return colors
+  end
+  return colors
+end
+
+function getUnitColor(unit, index, override_)
+  local override = override_ or unit.color_override
+  local colors = deepCopy(unit.color)
+
+  if override and unit.painted[index] then
+    return override
   else
-    return colors
+    return colors[index]
   end
 end
 
@@ -3752,4 +3726,119 @@ function execute(command)
   handle:close()
 
   return result
+end
+
+function addTile(tile)
+  tile.types = tile.types or {"object"}
+  tile.painted = tile.painted or {true}
+  tile.rotate = tile.rotate or false
+  tile.wobble = tile.wobble or false
+  tile.sprite_transforms = tile.sprite_transforms or {}
+  tile.features = tile.features or {}
+  tile.tags = tile.tags or {}
+  tile.alias = tile.alias or {}
+
+  tile.nt = tile.nt or false
+  tile.meta = tile.meta or 0
+
+  if tile.is_text == nil then
+    tile.is_text = tile.name:starts("txt_")
+  end
+
+  if tile.convertible == nil then
+    tile.convertible = true
+  end
+
+  tile.layer = tile.layer or (tile.is_text and 20 or 1)
+  tile.txtname = tile.txtname or (tile.is_text and tile.name:sub(5) or tile.name)
+
+  if not tile.display then
+    tile.display = tile.txtname
+
+    if tile.nt then
+      tile.display = tile.display .. " n't"
+    end
+
+    for i = 1, tile.meta do
+      tile.display = tile.display .. " txt"
+    end
+  end
+
+  tile.typeset = {}
+  for _,type in ipairs(tile.types) do
+    tile.typeset[type] = true
+  end
+
+
+  newtlist[tile.name] = tile
+  
+  if tile.is_text and not tile.typeset.letter then
+    text_list[tile.txtname] = tile
+    text_in_tiles[tile.txtname] = tile.txtname
+
+    for a,ali in ipairs(tile.alias) do
+      text_in_tiles[ali] = tile.txtname
+    end
+  end
+
+  if tile.typeset.group then
+		table.insert(group_names, tile.txtname)
+    table.insert(group_names_nt, tile.txtname.."n't")
+    group_names_set[tile.txtname] = true
+    group_names_set_nt[tile.txtname.."n't"] = true
+	end
+
+  return tile
+end
+
+function getTile(name)
+  if newtlist[name] then
+    return newtlist[name]
+  end
+
+  if name:isNt() then
+    print("making new tile: " .. name)
+
+    local tile = getTile(name:sub(1, -4))
+    if not tile then return nil end
+    tile = deepCopy(tile)
+
+    tile.name = tile.name .. "n't"
+    tile.display = tile.display .. " n't"
+    tile.sprite = tile.metasprite or tile.sprite
+    tile.nt = true
+
+    return addTile(tile)
+  elseif name:isText() then
+    print("making new tile: " .. name)
+
+    local tile = getTile(name:sub(5))
+    if not tile then return nil end
+    tile = deepCopy(tile)
+
+    tile.name = "txt_" .. tile.name
+    tile.display = tile.display .. " txt"
+    tile.sprite = tile.metasprite or tile.sprite
+    tile.txtname = "txt_" .. tile.txtname
+    tile.is_text = true
+    tile.meta = tile.meta + 1
+    if tile.layer < 20 then
+      tile.layer = 20
+    end
+
+    return addTile(tile)
+  end
+end
+
+function initializeTiles(tiles)
+  newtlist = {}
+  text_list = {}
+  text_in_tiles = {}
+  group_names = {}
+  group_names_nt = {}
+  group_names_set = {}
+  group_names_set_nt = {}
+  for _,tile in ipairs(tiles) do
+    addTile(tile)
+  end
 end

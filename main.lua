@@ -10,7 +10,6 @@ colr = require "lib/colr-print"
 require "ui"
 require "utils"
 require "values"
-do_utils_thing()
 require "audio"
 require "game/unit"
 require "game/movement"
@@ -281,6 +280,34 @@ bab arguments!
   sprites["letters_:"] = sprites["letters_colon"]
 
   print(colr.green("✓ added sprites\n"))
+
+  local tiles_to_add = {}
+  local function addTiles(d)
+    local dir = "assets/tiles"
+    if d then
+      dir = dir .. "/" .. d
+    end
+    local files = love.filesystem.getDirectoryItems(dir)
+    for _,file in ipairs(files) do
+      if string.sub(file, -5) == ".json" then
+        local tiles = json.decode(love.filesystem.read(dir .. "/" .. file))
+        for _,tile in ipairs(tiles) do
+          table.insert(tiles_to_add, tile)
+        end
+      elseif love.filesystem.getInfo(dir .. "/" .. file).type == "directory" then
+        local newdir = file
+        if d then
+          newdir = d .. "/" .. newdir
+        end
+        addTiles(newdir)
+      end
+    end
+  end
+  addTiles()
+
+  initializeTiles(tiles_to_add)
+
+  print(colr.green("✓ added tiles\n"))
 
   local function addPalettes(d)
     local dir = "assets/palettes"

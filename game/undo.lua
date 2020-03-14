@@ -273,7 +273,7 @@ function scanAndRecreateOldUnit(turn, i, unit_id, created_from_id, ignore_no_und
       if v[7] == created_from_id then
         --no exponential cloning if gras turned into 2 rocs - abort if there's already a unit with that name on that tile
         local tile, x, y = v[2], v[3], v[4]
-        local data = tiles_list[tile]
+        local data = getTile(tile)
         local stuff = getUnitsOnTile(x, y, nil, true)
         for _,on in ipairs(stuff) do
           if on.name == data.name then

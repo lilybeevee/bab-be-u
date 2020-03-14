@@ -568,7 +568,7 @@ function doMovement(movex, movey, key)
 
     for _,unit in pairs(moving_units) do
       if not unit.stelth and not hasProperty(unit, "loop") and timecheck(unit) then
-        addParticles("movement-puff", unit.x, unit.y, unit.color_override or unit.color)
+        addParticles("movement-puff", unit.x, unit.y, unit.color_override or unit.first_color)
       end
     end
     
@@ -821,7 +821,7 @@ function doAction(action)
     playSound("break", 0.5)
     local victims = action[2]
     for _,unit in ipairs(victims) do
-      addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
+      addParticles("destroy", unit.x, unit.y, unit.color_override or unit.first_color)
       --no protecc check because it can't safely be prevented here (we might be moving OoB)
       unit.removed = true
       unit.destroyed = true
@@ -830,7 +830,7 @@ function doAction(action)
     playSound("snacc", 0.5)
     local victims = action[2]
     for _,unit in ipairs(victims) do
-      addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
+      addParticles("destroy", unit.x, unit.y, unit.color_override or unit.first_color)
       if not hasProperty(unit, "protecc") then
         unit.removed = true
         unit.destroyed = true
@@ -2179,7 +2179,7 @@ function FindEntireGluedUnit(unit, dx, dy)
   local visited = {}
   local ignored = {}
   visited[tostring(unit.x)..","..tostring(unit.y)] = unit
-  local mycolor = unit.color_override or unit.color
+  local mycolor = unit.color_override or unit.first_color
   local myorthook = not hasProperty(unit,"diag") or hasProperty(unit,"ortho")
   local mydiagok = not hasProperty(unit,"ortho") or hasProperty(unit,"diag")
   
@@ -2235,7 +2235,7 @@ function FindEntireGluedUnit(unit, dx, dy)
         for _,other in ipairs(others) do
           --print("d:",other.name)
           if hasProperty(other,"glued") and ignoreCheck(cur_unit,other,"glued") then
-            local ocolor = other.color_override or other.color
+            local ocolor = other.color_override or other.first_color
             --print("e:", dump(mycolor),dump(ocolor))
             if (mycolor[1] == ocolor[1] and mycolor[2] == ocolor[2]) then
               --print("f, we did it")

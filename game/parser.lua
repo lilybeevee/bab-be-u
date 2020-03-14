@@ -190,7 +190,7 @@ function findUnit(words, extra_words_, dir, outer, no_verb_cond, is_subject)
       local words_ = copyTable(words)
       if infix.type.cond_infix_verb_plus then
         local verb = infix.name:sub(5)
-        table.insert(words_, 1, {name = verb, type = tiles_list[tiles_by_name["txt_"..verb]].texttype})
+        table.insert(words_, 1, {name = verb, type = getTile("txt_"..verb).typeset})
       end
       local verb
       verb_phrase, words_ = findVerbPhrase(words_, extra_words, dir, enclosed, true)

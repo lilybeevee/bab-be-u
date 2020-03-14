@@ -798,30 +798,30 @@ function scene.draw(dt)
 
     if unit.fullname == "txt_gay" then
       if unit.active then
-        unit.sprite = "text/gay-colored"
+        unit.sprite = {"text/gay-colored"}
       else
-        unit.sprite = "text/gay"
+        unit.sprite = {"text/gay"}
       end
     end
     if unit.fullname == "txt_tranz" then
       if unit.active then
-        unit.sprite = "text/tranz-colored"
+        unit.sprite = {"text/tranz-colored"}
       else
-        unit.sprite = "text/tranz"
+        unit.sprite = {"text/tranz"}
       end
     end
     if unit.fullname == "txt_enby" then
       if unit.active then
-        unit.sprite = "text/enby-colored"
+        unit.sprite = {"text/enby-colored"}
       else
-        unit.sprite = "text/enby"
+        unit.sprite = {"text/enby"}
       end
     end
     if unit.fullname == "txt_now" then
       if doing_past_turns then
-        unit.sprite = "text/latr"
+        unit.sprite = {"text/latr"}
       else
-        unit.sprite = "text/now"
+        unit.sprite = {"text/now"}
       end
     end
 
@@ -837,55 +837,18 @@ function scene.draw(dt)
       newcolor[1] = newcolor[1]*255
       newcolor[2] = newcolor[2]*255
       newcolor[3] = newcolor[3]*255
-      if type(unit.color[1]) == "table" then
-        unit.color_override = {}
-        for i,color in ipairs(unit.color) do
-          if not unit.colored or (unit.colored and unit.colored[i]) then
-            unit.color_override[i] = newcolor
-          else
-            unit.color_override[i] = color
-          end
-        end
-      else
-        unit.color_override = newcolor
-      end
+      unit.color_override = newcolor
     elseif unit.colrful or rainbowmode then
       -- print("unit " .. unit.name .. " is colourful or rainbowmode")
       local newcolor = hslToRgb((love.timer.getTime()/15+#undo_buffer/45+unit.x/18+unit.y/18)%1, .5, .5, 1)
       newcolor[1] = newcolor[1]*255
       newcolor[2] = newcolor[2]*255
       newcolor[3] = newcolor[3]*255
-      if type(unit.color[1]) == "table" then
-        unit.color_override = {}
-        for i,color in ipairs(unit.color) do
-          if not unit.colored or (unit.colored and unit.colored[i]) then
-            unit.color_override[i] = newcolor
-          else
-            unit.color_override[i] = color
-          end
-        end
-      else
-        unit.color_override = newcolor
-      end
+      unit.color_override = newcolor
     end
     
-    local sprite_name = unit.sprite
-    local sprite
-    
-    if type(sprite_name) ~= "table" then
-      if sprite_name == "lvl" and readSaveFile{"levels", unit.special.level, "won"} then
-        sprite_name = "lvl_won"
-      end
-      local frame = (unit.frame + anim_stage) % 3 + 1
-      if type(sprite_name) == "string" and sprites[sprite_name .. "_" .. frame] then
-        sprite_name = sprite_name .. "_" .. frame
-      end
-      if not sprites[sprite_name] then sprite_name = "wat" end
-
-      sprite = sprites[sprite_name]
-    else
-      sprite = sprites[sprite_name[1]]
-    end
+    local wobble_suffix = unit.wobble and ("_" .. (unit.frame + anim_stage) % 3 + 1) or ""
+    local sprite = sprites[unit.sprite[1]]
 
     --no tweening empty for now - it's buggy!
     --TODO: it's still a little buggy if you push/pull empties.
@@ -916,7 +879,7 @@ function scene.draw(dt)
 				end
 			end
 
-			if #unit.overlay > 0 and type(unit.sprite) == "string" and eq(unit.color, tiles_list[unit.tile].color) then
+			if #unit.overlay > 0 and type(unit.sprite) == "string" and eq(unit.color, getTile(unit.tile).color) then
 				love.graphics.setColor(1, 1, 1, unit.draw.opacity)
 			else
 				love.graphics.setColor(color[1], color[2], color[3], unit.draw.opacity)
@@ -924,10 +887,10 @@ function scene.draw(dt)
 			return color
 		end
 		
-		local color = setColor(unit.color_override or unit.color)
+		local color = setColor(unit.color_override or unit.first_color)
     if unit.fullname == "tronk" then
       if math.floor(love.timer.getTime()*10)%2 == 1 then
-        local r,g,b = getPaletteColor((unit.color_override or unit.color)[1],(unit.color_override or unit.color)[2])
+        local r,g,b = getPaletteColor((unit.color_override or unit.first_color)[1],(unit.color_override or unit.first_color)[2])
         setColor{r*350,g*350,b*350}
       end
     end
@@ -1007,42 +970,38 @@ function scene.draw(dt)
     love.graphics.translate(-fulldrawx, -fulldrawy)
     
     local function drawSprite(overlay, onlycolor, stretch)
-      local draw = sprites[overlay or unit.sprite]
+      local draw = sprites[overlay or (unit.sprite[1]..wobble_suffix)]
       local ox, oy = getOffset()
-      if not overlay and type(unit.sprite) == "table" then
+      if overlay and stretch then
+        love.graphics.draw(draw, fulldrawx + ox, fulldrawy + oy, 0, sprite:getWidth() / TILE_SIZE, sprite:getHeight() / TILE_SIZE, draw:getWidth() / 2, draw:getHeight() / 2)
+      else
         for i,image in ipairs(unit.sprite) do
-          setColor(getUnitColors(unit, i))
-          if onlycolor or (#unit.overlay > 0 and (unit.colored and unit.colored[i]) or not unit.colored) then
+          if unit.fullname == "detox" and graphical_property_cache["slep"][unit] ~= nil then
+            setColor{1,2}
+          else
+            setColor(getUnitColor(unit, i))
+          end
+          if onlycolor or (#unit.overlay > 0 and (unit.painted and unit.painted[i]) or not unit.painted) then
             love.graphics.setColor(1,1,1,1)
           end
-          if not onlycolor or not unit.colored or (onlycolor and unit.colored and unit.colored[i]) then
-            local sprit = sprites[image]
-            love.graphics.draw(sprit, fulldrawx + ox, fulldrawy + oy, 0, unit.draw.scalex, unit.draw.scaley, sprit:getWidth() / 2, sprit:getHeight() / 2)
-          end
-        end
-      else
-        if overlay and stretch then
-          love.graphics.draw(draw, fulldrawx + ox, fulldrawy + oy, 0, sprite:getWidth() / TILE_SIZE, sprite:getHeight() / TILE_SIZE, draw:getWidth() / 2, draw:getHeight() / 2)
-        else
-          if unit.sprite == "letter_custom" then
-            if unit.special.customletter then
-              drawCustomLetter(unit.special.customletter, fulldrawx + ox, fulldrawy + oy, 0, unit.draw.scalex, unit.draw.scaley, 16, 16)
+          if not onlycolor or not unit.painted or (onlycolor and unit.painted and unit.painted[i]) then
+            if image == "letter_custom" then
+              if unit.special.customletter then
+                drawCustomLetter(unit.special.customletter, fulldrawx + ox, fulldrawy + oy, 0, unit.draw.scalex, unit.draw.scaley, 16, 16)
+              else
+                love.graphics.draw(sprites["wut"], fulldrawx + ox, fulldrawy + oy, 0, unit.draw.scalex, unit.draw.scaley, draw:getWidth() / 2, draw:getHeight() / 2)
+              end
             else
-              love.graphics.draw(sprites["wut"], fulldrawx + ox, fulldrawy + oy, 0, unit.draw.scalex, unit.draw.scaley, draw:getWidth() / 2, draw:getHeight() / 2)
+              if image == "lvl" and readSaveFile{"levels", unit.special.level, "won"} then
+                image = "lvl_won"
+              end
+              local sprit = sprites[image .. wobble_suffix]
+              love.graphics.draw(sprit, fulldrawx + ox, fulldrawy + oy, 0, unit.draw.scalex, unit.draw.scaley, sprit:getWidth() / 2, sprit:getHeight() / 2)
             end
-          else
-            if unit.fullname == "detox" and graphical_property_cache["slep"][unit] ~= nil then
-              setColor{1,2}
-            end
-            if unit.fullname == "txt_wontn't" then
-              draw = sprites["text/wo"]
-            end
-            if not draw then draw = sprites["wat"] end
-            love.graphics.draw(draw, fulldrawx + ox, fulldrawy + oy, 0, unit.draw.scalex, unit.draw.scaley, draw:getWidth() / 2, draw:getHeight() / 2)
           end
         end
       end
-			if unit.meta ~= nil then
+			if unit.meta > 0 then
 				setColor({4, 1})
         local metasprite = unit.meta == 2 and sprites["meta2"] or sprites["meta1"]
         if spookmode and sessionseed < drawx/3%0.5*2 then
@@ -1054,7 +1013,7 @@ function scene.draw(dt)
 				end
 				setColor(unit.color)
 			end
-      if unit.nt ~= nil and unit.fullname ~= "txt_wontn't" then
+      if unit.nt then
         setColor({2, 2})
         local ntsprite = sprites["n't"]
         love.graphics.draw(ntsprite, fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
@@ -1396,7 +1355,7 @@ function scene.draw(dt)
         love.graphics.setColor(getPaletteColor(c1 or 0, c2 or 3))
         love.graphics.draw(sprites[o.sprite], fulldrawx + o.x + shake_x, fulldrawy + o.y + shake_y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
       elseif name ~= "bowie" and unit.fullname == "swan" then
-        local tile = tiles_list[tiles_by_name[name]]
+        local tile = getTile(name)
         if tile then
           -- temporarily replacing the current unit ... this is so janky im sorry
           local old_unit = unit
@@ -1405,18 +1364,7 @@ function scene.draw(dt)
           unit.overlay = {}
           unit.draw = {x = old_unit.draw.x, y = old_unit.draw.y, scalex = 0.5, scaley = 0.5, rotation = 0, opacity = 1}
           if c1 and c2 then
-            if unit.colored then
-              unit.color_override = {}
-              for i,_ in ipairs(unit.colored) do
-                if unit.colored[i] then
-                  unit.color_override[i] = {c1, c2}
-                else
-                  unit.color_override[i] = unit.color[i]
-                end
-              end
-            else
-              unit.color_override = {c1, c2}
-            end
+            unit.color_override = {c1, c2}
           end
 
           love.graphics.push()
@@ -1546,12 +1494,7 @@ function scene.draw(dt)
     local draw_units = {}
     local already_added = {}
     for _,unit in ipairs(units) do
-      local sprite = ""
-      if type(unit.sprite) == "table" then
-        sprite = unit.sprite[1]..(unit.meta or "")..(unit.nt and "nt" or "")..(unit.color_override and dump(unit.color_override) or "")
-      else
-        sprite = (unit.fullname ~= "letter_custom" and unit.sprite or "letter_"..unit.special.customletter)..(unit.meta or "")..(unit.nt and "nt" or "")..(unit.color_override and dump(unit.color_override) or "")
-      end
+      local sprite = (unit.fullname ~= "letter_custom" and unit.sprite[1] or "letter_"..unit.special.customletter)..(unit.meta or "")..(unit.nt and "nt" or "")..(unit.color_override and dump(unit.color_override) or "")
       if not already_added[sprite] then already_added[sprite] = {} end
       local dir = unit.rotatdir
       if not already_added[sprite][dir] then
@@ -1580,7 +1523,6 @@ function scene.draw(dt)
     for i,draw in ipairs(draw_units) do
       local cx = (-width / 2) + ((i / #draw_units) * width) - 20
       local unit = draw.unit
-      local dcolor = unit.color_override or unit.color
 
       love.graphics.push()
       if onscreen then
@@ -1590,33 +1532,22 @@ function scene.draw(dt)
       end
       love.graphics.push()
       love.graphics.rotate(math.rad((draw.dir - 1) * 45))
-      
-      if type(unit.sprite) ~= "table" then
-        if #dcolor == 2 then
-          love.graphics.setColor(getPaletteColor(dcolor[1], dcolor[2]))
-        else
-          love.graphics.setColor(dcolor[1], dcolor[2], dcolor[3], dcolor[4] or 1)
-        end
-        if unit.sprite == "letter_custom" then
-          print(unit.sprite)
+
+      for j,image in ipairs(unit.sprite) do
+        love.graphics.setColor(getPaletteColor(unpack(getUnitColor(unit, j))))
+        if image == "letter_custom" then
           if unit.special.customletter then
             drawCustomLetter(unit.special.customletter, 0, 0, 0, 1, 1, 16, 16)
           else
             love.graphics.draw(sprites["wut"], 0, 0, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
           end
         else
-          local sprite = sprites[unit.sprite]
-          love.graphics.draw(sprite, 0, 0, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
-        end
-      else
-        for j,image in ipairs(unit.sprite) do
-          love.graphics.setColor(getPaletteColor(unpack(getUnitColors(unit, j))))
           local sprite = sprites[image]
           love.graphics.draw(sprite, 0, 0, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
         end
       end
       
-      if (unit.meta ~= nil) then
+      if unit.meta > 0 then
 				love.graphics.setColor(getPaletteColor(4, 1))
 				local metasprite = unit.meta == 2 and sprites["meta2"] or sprites["meta1"]
 				love.graphics.draw(metasprite, 0, 0, 0, 1, 1, TILE_SIZE / 2, TILE_SIZE / 2)
@@ -1624,11 +1555,10 @@ function scene.draw(dt)
 					love.graphics.printf(tostring(unit.meta), -1, 6, 32, "center")
 				end
 			end
-      if (unit.nt ~= nil) then
+      if unit.nt then
         love.graphics.setColor(getPaletteColor(2, 2))
         local ntsprite = sprites["n't"]
         love.graphics.draw(ntsprite, 0, 0, 0, 1, 1, TILE_SIZE / 2, TILE_SIZE / 2)
-        love.graphics.setColor(getPaletteColor(unit.color[1], unit.color[2]))
       end
       love.graphics.pop()
 
@@ -1748,7 +1678,7 @@ function scene.draw(dt)
       love.graphics.scale(win_size, win_size)
       local tf_sprite = sprites[tile.sprite]
       love.graphics.draw(tf_sprite, -tf_sprite:getWidth() / 2 + 40, -tf_sprite:getHeight() / 2 - 45, 0, 4, 4)
-      if (tile.meta ~= nil) then
+      if tile.meta > 0 then
         local metasprite = tile.meta == 2 and sprites["meta2"] or sprites["meta1"]
 				love.graphics.draw(metasprite, -metasprite:getWidth() / 2 + 40, -metasprite:getHeight() / 2 - 45, 0, 4, 4)
 				if tile.meta > 2 and win_size == 1 then
@@ -1756,7 +1686,7 @@ function scene.draw(dt)
 					love.graphics.printf(tostring(tile.meta), -metasprite:getWidth() / 2 + 40, -metasprite:getHeight() / 2 - 45, 32, "center")
 				end
       end
-      if (tile.nt ~= nil) then
+      if tile.nt then
         local nt_sprite = sprites["n't"];
         love.graphics.draw(nt_sprite, -nt_sprite:getWidth() / 2 + 40, -nt_sprite:getHeight() / 2 - 45, 0, 4, 4)
       end
@@ -2117,98 +2047,95 @@ function scene.checkInput()
         local end_time = love.timer.getTime()
         if not unit_tests then print("gameplay logic took: "..tostring(round((end_time-start_time)*1000)).."ms") end
         -- SING
-        if tiles_by_name["txt_sing"] then
+        local sing_rules = matchesRule(nil, "sing", "?")
+        for _,ruleparent in ipairs(sing_rules) do
+          local unit = ruleparent[2]
           
-          local sing_rules = matchesRule(nil, "sing", "?")
-          for _,ruleparent in ipairs(sing_rules) do
-            local unit = ruleparent[2]
-            
-            if unit.name == "no1" then break end
-            if unit.name == "swan" then
-              local sound = love.sound.newSoundData("assets/audio/sfx/honk" .. math.random(1,6) .. ".wav");
-              local source = love.audio.newSource(sound, "static")
-              source:setVolume(1)
-              source:setPitch(math.random() * ((2^(11/12)) - 1) + 1)
-              source:play()
-            else
-              local specific_sing = "bit"
-              if unit.tile then
-                specific_sing = tiles_list[unit.tile].sing or specific_sing
-              end
-              if (unit.name == "pata") then
-                specific_sing = "pata" .. tostring(unit.dir)
-              end
-              
-              local sing_note = ruleparent[1].rule.object.name;
-              local sing_color = ruleparent[1].rule.object.unit.color_override or ruleparent[1].rule.object.unit.color;
-              local sing_octave = 0;
-              if (sing_color[1] <= 6 and sing_color[2] <= 4) then
-                local sing_color_word = colour_for_palette[sing_color[1]][sing_color[2]];
-                if sing_color_word == "whit" then
-                  sing_octave = 0
-                elseif sing_color_word == "blacc" then
-                  sing_octave = -5
-                elseif sing_color_word == "brwn" then
-                  sing_octave = -4
-                elseif sing_color_word == "reed" then
-                  sing_octave = -3
-                elseif sing_color_word == "orang" then
-                  sing_octave = -2
-                elseif sing_color_word == "yello" then
-                  sing_octave = -1
-                elseif sing_color_word == "grun" then
-                  sing_octave = 0
-                elseif sing_color_word == "cyeann" then
-                  sing_octave = 1
-                elseif sing_color_word == "bleu" then
-                  sing_octave = 2
-                elseif sing_color_word == "purp" then
-                  sing_octave = 3
-                elseif sing_color_word == "pinc" then
-                  sing_octave = 4
-                elseif sing_color_word == "graey" then
-                  sing_octave = 5
-                end
-              end
-              local sing_pitch = 1
-              if sing_note == "c" or sing_note == "b_sharp" then
-                sing_pitch = 1
-              elseif sing_note == "c_sharp" or sing_note == "d_flat" then
-                sing_pitch = 2^(1/12)
-              elseif sing_note == "d" then
-                sing_pitch = 2^(2/12)
-              elseif sing_note == "d_sharp" or sing_note == "e_flat" then
-                sing_pitch = 2^(3/12)
-              elseif sing_note == "e" or sing_note == "f_flat" then
-                sing_pitch = 2^(4/12)
-              elseif sing_note == "f" or sing_note == "e_sharp" then
-                sing_pitch = 2^(5/12)
-              elseif sing_note == "f_sharp" or sing_note == "g_flat" then
-                sing_pitch = 2^(6/12)
-              elseif sing_note == "g" then
-                sing_pitch = 2^(7/12)
-              elseif sing_note == "g_sharp" or sing_note == "a_flat" then
-                sing_pitch = 2^(8/12)
-              elseif sing_note == "a" then
-                sing_pitch = 2^(9/12)
-              elseif sing_note == "a_sharp" or sing_note == "b_flat" then
-                sing_pitch = 2^(10/12)
-              elseif sing_note == "b" or sing_note == "c_flat" then
-                sing_pitch = 2^(11/12)
-              end
-              
-              sing_pitch = sing_pitch * 2^sing_octave
-              --slightly randomize for chorusing purposes between 99% and 101%
-              sing_pitch = sing_pitch * 0.99+(math.random()/50)
-              
-              sound = love.sound.newSoundData("assets/audio/sfx/" .. specific_sing .. ".wav");
-              local source = love.audio.newSource(sound, "static")
-              source:setVolume(1)
-              source:setPitch(sing_pitch or 1)
-              source:play()
-            
-              addParticles("sing", unit.x, unit.y, sing_color)
+          if unit.name == "no1" then break end
+          if unit.name == "swan" then
+            local sound = love.sound.newSoundData("assets/audio/sfx/honk" .. math.random(1,6) .. ".wav");
+            local source = love.audio.newSource(sound, "static")
+            source:setVolume(1)
+            source:setPitch(math.random() * ((2^(11/12)) - 1) + 1)
+            source:play()
+          else
+            local specific_sing = "bit"
+            if unit.tile then
+              specific_sing = getTile(unit.tile).voice or specific_sing
             end
+            if (unit.name == "pata") then
+              specific_sing = "pata" .. tostring(unit.dir)
+            end
+            
+            local sing_note = ruleparent[1].rule.object.name
+            local sing_color = ruleparent[1].rule.object.unit.color_override or ruleparent[1].rule.object.unit.first_color
+            local sing_octave = 0;
+            if (sing_color[1] <= 6 and sing_color[2] <= 4) then
+              local sing_color_word = colour_for_palette[sing_color[1]][sing_color[2]];
+              if sing_color_word == "whit" then
+                sing_octave = 0
+              elseif sing_color_word == "blacc" then
+                sing_octave = -5
+              elseif sing_color_word == "brwn" then
+                sing_octave = -4
+              elseif sing_color_word == "reed" then
+                sing_octave = -3
+              elseif sing_color_word == "orang" then
+                sing_octave = -2
+              elseif sing_color_word == "yello" then
+                sing_octave = -1
+              elseif sing_color_word == "grun" then
+                sing_octave = 0
+              elseif sing_color_word == "cyeann" then
+                sing_octave = 1
+              elseif sing_color_word == "bleu" then
+                sing_octave = 2
+              elseif sing_color_word == "purp" then
+                sing_octave = 3
+              elseif sing_color_word == "pinc" then
+                sing_octave = 4
+              elseif sing_color_word == "graey" then
+                sing_octave = 5
+              end
+            end
+            local sing_pitch = 1
+            if sing_note == "c" or sing_note == "b_sharp" then
+              sing_pitch = 1
+            elseif sing_note == "c_sharp" or sing_note == "d_flat" then
+              sing_pitch = 2^(1/12)
+            elseif sing_note == "d" then
+              sing_pitch = 2^(2/12)
+            elseif sing_note == "d_sharp" or sing_note == "e_flat" then
+              sing_pitch = 2^(3/12)
+            elseif sing_note == "e" or sing_note == "f_flat" then
+              sing_pitch = 2^(4/12)
+            elseif sing_note == "f" or sing_note == "e_sharp" then
+              sing_pitch = 2^(5/12)
+            elseif sing_note == "f_sharp" or sing_note == "g_flat" then
+              sing_pitch = 2^(6/12)
+            elseif sing_note == "g" then
+              sing_pitch = 2^(7/12)
+            elseif sing_note == "g_sharp" or sing_note == "a_flat" then
+              sing_pitch = 2^(8/12)
+            elseif sing_note == "a" then
+              sing_pitch = 2^(9/12)
+            elseif sing_note == "a_sharp" or sing_note == "b_flat" then
+              sing_pitch = 2^(10/12)
+            elseif sing_note == "b" or sing_note == "c_flat" then
+              sing_pitch = 2^(11/12)
+            end
+            
+            sing_pitch = sing_pitch * 2^sing_octave
+            --slightly randomize for chorusing purposes between 99% and 101%
+            sing_pitch = sing_pitch * 0.99+(math.random()/50)
+            
+            sound = love.sound.newSoundData("assets/audio/sfx/" .. specific_sing .. ".wav");
+            local source = love.audio.newSource(sound, "static")
+            source:setVolume(1)
+            source:setPitch(sing_pitch or 1)
+            source:play()
+          
+            addParticles("sing", unit.x, unit.y, sing_color)
           end
         end
         -- BUP
@@ -2402,7 +2329,7 @@ function doOneMove(x, y, key, past)
       local melters = getUnitsWithEffect("fridgd")
       for _,unit in ipairs(melters) do
         table.insert(to_destroy, unit)
-        addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
+        addParticles("destroy", unit.x, unit.y, unit.color_override or unit.first_color)
       end
       if #to_destroy > 0 then
         playSound("hotte")
@@ -2414,7 +2341,7 @@ function doOneMove(x, y, key, past)
       local yous = getUs()
       for _,unit in ipairs(yous) do
         table.insert(to_destroy, unit)
-        addParticles("destroy", unit.x, unit.y, unit.color_override or unit.color)
+        addParticles("destroy", unit.x, unit.y, unit.color_override or unit.first_color)
       end
     end
     to_destroy = handleDels(to_destroy)

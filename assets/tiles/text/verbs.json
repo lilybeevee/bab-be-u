@@ -153,5 +153,15 @@
     "color": [[2, 2]],
     "desc": "WON'T: X WON'T PROPERTY makes X not be affected by that property.",
     "tags": ["won't", "can't"]
+  },
+  {
+    "name": "txt_wontn't",
+    "display": "wo",
+    "sprite": ["text/wo"],
+    "types": ["verb_property", "verb"],
+    "color": [[2, 2]],
+    "desc": "WO: won't n't.",
+    "alias": ["wo"],
+    "tags": ["wo", "will", "can"]
   }
 ]

@@ -216,7 +216,7 @@ function parseRules(undoing)
         if mimic[1].color_override ~= nil then
           unit.color_override = mimic[1].color_override
         else
-          unit.color_override = mimic[1].color
+          unit.color_override = mimic[1].first_color
         end
       else
         unit.textname = "  "
@@ -655,7 +655,7 @@ function addRule(full_rule)
   for _,unit in ipairs(units) do
     unit.active = true
     if not unit.old_active and not first_turn then
-      addParticles("rule", unit.x, unit.y, unit.color_override or unit.color)
+      addParticles("rule", unit.x, unit.y, unit.color_override or unit.first_color)
       new_rule = true
     end
     unit.old_active = unit.active
@@ -724,8 +724,8 @@ function addRule(full_rule)
 
   if rules.object.unit then
     local property = false
-    local tile_id = tiles_by_name["txt_" .. verb]
-    if tile_id and tiles_list[tile_id].texttype and tiles_list[tile_id].texttype.verb_property then
+    local tile = getTile("txt_" .. verb)
+    if tile and tile.typeset.verb_property then
       property = true
     end
     if property and not rules.object.unit.used_as["property"] then
@@ -755,8 +755,8 @@ function addRule(full_rule)
     table.insert(rules.subject.conds, rules.subject);
   end
   if object:find("letter_custom") and object.unit then
-    local tile_id = tiles_by_name["txt_"..verb]
-    if tile_id and tiles_list[tile_id].texttype and tiles_list[tile_id].texttype.verb_unit then
+    local tile = getTile("txt_"..verb)
+    if tile and tile.typeset.verb_unit then
       rules.object.conds = copyTable(rules.object.conds) or {};
       table.insert(rules.object.conds, rules.object);
     end
@@ -851,7 +851,7 @@ function addRule(full_rule)
       end
     end
   elseif subject_not % 2 == 1 then
-    if tiles_by_name[subject] or subject == "text" then
+    if getTile(subject) or subject == "text" then
       local new_subjects = getEverythingExcept(subject)
       for _,v in ipairs(new_subjects) do
         addRuleSimple({v, rules.subject.conds}, rules.verb, rules.object, units, dir)
@@ -891,7 +891,7 @@ function addRule(full_rule)
       end
     end
   elseif object_not % 2 == 1 then
-    if tiles_by_name[object] or object:starts("this") or object == "text" or object == "mous" then
+    if getTile(object) or object:starts("this") or object == "text" or object == "mous" then
       local new_objects = {}
       --skul be skul turns into skul ben't skuln't - but this needs to apply even to special objects (specific text, txt, no1, lvl, mous).
       if verb == "be" and verb_not % 2 == 1 then
