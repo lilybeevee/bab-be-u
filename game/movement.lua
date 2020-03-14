@@ -2180,7 +2180,9 @@ function FindEntireGluedUnit(unit, dx, dy, glued_rule)
   local units, pushers, pullers = {}, {}, {}
   local visited = {}
   local ignored = {}
+  local unit_added = {}
   visited[tostring(unit.x)..","..tostring(unit.y)] = {unit, glued_rule}
+  unit_added[unit] = true
   local myorthook = not hasProperty(unit,"diag") or hasProperty(unit,"ortho")
   local mydiagok = not hasProperty(unit,"ortho") or hasProperty(unit,"diag")
   
@@ -2229,13 +2231,12 @@ function FindEntireGluedUnit(unit, dx, dy, glued_rule)
       local xx, yy = x+cur_dx, y+cur_dy
       --print("b:",cur_dx,cur_dy,xx,yy,tostring(xx)..","..tostring(yy),visited[tostring(xx)..","..tostring(yy)])
       --visit surrounding tiles if we don't know their status yet
-      if visited[tostring(xx)..","..tostring(yy)] == nil then
-        --print("c")
-        visited[tostring(xx)..","..tostring(yy)] = false
-        local others = getUnitsOnTile(xx, yy)
-        local first = false
-        for _,other in ipairs(others) do
-          --print("d:",other.name)
+      --print("c")
+      local others = getUnitsOnTile(xx, yy)
+      local first = false
+      for _,other in ipairs(others) do
+        --print("d:",other.name)
+        if not unit_added[other] then
           local other_is_glued, other_rule = hasProperty(other,"glued",true)
           if other_is_glued and ignoreCheck(cur_unit,other,"glued") then
             local matched = true
@@ -2253,10 +2254,10 @@ function FindEntireGluedUnit(unit, dx, dy, glued_rule)
               end
             end
             if matched then
-              print("nya?")
               --print("f, we did it")
               if ignoreCheck(other,cur_unit,"glued") then
                 table.insert(units, other)
+                unit_added[other] = true
               else
                 ignored[other] = true
               end
@@ -2271,8 +2272,8 @@ function FindEntireGluedUnit(unit, dx, dy, glued_rule)
             end
           end
         end
-        --END iterate units on that tile
       end
+      --END iterate units on that tile
       --END visit surrounding unvisited tile
         
       --while checking the forward/backward direction, add the current unit to pushers/pullers if we know the tile ahead of/behind it is vacant
