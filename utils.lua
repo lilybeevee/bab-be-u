@@ -871,7 +871,7 @@ end
 function hasProperty(unit,prop,return_rule)
   if not rules_with[prop] and prop ~= "?" then return false end
   if unit and unit.fullname == "babby" and prop == "thicc" and not hasRule(unit, "be", "notranform") then return false end
-  local has_be_rule, be_rule = hasRule(unit, "be", prop)
+  local has_be_rule, be_rule = hasRule(unit, "be", prop, true)
   if has_be_rule then return true, (return_rule and be_rule or nil) end
   if type(unit) ~= "table" then return false end
   if not rules_with["giv"] then return false end

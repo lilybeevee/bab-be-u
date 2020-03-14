@@ -644,9 +644,10 @@ It is probably possible to do, but lily has decided that it's not important enou
             end
             --movedebug("considering:"..unit.fullname..","..dir)
             local success,movers,specials = true,{},{}
-            if hasProperty(unit,"glued") then
+            local is_glued, glued_rule = hasProperty(unit,"glued",true)
+            if is_glued then
               --Glued units get moved as a single group.
-              local units, pushers, pullers = FindEntireGluedUnit(unit, dx, dy)
+              local units, pushers, pullers = FindEntireGluedUnit(unit, dx, dy, glued_rule)
               for _,pusher in ipairs(pushers) do
                 local success_,movers_,specials_ = canMove(pusher, dx, dy, dir, {pushing = true, reason = data.reason})
                 mergeTable(movers,movers_)
@@ -2004,8 +2005,9 @@ function canMoveCore(unit,dx,dy,dir,o) --pushing, pulling, solid_name, reason, p
           -- print("success")
           if o.pushing and ignoreCheck(v,unit) then
             --glued units are pushed all at once or not at all
-            if hasProperty(v, "glued") then
-              local units, pushers, pullers = FindEntireGluedUnit(v, dx, dy)
+            local is_glued, glued_rule = hasProperty(v, "glued", true)
+            if is_glued then
+              local units, pushers, pullers = FindEntireGluedUnit(v, dx, dy, glued_rule)
               
               local all_success = true
               local newer_movers = {}
@@ -2173,13 +2175,12 @@ function getNextLevels()
   return next_levels, next_level_objs
 end
 
-function FindEntireGluedUnit(unit, dx, dy)
+function FindEntireGluedUnit(unit, dx, dy, glued_rule)
   --print("0:",unit.x,unit.y,dx,dy)
   local units, pushers, pullers = {}, {}, {}
   local visited = {}
   local ignored = {}
-  visited[tostring(unit.x)..","..tostring(unit.y)] = unit
-  local mycolor = unit.color_override or unit.first_color
+  visited[tostring(unit.x)..","..tostring(unit.y)] = {unit, glued_rule}
   local myorthook = not hasProperty(unit,"diag") or hasProperty(unit,"ortho")
   local mydiagok = not hasProperty(unit,"ortho") or hasProperty(unit,"diag")
   
@@ -2216,7 +2217,8 @@ function FindEntireGluedUnit(unit, dx, dy)
   
   while #unchecked_tiles > 0 do
     local x, y = unchecked_tiles[1][1], unchecked_tiles[1][2]
-    local cur_unit = visited[tostring(x)..","..tostring(y)]
+    local cur_unit, rule = unpack(visited[tostring(x)..","..tostring(y)])
+    local mycolor = cur_unit.color_override or cur_unit.first_color
     --print("a:",x,y,cur_unit)
     table.remove(unchecked_tiles, 1)
     --print("a.5:",#unchecked_tiles)
@@ -2234,10 +2236,24 @@ function FindEntireGluedUnit(unit, dx, dy)
         local first = false
         for _,other in ipairs(others) do
           --print("d:",other.name)
-          if hasProperty(other,"glued") and ignoreCheck(cur_unit,other,"glued") then
-            local ocolor = other.color_override or other.first_color
-            --print("e:", dump(mycolor),dump(ocolor))
-            if (mycolor[1] == ocolor[1] and mycolor[2] == ocolor[2]) then
+          local other_is_glued, other_rule = hasProperty(other,"glued",true)
+          if other_is_glued and ignoreCheck(cur_unit,other,"glued") then
+            local matched = true
+            if other_rule.rule.object.mods then
+              for _,prefix in ipairs(other_rule.rule.object.mods) do
+                if prefix.name == "samepaint" then
+                  local ocolor = other.color_override or other.first_color
+                  matched = (mycolor[1] == ocolor[1] and mycolor[2] == ocolor[2])
+                elseif prefix.name == "sameface" then
+                  matched = (cur_unit.dir == other.dir)
+                elseif prefix.name == "samefloat" then
+                  matched = sameFloat(cur_unit, other)
+                end
+                if not matched then break end
+              end
+            end
+            if matched then
+              print("nya?")
               --print("f, we did it")
               if ignoreCheck(other,cur_unit,"glued") then
                 table.insert(units, other)
@@ -2250,7 +2266,7 @@ function FindEntireGluedUnit(unit, dx, dy)
                 table.insert(unchecked_tiles, {xx, yy})
                 --print("f.5:",#unchecked_tiles)
                 first = true
-                visited[tostring(xx)..","..tostring(yy)] = other
+                visited[tostring(xx)..","..tostring(yy)] = {other, other_rule}
               end
             end
           end
