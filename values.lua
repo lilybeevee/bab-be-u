@@ -7172,8 +7172,8 @@ tiles_list = {
     texttype = {property = true},
     color = {1,1},
     layer = 20,
-    tags = {"stuck"},
-    desc = "STUKC: Anything with this property can't move. (I know this is a modded word but I don't know who made it, so I'll add that tag later.)"
+    tags = {"stuck", "still"},
+    desc = "STUKC: Anything with this property can't move."
   },
   -- 634
   {
