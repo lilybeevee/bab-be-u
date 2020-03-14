@@ -4,9 +4,9 @@ function clearRules()
   local temp = {}
   if timeless and full_rules then
     addUndo({"timeless_rules", rules_with, full_rules})
-    if rules_with["za warudo"] then
+    if rules_with["zawarudo"] then
       for _,text in ipairs(getAllText()) do
-        if hasProperty(text, "za warudo") then
+        if hasProperty(text, "zawarudo") then
           text.zawarudo = true
         else
           text.zawarudo = false
@@ -40,10 +40,10 @@ function clearRules()
   portal_id = ""
 
   --text and level basically already exist, so no need to be picky.
-  addBaseRule("text","be","go away pls")
-  addBaseRule("lvl","be","no go")
+  addBaseRule("text","be","goawaypls")
+  addBaseRule("lvl","be","nogo")
   --TODO: This will need to be automatic on levels with letters/combined words, since a selectr/bordr might be made in a surprising way, and it will need to have its implicit rules apply immediately.
-  if (units_by_name["selctr"] or units_by_name["text_selctr"] or units_by_name["lin"] or units_by_name["text_lin"] or units_by_name["text_pathz"]) then
+  if (units_by_name["selctr"] or units_by_name["txt_selctr"] or units_by_name["lin"] or units_by_name["txt_lin"] or units_by_name["txt_pathz"]) then
     addBaseRule("selctr","be","curse")
     addBaseRule("selctr","be","shy...")
     --[[addBaseRule("selctr","be","u")
@@ -53,13 +53,13 @@ function clearRules()
     addBaseRule("selctr","be","flye")
     addBaseRule("selctr","be","shy...")]]
   end
-  if (units_by_name["bordr"] or units_by_name["text_bordr"]) then
-    addBaseRule("bordr","be","no go")
+  if (units_by_name["bordr"] or units_by_name["txt_bordr"]) then
+    addBaseRule("bordr","be","nogo")
     addBaseRule("bordr","be","tall")
 		addBaseRule("bordr","be","tranparnt")
   end
   if units_by_name["this"] then
-    addBaseRule("this","be","go away pls")
+    addBaseRule("this","be","goawaypls")
     addBaseRule("this","be","wurd")
   end
 
@@ -188,7 +188,7 @@ function getTextOnTile(x, y)
 end
 
 function parseRules(undoing)
-  if timeless and not hasProperty("text","za warudo") then
+  if timeless and not hasProperty("text","zawarudo") then
     return
   end
   if (should_parse_rules) then
@@ -199,7 +199,7 @@ function parseRules(undoing)
   end
   
   --refresh name/type/color of dittos in reading order (top to bottom)
-  local dittos = units_by_name["text_''"]
+  local dittos = units_by_name["txt_''"]
   if (dittos ~= nil) then
     table.sort(dittos, function(a, b) return a.y < b.y end ) 
     for _,unit in ipairs(dittos) do
@@ -234,7 +234,7 @@ function parseRules(undoing)
   
   --TODO: This works in non-contrived examples, but isn't necessarily robust - for example, if after reparsing, you add one word rule while subtracting another word rule, it'll think nothing has changed. The only way to be ABSOLUTELY robust is to compare that the exact set of parsing effecting rules hasn't changed.
   local function reparseRuleCounts()
-    local props_table = {"wurd", "poor toll", "go arnd", "mirr arnd", "ortho", "diag", "za warudo", "rong", "slep"}
+    local props_table = {"wurd", "poortoll", "goarnd", "mirrarnd", "ortho", "diag", "zawarudo", "rong", "slep"}
     local verbs_table = {"be", "giv"}
     local result = {}
     for _,prop in ipairs(props_table) do
@@ -245,7 +245,7 @@ function parseRules(undoing)
     --Text that ben't wurd is a special case.
     table.insert(result, #matchesRule(nil, "ben't", "wurd"));
     --Text/wurds ignoring a poor toll could cause parsing to change.
-    table.insert(result, rules_with["poor toll"] and #matchesRule(nil, "ignor", nil) or 0);
+    table.insert(result, rules_with["poortoll"] and #matchesRule(nil, "ignor", nil) or 0);
     --RP can cause a parse effecting rule to be RP'd. (TODO: For mysterious reasons, this doesn't work with wurd.)
      table.insert(result, #matchesRule(nil, "rp", "?"));
     return result;
@@ -404,8 +404,8 @@ function parseRules(undoing)
     rules_effecting_names = {}
   
     populateRulesEffectingNames("?", "be", "wurd")
-    populateRulesEffectingNames("?", "be", "poor toll")
-    if (rules_with["go arnd"] or rules_with["mirr arnd"]) then
+    populateRulesEffectingNames("?", "be", "poortoll")
+    if (rules_with["goarnd"] or rules_with["mirrarnd"]) then
       rules_effecting_names["bordr"] = true
     end
   end
@@ -724,7 +724,7 @@ function addRule(full_rule)
 
   if rules.object.unit then
     local property = false
-    local tile_id = tiles_by_name["text_" .. verb]
+    local tile_id = tiles_by_name["txt_" .. verb]
     if tile_id and tiles_list[tile_id].texttype and tiles_list[tile_id].texttype.verb_property then
       property = true
     end
@@ -755,7 +755,7 @@ function addRule(full_rule)
     table.insert(rules.subject.conds, rules.subject);
   end
   if object:find("letter_custom") and object.unit then
-    local tile_id = tiles_by_name["text_"..verb]
+    local tile_id = tiles_by_name["txt_"..verb]
     if tile_id and tiles_list[tile_id].texttype and tiles_list[tile_id].texttype.verb_unit then
       rules.object.conds = copyTable(rules.object.conds) or {};
       table.insert(rules.object.conds, rules.object);
@@ -916,7 +916,7 @@ function addRule(full_rule)
   end
 
   if verb_not > 0 then
-    if (verb == "be") and (object == "notranform" or subject == object or (subject:starts("text_") and object == "text")) then
+    if (verb == "be") and (object == "notranform" or subject == object or (subject:starts("txt_") and object == "text")) then
       verb_not = verb_not + 1
     end
     if not not_rules[verb_not] then
@@ -928,7 +928,7 @@ function addRule(full_rule)
 
     -- for specifically checking NOT rules
     table.insert(full_rules, {rule = {subject = rules.subject, verb = {name = verb .. "n't"}, object = rules.object}, units = units, dir = dir})
-  elseif (verb == "be") and (subject == object or (subject:starts("text_") and object == "text")) and subject ~= "lvl" and object ~= "lvl" and subject ~= "sans" then
+  elseif (verb == "be") and (subject == object or (subject:starts("txt_") and object == "text")) and subject ~= "lvl" and object ~= "lvl" and subject ~= "sans" then
     --print("protecting: " .. subject .. ", " .. object)
     addRuleSimple(rules.subject, {"be"}, {"notranform", rules.object.conds}, units, dir)
   elseif object == "notranform" or (subject == "lvl" and object == "lvl") then -- no "n't" here, but still blocks other rules so we need to count it
@@ -986,7 +986,7 @@ function postRules()
               fverb = fverb .. "n't"
             end
             -- print("frule:", fullDump(frule))
-            if (frule.subject.name == rule.subject.name or (rule.subject.name == "text" and frule.subject.name:starts("text_"))) and fverb == rule.verb.name and (
+            if (frule.subject.name == rule.subject.name or (rule.subject.name == "text" and frule.subject.name:starts("txt_"))) and fverb == rule.verb.name and (
               (specialmatch == 0 and frule.object.name == rule.object.name and frule.object.name ~= "her" and frule.object.name ~= "thr" and frule.object.name ~= "rit here") or
               (specialmatch == 1 and (frule.object.type.object or frule.object.name == "tranz") and not group_names_set[frule.object.name]) or -- possibly more special cases needed
               (specialmatch == 2 and frule.object.name == "notranform")
@@ -1081,19 +1081,19 @@ end
 function shouldReparseRules()
   if should_parse_rules then return true end
   if shouldReparseRulesIfConditionalRuleExists("?", "be", "wurd") then return true end
-  if shouldReparseRulesIfConditionalRuleExists("?", "be", "poor toll") then return true end
+  if shouldReparseRulesIfConditionalRuleExists("?", "be", "poortoll") then return true end
   --TODO: We care about text, specific text and wurd units - this can't be easily specified to matchesRule.
-  if shouldReparseRulesIfConditionalRuleExists("?", "be", "go arnd") then return true end
-  if shouldReparseRulesIfConditionalRuleExists("?", "be", "mirr arnd") then return true end
-  if shouldReparseRulesIfConditionalRuleExists("lvl", "be", "go arnd", true) then return true end
-  if shouldReparseRulesIfConditionalRuleExists("lvl", "be", "mirr arnd", true) then return true end
+  if shouldReparseRulesIfConditionalRuleExists("?", "be", "goarnd") then return true end
+  if shouldReparseRulesIfConditionalRuleExists("?", "be", "mirrarnd") then return true end
+  if shouldReparseRulesIfConditionalRuleExists("lvl", "be", "goarnd", true) then return true end
+  if shouldReparseRulesIfConditionalRuleExists("lvl", "be", "mirrarnd", true) then return true end
   if shouldReparseRulesIfConditionalRuleExists("?", "be", "ortho") then return true end
   if shouldReparseRulesIfConditionalRuleExists("?", "be", "diag") then return true end
   if shouldReparseRulesIfConditionalRuleExists("?", "ben't", "wurd") then return true end
-  if shouldReparseRulesIfConditionalRuleExists("?", "be", "za warudo") then return true end
+  if shouldReparseRulesIfConditionalRuleExists("?", "be", "zawarudo") then return true end
   if shouldReparseRulesIfConditionalRuleExists("?", "be", "rong") then return true end
   if shouldReparseRulesIfConditionalRuleExists("?", "be", "slep") then return true end
-  if rules_with["poor toll"] then
+  if rules_with["poortoll"] then
     if shouldReparseRulesIfConditionalRuleExists("?", "ignor", "?", true) then return true end
   end
   return false

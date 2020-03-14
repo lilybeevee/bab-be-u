@@ -9,6 +9,7 @@
   },
   {
     "name": "txt_nogo",
+    "display": "no go",
     "sprite": ["text/nogo"],
     "types": ["property"],
     "color": [[5, 1]],
@@ -17,6 +18,7 @@
   },
   {
     "name": "txt_goawaypls",
+    "display": "go away pls",
     "sprite": ["text/goaway"],
     "types": ["property"],
     "color": [[6, 1]],
@@ -25,6 +27,7 @@
   },
   {
     "name": "txt_nedkee",
+    "display": "ned kee",
     "sprite": ["text/nedkee"],
     "types": ["property"],
     "color": [[2, 2]],
@@ -33,6 +36,7 @@
   },
   {
     "name": "txt_fordor",
+    "display": "for dor",
     "sprite": ["text/fordor"],
     "types": ["property"],
     "color": [[2, 4]],
@@ -52,7 +56,8 @@
   },
   {
     "name": "txt_noswim",
-    "sprite": ["text/no swim"],
+    "display": "no swim",
+    "sprite": ["text/noswim"],
     "types": ["property"],
     "color": [[1, 3]],
     "desc": "NO SWIM: At end of turn, if a NO SWIM unit is touching another object, all objects on the tile are destroyed.",
@@ -150,6 +155,7 @@
   },
   {
     "name": "txt_behinu",
+    "display": "behin u",
     "sprite": ["text/behinu"],
     "types": ["property"],
     "color": [[3, 1]],
@@ -169,7 +175,7 @@
     "sprite": ["text/qt"],
     "types": ["property"],
     "color": [[4, 2]],
-    "thingify": "the real qt",
+    "thingify": "therealqt",
     "desc": "QT: Makes the unit emit love hearts.",
     "tags": ["cute", "lily"]
   },
@@ -210,6 +216,7 @@
   },
   {
     "name": "txt_comepls",
+    "display": "come pls",
     "sprite": ["text/comepls"],
     "types": ["property"],
     "color": [[6, 2]],
@@ -234,6 +241,7 @@
   },
   {
     "name": "txt_gomyway",
+    "display": "go my way",
     "sprite": ["text/gomywey"],
     "types": ["property"],
     "color": [[1, 3]],
@@ -314,6 +322,7 @@
   },
   {
     "name": "txt_visitfren",
+    "display": "visit fren",
     "sprite": ["text/visitfren"],
     "types": ["property"],
     "color": [[1, 4]],
@@ -352,6 +361,7 @@
   },
   {
     "name": "txt_folowal",
+    "display": "folo wal",
     "sprite": ["text/folo_wal"],
     "types": ["property"],
     "color": [[5, 3]],
@@ -360,6 +370,7 @@
   },
   {
     "name": "txt_turncornr",
+    "display": "turn cornr",
     "sprite": ["text/turn_cornr"],
     "types": ["property"],
     "color": [[5, 3]],
@@ -379,6 +390,7 @@
   },
   {
     "name": "txt_tryagain",
+    "display": "try again",
     "sprite": ["text/try again"],
     "types": ["property"],
     "color": [[3, 3]],
@@ -390,7 +402,8 @@
   },
   {
     "name": "txt_noundo",
-    "sprite": ["text/no undo"],
+    "display": "no undo",
+    "sprite": ["text/noundo"],
     "types": ["property"],
     "color": [[5, 3]],
     "desc": "NO UNDO: NO UNDO units aren't affected by undoing manually. LVL BE NO UNDO prevents undo inputs entirely.",
@@ -406,7 +419,8 @@
   },
   {
     "name": "txt_goarnd",
-    "sprite": ["text/go arnd"],
+    "display": "go arnd",
+    "sprite": ["text/goarnd"],
     "types": ["property"],
     "color": [[3, 2]],
     "desc": "GO ARND: GO ARND units wrap around the level, as though it were a torus. BORDR objects are used as the level border, and the wraparound doesn't go through BORDRs. Diagonal GO ARNDs on corners of non-square levels might not work as expected, as it simply traces backward until hitting a BORDR.",
@@ -414,7 +428,8 @@
   },
   {
     "name": "txt_poortoll",
-    "sprite": ["text/poor_toll"],
+    "display": "poor toll",
+    "sprite": ["text/poortoll"],
     "types": ["property"],
     "color": [[3, 2]],
     "desc": "POOR TOLL: If a unit would enter a POOR TOLL unit, it instead leaves the next POOR TOLL unit of the same name in reading order (left to right, line by line, wrapping around) out the corresponding same side. Does not stack.",
@@ -456,7 +471,8 @@
   },
   {
     "name": "txt_mirrarnd",
-    "sprite": ["text/mirr arnd"],
+    "display": "mirr arnd",
+    "sprite": ["text/mirrarnd"],
     "types": ["property"],
     "color": [[3, 2]],
     "desc": "MIRR ARND: MIRR ARND units wrap around the level, as though it were a projective plane.",
@@ -513,14 +529,18 @@
   },
   {
     "name": "txt_tranparnt",
+    "display": "tranparn't",
     "sprite": ["text/tranparnt"],
     "types": ["property"],
     "color": [[0, 1]],
-    "desc": "TRANPARN'T: A BRITE object emits light in all directions. LIT will be true for objects on the same FLYE level if nothing TRANPARN'T is in the way."
+    "desc": "TRANPARN'T: A BRITE object emits light in all directions. LIT will be true for objects on the same FLYE level if nothing TRANPARN'T is in the way.",
+    "alias": ["tranparn't"],
+    "tags": ["opaque", "transparent"]
   },
   {
     "name": "txt_noturn",
-    "sprite": ["text/no turn"],
+    "display": "no turn",
+    "sprite": ["text/noturn"],
     "types": ["property"],
     "color": [[2, 3]],
     "desc": "NO TURN: A NO TURN unit's direction can't change (unless re-oriented by non-euclidean level geometry, i.e. POOR TOLL).",
@@ -536,6 +556,7 @@
   },
   {
     "name": "txt_haetflor",
+    "display": "haet flor",
     "sprite": ["text/haetflor"],
     "types": ["property"],
     "color": [[2, 2]],
@@ -551,22 +572,27 @@
   },
   {
     "name": "txt_utoo",
+    "display": "u too",
     "sprite": ["text/utoo"],
     "types": ["property"],
     "color": [[4, 1]],
     "desc": "player 2 has joined the game (dpad). Can also be spelled 'u2'.",
+    "alias": ["u2"],
     "tags": ["you2", "p2", "player"]
   },
   {
     "name": "txt_utres",
+    "display": "u tres",
     "sprite": ["text/utres"],
     "types": ["property"],
     "color": [[4, 1]],
     "desc": "and player 3 (ijkl or numpad).\nIf there are objects of two control schemes but not a third, the third control scheme can be used to move both of the first two at once.\nCan also be spelled 'u3'.",
+    "alias": ["u3"],
     "tags": ["you3", "p3", "player"]
   },
   {
     "name": "txt_zawarudo",
+    "display": "za warudo",
     "sprite": ["text/zawarudo"],
     "types": ["property"],
     "color": [[2, 4]],
@@ -641,6 +667,7 @@
   },
   {
     "name": "txt_rithere",
+    "display": "rit here",
     "sprite": ["text/rithere"],
     "types": ["property"],
     "layer": 21,
@@ -686,6 +713,7 @@
     "types": ["property", "direction"],
     "color": [[1, 4]],
     "desc": "UPLEFT: A GO ->, but facing upleft. Can also be spelled leftup.",
+    "alias": ["leftup"],
     "tags": ["direction"]
   },
   {
@@ -694,6 +722,7 @@
     "types": ["property", "direction"],
     "color": [[1, 4]],
     "desc": "UPRIGHT: A GO ->, but facing upright. Can also be spelled rightup.",
+    "alias": ["rightup"],
     "tags": ["direction"]
   },
   {
@@ -702,6 +731,7 @@
     "types": ["property", "direction"],
     "color": [[1, 4]],
     "desc": "DOWNLEFT: A GO ->, but facing downleft. Can also be spelled leftdown.",
+    "alias": ["leftdown"],
     "tags": ["direction"]
   },
   {
@@ -710,6 +740,7 @@
     "types": ["property", "direction"],
     "color": [[1, 4]],
     "desc": "DOWNRIGHT: A GO ->, but facing downright. Can also be spelled rightdown.",
+    "alias": ["rightdown"],
     "tags": ["direction"]
   },
   {
@@ -732,6 +763,7 @@
   },
   {
     "name": "txt_notranform",
+    "display": "no tranform",
     "sprite": ["text/notranform"],
     "types": ["property"],
     "color": [[2, 2]],
@@ -795,6 +827,7 @@
   },
   {
     "name": "txt_nodrag",
+    "display": "no drag",
     "sprite": ["text/nodrag"],
     "types": ["property"],
     "color": [[3, 0]],
@@ -842,15 +875,6 @@
     "color": [[1, 4]],
     "desc": "COOL: COOL units wear a pair of sunglasses, and don't shake.",
     "tags": ["cool"]
-  },
-  {
-    "name": "prop",
-    "sprite": ["prop"],
-    "types": ["property"],
-    "layer": 19,
-    "color": [[0, 3]],
-    "desc": "it's an empty property object",
-    "tags": ["property", "square", "box"]
   },
   {
     "name": "txt_thonk",

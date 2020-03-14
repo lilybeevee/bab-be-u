@@ -18,6 +18,15 @@
     "tags": ["wall"]
   },
   {
+    "name": "txt_waln't",
+    "display": "wal n't",
+    "sprite": ["text/wal meta", "n't"],
+    "types": ["object"],
+    "color": [[0, 1], [2, 2]],
+    "painted": [true, false],
+    "desc": "WAL N'T: The same as having these two text tiles in a row."
+  },
+  {
     "name": "roc",
     "sprite": ["roc"],
     "layer": 7,
@@ -33,6 +42,15 @@
     "types": ["object"],
     "color": [[6, 1]],
     "tags": ["rock"]
+  },
+  {
+    "name": "txt_rocn't",
+    "display": "roc n't",
+    "sprite": ["text/roc meta", "n't"],
+    "types": ["object"],
+    "color": [[6, 1], [2, 2]],
+    "painted": [true, false],
+    "desc": "ROC N'T: The same as having these two text tiles in a row."
   },
   {
     "name": "dor",
@@ -67,14 +85,6 @@
     "types": ["object"],
     "color": [[2, 4]],
     "tags": ["key"]
-  },
-  {
-    "name": "txt_&",
-    "sprite": ["text/and"],
-    "types": ["and"],
-    "color": [[0, 3]],
-    "desc": "&: Joins multiple conditions, subjects or objects together in a rule. Can also be spelled as ampersand with letters. Rules with stacked text and &s don't work like in baba, be sure to experiment!\nTry thingifying an &n't text, since no one would ever think to try that considering &n'ts are useless.",
-    "tags": ["and"]
   },
   {
     "name": "flog",
@@ -168,6 +178,7 @@
     "types": ["object"],
     "color": [[4, 2]],
     "desc": "LÜV: To use with letters, you need an umlaut!",
+    "alias": ["l*v"],
     "tags": ["love"]
   },
   {
@@ -438,6 +449,7 @@
     "types": ["object"],
     "color": [[0, 1]],
     "desc": "KATANY: Any object with GOT KATANY will have a KATANY.",
+    "alias": ["katanya"],
     "tags": ["weapon", "japan", "asia", "edgy"]
   },
   {
@@ -2081,7 +2093,8 @@
   },
   {
     "name": "ofin",
-    "sprite": ["of in"],
+    "display": "of in",
+    "sprite": ["ofin"],
     "layer": 7,
     "color": [[2, 3]],
     "desc": "why do they call it oven when you of in the cold food of out hot eat the food",
@@ -2089,7 +2102,8 @@
   },
   {
     "name": "txt_ofin",
-    "sprite": ["text/of in"],
+    "display": "of in",
+    "sprite": ["text/ofin"],
     "types": ["object"],
     "color": [[2, 3]],
     "desc": "of out",
@@ -2338,6 +2352,7 @@
     "types": ["object"],
     "color": [[2, 2]],
     "desc": "its now, or latr, no srsly",
+    "alias": ["latr"],
     "tags": ["present", "gift", "box", "christmas"]
   },
   {
@@ -2532,7 +2547,8 @@
   },
   {
     "name": "therealbabdictator",
-    "sprite": ["the real bab dictator"],
+    "display": "the real bab dictator",
+    "sprite": ["therealbabdictator"],
     "layer": 100,
     "color": [[0, 3]],
     "voice": "miku",
@@ -2557,6 +2573,15 @@
     "color": [[0, 3]],
     "desc": "don't be fooled by the sprite it's just fube",
     "tags": ["manifold garden", "arrow", "gravity"]
+  },
+  {
+    "name": "prop",
+    "sprite": ["prop"],
+    "types": ["property"],
+    "layer": 19,
+    "color": [[0, 3]],
+    "desc": "it's an empty property object",
+    "tags": ["property", "square", "box"]
   },
   {
     "name": "txt_prop",

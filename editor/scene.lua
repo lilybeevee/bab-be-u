@@ -400,12 +400,12 @@ w = w-h, h = h}):center():setGroup("settings")
   local twelfth = love.graphics.getWidth()/12
 
   --metatext
-  gooi.newButton({text = "", x = 9.25*twelfth, y = 0.25*twelfth, w = twelfth, h = twelfth, group = "mobile-controls-selector"}):setBGImage(sprites["text_meta"]):onPress(function()
+  gooi.newButton({text = "", x = 9.25*twelfth, y = 0.25*twelfth, w = twelfth, h = twelfth, group = "mobile-controls-selector"}):setBGImage(sprites["txt_meta"]):onPress(function()
       scene.keyPressed("lalt")
       scene.keyReleased("lalt")
   end):bg({0, 0, 0, 0})
   --n'ttext
-  gooi.newButton({text = "", x = 9.25*twelfth, y = 1.5*twelfth, w = twelfth, h = twelfth, group = "mobile-controls-selector"}):setBGImage(sprites["text_nt"]):onPress(function()
+  gooi.newButton({text = "", x = 9.25*twelfth, y = 1.5*twelfth, w = twelfth, h = twelfth, group = "mobile-controls-selector"}):setBGImage(sprites["txt_nt"]):onPress(function()
       scene.keyPressed("lctrl")
       scene.keyPressed("n")
       scene.keyReleased("lctrl")
@@ -499,8 +499,8 @@ function scene.keyPressed(key)
       searchstr = searchstr..love.system.getClipboardText()
     elseif key == "return" then
       if key_down["lalt"] or key_down["ralt"] or key_down["lshift"] or key_down["rshift"] then
-        if tiles_by_name["text_"..subsearchstr] then
-          brush.id = tiles_by_name["text_"..subsearchstr]
+        if tiles_by_name["txt_"..subsearchstr] then
+          brush.id = tiles_by_name["txt_"..subsearchstr]
           brush.special = {}
           selector_open = false
         end
@@ -520,8 +520,8 @@ function scene.keyPressed(key)
           brush.id = tiles_by_name[subsearchstr]
           brush.special = {}
           selector_open = false
-        elseif tiles_by_name["text_"..subsearchstr] then
-          brush.id = tiles_by_name["text_"..subsearchstr]
+        elseif tiles_by_name["txt_"..subsearchstr] then
+          brush.id = tiles_by_name["txt_"..subsearchstr]
           brush.special = {}
           selector_open = false
         end
@@ -701,7 +701,7 @@ function scene.keyPressed(key)
     current_tile_grid = copyTable(current_tile_grid)
     for i = 0,tile_grid_width*tile_grid_height do
       if current_tile_grid[i] ~= nil and current_tile_grid[i] > 0 then
-        local new_tile_id = tiles_by_name["text_" .. tiles_list[current_tile_grid[i]].name]
+        local new_tile_id = tiles_by_name["txt_" .. tiles_list[current_tile_grid[i]].name]
         if (new_tile_id ~= nil) then
           current_tile_grid[i] = new_tile_id
         else
@@ -1434,8 +1434,8 @@ function scene.draw(dt)
                   love.graphics.draw(sprite, (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
                 end
               else
-                if unit.fullname == "text_wontn't" then
-                  sprite = sprites["text_wo"]
+                if unit.fullname == "txt_wontn't" then
+                  sprite = sprites["text/wo"]
                 end
                 love.graphics.draw(sprite, (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
               end
@@ -1474,7 +1474,7 @@ function scene.draw(dt)
               end
               setColor(unit.color)
             end
-            if unit.nt ~= nil and unit.fullname ~= "text_wontn't" then
+            if unit.nt ~= nil and unit.fullname ~= "txt_wontn't" then
               setColor({2, 2})
               local ntsprite = sprites["n't"]
               love.graphics.draw(ntsprite, (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
@@ -1562,8 +1562,8 @@ function scene.draw(dt)
                 love.graphics.draw(sprite, (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
               end
             else
-              if tile.name == "text_wontn't" then
-                sprite = sprites["text_wo"]
+              if tile.name == "txt_wontn't" then
+                sprite = sprites["text/wo"]
               end
               love.graphics.draw(sprite, (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
             end
@@ -1577,7 +1577,7 @@ function scene.draw(dt)
               end
               setColor(tile.color)
             end
-            if tile.nt ~= nil and tile.name ~= "text_wontn't" then
+            if tile.nt ~= nil and tile.name ~= "txt_wontn't" then
               if found_matching_tag then setColor({2, 2}) end
               local ntsprite = sprites["n't"]
               love.graphics.draw(ntsprite, (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
@@ -1640,8 +1640,8 @@ function scene.draw(dt)
                 love.graphics.draw(sprite, (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, math.rad(rotation), 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
               end
             else
-              if tile.name == "text_wontn't" then
-                sprite = sprites["text_wo"]
+              if tile.name == "txt_wontn't" then
+                sprite = sprites["text/wo"]
               end
               love.graphics.draw(sprite, (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, math.rad(rotation), 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
             end
@@ -1656,7 +1656,7 @@ function scene.draw(dt)
             end
             setColor(tile.color)
           end
-          if tile.nt ~= nil and tile.name ~= "text_wontn't" then
+          if tile.nt ~= nil and tile.name ~= "txt_wontn't" then
             setColor({2,2},0.25)
             local ntsprite = sprites["n't"]
             love.graphics.draw(ntsprite, (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
@@ -2446,14 +2446,14 @@ function scene.wheelMoved(whx, why)
       if tiles_list[brush.id].tometa then
         new = tiles_list[brush.id].tometa
       else
-        new = "text_"..new
+        new = "txt_"..new
       end
     elseif why > 0 then
       if tiles_list[brush.id].demeta then
         new = tiles_list[brush.id].demeta
       else
-        if new:starts("text_") then
-          new = new:sub(6, -1)
+        if new:starts("txt_") then
+          new = new:sub(5, -1)
         else
           new = new
         end -- not gonna set it to nothing

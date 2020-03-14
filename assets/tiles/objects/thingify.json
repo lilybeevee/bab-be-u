@@ -1,0 +1,95 @@
+[
+  {
+    "name": "sans",
+    "sprite": ["sans_base", "sans_jacket"],
+    "layer": 11,
+    "color": [[0, 3], [1, 3]],
+    "painted": [false, true],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 19, "y": 5, "w": 2, "h": 2}
+    },
+    "voice": "overdriven guitar",
+    "desc": "sans",
+    "tags": ["chars", "sans", "undertale", "skeleton"]
+  },
+  {
+    "name": "ditto",
+    "sprite": ["ditto"],
+    "layer": 11,
+    "color": [[3, 3]],
+    "txtify": "text_''",
+    "rotate": true,
+    "features": {
+      "which": {"x": 1, "y": 6},
+      "sant": {"y": 4},
+      "sans": {"x": 10, "y": 16, "w": 5, "h": 5},
+      "gunne": {}
+    },
+    "voice": "ditto",
+    "tags": ["chars", "ditto", "pokemon"]
+  },
+  {
+    "name": "copkat",
+    "sprite": ["copkat_base", "copkat_stuff", "copkat_badge"],
+    "layer": 11,
+    "color": [[0, 3], [1, 3], [2, 4]],
+    "painted": [true, false, false],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 27, "y": 14, "w": 2, "h": 2}
+    },
+    "voice": "cat",
+    "desc": "u hav da wight to wemain siwent!!",
+    "tags": ["chars", "cop", "police", "cat"]
+  },
+  {
+    "name": "zawarudo",
+    "display": "za warudo",
+    "sprite": ["zawarudo"],
+    "layer": 11,
+    "color": [[2, 4]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 19, "y": 10, "w": 2, "h": 2}
+    },
+    "voice": "muda",
+    "desc": "WRYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY",
+    "tags": ["chars", "the world", "jojo", "DIO"]
+  },
+  {
+    "name": "thingify",
+    "sprite": ["thingify"],
+    "layer": 7,
+    "color": [[5, 2]],
+    "desc": "its a thing.",
+    "tags": ["thing"]
+  },
+  {
+    "name": "&",
+    "sprite": ["and"],
+    "layer": 7,
+    "color": [[0, 3]],
+    "rotate": true,
+    "desc": "only if all are true",
+    "tags": ["and gate", "logic gate"]
+  },
+  {
+    "name": "&n't",
+    "display": "& n't",
+    "sprite": ["andn't"],
+    "layer": 7,
+    "color": [[0, 3]],
+    "rotate": true,
+    "desc": "only if not all are true",
+    "tags": ["nand gate", "logic gate"]
+  },
+  {
+    "name": "therealqt",
+    "display": "the real qt",
+    "sprite": ["the real qt"],
+    "layer": 22,
+    "color": [[4, 2]],
+    "txtify": "text_qt"
+  }
+]

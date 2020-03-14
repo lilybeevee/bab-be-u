@@ -77,7 +77,7 @@ function undoOneAction(turn, i, v, ignore_no_undo)
     local convert = v[6]
     --If the unit was converted into 'no undo' byproducts that still exist, don't bring it back.
     local proceed = true
-    if (convert and not ignore_no_undo and rules_with["no undo"] ~= nil) then
+    if (convert and not ignore_no_undo and rules_with["noundo"] ~= nil) then
       proceed = not turnedIntoOnlyNoUndoUnits(turn, i, v[7])
     end
     if (proceed) then
@@ -110,7 +110,7 @@ function undoOneAction(turn, i, v, ignore_no_undo)
     end
   elseif action == "destroy_level" then
     level_destroyed = false
-  elseif action == "za warudo" then
+  elseif action == "zawarudo" then
     timeless = not v[2]
     if timeless then playSound("timestop", 0.5)
     else playSound("time resume", 0.5)
@@ -357,7 +357,7 @@ function doTryAgain(_ignore_no_undo)
   in_try_again = true
   try_again_cache = {}
   --cache units that are no undo so even if it's conditional they remain that way the entire time
-  local isnoundo = getUnitsWithEffect("no undo")
+  local isnoundo = getUnitsWithEffect("noundo")
   for _,unit in ipairs(isnoundo) do
     try_again_cache[unit] = true
   end
@@ -380,7 +380,7 @@ function isNoUndo(unit, just_created)
 -- if we just created a unit by undoing a removal, it won't be in the cache, so we should chack against the current rules to see whether that removal really should have been undone.
     return try_again_cache[unit] == true
   else
-    return hasProperty(unit, "no undo")
+    return hasProperty(unit, "noundo")
   end
 end
 
