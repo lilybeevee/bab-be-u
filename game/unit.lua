@@ -853,7 +853,7 @@ function updateUnits(undoing, big_update)
               table.insert(time_destroy,on.id)
               addUndo({"time_destroy",on.id})
             end
-            addParticles("destroy", on.x, on.y, on.color)
+            addParticles("destroy", on.x, on.y, on.first_color)
           end
           if onmoved and ignoreCheck(unit, on) then
             if timecheck(unit,"vs",on) then
@@ -1020,7 +1020,7 @@ function updateUnits(undoing, big_update)
               addParticles("destroy", unit.x, unit.y, unit.color_override or unit.first_color)
             end
             if ignore_on then
-              addParticles("destroy", on.x, on.y, on.color)
+              addParticles("destroy", on.x, on.y, on.first_color)
             end
             --unlike other destruction effects, keys and doors pair off one-by-one
             to_destroy = handleDels(to_destroy)
@@ -2080,7 +2080,7 @@ function levelBlock()
           if not lvlsafe then return 0,0 end
         elseif ignoreCheck(unit, outerlvl, "noswim") then
           table.insert(to_destroy, unit)
-          addParticles("destroy", unit.x, unit.y, unit.color)
+          addParticles("destroy", unit.x, unit.y, unit.first_color)
         end
       end
     end
