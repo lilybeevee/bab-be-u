@@ -1007,28 +1007,29 @@ function scene.draw(dt)
         love.graphics.setColor(1,1,1,1)
         love.graphics.draw(draw, fulldrawx + ox, fulldrawy + oy, 0, sprite:getWidth() / TILE_SIZE, sprite:getHeight() / TILE_SIZE, draw:getWidth() / 2, draw:getHeight() / 2)
       else
-        for i,image in ipairs(unit.sprite) do
-          if unit.fullname == "detox" and graphical_property_cache["slep"][unit] ~= nil then
-            setColor{1,2}
-          else
-            setColor(getUnitColor(unit, i))
-          end
-          if onlycolor or (#unit.overlay > 0 and (unit.painted and unit.painted[i]) or not unit.painted) then
-            love.graphics.setColor(1,1,1,1)
-          end
-          if not onlycolor or not unit.painted or (onlycolor and unit.painted and unit.painted[i]) then
-            if image == "letter_custom" then
-              if unit.special.customletter then
-                drawCustomLetter(unit.special.customletter, fulldrawx + ox, fulldrawy + oy, 0, unit.draw.scalex, unit.draw.scaley, 16, 16)
-              else
-                love.graphics.draw(sprites["wut"], fulldrawx + ox, fulldrawy + oy, 0, unit.draw.scalex, unit.draw.scaley, draw:getWidth() / 2, draw:getHeight() / 2)
-              end
+        if overlay then
+          love.graphics.draw(draw, fulldrawx + ox, fulldrawy + oy, 0, unit.draw.scalex, unit.draw.scaley, draw:getWidth() / 2, draw:getHeight() / 2)
+        else
+          for i,image in ipairs(unit.sprite) do
+            if unit.fullname == "detox" and graphical_property_cache["slep"][unit] ~= nil then
+              setColor{1,2}
             else
-              if image == "lvl" and readSaveFile{"levels", unit.special.level, "won"} then
-                image = "lvl_won"
+              setColor(getUnitColor(unit, i))
+            end
+            if onlycolor or (#unit.overlay > 0 and (unit.painted and unit.painted[i]) or not unit.painted) then
+              love.graphics.setColor(1,1,1,1)
+            end
+            if not onlycolor or not unit.painted or (onlycolor and unit.painted and unit.painted[i]) then
+              if image == "letter_custom" then
+                if unit.special.customletter then
+                  drawCustomLetter(unit.special.customletter, fulldrawx + ox, fulldrawy + oy, 0, unit.draw.scalex, unit.draw.scaley, 16, 16)
+                else
+                  love.graphics.draw(sprites["wut"], fulldrawx + ox, fulldrawy + oy, 0, unit.draw.scalex, unit.draw.scaley, draw:getWidth() / 2, draw:getHeight() / 2)
+                end
+              else
+                local sprit = getUnitSprite(image, unit)
+                love.graphics.draw(sprit, fulldrawx + ox, fulldrawy + oy, 0, unit.draw.scalex, unit.draw.scaley, sprit:getWidth() / 2, sprit:getHeight() / 2)
               end
-              local sprit = sprites[image .. wobble_suffix]
-              love.graphics.draw(sprit, fulldrawx + ox, fulldrawy + oy, 0, unit.draw.scalex, unit.draw.scaley, sprit:getWidth() / 2, sprit:getHeight() / 2)
             end
           end
         end

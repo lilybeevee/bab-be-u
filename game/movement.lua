@@ -799,7 +799,7 @@ It is probably possible to do, but lily has decided that it's not important enou
   
   if scene.setPathlockBox then 
     local showlock
-    for _,u in ipairs(getUnitsWithEffect("u")) do
+    for _,u in ipairs(getUnitsWithEffect("curse")) do
       for _,dir in ipairs(dirs8) do
         local _, __, ___, x, y = getNextTile(u, dir[1], dir[2], dirs8_by_offset[dir[1]][dir[2]])
         local facing = getUnitsOnTile(x, y, "lin")

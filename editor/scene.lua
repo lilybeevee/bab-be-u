@@ -1412,15 +1412,19 @@ function scene.draw(dt)
             end
             
             for j,image in ipairs(unit.sprite) do
-              local sprite = sprites[image]
-              setColor(getUnitColor(unit, j))
+              if image == "lin" and unit.special.pathlock and unit.special.pathlock ~= "none" then
+                setColor{2, 2}
+              else
+                setColor(getUnitColor(unit, j))
+              end
               if image == "letter_custom" then
                 if unit.special.customletter then
-                  drawCustomLetter(unit.special.customletter, (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+                  drawCustomLetter(unit.special.customletter, (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, TILE_SIZE / 2, TILE_SIZE / 2)
                 else
-                  love.graphics.draw(sprites["wut"], (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+                  love.graphics.draw(sprites["wut"], (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, TILE_SIZE / 2, TILE_SIZE / 2)
                 end
               else
+                sprite = getUnitSprite(image, unit)
                 love.graphics.draw(sprite, (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
               end
             end
@@ -1532,7 +1536,7 @@ function scene.draw(dt)
             if not found_matching_tag then love.graphics.setColor(0.2,0.2,0.2) end
             
             for j,image in ipairs(tile.sprite) do
-              local sprite = sprites[image] or sprites["wat"]
+              local sprite = sprites[image]
               if found_matching_tag then setColor(getUnitColor(tile, j, brush.color)) end
               love.graphics.draw(sprite, (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, TILE_SIZE / 2, TILE_SIZE / 2)
             end

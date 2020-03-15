@@ -3852,3 +3852,36 @@ function initializeTiles(tiles)
     addTile(tile)
   end
 end
+
+function getUnitSprite(name, unit)
+  local new_name = name
+  if unit then
+    if name == "lvl" and unit.special.visibility == "hidden" then
+      new_name = "lvl_hidden"
+    elseif name == "lvl" and unit.special.level and readSaveFile{"levels", unit.special.level, "won"} then
+      new_name = "lvl_won"
+    elseif name == "lin" and unit.special.pathlock and unit.special.pathlock ~= "none" then
+      new_name = "lin_gate"
+    elseif name == "lin" and (scene ~= editor or settings["draw_editor_lins"]) then
+      new_name = "no1"
+    elseif name == "lin" and unit.special.visibility == "hidden" then
+      new_name = "lin_hidden"
+    end
+  end
+  if unit and unit.wobble then
+    local wobble_frame = (unit.frame + anim_stage) % 3 + 1
+    return sprites[new_name.."_"..wobble_frame] or sprites[new_name] or sprites["wat"]
+  else
+    return sprites[new_name] or sprites["wat"]
+  end
+end
+
+function getTileSprite(name, tile)
+  local new_name = name
+  if tile and tile.wobble then
+    local wobble_frame = anim_stage % 3 + 1
+    return sprites[new_name.."_"..anim_stage] or sprites[new_name] or sprites["wat"]
+  else
+    return sprites[new_name] or sprites["wat"]
+  end
+end
