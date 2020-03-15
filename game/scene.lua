@@ -1690,8 +1690,10 @@ function scene.draw(dt)
       love.graphics.setColor(0.92, 0.92, 1)
       love.graphics.translate(love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
       love.graphics.scale(win_size, win_size)
-      local tf_sprite = sprites[tile.sprite]
-      love.graphics.draw(tf_sprite, -tf_sprite:getWidth() / 2 + 40, -tf_sprite:getHeight() / 2 - 45, 0, 4, 4)
+      for _,spritename in ipairs(tile.sprite) do
+        local tf_sprite = sprites[spritename] or sprites["wat"]
+        love.graphics.draw(tf_sprite, -tf_sprite:getWidth() / 2 + 40, -tf_sprite:getHeight() / 2 - 45, 0, 4, 4)
+      end
       if tile.meta > 0 then
         local metasprite = tile.meta == 2 and sprites["meta2"] or sprites["meta1"]
 				love.graphics.draw(metasprite, -metasprite:getWidth() / 2 + 40, -metasprite:getHeight() / 2 - 45, 0, 4, 4)

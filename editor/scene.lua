@@ -1104,7 +1104,7 @@ function scene.update(dt)
             end
           else
             local selected = hx + hy * tile_grid_width
-            if current_tile_grid[selected] then
+            if current_tile_grid[selected] and current_tile_grid[selected] ~= 0 then
               brush.id = current_tile_grid[selected]
               brush.special = {}
               brush.picked_tile = nil
