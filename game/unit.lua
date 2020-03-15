@@ -1975,7 +1975,7 @@ function handleTimeDels(time_destroy)
     addUndo({"time_destroy_remove", unitid})
     if unit ~= nil and not hasProperty(unit, "protecc") then
       if not already_added[unitid] then
-        addParticles("destroy",unit.x,unit.y,unit.color)
+        addParticles("destroy",unit.x,unit.y,unit.first_color)
       end
       unit.destroyed = true
       unit.removed = true
