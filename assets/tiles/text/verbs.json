@@ -172,5 +172,16 @@
     "wobble": true,
     "desc": "IS (Verb): Causes the subject to become an object or have a property.",
     "tags": ["is"]
+  },
+  {
+    "name": "txt_isn't",
+    "display": "is not",
+    "sprite": ["text/is not", "text/not (is)"],
+    "types": ["verb_class", "verb_property", "verb"],
+    "color": [[0, 3], [2, 2]],
+    "painted": [true, false],
+    "wobble": true,
+    "desc": "IS NOT (Verb): The same as having these two text tiles in a row.",
+    "tags": ["isn't", "is not", "verb"]
   }
 ]

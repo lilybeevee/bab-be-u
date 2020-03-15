@@ -3858,7 +3858,7 @@ function getUnitSprite(name, unit)
   if unit then
     if name == "lvl" and unit.special.visibility == "hidden" then
       new_name = "lvl_hidden"
-    elseif name == "lvl" and unit.special.level and readSaveFile{"levels", unit.special.level, "won"} then
+    elseif name == "lvl" and scene == game and unit.special.level and readSaveFile{"levels", unit.special.level, "won"} then
       new_name = "lvl_won"
     elseif name == "lin" and unit.special.pathlock and unit.special.pathlock ~= "none" then
       new_name = "lin_gate"
