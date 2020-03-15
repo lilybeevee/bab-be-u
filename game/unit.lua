@@ -2510,7 +2510,8 @@ function convertLevel()
 
   local converts = matchesRule(outerlvl,"be","?")
   for _,match in ipairs(converts) do
-    if not (hasProperty(outerlvl, "lvl") or hasProperty(outerlvl, "notranform")) and match.rule.object.type and (match.rule.object.type.object or match.rule.object.name:starts("txt_")) then
+    local object = match.rule.object
+    if not (hasProperty(outerlvl, "lvl") or hasProperty(outerlvl, "notranform")) and object.type and (object.type.object or object.name:starts("txt_")) and object.name ~= "no1" then
       if match.rule.object.name == "text" then
         tile = getTile("txt_lvl")
       elseif match.rule.object.name:starts("this") then
@@ -2518,7 +2519,7 @@ function convertLevel()
       else
         tile = getTile(match.rule.object.name)
       end
-      if tile == nil and match.rule.object.name == "every1" and not hasRule(outerlvl, "be", "lvl") then
+      if tile == nil and match.rule.object.name == "every1" then
         for _,v in ipairs(referenced_objects) do
           if not hasRule(outerlvl, "ben't", v) then
             table.insert(transform_results, v)
