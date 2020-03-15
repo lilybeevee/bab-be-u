@@ -883,5 +883,14 @@
     "color": [[2, 4]],
     "desc": "THONK: THONK units question their own FRAGIL existence.",
     "tags": ["thinking", "wonder"]
+  },
+  {
+    "name": "txt_you",
+    "sprite": ["text/you"],
+    "types": ["property"],
+    "color": [[4, 1]],
+    "wobble": true,
+    "desc": "YOU: Controlled by u, the player!",
+    "tags": ["you", "p1", "player"]
   }
 ]

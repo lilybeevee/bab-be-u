@@ -1371,5 +1371,23 @@
     "color": [[0, 3]],
     "desc": "yea its the same spelling what else would it be, SNOWM??",
     "tags": ["chars", "snom", "pokemon"]
+  },
+  {
+    "name": "baba",
+    "sprite": ["baba"],
+    "layer": 11,
+    "color": [[0, 3]],
+    "rotate": true,
+    "wobble": true,
+    "desc": "bab.... a???"
+  },
+  {
+    "name": "txt_baba",
+    "sprite": ["text/baba"],
+    "types": ["object"],
+    "color": [[4, 1]],
+    "wobble": true,
+    "desc": "\"BABA\". thats what it says",
+    "tags": ["chars", "baba"]
   }
 ]

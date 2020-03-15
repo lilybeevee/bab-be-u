@@ -289,7 +289,7 @@ function parseRules(undoing)
             validrule = false
           end
           
-          if (i == 2) and hasRule(unit,"be","ortho") and not hasRule(unit,"be","diag") then
+          if (i == 2) and (unit.wobble or hasRule(unit,"be","ortho")) and not hasRule(unit,"be","diag") then
             validrule = false
           end
           --print(tostring(x)..","..tostring(y)..","..tostring(dx)..","..tostring(dy)..","..tostring(ndx)..","..tostring(ndy)..","..tostring(#getUnitsOnTile(x+ndx, y+ndy, "text"))..","..tostring(#getUnitsOnTile(x+dx, y+dy, "text")))
@@ -760,6 +760,12 @@ function addRule(full_rule)
       rules.object.conds = copyTable(rules.object.conds) or {};
       table.insert(rules.object.conds, rules.object);
     end
+  end
+  
+  if verb == "is" then
+    local new_verb = copyTable(rules.verb)
+    new_verb.name = "be"
+    addRuleSimple(rules.subject, new_verb, rules.object, units, dir)
   end
 
   if subject == "every1" then

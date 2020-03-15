@@ -163,5 +163,14 @@
     "desc": "WO: won't n't.",
     "alias": ["wo"],
     "tags": ["wo", "will", "can"]
+  },
+  {
+    "name": "txt_is",
+    "sprite": ["text/is"],
+    "types": ["verb_class", "verb_property", "verb"],
+    "color": [[0, 3]],
+    "wobble": true,
+    "desc": "IS (Verb): Causes the subject to become an object or have a property.",
+    "tags": ["is"]
   }
 ]

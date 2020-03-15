@@ -499,7 +499,7 @@ function scene.keyPressed(key)
       searchstr = searchstr..love.system.getClipboardText()
     elseif key == "return" then
       if key_down["lalt"] or key_down["ralt"] or key_down["lshift"] or key_down["rshift"] then
-        if getTile("txt_"..subsearchstr) then
+        if getTile("txt_"..subsearchstr) and (settings["baba"] or not getTile("txt_"..subsearchstr).wobble) then
           brush.id = "txt_"..subsearchstr
           brush.special = {}
           selector_open = false
@@ -516,11 +516,11 @@ function scene.keyPressed(key)
           selector_open = false
         end
       else
-        if getTile(subsearchstr) then
+        if getTile(subsearchstr) and (settings["baba"] or not getTile(subsearchstr).wobble) then
           brush.id = subsearchstr
           brush.special = {}
           selector_open = false
-        elseif getTile("txt_"..subsearchstr) then
+        elseif getTile("txt_"..subsearchstr) and (settings["baba"] or not getTile("txt_"..subsearchstr).wobble) then
           brush.id = "txt_"..subsearchstr
           brush.special = {}
           selector_open = false
@@ -700,8 +700,11 @@ function scene.keyPressed(key)
     --copy so we don't override original list
     current_tile_grid = copyTable(current_tile_grid)
     for i = 0,tile_grid_width*tile_grid_height do
-      if current_tile_grid[i] ~= nil then
-        current_tile_grid[i] = getTile("txt_" .. current_tile_grid[i]).name
+      if current_tile_grid[i] ~= nil and current_tile_grid[i] ~= 0 then
+        local tile = getTile("txt_" .. current_tile_grid[i])
+        if tile then
+          current_tile_grid[i] = tile.name
+        end
       end
     end
   end

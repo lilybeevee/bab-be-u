@@ -274,6 +274,25 @@ function doMovement(movex, movey, key)
           end
         end
       end
+
+      local you = getUnitsWithEffectAndCount("you")
+      for unit,uness in pairs(you) do
+        if not hasProperty(unit, "slep") and slippers[unit.id] == nil and timecheck(unit,"be","you") then
+          if (key == "wasd") or ((key == "udlr") and not hasProperty(nil,"utoo")) or ((key == "numpad" or key == "ijkl") and not hasProperty(nil,"utres")) then
+            if movex == 0 or movey == 0 then
+              local dir = dirs8_by_offset[movex][movey]
+              --If you want baba style 'when you moves, even if it fails to move, it changes direction', uncomment this.
+              table.insert(unit.moves, {reason = "u", dir = dir, times = 1})
+              --[[addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
+              updateDir(unit, dir)]]
+              if #unit.moves > 0 and not already_added[unit] then
+                table.insert(moving_units, unit)
+                already_added[unit] = true
+              end
+            end
+          end
+        end
+      end
       
       local yall = getUnitsWithEffectAndCount("y'all")
       for unit,uness in pairs(yall) do

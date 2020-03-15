@@ -3129,6 +3129,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
   unit.painted = deepCopy(data.painted)
   unit.layer = data.layer
   unit.rotate = data.rotate
+  unit.wobble = data.wobble
   unit.got_objects = {}
   unit.sprite_transforms = data.sprite_transforms
   unit.features = data.features

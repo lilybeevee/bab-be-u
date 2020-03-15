@@ -543,6 +543,9 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
 
   --there are more properties than there are nouns, so we're more likely to miss based on a property not existing than based on a noun not existing
   rules_list = rules_with[(nrules[2] ~= "be" and nrules[2]) or nrules[3] or nrules[1] or nrules[2]] or {}
+  if #rules_list == 0 and rules_with[2] == "be" then
+    rules_list = rules_with["is"]
+  end
   mergeTable(rules_list, rules_with[fnrules[3] or fnrules[1]] or {})
 
   if (debugging) then
@@ -928,13 +931,14 @@ function countProperty(unit, prop, ignore_flye)
 end
 
 function hasU(unit)
-  return hasProperty(unit,"u") or hasProperty(unit,"utoo") or hasProperty(unit,"utres") or hasProperty(unit,"y'all")
+  return hasProperty(unit,"u") or hasProperty(unit,"utoo") or hasProperty(unit,"utres") or hasProperty(unit,"you") or hasProperty(unit,"y'all")
 end
 
 function getUs()
   local yous = getUnitsWithEffect("u")
   mergeTable(yous,getUnitsWithEffect("utoo"))
   mergeTable(yous,getUnitsWithEffect("utres"))
+  mergeTable(yous,getUnitsWithEffect("you"))
   mergeTable(yous,getUnitsWithEffect("y'all"))
   return yous
 end
@@ -2512,7 +2516,7 @@ function string.isText(str)
 end
 
 function string.isNt(str)
-  return str:ends("n't") and str ~= "txt_n't"
+  return str:ends("n't") and not (str == "n't" or str:ends("_n't"))
 end
 
 function mergeTable(t, other)
@@ -3742,7 +3746,7 @@ function addTile(tile)
   tile.meta = tile.meta or 0
 
   if tile.is_text == nil then
-    tile.is_text = tile.name:starts("txt_")
+    tile.is_text = tile.name:starts("txt_") or tile.name:starts("letter_")
   end
 
   if tile.convertible == nil then
@@ -3773,6 +3777,9 @@ function addTile(tile)
   newtlist[tile.name] = tile
   
   if tile.is_text and not tile.typeset.letter then
+    local text_list = tile.wobble and wobble_text_list or text_list
+    local text_in_tiles = tile.wobble and wobble_text_in_tiles or text_in_tiles
+
     text_list[tile.txtname] = tile
     text_in_tiles[tile.txtname] = tile.txtname
 
@@ -3819,6 +3826,7 @@ function getTile(name)
     tile.name = "txt_" .. tile.name
     tile.display = tile.display .. " txt"
     tile.sprite = tile.metasprite or tile.sprite
+    tile.types = {"object"}
     tile.txtname = "txt_" .. tile.txtname
     tile.is_text = true
     tile.meta = tile.meta + 1
@@ -3834,6 +3842,8 @@ function initializeTiles(tiles)
   newtlist = {}
   text_list = {}
   text_in_tiles = {}
+  wobble_text_list = {}
+  wobble_text_in_tiles = {}
   group_names = {}
   group_names_nt = {}
   group_names_set = {}

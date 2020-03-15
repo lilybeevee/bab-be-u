@@ -3,7 +3,8 @@ window_dir = 0
 
 local mask_shader = pcallNewShader[[
   vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords) {
-     if (Texel(texture, texture_coords).rgb == vec3(0.0)) {
+     vec4 tx = Texel(texture, texture_coords).rgba;
+     if (tx.rgb == vec3(0.0) || tx.a == 0) {
         // a discarded pixel wont be applied as the stencil.
         discard;
      }
@@ -868,8 +869,12 @@ function scene.draw(dt)
         else
           color = {1,1,1,1}
         end
-			else
-				color = {getPaletteColor(color[1], color[2])}
+      else
+        local palette = current_palette
+        if current_palette == "default" and unit.wobble then
+          palette = "baba"
+        end
+				color = {getPaletteColor(color[1], color[2], palette)}
 			end
 
 			-- multiply brightness by darkened bg color
@@ -968,11 +973,38 @@ function scene.draw(dt)
     love.graphics.push()
     love.graphics.rotate(math.rad(rotation))
     love.graphics.translate(-fulldrawx, -fulldrawy)
+
+    local function drawSpriteExtras()
+      if unit.meta > 0 then
+				setColor({4, 1})
+        local metasprite = unit.meta == 2 and sprites["meta2"] or sprites["meta1"]
+        if spookmode and sessionseed < drawx/3%0.5*2 then
+          love.graphics.setColor(0,0,0)
+        end
+				love.graphics.draw(metasprite, fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+				if unit.meta > 2 and unit.draw.scalex == 1 and unit.draw.scaley == 1 then
+					love.graphics.printf(tostring(unit.meta), fulldrawx-1, fulldrawy+6, 32, "center")
+				end
+				setColor(unit.color)
+			end
+      if unit.nt then
+        setColor({2, 2})
+        local ntsprite = sprites["n't"]
+        love.graphics.draw(ntsprite, fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+        setColor(unit.color)
+      end
+      if displayids then
+        setColor({1,4})
+        love.graphics.printf(tostring(unit.id), fulldrawx-3, fulldrawy-18, 32, "center")
+        setColor(unit.color)
+      end
+    end
     
     local function drawSprite(overlay, onlycolor, stretch)
       local draw = sprites[overlay or (unit.sprite[1]..wobble_suffix)]
       local ox, oy = getOffset()
       if overlay and stretch then
+        love.graphics.setColor(1,1,1,1)
         love.graphics.draw(draw, fulldrawx + ox, fulldrawy + oy, 0, sprite:getWidth() / TILE_SIZE, sprite:getHeight() / TILE_SIZE, draw:getWidth() / 2, draw:getHeight() / 2)
       else
         for i,image in ipairs(unit.sprite) do
@@ -1000,29 +1032,10 @@ function scene.draw(dt)
             end
           end
         end
-      end
-			if unit.meta > 0 then
-				setColor({4, 1})
-        local metasprite = unit.meta == 2 and sprites["meta2"] or sprites["meta1"]
-        if spookmode and sessionseed < drawx/3%0.5*2 then
-          love.graphics.setColor(0,0,0)
+
+        if #unit.overlay == 0 then
+          drawSpriteExtras()
         end
-				love.graphics.draw(metasprite, fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
-				if unit.meta > 2 and unit.draw.scalex == 1 and unit.draw.scaley == 1 then
-					love.graphics.printf(tostring(unit.meta), fulldrawx-1, fulldrawy+6, 32, "center")
-				end
-				setColor(unit.color)
-			end
-      if unit.nt then
-        setColor({2, 2})
-        local ntsprite = sprites["n't"]
-        love.graphics.draw(ntsprite, fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
-        setColor(unit.color)
-      end
-      if displayids then
-        setColor({1,4})
-        love.graphics.printf(tostring(unit.id), fulldrawx-3, fulldrawy-18, 32, "center")
-        setColor(unit.color)
       end
     end
     
@@ -1187,6 +1200,7 @@ function scene.draw(dt)
         love.graphics.setStencilTest(old_test_mode, old_test_value)
         love.graphics.pop()
       end
+      drawSpriteExtras()
     end
 
     if unit.is_portal then
