@@ -3521,7 +3521,7 @@ end
 function getTableWithDefaults(o, default)
   o = o or {}
   for k,v in pairs(default) do
-    if not o[k] then o[k] = v end
+    if o[k] == nil then o[k] = v end
   end
   return o
 end
@@ -3638,30 +3638,6 @@ function getIcon(path)
   end
 end
 
-function getUnitColors(unit, override_)
-  local override = override_ or unit.color_override
-  local colors = deepCopy(unit.color)
-  if override then
-    for i,_ in ipairs(colors) do
-      if unit.painted[i] then
-        colors[i] = override
-      end
-    end
-  end
-  return colors
-end
-
-function getUnitColor(unit, index, override_)
-  local override = override_ or unit.color_override
-  local colors = deepCopy(unit.color)
-
-  if override and unit.painted[index] then
-    return override
-  else
-    return colors[index]
-  end
-end
-
 -- logic for how this function works:
 -- nil checks (both nil -> true, one nil -> false)
 -- loop for colors in a if there are multiple
@@ -3736,6 +3712,7 @@ function addTile(tile)
   tile.types = tile.types or {"object"}
   tile.painted = tile.painted or {true}
   tile.rotate = tile.rotate or false
+  tile.portal = tile.portal or false
   tile.wobble = tile.wobble or false
   tile.sprite_transforms = tile.sprite_transforms or {}
   tile.features = tile.features or {}
@@ -3853,35 +3830,348 @@ function initializeTiles(tiles)
   end
 end
 
+function getTileSprite(name, tile, wobble_add)
+  local new_name = name
+  if tile and tile.wobble then
+    wobble_add = wobble_add or 1
+    local wobble_frame = (wobble_add + anim_stage) % 3 + 1
+    if sprites[new_name.."_"..wobble_frame] then
+      return sprites[new_name.."_"..wobble_frame], new_name.."_"..wobble_frame
+    end
+  end
+  if sprites[new_name] then
+    return sprites[new_name], new_name
+  end
+  return sprites["wat"], "wat"
+end
+
+function getTileSprites(tile)
+  local sprites = {}
+  for i,sprite in ipairs(tile.sprite) do
+    local _,name = getTileSprite(sprite, tile)
+    sprites[i] = name
+  end
+  return sprites
+end
+
+function getTileColor(tile, index, override)
+  if index then
+    if override and tile.painted[index] then
+      return deepCopy(override)
+    else
+      return deepCopy(tile.color[index])
+    end
+  else
+    for i,color in ipairs(tile.color) do
+      if tile.painted[i] then
+        return getTileColor(tile, i, override)
+      end
+    end
+    return deepCopy(tile.color[1])
+  end
+end
+
+function getTileColors(tile, override)
+  local colors = {}
+  for i = 1, #tile.color do
+    colors[i] = getTileColor(tile, i, override)
+  end
+  return colors
+end
+
 function getUnitSprite(name, unit)
   local new_name = name
   if unit then
+    -- lvl stuff
     if name == "lvl" and unit.special.visibility == "hidden" then
       new_name = "lvl_hidden"
     elseif name == "lvl" and scene == game and unit.special.level and readSaveFile{"levels", unit.special.level, "won"} then
       new_name = "lvl_won"
+    -- lin stuff
     elseif name == "lin" and unit.special.pathlock and unit.special.pathlock ~= "none" then
       new_name = "lin_gate"
     elseif name == "lin" and (scene ~= editor or settings["draw_editor_lins"]) then
       new_name = "no1"
     elseif name == "lin" and unit.special.visibility == "hidden" then
       new_name = "lin_hidden"
+    -- overlay properties
+    elseif name == "text/gay-colored" and not unit.active then
+      new_name = "text/gay"
+    elseif name == "text/tranz-colored" and not unit.active then
+      new_name = "text/tranz"
+    elseif name == "text/enby-colored" and not unit.active then
+      new_name = "text/enby"
+    -- misc
+    elseif name == "text/now" and doing_past_turns then
+      new_name = "text/latr"
     end
   end
-  if unit and unit.wobble then
-    local wobble_frame = (unit.frame + anim_stage) % 3 + 1
-    return sprites[new_name.."_"..wobble_frame] or sprites[new_name] or sprites["wat"]
+  return getTileSprite(new_name, unit and getTile(unit.tile), unit and unit.frame or 0)
+end
+
+function getUnitSprites(unit)
+  local sprites = {}
+  for i,sprite in ipairs(unit.sprite) do
+    local _,name = getUnitSprite(sprite, unit)
+    sprites[i] = name
+  end
+  return sprites
+end
+
+function getUnitColor(unit, index, override_)
+  local override = override_ or unit.color_override
+  
+  if index then
+    if not override and unit.name == "lin" and unit.special.pathlock and unit.special.pathlock ~= "none" then
+      return {2, 2}
+    elseif unit.sprite[i] == "detox" and graphical_property_cache["slep"][unit] ~= nil then
+      return {1, 2}
+    else
+      return getTileColor(getTile(unit.tile), index, override)
+    end
   else
-    return sprites[new_name] or sprites["wat"]
+    for i,color in ipairs(unit.color) do
+      if unit.painted[i] then
+        return getUnitColor(unit, i, override)
+      end
+    end
+    return getUnitColor(getTile(unit.tile), 1, override)
   end
 end
 
-function getTileSprite(name, tile)
-  local new_name = name
-  if tile and tile.wobble then
-    local wobble_frame = anim_stage % 3 + 1
-    return sprites[new_name.."_"..anim_stage] or sprites[new_name] or sprites["wat"]
+function getUnitColors(unit, override_)
+  local colors = {}
+  for i = 1, #unit.color do
+    colors[i] = getUnitColor(unit, i, override_)
+  end
+  return colors
+end
+
+function drawTileSprite(tile, x, y, rotation, sx, sy, o)
+  local o = getTableWithDefaults(copyTable(o or {}), {
+    sprite = getTileSprites(tile),
+    color = getTileColors(tile),
+    painted = tile.painted,
+    meta = tile.meta,
+    nt = tile.nt,
+    wobble = tile.wobble,
+    really_smol = tile.name == "babby",
+    lvl = tile.name == "lvl",
+  })
+  drawSprite(x, y, rotation, sx, sy, o)
+end
+
+function drawUnitSprite(unit, x, y, rotation, sx, sy, o)
+  local brightness = 1
+
+  if scene == game then
+    if ((unit.type == "text" and not hasRule(unit,"ben't","wurd")) or hasRule(unit,"be","wurd")) and not unit.active and not level_destroyed and not (unit.fullname == "prop") then
+      brightness = 0.33
+    end
+    if (unit.name == "steev") and not hasU(unit) then
+      brightness = 0.33
+    end
+    if unit.name == "casete" and not hasProperty(unit, "nogo") then
+      brightness = 0.5
+    end
+    if timeless and not hasProperty(unit,"zawarudo") and not (unit.type == "text") then
+      brightness = 0.33
+    end
+  end
+
+  local o = getTableWithDefaults(copyTable(o or {}), {
+    sprite = getUnitSprites(unit),
+    color = getUnitColors(unit),
+    painted = unit.painted,
+    special = unit.special,
+    overlay = unit.overlay,
+    meta = unit.meta,
+    nt = unit.nt,
+    brightness = brightness,
+    id = unit.id,
+    wobble = unit.wobble,
+    delet = unit.delet,
+    really_smol = unit.fullname == "babby",
+    lvl = unit.fullname == "lvl",
+  })
+  drawSprite(x, y, rotation, sx, sy, o)
+end
+
+function drawSprite(x, y, rotation, sx, sy, o)
+  local o = getTableWithDefaults(copyTable(o or {}), {
+    sprite = {},
+    color = {},
+    painted = {},
+    special = {},
+    overlay = {},
+    meta = 0,
+    nt = false,
+    alpha = 1,
+    brightness = 1,
+    id = 0,
+    wobble = false,
+    delet = false,
+    really_smol = false,
+    lvl = false,
+  })
+
+  local max_w, max_h = 0, 0
+  local is_lvl = false
+
+  for _,image in ipairs(o.sprite) do
+    local sprite = sprites[image]
+    max_w = math.max(max_w, sprite:getWidth())
+    max_h = math.max(max_h, sprite:getHeight())
+  end
+
+  local function setColor(color, brightness)
+    if #color == 3 then
+      if color[1] then
+        color = {color[1]/255, color[2]/255, color[3]/255, 1}
+      else
+        color = {1,1,1,1}
+      end
+    else
+      local palette = current_palette
+      if current_palette == "default" and o.wobble then
+        palette = "baba"
+      end
+      color = {getPaletteColor(color[1], color[2], palette)}
+    end
+
+    local bg_color = {getPaletteColor(1, 0)}
+
+    -- multiply brightness by darkened bg color
+    for i,c in ipairs(bg_color) do
+      if i < 4 then
+        color[i] = (1 - o.brightness) * (bg_color[i] * 0.5) + o.brightness * color[i]
+      end
+    end
+
+    love.graphics.setColor(color[1], color[2], color[3], color[4]*o.alpha)
+
+    return color
+  end
+
+  local function drawSpriteMaybeOverlay(overlay, onlycolor, stretch)
+    if overlay and stretch then
+      love.graphics.setColor(1,1,1,1)
+      local sprite = sprites[overlay]
+      love.graphics.draw(sprite, x, y, rotation, max_w / TILE_SIZE, max_h / TILE_SIZE, sprite:getWidth() / 2, sprite:getHeight() / 2)
+    else
+      if overlay then
+        local sprite = sprites[overlay]
+        love.graphics.draw(sprite, x, y, rotation, sx, sy, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      else
+        for i,image in ipairs(o.sprite) do
+          setColor(o.color[i])
+          if onlycolor or (#o.overlay > 0 and o.painted[i]) then
+            love.graphics.setColor(1,1,1,1)
+          end
+          if not onlycolor or o.painted[i] then
+            if image == "letter_custom" then
+              if o.special.customletter then
+                drawCustomLetter(o.special.customletter, x, y, rotation, sx, sy, 16, 16)
+              else
+                local sprite = sprites["wut"]
+                love.graphics.draw(sprites["wut"], x, y, rotation, sx, sy, sprite:getWidth() / 2, sprite:getHeight() / 2)
+              end
+            else
+              local sprite = sprites[image]
+              love.graphics.draw(sprite, x, y, rotation, sx, sy, sprite:getWidth() / 2, sprite:getHeight() / 2)
+            end
+          end
+        end
+      end
+    end
+  end
+
+  if (o.delet or spookmode) and (math.floor(love.timer.getTime() * 9) % 9 == 0) then -- if we're delet, apply the special shader to our object
+    pcallSetShader(xwxShader)
+    drawSpriteMaybeOverlay()
+    love.graphics.setShader()
   else
-    return sprites[new_name] or sprites["wat"]
+    drawSpriteMaybeOverlay()
+  end
+
+  if o.lvl and (scene == editor or (scene ~= editor and o.special.visibility == "open")) then
+    local first_color = o.color[1]
+    for i,color in ipairs(o.color) do
+      if o.painted[i] then
+        first_color = color
+        break
+      end
+    end
+    love.graphics.push()
+    love.graphics.translate(x, y)
+    love.graphics.rotate(rotation)
+    love.graphics.translate(-x, -y)
+    setColor(first_color)
+    if (scene ~= editor and readSaveFile{"levels", o.special.level, "won"}) or (scene == editor and o.special.visibility ~= "open") then
+      local r,g,b,a = love.graphics.getColor()
+      love.graphics.setColor(r,g,b,a*0.4)
+    end
+    if not o.special.iconstyle or o.special.iconstyle == "number" then
+      local num = tostring(o.special.number or 1)
+      if #num == 1 then
+        num = "0"..num
+      end
+      love.graphics.draw(sprites["levelicon_"..num:sub(1,1)], x+(4*sx), y+(4*sy), 0, sx, sy, max_w / 2, max_h / 2)
+      love.graphics.draw(sprites["levelicon_"..num:sub(2,2)], x+(16*sx), y+(4*sy), 0, sx, sy, max_w / 2, max_h / 2)
+    elseif o.special.iconstyle == "dots" then
+      local num = tostring(o.special.number or 1)
+      love.graphics.draw(sprites["levelicon_dots_"..num], x+(4*sx), y+(4*sy), 0, sx, sy, max_w / 2, max_h / 2)
+    elseif o.special.iconstyle == "letter" then
+      local num = o.special.number or 1
+      local letter = ("abcdefghijklmnopqrstuvwxyz"):sub(num, num)
+      love.graphics.draw(sprites["letter_"..letter], x, y, 0, sx*3/4, sy*3/4, max_w / 2, max_h / 2)
+    elseif o.special.iconstyle == "other" then
+      local sprite = sprites[o.special.iconname or "wat"] or sprites["wat"]
+      love.graphics.draw(sprite, x, y, 0, sx*3/4, sy*3/4, sprite:getWidth() / 2, sprite:getHeight() / 2)
+    end
+    love.graphics.pop()
+  end
+
+  if #o.overlay > 0 then
+    local function overlayStencil()
+      pcallSetShader(mask_shader)
+      drawSpriteMaybeOverlay(nil,true)
+      if o.really_smol then
+        love.graphics.translate(x, y)
+        love.graphics.scale(0.75, 0.5)
+        love.graphics.translate(-x, -y)
+      end
+      love.graphics.setShader()
+    end
+    for _,overlay in ipairs(o.overlay) do
+      love.graphics.push()
+      love.graphics.setColor(1, 1, 1)
+      love.graphics.stencil(overlayStencil, "replace")
+      local old_test_mode, old_test_value = love.graphics.getStencilTest()
+      love.graphics.setStencilTest("greater", 0)
+      love.graphics.setBlendMode("multiply", "premultiplied")
+      drawSpriteMaybeOverlay("overlay/" .. overlay, false, true)
+      love.graphics.setBlendMode("alpha", "alphamultiply")
+      love.graphics.setStencilTest(old_test_mode, old_test_value)
+      love.graphics.pop()
+    end
+  end
+
+  if o.meta > 0 then
+    setColor{4, 1}
+    local metasprite = o.meta == 2 and sprites["meta2"] or sprites["meta1"]
+    love.graphics.draw(metasprite, x, y, 0, sx, sy, max_w / 2, max_h / 2)
+    if o.meta > 2 and sx == 1 and sy == 1 then
+      love.graphics.printf(tostring(o.meta), x-1, y+6, 32, "center")
+    end
+  end
+  if o.nt then
+    setColor{2, 2}
+    local ntsprite = sprites["n't"]
+    love.graphics.draw(ntsprite, x, y, 0, sx, sy, max_w / 2, max_h / 2)
+  end
+  if displayids then
+    setColor{1, 4}
+    love.graphics.printf(tostring(o.id), x-3, y-18, 32, "center")
   end
 end

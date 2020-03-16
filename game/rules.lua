@@ -213,11 +213,7 @@ function parseRules(undoing)
       if #mimic == 1 then
         unit.textname = mimic[1].textname
         unit.texttype = mimic[1].texttype
-        if mimic[1].color_override ~= nil then
-          unit.color_override = mimic[1].color_override
-        else
-          unit.color_override = mimic[1].first_color
-        end
+        unit.color_override = getUnitColor(mimic[1])
       else
         unit.textname = "  "
         unit.texttype = {ditto = true}
@@ -655,7 +651,7 @@ function addRule(full_rule)
   for _,unit in ipairs(units) do
     unit.active = true
     if not unit.old_active and not first_turn then
-      addParticles("rule", unit.x, unit.y, unit.color_override or unit.first_color)
+      addParticles("rule", unit.x, unit.y, getUnitColor(unit))
       new_rule = true
     end
     unit.old_active = unit.active

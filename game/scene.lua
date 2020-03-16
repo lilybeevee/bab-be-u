@@ -1,7 +1,7 @@
 local scene = {}
 window_dir = 0
 
-local mask_shader = pcallNewShader[[
+mask_shader = pcallNewShader[[
   vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords) {
      vec4 tx = Texel(texture, texture_coords).rgba;
      if (tx.rgb == vec3(0.0) || tx.a == 0) {
@@ -12,7 +12,7 @@ local mask_shader = pcallNewShader[[
   }
 ]]
 
-local paletteshader_0 = pcallNewShader[[
+paletteshader_0 = pcallNewShader[[
   vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords) {
     vec4 texturecolor = Texel(texture, texture_coords);
     texturecolor = texturecolor * color;
@@ -23,7 +23,7 @@ local paletteshader_0 = pcallNewShader[[
   }
 ]]
 
-local xwxShader = pcallNewShader[[
+xwxShader = pcallNewShader[[
 	extern number time;
 
 	vec4 effect( vec4 color, Image texture, vec2 texture_coords, vec2 screen_coords ){
@@ -797,27 +797,6 @@ function scene.draw(dt)
       brightness = 0.33
     end
 
-    if unit.fullname == "txt_gay" then
-      if unit.active then
-        unit.sprite = {"text/gay-colored"}
-      else
-        unit.sprite = {"text/gay"}
-      end
-    end
-    if unit.fullname == "txt_tranz" then
-      if unit.active then
-        unit.sprite = {"text/tranz-colored"}
-      else
-        unit.sprite = {"text/tranz"}
-      end
-    end
-    if unit.fullname == "txt_enby" then
-      if unit.active then
-        unit.sprite = {"text/enby-colored"}
-      else
-        unit.sprite = {"text/enby"}
-      end
-    end
     if unit.fullname == "txt_now" then
       if doing_past_turns then
         unit.sprite = {"text/latr"}
@@ -892,10 +871,10 @@ function scene.draw(dt)
 			return color
 		end
 		
-		local color = setColor(unit.color_override or unit.first_color)
+		local color = setColor(getUnitColor(unit))
     if unit.fullname == "tronk" then
       if math.floor(love.timer.getTime()*10)%2 == 1 then
-        local r,g,b = getPaletteColor((unit.color_override or unit.first_color)[1],(unit.color_override or unit.first_color)[2])
+        local r,g,b = getPaletteColor((getUnitColor(unit))[1],(getUnitColor(unit))[2])
         setColor{r*350,g*350,b*350}
       end
     end
@@ -973,75 +952,10 @@ function scene.draw(dt)
     love.graphics.push()
     love.graphics.rotate(math.rad(rotation))
     love.graphics.translate(-fulldrawx, -fulldrawy)
-
-    local function drawSpriteExtras()
-      if unit.meta > 0 then
-				setColor({4, 1})
-        local metasprite = unit.meta == 2 and sprites["meta2"] or sprites["meta1"]
-        if spookmode and sessionseed < drawx/3%0.5*2 then
-          love.graphics.setColor(0,0,0)
-        end
-				love.graphics.draw(metasprite, fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
-				if unit.meta > 2 and unit.draw.scalex == 1 and unit.draw.scaley == 1 then
-					love.graphics.printf(tostring(unit.meta), fulldrawx-1, fulldrawy+6, 32, "center")
-				end
-				setColor(unit.color)
-			end
-      if unit.nt then
-        setColor({2, 2})
-        local ntsprite = sprites["n't"]
-        love.graphics.draw(ntsprite, fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
-        setColor(unit.color)
-      end
-      if displayids then
-        setColor({1,4})
-        love.graphics.printf(tostring(unit.id), fulldrawx-3, fulldrawy-18, 32, "center")
-        setColor(unit.color)
-      end
-    end
-    
-    local function drawSprite(overlay, onlycolor, stretch)
-      local draw = sprites[overlay or (unit.sprite[1]..wobble_suffix)]
-      local ox, oy = getOffset()
-      if overlay and stretch then
-        love.graphics.setColor(1,1,1,1)
-        love.graphics.draw(draw, fulldrawx + ox, fulldrawy + oy, 0, sprite:getWidth() / TILE_SIZE, sprite:getHeight() / TILE_SIZE, draw:getWidth() / 2, draw:getHeight() / 2)
-      else
-        if overlay then
-          love.graphics.draw(draw, fulldrawx + ox, fulldrawy + oy, 0, unit.draw.scalex, unit.draw.scaley, draw:getWidth() / 2, draw:getHeight() / 2)
-        else
-          for i,image in ipairs(unit.sprite) do
-            if unit.fullname == "detox" and graphical_property_cache["slep"][unit] ~= nil then
-              setColor{1,2}
-            else
-              setColor(getUnitColor(unit, i))
-            end
-            if onlycolor or (#unit.overlay > 0 and (unit.painted and unit.painted[i]) or not unit.painted) then
-              love.graphics.setColor(1,1,1,1)
-            end
-            if not onlycolor or not unit.painted or (onlycolor and unit.painted and unit.painted[i]) then
-              if image == "letter_custom" then
-                if unit.special.customletter then
-                  drawCustomLetter(unit.special.customletter, fulldrawx + ox, fulldrawy + oy, 0, unit.draw.scalex, unit.draw.scaley, 16, 16)
-                else
-                  love.graphics.draw(sprites["wut"], fulldrawx + ox, fulldrawy + oy, 0, unit.draw.scalex, unit.draw.scaley, draw:getWidth() / 2, draw:getHeight() / 2)
-                end
-              else
-                local sprit = getUnitSprite(image, unit)
-                love.graphics.draw(sprit, fulldrawx + ox, fulldrawy + oy, 0, unit.draw.scalex, unit.draw.scaley, sprit:getWidth() / 2, sprit:getHeight() / 2)
-              end
-            end
-          end
-        end
-
-        if #unit.overlay == 0 then
-          drawSpriteExtras()
-        end
-      end
-    end
     
     --performance todos: each line gets drawn twice (both ways), so there's probably a way to stop that. might not be necessary though, since there is no lag so far
     --in fact, the double lines add to the pixelated look, so for now i'm going to make it intentional and actually add it in a couple places to be consistent
+    local has_lin = false
     if unit.name == "lin" and (not unit.special.pathlock or unit.special.pathlock == "none") and scene ~= editor and not loop then
       love.graphics.setLineWidth(4)
       love.graphics.setLineStyle("rough")
@@ -1097,16 +1011,9 @@ function scene.draw(dt)
           love.graphics.line(fulldrawx+dx,fulldrawy+dy,fulldrawx-odx,fulldrawy-ody)
         end
       end
-      if (#line == 0) then
-        drawSprite()
-      end
+      has_lin = #line > 0
     end
-    
-    if unit.name == "lin" and unit.special.pathlock and unit.special.pathlock ~= "none" then
-      setColor(unit.color_override or {2, 2})
-      drawSprite("lin_gate")
-    end
-    
+
     --reset back to values being used before
     love.graphics.setLineWidth(2)
 
@@ -1133,88 +1040,39 @@ function scene.draw(dt)
       love.graphics.setColor(ur, ug, ub, ua)
     end
 
-    if not (unit.delet or spookmode) and unit.name ~= "lin" then -- delet takes control of the drawing sprite, so it shouldn't render the normal object
-      drawSprite()
-    end
-
-    if unit.delet or spookmode then -- if we're delet, apply the special shader to our object
-      if math.floor(love.timer.getTime() * 9) % 9 == 0 then
-        pcallSetShader(xwxShader)
-        drawSprite()
-        love.graphics.setShader()
-      else
-        drawSprite()
-      end
-    end
-    
-    if unit.name == "lvl" and unit.special.visibility == "open" then
-      love.graphics.push()
-      if readSaveFile{"levels", unit.special.level, "won"} then
-        local r,g,b,a = love.graphics.getColor()
-        love.graphics.setColor(r,g,b, a*0.4)
-      end
-      if not unit.special.iconstyle or unit.special.iconstyle == "number" then
-        local num = tostring(unit.special.number or 1)
-        if #num == 1 then
-          num = "0"..num
-        end
-        love.graphics.draw(sprites["levelicon_"..num:sub(1,1)], fulldrawx+(4*unit.draw.scalex), fulldrawy+(4*unit.draw.scaley), 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
-        love.graphics.draw(sprites["levelicon_"..num:sub(2,2)], fulldrawx+(16*unit.draw.scalex), fulldrawy+(4*unit.draw.scaley), 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
-      elseif unit.special.iconstyle == "dots" then
-        local num = tostring(unit.special.number or 1)
-        love.graphics.draw(sprites["levelicon_dots_"..num], fulldrawx+(4*unit.draw.scalex), fulldrawy+(4*unit.draw.scaley), 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
-      elseif unit.special.iconstyle == "letter" then
-        local num = unit.special.number or 1
-        local letter = ("abcdefghijklmnopqrstuvwxyz"):sub(num, num)
-        love.graphics.draw(sprites["letter_"..letter], fulldrawx, fulldrawy, 0, unit.draw.scalex*3/4, unit.draw.scaley*3/4, sprite:getWidth() / 2, sprite:getHeight() / 2)
-      elseif unit.special.iconstyle == "other" then
-        local sprite = sprites[unit.special.iconname or "wat"] or sprites["wat"]
-        love.graphics.draw(sprite, fulldrawx, fulldrawy, 0, unit.draw.scalex*3/4, unit.draw.scaley*3/4, sprite:getWidth() / 2, sprite:getHeight() / 2)
-      end
-      love.graphics.pop()
-    end
-    
-    if unit.fullname == "letter_custom" then
-      drawCustomLetter(unit.special.customletter, fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, 16, 16)
-    end
-
-    if #unit.overlay > 0 then
-      local function overlayStencil()
-        pcallSetShader(mask_shader)
-        drawSprite(nil,true)
-        if unit.fullname == "babby" then
-          love.graphics.translate(fulldrawx, fulldrawy)
-          love.graphics.scale(0.75, 0.5)
-          love.graphics.translate(-fulldrawx, -fulldrawy)
-        end
-        love.graphics.setShader()
-      end
-      for _,overlay in ipairs(unit.overlay) do
-        love.graphics.push()
-        love.graphics.setColor(1, 1, 1)
-        love.graphics.stencil(overlayStencil, "replace")
-        local old_test_mode, old_test_value = love.graphics.getStencilTest()
-        love.graphics.setStencilTest("greater", 0)
-        love.graphics.setBlendMode("multiply", "premultiplied")
-        drawSprite("overlay/" .. overlay, false, true)
-        love.graphics.setBlendMode("alpha", "alphamultiply")
-        love.graphics.setStencilTest(old_test_mode, old_test_value)
-        love.graphics.pop()
-      end
-      drawSpriteExtras()
+    if not has_lin then
+      local ox, oy = getOffset()
+      drawUnitSprite(unit, fulldrawx + ox, fulldrawy + oy, 0, unit.draw.scalex, unit.draw.scaley)
     end
 
     if unit.is_portal then
+      local ox, oy = getOffset()
       if loop or not unit.portal.objects then
-        love.graphics.setColor(color[1] * 0.75, color[2] * 0.75, color[3] * 0.75, color[4])
-        drawSprite(sprite_name .. "_bg")
+        for i,image in ipairs(getUnitSprites(unit)) do
+          local sprite = sprites[image .. "_bg"]
+          if sprite then
+            local r,g,b,a = getPaletteColor(unpack(getUnitColor(unit, i)))
+            love.graphics.setColor(r*0.75, g*0.75, b*0.75, a)
+            love.graphics.draw(sprite, fulldrawx + ox, fulldrawy + oy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+          end
+        end
       else
-        love.graphics.setColor(lvl_color[1], lvl_color[2], lvl_color[3], lvl_color[4])
-        drawSprite(sprite_name .. "_bg")
+        for i,image in ipairs(getUnitSprites(unit)) do
+          local sprite = sprites[image .. "_bg"]
+          if sprite then
+            love.graphics.setColor(lvl_color[1], lvl_color[2], lvl_color[3], lvl_color[4])
+            love.graphics.draw(sprite, fulldrawx + ox, fulldrawy + oy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+          end
+        end
         love.graphics.setColor(1, 1, 1)
         local function holStencil()
           pcallSetShader(mask_shader)
-          drawSprite(sprite_name .. "_mask")
+          for i,image in ipairs(getUnitSprites(unit)) do
+            local sprite = sprites[image .. "_mask"]
+            if sprite then
+              love.graphics.draw(sprite, fulldrawx + ox, fulldrawy + oy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+            end
+          end
           love.graphics.setShader()
         end
         local function holStencil2()
@@ -1389,7 +1247,7 @@ function scene.draw(dt)
           else
             setColor(tile.color)
           end
-          drawSprite()
+          localDrawSprite()
           love.graphics.pop()
 
           -- order is restored
@@ -1509,14 +1367,13 @@ function scene.draw(dt)
     local draw_units = {}
     local already_added = {}
     for _,unit in ipairs(units) do
-      local sprite = (unit.fullname ~= "letter_custom" and unit.sprite[1] or "letter_"..unit.special.customletter)..(unit.meta or "")..(unit.nt and "nt" or "")..(unit.color_override and dump(unit.color_override) or "")
-      if not already_added[sprite] then already_added[sprite] = {} end
+      if not already_added[unit.fullname] then already_added[unit.fullname] = {} end
       local dir = unit.rotatdir
-      if not already_added[sprite][dir] then
+      if not already_added[unit.fullname][dir] then
         table.insert(draw_units, {unit = unit, dir = dir, count = 1})
-        already_added[sprite][dir] = #draw_units
+        already_added[unit.fullname][dir] = #draw_units
       else
-        draw_units[already_added[sprite][dir]].count = draw_units[already_added[sprite][dir]].count + 1
+        draw_units[already_added[unit.fullname][dir]].count = draw_units[already_added[unit.fullname][dir]].count + 1
       end
     end
 
@@ -1548,33 +1405,8 @@ function scene.draw(dt)
       love.graphics.push()
       love.graphics.rotate(math.rad((draw.dir - 1) * 45))
 
-      for j,image in ipairs(unit.sprite) do
-        love.graphics.setColor(getPaletteColor(unpack(getUnitColor(unit, j))))
-        if image == "letter_custom" then
-          if unit.special.customletter then
-            drawCustomLetter(unit.special.customletter, 0, 0, 0, 1, 1, 16, 16)
-          else
-            love.graphics.draw(sprites["wut"], 0, 0, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
-          end
-        else
-          local sprite = sprites[image]
-          love.graphics.draw(sprite, 0, 0, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
-        end
-      end
-      
-      if unit.meta > 0 then
-				love.graphics.setColor(getPaletteColor(4, 1))
-				local metasprite = unit.meta == 2 and sprites["meta2"] or sprites["meta1"]
-				love.graphics.draw(metasprite, 0, 0, 0, 1, 1, TILE_SIZE / 2, TILE_SIZE / 2)
-				if unit.meta > 2 then
-					love.graphics.printf(tostring(unit.meta), -1, 6, 32, "center")
-				end
-			end
-      if unit.nt then
-        love.graphics.setColor(getPaletteColor(2, 2))
-        local ntsprite = sprites["n't"]
-        love.graphics.draw(ntsprite, 0, 0, 0, 1, 1, TILE_SIZE / 2, TILE_SIZE / 2)
-      end
+      drawUnitSprite(unit, 0, 0, 0, 1, 1)
+
       love.graphics.pop()
 
       if draw.count > 1 then
@@ -2085,7 +1917,7 @@ function scene.checkInput()
             end
             
             local sing_note = ruleparent[1].rule.object.name
-            local sing_color = ruleparent[1].rule.object.unit.color_override or ruleparent[1].rule.object.unit.first_color
+            local sing_color = getUnitColor(ruleparent[1].rule.object.unit)
             local sing_octave = 0;
             if (sing_color[1] <= 6 and sing_color[2] <= 4) then
               local sing_color_word = colour_for_palette[sing_color[1]][sing_color[2]];
@@ -2346,7 +2178,7 @@ function doOneMove(x, y, key, past)
       local melters = getUnitsWithEffect("fridgd")
       for _,unit in ipairs(melters) do
         table.insert(to_destroy, unit)
-        addParticles("destroy", unit.x, unit.y, unit.color_override or unit.first_color)
+        addParticles("destroy", unit.x, unit.y, getUnitColor(unit))
       end
       if #to_destroy > 0 then
         playSound("hotte")
@@ -2358,7 +2190,7 @@ function doOneMove(x, y, key, past)
       local yous = getUs()
       for _,unit in ipairs(yous) do
         table.insert(to_destroy, unit)
-        addParticles("destroy", unit.x, unit.y, unit.color_override or unit.first_color)
+        addParticles("destroy", unit.x, unit.y, getUnitColor(unit))
       end
     end
     to_destroy = handleDels(to_destroy)

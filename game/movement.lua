@@ -575,7 +575,6 @@ function doMovement(movex, movey, key)
           if key == "wasd" or key == "udlr" or key == "numpad" or key == "ijkl" then
             local dir = dirs8_by_offset[movex][movey]
             table.insert(unit.moves, {reason = "curse", dir = dir, times = 1})
-            print("its one")
             if #unit.moves > 0 and not already_added[unit] then
               table.insert(moving_units, unit)
               already_added[unit] = true
@@ -587,7 +586,7 @@ function doMovement(movex, movey, key)
 
     for _,unit in pairs(moving_units) do
       if not unit.stelth and not hasProperty(unit, "loop") and timecheck(unit) then
-        addParticles("movement-puff", unit.x, unit.y, unit.color_override or unit.first_color)
+        addParticles("movement-puff", unit.x, unit.y, getUnitColor(unit))
       end
     end
     
@@ -841,7 +840,7 @@ function doAction(action)
     playSound("break", 0.5)
     local victims = action[2]
     for _,unit in ipairs(victims) do
-      addParticles("destroy", unit.x, unit.y, unit.color_override or unit.first_color)
+      addParticles("destroy", unit.x, unit.y, getUnitColor(unit))
       --no protecc check because it can't safely be prevented here (we might be moving OoB)
       unit.removed = true
       unit.destroyed = true
@@ -850,7 +849,7 @@ function doAction(action)
     playSound("snacc", 0.5)
     local victims = action[2]
     for _,unit in ipairs(victims) do
-      addParticles("destroy", unit.x, unit.y, unit.color_override or unit.first_color)
+      addParticles("destroy", unit.x, unit.y, getUnitColor(unit))
       if not hasProperty(unit, "protecc") then
         unit.removed = true
         unit.destroyed = true
@@ -1609,15 +1608,15 @@ function doPortal(unit, px, py, move_dir, dir, reverse)
         -- Count portal colors
         local found_colored = {}
         for p,_ in pairs(portals_direct) do
-          local color_id = getColor(p)[1]..","..getColor(p)[2]
+          local color_id = getUnitColor(p)[1]..","..getUnitColor(p)[2]
           found_colored[color_id] = (found_colored[color_id] or 0) + 1
         end
         -- Only add portals to list if:
         -- A. They share the same color, or
         -- B. Only one of both color exists
         for p,_ in pairs(portals_direct) do
-          local p_color_id = getColor(p)[1]..","..getColor(p)[2]
-          local v_color_id = getColor(v)[1]..","..getColor(v)[2]
+          local p_color_id = getUnitColor(p)[1]..","..getUnitColor(p)[2]
+          local v_color_id = getUnitColor(v)[1]..","..getUnitColor(v)[2]
           if p_color_id == v_color_id then
             table.insert(portals, p)
           elseif found_colored[p_color_id] == 1 and found_colored[v_color_id] == 1 then
@@ -2239,7 +2238,7 @@ function FindEntireGluedUnit(unit, dx, dy, glued_rule)
   while #unchecked_tiles > 0 do
     local x, y = unchecked_tiles[1][1], unchecked_tiles[1][2]
     local cur_unit, rule = unpack(visited[tostring(x)..","..tostring(y)])
-    local mycolor = cur_unit.color_override or cur_unit.first_color
+    local mycolor = getUnitColor(cur_unit)
     --print("a:",x,y,cur_unit)
     table.remove(unchecked_tiles, 1)
     --print("a.5:",#unchecked_tiles)
@@ -2262,7 +2261,7 @@ function FindEntireGluedUnit(unit, dx, dy, glued_rule)
             if other_rule.rule.object.mods then
               for _,prefix in ipairs(other_rule.rule.object.mods) do
                 if prefix.name == "samepaint" then
-                  local ocolor = other.color_override or other.first_color
+                  local ocolor = getUnitColor(other)
                   matched = (mycolor[1] == ocolor[1] and mycolor[2] == ocolor[2])
                 elseif prefix.name == "sameface" then
                   matched = (cur_unit.dir == other.dir)

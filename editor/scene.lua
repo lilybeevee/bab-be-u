@@ -1087,6 +1087,7 @@ function scene.update(dt)
                   if last_lin_hidden and brush.id == "lin" then
                     new_unit.special.visibility = "hidden"
                   end
+                  new_unit.active = true
                   --[[if brush.id == tiles_by_name["letter_custom"] then
                     new_unit.special.customletter = brush.customletter
                   end]]
@@ -1114,6 +1115,7 @@ function scene.update(dt)
               brush.special = {}
               brush.picked_tile = nil
               brush.picked_index = 0
+              brush.color = nil
             end
           end
           mobile_firstpress = false
@@ -1151,6 +1153,7 @@ function scene.update(dt)
               brush.special = {}
               brush.picked_tile = nil
               brush.picked_index = 0
+              brush.color = nil
               mobile_picking = false
             end
           end
@@ -1294,25 +1297,23 @@ function scene.draw(dt)
   
     if not selector_open then
       if settings["grid_lines"] then
-            love.graphics.setLineWidth(1)
-            local r,g,b,a = getPaletteColor(0,1)
-            love.graphics.setColor({r,g,b},0.3)
-            for i=1,mapwidth-1 do
-                love.graphics.line(i*TILE_SIZE,0,i*TILE_SIZE,roomheight)
-            end
-            for i=1,mapheight-1 do
-                love.graphics.line(0,i*TILE_SIZE,roomwidth,i*TILE_SIZE)
-            end
+        love.graphics.setLineWidth(1)
+        local r,g,b,a = getPaletteColor(0,1)
+        love.graphics.setColor({r,g,b},0.3)
+        for i=1,mapwidth-1 do
+            love.graphics.line(i*TILE_SIZE,0,i*TILE_SIZE,roomheight)
         end
+        for i=1,mapheight-1 do
+            love.graphics.line(0,i*TILE_SIZE,roomwidth,i*TILE_SIZE)
+        end
+      end
     
       for i=1,max_layer do
         if units_by_layer[i] then
           for _,unit in ipairs(units_by_layer[i]) do
-            local sprite = sprites[unit.sprite]
-            local color = unit.color_override or unit.first_color
-            setColor(color)
+            local color = setColor(getUnitColor(unit))
+            local has_lin = false
             if unit.name == "lin" then
-              local name = "lin"
               --performance todos: each line gets drawn twice (both ways), so there's probably a way to stop that. might not be necessary though, since there is no lag so far
               --in fact, the double lines add to the pixelated look, so for now i'm going to make it intentional and actually add it in a couple places to be consistent
               if settings["draw_editor_lins"] and (not unit.special.pathlock or unit.special.pathlock == "none") then
@@ -1380,23 +1381,11 @@ function scene.draw(dt)
                   end
                 end
                 if #line > 0 then
-                  name = "no1"
+                  has_lin = true
                 end
                 love.graphics.setLineWidth(2)
               end
-              if unit.special.pathlock and unit.special.pathlock ~= "none" then
-                name = name.."_gate"
-                setColor({2, 2})
-              end
-              if name ~= "no1" then
-                if unit.special.visibility == "hidden" then name = name.."_hidden" end
-              end
-              sprite = sprites[name]
             end
-            if unit.name == "lvl" and unit.special.visibility == "hidden" then
-              sprite = sprites["lvl_hidden"]
-            end
-            if not sprite then sprite = sprites["wat"] end
             
             local rotation = 0
             if unit.rotate then
@@ -1410,66 +1399,8 @@ function scene.draw(dt)
               newcolor[3] = newcolor[3]*255
               unit.color_override = newcolor
             end
-            
-            for j,image in ipairs(unit.sprite) do
-              if image == "lin" and unit.special.pathlock and unit.special.pathlock ~= "none" then
-                setColor{2, 2}
-              else
-                setColor(getUnitColor(unit, j))
-              end
-              if image == "letter_custom" then
-                if unit.special.customletter then
-                  drawCustomLetter(unit.special.customletter, (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, TILE_SIZE / 2, TILE_SIZE / 2)
-                else
-                  love.graphics.draw(sprites["wut"], (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, TILE_SIZE / 2, TILE_SIZE / 2)
-                end
-              else
-                sprite = getUnitSprite(image, unit)
-                love.graphics.draw(sprite, (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
-              end
-            end
-            if unit.name == "lvl" then
-              if unit.special.visibility ~= "open" then
-                local r,g,b,a = love.graphics.getColor()
-                love.graphics.setColor(r,g,b, a*0.4)
-              end
-              local fulldrawx, fulldrawy = (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE
-              if not unit.special.iconstyle or unit.special.iconstyle == "number" then
-                local num = tostring(unit.special.number or 1)
-                if #num == 1 then
-                  num = "0"..num
-                end
-                love.graphics.draw(sprites["levelicon_"..num:sub(1,1)], fulldrawx+(4*unit.draw.scalex), fulldrawy+(4*unit.draw.scaley), 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
-                love.graphics.draw(sprites["levelicon_"..num:sub(2,2)], fulldrawx+(16*unit.draw.scalex), fulldrawy+(4*unit.draw.scaley), 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
-              elseif unit.special.iconstyle == "dots" then
-                local num = tostring(unit.special.number or 1)
-                love.graphics.draw(sprites["levelicon_dots_"..num], fulldrawx+(4*unit.draw.scalex), fulldrawy+(4*unit.draw.scaley), 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
-              elseif unit.special.iconstyle == "letter" then
-                local num = unit.special.number or 1
-                local letter = ("abcdefghijklmnopqrstuvwxyz"):sub(num, num)
-                love.graphics.draw(sprites["letter_"..letter], fulldrawx, fulldrawy, 0, unit.draw.scalex*3/4, unit.draw.scaley*3/4, sprite:getWidth() / 2, sprite:getHeight() / 2)
-              elseif unit.special.iconstyle == "other" then
-                local sprite = sprites[unit.special.iconname or "wat"] or sprites["wat"]
-                love.graphics.draw(sprite, fulldrawx, fulldrawy, 0, unit.draw.scalex*3/4, unit.draw.scaley*3/4, sprite:getWidth() / 2, sprite:getHeight() / 2)
-              end
-            end
-            if unit.meta > 0 then
-              setColor({4, 1})
-              local metasprite = unit.meta == 2 and sprites["meta2"] or sprites["meta1"]
-              love.graphics.draw(metasprite, (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
-              if unit.meta > 2 then
-                love.graphics.printf(tostring(unit.meta), (unit.x + 0.5)*TILE_SIZE-1, (unit.y + 0.5)*TILE_SIZE+6, 32, "center")
-              end
-            end
-            if unit.nt then
-              setColor({2, 2})
-              local ntsprite = sprites["n't"]
-              love.graphics.draw(ntsprite, (unit.x + 0.5)*TILE_SIZE, (unit.y + 0.5)*TILE_SIZE, math.rad(rotation), unit.scalex, unit.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
-            end
-            if displayids then
-              setColor({1,4})
-              love.graphics.printf(tostring(unit.id), (unit.x + 0.5)*TILE_SIZE-3, (unit.y + 0.5)*TILE_SIZE-18, 32, "center")
-            end
+
+            drawUnitSprite(unit, (unit.x+0.5)*TILE_SIZE, (unit.y+0.5)*TILE_SIZE, math.rad(rotation), 1, 1)
           end
         end
       end
@@ -1537,7 +1468,7 @@ function scene.draw(dt)
             
             for j,image in ipairs(tile.sprite) do
               local sprite = sprites[image]
-              if found_matching_tag then setColor(getUnitColor(tile, j, brush.color)) end
+              if found_matching_tag then setColor(getTileColor(tile, j, brush.color)) end
               love.graphics.draw(sprite, (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, TILE_SIZE / 2, TILE_SIZE / 2)
             end
             
@@ -1577,46 +1508,14 @@ function scene.draw(dt)
         
         if brush.id and not selector_open then
           local tile = getTile(brush.id)
-          local sprite = sprites[tile.sprite[1]]
-          if not sprite then sprite = sprites["wat"] end
+          local color = getTileColors(tile, brush.color)
 
           local rotation = 0
           if tile.rotate then
             rotation = (brush.dir - 1) * 45
           end
-          
-          for i,image in ipairs(tile.sprite) do
-            local r, g, b, a = getPaletteColor(tile.color[i][1], tile.color[i][2])
-            if tile.painted[i] and brush.color then
-              r, g, b, a = getPaletteColor(brush.color[1], brush.color[2])
-            end
-            love.graphics.setColor(r, g, b, a * 0.25)
-            if image == "letter_custom" then
-              if brush.special.customletter then
-                drawCustomLetter(brush.special.customletter, (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, math.rad(rotation), 1, 1, 16, 16)
-              else
-                local sprite = sprites["wut"]
-                love.graphics.draw(sprite, (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, math.rad(rotation), 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
-              end
-            else
-              local sprit = sprites[image]
-              love.graphics.draw(sprit, (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, math.rad(rotation), 1, 1, sprit:getWidth() / 2, sprit:getHeight() / 2)
-            end
-          end
-          
-          if tile.meta > 0 then
-            setColor({4,1},0.25)
-            local metasprite = tile.meta == 2 and sprites["meta2"] or sprites["meta1"]
-            love.graphics.draw(metasprite, (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
-            if tile.meta > 2 then
-              love.graphics.printf(tostring(tile.meta), (hx + 0.5)*TILE_SIZE-1, (hy + 0.5)*TILE_SIZE+6, 32, "center")
-            end
-          end
-          if tile.nt then
-            setColor({2,2},0.25)
-            local ntsprite = sprites["n't"]
-            love.graphics.draw(ntsprite, (hx + 0.5)*TILE_SIZE, (hy + 0.5)*TILE_SIZE, 0, 1, 1, sprite:getWidth() / 2, sprite:getHeight() / 2)
-          end
+
+          drawTileSprite(tile, (hx+0.5)*TILE_SIZE, (hy+0.5)*TILE_SIZE, math.rad(rotation), 1, 1, {alpha = 0.25, color = color, special = brush.special})
         end
       end
 
@@ -1925,27 +1824,15 @@ function scene.draw(dt)
         love.graphics.setColor(1, 1, 1, 1)
         love.graphics.draw(sprites["ui_plus"],10*twelfth,love.graphics.getHeight()-2*twelfth,0,twelfth/32,twelfth/32)
       elseif brush.id then
-        local sprite = getTile(brush.id).sprite
+        local tile = getTile(brush.id)
+        local color = getTileColors(tile, brush.color)
         
         local rotation = 0
-        if getTile(brush.id).rotate then
+        if tile.rotate then
           rotation = (brush.dir - 1) * 45
         end
-        
-        local color = getTile(brush.id).color
-        
-        for i,image in ipairs(sprite) do
-          love.graphics.setColor(getPaletteColor(color[i][1], color[i][2]))
-          if image == "letter_custom" then
-            if brush.special.customletter then
-              drawCustomLetter(brush.special.customletter, 10.5*twelfth, love.graphics.getHeight()-1.5*twelfth,math.rad(rotation),twelfth/32,twelfth/32,twelfth/4,twelfth/4)
-            else
-              love.graphics.draw(sprites["wut"], 10.5*twelfth, love.graphics.getHeight()-1.5*twelfth,math.rad(rotation),twelfth/32,twelfth/32,twelfth/4,twelfth/4)
-            end
-          else
-            love.graphics.draw(sprites[image] or sprites["wat"], 10.5*twelfth, love.graphics.getHeight()-1.5*twelfth,math.rad(rotation),twelfth/32,twelfth/32,twelfth/4,twelfth/4)
-          end
-        end
+
+        drawTileSprite(tile, 10.5*twelfth, love.graphics.getHeight()-1.5*twelfth, math.rad(rotation), twelfth/32, twelfth/32, {color = color, special = brush.special})
       end
       if mobile_stackmode == "none" then
         mobile_controls_stackmode_none:setBounds(9*twelfth, love.graphics.getHeight()-4.05*twelfth)
@@ -1971,23 +1858,9 @@ function scene.draw(dt)
           love.graphics.draw(sprites["ui/splat"], x, 4)
         else
           local tile = getTile(brush.id)
-          for i,image in ipairs(tile.sprite) do
-            if tile.painted[i] then
-              local cx, cy = (pal and pal[1] or tile.color[i][1]), (pal and pal[2] or tile.color[i][2])
-              love.graphics.setColor(getPaletteColor(cx, cy))
-            else
-              love.graphics.setColor(getPaletteColor(tile.color[i][1], tile.color[i][2]))
-            end
-            if image == "letter_custom" then
-              if brush.special.customletter then
-                drawCustomLetter(brush.special.customletter, x, 4)
-              else
-                love.graphics.draw(sprites["wut"], x, 4)
-              end
-            else
-              love.graphics.draw(sprites[image] or sprites["wat"], x, 4)
-            end
-          end
+          local color = getTileColors(tile, pal)
+
+          drawTileSprite(tile, x + 0.5*TILE_SIZE, 4 + 0.5*TILE_SIZE, 0, 1, 1, {color = color, special = brush.special})
         end
         if paint_open == "full" then break end
       end
