@@ -3107,7 +3107,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
   unit.tile = tile
   unit.sprite = deepCopy(data.sprite)
   unit.type = data.is_text and "text" or "object"
-  unit.texttype = data.typeset
+  unit.typeset = data.typeset
 	unit.meta = data.meta
   unit.nt = data.nt
   unit.color = deepCopy(data.color)
@@ -3134,7 +3134,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
   if unit.type == "text" then
     should_parse_rules = true
     unit.name = "text"
-    if unit.texttype.letter then
+    if unit.typeset.letter then
       letters_exist = true
       unit.textname = string.sub(unit.fullname, 8)
     else
@@ -3175,7 +3175,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
   end
   
   --do this before the 'this' change to textname so that we only get 'this' in referenced_objects
-  if unit.texttype.object and unit.textname ~= "every1" and unit.textname ~= "every2" and unit.textname ~= "every3" and unit.textname ~= "mous" and unit.textname ~= "bordr" and unit.textname ~= "no1" and unit.textname ~= "lvl" and unit.textname ~= "the" and unit.textname ~= "deez" and unit.textname ~= "text" and unit.textname ~= "this" and group_names_set[unit.textname] ~= true then
+  if unit.typeset.object and unit.textname ~= "every1" and unit.textname ~= "every2" and unit.textname ~= "every3" and unit.textname ~= "mous" and unit.textname ~= "bordr" and unit.textname ~= "no1" and unit.textname ~= "lvl" and unit.textname ~= "the" and unit.textname ~= "deez" and unit.textname ~= "text" and unit.textname ~= "this" and group_names_set[unit.textname] ~= true then
     if not unit.textname:ends("n't") and not unit.textname:starts("txt_") and not unit.textname:starts("letter_") and not table.has_value(referenced_objects, unit.textname) then
       table.insert(referenced_objects, unit.textname)
     end
@@ -3582,30 +3582,6 @@ end
 function newMouseID()
   max_mouse_id = max_mouse_id - 1
   return max_mouse_id
-end
-
-function makeMetaTile(premeta_tile)
-  return {
-    name = "txt_" .. premeta_tile.name,
-    sprite = premeta_tile.metasprite or premeta_tile.sprite,
-    type = "text",
-    color = premeta_tile.color,
-    layer = 20,
-    meta = premeta_tile.meta ~= nil and premeta_tile.meta + 1 or 1
-  }
-end
-
-function makeNtTile(premeta_tile)
-  return {
-    name = premeta_tile.name .. "n't",
-    sprite = premeta_tile.metasprite or premeta_tile.sprite,
-    type = "text",
-    color = premeta_tile.color,
-    layer = 20,
-    texttype = premeta_tile.texttype,
-    sprite_transforms = premeta_tile.sprite_transforms,
-    nt = true
-  }
 end
 
 function undoWin()

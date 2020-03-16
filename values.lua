@@ -9408,7 +9408,7 @@ group_names_set_nt = {}
 for i,v in ipairs(tiles_list) do
   tiles_by_name[v.name] = i
   tiles_by_name[v.name:gsub(" ","")] = i
-  if v.texttype and v.texttype.group then
+  if v.typeset and v.typeset.group then
 		table.insert(group_names, v.name:sub(5, -1));
     table.insert(group_names_nt, v.name:sub(5, -1).."n't");
     group_names_set[v.name:sub(5, -1)] = true;
@@ -9448,11 +9448,11 @@ for _,tile in ipairs(tiles_list) do
     category = "Letters"
   elseif name:starts("ui_") then
     category = "UI"
-  elseif tile.texttype and (tile.texttype.cond_infix or tile.texttype.cond_prefix) then
+  elseif tile.typeset and (tile.typeset.cond_infix or tile.typeset.cond_prefix) then
     category = "Conditions"
-  elseif tile.texttype and tile.texttype.property then
+  elseif tile.typeset and tile.typeset.property then
     category = "Properties"
-  elseif tile.texttype and tile.texttype.verb then
+  elseif tile.typeset and tile.typeset.verb then
     category = "Verbs"
   elseif tile.tometa or tile.convertible == false then
     category = "Thingify"
@@ -9465,9 +9465,9 @@ for _,tile in ipairs(tiles_list) do
   end
 
   local types
-  if tile.texttype then
+  if tile.typeset then
     types = {}
-    for k, v in pairs(tile.texttype) do
+    for k, v in pairs(tile.typeset) do
       table.insert(types, k)
     end
   end

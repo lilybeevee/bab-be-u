@@ -1440,8 +1440,8 @@ function scene.draw(dt)
               found_matching_tag = true
             end
             
-            if tile.texttype ~= nil then
-              for type,_ in pairs(tile.texttype) do
+            if tile.typeset ~= nil then
+              for type,_ in pairs(tile.typeset) do
                 if string.match(type, subsearchstr) then
                   found_matching_tag = true
                   break

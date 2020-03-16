@@ -3007,12 +3007,12 @@ function fillTextDetails(sentence, old_sentence, orig_index, word_index)
     if newname:starts("txt_") then
       newname = newname:sub(5)
     end
-    table.insert(ret,{type = text_list[word].texttype or {object = true}, name = newname, unit=old_sentence[orig_index].unit})
+    table.insert(ret,{type = text_list[word].typeset or {object = true}, name = newname, unit=old_sentence[orig_index].unit})
     w = w+1
   end
   for i=orig_index+1,(word_index-1) do --extra ellipses for the purposes of making sure the parser gets it properly.
     --print("aa:",old_sentence[i])
-    table.insert(ret,{type = text_list["..."].texttype or {object = true}, name = "...", unit=old_sentence[i].unit})
+    table.insert(ret,{type = text_list["..."].typeset or {object = true}, name = "...", unit=old_sentence[i].unit})
   end
   return ret
 end
@@ -3375,7 +3375,7 @@ function anagram_finder.run()
   local letters = {}
   local multi = {}
   for _,unit in ipairs(units_by_name["text"]) do
-    if unit.texttype.letter then
+    if unit.typeset.letter then
       if #unit.textname == 1 then
         letters[unit.textname] = (letters[unit.textname] or 0) + 1
       else

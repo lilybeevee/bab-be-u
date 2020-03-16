@@ -212,11 +212,11 @@ function parseRules(undoing)
       
       if #mimic == 1 then
         unit.textname = mimic[1].textname
-        unit.texttype = mimic[1].texttype
+        unit.typeset = mimic[1].typeset
         unit.color_override = getUnitColor(mimic[1])
       else
         unit.textname = "  "
-        unit.texttype = {ditto = true}
+        unit.typeset = {ditto = true}
         unit.color_override = {0,3}
       end
     end
@@ -338,7 +338,7 @@ function parseRules(undoing)
               local new_word = {}
 
               new_word.name = unit.textname
-              new_word.type = unit.texttype
+              new_word.type = unit.typeset
               new_word.unit = unit
               new_word.dir = dir
 
@@ -597,7 +597,7 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
           if other.dir == full_rule.dir then
             local subset = true
             for _,u in ipairs(other.units) do
-              if (not full_rule.units_set[u] or (full_rule.dirs[u] ~= other.dirs[u])) and not u.texttype["and"] then 
+              if (not full_rule.units_set[u] or (full_rule.dirs[u] ~= other.dirs[u])) and not u.typeset["and"] then 
                 subset = false
                 break
               end
@@ -607,7 +607,7 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
             else
               local subset = true
               for _,u in ipairs(full_rule.units) do
-                if (not other.units_set[u] or (full_rule.dirs[u] ~= other.dirs[u])) and not u.texttype["and"] then
+                if (not other.units_set[u] or (full_rule.dirs[u] ~= other.dirs[u])) and not u.typeset["and"] then
                   subset = false
                   break
                 end
