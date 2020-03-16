@@ -3890,8 +3890,6 @@ function getUnitSprite(name, unit)
     -- lin stuff
     elseif name == "lin" and unit.special.pathlock and unit.special.pathlock ~= "none" then
       new_name = "lin_gate"
-    elseif name == "lin" and (scene ~= editor or settings["draw_editor_lins"]) then
-      new_name = "no1"
     elseif name == "lin" and unit.special.visibility == "hidden" then
       new_name = "lin_hidden"
     -- overlay properties

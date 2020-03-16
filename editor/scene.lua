@@ -1400,7 +1400,9 @@ function scene.draw(dt)
               unit.color_override = newcolor
             end
 
-            drawUnitSprite(unit, (unit.x+0.5)*TILE_SIZE, (unit.y+0.5)*TILE_SIZE, math.rad(rotation), 1, 1)
+            if not has_lin then
+              drawUnitSprite(unit, (unit.x+0.5)*TILE_SIZE, (unit.y+0.5)*TILE_SIZE, math.rad(rotation), 1, 1)
+            end
           end
         end
       end
