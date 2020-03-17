@@ -1465,27 +1465,17 @@ function scene.draw(dt)
             end
             
             if not found_matching_tag then love.graphics.setColor(0.2,0.2,0.2) end
-            
-            for j,image in ipairs(tile.sprite) do
-              local sprite = sprites[image]
-              if found_matching_tag then setColor(getTileColor(tile, j, brush.color)) end
-              love.graphics.draw(sprite, (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, TILE_SIZE / 2, TILE_SIZE / 2)
-            end
-            
-            if tile.meta > 0 then
-              if found_matching_tag then setColor({4, 1}) end
-              local metasprite = tile.meta == 2 and sprites["meta2"] or sprites["meta1"]
-              love.graphics.draw(metasprite, (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, TILE_SIZE / 2, TILE_SIZE / 2)
-              if tile.meta > 2 then
-                love.graphics.printf(tostring(tile.meta), (x + 0.5)*TILE_SIZE-1, (y + 0.5)*TILE_SIZE+6, 32, "center")
+
+            local color = {}
+            if not found_matching_tag then
+              for i = 1, #tile.sprite do
+                color[i] = {0.2*255, 0.2*255, 0.2*255}
               end
+            else
+              color = getTileColors(tile)
             end
-            if tile.nt then
-              if found_matching_tag then setColor({2, 2}) end
-              local ntsprite = sprites["n't"]
-              love.graphics.draw(ntsprite, (x + 0.5)*TILE_SIZE, (y + 0.5)*TILE_SIZE, 0, 1, 1, TILE_SIZE / 2, TILE_SIZE / 2)
-            end
-            
+
+            drawTileSprite(tile, (x+0.5)*TILE_SIZE, (y+0.5)*TILE_SIZE, 0, 1, 1, {color = color})
 
             if brush.id == i then
               love.graphics.setColor(1, 0, 0)

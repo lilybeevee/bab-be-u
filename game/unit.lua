@@ -1338,43 +1338,6 @@ function miscUpdates()
       unit.layer = unit.layer + (24 * (hasProperty(unit,"curse") and 1 or 0)) + (20 * (graphical_property_cache["flye"][unit] or 0))
       unit.sprite = deepCopy(tile.sprite)
       
-      if unit.fullname == "os" then
-        local os = love.system.getOS()
-        if os == "Windows" then
-          unit.sprite = {"os_windous"}
-        elseif os == "OS X" or os == "iOS" then
-          unit.sprite = {"os_mak"}
-        elseif os == "Linux" then
-          unit.sprite = {"os_linx"}
-        elseif os == "Android" then
-          unit.sprite = {"os_androd"}
-        else
-          unit.sprite = {"wat"}
-        end
-        if unit.sprite ~= "wat" and graphical_property_cache["slep"][unit] ~= nil then
-          unit.sprite = unit.sprite .. "_slep"
-        end
-      end
-      
-      if unit.fullname == "ui_gui" then
-        local os = love.system.getOS()
-        if os == "Windows" then
-          unit.sprite = {"ui_win"}
-        elseif os == "OS X" or os == "iOS" then
-          unit.sprite = {"ui_cmd"}
-        else
-          unit.sprite = {"ui_win"}
-        end
-      end
-      
-      if unit.fullname == "ui_cap" then
-        if capslock then
-          unit.sprite = {"ui_cap_on"}
-        else
-          unit.sprite = {"ui_cap_off"}
-        end
-      end
-      
       if unit.fullname == "boooo" then
         if hasProperty(unit,"shy...") then
           unit.sprite = {"boooo_shy","boooo_mouth_shy","boooo_blush"}
@@ -1629,9 +1592,6 @@ function miscUpdates()
         else
           unit.sprite = {"bup","no1","no1","no1"}
         end
-        if graphical_property_cache["slep"][unit] ~= nil then
-          unit.sprite[1] = "bup_slep"
-        end
       end
       
       if unit.fullname == "maglit" then
@@ -1672,25 +1632,6 @@ function miscUpdates()
         if suit == "spade" or suit == "clubs" then
           unit.color = {{0, 3}, {0, 0}, {0, 0}}
           unit.painted = {{0, 0}, false, false}
-        end
-      end
-      
-      for type,name in pairs(unit.sprite_transforms) do
-        if table.has_value(unit.used_as, type) then
-          unit.sprite = name
-          break
-        end
-      end
-      
-      if graphical_property_cache["slep"][unit] ~= nil then
-        for j,name in ipairs(unit.sprite) do
-          if sprites[name.."_slep"] then
-            unit.sprite[j] = name.."_slep"
-          end
-        end
-      else
-        if unit.fullname == "detox" then
-          unit.color = {2,4}
         end
       end
 

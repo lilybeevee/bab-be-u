@@ -3828,17 +3828,63 @@ function initializeTiles(tiles)
   end
 end
 
-function getTileSprite(name, tile, wobble_add)
-  local new_name = name
-  if tile and tile.wobble then
-    wobble_add = wobble_add or 1
-    local wobble_frame = (wobble_add + anim_stage) % 3 + 1
-    if sprites[new_name.."_"..wobble_frame] then
-      return sprites[new_name.."_"..wobble_frame], new_name.."_"..wobble_frame
+local function addTry(try, str, extra)
+  if extra then
+    for i = 1, #try do
+      local nya = str:gsub("%?",try[i])
+      table.insert(try, i, nya)
+      i = i + 1
+    end
+  else
+    table.insert(try, 1, str)
+  end
+end
+
+function getTileSprite(name, tile, o)
+  local o = getTableWithDefaults(o, {wobble = 1, sleep = false})
+  local try = o.try or {name}
+  if tile then
+    if name == "os" then
+      local os = love.system.getOS()
+      if os == "Windows" then
+        addTry(try, "os_windous")
+      elseif os == "OS X" or os == "iOS" then
+        addTry(try, "os_mak")
+      elseif os == "Linux" then
+        addTry(try, "os_linx")
+      elseif os == "Android" then
+        addTry(try, "os_androd")
+      end
+    elseif name == "ui_gui" then
+      local os = love.system.getOS()
+      if os == "Windows" then
+        addTry(try, "ui_win")
+      elseif os == "OS X" or os == "iOS" then
+        addTry(try, "ui_cmd")
+      else
+        addTry(try, "ui_win")
+      end
+    elseif name == "ui_cap" then
+      if capslock then
+        addTry(try, "ui_cap_on")
+      else
+        addTry(try, "ui_cap_off")
+      end
+    end
+
+    if o.sleep then
+      addTry(try, "?_slep", true)
+    end
+
+    if tile.wobble then
+      local wobble_frame = (o.wobble + anim_stage) % 3 + 1
+      addTry(try, "?_"..wobble_frame, true)
     end
   end
-  if sprites[new_name] then
-    return sprites[new_name], new_name
+  for _,try_name in ipairs(try) do
+    if sprites[try_name] then
+      return sprites[try_name], try_name
+    end
   end
   return sprites["wat"], "wat"
 end
@@ -3878,33 +3924,45 @@ function getTileColors(tile, override)
 end
 
 function getUnitSprite(name, unit)
-  local new_name = name
+  local try = {name}
   if unit then
     -- lvl stuff
     if name == "lvl" and unit.special.visibility == "hidden" then
-      new_name = "lvl_hidden"
+      addTry(try, "lvl_hidden")
     elseif name == "lvl" and (unit.special.visibility == "locked" or unit.special.visibility == nil) then
-      new_name = "lvl_locked"
+      addTry(try, "lvl_locked")
     elseif name == "lvl" and scene == game and unit.special.level and readSaveFile{"levels", unit.special.level, "won"} then
-      new_name = "lvl_won"
+      addTry(try, "lvl_won")
     -- lin stuff
     elseif name == "lin" and unit.special.pathlock and unit.special.pathlock ~= "none" then
-      new_name = "lin_gate"
+      addTry(try, "lin_gate")
     elseif name == "lin" and unit.special.visibility == "hidden" then
-      new_name = "lin_hidden"
+      addTry(try, "lin_hidden")
     -- overlay properties
     elseif name == "text/gay-colored" and not unit.active then
-      new_name = "text/gay"
+      addTry(try, "text/gay")
     elseif name == "text/tranz-colored" and not unit.active then
-      new_name = "text/tranz"
+      addTry(try, "text/tranz")
     elseif name == "text/enby-colored" and not unit.active then
-      new_name = "text/enby"
+      addTry(try, "text/enby")
     -- misc
     elseif name == "text/now" and doing_past_turns then
-      new_name = "text/latr"
+      addTry(try, "text/latr")
+    end
+
+    for type,name in pairs(unit.sprite_transforms) do
+      if table.has_value(unit.used_as, type) then
+        addTry(try, name)
+        break
+      end
     end
   end
-  return getTileSprite(new_name, unit and getTile(unit.tile), unit and unit.frame or 0)
+
+  return getTileSprite(name, unit and getTile(unit.tile), {
+    try = try,
+    wobble = unit and unit.frame or 0,
+    sleep = unit and graphical_property_cache["slep"][unit]
+  })
 end
 
 function getUnitSprites(unit)
