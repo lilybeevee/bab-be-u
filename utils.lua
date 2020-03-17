@@ -262,7 +262,6 @@ function loadMap()
           local unit = createUnit(tile, x, y, dir, false, id, nil, color)
           unit.special = specials
         elseif tile == "lvl" then
-          print(specials.visibility)
           if readSaveFile{"levels", specials.level, "seen"} then
             specials.visibility = "open"
             local tfs = readSaveFile{"levels", specials.level, "transform"}
@@ -3780,7 +3779,7 @@ function getTile(name)
   end
 
   if name:isNt() then
-    print("making new tile: " .. name)
+    --print("making new tile: " .. name)
 
     local tile = getTile(name:sub(1, -4))
     if not tile then return nil end
@@ -3793,7 +3792,7 @@ function getTile(name)
 
     return addTile(tile)
   elseif name:isText() then
-    print("making new tile: " .. name)
+    --print("making new tile: " .. name)
 
     local tile = getTile(name:sub(5))
     if not tile then return nil end

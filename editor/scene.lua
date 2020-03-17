@@ -723,7 +723,6 @@ function scene.keyPressed(key)
     local already_nted = false
     for i = 0,tile_grid_width*tile_grid_height do   
       if current_tile_grid[i] ~= nil and current_tile_grid[i] ~= 0 and current_tile_grid[i]:isNt() then
-        print(current_tile_grid[i])
         already_nted = true
         break
       end
