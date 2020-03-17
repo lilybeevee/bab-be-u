@@ -531,24 +531,28 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
     end
   end
   
-  local function addUnits(list, set, root, dirs)
+  local function addUnits(list, set, root, dirs, mods)
     if root.unit and not set[root.unit] then
       table.insert(list, root.unit)
       set[root.unit] = true
       dirs[root.unit] = root.dir
+      mods[root.unit] = mods[root.unit] or {}
       if root.conds then
         for _,cond in ipairs(root.conds) do
-          addUnits(list, set, cond, dirs)
+          addUnits(list, set, cond, dirs, mods)
         end
       end
       if root.others then
         for _,other in ipairs(root.others) do
-          addUnits(list, set, other, dirs)
+          addUnits(list, set, other, dirs, mods)
         end
       end
       if root.mods then
         for _,mod in ipairs(root.mods) do
-          addUnits(list, set, mod, dirs)
+          if mod.unit then
+            table.insert(mods[root.unit], mod.unit)
+          end
+          addUnits(list, set, mod, dirs, mods)
         end
       end
     end
@@ -567,13 +571,14 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
         local list = {}
         local set = {}
         local dirs = {}
+        local mods = {}
         for _,word in ipairs(extra_words) do
-          addUnits(list, set, word, dirs)
+          addUnits(list, set, word, dirs, mods)
         end
-        addUnits(list, set, rule.subject, dirs)
-        addUnits(list, set, rule.verb, dirs)
-        addUnits(list, set, rule.object, dirs)
-        local full_rule = {rule = rule, units = list, dir = dir, units_set = set, dirs = dirs}
+        addUnits(list, set, rule.subject, dirs, mods)
+        addUnits(list, set, rule.verb, dirs, mods)
+        addUnits(list, set, rule.object, dirs, mods)
+        local full_rule = {rule = rule, units = list, dir = dir, units_set = set, dirs = dirs, mods = mods}
         -- print(fullDump(full_rule))
         
         local add = false
@@ -597,7 +602,7 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
           if other.dir == full_rule.dir then
             local subset = true
             for _,u in ipairs(other.units) do
-              if (not full_rule.units_set[u] or (full_rule.dirs[u] ~= other.dirs[u])) and not u.typeset["and"] then 
+              if (not full_rule.units_set[u] or (full_rule.dirs[u] ~= other.dirs[u]) or not eq(full_rule.mods[u], other.mods[u])) and not u.typeset["and"] then 
                 subset = false
                 break
               end
@@ -607,7 +612,7 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
             else
               local subset = true
               for _,u in ipairs(full_rule.units) do
-                if (not other.units_set[u] or (full_rule.dirs[u] ~= other.dirs[u])) and not u.typeset["and"] then
+                if (not other.units_set[u] or (full_rule.dirs[u] ~= other.dirs[u]) or not eq(full_rule.mods[u], other.mods[u])) and not u.typeset["and"] then
                   subset = false
                   break
                 end
