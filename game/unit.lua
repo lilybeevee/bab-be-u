@@ -3091,7 +3091,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
   unit.x = x or 0
   unit.y = y or 0
   unit.dir = dir or 1
-  unit.active = false
+  unit.active = (scene == editor)
   unit.blocked = false
   unit.removed = false
 

@@ -262,6 +262,7 @@ function loadMap()
           local unit = createUnit(tile, x, y, dir, false, id, nil, color)
           unit.special = specials
         elseif tile == "lvl" then
+          print(specials.visibility)
           if readSaveFile{"levels", specials.level, "seen"} then
             specials.visibility = "open"
             local tfs = readSaveFile{"levels", specials.level, "transform"}
@@ -277,12 +278,10 @@ function loadMap()
               end
             end
             created[id] = true
-          elseif specials.visibility == "open" then
+          elseif specials.visibility == "open" or specials.visibility == "locked" or specials.visibility == nil then
             local unit = createUnit(tile, x, y, dir, false, id, nil, color)
             unit.special = specials
             created[id] = true
-          elseif specials.visibility == "locked" then
-            table.insert(locked_lvls, {id, tile, x, y, dir, specials, color})
           end
           table.insert(objects, {id, tile, x, y, dir, specials, color})
         elseif tile == "lin" then
@@ -3885,6 +3884,8 @@ function getUnitSprite(name, unit)
     -- lvl stuff
     if name == "lvl" and unit.special.visibility == "hidden" then
       new_name = "lvl_hidden"
+    elseif name == "lvl" and (unit.special.visibility == "locked" or unit.special.visibility == nil) then
+      new_name = "lvl_locked"
     elseif name == "lvl" and scene == game and unit.special.level and readSaveFile{"levels", unit.special.level, "won"} then
       new_name = "lvl_won"
     -- lin stuff

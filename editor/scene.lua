@@ -503,27 +503,32 @@ function scene.keyPressed(key)
           brush.id = "txt_"..subsearchstr
           brush.special = {}
           selector_open = false
+          searchstr, subsearchstr = "", ""
         end
       elseif key_down["lctrl"] or key_down["rctrl"] then
         if getTile("letter_"..subsearchstr) then
           brush.id = "letter_"..subsearchstr
           brush.special = {}
           selector_open = false
+          searchstr, subsearchstr = "", ""
         elseif #subsearchstr >= 1 and #subsearchstr <= 6 then
           brush.id = "letter_custom"
           brush.special = {customletter = subsearchstr}
           --brush.customletter = subsearchstr
           selector_open = false
+          searchstr, subsearchstr = "", ""
         end
       else
         if getTile(subsearchstr) and (settings["baba"] or not getTile(subsearchstr).wobble) then
           brush.id = subsearchstr
           brush.special = {}
           selector_open = false
+          searchstr, subsearchstr = "", ""
         elseif getTile("txt_"..subsearchstr) and (settings["baba"] or not getTile("txt_"..subsearchstr).wobble) then
           brush.id = "txt_"..subsearchstr
           brush.special = {}
           selector_open = false
+          searchstr, subsearchstr = "", ""
         end
       end
     elseif (#key == 1 or key == "space") and not (key_down["lctrl"] or key_down["rctrl"] or key_down["f3"]) then
@@ -1087,7 +1092,6 @@ function scene.update(dt)
                   if last_lin_hidden and brush.id == "lin" then
                     new_unit.special.visibility = "hidden"
                   end
-                  new_unit.active = true
                   --[[if brush.id == tiles_by_name["letter_custom"] then
                     new_unit.special.customletter = brush.customletter
                   end]]
@@ -1323,20 +1327,15 @@ function scene.draw(dt)
                 for ndir=1,4 do
                   local nx,ny = dirs[ndir][1],dirs[ndir][2]
                   local px,py = unit.x + nx, unit.y + ny
-                  if inBounds(px,py) then
-                    local around = getUnitsOnTile(px,py)
-                    for _,other in ipairs(around) do
-                      if other.name == "lin" or other.name == "lvl" then
-                        orthos[ndir] = true
-                        table.insert(line,{unit.x*2-unit.draw.x+nx+other.draw.x-other.x, unit.y*2-unit.draw.y+ny+other.draw.y-other.y, other.special.visibility == "hidden"})
-                        break
-                      else
-                        orthos[ndir] = false
-                      end
+                  local around = getUnitsOnTile(px,py)
+                  for _,other in ipairs(around) do
+                    if other.name == "lin" or other.name == "lvl" then
+                      orthos[ndir] = true
+                      table.insert(line,{unit.x*2-unit.draw.x+nx+other.draw.x-other.x, unit.y*2-unit.draw.y+ny+other.draw.y-other.y, other.special.visibility == "hidden"})
+                      break
+                    else
+                      orthos[ndir] = false
                     end
-                  else
-                    orthos[ndir] = true
-                    table.insert(line,{px,py})
                   end
                 end
                 for ndir=2,8,2 do

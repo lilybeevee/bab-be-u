@@ -2172,10 +2172,12 @@ function getNextLevels()
   local curses = getUnitsWithEffect("curse")
   for _,unit in ipairs(curses) do
     local lvls = getUnitsOnTile(unit.x, unit.y, nil, false, unit)
+    local already_added = {}
     for _,lvl in ipairs(lvls) do
-      if lvl.special.level and lvl.special.visibility == "open" then
+      if lvl.special.level and not already_added[lvl.special.level] and lvl.special.visibility == "open" then
         table.insert(next_level_objs, lvl)
         table.insert(next_levels, lvl.special.level)
+        already_added[lvl.special.level] = true
       end
     end
   end

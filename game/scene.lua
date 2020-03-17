@@ -956,7 +956,7 @@ function scene.draw(dt)
     --performance todos: each line gets drawn twice (both ways), so there's probably a way to stop that. might not be necessary though, since there is no lag so far
     --in fact, the double lines add to the pixelated look, so for now i'm going to make it intentional and actually add it in a couple places to be consistent
     local has_lin = false
-    if unit.name == "lin" and (not unit.special.pathlock or unit.special.pathlock == "none") and scene ~= editor and not loop then
+    if unit.name == "lin" and (not unit.special.pathlock or unit.special.pathlock == "none") and scene ~= editor then
       love.graphics.setLineWidth(4)
       love.graphics.setLineStyle("rough")
       local orthos = {}
@@ -964,20 +964,15 @@ function scene.draw(dt)
       for ndir=1,4 do
         local nx,ny = dirs[ndir][1],dirs[ndir][2]
         local dx,dy,dir,px,py,portal = getNextTile(unit,nx,ny,2*ndir-1)
-        if inBounds(px,py) then
-          local around = getUnitsOnTile(px,py)
-          for _,other in ipairs(around) do
-            if other.name == "lin" or other.name == "lvl" then
-              orthos[ndir] = true
-              table.insert(line,{unit.x*2-unit.draw.x+nx+other.draw.x-other.x, unit.y*2-unit.draw.y+ny+other.draw.y-other.y, portal})
-              break
-            else
-              orthos[ndir] = false
-            end
+        local around = getUnitsOnTile(px,py)
+        for _,other in ipairs(around) do
+          if other.name == "lin" or other.name == "lvl" then
+            orthos[ndir] = true
+            table.insert(line,{unit.x*2-unit.draw.x+nx+other.draw.x-other.x, unit.y*2-unit.draw.y+ny+other.draw.y-other.y, portal})
+            break
+          else
+            orthos[ndir] = false
           end
-        else
-          orthos[ndir] = true
-          table.insert(line,{px,py})
         end
       end
       for ndir=2,8,2 do
@@ -1008,7 +1003,9 @@ function scene.draw(dt)
           -- else
           --   love.graphics.setLineWidth(3)
           -- end
-          love.graphics.line(fulldrawx+dx,fulldrawy+dy,fulldrawx-odx,fulldrawy-ody)
+          if not loop then
+            love.graphics.line(fulldrawx+dx,fulldrawy+dy,fulldrawx-odx,fulldrawy-ody)
+          end
         end
       end
       has_lin = #line > 0
