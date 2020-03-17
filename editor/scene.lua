@@ -1472,7 +1472,7 @@ function scene.draw(dt)
                 color[i] = {0.2*255, 0.2*255, 0.2*255}
               end
             else
-              color = getTileColors(tile)
+              color = getTileColors(tile, brush.color)
             end
 
             drawTileSprite(tile, (x+0.5)*TILE_SIZE, (y+0.5)*TILE_SIZE, 0, 1, 1, {color = color})
