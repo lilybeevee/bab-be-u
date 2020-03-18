@@ -1256,7 +1256,7 @@ function scene.draw(dt)
     love.graphics.pop()
 
     if unit.blocked then
-      local rotation = (unit.blocked_dir - 1) * 45
+      --[[local rotation = (unit.blocked_dir - 1) * 45
 
       love.graphics.push()
       love.graphics.rotate(math.rad(rotation))
@@ -1274,7 +1274,19 @@ function scene.draw(dt)
         love.graphics.draw(sprites["scribble_1"], fulldrawx, fulldrawy, 0, unit.draw.scalex * scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
       end
 
-      love.graphics.pop()
+      love.graphics.pop()]]
+
+      local rotation = math.sin(love.timer.getTime()*4)*math.rad(5)
+
+      setColor(getUnitColor(unit))
+
+      local sprite = sprites["no bad dont"]
+      love.graphics.draw(sprite, 0, 0, rotation, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+
+      setColor{0, 4}
+
+      sprite = sprites["no bad dont_outline"]
+      love.graphics.draw(sprite, 0, 0, rotation, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
     end
 
     love.graphics.pop()
