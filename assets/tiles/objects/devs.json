@@ -14,7 +14,7 @@
   },
   {
     "name": "txt_oat",
-    "sprite": ["text/oat"],
+    "sprite": ["txt/oat"],
     "types": ["object"],
     "color": [[2, 4]],
     "tags": ["devs", "chars", "oatmealine", "puyopuyo tetris"]
@@ -34,7 +34,7 @@
   },
   {
     "name": "txt_pata",
-    "sprite": ["text/pata"],
+    "sprite": ["txt/pata"],
     "types": ["object"],
     "color": [[3, 3]],
     "tags": ["devs", "chars", "patashu"]
@@ -62,7 +62,7 @@
   },
   {
     "name": "txt_larry",
-    "sprite": ["text/larry"],
+    "sprite": ["txt/larry"],
     "types": ["object"],
     "color": [[2, 4]],
     "tags": ["devs", "chars", "vitellary", "vvvvvv"]
@@ -82,7 +82,7 @@
   },
   {
     "name": "txt_lila",
-    "sprite": ["text/lila"],
+    "sprite": ["txt/lila"],
     "types": ["object"],
     "color": [[4, 2]],
     "tags": ["devs", "chars", "lily", "lili"]
@@ -101,7 +101,7 @@
   },
   {
     "name": "txt_zsoob",
-    "sprite": ["text/zsoob"],
+    "sprite": ["txt/zsoob"],
     "types": ["object"],
     "color": [[4, 1]],
     "tags": ["devs", "chars", "szoob"]
@@ -127,7 +127,7 @@
   },
   {
     "name": "txt_jill",
-    "sprite": ["text/jill"],
+    "sprite": ["txt/jill"],
     "types": ["object"],
     "color": [[1, 3]],
     "tags": ["devs", "chars", "va11 hall-a", "cynthia"]
@@ -146,7 +146,7 @@
   },
   {
     "name": "txt_slab",
-    "sprite": ["text/slab"],
+    "sprite": ["txt/slab"],
     "types": ["object"],
     "color": [[1, 4]],
     "desc": "i need to make this multicolor why am i so lazy",
@@ -167,7 +167,7 @@
   },
   {
     "name": "txt_butcher",
-    "sprite": ["text/butcher"],
+    "sprite": ["txt/butcher"],
     "types": ["object"],
     "color": [[1, 2]],
     "tags": ["devs", "chars"]
@@ -186,7 +186,7 @@
   },
   {
     "name": "txt_notnat",
-    "sprite": ["text/notnat"],
+    "sprite": ["txt/notnat"],
     "types": ["object"],
     "color": [[1, 4]],
     "tags": ["devs", "chars"]

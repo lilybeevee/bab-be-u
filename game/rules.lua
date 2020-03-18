@@ -240,7 +240,7 @@ function parseRules(undoing)
     end
     --Text that ben't wurd is a special case.
     table.insert(result, #matchesRule(nil, "ben't", "wurd"));
-    --Text/wurds ignoring a poor toll could cause parsing to change.
+    --txt/wurds ignoring a poor toll could cause parsing to change.
     table.insert(result, rules_with["poortoll"] and #matchesRule(nil, "ignor", nil) or 0);
     --RP can cause a parse effecting rule to be RP'd. (TODO: For mysterious reasons, this doesn't work with wurd.)
      table.insert(result, #matchesRule(nil, "rp", "?"));
@@ -1170,7 +1170,7 @@ function shouldReparseRulesIfConditionalRuleExists(r1, r2, r3, even_non_wurd)
           
           --TODO: How should a parse effecting THE rule work? Continual reparsing, like frenles?
           
-          --As another edge to consider, what if the level geometry changes suddenly? Well, portals already trigger reparsing rules when they update, which is the only kind of external level geometry change. In addition, text/wurds changing flye/tall surprisingly would already trigger rule reparsing since we checked those rules. But, what about a non-wurd changing flye/tall, allowing it to go through a portal, changing the condition of a different parse effecting rule? This can also happen with level be go arnd/mirr arnd turning on or off. parseRules should fire in such cases. So specifically for these cases, even though they aren't wurd/text, we do want to fire parseRules when their conditions change.
+          --As another edge to consider, what if the level geometry changes suddenly? Well, portals already trigger reparsing rules when they update, which is the only kind of external level geometry change. In addition, txt/wurds changing flye/tall surprisingly would already trigger rule reparsing since we checked those rules. But, what about a non-wurd changing flye/tall, allowing it to go through a portal, changing the condition of a different parse effecting rule? This can also happen with level be go arnd/mirr arnd turning on or off. parseRules should fire in such cases. So specifically for these cases, even though they aren't wurd/text, we do want to fire parseRules when their conditions change.
           
           --One final edge case to consider: MOUS, which just moves around on its own. This also triggers should_parse_rules_at_turn_boundary, since that's how often we care about MOUS moving.
         end

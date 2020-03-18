@@ -1,7 +1,7 @@
 [
   {
     "name": "txt_mous",
-    "sprite": ["text/mous"],
+    "sprite": ["txt/mous"],
     "types": ["object"],
     "color": [[3, 3]],
     "desc": "MOUS: Refers to the mouse cursor. You can create, destroy and apply properties to mouse cursors!",
@@ -9,7 +9,7 @@
   },
   {
     "name": "txt_no1",
-    "sprite": ["text/no1"],
+    "sprite": ["txt/no1"],
     "types": ["object"],
     "color": [[0, 3]],
     "desc": "NO1: Refers to tiles with nothing in them. Rotation status is kept on the tile. Cannot be colored.",
@@ -24,8 +24,8 @@
   },
   {
     "name": "txt_lvl",
-    "sprite": ["text/lvl"],
-    "metasprite": ["text/lvl meta"],
+    "sprite": ["txt/lvl"],
+    "metasprite": ["txt/lvl meta"],
     "types": ["object"],
     "color": [[4, 1]],
     "desc": "LVL: Refers to the level you're in, as well as any enterable levels in this level. \nMiddle or SHIFT right-click it to edit.)\nCreating levels will be a samepaint lvl.\nlvl be pathz by default.\nlvl got X will trigger even if the level infloops.",
@@ -50,7 +50,7 @@
   },
   {
     "name": "txt_bordr",
-    "sprite": ["text/bordr"],
+    "sprite": ["txt/bordr"],
     "types": ["object"],
     "color": [[2, 0]],
     "tags": ["border"]

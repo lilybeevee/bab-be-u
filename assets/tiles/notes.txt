@@ -1,4 +1,5 @@
 order of the things (because consistency is important):
+id
 name
 display
 sprite
@@ -23,6 +24,7 @@ desc
 alias
 tags
 pronouns
+old ids
 
 layer notes:
 1: bordr, and nothing else

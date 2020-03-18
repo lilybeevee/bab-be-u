@@ -10,8 +10,8 @@
   },
   {
     "name": "txt_wal",
-    "sprite": ["text/wal"],
-    "metasprite": ["text/wal meta"],
+    "sprite": ["txt/wal"],
+    "metasprite": ["txt/wal meta"],
     "types": ["object"],
     "color": [[0, 1]],
     "desc": "uigi isn't gonna be in smash",
@@ -20,7 +20,7 @@
   {
     "name": "txt_waln't",
     "display": "wal n't",
-    "sprite": ["text/wal meta", "n't"],
+    "sprite": ["txt/wal meta", "n't"],
     "types": ["object"],
     "color": [[0, 1], [2, 2]],
     "painted": [true, false],
@@ -37,8 +37,8 @@
   },
   {
     "name": "txt_roc",
-    "sprite": ["text/roc"],
-    "metasprite": ["text/roc meta"],
+    "sprite": ["txt/roc"],
+    "metasprite": ["txt/roc meta"],
     "types": ["object"],
     "color": [[6, 1]],
     "tags": ["rock"]
@@ -46,7 +46,7 @@
   {
     "name": "txt_rocn't",
     "display": "roc n't",
-    "sprite": ["text/roc meta", "n't"],
+    "sprite": ["txt/roc meta", "n't"],
     "types": ["object"],
     "color": [[6, 1], [2, 2]],
     "painted": [true, false],
@@ -62,8 +62,8 @@
   },
   {
     "name": "txt_dor",
-    "sprite": ["text/dor"],
-    "metasprite": ["text/dor meta"],
+    "sprite": ["txt/dor"],
+    "metasprite": ["txt/dor meta"],
     "types": ["object"],
     "color": [[2, 2]],
     "tags": ["door"]
@@ -80,8 +80,8 @@
   },
   {
     "name": "txt_kee",
-    "sprite": ["text/kee"],
-    "metasprite": ["text/kee meta"],
+    "sprite": ["txt/kee"],
+    "metasprite": ["txt/kee meta"],
     "types": ["object"],
     "color": [[2, 4]],
     "tags": ["key"]
@@ -97,7 +97,7 @@
   },
   {
     "name": "txt_flog",
-    "sprite": ["text/flog"],
+    "sprite": ["txt/flog"],
     "types": ["object"],
     "color": [[2, 4]],
     "tags": ["flag"]
@@ -120,14 +120,14 @@
   },
   {
     "name": "txt_watr",
-    "sprite": ["text/watr"],
+    "sprite": ["txt/watr"],
     "types": ["object"],
     "color": [[1, 3]],
     "tags": ["water"]
   },
   {
     "name": "txt_boux",
-    "sprite": ["text/boux"],
+    "sprite": ["txt/boux"],
     "types": ["object"],
     "color": [[6, 1]],
     "tags": ["box"]
@@ -143,7 +143,7 @@
   },
   {
     "name": "txt_laav",
-    "sprite": ["text/laav"],
+    "sprite": ["txt/laav"],
     "types": ["object"],
     "color": [[2, 3]],
     "tags": ["lava"]
@@ -158,8 +158,8 @@
   },
   {
     "name": "txt_til",
-    "sprite": ["text/til"],
-    "metasprite": ["text/til meta"],
+    "sprite": ["txt/til"],
+    "metasprite": ["txt/til meta"],
     "types": ["object"],
     "color": [[0, 1]],
     "tags": ["tile"]
@@ -174,7 +174,7 @@
   },
   {
     "name": "txt_l..uv",
-    "sprite": ["text/luv"],
+    "sprite": ["txt/luv"],
     "types": ["object"],
     "color": [[4, 2]],
     "desc": "LÜV: To use with letters, you need an umlaut!",
@@ -192,7 +192,7 @@
   },
   {
     "name": "txt_frut",
-    "sprite": ["text/frut"],
+    "sprite": ["txt/frut"],
     "types": ["object"],
     "color": [[2, 2]],
     "tags": ["fruit", "apple", "plants", "food"]
@@ -208,14 +208,14 @@
   },
   {
     "name": "txt_tre",
-    "sprite": ["text/tre"],
+    "sprite": ["txt/tre"],
     "types": ["object"],
     "color": [[5, 2]],
     "tags": ["tree", "plants"]
   },
   {
     "name": "txt_boll",
-    "sprite": ["text/boll"],
+    "sprite": ["txt/boll"],
     "types": ["object"],
     "color": [[4, 1]],
     "tags": ["orb", "ball"]
@@ -230,7 +230,7 @@
   },
   {
     "name": "txt_bellt",
-    "sprite": ["text/bellt"],
+    "sprite": ["txt/bellt"],
     "types": ["object"],
     "color": [[1, 3]],
     "tags": ["belt"]
@@ -255,7 +255,7 @@
   },
   {
     "name": "txt_gunne",
-    "sprite": ["text/gunne"],
+    "sprite": ["txt/gunne"],
     "types": ["object"],
     "color": [[0, 3]],
     "desc": "GUNNE: Any object with GOT GUNNE will wield a GUNNE.",
@@ -271,7 +271,7 @@
   },
   {
     "name": "txt_gras",
-    "sprite": ["text/gras"],
+    "sprite": ["txt/gras"],
     "types": ["object"],
     "color": [[5, 3]],
     "tags": ["grass", "plants"]
@@ -289,7 +289,7 @@
   },
   {
     "name": "txt_dayzy",
-    "sprite": ["text/dayzy"],
+    "sprite": ["txt/dayzy"],
     "types": ["object"],
     "color": [[3, 3]],
     "tags": ["violet", "daisy", "flower", "plants"]
@@ -307,7 +307,7 @@
   },
   {
     "name": "txt_hurcane",
-    "sprite": ["text/hurcane"],
+    "sprite": ["txt/hurcane"],
     "types": ["object"],
     "color": [[3, 1]],
     "tags": ["hurricane", "tornado"]
@@ -322,7 +322,7 @@
   },
   {
     "name": "txt_hatt",
-    "sprite": ["text/hatt"],
+    "sprite": ["txt/hatt"],
     "types": ["object"],
     "color": [[3, 1]],
     "desc": "HATT: Any object with GOT HATT will wear a HATT. (Aesthetic)",
@@ -345,7 +345,7 @@
   },
   {
     "name": "txt_chekr",
-    "sprite": ["text/chekr"],
+    "sprite": ["txt/chekr"],
     "types": ["object"],
     "color": [[3, 2]],
     "tags": ["checker", "diamond"]
@@ -361,14 +361,14 @@
   },
   {
     "name": "txt_arro",
-    "sprite": ["text/arro"],
+    "sprite": ["txt/arro"],
     "types": ["object"],
     "color": [[0, 3]],
     "tags": ["arrow"]
   },
   {
     "name": "txt_colld",
-    "sprite": ["text/colld"],
+    "sprite": ["txt/colld"],
     "types": ["object"],
     "color": [[1, 4]],
     "tags": ["ice"]
@@ -383,7 +383,7 @@
   },
   {
     "name": "txt_piler",
-    "sprite": ["text/piler"],
+    "sprite": ["txt/piler"],
     "types": ["object"],
     "color": [[0, 1]],
     "tags": ["pillar"]
@@ -407,14 +407,14 @@
   },
   {
     "name": "txt_clowd",
-    "sprite": ["text/clowd"],
+    "sprite": ["txt/clowd"],
     "types": ["object"],
     "color": [[0, 3]],
     "tags": ["cloud"]
   },
   {
     "name": "infloop",
-    "sprite": ["text/infloop"],
+    "sprite": ["txt/infloop"],
     "layer": 21,
     "color": [[0, 3]],
     "tags": ["infinity", "infinite", "loop"]
@@ -429,7 +429,7 @@
   },
   {
     "name": "txt_petnygrame",
-    "sprite": ["text/petnygrame"],
+    "sprite": ["txt/petnygrame"],
     "types": ["object"],
     "color": [[2, 1]],
     "tags": ["pentagram", "edgy"]
@@ -445,7 +445,7 @@
   },
   {
     "name": "txt_katany",
-    "sprite": ["text/katany"],
+    "sprite": ["txt/katany"],
     "types": ["object"],
     "color": [[0, 1]],
     "desc": "KATANY: Any object with GOT KATANY will have a KATANY.",
@@ -462,7 +462,7 @@
   },
   {
     "name": "txt_scarr",
-    "sprite": ["text/scarr"],
+    "sprite": ["txt/scarr"],
     "types": ["object"],
     "color": [[2, 1]],
     "tags": ["scar", "edgy"]
@@ -478,7 +478,7 @@
   },
   {
     "name": "txt_pepis",
-    "sprite": ["text/pepis"],
+    "sprite": ["txt/pepis"],
     "types": ["object"],
     "color": [[3, 2]],
     "tags": ["bepis", "pepsi"]
@@ -498,7 +498,7 @@
   },
   {
     "name": "txt_clok",
-    "sprite": ["text/clok"],
+    "sprite": ["txt/clok"],
     "types": ["object"],
     "color": [[3, 3]],
     "tags": ["clock", "time"]
@@ -517,14 +517,14 @@
   },
   {
     "name": "txt_splittr",
-    "sprite": ["text/splittr"],
+    "sprite": ["txt/splittr"],
     "types": ["object"],
     "color": [[0, 3]],
     "tags": ["splitter", "5 step"]
   },
   {
     "name": "txt_slippers",
-    "sprite": ["text/slippers"],
+    "sprite": ["txt/slippers"],
     "types": ["object"],
     "color": [[1, 4]],
     "desc": "SLIPPERS: An object that GOT SLIPPERS will ignore ICY and ICYYYYY objects (and wear SLIPPERS)."
@@ -546,7 +546,7 @@
   },
   {
     "name": "txt_selctr",
-    "sprite": ["text/selctr"],
+    "sprite": ["txt/selctr"],
     "types": ["object"],
     "color": [[2, 3]],
     "tags": ["cursor", "selector"]
@@ -561,7 +561,7 @@
   },
   {
     "name": "txt_lin",
-    "sprite": ["text/lin"],
+    "sprite": ["txt/lin"],
     "types": ["object"],
     "color": [[0, 3]],
     "desc": "LIN BE PATHZ by default. Also lin is used in floodfilling and can have a puff/blossom door attached to it.",
@@ -578,7 +578,7 @@
   },
   {
     "name": "txt_firbolt",
-    "sprite": ["text/firbolt"],
+    "sprite": ["txt/firbolt"],
     "types": ["object"],
     "color": [[6, 2]],
     "tags": ["firebolt"]
@@ -594,7 +594,7 @@
   },
   {
     "name": "txt_icbolt",
-    "sprite": ["text/icbolt"],
+    "sprite": ["txt/icbolt"],
     "types": ["object"],
     "color": [[1, 4]],
     "tags": ["icebolt"]
@@ -609,7 +609,7 @@
   },
   {
     "name": "txt_hedg",
-    "sprite": ["text/hedg"],
+    "sprite": ["txt/hedg"],
     "types": ["object"],
     "color": [[5, 1]],
     "tags": ["hedge", "plants"]
@@ -624,7 +624,7 @@
   },
   {
     "name": "txt_fenss",
-    "sprite": ["text/fenss"],
+    "sprite": ["txt/fenss"],
     "color": [[6, 2]],
     "tags": ["fence"]
   },
@@ -638,7 +638,7 @@
   },
   {
     "name": "txt_metl",
-    "sprite": ["text/metl"],
+    "sprite": ["txt/metl"],
     "types": ["object"],
     "color": [[0, 2]],
     "tags": ["metal"]
@@ -653,7 +653,7 @@
   },
   {
     "name": "txt_sparkl",
-    "sprite": ["text/sparkl"],
+    "sprite": ["txt/sparkl"],
     "types": ["object"],
     "color": [[2, 4]],
     "tags": ["sparkle", "dust"]
@@ -669,7 +669,7 @@
   },
   {
     "name": "txt_spik",
-    "sprite": ["text/spik"],
+    "sprite": ["txt/spik"],
     "types": ["object"],
     "color": [[0, 2]],
     "tags": ["spike"]
@@ -685,7 +685,7 @@
   },
   {
     "name": "txt_spiky",
-    "sprite": ["text/spiky"],
+    "sprite": ["txt/spiky"],
     "types": ["object"],
     "color": [[0, 2]],
     "tags": ["spike"]
@@ -701,7 +701,7 @@
   },
   {
     "name": "txt_platfor",
-    "sprite": ["text/platfor"],
+    "sprite": ["txt/platfor"],
     "types": ["object"],
     "color": [[6, 2]],
     "tags": ["platform"]
@@ -715,7 +715,7 @@
   },
   {
     "name": "txt_jail",
-    "sprite": ["text/jail"],
+    "sprite": ["txt/jail"],
     "types": ["object"],
     "color": [[0, 2]]
   },
@@ -731,7 +731,7 @@
   },
   {
     "name": "txt_hol",
-    "sprite": ["text/hol"],
+    "sprite": ["txt/hol"],
     "types": ["object"],
     "color": [[3, 2]],
     "tags": ["portal"]
@@ -748,7 +748,7 @@
   },
   {
     "name": "txt_rif",
-    "sprite": ["text/rif"],
+    "sprite": ["txt/rif"],
     "types": ["object"],
     "color": [[2, 4]],
     "tags": ["portal", "rift"]
@@ -763,7 +763,7 @@
   },
   {
     "name": "txt_lie",
-    "sprite": ["text/caek"],
+    "sprite": ["txt/caek"],
     "types": ["object"],
     "color": [[4, 1]],
     "desc": "LIE: If LIE BE SPLIT, LIE becomes LIE/8 on all open adjacent tiles.",
@@ -780,7 +780,7 @@
   },
   {
     "name": "txt_lie/8",
-    "sprite": ["text/slis"],
+    "sprite": ["txt/slis"],
     "types": ["object"],
     "color": [[4, 2]],
     "desc": "LIE/8: If LIE/8 BE MOAR, LIE/8 becomes LIE.",
@@ -796,7 +796,7 @@
   },
   {
     "name": "txt_sine",
-    "sprite": ["text/sine"],
+    "sprite": ["txt/sine"],
     "types": ["object"],
     "color": [[6, 2]],
     "tags": ["sign"]
@@ -812,7 +812,7 @@
   },
   {
     "name": "txt_buble",
-    "sprite": ["text/buble"],
+    "sprite": ["txt/buble"],
     "types": ["object"],
     "color": [[1, 3]],
     "tags": ["bubble"]
@@ -827,7 +827,7 @@
   },
   {
     "name": "txt_icecub",
-    "sprite": ["text/icecub"],
+    "sprite": ["txt/icecub"],
     "types": ["object"],
     "color": [[1, 4]],
     "tags": ["icecube"]
@@ -852,7 +852,7 @@
   },
   {
     "name": "txt_ger",
-    "sprite": ["text/ger"],
+    "sprite": ["txt/ger"],
     "types": ["object"],
     "color": [[6, 1]],
     "tags": ["gear", "time", "cog"]
@@ -868,7 +868,7 @@
   },
   {
     "name": "txt_can",
-    "sprite": ["text/can"],
+    "sprite": ["txt/can"],
     "types": ["object"],
     "color": [[2, 1]],
     "tags": ["valhalla"]
@@ -884,7 +884,7 @@
   },
   {
     "name": "txt_toggl",
-    "sprite": ["text/toggl"],
+    "sprite": ["txt/toggl"],
     "types": ["object"],
     "color": [[0, 3]],
     "tags": ["toggle", "lightswitch"]
@@ -899,7 +899,7 @@
   },
   {
     "name": "txt_bom",
-    "sprite": ["text/bom"],
+    "sprite": ["txt/bom"],
     "types": ["object"],
     "color": [[0, 1]],
     "tags": ["bomb", "boom"]
@@ -936,7 +936,7 @@
   },
   {
     "name": "txt_square",
-    "sprite": ["text/square"],
+    "sprite": ["txt/square"],
     "types": ["object"],
     "color": [[2, 4]],
     "features": {
@@ -946,7 +946,7 @@
   },
   {
     "name": "txt_triangle",
-    "sprite": ["text/triangle"],
+    "sprite": ["txt/triangle"],
     "types": ["object"],
     "color": [[2, 4]],
     "features": {
@@ -964,7 +964,7 @@
   },
   {
     "name": "txt_snoflak",
-    "sprite": ["text/snoflak"],
+    "sprite": ["txt/snoflak"],
     "types": ["object"],
     "color": [[0, 3]],
     "tags": ["snowflake", "ice", "hail", "christmas"]
@@ -979,7 +979,7 @@
   },
   {
     "name": "txt_fir",
-    "sprite": ["text/fir"],
+    "sprite": ["txt/fir"],
     "types": ["object"],
     "color": [[2, 2]],
     "tags": ["hot", "fire", "flame"]
@@ -995,7 +995,7 @@
   },
   {
     "name": "txt_sanglas",
-    "sprite": ["text/sanglas"],
+    "sprite": ["txt/sanglas"],
     "types": ["object"],
     "color": [[2, 4]],
     "tags": ["time", "hourglass"]
@@ -1011,7 +1011,7 @@
   },
   {
     "name": "txt_ladr",
-    "sprite": ["text/ladr"],
+    "sprite": ["txt/ladr"],
     "types": ["object"],
     "color": [[6, 0]],
     "tags": ["ladder", "stairs", "climb"]
@@ -1027,7 +1027,7 @@
   },
   {
     "name": "txt_cobll",
-    "sprite": ["text/cobll"],
+    "sprite": ["txt/cobll"],
     "types": ["object"],
     "color": [[0, 1]],
     "tags": ["cobblestone"]
@@ -1043,7 +1043,7 @@
   },
   {
     "name": "txt_wuud",
-    "sprite": ["text/wuud"],
+    "sprite": ["txt/wuud"],
     "types": ["object"],
     "color": [[6, 2]],
     "tags": ["wood", "planks"]
@@ -1058,7 +1058,7 @@
   },
   {
     "name": "txt_wut",
-    "sprite": ["text/wut"],
+    "sprite": ["txt/wut"],
     "types": ["object"],
     "color": [[0, 3]],
     "tags": ["what"]
@@ -1073,7 +1073,7 @@
   },
   {
     "name": "txt_wat",
-    "sprite": ["text/wat"],
+    "sprite": ["txt/wat"],
     "types": ["object"],
     "color": [[0, 3]],
     "tags": ["what", "error"]
@@ -1088,7 +1088,7 @@
   },
   {
     "name": "txt_brik",
-    "sprite": ["text/brik"],
+    "sprite": ["txt/brik"],
     "types": ["object"],
     "color": [[2, 1]],
     "desc": "reverse kirb",
@@ -1104,7 +1104,7 @@
   },
   {
     "name": "txt_litbolt",
-    "sprite": ["text/litbolt"],
+    "sprite": ["txt/litbolt"],
     "types": ["object"],
     "color": [[2, 4]]
   },
@@ -1121,7 +1121,7 @@
   },
   {
     "name": "txt_rouz",
-    "sprite": ["text/rouz"],
+    "sprite": ["txt/rouz"],
     "types": ["object"],
     "color": [[4, 1]],
     "tags": ["rose", "flower", "plants"]
@@ -1137,7 +1137,7 @@
   },
   {
     "name": "txt_san",
-    "sprite": ["text/san"],
+    "sprite": ["txt/san"],
     "types": ["object"],
     "color": [[2, 4]],
     "tags": ["sand", "beach", "desert"]
@@ -1152,7 +1152,7 @@
   },
   {
     "name": "txt_fungye",
-    "sprite": ["text/fungye"],
+    "sprite": ["txt/fungye"],
     "types": ["object"],
     "color": [[6, 2]],
     "desc": "not a very fun guy",
@@ -1172,7 +1172,7 @@
   },
   {
     "name": "txt_kar",
-    "sprite": ["text/kar"],
+    "sprite": ["txt/kar"],
     "types": ["object"],
     "color": [[5, 2]],
     "tags": ["car", "vehicle"]
@@ -1188,7 +1188,7 @@
   },
   {
     "name": "txt_tor",
-    "sprite": ["text/tor"],
+    "sprite": ["txt/tor"],
     "types": ["object"],
     "color": [[2, 1]],
     "tags": ["portal", "japan", "torii", "asia"]
@@ -1203,7 +1203,7 @@
   },
   {
     "name": "txt_son",
-    "sprite": ["text/son"],
+    "sprite": ["txt/son"],
     "types": ["object"],
     "color": [[2, 4]],
     "tags": ["hot", "sunny", "day"]
@@ -1218,7 +1218,7 @@
   },
   {
     "name": "txt_muun",
-    "sprite": ["text/muun"],
+    "sprite": ["txt/muun"],
     "types": ["object"],
     "color": [[1, 2]],
     "tags": ["moon", "night", "mun", "crescent"]
@@ -1234,7 +1234,7 @@
   },
   {
     "name": "txt_leef",
-    "sprite": ["text/leef"],
+    "sprite": ["txt/leef"],
     "types": ["object"],
     "color": [[5, 2]],
     "desc": "its the 420th object lmao",
@@ -1250,7 +1250,7 @@
   },
   {
     "name": "txt_starr",
-    "sprite": ["text/starr"],
+    "sprite": ["txt/starr"],
     "types": ["object"],
     "color": [[2, 4]],
     "tags": ["star", "night"]
@@ -1265,7 +1265,7 @@
   },
   {
     "name": "txt_shel",
-    "sprite": ["text/shel"],
+    "sprite": ["txt/shel"],
     "types": ["object"],
     "color": [[4, 2]],
     "tags": ["shell", "scallop", "beach"]
@@ -1280,7 +1280,7 @@
   },
   {
     "name": "txt_sancastl",
-    "sprite": ["text/sancastl"],
+    "sprite": ["txt/sancastl"],
     "types": ["object"],
     "color": [[2, 4]],
     "tags": ["sandcastle", "beach"]
@@ -1296,7 +1296,7 @@
   },
   {
     "name": "txt_parsol",
-    "sprite": ["text/parsol"],
+    "sprite": ["txt/parsol"],
     "types": ["object"],
     "color": [[2, 2]],
     "tags": ["parasol", "umbrella", "beach"]
@@ -1312,7 +1312,7 @@
   },
   {
     "name": "txt_pallm",
-    "sprite": ["text/pallm"],
+    "sprite": ["txt/pallm"],
     "types": ["object"],
     "color": [[5, 2]],
     "tags": ["palm tree", "coconut tree", "beach", "plants"]
@@ -1332,7 +1332,7 @@
   },
   {
     "name": "txt_coco",
-    "sprite": ["text/coco"],
+    "sprite": ["txt/coco"],
     "types": ["object"],
     "color": [[6, 1]],
     "tags": ["fruit", "coconut", "plants"]
@@ -1348,7 +1348,7 @@
   },
   {
     "name": "txt_glas",
-    "sprite": ["text/glas"],
+    "sprite": ["txt/glas"],
     "types": ["object"],
     "color": [[0, 2]],
     "tags": ["glass"]
@@ -1364,7 +1364,7 @@
   },
   {
     "name": "txt_vien",
-    "sprite": ["text/vien"],
+    "sprite": ["txt/vien"],
     "types": ["object"],
     "color": [[5, 1]],
     "desc": "so she uploads a VIEN",
@@ -1380,7 +1380,7 @@
   },
   {
     "name": "txt_pudll",
-    "sprite": ["text/pudll"],
+    "sprite": ["txt/pudll"],
     "types": ["object"],
     "color": [[1, 3]],
     "tags": ["water", "puddle"]
@@ -1395,7 +1395,7 @@
   },
   {
     "name": "txt_red",
-    "sprite": ["text/red"],
+    "sprite": ["txt/red"],
     "types": ["object"],
     "color": [[6, 2]],
     "desc": "wait what",
@@ -1411,7 +1411,7 @@
   },
   {
     "name": "txt_stum",
-    "sprite": ["text/stum"],
+    "sprite": ["txt/stum"],
     "types": ["object"],
     "color": [[6, 1]],
     "tags": ["plants", "tree stump"]
@@ -1426,7 +1426,7 @@
   },
   {
     "name": "txt_bullb",
-    "sprite": ["text/bullb"],
+    "sprite": ["txt/bullb"],
     "types": ["object"],
     "color": [[2, 4]],
     "desc": "go play lightbulbmeow's baba pack it's super good",
@@ -1446,7 +1446,7 @@
   },
   {
     "name": "txt_battry",
-    "sprite": ["text/battry"],
+    "sprite": ["txt/battry"],
     "types": ["object"],
     "color": [[4, 1]],
     "tags": ["battery", "power"]
@@ -1463,7 +1463,7 @@
   },
   {
     "name": "txt_smol",
-    "sprite": ["text/smol"],
+    "sprite": ["txt/smol"],
     "types": ["object"],
     "color": [[5, 2]],
     "tags": ["portal"]
@@ -1480,7 +1480,7 @@
   },
   {
     "name": "txt_win",
-    "sprite": ["text/win"],
+    "sprite": ["txt/win"],
     "types": ["object"],
     "color": [[1, 4]],
     "desc": "not to be confused with :)",
@@ -1498,7 +1498,7 @@
   },
   {
     "name": "txt_bon",
-    "sprite": ["text/bon"],
+    "sprite": ["txt/bon"],
     "types": ["object"],
     "color": [[0, 3]],
     "tags": ["bone"]
@@ -1517,7 +1517,7 @@
   },
   {
     "name": "txt_rockit",
-    "sprite": ["text/rockit"],
+    "sprite": ["txt/rockit"],
     "types": ["object"],
     "color": [[1, 3]],
     "tags": ["rocket", "spaceship"]
@@ -1535,7 +1535,7 @@
   },
   {
     "name": "txt_ufu",
-    "sprite": ["text/ufu"],
+    "sprite": ["txt/ufu"],
     "types": ["object"],
     "color": [[3, 3]],
     "tags": ["ufo", "spaceship"]
@@ -1550,7 +1550,7 @@
   },
   {
     "name": "txt_rein",
-    "sprite": ["text/rein"],
+    "sprite": ["txt/rein"],
     "types": ["object"],
     "color": [[1, 3]],
     "tags": ["rain"]
@@ -1564,7 +1564,7 @@
   },
   {
     "name": "txt_algay",
-    "sprite": ["text/algay"],
+    "sprite": ["txt/algay"],
     "types": ["object"],
     "color": [[5, 1]],
     "desc": "very gay",
@@ -1580,7 +1580,7 @@
   },
   {
     "name": "txt_noet",
-    "sprite": ["text/noet"],
+    "sprite": ["txt/noet"],
     "types": ["object"],
     "color": [[4, 1]],
     "tags": ["music note", "quarter note"]
@@ -1595,7 +1595,7 @@
   },
   {
     "name": "txt_banboo",
-    "sprite": ["text/banboo"],
+    "sprite": ["txt/banboo"],
     "types": ["object"],
     "color": [[5, 1]],
     "tags": ["bamboo", "plants"]
@@ -1611,7 +1611,7 @@
   },
   {
     "name": "txt_karot",
-    "sprite": ["text/karot"],
+    "sprite": ["txt/karot"],
     "types": ["object"],
     "color": [[2, 3]],
     "desc": "is it a frut? is it a vege? i dont karot all!!!",
@@ -1628,7 +1628,7 @@
   },
   {
     "name": "txt_poisbolt",
-    "sprite": ["text/poisbolt"],
+    "sprite": ["txt/poisbolt"],
     "types": ["object"],
     "color": [[5, 3]],
     "tags": ["poison"]
@@ -1644,7 +1644,7 @@
   },
   {
     "name": "txt_knif",
-    "sprite": ["text/knif"],
+    "sprite": ["txt/knif"],
     "types": ["object"],
     "color": [[0, 3]],
     "desc": "KNIF: Any object with GOT KNIF will wield a KNIF.",
@@ -1660,7 +1660,7 @@
   },
   {
     "name": "txt_timbolt",
-    "sprite": ["text/timbolt"],
+    "sprite": ["txt/timbolt"],
     "types": ["object"],
     "color": [[3, 3]]
   },
@@ -1674,7 +1674,7 @@
   },
   {
     "name": "txt_cor",
-    "sprite": ["text/cor"],
+    "sprite": ["txt/cor"],
     "types": ["object"],
     "color": [[4, 0]],
     "desc": "ROC backwards",
@@ -1691,7 +1691,7 @@
   },
   {
     "name": "txt_sirn",
-    "sprite": ["text/sirn"],
+    "sprite": ["txt/sirn"],
     "types": ["object"],
     "color": [[2, 2]],
     "tags": ["siren", "alarm"]
@@ -1706,7 +1706,7 @@
   },
   {
     "name": "txt_wips",
-    "sprite": ["text/wips"],
+    "sprite": ["txt/wips"],
     "types": ["object"],
     "color": [[0, 3]],
     "desc": "work in progress",
@@ -1723,7 +1723,7 @@
   },
   {
     "name": "txt_eeg",
-    "sprite": ["text/eeg"],
+    "sprite": ["txt/eeg"],
     "types": ["object"],
     "color": [[6, 2]],
     "tags": ["egg", "food"]
@@ -1739,7 +1739,7 @@
   },
   {
     "name": "txt_foreeg",
-    "sprite": ["text/foreeg"],
+    "sprite": ["txt/foreeg"],
     "types": ["object"],
     "color": [[6, 1]],
     "tags": ["nest"]
@@ -1755,7 +1755,7 @@
   },
   {
     "name": "txt_extre",
-    "sprite": ["text/extre"],
+    "sprite": ["txt/extre"],
     "types": ["object"],
     "color": [[6, 1]],
     "tags": ["tree", "plants", "husk"]
@@ -1770,7 +1770,7 @@
   },
   {
     "name": "txt_heg",
-    "sprite": ["text/heg"],
+    "sprite": ["txt/heg"],
     "types": ["object"],
     "color": [[5, 2]],
     "tags": ["plant", "cactus"]
@@ -1787,7 +1787,7 @@
   },
   {
     "name": "txt_byc",
-    "sprite": ["text/byc"],
+    "sprite": ["txt/byc"],
     "types": ["object"],
     "color": [[2, 2]],
     "desc": "BYC: has a random image every time it's loaded!",
@@ -1805,7 +1805,7 @@
   },
   {
     "name": "txt_bac",
-    "sprite": ["text/bac"],
+    "sprite": ["txt/bac"],
     "types": ["object"],
     "color": [[2, 2]],
     "tags": ["playing card back", "bicycle", "card"]
@@ -1820,7 +1820,7 @@
   },
   {
     "name": "txt_golf",
-    "sprite": ["text/golf"],
+    "sprite": ["txt/golf"],
     "types": ["object"],
     "color": [[1, 2]],
     "desc": "you see, in golf, a LOWER score is better",
@@ -1837,7 +1837,7 @@
   },
   {
     "name": "txt_sloop",
-    "sprite": ["text/sloop"],
+    "sprite": ["txt/sloop"],
     "types": ["object"],
     "color": [[0, 3]],
     "desc": "ideal for reflecc + go my way",
@@ -1854,7 +1854,7 @@
   },
   {
     "name": "txt_reflecr",
-    "sprite": ["text/reflecr"],
+    "sprite": ["txt/reflecr"],
     "types": ["object"],
     "color": [[0, 3]],
     "desc": "ideal for reflecc",
@@ -1870,7 +1870,7 @@
   },
   {
     "name": "txt_chain",
-    "sprite": ["text/chain"],
+    "sprite": ["txt/chain"],
     "types": ["object"],
     "color": [[0, 2]]
   },
@@ -1885,7 +1885,7 @@
   },
   {
     "name": "txt_lili",
-    "sprite": ["text/lili"],
+    "sprite": ["txt/lili"],
     "types": ["object"],
     "color": [[5, 1]],
     "desc": "not to be confused with LILA",
@@ -1901,7 +1901,7 @@
   },
   {
     "name": "txt_swim",
-    "sprite": ["text/swim"],
+    "sprite": ["txt/swim"],
     "types": ["object"],
     "color": [[6, 1]],
     "tags": ["boat", "ship"]
@@ -1917,7 +1917,7 @@
   },
   {
     "name": "txt_gorder",
-    "sprite": ["text/gorder"],
+    "sprite": ["txt/gorder"],
     "types": ["object"],
     "color": [[0, 2]],
     "tags": ["girder", "city"]
@@ -1934,7 +1934,7 @@
   },
   {
     "name": "txt_piep",
-    "sprite": ["text/piep"],
+    "sprite": ["txt/piep"],
     "types": ["object"],
     "color": [[5, 2]],
     "tags": ["pipe", "tube", "mario"]
@@ -1950,7 +1950,7 @@
   },
   {
     "name": "txt_tuba",
-    "sprite": ["text/tuba"],
+    "sprite": ["txt/tuba"],
     "types": ["object"],
     "color": [[5, 2]],
     "desc": "pieps are musical instruments",
@@ -1966,7 +1966,7 @@
   },
   {
     "name": "txt_forbeeee",
-    "sprite": ["text/forbeeee"],
+    "sprite": ["txt/forbeeee"],
     "types": ["object"],
     "color": [[6, 2]],
     "tags": ["beehive", "beecomb", "honeycomb"]
@@ -1981,7 +1981,7 @@
   },
   {
     "name": "txt_do$h",
-    "sprite": ["text/do$h"],
+    "sprite": ["txt/do$h"],
     "types": ["object"],
     "color": [[5, 2]],
     "desc": "dollas",
@@ -1998,7 +1998,7 @@
   },
   {
     "name": "txt_dling",
-    "sprite": ["text/dling"],
+    "sprite": ["txt/dling"],
     "types": ["object"],
     "color": [[2, 4]],
     "desc": "the sound a coin makes",
@@ -2015,7 +2015,7 @@
   },
   {
     "name": "txt_warn",
-    "sprite": ["text/warn"],
+    "sprite": ["txt/warn"],
     "types": ["object"],
     "color": [[2, 4]],
     "tags": ["warning", "stripes"]
@@ -2030,7 +2030,7 @@
   },
   {
     "name": "txt_reffil",
-    "sprite": ["text/reffil"],
+    "sprite": ["txt/reffil"],
     "types": ["object"],
     "color": [[5, 3]],
     "tags": ["refill", "celeste"]
@@ -2046,7 +2046,7 @@
   },
   {
     "name": "txt_yanying",
-    "sprite": ["text/yanying"],
+    "sprite": ["txt/yanying"],
     "types": ["object"],
     "color": [[2, 2]],
     "tags": ["yin yang orb", "taoism"]
@@ -2061,7 +2061,7 @@
   },
   {
     "name": "txt_vlc",
-    "sprite": ["text/vlc"],
+    "sprite": ["txt/vlc"],
     "types": ["object"],
     "color": [[2, 3]],
     "tags": ["traffic cone"]
@@ -2076,7 +2076,7 @@
   },
   {
     "name": "txt_foru",
-    "sprite": ["text/foru"],
+    "sprite": ["txt/foru"],
     "types": ["object"],
     "color": [[0, 1]],
     "desc": "ha ! goteeM",
@@ -2093,7 +2093,7 @@
   },
   {
     "name": "txt_rod",
-    "sprite": ["text/rod"],
+    "sprite": ["txt/rod"],
     "types": ["object"],
     "color": [[0, 3]],
     "tags": ["city", "street", "road"]
@@ -2110,7 +2110,7 @@
   {
     "name": "txt_ofin",
     "display": "of in",
-    "sprite": ["text/ofin"],
+    "sprite": ["txt/ofin"],
     "types": ["object"],
     "color": [[2, 3]],
     "desc": "of out",
@@ -2126,7 +2126,7 @@
   },
   {
     "name": "txt_casete",
-    "sprite": ["text/casete"],
+    "sprite": ["txt/casete"],
     "types": ["object"],
     "color": [[0, 2]],
     "desc": "The sprite changes if you change its color. Try it out!",
@@ -2143,7 +2143,7 @@
   },
   {
     "name": "txt_weeb",
-    "sprite": ["text/weeb"],
+    "sprite": ["txt/weeb"],
     "types": ["object"],
     "color": [[0, 3]],
     "desc": "weebs dont interact",
@@ -2159,7 +2159,7 @@
   },
   {
     "name": "txt_ches",
-    "sprite": ["text/ches"],
+    "sprite": ["txt/ches"],
     "types": ["object"],
     "color": [[2, 2]],
     "tags": ["chest", "treasure chest", "mimic"]
@@ -2175,7 +2175,7 @@
   },
   {
     "name": "txt_3den",
-    "sprite": ["text/3den"],
+    "sprite": ["txt/3den"],
     "types": ["object"],
     "color": [[1, 2]],
     "tags": ["trident"]
@@ -2191,7 +2191,7 @@
   },
   {
     "name": "txt_pen",
-    "sprite": ["text/pen"],
+    "sprite": ["txt/pen"],
     "types": ["object"],
     "color": [[2, 4]],
     "tags": ["pencil"]
@@ -2207,7 +2207,7 @@
   },
   {
     "name": "txt_cil",
-    "sprite": ["text/cil"],
+    "sprite": ["txt/cil"],
     "types": ["object"],
     "color": [[2, 4]],
     "tags": ["pencil", "eraser"]
@@ -2222,7 +2222,7 @@
   },
   {
     "name": "txt_grav",
-    "sprite": ["text/grav"],
+    "sprite": ["txt/grav"],
     "types": ["object"],
     "color": [[0, 1]],
     "desc": "not to be confused with the removed GRAVY",
@@ -2241,7 +2241,7 @@
   },
   {
     "name": "txt_pumkin",
-    "sprite": ["text/pumkin"],
+    "sprite": ["txt/pumkin"],
     "types": ["object"],
     "color": [[2, 3]],
     "tags": ["pumpkin", "plant", "spooky"]
@@ -2257,7 +2257,7 @@
   },
   {
     "name": "txt_bel",
-    "sprite": ["text/bel"],
+    "sprite": ["txt/bel"],
     "types": ["object"],
     "color": [[2, 4]],
     "tags": ["bell", "christmas"]
@@ -2272,7 +2272,7 @@
   },
   {
     "name": "txt_wres",
-    "sprite": ["text/wres"],
+    "sprite": ["txt/wres"],
     "types": ["object"],
     "color": [[5, 2]],
     "tags": ["wreathe", "plant", "christmas"]
@@ -2288,7 +2288,7 @@
   },
   {
     "name": "txt_bowie",
-    "sprite": ["text/bowie"],
+    "sprite": ["txt/bowie"],
     "types": ["object"],
     "color": [[2, 2]],
     "desc": "just for one day",
@@ -2305,7 +2305,7 @@
   },
   {
     "name": "txt_sant",
-    "sprite": ["text/sant"],
+    "sprite": ["txt/sant"],
     "types": ["object"],
     "color": [[2, 2]],
     "tags": ["santa hat", "christmas"]
@@ -2321,7 +2321,7 @@
   },
   {
     "name": "txt_gato",
-    "sprite": ["text/gato"],
+    "sprite": ["txt/gato"],
     "types": ["object"],
     "color": [[0, 2]],
     "desc": "el gato negro, michi michi",
@@ -2339,7 +2339,7 @@
   },
   {
     "name": "txt_canedy",
-    "sprite": ["text/canedy"],
+    "sprite": ["txt/canedy"],
     "types": ["object"],
     "color": [[2, 2]],
     "tags": ["candy cane", "christmas", "food", "sweets"]
@@ -2355,7 +2355,7 @@
   },
   {
     "name": "txt_now",
-    "sprite": ["text/now"],
+    "sprite": ["txt/now"],
     "types": ["object"],
     "color": [[2, 2]],
     "desc": "its now, or latr, no srsly",
@@ -2373,7 +2373,7 @@
   },
   {
     "name": "txt_bolble",
-    "sprite": ["text/bolble"],
+    "sprite": ["txt/bolble"],
     "types": ["object"],
     "color": [[2, 2]],
     "tags": ["bauble", "ball", "christmas"]
@@ -2388,7 +2388,7 @@
   },
   {
     "name": "txt_sno",
-    "sprite": ["text/sno"],
+    "sprite": ["txt/sno"],
     "types": ["object"],
     "color": [[0, 3]],
     "desc": "sno easy bein grun",
@@ -2404,7 +2404,7 @@
   },
   {
     "name": "txt_cooky",
-    "sprite": ["text/cooky"],
+    "sprite": ["txt/cooky"],
     "types": ["object"],
     "color": [[6, 2]],
     "desc": "very cooky",
@@ -2422,7 +2422,7 @@
   },
   {
     "name": "txt_pot",
-    "sprite": ["text/pot"],
+    "sprite": ["txt/pot"],
     "types": ["object"],
     "color": [[0, 3]],
     "tags": ["potion", "bottle", "halloween"]
@@ -2438,7 +2438,7 @@
   },
   {
     "name": "txt_sweep",
-    "sprite": ["text/sweep"],
+    "sprite": ["txt/sweep"],
     "types": ["object"],
     "color": [[6, 1]],
     "tags": ["broomstick", "halloween", "witch"]
@@ -2454,7 +2454,7 @@
   },
   {
     "name": "txt_which",
-    "sprite": ["text/which"],
+    "sprite": ["txt/which"],
     "types": ["object"],
     "color": [[3, 1]],
     "desc": "which one? THAT one!",
@@ -2472,7 +2472,7 @@
   },
   {
     "name": "txt_wan",
-    "sprite": ["text/wan"],
+    "sprite": ["txt/wan"],
     "types": ["object"],
     "color": [[0, 1]],
     "tags": ["magician wand", "staff"]
@@ -2491,7 +2491,7 @@
   },
   {
     "name": "txt_mug",
-    "sprite": ["text/mug"],
+    "sprite": ["txt/mug"],
     "types": ["object"],
     "color": [[0, 3]],
     "tags": ["cup", "mug", "magician"]
@@ -2508,7 +2508,7 @@
   },
   {
     "name": "txt_corndy",
-    "sprite": ["text/corndy"],
+    "sprite": ["txt/corndy"],
     "types": ["object"],
     "color": [[0, 1]],
     "tags": ["candy corn", "food", "sweets", "halloween"]
@@ -2525,7 +2525,7 @@
   },
   {
     "name": "txt_die",
-    "sprite": ["text/die"],
+    "sprite": ["txt/die"],
     "types": ["object"],
     "color": [[0, 3]],
     "desc": "ur turn to DIE",
@@ -2541,7 +2541,7 @@
   },
   {
     "name": "txt_tronk",
-    "sprite": ["text/tronk"],
+    "sprite": ["txt/tronk"],
     "types": ["object"],
     "color": [[1, 4]],
     "tags": ["trinket", "vvvvvv"]
@@ -2575,7 +2575,7 @@
   },
   {
     "name": "txt_fube",
-    "sprite": ["text/fube"],
+    "sprite": ["txt/fube"],
     "types": ["object"],
     "color": [[0, 3]],
     "desc": "don't be fooled by the sprite it's just fube",
@@ -2592,7 +2592,7 @@
   },
   {
     "name": "txt_prop",
-    "sprite": ["text/prop"],
+    "sprite": ["txt/prop"],
     "types": ["object"],
     "color": [[0, 3]],
     "desc": "it refers to the empty property object",
@@ -2607,7 +2607,7 @@
   },
   {
     "name": "txt_colect",
-    "sprite": ["text/colect"],
+    "sprite": ["txt/colect"],
     "types": ["object"],
     "color": [[0, 3]]
   },
@@ -2621,7 +2621,7 @@
   },
   {
     "name": "txt_whee",
-    "sprite": ["text/whee"],
+    "sprite": ["txt/whee"],
     "types": ["object"],
     "color": [[0, 3]]
   },
@@ -2635,7 +2635,7 @@
   },
   {
     "name": "txt_joycon",
-    "sprite": ["text/joycon_l", "text/joycon_r"],
+    "sprite": ["txt/joycon_l", "txt/joycon_r"],
     "types": ["object"],
     "color": [[1, 3], [2, 2]],
     "painted": [true, false],
@@ -2651,7 +2651,7 @@
   },
   {
     "name": "txt_cart",
-    "sprite": ["text/cart"],
+    "sprite": ["txt/cart"],
     "types": ["object"],
     "color": [[0, 2]],
     "tags": ["cart"]
@@ -2666,7 +2666,7 @@
   },
   {
     "name": "txt_drop",
-    "sprite": ["text/drop"],
+    "sprite": ["txt/drop"],
     "types": ["object"],
     "color": [[1, 3]],
     "tags": ["tear", "droplet", "water", "blood"]
@@ -2682,7 +2682,7 @@
   },
   {
     "name": "txt_woosh",
-    "sprite": ["text/woosh"],
+    "sprite": ["txt/woosh"],
     "types": ["object"],
     "color": [[5, 3]],
     "tags": ["wind", "blow", "whoosh"]
@@ -2697,7 +2697,7 @@
   },
   {
     "name": "txt_candl",
-    "sprite": ["text/candl"],
+    "sprite": ["txt/candl"],
     "types": ["object"],
     "color": [[2, 2]],
     "tags": ["candle", "fire", "light"]
@@ -2714,14 +2714,14 @@
   },
   {
     "name": "txt_maglit",
-    "sprite": ["text/maglit"],
+    "sprite": ["txt/maglit"],
     "types": ["object"],
     "color": [[0, 2]],
     "tags": ["maglight", "torchlight", "flashlight"]
   },
   {
     "name": "txt_xplod",
-    "sprite": ["text/xplod"],
+    "sprite": ["txt/xplod"],
     "types": ["object"],
     "color": [[2, 2]],
     "desc": "The object created by nuek"
@@ -2737,7 +2737,7 @@
   },
   {
     "name": "txt_zig",
-    "sprite": ["text/zig"],
+    "sprite": ["txt/zig"],
     "types": ["object"],
     "color": [[0, 3]],
     "desc": "zag",
@@ -2753,7 +2753,7 @@
   },
   {
     "name": "txt_cracc",
-    "sprite": ["text/cracc"],
+    "sprite": ["txt/cracc"],
     "types": ["object"],
     "color": [[0, 1]],
     "tags": ["crack"]
@@ -2768,7 +2768,7 @@
   },
   {
     "name": "txt_pixl",
-    "sprite": ["text/pixl"],
+    "sprite": ["txt/pixl"],
     "types": ["object"],
     "color": [[0, 3]],
     "tags": ["pixel", "square", "block"]
@@ -2786,7 +2786,7 @@
   },
   {
     "name": "txt_voom",
-    "sprite": ["text/voom"],
+    "sprite": ["txt/voom"],
     "types": ["object"],
     "color": [[2, 4]],
     "desc": "a long time ago in a galaxy far, far away...",

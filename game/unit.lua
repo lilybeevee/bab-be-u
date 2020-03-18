@@ -1608,13 +1608,13 @@ function miscUpdates()
       end
 
       if unit.fullname == "txt_katany" then
-        unit.sprite = {"text/katany"}
+        unit.sprite = {"txt/katany"}
         if rules_with_unit[unit] then
           for _,rules in ipairs(rules_with_unit[unit]) do
             if rules.rule.object.unit == unit then
               local tile = getTile(rules.rule.subject.name)
               if tile and tile.features.katany and tile.features.katany.nya then
-                unit.sprite = {"text/katanya"}
+                unit.sprite = {"txt/katanya"}
               end
             end
           end
@@ -3043,9 +3043,9 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
   unit.special = {} -- for lvl objects
   unit.portal = {dir = 1, last = {}, extra = {}} -- for hol objects
 
-  local data = getTile(tile)
+  local data = getTile(tile, true)
 
-  unit.tile = tile
+  unit.tile = data.name
   unit.sprite = deepCopy(data.sprite)
   unit.type = data.is_text and "text" or "object"
   unit.typeset = data.typeset

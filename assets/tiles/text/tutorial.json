@@ -25,7 +25,7 @@
     "sprite": ["tutorial_play"],
     "types": ["property"],
     "color": [[0, 3]],
-    "tags": ["text/2pley"]
+    "tags": ["txt/2pley"]
   },
   {
     "name": "txt_f1",

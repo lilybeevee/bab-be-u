@@ -799,9 +799,9 @@ function scene.draw(dt)
 
     if unit.fullname == "txt_now" then
       if doing_past_turns then
-        unit.sprite = {"text/latr"}
+        unit.sprite = {"txt/latr"}
       else
-        unit.sprite = {"text/now"}
+        unit.sprite = {"txt/now"}
       end
     end
 

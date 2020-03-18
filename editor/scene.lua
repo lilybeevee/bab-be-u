@@ -742,22 +742,6 @@ function scene.keyPressed(key)
     current_tile_grid = tile_grid[selector_page]
   end
   
-  --[[if selector_open and key == "n" and (key_down["lctrl"] or key_down["rctrl"]) then
-    nt = not nt
-    current_tile_grid = copyTable(current_tile_grid)
-    if nt then
-        for i = 0,tile_grid_width*tile_grid_height do
-            if current_tile_grid[i] ~= nil and current_tile_grid[i] > 0 then
-                local new_tile_id = tiles_by_name[tiles_list[current_tile_grid[i] ].name .. "n't"]
-                if (new_tile_id ~= nil) then
-                    current_tile_grid[i] = new_tile_id
-                end
-            end
-        end
-    else
-        current_tile_grid = tile_grid[selector_page]
-    end
-  end]]
   if not selector_open and not level_dialogue.enabled and key == "t" and (key_down["lctrl"] or key_down["rctrl"]) then
     -- if key_down["lshift"] or key_down["rshift"] then
     --   anagram_finder.enabled = true

@@ -2514,7 +2514,7 @@ function string.isText(str)
 end
 
 function string.isNt(str)
-  return str:ends("n't") and not (str == "n't" or str:ends("_n't"))
+  return str:ends("n't")
 end
 
 function mergeTable(t, other)
@@ -2723,7 +2723,7 @@ function getAbsolutelyEverythingExcept(except)
   if (except ~= "text") then
     for i,ref in ipairs(referenced_text) do
       --TODO: BEN'T text being returned here causes a stack overflow. Prevent it until a better solution is found.
-      if ref ~= except and (ref == "txt_n't" or not ref:ends("n't")) then
+      if ref ~= except and not ref:ends("n't") then
         table.insert(result, ref)
       end
     end
@@ -2743,7 +2743,7 @@ function getEverythingExcept(except)
 
   for i,ref in ipairs(ref_list) do
     --TODO: BEN'T text being returned here causes a stack overflow. Prevent it until a better solution is found.
-    if ref ~= except and (ref == "txt_n't" or not ref:ends("n't")) then
+    if ref ~= except and not ref:ends("n't") then
       table.insert(result, ref)
     end
   end
@@ -3382,7 +3382,7 @@ function anagram_finder.run()
     end
   end
   anagram_finder.words = {}
-  for _,tile in ipairs(newtlist) do
+  for _,tile in ipairs(tiles_list) do
     if tile.is_text and not tile.typeset.letter then
       local word = tile.txtname
       local letters = copyTable(letters)
@@ -3716,6 +3716,7 @@ function addTile(tile)
   tile.features = tile.features or {}
   tile.tags = tile.tags or {}
   tile.alias = tile.alias or {}
+  tile.old_names = tile.old_names or {}
 
   tile.nt = tile.nt or false
   tile.meta = tile.meta or 0
@@ -3749,7 +3750,10 @@ function addTile(tile)
   end
 
 
-  newtlist[tile.name] = tile
+  tiles_list[tile.name] = tile
+  for _,old in ipairs(tile.old_names) do
+    tiles_by_old_name[old] = tile
+  end
   
   if tile.is_text and not tile.typeset.letter then
     local text_list = tile.wobble and wobble_text_list or text_list
@@ -3773,15 +3777,19 @@ function addTile(tile)
   return tile
 end
 
-function getTile(name)
-  if newtlist[name] then
-    return newtlist[name]
+function getTile(name, old)
+  if tiles_list[name] then
+    return tiles_list[name]
+  end
+
+  if old and tiles_by_old_name[name] then
+    return tiles_by_old_name[name]
   end
 
   if name:isNt() then
     --print("making new tile: " .. name)
 
-    local tile = getTile(name:sub(1, -4))
+    local tile = getTile(name:sub(1, -4), old)
     if not tile then return nil end
     tile = deepCopy(tile)
 
@@ -3789,12 +3797,13 @@ function getTile(name)
     tile.display = tile.display .. " n't"
     tile.sprite = tile.metasprite or tile.sprite
     tile.nt = true
+    tile.old_names = {}
 
     return addTile(tile)
   elseif name:isText() then
     --print("making new tile: " .. name)
 
-    local tile = getTile(name:sub(5))
+    local tile = getTile(name:sub(5), old)
     if not tile then return nil end
     tile = deepCopy(tile)
 
@@ -3805,6 +3814,7 @@ function getTile(name)
     tile.txtname = "txt_" .. tile.txtname
     tile.is_text = true
     tile.meta = tile.meta + 1
+    tile.old_names = {}
     if tile.layer < 20 then
       tile.layer = 20
     end
@@ -3814,7 +3824,8 @@ function getTile(name)
 end
 
 function initializeTiles(tiles)
-  newtlist = {}
+  tiles_list = {}
+  tiles_by_old_name = {}
   text_list = {}
   text_in_tiles = {}
   wobble_text_list = {}
@@ -3939,15 +3950,15 @@ function getUnitSprite(name, unit)
     elseif name == "lin" and unit.special.visibility == "hidden" then
       addTry(try, "lin_hidden")
     -- overlay properties
-    elseif name == "text/gay-colored" and not unit.active then
-      addTry(try, "text/gay")
-    elseif name == "text/tranz-colored" and not unit.active then
-      addTry(try, "text/tranz")
-    elseif name == "text/enby-colored" and not unit.active then
-      addTry(try, "text/enby")
+    elseif name == "txt/gay-colored" and not unit.active then
+      addTry(try, "txt/gay")
+    elseif name == "txt/tranz-colored" and not unit.active then
+      addTry(try, "txt/tranz")
+    elseif name == "txt/enby-colored" and not unit.active then
+      addTry(try, "txt/enby")
     -- misc
-    elseif name == "text/now" and doing_past_turns then
-      addTry(try, "text/latr")
+    elseif name == "txt/now" and doing_past_turns then
+      addTry(try, "txt/latr")
     end
 
     for type,name in pairs(unit.sprite_transforms) do

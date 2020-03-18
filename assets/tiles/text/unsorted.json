@@ -1,7 +1,7 @@
 [
   {
     "name": "txt_&",
-    "sprite": ["text/and"],
+    "sprite": ["txt/and"],
     "types": ["and"],
     "color": [[0, 3]],
     "desc": "&: Joins multiple conditions, subjects or objects together in a rule. Can also be spelled as ampersand with letters. Rules with stacked text and &s don't work like in baba, be sure to experiment!\nTry thingifying an &n't text, since no one would ever think to try that considering &n'ts are useless.",
@@ -10,24 +10,26 @@
   },
   {
     "name": "txt_text",
-    "sprite": ["text/txt"],
-    "metasprite": ["text/txt meta"],
+    "sprite": ["txt/txt"],
+    "metasprite": ["txt/txt meta"],
     "types": ["object"],
     "color": [[4, 1]],
     "desc": "TXT: An object class referring to all text objects, or just a specific one if you write e.g. BAB TXT BE GAY.",
     "tags": ["txt"]
   },
   {
-    "name": "txt_n't",
-    "sprite": ["text/nt"],
+    "name": "txt_nt",
+    "sprite": ["txt/nt"],
     "types": ["not"],
     "color": [[2, 2]],
     "desc": "N'T: A suffix that negates the meaning of a verb, condition or object class. X txtn't will refer to all txt except that one.",
-    "tags": ["not", "nt"]
+    "alias": ["n't"],
+    "tags": ["not", "n't"],
+    "old_names": ["txt_n't"]
   },
   {
     "name": "txt_every1",
-    "sprite": ["text/every1"],
+    "sprite": ["txt/every1"],
     "types": ["object"],
     "color": [[0, 3]],
     "desc": "EVERY1: Every object type in the level, aside from special objects like TXT, NO1, LVL, BORDR, and MOUS.",
@@ -36,7 +38,7 @@
   {
     "name": "txt_loop",
     "display": "infloop",
-    "sprite": ["text/infloop"],
+    "sprite": ["txt/infloop"],
     "types": ["object"],
     "color": [[0, 3]],
     "desc": "INFLOOP: A special word that describes the infinite loop state.",
@@ -45,7 +47,7 @@
   },
   {
     "name": "txt_...",
-    "sprite": ["text/..."],
+    "sprite": ["txt/..."],
     "types": ["ellipsis"],
     "color": [[0, 3]],
     "desc": "... (ELLIPSIS): Extends rules. BAB ... BE ... ... U is the same as BAB BE U.",
@@ -53,7 +55,7 @@
   },
   {
     "name": "txt_''",
-    "sprite": ["text/ditto"],
+    "sprite": ["txt/ditto"],
     "types": ["ditto"],
     "color": [[0, 3]],
     "thingify": "ditto",
@@ -62,7 +64,7 @@
   },
   {
     "name": "txt_frens",
-    "sprite": ["text/frens"],
+    "sprite": ["txt/frens"],
     "types": ["object", "group"],
     "color": [[3, 3]],
     "desc": "FRENS: A group you can be a member of. 'x BE FRENS' adds you to the FRENS group. 'FRENS BE x' applies the property to all FRENS.",
@@ -70,7 +72,7 @@
   },
   {
     "name": "txt_groop",
-    "sprite": ["text/groop"],
+    "sprite": ["txt/groop"],
     "types": ["object", "group"],
     "color": [[3, 3]],
     "desc": "GROOP: A variant of FRENS.",
@@ -78,7 +80,7 @@
   },
   {
     "name": "txt_samefloat",
-    "sprite": ["text/samefloat"],
+    "sprite": ["txt/samefloat"],
     "types": ["cond_compare"],
     "color": [[1, 4]],
     "desc": "SAMEFLOAT( (Compare Condition): True if the condition unit has the same amount of FLYE as the target.",
@@ -86,7 +88,7 @@
   },
   {
     "name": "txt_gravy",
-    "sprite": ["text/gravy"],
+    "sprite": ["txt/gravy"],
     "types": ["object"],
     "color": [[6, 2]],
     "desc": "GRAVY: Changes the direction of HAET SKYE and HAET FLOR. (Unimplemented)",
@@ -108,7 +110,7 @@
   },
   {
     "name": "txt_every2",
-    "sprite": ["text/every2"],
+    "sprite": ["txt/every2"],
     "types": ["object"],
     "color": [[3, 3]],
     "desc": "EVERY2: EVERY1 + TXT. (Doesn't include innerlvls atm because lazy + hard to code + unlikely to come up. Sorry.)",
@@ -116,7 +118,7 @@
   },
   {
     "name": "txt_every3",
-    "sprite": ["text/every3"],
+    "sprite": ["txt/every3"],
     "types": ["object"],
     "color": [[4, 1]],
     "desc": "EVERY3: Absolutely everything conceivable. The pinnacle of everything technology. (Infloop is not an object.)",
@@ -124,7 +126,7 @@
   },
   {
     "name": "txt_every3",
-    "sprite": ["text/every3"],
+    "sprite": ["txt/every3"],
     "types": ["object"],
     "color": [[4, 1]],
     "desc": "EVERY3: Absolutely everything conceivable. The pinnacle of everything technology.",
@@ -132,7 +134,7 @@
   },
   {
     "name": "txt_lethers",
-    "sprite": ["text/lethers"],
+    "sprite": ["txt/lethers"],
     "types": ["object"],
     "color": [[2, 4]],
     "desc": "LETHERS: Refers to all letters that exist in the level.",
@@ -140,7 +142,7 @@
   },
   {
     "name": "txt_samepaint",
-    "sprite": ["text/samepaint"],
+    "sprite": ["txt/samepaint"],
     "types": ["class_prefix", "cond_compare"],
     "color": [[4, 2]],
     "desc": "SAMEPAINT (Compare Condition): True if the condition unit is the same color as the target. Also, BAB BE SAMEPAINT KEEK will turn bab into a keek of the same color that bab was.",
@@ -148,7 +150,7 @@
   },
   {
     "name": "txt_sameface",
-    "sprite": ["text/sameface"],
+    "sprite": ["txt/sameface"],
     "types": ["cond_compare"],
     "color": [[2, 4]],
     "desc": "SAMEFACE (Compare Condition): True if the condition unit is facing the same direction as the target.",
@@ -156,14 +158,14 @@
   },
   {
     "name": "txt_cann't",
-    "sprite": ["text/can't"],
+    "sprite": ["txt/can't"],
     "types": ["object"],
     "color": [[2, 1]],
     "tags": ["valhalla"]
   },
   {
     "name": "txt_gang",
-    "sprite": ["text/gang"],
+    "sprite": ["txt/gang"],
     "types": ["object", "group"],
     "color": [[0, 1]],
     "desc": "GANG: A variant of FRENS but members wear an exclusive hat.",
@@ -171,42 +173,42 @@
   },
   {
     "name": "txt_c_sharp",
-    "sprite": ["text/c_sharp"],
+    "sprite": ["txt/c_sharp"],
     "types": ["note"],
     "color": [[0, 3]],
     "desc": "For use with SING."
   },
   {
     "name": "txt_d_sharp",
-    "sprite": ["text/d_sharp"],
+    "sprite": ["txt/d_sharp"],
     "types": ["note"],
     "color": [[0, 3]],
     "desc": "For use with SING."
   },
   {
     "name": "txt_f_sharp",
-    "sprite": ["text/f_sharp"],
+    "sprite": ["txt/f_sharp"],
     "types": ["note"],
     "color": [[0, 3]],
     "desc": "For use with SING."
   },
   {
     "name": "txt_g_sharp",
-    "sprite": ["text/g_sharp"],
+    "sprite": ["txt/g_sharp"],
     "types": ["note"],
     "color": [[0, 3]],
     "desc": "For use with SING."
   },
   {
     "name": "txt_a_sharp",
-    "sprite": ["text/a_sharp"],
+    "sprite": ["txt/a_sharp"],
     "types": ["note"],
     "color": [[0, 3]],
     "desc": "For use with SING."
   },
   {
     "name": "txt_yuiy",
-    "sprite": ["text/yuiy"],
+    "sprite": ["txt/yuiy"],
     "types": ["object"],
     "color": [[0, 2]],
     "desc": "YUIY: Refers to all UIs that exist in the level.",
@@ -214,7 +216,7 @@
   },
   {
     "name": "txt_numa",
-    "sprite": ["text/numa"],
+    "sprite": ["txt/numa"],
     "types": ["object"],
     "color": [[3, 1]],
     "desc": "NUMA: Refers to all numbers that exist in the level.\n\nNUMA n't refers to all non-number letters.",
@@ -222,7 +224,7 @@
   },
   {
     "name": "txt_toen",
-    "sprite": ["text/toen"],
+    "sprite": ["txt/toen"],
     "types": ["object"],
     "color": [[4, 1]],
     "desc": "TOEN: Refers to all music note letters that exist in the level.",
@@ -230,7 +232,7 @@
   },
   {
     "name": "txt_themself",
-    "sprite": ["text/themself"],
+    "sprite": ["txt/themself"],
     "types": ["object"],
     "color": [[2, 3]],
     "desc": "ITSELF: Refers to the subject of the rule in conditions.",
