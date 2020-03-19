@@ -938,6 +938,7 @@ function getUs()
   mergeTable(yous,getUnitsWithEffect("utres"))
   mergeTable(yous,getUnitsWithEffect("you"))
   mergeTable(yous,getUnitsWithEffect("y'all"))
+  mergeTable(yous,getUnitsWithEffect("w"))
   return yous
 end
 
@@ -2969,7 +2970,7 @@ function timecheckUs(unit)
   if timecheck(unit) then
     return true
   else
-    local to_check = {"u","utoo","utres","y'all"}
+    local to_check = {"u","utoo","utres","y'all","you","w"}
     for _,prop in ipairs(to_check) do
       local rulecheck = matchesRule(unit,"be",prop)
       for _,ruleparent in ipairs(rulecheck) do
