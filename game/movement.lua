@@ -224,92 +224,36 @@ function doMovement(movex, movey, key)
         end
       end
     elseif move_stage == 0 and (movex ~= 0 or movey ~= 0) then
-      local u = getUnitsWithEffectAndCount("u")
-      for unit,uness in pairs(u) do
-        if not hasProperty(unit, "slep") and slippers[unit.id] == nil and timecheck(unit,"be","u") then
-          if (key == "wasd") or ((key == "udlr") and not hasProperty(nil,"utoo")) or ((key == "numpad" or key == "ijkl") and not hasProperty(nil,"utres")) then
-            local dir = dirs8_by_offset[movex][movey]
-            --If you want baba style 'when you moves, even if it fails to move, it changes direction', uncomment this.
-            table.insert(unit.moves, {reason = "u", dir = dir, times = 1})
-            --[[addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
-            updateDir(unit, dir)]]
-            if #unit.moves > 0 and not already_added[unit] then
-              table.insert(moving_units, unit)
-              already_added[unit] = true
-            end
-          end
-        end
-      end
-      
-      local utoo = getUnitsWithEffectAndCount("utoo")
-      for unit,uness in pairs(utoo) do
-        if not hasProperty(unit, "slep") and slippers[unit.id] == nil and timecheck(unit,"be","utoo") then
-          if ((key == "wasd") and not hasProperty(nil,"u")) or (key == "udlr") or ((key == "numpad" or key == "ijkl") and not hasProperty(nil,"utres")) then
-            local dir = dirs8_by_offset[movex][movey]
-            --If you want baba style 'when you moves, even if it fails to move, it changes direction', uncomment this.
-            table.insert(unit.moves, {reason = "u", dir = dir, times = 1})
-            --[[addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
-            updateDir(unit, dir)]]
-            if #unit.moves > 0 and not already_added[unit] then
-              table.insert(moving_units, unit)
-              already_added[unit] = true
-            end
-          end
-        end
-      end
-      
-      local utres = getUnitsWithEffectAndCount("utres")
-      for unit,uness in pairs(utres) do
-        if not hasProperty(unit, "slep") and slippers[unit.id] == nil and timecheck(unit,"be","utres") then
-          if ((key == "wasd") and not hasProperty(nil,"u")) or ((key == "udlr") and not hasProperty(nil,"utoo")) or (key == "numpad") or (key == "ijkl") then
-            local dir = dirs8_by_offset[movex][movey]
-            --If you want baba style 'when you moves, even if it fails to move, it changes direction', uncomment this.
-            table.insert(unit.moves, {reason = "u", dir = dir, times = 1})
-            --[[addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
-            updateDir(unit, dir)]]
-            if #unit.moves > 0 and not already_added[unit] then
-              table.insert(moving_units, unit)
-              already_added[unit] = true
-            end
-          end
-        end
-      end
 
-      local you = getUnitsWithEffectAndCount("you")
-      for unit,uness in pairs(you) do
-        if not hasProperty(unit, "slep") and slippers[unit.id] == nil and timecheck(unit,"be","you") then
-          if (key == "wasd") or ((key == "udlr") and not hasProperty(nil,"utoo")) or ((key == "numpad" or key == "ijkl") and not hasProperty(nil,"utres")) then
-            if movex == 0 or movey == 0 then
-              local dir = dirs8_by_offset[movex][movey]
-              --If you want baba style 'when you moves, even if it fails to move, it changes direction', uncomment this.
-              table.insert(unit.moves, {reason = "u", dir = dir, times = 1})
-              --[[addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
-              updateDir(unit, dir)]]
-              if #unit.moves > 0 and not already_added[unit] then
-                table.insert(moving_units, unit)
-                already_added[unit] = true
-              end
-            end
-          end
-        end
-      end
-      
-      local yall = getUnitsWithEffectAndCount("y'all")
-      for unit,uness in pairs(yall) do
-        if not hasProperty(unit, "slep") and slippers[unit.id] == nil and timecheck(unit,"be","y'all") then
-          if (key == "wasd") or (key == "udlr") or (key == "numpad" or key == "ijkl") then
+      local uMove = function(name, control, key_, times_, ortho_)
+        local key = key_
+        if (key=="numpad") then key="ijkl" end --numpad and ijkl are the same why are they even separated
+        local ortho = ortho_ or false
+        local u = getUnitsWithEffectAndCount(name)
+
+        for unit,uness in pairs(u) do
+          if (not hasProperty(unit, "slep") and slippers[unit.id] == nil and timecheck(unit,"be",name)) and
+          ((not ortho) or movex == 0 or movey == 0) and ((key == control) or (control == nil) or
+          ((key == "wasd") and not hasProperty(nil,"u")) or ((key == "udlr") and not hasProperty(nil,"utoo")) or ((key == "ijkl") and not hasProperty(nil,"utres"))) then
             local dir = dirs8_by_offset[movex][movey]
             --If you want baba style 'when you moves, even if it fails to move, it changes direction', uncomment this.
-            table.insert(unit.moves, {reason = "u", dir = dir, times = 1})
+            table.insert(unit.moves, {reason = "u", dir = dir, times = (times_ or 1)})
             --[[addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
             updateDir(unit, dir)]]
-            if #unit.moves > 0 and not already_added[unit] then
+             if #unit.moves > 0 and not already_added[unit] then
               table.insert(moving_units, unit)
               already_added[unit] = true
             end
           end
-        end
+        end --for
       end
+      uMove("u","wasd",key)
+      uMove("utoo","udlr",key)
+      uMove("utres","ijkl",key)
+      uMove("y'all",nil,key)
+      uMove("w","wasd",key,2)
+      uMove("you",nil,key,1,true)
+
     elseif move_stage == 1 then
       local isspoop = matchesRule(nil, "spoop", "?")
       local spoopunits = {}

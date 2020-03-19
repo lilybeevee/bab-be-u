@@ -891,6 +891,14 @@
     "color": [[4, 1]],
     "wobble": true,
     "desc": "YOU: Controlled by u, the player!",
-    "tags": ["you", "p1", "player"]
+    "tags": ["player", "baba"]
+  },
+  {
+    "name": "txt_w",
+    "sprite": ["txt/w"],
+    "types": ["property"],
+    "color": [[4, 1]],
+    "desc": "W: it's a double u",
+    "tags": ["you", "player"]
   }
 ]
