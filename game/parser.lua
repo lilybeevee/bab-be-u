@@ -50,14 +50,14 @@ function parse(words, dir, no_verb_cond)
   
   local units = {}
   local verbs = {}
-  while words[1].type and (words[1].type.object or words[1].type.cond_prefix or words[1].type.parenthesis) or (words[2] and (words[2].name == "text" or words[2].name == "textn't")) do
+  while words[1].type and (words[1].type.object or words[1].type.cond_prefix or words[1].type.parenthesis) or (words[2] and (words[2].name == "txt" or words[2].name == "txtn't") or (words[2].type.gang and (words[1].type.object or words[1].type.gang_prefix) and not words[1].name:starts("txt_") and not words[1].name:ends("n't"))) do
     local unit, words_ = findUnit(copyTable(words), extra_words, dir, true, no_verb_cond, true) -- outer unit doesn't need to worry about enclosure (nothing farther out to confuse it with)
     if not unit then break end
     words = words_
     if not unit then return false end
     if #words == 0 then return false end
     table.insert(units, unit)
-    if words[1].type and words[1].type["and"] and words[2] and (words[2].type.object or words[2].type.parenthesis or words[3] and (words[3].name == "text" or words[3].name == "textn't")) then
+    if words[1].type and words[1].type["and"] and words[2] and (words[2].type.object or words[2].type.parenthesis or (words[3] and (words[3].name == "txt" or words[3].name == "txtn't") or (words[3].type.gang and (words[2].type.object or words[2].type.gang_prefix) and not words[2].name:starts("txt_") and not words[2].name:ends("n't")))) then
       table.insert(extra_words, words[1])
       table.remove(words, 1)
       if #words == 0 then return false end
@@ -156,7 +156,7 @@ function findUnit(words, extra_words_, dir, outer, no_verb_cond, is_subject)
   end
   
   local words_
-  unit, words_ = findClass(copyTable(words))
+  unit, words_ = findClass(copyTable(words), extra_words)
   if not unit then
     if prefix_object then
       removeFromTable(conds, prefix_object)
@@ -244,7 +244,7 @@ function findUnit(words, extra_words_, dir, outer, no_verb_cond, is_subject)
         table.insert(conds, infix)
         -- print(enclosed, words[1] and words[1].type, words[2] and words[2].type)
         if #words == 0 then break end
-        while enclosed and words[1] and words[1].type["and"] and words[2] and words[3] and (words[2].type.object or words[2].type.parenthesis or (words[3].name == "text" or words[3].name == "textn't")) do
+        while enclosed and words[1] and words[1].type["and"] and words[2] and words[3] and (words[2].type.object or words[2].type.parenthesis or (words[3].name == "txt" or words[3].name == "txtn't")) do
           table.insert(extra_words, words[1])
           table.remove(words, 1)
           if #words == 0 then break end
@@ -295,23 +295,42 @@ function findUnit(words, extra_words_, dir, outer, no_verb_cond, is_subject)
   return unit, words
 end
 
-function findClass(words)
+function findClass(words, extra_words_)
+  local extra_words = {}
+
   local prefix
   if words[1].type and words[1].type.class_prefix then -- in cases where conditions can also be used, things should be caught there first
     prefix = table.remove(words, 1)
     if #words == 0 then return end
   end
+
+  local new_group
   
   local unit = copyTable(words[1])
   unit.mods = unit.mods or {}
-  if words[2] and (words[2].name == "text" or words[2].name == "textn't") then
+  if words[2] and (words[2].name == "txt" or words[2].name == "txtn't") then
     table.insert(unit.mods, words[2])
     if (unit.name ~= unit.unit.textname) then --many letters in a row
-      unit.name = "txt_"..unit.name..words[2].name:sub(5)
+      unit.name = "txt_"..unit.name..words[2].name:sub(4)
     else --every other case
-      unit.name = (unit.unit or {fullname = "no unit"}).fullname..words[2].name:sub(5)
+      unit.name = (unit.unit or {fullname = "no unit"}).fullname..words[2].name:sub(4)
     end
     table.remove(words, 2)
+  elseif words[2] and words[2].type.gang and (words[1].type.object or words[1].type.gang_prefix) and not words[1].name:starts("txt_") and not words[1].name:ends("n't") then
+    unit = copyTable(words[2])
+    unit.mods = unit.mods or {}
+
+    local subset_name = unit.name:ends("n't") and unit.name:sub(1, -4) or unit.name
+    unit.name = words[1].name.." "..words[2].name
+
+    if words[1].name == "gang" then
+      table.insert(unit.mods, words[1])
+    else
+      table.insert(extra_words, words[1])
+    end
+    table.remove(words, 1)
+
+    new_group = {unit.name:ends("n't") and unit.name:sub(1, -4) or unit.name, subset_name}
   elseif not words[1].type.object then
     return nil
   end
@@ -331,9 +350,13 @@ function findClass(words)
     end
   end
   
+  mergeTable(extra_words_, extra_words)
   if prefix then
     table.insert(unit.mods, prefix)
     unit.prefix = prefix.name
+  end
+  if new_group then
+    addGroup(new_group[1], new_group[2])
   end
   found = {unit, words}
   return unit, words
@@ -378,7 +401,7 @@ function findVerbPhrase(words, extra_words_, dir, enclosed, noconds, no_verb_con
   local andd
   while true do
     local valid
-    if (verb.type.verb_class or (verb.type.verb_unit and noconds)) and findClass(copyTable(words)) then
+    if (verb.type.verb_class or (verb.type.verb_unit and noconds)) and findClass(copyTable(words), extra_words) then
       table.insert(objects, found[1])
       words = found[2]
       valid = true
@@ -545,7 +568,7 @@ local function testParser()
     },
     { -- Test 5 - TRUE
       {name = "bab", type = "object", unit = {fullname = "txt_bab"}},
-      {name = "text", type = "object"},
+      {name = "txt", type = "object"},
       {name = "&", type = "and"},
       {name = "keek", type = "object"},
       {name = "be", type = "verb_all"},
@@ -559,7 +582,7 @@ local function testParser()
     },
     { -- Test 7 - TRUE
       {name = "bab", type = "object", unit = {fullname = "txt_bab"}},
-      {name = "text", type = "object"},
+      {name = "txt", type = "object"},
       {name = "be", type = "verb_all"},
       {name = "u", type = "property"}
     },
@@ -570,7 +593,7 @@ local function testParser()
     },
     { -- Test 9 - TRUE
       {name = "be", type = "property", unit = {fullname = "txt_be"}},
-      {name = "text", type = "object"},
+      {name = "txt", type = "object"},
       {name = "be", type = "verb_all"},
       {name = "u", type = "property"}
     },

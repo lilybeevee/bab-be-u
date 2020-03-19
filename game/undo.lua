@@ -58,7 +58,7 @@ function undoOneAction(turn, i, v, ignore_no_undo)
       --force updates when we're rewinding time - it ABSOLUTELY had that direction in the past
       updateDir(unit, v[5], true)
 
-      if unit.type == "text" or rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname] then
+      if unit.type == "txt" or rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname] then
         update_rules = true
       end
     end
@@ -66,7 +66,7 @@ function undoOneAction(turn, i, v, ignore_no_undo)
     local convert = v[3]
     unit = units_by_id[v[2]]
     --print("undoOneAction create:",fullDump(v), unit)
-    if unit ~= nil and (unit.type == "text" or rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname])  then
+    if unit ~= nil and (unit.type == "txt" or rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname])  then
       update_rules = true
     end
 
@@ -90,7 +90,7 @@ function undoOneAction(turn, i, v, ignore_no_undo)
         deleteUnit(unit, convert, true)
       end
 
-      if unit ~= nil and (unit.type == "text" or rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname])  then
+      if unit ~= nil and (unit.type == "txt" or rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname])  then
         update_rules = true
       end
     end

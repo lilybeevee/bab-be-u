@@ -670,6 +670,7 @@ function scene.keyPressed(key)
 
   if key == "tab" and not (key_down["lctrl"] or key_down["rctrl"]) then
     selector_open = not selector_open
+    scene.resetMiku(settings["baba"] or love.math.random(1,20) == 1)
     updateSelectorTabs()
     if selector_open then
       presence["details"] = "browsing selector"
@@ -722,7 +723,7 @@ function scene.keyPressed(key)
     --revert if we're already nt'd
     local already_nted = false
     for i = 0,tile_grid_width*tile_grid_height do   
-      if current_tile_grid[i] ~= nil and current_tile_grid[i] ~= 0 and current_tile_grid[i]:isNt() then
+      if current_tile_grid[i] ~= nil and current_tile_grid[i] ~= 0 and current_tile_grid[i]:ends("n't") then
         already_nted = true
         break
       end
@@ -1544,7 +1545,7 @@ function scene.draw(dt)
           love.graphics.applyTransform(scene.getTransform())
           love.graphics.print("Name: " .. tile.name, 0, roomheight+12)
           love.graphics.print("Layer: " .. tostring(tile.layer), 150, roomheight)
-          love.graphics.print("Type: " .. (tile.is_text and "text" or "object"), 150, roomheight+12)
+          love.graphics.print("Type: " .. (tile.is_text and "txt" or "object"), 150, roomheight+12)
           local color = dump(tile.color):sub(2,-2)
           color = color:gsub("{","(")
           color = color:gsub("}",")")
@@ -2110,6 +2111,36 @@ function scene.saveSettings()
   end
 
   saved_settings = true
+end
+
+function scene.resetMiku(random)
+  if secret_miku_location then
+    tile_grid[secret_miku_location[1]][secret_miku_location[2]] = 0
+  end
+  secret_miku_location = nil
+
+  if random then
+    local possibles = {}
+    for i,page in ipairs(tile_grid) do
+      for x = 0, tile_grid_width-1 do
+        for y = 0, tile_grid_height-1 do
+          if type(page[y*tile_grid_width+x+1]) ~= "string" and
+            (x-1 < 0 or type(page[y*tile_grid_width+(x-1)+1]) ~= "string") and
+            (x+1 == tile_grid_width or type(page[y*tile_grid_width+(x+1)+1]) ~= "string") and
+            (y-1 < 0 or type(page[(y-1)*tile_grid_width+x+1]) ~= "string") and
+            (y+1 == tile_grid_height or type(page[(y+1)*tile_grid_width+x+1]) ~= "string") then
+
+            table.insert(possibles, {i, y*tile_grid_width+x+1})
+          end
+        end
+      end
+    end
+    if #possibles > 0 then
+      local possible = possibles[love.math.random(1, #possibles)]
+      secret_miku_location = possible
+      tile_grid[possible[1]][possible[2]] = "therealbabdictator"
+    end
+  end
 end
 
 function love.filedropped(file)

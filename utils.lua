@@ -978,7 +978,7 @@ function testConds(unit, conds, compare_with, first_unit) --cond should be a {co
             end
           end
           if other.name == "every2" or other.name == "every3" then
-            for _,nya in ipairs(findUnitsByName("text")) do
+            for _,nya in ipairs(findUnitsByName("txt")) do
               addUnit(nya)
             end
           end
@@ -2509,14 +2509,6 @@ function table.has_value(tab, val)
   return false
 end
 
-function string.isText(str)
-  return str:starts("txt_")
-end
-
-function string.isNt(str)
-  return str:ends("n't")
-end
-
 function mergeTable(t, other)
   if other ~= nil then
     for k,v in pairs(other) do
@@ -2710,8 +2702,8 @@ function getAbsolutelyEverythingExcept(except)
     table.insert(result, "no1")
   end
   --don't specify generic text if it's already a type of text
-  if not except:starts("text") then
-    table.insert(result, "text")
+  if not except:starts("txt") then
+    table.insert(result, "txt")
   end
   
   for i,ref in ipairs(referenced_objects) do
@@ -2720,7 +2712,7 @@ function getAbsolutelyEverythingExcept(except)
     end
   end
   
-  if (except ~= "text") then
+  if (except ~= "txt") then
     for i,ref in ipairs(referenced_text) do
       --TODO: BEN'T text being returned here causes a stack overflow. Prevent it until a better solution is found.
       if ref ~= except and not ref:ends("n't") then
@@ -3250,6 +3242,15 @@ function updateGroup(n)
   for _,group in ipairs(group_names) do
     local list = {}
     local set = {}
+    if group_subsets[group] then
+      for _,subset in ipairs(group_subsets[group]) do
+        if group_sets[subset] then
+          for unit,v in pairs(group_sets[subset]) do
+            set[unit] = v
+          end
+        end
+      end
+    end
     if (rules_with[group] ~= nil) then
       local rules = matchesRule(nil, "be", group)
       for _,rule in ipairs(rules) do
@@ -3372,7 +3373,7 @@ anagram_finder.enabled = false
 function anagram_finder.run()
   local letters = {}
   local multi = {}
-  for _,unit in ipairs(units_by_name["text"]) do
+  for _,unit in ipairs(units_by_name["txt"]) do
     if unit.typeset.letter then
       if #unit.textname == 1 then
         letters[unit.textname] = (letters[unit.textname] or 0) + 1
@@ -3749,6 +3750,32 @@ function addTile(tile)
     tile.typeset[type] = true
   end
 
+  local relations = {}
+  if tile.name:ends("n't") then
+    table.insert(relations, tile.name:sub(1, -4))
+    if tile.is_text then
+      table.insert(relations, tile.txtname:sub(1, -4))
+    end
+  elseif tile.is_text then
+    table.insert(relations, tile.txtname)
+  end
+  table.insert(relations, "txt_"..tile.name)
+  for _,relation in ipairs(relations) do
+    local other = tiles_list[relation]
+    if other then
+      if #tile.tags == 0 then
+        for _,tag in ipairs(other.tags) do
+          table.insert(tile.tags, tag)
+        end
+      end
+      if #other.tags == 0 then
+        for _,tag in ipairs(tile.tags) do
+          table.insert(other.tags, tag)
+        end
+      end
+    end
+  end
+
 
   tiles_list[tile.name] = tile
   for _,old in ipairs(tile.old_names) do
@@ -3768,10 +3795,7 @@ function addTile(tile)
   end
 
   if tile.typeset.group then
-		table.insert(group_names, tile.txtname)
-    table.insert(group_names_nt, tile.txtname.."n't")
-    group_names_set[tile.txtname] = true
-    group_names_set_nt[tile.txtname.."n't"] = true
+    addGroup(tile.txtname)
 	end
 
   return tile
@@ -3786,7 +3810,7 @@ function getTile(name, old)
     return tiles_by_old_name[name]
   end
 
-  if name:isNt() then
+  if name:ends("n't") then
     --print("making new tile: " .. name)
 
     local tile = getTile(name:sub(1, -4), old)
@@ -3800,7 +3824,7 @@ function getTile(name, old)
     tile.old_names = {}
 
     return addTile(tile)
-  elseif name:isText() then
+  elseif name:starts("txt_") then
     --print("making new tile: " .. name)
 
     local tile = getTile(name:sub(5), old)
@@ -3834,6 +3858,7 @@ function initializeTiles(tiles)
   group_names_nt = {}
   group_names_set = {}
   group_names_set_nt = {}
+  group_subsets = {}
   for _,tile in ipairs(tiles) do
     addTile(tile)
   end
@@ -4025,6 +4050,11 @@ function drawTileSprite(tile, x, y, rotation, sx, sy, o)
     really_smol = tile.name == "babby",
     lvl = tile.name == "lvl",
   })
+  if tile.name == "therealbabdictator" and scene == editor and selector_open then
+    o.sprite = {"miku_shirt", "miku_skin", "miku_black", "miku_blue", "miku_red"}
+    o.color = {{0, 2}, {0, 3}, {0, 1}, {1, 4}, {2, 2}}
+    o.painted = {false, false, false, true, false}
+  end
   drawSprite(x, y, rotation, sx, sy, o)
 end
 
@@ -4032,7 +4062,7 @@ function drawUnitSprite(unit, x, y, rotation, sx, sy, o)
   local brightness = 1
 
   if scene == game then
-    if ((unit.type == "text" and not hasRule(unit,"ben't","wurd")) or hasRule(unit,"be","wurd")) and not unit.active and not level_destroyed and not (unit.fullname == "prop") then
+    if ((unit.type == "txt" and not hasRule(unit,"ben't","wurd")) or hasRule(unit,"be","wurd")) and not unit.active and not level_destroyed and not (unit.fullname == "prop") then
       brightness = 0.33
     end
     if (unit.name == "steev") and not hasU(unit) then
@@ -4041,7 +4071,7 @@ function drawUnitSprite(unit, x, y, rotation, sx, sy, o)
     if unit.name == "casete" and not hasProperty(unit, "nogo") then
       brightness = 0.5
     end
-    if timeless and not hasProperty(unit,"zawarudo") and not (unit.type == "text") then
+    if timeless and not hasProperty(unit,"zawarudo") and not (unit.type == "txt") then
       brightness = 0.33
     end
   end
@@ -4240,5 +4270,20 @@ function drawSprite(x, y, rotation, sx, sy, o)
   if displayids then
     setColor{1, 4}
     love.graphics.printf(tostring(o.id), x-3, y-18, 32, "center")
+  end
+end
+
+function addGroup(name, subset)
+  if not group_names_set[name] then
+    table.insert(group_names, name)
+    table.insert(group_names_nt, name.."n't")
+    group_names_set[name] = true
+    group_names_set_nt[name.."n't"] = true
+  end
+  if subset then
+    group_subsets[subset] = group_subsets[subset] or {}
+    if not table.has_value(group_subsets[subset], name) then
+      table.insert(group_subsets[subset], name)
+    end
   end
 end

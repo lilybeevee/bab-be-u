@@ -1200,17 +1200,17 @@ function updateUnits(undoing, big_update)
 
     function doOneCreate(rule, creator, createe)
       local object = createe
-      if (createe == "text") then
+      if (createe == "txt") then
         createe = "txt_"..creator.fullname
       end
       
       local tile = getTile(createe)
       --let x ben't x txt prevent x be txt, and x ben't txt prevent x be y txt
       local overriden = false;
-      if object == "text" then
+      if object == "txt" then
         overriden = hasRule(creator, "creatn't", "txt_" .. creator.fullname)
       elseif object:starts("txt_") then
-        overriden = hasRule(creator, "creatn't", "text")
+        overriden = hasRule(creator, "creatn't", "txt")
       end
       if tile ~= nil and not overriden then
         local others = getUnitsOnTile(creator.x, creator.y, createe, true, nil, nil, nil, hasProperty(unit,"thicc"))
@@ -1857,7 +1857,7 @@ function DoDiscordRichPresence()
       elseif unit.fullname == "bab" or unit.fullname == "keek" or unit.fullname == "meem" or unit.fullname == "bup" then
         presence["smallImageText"] = unit.fullname
         presence["smallImageKey"] = unit.fullname
-      elseif unit.type == "text" then
+      elseif unit.type == "txt" then
         presence["smallImageKey"] = "txt"
         presence["smallImageText"] = unit.name
       elseif unit.fullname == "os" then
@@ -2301,17 +2301,17 @@ function destroyLevel(reason)
   for _,match in ipairs(holds) do
     if not nameIs(outerlvl, match.rule.object.name) then
       local obj_name = match.rule.object.name
-      if obj_name == "text" then
+      if obj_name == "txt" then
         istext = true
         obj_name = "txt_" .. match.rule.subject.name
       end
       local tile = getTile(obj_name)
       --let x ben't x txt prevent x be txt, and x ben't txt prevent x be y txt
       local overriden = false;
-      if match.rule.object.name == "text" then
+      if match.rule.object.name == "txt" then
         overriden = hasRule(outerlvl, "gotn't", "txt_" .. match.rule.subject.name)
       elseif match.rule.object.name:starts("txt_") then
-        overriden = hasRule(outerlvl, "gotn't", "text")
+        overriden = hasRule(outerlvl, "gotn't", "txt")
       end
       if tile ~= nil and not overriden then
         table.insert(transform_results, tile.name)
@@ -2379,7 +2379,7 @@ function dropGotUnit(unit, rule)
   
   function dropOneGotUnit(unit, rule, obj_name)
     local object = obj_name
-    if rule.object.name == "text" then
+    if rule.object.name == "txt" then
       obj_name = "txt_" .. unit.fullname
     end
     if object:starts("this") then
@@ -2388,10 +2388,10 @@ function dropGotUnit(unit, rule)
     local obj_tile = getTile(obj_name)
     --let x ben't x txt prevent x be txt, and x ben't txt prevent x be y txt
     local overriden = false
-    if object == "text" then
+    if object == "txt" then
       overriden = hasRule(unit, "gotn't", "txt_" .. unit.fullname)
     elseif object:starts("txt_") or object:starts("letter_") then
-      overriden = hasRule(unit, "gotn't", "text")
+      overriden = hasRule(unit, "gotn't", "txt")
     end
     if not overriden and (obj_name == "mous" or obj_tile ~= nil) then
       if obj_name == "mous" then
@@ -2445,7 +2445,7 @@ function convertLevel()
   for _,match in ipairs(converts) do
     local object = match.rule.object
     if not (hasProperty(outerlvl, "lvl") or hasProperty(outerlvl, "notranform")) and object.type and (object.type.object or object.name:starts("txt_")) and object.name ~= "no1" then
-      if match.rule.object.name == "text" then
+      if match.rule.object.name == "txt" then
         tile = getTile("txt_lvl")
       elseif match.rule.object.name:starts("this") then
         tile = getTile("this")
@@ -2462,10 +2462,10 @@ function convertLevel()
       end
       --let x ben't x txt prevent x be txt, and x ben't txt prevent x be y txt
       local overriden = false;
-      if match.rule.object.name == "text" then
+      if match.rule.object.name == "txt" then
         overriden = hasRule(outerlvl, "ben't", "txt_" .. match.rule.subject.name)
       elseif match.rule.object.name:starts("txt_") then
-        overriden = hasRule(outerlvl, "ben't", "text")
+        overriden = hasRule(outerlvl, "ben't", "txt")
       end
       if tile ~= nil and not overriden then
         table.insert(transform_results, tile.name)
@@ -2608,7 +2608,7 @@ function convertUnits(pass)
           if inBounds(cursor.x, cursor.y) and testConds(cursor, rule.subject.conds) then
             for _,v in ipairs(referenced_objects) do
               local tile
-              if v == "text" then
+              if v == "txt" then
                 tile = getTile("txt_" .. rule.subject.name)
               else
                 tile = getTile(v)
@@ -2626,7 +2626,7 @@ function convertUnits(pass)
       elseif not unit.new and unit.class == "unit" and unit.type ~= "outerlvl" and not hasRule(unit, "be", unit.name) and timecheck(unit) then
         for _,v in ipairs(referenced_objects) do
           local tile
-          if v == "text" then
+          if v == "txt" then
             tile = getTile("txt_" .. rule.subject.name)
           else
             tile = getTile(v)
@@ -2665,7 +2665,7 @@ function convertUnits(pass)
             mergeTable(tbl, referenced_text)
             for _,v in ipairs(tbl) do
               local tile
-              if v == "text" then
+              if v == "txt" then
                 tile = getTile("txt_" .. rule.subject.name)
               else
                 tile = getTile(v)
@@ -2685,7 +2685,7 @@ function convertUnits(pass)
         mergeTable(tbl, referenced_text)
         for _,v in ipairs(tbl) do
           local tile
-          if v == "text" then
+          if v == "txt" then
             tile = getTile("txt_" .. rule.subject.name)
           else
             tile = getTile(v)
@@ -2725,7 +2725,7 @@ function convertUnits(pass)
             mergeTable(tbl, special_objects)
             for _,v in ipairs(tbl) do
               local tile
-              if v == "text" then
+              if v == "txt" then
                 tile = getTile("txt_" .. rule.subject.name)
               else
                 tile = getTile(v)
@@ -2746,7 +2746,7 @@ function convertUnits(pass)
         mergeTable(tbl, special_objects)
         for _,v in ipairs(tbl) do
           local tile
-          if v == "text" then
+          if v == "txt" then
             tile = getTile("txt_" .. rule.subject.name)
           else
             tile = getTile(v)
@@ -2783,7 +2783,7 @@ function convertUnits(pass)
         for _,cursor in ipairs(cursors) do
           if inBounds(cursor.x, cursor.y) and testConds(cursor, rule.subject.conds) then
             local tile
-            if rule.object.name == "text" then
+            if rule.object.name == "txt" then
               tile = getTile("txt_" .. rule.subject.name)
             elseif rule.object.name:starts("this") and not rule.object.name:ends("n't") then
               tile = getTile("this")
@@ -2812,7 +2812,7 @@ function convertUnits(pass)
         end
       elseif not unit.new and unit.class == "unit" and not nameIs(unit, rule.object.name) and unit.type ~= "outerlvl" and timecheck(unit) then
         local tile
-        if rule.object.name == "text" then
+        if rule.object.name == "txt" then
           tile = getTile("txt_" .. rule.subject.name)
         elseif rule.object.name:starts("this") and not rule.object.name:ends("n't") then
           tile = getTile("this")
@@ -2825,10 +2825,10 @@ function convertUnits(pass)
         end
         --let x ben't x txt prevent x be txt, and x ben't txt prevent x be y txt
         local overriden = false;
-        if rule.object.name == "text" then
+        if rule.object.name == "txt" then
           overriden = hasRule(unit, "ben't", "txt_" .. rule.subject.name)
         elseif rule.object.name:starts("txt_") then
-          overriden = hasRule(unit, "ben't", "text")
+          overriden = hasRule(unit, "ben't", "txt")
         end
         --transform into custom letter
         local new_special = {}
@@ -3047,7 +3047,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
 
   unit.tile = data.name
   unit.sprite = deepCopy(data.sprite)
-  unit.type = data.is_text and "text" or "object"
+  unit.type = data.is_text and "txt" or "object"
   unit.typeset = data.typeset
 	unit.meta = data.meta
   unit.nt = data.nt
@@ -3072,9 +3072,9 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
 
   unit.fullname = data.name
 
-  if unit.type == "text" then
+  if unit.type == "txt" then
     should_parse_rules = true
-    unit.name = "text"
+    unit.name = "txt"
     if unit.typeset.letter then
       letters_exist = true
       unit.textname = string.sub(unit.fullname, 8)
@@ -3116,7 +3116,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
   end
   
   --do this before the 'this' change to textname so that we only get 'this' in referenced_objects
-  if unit.typeset.object and unit.textname ~= "every1" and unit.textname ~= "every2" and unit.textname ~= "every3" and unit.textname ~= "mous" and unit.textname ~= "bordr" and unit.textname ~= "no1" and unit.textname ~= "lvl" and unit.textname ~= "the" and unit.textname ~= "deez" and unit.textname ~= "text" and unit.textname ~= "this" and group_names_set[unit.textname] ~= true then
+  if unit.typeset.object and unit.textname ~= "every1" and unit.textname ~= "every2" and unit.textname ~= "every3" and unit.textname ~= "mous" and unit.textname ~= "bordr" and unit.textname ~= "no1" and unit.textname ~= "lvl" and unit.textname ~= "the" and unit.textname ~= "deez" and unit.textname ~= "txt" and unit.textname ~= "this" and group_names_set[unit.textname] ~= true then
     if not unit.textname:ends("n't") and not unit.textname:starts("txt_") and not unit.textname:starts("letter_") and not table.has_value(referenced_objects, unit.textname) then
       table.insert(referenced_objects, unit.textname)
     end
@@ -3127,7 +3127,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
     unit.textname = unit.textname .. unit.id
   end
   
-  if unit.type == "text" then
+  if unit.type == "txt" then
     updateNameBasedOnDir(unit)
     if not table.has_value(referenced_text, unit.fullname) then
       table.insert(referenced_text, unit.fullname)
@@ -3149,10 +3149,10 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
   end
   
   if unit.name:starts("this") then
-    if not units_by_name["text"] then
-      units_by_name["text"] = {}
+    if not units_by_name["txt"] then
+      units_by_name["txt"] = {}
     end
-    table.insert(units_by_name["text"], unit)
+    table.insert(units_by_name["txt"], unit)
   end
 
   if not units_by_layer[unit.layer] then
@@ -3192,7 +3192,7 @@ function deleteUnit(unit,convert,undoing,gone)
     unit.removed_final = false
     return
   end
-  if unit.type == "text" or rules_effecting_names[unit.name] then
+  if unit.type == "txt" or rules_effecting_names[unit.name] then
     should_parse_rules = true
   end
   removeFromTable(units, unit)
@@ -3293,7 +3293,7 @@ function moveUnit(unit,x,y,portal,instant)
 
     -- putting portal check above same-position check to give portal effect through one-tile gap
     if portal and portal.is_portal and x - portal.x == dirs8[portal.dir][1] and y - portal.y == dirs8[portal.dir][2] and not instant then
-      if unit.type == "text" or rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname] or (rules_with["no1"] and rules_with["wurd"] and hasRule("no1", "be", "wurd")) then
+      if unit.type == "txt" or rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname] or (rules_with["no1"] and rules_with["wurd"] and hasRule("no1", "be", "wurd")) then
         should_parse_rules = true
       end
       if (not unit_tests) then
@@ -3311,7 +3311,7 @@ function moveUnit(unit,x,y,portal,instant)
         tweens["unit:rotation:" .. unit.tempid] = nil
       end
     elseif (x ~= unit.x or y ~= unit.y) and not instant then
-      if unit.type == "text" or rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname] or (rules_with and rules_with["no1"] and rules_with["wurd"] and hasRule("no1", "be", "wurd")) then
+      if unit.type == "txt" or rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname] or (rules_with and rules_with["no1"] and rules_with["wurd"] and hasRule("no1", "be", "wurd")) then
         should_parse_rules = true
       end
       if not unit_tests then

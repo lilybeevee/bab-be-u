@@ -781,7 +781,7 @@ function scene.draw(dt)
     if unit.name == "no1" and not (draw_empty and validEmpty(unit)) then return end
     
     local brightness = 1
-    if ((unit.type == "text" and not hasRule(unit,"ben't","wurd")) or hasRule(unit,"be","wurd")) and not unit.active and not level_destroyed and not (unit.fullname == "prop") then
+    if ((unit.type == "txt" and not hasRule(unit,"ben't","wurd")) or hasRule(unit,"be","wurd")) and not unit.active and not level_destroyed and not (unit.fullname == "prop") then
       brightness = 0.33
     end
 
@@ -793,7 +793,7 @@ function scene.draw(dt)
       brightness = 0.5
     end
     
-    if timeless and not hasProperty(unit,"zawarudo") and not (unit.type == "text") then
+    if timeless and not hasProperty(unit,"zawarudo") and not (unit.type == "txt") then
       brightness = 0.33
     end
 
@@ -910,7 +910,7 @@ function scene.draw(dt)
         local do_vibrate = false
         if unit.fullname == "temmi" then
           do_vibrate = true
-        elseif unit.type == "text" and unit.active then
+        elseif unit.type == "txt" and unit.active then
           local rules_list = rules_with_unit[unit]
           if rules_list then
             for _,rules in ipairs(rules_list) do
@@ -1131,10 +1131,12 @@ function scene.draw(dt)
         love.graphics.draw(sprites["kat_eyes"], fulldrawx, fulldrawy, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
       end
     end
+
+    local cool_gang, cool_gang_rule = hasRule(unit,"be","cool gang",true)
     
     if hasProperty(unit,"cool") then unit.cool = true end
     if hasRule(unit,"ben't","cool") then unit.cool = false end
-    if unit.cool then
+    if unit.cool or cool_gang then
       local o = getTableWithDefaults(unit.features.cool, {x=0, y=0, sprite="shades"})
       local shake_x, shake_y = getOffset()
       love.graphics.setColor(getPaletteColor(0,3))
@@ -1159,10 +1161,41 @@ function scene.draw(dt)
       end
     end
     
-    if hasRule(unit,"be","gang") then
-      local o = getTableWithDefaults(unit.features.gang, {x=0, y=0, sprite="gang_hat"})
-      love.graphics.setColor(getPaletteColor(0,1))
-      love.graphics.draw(sprites[o.sprite], fulldrawx + o.x, fulldrawy - 0.5*TILE_SIZE + o.y, 0, unit.draw.scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
+    local gang, gang_rule = hasRule(unit,"be","gang", true)
+    local double_gang, double_gang_rule = hasRule(unit,"be","gang gang", true)
+    local txt_gang, txt_gang_rule = hasRule(unit,"be","txt gang", true)
+
+    local gang_rule = txt_gang_rule or gang_rule or double_gang_rule or cool_gang_rule
+    local gang = gang or double_gang or cool_gang or txt_gang
+
+    if gang then
+      local o = getTableWithDefaults(unit.features.gang, {x=0, y=0, sx=1, sy=1, sprite="gang_hat"})
+      if gang_rule and gang_rule.rule.object.unit and gang_rule.rule.object.unit.color_override then
+        setColor(gang_rule.rule.object.unit.color_override)
+      else
+        love.graphics.setColor(getPaletteColor(0,1))
+      end
+      local sx, sy = unit.draw.scalex * o.sx, unit.draw.scaley * o.sy
+      if txt_gang then
+        o.sprite = "txt/hatt"
+        sx = sx * 0.5
+        sy = sy * 0.5
+      end
+      love.graphics.draw(sprites[o.sprite], fulldrawx + o.x, fulldrawy - 0.5*TILE_SIZE + o.y, 0, sx, sy, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      if double_gang then
+        if gang_rule and gang_rule.rule.object.mods then
+          for _,mod in ipairs(gang_rule.rule.object.mods) do
+            if mod.name == "gang" and mod.unit then
+              if mod.unit.color_override then
+                setColor(mod.unit.color_override)
+              else
+                love.graphics.setColor(getPaletteColor(0,1))
+              end
+            end
+          end
+        end
+        love.graphics.draw(sprites[o.sprite], fulldrawx + o.x - 3, fulldrawy - 0.5*TILE_SIZE + o.y - 5, math.rad(-15), sx, sy, sprite:getWidth() / 2, sprite:getHeight() / 2)
+      end
     end
 
     local matchrules = matchesRule(unit,"got","?")

@@ -359,7 +359,7 @@
   {
     "name": "txt_meow",
     "sprite": ["txt/meow"],
-    "types": ["cond_infix"],
+    "types": ["cond_infix", "gang_prefix"],
     "color": [[2, 4]],
     "desc": "Like AROND, but instead of only checking one tile it goes until it hits a TRANPARN'T object, following spatial warping/etc.\nCurrently has a range cap of 100 because it's laggy.",
     "tags": ["infix", "stare at"]

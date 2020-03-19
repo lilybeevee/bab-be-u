@@ -73,7 +73,7 @@
   {
     "name": "txt_tranz",
     "sprite": ["txt/tranz-colored"],
-    "types": ["property"],
+    "types": ["property", "gang_prefix"],
     "color": [[255, 255, 255]],
     "desc": "TRANZ: Causes the unit to appear pink, white and baby blue. TRANZ objects are pinc, whit, and cyeann, and not any other colors.",
     "tags": ["trans"]
@@ -81,7 +81,7 @@
   {
     "name": "txt_gay",
     "sprite": ["txt/gay-colored"],
-    "types": ["property"],
+    "types": ["property", "gang_prefix"],
     "color": [[255, 255, 255]],
     "desc": "GAY: Causes the unit to appear rainbow coloured. GAY objects are reed, orang, yello, grun, bleu, and purp, and not any other colors."
   },
@@ -173,7 +173,7 @@
   {
     "name": "txt_qt",
     "sprite": ["txt/qt"],
-    "types": ["property"],
+    "types": ["property", "gang_prefix"],
     "color": [[4, 2]],
     "thingify": "therealqt",
     "desc": "QT: Makes the unit emit love hearts.",
@@ -757,7 +757,7 @@
   {
     "name": "txt_enby",
     "sprite": ["txt/enby-colored"],
-    "types": ["property"],
+    "types": ["property", "gang_prefix"],
     "color": [[255, 255, 255]],
     "desc": "ENBY: Causes the unit to appear yellow, white, purple and black. ENBY objects are yello, whit, purp, and blacc, and not any other colors."
   },
@@ -871,7 +871,7 @@
   {
     "name": "txt_cool",
     "sprite": ["txt/cool"],
-    "types": ["property"],
+    "types": ["property", "gang_prefix"],
     "color": [[1, 4]],
     "desc": "COOL: COOL units wear a pair of sunglasses, and don't shake.",
     "tags": ["cool"]

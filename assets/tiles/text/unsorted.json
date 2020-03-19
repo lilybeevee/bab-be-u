@@ -9,13 +9,14 @@
     "tags": ["and"]
   },
   {
-    "name": "txt_text",
+    "name": "txt_txt",
     "sprite": ["txt/txt"],
     "metasprite": ["txt/txt meta"],
     "types": ["object"],
     "color": [[4, 1]],
     "desc": "TXT: An object class referring to all text objects, or just a specific one if you write e.g. BAB TXT BE GAY.",
-    "tags": ["txt"]
+    "tags": ["txt"],
+    "old_names": ["txt_text"]
   },
   {
     "name": "txt_nt",
@@ -166,7 +167,7 @@
   {
     "name": "txt_gang",
     "sprite": ["txt/gang"],
-    "types": ["object", "group"],
+    "types": ["object", "group", "gang", "gang_prefix"],
     "color": [[0, 1]],
     "desc": "GANG: A variant of FRENS but members wear an exclusive hat.",
     "tags": ["group"]

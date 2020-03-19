@@ -26,7 +26,7 @@ local function common(arg, group)
       },
       {
         {type = "any"},
-        {name = "text", mod = 1},
+        {name = "txt", mod = 1},
         not_suffix
       },
       {
@@ -507,7 +507,7 @@ local function testParser()
     },
     { -- Test 5 - TRUE
       {name = "bab", type = "object"},
-      {name = "text", type = "object"},
+      {name = "txt", type = "object"},
       {name = "&", type = "and"},
       {name = "keek", type = "object"},
       {name = "be", type = "verb"},
@@ -521,7 +521,7 @@ local function testParser()
     },
     { -- Test 7 - TRUE
       {name = "bab", type = "object"},
-      {name = "text", type = "object"},
+      {name = "txt", type = "object"},
       {name = "be", type = "verb"},
       {name = "u", type = "property"}
     },
@@ -532,7 +532,7 @@ local function testParser()
     },
     { -- Test 9 - TRUE
       {name = "be", type = "property"},
-      {name = "text", type = "object"},
+      {name = "txt", type = "object"},
       {name = "be", type = "verb"},
       {name = "u", type = "property"}
     },

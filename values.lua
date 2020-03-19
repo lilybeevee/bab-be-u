@@ -227,7 +227,7 @@ custom_letter_quads = {
 selector_grid_contents = {
   -- page 1: default
   {
-    0, "txt_be", "txt_&", "txt_got", "txt_nt", "txt_every1", "txt_no1", "txt_text", "txt_wurd", "txt_txtify", "txt_sublvl", "txt_wait...", "txt_mous", "txt_clikt", "txt_nxt", "txt_stayther", "lvl", "txt_lvl",
+    0, "txt_be", "txt_&", "txt_got", "txt_nt", "txt_every1", "txt_no1", "txt_txt", "txt_wurd", "txt_txtify", "txt_sublvl", "txt_wait...", "txt_mous", "txt_clikt", "txt_nxt", "txt_stayther", "lvl", "txt_lvl",
     "bab", "txt_bab", "txt_u", "kee", "txt_kee", "txt_fordor", "txt_goooo", "txt_icy", "txt_icyyyy", "txt_behinu", "txt_moar", "txt_sans", "txt_liek", "txt_loop", "lin", "txt_lin", "selctr", "txt_selctr",
     "keek", "txt_keek", "txt_walk", "dor", "txt_dor", "txt_nedkee", "txt_frens", "txt_groop", "txt_utoo", "txt_utres", "txt_delet", "txt_an", "txt_haet", "txt_mayb", "txt_that", "txt_ignor", "txt_curse", "txt_...",
     "flog", "txt_flog", "txt_:)", "colld", "txt_colld", "txt_fridgd", "txt_direction", "txt_ouch", "txt_slep", "txt_protecc", "txt_sidekik", "txt_brite", "txt_lit", "txt_tranparnt", "txt_torc", "txt_vs", "txt_nuek", "txt_''",
@@ -331,7 +331,7 @@ selector_grid_contents = {
     "txt_upleft","txt_up","txt_upright","txt_thicc",0,"txt_her","txt_thr","txt_rithere","txt_the","txt_deez",0,0,0,"txt_gay","txt_tranz","txt_enby","txt_colrful","txt_rave",
     "txt_left","txt_direction","txt_right",0,0,0,0,0,0,0,0,0,0,0,0,"txt_stelth","txt_qt","txt_thonk",
     "txt_downleft","txt_down","txt_downright",0,0,"selctr","txt_selctr","txt_frens","txt_groop","txt_gang","txt_themself",0,0,0,0,0,0,0,
-    0,0,0,0,0,"lvl","txt_lvl","txt_text","txt_no1","txt_every1","txt_every2","this","txt_xplod",0,0,0,0,0,
+    0,0,0,0,0,"lvl","txt_lvl","txt_txt","txt_no1","txt_every1","txt_every2","this","txt_xplod",0,0,0,0,0,
     "txt_...","txt_''","txt_nt",0,0,"lin","txt_lin","txt_lethers","txt_numa","txt_toen","txt_yuiy",0,0,0,0,0,0,0,
   },
 }

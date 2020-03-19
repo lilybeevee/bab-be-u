@@ -40,7 +40,7 @@ function clearRules()
   portal_id = ""
 
   --text and level basically already exist, so no need to be picky.
-  addBaseRule("text","be","goawaypls")
+  addBaseRule("txt","be","goawaypls")
   addBaseRule("lvl","be","nogo")
   --TODO: This will need to be automatic on levels with letters/combined words, since a selectr/bordr might be made in a surprising way, and it will need to have its implicit rules apply immediately.
   if (units_by_name["selctr"] or units_by_name["txt_selctr"] or units_by_name["lin"] or units_by_name["txt_lin"] or units_by_name["txt_pathz"]) then
@@ -78,7 +78,7 @@ end
 
 function getAllText()
   local hasCopied = false
-  local result = units_by_name["text"]
+  local result = units_by_name["txt"]
   if (result == nil) then result = {} end
   --remove ben't wurd text from result
   if rules_with["wurd"] ~= nil then
@@ -141,7 +141,7 @@ function getAllText()
 end
 
 function getTextOnTile(x, y)
-  local result = getUnitsOnTile(x, y, "text")
+  local result = getUnitsOnTile(x, y, "txt")
   --remove ben't wurd text from result
   if rules_with ~= nil and rules_with["wurd"] ~= nil then
     for i = #result,1,-1 do
@@ -188,7 +188,7 @@ function getTextOnTile(x, y)
 end
 
 function parseRules(undoing)
-  if timeless and not hasProperty("text","zawarudo") then
+  if timeless and not hasProperty("txt","zawarudo") then
     return
   end
   if (should_parse_rules) then
@@ -286,7 +286,7 @@ function parseRules(undoing)
           if (i == 2) and (unit.wobble or hasRule(unit,"be","ortho")) and not hasRule(unit,"be","diag") then
             validrule = false
           end
-          --print(tostring(x)..","..tostring(y)..","..tostring(dx)..","..tostring(dy)..","..tostring(ndx)..","..tostring(ndy)..","..tostring(#getUnitsOnTile(x+ndx, y+ndy, "text"))..","..tostring(#getUnitsOnTile(x+dx, y+dy, "text")))
+          --print(tostring(x)..","..tostring(y)..","..tostring(dx)..","..tostring(dy)..","..tostring(ndx)..","..tostring(ndy)..","..tostring(#getUnitsOnTile(x+ndx, y+ndy, "txt"))..","..tostring(#getUnitsOnTile(x+dx, y+dy, "txt")))
           if (#getTextOnTile(x+ndx, y+ndy) == 0) and validrule then
             if not been_first[i][x + y * mapwidth] then
               table.insert(first_words, {unit, i})
@@ -782,7 +782,7 @@ function addRule(full_rule)
       for _,v in ipairs(referenced_objects) do
         addRuleSimple({v, rules.subject.conds}, rules.verb, rules.object, units, dir)
       end
-      addRuleSimple({"text", rules.subject.conds}, rules.verb, rules.object, units, dir)
+      addRuleSimple({"txt", rules.subject.conds}, rules.verb, rules.object, units, dir)
     end
   elseif subject == "every3" then
     if subject_not % 2 == 1 then
@@ -791,7 +791,7 @@ function addRule(full_rule)
       for _,v in ipairs(referenced_objects) do
         addRuleSimple({v, rules.subject.conds}, rules.verb, rules.object, units, dir)
       end
-      addRuleSimple({"text", rules.subject.conds}, rules.verb, rules.object, units, dir)
+      addRuleSimple({"txt", rules.subject.conds}, rules.verb, rules.object, units, dir)
       for _,v in ipairs(special_objects) do
         addRuleSimple({v, rules.subject.conds}, rules.verb, rules.object, units, dir)
       end
@@ -856,7 +856,7 @@ function addRule(full_rule)
       end
     end
   elseif subject_not % 2 == 1 then
-    if getTile(subject) or subject == "text" then
+    if getTile(subject) or subject == "txt" then
       local new_subjects = getEverythingExcept(subject)
       for _,v in ipairs(new_subjects) do
         addRuleSimple({v, rules.subject.conds}, rules.verb, rules.object, units, dir)
@@ -881,7 +881,7 @@ function addRule(full_rule)
       for _,v in ipairs(referenced_objects) do
         addRuleSimple(rules.subject, rules.verb, {v, rules.object.conds}, units, dir)
       end
-      addRuleSimple(rules.subject, rules.verb, {"text", rules.object.conds}, units, dir)
+      addRuleSimple(rules.subject, rules.verb, {"txt", rules.object.conds}, units, dir)
     end
   elseif object == "every3" then
     if object_not % 2 == 1 then
@@ -890,13 +890,13 @@ function addRule(full_rule)
       for _,v in ipairs(referenced_objects) do
         addRuleSimple(rules.subject, rules.verb, {v, rules.object.conds}, units, dir)
       end
-      addRuleSimple(rules.subject, rules.verb, {"text", rules.object.conds}, units, dir)
+      addRuleSimple(rules.subject, rules.verb, {"txt", rules.object.conds}, units, dir)
       for _,v in ipairs(special_objects) do
         addRuleSimple(rules.subject, rules.verb, {v, rules.object.conds}, units, dir)
       end
     end
   elseif object_not % 2 == 1 then
-    if getTile(object) or object:starts("this") or object == "text" or object == "mous" then
+    if getTile(object) or object:starts("this") or object == "txt" or object == "mous" then
       local new_objects = {}
       --skul be skul turns into skul ben't skuln't - but this needs to apply even to special objects (specific text, txt, no1, lvl, mous).
       if verb == "be" and verb_not % 2 == 1 then
@@ -909,7 +909,7 @@ function addRule(full_rule)
         addRuleSimple(rules.subject, rules.verb, {v, rules.object.conds}, units, dir)
       end
       --txt be txt needs to also apply for flog txt, bab txt, etc.
-      if (object == "text" and verb == "be" and verb_not % 2 == 1) then
+      if (object == "txt" and verb == "be" and verb_not % 2 == 1) then
         for i,ref in ipairs(referenced_text) do
           for _,v in ipairs(new_objects) do
             addRuleSimple({ref, rules.subject.conds}, rules.verb, {v, rules.object.conds}, units, dir)
@@ -921,7 +921,7 @@ function addRule(full_rule)
   end
 
   if verb_not > 0 then
-    if (verb == "be") and (object == "notranform" or subject == object or (subject:starts("txt_") and object == "text")) then
+    if (verb == "be") and (object == "notranform" or subject == object or (subject:starts("txt_") and object == "txt")) then
       verb_not = verb_not + 1
     end
     if not not_rules[verb_not] then
@@ -933,7 +933,7 @@ function addRule(full_rule)
 
     -- for specifically checking NOT rules
     table.insert(full_rules, {rule = {subject = rules.subject, verb = {name = verb .. "n't"}, object = rules.object}, units = units, dir = dir})
-  elseif (verb == "be") and (subject == object or (subject:starts("txt_") and object == "text")) and subject ~= "lvl" and object ~= "lvl" and subject ~= "sans" then
+  elseif (verb == "be") and (subject == object or (subject:starts("txt_") and object == "txt")) and subject ~= "lvl" and object ~= "lvl" and subject ~= "sans" then
     --print("protecting: " .. subject .. ", " .. object)
     addRuleSimple(rules.subject, {"be"}, {"notranform", rules.object.conds}, units, dir)
   elseif object == "notranform" or (subject == "lvl" and object == "lvl") then -- no "n't" here, but still blocks other rules so we need to count it
@@ -991,7 +991,7 @@ function postRules()
               fverb = fverb .. "n't"
             end
             -- print("frule:", fullDump(frule))
-            if (frule.subject.name == rule.subject.name or (rule.subject.name == "text" and frule.subject.name:starts("txt_"))) and fverb == rule.verb.name and (
+            if (frule.subject.name == rule.subject.name or (rule.subject.name == "txt" and frule.subject.name:starts("txt_"))) and fverb == rule.verb.name and (
               (specialmatch == 0 and frule.object.name == rule.object.name and frule.object.name ~= "her" and frule.object.name ~= "thr" and frule.object.name ~= "rit here") or
               (specialmatch == 1 and (frule.object.type.object or frule.object.name == "tranz") and not group_names_set[frule.object.name]) or -- possibly more special cases needed
               (specialmatch == 2 and frule.object.name == "notranform")
@@ -1108,7 +1108,7 @@ function populateRulesEffectingNames(r1, r2, r3)
   local rules = matchesRule(r1, r2, r3)
   for _,rule in ipairs(rules) do
     local subject = rule.rule.subject.name
-    if (subject:sub(1, 4) ~= "text") then
+    if (subject:sub(1, 4) ~= "txt") then
       rules_effecting_names[subject] = true
     end
   end
@@ -1126,7 +1126,7 @@ function shouldReparseRulesIfConditionalRuleExists(r1, r2, r3, even_non_wurd)
     local subject = rule.rule.subject.name
     --We only care about conditional rules that effect text, specific text, wurd units and maybe portals too.
     --We can also distinguish between different conditions (todo).
-    if (#subject_cond > 0 and (even_non_wurd or subject:starts("text") or rules_effecting_names[subject])) then
+    if (#subject_cond > 0 and (even_non_wurd or subject:starts("txt") or rules_effecting_names[subject])) then
       for _,cond in ipairs(subject_cond) do
         local cond_name = cond.name
         local params = cond.others or {}
