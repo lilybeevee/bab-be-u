@@ -203,12 +203,10 @@ function parseRules(undoing)
   if (dittos ~= nil) then
     table.sort(dittos, function(a, b) return a.y < b.y end ) 
     for _,unit in ipairs(dittos) do
-      local mimic = getTextOnTile(unit.x,unit.y-1)
-      --print(unit.dir)
-      --print(hasProperty(unit,"rotatbl"))
-      if hasProperty(unit,"rotatbl") and unit.dir == 5 then
-        mimic = getTextOnTile(unit.x,unit.y+1)
-      end
+      local dir = dirAdd(unit.rotatdir,-2)
+      local dx, dy = dirs8[dir][1], dirs8[dir][2]
+      local _, __, ___, x, y = getNextTile(unit,dx,dy,dir)
+      local mimic = getTextOnTile(x,y)
       
       if #mimic == 1 then
         unit.textname = mimic[1].textname
