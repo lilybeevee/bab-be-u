@@ -229,7 +229,7 @@ selector_grid_contents = {
   {
     0, "txt_be", "txt_&", "txt_got", "txt_nt", "txt_every1", "txt_no1", "txt_txt", "txt_wurd", "txt_txtify", "txt_sublvl", "txt_wait...", "txt_mous", "txt_clikt", "txt_nxt", "txt_stayther", "lvl", "txt_lvl",
     "bab", "txt_bab", "txt_u", "kee", "txt_kee", "txt_fordor", "txt_goooo", "txt_icy", "txt_icyyyy", "txt_behinu", "txt_moar", "txt_sans", "txt_liek", "txt_loop", "lin", "txt_lin", "selctr", "txt_selctr",
-    "keek", "txt_keek", "txt_walk", "dor", "txt_dor", "txt_nedkee", "txt_frens", "txt_groop", "txt_utoo", "txt_utres", "txt_delet", "txt_an", "txt_haet", "txt_mayb", "txt_that", "txt_ignor", "txt_curse", "txt_...",
+    "keek", "txt_keek", "txt_walk", "dor", "txt_dor", "txt_nedkee", "txt_frens", "txt_gang", "txt_utoo", "txt_utres", "txt_delet", "txt_an", "txt_haet", "txt_mayb", "txt_that", "txt_ignor", "txt_curse", "txt_...",
     "flog", "txt_flog", "txt_:)", "colld", "txt_colld", "txt_fridgd", "txt_direction", "txt_ouch", "txt_slep", "txt_protecc", "txt_sidekik", "txt_brite", "txt_lit", "txt_tranparnt", "txt_torc", "txt_vs", "txt_nuek", "txt_''",
     "roc", "txt_roc", "txt_goawaypls", "laav", "txt_laav", "txt_hotte","txt_visitfren", "txt_w/fren", "txt_arond", "txt_frenles", "txt_copkat", "txt_zawarudo", "txt_timles", "txt_behind", "txt_beside", "txt_lookaway", "txt_notranform", "this",
     "wal", "txt_wal", "txt_nogo", "l..uv", "txt_l..uv", "gras", "txt_gras", "txt_creat", "txt_lookat", "txt_spoop", "txt_yeet", "txt_turncornr", "txt_corekt", "txt_goarnd", "txt_mirrarnd", "txt_past", 0, "txt_sing",

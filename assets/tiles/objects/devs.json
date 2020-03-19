@@ -130,7 +130,7 @@
     "sprite": ["txt/jill"],
     "types": ["object"],
     "color": [[1, 3]],
-    "tags": ["devs", "chars", "va11 hall-a", "cynthia"]
+    "tags": ["devs", "chars", "valhalla", "cynthia"]
   },
   {
     "name": "slab",

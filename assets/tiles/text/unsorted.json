@@ -169,7 +169,7 @@
     "sprite": ["txt/gang"],
     "types": ["object", "group", "gang", "gang_prefix"],
     "color": [[0, 1]],
-    "desc": "GANG: A variant of FRENS but members wear an exclusive hat.",
+    "desc": "GANG: A variant of FRENS but members wear an exclusive hat. Put an object before it to make unique gangs!",
     "tags": ["group"]
   },
   {
@@ -236,7 +236,7 @@
     "sprite": ["txt/themself"],
     "types": ["object"],
     "color": [[2, 3]],
-    "desc": "ITSELF: Refers to the subject of the rule in conditions.",
+    "desc": "THEMSELF: Refers to the subject of the rule in conditions.",
     "tags": ["itself"]
   }
 ]
