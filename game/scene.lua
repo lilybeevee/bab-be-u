@@ -1260,28 +1260,13 @@ function scene.draw(dt)
       elseif name ~= "bowie" and unit.fullname == "swan" then
         local tile = getTile(name)
         if tile then
-          -- temporarily replacing the current unit ... this is so janky im sorry
-          local old_unit = unit
-          unit = deepCopy(tile)
-          unit.fullname = unit.name
-          unit.overlay = {}
-          unit.draw = {x = old_unit.draw.x, y = old_unit.draw.y, scalex = 0.5, scaley = 0.5, rotation = 0, opacity = 1}
-          if c1 and c2 then
-            unit.color_override = {c1, c2}
-          end
-
           love.graphics.push()
           love.graphics.translate(14, -4)
-          if c1 and c2 then
-            setColor{c1, c2}
-          else
-            setColor(tile.color)
-          end
-          localDrawSprite()
-          love.graphics.pop()
 
-          -- order is restored
-          unit = old_unit
+          local color = getTileColors(tile, (c1 and c2) and {c1, c2} or nil)
+          drawTileSprite(tile, fulldrawx, fulldrawy, 0, 0.5, 0.5, {color = color})
+
+          love.graphics.pop()
         end
       end
     end
