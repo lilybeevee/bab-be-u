@@ -2550,7 +2550,8 @@
     "name": "aaaaaa",
     "sprite": ["aaaaaa"],
     "layer": 100,
-    "color": [[0, 3]]
+    "color": [[0, 3]],
+    "desc": "Thingifying a custom letter AAAA (with 2-4) A's becomes a BATTRY instead."
   },
   {
     "name": "therealbabdictator",

@@ -11,7 +11,7 @@
       "sans": {"x": 19, "y": 5, "w": 2, "h": 2}
     },
     "voice": "overdriven guitar",
-    "desc": "sans",
+    "desc": "ness in disguise\nDid you know that sans is a property too?",
     "tags": ["chars", "sans", "undertale", "skeleton"]
   },
   {
@@ -28,6 +28,7 @@
       "gunne": {}
     },
     "voice": "ditto",
+    "desc": "DITTO: The sprite changes based on its properties!",
     "tags": ["chars", "ditto", "pokemon"]
   },
   {
@@ -43,7 +44,7 @@
     },
     "voice": "cat",
     "desc": "u hav da wight to wemain siwent!!",
-    "tags": ["chars", "cop", "police", "cat"]
+    "tags": ["chars", "police", "cat"]
   },
   {
     "name": "zawarudo",
@@ -59,15 +60,6 @@
     "voice": "muda",
     "desc": "WRYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY",
     "tags": ["chars", "the world", "jojo", "DIO"]
-  },
-  {
-    "name": "thingify",
-    "sprite": ["thingify"],
-    "layer": 7,
-    "color": [[5, 2]],
-    "convertible": false,
-    "desc": "its a thing.",
-    "tags": ["thing"]
   },
   {
     "name": "&",
@@ -96,6 +88,7 @@
     "sprite": ["the real qt"],
     "layer": 22,
     "color": [[4, 2]],
-    "txtify": "text_qt"
+    "txtify": "text_qt",
+    "desc": "the real qt"
   }
 ]

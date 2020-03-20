@@ -4,7 +4,7 @@
     "sprite": ["txt/and"],
     "types": ["and"],
     "color": [[0, 3]],
-    "desc": "&: Joins multiple conditions, subjects or objects together in a rule. Can also be spelled as ampersand with letters. Rules with stacked text and &s don't work like in baba, be sure to experiment!\nTry thingifying an &n't text, since no one would ever think to try that considering &n'ts are useless.",
+    "desc": "&: Joins multiple conditions, subjects or objects together in a rule. Can also be spelled as ampersand with letters. Rules with stacked text or n't and &s don't work like in baba, be sure to experiment!",
     "alias": ["ampersand"],
     "tags": ["and"]
   },
@@ -116,14 +116,6 @@
     "color": [[3, 3]],
     "desc": "EVERY2: EVERY1 + TXT. (Doesn't include innerlvls atm because lazy + hard to code + unlikely to come up. Sorry.)",
     "tags": ["all", "everyone", "every2"]
-  },
-  {
-    "name": "txt_every3",
-    "sprite": ["txt/every3"],
-    "types": ["object"],
-    "color": [[4, 1]],
-    "desc": "EVERY3: Absolutely everything conceivable. The pinnacle of everything technology. (Infloop is not an object.)",
-    "tags": ["all", "everyone", "every3"]
   },
   {
     "name": "txt_every3",
