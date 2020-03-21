@@ -546,7 +546,7 @@ function updateUnits(undoing, big_update)
                 end
               end
             end
-          end
+          end --x for
         end
       end
     end
