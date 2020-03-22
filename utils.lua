@@ -3495,11 +3495,10 @@ function getTheme()
       return "christmas"
     end
   end
+  --in palettes: (3,4) is main title buttons, (4,4) is level buttons, (5,4) is extras
   local palettes = {
-    "abstract",
     "autumn",
     "cauliflower",
-    "cyberpunk",
     "default",
     "edge",
     "factory",
@@ -3509,9 +3508,7 @@ function getTheme()
     "ocean",
     "redfault",
     "ruins",
-    "snowy",
     "space",
-    "swamp",
     "variant",
     "volcano",
   }
