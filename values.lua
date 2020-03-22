@@ -190,6 +190,24 @@ colour_for_palette[6][2] = "brwn"
 colour_for_palette[6][3] = "brwn"
 colour_for_palette[6][4] = "blacc"
 
+--in palettes: (3,4) is main title buttons, (4,4) is level buttons, (5,4) is extras
+menu_palettes = {
+  "autumn",
+  "cauliflower",
+  "default",
+  "edge",
+  "factory",
+  "garden",
+  "greenfault",
+  "mountain",
+  "ocean",
+  "redfault",
+  "ruins",
+  "space",
+  "variant",
+  "volcano",
+}
+
 custom_letter_quads = {
   {}, -- single letters will always use actual letter units, not custom letter units
   {

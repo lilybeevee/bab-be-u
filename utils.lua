@@ -3495,24 +3495,8 @@ function getTheme()
       return "christmas"
     end
   end
-  --in palettes: (3,4) is main title buttons, (4,4) is level buttons, (5,4) is extras
-  local palettes = {
-    "autumn",
-    "cauliflower",
-    "default",
-    "edge",
-    "factory",
-    "garden",
-    "greenfault",
-    "mountain",
-    "ocean",
-    "redfault",
-    "ruins",
-    "space",
-    "variant",
-    "volcano",
-  }
-  return palettes[menu_palette]
+  
+  return menu_palette
 end
 
 function getTableWithDefaults(o, default)

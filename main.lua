@@ -274,7 +274,7 @@ bab arguments!
     end
   end
 
-  menu_palette = math.random(1,18) --18 is the number of possible palettes
+  menu_palette = menu_palettes[math.random(1,#menu_palettes)]
 
   sprites["letters_/"] = sprites["letters_slash"]
   sprites["letters_:"] = sprites["letters_colon"]
