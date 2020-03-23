@@ -499,7 +499,7 @@ function scene.keyPressed(key)
       searchstr = searchstr..love.system.getClipboardText()
     elseif key == "return" then
       if key_down["lalt"] or key_down["ralt"] or key_down["lshift"] or key_down["rshift"] then
-        if getTile("txt_"..subsearchstr) and (settings["baba"] or not getTile("txt_"..subsearchstr).wobble) then
+        if getTile("txt_"..subsearchstr) and not getTile("txt_"..subsearchstr).unsearchable and (settings["baba"] or not getTile("txt_"..subsearchstr).wobble) then
           brush.id = "txt_"..subsearchstr
           brush.special = {}
           selector_open = false
@@ -519,12 +519,12 @@ function scene.keyPressed(key)
           searchstr, subsearchstr = "", ""
         end
       else
-        if getTile(subsearchstr) and (settings["baba"] or not getTile(subsearchstr).wobble) then
+        if getTile(subsearchstr) and not getTile(subsearchstr).unsearchable and (settings["baba"] or not getTile(subsearchstr).wobble) then
           brush.id = subsearchstr
           brush.special = {}
           selector_open = false
           searchstr, subsearchstr = "", ""
-        elseif getTile("txt_"..subsearchstr) and (settings["baba"] or not getTile("txt_"..subsearchstr).wobble) then
+        elseif getTile("txt_"..subsearchstr) and not getTile("txt_"..subsearchstr).unsearchable and (settings["baba"] or not getTile("txt_"..subsearchstr).wobble) then
           brush.id = "txt_"..subsearchstr
           brush.special = {}
           selector_open = false
@@ -670,7 +670,7 @@ function scene.keyPressed(key)
 
   if key == "tab" and not (key_down["lctrl"] or key_down["rctrl"]) then
     selector_open = not selector_open
-    scene.resetMiku(settings["baba"] or love.math.random(1,20) == 1)
+    scene.resetMiku((settings["baba"] and love.math.random(1,5) == 1) or (not settings["baba"] and love.math.random(1,20) == 1))
     updateSelectorTabs()
     if selector_open then
       presence["details"] = "browsing selector"
@@ -1396,6 +1396,9 @@ function scene.draw(dt)
           local i = current_tile_grid[gridid]
           if i ~= nil and i ~= 0 then
             local tile = getTile(i)
+            if i == "therealbabdictator" then
+              tile = getTile("miku")
+            end
 
             -- local x = tile.grid[1]
             -- local y = tile.grid[2]

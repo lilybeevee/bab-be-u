@@ -18,6 +18,7 @@ convertible
 rotate
 portal
 wobble
+unsearchable
 features (hatt, which, sant, bowie, gang, sans, cool, katany, knif, gunne, slippers)
 voice
 desc
