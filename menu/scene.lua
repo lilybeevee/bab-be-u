@@ -153,18 +153,10 @@ function scene.draw(dt)
   git_btn:draw()
 
   if not options then
-    local bab_logo
-    if getTheme() == "halloween" then
-      if not settings["epileptic"] and (love.timer.getTime()%10 > 8.7 and love.timer.getTime()%10 < 8.8 or love.timer.getTime()%10 > 8.9 and love.timer.getTime()%10 < 9) then
-        bab_logo = sprites["ui/bab_be_u_halloween_blood"]
-      else
-        bab_logo = sprites["ui/bab_be_u_halloween"]
-      end
-    elseif getTheme() == "christmas" then
-      bab_logo = sprites["ui/bab_be_u_christmas"]
-    else
-      bab_logo = sprites["ui/bab_be_u"]
-    end    
+    local bab_logo = sprites["ui/title/"..getTheme()] or sprites["ui/title/default"]
+    if getTheme() == "halloween" and not settings["epileptic"] and (love.timer.getTime()%10 > 8.7 and love.timer.getTime()%10 < 8.8 or love.timer.getTime()%10 > 8.9 and love.timer.getTime()%10 < 9) then 
+      bab_logo = sprites["ui/title/halloween_blood"]
+    end
     
     love.graphics.push()
     love.graphics.translate(width/2, height/20 + bab_logo:getHeight()/2)
