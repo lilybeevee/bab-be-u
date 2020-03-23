@@ -43,6 +43,8 @@ function scene.load()
     babtitletween = love.timer.getTime()
     babtitlespeen = math.random(1,1000) == 1
   end
+  settings["seen_menu"] = true
+  saveAll()
 end
 
 function scene.buildUI()
