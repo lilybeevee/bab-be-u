@@ -4,7 +4,7 @@
     "sprite": ["letter_a"],
     "types": ["letter", "note"],
     "color": [[0, 3]],
-    "desc": "try thingifying a custom AAAAAA letter!"
+    "desc": "This description used to hold a hint for a secret, but that hint has since been moved."
   },
   {
     "name": "letter_b",
@@ -90,7 +90,8 @@
     "name": "letter_q",
     "sprite": ["letter_q"],
     "types": ["letter"],
-    "color": [[0, 3]]
+    "color": [[0, 3]],
+    "desc": "Why does Q even exist? There's literally no objects that have Q in them."
   },
   {
     "name": "letter_r",
@@ -116,7 +117,8 @@
     "name": "letter_u",
     "sprite": ["letter_u"],
     "types": ["letter"],
-    "color": [[0, 3]]
+    "color": [[0, 3]],
+    "desc": "Can be used to spell U, though it also has other uses."
   },
   {
     "name": "letter_v",
@@ -128,7 +130,8 @@
     "name": "letter_w",
     "sprite": ["letter_w"],
     "types": ["letter"],
-    "color": [[0, 3]]
+    "color": [[0, 3]],
+    "desc": "Can be used to spell W, though it also has other uses."
   },
   {
     "name": "letter_x",
@@ -228,7 +231,8 @@
     "name": "letter_i",
     "sprite": ["letter_i"],
     "types": ["letter"],
-    "color": [[0, 3]]
+    "color": [[0, 3]],
+    "desc": "This letter used to be simply a rotated H, and due to this it's far below the other letters in the code."
   },
   {
     "name": "letter_z",
@@ -242,7 +246,7 @@
     "sprite": ["letter_o"],
     "types": ["letter", "object"],
     "color": [[0, 3]],
-    "desc": "the most op letter"
+    "desc": "used to be the most op letter but now its just stronk"
   },
   {
     "name": "letter_1",
@@ -306,7 +310,8 @@
     "name": "letter_4",
     "sprite": ["letter_4"],
     "types": ["letter"],
-    "color": [[0, 3]]
+    "color": [[0, 3]],
+    "desc": "Numbers can also be used in text parsing for infix conditions. BAB W/FREN 4 WAL BE :) will make bab only win if on four walls!\n(not implemented yet)"
   },
   {
     "name": "letter_5",

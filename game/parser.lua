@@ -173,7 +173,28 @@ function findUnit(words, extra_words_, dir, outer, no_verb_cond, is_subject)
     local infix = copyTable(words[1])
     local infix_orig = infix
     infix.mods = infix.mods or {}
-    if words[1].type.direction and words[2].name == "arond" then
+
+    --[[local num,numc = findNumber(words[1],words[2],words[3])
+    if num then
+      print("if num")
+      if words[numc+1] and words[numc+1].type and words[numc+1].type.cond_infix then 
+        local cnum = numc
+        while cnum<3 do
+          infix.name = infix.name.."0"
+          cnum = cnum+1
+        end
+        infix.name = infix.name..num
+        table.remove(words, numc)
+      else break end
+    end]]
+    local directionableWord = function(name)
+      if words[1].type.direction and words[2].name == name then
+        infix.name = infix.name.." "..name
+        table.insert(infix.mods, words[2])
+        table.remove(words, 1)
+      end
+    end
+    --[[if words[1].type.direction and words[2].name == "arond" then
       infix.name = infix.name.." arond"
       table.insert(infix.mods, words[2])
     end
@@ -181,10 +202,13 @@ function findUnit(words, extra_words_, dir, outer, no_verb_cond, is_subject)
       infix.name = infix.name.." meow"
       table.insert(infix.mods, words[2])
     end
-    table.remove(words, 1)
     if words[1] and (words[1].name == "arond" or words[1].name == "meow") then
       table.remove(words, 1)
-    end
+    end]]
+    directionableWord("arond")
+    directionableWord("meow")
+
+    table.remove(words, 1)
     if #words == 0 then break end
     if infix.type.cond_infix_verb then
       local words_ = copyTable(words)

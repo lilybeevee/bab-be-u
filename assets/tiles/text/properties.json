@@ -889,7 +889,8 @@
     "sprite": ["txt/w"],
     "types": ["property"],
     "color": [[4, 1]],
-    "desc": "W: it's a double u",
+    "desc": "W: it's a double u (Alias: uu)",
+    "alias": ["uu"],
     "tags": ["you", "player"]
   }
 ]
