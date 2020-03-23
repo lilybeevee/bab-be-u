@@ -3045,6 +3045,11 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
 
   local data = getTile(tile, true)
 
+  if not data then
+    print(colr.yellow("Failed to create tile: " .. tile))
+    data = getTile("wat")
+  end
+
   unit.tile = data.name
   unit.display = data.display
   unit.sprite = deepCopy(data.sprite)
