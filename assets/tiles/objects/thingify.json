@@ -85,7 +85,7 @@
   {
     "name": "therealqt",
     "display": "the real qt",
-    "sprite": ["the real qt"],
+    "sprite": ["therealqt"],
     "layer": 22,
     "color": [[4, 2]],
     "txtify": "text_qt",

@@ -2263,14 +2263,14 @@ function scene.wheelMoved(whx, why)
 end
 
 function scene.getCaptureRect()
-  local rect = {
-    x = start_drag.x, 
-    y = start_drag.y,
-    w = love.mouse.getX() - start_drag.x,
-    h = love.mouse.getY() - start_drag.y
-  }
-
   if not love.keyboard.isDown("lshift") then
+    local rect = {
+      x = start_drag.x, 
+      y = start_drag.y,
+      w = love.mouse.getX() - start_drag.x,
+      h = love.mouse.getY() - start_drag.y
+    }
+
     local size = math.max(math.abs(rect.w), math.abs(rect.h))
 
     if rect.w < 0 then
@@ -2284,25 +2284,26 @@ function scene.getCaptureRect()
 
     return rect
   else
-    if rect.w < 0 then
-      rect.x = rect.x + rect.w
-      rect.w = math.abs(rect.w)
-    end
-    if rect.h < 0 then
-      rect.y = rect.y + rect.h
-      rect.h = math.abs(rect.h)
-    end
+    local start_x, start_y = screenToGameTile(start_drag.x, start_drag.y)
+    local current_x, current_y = screenToGameTile(love.mouse.getX(), love.mouse.getY())
 
-    local cx = rect.x + rect.w / 2
-    local cy = rect.y + rect.h / 2
+    local min_x, min_y = math.min(start_x, current_x), math.min(start_y, current_y)
+    local max_x, max_y = math.max(start_x, current_x), math.max(start_y, current_y)
 
-    local size = math.max(rect.w, rect.h)
-    return {
-      x = cx - size / 2,
-      y = cy - size / 2,
-      w = size,
-      h = size
-    }, rect
+    local x1, y1 = gameTileToScreen(min_x, min_y)
+    local x2, y2 = gameTileToScreen(max_x + 1, max_y + 1)
+
+    local rect = {
+      x = x1,
+      y = y1,
+      w = x2 - x1,
+      h = y2 - y1
+    }
+
+    rect.w = math.max(rect.w, rect.h)
+    rect.h = math.max(rect.w, rect.h)
+
+    return rect
   end
 end
 
