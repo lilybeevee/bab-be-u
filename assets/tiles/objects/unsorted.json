@@ -2555,14 +2555,25 @@
   },
   {
     "name": "therealbabdictator",
-    "display": "the real bab dictator",
+    "display": "the one and only hatsune miku herself",
     "sprite": ["therealbabdictator"],
     "layer": 100,
     "color": [[0, 3]],
+    "unsearchable": true,
     "voice": "miku",
     "desc": "woah!! you found a rare miku!!!!!",
     "tags": ["hatsune miku"],
     "pronouns": ["she", "her", "miku"]
+  },
+  {
+    "name": "txt_therealbabdictator",
+    "display": "the one and only hatsune miku herself",
+    "sprite": ["txt/therealbabdictator"],
+    "layer": 99,
+    "types": ["object"],
+    "color": [[0, 3]],
+    "unsearchable": true,
+    "desc": "yes"
   },
   {
     "name": "miku",

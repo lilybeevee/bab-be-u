@@ -3359,7 +3359,7 @@ end
 
 function serializeWord(word)
   if word.unit and hasProperty(word.unit, "stelth") then return "" end
-  local name = word.name
+  local name = word.unit and word.unit.display or word.name
   while name:starts("txt_") do
     name = name:sub(5).." txt"
   end

@@ -3046,6 +3046,7 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
   local data = getTile(tile, true)
 
   unit.tile = data.name
+  unit.display = data.display
   unit.sprite = deepCopy(data.sprite)
   unit.type = data.is_text and "txt" or "object"
   unit.typeset = data.typeset
