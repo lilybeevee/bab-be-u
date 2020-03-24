@@ -55,7 +55,9 @@ function createMouse_direct(x,y,id_)
   mouse.name = "mous"
   mouse.fullname = "mous"
   mouse.type = "object"
-  mouse.color = {255, 255, 255}
+  mouse.sprite = {"ui/mous"}
+  mouse.color = {{255, 255, 255}}
+  mouse.painted = {true}
 
   mouse.overlay = {}
   mouse.removed = false

@@ -3953,6 +3953,9 @@ end
 function getUnitSprite(name, unit)
   local try = {name}
   if unit then
+    if unit.class == "cursor" then
+      return name
+    end
     -- lvl stuff
     if name == "lvl" and unit.special.visibility == "hidden" then
       addTry(try, "lvl_hidden")
@@ -4003,6 +4006,10 @@ end
 
 function getUnitColor(unit, index, override_)
   local override = override_ or unit.color_override
+
+  if unit.class == "cursor" then
+    return index and unit.color[index] or unit.color[1]
+  end
   
   if index then
     if not override and unit.name == "lin" and unit.special.pathlock and unit.special.pathlock ~= "none" then
