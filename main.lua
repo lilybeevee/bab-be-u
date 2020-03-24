@@ -275,6 +275,9 @@ bab arguments!
   end
 
   menu_palette = menu_palettes[math.random(1,#menu_palettes)]
+  if not settings["seen_menu"] then
+    menu_palette = "default"
+  end
 
   sprites["letters_/"] = sprites["letters_slash"]
   sprites["letters_:"] = sprites["letters_colon"]
@@ -1096,6 +1099,8 @@ function love.errorhandler(msg)
 end
 
 function love.quit()
+  settings["played_before"] = true
+  saveAll()
   if discordRPC and discordRPC ~= true then
     discordRPC.shutdown()
   end

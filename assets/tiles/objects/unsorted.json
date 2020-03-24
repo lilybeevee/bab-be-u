@@ -2814,5 +2814,20 @@
     "color": [[2, 4]],
     "desc": "a long time ago in a galaxy far, far away...",
     "tags": ["lightsaber", "starwars", "jedi", "laser", "sword"]
-  }
+  },
+  {
+    "name": "qb",
+    "sprite": ["qb"],
+    "layer": 7,
+    "color": [[5, 2]],
+    "desc": "superbly normal thing",
+    "tags": ["cube", "block", "square"]
+  },
+  {
+    "name": "txt_qb",
+    "sprite": ["txt/qb"],
+    "types": ["object"],
+    "color": [[5, 2]],
+    "tags": ["cube", "block", "square"]
+  },
 ]

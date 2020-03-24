@@ -1680,24 +1680,24 @@ function scene.draw(dt)
         newcolor[2] = newcolor[2]*255
         newcolor[3] = newcolor[3]*255
         color = newcolor
-	  elseif (hasProperty(cursor,"reed") and hasProperty(cursor,"whit")) or hasProperty(cursor,"pinc") then
-	    color = {4, 1}
-	  elseif (hasProperty(cursor,"grun") and hasProperty(cursor,"whit")) then
-	    color = {5, 3}
-	  elseif (hasProperty(cursor,"bleu") and hasProperty(cursor,"reed")) or hasProperty(cursor,"purp") then
+      elseif (hasProperty(cursor,"reed") and hasProperty(cursor,"whit")) or hasProperty(cursor,"pinc") then
+        color = {4, 1}
+      elseif (hasProperty(cursor,"grun") and hasProperty(cursor,"whit")) then
+        color = {5, 3}
+      elseif (hasProperty(cursor,"bleu") and hasProperty(cursor,"reed")) or hasProperty(cursor,"purp") then
         color = {3, 1}
-	  elseif (hasProperty(cursor,"reed") and hasProperty(cursor,"grun")) or hasProperty(cursor,"yello") then
-	    color = {2, 4}
-	  elseif (hasProperty(cursor,"reed") and hasProperty(cursor,"yello")) or hasProperty(cursor,"orang") then
-	    color = {2, 3}
-	  elseif (hasProperty(cursor,"bleu") and hasProperty(cursor,"grun")) or hasProperty(cursor,"cyeann") then
-	    color = {1, 4}
-	  elseif hasProperty(cursor,"reed") then
+      elseif (hasProperty(cursor,"reed") and hasProperty(cursor,"grun")) or hasProperty(cursor,"yello") then
+        color = {2, 4}
+      elseif (hasProperty(cursor,"reed") and hasProperty(cursor,"yello")) or hasProperty(cursor,"orang") then
+        color = {2, 3}
+      elseif (hasProperty(cursor,"bleu") and hasProperty(cursor,"grun")) or hasProperty(cursor,"cyeann") then
+        color = {1, 4}
+      elseif hasProperty(cursor,"reed") then
         color = {2, 2}
-	  elseif hasProperty(cursor,"bleu") then
-	    color = {1, 3}
-	  elseif hasProperty(cursor,"grun") then
-	    color = {5, 2}
+      elseif hasProperty(cursor,"bleu") then
+        color = {1, 3}
+      elseif hasProperty(cursor,"grun") then
+        color = {5, 2}
       elseif hasProperty(cursor,"cyeann") then
         color = {1, 4}
       elseif hasProperty(cursor,"blacc") then
