@@ -12,7 +12,7 @@
     "sprite": ["txt/no1"],
     "types": ["object"],
     "color": [[0, 3]],
-    "desc": "NO1: Refers to tiles with nothing in them. Rotation status is kept on the tile. Cannot be colored.",
+    "desc": "NO1: Refers to tiles with nothing in them. Rotation status is kept on the tile, and is deterministic from the start. Cannot be colored.",
     "tags": ["none", "empty", "no one"]
   },
   {
@@ -45,7 +45,7 @@
     "sprite": ["bordr"],
     "layer": 1,
     "color": [[1, 0]],
-    "desc": "BORDR: OOB you can place manually. NOGO, TALL and BORDR by default.",
+    "desc": "BORDR: OOB you can place manually. NOGO, TALL, TRANPARN'T, and NODRAG by default.",
     "tags": ["border"]
   },
   {

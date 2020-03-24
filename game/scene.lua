@@ -2455,21 +2455,21 @@ function scene.mouseReleased(x, y, button)
       for _,unit in ipairs(drag_units) do
         local dest_x, dest_y = math.floor(unit.draw.x + 0.5), math.floor(unit.draw.y + 0.5)
         local stuff = getUnitsOnTile(dest_x,dest_y)
-        local nodrag = false
+        --[[local nodrag = false
         for _,other in ipairs(stuff) do
           if hasProperty(other,"nodrag") then
             nodrag = true
             break
           end
         end
-        if not nodrag then
+        if not nodrag then]]
           if not dragged then
             newUndo()
           end
           addUndo{"update",unit.id,unit.x,unit.y,unit.dir}
           moveUnit(unit,dest_x,dest_y)
           dragged = true
-        end
+        --end
         addTween(tween.new(0.1, unit.draw, {x = unit.x, y = unit.y}), "dragbl release:"..tostring(unit))
       end
       if dragged then
@@ -2624,36 +2624,77 @@ function doDragbl()
     local mx, my = screenToGameTile(mouse_X, mouse_Y, true)
     mx, my = mx - 0.5, my - 0.5
     local tx, ty = screenToGameTile(mouse_X, mouse_Y, false)
+    local nodrags = getUnitsWithEffect("nodrag")
+
     for _,unit in ipairs(drag_units) do
       local oldx, oldy = math.floor(unit.draw.x), math.floor(unit.draw.y)
-      local dirx, diry = sign(mx - unit.draw.x), sign(my - unit.draw.y)
-      
-      if  canMove(unit,dirx,0,0,{reason = "drag", start_x = math.floor(unit.draw.x), start_y = math.floor(unit.draw.y)})
-      and canMove(unit,dirx,0,0,{reason = "drag", start_x = math.floor(unit.draw.x), start_y = math.ceil( unit.draw.y)}) then
+      local dx, dy = sign(mx - unit.draw.x), sign(my - unit.draw.y)
+      local gox, goy = true, true
+
+      for __,other in ipairs(nodrags) do
+        if (other.x == math.floor(unit.draw.x)+dx) and (other.y == math.floor(unit.draw.y) or other.y == math.ceil(unit.draw.y)) then
+          gox = false
+          break
+        end
+      end
+      for __,other in ipairs(nodrags) do
+        if (other.y == math.floor(unit.draw.y)+dy) and (other.x == math.floor(unit.draw.x) or other.x == math.ceil(unit.draw.x)) then
+          goy = false
+          break
+        end
+      end
+
+      if gox then 
         local diff = mx - unit.draw.x
         if diff < -0.25 then diff = -0.25 end
         if diff > 0.25 then diff = 0.25 end
         unit.draw.x = unit.draw.x + diff
       else
-        if mx * dirx < oldx * dirx then
+        if mx * dx < oldx * dx then
           unit.draw.x = mx
         else
           unit.draw.x = oldx
         end
       end
-      if  canMove(unit,0,diry,0,{reason = "drag", start_x = math.floor(unit.draw.x), start_y = math.floor(unit.draw.y)})
-      and canMove(unit,0,diry,0,{reason = "drag", start_x = math.ceil( unit.draw.x), start_y = math.floor(unit.draw.y)}) then
+      if goy then
         local diff = my - unit.draw.y
         if diff < -0.25 then diff = -0.25 end
         if diff > 0.25 then diff = 0.25 end
         unit.draw.y = unit.draw.y + diff
       else
-        if my * diry < oldy * diry then
+        if my * dy < oldy * dy then
           unit.draw.y = my
         else
           unit.draw.y = oldy
         end
       end
+
+      --[[if  canMove(unit,dx,0,0,{reason = "drag", start_x = math.floor(unit.draw.x), start_y = math.floor(unit.draw.y)})
+      and canMove(unit,dx,0,0,{reason = "drag", start_x = math.floor(unit.draw.x), start_y = math.ceil( unit.draw.y)}) then
+        local diff = mx - unit.draw.x
+        if diff < -0.25 then diff = -0.25 end
+        if diff > 0.25 then diff = 0.25 end
+        unit.draw.x = unit.draw.x + diff
+      else
+        if mx * dx < oldx * dx then
+          unit.draw.x = mx
+        else
+          unit.draw.x = oldx
+        end
+      end
+      if  canMove(unit,0,dy,0,{reason = "drag", start_x = math.floor(unit.draw.x), start_y = math.floor(unit.draw.y)})
+      and canMove(unit,0,dy,0,{reason = "drag", start_x = math.ceil( unit.draw.x), start_y = math.floor(unit.draw.y)}) then
+        local diff = my - unit.draw.y
+        if diff < -0.25 then diff = -0.25 end
+        if diff > 0.25 then diff = 0.25 end
+        unit.draw.y = unit.draw.y + diff
+      else
+        if my * dy < oldy * dy then
+          unit.draw.y = my
+        else
+          unit.draw.y = oldy
+        end
+      end]]
     end
   end
 end

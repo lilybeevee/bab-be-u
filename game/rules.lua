@@ -56,8 +56,9 @@ function clearRules()
   if (units_by_name["bordr"] or units_by_name["txt_bordr"]) then
     addBaseRule("bordr","be","nogo")
     addBaseRule("bordr","be","tall")
-		addBaseRule("bordr","be","tranparnt")
+    addBaseRule("bordr","be","tranparnt")
   end
+  addBaseRule("bordr","be","nodrag") --it's important for this to be outside the check bc you can get mous outside level without bordr existing
   if units_by_name["this"] then
     addBaseRule("this","be","goawaypls")
     addBaseRule("this","be","wurd")

@@ -845,8 +845,8 @@
     "sprite": ["txt/rythm"],
     "types": ["property"],
     "color": [[4, 1]],
-    "desc": "RYTHM (property): Turns pass for these units based on time, separate from normal turns passing.",
-    "tags": ["auto", "necrodancer", "lily", "rhythm", "rythm", "dancr"]
+    "desc": "RYTHM (property): Turns pass for these units based on time, separate from normal turns passing. Uses the same system as zawarudo.",
+    "tags": ["auto", "necrodancer", "lily", "rhythm", "dancr"]
   },
   {
     "name": "txt_b)",
