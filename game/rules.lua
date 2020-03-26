@@ -334,19 +334,35 @@ function parseRules(undoing)
           local units = getTextOnTile(x, y)
           if #units > 0 then
             for _,unit in ipairs(units) do
-              local new_word = {}
+              local validrule = true
 
-              new_word.name = unit.textname
-              new_word.type = unit.typeset
-              new_word.unit = unit
-              new_word.dir = dir
+              if ((dir == 1) or (dir == 3)) and hasRule(unit,"be","diag") and not hasRule(unit,"be","ortho") then
+                validrule = false  
+              end
+              
+              if (dir == 2) and (unit.wobble or hasRule(unit,"be","ortho")) and not hasRule(unit,"be","diag") then
+                validrule = false
+              end
 
-              last_unit = unit
+              if validrule then
+                local new_word = {}
 
-              table.insert(new_words, new_word)
+                new_word.name = unit.textname
+                new_word.type = unit.typeset
+                new_word.unit = unit
+                new_word.dir = dir
+
+                last_unit = unit
+
+                table.insert(new_words, new_word)
+              end
             end
 
-            table.insert(words, new_words)
+            if #new_words == 0 then
+              stopped = true
+            else
+              table.insert(words, new_words)
+            end
           else
             stopped = true
           end
