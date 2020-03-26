@@ -283,6 +283,8 @@ function loadMap()
             unit.special = specials
             if specials.visibility == "open" then
               created[id] = true
+            else
+              pre_created[id] = unit
             end
           end
           table.insert(objects, {id, tile, x, y, dir, specials, color})
@@ -337,7 +339,7 @@ function loadMap()
                 if not created[v[1]] then
                   if v[2] == "lvl" then
                     if ptype ~= 2 then
-                      local unit = createUnit(v[2], v[3], v[4], v[5], false, v[1], nil, v[7])
+                      local unit = pre_created[v[1]] or createUnit(v[2], v[3], v[4], v[5], false, v[1], nil, v[7])
                       created[v[1]] = true
                       unit.special = v[6]
                       if ptype == 1 then
@@ -351,7 +353,7 @@ function loadMap()
                       table.insert(floodfill, {{x = v[3], y = v[4]}, 2})
                     end
                   elseif (ptype == 1 or ptype == 3) and v[2] == "lin" and (not v[6].pathlock or v[6].pathlock == "none") then
-                    local unit = createUnit(v[2], v[3], v[4], v[5], false, v[1], nil, v[7])
+                    local unit = pre_created[v[1]] or createUnit(v[2], v[3], v[4], v[5], false, v[1], nil, v[7])
                     created[v[1]] = true
                     unit.special = v[6]
                     table.insert(floodfill, {unit, 3})
@@ -363,7 +365,7 @@ function loadMap()
         end
         for _,v in ipairs(locked_lvls) do
           if not created[v[1]] then
-            local unit = createUnit(v[2], v[3], v[4], v[5], false, v[1], nil, v[7])
+            local unit = pre_created[v[1]] or createUnit(v[2], v[3], v[4], v[5], false, v[1], nil, v[7])
             created[v[1]] = true
             unit.special = v[6]
           end
