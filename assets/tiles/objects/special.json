@@ -20,7 +20,8 @@
     "sprite": ["no1"],
     "layer": 20,
     "color": [[0, 4]],
-    "rotate": true
+    "rotate": true,
+    "unsearchable": true
   },
   {
     "name": "txt_lvl",
