@@ -50,14 +50,14 @@ function parse(words, dir, no_verb_cond)
   
   local units = {}
   local verbs = {}
-  while words[1].type and (words[1].type.object or words[1].type.cond_prefix or words[1].type.parenthesis) or (words[2] and (words[2].name == "txt" or words[2].name == "txtn't") or (words[2].type.gang and (words[1].type.object or words[1].type.gang_prefix) and not words[1].name:starts("txt_") and not words[1].name:ends("n't"))) do
+  while words[1].type and (words[1].type.object or words[1].type.cond_prefix or words[1].type.parenthesis) or (words[2] and ((words[2].name == "txt" or words[2].name == "txtn't") or (words[2].type.gang and (words[1].type.object or words[1].type.gang_prefix) and not words[1].name:starts("txt_") and not words[1].name:ends("n't")))) do
     local unit, words_ = findUnit(copyTable(words), extra_words, dir, true, no_verb_cond, true) -- outer unit doesn't need to worry about enclosure (nothing farther out to confuse it with)
     if not unit then break end
     words = words_
     if not unit then return false end
     if #words == 0 then return false end
     table.insert(units, unit)
-    if words[1].type and words[1].type["and"] and words[2] and (words[2].type.object or words[2].type.parenthesis or (words[3] and (words[3].name == "txt" or words[3].name == "txtn't") or (words[3].type.gang and (words[2].type.object or words[2].type.gang_prefix) and not words[2].name:starts("txt_") and not words[2].name:ends("n't")))) then
+    if words[1].type and words[1].type["and"] and words[2] and (words[2].type.object or words[2].type.parenthesis or (words[3] and ((words[3].name == "txt" or words[3].name == "txtn't") or (words[3].type.gang and (words[2].type.object or words[2].type.gang_prefix) and not words[2].name:starts("txt_") and not words[2].name:ends("n't"))))) then
       table.insert(extra_words, words[1])
       table.remove(words, 1)
       if #words == 0 then return false end
