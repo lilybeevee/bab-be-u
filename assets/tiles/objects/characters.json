@@ -32,13 +32,6 @@
     "desc": "BAB N'T: The same as having these two text tiles in a row."
   },
   {
-    "name": "txt_skul",
-    "sprite": ["txt/skul"],
-    "types": ["object"],
-    "color": [[2, 1]],
-    "tags": ["chars", "skull"]
-  },
-  {
     "name": "skul",
     "sprite": ["skul"],
     "layer": 9,
@@ -49,14 +42,15 @@
     },
     "voice": "s_saw",
     "desc": "evillllll",
-    "tags": ["skull"]
+    "tags": ["skull"],
+	"pronouns": ["they", "them"]
   },
   {
-    "name": "txt_keek",
-    "sprite": ["txt/keek"],
+    "name": "txt_skul",
+    "sprite": ["txt/skul"],
     "types": ["object"],
-    "color": [[2, 2]],
-    "tags": ["keke", "chars"]
+    "color": [[2, 1]],
+    "tags": ["chars", "skull"]
   },
   {
     "name": "keek",
@@ -73,11 +67,11 @@
     "pronouns": ["they", "them"]
   },
   {
-    "name": "txt_meem",
-    "sprite": ["txt/meem"],
+    "name": "txt_keek",
+    "sprite": ["txt/keek"],
     "types": ["object"],
-    "color": [[3, 1]],
-    "tags": ["chars"]
+    "color": [[2, 2]],
+    "tags": ["keke", "chars"]
   },
   {
     "name": "meem",
@@ -94,11 +88,11 @@
     "pronouns": ["he", "him"]
   },
   {
-    "name": "txt_os",
-    "sprite": ["txt/os"],
+    "name": "txt_meem",
+    "sprite": ["txt/meem"],
     "types": ["object"],
-    "color": [[4, 1]],
-    "tags": ["apple", "android", "windows", "linux", "operating system"]
+    "color": [[3, 1]],
+    "tags": ["chars"]
   },
   {
     "name": "os",
@@ -111,7 +105,15 @@
     },
     "voice": "bit2",
     "desc": "OS: Its sprites changes with the user's Operating System!",
-    "tags": ["chars", "apple", "android", "windows", "linux", "operating system"]
+    "tags": ["chars", "apple", "android", "windows", "linux", "operating system"],
+	"pronouns": ["it"]
+  },
+  {
+    "name": "txt_os",
+    "sprite": ["txt/os"],
+    "types": ["object"],
+    "color": [[4, 1]],
+    "tags": ["apple", "android", "windows", "linux", "operating system"]
   },
   {
     "name": "wog",
@@ -124,7 +126,8 @@
     },
     "voice": "s_strum",
     "desc": "smol frens who own pointy tridents, play with explosives, and bake good cake. nobody knows how to describe more than one of them",
-    "tags": ["wug", "chars", "bird"]
+    "tags": ["wug", "chars", "bird"],
+	"pronouns": ["they", "them"]
   },
   {
     "name": "txt_wog",
@@ -133,13 +136,6 @@
     "color": [[2, 4]],
     "desc": "wogs dream is to be a mad scientist and go evil with power using nothing but sheer linguistics. linguists' evil career options may be limited but that wont stop wog from trying their best",
     "tags": ["wug", "chars", "bird"]
-  },
-  {
-    "name": "txt_bup",
-    "sprite": ["txt/bup"],
-    "types": ["object"],
-    "color": [[6, 2]],
-    "tags": ["toad", "simpleflips", "chars"]
   },
   {
     "name": "bup",
@@ -153,6 +149,14 @@
     },
     "voice": "s_steel",
     "desc": "BUP: HELLO\nBUP DOES NOT WANT, BUP DOES NOT DREAM\nPLEASE HELP HIM\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+    "tags": ["toad", "simpleflips", "chars"],
+	"pronouns": ["he", "him"]
+  },
+  {
+    "name": "txt_bup",
+    "sprite": ["txt/bup"],
+    "types": ["object"],
+    "color": [[6, 2]],
     "tags": ["toad", "simpleflips", "chars"]
   },
   {
@@ -166,7 +170,8 @@
     },
     "voice": "s_spian",
     "desc": "1, 2 oatmeal kirb be be a pincc guy",
-    "tags": ["kirby", "chars"]
+    "tags": ["kirby", "chars"],
+	"pronouns": ["he", "him"]
   },
   {
     "name": "txt_kirb",
@@ -182,7 +187,8 @@
     "color": [[0, 3]],
     "rotate": true,
     "desc": "grab, then yeet",
-    "tags": ["chars", "hand", "body part"]
+    "tags": ["hand", "body part"],
+	"pronouns": ["it", "they", "them"]
   },
   {
     "name": "txt_han",
@@ -203,14 +209,15 @@
     },
     "voice": "dog",
     "desc": "can only moov 5 steps b4 dyin nya",
-    "tags": ["chars", "5 step steve", "cat"]
+    "tags": ["chars", "5 step steve", "cat", "nya"],
+	"pronouns": ["he", "him"]
   },
   {
     "name": "txt_steev",
     "sprite": ["txt/steev"],
     "types": ["object"],
     "color": [[2, 3]],
-    "tags": ["chars", "5 step steve", "cat"]
+    "tags": ["chars", "5 step steve", "cat", "nya"]
   },
   {
     "name": "boy",
@@ -244,7 +251,8 @@
     },
     "voice": "s_sine",
     "desc": "its not spooky, its a fren.",
-    "tags": ["chars"]
+    "tags": ["chars"],
+	"pronouns": ["ze", "hir"]
   },
   {
     "name": "txt_ghostfren",
@@ -266,7 +274,8 @@
     },
     "voice": "bit2",
     "desc": "the super scan mouth lazers that copy abilities are missing because they forgot to design a mouth",
-    "tags": ["robot", "chars"]
+    "tags": ["robot", "chars"],
+	"pronouns": ["they", "them"]
   },
   {
     "name": "txt_robobot",
@@ -285,7 +294,8 @@
     },
     "voice": "crab rave",
     "desc": "loves to party and dance! woo! yeah!",
-    "tags": ["chars", "crab"]
+    "tags": ["chars", "crab"],
+	"pronouns": ["he", "him"]
   },
   {
     "name": "txt_creb",
@@ -303,7 +313,8 @@
       "sans": {"x": 17, "y": 6, "w": 3, "h": 3}
     },
     "desc": "it's a knoble knight",
-    "tags": ["chars", "chess", "knight", "horse"]
+    "tags": ["chars", "chess", "knight", "horse"],
+	"pronouns": ["she", "her"]
   },
   {
     "name": "txt_hors",
@@ -342,7 +353,8 @@
       "sans": {"x": 25, "y": 14, "w": 2, "h": 2}
     },
     "desc": "the bab beeee be tranz",
-    "tags": ["honeybee", "chars", "insect"]
+    "tags": ["honeybee", "chars", "insect"],
+	"pronouns": ["sheeee", "her"]
   },
   {
     "name": "txt_beeee",
@@ -362,7 +374,8 @@
       "sans": {"x": 24, "y": 11, "w": 2, "h": 2}
     },
     "desc": "fishe be walk?? kinda quirky doe",
-    "tags": ["angelfish", "chars"]
+    "tags": ["angelfish", "chars"],
+	"pronouns": ["he", "him"]
   },
   {
     "name": "txt_fishe",
@@ -380,7 +393,8 @@
       "sans": {"x": 16, "y": 6, "w": 2, "h": 2}
     },
     "desc": "their occupation is a janitor",
-    "tags": ["statue", "chars", "janitor"]
+    "tags": ["statue", "chars", "janitor"],
+	"pronouns": ["they", "them"]
   },
   {
     "name": "txt_statoo",
@@ -399,7 +413,8 @@
       "sans": {"x": 23, "y": 12, "w": 2, "h": 2}
     },
     "desc": "looks kinda like bab???",
-    "tags": ["chars", "bunny rabbit"]
+    "tags": ["chars", "bunny rabbit"],
+	"pronouns": ["she", "her"]
   },
   {
     "name": "txt_bunmy",
@@ -419,7 +434,8 @@
     },
     "voice": "s_scat",
     "desc": "icky",
-    "tags": ["chars", "bug", "insect", "cockroach"]
+    "tags": ["chars", "bug", "insect", "cockroach"],
+	"pronouns": ["xe", "xem"]
   },
   {
     "name": "txt_bog",
@@ -458,7 +474,8 @@
       "sans": {"x": 20, "y": 7, "w": 2, "h": 2}
     },
     "desc": "sssssssssssssss",
-    "tags": ["chars", "snake"]
+    "tags": ["chars", "snake"],
+	"pronouns": ["they", "them"]
   },
   {
     "name": "txt_snek",
@@ -477,7 +494,8 @@
       "sans": {"x": 25, "y": 17, "w": 3, "h": 3}
     },
     "desc": "from the hit game DEV IS YOU",
-    "tags": ["chars", "dev", "slime", "blob", "rip off"]
+    "tags": ["chars", "dev", "slime", "blob", "rip off"],
+	"pronouns": ["it"]
   },
   {
     "name": "txt_ripof",
@@ -497,7 +515,8 @@
       "sans": {"x": 19, "y": 11, "w": 2, "h": 2}
     },
     "desc": "of the bleu morpho variety",
-    "tags": ["butterfly", "chars", "insect"]
+    "tags": ["butterfly", "chars", "insect"],
+	"pronouns": ["she", "her"]
   },
   {
     "name": "txt_butflye",
@@ -517,7 +536,8 @@
       "sans": {"x": 20, "y": 4, "w": 2, "h": 2}
     },
     "desc": "slithers\nbut a wormy slither not a snaky slither",
-    "tags": ["worm", "caterpillar", "bug", "chars", "insect"]
+    "tags": ["worm", "caterpillar", "bug", "chars", "insect"],
+	"pronouns": ["he", "him"]
   },
   {
     "name": "txt_wurm",
@@ -536,7 +556,8 @@
       "sans": {"x": 27, "y": 14, "w": 2, "h": 2}
     },
     "desc": "the real MOUS, they STALK at night and SNACC at night, they're the RATTs",
-    "tags": ["chars", "rat", "mouse"]
+    "tags": ["chars", "rat", "mouse"],
+	"pronouns": ["they", "them"]
   },
   {
     "name": "txt_ratt",
@@ -556,7 +577,8 @@
       "sans": {"x": 27, "y": 7, "w": 2, "h": 2}
     },
     "desc": "you found bertie, the unfindable moo! noe lvl be infloop",
-    "tags": ["chars", "cow"]
+    "tags": ["chars", "cow"],
+	"pronouns": ["she", "her"]
   },
   {
     "name": "txt_moo",
@@ -597,7 +619,8 @@
     },
     "voice": "kkb",
     "desc": "shouldnt it be PINC",
-    "tags": ["chars", "shrimp", "prawn"]
+    "tags": ["chars", "shrimp", "prawn"],
+	"pronouns": ["she", "her"]
   },
   {
     "name": "txt_shrim",
@@ -617,7 +640,8 @@
     },
     "voice": "kkb",
     "desc": "if ur COLRFUL thats cool too!!",
-    "tags": ["chars", "flamingo", "bird"]
+    "tags": ["chars", "flamingo", "bird"],
+	"pronouns": ["he", "him"]
   },
   {
     "name": "txt_flamgo",
@@ -636,7 +660,8 @@
       "sans": {"x": 21, "y": 11, "w": 2, "h": 2}
     },
     "desc": "7",
-    "tags": ["chars", "seagull", "bird", "beach", "7"]
+    "tags": ["chars", "seagull", "bird", "beach", "7"],
+	"pronouns": ["he", "him"]
   },
   {
     "name": "txt_gul",
@@ -655,7 +680,8 @@
       "sans": {"x": 16, "y": 12, "w": 2, "h": 2}
     },
     "desc": "she's alive, and has 4 eyes",
-    "tags": ["chars", "starfish", "beach"]
+    "tags": ["chars", "starfish", "beach"],
+	"pronouns": ["she", "her", "they", "them"]
   },
   {
     "name": "txt_starrfishe",
@@ -675,7 +701,7 @@
       "sans": {"x": 21, "y": 28, "w": 2, "h": 2}
     },
     "desc": "winner of the undertale snail race gets into BAB",
-    "tags": ["chars", "snail"]
+    "tags": ["chars", "snail"],
   },
   {
     "name": "txt_sneel",
@@ -695,7 +721,8 @@
       "sans": {"x": 24, "y": 14, "w": 2, "h": 2}
     },
     "desc": "now we need a CUMBER object",
-    "tags": ["chars", "japan", "youkai", "kappa"]
+    "tags": ["chars", "japan", "youkai", "kappa"],
+	"pronouns": ["he", "him"]
   },
   {
     "name": "txt_kapa",
@@ -714,7 +741,8 @@
       "sans": {"x": 20, "y": 19, "w": 2, "h": 2}
     },
     "desc": "GHOST FREN of the eastern variety",
-    "tags": ["chars", "japan", "youkai", "yuurei", "ghost"]
+    "tags": ["chars", "japan", "youkai", "yuurei", "ghost"],
+	"pronouns": ["she", "her", "ze", "hir"]
   },
   {
     "name": "txt_urei",
@@ -733,7 +761,8 @@
       "sans": {"x": 21, "y": 7, "w": 3, "h": 2}
     },
     "desc": "ryugon no ken wo kurae",
-    "tags": ["chars", "japan", "youkai", "dragon"]
+    "tags": ["chars", "japan", "youkai", "dragon"],
+	"pronouns": ["he", "him"]
   },
   {
     "name": "txt_ryugon",
@@ -752,13 +781,15 @@
       "sans": {"x": 17, "y": 12, "w": 7, "h": 8}
     },
     "desc": "IY SEES ALL",
-    "tags": ["chars", "eye", "body part"]
+    "tags": ["chars", "eye", "body part"],
+	"pronouns": ["it"]
   },
   {
     "name": "txt_iy",
     "sprite": ["txt/iy"],
     "types": ["object"],
     "color": [[0, 1]],
+	"desc": "iy spiy",
     "tags": ["eye", "body part"]
   },
   {
@@ -769,7 +800,8 @@
     "rotate": true,
     "voice": "kkb2",
     "desc": "it speaks",
-    "tags": ["chars", "mouth", "lips", "body part"]
+    "tags": ["chars", "mouth", "lips", "body part"],
+	"pronouns": ["it", "she", "her"],
   },
   {
     "name": "txt_lisp",
@@ -786,7 +818,8 @@
     "color": [[0, 3]],
     "rotate": true,
     "desc": "dogg in bab when?",
-    "tags": ["chars", "paw print"]
+    "tags": ["chars", "paw print"],
+	"pronouns": ["it", "he", "him"]
   },
   {
     "name": "txt_paw",
@@ -805,7 +838,8 @@
       "sans": {"x": 18, "y": 10, "w": 2, "h": 2}
     },
     "desc": "slep upside down",
-    "tags": ["chars", "bat"]
+    "tags": ["chars", "bat"],
+	"pronouns": ["she", "her"]
   },
   {
     "name": "txt_cavebab",
@@ -824,7 +858,8 @@
       "sans": {"x": 12, "y": 14, "w": 2, "h": 3}
     },
     "desc": "i don't actually know what this is, someone tell me",
-    "tags": ["chars"]
+    "tags": ["chars"],
+	"pronouns": ["they", "them"]
   },
   {
     "name": "txt_migri",
@@ -852,7 +887,8 @@
     "types": ["object"],
     "color": [[4, 2]],
     "desc": "AAA u scar mee!",
-    "tags": ["boo", "mario", "ghost"]
+    "tags": ["boo", "mario", "ghost"],
+	"pronouns": ["he", "him"]
   },
   {
     "name": "madi",
@@ -906,7 +942,8 @@
       "sans": {"x": 21, "y": 6, "w": 2, "h": 2}
     },
     "desc": "not a creole",
-    "tags": ["chars", "bird", "city", "pigeon"]
+    "tags": ["chars", "bird", "city", "pigeon"],
+	"pronouns": ["they", "them"]
   },
   {
     "name": "txt_pidgin",
@@ -926,7 +963,8 @@
       "sans": {"x": 25, "y": 7, "w": 3, "h": 3}
     },
     "desc": "hippity hoppity kva loves u",
-    "tags": ["chars", "frog", "toad"]
+    "tags": ["chars", "frog", "toad"],
+	"pronouns": ["she", "her"]
   },
   {
     "name": "txt_kva",
@@ -954,7 +992,7 @@
     },
     "voice": "cat",
     "desc": "bab's sister",
-    "tags": ["chars", "cat", "sis", "sister"],
+    "tags": ["chars", "cat", "sis", "sister", "nya"],
     "pronouns": ["she", "her"]
   },
   {
@@ -963,7 +1001,7 @@
     "types": ["object"],
     "color": [[4, 1]],
     "desc": "meow?",
-    "tags": ["chars", "cat", "sis", "sister"]
+    "tags": ["chars", "cat", "sis", "sister", "nya"]
   },
   {
     "name": "swan",
@@ -983,7 +1021,8 @@
       "slippers": {"x": 3}
     },
     "desc": "a goos is a female swan",
-    "tags": ["chars", "bird", "untitled goose game"]
+    "tags": ["chars", "bird", "untitled goose game"],
+	"pronouns": ["he", "him"]
   },
   {
     "name": "txt_swan",
@@ -1003,7 +1042,8 @@
       "sans": {"x": 12, "y": 12, "w": 3, "h": 3}
     },
     "desc": "i think purp is a goode look on u!",
-    "tags": ["chars", "spider", "bug", "spoods"]
+    "tags": ["chars", "spider", "bug", "spoods"],
+	"pronouns": ["they", "them"]
   },
   {
     "name": "txt_spoder",
@@ -1092,7 +1132,8 @@
     "types": ["object"],
     "color": [[6, 1]],
     "desc": "stay away from kappa and ryugon!!",
-    "tags": ["chars", "reindeer", "moose", "christmas"]
+    "tags": ["chars", "reindeer", "moose", "christmas"],
+	"pronouns": ["he", "him"]
   },
   {
     "name": "ginn",
@@ -1153,7 +1194,8 @@
     },
     "voice": "choir",
     "desc": "i can be your angle...",
-    "tags": ["chars", "angel"]
+    "tags": ["chars", "angel"],
+	"pronouns": ["she", "her"]
   },
   {
     "name": "txt_angle",
@@ -1173,7 +1215,8 @@
       "sans": {"x": 14, "y": 18, "w": 2, "h": 2}
     },
     "desc": "or yuor dvl...",
-    "tags": ["chars", "devil", "demon", "debil"]
+    "tags": ["chars", "devil", "demon", "debil"],
+	"pronouns": ["he", "him"]
   },
   {
     "name": "txt_dvl",
@@ -1225,7 +1268,8 @@
     },
     "voice": "s_vitellary",
     "desc": "u've been lookin @ too much Good Art",
-    "tags": ["chars", "vvvvvv", "allison"]
+    "tags": ["chars", "vvvvvv", "allison"],
+	"pronouns": ["she", "her"]
   },
   {
     "name": "txt_detox",
@@ -1243,7 +1287,8 @@
     "rotate": true,
     "voice": "sham_gatsample",
     "desc": "gon infect u",
-    "tags": ["chars", "dr mario", "mario", "virus"]
+    "tags": ["chars", "dr mario", "mario", "virus"],
+	"pronouns": ["it"]
   },
   {
     "name": "txt_viruse",
@@ -1263,7 +1308,8 @@
       "sans": {"x": 23, "y": 13, "w": 3, "h": 6}
     },
     "desc": "crying",
-    "tags": ["chars", "nya", "jill"]
+    "tags": ["chars", "nya", "jill"],
+	"pronouns": ["she", "her"]
   },
   {
     "name": "txt_nyowo",
@@ -1299,7 +1345,8 @@
       "sans": {"x": 11, "y": 17, "w": 2, "h": 2}
     },
     "desc": "prime numbers SUCK",
-    "tags": ["chars", "hollow knight"]
+    "tags": ["chars", "hollow knight"],
+	"pronouns": ["she", "her"]
   },
   {
     "name": "txt_prime",
@@ -1314,7 +1361,8 @@
     "color": [[0, 3]],
     "rotate": true,
     "desc": "he can grab on ledges",
-    "tags": ["chars", "ash"]
+    "tags": ["chars", "ash"],
+	"pronouns": ["he", "him"]
   },
   {
     "name": "txt_assh",
@@ -1373,7 +1421,7 @@
     },
     "desc": "It snaccs SNO that piles up on the ground. The more SNO it snaccs, the THICCer and MOAR impressive the spikes on its back grow.",
     "tags": ["chars", "snom", "pokemon"],
-    "pronouns": ["any", "all"]
+    "pronouns": ["genderfluid"]
   },
   {
     "name": "txt_snom",

@@ -10,7 +10,8 @@
     },
     "voice": "pipipi",
     "desc": "pi pi piiii!!!",
-    "tags": ["devs", "chars", "oatmealine", "puyopuyo tetris"]
+    "tags": ["devs", "chars", "oatmealine", "puyopuyo tetris"],
+	"pronouns": ["she", "her"]
   },
   {
     "name": "txt_oat",
@@ -30,7 +31,8 @@
     },
     "voice": "pata1",
     "desc": "pat a shoe",
-    "tags": ["devs", "chars", "patashu"]
+    "tags": ["devs", "chars", "patashu"],
+	"pronouns": ["he", "him"]
   },
   {
     "name": "txt_pata",
@@ -58,7 +60,8 @@
     },
     "voice": "s_vitellary",
     "desc": "larry be haetflor",
-    "tags": ["devs", "chars", "vitellary", "vvvvvv"]
+    "tags": ["devs", "chars", "vitellary", "vvvvvv"],
+	"pronouns": ["he", "him"]
   },
   {
     "name": "txt_larry",
@@ -97,7 +100,8 @@
       "sans": {"x": 17, "y": 9, "w": 2, "h": 2}
     },
     "desc": "pinc keke",
-    "tags": ["devs", "chars", "szoob"]
+    "tags": ["devs", "chars", "szoob"],
+	"pronouns": ["he", "him"]
   },
   {
     "name": "txt_zsoob",
@@ -123,7 +127,8 @@
     },
     "voice": "s_jill",
     "desc": "it time 2 mix drincc & chaeng life",
-    "tags": ["devs", "chars", "valhalla", "cynthia"]
+    "tags": ["devs", "chars", "valhalla", "cynthia"],
+	"pronouns": ["she", "her"]
   },
   {
     "name": "txt_jill",
@@ -163,7 +168,8 @@
       "sans": {"x": 23, "y": 13, "w": 3, "h": 3}
     },
     "desc": "slice slice make a fruit salad",
-    "tags": ["devs", "chars"]
+    "tags": ["devs", "chars"],
+	"pronouns": ["he", "him"]
   },
   {
     "name": "txt_butcher",
@@ -182,7 +188,8 @@
       "sans": {"x": 26, "y": 10, "w": 2, "h": 2}
     },
     "desc": "this is just another pokemon??? what a ripoff",
-    "tags": ["devs", "chars"]
+    "tags": ["devs", "chars"],
+	"pronouns": ["he", "him"]
   },
   {
     "name": "txt_notnat",
