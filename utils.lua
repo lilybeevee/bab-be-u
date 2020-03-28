@@ -4001,21 +4001,55 @@ function getUnitSprite(name, unit)
     elseif name == "txt/themself" and scene == game and rules_with_unit[unit] then
       local pronoun
       for _,rules in ipairs(rules_with_unit[unit]) do
+        local name = rules.rule.subject.name 
+        if name:ends("n't") or name == "every1" or name == "every2" or name == "every3" or group_names_set[name] then
+          pronoun = "them"
+          break
+        end
         local subject = rules.rule.subject.unit and getTile(rules.rule.subject.unit.textname)
         if subject then
-          local new_pronoun = (subject.pronouns and (subject.pronouns[2] or subject.pronouns[1]) or "them").."self"
+          local new_pronoun
+          if subject.pronouns and subject.pronouns[1] == "genderfluid" then
+            local cycle_pronouns = {"them", "her", "it", "xem", "him", "hir"}
+            new_pronoun = cycle_pronouns[(math.floor(love.timer.getTime()/0.18) + unit.tempid) % #cycle_pronouns + 1].."self"
+          else
+            new_pronoun = (subject.pronouns and (subject.pronouns[2] or subject.pronouns[1]) or "it").."self"
+          end
           if pronoun and pronoun ~= new_pronoun then
-            pronoun = "themselves"
-            break
+            pronoun = "themself"
           else
             pronoun = new_pronoun
           end
+          if pronoun == "themself" then break end
         else
-          pronoun = "themself"
+          if pronoun and pronoun ~= "itself" then
+            pronoun = "themself"
+            break
+          else
+            pronoun = "itself"
+          end
         end
       end
-      pronoun = pronoun or "themself"
+      pronoun = pronoun or "itself"
       addTry(try, "txt/"..pronoun)
+    elseif name == "txt/themself_lower" and scene == game and rules_with_unit[unit] then
+      local has_multiple = false
+      local last_units
+      for _,rules in ipairs(rules_with_unit[unit]) do
+        local name = rules.rule.subject.name 
+        if name:ends("n't") or name == "every1" or name == "every2" or name == "every3" or name == "lethers" or name == "numa" or name == "yuiy" or group_names_set[name] then
+          has_multiple = true
+          break
+        elseif not last_units then
+          last_units = rules.units
+        elseif not eq(last_units, rules.units) then
+          has_multiple = true
+          break
+        end
+      end
+      if has_multiple then
+        addTry(try, "txt/themselves_lower")
+      end
     end
 
     for type,name in pairs(unit.sprite_transforms) do

@@ -225,9 +225,10 @@
   },
   {
     "name": "txt_themself",
-    "sprite": ["txt/themself"],
+    "sprite": ["txt/themself", "txt/themself_lower"],
     "types": ["object"],
-    "color": [[2, 3]],
+    "color": [[2, 3], [2, 3]],
+    "painted": [true, true],
     "desc": "THEMSELF: Refers to the subject of the rule - uses correct pronouns!",
     "tags": ["itself", "herself", "himself", "themselves"]
   }
