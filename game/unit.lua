@@ -840,7 +840,7 @@ function updateUnits(undoing, big_update)
       local unit = ruleparent[2]
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, true, hasProperty(unit,"thicc"))
       for _,on in ipairs(stuff) do
-        if (unit ~= on or ruleparent[1].rule.object.themself) and hasRule(unit, "vs", on) and sameFloat(unit, on) then
+        if (unit ~= on or ruleparent[1].rule.object.name == "themself") and hasRule(unit, "vs", on) and sameFloat(unit, on) then
           local unitmoved = false
           local onmoved = false
           for _,undo in ipairs(undo_buffer[1]) do
@@ -1041,7 +1041,7 @@ function updateUnits(undoing, big_update)
       local unit = ruleparent[2]
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, true, hasProperty(unit,"thicc"))
       for _,on in ipairs(stuff) do
-        if (unit ~= on or ruleparent[1].rule.object.themself) and hasRule(unit, "snacc", on) and sameFloat(unit, on) and ignoreCheck(on, unit) then
+        if (unit ~= on or ruleparent[1].rule.object.name == "themself") and hasRule(unit, "snacc", on) and sameFloat(unit, on) and ignoreCheck(on, unit) then
           if timecheck(unit,"snacc",on) and timecheck(on) then
             table.insert(to_destroy, on)
             playSound("snacc")
@@ -1749,7 +1749,7 @@ function updateUnitColours()
     local unit = ruleparent[2]
     local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, true, hasProperty(unit,"thicc"))
     for _,on in ipairs(stuff) do
-      if (unit ~= on or ruleparent[1].rule.object.themself) and hasRule(unit, "paint", on) and sameFloat(unit, on) and ignoreCheck(on, unit, "paint") then
+      if (unit ~= on or ruleparent[1].rule.object.name == "themself") and hasRule(unit, "paint", on) and sameFloat(unit, on) and ignoreCheck(on, unit, "paint") then
         if timecheck(unit,"paint",on) and timecheck(on) then
           local old_colour = getUnitColor(unit)
           local colour = colour_for_palette[old_colour[1]][old_colour[2]]

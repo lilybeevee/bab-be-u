@@ -915,19 +915,6 @@ function addRule(full_rule)
         addRuleSimple(rules.subject, rules.verb, {v, rules.object.conds}, units, dir)
       end
     end
-  elseif object == "themself" then
-    if not (object_not % 2 == 0 and rules.verb.type.verb_class) then
-      local new_conds = copyTable(rules.object.conds) or {};
-      table.insert(new_conds, rules.object);
-      if object_not % 2 == 1 then
-        for _,v in ipairs(referenced_objects) do
-          addRuleSimple(rules.subject, rules.verb, {v, new_conds, themself = true}, units, dir)
-        end
-        addRuleSimple(rules.subject, rules.verb, {"txt", new_conds, themself = true}, units, dir)
-      else
-        addRuleSimple(rules.subject, rules.verb, {rules.subject.name, new_conds, themself = true}, units, dir)
-      end
-    end
   elseif object_not % 2 == 1 then
     if getTile(object) or object:starts("this") or object == "txt" or object == "mous" then
       local new_objects = {}

@@ -431,7 +431,7 @@ function doMovement(movex, movey, key)
         local unit = ruleparent[2]
         local others = (unit == outerlvl and units or getUnitsOnTile(unit.x, unit.y, nil, nil, nil, nil, hasProperty(unit,"thicc")))
         for __,other in ipairs(others) do
-          if ((other.fullname ~= "no1" and other.id ~= unit.id) or ruleparent[1].rule.object.themself) and sameFloat(unit, other) and ignoreCheck(other, unit) then
+          if ((other.fullname ~= "no1" and other.id ~= unit.id) or ruleparent[1].rule.object.name == "themself") and sameFloat(unit, other) and ignoreCheck(other, unit) then
             local is_yeeted = hasRule(unit, "yeet", other)
             if (is_yeeted) then
               if timecheck(unit,"yeet",other) and timecheck(other) then
@@ -510,7 +510,7 @@ function doMovement(movex, movey, key)
           local is_moover = false
           local moov_rules = matchesRule(unit, "moov", other)
           for _,ruleparent in ipairs(moov_rules) do
-            if (other.fullname ~= "no1" and other.id ~= unit.id) or ruleparent.rule.object.themself then
+            if (other.fullname ~= "no1" and other.id ~= unit.id) or ruleparent.rule.object.name == "themself" then
               is_moover = true
               break
             end
@@ -1813,13 +1813,13 @@ function canMoveCore(unit,dx,dy,dir,o) --pushing, pulling, solid_name, reason, p
         if v ~= unit then
           has_others = true
         end
-        if hasRule(unit, "liek", v) and ignoreCheck(unit,v) and not (liek == "themself" or ruleparent.rule.object.themself) then
+        if hasRule(unit, "liek", v) and ignoreCheck(unit,v) and liek ~= "themself" then
           success = true
           curse_success = true
           break
         end
       end
-      if (liek == "themself" or ruleparent.rule.object.themself) and not has_others then
+      if liek == "themself" and not has_others then
         success = true
         curse_success = true
       end

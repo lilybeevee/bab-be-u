@@ -565,20 +565,24 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
         --special case for stuff like 'group be x' - if we are in that group, we do match that rule
         --we also need to handle groupn't
         --seems to not impact performance much?
-        local group_match = false
+        local pre_match = false
         if rule_units[i] ~= nil then
-          if group_sets[name] and group_sets[name][rule_units[i] ] then
-            group_match = true
+          if name == "themself" and i == 3 and rule_units[1] then
+            pre_match = rule_units[1] == rule_units[i]
+          elseif name == "themselfn't" and i == 3 and rule_units[1] then
+            pre_match = rule_units[1] ~= rule_units[i]
+          elseif group_sets[name] and group_sets[name][rule_units[i] ] then
+            pre_match = true
           else
             if rule_units[i].type == "object" and group_names_set_nt[name] then
               local nament = name:sub(1, -4)
               if not group_sets[nament][rule_units[i] ] then
-                group_match = true
+                pre_match = true
               end
             end
           end
         end
-        if not (group_match) then
+        if not (pre_match) then
           if nrules[i] ~= nil and nrules[i] ~= name and (fnrules[i] == nil or (fnrules[i] ~= nil and fnrules[i] ~= name)) then
             if (debugging) then
               print("false due to nrules/fnrules mismatch")
@@ -613,9 +617,21 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
           table.insert(ret, rules)
           if stopafterone then return ret end
         elseif find == 1 then
-          for _,unit in ipairs(findUnitsByName(rule[ruleparts[find_arg]].name)) do
+          local object_units = {}
+          if find_arg == 3 and rule_units[1] and rule[ruleparts[find_arg]].name == "themself" then
+            object_units = {rule_units[1]}
+          elseif find_arg == 3 and rule_units[1] and rule[ruleparts[find_arg]].name == "themselfn't" then
+            for _,unit in ipairs(units) do
+              if unit ~= rule_units[1] and unit ~= outerlvl and unit.fullname ~= "no1" and unit.fullname ~= "bordr" then
+                table.insert(object_units, unit)
+              end
+            end
+          else
+            object_units = findUnitsByName(rule[ruleparts[find_arg]].name)
+          end
+          for _,unit in ipairs(object_units) do
             local cond
-            if testConds(unit, rule[ruleparts[find_arg]].conds) then
+            if testConds(unit, rule[ruleparts[find_arg]].conds, rule_units[1]) then
               --check that there isn't a verbn't rule - edge cases where this might happen: text vs specific text, group vs unit. This is slow (15% longer unit tests, 0.1 second per unit test) but it fixes old and new bugs so I think we just have to suck it up.
               if rules_with[rule.verb.name.."n't"] ~= nil and #matchesRule(unit, rule.verb.name.."n't", rule.object.name, true) > 0 then
               else
@@ -627,8 +643,20 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
         elseif find == 2 then
           local found1, found2
           for _,unit1 in ipairs(findUnitsByName(rule.subject)) do
-            for _,unit2 in ipairs(findUnitsByName(rule.object)) do
-              if testConds(unit1, rule.subject.conds) and testConds(unit2, rule.object.conds, unit1) then
+            local object_units = {}
+            if rule.object.name == "themself" then
+              object_units = {unit1}
+            elseif rule.object.name == "themselfn't" then
+              for _,unit in ipairs(units) do
+                if unit ~= unit1 and unit ~= outerlvl and unit.fullname ~= "no1" and unit.fullname ~= "bordr" then
+                  table.insert(object_units, unit)
+                end
+              end
+            else
+              object_units = findUnitsByName(rule.object)
+            end
+            for _,unit2 in ipairs(object_units) do
+              if testConds(unit1, rule.subject.conds, unit1) and testConds(unit2, rule.object.conds, unit1) then
                 table.insert(ret, {rules, unit1, unit2})
                 if stopafterone then return ret end
               end
