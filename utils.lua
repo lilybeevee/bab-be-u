@@ -1704,8 +1704,8 @@ function testConds(unit, conds, compare_with, first_unit) --cond should be a {co
       else
         print(unit.special.customletter)
       end
-    elseif condtype == "themself" then
-      if unit ~= first_unit then
+    elseif condtype == "inner" then
+      if unit == outerlvl then
         result = false
       end
     elseif condtype == "unlocked" then

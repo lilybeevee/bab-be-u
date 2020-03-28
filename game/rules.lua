@@ -803,6 +803,10 @@ function addRule(full_rule)
         addRuleSimple({v, rules.subject.conds}, rules.verb, rules.object, units, dir)
       end
       addRuleSimple({"txt", rules.subject.conds}, rules.verb, rules.object, units, dir)
+
+      local copied_conds = copyTable(rules.subject.conds)
+      table.insert(copied_conds, {name = "inner", type = {cond_prefix = true}, dir = rules.subject.dir})
+      addRuleSimple({"lvl", copied_conds}, rules.verb, rules.object, units, dir)
     end
   elseif subject == "every3" then
     if subject_not % 2 == 1 then
@@ -902,6 +906,10 @@ function addRule(full_rule)
         addRuleSimple(rules.subject, rules.verb, {v, rules.object.conds}, units, dir)
       end
       addRuleSimple(rules.subject, rules.verb, {"txt", rules.object.conds}, units, dir)
+
+      local copied_conds = copyTable(rules.object.conds)
+      table.insert(copied_conds, {name = "inner", type = {cond_prefix = true}, dir = rules.object.dir})
+      addRuleSimple(rules.subject, rules.verb, {"lvl", copied_conds}, units, dir)
     end
   elseif object == "every3" then
     if object_not % 2 == 1 then
