@@ -228,7 +228,7 @@
     "sprite": ["txt/themself"],
     "types": ["object"],
     "color": [[2, 3]],
-    "desc": "THEMSELF: Refers to the subject of the rule in conditions.",
-    "tags": ["itself"]
+    "desc": "THEMSELF: Refers to the subject of the rule - uses correct pronouns!",
+    "tags": ["itself", "herself", "himself", "themselves"]
   }
 ]

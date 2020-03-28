@@ -781,6 +781,9 @@ function addRule(full_rule)
   if verb == "is" then
     local new_verb = copyTable(rules.verb)
     new_verb.name = "be"
+    for i = 1, verb_not do
+      new_verb.name = new_verb.name .. "n't"
+    end
     addRuleSimple(rules.subject, new_verb, rules.object, units, dir)
   end
 
@@ -912,6 +915,19 @@ function addRule(full_rule)
         addRuleSimple(rules.subject, rules.verb, {v, rules.object.conds}, units, dir)
       end
     end
+  elseif object == "themself" then
+    if not (object_not % 2 == 0 and rules.verb.type.verb_class) then
+      local new_conds = copyTable(rules.object.conds) or {};
+      table.insert(new_conds, rules.object);
+      if object_not % 2 == 1 then
+        for _,v in ipairs(referenced_objects) do
+          addRuleSimple(rules.subject, rules.verb, {v, new_conds, themself = true}, units, dir)
+        end
+        addRuleSimple(rules.subject, rules.verb, {"txt", new_conds, themself = true}, units, dir)
+      else
+        addRuleSimple(rules.subject, rules.verb, {rules.subject.name, new_conds, themself = true}, units, dir)
+      end
+    end
   elseif object_not % 2 == 1 then
     if getTile(object) or object:starts("this") or object == "txt" or object == "mous" then
       local new_objects = {}
@@ -938,7 +954,7 @@ function addRule(full_rule)
   end
 
   if verb_not > 0 then
-    if (verb == "be") and (object == "notranform" or subject == object or (subject:starts("txt_") and object == "txt")) then
+    if (verb == "be") and (object == "notranform" or subject == object or (subject:starts("txt_") and object == "txt") or object == "themself") then
       verb_not = verb_not + 1
     end
     if not not_rules[verb_not] then
@@ -950,7 +966,7 @@ function addRule(full_rule)
 
     -- for specifically checking NOT rules
     table.insert(full_rules, {rule = {subject = rules.subject, verb = {name = verb .. "n't"}, object = rules.object}, units = units, dir = dir})
-  elseif (verb == "be") and (subject == object or (subject:starts("txt_") and object == "txt")) and subject ~= "lvl" and object ~= "lvl" and subject ~= "sans" then
+  elseif (verb == "be") and (subject == object or (subject:starts("txt_") and object == "txt") or object == "themself") and subject ~= "lvl" and object ~= "lvl" and subject ~= "sans" then
     --print("protecting: " .. subject .. ", " .. object)
     addRuleSimple(rules.subject, {"be"}, {"notranform", rules.object.conds}, units, dir)
   elseif object == "notranform" or (subject == "lvl" and object == "lvl") then -- no "n't" here, but still blocks other rules so we need to count it

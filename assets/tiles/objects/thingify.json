@@ -12,7 +12,8 @@
     },
     "voice": "overdriven guitar",
     "desc": "ness in disguise\nDid you know that sans is a property too?",
-    "tags": ["chars", "sans", "undertale", "skeleton"]
+    "tags": ["chars", "sans", "undertale", "skeleton"],
+    "pronouns": ["he", "him"]
   },
   {
     "name": "ditto",
@@ -44,7 +45,8 @@
     },
     "voice": "cat",
     "desc": "u hav da wight to wemain siwent!!",
-    "tags": ["chars", "police", "cat"]
+    "tags": ["chars", "police", "cat"],
+    "pronouns": ["she", "her"]
   },
   {
     "name": "zawarudo",

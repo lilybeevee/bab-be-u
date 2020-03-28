@@ -546,9 +546,6 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
 
   --there are more properties than there are nouns, so we're more likely to miss based on a property not existing than based on a noun not existing
   rules_list = rules_with[(nrules[2] ~= "be" and nrules[2]) or nrules[3] or nrules[1] or nrules[2]] or {}
-  if #rules_list == 0 and rules_with[2] == "be" then
-    rules_list = rules_with["is"]
-  end
   mergeTable(rules_list, rules_with[fnrules[3] or fnrules[1]] or {})
 
   if (debugging) then
@@ -1679,6 +1676,10 @@ function testConds(unit, conds, compare_with, first_unit) --cond should be a {co
       else
         print(unit.special.customletter)
       end
+    elseif condtype == "themself" then
+      if unit ~= first_unit then
+        result = false
+      end
     elseif condtype == "unlocked" then
       if unit.name == "lvl" and unit.special.visibility ~= "open" then
         result = false
@@ -2631,7 +2632,11 @@ function ignoreCheck(unit, target, property)
   if not rules_with["wont"] and not rules_with["ignor"] then
     return true
   elseif unit == target then
-    return true
+    if hasRule(unit,"ignor","themself") then
+      return false
+    else
+      return true
+    end
   elseif target and (hasRule(unit,"ignor",target) or hasRule(unit,"ignor",outerlvl)) and (not property or (not hasRule(unit,"wontn't",property))) then
     return false
   elseif property and (hasRule(unit,"wont",property)) and (not target or (not hasRule(unit,"ignorn't",target))) then
@@ -3772,6 +3777,14 @@ function addTile(tile)
     end
   end
 
+  if not tile.pronouns then
+    if not tile.is_text and table.has_value(tile.tags, "chars") then
+      tile.pronouns = {"they", "them"}
+    else
+      tile.pronouns = {"it"}
+    end
+  end
+
 
   tiles_list[tile.name] = tile
   for _,old in ipairs(tile.old_names) do
@@ -3817,6 +3830,7 @@ function getTile(name, old)
     tile.display = tile.display .. " n't"
     tile.sprite = tile.metasprite or tile.sprite
     tile.nt = true
+    tile.pronouns = {"it"}
     tile.old_names = {}
 
     return addTile(tile)
@@ -3834,6 +3848,7 @@ function getTile(name, old)
     tile.txtname = "txt_" .. tile.txtname
     tile.is_text = true
     tile.meta = tile.meta + 1
+    tile.pronouns = {"it"}
     tile.old_names = {}
     if tile.layer < 20 then
       tile.layer = 20
@@ -3983,6 +3998,24 @@ function getUnitSprite(name, unit)
     -- misc
     elseif name == "txt/now" and doing_past_turns then
       addTry(try, "txt/latr")
+    elseif name == "txt/themself" and scene == game and rules_with_unit[unit] then
+      local pronoun
+      for _,rules in ipairs(rules_with_unit[unit]) do
+        local subject = rules.rule.subject.unit and getTile(rules.rule.subject.unit.textname)
+        if subject then
+          local new_pronoun = (subject.pronouns and (subject.pronouns[2] or subject.pronouns[1]) or "them").."self"
+          if pronoun and pronoun ~= new_pronoun then
+            pronoun = "themselves"
+            break
+          else
+            pronoun = new_pronoun
+          end
+        else
+          pronoun = "themself"
+        end
+      end
+      pronoun = pronoun or "themself"
+      addTry(try, "txt/"..pronoun)
     end
 
     for type,name in pairs(unit.sprite_transforms) do

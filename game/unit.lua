@@ -58,19 +58,25 @@ function moveBlock()
     local stalker_conds = ruleparent.rule.subject.conds
     local stalkee_conds = ruleparent.rule.object.conds
     for _,stalker in ipairs(stalkers) do
-      table.sort(stalkees, function(a, b) return euclideanDistance(a, stalker) < euclideanDistance(b, stalker) end )
-      for _,stalkee in ipairs(stalkees) do
-        if testConds(stalker, stalker_conds) and testConds(stalkee, stalkee_conds, stalker) then
-          local dist = euclideanDistance(stalker, stalkee)
-          local stalk_dir = dist > 0 and dirs8_by_offset[-sign(stalkee.x - stalker.x)][-sign(stalkee.y - stalker.y)] or stalkee.dir
-          if dist > 0 and hasProperty(stalker, "ortho") then
-            local use_hori = math.abs(stalkee.x - stalker.x) > math.abs(stalkee.y - stalker.y)
-            stalk_dir = dirs8_by_offset[use_hori and sign(stalkee.x - stalker.x) or 0][not use_hori and sign(stalkee.y - stalker.y) or 0]
+      if ruleparent.rule.object.name == "themself" then
+        addUndo({"update", stalker.id, stalker.x, stalker.y, stalker.dir})
+        stalker.olddir = stalker.dir
+        updateDir(stalker, (stalker.dir-1+4)%8 + 1)
+      else
+        table.sort(stalkees, function(a, b) return euclideanDistance(a, stalker) < euclideanDistance(b, stalker) end )
+        for _,stalkee in ipairs(stalkees) do
+          if testConds(stalker, stalker_conds) and testConds(stalkee, stalkee_conds, stalker) then
+            local dist = euclideanDistance(stalker, stalkee)
+            local stalk_dir = dist > 0 and dirs8_by_offset[-sign(stalkee.x - stalker.x)][-sign(stalkee.y - stalker.y)] or stalkee.dir
+            if dist > 0 and hasProperty(stalker, "ortho") then
+              local use_hori = math.abs(stalkee.x - stalker.x) > math.abs(stalkee.y - stalker.y)
+              stalk_dir = dirs8_by_offset[use_hori and sign(stalkee.x - stalker.x) or 0][not use_hori and sign(stalkee.y - stalker.y) or 0]
+            end
+            addUndo({"update", stalker.id, stalker.x, stalker.y, stalker.dir})
+            stalker.olddir = stalker.dir
+            updateDir(stalker, stalk_dir)
+            break
           end
-          addUndo({"update", stalker.id, stalker.x, stalker.y, stalker.dir})
-          stalker.olddir = stalker.dir
-          updateDir(stalker, stalk_dir)
-          break
         end
       end
     end
@@ -834,7 +840,7 @@ function updateUnits(undoing, big_update)
       local unit = ruleparent[2]
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, true, hasProperty(unit,"thicc"))
       for _,on in ipairs(stuff) do
-        if unit ~= on and hasRule(unit, "vs", on) and sameFloat(unit, on) then
+        if (unit ~= on or ruleparent[1].rule.object.themself) and hasRule(unit, "vs", on) and sameFloat(unit, on) then
           local unitmoved = false
           local onmoved = false
           for _,undo in ipairs(undo_buffer[1]) do
@@ -1035,7 +1041,7 @@ function updateUnits(undoing, big_update)
       local unit = ruleparent[2]
       local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, true, hasProperty(unit,"thicc"))
       for _,on in ipairs(stuff) do
-        if unit ~= on and hasRule(unit, "snacc", on) and sameFloat(unit, on) and ignoreCheck(on, unit) then
+        if (unit ~= on or ruleparent[1].rule.object.themself) and hasRule(unit, "snacc", on) and sameFloat(unit, on) and ignoreCheck(on, unit) then
           if timecheck(unit,"snacc",on) and timecheck(on) then
             table.insert(to_destroy, on)
             playSound("snacc")
@@ -1156,7 +1162,12 @@ function updateUnits(undoing, big_update)
     local issoko = matchesRule(nil,"soko","?")
     for _,ruleparent in ipairs(issoko) do
       local unit = ruleparent[2]
-      local others = findUnitsByName(ruleparent[1].rule.object.name)
+      local others = {}
+      if ruleparent[1].rule.object.name == "themself" then
+        others = {unit}
+      else
+        others = findUnitsByName(ruleparent[1].rule.object.name)
+      end
       local fail = false
       if #others > 0 then
         for _,other in ipairs(others) do
@@ -1738,7 +1749,7 @@ function updateUnitColours()
     local unit = ruleparent[2]
     local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, true, hasProperty(unit,"thicc"))
     for _,on in ipairs(stuff) do
-      if unit ~= on and hasRule(unit, "paint", on) and sameFloat(unit, on) and ignoreCheck(on, unit, "paint") then
+      if (unit ~= on or ruleparent[1].rule.object.themself) and hasRule(unit, "paint", on) and sameFloat(unit, on) and ignoreCheck(on, unit, "paint") then
         if timecheck(unit,"paint",on) and timecheck(on) then
           local old_colour = getUnitColor(unit)
           local colour = colour_for_palette[old_colour[1]][old_colour[2]]
@@ -2393,17 +2404,31 @@ function dropGotUnit(unit, rule)
     elseif object:starts("txt_") or object:starts("letter_") then
       overriden = hasRule(unit, "gotn't", "txt")
     end
-    if not overriden and (obj_name == "mous" or obj_tile ~= nil) then
-      if obj_name == "mous" then
-        local new_mouse = createMouse(unit.x, unit.y)
-        addUndo({"create_cursor", new_mouse.id})
-      else
-        local color = rule.object.prefix
-        if color == "samepaint" then
-          color = colour_for_palette[getUnitColor(unit)[1]][getUnitColor(unit)[2]]
+    if not overriden and (obj_name == "mous" or obj_name == "themself" or obj_tile ~= nil) then
+      if obj_name == "themself" then
+        if unit.class == "cursor" then
+          local new_mouse = createMouse_direct(unit.screenx, unit.screeny)
+          addUndo({"create_cursor", new_mouse.id})
+        else
+          local color = rule.object.prefix
+          if color == "samepaint" or not color then
+            color = colour_for_palette[getUnitColor(unit)[1]][getUnitColor(unit)[2]]
+          end
+          local new_unit = createUnit(unit.tile, unit.x, unit.y, unit.dir, false, nil, nil, color)
+          addUndo({"create", new_unit.id, false})
         end
-        local new_unit = createUnit(obj_name, unit.x, unit.y, unit.dir, false, nil, nil, color)
-        addUndo({"create", new_unit.id, false})
+      else
+        if obj_name == "mous" then
+          local new_mouse = createMouse(unit.x, unit.y)
+          addUndo({"create_cursor", new_mouse.id})
+        else
+          local color = rule.object.prefix
+          if color == "samepaint" then
+            color = colour_for_palette[getUnitColor(unit)[1]][getUnitColor(unit)[2]]
+          end
+          local new_unit = createUnit(obj_name, unit.x, unit.y, unit.dir, false, nil, nil, color)
+          addUndo({"create", new_unit.id, false})
+        end
       end
     end
   end
@@ -2592,6 +2617,23 @@ function convertUnits(pass)
     elseif not unit.new and nameIs(unit, rule.object.name) and timecheck(unit) then
       if not unit.removed and unit.type ~= "outerlvl" then
         addParticles("bonus", unit.x, unit.y, getUnitColor(unit))
+        table.insert(converted_units, unit)
+      end
+    end
+  end
+
+  local haetself = matchesRule(nil,"haet","themself")
+  for _,match in ipairs(haetself) do
+    local rules = match[1]
+    local unit = match[2]
+
+    local rule = rules.rule
+
+    if not unit.new and timecheck(unit) and not unit.removed and unit.type ~= "outerlvl" then
+      unit.removed = true
+      if unit.class == "cursor" then
+        table.insert(del_cursors, cursor)
+      else
         table.insert(converted_units, unit)
       end
     end
@@ -3407,6 +3449,7 @@ function updateDir(unit, dir, force)
       -- flip "mirror" effect
       addTween(tween.new(0.05, unit.draw, {scalex = 0}), "unit:scalex:rot:" .. unit.tempid, function()
         unit.draw.rotation = target_rot
+        tweens["unit:rotation:"..unit.tempid] = nil
         addTween(tween.new(0.05, unit.draw, {scalex = 1}), "unit:scalex:" .. unit.tempid)
       end)
     else

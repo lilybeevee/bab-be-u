@@ -266,14 +266,19 @@ function doMovement(movex, movey, key)
         for nx=-1,1 do
           for ny=-1,1 do
             if (nx ~= 0) or (ny ~= 0) then
-              mergeTable(others,getUnitsOnTile(unit.x+nx,unit.y+ny,nil,nil,nil,nil,hasProperty(unit,"thicc")))
+              local _, _, dir, x, y = getNextTile(unit, nx, ny, dirs8_by_offset[nx][ny])
+              local units = getUnitsOnTile(x,y,nil,nil,nil,nil,hasProperty(unit,"thicc"))
+              for _,unit in ipairs(units) do
+                table.insert(others, {unit = unit, dir = dir})
+              end
             end
           end
         end
-        for _,other in ipairs(others) do
+        for _,full_other in ipairs(others) do
+          local other = full_other.unit
+          local spoop_dir = full_other.dir
           local is_spoopy = #matchesRule(unit, "spoop", other)
           if (is_spoopy > 0 and not hasProperty(other, "slep")) and timecheck(unit,"spoop",other) and timecheck(other) and ignoreCheck(other,unit) then
-            spoop_dir = dirs8_by_offset[sign(other.x - unit.x)][sign(other.y - unit.y)]
             if (spoop_dir % 2 == 1 or (not hasProperty(unit, "ortho") and not hasProperty(other, "ortho"))) then
               addUndo({"update", other.id, other.x, other.y, other.dir})
               other.olddir = other.dir
@@ -426,7 +431,7 @@ function doMovement(movex, movey, key)
         local unit = ruleparent[2]
         local others = (unit == outerlvl and units or getUnitsOnTile(unit.x, unit.y, nil, nil, nil, nil, hasProperty(unit,"thicc")))
         for __,other in ipairs(others) do
-          if other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) and ignoreCheck(other, unit) then
+          if ((other.fullname ~= "no1" and other.id ~= unit.id) or ruleparent[1].rule.object.themself) and sameFloat(unit, other) and ignoreCheck(other, unit) then
             local is_yeeted = hasRule(unit, "yeet", other)
             if (is_yeeted) then
               if timecheck(unit,"yeet",other) and timecheck(other) then
@@ -502,8 +507,15 @@ function doMovement(movex, movey, key)
       for unit,_ in pairs(moovunits) do
         local others = getUnitsOnTile(unit.x,unit.y,nil,nil,nil,nil,hasProperty(unit,"thicc"))
         for _,other in ipairs(others) do
-          local is_moover = #matchesRule(unit, "moov", other)
-          if is_moover > 0 and timecheck(unit,"moov",other) and other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) and ignoreCheck(unit,other) and ignoreCheck(other,unit) then
+          local is_moover = false
+          local moov_rules = matchesRule(unit, "moov", other)
+          for _,ruleparent in ipairs(moov_rules) do
+            if (other.fullname ~= "no1" and other.id ~= unit.id) or ruleparent.rule.object.themself then
+              is_moover = true
+              break
+            end
+          end
+          if is_moover and timecheck(unit,"moov",other) and sameFloat(unit, other) and ignoreCheck(unit,other) and ignoreCheck(other,unit) then
             table.insert(other.moves, {reason = "moov", dir = unit.dir, times = 1})
             if #other.moves > 0 and not already_added[other] then
               table.insert(moving_units, other)
@@ -1796,12 +1808,20 @@ function canMoveCore(unit,dx,dy,dir,o) --pushing, pulling, solid_name, reason, p
       elseif hasRule(unit,"liek",liek) and hasRule(unit,"haet",liek) then
         success = true
       end
+      local has_others = false
       for _,v in ipairs(getUnitsOnTile(x, y, nil, false, nil, true)) do
-        if hasRule(unit, "liek", v) and ignoreCheck(unit,v) then
+        if v ~= unit then
+          has_others = true
+        end
+        if hasRule(unit, "liek", v) and ignoreCheck(unit,v) and not (liek == "themself" or ruleparent.rule.object.themself) then
           success = true
           curse_success = true
           break
         end
+      end
+      if (liek == "themself" or ruleparent.rule.object.themself) and not has_others then
+        success = true
+        curse_success = true
       end
       if not success then
         for _,update in ipairs(update_queue) do

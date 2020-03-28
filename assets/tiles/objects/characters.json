@@ -36,7 +36,7 @@
     "sprite": ["txt/skul"],
     "types": ["object"],
     "color": [[2, 1]],
-    "tags": ["skull"]
+    "tags": ["chars", "skull"]
   },
   {
     "name": "skul",
@@ -111,7 +111,7 @@
     },
     "voice": "bit2",
     "desc": "OS: Its sprites changes with the user's Operating System!",
-    "tags": ["apple", "android", "windows", "linux", "operating system"]
+    "tags": ["chars", "apple", "android", "windows", "linux", "operating system"]
   },
   {
     "name": "wog",
@@ -182,7 +182,7 @@
     "color": [[0, 3]],
     "rotate": true,
     "desc": "grab, then yeet",
-    "tags": ["hand", "body part"]
+    "tags": ["chars", "hand", "body part"]
   },
   {
     "name": "txt_han",
@@ -222,7 +222,8 @@
       "sans": {"x": 14, "y": 15, "w": 2, "h": 5}
     },
     "desc": "he's upsidedown b/c he lives on a Boy's surface",
-    "tags": ["chars"]
+    "tags": ["chars"],
+    "pronouns": ["he", "him"]
   },
   {
     "name": "txt_boy",
@@ -284,7 +285,7 @@
     },
     "voice": "crab rave",
     "desc": "loves to party and dance! woo! yeah!",
-    "tags": ["crab"]
+    "tags": ["chars", "crab"]
   },
   {
     "name": "txt_creb",
@@ -302,7 +303,7 @@
       "sans": {"x": 17, "y": 6, "w": 3, "h": 3}
     },
     "desc": "it's a knoble knight",
-    "tags": ["chess", "knight", "horse"]
+    "tags": ["chars", "chess", "knight", "horse"]
   },
   {
     "name": "txt_hors",
@@ -320,7 +321,8 @@
       "sans": {"x": 17, "y": 8, "w": 3, "h": 3}
     },
     "desc": "do u wanna creat a snoman??",
-    "tags": ["chars", "snowman", "christmas"]
+    "tags": ["chars", "snowman", "christmas"],
+    "pronouns": ["he", "him"]
   },
   {
     "name": "txt_snoman",
@@ -436,7 +438,8 @@
       "sans": {"x": 12, "y": 11, "w": 2, "h": 2}
     },
     "desc": "noot noot",
-    "tags": ["chars", "penguin", "bird"]
+    "tags": ["chars", "penguin", "bird"],
+    "pronouns": ["he", "him"]
   },
   {
     "name": "txt_pingu",
@@ -749,7 +752,7 @@
       "sans": {"x": 17, "y": 12, "w": 7, "h": 8}
     },
     "desc": "IY SEES ALL",
-    "tags": ["eye", "body part"]
+    "tags": ["chars", "eye", "body part"]
   },
   {
     "name": "txt_iy",
@@ -766,7 +769,7 @@
     "rotate": true,
     "voice": "kkb2",
     "desc": "it speaks",
-    "tags": ["mouth", "lips", "body part"]
+    "tags": ["chars", "mouth", "lips", "body part"]
   },
   {
     "name": "txt_lisp",
@@ -783,7 +786,7 @@
     "color": [[0, 3]],
     "rotate": true,
     "desc": "dogg in bab when?",
-    "tags": ["paw print"]
+    "tags": ["chars", "paw print"]
   },
   {
     "name": "txt_paw",
@@ -841,7 +844,7 @@
       "sans": {"x": 23, "y": 9, "w": 4, "h": 5}
     },
     "desc": "very shy, don't lookat",
-    "tags": ["boo", "mario", "ghost"]
+    "tags": ["chars", "boo", "mario", "ghost"]
   },
   {
     "name": "txt_boooo",
@@ -862,7 +865,8 @@
       "sans": {"x": 21, "y": 9, "w": 1, "h": 2}
     },
     "desc": "she clim mountain in very good game",
-    "tags": ["madeline", "celeste", "chars"]
+    "tags": ["madeline", "celeste", "chars"],
+    "pronouns": ["she", "her"]
   },
   {
     "name": "txt_madi",
@@ -882,7 +886,8 @@
       "sans": {"x": 21, "y": 9, "w": 1, "h": 2}
     },
     "desc": "emag doog yrev ni niatnuom milc ehs",
-    "tags": ["badeline", "celeste", "chars"]
+    "tags": ["badeline", "celeste", "chars"],
+    "pronouns": ["she", "her"]
   },
   {
     "name": "txt_badi",
@@ -1020,7 +1025,7 @@
       "sans": {"x": 23, "y": 17, "w": 3, "h": 3}
     },
     "desc": "bab's bro, ver soft, pls pet",
-    "tags": ["fluff", "floof", "brother", "dog"],
+    "tags": ["chars", "fluff", "floof", "brother", "dog"],
     "pronouns": ["he", "him"]
   },
   {
@@ -1059,7 +1064,8 @@
       "sans": {"x": 14, "y": 17, "w": 2, "h": 4}
     },
     "desc": "closes when NED KEE",
-    "tags": ["chars", "chest", "treasure chest", "mimic"]
+    "tags": ["chars", "chest", "treasure chest", "mimic"],
+    "pronouns": ["she", "her"]
   },
   {
     "name": "txt_mimi",
@@ -1125,7 +1131,8 @@
     },
     "voice": "dog",
     "desc": "absorps ur artefac",
-    "tags": ["chars", "toby fox", "annoying dog", "undertale"]
+    "tags": ["chars", "toby fox", "annoying dog", "undertale"],
+    "pronouns": ["he", "him"]
   },
   {
     "name": "txt_toby",
@@ -1195,7 +1202,8 @@
     },
     "voice": "temmie",
     "desc": "hOI!!! i'm tEMMi!!",
-    "tags": ["chars", "temmie chang", "undertale"]
+    "tags": ["chars", "temmie chang", "undertale"],
+    "pronouns": ["she", "her"]
   },
   {
     "name": "txt_temmi",
@@ -1217,7 +1225,7 @@
     },
     "voice": "s_vitellary",
     "desc": "u've been lookin @ too much Good Art",
-    "tags": ["vvvvvv", "allison"]
+    "tags": ["chars", "vvvvvv", "allison"]
   },
   {
     "name": "txt_detox",
@@ -1235,7 +1243,7 @@
     "rotate": true,
     "voice": "sham_gatsample",
     "desc": "gon infect u",
-    "tags": ["dr mario", "mario", "virus"]
+    "tags": ["chars", "dr mario", "mario", "virus"]
   },
   {
     "name": "txt_viruse",
@@ -1255,7 +1263,7 @@
       "sans": {"x": 23, "y": 13, "w": 3, "h": 6}
     },
     "desc": "crying",
-    "tags": ["nya", "jill"]
+    "tags": ["chars", "nya", "jill"]
   },
   {
     "name": "txt_nyowo",
@@ -1273,7 +1281,8 @@
     "features": {
       "sans": {"x": 21, "y": 13, "w": 2, "h": 2}
     },
-    "desc": "complet rituel pls"
+    "desc": "complet rituel pls",
+    "tags": ["chars"]
   },
   {
     "name": "txt_grimkid",
@@ -1289,7 +1298,8 @@
     "features": {
       "sans": {"x": 11, "y": 17, "w": 2, "h": 2}
     },
-    "desc": "prime numbers SUCK"
+    "desc": "prime numbers SUCK",
+    "tags": ["chars", "hollow knight"]
   },
   {
     "name": "txt_prime",
@@ -1304,7 +1314,7 @@
     "color": [[0, 3]],
     "rotate": true,
     "desc": "he can grab on ledges",
-    "tags": ["ash"]
+    "tags": ["chars", "ash"]
   },
   {
     "name": "txt_assh",
@@ -1324,7 +1334,7 @@
       "sans": {"x": 22, "y": 16, "w": 3, "h": 3}
     },
     "desc": "cant hurt u unless u walk into it somehow",
-    "tags": ["slime", "crypt of the necrodancer"]
+    "tags": ["chars", "slime", "crypt of the necrodancer"]
   },
   {
     "name": "txt_boogie",
@@ -1341,7 +1351,8 @@
     "rotate": true,
     "voice": "babby",
     "desc": "bab be babbe ba",
-    "tags": ["baby", "bapy", "babey", "babbey", "smol"]
+    "tags": ["chars", "baby", "bapy", "babey", "babbey", "smol"],
+    "pronouns": ["she", "her"]
   },
   {
     "name": "txt_babby",
