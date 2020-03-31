@@ -148,7 +148,7 @@ end
 function initializeGraphicalPropertyCache()
   local properties_to_init = -- list of properties that require the graphical cache
   {
-    "flye", "slep", "tranz", "gay", "stelth", "colrful", "delet", "rave", "enby" -- miscelleaneous graphical effects
+    "flye", "slep", "stelth", "colrful", "delet", "rave", "tranz", "gay", "enby", "ace", "pan", "bi", "lesbab", "aro", "fluid" -- miscelleaneous graphical effects
   }
   for i = 1, #properties_to_init do
     local prop = properties_to_init[i]
@@ -1636,26 +1636,34 @@ function testConds(unit, conds, compare_with, first_unit) --cond should be a {co
         result = false
       elseif unit.rave or unit.colrful then
         result = true
-      elseif unit.gay then
-        if condtype == "blacc" or condtype == "whit" or condtype == "graey" or condtype == "brwn" then
-          result = false
-        else
-          result = true
-        end
-      elseif unit.tranz then
-        if condtype == "cyeann" or condtype == "whit" or condtype == "pinc" then
-          result = true
-        else
-          result = false
-        end
-      elseif unit.enby then
-        if condtype == "yello" or condtype == "whit" or condtype == "purp" or condtype == "blacc" or condtype == "graey" then
-          result = true
-        else
-          result = false
-        end
       else
-        result = matchesColor(getUnitColors(unit), condtype)
+        local flags = {
+          gay = {"reed", "orang", "yello", "grun", "cyeann", "bleu", "purp", "pinc"},
+          tranz = {"cyeann", "whit", "pinc"},
+          enby = {"yello", "whit", "purp", "blacc", "graey"},
+          ace = {"blacc", "graey", "whit", "purp"},
+          pan = {"pinc", "yello", "cyeann"},
+          bi = {"pinc", "purp", "bleu"},
+          lesbab = {"reed", "orang", "whit", "pinc"},
+          aro = {"grun", "whit", "graey", "blacc"},
+          fluid = {"pinc", "whit", "blacc", "bleu"}
+        }
+        local has_flag = false
+        local matched_flag = false
+        for flag,colors in pairs(flags) do
+          if unit[flag] then
+            has_flag = true
+            if table.has_value(colors, condtype) then
+              matched_flag = true
+              break
+            end
+          end
+        end
+        if has_flag then
+          result = matched_flag
+        else
+          result = matchesColor(getUnitColors(unit), condtype)
+        end
       end
     elseif condtype == "the" then
       local the = cond.unit
@@ -4016,13 +4024,6 @@ function getUnitSprite(name, unit)
       addTry(try, "lin_gate")
     elseif name == "lin" and unit.special.visibility == "hidden" then
       addTry(try, "lin_hidden")
-    -- overlay properties
-    elseif name == "txt/gay-colored" and not unit.active then
-      addTry(try, "txt/gay")
-    elseif name == "txt/tranz-colored" and not unit.active then
-      addTry(try, "txt/tranz")
-    elseif name == "txt/enby-colored" and not unit.active then
-      addTry(try, "txt/enby")
     -- misc
     elseif name == "txt/now" and doing_past_turns then
       addTry(try, "txt/latr")
@@ -4081,7 +4082,15 @@ function getUnitSprite(name, unit)
     end
 
     for type,name in pairs(unit.sprite_transforms) do
-      if table.has_value(unit.used_as, type) then
+      if type == "inactive" then
+        if not unit.active then
+          addTry(try, name)
+        end
+      elseif type == "active" then
+        if unit.active then
+          addTry(try, name)
+        end
+      elseif table.has_value(unit.used_as, type) then
         addTry(try, name)
         break
       end

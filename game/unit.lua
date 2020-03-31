@@ -1647,7 +1647,7 @@ function miscUpdates()
       end
 
       unit.overlay = {}
-	  if (graphical_property_cache["enby"][unit] ~= nil) then
+	    if (graphical_property_cache["enby"][unit] ~= nil) then
         table.insert(unit.overlay, "enby")
       end
       if (graphical_property_cache["tranz"][unit] ~= nil) then
@@ -1656,10 +1656,28 @@ function miscUpdates()
       if (graphical_property_cache["gay"][unit] ~= nil) then
         table.insert(unit.overlay, "gay")
       end
+      if (graphical_property_cache["ace"][unit] ~= nil) then
+        table.insert(unit.overlay, "ace")
+      end
+      if (graphical_property_cache["pan"][unit] ~= nil) then
+        table.insert(unit.overlay, "pan")
+      end
+      if (graphical_property_cache["bi"][unit] ~= nil) then
+        table.insert(unit.overlay, "bi")
+      end
+      if (graphical_property_cache["lesbab"][unit] ~= nil) then
+        table.insert(unit.overlay, "lesbian")
+      end
+      if (graphical_property_cache["aro"][unit] ~= nil) then
+        table.insert(unit.overlay, "aro")
+      end
+      if (graphical_property_cache["fluid"][unit] ~= nil) then
+        table.insert(unit.overlay, "fluid")
+      end
       
       -- for optimisation in drawing
       local objects_to_check = {
-      "stelth", "colrful", "delet", "rave", "gay", "tranz", "enby"
+      "stelth", "colrful", "delet", "rave", "gay", "tranz", "enby", "ace", "pan", "bi", "lesbab", "aro", "fluid"
       }
 
       for i = 1, #objects_to_check do

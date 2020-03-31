@@ -33,6 +33,24 @@ function updateCursors()
       if hasProperty(cursor,"gay") then
         table.insert(cursor.overlay, "gay")
       end
+      if hasProperty(cursor,"ace") then
+        table.insert(cursor.overlay, "ace")
+      end
+      if hasProperty(cursor,"pan") then
+        table.insert(cursor.overlay, "pan")
+      end
+      if hasProperty(cursor,"bi") then
+        table.insert(cursor.overlay, "bi")
+      end
+      if hasProperty(cursor,"lesbab") then
+        table.insert(cursor.overlay, "lesbian")
+      end
+      if hasProperty(cursor,"aro") then
+        table.insert(cursor.overlay, "aro")
+      end
+      if hasProperty(cursor,"fluid") then
+        table.insert(cursor.overlay, "fluid")
+      end
     end
   end
   for i,cid in ipairs(del_cursors) do

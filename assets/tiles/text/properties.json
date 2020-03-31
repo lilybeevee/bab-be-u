@@ -73,6 +73,9 @@
   {
     "name": "txt_tranz",
     "sprite": ["txt/tranz-colored"],
+    "sprite_transforms": {
+      "inactive": "txt/tranz"
+    },
     "types": ["property", "gang_prefix"],
     "color": [[255, 255, 255]],
     "desc": "TRANZ: Causes the unit to appear pink, white and baby blue. TRANZ objects are pinc, whit, and cyeann, and not any other colors.",
@@ -81,9 +84,82 @@
   {
     "name": "txt_gay",
     "sprite": ["txt/gay-colored"],
+    "sprite_transforms": {
+      "inactive": "txt/gay"
+    },
     "types": ["property", "gang_prefix"],
     "color": [[255, 255, 255]],
     "desc": "GAY: Causes the unit to appear rainbow coloured. GAY objects are reed, orang, yello, grun, bleu, and purp, and not any other colors."
+  },
+  {
+    "name": "txt_enby",
+    "sprite": ["txt/enby-colored"],
+    "sprite_transforms": {
+      "inactive": "txt/enby"
+    },
+    "types": ["property", "gang_prefix"],
+    "color": [[255, 255, 255]],
+    "desc": "ENBY: Causes the unit to appear yellow, white, purple and black. ENBY objects are yello, whit, purp, and blacc, and not any other colors."
+  },
+  {
+    "name": "txt_ace",
+    "sprite": ["txt/ace-colored"],
+    "sprite_transforms": {
+      "inactive": "txt/ace"
+    },
+    "types": ["property", "gang_prefix"],
+    "color": [[255, 255, 255]],
+    "desc": "ACE: Causes the unit to appear black, grey, white, and purple. ACE objects are blacc, graey, whit, and purp, and not any other colors."
+  },
+  {
+    "name": "txt_pan",
+    "sprite": ["txt/pan-colored"],
+    "sprite_transforms": {
+      "inactive": "txt/pan"
+    },
+    "types": ["property", "gang_prefix"],
+    "color": [[255, 255, 255]],
+    "desc": "PAN: Causes the unit to appear pink, yellow, and cyan. PAN objects are pinc, yello, and cyeann, and not any other colors."
+  },
+  {
+    "name": "txt_bi",
+    "sprite": ["txt/bi-colored"],
+    "sprite_transforms": {
+      "inactive": "txt/bi"
+    },
+    "types": ["property", "gang_prefix"],
+    "color": [[255, 255, 255]],
+    "desc": "BI: Causes the unit to appear pink, purple, and blue. BI objects are pinc, purp, and bleu, and not any other colors."
+  },
+  {
+    "name": "txt_lesbab",
+    "sprite": ["txt/lesbab-colored"],
+    "sprite_transforms": {
+      "inactive": "txt/lesbab"
+    },
+    "types": ["property", "gang_prefix"],
+    "color": [[255, 255, 255]],
+    "desc": "LESBAB: Causes the unit to appear red, orange, white, and pink. LESBAB objects are reed, orang, whit, and pinc, and not any other colors."
+  },
+  {
+    "name": "txt_aro",
+    "sprite": ["txt/aro-colored"],
+    "sprite_transforms": {
+      "inactive": "txt/aro"
+    },
+    "types": ["property", "gang_prefix"],
+    "color": [[255, 255, 255]],
+    "desc": "ARO: Causes the unit to appear green, white, grey, and black. ARO objects are grun, whit, graey, and blacc, and not any other colors."
+  },
+  {
+    "name": "txt_fluid",
+    "sprite": ["txt/fluid-colored"],
+    "sprite_transforms": {
+      "inactive": "txt/fluid"
+    },
+    "types": ["property", "gang_prefix"],
+    "color": [[255, 255, 255]],
+    "desc": "FLUID: Causes the unit to appear pink, white, black, and blue. FLUID objects are pinc, whit, blacc, and bleu, and not any other colors."
   },
   {
     "name": "txt_slep",
@@ -744,13 +820,6 @@
     },
     "desc": "UN:): When U touches UN:), the current level will no longer be considered won, without exiting the level. Imagine a win score equal to the number of Us on :) minus the Us on UN:). If positive, you win. If negative, you lose your win. If equal, nothing happens.",
     "tags": ["unwin", "ungood", "face", "unyay", "patashu", ";d"]
-  },
-  {
-    "name": "txt_enby",
-    "sprite": ["txt/enby-colored"],
-    "types": ["property", "gang_prefix"],
-    "color": [[255, 255, 255]],
-    "desc": "ENBY: Causes the unit to appear yellow, white, purple and black. ENBY objects are yello, whit, purp, and blacc, and not any other colors."
   },
   {
     "name": "txt_notranform",
