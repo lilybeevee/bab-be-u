@@ -3573,6 +3573,9 @@ function buildOptions()
     scene.addOption("autoupdate", "autoupdate (experimental)", {{"on", true}, {"off", false}})
     scene.addButton("video options", function() display = true; scene.buildUI() end)
     scene.addButton("default settings", function () defaultSetting() scene.buildUI() end)
+    if scene == menu then
+      scene.addButton("delete save data", function () deleteDir("profiles") love.event.quit("restart") end)
+    end
     scene.addButton("back", function() options = false; scene.buildUI() end)
   else
     scene.addOption("game_scale", "game scale", {{"auto", "auto"}, {"0.5x", 0.5}, {"1x", 1}, {"1.5x", 1.5}, {"2x", 2}, {"4x", 4}})
