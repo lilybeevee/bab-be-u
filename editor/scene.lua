@@ -1463,7 +1463,7 @@ function scene.draw(dt)
               color = getTileColors(tile, brush.color)
             end
 
-            drawTileSprite(tile, (x+0.5)*TILE_SIZE, (y+0.5)*TILE_SIZE, 0, 1, 1, {color = color})
+            drawTileSprite(tile, (x+0.5)*TILE_SIZE, (y+0.5)*TILE_SIZE, 0, 1, 1, {color = color, anti_wobble = true})
 
             if brush.id == i then
               love.graphics.setColor(1, 0, 0)

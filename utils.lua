@@ -3960,7 +3960,7 @@ function getTileSprite(name, tile, o)
     end
 
     if tile.wobble then
-      local wobble_frame = (o.wobble + anim_stage) % 3 + 1
+      local wobble_frame = anim_stage % 3 + 1
       addTry(try, "?_"..wobble_frame, true)
     end
   end
@@ -4188,6 +4188,7 @@ function drawUnitSprite(unit, x, y, rotation, sx, sy, o)
     nt = unit.nt,
     brightness = brightness,
     id = unit.id,
+    frame = unit.frame,
     wobble = unit.wobble,
     delet = unit.delet,
     really_smol = unit.fullname == "babby",
@@ -4208,7 +4209,9 @@ function drawSprite(x, y, rotation, sx, sy, o)
     alpha = 1,
     brightness = 1,
     id = 0,
+    frame = x+y,
     wobble = false,
+    anti_wobble = false,
     delet = false,
     really_smol = false,
     lvl = false,
@@ -4285,6 +4288,20 @@ function drawSprite(x, y, rotation, sx, sy, o)
     end
   end
 
+  love.graphics.push()
+  if not o.anti_wobble and not o.wobble then
+    local wobble_frame = (o.frame + anim_stage) % 3 + 1
+    love.graphics.translate(x + max_w/TILE_SIZE/2, y + max_h/TILE_SIZE/2)
+    if wobble_frame == 2 then
+      love.graphics.rotate(math.rad(3))
+      love.graphics.scale(1, 0.95)
+    elseif wobble_frame == 3 then
+      love.graphics.rotate(math.rad(-3))
+      love.graphics.shear(-0.05, 0)
+    end
+    love.graphics.translate(-x - max_w/TILE_SIZE/2, -y - max_h/TILE_SIZE/2)
+  end
+
   if (o.delet or spookmode) and (math.floor(love.timer.getTime() * 9) % 9 == 0) then -- if we're delet, apply the special shader to our object
     pcallSetShader(xwxShader)
     drawSpriteMaybeOverlay()
@@ -4355,6 +4372,8 @@ function drawSprite(x, y, rotation, sx, sy, o)
       love.graphics.pop()
     end
   end
+
+  love.graphics.pop()
 
   if o.meta > 0 then
     setColor{4, 1}
