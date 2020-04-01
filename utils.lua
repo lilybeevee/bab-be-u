@@ -3574,7 +3574,16 @@ function buildOptions()
     scene.addButton("video options", function() display = true; scene.buildUI() end)
     scene.addButton("default settings", function () defaultSetting() scene.buildUI() end)
     if scene == menu then
-      scene.addButton("delete save data", function () deleteDir("profiles") love.event.quit("restart") end)
+      scene.addButton("delete save data", function ()
+        ui.overlay.confirm({
+          text = "Delete save data?\nLÖVE will restart\n\n(WARNING: Data cannot be restored)",
+          okText = "Yes",
+          cancelText = "Cancel",
+          ok = function()
+            deleteDir("profiles")
+            love.event.quit("restart")
+          end})
+      end)
     end
     scene.addButton("back", function() options = false; scene.buildUI() end)
   else
