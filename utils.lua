@@ -4198,6 +4198,7 @@ function drawUnitSprite(unit, x, y, rotation, sx, sy, o)
     overlay = unit.overlay,
     meta = unit.meta,
     nt = unit.nt,
+    alpha = unit.draw.opacity,
     brightness = brightness,
     id = unit.id,
     frame = unit.frame,
