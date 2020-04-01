@@ -521,6 +521,8 @@ function updateUnits(undoing, big_update)
     --moar remake: based on the scent map distance in brogue (thanks notnat/pata for inspiration)
     --TODO: If you write txt be moar, it's ambiguous which of a stacked text pair will be the one to grow into an adjacent tile first. But if you make it simultaneous, then you get double growth into corners which turns into exponential growth, which is even worse. It might need to be special cased in a clever way.
       --I think making each one grow is more consistent so it should happen
+    local already_grown = {}
+    local pending_growth = {}
     local moars = getUnitsWithEffectAndCount("moar")
     for unit,amt in pairs(moars) do
       if (unit.name ~= "lie/8" or hasProperty(unit,"notranform")) and timecheck(unit,"be","moar") then
@@ -536,24 +538,50 @@ function updateUnits(undoing, big_update)
                 x = x*2
                 y = y*2
               end
-              if canMove(unit, x, y, unit.dir, {solid_name = unit.name}) then
+              already_grown[getUnitStr(unit)] = already_grown[getUnitStr(unit)] or {}
+              if canMove(unit, x, y, unit.dir) then
                 if unit.class == "unit" then --idk what any of this means but i'm assuming it's good?
-                  local new_unit = createUnit(unit.fullname, unit.x, unit.y, unit.dir)
-                  addUndo({"create", new_unit.id, false})
                   _, __, ___, mx, my = getNextTile(unit, x, y, i*2-1, false)
-                  moveUnit(new_unit,mx,my)
-                  addUndo({"update", new_unit.id, unit.x, unit.y, unit.dir})
+                  if not already_grown[getUnitStr(unit)][mx..","..my] then
+                    local blocked = false
+                    local others = getUnitsOnTile(mx, my, unit.fullname)
+                    for _,other in ipairs(others) do
+                      if getUnitStr(other) == getUnitStr(unit) then
+                        blocked = true
+                      end
+                    end
+                    if not blocked then
+                      table.insert(pending_growth, {unit, mx, my})
+                    end
+                    already_grown[getUnitStr(unit)][mx..","..my] = true
+                  end
                 elseif unit.class == "cursor" then
                   local others = getCursorsOnTile(unit.x + x, unit.y + y)
-                  if #others == 0 then
-                    local new_mouse = createMouse(unit.x + x, unit.y + y)
-                    addUndo({"create_cursor", new_mouse.id})
+                  if #others == 0 and not already_grown[getUnitStr(unit)][(unit.x+x)..","..(unit.y+y)] then
+                    table.insert(pending_growth, {unit, unit.x + x, unit.y + y})
+                    already_grown[getUnitStr(unit)][(unit.x+x)..","..(unit.y+y)] = true
                   end
                 end
               end
             end
           end --x for
         end
+      end
+    end
+    for _,growing in ipairs(pending_growth) do
+      local unit, x, y = unpack(growing)
+      if unit.class == "unit" then
+        local color
+        if unit.color_override then
+          color = colour_for_palette[getUnitColor(unit)[1]][getUnitColor(unit)[2]]
+        end
+        local new_unit = createUnit(unit.tile, unit.x, unit.y, unit.dir, nil, nil, nil, color)
+        addUndo({"create", new_unit.id, false})
+        moveUnit(new_unit,x,y)
+        addUndo({"update", new_unit.id, unit.x, unit.y, unit.dir})
+      elseif unit.class == "cursor" then
+        local new_mouse = createMouse(x, y)
+        addUndo({"create_cursor", new_mouse.id})
       end
     end
 

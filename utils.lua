@@ -4301,7 +4301,7 @@ function drawSprite(x, y, rotation, sx, sy, o)
   end
 
   love.graphics.push()
-  if not o.anti_wobble and not o.wobble then
+  if not o.anti_wobble and not o.wobble and o.sprite[1] ~= "bordr" then
     local wobble_frame = (o.frame + anim_stage) % 3 + 1
     love.graphics.translate(x + max_w/TILE_SIZE/2, y + max_h/TILE_SIZE/2)
     if wobble_frame == 2 then
@@ -4444,4 +4444,12 @@ function findNumber(unit1,unit2,unit3)
   if not t3 then return t1..t2,2 end
 
   return t1..t2..t3,3
+end
+
+function getUnitStr(unit)
+  local str = unit.fullname
+  if unit.color_override then
+    str = str .. "|" .. table.concat(unit.color_override, ",")
+  end
+  return str
 end
