@@ -23,6 +23,8 @@ function scene.load()
   was_using_editor = false
   if getTheme() == "halloween" then
     resetMusic("bab spoop u", 0.5)
+  elseif sound_exists["bab be u them - "..getTheme()] then
+    resetMusic("bab be u them - "..getTheme(), 0.5)
   else
     resetMusic("bab be u them", 0.5)
   end
