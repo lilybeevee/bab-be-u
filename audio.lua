@@ -58,18 +58,22 @@ function playMusic(music, volume)
   current_volume = volume or 1
   old_volume = volume or 1
   
-  if love.filesystem.getInfo("assets/audio/bgm/" .. music .. ".wav") ~= nil then
-    music_source = love.audio.newSource("assets/audio/bgm/" .. music .. ".wav", "static")
-  elseif love.filesystem.getInfo("assets/audio/bgm/" .. music .. ".ogg") ~= nil then
-    music_source = love.audio.newSource("assets/audio/bgm/" .. music .. ".ogg", "static")
-  elseif love.filesystem.getInfo("assets/audio/bgm/" .. music .. ".xm") ~= nil then
-    music_source = love.audio.newSource("assets/audio/bgm/" .. music .. ".xm", "static")
-  else
-    music_source = love.audio.newSource("assets/audio/bgm/" .. music .. ".mp3", "static")
+  local filetypes = {".wav", ".ogg", ".xm", ".mp3"}
+  
+  for _,filetype in ipairs(filetypes) do
+    local path = "assets/audio/bgm/"..music..filetype
+    if love.filesystem.getInfo(path) ~= nil then
+      music_source = love.audio.newSource(path, "static")
+      break
+    else
+      music_source = nil
+    end
   end
-  music_source:setLooping(true)
-  music_source:setVolume(current_volume * music_volume)
-  music_source:play()
+  if music_source ~= nil then
+    music_source:setLooping(true)
+    music_source:setVolume(current_volume * music_volume)
+    music_source:play()
+  end
 
   current_music = music
 end
@@ -86,14 +90,12 @@ function resetMusic(name,volume)
     volume = 0.01
   end
   
-  if name ~= "" then
-    music_fading = false
-    if current_volume == 0 or not hasMusic() or current_music ~= name then
-      playMusic(name,volume)
-    else
-      current_volume = volume
-      old_volume = volume
-    end
+  music_fading = false
+  if current_volume == 0 or not hasMusic() or current_music ~= name then
+    playMusic(name,volume)
+  else
+    current_volume = volume
+    old_volume = volume
   end
 end
 

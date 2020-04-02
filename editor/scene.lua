@@ -112,7 +112,7 @@ function scene.load()
   scene.setupGooi()
 
   clear()
-  resetMusic(map_music, 0.5)
+  resetMusic(map_music, 0.1)
   loadMap()
   local now = os.time(os.date("*t"))
   presence = {
@@ -2056,10 +2056,7 @@ function scene.saveSettings()
   else
     input_palette:primary()
   end
-  if not sound_exists[input_music:getText()] then
-    success = false
-    input_music:danger()
-  else
+  if sound_exists[input_music:getText()] then
     input_music:primary()
   end
   if not success then

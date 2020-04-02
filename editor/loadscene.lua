@@ -25,7 +25,7 @@ function scene.load()
   metaClear()
   clear()
   was_using_editor = false
-  resetMusic(current_music, 0.8)
+  resetMusic(current_music, 0.5)
   selected_levels = {}
   scene.selecting = true
   scene.buildUI()
