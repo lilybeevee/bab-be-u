@@ -4302,7 +4302,7 @@ function drawSprite(x, y, rotation, sx, sy, o)
   end
 
   love.graphics.push()
-  if not o.anti_wobble and not o.wobble and o.sprite[1] ~= "bordr" then
+  if settings["max_wobble"] and not o.anti_wobble and not o.wobble and o.sprite[1] ~= "bordr" then
     local wobble_frame = (o.frame + anim_stage) % 3 + 1
     love.graphics.translate(x + max_w/TILE_SIZE/2, y + max_h/TILE_SIZE/2)
     if wobble_frame == 2 then

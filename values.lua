@@ -125,10 +125,10 @@ TILE_SIZE = 32
 mapwidth = 21
 mapheight = 15
 
-map_music = "bab be go"
+map_music = "map"
 map_ver = 1
 
-default_map = '{"width":21,"version":5,"extra":false,"author":"","compression":"zlib","background_sprite":"","height":15,"next_level":"","puffs_to_clear":0,"parent_level":"","is_overworld":false,"palette":"default","music":"bab be go","name":"new level","map":"eJyNkUEKgzAQRa8i7gpZdGKrtpKziJqxBIJKjKCId2+SFu2mJotk9d7nM5/3keybSkYlW1ctJLJYz7qsqzomMwMiuPkW88YBG1FJtm6EC8VgI784Wppamp7T32CHJgbNzoMnCycWvvlbDArH0QoPK9yNkJ4LLd3p1N+FIhd6FzIj5IF9wN0xDygEB/4IaDRIXA4Drv5OrexfzsicEbwt5I73rLunf+iAgZ8Xx7uTwp+Nt0KhnlQXlQV2/A10B+gd"}'
+default_map = '{"width":21,"version":5,"extra":false,"author":"","compression":"zlib","background_sprite":"","height":15,"next_level":"","puffs_to_clear":0,"parent_level":"","is_overworld":false,"palette":"default","music":"map","name":"new level","map":"eJyNkUEKgzAQRa8i7gpZdGKrtpKziJqxBIJKjKCId2+SFu2mJotk9d7nM5/3keybSkYlW1ctJLJYz7qsqzomMwMiuPkW88YBG1FJtm6EC8VgI784Wppamp7T32CHJgbNzoMnCycWvvlbDArH0QoPK9yNkJ4LLd3p1N+FIhd6FzIj5IF9wN0xDygEB/4IaDRIXA4Drv5OrexfzsicEbwt5I73rLunf+iAgZ8Xx7uTwp+Nt0KhnlQXlQV2/A10B+gd"}'
 
 main_palette_for_colour = {
 blacc = {0, 4},
