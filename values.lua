@@ -282,10 +282,10 @@ selector_grid_contents = {
   },
   -- page 4: characters and special objects
   {
-    "bab","txt_bab","kat","txt_kat","flof","txt_flof","babby","txt_babby","bunmy","txt_bunmy",0,0,0,0,"lila","txt_lila","larry","txt_larry",
+    "bab","txt_bab","kat","txt_kat","flof","txt_flof","babby","txt_babby","bad","txt_bad",0,0,0,0,"lila","txt_lila","larry","txt_larry",
     "keek","txt_keek","creb","txt_creb","shrim","txt_shrim","moo","txt_moo","toby","txt_toby",0,0,0,0,"pata","txt_pata","jill","txt_jill",
     "meem","txt_meem","statoo","txt_statoo","flamgo","txt_flamgo","migri","txt_migri","temmi","txt_temmi",0,0,0,0,"slab","txt_slab","zsoob","txt_zsoob",
-    "skul","txt_skul","beeee","txt_beeee","gul","txt_gul","kva","txt_kva",0,0,0,0,0,0,"notnat","txt_notnat","oat","txt_oat",
+    "skul","txt_skul","beeee","txt_beeee","gul","txt_gul","kva","txt_kva","bunmy","txt_bunmy",0,0,0,0,"notnat","txt_notnat","oat","txt_oat",
     "ghostfren","txt_ghostfren","fishe","txt_fishe","starrfishe","txt_starrfishe","pidgin","txt_pidgin",0,0,0,0,0,0,0,0,"butcher","txt_butcher",
     "robobot","txt_robobot","snek","txt_snek","sneel","txt_sneel","swan","txt_swan",0,0,0,0,0,0,0,0,0,0,
     "wog","txt_wog","bog","txt_bog","enbybog","txt_enbybog","spoder","txt_spoder",0,0,0,0,0,0,0,0,0,0,
