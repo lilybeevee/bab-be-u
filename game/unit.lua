@@ -663,7 +663,7 @@ function updateUnits(undoing, big_update)
     local fires = copyTable(findUnitsByName("xplod"))
     if #nukes > 0 then
       for _,nuke in ipairs(nukes) do
-        local check = getUnitsOnTile(nuke.x,nuke.y,nil,nil,nil,nil,hasProperty(nuek,"thicc"))
+        local check = getUnitsOnTile(nuke.x,nuke.y,nil,nil,nil,nil,hasProperty(nuke,"thicc"))
         local lit = false
         for _,other in ipairs(check) do
           if other.name == "xplod" then
@@ -672,12 +672,10 @@ function updateUnits(undoing, big_update)
         end
         if not lit then
           local new_unit = createUnit("xplod", nuke.x, nuke.y, nuke.dir)
-          new_unit.parent = nuke
           addUndo({"create", new_unit.id, false})
           if hasProperty(nuke,"thicc") then
             for i=1,3 do
               local _new_unit = createUnit("xplod", nuke.x+i%2, nuke.y+math.floor(i/2), nuke.dir)
-              _new_unit.parent = nuke
               addUndo({"create", _new_unit.id, false})
             end
           end
@@ -691,7 +689,7 @@ function updateUnits(undoing, big_update)
         end
       end
       for _,fire in ipairs(fires) do
-        if inBounds(fire.x,fire.y) and not fire.parent.removed then
+        if inBounds(fire.x,fire.y) then
           for i=1,7,2 do
             local dx = dirs8[i][1]
             local dy = dirs8[i][2]
@@ -699,10 +697,10 @@ function updateUnits(undoing, big_update)
             local others = getUnitsOnTile(fire.x+dx,fire.y+dy)
             if inBounds(fire.x+dx,fire.y+dy) then
               for _,on in ipairs(others) do
-                if ignoreCheck(on, fire.parent, "nuek") then
-                  if on.name == "xplod" or hasProperty(on, "nuek") then
+                if ignoreCheck(on, nil, "nuek") then
+                  if on.name == "xplod" or hasProperty(on, "nuek") or hasProperty(on, "protecc") then
                     lit = true
-                  elseif sameFloat(on,fire.parent) then
+                  else
                     table.insert(to_destroy,on)
                     playSound("break")
                     addParticles("destroy", on.x, on.y, {2,2})
@@ -711,7 +709,6 @@ function updateUnits(undoing, big_update)
               end
               if not lit then
                 local new_unit = createUnit("xplod", fire.x+dx, fire.y+dy, 1)
-                new_unit.parent = fire.parent
                 addUndo({"create", new_unit.id, false})
               end
             end

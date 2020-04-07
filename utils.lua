@@ -959,7 +959,12 @@ function countProperty(unit, prop, ignore_flye)
 end
 
 function hasU(unit)
-  return hasProperty(unit,"u") or hasProperty(unit,"utoo") or hasProperty(unit,"utres") or hasProperty(unit,"you") or hasProperty(unit,"y'all")
+  return hasProperty(unit,"u") 
+  or hasProperty(unit,"utoo")
+  or hasProperty(unit,"utres")
+  or hasProperty(unit,"you")
+  or hasProperty(unit,"y'all")
+  or hasProperty(unit,"w")
 end
 
 function getUs()
