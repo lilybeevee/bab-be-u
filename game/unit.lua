@@ -2562,15 +2562,13 @@ function convertUnits(pass)
   for unit,amt in pairs(meta) do
     if (unit.fullname == "mous") then
       local cursor = unit
-      if inBounds(cursor.x, cursor.y) then
-        local tile = getTile("txt_mous")
-        if tile ~= nil then
-          table.insert(del_cursors, cursor)
-        end
-        local new_unit = createUnit(tile.name, unit.x, unit.y, unit.dir, true)
-        if (new_unit ~= nil) then
-          addUndo({"create", new_unit.id, true, created_from_id = unit.id})
-        end
+      local tile = getTile("txt_mous")
+      if tile ~= nil then
+        table.insert(del_cursors, cursor)
+      end
+      local new_unit = createUnit(tile.name, unit.x, unit.y, unit.dir, true)
+      if (new_unit ~= nil) then
+        addUndo({"create", new_unit.id, true, created_from_id = unit.id})
       end
     elseif not unit.new and unit.type ~= "outerlvl" and timecheck(unit,"be","txtify") then
       table.insert(converted_units, unit)
@@ -2655,7 +2653,7 @@ function convertUnits(pass)
     
     if (rule.subject.name == "mous" and rule.object.name == "mous") then
       for _,cursor in ipairs(cursors) do
-        if inBounds(cursor.x, cursor.y) and testConds(cursor, rule.subject.conds) then
+        if testConds(cursor, rule.subject.conds) then
           addParticles("bonus", unit.x, unit.y, getUnitColor(unit))
           table.insert(del_cursors, cursor)
         end
@@ -2693,7 +2691,7 @@ function convertUnits(pass)
     if not hasProperty(unit, "notranform") then
       if (rule.subject.name == "mous" and rule.object.name ~= "mous") then
         for _,cursor in ipairs(cursors) do
-          if inBounds(cursor.x, cursor.y) and testConds(cursor, rule.subject.conds) then
+          if testConds(cursor, rule.subject.conds) then
             for _,v in ipairs(referenced_objects) do
               local tile
               if v == "txt" then
@@ -2748,7 +2746,7 @@ function convertUnits(pass)
     if not hasProperty(unit, "notranform") then
       if (rule.subject.name == "mous" and rule.object.name ~= "mous") then
         for _,cursor in ipairs(cursors) do
-          if inBounds(cursor.x, cursor.y) and testConds(cursor, rule.subject.conds) then
+          if testConds(cursor, rule.subject.conds) then
             local tbl = copyTable(referenced_objects)
             mergeTable(tbl, referenced_text)
             for _,v in ipairs(tbl) do
@@ -2807,7 +2805,7 @@ function convertUnits(pass)
     if not hasProperty(unit, "notranform") then
       if (rule.subject.name == "mous" and rule.object.name ~= "mous") then
         for _,cursor in ipairs(cursors) do
-          if inBounds(cursor.x, cursor.y) and testConds(cursor, rule.subject.conds) then
+          if testConds(cursor, rule.subject.conds) then
             local tbl = copyTable(referenced_objects)
             mergeTable(tbl, referenced_text)
             mergeTable(tbl, special_objects)
@@ -2869,7 +2867,7 @@ function convertUnits(pass)
     if not hasProperty(unit, "notranform") then
       if (rule.subject.name == "mous" and rule.object.name ~= "mous") then
         for _,cursor in ipairs(cursors) do
-          if inBounds(cursor.x, cursor.y) and testConds(cursor, rule.subject.conds) then
+          if testConds(cursor, rule.subject.conds) then
             local tile
             if rule.object.name == "txt" then
               tile = getTile("txt_" .. rule.subject.name)
