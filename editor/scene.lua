@@ -2281,8 +2281,13 @@ function scene.getCaptureRect()
 
     return rect
   else
-    local start_x, start_y = screenToGameTile(start_drag.x, start_drag.y)
-    local current_x, current_y = screenToGameTile(love.mouse.getX(), love.mouse.getY())
+    local start_x, start_y = screenToGameTile(start_drag.x, start_drag.y, true)
+    local current_x, current_y = screenToGameTile(love.mouse.getX(), love.mouse.getY(), true)
+    
+    start_x = math.floor(start_x*2)/2
+    start_y = math.floor(start_y*2)/2
+    current_x = math.floor(current_x*2)/2
+    current_y = math.floor(current_y*2)/2
 
     local min_x, min_y = math.min(start_x, current_x), math.min(start_y, current_y)
     local max_x, max_y = math.max(start_x, current_x), math.max(start_y, current_y)
