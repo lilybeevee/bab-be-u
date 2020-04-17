@@ -4269,7 +4269,8 @@ function drawSprite(x, y, rotation, sx, sy, o)
           end
           if not onlycolor or o.painted[i] then
             if image == "letter_custom" then
-              if o.special.customletter then
+              --if #o.special.customletter == 1 then 
+              if o.special.customletter and (#o.special.customletter > 1 or sprites["letter_"..o.special.customletter]) then
                 drawCustomLetter(o.special.customletter, x, y, rotation, sx, sy, 16, 16)
               else
                 local sprite = sprites["wut"]
