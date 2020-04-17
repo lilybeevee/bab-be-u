@@ -959,7 +959,12 @@ function countProperty(unit, prop, ignore_flye)
 end
 
 function hasU(unit)
-  return hasProperty(unit,"u") or hasProperty(unit,"utoo") or hasProperty(unit,"utres") or hasProperty(unit,"you") or hasProperty(unit,"y'all")
+  return hasProperty(unit,"u") 
+  or hasProperty(unit,"utoo")
+  or hasProperty(unit,"utres")
+  or hasProperty(unit,"you")
+  or hasProperty(unit,"y'all")
+  or hasProperty(unit,"w")
 end
 
 function getUs()
@@ -3573,6 +3578,18 @@ function buildOptions()
     scene.addOption("autoupdate", "autoupdate (experimental)", {{"on", true}, {"off", false}})
     scene.addButton("video options", function() display = true; scene.buildUI() end)
     scene.addButton("default settings", function () defaultSetting() scene.buildUI() end)
+    if scene == menu then
+      scene.addButton("delete save data", function ()
+        ui.overlay.confirm({
+          text = "Delete save data?\nLÖVE will restart\n\n(WARNING: Data cannot be restored)",
+          okText = "Yes",
+          cancelText = "Cancel",
+          ok = function()
+            deleteDir("profiles")
+            love.event.quit("restart")
+          end})
+      end)
+    end
     scene.addButton("back", function() options = false; scene.buildUI() end)
   else
     scene.addOption("game_scale", "game scale", {{"auto", "auto"}, {"0.5x", 0.5}, {"1x", 1}, {"1.5x", 1.5}, {"2x", 2}, {"4x", 4}})
@@ -3960,7 +3977,7 @@ function getTileSprite(name, tile, o)
     end
 
     if tile.wobble then
-      local wobble_frame = (o.wobble + anim_stage) % 3 + 1
+      local wobble_frame = anim_stage % 3 + 1
       addTry(try, "?_"..wobble_frame, true)
     end
   end
@@ -4186,8 +4203,10 @@ function drawUnitSprite(unit, x, y, rotation, sx, sy, o)
     overlay = unit.overlay,
     meta = unit.meta,
     nt = unit.nt,
+    alpha = unit.draw.opacity,
     brightness = brightness,
     id = unit.id,
+    frame = unit.frame,
     wobble = unit.wobble,
     delet = unit.delet,
     really_smol = unit.fullname == "babby",
@@ -4208,7 +4227,9 @@ function drawSprite(x, y, rotation, sx, sy, o)
     alpha = 1,
     brightness = 1,
     id = 0,
+    frame = x+y,
     wobble = false,
+    anti_wobble = false,
     delet = false,
     really_smol = false,
     lvl = false,
@@ -4286,6 +4307,20 @@ function drawSprite(x, y, rotation, sx, sy, o)
     end
   end
 
+  love.graphics.push()
+  if settings["max_wobble"] and not o.anti_wobble and not o.wobble and o.sprite[1] ~= "bordr" then
+    local wobble_frame = (o.frame + anim_stage) % 3 + 1
+    love.graphics.translate(x + max_w/TILE_SIZE/2, y + max_h/TILE_SIZE/2)
+    if wobble_frame == 2 then
+      love.graphics.rotate(math.rad(3))
+      love.graphics.scale(1, 0.95)
+    elseif wobble_frame == 3 then
+      love.graphics.rotate(math.rad(-3))
+      love.graphics.shear(-0.05, 0)
+    end
+    love.graphics.translate(-x - max_w/TILE_SIZE/2, -y - max_h/TILE_SIZE/2)
+  end
+
   if (o.delet or spookmode) and (math.floor(love.timer.getTime() * 9) % 9 == 0) then -- if we're delet, apply the special shader to our object
     pcallSetShader(xwxShader)
     drawSpriteMaybeOverlay()
@@ -4357,6 +4392,8 @@ function drawSprite(x, y, rotation, sx, sy, o)
     end
   end
 
+  love.graphics.pop()
+
   if o.meta > 0 then
     setColor{4, 1}
     local metasprite = o.meta == 2 and sprites["meta2"] or sprites["meta1"]
@@ -4414,4 +4451,12 @@ function findNumber(unit1,unit2,unit3)
   if not t3 then return t1..t2,2 end
 
   return t1..t2..t3,3
+end
+
+function getUnitStr(unit)
+  local str = unit.fullname
+  if unit.color_override then
+    str = str .. "|" .. table.concat(unit.color_override, ",")
+  end
+  return str
 end

@@ -521,6 +521,8 @@ function updateUnits(undoing, big_update)
     --moar remake: based on the scent map distance in brogue (thanks notnat/pata for inspiration)
     --TODO: If you write txt be moar, it's ambiguous which of a stacked text pair will be the one to grow into an adjacent tile first. But if you make it simultaneous, then you get double growth into corners which turns into exponential growth, which is even worse. It might need to be special cased in a clever way.
       --I think making each one grow is more consistent so it should happen
+    local already_grown = {}
+    local pending_growth = {}
     local moars = getUnitsWithEffectAndCount("moar")
     for unit,amt in pairs(moars) do
       if (unit.name ~= "lie/8" or hasProperty(unit,"notranform")) and timecheck(unit,"be","moar") then
@@ -536,24 +538,50 @@ function updateUnits(undoing, big_update)
                 x = x*2
                 y = y*2
               end
-              if canMove(unit, x, y, unit.dir, {solid_name = unit.name}) then
+              already_grown[getUnitStr(unit)] = already_grown[getUnitStr(unit)] or {}
+              if canMove(unit, x, y, unit.dir) then
                 if unit.class == "unit" then --idk what any of this means but i'm assuming it's good?
-                  local new_unit = createUnit(unit.fullname, unit.x, unit.y, unit.dir)
-                  addUndo({"create", new_unit.id, false})
                   _, __, ___, mx, my = getNextTile(unit, x, y, i*2-1, false)
-                  moveUnit(new_unit,mx,my)
-                  addUndo({"update", new_unit.id, unit.x, unit.y, unit.dir})
+                  if not already_grown[getUnitStr(unit)][mx..","..my] then
+                    local blocked = false
+                    local others = getUnitsOnTile(mx, my, unit.fullname)
+                    for _,other in ipairs(others) do
+                      if getUnitStr(other) == getUnitStr(unit) then
+                        blocked = true
+                      end
+                    end
+                    if not blocked then
+                      table.insert(pending_growth, {unit, mx, my})
+                    end
+                    already_grown[getUnitStr(unit)][mx..","..my] = true
+                  end
                 elseif unit.class == "cursor" then
                   local others = getCursorsOnTile(unit.x + x, unit.y + y)
-                  if #others == 0 then
-                    local new_mouse = createMouse(unit.x + x, unit.y + y)
-                    addUndo({"create_cursor", new_mouse.id})
+                  if #others == 0 and not already_grown[getUnitStr(unit)][(unit.x+x)..","..(unit.y+y)] then
+                    table.insert(pending_growth, {unit, unit.x + x, unit.y + y})
+                    already_grown[getUnitStr(unit)][(unit.x+x)..","..(unit.y+y)] = true
                   end
                 end
               end
             end
           end --x for
         end
+      end
+    end
+    for _,growing in ipairs(pending_growth) do
+      local unit, x, y = unpack(growing)
+      if unit.class == "unit" then
+        local color
+        if unit.color_override then
+          color = colour_for_palette[getUnitColor(unit)[1]][getUnitColor(unit)[2]]
+        end
+        local new_unit = createUnit(unit.tile, unit.x, unit.y, unit.dir, nil, nil, nil, color)
+        addUndo({"create", new_unit.id, false})
+        moveUnit(new_unit,x,y)
+        addUndo({"update", new_unit.id, unit.x, unit.y, unit.dir})
+      elseif unit.class == "cursor" then
+        local new_mouse = createMouse(x, y)
+        addUndo({"create_cursor", new_mouse.id})
       end
     end
 
@@ -635,7 +663,7 @@ function updateUnits(undoing, big_update)
     local fires = copyTable(findUnitsByName("xplod"))
     if #nukes > 0 then
       for _,nuke in ipairs(nukes) do
-        local check = getUnitsOnTile(nuke.x,nuke.y,nil,nil,nil,nil,hasProperty(nuek,"thicc"))
+        local check = getUnitsOnTile(nuke.x,nuke.y,nil,nil,nil,nil,hasProperty(nuke,"thicc"))
         local lit = false
         for _,other in ipairs(check) do
           if other.name == "xplod" then
@@ -644,12 +672,10 @@ function updateUnits(undoing, big_update)
         end
         if not lit then
           local new_unit = createUnit("xplod", nuke.x, nuke.y, nuke.dir)
-          new_unit.parent = nuke
           addUndo({"create", new_unit.id, false})
           if hasProperty(nuke,"thicc") then
             for i=1,3 do
               local _new_unit = createUnit("xplod", nuke.x+i%2, nuke.y+math.floor(i/2), nuke.dir)
-              _new_unit.parent = nuke
               addUndo({"create", _new_unit.id, false})
             end
           end
@@ -663,7 +689,7 @@ function updateUnits(undoing, big_update)
         end
       end
       for _,fire in ipairs(fires) do
-        if inBounds(fire.x,fire.y) and not fire.parent.removed then
+        if inBounds(fire.x,fire.y) then
           for i=1,7,2 do
             local dx = dirs8[i][1]
             local dy = dirs8[i][2]
@@ -671,10 +697,10 @@ function updateUnits(undoing, big_update)
             local others = getUnitsOnTile(fire.x+dx,fire.y+dy)
             if inBounds(fire.x+dx,fire.y+dy) then
               for _,on in ipairs(others) do
-                if ignoreCheck(on, fire.parent, "nuek") then
-                  if on.name == "xplod" or hasProperty(on, "nuek") then
+                if ignoreCheck(on, nil, "nuek") then
+                  if on.name == "xplod" or hasProperty(on, "nuek") or hasProperty(on, "protecc") then
                     lit = true
-                  elseif sameFloat(on,fire.parent) then
+                  else
                     table.insert(to_destroy,on)
                     playSound("break")
                     addParticles("destroy", on.x, on.y, {2,2})
@@ -683,7 +709,6 @@ function updateUnits(undoing, big_update)
               end
               if not lit then
                 local new_unit = createUnit("xplod", fire.x+dx, fire.y+dy, 1)
-                new_unit.parent = fire.parent
                 addUndo({"create", new_unit.id, false})
               end
             end
@@ -2534,15 +2559,13 @@ function convertUnits(pass)
   for unit,amt in pairs(meta) do
     if (unit.fullname == "mous") then
       local cursor = unit
-      if inBounds(cursor.x, cursor.y) then
-        local tile = getTile("txt_mous")
-        if tile ~= nil then
-          table.insert(del_cursors, cursor)
-        end
-        local new_unit = createUnit(tile.name, unit.x, unit.y, unit.dir, true)
-        if (new_unit ~= nil) then
-          addUndo({"create", new_unit.id, true, created_from_id = unit.id})
-        end
+      local tile = getTile("txt_mous")
+      if tile ~= nil then
+        table.insert(del_cursors, cursor)
+      end
+      local new_unit = createUnit(tile.name, unit.x, unit.y, unit.dir, true)
+      if (new_unit ~= nil) then
+        addUndo({"create", new_unit.id, true, created_from_id = unit.id})
       end
     elseif not unit.new and unit.type ~= "outerlvl" and timecheck(unit,"be","txtify") then
       table.insert(converted_units, unit)
@@ -2627,7 +2650,7 @@ function convertUnits(pass)
     
     if (rule.subject.name == "mous" and rule.object.name == "mous") then
       for _,cursor in ipairs(cursors) do
-        if inBounds(cursor.x, cursor.y) and testConds(cursor, rule.subject.conds) then
+        if testConds(cursor, rule.subject.conds) then
           addParticles("bonus", unit.x, unit.y, getUnitColor(unit))
           table.insert(del_cursors, cursor)
         end
@@ -2665,7 +2688,7 @@ function convertUnits(pass)
     if not hasProperty(unit, "notranform") then
       if (rule.subject.name == "mous" and rule.object.name ~= "mous") then
         for _,cursor in ipairs(cursors) do
-          if inBounds(cursor.x, cursor.y) and testConds(cursor, rule.subject.conds) then
+          if testConds(cursor, rule.subject.conds) then
             for _,v in ipairs(referenced_objects) do
               local tile
               if v == "txt" then
@@ -2720,7 +2743,7 @@ function convertUnits(pass)
     if not hasProperty(unit, "notranform") then
       if (rule.subject.name == "mous" and rule.object.name ~= "mous") then
         for _,cursor in ipairs(cursors) do
-          if inBounds(cursor.x, cursor.y) and testConds(cursor, rule.subject.conds) then
+          if testConds(cursor, rule.subject.conds) then
             local tbl = copyTable(referenced_objects)
             mergeTable(tbl, referenced_text)
             for _,v in ipairs(tbl) do
@@ -2779,7 +2802,7 @@ function convertUnits(pass)
     if not hasProperty(unit, "notranform") then
       if (rule.subject.name == "mous" and rule.object.name ~= "mous") then
         for _,cursor in ipairs(cursors) do
-          if inBounds(cursor.x, cursor.y) and testConds(cursor, rule.subject.conds) then
+          if testConds(cursor, rule.subject.conds) then
             local tbl = copyTable(referenced_objects)
             mergeTable(tbl, referenced_text)
             mergeTable(tbl, special_objects)
@@ -2841,7 +2864,7 @@ function convertUnits(pass)
     if not hasProperty(unit, "notranform") then
       if (rule.subject.name == "mous" and rule.object.name ~= "mous") then
         for _,cursor in ipairs(cursors) do
-          if inBounds(cursor.x, cursor.y) and testConds(cursor, rule.subject.conds) then
+          if testConds(cursor, rule.subject.conds) then
             local tile
             if rule.object.name == "txt" then
               tile = getTile("txt_" .. rule.subject.name)

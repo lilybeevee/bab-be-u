@@ -45,7 +45,7 @@
   },
   {
     "name": "txt_:)",
-    "sprite": ["txt/good"],
+    "sprite": ["txt/yay"],
     "types": ["property"],
     "color": [[2, 4]],
     "features": {
@@ -171,7 +171,7 @@
   },
   {
     "name": "txt_:(",
-    "sprite": ["txt/bad"],
+    "sprite": ["txt/aw"],
     "types": ["property"],
     "color": [[2, 1]],
     "features": {

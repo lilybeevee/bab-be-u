@@ -1448,5 +1448,23 @@
     "wobble": true,
     "desc": "\"BABA\". thats what it says",
     "tags": ["chars", "baba"]
+  },
+  {
+    "name": "bad",
+    "sprite": ["bad_body", "bad_metal", "bad_skateboard"],
+    "color": [[1, 4], [2, 4], [2, 2]],
+    "painted": [true, false, false],
+    "rotate": true,
+    "voice": "overdriven guitar",
+    "desc": "bab's evil sk8r bro, can say heck 3 times per day",
+    "tags": ["chars", "badbad", "cool"],
+    "pronouns": ["he", "him"]
+  },
+  {
+    "name": "txt_bad",
+    "sprite": ["txt/bad"],
+    "types": ["object"],
+    "color": [[1, 4]],
+    "tags": ["chars", "badbad", "cool"]
   }
 ]

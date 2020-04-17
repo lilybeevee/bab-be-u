@@ -23,8 +23,10 @@ function scene.load()
   was_using_editor = false
   if getTheme() == "halloween" then
     resetMusic("bab spoop u", 0.5)
+  elseif sound_exists["bab be u them - "..getTheme()] then
+    resetMusic("bab be u them - "..getTheme(), 0.5)
   else
-    resetMusic("bab be u them REEEMAZTUR", 0.5)
+    resetMusic("bab be u them", 0.5)
   end
   love.graphics.setBackgroundColor(0.10, 0.1, 0.11)
   local now = os.time(os.date("*t"))
