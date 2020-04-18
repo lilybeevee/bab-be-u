@@ -76,6 +76,8 @@ function clearRules()
     end
   end
 
+  rules_effecting_names["txt"] = true
+
   has_new_rule = false
 end
 
@@ -233,6 +235,9 @@ function parseRules(undoing)
   clearRules()
   loop_rules = 0
   changed_reparsing_rule = true
+
+  -- since txt is now inherently wurd, the rules table has to update with the base rules before we do any actual parsing
+  postRules(true)
   
   --TODO: This works in non-contrived examples, but isn't necessarily robust - for example, if after reparsing, you add one word rule while subtracting another word rule, it'll think nothing has changed. The only way to be ABSOLUTELY robust is to compare that the exact set of parsing effecting rules hasn't changed.
   local function reparseRuleCounts()
@@ -241,25 +246,24 @@ function parseRules(undoing)
     local result = {}
     for _,prop in ipairs(props_table) do
       for __,verb in ipairs(verbs_table) do
-        table.insert(result, #matchesRule(nil, verb, prop));
+        table.insert(result, #matchesRule(nil, verb, prop))
       end
     end
     --Text that ben't wurd is a special case.
-    table.insert(result, #matchesRule(nil, "ben't", "wurd"));
+    table.insert(result, #matchesRule(nil, "ben't", "wurd"))
     --txt/wurds ignoring a poor toll could cause parsing to change.
-    table.insert(result, rules_with["poortoll"] and #matchesRule(nil, "ignor", nil) or 0);
+    table.insert(result, rules_with["poortoll"] and #matchesRule(nil, "ignor", nil) or 0)
     --RP can cause a parse effecting rule to be RP'd. (TODO: For mysterious reasons, this doesn't work with wurd.)
-     table.insert(result, #matchesRule(nil, "rp", "?"));
-    return result;
+    table.insert(result, #matchesRule(nil, "rp", "?"))
+    return result
   end
   
-  local reparse_rule_counts = reparseRuleCounts();
+  local reparse_rule_counts = reparseRuleCounts()
   
   while (changed_reparsing_rule) do
     changed_reparsing_rule = false
     loop_rules = loop_rules + 1
     if (loop_rules > 100) then
-      print("parseRules infinite loop! (100 attempts)")
       destroyLevel("infloop")
       return
     end
@@ -415,7 +419,7 @@ function parseRules(undoing)
     
     postRules()
     
-    local reparse_rule_counts_new = reparseRuleCounts();
+    local reparse_rule_counts_new = reparseRuleCounts()
     
     for i = 1,#reparse_rule_counts do
       if reparse_rule_counts[i] ~= reparse_rule_counts_new[i] then
@@ -1010,7 +1014,7 @@ function addRule(full_rule)
   end
 end
 
-function postRules()
+function postRules(no_sound)
   local all_units = {}
 	
   -- Step 1:
@@ -1140,7 +1144,7 @@ function postRules()
     unit.blocked = false
   end
 
-  if has_new_rule then
+  if has_new_rule and not no_sound then
     playSound("rule", 0.5)
   end
 end
