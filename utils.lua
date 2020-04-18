@@ -3605,7 +3605,7 @@ function buildOptions()
     end
     scene.addButton("back", function() options = false; scene.buildUI() end)
   else
-    scene.addOption("game_scale", "game scale", {{"auto", "auto"}, {"0.5x", 0.5}, {"1x", 1}, {"1.5x", 1.5}, {"2x", 2}, {"4x", 4}})
+    scene.addOption("int_scaling", "integer scaling", {{"on", true}, {"off", false}})
     scene.addOption("particles_on", "particle effects", {{"on", true}, {"off", false}})
     scene.addOption("shake_on", "shakes", {{"on", true}, {"off", false}})
     scene.addOption("scribble_anim", "animated scribbles", {{"on", true}, {"off", false}})

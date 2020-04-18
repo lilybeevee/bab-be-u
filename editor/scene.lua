@@ -1199,31 +1199,38 @@ end
 
 function scene.transformParameters()
   local roomwidth, roomheight
+  local targetwidth, targetheight
 
   if not selector_open then
     roomwidth = mapwidth * TILE_SIZE
     roomheight = mapheight * TILE_SIZE
+
+    targetwidth = (mapwidth + 4) * TILE_SIZE
+    targetheight = (mapheight + 4) * TILE_SIZE
   else
     roomwidth = tile_grid_width * TILE_SIZE
     roomheight = tile_grid_height * TILE_SIZE
+
+    targetwidth = (tile_grid_width + 4) * TILE_SIZE
+    targetheight = (tile_grid_height + 4) * TILE_SIZE + 64
   end
 
   local screenwidth = love.graphics.getWidth() * (is_mobile and 0.75 or 1)
   local screenheight = love.graphics.getHeight() - (is_mobile and sprites["ui/cog"]:getHeight() or 0)
 
-  local scales = {0.25, 0.375, 0.5, 0.75, 1, 2, 3, 4}
-  if selector_open then
-    table.insert(scales, 6, 1.5)
+  if settings["int_scaling"] then
+    targetwidth = roomwidth
+    targetheight = roomheight
+    if selector_open then
+      targetheight = targetheight + 64
+    end
   end
 
-  local scale = scales[1]
-  for _,s in ipairs(scales) do
-    if screenwidth >= roomwidth * s and screenheight >= roomheight * s + (selector_open and 120 or 0) then
-        scale = s
-    else break end
-  end
-  if settings["game_scale"] ~= "auto" and settings["game_scale"] < scale then
-    scale = settings["game_scale"]
+  local scale = 1
+  if settings["int_scaling"] then
+    scale = math.floor(math.min(screenwidth / targetwidth, screenheight / targetheight))
+  else
+    scale = math.min(screenwidth / targetwidth, screenheight / targetheight)
   end
 
   local scaledwidth = screenwidth * (1/scale)
