@@ -667,7 +667,13 @@ function scene.getTransform()
 
   local scale = 1
   if settings["int_scaling"] then
-    scale = math.floor(math.min(screenwidth / targetwidth, screenheight / targetheight))
+    local scales = {0.25, 0.375, 0.5, 0.75, 1, 2, 3, 4}
+    scale = scales[1]
+    for _,s in ipairs(scales) do
+      if screenwidth >= roomwidth * s and screenheight >= roomheight * s then
+        scale = s
+      else break end
+    end
   else
     scale = math.min(screenwidth / targetwidth, screenheight / targetheight)
   end

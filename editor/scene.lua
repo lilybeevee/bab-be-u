@@ -1227,7 +1227,16 @@ function scene.transformParameters()
 
   local scale = 1
   if settings["int_scaling"] then
-    scale = math.floor(math.min(screenwidth / targetwidth, screenheight / targetheight))
+    local scales = {0.25, 0.375, 0.5, 0.75, 1, 2, 3, 4}
+    if selector_open then
+      table.insert(scales, 6, 1.5)
+    end
+    scale = scales[1]
+    for _,s in ipairs(scales) do
+      if screenwidth >= roomwidth * s and screenheight >= roomheight * s + (selector_open and 120 or 0) then
+          scale = s
+      else break end
+    end
   else
     scale = math.min(screenwidth / targetwidth, screenheight / targetheight)
   end
