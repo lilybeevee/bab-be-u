@@ -505,18 +505,24 @@ function scene.keyPressed(key)
           selector_open = false
           searchstr, subsearchstr = "", ""
         end
-      elseif key_down["lctrl"] or key_down["rctrl"] then
+      elseif key_down["lctrl"] or key_down["rctrl"] then 
         if getTile("letter_"..subsearchstr) then
           brush.id = "letter_"..subsearchstr
           brush.special = {}
           selector_open = false
           searchstr, subsearchstr = "", ""
-        elseif #subsearchstr >= 1 and #subsearchstr <= 6 then
+        else
+          local magic = {"%", "(", ")", ".", "+", "-", "*", "?", "[", "^", "$"}
+          for _,char in ipairs(magic) do
+            subsearchstr = subsearchstr:gsub("%%%"..char, "%"..char)
+          end
+          if #subsearchstr >= 1 and #subsearchstr <= 6 then
           brush.id = "letter_custom"
           brush.special = {customletter = subsearchstr}
           --brush.customletter = subsearchstr
           selector_open = false
           searchstr, subsearchstr = "", ""
+          end
         end
       else
         if getTile(subsearchstr) and not getTile(subsearchstr).unsearchable and (settings["baba"] or not getTile(subsearchstr).wobble) then
@@ -586,11 +592,11 @@ function scene.keyPressed(key)
     end
     subsearchstr = searchstr:gsub(" ","")
 
-    --[[ i commented this out bc it broke creating custom letters, idk what it's supposed to do but this commentingmight break smth
+    -- i commented this out bc it broke creating custom letters, idk what it's supposed to do but this commentingmight break smth
     local magic = {"%", "(", ")", ".", "+", "-", "*", "?", "[", "^", "$"}
     for _,char in ipairs(magic) do
       subsearchstr = subsearchstr:gsub("%"..char, "%%%"..char)
-    end]]
+    end
   end
   
   updateSelectorTabs()
