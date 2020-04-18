@@ -657,16 +657,19 @@ function scene.getTransform()
   local screenwidth = love.graphics.getWidth() * (is_mobile and 0.75 or 1)
   local screenheight = love.graphics.getHeight()
 
-  local scales = {0.25, 0.375, 0.5, 0.75, 1, 2, 3, 4}
+  local targetwidth = (mapwidth + 4) * TILE_SIZE
+  local targetheight = (mapheight + 4) * TILE_SIZE
 
-  local scale = scales[1]
-  for _,s in ipairs(scales) do
-    if screenwidth >= roomwidth * s and screenheight >= roomheight * s then
-      scale = s
-    else break end
+  if settings["int_scaling"] then
+    targetwidth = roomwidth
+    targetheight = roomheight
   end
-  if settings["game_scale"] ~= "auto" and settings["game_scale"] < scale then
-    scale = settings["game_scale"]
+
+  local scale = 1
+  if settings["int_scaling"] then
+    scale = math.floor(math.min(screenwidth / targetwidth, screenheight / targetheight))
+  else
+    scale = math.min(screenwidth / targetwidth, screenheight / targetheight)
   end
 
   local scaledwidth = screenwidth * (1/scale)
