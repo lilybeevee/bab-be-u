@@ -480,11 +480,11 @@ function scene.keyPressed(key, isrepeat)
     end
     
    if rules_with and rules_with["rythm"] then
-        if key == "+" or key == "=" then
-            rhythm_interval = rhythm_interval * 0.8
-        elseif key == "-" or key == "_" then
-            rhythm_interval = rhythm_interval / 0.8
-        end
+      if key == "+" or key == "=" then
+        rhythm_interval = rhythm_interval * 0.8
+      elseif key == "-" or key == "_" then
+        rhythm_interval = rhythm_interval / 0.8
+      end
     end
     
     --print(rhythm_interval)
@@ -508,35 +508,35 @@ function scene.keyPressed(key, isrepeat)
     
     -- Replay keys
       if key == "f12" then
-          if not replay_playback then
-              tryStartReplay()
-          else
-              replay_playback = false
-          end
+        if not replay_playback then
+          tryStartReplay()
+        else
+          replay_playback = false
+        end
       end
       
       if replay_playback and not pause then
-          if key == "+" or key == "=" or key == "w" or key == "up" then
-              replay_playback_interval = replay_playback_interval * 0.8
-          elseif key == "-" or key == "_" or key == "s" or key == "down" then
-              replay_playback_interval = replay_playback_interval / 0.8
-          elseif key == "0" or key == ")" then
-              replay_playback_interval = 0.3
-          elseif key == "space" then
-              replay_pause = not replay_pause
-          elseif key == "z" or key == "q" or key == "backspace" or key == "kp0" or key == "o" or key == "a" or key == "left" then
-              replay_pause = true
-              if replay_playback_turn > 1 then
-                  replay_playback_turn = replay_playback_turn - 1
-                  doOneMove(0,0,"undo")
-              end
-              print(replay_playback_turn)
-          elseif key == "d" or key == "right" then
-              doReplayTurn(replay_playback_turn)
-              replay_playback_turn = replay_playback_turn + 1
-          elseif key == "e" then
-              replay_playback_interval = 0
+        if key == "+" or key == "=" or key == "w" or key == "up" then
+          replay_playback_interval = replay_playback_interval * 0.8
+        elseif key == "-" or key == "_" or key == "s" or key == "down" then
+          replay_playback_interval = replay_playback_interval / 0.8
+        elseif key == "0" or key == ")" then
+          replay_playback_interval = 0.3
+        elseif key == "space" then
+          replay_pause = not replay_pause
+        elseif key == "z" or key == "q" or key == "backspace" or key == "kp0" or key == "o" or key == "a" or key == "left" then
+          replay_pause = true
+          if replay_playback_turn > 1 then
+            replay_playback_turn = replay_playback_turn - 1
+            doOneMove(0,0,"undo")
           end
+          print(replay_playback_turn)
+        elseif key == "d" or key == "right" then
+          doReplayTurn(replay_playback_turn)
+          replay_playback_turn = replay_playback_turn + 1
+        elseif key == "e" then
+          replay_playback_interval = 0
+        end
       end
       
     if key == "e" and not currently_winning and not replay_playback then
@@ -1615,7 +1615,7 @@ function scene.draw(dt)
 
   if not pause then gooi.draw() end
   if is_mobile then
-    if rules_with["zawarudo"] then
+    if rules_with["zawarudo"] or rules_with["anti zawarudo"] then
       mobile_controls_timeless:setVisible(true)
       mobile_controls_timeless:setBGImage(sprites[timeless and "ui/time resume" or "ui/timestop"])
     else
@@ -2139,7 +2139,7 @@ function doOneMove(x, y, key, past)
   end
   
   if (key == "e") then
-		if hasProperty(nil,"zawarudo") then
+		if hasProperty(nil,"zawarudo") or hasProperty(nil,"anti zawarudo") then
       --[[
       level_shader = shader_zawarudo
       shader_time = 0

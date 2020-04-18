@@ -1,4 +1,5 @@
 old_rules_with = {}
+old_rules_with = {}
 
 function clearRules()
   local temp = {}
@@ -95,7 +96,10 @@ function getAllText()
   local givers = {}
   
   if rules_with ~= nil and rules_with["giv"] ~= nil then
-    for unit,__ in pairs(getUnitsWithRuleAndCount(nil, "giv", "wurd")) do
+    for unit,_ in pairs(getUnitsWithRuleAndCount(nil, "giv", "wurd")) do
+      table.insert(givers, unit)
+    end
+    for unit,_ in pairs(getUnitsWithRuleAndCount(nil, "giv", "anti wurd")) do
       table.insert(givers, unit)
     end
   end
@@ -111,7 +115,7 @@ function getAllText()
   
   if (#givers > 0) then
     for __,unit in ipairs(units) do
-      if hasProperty(unit, "wurd") or unit.name:starts("this") or matchesGiver(unit, givers) then
+      if hasProperty(unit, "wurd") or hasProperty(unit,"anti wurd") or unit.name:starts("this") or matchesGiver(unit, givers) then
         if not hasCopied then
           result = copyTable(result)
           hasCopied = true
@@ -125,7 +129,7 @@ function getAllText()
     for name,_ in pairs(rules_effecting_names) do
       if units_by_name[name] then
         for __,unit in ipairs(units_by_name[name]) do
-          if hasProperty(unit, "wurd") or unit.name:starts("this") then
+          if hasProperty(unit, "wurd") or hasProperty(unit, "anti wurd") or unit.name:starts("this") then
             if not hasCopied then
               result = copyTable(result)
               hasCopied = true
@@ -156,7 +160,7 @@ function getTextOnTile(x, y)
   
   if rules_with ~= nil and rules_with["giv"] ~= nil then
     for __,unit in ipairs(getUnitsOnTile(x, y)) do
-      if hasRule(unit, "giv", "wurd") then
+      if hasRule(unit, "giv", "wurd") or hasRule(unit, "giv", "anti wurd") then
         table.insert(givers, unit)
       end
     end
@@ -164,7 +168,7 @@ function getTextOnTile(x, y)
   
   if (#givers > 0) then
     for __,unit in ipairs(getUnitsOnTile(x, y)) do
-      if hasProperty(unit, "wurd") or unit.name:starts("this") then
+      if hasProperty(unit, "wurd") or hasProperty(unit, "anti wurd") or unit.name:starts("this") then
         table.insert(result, unit)
       else
         for _,giver in ipairs(givers) do
@@ -178,7 +182,7 @@ function getTextOnTile(x, y)
   else
     for name,_ in pairs(rules_effecting_names) do
       for __,unit in ipairs(getUnitsOnTile(x, y, name)) do
-        if hasProperty(unit, "wurd") or unit.name:starts("this") then
+        if hasProperty(unit, "wurd") or hasProperty(unit, "anti wurd") or unit.name:starts("this") then
           table.insert(result, unit)
         end
       end
@@ -229,7 +233,7 @@ function parseRules(undoing)
   
   --TODO: This works in non-contrived examples, but isn't necessarily robust - for example, if after reparsing, you add one word rule while subtracting another word rule, it'll think nothing has changed. The only way to be ABSOLUTELY robust is to compare that the exact set of parsing effecting rules hasn't changed.
   local function reparseRuleCounts()
-    local props_table = {"wurd", "poortoll", "goarnd", "mirrarnd", "ortho", "diag", "zawarudo", "rong", "slep"}
+    local props_table = {"wurd", "anti wurd", "poortoll", "goarnd", "mirrarnd", "ortho", "diag", "zawarudo", "rong", "slep"}
     local verbs_table = {"be", "giv"}
     local result = {}
     for _,prop in ipairs(props_table) do
@@ -268,7 +272,11 @@ function parseRules(undoing)
     if units_to_check then
       for _,unit in ipairs(units_to_check) do
         local x,y = unit.x,unit.y
-        for i=1,3 do --right, down-right, down
+        local dirs_to_check = {1,2,3}
+        if hasProperty(unit,"anti wurd") then
+          mergeTable(dirs_to_check,{5,6,7})
+        end
+        for _,i in ipairs(dirs_to_check) do
           local dpos = dirs8[i]
           local ndpos = dirs8[rotate8(i)] --opposite direction
 
@@ -280,11 +288,11 @@ function parseRules(undoing)
           
           local validrule = true
           
-          if ((i == 1) or (i == 3)) and hasRule(unit,"be","diag") and not hasRule(unit,"be","ortho") then
+          if (i % 2 == 1) and hasRule(unit,"be","diag") and not hasRule(unit,"be","ortho") then
             validrule = false
           end
           
-          if (i == 2) and (unit.wobble or hasRule(unit,"be","ortho")) and not hasRule(unit,"be","diag") then
+          if (i % 2 == 0) and (unit.wobble or hasRule(unit,"be","ortho")) and not hasRule(unit,"be","diag") then
             validrule = false
           end
           --print(tostring(x)..","..tostring(y)..","..tostring(dx)..","..tostring(dy)..","..tostring(ndx)..","..tostring(ndy)..","..tostring(#getUnitsOnTile(x+ndx, y+ndy, "txt"))..","..tostring(#getUnitsOnTile(x+dx, y+dy, "txt")))
@@ -415,6 +423,7 @@ function parseRules(undoing)
     rules_effecting_names = {}
   
     populateRulesEffectingNames("?", "be", "wurd")
+    populateRulesEffectingNames("?", "be", "anti wurd")
     populateRulesEffectingNames("?", "be", "poortoll")
     if (rules_with["goarnd"] or rules_with["mirrarnd"]) then
       rules_effecting_names["bordr"] = true
@@ -678,7 +687,26 @@ function addRule(full_rule)
     rule_id = rule_id .. unit.id .. ","
   end
   has_new_rule = has_new_rule or new_rule
-
+  
+  if object:starts("anti ") and anti_word_replacements[object:sub(6,-1)] then
+    rules.object.name = anti_word_replacements[object:sub(6,-1)]
+    object = anti_word_replacements[object:sub(6,-1)]
+  end
+  
+  if verb:starts("anti ") and anti_word_replacements[verb:sub(6,-1)] then
+    rules.verb.name = anti_word_replacements[verb:sub(6,-1)]
+    verb = anti_word_replacements[verb:sub(6,-1)]
+  end
+  
+  if verb:starts("anti ") and anti_verb_mirrors[verb:sub(6,-1)] then
+    subject = rules.object.name
+    object = rules.subject.name
+    local old_object = copyTable(rules.object)
+    rules.object = copyTable(rules.subject)
+    rules.subject = old_object
+    rules.verb.name = verb:sub(6,-1)
+  end
+  
   if rule_id ~= "" and new_rule and not past_rules[rule_id] and not undoing then
     -- actually i dont know how rule stacking works ehehe
     local r1, subject_conds = getPastConds(rules.subject.conds or {})
@@ -1113,21 +1141,26 @@ end
 
 function shouldReparseRules()
   if should_parse_rules then return true end
-  if shouldReparseRulesIfConditionalRuleExists("?", "be", "wurd") then return true end
-  if shouldReparseRulesIfConditionalRuleExists("?", "be", "poortoll") then return true end
-  --TODO: We care about text, specific text and wurd units - this can't be easily specified to matchesRule.
-  if shouldReparseRulesIfConditionalRuleExists("?", "be", "goarnd") then return true end
-  if shouldReparseRulesIfConditionalRuleExists("?", "be", "mirrarnd") then return true end
-  if shouldReparseRulesIfConditionalRuleExists("lvl", "be", "goarnd", true) then return true end
-  if shouldReparseRulesIfConditionalRuleExists("lvl", "be", "mirrarnd", true) then return true end
-  if shouldReparseRulesIfConditionalRuleExists("?", "be", "ortho") then return true end
-  if shouldReparseRulesIfConditionalRuleExists("?", "be", "diag") then return true end
-  if shouldReparseRulesIfConditionalRuleExists("?", "ben't", "wurd") then return true end
-  if shouldReparseRulesIfConditionalRuleExists("?", "be", "zawarudo") then return true end
-  if shouldReparseRulesIfConditionalRuleExists("?", "be", "rong") then return true end
-  if shouldReparseRulesIfConditionalRuleExists("?", "be", "slep") then return true end
+  local rules_to_check = {
+    {"?","be","wurd"},
+    {"?","be","anti wurd"},
+    {"?","be","poortoll"},
+    {"?","be","goarnd"},
+    {"?","be","mirrarnd"},
+    {"lvl","be","goarnd", true},
+    {"lvl","be","mirrarnd", true},
+    {"?","be","ortho"},
+    {"?","be","diag"},
+    {"?","ben't","wurd"},
+    {"?","be","zawarudo"},
+    {"?","be","rong"},
+    {"?","be","slep"},
+  }
   if rules_with["poortoll"] then
-    if shouldReparseRulesIfConditionalRuleExists("?", "ignor", "?", true) then return true end
+    table.insert(rules_to_check, {"?","ignor","?",true})
+  end
+  for _,rule in ipairs(rules_to_check) do
+    if shouldReparseRulesIfConditionalRuleExists(unpack(rule)) then return true end
   end
   return false
 end

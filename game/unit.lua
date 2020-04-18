@@ -881,7 +881,7 @@ function updateUnits(undoing, big_update)
               table.insert(to_destroy,on)
               playSound("break")
             else
-              table.insert(time_destroy,on.id)
+              table.insert(time_destroy,{on.id,timeless})
               addUndo({"time_destroy",on.id})
             end
             addParticles("destroy", on.x, on.y, getUnitColor(on))
@@ -891,7 +891,7 @@ function updateUnits(undoing, big_update)
               table.insert(to_destroy,unit)
               playSound("break")
             else
-              table.insert(time_destroy,unit.id)
+              table.insert(time_destroy,{unit.id,timeless})
               addUndo({"time_destroy",unit.id})
             end
             addParticles("destroy", unit.x, unit.y, getUnitColor(unit))
@@ -921,11 +921,11 @@ function updateUnits(undoing, big_update)
               shakeScreen(0.3, 0.1)
             else
               if ignore_unit then
-                table.insert(time_destroy,unit.id)
+                table.insert(time_destroy,{unit.id,timeless})
                 addUndo({"time_destroy",unit.id})
               end
               if ignore_on then
-                table.insert(time_destroy,on.id)
+                table.insert(time_destroy,{on.id,timeless})
                 addUndo({"time_destroy",on.id})
               end
               table.insert(time_sfx,"sink")
@@ -952,11 +952,32 @@ function updateUnits(undoing, big_update)
             playSound("break")
             shakeScreen(0.3, 0.1)
           else
-            table.insert(time_destroy,unit.id)
+            table.insert(time_destroy,{unit.id,timeless})
 						addUndo({"time_destroy",unit.id})
             table.insert(time_sfx,"break")
           end
           addParticles("destroy", unit.x, unit.y, getUnitColor(unit))
+        end
+      end
+    end
+    
+    to_destroy = handleDels(to_destroy)
+    
+    local isstrong = getUnitsWithEffect("anti ouch")
+    for _,unit in ipairs(isstrong) do
+      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"thicc"))
+      for _,on in ipairs(stuff) do
+        if on ~= unit and sameFloat(on, unit) and ignoreCheck(on, unit) then
+          if timecheck(unit,"be","anti ouch") and timecheck(on) then
+            table.insert(to_destroy, on)
+            playSound("break")
+            shakeScreen(0.3, 0.1)
+          else
+            table.insert(time_destroy,{on.id,timeless})
+						addUndo({"time_destroy",on.id})
+            table.insert(time_sfx,"break")
+          end
+          addParticles("destroy", on.x, on.y, getUnitColor(on))
         end
       end
     end
@@ -973,7 +994,7 @@ function updateUnits(undoing, big_update)
             playSound("hotte")
             shakeScreen(0.3, 0.1)
           else
-            table.insert(time_destroy,on.id)
+            table.insert(time_destroy,{on.id,timeless})
 						addUndo({"time_destroy",on.id})
             table.insert(time_sfx,"hotte")
           end
@@ -983,18 +1004,6 @@ function updateUnits(undoing, big_update)
     end
     
     to_destroy = handleDels(to_destroy)
-    
-    local iscool = getUnitsWithEffect("B)")
-    for _,unit in ipairs(iscool) do
-      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"thicc"))
-      for _,on in ipairs(stuff) do
-        if hasU(on) and sameFloat(unit, on) and ignoreCheck(on, unit, "B)") then
-          if timecheck(unit,"be","B)") and (timecheckUs(on)) then
-            on.cool = true
-          end
-        end
-      end
-    end
     
     local isdefeat = getUnitsWithEffect(":(")
     for _,unit in ipairs(isdefeat) do
@@ -1006,13 +1015,49 @@ function updateUnits(undoing, big_update)
             playSound("break")
             shakeScreen(0.3, 0.2)
           else
-            table.insert(time_destroy,on.id)
+            table.insert(time_destroy,{on.id,timeless})
 						addUndo({"time_destroy",on.id})
             table.insert(time_sfx,"break")
           end
           addParticles("destroy", unit.x, unit.y, getUnitColor(unit))
         end
       end
+    end
+    
+    to_destroy = handleDels(to_destroy)
+    
+    local isantidefeat = getUnitsWithEffect("anti :(")
+    for _,unit in ipairs(isantidefeat) do
+      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"thicc"))
+      for _,on in ipairs(stuff) do
+        if hasU(on) and sameFloat(unit, on) and ignoreCheck(on, unit, ":(") then
+          if timecheck(unit,"be","anti :(") and (timecheckUs(on)) then
+            table.insert(to_destroy, unit)
+            playSound("break")
+            shakeScreen(0.3, 0.2)
+          else
+            table.insert(time_destroy,{unit.id,timeless})
+						addUndo({"time_destroy",unit.id})
+            table.insert(time_sfx,"break")
+          end
+          addParticles("destroy", unit.x, unit.y, getUnitColor(on))
+        end
+      end
+    end
+    
+    to_destroy = handleDels(to_destroy)
+    
+    local isntprotecc = getUnitsWithEffect("anti protecc")
+    for _,unit in ipairs(isntprotecc) do
+      if timecheck(unit,"be","anti protecc") then
+        table.insert(to_destroy, unit)
+        playSound("break")
+      else
+        table.insert(time_destroy,{unit.id,timeless})
+        addUndo({"time_destroy",unit.id})
+        table.insert(time_sfx,"break")
+      end
+      addParticles("destroy", unit.x, unit.y, getUnitColor(unit))
     end
     
     to_destroy = handleDels(to_destroy)
@@ -1037,11 +1082,11 @@ function updateUnits(undoing, big_update)
               shakeScreen(0.3, 0.1)
             else
               if ignore_unit then
-                table.insert(time_destroy,unit.id)
+                table.insert(time_destroy,{unit.id,timeless})
                 addUndo({"time_destroy",unit.id})
               end
               if ignore_on then
-                table.insert(time_destroy,on.id)
+                table.insert(time_destroy,{on.id,timeless})
                 addUndo({"time_destroy",on.id})
               end
               table.insert(time_sfx,"break")
@@ -1072,7 +1117,7 @@ function updateUnits(undoing, big_update)
             playSound("snacc")
             shakeScreen(0.3, 0.15)
           else
-            table.insert(time_destroy,on.id)
+            table.insert(time_destroy,{on.id,timeless})
 						addUndo({"time_destroy",on.id})
             table.insert(time_sfx,"snacc")
           end
@@ -1080,6 +1125,8 @@ function updateUnits(undoing, big_update)
         end
       end
     end
+    
+    to_destroy = handleDels(to_destroy)
     
     local isreset = getUnitsWithEffect("tryagain")
     for _,unit in ipairs(isreset) do
@@ -1098,7 +1145,21 @@ function updateUnits(undoing, big_update)
       end
     end
     
-    to_destroy = handleDels(to_destroy)
+    local isreplay = getUnitsWithEffect("anti tryagain")
+    for _,unit in ipairs(isreplay) do
+      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"thicc"))
+      for _,on in ipairs(stuff) do
+        if hasU(on) and sameFloat(unit, on) and ignoreCheck(on, unit, "tryagain") then
+          if timecheck(unit,"be","anti tryagain") and (timecheckUs(on)) then
+            tryStartReplay()
+          else
+            addUndo({"timeless_replay_add"})
+            timeless_replay = true
+            addParticles("bonus", unit.x, unit.y, getUnitColor(unit))
+          end
+        end
+      end
+    end
     
     local iscrash = matchesRule(nil,"be","delet")
     for _,ruleparent in ipairs(iscrash) do
@@ -1131,11 +1192,30 @@ function updateUnits(undoing, big_update)
             table.insert(to_destroy, unit)
             playSound("bonus")
           else
-            table.insert(time_destroy,unit.id)
+            table.insert(time_destroy,{unit.id,timeless})
 						addUndo({"time_destroy",unit.id})
             table.insert(time_sfx,"bonus")
           end
           addParticles("bonus", unit.x, unit.y, getUnitColor(unit))
+        end
+      end
+    end
+    
+    local isbonus = getUnitsWithEffect("anti :o")
+    for _,unit in ipairs(isbonus) do
+      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"thicc"))
+      for _,on in ipairs(stuff) do
+        if hasU(on) and sameFloat(unit, on) and ignoreCheck(on, unit, ":o") then
+          writeSaveFile(true, {"levels", level_filename, "bonus"})
+          if timecheck(unit,"be","anti :o") and (timecheckUs(on)) then
+            table.insert(to_destroy, on)
+            playSound("bonus")
+          else
+            table.insert(time_destroy,{on.id,timeless})
+						addUndo({"time_destroy",on.id})
+            table.insert(time_sfx,"bonus")
+          end
+          addParticles("bonus", on.x, on.y, getUnitColor(on))
         end
       end
     end
@@ -1233,8 +1313,30 @@ function updateUnits(undoing, big_update)
         end
       end
     end
+    
+    local issuper = getUnitsWithEffect("anti delet")
+    local lvltransforms = {}
+    for _,unit in ipairs(issuper) do
+      local stuff = getUnitsOnTile(unit.x, unit.y, nil, true, nil, nil, hasProperty(unit,"thicc"))
+      for _,on in ipairs(stuff) do
+        if hasU(on) and sameFloat(unit, on) and ignoreCheck(on, unit, ":)") then
+          if timecheck(unit,"be","anti delet") and (timecheckUs(on)) then
+            writeSaveFile(true, {"levels", level_filename, "won"})
+            writeSaveFile(true, {"levels", level_filename, "bonus"})
+            table.insert(lvltransforms, unit.name)
+          else
+            addUndo({"timeless_win_add", on.id})
+            table.insert(timeless_win,on.id)
+            addParticles("bonus", unit.x, unit.y, getUnitColor(unit))
+          end
+        end
+      end
+      if #lvltransforms > 0 then
+        doWin("transform", lvltransforms)
+      end
+    end
 
-    function doOneCreate(rule, creator, createe)
+    local function doOneCreate(rule, creator, createe)
       local object = createe
       if (createe == "txt") then
         createe = "txt_"..creator.fullname
@@ -1357,6 +1459,12 @@ function updateUnits(undoing, big_update)
     addUndo({"timeless_reset_remove"})
     timeless_reset = false
     doTryAgain()
+  end
+  
+  if timeless_replay and not timeless then
+    addUndo({"timeless_replay_remove"})
+    timeless_replay = false
+    tryStartReplay()
   end
   
   if timeless_crash and not timeless then
@@ -1957,14 +2065,15 @@ function handleTimeDels(time_destroy)
   local convert = false
   local del_units = {}
   local already_added = {}
-  for _,unitid in ipairs(time_destroy) do
+  for _,data in ipairs(time_destroy) do
+    local unitid = data[1]
     if unitid > 0 then
       unit = units_by_id[unitid]
     else
       unit = cursors_by_id[unitid]
     end
     addUndo({"time_destroy_remove", unitid})
-    if unit ~= nil and not hasProperty(unit, "protecc") then
+    if unit ~= nil and not hasProperty(unit, "protecc") and timeless == not data[2] then
       if not already_added[unitid] then
         addParticles("destroy",unit.x,unit.y,getUnitColor(unit))
       end

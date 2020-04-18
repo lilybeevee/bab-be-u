@@ -50,7 +50,7 @@ function parse(words, dir, no_verb_cond)
   
   local units = {}
   local verbs = {}
-  while words[1].type and (words[1].type.object or words[1].type.cond_prefix or words[1].type.parenthesis) or (words[2] and ((words[2].name == "txt" or words[2].name == "txtn't") or (words[2].type.gang and (words[1].type.object or words[1].type.gang_prefix) and not words[1].name:starts("txt_") and not words[1].name:ends("n't")))) do
+  while words[1].type and (words[1].type.anti or words[1].type.object or words[1].type.cond_prefix or words[1].type.parenthesis) or (words[2] and ((words[2].name == "txt" or words[2].name == "txtn't") or (words[2].type.gang and (words[1].type.object or words[1].type.gang_prefix) and not words[1].name:starts("txt_") and not words[1].name:ends("n't")))) do
     local unit, words_ = findUnit(copyTable(words), extra_words, dir, true, no_verb_cond, true) -- outer unit doesn't need to worry about enclosure (nothing farther out to confuse it with)
     if not unit then break end
     words = words_
@@ -67,12 +67,12 @@ function parse(words, dir, no_verb_cond)
   end
   if #units == 0 then return false end
   
-  while words[1] and words[1].type and words[1].type.verb do
+  while words[1] and words[1].type and (words[1].type.verb or (words[1].type.anti and words[2] and words[2].type and words[2].type.verb)) do
     local verb, words_ = findVerbPhrase(copyTable(words), extra_words, dir, true, false, no_verb_cond)
     if not verb then break end
     words = words_
     table.insert(verbs, verb)
-    if words[1] and words[1].type and words[1].type["and"] and words[2] and words[2].type and words[2].type.verb and words[3] then
+    if words[1] and words[1].type and words[1].type["and"] and words[2] and words[2].type and words[3] and (words[2].type.verb or (words[2].type.anti and words[3].type and words[3].type.verb and words[4])) then
       table.insert(extra_words, words[1])
       table.remove(words, 1)
       if #words == 0 then return false end
@@ -120,11 +120,24 @@ function findUnit(words, extra_words_, dir, outer, no_verb_cond, is_subject)
   
   local prefix_object
   local andd
-  while words[1].type and (words[1].type.cond_prefix or (words[1].type.cond_compare and not is_subject)) do
+  while words[1].type and (
+       (words[1].type.cond_prefix) or
+       (words[1].type.cond_compare and not is_subject) or
+       (words[1].type.anti and words[2] and words[2].type and (words[2].type.cond_prefix or (words[2].type.cond_compare and not is_subject))))
+  do
+    local anti
+    if words[1].type.anti then
+      anti = copyTable(words[1])
+      table.remove(words, 1)
+    end
     local prefix = copyTable(words[1])
     table.remove(words, 1)
     if #words == 0 then return end
     prefix.mods = prefix.mods or {}
+    if anti then
+      prefix.name = "anti "..prefix.name
+      table.insert(prefix.mods, anti)
+    end
     local nt = false
     while words[1].type["not"] do
       nt = not nt
@@ -168,8 +181,17 @@ function findUnit(words, extra_words_, dir, outer, no_verb_cond, is_subject)
   
   local first_infix = true
   while words[1] and words[1].type and
-  (words[1].type.cond_infix or (words[1].type.direction and words[2] and (words[2].name == "arond" or words[2].name == "meow")))
-  and (first_infix or enclosed) and (not no_verb_cond or not words[1].type.verb) do
+       (words[1].type.cond_infix or
+       (words[1].type.direction and words[2] and (words[2].name == "arond" or words[2].name == "meow")) or
+       (words[1].type.anti and words[2] and words[2].type and words[2].type.cond_infix)) and
+       (first_infix or enclosed) and
+       (not no_verb_cond or not words[1].type.verb)
+  do
+    local anti
+    if words[1].type.anti then
+      anti = copyTable(words[1])
+      table.remove(words, 1)
+    end
     local infix = copyTable(words[1])
     local infix_orig = infix
     infix.mods = infix.mods or {}
@@ -187,7 +209,7 @@ function findUnit(words, extra_words_, dir, outer, no_verb_cond, is_subject)
         table.remove(words, numc)
       else break end
     end]]
-    local directionableWord = function(name)
+    local function directionableWord(name)
       if words[1].type.direction and words[2].name == name then
         infix.name = infix.name.." "..name
         table.insert(infix.mods, words[2])
@@ -234,6 +256,10 @@ function findUnit(words, extra_words_, dir, outer, no_verb_cond, is_subject)
       end
       table.insert(conds, infix)
     else
+      if anti then
+        infix.name = "anti "..infix.name
+        table.insert(infix.mods, anti)
+      end
       local nt = false
       while words[1].type["not"] do
         nt = not nt
@@ -288,7 +314,7 @@ function findUnit(words, extra_words_, dir, outer, no_verb_cond, is_subject)
         if #words == 0 then break end
       end
     end
-    if enclosed and words[1] and words[1].type["and"] and words[2] and (words[2].type.cond_infix or (words[2].type.direction and words[3].name == "arond")) and (not no_verb_cond or not words[1].type.verb)  then
+    if enclosed and words[1] and words[1].type["and"] and words[2] and (words[2].type.cond_infix or (words[2].type.direction and words[3] and words[3].type and (words[3].name == "arond" or words[3].name == "meow")) or (words[2].type.anti and words[3] and words[3].type and words[3].type.cond_infix)) and (not no_verb_cond or not words[1].type.verb) then
       andd = words[1]
       table.remove(words, 1)
       if #words == 0 then break end
@@ -387,17 +413,31 @@ function findClass(words, extra_words_)
 end
 
 function findProperty(words)
+  local anti
+  if words[1].type and words[1].type.anti then
+    anti = copyTable(table.remove(words, 1))
+    if #words == 0 then return end
+  end
+  
   local prefix
   if words[1].name == "samepaint" or words[1].name == "samefloat" or words[1].name == "sameface" then
-    prefix = table.remove(words, 1)
+    prefix = copyTable(table.remove(words, 1))
     if #words == 0 or words[1].name ~= "glued" then return end
   end
-
+  
+  if prefix and words[1].type and words[1].type.anti then return end
+  
   local unit
   if words[1].type and words[1].type.property then
     unit = copyTable(table.remove(words, 1))
   end
-
+  
+  if anti then
+    local thing = prefix or unit
+    thing.name = "anti "..thing.name
+    thing.mods = thing.mods or {}
+    table.insert(thing.mods, anti)
+  end
   if prefix then
     unit.mods = unit.mods or {}
     table.insert(unit.mods, prefix)
@@ -412,6 +452,11 @@ end
 function findVerbPhrase(words, extra_words_, dir, enclosed, noconds, no_verb_cond)
   local extra_words = {}
   local objects = {}
+  local anti
+  if words[1].type.anti then
+    anti = copyTable(words[1])
+    table.remove(words, 1)
+  end
   local verb = copyTable(words[1])
   verb.mods = verb.mods or {}
   table.remove(words, 1)
@@ -421,6 +466,10 @@ function findVerbPhrase(words, extra_words_, dir, enclosed, noconds, no_verb_con
     table.insert(verb.mods, words[1])
     table.remove(words, 1)
     if #words == 0 then return nil end
+  end
+  if anti then
+    verb.name = "anti "..verb.name
+    table.insert(verb.mods, anti)
   end
   local andd
   while true do

@@ -157,6 +157,11 @@ function undoOneAction(turn, i, v, ignore_no_undo)
   elseif action == "timeless_reset_remove" then
     --causes an infinite loop, and kind of meaningless by definition I guess
     --timeless_reset = true
+  elseif action == "timeless_replay_add" then
+    timeless_replay = false
+  elseif action == "timeless_replay_remove" then
+    --actually not meaningless by definition since you can undo winning
+    timeless_replay = true
   elseif action == "timeless_crash_add" then
 		timeless_crash = false
   elseif action == "timeless_crash_remove" then

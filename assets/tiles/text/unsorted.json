@@ -231,5 +231,13 @@
     "painted": [true, true],
     "desc": "THEMSELF: Refers to the subject of the rule - uses correct pronouns!",
     "tags": ["itself", "herself", "himself", "themselves"]
+  },
+  {
+    "name": "txt_anti",
+    "sprite": ["txt/anti"],
+    "types": ["anti"],
+    "color": [[2, 2]],
+    "desc": "ANTI: Inverses the word after it to do the opposite. Currently not complete, so don't go trying it out yet.",
+    "tags": ["reverse", "vitellary"]
   }
 ]

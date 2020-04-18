@@ -81,6 +81,7 @@ function clear()
   timeless_win = {}
   timeless_unwin = {}
   timeless_reset = false
+  timeless_replay = false
   timeless_crash = false
   timeless_yote = {}
   firsttimestop = true
@@ -959,21 +960,20 @@ function countProperty(unit, prop, ignore_flye)
 end
 
 function hasU(unit)
-  return hasProperty(unit,"u") 
-  or hasProperty(unit,"utoo")
-  or hasProperty(unit,"utres")
-  or hasProperty(unit,"you")
-  or hasProperty(unit,"y'all")
-  or hasProperty(unit,"w")
+  for _,prop in ipairs{"u","utoo","utres","y'all","w","you"} do
+    if hasProperty(unit,prop) or hasProperty(unit,"anti "..prop) then
+      return true
+    end
+  end
+  return false
 end
 
 function getUs()
-  local yous = getUnitsWithEffect("u")
-  mergeTable(yous,getUnitsWithEffect("utoo"))
-  mergeTable(yous,getUnitsWithEffect("utres"))
-  mergeTable(yous,getUnitsWithEffect("you"))
-  mergeTable(yous,getUnitsWithEffect("y'all"))
-  mergeTable(yous,getUnitsWithEffect("w"))
+  local yous = {}
+  for _,prop in ipairs{"u","utoo","utres","y'all","w","you"} do
+    mergeTable(yous,getUnitsWithEffect(prop))
+    mergeTable(yous,getUnitsWithEffect("anti "..prop))
+  end
   return yous
 end
 
@@ -985,6 +985,11 @@ function testConds(unit, conds, compare_with, first_unit) --cond should be a {co
   local endresult = true
   for _,cond in ipairs(conds or {}) do
     local condtype = cond.name
+    
+    if condtype:starts("anti ") and anti_word_replacements[condtype:sub(6,-1)] then
+      condtype = anti_word_replacements[condtype:sub(6,-1)]
+    end
+    
     local lists = {} -- for iterating
     local sets = {} -- for checking
 
@@ -1046,12 +1051,17 @@ function testConds(unit, conds, compare_with, first_unit) --cond should be a {co
       end
     end
     
-
     local result = true
     local cond_not = false
+    
+    if condtype:starts("anti ") and anti_word_reverses[condtype:sub(6,-1)] then
+      condtype = condtype:sub(6,-1)
+      cond_not = not cond_not
+    end
+    
     if condtype:ends("n't") then
       condtype = condtype:sub(1, -4)
-      cond_not = true
+      cond_not = not cond_not
     end
 
     local x, y = unit.x, unit.y
@@ -2584,6 +2594,7 @@ function mergeTable(t, other)
       end
     end
   end
+  return t
 end
 
 function fullScreen()
@@ -3010,7 +3021,7 @@ function timecheck(unit,verb,prop)
       end
     end
   else
-    zw_pass = true
+    zw_pass = not hasProperty(unit,"anti zawarudo")
   end
   local rhythm_pass = false
   if rules_with["rythm"] then
