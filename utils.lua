@@ -3526,7 +3526,9 @@ function drawCustomLetter(text, x, y, rot, sx, sy, ox, oy)
   love.graphics.translate(-(ox or 0), -(oy or 0))
   for i,q in ipairs(custom_letter_quads[#(text or "-")]) do
     local quad, dx, dy = unpack(q)
-    love.graphics.draw(sprites["letters_"..(text:sub(i,i) or "a")] or sprites["wut"], quad, dx, dy)
+    local char = text:sub(i,i)
+    if char == "*" then char = "asterisk" end
+    love.graphics.draw(sprites["letters_"..char] or sprites["wut"], quad, dx, dy)
   end
   love.graphics.pop()
 end
