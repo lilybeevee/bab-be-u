@@ -203,20 +203,16 @@ function loadMap()
         if version == 1 then
           local tile, x, y, dir
           tile, x, y, dir, pos = love.data.unpack(PACK_UNIT_V1, map, pos)
-          if inBounds(x, y) then
-            createUnit(tile, x + offset.x, y + offset.y, dir)
-          end
+          createUnit(tile, x + offset.x, y + offset.y, dir)
         elseif version == 2 or version == 3 then
           local id, tile, x, y, dir, specials
           id, tile, x, y, dir, specials, pos = love.data.unpack(version == 2 and PACK_UNIT_V2 or PACK_UNIT_V3, map, pos)
-          if inBounds(x + offset.y, y + offset.y) then
-            local unit = createUnit(tile, x + offset.x, y + offset.y, dir, false, id)
-            local spos = 1
-            while spos <= #specials do
-              local k, v
-              k, v, spos = love.data.unpack(PACK_SPECIAL_V2, specials, spos)
-              unit.special[k] = v
-            end
+          local unit = createUnit(tile, x + offset.x, y + offset.y, dir, false, id)
+          local spos = 1
+          while spos <= #specials do
+            local k, v
+            k, v, spos = love.data.unpack(PACK_SPECIAL_V2, specials, spos)
+            unit.special[k] = v
           end
         end
       end

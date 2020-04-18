@@ -1019,10 +1019,11 @@ function scene.update(dt)
       end
     elseif (not settings_open or not mouseOverBox(settings_ui.x, settings_ui.y, settings_ui.w, settings_ui.h)) and not level_dialogue.enabled then
       local hx,hy = getHoveredTile()
-      if hx ~= nil and ((selector_open and inBounds(hx, hy)) or (not selector_open and inBounds(hx, hy, true))) then
-        local tileid = hx + hy * mapwidth
-
-        local hovered = {}
+      local ctrl_active = key_down["lctrl"] or key_down["rctrl"] or (is_mobile and mobile_stackmode == "ctrl")
+      local shift_active = key_down["lshift"] or key_down["rshift"] or (is_mobile and mobile_stackmode == "shift") or ctrl_active
+      local tileid = hx..","..hy
+      local hovered = {}
+      if hx ~= nil and ((selector_open and inBounds(hx, hy)) or (not selector_open)) then
         if unitsByTile(hx, hy) then
           for _,v in ipairs(unitsByTile(hx, hy)) do
             table.insert(hovered, v)
@@ -1035,15 +1036,13 @@ function scene.update(dt)
             local new_unit = nil
             local existing = nil
             local ctrl_first_press = false
-            local ctrl_active = key_down["lctrl"] or key_down["rctrl"] or (is_mobile and mobile_stackmode == "ctrl")
-            local shift_active = key_down["lshift"] or (is_mobile and mobile_stackmode == "shift") or ctrl_active
             if ctrl_active and brush.mode == "none" then
               ctrl_first_press = true
             end
             if #hovered >= 1 then
               for _,unit in ipairs(hovered) do
                 if unit.tile == brush.id and (unit.tile ~= getTile("letter_custom") or unit.special.customletter == brush.special.customletter)
-                  and matchesColor(unit.color_override, brush.color, true) then
+                and matchesColor(unit.color_override, brush.color, true) then
                   if not (ctrl_active or selectorhold) then
                     existing = unit
                   end
@@ -1071,7 +1070,7 @@ function scene.update(dt)
                   existing.dir = brush.dir
                   painted = true
                   new_unit = existing
-                elseif (not ctrl_active or ctrl_first_press) and (not is_mobile or mobile_firstpress) then
+                elseif (not ctrl_active or ctrl_first_press) and (not is_mobile or mobile_firstpress) and (inBounds(hx,hy) or shift_active) then
                   new_unit = createUnit(brush.id, hx, hy, brush.dir)
                   if type(brush.color) == "string" then
                     new_unit[brush.color] = true
@@ -1115,42 +1114,42 @@ function scene.update(dt)
           end
           mobile_firstpress = false
         end
-        if (love.mouse.isDown(2) or (is_mobile and mobile_picking and love.mouse.isDown(1))) and not selector_open then
-          if brush.mode ~= "picking" then
-            if #hovered >= 1 then
-              brush.picked_tile = tileid
-              if brush.picked_tile == tileid and brush.picked_index > 0 then
-                local new_index = brush.picked_index + 1
-                if new_index > #hovered then
-                  new_index = 1
-                end
-                brush.picked_index = new_index
-                brush.id = hovered[new_index].tile
-                brush.color = hovered[new_index].color_override
-                --brush.customletter = hovered[new_index].special.customletter
-                if hovered[new_index].name == "lin" then
-                  last_lin_hidden = (hovered[new_index].special.visibility == "hidden")
-                end
-                brush.special = hovered[new_index].special
-              else
-                brush.id = hovered[1].tile 
-                brush.color = hovered[1].color_override
-                --brush.customletter = hovered[1].special.customletter
-                if hovered[1].name == "lin" then
-                  last_lin_hidden = (hovered[1].special.visibility == "hidden")
-                end
-                brush.special = hovered[1].special
-                brush.picked_index = 1
+      end
+      if (love.mouse.isDown(2) or (is_mobile and mobile_picking and love.mouse.isDown(1))) and not selector_open then
+        if brush.mode ~= "picking" then
+          if #hovered >= 1 then
+            brush.picked_tile = tileid
+            if brush.picked_tile == tileid and brush.picked_index > 0 then
+              local new_index = brush.picked_index + 1
+              if new_index > #hovered then
+                new_index = 1
               end
-              brush.mode = "picking"
+              brush.picked_index = new_index
+              brush.id = hovered[new_index].tile
+              brush.color = hovered[new_index].color_override
+              --brush.customletter = hovered[new_index].special.customletter
+              if hovered[new_index].name == "lin" then
+                last_lin_hidden = (hovered[new_index].special.visibility == "hidden")
+              end
+              brush.special = hovered[new_index].special
             else
-              brush.id = nil
-              brush.special = {}
-              brush.picked_tile = nil
-              brush.picked_index = 0
-              brush.color = nil
-              mobile_picking = false
+              brush.id = hovered[1].tile 
+              brush.color = hovered[1].color_override
+              --brush.customletter = hovered[1].special.customletter
+              if hovered[1].name == "lin" then
+                last_lin_hidden = (hovered[1].special.visibility == "hidden")
+              end
+              brush.special = hovered[1].special
+              brush.picked_index = 1
             end
+            brush.mode = "picking"
+          else
+            brush.id = nil
+            brush.special = {}
+            brush.picked_tile = nil
+            brush.picked_index = 0
+            brush.color = nil
+            mobile_picking = false
           end
         end
       end
@@ -1926,15 +1925,19 @@ end
 function scene.updateMap()
   map_ver = 5
   local map = {}
+  --[[
   for x = 0, mapwidth-1 do
     for y = 0, mapheight-1 do
-      local tileid = x + y * mapwidth
       if unitsByTile(x, y) then
         for _,unit in ipairs(unitsByTile(x, y)) do
           table.insert(map, {id = unit.id, tile = unit.tile, x = unit.x, y = unit.y, dir = unit.dir, special = unit.special, color = unit.color_override})
         end
       end
     end
+  end
+  ]]
+  for _,unit in ipairs(units) do
+    table.insert(map, {id = unit.id, tile = unit.tile, x = unit.x, y = unit.y, dir = unit.dir, special = unit.special, color = unit.color_override})
   end
   local info = {
     name = level_name,
