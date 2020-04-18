@@ -118,7 +118,7 @@ function doMovement(movex, movey, key)
     movey = 0
   end
   walkdirchangingrulesexist = rules_with["munwalk"] or rules_with["sidestep"] or rules_with["diagstep"] or rules_with["hopovr"] or rules_with["knightstep"]
-  sliderulesexist = rules_with["icyyyy"] or rules_with["goooo"] or rules_with["reflecc"]
+  sliderulesexist = rules_with["icyyyy"] or rules_with["goooo"] or rules_with["reflecc"] or rules_with["anti icyyyy"] or rules_with["anti goooo"]
   local played_sound = {}
   local slippers = {}
   local flippers = {}
@@ -1191,7 +1191,7 @@ function applySlide(mover, already_added, moving_units_next)
       if (launchness > 0) then
         if (not did_clear_existing) then
           for i = #mover.moves,1,-1 do
-            if mover.moves[i].reason == "reflecc" or mover.moves[i].reason == "goooo" or mover.moves[i].reason == "icyyyy" then
+            if mover.moves[i].reason == "reflecc" or mover.moves[i].reason == "goooo" or mover.moves[i].reason == "icyyyy" or mover.moves[i].reason == "anti goooo" or mover.moves[i].reason == "anti icyyyy" then
               table.remove(mover.moves, i)
             end
           end
@@ -1201,6 +1201,29 @@ function applySlide(mover, already_added, moving_units_next)
         --TODO: CLEANUP: Figure out a nice way to not have to pass this around/do this in a million places.
         --movedebug("launching:"..mover.fullname..","..v.dir)
         table.insert(mover.moves, 1, {reason = "goooo", dir = v.dir, times = launchness})
+        if not already_added[mover] then
+          --movedebug("did add launcher")
+          table.insert(moving_units_next, mover)
+          already_added[mover] = true
+        end
+        did_launch = true
+      end
+    end
+    if (sameFloat(mover, v) and not v.already_moving) and timecheck(v) and ignoreCheck(mover,v,"anti goooo") then
+      local launchness = countProperty(v, "anti goooo")
+      if (launchness > 0) then
+        if (not did_clear_existing) then
+          for i = #mover.moves,1,-1 do
+            if mover.moves[i].reason == "reflecc" or mover.moves[i].reason == "goooo" or mover.moves[i].reason == "icyyyy" or mover.moves[i].reason == "anti goooo" or mover.moves[i].reason == "anti icyyyy" then
+              table.remove(mover.moves, i)
+            end
+          end
+          did_clear_existing = true
+        end
+        --the new moves will be at the start of the unit's moves data, so that it takes precedence over what it would have done next otherwise
+        --TODO: CLEANUP: Figure out a nice way to not have to pass this around/do this in a million places.
+        --movedebug("launching:"..mover.fullname..","..v.dir)
+        table.insert(mover.moves, 1, {reason = "anti goooo", dir = dirAdd(v.dir, 4), times = launchness})
         if not already_added[mover] then
           --movedebug("did add launcher")
           table.insert(moving_units_next, mover)
@@ -1219,7 +1242,7 @@ function applySlide(mover, already_added, moving_units_next)
       if (slideness > 0) then
         if (not did_clear_existing) then
           for i = #mover.moves,1,-1 do
-            if mover.moves[i].reason == "reflecc" or mover.moves[i].reason == "goooo" or mover.moves[i].reason == "icyyyy" then
+            if mover.moves[i].reason == "reflecc" or mover.moves[i].reason == "goooo" or mover.moves[i].reason == "icyyyy" or mover.moves[i].reason == "anti goooo" or mover.moves[i].reason == "anti icyyyy" then
               table.remove(mover.moves, i)
             end
           end
@@ -1228,6 +1251,28 @@ function applySlide(mover, already_added, moving_units_next)
         if not hasRule(mover,"got","slippers") then
           --movedebug("sliding:"..mover.fullname..","..mover.dir)
           table.insert(mover.moves, 1, {reason = "icyyyy", dir = mover.dir, times = slideness})
+        end
+        if not already_added[mover] then
+          --movedebug("did add slider")
+          table.insert(moving_units_next, mover)
+          already_added[mover] = true
+        end
+      end
+    end
+    if (sameFloat(mover, v) and not v.already_moving) and timecheck(v) and ignoreCheck(mover,v,"anti icyyyy") then
+      local slideness = countProperty(v, "anti icyyyy")
+      if (slideness > 0) then
+        if (not did_clear_existing) then
+          for i = #mover.moves,1,-1 do
+            if mover.moves[i].reason == "reflecc" or mover.moves[i].reason == "goooo" or mover.moves[i].reason == "icyyyy" or mover.moves[i].reason == "anti goooo" or mover.moves[i].reason == "anti icyyyy" then
+              table.remove(mover.moves, i)
+            end
+          end
+          did_clear_existing = true
+        end
+        if not hasRule(mover,"got","slippers") then
+          --movedebug("sliding:"..mover.fullname..","..mover.dir)
+          table.insert(mover.moves, 1, {reason = "anti icyyyy", dir = dirAdd(mover.dir, 4), times = slideness})
         end
         if not already_added[mover] then
           --movedebug("did add slider")

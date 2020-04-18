@@ -1151,7 +1151,7 @@ function updateUnits(undoing, big_update)
       for _,on in ipairs(stuff) do
         if hasU(on) and sameFloat(unit, on) and ignoreCheck(on, unit, "tryagain") then
           if timecheck(unit,"be","anti tryagain") and (timecheckUs(on)) then
-            tryStartReplay()
+            tryStartReplay(true)
           else
             addUndo({"timeless_replay_add"})
             timeless_replay = true
@@ -1464,7 +1464,7 @@ function updateUnits(undoing, big_update)
   if timeless_replay and not timeless then
     addUndo({"timeless_replay_remove"})
     timeless_replay = false
-    tryStartReplay()
+    tryStartReplay(true)
   end
   
   if timeless_crash and not timeless then

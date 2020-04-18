@@ -4194,7 +4194,7 @@ function drawUnitSprite(unit, x, y, rotation, sx, sy, o)
   local brightness = 1
 
   if scene == game then
-    if ((unit.type == "txt" and not hasRule(unit,"ben't","wurd")) or hasRule(unit,"be","wurd")) and not unit.active and not level_destroyed and not (unit.fullname == "prop") then
+    if (hasRule(unit,"be","wurd") or hasRule(unit,"be","anti wurd")) and not unit.active and not level_destroyed and not (unit.fullname == "prop") then
       brightness = 0.33
     end
     if (unit.name == "steev") and not hasU(unit) then

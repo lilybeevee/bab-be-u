@@ -41,6 +41,7 @@ function clearRules()
   portal_id = ""
 
   --text and level basically already exist, so no need to be picky.
+  addBaseRule("txt","be","wurd")
   addBaseRule("txt","be","goawaypls")
   addBaseRule("lvl","be","nogo")
   --TODO: This will need to be automatic on levels with letters/combined words, since a selectr/bordr might be made in a surprising way, and it will need to have its implicit rules apply immediately.
@@ -80,7 +81,8 @@ end
 
 function getAllText()
   local hasCopied = false
-  local result = units_by_name["txt"]
+  local result = {}
+  --[[local result = units_by_name["txt"]
   if (result == nil) then result = {} end
   --remove ben't wurd text from result
   if rules_with["wurd"] ~= nil then
@@ -91,7 +93,7 @@ function getAllText()
         table.remove(result, i)
       end
     end
-  end
+  end]]
   
   local givers = {}
   
@@ -146,7 +148,8 @@ function getAllText()
 end
 
 function getTextOnTile(x, y)
-  local result = getUnitsOnTile(x, y, "txt")
+  local result = {}
+  --[[local result = getUnitsOnTile(x, y, "txt")
   --remove ben't wurd text from result
   if rules_with ~= nil and rules_with["wurd"] ~= nil then
     for i = #result,1,-1 do
@@ -154,7 +157,7 @@ function getTextOnTile(x, y)
         table.remove(result, i)
       end
     end
-  end
+  end]]
   
   local givers = {}
   
@@ -272,7 +275,10 @@ function parseRules(undoing)
     if units_to_check then
       for _,unit in ipairs(units_to_check) do
         local x,y = unit.x,unit.y
-        local dirs_to_check = {1,2,3}
+        local dirs_to_check = {}
+        if not rules_with["anti wurd"] or hasProperty(unit,"wurd") then
+          mergeTable(dirs_to_check,{1,2,3})
+        end
         if hasProperty(unit,"anti wurd") then
           mergeTable(dirs_to_check,{5,6,7})
         end
@@ -1169,7 +1175,7 @@ function populateRulesEffectingNames(r1, r2, r3)
   local rules = matchesRule(r1, r2, r3)
   for _,rule in ipairs(rules) do
     local subject = rule.rule.subject.name
-    if (subject:sub(1, 4) ~= "txt") then
+    if subject == "txt" or (subject:sub(1, 4) ~= "txt") then
       rules_effecting_names[subject] = true
     end
   end

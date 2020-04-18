@@ -564,7 +564,7 @@ function scene.keyPressed(key, isrepeat)
   end
 end
 
-function tryStartReplay()
+function tryStartReplay(instant)
   scene.resetStuff()
   local dir = getWorldDir() .. "/"
   local full_dir = getWorldDir(true) .. "/"
@@ -586,6 +586,14 @@ function tryStartReplay()
     print("Started replay from: ".."levels/" .. level_name .. ".replay")
   else
     print("Failed to find replay: ".. dir .. level_filename .. ".replay")
+  end
+
+  if instant then
+    local turn = 1
+    while replay_playback do
+      doReplayTurn(turn)
+      turn = turn + 1
+    end
   end
 end
 
@@ -781,7 +789,7 @@ function scene.draw(dt)
     if unit.name == "no1" and not (draw_empty and validEmpty(unit)) then return end
     
     local brightness = 1
-    if ((unit.type == "txt" and not hasRule(unit,"ben't","wurd")) or hasRule(unit,"be","wurd")) and not unit.active and not level_destroyed and not (unit.fullname == "prop") then
+    if (hasRule(unit,"be","wurd") or hasRule(unit,"be","anti wurd")) and not unit.active and not level_destroyed and not (unit.fullname == "prop") then
       brightness = 0.33
     end
 
