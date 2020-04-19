@@ -686,7 +686,7 @@ function getUnitsWithEffect(effect, return_rule)
   for _,rule in ipairs(rules) do
     local unit = rule[2]
     if not unit.removed then
-      for _,other in ipairs(getUnitsOnTile(unit.x, unit.y, nil, false, unit, nil, hasProperty(unit,"thicc"))) do
+      for _,other in ipairs(getUnitsOnTile(unit.x, unit.y, {exclude = unit, thicc = hasProperty(unit,"thicc")})) do
         if not gotten[other] and sameFloat(unit, other) and not hasRule(other, "ben't", effect) and ignoreCheck(other, unit) then
           table.insert(result, other)
           table.insert(result_rules, rule[1])
@@ -757,7 +757,7 @@ function getUnitsWithEffectAndCount(effect)
   for _,rule in ipairs(rules) do
     local unit = rule[2]
     if not unit.removed then
-      for _,other in ipairs(getUnitsOnTile(unit.x, unit.y, nil, false, unit, nil, hasProperty(unit,"thicc"))) do
+      for _,other in ipairs(getUnitsOnTile(unit.x, unit.y, {exclude = unit, thicc = hasProperty(unit,"thicc")})) do
         if sameFloat(unit, other) and not hasRule(other, "ben't", effect) and ignoreCheck(other, unit) then
           if result[other] == nil then
             result[other] = 0
@@ -909,7 +909,7 @@ function hasProperty(unit,prop,return_rule)
   if unit then
     local has_lvl_giv, lvl_giv_rule = hasRule(outerlvl, "giv", prop)
     if has_lvl_giv then return true, lvl_giv_rule end
-    for _,other in ipairs(getUnitsOnTile(unit.x, unit.y, nil, false, unit, true, hasRule(unit,"be","thicc"))) do
+    for _,other in ipairs(getUnitsOnTile(unit.x, unit.y, {exclude = unit, thicc = hasProperty(unit,"thicc")})) do
       local givs = matchesRule(other, "giv", prop)
       if #givs > 0 and sameFloat(unit, other) and ignoreCheck(unit, other) then
         return true, (return_rule and givs[1] or nil)
@@ -920,7 +920,7 @@ function hasProperty(unit,prop,return_rule)
     if has_lvl_giv then return true, lvl_giv_rule end
     for _,ruleparent in ipairs(matchesRule(nil, "giv", prop)) do
       for _,other in ipairs(ruleparent.units) do
-        if #getUnitsOnTile(other.x, other.y, nil, false, other, true, hasRule(unit,"be","thicc")) > 0 and sameFloat(unit, other) then
+        if #getUnitsOnTile(other.x, other.y, {exclude = unit, checkmous = true, thicc = hasProperty(unit,"thicc")}) > 0 and sameFloat(unit, other) then
           return true, (return_rule and ruleparent or nil)
         end
       end
@@ -938,7 +938,7 @@ function countProperty(unit, prop, ignore_flye)
   if unit and unit.class == "mous" then return result end
   result = result + #matchesRule(outerlvl, "giv", prop)
   if unit then
-    for _,other in ipairs(getUnitsOnTile(unit.x, unit.y, nil, false, unit, true, hasProperty(unit,"thicc"))) do
+    for _,other in ipairs(getUnitsOnTile(unit.x, unit.y, {exclude = unit, checkmous = true, thicc = hasProperty(unit,"thicc")})) do
       if ignoreCheck(unit, other) and (ignore_flye or sameFloat(unit, other)) then
         result = result + #matchesRule(other, "giv", prop)
       end
@@ -947,7 +947,7 @@ function countProperty(unit, prop, ignore_flye)
     for _,ruleparent in ipairs(matchesRule(nil, "giv", prop)) do
       for _,other in ipairs(ruleparent.units) do
         if ignoreCheck(unit, other) and (ignore_flye or sameFloat(unit, other)) then
-          result = result + #getUnitsOnTile(other.x, other.y, nil, false, other, true, hasProperty(other,"thicc"))
+          result = result + #getUnitsOnTile(other.x, other.y, {exclude = other, checkmous = true, thicc = hasProperty(other,"thicc")})
         end
       end
     end
@@ -1137,7 +1137,7 @@ function testConds(unit, conds, compare_with, first_unit) --cond should be a {co
           end
         end
       else
-        local frens = getUnitsOnTile(x, y, nil, false, unit, true, hasProperty(unit,"thicc"))
+        local frens = getUnitsOnTile(x, y, {exclude = unit, checkmous = true, thicc = hasProperty(unit,"thicc")})
         for _,other in ipairs(sets) do
           if other[outerlvl] then
             if not inBounds(unit.x,unit.y) or count > 1 then
@@ -1180,7 +1180,7 @@ function testConds(unit, conds, compare_with, first_unit) --cond should be a {co
           end
         else
           local dx, dy, dir, px, py = getNextTile(unit, nx, ny, ndir)
-          others[nx][ny] = getUnitsOnTile(px, py, nil, false, nil, true, hasProperty(unit,"thicc"))
+          others[nx][ny] = getUnitsOnTile(px, py, {checkmous = true, thicc = hasProperty(unit,"thicc")})
         end
       end
       local found_set = {}
@@ -1235,7 +1235,8 @@ function testConds(unit, conds, compare_with, first_unit) --cond should be a {co
             local units = getUnitsOnTile(tx,ty)
             for _,unitd in ipairs(units) do
               if hasProperty(unitd,"tranparnt") or unitd.name == bordr then
-                goto continue end --tranparen't stops it, and it's false for the tile with the tranparn't
+                goto continue
+              end --tranparen't stops it, and it's false for the tile with the tranparn't
             end
             for _,set in ipairs(sets) do
               if not found_set[set] then
@@ -1272,7 +1273,7 @@ function testConds(unit, conds, compare_with, first_unit) --cond should be a {co
           end
         else
           local dx, dy, dir, px, py = getNextTile(unit, nx, ny, ndir)
-          mergeTable(others, getUnitsOnTile(px, py, nil, false, nil, true, hasProperty(unit,"thicc")))
+          mergeTable(others, getUnitsOnTile(px, py, {checkmous = true, thicc = hasProperty(unit,"thicc")}))
         end
       end
       if unit == outerlvl then --basically turns into sans n't BUT the unit has to be looking inbounds as well!
@@ -1325,7 +1326,7 @@ function testConds(unit, conds, compare_with, first_unit) --cond should be a {co
       --TODO: look at dir, ortho, diag, surrounds
       if unit ~= outerlvl then
         local dx, dy, dir, px, py = getNextTile(unit, dirs8[unit.dir][1], dirs8[unit.dir][2], unit.dir)
-        local frens = getUnitsOnTile(px, py, param, false, nil, nil, hasProperty(unit,"thicc"))
+        local frens = getUnitsOnTile(px, py, {name = param, checkmous = true, thicc = hasProperty(unit,"thicc")})
         for i,other in ipairs(sets) do
           local isdir = false
           if cond.others[i].name == "ortho" then
@@ -1385,14 +1386,14 @@ function testConds(unit, conds, compare_with, first_unit) --cond should be a {co
       --TODO: look at dir, ortho, diag, surrounds
       if unit ~= outerlvl then
         local dx, dy, dir, px, py = getNextTile(unit, -dirs8[unit.dir][1], -dirs8[unit.dir][2], unit.dir)
-        local frens = getUnitsOnTile(px, py, param, false, nil, nil, hasProperty(unit,"thicc"))
+        local frens = getUnitsOnTile(px, py, {name = param, checkmous = true, thicc = hasProperty(unit,"thicc")})
         for _,other in ipairs(sets) do
           if other[outerlvl] then
-              local dx, dy, dir, px, py = getNextTile(unit, dirs8[unit.dir][1], dirs8[unit.dir][2], unit.dir)
-              if inBounds(px,py) then
-                result = false
-                break
-              end
+            local dx, dy, dir, px, py = getNextTile(unit, dirs8[unit.dir][1], dirs8[unit.dir][2], unit.dir)
+            if inBounds(px,py) then
+              result = false
+              break
+            end
           else
             local found = 0
             for _,fren in ipairs(frens) do
@@ -1423,7 +1424,7 @@ function testConds(unit, conds, compare_with, first_unit) --cond should be a {co
           end
         else
           local dx, dy, dir, px, py = getNextTile(unit, nx, ny, ndir)
-          mergeTable(others, getUnitsOnTile(px, py, nil, false, nil, true, hasProperty(unit,"thicc")))
+          mergeTable(others, getUnitsOnTile(px, py, {checkmous = true, thicc = hasProperty(unit,"thicc")}))
         end
       end
       if unit == outerlvl then --basically turns into sans n't BUT the unit's rear has to be looking inbounds as well!
@@ -1488,7 +1489,7 @@ function testConds(unit, conds, compare_with, first_unit) --cond should be a {co
           end
         else
           local dx, dy, dir, px, py = getNextTile(unit, nx, ny, ndir)
-          mergeTable(others, getUnitsOnTile(px, py, nil, false, nil, true, hasProperty(unit,"thicc")))
+          mergeTable(others, getUnitsOnTile(px, py, {checkmous = true, thicc = hasProperty(unit,"thicc")}))
         end
       end
       if unit == outerlvl then --basically turns into sans n't BUT the unit's side has to be looking inbounds as well!
@@ -1556,7 +1557,7 @@ function testConds(unit, conds, compare_with, first_unit) --cond should be a {co
         end
         if found then result = false end
       else
-        local others = getUnitsOnTile(unit.x, unit.y, nil, false, unit, nil, hasProperty(unit,"thicc"))
+        local others = getUnitsOnTile(unit.x, unit.y, {exclude = unit, thicc = hasProperty(unit,"thicc")})
         if #others > 0 then
           result = false
         end
@@ -2089,7 +2090,14 @@ function tileHasUnitName(name,x,y)
   end
 end
 
-function getUnitsOnTile(x,y,name,not_destroyed,exclude,checkmous,thicc)
+function getUnitsOnTile(x,y,o)
+  o = o or {}
+  local name = o.name
+  local not_destroyed = o.not_destroyed
+  local exclude = o.exclude
+  local checkmous = o.checkmous
+  local thicc = o.thicc
+  
   local result = {}
   for _,unit in ipairs(unitsByTile(x, y)) do
     if unit ~= exclude then
@@ -2891,7 +2899,7 @@ function loadLevels(levels, mode, level_objs, xwx)
       for j = -1,1 do
         surrounds[i][j] = {}
         for _,lvl in ipairs(level_objs) do
-          for __,stuff in ipairs(getUnitsOnTile(lvl.x+i,lvl.y+j,nil,false,lvl)) do
+          for __,stuff in ipairs(getUnitsOnTile(lvl.x+i,lvl.y+j,{exclude = lvl})) do
             table.insert(surrounds[i][j], stuff)
           end
         end

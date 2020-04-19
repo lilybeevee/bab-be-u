@@ -186,7 +186,7 @@ function getTextOnTile(x, y)
     end
   else
     for name,_ in pairs(rules_effecting_names) do
-      for __,unit in ipairs(getUnitsOnTile(x, y, name)) do
+      for __,unit in ipairs(getUnitsOnTile(x, y, {name = name})) do
         if hasProperty(unit, "wurd") or hasProperty(unit, "anti wurd") or unit.name:starts("this") then
           table.insert(result, unit)
         end
