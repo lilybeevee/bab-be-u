@@ -1733,8 +1733,9 @@ function scene.draw(dt)
 
       if rainbowmode then love.graphics.setColor(hslToRgb((love.timer.getTime()/6+i*10)%1, .5, .5, .9)) end
       
+      local cursorrot = ((cursor.dir + 1) % 8) * 45
       if not hasProperty(cursor,"stelth") then
-        love.graphics.draw(system_cursor, cursor.screenx, cursor.screeny)
+        love.graphics.draw(system_cursor, cursor.screenx, cursor.screeny, math.rad(cursorrot))
       end
 
       love.graphics.setColor(1,1,1)
@@ -1743,7 +1744,7 @@ function scene.draw(dt)
       if #cursor.overlay > 0 then
         local function overlayStencil()
           pcallSetShader(mask_shader)
-          love.graphics.draw(system_cursor, cursor.screenx, cursor.screeny)
+          love.graphics.draw(system_cursor, cursor.screenx, cursor.screeny, math.rad(cursorrot))
           love.graphics.setShader()
         end
         for _,overlay in ipairs(cursor.overlay) do
