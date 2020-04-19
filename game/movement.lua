@@ -1108,77 +1108,60 @@ function applySlide(mover, already_added, moving_units_next)
   table.insert(others, outerlvl)
   --REFLECC is now also handled here, and goes before anything else.
   for _,v in ipairs(others) do
-    if (sameFloat(mover, v) and not v.already_moving) and timecheck(v) and ignoreCheck(mover,v,"reflecc") then
-      local reflecc = hasProperty(v, "reflecc")
-      if (reflecc) then
-        local dirToUse;
-        --SLOOP is oriented TL-BR when facing 1.
-        --Entering it 1 knocks you down to 3.
-        --Entering it 2 is forbidden.
-        --Entering it 3 knocks you down to 1.
-        --Entering it 4 knocks you back to 8.
-        --Entering it 5 knocks you back to 7.
-        --Entering it 6 is forbidden.
-        --Entering it 7 knocks you back to 5.
-        --Entering it 8 knocks you back to 4.
-        --SLOOP is oriented T-B when facing 2.
-        --Entering it 1 knocks you back to 5.
-        --Entering it 2 knocks you back to 4.
-        --Entering it 3 is forbidden.
-        --Entering it 4 knocks you back to 2.
-        --Entering it 5 knocks you back to 1.
-        --Entering it 6 knocks you back to 8.
-        --Entering it 7 is forbidden.
-        --Entering it 8 knocks you back to 6.
-        --TL;DR:
-        --v.dir is paired with v.dir+2.
-        --v.dir+1 is forbidden, as is v.dir+5.
-        --v.dir+3 is paired with v.dir v.dir+7.
-        --v.dir+4 is paired with v.dir+6.
-        local dirDifference = mover.dir - v.dir;
-        if (dirDifference < 0) then dirDifference = dirDifference + 8; end
-        if (dirDifference == 0) then
-          dirToUse = dirAdd(mover.dir, 2);
-        elseif (dirDifference == 1) then
-          dirToUse = nil;
-        elseif (dirDifference == 2) then
-           dirToUse = dirAdd(mover.dir, -2);
-        elseif (dirDifference == 3) then
-          dirToUse = dirAdd(mover.dir, 4);
-        elseif (dirDifference == 4) then
-          dirToUse = dirAdd(mover.dir, 2);
-        elseif (dirDifference == 5) then
-          dirToUse = nil;
-        elseif (dirDifference == 6) then
-          dirToUse = dirAdd(mover.dir, -2);
-        elseif (dirDifference == 7) then
-          dirToUse = dirAdd(mover.dir, 4);
-        end
-        if (dirToUse ~= nil) then
-          if (not did_clear_existing) then
-            for i = #mover.moves,1,-1 do
-              if mover.moves[i].reason == "reflecc"
-              or mover.moves[i].reason == "goooo"
-              or mover.moves[i].reason == "anti goooo"
-              or mover.moves[i].reason == "icyyyy"
-              or mover.moves[i].reason == "anti icyyyy" then
-                table.remove(mover.moves, i)
-              end
-            end
-            did_clear_existing = true
-          end
-          --the new moves will be at the start of the unit's moves data, so that it takes precedence over what it would have done next otherwise
-          --movedebug("launching:"..mover.fullname..","..v.dir)
-          
-          table.insert(mover.moves, 1, {reason = "reflecc", dir = dirToUse, times = 1})
-          if not already_added[mover] then
-            --movedebug("did add launcher")
-            table.insert(moving_units_next, mover)
-            already_added[mover] = true
-          end
-          did_launch = true
-        end
+    if hasProperty(v, "reflecc") and (sameFloat(mover, v) and not v.already_moving) and timecheck(v) and ignoreCheck(mover,v,"reflecc") then
+      local dirToUse = 0
+      --REFLECC reflects off front and back.
+      --[[
+      1 = bounce back
+      2 = reflect to 8
+      3 = bounce back
+      4 = reflect to 6
+      5 = bounce back
+      6 = reflect to 4
+      7 = bounce back
+      8 = reflect to 2
+      ]]
+      local dirDifference = mover.dir - v.dir
+      if (dirDifference < 0) then dirDifference = dirDifference + 8 end
+      if (dirDifference == 0) then
+        dirToUse = dirAdd(mover.dir, 4)
+      elseif (dirDifference == 1) then
+        dirToUse = dirAdd(mover.dir, 2)
+      elseif (dirDifference == 2) then
+         dirToUse = dirAdd(mover.dir, 4)
+      elseif (dirDifference == 3) then
+        dirToUse = dirAdd(mover.dir, -2)
+      elseif (dirDifference == 4) then
+        dirToUse = dirAdd(mover.dir, 4)
+      elseif (dirDifference == 5) then
+        dirToUse = dirAdd(mover.dir, 2)
+      elseif (dirDifference == 6) then
+        dirToUse = dirAdd(mover.dir, 4)
+      elseif (dirDifference == 7) then
+        dirToUse = dirAdd(mover.dir, -2)
       end
+      if (not did_clear_existing) then
+        for i = #mover.moves,1,-1 do
+          if mover.moves[i].reason == "reflecc"
+          or mover.moves[i].reason == "goooo"
+          or mover.moves[i].reason == "anti goooo"
+          or mover.moves[i].reason == "icyyyy"
+          or mover.moves[i].reason == "anti icyyyy" then
+            table.remove(mover.moves, i)
+          end
+        end
+        did_clear_existing = true
+      end
+      --the new moves will be at the start of the unit's moves data, so that it takes precedence over what it would have done next otherwise
+      --movedebug("launching:"..mover.fullname..","..v.dir)
+      
+      table.insert(mover.moves, 1, {reason = "reflecc", dir = dirToUse, times = 1})
+      if not already_added[mover] then
+        --movedebug("did add launcher")
+        table.insert(moving_units_next, mover)
+        already_added[mover] = true
+      end
+      did_launch = true
     end
   end
   if (did_launch) then
@@ -1646,42 +1629,6 @@ function fallBlock() --TODO: add support for spin
       end
     end
   end]]
-end
-
-function doZip(unit)
-  if not canMove(unit, 0, 0, -1, {solid_name = unit.name, reason = "zip"}) then
-    --try to zip to the tile behind us - this is usually elegant, since we probably just left that tile. if that fails, try increasingly larger squares around our current position until we give up. prefer squares closer to the tile behind us, arbitrarily break ties via however table.sort and the order we put tiles into it decides to do it!
-    local dx = -dirs8[unit.dir][1]
-    local dy = -dirs8[unit.dir][2]
-    if canMove(unit, dx, dy, -1, {solid_name = unit.name, reason = "zip"}) then
-      addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
-      moveUnit(unit,unit.x+dx,unit.y+dy)
-      return
-    end
-    
-    local orig = {x = dx, y = dy}
-    start_radius = 1
-    end_radius = 5
-    for radius = start_radius, end_radius do
-      places = {}
-      for dx = -radius, radius do
-        for dy = -radius, radius do
-          table.insert(places, {x = dx, y = dy})
-        end
-      end
-      table.sort(places, function(a, b) return euclideanDistance(a, orig) < euclideanDistance(b, orig) end )
-      for _,place in ipairs(places) do
-        local dx = place.x
-        local dy = place.y
-        --TODO: ZIP doesn't interact with WRAP/PORTAL. Maybe it should?
-        if canMove(unit, dx, dy, -1, {solid_name = unit.name, reason = "zip"}) then
-          addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
-          moveUnit(unit,unit.x+dx,unit.y+dy)
-          return
-        end
-      end
-    end
-  end
 end
 
 --for use with wrap and portal. portals can change the facing dir, and facing dir can already be different from dx and dy, so we need to keep track of everything.
@@ -2282,7 +2229,7 @@ function canMoveCore(unit,dx,dy,dir,o) --pushing, pulling, solid_name, reason, p
   local stopped = false
   --we have to iterate every object even after we're stopped, in case later we find something we open/snacc/ouch on
   for _,v in ipairs(getUnitsOnTile(x, y, nil, false, nil, true)) do
-    --Patashu: treat moving things as intangible in general. also, ignore ourselves for zip purposes
+    --Patashu: treat moving things as intangible in general
     if (v ~= unit and not v.already_moving and sameFloat(unit,v,true)) then
       if (v.name == o.solid_name) and ignoreCheck(unit,v) then
         return false,movers,specials
@@ -2396,8 +2343,6 @@ function canMoveCore(unit,dx,dy,dir,o) --pushing, pulling, solid_name, reason, p
         stopped = stopped or (sameFloat(unit, v) and ignoreCheck(unit,v,"diagkik"))
       elseif hasProperty(v, "comepls") and not canpush and not would_swap_with and not pulling and o.reason ~= "curse" then
         stopped = stopped or (sameFloat(unit, v) and ignoreCheck(unit,v,"comepls"))
-      elseif hasProperty(v, "reflecc") and refleccPrevents(v.dir, dx, dy) then
-        stopped = stopped or (sameFloat(unit, v) and ignoreCheck(unit,v,"reflecc"))
       elseif hasProperty(v, "gomyway") and goMyWayPrevents(v.dir, dx, dy) then
         stopped = stopped or (sameFloat(unit, v) and ignoreCheck(unit,v,"gomyway"))
       elseif hasProperty(v, "anti gomyway") and dir ~= v.dir then
@@ -2457,15 +2402,6 @@ function canMoveCore(unit,dx,dy,dir,o) --pushing, pulling, solid_name, reason, p
   end]]--
 
   return not stopped,movers,specials
-end
-
-function refleccPrevents(dir, dx, dy)
-  dx = sign(dx)
-  dy = sign(dy)
-  local otherDir = dirs8_by_offset[dx][dy];
-  local dirDifference = otherDir - dir;
-  if (dirDifference < 0) then dirDifference = dirDifference + 8; end
-  return dirDifference == 1 or dirDifference == 5
 end
 
 function goMyWayPrevents(dir, dx, dy)

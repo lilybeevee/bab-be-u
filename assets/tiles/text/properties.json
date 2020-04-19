@@ -418,13 +418,6 @@
     "desc": "TALL: Considered to be every FLYE amount at once."
   },
   {
-    "name": "txt_zip",
-    "sprite": ["txt/zip"],
-    "types": ["property"],
-    "color": [[5, 3]],
-    "desc": "ZIP: At end of turn, if it is on a tile it couldn't enter or shares a tile with another object of its name, it finds the nearest free tile (preferring backwards directions) and ejects to it."
-  },
-  {
     "name": "txt_shy...",
     "sprite": ["txt/shy"],
     "types": ["property"],
@@ -843,7 +836,7 @@
     "sprite": ["txt/reflecc"],
     "types": ["property"],
     "color": [[5, 2]],
-    "desc": "REFLECC: When a unit moves onto a REFLECC unit from in front or behind, it will bounce back at 180 degrees. At a 45/135 angle, 90 degrees. At a 90 angle, it will be unable to enter.",
+    "desc": "REFLECC: When a unit moves into a REFLECC's front or behind, it gets reflected off of that surface.",
     "tags": ["reflect", "slope", "bounce", "mirror"]
   },
   {
@@ -851,7 +844,7 @@
     "sprite": ["txt/stukc"],
     "types": ["property"],
     "color": [[1, 1]],
-    "desc": "STUKC: Anything with this property can't move. (I know this is a modded word but I don't know who made it, so I'll add that tag later.)",
+    "desc": "STUKC: Anything with this property can't move.",
     "tags": ["stuck"]
   },
   {

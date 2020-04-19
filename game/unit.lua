@@ -1,6 +1,6 @@
 function moveBlock()
   --baba order: FOLLOW, BACK, TELE, SHIFT
-  --bab order: thicc, zip, look at, undo, visit fren, go, goooo, shy, spin, folo wal, turn cornr
+  --bab order: thicc, look at, undo, visit fren, go, goooo, shy, spin, folo wal, turn cornr
   
   --currently very bad method of making sure thicc stuff gets updated: go through all units and make sure they're set up properly
   if units_by_name["txt_thicc"] then
@@ -19,11 +19,6 @@ function moveBlock()
         end
       end
     end
-  end
-  
-  local iszip = getUnitsWithEffect("zip")
-  for _,unit in ipairs(iszip) do
-    doZip(unit)
   end
   
   local isstalk = matchesRule("?", "lookat", "?")
@@ -1621,8 +1616,6 @@ function miscUpdates()
         elseif hasProperty(unit,"poortoll") then
           unit.sprite = {"ditto_poor toll"}
         -- Rotom formes
-        elseif hasProperty(unit,"zip") then
-          unit.sprite = {"ditto_zip"}
         elseif hasRule(unit,"sing","?") then
           unit.sprite = {"ditto_sing"}
         elseif hasRule(unit,"paint","?") then

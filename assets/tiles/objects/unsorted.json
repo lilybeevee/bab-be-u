@@ -1844,23 +1844,6 @@
     "tags": ["triangle", "half", "slope"]
   },
   {
-    "name": "reflecr",
-    "sprite": ["reflecr"],
-    "layer": 3,
-    "color": [[0, 3]],
-    "rotate": true,
-    "desc": "imported directly from Deflektor",
-    "tags": ["mirror", "diagonal", "line", "slope"]
-  },
-  {
-    "name": "txt_reflecr",
-    "sprite": ["txt/reflecr"],
-    "types": ["object"],
-    "color": [[0, 3]],
-    "desc": "ideal for reflecc",
-    "tags": ["mirror", "diagonal", "line", "slope"]
-  },
-  {
     "name": "chain",
     "sprite": ["chain"],
     "layer": 22,
@@ -2316,7 +2299,7 @@
     "layer": 3,
     "color": [[0, 2]],
     "rotate": true,
-    "desc": "shakes if you can't walk into it",
+    "desc": "el gato negro, michi michi",
     "tags": ["oneway", "mario", "gate"]
   },
   {
@@ -2324,7 +2307,7 @@
     "sprite": ["txt/gato"],
     "types": ["object"],
     "color": [[0, 2]],
-    "desc": "el gato negro, michi michi",
+    "desc": "shakes if you can't walk into it",
     "tags": ["oneway", "mario", "gate"]
   },
   {
