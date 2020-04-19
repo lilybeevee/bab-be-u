@@ -197,7 +197,6 @@ anti_word_replacements = {
   nogo = "icyyyy",
   goawaypls = "comepls",
   comepls = "goawaypls",
-  behinu = "goawaypls",
   haetskye = "haetflor",
   haetflor = "haetskye",
   diag = "ortho",

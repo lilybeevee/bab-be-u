@@ -1269,21 +1269,21 @@ end
 
 function applySwap(mover, dx, dy)
   --fast track
-  if rules_with["behin u"] == nil then return end
+  if rules_with["behinu"] == nil and rules_with["anti behinu"] == nil then return end
   --we haven't actually moved yet, same as applySlide
   --two priority related things:
   --1) don't swap with things that are already moving, to prevent move order related behaviour
   --2) swaps should occur before any other kind of movement, so that the swap gets 'overriden' by later, more intentional movement e.g. in a group of swap and you moving things, or a swapper pulling boxen behind it
   --[[addUndo({"update", unit.id, unit.x, unit.y, unit.dir})]]--
-  local swap_mover = hasProperty(mover, "behin u")
+  local swap_mover = hasProperty(mover, "behinu")
   local did_swap = false
   for _,v in ipairs(getUnitsOnTile(mover.x+dx, mover.y+dy, {thicc = hasProperty(mover,"thicc")})) do
   --if not v.already_moving then --this made some things move order dependent, so taking it out
-    local swap_v = hasProperty(v, "behin u")
+    local swap_v = hasProperty(v, "behinu")
     --Don't swap with non-swap empty.
     if ((swap_mover and v.fullname ~= "no1") or swap_v) and sameFloat(mover,v,true) then
-      if ignoreCheck(v,mover) and (not swap_mover or ignoreCheck(v,mover,"behin u")) then
-        queueMove(v, -dx, -dy, swap_v and rotate8(mover.dir) or v.dir, true, 0)
+      if ignoreCheck(v,mover) and (not swap_mover or ignoreCheck(v,mover,"behinu")) then
+        queueMove(v, -dx, -dy, swap_v and mover.dir or v.dir, true, 0)
       end
       if ignoreCheck(mover,v) then
         did_swap = true
@@ -1292,6 +1292,23 @@ function applySwap(mover, dx, dy)
   end
   --end
   if (swap_mover and did_swap) then
+    table.insert(update_queue, {unit = mover, reason = "dir", payload = {dir = rotate8(mover.dir)}})
+  end
+  
+  local anti_swap_mover = hasProperty(mover, "anti behinu")
+  local did_anti_swap = false
+  for _,v in ipairs(getUnitsOnTile(mover.x+dx, mover.y+dy, {thicc = hasProperty(mover,"thicc")})) do
+    local anti_swap_v = hasProperty(v, "anti behinu")
+    if ((anti_swap_mover and v.fullname ~= "no1") or anti_swap_v) and sameFloat(mover,v,true) then
+      if ignoreCheck(v,mover) and (not anti_swap_mover or ignoreCheck(v,mover,"anti behinu")) then
+        queueMove(v, dx, dy, anti_swap_v and mover.dir or v.dir, true, 0)
+      end
+      if ignoreCheck(mover,v) then
+        did_anti_swap = true
+      end
+    end
+  end
+  if (anti_swap_mover and did_anti_swap) then
     table.insert(update_queue, {unit = mover, reason = "dir", payload = {dir = rotate8(mover.dir)}})
   end
 end
