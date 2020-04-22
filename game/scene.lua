@@ -923,7 +923,7 @@ function scene.draw(dt)
 
     local function getOffset()
       if unit.cool or not settings["shake_on"] then return 0,0 end
-      if rules_with["temmi"] then
+      if rules_with["temmi"] or rules_with["anti slep"] then
         local do_vibrate = false
         if unit.fullname == "temmi" then
           do_vibrate = true
@@ -940,16 +940,22 @@ function scene.draw(dt)
               if do_vibrate then break end
             end
           end
+        elseif hasProperty(unit,"anti slep") then
+          do_vibrate = true
         end
         if do_vibrate then
           if unit.fullname == "temmi" then
             local props = countProperty(unit,"?")
+            props = props + (countProperty(unit,"anti slep") * 9)
             if math.random() > 1/(props+1) then
               return math.random(-props, props), math.random(-props, props)
             end
           else
-            if math.random() > 0.5 then
-              return math.random(-1, 1), math.random(-1, 1)
+            local props = countProperty(unit,"anti slep")
+            if math.random() > 1/(props+1) then
+              return math.random(-props, props), math.random(-props, props)
+            elseif props == 0 and math.random() > 0.5 then
+              return math.random(-1,1), math.random(-1,1)
             end
           end
         end
