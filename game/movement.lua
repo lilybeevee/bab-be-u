@@ -1688,7 +1688,31 @@ function doWrap(unit, px, py, move_dir, dir)
     return px, py, move_dir, dir
   end
   --TODO: make mirr arnd also work with bordr. hard to know how that should work though
-  if hasProperty(unit, "mirrarnd") or hasProperty(outerlvl, "mirrarnd") then --projective plane wrapping
+  if hasProperty(unit, "anti mirrarnd") or hasProperty(outerlvl, "anti mirrarnd") then --projective plane wrapping
+    local mirror_x, mirror_y = false, false
+    if px < 0 or px >= mapwidth then
+      mirror_y = true
+      px = clamp(px, 0, mapwidth-1)
+    end
+    if py < 0 or py >= mapheight then
+      mirror_x = true
+      py = clamp(py, 0, mapheight-1)
+    end
+    if mirror_y then
+      py = mapheight - 1 - py
+      move_dir = dirs8_by_offset[-dirs8[move_dir][1]][dirs8[move_dir][2]]
+      if not hasProperty(unit, "noturn") then
+        dir = move_dir
+      end
+    end
+    if mirror_x then
+      px = mapwidth - 1 - px
+      move_dir = dirs8_by_offset[dirs8[move_dir][1]][-dirs8[move_dir][2]]
+      if not hasProperty(unit, "noturn") then
+        dir = move_dir
+      end
+    end
+  elseif hasProperty(unit, "mirrarnd") or hasProperty(outerlvl, "mirrarnd") then --projective plane wrapping
     local dx, dy = 0, 0
     if (px < 0) then
       dx = -px
@@ -1709,7 +1733,71 @@ function doWrap(unit, px, py, move_dir, dir)
       py = py + (mapheight/2-0.5-py)*2
     end
   end
-  if hasProperty(unit, "goarnd") or hasProperty(outerlvl, "goarnd") then --torus wrapping
+  if hasProperty(unit, "anti goarnd") or hasProperty(outerlvl, "anti goarnd") then
+    --Orthogonal wrapping is trivial - eject backwards as far as we can.
+    --Diagonal wrapping is a bit harder - it depends on if we're walking into a wall or a corner (inward or outward). If we're walking into a wall, eject perpendicularly out of it as far as we can. If we're walking into a corner, eject backwards as far as we can.
+    if not inBounds(px,py) then
+      local mx,my = dirs8[move_dir][1],dirs8[move_dir][2]
+      local found = false
+      if (mx == 0 or my == 0) then --orthgonal
+        while not found do
+          if inBounds(px,py) then
+            found = true
+          else
+            px = px-mx
+            py = py-my
+          end
+        end
+        move_dir = dirs8_by_offset[-mx][-my]
+        if not hasProperty(unit, "noturn") then
+          dir = move_dir
+        end
+      else --diagonal, but into what?
+        local vert_wall = not inBounds(px,py-my);
+        local hori_wall = not inBounds(px-mx,py);
+        if vert_wall == hori_wall then --inward or outward corner
+          while not found do
+            if inBounds(px,py) then
+              found = true
+            else
+              px = px-mx
+              py = py-my
+            end
+          end
+          move_dir = dirs8_by_offset[-mx][-my]
+          if not hasProperty(unit, "noturn") then
+            dir = move_dir
+          end
+        elseif vert_wall then --vertical wall - eject horizontally
+          while not found do
+            if inBounds(px,py) then
+              found = true
+            else
+              px = px-mx
+              py = py
+            end
+          end
+          move_dir = dirs8_by_offset[-mx][my]
+          if not hasProperty(unit, "noturn") then
+            dir = move_dir
+          end
+        else --horizontal wall - eject vertically
+          while not found do
+            if inBounds(px,py) then
+              found = true
+            else
+              px = px
+              py = py-my
+            end
+          end
+          move_dir = dirs8_by_offset[mx][-my]
+          if not hasProperty(unit, "noturn") then
+            dir = move_dir
+          end
+        end
+      end
+    end
+  elseif hasProperty(unit, "goarnd") or hasProperty(outerlvl, "goarnd") then --torus wrapping
     --Orthogonal wrapping is trivial - eject backwards as far as we can.
     --Diagonal wrapping is a bit harder - it depends on if we're walking into a wall or a corner (inward or outward). If we're walking into a wall, eject perpendicularly out of it as far as we can. If we're walking into a corner, eject backwards as far as we can.
     if not inBounds(px,py) then
