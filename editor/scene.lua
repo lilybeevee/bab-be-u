@@ -380,19 +380,27 @@ w = w-h, h = h}):center():setGroup("settings")
   local y = love.graphics.getHeight()/2 - tile_grid_height*16 - 32
   
   for i=1,#tile_grid do
-    local j = i
+    local tab_name = custom_selector_tab == i and "custom" or i
     local button = gooi.newButton({text = "", x = x + 64*i, y = y, w = 64, h = 32}):onRelease(function()
-      selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..selector_page], sprites["ui/selector_tab_"..selector_page.."_h"])
-      selector_page = j
+      if selector_page == custom_selector_tab then
+        selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_custom"], sprites["ui/selector_tab_custom_h"])
+      else
+        selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..selector_page], sprites["ui/selector_tab_"..selector_page.."_h"])
+      end
+      selector_page = i
       current_tile_grid = tile_grid[selector_page]
-      selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..j.."_a"])
+      selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..tab_name.."_a"])
     end)
-    button:setBGImage(sprites["ui/selector_tab_"..i], sprites["ui/selector_tab_"..i.."_h"]):bg({0, 0, 0, 0})
+    button:setBGImage(sprites["ui/selector_tab_"..tab_name], sprites["ui/selector_tab_"..tab_name.."_h"]):bg({0, 0, 0, 0})
     button:setVisible(selector_open)
     button:setEnabled(selector_open)
     selector_tab_buttons_list[i] = button
   end
-  selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..selector_page.."_a"], sprites["ui/selector_tab_"..selector_page.."_h"])
+  if selector_page == custom_selector_tab then
+    selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_custom_a"], sprites["ui/selector_tab_custom_h"])
+  else
+    selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..selector_page.."_a"], sprites["ui/selector_tab_"..selector_page.."_h"])
+  end
   -- gooi.setGroupVisible("selectortabs", selector_open)
   -- gooi.setGroupEnabled("selectortabs", selector_open)
   updateSelectorTabs()
@@ -691,7 +699,11 @@ function scene.keyPressed(key)
   
   -- ctrl tab shortcuts
   local old_selector_page = selector_page
-  selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..selector_page], sprites["ui/selector_tab_"..selector_page.."_h"])
+  if selector_page == custom_selector_tab then
+    selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_custom"], sprites["ui/selector_tab_custom_h"])
+  else
+    selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..selector_page], sprites["ui/selector_tab_"..selector_page.."_h"])
+  end
   
   if key == "tab" and (key_down["lctrl"] or key_down["rctrl"]) and not (key_down["lshift"] or key_down["rshift"]) then
     selector_page = selector_page % #tile_grid + 1
@@ -705,7 +717,11 @@ function scene.keyPressed(key)
   if (old_selector_page ~= selector_page) then
     current_tile_grid = tile_grid[selector_page]
     -- print(dump(selector_tab_buttons_list))
-    selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..selector_page.."_a"], sprites["ui/selector_tab_"..selector_page.."_h"])
+    if selector_page == custom_selector_tab then
+      selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_custom_a"], sprites["ui/selector_tab_custom_h"])
+    else
+      selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..selector_page.."_a"], sprites["ui/selector_tab_"..selector_page.."_h"])
+    end
   end
   
   --create and display meta tiles 1 higher

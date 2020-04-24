@@ -4460,3 +4460,54 @@ function getUnitStr(unit)
   end
   return str
 end
+
+function loadMod()
+  if love.filesystem.getInfo(getWorldDir(true).."/assets/lua/mod.lua") then
+    local lua_dir = getWorldDir(true).."/assets/lua"
+    local old_require_path = love.filesystem.getRequirePath()
+    love.filesystem.setRequirePath(lua_dir.."/?.lua;"..lua_dir.."/?/init.lua")
+    local mod = love.filesystem.load(lua_dir.."/mod.lua")()
+    if type(mod) == "table" then
+      loaded_mod = mod
+      if mod.load then
+        mod.load()
+      end
+      if mod.createTab then
+        local grid = mod.createTab()
+        local tab = #tile_grid + 1
+
+        table.insert(selector_grid_contents, grid)
+        tile_grid[tab] = {}
+        for i,tile_name in ipairs(grid) do
+          if i then
+            tile_grid[tab][i-1] = tile_name
+          else
+            tile_grid[tab][i-1] = nil
+          end
+        end
+
+        custom_selector_grid = grid
+        custom_selector_tab = tab
+      end
+    end
+    love.filesystem.setRequirePath(old_require_path)
+  end
+end
+
+function unloadMod()
+  if loaded_mod then
+    if loaded_mod.unload() then
+      loaded_mod.unload()
+    end
+    if custom_selector_tab then
+      tile_grid[custom_selector_tab] = nil
+      selector_grid_contents[custom_selector_tab] = nil
+      if secret_miku_location and secret_miku_location[1] == custom_selector_tab then
+        secret_miku_location = nil
+      end
+      custom_selector_grid = nil
+      custom_selector_tab = nil
+    end
+    loaded_mod = nil
+  end
+end

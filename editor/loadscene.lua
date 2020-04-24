@@ -112,6 +112,7 @@ function scene.keyPressed(key)
       sub_worlds = old_world.sub_worlds
     elseif world ~= "" then
       if loaded_custom_assets then
+        unloadMod()
         assets.clear()
         assets.load("assets")
         loaded_custom_assets = false
@@ -762,6 +763,7 @@ function scene.selectWorld(o, button)
         world_parent = o.data.file
         if love.filesystem.getInfo(getWorldDir(true) .. "/" .. "assets") then
           assets.load(getWorldDir(true) .. "/" .. "assets")
+          loadMod()
           loaded_custom_assets = true
         end
       else
