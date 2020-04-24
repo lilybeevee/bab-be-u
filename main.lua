@@ -7,6 +7,7 @@ tick = require "lib/tick"
 tween = require "lib/tween"
 ease = require 'lib.easing'
 colr = require "lib/colr-print"
+assets = require "assets"
 require "ui"
 require "utils"
 require "values"
@@ -195,12 +196,8 @@ bab arguments!
     print(colr.yellow("⚠ failed to require discordrpc: "..liberr))
   end
 
-  sprites = {}
-  palettes = {}
   tweens = {}
   ticks = {}
-  move_sound_data = nil
-  move_sound_source = nil
   anim_stage = 0
   next_anim = ANIM_TIMER
   fullscreen = settings["fullscreen"]
@@ -227,32 +224,9 @@ bab arguments!
 
   print(colr.green("✓ startup values added\n"))
 
-  local function addsprites(d)
-    local dir = "assets/sprites"
-    if d then
-      dir = dir .. "/" .. d
-    end
-    local files = love.filesystem.getDirectoryItems(dir)
-    for _,file in ipairs(files) do
-      if string.sub(file, -4) == ".png" then
-        local spritename = string.sub(file, 1, -5)
-        local sprite = love.graphics.newImage(dir .. "/" .. file)
-        if d then
-          spritename = d .. "/" .. spritename
-        end
-        sprites[spritename] = sprite
-        --print(colr.cyan("ℹ️ added sprite "..spritename))
-      elseif love.filesystem.getInfo(dir .. "/" .. file).type == "directory" then
-        print(colr.cyan("ℹ️ found sprite dir: " .. file))
-        local newdir = file
-        if d then
-          newdir = d .. "/" .. newdir
-        end
-        addsprites(newdir)
-      end
-    end
-  end
-  addsprites()
+  loaded_custom_assets = false
+  assets.clear()
+  assets.load("assets")
 
   randomize_assets = false or cmdargs["randomize"]
   math.randomseed(love.timer.getTime())
@@ -274,6 +248,8 @@ bab arguments!
     end
   end
 
+  current_palette = "default"
+
   menu_palette = menu_palettes[math.random(1,#menu_palettes)]
   if not settings["seen_menu"] then
     menu_palette = "default"
@@ -281,108 +257,6 @@ bab arguments!
 
   sprites["letters_/"] = sprites["letters_slash"]
   sprites["letters_:"] = sprites["letters_colon"]
-
-  print(colr.green("✓ added sprites\n"))
-
-  local tiles_to_add = {}
-  local function addTiles(d)
-    local dir = "assets/tiles"
-    if d then
-      dir = dir .. "/" .. d
-    end
-    local files = love.filesystem.getDirectoryItems(dir)
-    for _,file in ipairs(files) do
-      if string.sub(file, -5) == ".json" then
-        local tiles = json.decode(love.filesystem.read(dir .. "/" .. file))
-        for _,tile in ipairs(tiles) do
-          table.insert(tiles_to_add, tile)
-        end
-      elseif love.filesystem.getInfo(dir .. "/" .. file).type == "directory" then
-        local newdir = file
-        if d then
-          newdir = d .. "/" .. newdir
-        end
-        addTiles(newdir)
-      end
-    end
-  end
-  addTiles()
-
-  initializeTiles(tiles_to_add)
-
-  print(colr.green("✓ added tiles\n"))
-
-  local function addPalettes(d)
-    local dir = "assets/palettes"
-    if d then
-      dir = dir .. "/" .. d
-    end
-    local files = love.filesystem.getDirectoryItems(dir)
-    for _,file in ipairs(files) do
-      if string.sub(file, -4) == ".png" then
-        local palettename = string.sub(file, 1, -5)
-        local data = love.image.newImageData(dir .. "/" .. file)
-        local sprite = love.graphics.newImage(data)
-        if d then
-          palettename = d .. "/" .. palettename
-        end
-        local palette = {}
-        palettes[palettename] = palette
-        palette.sprite = sprite
-        for x = 0, sprite:getWidth()-1 do
-          for y = 0, sprite:getHeight()-1 do
-            local r, g, b, a = data:getPixel(x, y)
-            palette[x + y * sprite:getWidth()] = {r, g, b, a}
-          end
-        end
-        --print(colr.cyan("ℹ added palette "..palettename))
-      elseif love.filesystem.getInfo(dir .. "/" .. file).type == "directory" then
-        print(colr.cyan("ℹ️ found palette dir: " .. file))
-        local newdir = file
-        if d then
-          newdir = d .. "/" .. newdir
-        end
-        addPalettes(file)
-      end
-    end
-  end
-  addPalettes()
-  current_palette = "default"
-
-  print(colr.green("✓ added palettes\n"))
-
-  sound_exists = {}
-  local function addAudio(d)
-    local dir = "assets/audio"
-    if d then
-      dir = dir .. "/" .. d
-    end
-    local files = love.filesystem.getDirectoryItems(dir)
-    for _,file in ipairs(files) do
-      if love.filesystem.getInfo(dir .. "/" .. file).type == "directory" then
-        local newdir = file
-        if d then
-          newdir = d .. "/" .. newdir
-        end
-        addAudio(file)
-      else
-        local audioname = file
-        if file:ends(".wav") then audioname = file:sub(1, -5) end
-        if file:ends(".mp3") then audioname = file:sub(1, -5) end
-        if file:ends(".ogg") then audioname = file:sub(1, -5) end
-        if file:ends(".flac") then audioname = file:sub(1, -5) end
-        if file:ends(".xm") then audioname = file:sub(1, -4) end
-        --[[if d then
-          audioname = d .. "/" .. audioname
-        end]]
-        sound_exists[audioname] = true
-        --print("ℹ️ audio "..audioname.." added")
-      end
-    end
-  end
-  addAudio()
-  print(colr.green("✓ audio added"))
-
   system_cursor = sprites["ui/mous"]
   --if love.system.getOS() == "OS X" then
     --system_cursor = sprites["ui/mous_osx"]
@@ -430,8 +304,6 @@ bab arguments!
   registerSound("unwin", 0.5)
   registerSound("stopwatch", 1.0)
   registerSound("babbolovania", 0.7)
-
-
 
   print(colr.green("✓ sounds registered"))
 

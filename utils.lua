@@ -3928,23 +3928,6 @@ function getTile(name, old)
   end
 end
 
-function initializeTiles(tiles)
-  tiles_list = {}
-  tiles_by_old_name = {}
-  text_list = {}
-  text_in_tiles = {}
-  wobble_text_list = {}
-  wobble_text_in_tiles = {}
-  group_names = {}
-  group_names_nt = {}
-  group_names_set = {}
-  group_names_set_nt = {}
-  group_subsets = {}
-  for _,tile in ipairs(tiles) do
-    addTile(tile)
-  end
-end
-
 local function addTry(try, str, extra)
   if extra then
     for i = 1, #try do

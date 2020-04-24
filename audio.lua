@@ -12,7 +12,7 @@ local sound_instances = {}
 
 function registerSound(sound, volume)
   sounds[sound] = {
-    data = love.sound.newSoundData("assets/audio/sfx/" .. sound .. ".wav"),
+    data = love.sound.newSoundData(sound_path[sound]),
     volume = volume or 1
   }
   --[[if not (sounds[sound].data) then
@@ -58,16 +58,10 @@ function playMusic(music, volume)
   current_volume = volume or 1
   old_volume = volume or 1
   
-  local filetypes = {".wav", ".ogg", ".xm", ".mp3"}
-  
-  for _,filetype in ipairs(filetypes) do
-    local path = "assets/audio/bgm/"..music..filetype
-    if love.filesystem.getInfo(path) ~= nil then
-      music_source = love.audio.newSource(path, "static")
-      break
-    else
-      music_source = nil
-    end
+  if music_path[music] then
+    music_source = love.audio.newSource(music_path[music], "static")
+  else
+    music_source = nil
   end
   if music_source ~= nil then
     music_source:setLooping(true)

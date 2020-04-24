@@ -2133,6 +2133,11 @@ function escResult(do_actual, xwx)
       load_mode = "play"
       new_scene = loadscene
       if (love.filesystem.getInfo(getWorldDir(true) .. "/" .. "overworld.txt")) then
+        if loaded_custom_assets then
+          assets.clear()
+          assets.load("assets")
+          loaded_custom_assets = false
+        end
         world = ""
       end
     else

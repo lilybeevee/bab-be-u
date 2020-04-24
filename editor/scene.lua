@@ -1012,7 +1012,7 @@ function scene.update(dt)
       else
         label_palette:setIcon()
       end
-      if not sound_exists[input_music:getText()] then
+      if not music_path[input_music:getText()] then
         label_music:setIcon(sprites["ui/smol warning"])
       else
         label_music:setIcon()
@@ -2082,7 +2082,7 @@ function scene.saveSettings()
   else
     input_palette:primary()
   end
-  if sound_exists[input_music:getText()] then
+  if music_path[input_music:getText()] then
     input_music:primary()
   end
   if not success then
