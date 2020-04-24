@@ -5,9 +5,9 @@ sfx_volume = 1
 
 current_music = ""
 music_fading = false
+sounds = {}
 local current_volume = 1
 local old_volume = 1
-local sounds = {}
 local sound_instances = {}
 
 function registerSound(sound, volume)

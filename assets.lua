@@ -145,6 +145,10 @@ function assets.addAudio(base, d, type)
       end]]
       if type == "sfx" then
         sound_path[audioname] = dir .. "/" .. file
+
+        if sounds and sounds[audioname] then
+          registerSound(audioname, sounds[audioname].volume)
+        end
       elseif type == "bgm" then
         music_path[audioname] = dir .. "/" .. file
       end
