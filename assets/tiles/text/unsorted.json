@@ -29,14 +29,6 @@
     "old_names": ["txt_n't"]
   },
   {
-    "name": "txt_every1",
-    "sprite": ["txt/every1"],
-    "types": ["object"],
-    "color": [[0, 3]],
-    "desc": "EVERY1: Every object type in the level, aside from special objects like TXT, NO1, LVL, BORDR, and MOUS.",
-    "tags": ["all", "everyone", "every1"]
-  },
-  {
     "name": "txt_loop",
     "display": "infloop",
     "sprite": ["txt/infloop"],
@@ -80,20 +72,12 @@
     "tags": ["group"]
   },
   {
-    "name": "txt_samefloat",
-    "sprite": ["txt/samefloat"],
-    "types": ["cond_compare"],
-    "color": [[1, 4]],
-    "desc": "SAMEFLOAT( (Compare Condition): True if the condition unit has the same amount of FLYE as the target.",
-    "tags": ["sameflye"]
-  },
-  {
-    "name": "txt_gravy",
-    "sprite": ["txt/gravy"],
-    "types": ["object"],
-    "color": [[6, 2]],
-    "desc": "GRAVY: Changes the direction of HAET SKYE and HAET FLOR. (Unimplemented)",
-    "tags": ["gravity", "fall", "lily"]
+    "name": "txt_gang",
+    "sprite": ["txt/gang"],
+    "types": ["object", "group", "gang", "gang_prefix"],
+    "color": [[0, 1]],
+    "desc": "GANG: A variant of FRENS but members wear an exclusive hat. Put an object before it to make unique gangs!",
+    "tags": ["group"]
   },
   {
     "name": "txt_sharp",
@@ -108,6 +92,14 @@
     "types": ["note_modifier"],
     "color": [[0, 3]],
     "desc": "For use with SING."
+  },
+  {
+    "name": "txt_every1",
+    "sprite": ["txt/every1"],
+    "types": ["object"],
+    "color": [[0, 3]],
+    "desc": "EVERY1: Every object type in the level, aside from special objects like TXT, NO1, LVL, BORDR, and MOUS.",
+    "tags": ["all", "everyone", "every1"]
   },
   {
     "name": "txt_every2",
@@ -126,19 +118,19 @@
     "tags": ["all", "everyone", "every3"]
   },
   {
-    "name": "txt_lethers",
-    "sprite": ["txt/lethers"],
-    "types": ["object"],
-    "color": [[2, 4]],
-    "desc": "LETHERS: Refers to all letters that exist in the level.",
-    "tags": ["letters"]
+    "name": "txt_samefloat",
+    "sprite": ["txt/samefloat"],
+    "types": ["cond_compare"],
+    "color": [[1, 4]],
+    "desc": "SAMEFLOAT( (Compare Condition): True if the condition unit has the same amount of FLYE as the target.\nAnti: a = -b",
+    "tags": ["sameflye"]
   },
   {
     "name": "txt_samepaint",
     "sprite": ["txt/samepaint"],
     "types": ["class_prefix", "cond_compare"],
     "color": [[4, 2]],
-    "desc": "SAMEPAINT (Compare Condition): True if the condition unit is the same color as the target. Also, BAB BE SAMEPAINT KEEK will turn bab into a keek of the same color that bab was.",
+    "desc": "SAMEPAINT (Compare Condition): True if the condition unit is the same color as the target. Also, BAB BE SAMEPAINT KEEK will turn bab into a keek of the same color that bab was.\nAnti: opposite color (see color descs to see what's considered opposite)",
     "tags": ["samecolor"]
   },
   {
@@ -146,7 +138,7 @@
     "sprite": ["txt/sameface"],
     "types": ["cond_compare"],
     "color": [[2, 4]],
-    "desc": "SAMEFACE (Compare Condition): True if the condition unit is facing the same direction as the target.",
+    "desc": "SAMEFACE (Compare Condition): True if the condition unit is facing the same direction as the target.\nAnti: opposite direction",
     "tags": ["samedirection", "samefacing"]
   },
   {
@@ -157,12 +149,21 @@
     "tags": ["valhalla"]
   },
   {
-    "name": "txt_gang",
-    "sprite": ["txt/gang"],
-    "types": ["object", "group", "gang", "gang_prefix"],
-    "color": [[0, 1]],
-    "desc": "GANG: A variant of FRENS but members wear an exclusive hat. Put an object before it to make unique gangs!",
-    "tags": ["group"]
+    "name": "txt_themself",
+    "sprite": ["txt/themself", "txt/themself_lower"],
+    "types": ["object"],
+    "color": [[2, 3], [2, 3]],
+    "painted": [true, true],
+    "desc": "THEMSELF: Refers to the subject of the rule - uses correct pronouns!",
+    "tags": ["itself", "herself", "himself", "themselves"]
+  },
+  {
+    "name": "txt_anti",
+    "sprite": ["txt/anti"],
+    "types": ["anti"],
+    "color": [[2, 2]],
+    "desc": "ANTI: Inverses the word after it to do the opposite. Does not work with nouns.\nEach text has a custom effect when anti'd. \"mirror\" in verbs means x verb y becomes y verb x. Conditions without anything specified just have the result inverted (a la n't).",
+    "tags": ["reverse", "vitellary"]
   },
   {
     "name": "txt_c_sharp",
@@ -200,6 +201,22 @@
     "desc": "For use with SING."
   },
   {
+    "name": "txt_toen",
+    "sprite": ["txt/toen"],
+    "types": ["object"],
+    "color": [[4, 1]],
+    "desc": "TOEN: Refers to all music note letters that exist in the level.",
+    "tags": ["tone", "pitch", "music notes"]
+  },
+  {
+    "name": "txt_lethers",
+    "sprite": ["txt/lethers"],
+    "types": ["object"],
+    "color": [[2, 4]],
+    "desc": "LETHERS: Refers to all letters that exist in the level.",
+    "tags": ["letters"]
+  },
+  {
     "name": "txt_yuiy",
     "sprite": ["txt/yuiy"],
     "types": ["object"],
@@ -216,28 +233,11 @@
     "tags": ["number", "digit"]
   },
   {
-    "name": "txt_toen",
-    "sprite": ["txt/toen"],
+    "name": "txt_gravy",
+    "sprite": ["txt/gravy"],
     "types": ["object"],
-    "color": [[4, 1]],
-    "desc": "TOEN: Refers to all music note letters that exist in the level.",
-    "tags": ["tone", "pitch", "music notes"]
-  },
-  {
-    "name": "txt_themself",
-    "sprite": ["txt/themself", "txt/themself_lower"],
-    "types": ["object"],
-    "color": [[2, 3], [2, 3]],
-    "painted": [true, true],
-    "desc": "THEMSELF: Refers to the subject of the rule - uses correct pronouns!",
-    "tags": ["itself", "herself", "himself", "themselves"]
-  },
-  {
-    "name": "txt_anti",
-    "sprite": ["txt/anti"],
-    "types": ["anti"],
-    "color": [[2, 2]],
-    "desc": "ANTI: Inverses the word after it to do the opposite. Currently not complete, so don't go trying it out yet.",
-    "tags": ["reverse", "vitellary"]
+    "color": [[6, 2]],
+    "desc": "GRAVY: Changes the direction of HAET SKYE and HAET FLOR. (Unimplemented)",
+    "tags": ["gravity", "fall", "lily"]
   }
 ]

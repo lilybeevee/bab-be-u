@@ -1635,7 +1635,7 @@ function testConds(unit, conds, compare_with, first_unit) --cond should be a {co
     elseif condtype == "timles" then
       result = timeless
     elseif condtype == "clikt" then
-      if unit.x == last_click_x and unit.y == last_click_y then
+      if unit.x == last_click_x and unit.y == last_click_y and last_click_button == 1 then
         result = true
       else
         result = false
@@ -1643,6 +1643,12 @@ function testConds(unit, conds, compare_with, first_unit) --cond should be a {co
       --print(result)
       --print(x, y)
       --print(last_click_x, last_click_y)
+    elseif condtype == "anti clikt" then
+      if unit.x == last_click_x and unit.y == last_click_y and last_click_button == 2 then
+        result = true
+      else
+        result = false
+      end
     elseif main_palette_for_colour[condtype] then
       if unit.fullname == "no1" then
         result = false
@@ -1750,6 +1756,8 @@ function testConds(unit, conds, compare_with, first_unit) --cond should be a {co
       result = matchesColor(getUnitColors(unit), getUnitColors(compare_with))
     elseif condtype == "sameface" then
       result = unit.dir == compare_with.dir
+    elseif condtype == "anti samefloat" then
+      result = sameFloat(unit, compare_with,nil,true)
     elseif condtype == "oob" then
       result = not inBounds(unit.x,unit.y)
     elseif condtype == "alt" then
@@ -2676,11 +2684,22 @@ function sign(x)
   return 0
 end
 
-function sameFloat(a, b, ignorefloat)
+function countFlye(unit)
+  return countProperty(unit, "flye", true) - countProperty(unit, "anti flye", true)
+end
+function sameFloat(a, b, ignorefloat, anti)
   if ignorefloat then
     return true
+  elseif anti then
+    local tallCheck = function(a,b)
+      return (hasProperty(a, "tall", true) and countFlye(b) <= 0) or (hasProperty(a, "anti tall", true) and countFlye(b) >= 0)
+    end
+    return (-countFlye(a) == countFlye(b)) or tallCheck(a,b) or tallCheck(b,a)
   else
-    return (countProperty(a, "flye", true) == countProperty(b, "flye", true)) or hasProperty(a, "tall", true) or hasProperty(b, "tall", true)
+    local tallCheck = function(a,b)
+      return (hasProperty(a, "tall", true) and countFlye(b) >= 0) or (hasProperty(a, "anti tall", true) and countFlye(b) <= 0)
+    end
+    return (countFlye(a) == countFlye(b)) or tallCheck(a,b) or tallCheck(b,a)
   end
 end
 

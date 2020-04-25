@@ -4,8 +4,54 @@
     "sprite": ["txt/u"],
     "types": ["property"],
     "color": [[4, 1]],
-    "desc": "U: Controlled by you, the player!",
+    "desc": "U: Controlled by you, the player!\nAnti: opposite direction",
     "tags": ["you", "p1", "player"]
+  },
+  {
+    "name": "txt_utoo",
+    "display": "u too",
+    "sprite": ["txt/utoo"],
+    "types": ["property"],
+    "color": [[4, 1]],
+    "desc": "player 2 has joined the game (dpad). Can also be spelled 'u2'.\nAnti: opposite direction",
+    "alias": ["u2"],
+    "tags": ["you2", "p2", "player"]
+  },
+  {
+    "name": "txt_utres",
+    "display": "u tres",
+    "sprite": ["txt/utres"],
+    "types": ["property"],
+    "color": [[4, 1]],
+    "desc": "and player 3 (ijkl or numpad).\nIf there are objects of two control schemes but not a third, the third control scheme can be used to move both of the first two at once.\nCan also be spelled 'u3'.\nAnti: opposite direction",
+    "alias": ["u3"],
+    "tags": ["you3", "p3", "player"]
+  },
+  {
+    "name": "txt_w",
+    "sprite": ["txt/w"],
+    "types": ["property"],
+    "color": [[4, 1]],
+    "desc": "W: it's a double u (Alias: uu)\nAnti: opposite direction",
+    "alias": ["uu"],
+    "tags": ["you", "player"]
+  },
+  {
+    "name": "txt_y'all",
+    "sprite": ["txt/y'all"],
+    "types": ["property"],
+    "color": [[4, 2]],
+    "desc": "all players control y'all\nAnti: opposite direction",
+    "tags": ["you all", "players"]
+  },
+  {
+    "name": "txt_you",
+    "sprite": ["txt/you"],
+    "types": ["property"],
+    "color": [[4, 1]],
+    "wobble": true,
+    "desc": "YOU: Controlled by u, the player!\nCan be controlled by all players.\nAnti: opposite direction",
+    "tags": ["player", "baba"]
   },
   {
     "name": "txt_nogo",
@@ -13,8 +59,17 @@
     "sprite": ["txt/nogo"],
     "types": ["property"],
     "color": [[5, 1]],
-    "desc": "NO GO: Can't be entered by objects. Overrides GO AWAY PLS!",
+    "desc": "NO GO: Can't be entered by objects. Overrides GO AWAY PLS!\nAnti: icyyyy",
     "tags": ["stop"]
+  },
+  {
+    "name": "txt_gomyway",
+    "display": "go my way",
+    "sprite": ["txt/gomywey"],
+    "types": ["property"],
+    "color": [[1, 3]],
+    "desc": "GO MY WAY: Prevents movement onto its tile from the tile in front of it and the two tiles 45 degrees to either side.\nAnti: only enterable from directly behind",
+    "tags": ["oneway", "go my wey"]
   },
   {
     "name": "txt_goawaypls",
@@ -22,8 +77,33 @@
     "sprite": ["txt/goaway"],
     "types": ["property"],
     "color": [[6, 1]],
-    "desc": "GO AWAY: Pushed by movement into its tile.",
+    "desc": "GO AWAY PLS: Pushed by movement into its tile.\nAnti: comepls",
     "tags": ["push"]
+  },
+  {
+    "name": "txt_comepls",
+    "display": "come pls",
+    "sprite": ["txt/comepls"],
+    "types": ["property"],
+    "color": [[6, 2]],
+    "desc": "COME PLS: Pulled by movement on adjacent tiles facing away from this unit.\nAnti: goawaypls",
+    "tags": ["pull"]
+  },
+  {
+    "name": "txt_sidekik",
+    "sprite": ["txt/sidekik"],
+    "types": ["property"],
+    "color": [[6, 1]],
+    "desc": "SIDEKIK: If a unit moves perpendicularly away from a SIDEKIK, the SIDEKIK copies that movement.\nAnti: goawaypls&comepls",
+    "tags": ["sidekick"]
+  },
+  {
+    "name": "txt_diagkik",
+    "sprite": ["txt/diagkik"],
+    "types": ["property"],
+    "color": [[6, 1]],
+    "desc": "DIAGKIK: If a unit moves 45 degrees away from a DIAGKIK, the DIAGKIK copies that movement. With two stacks, also copies 135 degree movement.\nAnti: goawaypls&comepls&sidekik",
+    "tags": ["sidekick", "diagkick"]
   },
   {
     "name": "txt_nedkee",
@@ -31,7 +111,7 @@
     "sprite": ["txt/nedkee"],
     "types": ["property"],
     "color": [[2, 2]],
-    "desc": "NED KEE: When a NED KEE and FOR DOR unit move into each other or are on each other, they are both destroyed.",
+    "desc": "NED KEE: When a NED KEE and FOR DOR unit move into each other or are on each other, they are both destroyed.\nAnti: fordor",
     "tags": ["shut"]
   },
   {
@@ -40,7 +120,7 @@
     "sprite": ["txt/fordor"],
     "types": ["property"],
     "color": [[2, 4]],
-    "desc": "FOR DOR: When a NED KEE and FOR DOR unit move into each other or are on each other, they are both destroyed.",
+    "desc": "FOR DOR: When a NED KEE and FOR DOR unit move into each other or are on each other, they are both destroyed.\nAnti: nedkee",
     "tags": ["open"]
   },
   {
@@ -51,7 +131,7 @@
     "features": {
       "sans": {"x": 21, "y": 6, "w": 3, "h": 4}
     },
-    "desc": ":): At end of turn, if U is on :) and survives, U R WIN!",
+    "desc": ":): At end of turn, if U is on :) and survives, U R WIN!\nAnti: un:)",
     "tags": ["win", "smiley", "face", "happy", "yay"]
   },
   {
@@ -60,7 +140,7 @@
     "sprite": ["txt/noswim"],
     "types": ["property"],
     "color": [[1, 3]],
-    "desc": "NO SWIM: At end of turn, if a NO SWIM unit is touching another object, all objects on the tile are destroyed.",
+    "desc": "NO SWIM: At end of turn, if a NO SWIM unit is touching another object, all objects on the tile are destroyed.\nAnti: giv protecc",
     "tags": ["sink"]
   },
   {
@@ -68,7 +148,14 @@
     "sprite": ["txt/colrful"],
     "types": ["property"],
     "color": [[0, 3]],
-    "desc": "COLRFUL: Causes the unit to appear a variety of colours."
+    "desc": "COLRFUL: Causes the unit to appear a variety of colours.\nAnti: ??"
+  },
+  {
+    "name": "txt_rave",
+    "sprite": ["txt/rave"],
+    "types": ["property"],
+    "color": [[0, 3]],
+    "desc": "RAVE: Causes the unit to flash through the rainbow extremely quickly.\nAnti: ??"
   },
   {
     "name": "txt_tranz",
@@ -78,7 +165,7 @@
     },
     "types": ["property", "gang_prefix"],
     "color": [[255, 255, 255]],
-    "desc": "TRANZ: Causes the unit to appear pink, white and baby blue. TRANZ objects are pinc, whit, and cyeann, and not any other colors.",
+    "desc": "TRANZ: Causes the unit to appear pink, white and baby blue. TRANZ objects are pinc, whit, and cyeann, and not any other colors.\nAnti: poof",
     "tags": ["trans"]
   },
   {
@@ -89,7 +176,7 @@
     },
     "types": ["property", "gang_prefix"],
     "color": [[255, 255, 255]],
-    "desc": "GAY: Causes the unit to appear rainbow coloured. GAY objects are reed, orang, yello, grun, bleu, and purp, and not any other colors."
+    "desc": "GAY: Causes the unit to appear rainbow coloured. GAY objects are reed, orang, yello, grun, bleu, and purp, and not any other colors.\nAnti: poof"
   },
   {
     "name": "txt_enby",
@@ -99,7 +186,7 @@
     },
     "types": ["property", "gang_prefix"],
     "color": [[255, 255, 255]],
-    "desc": "ENBY: Causes the unit to appear yellow, white, purple and black. ENBY objects are yello, whit, purp, and blacc, and not any other colors."
+    "desc": "ENBY: Causes the unit to appear yellow, white, purple and black. ENBY objects are yello, whit, purp, and blacc, and not any other colors.\nAnti: poof"
   },
   {
     "name": "txt_ace",
@@ -109,7 +196,7 @@
     },
     "types": ["property", "gang_prefix"],
     "color": [[255, 255, 255]],
-    "desc": "ACE: Causes the unit to appear black, grey, white, and purple. ACE objects are blacc, graey, whit, and purp, and not any other colors."
+    "desc": "ACE: Causes the unit to appear black, grey, white, and purple. ACE objects are blacc, graey, whit, and purp, and not any other colors.\nAnti: poof"
   },
   {
     "name": "txt_pan",
@@ -119,7 +206,7 @@
     },
     "types": ["property", "gang_prefix"],
     "color": [[255, 255, 255]],
-    "desc": "PAN: Causes the unit to appear pink, yellow, and cyan. PAN objects are pinc, yello, and cyeann, and not any other colors."
+    "desc": "PAN: Causes the unit to appear pink, yellow, and cyan. PAN objects are pinc, yello, and cyeann, and not any other colors.\nAnti: poof"
   },
   {
     "name": "txt_bi",
@@ -129,7 +216,7 @@
     },
     "types": ["property", "gang_prefix"],
     "color": [[255, 255, 255]],
-    "desc": "BI: Causes the unit to appear pink, purple, and blue. BI objects are pinc, purp, and bleu, and not any other colors."
+    "desc": "BI: Causes the unit to appear pink, purple, and blue. BI objects are pinc, purp, and bleu, and not any other colors.\nAnti: poof"
   },
   {
     "name": "txt_lesbab",
@@ -139,7 +226,7 @@
     },
     "types": ["property", "gang_prefix"],
     "color": [[255, 255, 255]],
-    "desc": "LESBAB: Causes the unit to appear red, orange, white, and pink. LESBAB objects are reed, orang, whit, and pinc, and not any other colors."
+    "desc": "LESBAB: Causes the unit to appear red, orange, white, and pink. LESBAB objects are reed, orang, whit, and pinc, and not any other colors.\nAnti: poof"
   },
   {
     "name": "txt_aro",
@@ -149,7 +236,7 @@
     },
     "types": ["property", "gang_prefix"],
     "color": [[255, 255, 255]],
-    "desc": "ARO: Causes the unit to appear green, white, grey, and black. ARO objects are grun, whit, graey, and blacc, and not any other colors."
+    "desc": "ARO: Causes the unit to appear green, white, grey, and black. ARO objects are grun, whit, graey, and blacc, and not any other colors.\nAnti: poof"
   },
   {
     "name": "txt_fluid",
@@ -159,14 +246,14 @@
     },
     "types": ["property", "gang_prefix"],
     "color": [[255, 255, 255]],
-    "desc": "FLUID: Causes the unit to appear pink, white, black, and blue. FLUID objects are pinc, whit, blacc, and bleu, and not any other colors."
+    "desc": "FLUID: Causes the unit to appear pink, white, black, and blue. FLUID objects are pinc, whit, blacc, and bleu, and not any other colors.\nAnti: poof"
   },
   {
     "name": "txt_slep",
     "sprite": ["txt/slep"],
     "types": ["property"],
     "color": [[1, 3]],
-    "desc": "SLEP: SLEP units can't move due to being U, WALK, COPKAT or SPOOPed.",
+    "desc": "SLEP: SLEP units can't move due to being U, WALK, COPKAT or SPOOPed.\nAnti: vibrate (like temmi)",
     "tags": ["sleep"]
   },
   {
@@ -177,7 +264,7 @@
     "features": {
       "sans": {"x": 20, "y": 6, "w": 4, "h": 4}
     },
-    "desc": ":(: At end of turn, destroys any U objects on it.",
+    "desc": ":(: At end of turn, destroys any U objects on it.\nAnti: destroy self",
     "tags": ["defeat", "sad", "face", "aw"]
   },
   {
@@ -185,7 +272,7 @@
     "sprite": ["txt/walk"],
     "types": ["property"],
     "color": [[5, 3]],
-    "desc": "WALK: Moves in a straight line each turn, bouncing off walls.",
+    "desc": "WALK: Moves in a straight line each turn, bouncing off walls.\nAnti: opposite direction",
     "tags": ["move"]
   },
   {
@@ -196,15 +283,8 @@
     "features": {
       "sans": {"x": 19, "y": 10, "w": 3, "h": 5}
     },
-    "desc": ":o: If U is on :o, the :o is collected. Bonus!",
+    "desc": ":o: If U is on :o, the :o is collected. Bonus!\nAnti: collect u (still gives bonus)",
     "tags": ["bonus", "woah", "whoa", "face"]
-  },
-  {
-    "name": "txt_up",
-    "sprite": ["txt/up"],
-    "types": ["property", "direction"],
-    "color": [[1, 4]],
-    "desc": "UP: A GO ->, but facing up."
   },
   {
     "name": "txt_direction",
@@ -212,22 +292,73 @@
     "types": ["property", "direction"],
     "color": [[1, 4]],
     "rotate": true,
-    "desc": "GO ->: The unit is forced to face the indicated direction. LOOKAT GO -> makes a unit look in that direction or is true if it is facing that direction. BEN'T GO -> prevents an object from facing that direction.",
+    "desc": "GO ->: The unit is forced to face the indicated direction. LOOKAT GO -> makes a unit look in that direction or is true if it is facing that direction. BEN'T GO -> prevents an object from facing that direction.\nAnti: opposite direction",
     "tags": ["go arrow", "up", "down", "left", "right", "go ->", "go^"]
+  },
+  {
+    "name": "txt_up",
+    "sprite": ["txt/up"],
+    "types": ["property", "direction"],
+    "color": [[1, 4]],
+    "desc": "UP: A GO ->, but facing up.\nAnti: down"
   },
   {
     "name": "txt_left",
     "sprite": ["txt/left"],
     "types": ["property", "direction"],
     "color": [[1, 4]],
-    "desc": "LEFT: A GO ->, but facing left."
+    "desc": "LEFT: A GO ->, but facing left.\nAnti: right"
   },
   {
     "name": "txt_down",
     "sprite": ["txt/down"],
     "types": ["property", "direction"],
     "color": [[1, 4]],
-    "desc": "DOWN: A GO ->, but facing down."
+    "desc": "DOWN: A GO ->, but facing down.\nAnti: up"
+  },
+  {
+    "name": "txt_right",
+    "sprite": ["txt/right"],
+    "types": ["property", "direction"],
+    "color": [[1, 4]],
+    "desc": "RIGHT: A GO ->, but facing right.\nAnti: left",
+    "tags": ["direction"]
+  },
+  {
+    "name": "txt_upleft",
+    "sprite": ["txt/upleft"],
+    "types": ["property", "direction"],
+    "color": [[1, 4]],
+    "desc": "UPLEFT: A GO ->, but facing upleft. Can also be spelled leftup.\nAnti: downright",
+    "alias": ["leftup"],
+    "tags": ["direction"]
+  },
+  {
+    "name": "txt_upright",
+    "sprite": ["txt/upright"],
+    "types": ["property", "direction"],
+    "color": [[1, 4]],
+    "desc": "UPRIGHT: A GO ->, but facing upright. Can also be spelled rightup.\nAnti: downleft",
+    "alias": ["rightup"],
+    "tags": ["direction"]
+  },
+  {
+    "name": "txt_downleft",
+    "sprite": ["txt/downleft"],
+    "types": ["property", "direction"],
+    "color": [[1, 4]],
+    "desc": "DOWNLEFT: A GO ->, but facing downleft. Can also be spelled leftdown.\nAnti: upright",
+    "alias": ["leftdown"],
+    "tags": ["direction"]
+  },
+  {
+    "name": "txt_downright",
+    "sprite": ["txt/downright"],
+    "types": ["property", "direction"],
+    "color": [[1, 4]],
+    "desc": "DOWNRIGHT: A GO ->, but facing downright. Can also be spelled rightdown.\nAnti: upleft",
+    "alias": ["rightdown"],
+    "tags": ["direction"]
   },
   {
     "name": "txt_behinu",
@@ -235,7 +366,7 @@
     "sprite": ["txt/behinu"],
     "types": ["property"],
     "color": [[3, 1]],
-    "desc": "BEHIN U: BEHIN U units swap with everything on tiles they move into, and swap with units that move onto their tile, then face their swapee. Nothing personnel, kid.",
+    "desc": "BEHIN U: BEHIN U units swap with everything on tiles they move into, and swap with units that move onto their tile, then face their swapee. Nothing personnel, kid.\nAnti: goawaypls + can push everything",
     "tags": ["swap", "edgy"]
   },
   {
@@ -243,7 +374,7 @@
     "sprite": ["txt/ouch"],
     "types": ["property"],
     "color": [[1, 2]],
-    "desc": "OUCH: This unit is destroyed if it shares a tile with another object, or if it tries to move/be moved into and can't.",
+    "desc": "OUCH: This unit is destroyed if it shares a tile with another object, or if it tries to move/be moved into and can't.\nAnti: treats everything else as ouch",
     "tags": ["weak"]
   },
   {
@@ -252,7 +383,7 @@
     "types": ["property", "gang_prefix"],
     "color": [[4, 2]],
     "thingify": "therealqt",
-    "desc": "QT: Makes the unit emit love hearts.",
+    "desc": "QT: Makes the unit emit love hearts.\nAnti: is rong",
     "tags": ["cute", "lily"]
   },
   {
@@ -260,7 +391,15 @@
     "sprite": ["txt/go"],
     "types": ["property"],
     "color": [[1, 3]],
-    "desc": "GO: This unit will force all other objects in its tile to move in its facing direction.",
+    "desc": "GO: This unit will force all other objects in its tile to move in its facing direction.\nAnti: opposite direction",
+    "tags": ["shift"]
+  },
+  {
+    "name": "txt_goooo",
+    "sprite": ["txt/goooo"],
+    "types": ["property"],
+    "color": [[1, 3]],
+    "desc": "GOOOO: The instant an object steps on a GOOOO unit, it is forced to move in the GOOOO unit's direction.\nAnti: opposite direction",
     "tags": ["shift"]
   },
   {
@@ -268,65 +407,39 @@
     "sprite": ["txt/icy"],
     "types": ["property"],
     "color": [[1, 4]],
-    "desc": "ICY: Objects on something ICY are forced to move in their facing direction until they either leave the ice or can't move any further.",
+    "desc": "ICY: Objects on something ICY are forced to move in the direction they entered the ice (disabling everything SLEP does) until they either leave the ice or can't move any further.\nAnti: opposite direction",
     "tags": ["slip", "patashu"]
+  },
+  {
+    "name": "txt_icyyyy",
+    "sprite": ["txt/icyyyy"],
+    "types": ["property"],
+    "color": [[1, 4]],
+    "desc": "ICYYYY: The instant an object steps on an ICYYYY unit, it is forced to move again.\nAnti: opposite direction",
+    "tags": ["slip", "slide", "patashu"]
   },
   {
     "name": "txt_delet",
     "sprite": ["txt/delet"],
     "types": ["property"],
     "color": [[2, 2]],
-    "desc": "DELET: At end of turn, if U is on DELET, you get booted out of the level and erases all progress in the level (win, bonus, transformation).",
+    "desc": "DELET: At end of turn, if U is on DELET, you get booted out of the level and erases all progress in the level (win, bonus, transformation).\nAnti: win, bonus, and transform into the object stepped on",
     "tags": ["crash", "oops", "fucky wucky", "xwx", "delete"]
-  },
-  {
-    "name": "txt_sublvl",
-    "sprite": ["txt/sublvl"],
-    "types": ["property"],
-    "color": [[4, 1]],
-    "desc": "SUBLVL: An object that is sublvl will become enterable. Currently unimplemented.",
-    "tags": ["lvl", "level", "sublevel"]
-  },
-  {
-    "name": "txt_comepls",
-    "display": "come pls",
-    "sprite": ["txt/comepls"],
-    "types": ["property"],
-    "color": [[6, 2]],
-    "desc": "COME PLS: Pulled by movement on adjacent tiles facing away from this unit.",
-    "tags": ["pull"]
-  },
-  {
-    "name": "txt_sidekik",
-    "sprite": ["txt/sidekik"],
-    "types": ["property"],
-    "color": [[6, 1]],
-    "desc": "SIDEKIK: If a unit moves perpendicularly away from a SIDEKIK, the SIDEKIK copies that movement.",
-    "tags": ["sidekick"]
   },
   {
     "name": "txt_diag",
     "sprite": ["txt/diag"],
     "types": ["property", "direction"],
     "color": [[3, 2]],
-    "desc": "DIAG: Prevents the unit from moving orthogonally, unless it is also ORTHO. Also affects rule parsing.",
+    "desc": "DIAG: Prevents the unit from moving orthogonally, unless it is also ORTHO. Also affects rule parsing.\nAnti: ortho",
     "tags": ["direction", "diagonal"]
-  },
-  {
-    "name": "txt_gomyway",
-    "display": "go my way",
-    "sprite": ["txt/gomywey"],
-    "types": ["property"],
-    "color": [[1, 3]],
-    "desc": "GO MY WAY: Prevents movement onto its tile from the tile in front of it and the two tiles 45 degrees to either side.",
-    "tags": ["oneway", "go my wey"]
   },
   {
     "name": "txt_ortho",
     "sprite": ["txt/ortho"],
     "types": ["property", "direction"],
     "color": [[3, 2]],
-    "desc": "ORTHO: Prevents the unit from moving diagonally, unless it is also DIAG. Also affects rule parsing.",
+    "desc": "ORTHO: Prevents the unit from moving diagonally, unless it is also DIAG. Also affects rule parsing.\nAnti: diag",
     "tags": ["direction", "orthogonal"]
   },
   {
@@ -334,7 +447,7 @@
     "sprite": ["txt/hotte"],
     "types": ["property"],
     "color": [[2, 3]],
-    "desc": "HOTTE: At end of turn, HOTTE units destroys all units that are FRIDGD on their tile.",
+    "desc": "HOTTE: At end of turn, HOTTE units destroys all units that are FRIDGD on their tile.\nAnti: fridgd",
     "tags": ["hot"]
   },
   {
@@ -342,31 +455,15 @@
     "sprite": ["txt/fridgd"],
     "types": ["property"],
     "color": [[1, 4]],
-    "desc": "FRIDGD: At end of turn, HOTTE units destroys all units that are FRIDGD on their tile.",
+    "desc": "FRIDGD: At end of turn, HOTTE units destroys all units that are FRIDGD on their tile.\nAnti: hotte",
     "tags": ["melt"]
-  },
-  {
-    "name": "txt_goooo",
-    "sprite": ["txt/goooo"],
-    "types": ["property"],
-    "color": [[1, 3]],
-    "desc": "GOOOO: The instant an object steps on a GOOOO unit, it is forced to move in the GOOOO unit's direction.",
-    "tags": ["shift"]
-  },
-  {
-    "name": "txt_icyyyy",
-    "sprite": ["txt/icyyyy"],
-    "types": ["property"],
-    "color": [[1, 4]],
-    "desc": "ICYYYY: The instant an object steps on an ICYYYY unit, it is forced to move again.",
-    "tags": ["slip", "slide", "patashu"]
   },
   {
     "name": "txt_protecc",
     "sprite": ["txt/protecc"],
     "types": ["property"],
     "color": [[0, 3]],
-    "desc": "PROTECC: Cannot be destroyed (but can be converted).",
+    "desc": "PROTECC: Cannot be destroyed (but can be converted).\nAnti: destroys object",
     "tags": ["safe", "protect"]
   },
   {
@@ -374,23 +471,39 @@
     "sprite": ["txt/flye"],
     "types": ["property"],
     "color": [[1, 4]],
-    "desc": "FLYE: A FLYE unit doesn't interact with other objects on its tile, and can ignore the collision of other objects, unless that other object has the same amount of FLYE as the unit. FLYE stacks with itself! Also pushing can occur regardless of flye.",
+    "desc": "FLYE: A FLYE unit doesn't interact with other objects on its tile, and can ignore the collision of other objects, unless that other object has the same amount of FLYE as the unit. FLYE stacks with itself! Also pushing can occur regardless of flye.\nAdds 5 to draw layer per flye, and 15 if there's at least 1.\nAnti: -1 to count",
     "tags": ["float"]
+  },
+  {
+    "name": "txt_tall",
+    "sprite": ["txt/tall"],
+    "types": ["property"],
+    "color": [[0, 1]],
+    "desc": "TALL: Considered to be every non-negative FLYE amount at once.\nAnti: non-positive (stacks with non-anti to block all)"
   },
   {
     "name": "txt_haetskye",
     "sprite": ["txt/haetskye"],
     "types": ["property"],
     "color": [[5, 3]],
-    "desc": "HAET SKYE: After movement, this unit falls DOWN as far as it can.",
+    "desc": "HAET SKYE: After movement, this unit falls DOWN as far as it can.\nAnti: haetflor",
     "tags": ["fall", "gravity"]
+  },
+  {
+    "name": "txt_haetflor",
+    "display": "haet flor",
+    "sprite": ["txt/haetflor"],
+    "types": ["property"],
+    "color": [[2, 2]],
+    "desc": "HAET FLOR: After movement, this unit falls UP as far as it can.\nAnti: haetskye",
+    "tags": ["vall", "gravity"]
   },
   {
     "name": "txt_moar",
     "sprite": ["txt/moar"],
     "types": ["property"],
     "color": [[4, 1]],
-    "desc": "MOAR: At end of turn, this unit replicates to all free tiles that are orthogonally adjacent. MOAR stacks with itself; note that at 3+ you can go through walls!",
+    "desc": "MOAR: At end of turn, this unit replicates to all free tiles that are orthogonally adjacent. MOAR stacks with itself; note that at 3+ you can go through walls!\nAnti: idk how tf this is supposed to be described",
     "tags": ["more"]
   },
   {
@@ -399,7 +512,7 @@
     "sprite": ["txt/visitfren"],
     "types": ["property"],
     "color": [[1, 4]],
-    "desc": "VISIT FREN: At end of turn, all other objects are sent to the next VISIT FREN unit with the same name in reading order (left to right, line by line, wrapping around). Higher levels of VISIT FREN will cause the target to be 1 backward, 2 forward, 2 backward, etc.",
+    "desc": "VISIT FREN: At end of turn, all other objects are sent to the next VISIT FREN unit with the same name in reading order (left to right, line by line, wrapping around). Higher levels of VISIT FREN will cause the target to be 1 backward, 2 forward, 2 backward, etc.\nAnti: visitfren object teleports to a random spot in level every turn",
     "tags": ["warp", "teleport", "portal"]
   },
   {
@@ -407,22 +520,15 @@
     "sprite": ["txt/stelth"],
     "types": ["property"],
     "color": [[1, 3]],
-    "desc": "STELTH: A STELTHy unit doesn't draw. STELTHy text won't appear in the rules list... kinda",
+    "desc": "STELTH: A STELTHy unit doesn't draw. STELTHy text won't appear in the rules list... kinda\nAnti: adds 130 to object draw layer",
     "tags": ["stealth", "hide"]
-  },
-  {
-    "name": "txt_tall",
-    "sprite": ["txt/tall"],
-    "types": ["property"],
-    "color": [[0, 1]],
-    "desc": "TALL: Considered to be every FLYE amount at once."
   },
   {
     "name": "txt_shy...",
     "sprite": ["txt/shy"],
     "types": ["property"],
     "color": [[6, 2]],
-    "desc": "SHY...: Can't initiate or continue a goawaypls, comepls, sidekik, or diagkik movement, and can look away from those objects, sometimes.",
+    "desc": "SHY...: Can't initiate or continue a goawaypls, comepls, sidekik, or diagkik movement, and can look away from those objects, sometimes.\nAnti: stubbn",
     "tags": ["patashu"]
   },
   {
@@ -431,7 +537,7 @@
     "sprite": ["txt/folo_wal"],
     "types": ["property"],
     "color": [[5, 3]],
-    "desc": "FOLO WAL: At end of turn, faces the first direction that it could enter and that doesn't have another unit of its name: right, forward, left, backward. When combined with WALK, causes the unit to follow the right wall.",
+    "desc": "FOLO WAL: At end of turn, faces the first direction that it could enter and that doesn't have another unit of its name: right, forward, left, backward. When combined with WALK, causes the unit to follow the right wall.\nAnti: turn cornr",
     "tags": ["follow wall"]
   },
   {
@@ -440,7 +546,7 @@
     "sprite": ["txt/turn_cornr"],
     "types": ["property"],
     "color": [[5, 3]],
-    "desc": "TURN CORNR: At end of turn, faces the first direction that it could enter and that doesn't have another unit of its name: forward, right, left, backward. When combined with WALK, causes the unit to bounce off walls at 90 degree angles.",
+    "desc": "TURN CORNR: At end of turn, faces the first direction that it could enter and that doesn't have another unit of its name: forward, right, left, backward. When combined with WALK, causes the unit to bounce off walls at 90 degree angles.\nAnti: folo wal",
     "tags": ["turn corner"]
   },
   {
@@ -448,7 +554,7 @@
     "sprite": ["txt/nxt"],
     "types": ["property"],
     "color": [[0, 3]],
-    "desc": "nxt: If U is on nxt, go to the next level (specified in object settings).",
+    "desc": "nxt: If U is on nxt, go to the next level (specified in object settings).\nAnti: auto return to map",
     "tags": ["next", "nxt", ":>", ";."]
   },
   {
@@ -457,7 +563,7 @@
     "sprite": ["txt/try again"],
     "types": ["property"],
     "color": [[3, 3]],
-    "desc": "TRY AGAIN: When U is on TRY AGAIN, the level is undone back to the starting state, except for NO UNDO objects. TRY AGAIN can be undone!",
+    "desc": "TRY AGAIN: When U is on TRY AGAIN, the level is undone back to the starting state, except for NO UNDO objects. TRY AGAIN can be undone!\nAnti: plays through the level's replay to the end",
     "tags": ["retry", "time", "reset", "lily", ":/", ";/"]
   },
   {
@@ -466,15 +572,23 @@
     "sprite": ["txt/noundo"],
     "types": ["property"],
     "color": [[5, 3]],
-    "desc": "NO UNDO: NO UNDO units aren't affected by undoing manually. LVL BE NO UNDO prevents undo inputs entirely.",
+    "desc": "NO UNDO: NO UNDO units aren't affected by undoing manually. LVL BE NO UNDO prevents undo inputs entirely.\nAnti: undo",
     "tags": ["persist", "time", "lily"]
+  },
+  {
+    "name": "txt_undo",
+    "sprite": ["txt/undo"],
+    "types": ["property"],
+    "color": [[6, 1]],
+    "desc": "UNDO: UNDO units, at end of turn, rewind a turn earlier, cumulatively. Stacks!\nAnti: no undo",
+    "tags": ["time", "back"]
   },
   {
     "name": "txt_stubbn",
     "sprite": ["txt/stubbn"],
     "types": ["property"],
     "color": [[6, 1]],
-    "desc": "STUBBN: STUBBN units ignore the special properties of WALK movers (bouncing off of walls, and declining to move if it would die due to being OUCH) and also makes attempted diagonal movement slide along walls. Stacks with itself - the more STUBBN, the more additional angles it will try, up to 180 degrees at 5 stacks! (2 stacks allows for 45 degree movement orthogonally.)",
+    "desc": "STUBBN: STUBBN units ignore the special properties of WALK movers (bouncing off of walls, and declining to move if it would die due to being OUCH) and also makes attempted diagonal movement slide along walls. Stacks with itself - the more STUBBN, the more additional angles it will try, up to 180 degrees at 5 stacks! (2 stacks allows for 45 degree movement orthogonally.)\nAnti: shy...",
     "tags": ["stubborn", "patashu"]
   },
   {
@@ -483,8 +597,17 @@
     "sprite": ["txt/goarnd"],
     "types": ["property"],
     "color": [[3, 2]],
-    "desc": "GO ARND: GO ARND units wrap around the level, as though it were a torus. BORDR objects are used as the level border, and the wraparound doesn't go through BORDRs. Diagonal GO ARNDs on corners of non-square levels might not work as expected, as it simply traces backward until hitting a BORDR.",
+    "desc": "GO ARND: GO ARND units wrap around the level, as though it were a torus. BORDR objects are used as the level border, and the wraparound doesn't go through BORDRs. Diagonal GO ARNDs on corners of non-square levels might not work as expected, as it simply traces backward until hitting a BORDR.\nAnti: flip around at edge (portal leading out to itself)",
     "tags": ["wrap around", "go around", "cg5"]
+  },
+  {
+    "name": "txt_mirrarnd",
+    "display": "mirr arnd",
+    "sprite": ["txt/mirrarnd"],
+    "types": ["property"],
+    "color": [[3, 2]],
+    "desc": "MIRR ARND: MIRR ARND units wrap around the level, as though it were a projective plane.\nAnti: flip around + mirror at edge",
+    "tags": ["mirror around", "cg5", "wrap"]
   },
   {
     "name": "txt_poortoll",
@@ -492,7 +615,7 @@
     "sprite": ["txt/poortoll"],
     "types": ["property"],
     "color": [[3, 2]],
-    "desc": "POOR TOLL: If a unit would enter a POOR TOLL unit, it instead leaves the next POOR TOLL unit of the same name in reading order (left to right, line by line, wrapping around) out the corresponding same side. Does not stack.",
+    "desc": "POOR TOLL: If a unit would enter a POOR TOLL unit, it instead leaves the next POOR TOLL unit of the same name in reading order (left to right, line by line, wrapping around) out the corresponding same side. Does not stack.\nAnti: uh wtf does \"sends you to the void\" mean",
     "tags": ["portal", "cg5"]
   },
   {
@@ -500,8 +623,304 @@
     "sprite": ["txt/split"],
     "types": ["property"],
     "color": [[4, 1]],
-    "desc": "SPLIT: Objects on a SPLITer are split into two copies on adjacent tiles.",
+    "desc": "SPLIT: Objects on a SPLITer are split into two copies on adjacent tiles.\nAnti: pulls objects arond to become 1",
     "tags": ["splitter", "5 step"]
+  },
+  {
+    "name": "txt_munwalk",
+    "sprite": ["txt/munwalk"],
+    "types": ["property"],
+    "color": [[1, 4]],
+    "desc": "MUNWALK: MUNWALK units move 180 degrees opposite of their facing direction. Stacks will cancel each other out.\nAnti: literally nothing",
+    "tags": ["moonwalk", "patashu"]
+  },
+  {
+    "name": "txt_sidestep",
+    "sprite": ["txt/sidestep"],
+    "types": ["property"],
+    "color": [[1, 3]],
+    "desc": "SIDESTEP: SIDESTEP units move 90 degrees clockwise off of their facing direction. Stacks!\nAnti: stack 3",
+    "tags": ["patashu", "drunk"]
+  },
+  {
+    "name": "txt_diagstep",
+    "sprite": ["txt/diagstep"],
+    "types": ["property"],
+    "color": [[3, 2]],
+    "desc": "DIAGSTEP: DIAGSTEP units move 45 degrees clockwise off of their facing direction. Stacks!\nAnti: stack 7",
+    "tags": ["patashu", "drunker"]
+  },
+  {
+    "name": "txt_knightstep",
+    "sprite": ["txt/knightstep"],
+    "types": ["property"],
+    "color": [[0, 2]],
+    "desc": "KNIGHTSTEP: KNIGHTSTEP units move like the Knight chess piece, rotated 22.5 degrees clockwise. Stacks add additional 1, 1 hops.\nAnti: move like a pawn (todo: make better desc after implemented)",
+    "tags": ["chess"]
+  },
+  {
+    "name": "txt_hopovr",
+    "sprite": ["txt/hopovr"],
+    "types": ["property"],
+    "color": [[5, 2]],
+    "desc": "HOPOVR: HOPOVR units move two tiles ahead, skipping the intermediate tile. Stacks!\nAnti: i cant visualize this one",
+    "tags": ["patashu", "skip"]
+  },
+  {
+    "name": "txt_spin",
+    "sprite": ["txt/spin"],
+    "types": ["property", "direction"],
+    "color": [[4, 1]],
+    "rotate": true,
+    "desc": "SPIN: A GO^ facing the same direction as the unit is facing, rotated clockwise the number of times on top of the property.\nAnti: opposite direction",
+    "tags": ["rotate", "lily"]
+  },
+  {
+    "name": "txt_brite",
+    "sprite": ["txt/brite"],
+    "types": ["property"],
+    "color": [[2, 4]],
+    "desc": "BRITE: Emits light in all directions.\nAnti: tranparnt",
+    "tags": ["bright", "power"]
+  },
+  {
+    "name": "txt_tranparnt",
+    "display": "tranparn't",
+    "sprite": ["txt/tranparnt"],
+    "types": ["property"],
+    "color": [[0, 1]],
+    "desc": "TRANPARN'T: Blocks light using a non-tile based system. Also blocks meow.\nAnti: brite",
+    "alias": ["tranparn't"],
+    "tags": ["opaque", "transparent"]
+  },
+  {
+    "name": "txt_torc",
+    "sprite": ["txt/torc"],
+    "types": ["property"],
+    "color": [[2, 2]],
+    "desc": "TORC: A TORC object emits light in the direction they're facing. The angle of the light determined by the number of TORC stacks. (WIP)\nAnti: gomyway but for light (WIP)",
+    "tags": ["torchlight", "flashlight"]
+  },
+  {
+    "name": "txt_noturn",
+    "display": "no turn",
+    "sprite": ["txt/noturn"],
+    "types": ["property"],
+    "color": [[2, 3]],
+    "desc": "NO TURN: A NO TURN unit's direction can't change (unless re-oriented by non-euclidean level geometry, i.e. POOR TOLL).\nAnti: rotatbl",
+    "tags": ["strafe"]
+  },
+  {
+    "name": "txt_wurd",
+    "sprite": ["txt/wurd"],
+    "types": ["property"],
+    "color": [[0, 3]],
+    "desc": "WURD: A WURD unit forms rules as though it was its respective text. TXT BEN'T WURD makes that text not parse.\nAnti: parse in opposite direction (stacks with normal wurd)",
+    "tags": ["word"]
+  },
+  {
+    "name": "txt_zawarudo",
+    "display": "za warudo",
+    "sprite": ["txt/zawarudo"],
+    "types": ["property"],
+    "color": [[2, 4]],
+    "desc": "ZA WARUDO: Can stop time and move without anything else moving. Faster than rule parsing itself!\nAfter forming the rule, press E (hourglass on mobile) to toggle. While stopped, a non-zawarudo object that would move at infinite speed will move one space per turn.\nAnti: is frozen outside timestop but not inside",
+    "tags": ["timeless", "the world", "dio", "lily"]
+  },
+  {
+    "name": "txt_txtify",
+    "sprite": ["txt/txtify"],
+    "types": ["property"],
+    "color": [[4, 1]],
+    "desc": "TXTIFY: BE TXTIFY causes that object to be turned into its corresponding metatext.\nAnti: thingify",
+    "tags": ["meta", "notnat"]
+  },
+  {
+    "name": "txt_thingify",
+    "sprite": ["txt/thingify"],
+    "types": ["property"],
+    "color": [[3, 1]],
+    "desc": "THINGIFY: BE THINGIFY causes that text to turn into the object it represents (or text it represents if metatext).\nSome objects are special and can only be gotten via thingify.\nAnti: txtify",
+    "tags": ["demeta", "notnat"]
+  },
+  {
+    "name": "txt_curse",
+    "sprite": ["txt/curse"],
+    "types": ["property"],
+    "color": [[3, 3]],
+    "desc": "CURSE: Makes object move like U on lins/lvls and able to enter lvls (also goes through walls)\nAlso adds 24 to draw layer.\nAnti: opposite direction",
+    "tags": ["select"]
+  },
+  {
+    "name": "txt_her",
+    "sprite": ["txt/her"],
+    "types": ["property"],
+    "color": [[1, 3]],
+    "rotate": true,
+    "desc": "HER ->: Sends objects to where the text indicates. N'T HER makes objects HAET that tile.\nAnti: opposite direction",
+    "tags": ["here", "cg5", "her^", "her ->"]
+  },
+  {
+    "name": "txt_thr",
+    "sprite": ["txt/thr"],
+    "types": ["property"],
+    "color": [[3, 2]],
+    "rotate": true,
+    "desc": "THR ->: Sends objects as far away from it as possible (until hitting a wall) in the indicated direction. N'T THR makes objects HAET a line from the text.\nAnti: opposite direction",
+    "tags": ["there", "cg5", "thr^", "thr ->"]
+  },
+  {
+    "name": "txt_rithere",
+    "display": "rit here",
+    "sprite": ["txt/rithere"],
+    "types": ["property"],
+    "layer": 21,
+    "color": [[4, 0]],
+    "desc": "RIT HERE: Sends objects to where the text is.\nAnti: random space in lvl other than this one",
+    "tags": ["right here"]
+  },
+  {
+    "name": "txt_stayther",
+    "sprite": ["txt/stay ther"],
+    "types": ["property"],
+    "color": [[0, 3]],
+    "desc": "STAY THER: Objects with this property will be taken with you when you transition between levels.\nAnti: object vanishes",
+    "tags": ["persist"]
+  },
+  {
+    "name": "txt_glued",
+    "sprite": ["txt/glued"],
+    "types": ["property"],
+    "color": [[2, 4]],
+    "desc": "GLUED: Stuck to adjacent units with glued, and can't move unless the entire block can simultaneously move.\nCan also form same[paint/flye/face] to make something only glued to those items.\nAnti: ignores comepls/sidekik/diagkik",
+    "tags": ["sticky", "lily"]
+  },
+  {
+    "name": "txt_rotatbl",
+    "sprite": ["txt/rotatbl"],
+    "types": ["property"],
+    "color": [[6, 2]],
+    "desc": "ROTATBL: Makes any object able to be rotated.\nAnti: noturn",
+    "tags": ["rotatable"]
+  },
+  {
+    "name": "txt_nuek",
+    "sprite": ["txt/nuek"],
+    "types": ["property"],
+    "color": [[2, 2]],
+    "desc": "NUEK: A NUEK will begin destroying everything around it, its radius growing once per turn. Currently very laggy, for some reason.\nAnti: places xplod at the corners of lvl",
+    "tags": ["nuke", "bomb"]
+  },
+  {
+    "name": "txt_un:)",
+    "sprite": ["txt/ungood"],
+    "types": ["property"],
+    "color": [[1, 2]],
+    "features": {
+      "sans": {"x": 19, "y": 14, "w": 2, "h": 4}
+    },
+    "desc": "UN:): When U touches UN:), the current level will no longer be considered won, without exiting the level. Imagine a win score equal to the number of Us on :) minus the Us on UN:). If positive, you win. If negative, you lose your win. If equal, nothing happens.\nAnti: :)",
+    "tags": ["unwin", "ungood", "face", "unyay", "patashu", ";d"]
+  },
+  {
+    "name": "txt_notranform",
+    "display": "no tranform",
+    "sprite": ["txt/notranform"],
+    "types": ["property"],
+    "color": [[2, 2]],
+    "desc": "NO TRANFORM: A property that prevents the object from transforming. LVL BE NO TRANFORM reverts any transformations it had. X BEN'T NOTRANFORM negates X BE X. Also negates TRANZ.\nAnti: tranz",
+    "tags": ["no transform"]
+  },
+  {
+    "name": "txt_reflecc",
+    "sprite": ["txt/reflecc"],
+    "types": ["property"],
+    "color": [[5, 2]],
+    "desc": "REFLECC: When a unit moves into a REFLECC's front or behind, it gets reflected off of that surface.\nAnti: ??",
+    "tags": ["reflect", "slope", "bounce", "mirror"]
+  },
+  {
+    "name": "txt_stukc",
+    "sprite": ["txt/stukc"],
+    "types": ["property"],
+    "color": [[1, 1]],
+    "desc": "STUKC: Anything with this property can't move.\nAnti: if not moved this turn, move in a random direction",
+    "tags": ["stuck"]
+  },
+  {
+    "name": "txt_gone",
+    "sprite": ["txt/gone"],
+    "types": ["property"],
+    "color": [[0, 3]],
+    "desc": "GONE: If something is GONE, it floats away into nothingness.\nAnti: restore all objects of type that have died (todo: define died)",
+    "tags": ["done"]
+  },
+  {
+    "name": "txt_dragbl",
+    "sprite": ["txt/dragbl"],
+    "types": ["property"],
+    "color": [[3, 3]],
+    "desc": "DRAGBL: Units that are DRAGBL can be picked up and moved around.\nAnti: takes the opposite of your mouse movements",
+    "tags": ["draggable", "mouse"]
+  },
+  {
+    "name": "txt_nodrag",
+    "display": "no drag",
+    "sprite": ["txt/nodrag"],
+    "types": ["property"],
+    "color": [[3, 0]],
+    "desc": "NO DRAG: Units that are DRAGBL can't be placed on NO DRAG objects.\nAnti: mous cant move on or over",
+    "tags": ["mouse"]
+  },
+  {
+    "name": "txt_thicc",
+    "sprite": ["txt/thicc"],
+    "types": ["property"],
+    "color": [[1, 3]],
+    "desc": "THICC: Thicc things take up a 2x2 space. Expands to the lower left.\nAnti: transform into babby"
+  },
+  {
+    "name": "txt_rythm",
+    "sprite": ["txt/rythm"],
+    "types": ["property"],
+    "color": [[4, 1]],
+    "desc": "RYTHM (property): Turns pass for these units based on time, separate from normal turns passing. Uses the same system as zawarudo.\nAnti: follows random intervals instead of a rhythm",
+    "tags": ["auto", "necrodancer", "lily", "rhythm", "dancr"]
+  },
+  {
+    "name": "txt_cool",
+    "sprite": ["txt/cool"],
+    "types": ["property", "gang_prefix"],
+    "color": [[1, 4]],
+    "desc": "COOL: COOL units wear a pair of sunglasses, and don't shake.\nAnti: hotte",
+    "tags": ["cool"]
+  },
+  {
+    "name": "txt_thonk",
+    "sprite": ["txt/thonk"],
+    "types": ["property"],
+    "color": [[2, 4]],
+    "desc": "THONK: THONK units question their own FRAGIL existence.\nAnti: ??",
+    "tags": ["thinking", "wonder"]
+  },
+  {
+    "name": "txt_sublvl",
+    "sprite": ["txt/sublvl"],
+    "types": ["property"],
+    "color": [[4, 1]],
+    "desc": "SUBLVL: An object that is sublvl will become enterable. Currently unimplemented, and likely won't ever be.",
+    "tags": ["lvl", "level", "sublevel"]
+  },
+  {
+    "name": "txt_b)",
+    "sprite": ["txt/B)"],
+    "types": ["property"],
+    "color": [[1, 4]],
+    "features": {
+      "sans": {"x": 20, "y": 8, "w": 5, "h": 4}
+    },
+    "desc": "B): At end of turn, if U is on B) and survives, U R COOL! (This currently does nothing.)",
+    "tags": ["cool", "smiley"]
   },
   {
     "name": "txt_cilindr",
@@ -520,439 +939,5 @@
     "rotate": true,
     "desc": "MOBYUS: MOBYUS units wrap around the level, as though it were a mobius strip with the indicated orientation.",
     "tags": ["mobius", "space", "wrap"]
-  },
-  {
-    "name": "txt_munwalk",
-    "sprite": ["txt/munwalk"],
-    "types": ["property"],
-    "color": [[1, 4]],
-    "desc": "MUNWALK: MUNWALK units move 180 degrees opposite of their facing direction. Stacks will cancel each other out.",
-    "tags": ["moonwalk", "patashu"]
-  },
-  {
-    "name": "txt_mirrarnd",
-    "display": "mirr arnd",
-    "sprite": ["txt/mirrarnd"],
-    "types": ["property"],
-    "color": [[3, 2]],
-    "desc": "MIRR ARND: MIRR ARND units wrap around the level, as though it were a projective plane.",
-    "tags": ["mirror around", "cg5", "space", "wrap"]
-  },
-  {
-    "name": "txt_sidestep",
-    "sprite": ["txt/sidestep"],
-    "types": ["property"],
-    "color": [[1, 3]],
-    "desc": "SIDESTEP: SIDESTEP units move 90 degrees clockwise off of their facing direction. Stacks!",
-    "tags": ["patashu", "drunk"]
-  },
-  {
-    "name": "txt_diagstep",
-    "sprite": ["txt/diagstep"],
-    "types": ["property"],
-    "color": [[3, 2]],
-    "desc": "DIAGSTEP: DIAGSTEP units move 45 degrees clockwise off of their facing direction. Stacks!",
-    "tags": ["patashu", "drunker"]
-  },
-  {
-    "name": "txt_hopovr",
-    "sprite": ["txt/hopovr"],
-    "types": ["property"],
-    "color": [[5, 2]],
-    "desc": "HOPOVR: HOPOVR units move two tiles ahead, skipping the intermediate tile. Stacks!",
-    "tags": ["patashu", "skip"]
-  },
-  {
-    "name": "txt_undo",
-    "sprite": ["txt/undo"],
-    "types": ["property"],
-    "color": [[6, 1]],
-    "desc": "UNDO: UNDO units, at end of turn, rewind a turn earlier, cumulatively. Stacks!",
-    "tags": ["time", "back"]
-  },
-  {
-    "name": "txt_spin",
-    "sprite": ["txt/spin"],
-    "types": ["property", "direction"],
-    "color": [[4, 1]],
-    "rotate": true,
-    "desc": "SPIN: A GO^ facing the same direction as the unit is facing, rotated clockwise the number of times on top of the property.",
-    "tags": ["rotate", "lily"]
-  },
-  {
-    "name": "txt_brite",
-    "sprite": ["txt/brite"],
-    "types": ["property"],
-    "color": [[2, 4]],
-    "desc": "BRITE: A BRITE object emits light in all directions. LIT will be true for objects on the same FLYE level if nothing TRANPARN'T is in the way.",
-    "tags": ["bright", "power"]
-  },
-  {
-    "name": "txt_tranparnt",
-    "display": "tranparn't",
-    "sprite": ["txt/tranparnt"],
-    "types": ["property"],
-    "color": [[0, 1]],
-    "desc": "TRANPARN'T: A BRITE object emits light in all directions. LIT will be true for objects on the same FLYE level if nothing TRANPARN'T is in the way.",
-    "alias": ["tranparn't"],
-    "tags": ["opaque", "transparent"]
-  },
-  {
-    "name": "txt_noturn",
-    "display": "no turn",
-    "sprite": ["txt/noturn"],
-    "types": ["property"],
-    "color": [[2, 3]],
-    "desc": "NO TURN: A NO TURN unit's direction can't change (unless re-oriented by non-euclidean level geometry, i.e. POOR TOLL).",
-    "tags": ["strafe"]
-  },
-  {
-    "name": "txt_wurd",
-    "sprite": ["txt/wurd"],
-    "types": ["property"],
-    "color": [[0, 3]],
-    "desc": "WURD: A WURD unit forms rules as though it was its respective text. TXT BEN'T WURD makes that text not parse.",
-    "tags": ["word"]
-  },
-  {
-    "name": "txt_haetflor",
-    "display": "haet flor",
-    "sprite": ["txt/haetflor"],
-    "types": ["property"],
-    "color": [[2, 2]],
-    "desc": "HAET FLOR: After movement, this unit falls UP as far as it can.",
-    "tags": ["vall", "gravity"]
-  },
-  {
-    "name": "txt_rave",
-    "sprite": ["txt/rave"],
-    "types": ["property"],
-    "color": [[0, 3]],
-    "desc": "RAVE: Causes the unit to flash through the rainbow extremely quickly."
-  },
-  {
-    "name": "txt_utoo",
-    "display": "u too",
-    "sprite": ["txt/utoo"],
-    "types": ["property"],
-    "color": [[4, 1]],
-    "desc": "player 2 has joined the game (dpad). Can also be spelled 'u2'.",
-    "alias": ["u2"],
-    "tags": ["you2", "p2", "player"]
-  },
-  {
-    "name": "txt_utres",
-    "display": "u tres",
-    "sprite": ["txt/utres"],
-    "types": ["property"],
-    "color": [[4, 1]],
-    "desc": "and player 3 (ijkl or numpad).\nIf there are objects of two control schemes but not a third, the third control scheme can be used to move both of the first two at once.\nCan also be spelled 'u3'.",
-    "alias": ["u3"],
-    "tags": ["you3", "p3", "player"]
-  },
-  {
-    "name": "txt_zawarudo",
-    "display": "za warudo",
-    "sprite": ["txt/zawarudo"],
-    "types": ["property"],
-    "color": [[2, 4]],
-    "desc": "ZA WARUDO: Can stop time and move without anything else moving. Faster than rule parsing itself!\nAfter forming the rule, press E (hourglass on mobile) to toggle. While stopped, a non-zawarudo object that would move at infinite speed will move one space per turn.",
-    "tags": ["timeless", "the world", "dio", "lily"]
-  },
-  {
-    "name": "txt_txtify",
-    "sprite": ["txt/txtify"],
-    "types": ["property"],
-    "color": [[4, 1]],
-    "desc": "TXTIFY: BE TXTIFY causes that object to be turned into its corresponding metatext.",
-    "tags": ["meta", "notnat"]
-  },
-  {
-    "name": "txt_curse",
-    "sprite": ["txt/curse"],
-    "types": ["property"],
-    "color": [[3, 3]],
-    "desc": "CURSE: Makes object move like U on lins/lvls and able to enter lvls (also goes through walls)",
-    "tags": ["select"]
-  },
-  {
-    "name": "txt_her",
-    "sprite": ["txt/her"],
-    "types": ["property"],
-    "color": [[1, 3]],
-    "rotate": true,
-    "desc": "HER ->: Sends objects to where the text indicates. N'T HER makes objects HAET that tile.",
-    "tags": ["here", "cg5", "her^", "her ->"]
-  },
-  {
-    "name": "txt_thr",
-    "sprite": ["txt/thr"],
-    "types": ["property"],
-    "color": [[3, 2]],
-    "rotate": true,
-    "desc": "THR ->: Sends objects as far away from it as possible (until hitting a wall) in the indicated direction. N'T THR makes objects HAET a line from the text.",
-    "tags": ["there", "cg5", "thr^", "thr ->"]
-  },
-  {
-    "name": "txt_knightstep",
-    "sprite": ["txt/knightstep"],
-    "types": ["property"],
-    "color": [[0, 2]],
-    "desc": "KNIGHTSTEP: KNIGHTSTEP units move like the Knight chess piece, rotated 22.5 degrees clockwise. Stacks add additional 1, 1 hops.",
-    "tags": ["chess"]
-  },
-  {
-    "name": "txt_stayther",
-    "sprite": ["txt/stay ther"],
-    "types": ["property"],
-    "color": [[0, 3]],
-    "desc": "STAY THER: Objects with this property will be taken with you when you transition between levels.",
-    "tags": ["persist"]
-  },
-  {
-    "name": "txt_paint",
-    "sprite": ["txt/paint"],
-    "types": ["verb_unit", "object", "property", "verb"],
-    "color": [[4, 2]],
-    "desc": "PAINT (Verb): changes the second object's color to match the first if the objects are on each other. Supports color mixing.",
-    "tags": ["colors", "colours"]
-  },
-  {
-    "name": "txt_glued",
-    "sprite": ["txt/glued"],
-    "types": ["property"],
-    "color": [[2, 4]],
-    "desc": "GLUED: Stuck to adjacent units with glued, and can't move unless the entire block can simultaneously move.\nCan also form same[paint/float/face] to make something only glued to those items.",
-    "tags": ["sticky", "lily"]
-  },
-  {
-    "name": "txt_rithere",
-    "display": "rit here",
-    "sprite": ["txt/rithere"],
-    "types": ["property"],
-    "layer": 21,
-    "color": [[4, 0]],
-    "desc": "RIT HERE: Sends objects to where the text is.",
-    "tags": ["right here"]
-  },
-  {
-    "name": "txt_torc",
-    "sprite": ["txt/torc"],
-    "types": ["property"],
-    "color": [[2, 2]],
-    "desc": "TORC: A TORC object emits light in the direction they're facing. The angle of the light determined by the number of TORC stacks. (WIP)",
-    "tags": ["torchlight", "flashlight"]
-  },
-  {
-    "name": "txt_rotatbl",
-    "sprite": ["txt/rotatbl"],
-    "types": ["property"],
-    "color": [[6, 2]],
-    "desc": "ROTATBL: Makes any object able to be rotated.",
-    "tags": ["rotatable"]
-  },
-  {
-    "name": "txt_nuek",
-    "sprite": ["txt/nuek"],
-    "types": ["property"],
-    "color": [[2, 2]],
-    "desc": "NUEK: A NUEK will begin destroying everything around it, its radius growing once per turn. Currently very laggy, for some reason.",
-    "tags": ["nuke", "bomb"]
-  },
-  {
-    "name": "txt_right",
-    "sprite": ["txt/goup"],
-    "types": ["property", "direction"],
-    "color": [[1, 4]],
-    "desc": "RIGHT: A GO ->, but facing right.",
-    "tags": ["direction"]
-  },
-  {
-    "name": "txt_upleft",
-    "sprite": ["txt/upleft"],
-    "types": ["property", "direction"],
-    "color": [[1, 4]],
-    "desc": "UPLEFT: A GO ->, but facing upleft. Can also be spelled leftup.",
-    "alias": ["leftup"],
-    "tags": ["direction"]
-  },
-  {
-    "name": "txt_upright",
-    "sprite": ["txt/upright"],
-    "types": ["property", "direction"],
-    "color": [[1, 4]],
-    "desc": "UPRIGHT: A GO ->, but facing upright. Can also be spelled rightup.",
-    "alias": ["rightup"],
-    "tags": ["direction"]
-  },
-  {
-    "name": "txt_downleft",
-    "sprite": ["txt/downleft"],
-    "types": ["property", "direction"],
-    "color": [[1, 4]],
-    "desc": "DOWNLEFT: A GO ->, but facing downleft. Can also be spelled leftdown.",
-    "alias": ["leftdown"],
-    "tags": ["direction"]
-  },
-  {
-    "name": "txt_downright",
-    "sprite": ["txt/downright"],
-    "types": ["property", "direction"],
-    "color": [[1, 4]],
-    "desc": "DOWNRIGHT: A GO ->, but facing downright. Can also be spelled rightdown.",
-    "alias": ["rightdown"],
-    "tags": ["direction"]
-  },
-  {
-    "name": "txt_un:)",
-    "sprite": ["txt/ungood"],
-    "types": ["property"],
-    "color": [[1, 2]],
-    "features": {
-      "sans": {"x": 19, "y": 14, "w": 2, "h": 4}
-    },
-    "desc": "UN:): When U touches UN:), the current level will no longer be considered won, without exiting the level. Imagine a win score equal to the number of Us on :) minus the Us on UN:). If positive, you win. If negative, you lose your win. If equal, nothing happens.",
-    "tags": ["unwin", "ungood", "face", "unyay", "patashu", ";d"]
-  },
-  {
-    "name": "txt_notranform",
-    "display": "no tranform",
-    "sprite": ["txt/notranform"],
-    "types": ["property"],
-    "color": [[2, 2]],
-    "desc": "NO TRANFORM: A property that prevents the object from transforming. LVL BE NO TRANFORM reverts any transformations it had. X BEN'T NOTRANFORM negates X BE X. Also negates TRANZ.",
-    "tags": ["no transform"]
-  },
-  {
-    "name": "txt_diagkik",
-    "sprite": ["txt/diagkik"],
-    "types": ["property"],
-    "color": [[6, 1]],
-    "desc": "DIAGKIK: If a unit moves 45 degrees away from a DIAGKIK, the DIAGKIK copies that movement. With two stacks, also copies 135 degree movement.",
-    "tags": ["sidekick", "diagkick"]
-  },
-  {
-    "name": "txt_reflecc",
-    "sprite": ["txt/reflecc"],
-    "types": ["property"],
-    "color": [[5, 2]],
-    "desc": "REFLECC: When a unit moves into a REFLECC's front or behind, it gets reflected off of that surface.",
-    "tags": ["reflect", "slope", "bounce", "mirror"]
-  },
-  {
-    "name": "txt_stukc",
-    "sprite": ["txt/stukc"],
-    "types": ["property"],
-    "color": [[1, 1]],
-    "desc": "STUKC: Anything with this property can't move.",
-    "tags": ["stuck"]
-  },
-  {
-    "name": "txt_gone",
-    "sprite": ["txt/gone"],
-    "types": ["property"],
-    "color": [[0, 3]],
-    "desc": "GONE: If something is GONE, it floats away into nothingness.",
-    "tags": ["done"]
-  },
-  {
-    "name": "txt_thingify",
-    "sprite": ["txt/thingify"],
-    "types": ["property"],
-    "color": [[3, 1]],
-    "desc": "THINGIFY: BE THINGIFY causes that text to turn into the object it represents (or text it represents if metatext).",
-    "tags": ["demeta", "notnat"]
-  },
-  {
-    "name": "txt_right",
-    "sprite": ["txt/right"],
-    "types": ["property", "direction"],
-    "color": [[1, 4]],
-    "desc": "RIGHT: A GO ->, but facing right."
-  },
-  {
-    "name": "txt_dragbl",
-    "sprite": ["txt/dragbl"],
-    "types": ["property"],
-    "color": [[3, 3]],
-    "desc": "DRAGBL: Units that are DRAGBL can be picked up and moved around.",
-    "tags": ["draggable", "mouse"]
-  },
-  {
-    "name": "txt_nodrag",
-    "display": "no drag",
-    "sprite": ["txt/nodrag"],
-    "types": ["property"],
-    "color": [[3, 0]],
-    "desc": "NO DRAG: Units that are DRAGBL can't be placed on NO DRAG objects.",
-    "tags": ["mouse"]
-  },
-  {
-    "name": "txt_y'all",
-    "sprite": ["txt/y'all"],
-    "types": ["property"],
-    "color": [[4, 2]],
-    "desc": "all players control y'all",
-    "tags": ["you all", "players"]
-  },
-  {
-    "name": "txt_thicc",
-    "sprite": ["txt/thicc"],
-    "types": ["property"],
-    "color": [[1, 3]],
-    "desc": "THICC: Thicc things take up a 2x2 space. Expands to the lower left."
-  },
-  {
-    "name": "txt_rythm",
-    "sprite": ["txt/rythm"],
-    "types": ["property"],
-    "color": [[4, 1]],
-    "desc": "RYTHM (property): Turns pass for these units based on time, separate from normal turns passing. Uses the same system as zawarudo.",
-    "tags": ["auto", "necrodancer", "lily", "rhythm", "dancr"]
-  },
-  {
-    "name": "txt_b)",
-    "sprite": ["txt/B)"],
-    "types": ["property"],
-    "color": [[1, 4]],
-    "features": {
-      "sans": {"x": 20, "y": 8, "w": 5, "h": 4}
-    },
-    "desc": "B): At end of turn, if U is on B) and survives, U R COOL! (This currently does nothing.)",
-    "tags": ["cool", "smiley"]
-  },
-  {
-    "name": "txt_cool",
-    "sprite": ["txt/cool"],
-    "types": ["property", "gang_prefix"],
-    "color": [[1, 4]],
-    "desc": "COOL: COOL units wear a pair of sunglasses, and don't shake.",
-    "tags": ["cool"]
-  },
-  {
-    "name": "txt_thonk",
-    "sprite": ["txt/thonk"],
-    "types": ["property"],
-    "color": [[2, 4]],
-    "desc": "THONK: THONK units question their own FRAGIL existence.",
-    "tags": ["thinking", "wonder"]
-  },
-  {
-    "name": "txt_you",
-    "sprite": ["txt/you"],
-    "types": ["property"],
-    "color": [[4, 1]],
-    "wobble": true,
-    "desc": "YOU: Controlled by u, the player!",
-    "tags": ["player", "baba"]
-  },
-  {
-    "name": "txt_w",
-    "sprite": ["txt/w"],
-    "types": ["property"],
-    "color": [[4, 1]],
-    "desc": "W: it's a double u (Alias: uu)",
-    "alias": ["uu"],
-    "tags": ["you", "player"]
   }
 ]

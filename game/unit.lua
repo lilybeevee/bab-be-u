@@ -1474,7 +1474,10 @@ function miscUpdates()
   for i,unit in ipairs(units) do
     if not deleted and not unit.removed_final then
       local tile = getTile(unit.tile)
-      unit.layer = unit.layer + (24 * (hasProperty(unit,"curse") and 1 or 0)) + (20 * (graphical_property_cache["flye"][unit] or 0))
+      unit.layer = unit.layer + (hasProperty(unit,"curse") and 24 or 0) + (hasProperty(unit,"anti stelth") and 130 or 0)
+      if (0 > (graphical_property_cache["flye"][unit] or 0)) then
+        unit.layer = unit.layer + 15 + 5 * (graphical_property_cache["flye"][unit] or 0)
+      end
       unit.sprite = deepCopy(tile.sprite)
       
       if unit.fullname == "boooo" then
@@ -1835,13 +1838,23 @@ end
 function updateGraphicalPropertyCache()
   for prop,tbl in pairs(graphical_property_cache) do
     --only flye has a stacking graphical effect and we want to ignore selector, the rest are boolean
-    local count = prop == "flye"
+    --local count = false
     new_tbl = {}
-    if (count) then
+    if (prop == "flye") then
+      local prop = getUnitsWithEffectAndCount("flye")
+      local anti = getUnitsWithEffectAndCount("anti flye")
+      local ccount = 0
+      for unit,amt in pairs(prop) do
+        new_tbl[unit] = amt or nil
+      end
+      for unit,amt in pairs(anti) do
+        new_tbl[unit] = (new_tbl[unit] or 0) - (amt or 0)
+      end
+    --[[else if (count) then
       local isprop = getUnitsWithEffectAndCount(prop)
       for unit,amt in pairs(isprop) do
         new_tbl[unit] = unit.fullname ~= "selctr" and amt or nil
-      end
+      end]]
     else
       local isprop = getUnitsWithEffect(prop)
       for _,unit in pairs(isprop) do

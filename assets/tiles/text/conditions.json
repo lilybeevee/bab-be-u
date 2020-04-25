@@ -1,27 +1,5 @@
 [
   {
-    "name": "txt_reed",
-    "sprite": ["txt/reed_cond"],
-    "sprite_transforms": {
-      "property": "txt/reed"
-    },
-    "types": ["class_prefix", "cond_prefix", "property"],
-    "color": [[2, 2]],
-    "desc": "REED: Causes the unit to appear red. Persistent and can be used as a prefix condition.",
-    "tags": ["colors", "colours", "red"]
-  },
-  {
-    "name": "txt_bleu",
-    "sprite": ["txt/bleu_cond"],
-    "sprite_transforms": {
-      "property": "txt/bleu"
-    },
-    "types": ["class_prefix", "cond_prefix", "property"],
-    "color": [[1, 3]],
-    "desc": "BLEU: Causes the unit to appear blue. Persistent and can be used as a prefix condition.",
-    "tags": ["colors", "colours", "blue"]
-  },
-  {
     "name": "txt_w/fren",
     "sprite": ["txt/wfren"],
     "metasprite": ["txt/wfren meta"],
@@ -36,8 +14,33 @@
     "sprite": ["txt/lookat"],
     "types": ["cond_infix", "verb_unit", "cond_infix_dir", "verb"],
     "color": [[0, 3]],
-    "desc": "LOOK AT: As an infix condition, true if this object is on the tile in front of the unit. As a verb, makes the unit face this object at end of turn.",
+    "desc": "LOOK AT: As an infix condition, true if this object is on the tile in front of the unit. As a verb, makes the unit face this object at end of turn.\nAnti: lookaway",
     "tags": ["follow", "facing", "lookat"]
+  },
+  {
+    "name": "txt_lookaway",
+    "display": "look away",
+    "sprite": ["txt/lookaway"],
+    "types": ["cond_infix", "verb_unit", "cond_infix_dir", "verb"],
+    "color": [[0, 3]],
+    "desc": "LOOK AWAY: As an infix condition, true if this object is on the tile behind the unit As a verb, makes the unit face away from this object at end of turn.\nAnti: lookat",
+    "tags": ["unfollow", "facing away", "lookaway", "behind"]
+  },
+  {
+    "name": "txt_behind",
+    "sprite": ["txt/behind"],
+    "types": ["cond_infix"],
+    "color": [[0, 3]],
+    "desc": "BEHIND (Infix Condition): True if an indicated object is looking away from the unit on an adjacent tile.\nAnti: seenby",
+    "tags": ["back", "look"]
+  },
+  {
+    "name": "txt_beside",
+    "sprite": ["txt/beside"],
+    "types": ["cond_infix"],
+    "color": [[0, 3]],
+    "desc": "BESIDE (Infix Condition): True if an indicated object is at the side of the unit on an adjacent tile.\nAnti: diagonals",
+    "tags": ["look", "left", "right"]
   },
   {
     "name": "txt_frenles",
@@ -91,7 +94,7 @@
     "sprite": ["txt/seenby"],
     "types": ["cond_infix"],
     "color": [[0, 3]],
-    "desc": "SEEN BY (Infix Condition): True if an indicated object is looking at this unit from an adjacent tile.",
+    "desc": "SEEN BY (Infix Condition): True if an indicated object is looking at this unit from an adjacent tile.\nAnti: behind",
     "tags": ["seenby", "looked at", "in front"]
   },
   {
@@ -111,6 +114,28 @@
     "tags": ["rng", "random"]
   },
   {
+    "name": "txt_reed",
+    "sprite": ["txt/reed_cond"],
+    "sprite_transforms": {
+      "property": "txt/reed"
+    },
+    "types": ["class_prefix", "cond_prefix", "property"],
+    "color": [[2, 2]],
+    "desc": "REED: Causes the unit to appear red. Persistent and can be used as a prefix condition.\nAnti: cyeann",
+    "tags": ["colors", "colours", "red"]
+  },
+  {
+    "name": "txt_bleu",
+    "sprite": ["txt/bleu_cond"],
+    "sprite_transforms": {
+      "property": "txt/bleu"
+    },
+    "types": ["class_prefix", "cond_prefix", "property"],
+    "color": [[1, 3]],
+    "desc": "BLEU: Causes the unit to appear blue. Persistent and can be used as a prefix condition.\nAnti: orang",
+    "tags": ["colors", "colours", "blue"]
+  },
+  {
     "name": "txt_grun",
     "sprite": ["txt/grun_cond"],
     "sprite_transforms": {
@@ -118,7 +143,7 @@
     },
     "types": ["class_prefix", "cond_prefix", "property"],
     "color": [[5, 2]],
-    "desc": "GRUN: Causes the unit to appear green. Persistent and can be used as a prefix condition.",
+    "desc": "GRUN: Causes the unit to appear green. Persistent and can be used as a prefix condition.\nAnti: pinc",
     "tags": ["colors", "colours", "green"]
   },
   {
@@ -129,7 +154,7 @@
     },
     "types": ["class_prefix", "cond_prefix", "property"],
     "color": [[2, 4]],
-    "desc": "YELLO: Causes the unit to appear yellow. Persistent and can be used as a prefix condition. Reed + Grun.",
+    "desc": "YELLO: Causes the unit to appear yellow. Persistent and can be used as a prefix condition. Reed + Grun.\nAnti: purp",
     "tags": ["colors", "colours", "yellow"]
   },
   {
@@ -140,7 +165,7 @@
     },
     "types": ["class_prefix", "cond_prefix", "property"],
     "color": [[3, 1]],
-    "desc": "PURP: Causes the unit to appear purple. Persistent and can be used as a prefix condition.",
+    "desc": "PURP: Causes the unit to appear purple. Persistent and can be used as a prefix condition.\nAnti: yello",
     "tags": ["colors", "colours", "purple"]
   },
   {
@@ -151,7 +176,7 @@
     },
     "types": ["class_prefix", "cond_prefix", "property"],
     "color": [[2, 3]],
-    "desc": "ORANG: Causes the unit to appear orange. Persistent and can be used as a prefix condition.",
+    "desc": "ORANG: Causes the unit to appear orange. Persistent and can be used as a prefix condition.\nAnti: bleu",
     "tags": ["colors", "colours", "orange"]
   },
   {
@@ -162,7 +187,7 @@
     },
     "types": ["class_prefix", "cond_prefix", "property"],
     "color": [[1, 4]],
-    "desc": "CYEANN: Causes the unit to appear cyan. Persistent and can be used as a prefix condition.",
+    "desc": "CYEANN: Causes the unit to appear cyan. Persistent and can be used as a prefix condition.\nAnti: reed",
     "tags": ["colors", "colours", "cyan"]
   },
   {
@@ -173,7 +198,7 @@
     },
     "types": ["class_prefix", "cond_prefix", "property"],
     "color": [[0, 3]],
-    "desc": "WHIT: Causes the unit to appear white. Persistent and can be used as a prefix condition. Bleu + Yello, Reed + Cyeann, Grun + Purp.",
+    "desc": "WHIT: Causes the unit to appear white. Persistent and can be used as a prefix condition. Bleu + Yello, Reed + Cyeann, Grun + Purp.\nAnti: blacc",
     "tags": ["colors", "colours", "white"]
   },
   {
@@ -184,8 +209,41 @@
     },
     "types": ["class_prefix", "cond_prefix", "property"],
     "color": [[0, 0]],
-    "desc": "BLACC: Causes the unit to appear black. Persistent and can be used as a prefix condition.",
+    "desc": "BLACC: Causes the unit to appear black. Persistent and can be used as a prefix condition.\nAnti: whit",
     "tags": ["colors", "colours", "black"]
+  },
+  {
+    "name": "txt_pinc",
+    "sprite": ["txt/pinc_cond"],
+    "sprite_transforms": {
+      "property": "txt/pinc"
+    },
+    "types": ["class_prefix", "cond_prefix", "property"],
+    "color": [[4, 1]],
+    "desc": "PINC: Causes the unit to become pink!\nAnti: grun",
+    "tags": ["colors", "colours", "pink"]
+  },
+  {
+    "name": "txt_graey",
+    "sprite": ["txt/graey_cond"],
+    "sprite_transforms": {
+      "property": "txt/graey"
+    },
+    "types": ["class_prefix", "cond_prefix", "property"],
+    "color": [[0, 1]],
+    "desc": "GRAEY: Causes the unit to become gray/grey.\nColor or colour?\nAnti: graey",
+    "tags": ["colors", "colours", "gray", "grey"]
+  },
+  {
+    "name": "txt_brwn",
+    "sprite": ["txt/brwn_cond"],
+    "sprite_transforms": {
+      "property": "txt/brwn"
+    },
+    "types": ["class_prefix", "cond_prefix", "property"],
+    "color": [[6, 0]],
+    "desc": "BRWN: Causes the unit to become brown.\nAnti: cyeann",
+    "tags": ["colors", "colours", "brown"]
   },
   {
     "name": "txt_corekt",
@@ -233,6 +291,15 @@
     "tags": ["lily", "with", "w/"]
   },
   {
+    "name": "txt_thatgot",
+    "display": "that got",
+    "sprite": ["txt/that got"],
+    "types": ["cond_infix", "cond_infix_verb", "cond_infix_verb_plus"],
+    "color": [[0, 3]],
+    "desc": "THAT GOT (Infix Condition): x THAT GOT y is true if x GOT y.",
+    "tags": ["lily", "with", "w/", "infix condition"]
+  },
+  {
     "name": "txt_timles",
     "sprite": ["txt/timles"],
     "types": ["cond_prefix"],
@@ -246,44 +313,8 @@
     "metasprite": ["txt/clikt meta"],
     "types": ["cond_prefix"],
     "color": [[3, 3]],
-    "desc": "CLIKT (Prefix Condition): CLIKT objects will be true when left-clicked. Clicks will pass a turn if this text exists.",
+    "desc": "CLIKT (Prefix Condition): CLIKT objects will be true when left-clicked. Clicks will pass a turn if this text exists.\nAnti: right click (does not prevent the stack box, though it's made after the move has been made)",
     "tags": ["clicked", "mouse"]
-  },
-  {
-    "name": "txt_pinc",
-    "sprite": ["txt/pinc_cond"],
-    "sprite_transforms": {
-      "property": "txt/pinc"
-    },
-    "types": ["class_prefix", "cond_prefix", "property"],
-    "color": [[4, 1]],
-    "desc": "PINC: Causes the unit to become pink!",
-    "tags": ["colors", "colours", "pink"]
-  },
-  {
-    "name": "txt_behind",
-    "sprite": ["txt/behind"],
-    "types": ["cond_infix"],
-    "color": [[0, 3]],
-    "desc": "BEHIND (Infix Condition): True if an indicated object is looking away from the unit on an adjacent tile.",
-    "tags": ["back", "look"]
-  },
-  {
-    "name": "txt_beside",
-    "sprite": ["txt/beside"],
-    "types": ["cond_infix"],
-    "color": [[0, 3]],
-    "desc": "BESIDE (Infix Condition): True if an indicated object is at the side of the unit on an adjacent tile.",
-    "tags": ["look", "left", "right"]
-  },
-  {
-    "name": "txt_lookaway",
-    "display": "look away",
-    "sprite": ["txt/lookaway"],
-    "types": ["cond_infix", "verb_unit", "cond_infix_dir", "verb"],
-    "color": [[0, 3]],
-    "desc": "LOOK AWAY: As an infix condition, true if this object is on the tile behind the unit As a verb, makes the unit face away from this object at end of turn.",
-    "tags": ["unfollow", "facing away", "lookaway", "behind"]
   },
   {
     "name": "txt_wun",
@@ -292,37 +323,6 @@
     "color": [[2, 4]],
     "desc": "WUN: A prefix condition that's true if the unit is a won level. If the unit isn't a level, then true if the current level is won.",
     "tags": ["won", "patashu"]
-  },
-  {
-    "name": "txt_graey",
-    "sprite": ["txt/graey_cond"],
-    "sprite_transforms": {
-      "property": "txt/graey"
-    },
-    "types": ["class_prefix", "cond_prefix", "property"],
-    "color": [[0, 1]],
-    "desc": "GRAEY: Causes the unit to become gray/grey.\nColor or colour?",
-    "tags": ["colors", "colours", "gray", "grey"]
-  },
-  {
-    "name": "txt_brwn",
-    "sprite": ["txt/brwn_cond"],
-    "sprite_transforms": {
-      "property": "txt/brwn"
-    },
-    "types": ["class_prefix", "cond_prefix", "property"],
-    "color": [[6, 0]],
-    "desc": "BRWN: Causes the unit to become brown.",
-    "tags": ["colors", "colours", "brown"]
-  },
-  {
-    "name": "txt_thatgot",
-    "display": "that got",
-    "sprite": ["txt/that got"],
-    "types": ["cond_infix", "cond_infix_verb", "cond_infix_verb_plus"],
-    "color": [[0, 3]],
-    "desc": "THAT GOT (Infix Condition): x THAT GOT y is true if x GOT y.",
-    "tags": ["lily", "with", "w/", "infix condition"]
   },
   {
     "name": "txt_past",

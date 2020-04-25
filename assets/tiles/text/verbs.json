@@ -4,7 +4,7 @@
     "sprite": ["txt/be"],
     "types": ["verb_class", "verb_property", "verb"],
     "color": [[0, 3]],
-    "desc": "BE (Verb): Causes the subject to become an object or have a property.",
+    "desc": "BE (Verb): Causes the subject to become an object or have a property.\nAnti: mirror",
     "tags": ["is"]
   },
   {
@@ -22,7 +22,7 @@
     "sprite": ["txt/got"],
     "types": ["verb_class", "verb"],
     "color": [[0, 3]],
-    "desc": "GOT (Verb): Causes the subject to drop the object when destroyed.",
+    "desc": "GOT (Verb): Causes the subject to drop the object when destroyed.\nAnti: mirror",
     "tags": ["has"]
   },
   {
@@ -30,7 +30,7 @@
     "sprite": ["txt/creat"],
     "types": ["verb_class", "verb"],
     "color": [[0, 3]],
-    "desc": "CREAT (Verb): At end of turn, the unit makes this object.",
+    "desc": "CREAT (Verb): At end of turn, the unit makes this object.\nAnti: snacc",
     "tags": ["make", "create"]
   },
   {
@@ -38,15 +38,23 @@
     "sprite": ["txt/snacc"],
     "types": ["verb_unit", "verb"],
     "color": [[2, 2]],
-    "desc": "SNACC (Verb): Units destroy any other unit that they SNACC on contact, like a conditional OUCH.",
+    "desc": "SNACC (Verb): Units destroy any other unit that they SNACC on contact, like a conditional OUCH.\nAnti: creat",
     "tags": ["eat", "consume"]
+  },
+  {
+    "name": "txt_moov",
+    "sprite": ["txt/moov"],
+    "types": ["verb_unit", "verb_direction", "verb"],
+    "color": [[1, 3]],
+    "desc": "MOOV (Verb): A verbified GO AWAY PLS/GO. x MOOV y means that x can push and shift y (shift not stacking). y is not treated as solid if unable to be pushed. MOOV GO^ will make the unit move one unit in that direction per turn.\nAnti: opposite direction",
+    "tags": ["shift"]
   },
   {
     "name": "txt_yeet",
     "sprite": ["txt/yeet"],
     "types": ["verb_unit", "verb_direction", "verb"],
     "color": [[0, 3]],
-    "desc": "YEET (Verb): This unit will force things it yeets in its tile to hurtle across the level in its facing direction (until it hits an object that stops it). YEET GO^ makes the object fall in that direction.",
+    "desc": "YEET (Verb): This unit will force things it yeets in its tile to hurtle across the level in its facing direction (until it hits an object that stops it). YEET GO^ makes the object fall in that direction.\nAnti: opposite direction",
     "tags": ["throw"]
   },
   {
@@ -54,7 +62,7 @@
     "sprite": ["txt/spoop"],
     "types": ["verb_unit", "verb"],
     "color": [[2, 2]],
-    "desc": "SPOOP (Verb): A SPOOPY unit forces all objects it SPOOPS on adjacent tiles to move away!",
+    "desc": "SPOOP (Verb): A SPOOPY unit forces all objects it SPOOPS on adjacent tiles to move away!\nAnti: opposite direction",
     "tags": ["fear", "spook"]
   },
   {
@@ -62,15 +70,23 @@
     "sprite": ["txt/stalk"],
     "types": ["verb_unit", "verb"],
     "color": [[5, 2]],
-    "desc": "STALK (Verb): If X stalks Y, X becomes an intelligent AI determined to get to Y. If it's also STUBBN, it'll try to track through walls if it can't reach its target. (actually that's not implemented yet)",
+    "desc": "STALK (Verb): If X stalks Y, X becomes an intelligent AI determined to get to Y. If it's also STUBBN, it'll try to track through walls if it can't reach its target. (actually that's not implemented yet)\nAnti: finds direction that gives farthest possible",
     "tags": ["follow", "find", "cg5"]
+  },
+  {
+    "name": "txt_haet",
+    "sprite": ["txt/haet"],
+    "types": ["verb_unit", "verb"],
+    "color": [[2, 3]],
+    "desc": "HAET (Verb): A unit cannot stop onto a tile that has something it HAETs (treating it like NOGO). (x HAET LVL makes x unable to move.)\nAnti: liek",
+    "tags": ["patashu", "hate", "hates", "collide"]
   },
   {
     "name": "txt_liek",
     "sprite": ["txt/liek"],
     "types": ["verb_unit", "verb"],
     "color": [[5, 3]],
-    "desc": "LIEK (Verb): If a unit LIEKs objects, it is picky, and cannot step onto a tile unless it has at least one object it LIEKs. If an object LIEKs zero objects, it is not bounded.",
+    "desc": "LIEK (Verb): If a unit LIEKs objects, it is picky, and cannot step onto a tile unless it has at least one object it LIEKs. If an object LIEKs zero objects, it is not bounded.\nAnti: haet",
     "tags": ["bounded", "likes"]
   },
   {
@@ -78,31 +94,15 @@
     "sprite": ["txt/copkat"],
     "types": ["verb_unit", "verb"],
     "color": [[0, 3]],
-    "desc": "COPKAT (Verb): COPKAT units copy the successful movements of the indicated object, no matter how far away.",
+    "desc": "COPKAT (Verb): COPKAT units copy the successful movements of the indicated object, no matter how far away.\nAnti: opposite direction",
     "tags": ["copycat", "lily"]
-  },
-  {
-    "name": "txt_moov",
-    "sprite": ["txt/moov"],
-    "types": ["verb_unit", "verb_direction", "verb"],
-    "color": [[1, 3]],
-    "desc": "MOOV (Verb): A verbified GO AWAY PLS/GO. x MOOV y means that x can push and shift y. y is not treated as solid if unable to be pushed. MOOV GO^ will make the unit move one unit in that direction per turn.",
-    "tags": ["shift"]
-  },
-  {
-    "name": "txt_haet",
-    "sprite": ["txt/haet"],
-    "types": ["verb_unit", "verb"],
-    "color": [[2, 3]],
-    "desc": "HAET (Verb): A unit cannot stop onto a tile that has something it HAETs (treating it like NOGO). (x HAET LVL makes x unable to move.)",
-    "tags": ["patashu", "hate", "hates", "collide"]
   },
   {
     "name": "txt_ignor",
     "sprite": ["txt/ignor"],
     "types": ["verb_unit", "verb"],
     "color": [[0, 1]],
-    "desc": "IGNOR (Verb): x IGNOR y causes x to not be able to interact with or move y in any way.",
+    "desc": "IGNOR (Verb): x IGNOR y causes x to not be able to interact with or move y in any way.\nAnti: only x can affect y",
     "tags": ["ignore"]
   },
   {
@@ -110,7 +110,7 @@
     "sprite": ["txt/vs"],
     "types": ["verb_unit", "verb"],
     "color": [[2, 1]],
-    "desc": "VS (Verb): The two objects enter a 1 on 1 battle: whoever steps on the other wins.",
+    "desc": "VS (Verb): The two objects enter a 1 on 1 battle: whoever steps on the other wins.\nAnti: when the objects are on each other, they make heart particles",
     "tags": ["versus"]
   },
   {
@@ -118,7 +118,7 @@
     "sprite": ["txt/sing"],
     "types": ["verb_sing", "verb"],
     "color": [[4, 1]],
-    "desc": "SING (Verb): SING A-G with letters!",
+    "desc": "SING (Verb): SING A-G with letters!\nAnti: (todo: write this)",
     "tags": ["play", "music", "say"]
   },
   {
@@ -126,7 +126,7 @@
     "sprite": ["txt/soko"],
     "types": ["verb_unit", "verb"],
     "color": [[6, 2]],
-    "desc": "SOKO (Verb): If X SOKO Y, then X wins when all Y are not frenles.",
+    "desc": "SOKO (Verb): If X SOKO Y, then X wins when all Y are not frenles.\nAnti: ...when all Y are frenles",
     "tags": ["sokoban"]
   },
   {
@@ -134,7 +134,7 @@
     "sprite": ["txt/giv"],
     "types": ["verb_property", "verb"],
     "color": [[2, 4]],
-    "desc": "GIV (Verb): If X giv Y, any other units in the same space and flye will get the Y property.",
+    "desc": "GIV (Verb): If X giv Y, any other units in the same space and flye will get the Y property.\nAnti: removes the property (ben'tn't still works)",
     "tags": ["give"]
   },
   {
@@ -142,7 +142,7 @@
     "sprite": ["txt/rp"],
     "types": ["verb_unit", "verb"],
     "color": [[3, 3]],
-    "desc": "RP: X RP Y gives X all of the properties of Y. Only an object that actually exists can be RP'd.",
+    "desc": "RP: X RP Y gives X all of the properties of Y. Only an object that actually exists can be RP'd.\nAnti: mirror",
     "tags": ["mimic", "roleplay"]
   },
   {
@@ -151,7 +151,7 @@
     "sprite": ["txt/wont"],
     "types": ["verb_property", "verb"],
     "color": [[2, 2]],
-    "desc": "WON'T: X WON'T PROPERTY makes X not be affected by that property.",
+    "desc": "WON'T: X WON'T PROPERTY makes X not be affected by that property.\nwontn't has an alias of wo\nAnti: n't",
     "tags": ["won't", "can't"]
   },
   {
@@ -165,12 +165,20 @@
     "tags": ["wo", "will", "can"]
   },
   {
+    "name": "txt_paint",
+    "sprite": ["txt/paint"],
+    "types": ["verb_unit", "object", "property", "verb"],
+    "color": [[4, 2]],
+    "desc": "PAINT (Verb): changes the second object's color to match the first if the objects are on each other. Supports color mixing.\nAnti: mirror",
+    "tags": ["colors", "colours"]
+  },
+  {
     "name": "txt_is",
     "sprite": ["txt/is"],
     "types": ["verb_class", "verb_property", "verb"],
     "color": [[0, 3]],
     "wobble": true,
-    "desc": "IS (Verb): Causes the subject to become an object or have a property.",
+    "desc": "IS (Verb): Causes the subject to become an object or have a property.\nAnti: mirror",
     "tags": ["is"]
   },
   {

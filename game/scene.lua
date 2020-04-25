@@ -2474,6 +2474,8 @@ function particlesRngCheck()
   return math.random() < math.pow(0.5, (#particles-50)/50)
 end
 
+last_click_button = 1;
+
 function scene.mouseReleased(x, y, button)
   local height, width = love.graphics.getHeight(), love.graphics.getWidth()
   local box = sprites["ui/32x32"]:getWidth()
@@ -2511,6 +2513,7 @@ function scene.mouseReleased(x, y, button)
     -- CLIKT prefix
     if units_by_name["txt_clikt"] then
       last_click_x, last_click_y = screenToGameTile(love.mouse.getX(), love.mouse.getY())
+      last_click_button = 1
       doOneMove(last_click_x,last_click_y,"clikt")
       last_click_x, last_click_y = nil, nil
       playSound("clicc")
@@ -2542,6 +2545,14 @@ function scene.mouseReleased(x, y, button)
       end
     end
   elseif button == 2 then
+    -- CLIKT prefix
+    if units_by_name["txt_clikt"] then
+      last_click_x, last_click_y = screenToGameTile(love.mouse.getX(), love.mouse.getY())
+      last_click_button = 2
+      doOneMove(last_click_x,last_click_y,"anti clikt")
+      last_click_x, last_click_y = nil, nil
+      playSound("clicc")
+    end
     -- Stacks preview
     scene.setStackBox(screenToGameTile(x, y))
   end
@@ -2583,14 +2594,17 @@ function scene.resize(w, h)
   scene.buildUI()
 end
 
+mouse_grabbedX, mouse_grabbedY = nil,nil
+
 function scene.mousePressed(x, y, button)
-  if not rules_with["dragbl"] then return end
+  if not (rules_with["dragbl"] or rules_with["anti dragbl"]) then return end
   
   if button == 1 then
     local tx,ty = screenToGameTile(x,y)
     local stuff = getUnitsOnTile(tx,ty)
     for _,unit in ipairs(stuff) do
-      if hasProperty(unit,"dragbl") then
+      if hasProperty(unit,"dragbl") or hasProperty(unit,"anti dragbl") then
+        mouse_grabbedX, mouse_grabbedY = tx,ty
         table.insert(drag_units, unit)
       end
     end
@@ -2651,14 +2665,27 @@ end
 
 function doDragbl()
   if drag_units and #drag_units > 0 then
-    local mx, my = screenToGameTile(mouse_X, mouse_Y, true)
+    local tx, ty = screenToGameTile(mouse_X, mouse_Y, true)
+    tx,ty = tx - 0.5, ty - 0.5
+    --[[local mx, my = mouse_grabbedX*2-mx, mouse_grabbedY*2-my
     mx, my = mx - 0.5, my - 0.5
-    local tx, ty = screenToGameTile(mouse_X, mouse_Y, false)
+    --local tx, ty = screenToGameTile(mouse_X, mouse_Y, false)]]
     local nodrags = getUnitsWithEffect("nodrag")
 
     for _,unit in ipairs(drag_units) do
+      --local anti = hasProperty(unit,"anti dragbl")
+      local mx, my
+      if hasProperty(unit,"anti dragbl") then
+        mx,my = mouse_grabbedX*2-tx, mouse_grabbedY*2-ty
+      else
+        mx,my = tx,ty
+      end
+      --mx, my = mx - 0.5, my - 0.5
       local oldx, oldy = math.floor(unit.draw.x), math.floor(unit.draw.y)
       local dx, dy = sign(mx - unit.draw.x), sign(my - unit.draw.y)
+      if anti then
+        dx, dy = sign(mx - unit.draw.x), sign(my - unit.draw.y)
+      end
       local gox, goy = true, true
 
       for __,other in ipairs(nodrags) do
