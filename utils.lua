@@ -805,6 +805,15 @@ function getUnitsWithEffectAndCount(effect)
   end
   return result
 end
+function getUnitsWithEffectAndCountAndAnti(effect)
+  local result = getUnitsWithEffectAndCount(effect)
+  local anti = getUnitsWithEffectAndCount("anti "..effect)
+
+  for unit,amt in pairs(anti) do
+    result[unit] = (result[unit] or 0) - amt
+  end
+  return result
+end
 
 function getUnitsWithRuleAndCount(rule1, rule2, rule3)
   local result = {}

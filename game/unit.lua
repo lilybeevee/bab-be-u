@@ -514,12 +514,12 @@ function updateUnits(undoing, big_update)
     deleteUnits(isgone, false, true)
     
     --moar remake: based on the scent map distance in brogue (thanks notnat/pata for inspiration)
-    --TODO: If you write txt be moar, it's ambiguous which of a stacked text pair will be the one to grow into an adjacent tile first. But if you make it simultaneous, then you get double growth into corners which turns into exponential growth, which is even worse. It might need to be special cased in a clever way.
-      --I think making each one grow is more consistent so it should happen
     local already_grown = {}
     local pending_growth = {}
-    local moars = getUnitsWithEffectAndCount("moar")
-    for unit,amt in pairs(moars) do
+    local pending_gone = {}
+    local moars = getUnitsWithEffectAndCountAndAnti("moar")
+    for unit,aamt in pairs(moars) do
+      local amt = math.abs(aamt)
       if (unit.name ~= "lie/8" or hasProperty(unit,"notranform")) and timecheck(unit,"be","moar") then
         local range = math.ceil(amt/2)
         for y_=-range,range do
@@ -533,28 +533,46 @@ function updateUnits(undoing, big_update)
                 x = x*2
                 y = y*2
               end
-              already_grown[getUnitStr(unit)] = already_grown[getUnitStr(unit)] or {}
-              if canMove(unit, x, y, unit.dir) then
-                if unit.class == "unit" then --idk what any of this means but i'm assuming it's good?
-                  _, __, ___, mx, my = getNextTile(unit, x, y, i*2-1, false)
-                  if not already_grown[getUnitStr(unit)][mx..","..my] then
-                    local blocked = false
-                    local others = getUnitsOnTile(mx, my, {name = unit.fullname})
-                    for _,other in ipairs(others) do
-                      if getUnitStr(other) == getUnitStr(unit) then
-                        blocked = true
+              if aamt > 0 then
+                already_grown[getUnitStr(unit)] = already_grown[getUnitStr(unit)] or {}
+                if canMove(unit, x, y, unit.dir) then
+                  if unit.class == "unit" then --idk what any of this means but i'm assuming it's good?
+                    _, __, ___, mx, my = getNextTile(unit, x, y, i*2-1, false)
+                    if not already_grown[getUnitStr(unit)][mx..","..my] then
+                      local blocked = false
+                      local others = getUnitsOnTile(mx, my, {name = unit.fullname})
+                      for _,other in ipairs(others) do
+                        if getUnitStr(other) == getUnitStr(unit) then
+                          blocked = true
+                        end
                       end
+                      if not blocked then
+                        table.insert(pending_growth, {unit, mx, my})
+                      end
+                      already_grown[getUnitStr(unit)][mx..","..my] = true
                     end
-                    if not blocked then
-                      table.insert(pending_growth, {unit, mx, my})
+                  elseif unit.class == "cursor" then
+                    local others = getCursorsOnTile(unit.x + x, unit.y + y)
+                    if #others == 0 and not already_grown[getUnitStr(unit)][(unit.x+x)..","..(unit.y+y)] then
+                      table.insert(pending_growth, {unit, unit.x + x, unit.y + y})
+                      already_grown[getUnitStr(unit)][(unit.x+x)..","..(unit.y+y)] = true
                     end
-                    already_grown[getUnitStr(unit)][mx..","..my] = true
                   end
-                elseif unit.class == "cursor" then
-                  local others = getCursorsOnTile(unit.x + x, unit.y + y)
-                  if #others == 0 and not already_grown[getUnitStr(unit)][(unit.x+x)..","..(unit.y+y)] then
-                    table.insert(pending_growth, {unit, unit.x + x, unit.y + y})
-                    already_grown[getUnitStr(unit)][(unit.x+x)..","..(unit.y+y)] = true
+                end
+              else
+                if canMove(unit, x, y, unit.dir) then
+                  _, __, ___, mx, my = getNextTile(unit, x, y, i*2-1, false)
+                  local others = getUnitsOnTile(mx, my, {name = unit.fullname})
+                  local matched = false
+                  for _,other in ipairs(others) do
+                    if getUnitStr(other) == getUnitStr(unit) then
+                      matched = true
+                      break
+                    end
+                  end
+                  if not matched then 
+                    table.insert(pending_gone, unit)
+                    goto continue
                   end
                 end
               end
@@ -562,6 +580,7 @@ function updateUnits(undoing, big_update)
           end --x for
         end
       end
+      ::continue::
     end
     for _,growing in ipairs(pending_growth) do
       local unit, x, y = unpack(growing)
@@ -579,75 +598,11 @@ function updateUnits(undoing, big_update)
         addUndo({"create_cursor", new_mouse.id})
       end
     end
-
-
-    --[[local give_me_moar = true
-    local moar_repeats = 0
-    while (give_me_moar) do
-      give_me_moar = false
-      local ismoar = getUnitsWithEffectAndCount("moar")
-      for unit,amt in pairs(ismoar) do
-        if (unit.name ~= "lie/8" or hasProperty(unit,"notranform")) and timecheck(unit,"be","moar") then
-          amt = amt - 2*moar_repeats
-          if amt > 0 then
-            if (amt % 2) == 1 then
-              for i=1,4 do
-                local ndir = dirs[i]
-                local dx = ndir[1]
-                local dy = ndir[2]
-                if hasProperty(unit,"thicc") then
-                  dx = dx*2
-                  dy = dy*2
-                end
-                if canMove(unit, dx, dy, i*2-1, false, false, unit.name) then
-                  if unit.class == "unit" then
-                    local new_unit = createUnit(tiles_by_name[unit.fullname], unit.x, unit.y, unit.dir)
-                    addUndo({"create", new_unit.id, false})
-                    _, __, ___, x, y = getNextTile(unit, dx, dy, i*2-1, false)
-                    moveUnit(new_unit,x,y)
-                    addUndo({"update", new_unit.id, unit.x, unit.y, unit.dir})
-                  elseif unit.class == "cursor" then
-                    local others = getCursorsOnTile(unit.x + dx, unit.y + dy)
-                    if #others == 0 then
-                      local new_mouse = createMouse(unit.x + dx, unit.y + dy)
-                      addUndo({"create_cursor", new_mouse.id})
-                    end
-                  end
-                  give_me_moar = give_me_moar or amt >= 3
-                end
-              end
-            else
-              for i=1,8 do
-                local ndir = dirs8[i]
-                local dx = ndir[1]
-                local dy = ndir[2]
-                if hasProperty(unit,"thicc") then
-                  dx = dx*2
-                  dy = dy*2
-                end
-                if canMove(unit, dx, dy, i, false, false, unit.name) then
-                  if unit.class == "unit" then
-                    local new_unit = createUnit(tiles_by_name[unit.fullname], unit.x, unit.y, unit.dir)
-                    addUndo({"create", new_unit.id, false})
-                    _, __, ___, x, y = getNextTile(unit, dx, dy, i, false)
-                    moveUnit(new_unit,x,y)
-                    addUndo({"update", new_unit.id, unit.x, unit.y, unit.dir})
-                  elseif unit.class == "cursor" then
-                    local others = getCursorsOnTile(unit.x + dx, unit.y + dy)
-                    if #others == 0 then
-                      local new_mouse = createMouse(unit.x + dx, unit.y + dy)
-                      addUndo({"create_cursor", new_mouse.id})
-                    end
-                  end
-                  give_me_moar = give_me_moar or amt >= 3
-                end
-              end
-            end
-          end
-        end
-      end
-      moar_repeats = moar_repeats + 1
-    end]]
+    for _,unit in ipairs(pending_gone) do
+      unit.destroyed = true
+      unit.removed = true
+    end
+    deleteUnits(pending_gone, true)
     
     local to_destroy = {}
     if time_destroy == nil then
