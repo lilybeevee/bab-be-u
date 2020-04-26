@@ -106,7 +106,7 @@
     "sprite": ["txt/every2"],
     "types": ["object"],
     "color": [[3, 3]],
-    "desc": "EVERY2: EVERY1 + TXT. (Doesn't include innerlvls atm because lazy + hard to code + unlikely to come up. Sorry.)",
+    "desc": "EVERY2: every1 + txt + innerlvl.\nA few other edge cases might be added in the future, but bordr, no1, and mous being excluded are intentional.",
     "tags": ["all", "everyone", "every2"]
   },
   {

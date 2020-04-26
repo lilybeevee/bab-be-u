@@ -91,7 +91,7 @@
     "sprite": ["letter_q"],
     "types": ["letter"],
     "color": [[0, 3]],
-    "desc": "Why does Q even exist? There's literally no objects that have Q in them."
+    "desc": "Why does Q even exist? There's literally no objects that have Q in them... oh, there are now"
   },
   {
     "name": "letter_r",
@@ -176,7 +176,7 @@
     "sprite": ["letter_apostrophe"],
     "types": ["letter"],
     "color": [[0, 3]],
-    "desc": "Used for n't, y'all, and ''."
+    "desc": "Surprisingly, not needed for most things with \"n't\" in them; you can just use \"nt\"."
   },
   {
     "name": "letter_go",
@@ -190,7 +190,7 @@
     "sprite": ["letter_come"],
     "types": ["letter"],
     "color": [[0, 3]],
-    "desc": "Used exclusively for COME PLS."
+    "desc": "Used exclusively for COME PLS, unless you're trying really hard to prove me wrong because then you can make 'coco meow'."
   },
   {
     "name": "letter_pls",
@@ -211,7 +211,7 @@
     "sprite": ["letter_my"],
     "types": ["letter"],
     "color": [[0, 3]],
-    "desc": "Used exclusively for GO MY WAY."
+    "desc": "Was made for GO MY WAY, but there's other things you can make too."
   },
   {
     "name": "letter_no",
@@ -304,7 +304,7 @@
     "sprite": ["letter_3"],
     "types": ["letter"],
     "color": [[0, 3]],
-    "desc": "and an every3 here (can also spell u3)"
+    "desc": "(can spell u3)"
   },
   {
     "name": "letter_4",

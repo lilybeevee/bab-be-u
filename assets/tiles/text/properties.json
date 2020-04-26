@@ -503,7 +503,7 @@
     "sprite": ["txt/moar"],
     "types": ["property"],
     "color": [[4, 1]],
-    "desc": "MOAR: At end of turn, this unit replicates to all free tiles that are orthogonally adjacent. MOAR stacks with itself; note that at 3+ you can go through walls!\nAnti: idk how tf this is supposed to be described",
+    "desc": "MOAR: At end of turn, this unit replicates to all free tiles that are adjacent.\nIt can spread to spaces in anywhere it can reach ignoring space shenanigans or blockages where ortho movement takes 2 points and diagonal 3, with (stacks+1) points; but only if those points either don't have anything blocking the object from entering (this can go through walls) or one of the object in question (which also won't grow two into the same space).\nAnti: -1 stack; at negative, if it would grow to any space at |n| stacks, the object is deleted",
     "tags": ["more"]
   },
   {
@@ -512,7 +512,7 @@
     "sprite": ["txt/visitfren"],
     "types": ["property"],
     "color": [[1, 4]],
-    "desc": "VISIT FREN: At end of turn, all other objects are sent to the next VISIT FREN unit with the same name in reading order (left to right, line by line, wrapping around). Higher levels of VISIT FREN will cause the target to be 1 backward, 2 forward, 2 backward, etc.\nAnti: visitfren object teleports to a random spot in level every turn",
+    "desc": "VISIT FREN: At end of turn, all other objects are sent to the next VISIT FREN unit with the same name in reading order (left to right, line by line, wrapping around). Higher levels of VISIT FREN will cause the target to be 1 backward, 2 forward, 2 backward, etc.\nAnti: visitfren object teleports to the next spot in level every turn",
     "tags": ["warp", "teleport", "portal"]
   },
   {
@@ -615,7 +615,7 @@
     "sprite": ["txt/poortoll"],
     "types": ["property"],
     "color": [[3, 2]],
-    "desc": "POOR TOLL: If a unit would enter a POOR TOLL unit, it instead leaves the next POOR TOLL unit of the same name in reading order (left to right, line by line, wrapping around) out the corresponding same side. Does not stack.\nAnti: uh wtf does \"sends you to the void\" mean",
+    "desc": "POOR TOLL: If a unit would enter a POOR TOLL unit, it instead leaves the next POOR TOLL unit of the same name in reading order (left to right, line by line, wrapping around) out the corresponding same side. Does not stack.\nAnti: to explain this to you, we have to talk about parallel universes. Also it's not made yet so i'll write about the skuttlebug jamborees when it is.",
     "tags": ["portal", "cg5"]
   },
   {
@@ -808,7 +808,7 @@
     "sprite": ["txt/nuek"],
     "types": ["property"],
     "color": [[2, 2]],
-    "desc": "NUEK: A NUEK will begin destroying everything around it, its radius growing once per turn. Currently very laggy, for some reason.\nAnti: places xplod at the corners of lvl",
+    "desc": "NUEK: A NUEK will begin destroying everything around it, its radius growing once per turn.\nAnti: places xplod at the corners of lvl",
     "tags": ["nuke", "bomb"]
   },
   {
@@ -877,7 +877,7 @@
     "sprite": ["txt/thicc"],
     "types": ["property"],
     "color": [[1, 3]],
-    "desc": "THICC: Thicc things take up a 2x2 space. Expands to the lower left.\nAnti: transform into babby"
+    "desc": "THICC: Thicc things take up a 2x2 space. Expands to the lower right.\nAnti: babby (yes, the noun)"
   },
   {
     "name": "txt_rythm",
