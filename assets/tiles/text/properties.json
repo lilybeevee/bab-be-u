@@ -229,6 +229,16 @@
     "desc": "LESBAB: Causes the unit to appear red, orange, white, and pink. LESBAB objects are reed, orang, whit, and pinc, and not any other colors.\nAnti: poof"
   },
   {
+    "name": "txt_lesbad",
+    "sprite": ["txt/lesbad-colored"],
+    "sprite_transforms": {
+      "inactive": "txt/lesbad"
+    },
+    "types": ["property", "gang_prefix"],
+    "color": [[255, 255, 255]],
+    "desc": "LESBAD: Causes the unit to appear cyan, purple, and blue. LESBAD objects are cyeann, purp, and bleu, and not any other colors.\nAnti: can't snacc or be snacced"
+  },
+  {
     "name": "txt_aro",
     "sprite": ["txt/aro-colored"],
     "sprite_transforms": {

@@ -45,6 +45,9 @@ function updateCursors()
       if hasProperty(cursor,"lesbab") then
         table.insert(cursor.overlay, "lesbian")
       end
+      if hasProperty(cursor,"lesbad") then
+        table.insert(cursor.overlay, "vore")
+      end
       if hasProperty(cursor,"aro") then
         table.insert(cursor.overlay, "aro")
       end
