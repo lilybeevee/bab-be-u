@@ -10,6 +10,7 @@ meta sprite transforms (is that a thing)
 layer
 color
 painted (formerly known as "colored")
+overlay
 txtify
 thingify
 wobblify

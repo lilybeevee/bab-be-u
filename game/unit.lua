@@ -1731,44 +1731,19 @@ function miscUpdates()
       end
 
       unit.overlay = {}
-	    if (graphical_property_cache["enby"][unit] ~= nil) then
-        table.insert(unit.overlay, "enby")
-      end
-      if (graphical_property_cache["tranz"][unit] ~= nil) then
-        table.insert(unit.overlay, "trans")
-      end
-      if (graphical_property_cache["gay"][unit] ~= nil) then
-        table.insert(unit.overlay, "gay")
-      end
-      if (graphical_property_cache["ace"][unit] ~= nil) then
-        table.insert(unit.overlay, "ace")
-      end
-      if (graphical_property_cache["pan"][unit] ~= nil) then
-        table.insert(unit.overlay, "pan")
-      end
-      if (graphical_property_cache["bi"][unit] ~= nil) then
-        table.insert(unit.overlay, "bi")
-      end
-      if (graphical_property_cache["lesbab"][unit] ~= nil) then
-        table.insert(unit.overlay, "lesbian")
-      end
-      if (graphical_property_cache["lesbad"][unit] ~= nil) then
-        table.insert(unit.overlay, "vore")
-      end
-      if (graphical_property_cache["aro"][unit] ~= nil) then
-        table.insert(unit.overlay, "aro")
-      end
-      if (graphical_property_cache["fluid"][unit] ~= nil) then
-        table.insert(unit.overlay, "fluid")
-      end
-      if (graphical_property_cache["πoly"][unit] ~= nil) then
-        table.insert(unit.overlay, "poly")
+      for name,overlay in pairs(overlay_props) do
+        if graphical_property_cache[name][unit] ~= nil then
+          table.insert(unit.overlay, overlay.sprite)
+        end
       end
       
       -- for optimisation in drawing
       local objects_to_check = {
-      "stelth", "colrful", "delet", "rave", "gay", "tranz", "enby", "ace", "pan", "bi", "lesbab", "lesbad", "aro", "fluid", "πoly"
+      "stelth", "colrful", "delet", "rave"
       }
+      for name,_ in pairs(overlay_props) do
+        table.insert(objects_to_check, name)
+      end
 
       for i = 1, #objects_to_check do
         local prop = objects_to_check[i]
