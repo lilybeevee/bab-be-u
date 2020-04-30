@@ -51,6 +51,9 @@ function updateCursors()
       if hasProperty(cursor,"fluid") then
         table.insert(cursor.overlay, "fluid")
       end
+      if hasProperty(cursor,"πoly") then
+        table.insert(cursor.overlay, "poly")
+      end
     end
   end
   for i,cid in ipairs(del_cursors) do

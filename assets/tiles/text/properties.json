@@ -249,6 +249,16 @@
     "desc": "FLUID: Causes the unit to appear pink, white, black, and blue. FLUID objects are pinc, whit, blacc, and bleu, and not any other colors.\nAnti: poof"
   },
   {
+    "name": "txt_πoly",
+    "sprite": ["txt/poly-colored"],
+    "sprite_transforms": {
+      "inactive": "txt/poly"
+    },
+    "types": ["property", "gang_prefix"],
+    "color": [[255, 255, 255]],
+    "desc": "POLY: Causes the unit to appear yellow, red, blue, and black. POLY objects are yello, reed, bleu, and blacc, and not any other colors.\nAnti: poof"
+  },
+  {
     "name": "txt_slep",
     "sprite": ["txt/slep"],
     "types": ["property"],

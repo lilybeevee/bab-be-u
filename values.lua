@@ -435,7 +435,7 @@ selector_grid_contents = {
     "txt_spin","txt_rotatbl","txt_noturn","txt_stukc",0,"txt_poortoll","txt_goarnd","txt_mirrarnd","txt_glued",0,0,0,0,"txt_stelth","txt_qt","txt_thonk","txt_blacc","txt_brwn",
     "txt_upleft","txt_up","txt_upright","txt_thicc",0,"txt_her","txt_thr","txt_rithere","txt_the","txt_deez",0,0,0,"txt_gay","txt_lesbab","txt_tranz","txt_colrful","txt_rave",
     "txt_left","txt_direction","txt_right",0,0,0,0,0,0,0,0,0,0,"txt_pan","txt_bi","txt_enby","txt_ace","txt_aro",
-    "txt_downleft","txt_down","txt_downright",0,0,"selctr","txt_selctr","txt_frens","txt_groop","txt_gang","txt_themself",0,0,0,0,"txt_fluid",0,0,
+    "txt_downleft","txt_down","txt_downright",0,0,"selctr","txt_selctr","txt_frens","txt_groop","txt_gang","txt_themself",0,0,0,0,"txt_fluid","txt_πoly",0,
     0,0,0,0,0,"lvl","txt_lvl","txt_txt","txt_no1","txt_every1","txt_every2","this","txt_mous",0,0,0,0,0,
     "txt_...","txt_''","txt_nt","txt_anti",0,"lin","txt_lin","txt_lethers","txt_numa","txt_toen","txt_yuiy",0,0,0,0,0,0,0,
   },

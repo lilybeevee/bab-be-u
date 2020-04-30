@@ -1758,10 +1758,13 @@ function miscUpdates()
       if (graphical_property_cache["fluid"][unit] ~= nil) then
         table.insert(unit.overlay, "fluid")
       end
+      if (graphical_property_cache["πoly"][unit] ~= nil) then
+        table.insert(unit.overlay, "poly")
+      end
       
       -- for optimisation in drawing
       local objects_to_check = {
-      "stelth", "colrful", "delet", "rave", "gay", "tranz", "enby", "ace", "pan", "bi", "lesbab", "aro", "fluid"
+      "stelth", "colrful", "delet", "rave", "gay", "tranz", "enby", "ace", "pan", "bi", "lesbab", "aro", "fluid", "πoly"
       }
 
       for i = 1, #objects_to_check do

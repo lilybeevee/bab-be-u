@@ -149,7 +149,7 @@ end
 function initializeGraphicalPropertyCache()
   local properties_to_init = -- list of properties that require the graphical cache
   {
-    "flye", "slep", "stelth", "colrful", "delet", "rave", "tranz", "gay", "enby", "ace", "pan", "bi", "lesbab", "aro", "fluid" -- miscelleaneous graphical effects
+    "flye", "slep", "stelth", "colrful", "delet", "rave", "tranz", "gay", "enby", "ace", "pan", "bi", "lesbab", "aro", "fluid", "πoly" -- miscelleaneous graphical effects
   }
   for i = 1, #properties_to_init do
     local prop = properties_to_init[i]
@@ -1675,7 +1675,8 @@ function testConds(unit, conds, compare_with, first_unit) --cond should be a {co
           bi = {"pinc", "purp", "bleu"},
           lesbab = {"reed", "orang", "whit", "pinc"},
           aro = {"grun", "whit", "graey", "blacc"},
-          fluid = {"pinc", "whit", "blacc", "bleu"}
+          fluid = {"pinc", "whit", "blacc", "bleu"},
+          πoly = {"yello", "reed", "bleu", "blacc"},
         }
         local has_flag = false
         local matched_flag = false
