@@ -149,8 +149,11 @@ end
 function initializeGraphicalPropertyCache()
   local properties_to_init = -- list of properties that require the graphical cache
   {
-    "flye", "slep", "stelth", "colrful", "delet", "rave", "tranz", "gay", "enby", "ace", "pan", "bi", "lesbab", "aro", "fluid" -- miscelleaneous graphical effects
+    "flye", "slep", "stelth", "colrful", "delet", "rave" -- miscelleaneous graphical effects
   }
+  for name,_ in pairs(overlay_props) do -- add overlays
+    table.insert(properties_to_init, name)
+  end
   for i = 1, #properties_to_init do
     local prop = properties_to_init[i]
     if (graphical_property_cache[prop] == nil) then graphical_property_cache[prop] = {} end
@@ -1666,23 +1669,12 @@ function testConds(unit, conds, compare_with, first_unit) --cond should be a {co
       elseif unit.rave or unit.colrful then
         result = true
       else
-        local flags = {
-          gay = {"reed", "orang", "yello", "grun", "cyeann", "bleu", "purp", "pinc"},
-          tranz = {"cyeann", "whit", "pinc"},
-          enby = {"yello", "whit", "purp", "blacc", "graey"},
-          ace = {"blacc", "graey", "whit", "purp"},
-          pan = {"pinc", "yello", "cyeann"},
-          bi = {"pinc", "purp", "bleu"},
-          lesbab = {"reed", "orang", "whit", "pinc"},
-          aro = {"grun", "whit", "graey", "blacc"},
-          fluid = {"pinc", "whit", "blacc", "bleu"}
-        }
         local has_flag = false
         local matched_flag = false
-        for flag,colors in pairs(flags) do
+        for flag,overlay in pairs(overlay_props) do
           if unit[flag] then
             has_flag = true
-            if table.has_value(colors, condtype) then
+            if table.has_value(overlay.colors, condtype) then
               matched_flag = true
               break
             end
@@ -3998,7 +3990,11 @@ function addTile(tile)
 
   if tile.typeset.group then
     addGroup(tile.txtname)
-	end
+  end
+  
+  if tile.overlay then
+    overlay_props[tile.txtname] = tile.overlay
+  end
 
   return tile
 end

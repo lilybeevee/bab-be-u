@@ -19,6 +19,7 @@ function assets.clear()
   group_names_set = {}
   group_names_set_nt = {}
   group_subsets = {}
+  overlay_props = {}
 end
 
 function assets.load(base)

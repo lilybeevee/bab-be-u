@@ -24,32 +24,10 @@ function updateCursors()
 
       cursor.overlay = {}
 
-	    if hasProperty(cursor,"enby") then
-        table.insert(cursor.overlay, "enby")
-      end
-      if hasProperty(cursor,"tranz") then
-        table.insert(cursor.overlay, "trans")
-      end
-      if hasProperty(cursor,"gay") then
-        table.insert(cursor.overlay, "gay")
-      end
-      if hasProperty(cursor,"ace") then
-        table.insert(cursor.overlay, "ace")
-      end
-      if hasProperty(cursor,"pan") then
-        table.insert(cursor.overlay, "pan")
-      end
-      if hasProperty(cursor,"bi") then
-        table.insert(cursor.overlay, "bi")
-      end
-      if hasProperty(cursor,"lesbab") then
-        table.insert(cursor.overlay, "lesbian")
-      end
-      if hasProperty(cursor,"aro") then
-        table.insert(cursor.overlay, "aro")
-      end
-      if hasProperty(cursor,"fluid") then
-        table.insert(cursor.overlay, "fluid")
+      for name,overlay in pairs(overlay_props) do
+        if hasProperty(cursor,name) then
+          table.insert(cursor.overlay, overlay.sprite)
+        end
       end
     end
   end

@@ -165,8 +165,12 @@
     },
     "types": ["property", "gang_prefix"],
     "color": [[255, 255, 255]],
+    "overlay": {
+      "sprite": "trans",
+      "colors": ["cyeann", "whit", "pinc"]
+    },
     "desc": "TRANZ: Causes the unit to appear pink, white and baby blue. TRANZ objects are pinc, whit, and cyeann, and not any other colors.\nAnti: poof",
-    "tags": ["trans"]
+    "tags": ["transgender"]
   },
   {
     "name": "txt_gay",
@@ -176,7 +180,11 @@
     },
     "types": ["property", "gang_prefix"],
     "color": [[255, 255, 255]],
-    "desc": "GAY: Causes the unit to appear rainbow coloured. GAY objects are reed, orang, yello, grun, bleu, and purp, and not any other colors.\nAnti: poof"
+    "overlay": {
+      "sprite": "gay",
+      "colors": ["reed", "orang", "yello", "grun", "cyeann", "bleu", "purp", "pinc"]
+    },
+    "desc": "GAY: Causes the unit to appear rainbow coloured. GAY objects are reed, orang, yello, grun, bleu, purp, and pinc, and not any other colors.\nAnti: poof"
   },
   {
     "name": "txt_enby",
@@ -186,7 +194,12 @@
     },
     "types": ["property", "gang_prefix"],
     "color": [[255, 255, 255]],
-    "desc": "ENBY: Causes the unit to appear yellow, white, purple and black. ENBY objects are yello, whit, purp, and blacc, and not any other colors.\nAnti: poof"
+    "overlay": {
+      "sprite": "enby",
+      "colors": ["yello", "whit", "purp", "blacc", "graey"]
+    },
+    "desc": "ENBY: Causes the unit to appear yellow, white, purple and black. ENBY objects are yello, whit, purp, blacc, and graey, and not any other colors.\nAnti: poof",
+    "tags": ["nb", "nonbinary"]
   },
   {
     "name": "txt_ace",
@@ -196,7 +209,12 @@
     },
     "types": ["property", "gang_prefix"],
     "color": [[255, 255, 255]],
-    "desc": "ACE: Causes the unit to appear black, grey, white, and purple. ACE objects are blacc, graey, whit, and purp, and not any other colors.\nAnti: poof"
+    "overlay": {
+      "sprite": "ace",
+      "colors": ["blacc", "graey", "whit", "purp"]
+    },
+    "desc": "ACE: Causes the unit to appear black, grey, white, and purple. ACE objects are blacc, graey, whit, and purp, and not any other colors.\nAnti: poof",
+    "tags": ["asexual"]
   },
   {
     "name": "txt_pan",
@@ -206,7 +224,12 @@
     },
     "types": ["property", "gang_prefix"],
     "color": [[255, 255, 255]],
-    "desc": "PAN: Causes the unit to appear pink, yellow, and cyan. PAN objects are pinc, yello, and cyeann, and not any other colors.\nAnti: poof"
+    "overlay": {
+      "sprite": "pan",
+      "colors": ["pinc", "yello", "cyeann"]
+    },
+    "desc": "PAN: Causes the unit to appear pink, yellow, and cyan. PAN objects are pinc, yello, and cyeann, and not any other colors.\nAnti: poof",
+    "tags": ["pansexual"]
   },
   {
     "name": "txt_bi",
@@ -216,7 +239,12 @@
     },
     "types": ["property", "gang_prefix"],
     "color": [[255, 255, 255]],
-    "desc": "BI: Causes the unit to appear pink, purple, and blue. BI objects are pinc, purp, and bleu, and not any other colors.\nAnti: poof"
+    "overlay": {
+      "sprite": "bi",
+      "colors": ["pinc", "purp", "bleu"]
+    },
+    "desc": "BI: Causes the unit to appear pink, purple, and blue. BI objects are pinc, purp, and bleu, and not any other colors.\nAnti: poof",
+    "tags": ["bisexual"]
   },
   {
     "name": "txt_lesbab",
@@ -226,7 +254,27 @@
     },
     "types": ["property", "gang_prefix"],
     "color": [[255, 255, 255]],
-    "desc": "LESBAB: Causes the unit to appear red, orange, white, and pink. LESBAB objects are reed, orang, whit, and pinc, and not any other colors.\nAnti: poof"
+    "overlay": {
+      "sprite": "lesbian",
+      "colors": ["reed", "orang", "whit", "pinc"]
+    },
+    "desc": "LESBAB: Causes the unit to appear red, orange, white, and pink. LESBAB objects are reed, orang, whit, and pinc, and not any other colors.\nAnti: poof",
+    "tags": ["lesbian"]
+  },
+  {
+    "name": "txt_lesbad",
+    "sprite": ["txt/lesbad-colored"],
+    "sprite_transforms": {
+      "inactive": "txt/lesbad"
+    },
+    "types": ["property", "gang_prefix"],
+    "color": [[255, 255, 255]],
+    "overlay": {
+      "sprite": "vore",
+      "colors": ["cyeann", "purp", "bleu"]
+    },
+    "desc": "LESBAD: Causes the unit to appear cyan, purple, and blue. LESBAD objects are cyeann, purp, and bleu, and not any other colors.\nAnti: can't snacc or be snacced",
+    "tags": ["vore"]
   },
   {
     "name": "txt_aro",
@@ -236,7 +284,12 @@
     },
     "types": ["property", "gang_prefix"],
     "color": [[255, 255, 255]],
-    "desc": "ARO: Causes the unit to appear green, white, grey, and black. ARO objects are grun, whit, graey, and blacc, and not any other colors.\nAnti: poof"
+    "overlay": {
+      "sprite": "aro",
+      "colors": ["grun", "whit", "graey", "blacc"]
+    },
+    "desc": "ARO: Causes the unit to appear green, white, grey, and black. ARO objects are grun, whit, graey, and blacc, and not any other colors.\nAnti: poof",
+    "tags": ["aromantic"]
   },
   {
     "name": "txt_fluid",
@@ -246,7 +299,27 @@
     },
     "types": ["property", "gang_prefix"],
     "color": [[255, 255, 255]],
-    "desc": "FLUID: Causes the unit to appear pink, white, black, and blue. FLUID objects are pinc, whit, blacc, and bleu, and not any other colors.\nAnti: poof"
+    "overlay": {
+      "sprite": "fluid",
+      "colors": ["pinc", "whit", "blacc", "bleu"]
+    },
+    "desc": "FLUID: Causes the unit to appear pink, white, black, and blue. FLUID objects are pinc, whit, blacc, and bleu, and not any other colors.\nAnti: poof",
+    "tags": ["genderfluid"]
+  },
+  {
+    "name": "txt_πoly",
+    "sprite": ["txt/poly-colored"],
+    "sprite_transforms": {
+      "inactive": "txt/poly"
+    },
+    "types": ["property", "gang_prefix"],
+    "color": [[255, 255, 255]],
+    "overlay": {
+      "sprite": "poly",
+      "colors": ["yello", "reed", "bleu", "blacc"]
+    },
+    "desc": "POLY: Causes the unit to appear yellow, red, blue, and black. POLY objects are yello, reed, bleu, and blacc, and not any other colors.\nAnti: poof",
+    "tags": ["polyamory"]
   },
   {
     "name": "txt_slep",
