@@ -2467,7 +2467,7 @@ function canMoveCore(unit,dx,dy,dir,o) --pushing, pulling, solid_name, reason, p
         local exploding = false
         --Case 1 or 3 - wall will be destroyed by us walking onto it.
         local ouch = hasProperty(v, "ouch") or hasProperty(unit, "anti ouch")
-        local snacc = rules_with["snacc"] ~= nil and hasRule(unit, "snacc", v)
+        local snacc = rules_with["snacc"] ~= nil and hasRule(unit, "snacc", v) and not hasProperty(unit,"anti lesbad") and not hasProperty(v,"anti lesbad")
         if (ouch or snacc) and not hasProperty(v, "protecc") and sameFloat(unit, v) and ignoreCheck(v,unit) then
           if (timecheck(v,"be","ouch") or timecheck(unit,"snacc",v)) and timecheck(unit) then
             table.insert(specials, {ouch and "weak" or "snacc", {v}})
@@ -2481,7 +2481,7 @@ function canMoveCore(unit,dx,dy,dir,o) --pushing, pulling, solid_name, reason, p
       
         --Case 2 or 3 - we will be destroyed by walking onto a wall.
         local ouch = hasProperty(unit, "ouch") or hasProperty(v, "anti ouch")
-        local snacc = rules_with["snacc"] ~= nil and hasRule(v, "snacc", unit)
+        local snacc = rules_with["snacc"] ~= nil and hasRule(v, "snacc", unit) and not hasProperty(unit,"anti lesbad") and not hasProperty(v,"anti lesbad")
         if (ouch or snacc) and not hasProperty(unit, "protecc") and (o.reason ~= "walk" or not hasProperty(unit, "stubbn")) and ignoreCheck(unit,v) then
           if (timecheck(unit,"be","ouch") or timecheck(v,"snacc",unit)) and timecheck(v) then
             table.insert(specials, {ouch and "weak" or "snacc", {unit}})

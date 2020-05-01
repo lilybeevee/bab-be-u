@@ -46,6 +46,7 @@ function clear()
   outerlvl = nil
   still_converting = {}
   portaling = {}
+  anti_gone_undos = {}
   rules_effecting_names = {}
   referenced_objects = {}
   referenced_text = {}
@@ -2380,6 +2381,23 @@ function addParticles(ptype,x,y,color,count)
   if doing_past_turns and not do_past_effects then return end
   
   if not settings["particles_on"] then return end
+
+  local particle_colors = {}
+  if type(color[1]) ~= "table" then
+    if #color == 2 then
+      particle_colors = {getPaletteColor(color[1], color[2])}
+    else
+      particle_colors = {color[1]/255, color[2]/255, color[3]/255, (color[4] or 255)/255}
+    end
+  else
+    for _,single_color in ipairs(color) do
+      if #single_color == 2 then
+        table.insert_range(particle_colors, {getPaletteColor(single_color[1], single_color[2])})
+      else
+        table.insert_range(particle_colors, {single_color[1]/255, single_color[2]/255, single_color[3]/255, (single_color[4] or 255)/255})
+      end
+    end
+  end
   
   if ptype == "destroy" then
     local ps = love.graphics.newParticleSystem(sprites["circle"])
@@ -2392,11 +2410,7 @@ function addParticles(ptype,x,y,color,count)
     ps:setSpeed(50)
     ps:setLinearDamping(5)
     ps:setParticleLifetime(0.25)
-    if #color == 2 then
-      ps:setColors(getPaletteColor(color[1], color[2]))
-    else
-      ps:setColors(color[1]/255, color[2]/255, color[3]/255, (color[4] or 255)/255)
-    end
+    ps:setColors(unpack(particle_colors))
     ps:start()
     ps:emit(count or 20)
     table.insert(particles, ps)
@@ -2411,11 +2425,7 @@ function addParticles(ptype,x,y,color,count)
     ps:setSpeed(50)
     ps:setLinearDamping(4)
     ps:setParticleLifetime(0.25)
-    if #color == 2 then
-      ps:setColors(getPaletteColor(color[1], color[2]))
-    else
-      ps:setColors(color[1]/255, color[2]/255, color[3]/255, (color[4] or 255)/255)
-    end
+    ps:setColors(unpack(particle_colors))
     ps:start()
     ps:emit(count or 10)
     table.insert(particles, ps)
@@ -2431,11 +2441,8 @@ function addParticles(ptype,x,y,color,count)
     ps:setSpeed(30)
     ps:setLinearDamping(2)
     ps:setParticleLifetime(0.6)
-    if #color == 2 then
-      ps:setColors(getPaletteColor(color[1], color[2]))
-    else
-      ps:setColors(color[1]/255, color[2]/255, color[3]/255, (color[4] or 255)/255)
-    end
+    print(dump(particle_colors))
+    ps:setColors(unpack(particle_colors))
     ps:start()
     ps:emit(count or 10)
     table.insert(particles, ps)
@@ -2450,11 +2457,7 @@ function addParticles(ptype,x,y,color,count)
     ps:setSpeed(-40)
     ps:setLinearDamping(2)
     ps:setParticleLifetime(0.6)
-    if #color == 2 then
-      ps:setColors(getPaletteColor(color[1], color[2]))
-    else
-      ps:setColors(color[1]/255, color[2]/255, color[3]/255, (color[4] or 255)/255)
-    end
+    ps:setColors(unpack(particle_colors))
     ps:start()
     ps:emit(count or 10)
     table.insert(particles, ps)
@@ -2469,11 +2472,7 @@ function addParticles(ptype,x,y,color,count)
     ps:setSpeed(30)
     ps:setLinearDamping(2)
     ps:setParticleLifetime(0.6)
-    if #color == 2 then
-      ps:setColors(getPaletteColor(color[1], color[2]))
-    else
-      ps:setColors(color[1]/255, color[2]/255, color[3]/255, (color[4] or 255)/255)
-    end
+    ps:setColors(unpack(particle_colors))
     ps:start()
     ps:emit(count or 10)
     table.insert(particles, ps)
@@ -2487,11 +2486,7 @@ function addParticles(ptype,x,y,color,count)
     ps:setSizes(0.5, 0.5, 0.5, 0)
     ps:setSpeed(20)
     ps:setParticleLifetime(1)
-    if #color == 2 then
-      ps:setColors(getPaletteColor(color[1], color[2]))
-    else
-      ps:setColors(color[1]/255, color[2]/255, color[3]/255, (color[4] or 255)/255)
-    end
+    ps:setColors(unpack(particle_colors))
     ps:start()
     ps:emit(count or 10)
     table.insert(particles, ps)
@@ -2505,11 +2500,7 @@ function addParticles(ptype,x,y,color,count)
     ps:setSizes(0.7, 0.7, 0.7, 0)
     ps:setSpeed(math.random(10,20))
     ps:setParticleLifetime(math.random(1,2))
-    if #color == 2 then
-      ps:setColors(getPaletteColor(color[1], color[2]))
-    else
-      ps:setColors(color[1]/255, color[2]/255, color[3]/255, (color[4] or 255)/255)
-    end
+    ps:setColors(unpack(particle_colors))
     ps:start()
     ps:emit(count or 10)
     table.insert(particles, ps)
@@ -2524,11 +2515,7 @@ function addParticles(ptype,x,y,color,count)
     ps:setSpeed(10)
     ps:setLinearAcceleration(0,-50)
     ps:setParticleLifetime(2)
-    if #color == 2 then
-      ps:setColors(getPaletteColor(color[1], color[2]))
-    else
-      ps:setColors(color[1]/255, color[2]/255, color[3]/255, (color[4] or 255)/255)
-    end
+    ps:setColors(unpack(particle_colors))
     ps:start()
     ps:emit(count or 10)
     table.insert(particles, ps)
@@ -2543,11 +2530,7 @@ function addParticles(ptype,x,y,color,count)
     ps:setSpeed(10)
     ps:setLinearAcceleration(0,-50)
     ps:setParticleLifetime(2)
-    if #color == 2 then
-      ps:setColors(getPaletteColor(color[1], color[2]))
-    else
-      ps:setColors(color[1]/255, color[2]/255, color[3]/255, (color[4] or 255)/255)
-    end
+    ps:setColors(unpack(particle_colors))
     ps:start()
     ps:emit(count or 10)
     table.insert(particles, ps)
@@ -2563,11 +2546,7 @@ function addParticles(ptype,x,y,color,count)
     ps:setSpeed(math.random(30, 40))
     ps:setLinearDamping(5)
     ps:setParticleLifetime(math.random(0.50, 1.10))
-    if #color == 2 then
-      ps:setColors(getPaletteColor(color[1], color[2]))
-    else
-      ps:setColors(color[1]/255, color[2]/255, color[3]/255, (color[4] or 255)/255)
-    end
+    ps:setColors(unpack(particle_colors))
     ps:start()
     ps:emit(count or 1)
     table.insert(particles, ps)
@@ -2701,6 +2680,34 @@ function mergeTable(t, other)
         end
       end
     end
+  end
+  return t
+end
+
+function mergeTable(t, other)
+  if other ~= nil then
+    for k,v in pairs(other) do
+      if type(k) == "number" then
+        if not table.has_value(t, v) then
+          table.insert(t, v)
+        end
+      else
+        if t[k] ~= nil then
+          if type(t[k]) == "table" and type(v) == "table" then
+            mergeTable(t[k], v)
+          end
+        else
+          t[k] = v
+        end
+      end
+    end
+  end
+  return t
+end
+
+function table.insert_range(t, other)
+  for _,v in ipairs(other) do
+    table.insert(t, v)
   end
   return t
 end
