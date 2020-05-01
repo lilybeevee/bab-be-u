@@ -514,7 +514,7 @@ function scene.keyPressed(key)
           searchstr, subsearchstr = "", ""
         end
       elseif key_down["lctrl"] or key_down["rctrl"] then 
-        if getTile("letter_"..subsearchstr) then
+        if getTile("letter_"..subsearchstr) and subsearchstr ~= "custom" then
           brush.id = "letter_"..subsearchstr
           brush.special = {}
           selector_open = false
@@ -524,6 +524,7 @@ function scene.keyPressed(key)
           for _,char in ipairs(magic) do
             subsearchstr = subsearchstr:gsub("%%%"..char, "%"..char)
           end
+          --subsearchstr = subsearchstr:gsub("pi", "π")
           if #subsearchstr >= 1 and #subsearchstr <= 6 then
           brush.id = "letter_custom"
           brush.special = {customletter = subsearchstr}

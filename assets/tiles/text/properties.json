@@ -318,7 +318,7 @@
       "sprite": "poly",
       "colors": ["yello", "reed", "bleu", "blacc"]
     },
-    "desc": "POLY: Causes the unit to appear yellow, red, blue, and black. POLY objects are yello, reed, bleu, and blacc, and not any other colors.\nAnti: poof",
+    "desc": "πOLY: Causes the unit to appear yellow, red, blue, and black. πOLY objects are yello, reed, bleu, and blacc, and not any other colors.\nAnti: poof",
     "tags": ["polyamory"]
   },
   {

@@ -306,13 +306,15 @@
     "name": "ui_c",
     "sprite": ["ui_c"],
     "layer": 20,
-    "color": [[0, 3]]
+    "color": [[0, 3]],
+    "desc":"ctrl+c=place search bar into clipboard"
   },
   {
     "name": "ui_v",
     "sprite": ["ui_v"],
     "layer": 20,
-    "color": [[0, 3]]
+    "color": [[0, 3]],
+    "desc":"ctrl+v=paste into search bar"
   },
   {
     "name": "ui_b",
