@@ -46,7 +46,7 @@
     "sprite": ["bordr"],
     "layer": 1,
     "color": [[1, 0]],
-    "desc": "BORDR: OOB you can place manually. NOGO, TALL, TRANPARN'T, and NODRAG by default.",
+    "desc": "BORDR: OOB you can place manually. NOGO, TALL, ANTI TALL, TRANPARNT, and NODRAG by default.",
     "tags": ["border"]
   },
   {

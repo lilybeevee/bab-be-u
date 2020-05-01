@@ -10,25 +10,29 @@
     "name": "letter_b",
     "sprite": ["letter_b"],
     "types": ["letter", "note"],
-    "color": [[0, 3]]
+    "color": [[0, 3]],
+    "desc": "you can't spell bab without b"
   },
   {
     "name": "letter_c",
     "sprite": ["letter_c"],
     "types": ["letter", "note"],
-    "color": [[0, 3]]
+    "color": [[0, 3]],
+    "desc": "c is for canedy"
   },
   {
     "name": "letter_d",
     "sprite": ["letter_d"],
     "types": ["letter", "note"],
-    "color": [[0, 3]]
+    "color": [[0, 3]],
+    "desc": "never say darn more than three times a day"
   },
   {
     "name": "letter_e",
     "sprite": ["letter_e"],
     "types": ["letter", "note"],
-    "color": [[0, 3]]
+    "color": [[0, 3]],
+    "desc": "eeeeee is a much better scream"
   },
   {
     "name": "letter_f",
@@ -41,20 +45,29 @@
     "name": "letter_g",
     "sprite": ["letter_g"],
     "types": ["letter", "note"],
-    "color": [[0, 3]]
+    "color": [[0, 3]],
+    "desc": "go to grav"
   },
   {
     "name": "letter_h",
     "sprite": ["letter_h"],
     "types": ["letter"],
-    "color": [[0, 3]]
+    "color": [[0, 3]],
+    "desc": "Can be rotated (with rotatbl) to form I."
+  },
+  {
+    "name": "letter_i",
+    "sprite": ["letter_i"],
+    "types": ["letter"],
+    "color": [[0, 3]],
+    "desc": "This letter used to be simply a rotated H. You can still get an H through rotation, though."
   },
   {
     "name": "letter_j",
     "sprite": ["letter_j"],
     "types": ["letter"],
     "color": [[0, 3]],
-    "desc": "This is used in JAIL and JILL. Discrimination against J!"
+    "desc": "Used less than it should be. There aren't any non-nouns that use it..."
   },
   {
     "name": "letter_k",
@@ -78,7 +91,16 @@
     "name": "letter_n",
     "sprite": ["letter_n"],
     "types": ["letter"],
-    "color": [[0, 3]]
+    "color": [[0, 3]],
+    "desc": "Can be rotated (with rotatbl) to form Z."
+  },
+  {
+    "name": "letter_o",
+    "sprite": ["letter_o"],
+    "types": ["letter", "object"],
+    "color": [[0, 3]],
+    "desc": "used to be the most op letter but now its just stronk",
+    "tags": ["number", "digit", "zero"]
   },
   {
     "name": "letter_p",
@@ -146,6 +168,20 @@
     "color": [[0, 3]]
   },
   {
+    "name": "letter_z",
+    "sprite": ["letter_z"],
+    "types": ["letter"],
+    "color": [[0, 3]],
+    "desc": "Can be rotated (with rotatbl) to form Z."
+  },
+  {
+    "name": "letter_'",
+    "sprite": ["letter_apostrophe"],
+    "types": ["letter"],
+    "color": [[0, 3]],
+    "desc": "Surprisingly, not needed for most things with \"n't\" in them; you can just use \"nt\"."
+  },
+  {
     "name": "letter_.",
     "sprite": ["letter_period"],
     "types": ["letter"],
@@ -160,7 +196,7 @@
     "color": [[0, 3]],
     "rotate": true,
     "desc": ":: Can also be an umlaut, or '..', if rotated in that way.",
-    "tags": [";", "umlaut", "diaeresis"]
+    "tags": [";", "umlaut", "diaeresis",".."]
   },
   {
     "name": "letter_parenthesis",
@@ -172,11 +208,110 @@
     "tags": ["9", "0", "brackets"]
   },
   {
-    "name": "letter_'",
-    "sprite": ["letter_apostrophe"],
+    "name": "letter_1",
+    "sprite": ["letter_1"],
     "types": ["letter"],
     "color": [[0, 3]],
-    "desc": "Surprisingly, not needed for most things with \"n't\" in them; you can just use \"nt\"."
+    "desc": "Used in EVERY1 and NO1.",
+    "tags": ["number", "digit", "one"]
+  },
+  
+  {
+    "name": "letter_2",
+    "sprite": ["letter_2"],
+    "types": ["letter"],
+    "color": [[0, 3]],
+    "desc": "used for every2, what a surprise (can also spell u2)",
+    "tags": ["number", "digit", "two"]
+  },
+  {
+    "name": "letter_3",
+    "sprite": ["letter_3"],
+    "types": ["letter"],
+    "color": [[0, 3]],
+    "desc": "3den awaits you (can spell u3)",
+    "tags": ["number", "digit", "three"]
+  },
+  {
+    "name": "letter_4",
+    "sprite": ["letter_4"],
+    "types": ["letter"],
+    "color": [[0, 3]],
+    "desc": "Numbers can also be used in text parsing for infix conditions. BAB W/FREN 4 WAL BE :) will make bab only win if on four walls!\n(not implemented yet)",
+    "tags": ["number", "digit", "four"]
+  },
+  {
+    "name": "letter_5",
+    "sprite": ["letter_5"],
+    "types": ["letter"],
+    "color": [[0, 3]],
+    "desc": "equivalent to 2+2",
+    "tags": ["number", "digit", "five"]
+  },
+  {
+    "name": "letter_6",
+    "sprite": ["letter_6"],
+    "types": ["letter"],
+    "color": [[0, 3]],
+    "desc": "just put three of these next to each other",
+    "tags": ["number", "digit", "six"]
+  },
+  {
+    "name": "letter_7",
+    "sprite": ["letter_7"],
+    "types": ["letter"],
+    "color": [[0, 3]],
+    "desc": "is this your lucky number?",
+    "tags": ["number", "digit", "seven"]
+  },
+  {
+    "name": "letter_8",
+    "sprite": ["letter_8"],
+    "types": ["letter"],
+    "color": [[0, 3]],
+    "desc": "Used in LIE/8.",
+    "tags": ["number", "digit", "eight"]
+  },
+  {
+    "name": "letter_9",
+    "sprite": ["letter_9"],
+    "types": ["letter"],
+    "color": [[0, 3]],
+    "desc": "There's not all that much to put in these descriptions, but it feels wrong to exclude them.",
+    "tags": ["number", "digit", "nine"]
+  },
+  {
+    "name": "letter_;",
+    "sprite": ["letter_semicolon"],
+    "types": ["letter"],
+    "color": [[0, 3]],
+    "desc": "Formerly used in ;D, until we changed that to be UN:). Now it's useless, very sad.",
+    "tags": ["semicolon", "wink"]
+  },
+  {
+    "name": "letter_/",
+    "sprite": ["letter_slash"],
+    "types": ["letter"],
+    "color": [[0, 3]],
+    "desc": "Used in W/FREN and LIE/8.",
+    "tags": ["slash"]
+  },
+  
+  {
+    "name": "letter_>",
+    "sprite": ["letter_angle"],
+    "types": ["letter"],
+    "color": [[0, 3]],
+    "desc": "Ɛ>",
+    "tags": ["angle","greater than"]
+  },
+  {
+    "name": "letter_*",
+    "sprite": ["letter_asterisk"],
+    "types": ["letter"],
+    "color": [[0, 3]],
+    "desc": "wildcard. Currently not implemented very well.",
+    "tags": ["asterisk","wildcard"]
   },
   {
     "name": "letter_go",
@@ -228,51 +363,6 @@
     "tags": ["wey"]
   },
   {
-    "name": "letter_i",
-    "sprite": ["letter_i"],
-    "types": ["letter"],
-    "color": [[0, 3]],
-    "desc": "This letter used to be simply a rotated H, and due to this it's far below the other letters in the code."
-  },
-  {
-    "name": "letter_z",
-    "sprite": ["letter_z"],
-    "types": ["letter"],
-    "color": [[0, 3]],
-    "desc": "Z: it's just a rotated N"
-  },
-  {
-    "name": "letter_o",
-    "sprite": ["letter_o"],
-    "types": ["letter", "object"],
-    "color": [[0, 3]],
-    "desc": "used to be the most op letter but now its just stronk"
-  },
-  {
-    "name": "letter_1",
-    "sprite": ["letter_1"],
-    "types": ["letter"],
-    "color": [[0, 3]],
-    "desc": "Used in EVERY1 and NO1.",
-    "tags": ["number", "digit", "one"]
-  },
-  {
-    "name": "letter_/",
-    "sprite": ["letter_slash"],
-    "types": ["letter"],
-    "color": [[0, 3]],
-    "desc": "Used in W/FREN and LIE/8.",
-    "tags": ["slash"]
-  },
-  {
-    "name": "letter_8",
-    "sprite": ["letter_8"],
-    "types": ["letter"],
-    "color": [[0, 3]],
-    "desc": "Used in LIE/8.",
-    "tags": ["number", "digit", "eight"]
-  },
-  {
     "name": "letter_ee",
     "sprite": ["letter_ee"],
     "types": ["letter"],
@@ -291,59 +381,6 @@
     "types": ["letter"],
     "color": [[0, 3]],
     "desc": "welcome <3 he11"
-  },
-  {
-    "name": "letter_2",
-    "sprite": ["letter_2"],
-    "types": ["letter"],
-    "color": [[0, 3]],
-    "desc": "used for every2, what a surprise (can also spell u2)"
-  },
-  {
-    "name": "letter_3",
-    "sprite": ["letter_3"],
-    "types": ["letter"],
-    "color": [[0, 3]],
-    "desc": "(can spell u3)"
-  },
-  {
-    "name": "letter_4",
-    "sprite": ["letter_4"],
-    "types": ["letter"],
-    "color": [[0, 3]],
-    "desc": "Numbers can also be used in text parsing for infix conditions. BAB W/FREN 4 WAL BE :) will make bab only win if on four walls!\n(not implemented yet)"
-  },
-  {
-    "name": "letter_5",
-    "sprite": ["letter_5"],
-    "types": ["letter"],
-    "color": [[0, 3]]
-  },
-  {
-    "name": "letter_6",
-    "sprite": ["letter_6"],
-    "types": ["letter"],
-    "color": [[0, 3]]
-  },
-  {
-    "name": "letter_7",
-    "sprite": ["letter_7"],
-    "types": ["letter"],
-    "color": [[0, 3]]
-  },
-  {
-    "name": "letter_9",
-    "sprite": ["letter_9"],
-    "types": ["letter"],
-    "color": [[0, 3]]
-  },
-  {
-    "name": "letter_;",
-    "sprite": ["letter_semicolon"],
-    "types": ["letter"],
-    "color": [[0, 3]],
-    "desc": "Formerly used in ;D, until we changed that to be UN:). Now it's useless, very sad.",
-    "tags": ["semicolon", "wink"]
   },
   {
     "name": "letter_bolt",
@@ -365,18 +402,5 @@
     "color": [[0, 3]],
     "desc": "Custom Letters: Type up to 6 letters into the search box and hit ctrl+enter to get a tile with those letters in it. This text shouldn't show ingame anywhere.",
     "tags": []
-  },
-  {
-    "name": "letter_>",
-    "sprite": ["letter_angle"],
-    "types": ["letter"],
-    "color": [[0, 3]]
-  },
-  {
-    "name": "letter_*",
-    "sprite": ["letter_asterisk"],
-    "types": ["letter"],
-    "color": [[0, 3]],
-    "desc": "wildcard."
   }
 ]

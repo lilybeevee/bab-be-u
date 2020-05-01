@@ -3587,10 +3587,10 @@ function updateNameBasedOnDir(unit)
     unit.textname = "spin" .. tostring(unit.dir)
     should_parse_rules = true
   elseif unit.fullname == "letter_colon" then
-    if unit.dir == 1 or unit.dir == 2 or unit.dir == 3 then
-      unit.textname = ":"
+    if unit.dir == 3 then
+      unit.textname = ".."
     else
-      unit.textname = "  "
+      unit.textname = ":"
     end
     should_parse_rules = true
   elseif unit.fullname == "letter_parenthesis" then
