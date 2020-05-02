@@ -1286,7 +1286,7 @@
     "color": [[2, 4]],
     "rotate": true,
     "voice": "sham_gatsample",
-    "desc": "gon infect u",
+    "desc": "dies to shigu",
     "tags": ["chars", "dr mario", "mario", "virus"],
 	  "pronouns": ["it"]
   },
@@ -1361,7 +1361,7 @@
     "color": [[0, 3]],
     "rotate": true,
     "desc": "he can grab on ledges",
-    "tags": ["chars", "ash"],
+    "tags": ["chars", "ash", "tein"],
 	  "pronouns": ["he", "him"]
   },
   {
@@ -1370,7 +1370,7 @@
     "types": ["object"],
     "color": [[0, 1]],
     "desc": "no bad words here mister vitellary",
-    "tags": ["ash"]
+    "tags": ["ash", "tein"]
   },
   {
     "name": "boogie",

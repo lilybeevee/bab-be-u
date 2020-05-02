@@ -121,7 +121,7 @@
     },
     "types": ["class_prefix", "cond_prefix", "property"],
     "color": [[2, 2]],
-    "desc": "REED: Causes the unit to appear red. Persistent and can be used as a prefix condition.\nAnti: cyeann",
+    "desc": "REED: Causes the unit to appear red.\nAnti: cyeann",
     "tags": ["colors", "colours", "red"]
   },
   {
@@ -132,7 +132,7 @@
     },
     "types": ["class_prefix", "cond_prefix", "property"],
     "color": [[1, 3]],
-    "desc": "BLEU: Causes the unit to appear blue. Persistent and can be used as a prefix condition.\nAnti: orang",
+    "desc": "BLEU: Causes the unit to appear blue.\nAnti: orang",
     "tags": ["colors", "colours", "blue"]
   },
   {
@@ -143,7 +143,7 @@
     },
     "types": ["class_prefix", "cond_prefix", "property"],
     "color": [[5, 2]],
-    "desc": "GRUN: Causes the unit to appear green. Persistent and can be used as a prefix condition.\nAnti: pinc",
+    "desc": "GRUN: Causes the unit to appear green.\nBleu+Yello.\nAnti: pinc",
     "tags": ["colors", "colours", "green"]
   },
   {
@@ -154,7 +154,7 @@
     },
     "types": ["class_prefix", "cond_prefix", "property"],
     "color": [[2, 4]],
-    "desc": "YELLO: Causes the unit to appear yellow. Persistent and can be used as a prefix condition. Reed + Grun.\nAnti: purp",
+    "desc": "YELLO: Causes the unit to appear yellow.\nReed+Grun.\nAnti: purp",
     "tags": ["colors", "colours", "yellow"]
   },
   {
@@ -165,7 +165,7 @@
     },
     "types": ["class_prefix", "cond_prefix", "property"],
     "color": [[3, 1]],
-    "desc": "PURP: Causes the unit to appear purple. Persistent and can be used as a prefix condition.\nAnti: yello",
+    "desc": "PURP: Causes the unit to appear purple.\nReed+Bleu.\nAnti: yello",
     "tags": ["colors", "colours", "purple"]
   },
   {
@@ -176,7 +176,7 @@
     },
     "types": ["class_prefix", "cond_prefix", "property"],
     "color": [[2, 3]],
-    "desc": "ORANG: Causes the unit to appear orange. Persistent and can be used as a prefix condition.\nAnti: bleu",
+    "desc": "ORANG: Causes the unit to appear orange.\nReed+Yello.\nAnti: bleu",
     "tags": ["colors", "colours", "orange"]
   },
   {
@@ -187,7 +187,7 @@
     },
     "types": ["class_prefix", "cond_prefix", "property"],
     "color": [[1, 4]],
-    "desc": "CYEANN: Causes the unit to appear cyan. Persistent and can be used as a prefix condition.\nAnti: reed",
+    "desc": "CYEANN: Causes the unit to appear cyan.\nBleu+Grun.\nAnti: reed",
     "tags": ["colors", "colours", "cyan"]
   },
   {
@@ -198,7 +198,7 @@
     },
     "types": ["class_prefix", "cond_prefix", "property"],
     "color": [[0, 3]],
-    "desc": "WHIT: Causes the unit to appear white. Persistent and can be used as a prefix condition. Bleu + Yello, Reed + Cyeann, Grun + Purp.\nAnti: blacc",
+    "desc": "WHIT: Causes the unit to appear white.\nReed+Bleu+Grun, Bleu+Yello, Reed+Cyeann, Grun+Purp.\nAnti: blacc",
     "tags": ["colors", "colours", "white"]
   },
   {
@@ -209,7 +209,7 @@
     },
     "types": ["class_prefix", "cond_prefix", "property"],
     "color": [[0, 0]],
-    "desc": "BLACC: Causes the unit to appear black. Persistent and can be used as a prefix condition.\nAnti: whit",
+    "desc": "BLACC: Causes the unit to appear black.\nAnti: whit",
     "tags": ["colors", "colours", "black"]
   },
   {
@@ -220,7 +220,7 @@
     },
     "types": ["class_prefix", "cond_prefix", "property"],
     "color": [[4, 1]],
-    "desc": "PINC: Causes the unit to become pink!\nAnti: grun",
+    "desc": "PINC: Causes the unit to appear pink!\nReed+Whit.\nAnti: grun",
     "tags": ["colors", "colours", "pink"]
   },
   {
@@ -231,7 +231,7 @@
     },
     "types": ["class_prefix", "cond_prefix", "property"],
     "color": [[0, 1]],
-    "desc": "GRAEY: Causes the unit to become gray/grey.\nColor or colour?\nAnti: graey",
+    "desc": "GRAEY: Causes the unit to appear gray/grey.\nBlacc+Whit.\nAnti: graey",
     "tags": ["colors", "colours", "gray", "grey"]
   },
   {
@@ -242,7 +242,7 @@
     },
     "types": ["class_prefix", "cond_prefix", "property"],
     "color": [[6, 0]],
-    "desc": "BRWN: Causes the unit to become brown.\nAnti: cyeann",
+    "desc": "BRWN: Causes the unit to appear brown.\nOrang+Brwn.\nAnti: cyeann",
     "tags": ["colors", "colours", "brown"]
   },
   {

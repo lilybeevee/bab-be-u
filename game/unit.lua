@@ -1897,30 +1897,50 @@ end
 
 function updateUnitColourOverride(unit)
   unit.color_override = nil
-  if unit.pinc or (unit.reed and unit.whit) then -- pink
+  if unit.pinc then
     unit.color_override = {4, 1}
-  elseif unit.purp or (unit.reed and unit.bleu) then -- purple
+  elseif unit.purp then
     unit.color_override = {3, 1}
-  elseif unit.yello or (unit.reed and unit.grun) then -- yellow
+  elseif unit.yello then
     unit.color_override = {2, 4}
-  elseif unit.orang or (unit.reed and unit.yello) then -- orange
+  elseif unit.orang then
       unit.color_override = {2, 3}
-  elseif unit.cyeann or (unit.bleu and unit.grun) then -- cyan
+  elseif unit.cyeann then
     unit.color_override = {1, 4}
-  elseif unit.brwn or (unit.orang and unit.blacc) then -- brown
+  elseif unit.brwn then
     unit.color_override = {6, 0}
-  elseif unit.reed then -- red
+  elseif unit.reed then
     unit.color_override = {2, 2}
-  elseif unit.grun or (unit.bleu and unit.yello) then -- green
+  elseif unit.grun then
     unit.color_override = {5, 2}
-  elseif unit.bleu then -- blue
+  elseif unit.bleu then
     unit.color_override = {1, 3}
-  elseif unit.graey or (unit.blacc and unit.whit) then -- grey
+  elseif unit.graey then
     unit.color_override = {0, 1}
-  elseif unit.whit or (unit.reed and unit.grun and unit.bleu) or (unit.reed and unit.cyeann) or (unit.bleu and unit.yello) or (unit.grun and unit.purp) then -- white
+  elseif unit.whit then
     unit.color_override = {0, 3}
-  elseif unit.blacc then -- black
+  elseif unit.blacc then
     unit.color_override = {0, 0}
+  end
+  --mixing colors
+  if (unit.reed and unit.whit) then --pinc
+    unit.color_override = {4, 1}
+  elseif (unit.reed and unit.grun and unit.bleu) or (unit.reed and unit.cyeann) or (unit.bleu and unit.yello) or (unit.grun and unit.purp) then -- whit
+    unit.color_override = {0, 3}
+  elseif (unit.reed and unit.bleu) then --purp
+    unit.color_override = {3, 1}
+  elseif (unit.reed and unit.grun) then --yello
+    unit.color_override = {2, 4}
+  elseif (unit.reed and unit.yello) then --orang
+    unit.color_override = {2, 3}
+  elseif (unit.bleu and unit.grun) then --cyeann
+    unit.color_override = {1, 4}
+  elseif (unit.orang and unit.blacc) then --brwn
+    unit.color_override = {6, 0}
+  elseif (unit.bleu and unit.yello) then --grun
+    unit.color_override = {5, 2}
+  elseif (unit.blacc and unit.whit) then --graey
+    unit.color_override = {0, 1}
   end
 end
 
