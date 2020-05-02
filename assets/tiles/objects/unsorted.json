@@ -2818,6 +2818,7 @@
     "sprite": ["tanc"],
     "layer": 9,
     "color": [[5, 1]],
+    "rotate": true,
     "desc": "it's comin towards ur house",
     "tags": ["tank"]
   },
