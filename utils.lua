@@ -46,7 +46,7 @@ function clear()
   outerlvl = nil
   still_converting = {}
   portaling = {}
-  anti_gone_undos = {}
+  zomb_undos = {}
   rules_effecting_names = {}
   referenced_objects = {}
   referenced_text = {}
@@ -2441,7 +2441,6 @@ function addParticles(ptype,x,y,color,count)
     ps:setSpeed(30)
     ps:setLinearDamping(2)
     ps:setParticleLifetime(0.6)
-    print(dump(particle_colors))
     ps:setColors(unpack(particle_colors))
     ps:start()
     ps:emit(count or 10)

@@ -198,15 +198,15 @@ function undoOneAction(turn, i, v, ignore_no_undo)
     end
   elseif action == "tween" then
     removeFromTable(still_converting, v[2])
-  elseif action == "anti_gone" then
+  elseif action == "zomb" then
     unit = units_by_id[v[2]]
     if unit ~= nil and (unit.type == "txt" or rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname])  then
       update_rules = true
     end
 
     if unit ~= nil and (ignore_no_undo or not isNoUndo(unit)) then
-      anti_gone_undos[v[3]] = nil
-      deleteUnit(unit, false, true, true)
+      zomb_undos[v[3]] = nil
+      deleteUnit(unit, true, true)
     end
   end
   return update_rules, unit

@@ -1333,29 +1333,38 @@ function updateUnits(undoing, big_update)
       end
     end
 
-    local anti_goners = matchesRule("?", "be", "anti gone")
-    for _,match in ipairs(anti_goners) do
+    local revived_units = {}
+    local zombies = matchesRule("?", "be", "zomb")
+    for _,match in ipairs(zombies) do
       local name = match.rule.subject.name
       for i,undos in ipairs(undo_buffer) do
         if i > 1 then
           for _,v in ipairs(undos) do
-            if v[1] == "remove" and not anti_gone_undos[v] then
-              unit = createUnit(v[2], v[3], v[4], v[5], nil, v[7], nil, nil, true)
+            if v[1] == "remove" and not zomb_undos[v] then
+              unit = createUnit(v[2], v[3], v[4], v[5], nil, v[7])
               if unit ~= nil then
                 unit.special = v[8]
 
-                -- delete the unit if it fails name/condition check
-                if (unit.name ~= name and unit.fullname ~= name) or not testConds(unit, match.rule.subject.conds) then
-                  deleteUnit(unit, false, true)
-                else
-                  anti_gone_undos[v] = true
-                  addUndo({"anti_gone", unit.id, v})
+                if (unit.name == name or unit.fullname == name) and testConds(unit, match.rule.subject.conds) then
+                  table.insert(revived_units, {v[2], v[3], v[4], v[5], v[7], v[8], v}) --im sorry
                 end
+
+                deleteUnit(unit, false, true)
               end
             end
           end
         end
       end
+    end
+    for _,v in ipairs(revived_units) do
+      -- aaaaaaaaaa
+      zomb_undos[v[7]] = true
+      unit = createUnit(v[1], v[2], v[3], v[4], true, v[5])
+      if unit ~= nil then
+        unit.special = v[6]
+      end
+      addParticles("bonus", unit.x, unit.y, getUnitColor(unit))
+      addUndo({"zomb", unit.id, v[7]})
     end
     
     if not timeless then

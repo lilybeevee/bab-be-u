@@ -1012,5 +1012,13 @@
     "rotate": true,
     "desc": "MOBYUS: MOBYUS units wrap around the level, as though it were a mobius strip with the indicated orientation.",
     "tags": ["mobius", "space", "wrap"]
+  },
+  {
+    "name": "txt_zomb",
+    "sprite": ["txt/zomb"],
+    "types": ["property"],
+    "color": [[3, 1]],
+    "desc": "ZOMB: Revives all previously destroyed copies of an object.",
+    "tags": ["zombie"]
   }
 ]
