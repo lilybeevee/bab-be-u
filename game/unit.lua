@@ -1062,16 +1062,18 @@ function updateUnits(undoing, big_update)
       local stuff = getUnitsOnTile(unit.x, unit.y, {not_destroyed = true, checkmous = true, thicc = hasProperty(unit,"thicc")})
       for _,on in ipairs(stuff) do
         if (unit ~= on or ruleparent[1].rule.object.name == "themself") and hasRule(unit, "snacc", on) and sameFloat(unit, on) and ignoreCheck(on, unit) then
-          if timecheck(unit,"snacc",on) and timecheck(on) then
-            table.insert(to_destroy, on)
-            playSound("snacc")
-            shakeScreen(0.3, 0.15)
-          else
-            table.insert(time_destroy,{on.id,timeless})
-						addUndo({"time_destroy",on.id})
-            table.insert(time_sfx,"snacc")
+          if not hasProperty(unit, "anti lesbad") and not hasProperty(on, "anti lesbad") then
+            if timecheck(unit,"snacc",on) and timecheck(on) then
+              table.insert(to_destroy, on)
+              playSound("snacc")
+              shakeScreen(0.3, 0.15)
+            else
+              table.insert(time_destroy,{on.id,timeless})
+              addUndo({"time_destroy",on.id})
+              table.insert(time_sfx,"snacc")
+            end
+            addParticles("destroy", unit.x, unit.y, getUnitColor(unit))
           end
-          addParticles("destroy", unit.x, unit.y, getUnitColor(unit))
         end
       end
     end
@@ -1329,6 +1331,40 @@ function updateUnits(undoing, big_update)
           doOneCreate(match[1].rule, creator, createe)
         end
       end
+    end
+
+    local revived_units = {}
+    local zombies = matchesRule("?", "be", "zomb")
+    for _,match in ipairs(zombies) do
+      local name = match.rule.subject.name
+      for i,undos in ipairs(undo_buffer) do
+        if i > 1 then
+          for _,v in ipairs(undos) do
+            if v[1] == "remove" and not zomb_undos[v] then
+              unit = createUnit(v[2], v[3], v[4], v[5], nil, v[7])
+              if unit ~= nil then
+                unit.special = v[8]
+
+                if (unit.name == name or unit.fullname == name) and testConds(unit, match.rule.subject.conds) then
+                  table.insert(revived_units, {v[2], v[3], v[4], v[5], v[7], v[8], v}) --im sorry
+                end
+
+                deleteUnit(unit, false, true)
+              end
+            end
+          end
+        end
+      end
+    end
+    for _,v in ipairs(revived_units) do
+      -- aaaaaaaaaa
+      zomb_undos[v[7]] = true
+      unit = createUnit(v[1], v[2], v[3], v[4], true, v[5])
+      if unit ~= nil then
+        unit.special = v[6]
+      end
+      addParticles("bonus", unit.x, unit.y, getUnitColor(unit))
+      addUndo({"zomb", unit.id, v[7]})
     end
     
     if not timeless then
@@ -2258,8 +2294,10 @@ function levelBlock()
   for _,ruleparent in ipairs(issnacc) do
     local unit = ruleparent[2]
     if unit ~= outerlvl and sameFloat(outerlvl,unit) and inBounds(unit.x,unit.y) and ignoreCheck(unit,outerlvl) then
-      addParticles("destroy", unit.x, unit.y, getUnitColor(unit))
-      table.insert(to_destroy, unit)
+      if not hasProperty(outerlvl, "anti lesbad") and not hasProperty(unit, "anti lesbad") then
+        addParticles("destroy", unit.x, unit.y, getUnitColor(unit))
+        table.insert(to_destroy, unit)
+      end
     end
   end
   
@@ -2267,8 +2305,10 @@ function levelBlock()
   for _,ruleparent in ipairs(issnacc) do
     local unit = ruleparent[2]
     if unit ~= outerlvl and sameFloat(outerlvl,unit) and inBounds(unit.x,unit.y) and ignoreCheck(outerlvl,unit) then
-      destroyLevel("snacc")
-      if not lvlsafe then return 0,0 end
+      if not hasProperty(outerlvl, "anti lesbad") and not hasProperty(unit, "anti lesbad") then
+        destroyLevel("snacc")
+        if not lvlsafe then return 0,0 end
+      end
     end
   end
   
@@ -2625,6 +2665,39 @@ function convertUnits(pass)
 
   local converted_units = {}
   local del_cursors = {}
+
+
+  local removed_rule = {}
+  local removed_rule_unit = {}
+  local function removeRuleChain(rule, pride)
+    if removed_rule[rule] then return end
+    removed_rule[rule] = true
+    for _,unit in ipairs(rule.units) do
+      if not removed_rule_unit[unit] then
+        removed_rule_unit[unit] = true
+        table.insert(converted_units, unit)
+        local particle_colors = {}
+        for _,color in ipairs(overlay_props[pride].colors) do
+          table.insert(particle_colors, main_palette_for_colour[color])
+        end
+        addParticles("bonus", unit.x, unit.y, particle_colors)
+        for _,other_rule in ipairs(rules_with_unit[unit]) do
+          removeRuleChain(other_rule, pride)
+        end
+      end
+    end
+  end
+
+  local pride_flags = {"gay", "tranz", "bi", "pan", "lesbab", "ace", "aro", "enby", "fluid", "πoly"}
+  for _,pride in ipairs(pride_flags) do
+    if rules_with["anti "..pride] then
+      for _,bad in ipairs(rules_with["anti "..pride]) do
+        removed_rule = {}
+        removed_rule_unit = {}
+        removeRuleChain(bad, pride)
+      end
+    end
+  end
   
   local meta = getUnitsWithEffectAndCount("txtify")
   for unit,amt in pairs(meta) do
@@ -3166,7 +3239,7 @@ function deleteUnits(del_units,convert,gone)
       if unit.class == "cursor" then
         addUndo({"remove_cursor",unit.screenx,unit.screeny,unit.id})
       else
-        addUndo({"remove", unit.tile, unit.x, unit.y, unit.dir, convert or false, unit.id, unit.special})
+        addUndo({"remove", unit.tile, unit.x, unit.y, unit.dir, convert or false, unit.id, unit.special, gone or false})
       end
     end
     if unit.class ~= "cursor" then
@@ -3177,7 +3250,7 @@ function deleteUnits(del_units,convert,gone)
   end
 end
 
-function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
+function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix,anti_gone) --ugh
   local unit = {}
   unit.class = "unit"
 
@@ -3227,6 +3300,14 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix)
     if convert then
       unit.draw.scaley = 0
       addTween(tween.new(0.1, unit.draw, {scaley = 1}), "unit:scaley:" .. unit.tempid)
+    elseif anti_gone then
+      unit.draw.y = unit.y - love.math.random(5,9)
+      unit.draw.rotation = (90 + love.math.random(0,180)) * (love.math.random() > .5 and 1 or -1)
+      unit.draw.opacity = 0
+      local method = love.math.random() > .01 and "outSine" or "outElastic"
+      addTween(tween.new(1.5, unit.draw, {opacity = 1}, method), "unit:opacity:" .. unit.tempid)
+      addTween(tween.new(1.5, unit.draw, {rotation = 0}, method), "unit:rotation:" .. unit.tempid)
+      addTween(tween.new(1.5, unit.draw, {y = unit.y}, method), "unit:pos:" .. unit.tempid)
     end
   end
 

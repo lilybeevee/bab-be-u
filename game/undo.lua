@@ -81,7 +81,7 @@ function undoOneAction(turn, i, v, ignore_no_undo)
       proceed = not turnedIntoOnlyNoUndoUnits(turn, i, v[7])
     end
     if (proceed) then
-      unit = createUnit(v[2], v[3], v[4], v[5], convert, v[7])
+      unit = createUnit(v[2], v[3], v[4], v[5], convert, v[7], nil, nil, v[9])
       if unit ~= nil then
         unit.special = v[8]
       end
@@ -198,6 +198,16 @@ function undoOneAction(turn, i, v, ignore_no_undo)
     end
   elseif action == "tween" then
     removeFromTable(still_converting, v[2])
+  elseif action == "zomb" then
+    unit = units_by_id[v[2]]
+    if unit ~= nil and (unit.type == "txt" or rules_effecting_names[unit.name] or rules_effecting_names[unit.fullname])  then
+      update_rules = true
+    end
+
+    if unit ~= nil and (ignore_no_undo or not isNoUndo(unit)) then
+      zomb_undos[v[3]] = nil
+      deleteUnit(unit, true, true)
+    end
   end
   return update_rules, unit
 end
