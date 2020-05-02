@@ -2812,5 +2812,20 @@
     "types": ["object"],
     "color": [[5, 2]],
     "tags": ["cube", "block", "square"]
-  }
+  },
+  {
+    "name": "tanc",
+    "sprite": ["tanc"],
+    "layer": 9,
+    "color": [[5, 1]],
+    "desc": "it's comin towards ur house",
+    "tags": ["tank"]
+  },
+  {
+    "name": "txt_tanc",
+    "sprite": ["txt/tanc"],
+    "color": [[5, 1]],
+    "desc": "tanc u 4 playin",
+    "tags": ["tank"]
+  },
 ]
