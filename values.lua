@@ -376,7 +376,7 @@ selector_grid_contents = {
     "skul","txt_skul","beeee","txt_beeee","gul","txt_gul","kva","txt_kva","bunmy","txt_bunmy",0,0,0,0,"notnat","txt_notnat","oat","txt_oat",
     "ghostfren","txt_ghostfren","fishe","txt_fishe","starrfishe","txt_starrfishe","pidgin","txt_pidgin",0,0,0,0,0,0,0,0,"butcher","txt_butcher",
     "robobot","txt_robobot","snek","txt_snek","sneel","txt_sneel","swan","txt_swan",0,0,0,0,0,0,0,0,0,0,
-    "wog","txt_wog","bog","txt_bog","enbybog","txt_enbybog","spoder","txt_spoder",0,0,0,0,0,0,0,0,0,0,
+    "wog","txt_wog","bog","txt_bog","enbybog","txt_enbybog","spoder","txt_spoder","niko","txt_niko",0,0,0,0,0,0,0,0,
     "kirb","txt_kirb","ripof","txt_ripof","cavebab","txt_cavebab","detox","txt_detox","nyowo","txt_nyowo",0,0,0,0,0,0,0,0,
     "bup","txt_bup","butflye","txt_butflye","boooo","txt_boooo","prime","txt_prime","grimkid","txt_grimkid",0,0,0,0,0,0,0,0,
     "boy","txt_boy","wurm","txt_wurm","madi","txt_madi","angle","txt_angle","boogie","txt_boogie",0,0,0,0,0,0,0,0,

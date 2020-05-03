@@ -1766,6 +1766,14 @@ function miscUpdates()
         end
       end
 
+      if unit.fullname == "txt_niko" then
+        if hasProperty(unit,"brite") or hasProperty(unit,"torc") then
+          unit.sprite = {"txt/niko", "txt/niko_lit"}
+        else
+          unit.sprite = {"txt/niko", "no1"}
+        end
+      end
+
       unit.overlay = {}
       for name,overlay in pairs(overlay_props) do
         if graphical_property_cache[name][unit] ~= nil then

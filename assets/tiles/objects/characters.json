@@ -1466,5 +1466,26 @@
     "types": ["object"],
     "color": [[1, 4]],
     "tags": ["chars", "badbad", "cool"]
+  },
+  {
+    "name": "niko",
+    "sprite": ["niko_A","niko_B","niko_C","niko_face"],
+    "layer": 11,
+    "color": [[3, 2],[6, 1],[2, 1],[2, 4]],
+    "painted": [false, false, false, true],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 19, "y": 14, "w": 3, "h": 3}
+    },
+    "desc": "u only have 1 shot",
+    "tags": ["oneshot", "niko", "jakubk027", "lightbulbmeow"],
+    "pronouns": ["they", "them"]
+  },
+  {
+    "name": "txt_niko",
+    "sprite": ["txt/niko", "no1"],
+    "types": ["object"],
+    "color": [[3, 2],[2, 4]],
+    "tags": ["oneshot", "niko", "jakubk027", "lightbulbmeow"]
   }
 ]
