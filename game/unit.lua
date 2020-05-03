@@ -3128,6 +3128,17 @@ function convertUnits(pass)
       addUndo({"create", new_unit.id, true, created_from_id = slice.id})
     end
   end
+
+  local pans = getUnitsWithEffect("pan")
+  for _,cake in  ipairs(pans) do
+    if cake.name == "lie" and not hasProperty(unit, "notranform") then
+      if not cake.removed then
+        table.insert(converted_units, cake)
+      end
+      local new_unit = createUnit("panlie", cake.x, cake.y, cake.dir, true)
+      addUndo({"create", new_unit.id, true, created_from_id = cake.id})
+    end
+  end
   
   local thes = matchesRule(nil,"be","the")
   for _,ruleparent in ipairs(thes) do

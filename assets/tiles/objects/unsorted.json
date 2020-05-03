@@ -2829,4 +2829,20 @@
     "desc": "tanc u 4 playin",
     "tags": ["tank"]
   },
+  {
+    "name": "panlie",
+    "sprite": ["panlie_base", "panlie_syrup", "panlie_butter"],
+    "layer": 6,
+    "color": [[6, 2], [5, 4], [2, 4]],
+    "painted": [true, true, false],
+    "desc": "for niko",
+    "tags": ["pancake", "food"]
+  },
+  {
+    "name": "txt_panlie",
+    "sprite": ["txt/panlie"],
+    "types": ["object"],
+    "color": [[6, 2]],
+    "tags": ["pancake", "food"]
+  }
 ]
