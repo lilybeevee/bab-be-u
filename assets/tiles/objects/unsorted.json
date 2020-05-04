@@ -1840,7 +1840,7 @@
     "sprite": ["txt/sloop"],
     "types": ["object"],
     "color": [[0, 3]],
-    "desc": "ideal for reflecc + go my way",
+    "desc": "ideal for art",
     "tags": ["triangle", "half", "slope"]
   },
   {
@@ -2844,5 +2844,22 @@
     "types": ["object"],
     "color": [[6, 2]],
     "tags": ["pancake", "food"]
+  },
+  {
+    "name": "pixbolt",
+    "sprite": ["pixbolt"],
+    "layer": 8,
+    "color": [[0, 3]],
+    "rotate": true,
+    "desc": "ouch!! ur pixls r sharp!!!",
+    "tags": ["pixelbolt"]
+  },
+  {
+    "name": "txt_pixbolt",
+    "sprite": ["txt/pixbolt"],
+    "types": ["object"],
+    "color": [[0, 3]],
+    "desc": "pixels are an element in my heart ok?",
+    "tags": ["pixelbolt"]
   }
 ]
