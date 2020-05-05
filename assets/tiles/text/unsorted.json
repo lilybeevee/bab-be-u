@@ -32,7 +32,7 @@
     "name": "txt_infloop",
     "display": "infloop",
     "sprite": ["txt/infloop"],
-    "types": ["object"],
+    "types": ["object", "property"],
     "color": [[0, 3]],
     "desc": "INFLOOP: A special word that describes the infinite loop state.",
     "alias": ["infloop"],

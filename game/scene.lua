@@ -2215,6 +2215,9 @@ function doOneMove(x, y, key, past)
     if hasRule("press","f2",":)") then
       doWin("won")
     end
+    if hasRule("press","f2","infloop") then
+      destroyLevel("infloop")
+    end
     if hasRule("press","f2","tryagain") then
       doTryAgain()
     end
