@@ -26,7 +26,7 @@ desc
 alias
 tags
 pronouns
-old ids
+old names
 
 layer notes:
 1: bordr, and nothing else

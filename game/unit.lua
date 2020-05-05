@@ -2123,7 +2123,7 @@ function levelBlock()
     writeSaveFile(nil, {"levels", level_filename, "transform"})
   end
   
-  if hasProperty(outerlvl, "loop") then
+  if hasProperty(outerlvl, "infloop") then
     destroyLevel("infloop")
   end
   
@@ -2500,19 +2500,19 @@ function destroyLevel(reason)
   end
   
   if reason == "infloop" then
-    if hasProperty("loop","tryagain") then
+    if hasProperty("infloop","tryagain") then
       doTryAgain()
       level_destroyed = false
-    elseif hasProperty("loop","delet") then
+    elseif hasProperty("infloop","delet") then
       doXWX()
-    elseif hasProperty("loop",":)") then
+    elseif hasProperty("infloop",":)") then
       doWin("won")
       level_destroyed = true
-    elseif hasProperty("loop","un:)") then
+    elseif hasProperty("infloop","un:)") then
       doWin("won", false)
       level_destroyed = true
     end
-    local berule = matchesRule("loop","be","?")
+    local berule = matchesRule("infloop","be","?")
     for _,rule in ipairs(berule) do
       local object = getTile(rule.rule.object.name)
       if object then
@@ -2525,7 +2525,7 @@ function destroyLevel(reason)
   if level_destroyed then
     local units_to_destroy = {}
     for _,unit in ipairs(units) do
-      if inBounds(unit.x, unit.y) then
+      if inBounds(unit.x, unit.y) or reason == "infloop" then
         table.insert(units_to_destroy, unit);
       end
     end

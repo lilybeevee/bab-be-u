@@ -29,14 +29,15 @@
     "old_names": ["txt_n't"]
   },
   {
-    "name": "txt_loop",
+    "name": "txt_infloop",
     "display": "infloop",
     "sprite": ["txt/infloop"],
     "types": ["object"],
     "color": [[0, 3]],
     "desc": "INFLOOP: A special word that describes the infinite loop state.",
     "alias": ["infloop"],
-    "tags": ["infloop", "infinity", "infinite loop"]
+    "tags": ["infloop", "infinity", "infinite loop"],
+    "old_names": ["txt_loop"]
   },
   {
     "name": "txt_...",
