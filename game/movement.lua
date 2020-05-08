@@ -268,6 +268,16 @@ function doMovement(movex, movey, key)
         end
       end
     elseif move_stage == 0 and (movex ~= 0 or movey ~= 0) then
+      local alwaysKeys = {
+        wasd= not (hasProperty(nil,"u") or hasProperty(nil, "anti u")
+          or hasProperty(nil,"w") or hasProperty(nil, "anti w")),
+        udlr= not hasProperty(nil,"utoo") and not hasProperty(nil,"anti utoo"),
+        ijkl= not hasProperty(nil,"utres") and not hasProperty(nil,"anti utres")
+      }
+      --[[((key == "wasd") and not hasProperty(nil,"u") and not hasProperty(nil, "anti u")) or
+          ((key == "udlr") and not hasProperty(nil,"utoo") and not hasProperty(nil,"anti utoo")) or
+          ((key == "ijkl") and not hasProperty(nil,"utres") and not hasProperty(nil,"anti utres")]]
+
       local uMove = function(name, control, key_, times_, ortho_)
         local key = key_
         if (key=="numpad") then key="ijkl" end --numpad and ijkl are the same why are they even separated
@@ -276,10 +286,7 @@ function doMovement(movex, movey, key)
 
         for unit,uness in pairs(u) do
           if (not hasProperty(unit, "slep") and slippers[unit.id] == nil and timecheck(unit,"be",name)) and
-          ((not ortho) or movex == 0 or movey == 0) and ((key == control) or (control == nil) or
-          ((key == "wasd") and not hasProperty(nil,"u") and not hasProperty(nil, "anti u")) or
-          ((key == "udlr") and not hasProperty(nil,"utoo") and not hasProperty(nil,"anti utoo")) or
-          ((key == "ijkl") and not hasProperty(nil,"utres") and not hasProperty(nil,"anti utres")))
+          ((not ortho) or movex == 0 or movey == 0) and ((key == control) or (control == nil) or alwaysKeys[key])
           then
             local dir = dirs8_by_offset[movex][movey]
             --If you want baba style 'when you moves, even if it fails to move, it changes direction', uncomment this.
@@ -1468,7 +1475,7 @@ function doPullCore(unit,dx,dy,dir,data, already_added, moving_units, moving_uni
   return result
 end
 
-function fallBlock() --TODO: add support for spin
+function fallBlock() 
   --1) gather all fallers
   local fallers = {}
   --and all timeless fallers
