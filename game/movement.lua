@@ -758,7 +758,7 @@ function doMovement(movex, movey, key)
     end
 
     for _,unit in pairs(moving_units) do
-      if not unit.stelth and not hasProperty(unit, "loop") and timecheck(unit) then
+      if not unit.stelth and timecheck(unit) then
         addParticles("movement-puff", unit.x, unit.y, getUnitColor(unit))
       end
     end
@@ -894,7 +894,7 @@ It is probably possible to do, but lily has decided that it's not important enou
             end
             if #unit.moves > 0 and not unit.removed and unit.moves[1].times > 0 then
               local data = unit.moves[1]
-              if data.reason == "walk" and flippers[unit.id] ~= true and not hasProperty(unit, "stubbn") and not hasProperty(unit,"loop") and timecheck(unit,"be","walk") then
+              if data.reason == "walk" and flippers[unit.id] ~= true and not hasProperty(unit, "stubbn") and timecheck(unit,"be","walk") then
                 dir = rotate8(data.dir); data.dir = dir
                 addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
                 table.insert(update_queue, {unit = unit, reason = "dir", payload = {dir = data.dir}})

@@ -1766,6 +1766,14 @@ function miscUpdates()
         end
       end
 
+      if unit.fullname == "txt_niko" then
+        if hasProperty(unit,"brite") or hasProperty(unit,"torc") then
+          unit.sprite = {"txt/niko", "txt/niko_lit"}
+        else
+          unit.sprite = {"txt/niko", "no1"}
+        end
+      end
+
       unit.overlay = {}
       for name,overlay in pairs(overlay_props) do
         if graphical_property_cache[name][unit] ~= nil then
@@ -2115,7 +2123,7 @@ function levelBlock()
     writeSaveFile(nil, {"levels", level_filename, "transform"})
   end
   
-  if hasProperty(outerlvl, "loop") then
+  if hasProperty(outerlvl, "infloop") then
     destroyLevel("infloop")
   end
   
@@ -2492,19 +2500,19 @@ function destroyLevel(reason)
   end
   
   if reason == "infloop" then
-    if hasProperty("loop","tryagain") then
+    if hasProperty("infloop","tryagain") then
       doTryAgain()
       level_destroyed = false
-    elseif hasProperty("loop","delet") then
+    elseif hasProperty("infloop","delet") then
       doXWX()
-    elseif hasProperty("loop",":)") then
+    elseif hasProperty("infloop",":)") then
       doWin("won")
       level_destroyed = true
-    elseif hasProperty("loop","un:)") then
+    elseif hasProperty("infloop","un:)") then
       doWin("won", false)
       level_destroyed = true
     end
-    local berule = matchesRule("loop","be","?")
+    local berule = matchesRule("infloop","be","?")
     for _,rule in ipairs(berule) do
       local object = getTile(rule.rule.object.name)
       if object then
@@ -2517,7 +2525,7 @@ function destroyLevel(reason)
   if level_destroyed then
     local units_to_destroy = {}
     for _,unit in ipairs(units) do
-      if inBounds(unit.x, unit.y) then
+      if inBounds(unit.x, unit.y) or reason == "infloop" then
         table.insert(units_to_destroy, unit);
       end
     end
@@ -3118,6 +3126,17 @@ function convertUnits(pass)
       end
       local new_unit = createUnit("lie", slice.x, slice.y, slice.dir, true)
       addUndo({"create", new_unit.id, true, created_from_id = slice.id})
+    end
+  end
+
+  local pans = getUnitsWithEffect("pan")
+  for _,cake in  ipairs(pans) do
+    if cake.name == "lie" and not hasProperty(unit, "notranform") then
+      if not cake.removed then
+        table.insert(converted_units, cake)
+      end
+      local new_unit = createUnit("panlie", cake.x, cake.y, cake.dir, true)
+      addUndo({"create", new_unit.id, true, created_from_id = cake.id})
     end
   end
   

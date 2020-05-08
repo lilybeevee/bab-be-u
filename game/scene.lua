@@ -1331,11 +1331,6 @@ function scene.draw(dt)
     end
 
     love.graphics.pop()
-
-    if hasProperty(unit,"loop") then
-      love.graphics.setColor(1,1,1,.4)
-      love.graphics.rectangle("fill",fulldrawx-16,fulldrawy-16,32,32)
-    end
   end
 
   for i=1,max_layer do
@@ -2219,6 +2214,9 @@ function doOneMove(x, y, key, past)
 
     if hasRule("press","f2",":)") then
       doWin("won")
+    end
+    if hasRule("press","f2","infloop") then
+      destroyLevel("infloop")
     end
     if hasRule("press","f2","tryagain") then
       doTryAgain()

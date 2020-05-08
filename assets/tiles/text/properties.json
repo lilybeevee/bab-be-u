@@ -977,43 +977,6 @@
     "tags": ["thinking", "wonder"]
   },
   {
-    "name": "txt_sublvl",
-    "sprite": ["txt/sublvl"],
-    "types": ["property"],
-    "color": [[4, 1]],
-    "desc": "SUBLVL: An object that is sublvl will become enterable. Currently unimplemented, and likely won't ever be.",
-    "tags": ["lvl", "level", "sublevel"]
-  },
-  {
-    "name": "txt_b)",
-    "sprite": ["txt/B)"],
-    "types": ["property"],
-    "color": [[1, 4]],
-    "features": {
-      "sans": {"x": 20, "y": 8, "w": 5, "h": 4}
-    },
-    "desc": "B): At end of turn, if U is on B) and survives, U R COOL! (This currently does nothing.)",
-    "tags": ["cool", "smiley"]
-  },
-  {
-    "name": "txt_cilindr",
-    "sprite": ["txt/cilindr"],
-    "types": ["property"],
-    "color": [[3, 2]],
-    "rotate": true,
-    "desc": "CILINDR: CILINDR units wrap around the level, as though it were a cylinder with the indicated orientation.",
-    "tags": ["cyllinder", "space", "wrap"]
-  },
-  {
-    "name": "txt_mobyus",
-    "sprite": ["txt/mobyus"],
-    "types": ["property"],
-    "color": [[3, 2]],
-    "rotate": true,
-    "desc": "MOBYUS: MOBYUS units wrap around the level, as though it were a mobius strip with the indicated orientation.",
-    "tags": ["mobius", "space", "wrap"]
-  },
-  {
     "name": "txt_zomb",
     "sprite": ["txt/zomb"],
     "types": ["property"],

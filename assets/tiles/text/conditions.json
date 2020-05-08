@@ -242,7 +242,7 @@
     },
     "types": ["class_prefix", "cond_prefix", "property"],
     "color": [[6, 0]],
-    "desc": "BRWN: Causes the unit to appear brown.\nOrang+Brwn.\nAnti: cyeann",
+    "desc": "BRWN: Causes the unit to appear brown.\nOrang+Blacc.\nAnti: cyeann",
     "tags": ["colors", "colours", "brown"]
   },
   {
