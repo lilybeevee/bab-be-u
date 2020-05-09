@@ -70,7 +70,7 @@
     "sprite": ["txt/stalk"],
     "types": ["verb_unit", "verb"],
     "color": [[5, 2]],
-    "desc": "STALK (Verb): If X stalks Y, X becomes an intelligent AI determined to get to Y. If it's also STUBBN, it'll try to track through walls if it can't reach its target. (actually that's not implemented yet)\nAnti: finds direction that gives farthest possible",
+    "desc": "STALK (Verb): If X stalks Y, X becomes an intelligent AI determined to get to Y. If it's also STUBBN, it'll try to track through walls if it can't reach its target. (actually that's not implemented yet)\nNote: Am planning on changing this at some point.\nAnti: finds direction that gives farthest possible",
     "tags": ["follow", "find", "cg5"]
   },
   {

@@ -941,6 +941,10 @@ function hasProperty(unit,prop,return_rule)
   end
   return false
 end
+function hasPropertyOrAnti(unit,prop,return_rule)
+  if prop == "?" then return hasProperty(unit,prop,return_rule) end
+  return hasProperty(unit,prop,return_rule) or hasProperty(unit,"anti "..prop,return_rule)
+end
 
 function countProperty(unit, prop, ignore_flye)
   if not rules_with[prop] and prop ~= "?" then return 0 end
@@ -3161,19 +3165,30 @@ function timecheck(unit,verb,prop)
   end
   return zw_pass and rhythm_pass
 end
+function timecheckAntiP(unit,verb,prop)
+  return timecheck(unit,verb,prop) or timecheck(unit,verb,"anti "..prop)
+end
+function timecheckAntiV(unit,verb,prop)
+  return timecheck(unit,verb,prop) or timecheck(unit,"anti "..verb,prop)
+end
 
 function timecheckUs(unit)
-  if timecheck(unit) then
-    return true
-  else
-    local to_check = {"u","utoo","utres","y'all","you","w"}
-    for _,prop in ipairs(to_check) do
-      local rulecheck = matchesRule(unit,"be",prop)
-      for _,ruleparent in ipairs(rulecheck) do
-        for i=1,#ruleparent.rule.subject.conds do
-          if ruleparent.rule.subject.conds[i][1] == "timles" then
-            return true
-          end
+  if timecheck(unit) then return true end
+  local to_check = {"u","utoo","utres","y'all","you","w"}
+  for _,prop in ipairs(to_check) do
+    local rulecheck = matchesRule(unit,"be",prop)
+    for _,ruleparent in ipairs(rulecheck) do
+      for i=1,#ruleparent.rule.subject.conds do
+        if ruleparent.rule.subject.conds[i][1] == "timles" then
+          return true
+        end
+      end
+    end
+    rulecheck = matchesRule(unit,"be","anti "..prop)
+    for _,ruleparent in ipairs(rulecheck) do
+      for i=1,#ruleparent.rule.subject.conds do
+        if ruleparent.rule.subject.conds[i][1] == "timles" then
+          return true
         end
       end
     end

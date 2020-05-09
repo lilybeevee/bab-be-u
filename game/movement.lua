@@ -269,10 +269,9 @@ function doMovement(movex, movey, key)
       end
     elseif move_stage == 0 and (movex ~= 0 or movey ~= 0) then
       local alwaysKeys = {
-        wasd= not (hasProperty(nil,"u") or hasProperty(nil, "anti u")
-          or hasProperty(nil,"w") or hasProperty(nil, "anti w")),
-        udlr= not hasProperty(nil,"utoo") and not hasProperty(nil,"anti utoo"),
-        ijkl= not hasProperty(nil,"utres") and not hasProperty(nil,"anti utres")
+        wasd= not (hasPropertyOrAnti(nil,"u") or hasPropertyOrAnti(nil,"w")),
+        udlr= not hasPropertyOrAnti(nil,"utoo"),
+        ijkl= not hasPropertyOrAnti(nil,"utres"),
       }
       --[[((key == "wasd") and not hasProperty(nil,"u") and not hasProperty(nil, "anti u")) or
           ((key == "udlr") and not hasProperty(nil,"utoo") and not hasProperty(nil,"anti utoo")) or
@@ -282,40 +281,40 @@ function doMovement(movex, movey, key)
         local key = key_
         if (key=="numpad") then key="ijkl" end --numpad and ijkl are the same why are they even separated
         local ortho = ortho_ or false
+        local times = times_ or 1
         local u = getUnitsWithEffectAndCount(name)
 
         for unit,uness in pairs(u) do
           if (not hasProperty(unit, "slep") and slippers[unit.id] == nil and timecheck(unit,"be",name)) and
-          ((not ortho) or movex == 0 or movey == 0) and ((key == control) or (control == nil) or alwaysKeys[key])
+          ((not ortho) or movex == 0 or movey == 0) and ((key == control) or (not control) or alwaysKeys[key])
           then
             local dir = dirs8_by_offset[movex][movey]
-            --If you want baba style 'when you moves, even if it fails to move, it changes direction', uncomment this.
-            local times = times_ or 1
             if times < 0 then
               dir = dirAdd(dir,4)
             end
             table.insert(unit.moves, {reason = "u", dir = dir, times = math.abs(times)})
             --[[addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
             updateDir(unit, dir)]]
-             if #unit.moves > 0 and not already_added[unit] then
+            if #unit.moves > 0 and not already_added[unit] then
               table.insert(moving_units, unit)
               already_added[unit] = true
             end
           end
         end --for
       end
-      uMove("u","wasd",key)
-      uMove("anti u","wasd",key,-1)
-      uMove("utoo","udlr",key)
-      uMove("anti utoo","udlr",key,-1)
-      uMove("utres","ijkl",key)
-      uMove("anti utres","ijkl",key,-1)
-      uMove("y'all",nil,key)
-      uMove("anti y'all",nil,key,-1)
-      uMove("w","wasd",key,2)
-      uMove("anti w","wasd",key,-2)
-      uMove("you",nil,key,1,true)
-      uMove("anti you",nil,key,-1,true)
+      local uMoveAnti = function(name, control, times_, ortho)
+        --calls uMove for both original and anti functions.
+        local times = times_ or 1
+        uMove(name, control, key, times, ortho)
+        uMove("anti "..name, control, key, -times, ortho)
+      end
+      uMoveAnti("u","wasd")
+      uMoveAnti("utoo","udlr")
+      uMoveAnti("utres","ijkl")
+      uMoveAnti("y'all")
+      uMoveAnti("w","wasd",2)
+      uMoveAnti("you",nil,1,true)
+
     elseif move_stage == 1 then
       local isspoop = matchesRule(nil, "spoop", "?")
       local spoopunits = {}
@@ -467,68 +466,163 @@ function doMovement(movex, movey, key)
         if #findUnitsByName(ruleparent.rule.object.name) > 0 then
           for _,stalker in ipairs(stalkers) do
             if testConds(stalker, stalker_conds) then
-              local found_target = nil
+              --[[local len = {999,999,999,999,999,999,999,999}
+              local target = {}
               for _,stalkee in ipairs(getUnitsOnTile(stalker.x, stalker.y, {name = ruleparent.rule.object.name})) do -- is it standing on the target
                 if testConds(stalkee, stalkee_conds, stalker) and stalker.id ~= stalkee.id and timecheck(stalker, stalkee) then
-                  found_target = 0
+                  goto continue end
+              end
+              for cdir=1,8 do
+                local isDiag = i%2 == 0
+                if hasProperty(stalker, "ortho") and not hasProperty(stalker, "diag") and isDiag then goto continue2 end
+                if hasProperty(stalker, "diag") and not hasProperty(stalker, "ortho") and not isDiag then goto continue2 end
+                --if i > 8 then break end
+                local visited = {}
+                for i = 0,mapwidth do
+                  visited[i] = {}
+          --      for j = 1,mapheight do
+          --        visited[i][j] = nil
+          --      end
+                end
+                local queue = {}
+                local found_target = nil
+
+                local stalkTurn = function(dir_,pos)
+                  local dx = ({1,1,0,-1,-1,-1,0,1})[dir_]
+                  local dy = ({0,1,1,1,0,-1,-1,-1})[dir_]
+                  local dir = dirs8_by_offset[dx][dy]
+
+                  local success, _, __ = canMove(stalker,dx,dy,dir,{start_x = pos.x,start_y = pos.y})
+                  if not success then return end
+                  local _, __, ___, x, y = getNextTile(stalker, dx, dy, dir, nil, pos.x, pos.y)
+                  if visited[x][y] then return end
+
+                  local stalkees = getUnitsOnTile(x, y, {name = ruleparent.rule.object.name})
+                  for _,stalkee in ipairs(stalkees) do
+                    if testConds(stalkee, stalkee_conds, stalker) and stalker.id ~= stalkee.id and timecheck(stalker, stalkee) then
+                      len[cdir] = pos.d
+                      target[cdir] = stalkee
+                      found_target = true
+                      return
+                    end
+                  end
+                  visited[x][y]=pos.d+1
+                  table.insert(queue,{x=x,y=y,d=pos.d+1})
+                end
+
+                stalkTurn(cdir,{x = stalker.x, y = stalker.y,d=0})
+                while queue[1] do
+                  local pos = table.remove(queue, 1)
+                  for i=1,8 do
+                    stalkTurn(i,pos)
+                    if found_target then goto continue2 end
+                  end
+                end
+                ::continue2::
+              end
+
+              local findMins = function(list)
+                local minV = 999
+                local ret = {}
+                for i=1,#list do
+                  if list[i] < minV then
+                    ret = {}
+                    ret[i]=true
+                  elseif list[i] == minV then
+                    ret[i]=true
+                  end
+                end
+                return ret
+              end
+              local addToList = function(dir)
+                addUndo({"update", stalker.id, stalker.x, stalker.y, stalker.dir})
+                stalker.olddir = stalker.dir
+                updateDir(stalker, dir)
+                table.insert(stalker.moves, {reason = "stalk", dir = stalker.dir, times = 1})
+                if #stalker.moves > 0 and not already_added[stalker] then
+                  table.insert(moving_units, stalker)
+                  already_added[stalker] = true
+                end
+              end
+
+              mins = findMins(len)
+              for id,_ in pairs(mins) do
+                --if not target[id] then break end
+                if target[id].x == stalker.x or target[id].y == stalker.y then
+                  if id%2==1 then
+                    addToList(id)
+                    break
+                  end
+                elseif id%2==0 then 
+                  addToList(id) 
                   break
                 end
               end
-              if not found_target then
-                local visited = {} -- 2d array the size of the map
-                for i = 1,mapwidth do
-                  visited[i] = {}
-                  for j = 1,mapheight do
-                    visited[i][j] = 0
-                  end
+              ::continue::]]
+              
+
+              local found_target = nil
+              for _,stalkee in ipairs(getUnitsOnTile(stalker.x, stalker.y, {name = ruleparent.rule.object.name})) do -- is it standing on the target
+                if testConds(stalkee, stalkee_conds, stalker) and stalker.id ~= stalkee.id and timecheck(stalker, stalkee) then
+                  goto continue
                 end
-                visited[stalker.x+1][stalker.y+1] = 1
-                local queue = {{x = stalker.x, y = stalker.y}}
-                (function () -- 'return' allows breaking from the outer loop, skipping inner loops
-                             -- smh notnat lua has gotos for a reason
-                  local first_loop = true
-                  while (queue[1]) do
-                    local pos = table.remove(queue, 1)
-                    for i=1,8 do
-                      local isDiag = i%2 == 0
-                      if hasProperty(stalker, "ortho") and not hasProperty(stalker, "diag") and isDiag then i = i + 1 end
-                      if hasProperty(stalker, "diag") and not hasProperty(stalker, "ortho") and not isDiag then i = i + 1 end
-                      if i > 8 then break end
-                      local dx = ({1,1,0,-1,-1,-1,0,1})[i]
-                      local dy = ({0,1,1,1,0,-1,-1,-1})[i]
-                      local dir = dirs8_by_offset[dx][dy]
-                      local dx_next, dy_next, dir_next, x, y, portal_unit = getNextTile(stalker, dx, dy, dir, nil, pos.x, pos.y)
-                      if inBounds(x,y) and visited[x+1][y+1] == 0 then
-                        visited[x+1][y+1] = first_loop and dir or visited[pos.x+1][pos.y+1] -- value depicts which way to travel to get there
-                        local success, movers, specials = canMove(stalker,dx,dy,dir,{start_x = pos.x,start_y = pos.y})
-                        if success then
-                          local stalkees = getUnitsOnTile(x, y, {name = ruleparent.rule.object.name})
-                          for _,stalkee in ipairs(stalkees) do
-                            if testConds(stalkee, stalkee_conds, stalker) and stalker.id ~= stalkee.id and timecheck(stalker, stalkee) then
-                              found_target = visited[x+1][y+1]
-                              return
-                            end
+              end
+              local visited = {} -- 2d array the size of the map
+              for i = 1,mapwidth do
+                visited[i] = {}
+                for j = 1,mapheight do
+                  visited[i][j] = 0
+                end
+              end
+              visited[stalker.x+1][stalker.y+1] = 1
+              local queue = {{x = stalker.x, y = stalker.y}}
+              (function () -- 'return' allows breaking from the outer loop, skipping inner loops
+                           -- smh notnat lua has gotos for a reason
+                local first_loop = true
+                while (queue[1]) do
+                  local pos = table.remove(queue, 1)
+                  for i=1,8 do
+                    local isDiag = i%2 == 0
+                    if hasProperty(stalker, "ortho") and not hasProperty(stalker, "diag") and isDiag then i = i + 1 end
+                    if hasProperty(stalker, "diag") and not hasProperty(stalker, "ortho") and not isDiag then i = i + 1 end
+                    if i > 8 then break end
+                    local dx = ({1,1,0,-1,-1,-1,0,1})[i]
+                    local dy = ({0,1,1,1,0,-1,-1,-1})[i]
+                    local dir = dirs8_by_offset[dx][dy]
+                    local dx_next, dy_next, dir_next, x, y, portal_unit = getNextTile(stalker, dx, dy, dir, nil, pos.x, pos.y)
+                    if inBounds(x,y) and visited[x+1][y+1] == 0 then
+                      visited[x+1][y+1] = first_loop and dir or visited[pos.x+1][pos.y+1] -- value depicts which way to travel to get there
+                      local success, movers, specials = canMove(stalker,dx,dy,dir,{start_x = pos.x,start_y = pos.y})
+                      if success then
+                        local stalkees = getUnitsOnTile(x, y, {name = ruleparent.rule.object.name})
+                        for _,stalkee in ipairs(stalkees) do
+                          if testConds(stalkee, stalkee_conds, stalker) and stalker.id ~= stalkee.id and timecheck(stalker, stalkee) then
+                            found_target = visited[x+1][y+1]
+                            return
                           end
-                          table.insert(queue, {x = x, y = y})
                         end
+                        table.insert(queue, {x = x, y = y})
                       end
                     end
-                    first_loop = false
                   end
-                end)() --function
-              end -- if not found
-              -- print(dump(visited))
-              if found_target then
-                if found_target ~= 0 then
-                  addUndo({"update", stalker.id, stalker.x, stalker.y, stalker.dir})
-                  stalker.olddir = stalker.dir
-                  updateDir(stalker, found_target)
-                  table.insert(stalker.moves, {reason = "stalk", dir = stalker.dir, times = 1})
-                  if #stalker.moves > 0 and not already_added[stalker] then
-                    table.insert(moving_units, stalker)
-                    already_added[stalker] = true
-                  end
+                  first_loop = false
                 end
+              end)() --function
+            -- if not found
+            -- print(dump(visited))
+            if found_target then
+              if found_target ~= 0 then
+                addUndo({"update", stalker.id, stalker.x, stalker.y, stalker.dir})
+                stalker.olddir = stalker.dir
+                updateDir(stalker, found_target)
+                table.insert(stalker.moves, {reason = "stalk", dir = stalker.dir, times = 1})
+                if #stalker.moves > 0 and not already_added[stalker] then
+                  table.insert(moving_units, stalker)
+                  already_added[stalker] = true
+                end
+              end
+            end
+            ::continue::
               -- else
               --   TODO: Make this depend on it being stubborn.
               --   local stalkees = copyTable(findUnitsByName(ruleparent[1][3]))
@@ -551,8 +645,7 @@ function doMovement(movex, movey, key)
               --       end
               --       break
               --     end
-              --   end
-              end
+              --   end]]
             end --if testConds
           end
         end
@@ -944,28 +1037,21 @@ It is probably possible to do, but lily has decided that it's not important enou
     move_stage = move_stage + 1
   end
   --https://babaiswiki.fandom.com/wiki/Advanced_rulebook (for comparison)
-  parseRules()
-  updateGroup()
-  calculateLight()
+  local reparse = function()
+    parseRules()
+    updateGroup()
+    calculateLight()
+  end
+  reparse()
   moveBlock()
-  parseRules()
-  updateGroup()
-  calculateLight()
+  reparse()
   fallBlock()
-  parseRules()
-  updateGroup()
-  calculateLight()
-  parseRules()
-  updateGroup()
-  calculateLight()
+  reparse()
+  reparse() --is this second one intended?
   convertUnits(1)
-  parseRules()
-  updateGroup()
-  calculateLight()
+  reparse()
 	updateUnits(false, true)
-  parseRules()
-  updateGroup()
-  calculateLight()
+  reparse()
   updatePortals()
   miscUpdates()
   
