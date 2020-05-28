@@ -1435,9 +1435,6 @@ function scene.draw(dt)
           local i = current_tile_grid[gridid]
           if i ~= nil and i ~= 0 then
             local tile = getTile(i)
-            if i == "therealbabdictator" then
-              tile = getTile("miku")
-            end
 
             -- local x = tile.grid[1]
             -- local y = tile.grid[2]
@@ -2181,7 +2178,7 @@ function scene.resetMiku(random)
     if #possibles > 0 then
       local possible = possibles[love.math.random(1, #possibles)]
       secret_miku_location = possible
-      tile_grid[possible[1]][possible[2]] = "therealbabdictator"
+      tile_grid[possible[1]][possible[2]] = "miku"
     end
   end
 end

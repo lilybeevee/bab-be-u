@@ -1506,5 +1506,26 @@
     "color": [[2, 3]],
     "desc": "a fish with a very long name. dont hurt them or ull get hurt",
     "tags": ["chars, fish"]
+  },
+  {
+    "name": "miku",
+    "sprite": ["miku_shirt", "miku_skin", "miku_black", "miku_blue", "miku_red"],
+    "layer": 10,
+    "color": [[0, 2], [0, 3], [0, 1], [1, 4], [2, 2]],
+    "painted": [false, false, false, true, false],
+    "unsearchable": true,
+    "voice": "miku",
+    "desc": "woah!!!! you found a rare miku!!!!!",
+    "tags": ["chars", "hatsune miku"],
+    "pronouns": ["she", "her", "miku"]
+  },
+  {
+    "name": "txt_miku",
+    "sprite": ["txt/miku"],
+    "types": ["object"],
+    "color": [[1, 4]],
+    "unsearchable": true,
+    "desc": "why she so small doe :floshed:",
+    "tags": ["chars", "hatsune miku"]
   }
 ]

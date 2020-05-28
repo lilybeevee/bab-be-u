@@ -197,5 +197,26 @@
     "types": ["object"],
     "color": [[1, 4]],
     "tags": ["devs", "chars"]
+  },
+  {
+    "name": "ally",
+    "sprite": ["ally_base", "ally_skirt", "ally_shirt", "ally_hair", "ally_hair_thingies"],
+    "layer": 11,
+    "color": [[0, 3], [4, 2], [5, 2], [2, 4], [1, 4]],
+    "painted": [false, false, true, false, false],
+    "rotate": true,
+    "voice": "miku",
+    "desc": "who is she...? her secret identity !!!",
+    "tags": ["devs", "chars"],
+    "pronouns": ["she", "her", "miku"]
+  },
+  {
+    "name": "txt_ally",
+    "sprite": ["txt/ally"],
+    "types": ["object"],
+    "color": [[4, 2]],
+    "desc": "its miku, lila's sister (bab lore)",
+    "tags": ["devs", "chars"],
+    "pronouns": ["she", "her", "miku"]
   }
 ]
