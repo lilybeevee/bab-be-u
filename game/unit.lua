@@ -1813,6 +1813,22 @@ function miscUpdates()
     end
     max_layer = math.max(max_layer, unit.layer)
   end
+
+  if units_by_name["camra"] and #units_by_name["camra"] > 1 then
+    local removed = {}
+    local new_special = {}
+    for i,camra in ipairs(units_by_name["camra"]) do
+      if i ~= #units_by_name["camra"] then
+        table.insert(removed, camra)
+        new_special = camra.special.camera
+      else
+        camra.special.camera = new_special
+      end
+    end
+    for _,camra in ipairs(removed) do
+      deleteUnit(camra)
+    end
+  end
 end
 
 function updateGraphicalPropertyCache()
@@ -2078,7 +2094,7 @@ function handleTimeDels(time_destroy)
     else
       unit = cursors_by_id[unitid]
     end
-    addUndo({"time_destroy_remove", unitid})
+    addUndo({"time_destroy_remove", {unitid,timeless}})
     if unit ~= nil and not hasProperty(unit, "protecc") and timeless == not data[2] then
       if not already_added[unitid] then
         addParticles("destroy",unit.x,unit.y,getUnitColor(unit))
@@ -3089,7 +3105,7 @@ function convertUnits(pass)
                 new_unit.color_override = getUnitColor(unit)
               end
             end
-            new_unit.special = copyTable(unit.special)
+            mergeTable(new_unit.special, copyTable(unit.special))
             for k,v in pairs(new_special) do
               new_unit.special[k] = v
             end
@@ -3344,6 +3360,10 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix,anti_gon
   else
     unit.name = unit.fullname
     unit.textname = unit.fullname
+  end
+
+  if unit.name == "camra" then
+    unit.special.camera = {x = 0, y = 0, w = 11, h = 7, fixed_w = false, fixed_h = false}
   end
   
   if rules_effecting_names[unit.name] then
