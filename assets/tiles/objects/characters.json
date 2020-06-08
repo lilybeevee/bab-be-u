@@ -1527,5 +1527,84 @@
     "unsearchable": true,
     "desc": "why she so small doe :floshed:",
     "tags": ["chars", "hatsune miku"]
+  },
+  {
+    "name": "slogkat",
+    "sprite": ["slogkat"],
+    "layer": 11,
+    "color": [[0, 3]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 17, "y": 7, "w": 2, "h": 3}
+    },
+    "desc": "slogkat snacc frut",
+    "pronouns": ["they", "them"]
+  },
+  {
+    "name": "txt_slogkat",
+    "sprite": ["txt/slogkat"],
+    "types": ["object"],
+    "color": [[4, 1]],
+    "desc": "bab,,, distant relative,,,,,",
+    "tags": ["chars", "slugcat"]
+  },
+  {
+    "name": "b..er",
+    "sprite": ["ber"],
+    "layer": 11,
+    "color": [[6, 1]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 25, "y": 17, "w": 2, "h": 2}
+    },
+    "desc": "grrrawwwrhrhwrhghrhg (nice to meet u)",
+    "pronouns": ["he", "him"]
+  },
+  {
+    "name": "txt_b..er",
+    "sprite": ["txt/ber"],
+    "types": ["object"],
+    "color": [[6, 1]],
+    "desc": "BËR: To use with letters, you need an umlaut!",
+    "alias": ["b*r"],
+    "tags": ["chars", "bear", "ber", "bër"]
+  },
+  {
+    "name": "slog",
+    "sprite": ["slog"],
+    "layer": 11,
+    "color": [[3, 3]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 24, "y": 7, "w": 4, "h": 4}
+    },
+    "desc": "currently slogging",
+    "pronouns": ["they", "them"]
+  },
+  {
+    "name": "txt_slog",
+    "sprite": ["txt/slog"],
+    "types": ["object"],
+    "color": [[3, 2]],
+    "tags": ["slug"]
+  },
+  {
+    "name": "scorpino",
+    "sprite": ["scorpino"],
+    "layer": 11,
+    "color": [[1, 3]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 20, "y": 17, "w": 2, "h": 2}
+    },
+    "desc": "she wont sting unless u bully",
+    "pronouns": ["she", "her"]
+  },
+  {
+    "name": "txt_scorpino",
+    "sprite": ["txt/scorpino"],
+    "types": ["object"],
+    "color": [[1, 4]],
+    "tags": ["scorpion"]
   }
 ]

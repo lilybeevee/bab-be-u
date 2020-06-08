@@ -834,10 +834,9 @@
   },
   {
     "name": "paint",
-    "sprite": ["paint", "paint_color"],
+    "sprite": ["ui/splat"],
     "layer": 8,
-    "color": [[0, 3], [0, 3]],
-    "painted": [false, true],
+    "color": [[0, 3]],
     "desc": "Creating a PAINT will always be a samecolor paint.",
     "tags": ["colors", "colours"]
   },
@@ -2849,5 +2848,63 @@
     "color": [[0, 3]],
     "desc": "pixels are an element in my heart ok?",
     "tags": ["pixelbolt"]
+  },
+  {
+    "name": "painbuct",
+    "sprite": ["painbuct", "painbuct_filled"],
+    "layer": 7,
+    "color": [[0, 2], [4, 3]],
+    "painted": [false, true],
+    "desc": "good 4 swim"
+  },
+  {
+    "name": "txt_painbuct",
+    "sprite": ["txt/painbuct"],
+    "types": ["object"],
+    "color": [[4, 2]],
+    "tags": ["paint bucket"]
+  },
+  {
+    "name": "sinyroc",
+    "sprite": ["sinyroc"],
+    "layer": 7,
+    "color": [[4, 2]],
+    "desc": "we...... . are the",
+    "tags": ["crystal gems"]
+  },
+  {
+    "name": "txt_sinyroc",
+    "sprite": ["txt/sinyroc"],
+    "types": ["object"],
+    "color": [[4, 2]],
+    "tags": ["gem", "shiny rock"]
+  },
+  {
+    "name": "nuzt",
+    "sprite": ["nuzt"],
+    "layer": 7,
+    "color": [[6, 2]],
+    "desc": "there is no joke. bab does not condone such jokes"
+  },
+  {
+    "name": "txt_nuzt",
+    "sprite": ["txt/nuzt"],
+    "types": ["object"],
+    "color": [[6, 2]],
+    "tags": ["peanut"]
+  },
+  {
+    "name": "cheez",
+    "sprite": ["cheez"],
+    "layer": 7,
+    "color": [[2, 4]],
+    "desc": "there is no joke. bab does not condone such jokes"
+  },
+  {
+    "name": "txt_cheez",
+    "sprite": ["txt/cheez"],
+    "types": ["object"],
+    "color": [[2, 4]],
+    "tags": ["cheese"]
   }
 ]
