@@ -912,7 +912,9 @@ function scene.draw(dt)
       if unit.name == "o" or unit.name == "square" or unit.name == "triangle" then
         flyenes = flyenes + 1
       end
-      fulldrawy = fulldrawy - math.sin(love.timer.getTime())*5*flyenes
+      if flyenes > 0 then 
+        fulldrawy = fulldrawy - math.sin(love.timer.getTime())*5*flyenes
+      end
     end
     
     if unit.fullname == "txt_temmi" and unit.active then

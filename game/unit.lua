@@ -1466,7 +1466,7 @@ function miscUpdates()
     if not deleted and not unit.removed_final then
       local tile = getTile(unit.tile)
       unit.layer = unit.layer + (hasProperty(unit,"curse") and 24 or 0) + (hasProperty(unit,"anti stelth") and 130 or 0)
-      if (0 > (graphical_property_cache["flye"][unit] or 0)) then
+      if (0 < (graphical_property_cache["flye"][unit] or 0)) then
         unit.layer = unit.layer + 15 + 5 * (graphical_property_cache["flye"][unit] or 0)
       end
       unit.sprite = deepCopy(tile.sprite)
@@ -1566,40 +1566,35 @@ function miscUpdates()
       
       -- here goes the legendary ditto transformations
       if unit.fullname == "ditto" then
-        if hasProperty(unit,"dragbl") then
-          unit.sprite = {"ditto_dragbl"}
-        elseif hasProperty(unit,"notranform") then
-          unit.sprite = {"ditto_notranform"}
-        elseif hasRule(unit,"got","which") then
-          unit.sprite = {"ditto_which"}
-        elseif hasRule(unit,"spoop","?") then
+        --very low priority, will only trigger if nothing else does
+        if hasRule(unit,"spoop","?") then 
           unit.sprite = {"ditto_spoop"}
-        elseif hasProperty(unit,"delet") then
-          unit.sprite = {"ditto_xwx"}
-        elseif hasProperty(unit,"rong") then
-          unit.sprite = {"ditto_rong"}
-        elseif hasProperty(unit,"wurd") then
-          unit.sprite = {"ditto_wurd"}
-        elseif hasProperty(unit,"nodrag") then
-          unit.sprite = {"ditto_no drag"}
-        elseif graphical_property_cache["slep"][unit] ~= nil then
-          unit.sprite = {"ditto_slep"}
-        elseif hasProperty(unit,"rithere") then
-          unit.sprite = {"ditto_rithere"}
-        elseif hasProperty(unit,"thr") then
-          unit.sprite = {"ditto_thr"}
-        elseif hasProperty(unit,"stelth") then
-          unit.sprite = {"ditto_stelth"}
-        elseif hasProperty(unit,"sans") then
-          unit.sprite = {"ditto_sans"}
-        elseif hasProperty(unit,"ouch") then
-          unit.sprite = {"ditto_ouch"}
-        elseif hasProperty(unit,"protecc") then
-          unit.sprite = {"ditto_protecc"}
-        elseif hasProperty(unit,"noundo") then
-          unit.sprite = {"ditto_no undo"}
-        -- Eeveelutions
-        elseif hasProperty(unit,"qt") then
+        elseif hasRule(unit,"sing","?") then
+          unit.sprite = {"ditto_sing"}
+        elseif hasRule(unit,"paint","?") then
+          unit.sprite = {"ditto_paint"}
+        elseif hasProperty(unit,"right") or hasProperty(unit,"downright") or hasProperty(unit,"down") or hasProperty(unit,"downleft") or hasProperty(unit,"left") or hasProperty(unit,"upleft") or hasProperty(unit,"up") or hasProperty(unit,"upright") then
+          unit.sprite = {"ditto_direction"}
+        elseif hasRule(unit,"snacc","?") then
+          unit.sprite = {"ditto_snacc"}
+        else
+          unit.sprite = {"ditto"}
+        end
+
+        local props_to_check = {"stelth","sans","delet","dragbl","rong","wurd","nodrag","rithere","thr","ouch","protecc","noundo",
+        "poortoll","go","folowal","tall","rave","colrful","torc","split","icyyyy","icy","hopovr","nuek","knightstep","diagstep","sidestep","notranform",
+        "munwalk","visitfren","walk","noswim","haetflor","haetskye","glued","flye","enby","tranz","comepls","goawaypls","goooo",
+        "moar","nedkee","fordor","hotte","fridgd","nogo","thingify","y'all","utres","utoo","u",
+        } --props are checked in order, so less common props should go in front
+        for _,prop in ipairs(props_to_check) do
+          if hasProperty(unit,prop) then
+            unit.sprite = {"ditto_"..prop}
+            break
+          end
+        end
+        --very high priority, will trigger over other things
+        if hasProperty(unit,"qt") then
+          -- Eeveelutions
           if hasProperty(unit,"icy") then
             unit.sprite = {"ditto_qt_icy"}
           elseif hasProperty(unit,"hopovr") then
@@ -1607,105 +1602,20 @@ function miscUpdates()
           else
             unit.sprite = {"ditto_qt"}
           end
-        elseif hasProperty(unit,"poortoll") then
-          unit.sprite = {"ditto_poor toll"}
-        -- Rotom formes
-        elseif hasRule(unit,"sing","?") then
-          unit.sprite = {"ditto_sing"}
-        elseif hasRule(unit,"paint","?") then
-          unit.sprite = {"ditto_paint"}
+        elseif hasRule(unit,"got","which") then
+          unit.sprite = {"ditto_which"}
         elseif hasRule(unit,"got","sant") then
           unit.sprite = {"ditto_sant"}
-        elseif hasProperty(unit,"go") then
-          unit.sprite = {"ditto_go"}
-        elseif hasProperty(unit,"folowal") then
-          unit.sprite = {"ditto_folo wal"}
-        elseif hasProperty(unit,"tall") then
-          unit.sprite = {"ditto_tall"}
-        elseif hasProperty(unit,"rave") then
-          unit.sprite = {"ditto_rave"}
-        elseif hasProperty(unit,"colrful") then
-          unit.sprite = {"ditto_colrful"}
-        elseif hasProperty(unit,"torc") then
-          unit.sprite = {"ditto_torc"}
-        elseif hasProperty(unit,"split") then
-          unit.sprite = {"ditto_split"}
-        elseif hasProperty(unit,"icyyyy") then
-          unit.sprite = {"ditto_icyyyy"}
-        elseif hasProperty(unit,"icy") then
-          unit.sprite = {"ditto_icy"}
-        elseif hasProperty(unit,"hopovr") then
-          unit.sprite = {"ditto_hopovr"}
-        elseif hasProperty(unit,"right") or hasProperty(unit,"downright") or hasProperty(unit,"down") or hasProperty(unit,"downleft") or hasProperty(unit,"left") or hasProperty(unit,"upleft") or hasProperty(unit,"up") or hasProperty(unit,"upright") then
-          unit.sprite = {"ditto_direction"}
-        elseif hasProperty(unit,"nuek") then
-          unit.sprite = {"ditto_nuek"}
-        elseif hasProperty(unit,"un:)") then
-          unit.sprite = {"ditto_;d"}
-        elseif hasProperty(unit,"knightstep") then
-          unit.sprite = {"ditto_knightstep"}
-        elseif hasProperty(unit,"diagstep") then
-          unit.sprite = {"ditto_diagstep"}
-        elseif hasProperty(unit,"sidestep") then
-          unit.sprite = {"ditto_sidestep"}
-        elseif hasProperty(unit,"munwalk") then
-          unit.sprite = {"ditto_munwalk"}
-        elseif hasProperty(unit,"visitfren") then
-          unit.sprite = {"ditto_visit fren"}
-        elseif hasProperty(unit,"walk") then
-          unit.sprite = {"ditto_walk"}
-        elseif hasProperty(unit,"noswim") then
-          unit.sprite = {"ditto_no swim"}
-        elseif hasProperty(unit,"haetflor") then
-          unit.sprite = {"ditto_haet flor"}
-        elseif hasProperty(unit,"haetskye") then
-          unit.sprite = {"ditto_haet skye"}
         elseif hasRule(unit,"got","gunne") then
           unit.sprite = {"ditto_gunne"}
-        elseif hasProperty(unit,"glued") then
-          unit.sprite = {"ditto_glued"}
-        elseif hasProperty(unit,"flye") then
-          unit.sprite = {"ditto_flye"}
-        elseif hasProperty(unit,"enby") then
-          unit.sprite = {"ditto_enby"}
-        elseif hasProperty(unit,"tranz") then
-          unit.sprite = {"ditto_tranz"}
-        elseif hasProperty(unit,"comepls") then
-          unit.sprite = {"ditto_come pls"}
-        elseif hasProperty(unit,"goawaypls") then
-          unit.sprite = {"ditto_go away pls"}
-        elseif hasProperty(unit,"goooo") then
-          unit.sprite = {"ditto_goooo"}
-        elseif hasRule(unit,"snacc","?") then
-          unit.sprite = {"ditto_snacc"}
-        elseif hasProperty(unit,"moar") then
-          unit.sprite = {"ditto_moar"}
-        elseif hasProperty(unit,"nedkee") then
-          unit.sprite = {"ditto_ned kee"}
-        elseif hasProperty(unit,"fordor") then
-          unit.sprite = {"ditto_fordor"}
-        elseif hasProperty(unit,"hotte") then
-          unit.sprite = {"ditto_hotte"}
-        elseif hasProperty(unit,"fridgd") then
-          unit.sprite = {"ditto_fridgd"}
+        elseif graphical_property_cache["slep"][unit] ~= nil then
+          unit.sprite = {"ditto_slep"}
+        elseif hasProperty(unit,"un:)") then
+          unit.sprite = {"ditto_;d"}
         elseif hasProperty(unit,":)") then
           unit.sprite = {"ditto_yay"}
         elseif hasProperty(unit,":o") then
           unit.sprite = {"ditto_whoa"}
-        elseif hasProperty(unit,"nogo") then
-          unit.sprite = {"ditto_no go"}
-        elseif hasProperty(unit,"y'all") then
-          unit.sprite = {"ditto_y'all"}
-        elseif hasProperty(unit,"utres") then
-          unit.sprite = {"ditto_u tres"}
-        elseif hasProperty(unit,"utoo") then
-          unit.sprite = {"ditto_u too"}
-        elseif hasProperty(unit,"u") then
-          unit.sprite = {"ditto_u"}
-        elseif hasProperty(unit,"thingify") then
-          unit.sprite = {"ditto_thingify"}
-        else
-          unit.sprite = {"ditto"}
         end
       end
       
@@ -1823,7 +1733,7 @@ function updateGraphicalPropertyCache()
     if (prop == "flye") then
       local prop = getUnitsWithEffectAndCount("flye")
       local anti = getUnitsWithEffectAndCount("anti flye")
-      local ccount = 0
+      --local ccount = 0
       for unit,amt in pairs(prop) do
         new_tbl[unit] = amt or nil
       end
