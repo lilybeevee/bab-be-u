@@ -465,7 +465,7 @@ function doMovement(movex, movey, key)
         local stalkee_conds = ruleparent.rule.object.conds
         if #findUnitsByName(ruleparent.rule.object.name) > 0 then
           for _,stalker in ipairs(stalkers) do
-            if testConds(stalker, stalker_conds) then
+            if stalker.name ~= "camra" and testConds(stalker, stalker_conds) then
               --[[local len = {999,999,999,999,999,999,999,999}
               local target = {}
               for _,stalkee in ipairs(getUnitsOnTile(stalker.x, stalker.y, {name = ruleparent.rule.object.name})) do -- is it standing on the target
@@ -2451,12 +2451,12 @@ function canMoveCore(unit,dx,dy,dir,o) --pushing, pulling, solid_name, reason, p
             return true,{movers[1]},specials
           else
             if dont_ignore_unit then
-              table.insert(time_destroy,unit.id)
+              table.insert(time_destroy,{unit.id,timeless})
               addUndo({"time_destroy",unit.id})
               addParticles("destroy", unit.x, unit.y, {237,226,133})
             end
             if dont_ignore_other then
-              table.insert(time_destroy,v.id)
+              table.insert(time_destroy,{v.id,timeless})
               addUndo({"time_destroy",v.id})
               addParticles("destroy", v.x, v.y, {237,226,133})
             end
@@ -2566,7 +2566,7 @@ function canMoveCore(unit,dx,dy,dir,o) --pushing, pulling, solid_name, reason, p
             table.insert(specials, {ouch and "weak" or "snacc", {v}})
             exploding = true
           else
-            table.insert(time_destroy,v.id)
+            table.insert(time_destroy,{v.id,timeless})
 						addUndo({"time_destroy",v.id})
             table.insert(time_sfx,"break")
           end
@@ -2580,7 +2580,7 @@ function canMoveCore(unit,dx,dy,dir,o) --pushing, pulling, solid_name, reason, p
             table.insert(specials, {ouch and "weak" or "snacc", {unit}})
             exploding = true
           else
-            table.insert(time_destroy,unit.id)
+            table.insert(time_destroy,{unit.id,timeless})
 						addUndo({"time_destroy",unit.id})
             table.insert(time_sfx,"break")
           end

@@ -47,4 +47,5 @@ layer notes:
 23: lins
 24: lvls
 25: selctr
+30: camra
 100: the real bab dictator

@@ -1095,9 +1095,12 @@ function scene.update(dt)
                   elseif type(brush.color) == "table" then
                     new_unit.color_override = brush.color
                   end
-                  new_unit.special = deepCopy(brush.special)
+                  mergeTable(new_unit.special, deepCopy(brush.special))
                   if last_lin_hidden and brush.id == "lin" then
                     new_unit.special.visibility = "hidden"
+                  end
+                  if brush.id == "camra" and units_by_name["camra"] and #units_by_name["camra"] > 1 then
+                    deleteUnit(units_by_name["camra"][1])
                   end
                   --[[if brush.id == tiles_by_name["letter_custom"] then
                     new_unit.special.customletter = brush.customletter
@@ -1435,9 +1438,6 @@ function scene.draw(dt)
           local i = current_tile_grid[gridid]
           if i ~= nil and i ~= 0 then
             local tile = getTile(i)
-            if i == "therealbabdictator" then
-              tile = getTile("miku")
-            end
 
             -- local x = tile.grid[1]
             -- local y = tile.grid[2]
@@ -1533,6 +1533,24 @@ function scene.draw(dt)
           end
 
           drawTileSprite(tile, (hx+0.5)*TILE_SIZE, (hy+0.5)*TILE_SIZE, math.rad(rotation), 1, 1, {alpha = 0.25, color = color, special = brush.special})
+
+          if brush.id == "camra" then
+            local camera = brush.special and brush.special.camera or {x = 0, y = 0, w = 11, h = 7}
+            local vx, vy, vw, vh = camera.x, camera.y, camera.w, camera.h
+            love.graphics.setLineWidth(1)
+            love.graphics.setColor(0, 0, 1, 0.5)
+            love.graphics.rectangle("line", (hx - vx - (vw - 1)/2) * TILE_SIZE, (hy - vy - (vh - 1)/2) * TILE_SIZE, vw * TILE_SIZE, vh * TILE_SIZE)
+          end
+        end
+        if not selector_open and units_by_name["camra"] and #units_by_name["camra"] > 0 then
+          for _,unit in ipairs(getUnitsOnTile(hx, hy)) do
+            if unit.name == "camra" then
+              local vx, vy, vw, vh = unit.special.camera.x, unit.special.camera.y, unit.special.camera.w, unit.special.camera.h
+              love.graphics.setLineWidth(1)
+              love.graphics.setColor(0, 0, 1)
+              love.graphics.rectangle("line", (hx - vx - (vw - 1)/2) * TILE_SIZE, (hy - vy - (vh - 1)/2) * TILE_SIZE, vw * TILE_SIZE, vh * TILE_SIZE)
+            end
+          end
         end
       end
 
@@ -2181,7 +2199,7 @@ function scene.resetMiku(random)
     if #possibles > 0 then
       local possible = possibles[love.math.random(1, #possibles)]
       secret_miku_location = possible
-      tile_grid[possible[1]][possible[2]] = "therealbabdictator"
+      tile_grid[possible[1]][possible[2]] = "miku"
     end
   end
 end

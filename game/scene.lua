@@ -48,6 +48,8 @@ local particle_timers = {}
 local canv = love.graphics.newCanvas(love.graphics.getWidth(), love.graphics.getHeight())
 local last_width,last_height = love.graphics.getWidth(),love.graphics.getHeight()
 
+local viewport
+
 local displaywords = false
 
 local stack_box, stack_font
@@ -239,6 +241,80 @@ function scene.update(dt)
   doReplay(dt)
   if rules_with and rules_with["rythm"] then
     doRhythm()
+  end
+  updateCamera()
+end
+
+function updateCamera()
+  if units_by_name and units_by_name["camra"] and #units_by_name["camra"] > 0 then
+    local camera = units_by_name["camra"][1]
+    local vx, vy, vw, vh = camera.special.camera.x, camera.special.camera.y, camera.special.camera.w, camera.special.camera.h
+
+    local function updateCamPos()
+
+    end
+
+    local function setViewport(v)
+      if not v then
+        viewport = {
+          x = camera.x - vx - (vw - 1)/2,
+          y = camera.y - vy - (vh - 1)/2,
+          w = vw,
+          h = vh,
+          last_cam_x = camera.x,
+          last_cam_y = camera.y,
+        }
+      else
+        local x = math.floor(v.x + v.w/2)
+        local y = math.floor(v.y + v.h/2)
+        moveUnit(camera, x, y, nil, false)
+        v.last_cam_x = camera.x
+        v.last_cam_y = camera.y
+        viewport = v
+      end
+    end
+
+    if not viewport or camera.x ~= last_cam_x or camera.y ~= last_cam_y then
+      setViewport()
+    end
+
+    if rules_with then
+      local stalking = {}
+      local stalk_rules = matchesRule(camera, "stalk", nil)
+      for _,match in ipairs(stalk_rules) do
+        table.insert(stalking, match[2])
+      end
+      if #stalking > 0 then
+        local full_rect
+        for _,stalkee in ipairs(stalking) do
+          local stalk_rect = {}
+          stalk_rect.x1 = stalkee.draw.x - vx - (vw - 1)/2
+          stalk_rect.y1 = stalkee.draw.y - vy - (vh - 1)/2
+          stalk_rect.x2 = stalk_rect.x1 + vw
+          stalk_rect.y2 = stalk_rect.y1 + vh
+
+          if not full_rect then
+            full_rect = stalk_rect
+          else
+            full_rect.x1 = math.min(full_rect.x1, stalk_rect.x1)
+            full_rect.y1 = math.min(full_rect.y1, stalk_rect.y1)
+            full_rect.x2 = math.max(full_rect.x2, stalk_rect.x2)
+            full_rect.y2 = math.max(full_rect.y2, stalk_rect.y2)
+          end
+        end
+        if full_rect then
+          setViewport{
+            x = full_rect.x1,
+            y = full_rect.y1,
+            w = full_rect.x2 - full_rect.x1,
+            h = full_rect.y2 - full_rect.y1,
+          }
+          return
+        end
+      end
+    end
+  else
+    viewport = nil
   end
 end
 
@@ -660,29 +736,44 @@ function scene.getTransform()
   local targetwidth = (mapwidth + 4) * TILE_SIZE
   local targetheight = (mapheight + 4) * TILE_SIZE
 
-  if settings["int_scaling"] then
-    targetwidth = roomwidth
-    targetheight = roomheight
-  end
+  if viewport then
+    --local camera = units_by_name["camra"][1]
+    --local vx, vy, vw, vh = camera.special.camera.x, camera.special.camera.y, camera.special.camera.w, camera.special.camera.h
 
-  local scale = 1
-  if settings["int_scaling"] then
-    local scales = {0.25, 0.375, 0.5, 0.75, 1, 2, 3, 4}
-    scale = scales[1]
-    for _,s in ipairs(scales) do
-      if screenwidth >= roomwidth * s and screenheight >= roomheight * s then
-        scale = s
-      else break end
-    end
+    local scale = math.min(screenwidth / (viewport.w * TILE_SIZE), screenheight / (viewport.h * TILE_SIZE))
+    local scaledwidth = screenwidth * (1/scale)
+    local scaledheight = screenheight * (1/scale)
+
+    --transform:translate(scaledwidth / 2 - roomwidth / 2, scaledheight / 2 - roomheight / 2)
+    --transform:translate((camera.x - vx + 0.5) * TILE_SIZE, (camera.y - vy + 0.5) * TILE_SIZE)
+    transform:scale(scale, scale)
+    transform:translate(-(viewport.x + viewport.w/2) * TILE_SIZE, -(viewport.y + viewport.h/2) * TILE_SIZE)
+    transform:translate(scaledwidth/2, scaledheight/2)
   else
-    scale = math.min(screenwidth / targetwidth, screenheight / targetheight)
+    if settings["int_scaling"] then
+      targetwidth = roomwidth
+      targetheight = roomheight
+    end
+
+    local scale = 1
+    if settings["int_scaling"] then
+      local scales = {0.25, 0.375, 0.5, 0.75, 1, 2, 3, 4}
+      scale = scales[1]
+      for _,s in ipairs(scales) do
+        if screenwidth >= roomwidth * s and screenheight >= roomheight * s then
+          scale = s
+        else break end
+      end
+    else
+      scale = math.min(screenwidth / targetwidth, screenheight / targetheight)
+    end
+
+    local scaledwidth = screenwidth * (1/scale)
+    local scaledheight = screenheight * (1/scale)
+
+    transform:scale(scale, scale)
+    transform:translate(scaledwidth / 2 - roomwidth / 2, scaledheight / 2 - roomheight / 2)
   end
-
-  local scaledwidth = screenwidth * (1/scale)
-  local scaledheight = screenheight * (1/scale)
-
-  transform:scale(scale, scale)
-  transform:translate(scaledwidth / 2 - roomwidth / 2, scaledheight / 2 - roomheight / 2)
 
   if shake_dur > 0 and not outerlvl.cool then
     local range = 1
@@ -1392,6 +1483,20 @@ function scene.draw(dt)
       love.graphics.line(cx-width,cy+width,cx+width,cy-width)
       love.graphics.line(cx,cy-width,cx,cy+width)
     end
+    love.graphics.pop()
+  end
+
+  -- camera black overlay
+  if viewport then
+    love.graphics.stencil(function()
+      love.graphics.rectangle("fill", viewport.x * TILE_SIZE, viewport.y * TILE_SIZE, viewport.w * TILE_SIZE, viewport.h * TILE_SIZE)
+    end)
+    love.graphics.push()
+    love.graphics.origin()
+    love.graphics.setStencilTest("less", 1)
+    love.graphics.setColor(0, 0, 0)
+    love.graphics.rectangle("fill", 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
+    love.graphics.setStencilTest()
     love.graphics.pop()
   end
 

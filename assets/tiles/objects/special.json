@@ -62,5 +62,21 @@
     "layer": 20,
     "color": [[0, 3]],
     "desc": "THIS: Text that refers to itself. Each THIS is independant. THIS TXT refers to all THISs."
+  },
+  {
+    "name": "camra",
+    "sprite": ["camra"],
+    "layer": 30,
+    "color": [[0, 1]],
+    "desc": "Middle or SHIFT right-click set area around the camera that the screen will be zoomed into (mainly for minigame uses). Only one can exist at a time. STELTH by default",
+    "tags": ["camera", "scroll", "screen"]
+  },
+  {
+    "name": "txt_camra",
+    "sprite": ["txt/camra"],
+    "types": ["object"],
+    "color": [[0, 1]],
+    "desc": "X BE CAMRA replaces the camera with a new one at X. CAMRA STALK X makes the camera follow all X.",
+    "tags": ["camera", "scroll", "screen"]
   }
 ]
