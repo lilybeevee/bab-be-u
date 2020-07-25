@@ -1606,5 +1606,47 @@
     "types": ["object"],
     "color": [[1, 4]],
     "tags": ["scorpion"]
+  },
+  {
+    "name": "jij",
+    "sprite": ["jij"],
+    "layer": 11,
+    "color": [[6, 2]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 25, "y": 17, "w": 2, "h": 2}
+    },
+    "desc": "its jij eeeeeeeeeeee",
+    "pronouns": ["she", "her"]
+  },
+  {
+    "name": "txt_jij",
+    "sprite": ["txt/jij"],
+    "types": ["object"],
+    "color": [[6, 2]],
+    "desc": "means pen in chinese",
+    "alias": ["jij"],
+    "tags": ["chars", "jij", "llama"]
+  },
+  {
+    "name": "fof",
+    "sprite": ["fof"],
+    "layer": 11,
+    "color": [[5, 3]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 25, "y": 17, "w": 2, "h": 2}
+    },
+    "desc": "he bush",
+    "pronouns": ["he", "him"]
+  },
+  {
+    "name": "txt_fof",
+    "sprite": ["txt/fof"],
+    "types": ["object"],
+    "color": [[5, 3]],
+    "desc": "from portugal",
+    "alias": ["jij"],
+    "tags": ["chars", "fof", "bush"]
   }
 ]
