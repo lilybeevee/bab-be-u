@@ -1624,7 +1624,7 @@
     "sprite": ["txt/jij"],
     "types": ["object"],
     "color": [[6, 2]],
-    "desc": "means pen in chinese",
+    "desc": "means "a few sentences" in chinese",
     "alias": ["jij"],
     "tags": ["chars", "jij", "llama"]
   },
