@@ -246,7 +246,7 @@ function findUnit(words, extra_words_, dir, outer, no_verb_cond, is_subject)
       words = words_
       if not infix.type.cond_infix_verb_plus then
         local verb = verb_phrase[1]
-        infix.name = infix.name.." "..verb.name
+        infix.name = infix.name..verb.name
         table.insert(infix.mods, verb)
       end
       infix.others = {}
