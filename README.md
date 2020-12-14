@@ -21,7 +21,5 @@ ok!!, here u go!!!!!
 
 ![lvl4](./docs/lvl4.png "carrier")
 
-![lvl5](./docs/lvl5.png "ise climers")
-
 ## dev info !!!!!!
 for build ver (in main menu at the top left), you must add a hook to your .git folder, [click here for more info](https://gist.github.com/sg-s/2ddd0fe91f6037ffb1bce28be0e74d4e)
