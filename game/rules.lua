@@ -1067,7 +1067,7 @@ function postRules(no_sound)
             -- print("frule:", fullDump(frule))
             if (frule.subject.name == rule.subject.name or (rule.subject.name == "txt" and frule.subject.name:starts("txt_"))) and fverb == rule.verb.name and (
               (specialmatch == 0 and frule.object.name == rule.object.name and frule.object.name ~= "her" and frule.object.name ~= "thr" and frule.object.name ~= "rit here") or
-              (specialmatch == 1 and (frule.object.type.object or frule.object.name == "tranz") and not group_names_set[frule.object.name]) or -- possibly more special cases needed
+              -- (specialmatch == 1 and (frule.object.type.object or frule.object.name == "tranz") and not group_names_set[frule.object.name]) or -- was used for making notranform cancel x be tranz but we decided that was a dumb joke
               (specialmatch == 2 and frule.object.name == "notranform")
             ) then
               if has_conds then
