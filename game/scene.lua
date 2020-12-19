@@ -889,7 +889,7 @@ function scene.draw(dt)
     if unit.name == "no1" and not (draw_empty and validEmpty(unit)) then return end
     
     local brightness = 1
-    if (hasRule(unit,"be","wurd") or hasRule(unit,"be","anti wurd")) and not unit.active and not level_destroyed and not (unit.fullname == "prop") then
+    if ((rules_with["wurd"] and hasRule(unit,"be","wurd")) or (rules_with["anti wurd"] and hasRule(unit,"be","anti wurd"))) and not unit.active and not level_destroyed and not (unit.fullname == "prop") then
       brightness = 0.33
     end
 
@@ -1425,18 +1425,20 @@ function scene.draw(dt)
 
     love.graphics.pop()
   end
+  
+  local lvl_stelth = hasProperty(outerlvl, "stelth")
 
   for i=1,max_layer do
     if units_by_layer[i] then
       local removed_units = {}
       for _,unit in ipairs(units_by_layer[i]) do
-        if not (unit.stelth or portaling[unit] or hasProperty(outerlvl, "stelth")) then
+        if not (unit.stelth or portaling[unit] or lvl_stelth) then
           local x, y, rot = unit.x, unit.y, 0
           if unit.name ~= "no1" then
             x, y = unit.draw.x, unit.draw.y
             rot = unit.draw.rotation
           else
-            if (unit.rotate or hasProperty(unit,"rotatbl")) then rot = (unit.dir - 1) * 45 end
+            if (unit.rotate or (rules_with["rotatbl"] and hasProperty(unit,"rotatbl"))) then rot = (unit.dir - 1) * 45 end
           end
           drawUnit(unit, x, y, rot)
         end
