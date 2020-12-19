@@ -428,7 +428,7 @@ function scene.resetStuff(forTime)
   end
   --love.mouse.setGrabbed(true)
   resetMusic(map_music, 0.9)
-  print(map_music)
+  --print(map_music)
   loadMap()
   clearRules()
   parseRules()
