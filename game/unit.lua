@@ -3287,6 +3287,11 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix,anti_gon
   if prefix then
     if type(prefix) == "table" then
       unit.color_override = prefix
+      --also set the appropriate initial colour flag
+      local color = colour_for_palette[unit.color_override[1]][unit.color_override[2]];
+      if color ~= nil then
+        unit[color] = true
+      end
     else
       unit[prefix] = true
       updateUnitColourOverride(unit)
