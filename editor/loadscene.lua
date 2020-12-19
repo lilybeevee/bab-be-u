@@ -157,12 +157,15 @@ function runUnitTests(just_this_folder)
   local succ_levels = {}
   local noreplay_levels = {}
   load_mode = "play"
+  local worst_replay_name = nil
+  local worst_replay_time = 0
   for _,v in ipairs(levels) do
     level_filename = v.file
     if not just_this_folder or string.find(v.file, '/') == nil then
       if #sub_worlds > 0 then
         level_filename = table.concat(sub_worlds, "/") .. "/" .. level_filename
       end
+      local this_replay_start = love.timer.getTime()
       scene.loadLevel(v.data, "play")
       game.load()
       tryStartReplay()
@@ -181,6 +184,12 @@ function runUnitTests(just_this_folder)
       else
         table.insert(noreplay_levels, v.file)
       end
+      local this_replay_end = love.timer.getTime()
+      local this_replay_time = this_replay_end-this_replay_start;
+      if this_replay_time > worst_replay_time then
+        worst_replay_time = this_replay_time
+        worst_replay_name = v.file
+      end
     end
   end
   local end_time = love.timer.getTime()
@@ -188,7 +197,8 @@ function runUnitTests(just_this_folder)
   print (tostring(#noreplay_levels) .. " levels lacked a replay: " .. dump(noreplay_levels))
   print (tostring(#succ_levels) .. " levels passed: " .. dump(succ_levels))
   print (tostring(#fail_levels) .. " levels failed: " .. dump(fail_levels))
-  print("Unit tests took: "..tostring(round((end_time-start_time))).."s")
+  print("Unit tests took: "..tostring(round((end_time-start_time)*10)/10).."s")
+  print("Worst offender was "..worst_replay_name.." at "..tostring(round((worst_replay_time)*10)/10).."s")
   unit_tests = false
 end
 
