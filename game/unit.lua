@@ -1310,7 +1310,9 @@ function updateUnits(undoing, big_update)
             color = colour_for_palette[getUnitColor(unit)[1]][getUnitColor(unit)[2]]
           end
           local new_unit = createUnit(tile.name, creator.x, creator.y, creator.dir, nil, nil, nil, color)
-          addUndo({"create", new_unit.id, false})
+          if new_unit ~= nil then
+            addUndo({"create", new_unit.id, false})
+          end
         end
       elseif createe == "mous" then
         local new_mouse = createMouse(creator.x, creator.y)
