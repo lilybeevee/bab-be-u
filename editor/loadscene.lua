@@ -143,11 +143,11 @@ function scene.keyPressed(key)
     scene.buildUI()
   elseif key == "f12" then
     print("Entering Unit Test mode.")
-    runUnitTests()
+    runUnitTests(love.keyboard.isDown("lctrl"))
   end
 end
 
-function runUnitTests()
+function runUnitTests(just_this_folder)
   local start_time = love.timer.getTime()
   unit_tests = true
   local dir = "levels/"
@@ -158,8 +158,8 @@ function runUnitTests()
   local noreplay_levels = {}
   load_mode = "play"
   for _,v in ipairs(levels) do
-    --if (v.file == "it's about time") then
-      level_filename = v.file
+    level_filename = v.file
+    if not just_this_folder or string.find(v.file, '/') == nil then
       if #sub_worlds > 0 then
         level_filename = table.concat(sub_worlds, "/") .. "/" .. level_filename
       end
@@ -181,7 +181,7 @@ function runUnitTests()
       else
         table.insert(noreplay_levels, v.file)
       end
-    --end
+    end
   end
   local end_time = love.timer.getTime()
   print ("Unit tested " .. tostring(#succ_levels + #fail_levels) .. " levels!")
