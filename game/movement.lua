@@ -1053,7 +1053,7 @@ It is probably possible to do, but lily has decided that it's not important enou
 	updateUnits(false, true)
   reparse()
   updatePortals()
-  miscUpdates()
+  miscUpdates(true)
   
   if scene.setPathlockBox then 
     local showlock

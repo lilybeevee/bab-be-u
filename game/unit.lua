@@ -1459,8 +1459,8 @@ function updateUnits(undoing, big_update)
   end
 end
 
-function miscUpdates()
-  updateGraphicalPropertyCache()
+function miscUpdates(state_change)
+  updateGraphicalPropertyCache(state_change)
   
   for i,unit in ipairs(units) do
     if not deleted and not unit.removed_final then
@@ -1724,24 +1724,26 @@ function miscUpdates()
     max_layer = math.max(max_layer, unit.layer)
   end
 
-  if units_by_name["camra"] and #units_by_name["camra"] > 1 then
-    local removed = {}
-    local new_special = {}
-    for i,camra in ipairs(units_by_name["camra"]) do
-      if i ~= #units_by_name["camra"] then
-        table.insert(removed, camra)
-        new_special = camra.special.camera
-      else
-        camra.special.camera = new_special
+  if state_change then
+    if units_by_name["camra"] and #units_by_name["camra"] > 1 then
+      local removed = {}
+      local new_special = {}
+      for i,camra in ipairs(units_by_name["camra"]) do
+        if i ~= #units_by_name["camra"] then
+          table.insert(removed, camra)
+          new_special = camra.special.camera
+        else
+          camra.special.camera = new_special
+        end
       end
-    end
-    for _,camra in ipairs(removed) do
-      deleteUnit(camra)
+      for _,camra in ipairs(removed) do
+        deleteUnit(camra)
+      end
     end
   end
 end
 
-function updateGraphicalPropertyCache()
+function updateGraphicalPropertyCache(state_change)
   for prop,tbl in pairs(graphical_property_cache) do
     --only flye has a stacking graphical effect and we want to ignore selector, the rest are boolean
     --local count = false
@@ -1770,7 +1772,9 @@ function updateGraphicalPropertyCache()
     graphical_property_cache[prop] = new_tbl
   end
   
-  updateUnitColours()
+  if state_change then
+    updateUnitColours()
+  end
 end
 
 --Colour logic:

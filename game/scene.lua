@@ -436,7 +436,7 @@ function scene.resetStuff(forTime)
   calculateLight()
   updateUnits(true)
   updatePortals()
-  miscUpdates()
+  miscUpdates(true)
   next_levels, next_level_objs = getNextLevels()
   first_turn = false
   window_dir = 0
