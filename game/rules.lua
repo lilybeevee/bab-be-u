@@ -261,6 +261,9 @@ function parseRules(undoing)
   
   local reparse_rule_counts = reparseRuleCounts()
   
+  --Hack for OOB rules to make them not alias onto each other surprisingly: assume mapwidth is 100 or higher, so that different co-ordinates are different unless you go STUPIDLY out of bounds
+  local mapwidth_hack = math.max(mapwidth, 100);
+  
   while (changed_reparsing_rule) do
     changed_reparsing_rule = false
     loop_rules = loop_rules + 1
@@ -293,9 +296,6 @@ function parseRules(undoing)
 
           local dx,dy = dpos[1],dpos[2]
           local ndx,ndy = ndpos[1],ndpos[2]
-
-          local tileid = (x+dx) + (y+dy) * mapwidth
-          local ntileid = (x+ndx) + (y+ndy) * mapwidth
           
           local validrule = true
           
@@ -308,9 +308,9 @@ function parseRules(undoing)
           end
           --print(tostring(x)..","..tostring(y)..","..tostring(dx)..","..tostring(dy)..","..tostring(ndx)..","..tostring(ndy)..","..tostring(#getUnitsOnTile(x+ndx, y+ndy, "txt"))..","..tostring(#getUnitsOnTile(x+dx, y+dy, "txt")))
           if (#getTextOnTile(x+ndx, y+ndy) == 0) and validrule then
-            if not been_first[i][x + y * mapwidth] then
+            if not been_first[i][x + y * mapwidth_hack] then
               table.insert(first_words, {unit, i})
-              been_first[i][x + y * mapwidth] = true
+              been_first[i][x + y * mapwidth_hack] = true
             end
           end
         end
@@ -344,7 +344,7 @@ function parseRules(undoing)
 
       local stopped = false
       while not stopped do
-        if been_here[x + y * mapwidth] == 2 then
+        if been_here[x + y * mapwidth_hack] == 2 then
           stopped = true
         else
           local new_words = {}
@@ -386,10 +386,10 @@ function parseRules(undoing)
             stopped = true
           end
 
-          if not been_here[x + y * mapwidth] then --can only go to each tile twice each first word; so that if we have a wrap/portal infinite loop we don't softlock
-            been_here[x + y * mapwidth] = 1
+          if not been_here[x + y * mapwidth_hack] then --can only go to each tile twice each first word; so that if we have a wrap/portal infinite loop we don't softlock
+            been_here[x + y * mapwidth_hack] = 1
           else
-            been_here[x + y * mapwidth] = 2
+            been_here[x + y * mapwidth_hack] = 2
           end
 
           dx, dy, dir, x, y = getNextTile(last_unit, dx, dy, dir)
