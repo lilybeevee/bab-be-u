@@ -1303,11 +1303,11 @@ function updateUnits(undoing, big_update)
         overriden = hasRule(creator, "creatn't", "txt")
       end
       if tile ~= nil and not overriden then
-        local others = getUnitsOnTile(creator.x, creator.y, {name = createe, not_destroyed = true, thicc = hasProperty(unit,"thicc")})
+        local others = getUnitsOnTile(creator.x, creator.y, {name = createe, not_destroyed = true, thicc = hasProperty(creator,"thicc")})
         if #others == 0 then
           local color = rule.object.prefix
           if color == "samepaint" then
-            color = colour_for_palette[getUnitColor(unit)[1]][getUnitColor(unit)[2]]
+            color = colour_for_palette[getUnitColor(creator)[1]][getUnitColor(creator)[2]]
           end
           local new_unit = createUnit(tile.name, creator.x, creator.y, creator.dir, nil, nil, nil, color)
           if new_unit ~= nil then
