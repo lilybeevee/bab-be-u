@@ -2266,7 +2266,9 @@ function doOneMove(x, y, key, past)
       undoWin()
     else
       if x == 0 and y == 0 and key ~= "e" and not past then
-        escResult(true)
+        if not replay_playback then
+          escResult(true)
+        end
       end
       return
     end
