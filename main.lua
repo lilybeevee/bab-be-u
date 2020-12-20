@@ -360,7 +360,7 @@ bab arguments!
   end
   scene.load()
 
-  print(colr.dim("load took ~"..(math.floor((love.timer.getTime()-startload)*1000)/1000).."ms"))
+  print(colr.dim("load took "..(math.floor((love.timer.getTime()-startload)*10)/10).."s"))
 end
 
 function love.keypressed(key,scancode,isrepeat)
