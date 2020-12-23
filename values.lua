@@ -223,6 +223,8 @@ anti_word_replacements = {
   cool = "hotte",
   thingify = "txtify",
   txtify = "thingify",
+  ["n'tify"] = "ify",
+  ["ify"] = "n'tify",
   notranform = "tranz",
   noundo = "undo",
   undo = "noundo",
@@ -430,7 +432,7 @@ selector_grid_contents = {
     "txt_nogo","txt_goawaypls","txt_comepls","txt_sidekik","txt_diagkik","txt_delet","txt_hotte","txt_fridgd","txt_thingify",0,"txt_dragbl","txt_nodrag","txt_alt","txt_clikt","txt_past","txt_wun","txt_an","txt_mayb",
     "txt_visitfren","txt_slep","txt_shy...","txt_behinu","txt_walk","txt_:o","txt_moar","txt_split","txt_txtify",0,"txt_rythm","txt_curse",0,"txt_wait...","txt_samefloat","txt_samepaint","txt_sameface",0,
     "txt_flye","txt_tall","txt_haetskye","txt_haetflor","txt_zomb","txt_un:)","txt_gone","txt_nuek","txt_notranform",0,0,0,0,"txt_w/fren","txt_arond","txt_sans","txt_seenby","txt_behind",
-    "txt_diag","txt_ortho","txt_gomyway",0,0,0,0,0,0,0,0,0,0,"txt_that","txt_thatbe","txt_thatgot","txt_meow","txt_beside",
+    "txt_diag","txt_ortho","txt_gomyway","txt_n'tify",0,0,0,0,0,0,0,0,0,"txt_that","txt_thatbe","txt_thatgot","txt_meow","txt_beside",
     "txt_turncornr","txt_folowal","txt_hopovr","txt_reflecc",0,0,0,0,0,0,0,0,0,"txt_reed","txt_orang","txt_yello","txt_grun","txt_cyeann",
     "txt_munwalk","txt_sidestep","txt_diagstep","txt_knightstep",0,"txt_tryagain","txt_noundo","txt_undo","txt_zawarudo","txt_brite","txt_torc","txt_tranparnt",0,"txt_bleu","txt_purp","txt_pinc","txt_whit","txt_graey",
     "txt_spin","txt_rotatbl","txt_noturn","txt_stukc",0,"txt_poortoll","txt_goarnd","txt_mirrarnd","txt_glued",0,0,0,0,0,"txt_rave","txt_colrful","txt_blacc","txt_brwn",
@@ -460,7 +462,7 @@ if settings["baba"] then
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     "txt_lesbad",0,0,0,0,0,0,0,0,0,0,0,0,0,0,"aaaaaa","therealqt","zawarudo",
-    "txt_every3",0,0,0,0,0,0,0,0,0,0,0,0,"&","&n't","sans","copkat","ditto",
+    "txt_every3","txt_ify",0,0,0,0,0,0,0,0,0,0,0,"&","&n't","sans","copkat","ditto",
   })
 end
 

@@ -2725,6 +2725,66 @@ function convertUnits(pass)
     end
   end
 
+  local ntify = getUnitsWithEffectAndCount("n'tify")
+  for unit,amt in pairs(ntify) do
+    if not unit.new and unit.type ~= "outerlvl" and timecheck(unit,"be","n'tify") then
+      local nametocreate = unit.fullname
+      for i = 1,amt do
+        local newname = nametocreate
+        local tile = getTile(nametocreate)
+        if nametocreate:ends("n't") then
+          newname = nametocreate:sub(1, string.len(nametocreate)-3)
+        else
+          newname = nametocreate .. "n't"
+        end
+        if not getTile(newname) then
+          break
+        end
+        nametocreate = newname
+      end
+      if nametocreate ~= unit.fullname then
+        table.insert(converted_units, unit)
+        addParticles("bonus", unit.x, unit.y, getUnitColor(unit))
+        if (nametocreate == "mous" or nametocreate == "mousn't") then
+          local new_mouse = createMouse(unit.x, unit.y)
+          addUndo({"create_cursor", new_mouse.id, created_from_id = unit.id})
+        else
+          local tile = getTile(nametocreate)
+          if tile ~= nil then
+            local new_unit = createUnit(tile.name, unit.x, unit.y, unit.dir, true)
+           if (new_unit ~= nil) then
+              new_unit.special.customletter = unit.special.customletter
+              addUndo({"create", new_unit.id, true, created_from_id = unit.id})
+            end
+          end
+        end
+      end
+    end
+  end
+
+  local ntifynt = getUnitsWithEffectAndCount("ify")
+  for unit,amt in pairs(ntifynt) do
+    if not unit.new and unit.type ~= "outerlvl" and timecheck(unit,"be","ify") then
+      local nametocreate = unit.fullname
+      if not getTile(nametocreate) then
+        break
+      end
+      addParticles("bonus", unit.x, unit.y, getUnitColor(unit))
+      if (nametocreate == "mous" or nametocreate == "mousn't") then
+        break
+      end
+      table.insert(converted_units, unit)
+      local tile = getTile(nametocreate)
+      if tile ~= nil then
+        local new_unit = createUnit(tile.name, unit.x, unit.y, unit.dir, true)
+        if (new_unit ~= nil) then
+          new_unit.special.customletter = unit.special.customletter
+          addUndo({"create", new_unit.id, true, created_from_id = unit.id})
+        end
+      end
+    end
+  end
+
   local deconverts = matchesRule(nil,"ben't","?")
   for _,match in ipairs(deconverts) do
     local rules = match[1]
