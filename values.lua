@@ -225,6 +225,7 @@ anti_word_replacements = {
   txtify = "thingify",
   ["n'tify"] = "ify",
   ["ify"] = "n'tify",
+  ["n'tifyyy"] = "ify",
   notranform = "tranz",
   noundo = "undo",
   undo = "noundo",
@@ -461,7 +462,7 @@ if settings["baba"] then
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    "txt_lesbad",0,0,0,0,0,0,0,0,0,0,0,0,0,0,"aaaaaa","therealqt","zawarudo",
+    "txt_lesbad","txt_n'tifyyy",0,0,0,0,0,0,0,0,0,0,0,0,0,"aaaaaa","therealqt","zawarudo",
     "txt_every3","txt_ify",0,0,0,0,0,0,0,0,0,0,0,"&","&n't","sans","copkat","ditto",
   })
 end
