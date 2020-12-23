@@ -63,6 +63,8 @@ function clearRules()
   end
   addBaseRule("bordr","be","nodrag") --it's important for this to be outside the check bc you can get mous outside level without bordr existing
   if units_by_name["this"] then
+    --have to do this now for the same reason we have to do it for "txt" - poor timing
+    rules_effecting_names["this"] = true
     addBaseRule("this","be","goawaypls")
     addBaseRule("this","be","wurd")
   end
