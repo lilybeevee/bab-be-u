@@ -209,28 +209,6 @@ function parseRules(undoing)
     return
   end
   
-  --refresh name/type/color of dittos in reading order (top to bottom)
-  local dittos = units_by_name["txt_''"]
-  if (dittos ~= nil) then
-    table.sort(dittos, function(a, b) return a.y < b.y end ) 
-    for _,unit in ipairs(dittos) do
-      local dir = dirAdd(unit.rotatdir,-2)
-      local dx, dy = dirs8[dir][1], dirs8[dir][2]
-      local _, __, ___, x, y = getNextTile(unit,dx,dy,dir)
-      local mimic = getTextOnTile(x,y)
-      
-      if #mimic == 1 then
-        unit.textname = mimic[1].textname
-        unit.typeset = mimic[1].typeset
-        unit.color_override = getUnitColor(mimic[1])
-      else
-        unit.textname = "  "
-        unit.typeset = {ditto = true}
-        unit.color_override = {0,3}
-      end
-    end
-  end
-  
   local start_time = love.timer.getTime()
   
   clearRules()
@@ -270,6 +248,28 @@ function parseRules(undoing)
     if (loop_rules > 100) then
       destroyLevel("infloop")
       return
+    end
+
+    --refresh name/type/color of dittos in reading order (top to bottom)
+    local dittos = units_by_name["txt_''"]
+    if (dittos ~= nil) then
+      table.sort(dittos, function(a, b) return a.y < b.y end ) 
+      for _,unit in ipairs(dittos) do
+        local dir = dirAdd(unit.rotatdir,-2)
+        local dx, dy = dirs8[dir][1], dirs8[dir][2]
+        local _, __, ___, x, y = getNextTile(unit,dx,dy,dir)
+        local mimic = getTextOnTile(x,y)
+        
+        if #mimic == 1 then
+          unit.textname = mimic[1].textname
+          unit.typeset = mimic[1].typeset
+          unit.color_override = getUnitColor(mimic[1])
+        else
+          unit.textname = "  "
+          unit.typeset = {ditto = true}
+          unit.color_override = {0,3}
+        end
+      end
     end
   
     local first_words = {}
