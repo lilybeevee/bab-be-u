@@ -817,6 +817,22 @@
     "tags": ["demeta", "notnat"]
   },
   {
+    "name": "txt_n'tify",
+    "sprite": ["txt/ntify"],
+    "types": ["property"],
+    "color": [[2, 2]],
+    "desc": "N'TIFY: BE N'TIFY causes that object or text to turn into its corresponding n't version.\nAnti: causes the object to turn into itself (different from notransform).",
+    "tags": ["nt", "n't", "mse"]
+  },
+  {
+    "name": "txt_ify",
+    "sprite": ["txt/ify"],
+    "types": ["property"],
+    "color": [[3, 3]],
+    "desc": "IFY: BE IFY causes that object or text to turn into itself.\nANTI N'TIFY isnt special behavior, its actually just this!\nAnti: n'tify",
+    "tags": ["why", "mse"]
+  },
+  {
     "name": "txt_curse",
     "sprite": ["txt/curse"],
     "types": ["property"],
