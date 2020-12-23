@@ -825,6 +825,14 @@
     "tags": ["nt", "n't", "mse"]
   },
   {
+    "name": "txt_n'tifyyy",
+    "sprite": ["txt/ntifyyy"],
+    "types": ["property"],
+    "color": [[2, 3]],
+    "desc": "N'TIFYYY: n'tify but it always adds nt (so it can make n'tn't text and objects)\nThere is no way to see how many nts a object has so this is dumb but whatever\nAnti: ify (yes anti anti n'tfyyyy is just n'tify)",
+    "tags": ["nt", "n't", "mse"]
+  },
+  {
     "name": "txt_ify",
     "sprite": ["txt/ify"],
     "types": ["property"],
