@@ -262,6 +262,9 @@ bab arguments!
     --system_cursor = sprites["ui/mous_osx"]
   --end
 
+  --load some fonts
+  fonts = {}
+  fonts["8bitoperator"] = love.graphics.newFont("assets/fonts/8bitoperator.ttf", 10, "mono");
   registerSound("move", 0.4)
   registerSound("mous sele", 0.3)
   registerSound("mous hovvr", 0.3)

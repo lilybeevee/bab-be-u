@@ -4536,10 +4536,20 @@ function drawSprite(x, y, rotation, sx, sy, o)
 
   if o.meta > 0 then
     setColor{4, 1}
-    local metasprite = o.meta == 2 and sprites["meta2"] or sprites["meta1"]
+    local metasprite = o.meta > 2 and sprites["meta3"] or o.meta > 1 and sprites["meta2"] or sprites["meta1"]
     love.graphics.draw(metasprite, x, y, 0, sx, sy, max_w / 2, max_h / 2)
     if o.meta > 2 and sx == 1 and sy == 1 then
-      love.graphics.printf(tostring(o.meta), x-1, y+6, 32, "center")
+      --stroking black outline
+      love.graphics.setColor(0,0,0,1)
+      local xx = round(x)
+      local yy = round(y)
+      local font = fonts["8bitoperator"];
+      love.graphics.printf(tostring(o.meta), font, xx+8+1, yy+6-1, 32, "left")
+      love.graphics.printf(tostring(o.meta), font, xx+8-1, yy+6-1, 32, "left")
+      love.graphics.printf(tostring(o.meta), font, xx+8+1, yy+6+1, 32, "left")
+      love.graphics.printf(tostring(o.meta), font, xx+8-1, yy+6+1, 32, "left")
+      setColor{4, 1}
+      love.graphics.printf(tostring(o.meta), font, xx+8, yy+6, 32, "left")
     end
   end
   if o.nt then
