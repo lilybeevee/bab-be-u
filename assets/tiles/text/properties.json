@@ -50,7 +50,7 @@
     "types": ["property"],
     "color": [[4, 1]],
     "wobble": true,
-    "desc": "YOU: Controlled by u, the player!\nCan be controlled by all players.\nAnti: opposite direction",
+    "desc": "YOU: Controlled by u, the player!\nCan be controlled by all players. (ortho only)\nAnti: opposite direction",
     "tags": ["player", "baba"]
   },
   {
