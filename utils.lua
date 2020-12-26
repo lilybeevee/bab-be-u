@@ -4543,13 +4543,24 @@ function drawSprite(x, y, rotation, sx, sy, o)
       love.graphics.setColor(0,0,0,1)
       local xx = round(x)
       local yy = round(y)
-      local font = fonts["metanumber"];
-      love.graphics.printf(tostring(o.meta), font, xx+8+1, yy+6, 32, "left", r, sx, sy, 0, -3)
-      love.graphics.printf(tostring(o.meta), font, xx+8-1, yy+6, 32, "left", r, sx, sy, 0, -3)
-      love.graphics.printf(tostring(o.meta), font, xx+8, yy+6+1, 32, "left", r, sx, sy, 0, -3)
-      love.graphics.printf(tostring(o.meta), font, xx+8, yy+6-1, 32, "left", r, sx, sy, 0, -3)
-      setColor{4, 1}
-      love.graphics.printf(tostring(o.meta), font, xx+8, yy+6, 32, "left", r, sx, sy, 0, -3)
+      if (o.meta >= 10) then
+        local font = fonts["metanumber"];
+        love.graphics.printf(tostring(o.meta), font, xx+8+1, yy+6, 32, "left", r, sx, sy, 0, -3)
+        love.graphics.printf(tostring(o.meta), font, xx+8-1, yy+6, 32, "left", r, sx, sy, 0, -3)
+        love.graphics.printf(tostring(o.meta), font, xx+8, yy+6+1, 32, "left", r, sx, sy, 0, -3)
+        love.graphics.printf(tostring(o.meta), font, xx+8, yy+6-1, 32, "left", r, sx, sy, 0, -3)
+        setColor{4, 1}
+        love.graphics.printf(tostring(o.meta), font, xx+8, yy+6, 32, "left", r, sx, sy, 0, -3)
+      else
+        local font = fonts["8bitoperator"];
+        love.graphics.printf(tostring(o.meta), font, xx+8+1, yy+6-1, 32, "left")
+        love.graphics.printf(tostring(o.meta), font, xx+8-1, yy+6-1, 32, "left")
+        love.graphics.printf(tostring(o.meta), font, xx+8+1, yy+6+1, 32, "left")
+        love.graphics.printf(tostring(o.meta), font, xx+8-1, yy+6+1, 32, "left")
+        setColor{4, 1}
+        love.graphics.printf(tostring(o.meta), font, xx+8, yy+6, 32, "left")
+      end
+      
     end
   end
   if o.nt then
