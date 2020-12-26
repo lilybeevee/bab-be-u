@@ -362,18 +362,13 @@ function doReplayTurn(turn)
 	end
 	local turn_parts = turn_string:split(",")
 	x, y, key = tonumber(turn_parts[1]), tonumber(turn_parts[2]), turn_parts[3]
-  print(key)
   if (key:sub(1, 4) == "drag") then
-    print("hi")
     drag_units = {}
     local key_parts = key:split(":")
     for _,key_part in ipairs(key_parts) do
-      print(key_part)
       key_part = tonumber(key_part)
-      print(key_part)
       if key_part ~= nil then
         local unit = units_by_id[key_part] or cursors_by_id[key_part]
-        print(unit)
         if unit ~= nil then
           table.insert(drag_units, unit);
         end
