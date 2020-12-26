@@ -750,10 +750,10 @@ function getUnitsWithEffectAndCount(effect)
   for _,dat in ipairs(rules) do
     local unit = dat[2]
     if not unit.removed and not hasRule(unit, "ben't", effect) then
-      if result[unit] == nil then
-        result[unit] = 0
+      if result[unit.id] == nil then
+        result[unit.id] = 0
       end
-      result[unit] = result[unit] + 1
+      result[unit.id] = result[unit.id] + 1
     end
   end
   
@@ -763,10 +763,10 @@ function getUnitsWithEffectAndCount(effect)
     if not unit.removed then
       for _,other in ipairs(getUnitsOnTile(unit.x, unit.y, {exclude = unit, thicc = hasProperty(unit,"thicc")})) do
         if sameFloat(unit, other) and not hasRule(other, "ben't", effect) and ignoreCheck(other, unit) then
-          if result[other] == nil then
-            result[other] = 0
+          if result[other.id] == nil then
+            result[other.id] = 0
           end
-          result[other] = result[other] + 1
+          result[other.id] = result[other.id] + 1
         end
       end
     end
@@ -775,21 +775,21 @@ function getUnitsWithEffectAndCount(effect)
   if hasRule(outerlvl, "giv", effect) then
     for _,unit in ipairs(units) do
       if inBounds(unit.x, unit.y) and not hasRule(unit, "ben't", effect) and ignoreCheck(unit, outerlvl) then
-        if result[unit] == nil then
-          result[unit] = 0
+        if result[unit.id] == nil then
+          result[unit.id] = 0
         end
-        result[unit] = result[unit] + 1
+        result[unit.id] = result[unit.id] + 1
       end
     end
   end
   
   if rules_with["rp"] then
     for unit,count in pairs(result) do
-      local isrp = matchesRule(nil,"rp",unit)
       for _,ruleparent in ipairs(isrp) do
         local mimic = ruleparent[2]
         if not mimic.removed and not hasRule(mimic,"ben't",effect) then
-          result[mimic] = count
+          print(mimic.id, mimic.fullname)
+          result[mimic.id] = count
         end
       end
     end
@@ -802,7 +802,7 @@ function getUnitsWithEffectAndCount(effect)
       local stuff = getUnitsOnTile(tx,ty)
       for _,unit in ipairs(stuff) do
         if hasProperty(unit,effect) and not hasRule(mimic,"ben't",effect) then
-          result[mimic] = countProperty(unit,effect)
+          result[mimic.id] = countProperty(unit,effect)
         end
       end
     end
@@ -826,10 +826,10 @@ function getUnitsWithRuleAndCount(rule1, rule2, rule3)
   for _,dat in ipairs(rules) do
     local unit = dat[2]
     if not unit.removed then
-      if result[unit] == nil then
-        result[unit] = 0
+      if result[unit.id] == nil then
+        result[unit.id] = 0
       end
-      result[unit] = result[unit] + 1
+      result[unit.id] = result[unit.id] + 1
     end
   end
   if rules_with["rp"] then
@@ -838,7 +838,7 @@ function getUnitsWithRuleAndCount(rule1, rule2, rule3)
       for _,ruleparent in ipairs(isrp) do
         local mimic = ruleparent[2]
         if not mimic.removed and not hasRule(mimic,rule2.."n't",rule3) then
-          result[mimic] = count
+          result[mimic.id] = count
         end
       end
     end
@@ -851,7 +851,7 @@ function getUnitsWithRuleAndCount(rule1, rule2, rule3)
       local stuff = getUnitsOnTile(tx,ty)
       for _,unit in ipairs(stuff) do
         if hasRule(unit,rule2,rule3) and not hasRule(mimic,rule2.."n't",rule3) then
-          result[mimic] = countProperty(unit,effect)
+          result[mimic.id] = countProperty(unit,effect)
         end
       end
     end

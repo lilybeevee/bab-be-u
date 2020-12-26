@@ -104,10 +104,10 @@ function getAllText()
   
   if rules_with ~= nil and rules_with["giv"] ~= nil then
     for unit,_ in pairs(getUnitsWithRuleAndCount(nil, "giv", "wurd")) do
-      table.insert(givers, unit)
+      table.insert(givers, units_by_id[unit] or cursors_by_id[unit])
     end
     for unit,_ in pairs(getUnitsWithRuleAndCount(nil, "giv", "anti wurd")) do
-      table.insert(givers, unit)
+      table.insert(givers, units_by_id[unit] or cursors_by_id[unit])
     end
   end
   

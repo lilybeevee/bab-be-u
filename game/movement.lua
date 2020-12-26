@@ -76,6 +76,7 @@ function doSpinRules(units_to_change)
   for i=1,7 do
     local isspin = getUnitsWithEffectAndCount("spin" .. tostring(i))
     for unit,amt in pairs(isspin) do
+      unit = units_by_id[unit] or cursors_by_id[unit]
       if (units_to_change == nil or units_to_change[unit] ~= nil) then
         addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
         unit.olddir = unit.dir
@@ -187,6 +188,7 @@ function doMovement(movex, movey, key)
     if move_stage == -1 then
       local icy = getUnitsWithEffectAndCount("icy")
       for unit,icyness in pairs(icy) do
+        unit = units_by_id[unit] or cursors_by_id[unit]
         local others = (unit == outerlvl and units or getUnitsOnTile(unit.x, unit.y, {thicc = hasProperty(unit,"thicc")}))
         for __,other in ipairs(others) do
           if other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) and timecheck(unit,"be","icy") and ignoreCheck(other,unit,"icy") and undo_buffer[2] ~= nil then
@@ -208,6 +210,7 @@ function doMovement(movex, movey, key)
       end
       local antiicy = getUnitsWithEffectAndCount("anti icy")
       for unit,icyness in pairs(antiicy) do
+        unit = units_by_id[unit] or cursors_by_id[unit]
         local others = (unit == outerlvl and units or getUnitsOnTile(unit.x, unit.y, {thicc = hasProperty(unit,"thicc")}))
         for __,other in ipairs(others) do
           if other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) and timecheck(unit,"be","anti icy") and ignoreCheck(other,unit,"anti icy") and undo_buffer[2] ~= nil then
@@ -229,6 +232,7 @@ function doMovement(movex, movey, key)
       end
       local icyyyy = getUnitsWithEffectAndCount("icyyyy")
       for unit,icyness in pairs(icyyyy) do
+        unit = units_by_id[unit] or cursors_by_id[unit]
         if timeless and not timecheck(unit,"be","icyyyy") then
           local others = (unit == outerlvl and units or getUnitsOnTile(unit.x, unit.y, {thicc = hasProperty(unit,"thicc")}))
           for __,other in ipairs(others) do
@@ -252,6 +256,7 @@ function doMovement(movex, movey, key)
       end
       local antiicyyyy = getUnitsWithEffectAndCount("anti icyyyy")
       for unit,icyness in pairs(antiicyyyy) do
+        unit = units_by_id[unit] or cursors_by_id[unit]
         if timeless and not timecheck(unit,"be","anti icyyyy") then
           local others = (unit == outerlvl and units or getUnitsOnTile(unit.x, unit.y, {thicc = hasProperty(unit,"thicc")}))
           for __,other in ipairs(others) do
@@ -291,6 +296,7 @@ function doMovement(movex, movey, key)
         local u = getUnitsWithEffectAndCount(name)
 
         for unit,uness in pairs(u) do
+          unit = units_by_id[unit] or cursors_by_id[unit]
           if (not hasProperty(unit, "slep") and slippers[unit.id] == nil and timecheck(unit,"be",name)) and
           ((not ortho) or movex == 0 or movey == 0) and ((key == control) or (not control) or alwaysKeys[key])
           then
@@ -398,6 +404,7 @@ function doMovement(movex, movey, key)
       end
       local walk = getUnitsWithEffectAndCount("walk")
       for unit,walkness in pairs(walk) do
+        unit = units_by_id[unit] or cursors_by_id[unit]
         if not hasProperty(unit, "slep") and slippers[unit.id] == nil and timecheck(unit,"be","walk") then
           table.insert(unit.moves, {reason = "walk", dir = unit.dir, times = walkness})
           if #unit.moves > 0 and not already_added[unit] then
@@ -408,6 +415,7 @@ function doMovement(movex, movey, key)
       end
       local antiwalk = getUnitsWithEffectAndCount("anti walk")
       for unit,walkness in pairs(antiwalk) do
+        unit = units_by_id[unit] or cursors_by_id[unit]
         if not hasProperty(unit, "slep") and slippers[unit.id] == nil and timecheck(unit,"be","anti walk") then
           table.insert(unit.moves, {reason = "walk", dir = dirAdd(unit.dir,4), times = walkness})
           if #unit.moves > 0 and not already_added[unit] then
@@ -729,6 +737,7 @@ function doMovement(movex, movey, key)
       end
       local go = getUnitsWithEffectAndCount("go")
       for unit,goness in pairs(go) do
+        unit = units_by_id[unit] or cursors_by_id[unit]
         local others = (unit == outerlvl and units or getUnitsOnTile(unit.x, unit.y, {thicc = hasProperty(unit,"thicc")}))
         for __,other in ipairs(others) do 
           if other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) and timecheck(unit,"be","go") and ignoreCheck(other,unit,"go") then
@@ -742,6 +751,7 @@ function doMovement(movex, movey, key)
       end
       local antigo = getUnitsWithEffectAndCount("anti go")
       for unit,goness in pairs(antigo) do
+        unit = units_by_id[unit] or cursors_by_id[unit]
         local others = (unit == outerlvl and units or getUnitsOnTile(unit.x, unit.y, {thicc = hasProperty(unit,"thicc")}))
         for __,other in ipairs(others) do 
           if other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) and timecheck(unit,"be","anti go") and ignoreCheck(other,unit,"anti go") then
@@ -755,6 +765,7 @@ function doMovement(movex, movey, key)
       end
       local goooo = getUnitsWithEffectAndCount("goooo")
       for unit,goness in pairs(goooo) do
+        unit = units_by_id[unit] or cursors_by_id[unit]
         local others = (unit == outerlvl and units or getUnitsOnTile(unit.x, unit.y, {thicc = hasProperty(unit,"thicc")}))
         for __,other in ipairs(others) do 
           if other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) and ignoreCheck(other,unit,"goooo") then
@@ -768,6 +779,7 @@ function doMovement(movex, movey, key)
       end
       local antigoooo = getUnitsWithEffectAndCount("anti goooo")
       for unit,goness in pairs(antigoooo) do
+        unit = units_by_id[unit] or cursors_by_id[unit]
         local others = (unit == outerlvl and units or getUnitsOnTile(unit.x, unit.y, {thicc = hasProperty(unit,"thicc")}))
         for __,other in ipairs(others) do 
           if other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) and ignoreCheck(other,unit,"anti goooo") then
@@ -783,9 +795,10 @@ function doMovement(movex, movey, key)
       local moovunits = {}
       for _,ruleparent in ipairs(ismoov) do
         local unit = ruleparent[2]
-        moovunits[unit] = true
+        moovunits[unit.id] = true
       end
       for unit,_ in pairs(moovunits) do
+        unit = units_by_id[unit] or cursors_by_id[unit]
         local others = getUnitsOnTile(unit.x,unit.y,{thicc = hasProperty(unit,"thicc")})
         for _,other in ipairs(others) do
           local is_moover = false
@@ -809,9 +822,10 @@ function doMovement(movex, movey, key)
       local antimoovunits = {}
       for _,ruleparent in ipairs(isantimoov) do
         local unit = ruleparent[2]
-        antimoovunits[unit] = true
+        antimoovunits[unit.id] = true
       end
       for unit,_ in pairs(antimoovunits) do
+        unit = units_by_id[unit] or cursors_by_id[unit]
         local others = getUnitsOnTile(unit.x,unit.y,{thicc = hasProperty(unit,"thicc")})
         for _,other in ipairs(others) do
           local is_moover = false
@@ -1600,6 +1614,7 @@ function fallBlock()
   function addFallersFromLoop(verb, property, gravity_dir, relative)
     local falling = (verb == "be" and getUnitsWithEffectAndCount(property) or getUnitsWithRuleAndCount(nil, verb, property))
     for unit,count in pairs(falling) do
+      unit = units_by_id[unit] or cursors_by_id[unit]
       if fallers[unit] == nil then
         fallers[unit] = {0, 0};
       end

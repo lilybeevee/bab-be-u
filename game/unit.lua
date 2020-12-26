@@ -100,6 +100,7 @@ function moveBlock()
     end
   end
   for unit,amt in pairs(isback) do
+    unit = units_by_id[unit] or cursors_by_id[unit]
     --print("backing 1:", unit.fullname, amt, unit.backer_turn, backers_cache[unit])
     backed_this_turn[unit] = true
     if (unit.backer_turn == nil) then
@@ -137,6 +138,7 @@ function moveBlock()
   tele_targets = {}
   --form lists, by tele name, of what all the tele units are
   for unit,amt in pairs(istele) do
+    unit = units_by_id[unit] or cursors_by_id[unit]
     if teles_by_name[unit.fullname] == nil then
       teles_by_name[unit.fullname] = {}
     end
@@ -156,6 +158,7 @@ function moveBlock()
   end
   --now do the actual teleports. we can use the index to know our own place in the list so we can skip ourselves
   for unit,amt in pairs(istele) do
+    unit = units_by_id[unit] or cursors_by_id[unit]
     local stuff = getUnitsOnTile(unit.x, unit.y, {not_destroyed = true, thicc = hasProperty(unit,"thicc")})
     for _,on in ipairs(stuff) do
       --we're going to deliberately let two same name teles tele if they're on each other, since with the deterministic behaviour it's predictable and interesting
@@ -465,6 +468,7 @@ function moveBlock()
   
   local folo_wall = getUnitsWithEffectAndCount("folowal")
   for unit,amt in pairs(folo_wall) do
+    unit = units_by_id[unit] or cursors_by_id[unit]
     local fwd = unit.dir
     local right = (((unit.dir + 2)-1)%8)+1
     local bwd = (((unit.dir + 4)-1)%8)+1
@@ -474,6 +478,7 @@ function moveBlock()
   
   local turn_cornr = getUnitsWithEffectAndCount("turncornr")
   for unit,amt in pairs(turn_cornr) do
+    unit = units_by_id[unit] or cursors_by_id[unit]
     local fwd = unit.dir
     local right = (((unit.dir + 2)-1)%8)+1
     local bwd = (((unit.dir + 4)-1)%8)+1
@@ -519,6 +524,7 @@ function updateUnits(undoing, big_update)
     local pending_gone = {}
     local moars = getUnitsWithEffectAndCountAndAnti("moar")
     for unit,aamt in pairs(moars) do
+      unit = units_by_id[unit] or cursors_by_id[unit]
       local amt = math.abs(aamt)
       if (unit.name ~= "lie/8" or hasProperty(unit,"notranform")) and timecheck(unit,"be","moar") then
         local range = math.ceil(amt/2)
@@ -679,7 +685,7 @@ function updateUnits(undoing, big_update)
     if not timeless then
       for on,unit in pairs(timeless_split) do
         addUndo({"timeless_split_remove", on, unit})
-        unit = units_by_id[unit]
+        unit = units_by_id[unit] or cursors_by_id[unit]
         on = units_by_id[on]
         if (unit ~= nil and on ~= nil) then
           table.insert(to_destroy, on)
@@ -1426,6 +1432,7 @@ function updateUnits(undoing, big_update)
       end
     end
     for unit,amt in pairs(isback) do
+      unit = units_by_id[unit] or cursors_by_id[unit]
       backed_this_turn[unit] = true
     end
     
@@ -1755,14 +1762,17 @@ function updateGraphicalPropertyCache(state_change)
       local anti = getUnitsWithEffectAndCount("anti flye")
       --local ccount = 0
       for unit,amt in pairs(prop) do
+        unit = units_by_id[unit] or cursors_by_id[unit]
         new_tbl[unit] = amt or nil
       end
       for unit,amt in pairs(anti) do
+        unit = units_by_id[unit] or cursors_by_id[unit]
         new_tbl[unit] = (new_tbl[unit] or 0) - (amt or 0)
       end
     --[[else if (count) then
       local isprop = getUnitsWithEffectAndCount(prop)
       for unit,amt in pairs(isprop) do
+        unit = units_by_id[unit] or cursors_by_id[unit]
         new_tbl[unit] = unit.fullname ~= "selctr" and amt or nil
       end]]
     else
@@ -2641,6 +2651,7 @@ function convertUnits(pass)
   
   local meta = getUnitsWithEffectAndCount("txtify")
   for unit,amt in pairs(meta) do
+    unit = units_by_id[unit] or cursors_by_id[unit]
     if (unit.fullname == "mous") then
       local cursor = unit
       local tile = getTile("txt_mous")
@@ -2677,6 +2688,7 @@ function convertUnits(pass)
   
   local demeta = getUnitsWithEffectAndCount("thingify")
   for unit,amt in pairs(demeta) do
+    unit = units_by_id[unit] or cursors_by_id[unit]
     if not unit.new and unit.type ~= "outerlvl" and timecheck(unit,"be","thingify") then
       --remove "txt_" as many times as we're de-metaing
       local nametocreate = unit.fullname
@@ -2727,6 +2739,7 @@ function convertUnits(pass)
 
   local ntify = getUnitsWithEffectAndCount("n'tify")
   for unit,amt in pairs(ntify) do
+    unit = units_by_id[unit] or cursors_by_id[unit]
     if not unit.new and unit.type ~= "outerlvl" and timecheck(unit,"be","n'tify") then
       local nametocreate = unit.fullname
       for i = 1,amt do
@@ -2764,6 +2777,7 @@ function convertUnits(pass)
 
   local ntifynt = getUnitsWithEffectAndCount("ify")
   for unit,amt in pairs(ntifynt) do
+    unit = units_by_id[unit] or cursors_by_id[unit]
     if not unit.new and unit.type ~= "outerlvl" and timecheck(unit,"be","ify") then
       local nametocreate = unit.fullname
       if not getTile(nametocreate) then
@@ -2787,6 +2801,7 @@ function convertUnits(pass)
 
   local ntifyyy = getUnitsWithEffectAndCount("n'tifyyy")
   for unit,amt in pairs(ntifyyy) do
+    unit = units_by_id[unit] or cursors_by_id[unit]
     if not unit.new and unit.type ~= "outerlvl" and timecheck(unit,"be","n'tifyyy") then
       local nametocreate = unit.fullname
       for i = 1,amt do
