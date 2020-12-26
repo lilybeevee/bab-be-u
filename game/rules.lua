@@ -479,6 +479,8 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
         local unit = letter.unit
         local prevunit = prevletter.unit or {}
         local name = letter.name
+        --turn flog be : ) (vertical) into flog be :) instead of flog be ..:)
+        local speaking_bridges_hack = false
         if name == "custom" then name = letter.unit.special.customletter end
         if letter.name == "u" then
           local umlauts = getTextOnTile(unit.x,unit.y-1)
@@ -499,6 +501,7 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
         elseif prevunit.fullname == "letter_colon" and prevunit.dir == dir
         and (letter.name == "o" or letter.name == ")" or letter.name == "(") then
           name = ":"..letter.name
+          speaking_bridges_hack = true
         end
         --[[elseif letter.name == "/" then
           if prevletter.name == ":" and prevunit.dir == dir then
@@ -509,6 +512,10 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
             name = "nxt"
           end
         end]]
+        
+        if (speaking_bridges_hack) then
+          new_word = new_word:sub(1, -3)
+        end
         
         if name ~= ":" then
           new_word = new_word..name
