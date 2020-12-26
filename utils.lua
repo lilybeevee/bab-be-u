@@ -3275,6 +3275,11 @@ end
 function extendReplayString(movex, movey, key)
   if (not unit_tests) then
     replay_string = replay_string..tostring(movex)..","..tostring(movey)..","..tostring(key)
+    if key == "drag" then
+      for _,unit in ipairs(drag_units) do
+        replay_string = replay_string..":"..unit.id
+      end
+    end
     if (units_by_name["txt_mous"] ~= nil or rules_with["mous"] ~= nil) then
       local cursor_table = {}
       for _,cursor in ipairs(cursors) do

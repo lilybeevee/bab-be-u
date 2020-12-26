@@ -57,7 +57,7 @@ local pathlock_box, pathlock_font
 local initialwindoposition
 stopwatch = nil
 
-local drag_units
+drag_units = {}
 
 local sessionseed
 
@@ -362,6 +362,27 @@ function doReplayTurn(turn)
 	end
 	local turn_parts = turn_string:split(",")
 	x, y, key = tonumber(turn_parts[1]), tonumber(turn_parts[2]), turn_parts[3]
+  print(key)
+  if (key:sub(1, 4) == "drag") then
+    print("hi")
+    drag_units = {}
+    local key_parts = key:split(":")
+    for _,key_part in ipairs(key_parts) do
+      print(key_part)
+      key_part = tonumber(key_part)
+      print(key_part)
+      if key_part ~= nil then
+        local unit = units_by_id[key_part] or cursors_by_id[key_part]
+        print(unit)
+        if unit ~= nil then
+          table.insert(drag_units, unit);
+        end
+      end
+    end
+    last_click_x, last_click_y = x, y;
+    doDragabl();
+    drag_units = {}
+  end
 	if (x == nil or y == nil) then
 		replay_playback = false
 		print("Finished playback at turn: "..tostring(turn))
@@ -2585,6 +2606,32 @@ end
 
 last_click_button = 1;
 
+function doDragabl()
+  --TODO: dragabl doesn't work with multiple mous I guess (and replay saving/loading would need updating too since there'd now be more than one destination)
+  local dragged = false
+  for _,unit in ipairs(drag_units) do
+    local dest_x, dest_y = last_click_x, last_click_y
+    local stuff = getUnitsOnTile(dest_x,dest_y)
+    --[[local nodrag = false
+    for _,other in ipairs(stuff) do
+      if hasProperty(other,"nodrag") then
+        nodrag = true
+        break
+      end
+    end
+    if not nodrag then]]
+      if not dragged then
+        newUndo()
+      end
+      addUndo{"update",unit.id,unit.x,unit.y,unit.dir}
+      moveUnit(unit,dest_x,dest_y)
+      dragged = true
+    --end
+    addTween(tween.new(0.1, unit.draw, {x = unit.x, y = unit.y}), "dragbl release:"..tostring(unit))
+  end
+  return dragged
+end
+
 function scene.mouseReleased(x, y, button)
   local height, width = love.graphics.getHeight(), love.graphics.getWidth()
   local box = sprites["ui/32x32"]:getWidth()
@@ -2592,32 +2639,13 @@ function scene.mouseReleased(x, y, button)
   if button == 1 then
     -- DRAGBL release
     if units_by_name["txt_dragbl"] then
-      local dragged = false
-      for _,unit in ipairs(drag_units) do
-        local dest_x, dest_y = math.floor(unit.draw.x + 0.5), math.floor(unit.draw.y + 0.5)
-        local stuff = getUnitsOnTile(dest_x,dest_y)
-        --[[local nodrag = false
-        for _,other in ipairs(stuff) do
-          if hasProperty(other,"nodrag") then
-            nodrag = true
-            break
-          end
-        end
-        if not nodrag then]]
-          if not dragged then
-            newUndo()
-          end
-          addUndo{"update",unit.id,unit.x,unit.y,unit.dir}
-          moveUnit(unit,dest_x,dest_y)
-          dragged = true
-        --end
-        addTween(tween.new(0.1, unit.draw, {x = unit.x, y = unit.y}), "dragbl release:"..tostring(unit))
-      end
+      last_click_x, last_click_y = screenToGameTile(love.mouse.getX(), love.mouse.getY())
+      local dragged = doDragabl()
       if dragged then
         doOneMove(last_click_x,last_click_y,"drag")
-        last_click_x, last_click_y = nil, nil
       end
       drag_units = {}
+      last_click_x, last_click_y = nil, nil
     end
     -- CLIKT prefix
     if units_by_name["txt_clikt"] then
