@@ -483,19 +483,19 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
         if letter.name == "u" then
           local umlauts = getTextOnTile(unit.x,unit.y-1)
           for _,umlaut in ipairs(umlauts) do
-            if umlaut.fullname == "letter_colon" and umlaut.dir == 3 then
+            if umlaut.fullname == "letter_colon" and umlaut.dir == 3 and umlaut ~= prevunit then
               name = "..u"
             end
           end
         elseif letter.name == "e" then
           local umlauts = getTextOnTile(unit.x,unit.y-1)
           for _,umlaut in ipairs(umlauts) do
-            if umlaut.fullname == "letter_colon" and umlaut.dir == 3 then
+            if umlaut.fullname == "letter_colon" and umlaut.dir == 3 and umlaut ~= prevunit then
               name = "..e"
             end
           end
-        elseif letter.fullname == "letter_colon" and letter.dir == 3 then
-          name = ".."
+        --[[elseif letter.fullname == "letter_colon" and letter.dir == 3 then
+          name = ".."]]--
         elseif prevunit.fullname == "letter_colon" and prevunit.dir == dir
         and (letter.name == "o" or letter.name == ")" or letter.name == "(") then
           name = ":"..letter.name
