@@ -94,6 +94,8 @@ function doSpinRules(units_to_change)
 end
 
 function doMovement(movex, movey, key)
+  --local start_time = love.timer.getTime();
+  
   --I guess this is the right place to do this?
   if (should_parse_rules_at_turn_boundary) then
     should_parse_rules = true
@@ -162,6 +164,10 @@ function doMovement(movex, movey, key)
   portaling = {}
   
   updateGroup()
+  
+  --local end_time = love.timer.getTime();
+  --if not unit_tests then print("doMovement Intro took: "..tostring(round((end_time-start_time)*1000)).."ms") end
+  --start_time = end_time;
 
   local move_stage = -1
   while move_stage <= 3 do
@@ -1036,6 +1042,9 @@ It is probably possible to do, but lily has decided that it's not important enou
     calculateLight()
     move_stage = move_stage + 1
   end
+  --local end_time = love.timer.getTime();
+  --if not unit_tests then print("doMovement While: "..tostring(round((end_time-start_time)*1000)).."ms") end
+  --start_time = end_time;
   --https://babaiswiki.fandom.com/wiki/Advanced_rulebook (for comparison)
   local reparse = function()
     parseRules()
@@ -1044,16 +1053,34 @@ It is probably possible to do, but lily has decided that it's not important enou
   end
   reparse()
   moveBlock()
+  --local end_time = love.timer.getTime();
+  --if not unit_tests then print("moveBlock took: "..tostring(round((end_time-start_time)*1000)).."ms") end
+  --start_time = end_time;
   reparse()
   fallBlock()
+  --local end_time = love.timer.getTime();
+  --if not unit_tests then print("fallBlock took: "..tostring(round((end_time-start_time)*1000)).."ms") end
+  --start_time = end_time;
   reparse()
   reparse() --is this second one intended?
   convertUnits(1)
+  --local end_time = love.timer.getTime();
+  --if not unit_tests then print("convertUnits took: "..tostring(round((end_time-start_time)*1000)).."ms") end
+  --start_time = end_time;
   reparse()
 	updateUnits(false, true)
+  --local end_time = love.timer.getTime();
+  --if not unit_tests then print("updateUnits took: "..tostring(round((end_time-start_time)*1000)).."ms") end
+  --start_time = end_time;
   reparse()
   updatePortals()
+  --local end_time = love.timer.getTime();
+  --if not unit_tests then print("updatePortals took: "..tostring(round((end_time-start_time)*1000)).."ms") end
+  --start_time = end_time;
   miscUpdates(true)
+  --local end_time = love.timer.getTime();
+  --if not unit_tests then print("miscUpdates took: "..tostring(round((end_time-start_time)*1000)).."ms") end
+  --start_time = end_time;
   
   if scene.setPathlockBox then 
     local showlock
@@ -1074,6 +1101,9 @@ It is probably possible to do, but lily has decided that it's not important enou
   end
   
   next_levels = getNextLevels()
+  --local end_time = love.timer.getTime();
+  --if not unit_tests then print("doMovement Outro took: "..tostring(round((end_time-start_time)*1000)).."ms") end
+  --start_time = end_time;
 end
 
 function doAction(action)
