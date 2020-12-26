@@ -2386,6 +2386,8 @@ function addParticles(ptype,x,y,color,count)
   
   if not settings["particles_on"] then return end
 
+  if unit_tests then return end
+
   local particle_colors = {}
   if type(color[1]) ~= "table" then
     if #color == 2 then
