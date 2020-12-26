@@ -4,7 +4,7 @@
     "sprite": ["tutorial_press"],
     "types": ["object"],
     "color": [[0, 3]],
-    "desc": "PRESS: Make PRESS F2 <property> to do something upon pressing F. Only some properties, like :(, will work!"
+    "desc": "PRESS: Make PRESS F2 <property> to do something upon pressing F. Only some properties, like :(, will work!\nIt's a noun, and anything that refers to press will work for this purpose."
   },
   {
     "name": "txt_f2",
@@ -25,12 +25,14 @@
     "sprite": ["tutorial_play"],
     "types": ["property"],
     "color": [[0, 3]],
-    "tags": ["txt/2pley"]
+    "tags": ["txt/2pley"],
+    "desc": "Can be used as a property that does literally nothing."
   },
   {
     "name": "txt_f1",
     "sprite": ["tutorial_f1"],
     "types": ["verb_property", "verb"],
-    "color": [[0, 3]]
+    "color": [[0, 3]],
+    "desc": "Can be used as a verb that does literally nothing (and accepts properties)."
   }
 ]

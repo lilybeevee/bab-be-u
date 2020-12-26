@@ -949,7 +949,7 @@
     "sprite": ["txt/gone"],
     "types": ["property"],
     "color": [[0, 3]],
-    "desc": "GONE: If something is GONE, it floats away into nothingness.\nAnti: restore all objects of type that have died (todo: define died)",
+    "desc": "GONE: If something is GONE, it floats away into nothingness.\nAnti: zomb",
     "tags": ["done"]
   },
   {
@@ -974,7 +974,7 @@
     "sprite": ["txt/thicc"],
     "types": ["property"],
     "color": [[1, 3]],
-    "desc": "THICC: Thicc things take up a 2x2 space. Expands to the lower right.\nAnti: babby (yes, the noun)"
+    "desc": "THICC: Thicc things take up a 2x2 space. Expands to the lower right. Currently very broken.\nAnti: babby (yes, the noun)"
   },
   {
     "name": "txt_rythm",
@@ -1005,7 +1005,7 @@
     "sprite": ["txt/zomb"],
     "types": ["property"],
     "color": [[3, 1]],
-    "desc": "ZOMB: Revives all previously destroyed copies of an object.",
+    "desc": "ZOMB: Revives all previously destroyed copies of an object. Anti: gone",
     "tags": ["zombie"]
   }
 ]
