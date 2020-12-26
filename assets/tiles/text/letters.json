@@ -172,7 +172,7 @@
     "sprite": ["letter_z"],
     "types": ["letter"],
     "color": [[0, 3]],
-    "desc": "Can be rotated (with rotatbl) to form Z."
+    "desc": "Can be rotated (with rotatbl) to form N."
   },
   {
     "name": "letter_'",
