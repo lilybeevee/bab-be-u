@@ -2421,7 +2421,7 @@ function canMoveCore(unit,dx,dy,dir,o) --pushing, pulling, solid_name, reason, p
   
   local nedkee = hasProperty(unit, "nedkee")
   local fordor = hasProperty(unit, "fordor")
-  local swap_mover = hasProperty(unit, "behin u")
+  local swap_mover = hasProperty(unit, "behinu")
   
   --normal checks
   local stopped = false
@@ -2432,8 +2432,8 @@ function canMoveCore(unit,dx,dy,dir,o) --pushing, pulling, solid_name, reason, p
       if (v.name == o.solid_name) and ignoreCheck(unit,v) then
         return false,movers,specials
       end
-      --local would_swap_with = (swap_mover and ignoreCheck(v,unit,"behin u")) or (hasProperty(v, "behin u") and ignoreCheck(unit,v,"behin u")) and pushing
-      local would_swap_with = swap_mover or hasProperty(v, "behin u") and o.pushing
+      --local would_swap_with = (swap_mover and ignoreCheck(v,unit,"behinu")) or (hasProperty(v, "behinu") and ignoreCheck(unit,v,"behinu")) and pushing
+      local would_swap_with = swap_mover or hasProperty(v, "behinu") and o.pushing
       --pushing a key into a door automatically works
       if ((fordor and hasProperty(v, "nedkee")) or (nedkee and hasProperty(v, "fordor"))) and sameFloat(unit, v) then
         local dont_ignore_unit = (nedkee and ignoreCheck(unit,v,"fordor")) or (fordor and ignoreCheck(unit,v,"nedkee"))
