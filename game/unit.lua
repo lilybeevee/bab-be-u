@@ -3337,7 +3337,11 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix,anti_gon
   unit.sprite_transforms = data.sprite_transforms
   unit.features = data.features
   unit.is_portal = data.portal
-  unit.rotatdir = unit.rotate and unit.dir or 1
+  if (unit.rotate or (rules_with ~= nil and rules_with["rotatbl"] and hasProperty(unit,"rotatbl"))) then
+    unit.rotatdir = dir
+  else
+    unit.rotatdir = 1
+  end
   
   if (not unit_tests) then
     unit.draw = {x = unit.x, y = unit.y, scalex = 1, scaley = 1, rotation = (unit.rotatdir - 1) * 45, opacity = 1}
