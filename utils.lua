@@ -785,10 +785,11 @@ function getUnitsWithEffectAndCount(effect)
   
   if rules_with["rp"] then
     for unit,count in pairs(result) do
+      unit = units_by_id[unit] or cursors_by_id[unit]
+      local isrp = matchesRule(nil,"rp",unit)
       for _,ruleparent in ipairs(isrp) do
         local mimic = ruleparent[2]
         if not mimic.removed and not hasRule(mimic,"ben't",effect) then
-          print(mimic.id, mimic.fullname)
           result[mimic.id] = count
         end
       end
@@ -834,6 +835,7 @@ function getUnitsWithRuleAndCount(rule1, rule2, rule3)
   end
   if rules_with["rp"] then
     for unit,count in pairs(result) do
+      unit = units_by_id[unit] or cursors_by_id[unit]
       local isrp = matchesRule(nil,"rp",unit)
       for _,ruleparent in ipairs(isrp) do
         local mimic = ruleparent[2]
