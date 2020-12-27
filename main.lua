@@ -5,7 +5,6 @@ require "lib/gooi"
 json = require "lib/json"
 tick = require "lib/tick"
 tween = require "lib/tween"
-ease = require 'lib.easing'
 colr = require "lib/colr-print"
 assets = require "assets"
 require "ui"
