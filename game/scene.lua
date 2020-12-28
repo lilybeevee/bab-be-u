@@ -2750,7 +2750,7 @@ function scene.mousePressed(x, y, button)
         if (hasProperty(unit,"dragbl") or hasProperty(unit,"anti dragbl")) and mous_for_drag_unit[unit] == nil then
           table.insert(drag_units, unit)
           mous_for_drag_unit[unit] = cursor;
-          initialxy_for_drag_unit = {x = cursor.screenx, y = cursor.screeny}
+          initialxy_for_drag_unit[unit] = {x = cursor.screenx, y = cursor.screeny}
         end
       end
     end
@@ -2818,7 +2818,8 @@ function updateDragabl()
       tx,ty = tx - 0.5, ty - 0.5
       local mx, my
       if hasProperty(unit,"anti dragbl") then
-        mx,my = initialxy_for_drag_unit[unit].x*2-tx, initialxy_for_drag_unit[unit].y*2-ty
+        mx, my = screenToGameTile(initialxy_for_drag_unit[unit].x, initialxy_for_drag_unit[unit].y);
+        mx,my = mx*2-tx, my*2-ty
       else
         mx,my = tx,ty
       end
