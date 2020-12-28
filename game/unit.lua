@@ -27,6 +27,12 @@ function thiccBlock(undoing)
     end
     for unit,_ in pairs(new_thicc_cache) do
       if not unit.removed_final then
+        if (#undo_buffer == 0) then
+          unit.draw.thicc = 2
+        else
+          unit.draw.thicc = 1
+          addTween(tween.new(0.35, unit.draw, {thicc = 2}), "unit:thicc:" .. unit.tempid)
+        end
         for i=1,3 do
           if not table.has_value(unitsByTile(unit.x+i%2,unit.y+math.floor(i/2)),unit) then
             table.insert(unitsByTile(unit.x+i%2,unit.y+math.floor(i/2)),unit)
@@ -41,6 +47,8 @@ function thiccBlock(undoing)
     end
     for unit,_ in pairs(un_thicc_cache) do
      if not unit.removed_final then
+      unit.draw.thicc = 2
+      addTween(tween.new(0.25, unit.draw, {thicc = 1}), "unit:thicc:" .. unit.tempid)
        for i=1,3 do
           if table.has_value(unitsByTile(unit.x+i%2,unit.y+math.floor(i/2)),unit) then
             removeFromTable(unitsByTile(unit.x+i%2,unit.y+math.floor(i/2)),unit)
@@ -3510,19 +3518,20 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix,anti_gon
   end
   table.insert(units_by_layer[unit.layer], unit)
   max_layer = math.max(max_layer, unit.layer)
+
+  table.insert(units, unit)
   
   --keep empty out of units_by_tile - it will be returned in getUnitsOnTile
   if (not (unit.fullname == "no1" or unit.type == "outerlvl")) then
     table.insert(unitsByTile(x, y), unit)
     if rules_with ~= nil and rules_with["thicc"] and hasProperty(unit, "thicc") then
+      unit.draw.thicc = 2
       table.insert(unitsByTile(x+1, y), unit)
       table.insert(unitsByTile(x, y+1), unit)
       table.insert(unitsByTile(x+1, y+1), unit)
       thicc_units[unit] = true;
     end
   end
-
-  table.insert(units, unit)
 
   --updateDir(unit, unit.dir)
   new_units_cache[unit] = true

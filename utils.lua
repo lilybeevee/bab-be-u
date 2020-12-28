@@ -85,7 +85,6 @@ function clear()
   timeless_crash = false
   timeless_yote = {}
   firsttimestop = true
-  
   thicc_units = {}
 
   --if scene == game then

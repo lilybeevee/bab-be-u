@@ -463,7 +463,7 @@ function scene.resetStuff(forTime)
   end
   --love.mouse.setGrabbed(true)
   resetMusic(map_music, 0.9)
-  --print(map_music)
+  rules_with = nil --fix for thicc/rotatabl persisting through restart since we check a couple of rules in createUnit. doesn't seem to break anything?
   loadMap()
   clearRules()
   parseRules()
@@ -472,6 +472,7 @@ function scene.resetStuff(forTime)
   updateUnits(true)
   updatePortals()
   miscUpdates(true)
+  thiccBlock(true)
   next_levels, next_level_objs = getNextLevels()
   first_turn = false
   window_dir = 0
@@ -1028,9 +1029,9 @@ function scene.draw(dt)
 
     local fulldrawx = (drawx + 0.5)*TILE_SIZE
     local fulldrawy = (drawy + 0.5)*TILE_SIZE
-    if thicc_units[unit] then
-      fulldrawx = fulldrawx + TILE_SIZE/2
-      fulldrawy = fulldrawy + TILE_SIZE/2
+    if (unit.draw.thicc) then
+      fulldrawx = fulldrawx + (unit.draw.thicc-1)*TILE_SIZE/2
+      fulldrawy = fulldrawy + (unit.draw.thicc-1)*TILE_SIZE/2
     end
 
     if graphical_property_cache["flye"][unit] ~= nil or (unit.parent and graphical_property_cache["flye"][unit.parent] ~= nil) or unit.name == "o" or unit.name == "square" or unit.name == "triangle" then
@@ -1096,12 +1097,11 @@ function scene.draw(dt)
 
     love.graphics.push()
     love.graphics.translate(fulldrawx, fulldrawy)
-    if thicc_units[unit] then
-      love.graphics.scale(2)
-    end
-
     love.graphics.push()
     love.graphics.rotate(math.rad(rotation))
+    if unit.draw.thicc then
+      love.graphics.scale(unit.draw.thicc)
+    end
     love.graphics.translate(-fulldrawx, -fulldrawy)
     
     --performance todos: each line gets drawn twice (both ways), so there's probably a way to stop that. might not be necessary though, since there is no lag so far
@@ -1425,25 +1425,6 @@ function scene.draw(dt)
     love.graphics.pop()
 
     if unit.blocked then
-      --[[local rotation = (unit.blocked_dir - 1) * 45
-
-      love.graphics.push()
-      love.graphics.rotate(math.rad(rotation))
-      love.graphics.translate(-fulldrawx, -fulldrawy)
-
-      local scalex = 1
-      if unit.blocked_dir % 2 == 0 then
-        scalex = math.sqrt(2)
-      end
-
-      love.graphics.setColor(getPaletteColor(2, 2))
-      if settings["scribble_anim"] then
-        love.graphics.draw(sprites["scribble_" .. anim_stage+1], fulldrawx, fulldrawy, 0, unit.draw.scalex * scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
-      else
-        love.graphics.draw(sprites["scribble_1"], fulldrawx, fulldrawy, 0, unit.draw.scalex * scalex, unit.draw.scaley, sprite:getWidth() / 2, sprite:getHeight() / 2)
-      end
-
-      love.graphics.pop()]]
 
       local rotation = math.sin(love.timer.getTime()*4)*math.rad(5)
 

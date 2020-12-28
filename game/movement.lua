@@ -95,7 +95,6 @@ function doSpinRules(units_to_change)
 end
 
 function doMovement(movex, movey, key)
-  print(key, last_click_button)
   --local start_time = love.timer.getTime();
   
   --I guess this is the right place to do this?
