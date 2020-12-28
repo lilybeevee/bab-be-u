@@ -368,8 +368,10 @@ function doReplayTurn(turn)
 	x, y, key = tonumber(turn_parts[1]), tonumber(turn_parts[2]), turn_parts[3]
   if (key == "clikt") then
     last_click_button = 1
+    playSound("clicc")
   elseif (key == "anti clikt") then
     last_click_button = 2
+    playSound("anti clicc")
   end
   if (key:sub(1, 4) == "drag") then
     last_click_button = 1
@@ -2622,16 +2624,8 @@ function finishDragabl()
   local dragged = false
   for _,unit in ipairs(drag_units) do
     local dest_x, dest_y = math.floor(unit.draw.x + 0.5), math.floor(unit.draw.y + 0.5)
-    --[[local stuff = getUnitsOnTile(dest_x,dest_y)
-    local nodrag = false
-    for _,other in ipairs(stuff) do
-      if hasProperty(other,"nodrag") then
-        nodrag = true
-        break
-      end
-    end
-    if not nodrag then]]
       if not dragged then
+        playSound("dragabl putdown")
         newUndo()
       end
       addUndo{"update",unit.id,unit.x,unit.y,unit.dir}
@@ -2703,7 +2697,7 @@ function scene.mouseReleased(x, y, button)
       local last_click_x, last_click_y = screenToGameTile(love.mouse.getX(), love.mouse.getY())
       last_click_button = 2
       doOneMove(last_click_x,last_click_y,"anti clikt")
-      playSound("clicc")
+      playSound("anti clicc")
       last_clicks = {}
     end
     -- Stacks preview
@@ -2762,6 +2756,9 @@ function scene.mousePressed(x, y, button)
           initialxy_for_drag_unit[unit] = {x = cursor.screenx, y = cursor.screeny}
         end
       end
+    end
+    if (#drag_units > 0) then
+      playSound("dragabl pickup")
     end
   end
 end
