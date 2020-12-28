@@ -414,11 +414,11 @@ function doReplayTurn(turn)
           else
             cursor.x = coords[1]
             cursor.y = coords[2]
-            --[[if (not unit_tests) then
-              local screenx, screeny = gameTileToScreen(cursor.x, cursor.y)
+            if (not unit_tests) then
+              local screenx, screeny = gameTileToScreen(cursor.x+0.5, cursor.y+0.5)
               cursor.screenx = screenx
               cursor.screeny = screeny
-            end]]
+            end
           end
         end
       end
