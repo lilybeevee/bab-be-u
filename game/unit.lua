@@ -2565,6 +2565,7 @@ function dropGotUnit(unit, rule)
           end
           local new_unit = createUnit(unit.tile, unit.x, unit.y, unit.dir, false, nil, nil, color)
           addUndo({"create", new_unit.id, false})
+          return new_unit
         end
       else
         if obj_name == "mous" then
@@ -2577,19 +2578,22 @@ function dropGotUnit(unit, rule)
           end
           local new_unit = createUnit(obj_name, unit.x, unit.y, unit.dir, false, nil, nil, color)
           addUndo({"create", new_unit.id, false})
+          return new_unit
         end
       end
     end
   end
   
+  local result = nil
   local obj_name = rule.object.name
   if (group_names_set[obj_name] ~= nil) then
     for _,v in ipairs(namesInGroup(obj_name)) do
-      dropOneGotUnit(unit, rule, v)
+      result = dropOneGotUnit(unit, rule, v)
     end
   else
-    dropOneGotUnit(unit, rule, obj_name)
+    result = dropOneGotUnit(unit, rule, obj_name)
   end
+  return result
 end
 
 function convertLevel()
@@ -3541,13 +3545,25 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix,anti_gon
 end
 
 function deleteUnit(unit,convert,undoing,gone)
+  print("aaaa", thicc_units[unit])
   unit.removed = true
   unit.removed_final = true
   if not undoing and not convert and not gone and not level_destroyed and rules_with ~= nil then
     gotters = matchesRule(unit, "got", "?")
     for _,ruleparent in ipairs(gotters) do
       local rule = ruleparent.rule
-      dropGotUnit(unit, rule)
+      local new_unit = dropGotUnit(unit, rule)
+      --thicc got law
+      if (thicc_units[unit] and new_unit ~= nil and not thicc_units[new_unit]) then
+        local old_x, old_y = unit.x, unit.y
+        for i=1,3 do
+          unit.x = old_x+i%2;
+          unit.y = old_y+math.floor(i/2);
+          dropGotUnit(unit, rule)
+        end
+        unit.x = old_x
+        unit.y = old_y
+      end
     end
   end
   --empty can't really be destroyed, only pretend to be, to preserve the invariant 'there is exactly empty per tile'
