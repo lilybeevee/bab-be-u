@@ -148,16 +148,32 @@ function scene.keyPressed(key)
 end
 
 local unit_tests_blacklist = { }
+--hugest offenders (make me want to die inside)
 unit_tests_blacklist["square fill 3"] = true
 unit_tests_blacklist["square fill 4"] = true
 unit_tests_blacklist["square fill 5"] = true
 unit_tests_blacklist["square fill 6"] = true
-unit_tests_blacklist["langton's bug"] = true
 unit_tests_blacklist["taek noetts"] = true
 unit_tests_blacklist["sadd citty"] = true
+--unit_tests_blacklist["remote txt"] = true
+--huge offenders (>10 s)
+unit_tests_blacklist["square fill 2"] = true
+unit_tests_blacklist["langton's bog"] = true
 unit_tests_blacklist["merrim_weebster"] = true
 unit_tests_blacklist["quick no1 puzzl"] = true
---borderline: "bab get cleen", "bridge wronging", "echolocation", "i don c no pumkin!"
+unit_tests_blacklist["with our powers combined___"] = true
+unit_tests_blacklist["sudoku"] = true
+--unit_tests_blacklist["f is for"] = true
+--unit_tests_blacklist["wal be seeping"] = true
+--borderline (7-10s)
+unit_tests_blacklist["bab get cleen"] = true
+unit_tests_blacklist["bridge wronging"] = true
+unit_tests_blacklist["echolocation"] = true
+unit_tests_blacklist["i don c no pumkin!"] = true
+unit_tests_blacklist["shhh, it's a secret"] = true
+unit_tests_blacklist["better bab snek"] = true
+unit_tests_blacklist["counter"] = true
+--unit_tests_blacklist["clause"] = true
 
 function runUnitTests(just_this_folder)
   local start_time = love.timer.getTime()

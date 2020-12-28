@@ -371,6 +371,10 @@ function doReplayTurn(turn)
       if did~= nil then
         local unit = units_by_id[did] or cursors_by_id[did]
         if unit ~= nil then
+          --hack for unit tests mode - draw doesn't exist so we'll just... pretend
+          if (unit.draw == nil) then
+            unit.draw = {}
+          end
           unit.draw.x = dx;
           unit.draw.y = dy;
           table.insert(drag_units, unit);
