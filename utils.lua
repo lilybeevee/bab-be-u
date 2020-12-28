@@ -61,8 +61,7 @@ function clear()
   cursor_converted = false
   mouse_X = love.mouse.getX()
   mouse_Y = love.mouse.getY()
-  last_click_x = nil
-  last_click_y = nil
+  last_clicks = {}
   mouse_oldX = mouse_X
   mouse_oldY = mouse_Y
   drag_units = {}
@@ -1584,7 +1583,7 @@ function testConds(unit, conds, compare_with, first_unit) --cond should be a {co
         end
       end
     elseif condtype == "wait..." then
-      result = last_move ~= nil and last_move[1] == 0 and last_move[2] == 0 and last_click_x == nil and last_click_y == nil
+      result = last_move ~= nil and last_move[1] == 0 and last_move[2] == 0 and #last_clicks == 0
     elseif condtype == "mayb" then
       local cond_unit = cond.unit
       --add a dummy action so that undoing happens
@@ -1656,19 +1655,22 @@ function testConds(unit, conds, compare_with, first_unit) --cond should be a {co
     elseif condtype == "timles" then
       result = timeless
     elseif condtype == "clikt" then
-      if unit.x == last_click_x and unit.y == last_click_y and last_click_button == 1 then
-        result = true
-      else
-        result = false
+      result = false
+      if last_click_button == 1 then
+        for _,click in ipairs(last_clicks) do
+          if click.x == unit.x and click.y == unit.y then
+            result = true
+          end
+        end
       end
-      --print(result)
-      --print(x, y)
-      --print(last_click_x, last_click_y)
     elseif condtype == "anti clikt" then
-      if unit.x == last_click_x and unit.y == last_click_y and last_click_button == 2 then
-        result = true
-      else
-        result = false
+      result = false
+      if last_click_button == 2 then
+        for _,click in ipairs(last_clicks) do
+          if click.x == unit.x and click.y == unit.y then
+            result = true
+          end
+        end
       end
     elseif main_palette_for_colour[condtype] then
       if unit.fullname == "no1" then
@@ -3277,7 +3279,7 @@ function extendReplayString(movex, movey, key)
     replay_string = replay_string..tostring(movex)..","..tostring(movey)..","..tostring(key)
     if key == "drag" then
       for _,unit in ipairs(drag_units) do
-        replay_string = replay_string..":"..unit.id.."@"..math.floor(unit.draw.x + 0.5).."@"..math.floor(unit.draw.y + 0.5)
+        replay_string = replay_string..":"..unit.id.."@"..math.floor(unit.x + 0.5).."@"..math.floor(unit.draw.y + 0.5)
       end
     end
     if (units_by_name["txt_mous"] ~= nil or rules_with["mous"] ~= nil) then

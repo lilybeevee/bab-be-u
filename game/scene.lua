@@ -385,7 +385,6 @@ function doReplayTurn(turn)
         end
       end
     end
-    last_click_x, last_click_y = x, y;
     finishDragabl();
     drag_units = {}
   end
@@ -2401,7 +2400,7 @@ function doOneMove(x, y, key, past)
 		last_move = {x, y}
 		just_moved = true
 		doMovement(x, y, key)
-    last_click_x, last_click_y = nil, nil
+    last_clicks = {}
 		if #undo_buffer > 0 and #undo_buffer[1] == 0 then
 			table.remove(undo_buffer, 1)
 		end
@@ -2644,22 +2643,23 @@ function scene.mouseReleased(x, y, button)
   if button == 1 then
     -- DRAGBL release
     if units_by_name["txt_dragbl"] then
-      last_click_x, last_click_y = screenToGameTile(love.mouse.getX(), love.mouse.getY())
+      local last_click_x, last_click_y = screenToGameTile(love.mouse.getX(), love.mouse.getY())
       local dragged = finishDragabl()
       if dragged then
+        last_click_button = 1
         doOneMove(last_click_x,last_click_y,"drag")
       end
       drag_units = {}
       mous_for_drag_unit = {}
       initialxy_for_drag_unit = {}
-      last_click_x, last_click_y = nil, nil
+      last_clicks = {}
     end
     -- CLIKT prefix
     if units_by_name["txt_clikt"] then
-      last_click_x, last_click_y = screenToGameTile(love.mouse.getX(), love.mouse.getY())
+      local last_click_x, last_click_y = screenToGameTile(love.mouse.getX(), love.mouse.getY())
       last_click_button = 1
       doOneMove(last_click_x,last_click_y,"clikt")
-      last_click_x, last_click_y = nil, nil
+      last_clicks = {}
       playSound("clicc")
     end
     -- Replay buttons
@@ -2691,11 +2691,11 @@ function scene.mouseReleased(x, y, button)
   elseif button == 2 then
     -- CLIKT prefix
     if units_by_name["txt_clikt"] then
-      last_click_x, last_click_y = screenToGameTile(love.mouse.getX(), love.mouse.getY())
+      local last_click_x, last_click_y = screenToGameTile(love.mouse.getX(), love.mouse.getY())
       last_click_button = 2
       doOneMove(last_click_x,last_click_y,"anti clikt")
-      last_click_x, last_click_y = nil, nil
       playSound("clicc")
+      last_clicks = {}
     end
     -- Stacks preview
     scene.setStackBox(screenToGameTile(x, y))

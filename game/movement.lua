@@ -116,7 +116,14 @@ function doMovement(movex, movey, key)
     extendReplayString(movex, movey, key)
   end
   if (key == "clikt" or key == "drag") then
-    last_click_x, last_click_y = movex, movey
+    last_clicks = {}
+    if (#cursors > 0) then
+      for _,cursor in ipairs(cursors) do
+        table.insert(last_clicks, {x = cursor.x, y = cursor.y})
+      end
+    else
+      table.insert(last_clicks, {x = movex, y = movey})
+    end
     movex = 0
     movey = 0
   end
