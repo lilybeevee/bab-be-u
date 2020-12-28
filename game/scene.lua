@@ -58,6 +58,8 @@ local initialwindoposition
 stopwatch = nil
 
 drag_units = {}
+mous_for_drag_unit = {}
+initialxy_for_drag_unit = {}
 
 local sessionseed
 
@@ -82,6 +84,8 @@ function scene.load()
   stack_font:setFilter("nearest","nearest")
   pathlock_font = love.graphics.newFont(16)
   drag_units = {}
+  mous_for_drag_unit = {}
+  initialxy_for_drag_unit = {}
 
   scene.resetStuff()
 
@@ -217,7 +221,7 @@ function scene.update(dt)
   scene.checkInput()
   updateCursors()
   
-  doDragbl()
+  updateDragabl()
 
   mouse_oldX = mouse_X
   mouse_oldY = mouse_Y
@@ -382,7 +386,7 @@ function doReplayTurn(turn)
       end
     end
     last_click_x, last_click_y = x, y;
-    doDragabl();
+    finishDragabl();
     drag_units = {}
   end
 	if (x == nil or y == nil) then
@@ -2608,8 +2612,7 @@ end
 
 last_click_button = 1;
 
-function doDragabl()
-  --TODO: dragabl doesn't work with multiple mous I guess (and replay saving/loading would need updating too since there'd now be more than one destination)
+function finishDragabl()
   local dragged = false
   for _,unit in ipairs(drag_units) do
     local dest_x, dest_y = math.floor(unit.draw.x + 0.5), math.floor(unit.draw.y + 0.5)
@@ -2642,11 +2645,13 @@ function scene.mouseReleased(x, y, button)
     -- DRAGBL release
     if units_by_name["txt_dragbl"] then
       last_click_x, last_click_y = screenToGameTile(love.mouse.getX(), love.mouse.getY())
-      local dragged = doDragabl()
+      local dragged = finishDragabl()
       if dragged then
         doOneMove(last_click_x,last_click_y,"drag")
       end
       drag_units = {}
+      mous_for_drag_unit = {}
+      initialxy_for_drag_unit = {}
       last_click_x, last_click_y = nil, nil
     end
     -- CLIKT prefix
@@ -2733,18 +2738,20 @@ function scene.resize(w, h)
   scene.buildUI()
 end
 
-mouse_grabbedX, mouse_grabbedY = nil,nil
 
 function scene.mousePressed(x, y, button)
   if not (rules_with["dragbl"] or rules_with["anti dragbl"]) then return end
   
   if button == 1 then
-    local tx,ty = screenToGameTile(x,y)
-    local stuff = getUnitsOnTile(tx,ty)
-    for _,unit in ipairs(stuff) do
-      if hasProperty(unit,"dragbl") or hasProperty(unit,"anti dragbl") then
-        mouse_grabbedX, mouse_grabbedY = tx,ty
-        table.insert(drag_units, unit)
+    for _,cursor in ipairs(cursors) do
+      local tx,ty = cursor.x, cursor.y
+      local stuff = getUnitsOnTile(tx,ty)
+      for _,unit in ipairs(stuff) do
+        if (hasProperty(unit,"dragbl") or hasProperty(unit,"anti dragbl")) and mous_for_drag_unit[unit] == nil then
+          table.insert(drag_units, unit)
+          mous_for_drag_unit[unit] = cursor;
+          initialxy_for_drag_unit = {x = cursor.screenx, y = cursor.screeny}
+        end
       end
     end
   end
@@ -2802,20 +2809,16 @@ function scene.setPathlockBox(unit)
   end
 end
 
-function doDragbl()
+function updateDragabl()
   if drag_units and #drag_units > 0 then
-    local tx, ty = screenToGameTile(mouse_X, mouse_Y, true)
-    tx,ty = tx - 0.5, ty - 0.5
-    --[[local mx, my = mouse_grabbedX*2-mx, mouse_grabbedY*2-my
-    mx, my = mx - 0.5, my - 0.5
-    --local tx, ty = screenToGameTile(mouse_X, mouse_Y, false)]]
     local nodrags = getUnitsWithEffect("nodrag")
 
     for _,unit in ipairs(drag_units) do
-      --local anti = hasProperty(unit,"anti dragbl")
+      local tx, ty = screenToGameTile(mous_for_drag_unit[unit].screenx, mous_for_drag_unit[unit].screeny, true)
+      tx,ty = tx - 0.5, ty - 0.5
       local mx, my
       if hasProperty(unit,"anti dragbl") then
-        mx,my = mouse_grabbedX*2-tx, mouse_grabbedY*2-ty
+        mx,my = initialxy_for_drag_unit[unit].x*2-tx, initialxy_for_drag_unit[unit].y*2-ty
       else
         mx,my = tx,ty
       end
@@ -2864,33 +2867,6 @@ function doDragbl()
           unit.draw.y = oldy
         end
       end
-
-      --[[if  canMove(unit,dx,0,0,{reason = "drag", start_x = math.floor(unit.draw.x), start_y = math.floor(unit.draw.y)})
-      and canMove(unit,dx,0,0,{reason = "drag", start_x = math.floor(unit.draw.x), start_y = math.ceil( unit.draw.y)}) then
-        local diff = mx - unit.draw.x
-        if diff < -0.25 then diff = -0.25 end
-        if diff > 0.25 then diff = 0.25 end
-        unit.draw.x = unit.draw.x + diff
-      else
-        if mx * dx < oldx * dx then
-          unit.draw.x = mx
-        else
-          unit.draw.x = oldx
-        end
-      end
-      if  canMove(unit,0,dy,0,{reason = "drag", start_x = math.floor(unit.draw.x), start_y = math.floor(unit.draw.y)})
-      and canMove(unit,0,dy,0,{reason = "drag", start_x = math.ceil( unit.draw.x), start_y = math.floor(unit.draw.y)}) then
-        local diff = my - unit.draw.y
-        if diff < -0.25 then diff = -0.25 end
-        if diff > 0.25 then diff = 0.25 end
-        unit.draw.y = unit.draw.y + diff
-      else
-        if my * dy < oldy * dy then
-          unit.draw.y = my
-        else
-          unit.draw.y = oldy
-        end
-      end]]
     end
   end
 end
