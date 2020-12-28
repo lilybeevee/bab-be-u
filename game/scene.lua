@@ -366,7 +366,13 @@ function doReplayTurn(turn)
 	end
 	local turn_parts = turn_string:split(",")
 	x, y, key = tonumber(turn_parts[1]), tonumber(turn_parts[2]), turn_parts[3]
+  if (key == "clikt") then
+    last_click_button = 1
+  elseif (key == "anti clikt") then
+    last_click_button = 2
+  end
   if (key:sub(1, 4) == "drag") then
+    last_click_button = 1
     drag_units = {}
     local drag_units_data = key:sub(6):split(":")
     for _,drag_unit_data in ipairs(drag_units_data) do
@@ -387,6 +393,7 @@ function doReplayTurn(turn)
     end
     finishDragabl();
     drag_units = {}
+    key = "drag"
   end
 	if (x == nil or y == nil) then
 		replay_playback = false
@@ -2641,6 +2648,7 @@ function scene.mouseReleased(x, y, button)
   local box = sprites["ui/32x32"]:getWidth()
   
   if button == 1 then
+    local did_a_thing = false;
     -- DRAGBL release
     if units_by_name["txt_dragbl"] then
       local last_click_x, last_click_y = screenToGameTile(love.mouse.getX(), love.mouse.getY())
@@ -2648,6 +2656,7 @@ function scene.mouseReleased(x, y, button)
       if dragged then
         last_click_button = 1
         doOneMove(last_click_x,last_click_y,"drag")
+        did_a_thing = true
       end
       drag_units = {}
       mous_for_drag_unit = {}
@@ -2655,7 +2664,7 @@ function scene.mouseReleased(x, y, button)
       last_clicks = {}
     end
     -- CLIKT prefix
-    if units_by_name["txt_clikt"] then
+    if units_by_name["txt_clikt"] and not did_a_thing then
       local last_click_x, last_click_y = screenToGameTile(love.mouse.getX(), love.mouse.getY())
       last_click_button = 1
       doOneMove(last_click_x,last_click_y,"clikt")

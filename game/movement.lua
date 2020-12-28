@@ -95,6 +95,7 @@ function doSpinRules(units_to_change)
 end
 
 function doMovement(movex, movey, key)
+  print(key, last_click_button)
   --local start_time = love.timer.getTime();
   
   --I guess this is the right place to do this?
@@ -115,7 +116,7 @@ function doMovement(movex, movey, key)
   if not doing_past_turns then
     extendReplayString(movex, movey, key)
   end
-  if (key == "clikt" or key == "drag") then
+  if (key == "clikt" or key == "drag" or key == "anti clikt") then
     last_clicks = {}
     if (#cursors > 0) then
       for _,cursor in ipairs(cursors) do
