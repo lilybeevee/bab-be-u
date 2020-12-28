@@ -196,7 +196,7 @@ function moveBlock()
   --now do the actual teleports. we can use the index to know our own place in the list so we can skip ourselves
   for unit,amt in pairs(istele) do
     unit = units_by_id[unit] or cursors_by_id[unit]
-    local stuff = getUnitsOnTile(unit.x, unit.y, {not_destroyed = true, thicc = hasProperty(unit,"thicc")})
+    local stuff = getUnitsOnTile(unit.x, unit.y, {not_destroyed = true, thicc = thicc_units[unit]})
     for _,on in ipairs(stuff) do
       --we're going to deliberately let two same name teles tele if they're on each other, since with the deterministic behaviour it's predictable and interesting
       if unit ~= on and sameFloat(unit, on) and ignoreCheck(unit, on, "visitfren") and timecheck(unit,"be","visitfren") --[[and unit.fullname ~= on.fullname]] then
@@ -435,7 +435,7 @@ function moveBlock()
   
   local isshift = getUnitsWithEffect("go")
   for _,unit in ipairs(isshift) do
-    local stuff = getUnitsOnTile(unit.x, unit.y, {not_destroyed = true, thicc = hasProperty(unit,"thicc")})
+    local stuff = getUnitsOnTile(unit.x, unit.y, {not_destroyed = true, thicc = thicc_units[unit]})
     for _,on in ipairs(stuff) do
       if unit ~= on and sameFloat(unit, on) and ignoreCheck(unit, on, "go") and timecheck(unit,"be","go") then
         if (units_to_change[on] == nil) then
@@ -449,7 +449,7 @@ function moveBlock()
   
   local isshift = getUnitsWithEffect("goooo")
   for _,unit in ipairs(isshift) do
-    local stuff = getUnitsOnTile(unit.x, unit.y, {not_destroyed = true, thicc = hasProperty(unit,"thicc")})
+    local stuff = getUnitsOnTile(unit.x, unit.y, {not_destroyed = true, thicc = thicc_units[unit]})
     for _,on in ipairs(stuff) do
       if unit ~= on and sameFloat(unit, on) and ignoreCheck(unit, on, "goooo") and timecheck(unit,"be","goooo") then
          if (units_to_change[on] == nil) then
@@ -476,8 +476,8 @@ function moveBlock()
     if not hasProperty("folowal") and not hasProperty("turncornr") then
       local dpos = dirs8[unit.dir]
       local dx, dy = dpos[1], dpos[2]
-      local stuff = getUnitsOnTile(unit.x+dx, unit.y+dy, {not_destroyed = true, thicc = hasProperty(unit,"thicc")})
-      local stuff2 = getUnitsOnTile(unit.x-dx, unit.y-dy, {not_destroyed = true, thicc = hasProperty(unit,"thicc")})
+      local stuff = getUnitsOnTile(unit.x+dx, unit.y+dy, {not_destroyed = true, thicc = thicc_units[unit]})
+      local stuff2 = getUnitsOnTile(unit.x-dx, unit.y-dy, {not_destroyed = true, thicc = thicc_units[unit]})
       local pushfront = false
       local pushbehin = false
       for _,on in ipairs(stuff) do
@@ -572,7 +572,7 @@ function updateUnits(undoing, big_update)
             local x = x_
             local absx = math.abs(x)
             if (absx+absy+math.max(absx,absy)-1 <= amt) and (x ~= 0 or y ~= 0) then --this line handles the area thing. 0,0 checking is because it's weird without it
-              if hasProperty(unit,"thicc") then
+              if thicc_units[unit] then
                 x = x*2
                 y = y*2
               end
@@ -656,7 +656,7 @@ function updateUnits(undoing, big_update)
     local fires = copyTable(findUnitsByName("xplod"))
     if #nukes > 0 then
       for _,nuke in ipairs(nukes) do
-        local check = getUnitsOnTile(nuke.x,nuke.y,{thicc = hasProperty(unit,"thicc")})
+        local check = getUnitsOnTile(nuke.x,nuke.y,{thicc = thicc_units[unit]})
         local lit = false
         for _,other in ipairs(check) do
           if other.name == "xplod" then
@@ -775,7 +775,7 @@ function updateUnits(undoing, big_update)
           splits_per_tile[coords] = 0
         end
         if splits_per_tile[coords] < 16 then
-          local stuff = getUnitsOnTile(unit.x, unit.y, {not_destroyed = true, thicc = hasProperty(unit,"thicc")})
+          local stuff = getUnitsOnTile(unit.x, unit.y, {not_destroyed = true, thicc = thicc_units[unit]})
           for _,on in ipairs(stuff) do
             if splits_per_tile[coords] >= 16 then break end
             if unit ~= on and sameFloat(unit, on) and not on.new and ignoreCheck(on, unit, "split") then
@@ -856,7 +856,7 @@ function updateUnits(undoing, big_update)
     local isvs = matchesRule(nil,"vs","?")
     for _,ruleparent in ipairs(isvs) do
       local unit = ruleparent[2]
-      local stuff = getUnitsOnTile(unit.x, unit.y, {not_destroyed = true, checkmous = true, thicc = hasProperty(unit,"thicc")})
+      local stuff = getUnitsOnTile(unit.x, unit.y, {not_destroyed = true, checkmous = true, thicc = thicc_units[unit]})
       for _,on in ipairs(stuff) do
         if (unit ~= on or ruleparent[1].rule.object.name == "themself") and hasRule(unit, "vs", on) and sameFloat(unit, on) then
           local unitmoved = false
@@ -897,7 +897,7 @@ function updateUnits(undoing, big_update)
     
     local issink = getUnitsWithEffect("noswim")
     for _,unit in ipairs(issink) do
-      local stuff = getUnitsOnTile(unit.x, unit.y, {not_destroyed = true, thicc = hasProperty(unit,"thicc")})
+      local stuff = getUnitsOnTile(unit.x, unit.y, {not_destroyed = true, thicc = thicc_units[unit]})
       for _,on in ipairs(stuff) do
         if unit ~= on and on.fullname ~= "no1" and sameFloat(unit, on) then
           local ignore_unit = ignoreCheck(unit, on)
@@ -937,7 +937,7 @@ function updateUnits(undoing, big_update)
     
     local isweak = getUnitsWithEffect("ouch")
     for _,unit in ipairs(isweak) do
-      local stuff = getUnitsOnTile(unit.x, unit.y, {not_destroyed = true, thicc = hasProperty(unit,"thicc")})
+      local stuff = getUnitsOnTile(unit.x, unit.y, {not_destroyed = true, thicc = thicc_units[unit]})
       for _,on in ipairs(stuff) do
         if unit ~= on and sameFloat(unit, on) and ignoreCheck(unit, on) then
           if timecheck(unit,"be","ouch") and timecheck(on) then
@@ -958,7 +958,7 @@ function updateUnits(undoing, big_update)
     
     local isstrong = getUnitsWithEffect("anti ouch")
     for _,unit in ipairs(isstrong) do
-      local stuff = getUnitsOnTile(unit.x, unit.y, {not_destroyed = true, thicc = hasProperty(unit,"thicc")})
+      local stuff = getUnitsOnTile(unit.x, unit.y, {not_destroyed = true, thicc = thicc_units[unit]})
       for _,on in ipairs(stuff) do
         if on ~= unit and sameFloat(on, unit) and ignoreCheck(on, unit) then
           if timecheck(unit,"be","anti ouch") and timecheck(on) then
@@ -979,7 +979,7 @@ function updateUnits(undoing, big_update)
     
     local ishot = getUnitsWithEffect("hotte")
     for _,unit in ipairs(ishot) do
-      local stuff = getUnitsOnTile(unit.x, unit.y, {not_destroyed = true, checkmous = true, thicc = hasProperty(unit,"thicc")})
+      local stuff = getUnitsOnTile(unit.x, unit.y, {not_destroyed = true, checkmous = true, thicc = thicc_units[unit]})
       for _,on in ipairs(stuff) do
         if hasProperty(on, "fridgd") and sameFloat(unit, on) and ignoreCheck(on, unit, "hotte") then
           if timecheck(unit,"be","hotte") and timecheck(on,"be","fridgd") then
@@ -1000,7 +1000,7 @@ function updateUnits(undoing, big_update)
     
     local isdefeat = getUnitsWithEffect(":(")
     for _,unit in ipairs(isdefeat) do
-      local stuff = getUnitsOnTile(unit.x, unit.y, {not_destroyed = true, checkmous = true, thicc = hasProperty(unit,"thicc")})
+      local stuff = getUnitsOnTile(unit.x, unit.y, {not_destroyed = true, checkmous = true, thicc = thicc_units[unit]})
       for _,on in ipairs(stuff) do
         if hasU(on) and sameFloat(unit, on) and ignoreCheck(on, unit, ":(") then
           if timecheck(unit,"be",":(") and (timecheckUs(on)) then
@@ -1021,7 +1021,7 @@ function updateUnits(undoing, big_update)
     
     local isantidefeat = getUnitsWithEffect("anti :(")
     for _,unit in ipairs(isantidefeat) do
-      local stuff = getUnitsOnTile(unit.x, unit.y, {not_destroyed = true, checkmous = true, thicc = hasProperty(unit,"thicc")})
+      local stuff = getUnitsOnTile(unit.x, unit.y, {not_destroyed = true, checkmous = true, thicc = thicc_units[unit]})
       for _,on in ipairs(stuff) do
         if hasU(on) and sameFloat(unit, on) and ignoreCheck(on, unit, ":(") then
           if timecheck(unit,"be","anti :(") and (timecheckUs(on)) then
@@ -1057,7 +1057,7 @@ function updateUnits(undoing, big_update)
     
     local isshut = getUnitsWithEffect("nedkee")
     for _,unit in ipairs(isshut) do
-      local stuff = getUnitsOnTile(unit.x, unit.y, {not_destroyed = true, checkmous = true, thicc = hasProperty(unit,"thicc")})
+      local stuff = getUnitsOnTile(unit.x, unit.y, {not_destroyed = true, checkmous = true, thicc = thicc_units[unit]})
       for _,on in ipairs(stuff) do
         if hasProperty(on, "fordor") and sameFloat(unit, on) then
           local ignore_unit = ignoreCheck(unit, on, "fordor")
@@ -1102,7 +1102,7 @@ function updateUnits(undoing, big_update)
     local issnacc = matchesRule(nil, "snacc", "?")
     for _,ruleparent in ipairs(issnacc) do
       local unit = ruleparent[2]
-      local stuff = getUnitsOnTile(unit.x, unit.y, {not_destroyed = true, checkmous = true, thicc = hasProperty(unit,"thicc")})
+      local stuff = getUnitsOnTile(unit.x, unit.y, {not_destroyed = true, checkmous = true, thicc = thicc_units[unit]})
       for _,on in ipairs(stuff) do
         if (unit ~= on or ruleparent[1].rule.object.name == "themself") and hasRule(unit, "snacc", on) and sameFloat(unit, on) and ignoreCheck(on, unit) then
           if not hasProperty(unit, "anti lesbad") and not hasProperty(on, "anti lesbad") then
@@ -1125,7 +1125,7 @@ function updateUnits(undoing, big_update)
     
     local isreset = getUnitsWithEffect("tryagain")
     for _,unit in ipairs(isreset) do
-      local stuff = getUnitsOnTile(unit.x, unit.y, {not_destroyed = true, checkmous = true, thicc = hasProperty(unit,"thicc")})
+      local stuff = getUnitsOnTile(unit.x, unit.y, {not_destroyed = true, checkmous = true, thicc = thicc_units[unit]})
       for _,on in ipairs(stuff) do
         if hasU(on) and sameFloat(unit, on) and ignoreCheck(on, unit, "tryagain") then
           if timecheck(unit,"be","tryagain") and (timecheckUs(on)) then
@@ -1142,7 +1142,7 @@ function updateUnits(undoing, big_update)
     
     local isreplay = getUnitsWithEffect("anti tryagain")
     for _,unit in ipairs(isreplay) do
-      local stuff = getUnitsOnTile(unit.x, unit.y, {not_destroyed = true, checkmous = true, thicc = hasProperty(unit,"thicc")})
+      local stuff = getUnitsOnTile(unit.x, unit.y, {not_destroyed = true, checkmous = true, thicc = thicc_units[unit]})
       for _,on in ipairs(stuff) do
         if hasU(on) and sameFloat(unit, on) and ignoreCheck(on, unit, "tryagain") then
           if timecheck(unit,"be","anti tryagain") and (timecheckUs(on)) then
@@ -1160,7 +1160,7 @@ function updateUnits(undoing, big_update)
     for _,ruleparent in ipairs(iscrash) do
       local unit = ruleparent[2]
       if not hasProperty(ruleparent[1].rule.object,"slep") then
-        local stuff = getUnitsOnTile(unit.x, unit.y, {not_destroyed = true, checkmous = true, thicc = hasProperty(unit,"thicc")})
+        local stuff = getUnitsOnTile(unit.x, unit.y, {not_destroyed = true, checkmous = true, thicc = thicc_units[unit]})
         for _,on in ipairs(stuff) do
           if hasU(on) and sameFloat(unit, on) and ignoreCheck(on, unit, "delet") then
             if timecheck(unit,"be","delet") and (timecheckUs(on)) then
@@ -1179,7 +1179,7 @@ function updateUnits(undoing, big_update)
     
     local isbonus = getUnitsWithEffect(":o")
     for _,unit in ipairs(isbonus) do
-      local stuff = getUnitsOnTile(unit.x, unit.y, {not_destroyed = true, checkmous = true, thicc = hasProperty(unit,"thicc")})
+      local stuff = getUnitsOnTile(unit.x, unit.y, {not_destroyed = true, checkmous = true, thicc = thicc_units[unit]})
       for _,on in ipairs(stuff) do
         if hasU(on) and sameFloat(unit, on) and ignoreCheck(on, unit, ":o") then
           writeSaveFile(true, {"levels", level_filename, "bonus"})
@@ -1198,7 +1198,7 @@ function updateUnits(undoing, big_update)
     
     local isbonus = getUnitsWithEffect("anti :o")
     for _,unit in ipairs(isbonus) do
-      local stuff = getUnitsOnTile(unit.x, unit.y, {not_destroyed = true, checkmous = true, thicc = hasProperty(unit,"thicc")})
+      local stuff = getUnitsOnTile(unit.x, unit.y, {not_destroyed = true, checkmous = true, thicc = thicc_units[unit]})
       for _,on in ipairs(stuff) do
         if hasU(on) and sameFloat(unit, on) and ignoreCheck(on, unit, ":o") then
           writeSaveFile(true, {"levels", level_filename, "bonus"})
@@ -1219,7 +1219,7 @@ function updateUnits(undoing, big_update)
     
     local is2edit = getUnitsWithEffect("2edit")
     for _,unit in ipairs(is2edit) do
-      local stuff = getUnitsOnTile(unit.x,unit.y, {not_destroyed = true, checkmous = true, thicc = hasProperty(unit,"thicc")})
+      local stuff = getUnitsOnTile(unit.x,unit.y, {not_destroyed = true, checkmous = true, thicc = thicc_units[unit]})
       for _,on in ipairs(stuff) do
         if hasU(on) and sameFloat(unit, on) and ignoreCheck(on, unit, "2edit") then
           scene = editor
@@ -1229,7 +1229,7 @@ function updateUnits(undoing, big_update)
     
     local isunwin = getUnitsWithEffect("un:)")
     for _,unit in ipairs(isunwin) do
-      local stuff = getUnitsOnTile(unit.x,unit.y, {not_destroyed = true, checkmous = true, thicc = hasProperty(unit,"thicc")})
+      local stuff = getUnitsOnTile(unit.x,unit.y, {not_destroyed = true, checkmous = true, thicc = thicc_units[unit]})
       for _,on in ipairs(stuff) do
         if hasU(on) and sameFloat(unit, on) and ignoreCheck(on, unit, "un:)") then
           if timecheck(unit,"be","d") and (timecheckUs(on)) then
@@ -1245,7 +1245,7 @@ function updateUnits(undoing, big_update)
     
     local iswin = getUnitsWithEffect(":)")
     for _,unit in ipairs(iswin) do
-      local stuff = getUnitsOnTile(unit.x, unit.y, {not_destroyed = true, checkmous = true, thicc = hasProperty(unit,"thicc")})
+      local stuff = getUnitsOnTile(unit.x, unit.y, {not_destroyed = true, checkmous = true, thicc = thicc_units[unit]})
       for _,on in ipairs(stuff) do
         if hasU(on) and sameFloat(unit, on) and ignoreCheck(on, unit, ":)") then
           if timecheck(unit,"be",":)") and (timecheckUs(on)) then
@@ -1300,7 +1300,7 @@ function updateUnits(undoing, big_update)
         end
       else fail = true end
       if not fail then
-        local stuff = getUnitsOnTile(unit.x,unit.y,{thicc = hasProperty(unit,"thicc")})
+        local stuff = getUnitsOnTile(unit.x,unit.y,{thicc = thicc_units[unit]})
         for _,on in ipairs(stuff) do
           if hasU(on) and sameFloat(unit,on) and ignoreCheck(on,unit) then
             wins = wins + 1
@@ -1312,7 +1312,7 @@ function updateUnits(undoing, big_update)
     local issuper = getUnitsWithEffect("anti delet")
     local lvltransforms = {}
     for _,unit in ipairs(issuper) do
-      local stuff = getUnitsOnTile(unit.x, unit.y, {not_destroyed = true, checkmous = true, thicc = hasProperty(unit,"thicc")})
+      local stuff = getUnitsOnTile(unit.x, unit.y, {not_destroyed = true, checkmous = true, thicc = thicc_units[unit]})
       for _,on in ipairs(stuff) do
         if hasU(on) and sameFloat(unit, on) and ignoreCheck(on, unit, ":)") then
           if timecheck(unit,"be","anti delet") and (timecheckUs(on)) then
@@ -1863,7 +1863,7 @@ function updateUnitColours()
   local painting = matchesRule(nil, "paint", "?")
   for _,ruleparent in ipairs(painting) do
     local unit = ruleparent[2]
-    local stuff = getUnitsOnTile(unit.x, unit.y, {not_destroyed = true, checkmous = true, thicc = hasProperty(unit,"thicc")})
+    local stuff = getUnitsOnTile(unit.x, unit.y, {not_destroyed = true, checkmous = true, thicc = thicc_units[unit]})
     for _,on in ipairs(stuff) do
       if (unit ~= on or ruleparent[1].rule.object.name == "themself") and hasRule(unit, "paint", on) and sameFloat(unit, on) and ignoreCheck(on, unit, "paint") then
         if timecheck(unit,"paint",on) and timecheck(on) then
@@ -1972,7 +1972,7 @@ function updatePortals()
     if unit.is_portal and hasProperty(unit, "poortoll") then
       local px, py, move_dir, dir = doPortal(unit, unit.x, unit.y, rotate8(unit.dir), rotate8(unit.dir), true)
       unit.portal.x, unit.portal.y = px, py
-      local portal_objects = getUnitsOnTile(px, py, {not_destroyed = true, thicc = hasProperty(unit,"thicc")})
+      local portal_objects = getUnitsOnTile(px, py, {not_destroyed = true, thicc = thicc_units[unit]})
       unit.portal.objects = portal_objects
       unit.portal.dir = rotate8(unit.dir) - dir
       local new_last_objs = copyTable(unit.portal.objects)
@@ -2362,7 +2362,7 @@ function levelBlock()
     local fail = false
     if #units > 0 then
       for _,unit in ipairs(units) do
-        local ons = getUnitsOnTile(unit.x,unit.y,{exclude = unit, thicc = hasProperty(unit,"thicc")})
+        local ons = getUnitsOnTile(unit.x,unit.y,{exclude = unit, thicc = thicc_units[unit]})
         local success = false
         for _,on in ipairs(ons) do
           if sameFloat(unit,on) and ignoreCheck(unit,on) then
@@ -3642,7 +3642,7 @@ function moveUnit(unit,x,y,portal,instant)
     empties_by_tile[dest_tileid] = unit
   else
     removeFromTable(unitsByTile(unit.x, unit.y), unit)
-    if rules_with and hasProperty(unit,"thicc") then
+    if rules_with and thicc_units[unit] then
       removeFromTable(unitsByTile(unit.x+1,unit.y),unit)
       removeFromTable(unitsByTile(unit.x,unit.y+1),unit)
       removeFromTable(unitsByTile(unit.x+1,unit.y+1),unit)
@@ -3672,7 +3672,7 @@ function moveUnit(unit,x,y,portal,instant)
         should_parse_rules = true
       end
       if not unit_tests then
-        if rules_with and not hasProperty(unit,"thicc") and unit.draw.x == x and unit.draw.y == y then
+        if rules_with and not thicc_units[unit] and unit.draw.x == x and unit.draw.y == y then
           --'bump' effect to show movement failed
           unit.draw.x = (unit.x+x*2)/3
           unit.draw.y = (unit.y+y*2)/3
@@ -3701,7 +3701,7 @@ function moveUnit(unit,x,y,portal,instant)
     unit.y = y
     
     table.insert(unitsByTile(unit.x, unit.y), unit)
-    if rules_with and hasProperty(unit,"thicc") then
+    if rules_with and thicc_units[unit] then
       for i=1,3 do
         if not table.has_value(unitsByTile(unit.x+i%2,unit.y+math.floor(i/2)),unit) then
           table.insert(unitsByTile(unit.x+i%2,unit.y+math.floor(i/2)),unit)

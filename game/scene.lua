@@ -1028,7 +1028,7 @@ function scene.draw(dt)
 
     local fulldrawx = (drawx + 0.5)*TILE_SIZE
     local fulldrawy = (drawy + 0.5)*TILE_SIZE
-    if hasProperty(unit,"thicc") then
+    if thicc_units[unit] then
       fulldrawx = fulldrawx + TILE_SIZE/2
       fulldrawy = fulldrawy + TILE_SIZE/2
     end
@@ -1096,7 +1096,7 @@ function scene.draw(dt)
 
     love.graphics.push()
     love.graphics.translate(fulldrawx, fulldrawy)
-    if hasProperty(unit,"thicc") then
+    if thicc_units[unit] then
       love.graphics.scale(2)
     end
 
