@@ -2812,6 +2812,7 @@ end
 function updateDragabl()
   if drag_units and #drag_units > 0 then
     local nodrags = getUnitsWithEffect("nodrag")
+    local bordr_is_nodrag = hasRule("bordr", "be", "nodrag")
 
     for _,unit in ipairs(drag_units) do
       local tx, ty = screenToGameTile(mous_for_drag_unit[unit].screenx, mous_for_drag_unit[unit].screeny, true)
@@ -2830,6 +2831,21 @@ function updateDragabl()
         dx, dy = sign(mx - unit.draw.x), sign(my - unit.draw.y)
       end
       local gox, goy = true, true
+
+      if (bordr_is_nodrag) then
+        if math.floor(unit.draw.x)+dx < 0 then
+          gox = false
+        end
+        if math.floor(unit.draw.x)+dx > (mapwidth-1) then
+          gox = false
+        end
+        if math.floor(unit.draw.y)+dy < 0 then
+          goy = false
+        end
+        if math.floor(unit.draw.y)+dy > (mapheight-1) then
+          goy = false
+        end
+      end
 
       for __,other in ipairs(nodrags) do
         if (other.x == math.floor(unit.draw.x)+dx) and (other.y == math.floor(unit.draw.y) or other.y == math.ceil(unit.draw.y)) then
