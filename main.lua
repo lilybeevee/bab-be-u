@@ -310,6 +310,8 @@ bab arguments!
   registerSound("babbolovania", 0.7)
   registerSound("dragabl pickup", 0.5)
   registerSound("dragabl putdown", 0.5)
+  registerSound("thicc", 1)
+  registerSound("unthicc", 1)
 
   print(colr.green("✓ sounds registered"))
 
