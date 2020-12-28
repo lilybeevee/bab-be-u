@@ -1339,6 +1339,23 @@ function updateUnits(undoing, big_update)
       end
     end
 
+    local isnxt = getUnitsWithEffect("nxt")
+    for _,unit in ipairs(isnxt) do
+      local stuff = getUnitsOnTile(unit.x, unit.y, {not_destroyed = true, checkmous = true, thicc = hasProperty(unit,"thicc")})
+      for _,on in ipairs(stuff) do
+        if hasU(on) and sameFloat(unit, on) and ignoreCheck(on, unit, "nxt") then
+          if timecheck(unit,"be","nxt") and (timecheckUs(on)) then
+            doWin("nxt")
+          else
+            --addUndo({"timeless_win_add", on.id})
+            --table.insert(timeless_win,on.id)
+            --addParticles("bonus", unit.x, unit.y, getUnitColor(unit))
+          end
+        end
+      end
+    end
+
+
     local function doOneCreate(rule, creator, createe)
       local object = createe
       if (createe == "txt") then
