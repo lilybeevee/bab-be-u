@@ -3277,7 +3277,7 @@ function extendReplayString(movex, movey, key)
     replay_string = replay_string..tostring(movex)..","..tostring(movey)..","..tostring(key)
     if key == "drag" then
       for _,unit in ipairs(drag_units) do
-        replay_string = replay_string..":"..unit.id
+        replay_string = replay_string..":"..unit.id.."@"..math.floor(unit.draw.x + 0.5).."@"..math.floor(unit.draw.y + 0.5)
       end
     end
     if (units_by_name["txt_mous"] ~= nil or rules_with["mous"] ~= nil) then

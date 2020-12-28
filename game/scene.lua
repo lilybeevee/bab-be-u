@@ -364,12 +364,15 @@ function doReplayTurn(turn)
 	x, y, key = tonumber(turn_parts[1]), tonumber(turn_parts[2]), turn_parts[3]
   if (key:sub(1, 4) == "drag") then
     drag_units = {}
-    local key_parts = key:split(":")
-    for _,key_part in ipairs(key_parts) do
-      key_part = tonumber(key_part)
-      if key_part ~= nil then
-        local unit = units_by_id[key_part] or cursors_by_id[key_part]
+    local drag_units_data = key:sub(6):split(":")
+    for _,drag_unit_data in ipairs(drag_units_data) do
+      local dudparts = drag_unit_data:split("@")
+      local did, dx, dy = tonumber(dudparts[1]), tonumber(dudparts[2])-0.5, tonumber(dudparts[3])-0.5
+      if did~= nil then
+        local unit = units_by_id[did] or cursors_by_id[did]
         if unit ~= nil then
+          unit.draw.x = dx;
+          unit.draw.y = dy;
           table.insert(drag_units, unit);
         end
       end
@@ -2605,9 +2608,9 @@ function doDragabl()
   --TODO: dragabl doesn't work with multiple mous I guess (and replay saving/loading would need updating too since there'd now be more than one destination)
   local dragged = false
   for _,unit in ipairs(drag_units) do
-    local dest_x, dest_y = last_click_x, last_click_y
-    local stuff = getUnitsOnTile(dest_x,dest_y)
-    --[[local nodrag = false
+    local dest_x, dest_y = math.floor(unit.draw.x + 0.5), math.floor(unit.draw.y + 0.5)
+    --[[local stuff = getUnitsOnTile(dest_x,dest_y)
+    local nodrag = false
     for _,other in ipairs(stuff) do
       if hasProperty(other,"nodrag") then
         nodrag = true
