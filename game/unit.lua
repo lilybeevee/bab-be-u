@@ -1,18 +1,47 @@
-function moveBlock()
-  --baba order: FOLLOW, BACK, TELE, SHIFT
-  --bab order: thicc, look at, undo, visit fren, go, goooo, shy, spin, folo wal, turn cornr
+function thiccBlock(undoing)
+  --to save headaches, thicc status can only update when a unit is created (or undestroyed) or at this very point)
+  local current_thicc = getUnitsWithEffect("thicc");
+  local new_thicc_cache = {}
+  local any_new = false;
+  local current_thicc_cache = {}
+  local un_thicc_cache = {}
+  local any_un = false;
+  for _,unit in ipairs(current_thicc) do
+    current_thicc_cache[unit] = true;
+    if (not thicc_units[unit]) then
+      new_thicc_cache[unit] = true;
+      any_new = true;
+    end
+  end
   
-  --currently very bad method of making sure thicc stuff gets updated: go through all units and make sure they're set up properly
-  if units_by_name["txt_thicc"] then
-    for _,unit in ipairs(units) do
-      if hasProperty(unit,"thicc") then
+  for unit,_ in pairs(thicc_units) do
+    if (not current_thicc_cache[unit]) then
+      un_thicc_cache[unit] = true;
+      any_un = true;
+    end
+  end
+  
+  if (any_new) then
+    if (not undoing) then
+      playSound("thicc");
+    end
+    for unit,_ in pairs(new_thicc_cache) do
+      if not unit.removed_final then
         for i=1,3 do
           if not table.has_value(unitsByTile(unit.x+i%2,unit.y+math.floor(i/2)),unit) then
             table.insert(unitsByTile(unit.x+i%2,unit.y+math.floor(i/2)),unit)
           end
         end
-      else
-        for i=1,3 do
+      end
+    end
+  end
+  if (any_un) then
+    if (not undoing) then
+      playSound("unthicc");
+    end
+    for unit,_ in pairs(un_thicc_cache) do
+     if not unit.removed_final then
+       for i=1,3 do
           if table.has_value(unitsByTile(unit.x+i%2,unit.y+math.floor(i/2)),unit) then
             removeFromTable(unitsByTile(unit.x+i%2,unit.y+math.floor(i/2)),unit)
           end
@@ -20,6 +49,14 @@ function moveBlock()
       end
     end
   end
+  thicc_units = current_thicc_cache;
+end
+
+function moveBlock()
+  --baba order: FOLLOW, BACK, TELE, SHIFT
+  --bab order: thicc, look at, undo, visit fren, go, goooo, shy, spin, folo wal, turn cornr
+  
+  thiccBlock(false)
   
   local isstalk = matchesRule("?", "lookat", "?")
   for _,ruleparent in ipairs(isstalk) do
@@ -3477,6 +3514,12 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix,anti_gon
   --keep empty out of units_by_tile - it will be returned in getUnitsOnTile
   if (not (unit.fullname == "no1" or unit.type == "outerlvl")) then
     table.insert(unitsByTile(x, y), unit)
+    if rules_with ~= nil and rules_with["thicc"] and hasProperty(unit, "thicc") then
+      table.insert(unitsByTile(x+1, y), unit)
+      table.insert(unitsByTile(x, y+1), unit)
+      table.insert(unitsByTile(x+1, y+1), unit)
+      thicc_units[unit] = true;
+    end
   end
 
   table.insert(units, unit)
@@ -3515,10 +3558,11 @@ function deleteUnit(unit,convert,undoing,gone)
     removeFromTable(units_by_name[unit.fullname], unit)
   end
   removeFromTable(unitsByTile(unit.x, unit.y), unit)
-  if rules_with and hasProperty(unit,"thicc") then
+  if thicc_units[unit] then
     removeFromTable(unitsByTile(unit.x+1,unit.y),unit)
     removeFromTable(unitsByTile(unit.x,unit.y+1),unit)
     removeFromTable(unitsByTile(unit.x+1,unit.y+1),unit)
+    thicc_units[unit] = nil
   end
   if not convert and not gone then
     removeFromTable(units_by_layer[unit.layer], unit)
