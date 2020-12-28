@@ -2119,17 +2119,28 @@ function canMove(unit,dx,dy,dir,o) --pushing, pulling, solid_name, reason, push_
   end
   local success, movers, specials = canMoveCore(unit,dx,dy,dir,o)
   if thicc_units[unit] then
+    local old_x, old_y = unit.x, unit.y;
     for i=1,3 do
-      local temp_o = copyTable(o)
-      temp_o.start_x = (temp_o.start_x or unit.x)+i%2
-      temp_o.start_y = (temp_o.start_y or unit.y)+math.floor(i/2)
-      local newsuccess, newmovers, newspecials = canMoveCore(unit,dx,dy,dir,temp_o)
+      --temporarily pretend the unit is at each other tile
+      --(the reason why o.start_x/o.start_y doesn't seem to work is because then everything we push uses the same co-ordinates and ends up trying to push onto itself? and that's why only the TL corner ever worked)
+      unit.x = old_x+i%2;
+      unit.y = old_y+math.floor(i/2);
+      local newsuccess, newmovers, newspecials = canMoveCore(unit,dx,dy,dir,o)
       mergeTable(movers,newmovers)
       mergeTable(specials,newspecials)
       success = success and newsuccess
+      --remove all the extra us's
+      for j = #movers,2,-1 do
+        if movers[j].unit == unit then
+          table.remove(movers, j)
+        end
+      end
     end
+    unit.x = old_x;
+    unit.y = old_y;
   end
   if success then
+    print(dump(movers))
     return success, movers, specials
   elseif dir > 0 and o.pushing then
     local stubbn = countProperty(unit, "stubbn")
@@ -2157,6 +2168,8 @@ function canMove(unit,dx,dy,dir,o) --pushing, pulling, solid_name, reason, push_
 end
 
 function canMoveCore(unit,dx,dy,dir,o) --pushing, pulling, solid_name, reason, push_stack, start_x, start_y, ignorestukc
+  print("canMoveCore:", unit.fullname, unit.x, unit.y, dx, dy, o.start_x, o.start_y)
+
   --if we haet outerlvl, we can't move, period. 
   if rules_with["haet"] ~= nil and hasRule(unit, "haet", outerlvl) and not ignoreCheck(unit,outerlvl) then
     return false,{},{}
@@ -2232,6 +2245,7 @@ function canMoveCore(unit,dx,dy,dir,o) --pushing, pulling, solid_name, reason, p
   local move_dir = dirs8_by_offset[sign(move_dx)][sign(move_dy)] or 0
   local old_dir = dir
   local dx, dy, dir, x, y, portal_unit = getNextTile(unit, dx, dy, dir, nil, o.start_x, o.start_y)
+  print("hey hey:", x, y, dx, dy)
   local geometry_spin = dirDiff(dir, old_dir)
   
   local movers = {}
@@ -2479,6 +2493,8 @@ function canMoveCore(unit,dx,dy,dir,o) --pushing, pulling, solid_name, reason, p
   local stopped = false
   --we have to iterate every object even after we're stopped, in case later we find something we open/snacc/ouch on
   for _,v in ipairs(getUnitsOnTile(x, y, {checkmous = true})) do
+    print("checking:", v.fullname, v.x, v.y)
+    print(v.already_moving, sameFloat(unit,v,true), table.has_value(unitsByTile(v.x,v.y),unit))
     --Patashu: treat moving things as intangible in general
     if (v ~= unit and not v.already_moving and sameFloat(unit,v,true)) then
       if (v.name == o.solid_name) and ignoreCheck(unit,v) then
@@ -2524,8 +2540,9 @@ function canMoveCore(unit,dx,dy,dir,o) --pushing, pulling, solid_name, reason, p
                   or (hasProperty(v, "anti sidekik") and ignoreCheck(unit,v,"anti sidekik"))
                   or (hasProperty(v, "anti diagkik") and ignoreCheck(unit,v,"anti diagkik"))
         local moov = hasRule(unit, "moov", v) and ignoreCheck(unit,v);
+        print("is it push?", push)
         if (push or moov) and not would_swap_with then
-          -- print("success")
+          print("success")
           if o.pushing and ignoreCheck(v,unit) then
             --glued units are pushed all at once or not at all
             local is_glued, glued_rule = hasProperty(v, "glued", true)
@@ -2541,6 +2558,7 @@ function canMoveCore(unit,dx,dy,dir,o) --pushing, pulling, solid_name, reason, p
                 temp_o.reason = reason
                 local success,new_movers,new_specials = canMove(v2, dx, dy, dir, temp_o)
                 o.push_stack[unit] = nil
+                print(success)
                 mergeTable(specials, new_specials)
                 mergeTable(newer_movers, new_movers)
                 if not success then all_success = false end
@@ -2560,6 +2578,7 @@ function canMoveCore(unit,dx,dy,dir,o) --pushing, pulling, solid_name, reason, p
               local reason = push and "goawaypls" or "moov"
               local temp_o = copyTable(o)
               temp_o.reason = reason
+              print("recursively canMove:", v.fullname, v.x, v.y, dx, dy)
               local success,new_movers,new_specials = canMove(v, dx, dy, dir, temp_o)
               o.push_stack[unit] = nil
               for _,special in ipairs(new_specials) do
@@ -2567,6 +2586,7 @@ function canMoveCore(unit,dx,dy,dir,o) --pushing, pulling, solid_name, reason, p
               end
               if success then
                 for _,mover in ipairs(new_movers) do
+                  print("successfully sending back:", dump(mover))
                   table.insert(movers, mover)
                 end
               elseif push then

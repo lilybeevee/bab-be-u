@@ -3602,7 +3602,7 @@ function deleteUnit(unit,convert,undoing,gone)
 end
 
 function moveUnit(unit,x,y,portal,instant)
-  --print("moving:", unit.fullname, unit.x, unit.y, "to:", x, y)
+  print("moving:", unit.fullname, unit.x, unit.y, "to:", x, y)
   --when empty moves, swap it with the empty in its destination tile, to preserve the invariant 'there is exactly empty per tile'
   --also, keep empty out of units_by_tile - it will be added in getUnitsOnTile
   if (unit.type == "outerlvl") then
