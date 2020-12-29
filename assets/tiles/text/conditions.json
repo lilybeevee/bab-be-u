@@ -68,6 +68,14 @@
     "tags": ["idle"]
   },
   {
+    "name": "txt_looped",
+    "sprite": ["txt/infloop"],
+    "types": ["cond_prefix"],
+    "color": [[4, 1]],
+    "desc": "LOOPED (Prefix Condition): True if the level has been destroyed due to an infinite loop.",
+    "tags": ["idle"]
+  },
+  {
     "name": "txt_sans",
     "sprite": ["txt/sans"],
     "sprite_transforms": {

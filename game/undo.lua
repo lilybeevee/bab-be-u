@@ -109,7 +109,13 @@ function undoOneAction(turn, i, v, ignore_no_undo)
       unit.backer_turn = v[3]
     end
   elseif action == "destroy_level" then
-    level_destroyed = false
+    destroycount = destroycount-1
+    if v[2] == "infloop" then
+      infcount = infcount-1
+    end
+    if destroycount <= 0 then
+      level_destroyed = false
+    end
   elseif action == "zawarudo" then
     timeless = not v[2]
     if timeless then playSound("timestop", 0.5)
