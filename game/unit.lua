@@ -1638,7 +1638,8 @@ function miscUpdates(state_change)
         local props_to_check = {"stelth","sans","delet","dragbl","rong","wurd","nodrag","rithere","thr","ouch","protecc","noundo",
         "poortoll","go","folowal","tall","rave","colrful","torc","split","icyyyy","icy","hopovr","nuek","knightstep","diagstep","sidestep","notranform",
         "munwalk","visitfren","walk","noswim","haetflor","haetskye","glued","flye","enby","tranz","comepls","goawaypls","goooo",
-        "moar","nedkee","fordor","hotte","fridgd","nogo","thingify","y'all","utres","utoo","u",
+        "moar","nedkee","fordor","hotte","fridgd","nogo","
+					","y'all","utres","utoo","u",
         } --props are checked in order, so less common props should go in front
         for _,prop in ipairs(props_to_check) do
           if hasProperty(unit,prop) then
@@ -2747,7 +2748,9 @@ function convertUnits(pass)
         if tile.thingify then
           newname = tile.thingify
         else
-          if nametocreate:starts("txt_") then
+          if nametocreate == "txt_txtify" then
+            newname = "txt_ify"
+          elseif nametocreate:starts("txt_") then
             newname = nametocreate:sub(5, -1)
           elseif nametocreate:starts("letter_") then
             newname = nametocreate:sub(8, -1)
