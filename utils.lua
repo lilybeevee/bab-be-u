@@ -61,8 +61,7 @@ function clear()
   cursor_converted = false
   mouse_X = love.mouse.getX()
   mouse_Y = love.mouse.getY()
-  last_click_x = nil
-  last_click_y = nil
+  last_clicks = {}
   mouse_oldX = mouse_X
   mouse_oldY = mouse_Y
   drag_units = {}
@@ -86,6 +85,7 @@ function clear()
   timeless_crash = false
   timeless_yote = {}
   firsttimestop = true
+  thicc_units = {}
 
   --if scene == game then
   if load_mode == "play" then
@@ -690,7 +690,7 @@ function getUnitsWithEffect(effect, return_rule)
   for _,rule in ipairs(rules) do
     local unit = rule[2]
     if not unit.removed then
-      for _,other in ipairs(getUnitsOnTile(unit.x, unit.y, {exclude = unit, thicc = hasProperty(unit,"thicc")})) do
+      for _,other in ipairs(getUnitsOnTile(unit.x, unit.y, {exclude = unit, thicc = thicc_units[unit]})) do
         if not gotten[other] and sameFloat(unit, other) and not hasRule(other, "ben't", effect) and ignoreCheck(other, unit) then
           table.insert(result, other)
           table.insert(result_rules, rule[1])
@@ -750,10 +750,10 @@ function getUnitsWithEffectAndCount(effect)
   for _,dat in ipairs(rules) do
     local unit = dat[2]
     if not unit.removed and not hasRule(unit, "ben't", effect) then
-      if result[unit] == nil then
-        result[unit] = 0
+      if result[unit.id] == nil then
+        result[unit.id] = 0
       end
-      result[unit] = result[unit] + 1
+      result[unit.id] = result[unit.id] + 1
     end
   end
   
@@ -761,12 +761,12 @@ function getUnitsWithEffectAndCount(effect)
   for _,rule in ipairs(rules) do
     local unit = rule[2]
     if not unit.removed then
-      for _,other in ipairs(getUnitsOnTile(unit.x, unit.y, {exclude = unit, thicc = hasProperty(unit,"thicc")})) do
+      for _,other in ipairs(getUnitsOnTile(unit.x, unit.y, {exclude = unit, thicc = thicc_units[unit]})) do
         if sameFloat(unit, other) and not hasRule(other, "ben't", effect) and ignoreCheck(other, unit) then
-          if result[other] == nil then
-            result[other] = 0
+          if result[other.id] == nil then
+            result[other.id] = 0
           end
-          result[other] = result[other] + 1
+          result[other.id] = result[other.id] + 1
         end
       end
     end
@@ -775,21 +775,22 @@ function getUnitsWithEffectAndCount(effect)
   if hasRule(outerlvl, "giv", effect) then
     for _,unit in ipairs(units) do
       if inBounds(unit.x, unit.y) and not hasRule(unit, "ben't", effect) and ignoreCheck(unit, outerlvl) then
-        if result[unit] == nil then
-          result[unit] = 0
+        if result[unit.id] == nil then
+          result[unit.id] = 0
         end
-        result[unit] = result[unit] + 1
+        result[unit.id] = result[unit.id] + 1
       end
     end
   end
   
   if rules_with["rp"] then
     for unit,count in pairs(result) do
+      unit = units_by_id[unit] or cursors_by_id[unit]
       local isrp = matchesRule(nil,"rp",unit)
       for _,ruleparent in ipairs(isrp) do
         local mimic = ruleparent[2]
         if not mimic.removed and not hasRule(mimic,"ben't",effect) then
-          result[mimic] = count
+          result[mimic.id] = count
         end
       end
     end
@@ -802,7 +803,7 @@ function getUnitsWithEffectAndCount(effect)
       local stuff = getUnitsOnTile(tx,ty)
       for _,unit in ipairs(stuff) do
         if hasProperty(unit,effect) and not hasRule(mimic,"ben't",effect) then
-          result[mimic] = countProperty(unit,effect)
+          result[mimic.id] = countProperty(unit,effect)
         end
       end
     end
@@ -826,19 +827,20 @@ function getUnitsWithRuleAndCount(rule1, rule2, rule3)
   for _,dat in ipairs(rules) do
     local unit = dat[2]
     if not unit.removed then
-      if result[unit] == nil then
-        result[unit] = 0
+      if result[unit.id] == nil then
+        result[unit.id] = 0
       end
-      result[unit] = result[unit] + 1
+      result[unit.id] = result[unit.id] + 1
     end
   end
   if rules_with["rp"] then
     for unit,count in pairs(result) do
+      unit = units_by_id[unit] or cursors_by_id[unit]
       local isrp = matchesRule(nil,"rp",unit)
       for _,ruleparent in ipairs(isrp) do
         local mimic = ruleparent[2]
         if not mimic.removed and not hasRule(mimic,rule2.."n't",rule3) then
-          result[mimic] = count
+          result[mimic.id] = count
         end
       end
     end
@@ -851,7 +853,7 @@ function getUnitsWithRuleAndCount(rule1, rule2, rule3)
       local stuff = getUnitsOnTile(tx,ty)
       for _,unit in ipairs(stuff) do
         if hasRule(unit,rule2,rule3) and not hasRule(mimic,rule2.."n't",rule3) then
-          result[mimic] = countProperty(unit,effect)
+          result[mimic.id] = countProperty(unit,effect)
         end
       end
     end
@@ -922,7 +924,7 @@ function hasProperty(unit,prop,return_rule)
   if unit then
     local has_lvl_giv, lvl_giv_rule = hasRule(outerlvl, "giv", prop)
     if has_lvl_giv then return true, lvl_giv_rule end
-    for _,other in ipairs(getUnitsOnTile(unit.x, unit.y, {exclude = unit, thicc = hasProperty(unit,"thicc")})) do
+    for _,other in ipairs(getUnitsOnTile(unit.x, unit.y, {exclude = unit, thicc = thicc_units[unit]})) do
       local givs = matchesRule(other, "giv", prop)
       if #givs > 0 and sameFloat(unit, other) and ignoreCheck(unit, other) then
         return true, (return_rule and givs[1] or nil)
@@ -933,7 +935,7 @@ function hasProperty(unit,prop,return_rule)
     if has_lvl_giv then return true, lvl_giv_rule end
     for _,ruleparent in ipairs(matchesRule(nil, "giv", prop)) do
       for _,other in ipairs(ruleparent.units) do
-        if #getUnitsOnTile(other.x, other.y, {exclude = unit, checkmous = true, thicc = hasProperty(unit,"thicc")}) > 0 and sameFloat(unit, other) then
+        if #getUnitsOnTile(other.x, other.y, {exclude = unit, checkmous = true, thicc = thicc_units[unit]}) > 0 and sameFloat(unit, other) then
           return true, (return_rule and ruleparent or nil)
         end
       end
@@ -955,7 +957,7 @@ function countProperty(unit, prop, ignore_flye)
   if unit and unit.class == "mous" then return result end
   result = result + #matchesRule(outerlvl, "giv", prop)
   if unit then
-    for _,other in ipairs(getUnitsOnTile(unit.x, unit.y, {exclude = unit, checkmous = true, thicc = hasProperty(unit,"thicc")})) do
+    for _,other in ipairs(getUnitsOnTile(unit.x, unit.y, {exclude = unit, checkmous = true, thicc = thicc_units[unit]})) do
       if ignoreCheck(unit, other) and (ignore_flye or sameFloat(unit, other)) then
         result = result + #matchesRule(other, "giv", prop)
       end
@@ -1154,7 +1156,7 @@ function testConds(unit, conds, compare_with, first_unit) --cond should be a {co
           end
         end
       else
-        local frens = getUnitsOnTile(x, y, {exclude = unit, checkmous = true, thicc = hasProperty(unit,"thicc")})
+        local frens = getUnitsOnTile(x, y, {exclude = unit, checkmous = true, thicc = thicc_units[unit]})
         for _,other in ipairs(sets) do
           if other[outerlvl] then
             if not inBounds(unit.x,unit.y) or count > 1 then
@@ -1197,7 +1199,7 @@ function testConds(unit, conds, compare_with, first_unit) --cond should be a {co
           end
         else
           local dx, dy, dir, px, py = getNextTile(unit, nx, ny, ndir)
-          others[nx][ny] = getUnitsOnTile(px, py, {checkmous = true, thicc = hasProperty(unit,"thicc")})
+          others[nx][ny] = getUnitsOnTile(px, py, {checkmous = true, thicc = thicc_units[unit]})
         end
       end
       local found_set = {}
@@ -1290,7 +1292,7 @@ function testConds(unit, conds, compare_with, first_unit) --cond should be a {co
           end
         else
           local dx, dy, dir, px, py = getNextTile(unit, nx, ny, ndir)
-          mergeTable(others, getUnitsOnTile(px, py, {checkmous = true, thicc = hasProperty(unit,"thicc")}))
+          mergeTable(others, getUnitsOnTile(px, py, {checkmous = true, thicc = thicc_units[unit]}))
         end
       end
       if unit == outerlvl then --basically turns into sans n't BUT the unit has to be looking inbounds as well!
@@ -1343,7 +1345,7 @@ function testConds(unit, conds, compare_with, first_unit) --cond should be a {co
       --TODO: look at dir, ortho, diag, surrounds
       if unit ~= outerlvl then
         local dx, dy, dir, px, py = getNextTile(unit, dirs8[unit.dir][1], dirs8[unit.dir][2], unit.dir)
-        local frens = getUnitsOnTile(px, py, {name = param, checkmous = true, thicc = hasProperty(unit,"thicc")})
+        local frens = getUnitsOnTile(px, py, {name = param, checkmous = true, thicc = thicc_units[unit]})
         for i,other in ipairs(sets) do
           local isdir = false
           if cond.others[i].name == "ortho" then
@@ -1403,7 +1405,7 @@ function testConds(unit, conds, compare_with, first_unit) --cond should be a {co
       --TODO: look at dir, ortho, diag, surrounds
       if unit ~= outerlvl then
         local dx, dy, dir, px, py = getNextTile(unit, -dirs8[unit.dir][1], -dirs8[unit.dir][2], unit.dir)
-        local frens = getUnitsOnTile(px, py, {name = param, checkmous = true, thicc = hasProperty(unit,"thicc")})
+        local frens = getUnitsOnTile(px, py, {name = param, checkmous = true, thicc = thicc_units[unit]})
         for _,other in ipairs(sets) do
           if other[outerlvl] then
             local dx, dy, dir, px, py = getNextTile(unit, dirs8[unit.dir][1], dirs8[unit.dir][2], unit.dir)
@@ -1442,7 +1444,7 @@ function testConds(unit, conds, compare_with, first_unit) --cond should be a {co
           end
         else
           local dx, dy, dir, px, py = getNextTile(unit, nx, ny, ndir)
-          mergeTable(others, getUnitsOnTile(px, py, {checkmous = true, thicc = hasProperty(unit,"thicc")}))
+          mergeTable(others, getUnitsOnTile(px, py, {checkmous = true, thicc = thicc_units[unit]}))
         end
       end
       if unit == outerlvl then --basically turns into sans n't BUT the unit's rear has to be looking inbounds as well!
@@ -1508,7 +1510,7 @@ function testConds(unit, conds, compare_with, first_unit) --cond should be a {co
           end
         else
           local dx, dy, dir, px, py = getNextTile(unit, nx, ny, ndir)
-          mergeTable(others, getUnitsOnTile(px, py, {checkmous = true, thicc = hasProperty(unit,"thicc")}))
+          mergeTable(others, getUnitsOnTile(px, py, {checkmous = true, thicc = thicc_units[unit]}))
         end
       end
       if unit == outerlvl then --basically turns into sans n't BUT the unit's side has to be looking inbounds as well!
@@ -1576,13 +1578,13 @@ function testConds(unit, conds, compare_with, first_unit) --cond should be a {co
         end
         if found then result = false end
       else
-        local others = getUnitsOnTile(unit.x, unit.y, {exclude = unit, thicc = hasProperty(unit,"thicc")})
+        local others = getUnitsOnTile(unit.x, unit.y, {exclude = unit, thicc = thicc_units[unit]})
         if #others > 0 then
           result = false
         end
       end
     elseif condtype == "wait..." then
-      result = last_move ~= nil and last_move[1] == 0 and last_move[2] == 0 and last_click_x == nil and last_click_y == nil
+      result = last_move ~= nil and last_move[1] == 0 and last_move[2] == 0 and #last_clicks == 0
     elseif condtype == "mayb" then
       local cond_unit = cond.unit
       --add a dummy action so that undoing happens
@@ -1654,19 +1656,22 @@ function testConds(unit, conds, compare_with, first_unit) --cond should be a {co
     elseif condtype == "timles" then
       result = timeless
     elseif condtype == "clikt" then
-      if unit.x == last_click_x and unit.y == last_click_y and last_click_button == 1 then
-        result = true
-      else
-        result = false
+      result = false
+      if last_click_button == 1 then
+        for _,click in ipairs(last_clicks) do
+          if click.x == unit.x and click.y == unit.y then
+            result = true
+          end
+        end
       end
-      --print(result)
-      --print(x, y)
-      --print(last_click_x, last_click_y)
     elseif condtype == "anti clikt" then
-      if unit.x == last_click_x and unit.y == last_click_y and last_click_button == 2 then
-        result = true
-      else
-        result = false
+      result = false
+      if last_click_button == 2 then
+        for _,click in ipairs(last_clicks) do
+          if click.x == unit.x and click.y == unit.y then
+            result = true
+          end
+        end
       end
     elseif main_palette_for_colour[condtype] then
       if unit.fullname == "no1" then
@@ -1819,7 +1824,7 @@ function sideCond(unit,sets,params,count,dirs_)
       end
     else
       local dx, dy, dir, px, py = getNextTile(unit, nx, ny, ndir)
-      mergeTable(others, getUnitsOnTile(px, py, {checkmous = true, thicc = hasProperty(unit,"thicc")}))
+      mergeTable(others, getUnitsOnTile(px, py, {checkmous = true, thicc = thicc_units[unit]}))
     end
   end
   if unit == outerlvl then --basically turns into sans n't BUT the unit's rear has to be looking inbounds as well!
@@ -2385,6 +2390,8 @@ function addParticles(ptype,x,y,color,count)
   if doing_past_turns and not do_past_effects then return end
   
   if not settings["particles_on"] then return end
+
+  if unit_tests then return end
 
   local particle_colors = {}
   if type(color[1]) ~= "table" then
@@ -3271,6 +3278,11 @@ end
 function extendReplayString(movex, movey, key)
   if (not unit_tests) then
     replay_string = replay_string..tostring(movex)..","..tostring(movey)..","..tostring(key)
+    if key == "drag" then
+      for _,unit in ipairs(drag_units) do
+        replay_string = replay_string..":"..unit.id.."@"..unit.x.."@"..unit.y
+      end
+    end
     if (units_by_name["txt_mous"] ~= nil or rules_with["mous"] ~= nil) then
       local cursor_table = {}
       for _,cursor in ipairs(cursors) do
@@ -4536,10 +4548,31 @@ function drawSprite(x, y, rotation, sx, sy, o)
 
   if o.meta > 0 then
     setColor{4, 1}
-    local metasprite = o.meta == 2 and sprites["meta2"] or sprites["meta1"]
+    local metasprite = o.meta > 2 and sprites["meta3"] or o.meta > 1 and sprites["meta2"] or sprites["meta1"]
     love.graphics.draw(metasprite, x, y, 0, sx, sy, max_w / 2, max_h / 2)
     if o.meta > 2 and sx == 1 and sy == 1 then
-      love.graphics.printf(tostring(o.meta), x-1, y+6, 32, "center")
+      --stroking black outline
+      love.graphics.setColor(0,0,0,1)
+      local xx = round(x)
+      local yy = round(y)
+      if (o.meta >= 10) then
+        local font = fonts["metanumber"];
+        love.graphics.printf(tostring(o.meta), font, xx+8+1, yy+6, 32, "left", r, sx, sy, 0, -3)
+        love.graphics.printf(tostring(o.meta), font, xx+8-1, yy+6, 32, "left", r, sx, sy, 0, -3)
+        love.graphics.printf(tostring(o.meta), font, xx+8, yy+6+1, 32, "left", r, sx, sy, 0, -3)
+        love.graphics.printf(tostring(o.meta), font, xx+8, yy+6-1, 32, "left", r, sx, sy, 0, -3)
+        setColor{4, 1}
+        love.graphics.printf(tostring(o.meta), font, xx+8, yy+6, 32, "left", r, sx, sy, 0, -3)
+      else
+        local font = fonts["8bitoperator"];
+        love.graphics.printf(tostring(o.meta), font, xx+8+1, yy+6-1, 32, "left")
+        love.graphics.printf(tostring(o.meta), font, xx+8-1, yy+6-1, 32, "left")
+        love.graphics.printf(tostring(o.meta), font, xx+8+1, yy+6+1, 32, "left")
+        love.graphics.printf(tostring(o.meta), font, xx+8-1, yy+6+1, 32, "left")
+        setColor{4, 1}
+        love.graphics.printf(tostring(o.meta), font, xx+8, yy+6, 32, "left")
+      end
+      
     end
   end
   if o.nt then

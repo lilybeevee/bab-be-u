@@ -131,13 +131,15 @@
     "name": "ui_walk",
     "sprite": ["ui_walk"],
     "layer": 20,
-    "color": [[0, 3]]
+    "color": [[0, 3]],
+    "desc": "Used in the tutorial."
   },
   {
     "name": "ui_activat",
     "sprite": ["ui_activat"],
     "layer": 20,
-    "color": [[0, 3]]
+    "color": [[0, 3]],
+    "desc": "Used in the tutorial for ZA WARUDO."
   },
   {
     "name": "ui_leftclick",
@@ -159,7 +161,8 @@
     "name": "ui_clik",
     "sprite": ["ui_clik"],
     "layer": 20,
-    "color": [[0, 3]]
+    "color": [[0, 3]],
+    "desc": "Used in the tutorial for clicks."
   },
   {
     "name": "ui_5",
@@ -193,19 +196,22 @@
     "name": "ui_reset",
     "sprite": ["ui_reset"],
     "layer": 20,
-    "color": [[0, 3]]
+    "color": [[0, 3]],
+    "desc": "Used in a tutorial next to an R."
   },
   {
     "name": "ui_undo",
     "sprite": ["ui_undo"],
     "layer": 20,
-    "color": [[0, 3]]
+    "color": [[0, 3]],
+    "desc": "Used in a tutorial next to a Z."
   },
   {
     "name": "ui_wait",
     "sprite": ["ui_wait"],
     "layer": 20,
-    "color": [[0, 3]]
+    "color": [[0, 3]],
+    "desc": "Used in a tutorial for wait..."
   },
   {
     "name": "ui_0",

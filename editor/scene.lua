@@ -219,7 +219,7 @@ function scene.setupGooi()
     local palette_x = math.floor((x - fullpaint_palette_x) / 8)
     local palette_y = math.floor((y - 4) / 8)
     brush.color = {palette_x, palette_y}
-  end):setBGImage(palettes[current_palette].sprite):bg({0,0,0,0})
+  end):setBGImage((palettes[current_palette] or palettes["default"]).sprite):bg({0,0,0,0})
   fullpaint_palette:setVisible(false)
   for _,color in pairs(color_names) do
     gooi.newButton({text = "", x = x, y = 4, h = 32, w = 32}):onPress(function()

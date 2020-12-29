@@ -14,8 +14,9 @@ local git_btn = nil
 
 local splash = love.timer.getTime() % 1
 
-local babtitletween = love.timer.getTime()
-local babtitlespeen = math.random(1,1000) == 1
+local tweens = {}
+local buttonPos = {}
+local buttonTweens = {}
 
 function scene.load()
   metaClear()
@@ -47,6 +48,22 @@ function scene.load()
   end
   settings["seen_menu"] = true
   saveAll()
+
+  -- tweens
+  -- the tween table on each update call updates every updatable tween, so you dont have to worry about updating anything else upon adding a tween
+  tweens['git'] = {x = 10, y = love.graphics.getHeight() + sprites["ui/github"]:getHeight() + 10}
+  tweens['gitTween'] = tween.new(0.5, tweens['git'], {y = love.graphics.getHeight() - sprites["ui/github"]:getHeight() - 10}, 'outCirc')
+
+  tweens['title'] = {rotate = -math.pi*2, scale = 0}
+  tweens['titleRotateTween'] = tween.new(1.6, tweens['title'], {rotate = (math.random(1,1000) == 1) and 999999 or math.pi*2}, 'outBack')
+  tweens['titleScaleTween'] = tween.new(1.6, tweens['title'], {scale = 1}, 'outBack')
+
+  tweens['textOpacity'] = {0}
+  tweens['textOpacityTween'] = tween.new(1, tweens['textOpacity'], {1})
+
+  local height = love.graphics.getFont():getHeight()
+  tweens['buildnumber'] = {y = -height}
+  tweens['buildnumberTween'] = tween.new(0.5, tweens['buildnumber'], {y = 0}, 'outCirc')
 end
 
 function scene.buildUI()
@@ -83,7 +100,14 @@ function scene.buildUI()
 
   for i,button in ipairs(buttons) do
     local width, height = button:getSize()
-    button:setPos(ox - width/2, oy - height/2)
+
+    buttonPos[i] = {x = (i % 2 == 0) and love.graphics.getWidth() + width or -width, y = oy - height/2}
+    local mult = 1
+    if options then mult = 0.000001 end -- this is a stupid hack. whatever
+
+    tick.delay(function()
+      buttonTweens[i] = tween.new(0.8 * mult, buttonPos[i], {x = ox - width/2}, 'outCirc')
+    end, (i * 0.1 + 0.2) * mult)
     oy = oy + height + 10
   end
 end
@@ -119,7 +143,16 @@ function scene.update(dt)
     scrollx, scrolly = 0,0
   end
 
-  git_btn:setPos(10, love.graphics.getHeight()-sprites["ui/github"]:getHeight()-10 + ease.outExpo(math.min(love.timer.getTime()-babtitletween-0.5, 1.2), sprites["ui/github"]:getHeight()+10, -sprites["ui/github"]:getHeight()-10, 1.2))
+  for _,t in pairs(tweens) do
+    if t.update then t:update(dt) end
+  end
+
+  for i,button in ipairs(buttons) do
+    if buttonTweens[i] then buttonTweens[i]:update(dt) end
+    button:setPos(buttonPos[i].x, buttonPos[i].y)
+  end
+
+  git_btn:setPos(tweens['git'].x, tweens['git'].y, sprites["ui/github"]:getHeight()+10, -sprites["ui/github"]:getHeight()-10, 1.2)
 end
 
 function scene.draw(dt)
@@ -164,8 +197,8 @@ function scene.draw(dt)
     
     love.graphics.push()
     love.graphics.translate(width/2, height/20 + bab_logo:getHeight()/2)
-    love.graphics.rotate(ease.outBack(math.min(love.timer.getTime()-babtitletween, babtitlespeen and 99999999 or 1.2), -math.pi*2, math.pi*2, 1.2, 2.6))
-    love.graphics.scale(ease.outBack(math.min(love.timer.getTime()-babtitletween, 1), 0, 1, 1, 1.9))
+    love.graphics.rotate(tweens['title'].rotate)
+    love.graphics.scale(tweens['title'].scale)
 
     for _,pair in pairs({{1,0},{0,1},{1,1},{-1,0},{0,-1},{-1,-1},{1,-1},{-1,1}}) do
       local outlineSize = 2
@@ -227,7 +260,7 @@ function scene.draw(dt)
     end
     love.graphics.translate(-textx-love.graphics.getFont():getWidth(splashtext)/2, -texty-love.graphics.getFont():getHeight()/2)
 
-    love.graphics.setColor(1,1,1,love.timer.getTime()-babtitletween)
+    love.graphics.setColor(1,1,1,tweens['textOpacity'][0])
     love.graphics.print(splashtext, textx, texty)
     
     love.graphics.pop()
@@ -282,9 +315,7 @@ function scene.draw(dt)
       love.graphics.setColor(hslToRgb(love.timer.getTime()%1, .5, .5, .9))
     end
     local height = love.graphics.getFont():getHeight()
-    local y = ease.outExpo(math.min(love.timer.getTime()-babtitletween-0.5, 1.2), -height, height, 1.2)
-    love.graphics.print(spookmode and "error" or 'v'..build_number, 0, y)
-    debugDisplay('y', y)
+    love.graphics.print(spookmode and "error" or 'v'..build_number, 0, tweens['buildnumber'].y)
   end
 
   if is_mobile then

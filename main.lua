@@ -5,7 +5,6 @@ require "lib/gooi"
 json = require "lib/json"
 tick = require "lib/tick"
 tween = require "lib/tween"
-ease = require 'lib.easing'
 colr = require "lib/colr-print"
 assets = require "assets"
 require "ui"
@@ -262,6 +261,10 @@ bab arguments!
     --system_cursor = sprites["ui/mous_osx"]
   --end
 
+  --load some fonts
+  fonts = {}
+  fonts["8bitoperator"] = love.graphics.newFont("assets/fonts/8bitoperator.ttf", 10, "mono");
+  fonts["metanumber"] = love.graphics.newImageFont("assets/fonts/metanumber.png", '1234567890');
   registerSound("move", 0.4)
   registerSound("mous sele", 0.3)
   registerSound("mous hovvr", 0.3)
@@ -300,10 +303,15 @@ bab arguments!
   registerSound("za warudo", 1)
   registerSound("time resume dio", 1)
   registerSound("bup", 0.5)
+  registerSound("anti clicc", 1)
   registerSound("clicc", 1)
   registerSound("unwin", 0.5)
   registerSound("stopwatch", 1.0)
   registerSound("babbolovania", 0.7)
+  registerSound("dragabl pickup", 0.5)
+  registerSound("dragabl putdown", 0.5)
+  registerSound("thicc", 1)
+  registerSound("unthicc", 1)
 
   print(colr.green("✓ sounds registered"))
 

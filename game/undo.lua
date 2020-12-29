@@ -353,6 +353,7 @@ function undo(dont_update_rules)
     end
     updateGroup()
     calculateLight()
+    thiccBlock(true)
     updateUnits(true)
     updatePortals()
     miscUpdates(false)

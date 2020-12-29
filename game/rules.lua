@@ -104,10 +104,10 @@ function getAllText()
   
   if rules_with ~= nil and rules_with["giv"] ~= nil then
     for unit,_ in pairs(getUnitsWithRuleAndCount(nil, "giv", "wurd")) do
-      table.insert(givers, unit)
+      table.insert(givers, units_by_id[unit] or cursors_by_id[unit])
     end
     for unit,_ in pairs(getUnitsWithRuleAndCount(nil, "giv", "anti wurd")) do
-      table.insert(givers, unit)
+      table.insert(givers, units_by_id[unit] or cursors_by_id[unit])
     end
   end
   
@@ -479,26 +479,29 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
         local unit = letter.unit
         local prevunit = prevletter.unit or {}
         local name = letter.name
+        --turn flog be : ) (vertical) into flog be :) instead of flog be ..:)
+        local speaking_bridges_hack = false
         if name == "custom" then name = letter.unit.special.customletter end
         if letter.name == "u" then
           local umlauts = getTextOnTile(unit.x,unit.y-1)
           for _,umlaut in ipairs(umlauts) do
-            if umlaut.fullname == "letter_colon" and umlaut.dir == 3 then
+            if umlaut.fullname == "letter_colon" and umlaut.dir == 3 and umlaut ~= prevunit then
               name = "..u"
             end
           end
         elseif letter.name == "e" then
           local umlauts = getTextOnTile(unit.x,unit.y-1)
           for _,umlaut in ipairs(umlauts) do
-            if umlaut.fullname == "letter_colon" and umlaut.dir == 3 then
+            if umlaut.fullname == "letter_colon" and umlaut.dir == 3 and umlaut ~= prevunit then
               name = "..e"
             end
           end
-        elseif letter.fullname == "letter_colon" and letter.dir == 3 then
-          name = ".."
+        --[[elseif letter.fullname == "letter_colon" and letter.dir == 3 then
+          name = ".."]]--
         elseif prevunit.fullname == "letter_colon" and prevunit.dir == dir
         and (letter.name == "o" or letter.name == ")" or letter.name == "(") then
           name = ":"..letter.name
+          speaking_bridges_hack = true
         end
         --[[elseif letter.name == "/" then
           if prevletter.name == ":" and prevunit.dir == dir then
@@ -509,6 +512,10 @@ function parseSentence(sentence_, params_, dir) --prob make this a local functio
             name = "nxt"
           end
         end]]
+        
+        if (speaking_bridges_hack) then
+          new_word = new_word:sub(1, -3)
+        end
         
         if name ~= ":" then
           new_word = new_word..name
