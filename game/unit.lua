@@ -2479,15 +2479,16 @@ function destroyLevel(reason)
       end
     end
   end
-  
-  addUndo({"destroy_level", reason})
   playSound(reason)
   if reason == "unlock" or reason == "convert" then
     playSound("break")
   end
   
   if reason == "infloop" then
-    if hasProperty("infloop","tryagain") then
+    addParticles("infup", 0, 0, {4, 1}, 60)
+    if hasRule("infloop","ben't","infloop") or hasRule("infloop","be", "n't","infloop") then
+      level_destroyed = false
+    elseif hasProperty("infloop","tryagain") then
       doTryAgain()
       level_destroyed = false
     elseif hasProperty("infloop","delet") then
@@ -2510,19 +2511,40 @@ function destroyLevel(reason)
   end
   
   if level_destroyed then
+    destroycount = destroycount+1
+    if reason == "infloop" then
+      infcount = infcount+1
+    end
+    addUndo({"destroy_level", reason})
+
     local units_to_destroy = {}
     for _,unit in ipairs(units) do
       if inBounds(unit.x, unit.y) or reason == "infloop" then
-        table.insert(units_to_destroy, unit);
+        if not hasProperty(unit, "stayther") then
+          table.insert(units_to_destroy, unit);
+        end
       end
     end
-    for _,unit in ipairs(units_to_destroy) do
-      addParticles("destroy", unit.x, unit.y, getUnitColor(unit))
-    end
+    --[[for _,unit in ipairs(units_to_destroy) do
+      addParticles("inf", unit.x, unit.y, {4, 1}, 2)
+    end]]
     handleDels(units_to_destroy,true)
     if reason == "infloop" and #transform_results == 0 then
       local new_unit = createUnit("infloop", math.floor(mapwidth/2), math.floor(mapheight/2), 1)
       addUndo({"create", new_unit.id, false})
+      local gotrule = matchesRule("infloop","got","?")
+      for _,rule in ipairs(gotrule) do
+        local object = getTile(rule.rule.object.name)
+        if rule.rule.object.name == "txt" then
+          object =  getTile("txt_infloop")
+        end
+        if object ~= nil then
+          local new_unit = createUnit(object.name, math.floor(mapwidth/2), math.floor(mapheight/2), 1)
+          if new_unit ~= nil then
+            addUndo({"create", new_unit.id, false})
+          end
+        end
+      end
     end
   end
   
