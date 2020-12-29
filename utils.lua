@@ -51,6 +51,8 @@ function clear()
   referenced_objects = {}
   referenced_text = {}
   undo_buffer = {}
+  infcount = 0
+  destroycount = 0
   update_undo = true
   max_layer = 1
   max_unit_id = 0
@@ -1583,6 +1585,8 @@ function testConds(unit, conds, compare_with, first_unit) --cond should be a {co
           result = false
         end
       end
+    elseif condtype == "looped" then
+      result = infcount > 0
     elseif condtype == "wait..." then
       result = last_move ~= nil and last_move[1] == 0 and last_move[2] == 0 and #last_clicks == 0
     elseif condtype == "mayb" then
@@ -2410,7 +2414,40 @@ function addParticles(ptype,x,y,color,count)
     end
   end
   
-  if ptype == "destroy" then
+  if ptype == "infup" then
+    local speed = (TILE_SIZE*mapheight)/672
+    local ps = love.graphics.newParticleSystem(sprites["infparticle"])
+    local px = (mapwidth*TILE_SIZE)/2
+    local py = (mapheight*TILE_SIZE)
+    ps:setPosition(px, py)
+    ps:setSpread(math.pi/4)
+    ps:setEmissionArea("uniform", (mapwidth*TILE_SIZE)/2, 2, 0)
+    ps:setSizes(2, 1.8, 1.5, 1, 0)
+    ps:setSpeed(450*speed, 600*speed)
+    ps:setSpin(0, 3.5)
+    ps:setLinearDamping(1)
+    ps:setParticleLifetime(1)
+    ps:setDirection(1.5*math.pi)
+    ps:setColors(unpack(particle_colors))
+    ps:start()
+    ps:emit(count or 20)
+    table.insert(particles, ps)
+  elseif ptype == "inf" then
+    local ps = love.graphics.newParticleSystem(sprites["infparticle"])
+    local px = (x + 0.5) * TILE_SIZE
+    local py = (y + 0.5) * TILE_SIZE
+    ps:setPosition(px, py)
+    ps:setSpread(3)
+    ps:setEmissionArea("uniform", TILE_SIZE/3, TILE_SIZE/3, 0, true)
+    ps:setSizes(1, 1, 1, 1, 0.75, 0)
+    ps:setSpeed(300)
+    ps:setLinearDamping(5)
+    ps:setParticleLifetime(1, 1.2)
+    ps:setColors(unpack(particle_colors))
+    ps:start()
+    ps:emit(count or 20)
+    table.insert(particles, ps)
+  elseif ptype == "destroy" then
     local ps = love.graphics.newParticleSystem(sprites["circle"])
     local px = (x + 0.5) * TILE_SIZE
     local py = (y + 0.5) * TILE_SIZE
