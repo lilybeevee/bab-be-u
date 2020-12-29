@@ -1655,8 +1655,7 @@ function miscUpdates(state_change)
         local props_to_check = {"stelth","sans","delet","dragbl","rong","wurd","nodrag","rithere","thr","ouch","protecc","noundo",
         "poortoll","go","folowal","tall","rave","colrful","torc","split","icyyyy","icy","hopovr","nuek","knightstep","diagstep","sidestep","notranform",
         "munwalk","visitfren","walk","noswim","haetflor","haetskye","glued","flye","enby","tranz","comepls","goawaypls","goooo",
-        "moar","nedkee","fordor","hotte","fridgd","nogo","
-					","y'all","utres","utoo","u",
+        "moar","nedkee","fordor","hotte","fridgd","nogo","thingify","y'all","utres","utoo","u",
         } --props are checked in order, so less common props should go in front
         for _,prop in ipairs(props_to_check) do
           if hasProperty(unit,prop) then
@@ -3587,7 +3586,6 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix,anti_gon
 end
 
 function deleteUnit(unit,convert,undoing,gone)
-  print("aaaa", thicc_units[unit])
   unit.removed = true
   unit.removed_final = true
   if not undoing and not convert and not gone and not level_destroyed and rules_with ~= nil then

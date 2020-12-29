@@ -985,7 +985,6 @@ It is probably possible to do, but lily has decided that it's not important enou
                 --Patashu: only the mover itself pulls, otherwise it's a mess. stuff like STICKY/STUCK will require ruggedizing this logic.
                 --Patashu: TODO: Doing the pull right away means that in a situation like this: https://cdn.discordapp.com/attachments/579519329515732993/582179745006092318/unknown.png the pull could happen before the bounce depending on move order. To fix this... I'm not sure how Baba does this? But it's somewhere in that mess of code.
                 if not table.has_value(unitsByTile(movers[k].unit.x-movers[k].dx,movers[k].unit.y-movers[k].dy),movers[k].unit) then
-                  -- this doesn't really work with thicc ? idk what fix it
                   doPull(movers[k].unit, movers[k].dx, movers[k].dy, movers[k].move_dir, data, already_added, moving_units, moving_units_next,  slippers, remove_from_moving_units)
                 end
               end
@@ -1543,7 +1542,22 @@ end
 --same stubborn logic as canMove, only the puller gets to branch though! also, we can't attempt a pull before going ahead with it, so just do the first one we can I guess.
 function doPull(unit,dx,dy,dir,data, already_added, moving_units, moving_units_next, slippers, remove_from_moving_units)
   local result = doPullCore(unit,dx,dy,dir,data, already_added, moving_units, moving_units_next, slippers, remove_from_moving_units)
+  
+   --this doesn't work great atm. analyze later
+   --[[if thicc_units[unit] then
+    local old_x, old_y = unit.x, unit.y;
+    for i=1,3 do
+      --similar to the thicc code for canMove
+      unit.x = old_x+i%2;
+      unit.y = old_y+math.floor(i/2);
+      local newresult = doPullCore(unit,dx,dy,dir,data, already_added, moving_units, moving_units_next, slippers, remove_from_moving_units)
+    end
+    unit.x = old_x;
+    unit.y = old_y;
+  end]]
+  
   --fast track
+  --Patashu: Why is there code ABOVE the fast track? *squinting*
   if rules_with["comepls"] == nil and rules_with["anti"] == nil and rules_with["sidekik"] == nil and rules_with["diagkik"] == nil then return 0 end
   if result > 0 then return result end
   if dir > 0 then
