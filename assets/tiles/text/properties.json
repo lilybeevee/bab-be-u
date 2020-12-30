@@ -81,6 +81,15 @@
     "tags": ["push"]
   },
   {
+    "name": "txt_push",
+    "sprite": ["txt/push"],
+    "types": ["property"],
+    "color": [[6, 1]],
+    "wobble": true,
+    "desc": "PUSH: Go away plsed by movement into its tile.\nAnti: comepls",
+    "tags": ["go away pls"]
+  },
+  {
     "name": "txt_comepls",
     "display": "come pls",
     "sprite": ["txt/comepls"],

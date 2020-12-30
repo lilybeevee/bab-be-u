@@ -196,6 +196,7 @@ anti_word_replacements = {
   ["shy..."] = "stubbn",
   nogo = "icyyyy",
   goawaypls = "comepls",
+  push = "comepls",
   comepls = "goawaypls",
   haetskye = "haetflor",
   haetflor = "haetskye",
@@ -451,6 +452,7 @@ if settings["baba"] then
   table.insert(selector_grid_contents, {
     0,"txt_is",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     "baba","txt_baba","txt_you",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,"txt_push",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -461,9 +463,8 @@ if settings["baba"] then
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    "txt_lesbad","txt_n'tifyyy",0,0,0,0,0,0,0,0,0,0,0,0,0,"aaaaaa","therealqt","zawarudo",
-    "txt_every3",0,0,0,0,0,0,0,0,0,0,0,0,"&","&n't","sans","copkat","ditto",
+    "txt_lesbad",0,0,0,0,0,0,0,0,0,0,0,0,0,0,"aaaaaa","therealqt","zawarudo",
+    "txt_every3","txt_n'tifyyy",0,0,0,0,0,0,0,0,0,0,0,"&","&n't","sans","copkat","ditto",
   })
 end
 

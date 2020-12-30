@@ -2516,6 +2516,7 @@ function canMoveCore(unit,dx,dy,dir,o) --pushing, pulling, solid_name, reason, p
         local push = (hasProperty(v, "goawaypls") and ignoreCheck(unit,v,"goawaypls"))
                   or (hasProperty(v, "anti sidekik") and ignoreCheck(unit,v,"anti sidekik"))
                   or (hasProperty(v, "anti diagkik") and ignoreCheck(unit,v,"anti diagkik"))
+                  or (hasProperty(v, "push") and ignoreCheck(unit,v,"push"))
         local moov = hasRule(unit, "moov", v) and ignoreCheck(unit,v);
         if (push or moov) and not would_swap_with then
           -- print("success")
@@ -2574,7 +2575,7 @@ function canMoveCore(unit,dx,dy,dir,o) --pushing, pulling, solid_name, reason, p
         end
       end
       
-      local canpush = hasProperty(v, "goawaypls") or hasProperty(v, "anti sidekik") or hasProperty(v, "anti diagkik")
+      local canpush = hasProperty(v, "goawaypls") or hasProperty(v, "anti sidekik") or hasProperty(v, "anti diagkik") or hasProperty(v, "push")
       --if/elseif chain for everything that sets stopped to true if it's true - no need to check the remainders after all! (but if anything ignores flye, put it first, like haet!)
       if rules_with["haet"] ~= nil and hasRule(unit, "haet", v) and not hasRule(unit,"liek",v) and ignoreCheck(unit,v) then
         stopped = true
