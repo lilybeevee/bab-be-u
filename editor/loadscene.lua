@@ -147,6 +147,34 @@ function scene.keyPressed(key)
   end
 end
 
+local unit_tests_blacklist = { }
+--hugest offenders (make me want to die inside)
+unit_tests_blacklist["square fill 3"] = true
+unit_tests_blacklist["square fill 4"] = true
+unit_tests_blacklist["square fill 5"] = true
+unit_tests_blacklist["square fill 6"] = true
+unit_tests_blacklist["taek noetts"] = true
+unit_tests_blacklist["sadd citty"] = true
+--unit_tests_blacklist["remote txt"] = true
+--huge offenders (>10 s)
+unit_tests_blacklist["square fill 2"] = true
+unit_tests_blacklist["langton's bog"] = true
+unit_tests_blacklist["merrim_weebster"] = true
+unit_tests_blacklist["quick no1 puzzl"] = true
+unit_tests_blacklist["with our powers combined___"] = true
+unit_tests_blacklist["sudoku"] = true
+--unit_tests_blacklist["f is for"] = true
+--unit_tests_blacklist["wal be seeping"] = true
+--borderline (7-10s)
+unit_tests_blacklist["bab get cleen"] = true
+unit_tests_blacklist["bridge wronging"] = true
+unit_tests_blacklist["echolocation"] = true
+unit_tests_blacklist["i don c no pumkin!"] = true
+unit_tests_blacklist["shhh, it's a secret"] = true
+unit_tests_blacklist["better bab snek"] = true
+unit_tests_blacklist["counter"] = true
+--unit_tests_blacklist["clause"] = true
+
 function runUnitTests(just_this_folder)
   local start_time = love.timer.getTime()
   unit_tests = true
@@ -161,36 +189,43 @@ function runUnitTests(just_this_folder)
   local worst_replay_time = 0
   for _,v in ipairs(levels) do
     level_filename = v.file
+    local dummy = level_filename:split('/');
+    local actual_name = dummy[#dummy];
     if not just_this_folder or string.find(v.file, '/') == nil then
-      if #sub_worlds > 0 then
-        level_filename = table.concat(sub_worlds, "/") .. "/" .. level_filename
-      end
-      local this_replay_start = love.timer.getTime()
-      scene.loadLevel(v.data, "play")
-      game.load()
-      tryStartReplay()
-      if replay_playback then
-        replay_playback_interval = 0
-        local still_going = true
-        while (still_going) do
-          still_going = doReplay(0)
-          cutscene_tick:update(1) --for past and other cutscenes
-        end
-        if not won_this_session then
-          table.insert(fail_levels, v.file)
-        else
-          table.insert(succ_levels, v.file)
-        end
+      if (unit_tests_blacklist[actual_name]) then
+        print (actual_name.." is blacklisted; skipping")
       else
-        table.insert(noreplay_levels, v.file)
-      end
-      local this_replay_end = love.timer.getTime()
-      local this_replay_time = this_replay_end-this_replay_start;
-      if this_replay_time > worst_replay_time then
-        worst_replay_time = this_replay_time
-        worst_replay_name = v.file
+        if #sub_worlds > 0 then
+          level_filename = table.concat(sub_worlds, "/") .. "/" .. level_filename
+        end
+        local this_replay_start = love.timer.getTime()
+        scene.loadLevel(v.data, "play")
+        game.load()
+        tryStartReplay()
+        if replay_playback then
+          replay_playback_interval = 0
+          local still_going = true
+          while (still_going) do
+            still_going = doReplay(0)
+            cutscene_tick:update(1) --for past and other cutscenes
+          end
+          if not won_this_session then
+            table.insert(fail_levels, v.file)
+          else
+            table.insert(succ_levels, v.file)
+          end
+        else
+          table.insert(noreplay_levels, v.file)
+        end
+        local this_replay_end = love.timer.getTime()
+        local this_replay_time = this_replay_end-this_replay_start;
+        if this_replay_time > worst_replay_time then
+          worst_replay_time = this_replay_time
+          worst_replay_name = v.file
+        end
       end
     end
+
   end
   local end_time = love.timer.getTime()
   print ("Unit tested " .. tostring(#succ_levels + #fail_levels) .. " levels!")

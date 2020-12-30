@@ -303,10 +303,15 @@ bab arguments!
   registerSound("za warudo", 1)
   registerSound("time resume dio", 1)
   registerSound("bup", 0.5)
+  registerSound("anti clicc", 1)
   registerSound("clicc", 1)
   registerSound("unwin", 0.5)
   registerSound("stopwatch", 1.0)
   registerSound("babbolovania", 0.7)
+  registerSound("dragabl pickup", 0.5)
+  registerSound("dragabl putdown", 0.5)
+  registerSound("thicc", 1)
+  registerSound("unthicc", 1)
 
   print(colr.green("✓ sounds registered"))
 
