@@ -726,7 +726,7 @@ function scene.keyPressed(key)
   end
   
   --create and display meta tiles 1 higher
-  if selector_open and #searchstr == 0 and (key == "lalt" or key == "m" and (key_down["lctrl"] or key_down["rctrl"])) then
+  if selector_open --[[and #searchstr == 0]] and (key == "lalt" or key == "m" and (key_down["lctrl"] or key_down["rctrl"])) then
     --copy so we don't override original list
     current_tile_grid = copyTable(current_tile_grid)
     for i = 0,tile_grid_width*tile_grid_height do
@@ -763,7 +763,7 @@ function scene.keyPressed(key)
     end
   end
   
-  if selector_open and #searchstr == 0 and key == "ralt" or key == "r" and (key_down["lctrl"] or key_down["rctrl"]) or key == "escape" then
+  if selector_open --[[and #searchstr == 0]] and key == "ralt" or key == "r" and (key_down["lctrl"] or key_down["rctrl"]) or key == "escape" then
     current_tile_grid = tile_grid[selector_page]
   end
   
