@@ -49,6 +49,7 @@ defaultsettings = {
   menu_anim = true,
   themes = true,
   autoupdate = true,
+  print_to_screen = false,
 }
 
 if love.filesystem.read("Settings.bab") ~= nil then
