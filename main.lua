@@ -571,6 +571,15 @@ end
 cutscene_tick = tick.group()
 
 function love.update(dt)
+  local mult = math.floor(love.timer.getFPS() / 60)
+  if not love.window.hasFocus() then
+    if frame % mult > 0 then
+      return
+    else
+      dt = dt * mult
+    end
+  end
+
   if spookmode then
     dt = math.tan(love.timer.getRealTime()*20)/200
   end
