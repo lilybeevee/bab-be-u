@@ -47,6 +47,10 @@ local babupdated = false
 
 bxb = nil
 
+local threaderror = ''
+local threaderrorstatus = {opacity = 0}
+local threaderrortween = tween.new(1, threaderrorstatus, {opacity = 0}, 'outCirc')
+
 function tableAverage(table)
   local sum = 0
   local ave = 0
@@ -608,6 +612,7 @@ function love.update(dt)
       if v[2] then v[2]() end
     end
   end
+  threaderrortween:update(dt)
 
   ui.update()
   if scene ~= loadscene then
@@ -764,12 +769,20 @@ function love.draw()
     drawmousething(0, 0)
   end
 
+  love.graphics.setFont(headerfont)
+  love.graphics.setColor(0, 0, 0, threaderrorstatus.opacity * 0.8) -- shadow
+  love.graphics.print(threaderror, 1, 1)
+  love.graphics.setColor(1, 0, 0, threaderrorstatus.opacity)
+  love.graphics.print(threaderror, 0, 0)
+
   if spookmode and math.random(1000) == 500 then
     local bab = love.graphics.newImage("assets/sprites/ui/bxb bx x.jpg")
+    love.graphics.setColor(1, 1, 1)
     love.graphics.draw(bab, 0, 0, 0, bab:getWidth()/love.graphics.getWidth(), bab:getHeight()/love.graphics.getHeight())
   end
 
   if debugEnabled then
+    love.graphics.setFont(regularfont)
     love.graphics.setColor(0.2,0.2,0.2,0.7)
     love.graphics.rectangle('fill', 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
     love.graphics.setColor(1,1,1)
@@ -984,4 +997,14 @@ function love.quit()
   if discordRPC and discordRPC ~= true then
     discordRPC.shutdown()
   end
+end
+
+function love.threaderror(thread, errorstr)
+  print(thread)
+  local str = 'THREAD ERROR ENCOUNTERED:\n' .. errorstr
+  print(str)
+
+  threaderrorstatus = {opacity = 1}
+  threaderrortween = tween.new(5, threaderrorstatus, {opacity = 0}, 'inCirc')
+  threaderror = str
 end

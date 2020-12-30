@@ -1,24 +1,26 @@
 [
   {
     "name": "oat",
-    "sprite": ["o"],
-    "types": ["object", "letter"],
+    "sprite": ["she_hairunder", "she_skin", "she_hairover"],
+    "color": [[1, 4], [0, 3], [1, 4]],
+    "painted": [true, false, true],
+    "types": ["object"],
     "layer": 11,
-    "color": [[2, 4]],
+    "rotate": true,
     "features": {
       "sans": {"x": 19, "y": 7, "w": 2, "h": 2}
     },
-    "voice": "pipipi",
-    "desc": "pi pi piiii!!!",
-    "tags": ["devs", "chars", "oatmealine", "puyopuyo tetris"],
-	"pronouns": ["she", "her"]
+    "voice": "miku",
+    "desc": "She",
+    "tags": ["devs", "chars", "oatmealine"],
+	  "pronouns": ["it", "her"]
   },
   {
     "name": "txt_oat",
-    "sprite": ["txt/oat"],
+    "sprite": ["txt/she"],
     "types": ["object"],
-    "color": [[2, 4]],
-    "tags": ["devs", "chars", "oatmealine", "puyopuyo tetris"]
+    "color": [[1, 4]],
+    "tags": ["devs", "chars", "oatmealine"]
   },
   {
     "name": "pata",
