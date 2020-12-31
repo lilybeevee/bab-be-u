@@ -1,5 +1,28 @@
 [
   {
+    "name": "she",
+    "sprite": ["she_hairunder", "she_skin", "she_hairover"],
+    "color": [[1, 4], [0, 3], [1, 4]],
+    "painted": [true, false, true],
+    "types": ["object"],
+    "layer": 11,
+    "rotate": true,
+    "features": {
+      "sans": {"x": 19, "y": 7, "w": 2, "h": 2}
+    },
+    "voice": "miku",
+    "desc": "She",
+    "tags": ["devs", "chars", "oatmealine"],
+	  "pronouns": ["it", "her"]
+  },
+  {
+    "name": "txt_she",
+    "sprite": ["txt/she"],
+    "types": ["object"],
+    "color": [[1, 4]],
+    "tags": ["devs", "chars", "oatmealine"]
+  },
+  {
     "name": "oat",
     "sprite": ["o"],
     "types": ["object", "letter"],
@@ -9,9 +32,9 @@
       "sans": {"x": 19, "y": 7, "w": 2, "h": 2}
     },
     "voice": "pipipi",
-    "desc": "pi pi piiii!!!",
+    "desc": "pi pi piiii!!! (oat's past char)",
     "tags": ["devs", "chars", "oatmealine", "puyopuyo tetris"],
-	"pronouns": ["she", "her"]
+	  "pronouns": ["it", "her"]
   },
   {
     "name": "txt_oat",
@@ -20,6 +43,7 @@
     "color": [[2, 4]],
     "tags": ["devs", "chars", "oatmealine", "puyopuyo tetris"]
   },
+
   {
     "name": "pata",
     "sprite": ["pata"],

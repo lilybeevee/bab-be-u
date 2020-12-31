@@ -3778,6 +3778,7 @@ function buildOptions()
     scene.addOption("sfx_vol", "sound volume", {{"25%", 0.25}, {"50%", 0.5}, {"75%", 0.75}, {"100%", 1}})
     scene.addOption("focus_pause", "pause on defocus", {{"on", true}, {"off", false}})
     scene.addOption("autoupdate", "autoupdate (experimental)", {{"on", true}, {"off", false}})
+    scene.addOption("print_to_screen", "log print()s to screen", {{"on", true}, {"off", false}})
     scene.addButton("video options", function() display = true; scene.buildUI() end)
     scene.addButton("default settings", function () defaultSetting() scene.buildUI() end)
     if scene == menu then
@@ -4720,4 +4721,14 @@ function unloadMod()
     end
     loaded_mod = nil
   end
+end
+
+function log(str)
+  table.insert(logs, {str})
+end
+function log_error(str)
+  table.insert(logs, {str, 'error'})
+end
+function log_debug(str)
+  table.insert(logs, {str, 'debug'})
 end

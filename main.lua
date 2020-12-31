@@ -47,6 +47,11 @@ local babupdated = false
 
 bxb = nil
 
+logs = {}
+logtexts = {}
+logstatuses = {}
+logtweens = {}
+
 function tableAverage(table)
   local sum = 0
   local ave = 0
@@ -64,6 +69,8 @@ end
 local debugDrawText                           -- read the line below
 local headerfont = love.graphics.newFont(32)  -- used for debug
 local regularfont = love.graphics.newFont(16) -- read the line above
+
+local slightlybiggerfont = love.graphics.newFont(20) -- for things that need more attention than usual text
 
 function love.load(arg)
   local current_arg = nil
@@ -369,6 +376,12 @@ bab arguments!
   scene.load()
 
   print(colr.dim("load took "..(math.floor((love.timer.getTime()-startload)*10)/10).."s"))
+
+  local print_ = print -- fuckers took print. cant have shit in detroit
+  print = function(a)
+    if settings["print_to_screen"] then log_debug(a) end
+    print_(a)
+  end
 end
 
 function love.keypressed(key,scancode,isrepeat)
@@ -567,6 +580,15 @@ end
 cutscene_tick = tick.group()
 
 function love.update(dt)
+  local mult = math.floor(love.timer.getFPS() / 60)
+  if not love.window.hasFocus() then
+    if frame % mult > 0 then
+      return
+    else
+      dt = dt * mult
+    end
+  end
+
   if spookmode then
     dt = math.tan(love.timer.getRealTime()*20)/200
   end
@@ -606,6 +628,49 @@ function love.update(dt)
     if v[1]:update(dt) then
       tweens[k] = nil
       if v[2] then v[2]() end
+    end
+  end
+
+  for i,l in ipairs(logs) do
+    if not logtexts[i] then
+      local font = regularfont
+      if l[2] == 'error' then font = slightlybiggerfont end
+
+      logtexts[i] = love.graphics.newText(font, l[1])
+      logtexts[i]:setf(l[1], love.graphics.getWidth(), 'left')
+    end
+    if not logstatuses[i] then
+      logstatuses[i] = {value = 1}
+    end
+    if not logtweens[i] then
+      logtweens[i] = 'hold on bro' -- im sorry i needed a value
+
+      local delay = 2
+      if l[2] == 'debug' then delay = 0.5 end
+      if l[2] == 'error' then delay = 5 end
+
+      local easeDur = 2
+
+      -- this approach causes tons of issues, see: https://canary.discord.com/channels/556333985882439680/579519329515732993/793868008677179402
+      --[[
+      tick.delay(function()
+        logtweens[i] = tween.new(easeDur, logstatuses[i], {value = 0}, 'inSine')
+      end, delay)
+      ]]
+      -- so for now im using a temporary approach that breaks the ease function
+      logstatuses[i] = {value = 1 + (1 / easeDur) * delay}
+      logtweens[i] = tween.new(easeDur + delay, logstatuses[i], {value = 0}, 'inSine')
+    end
+    if logtweens[i].update then logtweens[i]:update(dt) end
+  end
+
+  -- go through the log statuses, remove old ones
+  for i = #logstatuses, 1, -1 do -- reverse to avoid deleting perfectly fine logs by accident
+    if logstatuses[i].value == 0 then
+      table.remove(logstatuses, i)
+      table.remove(logs, i)
+      table.remove(logtweens, i)
+      table.remove(logtexts, i)
     end
   end
 
@@ -669,6 +734,34 @@ function love.draw()
   end
 
   ui.overlay.draw()
+
+  local y = 0
+  local width = 0
+  local height = 0
+  for i,l in ipairs(logtexts) do
+    local val = math.min(logstatuses[i].value, 1)
+    height = height + l:getHeight() * val
+    width = math.max(width, l:getWidth() * val)
+  end
+
+  love.graphics.setColor(0, 0, 0, 0.25)
+  love.graphics.rectangle('fill', 0, 0, math.max(width, love.graphics.getWidth()/3), height)
+
+  for i,l in ipairs(logtexts) do
+    local val = math.min(logstatuses[i].value, 1)
+
+    love.graphics.setColor(0, 0, 0, val)
+    love.graphics.draw(l, 1, y + 1)
+
+    love.graphics.setFont(regularfont)
+
+    love.graphics.setColor(1, 1, 1, val)
+    if logs[i][2] == 'error' then love.graphics.setColor(1, 0, 0, val) end
+    if logs[i][2] == 'debug' then love.graphics.setColor(1, 1, 1, val * 0.8) end
+
+    love.graphics.draw(l, 0, y)
+    y = y + l:getHeight() * val
+  end
 
   if debug_view and not spookmode then
     local mousex, mousey = love.mouse.getPosition()
@@ -766,10 +859,12 @@ function love.draw()
 
   if spookmode and math.random(1000) == 500 then
     local bab = love.graphics.newImage("assets/sprites/ui/bxb bx x.jpg")
+    love.graphics.setColor(1, 1, 1)
     love.graphics.draw(bab, 0, 0, 0, bab:getWidth()/love.graphics.getWidth(), bab:getHeight()/love.graphics.getHeight())
   end
 
   if debugEnabled then
+    love.graphics.setFont(regularfont)
     love.graphics.setColor(0.2,0.2,0.2,0.7)
     love.graphics.rectangle('fill', 0, 0, love.graphics.getWidth(), love.graphics.getHeight())
     love.graphics.setColor(1,1,1)
@@ -794,6 +889,8 @@ function love.resize(w, h)
   if spookmode then
     love.window.setFullscreen(true)
   end
+
+  logtexts = {} -- refresh text cache with new screen width in mind
 end
 
 function love.mousemoved(x, y, dx, dy)
@@ -984,4 +1081,12 @@ function love.quit()
   if discordRPC and discordRPC ~= true then
     discordRPC.shutdown()
   end
+end
+
+function love.threaderror(thread, errorstr)
+  print(thread)
+  local str = 'THREAD ERROR ENCOUNTERED:\n' .. errorstr
+  print(str)
+
+  log_error(str)
 end
