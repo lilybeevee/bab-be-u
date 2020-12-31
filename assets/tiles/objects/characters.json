@@ -1648,5 +1648,25 @@
     "desc": "from portugal",
     "alias": ["jij"],
     "tags": ["chars", "fof", "bush"]
+  },
+  {
+    "name": "ballt",
+    "sprite": ["ballt"],
+    "layer": 11,
+    "color": [[0, 1]],
+    "rotate": true,
+    "features": {
+      "sans": {"x": 22, "y": 10, "w": 2, "h": 2}
+    },
+    "desc": "they are siblings with beb",
+    "tags": ["chars", "balt", "baba", "belt"],
+    "pronouns": ["he", "him"]
+  },
+  {
+    "name": "txt_ballt",
+    "sprite": ["txt/ballt"],
+    "types": ["object"],
+    "color": [[0, 1]],
+    "tags": ["chars", "balt", "baba", "belt"]
   }
 ]
