@@ -49,6 +49,7 @@ defaultsettings = {
   menu_anim = true,
   themes = true,
   autoupdate = true,
+  print_to_screen = false,
 }
 
 if love.filesystem.read("Settings.bab") ~= nil then
@@ -196,6 +197,7 @@ anti_word_replacements = {
   ["shy..."] = "stubbn",
   nogo = "icyyyy",
   goawaypls = "comepls",
+  push = "comepls",
   comepls = "goawaypls",
   haetskye = "haetflor",
   haetflor = "haetskye",
@@ -375,8 +377,8 @@ selector_grid_contents = {
   {
     "bab","txt_bab","kat","txt_kat","flof","txt_flof","babby","txt_babby","bad","txt_bad","fof","txt_fof",0,0,"lila","txt_lila","larry","txt_larry",
     "keek","txt_keek","creb","txt_creb","shrim","txt_shrim","moo","txt_moo","toby","txt_toby","jij","txt_jij",0,0,"pata","txt_pata","jill","txt_jill",
-    "meem","txt_meem","statoo","txt_statoo","flamgo","txt_flamgo","migri","txt_migri","temmi","txt_temmi",0,0,0,0,"slab","txt_slab","zsoob","txt_zsoob",
-    "skul","txt_skul","beeee","txt_beeee","gul","txt_gul","kva","txt_kva","bunmy","txt_bunmy","ballt","txt_ballt",0,0,"notnat","txt_notnat","oat","txt_oat",
+    "meem","txt_meem","statoo","txt_statoo","flamgo","txt_flamgo","migri","txt_migri","temmi","txt_temmi","ballt","txt_ballt",0,0,"slab","txt_slab","zsoob","txt_zsoob",
+    "skul","txt_skul","beeee","txt_beeee","gul","txt_gul","kva","txt_kva","bunmy","txt_bunmy",0,0,0,0,"notnat","txt_notnat","she","txt_she",
     "ghostfren","txt_ghostfren","fishe","txt_fishe","starrfishe","txt_starrfishe","pidgin","txt_pidgin","slogkat","txt_slogkat",0,0,0,0,"ally","txt_ally","butcher","txt_butcher",
     "robobot","txt_robobot","snek","txt_snek","sneel","txt_sneel","swan","txt_swan","b..er","txt_b..er",0,0,0,0,0,0,0,0,
     "wog","txt_wog","bog","txt_bog","enbybog","txt_enbybog","spoder","txt_spoder","niko","txt_niko",0,0,0,0,0,0,0,0,
@@ -387,7 +389,7 @@ selector_grid_contents = {
     "han","txt_han","iy","txt_iy","lisp","txt_lisp","paw","txt_paw","humuhumunukunukuapua'a","txt_humuhumunukunukuapua'a",0,0,0,0,0,0,0,0,
     "snoman","txt_snoman","pingu","txt_pingu","der","txt_der","ginn","txt_ginn","snom","txt_snom",0,0,0,0,0,0,0,0,
     "kapa","txt_kapa","urei","txt_urei","ryugon","txt_ryugon","viruse","txt_viruse","slog","txt_slog",0,0,0,0,0,0,0,0,
-    "os","txt_os","hors","txt_hors","mimi","txt_mimi","err","txt_err","scorpino","txt_scorpino",0,0,0,0,0,0,0,0,
+    "os","txt_os","hors","txt_hors","mimi","txt_mimi","err","txt_err","scorpino","txt_scorpino",0,0,0,0,0,0,"oat","txt_oat",
   },
   -- page 5: inanimate objects
   {
@@ -451,6 +453,7 @@ if settings["baba"] then
   table.insert(selector_grid_contents, {
     0,"txt_is",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     "baba","txt_baba","txt_you",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,"txt_push",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -461,9 +464,8 @@ if settings["baba"] then
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    "txt_lesbad","txt_n'tifyyy",0,0,0,0,0,0,0,0,0,0,0,0,0,"aaaaaa","therealqt","zawarudo",
-    "txt_every3",0,0,0,0,0,0,0,0,0,0,0,0,"&","&n't","sans","copkat","ditto",
+    "txt_lesbad",0,0,0,0,0,0,0,0,0,0,0,0,0,0,"aaaaaa","therealqt","zawarudo",
+    "txt_every3","txt_n'tifyyy",0,0,0,0,0,0,0,0,0,0,0,"&","&n't","sans","copkat","ditto",
   })
 end
 
