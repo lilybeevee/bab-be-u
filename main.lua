@@ -342,7 +342,7 @@ bab arguments!
   end
 
   if is_mobile then
-    love.window.setMode(640, 360)
+    love.window.setMode(640, 360, {borderless=true, resizable=false, minwidth=705, minheight=510, fullscreen=true})
   end
 
   if spookmode then
@@ -412,10 +412,12 @@ function love.keypressed(key,scancode,isrepeat)
   elseif key == "m" and love.keyboard.isDown('f3') then
     if not is_mobile then
       winwidth, winheight = love.graphics.getDimensions( )
-      love.window.setMode(800, 480, {borderless=false, resizable=true, minwidth=705, minheight=510})
+      love.window.setMode(800, 480, {borderless=true, resizable=false, minwidth=705, minheight=510})
       is_mobile = true
+      emulating_mobile = false
     elseif is_mobile then
       love.window.setMode(winwidth, winheight, {borderless=false, resizable=true, minwidth=705, minheight=510})
+      emulating_mobile = true
       is_mobile = false
     end
   elseif key == "d" and love.keyboard.isDown('f3') then
@@ -718,6 +720,9 @@ function love.update(dt)
 end
 
 function love.draw()
+  local sx, sy, sw, sh = 0, 0, love.graphics.getWidth(), love.graphics.getHeight()
+  if love.isVersionCompatible('11.3') then sx, sy, sw, sh = love.window.getSafeArea() end
+
   local dt = love.timer.getDelta()
   frame = frame + 1
 
@@ -727,6 +732,10 @@ function love.draw()
     next_anim = next_anim + ANIM_TIMER
   end
 
+
+  love.graphics.push()
+  love.graphics.translate(sx, sy)
+  love.graphics.scale(sw/love.graphics.getWidth(), sh/love.graphics.getHeight())
   love.graphics.setFont(default_font)
 
   if scene and scene.draw then
@@ -873,6 +882,7 @@ function love.draw()
   end
 
   ui.postDraw()
+  love.graphics.pop()
 end
 
 function love.visible()
@@ -882,13 +892,15 @@ function love.visible()
 end
 
 function love.resize(w, h)
+  if spookmode then
+    local winwidth, winheight = love.graphics.getDimensions()
+    love.window.setMode(winwidth, winheight, {borderless=true, resizable=false, minwidth=705, minheight=510, fullscreen=true})
+  end
+
   if scene and scene.resize then
     scene.resize(w, h)
   end
   ui.overlay.rebuild()
-  if spookmode then
-    love.window.setFullscreen(true)
-  end
 
   logtexts = {} -- refresh text cache with new screen width in mind
 end
