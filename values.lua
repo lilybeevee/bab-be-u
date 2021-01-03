@@ -234,6 +234,7 @@ anti_word_replacements = {
   brite = "tranparnt",
   tranparnt = "brite",
   gone = "zomb",
+  zomb = "gone",
   reed = "cyeann",
   orang = "bleu",
   yello = "purp",
@@ -256,6 +257,7 @@ anti_word_replacements = {
   rong = "corekt",
   seenby = "behind",
   behind = "seenby",
+  halfstep = "hopovr",
 }
 
 anti_word_reverses = {
@@ -464,7 +466,7 @@ if settings["baba"] then
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    "txt_lesbad",0,0,0,0,0,0,0,0,0,0,0,0,0,0,"aaaaaa","therealqt","zawarudo",
+    "txt_lesbad","txt_halfstep",0,0,0,0,0,0,0,0,0,0,0,0,0,"aaaaaa","therealqt","zawarudo",
     "txt_every3","txt_n'tifyyy",0,0,0,0,0,0,0,0,0,0,0,"&","&n't","sans","copkat","ditto",
   })
 end

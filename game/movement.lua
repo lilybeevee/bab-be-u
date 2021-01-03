@@ -127,7 +127,7 @@ function doMovement(movex, movey, key)
     movex = 0
     movey = 0
   end
-  walkdirchangingrulesexist = rules_with["munwalk"] or rules_with["sidestep"] or rules_with["diagstep"] or rules_with["hopovr"] or rules_with["knightstep"]
+  walkdirchangingrulesexist = rules_with["munwalk"] or rules_with["sidestep"] or rules_with["diagstep"] or rules_with["hopovr"] or rules_with["knightstep"] or rules_with["halfstep"]
   sliderulesexist = rules_with["icyyyy"] or rules_with["goooo"] or rules_with["reflecc"] or rules_with["anti icyyyy"] or rules_with["anti goooo"]
   local played_sound = {}
   local slippers = {}
@@ -2249,6 +2249,11 @@ function canMoveCore(unit,dx,dy,dir,o) --pushing, pulling, solid_name, reason, p
     if hasProperty(unit, "anti hopovr") then
       dx = 0
       dy = 0
+    end
+    if hasProperty(unit, "halfstep") then
+      local hops = countProperty(unit, "halfstep")
+      dx = dx / (2^hops)
+      dy = dy / (2^hops)
     end
   end
 	

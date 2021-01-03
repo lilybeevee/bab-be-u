@@ -745,7 +745,15 @@
     "sprite": ["txt/hopovr"],
     "types": ["property"],
     "color": [[5, 2]],
-    "desc": "HOPOVR: HOPOVR units move two tiles ahead, skipping the intermediate tile. Stacks!\nAnti: i cant visualize this one",
+    "desc": "HOPOVR: HOPOVR units move two tiles ahead, skipping the intermediate tile. Stacks additively.\nAnti: sets motion to 0",
+    "tags": ["patashu", "skip"]
+  },
+  {
+    "name": "txt_halfstep",
+    "sprite": ["txt/halfstep"],
+    "types": ["property"],
+    "color": [[5, 2]],
+    "desc": "HALFSTEP: HALFSTEP units move half as much. Tiles off by nonwhole amounts tend to not interact in most ways. Stacks exponentially.\nAnti: hopovr",
     "tags": ["patashu", "skip"]
   },
   {
