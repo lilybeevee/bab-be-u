@@ -1,4 +1,4 @@
-function thiccBlock(undoing)
+--[[function thiccBlock(undoing)
   --to save headaches, thicc status can only update when a unit is created (or undestroyed) or at this very point)
   local current_thicc = getUnitsWithEffect("thicc");
   local new_thicc_cache = {}
@@ -52,6 +52,75 @@ function thiccBlock(undoing)
        for i=1,3 do
           if table.has_value(unitsByTile(unit.x+i%2,unit.y+math.floor(i/2)),unit) then
             removeFromTable(unitsByTile(unit.x+i%2,unit.y+math.floor(i/2)),unit)
+          end
+        end
+      end
+    end
+  end
+  thicc_units = current_thicc_cache;
+end]]
+
+function thiccBlock(undoing)
+  local current_thicc = getUnitsWithEffectAndCount("thicc");
+  local new_thicc_cache = {}
+  local any_new = false;
+  local current_thicc_cache = {}
+  local un_thicc_cache = {}
+  local any_un = false;
+  for unit,amt in pairs(current_thicc) do
+    unit = units_by_id[unit] or cursors_by_id[unit]
+
+    current_thicc_cache[unit] = amt;
+    if ((not thicc_units[unit]) or (thicc_units[unit] < amt)) then
+      new_thicc_cache[unit] = amt;
+      any_new = true;
+    end
+  end
+  
+  for unit,amt in pairs(thicc_units) do
+    if ((not current_thicc_cache[unit]) or (current_thicc_cache[unit] < amt)) then
+      un_thicc_cache[unit] = current_thicc_cache[unit] or 0;
+      any_un = true;
+    end
+  end
+  
+  if (any_new) then
+    if (not undoing) then
+      playSound("thicc");
+    end
+    for unit,amt in pairs(new_thicc_cache) do
+      if not unit.removed_final then
+        local old_amt = thicc_units[unit] or 0
+        if (#undo_buffer == 0) then
+          unit.draw.thicc = amt+1
+        else
+          unit.draw.thicc = old_amt+1
+          addTween(tween.new(0.35, unit.draw, {thicc = amt+1}), "unit:thicc:" .. unit.tempid)
+        end
+        for i=0,amt do
+          for j=0,amt do
+            if not table.has_value(unitsByTile(unit.x+i,unit.y+j),unit) then
+              table.insert(unitsByTile(unit.x+i,unit.y+j),unit)
+            end
+          end
+        end
+      end
+    end
+  end
+  if (any_un) then
+    if (not undoing) then
+      playSound("unthicc");
+    end
+    for unit,amt in pairs(un_thicc_cache) do
+      if not unit.removed_final then
+        local old_amt = thicc_units[unit] or 0
+        unit.draw.thicc = old_amt+1
+        addTween(tween.new(0.25, unit.draw, {thicc = amt+1}), "unit:thicc:" .. unit.tempid)
+        for i=0,old_amt do
+          for j=0,old_amt do
+            if (i>amt or j>amt) and table.has_value(unitsByTile(unit.x+i,unit.y+j),unit) then
+              removeFromTable(unitsByTile(unit.x+i,unit.y+j),unit)
+            end
           end
         end
       end
@@ -581,8 +650,8 @@ function updateUnits(undoing, big_update)
             local absx = math.abs(x)
             if (absx+absy+math.max(absx,absy)-1 <= amt) and (x ~= 0 or y ~= 0) then --this line handles the area thing. 0,0 checking is because it's weird without it
               if thicc_units[unit] then
-                x = x*2
-                y = y*2
+                x = x*(thicc_units[unit]+1)
+                y = y*(thicc_units[unit]+1)
               end
               if aamt > 0 then
                 already_grown[getUnitStr(unit)] = already_grown[getUnitStr(unit)] or {}
@@ -672,12 +741,12 @@ function updateUnits(undoing, big_update)
           end
         end
         if not lit then
-          local new_unit = createUnit("xplod", nuke.x, nuke.y, nuke.dir)
-          addUndo({"create", new_unit.id, false})
-          if hasProperty(nuke,"thicc") then
-            for i=1,3 do
-              local _new_unit = createUnit("xplod", nuke.x+i%2, nuke.y+math.floor(i/2), nuke.dir)
-              addUndo({"create", _new_unit.id, false})
+          local thicc = thicc_units[nuke] or 0
+          --i'm not sure if i can just flat out replace the hasProperty but i hope i can
+          for i=0,thicc do
+            for j=0,thicc do
+              local new_unit = createUnit("xplod", nuke.x+i, nuke.y+j, nuke.dir)
+              addUndo({"create", new_unit.id, false})
             end
           end
           for _,other in ipairs(check) do
@@ -1292,7 +1361,7 @@ function updateUnits(undoing, big_update)
               break
             end
           else
-            local ons = getUnitsOnTile(other.x,other.y,{exclude = other, thicc = hasProperty(other,"thicc")})
+            local ons = getUnitsOnTile(other.x,other.y,{exclude = other, thicc = thicc_units[other]})
             local success = false
             for _,on in ipairs(ons) do
               if sameFloat(other,on) and ignoreCheck(other,on) then
@@ -1341,7 +1410,7 @@ function updateUnits(undoing, big_update)
 
     local isnxt = getUnitsWithEffect("nxt")
     for _,unit in ipairs(isnxt) do
-      local stuff = getUnitsOnTile(unit.x, unit.y, {not_destroyed = true, checkmous = true, thicc = hasProperty(unit,"thicc")})
+      local stuff = getUnitsOnTile(unit.x, unit.y, {not_destroyed = true, checkmous = true, thicc = thicc_units[unit]})
       for _,on in ipairs(stuff) do
         if hasU(on) and sameFloat(unit, on) and ignoreCheck(on, unit, "nxt") then
           if timecheck(unit,"be","nxt") and (timecheckUs(on)) then
@@ -1371,7 +1440,7 @@ function updateUnits(undoing, big_update)
         overriden = hasRule(creator, "creatn't", "txt")
       end
       if tile ~= nil and not overriden then
-        local others = getUnitsOnTile(creator.x, creator.y, {name = createe, not_destroyed = true, thicc = hasProperty(creator,"thicc")})
+        local others = getUnitsOnTile(creator.x, creator.y, {name = createe, not_destroyed = true, thicc = countProperty(creator,"thicc")})
         if #others == 0 then
           local color = rule.object.prefix
           if color == "samepaint" then
@@ -3568,13 +3637,17 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix,anti_gon
   
   --keep empty out of units_by_tile - it will be returned in getUnitsOnTile
   if (not (unit.fullname == "no1" or unit.type == "outerlvl")) then
-    table.insert(unitsByTile(x, y), unit)
     if rules_with ~= nil and rules_with["thicc"] and hasProperty(unit, "thicc") then
-      unit.draw.thicc = 2
-      table.insert(unitsByTile(x+1, y), unit)
-      table.insert(unitsByTile(x, y+1), unit)
-      table.insert(unitsByTile(x+1, y+1), unit)
-      thicc_units[unit] = true;
+      local thicc = countProperty(unit,"thicc")
+      unit.draw.thicc = thicc+1
+      for i=0,thicc do
+        for j=0,thicc do
+          table.insert(unitsByTile(x+i, y+j), unit)
+        end
+      end
+      thicc_units[unit] = thicc;
+    else
+      table.insert(unitsByTile(x, y), unit)
     end
   end
 
@@ -3593,7 +3666,7 @@ function deleteUnit(unit,convert,undoing,gone)
     for _,ruleparent in ipairs(gotters) do
       local rule = ruleparent.rule
       local new_unit = dropGotUnit(unit, rule)
-      --thicc got law
+      --[[thicc got law
       if (thicc_units[unit] and new_unit ~= nil and not thicc_units[new_unit]) then
         local old_x, old_y = unit.x, unit.y
         for i=1,3 do
@@ -3603,7 +3676,7 @@ function deleteUnit(unit,convert,undoing,gone)
         end
         unit.x = old_x
         unit.y = old_y
-      end
+      end]]
     end
   end
   --empty can't really be destroyed, only pretend to be, to preserve the invariant 'there is exactly empty per tile'
@@ -3622,12 +3695,16 @@ function deleteUnit(unit,convert,undoing,gone)
   if unit.name ~= unit.fullname then
     removeFromTable(units_by_name[unit.fullname], unit)
   end
-  removeFromTable(unitsByTile(unit.x, unit.y), unit)
   if thicc_units[unit] then
-    removeFromTable(unitsByTile(unit.x+1,unit.y),unit)
-    removeFromTable(unitsByTile(unit.x,unit.y+1),unit)
-    removeFromTable(unitsByTile(unit.x+1,unit.y+1),unit)
+    local thicc = thicc_units[unit]
+    for i=0,thicc do
+      for j=0,thicc do
+        removeFromTable(unitsByTile(unit.x+i, unit.y+j), unit)
+      end
+    end
     thicc_units[unit] = nil
+  else
+    removeFromTable(unitsByTile(unit.x, unit.y), unit)
   end
   if not convert and not gone then
     removeFromTable(units_by_layer[unit.layer], unit)
@@ -3708,9 +3785,14 @@ function moveUnit(unit,x,y,portal,instant)
   else
     removeFromTable(unitsByTile(unit.x, unit.y), unit)
     if rules_with and thicc_units[unit] then
-      removeFromTable(unitsByTile(unit.x+1,unit.y),unit)
-      removeFromTable(unitsByTile(unit.x,unit.y+1),unit)
-      removeFromTable(unitsByTile(unit.x+1,unit.y+1),unit)
+      local thicc = thicc_units[unit]
+      for i=0,thicc do
+        for j=0,thicc do
+          removeFromTable(unitsByTile(unit.x+i, unit.y+j), unit)
+        end
+      end
+    else
+      removeFromTable(unitsByTile(unit.x, unit.y), unit)
     end
 
     -- putting portal check above same-position check to give portal effect through one-tile gap
@@ -3765,13 +3847,18 @@ function moveUnit(unit,x,y,portal,instant)
     unit.x = x
     unit.y = y
     
-    table.insert(unitsByTile(unit.x, unit.y), unit)
+    
     if rules_with and thicc_units[unit] then
-      for i=1,3 do
-        if not table.has_value(unitsByTile(unit.x+i%2,unit.y+math.floor(i/2)),unit) then
-          table.insert(unitsByTile(unit.x+i%2,unit.y+math.floor(i/2)),unit)
+      local thicc = thicc_units[unit]
+      for i=0,thicc do
+        for j=0,thicc do
+          if not table.has_value(unitsByTile(unit.x+i,unit.y+j),unit) then
+            table.insert(unitsByTile(unit.x+i,unit.y+j),unit)
+          end
         end
       end
+    else
+      table.insert(unitsByTile(unit.x, unit.y), unit)
     end
   end
 

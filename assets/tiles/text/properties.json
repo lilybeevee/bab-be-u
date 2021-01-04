@@ -679,7 +679,7 @@
     "sprite": ["txt/goarnd"],
     "types": ["property"],
     "color": [[3, 2]],
-    "desc": "GO ARND: GO ARND units wrap around the level, as though it were a torus. BORDR objects are used as the level border, and the wraparound doesn't go through BORDRs. Diagonal GO ARNDs on corners of non-square levels might not work as expected, as it simply traces backward until hitting a BORDR.\nAnti: flip around at edge (portal leading out to itself)",
+    "desc": "GO ARND: GO ARND units wrap around the level, as though it were a torus.\nBORDR objects are used as the level border, and the wraparound doesn't go through BORDRs.\nDiagonal GO ARNDs on corners of non-square levels might not work as expected, as it simply traces backward until hitting a BORDR.\nLVL BE GOARND will cause all objects to be able to wrap.\nAnti: flip around at edge (portal leading out to itself)",
     "tags": ["wrap around", "go around", "cg5"]
   },
   {
@@ -991,7 +991,7 @@
     "sprite": ["txt/thicc"],
     "types": ["property"],
     "color": [[1, 3]],
-    "desc": "THICC: Thicc things take up a 2x2 space. Expands to the lower right. Currently very broken.\nAnti: babby (yes, the noun)"
+    "desc": "THICC: Thicc things take up a 2x2 space. Expands to the lower right. Stacks additively. Also disables all spatial darnery (poor toll and go/mirrarnd).\nAnti: babby (yes, the noun)"
   },
   {
     "name": "txt_rythm",

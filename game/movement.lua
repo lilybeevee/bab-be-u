@@ -1420,7 +1420,7 @@ function applySwap(mover, dx, dy)
   --[[addUndo({"update", unit.id, unit.x, unit.y, unit.dir})]]--
   local swap_mover = hasProperty(mover, "behinu")
   local did_swap = false
-  for _,v in ipairs(getUnitsOnTile(mover.x+dx, mover.y+dy, {thicc = hasProperty(mover,"thicc")})) do
+  for _,v in ipairs(getUnitsOnTile(mover.x+dx, mover.y+dy, {thicc = countProperty(mover,"thicc")})) do
   --if not v.already_moving then --this made some things move order dependent, so taking it out
     local swap_v = hasProperty(v, "behinu")
     --Don't swap with non-swap empty.
@@ -1440,7 +1440,7 @@ function applySwap(mover, dx, dy)
   
   local anti_swap_mover = hasProperty(mover, "anti behinu")
   local did_anti_swap = false
-  for _,v in ipairs(getUnitsOnTile(mover.x+dx, mover.y+dy, {thicc = hasProperty(mover,"thicc")})) do
+  for _,v in ipairs(getUnitsOnTile(mover.x+dx, mover.y+dy, {thicc = countProperty(mover,"thicc")})) do
     local anti_swap_v = hasProperty(v, "anti behinu")
     if ((anti_swap_mover and v.fullname ~= "no1") or anti_swap_v) and sameFloat(mover,v,true) then
       if ignoreCheck(v,mover) and (not anti_swap_mover or ignoreCheck(v,mover,"anti behinu")) then
@@ -1461,11 +1461,12 @@ function applyPortalHoover(mover, dx, dy)
   --fast track
   if rules_with["poortoll"] == nil then return end
   if (not hasProperty(mover, "poortoll")) then return end
+  if thicc_units[mover] then return end
   
   local xx, yy = mover.x+dx, mover.y+dy
   
-  for _,v in ipairs(getUnitsOnTile(mover.x+dx, mover.y+dy, {thicc = thicc_units[unit]})) do
-    if sameFloat(mover, v) and ignoreCheck(v,mover,"poortoll") then
+  for _,v in ipairs(getUnitsOnTile(mover.x+dx, mover.y+dy)) do
+    if sameFloat(mover, v) and ignoreCheck(v,mover,"poortoll") and not thicc_units[v] then
       local dx, dy, dir, px, py = getNextTile(v, -dx, -dy, v.dir)
       if (px ~= xx and py ~= yy) then
         queueMove(v, px-v.x, py-v.y, v.dir, false, 0, mover)
@@ -1847,7 +1848,7 @@ function doWrap(unit, px, py, move_dir, dir)
     return px, py, move_dir, dir
   end
   --TODO: make mirr arnd also work with bordr. hard to know how that should work though
-  if hasProperty(unit, "anti mirrarnd") or hasProperty(outerlvl, "anti mirrarnd") then --projective plane wrapping
+  if (hasProperty(unit, "anti mirrarnd") or hasProperty(outerlvl, "anti mirrarnd")) and not thicc_units[unit] then --projective plane wrapping
     local mirror_x, mirror_y = false, false
     if px < 0 or px >= mapwidth then
       mirror_y = true
@@ -1871,7 +1872,7 @@ function doWrap(unit, px, py, move_dir, dir)
         dir = move_dir
       end
     end
-  elseif hasProperty(unit, "mirrarnd") or hasProperty(outerlvl, "mirrarnd") then --projective plane wrapping
+  elseif (hasProperty(unit, "mirrarnd") or hasProperty(outerlvl, "mirrarnd")) and not thicc_units[unit] then --projective plane wrapping
     local dx, dy = 0, 0
     if (px < 0) then
       dx = -px
@@ -1892,7 +1893,7 @@ function doWrap(unit, px, py, move_dir, dir)
       py = py + (mapheight/2-0.5-py)*2
     end
   end
-  if hasProperty(unit, "anti goarnd") or hasProperty(outerlvl, "anti goarnd") then
+  if (hasProperty(unit, "anti goarnd") or hasProperty(outerlvl, "anti goarnd")) and not thicc_units[unit] then
     --Orthogonal wrapping is trivial - eject backwards as far as we can.
     --Diagonal wrapping is a bit harder - it depends on if we're walking into a wall or a corner (inward or outward). If we're walking into a wall, eject perpendicularly out of it as far as we can. If we're walking into a corner, eject backwards as far as we can.
     if not inBounds(px,py) then
@@ -1956,7 +1957,7 @@ function doWrap(unit, px, py, move_dir, dir)
         end
       end
     end
-  elseif hasProperty(unit, "goarnd") or hasProperty(outerlvl, "goarnd") then --torus wrapping
+  elseif (hasProperty(unit, "goarnd") or hasProperty(outerlvl, "goarnd")) and not thicc_units[unit] then --torus wrapping
     --Orthogonal wrapping is trivial - eject backwards as far as we can.
     --Diagonal wrapping is a bit harder - it depends on if we're walking into a wall or a corner (inward or outward). If we're walking into a wall, eject perpendicularly out of it as far as we can. If we're walking into a corner, eject backwards as far as we can.
     if not inBounds(px,py) then
@@ -2010,75 +2011,72 @@ function doWrap(unit, px, py, move_dir, dir)
 end
 
 function doPortal(unit, px, py, move_dir, dir, reverse)
-  if not inBounds(px,py) or rules_with["poortoll"] == nil then
-    return px, py, move_dir, dir
-  else
-    local rs = reverse and -1 or 1
-    --arbitrarily pick the first paired portal we find while iterating - can't think of a more 'simultaneousy' logic
-    --I thought about making portals go backwards/forwards twice/etc depending on property count, but it doesn't play nice with pull - if two portals lead to a portal you move away from, which one do you pull from?
-    --This was already implemented in cg5's mod, but I overlooked it the first time around - PORTAL is FLOAT respecting, so now POOR TOLL is FLYE respecting. Spooky! (I already know this will have weird behaviour with PULL and SIDEKIK, so looking forward to that.)
-    for _,v in ipairs(getUnitsOnTile(px, py, {checkmous = true})) do
-      --At Vitellary's request, make it so you can only enter the front of a portal.
-      if dirAdd(v.dir, 4) == move_dir and hasProperty(v, "poortoll") and sameFloat(unit, v, true) and not hasRule(unit,"haet",v) and ignoreCheck(unit,v,"poortoll") then
-        local portal_rules = matchesRule(v.fullname, "be", "poortoll")
-        local portals_direct = {}
-        local portals = {}
-        local portal_index = -1
-        for _,rule in ipairs(portal_rules) do
-          for _,s in ipairs(findUnitsByName(v.fullname)) do
-            if testConds(s, rule.rule.subject.conds) then
-              portals_direct[s] = true
-            end
+  if not inBounds(px,py) or rules_with["poortoll"] == nil or thicc_units[unit] then return px, py, move_dir, dir end
+  local rs = reverse and -1 or 1
+  --arbitrarily pick the first paired portal we find while iterating - can't think of a more 'simultaneousy' logic
+  --I thought about making portals go backwards/forwards twice/etc depending on property count, but it doesn't play nice with pull - if two portals lead to a portal you move away from, which one do you pull from?
+  --This was already implemented in cg5's mod, but I overlooked it the first time around - PORTAL is FLOAT respecting, so now POOR TOLL is FLYE respecting. Spooky! (I already know this will have weird behaviour with PULL and SIDEKIK, so looking forward to that.)
+  for _,v in ipairs(getUnitsOnTile(px, py, {checkmous = true})) do
+    --At Vitellary's request, make it so you can only enter the front of a portal.
+    if dirAdd(v.dir, 4) == move_dir and hasProperty(v, "poortoll") and sameFloat(unit, v, true) and not hasRule(unit,"haet",v) and ignoreCheck(unit,v,"poortoll") then
+      local portal_rules = matchesRule(v.fullname, "be", "poortoll")
+      local portals_direct = {}
+      local portals = {}
+      local portal_index = -1
+      for _,rule in ipairs(portal_rules) do
+        for _,s in ipairs(findUnitsByName(v.fullname)) do
+          if testConds(s, rule.rule.subject.conds) then
+            portals_direct[s] = true
           end
         end
-        -- Count portal colors
-        local found_colored = {}
-        for p,_ in pairs(portals_direct) do
-          local color_id = getUnitColor(p)[1]..","..getUnitColor(p)[2]
-          found_colored[color_id] = (found_colored[color_id] or 0) + 1
+      end
+      -- Count portal colors
+      local found_colored = {}
+      for p,_ in pairs(portals_direct) do
+        local color_id = getUnitColor(p)[1]..","..getUnitColor(p)[2]
+        found_colored[color_id] = (found_colored[color_id] or 0) + 1
+      end
+      -- Only add portals to list if:
+      -- A. They share the same color, or
+      -- B. Only one of both color exists
+      for p,_ in pairs(portals_direct) do
+        local p_color_id = getUnitColor(p)[1]..","..getUnitColor(p)[2]
+        local v_color_id = getUnitColor(v)[1]..","..getUnitColor(v)[2]
+        if p_color_id == v_color_id then
+          table.insert(portals, p)
+        elseif found_colored[p_color_id] == 1 and found_colored[v_color_id] == 1 then
+          table.insert(portals, p)
         end
-        -- Only add portals to list if:
-        -- A. They share the same color, or
-        -- B. Only one of both color exists
-        for p,_ in pairs(portals_direct) do
-          local p_color_id = getUnitColor(p)[1]..","..getUnitColor(p)[2]
-          local v_color_id = getUnitColor(v)[1]..","..getUnitColor(v)[2]
-          if p_color_id == v_color_id then
-            table.insert(portals, p)
-          elseif found_colored[p_color_id] == 1 and found_colored[v_color_id] == 1 then
-            table.insert(portals, p)
-          end
-        end
-        table.sort(portals, readingOrderSort)
-        --find our place in the list
-        for pk,pv in ipairs(portals) do
-          if pv == v then
-            portal_index = pk
-            break
-          end
-        end
-        --did I ever mention I hate 1 indexed arrays?
-        local dest_index = ((portal_index + rs - 1) % #portals) + 1
-        local dest_portal = portals[dest_index]
-        --I don't know how this bug happens, but it'll be easier to debug if it doesn't immediately crash the game LOL
-        if (dest_portal == nil) then
-          print("Expected to find a portal destination and didn't!"..","..tostring(#portals)..","..tostring(dest_index))
+      end
+      table.sort(portals, readingOrderSort)
+      --find our place in the list
+      for pk,pv in ipairs(portals) do
+        if pv == v then
+          portal_index = pk
           break
         end
-        local dir1 = v.dir
-        --At Vitellary's request, and as a baba/bab difference, let's try making it so when you go in a (side), you come out the same (side) on the destination. Front to front, back to back, left side to left side and so on.
-        local dir2 = rotate8(dest_portal.dir)
-        move_dir = move_dir > 0 and dirAdd(move_dir, dirDiff(dir1, dir2)) or 0
-        dir = dir > 0 and dirAdd(dir, dirDiff(dir1, dir2)) or 0
-        local dx, dy = 0, 0
-        if (move_dir > 0) then
-          dx = dirs8[move_dir][1]
-          dy = dirs8[move_dir][2]
-        end
-        px = dest_portal.x + dx
-        py = dest_portal.y + dy
-        return px, py, move_dir, dir, dest_portal
       end
+      --did I ever mention I hate 1 indexed arrays?
+      local dest_index = ((portal_index + rs - 1) % #portals) + 1
+      local dest_portal = portals[dest_index]
+      --I don't know how this bug happens, but it'll be easier to debug if it doesn't immediately crash the game LOL
+      if (dest_portal == nil) then
+        print("Expected to find a portal destination and didn't!"..","..tostring(#portals)..","..tostring(dest_index))
+        break
+      end
+      local dir1 = v.dir
+      --At Vitellary's request, and as a baba/bab difference, let's try making it so when you go in a (side), you come out the same (side) on the destination. Front to front, back to back, left side to left side and so on.
+      local dir2 = rotate8(dest_portal.dir)
+      move_dir = move_dir > 0 and dirAdd(move_dir, dirDiff(dir1, dir2)) or 0
+      dir = dir > 0 and dirAdd(dir, dirDiff(dir1, dir2)) or 0
+      local dx, dy = 0, 0
+      if (move_dir > 0) then
+        dx = dirs8[move_dir][1]
+        dy = dirs8[move_dir][2]
+      end
+      px = dest_portal.x + dx
+      py = dest_portal.y + dy
+      return px, py, move_dir, dir, dest_portal
     end
   end
   return px, py, move_dir, dir, nil
@@ -2134,19 +2132,24 @@ function canMove(unit,dx,dy,dir,o) --pushing, pulling, solid_name, reason, push_
   local success, movers, specials = canMoveCore(unit,dx,dy,dir,o)
   if thicc_units[unit] then
     local old_x, old_y = unit.x, unit.y;
-    for i=1,3 do
-      --temporarily pretend the unit is at each other tile
-      --(the reason why o.start_x/o.start_y doesn't seem to work is because then everything we push uses the same co-ordinates and ends up trying to push onto itself? and that's why only the TL corner ever worked)
-      unit.x = old_x+i%2;
-      unit.y = old_y+math.floor(i/2);
-      local newsuccess, newmovers, newspecials = canMoveCore(unit,dx,dy,dir,o)
-      mergeTable(movers,newmovers)
-      mergeTable(specials,newspecials)
-      success = success and newsuccess
-      --remove all the extra us's
-      for j = #movers,2,-1 do
-        if movers[j].unit == unit then
-          table.remove(movers, j)
+    local thicc = thicc_units[unit]
+    for i=0,thicc do
+      for j=0,thicc do
+        --temporarily pretend the unit is at each other tile
+        --(the reason why o.start_x/o.start_y doesn't seem to work is because then everything we push uses the same co-ordinates and ends up trying to push onto itself? and that's why only the TL corner ever worked)
+        if (i+j) > 0 then
+          unit.x = old_x+i;
+          unit.y = old_y+j;
+          local newsuccess, newmovers, newspecials = canMoveCore(unit,dx,dy,dir,o)
+          mergeTable(movers,newmovers)
+          mergeTable(specials,newspecials)
+          success = success and newsuccess
+          --remove all the extra us's
+          for j = #movers,2,-1 do
+            if movers[j].unit == unit then
+              table.remove(movers, j)
+            end
+          end
         end
       end
     end

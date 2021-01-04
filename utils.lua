@@ -968,7 +968,7 @@ function countProperty(unit, prop, ignore_flye)
     for _,ruleparent in ipairs(matchesRule(nil, "giv", prop)) do
       for _,other in ipairs(ruleparent.units) do
         if ignoreCheck(unit, other) and (ignore_flye or sameFloat(unit, other)) then
-          result = result + #getUnitsOnTile(other.x, other.y, {exclude = other, checkmous = true, thicc = hasProperty(other,"thicc")})
+          result = result + #getUnitsOnTile(other.x, other.y, {exclude = other, checkmous = true, thicc = countProperty(other,"thicc")})
         end
       end
     end
@@ -2214,10 +2214,10 @@ function getUnitsOnTile(x,y,o)
   local not_destroyed = o.not_destroyed
   local exclude = o.exclude
   local checkmous = o.checkmous
-  local thicc = o.thicc
+  local thicc = o.thicc or 0
   
   local result = {}
-  for _,unit in ipairs(unitsByTile(x, y)) do
+  --[[for _,unit in ipairs(unitsByTile(x, y)) do
     if unit ~= exclude then
       if not not_destroyed or (not_destroyed and not unit.removed) then
         if not name or (name and nameIs(unit, name)) then
@@ -2225,10 +2225,10 @@ function getUnitsOnTile(x,y,o)
         end
       end
     end
-  end
-  if thicc then
-    for i=1,3 do
-      for _,unit in ipairs(unitsByTile(x+i%2,y+math.floor(i/2))) do
+  end]]
+  for i=0,thicc do
+    for j=0,thicc do
+      for _,unit in ipairs(unitsByTile(x+i,y+j)) do
         if unit ~= exclude then
           if not not_destroyed or (not_destroyed and not unit.removed) then
             if not name or (name and nameIs(unit, name)) then
