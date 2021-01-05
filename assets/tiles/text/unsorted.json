@@ -44,7 +44,7 @@
     "sprite": ["txt/plsdont"],
     "types": ["object", "property"],
     "color": [[0, 3]],
-    "desc": "PLSDONT: Like infloop, but for plsdonts instead. Keep in mind that some plsdonts occur before the first round of rule parsing completes, and so plsdont rules won't apply then.",
+    "desc": "PLSDONT: Like infloop, but for plsdonts instead. Keep in mind that some plsdonts occur before the first round of rule parsing completes, and so plsdont rules won't apply then.\nTwo basic plsdonts are 1000 rules formed; 3000 objects ever existed.",
     "tags": ["too complex", "plz dont"]
   },
   {

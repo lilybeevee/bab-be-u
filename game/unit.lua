@@ -2763,7 +2763,9 @@ function convertLevel()
   
   local meta = matchesRule(outerlvl,"be","txtify")
   if (#meta > 0) then
-   local tile = nil
+    if #meta > 100 then destroyLevel("plsdont")
+      return false end
+    local tile = nil
     local nametocreate = outerlvl.fullname
     for i = 1,#meta do
       nametocreate = "txt_"..nametocreate
@@ -2880,6 +2882,7 @@ function convertUnits(pass)
           nametocreate = "txt_"..nametocreate
         end
       end
+      if (string.sub(nametocreate,400,404) == "_txt_") then destroyLevel("plsdont") break end
       tile = getTile(nametocreate)
       if tile ~= nil then
         local new_unit = createUnit(tile.name, unit.x, unit.y, unit.dir, true)
@@ -2947,21 +2950,19 @@ function convertUnits(pass)
   local ntify = getUnitsWithEffectAndCount("n'tify")
   for unit,amt in pairs(ntify) do
     unit = units_by_id[unit] or cursors_by_id[unit]
-    if not unit.new and unit.type ~= "outerlvl" and timecheck(unit,"be","n'tify") then
+    if amt%2 == 1 and not unit.new and unit.type ~= "outerlvl" and timecheck(unit,"be","n'tify") then
       local nametocreate = unit.fullname
-      for i = 1,amt do
-        local newname = nametocreate
-        local tile = getTile(nametocreate)
-        if nametocreate:ends("n't") then
-          newname = nametocreate:sub(1, string.len(nametocreate)-3)
-        else
-          newname = nametocreate .. "n't"
-        end
-        if not getTile(newname) then
-          break
-        end
-        nametocreate = newname
+      local newname = nametocreate
+      local tile = getTile(nametocreate)
+      if nametocreate:ends("n't") then
+        newname = nametocreate:sub(1, string.len(nametocreate)-3)
+      else
+        newname = nametocreate .. "n't"
       end
+      if not getTile(newname) then
+        break
+      end
+      nametocreate = newname
       if nametocreate ~= unit.fullname then
         table.insert(converted_units, unit)
         addParticles("bonus", unit.x, unit.y, getUnitColor(unit))

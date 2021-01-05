@@ -2312,7 +2312,9 @@ function scene.wheelMoved(whx, why)
     local tile = getTile(brush.id)
     local new = tile.name
     if why < 0 then -- modified from 'x be meta' code
-      new = tile.txtify or "txt_"..new
+      if (string.sub(new,396,400) ~= "_txt_") then
+        new = tile.txtify or "txt_"..new
+      end
     elseif why > 0 then
       new = tile.thingify or tile.txtname
     end
