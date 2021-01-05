@@ -35,9 +35,17 @@
     "types": ["object", "property"],
     "color": [[0, 3]],
     "desc": "INFLOOP: A special word that describes the infinite loop state.",
-    "alias": ["infloop"],
-    "tags": ["infloop", "infinity", "infinite loop"],
+    "tags": ["infinity", "infinite loop"],
     "old_names": ["txt_loop"]
+  },
+  {
+    "name": "txt_plsdont",
+    "display": "plsdont",
+    "sprite": ["txt/plsdont"],
+    "types": ["object", "property"],
+    "color": [[0, 3]],
+    "desc": "PLSDONT: Like infloop, but for plsdonts instead. Keep in mind that some plsdonts occur before the first round of rule parsing completes, and so plsdont rules won't apply then.",
+    "tags": ["too complex", "plz dont"]
   },
   {
     "name": "txt_...",

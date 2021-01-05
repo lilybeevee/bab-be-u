@@ -417,7 +417,14 @@
     "sprite": ["txt/infloop"],
     "layer": 21,
     "color": [[0, 3]],
-    "tags": ["infinity", "infinite", "loop"]
+    "tags": ["infinity", "infinite loop"]
+  },
+  {
+    "name": "plsdont",
+    "sprite": ["txt/plsdont"],
+    "layer": 21,
+    "color": [[0, 3]],
+    "tags": ["too complex", "plz dont"]
   },
   {
     "name": "petnygrame",
@@ -564,7 +571,7 @@
     "sprite": ["txt/lin"],
     "types": ["object"],
     "color": [[0, 3]],
-    "desc": "LIN BE PATHZ by default. Also lin is used in floodfilling and can have a puff/blossom door attached to it.",
+    "desc": "lin is used in floodfilling and can have a puff/blossom door attached to it.",
     "tags": ["line", "path"]
   },
   {
@@ -2531,7 +2538,7 @@
   {
     "name": "aaaaaa",
     "sprite": ["aaaaaa"],
-    "layer": 100,
+    "layer": 22,
     "color": [[0, 3]],
     "desc": "Thingifying a custom letter AAAA (with 2-4) A's becomes a BATTRY instead."
   },

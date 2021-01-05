@@ -2199,6 +2199,9 @@ function levelBlock()
   if hasProperty(outerlvl, "infloop") then
     destroyLevel("infloop")
   end
+  if hasProperty(outerlvl, "plsdont") then
+    destroyLevel("plsdont")
+  end
   
   if hasProperty(outerlvl, "visitfren") then
     for _,unit in ipairs(units) do
@@ -2538,7 +2541,7 @@ function readingOrderSort(a, b)
 end
 
 function destroyLevel(reason)
-	if reason == "infloop" or (not hasRule(outerlvl,"got","lvl") and not hasProperty(outerlvl,"protecc")) then
+	if reason == "infloop" or reason == "plsdont" or (not hasRule(outerlvl,"got","lvl") and not hasProperty(outerlvl,"protecc")) then
     level_destroyed = true
   end
   
@@ -2595,17 +2598,45 @@ function destroyLevel(reason)
       end
     end
   end
+  if reason == "plsdont" then
+    addParticles("infup", 0, 0, {4, 1}, 60)
+    if hasRule("plsdont","ben't","plsdont") or hasRule("plsdont","be", "n't","plsdont") then
+      level_destroyed = false
+    elseif hasProperty("plsdont","tryagain") then
+      doTryAgain()
+      level_destroyed = false
+    elseif hasProperty("plsdont","delet") then
+      doXWX()
+    elseif hasProperty("plsdont",":)") then
+      doWin("won")
+      level_destroyed = true
+    elseif hasProperty("plsdont","un:)") then
+      doWin("won", false)
+      level_destroyed = true
+    end
+    --[[local berule = matchesRule("plsdont","be","?")
+    for _,rule in ipairs(berule) do
+      local object = getTile(rule.rule.object.name)
+      if object then
+        table.insert(transform_results, object.name)
+        table.insert(win_sprite_override, object)
+      end
+    end]]
+  end
   
   if level_destroyed then
     destroycount = destroycount+1
     if reason == "infloop" then
       infcount = infcount+1
     end
+    if reason == "plsdont" then
+      complexcount = complexcount+1
+    end
     addUndo({"destroy_level", reason})
 
     local units_to_destroy = {}
     for _,unit in ipairs(units) do
-      if inBounds(unit.x, unit.y) or reason == "infloop" then
+      if inBounds(unit.x, unit.y) or reason == "infloop" or reason == "plsdont" then
         if not hasProperty(unit, "stayther") then
           table.insert(units_to_destroy, unit);
         end
@@ -2623,6 +2654,23 @@ function destroyLevel(reason)
         local object = getTile(rule.rule.object.name)
         if rule.rule.object.name == "txt" then
           object =  getTile("txt_infloop")
+        end
+        if object ~= nil then
+          local new_unit = createUnit(object.name, math.floor(mapwidth/2), math.floor(mapheight/2), 1)
+          if new_unit ~= nil then
+            addUndo({"create", new_unit.id, false})
+          end
+        end
+      end
+    end
+    if reason == "plsdont" and #transform_results == 0 then
+      local new_unit = createUnit("plsdont", math.floor(mapwidth/2), math.floor(mapheight/2), 1)
+      addUndo({"create", new_unit.id, false})
+      local gotrule = matchesRule("plsdont","got","?")
+      for _,rule in ipairs(gotrule) do
+        local object = getTile(rule.rule.object.name)
+        if rule.rule.object.name == "txt" then
+          object =  getTile("txt_plsdont")
         end
         if object ~= nil then
           local new_unit = createUnit(object.name, math.floor(mapwidth/2), math.floor(mapheight/2), 1)
@@ -3469,6 +3517,10 @@ function deleteUnits(del_units,convert,gone)
 end
 
 function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix,anti_gone) --ugh
+  if #units_by_id > 3000 then -- i think this counts units that were deleted in the past too, but i'm not sure how to solve that
+    destroyLevel("plsdont")
+  end
+
   local unit = {}
   unit.class = "unit"
 

@@ -406,8 +406,8 @@ function parseRules(undoing)
       for _,sentence in ipairs(sentences) do
         parseSentence(sentence, {been_first, first_words, final_rules, first}, dir) -- split into a new function located below to organize this slightly more
         if (#final_rules > 1000) then
-          print("parseRules infinite loop! (1000 rules)")
-          destroyLevel("infloop")
+          print("parseRules too complex! (1000 rules)")
+          destroyLevel("plsdont")
           clearRules()
           return
         end

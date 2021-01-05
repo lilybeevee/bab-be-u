@@ -29,7 +29,7 @@
     "metasprite": ["txt/lvl meta"],
     "types": ["object"],
     "color": [[4, 1]],
-    "desc": "LVL: Refers to the level you're in, as well as any enterable levels in this level. \nMiddle or SHIFT right-click it to edit.)\nCreating levels will be a samepaint lvl.\nlvl be pathz by default.\nlvl got X will trigger even if the level infloops.",
+    "desc": "LVL: Refers to the level you're in, as well as any enterable levels in this level. \nMiddle or SHIFT right-click it to edit.)\nCreating levels will be a samepaint lvl.\nlvl got X will trigger even if the level infloops.",
     "tags": ["level"]
   },
   {

@@ -52,6 +52,7 @@ function clear()
   referenced_text = {}
   undo_buffer = {}
   infcount = 0
+  complexcount = 0
   destroycount = 0
   update_undo = true
   max_layer = 1

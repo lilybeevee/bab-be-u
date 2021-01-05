@@ -2339,11 +2339,11 @@ function doOneMove(x, y, key, past)
       extendReplayString(0, 0, "f")
     end
 
-    if hasRule("press","f2",":)") then
-      doWin("won")
-    end
     if hasRule("press","f2","infloop") then
       destroyLevel("infloop")
+    end
+    if hasRule("press","f2","plsdont") then
+      destroyLevel("plsdont")
     end
     if hasRule("press","f2","tryagain") then
       doTryAgain()
@@ -2353,6 +2353,9 @@ function doOneMove(x, y, key, past)
     end
     if hasRule("press","f2","nxt") then
       doWin("nxt")
+    end
+    if hasRule("press","f2",":)") then
+      doWin("won")
     end
 
     local to_destroy = {}
@@ -2531,7 +2534,7 @@ function scene.doPastTurns()
             createUndoBasedOnUnitsChanges(old_units, old_units_by_id, units, units_by_id)
             old_units = nil; old_units_by_id = nil;
           elseif iterations > 20 then
-            destroyLevel("infloop")
+            destroyLevel("plsdont")
           else
             cutscene_tick:delay(function() pastMove(i+count+1, math.min(#all_moves - i+count, moves_per_tick - 1)) end, delay)
           end 

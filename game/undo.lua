@@ -113,6 +113,9 @@ function undoOneAction(turn, i, v, ignore_no_undo)
     if v[2] == "infloop" then
       infcount = infcount-1
     end
+    if v[2] == "plsdont" then
+      complexcount = complexcount-1
+    end
     if destroycount <= 0 then
       level_destroyed = false
     end
