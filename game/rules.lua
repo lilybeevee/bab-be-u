@@ -222,7 +222,7 @@ function parseRules(undoing)
   
   --TODO: This works in non-contrived examples, but isn't necessarily robust - for example, if after reparsing, you add one word rule while subtracting another word rule, it'll think nothing has changed. The only way to be ABSOLUTELY robust is to compare that the exact set of parsing effecting rules hasn't changed.
   local function reparseRuleCounts()
-    local props_table = {"wurd", "anti wurd", "poortoll", "goarnd", "mirrarnd", "ortho", "diag", "zawarudo", "rong", "slep"}
+    local props_table = {"wurd", "anti wurd", "poortoll", "goarnd", "mirrarnd", "ortho", "diag", "zawarudo", "rong", "slep", "boring"}
     local verbs_table = {"be", "giv"}
     local result = {}
     for _,prop in ipairs(props_table) do
@@ -1171,7 +1171,7 @@ function shouldReparseRules()
   local rules_to_check = {
     {"?","be","wurd"},
     {"?","be","anti wurd"},
-    {"?","be","poortoll"},
+  --{"?","be","poortoll"}, added down below, only checked if there is poor toll
     {"?","be","goarnd"},
     {"?","be","mirrarnd"},
     {"lvl","be","goarnd", true},
@@ -1182,8 +1182,10 @@ function shouldReparseRules()
     {"?","be","zawarudo"},
     {"?","be","rong"},
     {"?","be","slep"},
+    {"?","be","boring"},
   }
   if rules_with["poortoll"] then
+    table.insert(rules_to_check, {"?","be","poortoll"})
     table.insert(rules_to_check, {"?","ignor","?",true})
   end
   for _,rule in ipairs(rules_to_check) do

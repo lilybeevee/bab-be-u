@@ -1030,7 +1030,7 @@
     "sprite": ["txt/boring"],
     "types": ["property"],
     "color": [[4, 1]],
-    "desc": "BORING: Makes an object unable to be effected by rules, except the rule that made it boring. (Unimplemented)",
+    "desc": "BORING: Makes an object unable to be effected by rules, except for boring itself.\nAnti: not implemented atm",
     "tags": ["broken"]
   }
 ]

@@ -525,6 +525,8 @@ function matchesRule(rule1,rule2,rule3,stopafterone,debugging)
   nrules[2] = rule2
   getnrule(rule3,3)
   
+  --if nrules[3] ~= "boring" and #matchesRule(rule1,rule2,"boring",true) > 0 then return {} end
+
   if (debugging) then
     for x,y in ipairs(nrules) do
       print("in nrules:"..tostring(x)..","..tostring(y))
@@ -682,7 +684,7 @@ function getUnitsWithEffect(effect, return_rule)
   --print ("h:"..tostring(#rules))
   for _,dat in ipairs(rules) do
     local unit = dat[2]
-    if not unit.removed and not hasRule(unit, "ben't", effect) then
+    if not unit.removed and not hasRule(unit, "ben't", effect) and not hasProperty(unit, "boring") then
       table.insert(result, unit)
       table.insert(result_rules, dat[1])
       gotten[unit] = true
@@ -692,7 +694,7 @@ function getUnitsWithEffect(effect, return_rule)
   local rules = matchesRule(nil, "giv", effect)
   for _,rule in ipairs(rules) do
     local unit = rule[2]
-    if not unit.removed then
+    if not unit.removed and not hasProperty(unit, "boring") then
       for _,other in ipairs(getUnitsOnTile(unit.x, unit.y, {exclude = unit, thicc = thicc_units[unit]})) do
         if not gotten[other] and sameFloat(unit, other) and not hasRule(other, "ben't", effect) and ignoreCheck(other, unit) then
           table.insert(result, other)
@@ -706,7 +708,7 @@ function getUnitsWithEffect(effect, return_rule)
   local has_lvl_giv, lvl_giv_rule = hasRule(outerlvl, "giv", effect, true)
   if has_lvl_giv then
     for _,unit in ipairs(units) do
-      if not gotten[unit] and inBounds(unit.x, unit.y) and not hasRule(unit, "ben't", effect) and ignoreCheck(unit, outerlvl) then
+      if not gotten[unit] and inBounds(unit.x, unit.y) and not hasRule(unit, "ben't", effect) and ignoreCheck(unit, outerlvl) and not hasProperty(unit, "boring") then
         table.insert(result, unit)
         table.insert(result_rules, lvl_giv_rule)
       end
@@ -752,11 +754,11 @@ function getUnitsWithEffectAndCount(effect)
   --print ("h:"..tostring(#rules))
   for _,dat in ipairs(rules) do
     local unit = dat[2]
-    if not unit.removed and not hasRule(unit, "ben't", effect) then
-      if result[unit.id] == nil then
+    if not unit.removed and not hasRule(unit, "ben't", effect) and not hasProperty(unit, "boring") then
+      --[[if result[unit.id] == nil then
         result[unit.id] = 0
-      end
-      result[unit.id] = result[unit.id] + 1
+      end]]
+      result[unit.id] = (result[unit.id] or 0) + 1
     end
   end
   
@@ -765,11 +767,11 @@ function getUnitsWithEffectAndCount(effect)
     local unit = rule[2]
     if not unit.removed then
       for _,other in ipairs(getUnitsOnTile(unit.x, unit.y, {exclude = unit, thicc = thicc_units[unit]})) do
-        if sameFloat(unit, other) and not hasRule(other, "ben't", effect) and ignoreCheck(other, unit) then
-          if result[other.id] == nil then
+        if sameFloat(unit, other) and not hasRule(other, "ben't", effect) and ignoreCheck(other, unit) and not hasProperty(unit, "boring") then
+          --[[if result[other.id] == nil then
             result[other.id] = 0
-          end
-          result[other.id] = result[other.id] + 1
+          end]]
+          result[other.id] = (result[unit.id] or 0) + 1
         end
       end
     end
@@ -777,7 +779,7 @@ function getUnitsWithEffectAndCount(effect)
   
   if hasRule(outerlvl, "giv", effect) then
     for _,unit in ipairs(units) do
-      if inBounds(unit.x, unit.y) and not hasRule(unit, "ben't", effect) and ignoreCheck(unit, outerlvl) then
+      if inBounds(unit.x, unit.y) and not hasRule(unit, "ben't", effect) and ignoreCheck(unit, outerlvl) and not hasProperty(unit, "boring") then
         if result[unit.id] == nil then
           result[unit.id] = 0
         end
@@ -866,6 +868,7 @@ end
 
 
 function hasRule(rule1,rule2,rule3, return_rule)
+  if rules_with["boring"] and rule3 ~= "boring" and #matchesRule(rule1,rule2,"boring",true) > 0 then return false end
   local matches = matchesRule(rule1,rule2,rule3, true)
   if #matches > 0 then return true, (return_rule and matches[1] or nil) end
   if not rules_with["rp"] then return false end
@@ -916,6 +919,7 @@ end
 
 function hasProperty(unit,prop,return_rule)
   if not rules_with[prop] and prop ~= "?" then return false end
+  if rules_with["boring"] and prop ~= "boring" and hasProperty(unit,"boring") then return false end
   if unit and unit.fullname == "babby" and prop == "thicc" and not hasRule(unit, "be", "notranform") then return false end
   local has_be_rule, be_rule = hasRule(unit, "be", prop, true)
   if has_be_rule then return true, (return_rule and be_rule or nil) end
@@ -954,6 +958,7 @@ end
 function countProperty(unit, prop, ignore_flye)
   if not rules_with[prop] and prop ~= "?" then return 0 end
   local result = #matchesRule(unit,"be",prop)
+  if rules_with["boring"] and prop ~= "boring" and hasProperty(unit,"boring") then return 0 end
   if hasRule(unit, "ben't", prop) then return 0 end
   if not rules_with["giv"] then return result end
   if unit == outerlvl then return result end
