@@ -1182,18 +1182,16 @@ function updateUnits(undoing, big_update)
       local stuff = getUnitsOnTile(unit.x, unit.y, {not_destroyed = true, checkmous = true, thicc = thicc_units[unit]})
       for _,on in ipairs(stuff) do
         if (unit ~= on or ruleparent[1].rule.object.name == "themself") and hasRule(unit, "snacc", on) and sameFloat(unit, on) and ignoreCheck(on, unit) then
-          if not hasProperty(unit, "anti lesbad") and not hasProperty(on, "anti lesbad") then
-            if timecheck(unit,"snacc",on) and timecheck(on) then
-              table.insert(to_destroy, on)
-              playSound("snacc")
-              shakeScreen(0.3, 0.15)
-            else
-              table.insert(time_destroy,{on.id,timeless})
-              addUndo({"time_destroy",on.id})
-              table.insert(time_sfx,"snacc")
-            end
-            addParticles("destroy", unit.x, unit.y, getUnitColor(unit))
+          if timecheck(unit,"snacc",on) and timecheck(on) then
+            table.insert(to_destroy, on)
+            playSound("snacc")
+            shakeScreen(0.3, 0.15)
+          else
+            table.insert(time_destroy,{on.id,timeless})
+            addUndo({"time_destroy",on.id})
+            table.insert(time_sfx,"snacc")
           end
+          addParticles("destroy", unit.x, unit.y, getUnitColor(unit))
         end
       end
     end
@@ -2301,10 +2299,8 @@ function levelBlock()
   for _,ruleparent in ipairs(issnacc) do
     local unit = ruleparent[2]
     if unit ~= "gaem" then
-      if not hasProperty("gaem", "anti lesbad") and not hasProperty(unit, "anti lesbad") then
-        addParticles("destroy", unit.x, unit.y, getUnitColor(unit))
-        table.insert(to_destroy, unit)
-      end
+      addParticles("destroy", unit.x, unit.y, getUnitColor(unit))
+      table.insert(to_destroy, unit)
     end
   end
   
@@ -2312,9 +2308,7 @@ function levelBlock()
   for _,ruleparent in ipairs(issnacc) do
     local unit = ruleparent[2]
     if unit ~= outerlvl then
-      if not hasProperty("gaem", "anti lesbad") and not hasProperty(unit, "anti lesbad") then
-        if not gaemsafe then love.event.quit() end
-      end
+      if not gaemsafe then love.event.quit() end
     end
   end
   
@@ -2590,10 +2584,8 @@ function levelBlock()
   for _,ruleparent in ipairs(issnacc) do
     local unit = ruleparent[2]
     if unit ~= outerlvl and sameFloat(outerlvl,unit) and inBounds(unit.x,unit.y) and ignoreCheck(unit,outerlvl) then
-      if not hasProperty(outerlvl, "anti lesbad") and not hasProperty(unit, "anti lesbad") then
-        addParticles("destroy", unit.x, unit.y, getUnitColor(unit))
-        table.insert(to_destroy, unit)
-      end
+      addParticles("destroy", unit.x, unit.y, getUnitColor(unit))
+      table.insert(to_destroy, unit)
     end
   end
   
@@ -2601,10 +2593,8 @@ function levelBlock()
   for _,ruleparent in ipairs(issnacc) do
     local unit = ruleparent[2]
     if unit ~= outerlvl and sameFloat(outerlvl,unit) and inBounds(unit.x,unit.y) and ignoreCheck(outerlvl,unit) then
-      if not hasProperty(outerlvl, "anti lesbad") and not hasProperty(unit, "anti lesbad") then
-        destroyLevel("snacc")
-        if not lvlsafe then return 0,0 end
-      end
+      destroyLevel("snacc")
+      if not lvlsafe then return 0,0 end
     end
   end
   
