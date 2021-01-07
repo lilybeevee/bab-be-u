@@ -683,7 +683,7 @@ end
 function boringAndNotCheck(unit, effect)
   if hasRule(unit, "ben't", effect) then return false end
   if not rules_with["boring"] or effect == "boring" then return true end
-  if hasProperty(unit,"boring") then return hasRule(unit,verb.."n'tn't",effect) end
+  if hasProperty(unit,"boring") then return hasRule(unit,"ben'tn't",effect) end
   return true
 end
 
@@ -695,7 +695,7 @@ function getUnitsWithEffect(effect, return_rule)
   --print ("h:"..tostring(#rules))
   for _,dat in ipairs(rules) do
     local unit = dat[2]
-    if not unit.removed --[[and boringAndNotCheck(unit, effect)]] then
+    if not unit.removed and boringAndNotCheck(unit, effect) then
       table.insert(result, unit)
       table.insert(result_rules, dat[1])
       gotten[unit] = true
@@ -765,7 +765,7 @@ function getUnitsWithEffectAndCount(effect)
   --print ("h:"..tostring(#rules))
   for _,dat in ipairs(rules) do
     local unit = dat[2]
-    if not unit.removed --[[and boringAndNotCheck(unit, effect)]] then
+    if not unit.removed and boringAndNotCheck(unit, effect) then
       --[[if result[unit.id] == nil then
         result[unit.id] = 0
       end]]

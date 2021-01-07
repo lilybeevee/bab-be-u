@@ -213,7 +213,7 @@ function doMovement(movex, movey, key)
           unit = units_by_id[unit] or cursors_by_id[unit]
           local others = (unit == outerlvl and units or getUnitsOnTile(unit.x, unit.y, {thicc = thicc_units[unit]}))
           for __,other in ipairs(others) do
-            if other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) and timecheck(unit,"be","icy") and ignoreCheck(other,unit,"icy") and undo_buffer[2] ~= nil and not hasRule(other,"got","slippers") then
+            if other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) and timecheck(unit,"be",word) and ignoreCheck(other,unit,word) and undo_buffer[2] ~= nil and not hasRule(other,"got","slippers") then
               for _,undo in ipairs(undo_buffer[2]) do
                 if undo[1] == "update" and undo[2] == other.id and ((undo[3] ~= other.x) or (undo[4] ~= other.y)) then
                   local dx = other.x-undo[3]
@@ -236,7 +236,7 @@ function doMovement(movex, movey, key)
           if timeless and not timecheck(unit,"be",word) then
             local others = (unit == outerlvl and units or getUnitsOnTile(unit.x, unit.y, {thicc = thicc_units[unit]}))
             for __,other in ipairs(others) do
-              if other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) and ignoreCheck(other,unit,"icyyyy") and undo_buffer[2] ~= nil and not hasRule(other,"got","slippers") then
+              if other.fullname ~= "no1" and other.id ~= unit.id and sameFloat(unit, other) and ignoreCheck(other,unit,word) and undo_buffer[2] ~= nil and not hasRule(other,"got","slippers") then
                 for _,undo in ipairs(undo_buffer[2]) do
                   if undo[1] == "update" and undo[2] == other.id and ((undo[3] ~= other.x) or (undo[4] ~= other.y)) then
                     local dx = other.x-undo[3]
