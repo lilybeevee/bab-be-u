@@ -818,6 +818,7 @@ function addRule(full_rule)
     rules.subject.conds = copyTable(rules.subject.conds) or {};
     table.insert(rules.subject.conds, rules.subject);
     addRuleSimple({"every2", rules.subject.conds}, rules.verb, rules.object, units, dir)
+    addRuleSimple({"bordr", rules.subject.conds}, rules.verb, rules.object, units, dir)
     return
   end
 
@@ -844,6 +845,11 @@ function addRule(full_rule)
 
   if subject == "every1" then
     if subject_not % 2 == 1 then
+      addRuleSimple({"txt", rules.subject.conds}, rules.verb, rules.object, units, dir)
+      addRuleSimple({"no1", rules.subject.conds}, rules.verb, rules.object, units, dir)
+      local copied_conds = copyTable(rules.subject.conds)
+      table.insert(copied_conds, {name = "inner", type = {cond_prefix = true}, dir = rules.subject.dir})
+      addRuleSimple({"lvl", copied_conds}, rules.verb, rules.object, units, dir)
       return
     else
       for _,v in ipairs(referenced_objects) do
@@ -945,12 +951,19 @@ function addRule(full_rule)
   end
 
   if object == "every1" then
-    if object_not % 2 == 1 then
-      return
-    elseif verb ~= "be" and verb ~= "ben't" then
-      --we'll special case x be every1 in convertUnit now
-      for _,v in ipairs(referenced_objects) do
-        addRuleSimple(rules.subject, rules.verb, {v, rules.object.conds}, units, dir)
+    if verb ~= "be" and verb ~= "ben't" then
+      if object_not % 2 == 1 then
+        --addRuleSimple(rules.subject, rules.verb, {"txt", rules.object.conds}, units, dir) transforming into every text seems really dangerous
+        --addRuleSimple(rules.subject, rules.verb, {"no1", rules.object.conds}, units, dir) making a no1 doesn't even do anything
+        local copied_conds = copyTable(rules.object.conds)
+        table.insert(copied_conds, {name = "inner", type = {cond_prefix = true}, dir = rules.object.dir})
+        addRuleSimple(rules.subject, rules.verb, {"lvl", copied_conds}, units, dir)
+        return
+      else
+        --we'll special case x be every1 in convertUnit now
+        for _,v in ipairs(referenced_objects) do
+          addRuleSimple(rules.subject, rules.verb, {v, rules.object.conds}, units, dir)
+        end
       end
     end
   elseif object == "every2" then

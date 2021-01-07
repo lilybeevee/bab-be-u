@@ -822,6 +822,7 @@
     "sprite": ["txt/txtify"],
     "types": ["property"],
     "color": [[4, 1]],
+    "thingify": "txt_ify",
     "desc": "TXTIFY: BE TXTIFY causes that object to be turned into its corresponding metatext. Will plsdont at 100 layers of meta.\nAnti: thingify",
     "tags": ["meta", "notnat"]
   },

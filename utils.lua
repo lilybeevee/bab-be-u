@@ -4122,6 +4122,7 @@ function getTile(name, old)
     tile.display = tile.display .. " txt"
     tile.sprite = tile.metasprite or tile.sprite
     tile.types = {"object"}
+    tile.thingify = nil
     tile.txtname = "txt_" .. tile.txtname
     tile.is_text = true
     tile.meta = tile.meta + 1
