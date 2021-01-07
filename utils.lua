@@ -1811,6 +1811,8 @@ function testConds(unit, conds, compare_with, first_unit) --cond should be a {co
       result = unit.dir == dirAdd(compare_with.dir,4)
     elseif condtype == "oob" then
       result = not inBounds(unit.x,unit.y)
+    elseif condtype == "missaligned" then
+      result = ((math.floor(unit.x)==unit.x) or (math.floor(unit.y)==unit.y)) 
     elseif condtype == "alt" then
       result = #undo_buffer % 2 == 1
     else
