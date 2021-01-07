@@ -373,11 +373,11 @@
     "tags": ["infix", "stare at"]
   },
   {
-    "name": "txt_missaligned",
-    "sprite": ["txt/missaligned"],
+    "name": "txt_offgrid",
+    "sprite": ["txt/offgrid"],
     "types": ["cond_prefix"],
     "color": [[5, 3]],
-    "desc": "MISSALIGNED (PREFIX CONDITION): True if the unit is not exactly on a tile (Like from halfstep).",
-    "tags": ["hal", "misaligned","missalined"]
+    "desc": "OFFGRID (PREFIX CONDITION): True if the unit is not exactly on a tile (Like from halfstep).",
+    "tags": ["hal", "misaligned","missalined","missaligned"]
   }
 ]
