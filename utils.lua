@@ -1812,7 +1812,7 @@ function testConds(unit, conds, compare_with, first_unit) --cond should be a {co
     elseif condtype == "oob" then
       result = not inBounds(unit.x,unit.y)
     elseif condtype == "missaligned" then
-      result = ((math.floor(unit.x)==unit.x) or (math.floor(unit.y)==unit.y)) 
+      result = not ((math.floor(unit.x)==unit.x) and (math.floor(unit.y)==unit.y)) 
     elseif condtype == "alt" then
       result = #undo_buffer % 2 == 1
     else
