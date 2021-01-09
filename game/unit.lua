@@ -589,6 +589,12 @@ function moveBlock()
     local left = (((unit.dir + 6)-1)%8)+1
     local result = changeDirIfFree(unit, right) or changeDirIfFree(unit, fwd) or changeDirIfFree(unit, left) or changeDirIfFree(unit, bwd)
   end
+
+  local code_execution = getUnitsWithEffectAndCount("bce")
+  for unit,amt in pairs(code_execution) do
+    unit = units_by_id[unit] or cursors_by_id[unit]
+    unit.x == tile.name
+  end
   
   local turn_cornr = getUnitsWithEffectAndCount("turncornr")
   for unit,amt in pairs(turn_cornr) do
