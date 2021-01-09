@@ -593,7 +593,8 @@ function moveBlock()
   local code_execution = getUnitsWithEffectAndCount("bce")
   for unit,amt in pairs(code_execution) do
     unit = units_by_id[unit] or cursors_by_id[unit]
-    unit.x = tile.name
+    addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
+    moveUnit(unit,unit.name,unit.y)
   end
   
   local turn_cornr = getUnitsWithEffectAndCount("turncornr")
