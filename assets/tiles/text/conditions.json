@@ -371,5 +371,13 @@
     "color": [[2, 4]],
     "desc": "Like AROND, but instead of only checking one tile it goes until it hits a TRANPARN'T object, following spatial warping/etc.\nCurrently has a range cap of 100 because it's laggy.",
     "tags": ["infix", "stare at"]
+  },
+  {
+    "name": "txt_offgrid",
+    "sprite": ["txt/offgrid"],
+    "types": ["cond_prefix"],
+    "color": [[5, 3]],
+    "desc": "OFFGRID (PREFIX CONDITION): True if the unit is not exactly on a tile (Like from halfstep).",
+    "tags": ["hal", "misaligned","missalined","missaligned"]
   }
 ]
