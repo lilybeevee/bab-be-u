@@ -960,7 +960,7 @@
     "types": ["property"],
     "color": [[1, 1]],
     "desc": "STUKC: Anything with this property can't move.\nAnti: if not moved this turn, move in a random direction",
-    "tags": ["stuck"]
+    "tags": ["stuck","still"]
   },
   {
     "name": "txt_gone",
@@ -1033,5 +1033,13 @@
     "color": [[4, 1]],
     "desc": "BORING: Makes an object unable to be effected by rules, except for boring itself. Also prevents being influenced by giv. x ben'tn't y will circumvent even broken.\nAnti: not implemented atm",
     "tags": ["broken"]
+  },
+  {
+    "name": "txt_bce",
+    "sprite": ["txt/bce"],
+    "types": ["property"],
+    "color": [[0, 3]],
+    "desc": "BCE: Sets the object's position to something based off its metatext and color values. \n Stands for Babitary Code Execution.\nAnti: Gets the color and metatext data FROM the object's position.",
+    "tags": ["arbitarycodeexeceution","hal","ace"]
   }
 ]
