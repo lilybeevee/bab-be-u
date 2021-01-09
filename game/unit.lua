@@ -3058,23 +3058,28 @@ function convertUnits(pass)
     end
   end
   
+  local function addTile(nametocreate,unit)
+    table.insert(converted_units, unit)
+    addParticles("bonus", unit.x, unit.y, getUnitColor(unit))
+    if (nametocreate == "mous" or nametocreate == "mousn't") then
+      local new_mouse = createMouse(unit.x, unit.y)
+      addUndo({"create_cursor", new_mouse.id, created_from_id = unit.id})
+    else
+      local tile = getTile(nametocreate)
+      if tile ~= nil then
+        local new_unit = createUnit(tile.name, unit.x, unit.y, unit.dir, true)
+        if (new_unit ~= nil) then
+          if unit.special then new_unit.special.customletter = unit.special.customletter end
+          addUndo({"create", new_unit.id, true, created_from_id = unit.id})
+        end
+      end
+    end
+  end
+
   local meta = getUnitsWithEffectAndCount("txtify")
   for unit,amt in pairs(meta) do
     unit = units_by_id[unit] or cursors_by_id[unit]
-    if (unit.fullname == "mous") then
-      local cursor = unit
-      local tile = getTile("txt_mous")
-      if tile ~= nil then
-        table.insert(del_cursors, cursor)
-      end
-      local new_unit = createUnit(tile.name, unit.x, unit.y, unit.dir, true)
-      if (new_unit ~= nil) then
-        addUndo({"create", new_unit.id, true, created_from_id = unit.id})
-      end
-    elseif not unit.new and unit.type ~= "outerlvl" and timecheck(unit,"be","txtify") then
-      table.insert(converted_units, unit)
-      addParticles("bonus", unit.x, unit.y, getUnitColor(unit))
-      local tile = nil
+    if not unit.new and unit.type ~= "outerlvl" and timecheck(unit,"be","txtify") then
       local nametocreate = unit.fullname
       for i = 1,amt do
         local tile = getTile(nametocreate)
@@ -3085,14 +3090,7 @@ function convertUnits(pass)
         end
       end
       if (string.sub(nametocreate,400,404) == "_txt_") then destroyLevel("plsdont") break end
-      tile = getTile(nametocreate)
-      if tile ~= nil then
-        local new_unit = createUnit(tile.name, unit.x, unit.y, unit.dir, true)
-        if (new_unit ~= nil) then
-          new_unit.special.customletter = unit.special.customletter
-          addUndo({"create", new_unit.id, true, created_from_id = unit.id})
-        end
-      end
+      addTile(nametocreate,unit)
     end
   end
   
@@ -3107,20 +3105,16 @@ function convertUnits(pass)
         local tile = getTile(nametocreate)
         if tile.thingify then
           newname = tile.thingify
-        else
-          if nametocreate == "txt_txtify" then
-            newname = "txt_ify"
-          elseif nametocreate:starts("txt_") then
-            newname = nametocreate:sub(5, -1)
-          elseif nametocreate:starts("letter_") then
-            newname = nametocreate:sub(8, -1)
-            if newname == "custom" then
-              local letter = unit.special.customletter
-              if letter == "aa" or letter == "aaa" or letter == "aaaa" then
-                newname = "battry"
-              elseif letter == "aaaaa" or letter == "aaaaaa" then
-                newname = "aaaaaa"
-              end
+        elseif nametocreate:starts("txt_") then
+          newname = nametocreate:sub(5, -1)
+        elseif nametocreate:starts("letter_") then
+          newname = nametocreate:sub(8, -1)
+          if newname == "custom" then
+            local letter = unit.special.customletter
+            if letter == "aa" or letter == "aaa" or letter == "aaaa" then
+              newname = "battry"
+            elseif letter == "aaaaa" or letter == "aaaaaa" then
+              newname = "aaaaaa"
             end
           end
         end
@@ -3130,21 +3124,7 @@ function convertUnits(pass)
         nametocreate = newname
       end
       if nametocreate ~= unit.fullname then
-        table.insert(converted_units, unit)
-        addParticles("bonus", unit.x, unit.y, getUnitColor(unit))
-        if (nametocreate == "mous") then
-          local new_mouse = createMouse(unit.x, unit.y)
-          addUndo({"create_cursor", new_mouse.id, created_from_id = unit.id})
-        else
-          local tile = getTile(nametocreate)
-          if tile ~= nil then
-            local new_unit = createUnit(tile.name, unit.x, unit.y, unit.dir, true)
-           if (new_unit ~= nil) then
-              new_unit.special.customletter = unit.special.customletter
-              addUndo({"create", new_unit.id, true, created_from_id = unit.id})
-            end
-          end
-        end
+        addTile(nametocreate,unit)
       end
     end
   end
@@ -3166,21 +3146,7 @@ function convertUnits(pass)
       end
       nametocreate = newname
       if nametocreate ~= unit.fullname then
-        table.insert(converted_units, unit)
-        addParticles("bonus", unit.x, unit.y, getUnitColor(unit))
-        if (nametocreate == "mous" or nametocreate == "mousn't") then
-          local new_mouse = createMouse(unit.x, unit.y)
-          addUndo({"create_cursor", new_mouse.id, created_from_id = unit.id})
-        else
-          local tile = getTile(nametocreate)
-          if tile ~= nil then
-            local new_unit = createUnit(tile.name, unit.x, unit.y, unit.dir, true)
-           if (new_unit ~= nil) then
-              new_unit.special.customletter = unit.special.customletter
-              addUndo({"create", new_unit.id, true, created_from_id = unit.id})
-            end
-          end
-        end
+        addTile(nametocreate,unit)
       end
     end
   end
@@ -3190,21 +3156,8 @@ function convertUnits(pass)
     unit = units_by_id[unit] or cursors_by_id[unit]
     if not unit.new and unit.type ~= "outerlvl" and timecheck(unit,"be","ify") then
       local nametocreate = unit.fullname
-      if not getTile(nametocreate) then
-        break
-      end
-      addParticles("bonus", unit.x, unit.y, getUnitColor(unit))
-      if (nametocreate == "mous" or nametocreate == "mousn't") then
-        break
-      end
-      table.insert(converted_units, unit)
-      local tile = getTile(nametocreate)
-      if tile ~= nil then
-        local new_unit = createUnit(tile.name, unit.x, unit.y, unit.dir, true)
-        if (new_unit ~= nil) then
-          new_unit.special.customletter = unit.special.customletter
-          addUndo({"create", new_unit.id, true, created_from_id = unit.id})
-        end
+      if getTile(nametocreate) then
+        addTile(nametocreate,unit)
       end
     end
   end
@@ -3224,21 +3177,7 @@ function convertUnits(pass)
         nametocreate = newname
       end
       if nametocreate ~= unit.fullname then
-        table.insert(converted_units, unit)
-        addParticles("bonus", unit.x, unit.y, getUnitColor(unit))
-        if (nametocreate:starts("mous")) then
-          local new_mouse = createMouse(unit.x, unit.y)
-          addUndo({"create_cursor", new_mouse.id, created_from_id = unit.id})
-        else
-          local tile = getTile(nametocreate)
-          if tile ~= nil then
-            local new_unit = createUnit(tile.name, unit.x, unit.y, unit.dir, true)
-           if (new_unit ~= nil) then
-              new_unit.special.customletter = unit.special.customletter
-              addUndo({"create", new_unit.id, true, created_from_id = unit.id})
-            end
-          end
-        end
+        addTile(nametocreate,unit)
       end
     end
   end

@@ -222,7 +222,7 @@ function parseRules(undoing)
   
   --TODO: This works in non-contrived examples, but isn't necessarily robust - for example, if after reparsing, you add one word rule while subtracting another word rule, it'll think nothing has changed. The only way to be ABSOLUTELY robust is to compare that the exact set of parsing effecting rules hasn't changed.
   local function reparseRuleCounts()
-    local props_table = {"wurd", "anti wurd", "poortoll", "goarnd", "mirrarnd", "ortho", "diag", "zawarudo", "rong", "slep", "boring"}
+    local props_table = {"wurd", "anti wurd", "poortoll", "goarnd", "mirrarnd", "ortho", "diag", "zawarudo", "rong", "slep"}
     local verbs_table = {"be", "giv"}
     local result = {}
     for _,prop in ipairs(props_table) do
@@ -818,7 +818,6 @@ function addRule(full_rule)
     rules.subject.conds = copyTable(rules.subject.conds) or {};
     table.insert(rules.subject.conds, rules.subject);
     addRuleSimple({"every2", rules.subject.conds}, rules.verb, rules.object, units, dir)
-    addRuleSimple({"bordr", rules.subject.conds}, rules.verb, rules.object, units, dir)
     return
   end
 
@@ -845,11 +844,6 @@ function addRule(full_rule)
 
   if subject == "every1" then
     if subject_not % 2 == 1 then
-      addRuleSimple({"txt", rules.subject.conds}, rules.verb, rules.object, units, dir)
-      addRuleSimple({"no1", rules.subject.conds}, rules.verb, rules.object, units, dir)
-      local copied_conds = copyTable(rules.subject.conds)
-      table.insert(copied_conds, {name = "inner", type = {cond_prefix = true}, dir = rules.subject.dir})
-      addRuleSimple({"lvl", copied_conds}, rules.verb, rules.object, units, dir)
       return
     else
       for _,v in ipairs(referenced_objects) do
@@ -951,19 +945,12 @@ function addRule(full_rule)
   end
 
   if object == "every1" then
-    if verb ~= "be" and verb ~= "ben't" then
-      if object_not % 2 == 1 then
-        --addRuleSimple(rules.subject, rules.verb, {"txt", rules.object.conds}, units, dir) transforming into every text seems really dangerous
-        --addRuleSimple(rules.subject, rules.verb, {"no1", rules.object.conds}, units, dir) making a no1 doesn't even do anything
-        local copied_conds = copyTable(rules.object.conds)
-        table.insert(copied_conds, {name = "inner", type = {cond_prefix = true}, dir = rules.object.dir})
-        addRuleSimple(rules.subject, rules.verb, {"lvl", copied_conds}, units, dir)
-        return
-      else
-        --we'll special case x be every1 in convertUnit now
-        for _,v in ipairs(referenced_objects) do
-          addRuleSimple(rules.subject, rules.verb, {v, rules.object.conds}, units, dir)
-        end
+    if object_not % 2 == 1 then
+      return
+    elseif verb ~= "be" and verb ~= "ben't" then
+      --we'll special case x be every1 in convertUnit now
+      for _,v in ipairs(referenced_objects) do
+        addRuleSimple(rules.subject, rules.verb, {v, rules.object.conds}, units, dir)
       end
     end
   elseif object == "every2" then
@@ -1089,7 +1076,7 @@ function postRules(no_sound)
             -- print("frule:", fullDump(frule))
             if (frule.subject.name == rule.subject.name or (rule.subject.name == "txt" and frule.subject.name:starts("txt_"))) and fverb == rule.verb.name and (
               (specialmatch == 0 and frule.object.name == rule.object.name and frule.object.name ~= "her" and frule.object.name ~= "thr" and frule.object.name ~= "rit here") or
-              (specialmatch == 1 and (frule.object.type.object or frule.object.name == "tranz") and not group_names_set[frule.object.name]) or -- possibly more special cases needed
+              (specialmatch == 1 and (frule.object.type.object) and not group_names_set[frule.object.name]) or -- was used for making notranform cancel x be tranz but we decided that was a dumb joke
               (specialmatch == 2 and frule.object.name == "notranform")
             ) then
               if has_conds then
@@ -1184,7 +1171,7 @@ function shouldReparseRules()
   local rules_to_check = {
     {"?","be","wurd"},
     {"?","be","anti wurd"},
-  --{"?","be","poortoll"}, added down below, only checked if there is poor toll
+    {"?","be","poortoll"},
     {"?","be","goarnd"},
     {"?","be","mirrarnd"},
     {"lvl","be","goarnd", true},
@@ -1195,10 +1182,8 @@ function shouldReparseRules()
     {"?","be","zawarudo"},
     {"?","be","rong"},
     {"?","be","slep"},
-    {"?","be","boring"},
   }
   if rules_with["poortoll"] then
-    table.insert(rules_to_check, {"?","be","poortoll"})
     table.insert(rules_to_check, {"?","ignor","?",true})
   end
   for _,rule in ipairs(rules_to_check) do
