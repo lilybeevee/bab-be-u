@@ -4330,7 +4330,7 @@ function doXWX()
   escResult(true, true)
 end
 
-function sumtable(t)
+function tablesum(t)
     local sum = 0
     local counter = 1;
     for k,v in pairs(t) do
