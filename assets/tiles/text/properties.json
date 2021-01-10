@@ -208,7 +208,7 @@
       "colors": ["yello", "whit", "purp", "blacc", "graey"]
     },
     "desc": "ENBY: Causes the unit to appear yellow, white, purple and black. ENBY objects are yello, whit, purp, blacc, and graey, and not any other colors.\nAnti: poof",
-    "tags": ["nb", "nonbinary"]
+    "tags": ["nb", "nonbinary","gender"]
   },
   {
     "name": "txt_ace",
@@ -1039,7 +1039,15 @@
     "sprite": ["txt/bce"],
     "types": ["property"],
     "color": [[0, 3]],
-    "desc": "BCE: Sets the object's position to something based off its metatext and color values. \n Stands for Babitary Code Execution.\nAnti: Gets the color and metatext data FROM the object's position.",
-    "tags": ["arbitarycodeexeceution","hal","ace"]
+    "desc": "BCE: Sets the object's position to a value based off its name (X) and color values (Y). \n Stands for Babitary Code Execution.\nAnti: Makes the (X) based off the color, and the (Y) based off the name.",
+    "tags": ["arbitarycodeexecution","hal","ace"]
+  },
+  {
+    "name": "txt_rond",
+    "sprite": ["txt/rond"],
+    "types": ["property"],
+    "color": [[1, 4]],
+    "desc": "ROND: Puts the object on the nearest tile (if it is in between tiles). \nAnti: Sets it to the unit farther away from the offgrid unit.",
+    "tags": ["round","hal"]
   }
 ]
