@@ -594,7 +594,7 @@ function moveBlock()
   for unit,amt in pairs(code_execution) do
     unit = units_by_id[unit] or cursors_by_id[unit]
     addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
-    moveUnit(unit,unit.name,unit.y)
+    moveUnit(unit,(#unit.name)-2,(tablesum(getUnitColor(unit)))-4)
   end
   
   local turn_cornr = getUnitsWithEffectAndCount("turncornr")
