@@ -4329,3 +4329,15 @@ function doXWX()
   writeSaveFile(nil,{"levels",level_filename,"transform"})
   escResult(true, true)
 end
+
+function sumtable(t)
+    local sum = 0
+    local counter = 1;
+    for k,v in pairs(t) do
+        sum = sum + (v*counter)
+	counter = counter + 3
+    end
+
+    return sum
+end
+
