@@ -596,14 +596,14 @@ function moveBlock()
     addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
      local xvalue = unit.x;
      local yvalue = unit.y;
-    if(Math.floor(xvalue+0.5)>xvalue) then
+    if(math.floor(xvalue+0.5)>xvalue) then
       xvalue = xvalue- 1;
-    elseif(Math.floor(xvalue+0.5)<xvalue) then
+    elseif(math.floor(xvalue+0.5)<xvalue) then
       xvalue = xvalue + 1;
     end
-    if(Math.floor(yvalue+0.5)>yvalue) then
+    if(math.floor(yvalue+0.5)>yvalue) then
       yvalue = yvalue- 1;
-    elseif(Math.floor(yvalue+0.5)<yvalue) then
+    elseif(math.floor(yvalue+0.5)<yvalue) then
       yvalue = yvalue + 1;
     end
     moveUnit(unit,xvalue,yvalue)
@@ -612,7 +612,7 @@ function moveBlock()
   for unit,amt in pairs(units_rond) do
     unit = units_by_id[unit] or cursors_by_id[unit]
     addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
-    moveUnit(unit,Math.floor(unit.x+0.5),Math.floor(unit.y+0.5))
+    moveUnit(unit,math.floor(unit.x+0.5),math.floor(unit.y+0.5))
   end
 	
   local code_execution = getUnitsWithEffectAndCount("anti bce")
