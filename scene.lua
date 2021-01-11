@@ -723,7 +723,7 @@ function scene.keyReleased(key)
   end
 
   if key == "z" or key == "q" or key == "backspace" or key == "kp0" or key == "o" then
-    UNDO_DELAY = MAX_UNDO_DELAY
+    UNDO_DELAY = settings["input_delay"]
   end
 
   --[[local do_turn_now = false
@@ -2168,7 +2168,7 @@ function scene.checkInput()
     if repeat_timers[key] ~= nil then
       if repeat_timers[key] <= 0 then
         if key ~= "undo" then
-          repeat_timers[key] = repeat_timers[key] + INPUT_DELAY
+          repeat_timers[key] = repeat_timers[key] + settings["input_delay"]
         else
           repeat_timers[key] = repeat_timers[key] + UNDO_DELAY
           UNDO_DELAY = math.max(MIN_UNDO_DELAY, UNDO_DELAY - UNDO_SPEED)

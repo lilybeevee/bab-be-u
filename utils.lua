@@ -44,6 +44,7 @@ function clear()
   backers_cache = {}
   empties_by_tile = {}
   outerlvl = nil
+  outergaem = nil
   still_converting = {}
   portaling = {}
   zomb_undos = {}
@@ -432,6 +433,7 @@ end
 
 function initializeOuterLvl()
   outerlvl = createUnit("lvl", -999, -999, 1, nil, nil, true)
+  outergaem = createUnit("gaem", -999, -999, 1, nil, nil, true)
 end
 
 function initializeEmpties()
@@ -2989,6 +2991,49 @@ function getAbsolutelyEverythingExcept(except)
   return result
 end
 
+function moveGameWindow(x, y, undoing)
+  local x0,y0 = gameTileToScreen(0,0)
+  local x1,y1 = gameTileToScreen(1,1)
+  local tilew = x1-x0
+  local tileh = y1-y0
+  if not undoing then
+    addUndo({"move_window", x, y})
+  end
+  local winw,winh,_ = love.window.getMode()
+  local winx,winy,wind = love.window.getPosition()
+  local deskw,deskh = love.window.getDesktopDimensions(wind)
+  local maxwinx = deskw-winw
+  local maxwiny = deskh-winh
+  local newx = winx+(tilew*x)
+  local newy = winy+(tileh*y)
+  if (newx > maxwinx) then
+    newx = maxwinx
+  end
+  if (newy > maxwiny) then
+    newy = maxwiny
+  end
+  if (newx < 0) then
+    newx = 0
+  end
+  if (newy < 0) then
+    newy = 0
+  end
+  love.window.setPosition(newx, newy, wind)
+end
+
+function centerGameWindow()
+  local _,_,winf = love.window.getMode()
+  local winw = 800
+  local winh = 600
+  love.window.setMode(winw, winh, winf)
+
+  wind = winf.display
+  local deskw,deskh = love.window.getDesktopDimensions(wind)
+  local newx = (deskw/2)-(winw/2)
+  local newy = (deskh/2)-(winh/2)
+  love.window.setPosition(newx, newy, wind)
+end
+
 function getEverythingExcept(except)
   local result = {}
 
@@ -3795,6 +3840,7 @@ function buildOptions()
     scene.addOption("music_vol", "music volume", {{"25%", 0.25}, {"50%", 0.5}, {"75%", 0.75}, {"100%", 1}})
     scene.addOption("sfx_on", "sound", {{"on", true}, {"off", false}})
     scene.addOption("sfx_vol", "sound volume", {{"25%", 0.25}, {"50%", 0.5}, {"75%", 0.75}, {"100%", 1}})
+    scene.addOption("input_delay", "input delay", {{"0", 0}, {"50", 50}, {"100", 100}, {"150", 150}, {"200", 200}})
     scene.addOption("focus_pause", "pause on defocus", {{"on", true}, {"off", false}})
     scene.addOption("autoupdate", "autoupdate (experimental)", {{"on", true}, {"off", false}})
     scene.addOption("print_to_screen", "log print()s to screen", {{"on", true}, {"off", false}})

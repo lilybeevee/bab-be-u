@@ -664,6 +664,17 @@ function updateUnits(undoing, big_update)
     local wins,unwins = levelBlock()
     
     
+    local isignor = matchesRule(nil,"ignor","gaem")
+    mergeTable(isignor,matchesRule("gaem","ignor",nil))
+    local gaemignor = {}
+    for _,ruleparent in ipairs(isignor) do
+      unit = ruleparent[2]
+      unit.destroyed = true
+      unit.removed = true
+      table.insert(gaemignor, unit)
+    end
+    deleteUnits(gaemignor, false, false, true)
+    
     local isgone = getUnitsWithEffect("gone")
     for _,unit in ipairs(isgone) do
       unit.destroyed = true
@@ -2233,6 +2244,10 @@ function levelBlock()
   if hasProperty("gaem","gone") then
     love.event.quit()
   end
+
+  if hasProperty("gaem","anti protecc") then
+    if not gaemsafe then love.event.quit() end
+  end
   
   if hasProperty("gaem", "nuek") then
     for _,unit in ipairs(units) do
@@ -2782,7 +2797,7 @@ function readingOrderSort(a, b)
 end
 
 function destroyLevel(reason)
-	if reason == "infloop" or reason == "plsdont" or (not hasRule(outerlvl,"got","lvl") and not hasProperty(outerlvl,"protecc")) then
+   if reason == "infloop" or reason == "plsdont" or (not hasRule(outerlvl,"got","lvl") and not hasProperty(outerlvl,"protecc")) then
     level_destroyed = true
   end
   
@@ -3669,7 +3684,7 @@ function convertUnits(pass)
   deleteUnits(converted_units,true)
 end
 
-function deleteUnits(del_units,convert,gone)
+function deleteUnits(del_units,convert,gone,fade)
   for _,unit in ipairs(del_units) do
     if (not unit.removed_final) then
       if (unit.color_override ~= nil) then
@@ -3686,18 +3701,18 @@ function deleteUnits(del_units,convert,gone)
       if unit.class == "cursor" then
         addUndo({"remove_cursor",unit.screenx,unit.screeny,unit.id})
       else
-        addUndo({"remove", unit.tile, unit.x, unit.y, unit.dir, convert or false, unit.id, unit.special, gone or false})
+        addUndo({"remove", unit.tile, unit.x, unit.y, unit.dir, convert or false, unit.id, unit.special, gone or false, fade or false})
       end
     end
     if unit.class ~= "cursor" then
-      deleteUnit(unit,convert,false,gone)
+      deleteUnit(unit,convert,false,gone,fade)
     else
       deleteMouse(unit.id)
     end
   end
 end
 
-function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix,anti_gone) --ugh
+function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix,anti_gone,anti_fade) --ugh
   if #units_by_id > 3000 then -- i think this counts units that were deleted in the past too, but i'm not sure how to solve that
     destroyLevel("plsdont")
   end
@@ -3763,6 +3778,9 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix,anti_gon
       addTween(tween.new(1.5, unit.draw, {opacity = 1}, method), "unit:opacity:" .. unit.tempid)
       addTween(tween.new(1.5, unit.draw, {rotation = 0}, method), "unit:rotation:" .. unit.tempid)
       addTween(tween.new(1.5, unit.draw, {y = unit.y}, method), "unit:pos:" .. unit.tempid)
+    elseif anti_fade then
+      unit.draw.opacity = 0
+      addTween(tween.new(1, unit.draw, {opacity = 1}, "inSine"), "unit:rotation:" .. unit.tempid)
     end
   end
 
@@ -3891,10 +3909,10 @@ function createUnit(tile,x,y,dir,convert,id_,really_create_empty,prefix,anti_gon
   return unit
 end
 
-function deleteUnit(unit,convert,undoing,gone)
+function deleteUnit(unit,convert,undoing,gone,fade)
   unit.removed = true
   unit.removed_final = true
-  if not undoing and not convert and not gone and not level_destroyed and rules_with ~= nil then
+  if not undoing and not convert and not gone and not fade and not level_destroyed and rules_with ~= nil then
     gotters = matchesRule(unit, "got", "?")
     for _,ruleparent in ipairs(gotters) do
       local rule = ruleparent.rule
@@ -3913,7 +3931,7 @@ function deleteUnit(unit,convert,undoing,gone)
     end
   end
   --empty can't really be destroyed, only pretend to be, to preserve the invariant 'there is exactly empty per tile'
-  if (unit.fullname == "no1" or unit.type == "outerlvl") then
+  if (unit.fullname == "no1" or unit.type == "outerlvl" or unit == outergaem) then
     unit.destroyed = false
     unit.removed = false
     unit.removed_final = false
@@ -3939,7 +3957,7 @@ function deleteUnit(unit,convert,undoing,gone)
   else
     removeFromTable(unitsByTile(unit.x, unit.y), unit)
   end
-  if not convert and not gone then
+  if not convert and not gone and not fade then
     removeFromTable(units_by_layer[unit.layer], unit)
   end
   if not unit_tests then
@@ -3963,6 +3981,11 @@ function deleteUnit(unit,convert,undoing,gone)
       local method = love.math.random() > .01 and "inSine" or "inElastic"
       addTween(tween.new(1.5, unit.draw, {y = unit.y-rise, rotation = rotate, opacity = 0}, method), "unit:rotation:" .. unit.tempid)
       tick.delay(function() removeFromTable(still_converting, unit) end, 1.5)
+    elseif fade then
+      table.insert(still_converting, unit)
+      addUndo{"tween",unit}
+      addTween(tween.new(1, unit.draw, {opacity = 0}, "inSine"), "unit:rotation:" .. unit.tempid)
+      tick.delay(function() removeFromTable(still_converting, unit) end, 1)
     end
   end
 end

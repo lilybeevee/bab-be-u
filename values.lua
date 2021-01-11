@@ -5,7 +5,6 @@ DEFAULT_HEIGHT = 600
 
 ANIM_TIMER = 180
 MAX_MOVE_TIMER = 80
-INPUT_DELAY = 150
 MAX_UNDO_DELAY = 150
 MIN_UNDO_DELAY = 50
 UNDO_SPEED = 5
@@ -38,6 +37,7 @@ defaultsettings = {
   light_on = true,
   flashing = false,
   int_scaling = true,
+  input_delay = 150,
   grid_lines = false,
   mouse_lines = false,
   stopwatch_effect = true,
@@ -468,7 +468,7 @@ if settings["baba"] then
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"txt_camra","camra",
     "txt_offgrid","txt_rond",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     "txt_gaem","txt_halfstep",0,0,0,0,0,0,0,0,0,0,0,0,0,"aaaaaa","therealqt","zawarudo",
-    "txt_every3","txt_n'tifyyy",0,0,0,0,0,0,0,0,0,0,0,0,"&","sans","copkat","ditto",
+    "txt_every3","txt_n'tifyyy",0,0,0,0,0,0,0,0,0,0,0,"gaem","&","sans","copkat","ditto",
   })
 end
 
