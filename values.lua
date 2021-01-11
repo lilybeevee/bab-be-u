@@ -468,7 +468,7 @@ if settings["baba"] then
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"txt_camra","camra",
     "txt_offgrid","txt_rond",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     "txt_gaem","txt_halfstep",0,0,0,0,0,0,0,0,0,0,0,0,0,"aaaaaa","therealqt","zawarudo",
-    "txt_every3","txt_n'tifyyy",0,0,0,0,0,0,0,0,0,0,0,0,"&","sans","copkat","ditto",
+    "txt_every3","txt_n'tifyyy",0,0,0,0,0,0,0,0,0,0,0,"gaem","&","sans","copkat","ditto",
   })
 end
 
