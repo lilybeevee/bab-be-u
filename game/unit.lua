@@ -589,6 +589,45 @@ function moveBlock()
     local left = (((unit.dir + 6)-1)%8)+1
     local result = changeDirIfFree(unit, right) or changeDirIfFree(unit, fwd) or changeDirIfFree(unit, left) or changeDirIfFree(unit, bwd)
   end
+	
+  local anti_rond = getUnitsWithEffectAndCount("anti rond")
+  for unit,amt in pairs(anti_rond) do
+    unit = units_by_id[unit] or cursors_by_id[unit]
+    addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
+     local xvalue = unit.x;
+     local yvalue = unit.y;
+    if(math.floor(xvalue+0.5)>xvalue) then
+      xvalue = xvalue- 1;
+    elseif(math.floor(xvalue+0.5)<xvalue) then
+      xvalue = xvalue + 1;
+    end
+    if(math.floor(yvalue+0.5)>yvalue) then
+      yvalue = yvalue- 1;
+    elseif(math.floor(yvalue+0.5)<yvalue) then
+      yvalue = yvalue + 1;
+    end
+    moveUnit(unit,xvalue,yvalue)
+  end
+  local units_rond = getUnitsWithEffectAndCount("rond")
+  for unit,amt in pairs(units_rond) do
+    unit = units_by_id[unit] or cursors_by_id[unit]
+    addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
+    moveUnit(unit,math.floor(unit.x+0.5),math.floor(unit.y+0.5))
+  end
+	
+  local code_execution = getUnitsWithEffectAndCount("anti bce")
+  for unit,amt in pairs(code_execution) do
+    unit = units_by_id[unit] or cursors_by_id[unit]
+    addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
+    moveUnit(unit,(tablesum(getUnitColor(unit)))-4,(#unit.fullname)-2)
+  end
+
+  local code_execution = getUnitsWithEffectAndCount("bce")
+  for unit,amt in pairs(code_execution) do
+    unit = units_by_id[unit] or cursors_by_id[unit]
+    addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
+    moveUnit(unit,(#unit.fullname)-2,(tablesum(getUnitColor(unit)))-4)
+  end
   
   local turn_cornr = getUnitsWithEffectAndCount("turncornr")
   for unit,amt in pairs(turn_cornr) do
@@ -4290,3 +4329,15 @@ function doXWX()
   writeSaveFile(nil,{"levels",level_filename,"transform"})
   escResult(true, true)
 end
+
+function tablesum(t)
+    local sum = 0
+    local counter = 1;
+    for k,v in pairs(t) do
+        sum = sum + (v*counter)
+	counter = counter + 3
+    end
+
+    return sum
+end
+
