@@ -81,7 +81,7 @@ function undoOneAction(turn, i, v, ignore_no_undo)
       proceed = not turnedIntoOnlyNoUndoUnits(turn, i, v[7])
     end
     if (proceed) then
-      unit = createUnit(v[2], v[3], v[4], v[5], convert, v[7], nil, nil, v[9])
+      unit = createUnit(v[2], v[3], v[4], v[5], convert, v[7], nil, nil, v[9], v[10])
       if unit ~= nil then
         unit.special = v[8]
       end
@@ -119,6 +119,8 @@ function undoOneAction(turn, i, v, ignore_no_undo)
     if destroycount <= 0 then
       level_destroyed = false
     end
+  elseif action == "move_window" then
+    moveGameWindow(v[2]*-1, v[3]*-1, true)
   elseif action == "zawarudo" then
     timeless = not v[2]
     if timeless then playSound("timestop", 0.5)
