@@ -3798,6 +3798,7 @@ function buildOptions()
     scene.addOption("autoupdate", "autoupdate (experimental)", {{"on", true}, {"off", false}})
     scene.addOption("print_to_screen", "log print()s to screen", {{"on", true}, {"off", false}})
     scene.addOption("unfinished_words", "unfinished words in editor", {{"on", true}, {"off", false}})
+    scene.addOption("infomode", "display object info", {{"on", true}, {"off", false}})
     scene.addButton("video options", function() display = true; scene.buildUI() end)
     scene.addButton("default settings", function () defaultSetting() scene.buildUI() end)
     if scene == menu then

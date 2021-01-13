@@ -1695,6 +1695,9 @@ function scene.draw(dt)
           if #tile.tags > 0 then
             tags = table.concat(tile.tags,", ") .. ", " .. tags
           end
+          if #tile.pronouns > 0 then
+            tags = tags .. table.concat(tile.pronouns, "/") .. ", " --need to add this to the end bc of the sub(1,-3) later
+          end
           love.graphics.print(tags:sub(1,-3), 0, roomheight+24)
           love.graphics.pop()
         end
