@@ -66,8 +66,8 @@
     "tags": ["devs", "chars", "patashu"]
   },
   {
-    "name": "larry",
-    "sprite": ["larry"],
+    "name": "vite",
+    "sprite": ["vite"],
     "layer": 11,
     "color": [[2, 4]],
     "rotate": true,
@@ -83,15 +83,16 @@
       "gunne": {"x": 5, "y": -1}
     },
     "voice": "s_vitellary",
-    "desc": "larry be haetflor",
+    "desc": "vite be haetflor",
     "tags": ["devs", "chars", "vitellary", "vvvvvv"],
-	"pronouns": ["he", "him"]
+    "pronouns": ["she", "her"]
   },
   {
-    "name": "txt_larry",
-    "sprite": ["txt/larry"],
+    "name": "txt_vite",
+    "sprite": ["txt/vite"],
     "types": ["object"],
     "color": [[2, 4]],
+    "desc": "(its actually pronounced vit",
     "tags": ["devs", "chars", "vitellary", "vvvvvv"]
   },
   {

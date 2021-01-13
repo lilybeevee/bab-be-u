@@ -1602,8 +1602,6 @@ function testConds(unit, conds, compare_with, first_unit) --cond should be a {co
           result = false
         end
       end
-    elseif condtype == "looped" then
-      result = infcount > 0
     elseif condtype == "wait..." then
       result = last_move ~= nil and last_move[1] == 0 and last_move[2] == 0 and #last_clicks == 0
     elseif condtype == "mayb" then
