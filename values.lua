@@ -51,6 +51,7 @@ defaultsettings = {
   themes = true,
   autoupdate = true,
   print_to_screen = false,
+  unfinished_words = false,
 }
 
 if love.filesystem.read("Settings.bab") ~= nil then
@@ -435,7 +436,7 @@ selector_grid_contents = {
     "txt_be","txt_&","txt_got","txt_creat","txt_snacc","txt_spoop","txt_copkat","txt_moov","txt_yeet","txt_liek","txt_haet","txt_stalk","txt_ignor","txt_paint","txt_vs","txt_sing","txt_soko","txt_lookat",
     "txt_u","txt_utoo","txt_utres","txt_y'all","txt_w","txt_:)","txt_noswim","txt_ouch","txt_protecc",0,"txt_nxt","txt_stayther","txt_wont","txt_giv",0,"txt_rp",0,"txt_lookaway",
     "txt_go","txt_goooo","txt_icy","txt_icyyyy","txt_stubbn","txt_:(","txt_nedkee","txt_fordor","txt_wurd",0,"txt_infloop","txt_plsdont","txt_oob","txt_frenles","txt_timles","txt_lit","txt_corekt","txt_rong",
-    "txt_nogo","txt_goawaypls","txt_comepls","txt_sidekik","txt_diagkik","txt_delet","txt_hotte","txt_fridgd","txt_thingify",0,"txt_looped","txt_curse","txt_alt","txt_clikt","txt_past","txt_wun","txt_an","txt_mayb",
+    "txt_nogo","txt_goawaypls","txt_comepls","txt_sidekik","txt_diagkik","txt_delet","txt_hotte","txt_fridgd","txt_thingify",0,0,"txt_curse","txt_alt","txt_clikt","txt_past","txt_wun","txt_an","txt_mayb",
     "txt_visitfren","txt_slep","txt_shy...","txt_behinu","txt_walk","txt_:o","txt_moar","txt_split","txt_txtify",0,"txt_dragbl","txt_nodrag",0,"txt_wait...","txt_samefloat","txt_samepaint","txt_sameface",0,
     "txt_flye","txt_tall","txt_haetskye","txt_haetflor","txt_zomb","txt_un:)","txt_gone","txt_nuek","txt_notranform",0,"txt_rythm",0,0,"txt_w/fren","txt_arond","txt_sans","txt_seenby","txt_behind",
     "txt_diag","txt_ortho","txt_gomyway","txt_n'tify","txt_ify","txt_boring","txt_bce",0,0,0,0,0,0,"txt_that","txt_thatbe","txt_thatgot","txt_meow","txt_beside",
@@ -465,10 +466,30 @@ if settings["baba"] then
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+  })
+end
+
+if settings["unfinished_words"] then
+  table.insert(selector_grid_contents, {
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"txt_camra","camra",
     "txt_offgrid","txt_rond",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    "txt_gaem","txt_halfstep",0,0,0,0,0,0,0,0,0,0,0,0,0,"aaaaaa","therealqt","zawarudo",
+    "txt_halfstep",0,0,0,0,0,0,0,0,0,0,0,0,0,0,"aaaaaa","therealqt","zawarudo",
     "txt_every3","txt_n'tifyyy",0,0,0,0,0,0,0,0,0,0,0,0,"&","sans","copkat","ditto",
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   })
 end
 

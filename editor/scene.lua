@@ -381,11 +381,31 @@ w = w-h, h = h}):center():setGroup("settings")
   
   for i=1,#tile_grid do
     local tab_name = custom_selector_tab == i and "custom" or i
-    local button = gooi.newButton({text = "", x = x + 64*i, y = y, w = 64, h = 32}):onRelease(function()
+    if tab_name == 8 then
+      if settings["baba"] then
+        tab_name = "baba"
+      else
+        tab_name = "unfinished"
+      end
+    elseif tab_name == 9 then
+      tab_name = "unfinished"
+    end
+    local button_width = math.floor(576 / #tile_grid) --576 is 18 tiles wide * 32 pixels per tile
+    local button = gooi.newButton({text = "", x = x + button_width*i, y = y, w = button_width, h = 32}):onRelease(function()
       if selector_page == custom_selector_tab then
         selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_custom"], sprites["ui/selector_tab_custom_h"])
       else
-        selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..selector_page], sprites["ui/selector_tab_"..selector_page.."_h"])
+        local image_to_use = selector_page
+        if selector_page == 8 then
+          if settings["baba"] then
+            image_to_use = "baba"
+          else
+            image_to_use = "unfinished"
+          end
+        elseif selector_page == 9 then
+          image_to_use = "unfinished"
+        end
+        selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..image_to_use], sprites["ui/selector_tab_"..image_to_use.."_h"])
       end
       selector_page = i
       current_tile_grid = tile_grid[selector_page]
@@ -399,7 +419,17 @@ w = w-h, h = h}):center():setGroup("settings")
   if selector_page == custom_selector_tab then
     selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_custom_a"], sprites["ui/selector_tab_custom_h"])
   else
-    selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..selector_page.."_a"], sprites["ui/selector_tab_"..selector_page.."_h"])
+    local image_to_use = selector_page
+    if selector_page == 8 then
+      if settings["baba"] then
+        image_to_use = "baba"
+      else
+        image_to_use = "unfinished"
+      end
+    elseif selector_page == 9 then
+      image_to_use = "unfinished"
+    end
+    selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..image_to_use.."_a"], sprites["ui/selector_tab_"..image_to_use.."_h"])
   end
   -- gooi.setGroupVisible("selectortabs", selector_open)
   -- gooi.setGroupEnabled("selectortabs", selector_open)
@@ -703,7 +733,17 @@ function scene.keyPressed(key)
   if selector_page == custom_selector_tab then
     selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_custom"], sprites["ui/selector_tab_custom_h"])
   else
-    selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..selector_page], sprites["ui/selector_tab_"..selector_page.."_h"])
+    local image_to_use = selector_page
+    if selector_page == 8 then
+      if settings["baba"] then
+        image_to_use = "baba"
+      else
+        image_to_use = "unfinished"
+      end
+    elseif selector_page == 9 then
+      image_to_use = "unfinished"
+    end
+    selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..image_to_use], sprites["ui/selector_tab_"..image_to_use.."_h"])
   end
   
   if key == "tab" and (key_down["lctrl"] or key_down["rctrl"]) and not (key_down["lshift"] or key_down["rshift"]) then
@@ -721,7 +761,17 @@ function scene.keyPressed(key)
     if selector_page == custom_selector_tab then
       selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_custom_a"], sprites["ui/selector_tab_custom_h"])
     else
-      selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..selector_page.."_a"], sprites["ui/selector_tab_"..selector_page.."_h"])
+      local image_to_use = selector_page
+      if selector_page == 8 then
+        if settings["baba"] then
+          image_to_use = "baba"
+        else
+          image_to_use = "unfinished"
+        end
+      elseif selector_page == 9 then
+        image_to_use = "unfinished"
+      end
+      selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..image_to_use.."_a"], sprites["ui/selector_tab_"..image_to_use.."_h"])
     end
   end
   
