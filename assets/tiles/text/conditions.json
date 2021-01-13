@@ -69,7 +69,7 @@
   },
   {
     "name": "txt_looped",
-    "sprite": ["txt/infloop"],
+    "sprite": ["txt/looped"],
     "types": ["cond_prefix"],
     "color": [[4, 1]],
     "desc": "LOOPED (Prefix Condition): True if the level has been destroyed due to an infinite loop.",
