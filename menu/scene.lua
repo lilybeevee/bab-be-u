@@ -334,7 +334,11 @@ end
 
 function scene.keyPressed(key)
   if key == "escape" and options then
-    options = false
+    if global_menu_state ~= "none" then
+      global_menu_state = "none"
+    else
+      options = false
+    end
     scene.buildUI()
   end
 end
