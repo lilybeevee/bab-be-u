@@ -28,11 +28,7 @@ function doUpdate(already_added, moving_units_next)
         updateDir(unit, dirAdd(dir, geometry_spin), true)
       end
       --movedebug("doUpdate:"..tostring(unit.fullname)..","..tostring(x)..","..tostring(y)..","..tostring(dir))
-      if unit == outergaem then
-        moveGameWindow(x-update.unit.x, y-update.unit.y)
-      else
-        moveUnit(unit, x, y, update.payload.portal)
-      end
+      moveUnit(unit, x, y, update.payload.portal)
       unit.already_moving = false
     elseif update.reason == "dir" then
       local unit = update.unit
@@ -2064,11 +2060,7 @@ function canMoveCore(unit,dx,dy,dir,o) --pushing, pulling, solid_name, reason, p
   local movers = {}
   local specials = {}
   table.insert(movers, {unit = unit, dx = x-unit.x, dy = y-unit.y, dir = dir, move_dx = move_dx, move_dy = move_dy, move_dir = move_dir, geometry_spin = geometry_spin, portal = portal_unit})
- 
-  if unit == outergaem then
-    return true,movers,{}
-  end
-
+  
   if rules_with["ignor"] ~= nil and not ignoreCheck(unit,outerlvl) then
     return true,movers,{}
   end
