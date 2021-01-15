@@ -355,7 +355,7 @@ bab arguments!
     --love.errorhandler = function() print(colr.red("goodbye")) end
     love.window.setIcon(love.image.newImageData("assets/sprites/wat.png"))
     love.window.setTitle("bxb bx x")
-    if settings["flashes"] then
+    if not settings["lessflashing"] then
       love.window.setFullscreen(true)
     end
   else
@@ -576,7 +576,7 @@ local gettimetime = 0
 
 love.timer.getRealTime = love.timer.getTime
 love.timer.getTime = function()
-  if spookmode and settings["flashes"] then
+  if spookmode and not settings["lessflashing"] then
     return gettimetime
   else
     return love.timer.getRealTime()
@@ -595,11 +595,11 @@ function love.update(dt)
     end
   end
 
-  if spookmode and settings["flashes"] then
+  if spookmode and not settings["lessflashing"] then
     dt = math.tan(love.timer.getRealTime()*20)/200
   end
 
-  if not (love.window.isVisible or love.window.hasFocus or love.window.hasMouseFoxus) and spookmode and settings["flashes"] then
+  if not (love.window.isVisible or love.window.hasFocus or love.window.hasMouseFoxus) and spookmode and not settings["lessflashing"] then
     love.window.requestAttention()
   end
 
@@ -870,7 +870,7 @@ function love.draw()
     drawmousething(0, 0)
   end
 
-  if spookmode and math.random(1000) == 500 and settings["flashes"] then
+  if spookmode and math.random(1000) == 500 and not settings["lessflashing"] then
     local bab = love.graphics.newImage("assets/sprites/ui/bxb bx x.jpg")
     love.graphics.setColor(1, 1, 1)
     love.graphics.draw(bab, 0, 0, 0, bab:getWidth()/love.graphics.getWidth(), bab:getHeight()/love.graphics.getHeight())
@@ -890,13 +890,13 @@ function love.draw()
 end
 
 function love.visible()
-  if spookmode and settings["flashes"] then
+  if spookmode and not settings["lessflashing"] then
     love.resize()
   end
 end
 
 function love.resize(w, h)
-  if spookmode and settings["flashes"] then
+  if spookmode and not settings["lessflashing"] then
     local winwidth, winheight = love.graphics.getDimensions()
     love.window.setMode(winwidth, winheight, {borderless=true, resizable=false, minwidth=705, minheight=510, fullscreen=true})
   end
