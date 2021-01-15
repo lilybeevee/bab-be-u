@@ -99,7 +99,7 @@ bab arguments!
   end
 
 
-  local babfound = false
+  babfound = false
 
   function searchbab(d)
     local dir = "assets/sprites"
@@ -129,7 +129,7 @@ bab arguments!
 
   searchbab()
 
-  if not babfound or cmdargs["spook"] or os.date("%m-%d") == "10-31" and os.date("%H") >= "22" or os.date("%H:%M") == "3:00" then
+  if settings["flashing"]  and (not babfound or cmdargs["spook"] or os.date("%m-%d") == "10-31" and os.date("%H") >= "22" or os.date("%H:%M") == "3:00") then
     spookmode = true
   end
 

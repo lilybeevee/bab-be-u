@@ -42,10 +42,12 @@ function menu_button.new(text, id, func)
   else
     babspr = sprites["bab"]
   end
-  local bab = ui.component.new():setSprite(babspr):setX(-sprites["bab"]:getWidth()-2):setEnabled(false)
-  o:addChild(bab)
-  o:onHovered(function() bab:setEnabled(true) end)
-  o:onExited(function() bab:setEnabled(false) end)
+  if babfound then
+    local bab = ui.component.new():setSprite(babspr):setX(-sprites["bab"]:getWidth()-2):setEnabled(false)
+    o:addChild(bab)
+    o:onHovered(function() bab:setEnabled(true) end)
+    o:onExited(function() bab:setEnabled(false) end)
+  end
 
   return o
 end
