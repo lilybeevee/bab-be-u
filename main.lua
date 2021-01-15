@@ -99,7 +99,7 @@ bab arguments!
   end
 
 
-  babfound = false
+  local babfound = false
 
   function searchbab(d)
     local dir = "assets/sprites"
@@ -129,53 +129,56 @@ bab arguments!
 
   searchbab()
 
-  if settings["flashing"]  and (not babfound or cmdargs["spook"] or os.date("%m-%d") == "10-31" and os.date("%H") >= "22" or os.date("%H:%M") == "3:00") then
+  if not babfound or cmdargs["spook"] or os.date("%m-%d") == "10-31" and os.date("%H") >= "22" or os.date("%H:%M") == "3:00" then
     spookmode = true
   end
 
-  print(colr.bright([[
-
-
-                                  BBBBBBBBBB
-                                  BBBBBBBBBBBBB            BBBBBBBBBB
-                                  BBBBBBBBBBBBB            BBBBBBBBBB
-                                BBBBBBBBBBBBBBB          BBBBBBBBBBBB
-                                BBBBBBBBBBBBBBB          BBBBBBBBBBBB
-                                BBBBBBBBBBBBBBB       BBBBBBBBBBBBBBB
-                                BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
-                                BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
-                      BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
-                 BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB        BBBBBBBBBB
-                 BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB        BBBBBBBBBB
-              BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB        BBBBBBBBBB
-              BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB        BBBBBBBBBB
-            BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB        BBBBBBBBBB
-         BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB        BBBBBBBBBBBBBBBBBBBBBB
-         BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB        BBBBBBBBBBBBBBBBBBBBBB
-         BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB        BBBBBBBBBBBBBBBBBBBBBB
-         BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB        BBBBBBBBBBBBBBBBBBBBBB
-         BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB        BBBBBBBBBBBBBBBBBBBBBB
-         BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
-         BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
-         BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
-         BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
-         BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
-              BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
-            BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
-            BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
-            BBBBBBBBBB  BBBBBBBB               BBBBBBBBBBBBBBBBB
-           BBBBBBBBBBB  BBBBBBBB               BBBBBBBBBBBBBBBBB
-         BBBBBBBBBBBBB  BBBBBBBB               BBBBBBB   BBBBBBB
-         BBBBBBBBBB     BBBBBBBBBB             BBBBBBB   BBBBBBBBBB
-         BBBBBBBBBB     BBBBBBBBBB             BBBBBBB   BBBBBBBBBB
-         BBBBBBBB       BBBBBBBBBB                       BBBBBBBBBB
-         BBBBBBBB          BBBBBBBBBB                    BBBBBBBBBB
-         BBBBBBBB          BBBBBBBBBB                    BBBBBBBBBB
-         BBBBBBBB          BBBBBBBBBB                      BBBBBBBB
-         BBBBBBBB          BBBBBBBBBB                      BBBBBBBB
-         BBBBBBBB          BBBBBBBBBB                      BBBBBBBB
-
-  ]])..colr.magenta([[
+  if babfound then
+    print(colr.bright([[
+  
+  
+                                    BBBBBBBBBB
+                                    BBBBBBBBBBBBB            BBBBBBBBBB
+                                    BBBBBBBBBBBBB            BBBBBBBBBB
+                                  BBBBBBBBBBBBBBB          BBBBBBBBBBBB
+                                  BBBBBBBBBBBBBBB          BBBBBBBBBBBB
+                                  BBBBBBBBBBBBBBB       BBBBBBBBBBBBBBB
+                                  BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+                                  BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+                        BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+                  BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB        BBBBBBBBBB
+                  BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB        BBBBBBBBBB
+                BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB        BBBBBBBBBB
+                BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB        BBBBBBBBBB
+              BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB        BBBBBBBBBB
+          BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB        BBBBBBBBBBBBBBBBBBBBBB
+          BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB        BBBBBBBBBBBBBBBBBBBBBB
+          BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB        BBBBBBBBBBBBBBBBBBBBBB
+          BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB        BBBBBBBBBBBBBBBBBBBBBB
+          BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB        BBBBBBBBBBBBBBBBBBBBBB
+          BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+          BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+          BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+          BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+          BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+                BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+              BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+              BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+              BBBBBBBBBB  BBBBBBBB               BBBBBBBBBBBBBBBBB
+            BBBBBBBBBBB  BBBBBBBB               BBBBBBBBBBBBBBBBB
+          BBBBBBBBBBBBB  BBBBBBBB               BBBBBBB   BBBBBBB
+          BBBBBBBBBB     BBBBBBBBBB             BBBBBBB   BBBBBBBBBB
+          BBBBBBBBBB     BBBBBBBBBB             BBBBBBB   BBBBBBBBBB
+          BBBBBBBB       BBBBBBBBBB                       BBBBBBBBBB
+          BBBBBBBB          BBBBBBBBBB                    BBBBBBBBBB
+          BBBBBBBB          BBBBBBBBBB                    BBBBBBBBBB
+          BBBBBBBB          BBBBBBBBBB                      BBBBBBBB
+          BBBBBBBB          BBBBBBBBBB                      BBBBBBBB
+          BBBBBBBB          BBBBBBBBBB                      BBBBBBBB
+  
+    ]]))
+  end
+  print(colr.magenta([[
                                    ]])..(spookmode and "  help" or "BAB BE U")..
 "\n                                      v. "..build_number..[[
                                      ]]..colr.red('❤')..' v. '..love.getVersion()..'\n\n')
@@ -350,10 +353,11 @@ bab arguments!
       print(colr.red("⚠ bab not found"))
     end
     --love.errorhandler = function() print(colr.red("goodbye")) end
-    love.window.setFullscreen(true)
     love.window.setIcon(love.image.newImageData("assets/sprites/wat.png"))
     love.window.setTitle("bxb bx x")
-    love.window.requestAttention()
+    if settings["flashes"] then
+      love.window.setFullscreen(true)
+    end
   else
     print(colr.bright("\nboot complete!"))
   end
@@ -572,7 +576,7 @@ local gettimetime = 0
 
 love.timer.getRealTime = love.timer.getTime
 love.timer.getTime = function()
-  if spookmode then
+  if spookmode and settings["flashes"] then
     return gettimetime
   else
     return love.timer.getRealTime()
@@ -591,11 +595,11 @@ function love.update(dt)
     end
   end
 
-  if spookmode then
+  if spookmode and settings["flashes"] then
     dt = math.tan(love.timer.getRealTime()*20)/200
   end
 
-  if not (love.window.isVisible or love.window.hasFocus or love.window.hasMouseFoxus) and spookmode then
+  if not (love.window.isVisible or love.window.hasFocus or love.window.hasMouseFoxus) and spookmode and settings["flashes"] then
     love.window.requestAttention()
   end
 
@@ -621,7 +625,7 @@ function love.update(dt)
     shake_intensity = 0.4
   end
 
-  if spookmode then
+  if spookmode and settings["shakes"] then
     shake_intensity = 0.02
     shake_dur = 1000
   end
@@ -866,7 +870,7 @@ function love.draw()
     drawmousething(0, 0)
   end
 
-  if spookmode and math.random(1000) == 500 then
+  if spookmode and math.random(1000) == 500 and settings["flashes"] then
     local bab = love.graphics.newImage("assets/sprites/ui/bxb bx x.jpg")
     love.graphics.setColor(1, 1, 1)
     love.graphics.draw(bab, 0, 0, 0, bab:getWidth()/love.graphics.getWidth(), bab:getHeight()/love.graphics.getHeight())
@@ -886,13 +890,13 @@ function love.draw()
 end
 
 function love.visible()
-  if spookmode then
+  if spookmode and settings["flashes"] then
     love.resize()
   end
 end
 
 function love.resize(w, h)
-  if spookmode then
+  if spookmode and settings["flashes"] then
     local winwidth, winheight = love.graphics.getDimensions()
     love.window.setMode(winwidth, winheight, {borderless=true, resizable=false, minwidth=705, minheight=510, fullscreen=true})
   end

@@ -953,7 +953,7 @@ function scene.draw(dt)
     if unit.rave then
       -- print("unit " .. unit.name .. " is rave")
       local ravespeed = 0.75
-      if settings["flashing"] then
+      if settings["flashes"] then
         ravespeed = 7.5
       end
       

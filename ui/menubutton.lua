@@ -42,7 +42,7 @@ function menu_button.new(text, id, func)
   else
     babspr = sprites["bab"]
   end
-  if babfound then
+  if not spookmode then
     local bab = ui.component.new():setSprite(babspr):setX(-sprites["bab"]:getWidth()-2):setEnabled(false)
     o:addChild(bab)
     o:onHovered(function() bab:setEnabled(true) end)

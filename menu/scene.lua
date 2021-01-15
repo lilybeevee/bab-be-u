@@ -69,7 +69,7 @@ end
 function scene.buildUI()
   buttons = {}
   if getTheme() == "halloween" then
-    if not settings["flashing"] and (love.timer.getTime()%10 > 8.7 and love.timer.getTime()%10 < 8.8 or love.timer.getTime()%10 > 8.9 and love.timer.getTime()%10 < 9) then
+    if not settings["flashes"] and (love.timer.getTime()%10 > 8.7 and love.timer.getTime()%10 < 8.8 or love.timer.getTime()%10 > 8.9 and love.timer.getTime()%10 < 9) then
         giticon = sprites["ui/github_halloween_blood"]
     else
         giticon = sprites["ui/github_halloween"]
@@ -164,7 +164,7 @@ function scene.draw(dt)
   local bgsprite = sprites["ui/bgs/"..getTheme()]
   if not bgsprite then bgsprite = sprites["ui/bgs/default"] end
   
-  if not settings["flashing"] and getTheme() == "halloween" and (love.timer.getTime()%10 > 8.6 and love.timer.getTime()%10 < 8.7 or love.timer.getTime()%10 > 8.8 and love.timer.getTime()%10 < 8.9 or love.timer.getTime()%10 > 9)  then
+  if not settings["flashes"] and getTheme() == "halloween" and (love.timer.getTime()%10 > 8.6 and love.timer.getTime()%10 < 8.7 or love.timer.getTime()%10 > 8.8 and love.timer.getTime()%10 < 8.9 or love.timer.getTime()%10 > 9)  then
     bgsprite = sprites["ui/bgs/halloween_flash"]
   end
 
@@ -196,7 +196,7 @@ function scene.draw(dt)
 
   if not options then
     local bab_logo = sprites["ui/title/"..getTheme()] or sprites["ui/title/default"]
-    if getTheme() == "halloween" and not settings["flashing"] and (love.timer.getTime()%10 > 8.7 and love.timer.getTime()%10 < 8.8 or love.timer.getTime()%10 > 8.9 and love.timer.getTime()%10 < 9) then 
+    if getTheme() == "halloween" and not settings["flashes"] and (love.timer.getTime()%10 > 8.7 and love.timer.getTime()%10 < 8.8 or love.timer.getTime()%10 > 8.9 and love.timer.getTime()%10 < 9) then 
       bab_logo = sprites["ui/title/halloween_blood"]
     end
     
@@ -241,7 +241,7 @@ function scene.draw(dt)
         splashtext = "happi hunnukkah!!"
       end
     elseif getTheme() == "halloween" then
-      if not settings["flashing"] and (love.timer.getTime()%10 > 8.7 and love.timer.getTime()%10 < 8.8 or love.timer.getTime()%10 > 8.9 and love.timer.getTime()%10 < 9) then
+      if not settings["flashes"] and (love.timer.getTime()%10 > 8.7 and love.timer.getTime()%10 < 8.8 or love.timer.getTime()%10 > 8.9 and love.timer.getTime()%10 < 9) then
         splashtext = "BAB IS DEAD"
       elseif love.filesystem.read("author_name") == "lilybeevee" and splash > 0.5 then
         splashtext = "happy spooky month lily!"
