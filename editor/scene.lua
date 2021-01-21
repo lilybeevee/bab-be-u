@@ -41,9 +41,10 @@ function scene.load()
   buttons = {}
   
   nt = false
-
+  
   settings_open = false
   selector_open = false
+  tutorial_open = false
   selector_page = 1
   current_tile_grid = tile_grid[selector_page]
   
@@ -51,6 +52,12 @@ function scene.load()
   
   paint_open = false
   paint_colors = {}
+  
+  scene.tutorial = {}
+  scene.tutorial.darkness = 0
+  scene.tutorial.opacity = 0
+  scene.tutorial.height = 0
+  scene.tutorial.scroll = 0
   
   if not level_compression then
     level_compression = settings["level_compression"]
@@ -156,6 +163,13 @@ end
 selector_tab_buttons_list = {}
 function scene.setupGooi()
   local x = 0
+  gooi.newButton({text = "", x = x, y = 0, w = 40, h = 40}):onRelease(function()
+    tutorial_open = true
+    scene.tutorial.darkness = 0
+    addTween(tween.new(0.2, scene.tutorial, {darkness = 0.9}), "tutorial_dark")
+    addTween(tween.new(0.2, scene.tutorial, {opacity = 1}), "tutorial_opacity")
+  end):setBGImage(sprites["ui/editor_help"],sprites["ui/editor_help_h"], sprites["ui/editor_help_a"]):bg({0, 0, 0, 0})
+  x = x + 40
   gooi.newButton({text = "", x = x, y = 0, w = 40, h = 40}):onRelease(function()
     scene.loadLevel()
   end):setBGImage(sprites["ui/load"], sprites["ui/load_h"], sprites["ui/load_a"]):bg({0, 0, 0, 0})
@@ -487,6 +501,14 @@ mobile_picking = false
 mobile_stackmode = "none"
 
 function scene.keyPressed(key)
+  if tutorial_open then
+    if key == "escape" then
+      tutorial_open = false
+      addTween(tween.new(0.2, scene.tutorial, {darkness = 0}), "tutorial_dark")
+      addTween(tween.new(0.2, scene.tutorial, {opacity = 0}), "tutorial_opacity")
+    end
+    return
+  end
   if key == "escape" and not selector_open then
     if not capturing then
       if not spookmode then
@@ -831,6 +853,7 @@ function scene.keyPressed(key)
 end
 
 function scene.mousePressed(x, y, button)
+  if tutorial_open then return end
   if capturing and button == 1 then
     start_drag = {x = love.mouse.getX(), y = love.mouse.getY()}
   end
@@ -840,6 +863,7 @@ function scene.mousePressed(x, y, button)
 end
 
 function scene.mouseReleased(x, y, button)
+  if tutorial_open then return end
   if capturing and button == 1 then
     scene.captureIcon()
   end
@@ -1055,11 +1079,19 @@ end
 
 function scene.update(dt)
   if not spookmode then
-    if capturing then
+    if capturing or ui.hovered then
       return
     end
-
-    if ui.hovered then
+    
+    if tutorial_open then
+      scene.tutorial.height = scene.tutorial.height + scene.tutorial.scroll
+      if scene.tutorial.height > 20 then
+        scene.tutorial.height = 20
+        scene.tutorial.scroll = 0
+      elseif scene.tutorial.height < -sprites["ui/editor_tutorial"]:getHeight() + 600 then
+        scene.tutorial.height = -sprites["ui/editor_tutorial"]:getHeight() + 600
+        scene.tutorial.scroll = 0
+      end
       return
     end
 
@@ -2001,6 +2033,14 @@ function scene.draw(dt)
       local cursorx, cursory = love.mouse.getPosition()
       love.graphics.draw(system_cursor, cursorx, cursory)
     end
+    
+    -- tutorial drawing
+    
+    love.graphics.setColor(0, 0, 0, scene.tutorial.darkness)
+    love.graphics.rectangle("fill", 0, 0, 800, 600)
+    love.graphics.setColor(1, 1, 1, scene.tutorial.opacity)
+    love.graphics.draw(sprites["ui/editor_tutorial"], 0, math.floor(scene.tutorial.height))
+    love.graphics.setColor(1, 1, 1)
   else
     love.graphics.setBackgroundColor(math.random(0,10)/1000,math.random(0,10)/1000,math.random(0,10)/1000)
 
@@ -2361,17 +2401,22 @@ function scene.translateLevel(dx, dy)
 end
 
 function scene.wheelMoved(whx, why)
-  if brush.id then
-    local tile = getTile(brush.id)
-    local new = tile.name
-    if why < 0 then -- modified from 'x be meta' code
-      if (string.sub(new,396,400) ~= "_txt_") then
-        new = tile.txtify or "txt_"..new
+  if tutorial_open then
+    scene.tutorial.scroll = scene.tutorial.scroll + why * 5
+    addTween(tween.new(0.5, scene.tutorial, {scroll = 0}), "tutorial_scroll")
+  else
+    if brush.id then
+      local tile = getTile(brush.id)
+      local new = tile.name
+      if why < 0 then -- modified from 'x be meta' code
+        if (string.sub(new,396,400) ~= "_txt_") then
+          new = tile.txtify or "txt_"..new
+        end
+      elseif why > 0 then
+        new = tile.thingify or tile.txtname
       end
-    elseif why > 0 then
-      new = tile.thingify or tile.txtname
+      brush.id = getTile(new) and new or brush.id
     end
-    brush.id = getTile(new) and new or brush.id
   end
 end
 
