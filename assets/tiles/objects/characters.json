@@ -1674,6 +1674,7 @@
     "sprite": ["one"],
     "layer": 11,
     "color": [[0, 3]],
+    "desc": "ONE: not to be confused with 1\nbut has an alias of 1",
     "rotate": true,
     "tags": ["chars", "oni", "1"],
     "pronouns": ["they", "them"]
@@ -1683,7 +1684,6 @@
     "sprite": ["txt/one"],
     "types": ["object"],
     "color": [[4, 1]],
-    "desc": "ONE: not to be confused with 1\nbut has an alias of 1",
     "alias": ["1"],
     "tags": ["chars", "oni", "1"]
   },
