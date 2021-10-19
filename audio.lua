@@ -94,6 +94,10 @@ function resetMusic(name,volume)
 end
 
 function updateMusic()
+  if not settings["focus_sound"] and not love.window.hasFocus() then
+    current_volume = 0
+  end
+  
   if music_source ~= nil then
     music_source:setVolume(current_volume * music_volume)
   end

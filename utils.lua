@@ -3793,6 +3793,7 @@ function buildOptions()
     scene.addOption("music_vol", "music volume", {{"25%", 0.25}, {"50%", 0.5}, {"75%", 0.75}, {"100%", 1}})
     scene.addOption("sfx_on", "sound", {{"on", true}, {"off", false}})
     scene.addOption("sfx_vol", "sound volume", {{"25%", 0.25}, {"50%", 0.5}, {"75%", 0.75}, {"100%", 1}})
+    scene.addOption("focus_sound", "mute on focus", {{"on", false}, {"off", true}})
     scene.addButton("back", function() global_menu_state = "none"; scene.buildUI() end)
   elseif global_menu_state == "video" then
     scene.addOption("int_scaling", "integer scaling", {{"on", true}, {"off", false}})
