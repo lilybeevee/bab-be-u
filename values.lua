@@ -385,7 +385,7 @@ selector_grid_contents = {
     "meem","txt_meem","statoo","txt_statoo","flamgo","txt_flamgo","migri","txt_migri","temmi","txt_temmi","ballt","txt_ballt",0,0,"slab","txt_slab","zsoob","txt_zsoob",
     "skul","txt_skul","beeee","txt_beeee","gul","txt_gul","kva","txt_kva","bunmy","txt_bunmy",0,0,0,0,"notnat","txt_notnat","she","txt_she",
     "ghostfren","txt_ghostfren","fishe","txt_fishe","starrfishe","txt_starrfishe","pidgin","txt_pidgin","slogkat","txt_slogkat",0,0,0,0,"ally","txt_ally","butcher","txt_butcher",
-    "robobot","txt_robobot","snek","txt_snek","sneel","txt_sneel","swan","txt_swan","b..er","txt_b..er",0,0,0,0,0,0,0,0,
+    "robobot","txt_robobot","snek","txt_snek","sneel","txt_sneel","swan","txt_swan","b..er","txt_b..er",0,0,0,0,0,0,"pitta","txt_pitta",
     "wog","txt_wog","bog","txt_bog","enbybog","txt_enbybog","spoder","txt_spoder","niko","txt_niko",0,0,0,0,0,0,0,0,
     "kirb","txt_kirb","ripof","txt_ripof","cavebab","txt_cavebab","detox","txt_detox","nyowo","txt_nyowo",0,0,0,0,0,0,0,0,
     "bup","txt_bup","butflye","txt_butflye","boooo","txt_boooo","prime","txt_prime","grimkid","txt_grimkid",0,0,0,0,0,0,0,0,

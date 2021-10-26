@@ -243,5 +243,23 @@
     "desc": "its miku, lila's sister (bab lore)",
     "tags": ["devs", "chars"],
     "pronouns": ["she", "her", "miku"]
+  },
+  {
+    "name": "pitta",
+    "sprite": ["pitta_bod", "pitta_eye", "pitta_pupil"],
+    "layer": 11,
+    "color": [[1, 3], [0, 3], [0, 4]],
+    "painted": [true, false, false],
+    "rotate": true,
+    "desc": "ok but what is it",
+    "tags": ["devs", "chars"]
+  },
+  {
+    "name": "txt_pitta",
+    "sprite": ["txt/pitta"],
+    "types": ["object"],
+    "color": [[1, 3]],
+    "desc": "would've gone with 'paytow', but it makes me cringe everytime I think about that",
+    "tags": ["devs", "chars"]
   }
 ]
