@@ -1452,6 +1452,7 @@
   {
     "name": "bad",
     "sprite": ["bad_body", "bad_metal", "bad_skateboard"],
+    "layer": 11,
     "color": [[1, 4], [2, 4], [2, 2]],
     "painted": [true, false, false],
     "rotate": true,
