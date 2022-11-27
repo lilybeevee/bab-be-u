@@ -241,6 +241,10 @@ function scene.update(dt)
   scene.doPassiveParticles(dt, "slep", "slep", 1, 0.33, 1, {0, 3})
   scene.doPassiveParticles(dt, "thonk", "thonk", 0.25, 0.5, 1, {0, 3})
   scene.doPassiveParticles(dt, "tryagain", "bonus", 0.25, 0.25, 1, {3, 3})
+  scene.doPassiveParticles(dt, "gud", "bonus", 0.25, 1, 1, {2, 4})
+  scene.doPassiveParticles(dt, "awdul", "stink", 0.25, 1, 1, {1, 2})
+  scene.doPassiveParticles(dt, "anti gud", "stink", 0.25, 1, 1, {2, 4})
+  scene.doPassiveParticles(dt, "anti awdul", "bonus", 0.25, 1, 1, {1, 2})
 	
   doReplay(dt)
   if rules_with and rules_with["rythm"] then
