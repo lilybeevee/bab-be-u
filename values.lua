@@ -32,6 +32,7 @@ defaultsettings = {
   sfx_on = true,
   sfx_vol = 1,
   focus_sound = true,
+  rhythm_interval = 1,
   particles_on = true,
   shake_on = true,
   scribble_anim = true,

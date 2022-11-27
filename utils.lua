@@ -16,7 +16,7 @@ function clear()
     replay_string = ""
   end
   rhythm_time = love.timer.getTime()
-  rhythm_interval = 1
+  rhythm_interval = settings["rhythm_interval"]
   rhythm_queued_movement = {0, 0, "wait"}
   new_units_cache = {}
   undoing = false
@@ -3819,6 +3819,7 @@ function buildOptions()
     scene.addButton("back", function() global_menu_state = "none"; scene.buildUI() end)
   elseif global_menu_state == "misc" then
     scene.addOption("input_delay", "input delay", {{"0", 0}, {"50", 50}, {"100", 100}, {"125", 125}, {"150 (default)", 150}, {"200", 200}})
+	scene.addOption("rhythm_interval", "rhythm speed", {{"slower",1.2},{"default",1},{"fast",0.5},{"faster",0.2},{"fastest",0.1}})
     scene.addOption("focus_pause", "pause on defocus", {{"on", true}, {"off", false}})
     scene.addOption("autoupdate", "autoupdate (experimental)", {{"on", true}, {"off", false}})
     scene.addButton("back", function() global_menu_state = "none"; scene.buildUI() end)
