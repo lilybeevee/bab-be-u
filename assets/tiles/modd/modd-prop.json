@@ -1,0 +1,18 @@
+[
+  {
+    "name": "txt_gud",
+    "sprite": ["modd/moddtxt/gud"],
+    "types": ["property"],
+    "color": [[2, 4]],
+    "desc": "GUD: Causes the unit to be awesome!\nAnti: The unit becomes awful.",
+    "tags": ["happy", "yay", "cool", "best"]
+  },
+  {
+    "name": "txt_awdul",
+    "sprite": ["modd/moddtxt/awdul"],
+    "types": ["property"],
+    "color": [[1, 2]],
+    "desc": "AWDUL: Causes the unit to be awful.\nAnti: The unit becomes awesome!",
+    "tags": ["aw", "nay", "sad", "uncool", "worst"]
+  }
+]
