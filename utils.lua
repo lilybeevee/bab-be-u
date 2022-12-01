@@ -16,6 +16,7 @@ function clear()
     replay_string = ""
   end
   rhythm_time = love.timer.getTime()
+  rhythm_interval = settings["rhythm_interval"]
   rhythm_queued_movement = {0, 0, "wait"}
   new_units_cache = {}
   undoing = false
