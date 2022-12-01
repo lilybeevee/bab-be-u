@@ -153,7 +153,7 @@ end
 function initializeGraphicalPropertyCache()
   local properties_to_init = -- list of properties that require the graphical cache
   {
-    "flye", "slep", "stelth", "colrful", "delet", "rave" -- miscelleaneous graphical effects
+    "flye", "slep", "stelth", "colrful", "delet", "rave" -- miscellaneous graphical effects
   }
   for name,_ in pairs(overlay_props) do -- add overlays
     table.insert(properties_to_init, name)
@@ -3827,7 +3827,7 @@ function buildOptions()
     scene.addButton("audio options", function() global_menu_state = "audio"; scene.buildUI() end)
     scene.addButton("video options", function() global_menu_state = "video"; scene.buildUI() end)
     scene.addButton("editor options", function() global_menu_state = "editor"; scene.buildUI() end)
-    scene.addButton("miscelleaneous options", function() global_menu_state = "misc"; scene.buildUI() end)
+    scene.addButton("miscellaneous options", function() global_menu_state = "misc"; scene.buildUI() end)
     scene.addButton("reset to default settings", function ()
       ui.overlay.confirm({
         text = "Reset all settings to default?",
