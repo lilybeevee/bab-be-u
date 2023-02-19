@@ -250,5 +250,78 @@
     "desc": "when you at the when you you when the",
     "color": [[0, 3]],
     "tags": ["it"]
+  },
+  {
+    "name": "be",
+    "sprite": ["modd/isoc_body", "modd/isoc_arrow"],
+    "color": [[4, 2], [4, 1]],
+    "convertible": false,
+    "rotate": true,
+    "desc": "kirb-oid",
+    "tags": ["chars", "is", "-oc", "iiy", "thingify", "mod"],
+	"pronouns": ["it"]
+  },
+  {
+    "name": "goawaypls",
+    "sprite": ["modd/pushoc_body", "modd/pushoc_hands"],
+    "color": [[6, 1], [6, 2]],
+    "convertible": false,
+    "rotate": true,
+    "desc": "it has stomach problems :(",
+    "tags": ["chars", "push", "-oc", "iiy", "thingify", "mod"],
+	"pronouns": ["it"]
+  },
+  {
+    "name": "gaem",
+    "sprite": ["modd/gameoc"],
+    "types": ["object"],
+    "desc": "deprecated and broken",
+    "color": [[0, 3]],
+    "rotate": true,
+    "tags": ["chars", "game", "-oc", "iiy", "thingify", "mod"],
+    "tags": ["it"]
+  },
+  {
+    "name": "fordor",
+    "sprite": ["modd/openoc"],
+    "color": [[0, 2]],
+    "convertible": false,
+    "rotate": true,
+    "desc": "has no idea why nedkee keeps running away",
+    "tags": ["chars", "open", "-oc", "iiy", "thingify", "mod"],
+	"pronouns": ["it"]
+  },
+  {
+    "name": "nedkee",
+    "sprite": ["modd/shutoc"],
+    "types": ["object"],
+    "convertible": false,
+    "rotate": true,
+    "desc": "i fordor",
+    "color": [[6, 2]],
+    "tags": ["chars", "shut", "-oc", "iiy", "thingify", "mod"],
+    "tags": ["it"]
+  },
+  {
+    "name": ":)",
+    "sprite": ["modd/winoc"],
+    "types": ["object"],
+    "desc": ":)",
+    "convertible": false,
+    "rotate": true,
+    "color": [[1, 4]],
+    "tags": ["chars", "win", "-oc", "iiy", "thingify", "mod"],
+    "tags": ["it"]
+  },
+  {
+    "name": "every1",
+    "sprite": ["modd/alloc"],
+    "types": ["object"],
+    "desc": "Question Mark?",
+    "convertible": false,
+    "rotate": true,
+    "color": [[1, 2]],
+    "tags": ["chars", "all", "-oc", "iiy", "thingify", "mod"],
+    "tags": ["it"]
   }
 ]
