@@ -1651,16 +1651,17 @@
   },
   {
     "name": "ballt",
-    "sprite": ["ballt"],
+    "sprite": ["ballt_body", "ballt_arrows", "ballt_eyes"],
     "layer": 11,
-    "color": [[0, 1]],
+    "color": [[0, 1], [0, 0], [0, 2]],
+    "painted": [true, false, true],
     "rotate": true,
     "features": {
       "sans": {"x": 22, "y": 10, "w": 2, "h": 2}
     },
     "desc": "they are siblings with beb",
     "tags": ["chars", "balt", "baba", "belt"],
-    "pronouns": ["he", "him"]
+    "pronouns": ["he", "they"]
   },
   {
     "name": "txt_ballt",
