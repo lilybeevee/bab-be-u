@@ -134,8 +134,8 @@ function doMovement(movex, movey, key)
   local flippers = {}
 
   if not unit_tests then
-    print("[---- begin turn "..tostring(#undo_buffer).." ----]")
-    print("move: " .. movex .. ", " .. movey)
+    --print("[---- begin turn "..tostring(#undo_buffer).." ----]")
+    --print("move: " .. movex .. ", " .. movey)
   end
 
   next_levels, next_level_objs = getNextLevels()
@@ -254,7 +254,7 @@ function doMovement(movex, movey, key)
       )
     elseif move_stage == 0 and (movex ~= 0 or movey ~= 0) then
       local alwaysKeys = {
-        wasd= not (hasPropertyOrAnti(nil,"u") or hasPropertyOrAnti(nil,"w")),
+        wasd= not (hasPropertyOrAnti(nil,"u") or hasPropertyOrAnti(nil,"w") or hasPropertyOrAnti(nil,"u_turn") or hasPropertyOrAnti(nil,"u_move")),
         udlr= not hasPropertyOrAnti(nil,"utoo"),
         ijkl= not hasPropertyOrAnti(nil,"utres"),
       }
@@ -262,30 +262,39 @@ function doMovement(movex, movey, key)
           ((key == "udlr") and not hasProperty(nil,"utoo") and not hasProperty(nil,"anti utoo")) or
           ((key == "ijkl") and not hasProperty(nil,"utres") and not hasProperty(nil,"anti utres")]]
 
-      local uMove = function(name, control, key_, times_, ortho_)
+      local uMove = function(name, control, key_, times_, ortho_, dzhake_u_special_)
         local key = key_
         if (key=="numpad") then key="ijkl" end --numpad and ijkl are the same why are they even separated
         local ortho = ortho_ or false
         local times = times_ or 1
         local u = getUnitsWithEffectAndCount(name)
+		local dzhake_u_special = dzhake_u_special_ or false
 
         for unit,uness in pairs(u) do
           unit = units_by_id[unit] or cursors_by_id[unit]
           if (not hasProperty(unit, "slep") and slippers[unit.id] == nil and timecheck(unit,"be",name)) and
           ((not ortho) or movex == 0 or movey == 0) and ((key == control) or (not control) or alwaysKeys[key])
           then
+		    addUndo({"update", unit.id, unit.x, unit.y, unit.dir})
             local dir = dirs8_by_offset[movex][movey]
-            if times < 0 then
+			if dzhake_u_special == "u_turn" then
+				dir = updateDir(unit,dirs8_by_offset[movex][movey])
+			elseif dzhake_u_special == "u_move" then
+				dzhake_dir_next = unit.dir
+            elseif times < 0 then
               dir = dirAdd(dir,4)
-            end
+            end		
             addMove(unit,"u",dir,math.abs(times))
+			if dzhake_u_special == "u_move" then
+				unit.dir = dzhake_dir_next
+			end
           end
         end --for
       end
-      local uMoveAnti = function(name, control, times_, ortho)
+      local uMoveAnti = function(name, control, times_, ortho, dzhake_u_special)
         --calls uMove for both original and anti functions.
         local times = times_ or 1
-        uMove(name, control, key, times, ortho)
+        uMove(name, control, key, times, ortho, dzhake_u_special)
         uMove("anti "..name, control, key, -times, ortho)
       end
       uMoveAnti("u","wasd")
@@ -293,6 +302,8 @@ function doMovement(movex, movey, key)
       uMoveAnti("utres","ijkl")
       uMoveAnti("y'all")
       uMoveAnti("w","wasd",2)
+	  uMoveAnti("u_turn","wasd",0,nil,"u_turn")
+	  uMoveAnti("u_move","wasd",1,nil,"u_move")
       uMoveAnti("you",nil,1,true)
 
     elseif move_stage == 1 then

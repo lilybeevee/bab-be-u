@@ -260,6 +260,12 @@ function scene.draw()
   if not settings["lessflashing"] and getTheme() == "halloween" and (love.timer.getTime()%10 > 8.6 and love.timer.getTime()%10 < 8.7 or love.timer.getTime()%10 > 8.8 and love.timer.getTime()%10 < 8.9 or love.timer.getTime()%10 > 9)  then
     bgsprite = sprites["ui/bgs/halloween_flash"]
   end
+  if getTheme() == "baba" and (love.timer.getTime()%1 > 0.33 and love.timer.getTime()%1 < 0.66) then
+    bgsprite = sprites["ui/bgs/baba_1"]
+  end
+  if getTheme() == "baba" and (love.timer.getTime()%1 > 0.66 and love.timer.getTime()%1 < 1) then
+    bgsprite = sprites["ui/bgs/baba_2"]
+  end
 
   local cells_x = math.ceil(love.graphics.getWidth() / bgsprite:getWidth())
   local cells_y = math.ceil(love.graphics.getHeight() / bgsprite:getHeight())
@@ -807,12 +813,12 @@ function scene.selectWorld(o, button)
         world = o:getName()
         world_parent = o.data.file
         if love.filesystem.getInfo(getWorldDir(true) .. "/" .. "assets") then
-          assets.load(getWorldDir(true) .. "/" .. "assets")
+		  assets.load(getWorldDir(true) .. "/" .. "assets")
           loadMod()
           loaded_custom_assets = true
         end
-      else
-        table.insert(sub_worlds, o:getName())
+	  else
+      table.insert(sub_worlds, o:getName())
       end
       if load_mode == "play" and love.filesystem.getInfo(getWorldDir(true) .. "/" .. "overworld.txt") then
         local overworld = love.filesystem.read(getWorldDir(true) .. "/" .. "overworld.txt")
@@ -826,12 +832,13 @@ function scene.selectWorld(o, button)
     if o.data.file ~= "officialworlds" then
       if not o.data.deleting then
         o.data.deleting = 1
-        o:setColor(1, 1, 1)
+        o:setColor(settings["dzhake_world_color_red"],settings["dzhake_world_color_green"],settings["dzhake_world_color_blue"])
         o:setSprite(sprites["ui/world box delete"])
         shakeScreen(0.4, 0.2)
         playSound("move")
       elseif o.data.deleting == 1 then
         o.data.deleting = 2
+		o:setColor(settings["dzhake_world_color_red"],settings["dzhake_world_color_green"],settings["dzhake_world_color_blue"])
         o:setSprite(sprites["ui/world box delete 2"])
         shakeScreen(0.4, 0.3)
         playSound("unlock")
@@ -930,12 +937,15 @@ function scene.selectLevel(o, button)
     elseif world_parent ~= "officialworlds" and (not o.data.world or o.data.world.world_parent ~= "officialworlds") then
       if not o.data.deleting then
         o.data.deleting = 1
-        o:setColor(1, 1, 1)
+		local dzhake_pick_this_time = tostring(math.random(1,3))
+		o:setColor(settings["dzhake_level_color_red_"..dzhake_pick_this_time],settings["dzhake_level_color_green_"..dzhake_pick_this_time],settings["dzhake_level_color_blue_"..dzhake_pick_this_time], settings["dzhake_level_color_alpha_"..dzhake_pick_this_time])
         o:setSprite(sprites["ui/level box delete"])
         shakeScreen(0.3, 0.1)
         playSound("move")
       elseif o.data.deleting == 1 then
         o.data.deleting = 2
+		local dzhake_pick_this_time = tostring(math.random(1,3))
+		o:setColor(settings["dzhake_level_color_red_"..dzhake_pick_this_time],settings["dzhake_level_color_green_"..dzhake_pick_this_time],settings["dzhake_level_color_blue_"..dzhake_pick_this_time], settings["dzhake_level_color_alpha_"..dzhake_pick_this_time])
         o:setSprite(sprites["ui/level box delete 2"])
         shakeScreen(0.3, 0.2)
         playSound("unlock")

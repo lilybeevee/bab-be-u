@@ -19,7 +19,9 @@ function world_button.new(file)
       return hslToRgb(love.timer.getTime()/3%1, 0.4, 0.5, .9)
     end
     if not self.color then
-      if getTheme() == "halloween" then
+	  if settings["dzhake_world_color_enabled"] then
+		return {settings["dzhake_world_color_red"],settings["dzhake_world_color_green"],settings["dzhake_world_color_blue"],1}
+      elseif getTheme() == "halloween" then
         return {0.5, 0.2, 0.7, 1}
       elseif getTheme() == "christmas" then
         return {0, 0.7, 0, 1}

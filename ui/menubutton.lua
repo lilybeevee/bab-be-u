@@ -9,6 +9,10 @@ function menu_button.new(text, id, func)
       o:setText(text)
       o:setColor(0.5, 0.25, 0.75)
       o:setHoverColor(0.4, 0, 0.75)
+	elseif getTheme() == "baba" then
+      o:setText(text)
+      o:setColor(love.math.colorFromBytes(71, 89, 177))
+      o:setHoverColor(love.math.colorFromBytes(85, 122, 224))
     elseif getTheme() == "christmas" then
       o:setText(text)
       o:setColor(0, 0.7, 0)

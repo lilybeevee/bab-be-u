@@ -5,7 +5,7 @@ end
 
 function addUndo(data)
   --print("addUndo:",data[1],data[2],data[3],data[4],data[5],data[6],data[7])
-  if #undo_buffer > 0 then 
+  if #undo_buffer > 0 then
     table.insert(undo_buffer[1], 1, data)
   end
 end
@@ -49,9 +49,11 @@ function undoOneAction(turn, i, v, ignore_no_undo)
   local update_rules = false
   local action = v[1]
   local unit = nil
-  
   if action == "update" then
     unit = units_by_id[v[2]]
+	if hasProperty(unit,"double_undo") then
+		
+	end
     --print("undoOneAction update", unit.name, v[3], v[4])
     if unit ~= nil and (ignore_no_undo or not isNoUndo(unit)) then
       moveUnit(unit,v[3],v[4])

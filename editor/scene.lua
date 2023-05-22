@@ -25,6 +25,8 @@ local searchstr = ""
 local subsearchstr = ""
 
 local nt = false
+
+
 -- for retaining information cross-scene
 editor_save = {}
 
@@ -45,7 +47,7 @@ function scene.load()
   settings_open = false
   selector_open = false
   tutorial_open = false
-  selector_page = 1
+  selector_page = Dzhake.start_selector_page
   current_tile_grid = tile_grid[selector_page]
   
   level_dialogue = {x = 0, y = 0, scale = 0, enabled = false}
@@ -159,7 +161,43 @@ function scene.load()
 
   scene.selecting = false
 end
-
+-- Dzhake's functions (hehe, modding)
+function Dzhake.SetPrevious()
+	if Dzhake.previous_brush_id ~= brush.id then
+		Dzhake.previous_brush_id = brush.id
+		Dzhake.previous_brush_special = brush.special
+	end
+end
+function Dzhake.PickOnNumber(notnumber)
+	local number = tonumber(notnumber)
+	if Dzhake_PickOn[number] == "meta" then
+		if brush.id then
+			brush.id = "txt_"..brush.id
+		end
+	elseif Dzhake_PickOn[number] == "unmeta" then
+		if brush.id then
+			if  string.sub(brush.id, 1, 4) == "txt_" then
+				tile = getTile(brush.id)
+				local new = tile.thingify or tile.txtname or tile.name
+				brush.id = getTile(new) and new or brush.id
+			end
+		end
+	elseif Dzhake_PickOn[number] == "toggle n't" then
+		if brush.id then
+			if  string.sub(brush.id, #brush.id-2, #brush.id) == "n't" then
+				brush.id = string.sub(brush.id,1,#brush.id-3)
+			else
+				brush.id = brush.id.."n't"
+			end
+		end
+	else
+		Dzhake.SetPrevious()
+		brush.id = Dzhake_PickOn[number]
+		brush.special = {}
+		searchstr = ""
+	end
+end
+-- End of Dzhake's functions
 selector_tab_buttons_list = {}
 function scene.setupGooi()
   local x = 0
@@ -402,7 +440,7 @@ w = w-h, h = h}):center():setGroup("settings")
         tab_name = "unfinished"
       end
     elseif tab_name == 9 then
-      tab_name = "unfinished"
+      tab_name = "custom"
     end
     local button_width = math.floor(576 / #tile_grid) --576 is 18 tiles wide * 32 pixels per tile
     local button = gooi.newButton({text = "", x = x + button_width*i, y = y, w = button_width, h = 32}):onRelease(function()
@@ -417,7 +455,7 @@ w = w-h, h = h}):center():setGroup("settings")
             image_to_use = "unfinished"
           end
         elseif selector_page == 9 then
-          image_to_use = "unfinished"
+          image_to_use = "custom"
         end
         selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..image_to_use], sprites["ui/selector_tab_"..image_to_use.."_h"])
       end
@@ -441,7 +479,7 @@ w = w-h, h = h}):center():setGroup("settings")
         image_to_use = "unfinished"
       end
     elseif selector_page == 9 then
-      image_to_use = "unfinished"
+      image_to_use = "custom"
     end
     selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..image_to_use.."_a"], sprites["ui/selector_tab_"..image_to_use.."_h"])
   end
@@ -537,7 +575,6 @@ function scene.keyPressed(key)
       ignore_mouse = true
     end
   end
-
   if key == "g" and key_down["lctrl"] and not selector_open then
     settings["draw_editor_lins"] = not settings["draw_editor_lins"]
     saveAll()
@@ -558,8 +595,9 @@ function scene.keyPressed(key)
       if #searchstr + #love.system.getClipboardText() > 50 then return end
       searchstr = searchstr..love.system.getClipboardText()
     elseif key == "return" then
-      if key_down["lalt"] or key_down["ralt"] or key_down["lshift"] or key_down["rshift"] then
-        if getTile("txt_"..subsearchstr) and not getTile("txt_"..subsearchstr).unsearchable and (settings["baba"] or not getTile("txt_"..subsearchstr).wobble) then
+      if key_down["lshift"] then
+        if getTile("txt_"..subsearchstr) and not getTile("txt_"..subsearchstr).unsearchable then
+		  Dzhake.SetPrevious()
           brush.id = "txt_"..subsearchstr
           brush.special = {}
           selector_open = false
@@ -567,6 +605,7 @@ function scene.keyPressed(key)
         end
       elseif key_down["lctrl"] or key_down["rctrl"] then 
         if getTile("letter_"..subsearchstr) and subsearchstr ~= "custom" then
+		  Dzhake.SetPrevious()
           brush.id = "letter_"..subsearchstr
           brush.special = {}
           selector_open = false
@@ -578,6 +617,7 @@ function scene.keyPressed(key)
           end
           --subsearchstr = subsearchstr:gsub("pi", "π")
           if #subsearchstr >= 1 and #subsearchstr <= 6 then
+	      Dzhake.SetPrevious()
           brush.id = "letter_custom"
           brush.special = {customletter = subsearchstr}
           --brush.customletter = subsearchstr
@@ -586,13 +626,15 @@ function scene.keyPressed(key)
           end
         end
       else
-        if getTile(subsearchstr) and not getTile(subsearchstr).unsearchable and (settings["baba"] or not getTile(subsearchstr).wobble) then
+        if getTile(subsearchstr) and not getTile(subsearchstr).unsearchable then
+		  Dzhake.SetPrevious()
           brush.id = subsearchstr
           brush.special = {}
           selector_open = false
           searchstr, subsearchstr = "", ""
-        elseif getTile("txt_"..subsearchstr) and not getTile("txt_"..subsearchstr).unsearchable and (settings["baba"] or not getTile("txt_"..subsearchstr).wobble) then
-          brush.id = "txt_"..subsearchstr
+        elseif getTile("txt_"..subsearchstr) and not getTile("txt_"..subsearchstr).unsearchable then
+		  Dzhake.SetPrevious()
+		  brush.id = "txt_"..subsearchstr
           brush.special = {}
           selector_open = false
           searchstr, subsearchstr = "", ""
@@ -670,6 +712,20 @@ function scene.keyPressed(key)
   key_down[key] = true
 
   if not settings_open and not selector_open then
+    if key == "1" or key == "2" or key == "3" or key == "4" or key == "5" or key == "6" or key == "7" or key == "8" or key == "9" then -- press number to
+	  Dzhake.PickOnNumber(key)
+    end
+	if key == Dzhake.PickPrevious then -- press x (or not x if you changed config) to pick previous thing
+    brush.id, Dzhake.previous_brush_id = Dzhake.previous_brush_id, brush.id
+    brush.special, Dzhake.previous_brush_special = Dzhake.previous_brush_special, brush.special
+	searchstr = ""
+  end
+  if key == "q" then -- press q to pick empty
+	Dzhake.SetPrevious()
+    brush.id = Dzhake.PickOnQ
+    brush.special = {}
+	searchstr = ""
+  end
     if not (key_down["lshift"] or key_down["rshift"]) and (key == "up" or key == "left" or key == "down" or key == "right" or key == "w" or key == "a" or key == "s" or key == "d") then
       local dx, dy = 0, 0
       if key_down["up"] or key_down["w"] then dy = dy - 1 end
@@ -763,7 +819,7 @@ function scene.keyPressed(key)
         image_to_use = "unfinished"
       end
     elseif selector_page == 9 then
-      image_to_use = "unfinished"
+      image_to_use = "custom"
     end
     selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..image_to_use], sprites["ui/selector_tab_"..image_to_use.."_h"])
   end
@@ -791,7 +847,7 @@ function scene.keyPressed(key)
           image_to_use = "unfinished"
         end
       elseif selector_page == 9 then
-        image_to_use = "unfinished"
+        image_to_use = "custom"
       end
       selector_tab_buttons_list[selector_page]:setBGImage(sprites["ui/selector_tab_"..image_to_use.."_a"], sprites["ui/selector_tab_"..image_to_use.."_h"])
     end
@@ -1202,11 +1258,13 @@ function scene.update(dt)
           else
             local selected = hx + hy * tile_grid_width
             if current_tile_grid[selected] and current_tile_grid[selected] ~= 0 then
+			  Dzhake.SetPrevious()
               brush.id = current_tile_grid[selected]
               brush.special = {}
               brush.picked_tile = nil
               brush.picked_index = 0
             else
+			  Dzhake.SetPrevious()
               brush.id = nil
               brush.special = {}
               brush.picked_tile = nil
@@ -1220,6 +1278,20 @@ function scene.update(dt)
       if (love.mouse.isDown(2) or (is_mobile and mobile_picking and love.mouse.isDown(1))) and not selector_open then
         if brush.mode ~= "picking" then
           if #hovered >= 1 then
+		    -- DizzyAndre make code
+			if love.keyboard.isDown("lctrl") and settings["dzhake_delete_on_ctrl_right_click"] then
+				for _,unit in ipairs(hovered) do
+                  deleteUnit(unit)
+                  scene.updateMap()
+                end
+			end
+			if not love.keyboard.isDown("lctrl") and settings["dzhake_delete_on_right_click"] then
+				for _,unit in ipairs(hovered) do
+                  deleteUnit(unit)
+                  scene.updateMap()
+                end
+			end
+			-- :KEKE_IS_TRUE:
             brush.picked_tile = tileid
             if brush.picked_tile == tileid and brush.picked_index > 0 then
               local new_index = brush.picked_index + 1
@@ -1227,6 +1299,7 @@ function scene.update(dt)
                 new_index = 1
               end
               brush.picked_index = new_index
+			  Dzhake.SetPrevious()
               brush.id = hovered[new_index].tile
               brush.color = hovered[new_index].color_override
               --brush.customletter = hovered[new_index].special.customletter
@@ -1235,6 +1308,7 @@ function scene.update(dt)
               end
               brush.special = hovered[new_index].special
             else
+			  Dzhake.SetPrevious()
               brush.id = hovered[1].tile 
               brush.color = hovered[1].color_override
               --brush.customletter = hovered[1].special.customletter
@@ -1246,6 +1320,7 @@ function scene.update(dt)
             end
             brush.mode = "picking"
           else
+			Dzhake.SetPrevious()
             brush.id = nil
             brush.special = {}
             brush.picked_tile = nil
@@ -1256,7 +1331,6 @@ function scene.update(dt)
         end
       end
     end
-    
     if level_dialogue.enabled and level_dialogue.unit.name ~= "lin" and level_dialogue.unit.special.iconstyle == "other" then
       if level_dialogue.lastUnit == level_dialogue.unit then
         local iconname = level_dialogue.iconnamebox:getText()
@@ -2415,6 +2489,7 @@ function scene.wheelMoved(whx, why)
       elseif why > 0 then
         new = tile.thingify or tile.txtname
       end
+	  Dzhake.SetPrevious()
       brush.id = getTile(new) and new or brush.id
     end
   end

@@ -222,7 +222,7 @@ function parseRules(undoing)
   
   --TODO: This works in non-contrived examples, but isn't necessarily robust - for example, if after reparsing, you add one word rule while subtracting another word rule, it'll think nothing has changed. The only way to be ABSOLUTELY robust is to compare that the exact set of parsing effecting rules hasn't changed.
   local function reparseRuleCounts()
-    local props_table = {"wurd", "anti wurd", "poortoll", "goarnd", "mirrarnd", "ortho", "diag", "zawarudo", "rong", "slep", "boring"}
+    local props_table = {"wurd", "anti wurd", "poortoll", "goarnd", "mirrarnd", "ortho", "diag", "zawarudo", "rong", "slep", "boring", "false", "true", "anti false", "anti true"}
     local verbs_table = {"be", "giv"}
     local result = {}
     for _,prop in ipairs(props_table) do
@@ -308,6 +308,12 @@ function parseRules(undoing)
           if (i % 2 == 0) and (unit.wobble or hasRule(unit,"be","ortho")) and not hasRule(unit,"be","diag") then
             validrule = false
           end
+		  if hasRule(unit,"be","false") or hasRule(unit,"be","anti true") then
+				validrule = false
+		  end
+		  if hasRule(unit,"be","true") or hasRule(unit,"be","anti false") then
+			validrule = true
+		  end
           --print(tostring(x)..","..tostring(y)..","..tostring(dx)..","..tostring(dy)..","..tostring(ndx)..","..tostring(ndy)..","..tostring(#getUnitsOnTile(x+ndx, y+ndy, "txt"))..","..tostring(#getUnitsOnTile(x+dx, y+dy, "txt")))
           if (#getTextOnTile(x+ndx, y+ndy) == 0) and validrule then
             if not been_first[i][x + y * mapwidth_hack] then
@@ -364,7 +370,15 @@ function parseRules(undoing)
               if (dir == 2) and (unit.wobble or hasRule(unit,"be","ortho")) and not hasRule(unit,"be","diag") then
                 validrule = false
               end
-
+			  
+			  if hasRule(unit,"be","false") then
+				validrule = false
+			  end
+			  
+			  if hasRule(unit,"be","true") then
+				validrule = true
+			  end
+			  
               if validrule then
                 local new_word = {}
 
@@ -750,7 +764,7 @@ function addRule(full_rule)
   for _,unit in ipairs(units) do
     if (not rong and old_rules_with["rong"] ~= nil) then
       local temp = rules_with; rules_with = old_rules_with
-      if hasProperty(unit, "rong") then
+      if hasProperty(unit, "rong") and not hasProperty(unit, "true") then
         for __,unit2 in ipairs(units) do
           unit2.blocked = true
           unit2.blocked_dir = full_rule.dirs and full_rule.dirs[unit2] or dir
@@ -842,7 +856,7 @@ function addRule(full_rule)
     end
     addRuleSimple(rules.subject, new_verb, rules.object, units, dir)
   end
-
+  
   if subject == "every1" then
     if subject_not % 2 == 1 then
       addRuleSimple({"txt", rules.subject.conds}, rules.verb, rules.object, units, dir)

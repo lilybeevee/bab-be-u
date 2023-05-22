@@ -1423,9 +1423,7 @@ function scene.draw(dt)
     end
 
     love.graphics.pop()
-
-    if unit.blocked then
-
+    if unit.blocked and not (hasProperty(unit,"true") or hasProperty(unit,"anti false")) then
       local rotation = math.sin(love.timer.getTime()*4)*math.rad(5)
 
       setColor(getUnitColor(unit))
@@ -1978,7 +1976,7 @@ function scene.draw(dt)
 
   if (just_moved and not unit_tests) then
     local end_time = love.timer.getTime()
-      print("scene.draw() took: "..tostring(round((end_time-start_time)*1000)).."ms")
+      --print("scene.draw() took: "..tostring(round((end_time-start_time)*1000)).."ms")
     just_moved = false
   end
 end
@@ -2023,7 +2021,7 @@ function scene.checkInput()
       if key == "undo" then
         just_moved = true
         if (last_input_time ~= nil) then
-          print("input latency: "..tostring(round((start_time-last_input_time)*1000)).."ms")
+          --print("input latency: "..tostring(round((start_time-last_input_time)*1000)).."ms")
           last_input_time = nil
         end
         local result = doOneMove(0, 0, "undo")
@@ -2060,12 +2058,12 @@ function scene.checkInput()
         end
         x = sign(x); y = sign(y)
         if (last_input_time ~= nil) then
-          print("input latency: "..tostring(round((start_time-last_input_time)*1000)).."ms")
+          --print("input latency: "..tostring(round((start_time-last_input_time)*1000)).."ms")
           last_input_time = nil
         end
         doOneMove(x, y, key)
         local end_time = love.timer.getTime()
-        if not unit_tests then print("gameplay logic took: "..tostring(round((end_time-start_time)*1000)).."ms") end
+        --if not unit_tests then print("gameplay logic took: "..tostring(round((end_time-start_time)*1000)).."ms") end
         -- SING
         local sing_rules = matchesRule(nil, "sing", "?")
         for _,ruleparent in ipairs(sing_rules) do
@@ -2386,6 +2384,12 @@ function doOneMove(x, y, key, past)
     end
     unsetNewUnits()
 		return result
+  elseif (key == "t") then
+    print(getUnitsWithEffect("timeskip"))
+    for k,i in pairs(getUnitsWithEffect("timeskip")) do
+	  print(k)
+	  print(i)
+	end
   else
     if key ~= "drag" then
       newUndo()

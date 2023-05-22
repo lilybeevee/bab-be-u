@@ -15,7 +15,9 @@ function level_button.new(file, extra)
 
   o.data.extra = extra
   local default_color
-  if getTheme() == "halloween" then
+  if settings["dzhake_level_color_enabled"] then
+	default_color = {settings["dzhake_level_color_red"],settings["dzhake_level_color_green"],settings["dzhake_level_color_blue"],settings["dzhake_level_color_alpha"]}
+  elseif getTheme() == "halloween" then
     default_color = {0.5, 0.2, 0.7, 1}
     if extra then
       default_color = {0.8, 0.4, 0, 1}

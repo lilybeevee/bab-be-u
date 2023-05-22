@@ -1758,7 +1758,7 @@ function miscUpdates(state_change)
           unit.sprite = {"ditto"}
         end
 
-        local props_to_check = {"stelth","sans","delet","dragbl","rong","wurd","nodrag","rithere","thr","ouch","protecc","noundo",
+        local props_to_check = {"stelth","sans","delet","dragbl","rong","false","wurd","nodrag","rithere","thr","ouch","protecc","noundo",
         "poortoll","go","folowal","tall","rave","colrful","torc","split","icyyyy","icy","hopovr","nuek","knightstep","diagstep","sidestep","notranform",
         "munwalk","visitfren","walk","noswim","haetflor","haetskye","glued","flye","enby","tranz","comepls","goawaypls","goooo",
         "moar","nedkee","fordor","hotte","fridgd","nogo","thingify","y'all","utres","utoo","u",
@@ -1824,6 +1824,11 @@ function miscUpdates(state_change)
         local roll = math.random(6)
         unit.sprite[2] = "die_"..roll
       end
+	  
+	  if unit.fullname == "arrow" and (first_turn or not (hasProperty(unit,"stukc") or hasProperty(unit,"noturn"))) then
+        local roll = math.random(6)
+        unit.sprite[2] = "die_"..roll
+      end
 
       if unit.fullname == "txt_katany" then
         unit.sprite = {"txt/katany"}
@@ -1844,7 +1849,6 @@ function miscUpdates(state_change)
           card_for_id[unit.id] = {math.random(13), ({"spade","heart","clubs","diamond"})[math.random(4)]}
         end
         local num, suit = unpack(card_for_id[unit.id])
-        print("a")
         unit.sprite[2] = "byc_"..num
         unit.sprite[3] = "byc_"..suit
         if suit == "spade" or suit == "clubs" then
