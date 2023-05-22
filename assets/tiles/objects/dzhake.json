@@ -1,0 +1,208 @@
+[
+  {
+    "name": "isac",
+    "sprite": ["dzhake/isac"],
+    "layer": 50,
+    "color": [[0, 3]],
+    "desc": "Isac got knif!!!",
+	"rotate": true,
+    "tags": ["dzhake"],
+    "pronouns": ["he"]
+  },
+  {
+    "name": "txt_isac",
+    "sprite": ["dzhake/txt/isac"],
+    "types": ["object"],
+    "color": [[0, 3]],
+    "desc": "Be this cul kolor'd txt???",
+    "tags": ["dzhake"]
+  },
+  {
+    "name": "txt_isacn't",
+    "display": "isac n't",
+    "sprite": ["dzhake/txt/isac", "n't"],
+    "types": ["object"],
+    "color": [[0,3], [2, 2]],
+    "painted": [true, false],
+    "desc": "Be this cul kolor'd txt???"
+  },
+  {
+    "name": "fofo",
+    "sprite": ["dzhake/fofo"],
+    "layer": 50,
+    "color": [[5, 2]],
+	"wobble": true,
+    "desc": "fofofofofofofofof",
+	"rotate": true,
+    "tags": ["dzhake"],
+    "pronouns": ["he"]
+  },
+  {
+    "name": "txt_fofo",
+    "sprite": ["dzhake/txt/fofo"],
+    "types": ["object"],
+	"wobble": true,
+    "color": [[5, 2]],
+    "desc": "txt_fofofofofofofofo",
+    "tags": ["dzhake"]
+  },
+  {
+    "name": "it",
+    "sprite": ["dzhake/it"],
+    "layer": 50,
+    "color": [[1, 4]],
+    "desc": "It lives",
+	"rotate": true,
+	"wobble": true,
+    "tags": ["dzhake"],
+    "pronouns": ["it"]
+  },
+  {
+    "name": "txt_it",
+    "sprite": ["dzhake/txt/it"],
+    "types": ["object"],
+    "color": [[1, 4]],
+	"wobble": true,
+    "desc": "This text lives too",
+    "tags": ["dzhake"]
+  },
+  {
+    "name": "keke",
+    "sprite": ["dzhake/keke"],
+    "layer": 50,
+    "color": [[2, 2]],
+    "desc": "I hate keek",
+	"rotate": true,
+	"wobble": true,
+    "tags": ["dzhake"],
+    "pronouns": ["he"]
+  },
+  {
+    "name": "txt_keke",
+    "sprite": ["dzhake/txt/keke"],
+    "types": ["object"],
+    "color": [[2, 2]],
+	"wobble": true,
+    "desc": "#kekeisbest",
+    "tags": ["dzhake"]
+  },
+  {
+    "name": "txt_dzhake_overlay",
+    "sprite": ["dzhake/txt/dzhake_overlay-colored"],
+    "sprite_transforms": {
+      "inactive": "dzhake/txt/dzhake_overlay"
+    },
+    "types": ["property", "gang_prefix"],
+    "color": [[255, 255, 255]],
+    "overlay": {
+      "sprite": "dzhake",
+      "colors": ["gren"]
+    },
+    "desc": "Dzhake: #infinite-troll.\nAnti: poof",
+    "tags": ["dzhake"]
+  },
+  {
+    "name": "txt_and",
+    "sprite": ["dzhake/txt/and"],
+    "types": ["and"],
+    "color": [[0, 3]],
+    "desc": "#myfirstword",
+    "alias": ["ampersand"],
+    "tags": ["and", "dzhake"],
+	"wobble":true,
+  },
+    {
+    "name": "txt_false",
+    "sprite": ["dzhake/txt/false"],
+    "types": ["property"],
+    "color": [[2, 2]],
+    "desc": "FALSE: If text is false it won't parse.\nAnti: text will parse in any conditions.",
+    "tags": ["false","dzhake"]
+  },
+  {
+    "name": "txt_true",
+    "sprite": ["dzhake/txt/true"],
+    "types": ["property"],
+    "color": [[5, 4]],
+    "desc": "TRUE: Text will parse in any conditions.*\nAnti: Text won't parse.\n*Unless game runs faster than text parses",
+    "tags": ["true","dzhake"]
+  },
+  {
+    "name": "txt_u_turn",
+    "sprite": ["dzhake/txt/u_turn"],
+    "types": ["property"],
+    "color": [[1, 3]],
+    "desc": "U TURN: Like u but you don't move",
+    "tags": ["u_turn","dzhake"]
+  },
+  {
+    "name": "txt_u_move",
+    "sprite": ["dzhake/txt/u_move"],
+    "types": ["property"],
+    "color": [[5, 4]],
+    "desc": "U MOVE: Like u but you don't turn",
+    "tags": ["u_move","dzhake"]
+  },
+  {
+    "name": "txt_uncolor",
+    "sprite": ["dzhake/txt/uncolor"],
+    "types": ["property"],
+    "color": [[5, 4]],
+    "desc": "UNCOLOR: Changes unit color to opposite",
+    "tags": ["uncolor","dzhake"]
+  },
+  {
+    "name": "txt_multy",
+    "sprite": ["dzhake/txt/multy"],
+    "types": ["property"],
+    "color": [[5, 4]],
+    "desc": "MULTY: WWWhhhaaattt???",
+    "tags": ["multy","dzhake"]
+  },
+  {
+    "name": "txt_timeskip",
+    "sprite": ["dzhake/txt/timeskip"],
+    "types": ["property"],
+    "color": [[5, 4]],
+    "desc": "TIMESKIP: What is undo?",
+    "tags": ["timeskip","dzhake"]
+  },
+  {
+    "name": "and_object",
+    "sprite": ["dzhake/and"],
+    "layer": 50,
+    "color": [[0, 3]],
+    "desc": "Wurd moment!!!",
+	"rotate": true,
+    "tags": ["dzhake","and"],
+    "pronouns": ["he"]
+  },
+  {
+    "name": "mous",
+    "sprite": ["ui/mous"],
+    "layer": 7,
+    "color": [[0, 3]],
+    "desc": "GAME WILL CRASH :D",
+    "tags": ["mous"],
+	"rotate":true
+  },
+  {
+    "name": "txt_mous",
+    "sprite": ["txt/mous"],
+	"types":["object"],
+    "layer": 50,
+    "color": [[3, 3]],
+    "desc": "GAME WILL CRASH FOR SURE",
+	"rotate": true,
+    "tags": ["dzhake"],
+    "pronouns": ["he"]
+  },
+  {
+    "name": "txt_and_object",
+    "sprite": ["dzhake/txt/and_object"],
+    "types": ["object","and"],
+    "color": [[0, 3]],
+    "desc": "This text is so awesome... i can't explain this.",
+    "tags": ["dzhake","and"]
+  }
+]
