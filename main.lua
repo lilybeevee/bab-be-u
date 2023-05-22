@@ -8,6 +8,7 @@ tween = require "lib/tween"
 colr = require "lib/colr-print"
 assets = require "assets"
 require "ui"
+require "dzhake_config"
 require "utils"
 require "values"
 require "audio"
@@ -17,8 +18,11 @@ require "game/parser"
 require "game/rules"
 require "game/undo"
 require "game/cursor"
+Dzhake_themes = {{"halloween","halloween"},{"christmas","christmas"}}
+for _,i in ipairs(menu_palettes) do
+	table.insert(Dzhake_themes,{i,i})
+end
 local utf8 = require("utf8")
-
 local function error_printer(msg, layer)
 	print((debug.traceback("Error: " .. tostring(msg), 1+(layer or 1)):gsub("\n[^\n]+$", "")))
 end
@@ -26,6 +30,7 @@ game = require 'game/scene'
 editor = require 'editor/scene'
 loadscene = require 'editor/loadscene'
 menu = require 'menu/scene'
+require "modsupport"
 presence = {}
 frame = 0
 cmdargs = {}
@@ -99,7 +104,7 @@ bab arguments!
   end
 
 
-  local babfound = false
+  local babfound = true
 
   function searchbab(d)
     local dir = "assets/sprites"

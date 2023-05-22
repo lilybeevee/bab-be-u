@@ -22,7 +22,7 @@ PACK_UNIT_V3 = "llhhbs" -- ID, TILE, X, Y, DIR, SPECIALS
 PACK_SPECIAL_V2 = "ss" -- KEY, VALUE
 
 profile = {
-  name = "bab"
+  name = Dzhake.Profile
 }
 
 defaultsettings = {
@@ -32,7 +32,6 @@ defaultsettings = {
   sfx_on = true,
   sfx_vol = 1,
   focus_sound = true,
-  rhythm_interval = 1,
   particles_on = true,
   shake_on = true,
   scribble_anim = true,
@@ -291,7 +290,12 @@ anti_verb_mirrors = {
 
 --in palettes: (3,4) is main title buttons, (4,4) is level buttons, (5,4) is extras
 menu_palettes = {
-  "autumn",
+  "scribble",
+  "dzhake",
+  "mono",
+  "baba",
+  "babatiles",
+  --[["autumn",
   "cauliflower",
   "default",
   "edge",
@@ -304,9 +308,8 @@ menu_palettes = {
   "ruins",
   "space",
   "variant",
-  "volcano",
+  "volcano",]]
 }
-
 custom_letter_quads = {
   {}, -- single letters will always use actual letter units, not custom letter units
   {
@@ -384,18 +387,18 @@ selector_grid_contents = {
     "bab","txt_bab","kat","txt_kat","flof","txt_flof","babby","txt_babby","bad","txt_bad","fof","txt_fof",0,0,"lila","txt_lila","vite","txt_vite",
     "keek","txt_keek","creb","txt_creb","shrim","txt_shrim","moo","txt_moo","toby","txt_toby","jij","txt_jij",0,0,"pata","txt_pata","jill","txt_jill",
     "meem","txt_meem","statoo","txt_statoo","flamgo","txt_flamgo","migri","txt_migri","temmi","txt_temmi","ballt","txt_ballt",0,0,"slab","txt_slab","zsoob","txt_zsoob",
-    "skul","txt_skul","beeee","txt_beeee","gul","txt_gul","kva","txt_kva","bunmy","txt_bunmy",0,0,0,0,"notnat","txt_notnat","she","txt_she",
-    "ghostfren","txt_ghostfren","fishe","txt_fishe","starrfishe","txt_starrfishe","pidgin","txt_pidgin","slogkat","txt_slogkat",0,0,0,0,"ally","txt_ally","butcher","txt_butcher",
-    "robobot","txt_robobot","snek","txt_snek","sneel","txt_sneel","swan","txt_swan","b..er","txt_b..er",0,0,0,0,0,0,"pitta","txt_pitta",
-    "wog","txt_wog","bog","txt_bog","enbybog","txt_enbybog","spoder","txt_spoder","niko","txt_niko",0,0,0,0,0,0,0,0,
-    "kirb","txt_kirb","ripof","txt_ripof","cavebab","txt_cavebab","detox","txt_detox","nyowo","txt_nyowo",0,0,0,0,0,0,0,0,
-    "bup","txt_bup","butflye","txt_butflye","boooo","txt_boooo","prime","txt_prime","grimkid","txt_grimkid",0,0,0,0,0,0,0,0,
-    "boy","txt_boy","wurm","txt_wurm","madi","txt_madi","angle","txt_angle","boogie","txt_boogie",0,0,0,0,0,0,0,0,
-    "steev","txt_steev","ratt","txt_ratt","badi","txt_badi","dvl","txt_dvl","assh","txt_assh",0,0,0,0,0,0,0,0,
-    "han","txt_han","iy","txt_iy","lisp","txt_lisp","paw","txt_paw","humuhumunukunukuapua'a","txt_humuhumunukunukuapua'a",0,0,0,0,0,0,0,0,
-    "snoman","txt_snoman","pingu","txt_pingu","der","txt_der","ginn","txt_ginn","snom","txt_snom",0,0,0,0,0,0,"square","txt_square",
-    "kapa","txt_kapa","urei","txt_urei","ryugon","txt_ryugon","viruse","txt_viruse","slog","txt_slog",0,0,0,0,0,0,"triangle","txt_triangle",
-    "os","txt_os","hors","txt_hors","mimi","txt_mimi","err","txt_err","scorpino","txt_scorpino",0,0,0,0,0,0,"oat","txt_oat",
+    "skul","txt_skul","beeee","txt_beeee","gul","txt_gul","kva","txt_kva","bunmy","txt_bunmy","cic","txt_cic",0,0,"notnat","txt_notnat","she","txt_she",
+    "ghostfren","txt_ghostfren","fishe","txt_fishe","starrfishe","txt_starrfishe","pidgin","txt_pidgin","slogkat","txt_slogkat","evil","txt_evil",0,0,"ally","txt_ally","butcher","txt_butcher",
+    "robobot","txt_robobot","snek","txt_snek","sneel","txt_sneel","swan","txt_swan","b..er","txt_b..er","itte!","txt_itte!",0,0,0,0,"pitta","txt_pitta",
+    "wog","txt_wog","bog","txt_bog","enbybog","txt_enbybog","spoder","txt_spoder","niko","txt_niko","tu","txt_tu","smoll","txt_smoll",0,0,0,0,
+    "kirb","txt_kirb","ripof","txt_ripof","trob","txt_trob","cavebab","txt_cavebab","detox","txt_detox","nyowo","txt_nyowo","amoung","txt_amoung",0,0,0,0,
+    "bup","txt_bup","butflye","txt_butflye","boooo","txt_boooo","prime","txt_prime","grimkid","txt_grimkid","dad","txt_dad","bellby","txt_bellby",0,0,0,0,
+    "boy","txt_boy","wurm","txt_wurm","madi","txt_madi","angle","txt_angle","boogie","txt_boogie","aka","txt_aka","nyaka","txt_nyaka",0,0,0,0,
+    "steev","txt_steev","ratt","txt_ratt","badi","txt_badi","dvl","txt_dvl","assh","txt_assh","obby","txt_obby","chad.","txt_chad.",0,0,0,0,
+    "han","txt_han","iy","txt_iy","lisp","txt_lisp","paw","txt_paw","humuhumunukunukuapua'a","txt_humuhumunukunukuapua'a","day","txt_day",0,0,0,0,0,0,
+    "snoman","txt_snoman","pingu","txt_pingu","der","txt_der","ginn","txt_ginn","snom","txt_snom","ses","txt_ses",0,0,0,0,"square","txt_square",
+    "kapa","txt_kapa","urei","txt_urei","ryugon","txt_ryugon","viruse","txt_viruse","slog","txt_slog","pati","txt_pati",0,0,0,0,"triangle","txt_triangle",
+    "os","txt_os","hors","txt_hors","mimi","txt_mimi","err","txt_err","scorpino","txt_scorpino","gargle","txt_gargle",0,0,0,0,"oat","txt_oat",
   },
   -- page 5: inanimate objects
   {
@@ -413,13 +416,13 @@ selector_grid_contents = {
     "brik","txt_brik","sparkl","txt_sparkl","sanglas","txt_sanglas","bullb","txt_bullb","son","txt_son","muun","txt_muun","bac","txt_bac","warn","txt_warn","piep","txt_piep",
     "san","txt_san","piler","txt_piler","sancastl","txt_sancastl","shel","txt_shel","starr","txt_starr","cor","txt_cor","byc","txt_byc","gorder","txt_gorder","tuba","txt_tuba",
     "glas","txt_glas","bom","txt_bom","sine","txt_sine","kar","txt_kar","can","txt_can","ger","txt_ger","sirn","txt_sirn","chain","txt_chain","sloop","txt_sloop",
-    0,0,"wut","txt_wut","wat","txt_wat","splittr","txt_splittr","toggl","txt_toggl","bon","txt_bon","battry","txt_battry","chekr","txt_chekr","do$h","txt_do$h",
+    "trol","txt_trol","wut","txt_wut","wat","txt_wat","splittr","txt_splittr","toggl","txt_toggl","bon","txt_bon","battry","txt_battry","chekr","txt_chekr","do$h","txt_do$h",
   },
   -- page 6: more inanimate objects
   {
     "fube","txt_fube","tronk","txt_tronk","cart","txt_cart","drop","txt_drop","woosh","txt_woosh","tanc","txt_tanc","gato","txt_gato","painbuct","txt_painbuct","sinyroc","txt_sinyroc",
     "colect","txt_colect","zig","txt_zig","pixl","txt_pixl","prop","txt_prop","qb","txt_qb","panlie","txt_panlie","cheez","txt_cheez","nuzt","txt_nuzt","xplod","txt_xplod",
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    "getboux","txt_getboux",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     "whee","txt_whee","joycon","txt_joycon",0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -455,26 +458,6 @@ selector_grid_contents = {
 tile_grid_width = 18
 tile_grid_height = 15
 
-if settings["baba"] then
-  table.insert(selector_grid_contents, {
-    0,"txt_is",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    "baba","txt_baba","txt_you",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,"txt_push",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-  })
-end
-
 if settings["unfinished_words"] then
   table.insert(selector_grid_contents, {
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"txt_camra","camra",
@@ -494,5 +477,23 @@ if settings["unfinished_words"] then
     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   })
 end
-
+if settings["dzhake_page"] and settings["unfinished_words"] then
+  table.insert(selector_grid_contents, {
+    "baba","txt_baba",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    "txt_push","txt_is","fofo","txt_fofo","isac","txt_isac",0,0,0,0,0,0,0,0,0,0,0,0,
+    "mous","txt_you","it","txt_it","txt_and","txt_dzhake_overlay",0,0,0,0,0,0,0,0,0,0,0,0,
+    "txt_timeskip",0,"keke","txt_keke","txt_false","txt_true",0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,"and_object","txt_and_object",0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,"txt_u_move","txt_u_turn",0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,"txt_uncolor","txt_multy",0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+  })
+end
 special_objects = {"mous", "lvl", "bordr", "no1", "this"}

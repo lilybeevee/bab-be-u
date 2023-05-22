@@ -3760,7 +3760,9 @@ end
 
 function getTheme()
   if not settings["themes"] then return "default" end
-  if cmdargs["theme"] then
+  if settings["dzhake_theme"] and not settings["dzhake_random_theme"] then
+      return settings["dzhake_theme"]
+  elseif cmdargs["theme"] then
     if cmdargs["theme"] ~= "" then
       return cmdargs["theme"]
     end
@@ -3823,11 +3825,42 @@ function buildOptions()
     scene.addOption("focus_pause", "pause on defocus", {{"on", true}, {"off", false}})
     scene.addOption("autoupdate", "autoupdate (experimental)", {{"on", true}, {"off", false}})
     scene.addButton("back", function() global_menu_state = "none"; scene.buildUI() end)
+  elseif global_menu_state == "dzhake" then
+    scene.addOption("dzhake_page", "Dzhake's page in editor (enable 'unfinished words in editor' and restart game)", {{"on", true}, {"off", false}})
+	scene.addOption("dzhake_enabled", "Dzhake's mod is enabled?", {{"No", false},{"Yes",true}})
+	scene.addOption("dzhake_delete_on_right_click", "Right-click mode", {{"Copy", false},{"Cut",true}})
+	scene.addOption("dzhake_delete_on_ctrl_right_click", "Ctrl+Right-click mode", {{"Copy", false},{"Cut",true}})
+	scene.addOption("dzhake_random_theme", "Random theme on launch", {{"No!", false},{"Yeeeeees",true}})
+	scene.addOption("dzhake_theme", "Select theme", Dzhake_themes)
+	scene.addOption("dzhake_world_delete_color", "World delete color", {{"orange (default)",""},{"blue","_blue"}})
+	scene.addOption("dzhake_world_color_enabled", "Your world colors enabled", {{"No", false},{"Yes",true}})
+	scene.addOption("dzhake_world_color_red", "Red", {{"0", 0}, {"0.2", 0.2}, {"0.4", 0.4}, {"0.6", 0.6}, {"0.8", 0.8}, {"1", 1}})
+	scene.addOption("dzhake_world_color_green", "Green", {{"0", 0}, {"0.2", 0.2}, {"0.4", 0.4}, {"0.6", 0.6}, {"0.8", 0.8}, {"1", 1}})
+	scene.addOption("dzhake_world_color_blue", "Blue", {{"0", 0}, {"0.2", 0.2}, {"0.4", 0.4}, {"0.6", 0.6}, {"0.8", 0.8}, {"1", 1}})
+	scene.addOption("dzhake_level_color_enabled", "Your level colors enabled", {{"No", false},{"Yes",true}})
+	scene.addOption("dzhake_level_color_red_1", "Red", {{"0", 0}, {"0.2", 0.2}, {"0.4", 0.4}, {"0.6", 0.6}, {"0.8", 0.8}, {"1", 1}})
+	scene.addOption("dzhake_level_color_green_1", "Green", {{"0", 0}, {"0.2", 0.2}, {"0.4", 0.4}, {"0.6", 0.6}, {"0.8", 0.8}, {"1", 1}})
+	scene.addOption("dzhake_level_color_blue_1", "Blue", {{"0", 0}, {"0.2", 0.2}, {"0.4", 0.4}, {"0.6", 0.6}, {"0.8", 0.8}, {"1", 1}})
+	scene.addOption("dzhake_level_color_alpha_1", "Alpha", {{"0.2", 0.2}, {"0.4", 0.4}, {"0.6", 0.6}, {"0.8", 0.8}, {"1", 1}})
+	scene.addOption("dzhake_level_color_red_2", "Red 2", {{"0", 0}, {"0.2", 0.2}, {"0.4", 0.4}, {"0.6", 0.6}, {"0.8", 0.8}, {"1", 1}})
+	scene.addOption("dzhake_level_color_green_2", "Green 2", {{"0", 0}, {"0.2", 0.2}, {"0.4", 0.4}, {"0.6", 0.6}, {"0.8", 0.8}, {"1", 1}})
+	scene.addOption("dzhake_level_color_blue_2", "Blue 2", {{"0", 0}, {"0.2", 0.2}, {"0.4", 0.4}, {"0.6", 0.6}, {"0.8", 0.8}, {"1", 1}})
+	scene.addOption("dzhake_level_color_alpha_2", "Alpha 2", {{"0.2", 0.2}, {"0.4", 0.4}, {"0.6", 0.6}, {"0.8", 0.8}, {"1", 1}})
+	scene.addOption("dzhake_level_color_red_3", "Red 3", {{"0", 0}, {"0.2", 0.2}, {"0.4", 0.4}, {"0.6", 0.6}, {"0.8", 0.8}, {"1", 1}})
+	scene.addOption("dzhake_level_color_green_3", "Green 3", {{"0", 0}, {"0.2", 0.2}, {"0.4", 0.4}, {"0.6", 0.6}, {"0.8", 0.8}, {"1", 1}})
+	scene.addOption("dzhake_level_color_blue_3", "Blue 3", {{"0", 0}, {"0.2", 0.2}, {"0.4", 0.4}, {"0.6", 0.6}, {"0.8", 0.8}, {"1", 1}})
+	scene.addOption("dzhake_level_color_alpha_3", "Alpha 3", {{"0.2", 0.2}, {"0.4", 0.4}, {"0.6", 0.6}, {"0.8", 0.8}, {"1", 1}})
+	scene.addButton("Fake print lol", function() print(Dzhake.print_); Dzhake.print_={} end)
+    scene.addButton("back", function() global_menu_state = "none"; scene.buildUI() end)
+  elseif global_menu_state == "lab" then
+	scene.addButton("back", function() global_menu_state = "none"; scene.buildUI() end)
   else
     scene.addButton("audio options", function() global_menu_state = "audio"; scene.buildUI() end)
     scene.addButton("video options", function() global_menu_state = "video"; scene.buildUI() end)
     scene.addButton("editor options", function() global_menu_state = "editor"; scene.buildUI() end)
     scene.addButton("miscellaneous options", function() global_menu_state = "misc"; scene.buildUI() end)
+	scene.addButton("Dzhake's options", function() global_menu_state = "dzhake"; scene.buildUI() end)
+	scene.addButton("Dzhake's lab", function() global_menu_state = "lab"; scene.buildUI() end)
     scene.addButton("reset to default settings", function ()
       ui.overlay.confirm({
         text = "Reset all settings to default?",
@@ -4370,6 +4403,12 @@ function getUnitColor(unit, index, override_)
     return index and unit.color[index] or unit.color[1]
   end
   
+  --[[if hasRule(unit,"be","uncolor") then
+	print(unit.color)
+	print(6-unit.color[1])
+	print(6-unit.color[2])
+  end]]
+  
   if index then
     if not override and unit.name == "lin" and unit.special.pathlock and unit.special.pathlock ~= "none" then
       return {2, 2}
@@ -4412,7 +4451,7 @@ end
 
 function drawUnitSprite(unit, x, y, rotation, sx, sy, o)
   local brightness = 1
-
+  local multy = false
   if scene == game then
     if (hasRule(unit,"be","wurd") or hasRule(unit,"be","anti wurd")) and not unit.active and not level_destroyed and not (unit.fullname == "prop") then
       brightness = 0.33
@@ -4426,6 +4465,9 @@ function drawUnitSprite(unit, x, y, rotation, sx, sy, o)
     if timeless and not hasProperty(unit,"zawarudo") and not (unit.type == "txt") then
       brightness = 0.33
     end
+	if hasProperty(unit, "multy") then
+		multy = true
+	end
   end
 
   local o = getTableWithDefaults(copyTable(o or {}), {
@@ -4445,7 +4487,64 @@ function drawUnitSprite(unit, x, y, rotation, sx, sy, o)
     really_smol = unit.fullname == "babby",
     lvl = unit.fullname == "lvl",
   })
-  drawSprite(x, y, rotation, sx, sy, o)
+  if multy then
+	o = getTableWithDefaults(copyTable(o or {}), {
+    sprite = getUnitSprites(unit),
+    color = {2,2},
+    painted = unit.painted,
+    special = unit.special,
+    overlay = unit.overlay,
+    meta = unit.meta,
+    nt = unit.nt,
+    alpha = unit.draw.opacity,
+    brightness = brightness,
+    id = unit.id,
+    frame = unit.frame,
+    wobble = unit.wobble,
+    delet = unit.delet,
+    really_smol = unit.fullname == "babby",
+    lvl = unit.fullname == "lvl",
+  })
+	drawSprite(x+3, y+3, rotation, sx, sy, o)
+	o = getTableWithDefaults(copyTable(o or {}), {
+    sprite = getUnitSprites(unit),
+    color = {1,4},
+    painted = unit.painted,
+    special = unit.special,
+    overlay = unit.overlay,
+    meta = unit.meta,
+    nt = unit.nt,
+    alpha = unit.draw.opacity,
+    brightness = brightness,
+    id = unit.id,
+    frame = unit.frame,
+    wobble = unit.wobble,
+    delet = unit.delet,
+    really_smol = unit.fullname == "babby",
+    lvl = unit.fullname == "lvl",
+  })
+	drawSprite(x-3, y-3, rotation, sx, sy, o)
+	o = getTableWithDefaults(copyTable(o or {}), {
+    sprite = getUnitSprites(unit),
+    color = {5,3},
+    painted = unit.painted,
+    special = unit.special,
+    overlay = unit.overlay,
+    meta = unit.meta,
+    nt = unit.nt,
+    alpha = unit.draw.opacity,
+    brightness = brightness,
+    id = unit.id,
+    frame = unit.frame,
+    wobble = unit.wobble,
+    delet = unit.delet,
+    really_smol = unit.fullname == "babby",
+    lvl = unit.fullname == "lvl",
+  })
+	drawSprite(x, y, rotation, sx, sy, o)
+  else
+    drawSprite(x, y, rotation, sx, sy, o)
+  end
 end
 
 function drawSprite(x, y, rotation, sx, sy, o)
@@ -4716,54 +4815,25 @@ function getUnitStr(unit)
 end
 
 function loadMod()
-  if love.filesystem.getInfo(getWorldDir(true).."/assets/lua/mod.lua") then
+  if love.filesystem.getInfo(getWorldDir(true).."/assets/lua") then
     local lua_dir = getWorldDir(true).."/assets/lua"
-    local old_require_path = love.filesystem.getRequirePath()
-    love.filesystem.setRequirePath(lua_dir.."/?.lua;"..lua_dir.."/?/init.lua")
-    local mod = love.filesystem.load(lua_dir.."/mod.lua")()
-    if type(mod) == "table" then
-      loaded_mod = mod
-      if mod.load then
-        mod.load()
-      end
-      if mod.createTab then
-        local grid = mod.createTab()
-        local tab = #tile_grid + 1
-
-        table.insert(selector_grid_contents, grid)
-        tile_grid[tab] = {}
-        for i,tile_name in ipairs(grid) do
-          if i then
-            tile_grid[tab][i-1] = tile_name
-          else
-            tile_grid[tab][i-1] = nil
-          end
-        end
-
-        custom_selector_grid = grid
-        custom_selector_tab = tab
-      end
-    end
-    love.filesystem.setRequirePath(old_require_path)
+	for i,filePath in pairs(lua_files_to_mod) do
+	  if love.filesystem.getInfo(getWorldDir(true).."/assets/lua/"..filePath..".lua") then
+		dofile(love.filesystem.getSaveDirectory().."/"..lua_dir.."/"..filePath..".lua")
+	  end
+	end
   end
 end
 
 function unloadMod()
-  if loaded_mod then
-    if loaded_mod.unload() then
-      loaded_mod.unload()
-    end
-    if custom_selector_tab then
-      tile_grid[custom_selector_tab] = nil
-      selector_grid_contents[custom_selector_tab] = nil
-      if secret_miku_location and secret_miku_location[1] == custom_selector_tab then
-        secret_miku_location = nil
-      end
-      custom_selector_grid = nil
-      custom_selector_tab = nil
-    end
-    loaded_mod = nil
+  for i,filePath in pairs(lua_files_to_mod) do
+	dofile("./"..filePath..".lua")
   end
+end
+
+function Dzhake.addBaseRule(ruleToAdd)
+  --for word in s:gmatch("%w+") do table.insert(words, word) end
+  --for w in s:gmatch("%S+") do print(w) end
 end
 
 function log(str)
