@@ -1,25 +1,13 @@
-# BAB BE U
-bab be u be a WIP (very very WIP!!) fangaem of [baba is you byy hempuli](https://hempuli.com/baba/) !!! a puzle gam wher ruls u folow r prenset as blok u intreact with.. by manpuilating tem, u chang how gam work, repupos thing u find in levl an cuase suprisng itneracton!!
-
-[help bab crew fix nasty bugs !!!](https://github.com/lilybeevee/bab-be-u/projects/1)
-
-[hep bab crew implement new cool fechures!!1](https://github.com/lilybeevee/bab-be-u/projects/2)
-
-## how do?
-firs, donload love2d!!
-nex, how run gam: https://love2d.org/wiki/Getting_Started#Running_Games
-
-## screnshoot pls!!!!
-ok!!, here u go!!!!!
-![img3](./docs/img3.png "mennu!!!")
-
-![lvl1](./docs/lvl1.png "xwx what's this?")
-
-![lvl2](./docs/lvl2.png "roguen't floor 2")
-
-![lvl3](./docs/lvl3.png "n'tn't")
-
-![lvl4](./docs/lvl4.png "carrier")
-
-## dev info !!!!!!
-for build ver (in main menu at the top left), you must add a hook to your .git folder, [click here for more info](https://gist.github.com/sg-s/2ddd0fe91f6037ffb1bce28be0e74d4e)
+# stuff i added:
+editor QoL
+true false
+multy (doesn't work :p should draw sprite 3 times (r,g,b) with ~5 pixels offset
+some sprites (animated ones are likely by Nona)
+A LOT OF opetions (they are are jank :p)
+new themes (themes competitions was cool, thanks guys)
+super modding way. it loads files from <world_folder>/assets/lua. You can see supported files in `modsupport.lua`.
+timeskip prop should make unit skip `addUndo()`, so when you undo it undos to turn when `timeskip` was parsed
+uncolor is uhh hueshift? yea, something like this. Should change unit's color to opposite (NOT PALLETTE'S OPPOSITE!!! CUZ IT SHOULD WORK FOR SAMECOLR ETC.)
+u_move,u_turn — u but only for dir/movement (u_move doesn't work cuz unit changes it's direction when it moves lol)
+and object? wtf?
+MOUS OBJECT? WHAR?
