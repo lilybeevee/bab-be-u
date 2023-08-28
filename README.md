@@ -1,6 +1,8 @@
 # BAB BE U
 bab be u be a WIP (very very WIP!!) fangaem of [baba is you byy hempuli](https://hempuli.com/baba/) !!! a puzle gam wher ruls u folow r prenset as blok u intreact with.. by manpuilating tem, u chang how gam work, repupos thing u find in levl an cuase suprisng itneracton!!
 
+[bab be u official discord channel (on baba server!!!)(https://discord.com/channels/556333985882439680/579519329515732993)]
+
 [help bab crew fix nasty bugs !!!](https://github.com/lilybeevee/bab-be-u/projects/1)
 
 [hep bab crew implement new cool fechures!!1](https://github.com/lilybeevee/bab-be-u/projects/2)
